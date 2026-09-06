@@ -141,6 +141,23 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
     /// </remarks>
     public double LongestFrameMicroseconds { get; private set; }
 
+    /// <summary>Wait until the worker has consumed everything offered so far.</summary>
+    /// <param name="timeout">How long to wait before giving up.</param>
+    /// <returns>True when the queue emptied inside the timeout.</returns>
+    /// <remarks>
+    /// **A SEAM FOR TESTS, AND IT IS A WAIT RATHER THAN A SLEEP.** The frame
+    /// worker is deliberately asynchronous and below normal priority, so a test
+    /// driving the device path has to know when it has caught up. Sleeping a
+    /// fixed number of milliseconds is a guess: too short and the test is flaky,
+    /// too long and it is slow, and neither reading is a fact about this class.
+    /// This asks the queue instead.
+    /// <para>**IT ADDS NOTHING TO THE PRODUCTION PATH.** `AudioHandoff` already
+    /// carried `WaitUntilDrained` for its own shutdown; this only makes it
+    /// reachable through the class that owns the queue.</para>
+    /// </remarks>
+    internal bool WaitUntilDrained(TimeSpan timeout)
+        => _handoff?.WaitUntilDrained(timeout) ?? true;
+
     /// <summary>Rows the picture lost because the worker was behind.</summary>
     public long DroppedFrames => _handoff?.DroppedChunks ?? 0;
 
@@ -359,62 +376,39 @@ public sealed class AudioSpectrumSource : ISpectrumSource, IDisposable
             return;
         }
 
-        // **NOBODY IS LOOKING, SO NOTHING IS COMPUTED** (unit 240 task 4).
-        // `WaterfallControl` unsubscribes from `FrameReady` when it leaves the
-        // visual tree, so a collapsed panel or an unselected tab really does
-        // leave this null, and that is the honest test of whether anything is
-        // consuming frames. The engine learns it without knowing that tabs
-        // exist, which §0.1 requires of it.
+        // **NOBODY IS LOOKING, SO NOTHING IS TRANSFORMED - BUT THE WINDOW IS
+        // KEPT WARM** (unit 240 task 4, amended by unit 252 task 4).
         //
-        // **WHAT `IsRunning` WAS ACTUALLY DRIVEN BY, WHICH THE INSTRUCTION SAID
-        // IT DID NOT KNOW:** `StartDecoding` and `StopDecoding` in the view
-        // model - the CW decoder's lifetime. It has never had anything to do
-        // with whether the Digital tab is showing, so before this the transform
-        // ran for an entire evening whether or not the picture was on screen.
-        if (FrameReady is null)
-        {
-            Idle();
-
-            return;
-        }
-
-        _idle = false;
-
+        // **WHAT UNIT 240 GOT RIGHT AND KEEPS.** `WaterfallControl` unsubscribes
+        // from `FrameReady` when it leaves the visual tree, so a collapsed panel
+        // or an unselected tab really does leave it null, and that is the honest
+        // test of whether anything is consuming frames. The engine learns it
+        // without knowing that tabs exist, which §0.1 requires of it. `Emit`
+        // returns on that same null, so **the 16,384-point transform is still not
+        // run while nobody is drawing** - which was the expensive half and the
+        // whole point of that task.
+        //
+        // **WHAT UNIT 252 CHANGED, AND WHY IT IS NOT A WEAKENING.** Unit 240 also
+        // threw the ring away and stopped offering, so reopening the tab cost one
+        // full window of audio - about a third of a second at 48 kHz - before the
+        // first row could be drawn. The reason given was that a row must never mix
+        // two moments (§0.0, HM-DEC-092), and that reason is sound about a ring
+        // that was *stopped and restarted*: the first frame after the gap would be
+        // part old audio and part new.
+        //
+        // **THE GAP IS WHAT CAUSES THAT, SO THE ANSWER IS NOT TO HAVE ONE.** The
+        // ring is fed continuously, so it always holds the most recent window of
+        // genuinely contiguous audio and the first frame after somebody looks
+        // again is exactly the frame they would have got had they never looked
+        // away. Nothing is stale, because nothing stopped.
+        //
+        // **AND NO RING WRITE MOVED ONTO THIS THREAD**, which is the constraint
+        // unit 240 bought at 522,895 microseconds a callback and unit 252 was told
+        // not to spend. `Offer` is a copy and a return - the same 270 microseconds
+        // this callback already pays whenever the tab is open - and `Push`, which
+        // writes the ring, still runs on the below-normal worker.
         handoff.Offer(chunk.FirstSampleIndex, chunk.SampleRate, chunk.Samples);
     }
-
-    /// <summary>Forget the window while nothing is drawing it.</summary>
-    /// <remarks>
-    /// **A ROW MUST NEVER MIX TWO DIFFERENT MOMENTS** (§0.0). Simply skipping
-    /// the work would leave the ring holding whatever was in it when the tab was
-    /// closed, and the first frame after it reopened would be part old audio and
-    /// part new - a picture asserting that a signal was present at a time it was
-    /// not, which is exactly the kind of claim a waterfall makes more
-    /// persuasively than a sentence (HM-DEC-092).
-    ///
-    /// So the window is dropped, and the first frame after somebody looks again
-    /// costs one full window of audio before it appears. On the FT8 window that
-    /// is about a third of a second.
-    /// </remarks>
-    private void Idle()
-    {
-        if (_idle)
-        {
-            return;
-        }
-
-        _idle = true;
-
-        lock (_gate)
-        {
-            _fill = 0;
-            _write = 0;
-            _sinceHop = 0;
-            Array.Clear(_ring);
-        }
-    }
-
-    private bool _idle;
 
     /// <summary>How many frame workers are alive across the whole process.</summary>
     /// <remarks>
