@@ -451,3 +451,149 @@ is already in the tree, already in the gate set at entry 13 and already watched 
 `B18`. **No second crossing helper is written and no watched failure is manufactured**, because
 a caller of existing arithmetic is not new arithmetic and a ladder walk is a measurement —
 `docs/gate-set.md:57` and rule 5.
+
+### 3.2 The extension rungs, as walked
+
+| rung | placement | `single slot` | `single + OSD` | **`summed x4`** | wrong | wall |
+|---|---|---:|---:|---:|---:|---:|
+| **-22.0 dB** | on grid | 0 of 306 | 1 of 306 | **239 of 306, 78.1 %** (73.1 – 82.4) | **0** | 144.7 s |
+| **-23.0 dB** | on grid | 0 of 306 | 0 of 306 | **29 of 306, 9.5 %** (6.7 – 13.3) | **1** | 145.8 s |
+
+At -22 dB `summed x4` is still above 50 per cent, so the second rung was licensed by the
+decision above and spent. At -23 dB it is below, so the pair brackets the crossing. **The cap
+at -23 dB was reached but not needed** — nothing below it was walked and nothing below it was
+licensed.
+
+Artefacts: `docs/unit257-runs/extension-on-grid-minus22.txt` and `-minus23.txt`.
+
+### 3.3 The crossing table
+
+| column | placement | rungs | **crossing** | **band** | width |
+|---|---|---|---|---|---:|
+| `single slot` | on grid | -19 / -20 | **-19.54 dB** | **-19.62 to -19.46 dB** | 0.162 |
+| `single + OSD` | on grid | -19 / -20 | **-19.81 dB** | **-19.92 to -19.71 dB** | 0.209 |
+| **`summed x4`** | **on grid** | **-22 / -23** | **-22.41 dB** | **-22.47 to -22.35 dB** | 0.120 |
+| `single slot` | cell centre | — | **not bracketed — above -19 dB** | — | — |
+| `single + OSD` | cell centre | — | **not bracketed — above -19 dB** | — | — |
+| **`summed x4`** | **cell centre** | **-20 / -21** | **-20.60 dB** | **-20.67 to -20.53 dB** | 0.138 |
+
+**The band is not a confidence interval on the crossing.** It is the two rungs' own 95 per cent
+Wilson bounds pushed through the same linear interpolation the point crossing uses, under the
+stated assumption that the decode rate moves linearly in decibels between two rungs one decibel
+apart. **Every band contains its own point crossing**, which is gate-set entry 13's invariant
+and the property `B18` violated; that is the one thing this unit asserts about a crossing, and
+it is a statement about the construction rather than a bound on any result. **No bound is
+asserted on where any crossing lies.** Artefact: `docs/unit257-runs/crossing-bands.txt`.
+
+**Three readings.**
+
+1. **Combining crosses at -22.41 dB on the grid** — **1.41 dB below the deepest rung the
+   closing table quotes**, which is why the table's own three rungs could not bracket it.
+2. **Combining crosses at -20.60 dB at the cell centre.** **The cost of landing half a bin off
+   the analysis grid, for combining, is 1.81 dB**, and the two bands are nowhere near touching.
+3. **Against §5.4's jittered -21.48 dB, the aligned on-grid crossing is 0.93 dB better.** That
+   gap is the cost of drift between hearings — `HM-OPEN-075` — and it is the reason both panels
+   are kept: **§5.4 understates what a stable station gets and §5.5 overstates what a drifting
+   one gets.**
+
+### 3.4 The wrong decode at -23 dB, and what is new about it
+
+```
+trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+```
+
+**Byte for byte the same trial, seed, sent and returned as `HM-OPEN-082`**, which unit 256 found
+at -23 dB on the **jittered** panel. Tonight's is at **zero jitter, on grid**. **So it survives
+a change of placement configuration**, which narrows the finding: it is a property of the rung
+and of the shipping stack's exposure, **not of the jitter and not of the pairing geometry.**
+
+**It did not come from a combination.** `CombinationsSubmitted` 951, `CodewordsAccepted` 36,
+`CombinedDecodes` 32, `CombinedDecodesVerified` **32** — every message the combining stage added
+was the message that was sent, and the second assertion passed. The wrong return came from the
+combined column's **inner** decoder on a single slot: the shipping stack at four times the
+exposure of the `single + OSD` row, which reads zero wrong at the same rung.
+
+**`Ft8Unit257PlacementPanelTests.TheDownwardExtensionOnGridAtMinus23` IS RED IN THE TREE AND IT
+STAYS RED.** Printed with sent beside returned before the assertion ran, artefact committed,
+assertion unweakened. It is a **second dated observation against `HM-OPEN-082`** and not a new
+issue, and **which of that issue's three named causes it is was not investigated** — that is
+outside step 6.
+
+---
+
+## 4. The prices against the actuals
+
+| # | call | predicted | **actual** | error |
+|---|---|---:|---:|---:|
+| 1 | `ThePlacementPanelOnGridAtMinus21` | 147 s | **144.0 s** | -2.0 % |
+| 2 | `ThePlacementPanelOnGridAtMinus20` | 147 s | **144.5 s** | -1.7 % |
+| 3 | `ThePlacementPanelOnGridAtMinus19` | 148 s | **145.2 s** | -1.9 % |
+| 4 | `ThePlacementPanelAtCellCentreAtMinus21` | 147 s | **145.9 s** | -0.7 % |
+| 5 | `ThePlacementPanelAtCellCentreAtMinus20` | 148 s | **149.4 s** | +0.9 % |
+| 6 | `ThePlacementPanelAtCellCentreAtMinus19` | 150 s | **150.4 s** | +0.3 % |
+| 7 | `TheDownwardExtensionOnGridAtMinus22` | **45 s** | **144.7 s** | **+222 %** |
+| 8 | `TheDownwardExtensionOnGridAtMinus23` | **45 s** | **145.8 s** | **+224 %** |
+| 9 | `TheCrossingsForTonightsSixColumns` | not priced — a computation, no walk | **0.005 s** | — |
+
+**The six required calls were priced to better than 2 per cent**, and the model in §1.4 — port
+one slot, ordered statistics one slot, four slots at the `OSD only` per-slot cost, plus the
+four-slot synthesis — is the one to carry forward.
+
+**The two extension rungs were priced wrong by a factor of 3.2, and the mistake is instructive
+rather than incidental.** §1.4 priced them at 45 s from **unit 256's measured wall clocks at -22
+and -23 dB**, which is exactly the right source for a *jittered* panel and the wrong one for
+this panel. Unit 256's -22 dB call is cheap because at 2.00 Hz and 480 samples of drift almost
+nothing decodes — `summed x4` reads **43 of 306** there and its `single slot` row costs 18.5 ms
+a trial. **At zero jitter the same rung reads 239 of 306**, the port's per-slot cost is back at
+64.3 ms, and the call costs what every other call tonight cost. **The lesson: a wall clock
+transcribed from another panel carries that panel's jitter with it, and on this ladder the
+jitter changes the price as much as it changes the result.**
+
+**It cost nothing.** Both calls sat at 145 s against a **480 s ceiling** and the **300 s split
+line**, so the split rule's answer would have been the same under either price and no call was
+restructured, delayed or dropped on account of it. Total foreground time across nine calls:
+**about 21 minutes**, in nine separate foregrounded invocations, **none backgrounded and none
+polled**.
+
+**The §1.4 pricing disagreement, resolved.** §1.4 recorded two defensible per-slot costs for the
+combined column's inner decoder — 74 ms from §5.3's measurement of this exact call, and 204 ms
+from §3.1's `SHIPPING` column built from the same stages. **The measured one was right in all
+eight walks**: `summed x4` came back between 291.3 and 309.0 ms a trial, which is 72.8 to
+77.3 ms a slot. **So the combined column's inner decoder does not pay for fine sync at anything
+like the rate §3's `fine sync only` column pays**, and that remains an open observation carried
+to the report rather than a finding this unit closed. It blocks nothing and it changed no
+decision tonight.
+
+---
+
+## 5. What was not run, and why
+
+- **§3's thirty-six cells were not re-run**, at either placement. Exit 1's six columns are
+  measured, committed and untouched; §5.0 as amended forbids putting a tonight row in that
+  table and reading 4 repeats it.
+- **§5.4's jittered panel was not re-run, amended or corrected.** It stands exactly as unit 256
+  left it. §5.5 is a **new configuration**, not a correction, and the closing document now
+  carries both with the difference on their faces.
+- **`Ft8Unit256CombiningPanelTests.TheCombiningPanelAtMinus23` was not run**, not weakened, not
+  fixed and not deleted. It is `HM-OPEN-082` and it is not this unit's. **No test this
+  instruction did not construct was run at any point tonight**, and no two were run at once.
+- **No rung above -19 dB and none below -23 dB was walked.** The two cell-centre combining-off
+  columns are unbracketed **above -19 dB** and walking up the ladder was not licensed; the
+  downward search was **capped at -23 dB** and stopped there.
+- **No extension rung was spent at the cell centre.** Its `summed x4` is already bracketed by
+  -20 / -21, and its other two columns are unbracketed upward where a downward rung cannot
+  reach them. Spending one there would have bought nothing.
+- **`DeepestHearings` was printed and not asserted**, for the reason in §1.6. It read **4 in all
+  eight walks**, so nothing was lost by not asserting it.
+- **Nothing under `src/` was touched.** `Ft8Reception.cs` is untouched, subtraction and
+  combining stay off by default, and whether either ships is Tim's with the figures now in front
+  of him. `Ft8Sharp` stays at 0.10.7 and `Ft8Sharp.Deep` at 0.8.0.
+- **No gate-set entry and no breakage-record entry was added.** Tonight's arithmetic is
+  `Ft8Unit256CrossingBand`, which is already entry 13 and already `B18`; **tonight's walks are
+  measurements and a measurement earns neither**, `docs/gate-set.md:57`. **Nothing broke that
+  was not already recorded**, and saying so explicitly rather than padding the list is that
+  file's own rule.
+- **Reading 3's fallback was not taken.** Reading 2's arithmetic held exactly (§1.1), so the
+  panel is labelled *placement* rather than *first-hearing placement*.
+- **The tree's uncommitted files, the `RULES_AT` disagreement and `HM-OPEN-082`'s three named
+  causes were reported and not chased**, as *Parked* requires.

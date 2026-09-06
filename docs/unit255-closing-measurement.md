@@ -770,6 +770,40 @@ there anyway would be a false comparison.**
 side. Every row below carries its ladder, its rung, its placement, its trial count and the
 `Ft8Sharp.Deep` version it was taken at on its own face, for exactly that reason.
 
+> **AMENDED IN PLACE BY UNIT 257, 2026-09-05. THE RULING ABOVE STANDS AND IS NARROWED TO WHAT
+> IT ACTUALLY ESTABLISHES.**
+>
+> **Still true, and not reopened: a §5 row cannot sit in §3's table.** §3 gives each trial
+> **one** slot and `RunRepeats` gives each trial **four**, so a four-slot row set beside a
+> one-slot row is a false comparison whatever else is held equal. Nothing in §3 was re-run,
+> amended or reopened by unit 257.
+>
+> **What did not follow, and unit 256's report drew it anyway: that combining therefore cannot
+> be measured at the coordinates §3's table is quoted at.** The rungs **-19, -20 and -21 dB**,
+> the two **placements** — on grid and at the cell centre — the **306 trials a cell** and the
+> **wrong count on every row** are properties of a *measurement*, not of that table, and every
+> one of them is reachable on the ladder that can carry combining. **§5.5 supplies them.**
+>
+> **What made the placement split honest is dropping the jitter, and that is the only thing
+> unit 257 changed.** `Ft8LadderHarness.cs:573-574` makes `frequencyHz` and `offsetSamples`
+> the origin of hearing `r = 0`, with every later hearing stepping from it by `r` times the
+> jitter; **with both jitters zero every hearing of every trial sits at exactly the stated
+> placement**, so *on grid* and *at the cell centre* mean in §5.5 precisely what they mean in
+> §3.1 and §3.2. A jittered panel cannot say that about itself, which is why §5.4 measured one
+> placement and §5.5 measures two.
+>
+> **§5.4 STANDS UNCHANGED, IS NOT RE-RUN AND IS NOT CORRECTED, AND BOTH PANELS ARE KEPT.**
+> They are not two attempts at one number; they are two different questions. §5.4 is the
+> **conservative** reading — a station whose oscillator and clock drift 2.00 Hz and 480 samples
+> between hearings — and §5.5 is the **aligned-repeats** reading — a station whose four
+> transmissions land in the same place, which is what a stable oscillator does over the two
+> minutes four slots take. Unit 247 §4 measured that difference directly at two hearings, 217
+> of 306 aligned against 68 of 306 jittered, and it is `HM-OPEN-075`. **Between them they
+> bracket what combining is worth to a real station; either alone would overstate or understate
+> it.** So the rule is now: **no row of §5.5 is comparable with a row of §3, and no row of §5.5
+> is comparable with a row of §5.4 either** — the jitter differs and it is the largest single
+> term in the result.
+
 ### 5.1 Subtraction — cited from unit 253, not re-run
 
 **Ladder: the masked two-signal ladder.** Two stations at the same frequency and the same
@@ -995,6 +1029,178 @@ tree with its assertion unweakened.**
 measurement handed to Tim, and §6.2 lists the surfaces that would have to move before any of
 it reached a radio.
 
+### 5.5 Combining on and off at the closing table's rungs and both placements, zero jitter — added by unit 257, 2026-09-05
+
+> **ADDED BY UNIT 257.** §5.4 answered *combining on and off* at -21, -22 and -23 dB in **one**
+> placement, on a jittered ladder. The session that judged unit 256's report against step 6's
+> exits returned `partial` on exactly that: exit 1 asks for each stage on and off **at -19, -20
+> and -21 dB, on grid and at cell centre, 306 trials a cell, with wrong counts**, and combining
+> had never been measured at -19 or -20 dB anywhere in this project, nor off the analysis grid
+> at all. **This is that measurement.**
+
+**LADDER: `Ft8LadderHarness.RunRepeats`.** Four slots a trial carrying the same message.
+**JITTER: ZERO on both axes** — `frequencyJitterHz: 0.0`, `offsetJitterSamples: 0` — so by
+`Ft8LadderHarness.cs:573-574` **every hearing of every trial sits at exactly the placement
+named on its column**. **PLACEMENTS: two.** On grid is `DefaultFrequencyHz` 1000.0 Hz and
+`DefaultOffsetSamples`; the cell centre is **+1.56 Hz and +480 samples**, unit 248's two
+constants from `Ft8Unit255ClosingLadderTests:62` and `:64` — the same two §3.2 uses, so the
+placement is the placement §3.2 means. **306 trials a cell. `Ft8Sharp.Deep` 0.8.0.** Every row
+in a cell sees identical audio, so the comparison within a cell is paired.
+
+> **NO ROW HERE IS COMPARABLE WITH A ROW IN §3**, which gives each trial **one** slot where
+> this gives each trial **four**, **NOR WITH A ROW IN §5.4**, which is the jittered panel and
+> where the jitter is the largest single term in the result. §5.0, as amended, rules both.
+> **§5.4 stands unchanged and is not re-run.**
+
+**THREE ROWS AND NOT FOUR**, and the third is `summed x4` rather than `combined x4` because the
+accumulation depth is 3 and the label is taken from the depth of the sum (`Ft8LadderHarness.cs:514`).
+That distinction is `B17`. `DeepestHearings` is **4 in every cell below**, so the label is
+earned everywhere on this panel.
+
+#### The panel, on the grid — 1000.0 Hz, three whole symbol periods in
+
+| row | what it is | **-19 dB** | **-20 dB** | **-21 dB** | wrong |
+|---|---|---:|---:|---:|---:|
+| `single slot` | **combining OFF** — the port on the first slot alone | 248 of 306, 81.0 % (76.3 – 85.0) | 73 of 306, 23.9 % (19.4 – 28.9) | 13 of 306, 4.2 % (2.5 – 7.1) | **0** |
+| `single + OSD` | **combining OFF** — ordered statistics, same first slot | 276 of 306, 90.2 % (86.3 – 93.0) | 125 of 306, 40.8 % (35.5 – 46.4) | 33 of 306, 10.8 % (7.8 – 14.8) | **0** |
+| **`summed x4`** | **combining ON** — four hearings accumulated three deep, shipping stages stacked | **306 of 306, 100.0 %** (98.8 – 100.0) | **306 of 306, 100.0 %** (98.8 – 100.0) | **306 of 306, 100.0 %** (98.8 – 100.0) | **0** |
+| | **`OnlyCombined`** — trials no single slot decoded alone and the combination did | 1 of 306 | 39 of 306 | **200 of 306** | |
+| | `LostByCombining` | **0** | **0** | **0** | |
+| | combinations submitted / accepted | 2 856 / 2 415 | 2 517 / 2 027 | 2 110 / 1 510 | |
+| | combined decodes / **verified** | 98 / **98** | 491 / **491** | 713 / **713** | |
+| | worst single slot | 121.6 ms, **123×** | 93.5 ms, **160×** | 92.3 ms, **162×** | |
+
+#### The panel, at the cell centre — +1.56 Hz, +480 samples
+
+| row | what it is | **-19 dB** | **-20 dB** | **-21 dB** | wrong |
+|---|---|---:|---:|---:|---:|
+| `single slot` | **combining OFF** — the port on the first slot alone | 6 of 306, 2.0 % (0.9 – 4.2) | 0 of 306, 0.0 % (0.0 – 1.2) | 0 of 306, 0.0 % (0.0 – 1.2) | **0** |
+| `single + OSD` | **combining OFF** — ordered statistics, same first slot | 33 of 306, 10.8 % (7.8 – 14.8) | 1 of 306, 0.3 % (0.1 – 1.8) | 0 of 306, 0.0 % (0.0 – 1.2) | **0** |
+| **`summed x4`** | **combining ON** — four hearings accumulated three deep, shipping stages stacked | **306 of 306, 100.0 %** (98.8 – 100.0) | **270 of 306, 88.2 %** (84.1 – 91.4) | **75 of 306, 24.5 %** (20.0 – 29.6) | **0** |
+| | **`OnlyCombined`** — trials no single slot decoded alone and the combination did | 196 of 306 | **262 of 306** | **75 of 306** | |
+| | `LostByCombining` | **0** | **0** | **0** | |
+| | combinations submitted / accepted | 6 223 / 4 173 | 4 467 / 1 515 | 2 480 / 140 | |
+| | combined decodes / **verified** | 689 / **689** | 483 / **483** | 87 / **87** | |
+| | worst single slot | 96.9 ms, **155×** | 125.4 ms, **120×** | 114.4 ms, **131×** | |
+
+**Every figure above is transcribed from a committed artefact under `docs/unit257-runs/`** —
+`placement-panel-on-grid-minus19.txt`, `-minus20.txt`, `-minus21.txt`,
+`placement-panel-cell-centre-minus19.txt`, `-minus20.txt`, `-minus21.txt` — **and none from a
+console buffer.**
+
+#### The consistency check, and it is exact in all twelve figures
+
+The two combining-OFF rows see only slot 0, which at zero jitter is exactly the audio §3
+walked. **They reproduce §3.1 and §3.2 to the decode in all six cells:**
+
+| rung-placement | §5.5 `single slot` | §3's `Ft8Sharp` | §5.5 `single + OSD` | §3's `OSD only` |
+|---|---:|---:|---:|---:|
+| -19 on grid | **248** | 248 | **276** | 276 |
+| -20 on grid | **73** | 73 | **125** | 125 |
+| -21 on grid | **13** | 13 | **33** | 33 |
+| -19 cell centre | **6** | 6 | **33** | 33 |
+| -20 cell centre | **0** | 0 | **1** | 1 |
+| -21 cell centre | **0** | 0 | **0** | 0 |
+
+**Twelve figures, twelve exact matches.** That is what establishes that §5.5's placements are
+§3's placements — the claim the whole section rests on — and it is measured rather than
+asserted. At -21 dB on grid the same pair also matches §5.3's cited row and
+`docs/unit247-combining.md` §4: **four independent records agreeing on 13 and 33 of 306.**
+
+#### The crossings
+
+| row | placement | ladder | rungs | crossing | **band** | width |
+|---|---|---|---|---|---|---:|
+| `single slot` | on grid | repeats ×4, zero jitter, 306 trials | -19 / -20 | **-19.54 dB** | **-19.62 to -19.46 dB** | 0.162 |
+| `single + OSD` | on grid | repeats ×4, zero jitter, 306 trials | -19 / -20 | **-19.81 dB** | **-19.92 to -19.71 dB** | 0.209 |
+| **`summed x4`** | **on grid** | repeats ×4, zero jitter, 306 trials | **-22 / -23** | **-22.41 dB** | **-22.47 to -22.35 dB** | 0.120 |
+| `single slot` | cell centre | repeats ×4, zero jitter, 306 trials | — | **not bracketed — above -19 dB** | — | — |
+| `single + OSD` | cell centre | repeats ×4, zero jitter, 306 trials | — | **not bracketed — above -19 dB** | — | — |
+| **`summed x4`** | **cell centre** | repeats ×4, zero jitter, 306 trials | **-20 / -21** | **-20.60 dB** | **-20.67 to -20.53 dB** | 0.138 |
+
+**The band is not a confidence interval on the crossing.** It is the two rungs' own 95 per cent
+Wilson bounds pushed through the same linear interpolation the point crossing uses, under the
+stated assumption that the decode rate moves linearly in decibels between two rungs one decibel
+apart — the construction §4.1 uses and the arithmetic `Ft8Unit256CrossingBand` executes, which
+is gate-set entry 13 and was watched failing once as `B18`. **Every band above contains its own
+point crossing**, checked. Artefact: `docs/unit257-runs/crossing-bands.txt`.
+
+**The two unbracketed columns are unbracketed *upward*, and the ceiling is named.** At the cell
+centre `single slot` reads 6 of 306 and `single + OSD` 33 of 306 at **-19 dB, the shallowest
+rung this panel walked** — already below 50 per cent at the top of the bracket. **A downward
+extension rung cannot reach them and walking up the ladder was not licensed, so -19 dB is the
+stated ceiling and nothing is extrapolated.** Unit 255's ruling 3.
+
+**`summed x4` on the grid needed two rungs below the table's**, because it reads 306 of 306 at
+-19, -20 **and** -21 dB. -22.0 dB (239 of 306) and -23.0 dB (29 of 306) bracket it. **The search
+was capped at -23 dB and did not need the cap.**
+
+#### What this panel says
+
+1. **On the grid, at every ratio the closing table is quoted at, a station heard four times is
+   decoded every time.** 306 of 306 at -19, -20 and -21 dB. **That is saturation and it is a
+   result rather than a fault** — no bound is asserted on any rate, and it was not chased down
+   the ladder inside the measurement. Combining's on-grid crossing is **1.4 dB below the
+   deepest rung the closing table quotes**, at -22.41 dB.
+2. **Off the grid, the two combining-off rows collapse and the combined row does not.** At -20
+   dB the port reads **0 of 306** and combining reads **270 of 306**. At -21 dB the port and
+   ordered statistics **both read 0 of 306**, `AnySlotAlone` is **0**, and combining reads
+   **75 of 306** — **every one of them a trial nothing else could reach.**
+3. **The cost of landing off the grid, for combining, is 1.81 dB**: -22.41 dB on grid against
+   **-20.60 dB** at the cell centre, and the two bands do not come close to touching.
+4. **`LostByCombining` is 0 in all six cells.** Combining is a strict superset of the single
+   slot on this audio at every rung and both placements; it never took a decode away.
+5. **Zero wrong in all eighteen rows, and 2 561 combined decodes with 2 561 verified**, against
+   naive false-accept expectations of 0.129 to 0.380 across the six cells. **No wrong decode
+   appeared at any rung or either placement inside this panel.**
+6. **The worst single slot anywhere in the panel is 125.4 ms — a 120× margin** against FT8's
+   15 000 ms, at -20 dB at the cell centre.
+
+#### Beside §5.4, and the two are a pair of bounds rather than a disagreement
+
+| | **§5.4 — jittered** | **§5.5 — aligned** |
+|---|---|---|
+| the station it models | oscillator and clock drift 2.00 Hz and 480 samples between hearings | four transmissions land in the same place |
+| `summed x4` at -21 dB, on grid | **254 of 306, 83.0 %** | **306 of 306, 100.0 %** |
+| combining's 50 % crossing, on grid | **-21.48 dB** (band -21.54 to -21.42) | **-22.41 dB** (band -22.47 to -22.35) |
+| placements measured | one, and mixed by construction | **two, and each exact** |
+
+**0.93 dB separates the two crossings, and that gap is the cost of drift** — the same term unit
+247 §4 measured at two hearings as 217 of 306 aligned against 68 of 306 jittered. It is
+`HM-OPEN-075` and it is not this section's to close. **Neither panel is the answer on its own:
+§5.4 understates what a stable station gets and §5.5 overstates what a drifting one gets, and a
+real station is somewhere between them.**
+
+#### The wrong decode at -23 dB reproduces at zero jitter, and it is the same one
+
+**The downward extension rung at -23 dB on the grid returned one message nobody sent**, in the
+`summed x4` row:
+
+```
+trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+```
+
+**That is byte for byte the same trial, the same seed, the same message sent and the same
+message returned as §5.4's**, which unit 256 found at -23 dB on the **jittered** panel. **So it
+reproduces across a change of placement configuration as well as across runs**, which narrows
+it: it is not a property of the jitter and not a property of the pairing geometry. As at §5.4,
+**it did not come from a combination** — `CombinedDecodes` is 32 and `CombinedDecodesVerified`
+is 32 at that rung, so every message the combining stage added was the message that was sent.
+It came from the combined column's **inner** decoder acting on a single slot: the shipping
+stack, run on all four slots of every trial, at four times the exposure of the `single + OSD`
+row, which reads zero wrong at the same rung.
+
+**It changes no figure in this document** — -23 dB is two decibels below the deepest rung in §3
+and 1.4 dB below combining's own on-grid crossing. **It is `HM-OPEN-082`**, it is a second dated
+observation against that issue and not a new one, and the test that found it,
+`Ft8Unit257PlacementPanelTests.TheDownwardExtensionOnGridAtMinus23`, **is left red in the tree
+with its assertion unweakened**, as `Ft8Unit256CombiningPanelTests.TheCombiningPanelAtMinus23`
+is.
+
+**And nothing here changes what ships.** Combining is off by default, this panel is a
+measurement handed to Tim, and §6.2 lists the surfaces that would have to move before any of it
+reached a radio.
+
 ---
 
 ## 6. What the operator should now see, and what he does not
@@ -1118,6 +1324,83 @@ thirty-six cells, which were not re-run; item 5's 336.8 ms and 44.5× are `SHIPP
 `SHIPPING` was not re-run — **the worst slot anywhere in unit 256's own walks was 154.4 ms**,
 a 97× margin, and nothing tonight came near the budget; item 6's SNR figures are step 2's and
 were not touched. **The checking was done and this is the record of it.**
+
+---
+
+**8. ADDED BY UNIT 257 — what hearing the same station four times is worth, at the ratios this
+table is quoted at and at the place a real station lands.** **This is a claim about a stage
+that is OFF by default; read item 8 with §6.2 in front of you.** §5.5, 306 trials a cell, zero
+jitter, four hearings a trial, `Ft8Sharp.Deep` 0.8.0. **Not comparable with items 2 and 3
+above, which are one-slot rows** — this is four slots a trial and the two ladders may not be
+read side by side.
+
+| ratio | placement | **combining OFF** (`single slot`) | **combining ON** (`summed x4`) | trials no single slot reached |
+|---|---|---|---|---|
+| -19 dB | on grid | 248 of 306 — 81.0 % | **306 of 306 — 100.0 %** | 1 of 306 |
+| -20 dB | on grid | 73 of 306 — 23.9 % | **306 of 306 — 100.0 %** | 39 of 306 |
+| -21 dB | on grid | 13 of 306 — 4.2 % | **306 of 306 — 100.0 %** | **200 of 306** |
+| -19 dB | cell centre | 6 of 306 — 2.0 % | **306 of 306 — 100.0 %** | 196 of 306 |
+| -20 dB | cell centre | 0 of 306 — 0.0 % | **270 of 306 — 88.2 %** | **262 of 306** |
+| -21 dB | cell centre | 0 of 306 — 0.0 % | **75 of 306 — 24.5 %** | **75 of 306** |
+
+**In plain words: at -21 dB, half a bin off Hamlet's grid, a station heard once is a station
+Hamlet never hears — 0 of 306, and ordered statistics does not help it, also 0 of 306. Heard
+four times in the same place, it is decoded 75 times in 306, and every one of those 75 is a
+trial nothing else could reach.** **Zero wrong across all eighteen rows**, and **`LostByCombining`
+is 0 in all six cells** — combining never took a decode away. Worst slot in the panel
+**125.4 ms, a 120× margin.**
+
+**Combining's own 50 per cent crossing, which no unit could state at either placement before:**
+**-22.41 dB on the grid** (band -22.47 to -22.35) and **-20.60 dB at the cell centre** (band
+-20.67 to -20.53). **The cost of landing off the grid is 1.81 dB.** §5.4's jittered panel puts
+the on-grid crossing at **-21.48 dB** instead, and **the 0.93 dB between them is the cost of a
+station whose oscillator drifts between overs** — the two panels bracket a real station rather
+than disagreeing.
+
+**THE CAVEAT THAT TRAVELS WITH EVERY FIGURE IN THIS ITEM, AND IT IS UNIT 254'S OWN.**
+`RunRepeats` scores the combined column on the union over the trial's slots, **so a four-repeat
+column gets four single-slot attempts as well as deeper sums.** 13 → 306 at -21 dB on grid is
+**not** the gain from accumulation; it conflates more hearings with more chances. **The
+`trials no single slot reached` column is the honest statement of what combining added**, and
+it is printed above for every cell.
+
+---
+
+**§6.1 RE-READ AGAINST UNIT 257'S NUMBERS, ITEM BY ITEM, 2026-09-05.**
+
+- **Item 1 — did not move.** `Ft8Reception.cs:460` was not touched. Nothing under `src/` moved
+  tonight and no production line changed.
+- **Item 2 — did not move.** It quotes §3's on-grid one-slot cells, which were not re-run. **A
+  §5.5 row may not be put in its table**, §5.0 as amended. What §5.5 does add is a second
+  reading of item 2's *the port at -19, -20 and -21 dB on grid* — 248, 73 and 13 of 306 — which
+  §5.5's `single slot` row reproduces **to the decode**, so item 2's left-hand column is now
+  confirmed by an independently walked ladder.
+- **Item 3 — did not move, and it gained its off-grid counterpart for a stage it did not
+  cover.** Its own figures are §3.2's and were not re-run; §5.5 reproduces its bare-port
+  cell-centre column — 6, 0 and 0 of 306 — to the decode. **Item 3's claim is about fine sync
+  and ordered statistics; item 8 is the same question asked of combining**, and it is a
+  different ladder and a separate item for that reason.
+- **Item 4 — did not move, and was not reopened.** Its two crossings are `SHIPPING`'s on §3's
+  one-slot ladder. **Combining's crossings are new numbers on a different ladder and are stated
+  in item 8, not folded into item 4.**
+- **Item 5 — did not move, and tonight's worst slot is quoted beside it.** 336.8 ms and 44.5×
+  are `SHIPPING`'s on §3's ladder and `SHIPPING` was not re-run. **The worst single slot
+  anywhere in unit 257's eight walks was 129.3 ms — a 116× margin** — at -22 dB on grid.
+  **Nothing tonight came within two orders of the budget**, and the four-slot panel's worst slot
+  is still a third of §3's worst.
+- **Item 6 — did not move.** Step 2's SNR figures were not touched.
+- **Item 7 — QUALIFIED FURTHER, AND THE QUALIFIER IS NARROWED.** Unit 257 added **5 508 more
+  scored slot decodes** — six cells of 918 at the closing table's rungs and both placements —
+  **with zero wrong in every one of the eighteen rows**, and **918 more at -22 dB on grid with
+  zero wrong**. At **-23 dB on grid at zero jitter** the `summed x4` row returned **the same
+  wrong message as §5.4's, on the same trial and the same seed**. **So the rung qualifier unit
+  256 added stands and is now better founded: the wrong decode is a property of the rung and of
+  the shipping stack's exposure, and not of the jitter or the placement** — it survived a change
+  of both. It remains `HM-OPEN-082`, it remains outside every rung this document quotes, and it
+  came from the port's own gates rather than from anything in `Ft8Sharp.Deep`.
+- **Item 8 — new tonight**, above.
+
+**The checking was done, item by item, and this is the record of it.**
 
 ### 6.2 What he does NOT get
 
