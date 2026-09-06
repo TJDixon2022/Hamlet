@@ -1,8 +1,8 @@
 PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-06
 STEP: 0 | done | the dummy load is gone from the tree
-STEP: 1 | done | the abort works before anything can key
-STEP: 2 | not started | Hamlet's own decoder reads Hamlet's transmission
+STEP: 1 | partial | the abort works before anything can key
+STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
 STEP: 3 | not started | the audio reaches the radio and the radio keys
 STEP: 4 | not started | the row knows where the contact stands
 STEP: 5 | not started | right-click and it goes
@@ -29,11 +29,12 @@ Digital tab rebuilt around it. **Hamlet could hear anything and say nothing.**
 
 ## Entries
 
-**The two entries below were written with the file-editing tools, in the format
+**The entries below were written with the file-editing tools, in the format
 `tools\arbiter\outcome-entry.py` writes, because this session's shell refused
-`outcome-append.bat`.** The refusal is recorded verbatim in unit 253's
-`output.md`. Nothing else about them differs: same fields, same order, ASCII, and
-the header's two step lines were updated in place the way the script updates them.
+`outcome-append.bat`.** It refused twice for unit 253 and once for unit 254; the
+refusals are recorded verbatim in each unit's `output.md`. Nothing else about them
+differs: same fields, same order, ASCII, and the header's step lines were updated
+in place the way the script updates them.
 
 ## UNIT 253 - STEP 0
 
@@ -64,3 +65,33 @@ ACCOMPLISHED: A same-thread abort with both halves, watched failing first at 9 r
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: All five must-pass criteria met, including the last one - grep for TransmitAbort in src returns its own declaration and nothing else.
+
+## UNIT 1 - STEP 1
+
+STEP: 1
+APPROACH: not recorded
+HIT: section 4 wants a ruling: banked - Two rulings are genuinely asked for, but both bear on the licence gate wording and a dummy load blurb that the unit itself defers to step 5, while step 1's five must-pass criteria are already met with the abort built, watched and uncalled, so nothing on this step waits on the owner.
+MOVE: continue
+WHY: not recorded
+DECIDED: none
+LICENCE: none
+COST: 10.629209499999998
+ACCOMPLISHED: not recorded
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: The abort criteria are met with quoted tests, watched-to-fail evidence and measured times, but the must-pass that no transmitting code exists when the step closes is contradicted by the report itself, which names Ic7300Rig.SendCwAsync and CivWrites.TuneNow as two things in the tree that can key a radio, left as unit 252 had them.
+
+## UNIT 254 - STEP 2
+
+STEP: 2
+APPROACH: Reuse the port for every step and build only the seam Hamlet lacks - one call from words to a slot of audio - then prove the round trip through Ft8SlotDecoder over more than a hundred messages, watched red first.
+HIT: Three things measured that had been assumed. The port accepts all twelve standard audio rates from 8000 to 192000 including 11025 and 44100, refusing only rates where 0.16 s is not a whole number of samples. A hashed callsign reads back wearing angle brackets, Ft8CallsignField.Bracket, so the seam carries two texts rather than one. And PaddingSampleCount centres the transmission in the slot with 1.18 s of silence before it, which is not where a transmission on the air begins.
+MOVE: continue
+WHY: The corpus caught a real defect in the seam before anything else did. GL IN TEST packed as a standard message whose two callsign fields were the hashes of GL IN and TEST - nonsense on the air that rendered back as the right words. The fix is a route order that is a ruling about hashes rather than a preference: everything carried in full, then free text, and only then anything hashed, because a message readable by anybody beats one readable only by a station that heard the full call in the same slot.
+DECIDED: That a callsign travelling as a hash is measured off the port's own refusal rather than inferred from a callsign's shape, packed once with no cache and once with one. That the bracket tolerance applies only on the cached attempt, so an unhashed packing can never sneak brackets in. That the WAV artefact alone was dropped from the named drop candidate, not for time but because a committed binary is a second copy of something every test regenerates deterministically.
+LICENCE: Step 2's own third criterion in its own words - reuse it rather than writing a second encoder - together with the arbiter decision of 2026-09-06 that reuse satisfies it, and PHASE_PLAN.md's named alternative to stopping: the tree wins, report the mismatch and continue.
+COST: unknown
+ACCOMPLISHED: Hamlet can compose a message and turn it into the audio of one FT8 slot, and its own decoder reads that audio back as the same message 112 times of 117, with the other 5 named as one category and their condition proved rather than excused. The seam lives in Hamlet.RadioEngine, opens no device, keys nothing, names no rig, no PTT, no CI-V and not TransmitAbort, and is what step 3 will play into the radio.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 1, 2 and 3 met - the geometry and continuous phase, 112 of 117 read back with the 5 conditional proved, and byte-identity by reuse of the port's existing comparison against upstream's WAV. Criterion 4 is half met: level and clipping are measured and pinned, and what the radio's input expects is stated from sources with the unknowns named, but no cited figure for the USB modulation input level exists in this repository and SHACK_FACTS.md FACT-004 forbids inferring it here. Criterion 5's 12.64 s holds exactly at both rates; its other half does not - the measurement shows the port centres the transmission rather than starting it on the slot boundary, which is a step 3 scheduling decision and not this unit's to fix in the port.
