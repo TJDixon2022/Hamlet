@@ -435,6 +435,143 @@ public sealed class TheDecodedListFiltersByCategoryTests
         Assert.Equal(0, model.DigitalHiddenCount);
     }
 
+    /// <summary>
+    /// Work instruction 252, task 3: his compound and portable calls are his.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE RULE IS: STRIP THE SLASHES AND COMPARE THE LONGEST PIECES.**
+    /// FT8 puts the prefix or the suffix on the other side of a `/`, so a compound
+    /// call is his base call plus one more piece and never his base call with
+    /// letters welded onto it.</para>
+    /// <para>**WHICH IS WHY IT IS NOT A PREFIX TEST, AND `W1ABCD` IS THE CASE
+    /// THAT PROVES IT.** A prefix match would make `W1ABCD` his, and `W1ABCD` is
+    /// somebody else entirely — a filter claiming another station's traffic as his
+    /// is the fault §0.0 exists for, wearing a helpful face.</para>
+    /// <para>**AND IT WORKS BOTH WAYS ROUND**, because he may type `W4/W1ABC` into
+    /// settings while operating away from home.</para>
+    /// </remarks>
+    [Theory]
+    // The plain case, and case does not matter.
+    [InlineData("W1ABC", "W1ABC", true)]
+    [InlineData("W1ABC", "w1abc", true)]
+    // Portable and compound suffixes.
+    [InlineData("W1ABC", "W1ABC/P", true)]
+    [InlineData("W1ABC", "W1ABC/M", true)]
+    [InlineData("W1ABC", "W1ABC/QRP", true)]
+    // A prefix, which is the other side of the slash.
+    [InlineData("W1ABC", "W4/W1ABC", true)]
+    [InlineData("W1ABC", "VP2E/W1ABC", true)]
+    // He is the one operating portable, so the stored call carries the piece.
+    [InlineData("W4/W1ABC", "W1ABC", true)]
+    [InlineData("W1ABC/P", "W1ABC", true)]
+    [InlineData("W4/W1ABC", "W1ABC/P", true)]
+    // **AND THE ONES THAT ARE NOT HIM.** A longer call that merely starts the
+    // same way is a different station, and so is a shorter one.
+    [InlineData("W1ABC", "W1ABCD", false)]
+    [InlineData("W1ABC", "W1AB", false)]
+    [InlineData("W1ABC", "W1ABCD/P", false)]
+    [InlineData("W1ABC", "KD9ABC", false)]
+    [InlineData("W1ABC", "", false)]
+    public void HisPortableAndCompoundCallsAreHis(
+        string stored, string heard, bool his)
+    {
+        var got = DecodedFilterRule.IsSameStation(heard, stored);
+
+        _output.WriteLine(
+            "stored [" + stored + "] heard [" + heard + "] -> "
+            + (got ? "his" : "somebody else"));
+
+        Assert.Equal(his, got);
+
+        // And it reaches the filter the same way round in either field.
+        Assert.Equal(
+            his,
+            DecodedFilterRule.Wants(false, true, heard, "W4WTM", stored));
+        Assert.Equal(
+            his,
+            DecodedFilterRule.Wants(false, true, "W4WTM", heard, stored));
+    }
+
+    /// <summary>
+    /// With no callsign on file, `mine` holds everything back and says so.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS A CHANGE FROM UNIT 251 AND IT IS DELIBERATE.** While rows
+    /// were dimmed, `mine` with no callsign matched everything — it dimmed nothing
+    /// and said so, which was the safe answer then. It is the wrong answer now
+    /// that the filter removes: matching everything would make `mine` do something
+    /// other than what the control says, and with `CQ` also on it would quietly
+    /// turn *both* into *everything*, which Tim's ruling forbids in as many
+    /// words.</para>
+    /// <para>**THE §0.0 HAZARD IS CARRIED BY THE TWO THINGS ON SCREEN INSTEAD**:
+    /// the hidden count, which says the band is as busy as it was, and the amber
+    /// note, which names the missing callsign and the screen it is typed on. An
+    /// empty list under a line reading `0 shown · 6 hidden by mine` is not a quiet
+    /// band, and it cannot be read as one.</para>
+    /// </remarks>
+    [Fact]
+    public void MineWithNoCallsignHoldsEverythingBackAndSaysSo()
+    {
+        var model = WithRows(mine: "");
+
+        Assert.False(model.HasDigitalFilterNote);
+
+        model.ShowsMine = true;
+
+        _output.WriteLine("note    : " + model.DigitalFilterNote);
+        _output.WriteLine("summary : " + model.DigitalDecodedSummary);
+
+        Assert.Empty(model.DigitalVisibleDecodes);
+        Assert.Equal(0, model.DigitalShownCount);
+        Assert.Equal(6, model.DigitalHiddenCount);
+
+        // **THE BAND IS STILL ON THE RECORD**, which is what makes the empty list
+        // readable rather than misleading.
+        Assert.Equal(6, model.DigitalDecodes.Count);
+        Assert.Contains("0 shown", model.DigitalDecodedSummary);
+        Assert.Contains("6 hidden by mine", model.DigitalDecodedSummary);
+
+        // And the note is up, naming what is missing and where it is fixed.
+        Assert.True(model.HasDigitalFilterNote);
+        Assert.Contains("does not know your callsign", model.DigitalFilterNote);
+        Assert.Contains("Settings", model.DigitalFilterNote);
+
+        // The toggle is still on and still available: it was not disabled and it
+        // did not silently fall back to something else (§0.5.1).
+        Assert.True(model.ShowsMine);
+    }
+
+    /// <summary>Typing the callsign in makes `mine` start working.</summary>
+    /// <remarks>
+    /// **THE POINTER HAS TO BE TRUE.** The note sends him to Settings, under
+    /// Operator, and that is the field this writes.
+    /// </remarks>
+    [Fact]
+    public void SettingTheCallsignMakesMineStartMatching()
+    {
+        var settings = new AppSettings();
+        var model = new MainWindowViewModel(settings, null);
+
+        model.AddDecodeRowForTests("214135", "-09", "0.2", "1240", "KD9ABC W4WTM -07");
+        model.AddDecodeRowForTests("214135", "-11", "0.2", "1290", "CQ TA3MPK KM39");
+
+        model.ShowsMine = true;
+
+        Assert.Empty(model.DigitalVisibleDecodes);
+
+        settings.Operator.Callsign = "KD9ABC";
+
+        // The panel re-reads the callsign the next time the filter runs, which is
+        // what pressing the toggle does.
+        model.ShowsMine = false;
+        model.ShowsMine = true;
+
+        Assert.False(model.HasDigitalFilterNote);
+        Assert.Single(model.DigitalVisibleDecodes);
+        Assert.Equal(
+            "KD9ABC W4WTM -07", model.DigitalVisibleDecodes[0].Message);
+    }
+
     /// <summary>The predicate itself, over the shapes the two fields take.</summary>
     /// <remarks>
     /// **THE `CQ POTA` ROW IS THE ONE THAT MATTERS**, and it takes two files to
