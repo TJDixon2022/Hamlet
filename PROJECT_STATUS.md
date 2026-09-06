@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 257 - combining gets the closing table's own rungs and both placements
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T20:18:25-04:00
-NOTE: Task 1 is the trace and it prices the night before it spends it. Reading Ft8LadderHarness.cs 472-600 to settle whether frequencyHz and offsetSamples set the first hearing with both jitters zero, because tonight's whole placement split turns on that one line pair
+UPDATED: 2026-09-05T20:31:26-04:00
+NOTE: RUN 2 of 6 RETURNED PASSED in 144.5 s. -20.0 dB on grid: combining off reads 73 and 125 of 306, matching section 3.1 to the decode, and combining ON reads 306 OF 306 again, zero wrong, 491 combined decodes all verified. Two rungs in and combining is saturated at both on grid. STARTING RUN 3 of 6 - ThePlacementPanelOnGridAtMinus19, foreground, 480 s timeout
 
 ---
 
