@@ -108,6 +108,20 @@ doc = {
             "expander does not confidently understand, and prefixes claimed by "
             "more than one entity, are excluded rather than guessed at."
         ),
+        "notTranscribed": (
+            "Rows whose prefix column carries a slash are not transcribed at "
+            "all: SV/A, FT/G, FT/J,E, FT/T, FT/W, FT/X, FT/Z, CE9/KC4, R1/F "
+            "and the 4U_ITU and 4U_UN forms. A slash means something different "
+            "in each of them and reading them wrongly is the failure this task "
+            "exists to avoid. The two Russia rows, UA-UI1-7,RA-RZ for European "
+            "Russia and UA-UI8-0,RA-RZ for Asiatic Russia, are also not "
+            "transcribed; note that RA-RZ appears in BOTH, so even transcribed "
+            "in full those calls would be declined under the shared-prefix "
+            "rule, which is the instruction's own 'a prefix whose entity "
+            "depends on a number returns nothing'. Measured, not repaired: "
+            "work instruction 252 task 5 says measure and report and do not "
+            "extend the table on the strength of it."
+        ),
     },
     "prefixes": dict(sorted(certain.items())),
     "sharedAndThereforeSilent": dict(sorted(shared.items())),
