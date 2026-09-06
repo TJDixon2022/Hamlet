@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 252 - the filter shows what he asked for and hides the rest
+TASK: 5 of 5
+WORK_INSTRUCTION: 252 - who they are and how far away
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-06T10:00:09-04:00
-NOTE: Four of four done and pushed, version 1.12.67 to 1.12.71, a patch a task. The named drop candidate was built rather than dropped - the third of a second is now 100 ms, measured through the device path, with no ring write moved onto the audio callback thread. One thing measured and deliberately not fixed and it is in section 4: the first waterfall row is black whichever way it arrives, because each bin is drawn against its own floor and the floor initialises on that first frame. Writing output.md now.
+UPDATED: 2026-09-06T16:15:52-04:00
+NOTE: Five of five done and pushed, version 1.12.71 to 1.12.76, a patch a task. The named drop candidate was built rather than dropped because the off-air corpus turned out to be on this machine: 1,982 real callsigns, 79.9 per cent resolved, and the commonest declines are Russian calls where RA-RZ belongs to two entities and the digit is what separates them. Task 1 was mostly already in the tree and is reported rather than rebuilt. One instruction claim to hand back: this file is numbered 252 and so was the last one. Writing output.md now.
 
 ---
 
