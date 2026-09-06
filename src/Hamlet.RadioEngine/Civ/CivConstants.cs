@@ -66,6 +66,35 @@ public static class CivConstants
     /// </remarks>
     public const byte CwStopByte = 0xFF;
 
+    /// <summary>
+    /// The transceiver-control family, <c>1C</c> (p. 19-7).
+    /// </summary>
+    /// <remarks>
+    /// Sub-commanded. <c>1C 00</c> is the transmit/receive state and <c>1C 01</c>
+    /// is the antenna tuner, which is why <see cref="CivWrites.AntennaTuner"/>
+    /// and <see cref="CivReads.TransmitStatus"/> both cite this page and are not
+    /// the same thing.
+    /// </remarks>
+    public const byte CmdTransceiverControl = 0x1C;
+
+    /// <summary>
+    /// The transmit/receive sub-command, <c>1C 00</c> (p. 19-7).
+    /// </summary>
+    public const byte SubPtt = 0x00;
+
+    /// <summary>
+    /// The value that puts the radio back into receive: <c>1C 00 00</c>
+    /// (p. 19-7, "00=receiving, 01=transmitting").
+    /// </summary>
+    /// <remarks>
+    /// **ONLY THE OFF VALUE IS NAMED HERE, AND THAT IS DELIBERATE.** This
+    /// constant exists for the abort's fallback (§0.2) and for nothing else.
+    /// The value that keys the radio is not in this file, because unit 253 built
+    /// the abort before anything that transmits and a constant is the easiest
+    /// thing in a codebase to reach for by accident.
+    /// </remarks>
+    public const byte PttOff = 0x00;
+
     /// <summary>Spectrum scope data family (HM-DEC-005, p. 19-14).</summary>
     public const byte CmdScope = 0x27;
 

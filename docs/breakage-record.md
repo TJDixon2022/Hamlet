@@ -471,6 +471,71 @@ only one that guards a number rather than a decode.
 
 ---
 
+### B19 — the abort was one write in one `try`, and a failed one told nobody
+
+**Unit 253, found by reading, not by a failure.** `Ic7300Rig.AbortCw`
+(`Rig/Ic7300Rig.cs:447-463`) builds `17 FF`, writes it straight at the port, and
+catches `Exception`. That is correct as far as it goes — an abort that could
+throw is not an abort — but it goes no further: **if that one write throws, the
+abort is over, and it returns `void`, so nothing anywhere can tell an abort that
+worked from an abort that did nothing.** A closed port, a pulled USB lead and a
+driver that refused the write are all indistinguishable from success, on the one
+path somebody reaches for when something has already gone wrong. That is §0.0.1
+broken on the path that needs it most.
+
+**Caught by** `TheAbortFiresFromEveryStateTests.ItFiresWhenTheTransportIsDead`,
+`.ItFiresWhenThePortIsGone`, `.ItFiresWhenTheCivWriteItselfThrows` — each asserts
+**two** attempts were made and that the returned record says which of them landed.
+Against the first, deliberately incomplete version of `TransmitAbort` these went
+red on `Assert.Equal(2, port.Attempts)`.
+
+### B20 — `17 FF` is not an abort for anything except a keyer message
+
+**Unit 253.** CI-V `17 FF` stops a CW message **the radio is sending itself**
+(p. 19-11). **An FT8 transmission is keyed by PTT with audio behind it, and `17
+FF` means nothing to it.** The engine had no PTT-off anywhere: `1C 00` existed
+only as `CivReads.TransmitStatus`, a read, and the four `ptt` hits in
+`src/Hamlet.RadioEngine` were all `AutoCallStop.PttPressed`, which *detects* the
+operator's hand rather than commanding anything. So the abort §0.2 has required
+since 2026-08-12 had one of its two halves missing, and the half that was missing
+is **the only one that would have worked for the mode this phase is about**.
+
+**Caught by** `.ThePttOffGoesOutWhenTheStopFrameThrows` and
+`.TheStopFrameGoesOutWhenThePttOffThrows` — the two halves failed one at a time,
+so the fallback is exercised rather than reasoned about — and by
+`.TheTwoFramesAreTheStopCodeAndPttOff`, which pins the wire bytes
+`FE FE 94 E0 17 FF FD` and `FE FE 94 E0 1C 00 00 FD`.
+
+### B21 — a wait on the abort path, which nothing would have noticed (tripwire)
+
+**Not yet broken. This is a guard, and it is marked as one.** Every statement of
+the no-wait rule in this tree before unit 253 was a comment: `ISerialPort.Write`'s
+"THE ABORT PATH AND NOTHING ELSE", `Ic7300Rig.AbortCw`'s "STRAIGHT AT THE PORT, ON
+THIS THREAD". **A comment does not fail.** Somebody adding one `await` to
+`TransmitAbort` — for a log write, for a retry, for a token — would break the
+property the whole of §0.2 rests on, and every existing test would still pass,
+because the abort would still emit the right bytes eventually.
+
+**Caught by** `.NothingOnTheAbortPathWaitsForAnything`, which uses two
+instruments: reflection over the type for `AsyncStateMachineAttribute`,
+task-shaped returns and generated state machines, and a scan of
+`TransmitAbort.cs` with its comment lines stripped. **Watched to fail on 2026-09-06
+by temporarily putting `await Task.Yield()` on the path; it went red, and the
+`await` was reverted.**
+
+### B22 — a flag that turns the abort off (tripwire)
+
+**Not yet broken.** Ruled unfixable-by-review: the way an interlock dies is a
+`bool` parameter added for a test, a `Suspended` property added for a settings
+screen, or an `if` added for a state nobody wanted to key from.
+
+**Caught by** `.NoFlagCanTurnTheAbortOff`, which asserts `TransmitAbort` is
+static, declares no fields and no properties, takes no `bool` or `bool?`
+parameter on any public method, and contains neither the string `enabled` nor an
+`if (` in its body. It fails the moment somewhere for a flag to live appears.
+
+---
+
 ## B. Breakages no test would have caught
 
 **These are worth more than the coverage above.** Every one of them got through,
