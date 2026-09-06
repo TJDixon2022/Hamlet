@@ -7755,6 +7755,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private DigitalDecodeRow PlaceRow(DigitalDecodeRow row)
     {
+        // **THE ONE PLACE THE OPERATOR'S OWN GRID REACHES A ROW** (unit 252 task
+        // 2). Every row goes through here, so the tooltip can measure a distance
+        // without `Ft8Vocabulary` — a static table — being handed a settings
+        // object, and without a second copy of the grid living anywhere.
+        // `OperatorProfile.GridSquare` stays the only one, and this reads it
+        // fresh each time so a grid typed in Settings shows up on the next slot.
+        row = row with { ObserverGrid = _settings.Operator.GridSquare };
+
         _digitalArrivals.Add(row);
         DigitalDecodes.Insert(InsertAt(row), row);
 

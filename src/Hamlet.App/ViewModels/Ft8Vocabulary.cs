@@ -1,4 +1,5 @@
 using System.Globalization;
+using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.ViewModels;
 
@@ -95,7 +96,11 @@ public static class Ft8Vocabulary
     /// about a callsign, which Hamlet has no way to know. Every sentence here
     /// names the stations and uses `they`.</para>
     /// </remarks>
-    public static string? Explain(Ft8MessageFields? fields)
+    /// <param name="observerGrid">
+    /// The operator's own Maidenhead locator from Settings, or "" where he has
+    /// not set one. Used only to measure a distance from, never to name a place.
+    /// </param>
+    public static string? Explain(Ft8MessageFields? fields, string? observerGrid = null)
     {
         if (fields is null)
         {
@@ -149,16 +154,24 @@ public static class Ft8Vocabulary
 
         if (IsGrid(text))
         {
-            // **WHICH SQUARE, AND NEVER WHERE THAT IS.** Turning a grid into a
-            // place name is the one inference this table is most tempted into
-            // and the one it must not make. The sentence does not even repeat
-            // the four characters, so there is nothing in it that could grow a
-            // country on the end.
-            return callingAnyone
-                ? $"{from} is calling anyone, and saying which grid square they "
-                  + "are transmitting from."
-                : $"{from} is telling {to} which grid square they are "
-                  + "transmitting from.";
+            // **STILL NEVER WHERE THAT IS** (Tim's ruling, 2026-09-05: a grid is
+            // roughly 70 by 100 miles, so *Texas* is fair and *Houston* is a lie,
+            // and neither is shown). What unit 252 adds is arithmetic on the
+            // square rather than a name for it: how far away it is and which way.
+            //
+            // **THE FOUR CHARACTERS ARE NOW SAID, WHERE UNIT 241 WITHHELD THEM.**
+            // That was a good instinct against a sentence growing a country on the
+            // end, and it is no longer the right guard, because the sentence now
+            // carries a distance and the operator has to be able to see which
+            // square it was measured from. The guard that replaces it is a test
+            // sweeping every output for a place name.
+            var grid = text.ToUpperInvariant();
+
+            var opening = callingAnyone
+                ? $"{from} is calling anyone from grid {grid}"
+                : $"{from} is telling {to} they are transmitting from grid {grid}";
+
+            return opening + ", " + DescribeWhereThatIs(grid, observerGrid) + ".";
         }
 
         if (IsReport(text, out var rogered, out var decibels))
@@ -186,6 +199,42 @@ public static class Ft8Vocabulary
         // **NOT A FALLBACK STRING.** Contest exchanges, QRZ, free text, compound
         // and non-standard callsigns: nothing appears.
         return null;
+    }
+
+    /// <summary>How far away a grid square is and which way, or what is missing.</summary>
+    /// <param name="grid">The station's four-character locator, upper case.</param>
+    /// <param name="observerGrid">The operator's own locator, or "" / null.</param>
+    /// <returns>A clause, without a leading capital or a trailing stop.</returns>
+    /// <remarks>
+    /// <para>**NO PLACE NAME, EVER** (Tim's ruling, 2026-09-05). Not a country,
+    /// not a state, not a city. A four-character square is roughly 70 by 100
+    /// miles, so the honest thing it supports is a distance and a direction, and
+    /// nothing else about it is knowable from four characters.</para>
+    /// <para>**WITH NO GRID OF HIS OWN IT SAYS SO RATHER THAN FALLING SILENT.**
+    /// The instruction is explicit and it is right: the grid still means something
+    /// without his own square, so the tooltip says what the square is and what
+    /// Hamlet would need to measure from it. Going quiet would read as the grid
+    /// being meaningless, and guessing his location from anything at all is the
+    /// §0.0 fault this whole unit is exposed to.</para>
+    /// <para>**IT IS THE INITIAL BEARING**, which is what an operator points an
+    /// antenna along from here. On a long path the far end differs by tens of
+    /// degrees, so the word is not decoration.</para>
+    /// </remarks>
+    private static string DescribeWhereThatIs(string grid, string? observerGrid)
+    {
+        var mine = OperatorLocation.FromGrid(observerGrid);
+        var theirs = OperatorLocation.FromGrid(grid);
+
+        if (mine is not { } here || theirs is not { } there)
+        {
+            return "and Hamlet needs your own grid square in Settings before it "
+                   + "can say how far away that is";
+        }
+
+        var miles = GridPath.DescribeMiles(GridPath.MilesBetween(here, there));
+        var bearing = GridPath.DescribeBearing(GridPath.BearingDegrees(here, there));
+
+        return $"which is {miles} away from you, on a bearing of {bearing}";
     }
 
     /// <summary>Whether an addressee field is a call to anyone rather than a station.</summary>

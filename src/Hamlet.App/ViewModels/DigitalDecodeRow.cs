@@ -55,8 +55,18 @@ namespace Hamlet.App.ViewModels;
 /// left behind empty**: an event nobody raises is a promise the type cannot keep,
 /// and a reader would reasonably conclude something on this row still moves.
 /// </remarks>
+/// <param name="ObserverGrid">
+/// The operator's own Maidenhead locator from Settings, or "" where he has not
+/// set one. **It is on the row because the tooltip needs it and the tooltip is
+/// built from the row**, and `Ft8Vocabulary` is a static table with no route to
+/// settings. It is set in one place — `MainWindowViewModel.PlaceRow` — so there
+/// is no second copy of the operator's grid anywhere; `OperatorProfile.GridSquare`
+/// stays the only one. It is used to measure a distance from and never to name a
+/// place (Tim's ruling, 2026-09-05).
+/// </param>
 public sealed record DigitalDecodeRow(
-    string Utc, string Snr, string Dt, string Hz, string Message)
+    string Utc, string Snr, string Dt, string Hz, string Message,
+    string ObserverGrid = "")
 {
     /// <summary>What the `snr` cell says for a message whose ratio was not measured.</summary>
     /// <remarks>
@@ -153,7 +163,7 @@ public sealed record DigitalDecodeRow(
     /// this handed `Explain` three characters with no way of knowing whose report
     /// it was — so it said *hears you*, about a contact the operator was not in.</para>
     /// </remarks>
-    public string PayloadHelp => Ft8Vocabulary.Explain(Fields) ?? "";
+    public string PayloadHelp => Ft8Vocabulary.Explain(Fields, ObserverGrid) ?? "";
 
     /// <summary>True where the payload is on the list and has hover text.</summary>
     public bool HasPayloadHelp => PayloadHelp.Length > 0;
