@@ -5,7 +5,7 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-082
-status: open — measured by unit 256, 2026-09-05, and not closed by it
+status: open — measured by unit 256, 2026-09-05, observed again at zero jitter by unit 257 the same day, and not closed by either
 owner: tim
 raised: 2026-09-05
 severity: slows
@@ -69,6 +69,59 @@ they are worth asking:
 project publishes and 1.5 dB below combining's own crossing. **No figure in
 `docs/unit255-closing-measurement.md` moves**, and §6.1 item 7 now carries the qualification
 on its face rather than the issue being the only place it is written.
+
+### Second observation — unit 257, 2026-09-05. It reproduces at ZERO JITTER and ON GRID.
+
+**A dated observation against this issue, not a new issue, and no cause is proposed** — which
+of the three questions above it is remains outside step 6 and unspent.
+
+**What was run.** `Ft8Unit257PlacementPanelTests.TheDownwardExtensionOnGridAtMinus23`, the
+downward extension rung of unit 257's zero-jitter placement panel. **Same ladder** —
+`RunRepeats`, four slots a trial, 306 trials, `Ft8Sharp.Deep` 0.8.0, `historyDepth: 3`,
+`accumulationDepth: 3`, `combinedOsd` and `combinedFineSync` both `Default`. **Different in
+exactly two arguments**: `frequencyJitterHz: 0.0` against unit 256's `2.0`, and
+`offsetJitterSamples: 0` against unit 256's `480`.
+
+| | |
+|---|---|
+| rung | **-23.0 dB** (delivered -23.000) |
+| placement | **on grid** — 1000.0 Hz, three whole symbol periods in, **and every one of the four hearings sits there**, jitter being zero |
+| row | **`summed x4`** |
+| trial | **29** |
+| seed | **220771** |
+| sent | **`CQ PY2ABC GG66`** |
+| returned | **`WN8ESU/P JG5HKE/P R AH58`** |
+
+**That is byte for byte the same trial, the same seed, the same message sent and the same
+message returned as unit 256's**, which was taken at 2.00 Hz and 480 samples of jitter between
+hearings.
+
+**What the second observation narrows.** It survived a change of **both** jitter axes and
+therefore of the placement geometry every later hearing sits at. **So it is not a property of
+the jitter, and not a property of the pairing geometry between hearings.** It is consistent
+with what unit 256's counts already suggested — the combined column's **inner** decoder acting
+on a single slot — and this run's counts say the same thing again, more strongly: at this rung
+`CombinationsSubmitted` is **951**, `CodewordsAccepted` is **36**, `CombinedDecodes` is **32**
+and `CombinedDecodesVerified` is **32**. **Every message the combining stage added was the
+message that was sent**, so the second assertion passed and the wrong return did not come from
+a combination.
+
+**What it does not do.** It does not touch a published figure. -23 dB is **1.41 dB below
+combining's own on-grid crossing** of -22.41 dB and **two decibels below the deepest rung** in
+`docs/unit255-closing-measurement.md` §3. Unit 257's own panel reads **zero wrong across all
+eighteen rows** at -19, -20 and -21 dB at both placements — 5 508 scored slot decodes — and
+**zero wrong across the 918 at -22 dB on grid.**
+
+**What unit 257 did and did not do.** It printed the whole table before the assertion ran, wrote
+the artefact to `docs/unit257-runs/extension-on-grid-minus23.txt` before the assertion ran, and
+**left `Ft8Unit257PlacementPanelTests.TheDownwardExtensionOnGridAtMinus23` RED in the tree with
+its assertion unweakened**, as `Ft8Unit256CombiningPanelTests.TheCombiningPanelAtMinus23` is
+left. **It did not run unit 256's test**, did not weaken, fix or delete it, did not change a
+line under `src/`, and did not propose which of the three named causes this is.
+
+*Refs added by unit 257: `docs/unit255-closing-measurement.md` §5.5 and §6.1 item 7,
+`docs/unit257-runs/extension-on-grid-minus23.txt`,
+`tests/Ft8Sharp.Tests/Dsp/Ft8Unit257PlacementPanelTests.cs`, `docs/unit257-combining-placement.md` §3.4.*
 
 ---
 id: HM-OPEN-081
