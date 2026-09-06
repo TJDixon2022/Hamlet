@@ -2864,9 +2864,59 @@
                             Foreground="{StaticResource HmAmberDeepBrush}" />
                     </Border>
 
-                    <ScrollViewer Grid.Row="2"
-                                  VerticalScrollBarVisibility="Auto">
-                        <StackPanel Spacing="10">
+                    <!-- **TWO COLUMNS, AND THIS WAS RULED A PHASE AGO** (Tim,
+                         during the phase before unit 251, and it never reached
+                         an instruction until now — that omission was ours).
+                         Waterfall left at half the available width, decoded text
+                         right at the other half, the two filling the same
+                         vertical run.
+
+                         **`*,*` AND NOT A PAIR OF PERCENTAGES.** Two star
+                         columns are equal by construction, so nothing can round
+                         them apart, and each panel gives up the same five pixels
+                         to the gutter between them — which is what keeps the two
+                         panels the same width and not merely the two columns.
+
+                         **THE OUTER SCROLLER IS GONE ON PURPOSE.** It used to
+                         stack the two panels vertically and scroll the pair. A
+                         scroller hands its content unbounded height, so a `*`
+                         row inside one cannot fill anything; with it removed the
+                         right column is a real height and the decoded table
+                         fills it. Each panel still scrolls its own contents.
+
+                         **NOTHING ABOUT WHAT THE WATERFALL IS A PICTURE OF
+                         CHANGES** (Tim, 2026-08-28). `AudioSpectrumSource` keeps
+                         its 16384-sample window at 48 kHz, its quarter hop, its
+                         200 to 3000 Hz span and its 240 rows of history. The
+                         bitmap is bins wide and is resampled into whatever
+                         rectangle it is drawn in, so halving the width halves
+                         the pixels per hertz and changes no transform. That is
+                         the choice, and it is the one that leaves the measurement
+                         alone. -->
+                    <Grid Grid.Row="2" x:Name="DigitalPanes"
+                          ColumnDefinitions="*,*">
+
+                        <!-- **THE LEFT COLUMN IS THE WATERFALL AND THE SPACE
+                             UNDER IT.** Both rows are `Auto`: the waterfall keeps
+                             exactly the height it had, and the reserved region is
+                             a box of a stated minimum size rather than whatever
+                             happens to be left over — which is what makes it read
+                             as space kept on purpose.
+
+                             **IT SCROLLS RATHER THAN CLIPS.** The outer scroller
+                             that used to carry both panels is gone, so on a
+                             window too short for a 180-pixel waterfall and the
+                             region under it something has to give. Clipping would
+                             cut the bottom off the picture with nothing on screen
+                             saying so, which is a display asserting the band is
+                             narrower than it is. The right column does not need
+                             one: the decoded table already scrolls itself. -->
+                        <ScrollViewer Grid.Column="0"
+                                      Margin="0,0,5,0"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                        <Grid x:Name="DigitalLeftColumn"
+                              RowDefinitions="Auto,Auto">
 
                             <!-- **THE WATERFALL, WITH THE CAPTURE PRESS ON ITS
                                  HEADER** (Tim, 2026-08-28). The press is where a
@@ -2879,7 +2929,8 @@
                                  is that the same audio is now cut on the UTC
                                  quarter minute and read, and whatever comes out
                                  of it lands on the decoded panel below. -->
-                            <ctl:CollapsiblePanel x:Name="DigitalWaterfallPanel"
+                            <ctl:CollapsiblePanel Grid.Row="0"
+                                                  x:Name="DigitalWaterfallPanel"
                                                   Family="Lavender"
                                                   Title="Waterfall"
                                                   Summary="{Binding DigitalWaterfallSummary}"
@@ -2910,11 +2961,51 @@
                                                       BandHighHz="3000" />
                             </ctl:CollapsiblePanel>
 
-                            <!-- **DECODED TEXT SITS ABOVE WHAT PEOPLE ARE
-                                 SAYING** (Tim, 2026-08-28: he is more interested
-                                 in the text and expects to switch between
-                                 them). -->
-                            <ctl:CollapsiblePanel x:Name="DigitalDecodedPanel"
+                            <!-- **THE SPACE UNDER THE WATERFALL IS SPOKEN FOR,
+                                 AND IT SAYS SO** (Tim's ruling: keep the room
+                                 under the waterfall for Send).
+
+                                 **A NAMED REGION AND NOT A GAP.** A gap that
+                                 happens to be there is a gap the next layout
+                                 edit closes, and then the waterfall moves a
+                                 second time when transmit arrives. This has a
+                                 name in the markup — `DigitalSendReserved` —
+                                 so the transmit phase drops into it.
+
+                                 **IT SAYS TRANSMIT IS NOT BUILT** (§0.0,
+                                 §0.5.1). An empty bordered box where a Send
+                                 panel will go reads as a Send panel that is
+                                 broken. There is no control in it, live or
+                                 greyed, because a greyed control claims a
+                                 feature exists and is unavailable, and this
+                                 one does not exist at all. -->
+                            <Border Grid.Row="1" x:Name="DigitalSendReserved"
+                                    Margin="0,10,0,0"
+                                    MinHeight="72"
+                                    Padding="14,12"
+                                    CornerRadius="8"
+                                    Background="Transparent"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    BorderThickness="1">
+                                <TextBlock x:Name="DigitalSendReservedLine"
+                                           Text="Send lives here when it is built. Hamlet does not transmit yet, and this space is kept clear so the waterfall above it never has to move again."
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Top"
+                                           FontSize="11"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                            </Border>
+                        </Grid>
+                        </ScrollViewer>
+
+                            <!-- **DECODED TEXT IS THE RIGHT-HAND HALF** (Tim's
+                                 ruling, carried into markup at last). It was
+                                 stacked under the waterfall from work
+                                 instruction 037 until unit 251, so reading a
+                                 slot meant scrolling away from the picture of
+                                 it. -->
+                            <ctl:CollapsiblePanel Grid.Column="1"
+                                                  Margin="5,0,0,0"
+                                                  x:Name="DigitalDecodedPanel"
                                                   Family="Lavender"
                                                   Title="Decoded text"
                                                   Summary="{Binding DigitalDecodedSummary}"
@@ -2965,7 +3056,15 @@
                                                 Foreground="{StaticResource HmTextPrimaryBrush}" />
                                     </StackPanel>
                                 </ctl:CollapsiblePanel.HeaderAction>
-                              <StackPanel Spacing="6">
+
+                              <!-- **A GRID AND NOT A STACK SINCE UNIT 251.** The
+                                   panel now owns a whole column's height, and a
+                                   StackPanel would have handed the table its own
+                                   desired height and left the rest of the column
+                                   blank. The heading row, the idle line and the
+                                   census line stay `Auto`; the table takes what
+                                   is left. -->
+                              <Grid RowDefinitions="Auto,*,Auto,Auto">
 
                                 <!-- **THE HEADINGS STAY AND THE FOUR ROWS UNDER
                                      THEM ARE GONE** (unit 224). They were
@@ -3023,7 +3122,8 @@
                                      row's. That is a stronger guard than one
                                      declaration, because it checks the result
                                      rather than the intent. -->
-                                <Grid ColumnDefinitions="76,48,48,54,*"
+                                <Grid Grid.Row="0"
+                                      ColumnDefinitions="76,48,48,54,*"
                                       RowDefinitions="Auto"
                                       IsVisible="{Binding HasDigitalDecodes}">
 
@@ -3075,8 +3175,17 @@
                                      eighteen rows, which is longer than one
                                      slot's worth on the busiest band recorded
                                      here, so an operator watching live sees a
-                                     whole slot without touching anything. -->
-                                <ScrollViewer MaxHeight="300"
+                                     whole slot without touching anything.
+
+                                     **AND THE `MaxHeight` IS GONE IN UNIT 251.**
+                                     300 pixels was a cap chosen while this panel
+                                     shared one scroller with the waterfall
+                                     stacked above it. The panel now has its own
+                                     column, so the table fills whatever height
+                                     that column has and the cap would only be a
+                                     smaller ceiling than the screen's. -->
+                                <ScrollViewer Grid.Row="1"
+                                              Margin="0,6,0,0"
                                               VerticalScrollBarVisibility="Auto"
                                               HorizontalScrollBarVisibility="Disabled"
                                               IsVisible="{Binding HasDigitalDecodes}">
@@ -3171,9 +3280,11 @@
                                      panel is indistinguishable from a broken
                                      one, and the tab swaps between this and the
                                      live table rather than losing either. -->
-                                <TextBlock x:Name="DigitalDecodedIdleLine"
+                                <TextBlock Grid.Row="2"
+                                           x:Name="DigitalDecodedIdleLine"
                                            Text="{Binding DigitalDecodedIdle}"
                                            IsVisible="{Binding !HasDigitalDecodes}"
+                                           Margin="0,6,0,0"
                                            FontSize="11" TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
 
@@ -3199,13 +3310,14 @@
                                      (CLAUDE.md 12.1). It names the stage the
                                      numbers point at. It does not say the band was
                                      quiet and it does not say what to change. -->
-                                <TextBlock x:Name="DigitalCensusLine"
+                                <TextBlock Grid.Row="3"
+                                           x:Name="DigitalCensusLine"
                                            Text="{Binding DigitalCensusLine}"
                                            IsVisible="{Binding HasDigitalCensus}"
                                            FontSize="11" TextWrapping="Wrap"
-                                           Margin="0,2,0,0"
+                                           Margin="0,8,0,0"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
-                              </StackPanel>
+                              </Grid>
                             </ctl:CollapsiblePanel>
 
                             <!-- **"WHAT PEOPLE ARE SAYING" IS GONE** (Tim's
@@ -3232,8 +3344,7 @@
                                  and `DigitalIdleText.Waterfall`, `.Decoded` and
                                  `.ModeStrip` are all still in use; only
                                  `.Saying` went with it. -->
-                        </StackPanel>
-                    </ScrollViewer>
+                    </Grid>
                 </Grid>
 
                 <Grid x:Name="VoiceWorkspace"

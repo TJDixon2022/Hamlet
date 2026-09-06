@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 9
+TASK: 3 of 9
 WORK_INSTRUCTION: 251 - the Digital tab does what the operator expects
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T21:40:00-04:00
-NOTE: Task 1 closed and committed. Step 6 is done in both PHASE_STATUS.md and PHASE_OUTCOME.md, and exits 2 and 5 are carried as HM-OPEN-084 and HM-OPEN-083 with what each would have shown and what it would take to run it. Correcting the previous note - WORK_INSTRUCTIONS.md was rewritten on disk at 21:30, mid-session, from eight tasks to nine; the layout in MainWindow.axaml is this session's own work against what was then task 1, not inherited, and it is now task 2. outcome-append.bat was refused in both spellings so the entry and the header were written with the file-editing tools, as task 1 directs. Task 2 now: the two-column Digital tab is built and builds clean; writing the headless test that asserts equal column widths and the named reserved region.
+UPDATED: 2026-09-05T21:52:00-04:00
+NOTE: Task 2 done and committed - the Digital tab is two columns, measured headless at waterfall x=29 w=666 and decoded x=705 w=666, both starting at y=520, reserved Send region at x=29 y=751 w=666 h=73 beneath the waterfall. AudioSpectrumSource and WaterfallControl are untouched - git diff against HEAD is empty for both. Task 3 now: persisting the selected tab and the Digital sub-mode to settings.json and restoring at startup WITHOUT tuning. Earlier note kept for the record - Task 1 closed and committed. Step 6 is done in both PHASE_STATUS.md and PHASE_OUTCOME.md, and exits 2 and 5 are carried as HM-OPEN-084 and HM-OPEN-083 with what each would have shown and what it would take to run it. Correcting the previous note - WORK_INSTRUCTIONS.md was rewritten on disk at 21:30, mid-session, from eight tasks to nine; the layout in MainWindow.axaml is this session's own work against what was then task 1, not inherited, and it is now task 2. outcome-append.bat was refused in both spellings so the entry and the header were written with the file-editing tools, as task 1 directs. Task 2 now: the two-column Digital tab is built and builds clean; writing the headless test that asserts equal column widths and the named reserved region.
 
 ---
 
