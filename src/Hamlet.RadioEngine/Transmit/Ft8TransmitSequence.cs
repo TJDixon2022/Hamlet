@@ -387,10 +387,13 @@ public sealed class Ft8TransmitSequence
 
         if (string.IsNullOrEmpty(decision.Citation))
         {
-            refusal =
-                "Hamlet does not know your licence class, so nothing checked this transmission "
-                + "against your privileges. Set your class in Settings and it will. "
-                + $"{decision.Reason}".TrimEnd();
+            // THE GATE'S OWN SENTENCE, AND THEN WHAT THIS PATH DOES ABOUT IT.
+            // Saying it again in slightly different words would read as two
+            // refusals for one reason.
+            refusal = string.IsNullOrEmpty(decision.Reason)
+                ? "nothing checked this transmission against your licence privileges, and Hamlet "
+                  + "will not key one it could not check."
+                : $"{decision.Reason} Hamlet will not key a transmission nothing checked.";
             return false;
         }
 

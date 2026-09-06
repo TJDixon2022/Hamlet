@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 255 - key, transmit, unkey, with the unkey guaranteed
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T19:43:00-04:00
-NOTE: The sequence is built and 10 of 10 green. Watched red first with the unkey on the success path only - four modes ended with the wire at FE FE 94 E0 1C 00 01 FD and nothing after it. Six of six failure modes now leave the radio unkeyed. Next: the licence gate refusing inside the path, proved by the port seeing zero bytes.
+UPDATED: 2026-09-06T19:44:59-04:00
+NOTE: Gate tests green, 6 of 6. All three refusals - out of privilege, unknown class, guard switched off - leave the port at zero writes and the sink untouched, and each test also records what TransmitGuard.Check itself answered, which was yes in two of the three. Check is unchanged. Next: where in the slot the transmission starts, and the telemetry line that carries its shape and none of its words.
 
 ---
 
