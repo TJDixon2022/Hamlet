@@ -141,7 +141,7 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
         Assert.Equal(UnkeyRoute.TheAbort, run.CameOutOfTransmit);
         Assert.True(run.RadioIsInReceive);
         Assert.Equal(48_000, run.Played!.Value.SamplesPlayed);
-        Assert.Contains("48000 of 180000 samples", run.Reason, StringComparison.Ordinal);
+        Assert.Contains("48000 of 151680 samples", run.Reason, StringComparison.Ordinal);
         Assert.Equal(
             Hex([.. KeyFrame, .. AbortCwStopFrame, .. UnkeyFrame]),
             Hex(port.Written));
@@ -421,13 +421,19 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
     /// <param name="frequencyHz">Where it would go out.</param>
     /// <param name="guardEnabled">The Settings toggle.</param>
     /// <param name="startSecondsIntoSlot">How far after the boundary it starts.</param>
+    /// <param name="text">What to say.</param>
+    /// <remarks>
+    /// <c>ComposeSignal</c>, not <c>Compose</c>: the send path plays the 12.64 s
+    /// of tones, and the padded 15 s slot is what a decoder reads.
+    /// </remarks>
     internal static OperatorSend Send(
         LicenseClass licenseClass = LicenseClass.General,
         long frequencyHz = 14_074_000,
         bool guardEnabled = true,
-        double startSecondsIntoSlot = 0.5)
+        double startSecondsIntoSlot = 0.5,
+        string text = "CQ KC3QIS FN00")
     {
-        var composed = Ft8Composer.Compose("CQ KC3QIS FN00");
+        var composed = Ft8Composer.ComposeSignal(text);
         Assert.True(composed.Composed, composed.Explanation);
 
         return new OperatorSend(

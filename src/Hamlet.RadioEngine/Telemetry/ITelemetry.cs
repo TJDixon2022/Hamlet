@@ -22,6 +22,21 @@ public enum TelemetryCategory
     /// <summary>Decoder runs and confidence statistics — never message content.</summary>
     Decode,
 
+    /// <summary>
+    /// Transmissions: when a slot went out, where, how long for, and how the
+    /// radio came out of transmit — never message content and never a callsign.
+    /// </summary>
+    /// <remarks>
+    /// **ADDED DELIBERATELY** (work instruction 255, task 4), which this enum's
+    /// own comment requires of any addition. Step 3's fourth exit criterion is
+    /// that the transmitted slot is recorded, and a transmission is not a decode:
+    /// it is the one thing Hamlet does that reaches other people, and it is the
+    /// category an operator would most want to be able to switch on and read
+    /// back. HM-DEC-018 governs what may be in it and
+    /// <see cref="TransmitRecord"/> is the shape that enforces that.
+    /// </remarks>
+    Transmit,
+
     /// <summary>Frame rates, render timings, spectrum throughput.</summary>
     Performance,
 }

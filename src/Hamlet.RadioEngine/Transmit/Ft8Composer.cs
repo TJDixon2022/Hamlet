@@ -50,10 +50,14 @@ public enum Ft8ComposeRefusal
 /// receive path's decoder ends in. <see cref="Ft8Composer"/> refuses to return
 /// this record at all unless the two are identical **or** differ only by the angle
 /// brackets the port puts round a callsign it recovered from a hash.</para>
-/// <para>**<see cref="Samples"/> is a whole slot: silence, signal, silence.** It
-/// is what <c>Ft8Waveform.SynthesizeSlot</c> produces and nothing else. Where in
-/// that slot the signal sits is the port's placement and is measured rather than
-/// asserted here.</para>
+/// <para>**<see cref="Samples"/> is whatever the route that made it produces, and
+/// there are two.** <see cref="Ft8Composer.Compose"/> gives a whole slot -
+/// silence, signal, silence - from <c>Ft8Waveform.SynthesizeSlot</c>, which is
+/// what a decoder is handed. <see cref="Ft8Composer.ComposeSignal"/> gives the
+/// signal alone, with no padding at either end, from <c>Ft8Waveform.Synthesize</c>
+/// - which is what goes out on the air, because on the air the silence is time
+/// rather than samples. Where the signal sits inside the padded slot is the
+/// port's placement and is measured rather than asserted here.</para>
 /// </remarks>
 /// <param name="Text">The message, as the operator asked for it.</param>
 /// <param name="ReadsBackAs">
@@ -61,7 +65,7 @@ public enum Ft8ComposeRefusal
 /// except where a callsign travels as a hash, when it wears angle brackets.
 /// </param>
 /// <param name="Type">Which of FT8's message types carries it.</param>
-/// <param name="Samples">One slot of audio, in the range -1 to +1.</param>
+/// <param name="Samples">The audio, in the range -1 to +1.</param>
 /// <param name="SampleRate">Samples per second.</param>
 /// <param name="BaseFrequencyHz">The audio frequency of tone 0.</param>
 /// <param name="CarriesHashedCallsign">
@@ -82,7 +86,15 @@ public sealed record Ft8Transmission(
     float BaseFrequencyHz,
     bool CarriesHashedCallsign)
 {
-    /// <summary>How long the slot is, in seconds, from the array and the rate.</summary>
+    /// <summary>
+    /// How long the audio is, in seconds, from the array and the rate.
+    /// </summary>
+    /// <remarks>
+    /// 15 s for <see cref="Ft8Composer.Compose"/>'s padded slot and 12.64 s for
+    /// <see cref="Ft8Composer.ComposeSignal"/>'s bare signal. **Measured off the
+    /// array rather than stored**, so it cannot disagree with the samples it
+    /// describes.
+    /// </remarks>
     public double SlotSeconds => Samples.Length / (double)SampleRate;
 
     /// <summary>The largest absolute sample in the slot.</summary>
@@ -213,6 +225,55 @@ public static class Ft8Composer
         string? text,
         int sampleRate = DefaultSampleRate,
         float baseFrequencyHz = DefaultBaseFrequencyHz)
+        => Build(text, sampleRate, baseFrequencyHz, wholeSlot: true);
+
+    /// <summary>
+    /// Turns what the operator wants to say into the signal alone - the 12.64 s
+    /// of tones, with no silence at either end.
+    /// </summary>
+    /// <param name="text">The message, in the operator's own words.</param>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="baseFrequencyHz">The audio frequency of tone 0.</param>
+    /// <returns>The signal, or a refusal naming what would not pack.</returns>
+    /// <remarks>
+    /// <para>**THIS IS THE ROUTE THAT GOES ON THE AIR, AND
+    /// <see cref="Compose"/> IS THE ROUTE THAT GOES INTO A DECODER.** They differ
+    /// in one call - <c>Ft8Waveform.Synthesize</c> here,
+    /// <c>Ft8Waveform.SynthesizeSlot</c> there - and in nothing else. Every
+    /// packing decision, every refusal and every round trip is shared, so the two
+    /// cannot come to different answers about what a message says.</para>
+    /// <para>**WHY THE PADDED SLOT IS THE WRONG THING TO PLAY.** The padding
+    /// centres the signal, putting 1.180 s of silence at each end. On the air the
+    /// silence before a transmission is not samples, it is time: the operator's
+    /// audio path starts when the sequence hands it something, so playing the
+    /// padded slot would key the radio and send 1.180 s of nothing, and the tones
+    /// would start about seven tenths of a second later than every other station
+    /// on the band. **Where the transmission starts is the caller's to state**
+    /// and it is stated to <c>Ft8TransmitSequence</c> as a figure, not built into
+    /// an array.</para>
+    /// <para>**AND THE PADDING IS NOT TRIMMED OFF AN ARRAY TO GET HERE.** The
+    /// port hands the signal over directly; trimming would be this seam deciding
+    /// where a signal begins, which is the port's arithmetic and not this file's
+    /// (work instruction 255, task 4).</para>
+    /// </remarks>
+    public static Ft8ComposeResult ComposeSignal(
+        string? text,
+        int sampleRate = DefaultSampleRate,
+        float baseFrequencyHz = DefaultBaseFrequencyHz)
+        => Build(text, sampleRate, baseFrequencyHz, wholeSlot: false);
+
+    /// <summary>Both routes, which differ in one call.</summary>
+    /// <param name="text">The message, in the operator's own words.</param>
+    /// <param name="sampleRate">Samples per second.</param>
+    /// <param name="baseFrequencyHz">The audio frequency of tone 0.</param>
+    /// <param name="wholeSlot">
+    /// True for the padded 15 s slot, false for the 12.64 s signal alone.
+    /// </param>
+    private static Ft8ComposeResult Build(
+        string? text,
+        int sampleRate,
+        float baseFrequencyHz,
+        bool wholeSlot)
     {
         var wanted = Normalise(text);
         if (wanted.Length == 0)
@@ -241,13 +302,15 @@ public static class Ft8Composer
         // From here down every step is the port's. Nothing below chooses a tone,
         // places a synchronisation block or advances a phase.
         var symbols = Ft8SymbolEncoder.Encode(packing.Bits);
-        var slot = Ft8Waveform.SynthesizeSlot(symbols, sampleRate, baseFrequencyHz);
+        var audio = wholeSlot
+            ? Ft8Waveform.SynthesizeSlot(symbols, sampleRate, baseFrequencyHz)
+            : Ft8Waveform.Synthesize(symbols, sampleRate, baseFrequencyHz);
 
         return Ft8ComposeResult.Ok(new Ft8Transmission(
             wanted,
             packing.ReadsBackAs,
             packing.Type,
-            slot,
+            audio,
             sampleRate,
             baseFrequencyHz,
             packing.CarriesHashedCallsign));

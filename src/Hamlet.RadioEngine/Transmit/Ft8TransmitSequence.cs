@@ -1,6 +1,7 @@
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.RadioEngine.Transmit;
@@ -201,6 +202,7 @@ public sealed class Ft8TransmitSequence
     private readonly ISerialPort _port;
     private readonly ITransmitAudioSink _sink;
     private readonly TransmitGuard _guard;
+    private readonly ITelemetry _telemetry;
     private readonly byte _radioAddress;
     private readonly byte _controllerAddress;
 
@@ -208,18 +210,21 @@ public sealed class Ft8TransmitSequence
     /// <param name="port">The CI-V transport, in whatever state it is in.</param>
     /// <param name="sink">Where the samples go.</param>
     /// <param name="guard">The licence gate, or a fresh one over the shipped data.</param>
+    /// <param name="telemetry">Where the record goes, or nowhere.</param>
     /// <param name="radioAddress">The radio's CI-V address.</param>
     /// <param name="controllerAddress">This application's CI-V address.</param>
     public Ft8TransmitSequence(
         ISerialPort port,
         ITransmitAudioSink sink,
         TransmitGuard? guard = null,
+        ITelemetry? telemetry = null,
         byte radioAddress = CivConstants.DefaultRadioAddress,
         byte controllerAddress = CivConstants.DefaultControllerAddress)
     {
         _port = port ?? throw new ArgumentNullException(nameof(port));
         _sink = sink ?? throw new ArgumentNullException(nameof(sink));
         _guard = guard ?? new TransmitGuard();
+        _telemetry = telemetry ?? NullTelemetry.Instance;
         _radioAddress = radioAddress;
         _controllerAddress = controllerAddress;
     }
@@ -253,12 +258,14 @@ public sealed class Ft8TransmitSequence
 
         if (!Permits(decision, out var refusal))
         {
-            return Refused(Ft8TransmitOutcome.RefusedByLicence, refusal, decision.Citation);
+            return Recorded(
+                send, Refused(Ft8TransmitOutcome.RefusedByLicence, refusal, decision.Citation));
         }
 
         if (!Sendable(send, out var unsendable))
         {
-            return Refused(Ft8TransmitOutcome.RefusedAsUnsendable, unsendable, string.Empty);
+            return Recorded(
+                send, Refused(Ft8TransmitOutcome.RefusedAsUnsendable, unsendable, string.Empty));
         }
 
         var samples = send.Transmission.Samples;
@@ -338,9 +345,51 @@ public sealed class Ft8TransmitSequence
             }
         }
 
-        return new TransmitRun(
-            outcome, reason, string.Empty, keyed, unkeyedNormally, abort, played,
-            samples.Length, seconds);
+        return Recorded(
+            send,
+            new TransmitRun(
+                outcome, reason, string.Empty, keyed, unkeyedNormally, abort, played,
+                samples.Length, seconds));
+    }
+
+    /// <summary>
+    /// Writes the transmission's shape to telemetry and hands the run back
+    /// unchanged.
+    /// </summary>
+    /// <param name="send">What the operator asked for.</param>
+    /// <param name="run">What became of it.</param>
+    /// <returns><paramref name="run"/>.</returns>
+    /// <remarks>
+    /// <para>**AFTER THE RADIO IS OUT OF TRANSMIT, NEVER BEFORE.** Writing a
+    /// record is not urgent and coming out of transmit is; nothing goes between
+    /// the end of the audio and the unkey.</para>
+    /// <para>**IT CARRIES THE SHAPE AND NOT THE WORDS** (HM-DEC-018).
+    /// <see cref="TransmitRecord"/> has nowhere to put
+    /// <c>Ft8Transmission.Text</c> or <c>ReadsBackAs</c>, which is why the length
+    /// is passed and the message is not.</para>
+    /// <para>A refusal is recorded too, with nothing offered and nothing keyed. A
+    /// transmission that did not happen because the licence gate said no is worth
+    /// exactly as much to somebody reading the log as one that did.</para>
+    /// </remarks>
+    private TransmitRun Recorded(OperatorSend send, TransmitRun run)
+    {
+        var record = new TransmitRecord(
+            send.SlotStartUtc,
+            send.StartSecondsIntoSlot,
+            send.FrequencyHz,
+            run.SecondsOffered,
+            send.Transmission.SampleRate,
+            run.SamplesOffered,
+            send.Transmission.Type,
+            send.Transmission.Text.Length,
+            run.Outcome,
+            run.CameOutOfTransmit,
+            run.Keyed);
+
+        _telemetry.Write(
+            TelemetryCategory.Transmit, TransmitRecord.EventName, record.ToBag(), record.Level);
+
+        return run;
     }
 
     /// <summary>
@@ -428,13 +477,33 @@ public sealed class Ft8TransmitSequence
             return false;
         }
 
-        if (!Ft8Slots.TransmissionFits(Ft8Slots.SlotSeconds - send.StartSecondsIntoSlot))
+        var left = Ft8Slots.SlotSeconds - send.StartSecondsIntoSlot;
+
+        if (!Ft8Slots.TransmissionFits(left))
         {
             why =
                 $"starting {send.StartSecondsIntoSlot:0.###} s into the slot leaves "
-                + $"{Ft8Slots.SlotSeconds - send.StartSecondsIntoSlot:0.###} s of it, and an FT8 "
-                + $"transmission needs {Ft8Slots.TransmissionSeconds:0.##} s. It would run into "
-                + "the next slot.";
+                + $"{left:0.###} s of it, and an FT8 transmission needs "
+                + $"{Ft8Slots.TransmissionSeconds:0.##} s. It would run into the next slot.";
+            return false;
+        }
+
+        var audioSeconds =
+            send.Transmission.Samples.Length / (double)send.Transmission.SampleRate;
+
+        if (audioSeconds > left + 1e-6)
+        {
+            // THE PADDED SLOT IS CAUGHT HERE. Ft8Composer.Compose returns 15 s
+            // with the signal centred, which is what a decoder reads and not what
+            // goes on the air: handing it to this path with any offset at all
+            // would run past the boundary, and playing it at offset zero would
+            // put the tones 1.180 s late. ComposeSignal is the route that goes
+            // out.
+            why =
+                $"this is {audioSeconds:0.###} s of audio and only {left:0.###} s of the slot is "
+                + $"left after {send.StartSecondsIntoSlot:0.###} s. An FT8 transmission is "
+                + $"{Ft8Slots.TransmissionSeconds:0.##} s of tones with no silence on either end - "
+                + "a padded slot is what a decoder reads, not what goes on the air.";
             return false;
         }
 
