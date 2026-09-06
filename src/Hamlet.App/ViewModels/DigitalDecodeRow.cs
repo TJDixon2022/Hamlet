@@ -134,11 +134,15 @@ public sealed record DigitalDecodeRow(
     /// Hover text for the payload, from the closed table, or "" for silence.
     /// </summary>
     /// <remarks>
-    /// **AN EMPTY STRING AND NOT A FALLBACK SENTENCE.** Avalonia shows no
+    /// <para>**AN EMPTY STRING AND NOT A FALLBACK SENTENCE.** Avalonia shows no
     /// tooltip for an empty tip, which is exactly what Tim's ruling asks for:
-    /// anything off the list gets nothing, not "unrecognised".
+    /// anything off the list gets nothing, not "unrecognised".</para>
+    /// <para>**THE WHOLE MESSAGE GOES IN, NOT THE PAYLOAD ALONE** (unit 251 task
+    /// 4). A report is a report from one named station to another, and until now
+    /// this handed `Explain` three characters with no way of knowing whose report
+    /// it was — so it said *hears you*, about a contact the operator was not in.</para>
     /// </remarks>
-    public string PayloadHelp => Ft8Vocabulary.Explain(Payload) ?? "";
+    public string PayloadHelp => Ft8Vocabulary.Explain(Fields) ?? "";
 
     /// <summary>True where the payload is on the list and has hover text.</summary>
     public bool HasPayloadHelp => PayloadHelp.Length > 0;

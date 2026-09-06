@@ -69,60 +69,134 @@ public static class Ft8Vocabulary
     }
 
     /// <summary>What a payload means, or null where it is not on the list.</summary>
-    /// <param name="payload">The third field of the message.</param>
+    /// <param name="fields">
+    /// The message's own three fields, from <see cref="Split(string?)"/>.
+    /// </param>
     /// <returns>One sentence, or null for silence.</returns>
-    public static string? Explain(string? payload)
+    /// <remarks>
+    /// <para>**IT TAKES THE WHOLE MESSAGE AND NOT THE PAYLOAD ALONE, SINCE UNIT
+    /// 251** (Tim's ruling of 2026-09-05). The old signature could not do
+    /// otherwise than word a report as being about the reader: given `R+14` and
+    /// nothing else it said *roger, and hears you at 14 dB*. On
+    /// `KE9COB N5CH R+14` the operator is not in the message at all — N5CH is
+    /// reporting to KE9COB, two other stations, and the tooltip put the reader in
+    /// the middle of somebody else's contact. **A sentence that names the wrong
+    /// station is a decode presented wrongly, which §0.0 does not distinguish
+    /// from a guess.**</para>
+    /// <para>**THE OVERLOAD TAKING A BARE PAYLOAD IS GONE RATHER THAN KEPT
+    /// BESIDE THIS ONE.** Leaving it would leave a way to get the you-worded
+    /// sentence back, and a second door to a fault is how the fault returns.</para>
+    /// <para>**THE TABLE IS STILL CLOSED** (Tim, 2026-09-04). Everything below is
+    /// vocabulary the FT8 standard fixes; anything else gets no tooltip at all.
+    /// Two shapes that are not standard FT8 are silent for that reason and are
+    /// named where they are handled: a courtesy or a report addressed to `CQ`,
+    /// which has no addressee to be a courtesy or a report to.</para>
+    /// <para>**NO PRONOUN CHOOSES A GENDER.** The old wording said *where he is*
+    /// about a callsign, which Hamlet has no way to know. Every sentence here
+    /// names the stations and uses `they`.</para>
+    /// </remarks>
+    public static string? Explain(Ft8MessageFields? fields)
     {
-        if (string.IsNullOrWhiteSpace(payload))
+        if (fields is null)
         {
             return null;
         }
 
-        var text = payload.Trim();
+        var to = fields.To.Trim();
+        var from = fields.From.Trim();
+        var text = fields.Payload.Trim();
+
+        if (to.Length == 0 || from.Length == 0 || text.Length == 0)
+        {
+            return null;
+        }
+
+        // **A SENDER THAT IS ITSELF A CALL TO ANYONE IS NOT A STATION**, so
+        // there is nobody to build a sentence around. It comes off a message
+        // shape that is not standard FT8 and it gets the same silence everything
+        // else off the list gets.
+        if (IsCallToAnyone(from))
+        {
+            return null;
+        }
+
+        var callingAnyone = IsCallToAnyone(to);
 
         switch (text.ToUpperInvariant())
         {
             case "CQ":
-                return "calling anyone";
+                return $"{from} is calling anyone.";
 
             case "CQ DX":
-                return "calling anyone, looking for distance";
+                return $"{from} is calling anyone, and is looking for distance.";
 
             case "RRR":
-                return "roger, everything received";
+                return callingAnyone
+                    ? null
+                    : $"{from} is telling {to} that everything came through.";
 
             case "RR73":
-                return "roger, and best regards";
+                return callingAnyone
+                    ? null
+                    : $"{from} is telling {to} that everything came through, and "
+                      + "is signing off with best regards.";
 
             case "73":
-                return "best regards, contact finished";
+                return callingAnyone
+                    ? null
+                    : $"{from} is signing off to {to} with best regards.";
         }
 
         if (IsGrid(text))
         {
-            // **WHERE HE IS, AND NEVER WHERE THAT IS.** Turning a grid into a
+            // **WHICH SQUARE, AND NEVER WHERE THAT IS.** Turning a grid into a
             // place name is the one inference this table is most tempted into
-            // and the one it must not make.
-            return "grid square: where he is";
+            // and the one it must not make. The sentence does not even repeat
+            // the four characters, so there is nothing in it that could grow a
+            // country on the end.
+            return callingAnyone
+                ? $"{from} is calling anyone, and saying which grid square they "
+                  + "are transmitting from."
+                : $"{from} is telling {to} which grid square they are "
+                  + "transmitting from.";
         }
 
         if (IsReport(text, out var rogered, out var decibels))
         {
+            // **A REPORT NEEDS SOMEBODY TO BE ABOUT.** `CQ` is not a station and
+            // a report addressed to it is not a message this table has a reading
+            // for.
+            if (callingAnyone)
+            {
+                return null;
+            }
+
+            var signed = decibels.ToString("+0;-0;+0", CultureInfo.InvariantCulture);
+
+            // **THE ROGER AND THE REPORT ARE BOTH SAID**, because `R+14` carries
+            // both and a sentence naming only the number would drop the half of
+            // it that says the previous transmission arrived.
             return rogered
-                ? string.Format(
-                    CultureInfo.InvariantCulture,
-                    "roger, and hears you at {0} dB",
-                    decibels)
-                : string.Format(
-                    CultureInfo.InvariantCulture,
-                    "signal report: hears you at {0} dB",
-                    decibels);
+                ? $"{from} has {to}'s message, and is answering with a report of "
+                  + $"its own: {from} hears {to} at {signed} dB."
+                : $"{from} hears {to} at {signed} dB, and is sending that back "
+                  + "as the signal report.";
         }
 
         // **NOT A FALLBACK STRING.** Contest exchanges, QRZ, free text, compound
         // and non-standard callsigns: nothing appears.
         return null;
     }
+
+    /// <summary>Whether an addressee field is a call to anyone rather than a station.</summary>
+    /// <remarks>
+    /// `CQ`, and `CQ DX` or `CQ EU` — which <see cref="Split(string?)"/> already
+    /// joins into one addressee, because the call and its direction are one field
+    /// in two words.
+    /// </remarks>
+    private static bool IsCallToAnyone(string field)
+        => string.Equals(field, "CQ", StringComparison.OrdinalIgnoreCase)
+           || field.StartsWith("CQ ", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>A four-character Maidenhead field, as FT8 sends it.</summary>
     /// <remarks>
