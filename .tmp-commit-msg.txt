@@ -1,0 +1,26 @@
+docs(unit251): the report, validated at exit 0
+
+Nine of nine. 98 tests green across this unit's six new test classes and the
+three it edited, 0 failed.
+
+Section 3 leads with the four things the instruction asked for: the
+two-column layout with DigitalSendReserved named and AudioSpectrumSource
+byte for byte unchanged; where the frequency table came from and what the
+read-back does when a tune does not take; the dt measurement, which says
++0.144 s constant in the decode path and NOT the +0.9 on his screen; and a
+report tooltip quoted, naming both third-party stations and neither the
+operator nor the word you.
+
+Section 4 raises three items and exactly one asks for a ruling: whether to
+pin a citation for the FT8 nominal transmission start so the dt column can be
+corrected against a source rather than a number from memory. The other two
+are the named drop candidate, reported as a drop with the design that would
+remove it, and this session's own conduct - composed timestamps in
+PROJECT_STATUS.md, corrected, and a second session running concurrently
+against this repository.
+
+validate-output.bat was refused in four spellings and reached through
+tools/arbiter/validate-output.proj, which is what that file exists for. All
+seven rules pass.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

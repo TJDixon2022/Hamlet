@@ -1,22 +1,21 @@
-﻿## Step 3 - ordered statistics, taken as far as it goes
+﻿## Step 6 - the closing measurement
 
-**Delivers:** OSD tuned and measured to its practical limit.
+**Delivers:** one table saying where the decoder now stands.
 
-**Entry:** step 0 complete. Independent of steps 4 and 5.
+**Entry:** steps 0 to 5 closed, in whatever state each reached.
 
 **Exit:**
-- **The 50 per cent crossing and the -21 dB rate quoted with trial counts and
-  Wilson intervals**, before and after, separately from every other stage.
+- **One committed table**: the port, and Deep with each stage on and off, at -19,
+  -20 and -21 dB, on grid and at cell centre, 306 trials a cell, with wrong
+  counts. *must-pass*
+- The 50 per cent crossing for each configuration, interpolated, with its
+  interval. *must-pass*
+- **Time per slot for the shipping configuration**, with the budget margin.
   *must-pass*
-- **Zero wrong decodes.** An approach that returns one is rejected and another
-  taken. *must-pass*
-- **Order and search weight stated with the cost each buys, measured.** Not tuned
-  until a number passes. *must-pass*
-- Worst-case time per slot inside the 15-second budget, margin stated. *must-pass*
-- **The step closes on the figure reached.** The previous plan's waypoint was 40
-  per cent at -21 dB; the built implementation reads about 11 per cent, which is
-  33 of 306 against the port's 13. **Reaching 40 is not this step's gate and
-  never was a fact.** *must-pass*
+- **What the operator should now see on his own radio**, in plain words, with the
+  figure behind each claim. *must-pass*
+- The fixtures that would settle the deferred criteria, named, with the command
+  Tim runs. *must-pass*
 
-**Depends on:** step 0.
+**Depends on:** steps 0 to 5.
 

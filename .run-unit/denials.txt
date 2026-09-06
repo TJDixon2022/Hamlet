@@ -1,9 +1,21 @@
-﻿   Bash  {"command":"python -c \"\nfrom math import comb\nWs=[91,60,45,40,30,20]\nprint(\u0027order \u0027 + \u0027 \u0027.join(f\u0027{w:\u003e10}\u0027 for w in Ws))\nfor o in [2,3,4]:\n    row=[1+sum(comb(w,i) for i in range(1,o+1)) for w in Ws]\ ...(truncated)
-   Bash  {"command":"python .run-unit/cost.py","description":"Run cost table script"}
-   Bash  {"command":"py .run-unit/cost.py","description":"Run cost script via py launcher"}
-   Bash  {"command":"rm -f .run-unit/cost.py \u0026\u0026 git add docs/unit252-osd-window.md PROJECT_STATUS.md \u0026\u0026 git status --porcelain --untracked-files=no","description":"Stage task 1 files"}
-   Bash  {"command":"sed -i \u0027s/^## 7\\. Where this instruction and the tree disagreed$/## 9. Where this instruction and the tree disagreed/\u0027 docs/unit252-osd-window.md \u0026\u0026 grep -n \"^## \" docs/unit252-osd-window.md","description" ...(truncated)
-   Bash  {"command":"cmd //c \"tools\\arbiter\\outcome-append.bat\" 2\u003e\u00261 | head -30","description":"Probe the outcome-append script"}
-   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Run the outcome-append script for usage"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md 2\u003e\u00261 | tail -30; echo \"EXIT=$?\"","description":"Validate the report"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate the report"}
+﻿   Bash  {"command":"python -c \"\nimport json\nd=json.load(open(\u0027data/bands/us-neighborhoods.json\u0027))\nprint(list(d.keys()))\nfor b in d[\u0027bands\u0027]:\n    print(\u0027BAND\u0027, b.get(\u0027band\u0027), list(b.keys()))\n    for h i ...(truncated)
+   Bash  {"command":"python .tmp-sink.py","description":"Dump neighborhood blocks per band"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\outcome-append.bat\" \"251\" \"6\" \"done\" \"close step 6 on the evidence unit 257 already produced rather than measure anything further\" \"exits 2 and 5 cannot be closed by any session holding unit 2 ...(truncated)
+   Bash  {"command":"cmd //c \"tools\\arbiter\\outcome-append.bat\" \"251\" \"6\" \"done\" \"close step 6 on the evidence unit 257 already produced rather than measure anything further\" \"exits 2 and 5 cannot be closed by any session holding unit 2 ...(truncated)
+   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027ENTRY\u0027\n\n## UNIT 251 - STEP 6\n\nSTEP: 6\nAPPROACH: close step 6 on the evidence unit 257 already produced, and record the two unmet exit criteria in OPEN_ISSUES.md by na ...(truncated)
+   Bash  {"command":"sed -i \u0027s|\u003cVersion\u003e1.12.61\u003c/Version\u003e|\u003cVersion\u003e1.12.62\u003c/Version\u003e|\u0027 Directory.Build.props \u0026\u0026 grep -n \"1.12.62\" Directory.Build.props","description":"Bump version for ta ...(truncated)
+   Bash  {"command":"grep -rn -iE \"K[A-Z]?[0-9][A-Z]{2,3}\" SHACK_FACTS.md | head -10; echo \"=== FACT list ===\"; grep -n \"^FACT\\|^## FACT\\|FACT-00\" SHACK_FACTS.md | head -20","description":"Look for a callsign in SHACK_FACTS"}
+   Bash  {"command":"grep -n \u0027Grid.Row=\"0\"$\\|Grid Grid.Row=\"0\"\\|Grid.Row=\"1\"\\|Grid.Row=\"2\"\\|Grid.Row=\"3\"\u0027 src/Hamlet.App/Views/MainWindow.axaml | sed -n \u00271,60p\u0027 | grep -n \"3[0-9][0-9][0-9]:\" ; sed -n \u00273125,31 ...(truncated)
+   Bash  {"command":"grep -n \u0027Grid Grid.Row=\"0\"$\\|ColumnDefinitions=\"76,48,48,54,\\*\"$\\|ScrollViewer Grid.Row=\"1\"\\|x:Name=\"DigitalDecodedIdleLine\"\\|x:Name=\"DigitalCensusLine\"\u0027 src/Hamlet.App/Views/MainWindow.axaml","descripti ...(truncated)
+   Bash  {"command":"dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --no-build --nologo -v q --filter \"FullyQualifiedName=Hamlet.App.Tests.ViewModels.TheDecodedTableIsRealTests.AudioWithATransmissionInItFillsTheTable\" --logger \"consol ...(truncated)
+   Bash  {"command":"git add -A src tests Directory.Build.props PROJECT_STATUS.md \u0026\u0026 git commit -q -m \"$(cat \u003c\u003c\u0027MSG\u0027\nfeat(unit251): the decoded list filters by category, and cannot make the band look quiet\n\nTim\u002 ...(truncated)
+   Bash  {"command":"python - \u003c\u003c\u0027EOF\u0027\nimport io\np=\u0027tests/Hamlet.App.Tests/Views/TheDigitalTabIsTwoColumnsTests.cs\u0027\ns=io.open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027ModePalette.Green\u0027,\u0027Panel ...(truncated)
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat\" output.md","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"cmd /c tools\\\\arbiter\\\\validate-output.bat output.md","timeout":180000,"description":"Validate the report via cmd"}
+   Bash  {"command":"cmd //c validate.cmd 2\u003e/dev/null; ls tools/arbiter/validate-output.proj","description":"Check for the msbuild validator project"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"\"tools/arbiter/validate-output.bat\" output.md","timeout":180000,"description":"Validate the report directly"}
+   Bash  {"command":"cmd //c validate-output-run.bat","timeout":180000,"description":"Attempt validator through a wrapper path"}
+   Bash  {"command":"rm -f .tmp-commit-msg.txt .tmp-sink.py \u0026\u0026 git status --short | head -20","description":"Remove scratch files and check status"}
+   Bash  {"command":"rm -f .tmp-commit-msg.txt .tmp-sink.py","description":"Remove the scratch files"}

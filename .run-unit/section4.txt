@@ -1,35 +1,72 @@
 ﻿
-**Nothing blocks step 3. All five of its must-pass exits are met and evidenced.** The
-three items below are open questions and a standing gap, not blockers.
+### The `dt` reference point needs a citation, and this unit would not invent one
 
-**1. The ladder cannot tell you whether the window's gain is real - `HM-OPEN-078`,
-raised tonight, owner Tim.** `Ft8LadderHarness.Run` is a paired design and
-`Ft8Step6Ladder.Wilson` is an independent-sample interval, so the interval this project
-quotes overstates the uncertainty of a difference between two columns. McNemar is the
-right test and `Ft8LadderHarness.Result` records totals rather than discordant pairs.
-**This is the only reason `Ft8DeepOsdSettings.Default` did not move tonight**, and it
-is worth 8 decodes of 306 at -21 dB and 19 at -20. One field on `Result` and one run
-would settle it - no new algorithm, no new audio, no change to the port.
+**Ruling asked for:** whether to spend a unit pinning the FT8 nominal transmission
+start in `data/vendor/` and correcting `Ft8Decode.OffsetSeconds` against it.
 
-**2. `docs/unit246-osd.md` Â§5 item 4 carries a wall-clock figure that is wrong by
-about fifteen-fold**, and it is still in the tree. *306 trials at order 3 is about 25
-minutes* against its own Â§3's measured 311.4 ms a trial, which is 1.6 minutes, and
-against tonight's measured 91.2 s. **It is not repaired here** - this unit reports
-mismatches and does not edit another unit's measurement document - but it is the
-sentence that shaped the whole design of work instruction 252, and step 6 will read
-that document. **It cost nothing tonight because the arithmetic was re-derived rather
-than trusted**, which is what task 1 exists for.
+**Reasoning.** The measurement is done and it says the largest term is a reference
+point that is Hamlet's own to fix. **The number it needs is not in this
+repository.** `Ft8Slots` carries `SlotSeconds` 15 and `TransmissionSeconds` 12.64
+and nothing about where inside a slot a transmission nominally begins. There are
+two candidate zeros:
 
-**3. The gate set's whole-command wall clock is still an estimate and this unit could
-not improve it.** `docs/gate-set.md` says *the estimate is five to six minutes cold*
-and that **the gate set has never been seen fail as a whole**, and its own note says a
-gate set nobody has seen fail is a list and not a gate. This unit added entry 10 and
-measured that entry alone at 2 s, and updated the cost table's counts accordingly - but
-`tools\arbiter\gate-set.bat` is Tim's command and no unit runs it, so the whole-command
-figure is unchanged and still unmeasured. **Recorded so the next person to run it knows
-the table is one entry newer than the last time anybody timed the whole thing.**
+| Candidate | Where it comes from | What a perfect station would then read |
+|---|---|---|
+| **0.5 s** | the on-air convention every station in this mode uses | about **+0.14** |
+| **1.18 s** | `Ft8Waveform`'s own slot layout, splitting the 2.36 s spare evenly across both ends | about **-0.54** |
 
-**Not raised, because they are parked and were not touched:** the two column
-definitions for one table, whether the capture sidecar's per-message lines carry the
-decoded text, `HM-OPEN-077`'s standing `CLAUDE.md` Â§1 gap, the inherited reds, and
-steps 4 to 6.
+**The second is not the on-air convention and its own comment says so** â€” it is a
+choice made so a written slot file lines up with upstream's, not a statement about
+when anybody transmits. The first is almost certainly right, and *almost certainly
+right* is exactly what this project does not put in a data file (Â§0, Â§0.2.1).
+
+**What was rejected and why.** Writing `0.5` into the tree from memory. It would
+have made the column look right tonight and would be a timing constant with no
+source behind it, in a file that outlives everybody who could correct it â€” which
+is task 7's own prohibition, in its own words. Recorded as `HM-OPEN-085` with the
+full table.
+
+**One thing this cannot settle either way**: the residual of your ~+0.9 that
+remains after the 0.144 and the reference point is in the live capture path â€” the
+tap's anchor or the audio latency between antenna and timestamp â€” and it cannot be
+measured without a radio on the bench. That is arithmetic on your reported
+cluster, not a measurement, and is labelled as such.
+
+### Task 9 was not built, and the drop is reported as one
+
+**The named drop candidate, and it is the only thing left undone.** Opening the
+Digital tab still takes about a third of a second â€” one full 16384-sample window
+at 48 kHz, 0.341 s â€” to draw the first line, because `AudioSpectrumSource.Idle()`
+clears the ring when nobody is subscribed to `FrameReady`.
+
+**The design that would remove it, stated so the next unit does not re-derive
+it.** Keep offering chunks to the handoff while idle and let the worker keep the
+**ring** filled while skipping the transform and the `FrameReady` raise. The
+offer is the cheap half and already runs on the callback thread whenever the tab
+is open, so **no ring write returns to that thread** and unit 240's 522,895
+microseconds are not revisited. The tab would then open on a ring already holding
+the last 0.341 s of contiguous current audio, mixing no two moments.
+
+**Why it was not taken.** It would reverse a documented unit 240 behaviour â€”
+*nobody is looking, so nothing is computed* â€” and keep a worker thread and a queue
+alive for a whole evening spent on the CW tab. **Proving that costs nothing needs
+a callback-budget measurement on the real hardware**, which cannot be made here
+and would not fit the remaining session. *Cannot* means cannot be shown safe
+inside this unit, not impossible.
+
+**No ruling is asked for.** The instruction's own words are that a third of a
+second is a fair price for a picture that never asserts a signal was present at a
+time it was not, and that stands.
+
+### Two things about this session's own conduct, reported rather than buried
+
+**Every `UPDATED` timestamp in `PROJECT_STATUS.md` before the final one was
+composed rather than read from the clock**, and they ran ahead of it â€” the last
+said 23:50 while the machine said 22:10. CLAUDE_CODE.md Â§11 requires the clock.
+The final field is a clock read and the note carries the correction. **No measured
+figure is affected**; only the times were wrong.
+
+**A second Claude Code session ran against this repository concurrently** and both
+sessions wrote task 1. The duplicate open issues were removed outside this session
+in commit `39b7482` and the register is clean. Nothing is asked for, but a loop
+that can start two sessions on one repository will do it again.
