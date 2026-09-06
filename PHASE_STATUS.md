@@ -2,7 +2,8 @@ PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-06
 DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
 CURRENT_STEP: 0
-WORK_INSTRUCTION: 253 - the dummy load is gone from the tree, and the abort is watched to fire
+WORK_INSTRUCTION: 253 - the dummy load is gone, and the abort is watched to fire
+HEARTBEAT: 2026-09-06 18:22:21
 STEP: 0 | not started | the dummy load is gone from the tree
 STEP: 1 | not started | the abort works before anything can key
 STEP: 2 | not started | Hamlet's own decoder reads Hamlet's transmission

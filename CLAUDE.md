@@ -118,20 +118,23 @@ without touching it? If not, something leaked.
 
 ### 0.2 Transmit safety — ABSOLUTE
 
-- Development transmit testing is into a **dummy load**, not an antenna,
-  until the feature is proven (HM-DEC-008).
 - Every code path that keys the transmitter has a same-thread, no-await abort
   available (CI-V `0x17` with `0xFF`, and PTT off as the fallback).
-- No unattended transmission. A scan never transmits.
+- **One operator action, one transmission.** Hamlet transmits because the
+  operator clicked, and for no other reason. It never transmits on a timer, on a
+  decode, or because a contact "should" continue. A scan never transmits.
+- **Hamlet never transmits outside the operator's licence privileges.** The
+  Settings check is the gate and it is not bypassable from any send path.
 
-**An automated transmit cycle may be built and exercised into a dummy load
-only** (HM-DEC-098). It does not reach an antenna on the strength of this
-clause. Whether §0.2's first sentence is amended to permit an attended
-automatic cycle on the air is a **separate ruling, taken after every interlock
-has been watched to fire into the dummy load** — including the link being
-pulled mid-cycle. Reasoning about an interlock is not the same as seeing it
-work, and this is the one feature where the difference is somebody else's
-band.
+**Tim operates a licensed station on an antenna and Hamlet transmits on the air.**
+Ruled 2026-09-06, superseding HM-DEC-008 and HM-DEC-098, which required a dummy
+load. **That requirement is withdrawn in full: it is not a stage, not a fallback,
+and not to be referenced.** No unit reintroduces it, proposes it, or treats its
+absence as a risk to be mitigated.
+
+**What remains absolute is the abort and the one-click rule.** A transmission the
+operator did not ask for is the fault this section exists to prevent, and it is
+unaffected by where the RF goes.
 
 ### 0.2.1 Tuning writes — the scanner moves the operator's dial
 

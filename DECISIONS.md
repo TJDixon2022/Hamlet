@@ -4,6 +4,48 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-156
+date: 2026-09-06
+refs: CLAUDE.md §0.2, §13.4, HM-DEC-008, HM-DEC-098, PHASE_PLAN.md, work instruction 253
+---
+
+**Tim operates a licensed station on an antenna and Hamlet transmits on the air.
+HM-DEC-008 and HM-DEC-098 are withdrawn in full.** Tim, 2026-09-06.
+
+The dummy load was never a safety property of the software. It was a stand-in for
+a question that has now been answered by the licence on the wall: **is the person
+running this allowed to put this signal on this frequency?** Tim holds a General
+class licence, the bands Hamlet will work are bands he is licensed for, the gate
+that keeps Hamlet inside those privileges is in the application already, and the
+antenna is up. A requirement that development testing goes into a dummy load
+until the feature is proven answers a question nobody is asking here.
+
+**It is not a stage, not a fallback, and not to be referenced.** No unit
+reintroduces it, proposes it as an intermediate step, treats its absence as a
+risk to be mitigated, or substitutes a compensating control in its place — no
+confirmation dialog, no power cap, no test mode. Those would be the same
+requirement wearing a different hat, and each one buys back the delay this ruling
+exists to remove.
+
+**What this ruling does not touch, and what it makes load-bearing instead:**
+
+- **Every path that keys the transmitter has a same-thread, no-await abort** —
+  CI-V `0x17` with `0xFF`, PTT off as the fallback. Unchanged, and now the only
+  interlock between a bug and somebody else's band.
+- **One operator action, one transmission.** Hamlet transmits because the
+  operator clicked. Never on a timer, never on a decode, never because a contact
+  ought to continue. This is what HM-DEC-098's automated cycle was really being
+  held back for, and it is held back by this clause rather than by where the RF
+  went.
+- **Hamlet never transmits outside the operator's licence privileges.**
+
+**Rejected: keeping the dummy load as an opt-in development mode.** An interlock
+that is only exercised in a mode nobody runs is not exercised, and a switch
+between on-the-air and not-on-the-air is one more piece of state a send path can
+be wrong about. The abort is proven against a fake transport instead, before any
+code exists that can key a radio at all.
+
+---
 id: HM-DEC-155
 date: 2026-09-05
 refs: PHASE_PLAN.md, RUN_LEDGER.md, docs/gate-set.md, docs/breakage-record.md, docs/test-baseline.md, HM-DEC-154, work instruction 250
