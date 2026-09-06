@@ -409,6 +409,66 @@ and
 asserts the offered and submitted counts equal, slot for slot, against a pairwise decoder
 on identical audio.
 
+### B18 — a crossing's band built from the wrong pair of bounds, inverted on every row
+
+**Work instruction 256.** `Ft8Unit256CrossingBand.Crossing` gave every 50 per cent crossing a
+band by pushing the two bracketing rungs' 95 per cent Wilson bounds through the same linear
+interpolation the point crossing uses. **It paired them the wrong way round** — the **upper**
+bound at one rung against the **lower** at the other, for both curves — instead of upper with
+upper and lower with lower.
+
+**It did not throw, and nothing about the output announced itself as wrong.** It printed a
+complete, publication-shaped table of eight crossings, every point value correct and every
+individual Wilson interval correct, and **every band inverted**:
+
+```
+Ft8Sharp    on grid   -19.54   -19.53 dB to -19.56 dB   -0.021
+SHIPPING    on grid   -19.90   -19.81 dB to -20.02 dB   -0.206
+```
+
+**Three things that table says, and all three are false.**
+
+1. **Every width is negative.** The band's optimistic end sits at a *worse* ratio than its
+   pessimistic one. **An inverted interval contains nothing at all**, and the containment
+   check is the only thing that said so.
+2. **`Ft8Sharp` on the grid reads 0.021 dB wide against the 0.162 dB its two rungs support —
+   eight times too narrow.** Published, that is a claim of precision of two hundredths of a
+   decibel from 306 trials, and **a band narrower than the measurement supports is more
+   dangerous than no band at all**: it licenses exactly the comparison `CLAUDE.md` §0.0
+   forbids, -19.90 set beside another decoder's -19.7 and called a 0.2 dB win.
+3. **`SHIPPING` on the grid claims to be closed on both sides and it is not.** Its -20 dB
+   rung's Wilson upper bound is **50.700 per cent**, still above 50, so the optimistic curve
+   never crosses inside the bracket and that side has **no bound at all**. The defective
+   pairing manufactured one. **That is an extrapolation in all but name**, and unit 255's
+   ruling 3 forbids it.
+
+**Why the arithmetic makes it an inversion and not a rounding.** Write the crossing's position
+in the bracket as `t(a, b) = (a - 50)/(a - b)`, with `a` the upper rung's rate and `b` the
+lower rung's. Both partial derivatives are positive — `∂t/∂a = (50 - b)/(a - b)²` and
+`∂t/∂b = (a - 50)/(a - b)²` — so **`t` increases in both arguments.** `t(hi, hi)` is therefore
+the extreme optimistic end and `t(lo, lo)` the extreme pessimistic one, and **any mixed
+pairing lands strictly inside them and can land on the wrong side of the point.** On
+`SHIPPING` on the grid, `hi(-19)=94.940` against `lo(-20)=39.618` gives **-19.812 dB, worse
+than the point crossing -19.897 dB it is meant to bracket.**
+
+**Would a test have caught it? Yes, and only this one.** The point crossings are unaffected by
+the pairing — **all eight published values reproduce either way** — and every individual
+Wilson interval is correct, so `Ft8Step6Ladder`'s own tests cannot see it. **The defect lives
+entirely in which bound is paired with which**, and the only number that reveals it is the
+containment of the point inside the band. **Nothing in the tree computed a crossing at all
+before unit 256**; §4.1's interpolations had been done by hand in prose since unit 246.
+
+**It was watched failing before it was fixed**, on its own first run, and the red is committed
+whole at `docs/unit256-runs/task2-watched-failure.txt`:
+
+```
+Ft8Sharp on grid: the point crossing -19.5429 dB is NOT inside the band -19.53 dB to
+-19.56 dB.
+```
+
+**It is `docs/gate-set.md` entry 13**, at **6 ms** — the cheapest entry in that set, and the
+only one that guards a number rather than a decode.
+
 ---
 
 ## B. Breakages no test would have caught

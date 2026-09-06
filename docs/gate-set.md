@@ -115,6 +115,16 @@ an earlier attempt at this same work instruction left in `.run-unit\trx\` at
 | `Hamlet.App.Tests` | 2 methods, 2 cases | **not measured** |
 | | **29 methods, 46 cases** | **264.1 s over 44 of the 46 cases** |
 
+**Unit 256 added entry 13** and measured it on this machine, alone by exact full method name,
+foregrounded, with a stated timeout: **6 ms**, green — and **11 ms** on the run that watched it
+failing. It is in `Ft8Sharp.Tests`, so that row gains one method and one case and the totals
+gain the same. **It walks no ladder and decodes nothing**; every rate it computes is a
+committed count out of `docs/unit255-runs/` and `docs/unit256-runs/`. **It is the cheapest
+entry in the set and it does not move the five-to-six-minute estimate below by a measurable
+amount.** *(The table above was taken from TRX files by an earlier session and this figure is
+not folded into its arithmetic, because that arithmetic's own provenance is stated and should
+not be silently amended.)*
+
 **Unit 252 added entry 10** and measured it on this machine, alone by exact name:
 **2 s for its sixteen theory cases**, green. That is the second figure in this
 table taken by the unit that added the entry, and it is the cheapest entry in the
@@ -562,6 +572,58 @@ off any count it publishes.
 
 ---
 
+### 13. A crossing's band is built from the two rungs' own bounds, and it contains the crossing
+
+| | |
+|---|---|
+| `Ft8Sharp.Tests.Dsp.Ft8Unit256CrossingIntervalTests.TheCrossingBandBracketsThePointAndIsBuiltFromTheRungsOwnIntervals` | **0.006 s** |
+
+**The property.** Twelve 50 per cent crossings — every one this project publishes, on both
+placements and on the repeats ladder — are interpolated between the two rungs that straddle
+50 per cent, and each is given a band by pushing the two rungs' **95 per cent Wilson bounds
+through the same linear interpolation**. Three things are asserted and no more: **the point
+crossing lies inside its own band**; **a side is open exactly when its bound curve does not
+reach 50 per cent inside the bracket**, checked on one row of each branch; and **a case
+computed by hand before the code existed matches to two decimals**. **No bound is asserted on
+any crossing value.** Targets are waypoints.
+
+**The breakage it would have caught — `B18`, work instruction 256.** The bounds were paired
+the wrong way round: the **upper** Wilson bound at one rung against the **lower** at the
+other. **It did not throw and it did not look wrong.** It printed a complete,
+publication-shaped table in which **every width was negative** — every band inverted, and an
+inverted interval contains nothing — with `Ft8Sharp` on the grid reading **0.021 dB wide
+against the 0.162 dB its two rungs support**, eight times too narrow, and `SHIPPING` on the
+grid claiming a **closed** optimistic bound at a rung whose Wilson upper bound is 50.700 per
+cent and therefore has none. **A band manufactured where the measurement has none is an
+extrapolation in all but name.**
+
+**Why that is worth an entry and not just a fixed bug.** The crossing is the number this
+project will be quoted on for years — *Hamlet crosses 50 per cent at -19.90 dB* — and a band
+narrower than the measurement supports is **more dangerous than no band at all**, because it
+licenses exactly the comparison `CLAUDE.md` §0.0 forbids: -19.90 set beside another decoder's
+-19.7 and called a 0.2 dB win. **The honest band is 0.162 dB wide and the narrowest anywhere
+is 0.126 dB**, so that comparison is inside this project's own bracket at 306 trials. **The
+defective table would have said the opposite and nothing in it announces itself as wrong to a
+reader.**
+
+**Why no other check stands in for it.** The point crossings are unaffected by the pairing —
+all eight published values reproduce either way — and every individual Wilson interval is
+correct. **The defect lives entirely in which bound is paired with which**, and the only
+number that reveals it is the containment of the point inside the band. `Ft8Step6Ladder`'s own
+Wilson tests do not reach it; nothing in the tree computed a crossing at all before unit 256.
+
+**And it was watched failing.** The red is quoted whole at
+`docs/unit256-runs/task2-watched-failure.txt`, with the arithmetic that explains why a mixed
+pairing inverts rather than narrows: the crossing's position in the bracket,
+`t(a, b) = (a - 50)/(a - b)`, is increasing in **both** rung rates.
+
+**Why 6 ms is the whole cost.** It walks no ladder and decodes nothing — every rate is a
+committed count out of `docs/unit255-runs/` and `docs/unit256-runs/`. **It is the cheapest
+entry in this set**, ahead of entry 12's 0.6 s, and it is the only entry that guards a number
+rather than a decode.
+
+---
+
 ## Known red, inherited, never chased
 
 **These are red before any unit starts and are not that unit's finding.** They are
@@ -573,9 +635,23 @@ recorded here so a session finds them in one place instead of rediscovering them
 | The CW cases in `docs/unit239-failing-set.txt` | engine, `Cw` | 51 named; **they fail at the baseline `d541fc8` too** |
 | `Ft8Sharp.Deep.Tests`' whole-type-list tripwire | sibling | reddens whenever a type is added to Deep — **by design** |
 | `Hamlet.RadioEngine.Tests.Scan.ScannerEndToEndTests.ADwellReachesTheDecoderAndTheVerdictCarriesItsConfidence` | engine, `Scan` | red on 2026-09-05; **not previously recorded**, see below |
+| `Ft8Sharp.Tests.Dsp.Ft8Unit256CombiningPanelTests.TheCombiningPanelAtMinus23` | `Ft8Sharp.Tests`, `Dsp` | **NOT inherited — unit 256's own finding, 2026-09-05.** Red because of what it measured, and left red deliberately. See below |
 
 **None of them is in the gate set**, and the gate set is expected to run green
 with all of them red.
+
+**On the -23 dB panel failure, and it is the one entry in this table that is not
+inherited.** At -23 dB on the repeats ladder the `summed x4` row returned **one
+message nobody sent** — trial 29, seed 220771, `SENT "CQ PY2ABC GG66"`,
+`RETURNED "WN8ESU/P JG5HKE/P R AH58"` — and it **reproduces on the same trial and
+the same seed**, so it is deterministic rather than a flake. **The assertion was
+not weakened.** A unit that softened a zero-wrong assertion to make its night look
+clean would be the unit that stopped checking, and this project's rule is that no
+unit may be that one. **It is `HM-OPEN-082`**, it did not come from a combination —
+the one combination the port accepted at that rung was correct — and it changes no
+figure in `docs/unit255-closing-measurement.md`, being two decibels below that
+document's deepest rung. **It is a measurement and not a regression**: no rung this
+deep had ever been walked on this ladder.
 
 **On the `Scan` failure.** An earlier attempt at work instruction 250 ran
 `Hamlet.RadioEngine.Tests` in namespace batches and this was the single failure

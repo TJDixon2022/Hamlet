@@ -4,6 +4,73 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-082
+status: open — measured by unit 256, 2026-09-05, and not closed by it
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing that any step 6 exit criterion depends on — the rung is two decibels below the deepest rung in the closing table and no published figure moves — but it makes the sentence "every column measured in this project reads zero wrong" untrue without a rung qualifier
+refs: docs/unit255-closing-measurement.md §5.4 and §6.1 item 7, docs/unit256-runs/combining-panel-minus23.txt, tests/Ft8Sharp.Tests/Dsp/Ft8Unit256CombiningPanelTests.cs, unit 256
+---
+
+> **AT -23 dB ON THE REPEATS LADDER THE SHIPPING STACK RETURNED A MESSAGE NOBODY SENT.**
+>
+> ```
+> trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+> ```
+>
+> **It reproduces.** Run a second time under the identical exact-name filter it returned the
+> same wrong message on the same trial and the same seed. **Deterministic, not a flake.**
+>
+> **It is the first wrong decode measured anywhere in this phase** — against zero in all
+> thirty-six cells of `docs/unit255-closing-measurement.md` §3 (11 016 scored slot decodes),
+> zero in every table of its §5.1 to §5.3, and zero across unit 256's own 2 448 cell-centre
+> slot decodes and its 918 at -22 dB on this same ladder.
+
+**Where it came from, as far as the counts can say.** **Not from a combination.** At that rung
+`CodewordsAccepted` is **1**, `CombinedDecodes` is **1** and `CombinedDecodesVerified` is
+**1** — the single combination the port took past both its gates was the message that was
+sent. So the wrong return came from the combined column's **inner** decoder acting on a single
+slot: `new Ft8DeepSlotDecoder(osd: Ft8DeepOsdSettings.Default, fineSync:
+Ft8DeepFineSyncSettings.Default, rememberHearings: true)` — **the stack
+`Ft8Reception.cs:460` builds** — run on **all four slots of every trial**, four times the
+exposure of the `single + OSD` row, which reads zero wrong at the same rung.
+
+**Both of the port's gates were in the path when it happened**, which is the point rather than
+a defect: **parity and CRC-14 are a filter and not a proof.** Over 632 submissions the naive
+expectation of a message nobody sent was **0.039**, so one is about twenty-five times the
+naive expectation and, as a single event, is not by itself extraordinary — the probability of
+at least one at that rate is about 4 per cent. **Nothing in `Ft8Sharp.Deep` decided that
+message was real.**
+
+**What unit 256 did and did not do.** It measured it, printed the whole table before the
+assertion ran so the red cost none of its own numbers, and **left
+`Ft8Unit256CombiningPanelTests.TheCombiningPanelAtMinus23` RED in the tree with its assertion
+unweakened.** It did not chase it, did not change a line under `src/`, and did not touch a
+published figure. **A unit that weakened a zero-wrong assertion to make a night look clean
+would be the unit that stopped checking, and this project's rule is that no unit may be that
+one.**
+
+**What would answer it, and it is not this unit's to spend.** Three questions, in the order
+they are worth asking:
+
+1. **Is it the rung or the exposure?** Walk the `single + OSD` row alone on all four slots at
+   -23 dB. If it produces the same wrong return, the four-slot exposure explains it and the
+   stack is no worse per slot than the record already says.
+2. **Is it ordered statistics or fine sync?** The same rung with each stage alone on the inner
+   decoder. Ordered statistics reprocesses failed codewords and is the stage with a mechanism
+   for it.
+3. **How often, at rungs anybody cares about?** One event at one rung is a rate of unknown
+   size. **The rungs the closing table publishes read zero wrong over 11 016 slot decodes**,
+   and the honest current statement is that the wrong-decode rate is below what those trial
+   counts can resolve at -19 to -21 dB and is not zero at -23 dB.
+
+**Why it is `slows` and not worse.** It is 2 dB below the deepest rung anything in this
+project publishes and 1.5 dB below combining's own crossing. **No figure in
+`docs/unit255-closing-measurement.md` moves**, and §6.1 item 7 now carries the qualification
+on its face rather than the issue being the only place it is written.
+
+---
 id: HM-OPEN-081
 status: closed — measured by unit 255, 2026-09-05
 owner: tim
