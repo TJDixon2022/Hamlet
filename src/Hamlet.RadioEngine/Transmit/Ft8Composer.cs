@@ -324,61 +324,61 @@ public static class Ft8Composer
     /// back the same words.
     /// </summary>
     /// <remarks>
-    /// **The round trip is the whole of the refusal.** Every candidate is offered
-    /// to the packers and then read back through <c>Ft8MessageDecoder</c>, which
-    /// is the call the receive path itself ends in. A packing that succeeds but
-    /// does not reproduce its own text is discarded exactly like one that failed —
-    /// audio for a message the operator did not ask for is the fault this method
-    /// exists to prevent.
+    /// <para>**The round trip is the whole of the refusal.** Every candidate is
+    /// offered to the packers and then read back through <c>Ft8MessageDecoder</c>,
+    /// which is the call the receive path itself ends in. A packing that succeeds
+    /// but does not reproduce its own text is discarded exactly like one that
+    /// failed — audio for a message the operator did not ask for is the fault this
+    /// method exists to prevent.</para>
+    /// <para>**THREE PASSES, AND THE ORDER IS A RULING ABOUT HASHES RATHER THAN A
+    /// PREFERENCE.** A message that puts a callsign on the wire as a hash can be
+    /// read back only by a receiver that heard the full call in the same slot; a
+    /// message that carries everything in full can be read by anybody. So anything
+    /// sayable without a hash is said without one: first the structured types with
+    /// no callsign cache at all, then free text, and only then the structured types
+    /// with a cache.</para>
+    /// <para>**The unit that wrote this had the order wrong and the corpus caught
+    /// it.** With hashing allowed in the first pass, `GL IN TEST` packed as a
+    /// standard message whose two callsign fields were the hashes of `GL IN` and
+    /// `TEST` — nonsense on the air that rendered back as the right words, which is
+    /// precisely the failure §0.0's principle forbids in the other direction. It is
+    /// now free text, because free text is offered before anything is hashed.</para>
     /// </remarks>
     private static Packing? PackAsItself(string wanted, out string explanation)
     {
         var refusals = new List<string>();
         var words = wanted.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        foreach (var (to, de, extra) in FieldArrangements(words))
+        // Pass one: everything carried in full.
+        var whole = TryStructured(words, wanted, refusals, allowHashing: false);
+        if (whole is not null)
         {
-            // Standard first. It is most of what a band carries, and offering it
-            // first is what stops an ordinary message becoming free text that
-            // happens to read the same.
-            var standard = TryRoute(
-                (cache, buffer) => Ft8StandardMessage.TryPack(to, de, extra, cache, buffer),
-                wanted,
-                Ft8MessageType.Standard,
-                refusals,
-                $"standard \"{to}\" / \"{de}\" / \"{extra}\"");
-            if (standard is not null)
-            {
-                explanation = string.Empty;
-                return standard;
-            }
-
-            var nonstandard = TryRoute(
-                (cache, buffer) => Ft8NonstandardMessage.TryPack(to, de, extra, cache, buffer),
-                wanted,
-                Ft8MessageType.NonstandardCallsign,
-                refusals,
-                $"non-standard callsign \"{to}\" / \"{de}\" / \"{extra}\"");
-            if (nonstandard is not null)
-            {
-                explanation = string.Empty;
-                return nonstandard;
-            }
+            explanation = string.Empty;
+            return whole;
         }
 
-        // Free text last, and only for words no message type would carry. It is
-        // the form that says the least about the message, so it is never taken
-        // while a structured form is available.
+        // Pass two: free text, which carries thirteen characters and hashes
+        // nothing.
         var freeText = TryRoute(
             (_, buffer) => Ft8FreeText.TryPackText(wanted, buffer),
             wanted,
             Ft8MessageType.FreeText,
             refusals,
-            "free text");
+            "free text",
+            allowHashing: false);
         if (freeText is not null)
         {
             explanation = string.Empty;
             return freeText;
+        }
+
+        // Pass three: a callsign on the wire as a hash, which is the only way to
+        // say some things and is reported as what it is.
+        var hashed = TryStructured(words, wanted, refusals, allowHashing: true);
+        if (hashed is not null)
+        {
+            explanation = string.Empty;
+            return hashed;
         }
 
         explanation =
@@ -388,30 +388,78 @@ public static class Ft8Composer
     }
 
     /// <summary>
-    /// Offers one packing route, twice if it asks for a callsign cache, and keeps
-    /// it only if it reads back as itself.
+    /// Offers the structured message types every field arrangement these words
+    /// admit.
     /// </summary>
     /// <remarks>
-    /// **The two attempts are how the hash is measured rather than guessed.** A
-    /// message packed without a cache carries every callsign in full by
-    /// construction; one that refuses for want of a cache and then packs with one
-    /// has put a callsign on the wire as a hash. That is the fact a caller needs
-    /// in order to know that a receiver cannot resolve it on its own, and it is
-    /// read off the port's own refusal rather than inferred from the shape of a
-    /// callsign.
+    /// Standard before non-standard: it is most of what a band carries, and it is
+    /// the form that puts two whole callsigns on the wire.
+    /// </remarks>
+    private static Packing? TryStructured(
+        string[] words, string wanted, List<string> refusals, bool allowHashing)
+    {
+        var pass = allowHashing ? "hashed" : "in full";
+
+        foreach (var (to, de, extra) in FieldArrangements(words))
+        {
+            var standard = TryRoute(
+                (cache, buffer) => Ft8StandardMessage.TryPack(to, de, extra, cache, buffer),
+                wanted,
+                Ft8MessageType.Standard,
+                refusals,
+                $"standard, {pass}, \"{to}\" / \"{de}\" / \"{extra}\"",
+                allowHashing);
+            if (standard is not null)
+            {
+                return standard;
+            }
+
+            var nonstandard = TryRoute(
+                (cache, buffer) => Ft8NonstandardMessage.TryPack(to, de, extra, cache, buffer),
+                wanted,
+                Ft8MessageType.NonstandardCallsign,
+                refusals,
+                $"non-standard callsign, {pass}, \"{to}\" / \"{de}\" / \"{extra}\"",
+                allowHashing);
+            if (nonstandard is not null)
+            {
+                return nonstandard;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Offers one packing route and keeps it only if it reads back as itself.
+    /// </summary>
+    /// <remarks>
+    /// **Whether a callsign is on the wire as a hash is measured rather than
+    /// guessed.** A message packed without a cache carries every callsign in full
+    /// by construction; one that refuses for want of a cache has a callsign that
+    /// can only travel as a hash. That is read off the port's own refusal rather
+    /// than inferred from the shape of a callsign — and on the pass where hashing
+    /// is not allowed, that refusal is simply the end of the route.
     /// </remarks>
     private static Packing? TryRoute(
         Func<Ft8CallsignCache?, byte[], Ft8PackResult> pack,
         string wanted,
         Ft8MessageType type,
         List<string> refusals,
-        string label)
+        string label,
+        bool allowHashing)
     {
         var buffer = new byte[Ft8Payload.MessageBytes];
 
         var result = pack(null, buffer);
         if (result is Ft8PackResult.FirstCallRequiresHashCache or Ft8PackResult.SecondCallRequiresHashCache)
         {
+            if (!allowHashing)
+            {
+                refusals.Add($"{label} needs a callsign on the wire as a hash: {result}");
+                return null;
+            }
+
             var cache = new Ft8CallsignCache();
             result = pack(cache, buffer);
             if (result != Ft8PackResult.Ok)
