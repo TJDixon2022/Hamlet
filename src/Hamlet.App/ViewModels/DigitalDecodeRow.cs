@@ -45,59 +45,19 @@ namespace Hamlet.App.ViewModels;
 /// everywhere else, and it fits the 48-pixel monospace column with room for the
 /// sign.</para>
 /// </remarks>
+/// <remarks>
+/// **NOTHING ON THIS ROW CHANGES AFTER IT ARRIVES, SINCE UNIT 252.** It carried
+/// `INotifyPropertyChanged` for one mutable flag — `IsDimmed`, and the
+/// `RowOpacity` derived from it — and Tim's ruling of 2026-09-06 removed the
+/// dimming those existed for. A row the filter does not want is not on the table
+/// at all now, so there is no per-row appearance to carry and nothing here to
+/// raise an event about. **The interface came off with them rather than being
+/// left behind empty**: an event nobody raises is a promise the type cannot keep,
+/// and a reader would reasonably conclude something on this row still moves.
+/// </remarks>
 public sealed record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message)
-    : INotifyPropertyChanged
 {
-    /// <inheritdoc/>
-    /// <remarks>
-    /// **THE RECORD RAISES ITS OWN, RATHER THAN DERIVING FROM `ObservableObject`.**
-    /// A record may only inherit from another record, so the toolkit's base class
-    /// is not available here — and it is not wanted either: this record has
-    /// exactly one changeable thing on it and everything else about it is fixed
-    /// when the decode arrives.
-    /// </remarks>
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    private bool _isDimmed;
-
-    /// <summary>True where the current filter is not interested in this row.</summary>
-    /// <remarks>
-    /// <para>**DIMMED AND NOT REMOVED** (unit 251 task 6, the arbiter's choice
-    /// and the reasoning is in `MainWindowViewModel.ApplyDecodedFilter`). The row
-    /// stays in the table, in its place, and is drawn faint.</para>
-    /// <para>**THE ONE MUTABLE THING ON THIS RECORD, AND IT IS NOT PART OF WHAT
-    /// THE ROW IS.** It is outside the value equality on purpose: two rows
-    /// carrying the same decode are the same decode whichever of them the filter
-    /// happens to want, and the trim in `ShowDecodes` removes rows by equality.</para>
-    /// </remarks>
-    public bool IsDimmed
-    {
-        get => _isDimmed;
-        set
-        {
-            if (_isDimmed == value)
-            {
-                return;
-            }
-
-            _isDimmed = value;
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsDimmed)));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowOpacity)));
-        }
-    }
-
-    /// <summary>How solidly the row is drawn.</summary>
-    /// <remarks>
-    /// **A NUMBER RATHER THAN A CONVERTER**, because a converter would be a
-    /// second place the dimmed appearance is decided and this panel already has
-    /// its appearance argued about in three files. 0.35 is faint enough that the
-    /// eye skips it while scanning and dark enough that the band's texture is
-    /// still visible, which is the whole reason dimming was chosen over removal.
-    /// </remarks>
-    public double RowOpacity => IsDimmed ? 0.35 : 1.0;
-
     /// <summary>What the `snr` cell says for a message whose ratio was not measured.</summary>
     /// <remarks>
     /// **NOT "while nothing measures one" ANY MORE.** Something does, since unit

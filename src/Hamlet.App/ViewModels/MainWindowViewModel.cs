@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Threading;
@@ -1054,6 +1055,26 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public ObservableCollection<DigitalDecodeRow> DigitalDecodes { get; } = new();
 
+    /// <summary>The rows the operator's toggles actually asked for.</summary>
+    /// <remarks>
+    /// <para>**THIS IS WHAT THE TABLE BINDS TO SINCE UNIT 252** (Tim's ruling,
+    /// 2026-09-06: *what is not selected is not on the list — not dimmed, not
+    /// faded, gone*). <see cref="DigitalDecodes"/> stays the whole table, because
+    /// the row cap, the duplicate keys and the arrival order all count what was
+    /// heard rather than what is being shown, and a filter must not change any of
+    /// them.</para>
+    /// <para>**THE SPLIT IS ALSO WHAT KEEPS THE VIEW STILL.**
+    /// `FollowingScroll` watches the collection it is bound to, so a row the
+    /// toggles do not want raises no change here at all and there is nothing for
+    /// the view to follow. The reflow unit 251 was right to worry about is
+    /// answered by the view not moving rather than by the rows staying.</para>
+    /// <para>**AND IT IS SYNCED IN PLACE RATHER THAN REBUILT PER SLOT.** A clear
+    /// and refill every fifteen seconds would raise a reset, and a reset is what
+    /// sends a list back to the top under the operator's eyes. Only an explicit
+    /// action he took — a toggle, the order button, clear — rebuilds it.</para>
+    /// </remarks>
+    public ObservableCollection<DigitalDecodeRow> DigitalVisibleDecodes { get; } = new();
+
     /// <summary>Every row in the order the decoder produced it.</summary>
     /// <remarks>
     /// <para>**THE DISPLAY ORDER IS A VIEW OF THIS AND NEVER THE RECORD OF
@@ -1290,11 +1311,18 @@ public partial class MainWindowViewModel : ObservableObject
         ShowsMine = false;
     }
 
-    /// <summary>How many rows the filter wants.</summary>
+    /// <summary>How many rows are on the list.</summary>
     public int DigitalShownCount { get; private set; }
 
-    /// <summary>How many rows are drawn dimmed.</summary>
-    public int DigitalDimmedCount { get; private set; }
+    /// <summary>How many rows the toggles are holding off the list.</summary>
+    /// <remarks>
+    /// **NEVER OMITTED, AND IT IS THE WHOLE DEFENCE AGAINST §0.0 HERE** (Tim's
+    /// ruling, 2026-09-06). A filter that removes can make a busy band look like a
+    /// quiet one, which is a false picture and binds as hard as a false sentence
+    /// (HM-DEC-092). The count of what is held back is what stops it, so the
+    /// summary carries it whenever it is not zero, expanded or collapsed.
+    /// </remarks>
+    public int DigitalHiddenCount { get; private set; }
 
     /// <summary>
     /// What the filter has to say for itself, or "" when it has nothing to add.
@@ -1323,65 +1351,132 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True while the filter has something to say.</summary>
     public bool HasDigitalFilterNote => DigitalFilterNote.Length > 0;
 
-    /// <summary>
-    /// Dim the rows the filter is not interested in, and count both halves.
-    /// </summary>
+    /// <summary>Whether the toggles want this row on the list.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>True when it belongs on the visible table.</returns>
+    private bool WantsRow(DigitalDecodeRow row)
+        => DecodedFilterRule.Wants(
+            ShowsCqOnly, ShowsMine, row.Addressee, row.Sender,
+            _settings.Operator.Callsign);
+
+    /// <summary>Keep the visible table in step with the whole one.</summary>
+    /// <param name="sender">The whole table.</param>
+    /// <param name="e">What happened to it.</param>
     /// <remarks>
-    /// <para>**DIMMED, NOT REMOVED — AND THAT WAS THE ARBITER'S TO CHOOSE**
-    /// (§12.1; Tim has not ruled it). Two reasons, and the second is the stronger
-    /// one. **The band's texture stays visible**: an evening on 20 m is mostly
-    /// other people's contacts, and a list showing only the CQs makes a busy band
-    /// look like a quiet one with a few callers on it. **And rows do not jump
-    /// while he is reading them**: four slots a minute, fourteen rows a slot, and
-    /// a removing filter would reflow the table under his eyes every fifteen
-    /// seconds — worst at exactly the moment a new row arrives, which is when he
-    /// is looking. Removal buys screen space this panel now has a whole column
-    /// of.</para>
-    /// <para>**THE COUNTS ARE THE NON-VISUAL CARRIER** (§0.6). Dimming is
-    /// opacity, and opacity is no better than colour for somebody who cannot see
-    /// it well; the summary says both numbers in words, so what the filter has
-    /// done is legible without seeing the rows at all.</para>
+    /// <para>**INCREMENTAL FOR AN ARRIVAL, WHOLESALE FOR A RESET.** A slot's rows
+    /// arrive one at a time, and each one that the toggles want is inserted where
+    /// it belongs; a filtered-out one produces no change on the visible collection
+    /// at all, which is what leaves the scroll position untouched. A reset is the
+    /// order toggle or a clear, both of which the operator asked for, so rebuilding
+    /// there costs nothing he did not choose.</para>
+    /// <para>**THE INSERT POSITION IS COUNTED FROM THE WHOLE TABLE.** The visible
+    /// table is the whole table with rows taken out, so a row's place in it is the
+    /// number of wanted rows sitting before it — which is what keeps the two in
+    /// the same order under newest-first, where a row goes neither at the top nor
+    /// at the bottom but after the rows already in its own slot.</para>
     /// </remarks>
-    private void ApplyDecodedFilter()
+    private void OnDigitalDecodesChanged(
+        object? sender, NotifyCollectionChangedEventArgs e)
     {
-        var mine = _settings.Operator.Callsign;
-        var shown = 0;
-
-        foreach (var row in DigitalDecodes)
+        if (e.Action is NotifyCollectionChangedAction.Reset
+            or NotifyCollectionChangedAction.Move
+            or NotifyCollectionChangedAction.Replace)
         {
-            var wanted = DecodedFilterRule.Wants(
-                ShowsCqOnly, ShowsMine, row.Addressee, row.Sender, mine);
+            ApplyDecodedFilter();
+            return;
+        }
 
-            row.IsDimmed = !wanted;
-
-            if (wanted)
+        if (e.OldItems is not null)
+        {
+            foreach (DigitalDecodeRow row in e.OldItems)
             {
-                shown++;
+                DigitalVisibleDecodes.Remove(row);
             }
         }
 
-        DigitalShownCount = shown;
-        DigitalDimmedCount = DigitalDecodes.Count - shown;
+        if (e.NewItems is not null)
+        {
+            var at = e.NewStartingIndex;
 
-        OnPropertyChanged(nameof(DigitalShownCount));
-        OnPropertyChanged(nameof(DigitalDimmedCount));
+            foreach (DigitalDecodeRow row in e.NewItems)
+            {
+                if (WantsRow(row))
+                {
+                    DigitalVisibleDecodes.Insert(VisibleIndexOf(at), row);
+                }
+
+                at++;
+            }
+        }
+
+        RecountDecodedFilter();
+    }
+
+    /// <summary>Where a row at this place on the whole table sits on the visible one.</summary>
+    /// <param name="index">The row's index in <see cref="DigitalDecodes"/>.</param>
+    /// <returns>Its index in <see cref="DigitalVisibleDecodes"/>.</returns>
+    private int VisibleIndexOf(int index)
+    {
+        var at = 0;
+
+        for (var i = 0; i < index && i < DigitalDecodes.Count; i++)
+        {
+            if (WantsRow(DigitalDecodes[i]))
+            {
+                at++;
+            }
+        }
+
+        return at;
+    }
+
+    /// <summary>
+    /// Rebuild the visible table from the whole one, and count both halves.
+    /// </summary>
+    /// <remarks>
+    /// <para>**REMOVED, NOT DIMMED** (Tim's ruling, 2026-09-06, superseding unit
+    /// 251's arbiter choice). That choice reasoned carefully and reasoned to the
+    /// wrong answer: the operator's problem was never that he could not see the
+    /// band's texture, it is that fourteen rows a slot at four slots a minute
+    /// scrolls past faster than he can read. Dimming left every one of them on the
+    /// list and moving.</para>
+    /// <para>**A FULL REBUILD IS ONLY EVER AN ANSWER TO SOMETHING HE DID** — a
+    /// toggle, the order button, a clear. Rows arriving take the incremental path
+    /// in `PlaceRow`, because clearing and refilling raises a reset and a reset is
+    /// what throws a list back to the top while he is reading it.</para>
+    /// <para>**THE COUNTS ARE THE NON-VISUAL CARRIER AND NOW THEY ARE THE ONLY
+    /// ONE** (§0.6, §0.0). While rows were dimmed, a reader who could not make out
+    /// the opacity could still count the rows. They are gone now, so the summary's
+    /// hidden count is the single thing standing between a filtered list and a
+    /// band that reads as quiet.</para>
+    /// </remarks>
+    private void ApplyDecodedFilter()
+    {
+        DigitalVisibleDecodes.Clear();
+
+        foreach (var row in DigitalDecodes)
+        {
+            if (WantsRow(row))
+            {
+                DigitalVisibleDecodes.Add(row);
+            }
+        }
+
+        RecountDecodedFilter();
+
         OnPropertyChanged(nameof(DigitalFilterNote));
         OnPropertyChanged(nameof(HasDigitalFilterNote));
         OnPropertyChanged(nameof(DigitalDecodedSummary));
     }
 
-    /// <summary>Bring the shown and hidden totals level with the table.</summary>
-    /// <remarks>
-    /// The same counting as <see cref="ApplyDecodedFilter"/> without the writes,
-    /// for the path where rows were already dimmed as they arrived.
-    /// </remarks>
+    /// <summary>Bring the shown and hidden totals level with the two tables.</summary>
     private void RecountDecodedFilter()
     {
-        DigitalShownCount = DigitalDecodes.Count(r => !r.IsDimmed);
-        DigitalDimmedCount = DigitalDecodes.Count - DigitalShownCount;
+        DigitalShownCount = DigitalVisibleDecodes.Count;
+        DigitalHiddenCount = DigitalDecodes.Count - DigitalShownCount;
 
         OnPropertyChanged(nameof(DigitalShownCount));
-        OnPropertyChanged(nameof(DigitalDimmedCount));
+        OnPropertyChanged(nameof(DigitalHiddenCount));
     }
 
     /// <summary>What the order button says it will do.</summary>
@@ -1461,20 +1556,21 @@ public partial class MainWindowViewModel : ObservableObject
                 // the panel and opens it later should not have to work out from
                 // the rows which end is the live one.
                 // **WHAT IS SHOWN AND WHAT IS HIDDEN, BOTH** (Tim's ruling,
-                // 2026-09-05). A filter must never be able to make him think the
-                // band went quiet, and the count of what it dimmed is the thing
-                // that stops it — in the summary rather than only in the table,
-                // because a collapsed panel is exactly where the mistake would
-                // be made (§0.5).
-                var hidden = DigitalDimmedCount > 0
-                    ? $"{DigitalDimmedCount} dimmed by {FilterLabel()} · "
+                // 2026-09-05, and it carries more weight since his ruling of
+                // 2026-09-06 made the filter remove rather than dim). A filter
+                // must never be able to make him think the band went quiet, and
+                // the count of what it held back is the only thing that stops it
+                // now that the rows themselves are gone — in the summary rather
+                // than only in the table, because a collapsed panel is exactly
+                // where the mistake would be made (§0.5).
+                //
+                // **IT NAMES THE TOGGLE THAT DID IT.** A line saying rows were
+                // held back by "the filter" names nothing he can turn off.
+                var hidden = DigitalHiddenCount > 0
+                    ? $"{DigitalHiddenCount} hidden by {FilterLabel()} · "
                     : "";
 
-                var count = DigitalDimmedCount > 0
-                    ? DigitalShownCount
-                    : DigitalDecodes.Count;
-
-                return $"{newest} UTC · {count} shown · " + hidden
+                return $"{newest} UTC · {DigitalShownCount} shown · " + hidden
                     + DigitalOrderLabel + TrimNote();
             }
 
@@ -2937,6 +3033,16 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _settings = settings;
         _telemetry = telemetry;
+
+        // **THE VISIBLE TABLE MIRRORS THE WHOLE ONE, RATHER THAN EVERY CALLER
+        // REMEMBERING TO FILL BOTH** (unit 252 task 2). There are four places a
+        // row leaves or joins `DigitalDecodes` — the decoder's own door, the row
+        // cap, the order toggle's rebuild and the two clears — and a second
+        // collection maintained by hand at each of them is four chances for the
+        // two to disagree about what was heard. Subscribing once means a row on
+        // the table is on the visible table exactly when the toggles want it,
+        // whatever put it there.
+        DigitalDecodes.CollectionChanged += OnDigitalDecodesChanged;
 
         // **THE TABS BEFORE ANYTHING THAT COULD CHANGE THE MODE**, because the
         // mode's own change handler walks them.
@@ -7629,21 +7735,26 @@ public partial class MainWindowViewModel : ObservableObject
         return true;
     }
 
-    /// <summary>Put a row on the table, dimmed if the filter is not after it.</summary>
+    /// <summary>Put a row on the table, and on the visible one if it is wanted.</summary>
     /// <param name="row">The row.</param>
     /// <returns>The same row, so a caller can look at what it became.</returns>
     /// <remarks>
-    /// **DIMMED BEFORE IT IS DRAWN, NOT AFTER** (unit 251 task 6). A row put in
-    /// at full strength and dimmed a moment later flashes at exactly the moment
-    /// the operator's eye is drawn to it by the movement, which is the opposite
-    /// of what the filter is for.
+    /// <para>**IT NEVER REACHES THE VISIBLE TABLE AT ALL IF THE TOGGLES DO NOT
+    /// WANT IT** (unit 252, Tim's ruling). Unit 251 put every row on the one table
+    /// and dimmed it; the row is simply not added now.</para>
+    /// <para>**WHICH IS ALSO WHY THE VIEW DOES NOT MOVE.** `FollowingScroll`
+    /// watches the collection the table is bound to. A filtered-out row raises no
+    /// change on it, so there is nothing to follow and the scroll position is
+    /// untouched — the instruction's requirement, met by the row never arriving
+    /// rather than by a rule about scrolling.</para>
+    /// <para>**THE INSERT POSITION IS COUNTED, NOT GUESSED.** The visible table is
+    /// the whole table with rows taken out, so a row's place in it is the number of
+    /// wanted rows that sit before it in `DigitalDecodes` — which is what keeps the
+    /// two in the same order under newest-first, where a row does not go at either
+    /// end.</para>
     /// </remarks>
     private DigitalDecodeRow PlaceRow(DigitalDecodeRow row)
     {
-        row.IsDimmed = !DecodedFilterRule.Wants(
-            ShowsCqOnly, ShowsMine, row.Addressee, row.Sender,
-            _settings.Operator.Callsign);
-
         _digitalArrivals.Add(row);
         DigitalDecodes.Insert(InsertAt(row), row);
 

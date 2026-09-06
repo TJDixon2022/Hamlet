@@ -3370,25 +3370,24 @@
                                               IsVisible="{Binding HasDigitalDecodes}">
                                 <ItemsControl x:Name="DigitalDecodedRows"
                                               ctl:FollowingScroll.Follows="True"
-                                              ItemsSource="{Binding DigitalDecodes}">
+                                              ItemsSource="{Binding DigitalVisibleDecodes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:DigitalDecodeRow">
                                             <!-- The same widths as the header,
                                                  from the same resource, so the
                                                  two cannot drift apart again. -->
-                                            <!-- **A FILTERED-OUT ROW IS DIMMED
-                                                 AND NOT REMOVED** (unit 251 task
-                                                 6). It keeps its place, so the
-                                                 band's texture is still visible
-                                                 and the table does not reflow
-                                                 under the operator's eyes four
-                                                 times a minute. The summary
-                                                 above counts both halves in
-                                                 words, which is what carries the
-                                                 same fact for anybody who cannot
-                                                 read the opacity (§0.6). -->
-                                            <Grid ColumnDefinitions="76,48,48,54,*"
-                                                  Opacity="{Binding RowOpacity}">
+                                            <!-- **A FILTERED-OUT ROW IS NOT
+                                                 HERE AT ALL** (Tim's ruling,
+                                                 2026-09-06, superseding unit
+                                                 251's dimming). This table binds
+                                                 to the visible collection, so
+                                                 there is no row-level appearance
+                                                 for a hidden row and no opacity
+                                                 to get wrong. What the toggles
+                                                 held back is carried by the
+                                                 summary's hidden count, which is
+                                                 never omitted (§0.0, §0.6). -->
+                                            <Grid ColumnDefinitions="76,48,48,54,*">
                                                 <TextBlock Grid.Column="0" Text="{Binding Utc}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                 <TextBlock Grid.Column="1" Text="{Binding Snr}"

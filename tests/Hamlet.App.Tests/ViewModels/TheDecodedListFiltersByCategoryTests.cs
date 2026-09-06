@@ -286,6 +286,155 @@ public sealed class TheDecodedListFiltersByCategoryTests
         }
     }
 
+    /// <summary>
+    /// Work instruction 252, task 2: a filtered row is off the list, and the
+    /// summary says how many.
+    /// </summary>
+    /// <remarks>
+    /// **THE SUMMARY IS THE WHOLE DEFENCE AGAINST §0.0 HERE.** A filter that
+    /// removes can make a busy band look like a quiet one, and a picture binds as
+    /// hard as a sentence (HM-DEC-092). Every state below is asserted with both
+    /// numbers, because a shown-count without a hidden-count is the fault.
+    /// </remarks>
+    [Fact]
+    public void TheSummaryCountsWhatIsShownAndWhatIsHidden()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        // Neither toggle: six heard, six shown, nothing hidden, and no "hidden"
+        // clause at all because there is nothing to warn about.
+        Assert.Equal(6, model.DigitalShownCount);
+        Assert.Equal(0, model.DigitalHiddenCount);
+        Assert.Equal(6, model.DigitalVisibleDecodes.Count);
+        Assert.DoesNotContain("hidden", model.DigitalDecodedSummary);
+        _output.WriteLine("neither : " + model.DigitalDecodedSummary);
+
+        model.ShowsCqOnly = true;
+
+        Assert.Equal(2, model.DigitalShownCount);
+        Assert.Equal(4, model.DigitalHiddenCount);
+        Assert.Equal(2, model.DigitalVisibleDecodes.Count);
+        Assert.Contains("2 shown", model.DigitalDecodedSummary);
+        Assert.Contains("4 hidden by CQ", model.DigitalDecodedSummary);
+        _output.WriteLine("CQ      : " + model.DigitalDecodedSummary);
+
+        model.ShowsCqOnly = false;
+        model.ShowsMine = true;
+
+        Assert.Equal(2, model.DigitalShownCount);
+        Assert.Equal(4, model.DigitalHiddenCount);
+        Assert.Contains("4 hidden by mine", model.DigitalDecodedSummary);
+        _output.WriteLine("mine    : " + model.DigitalDecodedSummary);
+
+        model.ShowsCqOnly = true;
+
+        // Both: the two CQs and his two, so two are held back.
+        Assert.Equal(4, model.DigitalShownCount);
+        Assert.Equal(2, model.DigitalHiddenCount);
+        Assert.Contains("2 hidden by CQ and mine", model.DigitalDecodedSummary);
+        _output.WriteLine("both    : " + model.DigitalDecodedSummary);
+
+        // **THE WHOLE TABLE NEVER SHRANK.** The band was as busy under every one
+        // of those states, and the panel still knows it.
+        Assert.Equal(6, model.DigitalDecodes.Count);
+    }
+
+    /// <summary>A row the toggles do not want never reaches the visible list.</summary>
+    /// <remarks>
+    /// **AND THAT IS HOW THE SCROLL POSITION IS LEFT ALONE.** `FollowingScroll`
+    /// watches the bound collection, so a filtered-out row raising no change on it
+    /// is the mechanism — the view has nothing to follow because nothing happened
+    /// to the list it is drawing. This asserts the collection did not move, which
+    /// is the fact the scroll behaviour rests on and one a headless test can
+    /// state without a window.
+    /// </remarks>
+    [Fact]
+    public void AFilteredRowArrivingDoesNotDisturbTheList()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        model.ShowsCqOnly = true;
+
+        var before = model.DigitalVisibleDecodes.ToArray();
+        var changed = 0;
+
+        model.DigitalVisibleDecodes.CollectionChanged += (_, _) => changed++;
+
+        // Somebody else's contact, which `CQ` did not ask for.
+        model.AddDecodeRowForTests(
+            "214150", "-13", "0.3", "1620", "W1ABC K4XYZ RR73");
+
+        Assert.Equal(0, changed);
+        Assert.Equal(before, model.DigitalVisibleDecodes);
+
+        // It was still heard, and the summary says so rather than swallowing it.
+        Assert.Equal(7, model.DigitalDecodes.Count);
+        Assert.Equal(5, model.DigitalHiddenCount);
+
+        // And a row it did ask for arrives on the list, so the silence above is
+        // the filter working rather than the table having stopped.
+        model.AddDecodeRowForTests(
+            "214150", "-08", "0.2", "980", "CQ K4XYZ FM18");
+
+        Assert.Equal(1, changed);
+        Assert.Contains(
+            model.DigitalVisibleDecodes, r => r.Message == "CQ K4XYZ FM18");
+    }
+
+    /// <summary>
+    /// The visible list keeps the whole list's order, in both directions.
+    /// </summary>
+    /// <remarks>
+    /// **NEWEST-FIRST IS WHERE THIS COULD GO WRONG.** A new row does not go at
+    /// either end of the table then — it goes after the rows already in its own
+    /// slot — so the visible list's insert position has to be counted rather than
+    /// assumed.
+    /// </remarks>
+    [Fact]
+    public void TheVisibleListKeepsTheWholeListsOrder()
+    {
+        foreach (var newestFirst in new[] { true, false })
+        {
+            var model = WithRows(mine: "KD9ABC");
+
+            model.DigitalNewestFirst = newestFirst;
+            model.ShowsCqOnly = true;
+
+            model.AddDecodeRowForTests(
+                "214150", "-08", "0.2", "980", "CQ K4XYZ FM18");
+            model.AddDecodeRowForTests(
+                "214150", "-13", "0.3", "1620", "W1ABC K4XYZ RR73");
+            model.AddDecodeRowForTests(
+                "214150", "-15", "0.1", "1100", "CQ DX VK3ABC QF22");
+
+            var expected = model.DigitalDecodes
+                .Where(r => DecodedFilterRule.IsCallToAnyone(r.Addressee))
+                .ToArray();
+
+            _output.WriteLine(
+                "newest first " + newestFirst + " : "
+                + string.Join(" | ", model.DigitalVisibleDecodes.Select(r => r.Message)));
+
+            Assert.Equal(expected, model.DigitalVisibleDecodes);
+        }
+    }
+
+    /// <summary>Clearing empties both lists.</summary>
+    [Fact]
+    public void ClearEmptiesTheVisibleListToo()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        model.ShowsCqOnly = true;
+
+        model.ClearDigitalDecodesCommand.Execute(null);
+
+        Assert.Empty(model.DigitalDecodes);
+        Assert.Empty(model.DigitalVisibleDecodes);
+        Assert.Equal(0, model.DigitalShownCount);
+        Assert.Equal(0, model.DigitalHiddenCount);
+    }
+
     /// <summary>The predicate itself, over the shapes the two fields take.</summary>
     /// <remarks>
     /// **THE `CQ POTA` ROW IS THE ONE THAT MATTERS**, and it takes two files to
@@ -328,15 +477,27 @@ public sealed class TheDecodedListFiltersByCategoryTests
         Assert.Equal(wanted, got);
     }
 
+    /// <summary>Whether a row the panel heard is on the list the operator sees.</summary>
+    /// <remarks>
+    /// **IT READS THE VISIBLE COLLECTION AND ASSERTS THE ROW IS STILL ON THE
+    /// WHOLE ONE.** The second half is what keeps a filter from being confused
+    /// with a decoder that stopped: the row was heard either way, and only its
+    /// place on the table is in question.
+    /// </remarks>
     private static bool Wanted(MainWindowViewModel model, string message)
-        => !model.DigitalDecodes.Single(r => r.Message == message).IsDimmed;
+    {
+        Assert.Contains(model.DigitalDecodes, r => r.Message == message);
+
+        return model.DigitalVisibleDecodes.Any(r => r.Message == message);
+    }
 
     private void Print(MainWindowViewModel model)
     {
         foreach (var row in model.DigitalDecodes)
         {
-            _output.WriteLine(
-                (row.IsDimmed ? "  held  " : "  shown ") + row.Message);
+            var shown = model.DigitalVisibleDecodes.Contains(row);
+
+            _output.WriteLine((shown ? "  shown " : "  hidden ") + row.Message);
         }
 
         _output.WriteLine("summary : " + model.DigitalDecodedSummary);
