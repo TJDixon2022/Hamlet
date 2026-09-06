@@ -243,6 +243,69 @@ public sealed class TheDigitalTabIsTwoColumnsTests
         window.Close();
     }
 
+    /// <summary>
+    /// The decoded panel wears the decode family, and its header bar is not
+    /// filled with it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**UNIT 249 FOUND THE TWO DISAGREEING.** The markup said `Lavender`
+    /// while the sender field inside the panel is green, and §0.5's families are
+    /// amber for tuning, blue for spectrum and **green for decode**. This panel is
+    /// the decode, so the markup was the wrong one of the two.</para>
+    /// <para>**AND THE BAR IS NEVER FILLED** (HM-DEC-012). The family is text
+    /// colour and edge colour only; a column of filled header bars reads as
+    /// stripes rather than as structure, which is the thing that ruling exists to
+    /// stop and the thing a family change is most likely to undo by accident.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheDecodedPanelWearsTheDecodeFamilyAndItsBarIsNotFilled()
+    {
+        var model = new MainWindowViewModel(new AppSettings(), null)
+        {
+            OperatingMode = "Digital",
+            DigitalDecodedExpanded = true,
+        };
+
+        var window = new MainWindow
+        {
+            DataContext = model,
+            Width = 1400,
+            Height = 1200,
+        };
+
+        window.Show();
+
+        for (var i = 0; i < 5; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
+
+        var decoded = Named<CollapsiblePanel>(window, "DigitalDecodedPanel");
+
+        _output.WriteLine("decoded panel family : " + decoded.Family);
+
+        Assert.Equal(PanelFamily.Green, decoded.Family);
+
+        // **THE HEADER BUTTON IS TRANSPARENT AT REST.** It is the control the
+        // whole bar is, and a family fill would land on it.
+        var header = decoded.GetVisualDescendants()
+            .OfType<Button>()
+            .FirstOrDefault(b => b.Name == "PART_Header");
+
+        Assert.True(header is not null, "the panel has no header button");
+
+        var fill = PanelPalette.Green.FillBrush;
+
+        _output.WriteLine("header background    : " + header!.Background);
+        _output.WriteLine("the family's fill    : " + fill);
+
+        Assert.NotEqual(fill, header.Background);
+
+        // And the title carries the family instead, which is where it belongs.
+        Assert.Equal(PanelPalette.Green.TitleBrush, decoded.FamilyBrush);
+    }
+
     /// <summary>The named control, or a failure that says which name was missing.</summary>
     private static T Named<T>(Visual root, string name)
         where T : Control

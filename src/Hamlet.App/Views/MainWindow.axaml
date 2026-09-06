@@ -3095,10 +3095,24 @@
                                  instruction 037 until unit 251, so reading a
                                  slot meant scrolling away from the picture of
                                  it. -->
+                            <!-- **GREEN AND NOT LAVENDER SINCE UNIT 251 TASK
+                                 8.** Unit 249 recorded that this panel's markup
+                                 said `Lavender` while the sender field inside it
+                                 is green, and one of the two had to be wrong
+                                 against §0.5's families: amber is tuning, blue
+                                 is spectrum, **green is decode**. This panel is
+                                 the decode. The markup was the wrong one; the
+                                 sender field was right and is untouched.
+
+                                 **THE HEADER IS TEXT COLOUR ONLY** (HM-DEC-012,
+                                 §0.5) - `CollapsiblePanel` applies the family to
+                                 the title and the edge and never fills the bar,
+                                 which is what stops a column of panels reading
+                                 as stripes. Nothing about that changes here. -->
                             <ctl:CollapsiblePanel Grid.Column="1"
                                                   Margin="5,0,0,0"
                                                   x:Name="DigitalDecodedPanel"
-                                                  Family="Lavender"
+                                                  Family="Green"
                                                   Title="Decoded text"
                                                   Summary="{Binding DigitalDecodedSummary}"
                                                   IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
