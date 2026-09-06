@@ -1,13 +1,13 @@
 PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-06
 DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
-CURRENT_STEP: 1
+CURRENT_STEP: 3
 WORK_INSTRUCTION: 255 - key, transmit, unkey, with the unkey guaranteed
 HEARTBEAT: 2026-09-06 19:28:34
 STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | partial | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
-STEP: 3 | not started | the audio reaches the radio and the radio keys
+STEP: 3 | partial | the audio reaches the radio and the radio keys
 STEP: 4 | not started | the row knows where the contact stands
 STEP: 5 | not started | right-click and it goes
 STEP: 6 | not started | Tim works a station

@@ -3,7 +3,7 @@ PHASE_SET: 2026-09-06
 STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | partial | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
-STEP: 3 | not started | the audio reaches the radio and the radio keys
+STEP: 3 | partial | the audio reaches the radio and the radio keys
 STEP: 4 | not started | the row knows where the contact stands
 STEP: 5 | not started | right-click and it goes
 STEP: 6 | not started | Tim works a station
@@ -110,3 +110,18 @@ ACCOMPLISHED: Hamlet can compose a message and turn it into the audio of one FT8
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: Criteria 1, 2 and 3 are met with measurements quoted, 117 messages tried and 112 decoded back identically plus a proved condition for the 5 hashed ones, but criterion 4 lacks the radio's expected USB modulation input level and criterion 5 is measured false since the transmission is centred in the slot rather than started on the boundary.
+
+## UNIT 255 - STEP 3
+
+STEP: 3
+APPROACH: Take the half of step 3 that can be proved without a radio and without an audio device - the sequence, gate, key, play, unkey, with the unkey guaranteed on every path - against a fake CI-V transport and a fake sink, with the licence gate refusing inside the path and TransmitAbort as its first caller, opening no device and playing no sound.
+HIT: Unit 253's list of what can key a radio was incomplete as a list of routes. Five reach a keying frame, not two: Ic7300Rig.SendCwAsync builds the only 17 frame in the tree, KeyerCwSender and CwTransmitter sit above it, AutoCaller keys repeatedly from one operator start, and SetSettingAsync with CivWrites.AntennaTuner and TuneNow writes 1C 01 02 - a documented, tiered, reachable route that no line in the tree calls. The engine has no audio output at all, so the sink interface was written against nothing rather than beside something. And the fake transport could refuse to open and could hang on a read but always took a write, so the case that matters - the port dying between the key and the unkey - could not be scripted until this unit added it.
+MOVE: continue
+WHY: The unkey has to survive the paths nobody thought of, so it is guaranteed by shape rather than by discipline: one keying write, in one file, inside a try whose finally either writes 1C 00 00 or fires the abort. Watched red first with the unkey on the success path only - four of six failure modes ended with the wire at FE FE 94 E0 1C 00 01 FD and nothing after it, which is a radio left transmitting.
+DECIDED: That the abort fires even where the keying write itself threw, because a write that threw is not a write that is known not to have arrived, and two frames at a probably-dead port is the cheaper side of that bet. That a keyed radio with neither route out taken is reported as NothingReachedTheRadio rather than as safe, so the result cannot read well on a path nobody has. That PttOn arrives with its one use site rather than ahead of one, and gets no descriptor in CivWrites, because a keying write reachable through SetSettingAsync would be a way into transmit with no guaranteed way out. That the transmission starts 0.5 s after the slot boundary, recorded as a choice with its arithmetic rather than quoted as a specification, because this repository holds no pinned document for FT8 slot timing.
+LICENCE: The arbiter decision of 2026-09-06 that step 3 is split - the sequence tonight against fakes, the render device and the loopback next - together with SHACK_FACTS.md FACT-004, which rules that no radio has ever been attached to this machine, so a device opened here measures this machine's endpoint and says nothing about the radio. Section 0.2 licenses the narrowing of the gate inside this path: the Settings check is not bypassable from any send path, and this is one.
+COST: unknown
+ACCOMPLISHED: Hamlet can key a radio, hand it a transmission and come out of transmit, and it comes out of transmit in all six failure modes tried - the sink throwing, the sink returning early, the sink cancelled, the port throwing on the way out, the keying write itself throwing, and the licence gate refusing before a byte is sent. TransmitAbort has its first caller and its record is carried out rather than swallowed. The gate refuses an out-of-privilege frequency, an unknown licence class and a guard switched off, each at zero writes attempted and with the sink never touched, without changing TransmitGuard.Check or any existing caller. The transmission is placed 0.5 s into the slot, measured at both rates, which closes the open half of step 2's criterion 5. The record carries eleven fields and has no string parameter at all, so a callsign cannot reach it, and the file on disk proves it too. Nothing in src/ calls the sequence and nothing can start one on a timer.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Four of six criteria met with the wire quoted - criterion 2 at 6 of 6 failure modes, criterion 4 with the telemetry line quoted in full and no callsign in it, criterion 5 at zero bytes on all three refusals, and criterion 6 by a grep of the sequence's own body. Criteria 1 and 3 - the audio reaching the radio's USB input, and the loopback that captures and decodes it - were deliberately not attempted and are the next unit's, because FACT-004 rules no radio has been attached here and the shape of a keying path had to be right before any real device was opened. The level the radio's input expects remains deferred to the operator.
