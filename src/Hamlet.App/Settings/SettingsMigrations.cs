@@ -38,19 +38,73 @@ public static class SettingsMigrations
         {
             using var document = JsonDocument.Parse(json);
 
+            // **THE DECODED FILTER IS NOT UNDER `Operator`**, so it is carried
+            // before the profile block is looked for. It used to run after, and a
+            // file with no `Operator` object at all — which a fresh profile that
+            // has only ever touched the Digital tab is — returned early and
+            // skipped it.
+            var carried = CarryDecodedFilter(settings, document.RootElement);
+
             if (!document.RootElement.TryGetProperty("Operator", out var op)
                 || op.ValueKind != JsonValueKind.Object)
             {
-                return false;
+                return carried;
             }
 
-            return CarryLicenseClass(settings.Operator, op);
+            return CarryLicenseClass(settings.Operator, op) || carried;
         }
         catch (Exception)
         {
             // A file we cannot parse is a file the loader already handled.
             return false;
         }
+    }
+
+    /// <summary>
+    /// Unit 251 files carry one exclusive `DecodedFilter`; unit 252 wants two.
+    /// </summary>
+    /// <param name="settings">Settings as deserialized. Modified in place.</param>
+    /// <param name="root">The file's root object.</param>
+    /// <returns>True when a choice was carried forward.</returns>
+    /// <remarks>
+    /// <para>**IT ONLY FIRES ON A FILE THAT HAS NEITHER NEW KEY.** Once the
+    /// toggles have been saved even once, both keys are present and this leaves
+    /// them alone — otherwise an operator who deliberately turned `CQ only` back
+    /// off would have it turned on again by his own settings file on every launch,
+    /// which is worse than the reset it exists to prevent.</para>
+    /// <para>**`Everything` CARRIES AS BOTH OFF AND STILL COUNTS AS CARRIED.**
+    /// The two states are the same on screen, and saying so is what stops this
+    /// running a second time.</para>
+    /// </remarks>
+    private static bool CarryDecodedFilter(AppSettings settings, JsonElement root)
+    {
+        if (root.TryGetProperty(nameof(AppSettings.DecodedShowCq), out _)
+            || root.TryGetProperty(nameof(AppSettings.DecodedShowMine), out _))
+        {
+            return false;
+        }
+
+        if (!root.TryGetProperty(nameof(AppSettings.DecodedFilter), out var legacy)
+            || legacy.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        var chosen = legacy.GetString()?.Trim() ?? "";
+
+        if (string.Equals(chosen, "CqOnly", StringComparison.OrdinalIgnoreCase))
+        {
+            settings.DecodedShowCq = true;
+            return true;
+        }
+
+        if (string.Equals(chosen, "Mine", StringComparison.OrdinalIgnoreCase))
+        {
+            settings.DecodedShowMine = true;
+            return true;
+        }
+
+        return string.Equals(chosen, "Everything", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

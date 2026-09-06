@@ -1,83 +1,86 @@
 namespace Hamlet.App.ViewModels;
 
-/// <summary>Which decoded messages the operator wants to stand out.</summary>
-/// <remarks>
-/// **THREE, AND THEY ARE TIM'S** (ruling of 2026-09-05). The set is not this
-/// code's to extend.
-/// </remarks>
-public enum DecodedFilter
-{
-    /// <summary>Everything, which is where a fresh settings file starts.</summary>
-    Everything,
-
-    /// <summary>Only messages addressed to anyone.</summary>
-    CqOnly,
-
-    /// <summary>Only messages addressed to the operator.</summary>
-    Mine,
-}
-
 /// <summary>
-/// Whether a decoded row is one the current filter is interested in.
+/// Whether a decoded row is one the operator asked to see.
 /// </summary>
 /// <remarks>
-/// <para>**THE PREDICATE IS OVER THE TO-FIELD AND NOTHING ELSE.**
+/// <para>**TWO INDEPENDENT TOGGLES SINCE UNIT 252** (Tim's ruling, 2026-09-06),
+/// superseding unit 251's three exclusive choices. `CQ` and `mine` are each on or
+/// off, both can be on at once, and **`everything` is the state where neither is
+/// on** rather than a third choice beside them. An enum could not express *both*,
+/// which is the state he actually wants most evenings: the calls he could answer,
+/// plus his own traffic.</para>
+/// <para>**THE PREDICATE IS OVER THE TO-FIELD AND THE FROM-FIELD.**
 /// `DigitalDecodeRow` already splits a message into addressee, sender and
-/// payload, so this reads a field the row has rather than parsing the message a
+/// payload, so this reads fields the row has rather than parsing the message a
 /// second time. A second parser is a second answer waiting to disagree.</para>
-/// <para>**A ROW WITH NO THREE FIELDS IS NOT A MATCH AND IS NOT AN ERROR.** Free
-/// text and telemetry have no addressee, so they cannot be addressed to anyone in
-/// particular and cannot be addressed to the operator. Under `Everything` they
-/// are shown like everything else.</para>
-/// <para>**IT NEVER HIDES A ROW.** The answer here decides whether a row is drawn
-/// dimmed, and dimming is the whole of what a filter does on this panel — see
+/// <para>**A ROW WITH NO THREE FIELDS MATCHES NEITHER TOGGLE AND IS NOT AN
+/// ERROR.** Free text and telemetry have no addressee, so they cannot be
+/// addressed to anyone in particular and cannot be his. With neither toggle on
+/// they are shown like everything else.</para>
+/// <para>**AND SINCE UNIT 252 A ROW THIS SAYS NO TO IS REMOVED, NOT DIMMED**
+/// (Tim's ruling, 2026-09-06). The dimming unit 251 chose left every row on the
+/// list and moving, and the operator's problem was never that he could not see
+/// the band's texture — it is that fourteen rows a slot, four slots a minute,
+/// scrolls past faster than he can read. See
 /// `MainWindowViewModel.ApplyDecodedFilter`.</para>
 /// </remarks>
 public static class DecodedFilterRule
 {
-    /// <summary>Whether a row is one this filter wants.</summary>
-    /// <param name="filter">The filter.</param>
+    /// <summary>Whether a row is one the operator asked to see.</summary>
+    /// <param name="cq">Whether the `CQ` toggle is on.</param>
+    /// <param name="mine">Whether the `mine` toggle is on.</param>
     /// <param name="addressee">The row's to-field, which may be "".</param>
-    /// <param name="mine">The operator's callsign, or null where it is unknown.</param>
-    /// <returns>True when the row is one the filter is interested in.</returns>
+    /// <param name="sender">The row's from-field, which may be "".</param>
+    /// <param name="callsign">The operator's callsign, or null where unknown.</param>
+    /// <returns>True when the row belongs on the list.</returns>
     /// <remarks>
-    /// **AN UNKNOWN CALLSIGN MAKES `Mine` MATCH EVERYTHING, NOT NOTHING.** Tim's
-    /// ruling: `mine` is still offered where Hamlet does not know his callsign,
-    /// and it says it has nothing to match on rather than silently showing an
-    /// empty band. Returning false for every row would be exactly the silent
-    /// nothing the ruling forbids, and the operator would read a busy evening as
-    /// a dead one.
+    /// <para>**NEITHER TOGGLE ON MEANS EVERYTHING**, which is the fresh-file
+    /// state and the one this panel has always started in.</para>
+    /// <para>**BOTH ON MEANS THE UNION AND NOTHING ELSE** (Tim's ruling): every
+    /// call to anyone, plus every message to or from him. Not the intersection,
+    /// which would be his own callsign addressed to `CQ` and is empty in
+    /// practice.</para>
+    /// <para>**`mine` WITH NO CALLSIGN ON FILE MATCHES NOTHING, AND THAT IS A
+    /// CHANGE FROM UNIT 251.** While rows were dimmed, matching everything was
+    /// the safe answer — it dimmed nothing and said so. It is the wrong answer
+    /// now that the filter removes: matching everything would make `mine` do
+    /// something other than what the control says, and with `CQ` also on it would
+    /// quietly turn *both* into *everything*, which the ruling forbids in as many
+    /// words. The §0.0 hazard of an empty-looking band is carried instead by the
+    /// two things unit 252 puts on screen for exactly this: the summary's hidden
+    /// count, which is never omitted, and the amber note naming the missing
+    /// callsign and where to type it.</para>
     /// </remarks>
-    public static bool Wants(DecodedFilter filter, string? addressee, string? mine)
+    public static bool Wants(
+        bool cq, bool mine, string? addressee, string? sender, string? callsign)
     {
-        var to = addressee?.Trim() ?? "";
-
-        return filter switch
+        if (!cq && !mine)
         {
-            DecodedFilter.CqOnly => IsCallToAnyone(to),
-            DecodedFilter.Mine => !HasSomethingToMatchOn(mine)
-                                  || string.Equals(
-                                      to, mine!.Trim(),
-                                      StringComparison.OrdinalIgnoreCase),
-            _ => true,
-        };
+            return true;
+        }
+
+        return (cq && IsCallToAnyone(addressee))
+               || (mine && IsTheOperators(addressee, sender, callsign));
     }
 
     /// <summary>Whether the app knows a callsign to match `mine` against.</summary>
-    /// <param name="mine">The operator's callsign from settings.</param>
-    /// <returns>True when there is something to compare a to-field with.</returns>
-    public static bool HasSomethingToMatchOn(string? mine)
-        => !string.IsNullOrWhiteSpace(mine);
+    /// <param name="callsign">The operator's callsign from settings.</param>
+    /// <returns>True when there is something to compare a field with.</returns>
+    public static bool HasSomethingToMatchOn(string? callsign)
+        => !string.IsNullOrWhiteSpace(callsign);
 
     /// <summary>
-    /// A to-field that is a call to anyone: `CQ`, and `CQ DX` or `CQ EU`.
+    /// A to-field that is a call to anyone: `CQ`, `CQ DX`, `CQ POTA`.
     /// </summary>
     /// <param name="to">The to-field.</param>
     /// <returns>True when it is a call to anyone.</returns>
     /// <remarks>
-    /// **CQ IN ANY OF ITS FORMS**, which is the ruling's own wording.
-    /// `Ft8Vocabulary.Split` joins `CQ DX` into one addressee already, because
-    /// the call and its direction are one field in two words.
+    /// **CQ IN ANY OF ITS FORMS**, which is the ruling's own wording, and the
+    /// behaviour unit 252 was told to keep. It takes two files to do it:
+    /// `Ft8Vocabulary.Split` joins `CQ POTA W5LST EM33` into the one addressee
+    /// `CQ POTA`, because the call and its direction are one field in two words,
+    /// and this tests what that produced.
     /// </remarks>
     public static bool IsCallToAnyone(string? to)
     {
@@ -87,13 +90,93 @@ public static class DecodedFilterRule
                || text.StartsWith("CQ ", StringComparison.OrdinalIgnoreCase);
     }
 
-    /// <summary>What a filter is called on a control.</summary>
-    /// <param name="filter">The filter.</param>
-    /// <returns>The label.</returns>
-    public static string Label(DecodedFilter filter) => filter switch
+    /// <summary>Whether a row is the operator's own traffic.</summary>
+    /// <param name="addressee">The to-field.</param>
+    /// <param name="sender">The from-field.</param>
+    /// <param name="callsign">The operator's callsign, or null where unknown.</param>
+    /// <returns>True when either field is his.</returns>
+    /// <remarks>
+    /// **EITHER FIELD, BECAUSE IT IS HIS TRAFFIC AND NOT HIS INBOX** (the
+    /// instruction's own wording). A contact is two sides, and a list of what was
+    /// said to him with his own half missing is half a conversation.
+    /// </remarks>
+    public static bool IsTheOperators(
+        string? addressee, string? sender, string? callsign)
+        => HasSomethingToMatchOn(callsign)
+           && (IsSameStation(addressee, callsign)
+               || IsSameStation(sender, callsign));
+
+    /// <summary>Whether a field names the same station as a callsign.</summary>
+    /// <param name="field">The to-field or from-field.</param>
+    /// <param name="callsign">The operator's callsign.</param>
+    /// <returns>True when they are the same station.</returns>
+    /// <remarks>
+    /// <para>**COMPOUND AND PORTABLE FORMS ARE HIS.** If he is `W1ABC` then
+    /// `W1ABC/P`, `W1ABC/QRP` and `W4/W1ABC` are all him, and a filter that hides
+    /// his own portable operation while he is running it is a filter that lies
+    /// about a band he is on.</para>
+    /// <para>**THE RULE IS: STRIP THE SLASHES AND SEE IF HIS CALL IS ONE OF THE
+    /// PIECES.** FT8 puts the prefix or suffix on the other side of a `/`, so a
+    /// compound call is his base call plus one more piece and never his base call
+    /// with letters welded onto it. That is why this splits rather than matching a
+    /// prefix: a prefix test would make `W1ABCD` his, and `W1ABCD` is somebody
+    /// else entirely.</para>
+    /// <para>**AND IT WORKS BOTH WAYS ROUND.** He may type `W4/W1ABC` into
+    /// settings while operating away from home, so the stored call is compared
+    /// piece by piece too rather than being assumed bare.</para>
+    /// </remarks>
+    public static bool IsSameStation(string? field, string? callsign)
     {
-        DecodedFilter.CqOnly => "CQ only",
-        DecodedFilter.Mine => "mine",
-        _ => "everything",
-    };
+        var them = field?.Trim() ?? "";
+        var us = callsign?.Trim() ?? "";
+
+        if (them.Length == 0 || us.Length == 0)
+        {
+            return false;
+        }
+
+        if (string.Equals(them, us, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        // The longest piece of a compound call is the callsign itself; the other
+        // pieces are the prefix or the suffix that says where he is or how. So
+        // two calls are the same station when their longest pieces agree.
+        return string.Equals(
+            BaseCall(them), BaseCall(us), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>The callsign inside a compound call.</summary>
+    /// <param name="call">A call, compound or not.</param>
+    /// <returns>The longest slash-separated piece, which is the call itself.</returns>
+    /// <remarks>
+    /// **THE LONGEST PIECE AND NOT THE FIRST OR THE LAST**, because FT8 puts the
+    /// added piece on either side: `W4/W1ABC` is a prefix and `W1ABC/P` is a
+    /// suffix, and no rule about position covers both. A prefix or a suffix is
+    /// short — a region, a country, `P`, `M`, `QRP` — and the callsign is the long
+    /// one. Ties keep the first piece, which is the only case this cannot settle
+    /// and is not a case any real call produces.
+    /// </remarks>
+    private static string BaseCall(string call)
+    {
+        var pieces = call.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (pieces.Length <= 1)
+        {
+            return call;
+        }
+
+        var longest = pieces[0];
+
+        foreach (var piece in pieces)
+        {
+            if (piece.Length > longest.Length)
+            {
+                longest = piece;
+            }
+        }
+
+        return longest;
+    }
 }

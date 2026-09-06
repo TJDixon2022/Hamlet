@@ -417,17 +417,42 @@ public sealed class AppSettings
     public string? LastDigitalSubMode { get; set; }
 
     /// <summary>
-    /// Which decoded messages the operator wants to stand out — `Everything`,
-    /// `CqOnly` or `Mine`.
+    /// Unit 251's single filter choice — `Everything`, `CqOnly` or `Mine`.
+    /// **Read on load and never written since unit 252.**
     /// </summary>
     /// <remarks>
-    /// **PERSISTED WITH THE OTHER PANEL STATE** (Tim's ruling, 2026-09-05), for
-    /// the same reason the sort direction is: it is how this operator wants this
-    /// panel to look, remembered between evenings. Null or unreadable means
-    /// `Everything`, which is where the panel has always started and what it
-    /// still does on a fresh file.
+    /// **KEPT SO A FILE WRITTEN YESTERDAY DOES NOT SILENTLY RESET** (§6.1's
+    /// second exception). Unit 252 replaced the one exclusive choice with the two
+    /// independent toggles below, on Tim's ruling of 2026-09-06. Dropping this key
+    /// outright would take an operator who had left the panel on `CQ only` back to
+    /// `everything` on his next launch with nothing on screen to say why, and a
+    /// settings reset that looks like the app forgetting him is the exact failure
+    /// §6.1 was written about.
+    /// <para>`SettingsMigrations` carries it into
+    /// <see cref="DecodedShowCq"/> and <see cref="DecodedShowMine"/> when those
+    /// two are absent, which is what an unmigrated file looks like. Nothing writes
+    /// here any more, so the key ages out of a profile the first time the toggles
+    /// are saved.</para>
     /// </remarks>
     public string? DecodedFilter { get; set; }
+
+    /// <summary>Whether the decoded table is showing calls to anyone.</summary>
+    /// <remarks>
+    /// **ITS OWN KEY, BECAUSE IT IS ITS OWN TOGGLE** (Tim's ruling, 2026-09-06).
+    /// `CQ` and `mine` are independent and both can be on at once, so one stored
+    /// value could not carry them: the state he wants most evenings — the calls he
+    /// could answer plus his own traffic — has no name in an enum.
+    /// <para>Both false is `everything`, which is the fresh-file state and what
+    /// this panel has always started in.</para>
+    /// </remarks>
+    public bool DecodedShowCq { get; set; }
+
+    /// <summary>Whether the decoded table is showing the operator's own traffic.</summary>
+    /// <remarks>
+    /// **HIS TRAFFIC AND NOT HIS INBOX**: messages he sent as well as messages
+    /// addressed to him. See <see cref="ViewModels.DecodedFilterRule.IsTheOperators"/>.
+    /// </remarks>
+    public bool DecodedShowMine { get; set; }
 
     /// <summary>Whether the decoded table shows the newest slot first.</summary>
     /// <remarks>

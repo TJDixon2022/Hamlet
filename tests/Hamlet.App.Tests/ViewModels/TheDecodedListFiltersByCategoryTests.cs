@@ -6,18 +6,18 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// Work instruction 251, task 6: the decoded list filters by category, and a
-/// filter can never make the band look quiet.
+/// Work instruction 252, task 1: `CQ` and `mine` are independent toggles, both
+/// can be on at once, and `everything` is the state where neither is.
 /// </summary>
 /// <remarks>
-/// <para>**DIMMED AND NOT REMOVED, WHICH WAS THE ARBITER'S TO CHOOSE** (§12.1;
-/// Tim has not ruled it). The band's texture stays visible - an evening on 20 m
-/// is mostly other people's contacts, and a list showing only the CQs makes a
-/// busy band look like a quiet one - and rows do not jump while he is reading
-/// them at four slots a minute.</para>
-/// <para>**THE COUNTS ARE WHAT MAKE THE CHOICE SAFE.** Opacity is no better than
-/// colour for somebody who cannot see it well, so the summary says both numbers
-/// in words and a collapsed panel carries them (§0.5, §0.6).</para>
+/// <para>**THIS SUPERSEDES UNIT 251'S THREE EXCLUSIVE CHOICES** (Tim's ruling,
+/// 2026-09-06). An enum could not carry the state he wants most evenings: the
+/// calls he could answer AND his own traffic, at the same time.</para>
+/// <para>**THE PERSISTED CHOICE IS CARRIED FORWARD RATHER THAN RESET.** A
+/// settings file written by unit 251 names one exclusive filter; §6.1's second
+/// exception says a rename that changes a stored key ships with a migration and a
+/// test proving an existing profile survives it, and
+/// <see cref="AUnit251FileKeepsTheChoiceItWasLeftOn"/> is that test.</para>
 /// </remarks>
 public sealed class TheDecodedListFiltersByCategoryTests
 {
@@ -28,149 +28,163 @@ public sealed class TheDecodedListFiltersByCategoryTests
     public TheDecodedListFiltersByCategoryTests(ITestOutputHelper output)
         => _output = output;
 
-    /// <summary>`CQ only` dims everything that is not a call to anyone.</summary>
+    /// <summary>`CQ` alone keeps the calls to anyone and nothing else.</summary>
     [Fact]
-    public void CqOnlyDimsEverythingThatIsNotACallToAnyone()
+    public void CqKeepsEveryCallToAnyone()
     {
-        var model = WithRows(out var rows, mine: "KD9ABC");
+        var model = WithRows(mine: "KD9ABC");
 
-        model.DigitalFilter = DecodedFilter.CqOnly;
+        model.ShowsCqOnly = true;
 
         Print(model);
 
-        // **THE ROWS ARE ALL STILL THERE.** This is the assertion that separates
-        // dimming from removing, and it is first because it is the choice.
-        Assert.Equal(rows.Length, model.DigitalDecodes.Count);
+        Assert.True(Wanted(model, "CQ TA3MPK KM39"));
+        Assert.True(Wanted(model, "CQ DX EA3QQ JN11"));
 
-        Assert.False(Row(model, "CQ TA3MPK KM39").IsDimmed);
-        Assert.False(Row(model, "CQ DX EA3QQ JN11").IsDimmed);
-
-        Assert.True(Row(model, "KE9COB N5CH R+14").IsDimmed);
-        Assert.True(Row(model, "KD9ABC W4WTM -07").IsDimmed);
-        Assert.True(Row(model, "TNX FER QSO OM").IsDimmed);
-
-        Assert.Equal(2, model.DigitalShownCount);
-        Assert.Equal(3, model.DigitalDimmedCount);
+        Assert.False(Wanted(model, "KE9COB N5CH R+14"));
+        Assert.False(Wanted(model, "KD9ABC W4WTM -07"));
+        Assert.False(Wanted(model, "TNX FER QSO OM"));
     }
 
-    /// <summary>`mine` dims everything not addressed to the operator.</summary>
-    [Fact]
-    public void MineDimsEverythingNotAddressedToTheOperator()
-    {
-        var model = WithRows(out var rows, mine: "KD9ABC");
-
-        model.DigitalFilter = DecodedFilter.Mine;
-
-        Print(model);
-
-        Assert.Equal(rows.Length, model.DigitalDecodes.Count);
-
-        Assert.False(Row(model, "KD9ABC W4WTM -07").IsDimmed);
-
-        Assert.True(Row(model, "CQ TA3MPK KM39").IsDimmed);
-        Assert.True(Row(model, "KE9COB N5CH R+14").IsDimmed);
-
-        Assert.Equal(1, model.DigitalShownCount);
-        Assert.Equal(4, model.DigitalDimmedCount);
-
-        // Hamlet knows his callsign here, so the filter has nothing to explain.
-        Assert.False(model.HasDigitalFilterNote);
-    }
-
-    /// <summary>`everything` dims nothing, and is where a fresh file starts.</summary>
-    [Fact]
-    public void EverythingDimsNothingAndIsTheFreshDefault()
-    {
-        var model = WithRows(out var rows, mine: "KD9ABC");
-
-        Assert.Equal(DecodedFilter.Everything, model.DigitalFilter);
-        Assert.True(model.ShowsEverything);
-
-        model.DigitalFilter = DecodedFilter.CqOnly;
-        model.DigitalFilter = DecodedFilter.Everything;
-
-        Print(model);
-
-        Assert.All(model.DigitalDecodes, r => Assert.False(r.IsDimmed));
-        Assert.Equal(rows.Length, model.DigitalShownCount);
-        Assert.Equal(0, model.DigitalDimmedCount);
-    }
-
-    /// <summary>
-    /// The summary counts what is shown and what is hidden, so a filter can never
-    /// make the band look quiet.
-    /// </summary>
+    /// <summary>`mine` alone keeps his traffic, sent and received.</summary>
     /// <remarks>
-    /// **IT IS THE SUMMARY AND NOT A LINE IN THE TABLE**, because a collapsed
-    /// panel is exactly where the mistake would be made: the rows are not on
-    /// screen at all and the one sentence left has to carry it (§0.5).
+    /// **EITHER FIELD, BECAUSE IT IS HIS TRAFFIC AND NOT HIS INBOX.** A contact
+    /// is two sides, and a list of what was said to him with his own half missing
+    /// is half a conversation.
     /// </remarks>
     [Fact]
-    public void TheSummaryCountsBothHalves()
+    public void MineKeepsWhatHeSentAsWellAsWhatHeWasSent()
     {
-        var model = WithRows(out _, mine: "KD9ABC");
+        var model = WithRows(mine: "KD9ABC");
 
-        var unfiltered = model.DigitalDecodedSummary;
-
-        model.DigitalFilter = DecodedFilter.CqOnly;
-
-        var filtered = model.DigitalDecodedSummary;
-
-        _output.WriteLine("everything : " + unfiltered);
-        _output.WriteLine("CQ only    : " + filtered);
-
-        Assert.Contains("5 shown", unfiltered, StringComparison.Ordinal);
-        Assert.DoesNotContain("dimmed", unfiltered, StringComparison.Ordinal);
-
-        Assert.Contains("2 shown", filtered, StringComparison.Ordinal);
-        Assert.Contains("3 dimmed", filtered, StringComparison.Ordinal);
-
-        // And it names the filter that did it, so the number is not a mystery.
-        Assert.Contains("CQ only", filtered, StringComparison.Ordinal);
-    }
-
-    /// <summary>
-    /// With no callsign on file, `mine` says it has nothing to match on rather
-    /// than silently showing nothing.
-    /// </summary>
-    [Fact]
-    public void MineWithNoCallsignSaysSoAndDimsNothing()
-    {
-        var model = WithRows(out var rows, mine: "");
-
-        model.DigitalFilter = DecodedFilter.Mine;
+        model.ShowsMine = true;
 
         Print(model);
 
-        // **NOTHING IS DIMMED**, which is the ruling: `mine` is offered, and
-        // where there is nothing to match on it does not quietly empty the band.
-        Assert.All(model.DigitalDecodes, r => Assert.False(r.IsDimmed));
-        Assert.Equal(rows.Length, model.DigitalShownCount);
-        Assert.Equal(0, model.DigitalDimmedCount);
+        // Addressed to him.
+        Assert.True(Wanted(model, "KD9ABC W4WTM -07"));
 
-        Assert.True(model.HasDigitalFilterNote);
-        Assert.Contains(
-            "nothing to match on", model.DigitalFilterNote, StringComparison.Ordinal);
+        // Sent by him. This is the half unit 251 could not see, because its
+        // predicate read the to-field alone.
+        Assert.True(Wanted(model, "W4WTM KD9ABC R-11"));
 
-        // The choice is still available and still selected - it is not disabled
-        // and it did not silently fall back to something else.
+        Assert.False(Wanted(model, "CQ TA3MPK KM39"));
+        Assert.False(Wanted(model, "KE9COB N5CH R+14"));
+    }
+
+    /// <summary>
+    /// Both on is the union: every CQ, plus his own traffic, and nothing else.
+    /// </summary>
+    /// <remarks>
+    /// **THE STATE THE ENUM COULD NOT HOLD, AND THE REASON THIS TASK EXISTS**
+    /// (Tim's ruling, 2026-09-06: *when both are on, that is all he wants to
+    /// see*). It is the union rather than the intersection, which would be his
+    /// own callsign addressed to `CQ` and is empty on every real band.
+    /// </remarks>
+    [Fact]
+    public void BothOnShowsTheCqsAndHisOwnTrafficAndNothingElse()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        model.ShowsCqOnly = true;
+        model.ShowsMine = true;
+
+        Print(model);
+
+        Assert.True(Wanted(model, "CQ TA3MPK KM39"));
+        Assert.True(Wanted(model, "CQ DX EA3QQ JN11"));
+        Assert.True(Wanted(model, "KD9ABC W4WTM -07"));
+        Assert.True(Wanted(model, "W4WTM KD9ABC R-11"));
+
+        // Somebody else's contact, and free text with no fields at all. Neither
+        // toggle asked for either.
+        Assert.False(Wanted(model, "KE9COB N5CH R+14"));
+        Assert.False(Wanted(model, "TNX FER QSO OM"));
+
+        Assert.False(model.ShowsEverything);
+    }
+
+    /// <summary>Neither on is `everything`, and it is the fresh-file state.</summary>
+    [Fact]
+    public void NeitherToggleIsEverything()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        Assert.True(model.ShowsEverything);
+        Assert.False(model.ShowsCqOnly);
+        Assert.False(model.ShowsMine);
+
+        foreach (var row in model.DigitalDecodes)
+        {
+            Assert.True(Wanted(model, row.Message));
+        }
+    }
+
+    /// <summary>Pressing `everything` clears both toggles.</summary>
+    /// <remarks>
+    /// **IT IS NOT A THIRD CHOICE THAT COULD DISAGREE WITH THEM.** `everything`
+    /// is what neither toggle being on already is, so the button that appears to
+    /// select it clears both and `ShowsEverything` is derived rather than stored.
+    /// </remarks>
+    [Fact]
+    public void EverythingClearsBothToggles()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        model.ShowsCqOnly = true;
+        model.ShowsMine = true;
+
+        model.ShowEveryDecodeCommand.Execute(null);
+
+        Assert.False(model.ShowsCqOnly);
+        Assert.False(model.ShowsMine);
+        Assert.True(model.ShowsEverything);
+
+        // And pressing it again is a no-op rather than an error, because the
+        // control is never disabled (§0.5.1).
+        model.ShowEveryDecodeCommand.Execute(null);
+
+        Assert.True(model.ShowsEverything);
+    }
+
+    /// <summary>The two toggles do not turn each other off.</summary>
+    [Fact]
+    public void TheTogglesAreIndependentOfEachOther()
+    {
+        var model = WithRows(mine: "KD9ABC");
+
+        model.ToggleDecodedCqCommand.Execute(null);
+        Assert.True(model.ShowsCqOnly);
+        Assert.False(model.ShowsMine);
+
+        model.ToggleDecodedMineCommand.Execute(null);
+
+        // The whole point: turning `mine` on did not turn `CQ` off.
+        Assert.True(model.ShowsCqOnly);
+        Assert.True(model.ShowsMine);
+
+        model.ToggleDecodedCqCommand.Execute(null);
+
+        Assert.False(model.ShowsCqOnly);
         Assert.True(model.ShowsMine);
     }
 
-    /// <summary>The filter is remembered between evenings.</summary>
+    /// <summary>Both toggles are remembered between evenings, separately.</summary>
     [Fact]
-    public void TheFilterSurvivesTheSettingsFile()
+    public void BothTogglesSurviveTheSettingsFile()
     {
         var settings = new AppSettings();
         var model = new MainWindowViewModel(settings, null);
 
-        model.SetDecodedFilterCommand.Execute("CqOnly");
+        model.ShowsCqOnly = true;
+        model.ShowsMine = true;
 
-        Assert.Equal("CqOnly", settings.DecodedFilter);
+        Assert.True(settings.DecodedShowCq);
+        Assert.True(settings.DecodedShowMine);
 
         var path = Path.Combine(
             Path.GetTempPath(),
-            "hamlet-unit251-filter-" + Guid.NewGuid().ToString("N") + ".json");
+            "hamlet-unit252-filter-" + Guid.NewGuid().ToString("N") + ".json");
 
         try
         {
@@ -179,10 +193,13 @@ public sealed class TheDecodedListFiltersByCategoryTests
             var reloaded = SettingsStore.LoadFrom(path);
             var reopened = new MainWindowViewModel(reloaded, null);
 
-            _output.WriteLine("reopened on : " + reopened.DigitalFilter);
+            _output.WriteLine(
+                "reopened on : CQ=" + reopened.ShowsCqOnly
+                + " mine=" + reopened.ShowsMine);
 
-            Assert.Equal(DecodedFilter.CqOnly, reopened.DigitalFilter);
             Assert.True(reopened.ShowsCqOnly);
+            Assert.True(reopened.ShowsMine);
+            Assert.False(reopened.ShowsEverything);
         }
         finally
         {
@@ -190,93 +207,143 @@ public sealed class TheDecodedListFiltersByCategoryTests
         }
     }
 
-    /// <summary>A settings file naming a filter that does not exist shows everything.</summary>
-    [Fact]
-    public void AFilterThatDoesNotExistShowsEverything()
+    /// <summary>A unit 251 settings file keeps the filter it was left on.</summary>
+    /// <remarks>
+    /// **§6.1's SECOND EXCEPTION, WHICH IS THE ONE THAT BITES.** Unit 251 shipped
+    /// `DecodedFilter` as one string. Dropping it would take an operator who had
+    /// left the panel on `CQ only` back to `everything` on his next launch with
+    /// nothing on screen to say why, and a settings reset that looks like the app
+    /// forgetting him is exactly what that clause was written about.
+    /// </remarks>
+    [Theory]
+    [InlineData("CqOnly", true, false)]
+    [InlineData("Mine", false, true)]
+    [InlineData("Everything", false, false)]
+    [InlineData("OnlyTheInterestingOnes", false, false)]
+    public void AUnit251FileKeepsTheChoiceItWasLeftOn(
+        string legacy, bool cq, bool mine)
     {
-        var model = new MainWindowViewModel(
-            new AppSettings { DecodedFilter = "OnlyTheInterestingOnes" }, null);
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            "hamlet-unit251-legacy-" + Guid.NewGuid().ToString("N") + ".json");
 
-        Assert.Equal(DecodedFilter.Everything, model.DigitalFilter);
+        try
+        {
+            // Written the way unit 251 wrote it: the one key, and neither of the
+            // two this unit reads.
+            File.WriteAllText(
+                path,
+                "{ \"DecodedFilter\": \"" + legacy + "\" }");
 
-        // And a command parameter it cannot read changes nothing, rather than
-        // resetting the filter behind the operator's back.
-        model.DigitalFilter = DecodedFilter.Mine;
-        model.SetDecodedFilterCommand.Execute("NotAFilter");
+            var reloaded = SettingsStore.LoadFrom(path);
+            var reopened = new MainWindowViewModel(reloaded, null);
 
-        Assert.Equal(DecodedFilter.Mine, model.DigitalFilter);
+            _output.WriteLine(
+                legacy + " -> CQ=" + reopened.ShowsCqOnly
+                + " mine=" + reopened.ShowsMine);
+
+            Assert.Equal(cq, reopened.ShowsCqOnly);
+            Assert.Equal(mine, reopened.ShowsMine);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
     /// <summary>
-    /// A row that arrives while a filter is on is dimmed before it is drawn.
+    /// A file that already carries the two toggles is not overwritten by the old
+    /// key.
     /// </summary>
     /// <remarks>
-    /// **OTHERWISE IT FLASHES.** A row put in at full strength and dimmed a
-    /// moment later catches the eye at exactly the moment the movement already
-    /// has, which is the opposite of what the filter is for.
+    /// **OTHERWISE TURNING A FILTER OFF WOULD NOT STICK.** An operator who
+    /// deliberately turned `CQ` back off would have his own settings file turn it
+    /// on again at every launch, which is worse than the reset the migration
+    /// exists to prevent.
     /// </remarks>
     [Fact]
-    public void ARowArrivingUnderAFilterIsDimmedBeforeItIsDrawn()
+    public void TheMigrationDoesNotFightAFileThatAlreadyHasTheToggles()
     {
-        var model = WithRows(out _, mine: "KD9ABC");
+        var path = Path.Combine(
+            Path.GetTempPath(),
+            "hamlet-unit252-nofight-" + Guid.NewGuid().ToString("N") + ".json");
 
-        model.DigitalFilter = DecodedFilter.CqOnly;
+        try
+        {
+            File.WriteAllText(
+                path,
+                "{ \"DecodedFilter\": \"CqOnly\", "
+                + "\"DecodedShowCq\": false, \"DecodedShowMine\": false }");
 
-        var arriving = model.AddDecodeRowForTests(
-            "214150", "-13", "0.3", "1620", "W1ABC K4XYZ RR73");
+            var reopened = new MainWindowViewModel(SettingsStore.LoadFrom(path), null);
 
-        Assert.True(arriving.IsDimmed);
-
-        var alsoArriving = model.AddDecodeRowForTests(
-            "214150", "-08", "0.2", "980", "CQ K4XYZ FM18");
-
-        Assert.False(alsoArriving.IsDimmed);
+            Assert.False(reopened.ShowsCqOnly);
+            Assert.True(reopened.ShowsEverything);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
     }
 
-    /// <summary>The predicate itself, over the shapes a to-field takes.</summary>
+    /// <summary>The predicate itself, over the shapes the two fields take.</summary>
+    /// <remarks>
+    /// **THE `CQ POTA` ROW IS THE ONE THAT MATTERS**, and it takes two files to
+    /// answer: `Ft8Vocabulary.Split` joins `CQ POTA W5LST EM33` into the single
+    /// addressee `CQ POTA`, and `IsCallToAnyone` tests what that produced. The
+    /// instruction requires that behaviour to survive this unit and it does.
+    /// </remarks>
     [Theory]
-    [InlineData(DecodedFilter.CqOnly, "CQ", true)]
-    [InlineData(DecodedFilter.CqOnly, "CQ DX", true)]
-    [InlineData(DecodedFilter.CqOnly, "CQ EU", true)]
-    [InlineData(DecodedFilter.CqOnly, "cq", true)]
-    [InlineData(DecodedFilter.CqOnly, "KD9ABC", false)]
-    [InlineData(DecodedFilter.CqOnly, "", false)]
-    [InlineData(DecodedFilter.Mine, "KD9ABC", true)]
-    [InlineData(DecodedFilter.Mine, "kd9abc", true)]
-    [InlineData(DecodedFilter.Mine, "CQ", false)]
-    [InlineData(DecodedFilter.Mine, "", false)]
-    [InlineData(DecodedFilter.Everything, "", true)]
-    [InlineData(DecodedFilter.Everything, "CQ", true)]
-    [InlineData(DecodedFilter.Everything, "KE9COB", true)]
-    public void ThePredicateReadsTheToField(
-        DecodedFilter filter, string to, bool wanted)
+    // CQ alone.
+    [InlineData(true, false, "CQ", "TA3MPK", true)]
+    [InlineData(true, false, "CQ DX", "EA3QQ", true)]
+    [InlineData(true, false, "CQ POTA", "W5LST", true)]
+    [InlineData(true, false, "cq", "TA3MPK", true)]
+    [InlineData(true, false, "KD9ABC", "W4WTM", false)]
+    [InlineData(true, false, "", "", false)]
+    // mine alone, either field.
+    [InlineData(false, true, "KD9ABC", "W4WTM", true)]
+    [InlineData(false, true, "W4WTM", "KD9ABC", true)]
+    [InlineData(false, true, "kd9abc", "W4WTM", true)]
+    [InlineData(false, true, "CQ", "TA3MPK", false)]
+    [InlineData(false, true, "KE9COB", "N5CH", false)]
+    [InlineData(false, true, "", "", false)]
+    // Both, which is the union.
+    [InlineData(true, true, "CQ", "TA3MPK", true)]
+    [InlineData(true, true, "KD9ABC", "W4WTM", true)]
+    [InlineData(true, true, "KE9COB", "N5CH", false)]
+    // Neither, which is everything.
+    [InlineData(false, false, "", "", true)]
+    [InlineData(false, false, "KE9COB", "N5CH", true)]
+    public void ThePredicateReadsBothFields(
+        bool cq, bool mine, string to, string from, bool wanted)
     {
-        var got = DecodedFilterRule.Wants(filter, to, "KD9ABC");
+        var got = DecodedFilterRule.Wants(cq, mine, to, from, "KD9ABC");
 
         _output.WriteLine(
-            filter + " / [" + to + "] -> " + (got ? "shown" : "dimmed"));
+            "CQ=" + cq + " mine=" + mine
+            + " / [" + to + "] [" + from + "] -> "
+            + (got ? "shown" : "held back"));
 
         Assert.Equal(wanted, got);
     }
 
-    private static DigitalDecodeRow Row(MainWindowViewModel model, string message)
-        => model.DigitalDecodes.Single(r => r.Message == message);
+    private static bool Wanted(MainWindowViewModel model, string message)
+        => !model.DigitalDecodes.Single(r => r.Message == message).IsDimmed;
 
     private void Print(MainWindowViewModel model)
     {
         foreach (var row in model.DigitalDecodes)
         {
             _output.WriteLine(
-                (row.IsDimmed ? "  dim  " : "  show ") + row.Message
-                + "   opacity " + row.RowOpacity.ToString("0.00"));
+                (row.IsDimmed ? "  held  " : "  shown ") + row.Message);
         }
 
         _output.WriteLine("summary : " + model.DigitalDecodedSummary);
     }
 
-    /// <summary>Five rows covering every shape the predicate has to read.</summary>
-    private static MainWindowViewModel WithRows(
-        out string[] messages, string mine)
+    /// <summary>Six rows covering every shape the predicate has to read.</summary>
+    private static MainWindowViewModel WithRows(string mine)
     {
         var settings = new AppSettings();
 
@@ -284,25 +351,26 @@ public sealed class TheDecodedListFiltersByCategoryTests
 
         var model = new MainWindowViewModel(settings, null);
 
-        messages = new[]
+        var rows = new[]
         {
             // A call to anyone, and a call to anyone with a direction on it.
-            "CQ TA3MPK KM39",
-            "CQ DX EA3QQ JN11",
+            ("CQ TA3MPK KM39", "-11"),
+            ("CQ DX EA3QQ JN11", "-17"),
 
-            // Two other stations, which is neither a CQ nor his.
-            "KE9COB N5CH R+14",
+            // Two other stations: neither a CQ nor his.
+            ("KE9COB N5CH R+14", "-04"),
 
-            // Addressed to the operator.
-            "KD9ABC W4WTM -07",
+            // Addressed to him, and sent by him.
+            ("KD9ABC W4WTM -07", "-09"),
+            ("W4WTM KD9ABC R-11", "-13"),
 
             // Free text: no three fields at all, so no addressee to match.
-            "TNX FER QSO OM",
+            ("TNX FER QSO OM", "-06"),
         };
 
-        foreach (var message in messages)
+        foreach (var (message, snr) in rows)
         {
-            model.AddDecodeRowForTests("214135", "-12", "0.4", "1240", message);
+            model.AddDecodeRowForTests("214135", snr, "0.2", "1240", message);
         }
 
         return model;

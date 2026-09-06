@@ -1186,59 +1186,108 @@ public partial class MainWindowViewModel : ObservableObject
 
     private bool _digitalNewestFirst = true;
 
-    private DecodedFilter _digitalFilter;
+    private bool _digitalShowCq;
 
-    /// <summary>Which decoded messages the operator wants to stand out.</summary>
+    private bool _digitalShowMine;
+
+    /// <summary>Whether the table is showing calls to anyone.</summary>
     /// <remarks>
-    /// **CQ ONLY, MINE, OR EVERYTHING** (Tim's ruling, 2026-09-05). Persisted
-    /// beside the sort direction and the panel's expand state.
+    /// **AN INDEPENDENT TOGGLE SINCE UNIT 252** (Tim's ruling, 2026-09-06),
+    /// superseding unit 251's three exclusive buttons. Persisted beside the sort
+    /// direction and the panel's expand state.
     /// </remarks>
-    public DecodedFilter DigitalFilter
+    public bool ShowsCqOnly
     {
-        get => _digitalFilter;
+        get => _digitalShowCq;
         set
         {
-            if (_digitalFilter == value)
+            if (_digitalShowCq == value)
             {
                 return;
             }
 
-            _digitalFilter = value;
-            _settings.DecodedFilter = value.ToString();
+            _digitalShowCq = value;
+            _settings.DecodedShowCq = value;
             SettingsStore.Save(_settings);
 
             ApplyDecodedFilter();
 
             OnPropertyChanged();
             OnPropertyChanged(nameof(ShowsEverything));
-            OnPropertyChanged(nameof(ShowsCqOnly));
-            OnPropertyChanged(nameof(ShowsMine));
         }
     }
 
-    /// <summary>True while the filter is showing everything.</summary>
-    public bool ShowsEverything => DigitalFilter == DecodedFilter.Everything;
-
-    /// <summary>True while the filter is picking out calls to anyone.</summary>
-    public bool ShowsCqOnly => DigitalFilter == DecodedFilter.CqOnly;
-
-    /// <summary>True while the filter is picking out messages to the operator.</summary>
-    public bool ShowsMine => DigitalFilter == DecodedFilter.Mine;
-
-    /// <summary>Choose which decoded messages stand out.</summary>
-    /// <param name="which">`Everything`, `CqOnly` or `Mine`.</param>
+    /// <summary>Whether the table is showing the operator's own traffic.</summary>
     /// <remarks>
-    /// A string parameter because it comes off a `CommandParameter` in the
-    /// markup. A value the enum does not know is ignored rather than reset to a
-    /// default, so a typo in the markup cannot silently change the filter.
+    /// **HIS TRAFFIC AND NOT HIS INBOX**: what he sent as well as what was
+    /// addressed to him, and his portable and compound forms with it. See
+    /// <see cref="DecodedFilterRule.IsTheOperators"/>.
+    /// </remarks>
+    public bool ShowsMine
+    {
+        get => _digitalShowMine;
+        set
+        {
+            if (_digitalShowMine == value)
+            {
+                return;
+            }
+
+            _digitalShowMine = value;
+            _settings.DecodedShowMine = value;
+            SettingsStore.Save(_settings);
+
+            ApplyDecodedFilter();
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ShowsEverything));
+        }
+    }
+
+    /// <summary>True while nothing is filtered.</summary>
+    /// <remarks>
+    /// **`everything` IS A STATE AND NOT A THIRD CHOICE** (Tim's ruling,
+    /// 2026-09-06). It is what neither toggle being on *is*, so it cannot
+    /// disagree with them, and the button that appears to select it clears both.
+    /// </remarks>
+    public bool ShowsEverything => !ShowsCqOnly && !ShowsMine;
+
+    /// <summary>What the active toggles are called, for the summary line.</summary>
+    /// <remarks>
+    /// **BOTH NAMES WHEN BOTH ARE ON**, because the operator has to be able to
+    /// read back off the summary which of the two is holding rows away — a line
+    /// saying rows were held back *by the filter* names nothing he can turn off.
+    /// </remarks>
+    private string FilterLabel()
+    {
+        if (ShowsCqOnly && ShowsMine)
+        {
+            return "CQ and mine";
+        }
+
+        return ShowsCqOnly ? "CQ" : ShowsMine ? "mine" : "everything";
+    }
+
+    /// <summary>Turn the calls-to-anyone toggle over.</summary>
+    [RelayCommand]
+    private void ToggleDecodedCq() => ShowsCqOnly = !ShowsCqOnly;
+
+    /// <summary>Turn the own-traffic toggle over.</summary>
+    [RelayCommand]
+    private void ToggleDecodedMine() => ShowsMine = !ShowsMine;
+
+    /// <summary>Stop filtering, by clearing both toggles.</summary>
+    /// <remarks>
+    /// **PRESSING IT WHILE IT IS ALREADY THE STATE DOES NOTHING**, rather than
+    /// being disabled. A control that goes grey when the panel is doing the
+    /// ordinary thing teaches the operator that this strip greys out, and grey is
+    /// reserved for what genuinely cannot be used (§0.5.1, HM-DEC-087).
     /// </remarks>
     [RelayCommand]
-    private void SetDecodedFilter(string? which)
+    private void ShowEveryDecode()
     {
-        if (Enum.TryParse<DecodedFilter>(which, ignoreCase: true, out var parsed))
-        {
-            DigitalFilter = parsed;
-        }
+        ShowsCqOnly = false;
+        ShowsMine = false;
     }
 
     /// <summary>How many rows the filter wants.</summary>
@@ -1251,18 +1300,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// What the filter has to say for itself, or "" when it has nothing to add.
     /// </summary>
     /// <remarks>
-    /// **THE ONE CASE THAT MUST NOT BE SILENT** (Tim's ruling, 2026-09-05).
+    /// <para>**THE ONE CASE THAT MUST NOT BE SILENT** (Tim's ruling, 2026-09-05).
     /// `mine` is offered whether or not Hamlet knows the operator's callsign, and
-    /// where it does not, the panel says so. The alternative — dimming every row
-    /// on a busy band and saying nothing — would read as the band having gone
-    /// quiet, which is §0.0 broken by omission.
+    /// where it does not, the panel says so. The alternative — holding every row
+    /// back on a busy band and saying nothing — would read as the band having
+    /// gone quiet, which is §0.0 broken by omission.</para>
+    /// <para>**AND IT SAYS MORE SINCE UNIT 252, BECAUSE THE FILTER NOW REMOVES.**
+    /// While rows were dimmed, `mine` with no callsign dimmed nothing and the
+    /// note said so. It holds everything back now, which is a bigger thing to
+    /// happen without explanation, so the note says that is what is happening and
+    /// names the screen where it is fixed.</para>
     /// </remarks>
     public string DigitalFilterNote
-        => DigitalFilter == DecodedFilter.Mine
+        => ShowsMine
            && !DecodedFilterRule.HasSomethingToMatchOn(_settings.Operator.Callsign)
             ? "Hamlet does not know your callsign yet, so \"mine\" has nothing to "
-              + "match on and nothing is dimmed. Put it in Settings and this "
-              + "starts picking out the messages addressed to you."
+              + "match on and it is holding every message back. Put your callsign "
+              + "in Settings, under Operator, and this starts picking out the "
+              + "contacts you are part of."
             : "";
 
     /// <summary>True while the filter has something to say.</summary>
@@ -1294,7 +1349,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var row in DigitalDecodes)
         {
-            var wanted = DecodedFilterRule.Wants(DigitalFilter, row.Addressee, mine);
+            var wanted = DecodedFilterRule.Wants(
+                ShowsCqOnly, ShowsMine, row.Addressee, row.Sender, mine);
 
             row.IsDimmed = !wanted;
 
@@ -1411,7 +1467,7 @@ public partial class MainWindowViewModel : ObservableObject
                 // because a collapsed panel is exactly where the mistake would
                 // be made (§0.5).
                 var hidden = DigitalDimmedCount > 0
-                    ? $"{DigitalDimmedCount} dimmed by {DecodedFilterRule.Label(DigitalFilter)} · "
+                    ? $"{DigitalDimmedCount} dimmed by {FilterLabel()} · "
                     : "";
 
                 var count = DigitalDimmedCount > 0
@@ -2930,13 +2986,14 @@ public partial class MainWindowViewModel : ObservableObject
         _digitalDecodedExpanded = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
         _digitalNewestFirst = settings.DecodedNewestFirst;
 
-        // **AN UNREADABLE VALUE IS `Everything`**, which is where this panel has
-        // always started. A filter restored from a settings file it cannot parse
-        // must not be one that dims rows for a reason nobody can see.
-        _digitalFilter = Enum.TryParse<DecodedFilter>(
-            settings.DecodedFilter, ignoreCase: true, out var savedFilter)
-            ? savedFilter
-            : DecodedFilter.Everything;
+        // **TWO FLAGS SINCE UNIT 252, AND A MISSING ONE IS OFF**, which is
+        // `everything` and is where this panel has always started. A settings
+        // file written by unit 251 carries one exclusive choice instead, and
+        // `SettingsMigrations` has already turned it into these two by the time
+        // this reads them, so an operator who left the panel on `CQ only` finds
+        // it on `CQ` rather than back at everything.
+        _digitalShowCq = settings.DecodedShowCq;
+        _digitalShowMine = settings.DecodedShowMine;
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
@@ -7584,7 +7641,8 @@ public partial class MainWindowViewModel : ObservableObject
     private DigitalDecodeRow PlaceRow(DigitalDecodeRow row)
     {
         row.IsDimmed = !DecodedFilterRule.Wants(
-            DigitalFilter, row.Addressee, _settings.Operator.Callsign);
+            ShowsCqOnly, ShowsMine, row.Addressee, row.Sender,
+            _settings.Operator.Callsign);
 
         _digitalArrivals.Add(row);
         DigitalDecodes.Insert(InsertAt(row), row);

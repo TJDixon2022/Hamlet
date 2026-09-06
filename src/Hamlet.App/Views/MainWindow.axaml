@@ -3133,13 +3133,22 @@
                                     <StackPanel Orientation="Horizontal" Spacing="6"
                                                 IsVisible="{Binding HasDigitalDecodes}">
 
-                                        <!-- **THREE CHOICES, ALL THREE ON
-                                             SCREEN** (Tim's ruling, 2026-09-05).
-                                             A single cycling button like the
-                                             order toggle beside it works for two
-                                             states and stops working at three -
-                                             you cannot see what the other two
-                                             are without pressing through them.
+                                        <!-- **TWO TOGGLES AND A WAY BACK, SINCE
+                                             UNIT 252** (Tim's ruling,
+                                             2026-09-06). Unit 251 built these as
+                                             three exclusive choices, which could
+                                             not express the state he wants most
+                                             evenings: the calls he could answer
+                                             AND his own traffic, both at once.
+
+                                             **`everything` IS NOT A THIRD
+                                             CHOICE.** It is what neither toggle
+                                             being on already is, so it cannot
+                                             disagree with them - it lights when
+                                             both are off and pressing it clears
+                                             both. That is why it binds a
+                                             different command from the other
+                                             two.
 
                                              **THE PICKED ONE DIFFERS BY MORE
                                              THAN COLOUR** (§0.6): it carries a
@@ -3151,35 +3160,32 @@
                                              (§0.5.1, HM-DEC-087). Grey is
                                              reserved for what cannot be used;
                                              this can be used and answers by
-                                             saying what it has to match on,
-                                             which is more use than a dead
-                                             control. -->
+                                             saying what it has to match on and
+                                             where to fix it, which is more use
+                                             than a dead control. -->
                                         <Button x:Name="DigitalFilterEverything"
                                                 Classes="hm-chip"
                                                 Classes.hm-picked="{Binding ShowsEverything}"
                                                 Content="everything"
-                                                ToolTip.Tip="Every message that decoded, at full strength."
+                                                ToolTip.Tip="Every message that decoded, with nothing held back."
                                                 FontSize="11"
-                                                Command="{Binding SetDecodedFilterCommand}"
-                                                CommandParameter="Everything" />
+                                                Command="{Binding ShowEveryDecodeCommand}" />
 
                                         <Button x:Name="DigitalFilterCq"
                                                 Classes="hm-chip"
                                                 Classes.hm-picked="{Binding ShowsCqOnly}"
-                                                Content="CQ only"
-                                                ToolTip.Tip="Picks out the messages addressed to anyone. The rest stay in the list, drawn faint, so the band still looks as busy as it is."
+                                                Content="CQ"
+                                                ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
                                                 FontSize="11"
-                                                Command="{Binding SetDecodedFilterCommand}"
-                                                CommandParameter="CqOnly" />
+                                                Command="{Binding ToggleDecodedCqCommand}" />
 
                                         <Button x:Name="DigitalFilterMine"
                                                 Classes="hm-chip"
                                                 Classes.hm-picked="{Binding ShowsMine}"
                                                 Content="mine"
-                                                ToolTip.Tip="Picks out the messages addressed to your own callsign. The rest stay in the list, drawn faint."
+                                                ToolTip.Tip="Keeps the messages you are in, sent or received, and your portable and compound calls with them. Turn it on beside CQ to watch for answers while you look for someone to answer."
                                                 FontSize="11"
-                                                Command="{Binding SetDecodedFilterCommand}"
-                                                CommandParameter="Mine" />
+                                                Command="{Binding ToggleDecodedMineCommand}" />
 
                                         <Border Width="1" Margin="4,2"
                                                 Background="{StaticResource HmSlateEdgeBrush}" />
