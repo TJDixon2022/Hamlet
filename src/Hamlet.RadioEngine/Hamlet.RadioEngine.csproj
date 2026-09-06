@@ -64,6 +64,15 @@
     <EmbeddedResource Include="..\..\data\glossary.json" LogicalName="Hamlet.RadioEngine.Data.glossary.json" />
   </ItemGroup>
 
+  <!-- The DXCC prefix table lives in /data with the other cited facts. It is
+       GENERATED from tools/dxcc/arrl-dxcc-current.txt by
+       tools/dxcc/expand-prefixes.py rather than written by hand, so the
+       derivation is reproducible and the source is named on the face of the
+       file (work instruction 252 task 3). -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\callsigns\dxcc-prefixes.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-prefixes.json" />
+  </ItemGroup>
+
   <!-- The telemetry line format is an internal detail with a public promise
        attached (HM-DEC-018), so the schema test reaches it directly rather
        than the format being widened to public just to be provable. -->
