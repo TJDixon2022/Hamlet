@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 253 - the dummy load is gone, and the abort is watched to fire
 BALL: code
 NEXT_PASTE: none
-RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-06T18:23:10-04:00
-NOTE: Gate verified against the tree - SHACK_FACTS.md and CwProbabilisticDecoder.cs present, neither foreign solution. Reading CLAUDE.md 0.2 as it stands before swapping in the delivered replacement text, and checking that text carries the abort and the one-click rule verbatim.
+RULES_AT: HM-DEC-156 (2026-09-06)
+UPDATED: 2026-09-06T18:36:40-04:00
+NOTE: Task 1 pushed - 0.2 swapped for the delivered text, HM-DEC-156 written in Tim's name. Sweeping the rest of the tree now: seven more lines in CLAUDE.md corrected including the 13.4 hazard line, ONBOARDING and ABANDONED_WIDGETS rewritten, three spent briefs bannered rather than edited. Four archived hits under docs/phase-onair* and docs/phase-sensitivity* left alone.
 
 ---
 

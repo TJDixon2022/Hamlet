@@ -1,5 +1,11 @@
 **PROJECT: Hamlet**
 
+> **SPENT WORK ORDER, and its premise is withdrawn — HM-DEC-156, 2026-09-06.**
+> HM-DEC-008 and HM-DEC-098 are withdrawn in full, and §0.2 as it now reads
+> permits one transmission per operator action, which is not what an auto-CQ
+> cycle is. **Read for history; do not execute, and do not carry its conditions
+> into a new order.**
+
 # Work order: auto-CQ, into a dummy load
 
 Six phases. Reported per §12.2: four sections, **written to `OUTPUT.md` at the

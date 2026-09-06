@@ -201,8 +201,10 @@ transmits."** Auto-CQ as scoped in `BATCH_BRIEF.md` session 3 is automated
 repeating transmission. The mutual-exclusion ruling satisfies the second
 sentence; the first sentence it does not satisfy.
 
-HM-DEC-008 also stands: **development transmit testing goes into a dummy load,
-not an antenna, until the feature is proven.**
+**Withdrawn 2026-09-06 by HM-DEC-156.** The clause that stood here required
+development transmit testing to go somewhere other than an antenna until the
+feature was proven; HM-DEC-008 and HM-DEC-098 are withdrawn in full and it is
+not to be reintroduced. Read the original in `DECISIONS.md`.
 
 **Session 3 does not start until Tim rules on both.** Raise it once, at the top
 of the next report, and do not build toward it in the meantime.

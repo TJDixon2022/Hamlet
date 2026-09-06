@@ -1,5 +1,15 @@
 **PROJECT: Hamlet**
 
+> **WITHDRAWN 2026-09-06 — HM-DEC-156. Do not run this card.**
+> It was written as the evidence HM-DEC-098 made the precondition for putting an
+> automatic cycle on an antenna. **HM-DEC-008 and HM-DEC-098 are withdrawn in
+> full**: Tim operates a licensed station on an antenna and Hamlet transmits on
+> the air, so the precondition this card satisfies no longer exists. It is left
+> here unedited below as a record of what was asked for, and **nothing in it is
+> to be proposed, scheduled, or treated as a step still owing.** What replaces
+> it is §0.2 as it now reads — the abort, one operator action per transmission,
+> and the licence gate.
+
 # Bench card — the dummy load evening
 
 Not a work order. A checklist for the operator, at the radio, with a dummy load

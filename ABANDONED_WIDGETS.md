@@ -36,7 +36,7 @@ with the description in hand.
 | **Neighborhood map** | Blue | What lives where across the band, so you can see what you are tuning into before you get there. | 560x200 |
 | **Dial tape** | Amber | Fine tuning by dragging, with the stations somebody has reported marked along the top. | 560x180 |
 | **Scanner** | Blue | Hamlet works down the band for you, stopping where somebody is actually calling rather than wherever there is a tone. | 460x400 |
-| **Call CQ on a cycle** | Green | Hamlet does the calling and listens between rounds, and it stops the moment somebody answers. Into a dummy load while this is being proved. | 460x520 |
+| **Call CQ on a cycle** | Green | Hamlet does the calling and listens between rounds, and it stops the moment somebody answers. **Cut across by §0.2 as it now reads — one operator action, one transmission** (HM-DEC-156). | 460x520 |
 | **Waterfall** | Blue | The radio's own picture of the band, with signals as bright marks moving down the screen. | 560x320 |
 | **I can hear it and Hamlet can't** | Blue | One button for when the radio is clearly hearing something and the decoder is not. | 420x300 |
 | **Field guide** | Blue | What each mode looks and sounds like, so an unfamiliar noise stops being a mystery. | 420x400 |
@@ -134,18 +134,21 @@ markup.**
 **Both carry the interlocks their rulings demand, and both interlocks are live
 right now with nothing on screen to trip them.** The scanner refuses to start
 before rig state is populated and restores the starting frequency by any exit
-route (§0.2.1, HM-DEC-107); the calling cycle is dummy load only until §0.2's
-first sentence is amended (HM-DEC-098). **They also ask each other**: the scanner
+route (§0.2.1, HM-DEC-107); the calling cycle's own gating clause was HM-DEC-098,
+**withdrawn in full by HM-DEC-156 on 2026-09-06 along with HM-DEC-008**, and what
+now stands against it is §0.2's rule that Hamlet transmits once per operator
+click and for no other reason. **They also ask each other**: the scanner
 will not tune while the cycle is transmitting and the cycle will not key while
 the scanner is moving, wired as two predicates at
 `MainWindowViewModel.cs:2054-2065` so that neither holds a stale copy of the
 other's state.
 
 **The calling cycle is the one to be careful about.** It is the only thing in
-this application that transmits without a hand on it, and it is the one feature
-whose ruling says the interlocks are watched firing into a dummy load before it
-reaches an antenna. **A surface for it is a separate decision from a surface for
-the scanner**, and neither follows from the send button coming back.
+this application that transmits without a hand on it, and **§0.2 as it now reads
+forbids exactly that** — one operator action, one transmission, never on a timer.
+A surface for it is not a decision this repository is currently in a position to
+take. **A surface for it is a separate decision from a surface for the scanner**,
+and neither follows from the send button coming back.
 
 ### Three do real work whose only output was the deleted picture
 
