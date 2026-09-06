@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 257 - combining gets the closing table's own rungs and both placements
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-05T20:39:55-04:00
-NOTE: RUN 5 of 6 RETURNED PASSED in 149.4 s. At -20.0 dB at the cell centre combining off reads 0 and 1 of 306, matching section 3.2, and combining ON reads 270 of 306 with 262 of them trials no single slot could reach. Zero wrong, 483 combined decodes all verified. That brackets combining's crossing off the grid between -20 and -21 dB, which is a crossing this project has never had. STARTING RUN 6 of 6 - ThePlacementPanelAtCellCentreAtMinus19, foreground, 480 s timeout
+UPDATED: 2026-09-05T20:47:38-04:00
+NOTE: RUN 7 RETURNED PASSED in 144.7 s. -22.0 dB on grid, zero jitter: summed x4 reads 239 of 306 at 78.1 per cent, still ABOVE 50, so the -23 dB rung at the stated cap is licensed and is spent next. Zero wrong again, 385 combined decodes all verified. One pricing miss to report: I priced this call at 45 s from unit 256's jittered wall clock and it took 144.7 s, because at zero jitter -22 dB still has real decoding to do - a miss in the safe direction, under the 300 s split line. STARTING RUN 8 - TheDownwardExtensionOnGridAtMinus23, the call likeliest tonight to go red against HM-OPEN-082, foreground, 480 s timeout
 
 ---
 

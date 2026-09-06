@@ -1,0 +1,74 @@
+UNIT 257, THE PLACEMENT PANEL AT -23.0 dB, ON GRID, 306 trials, 3 rows.
+LADDER: Ft8LadderHarness.RunRepeats - FOUR slots a trial carrying the same message. THIS IS NOT THE CLOSING TABLE'S LADDER AND NO ROW HERE IS COMPARABLE WITH ONE THERE, which gives each trial ONE slot. Unit 255 section 5.0.
+JITTER: ZERO on both axes - frequencyJitterHz 0.0 and offsetJitterSamples 0. Ft8LadderHarness.cs:573-574 makes frequencyHz and offsetSamples the origin of hearing r=0 and every later hearing step from it, so AT ZERO JITTER EVERY HEARING OF EVERY TRIAL SITS AT EXACTLY THE PLACEMENT NAMED BELOW. That is what makes the placement label true rather than approximate.
+PLACEMENT: on grid - 1000.00 Hz, 5760 samples in. On grid is Ft8LadderHarness.DefaultFrequencyHz 1000.00 Hz and DefaultOffsetSamples 5760; the cell centre adds +1.56 Hz and +480 samples, unit 248's two constants from Ft8Unit255ClosingLadderTests:62 and :64. At 3.125 Hz a waterfall bin, +1.56 Hz is half a bin - the furthest it is possible to be from a bin centre.
+NOT UNIT 256's PANEL. That one is jittered 2.00 Hz and 480 samples between hearings and is therefore a MIXED-placement instrument; it stands unchanged at docs/unit255-closing-measurement.md section 5.4 and is NOT re-run or corrected here. This panel models a station whose four transmissions land in the SAME place off the grid - a stable oscillator over two minutes - and it does NOT model drift.
+COMBINING: new Ft8DeepCombineSettings(historyDepth: 3, accumulationDepth: 3) - three remembered slots, and up to three of them in ONE sum.
+STACKED: combinedOsd Ft8DeepOsdSettings.Default and combinedFineSync Ft8DeepFineSyncSettings.Default - the two stages Ft8Reception.cs:460 builds, on the combined column's inner decoder.
+THE CAVEAT, UNIT 254'S OWN, AND IT TRAVELS WITH EVERY FIGURE BELOW: RunRepeats scores the combined column on the union over the trial's slots, so A FOUR-REPEAT COLUMN GETS FOUR SINGLE-SLOT ATTEMPTS AS WELL AS DEEPER SUMS. OnlyCombined is the honest statement of what combining added and it is printed below.
+NOTHING IS ASSERTED ABOUT ANY RATE. Saturation at these rungs is a RESULT and is reported as one. The two assertions are zero wrong on every row, and every combined decode verified against the ladder's own ground truth.
+
+decoder      requested  delivered  trials  DECODED  MISSED  WRONG    rate   lo 95   hi 95    wall s    ms/tr
+single slot      -23.0    -22.999     306        0     306      0     0.0     0.0     1.2     20.1     65.7
+single + OSD     -23.0    -22.999     306        0     306      0     0.0     0.0     1.2     21.9     71.6
+summed x4        -23.0    -23.000     306       29     277      1     9.5     6.7    13.3     90.8    296.7
+
+  DECODED + MISSED = trials. WRONG is not part of that partition: a slot can
+  return the right message and a wrong one at once, and both are true.
+  lo 95 / hi 95 are the WILSON score interval on the decode rate.
+
+  single slot at -23.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+  single + OSD at -23.0 dB: NO WRONG DECODES. 0 messages returned that were not sent.
+  summed x4 at -23.0 dB: 1 WRONG, each on its own line:
+    trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+
+  4 slots a trial. Delivered per slot: -22.999 dB, -23.001 dB, -23.000 dB, -22.999 dB
+
+  THE NUMBER THIS STEP IS JUDGED ON:
+    trials NO single slot decoded alone and the combination DID: 29 of 306
+    trials SOME single slot decoded alone, no combining needed:  0 of 306   (the two-chances baseline)
+    trials a single slot decoded and the combination did NOT:    0 of 306   (zero, as the superset property requires)
+
+  THE SUBMISSION BUDGET, AS IT WAS ACTUALLY SPENT:
+    candidate pairs the rule looked at        255831
+    combinations submitted to the port        951
+    HEARINGS IN THE DEEPEST COMBINATION        4   (6.02 dB of processing gain if the hearings were independent)
+    of those, the PORT took past both gates   36
+    naive expected messages nobody sent       0.058
+
+  EVERY COMBINED DECODE AGAINST THE LADDER'S OWN GROUND TRUTH:
+    messages the combining stage added        32
+    of those, the message that was sent       32
+    of those, a message that was NOT sent     0
+
+  WORST SINGLE SLOT: 115.5 ms, carrying 15 candidates and 3 combinations - a margin of 130x against FT8's 15 seconds.
+
+EVERY FIELD THIS PANEL IS JUDGED ON, ON ITS OWN LINE:
+  requested                                -23.0 dB
+  delivered to single slot               -22.999 dB   (worst trial off by 0.047 dB from the -23.0 dB requested)
+  delivered to single + OSD              -22.999 dB   (worst trial off by 0.047 dB from the -23.0 dB requested)
+  delivered to summed x4                 -23.000 dB   (worst trial off by 0.022 dB from the -23.0 dB requested)
+  repeats                                  4
+  delivered per slot                       -22.999 dB, -23.001 dB, -23.000 dB, -22.999 dB
+  OnlyCombined                             29 of 306
+  AnySlotAlone                             0 of 306
+  LostByCombining                          0 of 306
+  PairsOffered                             255831
+  CombinationsSubmitted                    951
+  CodewordsAccepted                        36
+  CombinedDecodes                          32
+  CombinedDecodesVerified                  32
+  of those, a message that was NOT sent    0
+  ExpectedFalseAccepts                     0.058   (Ft8DeepCombineSettings.ExpectedFalseAccepts, a static on the settings type - it is NOT a field of RepeatsRun)
+  DeepestHearings                          4   (four hearings did reach one sum, so the summed x4 label is earned - B17)
+  WorstSlotMilliseconds                    115.5 ms, carrying 15 candidates and 3 combinations - a margin of 130x against FT8's 15 000 ms
+
+ONLYCOMBINED ON EVERY ROW, WHICH IS WHAT THE CAVEAT REQUIRES:
+  single slot       0 of 306    0.0 % (  0.0 -   1.2)  WRONG 0   trials no single slot decoded alone and the combination DID: 29 of 306
+  single + OSD      0 of 306    0.0 % (  0.0 -   1.2)  WRONG 0   trials no single slot decoded alone and the combination DID: 29 of 306
+  summed x4        29 of 306    9.5 % (  6.7 -  13.3)  WRONG 1   trials no single slot decoded alone and the combination DID: 29 of 306
+
+PANEL WALL CLOCK 145.8 s, against ~147 s predicted in docs/unit257-combining-placement.md section 1.4 and a 480 s ceiling.
+WRONG on summed x4:     trial    29  seed 220771  SENT "CQ PY2ABC GG66"  RETURNED "WN8ESU/P JG5HKE/P R AH58"
+TOTAL WRONG ACROSS ALL THREE ROWS AT THIS RUNG-PLACEMENT: 1.
+TOTAL SCORED SLOT DECODES AT THIS RUNG-PLACEMENT: 918.

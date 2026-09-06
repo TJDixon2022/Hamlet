@@ -1,0 +1,36 @@
+UNIT 257, TASK 4, THE 50 PER CENT CROSSINGS FOR THE ZERO-JITTER PLACEMENT PANEL.
+LADDER: Ft8LadderHarness.RunRepeats, four slots a trial, JITTER ZERO on both axes, 306 trials a rung, Ft8Sharp.Deep 0.8.0. NO ROW HERE IS COMPARABLE WITH A ROW IN section 3 of the closing document, which gives each trial ONE slot, NOR WITH A ROW IN section 5.4, which is unit 256's JITTERED panel.
+ARITHMETIC: Ft8Unit256CrossingBand.Crossing - already in the tree, already gate-set entry 13, already watched failing once as B18. NO SECOND CROSSING HELPER IS WRITTEN and no new watched failure is manufactured.
+THE BAND IS NOT A CONFIDENCE INTERVAL ON THE CROSSING. It is the two rungs' own 95 per cent Wilson bounds pushed through the same linear interpolation the point crossing uses, under a stated assumption that the rate moves linearly in decibels between two rungs one decibel apart.
+EVERY COUNT IS TRANSCRIBED FROM A COMMITTED ARTEFACT UNDER docs/unit257-runs/, named beside it below. NOTHING IS ASSERTED ABOUT WHERE ANY CROSSING LIES.
+
+SOURCE  single slot    on grid      upper  -19.0 dB  248 of 306 from docs/unit257-runs/placement-panel-on-grid-minus19.txt
+SOURCE  single slot    on grid      lower  -20.0 dB   73 of 306 from docs/unit257-runs/placement-panel-on-grid-minus20.txt
+SOURCE  single + OSD   on grid      upper  -19.0 dB  276 of 306 from docs/unit257-runs/placement-panel-on-grid-minus19.txt
+SOURCE  single + OSD   on grid      lower  -20.0 dB  125 of 306 from docs/unit257-runs/placement-panel-on-grid-minus20.txt
+SOURCE  summed x4      on grid      upper  -22.0 dB  239 of 306 from docs/unit257-runs/extension-on-grid-minus22.txt
+SOURCE  summed x4      on grid      lower  -23.0 dB   29 of 306 from docs/unit257-runs/extension-on-grid-minus23.txt
+SOURCE  summed x4      cell centre  upper  -20.0 dB  270 of 306 from docs/unit257-runs/placement-panel-cell-centre-minus20.txt
+SOURCE  summed x4      cell centre  lower  -21.0 dB   75 of 306 from docs/unit257-runs/placement-panel-cell-centre-minus21.txt
+
+column               placement    upper rung                            lower rung                            point       band                             width
+single slot          on grid       -19.0 dB   248 of  306   81.05 % ( 76.28 -  85.04)  -20.0 dB    73 of  306   23.86 % ( 19.42 -  28.94)   -19.54  -19.62 dB to -19.46 dB            0.162
+single + OSD         on grid       -19.0 dB   276 of  306   90.20 % ( 86.35 -  93.05)  -20.0 dB   125 of  306   40.85 % ( 35.49 -  46.44)   -19.81  -19.92 dB to -19.71 dB            0.209
+summed x4            on grid       -22.0 dB   239 of  306   78.10 % ( 73.14 -  82.37)  -23.0 dB    29 of  306    9.48 % (  6.68 -  13.28)   -22.41  -22.47 dB to -22.35 dB            0.120
+summed x4            cell centre   -20.0 dB   270 of  306   88.24 % ( 84.14 -  91.38)  -21.0 dB    75 of  306   24.51 % ( 20.03 -  29.63)   -20.60  -20.67 dB to -20.53 dB            0.138
+
+THE TWO COLUMNS THE TABLE'S THREE RUNGS DO NOT STRADDLE, WITH THEIR DIRECTION AND
+THE CEILING RUNG NAMED. NOTHING IS EXTRAPOLATED - unit 255's ruling 3.
+  single slot    cell centre   NOT BRACKETED - ABOVE -19.0 dB. It reads 6 of 306 at -19.0 dB, the SHALLOWEST rung this panel walked, and is therefore already below 50 per cent at the top of the bracket. The downward extension rung cannot reach it and walking UP the ladder is not licensed by this instruction, so -19.0 dB is the stated ceiling.
+  single + OSD   cell centre   NOT BRACKETED - ABOVE -19.0 dB. It reads 33 of 306 at -19.0 dB, same reasoning, same stated ceiling.
+
+AND THE ONE COLUMN THE TABLE'S OWN RUNGS COULD NOT BRACKET DOWNWARD, WHICH THE
+EXTENSION WAS SPENT ON:
+  summed x4      on grid       reads 306 of 306 at -19, -20 AND -21 dB - saturated at every rung the closing table quotes. Its crossing lies BELOW -21 dB, and the downward extension at -22.0 dB (239 of 306) and -23.0 dB (29 of 306) brackets it. The search was capped at -23 dB and did not need the cap.
+
+EVERY PUBLISHED BAND CONTAINS ITS OWN POINT CROSSING (gate-set entry 13, the
+property B18 violated):
+  single slot    on grid      point   -19.54 dB   band -19.62 dB to -19.46 dB             contains point: True
+  single + OSD   on grid      point   -19.81 dB   band -19.92 dB to -19.71 dB             contains point: True
+  summed x4      on grid      point   -22.41 dB   band -22.47 dB to -22.35 dB             contains point: True
+  summed x4      cell centre  point   -20.60 dB   band -20.67 dB to -20.53 dB             contains point: True

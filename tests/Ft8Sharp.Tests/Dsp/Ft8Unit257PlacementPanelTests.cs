@@ -369,4 +369,53 @@ public class Ft8Unit257PlacementPanelTests(ITestOutputHelper output)
             Ft8LadderHarness.DefaultFrequencyHz + CellCentreFrequencyOffsetHz,
             Ft8LadderHarness.DefaultOffsetSamples + CellCentreOffsetSamples,
             "placement-panel-cell-centre-minus19");
+
+    /// <summary>
+    /// <b>THE DOWNWARD EXTENSION, FIRST STEP. On grid, -22 dB.</b>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Not one of exit criterion 1's rungs, and it is here to serve exit 2.</b> The three
+    /// rungs the closing table quotes leave <c>summed x4</c> on the grid reading <b>306 of 306 at
+    /// all three</b>, so its 50 per cent crossing lies below -21 dB and this ladder cannot say
+    /// where without walking further. <b>The decision to spend this call was taken at the start of
+    /// task 4 and written into <c>docs/unit257-combining-placement.md</c> §3.1 before it was
+    /// spent</b>, with its reason and its price.
+    /// </para>
+    /// <para>
+    /// <b>THE SEARCH IS CAPPED AT -23 dB.</b> A column still unbracketed there is reported
+    /// against that stated ceiling and <b>nothing is extrapolated</b>.
+    /// </para>
+    /// <para>
+    /// <b>This rung is likelier than any other call tonight to return a wrong decode.</b>
+    /// <c>HM-OPEN-082</c> was found at -23 dB on the jittered panel, from the combined column's
+    /// inner decoder at four times the exposure of the <c>single + OSD</c> row. <b>If it goes
+    /// red it stays red</b>, printed with sent beside returned, and it is not weakened.
+    /// </para>
+    /// </remarks>
+    [Fact]
+    public void TheDownwardExtensionOnGridAtMinus22() =>
+        Panel(
+            -22.0,
+            "on grid",
+            Ft8LadderHarness.DefaultFrequencyHz,
+            Ft8LadderHarness.DefaultOffsetSamples,
+            "extension-on-grid-minus22");
+
+    /// <summary>
+    /// <b>THE DOWNWARD EXTENSION, SECOND AND LAST STEP. On grid, -23 dB — the stated cap.</b>
+    /// </summary>
+    /// <remarks>
+    /// Spent only because <c>summed x4</c> on the grid was still above 50 per cent at -22 dB.
+    /// <b>Nothing below -23 dB is licensed by this instruction and nothing below it is walked</b>;
+    /// a column unbracketed here is reported as unbracketed against this ceiling.
+    /// </remarks>
+    [Fact]
+    public void TheDownwardExtensionOnGridAtMinus23() =>
+        Panel(
+            -23.0,
+            "on grid",
+            Ft8LadderHarness.DefaultFrequencyHz,
+            Ft8LadderHarness.DefaultOffsetSamples,
+            "extension-on-grid-minus23");
 }
