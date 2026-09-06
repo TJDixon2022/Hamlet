@@ -2,15 +2,15 @@ PHASE: Everything this project has built reaches the operator's screen, and the 
 PHASE_SET: 2026-09-05
 DESCRIPTION: Wire Ft8Sharp.Deep into Hamlet, show a real SNR, then take ordered statistics, subtraction and cross-slot combining as far as they go
 CURRENT_STEP: 6
-WORK_INSTRUCTION: 257 - combining gets the closing table's own rungs and both placements
-HEARTBEAT: 2026-09-05 20:17:59
+WORK_INSTRUCTION: 251 - the Digital tab does what the operator expects
+HEARTBEAT: 2026-09-05 21:27:46
 STEP: 0 | done | Hamlet decodes through Ft8Sharp.Deep
 STEP: 1 | done | the gate set exists, and the slow tests are named
 STEP: 2 | done | the SNR column shows a number
 STEP: 3 | done | ordered statistics, taken as far as it goes
 STEP: 4 | done | strong signals are subtracted and the slot is read again
 STEP: 5 | done | repeated transmissions are combined across slots
-STEP: 6 | partial | the closing measurement
+STEP: 6 | done | the closing measurement
 
 ---
 

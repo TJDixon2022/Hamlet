@@ -4,6 +4,155 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-084
+status: open — recorded, not dropped, when step 6 was closed by Tim's ruling of 2026-09-05
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing that ships. Step 6 is closed and the phase is complete; this is the unmet half of one exit criterion, carried by name so it is not lost with the step's state
+refs: PHASE_PLAN.md step 6 exit 2, docs/unit255-closing-measurement.md §5.5, docs/unit257-runs/, unit 257, work instruction 251 task 1
+---
+
+> **STEP 6 EXIT 2 IS CLOSED ON A CEILING RATHER THAN ON A BRACKET, FOR TWO OF ITS COLUMNS.**
+
+**What is short.** Exit 2 asks every configuration to be bracketed — an interpolated 50 per
+cent crossing with an interval either side of it. Sixteen of the eighteen cells have one. **The
+two cell-centre combining-OFF columns do not.** They are reported against a *stated ceiling of
+-19 dB*: nothing in them crosses 50 per cent anywhere at or below that rung, so the crossing,
+wherever it is, is **above** -19 dB and the measurement never went there.
+
+**What it would have shown.** Where the port and Deep-with-combining-off actually cross at the
+cell centre — half a waterfall bin off the analysis grid, which is where a real station lands.
+Today the closing document can say those two columns are worse than -19 dB and cannot say by
+how much. **The figures that ARE bracketed are unaffected**: combining on crosses at
+**-22.41 dB on grid** and **-20.60 dB at the cell centre**, each with its interval, and the
+1.81 dB cost of landing off the grid is measured, not inferred.
+
+**What it would take to run it.** Rungs **above** -19 dB at the cell centre — -18, -17 and
+probably -16 dB — on the repeats ladder at 306 trials a cell, two configurations. Roughly the
+cost of one of unit 257's walks per rung. **Unit 257's own instruction expressly forbade
+walking upward**, which is why no session holding it could have closed this: the criterion and
+the instruction disagreed, and that is a scoping conflict rather than a defect in the
+measurement.
+
+**Not a request for a ruling.** Tim has already ruled the step closed on the figure it reached
+(2026-09-05). This is the register entry that keeps the shortfall visible afterwards.
+
+---
+id: HM-OPEN-083
+status: open — recorded, not dropped, when step 6 was closed by Tim's ruling of 2026-09-05
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing that ships. It is the one step 6 criterion that has never been touched by any unit of this phase, because the material it needs does not exist on this machine
+refs: PHASE_PLAN.md step 6 exit 5, SHACK_FACTS.md FACT-004, docs/unit255-closing-measurement.md §6.3, work instruction 251 task 1
+---
+
+> **STEP 6 EXIT 5 — THE FIXTURE CRITERIA — IS CLOSED UNTOUCHED, BECAUSE NEITHER THING IT NEEDS
+> EXISTS HERE.**
+
+**What is short.** Exit 5 asks for the decoder to be scored against a **real off-air capture**
+and compared with **WSJT-X** on the same audio. Every figure this phase quotes — all
+thirty-six cells of the closing table, all eighteen of the combining panel, both crossings — is
+from **synthesized** audio on a ladder this project wrote. That is not a small caveat: a
+synthesizer can only test the decoder against the model the synthesizer holds, and the whole
+value of a fixture is that it holds a model nobody here chose.
+
+**What it would have shown.** Whether the 1.81 dB off-grid penalty, the -22.41 dB crossing and
+the zero-wrong record survive contact with real propagation, real receiver noise, real
+neighbouring signals and real clock error — and whether Hamlet reads a slot the way the
+reference implementation reads the same slot. **The thirteen messages decoded from one live
+slot on 2026-09-04, five continents, down to -21 dB, are the closest thing this project has**,
+and they are an existence proof rather than a score: nothing counted what was missed.
+
+**What it would take to run it.** Two things this machine does not have, per `SHACK_FACTS.md`
+FACT-004: **a recorded off-air WAV with ground truth** — a slot captured with a known list of
+what was actually on it — and **a WSJT-X installation** to decode the same file. Getting the
+first honestly means recording a busy slot and settling its ground truth from an outside
+source, not from Hamlet's own output; the second is an install and a licence question. Neither
+is a decode-side change and neither is measurable from the tree.
+
+**Not a request for a ruling.** Tim ruled the step closed on 2026-09-05 and expressly forbade
+building a fixture to close it. This entry exists so *closed on synthesized audio only* stays
+on the record.
+
+---
+id: HM-OPEN-084
+status: open - recorded by unit 251 when step 6 was closed on Tim's ruling of 2026-09-05, and never attempted
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing in the tree. It blocks only the sentence "every exit criterion of step 6 was met" - the phase closed with this one untouched, and it is written down here so that closing is a ledger entry rather than a silence
+refs: PHASE_PLAN.md step 6 exit 5, SHACK_FACTS.md FACT-004, docs/unit255-closing-measurement.md section 6.3, work instruction 251 task 1
+---
+
+> **STEP 6 EXIT 5 - "the fixtures that would settle the deferred criteria, named, with the
+> command Tim runs" - WAS NEVER RUN, AND NO SESSION IN THIS PHASE COULD HAVE RUN IT.**
+
+**What it would have shown.** Which real off-air recordings settle the criteria this phase
+deferred, and what Tim types to make them speak - so that the closing table's synthetic
+ladder is anchored to at least one recording of a real band, read alongside the decoder
+every other operator uses.
+
+**What it would take to run.** A real off-air capture and a WSJT-X comparison over the same
+audio. **Neither exists on this machine.** `SHACK_FACTS.md` FACT-004 records that the radio
+lives on a different computer, and that nothing measured about the development machine's
+audio endpoints says anything about the shack machine's. So this is not a criterion a
+session declined to meet; it is one that needed a room this project's sessions have never
+been in.
+
+**Why it is recorded rather than dropped.** The plan's own wording is that a step which gets
+partway closes with the figure it reached, and *recorded is not dropped*. An unmet criterion
+that nobody wrote down looks exactly like a criterion nobody had. This one is named, with
+what it wanted and what it costs, so the evening it becomes cheap it is a job rather than an
+archaeology exercise.
+
+**What would close it.** One slot of real off-air audio captured on the shack machine, kept
+as a fixture with its sidecar, and the same audio read by WSJT-X, with both readings in one
+document. Section 6.3 of `docs/unit255-closing-measurement.md` already carries the fixture
+names and the command; what it does not carry is a recording.
+
+---
+id: HM-OPEN-083
+status: open - recorded by unit 251 when step 6 was closed on Tim's ruling of 2026-09-05, and deliberately not measured
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing that ships. Combining is off by default and no radio does any of it. It blocks only the claim that every configuration in the closing table carries an interpolated crossing with an interval
+refs: PHASE_PLAN.md step 6 exit 2, docs/unit255-closing-measurement.md section 5.5, PHASE_OUTCOME.md units 8 and 9 under step 6, work instruction 251 task 1
+---
+
+> **STEP 6 EXIT 2 - the interpolated 50 per cent crossing with its interval, for every
+> configuration - IS MET FOR EVERY CONFIGURATION EXCEPT TWO: the two cell-centre columns with
+> combining OFF. Those two are reported against a stated ceiling of -19 dB and are not
+> bracketed.**
+
+**What it would have shown.** Where those two configurations actually cross fifty per cent,
+with an interval around it, rather than the weaker statement that the crossing lies at or
+above -19 dB. Every other column in the panel is bracketed; these two run out of ladder
+before they run out of decodes.
+
+**What it would take to run.** **Rungs ABOVE -19 dB at the cell centre** - the ladder's
+existing rungs are -19, -20 and -21 dB, and at the cell centre with combining off the rate is
+still climbing at the top of that range, so the crossing is off the top of the measured
+region. Adding upward rungs is the whole job, and it is a night of ladder time rather than a
+change to any decoder.
+
+**Why no session in this phase could have done it.** Unit 257's instruction expressly forbade
+adding rungs and raising the ceiling. So the criterion could not be closed by any session
+holding that instruction, and it was closed at the figure it reached instead - **a scoping
+conflict rather than a defect**, in Tim's own words of 2026-09-05.
+
+**What the step did close on.** At -21 dB over 306 trials, combining on reads **306 of 306 on
+grid** against 13 off, and **75 of 306 at the cell centre** against 0 off; **zero wrong in all
+eighteen cells**; crossings at **-22.41 dB on grid** and **-20.60 dB at the cell centre**.
+
+**One thing this issue does not ask for.** It does not ask for the ceiling to be raised on
+paper. A stated ceiling is an honest weaker claim and it stays until somebody measures a
+crossing; writing a crossing that no rung supports is the fault this project spent the phase
+learning to refuse.
+
+---
 id: HM-OPEN-082
 status: open — measured by unit 256, 2026-09-05, observed again at zero jitter by unit 257 the same day, and not closed by either
 owner: tim
