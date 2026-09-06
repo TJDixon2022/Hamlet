@@ -22,8 +22,31 @@ namespace Hamlet.App.ViewModels;
 /// strip carries, every chip is unlit. Lighting the nearest one instead would be
 /// a guess dressed as a reading.</para>
 /// </remarks>
-public sealed record DigitalModeChip(string Label, bool IsLit)
+/// <param name="IsChosen">
+/// Whether this is the sub-mode the operator last picked. **A different fact from
+/// <paramref name="IsLit"/> and never conflated with it** — see the remarks on
+/// <see cref="For(Neighborhood?, string?)"/>.
+/// </param>
+public sealed record DigitalModeChip(string Label, bool IsLit, bool IsChosen)
 {
+    /// <summary>True where the chip is picked but the dial is not in its block.</summary>
+    /// <remarks>
+    /// **THE ONE STATE THE STRIP HAD NO WAY TO DRAW.** He asked for FT8 and the
+    /// dial is somewhere else — because the tune has not landed yet, because it
+    /// did not take, or because the band has no FT8 block at all. Drawing it as
+    /// lit would say the radio is there; drawing it as unlit would lose his
+    /// choice. It is its own appearance.
+    /// </remarks>
+    public bool IsChosenElsewhere => IsChosen && !IsLit;
+
+    /// <summary>True where the chip is neither lit nor chosen.</summary>
+    /// <remarks>
+    /// **THE THREE APPEARANCES ARE EXCLUSIVE AND EXHAUSTIVE**, computed here
+    /// rather than assembled out of negations in the markup, so a fourth state
+    /// cannot appear by accident and two of them can never draw at once.
+    /// </remarks>
+    public bool IsPlain => !IsLit && !IsChosen;
+
     /// <summary>
     /// The four modes the strip carries, in the order they are drawn.
     /// </summary>
@@ -39,8 +62,22 @@ public sealed record DigitalModeChip(string Label, bool IsLit)
 
     /// <summary>The strip for one neighborhood.</summary>
     /// <param name="here">Where the dial is, or null when the map has no block.</param>
-    /// <returns>Four chips, at most one of them lit.</returns>
-    public static IReadOnlyList<DigitalModeChip> For(Neighborhood? here)
+    /// <param name="chosen">
+    /// The sub-mode the operator last picked, or null where he has picked none.
+    /// </param>
+    /// <returns>Four chips, at most one lit and at most one chosen.</returns>
+    /// <remarks>
+    /// <para>**TWO FACTS, KEPT APART** (unit 251 task 3). `IsLit` is a
+    /// measurement — the dial is inside this mode's block, and the map is what
+    /// answers. `IsChosen` is a preference — this is the one he pressed, and it
+    /// is remembered between evenings.</para>
+    /// <para>**THEY DISAGREE OFTEN AND THAT IS THE INTERESTING CASE.** He presses
+    /// FT8 on a band with no FT8 block, or the tune does not take, or the app has
+    /// just started and nothing has moved the dial at all. Merging them into one
+    /// flag would make a remembered press look like a reading of the radio, which
+    /// is a picture asserting something nobody measured (§0.0, HM-DEC-092).</para>
+    /// </remarks>
+    public static IReadOnlyList<DigitalModeChip> For(Neighborhood? here, string? chosen)
     {
         // A block that is not digital territory lights nothing, and so does a
         // frequency the map has no block for. Both are the absence of a reading
@@ -49,8 +86,33 @@ public sealed record DigitalModeChip(string Label, bool IsLit)
             ? here.ShortName.Trim().ToUpperInvariant()
             : "";
 
+        var picked = chosen?.Trim().ToUpperInvariant() ?? "";
+
         return Labels
-            .Select(one => new DigitalModeChip(one, one == label))
+            .Select(one => new DigitalModeChip(one, one == label, one == picked))
             .ToList();
+    }
+
+    /// <summary>The strip for one neighborhood, with nothing chosen.</summary>
+    /// <param name="here">Where the dial is, or null when the map has no block.</param>
+    /// <returns>Four chips, at most one of them lit.</returns>
+    public static IReadOnlyList<DigitalModeChip> For(Neighborhood? here)
+        => For(here, null);
+
+    /// <summary>Whether a label is one of the four the strip carries.</summary>
+    /// <param name="label">A candidate sub-mode name, from settings or a press.</param>
+    /// <returns>The canonical label, or null where it is not one of the four.</returns>
+    /// <remarks>
+    /// **A SETTINGS FILE NAMING A FIFTH MODE GETS NONE.** The strip carries the
+    /// owner's four; anything else read out of `settings.json` is dropped rather
+    /// than shown, because a chip the strip cannot draw is a preference nothing
+    /// can act on.
+    /// </remarks>
+    public static string? Canonical(string? label)
+    {
+        var wanted = label?.Trim().ToUpperInvariant();
+
+        return Labels.FirstOrDefault(
+            one => string.Equals(one, wanted, StringComparison.Ordinal));
     }
 }

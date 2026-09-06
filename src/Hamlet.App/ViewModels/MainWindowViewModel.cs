@@ -272,11 +272,41 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True while the Voice tab is the one showing.</summary>
     public bool IsVoiceMode => OperatingMode == "Voice";
 
+    /// <summary>
+    /// Which digital sub-mode the operator last chose, or null where he has
+    /// chosen none.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A PREFERENCE AND NOT A READING** (unit 251 task 3). The strip's
+    /// lit chip says where the dial is and this says what he asked for. They are
+    /// separate properties, separate flags on the chip and separate appearances,
+    /// because a remembered press drawn as a lit chip would claim the radio is
+    /// somewhere nobody measured (§0.0, HM-DEC-092).</para>
+    /// <para>**NULL IS A REAL VALUE.** A fresh `settings.json` has no sub-mode in
+    /// it, and until he presses one the strip has nothing chosen. That is
+    /// different from having chosen FT8, and it is stored differently.</para>
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
+    private string? _chosenDigitalMode;
+
+    partial void OnChosenDigitalModeChanged(string? value)
+    {
+        _settings.LastDigitalSubMode = value;
+        SettingsStore.Save(_settings);
+    }
+
     partial void OnOperatingModeChanged(string value)
     {
         OnPropertyChanged(nameof(IsCwMode));
         OnPropertyChanged(nameof(IsDigitalMode));
         OnPropertyChanged(nameof(IsVoiceMode));
+
+        // **REMEMBERED THE MOMENT IT CHANGES, NOT AT SHUTDOWN** (unit 251 task
+        // 3). A preference written only on a clean exit is a preference lost
+        // whenever the app is closed the way people actually close it.
+        _settings.LastOperatingMode = value;
+        SettingsStore.Save(_settings);
 
         // The mode can be set from either end — a tab press, or code — and the
         // tabs follow it either way.
@@ -791,7 +821,29 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public IReadOnlyList<DigitalModeChip> DigitalModeChips
         => DigitalModeChip.For(
-            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
+            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
+            ChosenDigitalMode);
+
+    /// <summary>Pick a digital sub-mode from the strip.</summary>
+    /// <param name="label">FT8, FT4, PSK31 or WSPR.</param>
+    /// <remarks>
+    /// **CHOOSING IS ALL THIS DOES TODAY.** Unit 251 task 5 puts the tune behind
+    /// the same press — Tim's ruling: press FT8 and the radio goes there
+    /// immediately, with no confirmation. Until then this records the choice and
+    /// remembers it, and the strip says plainly that the dial has not moved.
+    /// </remarks>
+    [RelayCommand]
+    private void ChooseDigitalMode(string? label)
+    {
+        var picked = DigitalModeChip.Canonical(label);
+
+        if (picked is null)
+        {
+            return;
+        }
+
+        ChosenDigitalMode = picked;
+    }
 
     /// <summary>Whether the readiness line has anything to say.</summary>
     /// <remarks>
@@ -2494,7 +2546,33 @@ public partial class MainWindowViewModel : ObservableObject
             .Select(m => new ModeTabViewModel(m, name => OperatingMode = name))
             .ToList();
 
-        ModeTabs[0].Follow(true);
+        // **THE APP OPENS IN THE MODE IT WAS LAST IN** (Tim's ruling,
+        // 2026-09-05, unit 251 task 3).
+        //
+        // **THE FIELD IS SET RATHER THAN THE PROPERTY**, so the change handler
+        // does not run during construction. It would walk tabs that are not yet
+        // wired to a window and schedule a mode follow before the settings this
+        // constructor is still reading are all in place. The tab strip is put in
+        // step directly on the next line, which is the only thing the handler
+        // would have done that matters here.
+        //
+        // **AN UNKNOWN OR MISSING VALUE IS CW.** A settings file naming a tab
+        // that does not exist must not leave the window with no workspace
+        // showing — the blank-screen failure `ModeTabViewModel` records from
+        // 2026-08-27, which is exactly what an unmatched mode string produces.
+        _operatingMode = OperatingModes.FirstOrDefault(
+            m => string.Equals(m, settings.LastOperatingMode?.Trim(),
+                StringComparison.OrdinalIgnoreCase))
+            ?? "CW";
+
+        foreach (var tab in ModeTabs)
+        {
+            tab.Follow(tab.Name == _operatingMode);
+        }
+
+        // **AND WITHIN DIGITAL, THE SUB-MODE.** What he chose, which is not where
+        // the dial is; see `DigitalModeChip.For`. Nothing is tuned by reading it.
+        _chosenDigitalMode = DigitalModeChip.Canonical(settings.LastDigitalSubMode);
 
         Bands = new ObservableCollection<BandButtonViewModel>(
             HfBands.Bands.Select(b => new BandButtonViewModel(b)));

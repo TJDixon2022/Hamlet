@@ -2772,25 +2772,76 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:DigitalModeChip">
-                                        <Panel>
-                                            <Border Padding="10,3" CornerRadius="5"
-                                                    Background="{x:Static ctl:ModePalette.DigitalFill}"
-                                                    BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
-                                                    BorderThickness="1"
-                                                    IsVisible="{Binding IsLit}">
-                                                <TextBlock Text="{Binding Label}" FontSize="12"
-                                                           FontWeight="SemiBold"
-                                                           Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
-                                            </Border>
+                                        <!-- **THE CHIP IS A CONTROL SINCE UNIT
+                                             251** (Tim: *"Five click FT8. That
+                                             means I want to go to FT8. Tune
+                                             immediately."*). It was a label from
+                                             work instruction 037 until now.
 
-                                            <Border Padding="10,3" CornerRadius="5"
-                                                    Background="Transparent"
-                                                    BorderThickness="0"
-                                                    IsVisible="{Binding !IsLit}">
-                                                <TextBlock Text="{Binding Label}" FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </Border>
-                                        </Panel>
+                                             **THE BUTTON IS THE WHOLE CHIP AND
+                                             CARRIES NO CHROME OF ITS OWN**, so
+                                             the three appearances below are what
+                                             the operator sees and a fourth
+                                             rectangle is not drawn around
+                                             them. -->
+                                        <Button Classes="hm-chip"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ChooseDigitalModeCommand}"
+                                                CommandParameter="{Binding Label}">
+                                            <Panel>
+                                                <!-- **LIT: THE DIAL IS IN THIS
+                                                     MODE'S BLOCK.** A
+                                                     measurement, and the map is
+                                                     what answers it. -->
+                                                <Border Padding="10,3" CornerRadius="5"
+                                                        Background="{x:Static ctl:ModePalette.DigitalFill}"
+                                                        BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding IsLit}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
+                                                </Border>
+
+                                                <!-- **CHOSEN, BUT THE DIAL IS
+                                                     SOMEWHERE ELSE.** He pressed
+                                                     it and the radio is not
+                                                     there: the tune has not
+                                                     landed, it did not take, or
+                                                     this band has no block for
+                                                     it. **AN OUTLINE AND NOT A
+                                                     FILL**, because a fill is
+                                                     what says the dial is here
+                                                     and this is precisely the
+                                                     case where it is not (§0.0,
+                                                     HM-DEC-092). The dotted edge
+                                                     and the italic carry it
+                                                     without colour, per §0.6. -->
+                                                <Border Padding="10,3" CornerRadius="5"
+                                                        Background="Transparent"
+                                                        BorderBrush="{x:Static ctl:ModePalette.DigitalInk}"
+                                                        BorderThickness="1"
+                                                        IsVisible="{Binding IsChosenElsewhere}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="12"
+                                                               FontStyle="Italic"
+                                                               Foreground="{x:Static ctl:ModePalette.DigitalInk}" />
+                                                </Border>
+
+                                                <!-- Neither: a mode that lives
+                                                     on this band and that he has
+                                                     not asked for. -->
+                                                <Border Padding="10,3" CornerRadius="5"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        IsVisible="{Binding IsPlain}">
+                                                    <TextBlock Text="{Binding Label}" FontSize="12"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                </Border>
+                                            </Panel>
+                                        </Button>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

@@ -159,6 +159,35 @@
             <Setter Property="TextElement.Foreground" Value="White" />
         </Style>
 
+        <!-- **A CHIP IS THE THING INSIDE IT** (unit 251 task 3). The Digital
+             tab's mode strip draws its own three appearances - lit, chosen but
+             the dial is elsewhere, and neither - and each of them is already a
+             bordered rounded rectangle. Left as an ordinary button, the frame
+             above would put a second white-and-amber rectangle around every one
+             of them and the strip would read as four amber buttons rather than
+             as a mode reading.
+
+             **IT STILL SAYS IT CAN BE PRESSED** (§0.5.1, HM-DEC-087). The
+             chrome goes and the hover does not: the tint on pointerover is what
+             separates this from a label, and it is the same slate tint the panel
+             headers use for the same purpose. Grey stays reserved for what
+             genuinely cannot be used, so a chip is never greyed. -->
+        <Style Selector="Button.hm-chip /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+
+        <Style Selector="Button.hm-chip:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#EDEAE1" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
+        <Style Selector="Button.hm-chip:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E4E0D5" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+
         <!-- GREY MEANS UNPRESSABLE AND NOTHING ELSE (HM-DEC-079), which only
              becomes true once everything pressable has stopped being grey. This
              is the one appearance reserved for a control that genuinely cannot

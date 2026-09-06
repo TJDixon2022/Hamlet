@@ -383,6 +383,39 @@ public sealed class AppSettings
     public int EnabledTelemetryCategoryCount
         => Enum.GetValues<TelemetryCategory>().Count(IsTelemetryEnabled);
 
+    /// <summary>Which tab the app was last showing — CW, Digital or Voice.</summary>
+    /// <remarks>
+    /// <para>**THE APP OPENS IN THE MODE IT WAS LAST IN** (Tim's ruling,
+    /// 2026-09-05). It sits beside the panel expand states because it is the same
+    /// kind of fact: how this operator wants this window to look, remembered
+    /// between evenings.</para>
+    /// <para>**NULL IS THE FRESH-FILE ANSWER AND IT MEANS CW**, which is the
+    /// default this application has always opened on. An unreadable or unknown
+    /// value means CW too — a settings file naming a tab that no longer exists
+    /// must not leave the window with no workspace showing, which is the failure
+    /// `ModeTabViewModel`'s own remarks record from 2026-08-27.</para>
+    /// <para>**RESTORING IT TOUCHES NO RADIO.** Selecting a tab schedules a mode
+    /// follow, and that write is gated on a connected rig; at construction there
+    /// is none. Starting the app has never moved the operator's dial and does not
+    /// start now.</para>
+    /// </remarks>
+    public string? LastOperatingMode { get; set; }
+
+    /// <summary>
+    /// Which digital sub-mode the operator last chose — FT8, FT4, PSK31 or WSPR.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHAT HE CHOSE, WHICH IS NOT WHERE THE DIAL IS.** The mode strip
+    /// already lights the chip whose block the dial is actually in, and that is a
+    /// measurement (`DigitalModeChip`, unit 228). This is the separate fact of
+    /// which one he last pressed. The two are stored, drawn and reasoned about
+    /// apart, because a remembered choice drawn as a lit chip would assert the
+    /// radio is somewhere it is not (§0.0, HM-DEC-092).</para>
+    /// <para>Null means he has not chosen one, which is the fresh-file answer and
+    /// stays the fresh-file answer.</para>
+    /// </remarks>
+    public string? LastDigitalSubMode { get; set; }
+
     /// <summary>Whether the decoded table shows the newest slot first.</summary>
     /// <remarks>
     /// **NEWEST AT THE TOP, AND THAT IS A RULING RATHER THAN A DEFAULT THIS
