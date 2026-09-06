@@ -94,10 +94,24 @@ public sealed class TheDecodedTableIsRealTests
         // wide, so the column is asserted as a neighbourhood and not a number.
         Assert.InRange(int.Parse(only.Hz, CultureInfo.InvariantCulture), 1236, 1244);
 
-        // **THE SNR COLUMN CARRIES A DASH AND NOT A NUMBER** (§0.0). This library
-        // returns a sync score and no decibels, and a plausible figure under that
-        // heading would be read as a measurement.
-        Assert.Equal(DigitalDecodeRow.NoMeasurement, only.Snr);
+        // **THE SNR COLUMN CARRIES A NUMBER NOW, AND THIS ASSERTION IS STALE
+        // RATHER THAN THE COLUMN BEING WRONG.** It was written when `Ft8Sharp`
+        // returned a sync score and no decibels, so a dash was the only honest
+        // cell. `Ft8Sharp.Deep.Ft8DeepSignalToNoise` measures a real ratio -
+        // 0.26 dB mean absolute error over 510 synthesized messages,
+        // `docs/unit251-snr-trace.md` §6 - and `PHASE_PLAN.md` step 2 rules that
+        // the column shows a number once agreement is inside 2 dB.
+        //
+        // **THE DASH IS STILL THE ANSWER WHERE NOTHING WAS MEASURED**, which is
+        // what the second assertion holds: whatever is in this cell is either a
+        // signed whole number of decibels or the dash, and never a bare digit
+        // that could be read as a serial or a score.
+        Assert.NotEqual(DigitalDecodeRow.NoMeasurement, only.Snr);
+        Assert.True(
+            only.Snr[0] is '+' or '-',
+            "the snr cell reads " + only.Snr + ", which carries no sign - most "
+            + "FT8 reports are negative and an unsigned figure in that column "
+            + "reads as a missing minus rather than as a strong station");
 
         Assert.True(model.HasDigitalDecodes);
         // The summary now names the direction too, so a collapsed panel says

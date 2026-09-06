@@ -99,11 +99,17 @@ public sealed class TheTabHearsARealBandTests
         Assert.All(
             model.DigitalDecodes, r => Assert.Equal("142230", r.Utc));
 
-        // **THE SNR CELL STAYS AN EM DASH** (§0.0). This decoder produces a Costas
-        // sync score and no decibels, and HM-OPEN-068 is Tim's.
+        // **THE SNR CELL CARRIES A MEASURED RATIO SINCE PHASE STEP 2**, and this
+        // assertion was stale rather than the column being wrong: it was written
+        // while the decoder produced a Costas sync score and no decibels, when a
+        // dash was the only honest cell. What still has to hold is that every
+        // cell is either a signed whole number or the dash, never a bare digit
+        // that could be read as a score.
         Assert.All(
             model.DigitalDecodes,
-            r => Assert.Equal(DigitalDecodeRow.NoMeasurement, r.Snr));
+            r => Assert.True(
+                r.Snr == DigitalDecodeRow.NoMeasurement || r.Snr[0] is '+' or '-',
+                "the snr cell reads " + r.Snr));
 
         // The summary names the slot the rows came from and how many there are,
         // which is the only claim on that panel and is true of this recording.

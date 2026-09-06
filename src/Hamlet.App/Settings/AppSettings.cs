@@ -416,6 +416,19 @@ public sealed class AppSettings
     /// </remarks>
     public string? LastDigitalSubMode { get; set; }
 
+    /// <summary>
+    /// Which decoded messages the operator wants to stand out — `Everything`,
+    /// `CqOnly` or `Mine`.
+    /// </summary>
+    /// <remarks>
+    /// **PERSISTED WITH THE OTHER PANEL STATE** (Tim's ruling, 2026-09-05), for
+    /// the same reason the sort direction is: it is how this operator wants this
+    /// panel to look, remembered between evenings. Null or unreadable means
+    /// `Everything`, which is where the panel has always started and what it
+    /// still does on a fresh file.
+    /// </remarks>
+    public string? DecodedFilter { get; set; }
+
     /// <summary>Whether the decoded table shows the newest slot first.</summary>
     /// <remarks>
     /// **NEWEST AT THE TOP, AND THAT IS A RULING RATHER THAN A DEFAULT THIS

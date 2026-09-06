@@ -1186,6 +1186,148 @@ public partial class MainWindowViewModel : ObservableObject
 
     private bool _digitalNewestFirst = true;
 
+    private DecodedFilter _digitalFilter;
+
+    /// <summary>Which decoded messages the operator wants to stand out.</summary>
+    /// <remarks>
+    /// **CQ ONLY, MINE, OR EVERYTHING** (Tim's ruling, 2026-09-05). Persisted
+    /// beside the sort direction and the panel's expand state.
+    /// </remarks>
+    public DecodedFilter DigitalFilter
+    {
+        get => _digitalFilter;
+        set
+        {
+            if (_digitalFilter == value)
+            {
+                return;
+            }
+
+            _digitalFilter = value;
+            _settings.DecodedFilter = value.ToString();
+            SettingsStore.Save(_settings);
+
+            ApplyDecodedFilter();
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ShowsEverything));
+            OnPropertyChanged(nameof(ShowsCqOnly));
+            OnPropertyChanged(nameof(ShowsMine));
+        }
+    }
+
+    /// <summary>True while the filter is showing everything.</summary>
+    public bool ShowsEverything => DigitalFilter == DecodedFilter.Everything;
+
+    /// <summary>True while the filter is picking out calls to anyone.</summary>
+    public bool ShowsCqOnly => DigitalFilter == DecodedFilter.CqOnly;
+
+    /// <summary>True while the filter is picking out messages to the operator.</summary>
+    public bool ShowsMine => DigitalFilter == DecodedFilter.Mine;
+
+    /// <summary>Choose which decoded messages stand out.</summary>
+    /// <param name="which">`Everything`, `CqOnly` or `Mine`.</param>
+    /// <remarks>
+    /// A string parameter because it comes off a `CommandParameter` in the
+    /// markup. A value the enum does not know is ignored rather than reset to a
+    /// default, so a typo in the markup cannot silently change the filter.
+    /// </remarks>
+    [RelayCommand]
+    private void SetDecodedFilter(string? which)
+    {
+        if (Enum.TryParse<DecodedFilter>(which, ignoreCase: true, out var parsed))
+        {
+            DigitalFilter = parsed;
+        }
+    }
+
+    /// <summary>How many rows the filter wants.</summary>
+    public int DigitalShownCount { get; private set; }
+
+    /// <summary>How many rows are drawn dimmed.</summary>
+    public int DigitalDimmedCount { get; private set; }
+
+    /// <summary>
+    /// What the filter has to say for itself, or "" when it has nothing to add.
+    /// </summary>
+    /// <remarks>
+    /// **THE ONE CASE THAT MUST NOT BE SILENT** (Tim's ruling, 2026-09-05).
+    /// `mine` is offered whether or not Hamlet knows the operator's callsign, and
+    /// where it does not, the panel says so. The alternative — dimming every row
+    /// on a busy band and saying nothing — would read as the band having gone
+    /// quiet, which is §0.0 broken by omission.
+    /// </remarks>
+    public string DigitalFilterNote
+        => DigitalFilter == DecodedFilter.Mine
+           && !DecodedFilterRule.HasSomethingToMatchOn(_settings.Operator.Callsign)
+            ? "Hamlet does not know your callsign yet, so \"mine\" has nothing to "
+              + "match on and nothing is dimmed. Put it in Settings and this "
+              + "starts picking out the messages addressed to you."
+            : "";
+
+    /// <summary>True while the filter has something to say.</summary>
+    public bool HasDigitalFilterNote => DigitalFilterNote.Length > 0;
+
+    /// <summary>
+    /// Dim the rows the filter is not interested in, and count both halves.
+    /// </summary>
+    /// <remarks>
+    /// <para>**DIMMED, NOT REMOVED — AND THAT WAS THE ARBITER'S TO CHOOSE**
+    /// (§12.1; Tim has not ruled it). Two reasons, and the second is the stronger
+    /// one. **The band's texture stays visible**: an evening on 20 m is mostly
+    /// other people's contacts, and a list showing only the CQs makes a busy band
+    /// look like a quiet one with a few callers on it. **And rows do not jump
+    /// while he is reading them**: four slots a minute, fourteen rows a slot, and
+    /// a removing filter would reflow the table under his eyes every fifteen
+    /// seconds — worst at exactly the moment a new row arrives, which is when he
+    /// is looking. Removal buys screen space this panel now has a whole column
+    /// of.</para>
+    /// <para>**THE COUNTS ARE THE NON-VISUAL CARRIER** (§0.6). Dimming is
+    /// opacity, and opacity is no better than colour for somebody who cannot see
+    /// it well; the summary says both numbers in words, so what the filter has
+    /// done is legible without seeing the rows at all.</para>
+    /// </remarks>
+    private void ApplyDecodedFilter()
+    {
+        var mine = _settings.Operator.Callsign;
+        var shown = 0;
+
+        foreach (var row in DigitalDecodes)
+        {
+            var wanted = DecodedFilterRule.Wants(DigitalFilter, row.Addressee, mine);
+
+            row.IsDimmed = !wanted;
+
+            if (wanted)
+            {
+                shown++;
+            }
+        }
+
+        DigitalShownCount = shown;
+        DigitalDimmedCount = DigitalDecodes.Count - shown;
+
+        OnPropertyChanged(nameof(DigitalShownCount));
+        OnPropertyChanged(nameof(DigitalDimmedCount));
+        OnPropertyChanged(nameof(DigitalFilterNote));
+        OnPropertyChanged(nameof(HasDigitalFilterNote));
+        OnPropertyChanged(nameof(DigitalDecodedSummary));
+    }
+
+    /// <summary>Bring the shown and hidden totals level with the table.</summary>
+    /// <remarks>
+    /// The same counting as <see cref="ApplyDecodedFilter"/> without the writes,
+    /// for the path where rows were already dimmed as they arrived.
+    /// </remarks>
+    private void RecountDecodedFilter()
+    {
+        DigitalShownCount = DigitalDecodes.Count(r => !r.IsDimmed);
+        DigitalDimmedCount = DigitalDecodes.Count - DigitalShownCount;
+
+        OnPropertyChanged(nameof(DigitalShownCount));
+        OnPropertyChanged(nameof(DigitalDimmedCount));
+    }
+
     /// <summary>What the order button says it will do.</summary>
     /// <remarks>
     /// **IT NAMES THE STATE, NOT THE ACTION.** A button reading "oldest first"
@@ -1262,7 +1404,21 @@ public partial class MainWindowViewModel : ObservableObject
                 // PANEL STILL CARRIES ITS SUMMARY** (§0.5). Somebody who shuts
                 // the panel and opens it later should not have to work out from
                 // the rows which end is the live one.
-                return $"{newest} UTC · {DigitalDecodes.Count} shown · "
+                // **WHAT IS SHOWN AND WHAT IS HIDDEN, BOTH** (Tim's ruling,
+                // 2026-09-05). A filter must never be able to make him think the
+                // band went quiet, and the count of what it dimmed is the thing
+                // that stops it — in the summary rather than only in the table,
+                // because a collapsed panel is exactly where the mistake would
+                // be made (§0.5).
+                var hidden = DigitalDimmedCount > 0
+                    ? $"{DigitalDimmedCount} dimmed by {DecodedFilterRule.Label(DigitalFilter)} · "
+                    : "";
+
+                var count = DigitalDimmedCount > 0
+                    ? DigitalShownCount
+                    : DigitalDecodes.Count;
+
+                return $"{newest} UTC · {count} shown · " + hidden
                     + DigitalOrderLabel + TrimNote();
             }
 
@@ -2773,6 +2929,14 @@ public partial class MainWindowViewModel : ObservableObject
         _digitalWaterfallExpanded = settings.IsPanelExpanded(PanelKeys.DigitalWaterfall);
         _digitalDecodedExpanded = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
         _digitalNewestFirst = settings.DecodedNewestFirst;
+
+        // **AN UNREADABLE VALUE IS `Everything`**, which is where this panel has
+        // always started. A filter restored from a settings file it cannot parse
+        // must not be one that dims rows for a reason nobody can see.
+        _digitalFilter = Enum.TryParse<DecodedFilter>(
+            settings.DecodedFilter, ignoreCase: true, out var savedFilter)
+            ? savedFilter
+            : DecodedFilter.Everything;
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);
@@ -7387,10 +7551,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         _digitalDecodeKeyOrder.Add(key);
 
-        var row = DigitalDecodeRow.From(decode);
-
-        _digitalArrivals.Add(row);
-        DigitalDecodes.Insert(InsertAt(row), row);
+        PlaceRow(DigitalDecodeRow.From(decode));
 
         while (_digitalArrivals.Count > MaxDigitalDecodes)
         {
@@ -7409,6 +7570,49 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return true;
+    }
+
+    /// <summary>Put a row on the table, dimmed if the filter is not after it.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>The same row, so a caller can look at what it became.</returns>
+    /// <remarks>
+    /// **DIMMED BEFORE IT IS DRAWN, NOT AFTER** (unit 251 task 6). A row put in
+    /// at full strength and dimmed a moment later flashes at exactly the moment
+    /// the operator's eye is drawn to it by the movement, which is the opposite
+    /// of what the filter is for.
+    /// </remarks>
+    private DigitalDecodeRow PlaceRow(DigitalDecodeRow row)
+    {
+        row.IsDimmed = !DecodedFilterRule.Wants(
+            DigitalFilter, row.Addressee, _settings.Operator.Callsign);
+
+        _digitalArrivals.Add(row);
+        DigitalDecodes.Insert(InsertAt(row), row);
+
+        return row;
+    }
+
+    /// <summary>Put one row on the table without a decoder, for tests.</summary>
+    /// <param name="utc">The slot, as `hhmmss`.</param>
+    /// <param name="snr">The ratio cell.</param>
+    /// <param name="dt">The offset cell.</param>
+    /// <param name="hz">The tone cell.</param>
+    /// <param name="message">The text.</param>
+    /// <returns>The row, so a test can look at what became of it.</returns>
+    /// <remarks>
+    /// **THE SAME DOOR THE DECODER USES**, so what is tested is the placement
+    /// rule and not a second copy of it. Synthesising audio for five rows whose
+    /// only interesting property is their to-field would spend seconds of decode
+    /// on a question about a string comparison (§5).
+    /// </remarks>
+    internal DigitalDecodeRow AddDecodeRowForTests(
+        string utc, string snr, string dt, string hz, string message)
+    {
+        var row = PlaceRow(new DigitalDecodeRow(utc, snr, dt, hz, message));
+
+        RaiseDigitalDecodeChanges();
+
+        return row;
     }
 
     /// <summary>Where a newly arrived row belongs in the display order.</summary>
@@ -7576,6 +7780,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Everything on the tab that reads the decoded table.</summary>
     private void RaiseDigitalDecodeChanges()
     {
+        // **THE COUNTS BEFORE THE SUMMARY THAT QUOTES THEM.** Rows arrive already
+        // dimmed, so this is not re-deciding anything; what it does is bring the
+        // shown and hidden totals level with the table before the summary is
+        // asked for them.
+        RecountDecodedFilter();
+
         OnPropertyChanged(nameof(HasDigitalDecodes));
         OnPropertyChanged(nameof(DigitalDecodedSummary));
         OnPropertyChanged(nameof(DigitalModeStripLine));

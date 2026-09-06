@@ -188,6 +188,20 @@
             <Setter Property="BorderThickness" Value="0" />
         </Style>
 
+        <!-- **THE ONE THAT IS PICKED, ON A STRIP OF CHIPS THAT ARE CHOICES.**
+             The decoded panel's filter has three, and which one is in force has
+             to be readable without pressing anything.
+
+             **NOT COLOUR ALONE** (§0.6): a border and semibold weight as well as
+             the tint, so the strip still says which is picked in a greyscale
+             print or to somebody with a colour vision deficiency. -->
+        <Style Selector="Button.hm-chip.hm-picked /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E4E0D5" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="TextElement.FontWeight" Value="SemiBold" />
+        </Style>
+
         <!-- GREY MEANS UNPRESSABLE AND NOTHING ELSE (HM-DEC-079), which only
              becomes true once everything pressable has stopped being grey. This
              is the one appearance reserved for a control that genuinely cannot

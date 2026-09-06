@@ -109,10 +109,17 @@ public sealed class TheTabHearsEverySlotTests
 
         Assert.True(model.HasDigitalDecodes);
 
-        // **THE SNR CELL STAYS AN EM DASH** (§0.0). HM-OPEN-068 is Tim's.
+        // **THE SNR CELL CARRIES A MEASURED RATIO SINCE PHASE STEP 2**, and this
+        // assertion was stale rather than the column being wrong: it was written
+        // while the decoder produced a Costas sync score and no decibels, when a
+        // dash was the only honest cell. What still has to hold is that every
+        // cell is either a signed whole number or the dash, never a bare digit
+        // that could be read as a score.
         Assert.All(
             model.DigitalDecodes,
-            r => Assert.Equal(DigitalDecodeRow.NoMeasurement, r.Snr));
+            r => Assert.True(
+                r.Snr == DigitalDecodeRow.NoMeasurement || r.Snr[0] is '+' or '-',
+                "the snr cell reads " + r.Snr));
 
         // **THE SUMMARY NAMES THE MOST RECENT SLOT, NOT THE FIRST.** Reading row
         // zero would leave it reporting a slot from an hour ago.
@@ -382,7 +389,20 @@ public sealed class TheTabHearsEverySlotTests
 
             if (row.HasPayloadHelp)
             {
-                Assert.Equal("grid square: where he is", row.PayloadHelp);
+                // **WORDED FROM THE MESSAGE'S OWN FIELDS SINCE UNIT 251 TASK 4**,
+                // so the sentence names the sender rather than addressing the
+                // reader. Every row here is a call to anyone carrying a grid, so
+                // every one of them takes the same shape.
+                Assert.EndsWith(
+                    "is calling anyone, and saying which grid square they are "
+                    + "transmitting from.",
+                    row.PayloadHelp,
+                    StringComparison.Ordinal);
+
+                // **AND THE FOUR CHARACTERS ARE NOT IN IT**, which is what stops
+                // a place name ever being grown on the end of one.
+                Assert.DoesNotContain(
+                    row.Payload, row.PayloadHelp, StringComparison.OrdinalIgnoreCase);
             }
         }
     }
