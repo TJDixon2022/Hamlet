@@ -4,6 +4,83 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-085
+status: open — measured by unit 251, 2026-09-05, and deliberately not corrected
+owner: tim
+raised: 2026-09-05
+severity: slows
+blocks: nothing decodes any worse for it — every figure in the `dt` column moves together, so comparing two stations is unaffected. What it blocks is reading the column as what it is called: an operator cannot tell from it whether a station is early or late
+refs: tests/Hamlet.App.Tests/Audio/TheDtBiasIsMeasuredTests.cs, src/Hamlet.RadioEngine/Audio/Ft8Reception.cs:579, src/Ft8Sharp/Dsp/Ft8WaterfallGeometry.cs:263, work instruction 251 task 7
+---
+
+> **THE `dt` COLUMN IS NOT MEASURING WHAT ITS NAME SAYS, AND THE NUMBER NEEDED TO
+> CORRECT IT IS NOT IN THIS TREE.**
+
+**What was measured.** A transmission was synthesized at five known placements inside a slot
+and put through the live route — `Ft8SlotCutter`, the resample to 12 kHz, the waterfall and
+`Ft8Sharp.Deep` — with the clock offset set to zero. **The audio was never near a radio.**
+
+```
+placed      reported     error
+-1.000      -0.880      +0.120
+ 0.000      +0.160      +0.160
++0.500      +0.640      +0.140
++1.000      +1.120      +0.120
++1.180      +1.360      +0.180
+
+constant offset  +0.144 s     spread  0.060 s
+```
+
+**It is a constant offset and not a scale.** The spread across placements is 0.060 s, which is
+one and a half steps of the decoder's own sub-symbol time search (0.04 s) — the reported figures
+are quantized to that grid and the placements are not on it. **The reported offset tracks the
+real placement one for one**, so the column can still be used to compare two stations.
+
+**And it is not the +0.9 on the operator's screen.** That is the finding worth having. The
+decode path contributes **+0.144 s**, not nine tenths of a second, so **most of what he is
+seeing is not the decoder.** Three things add up on that column and only one of them is
+measured here:
+
+1. **+0.144 s, in the decode path**, and it is inside `Ft8Sharp`. The port's own comment on
+   `Ft8WaterfallGeometry.TimeSeconds` says the block's position is *"the block's nominal position
+   and not the centre of the window that produced it — the analysis frame is prefilled with zeros
+   and slides, so the samples behind a block reach back before it. Task 2 could not settle the
+   exact alignment by reading and it is not asserted as one here."* **`Ft8Sharp` is a faithful MIT
+   port and nothing changes a line of it**, so this stands whatever else is decided.
+2. **The reference point, which is Hamlet's own and is the biggest term.**
+   `Ft8Decode.OffsetSeconds` is `Ft8Candidate.TimeSeconds`, documented as *seconds from the start
+   of the analysis* — the slot boundary. **`dt` in this mode means how early or late a station
+   was against the moment a transmission is supposed to begin**, which is some way into the slot.
+   Those are different quantities and the column is showing the first under the name of the
+   second.
+3. **Whatever is left, in the live capture path** — the tap's anchor, the sample-to-moment
+   mapping, or the audio latency between the antenna and the timestamp. **This is arithmetic on
+   his reported cluster and not a measurement**: it is what remains of ~+0.9 after items 1 and 2,
+   and it cannot be measured without a radio on the bench.
+
+**WHY NOTHING WAS CORRECTED, WHICH IS THE ASK.** Item 2 is Hamlet's to fix and **the number it
+needs is not in this repository.** `Ft8Slots` carries `SlotSeconds` 15 and `TransmissionSeconds`
+12.64 and nothing about where inside the slot a transmission nominally starts. There are two
+candidate zeros and this session may pick neither:
+
+| Candidate | Where it comes from | What it would make a perfect station read |
+|---|---|---|
+| **0.5 s** | The on-air convention every station in this mode uses | about **+0.14** |
+| **1.18 s** | `Ft8Waveform`'s own slot layout, which splits the 2.36 s of spare evenly across the two ends | about **-0.54** |
+
+**The second is not the on-air convention and its own comment says so** — it is a choice made so
+a written slot file lines up with upstream's, not a statement about when anybody transmits. The
+first is almost certainly right and **almost certainly right is exactly what this project does
+not put in a data file** (§0, §0.2.1: frequencies and timings are never asserted from a model's
+memory). It needs a citation — the WSJT-X source or the FT8 protocol description — pinned in
+`data/vendor/` the way the USNO files are.
+
+**What is asked of the owner.** Whether to spend a unit pinning that citation and correcting the
+reference point. **Not a fudge factor**: applying a constant that makes the column look right
+without a source behind it is the thing task 7 forbade in its own words, and this session
+declined it rather than doing it quietly.
+
+---
 id: HM-OPEN-084
 status: open — recorded, not dropped, when step 6 was closed by Tim's ruling of 2026-09-05
 owner: tim
