@@ -4,6 +4,45 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-157
+date: 2026-09-06
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-156, work instruction 253
+---
+
+**`PHASE_PLAN.md` is approved: the phase is "Hamlet works stations on the air",
+set 2026-09-06, seven steps.** Tim, 2026-09-06.
+
+`PROJECT_CARD.md` is changed only by ruling (§13.3), and this is the ruling that
+changes it: `PHASE` and `PHASE_SET` move off the on-air phase, whose closing
+position was a decoder reading 252 of 306 trials at -21 dB against the port's 13,
+zero wrong, on a screen with no way to answer anybody.
+
+**The shape of the phase, approved with the plan:**
+
+- **One click, one message.** Hamlet transmits because the operator clicked. It
+  never sequences, never decides, never continues a contact on its own.
+- **Right-click a decoded row and it sends, in the next slot, with no
+  confirmation.** The one action is the click; a dialogue after it is a second
+  click for the same transmission.
+- **Nothing is forbidden in the menu.** The expected next message is highlighted
+  and everything still valid stays clickable. FT8 loses transmissions constantly,
+  so sending the grid a second time is correct behaviour, not a mistake to grey
+  out.
+- **A contact is never closed by the app.** Nobody is obliged to send `73`, an
+  operator may be working three stations at once, and Hamlet is not the radio
+  police. A row reports; it does not rule.
+- **Automatic sequencing is out of this phase**, and that is a scope decision
+  rather than a deferral.
+
+**Three things no unit in this phase may reason past**: the abort, one click per
+transmission, and the licence privileges. The first of those is why step 1 comes
+before anything that can key a transmitter, rather than after it.
+
+**Step 6 is Tim keying a transmitter and cannot be automated.** It is last,
+nothing before it is blocked by it, and steps 0 to 5 need no radio and no further
+ruling.
+
+---
 id: HM-DEC-156
 date: 2026-09-06
 refs: CLAUDE.md §0.2, §13.4, HM-DEC-008, HM-DEC-098, PHASE_PLAN.md, work instruction 253
