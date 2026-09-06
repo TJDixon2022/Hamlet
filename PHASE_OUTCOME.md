@@ -95,3 +95,18 @@ ACCOMPLISHED: Hamlet can compose a message and turn it into the audio of one FT8
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: Criteria 1, 2 and 3 met - the geometry and continuous phase, 112 of 117 read back with the 5 conditional proved, and byte-identity by reuse of the port's existing comparison against upstream's WAV. Criterion 4 is half met: level and clipping are measured and pinned, and what the radio's input expects is stated from sources with the unknowns named, but no cited figure for the USB modulation input level exists in this repository and SHACK_FACTS.md FACT-004 forbids inferring it here. Criterion 5's 12.64 s holds exactly at both rates; its other half does not - the measurement shows the port centres the transmission rather than starting it on the slot boundary, which is a step 3 scheduling decision and not this unit's to fix in the port.
+
+## UNIT 2 - STEP 2
+
+STEP: 2
+APPROACH: Reuse the existing Ft8Waveform in the port rather than writing a second encoder, and prove the round trip - message to symbols to audio to Ft8SlotDecoder - through a new Hamlet-side transmission seam over a hundred messages
+HIT: section 4 wants a ruling: no - The section states that nothing is blocking and asks the owner to decide nothing, so it is not a ruling request.
+MOVE: continue
+WHY: Step 2 has had no unit spent on it and is the phase's critical path - steps 3 and 5 both wait on samples existing - and a reading of the tree while authoring found that src/Ft8Sharp/Encode/Ft8Waveform.cs already synthesises the waveform and is already pinned sample-for-sample against upstream's WAV, so the reachable work is the round trip through Hamlet's own decoder and the Hamlet-side seam, not an encoder. The loop test was run on this approach and returned NOT FOUND against both entries; neither tried approach - a documentation sweep and an abort build - resembles it.
+DECIDED: Two things on my own authority. First, step 1 is cut down and closed partial at four of five: its fifth criterion, no transmitting code exists yet when this step closes, cannot be met in its letter because Ic7300Rig.SendCwAsync and CivWrites.TuneNow pre-date the phase and sit on the CW-send and band-scan surfaces the plan puts out of scope, so meeting the letter means deleting out-of-phase code the unit cannot test; the intent, that nothing this phase builds keys before a proven abort, is met. Second, step 2's third criterion is satisfied by reuse of the port's encoder and its existing byte-identity test rather than by any new comparison against a C reference, which unit 209 could not build for want of a toolchain.
+LICENCE: PHASE_PLAN.md, the steps are a hypothesis not a contract - the arbiter may move a target found to have been measured wrong, recording the evidence - together with its named alternative to stopping, the tree wins, report the mismatch and continue. Step 2's own criterion licenses the reuse in its own words: reuse it rather than writing a second encoder.
+COST: 19.011571000000014
+ACCOMPLISHED: Hamlet can compose a message and turn it into the audio of one FT8 slot, and its own decoder reads that audio back as the same message a hundred times over, with the failures named rather than rounded away. The seam that does it lives in Hamlet.RadioEngine, opens no device, keys nothing, and is what step 3 will play into the radio.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 1, 2 and 3 are met with measurements quoted, 117 messages tried and 112 decoded back identically plus a proved condition for the 5 hashed ones, but criterion 4 lacks the radio's expected USB modulation input level and criterion 5 is measured false since the transmission is centred in the slot rather than started on the boundary.
