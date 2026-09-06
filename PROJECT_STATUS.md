@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 255 - key, transmit, unkey, with the unkey guaranteed
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T19:32:30-04:00
-NOTE: Survey written - five keying routes found where unit 253 named two, the engine has no audio output at all, and the gate permits in three ways. Now building the sequence itself: gate, key, hand the samples to a sink, unkey, with the unkey guaranteed on every path and TransmitAbort as its first caller.
+UPDATED: 2026-09-06T19:43:00-04:00
+NOTE: The sequence is built and 10 of 10 green. Watched red first with the unkey on the success path only - four modes ended with the wire at FE FE 94 E0 1C 00 01 FD and nothing after it. Six of six failure modes now leave the radio unkeyed. Next: the licence gate refusing inside the path, proved by the port seeing zero bytes.
 
 ---
 

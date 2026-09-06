@@ -43,6 +43,25 @@ internal sealed class FakeSerialPort : ISerialPort
     /// <summary>True once a stuck read has actually been entered.</summary>
     public bool IsReadParked { get; private set; }
 
+    /// <summary>
+    /// Which writes throw, counted from one over both write paths in the order
+    /// they are attempted.
+    /// </summary>
+    /// <remarks>
+    /// **A DYING PORT IS THE INTERESTING CASE AND THERE WAS NO WAY TO SCRIPT IT**
+    /// (work instruction 255, task 1). This fake could refuse to open and could
+    /// hang on a read; it always took a write. A transmit sequence has to come out
+    /// of transmit when the port dies *between* the keying write and the unkey,
+    /// which needs the second write to fail while the third and fourth still land.
+    /// Hence a set of write numbers rather than a flag: the number is the position
+    /// on the wire, so a test says "the unkey is write two" and reads exactly like
+    /// what it is proving.
+    /// </remarks>
+    public HashSet<int> WritesThatThrow { get; } = new();
+
+    /// <summary>How many writes have been attempted, thrown or not.</summary>
+    public int WritesAttempted { get; private set; }
+
     /// <summary>Everything the rig has written, as one contiguous byte run.</summary>
     public byte[] Written
     {
@@ -87,6 +106,7 @@ internal sealed class FakeSerialPort : ISerialPort
     {
         lock (_writeLock)
         {
+            RefuseIfScripted();
             _written.AddRange(buffer.ToArray());
         }
 
@@ -98,7 +118,26 @@ internal sealed class FakeSerialPort : ISerialPort
     {
         lock (_writeLock)
         {
+            RefuseIfScripted();
             _written.AddRange(buffer.ToArray());
+        }
+    }
+
+    /// <summary>
+    /// Count this write and throw where the test scripted this one to fail.
+    /// </summary>
+    /// <remarks>
+    /// The bytes of a refused write never reach <see cref="Written"/>, because a
+    /// port that threw did not take them. A test asserting what the radio saw
+    /// would otherwise be asserting what the driver was handed.
+    /// </remarks>
+    private void RefuseIfScripted()
+    {
+        WritesAttempted++;
+
+        if (WritesThatThrow.Contains(WritesAttempted))
+        {
+            throw new IOException($"write {WritesAttempted} refused (scripted).");
         }
     }
 

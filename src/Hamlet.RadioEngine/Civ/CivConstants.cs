@@ -95,6 +95,30 @@ public static class CivConstants
     /// </remarks>
     public const byte PttOff = 0x00;
 
+    /// <summary>
+    /// The value that puts the radio into transmit: <c>1C 00 01</c>
+    /// (p. 19-7, "00=receiving, 01=transmitting").
+    /// </summary>
+    /// <remarks>
+    /// <para>**WITHHELD BY UNIT 253, ADDED BY UNIT 255, AND WHAT CHANGED IS THAT
+    /// THERE IS SOMEWHERE FOR IT TO BE USED SAFELY.** <see cref="PttOff"/>'s
+    /// remarks say why it was left out: the abort was built before anything that
+    /// transmits, and a constant is the easiest thing in a codebase to reach for
+    /// by accident. That reasoning is unchanged and it is why this one arrives
+    /// with a caller rather than ahead of one.</para>
+    /// <para>**IT HAS EXACTLY ONE USE SITE AND IT IS NOT A HELPER.**
+    /// <c>Ft8TransmitSequence</c> writes it, inside a <c>try</c> whose
+    /// <c>finally</c> unkeys on every path (§0.2). **There is deliberately no
+    /// "key the radio" method in <see cref="CivWrites"/>**: the table is a list
+    /// of settings anything may write through
+    /// <c>Ic7300Rig.SetSettingAsync</c>, and a keying write reachable from
+    /// there would be a way into transmit with no guaranteed way out.</para>
+    /// <para>Reaching for this byte anywhere else is the accident the withholding
+    /// was about, and it is now a visible one: this constant's callers are
+    /// countable with a grep.</para>
+    /// </remarks>
+    public const byte PttOn = 0x01;
+
     /// <summary>Spectrum scope data family (HM-DEC-005, p. 19-14).</summary>
     public const byte CmdScope = 0x27;
 
