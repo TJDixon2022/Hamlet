@@ -1,6 +1,6 @@
-﻿using System.ComponentModel;
-using System.Globalization;
+﻿using System.Globalization;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.ViewModels;
 
@@ -148,8 +148,32 @@ public sealed record DigitalDecodeRow(
             ? "Who this is addressed to. CQ means anyone."
             : "Who this is addressed to.";
 
-    /// <summary>Hover text naming the sender field.</summary>
-    public string SenderHelp => "Who sent it.";
+    /// <summary>Hover text naming the sender field, with the entity where certain.</summary>
+    /// <remarks>
+    /// <para>**THE COUNTRY ONLY WHERE IT IS CERTAIN** (Tim's ruling, 2026-09-05:
+    /// *say nothing if we don't know*). Where `DxccPrefixes` declines — a shared
+    /// prefix, a form it does not handle, a station at sea — the line is exactly
+    /// what unit 241 left and carries no hedge in place of the answer.</para>
+    /// <para>**IT IS A FACT ABOUT THE LICENCE AND NEVER A LOCATION.**
+    /// HM-DEC-038 forbids deriving a distance or a position from a prefix and
+    /// that stands: this says which entity issued the callsign, and how far away
+    /// the station is comes from a grid square or from nowhere.</para>
+    /// </remarks>
+    public string SenderHelp
+        => DxccPrefixes.EntityOf(Sender) is { } entity
+            ? $"Who sent it. {Sender} is a callsign from {Sentence(entity)}"
+            : "Who sent it.";
+
+    /// <summary>An entity name finished as a sentence.</summary>
+    /// <remarks>
+    /// **THE ARRL'S OWN NAMES ABBREVIATE, AND SOME END IN A STOP.** `Canary Is.`
+    /// and `Rodrigues I.` are its wording and the wording is kept, because a name
+    /// tidied is a name that no longer matches the source it is cited from.
+    /// Appending a second full stop put `Canary Is..` on the screen, so the stop
+    /// is added only where there is not one already.
+    /// </remarks>
+    private static string Sentence(string entity)
+        => entity.EndsWith('.') ? entity : entity + ".";
 
     /// <summary>
     /// Hover text for the payload, from the closed table, or "" for silence.
