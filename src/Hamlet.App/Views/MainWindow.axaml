@@ -2719,7 +2719,7 @@
                      fixed, not removable, not draggable, in no catalogue. The
                      canvas is gone and nothing here reintroduces it. -->
                 <Grid x:Name="DigitalWorkspace"
-                      RowDefinitions="Auto,Auto,*"
+                      RowDefinitions="Auto,Auto,Auto,*"
                       IsVisible="{Binding IsDigitalMode}">
 
                     <!-- **THE MODE STRIP RUNS THE FULL WIDTH AND DOES NOT
@@ -2915,6 +2915,47 @@
                             Foreground="{StaticResource HmAmberDeepBrush}" />
                     </Border>
 
+                    <!-- **WHAT THE LAST PRESS DID** (unit 251 task 5). A row of
+                         its own rather than a word squeezed into the strip
+                         above, because the sentence that matters most here is
+                         the long one: *Hamlet asked for 14.074000 MHz and the
+                         radio came back with 14.070000 MHz, so the display is
+                         left where it was.*
+
+                         **IT IS ABOUT A PRESS AND NOT ABOUT A STATE**, which is
+                         what separates it from the readiness strip above. That
+                         one describes the setup; this one describes one thing
+                         the operator just did, and it is not there until he does
+                         it.
+
+                         **TWO APPEARANCES, AND THE DIFFERENCE IS NOT ONLY
+                         COLOUR** (§0.6). A confirmed tune is muted and regular
+                         weight; a tune that did not take is the amber the
+                         readiness strip uses AND semibold, so it still reads as
+                         the louder of the two in a greyscale print. -->
+                    <Border Grid.Row="2" x:Name="DigitalTuneStrip"
+                            Margin="0,0,0,10" Padding="10,7"
+                            CornerRadius="8"
+                            IsVisible="{Binding HasDigitalTuneLine}"
+                            Background="{StaticResource HmPanelBrush}"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1">
+                        <Panel>
+                            <TextBlock x:Name="DigitalTuneConfirmedLine"
+                                       Text="{Binding DigitalTuneLine}"
+                                       IsVisible="{Binding !DigitalTuneFailed}"
+                                       TextWrapping="Wrap" FontSize="12"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <TextBlock x:Name="DigitalTuneFailedLine"
+                                       Text="{Binding DigitalTuneLine}"
+                                       IsVisible="{Binding DigitalTuneFailed}"
+                                       TextWrapping="Wrap" FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmAmberDeepBrush}" />
+                        </Panel>
+                    </Border>
+
                     <!-- **TWO COLUMNS, AND THIS WAS RULED A PHASE AGO** (Tim,
                          during the phase before unit 251, and it never reached
                          an instruction until now — that omission was ours).
@@ -2944,7 +2985,7 @@
                          the pixels per hertz and changes no transform. That is
                          the choice, and it is the one that leaves the measurement
                          alone. -->
-                    <Grid Grid.Row="2" x:Name="DigitalPanes"
+                    <Grid Grid.Row="3" x:Name="DigitalPanes"
                           ColumnDefinitions="*,*">
 
                         <!-- **THE LEFT COLUMN IS THE WATERFALL AND THE SPACE

@@ -296,11 +296,32 @@ public partial class MainWindowViewModel : ObservableObject
         SettingsStore.Save(_settings);
     }
 
+    /// <summary>Which mode the licence card should answer for.</summary>
+    /// <remarks>
+    /// **THE TAB, AND NOT THE BLOCK THE DIAL IS IN** (unit 251 task 5). The two
+    /// are different questions: the map says what other people are doing at this
+    /// frequency, and this says what the operator would be doing if he
+    /// transmitted. Somebody sitting in the FT8 block on the CW tab is asking
+    /// about Morse, and 97.305(a) has a different answer for him than for the man
+    /// on the Digital tab in the same place.
+    /// </remarks>
+    private TransmitMode LicenceModeForTheTab => OperatingMode switch
+    {
+        "Digital" => TransmitMode.Data,
+        "Voice" => TransmitMode.Phone,
+        _ => TransmitMode.Cw,
+    };
+
     partial void OnOperatingModeChanged(string value)
     {
         OnPropertyChanged(nameof(IsCwMode));
         OnPropertyChanged(nameof(IsDigitalMode));
         OnPropertyChanged(nameof(IsVoiceMode));
+
+        // **THE LICENCE CARD FOLLOWS THE TAB** (unit 251 task 5). Changing tab
+        // changes what the operator would be transmitting, so it changes what his
+        // licence has to say about where he is.
+        UpdatePrivileges();
 
         // **REMEMBERED THE MOMENT IT CHANGES, NOT AT SHUTDOWN** (unit 251 task
         // 3). A preference written only on a clean exit is a preference lost
@@ -824,16 +845,57 @@ public partial class MainWindowViewModel : ObservableObject
             Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
             ChosenDigitalMode);
 
-    /// <summary>Pick a digital sub-mode from the strip.</summary>
+    /// <summary>What the last sub-mode press did, or "" when there is nothing to say.</summary>
+    /// <remarks>
+    /// **IT IS ABOUT THE PRESS AND NOT ABOUT THE BAND**, which is what separates
+    /// it from the readiness strip above the panels and from
+    /// <see cref="DigitalModeStripLine"/> beside it. Those describe a standing
+    /// state; this describes one thing the operator just did, and it is empty
+    /// until he does it.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasDigitalTuneLine))]
+    private string _digitalTuneLine = "";
+
+    /// <summary>True while the last press has something to report.</summary>
+    public bool HasDigitalTuneLine => DigitalTuneLine.Length > 0;
+
+    /// <summary>
+    /// True where the last press did not put the radio where it was asked to.
+    /// </summary>
+    /// <remarks>
+    /// **DRAWN DIFFERENTLY, BECAUSE IT IS A DIFFERENT KIND OF FACT.** *The dial
+    /// is now at 14.074* and *the dial did not move and here is why* must not
+    /// look the same, or the second gets read as the first at a glance.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _digitalTuneFailed;
+
+    /// <summary>
+    /// Pick a digital sub-mode from the strip, and go there.
+    /// </summary>
     /// <param name="label">FT8, FT4, PSK31 or WSPR.</param>
     /// <remarks>
-    /// **CHOOSING IS ALL THIS DOES TODAY.** Unit 251 task 5 puts the tune behind
-    /// the same press — Tim's ruling: press FT8 and the radio goes there
-    /// immediately, with no confirmation. Until then this records the choice and
-    /// remembers it, and the strip says plainly that the dial has not moved.
+    /// <para>**IMMEDIATELY, WITH NO CONFIRMATION** (Tim, 2026-09-05: *"Five click
+    /// FT8. That means I want to go to FT8. Tune immediately."*). There is no
+    /// dialog and no second press.</para>
+    /// <para>**THE DISPLAY MOVES ON THE READ-BACK AND NEVER ON THE COMMAND**
+    /// (§0.0). Set over CI-V, read over CI-V 03, and show what came back. A
+    /// frequency Hamlet commanded is a request; a frequency the radio reported is
+    /// a measurement, and only one of those belongs on a display the whole
+    /// application trusts. If the read-back disagrees or does not arrive, the
+    /// display keeps the frequency it had and says the tune did not take.</para>
+    /// <para>**THE FREQUENCY COMES OUT OF THE TREE**
+    /// (<see cref="DigitalCallingFrequencies"/>), from the same cited rows the
+    /// Neighborhood map draws `FT8 city` from. Nothing here holds a number.</para>
+    /// <para>**A BAND WITH NO ROW FOR THAT MODE MOVES NOTHING.** It says so, and
+    /// says which bands do have one. Guessing a frequency or hopping to another
+    /// band would both be Hamlet deciding where the operator meant to be.</para>
+    /// <para>**§0.2 IS UNTOUCHED.** This is a receive-frequency change and keys
+    /// nothing.</para>
     /// </remarks>
     [RelayCommand]
-    private void ChooseDigitalMode(string? label)
+    private async Task ChooseDigitalModeAsync(string? label)
     {
         var picked = DigitalModeChip.Canonical(label);
 
@@ -842,8 +904,132 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **THE CHOICE IS RECORDED WHETHER OR NOT THE TUNE TAKES.** He asked for
+        // FT8; that is true even on a band with no FT8 in it, and the strip draws
+        // the chip as chosen-with-the-dial-elsewhere rather than forgetting he
+        // pressed it.
         ChosenDigitalMode = picked;
+
+        await TuneToDigitalModeAsync(picked).ConfigureAwait(true);
     }
+
+    /// <summary>Take the dial to a sub-mode's block, and confirm it landed.</summary>
+    /// <param name="picked">One of the four, already canonical.</param>
+    private async Task TuneToDigitalModeAsync(string picked)
+    {
+        var bandName = SelectedBand.Band.Name;
+        var block = DigitalCallingFrequencies.Find(bandName, picked);
+
+        if (block is null)
+        {
+            // **NOTHING MOVES AND THE SCREEN SAYS WHY.** As of 2026-09-05 the
+            // cited data has no WSPR row on any band and no FT4 on 30 m or 17 m.
+            // A number invented to fill the gap would be the one thing §0.2.1
+            // names outright.
+            var elsewhere = DigitalCallingFrequencies.BandsWith(picked);
+
+            DigitalTuneFailed = true;
+            DigitalTuneLine = elsewhere.Count == 0
+                ? $"Hamlet has no {picked} frequency for any band, so the dial "
+                  + "has not moved. Nothing here is written from memory, and "
+                  + $"there is no cited row for {picked} in the band data."
+                : $"There is no {picked} on {bandName}, so the dial has not "
+                  + $"moved. {Listed(elsewhere)} {(elsewhere.Count == 1 ? "has" : "have")} one.";
+
+            return;
+        }
+
+        var target = block.JumpHz;
+
+        if (_rig is null || !IsConnected)
+        {
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"Nothing is connected, so the dial has not moved. {picked} on "
+                + $"{bandName} is {Megahertz(target)} MHz when a radio is.";
+
+            return;
+        }
+
+        // **THE SAME STAMP THE ORDINARY SEND TICK SETS.** A frequency report that
+        // crossed this write on the wire describes where the dial was, and the
+        // display must not follow it back (`DialGuard`).
+        var was = FrequencyHz;
+        NoteTuneWritten(target, was, DateTime.UtcNow);
+
+        AppEvents.TuneRequested(_telemetry, target, "digital_mode_press");
+
+        long readBack;
+
+        try
+        {
+            await _rig.SetFrequencyHzAsync(target).ConfigureAwait(true);
+
+            // **READ, RATHER THAN WAIT FOR THE BROADCAST.** The radio volunteers
+            // frequency changes and that path still works, but a press has to be
+            // able to say *this did not take*, and silence is indistinguishable
+            // from a broadcast that has not arrived yet. Asking gets an answer or
+            // an exception, and both are results.
+            readBack = await _rig.GetFrequencyHzAsync().ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            AppEvents.TuneWritten(_telemetry, target, "failed", null);
+
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"The tune to {picked} did not take: {ex.Message}. The dial is "
+                + $"still showing {Megahertz(was)} MHz.";
+
+            return;
+        }
+
+        if (readBack != target)
+        {
+            // **THE DISPLAY STAYS WHERE IT WAS.** Showing the target would assert
+            // a frequency the radio did not accept; showing the read-back would
+            // be right about the radio and would silently swallow the fact that
+            // the press did something other than what it said. So the display
+            // does not move and the line names both numbers.
+            AppEvents.TuneWritten(_telemetry, target, "unconfirmed", null);
+
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"The tune to {picked} did not take. Hamlet asked for "
+                + $"{Megahertz(target)} MHz and the radio came back with "
+                + $"{Megahertz(readBack)} MHz, so the display is left where it "
+                + "was.";
+
+            return;
+        }
+
+        AppEvents.TuneWritten(_telemetry, target, "confirmed", null);
+
+        // **THE READ-BACK IS WHAT GOES ON SCREEN**, applied through the same door
+        // a report from the radio uses, so no second write goes out behind it.
+        ApplyRigFrequency(readBack);
+
+        DigitalTuneFailed = false;
+        DigitalTuneLine =
+            $"{picked} on {bandName} — the radio confirmed {Megahertz(readBack)} MHz.";
+    }
+
+    /// <summary>Hertz as megahertz, to the same six places the rig display uses.</summary>
+    private static string Megahertz(long hz)
+        => (hz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture);
+
+    /// <summary>A list of band names as English rather than as a comma run.</summary>
+    private static string Listed(IReadOnlyList<string> names)
+        => names.Count switch
+        {
+            0 => "",
+            1 => names[0],
+            2 => names[0] + " and " + names[1],
+            _ => string.Join(", ", names.Take(names.Count - 1))
+                 + " and " + names[^1],
+        };
+
+    /// <summary>Whether the readiness line has anything to say.</summary>
 
     /// <summary>Whether the readiness line has anything to say.</summary>
     /// <remarks>
@@ -6323,6 +6509,24 @@ public partial class MainWindowViewModel : ObservableObject
         _tunedToHz = toHz;
     }
 
+    /// <summary>Put a radio behind the view model, for tests.</summary>
+    /// <param name="rig">The radio, or null to detach.</param>
+    /// <remarks>
+    /// <para>**THE SAME ARGUMENT AS <see cref="NoteTuneWritten"/> ONE METHOD
+    /// UP.** Going through `ConnectToAsync` would need a port, a dispatcher timer
+    /// and a spectrum source to test a rule that is a set, a read and a
+    /// comparison. This attaches the seam and nothing else, so the rule is
+    /// exercised exactly as the press leaves it (§5: determinism below the UI).</para>
+    /// <para>**IT DELIBERATELY DOES NOT DO WHAT CONNECTING DOES.** No spectrum
+    /// starts, no frequency subscription is taken and no telemetry is written, so
+    /// a test using it cannot accidentally be testing the connect path.</para>
+    /// </remarks>
+    internal void UseRigForTests(IRig? rig)
+    {
+        _rig = rig;
+        IsConnected = rig is not null;
+    }
+
     private async void OnRigSendTick(object? sender, EventArgs e)
     {
         if (!_rigSendPending || _rig is null || !IsConnected)
@@ -8424,11 +8628,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// operator is tuned.
     /// </summary>
     /// <remarks>
-    /// One computation feeding both the map's veil and the line beneath it,
-    /// so the hatching and the words can never contradict each other
-    /// (HM-DEC-029). Phase 1 is a CW app, so the line answers for Morse; when
-    /// other modes can be sent, the mode being transmitted becomes the
-    /// argument rather than a constant.
+    /// <para>One computation feeding both the map's veil and the line beneath
+    /// it, so the hatching and the words can never contradict each other
+    /// (HM-DEC-029).</para>
+    /// <para>**THE MODE IS NO LONGER A CONSTANT** (unit 251 task 5). It was
+    /// `TransmitMode.Cw` from when this was a CW app, so the card read *Your
+    /// General license covers Morse here* while the operator sat on the Digital
+    /// tab at 14.074 working FT8. That is a licence statement about a mode he is
+    /// not using, and **a false licence statement is worse than a stale
+    /// frequency** — it is the one place a confident wrong answer has legal
+    /// consequences (§0.0, HM-DEC-029). The card answers for the tab he is on.</para>
+    /// <para>**AND IT ALREADY FOLLOWED THE DIAL AND STILL DOES.** This is called
+    /// from `UpdateModeLine`, which is called from `OnFrequencyHzChanged`, so the
+    /// frequency it answers for is whatever is on the display — which after a
+    /// confirmed tune is the frequency the radio reported, not the one Hamlet
+    /// asked for.</para>
     /// </remarks>
     private void UpdatePrivileges()
     {
@@ -8438,7 +8652,7 @@ public partial class MainWindowViewModel : ObservableObject
         // The card answers two questions at once: what the license allows, and
         // what is actually going on where the dial is pointing (HM-DEC-054).
         PrivilegeStatus = PrivilegeStatusLine.Build(
-            _privileges, cls, FrequencyHz, TransmitMode.Cw,
+            _privileges, cls, FrequencyHz, LicenceModeForTheTab,
             Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)));
 
         // A pending mismatch is a question about a class the operator has
