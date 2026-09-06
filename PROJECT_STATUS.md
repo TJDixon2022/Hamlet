@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 254 - the transmission Hamlet's own decoder can read
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T19:09:29-04:00
-NOTE: The round trip is green: 112 of 117 read back identically through Ft8SlotDecoder, 5 read back only with the full call in the same slot, 0 failed, 7.94 s. Watched red first at 3500 Hz outside the search window. The corpus caught a real defect in the seam and it is fixed. Next: level, clipping and where the signal sits in the slot.
+UPDATED: 2026-09-06T19:13:58-04:00
+NOTE: Level and timing measured and pinned - peak 1.000000, nothing outside full scale, PCM16 -32766 to +32767, 12.640000 s of signal in a 15.000000 s slot at both rates. The finding for step 3 is that the port centres the transmission, 1.18 s of silence before it. 32 of 32 green. Writing the record now.
 
 ---
 
