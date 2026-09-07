@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
-TASK: 4 of 5
+STATE: DONE
+TASK: 5 of 5
 WORK_INSTRUCTION: 260 - the menu under the mouse, and a route to the radio
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T00:02:33-04:00
-NOTE: Task 4 shipped rather than dropped - the transmit endpoint picker is in SettingsWindow.axaml beside the input one, same shape, same note style, bound to a list the Settings view model enumerates at run time through a seam no test calls. Six tests green. Its red was watched first: with a fall back to the machine's default endpoint, a saved id for a radio that had been unplugged selected "Speakers (Realtek)", which is FT8 out of the laptop speakers. Committing, then task 5 and the report.
+UPDATED: 2026-09-07T00:06:49-04:00
+NOTE: All five tasks done, committed and pushed; 19 new tests green, the solution clean, nothing dropped. NUMBER is 5 of 5 - every station's menu appeared under a real mouse on a real control tree and matched the set committed before the option list existed. Step 5 stays partial at five of six: criterion 2 is now met in its letter for the first time and criterion 3's application half is wired and asserted, with the last mile named as step 6's because no radio has ever been attached to this machine. Three reds were watched and quoted first - the stale menu, the unconditional armed send, and the endpoint picker falling back to the laptop speakers. outcome-append.bat was refused for the eighth unit running, so the entry was appended with the file-editing tools.
 
 ---
 
