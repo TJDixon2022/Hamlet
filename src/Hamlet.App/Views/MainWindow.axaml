@@ -3259,6 +3259,52 @@
                                                TextWrapping="Wrap"
                                                FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- **WHERE THE CONTACT STANDS AFTER HIS OWN
+                                         LAST TRANSMISSION** (work instruction
+                                         270, task 3).
+
+                                         **THE ENDING NOTHING IN HAMLET COULD
+                                         REPORT.** A great many contacts finish on
+                                         the operator's own message: he answers a
+                                         CQ, the station comes back
+                                         `KC3QIS W1ABC R-09` — a report and a
+                                         roger in one field — and his own `RRR` is
+                                         what satisfies
+                                         `Ft8ContactStates.IsComplete`. `PlaceRow`
+                                         computes a row's Contact cell once, at
+                                         that row's own slot, and `RecordSent`
+                                         touches nothing already on the table, so
+                                         the newest row on screen is the one
+                                         placed BEFORE his last transmission and
+                                         it still reads "your move". If the
+                                         station has got what it came for and gone
+                                         quiet, nothing ever said the contact
+                                         finished.
+
+                                         **THE PRESENT STATE GOES IN A LINE ABOUT
+                                         THE PRESENT, NOT INTO THE PAST.** No row
+                                         already on the table is rewritten: a
+                                         table of moments that edits its own
+                                         moments is a worse instrument than one
+                                         that is merely incomplete.
+
+                                         **IT IS THE LAST CHILD OF THIS STACK, FOR
+                                         THE SAME REASON THE DRIVE CONTROL IS
+                                         BELOW THE BUTTON ROW.** In a vertical
+                                         StackPanel a child's position depends
+                                         only on the children before it, so
+                                         nothing here can move
+                                         `DigitalStopButton`, which is child one.
+
+                                         **AND IT SAYS WHEN IT WAS READ.** Every
+                                         word is formatted in the view model; the
+                                         markup binds and does no arithmetic. -->
+                                    <TextBlock x:Name="DigitalContactStandsText"
+                                               Text="{Binding DigitalContactStandsLine}"
+                                               TextWrapping="Wrap"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
                                 </StackPanel>
                             </Border>
                         </Grid>

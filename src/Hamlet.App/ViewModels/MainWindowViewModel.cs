@@ -8272,6 +8272,107 @@ public partial class MainWindowViewModel : ObservableObject
             + "the radio's input gain, which Hamlet cannot see.";
     }
 
+    /// <summary>What the Send area says about a contact before anything is sent.</summary>
+    internal const string NoContactStandsYet =
+        "Nothing has been sent, so there is no contact to report on. After a "
+        + "transmission this line says where that contact stands - the station, "
+        + "the state in the same words the table's Contact column uses, the slot "
+        + "count, and the slot it was read at.";
+
+    /// <summary>
+    /// **Where the contact stands after the operator's own last transmission**,
+    /// with the moment it was read at.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ONE THING NOTHING IN HAMLET COULD SAY** (work instruction 270).
+    /// A great many contacts end on the operator's own message: he answers a CQ,
+    /// the station comes back `KC3QIS W1ABC R-09` - a report and a roger in one
+    /// field - and his `RRR` is what satisfies
+    /// <see cref="Ft8ContactStates.IsComplete"/>. <see cref="PlaceRow"/> computes
+    /// a row's contact cell once, at that row's own slot, and
+    /// <see cref="Ft8ContactLedger.RecordSent"/> writes into a private ledger and
+    /// touches nothing already on the table - **so the newest row on screen is
+    /// the one placed before his last transmission and it still reads *your
+    /// move*.** If the station then goes quiet, nothing said the contact
+    /// finished, and at the rig that is a man re-sending into a contact that
+    /// ended or waiting for a station that has finished with him.</para>
+    /// <para>**THE PRESENT STATE GOES IN A LINE ABOUT THE PRESENT AND NOT INTO
+    /// THE PAST.** No row already on the table is rewritten.
+    /// <see cref="ContactTextFor"/>'s contract is that a row shows where the
+    /// contact stood in its own slot and never restates itself, and a table of
+    /// moments that edits its own moments is a worse instrument than one that is
+    /// merely incomplete.</para>
+    /// <para>**IT SAYS WHEN IT WAS READ** (§0.0). A screen that says *complete*
+    /// with no idea when is the same class of fault as unit 269's readout showing
+    /// a setting and calling it a measurement, so the slot is on the face of the
+    /// sentence and the count of slots comes with the state.</para>
+    /// <para>**IT REPORTS AND IT RULES NOTHING.** It closes nothing, hides
+    /// nothing, greys nothing and suggests nothing: after `complete` the row's
+    /// menu offers exactly what it offered before. Hamlet is not the radio
+    /// police.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _digitalContactStandsLine = NoContactStandsYet;
+
+    /// <summary>Where the contact the operator just transmitted into stands.</summary>
+    /// <param name="message">What actually went out.</param>
+    /// <param name="slotUtc">The slot it went out in, which is the moment read at.</param>
+    /// <returns>One line, in the register the rest of this area uses.</returns>
+    /// <remarks>
+    /// <para>**IT ASKS AND IT DECIDES NOTHING** (§12.1). The addressee comes from
+    /// <see cref="Ft8MessageSplit.Split(string?)"/> and
+    /// <see cref="Ft8MessageSplit.IsCallToAnyone(string?)"/> - **the same two
+    /// questions <see cref="Ft8ContactLedger.RecordSent"/> asks of the same two
+    /// methods**, so this cannot come to a different answer about who a message
+    /// was addressed to. The state and its slot count come from
+    /// <see cref="Ft8ContactStates.Read"/>. Nothing about completeness, about the
+    /// four words or about the shape of a message is worked out here.</para>
+    /// <para>**AND IT INVENTS NO STATION** (§0.0). A call to anyone books nobody,
+    /// which is what the ledger already does, and a message the splitter refuses
+    /// names nobody either. In both cases the line says there is no contact to
+    /// report on rather than reaching for the newest station it can find.</para>
+    /// <para>**THE MOMENT IS THE SLOT THE TRANSMISSION WENT OUT IN**, not the
+    /// wall clock at the post. It is the value <see cref="AtSlotBoundaryAsync"/>
+    /// books the send at, and the same convention <see cref="ContactTextFor"/>
+    /// uses for a row - two readers of one ledger that counted slots from
+    /// different moments would print different numbers for the same contact.</para>
+    /// </remarks>
+    private string ContactStandsLine(string? message, DateTime slotUtc)
+    {
+        var slot = slotUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        var fields = Ft8MessageSplit.Split(message);
+
+        if (fields is null)
+        {
+            return "Hamlet cannot tell who that was addressed to - it is not a "
+                + "standard three-field message - so it has no contact to report "
+                + "on. Where a message names a station, this line says where that "
+                + "contact stands.";
+        }
+
+        if (Ft8MessageSplit.IsCallToAnyone(fields.To))
+        {
+            return "That was a call to anyone, so it is addressed to no station "
+                + "and there is no one contact to report on yet. This line says "
+                + "where a contact stands after a message sent to a station.";
+        }
+
+        var record = _contacts?.For(fields.To);
+
+        if (record is null)
+        {
+            return "Nothing is on file with " + fields.To + " yet, so there is "
+                + "nothing to report about where that contact stands.";
+        }
+
+        var read = Ft8ContactStates.Read(record, slotUtc);
+
+        return "Where the contact with " + read.Callsign + " stands: " + read.Text
+            + ", read at the " + slot + " UTC slot. That is what passed between "
+            + "you, counted in slots; it is not advice about what to send next, "
+            + "and nothing is closed or withheld by it.";
+    }
+
     /// <summary>Every message the operator may send to one row's station.</summary>
     /// <param name="row">The row he right-clicked.</param>
     /// <returns>The menu, or null where the row names no station.</returns>
@@ -8484,10 +8585,18 @@ public partial class MainWindowViewModel : ObservableObject
             : "Nothing was transmitted, so there is no measured level. After a "
               + "send this line says what the sound card was actually handed.";
 
+        // **THE SECOND READER OF THE ONE LEDGER THE ROWS ALREADY READ** (work
+        // instruction 270, task 3), read here rather than in the post for the
+        // same reason `RecordSent` is booked here: this is the thread that has
+        // just finished with the ledger, and the moment is the slot that went
+        // out and not the wall clock a few milliseconds later.
+        var stands = ContactStandsLine(text, result.Send!.SlotStartUtc);
+
         Dispatcher.UIThread.Post(() =>
         {
             DigitalSendLine = WentLine(text, result);
             DigitalTransmitLevelLine = measured;
+            DigitalContactStandsLine = stands;
         });
 
         return result;
