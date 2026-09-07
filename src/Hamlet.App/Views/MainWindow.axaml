@@ -3147,6 +3147,87 @@
                                                TextWrapping="Wrap"
                                                FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- **THE TRANSMIT DRIVE, UNDER THE
+                                         WATERFALL, WHERE STEP D SAYS HE READS
+                                         IT** (work instruction 269, task 2).
+                                         `PHASE_PLAN.md` step D's first exit
+                                         criterion is "Tim sets the Transmit
+                                         drive control and reads the dBFS and
+                                         clip count under the waterfall", and
+                                         until tonight the only drive control in
+                                         Hamlet was `TransmitDriveBox` in
+                                         `SettingsWindow.axaml:262` — behind a
+                                         `ShowDialog` modal that covers the
+                                         waterfall, the decode table and the
+                                         always-pressable Stop button, while
+                                         slot boundaries keep arriving behind
+                                         it. Setting a drive between two
+                                         fifteen-second slots meant hiding the
+                                         band to do it.
+
+                                         **IT IS BELOW THE STOP BUTTON AND NOT
+                                         ABOVE IT.** Anything inserted before
+                                         the button row would push the one
+                                         control that must never be unreachable
+                                         further down the area, and that is the
+                                         first of the things no unit may reason
+                                         past.
+
+                                         **NOTHING WAS TAKEN OFF SETTINGS.**
+                                         This is a second view of one setting.
+                                         Both write `AppSettings.TransmitDrivePeak`
+                                         through `TransmitDrive`, which is where
+                                         the percent-to-peak conversion, the
+                                         `Ft8Composer.DriveIsUsable` question and
+                                         the note sentence now live, once — two
+                                         controls over one setting is exactly
+                                         the shape that drifts silently.
+
+                                         **THE SAME TWO ENDS AS THE SETTINGS
+                                         SPINNER**, 1 and 100, because a control
+                                         that could offer a level the composer
+                                         refuses would be a second opinion about
+                                         what a level is. -->
+                                    <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8"
+                                          Margin="0,4,0,0">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="Transmit drive"
+                                                   FontSize="11"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <NumericUpDown Grid.Column="1" Width="120"
+                                                       x:Name="DigitalTransmitDriveBox"
+                                                       Minimum="1" Maximum="100" Increment="1"
+                                                       FormatString="0.#"
+                                                       FontSize="11"
+                                                       Value="{Binding TransmitDrivePercent, Mode=TwoWay}" />
+                                        <TextBlock Grid.Column="2"
+                                                   Text="% of full scale"
+                                                   FontSize="11"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </Grid>
+
+                                    <!-- **THE dBFS, BEFORE ANYTHING IS SENT.**
+                                         The only level Hamlet showed anywhere
+                                         was inside `DigitalSendLine`, and that
+                                         line says nothing has been sent until a
+                                         transmission has already gone out — so
+                                         an operator setting a drive against his
+                                         radio's ALC had to transmit once to find
+                                         out what he had just set. This moves
+                                         with the control.
+
+                                         **IT IS A SETTING AND IT SAYS SO.** What
+                                         the sound card was actually handed is
+                                         the line below it, and the two are
+                                         deliberately worded apart. -->
+                                    <TextBlock x:Name="DigitalTransmitDriveNote"
+                                               Text="{Binding TransmitDriveNote}"
+                                               TextWrapping="Wrap"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
                                 </StackPanel>
                             </Border>
                         </Grid>

@@ -1,23 +1,22 @@
-﻿## Step 3 - the audio reaches the radio and the radio keys
+﻿## Step C - the whole chain runs from one click, at the bench
 
-**Delivers:** audio out to the USB codec, PTT via CI-V, unkey.
+**Delivers:** click to keyed to unkeyed, proven end to end with no radio.
 
-**Entry:** steps 1 and 2. **The abort must be proven first.**
+**Entry:** steps A and B.
 
 **Exit:**
-- Audio plays to the radio's USB input at the right device, rate and level.
+- **One right-click drives the whole chain**: menu, compose, key, play, unkey,
+  telemetry - **exercised in one test**, with the transmit endpoint on a loopback
+  and CI-V on a fake transport. *must-pass*
+- **The audio that reaches the endpoint decodes back to the message the operator
+  clicked.** *must-pass*
+- **The abort fires from the middle of that chain** and the sound stops.
   *must-pass*
-- **Key, transmit, unkey**, with the unkey happening even if the audio path
-  throws. *must-pass*
-- **A loopback proves the whole chain**: generate, play, capture on the tap,
-  decode, and get the message back. **This needs no antenna and no radio state**
-  and is the closing evidence for this step. *must-pass*
-- The transmitted slot is recorded to telemetry with what was sent and when.
-  *must-pass*
-- **The licence gate is in the path** and refuses out-of-privilege frequencies,
-  asserted by a test. *must-pass*
-- **Nothing keys without an operator action reaching this code.** There is no
-  entry point that transmits on a timer. *must-pass*
+- **Nothing transmits that the operator did not click**, asserted across the whole
+  chain rather than at the menu alone. *must-pass*
 
-**Depends on:** steps 1 and 2.
+**This is the last thing that can be proved without a radio.** Everything after it
+is Tim.
+
+**Depends on:** steps A and B.
 

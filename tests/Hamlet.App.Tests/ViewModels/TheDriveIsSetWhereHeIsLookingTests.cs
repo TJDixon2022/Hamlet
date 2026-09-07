@@ -161,6 +161,61 @@ public sealed class TheDriveIsSetWhereHeIsLookingTests
     }
 
     /// <summary>
+    /// **A level the composer would refuse is not written, and the operator is
+    /// told in `Ft8Composer`'s own words.**
+    /// </summary>
+    /// <remarks>
+    /// <para>The question is asked of <c>Ft8Composer.DriveIsUsable</c> rather
+    /// than answered a second time on this screen, so a level the tab accepted
+    /// could never be one the send path then refuses with a sentence at the
+    /// moment the operator presses send. **The setting keeps the last usable
+    /// level** rather than storing one that would be rejected.</para>
+    /// <para>**IT GOES THROUGH THE VIEW MODEL AND NOT THROUGH THE SPINNER**, and
+    /// that is the stronger test: the spinner's own <c>Minimum</c> and
+    /// <c>Maximum</c> are 1 and 100, the same two ends the Settings spinner
+    /// carries, so a refused level cannot be typed into it - which means the
+    /// bounds on the control and the composer's refusal would agree by accident
+    /// even if the refusal were missing entirely. The expected sentence is read
+    /// **off the composer here**, not written out again, so this cannot pass by
+    /// matching a copy of a string that has since changed.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void ALevelTheComposerWouldRefuseIsNotWrittenAndItSaysSoInTheComposersWords()
+    {
+        var (window, panel, settings) = Scene(s => s.TransmitDrivePeak = 0.3f);
+
+        var note = Named<TextBlock>(window, "DigitalTransmitDriveNote");
+
+        foreach (var refused in new[] { 0.0, -10.0, 101.0 })
+        {
+            panel.TransmitDrivePercent = refused;
+
+            Pump(window);
+
+            _output.WriteLine("asked for : " + refused + " %");
+            _output.WriteLine("peak now  : " + settings.TransmitDrivePeak.ToString("F6"));
+            _output.WriteLine("note      : " + note.Text);
+
+            Assert.Equal(0.3f, settings.TransmitDrivePeak, 4);
+
+            // **THE COMPOSER'S OWN SENTENCE, ASKED OF THE COMPOSER.** The note
+            // upper-cases its first letter, so the tail from the second
+            // character is what is looked for.
+            Ft8Composer.DriveIsUsable((float)(refused / 100.0), out var why);
+
+            Assert.Contains(why[1..], note.Text ?? "", StringComparison.Ordinal);
+            Assert.Contains(
+                "not a transmit level", note.Text ?? "", StringComparison.Ordinal);
+
+            // And it names the level that is still in force, so he is not left
+            // guessing what his radio is being driven at.
+            Assert.Contains("still using 30 %", note.Text ?? "", StringComparison.Ordinal);
+        }
+
+        window.Close();
+    }
+
+    /// <summary>
     /// **The two views cannot disagree**: a settings panel built after the tab's
     /// control moved the level shows the new one.
     /// </summary>

@@ -1,5 +1,6 @@
-﻿   Bash  {"command":"python -c \"\nimport io,re\np=\u0027PROJECT_STATUS.md\u0027\ns=io.open(p,encoding=\u0027utf-8\u0027).read()\ni=s.index(\u0027\\n\\n---\u0027)\nhead=s[:i]\ntail=s[i:]\nold=head.split(\u0027NOTE: \u0027,1)[1]\nhead=head.split(\u00 ...(truncated)
-   Bash  {"command":"tools\\arbiter\\outcome-append.bat 2\u003e\u00261 | head -20","description":"Try outcome-append.bat once verbatim"}
-   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Try outcome-append.bat verbatim"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run the output validator"}
-   Bash  {"command":"cmd /c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the validator through cmd"}
+﻿   Bash  {"command":"sed -n \u002710p\u0027 PROJECT_STATUS.md | cut -c1-2400 \u003e /tmp/prev-note.txt; wc -c /tmp/prev-note.txt","description":"Extract prior note head"}
+   Bash  {"command":"ls ~/.nuget/packages/avalonia.headless.xunit/ ~/.nuget/packages/avalonia.headless/ 2\u003e\u00261","description":"Headless packages"}
+   Bash  {"command":"grep -n \"TooQuietDb = -60\\|public const double SilenceDb\\|private const double LevelSeconds\\|Assert.Equal(new\\[\\] { KeyOn, CwStop, PttOff }, whileRunning)\\|Assert.Equal(Ft8TransmitOutcome.Cancelled, boundary.Run.Outcome)\ ...(truncated)
+   Bash  {"command":"tools\\\\arbiter\\\\outcome-append.bat 2\u003e\u00261 | head -20","description":"Try outcome-append.bat"}
+   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Try outcome-append.bat, bare"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate output.md"}

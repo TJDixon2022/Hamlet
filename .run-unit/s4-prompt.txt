@@ -21,7 +21,7 @@ work on the same step remains open.
 Read PHASE_PLAN.md for this step exit criteria and
 PHASE_OUTCOME.md for what has already been done. Then decide
 whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step 3.
+owner answer. The step being worked is step C.
 
 Halting a night for a question that forecloses nothing is the
 failure this judgment exists to prevent. Building on an assumption
@@ -50,77 +50,56 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-**Nothing is blocking. Three items are recorded for the record; none is a
-ruling request, and none stands in the way of anything named in B.**
+**Nothing is blocking. Four items, none in the way of a step C criterion, and no
+ruling is wanted** - the one question this unit could have raised (whether the
+`456 ms` figure should replace the tree's stated bound) answers itself: it is a
+different quantity measured a different way, both are honest, and neither is
+asserted against the other.
 
-### 1. An inherited red, found and deliberately not chased
+### 1. `outcome-append.bat` was refused again, both forms
 
-`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequence
-CallsItAudioFailed` fails: `Expected: AudioFailed, Actual: Cancelled`.
+Verbatim, in order:
 
-**It is not the scale and it is not mine.** The test builds its own tone
-through `RenderChoice.Tone` and never touches `Ft8Composer`, so the drive
-level cannot reach it. `Ft8TransmitSequence.cs:296-305` is unit 263's new
-branch - a short play under cancellation now reports `Cancelled` rather than
-`AudioFailed`, deliberately, because "one is the sound card letting him down;
-the other is him pressing the button". The test asserts the pre-263 behaviour
-and was last touched at `77268f1`, before unit 263 existed.
+```
+This Bash command contains multiple operations. The following part requires
+approval: tools\arbiter\outcome-append.bat 2>&1
+```
+```
+This command requires approval
+```
 
-Task 3 item 2 says: where a test fails for a reason that is not the scale,
-stop, report it, and do not chase it. **Reported, not chased.** The next unit
-inherits a one-line expectation change and the sentence explaining it.
+The plan's own named alternative was taken: the entry was appended with the
+file-editing tools in the format the existing entries use, with an `APPENDED_BY:`
+line saying on its face that a script did not write it. **Halts nothing.** Two other
+shell calls were refused tonight and both were worked around the same way:
+`This Bash command contains multiple operations. The following part requires
+approval: cut -c1-2400 ; wc -c /tmp/prev-note.txt`, and `This command requires
+approval` for a multi-file grep.
 
-### 2. Two places where the tree disagreed with the instruction
+### 2. A plan-versus-tree mismatch, reported and not repaired - and it is step D's
 
-Both reported and neither repaired, per "the tree wins".
+`PHASE_PLAN.md` step D's first criterion says Tim *"reads the dBFS and clip count
+**under the waterfall**"*. **In the tree they are in the Send area line after each
+send** - `MainWindowViewModel.LevelLine` - and there is no such readout under the
+waterfall. The figures exist and are readable, so **the criterion is satisfiable as
+written except for where it says to look**, and `docs/unit268-what-step-d-asks-tim.md`
+points Tim at the right place. **Not repaired, per the instruction.** Bears on step
+D, not on step C.
 
-- The instruction refers to "the four at `Ft8Composer.cs:14-34`". The enum
-  runs to line 40 and holds **five** values - four refusals plus `None`. I
-  added the new refusal beside them as asked; the count and the line range in
-  the instruction are both slightly off and nothing turns on it.
-- `AppSettings.cs:210-213`'s remark was stale, as the instruction suspected.
-  **I corrected it**, and only because task 5 put the drive control beside
-  that picker, which is the exact condition the instruction set for touching
-  it. Had task 5 been dropped, the remark would have been left alone.
+### 3. An open menu swallows the next press, and any future unit will hit it
 
-### 3. Carried forward, reported and not chased
+A `MenuFlyout` shown by the right-click handler is a popup with a light-dismiss
+layer over the whole window. **Until it is closed, the next simulated press lands on
+that layer and not on the control underneath**, silently - it cost this unit a red
+whose first diagnosis was wrong. **This is a test-harness fact and not a product
+defect**: in the running application, clicking a menu item closes the flyout itself.
+Written down here so it is not rediscovered as a mystery.
 
-- `PROJECT_STATUS.md` carries `RULES_AT: HM-DEC-157 (2026-09-06)` while
-  `CLAUDE.md` Â§1's highest is `CPS-DEC-0152`. **Reported, not reconciled** -
-  the work instruction parks it explicitly.
-- `PHASE_OUTCOME.md`'s header says step 1 is `done` while an entry beneath it
-  says `partial`. **Expected, and not reconciled**: unit 264 set the header on
-  work instruction 264's authority and the entry predates it. No existing
-  entry was edited and no step's word in either header line was touched.
-- `outcome-append.bat` refused once, verbatim - the thirteenth consecutive
-  unit.
-- **`validate-output.bat` could not be run, and this report's validation is a
-  hand check standing in for a run.** Three forms were tried: the verbatim
-  backslash form, which the shell mangled into
-  `toolsarbitervalidate-output.bat: command not found`; the forward-slash
-  form; and `cmd /c "..."`. The last two were both refused with **"This
-  command requires approval"**. Following unit 263's recorded fallback, the
-  script's seven rules were checked by hand against the copy it prints in its
-  own header, and **all seven pass**: the `UNIT:` line is above section 1 and
-  parses; the four top-level sections are in order with exact names; there is
-  no fifth; section 4 is present and non-empty; section 3 is non-empty; the
-  ordering block sits above the `UNIT:` line with A, B and C, and C names how
-  many items section 4 raises; and the header block carries no placeholder
-  token.
-- **The bookkeeping the reload named was committed before task 2**, at
-  `96d7d2d`: `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`,
-  `SESSION.lock`, `WORK_INSTRUCTIONS.md` and the whole of `.run-unit/`. **What
-  I left:** none of it - `git status` was clean of the reload's list after
-  that commit. The only files I authored changes to among them are
-  `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line and `PROJECT_STATUS.md`'s
-  header; `HEARTBEAT:`, `CURRENT_STEP:` and the `STEP:` lines were not
-  touched and nothing below the `---` was changed.
+### 4. The inherited reds, none run and none chased
 
-### Not blocking, and not raised as questions
-
-The parked list was honoured in full: the IC-7300's expected figure, the
-transmit audio base frequency, step 4's criterion 6, step 1's fifth criterion
-and both its header words, the CW send and band-scan members, the licence-gate
-wording, and the `RULES_AT` disagreement. **No step was closed. `TransmitGuard`
-was not touched, the drive level is not a gate, and neither the abort nor the
-stop was made conditional on anything added tonight.**
+`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
+`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
+and
+`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`,
+which unit 265 recorded and units 266, 267 and now 268 have left alone. **None was
+run tonight and none is chased.**

@@ -92,3 +92,6 @@ the owner reads instead of watching.
 | 7 | 2026-09-07T02:01 | 2026-09-07T02:24 | complete | 13.141347000000003 | ran unattended, 165 turns, 8 denied call(s) worked around, report valid |
 | 8 | 2026-09-07T02:33 | 2026-09-07T02:58 | failed | 12.819888500000001 | run-unit exit 4: 5 denied call(s), is_error=False, terminal=completed |
 | phase | 2026-09-07T02:59 | 2026-09-07T02:59 | halted | 112.2652 | stop 7: validate-output refused the report (after 5 denied calls) |
+| 1 | 2026-09-07T09:59 | 2026-09-07T10:23 | complete | 13.577231000000003 | ran unattended, 145 turns, 4 denied call(s) worked around, report valid |
+| 2 | 2026-09-07T10:29 | 2026-09-07T10:47 | complete | 12.125338 | ran unattended, 145 turns, 12 denied call(s) worked around, report valid |
+| 3 | 2026-09-07T10:54 | 2026-09-07T11:23 | complete | 16.319568000000007 | ran unattended, 170 turns, 6 denied call(s) worked around, report valid |

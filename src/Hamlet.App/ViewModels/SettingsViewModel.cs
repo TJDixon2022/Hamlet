@@ -321,27 +321,25 @@ public partial class SettingsViewModel : ObservableObject
     /// question is asked of <c>Ft8Composer.DriveIsUsable</c> rather than answered
     /// again here, so the screen and the send path cannot come to different
     /// answers about what is a level.</para>
+    /// <para>**THE ARITHMETIC MOVED TO <see cref="TransmitDrive"/> AND THE
+    /// BEHAVIOUR DID NOT** (work instruction 269, task 2). There is a second
+    /// control over this one setting now, under the waterfall on the Digital tab,
+    /// where step D asks the operator to read it; two copies of *percent goes in,
+    /// peak comes out* is the drift this unit exists to make impossible. The
+    /// conversion, the composer's question and the note sentence are the same
+    /// code on both screens.</para>
     /// </remarks>
     [ObservableProperty]
     private double _transmitDrivePercent;
 
     partial void OnTransmitDrivePercentChanged(double value)
     {
-        var peak = (float)(value / 100.0);
-
         // ASKED OF THE COMPOSER, NOT DECIDED AGAIN HERE. A value it would refuse
         // is not written to the file at all - the setting keeps the level that
         // was last usable rather than storing one the send path would reject with
         // a sentence at the moment the operator pressed send.
-        if (!Ft8Composer.DriveIsUsable(peak, out _))
-        {
-            OnPropertyChanged(nameof(TransmitDriveNote));
+        TransmitDrive.Write(_settings, value);
 
-            return;
-        }
-
-        _settings.TransmitDrivePeak = peak;
-        SettingsStore.Save(_settings);
         OnPropertyChanged(nameof(TransmitDriveNote));
     }
 
@@ -353,31 +351,14 @@ public partial class SettingsViewModel : ObservableObject
     /// the machine Hamlet was written on. The operator sets this against his own
     /// radio's ALC meter, and the line says so rather than letting a default look
     /// like a specification.
+    ///
+    /// **THE WORDS ARE <see cref="TransmitDrive.NoteFor"/>'S AND THEY ARE
+    /// UNCHANGED** (work instruction 269, task 2): the Digital tab's own drive
+    /// control shows the same sentence, and two copies of a sentence that has to
+    /// keep saying *this is not a specification* is one copy too many.
     /// </remarks>
     public string TransmitDriveNote
-    {
-        get
-        {
-            var peak = TransmitDrivePercent / 100.0;
-
-            if (!Ft8Composer.DriveIsUsable((float)peak, out var why))
-            {
-                return "That is not a transmit level, so Hamlet is still using "
-                    + (_settings.TransmitDrivePeak * 100.0).ToString("0.#", CultureInfo.InvariantCulture)
-                    + " %. " + char.ToUpperInvariant(why[0]) + why[1..];
-            }
-
-            return "How hard Hamlet drives the radio's input - "
-                + (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture)
-                + " dBFS at this setting. This is a starting point, not a "
-                + "specification. Set it against your own radio's ALC meter: turn "
-                + "it up until the ALC just begins to move and then back off. Full "
-                + "scale is a wide, distorted signal over other people's band, which "
-                + "is why Hamlet starts at "
-                + (Ft8Composer.DefaultDrivePeak * 100.0).ToString("0.#", CultureInfo.InvariantCulture)
-                + " %.";
-        }
-    }
+        => TransmitDrive.NoteFor(TransmitDrivePercent, _settings.TransmitDrivePeak);
 
     /// <summary>The endpoints, or none where the machine would not say.</summary>
     /// <remarks>

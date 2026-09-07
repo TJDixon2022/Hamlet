@@ -3075,6 +3075,14 @@ public partial class MainWindowViewModel : ObservableObject
         _settings = settings;
         _telemetry = telemetry;
 
+        // **THE DRIVE CONTROL UNDER THE WATERFALL OPENS ON THE LEVEL IN FORCE**
+        // (work instruction 269, task 2), read the same way
+        // `SettingsViewModel.cs:163` reads it, off the one `AppSettings` both
+        // screens share. Assigned to the field rather than the property so that
+        // opening the window does not count as the operator moving the control
+        // and re-save a level nothing changed.
+        _transmitDrivePercent = TransmitDrive.PercentFor(settings.TransmitDrivePeak);
+
         // **THE VISIBLE TABLE MIRRORS THE WHOLE ONE, RATHER THAN EVERY CALLER
         // REMEMBERING TO FILL BOTH** (unit 252 task 2). There are four places a
         // row leaves or joins `DigitalDecodes` — the decoder's own door, the row
@@ -4057,6 +4065,15 @@ public partial class MainWindowViewModel : ObservableObject
             DataContext = new SettingsViewModel(_settings, _telemetry),
         };
         await window.ShowDialog(desktop.MainWindow);
+
+        // **THE OTHER DRIVE CONTROL MAY HAVE MOVED WHILE THE DIALOG WAS UP**
+        // (work instruction 269, task 2). Two controls over one setting have to
+        // agree in both directions, and the tab's one is not watching the
+        // settings object. Setting the property rather than the field is
+        // deliberate: it is a no-op when nothing changed, because the generated
+        // setter compares first.
+        TransmitDrivePercent = TransmitDrive.PercentFor(_settings.TransmitDrivePeak);
+        OnPropertyChanged(nameof(TransmitDriveNote));
 
         // Source switches and the callsign may both have changed while the
         // dialog was open, and the callsign is RBN's login, so the sources are
@@ -8103,6 +8120,65 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     private string _digitalSendLine = NothingHasBeenSent;
+
+    /// <summary>
+    /// The peak amplitude Hamlet builds a transmission at, as a percentage of
+    /// full scale - **the same setting the Settings screen writes, on the tab.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHY IT IS HERE AS WELL AS IN SETTINGS** (work instruction 269,
+    /// task 2). `PHASE_PLAN.md` step D's first exit criterion is *"Tim sets the
+    /// Transmit drive control and reads the dBFS and clip count under the
+    /// waterfall"*. The only drive control was <c>TransmitDriveBox</c> in
+    /// <c>SettingsWindow.axaml:262</c>, reached through
+    /// <see cref="OpenSettingsAsync"/>, which shows the settings window with
+    /// <c>ShowDialog</c> - a second top-level window over the waterfall, over the
+    /// decode table and over <c>DigitalStopButton</c>, while the 250 ms
+    /// <c>_decodeTimer</c> keeps driving slot boundaries behind it. Setting a
+    /// drive between two fifteen-second slots meant hiding the band and the Stop
+    /// button to do it.</para>
+    /// <para>**THE SETTINGS CONTROL STAYS.** Nothing was taken off that screen;
+    /// this is a second view of one setting, not a move. Both write
+    /// <see cref="AppSettings.TransmitDrivePeak"/> through
+    /// <see cref="TransmitDrive"/>, so the conversion, the composer's question
+    /// and the note sentence are one piece of code and cannot drift apart.</para>
+    /// <para>**PERCENT ON THE SCREEN, PEAK IN THE FILE.** A spinner showing
+    /// `0.25` is a control an operator has to be taught to read and `25 %` is one
+    /// he does not.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private double _transmitDrivePercent;
+
+    partial void OnTransmitDrivePercentChanged(double value)
+    {
+        // ASKED OF THE COMPOSER, NOT DECIDED AGAIN HERE, AND NOT DECIDED TWICE:
+        // this is the same call `SettingsViewModel` makes. A value it would
+        // refuse is not written at all and the note says which level is still in
+        // force.
+        TransmitDrive.Write(_settings, value);
+
+        OnPropertyChanged(nameof(TransmitDriveNote));
+    }
+
+    /// <summary>
+    /// What the drive works out to in dBFS, and what it is for - **on the screen
+    /// before anything has been transmitted.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS THE HALF OF STEP D'S FIRST CRITERION NOTHING IN THE TREE
+    /// COULD DO.** The only level Hamlet showed anywhere was inside
+    /// <see cref="DigitalSendLine"/>, which reads
+    /// <see cref="NothingHasBeenSent"/> until a transmission has already gone
+    /// out - so an operator setting a drive against his radio's ALC had to
+    /// transmit once to find out what he had just set. This one is there as the
+    /// control moves and before the radio is keyed.</para>
+    /// <para>**IT IS THE LEVEL HAMLET WILL COMPOSE AT AND IT SAYS SO** - a
+    /// setting, not a measurement. What was actually handed to the sound card is
+    /// a different sentence, after a send, and the two are deliberately
+    /// worded apart.</para>
+    /// </remarks>
+    public string TransmitDriveNote
+        => TransmitDrive.NoteFor(TransmitDrivePercent, _settings.TransmitDrivePeak);
 
     /// <summary>Every message the operator may send to one row's station.</summary>
     /// <param name="row">The row he right-clicked.</param>
