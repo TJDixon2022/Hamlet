@@ -8475,6 +8475,29 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **AND COMPOSED IS NOT THE SAME AS READABLE** (work instruction 272).
+        // `Ft8Composer` measures, per transmission, whether a callsign travelled
+        // as a 22-bit hash rather than as a callsign - and until tonight no line
+        // of `src/` read that. The application composed, saw `Composed: true`,
+        // armed and keyed, which is exactly what it did twice on 14.074 on
+        // 2026-09-07: the level was right, the timing was right, the log said
+        // `Sent`, and both slots decoded to nothing at all.
+        // **THE RULE IS THE ENGINE'S AND NOT THIS FILE'S** (0.1). Nothing here
+        // knows what a hashed callsign is, what the port's brackets mean, or
+        // which callsigns are compound; it asks `Ft8ReadBack` and says what it
+        // is told. **It is asked before the radio is**, because a message nobody
+        // can read is unreadable whether or not anything is connected.
+        // **AND IT IS NOT A CHANGE TO THE MENU.** This is the send path, where
+        // the licence gate already refuses. `SendMenuFor` is untouched and
+        // nothing is removed, greyed, hidden or reordered.
+        var readBack = Ft8ReadBack.Check(composed.Transmission!);
+
+        if (!readBack.WouldReachAnybody)
+        {
+            DigitalSendLine = Ft8ReadBack.SentNothing(wanted, readBack);
+            return;
+        }
+
         var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
         var next = Ft8Slots.SlotStart(trueUtc).AddSeconds(Ft8Slots.SlotSeconds);
 

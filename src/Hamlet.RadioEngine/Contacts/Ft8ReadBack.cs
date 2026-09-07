@@ -70,14 +70,30 @@ public static class Ft8ReadBack
     {
         ArgumentNullException.ThrowIfNull(transmission);
 
-        // **WHAT THE APPLICATION BELIEVES TODAY, WRITTEN DOWN SO IT CAN BE
-        // WATCHED FAILING** (work instruction 272, task 2, the red).
-        // `MainWindowViewModel.SendMessage` goes from `composed.Composed` to
-        // `_armedSend.Arm` with nothing between them that looks at how the
-        // message encoded, so the rule in force is exactly this: a transmission
-        // that composed is a transmission that reaches somebody. It is false,
-        // and both of the operator's live transmissions are the evidence.
-        return new Ft8ReadBackVerdict(true, string.Empty);
+        // **NOTHING TO ANSWER.** Every callsign went out in full, so the slot
+        // decodes to the words he clicked and this is the ordinary case.
+        if (!transmission.CarriesHashedCallsign)
+        {
+            return new Ft8ReadBackVerdict(true, string.Empty);
+        }
+
+        // **UNLESS THE BRACKETS ARE HIS OWN.** Where the bits read back
+        // character-for-character as what he typed, the encoder substituted
+        // nothing and there is nothing to tell him. Read off the two strings
+        // rather than by looking for a bracket, so nothing here has to know what
+        // the port's marking looks like.
+        if (string.Equals(transmission.ReadsBackAs, transmission.Text, StringComparison.Ordinal))
+        {
+            return new Ft8ReadBackVerdict(true, string.Empty);
+        }
+
+        return new Ft8ReadBackVerdict(
+            false,
+            "it encodes as \"" + transmission.ReadsBackAs + "\", which puts a callsign on the "
+            + "air as a 22-bit hash instead of as a callsign. A station can only put a name to "
+            + "that hash if it heard the whole callsign in the same slot, so anybody hearing "
+            + "this on its own decodes nothing at all. Nothing was keyed. The message is still "
+            + "in the menu and everything else toward that station will go.");
     }
 
     /// <summary>
