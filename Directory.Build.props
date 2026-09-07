@@ -201,8 +201,42 @@
     and docs/unit254-combining-depth.md section 1.7 lists those surfaces for the unit that ships
     it. No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.124 -> 1.12.125, UNIT 271. A PATCH, AND IT REPAIRS THE FIRST DEFECT THIS PROJECT HAS PUT ON
+    A LIVE ANTENNA. Hamlet transmitted twice on 14.074000 on 2026-09-07 and the machinery was clean -
+    keyed 0.5 s in, 606720 samples, Sent, OrdinaryUnkey. WHAT IT SAID WAS NOT. The operator's grid in
+    Settings is six characters, FN00DJ, and a standard FT8 message carries four. MEASURED, task 1,
+    through Ft8Composer and back through Ft8Sharp's own Ft8SlotDecoder at 12000 and packed again at
+    the 48000 the endpoint actually ran at:
+
+      "VP2MAA KC3QIS FN00DJ" -> NonstandardCallsign, the bits say "<VP2MAA KC3QIS> FN00DJ",
+                                callsign hashed, DECODER RETURNS NOTHING.
+      "CQ KC3QIS FN00DJ"     -> Standard, the bits say "<CQ KC3QIS> <FN00DJ>",
+                                callsign hashed, DECODER RETURNS NOTHING.
+      "VP2MAA KC3QIS FN00"   -> Standard, reads back as itself.
+      "CQ KC3QIS FN00"       -> Standard, reads back as itself.
+
+    THE SIX-CHARACTER GRID WAS NOT TRUNCATED AND WAS NOT REJECTED - it was encoded as something
+    else. The standard packing of "VP2MAA" / "KC3QIS" / "FN00DJ" succeeds and reads back
+    "VP2MAA KC3QIS FN00", so Ft8Composer's round-trip guard correctly refused it as a truncation;
+    the words then fell through to the pass that allows a callsign on the wire as a hash, where
+    "VP2MAA KC3QIS" hashed as ONE callsign field and the bracket-stripping comparison accepted it.
+    A transmission asserting something nobody receives is 0.0 pointed the other way, and it went out
+    on a live antenna twice.
+
+    THE REPAIR IS AT THE ONE PLACE A GRID ENTERS A TRANSMITTED MESSAGE - Ft8SendOptions - and the
+    six characters stay in Settings untouched, because distance and bearing use them. The round trip
+    is now the test: compose, encode, decode with Ft8Sharp, get the same text back, over a CQ, a grid
+    reply, a report, an R- report, RRR, RR73 and 73.
+
+    ALSO IN: the CQ button's independence from the decoded table is pinned by test rather than by
+    reading; the contact column speaks only where the message is addressed to the operator, so a CQ
+    and two other stations working each other say nothing there; and the stop control carries a label
+    and a resting state, with the abort behind it untouched. SHACK_FACTS.md gains the level the
+    operator measured at his own radio, which no machine in this repository could know.
+  -->
   <PropertyGroup>
-    <Version>1.12.124</Version>
+    <Version>1.12.125</Version>
   </PropertyGroup>
 
   <!--
