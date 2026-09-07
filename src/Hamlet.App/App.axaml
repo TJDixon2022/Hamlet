@@ -51,6 +51,12 @@
         <x:String x:Key="HmDecodeDtHelp">Seconds from the start of the slot to the moment that station began transmitting.</x:String>
         <x:String x:Key="HmDecodeHzHelp">The audio tone above the dial. The station is on the dial frequency plus this.</x:String>
         <x:String x:Key="HmDecodeMessageHelp">What was sent. Thirteen characters in three parts: who it is to, who it is from, and the payload.</x:String>
+        <!-- **IT REPORTS AND IT DOES NOT RULE** (PHASE_PLAN.md). The four words
+             are the plan's own and the number beside them is a count of slots, a
+             slot being fifteen seconds. Nothing here closes a contact, and gone
+             quiet is a measurement of silence rather than a statement about the
+             station: an operator working three others at once is being busy. -->
+        <x:String x:Key="HmDecodeContactHelp">Where the contact with the sender stands, and how many slots ago. Waiting on him, your move, complete, or gone quiet. Complete means both callsigns, both grids or reports, and both acknowledgements have passed - a 73 is politeness and its absence does not withhold it. Nothing here is ever closed or withdrawn.</x:String>
 
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,

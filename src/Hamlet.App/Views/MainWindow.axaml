@@ -3302,7 +3302,7 @@
                                      declaration, because it checks the result
                                      rather than the intent. -->
                                 <Grid Grid.Row="1"
-                                      ColumnDefinitions="76,48,48,54,*"
+                                      ColumnDefinitions="76,48,48,54,*,148"
                                       RowDefinitions="Auto"
                                       IsVisible="{Binding HasDigitalDecodes}">
 
@@ -3329,6 +3329,23 @@
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                     <TextBlock Grid.Row="0" Grid.Column="4" Text="message"
                                                ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
+                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                               Margin="0,0,14,4"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- **THE CONTACT COLUMN GOES LAST AND THE
+                                         MESSAGE KEEPS THE STAR** (unit 258). The
+                                         message is what the operator came to
+                                         read and it is the one cell whose width
+                                         is not knowable in advance; the state is
+                                         four fixed phrases and a small number,
+                                         and `gone quiet, 11 slots` is the
+                                         longest of them at 148 pixels of
+                                         12-point Consolas. Giving the star to
+                                         the state instead would let a derived
+                                         cell push the decoded text around. -->
+                                    <TextBlock Grid.Row="0" Grid.Column="5" Text="contact"
+                                               ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
                                                FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                Margin="0,0,0,4"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
@@ -3387,7 +3404,7 @@
                                                  held back is carried by the
                                                  summary's hidden count, which is
                                                  never omitted (§0.0, §0.6). -->
-                                            <Grid ColumnDefinitions="76,48,48,54,*">
+                                            <Grid ColumnDefinitions="76,48,48,54,*,148">
                                                 <TextBlock Grid.Column="0" Text="{Binding Utc}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                 <TextBlock Grid.Column="1" Text="{Binding Snr}"
@@ -3458,6 +3475,37 @@
 
                                                 <TextBlock Grid.Column="4" Text="{Binding Unsplit}"
                                                            IsVisible="{Binding !HasFields}"
+                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                                <!-- **THE STATE IS TEXT AND THE
+                                                     TEXT IS FORMATTED IN THE
+                                                     ENGINE**, so what a reader
+                                                     sees here is what
+                                                     `TheRowSaysWhereTheContactStandsTests`
+                                                     asserts without opening a
+                                                     window. There is no
+                                                     converter, no template
+                                                     selector and no per-state
+                                                     styling: a row that is
+                                                     complete and a row that has
+                                                     gone quiet are drawn
+                                                     identically, because nothing
+                                                     on this table is closed,
+                                                     hidden or greyed out (Tim's
+                                                     ruling, 2026-09-06, and unit
+                                                     252 already removed the
+                                                     dimming once).
+
+                                                     **AND IT IS MUTED.** The
+                                                     decoded message is what
+                                                     arrived off the air; this is
+                                                     Hamlet's bookkeeping about
+                                                     it, and the two should not
+                                                     read with the same
+                                                     weight. -->
+                                                <TextBlock Grid.Column="5" Text="{Binding Contact}"
+                                                           ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
+                                                           Foreground="{StaticResource HmTextMutedBrush}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                             </Grid>
                                         </DataTemplate>

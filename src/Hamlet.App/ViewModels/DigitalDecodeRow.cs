@@ -64,9 +64,29 @@ namespace Hamlet.App.ViewModels;
 /// stays the only one. It is used to measure a distance from and never to name a
 /// place (Tim's ruling, 2026-09-05).
 /// </param>
+/// <param name="SlotStartUtc">
+/// The boundary of the slot this row's message was in, in true UTC.
+/// **The `Utc` cell is `HHmmss` for a reader and cannot be counted with**; this
+/// is the moment the contact ledger measures slots from. It is set by
+/// <see cref="From(Ft8Decode)"/> off `Ft8Decode.SlotStartUtc` and by nothing
+/// else.
+/// </param>
+/// <param name="Contact">
+/// **Where the contact with this row's sender stands, as text a reader sees.**
+/// One of `PHASE_PLAN.md`'s four - *waiting on him*, *your move*, *complete* or
+/// *gone quiet* - with the count of slots beside it, or "" where the message
+/// has no sender to hold a contact with.
+/// **Formatted in the engine and carried here as a string**, for the same reason
+/// the rest of this row is formatted rather than templated: what a reader sees
+/// can then be asserted by a test that never opens a window.
+/// It is set in one place, `MainWindowViewModel.PlaceRow`, beside
+/// <paramref name="ObserverGrid"/>.
+/// </param>
 public sealed record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message,
-    string ObserverGrid = "")
+    string ObserverGrid = "",
+    DateTime SlotStartUtc = default,
+    string Contact = "")
 {
     /// <summary>What the `snr` cell says for a message whose ratio was not measured.</summary>
     /// <remarks>
@@ -206,6 +226,8 @@ public sealed record DigitalDecodeRow(
             FormatSnr(decode.SignalToNoiseDb),
             decode.OffsetSeconds.ToString("0.0", CultureInfo.InvariantCulture),
             decode.FrequencyHz.ToString("0", CultureInfo.InvariantCulture),
-            decode.Message);
+            decode.Message,
+            ObserverGrid: "",
+            SlotStartUtc: decode.SlotStartUtc);
     }
 }

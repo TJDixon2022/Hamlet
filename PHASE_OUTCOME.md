@@ -4,7 +4,7 @@ STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | partial | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
 STEP: 3 | partial | the audio reaches the radio and the radio keys
-STEP: 4 | not started | the row knows where the contact stands
+STEP: 4 | partial | the row knows where the contact stands
 STEP: 5 | not started | right-click and it goes
 STEP: 6 | not started | Tim works a station
 
@@ -185,3 +185,18 @@ ACCOMPLISHED: Hamlet stops showing a list of events and starts knowing where a c
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: The unit worked entirely on step 3 and its own report states that steps 4, 5 and 6 have had no unit spent on them and that step 4 is unblocked, unstarted and next, so none of step 4's exit criteria on per station QSO state, the four row states, the completeness rule, the never closing rule, the three at once proof or derivation from recorded captures has any work or evidence behind it.
+
+## UNIT 6 - STEP 4
+
+STEP: 4
+APPROACH: Build the per-station contact ledger and the four row states in the engine, ledger first, proved against the band scene corpus unit 257 left in the tree rather than composing a scene again
+HIT: The unit before this one was killed by the watchdog fourteen minutes in and never wrote an output.md, so there was no section 4 to weigh and nothing was banked from it - the entry above carries judgment fields computed from unit 256's report and is left exactly as it stands. This unit's own section 4 raises 0 items and asks the owner to decide nothing.
+MOVE: continue
+WHY: Step 4 was the only thing standing between this phase and step 5, and it had had one unit launched at it that was killed by the watchdog with its survey committed and its fixture not, so the ledger was never built and the approach was never carried out. The order was inverted against the last instruction - the fixture was adopted in one bounded task and the ledger built before the night could end again - and that is what carried it: task 1 was green on the first of three permitted attempts and every task after it landed.
+DECIDED: Three on my own authority. First, the splitter was moved into the engine as unit 257's survey decided, and IsCallToAnyone, IsGrid and IsReport were moved with it, because the states need the same field shapes the tooltip needs and three copies of the CQ rule existed in the tree; the app's four are one-line forwards now and no existing test of Split was edited. Second, the gone-quiet threshold is four slots, sixty seconds, two consecutive transmit opportunities gone by, chosen and argued rather than specified, and the scene is evaluated at the boundary of slot 13 because that is the operator's next transmit opportunity after his slot-11 transmission and so is the moment the row actually matters. Third, the named drop candidate was not dropped: the contact column is in MainWindow.axaml at the header and the row template with the XAML compiling green, because the mechanical change was small and the tested string was already on the row.
+LICENCE: PHASE_PLAN.md's named alternatives to stopping - the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried - together with the plan's own ruling that a row's state is derived from which messages passed between two callsigns, which is bookkeeping, not meaning. SHACK_FACTS.md FACT-004 rules out the radio-side alternative to a synthesized scene and is why criterion 6 lands on a corpus rather than a capture.
+COST: unknown
+ACCOMPLISHED: Hamlet stops showing a list of events and starts knowing where a contact stands. For each station it holds what passed each way and how long ago, and says one of four things about it - waiting on him, your move, complete, gone quiet - with the slot counts beside it, on the row, in a column. It says them about a station working three others at once without calling that a fault, it calls an exchange complete without waiting for a 73 nobody is obliged to send, and it closes, hides and forbids nothing. That is the last thing step 5's menu needs before a right-click can offer the operator anything.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Five of step 4's six exit criteria stand met on quoted evidence - what passed each way with its slot counts, the four states shown per row, complete with no 73 in the exchange and a 73 after it changing nothing, nothing closed hidden or forbidden asserted by reflection over every public member, and the three-at-once station reading as gaps and never as gone quiet across every slot of the scene. Criterion 6 is met in substance and not in letter: the evidence is derived from a recorded corpus read back through the application's own Ft8DeepSlotDecoder rather than from the air, but that corpus is synthesized by Hamlet's own encoder and is not a WSJT-X capture, which SHACK_FACTS.md FACT-004 puts out of this machine's reach, so the step closes partial with the route stated.

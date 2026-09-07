@@ -13,6 +13,7 @@ using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Civ;
+using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
@@ -1089,6 +1090,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// ordering.</para>
     /// </remarks>
     private readonly List<DigitalDecodeRow> _digitalArrivals = new();
+
+    /// <summary>What has passed with each station heard on the Digital tab.</summary>
+    /// <remarks>
+    /// **OPENED WHEN THE FIRST ROW ARRIVES AND NOT IN THE CONSTRUCTOR**, because
+    /// a ledger is kept from somebody's station and the operator's callsign may
+    /// be empty until he has typed one into Settings.
+    /// </remarks>
+    private Ft8ContactLedger? _contacts;
+
+    /// <summary>Whose callsign <see cref="_contacts"/> was opened for.</summary>
+    private string _contactsFor = "";
 
     /// <summary>
     /// How many rows the table keeps before the oldest fall off.
@@ -7763,6 +7775,12 @@ public partial class MainWindowViewModel : ObservableObject
         // fresh each time so a grid typed in Settings shows up on the next slot.
         row = row with { ObserverGrid = _settings.Operator.GridSquare };
 
+        // **AND THE ONE PLACE THE CONTACT STATE REACHES A ROW** (unit 258). Same
+        // door, same reason: every row goes through here, so there is one place
+        // that books what was heard and one place that reads back where the
+        // contact stands.
+        row = row with { Contact = ContactTextFor(row) };
+
         _digitalArrivals.Add(row);
         DigitalDecodes.Insert(InsertAt(row), row);
 
@@ -7775,6 +7793,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="dt">The offset cell.</param>
     /// <param name="hz">The tone cell.</param>
     /// <param name="message">The text.</param>
+    /// <param name="slotStartUtc">
+    /// The boundary of the slot the message was in, in true UTC. **The contact
+    /// state is counted in slots and cannot be counted off the `HHmmss` cell**,
+    /// so a test that wants a state on the row passes the real moment. Left
+    /// unset, the row carries no contact text and every test written before unit
+    /// 258 goes on asserting exactly what it did.
+    /// </param>
     /// <returns>The row, so a test can look at what became of it.</returns>
     /// <remarks>
     /// **THE SAME DOOR THE DECODER USES**, so what is tested is the placement
@@ -7783,13 +7808,69 @@ public partial class MainWindowViewModel : ObservableObject
     /// on a question about a string comparison (§5).
     /// </remarks>
     internal DigitalDecodeRow AddDecodeRowForTests(
-        string utc, string snr, string dt, string hz, string message)
+        string utc, string snr, string dt, string hz, string message,
+        DateTime slotStartUtc = default)
     {
-        var row = PlaceRow(new DigitalDecodeRow(utc, snr, dt, hz, message));
+        var row = PlaceRow(new DigitalDecodeRow(
+            utc, snr, dt, hz, message, ObserverGrid: "",
+            SlotStartUtc: slotStartUtc));
 
         RaiseDigitalDecodeChanges();
 
         return row;
+    }
+
+    /// <summary>Where the contact with this row's sender stands, as text.</summary>
+    /// <param name="row">The row that has just arrived.</param>
+    /// <returns>The state and its slot count, or "" where there is no station.</returns>
+    /// <remarks>
+    /// <para>**THE ROW SHOWS WHERE THE CONTACT STOOD IN ITS OWN SLOT**, which is
+    /// what a table of decodes is: a record of moments. The state is read at the
+    /// row's own slot boundary, so a row never restates itself as the evening
+    /// goes on and a reader can see a contact progressing down the table.</para>
+    /// <para>**THE ENGINE DOES NOT KNOW A TAB EXISTS** (§0.1). The ledger takes
+    /// the operator's callsign as a constructor parameter; this is the app
+    /// reading `OperatorProfile.Callsign` and handing it over, which is the same
+    /// arrangement `ObserverGrid` has above.</para>
+    /// <para>**NOTHING HERE SENDS AND NOTHING CALLS `RecordSent`.** Until step 5
+    /// there is no send path to say what went out, so every row's state is
+    /// derived from what was heard - which is correct rather than incomplete: a
+    /// station Hamlet has not answered is a station it is *your move* on.</para>
+    /// <para>**AND IT IS EMPTY RATHER THAN GUESSED.** No operator callsign, a
+    /// message the splitter refuses, or a sender that is a call to anyone all
+    /// give "", because there is no contact between two stations to report.</para>
+    /// </remarks>
+    private string ContactTextFor(DigitalDecodeRow row)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+
+        // **NO SLOT, NO SLOT COUNT** (§0.0). A row that arrived without its true
+        // UTC cannot say how many slots ago anything was, and a count measured
+        // from `DateTime.MinValue` would be a number on the screen that means
+        // nothing. It says nothing instead.
+        if (mine.Length == 0 || row.SlotStartUtc == default)
+        {
+            return "";
+        }
+
+        // **A CHANGED CALLSIGN OPENS A NEW LEDGER RATHER THAN REWRITING THE OLD
+        // ONE.** What passed with a station was addressed to whoever the operator
+        // was at the time, and carrying it over would put somebody else's
+        // exchange under his call.
+        if (_contacts is null
+            || !string.Equals(_contactsFor, mine, StringComparison.OrdinalIgnoreCase))
+        {
+            _contacts = new Ft8ContactLedger(mine);
+            _contactsFor = mine;
+        }
+
+        _contacts.RecordHeard(row.Message, row.SlotStartUtc);
+
+        var record = _contacts.For(row.Sender);
+
+        return record is null
+            ? ""
+            : Ft8ContactStates.Read(record, row.SlotStartUtc).Text;
     }
 
     /// <summary>Where a newly arrived row belongs in the display order.</summary>
