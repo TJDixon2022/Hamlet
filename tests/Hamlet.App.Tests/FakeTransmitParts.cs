@@ -111,6 +111,45 @@ internal sealed class FakeSink : ITransmitAudioSink
     /// <summary>True where nothing ever reached it.</summary>
     public bool WasNeverTouched => TimesCalled == 0;
 
+    /// <summary>
+    /// Wall-clock time the whole slot should take, or null for the instant play.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ONE BEHAVIOUR THIS FAKE LACKED** (work instruction 263, task 2),
+    /// and it lacked it worse than its engine-side neighbour did: this one had no
+    /// way to report a short play at all, so **it always claimed the full
+    /// `samples.Length` went out in a hard-coded 12.64 seconds**, whatever
+    /// happened. Since this is the fake the application's send path actually runs
+    /// against, that is where a stop that stopped only half of what was on the air
+    /// would have hidden - and did.</para>
+    /// <para>**IT IS WALL TIME, AND WHAT IS REPORTED IS SAMPLES.**
+    /// <see cref="PlayedSoFar"/> advances in proportion to elapsed wall time
+    /// against this span, so a test can compress a 12.64 s slot into a second and
+    /// the fraction played, and therefore the milliseconds of audio, stay exact.</para>
+    /// <para>**NULL BY DEFAULT, SO NO EXISTING TEST CHANGES MEANING.**</para>
+    /// </remarks>
+    public TimeSpan? PlaysOver { get; set; }
+
+    /// <summary>Set once something is actually inside the play.</summary>
+    /// <remarks>
+    /// How a test lands a stop mid-transmission without racing it. Set on the
+    /// timed path only; the instant play has no middle to be in.
+    /// </remarks>
+    public ManualResetEventSlim Entered { get; } = new(false);
+
+    /// <summary>
+    /// How many samples have gone out so far, readable while the play is running.
+    /// </summary>
+    /// <remarks>
+    /// The difference between this read at the stop and read after the run ends,
+    /// over the rate, is **the milliseconds of audio that left the machine after
+    /// the operator pressed stop**.
+    /// </remarks>
+    public int PlayedSoFar { get; private set; }
+
+    /// <summary>True where the token ended the play before the samples ran out.</summary>
+    public bool StoppedByTheToken { get; private set; }
+
     /// <inheritdoc/>
     public Task<PlayedAudio> PlayAsync(
         ReadOnlyMemory<float> samples, int sampleRate, CancellationToken cancellationToken)
@@ -130,7 +169,57 @@ internal sealed class FakeSink : ITransmitAudioSink
                 + "silently changed on the way out.");
         }
 
-        return Task.FromResult(
-            new PlayedAudio(samples.Length, TimeSpan.FromSeconds(12.64)));
+        if (PlaysOver is not TimeSpan over)
+        {
+            PlayedSoFar = samples.Length;
+
+            return Task.FromResult(
+                new PlayedAudio(samples.Length, TimeSpan.FromSeconds(12.64)));
+        }
+
+        // NOT `async` ON THE METHOD ITSELF. The refusal above throws synchronously
+        // today and unit 262's tests rely on it; an `async` keyword here would
+        // wrap it in a faulted task instead.
+        return PlayOverTimeAsync(samples.Length, over, cancellationToken);
+    }
+
+    /// <summary>The play that takes time and stops when it is told to.</summary>
+    /// <param name="total">How many samples the whole slot is.</param>
+    /// <param name="over">How long the whole slot should take in wall time.</param>
+    /// <param name="cancellationToken">Stops the playing.</param>
+    /// <returns>How much actually went out, and how long it actually took.</returns>
+    /// <remarks>
+    /// **IT POLLS, BECAUSE `WasapiTransmitSink` POLLS**
+    /// (<c>WasapiTransmitSink.cs:339</c> and <c>:372</c>), and **it does not throw
+    /// on cancellation**, because the real sink does not either: the contract of
+    /// this method is to say how much went out and an
+    /// <c>OperationCanceledException</c> cannot.
+    /// </remarks>
+    private async Task<PlayedAudio> PlayOverTimeAsync(
+        int total, TimeSpan over, CancellationToken cancellationToken)
+    {
+        const int PollMilliseconds = 2;
+
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+
+        PlayedSoFar = 0;
+        StoppedByTheToken = false;
+        Entered.Set();
+
+        while (PlayedSoFar < total && !cancellationToken.IsCancellationRequested)
+        {
+            await Task.Delay(PollMilliseconds, CancellationToken.None).ConfigureAwait(false);
+
+            var through = over <= TimeSpan.Zero
+                ? 1.0
+                : clock.Elapsed.TotalMilliseconds / over.TotalMilliseconds;
+
+            PlayedSoFar = (int)Math.Min(total, Math.Max(0, through * total));
+        }
+
+        StoppedByTheToken = PlayedSoFar < total;
+        clock.Stop();
+
+        return new PlayedAudio(PlayedSoFar, clock.Elapsed);
     }
 }

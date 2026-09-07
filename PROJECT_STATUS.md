@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 263 - the stop stops the audio too
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T01:22:10-04:00
-NOTE: Gate checked against the tree - SHACK_FACTS.md and CwProbabilisticDecoder.cs present, no CoreHMI.sln, no MURC.sln, Hamlet.sln the only solution. Tracing the token from MainWindowViewModel.cs:8258 down to WasapiTransmitSink.PlayAsync for docs/unit263-stop-audio-trace.md. Confirmed so far: grep -rn "Register(" over WasapiTransmitSink.cs and the whole Transmit/ folder returns nothing at all, so unit 261's stated reason for not doing this work does not hold. Two line numbers in the instruction are off by a hop - StopNow is 235-247 not 235-251, and AtBoundaryAsync hands the token over at :297 not :296.
+UPDATED: 2026-09-07T01:34:00-04:00
+NOTE: THE RED IS WATCHED AND QUOTED. Both fakes now have a play that takes time and honours the token; four new tests in TheStopStopsTheAudioTooTests run the stop into a live transmission. Against the tree as it stands, 3 of the 4 fail and the numbers are the unit's evidence: wire at the stop FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD - the carrier is off - and the sink played 151680 of 151680 samples anyway, 12640 ms of audio of which 8345 ms went out AFTER the operator pressed stop, with the run reporting itself Sent. Task 1's trace is committed and pushed at 894de90.
 
 ---
 

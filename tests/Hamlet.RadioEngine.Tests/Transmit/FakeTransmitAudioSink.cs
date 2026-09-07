@@ -67,6 +67,54 @@ internal sealed class FakeTransmitAudioSink : ITransmitAudioSink
     /// <summary>How long it claims the playing took.</summary>
     public TimeSpan Took { get; set; } = TimeSpan.FromSeconds(12.64);
 
+    /// <summary>
+    /// Wall-clock time the whole slot should take, or null for the instant play.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ONE BEHAVIOUR THIS FAKE LACKED, AND WHY THAT MATTERED** (work
+    /// instruction 263, task 2). A play that returns before the caller can reach
+    /// it cannot be cancelled by anything, so **every test of the operator's stop
+    /// was proved against a sink that had already finished** - and twelve of the
+    /// twelve tests in <c>TheOperatorsStopFiresFromEveryStateTests</c> would still
+    /// pass if the audio never stopped at all
+    /// (<c>docs/unit263-stop-audio-trace.md</c> Q7). A fake more permissive than
+    /// the real thing hides the defect, which is unit 262's lesson and it cost
+    /// that unit a task.</para>
+    /// <para>**IT IS WALL TIME, AND WHAT IS REPORTED IS SAMPLES.**
+    /// <see cref="PlayedSoFar"/> advances in proportion to elapsed wall time
+    /// against this span, so a test can compress a 12.64 s slot into a second and
+    /// **the fraction played, and therefore the milliseconds of audio, stay
+    /// exact**. A test that wants real time sets this to the slot's own duration.</para>
+    /// <para>**NULL BY DEFAULT, SO NO EXISTING TEST CHANGES MEANING.** Every test
+    /// written before this unit gets the instant play it has always had, with
+    /// <see cref="PlaysOnly"/> and <see cref="Throws"/> untouched. Setting this is
+    /// how a test says *stand for a transmission that is still going out*.</para>
+    /// </remarks>
+    public TimeSpan? PlaysOver { get; set; }
+
+    /// <summary>Set once something is actually inside the play.</summary>
+    /// <remarks>
+    /// **HOW A TEST LANDS A STOP MID-TRANSMISSION WITHOUT RACING IT.** The radio
+    /// is keyed, the samples have been handed over, and the sequence is where it
+    /// spends the slot - which is the moment the operator reaches for the stop.
+    /// It is set on the timed path only; the instant play has no middle to be in.
+    /// </remarks>
+    public ManualResetEventSlim Entered { get; } = new(false);
+
+    /// <summary>
+    /// How many samples have gone out so far, readable while the play is running.
+    /// </summary>
+    /// <remarks>
+    /// **THE MEASURE THE WHOLE UNIT TURNS ON.** A test reads it just before it
+    /// calls the stop and again after the run ends, and the difference in samples
+    /// over the rate is **the milliseconds of audio that left the machine after
+    /// the operator pressed stop**.
+    /// </remarks>
+    public int PlayedSoFar { get; private set; }
+
+    /// <summary>True where the token ended the play before the samples ran out.</summary>
+    public bool StoppedByTheToken { get; private set; }
+
     /// <inheritdoc/>
     public Task<PlayedAudio> PlayAsync(
         ReadOnlyMemory<float> samples, int sampleRate, CancellationToken cancellationToken)
@@ -91,6 +139,59 @@ internal sealed class FakeTransmitAudioSink : ITransmitAudioSink
             throw Throws;
         }
 
-        return Task.FromResult(new PlayedAudio(PlaysOnly ?? samples.Length, Took));
+        if (PlaysOver is not TimeSpan over)
+        {
+            PlayedSoFar = PlaysOnly ?? samples.Length;
+
+            return Task.FromResult(new PlayedAudio(PlayedSoFar, Took));
+        }
+
+        // NOT `async` ON THE METHOD ITSELF. The two refusals above throw
+        // synchronously today and tests written against them rely on it; an
+        // `async` keyword here would wrap both in a faulted task instead.
+        return PlayOverTimeAsync(samples.Length, over, cancellationToken);
+    }
+
+    /// <summary>The play that takes time and stops when it is told to.</summary>
+    /// <param name="total">How many samples the whole slot is.</param>
+    /// <param name="over">How long the whole slot should take in wall time.</param>
+    /// <param name="cancellationToken">Stops the playing.</param>
+    /// <returns>How much actually went out, and how long it actually took.</returns>
+    /// <remarks>
+    /// <para>**IT POLLS, BECAUSE <c>WasapiTransmitSink</c> POLLS**
+    /// (<c>WasapiTransmitSink.cs:339</c> and <c>:372</c>). A fake that registered
+    /// a callback instead would prove a mechanism the real sink does not have.</para>
+    /// <para>**AND IT DOES NOT THROW ON CANCELLATION**, for the reason the real
+    /// sink does not: the contract of this method is to say how much went out, and
+    /// an <c>OperationCanceledException</c> cannot. The waits are on
+    /// <see cref="CancellationToken.None"/> for the same reason - the real sink's
+    /// <c>Task.Delay(WaitMilliseconds, CancellationToken.None)</c>.</para>
+    /// </remarks>
+    private async Task<PlayedAudio> PlayOverTimeAsync(
+        int total, TimeSpan over, CancellationToken cancellationToken)
+    {
+        const int PollMilliseconds = 2;
+
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+
+        PlayedSoFar = 0;
+        StoppedByTheToken = false;
+        Entered.Set();
+
+        while (PlayedSoFar < total && !cancellationToken.IsCancellationRequested)
+        {
+            await Task.Delay(PollMilliseconds, CancellationToken.None).ConfigureAwait(false);
+
+            var through = over <= TimeSpan.Zero
+                ? 1.0
+                : clock.Elapsed.TotalMilliseconds / over.TotalMilliseconds;
+
+            PlayedSoFar = (int)Math.Min(total, Math.Max(0, through * total));
+        }
+
+        StoppedByTheToken = PlayedSoFar < total;
+        clock.Stop();
+
+        return new PlayedAudio(PlayedSoFar, clock.Elapsed);
     }
 }
