@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 260 - the menu under the mouse, and a route to the radio
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:55:00-04:00
-NOTE: Root records committed and pushed at 2f68c40. All five trace questions measured out of the tree - no ContextRequested or ContextFlyout in any source file, the row template's Grid at MainWindow.axaml:3444, CreateRig discarding its SystemSerialPort at :9830, WasapiTransmitSink throwing on an unknown endpoint at :119, and the baseline arming grep showing one Arm call site at MainWindowViewModel.cs:8017. Writing docs/unit260-route-trace.md now.
+UPDATED: 2026-09-06T23:53:50-04:00
+NOTE: Task 2 green - six tests, all passing, and criterion 2 taken on a real control tree with a real ContextRequested raised on the row's own Grid. NUMBER is 5 of 5: every station's menu under the mouse matched unit 259's prediction exactly, including K9RST and W1ABC carrying "acknowledge, 2nd time". The red was watched first with the flyout captured when the row was created - after sending VK2PQ 73 the second right-click still read "73" and not "73, 2nd time". Committing, then task 3, the dangerous one.
 
 ---
 

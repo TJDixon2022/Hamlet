@@ -3441,7 +3441,22 @@
                                                  held back is carried by the
                                                  summary's hidden count, which is
                                                  never omitted (§0.0, §0.6). -->
-                                            <Grid ColumnDefinitions="76,48,48,54,*,148">
+                                            <!-- **RIGHT-CLICK A ROW AND THE MENU
+                                                 IS BUILT AT THAT MOMENT** (step
+                                                 5's criterion 2, ruled
+                                                 2026-09-06). The handler is in
+                                                 the code-behind because a
+                                                 pointer is a view fact (§0.2),
+                                                 and there is deliberately no
+                                                 `ContextFlyout` here: a flyout
+                                                 hung on the row would carry the
+                                                 repeat counts the row was born
+                                                 with and offer `RRR` as a first
+                                                 send after it had already gone
+                                                 twice. -->
+                                            <Grid ColumnDefinitions="76,48,48,54,*,148"
+                                                  Background="Transparent"
+                                                  ContextRequested="OnDecodedRowContextRequested">
                                                 <TextBlock Grid.Column="0" Text="{Binding Utc}"
                                                            FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                 <TextBlock Grid.Column="1" Text="{Binding Snr}"
