@@ -1,6 +1,9 @@
 using System.Diagnostics;
 using Ft8Sharp.Dsp;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Telemetry;
+using Hamlet.RadioEngine.Tests.Rig;
 using Hamlet.RadioEngine.Transmit;
 using NAudio.CoreAudioApi;
 using Xunit;
@@ -81,6 +84,22 @@ public sealed class TheLoopbackProvesTheWholeChainTests
         // **AND THE RATE LIE RETURNS NOTHING**, watched red before this chain was
         // right and kept as an assertion so it stays caught.
         Assert.DoesNotContain(run.Expected, run.TextsUnresampled, StringComparer.Ordinal);
+
+        // The whole send path ran: the gate permitted, the radio was keyed and it
+        // came back out of transmit the ordinary way.
+        Assert.Equal(Ft8TransmitOutcome.Sent.ToString(), run.Outcome);
+        Assert.Equal(UnkeyRoute.OrdinaryUnkey.ToString(), run.CameOutOfTransmit);
+
+        // **AND THE RECORD CARRIES NO CALLSIGN AND NO MESSAGE** (HM-DEC-018).
+        // The message that just went out is not findable anywhere in the record's
+        // keys or its values.
+        var written = string.Join(
+            "|",
+            run.Record.Select(pair => $"{pair.Key}={pair.Value}"));
+
+        Assert.NotEmpty(run.Record);
+        Assert.DoesNotContain("KC3QIS", written, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(run.Sent, written, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -162,6 +181,10 @@ public sealed class TheLoopbackProvesTheWholeChainTests
         double PeakDb,
         double FloorDb,
         bool NearlySilent,
+        string Outcome,
+        string CameOutOfTransmit,
+        int WireBytes,
+        IReadOnlyDictionary<string, object?> Record,
         IReadOnlyList<string> Texts,
         IReadOnlyList<string> TextsUnresampled)
     {
@@ -229,14 +252,32 @@ public sealed class TheLoopbackProvesTheWholeChainTests
 
         capture.RecordingStopped += (_, _) => stopped.Set();
 
+        // **THE WHOLE SEND PATH, NOT JUST THE SINK.** The gate, the keying frame,
+        // the play and the guaranteed unkey, with the record written at the end -
+        // so the transmission that goes through this loopback is recorded exactly
+        // the way unit 255 built it. The transport is unit 253's fake: a real port
+        // beside a real sink would be a real transmission.
+        var port = new FakeSerialPort();
+        var telemetry = new RecordingTelemetry();
+
+        var send = new OperatorSend(
+            transmission,
+            14_074_000,
+            LicenseClass.General,
+            true,
+            new DateTime(2026, 9, 6, 23, 45, 0, DateTimeKind.Utc),
+            0.5);
+
         var clock = Stopwatch.StartNew();
 
         capture.StartRecording();
         await Task.Delay(PreRoll).ConfigureAwait(false);
 
-        var played = await sink
-            .PlayAsync(transmission.Samples, rate, CancellationToken.None)
+        var run = await new Ft8TransmitSequence(port, sink, guard: null, telemetry: telemetry)
+            .RunAsync(send)
             .ConfigureAwait(false);
+
+        var played = run.Played ?? new PlayedAudio(0, TimeSpan.Zero);
 
         await Task.Delay(PostRoll).ConfigureAwait(false);
         capture.StopRecording();
@@ -298,13 +339,20 @@ public sealed class TheLoopbackProvesTheWholeChainTests
             tap.Level.PeakDb,
             tap.Level.FloorDb,
             tap.Level.NearlySilent,
+            run.Outcome.ToString(),
+            run.CameOutOfTransmit.ToString(),
+            port.Written.Length,
+            telemetry.Events.Count == 1
+                ? telemetry.Events[0].Data
+                : new Dictionary<string, object?>(StringComparer.Ordinal),
             texts,
             lied);
     }
 
     /// <summary>A run that never got as far as playing anything.</summary>
     private static Run NotAttempted(string note) =>
-        new(false, note, "none", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -90, 0, 0, true, [], []);
+        new(false, note, "none", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -90, 0, 0, true,
+            "none", "none", 0, new Dictionary<string, object?>(StringComparer.Ordinal), [], []);
 
     /// <summary>Everything the run measured, printed.</summary>
     private void Report(Run run)
@@ -340,10 +388,47 @@ public sealed class TheLoopbackProvesTheWholeChainTests
         _output.WriteLine($"decoded         : {Quoted(run.Texts)}");
         _output.WriteLine($"decoded (lied)  : {Quoted(run.TextsUnresampled)}");
         _output.WriteLine($"came back       : {run.CameBack}");
+        _output.WriteLine($"outcome         : {run.Outcome}");
+        _output.WriteLine($"came out of tx  : {run.CameOutOfTransmit}");
+        _output.WriteLine($"wire            : {run.WireBytes} bytes to the fake transport");
+        _output.WriteLine("record          :");
+
+        foreach (var pair in run.Record)
+        {
+            _output.WriteLine($"    {pair.Key,-22}: {pair.Value}");
+        }
+
         _output.WriteLine($"wall clock      : {run.WallSeconds:0.###} s");
     }
 
     /// <summary>A list of decodes, quoted, or the word nothing.</summary>
     private static string Quoted(IReadOnlyList<string> texts) =>
         texts.Count == 0 ? "nothing" : "\"" + string.Join("\", \"", texts) + "\"";
+
+    /// <summary>Keeps what the sequence wrote, so the record can be quoted.</summary>
+    private sealed class RecordingTelemetry : ITelemetry
+    {
+        private readonly List<TelemetryEvent> _events = [];
+
+        /// <summary>Everything written, in order.</summary>
+        public IReadOnlyList<TelemetryEvent> Events => _events;
+
+        /// <inheritdoc/>
+        public long DroppedEventCount => 0;
+
+        /// <inheritdoc/>
+        public void Write(
+            TelemetryCategory category,
+            string eventName,
+            IReadOnlyDictionary<string, object?>? data = null,
+            TelemetryLevel level = TelemetryLevel.Info)
+            => _events.Add(new TelemetryEvent(
+                new DateTime(2026, 9, 6, 23, 45, 1, DateTimeKind.Utc),
+                "test",
+                level,
+                "test",
+                category,
+                eventName,
+                data ?? new Dictionary<string, object?>(StringComparer.Ordinal)));
+    }
 }

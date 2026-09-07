@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T20:23:09-04:00
-NOTE: IT DECODED, and it is committed and pushed on its own. "CQ KC3QIS FN00" left the sound card, came back through WasapiLoopbackCapture, AudioTap, Ft8Resample and Ft8SlotDecoder, and read back as "CQ KC3QIS FN00" - whole text, ordinal, 606720 of 606720 samples in 12.657 s, 14.686 s wall clock. The same capture handed over without the resampler returned nothing, which is the rate lie caught. ABOUT TO RUN IN REAL TIME AGAIN: the two further messages of other shapes, roughly 30 seconds. The tap's live meter reads the silence after the transmission rather than the transmission, so the capture's own peak is now reported beside it.
+UPDATED: 2026-09-06T20:26:25-04:00
+NOTE: Three of three decoded and are pushed. The loopback has now been widened to run the whole send path rather than the sink alone - the gate, the keying frame to unit 253's fake transport, the real sink into the real endpoint, the guaranteed unkey, and unit 255's record written at the end - so the same three transmissions also carry criterion 4's evidence and the record is asserted to hold no callsign. ABOUT TO RUN IN REAL TIME AGAIN, roughly 45 seconds for the class. Then task 4 writes up the level: the sink wrote peak 1.0 at 0 dBFS with nothing clipped, and that is a development-machine figure, not the radio's.
 
 ---
 
