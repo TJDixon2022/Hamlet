@@ -196,12 +196,15 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
 
         var result = await panel.AtSlotBoundaryAsync(slot!.Value);
 
+        Dispatcher.UIThread.RunJobs();
+
         _output.WriteLine("licence class     : " + panel.LicenseClass);
         _output.WriteLine("boundary outcome  : " + result!.Outcome);
         _output.WriteLine("run outcome       : " + result.Run!.Outcome);
         _output.WriteLine("sent              : " + result.Run.Sent);
         _output.WriteLine("sink calls        : " + factory.Sink.TimesCalled);
         _output.WriteLine("frames at the port: " + port.Written.Count);
+        _output.WriteLine("the sentence      : " + panel.DigitalSendLine);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
         Assert.Equal(Ft8TransmitOutcome.Sent, result.Run.Outcome);
@@ -210,6 +213,13 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         // ONE TRANSMISSION, KEYED AND UNKEYED.
         Assert.Equal(1, factory.Sink.TimesCalled);
         Assert.Equal(2, port.Written.Count);
+
+        // **AND THE SEND AREA SAYS WHAT WENT AND TO WHOM** - criterion 4's first
+        // half, on the same run rather than on a second one. `Addressed` at
+        // `MainWindowViewModel.cs:8452` is what puts the callsign in it.
+        Assert.Contains("Sent to W1ABC,", panel.DigitalSendLine, StringComparison.Ordinal);
+        Assert.Contains(
+            "\"W1ABC KC3QIS -10\"", panel.DigitalSendLine, StringComparison.Ordinal);
     }
 
     /// <summary>
