@@ -568,6 +568,13 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
         item.Command!.Execute(clicked);
 
+        // **AND THE MENU CLOSES BEHIND HIM, WHICH IS WHAT A CLICK ON AN ITEM
+        // DOES.** An open `MenuFlyout` is a popup with a light-dismiss layer over
+        // the window, and the next press lands on that layer instead of on the
+        // control underneath it. Unit 268 task 4 watched a Stop press disappear
+        // into it while a real 12.64 s transmission went out of a real card whole.
+        Dismiss(scene, flyout);
+
         var slot = scene.Panel.ArmedForSlotUtc;
 
         Assert.True(slot is not null, scene.Panel.DigitalSendLine);
@@ -606,6 +613,7 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         pressClock.Stop();
 
         var whileRunning = Frames(scene);
+        var lineAtThePress = scene.Panel.DigitalSendLine;
 
         // ---- 4. WHEN DID THE CARD GO QUIET? ------------------------------------
         // Watched on the capture: the wall-clock moment the last sample arrived,
@@ -643,6 +651,7 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         _output.WriteLine("the run said     : " + boundary.Run.Outcome);
         _output.WriteLine("came out of tx   : " + boundary.Run.CameOutOfTransmit);
         _output.WriteLine("WIRE WHILE RUNNING: " + string.Join(" | ", whileRunning));
+        _output.WriteLine("he read at the press: " + lineAtThePress);
         _output.WriteLine("wire at the end  : " + Wire(scene));
         _output.WriteLine("the operator reads: " + scene.Panel.DigitalSendLine);
 
@@ -820,7 +829,13 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             DigitalDecodedExpanded = true,
         };
 
-        var window = new MainWindow { DataContext = panel };
+        // **A WINDOW TALL ENOUGH TO SHOW THE SEND AREA WITHOUT SCROLLING**, which
+        // `TheOperatorCanStopItTests.cs:628-632` paid for first and unit 268 task 4
+        // paid for again: at the default height the Send area sits below the fold,
+        // a mouse cannot reach what is not on screen, and the press then reaches
+        // nothing while a real 12.64 s transmission goes out of a real card whole.
+        // It is a fact about the window size and not about the button.
+        var window = new MainWindow { DataContext = panel, Width = 1400, Height = 1400 };
 
         window.Show();
 
@@ -1154,6 +1169,14 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             + $"was taken from {endpoints.Count} active render endpoints - THIS MAY BE AUDIBLE";
 
         return chosen;
+    }
+
+    /// <summary>Closes the menu, the way a click on one of its items closes it.</summary>
+    private static void Dismiss(Built scene, MenuFlyout flyout)
+    {
+        flyout.Hide();
+
+        Pump(scene.Window);
     }
 
     /// <summary>The realized FT8 stop button, found on the window itself.</summary>
