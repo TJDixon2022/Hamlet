@@ -4,9 +4,9 @@ STEP: 0 | done | the record is honest about where the phase stands
 STEP: A | done | the row knows where the contact stands
 STEP: B | done | right-click and it goes
 STEP: C | done | the whole chain runs from one click, at the bench
-STEP: D | blocked | the drive level his radio wants
-STEP: E | in progress | Tim works a station
-STEP: 1 | not started | (described by the plan)
+STEP: D | done | the drive level his radio wants - 25 per cent, -12.04 dBFS, ALC -2.0 to -1.5 inside the red zone, on the IC-7300 at 14.074 MHz. The evidence is SHACK_FACTS.md FACT-005, written by unit 271 from the operator's own reading at the radio on 2026-09-07, and no unit may promise to defer that number again.
+STEP: E | blocked | Tim works a station
+STEP: 1 | in progress | (described by the plan)
 
 ---
 
@@ -192,3 +192,35 @@ FATE: executed
 STATE_AFTER: in progress
 STATE_WHY: NONE OF STEP E'S THREE EXIT CRITERIA IS MET AND NONE COULD BE, because all three are Tim's at his own radio: he answers a CQ on 14.074 or 7.074 and completes an exchange, the slots that appear in telemetry are his slots, and what he saw and what surprised him are his words. What moved is the blocker under criterion 2 and only that. Its telemetry half was already proved on disk by the committed walk; its "the row reads complete" half was proved for one ending only - the exchange that finishes with a message HEARD - and the ending that finishes with the operator's own message had a hole that nothing in the tree failed on. That hole is measured, committed and closed: a fourth line in DigitalSendReserved, computed from the one ledger the rows already read, asserted on a realized window with DigitalStopButton still visible, still enabled and inside the window's bounds beside it. Criteria 1 and 3 were untouched and SHACK_FACTS.md was not opened. Step D was not touched and stays blocked. Step E stays in progress until Tim runs the evening.
 APPENDED_BY: the file-editing tools, not outcome-append.bat. Both invocation forms were refused by this session's shell - verbatim, "This command requires approval" for `tools\arbiter\outcome-append.bat --help` and the same words for `cmd //c "tools\arbiter\outcome-append.bat" --help` - the fourteenth consecutive unit, so work instruction 270 task 4's named alternative was taken and the header's STEP: E line was updated in place by hand, in the format the existing entries use. outcome-entry.py's own FIELDS list at :115-118 holds twelve fields and twelve are written here, plus this line.
+
+### ALSO RECORDED FOR UNIT 270 - STEP E
+
+A second append for the same unit and the same step, called as UNIT 5.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: after the operator's own last transmission completes a contact, say so in a Send area line read from the one ledger the rows already use, at the moment it was read, without rewriting the contact cell of any row already on the table
+HIT: section 4 wants a ruling: no - All four items are reports for the record, a plan versus tree mismatch left unrepaired under the rule that the tree wins, a shell refusal already handled by the plan's named alternative, and a note that one committed test was outside this unit's licence, and none of them asks the owner to decide anything or stops work pending his answer.
+WHY: Step D is blocked on Tim at his own radio and no unit can move it, so rather than spend a night on it or halt the phase, this unit takes the one part of what remains that a machine with no radio can settle - step E's second criterion, whose telemetry half is already proved on disk by the committed walk and whose 'the row reads complete' half has a hole: where the operator's own message is what completes the exchange, PlaceRow computed the newest row's cell before the send and RecordSent touches nothing on the table, so if the station then goes quiet nothing on screen ever says the contact finished.
+DECIDED: Three on my own authority. First, the present state goes into a line about the present rather than into the cells of rows already placed, because PlaceRow's own contract at :7826 is that a row shows where the contact stood in its own slot and never restates itself, and a table of moments that edits its own moments is a worse instrument than an incomplete one - the row-rewrite route is named in the instruction, parked, and to be reported if it turns out to be the only honest one. Second, step E's criterion 2 is treated as having a bench half and a shack half, on the same reading of the plan that licensed unit 269 to build the bench half of step D's criterion 1, and this unit builds only the bench half and claims no criterion. Third, the line is required to say which slot it was read at, because a state without a moment is the same class of fault as unit 269's readout showing the operator 
+LICENCE: PHASE_PLAN.md step E's second exit criterion, which names the transmitted slots in telemetry and the row reading complete; the plan's rule that a criterion needing the radio is his and its mirror, which leaves a bench-provable half as bench work; the ruling that a contact is never closed by the app and that nothing is forbidden, hidden or closed; section 12.1, under which a state is bookkeeping over which messages passed and not a reading of meaning; and the plan's named alternatives to stopping, including the file-editing tools where the shell refuses a call.
+COST: 15.337653000000003
+ACCOMPLISHED: When Tim answers a CQ and his own RRR is the message that finishes the exchange, Hamlet tells him it finished - naming the station, in the same four words the rows use, with the slot it was read at - instead of leaving the top of his table reading 'your move' until a station that has already moved on happens to transmit again. He will not re-send into a completed contact, and he will not sit waiting for one. What the contact itself is worth, and everything else about the evening, is still his.
+STATE_AFTER: blocked
+STATE_WHY: All three of step E's exit criteria require Tim to operate his own licensed station, its entry step D is itself blocked on the same outside event, and the unit closed none of them, only clearing a bench blocker under criterion 2, so no further development effort can meet the criteria.
+
+## UNIT 271 - STEP 1
+
+UNIT_AS_CALLED: 1
+STEP: 1
+APPROACH: not recorded
+HIT: section 4 wants a ruling: no - Every item is a report for the record, a self declared rule stretch, a caveat on an unverifiable claim or a change deliberately not made, and none asks the owner to decide anything or holds work pending his answer, the one request to him being for his memory of what he pressed rather than a ruling.
+MOVE: continue
+WHY: not recorded
+DECIDED: none
+LICENCE: none
+COST: 16.066289
+ACCOMPLISHED: not recorded
+FATE: executed
+STATE_AFTER: in progress
+STATE_WHY: The report closes none of step E's three criteria, which only the operator at the radio can meet, but it measures and repairs the undecodable transmission that stood in the way of criterion 1, so work is under way and the on-air exchange is still needed.
