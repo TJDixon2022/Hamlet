@@ -208,10 +208,12 @@ public sealed class AppSettings
     /// <para>**THE SAME SHAPE AND THE SAME REASONING AS THE INPUT FIELD**: the
     /// device's own id, because names change when a driver updates and an id does
     /// not.</para>
-    /// <para>**A SETTINGS SCREEN FOR IT IS NOT BUILT** (work instruction 259,
-    /// task 4, which names it as what remains). The field exists so the send path
-    /// has somewhere to read a name from; until something writes one, the send
-    /// says so.</para>
+    /// <para>**THE SETTINGS SCREEN FOR IT IS BUILT** - the picker unit 260 task 4
+    /// shipped, at <c>SettingsViewModel.cs</c>'s <c>TransmitEndpoint</c> and
+    /// <c>SettingsWindow.axaml</c>'s Transmit box. **This remark said it was not
+    /// built** until unit 265, which put the transmit drive control beside that
+    /// picker and had to read the remark to do it. With no endpoint named the send
+    /// still refuses and says so, which is the sentence below and is unchanged.</para>
     /// </remarks>
     public string? AudioOutputDeviceId { get; set; }
 

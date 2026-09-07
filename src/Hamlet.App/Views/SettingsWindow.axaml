@@ -239,6 +239,38 @@
                             </ComboBox>
                         </Grid>
 
+                        <!-- **HOW HARD THE TRANSMISSION DRIVES THAT ENDPOINT**
+                             (work instruction 265, task 5), beside the picker
+                             that says where it goes, because they are the same
+                             question asked twice: which output, and how loud
+                             into it. **Before this Hamlet transmitted at full
+                             scale and there was no control anywhere** - the
+                             operator's only recourse was the Windows volume
+                             slider, which Hamlet neither sets nor reports.
+                             **The note says on the screen that the number is a
+                             starting point set against the radio's own ALC**
+                             and not a figure this repository knows
+                             (`SHACK_FACTS.md` FACT-004). The spinner cannot
+                             offer a value the composer would refuse: it is
+                             bounded here at the same two ends
+                             `Ft8Composer.DriveIsUsable` refuses outside, and
+                             the view model asks the composer rather than
+                             deciding again. -->
+                        <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
+                            <TextBlock Grid.Column="0" Text="Transmit drive" Classes="hm-field" />
+                            <NumericUpDown Grid.Column="1" Width="130"
+                                           x:Name="TransmitDriveBox"
+                                           Minimum="1" Maximum="100" Increment="1"
+                                           FormatString="0.#"
+                                           Value="{Binding TransmitDrivePercent}" />
+                            <TextBlock Grid.Column="2" Text="% of full scale"
+                                       Classes="hm-field"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+
+                        <TextBlock Classes="hm-note" TextWrapping="Wrap"
+                                   Text="{Binding TransmitDriveNote}" />
+
                         <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
                             <TextBlock Grid.Column="0" Text="CW pitch" Classes="hm-field" />
                             <NumericUpDown Grid.Column="1" Width="130"

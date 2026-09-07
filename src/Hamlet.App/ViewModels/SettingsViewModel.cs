@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Settings;
@@ -7,6 +8,7 @@ using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Telemetry;
+using Hamlet.RadioEngine.Transmit;
 
 namespace Hamlet.App.ViewModels;
 
@@ -158,6 +160,7 @@ public partial class SettingsViewModel : ObservableObject
 
         TransmitEndpoints = ListEndpoints(transmitEndpoints);
         _transmitEndpoint = ChooseEndpoint(TransmitEndpoints, settings.AudioOutputDeviceId);
+        _transmitDrivePercent = settings.TransmitDrivePeak * 100.0;
         _cwPitchHz = settings.CwPitchHz;
         _copySpeedWpm = settings.CopySpeedWpm;
         _reconnectOnStartup = settings.ReconnectOnStartup;
@@ -301,6 +304,79 @@ public partial class SettingsViewModel : ObservableObject
     {
         _settings.AudioOutputDeviceId = value?.Id;
         SettingsStore.Save(_settings);
+    }
+
+    /// <summary>
+    /// The peak amplitude Hamlet builds a transmission at, as a percentage of
+    /// full scale.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A PERCENTAGE ON THE SCREEN AND A PEAK AMPLITUDE IN THE FILE.** The
+    /// stored value is the number <c>Ft8Composer</c> takes, 0 to 1; a spinner
+    /// showing `0.25` is a control an operator has to be taught to read, and
+    /// `25 %` is one he does not. **The dBFS the level actually works out to is
+    /// on screen beside it** (<see cref="TransmitDriveNote"/>), because that is
+    /// the unit the number is talked about in.</para>
+    /// <para>**IT WILL NOT ACCEPT A VALUE THE COMPOSER WOULD REFUSE.** The
+    /// question is asked of <c>Ft8Composer.DriveIsUsable</c> rather than answered
+    /// again here, so the screen and the send path cannot come to different
+    /// answers about what is a level.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private double _transmitDrivePercent;
+
+    partial void OnTransmitDrivePercentChanged(double value)
+    {
+        var peak = (float)(value / 100.0);
+
+        // ASKED OF THE COMPOSER, NOT DECIDED AGAIN HERE. A value it would refuse
+        // is not written to the file at all - the setting keeps the level that
+        // was last usable rather than storing one the send path would reject with
+        // a sentence at the moment the operator pressed send.
+        if (!Ft8Composer.DriveIsUsable(peak, out _))
+        {
+            OnPropertyChanged(nameof(TransmitDriveNote));
+
+            return;
+        }
+
+        _settings.TransmitDrivePeak = peak;
+        SettingsStore.Save(_settings);
+        OnPropertyChanged(nameof(TransmitDriveNote));
+    }
+
+    /// <summary>What the drive works out to, and what it is for.</summary>
+    /// <remarks>
+    /// **IT SAYS ON THE SCREEN THAT THE NUMBER IS A STARTING POINT.**
+    /// `SHACK_FACTS.md` FACT-004: what the IC-7300's USB modulation input expects
+    /// is not in this repository and cannot be inferred from anything measured on
+    /// the machine Hamlet was written on. The operator sets this against his own
+    /// radio's ALC meter, and the line says so rather than letting a default look
+    /// like a specification.
+    /// </remarks>
+    public string TransmitDriveNote
+    {
+        get
+        {
+            var peak = TransmitDrivePercent / 100.0;
+
+            if (!Ft8Composer.DriveIsUsable((float)peak, out var why))
+            {
+                return "That is not a transmit level, so Hamlet is still using "
+                    + (_settings.TransmitDrivePeak * 100.0).ToString("0.#", CultureInfo.InvariantCulture)
+                    + " %. " + char.ToUpperInvariant(why[0]) + why[1..];
+            }
+
+            return "How hard Hamlet drives the radio's input - "
+                + (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture)
+                + " dBFS at this setting. This is a starting point, not a "
+                + "specification. Set it against your own radio's ALC meter: turn "
+                + "it up until the ALC just begins to move and then back off. Full "
+                + "scale is a wide, distorted signal over other people's band, which "
+                + "is why Hamlet starts at "
+                + (Ft8Composer.DefaultDrivePeak * 100.0).ToString("0.#", CultureInfo.InvariantCulture)
+                + " %.";
+        }
     }
 
     /// <summary>The endpoints, or none where the machine would not say.</summary>
