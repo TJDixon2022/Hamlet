@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 5 of 5
-WORK_INSTRUCTION: 273 - the decoded area splits, and He is He
+WORK_INSTRUCTION: 274 - the contact log, written as ADIF
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-07T18:06:33-04:00
-NOTE: Five of five done and pushed, version 1.12.127 to 1.12.130. The drop candidate was attempted and it found the thing worth finding: at his own window size the left list has 75 pixels for the message where an ordinary VP2MAA KC3QIS FN00 wants 180, and that side clips where the mine side wraps. Nothing was shrunk to hide it - what would have to give is section 4 with numbers behind each option and it is his to choose. It also caught this unit's own omission, the 148-pixel contact column left on the everything side when task 1 says the column moves. Writing output.md now.
+UPDATED: 2026-09-07T19:13:00-04:00
+NOTE: Five of five done and pushed, version 1.12.130 to 1.12.134. A contact can be written down in one click and a station already worked is marked on both lists. The round trip earned its place twice and the entry builder once - a note containing the header terminator cut the file in half at his own sentence, an end time with no start silently lost the end, and reading the grid and the report off the same list lost the grid on every contact that opens with a CQ. Task 5 measured 265 bytes an entry and a check that runs once rather than per decode, asserted by deleting the file and watching the mark still land. Writing output.md now.
 
 ---
 
