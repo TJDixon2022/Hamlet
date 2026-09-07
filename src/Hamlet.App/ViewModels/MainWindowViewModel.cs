@@ -216,6 +216,34 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly PrivilegePlan _privileges = new();
     private CancellationTokenSource? _licenseLookup;
     private IRig? _rig;
+
+    /// <summary>The serial port the connected radio is on, or null where none is.</summary>
+    /// <remarks>
+    /// <para>**THE APPLICATION ALREADY BUILT THIS AND THREW IT AWAY.**
+    /// <see cref="CreateRig"/> constructed a <see cref="SystemSerialPort"/> inside
+    /// the expression that handed it to <c>Ic7300Rig</c>, which keeps it in a
+    /// private field and exposes no accessor, so the send path had no transport
+    /// and <c>_armedSend</c> was assigned only by a test seam
+    /// (`docs/unit260-route-trace.md` questions 3 and 5). This is the smaller of
+    /// the two seams: a field beside <see cref="_rig"/> is visible to the send
+    /// path and to nothing else, where an accessor on the rig would hand the port
+    /// to everything holding one.</para>
+    /// <para>**IT IS SET WHERE <see cref="_rig"/> IS SET AND NULLED IN THE SAME
+    /// `finally`**, so there is no state in which Hamlet believes it has a port
+    /// and has no radio.</para>
+    /// <para>**THE TRAINING RADIO SETS NOTHING.** <c>TrainingRig</c> is a
+    /// simulator with no port at all, and a simulator must never become a route
+    /// to a keying frame.</para>
+    /// </remarks>
+    private ISerialPort? _rigPort;
+
+    /// <summary>Why the send path cannot transmit, in the operator's terms, or "".</summary>
+    /// <remarks>
+    /// **SAID ON THE CLICK, NEVER GUESSED AROUND.** Empty means nothing has been
+    /// attempted yet, and the refusal keeps the wording it had before this unit.
+    /// </remarks>
+    private string _transmitRefusal = "";
+
     private bool _updatingFromRig;
     private bool _rigSendPending;
     private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
@@ -6498,7 +6526,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private async Task<bool> ConnectToAsync(string port, bool remember = true)
     {
-        var rig = CreateRig(port);
+        var (rig, rigPort) = CreateRig(port);
         var rigType = port == TrainingRadio ? "simulated" : "IC-7300";
         StatusText = $"Connecting to {port}…";
 
@@ -6531,6 +6559,13 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _rig = rig;
+
+        // **THE PORT IS KEPT BESIDE THE RADIO, AND THE SEND PATH IS BUILT FROM
+        // IT** (work instruction 260 task 3). Both happen here, past the early
+        // return above, so a connect that failed leaves both unset.
+        _rigPort = rigPort;
+        BuildTheArmedSend(rigPort);
+
         AppEvents.ConnectOk(_telemetry, SelectedPort, rigType);
         rig.FrequencyChanged += OnRigFrequencyChanged;
         IsConnected = true;
@@ -7895,6 +7930,99 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Ft8ArmedSend? _armedSend;
 
+    /// <summary>How a transmit sink is made from an endpoint's name.</summary>
+    /// <remarks>
+    /// <para>**SUBSTITUTABLE SO THAT NO TEST EVER OPENS A DEVICE**
+    /// (`SHACK_FACTS.md` FACT-004). The default is the only line in `src/` that
+    /// constructs a <see cref="WasapiTransmitSink"/>, and it is reached only when
+    /// a radio is connected and an endpoint is named in Settings - neither of
+    /// which is true on a build machine.</para>
+    /// <para>**IT IS NOT A SECOND ROUTE TO A KEYING FRAME.** A sink plays audio;
+    /// what keys a radio is <see cref="Ft8TransmitSequence"/>, reached from
+    /// <see cref="Ft8ArmedSend.AtBoundaryAsync"/> alone.</para>
+    /// </remarks>
+    internal Func<string, ITransmitAudioSink> TransmitSinkFactory { get; set; } =
+        name => new WasapiTransmitSink(name);
+
+    /// <summary>
+    /// **Builds the one armed send where, and only where, both halves exist.**
+    /// </summary>
+    /// <param name="port">The connected radio's serial port, or null where none.</param>
+    /// <remarks>
+    /// <para>**BOTH, OR NOTHING.** A transmission needs a wire to key the radio
+    /// with and a device to play the tones into. Where either is missing
+    /// <c>_armedSend</c> stays null and the click lands on a refusal that says
+    /// which one - **never on a guess.** In particular there is no fallback to
+    /// the machine's default endpoint: <see cref="WasapiTransmitSink"/> refuses
+    /// to pick one on purpose, because FT8 through the laptop speakers while the
+    /// operator believes he is on the air is the failure that refusal exists to
+    /// prevent (0.0).</para>
+    /// <para>**IT IS BUILT AT CONNECT AND NOT AT THE CLICK, AND THAT IS
+    /// DELIBERATE.** The sink's constructor throws where the named endpoint is
+    /// gone - a device id survives a driver update but not being moved to another
+    /// socket - and an exception raised inside a click handler would reach the
+    /// operator as a crash while he was answering a CQ. Here it is caught, the
+    /// send stays unarmed, and the reserved Send area says the named device was
+    /// not found.</para>
+    /// <para>**IT ADDS NO SECOND ROUTE TO <see cref="Ft8ArmedSend.Arm"/>.** It
+    /// constructs one; the only line that arms it is <see cref="SendMessage"/>.</para>
+    /// </remarks>
+    internal void BuildTheArmedSend(ISerialPort? port)
+    {
+        _armedSend = null;
+        _transmitRefusal = "";
+
+        var endpoint = (_settings.AudioOutputDeviceId ?? "").Trim();
+
+        if (port is null && endpoint.Length == 0)
+        {
+            // The wording every existing test of this refusal was written
+            // against, kept verbatim for the case that has not changed.
+            return;
+        }
+
+        if (port is null)
+        {
+            _transmitRefusal =
+                "no radio with a serial port is connected. The training radio is a "
+                + "simulator and has no port, so nothing can be keyed through it";
+            return;
+        }
+
+        if (endpoint.Length == 0)
+        {
+            _transmitRefusal =
+                "no transmit audio device is named in Settings. That is the radio's "
+                + "own USB audio input, and Hamlet will not choose one for you: "
+                + "playing FT8 into whatever the computer defaults to is not "
+                + "transmitting";
+            return;
+        }
+
+        ITransmitAudioSink sink;
+
+        try
+        {
+            sink = TransmitSinkFactory(endpoint);
+        }
+        catch (Exception ex)
+        {
+            // **THE STALE NAME, CAUGHT WHERE IT IS CHEAP.** A click must not put
+            // an exception in front of an operator.
+            _transmitRefusal =
+                "the transmit audio device named in Settings could not be opened: "
+                + ex.Message;
+
+            DigitalSendLine =
+                "Hamlet cannot transmit: " + _transmitRefusal + ".";
+
+            return;
+        }
+
+        _armedSend = new Ft8ArmedSend(
+            new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
+    }
+
     /// <summary>The text of what is armed, so the ledger can be told what went.</summary>
     private string _armedText = "";
 
@@ -8003,12 +8131,16 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (_armedSend is null)
         {
-            // REFUSED WITH WORDS, NEVER SILENTLY. There is no radio and no named
-            // transmit endpoint on this machine, and saying so is the whole of
-            // what can honestly be done.
+            // REFUSED WITH WORDS, NEVER SILENTLY, AND IT NAMES WHICH HALF IS
+            // MISSING. `_transmitRefusal` is written by `BuildTheArmedSend` at
+            // the moment the radio connected; empty means nothing has connected
+            // at all, and that case keeps the sentence it has always had.
             DigitalSendLine =
-                "Hamlet composed \"" + wanted + "\" and sent nothing: no radio is "
-                + "connected and no transmit audio device is named in Settings.";
+                "Hamlet composed \"" + wanted + "\" and sent nothing: "
+                + (_transmitRefusal.Length == 0
+                    ? "no radio is connected and no transmit audio device is named "
+                      + "in Settings."
+                    : _transmitRefusal + ".");
             return;
         }
 
@@ -8226,6 +8358,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// this is not a second one.
     /// </remarks>
     internal void UseArmedSendForTests(Ft8ArmedSend? armed) => _armedSend = armed;
+
+    /// <summary>The slot the armed transmission is waiting for, or null.</summary>
+    /// <remarks>
+    /// **READ-ONLY, AND IT CANNOT ARM OR FIRE ANYTHING.** A test needs to know
+    /// which boundary the click chose in order to hand that boundary over, and
+    /// composing one from the clock would race the slot the click actually read.
+    /// </remarks>
+    internal DateTime? ArmedForSlotUtc => _armedSend?.Armed?.SlotStartUtc;
+
+    /// <summary>Whether anything is armed at all.</summary>
+    internal bool HasSomethingToTransmitThrough => _armedSend is not null;
 
     /// <summary>Where a newly arrived row belongs in the display order.</summary>
     /// <param name="row">The row that just arrived.</param>
@@ -9819,15 +9962,40 @@ public partial class MainWindowViewModel : ObservableObject
         finally
         {
             _rig = null;
+
+            // **THE PORT AND THE ARMED SEND GO WITH THE RADIO, IN THE SAME
+            // `finally`.** There is no state in which Hamlet believes it can
+            // transmit and has no radio, because the two are cleared together.
+            _rigPort = null;
+            _armedSend = null;
+            _transmitRefusal = "";
+
             IsConnected = false;
             ConnectButtonText = "Connect";
         }
     }
 
-    private static IRig CreateRig(string selection)
-        => selection == TrainingRadio
-            ? new TrainingRig()
-            : new Ic7300Rig(new SystemSerialPort(selection));
+    /// <summary>The radio for one selection, and the port it is on.</summary>
+    /// <param name="selection">A COM port name, or the training radio entry.</param>
+    /// <returns>The rig, and its port, or null where it has none.</returns>
+    /// <remarks>
+    /// **THE PORT IS KEPT NOW INSTEAD OF BEING DISCARDED.** It was constructed
+    /// here and thrown away in the same expression, which is why nothing in the
+    /// tree could ever build an <see cref="Ft8ArmedSend"/>. **The training entry
+    /// still returns no port**, because a simulator has none and must never
+    /// become a route to a keying frame.
+    /// </remarks>
+    internal static (IRig Rig, ISerialPort? Port) CreateRig(string selection)
+    {
+        if (selection == TrainingRadio)
+        {
+            return (new TrainingRig(), null);
+        }
+
+        var port = new SystemSerialPort(selection);
+
+        return (new Ic7300Rig(port), port);
+    }
 
     private static IReadOnlyList<string> SafePortNames()
     {

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 260 - the menu under the mouse, and a route to the radio
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:53:50-04:00
-NOTE: Task 2 green - six tests, all passing, and criterion 2 taken on a real control tree with a real ContextRequested raised on the row's own Grid. NUMBER is 5 of 5: every station's menu under the mouse matched unit 259's prediction exactly, including K9RST and W1ABC carrying "acknowledge, 2nd time". The red was watched first with the flyout captured when the row was created - after sending VK2PQ 73 the second right-click still read "73" and not "73, 2nd time". Committing, then task 3, the dangerous one.
+UPDATED: 2026-09-06T23:59:40-04:00
+NOTE: Task 3 green - seven tests, all passing, no device and no port opened. The red was watched first by removing the guards: unconditional construction would not even compile against Ft8TransmitSequence's null check, and forced past it the sink factory was reached with an empty name and the connect threw ArgumentNullException at Ft8TransmitSequence.cs:224. The arming grep run again is unchanged in shape - one Arm call site, MainWindowViewModel.cs:8149 inside SendMessage - and _armedSend now has a second assignment which is the connect path and nothing else. Committing, then task 4, the drop candidate.
 
 ---
 
