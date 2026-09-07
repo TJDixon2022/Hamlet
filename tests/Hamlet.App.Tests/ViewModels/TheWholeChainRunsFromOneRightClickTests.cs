@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
 using Avalonia.VisualTree;
@@ -58,6 +60,9 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
     /// <summary>One FT8 slot, which is what the decoder's geometry describes.</summary>
     private const double SlotSeconds = 15.0;
+
+    /// <summary>How long an FT8 transmission itself is, inside that slot.</summary>
+    private const double Ft8SlotSeconds = 12.64;
 
     /// <summary>FT8's watering hole on 20 m, where a General may send data.</summary>
     private const long Ft8On20m = 14_074_000;
@@ -490,6 +495,215 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             + $"{(texts.Count == 0 ? "nothing" : "\"" + string.Join("\", \"", texts) + "\"")} "
             + "from the captured audio. The message on the menu and the message on the "
             + "air are not the same message.");
+    }
+
+    /// <summary>
+    /// **His Stop button takes a real transmission off a real card, from the middle
+    /// of the chain he started with a right-click.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**STEP C'S CRITERION 3.** The operator's own right-click starts it and
+    /// the real <c>DigitalStopButton</c> on the realized window is pressed part-way
+    /// through, with a real mouse at the button's own place - not
+    /// <c>StopNow</c> called directly and not the command invoked.</para>
+    /// <para>**WHY IT IS A SECOND RUN AND NOT THE SAME ONE, AND IT MUST NOT BE
+    /// REDISCOVERED AS A RED:** a stopped transmission does not decode. Criterion 2
+    /// needs a whole 12.64-second slot to reach the decoder and this one truncates
+    /// one on purpose (`docs/unit267-what-step-c-needs.md`). **Nothing here decodes
+    /// anything**, and a decode failure here would be the expected result rather
+    /// than a finding.</para>
+    /// <para>**THE BREAKAGE IT WOULD HAVE CAUGHT: a stop that takes the carrier off
+    /// the wire and leaves the card playing.** That is unit 261's real defect and
+    /// unit 263 fixed it - but the operator's *press* is proved against a fake sink
+    /// (<c>TheOperatorCanStopItTests.cs:241</c>) and the *card going quiet* is proved
+    /// in the engine with no operator
+    /// (<c>TheStopStopsARealEndpointTests.cs:88</c>), and **nothing joins the
+    /// two**. A regression that reconnected them wrongly would leave both existing
+    /// tests green.</para>
+    /// <para>**IT PROVES THE ABORT AND DOES NOT EDIT IT.** `PHASE_PLAN.md`'s first
+    /// ruling: the abort is not weakened, made conditional or routed around.</para>
+    /// <para>**NO BOUND TIGHTER THAN THE TREE'S IS ASSERTED.** Unit 263 measured the
+    /// card going quiet 15-20 ms after the stop on a real endpoint with a 200 ms
+    /// buffer, and `TheStopStopsARealEndpointTests.cs:187` asserts under a second.
+    /// What this run reads is printed, whatever it is; the margin is not made the
+    /// thing under test.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task TheOperatorsStopButtonTakesARealTransmissionOffTheCardMidSlot()
+    {
+        var endpoint = Preferred(out var why);
+
+        if (endpoint is null)
+        {
+            NoEndpoint(why);
+
+            return;
+        }
+
+        using var scene = Scene(endpoint);
+
+        _output.WriteLine("chosen because   : " + why);
+        _output.WriteLine("endpoint         : " + endpoint.Name);
+        _output.WriteLine("sink opened      : " + scene.Sink.DeviceName + " at "
+            + scene.Sink.EndpointSampleRate + " Hz");
+        _output.WriteLine("buffer           : " + scene.Sink.BufferFrames + " frames ("
+            + (scene.Sink.BufferFrames * 1000.0 / scene.Sink.EndpointSampleRate)
+                .ToString("F1", CultureInfo.InvariantCulture) + " ms)");
+
+        using var capture = new Capture(endpoint);
+
+        capture.Start();
+        await Task.Delay(PreRoll);
+
+        // ---- 1. THE SAME GESTURE THAT STARTS EVERY TRANSMISSION -----------------
+        var flyout = RightClick(scene);
+        var item = TheOneThatComesNext(flyout);
+        var clicked = item.CommandParameter as string;
+
+        Assert.True(clicked is not null, "the menu item under the mouse carried no message");
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("HE CLICKED       : " + (item.Header as string ?? ""));
+        _output.WriteLine("WHICH CARRIES    : \"" + clicked + "\"");
+
+        item.Command!.Execute(clicked);
+
+        var slot = scene.Panel.ArmedForSlotUtc;
+
+        Assert.True(slot is not null, scene.Panel.DigitalSendLine);
+
+        var clock = Stopwatch.StartNew();
+        var running = scene.Panel.AtSlotBoundaryAsync(slot!.Value);
+
+        // ---- 2. WAIT UNTIL THE CARD IS ACTUALLY MAKING THE SOUND ---------------
+        // **THE CAPTURE ITSELF IS THE TRIGGER, NOT A SLEEP.** An idle endpoint
+        // renders nothing and the loopback hands over empty packets, so the first
+        // sample to reach the tap is the first sample the card played.
+        var soundStarted = await WaitUntil(
+            () => capture.SamplesSeen > 0, TimeSpan.FromSeconds(20), clock);
+
+        Assert.True(
+            soundStarted is not null,
+            "no audio reached the loopback at all: the run said "
+            + scene.Panel.DigitalSendLine);
+
+        var rate = scene.Sink.EndpointSampleRate;
+        var wholeSlot = TimeSpan.FromSeconds(Ft8SlotSeconds);
+        var aThirdIn = soundStarted!.Value + (wholeSlot / 3);
+
+        while (clock.Elapsed < aThirdIn)
+        {
+            await Task.Delay(5, CancellationToken.None);
+        }
+
+        // ---- 3. THE PRESS, WITH A REAL MOUSE, ON THE REAL BUTTON ---------------
+        var samplesAtThePress = capture.SamplesSeen;
+        var atThePress = clock.Elapsed;
+        var pressClock = Stopwatch.StartNew();
+
+        Click(scene, StopButton(scene));
+
+        pressClock.Stop();
+
+        var whileRunning = Frames(scene);
+
+        // ---- 4. WHEN DID THE CARD GO QUIET? ------------------------------------
+        // Watched on the capture: the wall-clock moment the last sample arrived,
+        // once nothing more has arrived for a settled stretch.
+        var wentQuietAt = await WhenTheSamplesStop(capture, clock, TimeSpan.FromSeconds(10));
+
+        var boundary = await running;
+
+        var played = boundary!.Run!.Played!.Value;
+        var offTheCard = capture.SamplesSeen / (double)rate;
+        var quietAfter = (wentQuietAt - atThePress).TotalMilliseconds;
+
+        Pump(scene.Window);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("sound started at : " + soundStarted.Value.TotalSeconds
+            .ToString("F2", CultureInfo.InvariantCulture) + " s (first sample at the tap)");
+        _output.WriteLine("STOP PRESSED AT  : " + atThePress.TotalSeconds
+            .ToString("F2", CultureInfo.InvariantCulture) + " s, "
+            + (atThePress - soundStarted.Value).TotalSeconds
+                .ToString("F2", CultureInfo.InvariantCulture) + " s into the transmission");
+        _output.WriteLine("the press took   : " + pressClock.Elapsed.TotalMilliseconds
+            .ToString("F1", CultureInfo.InvariantCulture)
+            + " ms (mouse down, up and the dispatcher pumped - not StopNow alone)");
+        _output.WriteLine("samples at press : " + samplesAtThePress);
+        _output.WriteLine("AUDIO OFF THE CARD: " + offTheCard
+            .ToString("F2", CultureInfo.InvariantCulture) + " s of the "
+            + Ft8SlotSeconds.ToString("F2", CultureInfo.InvariantCulture)
+            + " s the slot would have been");
+        _output.WriteLine("CARD WENT QUIET  : " + quietAfter.ToString("F0", CultureInfo.InvariantCulture)
+            + " ms after the press  [development machine]");
+        _output.WriteLine("sink counted     : " + played.SamplesPlayed + " of "
+            + boundary.Send!.Transmission.Samples.Length + " samples, short by "
+            + (boundary.Send.Transmission.Samples.Length - played.SamplesPlayed));
+        _output.WriteLine("the run said     : " + boundary.Run.Outcome);
+        _output.WriteLine("came out of tx   : " + boundary.Run.CameOutOfTransmit);
+        _output.WriteLine("WIRE WHILE RUNNING: " + string.Join(" | ", whileRunning));
+        _output.WriteLine("wire at the end  : " + Wire(scene));
+        _output.WriteLine("the operator reads: " + scene.Panel.DigitalSendLine);
+
+        // ---- the carrier came off the wire ------------------------------------
+        // **THE ABORT'S OWN TWO FRAMES**, and they are read rather than counted.
+        Assert.Equal(new[] { KeyOn, CwStop, KeyOff }, whileRunning);
+
+        // ---- the sound came off the card ---------------------------------------
+        Assert.Equal(Ft8TransmitOutcome.Cancelled, boundary.Run.Outcome);
+
+        Assert.True(
+            played.SamplesPlayed < boundary.Send.Transmission.Samples.Length,
+            $"the whole slot went out of a real endpoint anyway: {played.SamplesPlayed} "
+            + $"of {boundary.Send.Transmission.Samples.Length} samples");
+
+        Assert.True(
+            offTheCard < Ft8SlotSeconds,
+            $"the loopback heard {offTheCard:F2} s off the card, which is the whole "
+            + $"{Ft8SlotSeconds:F2} s slot - the carrier came off the wire and the card "
+            + "played on");
+
+        // **AND IT STAYED QUIET, WITH THE ENDPOINT STILL OPEN.** The same figure
+        // criterion 4 uses, on the stretch after the stop.
+        var quietFrom = capture.SamplesSeen;
+        var packetsBefore = capture.Packets;
+
+        await Task.Delay(SilentStretch);
+
+        var after = (int)(capture.SamplesSeen - quietFrom);
+        var packetsAfter = capture.Packets - packetsBefore;
+        var tail = after > 0 ? capture.Window(quietFrom, after) : null;
+
+        capture.Stop();
+
+        var quiet = tail is null
+            ? new CapturedLevel(0, AudioLevel.SilenceDb, AudioLevel.SilenceDb)
+            : Level(tail.Samples);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- and it stayed off ----");
+        _output.WriteLine("listened for     : " + SilentStretch.TotalSeconds
+            .ToString("F1", CultureInfo.InvariantCulture)
+            + " s more with the endpoint open");
+        _output.WriteLine("packets after    : " + packetsAfter + " (the capture was alive)");
+        _output.WriteLine("samples after    : " + after);
+        _output.WriteLine("CARD AFTER STOP  : peak " + Db(quiet.PeakDb) + " dBFS");
+
+        Assert.True(
+            packetsAfter > 0,
+            "the capture was handed no packets after the stop, so nothing here can "
+            + "tell a silent card from a capture that died");
+
+        Assert.True(
+            quiet.PeakDb <= AudioLevel.TooQuietDb,
+            $"the card was still making a sound {SilentStretch.TotalSeconds:F1} s after "
+            + $"the operator pressed Stop: peak {Db(quiet.PeakDb)} dBFS off "
+            + scene.Sink.DeviceName);
+
+        // **NOTHING HERE IS DECODED**, and that is deliberate: a stopped
+        // transmission does not decode, and asserting one would go red for the
+        // reason this method exists to create.
     }
 
     // -------------------------------------------------------------------------
@@ -940,6 +1154,115 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             + $"was taken from {endpoints.Count} active render endpoints - THIS MAY BE AUDIBLE";
 
         return chosen;
+    }
+
+    /// <summary>The realized FT8 stop button, found on the window itself.</summary>
+    private static Button StopButton(Built scene)
+    {
+        Pump(scene.Window);
+
+        var button = scene.Window.GetVisualDescendants()
+            .OfType<Button>()
+            .FirstOrDefault(b => b.Name == "DigitalStopButton");
+
+        Assert.True(button is not null, "DigitalStopButton is not on the realized window");
+
+        return button!;
+    }
+
+    /// <summary>
+    /// **A real left click, at the button's own place on the window.**
+    /// </summary>
+    /// <remarks>
+    /// Headless pointer input rather than an invoked command: the point is that a
+    /// mouse can reach it. Lifted from <c>TheOperatorCanStopItTests.Click</c>.
+    /// </remarks>
+    private static void Click(Built scene, Button button)
+    {
+        Pump(scene.Window);
+
+        var centre = button.TranslatePoint(
+            new Point(button.Bounds.Width / 2, button.Bounds.Height / 2), scene.Window);
+
+        Assert.True(centre.HasValue, "the button has no place on the window");
+
+        scene.Window.MouseMove(centre!.Value);
+        scene.Window.MouseDown(centre.Value, MouseButton.Left);
+        scene.Window.MouseUp(centre.Value, MouseButton.Left);
+
+        Pump(scene.Window);
+    }
+
+    /// <summary>Waits for something to become true, and says when it did.</summary>
+    /// <param name="until">What is being waited for.</param>
+    /// <param name="giveUpAfter">How long to wait before saying it never happened.</param>
+    /// <param name="clock">The run's own clock, so the answer is on its timeline.</param>
+    /// <returns>When it happened, or null where it did not.</returns>
+    private static async Task<TimeSpan?> WaitUntil(
+        Func<bool> until, TimeSpan giveUpAfter, Stopwatch clock)
+    {
+        var deadline = clock.Elapsed + giveUpAfter;
+
+        while (clock.Elapsed < deadline)
+        {
+            if (until())
+            {
+                return clock.Elapsed;
+            }
+
+            await Task.Delay(2, CancellationToken.None);
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// **When the last sample arrived, once none has arrived for a settled
+    /// stretch.**
+    /// </summary>
+    /// <param name="capture">The loopback, still running.</param>
+    /// <param name="clock">The run's own clock.</param>
+    /// <param name="giveUpAfter">How long to watch before giving up.</param>
+    /// <returns>The moment the last sample was seen to arrive.</returns>
+    /// <remarks>
+    /// <para>**MEASURED ON THE CARD AND NOT ON THE SINK'S OWN BOOKKEEPING.** The
+    /// engine's equivalent (`TheStopStopsARealEndpointTests.cs:145`) takes the
+    /// moment `AtBoundaryAsync` returned; this takes the moment the loopback
+    /// stopped being handed audio, which is the endpoint itself falling silent.</para>
+    /// <para>**ITS RESOLUTION IS THE DEVICE'S PACKET PERIOD** and it is reported,
+    /// not asserted against. The settle window is deliberately longer than any
+    /// packet period this endpoint has shown.</para>
+    /// </remarks>
+    private static async Task<TimeSpan> WhenTheSamplesStop(
+        Capture capture, Stopwatch clock, TimeSpan giveUpAfter)
+    {
+        var settle = TimeSpan.FromMilliseconds(400);
+        var deadline = clock.Elapsed + giveUpAfter;
+
+        var seen = capture.SamplesSeen;
+        var lastChange = clock.Elapsed;
+
+        while (clock.Elapsed < deadline)
+        {
+            await Task.Delay(2, CancellationToken.None);
+
+            var now = capture.SamplesSeen;
+
+            if (now != seen)
+            {
+                seen = now;
+                lastChange = clock.Elapsed;
+
+                continue;
+            }
+
+            if (clock.Elapsed - lastChange > settle)
+            {
+                return lastChange;
+            }
+        }
+
+        return lastChange;
     }
 
     /// <summary>Every frame the fake wire took, as hex, in order.</summary>
