@@ -233,6 +233,85 @@ public sealed class TheReadoutSaysWhatTheCardWasHandedTests
             + "front of Ft8TransmitSequence and inside the keying path.");
     }
 
+    /// <summary>
+    /// **What the clip count can actually count on Hamlet's own path**, measured
+    /// at the highest drive the composer will accept.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE BREAKAGE THIS WOULD HAVE CAUGHT: A NUMBER ON THE SCREEN THAT
+    /// CANNOT MOVE, READ AS EVIDENCE.** Step D asks the operator to read a clip
+    /// count while he sets his radio's ALC. If the count over the composed array
+    /// is zero by construction, then *nothing clipped* is arithmetic and not a
+    /// measurement of anything he did - and an operator who reads it as *my drive
+    /// is safe* has been told something by a screen that cannot say it. That is
+    /// §0.0 exactly: the display was more confident than its input justified.
+    /// **Nothing in the tree measured this**, so nothing in the tree could tell
+    /// the two apart.</para>
+    /// <para>**MEASURED, NOT REASONED, AND NOTHING IS MANUFACTURED.** The drive
+    /// is set to the ceiling <c>Ft8Composer.DriveIsUsable</c> accepts and no
+    /// higher, the composition goes through the same call
+    /// <c>MainWindowViewModel.cs:8192</c> makes, at 48000 Hz, and the samples are
+    /// counted. **No clip is added and the composer's ceiling is not raised.**
+    /// Whatever the number is, it is reported.</para>
+    /// <para>**AND NOTHING RESAMPLES BETWEEN THEM.** The one <c>ComposeSignal</c>
+    /// call site in `src/` composes at the endpoint's own declared rate (unit
+    /// 262), so there is no resampler on the transmit path that could overshoot a
+    /// composed peak on the way to the card. The count the sink keeps is of its
+    /// own clamping in the PCM conversion, which is a different question and is
+    /// what the readout under the waterfall reports.</para>
+    /// <para>**NO SOUND IS MADE AND NOTHING IS KEYED** (FACT-004), and **none of
+    /// this is a recommendation about a drive level** - the ceiling is used here
+    /// because it is the worst case for the question being asked, not because it
+    /// is a level anybody should set.</para>
+    /// </remarks>
+    [Fact]
+    public void AtTheComposersCeilingNothingComesOutOfItOutsideTheRails()
+    {
+        // **THE HIGHEST LEVEL THE COMPOSER ACCEPTS, ASKED OF THE COMPOSER.**
+        const float ceiling = 1.0f;
+
+        Assert.True(
+            Ft8Composer.DriveIsUsable(ceiling, out _),
+            "the composer refuses 1.0, so this is measuring the wrong ceiling.");
+
+        Assert.False(
+            Ft8Composer.DriveIsUsable(1.0001f, out _),
+            "the composer accepts more than 1.0, so 1.0 is not the ceiling.");
+
+        var composed = Ft8Composer.ComposeSignal(
+            "CQ KC3QIS FN00", 48_000, Ft8Composer.DefaultBaseFrequencyHz, ceiling);
+
+        Assert.True(composed.Composed, composed.Explanation);
+
+        var samples = composed.Transmission!.Samples;
+        var outside = 0;
+        var biggest = 0.0f;
+
+        foreach (var sample in samples)
+        {
+            if (sample is < -1.0f or > 1.0f)
+            {
+                outside++;
+            }
+
+            biggest = Math.Max(biggest, Math.Abs(sample));
+        }
+
+        _output.WriteLine("drive              : " + ceiling.ToString("F6")
+            + "  (" + (20.0 * Math.Log10(ceiling)).ToString("F2") + " dBFS), the ceiling");
+        _output.WriteLine("rate               : 48000 Hz");
+        _output.WriteLine("samples composed   : " + samples.Length);
+        _output.WriteLine("largest magnitude  : " + biggest.ToString("F6"));
+        _output.WriteLine("outside [-1, +1]   : " + outside);
+
+        // **ZERO IS A REAL ANSWER AND IT IS THIS ONE.** The composer multiplies
+        // a unit-amplitude sine by the drive (`Ft8Composer.cs:390`) and refuses a
+        // drive above 1.0, so no drive it accepts can put a sample outside the
+        // rails. The count over the composed array is arithmetic.
+        Assert.Equal(0, outside);
+        Assert.True(biggest <= 1.0f, "the composed array left the rails at " + biggest);
+    }
+
     /// <summary>The CQ button, clicked, taken through its slot boundary.</summary>
     /// <param name="scene">The window and the fakes behind it.</param>
     /// <returns>The send the application armed.</returns>

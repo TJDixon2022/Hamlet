@@ -11,6 +11,15 @@ yours.
 Step C closed tonight. It was the last thing about Hamlet's transmit side that can
 be proved without a radio; everything left is you at your own station.
 
+> **CORRECTED BY UNIT 269, 2026-09-07.** This page was written when the drive
+> control was only in Settings and the level was only in the Send area line.
+> **Both have moved onto the Digital tab, under the waterfall, where step D's own
+> criterion says you read them**, and there is now a second figure beside the
+> first that is a measurement rather than your own setting read back. Sections 1
+> and 2 are rewritten to match the tree; the procedure in section 3 and the
+> `SHACK_FACTS.md` list in section 4 are unchanged, and **no number on this page
+> is chosen for you.**
+
 ---
 
 ## What you are doing, in one sentence
@@ -42,19 +51,29 @@ Two things Hamlet will refuse to transmit without, both in **Settings**:
 
 ## 1. Where the Transmit drive control is
 
-**Settings, in the audio block, directly under the Transmit endpoint picker** -
-they are the same question asked twice: which output, and how loud into it.
+**On the Digital tab, in the Send area under the waterfall, below the CQ and Stop
+buttons.** You do not open anything to reach it and nothing covers the band while
+you use it.
 
 ```
-Transmit         [ radio's USB audio endpoint ▾ ]
-Transmit drive   [   25.0 ]  % of full scale
+[ CQ ]   [ Stop ]
+
+Nothing has been sent. Right-click a decoded row to choose a message, or press CQ.
+
+Transmit drive  [   25 ]  % of full scale
+How hard Hamlet drives the radio's input - -12.0 dBFS at this setting. ...
+
+Nothing has been transmitted yet, so there is no measured level. ...
 ```
 
 - It is a spinner in **percent of full scale**, from 1 to 100.
-- **It will not take a value Hamlet would refuse.** If you type one, the line
-  underneath says so and the setting keeps the last usable value rather than
-  storing one the send path would reject at the moment you pressed send.
+- **It will not take a value Hamlet would refuse.** The line underneath says so and
+  the setting keeps the last usable value rather than storing one the send path
+  would reject at the moment you pressed send.
 - It saves as you change it. There is no OK button to miss.
+- **It is still in Settings too**, under the Transmit endpoint picker, exactly as
+  it was. Nothing was taken away. **Both controls write the same one setting**, so
+  it does not matter which you use and they cannot disagree.
 
 Underneath it, the line that changes as you turn the number:
 
@@ -64,22 +83,65 @@ Underneath it, the line that changes as you turn the number:
 > scale is a wide, distorted signal over other people's band, which is why Hamlet
 > starts at 25 %.
 
+**That line is there before you transmit anything** and it moves as you move the
+spinner, so you can find the level you want without keying the radio to see what
+you set. Until unit 269 you could not: the only level Hamlet showed was in the
+Send area after a transmission had already gone out.
+
 **Hamlet ships at 25 %, which is -12.0 dBFS.** That is a deliberately quiet
 starting point chosen on the bench, not a figure anybody here knows to be right for
 your radio.
+
+### What changed, in the terms that matter at the rig
+
+|  | This morning | Now |
+|---|---|---|
+| Windows to open | **1** - Settings, modal | **0** |
+| Controls to cross | **4** | **1** |
+| Hidden while you do it | the waterfall, the decode table, **and the Stop button** | nothing |
+
+The old sequence, between two fifteen-second slots: open Settings, which puts a
+window over the band, over the decoded table and over the Stop button; find the
+Transmit section; move the spinner; close the window; right-click a station; wait
+a slot; read a sentence in the Send area; open Settings again. **Slot boundaries
+keep arriving the whole time the dialog is up** - a transmission you had already
+armed still goes out behind it, and you cannot see it go or reach Stop.
+
+The new sequence: move the spinner, read the line under it.
 
 ---
 
 ## 2. What the dBFS readout and the clip count mean
 
-**Where you read them: the Send area line, after each send** - not on the
-waterfall. It reads like this, and the first two figures are the ones step D is
-about:
+**There are now TWO figures under the waterfall after each send, and they are
+different quantities.** Telling them apart is the whole of this section.
+
+*(The two quotations below are the shape of the lines, with the default drive
+filled in. They are not readings off your radio - nothing in this repository has
+ever seen it.)*
+
+**The first**, in the Send area line, is what Hamlet *built*:
 
 > Sent to W1ABC, "W1ABC KC3QIS RRR" in the slot at 15:10:45 UTC. **It was composed
 > at -12.0 dBFS with nothing clipped** - that is the level Hamlet built, before this
 > machine's own volume for that device and before the radio's input gain. Set the
-> radio's drive against its own ALC meter.
+> radio's drive against its own ALC meter. The clipped count here is of the audio
+> Hamlet built, and the composer will not build above full scale, so on this path
+> it is always none. What the sound card actually had to clamp is the measured
+> line under the drive control.
+
+**The second**, below the drive control, is what the sound card was *handed*:
+
+> **The sound card was handed -12.0 dBFS** - that is the peak the endpoint actually
+> got, measured on the way out after clamping, and not the level Hamlet composed
+> at. **Nothing had to be clamped.** Beyond this point are Windows' own volume for
+> that device and the radio's input gain, which Hamlet cannot see.
+
+**Why both.** The first is your own setting read back to you. The second is a
+measurement of what came out the other end of Hamlet. On an ordinary evening they
+will be the same number, and that is fine - **the point is that when they are not,
+you can see it**, and you are never in the position of setting your ALC against a
+figure you typed while believing you had verified it.
 
 **dBFS** - decibels below full scale. **0.0 dBFS is as loud as the number format
 can go and every figure you want is negative.** Each 6 dB is a halving: -6.0 is
@@ -87,18 +149,33 @@ half of full scale, -12.0 is a quarter, -20.0 is a tenth. **Louder is a smaller
 number of decibels below zero**, which is the one thing about this unit that reads
 backwards at first.
 
-**Clipped** - how many individual samples ran into the end of the scale and had to
-be squared off. **"nothing clipped" is the only acceptable reading.** A clipped
-sample is not a slightly loud signal; it is a corner in the waveform, and corners
-are splatter on either side of your transmission, on frequencies other people are
-using. **If you ever see a clip count above zero, turn the drive down and send
-again** - do not go on the air deciding whether a few is acceptable.
+### The clip count - what it tells you and what it does not
 
-**Three things are NOT this number**, and they multiply together on the way to your
-antenna:
+There are two clip counts on the screen and only one of them can ever move.
 
-1. **This number** - the level Hamlet builds the audio at. It is what the drive
-   control sets.
+**The one in the Send area line cannot.** It counts samples of the audio Hamlet
+built that fall outside the scale, and Hamlet will not build such a sample:
+measured on 2026-09-07, at a drive of **1.0 - the highest the composer accepts, 0.0
+dBFS** - a whole slot at 48000 Hz was **606720 samples, largest magnitude exactly
+1.000000, and 0 outside the rails**. It is arithmetic, not a reading of your drive.
+**Do not treat "nothing clipped" there as evidence that your level is safe.** It
+would say that at any drive Hamlet allows.
+
+**The one under the drive control can.** It is the count the sound card's own
+output path had to clamp on the way to the endpoint. If anything between Hamlet's
+array and the device ever squares a sample off, that is where it shows.
+
+**What clipping is, if you do see it:** a clipped sample is not a slightly loud
+signal; it is a corner in the waveform, and corners are splatter on either side of
+your transmission, on frequencies other people are using. **If the measured count
+is above zero, turn the drive down and send again** - do not go on the air deciding
+whether a few is acceptable.
+
+**And what neither count can see:** everything past the sound card. **Three things
+are NOT these numbers**, and they multiply together on the way to your antenna:
+
+1. **These numbers** - the level Hamlet builds at, and the level the card was
+   handed. The drive control sets the first.
 2. **Windows' own volume for that endpoint.** Hamlet neither sets it nor reads it.
    If it is not at 100 % you are working against a slider Hamlet cannot see.
 3. **The radio's own input gain** - the IC-7300's USB MOD level menu setting.
@@ -132,7 +209,9 @@ fault condition, not the target.**
 
 **Things that would be worth stopping for:**
 
-- **The clip count is not zero.** Drive too high; turn it down.
+- **The measured clip count - the one under the drive control - is not zero.**
+  Turn the drive down. The count in the Send area line is not this one and cannot
+  move; see section 2.
 - **The ALC swings hard however far you turn the drive down.** That points at the
   radio's USB MOD gain or Windows' volume rather than at Hamlet's number.
 - **Power reads far below what you set with the ALC quiet.** Drive too low; there
@@ -163,7 +242,9 @@ the one that has to survive the evening:
 
 1. **The drive percentage you left the control at, and the dBFS Hamlet showed
    beside it.** Both, because the percentage alone is meaningless if a default
-   changes.
+   changes. **And the measured figure** - what the line under the drive control
+   said the sound card was handed - if it was not the same number, because that
+   difference is the only thing on the screen that nobody could have predicted.
 2. **Which endpoint** was selected in Settings, by the name Windows gives it.
 3. **The Windows volume for that endpoint**, if it is not 100 %.
 4. **The radio's own USB MOD level**, so the number above can be reproduced.
@@ -192,10 +273,22 @@ settings that were already correct.
 
 ---
 
-## One mismatch to be aware of
+## The mismatch this page used to carry, and what became of it
 
-`PHASE_PLAN.md` step D's first criterion says you read the dBFS and clip count
-**"under the waterfall"**. **In the tree they are in the Send area line after each
-send**, quoted in section 2 above, and there is no such readout under the
-waterfall. **Reported, not repaired** - the figures exist and are readable, so the
-criterion is satisfiable as written except for where it says to look.
+**It is closed.** This page said, when unit 268 wrote it:
+
+> `PHASE_PLAN.md` step D's first criterion says you read the dBFS and clip count
+> **"under the waterfall"**. **In the tree they are in the Send area line after
+> each send** ... and there is no such readout under the waterfall. **Reported, not
+> repaired.**
+
+Unit 269 repaired it. **The drive control and both figures are under the waterfall
+now**, out of the modal dialog, and the second figure is a measurement of what the
+sound card was handed rather than your own setting read back.
+
+**That does not close any of step D's three criteria.** All three are yours, at
+your own radio: what your ALC does at the level you choose, and the value you write
+into `SHACK_FACTS.md`, are not things a machine with no radio on it can answer.
+What unit 269 removed is the obstacle - you no longer have to hide the band and the
+Stop button behind a dialog to move the control, and you are no longer setting an
+ALC against a number nobody measured.

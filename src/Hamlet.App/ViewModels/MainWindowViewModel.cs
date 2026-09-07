@@ -8598,7 +8598,22 @@ public partial class MainWindowViewModel : ObservableObject
                 : clipped.ToString(CultureInfo.InvariantCulture) + " samples clipped")
             + " - that is the level Hamlet built, before this machine's own volume "
             + "for that device and before the radio's input gain. Set the radio's "
-            + "drive against its own ALC meter.";
+            + "drive against its own ALC meter. "
+
+            // **THE CLIP COUNT HERE CANNOT MOVE, AND SAYING SO IS THE POINT**
+            // (work instruction 269, task 4). Measured tonight: at 1.0, the
+            // highest drive `Ft8Composer.DriveIsUsable` accepts, a whole slot
+            // composed at 48000 Hz is 606720 samples with a largest magnitude of
+            // exactly 1.000000 and 0 outside the rails. It is zero by
+            // construction - the composer multiplies a unit-amplitude sine by the
+            // drive and refuses a drive above full scale - so an operator who
+            // read "nothing clipped" as evidence that his drive is safe would
+            // have been told something by a screen that cannot say it (§0.0).
+            // The count that can move is the sink's, and it is the other line.
+            + "The clipped count here is of the audio Hamlet built, and the "
+            + "composer will not build above full scale, so on this path it is "
+            + "always none. What the sound card actually had to clamp is the "
+            + "measured line under the drive control.";
     }
 
     /// <summary>How much of a stopped transmission went out, in seconds.</summary>
