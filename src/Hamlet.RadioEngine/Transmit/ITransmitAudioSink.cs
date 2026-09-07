@@ -32,10 +32,20 @@ public readonly record struct PlayedAudio(int SamplesPlayed, TimeSpan Took);
 /// <para>**IT DOES NOT KEY ANYTHING AND IT KNOWS NOTHING ABOUT A RADIO.** No
 /// PTT, no serial port, no rig. The one thing that holds those two ends together
 /// is <see cref="Ft8TransmitSequence"/>, where the unkey is guaranteed.</para>
-/// <para>**NOTHING IN THIS REPOSITORY IMPLEMENTS IT FOR A REAL DEVICE.** The
-/// engine has no audio output at all - every file under <c>Audio/</c> is capture,
-/// cutting or arithmetic, and the only playback in the tree is the UI project's
-/// training-tone player. The render implementation is the next unit's.</para>
+/// <para>**IT IS IMPLEMENTED FOR A REAL DEVICE BY
+/// <c>Hamlet.RadioEngine.Audio.WasapiTransmitSink</c>** (unit 256), which opens a
+/// render endpoint the caller names - never the one the machine happens to
+/// default to - at that endpoint's own mix format in WASAPI shared mode,
+/// converts these floats to whatever it speaks, and **waits for the endpoint to
+/// empty before returning**, so <see cref="PlayedAudio.SamplesPlayed"/> is what
+/// the card consumed rather than what was handed to it. The other implementation
+/// is the tests' <c>FakeTransmitAudioSink</c>, and the sequence around this
+/// interface is proved against both.</para>
+/// <para>**THE RATE IS NOT NEGOTIABLE FROM THIS SIDE.** The real sink refuses a
+/// <c>sampleRate</c> that is not the endpoint's own rather than
+/// letting shared-mode WASAPI resample it quietly, so the caller composes at the
+/// rate the endpoint declares. That is a fact about sound cards, not a
+/// restriction this interface imposes.</para>
 /// </remarks>
 public interface ITransmitAudioSink
 {

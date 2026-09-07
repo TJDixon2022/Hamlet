@@ -105,11 +105,22 @@ public sealed class WasapiAudioDevices : IAudioDevices
 /// USB codec.
 /// </summary>
 /// <remarks>
-/// <para>The only class in the engine that knows what a sound device is. The
-/// decoder above it sees <see cref="IAudioSource"/> and nothing more, which is
-/// what lets every decoder test run without hardware (HM-DEC-007) and what
-/// would let the engine be wrapped in a console app without touching it
-/// (§0.1).</para>
+/// <para>**The only class in the engine that knows what a sound device is on the
+/// way in.** The decoder above it sees <see cref="IAudioSource"/> and nothing
+/// more, which is what lets every decoder test run without hardware
+/// (HM-DEC-007) and what would let the engine be wrapped in a console app
+/// without touching it (§0.1).</para>
+/// <para>**AMENDED, BECAUSE THIS SENTENCE USED TO CLAIM MORE THAN IT CAN**
+/// (unit 256). It read *the only class in the engine that knows what a sound
+/// device is*, and that was true for as long as the engine only listened. There
+/// is now a second one, <see cref="WasapiTransmitSink"/>, which knows what a
+/// render endpoint is on the way out. **The two are deliberately separate and
+/// share nothing but NAudio**: they open different endpoints for different
+/// directions, one is fed by a device callback and the other feeds a device
+/// buffer, and the seams above them - <see cref="IAudioSource"/> and
+/// <c>ITransmitAudioSink</c> - are answering different questions. The claim that
+/// still holds, and that matters, is the one in the sentence after this: **no
+/// class above either of them knows a sound device exists.**</para>
 /// <para>Whatever format the device hands over is converted here to mono
 /// floats, because the rest of the engine has no business knowing that some
 /// codecs speak 24-bit and some speak float, or that this one is stereo with
