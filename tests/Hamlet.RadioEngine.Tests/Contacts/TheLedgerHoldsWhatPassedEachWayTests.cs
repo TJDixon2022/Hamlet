@@ -34,14 +34,26 @@ public sealed class TheLedgerHoldsWhatPassedEachWayTests
         _output = output;
 
     /// <summary>The scene, read back off disk and fed to a ledger.</summary>
+    /// <param name="throughSlot">
+    /// The last slot to feed, or null for the whole scene. **A ledger fed the
+    /// whole scene and then read at an earlier moment already knows what has not
+    /// happened yet**, which would make a walk through the slots pass for the
+    /// wrong reason.
+    /// </param>
     /// <returns>The ledger and the corpus it was fed.</returns>
-    internal static (Ft8ContactLedger Ledger, Ft8SceneCorpus Corpus) FedFromTheScene()
+    internal static (Ft8ContactLedger Ledger, Ft8SceneCorpus Corpus) FedFromTheScene(
+        int? throughSlot = null)
     {
         var corpus = Ft8SceneCorpus.Read(Ft8SceneCorpus.PathInTree);
         var ledger = new Ft8ContactLedger(corpus.OperatorCallsign);
 
         foreach (var line in corpus.Lines)
         {
+            if (throughSlot is not null && line.Slot > throughSlot)
+            {
+                continue;
+            }
+
             var fields = Ft8MessageSplit.Split(line.Message);
             var utc = corpus.SlotUtc(line.Slot);
 

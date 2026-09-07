@@ -19,6 +19,7 @@ public sealed record Ft8LedgerMessage(
 public sealed class Ft8StationRecord
 {
     private readonly List<Ft8LedgerMessage> _heard = [];
+    private readonly List<Ft8LedgerMessage> _heardToUs = [];
     private readonly List<Ft8LedgerMessage> _sent = [];
 
     internal Ft8StationRecord(string callsign) => Callsign = callsign;
@@ -38,6 +39,18 @@ public sealed class Ft8StationRecord
     /// </remarks>
     public IReadOnlyList<Ft8LedgerMessage> Heard => _heard;
 
+    /// <summary>
+    /// Every message heard from this station addressed to the operator, in order.
+    /// </summary>
+    /// <remarks>
+    /// A subset of <see cref="Heard"/>, kept separately because *whose turn it
+    /// is* is about what passed between the two of them while *how long since he
+    /// transmitted* is about everything he sent. **A station's CQ is addressed to
+    /// anyone and is not in here**, so it never reads as an answer to the
+    /// operator's last transmission.
+    /// </remarks>
+    public IReadOnlyList<Ft8LedgerMessage> HeardToUs => _heardToUs;
+
     /// <summary>Every message the operator sent to this station, in order.</summary>
     public IReadOnlyList<Ft8LedgerMessage> Sent => _sent;
 
@@ -45,7 +58,8 @@ public sealed class Ft8StationRecord
     public Ft8LedgerMessage? LastHeard => _heard.Count == 0 ? null : _heard[^1];
 
     /// <summary>The last message heard from this station addressed to the operator.</summary>
-    public Ft8LedgerMessage? LastHeardToUs { get; private set; }
+    public Ft8LedgerMessage? LastHeardToUs
+        => _heardToUs.Count == 0 ? null : _heardToUs[^1];
 
     /// <summary>The last message the operator sent to this station.</summary>
     public Ft8LedgerMessage? LastSent => _sent.Count == 0 ? null : _sent[^1];
@@ -96,7 +110,7 @@ public sealed class Ft8StationRecord
 
         if (toUs)
         {
-            LastHeardToUs = message;
+            _heardToUs.Add(message);
         }
     }
 
