@@ -76,8 +76,15 @@
   <!-- The telemetry line format is an internal detail with a public promise
        attached (HM-DEC-018), so the schema test reaches it directly rather
        than the format being widened to public just to be provable. -->
+  <!-- Hamlet.App.Tests was added by unit 262 for one reason: the loopback that
+       drives the application's own send path lives in that assembly, because
+       MainWindowViewModel does, and it must not carry a second downmix.
+       WasapiAudioSource.Downmix is internal and static *so a test can reach it*
+       (unit 237's own words) - so letting the other test assembly reach it
+       honours that reasoning rather than widening the method to public. -->
   <ItemGroup>
     <InternalsVisibleTo Include="Hamlet.RadioEngine.Tests" />
+    <InternalsVisibleTo Include="Hamlet.App.Tests" />
   </ItemGroup>
 
 </Project>
