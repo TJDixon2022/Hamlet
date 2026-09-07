@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-07T01:11:49-04:00  root C:\Source\HamLet
+measured 2026-09-07T01:53:11-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -11,7 +11,6 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
   UNCOMMITTED      SESSION.lock is modified and uncommitted.
-  PHASE_OUTCOME    header says step 1 is partial; the last entry for it says blocked. The entries win.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -23,7 +22,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 5186820
+  HEAD   : d8a92a6
   uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -371,13 +370,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     bug, the 101.33 ms pulse above 6 kHz, the CW decoder and its inherited reds.
 
   --- PHASE_STATUS.md ---
-  31 lines, 1355 bytes
+  31 lines, 1346 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
-  HEARTBEAT: 2026-09-07 01:11:47
+  WORK_INSTRUCTION: 263 - the stop stops the audio too
+  HEARTBEAT: 2026-09-07 01:53:10
   STEP: 0 | done | the dummy load is gone from the tree
   STEP: 1 | partial | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
@@ -405,7 +404,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   The previous phase's final status is archived at `docs/phase-onair-run/PHASE_STATUS.md`.
 
   --- PHASE_OUTCOME.md ---
-  337 lines, 77696 bytes
+  367 lines, 88575 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   STEP: 0 | done | the dummy load is gone from the tree
@@ -743,6 +742,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: partial
   STATE_WHY: The loopback closing evidence and the rate half of criterion 1 are shown with quoted decoder output and sample counts, but the level half is explicitly deferred under FACT-004 and the report shows nothing at all for the telemetry record of the transmitted slot or the licence gate test, so several must-pass criteria remain unmet.
+  
+  ## UNIT 263 - STEP 1
+  
+  STEP: 1
+  APPROACH: stop the audio as well as the carrier - thread a cancellation source from Ft8ArmedSend.StopNow into the polling loop of the transmit sink
+  HIT: Four things. Unit 261's stated reason for not doing this work does not hold: grep -rn "Register(" over WasapiTransmitSink.cs and the whole of src/Hamlet.RadioEngine/Transmit/ returns nothing, so Cancel() reaches no callback and no WASAPI call runs on the operator's thread - the sink stops itself by reading a flag at the top of a loop it is already in, on its own thread. Two line numbers in the instruction are off by a hop and the tree wins: StopNow is Ft8ArmedSend.cs:235-247 not :235-251, and AtBoundaryAsync hands the token to RunAsync at :297 not :296. A third fake mattered more than either of the two the instruction named - ParkingSink, private to TheOperatorsStopFiresFromEveryStateTests, is what the mid-transmission stop tests actually run against and it ignores the token entirely, which is why twelve of twelve tests in that file would still pass if the audio never stopped. And an inherited red was found and not repaired: ExactlyOneFileInTheShippedTreeCallsTheSequence has been failing since unit 260 put "new Ft8TransmitSequence" into MainWindowViewModel.cs fifteen commits ago, and it fails on the coarse file-name grep before reaching the assertion that carries the safety property; that assertion's own condition still holds, _sequence.RunAsync having exactly one caller in src/.
+  MOVE: work around
+  WHY: No exit criterion across steps 1 to 5 is still reachable by a unit on this machine - every one left is a radio-side figure FACT-004 defers to Tim - so the reachable work is the last open blocker under step 6, which is unit 261's own named and unrepaired finding that the stop unkeys the radio and leaves Hamlet feeding it audio for the rest of the slot. The cancellation path already existed the whole way down: PlayAsync takes a token, the real sink polls it in both loops and stops and flushes the endpoint in its finally, and both Ft8TransmitSequence and Ft8ArmedSend forward it faithfully. The one thing missing was a source for it, and the application called the whole chain with no token at all, so nothing could ever cancel it.
+  DECIDED: Four on my own authority. First, the order inside StopNow is un-arm, then abort, then audio, and the abort goes second rather than last so that nothing this unit adds sits between the operator and his frames - not a lock, not a null check, not a cancel that might throw. The cost is the few microseconds of audio that go into an already-unkeyed radio, which is nothing, and it is the strongest available reading of step 1's criterion that the abort cannot be deferred or made conditional. Second, MainWindowViewModel.AtSlotBoundaryAsync is left unchanged and gains no token parameter: Ft8ArmedSend creates its own source at the boundary and links it to whatever the caller passed, so the stop reaches the transmission without the view model holding anything, and there is still exactly one stop entry point in the view model rather than two. The instruction asked for a token to be handed down from the application; the same property is obtained without giving the application a second thing to get wrong, and it is reported rather than done silently. Third, the field is named AudioToldToStop and not AudioStopped, because the sink polls the flag on its own thread and what the stop can honestly claim is that the message was sent, not that the last sample has left the card - section 0.0 applied to a boolean. Fourth, three existing outcome assertions were changed where the value's meaning genuinely changed, with the reason written at each site and every byte assertion left identical.
+  LICENCE: PHASE_PLAN.md's first thing the arbiter may not reason past - every path that keys the transmitter has a same-thread, no-await abort - together with step 1's own criterion that it cannot be disabled, deferred, or made conditional, which an abort that stops half of what is going out does not fully satisfy. The steps are a hypothesis not a contract licenses taking a partial step again on unattempted ground. PHASE_PLAN.md's named alternatives to stopping license the rest: the tree wins, report the mismatch and continue. SHACK_FACTS.md FACT-004 licenses playing into this machine's own endpoint in task 5 while forbidding any inference about the IC-7300, and keeps the level half deferred and unclaimed.
+  COST: unknown
+  ACCOMPLISHED: When Tim presses stop now, everything stops. Before tonight the button took the carrier off the antenna and Hamlet went on playing the rest of a twelve-second transmission into the radio - harmless if the radio heard the unkey, and the whole transmission going out over other people's band if it did not, which is precisely the case the stop exists for. Measured on a real sound card: stop pressed 4.2 seconds into a 12.64 second transmission, the card went quiet 20 milliseconds later, and 8.4 seconds of audio that would have gone out did not. The button returned in 1.3 milliseconds with the transmission still in flight, so it never waits for the thing it is stopping, and the abort still fires from all six states including when the cancel itself throws. And the Send area tells him which of the two it managed rather than saying "stopped" when only half of it did: "W1ABC KC3QIS -10" went out for about 3.3 of its 12.6 seconds and the rest of it did not, and the radio was told to stop transmitting.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: This unit claims no step 1 criterion and was authored not to. All five were recorded met at unit 253's close and unit 261's, and filling the advance with one known to be met is the plausible-rather-than-true answer ARBITER.md section 7 warns about; what moved is step 6's blocker, which is unit 261's own recorded and deliberately unrepaired finding. The number is 8345 ms of audio after the stop before tonight, 15 ms after it against the fake at real time and 20 ms after it on a real render endpoint, all on the development machine. The red was watched and quoted first: the wire carrying 1C 00 01, 17 FF and 1C 00 00 while the sink played 151680 of 151680 samples anyway and the run reported itself Sent. Nothing regressed - the six-state table is 12 of 12 with bytes quoted for each, OneClickSendsExactlyOneMessageTests is 8 of 8 with no edit to its assertions, the arming grep returns one call site before and after, and _sequence.RunAsync still has exactly one caller in src/. Nothing was dropped, including the named drop candidate. Step 1 stays partial because its remaining criteria are radio-side figures FACT-004 puts beyond this machine.
+  
+  ## UNIT 6 - STEP 1
+  
+  STEP: 1
+  APPROACH: stop the audio as well as the carrier - thread a cancellation source from Ft8ArmedSend.StopNow into the polling loop of the transmit sink
+  HIT: section 4 wants a ruling: no - The section states nothing is blocking and its three items are a correction of an earlier unit's reasoning, two line number fixes, and an inherited test failure reported rather than repaired, none of which asks the owner to decide anything or stops work pending an answer.
+  MOVE: work around
+  WHY: No exit criterion across steps 1 to 5 is still reachable by a unit on this machine - every one left is a radio-side figure FACT-004 defers to Tim - so the reachable work is the last open blocker under step 6, which is unit 261's own named and unrepaired finding that the stop unkeys the radio and leaves Hamlet feeding it audio for the rest of the slot. The loop test returned NOT FOUND against all twenty entries; the nearest neighbour is unit 261's 'give the operator a route to the abort', and I judge it not a loop because that unit built the route and recorded the audio as deliberately left running, so this is the complement it named rather than a repeat of it, by a different mechanism - a polled token through the sink, not a CI-V frame.
+  DECIDED: Three on my own authority. First, that a unit is authored at all rather than the phase being handed to Tim tonight - every remaining criterion is deferred or his, and the comfortable answer at three in the morning is that the code is finished, which is what unit 260 said an hour before unit 261 found there was no stop button and two before unit 262 found the send path could transmit through none of this machine's endpoints. Second, that this unit claims no step 1 criterion and says so in ADVANCES, because all five were recorded met at unit 253's and 261's closes and filling the field with one I know to be met is the plausible-rather-than-true answer ARBITER.md section 7 warns about. Third, that unit 261's recorded reason for not doing this work - that a cancellation source would run WASAPI registrations on the operator's UI thread - is handed to the unit as task 1's measured question rat
+  LICENCE: PHASE_PLAN.md's first thing the arbiter may not reason past - every path that keys the transmitter has a same-thread, no-await abort - together with step 1's own criterion that it cannot be disabled, deferred, or made conditional, which an abort that stops half of what is going out does not fully satisfy. The steps are a hypothesis not a contract licenses taking a partial step again on unattempted ground. PHASE_PLAN.md's named alternatives to stopping license the rest: the tree wins, report the mismatch and continue, and where the radio is wanted the step is closed on what can be proved here with what Tim must do named. SHACK_FACTS.md FACT-004 licenses playing into this machine's own endpoint in task 5 while forbidding any inference about the IC-7300, and keeps the level half deferred and unclaimed.
+  COST: 20.201800000000006
+  ACCOMPLISHED: When Tim presses stop, everything stops. Tonight the button takes the carrier off the antenna and Hamlet goes on playing the rest of a twelve-second transmission into the radio - which is harmless if the radio heard the unkey and is the whole transmission going out anyway if it did not, and the radio not hearing the unkey is precisely what the stop is for. After this unit the sound stops too, inside a measured number of milliseconds, on the calling thread, without waiting for the transmission it is stopping, and the abort still fires from every state including when the cancel itself fails. And Hamlet tells him which of the two it managed rather than saying 'stopped' when only half of it did.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 1 to 4 are supported by quoted wires, member scans and timings that this unit re-ran green, but criterion 5, that no transmitting code exists when the step closes, is not met in the present tree, since a real FT8 slot was played through WasapiTransmitSink and Ft8TransmitSequence, and the report only excuses it as overtaken by the plan's ordering rather than showing it holds.
 
   --- CLAUDE.md ---
   1376 lines, 188627 bytes
@@ -765,17 +794,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1493 bytes
+  19 lines, 4553 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 5 of 5
-  WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
+  WORK_INSTRUCTION: 263 - the stop stops the audio too
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-157 (2026-09-06)
-  UPDATED: 2026-09-07T02:22:05-04:00
-  NOTE: All five tasks done, committed and pushed, nothing dropped including the named drop candidate. NUMBER is 0 of 4 to 4 of 4 - the send path could transmit through none of this machine's render endpoints and can now transmit through all four. The red was watched with the radio keyed, nothing played and the operator's sentence quoted, then green at 48000 asked and 48000 got. 19 new tests green; OneClickSendsExactlyOneMessageTests 8 of 8 and the arming grep 1, 1, 1 before and after. Step 1's header corrected from blocked to partial per the arbiter's ruling; step 3 stays partial because the level half of criterion 1 is Tim's under FACT-004 and is not claimed. Section 4 raises 2, neither blocking: the operator's refusal sentence carries the engine's developer-facing wording in its middle, and that branch is unreachable on any ordinary sound card so it is proved against a constructed rate.
+  UPDATED: 2026-09-07T01:47:00-04:00
+  NOTE: All five tasks done, committed and pushed, nothing dropped including the named drop candidate. NUMBER is 8345 ms of audio after the operator's stop to 15 ms against the fake at real time and 20 ms on a real render endpoint, all on the development machine under FACT-004. The red was watched and quoted first: the carrier off on the wire and the sink playing 151680 of 151680 samples anyway with the run reporting itself Sent. No step 1 criterion is claimed and the unit was authored not to claim one; what moved is step 6's last open blocker, unit 261's own recorded and deliberately unrepaired finding. Section 4 raises 3, none blocking and none a ruling request. validate-output.bat could not be run - four invocation forms refused or mangled by the shell - so its seven rules were checked by hand against the copy it prints in its own header, and two real failures were found and fixed that way. Earlier: THE DROP CANDIDATE WAS NOT DROPPED. A full 12.64 s FT8 slot played into a real render endpoint through the real WasapiTransmitSink and stopped 4.228 s in, on the development machine, no serial port, nothing keyed: S34J55x display audio, 48000 Hz, buffer 9600 frames = 200 ms exactly as the arithmetic predicted; 203040 of 606720 samples, short by 403680; the card went quiet 20 ms after the stop; StopNow took 1.3 ms against the 250 ms bound. And Reset() was measured to discard rather than play out - the sink reports 4230 ms of audio in 4241 ms of wall time, and a played-out buffer would have shown 200 ms of excess, not 11. That settles the second thing the instruction expected to be told it got wrong. Earlier: THE OPERATOR IS TOLD WHAT WAS STOPPED. Ft8StopResult carries three facts and Ft8StopOutcome has six values; the two new ones say a transmission was stopped, which used to be indistinguishable from a stop pressed at an idle radio because _armed is already null mid-slot. The sentence he is left looking at now reads: Stopped: "W1ABC KC3QIS -10" went out for about 3.3 of its 12.6 seconds in the slot at 05:42:15 UTC, and the rest of it did not. The radio was told to stop transmitting. Before tonight that line said the transmission was stopped after 40890 of 151680 samples - the engine's own words, in samples, at an operator. Engine stop suites 24 of 24, app stop tests 9 of 9, the five app send-area suites 28 of 28. Three outcome assertions changed meaning and are updated with the reason at each; every byte assertion is untouched. Task 3 is committed and pushed at d862dd7. Earlier: GREEN, AND THE NUMBER IS 8345 ms -> 15 ms. Ft8ArmedSend now carries one cancellation source beside _armed, created under the same lock in the same block that takes the send, linked to the caller's token, cleared and disposed in a finally; StopNow cancels it through StopTheAudio() on the calling thread. Order is un-arm, abort, audio - the frames go before this unit's new line runs at all. All 4 of TheStopStopsTheAudioTooTests green: audio after the stop 15 ms measured at real time with a 12.64 s transmission in flight, StopNow returned in 0.5 ms against a stated 250 ms bound, and the cancel made to really throw (a callback registered on the token from the sink's side) still leaves 17 FF and 1C 00 00 on the wire. The red it was watched at, committed at 6aa5fd8: the same wire, and the sink playing 151680 of 151680 samples anyway with the run reporting itself Sent. Neighbours checked: the six-state table 12 of 12 with bytes quoted for each, OneClickSendsExactlyOneMessageTests 8 of 8 with no edit to its assertions, the app's TheOperatorCanStopItTests 8 of 8 including a new one that clicks the real button into a live transmission and stops it. The arming grep is 1 before and after and _sequence.RunAsync still has exactly one caller. One inherited red found, not mine and not repaired: ExactlyOneFileInTheShippedTreeCallsTheSequence has been failing since unit 260 put "new Ft8TransmitSequence" in MainWindowViewModel.cs 15 commits ago.
   
   ---
   

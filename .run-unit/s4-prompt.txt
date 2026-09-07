@@ -21,7 +21,7 @@ work on the same step remains open.
 Read PHASE_PLAN.md for this step exit criteria and
 PHASE_OUTCOME.md for what has already been done. Then decide
 whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step 3.
+owner answer. The step being worked is step 1.
 
 Halting a night for a question that forecloses nothing is the
 failure this judgment exists to prevent. Building on an assumption
@@ -50,32 +50,56 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-**Nothing is blocking.** Both items below are notes recorded for the record, not
-ruling requests, and neither is in the way of anything named in B.
+**Nothing is blocking. Three items are recorded for the record and none is a
+ruling request.**
 
-**1. The operator's refusal sentence carries the engine's developer-facing
-explanation in its middle.** When a sound card declares a rate FT8 cannot be built
-at, the sentence Hamlet shows names the device and the rate - which is what the
-instruction required - and then quotes `Ft8Composer.RateIsUsable`'s own
-explanation, which talks about symbols, samples and slot layout, before reaching
-the clause the operator can act on. I built it that way deliberately rather than
-paraphrasing, because the instruction required the refusal to say *why FT8 cannot
-be built at it* and the engine's words are the accurate answer; writing a second,
-friendlier explanation beside the engine's would be a second thing to drift.
-**What was rejected:** shortening the engine's message, which would change a
-string other callers depend on and is not this unit's; and dropping the reason
-entirely, which the instruction explicitly forbids - *a refusal that says only
-cannot transmit is not acceptable here*. If the owner wants the operator-facing
-half alone, that is a small, separable unit.
+### 1. Unit 261's stated reason for not doing this work did not hold
 
-**2. That sentence cannot be produced by real hardware on this machine, so it is
-proved against a constructed rate.** All four render endpoints here declare 48000
-Hz, and `RateIsUsable` accepts every rate ordinary consumer hardware announces,
-because a channel symbol is 0.16 s and that divides every one of them into whole
-samples. The refusal branch is real code with a real test, but the test reaches it
-by declaring 8001 Hz on a fake, and no sound card anyone is likely to own would
-take it there. **What was rejected:** leaving the branch unwritten, which would
-mean a click on an unusable device keys the radio before anyone finds out - the
-ordering measured in task 1 question 4 - and writing the test against a real
-device, which would need hardware that does not exist here. It is recorded so that
-a later unit does not spend time hunting for the machine that triggers it.
+Unit 261 recorded, in its own `PHASE_OUTCOME.md` entry: *"Threading a
+cancellation source from `Ft8ArmedSend` into `RunAsync` would run WASAPI's
+registrations synchronously on the operator's UI thread, which is the one
+property the abort may not have."*
+
+The concern is real in general - `Cancel()` does run every registered callback
+synchronously on the calling thread. **But there are no registrations.**
+`grep -rn "Register("` over `WasapiTransmitSink.cs` and the whole of
+`src/Hamlet.RadioEngine/Transmit/` returns nothing at all. The sink stops itself
+by reading a flag at the top of a loop it is already in, on its own thread, and
+by a `finally` that also runs on the sink's thread. **The endpoint is never
+touched by the thread that cancels**, and the measurement is `StopNow` returning
+in 1.3 ms against a real endpoint with a real transmission in flight.
+
+**Unit 261's entry was not edited** - unit 258's ruling stands, a unit does not
+rewrite an entry that is not its own. The correction is here and in this unit's
+own entry, which is where it belongs. Unit 261's finding was right as a general
+worry and wrong about this path, and the tree settled it.
+
+### 2. Two line numbers in the instruction that the tree disagrees with
+
+The tree wins on both, and neither changes anything:
+
+- `StopNow` is at `Ft8ArmedSend.cs:235-247`, not `:235-251`.
+- `AtBoundaryAsync` handed the token to `RunAsync` at `:297`, not `:296`.
+
+Everything else in the instruction's table was checked and held, including
+`WasapiTransmitSink.cs:339`, `:372`, `:398-402`, `Ft8TransmitSequence.cs:288` and
+`MainWindowViewModel.cs:8258`.
+
+### 3. An inherited red, found and not repaired
+
+`TheUnkeyHappensWhateverGoesWrongTests.ExactlyOneFileInTheShippedTreeCallsThe-
+Sequence` fails, and **it has been failing since unit 260**, fifteen commits ago,
+when `MainWindowViewModel.cs:8049` gained `new Ft8TransmitSequence(...)`. It was
+found tonight only because task 3 required running the suite it lives in. It is
+not on `PHASE_PLAN.md`'s list of named inherited reds.
+
+**The safety property it exists to protect still holds.** The test fails on its
+coarse first assertion - *exactly one file under `src/` mentions the type* -
+before reaching the assertion that actually carries the property, which is that
+`_sequence.RunAsync` is called from exactly one file. That one was checked
+directly tonight and returns `Ft8ArmedSend.cs` and nothing else.
+
+**Reported rather than repaired**, per `ARBITER.md` section 5 and this instruction's
+*What not to do* item 2. A note, not a ruling request. The next unit can decide
+whether the assertion should distinguish constructing the sequence from reaching
+`RunAsync` through it, which is the substantive question underneath it.

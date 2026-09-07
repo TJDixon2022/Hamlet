@@ -1,23 +1,21 @@
-﻿## Step 3 - the audio reaches the radio and the radio keys
+﻿## Step 1 - the abort works before anything can key
 
-**Delivers:** audio out to the USB codec, PTT via CI-V, unkey.
+**Delivers:** a proven abort path, ahead of any code that transmits.
 
-**Entry:** steps 1 and 2. **The abort must be proven first.**
+**Entry:** step 0.
 
 **Exit:**
-- Audio plays to the radio's USB input at the right device, rate and level.
-  *must-pass*
-- **Key, transmit, unkey**, with the unkey happening even if the audio path
-  throws. *must-pass*
-- **A loopback proves the whole chain**: generate, play, capture on the tap,
-  decode, and get the message back. **This needs no antenna and no radio state**
-  and is the closing evidence for this step. *must-pass*
-- The transmitted slot is recorded to telemetry with what was sent and when.
-  *must-pass*
-- **The licence gate is in the path** and refuses out-of-privilege frequencies,
-  asserted by a test. *must-pass*
-- **Nothing keys without an operator action reaching this code.** There is no
-  entry point that transmits on a timer. *must-pass*
+- A same-thread, no-await abort: CI-V `0x17` with `0xFF`, PTT off as fallback.
+  **No `await` on the abort path, asserted by a test.** *must-pass*
+- **Watched to fire**, against a fake CI-V transport, from every state a
+  transmission can be in - about to key, keying, mid-transmission, waiting for
+  unkey. *must-pass*
+- **Fires when the transport is dead**, the port is gone, or the radio does not
+  answer. The fallback is exercised, not reasoned about. *must-pass*
+- It cannot be disabled, deferred, or made conditional. *must-pass*
+- **No transmitting code exists yet when this step closes.** *must-pass*
 
-**Depends on:** steps 1 and 2.
+**This is the one thing that must work when everything else has failed.**
+
+**Depends on:** step 0.
 
