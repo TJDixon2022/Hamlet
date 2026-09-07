@@ -14,6 +14,9 @@ namespace Hamlet.RadioEngine.Tests.Transmit;
 /// given.</para>
 /// <para>It records what it was handed so a test can assert the sink was never
 /// touched, which is what a licence refusal has to prove.</para>
+/// <para>**AND SINCE UNIT 262 IT CAN DECLARE A RATE AND REFUSE EVERY OTHER ONE**,
+/// which is the last way a real sink can fail that this could not - see
+/// <see cref="DeclaredSampleRate"/>.</para>
 /// </remarks>
 internal sealed class FakeTransmitAudioSink : ITransmitAudioSink
 {
@@ -35,6 +38,25 @@ internal sealed class FakeTransmitAudioSink : ITransmitAudioSink
     /// <summary>Report having played only this many samples.</summary>
     public int? PlaysOnly { get; set; }
 
+    /// <summary>
+    /// The rate this endpoint declares, or null to take whatever it is handed.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ONE BEHAVIOUR THIS FAKE LACKED, AND WHY THAT MATTERED** (work
+    /// instruction 262, task 2). <c>WasapiTransmitSink</c> has a rate it will
+    /// accept - the endpoint's shared-mode mix format - and throws on anything
+    /// else, rather than letting shared-mode WASAPI resample quietly. This fake
+    /// recorded the rate it was asked for and played anyway, which made it **more
+    /// permissive than the thing it stands for**: every test that handed it 12000
+    /// Hz passed, against a real sink that would have refused, and sixteen units
+    /// of green tests sat over a send path that could not transmit on any endpoint
+    /// this machine has.</para>
+    /// <para>**NULL BY DEFAULT, SO NO EXISTING TEST CHANGES MEANING.** A fake that
+    /// suddenly refused would be a different fixture wearing the same name.
+    /// Setting this is how a test says *stand for a real endpoint*.</para>
+    /// </remarks>
+    public int? DeclaredSampleRate { get; set; }
+
     /// <summary>How long it claims the playing took.</summary>
     public TimeSpan Took { get; set; } = TimeSpan.FromSeconds(12.64);
 
@@ -45,6 +67,17 @@ internal sealed class FakeTransmitAudioSink : ITransmitAudioSink
         TimesCalled++;
         SamplesHandedOver = samples.Length;
         RateAskedFor = sampleRate;
+
+        if (DeclaredSampleRate is int declared && sampleRate != declared)
+        {
+            // **THE SAME SHAPE OF MESSAGE AS `WasapiTransmitSink.cs:306-309`**,
+            // word for word, because a fake whose refusal reads differently sends
+            // whoever reads the red looking in the wrong place.
+            throw new InvalidOperationException(
+                $"the samples are at {sampleRate} Hz and the endpoint speaks "
+                + $"{declared} Hz. Nothing is played rather than a rate being "
+                + "silently changed on the way out.");
+        }
 
         if (Throws is not null)
         {

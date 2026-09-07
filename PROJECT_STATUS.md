@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T01:05:40-04:00
-NOTE: Trace written and measured. All four of this machine's render endpoints declare 48000 Hz and not one declares 12000, so the send path can transmit on 0 of 4 today. Ft8Composer.RateIsUsable accepts 48000 and the default 1000 Hz base frequency holds there. Both PowerShell spellings of the enumeration were refused by the shell, so the instruction's named fallback - a filtered test that prints the table - was used. Step 1's header line corrected from blocked to partial in PHASE_STATUS.md and PHASE_OUTCOME.md. Committing task 1.
+UPDATED: 2026-09-07T01:22:15-04:00
+NOTE: Both transmit fakes now declare a rate and refuse every other one, in the same words WasapiTransmitSink.cs:306 uses, defaulted off so no existing test changes meaning. The new test drives the application's own send path against a sink declaring 48000 Hz and is RED ON PURPOSE, 3 of 4 failing: rate asked for 12000, keyed True, 3 frames on the wire, samples played empty, and the operator would read "the samples are at 12000 Hz and the endpoint speaks 48000 Hz". Arming grep before task 3 is 1, 1, 1. Committing the red, then task 3 turns it green.
 
 ---
 
