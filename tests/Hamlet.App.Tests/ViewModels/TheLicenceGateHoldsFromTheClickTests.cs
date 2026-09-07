@@ -272,19 +272,26 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
     /// <para>**THE BREAKAGE IT WOULD HAVE CAUGHT**, which the rule requires named:
     /// a <c>GuardEnabled</c> that never reaches the gate - hard-coded, or read once
     /// at startup and never again. That fault is invisible to assertions 1 and 3,
-    /// which both run with the setting at its default of <c>true</c>: a gate wired
-    /// to a constant refuses a Technician exactly as a gate wired to Settings does.
-    /// **This is the only assertion in the tree that moves the switch and watches
-    /// the answer move with it.**</para>
-    /// <para>**IT DECIDES NOTHING.** <c>TransmitGuard.Check</c> at
-    /// <c>TransmitGuard.cs:88-91</c> returns <c>MayTransmit</c> true with
-    /// <c>WasOverridden</c> true where the operator has switched the guard off -
-    /// the transmission proceeds on his own authority, and the reason travels with
-    /// it. Whether that is the right behaviour is not this unit's to weigh; it is
-    /// recorded in `output.md` for the owner.</para>
+    /// which both run with the setting at its default of <c>true</c>. **This is the
+    /// only assertion in the tree that moves the switch**, and what proves the
+    /// switch arrived is that the *sentence* changes with it: a panel passing a
+    /// hard-coded <c>true</c> would leave the operator reading the privileges
+    /// refusal, and he reads the guard-off refusal instead.</para>
+    /// <para>**THE MEASUREMENT, AND IT IS NOT WHAT THIS TEST FIRST EXPECTED.**
+    /// <c>TransmitGuard.Check</c> at <c>TransmitGuard.cs:88-91</c> does return
+    /// <c>MayTransmit</c> true with <c>WasOverridden</c> true where the guard is
+    /// off - **and this send path refuses anyway**.
+    /// <c>Ft8TransmitSequence.Permits</c> at <c>:443</c> accepts one of the gate's
+    /// three ways of permitting, because §0.2 says the Settings check is not
+    /// bypassable from any send path. **Switching the guard off in Settings does
+    /// not make Hamlet transmit outside privileges; it changes which sentence the
+    /// operator reads.** The red this was watched at is committed at 5c91f7e with
+    /// its verbatim output. Whether that is the right behaviour is not this unit's
+    /// to weigh - it is recorded in `output.md` for the owner, and no product code
+    /// was touched.</para>
     /// </remarks>
     [Fact]
-    public async Task WithTheGuardSwitchedOffInSettingsTheSameClickGoesOnHisOwnAuthority()
+    public async Task WithTheGuardSwitchedOffInSettingsTheSendPathStillRefusesAndSaysWhy()
     {
         var (panel, settings, factory, port) = Armed(LicenseClass.Technician);
 
@@ -298,21 +305,38 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
 
         var result = await panel.AtSlotBoundaryAsync(slot!.Value);
 
+        Dispatcher.UIThread.RunJobs();
+
         _output.WriteLine("guard enabled     : " + settings.RestrictTransmitToPrivileges);
         _output.WriteLine("licence class     : " + panel.LicenseClass);
         _output.WriteLine("run outcome       : " + result!.Run!.Outcome);
         _output.WriteLine("sent              : " + result.Run.Sent);
         _output.WriteLine("sink calls        : " + factory.Sink.TimesCalled);
         _output.WriteLine("frames at the port: " + port.Written.Count);
+        _output.WriteLine("the sentence      : " + panel.DigitalSendLine);
 
-        // **THE SAME CLASS AND THE SAME FREQUENCY THAT ASSERTION 1 REFUSED.**
-        Assert.Equal(Ft8TransmitOutcome.Sent, result.Run.Outcome);
-        Assert.True(result.Run.Sent);
-        Assert.Equal(1, factory.Sink.TimesCalled);
-        Assert.Equal(2, port.Written.Count);
+        // **STILL REFUSED, AND STILL NOTHING ON THE WIRE.** The switch does not
+        // open a route to the air.
+        Assert.Equal(Ft8TransmitOutcome.RefusedByLicence, result.Run.Outcome);
+        Assert.False(result.Run.Sent);
+        Assert.False(result.Run.Keyed);
+        Assert.Equal(0, factory.Sink.TimesCalled);
+        Assert.Empty(port.Written);
 
-        // AND THE SETTING IS WHAT MOVED IT: the panel reads it per click, at
-        // `MainWindowViewModel.cs:8225`, rather than having captured it.
+        // **AND THE SWITCH DID REACH THE GATE** - this is a different sentence
+        // from assertion 2's, which is what proves the panel passed the operator's
+        // own setting rather than a constant.
+        Assert.Contains(
+            "the licence guard is switched off in Settings",
+            panel.DigitalSendLine,
+            StringComparison.Ordinal);
+        // AND IT STILL CARRIES WHAT THE GUARD SAID WHEN IT WAS LAST ASKED, so
+        // switching the guard off does not cost him the reason.
+        Assert.Contains(
+            "What the guard said when it was last asked",
+            panel.DigitalSendLine,
+            StringComparison.Ordinal);
+
         Assert.False(settings.RestrictTransmitToPrivileges);
     }
 
