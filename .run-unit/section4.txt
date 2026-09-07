@@ -1,54 +1,81 @@
 ﻿
-**Nothing is blocking. Three items are recorded for the record and none is a
-ruling request.**
+**Nothing is blocking. Three items, all recorded for the record, none a ruling
+request, and none stands in the way of anything in B.**
 
-### 1. Unit 261's stated reason for not doing this work did not hold
+### 1. Task 2 was green against the tree as it stood
 
-Unit 261 recorded, in its own `PHASE_OUTCOME.md` entry: *"Threading a
-cancellation source from `Ft8ArmedSend` into `RunAsync` would run WASAPI's
-registrations synchronously on the operator's UI thread, which is the one
-property the abort may not have."*
+Reported because the instruction asked to be told either way and named this as
+the answer it expected might come back. **All four assertions held on the first
+run, 543 ms, with no change to any product code except a read-only accessor.**
+The join between unit 258's ledger, unit 259 and 260's arming and menu, and unit
+262's rate handling was already sound; it had simply never been walked. **Not
+blocking â€” it is the answer B asks for.**
 
-The concern is real in general - `Cancel()` does run every registered callback
-synchronously on the calling thread. **But there are no registrations.**
-`grep -rn "Register("` over `WasapiTransmitSink.cs` and the whole of
-`src/Hamlet.RadioEngine/Transmit/` returns nothing at all. The sink stops itself
-by reading a flag at the top of a loop it is already in, on its own thread, and
-by a `finally` that also runs on the sink's thread. **The endpoint is never
-touched by the thread that cancels**, and the measurement is `StopNow` returning
-in 1.3 ms against a real endpoint with a real transmission in flight.
+### 2. The contact cell is computed as of the row's own slot, but only for the count
 
-**Unit 261's entry was not edited** - unit 258's ruling stands, a unit does not
-rewrite an entry that is not its own. The correction is here and in this unit's
-own entry, which is where it belongs. Unit 261's finding was right as a general
-worry and wrong about this path, and the tree settled it.
+The instruction expected to be told it got this wrong, and it half did.
+`MainWindowViewModel.cs:7914` reads `Ft8ContactStates.Read(record, row.SlotStartUtc)`,
+so `nowUtc` is the row's own slot â€” **but `Read` uses that argument for the slot
+count alone.** `IsComplete` takes no moment at all and reads the whole record. So
+the state is as of the whole ledger and the number beside it is as of the row.
 
-### 2. Two line numbers in the instruction that the tree disagrees with
+**What actually stops a row moving after a send is a different thing entirely:
+nothing recomputes it.** `PlaceRow` has two callers, `:7823` bakes the string in
+with a `with` expression, and nothing walks `DigitalDecodes` after `:8279`. That
+is a real property of the application and it is why the walk reads the newest
+row. **Not blocking, and not a defect** â€” Â§12.1 is untouched, the row's state
+still depends only on which messages passed, and nothing was changed about
+*what* the cell decides or *when* it is computed.
 
-The tree wins on both, and neither changes anything:
+### 3. Transmit telemetry does survive the app's own category predicate â€” and one instruction mismatch beside it
 
-- `StopNow` is at `Ft8ArmedSend.cs:235-247`, not `:235-251`.
-- `AtBoundaryAsync` handed the token to `RunAsync` at `:297`, not `:296`.
+The instruction said to measure this rather than reason from `App.axaml.cs:42`
+and `AppSettings.cs:395`. **Measured: it survives.** A `JsonlTelemetry` built the
+way `App.axaml.cs:38-43` builds it, with the predicate off a real `AppSettings`
+and the byte cap, wrote `2026-09-07.jsonl` with the `ft8_transmission` line in
+category `transmit`, read back off disk. **Not blocking.**
 
-Everything else in the instruction's table was checked and held, including
-`WasapiTransmitSink.cs:339`, `:372`, `:398-402`, `Ft8TransmitSequence.cs:288` and
-`MainWindowViewModel.cs:8258`.
+**The mismatch, reported and not repaired, per `ARBITER.md` Â§5 â€” the tree wins.**
+Task 1 question 4 says `Ft8ContactState.cs:186` requires three things:
+`record.Sent.Count > 0`, `ours.Any(IsGridOrReport)` and
+`ours.Any(IsAcknowledgement)`. **The tree requires five:** those three plus
+`record.LastHeardToUs is not null`, `his.Any(IsGridOrReport)` and
+`his.Any(IsAcknowledgement)`. Both sides of the exchange must carry a
+grid-or-report and an acknowledgement. It changes nothing about the exchange task
+2 drives, which satisfies all five. **The instruction was not repaired and
+`PHASE_OUTCOME.md`'s existing entries were not touched;** the correction is here
+and in the appended entry.
 
-### 3. An inherited red, found and not repaired
+### One procedural conflict, resolved, and said out loud
 
-`TheUnkeyHappensWhateverGoesWrongTests.ExactlyOneFileInTheShippedTreeCallsThe-
-Sequence` fails, and **it has been failing since unit 260**, fifteen commits ago,
-when `MainWindowViewModel.cs:8049` gained `new Ft8TransmitSequence(...)`. It was
-found tonight only because task 3 required running the suite it lives in. It is
-not on `PHASE_PLAN.md`'s list of named inherited reds.
+The session's standing cadence says the `STEP:` lines in `PHASE_STATUS.md` belong
+to the launcher and are not this session's to write. **Work instruction 264 task
+5 explicitly instructs this unit to set step 1 to `done` in that file's header
+lines and to say whose authority it acted on.** The instruction is specific and
+names the arbiter's ruling behind it, so it was followed: one word on one line,
+no other step touched, no reformatting, and nothing below the `---` altered.
+**Reported so that whoever owns that file knows a unit wrote to it and why.**
 
-**The safety property it exists to protect still holds.** The test fails on its
-coarse first assertion - *exactly one file under `src/` mentions the type* -
-before reaching the assertion that actually carries the property, which is that
-`_sequence.RunAsync` is called from exactly one file. That one was checked
-directly tonight and returns `Ft8ArmedSend.cs` and nothing else.
+### Parked, untouched, and not raised
 
-**Reported rather than repaired**, per `ARBITER.md` section 5 and this instruction's
-*What not to do* item 2. A note, not a ruling request. The next unit can decide
-whether the assertion should distinguish constructing the sequence from reaching
-`RunAsync` through it, which is the substantive question underneath it.
+The level; step 4's criterion 6; unit 263's section 4 items 1 and 2; the
+`RULES_AT` disagreement between `PROJECT_STATUS.md` (`HM-DEC-157`) and
+`CLAUDE.md` Â§1 (`CPS-DEC-0152`), which is reported and not reconciled; the CW
+send and band-scan surface; and the inherited reds â€” `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
+the 51 CW cases in `docs/unit239-failing-set.txt`, and the `Ft8Sharp.Deep.Tests`
+whole-type-list tripwire â€” none of which was run or chased.
+
+### What was committed, and what was left
+
+Committed before task 2 started, at `8531720`: `PHASE_OUTCOME.md`,
+`RUN_LEDGER.md`, `WORK_INSTRUCTIONS.md`, `SESSION.lock` and the whole of
+`.run-unit/`. **Nothing was left uncommitted.** `SESSION.lock` was modified rather
+than deleted in the tree this unit found, and `.run-unit/watched.rc` was not
+present as an untracked file â€” both differ from what the instruction's reload
+section reported, and both are the launcher's, not this unit's to repair.
+
+### Step 6 is not closed and no unit can close it
+
+Said plainly because the instruction requires it: **proving a mechanism is not
+performing a contact.** All three of step 6's criteria need Tim, a radio and an
+antenna. Nothing in this report is evidence that anything went on the air.

@@ -1,12 +1,8 @@
-﻿   Bash  {"command":"date -Iseconds","description":"Read the clock"}
-   Bash  {"command":"powershell -NoProfile -Command \"Get-Date -Format \u0027yyyy-MM-ddTHH:mm:ssK\u0027\"","description":"Read the clock"}
-   Bash  {"command":"grep -rn \"Register(\" src/Hamlet.RadioEngine/Audio/WasapiTransmitSink.cs src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs src/Hamlet.RadioEngine/Transmit/Ft8Composer.cs src/Hamlet.RadioEngine/Transmit/Ft8TransmitSequence.cs src/ ...(truncated)
-   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Try outcome-append.bat once as the tool rule requires"}
-   Bash  {"command":"dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --no-build --filter \"FullyQualifiedName~TheStopStopsTheAudioTooTests.MidTransmissionTheStopTakesTheCarrierOffAndStopsTheSound\" --logger \"console;verbo ...(truncated)
-   Bash  {"command":"git stash -q -u \u0026\u0026 dotnet build tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj -v q --nologo 2\u003e\u00261 | tail -3","timeout":300000,"description":"Stash task 3 and rebuild to check the failure is in ...(truncated)
-   Bash  {"command":"git stash list; git show 5186820:src/Hamlet.App/ViewModels/MainWindowViewModel.cs \u003e /tmp/vm-old.cs; grep -c \"new Ft8TransmitSequence\" /tmp/vm-old.cs","description":"Check the sequence construction existed at HEAD 5186820" ...(truncated)
-   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027EOF\u0027\n\n## UNIT 263 - STEP 1\n\nSTEP: 1\nAPPROACH: stop the audio as well as the carrier - thread a cancellation source from Ft8ArmedSend.StopNow into the polling loop of  ...(truncated)
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate the report, forward slashes"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Validate the report via cmd"}
-   Bash  {"command":"cmd /c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Validate the report"}
-   Bash  {"command":"powershell -NoProfile -Command \"\\$f=\u0027C:\\Source\\HamLet\\output.md\u0027; \\$t=Get-Content -LiteralPath \\$f; \\$u=(\\$t | Select-Object -First 60 | Where-Object { \\$_.TrimStart([char]0xFEFF) -like \u0027UNIT:*\u0027 } | ...(truncated)
+﻿   Bash  {"command":"date \"+%Y-%m-%d %H:%M:%S\"; echo \"---\"; git -C /c/Source/HamLet status --short; echo \"---\"; git -C /c/Source/HamLet log --oneline -3","description":"Read clock and git status"}
+   Bash  {"command":"sed -n \u0027385,410p\u0027 src/Hamlet.App/Settings/AppSettings.cs 2\u003e/dev/null || (find . -name AppSettings.cs -not -path \"*/obj/*\" -not -path \"*/bin/*\")","description":"Read AppSettings IsTelemetryEnabled"}
+   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Try outcome-append.bat once verbatim"}
+   Bash  {"command":"git push -q 2\u003e\u00261 | tail -3; echo \"pushed rc=$?\"","description":"Push commits"}
+   Bash  {"command":"sed -i \u0027s/m =\u003e m\\.Text/m =\u003e m.Message/g\u0027 tests/Hamlet.App.Tests/ViewModels/TheWholeContactWalksThroughTheApplicationTests.cs \u0026\u0026 grep -n \"m.Message\" tests/Hamlet.App.Tests/ViewModels/TheWholeConta ...(truncated)
+   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027ENTRY\u0027\n\n## UNIT 264 - STEP 6\n\nSTEP: 6\nAPPROACH: walk a whole QSO through the application - right-click, send, ledger, row reads complete, and the transmitted slots re ...(truncated)
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run validator via cmd"}
+   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run validator with forward slashes"}
