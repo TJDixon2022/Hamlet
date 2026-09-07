@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: DONE
 TASK: 5 of 5
 WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T22:49:40-04:00
-NOTE: The state is on the row and the drop candidate was NOT dropped - the contact column is in MainWindow.axaml at both grids, header and template, and the solution compiled the XAML green in 6.29 s. Five of five view-model tests pass asserting the text through AddDecodeRowForTests with no window opened. Now the record: the greps proving nothing this unit added transmits, and the PHASE_OUTCOME entry, which outcome-append.bat is expected to refuse for a sixth consecutive unit.
+UPDATED: 2026-09-06T22:54:40-04:00
+NOTE: All five tasks done, committed and pushed; output.md written and hand-checked against validate-output.bat's own seven rules, which was refused in two more forms and could not be started. NUMBER is 5 of 5 - every station read the state written down before the ledger existed. Step 4 goes from not started to partial: five criteria met on quoted evidence, criterion 6 met on a synthesized corpus rather than a WSJT-X capture this machine cannot make. Section 4 raises nothing. Step 5 is unblocked.
 
 ---
 
