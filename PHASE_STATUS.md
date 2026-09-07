@@ -3,7 +3,7 @@ PHASE_SET: 2026-09-06
 DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
 CURRENT_STEP: 1
 WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
-HEARTBEAT: 2026-09-06 20:04:17
+HEARTBEAT: 2026-09-06 20:43:44
 STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | partial | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission

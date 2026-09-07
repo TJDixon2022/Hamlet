@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-06T19:57:52-04:00  root C:\Source\HamLet
+measured 2026-09-06T20:34:05-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -21,7 +21,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 4a61977
+  HEAD   : 875f176
   uncommitted at the root : 3
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
@@ -368,13 +368,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     bug, the 101.33 ms pulse above 6 kHz, the CW decoder and its inherited reds.
 
   --- PHASE_STATUS.md ---
-  31 lines, 1373 bytes
+  31 lines, 1395 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 255 - key, transmit, unkey, with the unkey guaranteed
-  HEARTBEAT: 2026-09-06 19:57:51
+  WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
+  HEARTBEAT: 2026-09-06 20:34:04
   STEP: 0 | done | the dummy load is gone from the tree
   STEP: 1 | partial | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
@@ -402,7 +402,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   The previous phase's final status is archived at `docs/phase-onair-run/PHASE_STATUS.md`.
 
   --- PHASE_OUTCOME.md ---
-  142 lines, 21477 bytes
+  172 lines, 29793 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   STEP: 0 | done | the dummy load is gone from the tree
@@ -545,6 +545,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: partial
   STATE_WHY: Four of the six must-pass criteria are met against quoted bytes, greps and a telemetry line, while criterion 1, audio to the radio's USB input at the right device, rate and level, and criterion 3, the loopback proving the whole chain, were not attempted and are unmet, and nothing in the report says a decision or outside change prevents them.
+  
+  ## UNIT 256 - STEP 3
+  
+  STEP: 3
+  APPROACH: Measure what this machine can actually play and capture before writing a line of it, then build a real WASAPI render sink that opens an endpoint the caller names, and prove the loopback whole - compose, play to that endpoint, capture the same endpoint, through AudioTap, Ft8Resample and Ft8SlotDecoder, back to the message that went in.
+  HIT: Three things measured that had been assumed. The work instruction says Ft8Composer already constructs and calls Ft8SlotDecoder and it does not - Ft8Composer.cs:585 calls Ft8MessageDecoder.Decode, the message layer, which never sees a sample; the construction to reuse is in the round-trip test. NAudio's MMDevice.AudioClient activates a fresh uninitialised client on every read of the property, so initialising one and then reading the property again throws away the initialised one and fails later at AUDCLNT_E_NOT_INITIALIZED, nowhere near its cause. And AudioTap.Level read peak -90 dB, NearlySilent true, on audio that decoded perfectly - it is a 0.2 s moving meter and the last 0.2 s of a run is the silence after the transmission.
+  MOVE: continue
+  WHY: The drain is the whole engineering. A sink that writes its last buffer and returns SamplesPlayed = samples.Length passes every test that counts samples and is a lie, and only a stopwatch can catch it - so the sink was built that way first and watched reporting 96000 of 96000 samples played in 1.810 s of a 2.000 s tone, 190 ms of audio still inside the card at the moment the caller was told the transmission had gone out. The rate on the way out is refused rather than resampled for the same class of reason: shared-mode WASAPI resamples anything handed to it silently, so a sink that accepted 12000 Hz would report asked 12000 got 12000 while something nobody chose decided what the samples became.
+  DECIDED: Three on my own authority. First, the render enumeration lives with the render sink rather than on IAudioDevices, because every existing caller of that interface is asking what Hamlet can listen to and a render endpoint in that list is a device the caller cannot open, with no field on AudioDevice to tell them apart. Second, WasapiAudioSource's claim to be the only class in the engine that knows what a sound device is was amended rather than left to be falsified by its neighbour - it now says on the way in, and names the sink as the way out. Third, the loopback was widened to run the whole send path rather than the sink alone, so the same three transmissions that prove criterion 3 also carry criterion 4's record, which kept the unit inside its own cap of three rather than spending a fourth transmission on telemetry.
+  LICENCE: The arbiter decision of 2026-09-06 that criterion 3 is taken whole and criterion 1 is cut down, together with PHASE_PLAN.md step 3 criterion 3 in its own words - the loopback needs no antenna and no radio state and is the closing evidence for this step. SHACK_FACTS.md FACT-004 licenses the cut-down of criterion 1 and forbids the inference that would otherwise close it: no measurement of this machine's audio endpoints says anything about the radio.
+  COST: unknown
+  ACCOMPLISHED: A message Hamlet composed leaves this computer as sound and comes back into Hamlet's own decoder as the same message. Three of three, on the device route, compared as whole text: CQ KC3QIS FN00, KC3QIS W9XYZ FN00 and W9XYZ KC3QIS -12 all read back identically, each 606720 of 606720 samples in about 12.65 s. The transmit path stops being a thing proved against fakes - ITransmitAudioSink has a real implementation that opens an endpoint by name and fails loudly rather than playing to whatever the machine defaults to, states the rate it asked against the rate it got, converts float to the endpoint's own format with the clipping counted, and waits for the card to empty before it says it is done. The same capture handed to the decoder without Ft8Resample returns nothing, which is the defect the loopback exists to catch and it is watched and kept.
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: Criterion 3 is met whole on the device route, 3 of 3 messages compared as whole text with the run's wall clock stated. Criteria 2, 4, 5 and 6 stand met from unit 255, with 2 and 4 re-exercised here against the real sink and on the loopback transmissions themselves. Criterion 1 is met as the cut-down the arbiter declared: the render path, the named endpoint, the rate asked against the rate got, and the level, format and clip count are all measured on the development machine, and the radio-side half - what the IC-7300's USB modulation input expects - is unreachable from this machine under FACT-004 and is deferred to Tim beside step 2's criterion 4, which is the same treatment PHASE_PLAN.md's table already licenses.
+  
+  ## UNIT 4 - STEP 3
+  
+  STEP: 3
+  APPROACH: Implement the WASAPI render sink and prove the loopback - compose, play to a real output endpoint, capture that same endpoint through AudioTap, resample and decode back to the message that went in - closing step 3 criterion 3, with criterion 1 cut down to what a development machine can prove
+  HIT: section 4 wants a ruling: no - The section states nothing is blocking and its only other content is a note for the record about the validator and an action for Tim at the radio, neither of which asks the owner to decide anything.
+  MOVE: cut down
+  WHY: Criterion 3, the loopback, is fully reachable here - PHASE_PLAN.md says in its own words that it needs no antenna and no radio state and is the closing evidence for this step - so it is taken whole and is the goal task. Criterion 1's radio-side half is not reachable by any unit, because SHACK_FACTS.md FACT-004 rules the IC-7300's codec is absent from this machine and may not be inferred from it, so it is cut down to the render path, the endpoint, the rate and the level, with the radio's own expected level deferred to Tim beside step 2's criterion 4. The loop test was run on this approach and returned NOT FOUND; the two step 3 entries are one unit recorded twice and both say 'opening no device and playing no sound', so this is the deliberate complement of what was tried, not a repeat of it.
+  DECIDED: Three on my own authority. First, criterion 1 is cut down rather than chased or declared unachievable - the reachable half is real engineering and the unreachable half gets the same named-operator-action treatment step 2's criterion 4 already has, which PHASE_PLAN.md's table licenses directly. Second, step 3 is taken again rather than step 4 being started, because the loopback was deferred once already by unit 255's split and deferring the plan's own named closing evidence a second time is how a step gets quietly abandoned; step 4 is unblocked, unstarted and named as next. Third, the unit is given two loopback routes with the device route mandatory unless task 1's measurement says otherwise, because the authoring shell refused twice to enumerate this machine's sound devices and I could not measure whether a render endpoint exists - so the instruction is written to land either way rather 
+  LICENCE: PHASE_PLAN.md's named alternatives to stopping - a target not reached is closed with the figure reached and what was tried, and where the radio is wanted the step is closed on the loopback with what Tim must do named - together with step 3's own criterion 3, which states that the loopback needs no antenna and no radio state. SHACK_FACTS.md FACT-004 licenses the cut-down of criterion 1 and forbids the inference that would otherwise close it.
+  COST: 15.8225235
+  ACCOMPLISHED: A message Hamlet composed leaves this computer as sound and comes back into Hamlet's own decoder as the same message - the whole chain proved on one machine with no radio and no antenna. The transmit path stops being a thing proved against fakes. What remains of step 3 after this is the one number only Tim can read off the radio.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 2 through 6 are met with quoted evidence, including a 3 of 3 loopback decode on a real device route, but criterion 1 is met only as a self declared cut down on a development machine's monitor audio endpoint, with audio never played to the radio's USB input and the level deferred to Tim, so a must pass criterion remains unmet.
 
   --- CLAUDE.md ---
   1376 lines, 188627 bytes
@@ -567,17 +597,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1368 bytes
+  19 lines, 1579 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 5 of 5
-  WORK_INSTRUCTION: 255 - key, transmit, unkey, with the unkey guaranteed
+  WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-157 (2026-09-06)
-  UPDATED: 2026-09-06T19:56:38-04:00
-  NOTE: Five of five done and pushed, 1.12.85 to 1.12.89, a patch a task, nothing dropped. Hamlet can key a radio, hand it a transmission and come out of transmit - 6 of 6 failure modes leave it unkeyed with the bytes on the wire to prove it, and TransmitAbort has its first caller. The gate refuses at zero writes on all three of its permissive branches without Check being touched. The signal starts 0.5 s into the slot, which closes step 2 criterion 5's open half, and the record carries eleven fields and no string parameter at all. Step 3 recorded partial: criteria 2, 4, 5 and 6 met, and 1 and 3 - the device and the loopback - deliberately not attempted and left whole for the next unit. Nothing is blocking. Every UPDATED this session was read from the clock.
+  UPDATED: 2026-09-06T20:29:33-04:00
+  NOTE: Five of five done and pushed, 1.12.89 to 1.12.93, a patch a task, nothing dropped that was not named. A message Hamlet composed now leaves this computer as sound and comes back into Hamlet's own decoder as the same message - 3 of 3 on the device route, whole text, ordinal, 48.16 s of wall clock for the class. The sink was watched lying first: without the drain it reported 96000 of 96000 samples played in 1.810 s of a 2.000 s tone. The rate lie was watched too - the same capture without Ft8Resample decodes to nothing. Step 3 recorded done: criterion 3 whole, criterion 1 as the declared cut-down with the radio's own input level deferred to Tim beside step 2's criterion 4. Step 4 is next and unblocked. outcome-append.bat was refused for the fifth consecutive unit and the entry was appended by hand; validate-output.bat was refused too and the report was hand-checked. Nothing is blocking. Every UPDATED this session was read from the clock.
   
   ---
   

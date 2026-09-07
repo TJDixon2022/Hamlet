@@ -1,7 +1,15 @@
 ﻿
-**Nothing is blocking.**
+**Nothing is blocking.** Step 3 is closed at `done` and step 4 is unblocked,
+unstarted and next; the one thing step 3 leaves outstanding - the drive level at
+the radio - is an action for Tim at the radio, not a decision anybody is waiting
+on, and it is already recorded as such against step 2's criterion 4.
 
-No ruling is asked for. Criteria 1 and 3 of step 3 are unmet but not blocked -
-they were not attempted, by the arbiter's split and this instruction's own
-words, and the next unit can begin on them exactly as the tree now stands: the
-sink interface is declared, narrow, and has a fake standing in it.
+---
+
+**Note on validation.** `tools\arbiter\validate-output.bat` could not be started
+by this session's shell, the same as in unit 255. **This report was checked by
+hand against the validator's rules and there is no exit code to quote**: the
+ordering block carries the literal `READ IN THIS ORDER` with `A.`, `B.` and `C.`
+paragraphs inside the first 60 lines and `raises 0 items` in C; the six-line
+header block follows; and the file has exactly four `##` headings, spelled and
+ordered as required, with section 3 not empty and section 4 present.

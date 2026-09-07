@@ -1,15 +1,10 @@
-﻿   Bash  {"command":"rm -f tools/unit254-seam-grep.sh; echo \"rm exit: $?\"; ls tools/unit254-seam-grep.sh 2\u003e\u00261","description":"Attempt to delete the leftover script"}
-   Bash  {"command":"dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~TheUnkeyHappensWhateverGoesWrongTests\" --nologo -v n \u003e /tmp/unkey.txt 2\u003e\u00261; grep -E \"left the radio unkeye ...(truncated)
-   Bash  {"command":"grep -c \"TransmitAbort\\|Ic7300\\|IAudioSource\\|Wasapi\\|NAudio\\|Stopwatch\\|Costas\\|phaseStep\" \u003c(grep -v \"^\\s*///\" src/Hamlet.RadioEngine/Transmit/Ft8Composer.cs); echo \"--- individual ---\"; for p in TransmitAbor ...(truncated)
-   Bash  {"command":"grep -v \"^\\s*///\" src/Hamlet.RadioEngine/Transmit/Ft8Composer.cs \u003e /tmp/composer-code.txt; for p in TransmitAbort PTT Ptt Civ SerialPort Ic7300 IRig RigState AudioDevice IAudioSource Wasapi NAudio Thread DateTime Stopwat ...(truncated)
-   Bash  {"command":"grep -v \"^\\s*///\" src/Hamlet.RadioEngine/Transmit/Ft8Composer.cs | grep -n -E \"TransmitAbort|PTT|Ptt|Civ|SerialPort|Ic7300|IRig|RigState|AudioDevice|IAudioSource|Wasapi|NAudio|Thread|DateTime|Stopwatch|TickCount|MathF|Math\\ ...(truncated)
-   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\outcome-append.bat\" 2\u003e\u00261 | head -20","description":"Try the outcome-append tool as instructed"}
-   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Try the outcome-append tool directly"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate the report"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Validate the report via cmd"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run the validator with a relative path prefix"}
-   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the validator through cmd.exe"}
-   Bash  {"command":"powershell -NoProfile -Command \"\u0026 { \u0026 \u0027C:\\Source\\HamLet\\tools\\arbiter\\validate-output.bat\u0027 \u0027output.md\u0027 }\"","description":"Run the validator through PowerShell"}
-   Bash  {"command":"powershell -NoProfile -Command \"$FILE=\u0027C:\\Source\\HamLet\\output.md\u0027; $t=Get-Content -LiteralPath $FILE; $u=($t | Select-Object -First 60 | Where-Object { $_.TrimStart([char]0xFEFF) -like \u0027UNIT:*\u0027 } | Selec ...(truncated)
-   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the instructed validator on the report","dangerouslyDisableSandbox":true}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run the instructed validator directly on the report","dangerouslyDisableSandbox":true}
+﻿   Bash  {"command":"powershell -NoProfile -Command \"Get-CimInstance Win32_SoundDevice | Select-Object Name,Status,StatusInfo | Format-List\"","description":"List sound devices via WMI"}
+   Bash  {"command":"sed -i \u0027s|\u003cVersion\u003e1.12.91\u003c/Version\u003e|\u003cVersion\u003e1.12.92\u003c/Version\u003e|\u0027 Directory.Build.props \u0026\u0026 grep -n \"\u003cVersion\u003e1.12\" Directory.Build.props","description":"Bum ...(truncated)
+   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\outcome-append.bat\" 2\u003e\u00261 | head -20","description":"Attempt outcome-append.bat"}
+   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Attempt outcome-append.bat directly"}
+   Bash  {"command":"LC_ALL=C grep -n \u0027[^ -~]\u0027 PHASE_OUTCOME.md | tail -5; echo \"exit=$?\"","description":"ASCII check on outcome file"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run the report validator"}
+   Bash  {"command":"cmd.exe /c tools\\\\arbiter\\\\validate-output.bat output.md","description":"Second form of validator invocation"}
+   Bash  {"command":"powershell -NoProfile -Command \"(Select-String -Path \u0027output.md\u0027 -Pattern \u0027^## \u0027 | ForEach-Object { \\$_.Line.Substring(3).Trim() }) -join \u0027 ~ \u0027\"","description":"Rule 2/3 - list top-level sections ...(truncated)
+   Bash  {"command":"head -53 output.md \u003e /tmp/hdr256.txt; grep -c \"_PENDING\\|PENDING_\\|TBD\\|TODO\\|FIXME\\|XXX\\|\u003cFILL\\|FILL IN\u003e\\|PLACEHOLDER\" /tmp/hdr256.txt","description":"Rule 7 - placeholder tokens in the header block"}
+   Bash  {"command":"awk \u0027NR\u003e151 \u0026\u0026 NR\u003c388 \u0026\u0026 $0 !~ /^[[:space:]]*$/\u0027 output.md | wc -l","description":"Rule 5 - count non-blank lines in section 3"}

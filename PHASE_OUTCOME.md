@@ -3,7 +3,7 @@ PHASE_SET: 2026-09-06
 STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | partial | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
-STEP: 3 | done | the audio reaches the radio and the radio keys
+STEP: 3 | partial | the audio reaches the radio and the radio keys
 STEP: 4 | not started | the row knows where the contact stands
 STEP: 5 | not started | right-click and it goes
 STEP: 6 | not started | Tim works a station
@@ -155,3 +155,18 @@ ACCOMPLISHED: A message Hamlet composed leaves this computer as sound and comes 
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: Criterion 3 is met whole on the device route, 3 of 3 messages compared as whole text with the run's wall clock stated. Criteria 2, 4, 5 and 6 stand met from unit 255, with 2 and 4 re-exercised here against the real sink and on the loopback transmissions themselves. Criterion 1 is met as the cut-down the arbiter declared: the render path, the named endpoint, the rate asked against the rate got, and the level, format and clip count are all measured on the development machine, and the radio-side half - what the IC-7300's USB modulation input expects - is unreachable from this machine under FACT-004 and is deferred to Tim beside step 2's criterion 4, which is the same treatment PHASE_PLAN.md's table already licenses.
+
+## UNIT 4 - STEP 3
+
+STEP: 3
+APPROACH: Implement the WASAPI render sink and prove the loopback - compose, play to a real output endpoint, capture that same endpoint through AudioTap, resample and decode back to the message that went in - closing step 3 criterion 3, with criterion 1 cut down to what a development machine can prove
+HIT: section 4 wants a ruling: no - The section states nothing is blocking and its only other content is a note for the record about the validator and an action for Tim at the radio, neither of which asks the owner to decide anything.
+MOVE: cut down
+WHY: Criterion 3, the loopback, is fully reachable here - PHASE_PLAN.md says in its own words that it needs no antenna and no radio state and is the closing evidence for this step - so it is taken whole and is the goal task. Criterion 1's radio-side half is not reachable by any unit, because SHACK_FACTS.md FACT-004 rules the IC-7300's codec is absent from this machine and may not be inferred from it, so it is cut down to the render path, the endpoint, the rate and the level, with the radio's own expected level deferred to Tim beside step 2's criterion 4. The loop test was run on this approach and returned NOT FOUND; the two step 3 entries are one unit recorded twice and both say 'opening no device and playing no sound', so this is the deliberate complement of what was tried, not a repeat of it.
+DECIDED: Three on my own authority. First, criterion 1 is cut down rather than chased or declared unachievable - the reachable half is real engineering and the unreachable half gets the same named-operator-action treatment step 2's criterion 4 already has, which PHASE_PLAN.md's table licenses directly. Second, step 3 is taken again rather than step 4 being started, because the loopback was deferred once already by unit 255's split and deferring the plan's own named closing evidence a second time is how a step gets quietly abandoned; step 4 is unblocked, unstarted and named as next. Third, the unit is given two loopback routes with the device route mandatory unless task 1's measurement says otherwise, because the authoring shell refused twice to enumerate this machine's sound devices and I could not measure whether a render endpoint exists - so the instruction is written to land either way rather 
+LICENCE: PHASE_PLAN.md's named alternatives to stopping - a target not reached is closed with the figure reached and what was tried, and where the radio is wanted the step is closed on the loopback with what Tim must do named - together with step 3's own criterion 3, which states that the loopback needs no antenna and no radio state. SHACK_FACTS.md FACT-004 licenses the cut-down of criterion 1 and forbids the inference that would otherwise close it.
+COST: 15.8225235
+ACCOMPLISHED: A message Hamlet composed leaves this computer as sound and comes back into Hamlet's own decoder as the same message - the whole chain proved on one machine with no radio and no antenna. The transmit path stops being a thing proved against fakes. What remains of step 3 after this is the one number only Tim can read off the radio.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 2 through 6 are met with quoted evidence, including a 3 of 3 loopback decode on a real device route, but criterion 1 is met only as a self declared cut down on a development machine's monitor audio endpoint, with audio never played to the radio's USB input and the level deferred to Tim, so a must pass criterion remains unmet.
