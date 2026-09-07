@@ -91,6 +91,46 @@ public sealed record AdifContact
 /// </remarks>
 public static class AdifLog
 {
+    /// <summary>A band name as the ADIF Band enumeration spells it.</summary>
+    /// <param name="displayName">Hamlet's own display name, e.g. `20 m`.</param>
+    /// <returns>The enumeration value, e.g. `20m`, or null for nothing.</returns>
+    /// <remarks>
+    /// <para>**HAMLET SAYS `20 m` AND ADIF SAYS `20m`, AND UNIT 274 WROTE THE
+    /// FIRST ONE INTO THE FILE.** `HfBands` names bands for the screen —
+    /// `HfBands.cs:76` — and the log took that name straight through. The
+    /// specification's Band enumeration gives **`20m`** for "14.0" to "14.35" MHz,
+    /// quoted from the fetch of 2026-09-07, and a logger reading `20 m` has no row
+    /// for it.</para>
+    /// <para>**WHY THE ROUND TRIP DID NOT CATCH IT.** Unit 274's test wrote a
+    /// hand-made `"20m"` and read back `"20m"`, so the writer and the reader agreed
+    /// perfectly about a value the application never produces. That is §12.5 in
+    /// miniature: a fixture built from the same assumption as the code proves
+    /// nothing about the code. What caught it was work instruction 275 task 3,
+    /// which pushed the app's **own** band name through for the first time.</para>
+    /// <para>**IT REMOVES SPACE AND NOTHING ELSE.** This is a format conversion
+    /// rather than a translation: every ADIF band value is a number and a unit run
+    /// together, and every `HfBands` name is the same two with a space between
+    /// them. Nothing is renamed, mapped or guessed, and a name this cannot
+    /// recognise comes back null so the field is absent rather than wrong.</para>
+    /// </remarks>
+    public static string? BandValueFor(string? displayName)
+    {
+        var name = (displayName ?? "").Replace(" ", "").Trim().ToLowerInvariant();
+
+        // A band value is digits then `m` or `cm`. Anything else is not one, and
+        // an unrecognised name is left out rather than written wrong.
+        var digits = 0;
+
+        while (digits < name.Length && char.IsAsciiDigit(name[digits]))
+        {
+            digits++;
+        }
+
+        var unit = name[digits..];
+
+        return digits > 0 && unit is "m" or "cm" ? name : null;
+    }
+
     /// <summary>The specification this file was written from.</summary>
     public const string Specification =
         "ADIF Specification 3.1.4, released 2022-12-06, "

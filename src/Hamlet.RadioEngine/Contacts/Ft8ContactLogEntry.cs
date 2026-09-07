@@ -89,7 +89,12 @@ public static class Ft8ContactLogEntry
             ReportReceived = LastReport(his),
             ReportSent = LastReport(ours),
 
-            Band = Blank(conditions?.Band),
+            // **THROUGH THE ADIF ENUMERATION, NOT STRAIGHT FROM THE SCREEN.**
+            // `HfBands` names a band `20 m` for the operator to read and ADIF
+            // spells it `20m`; unit 274 wrote the first one and unit 275 caught
+            // it. A name the enumeration has no row for is left out rather than
+            // written wrong.
+            Band = AdifLog.BandValueFor(conditions?.Band),
             Mode = Blank(conditions?.Mode),
 
             // **HERTZ TO MEGAHERTZ HERE AND NOWHERE ELSE**, so the one place that

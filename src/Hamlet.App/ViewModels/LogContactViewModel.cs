@@ -9,12 +9,19 @@ namespace Hamlet.App.ViewModels;
 /// <param name="Label">What the field is called on screen.</param>
 /// <param name="Value">What Hamlet observed, or "".</param>
 /// <param name="AdifField">The ADIF tag it will be written under.</param>
+/// <param name="WhenAbsent">
+/// What to say where nothing was observed, or "" for the general answer.
+/// **Some fields are not things a station sends**: *Hamlet did not hear this* is
+/// right about a report and wrong about a dial, so a field that needs its own
+/// sentence carries one.
+/// </param>
 /// <remarks>
 /// **THE ADIF NAME IS ON SCREEN BESIDE THE VALUE**, because this is the operator's
 /// own record and a year from now *what did Hamlet call this* should not need a
 /// source read. It is also how he checks the file against another logger.
 /// </remarks>
-public sealed record LogField(string Label, string Value, string AdifField)
+public sealed record LogField(
+    string Label, string Value, string AdifField, string WhenAbsent = "")
 {
     /// <summary>True where Hamlet observed this and did not have to be told.</summary>
     /// <remarks>
@@ -30,7 +37,10 @@ public sealed record LogField(string Label, string Value, string AdifField)
     /// beside a label reads as a box he forgot to fill; this says Hamlet did not
     /// hear it, which is a different fact and the true one.
     /// </remarks>
-    public string Shown => Value.Length > 0 ? Value : "Hamlet did not hear this";
+    public string Shown
+        => Value.Length > 0
+            ? Value
+            : WhenAbsent.Length > 0 ? WhenAbsent : "Hamlet did not hear this";
 }
 
 /// <summary>
@@ -74,7 +84,14 @@ public sealed partial class LogContactViewModel : ObservableObject
             new("Started", Moment(observed.StartedUtc), "QSO_DATE, TIME_ON"),
             new("Ended", Moment(observed.EndedUtc), "TIME_OFF"),
             new("Band", observed.Band ?? "", "BAND"),
-            new("Frequency", frequencySaidPlainly, "FREQ"),
+            // **THE FREQUENCY SAYS WHAT IT IS RATHER THAN WHAT IT WAS HEARD
+            // AS.** *Hamlet did not hear this* is right about a report and wrong
+            // about a dial: a dial is not something a station sends. Rows decoded
+            // before work instruction 275 carry none, and the record leaves both
+            // `FREQ` and `BAND` out entirely rather than guessing.
+            new("Frequency", frequencySaidPlainly, "FREQ",
+                "Hamlet did not record the dial for this row, so the frequency "
+                + "and the band are left out of the entry."),
             new("Mode", observed.Mode ?? "", "MODE"),
             new("Your callsign", observed.StationCallsign ?? "", "STATION_CALLSIGN"),
             new("Your grid", observed.MyGridSquare ?? "", "MY_GRIDSQUARE"),

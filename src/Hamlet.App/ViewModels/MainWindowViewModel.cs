@@ -7881,7 +7881,25 @@ public partial class MainWindowViewModel : ObservableObject
         // door, same reason: every row goes through here, so there is one place
         // that books what was heard and one place that reads back where the
         // contact stands.
-        row = row with { Contact = ContactTextFor(row) };
+        // **THE DIAL IS STAMPED ON THE ROW AT DECODE TIME** (work instruction 275
+        // task 3). Unit 274's log dialog read the dial when he right-clicked and
+        // said so on the field, because a row carried its slot and not its tuning
+        // — so an entry logged after he had retuned would record a band he never
+        // worked the station on. A log is the one artefact here that outlives
+        // everything else, and a wrong band in it is wrong in ten years.
+        //
+        // **`_digitalRowsTunedAtHz` IS THE SAME READING THE RETUNE GUARD USES**,
+        // taken when the slot was cut rather than read again now, so every row of
+        // one slot carries one frequency and it is the frequency that slot was
+        // heard at.
+        row = row with
+        {
+            Contact = ContactTextFor(row),
+
+            // **A ROW THAT ARRIVED WITH A DIAL KEEPS IT.** Only the decode path
+            // leaves it unset, and that is where the slot's own tuning belongs.
+            HeardOnHz = row.HeardOnHz > 0 ? row.HeardOnHz : _digitalRowsTunedAtHz,
+        };
 
         // **THE LOG IS READ ONCE AND KEPT, NOT ONCE PER DECODE** (task 5's own
         // concern). Fourteen messages a slot at four slots a minute is fifty-six
@@ -7911,6 +7929,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// unset, the row carries no contact text and every test written before unit
     /// 258 goes on asserting exactly what it did.
     /// </param>
+    /// <param name="heardOnHz">
+    /// The dial the row was heard on, or 0 for a row with none recorded. **Left
+    /// unset it behaves exactly as every test written before work instruction 275
+    /// expects**, which is a row whose log entry carries no frequency and no band.
+    /// </param>
     /// <returns>The row, so a test can look at what became of it.</returns>
     /// <remarks>
     /// **THE SAME DOOR THE DECODER USES**, so what is tested is the placement
@@ -7920,11 +7943,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     internal DigitalDecodeRow AddDecodeRowForTests(
         string utc, string snr, string dt, string hz, string message,
-        DateTime slotStartUtc = default)
+        DateTime slotStartUtc = default,
+        long heardOnHz = 0)
     {
+        // **THE DIAL IS SET BEFORE PLACING**, so a test can say what a row was
+        // heard on without reaching inside the panel and without a replace on the
+        // bound collection afterwards. `PlaceRow` fills it from the slot's own
+        // tuning only where it arrives unset.
         var row = PlaceRow(new DigitalDecodeRow(
             utc, snr, dt, hz, message, ObserverGrid: "",
-            SlotStartUtc: slotStartUtc));
+            SlotStartUtc: slotStartUtc, HeardOnHz: heardOnHz));
 
         RaiseDigitalDecodeChanges();
 
@@ -8593,8 +8621,15 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var hz = FrequencyHz;
-        var band = HfBands.BandFor(hz);
+        // **THE DIAL THE ROW WAS HEARD ON, NOT THE ONE THE RADIO IS ON NOW**
+        // (work instruction 275 task 3). A contact logged after he retuned used to
+        // record the band he had moved to.
+        //
+        // **ZERO MEANS NOT RECORDED AND THE FIELDS GO OUT ENTIRELY.** Anything
+        // decoded before this change carries no dial, and a plausible frequency in
+        // a permanent record is the fault §0.0 exists for.
+        var hz = row.HeardOnHz;
+        var band = hz > 0 ? HfBands.BandFor(hz) : null;
 
         var entry = Ft8ContactLogEntry.For(
             record,
@@ -8609,7 +8644,7 @@ public partial class MainWindowViewModel : ObservableObject
             entry,
             hz > 0
                 ? (hz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture)
-                  + " MHz, where the dial is now"
+                  + " MHz, where this was heard"
                 : "");
 
         if (Application.Current?.ApplicationLifetime

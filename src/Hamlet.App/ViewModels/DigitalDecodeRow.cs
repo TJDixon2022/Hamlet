@@ -72,6 +72,21 @@ namespace Hamlet.App.ViewModels;
 /// <see cref="From(Ft8Decode)"/> off `Ft8Decode.SlotStartUtc` and by nothing
 /// else.
 /// </param>
+/// <param name="HeardOnHz">
+/// **The dial this message was heard on**, in hertz, or 0 where it is not
+/// recorded.
+/// <para>**A LOG ENTRY MUST NOT RECORD A BAND HE DID NOT WORK.** Unit 274's
+/// dialog wrote the frequency the dial was on when he right-clicked, said so on
+/// the field, and named the fix as another unit's work. This is it: the row
+/// carries the tuning it was decoded at, so the log records where the contact
+/// happened rather than where the radio has since been turned.</para>
+/// <para>**ZERO MEANS NOT RECORDED, NOT ZERO HERTZ.** Anything decoded before
+/// this change carries no dial, and the log leaves `FREQ` and `BAND` out
+/// entirely rather than guessing one - the rule every other field already
+/// follows (§0.0).</para>
+/// <para>It is set in one place, `MainWindowViewModel.PlaceRow`, beside
+/// <paramref name="ObserverGrid"/> and <paramref name="Contact"/>.</para>
+/// </param>
 /// <param name="Contact">
 /// **Where the contact with this row's sender stands, as text a reader sees.**
 /// One of `PHASE_PLAN.md`'s four - *waiting on him*, *your move*, *complete* or
@@ -87,7 +102,8 @@ public sealed record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message,
     string ObserverGrid = "",
     DateTime SlotStartUtc = default,
-    string Contact = "")
+    string Contact = "",
+    long HeardOnHz = 0)
     : INotifyPropertyChanged
 {
     private string _workedBefore = "";

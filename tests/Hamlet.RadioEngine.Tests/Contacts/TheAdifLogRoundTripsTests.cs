@@ -301,6 +301,51 @@ public sealed class TheAdifLogRoundTripsTests
         Assert.True(checkedFields >= 12, "only " + checkedFields + " fields were checked");
     }
 
+    /// <summary>
+    /// Hamlet's own band names become the enumeration's, or nothing.
+    /// </summary>
+    /// <remarks>
+    /// <para>**UNIT 274 WROTE `20 m` INTO THE FILE AND THIS FILE DID NOT NOTICE.**
+    /// `HfBands` names bands for the screen and the log took the name straight
+    /// through; ADIF's Band enumeration gives `20m`, and a logger has no row for
+    /// `20 m`.</para>
+    /// <para>**WHY THE ROUND TRIP MISSED IT, WHICH IS THE LESSON.** Every test in
+    /// this file wrote a hand-made `"20m"` and read back `"20m"` — the writer and
+    /// the reader agreeing perfectly about a value the application never produces.
+    /// A fixture built from the same assumption as the code proves nothing about
+    /// the code (§12.5). What caught it was pushing the app's own name through for
+    /// the first time, in work instruction 275 task 3.</para>
+    /// <para>**THE HF BANDS BELOW ARE `HfBands`' OWN NAMES**, copied from
+    /// `HfBands.cs:76`, so this fails if either side is renamed.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData("20 m", "20m")]
+    [InlineData("80 m", "80m")]
+    [InlineData("40 m", "40m")]
+    [InlineData("30 m", "30m")]
+    [InlineData("17 m", "17m")]
+    [InlineData("15 m", "15m")]
+    [InlineData("10 m", "10m")]
+    [InlineData("20m", "20m")]
+    [InlineData("  40 m  ", "40m")]
+    [InlineData("70 cm", "70cm")]
+    // **AND WHAT IT REFUSES.** A name the enumeration has no row for is left out
+    // rather than written wrong, which is the rule every field here follows.
+    [InlineData("", null)]
+    [InlineData(null, null)]
+    [InlineData("the twenty metre band", null)]
+    [InlineData("HF", null)]
+    [InlineData("m", null)]
+    public void HamletsBandNamesBecomeTheEnumerationsOrNothing(
+        string? given, string? expected)
+    {
+        var got = AdifLog.BandValueFor(given);
+
+        _output.WriteLine("[" + given + "] -> " + (got ?? "(nothing)"));
+
+        Assert.Equal(expected, got);
+    }
+
     /// <summary>A complete contact, as an evening on 20 metres produces one.</summary>
     private static AdifContact Complete() => new()
     {
