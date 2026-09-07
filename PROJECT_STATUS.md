@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 255 - key, transmit, unkey, with the unkey guaranteed
-BALL: tim
+STATE: RUNNING
+TASK: 2 of 5
+WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T19:56:38-04:00
-NOTE: Five of five done and pushed, 1.12.85 to 1.12.89, a patch a task, nothing dropped. Hamlet can key a radio, hand it a transmission and come out of transmit - 6 of 6 failure modes leave it unkeyed with the bytes on the wire to prove it, and TransmitAbort has its first caller. The gate refuses at zero writes on all three of its permissive branches without Check being touched. The signal starts 0.5 s into the slot, which closes step 2 criterion 5's open half, and the record carries eleven fields and no string parameter at all. Step 3 recorded partial: criteria 2, 4, 5 and 6 met, and 1 and 3 - the device and the loopback - deliberately not attempted and left whole for the next unit. Nothing is blocking. Every UPDATED this session was read from the clock.
+UPDATED: 2026-09-06T20:08:55-04:00
+NOTE: The machine answered. Four active render endpoints, all 48000 Hz 2 ch 32-bit float behind an Extensible tag, and WasapiLoopbackCapture started and delivered 16 callbacks in a second - so LOOPBACK ROUTE: device, and the file fallback is not needed. The shell refused device enumeration and the throwaway xunit test the instruction names was used instead. Now the render sink itself is going in, watched to fail first on the breakage that matters: returning SamplesPlayed without waiting for the card's buffer to drain, which is a radio unkeying while audio is still in flight.
 
 ---
 

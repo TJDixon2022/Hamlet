@@ -21,7 +21,7 @@ work on the same step remains open.
 Read PHASE_PLAN.md for this step exit criteria and
 PHASE_OUTCOME.md for what has already been done. Then decide
 whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step 6.
+owner answer. The step being worked is step 3.
 
 Halting a night for a question that forecloses nothing is the
 failure this judgment exists to prevent. Building on an assumption
@@ -50,74 +50,9 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-### The `dt` reference point needs a citation, and this unit would not invent one
+**Nothing is blocking.**
 
-**Ruling asked for:** whether to spend a unit pinning the FT8 nominal transmission
-start in `data/vendor/` and correcting `Ft8Decode.OffsetSeconds` against it.
-
-**Reasoning.** The measurement is done and it says the largest term is a reference
-point that is Hamlet's own to fix. **The number it needs is not in this
-repository.** `Ft8Slots` carries `SlotSeconds` 15 and `TransmissionSeconds` 12.64
-and nothing about where inside a slot a transmission nominally begins. There are
-two candidate zeros:
-
-| Candidate | Where it comes from | What a perfect station would then read |
-|---|---|---|
-| **0.5 s** | the on-air convention every station in this mode uses | about **+0.14** |
-| **1.18 s** | `Ft8Waveform`'s own slot layout, splitting the 2.36 s spare evenly across both ends | about **-0.54** |
-
-**The second is not the on-air convention and its own comment says so** â€” it is a
-choice made so a written slot file lines up with upstream's, not a statement about
-when anybody transmits. The first is almost certainly right, and *almost certainly
-right* is exactly what this project does not put in a data file (Â§0, Â§0.2.1).
-
-**What was rejected and why.** Writing `0.5` into the tree from memory. It would
-have made the column look right tonight and would be a timing constant with no
-source behind it, in a file that outlives everybody who could correct it â€” which
-is task 7's own prohibition, in its own words. Recorded as `HM-OPEN-085` with the
-full table.
-
-**One thing this cannot settle either way**: the residual of your ~+0.9 that
-remains after the 0.144 and the reference point is in the live capture path â€” the
-tap's anchor or the audio latency between antenna and timestamp â€” and it cannot be
-measured without a radio on the bench. That is arithmetic on your reported
-cluster, not a measurement, and is labelled as such.
-
-### Task 9 was not built, and the drop is reported as one
-
-**The named drop candidate, and it is the only thing left undone.** Opening the
-Digital tab still takes about a third of a second â€” one full 16384-sample window
-at 48 kHz, 0.341 s â€” to draw the first line, because `AudioSpectrumSource.Idle()`
-clears the ring when nobody is subscribed to `FrameReady`.
-
-**The design that would remove it, stated so the next unit does not re-derive
-it.** Keep offering chunks to the handoff while idle and let the worker keep the
-**ring** filled while skipping the transform and the `FrameReady` raise. The
-offer is the cheap half and already runs on the callback thread whenever the tab
-is open, so **no ring write returns to that thread** and unit 240's 522,895
-microseconds are not revisited. The tab would then open on a ring already holding
-the last 0.341 s of contiguous current audio, mixing no two moments.
-
-**Why it was not taken.** It would reverse a documented unit 240 behaviour â€”
-*nobody is looking, so nothing is computed* â€” and keep a worker thread and a queue
-alive for a whole evening spent on the CW tab. **Proving that costs nothing needs
-a callback-budget measurement on the real hardware**, which cannot be made here
-and would not fit the remaining session. *Cannot* means cannot be shown safe
-inside this unit, not impossible.
-
-**No ruling is asked for.** The instruction's own words are that a third of a
-second is a fair price for a picture that never asserts a signal was present at a
-time it was not, and that stands.
-
-### Two things about this session's own conduct, reported rather than buried
-
-**Every `UPDATED` timestamp in `PROJECT_STATUS.md` before the final one was
-composed rather than read from the clock**, and they ran ahead of it â€” the last
-said 23:50 while the machine said 22:10. CLAUDE_CODE.md Â§11 requires the clock.
-The final field is a clock read and the note carries the correction. **No measured
-figure is affected**; only the times were wrong.
-
-**A second Claude Code session ran against this repository concurrently** and both
-sessions wrote task 1. The duplicate open issues were removed outside this session
-in commit `39b7482` and the register is clean. Nothing is asked for, but a loop
-that can start two sessions on one repository will do it again.
+No ruling is asked for. Criteria 1 and 3 of step 3 are unmet but not blocked -
+they were not attempted, by the arbiter's split and this instruction's own
+words, and the next unit can begin on them exactly as the tree now stands: the
+sink interface is declared, narrow, and has a fake standing in it.

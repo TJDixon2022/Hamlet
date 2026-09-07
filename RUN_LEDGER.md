@@ -79,3 +79,4 @@ the owner reads instead of watching.
 | phase | 2026-09-05T22:15 | 2026-09-05T22:15 | halted | 197.4706 | stop 10: no progress in four consecutive units |
 | 1 | 2026-09-06T18:22 | 2026-09-06T18:41 | complete | 10.629209499999998 | ran unattended, 162 turns, 13 denied call(s) worked around, report valid |
 | 2 | 2026-09-06T18:51 | 2026-09-06T19:20 | complete | 19.011571000000014 | ran unattended, 190 turns, 15 denied call(s) worked around, report valid |
+| 3 | 2026-09-06T19:28 | 2026-09-06T19:57 | complete | 18.9084725 | ran unattended, 169 turns, 15 denied call(s) worked around, report valid |

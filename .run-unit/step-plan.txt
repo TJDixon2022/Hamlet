@@ -1,21 +1,23 @@
-﻿## Step 6 - the closing measurement
+﻿## Step 3 - the audio reaches the radio and the radio keys
 
-**Delivers:** one table saying where the decoder now stands.
+**Delivers:** audio out to the USB codec, PTT via CI-V, unkey.
 
-**Entry:** steps 0 to 5 closed, in whatever state each reached.
+**Entry:** steps 1 and 2. **The abort must be proven first.**
 
 **Exit:**
-- **One committed table**: the port, and Deep with each stage on and off, at -19,
-  -20 and -21 dB, on grid and at cell centre, 306 trials a cell, with wrong
-  counts. *must-pass*
-- The 50 per cent crossing for each configuration, interpolated, with its
-  interval. *must-pass*
-- **Time per slot for the shipping configuration**, with the budget margin.
+- Audio plays to the radio's USB input at the right device, rate and level.
   *must-pass*
-- **What the operator should now see on his own radio**, in plain words, with the
-  figure behind each claim. *must-pass*
-- The fixtures that would settle the deferred criteria, named, with the command
-  Tim runs. *must-pass*
+- **Key, transmit, unkey**, with the unkey happening even if the audio path
+  throws. *must-pass*
+- **A loopback proves the whole chain**: generate, play, capture on the tap,
+  decode, and get the message back. **This needs no antenna and no radio state**
+  and is the closing evidence for this step. *must-pass*
+- The transmitted slot is recorded to telemetry with what was sent and when.
+  *must-pass*
+- **The licence gate is in the path** and refuses out-of-privilege frequencies,
+  asserted by a test. *must-pass*
+- **Nothing keys without an operator action reaching this code.** There is no
+  entry point that transmits on a timer. *must-pass*
 
-**Depends on:** steps 0 to 5.
+**Depends on:** steps 1 and 2.
 
