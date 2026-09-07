@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 259 - right-click, and it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:04:10-04:00
-NOTE: Project checks passed - Hamlet confirmed. Committing the four root records units 256-258 left modified, then tracing the send path: where the frequency is live, whether any seam reaches an ISerialPort, what Settings actually holds for callsign and grid on this machine, and the predicted menu for each of the corpus's five stations, which must be committed before the option list exists.
+UPDATED: 2026-09-06T23:07:05-04:00
+NOTE: Trace written, all six questions answered, and the predicted menus for the five stations are down on paper before any option list exists. Two findings: no seam reaches an ISerialPort today and the app keeps no reference to the port it constructs, and the live settings.json is outside the working directory so both tools refused it - the source defaults are recorded instead. Baseline build next, then commit before task 2 starts.
 
 ---
 
