@@ -2,8 +2,8 @@ PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-06
 STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | done | the abort works before anything can key
-STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
-STEP: 3 | partial | the audio reaches the radio and the radio keys
+STEP: 2 | done | Hamlet's own decoder reads Hamlet's transmission
+STEP: 3 | done | the audio reaches the radio and the radio keys
 STEP: 4 | partial | the row knows where the contact stands
 STEP: 5 | partial | right-click and it goes
 STEP: 6 | not started | Tim works a station
@@ -26,6 +26,36 @@ Its closing position: the decoder wired into Hamlet, the SNR column showing a re
 number, ordered statistics, subtraction and cross-slot combining all built and
 measured - 252 of 306 at -21 dB against the port's 13, zero wrong - and the
 Digital tab rebuilt around it. **Hamlet could hear anything and say nothing.**
+
+## How this cut closed, recorded by work instruction 266
+
+**This cut is finished.** The live plan is the re-cut at the repository root, with
+steps 0, A, B, C, D and E. **The header above has been changed in one place only:
+steps 2 and 3 now read `done`.** That is the file's one mutable region, and this
+section is the line beside it saying why. **No entry body has been altered** - the
+entries are the record of what the units did, and a unit that went wrong gets
+another entry, never a corrected one.
+
+**Step 2 closed at 3 of 3.** Hamlet's own decoder read Hamlet's own transmission
+back through a real render endpoint, three messages of three as the same text, and
+the corpus round trip reads 15 of 15 across 12000, 44100 and 48000 Hz with the
+signal 12.6400 s at every rate.
+
+**Step 3 closed at -12.04 dBFS, with the device by unit 256 and the rate by unit
+262.** The send path composes at the rate the chosen endpoint declares rather than
+at a 12000 Hz default no render endpoint on the development machine speaks; the
+level went from 0.00 dBFS, full scale, to -12.04 dBFS, with a Transmit drive
+control and a dBFS readout the operator can see.
+
+**What was open in both, and where it went.** The same one thing: **the level
+Tim's own radio wants**, which is a fact about his USB input and his ALC and
+cannot be measured on a machine with no radio. It is now **step D of the re-cut
+plan** - *the drive level his radio wants*. Nothing else was left open in either
+step, and no criterion of either is deferred to anybody from here.
+
+**Steps 4 and 5 stay `partial` and are not re-recorded.** What they built is
+inherited by steps A and B of the re-cut plan, and that is where it is accounted
+for from now on.
 
 ## Entries
 
