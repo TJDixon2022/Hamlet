@@ -7922,13 +7922,21 @@ public partial class MainWindowViewModel : ObservableObject
             _contactsFor = mine;
         }
 
+        // **THE LEDGER GOES ON BOOKING EVERYTHING IT HEARS** (unit 266, unchanged).
+        // Every sender is recorded whoever the message was addressed to, because
+        // *how long since he transmitted at all* is measured from all of it. What
+        // work instruction 271 task 4 changed is one line below this one: what the
+        // column shows.
         _contacts.RecordHeard(row.Message, row.SlotStartUtc);
 
-        var record = _contacts.For(row.Sender);
-
-        return record is null
-            ? ""
-            : Ft8ContactStates.Read(record, row.SlotStartUtc).Text;
+        // **AND THE COLUMN SPEAKS ONLY ABOUT CONTACTS HE IS IN** (Tim, 2026-09-07).
+        // The rule is `Ft8ContactStates.ColumnTextFor` and it is not restated here:
+        // a CQ is an invitation and gets nothing, two other stations working each
+        // other get nothing, and a state appears where the message is addressed to
+        // his callsign. Before this, `K9TC KJ6IX RRR` read `your move, 0 slots` on
+        // his screen and he is in none of it.
+        return Ft8ContactStates.ColumnTextFor(
+            row.Message, mine, _contacts.For(row.Sender), row.SlotStartUtc);
     }
 
     /// <summary>What passed with one station, out of the ledger the app kept.</summary>

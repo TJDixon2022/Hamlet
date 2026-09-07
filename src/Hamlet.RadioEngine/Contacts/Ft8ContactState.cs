@@ -168,6 +168,83 @@ public static class Ft8ContactStates
             Ft8StationRecord.SlotsAgo(theirs, nowUtc));
     }
 
+    /// <summary>
+    /// **What the contact column shows for one decoded message, which is nothing
+    /// unless the message is addressed to the operator.**
+    /// </summary>
+    /// <param name="message">The message exactly as it decoded.</param>
+    /// <param name="operatorCallsign">The operator's own callsign.</param>
+    /// <param name="record">What passed with the sender, or null where nothing has.</param>
+    /// <param name="slotUtc">The boundary of the slot the message was in.</param>
+    /// <returns>The state and its slot count, or "" where the column says nothing.</returns>
+    /// <remarks>
+    /// <para>**TIM'S RULING, 2026-09-07: THE CONTACT COLUMN SPEAKS ONLY ABOUT
+    /// CONTACTS HE IS IN.** *"The your move text is obnoxious."* Unit 266 put a
+    /// state on every row that had a sender, so `K9TC KJ6IX RRR` - KJ6IX telling
+    /// K9TC he received, with Tim in none of it - read `your move, 0 slots`, as
+    /// though he owed a stranger's conversation an answer.</para>
+    /// <para>**THREE THINGS GET NOTHING, AND EACH FOR ITS OWN REASON.** A message
+    /// that is not three plain fields names nobody. **A CQ is not a contact** - it
+    /// is an invitation, and answering it is what would begin one. **Two other
+    /// stations working each other** are not his contact whatever they are saying
+    /// to one another.</para>
+    /// <para>**THE LEDGER IS UNCHANGED AND IS NOT CONSULTED ABOUT THIS.** Unit 266
+    /// built it and it goes on booking every sender it hears, including stations
+    /// Tim is not working, because *how long since he transmitted at all* is
+    /// measured from all of them. **This is what the column shows, not what is
+    /// tracked** - so the right-click menu, the send options and the Send area's
+    /// own line are all untouched, and a station whose column is blank still has a
+    /// full record behind it.</para>
+    /// <para>**THE ADDRESSEE IS ASKED OF <see cref="Ft8MessageSplit"/> AND OF
+    /// NOTHING ELSE**, by the same two methods
+    /// <see cref="Ft8ContactLedger.RecordHeard"/> asks - so the column and the
+    /// ledger cannot come to different answers about who a message was addressed
+    /// to. Compound and portable forms of his call are his
+    /// (<see cref="Ft8MessageSplit.IsSameStation"/>): a row addressed to
+    /// `KC3QIS/P` while he is running portable is addressed to him.</para>
+    /// <para>**IT REPORTS AND IT RULES NOTHING** (`PHASE_PLAN.md`). An empty column
+    /// hides no row, closes no contact and withholds no message; the row is on the
+    /// table with its callsign, its ratio and its whole right-click menu exactly as
+    /// before. The column simply has nothing to say about a conversation he is not
+    /// in.</para>
+    /// </remarks>
+    public static string ColumnTextFor(
+        string? message,
+        string? operatorCallsign,
+        Ft8StationRecord? record,
+        DateTime slotUtc)
+    {
+        if (record is null || string.IsNullOrWhiteSpace(operatorCallsign))
+        {
+            return "";
+        }
+
+        var fields = Ft8MessageSplit.Split(message);
+
+        // NOT THREE PLAIN FIELDS - free text, telemetry, a non-standard form. It
+        // names nobody, so there is no contact of his to report on.
+        if (fields is null)
+        {
+            return "";
+        }
+
+        // A CQ IS AN INVITATION AND NOT A CONTACT. This is tested before the
+        // addressee comparison rather than left to fall out of it, because it is a
+        // separate ruling and reads as one.
+        if (Ft8MessageSplit.IsCallToAnyone(fields.To))
+        {
+            return "";
+        }
+
+        // TWO OTHER STATIONS WORKING EACH OTHER.
+        if (!Ft8MessageSplit.IsSameStation(fields.To, operatorCallsign))
+        {
+            return "";
+        }
+
+        return Read(record, slotUtc).Text;
+    }
+
     /// <summary>Whether an exchange has what a QSO needs.</summary>
     /// <param name="record">What passed with the station.</param>
     /// <returns>True when it is complete.</returns>

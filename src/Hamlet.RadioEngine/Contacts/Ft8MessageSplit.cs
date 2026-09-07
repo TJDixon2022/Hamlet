@@ -91,6 +91,81 @@ public static class Ft8MessageSplit
                || text.StartsWith("CQ ", StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>Whether a message field names the same station as a callsign.</summary>
+    /// <param name="field">The to-field or from-field.</param>
+    /// <param name="callsign">The callsign to compare it with.</param>
+    /// <returns>True when they are the same station.</returns>
+    /// <remarks>
+    /// <para>**COMPOUND AND PORTABLE FORMS ARE THE SAME STATION.** If he is
+    /// `W1ABC` then `W1ABC/P`, `W1ABC/QRP` and `W4/W1ABC` are all him, and a rule
+    /// that says otherwise says his own portable operation is somebody else's.</para>
+    /// <para>**THE RULE IS: STRIP THE SLASHES AND SEE IF THE CALL IS ONE OF THE
+    /// PIECES.** FT8 puts the prefix or suffix on the other side of a `/`, so a
+    /// compound call is a base call plus one more piece and never a base call with
+    /// letters welded onto it. That is why this splits rather than matching a
+    /// prefix: a prefix test would make `W1ABCD` the same station as `W1ABC`, and
+    /// `W1ABCD` is somebody else entirely.</para>
+    /// <para>**AND IT WORKS BOTH WAYS ROUND**, because he may type `W4/W1ABC` into
+    /// Settings while operating away from home.</para>
+    /// <para>**IT LIVES HERE BECAUSE IT IS A FACT ABOUT CALLSIGNS AND NOT ABOUT A
+    /// LIST CONTROL** (§0.1). It was written in `DecodedFilterRule` for the decoded
+    /// list's `mine` toggle; work instruction 271 task 4 needed the same question
+    /// asked about the contact column, and a second copy of a callsign rule is a
+    /// second answer waiting to disagree (§0). `DecodedFilterRule.IsSameStation`
+    /// now calls this and there is one implementation.</para>
+    /// </remarks>
+    public static bool IsSameStation(string? field, string? callsign)
+    {
+        var them = field?.Trim() ?? "";
+        var us = callsign?.Trim() ?? "";
+
+        if (them.Length == 0 || us.Length == 0)
+        {
+            return false;
+        }
+
+        if (string.Equals(them, us, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return string.Equals(
+            BaseCall(them), BaseCall(us), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>The callsign inside a compound call.</summary>
+    /// <param name="call">A call, compound or not.</param>
+    /// <returns>The longest slash-separated piece, which is the call itself.</returns>
+    /// <remarks>
+    /// **THE LONGEST PIECE AND NOT THE FIRST OR THE LAST**, because FT8 puts the
+    /// added piece on either side: `W4/W1ABC` is a prefix and `W1ABC/P` is a
+    /// suffix, and no rule about position covers both. A prefix or a suffix is
+    /// short - a region, a country, `P`, `M`, `QRP` - and the callsign is the long
+    /// one. Ties keep the first piece, which is the only case this cannot settle
+    /// and is not a case any real call produces.
+    /// </remarks>
+    private static string BaseCall(string call)
+    {
+        var pieces = call.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (pieces.Length <= 1)
+        {
+            return call;
+        }
+
+        var longest = pieces[0];
+
+        foreach (var piece in pieces)
+        {
+            if (piece.Length > longest.Length)
+            {
+                longest = piece;
+            }
+        }
+
+        return longest;
+    }
+
     /// <summary>A four-character Maidenhead field, as FT8 sends it.</summary>
     /// <param name="text">The payload field.</param>
     /// <returns>True when it has a grid square's shape.</returns>

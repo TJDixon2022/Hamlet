@@ -119,59 +119,15 @@ public static class DecodedFilterRule
     /// <para>**AND IT WORKS BOTH WAYS ROUND.** He may type `W4/W1ABC` into
     /// settings while operating away from home, so the stored call is compared
     /// piece by piece too rather than being assumed bare.</para>
+    /// <para>**AND SINCE WORK INSTRUCTION 271 THE BODY LIVES IN THE ENGINE.** The
+    /// contact column needed the same question asked of the same fields, and a
+    /// second copy of a callsign rule is a second answer waiting to disagree (§0).
+    /// What makes two callsigns one station is a fact about amateur radio and not
+    /// about a list control (§0.1), so it moved to
+    /// <see cref="Hamlet.RadioEngine.Contacts.Ft8MessageSplit.IsSameStation"/> and
+    /// this calls it. The behaviour, the signature and every caller are
+    /// unchanged.</para>
     /// </remarks>
     public static bool IsSameStation(string? field, string? callsign)
-    {
-        var them = field?.Trim() ?? "";
-        var us = callsign?.Trim() ?? "";
-
-        if (them.Length == 0 || us.Length == 0)
-        {
-            return false;
-        }
-
-        if (string.Equals(them, us, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        // The longest piece of a compound call is the callsign itself; the other
-        // pieces are the prefix or the suffix that says where he is or how. So
-        // two calls are the same station when their longest pieces agree.
-        return string.Equals(
-            BaseCall(them), BaseCall(us), StringComparison.OrdinalIgnoreCase);
-    }
-
-    /// <summary>The callsign inside a compound call.</summary>
-    /// <param name="call">A call, compound or not.</param>
-    /// <returns>The longest slash-separated piece, which is the call itself.</returns>
-    /// <remarks>
-    /// **THE LONGEST PIECE AND NOT THE FIRST OR THE LAST**, because FT8 puts the
-    /// added piece on either side: `W4/W1ABC` is a prefix and `W1ABC/P` is a
-    /// suffix, and no rule about position covers both. A prefix or a suffix is
-    /// short — a region, a country, `P`, `M`, `QRP` — and the callsign is the long
-    /// one. Ties keep the first piece, which is the only case this cannot settle
-    /// and is not a case any real call produces.
-    /// </remarks>
-    private static string BaseCall(string call)
-    {
-        var pieces = call.Split('/', StringSplitOptions.RemoveEmptyEntries);
-
-        if (pieces.Length <= 1)
-        {
-            return call;
-        }
-
-        var longest = pieces[0];
-
-        foreach (var piece in pieces)
-        {
-            if (piece.Length > longest.Length)
-            {
-                longest = piece;
-            }
-        }
-
-        return longest;
-    }
+        => Hamlet.RadioEngine.Contacts.Ft8MessageSplit.IsSameStation(field, callsign);
 }
