@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 270 - after his last transmission, the screen still says where the contact stands
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-158 (2026-09-07)
-UPDATED: 2026-09-07T12:38:51-04:00
-NOTE: THE BOOKKEEPING IS WRITTEN BY HAND, AND SAYS SO ON ITS FACE. outcome-append.bat was refused in both spellings, verbatim "This command requires approval" for `tools\arbiter\outcome-append.bat --help` and the same words for `cmd //c "tools\arbiter\outcome-append.bat" --help` - the fourteenth consecutive unit - so the unit 270 entry was appended with the file-editing tools in the format the existing entries use, twelve fields plus an APPENDED_BY line, matching outcome-entry.py's own FIELDS list at :115-118. THE HEADER'S STEP: E LINE MOVED FROM not started TO in progress AND TO NOTHING ELSE - not done and not partial, because none of step E's three criteria is met and all three are Tim's at his own radio. STEP: D WAS NOT TOUCHED and still reads blocked. THREE DISAGREEMENTS REPORTED AND NOT REPAIRED: RULES_AT here reads HM-DEC-158 (2026-09-07) while CLAUDE.md section 1's newest table row is HM-DEC-152 of 2026-08-31, six rulings and seven days apart as measured tonight; .commit-msg.txt and .oa-267.bat are untracked at the root so a fresh clone does not have them; and .run-unit/watched.rc, which unit 269 named, is not on disk at all tonight. No git add -A was used - every path was added by name. Next: task 5, correcting the page for his evening.
+UPDATED: 2026-09-07T12:40:27-04:00
+NOTE: THE PAGE FOR HIS EVENING IS CORRECTED IN PLACE, NOT REWRITTEN. docs/unit269-what-step-e-asks.md kept its structure and its findings; what changed is the advice that went out of date when task 3 shipped. Section 2.2's "expect it, and read the row that arrives after his last transmission rather than the one he clicked" is replaced by where he now reads it - the last line in the Send area under the waterfall, DigitalContactStandsText - with the sentence quoted whole off a bench run, what it says when the other station has gone quiet (it stands at the slot it was read at, and the row a later decode places carries the state), and what it never does (no suggestion, nothing closed, a CQ names nobody). The "what is missing at the bench" item is corrected to nothing, with the underlying finding restated as deliberate rather than repaired. A new table says which of step E's three criteria is still entirely his: ALL THREE, and this unit closed none. Two XAML line references that moved 46 lines when the new markup landed were corrected and the move said out loud. SHACK_FACTS.md was not touched. Next: output.md and validate.
 
 ---
 
