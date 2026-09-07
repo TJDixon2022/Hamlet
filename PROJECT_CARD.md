@@ -4,7 +4,7 @@ REPO_PATH: C:\Source\HamLet
 REMOTE: https://github.com/TJDixon2022/Hamlet.git
 TRUNK: main
 PHASE: Hamlet works stations on the air
-PHASE_SET: 2026-09-06
+PHASE_SET: 2026-09-07
 TEST_CMD: dotnet test
 
 ---

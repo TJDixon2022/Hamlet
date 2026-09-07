@@ -4,6 +4,59 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-158
+date: 2026-09-07
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, docs/phase-send-run/, HM-DEC-157, work instruction 266
+---
+
+**The send phase is re-cut. `PHASE_PLAN.md` of 2026-09-07 is approved: the same
+phase, "Hamlet works stations on the air", with steps 0, A, B, C, D and E.** Tim,
+2026-09-07. The previous cut of 2026-09-06, approved by HM-DEC-157, is archived at
+`docs/phase-send-run/` and is superseded by this one.
+
+`PROJECT_CARD.md` is changed only by ruling (§13.3), and this is the ruling that
+changes it: `PHASE_SET` moves from 2026-09-06 to 2026-09-07. The phase name does
+not move, because the phase has not changed - only its steps have.
+
+**Why, in one sentence: four steps sat `partial` for eight units because each held
+a criterion no bench machine could satisfy.**
+
+Steps 2, 3, 4 and 5 of the old cut were all still `partial` after eight units that
+advanced real work and closed nothing. **That was a defect in the plan, not in the
+work.** The stop button was proved, 8.4 seconds of audio taken off the air 4.2 s
+into a transmission with the card quiet 20 ms later. The whole chain was proved on
+one machine, composed and played and captured and decoded, 3 of 3 messages as the
+same text. A whole exchange was walked through the application. Transmit level went
+from 0.00 dBFS, full scale, to -12.04 dBFS with a control and a readout. **And
+every one of those steps carried a criterion only Tim's radio could answer** - *the
+right level* is a fact about his USB input and his ALC - so each unit did
+everything reachable, deferred the rest, and the step stayed open. Unit 265's own
+words: *a criterion deferred to an operator who has no control and no number is not
+deferred; it is unclosable by anybody.*
+
+**The two rules the re-cut exists to enforce:**
+
+- **A bench step's criteria are all satisfiable on a machine with no radio, and a
+  bench step never defers a criterion to Tim.** Anything needing his antenna, his
+  USB input or his ears belongs in a shack step, and where a criterion turns out to
+  need the radio it is *moved* to one and the move is recorded - never left open.
+- **A step has at most four criteria.** The old step 3 had six, and each unit
+  chipped one corner while the step stayed open. Few enough that one unit can close
+  it, so that a step closing means something and the stall detectors catch a real
+  stall instead of an unclosable step.
+
+**What the re-cut does not change.** Every ruling of HM-DEC-156 and HM-DEC-157
+stands: the dummy load withdrawn in full, one click and one message, right-click
+sending in the next slot with no confirmation, nothing forbidden in the menu, a
+contact never closed by the app, automatic sequencing out of the phase, and the
+three things no unit may reason past - the abort, one click per transmission, and
+the licence privileges.
+
+**Steps 2 and 3 of the old cut are closed `done` at what they reached** and their
+one open criterion, the level Tim's own radio wants, is now step D. **Steps D and E
+are Tim at the radio, they are last, and nothing before them is blocked by them.**
+
+---
 id: HM-DEC-157
 date: 2026-09-06
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-156, work instruction 253
