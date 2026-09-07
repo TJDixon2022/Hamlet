@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 259 - right-click, and it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:14:20-04:00
-NOTE: The red was watched and quoted - K9RST reads complete and the expected-only list offered it nothing at all, Expected 5 Actual 0, no 73 and no second grid. The whole list then went in and all eight tests are green: NUMBER is 5 of 5, every station matching the set committed at 495a499 before the type existed. Nine verbs checked by reflection over four types; nothing can withhold an option. Task 3, the dangerous one, is next.
+UPDATED: 2026-09-06T23:29:10-04:00
+NOTE: The red was watched and quoted: one click, three boundaries, three transmissions, the sink played three times and the port took 1C 00 01 / 1C 00 00 three times over. Take-and-clear under the lock before anything is awaited fixed it - eight engine tests and five app tests green, one click one message. The no-callers assertion became exactly-one-caller and names Ft8ArmedSend.cs. RecordSent has its first call site, fired only where the run says the transmission actually went. Task 4 next.
 
 ---
 

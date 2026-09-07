@@ -22,6 +22,7 @@ using Hamlet.RadioEngine.Solar;
 using Hamlet.RadioEngine.Training;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Scan;
+using Hamlet.RadioEngine.Transmit;
 using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.App.ViewModels;
@@ -7576,6 +7577,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void OnSlotTick()
     {
+        // **BEFORE THE MODE CHECK, AND IT CAN ONLY FIRE WHAT IS ALREADY ARMED.**
+        // An operator who clicked and then changed tab still gets the one
+        // transmission he asked for; nothing here can arm one (§0.2).
+        DriveTheArmedSend();
+
         var tap = _decoder?.Tap;
 
         // **THE DECODER IS TOLD WHICH MODE IT IS IN, ON THE TICK THAT ALREADY
@@ -7872,6 +7878,281 @@ public partial class MainWindowViewModel : ObservableObject
             ? ""
             : Ft8ContactStates.Read(record, row.SlotStartUtc).Text;
     }
+
+    // ---------------------------------------------------------------------
+    // THE SEND PATH. One click, one message (ruled 2026-09-06).
+    // ---------------------------------------------------------------------
+
+    /// <summary>The one armed transmission, or null where nothing can transmit.</summary>
+    /// <remarks>
+    /// **NULL ON THIS MACHINE AND THAT IS THE HONEST STATE.** Building one needs
+    /// an <see cref="ISerialPort"/> and an <see cref="ITransmitAudioSink"/>;
+    /// <c>Ic7300Rig</c> keeps the port it is given in a private field and exposes
+    /// no accessor, and <see cref="AppSettings"/> names no output endpoint, both
+    /// measured in <c>docs/unit259-send-path-trace.md</c>. **So the send refuses
+    /// with words rather than silently doing nothing**, which is the landing work
+    /// instruction 259 task 3 names as acceptable.
+    /// </remarks>
+    private Ft8ArmedSend? _armedSend;
+
+    /// <summary>The text of what is armed, so the ledger can be told what went.</summary>
+    private string _armedText = "";
+
+    /// <summary>The last boundary handed to the armed send, so it is handed once.</summary>
+    private DateTime _lastBoundaryDriven;
+
+    /// <summary>What the reserved Send area says when nothing has gone out.</summary>
+    internal const string NothingHasBeenSent =
+        "Nothing has been sent. Right-click a decoded row to choose a message, "
+        + "or press CQ.";
+
+    /// <summary>
+    /// What is being sent, and to whom - the reserved area's one line.
+    /// </summary>
+    /// <remarks>
+    /// **FORMATTED HERE SO A TEST CAN ASSERT IT WITHOUT OPENING A WINDOW**, the
+    /// precedent <see cref="DigitalDecodeRow"/> and unit 258's contact cell set.
+    /// The markup binds and does no arithmetic.
+    /// </remarks>
+    [ObservableProperty]
+    private string _digitalSendLine = NothingHasBeenSent;
+
+    /// <summary>Every message the operator may send to one row's station.</summary>
+    /// <param name="row">The row he right-clicked.</param>
+    /// <returns>The menu, or null where the row names no station.</returns>
+    /// <remarks>
+    /// <para>**NOTHING IS WITHHELD HERE EITHER.** This hands
+    /// <see cref="Ft8SendOptions"/> what it needs and returns what it says; there
+    /// is no filtering step between the two, on the contact state or on anything
+    /// else.</para>
+    /// <para>**THE REPORT IS THE ROW'S OWN MEASURED RATIO**, which is what a
+    /// signal report is. A row whose ratio was not measured carries
+    /// <see cref="DigitalDecodeRow.NoMeasurement"/> and the report-bearing
+    /// messages are absent with the reason said, rather than a number being
+    /// invented (§0.0).</para>
+    /// </remarks>
+    public Ft8SendMenu? SendMenuFor(DigitalDecodeRow? row)
+    {
+        if (row is null || _contacts is null)
+        {
+            return null;
+        }
+
+        var record = _contacts.For(row.Sender);
+
+        return record is null
+            ? null
+            : Ft8SendOptions.For(
+                record,
+                _settings.Operator.Callsign?.Trim() ?? "",
+                _settings.Operator.GridSquare,
+                MeasuredReport(row));
+    }
+
+    /// <summary>The row's own ratio, in whole decibels, or null where none.</summary>
+    private static int? MeasuredReport(DigitalDecodeRow row)
+        => int.TryParse(
+            row.Snr, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
+            out var decibels)
+            ? decibels
+            : null;
+
+    /// <summary>
+    /// **THE ONE ENTRY POINT. Arms exactly one transmission for the next slot.**
+    /// </summary>
+    /// <param name="text">The message, exactly as it would go on the air.</param>
+    /// <remarks>
+    /// <para>**NO CONFIRMATION, NO DIALOG, NO SECOND CLICK** (ruled 2026-09-06).
+    /// The click is the decision; there is no armed state the operator has to
+    /// approve and nothing here opens a window.</para>
+    /// <para>**NOTHING BUT A CLICK REACHES THIS.** No decode, no timer, no state
+    /// change and no retry calls it: the slot tick can only *fire* what is
+    /// already armed and has no way to arm anything, because
+    /// <see cref="Ft8ArmedSend.Arm"/> is called from this method and from no
+    /// other line in <c>src/</c>.</para>
+    /// <para>**A SECOND CLICK REPLACES; IT NEVER ADDS.**
+    /// <see cref="Ft8ArmedSend"/> holds one field, so two clicks a second apart
+    /// are one transmission in the next slot.</para>
+    /// <para>**THE CLOCK IS READ HERE BECAUSE THE CLICK IS WHEN.** Which slot is
+    /// next is a fact about the moment the operator clicked, and this is the
+    /// shell, where <see cref="OnSlotTick"/>'s own remark already puts the clock.
+    /// Nothing deeper reads one.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void SendMessage(string? text)
+    {
+        var wanted = (text ?? "").Trim();
+
+        if (wanted.Length == 0)
+        {
+            DigitalSendLine = "There was nothing to send.";
+            return;
+        }
+
+        var composed = Ft8Composer.ComposeSignal(wanted);
+
+        if (!composed.Composed)
+        {
+            DigitalSendLine =
+                "Hamlet did not send \"" + wanted + "\": " + composed.Explanation;
+            return;
+        }
+
+        var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
+        var next = Ft8Slots.SlotStart(trueUtc).AddSeconds(Ft8Slots.SlotSeconds);
+
+        if (_armedSend is null)
+        {
+            // REFUSED WITH WORDS, NEVER SILENTLY. There is no radio and no named
+            // transmit endpoint on this machine, and saying so is the whole of
+            // what can honestly be done.
+            DigitalSendLine =
+                "Hamlet composed \"" + wanted + "\" and sent nothing: no radio is "
+                + "connected and no transmit audio device is named in Settings.";
+            return;
+        }
+
+        _armedText = wanted;
+
+        _armedSend.Arm(new OperatorSend(
+            composed.Transmission!,
+            FrequencyHz,
+            LicenseClass,
+            _settings.RestrictTransmitToPrivileges,
+            next,
+            StartSecondsIntoSlot));
+
+        DigitalSendLine = SendingLine(wanted, next);
+    }
+
+    /// <summary>Where in the slot the signal begins, as unit 255 recorded it.</summary>
+    /// <remarks>
+    /// **HALF A SECOND AFTER THE BOUNDARY**, which leaves 14.5 s for a 12.64 s
+    /// transmission. <see cref="Ft8Slots.TransmissionFits"/> is what says that is
+    /// enough, and it is asserted rather than assumed.
+    /// </remarks>
+    internal const double StartSecondsIntoSlot = 0.5;
+
+    /// <summary>Hands the armed send its boundary, at most once per boundary.</summary>
+    /// <remarks>
+    /// **THIS CAN FIRE WHAT WAS ARMED AND CANNOT ARM ANYTHING.** It is the
+    /// existing slot tick, which is where the clock is already read, and it is
+    /// driven before the digital-mode check so an operator who clicked and then
+    /// changed tab still gets the transmission he asked for.
+    /// </remarks>
+    private void DriveTheArmedSend()
+    {
+        if (_armedSend is null || !_armedSend.IsArmed)
+        {
+            return;
+        }
+
+        var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
+        var boundary = Ft8Slots.SlotStart(trueUtc);
+
+        if (boundary == _lastBoundaryDriven)
+        {
+            return;
+        }
+
+        _lastBoundaryDriven = boundary;
+
+        _ = AtSlotBoundaryAsync(boundary);
+    }
+
+    /// <summary>What one slot boundary did about the armed send.</summary>
+    /// <param name="boundaryUtc">The boundary that has arrived, in true UTC.</param>
+    /// <returns>What happened, or null where nothing could.</returns>
+    /// <remarks>
+    /// **THE LEDGER IS TOLD ONLY WHAT ACTUALLY WENT OUT.** `RecordSent` is called
+    /// where the run says the whole transmission went and the radio unkeyed, and
+    /// nowhere else - a message booked at the moment of arming would put a
+    /// transmission in the ledger that a licence refusal, a cancel or a missed
+    /// boundary meant never happened.
+    /// </remarks>
+    internal async Task<Ft8BoundaryResult?> AtSlotBoundaryAsync(DateTime boundaryUtc)
+    {
+        if (_armedSend is null)
+        {
+            return null;
+        }
+
+        var text = _armedText;
+        var result = await _armedSend.AtBoundaryAsync(boundaryUtc).ConfigureAwait(false);
+
+        if (result.Outcome != Ft8ArmOutcome.Ran)
+        {
+            if (result.Outcome == Ft8ArmOutcome.TooLate)
+            {
+                Dispatcher.UIThread.Post(() => DigitalSendLine =
+                    "Hamlet did not send \"" + text + "\": its slot went by before "
+                    + "the transmission could start, and it was discarded rather "
+                    + "than sent in a slot you did not choose.");
+            }
+
+            return result;
+        }
+
+        var run = result.Run!;
+
+        if (run.Sent)
+        {
+            // **THE ONE CALL SITE OF `RecordSent` IN THE TREE**, which is the line
+            // unit 258 left it unreachable for.
+            _contacts?.RecordSent(text, result.Send!.SlotStartUtc);
+        }
+
+        Dispatcher.UIThread.Post(() => DigitalSendLine = WentLine(text, result));
+
+        return result;
+    }
+
+    /// <summary>What the Send area says once a boundary has been and gone.</summary>
+    private static string WentLine(string text, Ft8BoundaryResult result)
+    {
+        var run = result.Run!;
+        var slot = result.Send!.SlotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+
+        if (run.Outcome == Ft8TransmitOutcome.RefusedByLicence)
+        {
+            return "Hamlet did not send \"" + text + "\": " + run.Reason
+                + " (" + run.Citation + ")";
+        }
+
+        if (!run.Sent)
+        {
+            return "Hamlet did not send \"" + text + "\": " + run.Reason;
+        }
+
+        return "Sent " + Addressed(text) + "\"" + text + "\" in the slot at "
+            + slot + " UTC.";
+    }
+
+    /// <summary>What the Send area says while a transmission is armed.</summary>
+    private static string SendingLine(string text, DateTime slotStartUtc)
+        => "Sending " + Addressed(text) + "\"" + text + "\" in the slot at "
+            + slotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + " UTC.";
+
+    /// <summary>"to W1ABC, " where there is an addressee, or "" for a call to anyone.</summary>
+    private static string Addressed(string text)
+    {
+        var fields = Ft8MessageSplit.Split(text);
+
+        return fields is null || Ft8MessageSplit.IsCallToAnyone(fields.To)
+            ? ""
+            : "to " + fields.To + ", ";
+    }
+
+    /// <summary>Give the send path something to transmit through, for tests.</summary>
+    /// <param name="armed">The armed send over whatever fakes a test built.</param>
+    /// <remarks>
+    /// **THE SEAM EXISTS BECAUSE NO RADIO HAS EVER BEEN ATTACHED TO THIS MACHINE**
+    /// (`SHACK_FACTS.md` FACT-004), the shape <see cref="UseRigForTests"/> already
+    /// uses. It hands over an already-built <see cref="Ft8ArmedSend"/> and so
+    /// opens nothing: **there is still exactly one route to a keying frame** and
+    /// this is not a second one.
+    /// </remarks>
+    internal void UseArmedSendForTests(Ft8ArmedSend? armed) => _armedSend = armed;
 
     /// <summary>Where a newly arrived row belongs in the display order.</summary>
     /// <param name="row">The row that just arrived.</param>

@@ -380,11 +380,19 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
     }
 
     /// <summary>
-    /// **Nothing in the shipped tree calls the sequence.**
+    /// **Exactly one file in the shipped tree calls the sequence, and this is it.**
     /// </summary>
     /// <remarks>
-    /// <para>It is built, proved and unreachable. The first caller is step 5's
-    /// right-click; until then the only way into a transmission is a test.</para>
+    /// <para>**IT WAS `Assert.Empty` UNTIL UNIT 259 AND THE CHANGE IS THE POINT.**
+    /// Through units 253 to 258 the sequence was built, proved and unreachable,
+    /// and this test's own remark said *the first caller is step 5's right-click*.
+    /// Step 5 arrived, the caller exists, and the assertion becomes the stronger
+    /// one it was always going to become: **not none, but exactly one, named.**
+    /// </para>
+    /// <para>**THIS IS THE GREP THAT PROVES THERE IS ONE WAY TO KEY A RADIO.** A
+    /// second file constructing a sequence or calling <c>RunAsync</c> fails here,
+    /// whoever adds it and for whatever reason, which is what stops a second route
+    /// to a keying frame being added quietly (work instruction 259, task 5).</para>
     /// <para>Doc comments are stripped first: <c>CivConstants.PttOn</c> and
     /// <see cref="ITransmitAudioSink"/> both name the sequence in their remarks,
     /// saying where the keying write lives and what does not implement it. **A
@@ -393,7 +401,7 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
     /// </para>
     /// </remarks>
     [Fact]
-    public void NothingInTheShippedTreeCallsTheSequence()
+    public void ExactlyOneFileInTheShippedTreeCallsTheSequence()
     {
         var source = Path.Combine(RepositoryRoot(), "src");
 
@@ -413,7 +421,24 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
 
         _output.WriteLine($"callers under src/: {callers.Count}");
 
-        Assert.Empty(callers);
+        var only = Assert.Single(callers);
+
+        Assert.Equal("Ft8ArmedSend.cs", Path.GetFileName(only));
+
+        // AND THE KEYING FRAME IS STILL REACHED FROM ONE PLACE. RunAsync is
+        // called in that one file and in no other under src/.
+        var runners = Directory
+            .EnumerateFiles(source, "*.cs", SearchOption.AllDirectories)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(file => CodeOnly(File.ReadAllText(file))
+                .Contains("_sequence.RunAsync", StringComparison.Ordinal))
+            .Select(Path.GetFileName)
+            .ToList();
+
+        _output.WriteLine($"call _sequence.RunAsync: {string.Join(", ", runners)}");
+
+        Assert.Equal(["Ft8ArmedSend.cs"], runners);
     }
 
     /// <summary>One operator's send, with everything the sequence needs.</summary>
