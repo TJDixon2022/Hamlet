@@ -29,592 +29,583 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿## Step 5 - right-click and it goes
+﻿## Step 1 - the abort works before anything can key
 
-**Delivers:** the menu, the CQ button, and the reserved Send area filled.
+**Delivers:** a proven abort path, ahead of any code that transmits.
 
-**Entry:** steps 3 and 4.
+**Entry:** step 0.
 
 **Exit:**
-- **A CQ button** sending `CQ KC3QIS FN00` from the operator's own settings, no
-  typing. *must-pass*
-- **Right-click a decoded row** and the menu offers every message valid at that
-  point, **with the expected one highlighted and none forbidden**. A repeat shows
-  its count - *grid, 2nd time*. *must-pass*
-- **Choosing one transmits in the next slot with no confirmation.** *must-pass*
-- **One click sends exactly one message.** Asserted by a test: after a send,
-  nothing further transmits without another click. *must-pass*
-- What is being sent, and to whom, appears in the Send area reserved beneath the
-  waterfall. *must-pass*
-- **Out of licence privileges, the menu says so and sends nothing.** *must-pass*
+- A same-thread, no-await abort: CI-V `0x17` with `0xFF`, PTT off as fallback.
+  **No `await` on the abort path, asserted by a test.** *must-pass*
+- **Watched to fire**, against a fake CI-V transport, from every state a
+  transmission can be in - about to key, keying, mid-transmission, waiting for
+  unkey. *must-pass*
+- **Fires when the transport is dead**, the port is gone, or the radio does not
+  answer. The fallback is exercised, not reasoned about. *must-pass*
+- It cannot be disabled, deferred, or made conditional. *must-pass*
+- **No transmitting code exists yet when this step closes.** *must-pass*
 
-**Depends on:** steps 3 and 4.
+**This is the one thing that must work when everything else has failed.**
+
+**Depends on:** step 0.
 
 
 --- the unit's report follows ---
 
-# Unit 259 - right-click, and it goes
-
 READ IN THIS ORDER
 
-A. **The phase goal is that Hamlet works stations on the air.** Step 0 is `done` -
-the dummy load is gone from the tree. Steps 1, 2, 3 and 4 are all `partial` and
-all closed: step 1's abort at four of five, step 2's waveform at 112 of 117 with
-criterion 4 deferred, step 3's audio path closed on the loopback, step 4's ledger
-at five of six on a synthesized corpus. **What is outstanding in every one of them
-is either settled on the record or is a figure only Tim can read off a radio** -
-the IC-7300's USB modulation input level, and the drive level at the radio - and
-`SHACK_FACTS.md` FACT-004 rules that no radio has ever been attached to this
-machine, so none of it is inferable here. **Step 5 entered this unit at `not
-started` and leaves it `partial`**, four of its six criteria met outright, one met
-in substance, one met on a fake port. Step 6 - Tim works a station - is not
-started, and **what stands between him and attempting it is named in B and in
-section 3.3: the app has no route to a real serial port and no way to name a
-transmit audio endpoint, so on this machine the send refuses with words instead
-of transmitting.**
+A. **The phase goal is *Hamlet works stations on the air*.** Step 0 `done`; steps
+1, 2, 3, 4 and 5 all `partial`; step 6 `not started`. **Can the operator now stop
+a transmission he did not want, and at which of the two moments? Yes, at both.**
+Before the slot boundary, while the message is armed and nothing is keyed, one
+press takes it off and the boundary that follows produces nothing. During the
+12.64 seconds the radio is keyed, the same press puts `17 FF` and `1C 00 00` on
+the wire while the transmission is still running, on the calling thread, waiting
+for nothing. It is the same button at both moments because it is always visible
+and never disabled. Both were watched, on a fake wire, with the bytes quoted.
 
-B. **This step is *right-click and it goes*, and it has six exit criteria.**
-A CQ button from the operator's own settings with no typing - **met**. Right-click
-offers every message valid at that point with the expected one highlighted, none
-forbidden, and a repeat showing its count - **met in substance, not on screen**:
-the option list is asserted station by station, 5 of 5, against sets committed
-before it existed, and the view model exposes it per row, but the row's
-`ContextFlyout` markup was the named drop candidate and was dropped. Choosing one
-transmits in the next slot with no confirmation - **met on a fake port and a fake
-sink**: the keying frame, the samples, the unkey and the recorded slot being the
-next boundary, all quoted; **what that leaves for step 6 is the real wire, and it
-is Tim's.** One click sends exactly one message, asserted by a test - **met, and
-it is the must-pass**: the red was watched first and is quoted in section 3.1.
-What is being sent and to whom in the reserved Send area - **met**; the sentence
-saying Hamlet does not transmit is gone. Out of licence privileges the menu says
-so and sends nothing - **met**: the menu keeps all five options and gains the
-guard's own words, and zero bytes reached the port.
+B. **This unit aims at step 1, whose subject is the abort, and it closes none of
+step 1's criteria - it clears step 6's blocker.** `PHASE_PLAN.md`'s step 1
+criterion, in its own words: the abort **"cannot be disabled, deferred, or made
+conditional."** Did an abort with exactly one internal call site satisfy that
+before tonight? **No.** `TransmitAbort.Fire` had one call site in the whole tree,
+`Ft8TransmitSequence.cs:344`, inside the sequence's own `catch` and guarded by
+`if (!unkeyedNormally)` - so the abort was reachable **only when something
+happened to throw**, which is an abort conditional on a fault. And
+`Ft8ArmedSend.Cancel()` had no caller in `src/` at all. **Does it satisfy it
+now? Yes.** There is a second call site,
+`Ft8ArmedSend.StopNow` at `Ft8ArmedSend.cs:244`, reached by an operator's click
+through a button that reads no state, has no `CanExecute`, no `IsVisible`
+binding, and takes no boolean. Task 3's six states are: nothing armed; armed with
+the boundary not yet arrived; about to key; keyed mid-transmission; waiting for
+the unkey; port dead or throwing. **All six were watched**, and two extra beside
+them (nothing armed *with* a radio present, and a disposed port).
 
-C. **What this report adds is the evidence for those six, in the order that
-matters rather than the order the work was done.** It leads with the one-click
-assertion because a transmission the operator did not ask for is the phase's one
-unrecoverable fault, and it was watched happening - one click, three boundaries,
-three transmissions - before it was made impossible. It then gives the menu
-station by station against what was predicted and committed beforehand, and then
-what the licence gate did and where the send path lives. **Section 4 raises 0 items**,
-and **none of what is in this report is in the way of any criterion named
-in B**: the two things a reader might expect to find in section 4 - the
-dropped flyout and the absent port - are a figure reached and a fact about this
-machine respectively, both reported in section 3 and neither waiting on a
-decision.
+C. **This report raises 2 items.** Neither is in the way of anything named in B -
+the stop is built, reachable and proved at both moments, and no criterion is
+waiting on either. **Item 1 is a finding recorded for the record, not a ruling
+request:** the abort takes the carrier off but does not stop the audio, so the
+sink plays out the rest of the slot into an unkeyed radio. Nothing goes on the
+air; it costs the remainder of the slot. `What not to do` item 2 instructed that
+this be reported rather than repaired, and it is named as the next unit's.
+**Item 2 is a ruling request and it is an inherited red this unit made
+unambiguous:** `TheDigitalTabIsTwoColumnsTests` asserts the FT8 Send area
+contains no `Button` at all, on HM-DEC-087's reasoning that transmit does not
+exist. It went red when unit 260 put the CQ button there and was not reported;
+this unit put a second one beside it. The decision's premise has been withdrawn
+by the rulings of 2026-09-06, but a decision is not a session's to overturn.
+
+---
 
 ```
-UNIT:       259 - right-click, and it goes
-PHASE GOAL: Hamlet works stations on the air.
-UNIT GOAL:  The operator right-clicks a decoded row and Hamlet offers every
-            message that is valid at that point, with the expected one
-            highlighted, none forbidden, and a repeat showing its count.
-            Choosing one arms exactly one transmission in the next slot, with no
-            confirmation, and nothing further goes out without another click. A
-            CQ button does the same from his own settings with no typing. What is
-            being sent, and to whom, appears in the reserved Send area. Out of
-            licence privileges the menu says so and sends nothing. Proved on this
-            machine against a fake port and a fake sink, with no device opened.
-ADVANCED:   step 5 - criteria 1, 4, 5 and 6 met; criterion 2 met in substance
-            with the markup dropped; criterion 3 met on the fake wire. Step 5
-            moves from not started to partial.
-NUMBER:     5 of 5
-DRIFT:      0
+UNIT:       261 - complete at task 5 of 5 - 2026-09-07 00:35
+PHASE GOAL: Hamlet works stations on the air
+UNIT GOAL:  The operator can stop a transmission he did not want. One control
+            reaches an armed send before the slot boundary and cancels it, and
+            reaches a keyed radio during the 12.64 seconds and fires
+            TransmitAbort on the calling thread with no await - and it adds no
+            new route to a transmission.
+ADVANCED:   no - this unit cleared a blocker rather than closing a criterion.
+            Every criterion still outstanding across steps 1 to 5 is a
+            radio-side figure FACT-004 puts beyond this machine; what moved is
+            step 6's last code-side obstacle, that no operator gesture reached
+            the abort.
+NUMBER:     0 of 6 -> 6 of 6 states of task 3's table from which the stop was
+            watched to fire
+DRIFT:      1 consecutive unit without advance  (was 0)
 ```
 
 ## 1. What Claude did
 
-**All five tasks were executed, committed and pushed.** The version moved
-`1.12.100` to `1.12.105`, one patch per task. **The named drop candidate was
-dropped** - see section 3.3 - and nothing in tasks 2, 3 or 4 was shed to reach
-it.
+**Complete, at task 5 of 5.** Nothing was dropped, including the named drop
+candidate - task 4's assertion went through a shown headless `MainWindow` with a
+real mouse, not through the view model.
 
-| Task | What landed | Commit |
+Machine `C:\Source\HamLet`, project claimed **Hamlet**, branch `main`. All four
+gate checks were taken against the tree before anything was read:
+`SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, no `CoreHMI.sln`, no `MURC.sln`, and `Hamlet.sln` the only solution at
+the root. **Hamlet confirmed.**
+
+### What was traced, built and measured
+
+**Task 1 - the trace.** `docs/unit261-stop-trace.md`, 6 questions, every answer
+carrying a file and a line number, committed before task 2 touched anything. The
+four findings that shaped everything after it:
+
+1. **`_rigPort` is reachable from a view-model command at both moments.**
+   Declared `MainWindowViewModel.cs:238`, assigned `:6566`, nulled `:9969` beside
+   `_armedSend = null` at `:9970`. All three lines confirmed exactly as the
+   instruction stated them.
+2. **The UI thread is free for the whole 12.64 seconds**, which is the only
+   reason a button can work at all. `DriveTheArmedSend` discards the task -
+   `_ = AtSlotBoundaryAsync(boundary);` at `:8194` - and every await on the path
+   carries `ConfigureAwait(false)` (`:8213`, `Ft8ArmedSend.cs:164`,
+   `Ft8TransmitSequence.cs:284`, `:289`, `:327`). Determined by reading those five
+   call sites; **then watched**, in task 3 and task 4, by parking a transmission
+   inside the sink and pressing the button from the dispatcher thread while it
+   was parked.
+3. **Two writers on one `ISerialPort` is undocumented, not safe.** The interface
+   states no thread-safety contract; `SystemSerialPort` reaches one `SerialPort`
+   by two doors, `BaseStream.WriteAsync` and `SerialPort.Write`. That is recorded
+   as a finding, as the instruction said it should be. **But the port is idle for
+   the whole of the audio** - three writes exist in `RunAsync` and the middle
+   12.64 seconds touch none of them - so the collision window is two six-byte
+   frames, not the transmission.
+4. **A second unkey is redundant and not harmful.** `1C 00 00` is *be in
+   receive*: an absolute state, not a toggle. `17 FF` is a stop code a radio
+   sending no keyer message has nothing to apply to. Argued from the bytes in the
+   trace, and it is what makes decision 1 below cost nothing.
+
+**Task 2 - the stop, in the engine.** `Ft8ArmedSend.StopNow(port, radioAddress,
+controllerAddress)` returns `Ft8StopResult` - not a task, so a caller cannot
+forget to await it. It un-arms through the existing `Cancel()` (no second way to
+un-arm; the existing test counting three writes to `_armed` still passes), then
+fires `TransmitAbort.Fire`. **Nine lines of body, one branch, and the branch is
+`port is null`** - an absence, not a condition on state.
+
+**Task 3 - watched from every state.** 12 tests,
+`TheOperatorsStopFiresFromEveryStateTests`, **12 passed / 0 failed in 91 ms**,
+foreground, filtered by name, 7-minute timeout stated. Wire quoted in §3.2.
+
+**Task 4 - the button.** `DigitalStopButton` in the FT8 Send area beside CQ,
+`MainWindow.axaml:3095-3125`, bound to `StopSendingCommand`. 7 tests,
+`TheOperatorCanStopItTests`, **7 passed / 0 failed in ~1 s**.
+
+**Task 5 - no new route.** Both greps in §3.1, and the count is now a standing
+guard rather than a one-off: `TheStopAddedNoNewRouteToATransmission`.
+
+### Decisions made for myself, reproduced in full
+
+**Decision 1. The stop fires the abort whenever there is a port - it does not ask
+whether anything is armed or whether the application believes it is
+transmitting.** This contradicts task 3's table row *nothing armed - say so,
+write nothing*, and it honours `What not to do` item 6, *do not make the stop
+conditional on anything - not on a state flag, not on whether the app believes it
+is transmitting*. **The two cannot both be honoured**, because during a
+transmission "nothing armed" and "keyed and on the air" are the same field value:
+`Ft8ArmedSend.cs:148` clears `_armed` before awaiting `RunAsync`. A stop that
+wrote nothing when nothing was armed would write nothing for the whole
+transmission. **I watched exactly that happen before choosing** - §3.2's red. The
+arithmetic of the other side, stated the way unit 255 stated its 0.5 s offset:
+the cost of firing anyway is **two frames, twelve bytes, at a radio in receive**;
+`FE FE 94 E0 17 FF FD` applies to a keyer message that is not being sent, and
+`FE FE 94 E0 1C 00 00 FD` sets an absolute state the radio is already in and is
+answered `FB`. The cost of not firing is **a transmitter left on the air on other
+people's band**. Twelve bytes against that is not a trade.
+
+**Decision 2. On task 1's question 4 - the abort is not serialised behind
+anything the transmission holds.** Both writes go, and what the sequence's
+`finally` then did is recorded rather than suppressed: in every keyed state it
+ran and wrote `1C 00 00` a second time, visible as the fourth frame in §3.2. The
+measured fact that made this safe rather than merely necessary: **no member of
+`Ft8ArmedSend` holds `_gate` across an `await`** - `AtBoundaryAsync` takes it at
+`:137` and releases it at `:149`, before the await at `:164` - so the only lock
+on the stop's path is one a running transmission can never own.
+
+**Decision 3. Four outcomes, not the three asked for.** `NothingToStop`,
+`Unarmed`, `ToldTheRadio`, `UnarmedAndToldTheRadio`. Three cannot express the
+real state where an operator arms a second message *while the first is
+transmitting*, which makes both halves true at once. Four is strictly more
+distinguishable, which is what the instruction's reason asks for.
+
+**Decision 4. The button is always visible and never disabled.** No `IsVisible`,
+no `CanExecute`, no state read anywhere between the click and
+`TransmitAbort.Fire`. A stop that greys out when the application believes nothing
+is happening is disabled at exactly the moment the application is wrong; and a
+control only visible while sending is useless before the boundary, while one only
+visible while armed is useless during the 12.64 seconds. One always-there button
+answers both.
+
+**Decision 5. The audio is not cut short, and that is reported rather than
+repaired.** See §4 item 1.
+
+**Decision 6. Two named tests in the app tests were run beside my own.**
+`TheDigitalTabIsTwoColumnsTests` and nothing else, both filtered by name, because
+my change touched the markup they read. That is how the inherited red in §4 item 2
+was found. No unfiltered `dotnet test` was run on any project.
+
+### The tool rule
+
+Tried once each, verbatim, and both refused:
+
+- `tools\arbiter\validate-output.bat output.md` ->
+  `/usr/bin/bash: line 1: toolsarbitervalidate-output.bat: command not found`
+  (the shell is POSIX and eats the backslashes). Three further spellings, because
+  the session's own instructions require the validator to be run before stopping:
+  `./tools/arbiter/validate-output.bat output.md`,
+  `cmd //c "tools\arbiter\validate-output.bat output.md"`, and
+  `bash tools/arbiter/validate-output.bat output.md` - **all three returned `This
+  command requires approval`.** That is seven units of the same behaviour.
+- `tools\arbiter\outcome-append.bat 261 1 partial ...` -> **`This command
+  requires approval`**. **That is nine units of the same behaviour.**
+
+`PHASE_OUTCOME.md`'s unit 261 entry was appended with the file-editing tools in
+the format the script writes - twelve fields, same order, ASCII, existing entries
+untouched, header's step lines unchanged because the state after is still
+`partial`.
+
+**The report was then validated by hand against the seven rules the script
+itself prints**, read out of `validate-output.bat` rather than out of
+`CLAUDE_CODE.md`, using the same measurements its PowerShell does:
+
+| Rule | Measured | Result |
 |---|---|---|
-| - | The four root records units 256-258 left uncommitted, exactly as they arrived | `aec0698` |
-| 1 | `docs/unit259-send-path-trace.md` - six questions, and the predicted menus | `495a499` |
-| 2 | `Ft8SendOptions` - every valid message, expected marked, repeats counted | `3576472` |
-| 3 | `Ft8ArmedSend` and the view model's one send command | `8d8bcf9` |
-| 4 | The Send area, the CQ button, the licence line, `AudioOutputDeviceId` | `9c36abb` |
-| 5 | The record, the greps, and the flyout dropped | `05d7299` |
+| 1 - `UNIT:` line in the first 60 lines | present at line 47 | **ok** |
+| 2/3 - the four `##` sections, exact names, in order, no fifth | joined list identical to the script's `WANT` string | **ok** |
+| 4 - section 4 present | `## 4. What's blocking us` present as the fourth and last | **ok** |
+| 5 - section 3 non-empty | 215 non-blank lines between `## 3.` and `## 4.` | **ok** |
+| 6 - ordering block above `UNIT:` | `READ IN THIS ORDER` line 1, `A.` line 3, `B.` line 13, `C.` line 30, and `raises 2 items` matching `raises \d+ item` - all inside the first 60 | **ok** |
+| 7 - no placeholder in the header block | 0 matches for the script's token list in lines 1-63 | **ok** |
 
-**26 new tests, all green.** Eight on the option list, eight on the armed send,
-ten in the app. One existing assertion was **converted rather than added**:
-`NothingInTheShippedTreeCallsTheSequence` became
-`ExactlyOneFileInTheShippedTreeCallsTheSequence`, which is section 3.3's grep.
-
-**The build was green before anything changed** - `Build succeeded, 0 Warning(s),
-0 Error(s)` at `HEAD e1f0b23` - and is green now. **No unfiltered `dotnet test`
-was run**, no command was backgrounded and polled, and no device or port was
-opened. `PROJECT_STATUS.md` was written eight times, every value read from the
-clock.
-
-### Nothing was left undone
-
-There are no tasks remaining. **One deliverable inside task 5 was deliberately
-not built** - the row's `ContextFlyout` markup, which work instruction 259 names
-as the drop candidate and instructs to drop if the unit runs long. The reason it
-was dropped is in section 3.3 and it is a design reason as well as a time one.
+**Seven of seven by hand. The script's exit code was not obtained**, because the
+shell refused every spelling of it, and that is stated rather than implied.
 
 ## 2. What the owner should expect
 
-**Hamlet can now be told to transmit, and it will refuse on this machine.** That
-is the honest headline and both halves of it matter.
+**There is now a Stop button on the Digital tab, in the Send area, immediately to
+the right of CQ.** It is amber. It is always there and always pressable - it does
+not appear when you start sending and it does not grey out when you are not. That
+is deliberate and it is the point.
 
-The engine knows every message that may be sent to a station, which one
-conventionally comes next, and how many times each has already gone. It will arm
-exactly one transmission for the next slot boundary, with no dialog and no second
-click, and it will not transmit again until somebody clicks again. The reserved
-space under the waterfall now says what is going out and to whom, and there is a
-CQ button that needs no typing.
+**What a press does at each of the two moments** is in §3.3. **What it never does
+is ask you anything first.** *Right-click sends immediately with no
+confirmation* is ruled, and a stop that asks *are you sure* while the radio is
+keyed would be worse than the send that asks.
 
-**What it will not do here is key a radio**, because there is no radio. The app
-has never had a route to the serial port it constructs, and `AppSettings` had no
-transmit endpoint field until tonight and still has no screen to fill it in. So
-on this machine, clicking a message produces this, and this is correct rather
-than broken:
+### What will look wrong but is not
 
-> Hamlet composed "W1ABC KC3QIS -10" and sent nothing: no radio is connected and
-> no transmit audio device is named in Settings.
-
-**No operator has right-clicked anything yet.** The menu exists, is proved, and is
-exposed per row on the view model; the markup that puts it under the mouse is not
-in the tree. That is roughly an afternoon of work and it is described in section
-3.3.
-
-**What Tim would need before step 6.** Three things, none of them large and none
-of them this unit's to guess at: a way for the send path to reach the port the app
-already builds; a name in `AudioOutputDeviceId` and a screen to set it; and the
-flyout. After that it is a radio, an antenna and his own hand.
+- **It says the radio was told to stop even when nothing was going out.** That is
+  true and deliberate. Pressing Stop with nothing armed and nothing sending puts
+  two frames on the wire and reports it. They cost twelve bytes and change
+  nothing at a radio in receive. The alternative is a stop that decides for
+  itself whether you needed it.
+- **On a real transmission the tones keep going for the rest of the slot.** The
+  transmitter is off within two frames - nothing goes on the air - but the audio
+  path plays out. §4 item 1.
+- **You may see `1C 00 00` twice on the wire.** Once from the abort and once from
+  the sequence's own guaranteed unkey. Redundant, harmless, and argued from the
+  bytes in the trace.
+- **The window has two things called stop.** The old *Stop sending* button
+  belongs to the parked CW path and never appears on the Digital tab. The new one
+  is labelled just **Stop**.
+- **`TheDigitalTabIsTwoColumnsTests` has one red test.** It is not new tonight
+  and it is not chased. §4 item 2.
 
 ## 3. What you should see
 
-### 3.1 The one-click assertion, and the red that was watched first
+### 3.1 The two greps, before task 2 and after task 4
 
-**This comes first because it is the phase's one unrecoverable fault.** A
-transmission the operator did not ask for goes out over other people's band and
-cannot be taken back.
+`grep -rn "Arm(\|_armedSend\|Ft8TransmitSequence\|Ft8ArmedSend" src/ --include=*.cs --include=*.axaml`
 
-`Ft8ArmedSend` was built **without clearing the armed send once it had fired** -
-the obvious way to write it, and the wrong one. One click, three slot boundaries
-driven past it:
+**Before task 2** (`HEAD ed324bf`), the lines that matter:
 
 ```
-clicks              : 1
-boundaries driven   : 3
-boundary 1          : Ran
-boundary 2          : Ran
-boundary 3          : Ran
-times the sink played: 3
-wire                : FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD
-                      FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD
-                      FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD
-
-Assert.Equal() Failure: Values differ
-Expected: NothingArmed
-Actual:   Ran
+MainWindowViewModel.cs:8022:        _armedSend = new Ft8ArmedSend(
+MainWindowViewModel.cs:8023:            new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
+MainWindowViewModel.cs:8149:        _armedSend.Arm(new OperatorSend(
+Ft8ArmedSend.cs:297:  var run = await _sequence.RunAsync(send, cancellationToken)   [the one keying route]
 ```
 
-**Three keyings and three unkeyings on the wire, from one click.** Nobody clicked
-twice. That is the fault, caught on a fake port where it cost nothing.
-
-The fix is that the send is **taken and the field cleared under the lock before
-anything is awaited** - not after, because the await is itself a window in which
-another boundary can arrive and find the same send still armed. The green:
+**After task 4** (`HEAD 00fcad1`), the same four lines, unmoved:
 
 ```
-Passed!  - Failed: 0, Passed: 8, Skipped: 0, Total: 8
-  - TwoBoundariesAfterOneClickProduceOneTransmission
-  - ASecondClickReplacesTheArmedSendAndNeverAddsOne
-  - ABoundaryEarlierThanTheArmedOneDoesNotTransmit
-  - ABoundaryAfterTheArmedOneDiscardsItRatherThanSendingLate
-  - AnArmedSendThatHasNotKeyedCanBeCancelled
-  - OutOfPrivilegesNothingReachesThePortOrTheSink
-  - TheSlotItWentInIsTheBoundaryItWasArmedFor
-  - NothingInTheArmedSendCanStartATransmissionOnItsOwn
+MainWindowViewModel.cs:8022:        _armedSend = new Ft8ArmedSend(
+MainWindowViewModel.cs:8023:            new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
+MainWindowViewModel.cs:8149:        _armedSend.Arm(new OperatorSend(
+Ft8ArmedSend.cs:297:  var run = await _sequence.RunAsync(send, cancellationToken)
 ```
 
-Two boundaries after one click now produce **one** transmission, two writes on
-the wire, and the sink played **once**. A second click **replaces** and never
-adds - two clicks a second apart are one transmission. A boundary that has gone
-by **discards** the send rather than putting the operator's message out in a slot
-he did not choose.
+| | Before | After | Required |
+|---|---|---|---|
+| `_armedSend.Arm(` call sites in `src/` | **1** | **1** | 1 |
+| ...and it is inside | `SendMessage` | `SendMessage` | `SendMessage` |
+| `new Ft8ArmedSend` in `src/` | **1** | **1** | 1 |
+| `new Ft8TransmitSequence` in `src/` | **1** | **1** | - |
+| callers of `Ft8TransmitSequence.RunAsync` | **1** | **1** | - |
+| `TransmitAbort.Fire` call sites | 1 | **2** | *this is the deliverable* |
 
-**THE ONE ENTRY POINT BY WHICH A TRANSMISSION CAN BEGIN** is
-`Ft8ArmedSend.AtBoundaryAsync`, and the only thing that can put anything in front
-of it is `Ft8ArmedSend.Arm`. The proof that there is no other:
+**Neither moved. The only count that changed is the abort's, from one to two, and
+the new one is the operator's.** The other two `RunAsync` hits in `src/`
+(`AutoCallViewModel.cs:360`, `ScanViewModel.cs:459`) are different types and are
+unchanged.
 
-```
-$ grep -rn "new Ft8TransmitSequence" src/ --include=*.cs
-(nothing)
-
-$ grep -rn "_sequence.RunAsync" src/ --include=*.cs
-src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs:164
-
-$ grep -rn "\.Arm(" src/ --include=*.cs
-src/Hamlet.App/ViewModels/MainWindowViewModel.cs:8017
-
-$ grep -n "PttOn\|CivConstants\|TransmitAbort" \
-      src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs
-(nothing)
-```
-
-`.Arm(` is reached from exactly one method, `SendMessage`, which is a
-`[RelayCommand]` and is called by a menu item and by the CQ button. **No decode,
-no timer, no state change and no retry reaches it.** The slot tick can only *fire*
-what is already armed - `DriveTheArmedSend` calls `AtBoundaryAsync` and has no way
-to call `Arm`.
-
-`NothingInTheArmedSendCanStartATransmissionOnItsOwn` reads `Ft8ArmedSend.cs` with
-its doc comments stripped and fails on any of seventeen patterns - `Timer`,
-`Delay`, `Sleep`, `Stopwatch`, `DateTime.UtcNow`, `PeriodicTimer`, `Repeat` and
-the rest:
+**This is now a standing guard, not a one-off count.**
+`TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission` walks `src/`,
+counts the three, brace-matches `SendMessage`'s body to confirm the arming line
+is still inside it, and brace-matches `StopSending`'s body to confirm it contains
+no `.Arm(`, no `Compose`, no `RunAsync`, no `AtBoundary` and no `new`. Its
+output:
 
 ```
-armed send     : C:\Source\HamLet\src\Hamlet.RadioEngine\Transmit\Ft8ArmedSend.cs
-patterns tried : 17
-found in code  : none
+_armedSend.Arm( -> MainWindowViewModel.cs:8149
+new Ft8ArmedSend -> MainWindowViewModel.cs:8022
+new Ft8TransmitSequence -> MainWindowViewModel.cs:8023
 ```
 
-It also counts the writes to the armed field: **three, of which exactly one is not
-a clear.** `Arm` sets it; `Cancel` and `AtBoundaryAsync` clear it; nothing else
-touches it.
+### 3.2 The wire
 
-**And the grep that proves there is one way to key a radio at all** is now an
-assertion that runs every time. Through units 253 to 258,
-`NothingInTheShippedTreeCallsTheSequence` asserted that *nothing* under `src/`
-called `Ft8TransmitSequence`, and its own remark said *the first caller is step
-5's right-click*. Step 5 arrived, so the assertion became the stronger one:
+**The red, watched first, and quoted as output, not described.** The stop built
+so that it only un-arms - which is all the tree could do before tonight, because
+`Cancel()` was the only half with a caller - run against a radio that is keyed
+and mid-transmission:
 
 ```
-caller: C:\Source\HamLet\src\Hamlet.RadioEngine\Transmit\Ft8ArmedSend.cs
-callers under src/: 1
-call _sequence.RunAsync: Ft8ArmedSend.cs
+Hamlet.RadioEngine.Tests.Transmit.TheOperatorsStopFiresFromEveryStateTests.
+    KeyedMidTransmissionTheAbortFiresWhileItIsStillRunning [FAIL]
+  Assert.Equal() Failure: Values differ
+  Expected: ToldTheRadio
+  Actual:   NothingToStop
+  Output:
+    state              : keyed, mid-transmission
+    outcome            : NothingToStop
+    un-armed           : False
+    reached the radio  : False
+    wire while running : FE FE 94 E0 1C 00 01 FD
+    the run said       : Sent
+    came out of transmit: OrdinaryUnkey
 ```
 
-A second file constructing a sequence or calling `RunAsync` fails that test,
-whoever adds it and for whatever reason.
+**`wire while running : FE FE 94 E0 1C 00 01 FD`** - PTT on, and nothing after
+it. **A keyed radio staying keyed**, with the stop reporting `NothingToStop`
+because during a transmission there is nothing armed for it to find. That is the
+defect, and it is the one that costs an operator a transmission he did not want
+on other people's band.
 
-### 3.2 The menu, station by station, against what was predicted
-
-**The predictions were committed at `495a499`, before `Ft8SendOptions` existed.**
-That commit is what makes `NUMBER` a measurement. Everything below is read at the
-boundary of slot 13 - `2026-09-06T18:03:15Z` - the moment unit 258 used, with the
-grid `FN00` and a report of `-10` supplied as parameters and stated in the trace.
-
-#### The red that was watched first
-
-`Ft8SendOptions` was built returning **only the message that conventionally comes
-next**, with a complete exchange having none. `K9RST`'s exchange is complete at
-slot 5. The output:
+**The second red, also watched: the no-wait shape assertion**, with a wait put
+into the path on purpose:
 
 ```
-K9RST reads complete, and is offered:
-
-
-
-Assert.Equal() Failure: Values differ
-Expected: 5
-Actual:   0
+    NothingOnTheStopPathWaitsForAnything [FAIL]
+  Assert.DoesNotContain() Failure: Sub-string found
+                                   ↓ (pos 368)
+  String: ···"tely after.\n        Task.Delay(1).Wait();"···
+  Found:  "Task"
 ```
 
-**Nothing at all.** No `73`, and no way to send his grid a second time because the
-first was lost. That version closed a contact, which is ruled against, and it
-forbade every option, which is also ruled against. **The station it left with
-nothing to send was `K9RST`.**
+The stronger form of the same guarantee was watched too: rewriting `StopNow` as
+`async Task<Ft8StopResult>` **does not compile at all** - eleven `CS1503`/`CS1061`
+errors at the call sites, because the return type is a compile-time promise that
+nobody has to remember to await.
 
-#### The five stations, green, with the predicted set beside each
+**Then the green, every state, with the bytes the fake port took in order.**
+`17 FF` is `FE FE 94 E0 17 FF FD`; `1C 00 00` is `FE FE 94 E0 1C 00 00 FD`;
+`1C 00 01` (PTT on) is `FE FE 94 E0 1C 00 01 FD`.
 
-Format is `text | label | expected | times already sent`. **In every one of the
-five, what came out is character-for-character what was predicted.**
+| State | Outcome | Wire, in order |
+|---|---|---|
+| nothing armed, no port | `NothingToStop` | *(nothing - 0 frames attempted)* |
+| nothing armed, port present | `ToldTheRadio` | `17 FF` \| `1C 00 00` |
+| **armed, boundary not yet arrived** | `UnarmedAndToldTheRadio` | `17 FF` \| `1C 00 00` - and no `1C 00 01` anywhere |
+| **about to key** | `ToldTheRadio` | `17 FF` \| `1C 00 00` \| `1C 00 01` \| `1C 00 00` |
+| **keyed, mid-transmission** | `ToldTheRadio` | `1C 00 01` \| `17 FF` \| `1C 00 00` \| `1C 00 00` |
+| **waiting for unkey** | `ToldTheRadio` | `1C 00 01` \| `17 FF` \| `1C 00 00` \| `1C 00 00` |
+| **port dead / throwing** | `UnarmedAndToldTheRadio` | *(nothing landed - 2 attempted, both refused, both reported)* |
+| port disposed | `ToldTheRadio` | *(nothing landed - 2 attempted)* |
 
-```
-G4XYZ - waiting on him, 2 slots
-    G4XYZ KC3QIS FN00 | grid             | -        | 0
-    G4XYZ KC3QIS -10  | report           | expected | 0
-    G4XYZ KC3QIS R-10 | roger and report | -        | 0
-    G4XYZ KC3QIS RRR  | acknowledge      | -        | 0
-    G4XYZ KC3QIS 73   | 73               | -        | 0
-
-VK2PQ - gone quiet, 11 slots
-    VK2PQ KC3QIS FN00 | grid             | -        | 0
-    VK2PQ KC3QIS -10  | report           | expected | 0
-    VK2PQ KC3QIS R-10 | roger and report | -        | 0
-    VK2PQ KC3QIS RRR  | acknowledge      | -        | 0
-    VK2PQ KC3QIS 73   | 73               | -        | 0
-
-K9RST - complete, 7 slots
-    K9RST KC3QIS FN00 | grid             | -        | 0
-    K9RST KC3QIS -10  | report           | -        | 0
-    K9RST KC3QIS R-10 | roger and report | -        | 0
-    K9RST KC3QIS RRR  | acknowledge      | -        | 1
-    K9RST KC3QIS 73   | 73               | expected | 0
-
-W1ABC - complete, 4 slots
-    W1ABC KC3QIS FN00 | grid             | -        | 0
-    W1ABC KC3QIS -10  | report           | -        | 0
-    W1ABC KC3QIS R-10 | roger and report | -        | 0
-    W1ABC KC3QIS RRR  | acknowledge      | expected | 1
-    W1ABC KC3QIS 73   | 73               | -        | 0
-
-N5TT - gone quiet, 5 slots
-    N5TT KC3QIS FN00  | grid             | -        | 0
-    N5TT KC3QIS -10   | report           | expected | 0
-    N5TT KC3QIS R-10  | roger and report | -        | 0
-    N5TT KC3QIS RRR   | acknowledge      | -        | 0
-    N5TT KC3QIS 73    | 73               | -        | 0
-
-NUMBER: 5 of 5
-```
-
-**The repeat count is doing real work in two of them.** `K9RST` and `W1ABC` have
-each already had an `RRR`, so both show `acknowledge` with a count of 1 - *2nd
-time* to a reader. In `W1ABC`'s case **the expected message is itself a repeat**,
-and both facts are shown at once, which is the ruling working: FT8 loses
-transmissions constantly and sending `RRR` again is correct operating, not a
-mistake to be greyed out.
-
-#### The complete contact, which is its own paragraph
-
-**`K9RST` reads `complete, 7 slots` and loses nothing.** All five messages are
-offered: the grid a second time for an operator whose first was lost, the report,
-the roger, the acknowledgement he has already sent once, and `73`. **`73` arrived
-from him a slot *after* the exchange was already complete and changed nothing** -
-a contact is never closed by the app.
-
-**Nothing was removed from any list, and there is no way for anything to remove
-one.** That is asserted rather than asserted-in-prose:
-`NothingOnTheseTypesCanWithholdAnOption` reads **every public member** of
-`Ft8SendOptions`, `Ft8SendOption`, `Ft8SendMenu` and `Ft8SendShape` by reflection
-and fails on any name containing **hide, close, forbid, deny, block, grey, dim,
-disable or exclude**. Four types, nine verbs, no hits.
-
-The gone-quiet stations behave the same way. `VK2PQ` has been silent for eleven
-slots and is offered all five.
-
-#### Absence, which is not the same as forbidding
-
-Two things can be absent, and both say why out loud rather than being defaulted:
-
-- **no grid in Settings** - the grid-bearing messages are gone and the CQ becomes
-  `CQ KC3QIS`, a legal FT8 message. *"the grid square is not set in Settings, so
-  the messages that carry one are not offered"*. **`FN00` is Tim's own square and
-  is never a fallback.**
-- **no measured signal report** - a report is a measurement of a received signal,
-  so the report-bearing messages are gone with the same kind of sentence. In the
-  app the figure is the decoded row's own ratio; a row showing `-` gets no report
-  options.
-
-**The two messages the splitter refuses** - `TNX BOB 73 GL` and `ABCDEFGHIJKLM` -
-are never booked by the ledger, so no station record exists for them and the
-option list is never asked about them. A station booked from an ordinary message
-and then heard in free text still answers with all five rather than throwing.
-
-### 3.3 What the licence gate did, and where the send path lives
-
-#### The refusal, with zero bytes and an untouched sink
-
-`OutOfPrivilegesNothingReachesThePortOrTheSink` arms a Technician at
-14.074 MHz and drives the boundary:
+Verbatim, for the row the unit exists for:
 
 ```
-outcome  : RefusedByLicence
-bytes at the port : 0
-sink touched      : False
+ state              : keyed, mid-transmission
+ outcome            : ToldTheRadio
+ un-armed           : False
+ reached the radio  : True
+ frames attempted   : 4
+ wire               : FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD | FE FE 94 E0 1C 00 00 FD
+ wire while running : FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD | FE FE 94 E0 1C 00 00 FD
+ the run said       : Sent
+ came out of transmit: OrdinaryUnkey
 ```
 
-**Not a byte reached the fake port and the fake sink was never called.** `Keyed`
-is false and `Sent` is false. The refusal happens at the gate **inside**
-`Ft8TransmitSequence.RunAsync`, before anything that can key, which is where it
-already lived - **no second copy of the licence rule was written anywhere in the
-send path.**
+**`wire while running` is measured before the parked transmission is released.**
+Both abort frames are on the wire while the radio is still on the air; an abort
+that landed after the audio had finished would be indistinguishable from no abort
+at all. The fourth frame is the sequence's own `finally` running afterwards -
+redundant, harmless, and recorded rather than suppressed.
 
-What the menu gains is a line, and the line is the guard's own words:
+And the dead port, which is the row where the answer must not be a comfortable
+one:
 
-> Technician licensees may only send Morse here. digital modes on this segment
-> needs General. (97.307(f)(9))
+```
+ state              : port dead / gone / throwing
+ outcome            : UnarmedAndToldTheRadio
+ reached the radio  : False
+ frames attempted   : 2
+ wire               : (nothing)
+ cw stop failure    : the port is gone (scripted)
+ ptt off failure    : the port is gone (scripted)
+```
 
-**The menu itself keeps all five options.** *Nothing is forbidden in the menu* is
-a ruling about the contact state, not about the licence, and the licence does not
-shorten the list. A class that may transmit where it is pointed gets **no line at
-all** - asserted, because a line that is always there teaches the operator to stop
-reading that part of the window.
+It returned, it did not throw, both halves were attempted independently, and it
+says neither landed instead of reporting success.
 
-#### Where everything lives
+**Runs.** `TheOperatorsStopFiresFromEveryStateTests` - **12 passed, 0 failed,
+91 ms**. `TheOperatorCanStopItTests` - **7 passed, 0 failed, ~1 s**. Both
+foreground, both filtered by name, timeout stated at 7 minutes, neither reached
+it. `OneClickSendsExactlyOneMessageTests` re-run to confirm the existing
+`Ft8ArmedSend` guards survive: **8 passed, 0 failed**. No unfiltered suite was
+run.
 
-| Thing | File and line |
+### 3.3 What the operator sees, at each of the two moments
+
+**Moment one - armed, waiting for the slot boundary.** The Send area reads
+`Sending to W1ABC, "W1ABC KC3QIS -10" in the slot at 04:31:30 UTC.` The Stop
+button sits beside CQ, visible, enabled. **A click, and it reads:**
+
+```
+Stopped: "W1ABC KC3QIS -10" was taken off before its slot and will not go out,
+and the radio was told to stop transmitting.
+```
+
+The slot then arrives and produces `NothingArmed`; the sink was never touched;
+no keying frame is anywhere on the wire. *(Asserted by driving the real boundary
+afterwards, not by reading a flag.)*
+
+**Moment two - the radio is keyed and 12.64 seconds of tones are going out.** The
+button is in exactly the same place, still visible, still enabled - measured on
+the realized control while the transmission was parked mid-audio. **A click, and
+it reads:**
+
+```
+Stopped: nothing was waiting for a slot, and the radio was told to stop
+transmitting.
+```
+
+and `17 FF` then `1C 00 00` are on the wire before the transmission is released.
+
+**No radio connected - this machine's actual state.** The button is still there
+and still pressable. A click reads:
+
+```
+There was nothing to stop: no radio is connected and no transmit audio device is
+named in Settings. Nothing here has a way to key a radio.
+```
+
+**Not a crash and not a lie.** It does not claim a frame went out. Where a radio
+*is* connected but Settings names no transmit audio device, the same line names
+that half instead, taken from the refusal the connect already wrote.
+
+**And the failure case, which is the one that matters most and is said plainly
+rather than folded into the success sentence:**
+
+```
+Hamlet told the radio to stop and neither frame got out: <the port's own
+message>. If it is still transmitting, stop it at the radio.
+```
+
+**How this was asserted.** The named drop candidate was **not** taken. A shown
+headless `MainWindow`, the real realized `DigitalStopButton` found by walking the
+visual tree, its centre translated into window coordinates, `InputHitTest` at
+that point returning a `ContentPresenter` inside the button, and then
+`MouseMove` / `MouseDown` / `MouseUp` at it. **A real click on a real control
+tree.** One layout fact came out of it and is worth knowing: at the window's
+default 1100x780 the Send area's buttons land at y=829, **below the fold** - so
+the tests build the window at 1400x1400. On a short window the operator has to
+scroll to reach Stop.
+
+### 3.4 Where this instruction and the tree disagreed
+
+**Reported, not repaired, as instructed.**
+
+1. **The version had already moved.** The instruction says *one patch bump per
+   task, continuing from `1.12.109`*. `Directory.Build.props` held **`1.12.110`**
+   at `HEAD ed324bf`. Continued from what the tree said: `.111`, `.112`, `.113`,
+   `.114`. **The tree wins.**
+2. **Task 3's table row 1 cannot be honoured beside `What not to do` item 6.**
+   *nothing armed - say so, write nothing* against *do not make the stop
+   conditional on... whether the app believes it is transmitting*. During a
+   transmission both descriptions are the same field value. **The rule was
+   followed and the table row was not**, with the red in §3.2 as the evidence for
+   which way round to take it, and the whole reasoning in decision 1.
+3. **Task 2 asked for three distinguishable outcomes; there are four.** Arming a
+   second message while the first is transmitting makes "un-armed" and "told the
+   radio" simultaneously true, which three cannot express.
+4. **`Ft8ArmedSend.Cancel()` had one more caller than the instruction states.**
+   The instruction says its only callers are
+   `OneClickSendsExactlyOneMessageTests.cs:178-179`. That was correct for `src/`
+   and for that file; it now also has `StopNow`, which is the point of the unit.
+5. **Everything else in the instruction checked out**, including all three
+   `_rigPort` line numbers, `MainWindowViewModel.cs:8213`,
+   `Ft8TransmitSequence.cs:249-350`, `MainWindow.axaml:1242`'s `AbortCommand`
+   resolving on `CwTransmitViewModel` through the `DataContext="{Binding
+   Transmit}"` at `:1157`, and `TransmitAbort.Fire`'s single call site.
+
+### 3.5 What is on disk
+
+| | |
 |---|---|
-| The option list | `src/Hamlet.RadioEngine/Contacts/Ft8SendOptions.cs` |
-| The armed send, and the one call to `RunAsync` | `src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs:164` |
-| The command - the one entry point | `MainWindowViewModel.cs`, `SendMessage`, arming at `:8017` |
-| **`RecordSent`'s one call site** | `MainWindowViewModel.cs:8102` |
-| The row's menu | `MainWindowViewModel.SendMenuFor(row)` |
-| The Send area's words | `MainWindowViewModel.DigitalSendLine` |
+| `docs/unit261-stop-trace.md` | the six-question trace, committed before task 2 |
+| `src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs` | `StopNow`, `Ft8StopResult`, `Ft8StopOutcome` |
+| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | `StopSending` command, `StopLine`, `UseRigPortForTests` |
+| `src/Hamlet.App/Views/MainWindow.axaml` | `DigitalStopButton`, beside CQ |
+| `tests/Hamlet.RadioEngine.Tests/.../TheOperatorsStopFiresFromEveryStateTests.cs` | 12 tests |
+| `tests/Hamlet.App.Tests/Views/TheOperatorCanStopItTests.cs` | 7 tests |
+| `PHASE_OUTCOME.md` | unit 261's entry, appended by hand after the script refused |
 
-**`Ft8ContactLedger.RecordSent` has had no caller since it was written.** It has
-one now, and it is called **only where the run says the whole transmission went
-out and the radio unkeyed** - not at the moment of arming, because a message
-booked at arming would put a transmission in the ledger that a licence refusal, a
-cancel or a missed boundary meant never happened.
-
-#### The Send area, and the sentence that did not survive
-
-`MainWindow.axaml:3083` said:
-
-> Send lives here when it is built. Hamlet does not transmit yet, and this space
-> is kept clear so the waterfall above it never has to move again.
-
-**That sentence is gone.** In its place the region binds `DigitalSendLine`, plus
-the licence line, plus a line for anything unset, plus a CQ button. Every word is
-formatted in the view model so it is asserted without opening a window. What it
-says now, in the three states:
-
-```
-Nothing has been sent. Right-click a decoded row to choose a message, or press CQ.
-
-Sending to W1ABC, "W1ABC KC3QIS -10" in the slot at 23:45:00 UTC.
-
-Hamlet composed "CQ KC3QIS FN00" and sent nothing: no radio is connected and no
-transmit audio device is named in Settings.
-```
-
-and, with no grid set:
-
-> Your grid square is not set in Settings, so Hamlet calls CQ as "CQ KC3QIS" and
-> does not offer the messages that carry a grid. It will not invent one.
-
-**The CQ button goes through the same command a right-click does.** One send path,
-not two, so everything asserted about one click applies to it without being
-asserted twice.
-
-#### Where the frequency, callsign, grid and licence class come from
-
-- **Frequency** - `MainWindowViewModel._frequencyHz` at `:447`, seeded from the
-  selected band's `JumpHz` at `:3098`. **It is the band's frequency until a radio
-  moves it**, and there is no radio. A second finding arrived during task 4:
-  `OnFrequencyHzChanged` at `:6701` **clamps every operator-origin frequency to
-  the selected band's map window**, so it cannot leave the selected band at all
-  unless a rig reports otherwise. A test that assumed 14.074 MHz while 40 m was
-  selected got *"No US license class may transmit here"* about the edge of 40 m -
-  a correct answer to a question nobody meant to ask. Recorded against question 1
-  of the trace; the test now uses 7.074 MHz.
-- **Callsign, grid, licence class** - `_settings.Operator`, defaults `KC3QIS`,
-  `""` and `Unknown`. **The live values could not be read**: `settings.json` lives
-  in `%AppData%\Hamlet` and both tools in this session are confined to the working
-  directory. The shell said *"ls in '/c/Users' was blocked"* and the file reader
-  said *"is outside C:\Source\HamLet; --restricted confines the file tools to the
-  working directory."* The send path is built so that the two values which may be
-  missing fail toward **saying so**, not toward inventing one.
-- **Guard toggle** - `_settings.RestrictTransmitToPrivileges`, default `true`, the
-  same field the existing CW guard reads through `BuildTransmitContext()`.
-
-#### Whether the app can reach a real port and a real endpoint
-
-**It cannot, in either direction, and this was task 1's whole point.**
-
-- `Ic7300Rig` holds its `ISerialPort` in a private field at `:39` and exposes no
-  accessor. The app builds a `SystemSerialPort` at `MainWindowViewModel.cs:9476`,
-  hands it straight to the rig and **keeps no reference to it**. The smallest seam
-  is the view model keeping the port it already constructs - a field and one
-  assignment, two lines - and it is named rather than built, because on a machine
-  with no radio it could only ever be exercised by opening a port that is not
-  there.
-- `AppSettings` had no output device field. **It has one now**,
-  `AudioOutputDeviceId`, in the same shape and with the same id-not-name reasoning
-  as `AudioInputDeviceId` at `:193`. **A Settings screen to fill it in is out of
-  scope and is named as what remains.** `WasapiTransmitSink` takes a name and
-  refuses rather than falling back, which is the behaviour wanted: playing FT8 into
-  laptop speakers because a name was missing is exactly the fault the refusal
-  exists to prevent.
-
-So the command **refuses with words**, which work instruction 259 names as an
-acceptable landing, and the tests drive the sequence through the test seam
-`UseArmedSendForTests` instead. **What is not acceptable - a command that silently
-does nothing - is asserted against**:
-`WithNoRadioTheSendRefusesWithWordsRatherThanDoingNothing`.
-
-**Criterion 3 is met on the fake wire and not on a radio.** The keying frame, the
-samples, the unkey and the recorded slot being the next boundary were all proved
-against `FakeSerialPort` and `FakeTransmitAudioSink`, both already in the tree; no
-third fake was written, no port was opened and no device was enumerated.
-`SHACK_FACTS.md` FACT-004 rules that no radio has ever been attached to this
-machine, so a real port here would measure this machine and say nothing about the
-radio. **The last mile is step 6's and Tim's, and this unit claims no more.**
-
-#### The drop candidate was dropped
-
-**The row's `ContextFlyout` markup is not in the tree**, and work instruction 259
-names it as the thing to drop if the unit runs long. What remains without it:
-
-- **criterion 2 is met in substance** - the option list is asserted 5 of 5 against
-  sets committed before it existed, the expected one is marked, the repeat counts
-  are right, and nothing can be withheld;
-- **`MainWindowViewModel.SendMenuFor(row)` is the seam the flyout binds to**, and
-  it is tested through the app's own row door with no window opened;
-- **criteria 1 and 5 are whole** - the CQ button and the Send area are both in the
-  markup and both working.
-
-**There is a design reason as well as a time one, and it is worth the owner's
-attention before somebody builds it.** A `ContextFlyout` binding `ItemsSource` to
-a property on `DigitalDecodeRow` would freeze the options at the moment the row
-was placed - which is right for the `Contact` cell, whose whole job is to record
-where the contact stood *in its own slot*, but wrong for a menu, whose repeat
-counts and expected message should be as of **the click**. Answering that properly
-means populating the flyout when it opens, which is a code-behind handler in a
-3,600-line `.axaml`. That is an afternoon done carefully and a broken window done
-at the end of a long night.
-
-### 3.4 Mismatches between the instruction and the tree
-
-**Two, both reported at no cost, neither repaired.**
-
-1. **`NothingInTheShippedTreeCallsTheSequence` had to change.** The instruction
-   forbids changing `Ft8TransmitSequence`, which was honoured - the type is
-   untouched. But its *test* asserted that nothing under `src/` calls it, and this
-   unit is the caller its own remark predicted. It was converted to
-   `ExactlyOneFileInTheShippedTreeCallsTheSequence`, which is strictly stronger and
-   is task 5's required grep.
-2. **The instruction's line numbers were accurate.** All four markup facts
-   (`:3074`, `:3082`, `:3388`, `:3407`) checked out exactly, as did
-   `Ic7300Rig._port` at `:39`, `AudioInputDeviceId` at `:193`, `_frequencyHz` at
-   `:447` and the rest. The only thing the trace found that the instruction did not
-   state is the frequency clamp described above.
-
-### 3.5 Tool refusals, recorded verbatim
-
-- **`tools/arbiter/outcome-append.bat`, the seventh consecutive refusal.** Two
-  forms tried, once each: `tools/arbiter/outcome-append.bat 2>&1 | head -5` gave
-  *"This Bash command contains multiple operations. The following part requires
-  approval: tools/arbiter/outcome-append.bat 2>&1"*, and the bare
-  `tools/arbiter/outcome-append.bat` gave *"This command requires approval"*. The
-  twelve-field entry was written with the file-editing tools instead, ASCII only,
-  in the format the existing entries use, and the header's `STEP: 5` line moved
-  from `not started` to `partial` in place. **No existing entry was edited**,
-  including the two that disagree with themselves.
-- **A heredoc appending to a file inside the working directory was refused**:
-  *"Output redirection to 'C:\Source\HamLet\PHASE_OUTCOME.md' was blocked. For
-  security, Claude Code may only write to files in the allowed working directories
-  for this session: 'C:\Source\HamLet'"* - which names the working directory the
-  file is in. The file-editing tools were unaffected, as the instruction said they
-  would be.
-- **Variable expansion and paths outside the tree were refused**: `$USERNAME` and
-  `$APPDATA` gave *"Contains simple_expansion"*, and `ls /c/Users` gave *"ls in
-  '/c/Users' was blocked."* This is what stopped question 3 reading the live
-  settings.
-- **`python` with a heredoc was refused**: *"This command requires approval."*
-  The edit was done with the file-editing tools.
-
-**Nothing halted the loop.** Every refusal had another route and it was taken.
-
-### 3.6 One housekeeping note
-
-`git add -A` in task 3 swept in two untracked files that were in the tree when
-this session started: `SESSION.lock` and `tools/unit254-seam-grep.sh`. **Neither
-was deleted** - work instruction 259 says to leave the seam-grep script alone and
-it is still there, now tracked. `SESSION.lock` is a launcher artefact and probably
-should not be in version control; it is left as found rather than removed, because
-the launcher's working area is not this unit's to tidy.
+Five commits, one per task, each pushed before the next began:
+`ed94432`, `4f3970b`, `f294e62`, `00fcad1` (task 2 and task 3 share one commit -
+`StopNow` and the tests that watch it are the same file's proof and could not
+usefully be split; that is stated here rather than passed off as four tasks in
+four commits).
 
 ## 4. What's blocking us
 
-**Nothing is blocking.**
+**Nothing is blocking.** Both items below are recorded for the next unit; neither
+stops anything named in B.
+
+### Item 1 - the abort takes the carrier off, not the audio (a finding, no ruling wanted)
+
+**What was measured.** `Ft8TransmitSequence.cs:287-289` hands the sink the
+`cancellationToken` it was given, and `MainWindowViewModel.cs:8213` calls
+`AtBoundaryAsync(boundaryUtc)` with **no token**, so `CancellationToken.None`
+reaches the sink. After a stop at second 3 of a 12.64 s transmission, PTT is off
+within two frames and **the sink plays out the remaining ~9.6 s into an unkeyed
+radio.**
+
+**What it costs and does not cost.** Nothing goes on the air - PTT is off, and
+audio into an unkeyed IC-7300's USB input modulates nothing. It costs the
+remainder of the slot, because `RunAsync` does not return until the sink does.
+The send itself is already consumed at `Ft8ArmedSend.cs:148`, so nothing is stuck
+armed and nothing repeats.
+
+**Why it was not repaired here.** `What not to do` item 2 is explicit: *if task 1
+question 5 shows the abort and the `finally` interact badly, report it; do not
+repair it here.* And the repair is not trivial in the direction that matters:
+cutting the audio needs a cancellation source threaded from `Ft8ArmedSend`
+through `AtBoundaryAsync` into `RunAsync`, and `CancellationTokenSource.Cancel()`
+runs its registrations **synchronously on the calling thread** - which on a real
+WASAPI sink would be the operator's UI thread, during the one moment he cannot
+afford it to block. **That is precisely the property the abort may not have**, and
+it deserves a unit with its own measurement rather than a line in this one.
+
+**Rejected alternative:** firing the abort *after* cancelling, so the audio stops
+first. Rejected because it puts an unbounded synchronous callback between the
+click and the frames that stop the transmitter, which inverts the priority.
+
+### Item 2 - `TheDigitalTabIsTwoColumnsTests` says the Send area may hold no button (a ruling is wanted)
+
+**Ruling wanted:** may `TheTwoPanelsAreEqualColumnsWithSendReservedBeneathTheWaterfall`'s
+final assertion - `Assert.Empty(reserved.GetVisualDescendants().OfType<Button>())` -
+be removed or narrowed?
+
+**Reasoning.** The assertion carries HM-DEC-087 and §0.5.1, and its own comment
+states the reason: *"a greyed button claims a feature exists and is unavailable;
+transmit does not exist at all, and this region must not imply otherwise."* Unit
+251 wrote it when the Send area was empty space being reserved. **Transmit now
+exists** - the rulings of 2026-09-06 say Hamlet transmits on the air, unit 260 put
+a working CQ button in that region, and unit 261 has put a Stop beside it. The
+decision's premise has been withdrawn.
+
+**Measured, not inferred:** the test file has not been touched since `faff867`
+(unit 251); `git show ed324bf:src/Hamlet.App/Views/MainWindow.axaml` shows
+`DigitalSendCqButton` already inside `DigitalSendReserved` at last night's HEAD.
+**So this test went red at unit 260 and was not reported.** Tonight it fails
+finding two buttons instead of one. It is the only red I touched, and it is not
+one of the inherited reds this instruction named.
+
+**Rejected:** editing the assertion on my own authority. A ruling is not a
+session's to overturn, and the two-word change would erase the reason the rule
+existed. **What I would recommend:** narrow it to *no disabled button*, which
+keeps the whole of HM-DEC-087's actual argument - a greyed control claiming an
+unavailable feature - and permits the two live ones.

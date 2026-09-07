@@ -1,21 +1,21 @@
-﻿## Step 5 - right-click and it goes
+﻿## Step 1 - the abort works before anything can key
 
-**Delivers:** the menu, the CQ button, and the reserved Send area filled.
+**Delivers:** a proven abort path, ahead of any code that transmits.
 
-**Entry:** steps 3 and 4.
+**Entry:** step 0.
 
 **Exit:**
-- **A CQ button** sending `CQ KC3QIS FN00` from the operator's own settings, no
-  typing. *must-pass*
-- **Right-click a decoded row** and the menu offers every message valid at that
-  point, **with the expected one highlighted and none forbidden**. A repeat shows
-  its count - *grid, 2nd time*. *must-pass*
-- **Choosing one transmits in the next slot with no confirmation.** *must-pass*
-- **One click sends exactly one message.** Asserted by a test: after a send,
-  nothing further transmits without another click. *must-pass*
-- What is being sent, and to whom, appears in the Send area reserved beneath the
-  waterfall. *must-pass*
-- **Out of licence privileges, the menu says so and sends nothing.** *must-pass*
+- A same-thread, no-await abort: CI-V `0x17` with `0xFF`, PTT off as fallback.
+  **No `await` on the abort path, asserted by a test.** *must-pass*
+- **Watched to fire**, against a fake CI-V transport, from every state a
+  transmission can be in - about to key, keying, mid-transmission, waiting for
+  unkey. *must-pass*
+- **Fires when the transport is dead**, the port is gone, or the radio does not
+  answer. The fallback is exercised, not reasoned about. *must-pass*
+- It cannot be disabled, deferred, or made conditional. *must-pass*
+- **No transmitting code exists yet when this step closes.** *must-pass*
 
-**Depends on:** steps 3 and 4.
+**This is the one thing that must work when everything else has failed.**
+
+**Depends on:** step 0.
 

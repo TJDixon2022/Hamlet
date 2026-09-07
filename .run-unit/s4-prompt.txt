@@ -21,7 +21,7 @@ work on the same step remains open.
 Read PHASE_PLAN.md for this step exit criteria and
 PHASE_OUTCOME.md for what has already been done. Then decide
 whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step 5.
+owner answer. The step being worked is step 1.
 
 Halting a night for a question that forecloses nothing is the
 failure this judgment exists to prevent. Building on an assumption
@@ -50,4 +50,61 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-**Nothing is blocking.**
+**Nothing is blocking.** Both items below are recorded for the next unit; neither
+stops anything named in B.
+
+### Item 1 - the abort takes the carrier off, not the audio (a finding, no ruling wanted)
+
+**What was measured.** `Ft8TransmitSequence.cs:287-289` hands the sink the
+`cancellationToken` it was given, and `MainWindowViewModel.cs:8213` calls
+`AtBoundaryAsync(boundaryUtc)` with **no token**, so `CancellationToken.None`
+reaches the sink. After a stop at second 3 of a 12.64 s transmission, PTT is off
+within two frames and **the sink plays out the remaining ~9.6 s into an unkeyed
+radio.**
+
+**What it costs and does not cost.** Nothing goes on the air - PTT is off, and
+audio into an unkeyed IC-7300's USB input modulates nothing. It costs the
+remainder of the slot, because `RunAsync` does not return until the sink does.
+The send itself is already consumed at `Ft8ArmedSend.cs:148`, so nothing is stuck
+armed and nothing repeats.
+
+**Why it was not repaired here.** `What not to do` item 2 is explicit: *if task 1
+question 5 shows the abort and the `finally` interact badly, report it; do not
+repair it here.* And the repair is not trivial in the direction that matters:
+cutting the audio needs a cancellation source threaded from `Ft8ArmedSend`
+through `AtBoundaryAsync` into `RunAsync`, and `CancellationTokenSource.Cancel()`
+runs its registrations **synchronously on the calling thread** - which on a real
+WASAPI sink would be the operator's UI thread, during the one moment he cannot
+afford it to block. **That is precisely the property the abort may not have**, and
+it deserves a unit with its own measurement rather than a line in this one.
+
+**Rejected alternative:** firing the abort *after* cancelling, so the audio stops
+first. Rejected because it puts an unbounded synchronous callback between the
+click and the frames that stop the transmitter, which inverts the priority.
+
+### Item 2 - `TheDigitalTabIsTwoColumnsTests` says the Send area may hold no button (a ruling is wanted)
+
+**Ruling wanted:** may `TheTwoPanelsAreEqualColumnsWithSendReservedBeneathTheWaterfall`'s
+final assertion - `Assert.Empty(reserved.GetVisualDescendants().OfType<Button>())` -
+be removed or narrowed?
+
+**Reasoning.** The assertion carries HM-DEC-087 and Â§0.5.1, and its own comment
+states the reason: *"a greyed button claims a feature exists and is unavailable;
+transmit does not exist at all, and this region must not imply otherwise."* Unit
+251 wrote it when the Send area was empty space being reserved. **Transmit now
+exists** - the rulings of 2026-09-06 say Hamlet transmits on the air, unit 260 put
+a working CQ button in that region, and unit 261 has put a Stop beside it. The
+decision's premise has been withdrawn.
+
+**Measured, not inferred:** the test file has not been touched since `faff867`
+(unit 251); `git show ed324bf:src/Hamlet.App/Views/MainWindow.axaml` shows
+`DigitalSendCqButton` already inside `DigitalSendReserved` at last night's HEAD.
+**So this test went red at unit 260 and was not reported.** Tonight it fails
+finding two buttons instead of one. It is the only red I touched, and it is not
+one of the inherited reds this instruction named.
+
+**Rejected:** editing the assertion on my own authority. A ruling is not a
+session's to overturn, and the two-word change would erase the reason the rule
+existed. **What I would recommend:** narrow it to *no disabled button*, which
+keeps the whole of HM-DEC-087's actual argument - a greyed control claiming an
+unavailable feature - and permits the two live ones.

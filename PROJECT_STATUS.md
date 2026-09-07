@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 5 of 5
-WORK_INSTRUCTION: 261 - the operator can stop it
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T00:38:43-04:00
-NOTE: All five tasks done, committed and pushed; 19 new tests green, nothing dropped including the named drop candidate. NUMBER is 6 of 6 - the stop was watched firing from every state a transmission can be in, with the wire quoted, and a real mouse pressed the real button on a shown headless window at both moments. Two reds watched first: the un-arm-only stop leaving a keyed radio keyed, and the no-wait shape assertion. Step 1 stays partial - this claims no criterion, it clears step 6's blocker. Section 4 raises 2: the abort takes the carrier off but not the audio, reported not repaired as instructed; and an inherited red from unit 260, TheDigitalTabIsTwoColumns asserting the Send area may hold no button, which wants a ruling on HM-DEC-087.
+UPDATED: 2026-09-07T01:05:40-04:00
+NOTE: Trace written and measured. All four of this machine's render endpoints declare 48000 Hz and not one declares 12000, so the send path can transmit on 0 of 4 today. Ft8Composer.RateIsUsable accepts 48000 and the default 1000 Hz base frequency holds there. Both PowerShell spellings of the enumeration were refused by the shell, so the instruction's named fallback - a filtered test that prints the table - was used. Step 1's header line corrected from blocked to partial in PHASE_STATUS.md and PHASE_OUTCOME.md. Committing task 1.
 
 ---
 

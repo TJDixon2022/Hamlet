@@ -1,4 +1,4 @@
-# Work instruction 260 - the menu under the mouse, and a route to the radio
+# Work instruction 262 - the rate the endpoint actually speaks
 
 ```
 STOP. Verify the project before reading any further.
@@ -20,8 +20,8 @@ Reply with only: the path you are in, which checks failed, and
 If all four hold, say "Hamlet confirmed" and continue.
 ```
 
-**All four were checked against the tree at 2026-09-06T23:3x, at `HEAD 2a3a90a`,
-while this instruction was written.** `SHACK_FACTS.md` and
+**All four were checked against the tree at `HEAD a81d214` while this instruction
+was written.** `SHACK_FACTS.md` and
 `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` are present; neither
 `CoreHMI.sln` nor `MURC.sln` exists; the only solution at the root is
 `Hamlet.sln`. Check them anyway.
@@ -44,732 +44,502 @@ timeout.
 
 **3. THE WATCHDOG FIRES AFTER TWELVE MINUTES WITH NO STATUS WRITE.** It killed
 unit 257 at fourteen minutes with three files written and none committed. Units
-258 and 259 wrote `PROJECT_STATUS.md` repeatedly and lost nothing. **The status
-write is part of the work, not part of the reporting.**
+258 through 261 wrote `PROJECT_STATUS.md` repeatedly and lost nothing. **The
+status write is part of the work, not part of the reporting.**
 
 `dotnet build` is allowed, foregrounded, with a timeout.
 
-**This unit opens no audio device, opens no serial port, and plays no sound.**
-It *builds the routes* to both and proves the decision about them without taking
-either. See *What not to do* §1, which is narrower this time than it was last
-time and says exactly where the line is.
+**This unit opens no serial port and keys nothing.** It may *enumerate* audio
+endpoints and, in task 5 only, *play into one* - and task 5 is the named drop
+candidate. Everything else is proved against the `FakePort` and the transmit
+fake that units 253 to 256 left in the tree.
 
 ---
 
 ## THE TOOL RULE
 
-**This session's shell may refuse calls.** A refused shell call is a signal to
-reach for the other tool, not to stop. **The file-editing tools have been
-unaffected throughout.** Record every refusal verbatim. **Nothing in this unit
-halts the loop.**
+`tools\arbiter\outcome-append.bat` has been refused for **nine consecutive
+units**, and `tools\arbiter\validate-output.bat` in seventeen forms across seven.
+**Try each once, verbatim, and record the refusal text.** Then do the work with
+the file-editing tools in the exact format the script writes - twelve fields,
+same order, ASCII, existing entries untouched. **Do not spend a second call on a
+refused form and do not treat a refusal as a halt.** `PHASE_PLAN.md`: *if the
+shell refuses a call, use the file-editing tools.*
 
-Three tool facts earlier units paid for, carried forward unchanged:
-
-1. **`tools\arbiter\outcome-append.bat` has been refused for seven consecutive
-   units** - 253 through 259. **Expect an eighth.** Task 5 tells you what to do
-   instead: append the entry with the file-editing tools, in the exact
-   twelve-field format the existing entries use, ASCII only.
-2. **`tools\arbiter\validate-output.bat` has been refused in eleven forms**
-   across units 255, 256, 257, 258 and 259. **This shell may not start a batch
-   file.** Try it once; if it is refused, check the report by hand against the
-   rules in the reporting section below, say in the report that you did, and
-   **quote no exit code**, because there is none.
-3. **The shell has refused device enumeration, `powershell -NoProfile`,
-   `git reset -q <paths>`, `sed -i`, and heredocs for commit messages.**
-   `git restore --staged` and repeated `-m` flags do the same jobs. **You need
-   device enumeration for nothing in this unit** - task 4 binds a list the
-   application builds at run time and you never call it yourself.
-
-**One more, measured while this instruction was written.** The arbiter's own
-`outcome-read.bat` breaks on an apostrophe inside `--approach` - the quoting is
-consumed by the batch file's inner PowerShell and it reports a parser error
-instead of a reading. **Not yours to fix** (`tools\` is not yours to touch); it
-is written here so the next arbiter does not spend a call on it.
+One measured note for the arbiter's own tool, recorded here because it cost a
+call tonight: `outcome-read.bat --approach` embeds its argument in PowerShell
+single quotes, so **an apostrophe in the approach text is a parse error**. It is
+not this unit's to repair.
 
 ---
 
 ## Why this unit exists
 
-**The count today.** Step 0 `done`, one unit. Step 1 `partial` at four of five and
-closed. Step 2 `partial`, two units, criterion 4 deferred to Tim. Step 3
-`partial`, four units, closed on the loopback with the radio's own drive level
-deferred to Tim. Step 4 `partial`, three units, closed at five of six with the
-sixth met in substance. **Step 5 `partial`, two units** - which is one unit
-recorded twice - **and step 6 cannot have one.**
-
-**Step 5 is still the last step any unit can move, and it went to `partial` and
-not to `done` for two named reasons.** Both are in unit 259's own record and both
-were deliberate. Neither has been attempted:
-
-1. **Criterion 2 is not on screen.** `SendMenuFor(row)` exists on the view model,
-   returns the whole menu, and is asserted station by station - **and there is no
-   `ContextFlyout` anywhere in `src/`.** I grepped the whole of `src/` for the
-   word while writing this and it appears zero times. **No operator has ever
-   right-clicked a decoded row.** The criterion is written as an operator's
-   gesture - *right-click a decoded row and the menu offers...* - and a menu that
-   cannot be reached with a mouse does not meet it.
-2. **Criterion 3 has no route to a radio.** `private Ft8ArmedSend? _armedSend` at
-   `MainWindowViewModel.cs:7896` is **assigned in exactly one place in the whole
-   tree, and it is the test seam** - `UseArmedSendForTests` at `:8228`. There is
-   no line in `src/` that constructs one. So on every real run of the application
-   `_armedSend` is null and every click lands on the refusal at `:8009`.
-
-**Step 6 is Tim answering a CQ on 14.074 and completing an exchange.** Its entry
-is steps 0 to 5. **He cannot attempt it tonight**, and not because of a radio: he
-cannot right-click a row, and if he could, the click would reach a null field and
-say so. **Those two are what this unit is for.** They are the difference between
-a phase whose last step is waiting on a man with a radio and a phase whose last
-step is waiting on code nobody has written.
-
-**What exists and is waiting to be joined.** Read out of the tree while this
-instruction was written; line numbers below.
-
-- `MainWindowViewModel.SendMenuFor(DigitalDecodeRow?)` at `:7934` - the whole
-  menu for one row, built at the moment it is called. **Nothing calls it from the
-  view.**
-- `MainWindowViewModel.SendMessageCommand` - the `[RelayCommand]` over
-  `SendMessage(string?)` at `:7982`. **It is the one entry point that arms.**
-- `MainWindow.axaml.cs` - **114 lines**, whose own summary says its code-behind
-  owns the facts the view knows and the ViewModel cannot. A `ContextRequested`
-  handler belongs there and it is a small file.
-- `CreateRig(string)` at `:9827` - `new Ic7300Rig(new SystemSerialPort(selection))`
-  at `:9830`. **The port is constructed there and thrown away in the same
-  expression.**
-- `AppSettings.AudioOutputDeviceId` at `Settings/AppSettings.cs:215` - added by
-  unit 259, **and nothing in `src/` reads it.** Its only mentions are one test and
-  the generated XML doc.
-- `WasapiTransmitSink.Endpoints()` at `Audio/WasapiTransmitSink.cs:243`, returning
-  `IReadOnlyList<RenderEndpoint>` with `Id`, `Name`, `IsDefault`, `SampleRate`,
-  `Channels`, `BitsPerSample`, `Encoding`. **The list a picker needs already
-  exists.**
-
-**The heavy hand is still one click, one message.** This unit is the first that
-builds a path from an operator's mouse to a real serial port. **Everything that
-could put an unasked transmission on the air is in task 3**, and task 3 is
-written to make that impossible rather than unlikely.
+**This is work instruction 262. Nine units have been spent on this phase, 253
+through 261.** `PHASE_OUTCOME.md` carries eighteen entries because every unit
+since 253 is recorded twice - once from the arbiter's decision block and once
+from the session that judged the report. Step 0 is `done`; step 1 reads
+`blocked`; steps 2 through 5 are `partial`; step 6 has not started.
 
 ```
-PHASE GOAL:   Hamlet works stations on the air.
-UNIT GOAL:    An operator right-clicks a decoded row with a mouse and the menu
-              appears under it, built at the moment of the click, offering every
-              message valid at that point with the expected one marked, nothing
-              greyed out, and each repeat carrying the count as of that click.
-              Choosing one goes through the one command that arms, and nothing
-              else does. The application builds a real armed send when - and
-              only when - a real radio is connected and a transmit endpoint is
-              named in Settings, and refuses with words otherwise. Settings can
-              name that endpoint. Proved on this machine with no device opened
-              and no port opened.
-ADVANCES:     step 5 - exit criterion 2 (right-click a decoded row and the menu
-              offers every message valid at that point, with the expected one
-              highlighted and none forbidden, a repeat showing its count) taken
-              in its letter for the first time, on a real control tree; and
-              criterion 3's application-side half (choosing one transmits in the
-              next slot with no confirmation) by giving the send path the port
-              and the named endpoint it has never had, so that step 6's entry
-              stops being blocked by code and starts being a radio, an antenna
-              and Tim.
+PHASE GOAL: Hamlet works stations on the air
+UNIT GOAL:  The application composes its transmission at the sample rate the
+            chosen transmit endpoint actually declares, instead of at the
+            decoder's 12000 Hz - because the real sink refuses a rate that is
+            not the endpoint's own, and today the application asks it for one
+            every single time. Where the endpoint speaks a rate FT8 cannot be
+            built at, the send refuses in words at the moment the device is
+            chosen, before anything keys.
+ADVANCES:   Step 3, criterion 1 - "Audio plays to the radio's USB input at the
+            right device, RATE and level." The device half was cut down and met
+            by unit 256; the level half is Tim's and is deferred under FACT-004.
+            The RATE half has never been measured on the application's own send
+            path, and on that path it is wrong.
 ```
+
+**Read the next paragraph before you form an opinion about the size of the job.**
+Units 259, 260 and 261 each closed believing the send path was finished code.
+Unit 260's report says *what stands between him and trying is no longer code*;
+unit 261 found the missing stop button an hour later. Here is the third thing,
+measured from the tree at `HEAD a81d214` while this was written:
+
+| Measured | Where |
+|---|---|
+| The application composes with **no rate argument**, so it gets the default | `MainWindowViewModel.cs:8120` - `Ft8Composer.ComposeSignal(wanted)` |
+| That default is **12000 Hz** | `Ft8Composer.cs:201` -> `Ft8Waveform.cs:59` |
+| The real sink **throws** when the rate is not the endpoint's own | `WasapiTransmitSink.cs:301`, message at `:307-308` |
+| The endpoint's rate is its **shared-mode mix format** - 48000 Hz on ordinary hardware and on the IC-7300's USB codec | `WasapiTransmitSink.cs:139`, published at `:194` |
+| **`ITransmitAudioSink` has no member that tells a caller that rate.** Its own remarks say *"the caller composes at the rate the endpoint declares"* - and no caller can | `ITransmitAudioSink.cs`, the closing `<para>` |
+| The radio is **keyed at line 283**; the sink is called at **287-289** | `Ft8TransmitSequence.cs` |
+
+**So on Tim's first real click: PTT goes on, the sink throws, the `finally`
+unkeys or fires the abort, and nothing goes out. Every time, on every endpoint
+whose mix format is not 12000 Hz.** Nothing illegal happens and nothing is
+damaged - the abort is sound and unit 261 proved it - but the phase goal is *a
+contact*, and on the path as it stands there cannot be one.
+
+**And here is why the whole suite is green over it.**
+`tests/Hamlet.RadioEngine.Tests/Transmit/FakeTransmitAudioSink.cs:43-47` takes
+any rate and records it as `RateAskedFor`. **The fake is more permissive than the
+thing it stands for.** Every test that exercises the send path hands 12000 Hz to
+a sink that will accept anything, and passes. That is the breakage task 2 exists
+to catch, and naming it is what licenses adding the test at all.
 
 ---
 
 ## Verify this instruction against the tree
 
-**Everything below was read from the tree at 2026-09-06T23:3x by a session that
-could not run the application.** Where this instruction and the tree disagree,
-**the tree wins** - `PHASE_PLAN.md` says so in its own table. **Report the
-mismatch in section 3 and continue. Do not repair the instruction and do not
-stop.**
+**Every file and line number above and below was read at `HEAD a81d214`. The tree
+may have moved. Where this instruction and the tree disagree, THE TREE WINS.**
 
-Unit 256 found one of these wrong and reported it at no cost; unit 258 found two;
-unit 259 found three, one of which was this instruction's predecessor claiming
-`Ft8Composer` called `Ft8SlotDecoder` when it does not. **That is the behaviour
-that is wanted.**
+**Report the mismatch in section 3.4 of your report and continue. Do not repair
+this file, do not adapt silently, and do not stop.** Unit 261 found five
+mismatches this way and reporting them was the right answer every time - including
+one where the instruction's own table row could not be honoured beside its own
+prohibition. **If you find that here, the prohibition wins and the table loses,
+and you say so.**
 
-**What I measured, with where I read it:**
+**What is expected to fail, and is not your problem:**
 
-| Claim | Where |
-|---|---|
-| **`ContextFlyout` appears zero times in `src/`**, in markup or in code. | `grep -rn ContextFlyout src/` returns nothing |
-| The decoded table is `ItemsControl x:Name="DigitalDecodedRows"` at `:3425`, bound to `DigitalVisibleDecodes`, `DataTemplate x:DataType="vm:DigitalDecodeRow"`, root `Grid ColumnDefinitions="76,48,48,54,*,148"` at `:3444`. **That `Grid` is the row and it is where a flyout attaches.** | `src/Hamlet.App/Views/MainWindow.axaml` |
-| **`MainWindow.axaml.cs` is 114 lines.** `MainWindow.axaml` is 3,642. **Unit 259's report said the flyout needed "a code-behind handler in a 3,600 line file"; the 3,600-line file is the markup and the code-behind is 114 lines.** The objection that dropped it is smaller than the record says. | both files, `grep -c ""` |
-| The code-behind already owns view-only facts and already adds a handler in its constructor: `AddHandler(KeyDownEvent, OnTuneKey, ...)` at `:20`, and `OnTuneKey` reads `DataContext is MainWindowViewModel vm` at `:83`. **The shape you need is already there twice.** | `src/Hamlet.App/Views/MainWindow.axaml.cs` |
-| `public Ft8SendMenu? SendMenuFor(DigitalDecodeRow? row)` at `:7934`; returns null where the row names no station or the ledger has no record; otherwise `Ft8SendOptions.For(record, callsign, grid, MeasuredReport(row))`. **It reads the ledger when it is called**, so a menu built at click time carries counts as of the click. | `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` |
-| `Ft8SendMenu(string Callsign, IReadOnlyList<Ft8SendOption> Options, IReadOnlyList<string> Absent)`; `Ft8SendOption(Ft8SendShape Shape, string Text, string Label, bool IsExpected, int SentBefore)`. | `src/Hamlet.RadioEngine/Contacts/Ft8SendOptions.cs:30`, `:40` |
-| `[RelayCommand] private void SendMessage(string? text)` at `:7982`, generating `SendMessageCommand`. **`_armedSend.Arm` is called from it and from nowhere else.** | same view model, `:8017` |
-| `private Ft8ArmedSend? _armedSend` at `:7896`. Read at `:8004`, `:8045`, `:8075`, `:8081`. **Assigned at `:8228` only, by `internal void UseArmedSendForTests(Ft8ArmedSend?)`.** No `new Ft8ArmedSend` exists in `src/`. | same view model |
-| The refusal an operator sees today, verbatim: *"Hamlet composed \"...\" and sent nothing: no radio is connected and no transmit audio device is named in Settings."* | same view model, `:8009`-`:8011` |
-| `private static IRig CreateRig(string selection)` at `:9827` returns `new TrainingRig()` for the training entry and otherwise `new Ic7300Rig(new SystemSerialPort(selection))`. **The `SystemSerialPort` is not kept.** Called once, from `ConnectToAsync` at `:6501`. | same view model |
-| `private IRig? _rig` at `:218`, set on a successful connect and nulled in the disconnect `finally` at about `:9821`. | same view model |
-| **`Ic7300Rig` holds its `ISerialPort` in a private field at `:39` and exposes no accessor.** | `src/Hamlet.RadioEngine/Rig/Ic7300Rig.cs` |
-| `AppSettings.AudioInputDeviceId` at `:193`; **`AudioOutputDeviceId` at `:215`, and `grep -rn AudioOutputDeviceId src/` finds only its own declaration.** | `src/Hamlet.App/Settings/AppSettings.cs` |
-| `WasapiTransmitSink(string device, int bufferMilliseconds = 200)` at `:110`. It takes an endpoint **id or exact friendly name**, throws on null or whitespace at `:112`, and throws where no such endpoint exists at `:119`. **It never plays to the machine default.** | `src/Hamlet.RadioEngine/Audio/WasapiTransmitSink.cs` |
-| `public static IReadOnlyList<RenderEndpoint> Endpoints()` at `:243`; `RenderEndpoint(Id, Name, IsDefault, SampleRate, Channels, BitsPerSample, Encoding)` at `:26`. | same file |
-| The Settings audio input picker is a `ComboBox` at `SettingsWindow.axaml:203`, `ItemsSource="{Binding AudioDevices}"`, `SelectedItem="{Binding AudioDevice}"`, `IsEnabled="{Binding HasAudioDevices}"`, with a note `TextBlock` above it at `:199`. The view model side is `AudioDevices` at `SettingsViewModel.cs:221`, `HasAudioDevices` at `:224`, chosen at `:151` and written back at `:281`. **Copy that shape; do not invent a second one.** | `src/Hamlet.App/Views/SettingsWindow.axaml`, `src/Hamlet.App/ViewModels/SettingsViewModel.cs` |
-| `DigitalSendLicenceLine` at `:8164` and `HasDigitalSendLicenceLine` at `:8183` already carry `TransmitGuard`'s own `Reason` and `Citation`, **for display and never for permission** - the refusal that stops a transmission is inside `Ft8TransmitSequence.RunAsync`. Both are already bound in the Send area at `MainWindow.axaml:3112`-`:3113`. | view model and markup |
-| `DigitalSendUnset` at `:8196` says out loud when the grid is not set. Bound at `:3118`-`:3120`. | same |
-| The CQ button is `Button x:Name="DigitalSendCqButton"` at `MainWindow.axaml:3095`, `Command="{Binding SendCallToAnyoneCommand}"`. **Criterion 1 is met and is not yours.** | same markup |
-| `AddDecodeRowForTests(utc, snr, dt, hz, message, slotStartUtc)` lets a test put a row on the view model **without opening a window**. Units 258 and 259 both used it. | view model, about `:7810` |
-| Headless Avalonia is already set up: `Avalonia.Headless.XUnit` 11.3.0 in the test project, `[assembly: AvaloniaTestApplication(typeof(HeadlessApp))]` and `HeadlessApp.BuildAvaloniaApp()` in `tests/Hamlet.App.Tests/Views/BindingHealthTests.cs:9`-`:21`, and ten existing files use `[AvaloniaFact]`. **A real control tree can be built in a test on this machine. That is what makes criterion 2 reachable in its letter tonight.** | `tests/Hamlet.App.Tests/` |
-| The scene corpus is `tests/fixtures/ft8/scenes/unit257-band-scene.corpus.txt` - 21 decode lines over twelve slots, five booked stations `G4XYZ`, `VK2PQ`, `K9RST`, `W1ABC`, `N5TT`, operator `KC3QIS`. | unit 258's report §3.1, verified against the file |
-| Unit 259's predicted menus, with the exact texts, the expected one and the repeat counts for all five stations at the boundary of slot 13. **Reuse the prediction; do not write a second one.** | `docs/unit259-send-path-trace.md` §6 |
-| The root version reads `1.12.105`. | `Directory.Build.props:205` |
+- The known inherited reds - `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
+  the 51 CW cases in `docs/unit239-failing-set.txt`, and the
+  `Ft8Sharp.Deep.Tests` whole-type-list tripwire. **Never chase them.**
+- **`TheDigitalTabIsTwoColumnsTests` has one red**, and it is waiting on the
+  owner. See *Parked*. **Do not touch it, do not edit its assertion, and do not
+  count it as yours.**
 
-**Expected failures: none in the build.** The tree was green at `HEAD 2a3a90a`
-with unit 259's 26 new tests passing. **If the build is red before you have
-changed anything, that is a finding worth its own paragraph** - say so and say
-what it was.
-
-**`tools/unit254-seam-grep.sh` is still there, untracked. Leave it. No fifth
-deletion attempt.**
-
----
-
-## What the reload measured, and what to do about it
-
-**Five entries, none of them yours to repair.**
-
-1. **`RULES_AT` disagrees with `CLAUDE.md` §1** - `PROJECT_STATUS.md` says
-   `HM-DEC-157 (2026-09-06)`, the reload reads §1's highest as `CPS-DEC-0152`.
-   **Units 255 through 259 have all answered this:** §1's table is `HM-DEC-`
-   throughout, `CPS-DEC-` appears nowhere in this repository, and
-   `HM-DEC-155/156/157` are in `DECISIONS.md` but not yet indexed into §1's
-   table. **`RULES_AT` is ahead of the index, not ahead of the record. Change
-   nothing. Do not re-derive it a sixth time.**
-2. **`PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` are modified and
-   uncommitted at the root.** **Commit them at the start of task 1**, the way
-   units 256 through 259 committed their predecessors' leftovers.
-3. **`SESSION.lock` is deleted and the deletion is unstaged.** It is the
-   launcher's file. **Commit the deletion with the others and do not recreate
-   it.** If committing it is refused, leave it and say so in one line; do not
-   spend a second attempt on it.
-4. **`.run-unit/` is the launcher's working area** and changes under your feet -
-   `watched.rc` is new and untracked. **Include it or leave it as you find
-   convenient, and do not spend a second on it either way.**
-5. **`PHASE_STATUS.md`'s `CURRENT_STEP:` reads 1** and is stale. **It is the
-   launcher's field.** Do not write `CURRENT_STEP:`, `HEARTBEAT:` or the `STEP:`
-   lines in `PHASE_STATUS.md`. `WORK_INSTRUCTION:` is yours to set.
-   `PHASE_OUTCOME.md`'s header **is** yours - task 5.
-
-**And one about the record itself.** `PHASE_OUTCOME.md` holds several pairs of
-entries describing the same unit twice with different judgment fields, and one
-entry whose fields were computed from a report that was never written. **All of
-them are on the record and none of them is yours to reconcile. Do not edit an
-entry that is not your own. Append yours.**
-
----
-
-## Steps 1, 2, 3 and 4 are closed and are not yours
-
-**Do not reopen them, do not improve them, do not add a test to them.**
-
-- **Step 1**, the abort: `partial` at four of five. `TransmitAbort` fires from
-  inside `Ft8TransmitSequence` and needs nothing from you.
-- **Step 2**, the waveform: `partial`, 112 of 117 read back. Criterion 4 deferred
-  to Tim.
-- **Step 3**, the audio path: `partial`. The loopback decoded 3 of 3 on the device
-  route in unit 256. **What remains of step 3 is the drive level Tim reads off the
-  radio.** Note carefully: **step 3's criteria are not what you are moving.** You
-  are moving step 5's criterion 3, which is a different sentence about the same
-  machinery - *choosing one transmits in the next slot* - and it is unmet on the
-  application side because the application never builds a sender.
-- **Step 4**, the ledger: `partial` at five of six. **You call the ledger. You do
-  not change it, and you do not re-argue the four-slot gone-quiet threshold.**
-
-**What step 5 already has, from unit 259, and you do not rebuild:** the option
-list, the expected-message rule, the repeat counts, the arming, the one-click
-assertion on the engine side, the CQ button, the Send area, the licence line and
-the grid-unset line. **All of it is built and tested. You are adding the mouse
-and the wire, and re-asserting that adding them did not break one click, one
-message.**
+**Expect `outcome-append.bat` and `validate-output.bat` to be refused.** That is
+ten and eight units of the same behaviour; it is the harness, not you.
 
 ---
 
 ## Rulings in force
 
-**Transcribed from `PHASE_PLAN.md`. Not to be re-argued by any unit, including
-this one.**
+**Transcribed in full from `PHASE_PLAN.md`. Not this unit's to re-argue.**
 
-**The dummy load is withdrawn.** HM-DEC-008 and HM-DEC-098 superseded,
-2026-09-06. **Do not reference it, do not propose it, do not treat its absence as
-a risk.** *Tim operates a licensed station on an antenna and Hamlet transmits on
-the air.*
+**Tim operates a licensed station on an antenna and Hamlet transmits on the
+air.** Ruled 2026-09-06. **HM-DEC-008 and HM-DEC-098, which required a dummy
+load, are withdrawn in full** - not a stage, not a fallback, not to be referenced
+by any unit. **Do not reference it, do not propose it, do not treat its absence
+as a risk.**
 
 **One click, one message.** Ruled 2026-09-06. Hamlet transmits because the
 operator clicked. **Never on a timer, never on a decode, never to continue a
-contact.** *This unit builds the first path from a mouse to a real port. Task 3
-is written for that reason.*
+contact.**
 
 **Right-click sends immediately, in the next slot, with no confirmation.** Ruled
-2026-09-06. **No dialog, no "are you sure", no second click.** *Task 2 is the
-right-click itself, and it adds no confirmation of any kind.*
+2026-09-06.
 
 **Nothing is forbidden in the menu.** The expected next message is highlighted;
-everything valid stays clickable; **a repeat is correct behaviour and shows its
-count.** FT8 loses transmissions constantly, so sending the grid a second time is
-correct behaviour, not a mistake to be greyed out. *In a flyout that means no
-`IsEnabled="False"` on an option, ever.*
+everything valid stays clickable; a repeat is correct behaviour and shows its
+count.
 
 **A contact is never closed by the app.** Complete is shown when the exchange has
-what a QSO needs. **`73` is politeness, not a requirement.** **A complete contact
-still offers `73`; a gone-quiet one still offers everything.**
-
-**Licence privileges.** Hamlet never transmits outside them. **The Settings gate
-is not bypassable from any send path.**
-
-**The abort.** Every path that keys the transmitter has a same-thread, no-await
-abort. **No unit ships a keying path before its abort is watched to fire.** It was
-watched in unit 253 and it is inside `Ft8TransmitSequence`; **you add no second
-route to a keying frame.**
+what a QSO needs. `73` is politeness, not a requirement.
 
 **`Ft8Sharp` is a faithful MIT port and nothing in this phase changes a line of
-it.** `Ft8Sharp.Deep` is GPL-3.0.
+it.** `Ft8Sharp.Deep` is GPL-3.0. **This matters tonight**: `Ft8Waveform.cs` is
+in the port. You may *call* it at any rate it accepts. **You may not change a
+line of it, and you may not change its default.**
 
 **The engine is not told that tabs exist** (§0.1).
 
-**Nothing interprets a message** (§12.1). **A row's state is derived from which
-messages passed between two callsigns, which is bookkeeping, not meaning.**
+**Nothing interprets a message** (§12.1).
 
-**A unit may not add a test without naming the breakage it would have caught.**
+**The three the arbiter may not reason past.** (1) **The abort** - every path that
+keys the transmitter has a same-thread, no-await abort, CI-V `0x17` with `0xFF`,
+PTT off as the fallback. (2) **One click, one transmission** - a transmission he
+did not ask for is this phase's one unrecoverable fault. (3) **Licence
+privileges** - the Settings gate is not bypassable from any send path.
 
-**Known reds, inherited, never chased:**
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
-`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list
-tripwire.
+**`SHACK_FACTS.md` FACT-004: no radio has ever been attached to this machine.** No
+measurement taken here says anything about the radio. **Do not infer a radio-side
+figure and do not open a serial port to try.** You may enumerate and play into
+*this machine's own* audio endpoints, as unit 256 did; that measures this machine
+and is stated as such.
+
+---
+
+## One bookkeeping correction, ruled by the arbiter
+
+**Step 1's header line reads `blocked`. It is wrong, and this instruction is the
+recorded ruling that corrects it. Do this in task 1's commit.**
+
+The session that judged unit 261's report answered `blocked` on this reasoning:
+step 1's fifth criterion, *"No transmitting code exists yet when this step
+closes"*, is now permanently violated by the keying sequence and the live CQ send
+in the tree.
+
+**That criterion is a sequencing gate and it says *yet*.** It exists so that no
+keying path ships before a proven abort. It was measured met at unit 253's close
+- a grep for `TransmitAbort` in `src/` returned its own declaration and nothing
+else - and it was then overtaken by steps 3 and 5, which the plan's own ordering
+required next. Read as a permanent invariant it makes step 1 unclosable unless
+steps 3 and 5 are deleted, which would mean the plan forbids its own completion.
+
+**`PHASE_PLAN.md` licenses this directly**: *the steps are a hypothesis, not a
+contract* - the arbiter may *move a target found to have been measured wrong*,
+recording the evidence in `PHASE_OUTCOME.md`. It is recorded in this unit's
+arbiter entry.
+
+**So: change `STEP: 1 | blocked | ...` to `STEP: 1 | partial | ...` in both
+`PHASE_STATUS.md` and `PHASE_OUTCOME.md`'s header, and change nothing else about
+step 1.** Do not edit unit 261's entry or any other entry - a unit rewriting an
+entry that is not its own is worse than a record that disagrees with itself in
+public, which is the rule unit 258 set and it stands. Note the change in section
+3.4.
 
 ---
 
 ## Status cadence
 
-**This is the section that kept unit 257's work out of the tree and kept units
-258 and 259 in it. Read it twice.**
+**Write `PROJECT_STATUS.md` at least every eight minutes and always immediately
+after a commit.** The watchdog fires at twelve minutes with no status write and it
+has already killed one unit of this phase with its work uncommitted.
 
-After each task, before starting the next, update `PROJECT_STATUS.md` per
-`CLAUDE.md` - `STATE`, `TASK: n of m`, `BALL`, `UPDATED` **read from the clock,
-never composed**, and `NOTE` saying what is moving inside the task.
-
-**And in addition, all of these:**
-
-- **Before every `dotnet build` and every filtered `dotnet test`.**
-- **After every file you finish writing**, not after every batch of them.
-- **Never more than eight minutes apart.** The watchdog fires at twelve, measured
-  from the launch clock and not from your last output.
-
-**A headless Avalonia test is slower to start than an engine test.** Write the
-status line *before* you launch task 2's filtered run, not after it.
-
-**Use the file-editing tools if the shell refuses.** Unit 253 wrote three
-`UPDATED` values it composed, one of them 39 minutes ahead of the real clock.
-**Read the clock.**
+Update `TASK: n of 5`, `NUMBER:`, `NOTE:` and `UPDATED:` as you go. **The status
+write is part of the work, not part of the reporting.** Commit and push each task
+before starting the next, so that a kill costs one task and not a night.
 
 ---
 
 ## Tasks
 
-Five tasks. **Task 1 is bounded and mostly reading. Task 2 is the goal task and
-task 3 is the dangerous one.** **Task 4 is the named drop candidate.**
+**Five tasks. Task 1 is a trace and it comes first, because this unit must
+measure what this machine's endpoints actually declare before it decides what the
+application should compose at.**
 
-### Task 1 - the two routes, measured. THE TRACE.
+### Task 1 - the trace: where the two rates meet, and what happens there
 
-**Commit the uncommitted root records first**, as named above, before you touch
-anything.
+**Write `docs/unit262-rate-trace.md`. Every answer carries a file and a line
+number, or a measured figure. Build nothing in this task.** Commit it before task
+2 touches anything, together with the step 1 header correction above.
 
-Then measure, and write it to `docs/unit260-route-trace.md`. **Every answer gets
-a file and a line number.** Five questions and no others. **This is a trace, not
-a survey. Unit 257 died writing a survey.**
+Answer these seven questions:
 
-1. **Where does a right-click on a decoded row arrive today?** Name the control
-   in the row template that would receive it, its line, and whether anything in
-   the tree handles `ContextRequested`, `PointerReleased` or a right button
-   anywhere in `MainWindow.axaml` or its code-behind. **If the answer is nothing,
-   say nothing and give the grep.**
-2. **What does the row's `DataContext` carry at the moment of a right-click, and
-   is it enough to call `SendMenuFor`?** Name `DigitalDecodeRow`'s members that
-   `SendMenuFor` and `MeasuredReport` read, with lines. **Say whether the row
-   object the template is bound to is the same instance the view model holds**,
-   because that is what decides whether the handler can pass it straight through.
-3. **What is the smallest seam that keeps the `SystemSerialPort` the app already
-   constructs?** Read `CreateRig` at `:9827` and `ConnectToAsync` at `:6501`.
-   Name the change in lines, and **name what happens on the training-radio route,
-   which has no serial port at all.**
-4. **What would the sink be constructed from, and where would it be constructed?**
-   `AudioOutputDeviceId` at `AppSettings.cs:215`, `WasapiTransmitSink`'s
-   constructor at `:110`, and what it does with an empty or unknown name at
-   `:112` and `:119`. **Say plainly what a wrong or stale name does to an
-   operator who clicks**, because that is the failure this unit has to make loud.
-5. **Every place a transmission can begin, today.** Grep `src/` for `Arm(`, for
-   `_armedSend`, for `Ft8TransmitSequence`, and for `RunAsync` on it. **List every
-   hit with its line and say which is a call site and which is a declaration.**
-   This is the baseline you will hold task 3 against: **the same grep after task 3
-   must show one arming call site, and it must be the same one.**
+1. **What rate does the application compose at today, and where is that decided?**
+   Follow it from the click to `Ft8Transmission.SampleRate`. Name every line the
+   value passes through.
+2. **What rate does the real sink demand, and where does it learn it?** Quote the
+   comparison and the exception message verbatim.
+3. **Where do the two meet on the live path?** Name the exact call and quote what
+   the operator would see.
+4. **Where is the radio keyed relative to that throw?** State it as an ordering of
+   line numbers, and say what the wire shows and what `TransmitRun` reports.
+   **This is the question that decides whether the fix belongs at the click or at
+   the connect.**
+5. **What does `WasapiTransmitSink.Endpoints()` publish on this machine?** Run it.
+   For every active render endpoint: id, friendly name, declared rate, channels,
+   bits. **If it returns nothing, say so plainly and continue** - that is a fact
+   about this machine, not a failure, and unit 256 already recorded that a machine
+   with no default render endpoint is a normal machine.
+6. **Does `Ft8Composer.RateIsUsable` accept every rate those endpoints declare?**
+   Test each one. Name any it refuses and quote the refusal. Also state whether
+   `BaseFrequencyIsUsable` holds at each of those rates with the default base
+   frequency.
+7. **Why did no existing test catch this?** Name the fake, the line, and the one
+   behaviour it does not reproduce.
 
-**Commit the trace before task 2 starts.**
+**Do not infer question 5 or 6. Measure them.** If the shell refuses to run the
+enumeration, say which spelling was refused and fall back to a filtered test that
+prints the same table.
 
-### Task 2 - the menu under the mouse. THE GOAL TASK.
+### Task 2 - watch it fail on the application's own path
 
-**Criterion 2, in its letter, for the first time.** Right-click a decoded row and
-the menu appears.
+**Make the fake faithful, then watch the red.**
 
-**The shape, and it is decided:** a `ContextRequested` handler in
-`MainWindow.axaml.cs`, which takes the row out of the sender's `DataContext`,
-calls `vm.SendMenuFor(row)` **at that moment**, builds the items from what comes
-back, and shows them. **Not a bound property, not a static list built when the
-row was created.** That distinction is the whole reason unit 259 dropped this and
-it is the thing to get right: *the repeat count belongs to the click, not to the
-row.*
+Give the transmit fake the one behaviour it lacks: an optional declared endpoint
+rate which, when set, makes `PlayAsync` throw exactly as `WasapiTransmitSink.cs:301`
+throws, with the same shape of message. **Default it to accepting anything, so no
+existing test changes meaning.**
 
-What the menu shows, and every one of these is a ruling above, not a preference:
+Then a new test - `TheSendPathComposesAtTheEndpointsRateTests` in
+`tests/Hamlet.App.Tests/` - that drives the **application's own** send path
+(`SendMessage`, through `BuildTheArmedSend`, through the substitutable
+`TransmitSinkFactory` at `MainWindowViewModel.cs:7944`) with a sink declaring
+**48000 Hz**, and asserts a transmission goes out whole.
 
-- **Every option in `Ft8SendMenu.Options`, in the order they arrive.** All of them
-  clickable. **No `IsEnabled="False"` on an option, ever, for any reason** -
-  not for the contact state, not for the licence, not for a repeat.
-- **The expected one marked**, where `IsExpected` is true. Mark it in a way a
-  reader sees without hovering; the text of the mark is yours.
-- **A repeat carries its count** where `SentBefore > 0`, in words - unit 259's
-  report already uses *acknowledge, 2nd time* and the trace predicts it for two
-  stations. Use the same wording.
-- **`Ft8SendMenu.Absent` reasons appear as an unclickable note**, not as greyed
-  options. **An absent message is a message that does not exist, not a message
-  withheld** - say that distinction in the code's own remarks.
-- **`DigitalSendLicenceLine` appears as a note when `HasDigitalSendLicenceLine`**,
-  which is criterion 6's first half in the place criterion 6 asks for it. **Every
-  option stays clickable underneath it.** The refusal that stops a transmission
-  is inside `Ft8TransmitSequence` and stays there.
-- **Choosing one calls `SendMessageCommand` with the option's `Text` and does
-  nothing else.** No second route, no dialog, no confirmation.
-- **A row with no station record produces no menu**, and a right-click on it does
-  nothing visible rather than showing an empty box.
+**Watch it go red and quote the output as output, not as description.** The red
+must show three things: that the radio was keyed, that nothing was played, and
+what the operator was told. **A red that only says "test failed" is not evidence
+and will not do.**
 
-**Watch it red first, and this is the red that matters:** build the flyout once
-from a menu captured when the row was created, assert a station's repeat count,
-send that station a message through `SendMessageCommand`, right-click again, and
-**watch the count fail to move.** Quote that failure. Then move the call to the
-handler and watch it move. **The breakage that test catches is a menu that lies
-about what has already gone out**, which is exactly the fault that would make an
-operator send a third `RRR` thinking it was his first.
+**No device is opened in this task and no port. The fake and the substituted
+factory are the whole apparatus.**
 
-**Assert it on a real control tree**, headless, with `[AvaloniaFact]` and the
-`HeadlessApp` that already exists. Build the window or the row template, raise
-the context request, read the items back, and compare the texts, the mark and
-the counts **against `docs/unit259-send-path-trace.md` §6's committed
-prediction** for all five stations. **That prediction was committed before the
-option list existed and it is what makes this a measurement.**
+### Task 3 - the caller composes at the rate the endpoint declares
 
-**If headless Avalonia cannot raise a context request on this machine** - it is
-the one thing here I could not run - **do not spend the night on it.** Fall back
-to: assert the handler's own method directly with a row and a view model, on the
-same five stations, and assert separately that the markup carries the flyout by
-reading `MainWindow.axaml` in a test the way `EveryResourceKeyResolvesTests`
-reads it. **Say in the report which route you took and why.** A criterion closed
-on the second route is still closed with its figure and what was tried.
+**Two changes and no more.**
 
-### Task 3 - a real route to a real radio. THE DANGEROUS TASK.
+**a. The interface publishes the rate.** `ITransmitAudioSink` gains a member
+carrying the rate the sink will accept. `WasapiTransmitSink` already has the
+value at `:194`; the fake returns whatever it was told. **Amend the interface's
+closing `<para>` in the same edit** - it currently instructs a caller to do
+something no caller could do, and leaving prose that a neighbour falsifies is the
+mistake unit 256 named and fixed rather than left.
 
-**This is where an unasked transmission would come from. Read it twice.**
+**b. The application asks, and refuses early where the answer is unusable.**
+`BuildTheArmedSend` at `MainWindowViewModel.cs:7970` already refuses in words for
+a missing port and for a missing endpoint, and already catches the sink
+constructor's throw at `:8004-8012`. **Put the rate decision in the same place,
+in the same shape.** Read the rate off the sink it has just built, keep it, and
+have `SendMessage` at `:8120` compose at it.
 
-Two joins, and nothing else:
+**Where the endpoint declares a rate `Ft8Composer.RateIsUsable` refuses, set
+`_transmitRefusal` and build no armed send at all** - so the click is answered
+with words and the radio is never keyed. **The refusal must name the endpoint, the
+rate it declared, and why FT8 cannot be built at it**, in the register the
+neighbouring refusals use. A refusal that says only *cannot transmit* is not
+acceptable here; the operator has to know to go and change his sound device.
 
-**The port.** Keep the `SystemSerialPort` the application already constructs at
-`:9830`, in a field beside `_rig`, set where the rig is set and **nulled in the
-same `finally` that nulls `_rig`**. The training radio has no port and therefore
-**sets nothing** - `TrainingRig` is a simulator and must never become a route to
-a keying frame. Do not add an accessor to `Ic7300Rig`; unit 259's trace already
-settled that the field beside `_rig` is the smaller seam and task 1 question 3
-confirms it or corrects it.
+**Then watch task 2 go green**, and re-run
+`OneClickSendsExactlyOneMessageTests` filtered by name to confirm the arming
+guards survive. **State both counts.**
 
-**The sink.** Construct it from `AppSettings.AudioOutputDeviceId`, **through a
-factory the tests can substitute** - a `Func<string, ITransmitAudioSink>` on the
-view model defaulting to `name => new WasapiTransmitSink(name)`. **The default is
-never invoked by any test in this unit**, and that is asserted: a test hands a
-factory that records its calls and proves it was never called when the setting is
-empty.
+**What must not change:** `Ft8Waveform`'s default, any line of `Ft8Sharp`, the
+sink's refusal to resample, the keying order in `Ft8TransmitSequence`, and the
+number of `.Arm(` call sites in `src/`. **Take the arming grep before task 3 and
+again after it, and put both in section 3.1.** One click, one transmission is the
+fault this phase cannot recover from, and a unit that touched the send path owes
+that evidence first whether or not it expected to move it.
 
-**Then `_armedSend` is built when, and only when, both exist.** Where either is
-missing, `_armedSend` stays null and the click lands on the refusal at `:8009` -
-**which is already correct and already worded.** Widen its wording only enough to
-say which of the two is missing, and say it in the operator's terms.
+### Task 4 - the oracle, at the rate the send path will actually use
 
-**Five assertions, all of them without opening anything:**
+**A signal composed at 48000 Hz is only useful if it is still FT8.**
 
-1. **No port, no sink: nothing is armed and the sink factory is never called.**
-   Watch it red first by building the armed send unconditionally and quoting what
-   happens - **a `WasapiTransmitSink` constructor reached on a machine with no
-   such endpoint**, which is an exception in a click handler.
-2. **Training radio: nothing is armed**, even with an endpoint named. Quote the
-   refusal.
-3. **Port and sink both present, with fakes: exactly one transmission is armed**,
-   and it goes through `SendMessageCommand` and no other route.
-4. **One click, one message, re-asserted through the new construction path.**
-   Unit 259 proved it against a hand-injected `Ft8ArmedSend`; prove it again
-   against one this code built. **Two boundaries, one transmission.** Watch the
-   red: without the clear, one click and three boundaries put three transmissions
-   on the wire - unit 259 quoted that and you should be able to reproduce it.
-5. **The grep from task 1 question 5, run again, is unchanged in shape:** one
-   call site for `Arm`, and it is `SendMessage`. **Quote both greps side by
-   side.** If task 3 added a second, you have built the fault this phase exists to
-   prevent and the report says so before anything else.
+For **each rate this machine's endpoints declare** (from task 1 question 5), and
+for 48000 Hz whether or not this machine has such an endpoint: compose a set of
+messages and decode them back through Hamlet's own decoder, and assert the text
+that comes back is the text that went in. **Reuse
+`HamletsOwnDecoderReadsBackWhatHamletComposedTests`' existing construction** -
+step 2's criterion 3 says *reuse it rather than writing a second encoder*, and
+that applies to the round trip too.
 
-**A stale or wrong endpoint name is the operator-facing hazard here.** The sink
-throws where the endpoint is not found. **A click must not put an exception in
-front of an operator**: catch it at the construction site, leave `_armedSend`
-null, and let the Send area say the named device was not found. **Assert that
-with a factory that throws.**
+**A dozen messages is enough and a hundred is not wanted here.** Step 2 already
+proved the corpus at its own rate; what is unproved is the rate, so vary the rate
+and hold the corpus small. Include one compound callsign, one grid, one report and
+one `RR73`.
 
-### Task 4 - naming the endpoint in Settings. **THE DROP CANDIDATE.**
+**State the sample count and the duration at each rate**, and confirm the
+duration is 12.64 s at every one of them. A rate that changes the duration is a
+defect and must be reported, not rounded.
 
-A `ComboBox` in `SettingsWindow.axaml`, beside the input one at `:203`, bound to
-a transmit-endpoint list on `SettingsViewModel` built from
-`WasapiTransmitSink.Endpoints()`, written back to `AppSettings.AudioOutputDeviceId`
-the way `AudioInputDeviceId` is written at `SettingsViewModel.cs:281`. **Copy the
-existing shape exactly, including the note above it.** The note says what this
-device is for in the operator's words: *the radio's own USB audio input, which is
-what carries FT8 out of the computer.*
+### Task 5 - the loopback through the application's own path. NAMED DROP CANDIDATE.
 
-**Enumeration happens in the Settings view model at run time and you never call
-`Endpoints()` from a test.** Where the list is empty the box is disabled and the
-note says so, exactly as `HasAudioDevices` already does.
+**Drop this one if the night is short. Drop nothing else.**
 
-**If the night is short, this is what goes.** Say so in section 3 and say what
-remains. **The fallback is real and must be named in the report if you drop it:**
-`AudioOutputDeviceId` is persisted in `%AppData%\Hamlet\settings.json` and Tim can
-put the endpoint's name in it by hand, so **step 6 is still attemptable without
-this task.** That is why it is the drop candidate and not task 3.
+Unit 256 proved the loopback - compose, play, capture, resample, decode - but it
+composed at the endpoint's rate itself, inside its own test. **What has never been
+proved is the same loopback driven by the application's send path**, which is
+where the defect lives.
 
-### Task 5 - the record
+If task 1 question 5 found a usable render endpoint: run one transmission end to
+end through `SendMessage` and the real sink, capture it, and decode it back.
+**One message, not three.** If it found none, say so and stop - the wiring is
+already proved by tasks 2 and 3 against the faithful fake, and this task is the
+device-route confirmation of it, not its foundation.
 
-`PHASE_OUTCOME.md`: **append one entry**, twelve fields, the exact format the
-existing entries use, ASCII only, with the file-editing tools if
-`outcome-append.bat` is refused for the eighth time. **Update the header's
-`STEP:` lines to what you actually reached. Do not touch an existing entry.**
-
-`PROJECT_STATUS.md`: final write, `WORK_INSTRUCTION: 260 - the menu under the
-mouse, and a route to the radio`, clock read not composed.
-
-Then `output.md`, per the reporting section below.
+**If you drop this task, say in section 2 exactly what is therefore unproved**, in
+the operator's terms and not in the code's. That sentence is the reason the drop
+candidate is named in advance rather than chosen at midnight.
 
 ---
 
-## Parked - do not touch, do not raise
+## Parked
 
-**From `PHASE_PLAN.md`'s own list**, and it is not open for discussion: automatic
-sequencing - *if I get a response, send `73`* is **deliberately out of this phase**
-and is the single most tempting thing to build tonight, and it is more tempting
-tonight than it has ever been because tonight the click reaches a wire; logging
-(FG-004); FT4, PSK31 and WSPR transmit; CW send; the OSD re-encoding count;
-`ReusableWindow`; `ProcessDelayForTests`; the tap's owner; the waterfall's first
-row; unit 237's Extensible conclusion; work instruction 231's four tree items;
-`validate-output.bat`'s permitted-spellings bug; the 101.33 ms pulse above 6 kHz;
-the CW decoder and its inherited reds.
+**Do not touch. Do not raise. Do not propose.**
 
-**And these seven, carried from units 253 to 259:**
-
-- **`TransmitGuard.Check` permits when the operator's toggle is off.** Banked and
-  the owner's. **The send path already treats that as a refusal inside itself and
-  changes nothing about the guard.** Not re-raised, not widened.
-- **Five routes in the tree reach a keying frame**, including `AutoCaller` at
-  `Cw/AutoCall.cs:272`, which keys repeatedly from one operator start. **On the
-  parked CW path. Logged. Do not touch it, and do not copy its shape** - it is
-  the exact shape task 3 must not become.
-- **`SetSettingAsync(CivWrites.AntennaTuner, CivWrites.TuneNow)` writes
-  `1C 01 02`**, a tuning cycle that transmits, called by no line in the tree.
-  **Logged. Parked.**
-- **The IC-7300's USB modulation input level.** Deferred to Tim at step 2's
-  criterion 4 and step 3's criterion 1. **Not this unit's and not inferable from
-  this machine** - `SHACK_FACTS.md` FACT-004.
-- **`ContactStage`, `SendOption` and `ContactShape`** on the parked CW path.
-  **Do not reach for them and check for a collision before you name a type.**
-- **The gone-quiet threshold of four slots** and the corpus's synthesized
-  provenance. Both argued, both recorded, neither yours.
-- **The CW auto-call block in `MainWindow.axaml` around `:495`-`:504` still
-  describes sending into a dummy load** in user-facing text. Unit 253 reported it
-  and left it as parked CW-send surface. **Logged again here so you do not
-  rediscover it and chase it. It is not yours.**
+- **The abort playing out the rest of the slot.** Unit 261 measured that a stop at
+  second 3 takes PTT off within two frames and the sink plays out the remaining
+  ~9.6 s into an unkeyed radio. **Nothing goes on the air.** The repair needs a
+  cancellation source threaded from `Ft8ArmedSend` into `RunAsync`, and
+  `CancellationTokenSource.Cancel()` runs its registrations synchronously on the
+  calling thread - which would be the operator's UI thread at the one moment it
+  must not block. **That is the property the abort may not have**, it deserves its
+  own measured unit, and it is logged here rather than chased. **You may not
+  thread a token tonight.**
+- **`TheDigitalTabIsTwoColumnsTests` and HM-DEC-087.** Its assertion that the FT8
+  Send area contains no `Button` went red at unit 260 and unit 261 made it
+  unambiguous. **The owner has been asked whether it may be narrowed and has not
+  answered.** A decision is not a session's to overturn. **Leave the test, leave
+  the assertion, leave HM-DEC-087, and do not add a third button.**
+- CW send, `AutoCaller`, `ScanViewModel`, `CivWrites.TuneNow` and the antenna
+  tuner route. Automatic sequencing. Logging and FG-004. FT4, PSK31, WSPR.
+- The level the IC-7300's USB modulation input expects. **FACT-004. It is Tim's to
+  read off the radio and it is deferred, not open.**
+- Everything in `PHASE_PLAN.md`'s *What is not in this phase*.
 
 ---
 
 ## What not to do
 
-**Citing rather than retyping where the rule is already written down.**
-
-1. **Do not open a serial port and do not open an audio device.** FACT-004. This
-   is narrower than it was last unit and the line is exact: **you may write the
-   code that would open them; you may not execute it.** No test constructs a
-   `WasapiTransmitSink` or a `SystemSerialPort`. Every transmission in this unit
-   goes to a fake through a substituted factory. **A device opened here measures
-   this machine and says nothing about the radio.**
-2. **Do not change a line of `src/Ft8Sharp/` or `src/Ft8Sharp.Deep/`.**
-3. **Do not change `Ft8TransmitSequence`, `TransmitAbort`, `TransmitGuard`,
-   `WasapiTransmitSink`, `Ft8Composer`, `Ft8ContactLedger`, `Ft8ContactStates`,
-   `Ft8SendOptions` or `Ft8ArmedSend`.** **Call them. Read them. Leave them.**
-   Unit 259 built the last four for exactly this caller. If one genuinely cannot
-   be called without a change, that is a finding for section 3 with the line
-   quoted - not a licence to edit it.
-4. **Do not add a second route to a keying frame, and do not add a second route
-   to `Arm`.** Task 1 question 5 takes the baseline and task 3 assertion 5 holds
-   you to it.
-5. **Do not build automatic sequencing.** No *if he answers, send the report*. No
-   retry. No continuation. **One click, one message.**
-6. **Do not add a confirmation.** Ruled 2026-09-06. No dialog, no "are you sure",
-   no armed state he has to approve.
-7. **Do not disable, grey, hide, sort away or forbid an option in the flyout**,
-   on the contact state, the licence, a repeat count or anything else. Ruled
-   2026-09-06 and asserted by unit 259's reflection test over the option types.
-8. **Do not interpret a message.** §12.1. A label naming a field shape is
-   arithmetic; wording what a station meant is not.
-9. **Do not invent a grid, a callsign, a frequency, a licence class or a device
-   name.** §0.0. **In particular: do not fall back to the default audio endpoint.**
-   `WasapiTransmitSink` refuses to, on purpose, and playing FT8 into laptop
-   speakers because a name was missing is the failure that refusal exists to
-   prevent. **An unset endpoint is a refusal with words, never a guess.**
-10. **Do not write a second predicted-menu table.** Unit 259 committed one before
-    the option list existed; that is what makes it evidence. Read it and compare.
-11. **Do not edit `PHASE_OUTCOME.md`'s existing entries**, including the several
-    that disagree with each other. Append yours; leave the record.
-12. **Do not run an unfiltered `dotnet test`, and do not background a command and
-    poll for it.** The rules at the top killed four sessions.
-13. **Do not chase the known reds.**
-14. **Do not hand-write `HEARTBEAT:`, `CURRENT_STEP:` or the `STEP:` lines in
-    `PHASE_STATUS.md`.**
-15. **Do not re-derive `RULES_AT`.** Five units have answered it.
-16. **Do not write a survey.** Task 1 is five questions with line numbers.
+1. **Do not make the sink resample.** It refuses on purpose - unit 256's reasoning
+   is that shared-mode WASAPI resamples anything handed to it silently, so a sink
+   that accepted 12000 Hz would report *asked 12000 got 12000* while something
+   nobody chose decided what the samples became. **The caller moves, not the
+   sink.**
+2. **Do not change `Ft8Waveform.DefaultSampleRate`.** It is `Ft8Sharp`, it is the
+   rate the decoder works at, and the receive path depends on it. The send path
+   asks for a different rate; it does not redefine the default.
+3. **Do not key anything, and do not open a serial port.** FACT-004.
+4. **Do not let the fix arrive after the keying frame.** If the rate cannot work,
+   the refusal happens where the sink is built, not where the radio is keyed. Task
+   1 question 4 is what tells you the ordering; if it says something other than
+   this instruction expects, **the tree wins and you say so.**
+5. **Do not add a route to a transmission.** `.Arm(` has exactly one call site in
+   `src/` and `TheStopAddedNoNewRouteToATransmission` is a standing guard. Keep
+   both greps.
+6. **Do not repair the parked items**, however small they look at the end of the
+   night. Item 1 in particular is a trap: it is three lines to write and it is the
+   one change that could take the no-await property off the abort.
+7. **Do not run a test suite.** Rule 1. Only the tests you construct plus the two
+   named for re-running, filtered by exact name, foregrounded, with a stated
+   timeout.
+8. **Do not chase the inherited reds** and do not chase the red named in *Verify
+   this instruction against the tree*.
 
 ---
 
 ## Committing and pushing
 
-Commit and push **each task before starting the next**. Bump the root version's
-patch by one per task from `1.12.105`, so `1.12.106` through `1.12.110`.
-**`Ft8Sharp` does not move.**
+**Commit and push after every task, before the next one starts.** Unit 257 lost
+three files to the watchdog with nothing committed; units 258 through 261 lost
+nothing.
 
-**Task 1 commits twice**: once for the uncommitted root records exactly as they
-arrived, and once for the trace - **and task 1 question 5's baseline grep must be
-in a commit before task 3 starts.** That is what makes assertion 5 a comparison
-rather than a claim.
+One patch bump of the root version per task, continuing from **`1.12.114`**, which
+is what `Directory.Build.props:205` held at `HEAD a81d214`. **If the tree says
+otherwise, continue from the tree.**
 
----
+Conventional commit subjects in the register the recent history uses - what the
+operator gets, not what the file is called.
 
-## Logged, not chased
-
-**Unit 259's section 4 raised nothing and asked for no ruling.** It said in one
-sentence that nothing is blocking. **Nothing is banked from the last unit.**
-
-Five things carried forward so they are not lost, none of them a ruling request:
-
-1. **`validate-output.bat` could not be started in eleven forms across five
-   units.** Logged, and the tool rule tells you what to do about it.
-2. **Unit 259's report called `MainWindow.axaml.cs` a 3,600 line file.** It is
-   114 lines; the markup is 3,642. **Corrected here, logged, and it is why task 2
-   is affordable tonight.** Not a fault of that unit's work - it dropped the
-   flyout for a second and better reason, the repeat count, which task 2 solves
-   properly.
-3. **`AudioOutputDeviceId` has had no reader since it was written**, on purpose,
-   waiting for you. Task 3 is where it stops being unreachable.
-4. **`BoundariesBetween` includes `from` when `from` is itself a boundary.**
-   Measured by unit 258. **Relevant to you** if task 3's assertions count
-   boundaries - read `Ft8Slots.cs:209-232` before you write that arithmetic, and
-   do not write a second copy of it.
-5. **`_armedSend` is assigned only by a test seam today**, so every existing test
-   of the send path proves the path and not the wiring. **That is the gap task 3
-   closes**, and it is worth one sentence in the report saying so.
+**Push. A commit that is not pushed is not evidence.**
 
 ---
 
 ## Reporting
 
-`output.md` at the repository root, four sections per `CLAUDE_CODE.md` §8.
+Write `output.md`. **`validate-output.bat` will very likely be refused - try it
+once, quote the refusal, then check the report by hand against the seven rules the
+script itself prints**, as unit 261 did.
 
-**First, above everything, the ordering block. `validate-output.bat` refuses a
-report without it.** It must carry the literal words `READ IN THIS ORDER`, then
-three paragraphs beginning `A.`, `B.` and `C.` at the start of a line, all inside
-the first 60 lines of the file, and **C must contain the literal phrase `raises N
-items`** with a real number.
+### The ordering block comes first, before the header
 
-- **A - the phase goal and where every step stands.** Hamlet works stations on the
-  air. Step 0 `done`. Steps 1, 2, 3 and 4 `partial` and closed, **and say that
-  what is outstanding in each is either on the record or a figure only Tim can
-  read off a radio.** **Step 5 entering this unit at `partial` with criteria 2 and
-  3 named as its two gaps, and leaving it at whatever you actually reached.** Step
-  6 not started - **and this is the sentence that matters this time: say plainly
-  whether Tim can now right-click a row and have the click reach a radio if one is
-  connected and an endpoint is named, or what still stands between him and
-  trying.**
-- **B - step 5's six exit criteria and which were met.** In the plan's own words:
-  a CQ button from the operator's own settings, no typing; right-click offers
-  every message valid at that point with the expected one highlighted and none
-  forbidden, a repeat showing its count; choosing one transmits in the next slot
-  with no confirmation; one click sends exactly one message, asserted by a test;
-  what is being sent and to whom in the reserved Send area; out of licence
-  privileges the menu says so and sends nothing. **One line each, on quoted
-  evidence.** Criteria 1, 4, 5 and 6 stood met entering this unit - **say whether
-  they still stand after the wiring, because that is not free.** For criterion 2
-  say whether the menu was reached with a real context request on a control tree
-  or by the fallback route, and which. **For criterion 3 say exactly what is now
-  wired, what is still proved on a fake, and what a real radio would change.**
-- **C - what this report adds, weighed against A and B.** How many items section 4
-  raises, in the words `raises N items`, and **whether any of them is in the way of
-  a criterion named in B.** If none is, say so - that is a real answer and it is
-  not a ruling request.
+**The file must open with the literal words `READ IN THIS ORDER`**, then three
+paragraphs beginning `A.`, `B.` and `C.` at the start of a line, all within the
+first 60 lines. **A report without this block is rejected by the validator.**
 
-**Then the six-line header block**, from the clock, never composed:
-`UNIT:`, `PHASE GOAL:`, `UNIT GOAL:`, `ADVANCED:`, `NUMBER:`, `DRIFT:`.
+- **A - the phase goal and every step's state.** *Hamlet works stations on the
+  air.* Step 0 `done`; step 1 `partial` after tonight's header correction, and say
+  that it was `blocked` and why it is not; steps 2 to 5 `partial`; step 6 not
+  started. **Then answer plainly: on how many of this machine's render endpoints
+  could the application's send path have transmitted before tonight, and on how
+  many can it now?** Both numbers, out of the total task 1 found.
+- **B - this unit's step and its criterion.** This unit aims at **step 3**, and at
+  criterion 1 in `PHASE_PLAN.md`'s own words: *"Audio plays to the radio's USB
+  input at the right device, rate and level."* B must say which of those three
+  words this unit moved, which was already met and by whom, and which remains
+  deferred to Tim under FACT-004 - **and it must not claim the deferred one.**
+  Then state whether a transmission composed at the endpoint's rate still decodes
+  back through Hamlet's own decoder, with the figure from task 4.
+- **C - this report's own findings weighed against A and B.** **State the literal
+  phrase `raises N items` with a real number** for section 4. For each, say
+  whether it is in the way of anything named in B. **If nothing is blocking, say
+  so in one sentence** - `CLAUDE_CODE.md` §8 makes an empty section 4 a real
+  answer, and a note recorded for the record is not a ruling request.
 
-**`NUMBER:` for this unit is how many of the corpus's five stations the flyout
-put the predicted menu under the mouse for, of five** - and *predicted* means
-`docs/unit259-send-path-trace.md` §6, committed before the option list existed.
-**If you took task 2's fallback route, `NUMBER:` counts the same five stations
-through that route and the report says so in the same line.** **`DRIFT:` - unit
-259 reported 0.**
+### Then the six-line header
 
-**Section 3 leads with three things, in this order:**
+```
+UNIT: 262 - the rate the endpoint actually speaks
+PHASE GOAL: Hamlet works stations on the air
+UNIT GOAL: <as stated above>
+ADVANCED: <yes or no, and which criterion - and if a task was dropped, what that
+           leaves unproved>
+NUMBER: <endpoints this machine declares on which the application's send path can
+         transmit - before -> after, out of the total>
+DRIFT: <count. It was 1 after unit 261. If this unit advances a criterion it goes
+        to 0; if it does not, it goes to 2, and say so plainly either way>
+```
 
-1. **That no new route to a transmission exists.** The task 1 question 5 grep and
-   the same grep after task 3, **quoted side by side**, showing one arming call
-   site and that it is `SendMessage`. Then the four remaining assertions of task
-   3: nothing armed with no port, nothing armed on the training radio, the sink
-   factory never called with an empty setting, and one click producing exactly one
-   transmission across two boundaries through the send path this unit built -
-   **with the red you watched first for each.** **This is the phase's one
-   unrecoverable fault and this paragraph is the evidence it cannot happen.** It
-   comes first for that reason and not because it is the largest piece of work.
-2. **The right-click, station by station.** All five, one block each: what
-   appeared under the mouse, which was marked expected, which carried a repeat
-   count, what the absent note said, and unit 259's prediction beside it. **The
-   station the ledger reads as `complete` gets its own paragraph** showing `73`
-   and everything else still under the mouse and nothing greyed. **And the red
-   you watched first** - the menu built once at row creation, and the repeat count
-   that did not move after a send. Quote it.
-3. **What the app can now reach, and what it cannot.** Where the port is kept and
-   where it is nulled; where the sink is constructed and from what; what happens
-   to an operator who clicks with a stale endpoint name; what the Send area says
-   in each case and what it said before. Then **whether task 4 shipped or was
-   dropped** - if dropped, say so here, say that `AudioOutputDeviceId` can still be
-   set by hand in `%AppData%\Hamlet\settings.json`, and say that step 6 is
-   therefore still attemptable.
+### What section 3 must lead with
 
-**Section 4 is for what is genuinely in the way.** *Nothing is blocking* is a real
-answer and is written as one sentence. **A note, an observation or a recommendation
-you have already acted on is not a ruling request** - put it in section 3. **A
-criterion you could not fully reach is not a blockage either** - it is a figure and
-what was tried, and `PHASE_PLAN.md`'s own table says to close it that way and
-continue. Ask the owner to decide something only where work is actually stopped
-until he does.
+**Section 3.1 is the arming grep, before and after task 3, side by side.** Not
+because it is the largest piece of work but because *one click, one transmission*
+is the fault this phase cannot recover from, and this unit edited `SendMessage`.
+The three counts unit 261 established - `_armedSend.Arm(` call sites,
+`new Ft8ArmedSend`, `new Ft8TransmitSequence` - each at 1, and the arming line
+still inside `SendMessage`'s body.
 
-**Write `output.md` before you stop, for any reason at all** - complete, blocked,
-failed or out of time are all reported the same way. Then stop. Do not start the
-next unit.
+**Then section 3.2: the red, and then the green.** The task 2 red quoted as
+output, showing the radio keyed, nothing played, and what the operator was told.
+Then the same test green, with the rate asked and the rate got beside each other.
+
+**Then section 3.3: the endpoint table from task 1 question 5**, every active
+render endpoint on this machine with its declared rate, and beside each one
+whether `Ft8Composer.RateIsUsable` accepts it and what the operator would now see
+if he chose it. **Including the refusal wording for any endpoint that cannot
+carry FT8** - that sentence is what a stranded operator reads at two in the
+morning, so quote it exactly.
+
+**Then section 3.4: mismatches** between this instruction and the tree, reported
+and not repaired, and the step 1 header correction recorded as done.
+
+**Four `##` headings, spelled and ordered as `CLAUDE_CODE.md` §4 requires, with
+section 4 present and section 3 not empty.**
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 5
-APPROACH: Put the ContextFlyout on the decoded row and wire the send path to a real serial port and a named output endpoint chosen in Settings
+STEP: 3
+APPROACH: compose the transmission at the sample rate the transmit endpoint declares instead of the 12000 Hz default, so the real sink stops refusing every send
 MOVE: continue
-WHY: Step 5 closed partial with two named, deliberate gaps that no unit has attempted - no ContextFlyout exists anywhere in src, so criterion 2's operator gesture has never happened, and _armedSend is assigned only by UseArmedSendForTests, so on every real run the application has no sender at all and criterion 3 cannot occur outside a test. Both are step 6's entry conditions and neither needs a radio to build. The loop test was run on this approach and returned NOT FOUND against all fourteen entries; the two step 5 entries are one unit recorded twice and both read "proved against the fake port and fake sink with no device opened", so this is the deliberate complement of what was tried and the remainder that unit named, not a repeat of it.
+WHY: Step 3 criterion 1 names the right device, the right rate and the right level; the device half was cut down and met by unit 256 and the level half is deferred to Tim under FACT-004, but the rate half has never been measured on the application own send path, and I measured it wrong there - MainWindowViewModel.cs:8120 composes at Ft8Waveform default 12000 Hz, WasapiTransmitSink.cs:301 throws on any rate that is not the endpoint mix format, and Ft8TransmitSequence.cs:283 keys the radio before line 287 reaches the sink. So on every real click the radio keys, the sink throws, the finally unkeys and nothing goes out. The loop test returned NOT FOUND against all eighteen entries, and I judge it not a loop: unit 256 is the nearest neighbour and it composed at the endpoint rate inside its own loopback test, never touching the caller, which is the complement of this and not a repeat.
 STATE: partial
-DECIDED: Four on my own authority. First, step 5 is taken a second time rather than the phase being called satisfied, because a must-pass written as an operator's gesture is not met by a method no view calls, and declaring victory early is the likelier failure. Second, the flyout is built by a ContextRequested handler that calls SendMenuFor at the moment of the click rather than binding a list, which answers the repeat-count objection that caused unit 259 to drop it; I also measured that MainWindow.axaml.cs is 114 lines and not the 3,600-line file that report named, so the objection is cheaper than the record says. Third, the sink is constructed through a substitutable factory defaulting to WasapiTransmitSink so that the wiring is asserted without any test opening a device, and no test constructs a real sink or a real port - FACT-004 stands and the last mile is still step 6's. Fourth, the Settings endpoint picker is the drop candidate rather than the wiring, because AudioOutputDeviceId is persisted in settings.json and can be set by hand, so dropping it leaves step 6 attemptable while dropping the wiring would not.
-LICENCE: PHASE_PLAN.md's rulings of 2026-09-06 - one click one message, right-click sends immediately in the next slot with no confirmation, nothing forbidden in the menu, and Tim operates a licensed station on an antenna and Hamlet transmits on the air - together with its named alternatives to stopping: the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried. The steps are a hypothesis not a contract licenses taking a partial step again on its unattempted criteria. SHACK_FACTS.md FACT-004 licenses the substituted factory and forbids the inference that would otherwise close criterion 3 on this machine. The three the arbiter may not reason past license the ordering: the abort was watched to fire in unit 253 and lives inside Ft8TransmitSequence, the gate is inside it too, and this unit adds no second route to either.
-ACCOMPLISHED: Tim right-clicks a decoded station with a mouse and the menu is there under it - every message valid at that point, the one that conventionally comes next marked, nothing greyed out, and each repeat carrying the count as of that click rather than as of the row. One of those clicks now reaches a real serial port and a real audio endpoint when a radio is connected and a device is named, instead of reaching a field nothing ever fills, and it still arms exactly one transmission and still refuses in words when either is missing. What is left after this is Tim, a radio and an antenna.
-ADVANCES: step 5 - exit criterion 2 (right-click a decoded row and the menu offers every message valid at that point, with the expected one highlighted, none forbidden, and a repeat showing its count) taken in its letter for the first time on a real control tree, and criterion 3's application-side half (choosing one transmits in the next slot with no confirmation) by giving the send path the port and the named endpoint it has never had - which together clear what stands between step 6's entry and Tim attempting it.
+DECIDED: Three on my own authority. First, step 1 is moved from blocked back to partial and the unit is told to correct both header lines: the judging session read criterion 5, no transmitting code exists yet when this step closes, as a permanent invariant, and read that way it makes step 1 unclosable unless steps 3 and 5 are deleted - the criterion says yet, it is a sequencing gate, it was measured met at unit 253 close by a grep that returned only its own declaration, and it was overtaken by the plan own ordering. Second, the fix is placed at BuildTheArmedSend rather than at the click, because the keying write at line 283 precedes the sink call at 287, so a rate that cannot work must be refused where the sink is constructed or the radio keys before anybody finds out. Third, the transmit fake is given the one behaviour it lacks - a declared rate it can refuse on - because a fake more permissive than the thing it stands for is why sixteen units of green tests sat over a path that cannot transmit, and that is the named breakage which licenses the new test.
+LICENCE: PHASE_PLAN.md step 3 criterion 1 in its own words - audio plays at the right device, rate and level - together with the named alternatives to stopping: the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried. The steps are a hypothesis not a contract licenses both taking a partial step again on unattempted ground and moving step 1 target found to have been measured wrong, recording the evidence. SHACK_FACTS.md FACT-004 licenses enumerating and playing into this machine own endpoints while forbidding any inference about the radio, and keeps the level half deferred. Step 2 criterion 3, reuse it rather than writing a second encoder, licenses task 4 reuse of the existing round trip.
+ACCOMPLISHED: When Tim clicks a station tonight, the sound Hamlet builds is at the rate his radio sound card actually speaks, so it reaches the radio instead of being refused at the last inch after the transmitter has already been keyed. And where he picks a sound device that cannot carry FT8 at all, Hamlet tells him so when he picks it, by name, instead of keying his radio and then saying nothing went out.
+ADVANCES: Step 3, criterion 1 - "Audio plays to the radio's USB input at the right device, rate and level" - the rate half, which no unit has measured on the application's own send path and which is wrong there today. The device half stands met from unit 256 and the level half stays deferred to Tim under FACT-004 and is not claimed.
 END-ARBITER-DECISION
 ```

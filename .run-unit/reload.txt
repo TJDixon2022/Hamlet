@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-06T23:32:06-04:00  root C:\Source\HamLet
+measured 2026-09-07T00:40:09-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -11,6 +11,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
   UNCOMMITTED      SESSION.lock is modified and uncommitted.
+  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -22,12 +23,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 2a3a90a
-  uncommitted at the root : 4
+  HEAD   : a81d214
+  uncommitted at the root : 5
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
       D SESSION.lock
+      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -375,10 +377,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   PHASE_SET: 2026-09-06
   DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 259 - right-click, and it goes
-  HEARTBEAT: 2026-09-06 23:32:05
+  WORK_INSTRUCTION: 261 - the operator can stop it
+  HEARTBEAT: 2026-09-07 00:40:08
   STEP: 0 | done | the dummy load is gone from the tree
-  STEP: 1 | partial | the abort works before anything can key
+  STEP: 1 | blocked | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
   STEP: 3 | partial | the audio reaches the radio and the radio keys
   STEP: 4 | partial | the row knows where the contact stands
@@ -404,11 +406,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   The previous phase's final status is archived at `docs/phase-onair-run/PHASE_STATUS.md`.
 
   --- PHASE_OUTCOME.md ---
-  247 lines, 50485 bytes
+  307 lines, 68454 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   STEP: 0 | done | the dummy load is gone from the tree
-  STEP: 1 | partial | the abort works before anything can key
+  STEP: 1 | blocked | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
   STEP: 3 | partial | the audio reaches the radio and the radio keys
   STEP: 4 | partial | the row knows where the contact stands
@@ -652,6 +654,66 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: partial
   STATE_WHY: Four criteria are met with quoted test output, but the right click criterion has no ContextFlyout in the tree so no menu is reachable from a decoded row, and the transmit in the next slot criterion is proved only against a fake port and fake sink.
+  
+  ## UNIT 260 - STEP 5
+  
+  STEP: 5
+  APPROACH: Put the ContextFlyout on the decoded row and wire the send path to a real serial port and a named output endpoint chosen in Settings
+  HIT: section 4 wants a ruling: no - Section 4 raises 0 items and says in one sentence that nothing is blocking. The two things a reader might expect there are in section 3 instead: the startup grid resolution filling in a grid that Settings left empty, which is a finding this unit measured and worked around rather than a decision the owner has to make, and the last mile of criterion 3, which SHACK_FACTS.md FACT-004 already puts beyond this machine and which is step 6's to close.
+  MOVE: continue
+  WHY: Step 5 closed partial with two named, deliberate gaps that no unit had attempted. There was no ContextFlyout and no ContextRequested handler anywhere in src, so criterion 2's operator gesture had never happened; and _armedSend was assigned by exactly one line in the whole tree, the test seam, so on every real run the application had no sender at all. Both were step 6's entry conditions and neither needed a radio to build. Both are now built and both are asserted - the menu on a real control tree with a real context request, five stations of five against a prediction committed before the option list existed, and the send path against a fake port and a substituted sink factory with no device opened.
+  DECIDED: Four on my own authority. First, the flyout is built by a ContextRequested handler that calls SendMenuFor at the moment of the click and never assigns ContextFlyout, because a flyout hung on the row carries the repeat counts the row was born with - watched failing exactly that way before the handler was moved. Second, the sink is constructed at connect and not at the click, and the constructor's throw is caught there, because WasapiTransmitSink throws on a stale endpoint id and an exception raised inside a click handler would reach the operator as a crash while he was answering a CQ. Third, the training radio route sets no port at all rather than carrying a null-checked one, so a simulator cannot become a route to a keying frame by anybody later filling the field in. Fourth, the Settings picker was shipped rather than dropped, and it deliberately differs from the capture-side chooser in one way: a saved id that names no endpoint selects nothing, because falling back to the machine default was watched selecting the laptop speakers.
+  LICENCE: PHASE_PLAN.md's rulings of 2026-09-06 - one click one message, right-click sends immediately in the next slot with no confirmation, nothing forbidden in the menu, and Tim operates a licensed station on an antenna and Hamlet transmits on the air - together with its named alternatives to stopping: the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried. SHACK_FACTS.md FACT-004 licenses the fake port and the substituted sink factory and forbids the inference that would otherwise close criterion 3 on this machine. The abort was watched to fire in unit 253 and lives inside Ft8TransmitSequence, and this unit added no second route to it: the arming grep taken before task 3 and run again after it shows the same single call site.
+  COST: unknown
+  ACCOMPLISHED: Tim right-clicks a decoded station with a mouse and the menu is there under it. Every message valid at that point, the one that conventionally comes next marked in words and not only in weight, nothing greyed out, and each repeat carrying the count as of that click rather than as of the row - K9RST and W1ABC both read acknowledge, 2nd time, which is what the ledger holds. All five of the scene's stations matched the menu predicted before the option list existed. Choosing one calls the one command that arms and nothing else. And that click now reaches a real serial port and a real audio endpoint when a radio is connected and a device is named in Settings, instead of reaching a field that only a test seam ever filled: the port the application already built is kept beside the rig and nulled with it, the sink is built from the endpoint Settings names through a factory no test invokes, and where either is missing the send refuses in words that say which one. Settings can now name that endpoint, and it will not name one for him.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Five of six criteria are met on quoted evidence, criterion 2 for the first time in its letter - a real ContextRequested raised on the row's own control in a real window, five stations of five matching the committed prediction. Criterion 3's application-side half is done and asserted: with a port and a named endpoint the application builds one armed send, one click arms exactly one transmission, two boundaries produce one, and the arming grep is unchanged in shape. What is not done is the other half of the same sentence - that choosing one transmits in the next slot - because nothing has yet gone out of a radio. No radio has ever been attached to this machine, SHACK_FACTS.md FACT-004, so that is step 6's and is named rather than claimed. What stands between step 6 and being attempted is no longer code.
+  
+  ## UNIT 3 - STEP 5
+  
+  STEP: 5
+  APPROACH: Put the ContextFlyout on the decoded row and wire the send path to a real serial port and a named output endpoint chosen in Settings
+  HIT: section 4 wants a ruling: no - The section only states that nothing is blocking, which is a declaration rather than a request for the owner to decide anything.
+  MOVE: continue
+  WHY: Step 5 closed partial with two named, deliberate gaps that no unit has attempted - no ContextFlyout exists anywhere in src, so criterion 2's operator gesture has never happened, and _armedSend is assigned only by UseArmedSendForTests, so on every real run the application has no sender at all and criterion 3 cannot occur outside a test. Both are step 6's entry conditions and neither needs a radio to build. The loop test was run on this approach and returned NOT FOUND against all fourteen entries; the two step 5 entries are one unit recorded twice and both read 'proved against the fake port and fake sink with no device opened', so this is the deliberate complement of what was tried and the remainder that unit named, not a repeat of it.
+  DECIDED: Four on my own authority. First, step 5 is taken a second time rather than the phase being called satisfied, because a must-pass written as an operator's gesture is not met by a method no view calls, and declaring victory early is the likelier failure. Second, the flyout is built by a ContextRequested handler that calls SendMenuFor at the moment of the click rather than binding a list, which answers the repeat-count objection that caused unit 259 to drop it; I also measured that MainWindow.axaml.cs is 114 lines and not the 3,600-line file that report named, so the objection is cheaper than the record says. Third, the sink is constructed through a substitutable factory defaulting to WasapiTransmitSink so that the wiring is asserted without any test opening a device, and no test constructs a real sink or a real port - FACT-004 stands and the last mile is still step 6's. Fourth, the Setting
+  LICENCE: PHASE_PLAN.md's rulings of 2026-09-06 - one click one message, right-click sends immediately in the next slot with no confirmation, nothing forbidden in the menu, and Tim operates a licensed station on an antenna and Hamlet transmits on the air - together with its named alternatives to stopping: the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried. The steps are a hypothesis not a contract licenses taking a partial step again on its unattempted criteria. SHACK_FACTS.md FACT-004 licenses the substituted factory and forbids the inference that would otherwise close criterion 3 on this machine. The three the arbiter may not reason past license the ordering: the abort was watched to fire in unit 253 and lives inside Ft8TransmitSequence, the gate is inside it too, and this unit adds no second route to either.
+  COST: 18.74422600000001
+  ACCOMPLISHED: Tim right-clicks a decoded station with a mouse and the menu is there under it - every message valid at that point, the one that conventionally comes next marked, nothing greyed out, and each repeat carrying the count as of that click rather than as of the row. One of those clicks now reaches a real serial port and a real audio endpoint when a radio is connected and a device is named, instead of reaching a field nothing ever fills, and it still arms exactly one transmission and still refuses in words when either is missing. What is left after this is Tim, a radio and an antenna.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Five of the six exit criteria are met with quoted evidence, the menus matching the committed prediction on a real control tree and the one click one message assertion, but criterion 3 is proved only against a fake port and fake sink so no message has been shown to transmit in a real slot.
+  
+  ## UNIT 261 - STEP 1
+  
+  STEP: 1
+  APPROACH: Measure the concurrency question first, then give the operator a route to the abort - one entry point on Ft8ArmedSend that un-arms and fires TransmitAbort on the calling thread, and one button in the FT8 Send area that reaches it at both moments.
+  HIT: Three things the instruction did not name, and one it did. Ft8ArmedSend never holds its lock across an await, so the abort provably cannot wait on the transmission it is aborting - which was the property task 1 was told to be careful about and which turned out to be already true. ISerialPort states no thread-safety contract at all, and SystemSerialPort reaches one SerialPort by two different doors, so a concurrent Write beside an in-flight WriteAsync is undocumented rather than safe; the port is nevertheless idle for the whole 12.64 seconds of audio, so the collision window is two six-byte frames. The abort takes the carrier off but does not stop the sink, which keeps playing into an unkeyed radio for the rest of the slot. And task 3's table row "nothing armed - write nothing" cannot be honoured beside item 6 of "what not to do", because during a transmission the armed field is already null.
+  MOVE: work around
+  WHY: Every criterion still outstanding across steps 1 to 5 is a radio-side figure FACT-004 puts beyond this machine, so the reachable work was not a criterion but step 6's blocker: TransmitAbort.Fire had exactly one call site in the tree and it was inside Ft8TransmitSequence's own catch, and Ft8ArmedSend.Cancel had no caller in src at all. An abort reachable only when something throws is conditional on a fault, which step 1's own criterion forbids. The stop is built where the fault would be rather than in the view, and the view calls it with the port it already holds.
+  DECIDED: Four on my own authority. First, the stop fires the abort whenever there is a port, whether or not anything is armed and whether or not the application believes it is transmitting, because during a transmission the armed field is null and a stop conditional on that field does nothing at exactly the moment it is needed - watched failing that way, with the wire showing FE FE 94 E0 1C 00 01 FD and a keyed radio staying keyed. That contradicts task 3's table row and honours item 6 of "what not to do"; the redundant frames cost two writes and change nothing, argued from the bytes. Second, the outcome record carries four states rather than the three asked for, because arming a second message while the first is transmitting makes "un-armed" and "told the radio" true at once. Third, the button is always visible and never disabled - no IsVisible, no CanExecute - because a control that hides when the application believes nothing is happening is hidden at exactly the moment the application is wrong, and because a control only visible while sending is useless before the boundary. Fourth, the audio is not cut short: the abort takes the carrier off and the sink plays out the slot into an unkeyed radio. Threading a cancellation source from Ft8ArmedSend into RunAsync would run WASAPI's registrations synchronously on the operator's UI thread, which is the one property the abort may not have, so it is reported as a finding rather than repaired here - as "what not to do" item 2 instructs.
+  LICENCE: PHASE_PLAN.md's first thing the arbiter may not reason past - every path that keys the transmitter has a same-thread, no-await abort, CI-V 0x17 with 0xFF and PTT off as the fallback - together with step 1's own criterion that it cannot be disabled, deferred, or made conditional, which an abort reachable only when something throws does not satisfy. The steps are a hypothesis not a contract licenses taking a partial step again on unattempted ground. SHACK_FACTS.md FACT-004 licenses the fake port and the parking sink and forbids the inference that would otherwise close the radio-side criteria. "What not to do" item 2 licenses reporting the abort-versus-finally interaction rather than repairing it.
+  COST: unknown
+  ACCOMPLISHED: Tim can stop it. If he right-clicks the wrong station, or the wrong message, or thinks better of it in the fifteen seconds before the slot, one button takes it off and nothing goes out - and the Send area names the message that will not go. If the radio is already keyed and transmitting, the same button puts 17 FF and 1C 00 00 on the wire while the transmission is still running, on the calling thread, waiting for nothing, and says the radio was told to stop. If the frames do not get out it says that too, and tells him to use the radio's own controls. With no radio connected it says there was nothing to stop and names which half is missing. Before tonight his only recourse was the radio's front panel or the USB cable.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: This unit claims no step 1 criterion. Unit 253 already recorded criterion 4 met and filling the advance with a criterion known to be met would be the plausible-rather-than-true answer; what moved is step 6's blocker. The stop was watched firing from six of six states in task 3's table over a fake wire, with the bytes quoted in each, and a real mouse pressed the real button on a shown headless MainWindow at both of the two moments. Step 1 stays partial because its remaining criteria are radio-side figures FACT-004 puts beyond this machine, and because one finding is left open and named: the abort unkeys the radio and does not stop the audio.
+  
+  ## UNIT 4 - STEP 1
+  
+  STEP: 1
+  APPROACH: give the operator a route to the abort - a stop control that cancels an armed send before the boundary and fires TransmitAbort same-thread during a keyed transmission
+  HIT: section 4 wants a ruling: banked - Item 2 genuinely asks the owner to rule on a Digital tab layout assertion, but that test touches none of step 1's abort criteria, so the abort work on this step, including the reported sink playing on after the unkey, remains open without his answer.
+  MOVE: work around
+  WHY: Every criterion still outstanding across steps 1 to 5 is a radio-side figure FACT-004 puts beyond this machine, so the reachable work is not a criterion but the blocker under step 6: TransmitAbort.Fire has exactly one call site in the tree and it is inside Ft8TransmitSequence's own catch, so no operator gesture reaches the abort and Ft8ArmedSend.Cancel() has no caller in src at all. Handing a licensed operator a live antenna and no stop button is the wrong last act of this phase.
+  DECIDED: Three on my own authority. First, that the phase is not called satisfied tonight even though every remaining criterion is a deferred radio-side figure and unit 260's report says what stands between Tim and trying is no longer code - that sentence is true of the send path and false of the stop, and declaring victory early is the likelier failure. Second, that this unit aims at step 1 but claims none of its criteria, because unit 253 already recorded criterion 4 met and filling ADVANCES with a criterion I know was already met would be the plausible-rather-than-true answer ARBITER.md section 7 warns about - so it is recorded as clearing a blocker instead. Third, that the concurrency question raised by two writers on one ISerialPort is handed to the unit as task 1's measured trace rather than resolved here, with the one property named that the answer may not have: the abort may never wait on
+  LICENCE: PHASE_PLAN.md's first thing the arbiter may not reason past - every path that keys the transmitter has a same-thread, no-await abort - together with step 1's own criterion that it cannot be disabled, deferred, or made conditional, which an abort reachable only when something throws does not satisfy. The steps are a hypothesis not a contract licenses taking a partial step again on unattempted ground. SHACK_FACTS.md FACT-004 licenses the fake port and fake sink and forbids the inference that would otherwise close the radio-side criteria.
+  COST: 15.008637499999999
+  ACCOMPLISHED: Tim can stop it. If he right-clicks the wrong station, or the wrong message, or thinks better of it in the fifteen seconds before the slot, one control un-arms it and nothing goes out. If the radio is already keyed and transmitting, the same control tells the radio to stop on the calling thread without waiting for anything, and says which of the two it did. Before tonight his only recourse was the radio's front panel or the USB cable.
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: The abort's four substantive criteria are evidenced with quoted wire bytes from all the required states including a dead port and a compile time no-await guarantee, but the step's final criterion, that no transmitting code exists when it closes, is already permanently violated by the keying sequence and the live CQ send in the tree, so no further work can close this step without a ruling amending the plan.
 
   --- CLAUDE.md ---
   1376 lines, 188627 bytes
@@ -674,17 +736,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1250 bytes
+  19 lines, 1326 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: DONE
   TASK: 5 of 5
-  WORK_INSTRUCTION: 259 - right-click, and it goes
+  WORK_INSTRUCTION: 261 - the operator can stop it
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-157 (2026-09-06)
-  UPDATED: 2026-09-06T23:31:20-04:00
-  NOTE: All five tasks done, committed and pushed; 26 new tests green and the build clean. NUMBER is 5 of 5 - every station's menu matched the set committed before the option list existed. Step 5 goes from not started to partial: criteria 1, 4, 5 and 6 met, criterion 2 met in substance with the named drop candidate dropped, criterion 3 met on the fake port and sink with the last mile named as step 6's. Both dangerous defaults were watched failing first and quoted. validate-output.bat was refused in two more forms and could not be started, so output.md was checked by hand against all seven rules the script itself prints; no exit code is quoted. Section 4 raises nothing.
+  UPDATED: 2026-09-07T00:38:43-04:00
+  NOTE: All five tasks done, committed and pushed; 19 new tests green, nothing dropped including the named drop candidate. NUMBER is 6 of 6 - the stop was watched firing from every state a transmission can be in, with the wire quoted, and a real mouse pressed the real button on a shown headless window at both moments. Two reds watched first: the un-arm-only stop leaving a keyed radio keyed, and the no-wait shape assertion. Step 1 stays partial - this claims no criterion, it clears step 6's blocker. Section 4 raises 2: the abort takes the carrier off but not the audio, reported not repaired as instructed; and an inherited red from unit 260, TheDigitalTabIsTwoColumns asserting the Send area may hold no button, which wants a ruling on HM-DEC-087.
   
   ---
   
