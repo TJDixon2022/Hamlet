@@ -57,6 +57,71 @@ step, and no criterion of either is deferred to anybody from here.
 inherited by steps A and B of the re-cut plan, and that is where it is accounted
 for from now on.
 
+## Read these entries in pairs - every unit below is recorded twice
+
+**Thirteen units, twenty-six entries.** Each pair is **one unit**, appended once
+by its work-instruction number and once by the phase loop's iteration counter.
+**A reader counting entries counts this phase's work at twice its size.**
+
+| One unit | the unit's own entry | the loop's entry |
+|---|---|---|
+| 253 | `UNIT 253 - STEP 0` | *(none - no loop entry for step 0)* |
+| 253 | `UNIT 253 - STEP 1` | `UNIT 1 - STEP 1` |
+| 254 | `UNIT 254 - STEP 2` | `UNIT 2 - STEP 2` |
+| 255 | `UNIT 255 - STEP 3` | `UNIT 3 - STEP 3` |
+| 256 | `UNIT 256 - STEP 3` | `UNIT 4 - STEP 3` |
+| 257 | *(none - the run was killed before it wrote one)* | `UNIT 5 - STEP 4` |
+| 258 | `UNIT 6 - STEP 4` | `UNIT 1 - STEP 4` |
+| 259 | `UNIT 1 - STEP 5` | `UNIT 2 - STEP 5` |
+| 260 | `UNIT 260 - STEP 5` | `UNIT 3 - STEP 5` |
+| 261 | `UNIT 261 - STEP 1` | `UNIT 4 - STEP 1` |
+| 262 | `UNIT 262 - STEP 3` | `UNIT 5 - STEP 3` |
+| 263 | `UNIT 263 - STEP 1` | `UNIT 6 - STEP 1` |
+| 264 | `UNIT 264 - STEP 6` | `UNIT 7 - STEP 6` |
+| 265 | `UNIT 265 - STEP 3` | `UNIT 8 - STEP 3` |
+
+**How the two columns are told apart, which is measured and not guessed.** The
+`COST:` field says which route wrote an entry: **a unit does not know what its own
+run cost**, so every entry a unit wrote for itself reads `COST: unknown`, and every
+entry the loop wrote carries the figure the loop read out of `last-run.json`. The
+two columns above are exactly that split, and each pair carries near-identical
+`ACCOMPLISHED` text because both routes are composing from the same decision block.
+
+**Three rows are not straightforward and the evidence for them is in the entries
+themselves.** Unit 258's own entry is headed `UNIT 6 - STEP 4` because that
+session took the number the launcher handed it rather than the one at the top of
+its instruction - it still reads `COST: unknown`, so it is a unit's entry.
+`UNIT 1 - STEP 4`'s own `WHY` and `DECIDED` name the killed run and name the
+`UNIT 5` entry as recording *an instruction that was launched rather than an
+approach that was tried*, which is what identifies `UNIT 5 - STEP 4` as unit 257,
+whose run `RUN_LEDGER.md` shows killed by the watchdog at 2026-09-06T20:57 with no
+report. And `UNIT 2 - STEP 5`'s `DECIDED` names *the precedent unit 258 set with
+the contact cell*, which places the step 5 pair at unit 259. `docs/unit257-*`,
+`docs/unit258-*` and `docs/unit259-*` are in the tree under those names.
+
+**Thirteen units. Twenty-six entries. Every heading is left exactly as it was
+written.**
+
+**Where the duplicates came from.** `outcome-append.bat` takes the unit number
+from its caller and its two callers disagree about what a unit number is:
+`tools\arbiter\run-unit.bat:534` passes `%UNIT%`, the work-instruction number, and
+`tools\arbiter\run-phase.bat:373` passes `%ITER%`, the loop's iteration counter,
+set to 0 at `run-phase.bat:127` and incremented at `:171`. Both fire during the
+same run. Neither caller is wrong about its own number and neither can see the
+other.
+
+**Fixed on 2026-09-07 by work instruction 266**, in `outcome-entry.py`, the one
+place both routes pass through: the number is resolved from
+`WORK_INSTRUCTIONS.md`'s own heading, and a second append for the same unit and
+step is folded into the first entry as a `###` continuation naming only what
+differs. Watched failing first, with the red quoted: *expected ONE entry heading,
+got 2: ['## UNIT 266 - STEP A', '## UNIT 9 - STEP A']*.
+
+**The duplicates below are left where they are.** Rewriting history is worse than
+a labelled duplicate: these entries are the record of what thirteen units did, and
+a record that gets tidied afterwards is a record nobody can trust the next time.
+This section is the label.
+
 ## Entries
 
 **The entries below were written with the file-editing tools, in the format

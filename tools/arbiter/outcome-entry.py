@@ -47,11 +47,53 @@ WHAT IT GUARANTEES, AND WHAT IT ONLY USUALLY DOES
     **Callers should still write ASCII in the first place.** A recovery that
     works is not a licence to depend on it.
 
+ONE UNIT, ONE ENTRY, AND WHERE THE SECOND NUMBER CAME FROM
+
+    `outcome-append.bat` takes the unit number from its caller, and its two
+    callers disagree about what a unit number IS. `run-unit.bat:534` passes
+    `%UNIT%`, which is the work-instruction number. `run-phase.bat:373`
+    passes `%ITER%`, which is the loop's iteration counter - set to 0 at
+    `run-phase.bat:127` and incremented at `:171`. **Both fire during the
+    same run**, so every unit of the send phase landed twice under two
+    different numbers: `## UNIT 262 - STEP 3` and `## UNIT 5 - STEP 3` are
+    one unit, and so are twelve other pairs.
+
+    Neither caller is wrong about its own number and neither can see the
+    other, so the fix is here, at the one place both routes pass through.
+
+    **THE NUMBER IS RESOLVED FROM THE TREE.** The launcher has exactly one
+    authoritative answer to *which unit is this* - the instruction it just
+    ran - and it is written at the top of `WORK_INSTRUCTIONS.md` as
+    `# Work instruction <n> - <title>`, with `PHASE_STATUS.md`'s
+    `WORK_INSTRUCTION:` line as the fallback.
+
+    **IT IS A TIE-BREAK AND NOT A TAKEOVER.** With no instruction to read
+    against, the caller's number stands. `OA_UNIT_EXACT` turns the
+    resolution off outright, for appending an old entry by hand, and where
+    the resolved number differs from the one asked for, the entry says so
+    on its face in `UNIT_AS_CALLED:` rather than quietly relabelling
+    somebody's record.
+
+    **AND A SECOND APPEND FOR THE SAME UNIT AND STEP IS NOT A SECOND
+    ENTRY.** It is written into the first entry as a `###` continuation
+    naming only the fields whose values differ, so the unit appears once at
+    `##` level and nothing either route recorded is lost - the second route
+    is the one carrying the run's real cost and the arbiter's judgment.
+    Two different STEPS of one unit are two different facts and stay two
+    entries: `UNIT 253 - STEP 0` and `UNIT 253 - STEP 1` are not a
+    duplicate.
+
+    **NOTHING IS EVER REWRITTEN.** The file is read to find out what is
+    already in it; every byte this script emits still goes on the end.
+
+    Tested by `outcome-entry-tests.py`, one case at a time by exact name.
+
 Usage, with every value in the environment as OA_<FIELD>:
 
     python tools/arbiter/outcome-entry.py <file>
 """
 import os
+import re
 import sys
 
 # Characters worth spelling rather than replacing. Everything else outside
@@ -85,6 +127,19 @@ SOURCE = {
 
 # The codepages a Windows console hands a batch script, most likely first.
 OEM = ('cp437', 'cp850', 'cp1252')
+
+# `# Work instruction 266 - the record is honest ...`, and `# Work instruction
+# 041 - ...` too: the leading zeroes are dropped so 041 and 41 are one unit.
+HEADING = re.compile(r'^#+\s*work\s+instruction\s+0*(\d+)\b', re.IGNORECASE)
+
+# `WORK_INSTRUCTION: 266 - the record is honest ...` in PHASE_STATUS.md.
+KEY = re.compile(r'^WORK_INSTRUCTION:\s*0*(\d+)\b')
+
+# `## UNIT 266 - STEP A`. The step is free text - the re-cut phase's steps are
+# letters where the previous cut's were digits - so it is matched as text.
+ENTRY = re.compile(r'^##\s+UNIT\s+(\S+)\s+-\s+STEP\s+(.+?)\s*$')
+
+FIELD = re.compile(r'^([A-Z][A-Z_]*):\s?(.*)$')
 
 
 def unmangle(value):
@@ -147,20 +202,170 @@ def ascii_only(value):
     return ''.join(out)
 
 
+def repository_root():
+    """Where to look for the instruction this unit is running.
+
+    `OA_ROOT` first, so a test can point this somewhere harmless. Otherwise
+    two directories up from this file, which is the repository root by this
+    script's own location and not by the working directory - the launcher
+    calls it from wherever the run happened to start.
+    """
+    override = os.environ.get('OA_ROOT')
+
+    if override:
+        return override
+
+    return os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                        os.pardir, os.pardir))
+
+
+def read_text(path):
+    """The file, or None. Never raises on a file that is not there."""
+    try:
+        with open(path, 'rb') as handle:
+            return handle.read().decode('utf-8', 'replace')
+    except OSError:
+        return None
+
+
+def resolve_unit(called, root):
+    """Which unit this really is, and what it was called.
+
+    Returns (unit, called). They differ exactly when the caller passed
+    something other than the number the tree says is running - which is the
+    iteration counter, every time it has happened.
+    """
+    if os.environ.get('OA_UNIT_EXACT'):
+        return called, called
+
+    for name, pattern in (('WORK_INSTRUCTIONS.md', HEADING),
+                          ('PHASE_STATUS.md', KEY)):
+        text = read_text(os.path.join(root, name))
+
+        if text is None:
+            continue
+
+        for line in text.splitlines():
+            match = pattern.match(line)
+
+            if match:
+                return match.group(1), called
+
+    # NOTHING TO RESOLVE AGAINST, SO THE CALLER'S NUMBER STANDS. Appending an
+    # old entry by hand is a real thing to do and this is not the place to
+    # start guessing at it.
+    return called, called
+
+
+def existing_entry(path, unit, step):
+    """The fields of the last entry already recorded for this unit and step.
+
+    None where there is no such entry. The file is READ here and never
+    written back: the duplicate has to be detected before it can be avoided,
+    and reading is not rewriting.
+    """
+    text = read_text(path)
+
+    if text is None:
+        return None
+
+    found = None
+    fields = None
+
+    for line in text.splitlines():
+        heading = ENTRY.match(line)
+
+        if heading:
+            if heading.group(1) == unit and heading.group(2) == step:
+                fields = {}
+                found = fields
+            else:
+                fields = None
+
+            continue
+
+        if fields is None:
+            continue
+
+        field = FIELD.match(line)
+
+        if field:
+            fields[field.group(1)] = field.group(2)
+
+    return found
+
+
+def new_entry(unit, called, step, values):
+    """The entry as it has always been written, with one line added."""
+    lines = ['', '## UNIT %s - STEP %s' % (unit, step), '']
+
+    # THE SUBSTITUTION IS ON THE FACE OF THE RECORD OR IT IS NOT HONEST. A
+    # reader who goes looking for the iteration number the launcher printed
+    # on screen finds it here rather than finding nothing.
+    if called != unit:
+        lines.append('UNIT_AS_CALLED: %s' % called)
+
+    for field in FIELDS:
+        lines.append('%s: %s' % (field, values[field]))
+
+    return lines
+
+
+def continuation(unit, called, step, values, already):
+    """A second append for the same unit and step, folded into its entry.
+
+    Only what differs is written. The two routes send almost the same
+    sentences - the arbiter composes its fields from the same decision block
+    the unit recorded - and repeating the identical ones would put the
+    duplicate back in a smaller typeface.
+    """
+    lines = [
+        '',
+        '### ALSO RECORDED FOR UNIT %s - STEP %s' % (unit, step),
+        '',
+        'A second append for the same unit and the same step, called as UNIT %s.'
+        % called,
+        'One unit is one entry, so what this route recorded is folded in here',
+        'rather than written as a second entry. Only what differs is listed.',
+        '',
+    ]
+
+    differs = [field for field in FIELDS
+               if values[field] != already.get(field, '')]
+
+    if not differs:
+        lines.append('Nothing this route recorded differs from the entry above.')
+
+        return lines
+
+    for field in differs:
+        lines.append('%s: %s' % (field, values[field]))
+
+    return lines
+
+
 def main(argv):
     if len(argv) != 1:
         sys.stderr.write(__doc__)
         return 2
 
     path = argv[0]
-    unit = ascii_only(os.environ.get('OA_UNIT', ''))
+    called = ascii_only(os.environ.get('OA_UNIT', ''))
     step = ascii_only(os.environ.get('OA_STEP', ''))
+    unit, called = resolve_unit(called, repository_root())
 
-    lines = ['', '## UNIT %s - STEP %s' % (unit, step), '']
+    values = {}
 
     for field in FIELDS:
         source = SOURCE.get(field, 'OA_' + field)
-        lines.append('%s: %s' % (field, ascii_only(os.environ.get(source, ''))))
+        values[field] = ascii_only(os.environ.get(source, ''))
+
+    already = existing_entry(path, unit, step)
+
+    if already is None:
+        lines = new_entry(unit, called, step, values)
+    else:
+        lines = continuation(unit, called, step, values, already)
 
     body = '\r\n'.join(lines) + '\r\n'
 
@@ -170,6 +375,10 @@ def main(argv):
     # a record it was not asked to touch.
     with open(path, 'ab') as handle:
         handle.write(body.encode('ascii'))
+
+    sys.stdout.write('outcome-entry: UNIT %s - STEP %s%s\n'
+                     % (unit, step,
+                        '' if called == unit else ' (called as %s)' % called))
 
     return 0
 

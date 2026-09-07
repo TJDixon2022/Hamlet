@@ -57,6 +57,20 @@ rem  Both happen in the same call, because a header that lags the
 rem  entries is a position nobody can trust, and a caller that has
 rem  to remember a second command is a caller that will forget.
 rem
+rem  THE UNIT NUMBER COMES FROM THE CALLER AND THE CALLERS DISAGREE.
+rem  run-unit.bat:534 passes %UNIT%, the work-instruction number.
+rem  run-phase.bat:373 passes %ITER%, the loop's iteration counter, set
+rem  at run-phase.bat:127 and incremented at :171. BOTH FIRE IN THE SAME
+rem  RUN, so the send phase recorded thirteen units as twenty-six
+rem  entries - `UNIT 262 - STEP 3` and `UNIT 5 - STEP 3` are one unit.
+rem  Neither caller is wrong about its own number and neither can see
+rem  the other, so the fix is in outcome-entry.py, the one place both
+rem  routes pass through: it resolves the number from
+rem  WORK_INSTRUCTIONS.md's own heading and folds a second append for
+rem  the same unit and step into the first entry as a `###`
+rem  continuation. Fixed 2026-09-07 by 266, tested by
+rem  outcome-entry-tests.py.
+rem
 rem  IT CREATES THE FILE ON FIRST APPEND, header and all, the way
 rem  ledger.bat does. A record that depends on somebody having set
 rem  it up first is a record with a gap at the beginning.
@@ -171,7 +185,7 @@ echo.
 echo ============================================================
 echo  outcome-append
 echo    file : %FILE%
-echo    unit : %UNIT%   step : %STEP%   state : %STATE%
+echo    unit ^(as called^) : %UNIT%   step : %STEP%   state : %STATE%
 echo ============================================================
 echo.
 
@@ -317,8 +331,16 @@ if errorlevel 1 (
   goto :end
 )
 
-echo   Appended:
-echo     ## UNIT %UNIT% - STEP %STEP%
+rem  THE ENTRY'S OWN HEADING IS NOT ECHOED HERE, and that is deliberate.
+rem  This script takes the unit number from its caller and its two callers
+rem  disagree about what a unit number is - run-unit.bat:534 passes the
+rem  work-instruction number and run-phase.bat:373 passes %ITER%, the loop's
+rem  iteration counter - so every unit of the send phase landed twice.
+rem  outcome-entry.py now resolves the number from WORK_INSTRUCTIONS.md and
+rem  folds a second append for the same unit and step into the first entry,
+rem  and it PRINTS the heading it actually wrote, just above this. Echoing
+rem  %UNIT% here would print a number the file may not contain.
+echo   Appended, under the heading printed above:
 echo     APPROACH: %APPROACH%
 echo     ACCOMPLISHED: %ACCOMPLISHED%
 echo     COST: %COST%

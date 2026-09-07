@@ -153,8 +153,14 @@ def OneUnitAppendedTwiceUnderBothNumberingRoutesProducesOneEntry():
         check(found[0] == '## UNIT 266 - STEP A',
               'the one entry should be under the work-instruction number, '
               'not the iteration number: %r' % found[0])
-        check('UNIT 9' not in text.replace('UNIT 9 ', 'UNIT_9_'),
-              'the iteration number should not appear as a unit')
+        check(not any('UNIT 9' in line for line in found),
+              'the iteration number should not head an entry: %r' % found)
+
+        # AND IT IS STILL ON THE FACE OF THE RECORD. The number the caller
+        # asked for is what the launcher printed on screen, and a reader who
+        # goes looking for it should find it said rather than find nothing.
+        check('called as UNIT 9' in text,
+              'the number the second route asked for is not recorded anywhere')
 
         # NOTHING THE SECOND ROUTE RECORDED IS LOST. It is the route that
         # carries the run's real cost and the arbiter's judgment, and an
