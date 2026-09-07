@@ -353,7 +353,20 @@ Both reported and neither repaired, per "the tree wins".
   work instruction 264's authority and the entry predates it. No existing
   entry was edited and no step's word in either header line was touched.
 - `outcome-append.bat` refused once, verbatim - the thirteenth consecutive
-  unit. `validate-output.bat` is dealt with below.
+  unit.
+- **`validate-output.bat` could not be run, and this report's validation is a
+  hand check standing in for a run.** Three forms were tried: the verbatim
+  backslash form, which the shell mangled into
+  `toolsarbitervalidate-output.bat: command not found`; the forward-slash
+  form; and `cmd /c "..."`. The last two were both refused with **"This
+  command requires approval"**. Following unit 263's recorded fallback, the
+  script's seven rules were checked by hand against the copy it prints in its
+  own header, and **all seven pass**: the `UNIT:` line is above section 1 and
+  parses; the four top-level sections are in order with exact names; there is
+  no fifth; section 4 is present and non-empty; section 3 is non-empty; the
+  ordering block sits above the `UNIT:` line with A, B and C, and C names how
+  many items section 4 raises; and the header block carries no placeholder
+  token.
 - **The bookkeeping the reload named was committed before task 2**, at
   `96d7d2d`: `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`,
   `SESSION.lock`, `WORK_INSTRUCTIONS.md` and the whole of `.run-unit/`. **What
