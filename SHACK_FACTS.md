@@ -9,6 +9,10 @@ sessions advised changing radio settings that were already correct.
 fault from an empty capture folder on a machine that has never had a radio
 attached to it.
 
+**FACT-005 added 2026-09-07**, the day Hamlet first transmitted on a live
+antenna: the drive level the operator read off his own ALC meter, which four
+unit reports had promised to defer to him and none had written down.
+
 ---
 id: FACT-001
 status: standing
@@ -113,3 +117,43 @@ source: operator statement, 2026-09-03; standing since the project began
 device exists at the radio is a question about the shack machine, and only the
 operator can answer it. Ask him, or say the answer is unknown. Do not answer it
 from the tree.
+
+---
+id: FACT-005
+status: standing
+source: the operator, at the radio, 2026-09-07, on the IC-7300 at 14.074 MHz
+---
+
+**The transmit drive level, measured against his own ALC.**
+
+- **Transmit drive: 25 per cent**, which is the peak amplitude `0.25` that
+  `Ft8Composer.DefaultDrivePeak` builds a slot at.
+- **-12.04 dBFS composed**, which is `20*log10(0.25)`.
+- **ALC: -2.0 to -1.5, inside the red zone**, read off the IC-7300's own meter
+  while Hamlet was transmitting.
+- **Measured 2026-09-07**, on the first transmissions Hamlet ever made on a
+  live antenna: two slots on 14.074000, keyed 0.5 s into the slot, 12.64 s
+  each, 606,720 samples at 48 kHz, `outcome: Sent`,
+  `cameOutOfTransmit: OrdinaryUnkey`.
+
+**This is the number no machine in this repository could know.** FACT-004
+already rules that nothing measured on the development machine says anything
+about what the IC-7300's USB modulation input expects, and it is the operator's
+ALC meter that answers it. `Ft8Composer.DefaultDrivePeak`'s own remarks say the
+0.25 was chosen as a conservative place to start from and **not** as a
+measurement. **It has now been measured, and it is the same number.**
+
+**Consequences, and no session may reason past them:**
+
+- **No unit may promise to defer this to the operator again.** Four unit
+  reports did, before he had a control to set it with; he has the control
+  (unit 269) and he has used it. The figure is written down here and a report
+  that defers it is deferring a question that is answered.
+- **It is a reading of one radio's ALC on one band and it is not a
+  specification.** It is what his IC-7300 wanted on 14.074 MHz at 25 per cent.
+  A different band, a different rig or a different USB level control is a
+  different reading, and this fact does not cover them.
+- **Nothing here changes what Hamlet does.** `DefaultDrivePeak` is unchanged at
+  0.25, the drive control under the waterfall is unchanged, and the level
+  remains his to set. This records what he read; it does not turn a reading
+  into a default.
