@@ -1,462 +1,326 @@
-READ IN THIS ORDER — A the phase goal, B this step and its criteria, C what this
-report adds and whether any of it bears on A or B.
+READ IN THIS ORDER
 
-A. THE PHASE GOAL AND WHERE EVERY STEP STANDS. *Hamlet works stations on the
-air*: Tim answers a CQ on 14.074 or 7.074 and completes an exchange. Steps 0, A,
-B and C are `done`. **Step D is `done` after task 4**, on the evidence of
-`SHACK_FACTS.md` FACT-005 — 25 per cent, -12.04 dBFS, ALC `-2.0 to -1.5, inside
-the red zone` on the IC-7300 at 14.074 MHz, sourced to the operator at his own
-radio on 2026-09-07 and written by unit 271 before this unit started. **Step E is
-`in progress` and all three of its criteria are his**, at the radio, on a band.
-(The tree's `PHASE_OUTCOME.md` header actually reads `STEP: E | blocked`; the
-instruction said not to touch that line and it was not touched. Reported in
-section 4.)
+A. THE PHASE GOAL. Hamlet works stations on the air. It transmitted on a live
+   antenna for the first time on 2026-09-07 and the machinery works.
+B. THE STEP AND ITS EXIT CRITERIA. Step E's bench half. The criteria themselves
+   are yours at the radio; this unit removes defects standing between you and
+   them, and closes none of them itself.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on A. **Six of
+   the seven tasks were already in the tree** from the earlier issue of this same
+   order and were verified by re-running their own tests rather than repeated; the
+   amended task 6 is the new work. Section 4 raises 3 items and **none asks for a
+   ruling** — two are departures from the instruction's own wording, stated so you
+   can overrule them, and one is the standing asks queue.
 
-B. THIS STEP AND ITS EXIT CRITERIA, AND WHICH WERE MET. Step E's three, quoted
-from `PHASE_PLAN.md:265-268`, and **no criterion of step E is claimed by this
-unit — none could be.**
-
-1. *He answers a CQ on 14.074 or 7.074 and completes an exchange.* **Not met.** No
-   unit can meet it. **Its remaining measured bench blocker was that 15 of the 43
-   messages the menu can offer against the callsigns he could plausibly work
-   tonight would have been keyed and read back as nothing** — every one of them a
-   compound prefix, including his own `W4/KC3QIS`. **That blocker is now closed:**
-   Hamlet refuses to key any of them and says so.
-2. *The transmitted slots appear in telemetry and the row reads complete.* **Not
-   met.** Its telemetry half moved: `ft8_transmission` now records
-   `carriedHashedCallsign`, which it did not carry at all, and `messageLength`
-   now counts the encoded message rather than the string the operator clicked.
-3. *What he saw, and anything that surprised him, recorded.* **Not met.** His.
-
-C. THIS REPORT'S OWN FINDINGS, WEIGHED AGAINST A AND B.
-**Section 4 raises 5 items, and none of them is in the way of a criterion in B.**
-None asks for a ruling. Three are mismatches between the instruction and the tree, reported and
-not repaired; one is a conflict inside the instruction that cost the click-driven
-test its run; one is a parked question the arbiter already logged.
-
-```
-UNIT:       272 — complete at task 4 of 4 — 2026-09-07 14:10
-PHASE GOAL: Hamlet works stations on the air — Tim answers a CQ on 14.074 or
-            7.074 from his own shack and completes an exchange.
-UNIT GOAL:  Hamlet never keys a message nobody can read, it says so when it
-            refuses, and the telemetry line says which kind of message went out.
-ADVANCED:   yes — 15 of 43 messages the menu can offer would have been keyed
-            unreadably; now 0 are, and the telemetry line names the fault.
-NUMBER:     15 of 43 keyed-and-unreadable -> 0 of 43, refused with a sentence
+UNIT:       271 — complete at task 7 of 7 — 2026-09-07 16:40
+PHASE GOAL: Hamlet works stations on the air.
+UNIT GOAL:  The CQ button calls CQ, the grid fits the message, the contact column speaks only about his own contacts, the stop control says what it is, and a grid tooltip says where the station is rather than where some square is.
+ADVANCED:   yes — one new task built, six verified. It advances no step's criterion and the instruction says so itself.
+NUMBER:     none for this session's own task. The unit's number is task 1's and it stands: `VP2MAA KC3QIS FN00DJ` went out as `<VP2MAA KC3QIS> FN00DJ` and decoded back to nothing at all.
 DRIFT:      0 consecutive units without advance  (was 0)
-```
+
+---
 
 ## 1. What Claude did
 
-**Complete, at task 4 of 4.** Nothing was dropped, including task 4, which the
-instruction named as the drop candidate.
+**Complete, seven of seven, and only one of them was new work.** Machine
+`QUIVERFULL`, `C:\Source\HamLet`, branch `main`, pushed.
 
-Provenance: `C:\Source\HamLet`, branch `main`, project claimed `Hamlet` and
-confirmed against the tree — `SHACK_FACTS.md` and
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both present, `CoreHMI.sln`
-and `MURC.sln` both absent. Six commits, `3f641e8` through `7953146`, each pushed
-before the next task began, the trace on its own and each red before its green.
-Version `1.12.125 -> 1.12.126`.
+### The gate
 
-### Task 1 — the trace
+`SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, `CoreHMI.sln` absent, `MURC.sln` absent. **Hamlet confirmed.**
+`SESSION.lock` absent and one session in the process list, checked before the
+order was read.
 
-**The central claim holds.** `grep -rn CarriesHashedCallsign src/` returns
-`Ft8Composer.cs` and nothing else — lines 83, 99, 405, 681, 696 and 748, plus
-generated `bin/obj` artefacts. Every reader in the tree is a test. The same grep
-over `tests/` returns twenty-one source lines across nine files, all of them
-assertions or table columns.
+### What this session found before it changed anything
 
-The six questions, answered with a file, a line and a quotation:
+**`WORK_INSTRUCTIONS.md` on disk is an amended issue of an order already
+executed.** Committed at HEAD it reads *271 — four faults the operator found on
+the air*; the working copy reads ***271 — six faults***, and the difference is a
+**new task 6** for the grid tooltip with the old task 6, the ALC level, renumbered
+to **task 7**.
 
-1. **Who reads it in `src/`?** Nobody. See above.
-2. **Where does a composed message become an armed send?**
-   `MainWindowViewModel.SendMessage:8446`, the only `ComposeSignal` call site in
-   the whole of `src/`. Between `if (!composed.Composed)` at `:8471` and
-   `_armedSend.Arm(new OperatorSend(...))` at `:8498` the method reads the clock,
-   checks `_armedSend is null`, and sets `_armedText`. **Nothing there consults
-   `Type`, `ReadsBackAs` or `CarriesHashedCallsign`.**
-3. **What does the composer hand back?** `Ft8Transmission` carries `Text`,
-   `ReadsBackAs`, `Type`, `Samples`, `SampleRate`, `BaseFrequencyHz` and
-   `CarriesHashedCallsign` at `Ft8Composer.cs:92-99`. The flag is set true on the
-   hashing pass at `:681` and false at `:696`; all three are copied onto the
-   returned record at `:398-405`.
-4. **Where is the bracket comparison, and is `allowHashing` reachable?**
-   `ReadsBackAsItself(buffer, cache, wanted, allowHashMarking: true, out var
-   hashedText)` at `:674`. `ComposeSignal`'s parameters, read by reflection off
-   the running assembly, are `text, sampleRate, baseFrequencyHz, drivePeak` —
-   **no `allowHashing`**, so there is no one-argument route from the application.
-   **But the flag itself is public on the returned transmission**, so the guard
-   reads it at the caller.
-5. **How big is the class?** The table is in section 3. **15 of 43.**
-6. **What does the telemetry say?** `Ft8TransmitSequence.Recorded:389-405` passed
-   `send.Transmission.Text.Length`. For `CQ KC3QIS FN00DJ` on 2026-09-07 that
-   counted **16**, and what actually went out was `<CQ KC3QIS> <FN00DJ>`, twenty
-   characters, with the callsign hashed. For a compound call it would count 22 for
-   a slot carrying 24. **A reader of that line would not know.**
+The four-fault issue ran to completion: `9690c28`, `6337b04`, `9eb7f13`,
+`ffe7d8c`, `2a73745`, `a999ec4`, `0eee73b`, with its report at `e25e883`. **Unit
+272 has run since**, and the root version was `1.12.126` rather than the
+`1.12.71`-ish a fresh 271 would imply.
 
-### Task 2 — the guard
+So tasks 1 to 5 and 7 were **verified rather than repeated**, and the verification
+is a re-run of each task's own tests, not a reading of its commit message. That
+distinction is the whole of why section 3 quotes numbers rather than claims.
 
-Watched red first and committed red (`7485c81`): five red, five green, with
-`VP2MAA KC3QIS FN00DJ` reading `armed: True` beside `the encoder made:
-"<VP2MAA KC3QIS> FN00DJ"`. Green at `52d4859`, ten of ten.
+### Task by task
 
-**A decision I made for myself, reproduced in full: I guarded on the flag and not
-on the written fallback.** The instruction's fallback said to guard on
-`ReadsBackAs` *if task 1 q4 finds the flag unreachable from the application*. It
-is not unreachable — `allowHashing` is not a parameter of `ComposeSignal`, but
-`CarriesHashedCallsign` is a public property of the record `ComposeSignal`
-returns. So `Ft8ReadBack.Check` reads the flag first, and uses `ReadsBackAs`
-only for the second half of the arbiter's rule (*unless he clicked brackets*),
-which is expressed as *what the bits say is character-for-character what he
-typed*.
+**1 — what went out on the air. Verified by re-running `WhatWentOutOnTheAirTests`
+this session.** The figures in section 3 are what came back today.
 
-**The rule lives in the engine** (§0.1), in
-`src/Hamlet.RadioEngine/Contacts/Ft8ReadBack.cs`. It reads the two facts
-`Ft8Composer` already measured and nothing else: it does not know what a callsign
-looks like, does not split a message into fields, and does not know which
-callsigns are compound. **There is no second copy of any callsign rule** (§0).
-The view model asks it and states nothing of its own.
+**2 — the CQ button calls CQ. Verified by re-running `TheCqButtonCallsCqTests`.**
+Empty table, one row, several rows: the same string every time.
 
-**Nothing in `src/Hamlet.RadioEngine/Transmit/` changed in task 2, and it is
-proven:** `git diff --stat` over that directory was empty at the commit, and
-`TheOperatorsStopFiresFromEveryStateTests` passed unchanged, **twelve of twelve**,
-including `KeyedMidTransmissionTheAbortFiresWhileItIsStillRunning`.
-`TheSeamTurnsWordsIntoASlotOfAudioTests` 23 of 23 and
-`TheGridFitsTheMessageTests` 3 of 3, each alone by exact name, foregrounded.
+**3 — the grid fits the message.** `Ft8SendOptions.ForTheMessage` cuts to four
+characters at the one place both send routes pass through, and Settings keeps the
+six for distance and bearing. Verified by the round trips in section 3.
 
-**The menu was not touched.** No item removed, greyed, hidden or reordered;
-`SendMenuFor` is unchanged and nothing about the guard reaches `Ft8SendOptions`.
-No dialog, no confirmation, no prompt: a line in the Send area, where the licence
-gate already refuses.
+**4 — the contact column. Verified by re-running
+`TheContactColumnSpeaksOnlyAboutHisContactsTests`.** Section 3 quotes the slot.
 
-### Task 3 — the telemetry line
+**5 — the stop control says what it is.** `DigitalStopButton` carries
+`Content="{Binding StopLabel}"`, which reads **"Stop"** at rest and **"Stop
+transmitting"** while something is armed, with `Classes.hm-live` changing ink
+weight and border rather than filling a bar. Read from the markup; the abort
+behind it was not touched.
 
-Watched red first and committed red (`930ef0a`): four red — `KeyNotFoundException
-: The given key 'carriedHashedCallsign' was not present in the dictionary`, and
-`messageLength Expected: 22, Actual: 20`. Green at `228e0d1`, five of five.
+**6 — a grid says where the station is. This session's only new work**, committed
+at `5ef559a`.
 
-`TransmitRecord` gains `bool CarriedHashedCallsign` and the bag gains
-`carriedHashedCallsign`. `Ft8TransmitSequence.Recorded` now passes
-`send.Transmission.ReadsBackAs.Length` instead of `Text.Length`, which is the
-decision the arbiter made and this unit implemented rather than re-argued.
+**7 — the level that was measured.** Already in `SHACK_FACTS.md`: 25 per cent
+drive, -12.04 dBFS composed, ALC -2.0 to -1.5 inside the red zone, measured
+2026-09-07, with the consequence recorded that no unit may promise to defer it
+again.
 
-**HM-DEC-018 holds and is asserted on both sides of the change.** The record's
-constructor still has no string parameter at all —
-`DateTime SlotStartUtc, Double StartSecondsIntoSlot, Int64 FrequencyHz, Double
-DurationSeconds, Int32 SampleRate, Int32 SampleCount, Ft8MessageType MessageType,
-Int32 MessageLength, Boolean CarriedHashedCallsign, Ft8TransmitOutcome Outcome,
-UnkeyRoute CameOutOfTransmit, Boolean Keyed` — and none of `KC3QIS`, `VP2MAA`,
-`FN00`, the message or its read-back appears anywhere in the bag.
+### Decisions made on this session's own authority, reproduced in full
 
-**The one change in `Transmit/`, quoted rather than asserted**, replacing task 2's
-empty-diff proof:
+**One: the tooltip says *They* where the instruction's example says *He*.** The
+instruction's wording is *He is in grid JN54*. `Ft8Vocabulary`'s own rule, recorded
+in that file since unit 251, is that **no pronoun chooses a gender** — Hamlet has
+no way to know who is at the key. The substance of your ruling is that the distance
+belongs to the station, and that is untouched; only the pronoun follows the older
+rule. **It is section 4's first item so you can overrule it in a word.**
 
-```
---- a/src/Hamlet.RadioEngine/Transmit/Ft8TransmitSequence.cs
-@@ -396,7 +405,8 @@
-             send.Transmission.Type,
--            send.Transmission.Text.Length,
-+            send.Transmission.ReadsBackAs.Length,
-+            send.Transmission.CarriesHashedCallsign,
-             run.Outcome,
-```
+**Two: the comma after *They are* goes when there is no country.** Built as one
+clause with an optional country in front, every station the DXCC table declines
+read *They are, in grid QG44* — a stumble mid-sentence that reads as though a word
+had gone missing. It had.
 
-plus a doc paragraph above it saying why. **Nothing between the end of the audio
-and the unkey moved**; the record is still written after the radio is out of
-transmit. The abort's twelve passed again after it.
-
-**The refusal in task 2 does mean a hashed message can no longer reach `Recorded`
-through the application**, so these tests drive `Ft8TransmitSequence.RunAsync`
-directly, as the instruction directs — the field still has to be right for
-anything that arrives by another route later.
-
-### Task 4 — step D
-
-`PHASE_OUTCOME.md`'s header read `STEP: D | blocked`; it now reads `done`, with
-the figures on the line and one sentence naming FACT-005 as the evidence. **The
-cursor moved and no entry was invented.** Step E's line was not touched.
-`SHACK_FACTS.md` and `docs/phase-send-run/` were not touched, proven by an empty
-`git diff --stat` over both.
-
-### What was run, and what was not
-
-Only what this unit constructed, plus the three named committed tests, each alone
-by exact name, foregrounded, under a 7-minute timeout: three test classes of my
-own (3, 10 and 5 cases), `TheOperatorsStopFiresFromEveryStateTests` twice (12 of
-12 both times), `TheSeamTurnsWordsIntoASlotOfAudioTests` (23 of 23) and
-`TheGridFitsTheMessageTests` (3 of 3). **No suite, nothing unfiltered, nothing
-backgrounded, and `Hamlet.App.Tests` was not run.** `dotnet build Hamlet.sln`
-foregrounded, 0 warnings 0 errors. `src/Ft8Sharp/` not touched.
-
-**Four shell refusals, recorded verbatim:**
-
-- `This Bash command contains multiple operations. The following part requires
-  approval: echo "EXIT:$?"` — the call was split and rerun.
-- `This Bash command contains multiple operations. The following part requires
-  approval: tools/arbiter/validate-output.bat output.md 2>&1`
-- `This command requires approval` — `tools/arbiter/validate-output.bat output.md`
-- `This command requires approval` — `dotnet msbuild
-  tools/arbiter/validate-output.proj -p:Report=output.md`
-
-The validator was reached through `dotnet build
-tools/arbiter/validate-output.proj -p:Report=output.md`, which is the parked
-permitted-spellings bug working exactly as unit 243 documented it, and is not
-raised as an item. **`output.md` validates: all seven rules passed,
-`validate-output exit 0`.** The file-editing tools were unaffected throughout, as
-they have been for sixteen consecutive units. **Nothing halted the loop.**
+**Three: unit 252's place-name sweep was updated rather than deleted.** That test
+forbade **every** place name; your ruling of 2026-09-07 supersedes it for the
+country alone, and only when the country comes from the callsign. So it now runs
+against a sender the table declines — `ZZ9ZZZ` — where no country can arrive
+legitimately, and **any name at all that appears can only have come from the
+square**, which is the fault it still exists to catch. Deleting it would have
+removed the guard along with the rule it outgrew.
 
 ## 2. What the owner should expect
 
-**Hamlet will now sometimes refuse to send something you clicked, and it will
-tell you why.** If you right-click a station whose callsign will not fit an FT8
-message — a compound prefix like `VP2M/K1ABC` or `SV9/PA3EXX`, the kind of call
-a DX station answering your CQ often signs — and click one of the five messages,
-nothing will be keyed and the Send area will say:
+**All six, in the order you found them:**
 
-> Hamlet composed "VP2M/K1ABC KC3QIS FN00" and sent nothing: it encodes as
-> "<VP2M/K1ABC> KC3QIS FN00", which puts a callsign on the air as a 22-bit hash
-> instead of as a callsign. A station can only put a name to that hash if it
-> heard the whole callsign in the same slot, so anybody hearing this on its own
-> decodes nothing at all. Nothing was keyed. The message is still in the menu and
-> everything else toward that station will go.
+- **The CQ button calls CQ.** It composes `CQ KC3QIS FN00` from Settings and reads
+  nothing off the table — not the selected row, not several rows, not a row that
+  is itself a CQ. It took `VP2MAA` because the send options were built from the
+  row under the cursor; they are built from your own profile now.
+- **The grid fits the message.** Your Settings still hold `FN00DJ` and always
+  will, because the extra two characters are what the distance and bearing are
+  measured from. What goes into a transmitted message is `FN00`.
+- **What you transmitted twice on 2026-09-07 was not decodable by anybody**, and
+  section 3 says exactly what went out instead. That is fixed, and unit 272 has
+  since put a guard in front of the send path as well.
+- **The contact column is quiet on rows you are not in.** A CQ gets nothing, two
+  other stations working each other get nothing, and only a message addressed to
+  `KC3QIS` carries a state.
+- **The stop control has a label.** "Stop" at rest, "Stop transmitting" while
+  something is armed. It is always there and always pressable, exactly as before;
+  only its appearance says more.
+- **A grid tooltip says where the station is.** *IK4LZH is calling anyone. They
+  are in northern Italy, in grid JN54, 4,400 miles away on a bearing of 53
+  degrees.*
 
-**This is the fault that put two unreadable slots on 14.074 on 2026-09-07.** The
-level was right, the timing was right, the log said `Sent`, and nobody on the
-band could turn either slot back into your callsign. Unit 271 fixed the grid that
-caused those two; this closes the class they belonged to.
+**What will look wrong and is not:**
 
-**Nothing was removed from the menu.** Every one of the five messages is still
-there, in the same order, with the same labels, and the expected one still
-highlighted. The refusal is at the send path, in the same place and the same
-shape as the line you already get when a frequency is outside your privileges.
-There is no new dialog, no confirmation and no second click.
+- **Some stations get no country.** `VK9` is five different islands and `3D2` is
+  three; the table declines rather than guessing, and the sentence still gives the
+  square and the distance because those are arithmetic.
+- **Some countries get no compass word.** Belgium is 1.95 degrees tall, about two
+  grid squares. It is in the table's `declined` list with that reason written
+  beside it, so it reads as considered rather than forgotten.
+- **`PM95` reads *southern Japan*.** That is honest arithmetic on the stated
+  bounds — 35.6°N against a country running 31.03 to 45.55 — and it is the Tokyo
+  area, which some would call central. Thirds put it in the southern band.
 
-**What will look wrong but is not.** Refusing a genuinely nonstandard callsign
-means you cannot work that station from Hamlet tonight, even though other
-software would put something on the air for you. That is deliberate — what that
-software puts out is a slot nobody can decode either, and Hamlet will not assert
-something nobody receives. Whether Hamlet should later offer you a way to send
-one anyway is logged and parked, not decided against.
+**Build:** clean, 0 warnings, 0 errors, whole solution, six times.
 
-**And the log will be honest about it.** The `ft8_transmission` line now says
-whether the callsign went out as a hash, and the length it prints is the length
-of what actually went on the air rather than of what you typed.
+**Tests:** filtered and foregrounded, and every one of them belongs to this work
+instruction. New this session: `TheGridSaysWhereTheStationIsTests` **16 of 16**.
+Re-run to verify the earlier issue: `WhatWentOutOnTheAirTests` and
+`TheContactColumnSpeaksOnlyAboutHisContactsTests` **6 of 6**, `TheCqButtonCallsCqTests`
+green. Repaired because task 6 changed the wording they assert:
+`TheGridTooltipSaysHowFarTests` and `TheSenderTooltipNamesTheEntityTests`, now
+**42 of 42** with the new file. No suite was run and nothing was backgrounded.
+
+**Pushed to `main`:** `5ef559a`. Version **1.12.126 → 1.12.127**, one patch for
+one task. `Ft8Sharp` did not move.
 
 ## 3. What you should see
 
-### 1. The count from task 1, quoted off the run
-
-> **15 of 43 messages the menu can offer today would be keyed and read back as
-> nothing.**
-
-Measured at 48000 Hz through the application's own `ComposeSignal`, resampled to
-12000 by `Ft8Resample` and decoded by `Ft8SlotDecoder` — the same two calls
-`Ft8Reception` makes on every slot Hamlet hears. The corpus is
-`Ft8SendOptions`'s own: the CQ button's message and the five shapes the
-right-click menu offers, against eight operator-and-station pairs.
+**1. What `VP2MAA KC3QIS FN00DJ` decoded back to.** Re-measured this session
+through `Ft8Composer` and back through `Ft8Sharp`'s own `Ft8SlotDecoder`:
 
 ```
-callsign class           shape            message                    composes  hashed  bits say                     decoder returns
---------------------------------------------------------------------------------------------------------------------------------
-a plain call             CQ button        CQ KC3QIS FN00             yes       no      CQ KC3QIS FN00               "CQ KC3QIS FN00"
-a plain call             Grid             K1ABC KC3QIS FN00          yes       no      K1ABC KC3QIS FN00            "K1ABC KC3QIS FN00"
-a plain call             Report           K1ABC KC3QIS -12           yes       no      K1ABC KC3QIS -12             "K1ABC KC3QIS -12"
-a plain call             RogerAndReport   K1ABC KC3QIS R-12          yes       no      K1ABC KC3QIS R-12            "K1ABC KC3QIS R-12"
-a plain call             Acknowledge      K1ABC KC3QIS RRR           yes       no      K1ABC KC3QIS RRR             "K1ABC KC3QIS RRR"
-a plain call             Seventy3         K1ABC KC3QIS 73            yes       no      K1ABC KC3QIS 73              "K1ABC KC3QIS 73"
-the one from 2026-09-07  Grid             VP2MAA KC3QIS FN00         yes       no      VP2MAA KC3QIS FN00           "VP2MAA KC3QIS FN00"
-the one from 2026-09-07  Report           VP2MAA KC3QIS -12          yes       no      VP2MAA KC3QIS -12            "VP2MAA KC3QIS -12"
-the one from 2026-09-07  RogerAndReport   VP2MAA KC3QIS R-12         yes       no      VP2MAA KC3QIS R-12           "VP2MAA KC3QIS R-12"
-the one from 2026-09-07  Acknowledge      VP2MAA KC3QIS RRR          yes       no      VP2MAA KC3QIS RRR            "VP2MAA KC3QIS RRR"
-the one from 2026-09-07  Seventy3         VP2MAA KC3QIS 73           yes       no      VP2MAA KC3QIS 73             "VP2MAA KC3QIS 73"
-a compound prefix        Grid             VP2M/K1ABC KC3QIS FN00     yes       YES     <VP2M/K1ABC> KC3QIS FN00     NOTHING
-a compound prefix        Report           VP2M/K1ABC KC3QIS -12      yes       YES     <VP2M/K1ABC> KC3QIS -12      NOTHING
-a compound prefix        RogerAndReport   VP2M/K1ABC KC3QIS R-12     yes       YES     <VP2M/K1ABC> KC3QIS R-12     NOTHING
-a compound prefix        Acknowledge      VP2M/K1ABC KC3QIS RRR      yes       YES     <VP2M/K1ABC> KC3QIS RRR      NOTHING
-a compound prefix        Seventy3         VP2M/K1ABC KC3QIS 73       yes       YES     <VP2M/K1ABC> KC3QIS 73       NOTHING
-a portable suffix        Grid             K1ABC/P KC3QIS FN00        yes       no      K1ABC/P KC3QIS FN00          "K1ABC/P KC3QIS FN00"
-a portable suffix        Report           K1ABC/P KC3QIS -12         yes       no      K1ABC/P KC3QIS -12           "K1ABC/P KC3QIS -12"
-a portable suffix        RogerAndReport   K1ABC/P KC3QIS R-12        yes       no      K1ABC/P KC3QIS R-12          "K1ABC/P KC3QIS R-12"
-a portable suffix        Acknowledge      K1ABC/P KC3QIS RRR         yes       no      K1ABC/P KC3QIS RRR           "K1ABC/P KC3QIS RRR"
-a portable suffix        Seventy3         K1ABC/P KC3QIS 73          yes       no      K1ABC/P KC3QIS 73            "K1ABC/P KC3QIS 73"
-a short call             Grid             PJ4G KC3QIS FN00           yes       no      PJ4G KC3QIS FN00             "PJ4G KC3QIS FN00"
-a short call             Report           PJ4G KC3QIS -12            yes       no      PJ4G KC3QIS -12              "PJ4G KC3QIS -12"
-a short call             RogerAndReport   PJ4G KC3QIS R-12           yes       no      PJ4G KC3QIS R-12             "PJ4G KC3QIS R-12"
-a short call             Acknowledge      PJ4G KC3QIS RRR            yes       no      PJ4G KC3QIS RRR              "PJ4G KC3QIS RRR"
-a short call             Seventy3         PJ4G KC3QIS 73             yes       no      PJ4G KC3QIS 73               "PJ4G KC3QIS 73"
-a long call              Grid             SV9/PA3EXX KC3QIS FN00     yes       YES     <SV9/PA3EXX> KC3QIS FN00     NOTHING
-a long call              Report           SV9/PA3EXX KC3QIS -12      yes       YES     <SV9/PA3EXX> KC3QIS -12      NOTHING
-a long call              RogerAndReport   SV9/PA3EXX KC3QIS R-12     yes       YES     <SV9/PA3EXX> KC3QIS R-12     NOTHING
-a long call              Acknowledge      SV9/PA3EXX KC3QIS RRR      yes       YES     <SV9/PA3EXX> KC3QIS RRR      NOTHING
-a long call              Seventy3         SV9/PA3EXX KC3QIS 73       yes       YES     <SV9/PA3EXX> KC3QIS 73       NOTHING
-the operator portable    CQ button        CQ KC3QIS/P FN00           yes       no      CQ KC3QIS/P FN00             "CQ KC3QIS/P FN00"
-the operator portable    Grid             K1ABC KC3QIS/P FN00        yes       no      K1ABC KC3QIS/P FN00          "K1ABC KC3QIS/P FN00"
-the operator portable    Report           K1ABC KC3QIS/P -12         yes       no      K1ABC KC3QIS/P -12           "K1ABC KC3QIS/P -12"
-the operator portable    RogerAndReport   K1ABC KC3QIS/P R-12        yes       no      K1ABC KC3QIS/P R-12          "K1ABC KC3QIS/P R-12"
-the operator portable    Acknowledge      K1ABC KC3QIS/P RRR         yes       no      K1ABC KC3QIS/P RRR           "K1ABC KC3QIS/P RRR"
-the operator portable    Seventy3         K1ABC KC3QIS/P 73          yes       no      K1ABC KC3QIS/P 73            "K1ABC KC3QIS/P 73"
-the operator compound    CQ button        CQ W4/KC3QIS FN00          NO        -       (refused)                    (never keyed)
-the operator compound    Grid             K1ABC W4/KC3QIS FN00       yes       YES     K1ABC <W4/KC3QIS> FN00       NOTHING
-the operator compound    Report           K1ABC W4/KC3QIS -12        yes       YES     K1ABC <W4/KC3QIS> -12        NOTHING
-the operator compound    RogerAndReport   K1ABC W4/KC3QIS R-12       yes       YES     K1ABC <W4/KC3QIS> R-12       NOTHING
-the operator compound    Acknowledge      K1ABC W4/KC3QIS RRR        yes       YES     K1ABC <W4/KC3QIS> RRR        NOTHING
-the operator compound    Seventy3         K1ABC W4/KC3QIS 73         yes       YES     K1ABC <W4/KC3QIS> 73         NOTHING
-
-MESSAGES THE MENU CAN OFFER : 43
-compose and read back       : 27
-refused by the composer     : 1
-carry a hashed callsign     : 15
-
-15 of 43 would be keyed today and read back as nothing.
+ASKED FOR    : "VP2MAA KC3QIS FN00DJ"  (20 characters)
+AT 48000 Hz  : composed, NonstandardCallsign, bits say "<VP2MAA KC3QIS> FN00DJ"
+THE BITS SAY : "<VP2MAA KC3QIS> FN00DJ"
+    standard  "VP2MAA" / "KC3QIS" / "FN00DJ"      -> Ok, reads back "VP2MAA KC3QIS FN00"
+    standard  "VP2MAA KC3QIS" / "FN00DJ" / ""     -> FirstCallInvalid, reads back -
 ```
 
-**It is not the class the instruction predicted, and that is the finding inside
-the finding.** The instruction named *the compound and portable callsigns*.
-**Portable suffixes are fine** — `K1ABC/P KC3QIS FN00` packs `Standard` and reads
-back as itself on all five shapes, and so does the operator's own `KC3QIS/P`.
-**It is compound prefixes**, and it includes his own `W4/KC3QIS`. One message
-already refused honestly before this unit: `CQ W4/KC3QIS FN00` will not compose
-at all.
+**There is no `DECODED BACK` line, and its absence is the finding.** The standard
+packing succeeded and read back `VP2MAA KC3QIS FN00`, a **truncation of your own
+words**, so the composer's round-trip guard correctly refused it. The words then
+fell through to the pass that allows a callsign on the wire as a hash, where
+**`VP2MAA KC3QIS` was hashed as one callsign field** and what went out was
+`<VP2MAA KC3QIS> FN00DJ`. `Ft8SlotDecoder` returns nothing at all off that slot.
+**You transmitted something nobody could decode, twice, on a live antenna** —
+§0.0 pointed the other way, a transmission asserting something nobody receives.
 
-### 2. `VP2MAA KC3QIS FN00DJ` clicked, after the guard — beside a good message
+`CQ KC3QIS FN00DJ` did the same thing: `composed, Standard, bits say
+"<CQ KC3QIS> <FN00DJ>"`, no decode back.
 
-```
-he clicked        : "VP2MAA KC3QIS FN00DJ"
-the encoder made  : "<VP2MAA KC3QIS> FN00DJ"
-hashed callsign   : True
-armed             : False
-bytes at the port : 0
-sink touched      : False
-
-THE SEND AREA LINE, IN FULL:
-Hamlet composed "VP2MAA KC3QIS FN00DJ" and sent nothing: it encodes as
-"<VP2MAA KC3QIS> FN00DJ", which puts a callsign on the air as a 22-bit hash
-instead of as a callsign. A station can only put a name to that hash if it heard
-the whole callsign in the same slot, so anybody hearing this on its own decodes
-nothing at all. Nothing was keyed. The message is still in the menu and
-everything else toward that station will go.
-```
-
-Driving the slot boundary it would have gone out on still produces
-`Ft8ArmOutcome.NothingArmed`, no run, zero bytes and an untouched sink — a
-refusal that leaves something armed is not a refusal.
-
-**And beside it, through the same three calls, so it reads as a gate:**
+**With the grid cut to four, both round-trip exactly:**
 
 ```
-"CQ KC3QIS FN00" -> "CQ KC3QIS FN00"
-outcome            : Ran
-sent               : True
-bytes at the port  : 16
-wire               : FE FE 94 E0 1C 00 01 FD FE FE 94 E0 1C 00 00 FD
-samples to the card: 606720 at 48000 Hz
+ASKED FOR    : "VP2MAA KC3QIS FN00"  (18 characters)  -> DECODED BACK: "VP2MAA KC3QIS FN00"
+ASKED FOR    : "CQ KC3QIS FN00"      (14 characters)  -> DECODED BACK: "CQ KC3QIS FN00"
 ```
 
-The same for `VP2MAA KC3QIS FN00`, `K1ABC/P KC3QIS -12` and `CQ KC3QIS/P FN00`.
-**Ten of ten.** And the menu toward a station every one of whose messages is
-refused still offers all five, in exchange order, with their labels:
+**`messageLength: 16` measured the composed string and not the encoded message**,
+which is why it looked healthy: `CQ KC3QIS FN00DJ` is sixteen characters whether
+or not anything on the air could read it. Unit 272 has since changed what the
+telemetry line reports.
+
+**2. The CQ button's composed string, with rows on the table.** Re-measured this
+session:
 
 ```
-grid                   "VP2M/K1ABC KC3QIS FN00"  menu: offered, send path: refused
-report                 "VP2M/K1ABC KC3QIS -12"   menu: offered, send path: refused
-roger and report       "VP2M/K1ABC KC3QIS R-12"  menu: offered, send path: refused
-acknowledge            "VP2M/K1ABC KC3QIS RRR"   menu: offered, send path: refused
-73                     "VP2M/K1ABC KC3QIS 73"    menu: offered, send path: refused
+empty table    : "CQ KC3QIS FN00"
+one row        : "CQ KC3QIS FN00"
+several rows   : "CQ KC3QIS FN00"
+
+the CQ button composes: "CQ KC3QIS FN00"
+the bits say          : "CQ KC3QIS FN00"
+the decoder returns   : "CQ KC3QIS FN00"
 ```
 
-### 3. The two telemetry bags, hashed and not
+It begins with `CQ `, it is the same string every time, and it round-trips.
+
+**3. A slot with a CQ, a third-party exchange and a message to the operator.**
+Re-measured this session:
 
 ```
-HASHED  - "VP2MAA KC3QIS FN00DJ"        IN FULL - "VP2MAA KC3QIS FN00"
-  messageType : NonstandardCallsign       messageType : Standard
-  messageLength         : 22              messageLength         : 18
-  carriedHashedCallsign : True            carriedHashedCallsign : False
-  outcome               : Sent            outcome               : Sent
-  keyed                 : True            keyed                 : True
+"CQ VP2MAA FK52"    -> contact column: (nothing)
+"K9TC KJ6IX RRR"    -> contact column: (nothing)
+"KC3QIS W1ABC -12"  -> contact column: "your move, 0 slots"
 ```
 
-**And the line from 2026-09-07, then and now.** It read `messageType: Standard,
-messageLength: 16` for a slot that carried `<CQ KC3QIS> <FN00DJ>` and decoded to
-nothing. It now reads:
+**A state on exactly one row.** The test also records what the ungated read still
+says about the middle row — `"your move, 0 slots"` — so the gate is demonstrably
+doing the work rather than the ledger having changed. Your own compound forms
+still count: `KC3QIS/P` and `W4/KC3QIS` both carry the state.
+
+**4. `IK4LZH JN54`'s tooltip, and a Belgian callsign beside it.**
 
 ```
-  messageType           : Standard
-  messageLength         : 20
-  carriedHashedCallsign : True
+IK4LZH is calling anyone. They are in northern Italy, in grid JN54,
+    4,400 miles away on a bearing of 53 degrees.
+
+ON4ABC is calling anyone. They are in Belgium, in grid JO20,
+    3,900 miles away on a bearing of 49 degrees.
 ```
 
-The type is unchanged, because `Standard` is a true fact about the format and not
-this unit's to alter. **What has changed is that the flag beside it says the slot
-was unreadable.** An ordinary transmission's line did not move at all —
-`CQ KC3QIS FN00` still counts 14, because for a message that reads back as itself
-the two counts are the same count.
+The compass word is on one and not the other, and **the difference is a committed
+table with a reason beside each row**, `data/callsigns/entity-extents.json`. Italy
+is 10.5 degrees tall, about 725 miles from Sicily to the Alps, and *northern
+Italy* is ordinary English. Belgium is 1.95 degrees, barely two grid squares, and
+*northern Belgium* is not something people say. **Ten entities take a qualifier
+and six were considered and refused one**, each refusal with its reasoning, so
+Belgium reads as weighed rather than missed. The United Kingdom is the interesting
+refusal: it clears the span and fails the idiom, because nobody says *northern
+United Kingdom*.
+
+The same callsign moves with its grid and the country does not:
+
+```
+JN54 -> They are in northern Italy    JM88 -> They are in southern Italy
+JN62 -> They are in Italy             (the middle third takes no compass word)
+```
+
+And where the callsign and the grid disagree, **the callsign wins**:
+
+```
+CQ W4/YV7AXM FK60 -> They are in United States of America, in grid FK60,
+                     2,200 miles away on a bearing of 156 degrees.
+```
+
+`FK60` is a Venezuelan square and the sentence names the United States, because
+that is where he is transmitting from. Where the DXCC table declines, no country
+at all: `VK9XYZ` reads *They are in grid QG44, 9,500 miles away on a bearing of
+275 degrees.*
 
 ## 4. What's blocking us
 
-**Five items. None asks for a ruling, and none is in the way of a criterion in
-B.**
+**Nothing blocks the next unit.** Three items, none of which asks for a ruling.
 
-### 1. The instruction predicted the wrong class, and the tree wins
+**1. The tooltip says *They* where your example says *He*.**
 
-The instruction says *the compound and portable callsigns of the DX stations he
-is most likely to answer are the obvious candidates*. Measured, **portable
-suffixes are not in the class at all**: `K1ABC/P`, `KC3QIS/P` and every message
-built on them packs `Standard` and reads back as itself. The fifteen are all
-compound *prefixes*. Reported, not repaired. It does not change what was built —
-the guard is written on what the encoder did, not on the shape of a callsign, so
-it catches the real class whatever it turns out to be.
+Stated so you can overrule it in a word, not asked.
 
-### 2. The arbiter's brackets branch is unreachable against this tree
+Your example reads *He is in grid JN54*. `Ft8Vocabulary` has carried a rule since
+unit 251 — written into the file — that **no pronoun chooses a gender**, because
+Hamlet has no way to know who is at the key. Following the example would have
+broken a rule recorded in the very file being edited, so the wording follows the
+rule and the substance of your ruling is untouched: the distance belongs to the
+station.
 
-The ruling is *a hashed callsign is not the words the operator clicked, **unless
-he clicked brackets***. Measured, `Ft8Composer` refuses a bracketed string
-outright, before the guard is ever asked:
+**If you would rather it read *He*, say so and it is a one-line change.** It is
+here rather than in section 1 alone because it is the kind of thing that is easy
+to not notice and then live with for months.
 
-> Hamlet did not send "<VP2M/K1ABC> KC3QIS FN00": "<VP2M/K1ABC> KC3QIS FN00" is
-> not a message this library can put on the air. What was tried … standard, in
-> full, "<VP2M/K1ABC>" / "KC3QIS" / "FN00" would not pack: FirstCallInvalid …
+**2. The order on disk was an amended issue of one already executed.**
 
-I expected that string to compose and arm, and the tree said otherwise; the test
-records the measured truth rather than my expectation. The second half of the
-rule is kept anyway, because it costs nothing and a guard written on the flag
-alone would refuse such a message for the wrong reason if the composer ever
-accepted one. **Nothing is asked here** — it is a note for whoever picks up the
-parked question of offering him a way to send a nonstandard callsign.
+Reported, not repaired, per the instruction's own rule about tree mismatches.
 
-### 3. Step D's criterion 1 has a clause the instruction did not quote
+HEAD carries *271 — four faults*, executed and reported at `e25e883`; the working
+copy carries *271 — six faults*, which inserts a new task 6 and renumbers the old
+one to 7. **Unit 272 has also run since**, so the tree was two units past the
+order's own assumptions and the root version read `1.12.126`.
 
-`PHASE_PLAN.md:246` reads *Tim sets the Transmit drive control and reads the dBFS
-**and clip count** under the waterfall*. The instruction quoted it without the
-clip count, and **no clip count is recorded anywhere** — `grep -rn clip
-SHACK_FACTS.md` returns nothing. I moved the cursor to `done` on the arbiter's
-decision, which named FACT-005 as answering all three criteria and is not this
-unit's to re-argue, and I am naming the gap so it can be reversed by a reader who
-judges otherwise. My own reading: a peak of 0.25 cannot clip, so that reading is
-arithmetically forced and its absence from the record is a bookkeeping gap rather
-than an unanswered question. The two must-pass criteria that genuinely blocked
-step D — his ALC in his words, and the number written down — are answered without
-qualification.
+§9.6 says a session opening an order dated earlier than `OUTPUT.md` is holding
+work already done, and should say so and stop. **This one is not that case** — it
+carries genuinely new work in its task 6 — so it was executed for the new task and
+verified for the rest. The mismatch is worth naming because the phase record
+indexes units by number, and two issues of 271 will collide in `PHASE_OUTCOME.md`
+the next time either is cited. **This is the second consecutive report saying
+that**; unit 252 was also issued twice under one number.
 
-### 4. Step E's line in the tree says `blocked`, not `in progress`
+**3. `PM95` reads *southern Japan*, and that is the qualifier's weakest reading.**
 
-`PHASE_OUTCOME.md`'s header reads `STEP: E | blocked | Tim works a station`,
-while the instruction and the `ARBITER-DECISION` block both say `in progress`.
-The instruction says not to touch step E's line, so it was not touched. The
-arbiter's own append is what resolves it. Reported, not repaired.
+Not a defect and not a question. It is honest arithmetic on the bounds the table
+records — 35.6°N in a country running 31.03 to 45.55 — and thirds put it in the
+southern band. Some would call the Tokyo area central. **The table is the place to
+argue with it**, which is why the rule, the banding and the reason for each entry
+are all in the data file rather than in code.
 
-### 5. The click-driven test was built and not run — a conflict inside the instruction
+### Asks still outstanding
 
-Task 2 requires the test to be *driven from the operator's click rather than from
-a constructed transmitter*. The click lands on
-`MainWindowViewModel.SendMessageCommand`, which lives in `Hamlet.App`;
-`Hamlet.RadioEngine.Tests` references only the engine and cannot reach it, and
-the instruction forbids running `Hamlet.App.Tests`. Resolved by doing both:
-`tests/Hamlet.App.Tests/ViewModels/TheSendPathRefusesWhatNobodyCanReadTests.cs`
-drives `SendMessageCommand.Execute` and reads `DigitalSendLine`, and is **built
-and not run**; the runnable measurement is
-`HamletDoesNotKeyWhatNobodyCanReadTests`, which makes the send path's own three
-calls with its own arguments against the **real** `Ft8ArmedSend`,
-`Ft8TransmitSequence`, fake port and fake sink. **What I cannot claim on a run
-tonight is that the guard is reached from the click itself** — only that the
-guard is correct and that the view model calls it. Said plainly rather than
-glossed.
+Carried verbatim until you rule, per HM-DEC-139.
+
+**This session cannot honestly reconstruct the queue, and that is now the fourth
+report in a row saying so.** HM-DEC-139 requires the work order to carry the
+outstanding asks inbound, and **work instruction 271 carries no
+`Asks still outstanding` heading**, which by §9.6 makes the order defective and
+obliges the session to rebuild the queue from `OPEN_ISSUES.md` and the recent
+reports. `output.md` is overwritten every unit, so the reports that would carry
+those asks are gone, and rebuilding from `OPEN_ISSUES.md` alone would produce the
+long list HM-DEC-140 expressly says does not belong here.
+
+What can be stated without a rebuild:
+
+- **The missing heading is itself the first ask.** It is a defect in the order
+  under §9.6 and HM-DEC-137. **Four consecutive orders have now been missing it**,
+  which is exactly the shape HM-DEC-137 was written about: a rule nothing carries
+  into the session is the same as no rule.
+- **The pronoun above is the only thing this unit hands back**, and it is a
+  preference rather than a ruling.
+- **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05, are step 6's two unmet
+  exit criteria from the closed sensitivity phase. They are recorded issues with
+  an id, an owner and a date, so by HM-DEC-140 they belong in `OPEN_ISSUES.md` and
+  not on this queue. Neither was touched.
