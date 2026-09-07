@@ -3634,7 +3634,7 @@
                                          declaration, because it checks the result
                                          rather than the intent. -->
                                     <Grid Grid.Row="1"
-                                          ColumnDefinitions="76,48,48,54,*,148"
+                                          ColumnDefinitions="76,48,48,54,*"
                                           RowDefinitions="Auto"
                                           IsVisible="{Binding HasDigitalDecodes}">
 
@@ -3676,11 +3676,13 @@
                                              12-point Consolas. Giving the star to
                                              the state instead would let a derived
                                              cell push the decoded text around. -->
-                                        <TextBlock Grid.Row="0" Grid.Column="5" Text="contact"
-                                                   ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
-                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                                   Margin="0,0,0,4"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <!-- **THE `contact` HEADING WENT WITH ITS
+                                             COLUMN ON 2026-09-07.** The column
+                                             moved to the mine side, where unit
+                                             271's gate means it has something to
+                                             say; here it was blank on nearly every
+                                             row and it was costing 148 pixels of a
+                                             list that is now half as wide. -->
 
                                     </Grid>
 
@@ -3749,7 +3751,7 @@
                                                      with and offer `RRR` as a first
                                                      send after it had already gone
                                                      twice. -->
-                                                <Grid ColumnDefinitions="76,48,48,54,*,148"
+                                                <Grid ColumnDefinitions="76,48,48,54,*"
                                                       Background="Transparent"
                                                       ContextRequested="OnDecodedRowContextRequested">
                                                     <TextBlock Grid.Column="0" Text="{Binding Utc}"
@@ -3850,10 +3852,6 @@
                                                          it, and the two should not
                                                          read with the same
                                                          weight. -->
-                                                    <TextBlock Grid.Column="5" Text="{Binding Contact}"
-                                                               ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
-                                                               Foreground="{StaticResource HmTextMutedBrush}"
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                 </Grid>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
