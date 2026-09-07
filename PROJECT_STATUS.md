@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
 TASK: 1 of 5
-WORK_INSTRUCTION: 257 - the row knows where the contact stands
+WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T20:45:31-04:00
-NOTE: Unit 256's leftover root records and .run-unit state committed first, as the reload asked. Now tracing what the tree already knows about a station before a line is written: Ft8Decode carries the relation only inside Message, Ft8Vocabulary.Split lives in the app and is the only splitter, and the question the survey has to settle is whether it moves into the engine or the engine gets fields another way. Two copies of the parsing rules is the one answer that is not allowed.
+UPDATED: 2026-09-06T22:29:20-04:00
+NOTE: Committing unit 257's leftover root records and its four uncommitted files exactly as they arrived, before anything touches them, so the next failure is a diff and not a loss. Then the trace: does the inherited test project compile, and is the committed corpus what the decoder returned or what the script wrote.
 
 ---
 

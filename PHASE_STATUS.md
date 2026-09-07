@@ -2,8 +2,8 @@ PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-06
 DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
 CURRENT_STEP: 1
-WORK_INSTRUCTION: 257 - the row knows where the contact stands
-HEARTBEAT: 2026-09-06 20:43:44
+WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
+HEARTBEAT: 2026-09-06 22:28:48
 STEP: 0 | done | the dummy load is gone from the tree
 STEP: 1 | partial | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission

@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-06T20:34:05-04:00  root C:\Source\HamLet
+measured 2026-09-06T22:22:14-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -10,6 +10,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      output.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,11 +22,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 875f176
-  uncommitted at the root : 3
+  HEAD   : 264cc8b
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
+      D output.md
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -368,13 +370,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     bug, the 101.33 ms pulse above 6 kHz, the CW decoder and its inherited reds.
 
   --- PHASE_STATUS.md ---
-  31 lines, 1395 bytes
+  30 lines, 1333 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
-  HEARTBEAT: 2026-09-06 20:34:04
+  WORK_INSTRUCTION: 257 - the row knows where the contact stands
   STEP: 0 | done | the dummy load is gone from the tree
   STEP: 1 | partial | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
@@ -402,7 +403,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   The previous phase's final status is archived at `docs/phase-onair-run/PHASE_STATUS.md`.
 
   --- PHASE_OUTCOME.md ---
-  172 lines, 29793 bytes
+  187 lines, 33475 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   STEP: 0 | done | the dummy load is gone from the tree
@@ -575,6 +576,21 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: partial
   STATE_WHY: Criteria 2 through 6 are met with quoted evidence, including a 3 of 3 loopback decode on a real device route, but criterion 1 is met only as a self declared cut down on a development machine's monitor audio endpoint, with audio never played to the radio's USB input and the level deferred to Tim, so a must pass criterion remains unmet.
+  
+  ## UNIT 5 - STEP 4
+  
+  STEP: 4
+  APPROACH: Build a per-station contact ledger in the engine from decoded slots - which messages passed each way and how many slots ago - and derive the four row states from it, proved against a recorded multi-slot band scene composed by Hamlet's own encoder and read back by its own decoder, including a station working three others at once
+  HIT: section 4 wants a ruling: no - The section states plainly that nothing is blocking and its only other content is a note about the validator not running, reported for the record, so no decision is asked of the owner.
+  MOVE: continue
+  WHY: Step 4 has had no unit spent on it, its only entry criterion is step 0 which is done, and it is now the one thing standing between this phase and step 5 - the right-click menu cannot highlight an expected message or count a repeat until something holds what has passed between two callsigns, and nothing in this repository does. The loop test was run on this approach and returned NOT FOUND against all nine entries; step 4 has zero units spent, nothing on it has failed, and none of the tried approaches - a documentation sweep, an abort, a waveform seam, a keying sequence, a render sink - resembles receive-side bookkeeping.
+  DECIDED: Three on my own authority. First, that criterion 6's recorded captures are satisfied by a scene composed by Hamlet's own encoder and read back through its own decoder, because I measured that tests/fixtures/ft8/captured/ holds a README and no captures and that the only FT8 wav in the tree is refused for scoring by its own README - so the choice is a synthesized scene with its provenance stated or no evidence at all, and the instruction requires the scene to be kept out of the WSJT-X fixture folder and never scored against the decoder. Second, that the ledger lives in the engine and takes the operator's callsign as a parameter rather than reading settings, so the engine is still not told that tabs exist while step 5 and any later logging can both read it. Third, that the drop candidate is the MainWindow.axaml markup rather than any part of the ledger, because a tested string on the row is
+  LICENCE: PHASE_PLAN.md's named alternatives to stopping - the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried - together with the plan's own ruling that a row's state is derived from which messages passed between two callsigns, which is bookkeeping, not meaning, which licenses the field split the ledger needs. SHACK_FACTS.md FACT-004 rules out the radio-side alternative to a synthesized scene.
+  COST: 15.8225235
+  ACCOMPLISHED: Hamlet stops showing a list of events and starts knowing where a contact stands. For each station it holds what passed each way and how long ago, and says one of four things about it - waiting on him, your move, complete, gone quiet - with the slot counts beside it. It says them about a station working three others at once without calling that a fault, it calls an exchange complete without waiting for a 73 nobody is obliged to send, and it closes, hides and forbids nothing. That is the last thing step 5's menu needs before a right-click can offer the operator anything.
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: The unit worked entirely on step 3 and its own report states that steps 4, 5 and 6 have had no unit spent on them and that step 4 is unblocked, unstarted and next, so none of step 4's exit criteria on per station QSO state, the four row states, the completeness rule, the never closing rule, the three at once proof or derivation from recorded captures has any work or evidence behind it.
 
   --- CLAUDE.md ---
   1376 lines, 188627 bytes
@@ -597,17 +613,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1579 bytes
+  19 lines, 1076 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: 5 of 5
-  WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears it come back
-  BALL: tim
+  STATE: WORKING
+  TASK: 1 of 5
+  WORK_INSTRUCTION: 257 - the row knows where the contact stands
+  BALL: claude
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-157 (2026-09-06)
-  UPDATED: 2026-09-06T20:29:33-04:00
-  NOTE: Five of five done and pushed, 1.12.89 to 1.12.93, a patch a task, nothing dropped that was not named. A message Hamlet composed now leaves this computer as sound and comes back into Hamlet's own decoder as the same message - 3 of 3 on the device route, whole text, ordinal, 48.16 s of wall clock for the class. The sink was watched lying first: without the drain it reported 96000 of 96000 samples played in 1.810 s of a 2.000 s tone. The rate lie was watched too - the same capture without Ft8Resample decodes to nothing. Step 3 recorded done: criterion 3 whole, criterion 1 as the declared cut-down with the radio's own input level deferred to Tim beside step 2's criterion 4. Step 4 is next and unblocked. outcome-append.bat was refused for the fifth consecutive unit and the entry was appended by hand; validate-output.bat was refused too and the report was hand-checked. Nothing is blocking. Every UPDATED this session was read from the clock.
+  UPDATED: 2026-09-06T20:45:31-04:00
+  NOTE: Unit 256's leftover root records and .run-unit state committed first, as the reload asked. Now tracing what the tree already knows about a station before a line is written: Ft8Decode carries the relation only inside Message, Ft8Vocabulary.Split lives in the app and is the only splitter, and the question the survey has to settle is whether it moves into the engine or the engine gets fields another way. Two copies of the parsing rules is the one answer that is not allowed.
   
   ---
   

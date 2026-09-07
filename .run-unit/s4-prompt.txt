@@ -21,7 +21,7 @@ work on the same step remains open.
 Read PHASE_PLAN.md for this step exit criteria and
 PHASE_OUTCOME.md for what has already been done. Then decide
 whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step 3.
+owner answer. The step being worked is step 4.
 
 Halting a night for a question that forecloses nothing is the
 failure this judgment exists to prevent. Building on an assumption
