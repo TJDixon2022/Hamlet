@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 261 - the operator can stop it
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T00:14:11-04:00
-NOTE: Tracing the stop before building it - reading Ft8ArmedSend, Ft8TransmitSequence, TransmitAbort, ISerialPort and the FT8 send area to answer the six questions, chiefly whether ISerialPort.Write is safe beside an in-flight WriteAsync.
+UPDATED: 2026-09-07T00:25:32-04:00
+NOTE: 12 of 12 green in 91 ms, every state's wire quoted. Two reds watched first - the un-arm-only stop leaving FE FE 94 E0 1C 00 01 FD on the wire with a keyed radio, and the shape assertion firing on a wait put into the path. Committing, then the button.
 
 ---
 

@@ -1,3 +1,6 @@
+using Hamlet.RadioEngine.Civ;
+using Hamlet.RadioEngine.Transport;
+
 namespace Hamlet.RadioEngine.Transmit;
 
 /// <summary>What a slot boundary did about the armed send.</summary>
@@ -26,6 +29,70 @@ public enum Ft8ArmOutcome
 public sealed record Ft8BoundaryResult(
     Ft8ArmOutcome Outcome, OperatorSend? Send, TransmitRun? Run);
 
+/// <summary>What the operator's stop actually stopped.</summary>
+/// <remarks>
+/// **A STOP THAT CANNOT SAY WHAT IT STOPPED IS THE DEFECT UNIT 253 FOUND IN
+/// <c>Ic7300Rig.AbortCw</c>**, where a failed abort and a successful one left the
+/// same trace, which was nothing (§0.0.1). These four are distinguishable at the
+/// call site and each one is a different sentence to put in front of an operator.
+/// </remarks>
+public enum Ft8StopOutcome
+{
+    /// <summary>
+    /// Nothing was armed and there was no port to say anything on. **Nothing
+    /// happened and nothing is claimed to have happened.**
+    /// </summary>
+    NothingToStop,
+
+    /// <summary>
+    /// Something was armed and now is not, and there was no port to tell.
+    /// Nothing was ever going to key, so nothing needed telling.
+    /// </summary>
+    Unarmed,
+
+    /// <summary>
+    /// Nothing was armed, and the abort's frames went at the port anyway.
+    /// **That is not a mistake** - see <see cref="Ft8ArmedSend.StopNow"/>.
+    /// </summary>
+    ToldTheRadio,
+
+    /// <summary>Both: an armed send was taken away *and* the radio was told.</summary>
+    UnarmedAndToldTheRadio,
+}
+
+/// <summary>What one press of the operator's stop did, in full.</summary>
+/// <param name="Unarmed">
+/// True where a send was armed when the stop arrived and is not armed now.
+/// **Nothing it was carrying will ever go out**: the field is the only thing a
+/// boundary reads.
+/// </param>
+/// <param name="Abort">
+/// What <see cref="TransmitAbort.Fire"/> did - both frames and what became of
+/// each - or null where there was no port to fire it at. **Carried rather than
+/// reduced to a boolean**, because the operator's next question after "did it
+/// stop" is "did anything reach the radio".
+/// </param>
+public sealed record Ft8StopResult(bool Unarmed, AbortRecord? Abort)
+{
+    /// <summary>Which of the four this was.</summary>
+    public Ft8StopOutcome Outcome => (Unarmed, Abort is not null) switch
+    {
+        (true, true) => Ft8StopOutcome.UnarmedAndToldTheRadio,
+        (true, false) => Ft8StopOutcome.Unarmed,
+        (false, true) => Ft8StopOutcome.ToldTheRadio,
+        _ => Ft8StopOutcome.NothingToStop,
+    };
+
+    /// <summary>True where at least one of the abort's two frames got out.</summary>
+    /// <remarks>
+    /// **FALSE IS NOT THE SAME AS "NOT NEEDED".** It is false both when there was
+    /// no port and when there was one that took neither frame, and the second of
+    /// those means the radio may still be transmitting. <see cref="Abort"/> tells
+    /// the two apart and the caller is expected to look.
+    /// </remarks>
+    public bool AnythingReachedTheRadio => Abort?.AnythingReachedTheRadio ?? false;
+}
+
 /// <summary>
 /// **One armed transmission, fired at one boundary, and then gone.**
 /// </summary>
@@ -51,8 +118,16 @@ public sealed record Ft8BoundaryResult(
 /// nothing itself, names no CI-V constant and touches no port.</para>
 /// <para>**AN ARMED SEND THAT HAS NOT KEYED CAN BE CANCELLED**, and
 /// <see cref="Cancel"/> is a field cleared under a lock on the calling thread
-/// with nothing awaited. Once it has keyed, the route out is the sequence's own
-/// abort and nothing is added beside it.</para>
+/// with nothing awaited.</para>
+/// <para>**AND THE OPERATOR REACHES BOTH HALVES THROUGH ONE DOOR**, which is
+/// <see cref="StopNow"/>: it un-arms what has not keyed and fires
+/// <see cref="TransmitAbort.Fire"/> at the port for what has, on the calling
+/// thread, with no <c>await</c> on the path and no question asked about which of
+/// the two the application believes it is in. Until unit 261 built it,
+/// <see cref="Cancel"/> had no caller in <c>src/</c> at all and
+/// <c>TransmitAbort.Fire</c> had exactly one - inside
+/// <see cref="Ft8TransmitSequence"/>'s own <c>catch</c> - so **no operator
+/// gesture reached the abort**.</para>
 /// <para>**A BOUNDARY THAT HAS GONE BY DISCARDS THE SEND RATHER THAN
 /// TRANSMITTING LATE.** The operator chose a slot; putting his message out in a
 /// different one is a transmission he did not ask for, which is this phase's one
@@ -111,6 +186,64 @@ public sealed class Ft8ArmedSend
 
             return had;
         }
+    }
+
+    /// <summary>
+    /// **The operator's stop. Both halves, on this thread, waiting for nothing.**
+    /// </summary>
+    /// <param name="port">
+    /// The radio's CI-V transport, in whatever state it is in, or null where no
+    /// radio is connected.
+    /// </param>
+    /// <param name="radioAddress">The radio's CI-V address.</param>
+    /// <param name="controllerAddress">This application's CI-V address.</param>
+    /// <returns>Which of the four happened, and what the abort's frames did.</returns>
+    /// <remarks>
+    /// <para>**IT IS NOT CONDITIONAL ON THE APPLICATION BELIEVING IT IS
+    /// TRANSMITTING** (`PHASE_PLAN.md` step 1: *it cannot be disabled, deferred,
+    /// or made conditional*). There is no flag read here, no state machine
+    /// consulted and no "am I sending?" question asked, because the one moment the
+    /// answer would be wrong is the moment it matters. **Given a port, the abort
+    /// always fires.** Firing it at a radio already in receive costs two frames
+    /// and changes nothing - `1C 00 00` is *be in receive*, an absolute state and
+    /// not a toggle, and `17 FF` is a stop code a radio sending nothing has
+    /// nothing to apply it to (`docs/unit261-stop-trace.md` Q5).</para>
+    /// <para>**THE UN-ARM COMES FIRST, AND THAT ORDER IS DELIBERATE.** Between the
+    /// two halves a slot boundary can arrive on another thread; clearing the field
+    /// before the frames go out means the boundary finds
+    /// <see cref="Ft8ArmOutcome.NothingArmed"/> rather than keying a radio one
+    /// microsecond after it was told to stop.</para>
+    /// <para>**AND IT CANNOT WAIT ON THE TRANSMISSION IT IS STOPPING.** The one
+    /// wait on this path is <c>_gate</c>, and **no member of this type holds
+    /// <c>_gate</c> across an <c>await</c>** - <see cref="AtBoundaryAsync"/> takes
+    /// it and releases it before the await, so a running transmission never owns
+    /// it. The abort itself goes at
+    /// <see cref="ISerialPort.Write(ReadOnlySpan{byte})"/>, which returns void and
+    /// does not queue behind the in-flight <see cref="ISerialPort.WriteAsync"/>
+    /// the sequence uses.</para>
+    /// <para>**IT REUSES <see cref="Cancel"/> AND ADDS NO SECOND WAY TO UN-ARM.**
+    /// One field, one lock, one line that clears it.</para>
+    /// <para>**NULL PORT IS NOT A REFUSAL, IT IS AN ABSENCE.** With no radio
+    /// connected there is no wire to write a stop onto, and the result says so
+    /// with <see cref="Ft8StopOutcome.NothingToStop"/> or
+    /// <see cref="Ft8StopOutcome.Unarmed"/> rather than pretending a frame
+    /// went out.</para>
+    /// <para>**NOTHING ON THIS PATH IS AWAITED**, and
+    /// <c>TheOperatorsStopFiresFromEveryStateTests.NothingOnTheStopPathWaitsForAnything</c>
+    /// reads this method's own body and fails on the keyword.</para>
+    /// </remarks>
+    public Ft8StopResult StopNow(
+        ISerialPort? port,
+        byte radioAddress = CivConstants.DefaultRadioAddress,
+        byte controllerAddress = CivConstants.DefaultControllerAddress)
+    {
+        var unarmed = Cancel();
+
+        var abort = port is null
+            ? null
+            : TransmitAbort.Fire(port, radioAddress, controllerAddress);
+
+        return new Ft8StopResult(unarmed, abort);
     }
 
     /// <summary>
