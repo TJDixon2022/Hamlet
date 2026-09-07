@@ -3932,17 +3932,27 @@
 
                                     <Grid RowDefinitions="Auto,*,Auto">
 
-                                        <Grid Grid.Row="0" ColumnDefinitions="76,62,*"
+                                        <Grid Grid.Row="0" ColumnDefinitions="76,*"
                                               IsVisible="{Binding HasDigitalMineDecodes}">
                                             <TextBlock Grid.Column="0" Text="utc"
                                                        FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                        Margin="0,0,14,4"
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
-                                            <TextBlock Grid.Column="1" Text="from"
-                                                       FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                                       Margin="0,0,14,4"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                            <TextBlock Grid.Column="2" Text="message"
+                                            <!-- **THE `from` COLUMN WENT ON 2026-09-07
+                                                 AND IT WAS MINE TO LOSE.** Unit 273
+                                                 put it here and unit 275 measured
+                                                 what it cost: it is the only column
+                                                 on this side whose content has no
+                                                 bound, so a six-character callsign
+                                                 pushed the row's message column to
+                                                 150 where the header's sat at 138 -
+                                                 the sibling-grid drift unit 241 wrote
+                                                 this test class about, reproduced.
+                                                 And it duplicated the message beside
+                                                 it, which already opens with the
+                                                 sender. The tooltip that named the
+                                                 entity moved to the message cell. -->
+                                            <TextBlock Grid.Column="1" Text="message"
                                                        FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                        Margin="0,0,0,4"
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
@@ -3957,15 +3967,11 @@
                                                           ItemsSource="{Binding DigitalMineDecodes}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate x:DataType="vm:DigitalDecodeRow">
-                                                        <Grid ColumnDefinitions="76,62,*" RowDefinitions="Auto,Auto">
+                                                        <Grid ColumnDefinitions="76,*" RowDefinitions="Auto,Auto">
                                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Utc}"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
                                                                        Margin="0,1,14,1" />
-                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Sender}"
-                                                                       ToolTip.Tip="{Binding SenderHelp}"
-                                                                       FontFamily="Consolas,Menlo,monospace" FontSize="12"
-                                                                       Margin="0,1,14,1" />
-                                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Message}"
+                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Message}"
                                                                        ToolTip.Tip="{Binding PayloadHelp}"
                                                                        TextWrapping="Wrap"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
@@ -3977,7 +3983,13 @@
                                      column of its own, because this side is half the width the
                                      one list had and the message is what must not be
                                      squeezed. -->
-                                <TextBlock Grid.Row="1" Grid.Column="1" Text="worked"
+                                <!-- **UNDER THE TIME RATHER THAN BESIDE THE
+                                     CONTACT**, since the `from` column went on
+                                     2026-09-07 and the contact line took column 1.
+                                     `worked` at ten point fits inside the 76 the
+                                     time column already has, so the mark costs the
+                                     message nothing. -->
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="worked"
                                            IsVisible="{Binding HasWorkedBefore}"
                                            ToolTip.Tip="{Binding WorkedBefore}"
                                            FontSize="10" Margin="0,0,14,4"
@@ -3988,7 +4000,7 @@
                                                                  column of its own, because this side is half
                                                                  the width the one list had and the message is
                                                                  what must not be squeezed. -->
-                                                            <TextBlock Grid.Row="1" Grid.Column="2"
+                                                            <TextBlock Grid.Row="1" Grid.Column="1"
                                                                        Text="{Binding Contact}"
                                                                        FontSize="11" Margin="0,0,0,4"
                                                                        Foreground="{StaticResource HmGreenBrush}" />

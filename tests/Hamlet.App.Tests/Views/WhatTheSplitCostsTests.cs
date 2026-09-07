@@ -102,11 +102,17 @@ public sealed class WhatTheSplitCostsTests
         // and it takes no width on a row it has nothing to say about, which is
         // the case measured here.
         //
-        // **THE MINE LIST KEPT BOTH.** They are diagnostics about a contact he is
-        // in and there was never a shortage of width on that side. The two lists
-        // carry different columns now, deliberately.
+        // **THE MINE LIST LOST ITS `from` COLUMN ON 2026-09-07**, so it declares
+        // `76,*` where it declared `76,62,*`. That column was the only one on
+        // either side whose content had no bound - a six-character callsign
+        // pushed the row past its header - and it duplicated the message beside
+        // it, which already opens with the sender.
+        //
+        // **AND NOTE WHAT THE INSTRUCTION EXPECTED VERSUS WHAT WAS THERE.** Task 1
+        // says the mine list keeps `dt` and `hz`. It never had them: unit 273
+        // built that side as `utc`, `from`, `message`.
         const double LeftFixed = 76 + 48;
-        const double MineFixed = 76 + 62;
+        const double MineFixed = 76;
 
         // The panel's own padding and the scroller, taken off both. Measured from
         // the panel rectangle rather than assumed, so a theme change moves it.

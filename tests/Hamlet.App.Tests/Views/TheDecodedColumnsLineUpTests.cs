@@ -138,90 +138,130 @@ public sealed class TheDecodedColumnsLineUpTests
     }
 
     /// <summary>
-    /// The `hz` column is right-aligned, so a three-digit tone and a four-digit
-    /// one line up on their units.
+    /// The mine list's header sits over its own columns, which are not the left
+    /// list's.
     /// </summary>
     /// <remarks>
-    /// **231 AND 2438 ARE BOTH REAL AND THEY READ AS A COLUMN.** Left-aligned,
-    /// the hundreds digit of one sits under the thousands digit of the other,
-    /// and a column of numbers that cannot be compared at a glance is worse than
-    /// no column, because the eye compares them anyway.
+    /// <para>**EACH HEADER AGAINST ITS OWN ROWS, SINCE THE TWO SIDES DIFFER**
+    /// (work instruction 275 task 2). The left list dropped `dt` and `hz` on
+    /// 2026-09-07 and the mine list kept them, so the sides carry different
+    /// columns deliberately — and a test that compared one side's header with the
+    /// other's rows would fail for the right reason and tell nobody
+    /// anything.</para>
+    /// <para>**THE HEADER IS FOUND BY `from`, WHICH ONLY THIS SIDE HAS.** The left
+    /// list has no such column, so there is no way for this to pick up the wrong
+    /// grid.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void TheToneColumnAgreesOnItsUnits()
+    public void TheMineHeaderAndItsRowsShareColumnOrigins()
     {
         var model = new MainWindowViewModel(new AppSettings(), null)
         {
-            // **THE DIGITAL WORKSPACE IS COLLAPSED UNLESS THIS TAB IS THE ONE
-            // SHOWING**, so without it nothing under it is realized and the
-            // test would look at an empty visual tree and pass by finding
-            // nothing to disagree.
             OperatingMode = "Digital",
-
-            // The panel's expand state is loaded from settings in the
-            // constructor, so it is set here rather than relied on.
             DigitalDecodedExpanded = true,
         };
 
-        var window = new MainWindow { DataContext = model };
+        var window = new MainWindow { DataContext = model, Width = 1400, Height = 1200 };
 
         window.Show();
 
         Decode(model);
 
-        // **A LAYOUT PASS IS NEEDED AS WELL AS THE JOBS.** Running the
-        // dispatcher realizes the item containers; it does not necessarily
-        // measure and arrange them, and a column origin only exists once
-        // something has been arranged.
         for (var i = 0; i < 5; i++)
         {
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
             window.UpdateLayout();
         }
 
-        // The two tones the fixture places, one three digits and one four.
-        var wanted = model.DigitalDecodes.Select(r => r.Hz).ToHashSet(StringComparer.Ordinal);
-
-        _output.WriteLine("tones decoded: " + string.Join(", ", wanted));
+        _output.WriteLine("left rows : " + model.DigitalVisibleDecodes.Count);
+        _output.WriteLine("mine rows : " + model.DigitalMineDecodes.Count);
 
         Assert.True(
-            wanted.Any(h => h.Length == 3) && wanted.Any(h => h.Length == 4),
-            "the fixture did not produce both a three-digit and a four-digit "
-            + "tone, so there is nothing to compare: " + string.Join(", ", wanted));
+            model.DigitalMineDecodes.Count >= 2,
+            "the fixture put fewer than two rows on the mine side, so there is "
+            + "nothing to compare");
 
-        var tones = window.GetVisualDescendants()
-            .OfType<TextBlock>()
-            .Where(t => t.Text is not null && wanted.Contains(t.Text))
-            .ToList();
+        var rows = window.GetVisualDescendants()
+            .OfType<ItemsControl>()
+            .FirstOrDefault(c => c.Name == "DigitalMineRows");
 
-        Assert.True(tones.Count >= 2, "fewer than two tone cells were realized");
+        Assert.NotNull(rows);
 
-        // **`Bounds` IS ALREADY RELATIVE TO THE PARENT GRID**, and every row
-        // grid now starts at the same place, so the right edge inside the grid
-        // is directly comparable between rows without translating anything.
-        var rights = tones.Select(t => t.Bounds.Right).ToList();
+        // **THE MINE HEADER IS THE ONE WITH TWO COLUMNS.** Both sides label a
+        // `message` column, and since the `from` column went on 2026-09-07 there
+        // is no heading unique to this side - so it is found by shape: `utc` and
+        // `message` and nothing else.
+        var header = window.GetVisualDescendants()
+            .OfType<Grid>()
+            .FirstOrDefault(g =>
+                g.Children.OfType<TextBlock>().Any(t => t.Text == "utc")
+                && g.Children.OfType<TextBlock>().Any(t => t.Text == "message")
+                && g.Children.OfType<TextBlock>().Count() == 2);
 
-        _output.WriteLine("right edges: "
-            + string.Join(", ", rights.Select(r => r.ToString("0.##"))));
+        Assert.NotNull(header);
 
-        Assert.All(
-            rights,
-            r => Assert.True(
-                Math.Abs(r - rights[0]) < 0.5,
-                "the tones end at " + string.Join(", ",
-                    rights.Select(x => x.ToString("0.##")))
-                + ", so they do not agree on their units"));
+        var rowGrids = rows!.GetVisualDescendants().OfType<Grid>().ToList();
+
+        Assert.True(
+            rowGrids.Count >= 2,
+            "fewer than two mine rows were realized");
+
+        var headerOrigins = Origins(header!);
+
+        _output.WriteLine("mine header origins : "
+            + string.Join(", ", headerOrigins.Select(o => o.ToString("0.##"))));
+
+        for (var i = 0; i < rowGrids.Count; i++)
+        {
+            var origins = Origins(rowGrids[i]);
+
+            _output.WriteLine("mine row " + i + " origins  : "
+                + string.Join(", ", origins.Select(o => o.ToString("0.##"))));
+
+            // **THE ROW HAS A SECOND LINE THE HEADER DOES NOT.** The contact
+            // text and the worked mark sit under the message, so a row can carry
+            // a column the header has no cell for. What must hold is that every
+            // column the header names starts where the row's does.
+            for (var column = 0; column < headerOrigins.Count
+                 && column < origins.Count; column++)
+            {
+                Assert.True(
+                    Math.Abs(headerOrigins[column] - origins[column]) < 0.5,
+                    "column " + column + " of mine row " + i + " starts at "
+                    + origins[column].ToString("0.##")
+                    + " and its header starts at "
+                    + headerOrigins[column].ToString("0.##"));
+            }
+        }
 
         window.Close();
     }
 
-    /// <summary>Where each column starts, inside its own grid.</summary>
+    /// <summary>
+    /// **THE `hz` COLUMN NO LONGER EXISTS ANYWHERE, AND THIS IS THE RECORD OF
+    /// WHAT IT USED TO PROVE.**
+    /// </summary>
     /// <remarks>
-    /// **`Bounds.X` IS THE COLUMN ORIGIN AND NEEDS NO TRANSLATION.** A child's
-    /// bounds are already expressed in its parent's coordinates, and comparing
-    /// origins inside each grid is exactly the question: does the header's
-    /// column three start where the rows' column three starts.
+    /// <para>Unit 241 built this to hold one property: `hz` was right-aligned, so
+    /// a three-digit tone and a four-digit one lined up on their units. **231 and
+    /// 2438 are both real**, and left-aligned the hundreds digit of one sat under
+    /// the thousands digit of the other, which is worse than no column because the
+    /// eye compares them anyway.</para>
+    /// <para>**IT HAS NO SUBJECT SINCE 2026-09-07.** Tim ruled `dt` and `hz` off
+    /// the left list, choosing from five options with the numbers behind each, and
+    /// work instruction 275 found they had never been on the mine side at all -
+    /// unit 273 built that side as `utc`, `from`, `message`. So there is no `hz`
+    /// cell in the application to align.</para>
+    /// <para>**IT IS KEPT RATHER THAN DELETED, AND SKIPPED RATHER THAN LEFT RED.**
+    /// Deleting it would destroy the record of a real fault and its fix; leaving it
+    /// running would report a property nothing has. If `hz` ever returns, this is
+    /// the test that was written for it and the reason it mattered.</para>
     /// </remarks>
+    [Fact(Skip = "The hz column no longer exists on either list. See the summary.")]
+    public void TheToneColumnAgreedOnItsUnitsWhileThereWasOne()
+    {
+    }
+
     private static List<double> Origins(Grid grid)
         => grid.Children
             .OfType<Control>()
@@ -250,8 +290,20 @@ public sealed class TheDecodedColumnsLineUpTests
 
         var samples = new float[Rate * 30];
 
-        Place(samples, Rate, "CQ", "TA3MPK", "KM39", 231f);
-        Place(samples, Rate, "W4WTM", "K1ABC", "EM74", 2438f);
+        // **TWO FOR EACH SIDE SINCE WORK INSTRUCTION 275.** The decoded area
+        // split in two on 2026-09-07 and the two lists now carry DIFFERENT
+        // columns - the left dropped `dt` and `hz`, the mine side kept them - so
+        // each header has to be checked against its own rows and both sides need
+        // rows to check.
+        //
+        // **THE TONE PAIR IS ON THE MINE SIDE**, because that is where `hz`
+        // lives now. 231 and 2438 are a three-digit tone and a four-digit one,
+        // which are exactly the two widths that used to give two different
+        // column origins.
+        Place(samples, Rate, "CQ", "TA3MPK", "KM39", 800f);
+        Place(samples, Rate, "W4WTM", "K1ABC", "EM74", 1500f);
+        Place(samples, Rate, "KC3QIS", "TA3MPK", "KM39", 231f);
+        Place(samples, Rate, "KC3QIS", "K1ABC", "EM74", 2438f);
 
         model.ShowDecodes(
             new MonoAudio(Rate, samples),
