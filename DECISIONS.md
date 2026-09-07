@@ -4,6 +4,44 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-159
+date: 2026-09-07
+refs: src/Hamlet.App/ViewModels/Ft8Vocabulary.cs, work instruction 273 task 3, unit 271
+---
+
+**Hamlet's message tooltips say `he` about a station, and the rule against
+gendered pronouns comes out of `Ft8Vocabulary` rather than gaining an exception.**
+Tim, 2026-09-07.
+
+Why. Unit 251 wrote a rule into `Ft8Vocabulary`'s own remarks -- *no pronoun
+chooses a gender* -- and unit 271 was handed an instruction whose example read
+*He is in grid JN54*. It followed the rule, wrote `they`, and raised the conflict
+as an ask rather than choosing for him. He ruled `he`.
+
+**The rule is removed rather than excepted, and that is the half of this ruling
+that is not about pronouns at all.** A file that states a rule its own code breaks
+is worse than either answer: the next session reads the rule, believes it, and
+reinstates it from habit -- and the one after that finds a comment and a
+contradiction and has no way to tell which was the decision. One of the two had to
+go and the code is what he ruled on.
+
+**What it costs, weighed and accepted.** An FT8 callsign belongs to a real
+operator whose gender Hamlet has no way to know, so this wording will sometimes be
+wrong about a real person. It is his application, his copy, and his call. What
+reduces the cost is that **the station is always named first** -- *IK4LZH is
+calling anyone. He is in northern Italy...* -- so the pronoun stands in for a
+callsign the reader has already been given, rather than introducing anybody.
+
+What was rejected. **An exception carved into the file beside the rule**, which is
+what produces the contradiction above. **Rewording every sentence to avoid a
+pronoun**, which was not offered to him: it is achievable, and it makes each
+sentence stiffer than the voice §0.7 asks for, and he was asked a plain question
+and gave a plain answer.
+
+What follows and should not be re-argued. **No session reinstates the rule from a
+comment or from habit.** It is not in the file any more, and this record is why.
+
+---
 id: HM-DEC-158
 date: 2026-09-07
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, docs/phase-send-run/, HM-DEC-157, work instruction 266

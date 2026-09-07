@@ -70,7 +70,8 @@ public sealed class TheGridTooltipSaysHowFarTests
         // 2026-09-07, unit 271 task 6). It read `which is 1,100 miles away from
         // you`, where *which* attached to the grid; it now reads `They are ...
         // 1,100 miles away`, and the operator is still not in the message.
-        Assert.Contains("They are in", help, StringComparison.Ordinal);
+        // `He` since Tim's ruling of 2026-09-07, HM-DEC-159.
+        Assert.Contains("He is in", help, StringComparison.Ordinal);
         Assert.Contains(
             "miles away on a bearing of", help, StringComparison.Ordinal);
         Assert.DoesNotContain(" you are ", help, StringComparison.Ordinal);

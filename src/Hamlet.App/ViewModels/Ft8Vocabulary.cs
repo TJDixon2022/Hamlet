@@ -79,9 +79,14 @@ public static class Ft8Vocabulary
     /// Two shapes that are not standard FT8 are silent for that reason and are
     /// named where they are handled: a courtesy or a report addressed to `CQ`,
     /// which has no addressee to be a courtesy or a report to.</para>
-    /// <para>**NO PRONOUN CHOOSES A GENDER.** The old wording said *where he is*
-    /// about a callsign, which Hamlet has no way to know. Every sentence here
-    /// names the stations and uses `they`.</para>
+    /// <para>**THE STATIONS ARE NAMED, AND THE PRONOUN IS `he`** (Tim's ruling,
+    /// 2026-09-07, HM-DEC-159). This file carried a rule from unit 251 that no
+    /// pronoun chooses a gender, and unit 271 followed it and wrote `they`; he
+    /// ruled the other way and the rule came out rather than gaining an exception,
+    /// because a file that states a rule its own code breaks is worse than either
+    /// answer. See `DECISIONS.md` for what that costs and why he weighed it that
+    /// way. Every sentence still names the stations, which is what carries the
+    /// meaning; the pronoun only stands in for a callsign already said.</para>
     /// </remarks>
     /// <param name="observerGrid">
     /// The operator's own Maidenhead locator from Settings, or "" where he has
@@ -164,7 +169,7 @@ public static class Ft8Vocabulary
 
             var doing = callingAnyone
                 ? $"{from} is calling anyone."
-                : $"{from} is telling {to} where they are transmitting from.";
+                : $"{from} is telling {to} where he is transmitting from.";
 
             return doing + " " + WhereTheyAre(from, grid, observerGrid);
         }
@@ -212,11 +217,11 @@ public static class Ft8Vocabulary
     /// inside a country the callsign already settled, and that is arithmetic on a
     /// value the message itself carries rather than a lookup of any kind
     /// (§12.1).</para>
-    /// <para>**NO PRONOUN CHOOSES A GENDER.** The instruction's own example reads
-    /// *He is in grid JN54*, and this file's rule since unit 251 is that every
-    /// sentence names the stations and uses `they` — Hamlet has no way to know who
-    /// is at the key. The wording follows the rule and the substance of the ruling
-    /// is untouched: the distance belongs to the station.</para>
+    /// <para>**`He`, BY TIM'S RULING OF 2026-09-07** (HM-DEC-159). Unit 271
+    /// raised it as an ask and wrote `they` meanwhile, under a rule this file used
+    /// to state; he ruled `He` and the rule came out with the same change. The
+    /// callsign is always said first, so the pronoun stands in for a station the
+    /// reader has already been given by name.</para>
     /// <para>**IT IS ONE SENTENCE AND IT CARRIES ONE DASH AT MOST** (§0.7,
     /// HM-DEC-040) — it carries none.</para>
     /// </remarks>
@@ -226,7 +231,7 @@ public static class Ft8Vocabulary
         var entity = DxccPrefixes.EntityOf(sender);
 
         // **WITH NO COUNTRY THE COMMA GOES TOO.** Built as one clause with an
-        // optional country in front, `They are, in grid QG44` came out for every
+        // optional country in front, `He is, in grid QG44` came out for every
         // station the table declines, which is a stumble in the middle of the
         // sentence and reads as though a word had gone missing. It had.
         var place = entity is null
@@ -238,14 +243,14 @@ public static class Ft8Vocabulary
 
         if (mine is not { } here || theirs is not { } there)
         {
-            return $"They are {place}, and Hamlet needs your own grid square in "
+            return $"He is {place}, and Hamlet needs your own grid square in "
                    + "Settings before it can say how far away that is.";
         }
 
         var miles = GridPath.DescribeMiles(GridPath.MilesBetween(here, there));
         var bearing = GridPath.DescribeBearing(GridPath.BearingDegrees(here, there));
 
-        return $"They are {place}, {miles} away on a bearing of {bearing}.";
+        return $"He is {place}, {miles} away on a bearing of {bearing}.";
     }
 
     /// <summary>Whether an addressee field is a call to anyone rather than a station.</summary>

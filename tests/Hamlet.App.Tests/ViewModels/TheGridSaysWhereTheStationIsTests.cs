@@ -46,8 +46,11 @@ public sealed class TheGridSaysWhereTheStationIsTests
 
         _output.WriteLine(help);
 
+        // **`He`, BY TIM'S RULING OF 2026-09-07** (HM-DEC-159). Unit 271 wrote
+        // `They` under a rule `Ft8Vocabulary` used to state; he ruled the other
+        // way and the rule came out of the file with the same change.
         Assert.Equal(
-            "IK4LZH is calling anyone. They are in northern Italy, in grid JN54, "
+            "IK4LZH is calling anyone. He is in northern Italy, in grid JN54, "
             + "4,400 miles away on a bearing of 53 degrees.",
             help);
 
@@ -134,7 +137,7 @@ public sealed class TheGridSaysWhereTheStationIsTests
 
         _output.WriteLine(help);
 
-        Assert.Contains("They are in grid", help, StringComparison.Ordinal);
+        Assert.Contains("He is in grid", help, StringComparison.Ordinal);
         Assert.Contains("miles away", help, StringComparison.Ordinal);
         Assert.DoesNotContain("Australia", help, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Fiji", help, StringComparison.OrdinalIgnoreCase);
