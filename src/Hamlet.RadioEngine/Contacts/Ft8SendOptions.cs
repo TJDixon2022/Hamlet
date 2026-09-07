@@ -152,10 +152,61 @@ public static class Ft8SendOptions
     public static string CallToAnyone(string operatorCallsign, string? gridSquare)
     {
         var call = (operatorCallsign ?? "").Trim();
-        var grid = (gridSquare ?? "").Trim();
+        var grid = ForTheMessage(gridSquare);
 
         return grid.Length == 0 ? "CQ " + call : "CQ " + call + " " + grid;
     }
+
+    /// <summary>
+    /// **The grid as a transmitted message can carry it - the first four
+    /// characters, and nothing else changed.**
+    /// </summary>
+    /// <param name="gridSquare">The operator's grid as Settings holds it.</param>
+    /// <returns>The field, upper-cased and at most four characters. Empty for none.</returns>
+    /// <remarks>
+    /// <para>**A STANDARD FT8 MESSAGE CARRIES FOUR** - a Maidenhead field and
+    /// square, which is what the format has room for beside two callsigns in 77
+    /// bits. Every station on the operator's own screen sends four: `FL20`,
+    /// `JN86`, `EL29`, `EM16`, `EK57`, `JN03`.</para>
+    /// <para>**AND THIS IS WHAT WENT WRONG ON THE AIR ON 2026-09-07**, measured in
+    /// work instruction 271 task 1. His grid is `FN00DJ` and it went into a message
+    /// whole. The standard packing of `VP2MAA` / `KC3QIS` / `FN00DJ` succeeds and
+    /// reads back `VP2MAA KC3QIS FN00`, so <c>Ft8Composer</c>'s round-trip guard
+    /// correctly refused it as a truncation of the operator's own words - and the
+    /// words then fell through to the pass that allows a callsign on the wire as a
+    /// hash, where `VP2MAA KC3QIS` hashed as **one** callsign field and the message
+    /// went out as `&lt;VP2MAA KC3QIS&gt; FN00DJ`. <c>Ft8SlotDecoder</c> returns
+    /// nothing at all off that slot. **Hamlet transmitted something nobody could
+    /// decode, twice, on a live antenna**, which is 0.0 pointed the other way: a
+    /// transmission asserting something nobody receives.</para>
+    /// <para>**THE CUT IS HERE AND NOT IN SETTINGS.** `OperatorProfile.GridSquare`
+    /// keeps all six and is not touched: the extra two are what distance and
+    /// bearing are computed from, and discarding them there would trade one defect
+    /// for another. This is the one place a grid enters a message the operator can
+    /// send - <see cref="CallToAnyone"/> and <see cref="TextFor"/> both come
+    /// through it - so there is no second copy of the rule to drift.</para>
+    /// <para>**IT CUTS AND IT DOES NOT CORRECT** (0.0). A grid shorter than four
+    /// is passed through as it stands: nothing is padded, completed or invented,
+    /// and a grid that is wrong is transmitted wrong or refused by the composer's
+    /// round trip, never quietly fixed. Upper-casing is what the format does with
+    /// every field rather than a liberty taken with his words, and it is the same
+    /// normalisation <c>Ft8Composer.Normalise</c> would apply a moment later.</para>
+    /// </remarks>
+    public static string ForTheMessage(string? gridSquare)
+    {
+        var grid = (gridSquare ?? "").Trim().ToUpperInvariant();
+
+        return grid.Length <= GridCharactersOnTheWire
+            ? grid
+            : grid[..GridCharactersOnTheWire];
+    }
+
+    /// <summary>How many characters of a grid a standard FT8 message carries.</summary>
+    /// <remarks>
+    /// Four - the Maidenhead field and square. Named rather than written as a
+    /// literal in two places, because the two places would drift.
+    /// </remarks>
+    public const int GridCharactersOnTheWire = 4;
 
     /// <summary>A signal report in the shape FT8 sends one.</summary>
     /// <param name="decibels">The level, signed.</param>
@@ -206,7 +257,7 @@ public static class Ft8SendOptions
         int? reportDecibels)
     {
         var head = callsign + " " + operatorCallsign + " ";
-        var grid = (gridSquare ?? "").Trim();
+        var grid = ForTheMessage(gridSquare);
 
         return shape switch
         {
