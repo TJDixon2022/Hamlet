@@ -32,11 +32,17 @@ public sealed class WhatTheTransmissionLooksLikeAsAudioTests
     /// **The peak sample, the headroom, and that nothing can leave full scale.**
     /// </summary>
     /// <remarks>
-    /// The synthesis is a sine of unit amplitude, so full scale is what it reaches
-    /// and there is no headroom above it by construction. What matters is that
-    /// nothing *exceeds* it — a sample outside -1..+1 would be clipped by
-    /// <c>Ft8Waveform.ToPcm16</c> and would be distortion on the air. Measured over
-    /// a spread of messages, since the peak depends on the symbol sequence.
+    /// <para>The port's synthesis is a sine of unit amplitude
+    /// (<c>Ft8Waveform.cs:199</c>) and stays that way. **Since unit 265
+    /// <c>Ft8Composer</c> scales it to the transmit drive level before anybody
+    /// sees it**, so what leaves the seam peaks at
+    /// <c>Ft8Composer.DefaultDrivePeak</c> unless a caller asked for something
+    /// else - and the name of this method now means *nothing leaves the rails*
+    /// rather than *everything reaches them*.</para>
+    /// <para>What matters either way is that nothing *exceeds* full scale — a
+    /// sample outside -1..+1 would be clipped by <c>Ft8Waveform.ToPcm16</c> and
+    /// would be distortion on the air. Measured over a spread of messages, since
+    /// the peak depends on the symbol sequence.</para>
     /// </remarks>
     [Theory]
     [InlineData(12000)]
@@ -92,10 +98,29 @@ public sealed class WhatTheTransmissionLooksLikeAsAudioTests
         Assert.Equal(0, outsideRange);
         Assert.True(worstPeak <= 1.0f, $"the peak is {worstPeak} and full scale is 1.0.");
 
-        // A sine of unit amplitude sampled at these rates reaches essentially all
-        // of full scale, so a peak far below it would mean the synthesis had
-        // quietly changed and the level had gone with it.
-        Assert.True(worstPeak > 0.99f, $"the peak is {worstPeak}, which is not a full-scale sine.");
+        // **THE EXPECTATION CHANGED AT UNIT 265 AND THE REASON IS THE DRIVE
+        // LEVEL.** It used to be `worstPeak > 0.99f`, and that was the right check
+        // for a seam that built a full-scale sine and had no way to build anything
+        // else: a peak far below it would have meant the synthesis had quietly
+        // changed and the level had gone with it.
+        //
+        // **IT IS NOW THE ONE ASSERTION IN THE TREE THAT WOULD HAVE MADE THIS
+        // UNIT'S WHOLE POINT IMPOSSIBLE**, because what unit 265 exists to change
+        // is precisely that Hamlet transmitted at 0 dBFS with no control over it.
+        // The check the test was really making - the port synthesised something,
+        // at the level the composer was asked for, and nothing left the rails -
+        // survives, written against the drive rather than against full scale.
+        Assert.True(
+            Math.Abs(worstPeak - Ft8Composer.DefaultDrivePeak) <= 0.005f,
+            $"the peak is {worstPeak} and the composer's default drive is "
+            + $"{Ft8Composer.DefaultDrivePeak}.");
+
+        // AND IT IS STILL BELOW FULL SCALE BY THE MARGIN THE UNIT REQUIRED, so a
+        // future change that puts the default back up to 1.0 fails here as well as
+        // in TheOperatorSetsTheLevelHamletTransmitsAtTests.
+        Assert.True(
+            20.0 * Math.Log10(worstPeak) <= -6.0,
+            $"the peak is {worstPeak}, which is not at least 6 dB below full scale.");
     }
 
     /// <summary>
@@ -132,10 +157,32 @@ public sealed class WhatTheTransmissionLooksLikeAsAudioTests
         Assert.True(min >= short.MinValue);
         Assert.True(max <= short.MaxValue);
 
-        // Nothing wrapped: a wrap turns a positive peak into a large negative one,
-        // so the extremes being of opposite sign and comparable size is the check.
-        Assert.True(max > 32000, $"max is {max}; a full-scale sine should reach the top of the range.");
-        Assert.True(min < -32000, $"min is {min}; a full-scale sine should reach the bottom of it.");
+        // **THE EXPECTATION CHANGED AT UNIT 265 AND THE REASON IS THE DRIVE
+        // LEVEL.** It used to be `max > 32000` and `min < -32000`, which was the
+        // right check while the seam produced a full-scale sine and nothing could
+        // change that. `Ft8Composer` now builds at `DefaultDrivePeak` - 0.25, or
+        // -12.04 dBFS - so the honest expectation is the same proportion of the
+        // range rather than the top of it: 0.25 * 32767 is about 8192.
+        //
+        // **WHAT THIS TEST IS ACTUALLY FOR IS UNCHANGED.** A wrap turns a positive
+        // peak into a large negative one, so the extremes being of opposite sign
+        // and comparable size is the check, and it is expressed against the drive
+        // rather than against a constant so it cannot go stale again.
+        var rail = (short)Math.Round(Ft8Composer.DefaultDrivePeak * 32767.0);
+        var floorOfTheCheck = (short)Math.Round(rail * 0.97);
+
+        _output.WriteLine($"drive   : {Ft8Composer.DefaultDrivePeak:F6} "
+            + $"({20.0 * Math.Log10(Ft8Composer.DefaultDrivePeak):F2} dBFS)");
+        _output.WriteLine($"expects : |extreme| >= {floorOfTheCheck} of a {rail} rail");
+
+        Assert.True(
+            max > floorOfTheCheck,
+            $"max is {max}; a sine at the {Ft8Composer.DefaultDrivePeak:F2} drive level should "
+            + $"reach about {rail}.");
+        Assert.True(
+            min < -floorOfTheCheck,
+            $"min is {min}; a sine at the {Ft8Composer.DefaultDrivePeak:F2} drive level should "
+            + $"reach about {-rail}.");
     }
 
     /// <summary>
