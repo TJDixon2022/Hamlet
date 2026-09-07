@@ -1,9 +1,14 @@
-﻿   Bash  {"command":"git reset -q tools/unit254-seam-grep.sh SESSION.lock \u0026\u0026 git commit -q -m \"chore(unit258): unit 257\u0027s leftover root records, and its four files exactly as they arrived\n\nUnit 257 was killed by the watchdog at fou ...(truncated)
-   Bash  {"command":"git reset -q tools/unit254-seam-grep.sh SESSION.lock","description":"Unstage session lock and unit254 script"}
-   Bash  {"command":"git commit -q -F - \u003c\u003c\u0027EOF\u0027 2\u003e\u00261 | tail -5\nchore(unit258): unit 257\u0027s leftover root records, and its four files exactly as they arrived\n\nUnit 257 was killed by the watchdog at fourteen minute ...(truncated)
-   Write  {"file_path":"C:\\Source\\HamLet\\.git\\COMMITMSG.tmp","content":"chore(unit258): unit 257\u0027s leftover root records, and its four files exactly as they arrived\n\nUnit 257 was killed by the watchdog at fourteen minutes with three test\n ...(truncated)
-   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Attempt the outcome append tool once"}
+﻿   Bash  {"command":"ls -la \"$APPDATA/Hamlet/\" 2\u003e\u00261 | head; echo \"=== settings.json ===\"; cat \"$APPDATA/Hamlet/settings.json\" 2\u003e\u00261 | head -60","description":"Read the operator settings on this machine"}
+   Bash  {"command":"ls -la \"/c/Users/$USERNAME/AppData/Roaming/Hamlet/\" 2\u003e\u00261 | head -20","description":"List the Hamlet AppData folder"}
+   Bash  {"command":"ls -d /c/Users/*/AppData/Roaming/Hamlet 2\u003e\u00261","description":"Locate the Hamlet settings folder"}
+   Bash  {"command":"whoami; printenv USERPROFILE APPDATA 2\u003e\u00261","description":"Identify the user profile path"}
+   Read  {"file_path":"C:\\Users\\TimDi\\AppData\\Roaming\\Hamlet\\settings.json"}
+   Bash  {"command":"python - \u003c\u003c\u0027EOF\u0027\nimport re,io\np=\u0027tests/Hamlet.RadioEngine.Tests/Contacts/TheMenuOffersEveryValidMessageTests.cs\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027| | 0\"\u0027,\u002 ...(truncated)
+   Bash  {"command":"tools/arbiter/outcome-append.bat 2\u003e\u00261 | head -5","description":"Attempt the outcome append tool once"}
+   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Attempt the outcome append tool once, plainly"}
+   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027ENTRY\u0027\n\n## UNIT 1 - STEP 5\n\nSTEP: 5\nAPPROACH: Wire the right-click menu, the CQ button and the Send area to the ledger and the transmit sequence so one click sends ex ...(truncated)
+   Bash  {"command":"grep -nP \"[^\\x00-\\x7F]\" PHASE_OUTCOME.md | tail -5; echo \"--- non-ascii check above (none = clean in new entry) ---\"; grep -c \"^STEP: 5$\" PHASE_OUTCOME.md","description":"Check the new entry is ASCII only"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate the report"}
    Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Validate the report via cmd"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Validate the report via forward-slash path"}
-   Bash  {"command":"cd /c/Source/HamLet\necho \"--- rule 1: UNIT: line within first 60 lines ---\"\nhead -60 output.md | grep -n \"^UNIT:\" || echo \"FAIL: no UNIT: line in first 60\"\necho \"--- rule 2/3: all \u0027## \u0027 headings ---\"\ngrep - ...(truncated)
-   Bash  {"command":"head -57 output.md | grep -nE \"_PENDING|PENDING_|TBD|TODO|FIXME|XXX|\u003cFILL|FILL IN\u003e|PLACEHOLDER\" ; echo \"exit=$? (1 means none found, which is the pass)\"","description":"Check for placeholder tokens in the header bl ...(truncated)
+   Bash  {"command":"grep -n \"raises 0 items\" output.md; echo \"--- literal phrase present above ---\"; awk \u0027NR\u003c=60\u0027 output.md | grep -cn \"^C\\.\"","description":"Confirm the literal phrase and its position"}
+   Bash  {"command":"awk \u0027NR\u003c70\u0027 output.md | grep -n \"_PENDING\\|PENDING_\\|TBD\\|TODO\\|FIXME\\|XXX\\|\u003cFILL\\|FILL IN\u003e\\|PLACEHOLDER\"","description":"Check the header block for placeholder tokens"}

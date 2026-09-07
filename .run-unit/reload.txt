@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-06T22:55:38-04:00  root C:\Source\HamLet
+measured 2026-09-06T23:32:06-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -10,6 +10,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      SESSION.lock is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,11 +22,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : e1f0b23
-  uncommitted at the root : 3
+  HEAD   : 2a3a90a
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
+      D SESSION.lock
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -368,19 +370,19 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     bug, the 101.33 ms pulse above 6 kHz, the CW decoder and its inherited reds.
 
   --- PHASE_STATUS.md ---
-  31 lines, 1365 bytes
+  31 lines, 1342 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
-  HEARTBEAT: 2026-09-06 22:55:37
+  WORK_INSTRUCTION: 259 - right-click, and it goes
+  HEARTBEAT: 2026-09-06 23:32:05
   STEP: 0 | done | the dummy load is gone from the tree
   STEP: 1 | partial | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
   STEP: 3 | partial | the audio reaches the radio and the radio keys
   STEP: 4 | partial | the row knows where the contact stands
-  STEP: 5 | not started | right-click and it goes
+  STEP: 5 | partial | right-click and it goes
   STEP: 6 | not started | Tim works a station
   
   ---
@@ -402,7 +404,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   The previous phase's final status is archived at `docs/phase-onair-run/PHASE_STATUS.md`.
 
   --- PHASE_OUTCOME.md ---
-  217 lines, 41135 bytes
+  247 lines, 50485 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   STEP: 0 | done | the dummy load is gone from the tree
@@ -410,7 +412,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
   STEP: 3 | partial | the audio reaches the radio and the radio keys
   STEP: 4 | partial | the row knows where the contact stands
-  STEP: 5 | not started | right-click and it goes
+  STEP: 5 | partial | right-click and it goes
   STEP: 6 | not started | Tim works a station
   
   ---
@@ -620,6 +622,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: partial
   STATE_WHY: Criteria 1 through 5 are met with quoted per station tables, slot by slot state walks and reflection and grep evidence, but criterion 6 is not met in letter because the corpus is synthesized by Hamlet's own encoder rather than a recorded capture, as the unit itself states.
+  
+  ## UNIT 1 - STEP 5
+  
+  STEP: 5
+  APPROACH: Wire the right-click menu, the CQ button and the Send area to the ledger and the transmit sequence so one click sends exactly one message in the next slot, proved against the fake port and fake sink already in the tree with no device opened
+  HIT: section 4 wants a ruling: no - Section 4 raises 0 items and states in one sentence that nothing is blocking. The two things a reader might expect there are in section 3 instead, because neither stops work until the owner decides something: the named drop candidate was dropped, which PHASE_PLAN.md's own table says to close with the figure reached and continue, and the app having no route to a real serial port or a named transmit endpoint is what SHACK_FACTS.md FACT-004 already puts beyond this machine and is step 6's to close.
+  MOVE: continue
+  WHY: Step 5 had had no unit spent on it and was the last step any unit could move, step 6 being Tim keying a transmitter. Ft8TransmitSequence's own remarks named step 5's right-click as the caller it was built for and nothing in the repository called it; Ft8ContactLedger.RecordSent had been written with no caller on purpose, waiting for this unit. Both are now called from exactly one place each. The order held: the menus were predicted and committed before the option list existed, and each of the two dangerous defaults was watched failing before it was fixed.
+  DECIDED: Four on my own authority. First, the arming lives in the engine as Ft8ArmedSend, holding one field, with the slot boundary arriving as a parameter rather than being waited for, so that one click one message could be asserted on the fake port where a second transmission costs nothing - the app command is a thin caller of it and the whole assertion sits where the fault would be. Second, the expected next message is derived from the last message heard from that station addressed to the operator and from nothing else, and completeness is deliberately not consulted, because consulting it is exactly what produced the empty menu for K9RST. Third, a signal report is treated the way a grid is: it is a measurement, so it arrives as a parameter from the row's own ratio and the report-bearing messages are absent with the reason said out loud where none was measured, rather than a number being invented. Fourth, the named drop candidate - the row's ContextFlyout markup - was dropped, because a flyout bound to a static row property would show repeat counts as of the row's own slot rather than as of the click, and answering that properly needs a code-behind handler in a 3,600 line file at the end of the night.
+  LICENCE: PHASE_PLAN.md's rulings of 2026-09-06 - one click one message, right-click sends immediately in the next slot with no confirmation, nothing forbidden in the menu, and a contact never closed by the app - together with its named alternatives to stopping: the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried. SHACK_FACTS.md FACT-004 licenses the fake port and the fake sink and forbids the inference that would otherwise close criterion 3, so the last mile is named as step 6's rather than claimed. Work instruction 259 task 3 names a send that refuses with words where no seam reaches a port as an acceptable landing, and names a command that silently does nothing as the one that is not.
+  COST: unknown
+  ACCOMPLISHED: Hamlet can be told to transmit. The operator right-clicks a decoded station and Hamlet offers every message that is valid at that point - grid, report, roger and report, acknowledge, 73 - with the one that conventionally comes next marked, nothing removed, and a repeat carrying the count of what already went. A station the ledger reads as complete still gets all five, and no member of the type can withhold one. Choosing a message arms exactly one transmission for the next slot boundary with no dialog and no second click, and nothing further goes out until he clicks again, which was watched failing first: without the clear, one click and three boundaries put three transmissions on the wire. A CQ button does the same from his own callsign and grid with no typing, the reserved space under the waterfall says what is going out and to whom instead of saying Hamlet does not transmit, and outside his licence privileges the menu keeps every option, says what the guard said, and not a byte reaches the port.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 1, 4, 5 and 6 stand met on quoted evidence - a CQ button from the operator's own settings with no typing, one click sending exactly one message with the red quoted and the green beside it, the Send area carrying what went out and to whom, and the licence refusing with zero bytes at the port and the sink never touched. Criterion 2 is met in substance and not on screen: the option list is asserted station by station against sets committed before it existed, five of five, and the view model exposes the menu per row, but the row's ContextFlyout markup was the named drop candidate and was dropped, so no operator has yet right-clicked anything. Criterion 3 is met on a fake port and a fake sink - the keying frame, the samples, the unkey and the recorded slot being the next boundary - and not on a radio, because no radio has ever been attached to this machine; and the app has no route to a real port or a named transmit endpoint today, so the send refuses with words rather than transmitting. Those two are what stand between this and step 6.
+  
+  ## UNIT 2 - STEP 5
+  
+  STEP: 5
+  APPROACH: Wire the right-click menu, the CQ button and the Send area to the ledger and the transmit sequence so one click sends exactly one message in the next slot, proved against the fake port and fake sink already in the tree with no device opened
+  HIT: section 4 wants a ruling: no - The section only states that nothing is blocking, which is a declaration rather than a request for the owner to decide anything.
+  MOVE: continue
+  WHY: Step 5 has had no unit spent on it, both its entry steps are substantively met with only radio-side figures outstanding, and it is the last step any unit can move - step 6 is Tim keying a transmitter. The loop test was run on this approach and returned NOT FOUND against all twelve entries; none of the tried approaches - a documentation sweep, an abort, a waveform seam, a keying sequence, a render sink, a contact ledger - is the operator-facing join, and Ft8TransmitSequence's own remarks name step 5's right-click as the caller it was built for.
+  DECIDED: Four on my own authority. First, criterion 3 is taken on the fake port and fake sink that units 253 to 255 left in the tree rather than on a real device, because SHACK_FACTS.md FACT-004 rules no radio has ever been attached to this machine, so the last mile is step 6's and is named rather than claimed. Second, the option list is built in the engine as a testable list with the expected one marked and repeats counted, not in the markup, so criterion 2 can be asserted without opening a window - the precedent unit 258 set with the contact cell. Third, criterion 6 is resolved against the nothing-is-forbidden ruling this way: the menu still lists every message and gains a line carrying TransmitGuard's own Reason and Citation, and the refusal that actually stops a transmission stays inside Ft8TransmitSequence where it already is, so no second copy of the licence rule is written. Fourth, with no
+  LICENCE: PHASE_PLAN.md's own rulings of 2026-09-06 - one click one message, right-click sends immediately in the next slot with no confirmation, nothing forbidden in the menu, and a contact never closed by the app - together with its named alternatives to stopping: the tree wins, report the mismatch and continue, and where the radio is wanted the step is closed on what can be proved here with what Tim must do named. SHACK_FACTS.md FACT-004 licenses the fake port and fake sink and forbids the inference that would otherwise close criterion 3. The three the arbiter may not reason past license the ordering directly: the abort was watched to fire in unit 253 and lives inside Ft8TransmitSequence, so a caller may now ship, and it ships with the gate inside it and with one click proved to send exactly one message.
+  COST: 17.7668375
+  ACCOMPLISHED: The operator right-clicks a station on the Digital tab and Hamlet offers him every message that is valid at that point, with the one that conventionally comes next highlighted, nothing greyed out, and a repeat showing that it is a repeat. He clicks one and exactly one transmission is armed for the next slot - no dialog, no second click, and nothing further goes out until he clicks again, which is watched failing first and then held. A CQ button does the same from his own callsign with no typing, the reserved space under the waterfall says what is going out and to whom, and outside his licence privileges the menu says so and not a byte reaches the radio. What is left after this is Tim, a radio and an antenna.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Four criteria are met with quoted test output, but the right click criterion has no ContextFlyout in the tree so no menu is reachable from a decoded row, and the transmit in the next slot criterion is proved only against a fake port and fake sink.
 
   --- CLAUDE.md ---
   1376 lines, 188627 bytes
@@ -642,17 +674,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1095 bytes
+  19 lines, 1250 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: DONE
   TASK: 5 of 5
-  WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
+  WORK_INSTRUCTION: 259 - right-click, and it goes
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-157 (2026-09-06)
-  UPDATED: 2026-09-06T22:54:40-04:00
-  NOTE: All five tasks done, committed and pushed; output.md written and hand-checked against validate-output.bat's own seven rules, which was refused in two more forms and could not be started. NUMBER is 5 of 5 - every station read the state written down before the ledger existed. Step 4 goes from not started to partial: five criteria met on quoted evidence, criterion 6 met on a synthesized corpus rather than a WSJT-X capture this machine cannot make. Section 4 raises nothing. Step 5 is unblocked.
+  UPDATED: 2026-09-06T23:31:20-04:00
+  NOTE: All five tasks done, committed and pushed; 26 new tests green and the build clean. NUMBER is 5 of 5 - every station's menu matched the set committed before the option list existed. Step 5 goes from not started to partial: criteria 1, 4, 5 and 6 met, criterion 2 met in substance with the named drop candidate dropped, criterion 3 met on the fake port and sink with the last mile named as step 6's. Both dangerous defaults were watched failing first and quoted. validate-output.bat was refused in two more forms and could not be started, so output.md was checked by hand against all seven rules the script itself prints; no exit code is quoted. Section 4 raises nothing.
   
   ---
   

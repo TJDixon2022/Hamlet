@@ -1,22 +1,21 @@
-﻿## Step 4 - the row knows where the contact stands
+﻿## Step 5 - right-click and it goes
 
-**Delivers:** per-station QSO state, shown, deciding nothing.
+**Delivers:** the menu, the CQ button, and the reserved Send area filled.
 
-**Entry:** step 0. Independent of 1, 2 and 3 - it is receive-side bookkeeping.
+**Entry:** steps 3 and 4.
 
 **Exit:**
-- Per station: which messages passed each way, when, and how many slots ago.
-  *must-pass*
-- Four states shown per row - **waiting on him**, **your move**, **complete**,
-  **gone quiet** - with slot counts. *must-pass*
-- **Complete means the exchange has what a QSO needs**, both calls, both
-  grids or reports, both acknowledgements. **`73` is politeness and its absence
-  never withholds complete.** *must-pass*
-- **Nothing is ever closed, hidden or forbidden by the app.** A complete contact
-  still offers `73`; a gone-quiet one still offers everything. *must-pass*
-- **A station working three others at once reads as gaps, not as a fault**,
-  proved against recorded slots where that happens. *must-pass*
-- Derived from recorded captures, not from the air. *must-pass*
+- **A CQ button** sending `CQ KC3QIS FN00` from the operator's own settings, no
+  typing. *must-pass*
+- **Right-click a decoded row** and the menu offers every message valid at that
+  point, **with the expected one highlighted and none forbidden**. A repeat shows
+  its count - *grid, 2nd time*. *must-pass*
+- **Choosing one transmits in the next slot with no confirmation.** *must-pass*
+- **One click sends exactly one message.** Asserted by a test: after a send,
+  nothing further transmits without another click. *must-pass*
+- What is being sent, and to whom, appears in the Send area reserved beneath the
+  waterfall. *must-pass*
+- **Out of licence privileges, the menu says so and sends nothing.** *must-pass*
 
-**Depends on:** step 0.
+**Depends on:** steps 3 and 4.
 
