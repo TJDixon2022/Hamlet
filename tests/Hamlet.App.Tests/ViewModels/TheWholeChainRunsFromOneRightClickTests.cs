@@ -363,6 +363,7 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         // **THE ENDPOINT IS STILL OPEN AND THE CAPTURE IS STILL RUNNING.** A second
         // boundary, with nothing armed, listened to as sound rather than counted.
         var quietFrom = capture.SamplesSeen;
+        var packetsBefore = capture.Packets;
         var framesBefore = scene.Port.Written.Count;
 
         var nothing = await scene.Panel.AtSlotBoundaryAsync(slot.Value.AddSeconds(15));
@@ -370,7 +371,8 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         await Task.Delay(SilentStretch);
 
         var quietCount = (int)(capture.SamplesSeen - quietFrom);
-        var acrossTheBoundary = capture.Window(quietFrom, quietCount);
+        var packetsAcross = capture.Packets - packetsBefore;
+        var acrossTheBoundary = quietCount > 0 ? capture.Window(quietFrom, quietCount) : null;
 
         capture.Stop();
 
@@ -379,23 +381,42 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         Assert.Null(nothing.Run);
         Assert.Equal(framesBefore, scene.Port.Written.Count);
 
+        // **THE CAPTURE WAS STILL RUNNING**, witnessed by packets and not by
+        // samples. A loopback capture is handed empty packets while the endpoint
+        // renders nothing, so a stretch with no samples in it is a real answer
+        // about the card - but only once *the capture stopped* has been ruled out
+        // separately. That is unit 268 task 3's watched red, in one assertion.
         Assert.True(
-            acrossTheBoundary is not null && acrossTheBoundary.Samples.Length > 0,
-            "the capture delivered nothing across the unclicked boundary, so silence "
-            + "cannot be told from a capture that stopped");
+            packetsAcross > 0,
+            "the capture was handed no packets at all across the unclicked boundary, "
+            + "so nothing here can tell a silent card from a capture that died");
 
-        var quiet = Level(acrossTheBoundary!.Samples);
+        // **THE LEVEL, WHICH FLOORS AT SILENCE WHERE NO AUDIO WAS RENDERED.** Not a
+        // sample count: where samples did arrive they are measured, and where none
+        // did the endpoint rendered nothing, which is the same verdict by the
+        // stronger route.
+        var quiet = acrossTheBoundary is null
+            ? new CapturedLevel(0, AudioLevel.SilenceDb, AudioLevel.SilenceDb)
+            : Level(acrossTheBoundary.Samples);
 
         _output.WriteLine(string.Empty);
         _output.WriteLine("---- the boundary nobody clicked ----");
-        _output.WriteLine("second boundary  : " + nothing.Outcome + ", run " + (nothing.Run is null ? "null" : "not null"));
-        _output.WriteLine("frames on wire   : " + scene.Port.Written.Count + " (unchanged from " + framesBefore + ")");
-        _output.WriteLine("listened for     : " + (quietCount / (double)acrossTheBoundary.SampleRate).ToString("F2")
-            + " s, " + quietCount + " samples, card open");
+        _output.WriteLine("second boundary  : " + nothing.Outcome + ", run "
+            + (nothing.Run is null ? "null" : "not null"));
+        _output.WriteLine("frames on wire   : " + scene.Port.Written.Count
+            + " (unchanged from " + framesBefore + ")");
+        _output.WriteLine("listened for     : " + SilentStretch.TotalSeconds.ToString("F1")
+            + " s with the endpoint open and the capture running");
+        _output.WriteLine("packets across   : " + packetsAcross
+            + " (the capture was alive)");
+        _output.WriteLine("samples across   : " + quietCount
+            + (quietCount == 0 ? " - the endpoint rendered nothing at all" : ""));
         _output.WriteLine("CARD ACROSS IT   : peak " + Db(quiet.PeakDb) + " dBFS, rms "
             + Db(quiet.RmsDb) + " dBFS");
         _output.WriteLine("silent means     : peak at or below " + AudioLevel.TooQuietDb
             + " dBFS (AudioLevel.TooQuietDb)");
+        _output.WriteLine("the same capture read -12.0 dBFS while the transmission was on, "
+            + "so the instrument is not deaf");
 
         Assert.True(
             quiet.PeakDb <= AudioLevel.TooQuietDb,
@@ -740,6 +761,8 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         private readonly ManualResetEventSlim _stopped = new(false);
         private readonly AudioTap _tap = new();
         private float[] _mono = [];
+        private long _packets;
+        private long _audioBytes;
 
         /// <summary>Opens the capture without starting it.</summary>
         /// <param name="endpoint">The render endpoint to listen to.</param>
@@ -750,12 +773,21 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
             _capture.DataAvailable += (_, e) =>
             {
+                // **EVERY PACKET IS COUNTED, INCLUDING THE EMPTY ONES**, and that is
+                // this class's one addition to the block it was lifted from. An idle
+                // endpoint delivers empty packets, so *the capture is still running*
+                // and *the endpoint rendered nothing* are different facts and have to
+                // be witnessed separately - unit 268 task 3's watched red is what
+                // happens when they are not.
+                Interlocked.Increment(ref _packets);
+
                 if (e.BytesRecorded <= 0)
                 {
-                    // An idle endpoint delivers empty packets; they are not silence
-                    // to be recorded, they are nothing arriving.
+                    // They are not silence to be recorded, they are nothing arriving.
                     return;
                 }
+
+                Interlocked.Add(ref _audioBytes, e.BytesRecorded);
 
                 var frames = WasapiAudioSource.Downmix(
                     e.Buffer, e.BytesRecorded, _capture.WaveFormat, ref _mono);
@@ -771,6 +803,19 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
         /// <summary>How many samples have reached the tap.</summary>
         public long SamplesSeen => _tap.SamplesSeen;
+
+        /// <summary>
+        /// **Every packet the device has handed over, empty ones included.**
+        /// </summary>
+        /// <remarks>
+        /// This is the liveness witness and nothing else. It says the capture is
+        /// still being fed by the endpoint; it says nothing whatever about whether
+        /// there was any sound in it, which is <see cref="Level"/>'s business.
+        /// </remarks>
+        public long Packets => Interlocked.Read(ref _packets);
+
+        /// <summary>How many bytes of actual audio those packets carried.</summary>
+        public long AudioBytes => Interlocked.Read(ref _audioBytes);
 
         /// <summary>What the endpoint is delivering at.</summary>
         public int SampleRate => _capture.WaveFormat.SampleRate;
