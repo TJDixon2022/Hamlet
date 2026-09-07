@@ -3426,469 +3426,579 @@
                                  the title and the edge and never fills the bar,
                                  which is what stops a column of panels reading
                                  as stripes. Nothing about that changes here. -->
-                            <ctl:CollapsiblePanel Grid.Column="1"
-                                                  Margin="5,0,0,0"
-                                                  x:Name="DigitalDecodedPanel"
-                                                  Family="Green"
-                                                  Title="Decoded text"
-                                                  Summary="{Binding DigitalDecodedSummary}"
-                                                  IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+                            <!-- **THE DECODED AREA IS TWO LISTS SINCE 2026-09-07** (Tim: *that
+                                 way I am always sure that I am seeing what is for me*). Left:
+                                 everything or CQ, a toggle. Right: what is addressed to him,
+                                 always, with no filter of its own.
+                            
+                                 **`*,*` AND NOT A PAIR OF PERCENTAGES**, the same reasoning the
+                                 outer split uses: two star columns are equal by construction and
+                                 nothing can round them apart.
+                            
+                                 **A MESSAGE IS ON EXACTLY ONE SIDE.** The two collections behind
+                                 these are filled by one decision with two arms rather than by two
+                                 tests, so nothing can land on both. -->
+                            <Grid Grid.Column="1" x:Name="DigitalDecodedPanes"
+                                  ColumnDefinitions="*,*">
+                            
+                                <ctl:CollapsiblePanel Grid.Column="0"
+                                                      Margin="5,0,0,0"
+                                                      x:Name="DigitalDecodedPanel"
+                                                      Family="Green"
+                                                      Title="Decoded text"
+                                                      Summary="{Binding DigitalDecodedSummary}"
+                                                      IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
 
-                                <!-- **THE TWO CONTROLS GO IN THE HEADER, WHERE
-                                     THIS PANEL FAMILY ALREADY PUTS THEM** (§0.5).
-                                     The waterfall panel above carries its
-                                     "keep the last 30 seconds" button in exactly
-                                     this slot, so neither of these is a new
-                                     affordance to learn.
+                                    <!-- **THE TWO CONTROLS GO IN THE HEADER, WHERE
+                                         THIS PANEL FAMILY ALREADY PUTS THEM** (§0.5).
+                                         The waterfall panel above carries its
+                                         "keep the last 30 seconds" button in exactly
+                                         this slot, so neither of these is a new
+                                         affordance to learn.
 
-                                     **BOTH ARE HIDDEN WHILE THE TABLE IS
-                                     EMPTY.** There is nothing to clear and
-                                     nothing to order, and a live control that
-                                     does nothing teaches the operator that
-                                     controls here do nothing (HM-DEC-087). -->
-                                <ctl:CollapsiblePanel.HeaderAction>
-                                    <StackPanel Orientation="Horizontal" Spacing="6"
-                                                IsVisible="{Binding HasDigitalDecodes}">
+                                         **BOTH ARE HIDDEN WHILE THE TABLE IS
+                                         EMPTY.** There is nothing to clear and
+                                         nothing to order, and a live control that
+                                         does nothing teaches the operator that
+                                         controls here do nothing (HM-DEC-087). -->
+                                    <ctl:CollapsiblePanel.HeaderAction>
+                                        <StackPanel Orientation="Horizontal" Spacing="6"
+                                                    IsVisible="{Binding HasDigitalDecodes}">
 
-                                        <!-- **TWO TOGGLES AND A WAY BACK, SINCE
-                                             UNIT 252** (Tim's ruling,
-                                             2026-09-06). Unit 251 built these as
-                                             three exclusive choices, which could
-                                             not express the state he wants most
-                                             evenings: the calls he could answer
-                                             AND his own traffic, both at once.
+                                            <!-- **TWO TOGGLES AND A WAY BACK, SINCE
+                                                 UNIT 252** (Tim's ruling,
+                                                 2026-09-06). Unit 251 built these as
+                                                 three exclusive choices, which could
+                                                 not express the state he wants most
+                                                 evenings: the calls he could answer
+                                                 AND his own traffic, both at once.
 
-                                             **`everything` IS NOT A THIRD
-                                             CHOICE.** It is what neither toggle
-                                             being on already is, so it cannot
-                                             disagree with them - it lights when
-                                             both are off and pressing it clears
-                                             both. That is why it binds a
-                                             different command from the other
-                                             two.
+                                                 **`everything` IS NOT A THIRD
+                                                 CHOICE.** It is what neither toggle
+                                                 being on already is, so it cannot
+                                                 disagree with them - it lights when
+                                                 both are off and pressing it clears
+                                                 both. That is why it binds a
+                                                 different command from the other
+                                                 two.
 
-                                             **THE PICKED ONE DIFFERS BY MORE
-                                             THAN COLOUR** (§0.6): it carries a
-                                             border and semibold weight, so the
-                                             strip survives a greyscale print.
+                                                 **THE PICKED ONE DIFFERS BY MORE
+                                                 THAN COLOUR** (§0.6): it carries a
+                                                 border and semibold weight, so the
+                                                 strip survives a greyscale print.
 
-                                             **`mine` IS OFFERED EVEN WITH NO
-                                             CALLSIGN ON FILE**, and never greyed
-                                             (§0.5.1, HM-DEC-087). Grey is
-                                             reserved for what cannot be used;
-                                             this can be used and answers by
-                                             saying what it has to match on and
-                                             where to fix it, which is more use
-                                             than a dead control. -->
-                                        <Button x:Name="DigitalFilterEverything"
-                                                Classes="hm-chip"
-                                                Classes.hm-picked="{Binding ShowsEverything}"
-                                                Content="everything"
-                                                ToolTip.Tip="Every message that decoded, with nothing held back."
-                                                FontSize="11"
-                                                Command="{Binding ShowEveryDecodeCommand}" />
+                                                 **`mine` IS OFFERED EVEN WITH NO
+                                                 CALLSIGN ON FILE**, and never greyed
+                                                 (§0.5.1, HM-DEC-087). Grey is
+                                                 reserved for what cannot be used;
+                                                 this can be used and answers by
+                                                 saying what it has to match on and
+                                                 where to fix it, which is more use
+                                                 than a dead control. -->
+                                            <Button x:Name="DigitalFilterEverything"
+                                                    Classes="hm-chip"
+                                                    Classes.hm-picked="{Binding ShowsEverything}"
+                                                    Content="everything"
+                                                    ToolTip.Tip="Every message that decoded, with nothing held back."
+                                                    FontSize="11"
+                                                    Command="{Binding ShowEveryDecodeCommand}" />
 
-                                        <Button x:Name="DigitalFilterCq"
-                                                Classes="hm-chip"
-                                                Classes.hm-picked="{Binding ShowsCqOnly}"
-                                                Content="CQ"
-                                                ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
-                                                FontSize="11"
-                                                Command="{Binding ToggleDecodedCqCommand}" />
+                                            <Button x:Name="DigitalFilterCq"
+                                                    Classes="hm-chip"
+                                                    Classes.hm-picked="{Binding ShowsCqOnly}"
+                                                    Content="CQ"
+                                                    ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
+                                                    FontSize="11"
+                                                    Command="{Binding ToggleDecodedCqCommand}" />
 
-                                        <Button x:Name="DigitalFilterMine"
-                                                Classes="hm-chip"
-                                                Classes.hm-picked="{Binding ShowsMine}"
-                                                Content="mine"
-                                                ToolTip.Tip="Keeps the messages you are in, sent or received, and your portable and compound calls with them. Turn it on beside CQ to watch for answers while you look for someone to answer."
-                                                FontSize="11"
-                                                Command="{Binding ToggleDecodedMineCommand}" />
+                                            <!-- **`mine` LEFT THIS ROW ON 2026-09-07
+                                                 AND BECAME A SIDE OF THE PANEL.**
+                                                 It and `CQ` competed for one list,
+                                                 so choosing either lost sight of
+                                                 the other, and on a busy band a
+                                                 message addressed to him landed
+                                                 among fifty that were not. It is
+                                                 the right-hand list now, always on,
+                                                 with no control that could hide it
+                                                 - because a control that can hide
+                                                 what is addressed to him is a
+                                                 control that can bury the one thing
+                                                 he is waiting for. -->
 
-                                        <Border Width="1" Margin="4,2"
-                                                Background="{StaticResource HmSlateEdgeBrush}" />
+                                            <Border Width="1" Margin="4,2"
+                                                    Background="{StaticResource HmSlateEdgeBrush}" />
 
-                                        <!-- **IT NAMES THE STATE AND NOT THE
-                                             ACTION.** "oldest first" on a button
-                                             is ambiguous about whether that is
-                                             what you have or what you would
-                                             get, and this panel is read by
-                                             somebody who has never seen FT8. -->
-                                        <Button x:Name="DigitalOrderToggle"
-                                                Content="{Binding DigitalOrderLabel}"
-                                                ToolTip.Tip="Which end the newest slot is at. Messages decoded from the same slot keep the order they were found in either way."
-                                                FontSize="11"
-                                                Padding="10,3"
-                                                Command="{Binding ToggleDigitalOrderCommand}"
-                                                Background="{StaticResource HmSlateTintBrush}"
-                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                BorderThickness="1"
-                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                            <!-- **IT NAMES THE STATE AND NOT THE
+                                                 ACTION.** "oldest first" on a button
+                                                 is ambiguous about whether that is
+                                                 what you have or what you would
+                                                 get, and this panel is read by
+                                                 somebody who has never seen FT8. -->
+                                            <Button x:Name="DigitalOrderToggle"
+                                                    Content="{Binding DigitalOrderLabel}"
+                                                    ToolTip.Tip="Which end the newest slot is at. Messages decoded from the same slot keep the order they were found in either way."
+                                                    FontSize="11"
+                                                    Padding="10,3"
+                                                    Command="{Binding ToggleDigitalOrderCommand}"
+                                                    Background="{StaticResource HmSlateTintBrush}"
+                                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                    BorderThickness="1"
+                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
 
-                                        <Button x:Name="DigitalClearPress"
-                                                Content="clear"
-                                                ToolTip.Tip="Empties what is on screen. The telemetry record and any capture sidecars are untouched."
-                                                FontSize="11"
-                                                Padding="10,3"
-                                                Command="{Binding ClearDigitalDecodesCommand}"
-                                                Background="{StaticResource HmSlateTintBrush}"
-                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                BorderThickness="1"
-                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                    </StackPanel>
-                                </ctl:CollapsiblePanel.HeaderAction>
+                                            <Button x:Name="DigitalClearPress"
+                                                    Content="clear"
+                                                    ToolTip.Tip="Empties what is on screen. The telemetry record and any capture sidecars are untouched."
+                                                    FontSize="11"
+                                                    Padding="10,3"
+                                                    Command="{Binding ClearDigitalDecodesCommand}"
+                                                    Background="{StaticResource HmSlateTintBrush}"
+                                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                    BorderThickness="1"
+                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        </StackPanel>
+                                    </ctl:CollapsiblePanel.HeaderAction>
 
-                              <!-- **A GRID AND NOT A STACK SINCE UNIT 251.** The
-                                   panel now owns a whole column's height, and a
-                                   StackPanel would have handed the table its own
-                                   desired height and left the rest of the column
-                                   blank. The heading row, the idle line and the
-                                   census line stay `Auto`; the table takes what
-                                   is left. -->
-                              <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+                                  <!-- **A GRID AND NOT A STACK SINCE UNIT 251.** The
+                                       panel now owns a whole column's height, and a
+                                       StackPanel would have handed the table its own
+                                       desired height and left the rest of the column
+                                       blank. The heading row, the idle line and the
+                                       census line stay `Auto`; the table takes what
+                                       is left. -->
+                                  <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
 
-                                <!-- **WHERE `mine` HAS NOTHING TO MATCH ON, IT
-                                     SAYS SO** (Tim's ruling, 2026-09-05). The
-                                     alternative - dimming every row on a busy
-                                     band and saying nothing - would read as the
-                                     band having gone quiet, which is §0.0 broken
-                                     by omission on a panel whose whole job is
-                                     saying what was heard. -->
-                                <ctl:GlossaryTextControl
-                                    Grid.Row="0"
-                                    x:Name="DigitalFilterNoteLine"
-                                    Text="{Binding DigitalFilterNote}"
-                                    IsVisible="{Binding HasDigitalFilterNote}"
-                                    Margin="0,0,0,6"
-                                    FontSize="11" LineSpacing="1.4"
-                                    Foreground="{StaticResource HmAmberDeepBrush}" />
+                                    <!-- **THE MISSING-CALLSIGN NOTE MOVED TO THE
+                                         MINE SIDE ON 2026-09-07.** It said what
+                                         `mine` had to match on, and `mine` is no
+                                         longer a filter on this list: it is the
+                                         panel to the right, and that panel says it
+                                         in `DigitalMineIdle` where the empty
+                                         column is. Saying it here as well would
+                                         put one fact in two places, and this side
+                                         no longer has anything to explain. -->
 
-                                <!-- **THE HEADINGS STAY AND THE FOUR ROWS UNDER
-                                     THEM ARE GONE** (unit 224). They were
-                                     literal strings from work instruction 037 -
-                                     CQ K1ABC FN42 at 1240 Hz and the rest - and
-                                     they came out in the same change that bound
-                                     the real ones, because a table showing both
-                                     is worse than a table showing neither. -->
-                                <!-- **ONE SET OF COLUMN WIDTHS, DECLARED ONCE
-                                     IN App.axaml AND USED BY BOTH THE HEADER AND
-                                     EVERY ROW** (unit 241 task 2).
+                                    <!-- **THE HEADINGS STAY AND THE FOUR ROWS UNDER
+                                         THEM ARE GONE** (unit 224). They were
+                                         literal strings from work instruction 037 -
+                                         CQ K1ABC FN42 at 1240 Hz and the rest - and
+                                         they came out in the same change that bound
+                                         the real ones, because a table showing both
+                                         is worse than a table showing neither. -->
+                                    <!-- **ONE SET OF COLUMN WIDTHS, DECLARED ONCE
+                                         IN App.axaml AND USED BY BOTH THE HEADER AND
+                                         EVERY ROW** (unit 241 task 2).
 
-                                     The header and the rows used to be separate
-                                     Grids, each with Auto,Auto,Auto,Auto,*.
-                                     Sibling Grids share no measure: the header
-                                     first column sized to "utc" at FontSize 11
-                                     and a row to "214135" at FontSize 12, and
-                                     two rows carrying 231 and 2438 in the hz
-                                     column disagreed with each other as well.
-                                     Nothing was going to line up, and nudging
-                                     the margins would have hidden it for one
-                                     font and one set of values.
+                                         The header and the rows used to be separate
+                                         Grids, each with Auto,Auto,Auto,Auto,*.
+                                         Sibling Grids share no measure: the header
+                                         first column sized to "utc" at FontSize 11
+                                         and a row to "214135" at FontSize 12, and
+                                         two rows carrying 231 and 2438 in the hz
+                                         column disagreed with each other as well.
+                                         Nothing was going to line up, and nudging
+                                         the margins would have hidden it for one
+                                         font and one set of values.
 
-                                     Fixed widths cannot drift, because there is
-                                     no measure left to disagree about. Each is
-                                     sized to the widest value its field can
-                                     hold in this font PLUS its fourteen-pixel
-                                     gap, and that headroom is the whole trick.
-                                     A pixel column narrower than its content
-                                     is widened to fit, so a value that only
-                                     just overflows brings the drift straight
-                                     back - which is what the first attempt at
-                                     these numbers did, giving a header column
-                                     at 58 and a row column at 72. Every column
-                                     here is wider than anything that can land
-                                     in it: six digits for utc, a signed
-                                     two-digit dB for snr (reserved at full
-                                     width per the ruling, so the measurement
-                                     drops in without moving anything), a
-                                     signed one-decimal dt, and four digits for
-                                     hz.
+                                         Fixed widths cannot drift, because there is
+                                         no measure left to disagree about. Each is
+                                         sized to the widest value its field can
+                                         hold in this font PLUS its fourteen-pixel
+                                         gap, and that headroom is the whole trick.
+                                         A pixel column narrower than its content
+                                         is widened to fit, so a value that only
+                                         just overflows brings the drift straight
+                                         back - which is what the first attempt at
+                                         these numbers did, giving a header column
+                                         at 58 and a row column at 72. Every column
+                                         here is wider than anything that can land
+                                         in it: six digits for utc, a signed
+                                         two-digit dB for snr (reserved at full
+                                         width per the ruling, so the measurement
+                                         drops in without moving anything), a
+                                         signed one-decimal dt, and four digits for
+                                         hz.
 
-                                     **THE SAME LITERAL APPEARS ON THE ROW GRID
-                                     BELOW, AND A SHARED RESOURCE WAS TRIED
-                                     FIRST AND IS WRONG.** `ColumnDefinitions`
-                                     does not convert from a `StaticResource`
-                                     string, and one shared instance would be
-                                     worse than two literals: definitions carry
-                                     per-grid layout state, so the header and
-                                     every row would be writing over each
-                                     other's. What stops the two drifting is
-                                     `TheDecodedColumnsLineUpTests`, which
-                                     builds this window headless and asserts
-                                     the header's column origins equal every
-                                     row's. That is a stronger guard than one
-                                     declaration, because it checks the result
-                                     rather than the intent. -->
-                                <Grid Grid.Row="1"
-                                      ColumnDefinitions="76,48,48,54,*,148"
-                                      RowDefinitions="Auto"
-                                      IsVisible="{Binding HasDigitalDecodes}">
+                                         **THE SAME LITERAL APPEARS ON THE ROW GRID
+                                         BELOW, AND A SHARED RESOURCE WAS TRIED
+                                         FIRST AND IS WRONG.** `ColumnDefinitions`
+                                         does not convert from a `StaticResource`
+                                         string, and one shared instance would be
+                                         worse than two literals: definitions carry
+                                         per-grid layout state, so the header and
+                                         every row would be writing over each
+                                         other's. What stops the two drifting is
+                                         `TheDecodedColumnsLineUpTests`, which
+                                         builds this window headless and asserts
+                                         the header's column origins equal every
+                                         row's. That is a stronger guard than one
+                                         declaration, because it checks the result
+                                         rather than the intent. -->
+                                    <Grid Grid.Row="1"
+                                          ColumnDefinitions="76,48,48,54,*,148"
+                                          RowDefinitions="Auto"
+                                          IsVisible="{Binding HasDigitalDecodes}">
 
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="utc"
-                                               ToolTip.Tip="{StaticResource HmDecodeUtcHelp}"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                               Margin="0,0,14,4"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="snr"
-                                               ToolTip.Tip="{StaticResource HmDecodeSnrHelp}"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                               Margin="0,0,14,4"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="dt"
-                                               ToolTip.Tip="{StaticResource HmDecodeDtHelp}"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                               Margin="0,0,14,4"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="hz"
-                                               ToolTip.Tip="{StaticResource HmDecodeHzHelp}"
-                                               TextAlignment="Right"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                               Margin="0,0,14,4"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    <TextBlock Grid.Row="0" Grid.Column="4" Text="message"
-                                               ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                               Margin="0,0,14,4"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="utc"
+                                                   ToolTip.Tip="{StaticResource HmDecodeUtcHelp}"
+                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                   Margin="0,0,14,4"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="snr"
+                                                   ToolTip.Tip="{StaticResource HmDecodeSnrHelp}"
+                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                   Margin="0,0,14,4"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="dt"
+                                                   ToolTip.Tip="{StaticResource HmDecodeDtHelp}"
+                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                   Margin="0,0,14,4"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock Grid.Row="0" Grid.Column="3" Text="hz"
+                                                   ToolTip.Tip="{StaticResource HmDecodeHzHelp}"
+                                                   TextAlignment="Right"
+                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                   Margin="0,0,14,4"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock Grid.Row="0" Grid.Column="4" Text="message"
+                                                   ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
+                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                   Margin="0,0,14,4"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                    <!-- **THE CONTACT COLUMN GOES LAST AND THE
-                                         MESSAGE KEEPS THE STAR** (unit 258). The
-                                         message is what the operator came to
-                                         read and it is the one cell whose width
-                                         is not knowable in advance; the state is
-                                         four fixed phrases and a small number,
-                                         and `gone quiet, 11 slots` is the
-                                         longest of them at 148 pixels of
-                                         12-point Consolas. Giving the star to
-                                         the state instead would let a derived
-                                         cell push the decoded text around. -->
-                                    <TextBlock Grid.Row="0" Grid.Column="5" Text="contact"
-                                               ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
-                                               FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                               Margin="0,0,0,4"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <!-- **THE CONTACT COLUMN GOES LAST AND THE
+                                             MESSAGE KEEPS THE STAR** (unit 258). The
+                                             message is what the operator came to
+                                             read and it is the one cell whose width
+                                             is not knowable in advance; the state is
+                                             four fixed phrases and a small number,
+                                             and `gone quiet, 11 slots` is the
+                                             longest of them at 148 pixels of
+                                             12-point Consolas. Giving the star to
+                                             the state instead would let a derived
+                                             cell push the decoded text around. -->
+                                        <TextBlock Grid.Row="0" Grid.Column="5" Text="contact"
+                                                   ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
+                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                   Margin="0,0,0,4"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                </Grid>
+                                    </Grid>
 
-                                <!-- **THE PANEL SCROLLS ITSELF, AND THE REST OF
-                                     THE TAB STOPS MOVING** (unit 241 task 3).
+                                    <!-- **THE PANEL SCROLLS ITSELF, AND THE REST OF
+                                         THE TAB STOPS MOVING** (unit 241 task 3).
 
-                                     There was no scroller here at all. The
-                                     comment on `MaxDigitalDecodes` said there
-                                     was one - "a plain ItemsControl inside a
-                                     ScrollViewer" - and there was not, so the
-                                     window's own scroller carried the whole
-                                     list and the panel grew without bound. At
-                                     fourteen rows a slot the waterfall above
-                                     was pushed off the screen inside a minute
-                                     and only the first few rows were reachable.
+                                         There was no scroller here at all. The
+                                         comment on `MaxDigitalDecodes` said there
+                                         was one - "a plain ItemsControl inside a
+                                         ScrollViewer" - and there was not, so the
+                                         window's own scroller carried the whole
+                                         list and the panel grew without bound. At
+                                         fourteen rows a slot the waterfall above
+                                         was pushed off the screen inside a minute
+                                         and only the first few rows were reachable.
 
-                                     **MaxHeight AND NOT Height**, so a table with
-                                     three rows in it is three rows tall rather
-                                     than a mostly empty box. 300 is about
-                                     eighteen rows, which is longer than one
-                                     slot's worth on the busiest band recorded
-                                     here, so an operator watching live sees a
-                                     whole slot without touching anything.
+                                         **MaxHeight AND NOT Height**, so a table with
+                                         three rows in it is three rows tall rather
+                                         than a mostly empty box. 300 is about
+                                         eighteen rows, which is longer than one
+                                         slot's worth on the busiest band recorded
+                                         here, so an operator watching live sees a
+                                         whole slot without touching anything.
 
-                                     **AND THE `MaxHeight` IS GONE IN UNIT 251.**
-                                     300 pixels was a cap chosen while this panel
-                                     shared one scroller with the waterfall
-                                     stacked above it. The panel now has its own
-                                     column, so the table fills whatever height
-                                     that column has and the cap would only be a
-                                     smaller ceiling than the screen's. -->
-                                <ScrollViewer Grid.Row="2"
-                                              Margin="0,6,0,0"
-                                              VerticalScrollBarVisibility="Auto"
-                                              HorizontalScrollBarVisibility="Disabled"
-                                              IsVisible="{Binding HasDigitalDecodes}">
-                                <ItemsControl x:Name="DigitalDecodedRows"
-                                              ctl:FollowingScroll.Follows="True"
-                                              ItemsSource="{Binding DigitalVisibleDecodes}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:DigitalDecodeRow">
-                                            <!-- The same widths as the header,
-                                                 from the same resource, so the
-                                                 two cannot drift apart again. -->
-                                            <!-- **A FILTERED-OUT ROW IS NOT
-                                                 HERE AT ALL** (Tim's ruling,
-                                                 2026-09-06, superseding unit
-                                                 251's dimming). This table binds
-                                                 to the visible collection, so
-                                                 there is no row-level appearance
-                                                 for a hidden row and no opacity
-                                                 to get wrong. What the toggles
-                                                 held back is carried by the
-                                                 summary's hidden count, which is
-                                                 never omitted (§0.0, §0.6). -->
-                                            <!-- **RIGHT-CLICK A ROW AND THE MENU
-                                                 IS BUILT AT THAT MOMENT** (step
-                                                 5's criterion 2, ruled
-                                                 2026-09-06). The handler is in
-                                                 the code-behind because a
-                                                 pointer is a view fact (§0.2),
-                                                 and there is deliberately no
-                                                 `ContextFlyout` here: a flyout
-                                                 hung on the row would carry the
-                                                 repeat counts the row was born
-                                                 with and offer `RRR` as a first
-                                                 send after it had already gone
-                                                 twice. -->
-                                            <Grid ColumnDefinitions="76,48,48,54,*,148"
-                                                  Background="Transparent"
-                                                  ContextRequested="OnDecodedRowContextRequested">
-                                                <TextBlock Grid.Column="0" Text="{Binding Utc}"
-                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                                <TextBlock Grid.Column="1" Text="{Binding Snr}"
-                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                                <TextBlock Grid.Column="2" Text="{Binding Dt}"
-                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                         **AND THE `MaxHeight` IS GONE IN UNIT 251.**
+                                         300 pixels was a cap chosen while this panel
+                                         shared one scroller with the waterfall
+                                         stacked above it. The panel now has its own
+                                         column, so the table fills whatever height
+                                         that column has and the cap would only be a
+                                         smaller ceiling than the screen's. -->
+                                    <ScrollViewer Grid.Row="2"
+                                                  Margin="0,6,0,0"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  HorizontalScrollBarVisibility="Disabled"
+                                                  IsVisible="{Binding HasDigitalDecodes}">
+                                    <ItemsControl x:Name="DigitalDecodedRows"
+                                                  ctl:FollowingScroll.Follows="True"
+                                                  ItemsSource="{Binding DigitalVisibleDecodes}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:DigitalDecodeRow">
+                                                <!-- The same widths as the header,
+                                                     from the same resource, so the
+                                                     two cannot drift apart again. -->
+                                                <!-- **A FILTERED-OUT ROW IS NOT
+                                                     HERE AT ALL** (Tim's ruling,
+                                                     2026-09-06, superseding unit
+                                                     251's dimming). This table binds
+                                                     to the visible collection, so
+                                                     there is no row-level appearance
+                                                     for a hidden row and no opacity
+                                                     to get wrong. What the toggles
+                                                     held back is carried by the
+                                                     summary's hidden count, which is
+                                                     never omitted (§0.0, §0.6). -->
+                                                <!-- **RIGHT-CLICK A ROW AND THE MENU
+                                                     IS BUILT AT THAT MOMENT** (step
+                                                     5's criterion 2, ruled
+                                                     2026-09-06). The handler is in
+                                                     the code-behind because a
+                                                     pointer is a view fact (§0.2),
+                                                     and there is deliberately no
+                                                     `ContextFlyout` here: a flyout
+                                                     hung on the row would carry the
+                                                     repeat counts the row was born
+                                                     with and offer `RRR` as a first
+                                                     send after it had already gone
+                                                     twice. -->
+                                                <Grid ColumnDefinitions="76,48,48,54,*,148"
+                                                      Background="Transparent"
+                                                      ContextRequested="OnDecodedRowContextRequested">
+                                                    <TextBlock Grid.Column="0" Text="{Binding Utc}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Snr}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding Dt}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
 
-                                                <!-- **RIGHT-ALIGNED SO 231 AND
-                                                     2438 AGREE ON THEIR UNITS.**
-                                                     Left-aligned, the hundreds
-                                                     digit of one sits under the
-                                                     thousands digit of the other
-                                                     and the eye reads a column of
-                                                     numbers that are not
-                                                     comparable. -->
-                                                <TextBlock Grid.Column="3" Text="{Binding Hz}"
-                                                           TextAlignment="Right"
-                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                                <!-- **THE MESSAGE READS AS THREE
-                                                     THINGS AT A GLANCE** (unit 241
-                                                     task 5). The operator said the
-                                                     columns read as gibberish and
-                                                     that he could not tell a
-                                                     message was three parts.
+                                                    <!-- **RIGHT-ALIGNED SO 231 AND
+                                                         2438 AGREE ON THEIR UNITS.**
+                                                         Left-aligned, the hundreds
+                                                         digit of one sits under the
+                                                         thousands digit of the other
+                                                         and the eye reads a column of
+                                                         numbers that are not
+                                                         comparable. -->
+                                                    <TextBlock Grid.Column="3" Text="{Binding Hz}"
+                                                               TextAlignment="Right"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
+                                                    <!-- **THE MESSAGE READS AS THREE
+                                                         THINGS AT A GLANCE** (unit 241
+                                                         task 5). The operator said the
+                                                         columns read as gibberish and
+                                                         that he could not tell a
+                                                         message was three parts.
 
-                                                     **COLOUR IS NOT THE ONLY
-                                                     CARRIER** (§0.6). The order is
-                                                     fixed - addressee, sender,
-                                                     payload - and each field says
-                                                     what it is on hover, so the
-                                                     structure survives being
-                                                     printed in grey.
+                                                         **COLOUR IS NOT THE ONLY
+                                                         CARRIER** (§0.6). The order is
+                                                         fixed - addressee, sender,
+                                                         payload - and each field says
+                                                         what it is on hover, so the
+                                                         structure survives being
+                                                         printed in grey.
 
-                                                     **THE TWO PRESENTATIONS ARE
-                                                     EXCLUSIVE.** A message with no
-                                                     three parts, such as free text
-                                                     or telemetry, is drawn below
-                                                     exactly as it arrived rather
-                                                     than being split at a boundary
-                                                     nobody found. -->
-                                                <StackPanel Grid.Column="4"
-                                                            Orientation="Horizontal"
-                                                            Spacing="0"
-                                                            IsVisible="{Binding HasFields}">
-                                                    <TextBlock Text="{Binding Addressee}"
-                                                               ToolTip.Tip="{Binding AddresseeHelp}"
+                                                         **THE TWO PRESENTATIONS ARE
+                                                         EXCLUSIVE.** A message with no
+                                                         three parts, such as free text
+                                                         or telemetry, is drawn below
+                                                         exactly as it arrived rather
+                                                         than being split at a boundary
+                                                         nobody found. -->
+                                                    <StackPanel Grid.Column="4"
+                                                                Orientation="Horizontal"
+                                                                Spacing="0"
+                                                                IsVisible="{Binding HasFields}">
+                                                        <TextBlock Text="{Binding Addressee}"
+                                                                   ToolTip.Tip="{Binding AddresseeHelp}"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                        <TextBlock Text=" "
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                        <TextBlock Text="{Binding Sender}"
+                                                                   ToolTip.Tip="{Binding SenderHelp}"
+                                                                   Foreground="{StaticResource HmGreenBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                        <TextBlock Text=" "
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                                        <!-- The payload keeps the
+                                                             primary text colour, and
+                                                             carries hover text only
+                                                             where the closed table has
+                                                             a sentence for it. -->
+                                                        <TextBlock Text="{Binding Payload}"
+                                                                   ToolTip.Tip="{Binding PayloadHelp}"
+                                                                   Foreground="{StaticResource HmTextPrimaryBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                    </StackPanel>
+
+                                                    <TextBlock Grid.Column="4" Text="{Binding Unsplit}"
+                                                               IsVisible="{Binding !HasFields}"
+                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                                    <!-- **THE STATE IS TEXT AND THE
+                                                         TEXT IS FORMATTED IN THE
+                                                         ENGINE**, so what a reader
+                                                         sees here is what
+                                                         `TheRowSaysWhereTheContactStandsTests`
+                                                         asserts without opening a
+                                                         window. There is no
+                                                         converter, no template
+                                                         selector and no per-state
+                                                         styling: a row that is
+                                                         complete and a row that has
+                                                         gone quiet are drawn
+                                                         identically, because nothing
+                                                         on this table is closed,
+                                                         hidden or greyed out (Tim's
+                                                         ruling, 2026-09-06, and unit
+                                                         252 already removed the
+                                                         dimming once).
+
+                                                         **AND IT IS MUTED.** The
+                                                         decoded message is what
+                                                         arrived off the air; this is
+                                                         Hamlet's bookkeeping about
+                                                         it, and the two should not
+                                                         read with the same
+                                                         weight. -->
+                                                    <TextBlock Grid.Column="5" Text="{Binding Contact}"
+                                                               ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
                                                                Foreground="{StaticResource HmTextMutedBrush}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-                                                    <TextBlock Text=" "
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-                                                    <TextBlock Text="{Binding Sender}"
-                                                               ToolTip.Tip="{Binding SenderHelp}"
-                                                               Foreground="{StaticResource HmGreenBrush}"
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-                                                    <TextBlock Text=" "
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    </ScrollViewer>
 
-                                                    <!-- The payload keeps the
-                                                         primary text colour, and
-                                                         carries hover text only
-                                                         where the closed table has
-                                                         a sentence for it. -->
-                                                    <TextBlock Text="{Binding Payload}"
-                                                               ToolTip.Tip="{Binding PayloadHelp}"
-                                                               Foreground="{StaticResource HmTextPrimaryBrush}"
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-                                                </StackPanel>
+                                    <!-- **THE PANEL'S OWN IDLE LINE, WRITTEN IN
+                                         AUGUST AND KEPT** (HM-DEC-021). An empty
+                                         panel is indistinguishable from a broken
+                                         one, and the tab swaps between this and the
+                                         live table rather than losing either. -->
+                                    <TextBlock Grid.Row="3"
+                                               x:Name="DigitalDecodedIdleLine"
+                                               Text="{Binding DigitalDecodedIdle}"
+                                               IsVisible="{Binding !HasDigitalDecodes}"
+                                               Margin="0,6,0,0"
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                                <TextBlock Grid.Column="4" Text="{Binding Unsplit}"
-                                                           IsVisible="{Binding !HasFields}"
-                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                    <!-- **THE STAGE THAT REFUSED, UNDER THE TABLE**
+                                         (unit 233). On 2026-09-03 the owner sat at
+                                         14.074, pressed the button this phase was
+                                         built for, and got an empty table with no
+                                         way to tell a quiet band from a wrong audio
+                                         device from a deaf decoder.
 
-                                                <!-- **THE STATE IS TEXT AND THE
-                                                     TEXT IS FORMATTED IN THE
-                                                     ENGINE**, so what a reader
-                                                     sees here is what
-                                                     `TheRowSaysWhereTheContactStandsTests`
-                                                     asserts without opening a
-                                                     window. There is no
-                                                     converter, no template
-                                                     selector and no per-state
-                                                     styling: a row that is
-                                                     complete and a row that has
-                                                     gone quiet are drawn
-                                                     identically, because nothing
-                                                     on this table is closed,
-                                                     hidden or greyed out (Tim's
-                                                     ruling, 2026-09-06, and unit
-                                                     252 already removed the
-                                                     dimming once).
+                                         **IT IS ABOUT A DECODE THAT HAPPENED**, which
+                                         is what separates it from the readiness strip
+                                         above the panels: that one describes the setup
+                                         BEFORE a decode and this one describes a slot
+                                         that was actually read.
 
-                                                     **AND IT IS MUTED.** The
-                                                     decoded message is what
-                                                     arrived off the air; this is
-                                                     Hamlet's bookkeeping about
-                                                     it, and the two should not
-                                                     read with the same
-                                                     weight. -->
-                                                <TextBlock Grid.Column="5" Text="{Binding Contact}"
-                                                           ToolTip.Tip="{StaticResource HmDecodeContactHelp}"
-                                                           Foreground="{StaticResource HmTextMutedBrush}"
-                                                           FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                </ScrollViewer>
+                                         **IT IS HERE ONLY WHILE A SLOT WAS DECODED AND
+                                         PRODUCED NO TEXT.** A line that always says
+                                         something is one the operator stops reading,
+                                         which is the readiness strip's own argument.
 
-                                <!-- **THE PANEL'S OWN IDLE LINE, WRITTEN IN
-                                     AUGUST AND KEPT** (HM-DEC-021). An empty
-                                     panel is indistinguishable from a broken
-                                     one, and the tab swaps between this and the
-                                     live table rather than losing either. -->
-                                <TextBlock Grid.Row="3"
-                                           x:Name="DigitalDecodedIdleLine"
-                                           Text="{Binding DigitalDecodedIdle}"
-                                           IsVisible="{Binding !HasDigitalDecodes}"
-                                           Margin="0,6,0,0"
-                                           FontSize="11" TextWrapping="Wrap"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                         **IT COUNTS AND IT DOES NOT INTERPRET**
+                                         (CLAUDE.md 12.1). It names the stage the
+                                         numbers point at. It does not say the band was
+                                         quiet and it does not say what to change. -->
+                                    <TextBlock Grid.Row="4"
+                                               x:Name="DigitalCensusLine"
+                                               Text="{Binding DigitalCensusLine}"
+                                               IsVisible="{Binding HasDigitalCensus}"
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Margin="0,8,0,0"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                  </Grid>
+                                </ctl:CollapsiblePanel>
 
-                                <!-- **THE STAGE THAT REFUSED, UNDER THE TABLE**
-                                     (unit 233). On 2026-09-03 the owner sat at
-                                     14.074, pressed the button this phase was
-                                     built for, and got an empty table with no
-                                     way to tell a quiet band from a wrong audio
-                                     device from a deaf decoder.
+                                <!-- **THE MINE SIDE.** No toggle, no filter, no control that
+                                     could hide it, because a control that can hide what is
+                                     addressed to him is a control that can bury the one thing he
+                                     is waiting for.
+                            
+                                     **IT CARRIES THE CONTACT COLUMN**, which unit 271 made speak
+                                     only about contacts he is in. On the everything side that
+                                     left it blank on nearly every row; these are the only rows it
+                                     has anything to say about.
+                            
+                                     **FAMILY COLOUR IS TEXT COLOUR ONLY** and the bar is never
+                                     filled (HM-DEC-012, 0.5); `CollapsiblePanel` applies the
+                                     family to the title and the edge and nothing here changes
+                                     that. -->
+                                <ctl:CollapsiblePanel Grid.Column="1"
+                                                      Margin="5,0,0,0"
+                                                      x:Name="DigitalMinePanel"
+                                                      Family="Green"
+                                                      Title="For you"
+                                                      Summary="{Binding DigitalMineSummary}"
+                                                      IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
 
-                                     **IT IS ABOUT A DECODE THAT HAPPENED**, which
-                                     is what separates it from the readiness strip
-                                     above the panels: that one describes the setup
-                                     BEFORE a decode and this one describes a slot
-                                     that was actually read.
+                                    <Grid RowDefinitions="Auto,*,Auto">
 
-                                     **IT IS HERE ONLY WHILE A SLOT WAS DECODED AND
-                                     PRODUCED NO TEXT.** A line that always says
-                                     something is one the operator stops reading,
-                                     which is the readiness strip's own argument.
+                                        <Grid Grid.Row="0" ColumnDefinitions="76,62,*"
+                                              IsVisible="{Binding HasDigitalMineDecodes}">
+                                            <TextBlock Grid.Column="0" Text="utc"
+                                                       FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                       Margin="0,0,14,4"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                            <TextBlock Grid.Column="1" Text="from"
+                                                       FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                       Margin="0,0,14,4"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                            <TextBlock Grid.Column="2" Text="message"
+                                                       FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                                                       Margin="0,0,0,4"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </Grid>
 
-                                     **IT COUNTS AND IT DOES NOT INTERPRET**
-                                     (CLAUDE.md 12.1). It names the stage the
-                                     numbers point at. It does not say the band was
-                                     quiet and it does not say what to change. -->
-                                <TextBlock Grid.Row="4"
-                                           x:Name="DigitalCensusLine"
-                                           Text="{Binding DigitalCensusLine}"
-                                           IsVisible="{Binding HasDigitalCensus}"
-                                           FontSize="11" TextWrapping="Wrap"
-                                           Margin="0,8,0,0"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                              </Grid>
-                            </ctl:CollapsiblePanel>
+                                        <ScrollViewer Grid.Row="1" Margin="0,6,0,0"
+                                                      VerticalScrollBarVisibility="Auto"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      IsVisible="{Binding HasDigitalMineDecodes}">
+                                            <ItemsControl x:Name="DigitalMineRows"
+                                                          ctl:FollowingScroll.Follows="True"
+                                                          ItemsSource="{Binding DigitalMineDecodes}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:DigitalDecodeRow">
+                                                        <Grid ColumnDefinitions="76,62,*" RowDefinitions="Auto,Auto">
+                                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Utc}"
+                                                                       FontFamily="Consolas,Menlo,monospace" FontSize="12"
+                                                                       Margin="0,1,14,1" />
+                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Sender}"
+                                                                       ToolTip.Tip="{Binding SenderHelp}"
+                                                                       FontFamily="Consolas,Menlo,monospace" FontSize="12"
+                                                                       Margin="0,1,14,1" />
+                                                            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Message}"
+                                                                       ToolTip.Tip="{Binding PayloadHelp}"
+                                                                       TextWrapping="Wrap"
+                                                                       FontFamily="Consolas,Menlo,monospace" FontSize="12"
+                                                                       Margin="0,1,0,1" />
+
+                                                            <!-- **THE CONTACT COLUMN LIVES HERE NOW**, on its
+                                                                 own line under the message rather than in a
+                                                                 column of its own, because this side is half
+                                                                 the width the one list had and the message is
+                                                                 what must not be squeezed. -->
+                                                            <TextBlock Grid.Row="1" Grid.Column="2"
+                                                                       Text="{Binding Contact}"
+                                                                       FontSize="11" Margin="0,0,0,4"
+                                                                       Foreground="{StaticResource HmGreenBrush}" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+
+                                        <!-- **EMPTY, WITH A LINE SAYING SO, AND NEVER BLANK** (Tim,
+                                             2026-09-07). A blank column says nothing about whether it
+                                             is working, and this is the column he watches hardest: on
+                                             the evening it stays empty he needs to know that is the
+                                             band and not the panel. -->
+                                        <ctl:GlossaryTextControl Grid.Row="2"
+                                                                 x:Name="DigitalMineIdleLine"
+                                                                 Text="{Binding DigitalMineIdle}"
+                                                                 IsVisible="{Binding !HasDigitalMineDecodes}"
+                                                                 Margin="0,6,0,0"
+                                                                 FontSize="11" LineSpacing="1.4"
+                                                                 Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </Grid>
+                                </ctl:CollapsiblePanel>
+
+                            </Grid>
 
                             <!-- **"WHAT PEOPLE ARE SAYING" IS GONE** (Tim's
                                  ruling, 2026-09-04: the decoded text is what

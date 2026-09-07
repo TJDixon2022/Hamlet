@@ -219,25 +219,18 @@ public static class Ft8ContactStates
             return "";
         }
 
-        var fields = Ft8MessageSplit.Split(message);
-
-        // NOT THREE PLAIN FIELDS - free text, telemetry, a non-standard form. It
-        // names nobody, so there is no contact of his to report on.
-        if (fields is null)
-        {
-            return "";
-        }
-
-        // A CQ IS AN INVITATION AND NOT A CONTACT. This is tested before the
-        // addressee comparison rather than left to fall out of it, because it is a
-        // separate ruling and reads as one.
-        if (Ft8MessageSplit.IsCallToAnyone(fields.To))
-        {
-            return "";
-        }
-
-        // TWO OTHER STATIONS WORKING EACH OTHER.
-        if (!Ft8MessageSplit.IsSameStation(fields.To, operatorCallsign))
+        // **THE THREE REFUSALS ARE ONE PREDICATE SINCE WORK INSTRUCTION 273**,
+        // `Ft8MessageSplit.IsAddressedTo`: not three plain fields names nobody, a
+        // CQ is an invitation rather than a contact, and two other stations
+        // working each other are not his. The behaviour is exactly what unit 271
+        // wrote and every one of its tests still asserts it.
+        //
+        // **IT MOVED BECAUSE THE DECODED AREA NOW ASKS THE SAME QUESTION.** Work
+        // instruction 273 gives the panel a right-hand list of what is addressed
+        // to him, and two copies of *is this for him* would disagree on the
+        // screen: a row on that side with a blank contact column, or a state
+        // beside a row he cannot find.
+        if (!Ft8MessageSplit.IsAddressedTo(message, operatorCallsign))
         {
             return "";
         }

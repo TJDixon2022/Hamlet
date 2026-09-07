@@ -1105,6 +1105,22 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public ObservableCollection<DigitalDecodeRow> DigitalVisibleDecodes { get; } = new();
 
+    /// <summary>Everything addressed to the operator, always, with no filter.</summary>
+    /// <remarks>
+    /// <para>**THE RIGHT-HAND SIDE OF THE SPLIT** (Tim's ruling, 2026-09-07:
+    /// *that way I am always sure that I am seeing what is for me*). With his own
+    /// traffic finally worth watching for, `mine` and `CQ` were competing for one
+    /// list, so choosing either lost sight of the other and a message addressed to
+    /// him landed among fifty that were not.</para>
+    /// <para>**IT HAS NO TOGGLE AND CANNOT BE FILTERED**, which is the whole point
+    /// of it: a control that can hide this is a control that can bury the one
+    /// thing he is waiting for.</para>
+    /// <para>**AND A MESSAGE IS ON EXACTLY ONE SIDE.** Anything here is absent
+    /// from <see cref="DigitalVisibleDecodes"/>, so the two counts add up to what
+    /// was heard rather than overlapping.</para>
+    /// </remarks>
+    public ObservableCollection<DigitalDecodeRow> DigitalMineDecodes { get; } = new();
+
     /// <summary>Every row in the order the decoder produced it.</summary>
     /// <remarks>
     /// <para>**THE DISPLAY ORDER IS A VIEW OF THIS AND NEVER THE RECORD OF
@@ -1250,8 +1266,6 @@ public partial class MainWindowViewModel : ObservableObject
 
     private bool _digitalShowCq;
 
-    private bool _digitalShowMine;
-
     /// <summary>Whether the table is showing calls to anyone.</summary>
     /// <remarks>
     /// **AN INDEPENDENT TOGGLE SINCE UNIT 252** (Tim's ruling, 2026-09-06),
@@ -1279,40 +1293,13 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    /// <summary>Whether the table is showing the operator's own traffic.</summary>
-    /// <remarks>
-    /// **HIS TRAFFIC AND NOT HIS INBOX**: what he sent as well as what was
-    /// addressed to him, and his portable and compound forms with it. See
-    /// <see cref="DecodedFilterRule.IsTheOperators"/>.
-    /// </remarks>
-    public bool ShowsMine
-    {
-        get => _digitalShowMine;
-        set
-        {
-            if (_digitalShowMine == value)
-            {
-                return;
-            }
-
-            _digitalShowMine = value;
-            _settings.DecodedShowMine = value;
-            SettingsStore.Save(_settings);
-
-            ApplyDecodedFilter();
-
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(ShowsEverything));
-        }
-    }
-
     /// <summary>True while nothing is filtered.</summary>
     /// <remarks>
     /// **`everything` IS A STATE AND NOT A THIRD CHOICE** (Tim's ruling,
     /// 2026-09-06). It is what neither toggle being on *is*, so it cannot
     /// disagree with them, and the button that appears to select it clears both.
     /// </remarks>
-    public bool ShowsEverything => !ShowsCqOnly && !ShowsMine;
+    public bool ShowsEverything => !ShowsCqOnly;
 
     /// <summary>What the active toggles are called, for the summary line.</summary>
     /// <remarks>
@@ -1322,21 +1309,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string FilterLabel()
     {
-        if (ShowsCqOnly && ShowsMine)
-        {
-            return "CQ and mine";
-        }
-
-        return ShowsCqOnly ? "CQ" : ShowsMine ? "mine" : "everything";
+        return ShowsCqOnly ? "CQ" : "everything";
     }
 
     /// <summary>Turn the calls-to-anyone toggle over.</summary>
     [RelayCommand]
     private void ToggleDecodedCq() => ShowsCqOnly = !ShowsCqOnly;
-
-    /// <summary>Turn the own-traffic toggle over.</summary>
-    [RelayCommand]
-    private void ToggleDecodedMine() => ShowsMine = !ShowsMine;
 
     /// <summary>Stop filtering, by clearing both toggles.</summary>
     /// <remarks>
@@ -1346,14 +1324,54 @@ public partial class MainWindowViewModel : ObservableObject
     /// reserved for what genuinely cannot be used (§0.5.1, HM-DEC-087).
     /// </remarks>
     [RelayCommand]
-    private void ShowEveryDecode()
-    {
-        ShowsCqOnly = false;
-        ShowsMine = false;
-    }
+    private void ShowEveryDecode() => ShowsCqOnly = false;
 
-    /// <summary>How many rows are on the list.</summary>
+    /// <summary>How many rows are on the left-hand list.</summary>
     public int DigitalShownCount { get; private set; }
+
+    /// <summary>How many messages are addressed to the operator.</summary>
+    public int DigitalMineCount { get; private set; }
+
+    /// <summary>True while anything at all has been addressed to him.</summary>
+    public bool HasDigitalMineDecodes => DigitalMineCount > 0;
+
+    /// <summary>What the mine side says when nobody has called him.</summary>
+    /// <remarks>
+    /// <para>**EMPTY, WITH A LINE SAYING SO, AND NEVER BLANK** (Tim's ruling,
+    /// 2026-09-07). A blank column says nothing about whether it is working, and
+    /// this is the column he will be watching hardest — on the evening it stays
+    /// empty he needs to know that is the band and not the panel.</para>
+    /// <para>**IT NEVER SHOWS HIS OWN TRANSMISSIONS.** He ruled the side is for
+    /// what is addressed to him, and a sent message is not a decode: putting it in
+    /// a decoded list would be the panel showing him his own words back as though
+    /// somebody had sent them (§0.0).</para>
+    /// <para>**AND WHERE HAMLET DOES NOT KNOW HIS CALLSIGN IT SAYS THAT
+    /// INSTEAD**, because nothing can be addressed to a callsign the app has never
+    /// been told, and *nobody has called you* would be a claim about the band when
+    /// the truth is a gap in Settings.</para>
+    /// </remarks>
+    public string DigitalMineIdle
+        => string.IsNullOrWhiteSpace(_settings.Operator.Callsign)
+            ? "Hamlet does not know your callsign yet, so it cannot tell which "
+              + "messages are for you. Put it in Settings, under Operator, and "
+              + "anything addressed to you will appear here."
+            : "Nothing addressed to you yet. Anything a station sends to your "
+              + "callsign lands here, and it stays out of the list on the left so "
+              + "it can never be buried.";
+
+    /// <summary>The mine panel's own summary, in its header.</summary>
+    /// <remarks>
+    /// **IT SAYS WHEN IT IS EMPTY RATHER THAN SAYING NOTHING** (HM-DEC-021, and
+    /// Tim's ruling of 2026-09-07). A collapsed panel still carries its summary,
+    /// and a shut panel that goes silent on the one column he is waiting on is
+    /// §0.0 broken by omission.
+    /// </remarks>
+    public string DigitalMineSummary
+        => DigitalMineCount == 0
+            ? "nothing for you yet"
+            : DigitalMineCount == 1
+                ? "1 for you"
+                : $"{DigitalMineCount} for you";
 
     /// <summary>How many rows the toggles are holding off the list.</summary>
     /// <remarks>
@@ -1365,40 +1383,35 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public int DigitalHiddenCount { get; private set; }
 
-    /// <summary>
-    /// What the filter has to say for itself, or "" when it has nothing to add.
-    /// </summary>
-    /// <remarks>
-    /// <para>**THE ONE CASE THAT MUST NOT BE SILENT** (Tim's ruling, 2026-09-05).
-    /// `mine` is offered whether or not Hamlet knows the operator's callsign, and
-    /// where it does not, the panel says so. The alternative — holding every row
-    /// back on a busy band and saying nothing — would read as the band having
-    /// gone quiet, which is §0.0 broken by omission.</para>
-    /// <para>**AND IT SAYS MORE SINCE UNIT 252, BECAUSE THE FILTER NOW REMOVES.**
-    /// While rows were dimmed, `mine` with no callsign dimmed nothing and the
-    /// note said so. It holds everything back now, which is a bigger thing to
-    /// happen without explanation, so the note says that is what is happening and
-    /// names the screen where it is fixed.</para>
-    /// </remarks>
-    public string DigitalFilterNote
-        => ShowsMine
-           && !DecodedFilterRule.HasSomethingToMatchOn(_settings.Operator.Callsign)
-            ? "Hamlet does not know your callsign yet, so \"mine\" has nothing to "
-              + "match on and it is holding every message back. Put your callsign "
-              + "in Settings, under Operator, and this starts picking out the "
-              + "contacts you are part of."
-            : "";
-
-    /// <summary>True while the filter has something to say.</summary>
-    public bool HasDigitalFilterNote => DigitalFilterNote.Length > 0;
-
-    /// <summary>Whether the toggles want this row on the list.</summary>
+    /// <summary>Whether a row is addressed to the operator.</summary>
     /// <param name="row">The row.</param>
-    /// <returns>True when it belongs on the visible table.</returns>
+    /// <returns>True when it belongs on the right-hand list.</returns>
+    /// <remarks>
+    /// **THE SAME QUESTION THE CONTACT COLUMN ASKS**, and asked of the one place
+    /// that answers it — `Ft8MessageSplit.IsAddressedTo` — rather than restated
+    /// here (§0). Two copies of *is this for him* would disagree on the screen: a
+    /// row on this side with a blank contact column, or a contact state beside a
+    /// row he cannot find.
+    /// </remarks>
+    private bool IsForHim(DigitalDecodeRow row)
+        => Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
+
+    /// <summary>Whether a row belongs on the left-hand list.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>True when the left list should carry it.</returns>
+    /// <remarks>
+    /// <para>**A MESSAGE IS ON EXACTLY ONE SIDE** (Tim's ruling, 2026-09-07).
+    /// Anything addressed to him is on the right and **not also here**: two copies
+    /// of one message is how a table starts disagreeing with itself, and each
+    /// summary would then be counting something that overlaps the other.</para>
+    /// <para>**`mine` IS NO LONGER A TOGGLE**, so this side reads one flag:
+    /// everything, or calls to anyone. `DecodedFilterRule.Wants` is still the rule
+    /// for that half and is called with its `mine` argument false, because what
+    /// that argument used to select is now a side of the panel rather than a
+    /// filter.</para>
+    /// </remarks>
     private bool WantsRow(DigitalDecodeRow row)
-        => DecodedFilterRule.Wants(
-            ShowsCqOnly, ShowsMine, row.Addressee, row.Sender,
-            _settings.Operator.Callsign);
+        => !IsForHim(row) && DecodedFilterRule.Wants(ShowsCqOnly, row.Addressee);
 
     /// <summary>Keep the visible table in step with the whole one.</summary>
     /// <param name="sender">The whole table.</param>
@@ -1432,6 +1445,7 @@ public partial class MainWindowViewModel : ObservableObject
             foreach (DigitalDecodeRow row in e.OldItems)
             {
                 DigitalVisibleDecodes.Remove(row);
+                DigitalMineDecodes.Remove(row);
             }
         }
 
@@ -1441,9 +1455,17 @@ public partial class MainWindowViewModel : ObservableObject
 
             foreach (DigitalDecodeRow row in e.NewItems)
             {
-                if (WantsRow(row))
+                // **EXACTLY ONE SIDE**, which is why these are two arms of one
+                // decision rather than two independent tests. Written as two
+                // tests, a message addressed to him under an `everything` left
+                // list would land on both.
+                if (IsForHim(row))
                 {
-                    DigitalVisibleDecodes.Insert(VisibleIndexOf(at), row);
+                    DigitalMineDecodes.Insert(SideIndexOf(at, IsForHim), row);
+                }
+                else if (WantsRow(row))
+                {
+                    DigitalVisibleDecodes.Insert(SideIndexOf(at, WantsRow), row);
                 }
 
                 at++;
@@ -1453,16 +1475,24 @@ public partial class MainWindowViewModel : ObservableObject
         RecountDecodedFilter();
     }
 
-    /// <summary>Where a row at this place on the whole table sits on the visible one.</summary>
+    /// <summary>Where a row at this place on the whole table sits on one side.</summary>
     /// <param name="index">The row's index in <see cref="DigitalDecodes"/>.</param>
-    /// <returns>Its index in <see cref="DigitalVisibleDecodes"/>.</returns>
-    private int VisibleIndexOf(int index)
+    /// <param name="belongs">Which side is being counted.</param>
+    /// <returns>Its index in that side's own collection.</returns>
+    /// <remarks>
+    /// **THE POSITION IS COUNTED FROM THE WHOLE TABLE.** Either side is the whole
+    /// table with rows taken out, so a row's place in it is the number of that
+    /// side's rows sitting before it — which is what keeps both in the same order
+    /// under newest-first, where a row goes neither at the top nor at the bottom
+    /// but after the rows already in its own slot.
+    /// </remarks>
+    private int SideIndexOf(int index, Func<DigitalDecodeRow, bool> belongs)
     {
         var at = 0;
 
         for (var i = 0; i < index && i < DigitalDecodes.Count; i++)
         {
-            if (WantsRow(DigitalDecodes[i]))
+            if (belongs(DigitalDecodes[i]))
             {
                 at++;
             }
@@ -1494,10 +1524,15 @@ public partial class MainWindowViewModel : ObservableObject
     private void ApplyDecodedFilter()
     {
         DigitalVisibleDecodes.Clear();
+        DigitalMineDecodes.Clear();
 
         foreach (var row in DigitalDecodes)
         {
-            if (WantsRow(row))
+            if (IsForHim(row))
+            {
+                DigitalMineDecodes.Add(row);
+            }
+            else if (WantsRow(row))
             {
                 DigitalVisibleDecodes.Add(row);
             }
@@ -1505,19 +1540,29 @@ public partial class MainWindowViewModel : ObservableObject
 
         RecountDecodedFilter();
 
-        OnPropertyChanged(nameof(DigitalFilterNote));
-        OnPropertyChanged(nameof(HasDigitalFilterNote));
         OnPropertyChanged(nameof(DigitalDecodedSummary));
     }
 
-    /// <summary>Bring the shown and hidden totals level with the two tables.</summary>
+    /// <summary>Bring the counts level with the three tables.</summary>
+    /// <remarks>
+    /// **A ROW ON THE MINE SIDE IS NOT HIDDEN.** It is on the screen, in its own
+    /// column, so counting it as hidden would make the left summary claim the band
+    /// was busier than what it is showing by exactly the number of messages the
+    /// operator most wanted to see. That is the §0.0 fault the hidden count exists
+    /// to prevent, arrived at from the other direction.
+    /// </remarks>
     private void RecountDecodedFilter()
     {
         DigitalShownCount = DigitalVisibleDecodes.Count;
-        DigitalHiddenCount = DigitalDecodes.Count - DigitalShownCount;
+        DigitalMineCount = DigitalMineDecodes.Count;
+        DigitalHiddenCount =
+            DigitalDecodes.Count - DigitalShownCount - DigitalMineCount;
 
         OnPropertyChanged(nameof(DigitalShownCount));
+        OnPropertyChanged(nameof(DigitalMineCount));
         OnPropertyChanged(nameof(DigitalHiddenCount));
+        OnPropertyChanged(nameof(HasDigitalMineDecodes));
+        OnPropertyChanged(nameof(DigitalMineSummary));
     }
 
     /// <summary>What the order button says it will do.</summary>
@@ -3148,7 +3193,6 @@ public partial class MainWindowViewModel : ObservableObject
         // this reads them, so an operator who left the panel on `CQ only` finds
         // it on `CQ` rather than back at everything.
         _digitalShowCq = settings.DecodedShowCq;
-        _digitalShowMine = settings.DecodedShowMine;
         _scanExpanded = settings.IsPanelExpanded(PanelKeys.Scan);
         _autoCallExpanded = settings.IsPanelExpanded(PanelKeys.AutoCall);
         _terminalExpanded = settings.IsPanelExpanded(PanelKeys.Terminal);

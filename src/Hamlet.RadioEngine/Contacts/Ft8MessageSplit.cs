@@ -167,6 +167,46 @@ public static class Ft8MessageSplit
     }
 
     /// <summary>A four-character Maidenhead field, as FT8 sends it.</summary>
+    /// <summary>Whether a message is addressed to the operator.</summary>
+    /// <param name="message">The text exactly as it was sent.</param>
+    /// <param name="operatorCallsign">The operator's callsign, or null.</param>
+    /// <returns>True when this message is for him and for nobody else.</returns>
+    /// <remarks>
+    /// <para>**ONE RULE, ASKED IN TWO PLACES** (§0). The contact column has gated
+    /// on exactly this since unit 271, and work instruction 273 gives the decoded
+    /// area a right-hand list gated on the same question. A second copy of *is
+    /// this for him* is a second answer waiting to disagree, and the two would
+    /// disagree on the screen: a row on the mine side with a blank contact column,
+    /// or a state beside a row he cannot find.</para>
+    /// <para>**A CQ IS NOT ADDRESSED TO HIM.** It is an invitation to anybody, and
+    /// answering it is what would begin a contact. This is tested before the
+    /// addressee comparison rather than left to fall out of it, because it is a
+    /// separate ruling and reads as one.</para>
+    /// <para>**AND IT IS THE TO-FIELD ALONE, WHICH IS NARROWER THAN
+    /// <see cref="IsSameStation"/> USED BY THE FILTER.** `DecodedFilterRule`'s
+    /// `mine` toggle matched either field, because Tim asked there for *his
+    /// traffic* and a contact is two sides. This side of the split is what he
+    /// ruled *addressed to him*, so a message he sent is not on it — and by
+    /// unit 273 task 2 a sent message is not a decode and does not belong in a
+    /// decoded list at all.</para>
+    /// <para>**COMPOUND AND PORTABLE FORMS ARE HIS.** A row addressed to
+    /// `KC3QIS/P` while he is running portable is addressed to him
+    /// (<see cref="IsSameStation"/>).</para>
+    /// </remarks>
+    public static bool IsAddressedTo(string? message, string? operatorCallsign)
+    {
+        if (string.IsNullOrWhiteSpace(operatorCallsign))
+        {
+            return false;
+        }
+
+        var fields = Split(message);
+
+        return fields is not null
+               && !IsCallToAnyone(fields.To)
+               && IsSameStation(fields.To, operatorCallsign);
+    }
+
     /// <param name="text">The payload field.</param>
     /// <returns>True when it has a grid square's shape.</returns>
     /// <remarks>

@@ -27,42 +27,26 @@ namespace Hamlet.App.ViewModels;
 /// </remarks>
 public static class DecodedFilterRule
 {
-    /// <summary>Whether a row is one the operator asked to see.</summary>
+    /// <summary>Whether a row belongs on the left-hand list.</summary>
     /// <param name="cq">Whether the `CQ` toggle is on.</param>
-    /// <param name="mine">Whether the `mine` toggle is on.</param>
     /// <param name="addressee">The row's to-field, which may be "".</param>
-    /// <param name="sender">The row's from-field, which may be "".</param>
-    /// <param name="callsign">The operator's callsign, or null where unknown.</param>
-    /// <returns>True when the row belongs on the list.</returns>
+    /// <returns>True when the left list should carry it.</returns>
     /// <remarks>
-    /// <para>**NEITHER TOGGLE ON MEANS EVERYTHING**, which is the fresh-file
-    /// state and the one this panel has always started in.</para>
-    /// <para>**BOTH ON MEANS THE UNION AND NOTHING ELSE** (Tim's ruling): every
-    /// call to anyone, plus every message to or from him. Not the intersection,
-    /// which would be his own callsign addressed to `CQ` and is empty in
-    /// practice.</para>
-    /// <para>**`mine` WITH NO CALLSIGN ON FILE MATCHES NOTHING, AND THAT IS A
-    /// CHANGE FROM UNIT 251.** While rows were dimmed, matching everything was
-    /// the safe answer — it dimmed nothing and said so. It is the wrong answer
-    /// now that the filter removes: matching everything would make `mine` do
-    /// something other than what the control says, and with `CQ` also on it would
-    /// quietly turn *both* into *everything*, which the ruling forbids in as many
-    /// words. The §0.0 hazard of an empty-looking band is carried instead by the
-    /// two things unit 252 puts on screen for exactly this: the summary's hidden
-    /// count, which is never omitted, and the amber note naming the missing
-    /// callsign and where to type it.</para>
+    /// <para>**OFF MEANS EVERYTHING**, which is the fresh-file state and the one
+    /// this panel has always started in.</para>
+    /// <para>**IT LOST ITS `mine` ARM ON 2026-09-07 AND THE ARM DID NOT MOVE, IT
+    /// WAS SUPERSEDED.** `mine` was a toggle competing with `CQ` for one list;
+    /// Tim's ruling makes it a side of the panel, always on, with no control that
+    /// could hide it. The question *is this addressed to him* is now
+    /// `Ft8MessageSplit.IsAddressedTo`, asked by the panel and by the contact
+    /// column so the two cannot disagree.</para>
+    /// <para>**AND THE NEW QUESTION IS NARROWER THAN THE OLD ONE.** The toggle
+    /// matched either field, because Tim asked there for *his traffic* and a
+    /// contact is two sides. The side is what he ruled *addressed to him*, which
+    /// is the to-field alone.</para>
     /// </remarks>
-    public static bool Wants(
-        bool cq, bool mine, string? addressee, string? sender, string? callsign)
-    {
-        if (!cq && !mine)
-        {
-            return true;
-        }
-
-        return (cq && IsCallToAnyone(addressee))
-               || (mine && IsTheOperators(addressee, sender, callsign));
-    }
+    public static bool Wants(bool cq, string? addressee)
+        => !cq || IsCallToAnyone(addressee);
 
     /// <summary>Whether the app knows a callsign to match `mine` against.</summary>
     /// <param name="callsign">The operator's callsign from settings.</param>
@@ -84,22 +68,6 @@ public static class DecodedFilterRule
     /// </remarks>
     public static bool IsCallToAnyone(string? to)
         => Hamlet.RadioEngine.Contacts.Ft8MessageSplit.IsCallToAnyone(to);
-
-    /// <summary>Whether a row is the operator's own traffic.</summary>
-    /// <param name="addressee">The to-field.</param>
-    /// <param name="sender">The from-field.</param>
-    /// <param name="callsign">The operator's callsign, or null where unknown.</param>
-    /// <returns>True when either field is his.</returns>
-    /// <remarks>
-    /// **EITHER FIELD, BECAUSE IT IS HIS TRAFFIC AND NOT HIS INBOX** (the
-    /// instruction's own wording). A contact is two sides, and a list of what was
-    /// said to him with his own half missing is half a conversation.
-    /// </remarks>
-    public static bool IsTheOperators(
-        string? addressee, string? sender, string? callsign)
-        => HasSomethingToMatchOn(callsign)
-           && (IsSameStation(addressee, callsign)
-               || IsSameStation(sender, callsign));
 
     /// <summary>Whether a field names the same station as a callsign.</summary>
     /// <param name="field">The to-field or from-field.</param>

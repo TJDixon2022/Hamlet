@@ -506,10 +506,18 @@ public sealed class AppSettings
     /// </remarks>
     public bool DecodedShowCq { get; set; }
 
-    /// <summary>Whether the decoded table is showing the operator's own traffic.</summary>
+    /// <summary>
+    /// Unit 252's `mine` toggle. **Written by the migration and read by nothing
+    /// since 2026-09-07.**
+    /// </summary>
     /// <remarks>
-    /// **HIS TRAFFIC AND NOT HIS INBOX**: messages he sent as well as messages
-    /// addressed to him. See <see cref="ViewModels.DecodedFilterRule.IsTheOperators"/>.
+    /// **THE TOGGLE BECAME A SIDE OF THE PANEL** (Tim's ruling, 2026-09-07), so
+    /// there is no longer a filter for this key to restore. It is kept rather than
+    /// deleted for the same reason <see cref="DecodedFilter"/> above is: a key that
+    /// disappears takes an operator's stored answer with it silently, and a reader
+    /// of an existing `settings.json` should be able to see what the value used to
+    /// mean rather than find an orphan. It ages out of a profile the first time
+    /// anything else is saved.
     /// </remarks>
     public bool DecodedShowMine { get; set; }
 
