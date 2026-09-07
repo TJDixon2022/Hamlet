@@ -1,8 +1,5 @@
-﻿   Bash  {"command":"date \"+%Y-%m-%d %H:%M:%S\"; echo \"---\"; git -C /c/Source/HamLet status --short; echo \"---\"; git -C /c/Source/HamLet log --oneline -3","description":"Read clock and git status"}
-   Bash  {"command":"sed -n \u0027385,410p\u0027 src/Hamlet.App/Settings/AppSettings.cs 2\u003e/dev/null || (find . -name AppSettings.cs -not -path \"*/obj/*\" -not -path \"*/bin/*\")","description":"Read AppSettings IsTelemetryEnabled"}
-   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Try outcome-append.bat once verbatim"}
-   Bash  {"command":"git push -q 2\u003e\u00261 | tail -3; echo \"pushed rc=$?\"","description":"Push commits"}
-   Bash  {"command":"sed -i \u0027s/m =\u003e m\\.Text/m =\u003e m.Message/g\u0027 tests/Hamlet.App.Tests/ViewModels/TheWholeContactWalksThroughTheApplicationTests.cs \u0026\u0026 grep -n \"m.Message\" tests/Hamlet.App.Tests/ViewModels/TheWholeConta ...(truncated)
-   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027ENTRY\u0027\n\n## UNIT 264 - STEP 6\n\nSTEP: 6\nAPPROACH: walk a whole QSO through the application - right-click, send, ledger, row reads complete, and the transmitted slots re ...(truncated)
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run validator via cmd"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run validator with forward slashes"}
+﻿   Bash  {"command":"python -c \"\nimport io,re\np=\u0027PROJECT_STATUS.md\u0027\ns=io.open(p,encoding=\u0027utf-8\u0027).read()\ni=s.index(\u0027\\n\\n---\u0027)\nhead=s[:i]\ntail=s[i:]\nold=head.split(\u0027NOTE: \u0027,1)[1]\nhead=head.split(\u00 ...(truncated)
+   Bash  {"command":"tools\\arbiter\\outcome-append.bat 2\u003e\u00261 | head -20","description":"Try outcome-append.bat once verbatim"}
+   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Try outcome-append.bat verbatim"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run the output validator"}
+   Bash  {"command":"cmd /c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the validator through cmd"}

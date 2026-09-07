@@ -1,81 +1,75 @@
 ﻿
-**Nothing is blocking. Three items, all recorded for the record, none a ruling
-request, and none stands in the way of anything in B.**
+**Nothing is blocking. Three items are recorded for the record; none is a
+ruling request, and none stands in the way of anything named in B.**
 
-### 1. Task 2 was green against the tree as it stood
+### 1. An inherited red, found and deliberately not chased
 
-Reported because the instruction asked to be told either way and named this as
-the answer it expected might come back. **All four assertions held on the first
-run, 543 ms, with no change to any product code except a read-only accessor.**
-The join between unit 258's ledger, unit 259 and 260's arming and menu, and unit
-262's rate handling was already sound; it had simply never been walked. **Not
-blocking â€” it is the answer B asks for.**
+`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequence
+CallsItAudioFailed` fails: `Expected: AudioFailed, Actual: Cancelled`.
 
-### 2. The contact cell is computed as of the row's own slot, but only for the count
+**It is not the scale and it is not mine.** The test builds its own tone
+through `RenderChoice.Tone` and never touches `Ft8Composer`, so the drive
+level cannot reach it. `Ft8TransmitSequence.cs:296-305` is unit 263's new
+branch - a short play under cancellation now reports `Cancelled` rather than
+`AudioFailed`, deliberately, because "one is the sound card letting him down;
+the other is him pressing the button". The test asserts the pre-263 behaviour
+and was last touched at `77268f1`, before unit 263 existed.
 
-The instruction expected to be told it got this wrong, and it half did.
-`MainWindowViewModel.cs:7914` reads `Ft8ContactStates.Read(record, row.SlotStartUtc)`,
-so `nowUtc` is the row's own slot â€” **but `Read` uses that argument for the slot
-count alone.** `IsComplete` takes no moment at all and reads the whole record. So
-the state is as of the whole ledger and the number beside it is as of the row.
+Task 3 item 2 says: where a test fails for a reason that is not the scale,
+stop, report it, and do not chase it. **Reported, not chased.** The next unit
+inherits a one-line expectation change and the sentence explaining it.
 
-**What actually stops a row moving after a send is a different thing entirely:
-nothing recomputes it.** `PlaceRow` has two callers, `:7823` bakes the string in
-with a `with` expression, and nothing walks `DigitalDecodes` after `:8279`. That
-is a real property of the application and it is why the walk reads the newest
-row. **Not blocking, and not a defect** â€” Â§12.1 is untouched, the row's state
-still depends only on which messages passed, and nothing was changed about
-*what* the cell decides or *when* it is computed.
+### 2. Two places where the tree disagreed with the instruction
 
-### 3. Transmit telemetry does survive the app's own category predicate â€” and one instruction mismatch beside it
+Both reported and neither repaired, per "the tree wins".
 
-The instruction said to measure this rather than reason from `App.axaml.cs:42`
-and `AppSettings.cs:395`. **Measured: it survives.** A `JsonlTelemetry` built the
-way `App.axaml.cs:38-43` builds it, with the predicate off a real `AppSettings`
-and the byte cap, wrote `2026-09-07.jsonl` with the `ft8_transmission` line in
-category `transmit`, read back off disk. **Not blocking.**
+- The instruction refers to "the four at `Ft8Composer.cs:14-34`". The enum
+  runs to line 40 and holds **five** values - four refusals plus `None`. I
+  added the new refusal beside them as asked; the count and the line range in
+  the instruction are both slightly off and nothing turns on it.
+- `AppSettings.cs:210-213`'s remark was stale, as the instruction suspected.
+  **I corrected it**, and only because task 5 put the drive control beside
+  that picker, which is the exact condition the instruction set for touching
+  it. Had task 5 been dropped, the remark would have been left alone.
 
-**The mismatch, reported and not repaired, per `ARBITER.md` Â§5 â€” the tree wins.**
-Task 1 question 4 says `Ft8ContactState.cs:186` requires three things:
-`record.Sent.Count > 0`, `ours.Any(IsGridOrReport)` and
-`ours.Any(IsAcknowledgement)`. **The tree requires five:** those three plus
-`record.LastHeardToUs is not null`, `his.Any(IsGridOrReport)` and
-`his.Any(IsAcknowledgement)`. Both sides of the exchange must carry a
-grid-or-report and an acknowledgement. It changes nothing about the exchange task
-2 drives, which satisfies all five. **The instruction was not repaired and
-`PHASE_OUTCOME.md`'s existing entries were not touched;** the correction is here
-and in the appended entry.
+### 3. Carried forward, reported and not chased
 
-### One procedural conflict, resolved, and said out loud
+- `PROJECT_STATUS.md` carries `RULES_AT: HM-DEC-157 (2026-09-06)` while
+  `CLAUDE.md` Â§1's highest is `CPS-DEC-0152`. **Reported, not reconciled** -
+  the work instruction parks it explicitly.
+- `PHASE_OUTCOME.md`'s header says step 1 is `done` while an entry beneath it
+  says `partial`. **Expected, and not reconciled**: unit 264 set the header on
+  work instruction 264's authority and the entry predates it. No existing
+  entry was edited and no step's word in either header line was touched.
+- `outcome-append.bat` refused once, verbatim - the thirteenth consecutive
+  unit.
+- **`validate-output.bat` could not be run, and this report's validation is a
+  hand check standing in for a run.** Three forms were tried: the verbatim
+  backslash form, which the shell mangled into
+  `toolsarbitervalidate-output.bat: command not found`; the forward-slash
+  form; and `cmd /c "..."`. The last two were both refused with **"This
+  command requires approval"**. Following unit 263's recorded fallback, the
+  script's seven rules were checked by hand against the copy it prints in its
+  own header, and **all seven pass**: the `UNIT:` line is above section 1 and
+  parses; the four top-level sections are in order with exact names; there is
+  no fifth; section 4 is present and non-empty; section 3 is non-empty; the
+  ordering block sits above the `UNIT:` line with A, B and C, and C names how
+  many items section 4 raises; and the header block carries no placeholder
+  token.
+- **The bookkeeping the reload named was committed before task 2**, at
+  `96d7d2d`: `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`,
+  `SESSION.lock`, `WORK_INSTRUCTIONS.md` and the whole of `.run-unit/`. **What
+  I left:** none of it - `git status` was clean of the reload's list after
+  that commit. The only files I authored changes to among them are
+  `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line and `PROJECT_STATUS.md`'s
+  header; `HEARTBEAT:`, `CURRENT_STEP:` and the `STEP:` lines were not
+  touched and nothing below the `---` was changed.
 
-The session's standing cadence says the `STEP:` lines in `PHASE_STATUS.md` belong
-to the launcher and are not this session's to write. **Work instruction 264 task
-5 explicitly instructs this unit to set step 1 to `done` in that file's header
-lines and to say whose authority it acted on.** The instruction is specific and
-names the arbiter's ruling behind it, so it was followed: one word on one line,
-no other step touched, no reformatting, and nothing below the `---` altered.
-**Reported so that whoever owns that file knows a unit wrote to it and why.**
+### Not blocking, and not raised as questions
 
-### Parked, untouched, and not raised
-
-The level; step 4's criterion 6; unit 263's section 4 items 1 and 2; the
-`RULES_AT` disagreement between `PROJECT_STATUS.md` (`HM-DEC-157`) and
-`CLAUDE.md` Â§1 (`CPS-DEC-0152`), which is reported and not reconciled; the CW
-send and band-scan surface; and the inherited reds â€” `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
-the 51 CW cases in `docs/unit239-failing-set.txt`, and the `Ft8Sharp.Deep.Tests`
-whole-type-list tripwire â€” none of which was run or chased.
-
-### What was committed, and what was left
-
-Committed before task 2 started, at `8531720`: `PHASE_OUTCOME.md`,
-`RUN_LEDGER.md`, `WORK_INSTRUCTIONS.md`, `SESSION.lock` and the whole of
-`.run-unit/`. **Nothing was left uncommitted.** `SESSION.lock` was modified rather
-than deleted in the tree this unit found, and `.run-unit/watched.rc` was not
-present as an untracked file â€” both differ from what the instruction's reload
-section reported, and both are the launcher's, not this unit's to repair.
-
-### Step 6 is not closed and no unit can close it
-
-Said plainly because the instruction requires it: **proving a mechanism is not
-performing a contact.** All three of step 6's criteria need Tim, a radio and an
-antenna. Nothing in this report is evidence that anything went on the air.
+The parked list was honoured in full: the IC-7300's expected figure, the
+transmit audio base frequency, step 4's criterion 6, step 1's fifth criterion
+and both its header words, the CW send and band-scan members, the licence-gate
+wording, and the `RULES_AT` disagreement. **No step was closed. `TransmitGuard`
+was not touched, the drive level is not a gate, and neither the abort nor the
+stop was made conditional on anything added tonight.**

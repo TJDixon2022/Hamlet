@@ -1,18 +1,23 @@
-﻿## Step 6 - Tim works a station
+﻿## Step 3 - the audio reaches the radio and the radio keys
 
-**Delivers:** a contact.
+**Delivers:** audio out to the USB codec, PTT via CI-V, unkey.
 
-**Entry:** steps 0 to 5.
+**Entry:** steps 1 and 2. **The abort must be proven first.**
 
 **Exit:**
-- **Tim answers a CQ on 14.074 or 7.074 and completes an exchange.** *must-pass*
-- The transmitted slots appear in telemetry and the row reads *complete*.
+- Audio plays to the radio's USB input at the right device, rate and level.
   *must-pass*
-- **What he saw, in his words, and anything that surprised him**, recorded.
+- **Key, transmit, unkey**, with the unkey happening even if the audio path
+  throws. *must-pass*
+- **A loopback proves the whole chain**: generate, play, capture on the tap,
+  decode, and get the message back. **This needs no antenna and no radio state**
+  and is the closing evidence for this step. *must-pass*
+- The transmitted slot is recorded to telemetry with what was sent and when.
   *must-pass*
+- **The licence gate is in the path** and refuses out-of-privilege frequencies,
+  asserted by a test. *must-pass*
+- **Nothing keys without an operator action reaching this code.** There is no
+  entry point that transmits on a timer. *must-pass*
 
-**No unit can perform this step.** It is last, nothing before it is blocked by
-it, and the phase is otherwise complete without it.
-
-**Depends on:** steps 0 to 5.
+**Depends on:** steps 1 and 2.
 

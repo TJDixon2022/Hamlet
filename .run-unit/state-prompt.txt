@@ -29,574 +29,415 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿## Step 6 - Tim works a station
+﻿## Step 3 - the audio reaches the radio and the radio keys
 
-**Delivers:** a contact.
+**Delivers:** audio out to the USB codec, PTT via CI-V, unkey.
 
-**Entry:** steps 0 to 5.
+**Entry:** steps 1 and 2. **The abort must be proven first.**
 
 **Exit:**
-- **Tim answers a CQ on 14.074 or 7.074 and completes an exchange.** *must-pass*
-- The transmitted slots appear in telemetry and the row reads *complete*.
+- Audio plays to the radio's USB input at the right device, rate and level.
   *must-pass*
-- **What he saw, in his words, and anything that surprised him**, recorded.
+- **Key, transmit, unkey**, with the unkey happening even if the audio path
+  throws. *must-pass*
+- **A loopback proves the whole chain**: generate, play, capture on the tap,
+  decode, and get the message back. **This needs no antenna and no radio state**
+  and is the closing evidence for this step. *must-pass*
+- The transmitted slot is recorded to telemetry with what was sent and when.
   *must-pass*
+- **The licence gate is in the path** and refuses out-of-privilege frequencies,
+  asserted by a test. *must-pass*
+- **Nothing keys without an operator action reaching this code.** There is no
+  entry point that transmits on a timer. *must-pass*
 
-**No unit can perform this step.** It is last, nothing before it is blocked by
-it, and the phase is otherwise complete without it.
-
-**Depends on:** steps 0 to 5.
+**Depends on:** steps 1 and 2.
 
 
 --- the unit's report follows ---
 
 READ IN THIS ORDER
 
-A. THE PHASE GOAL IS "Hamlet works stations on the air", and every step's state:
-   step 0 done; step 1 done as of tonight, on work instruction 264's authority
-   and not on this unit's judgment; steps 2 to 5 partial; step 6 not started.
-   NOTHING THIS UNIT MEASURED CHANGED ANY OF THOSE. Step 1's word moved because
-   the instruction told this unit to move it and to say whose authority it was
-   on; no step 1 criterion was measured here and no step 1 test was written.
-   The fact that shaped this unit is unit 263's, and it still holds: what
-   remains open in steps 2 to 5 is THE LEVEL, which is Tim's to read off the
-   radio under SHACK_FACTS.md FACT-004, and no unit on this machine can advance
-   it. STEP 6 HAS TWO HALVES - the contact, which is his, and the evidence the
-   contact must leave behind, which is the tree's. This unit worked the second
-   half and did not touch the first.
+A. THE PHASE GOAL IS "Hamlet works stations on the air", and every step's
+   state is unchanged tonight: step 0 done; step 1 done; steps 2 to 5
+   partial; step 6 not started. Nothing this unit measured changed any of
+   those. NO STEP CLOSED TONIGHT AND NONE WAS MEANT TO - the work
+   instruction forbids closing step 2, step 3 or step 6, and this unit
+   closes none of them.
 
-B. THIS UNIT AIMS AT STEP 6 AND CLAIMS THE MECHANISM OF ITS SECOND CRITERION,
-   NOT THE CRITERION. Step 6's three criteria are: (1) Tim answers a CQ on
-   14.074 or 7.074 and completes an exchange; (2) the transmitted slots appear
-   in telemetry and the row reads complete; (3) what he saw, in his words, is
-   recorded. A UNIT CAN TOUCH NONE OF THE THREE. All three need a radio, an
-   antenna and the operator; the second one's MECHANISM is in the tree, and that
-   is what was worked. The question this unit exists for:
-   DOES A WHOLE CONTACT WALKED THROUGH THE APPLICATION END WITH THE ROW READING
-   "COMPLETE" AND BOTH TRANSMITTED SLOTS IN THE TELEMETRY FILE?
-   BEFORE THIS UNIT: YES, but unproved - every part existed, each was proved
-   alone, and no test had ever walked one contact from the right-click to the
-   word on the row. AFTER THIS UNIT: YES, proved. The walk was GREEN WHOLE ON
-   ITS FIRST RUN against the tree as it stood, four of four assertions, and none
-   of the four failed, so there was no seam and TASK 3 IS CORRECTLY EMPTY. That
-   is a real finding and not a failure, and no red was manufactured to fill it.
-   TASK 5 WAS NOT DROPPED: the named drop candidate was done and is green.
+   The fact that shaped this unit: what has been recorded open in steps 2
+   and 3 for four consecutive units is THE LEVEL, deferred to Tim under
+   SHACK_FACTS.md FACT-004. Before tonight, HAMLET HAD NO CONTROL AND NO
+   READOUT WITH WHICH HE COULD HAVE CLOSED IT. Measured cold: the waveform
+   was built at unit amplitude, no compose route took an amplitude
+   argument, nothing between the composer and the sound card multiplied a
+   sample by anything, and every reader of the sink's own peak and clip
+   counters in the whole repository was a test. A criterion deferred to an
+   operator who has no control and no number is not deferred; it is
+   unclosable by anybody.
 
-C. THIS REPORT'S OWN FINDINGS. Section 4 raises 3 items and none of them stands
-   in the way of anything named in B. They are the three this instruction
-   predicted: whether task 2 was red or green as the tree stood - it was green;
-   whether the contact cell is computed as of the row's slot or as of now - the
-   state is as of the whole record and only the COUNT is as of the row's slot,
-   and what stops a row moving after a send is that nothing recomputes it at
-   all; and whether Transmit telemetry survives the application's own
-   enabled-category predicate - it does, measured through the app's own writer
-   and read back off disk rather than reasoned from two lines. One of the three
-   also carries a mismatch between the instruction and the tree, reported and
-   not repaired. None is a ruling request.
+B. THIS UNIT AIMS AT STEP 3, CRITERION 1 - "audio plays to the radio's USB
+   input at the right device, rate and level." Two of its three halves
+   were already met: THE DEVICE BY UNIT 256, THE RATE BY UNIT 262. The
+   level half is this unit's.
 
-UNIT: 264 - complete at task 5 of 5 - 2026-09-07T02:25:00-04:00
+   AT WHAT PEAK DID HAMLET TRANSMIT BEFORE THIS UNIT, AT WHAT PEAK DOES IT
+   TRANSMIT AFTER IT, AND CAN THE OPERATOR NOW CHANGE IT AND SEE IT?
+
+   BEFORE: 0.00 dBFS - peak sample 1.000000, full scale.
+   AFTER:  -12.04 dBFS - peak sample 0.250000, by default.
+   Both measured on THE DEVELOPMENT MACHINE, the second of them through a
+   real render endpoint (S34J55x display audio, 48000 Hz), which reported
+   peak written 0.2500 with 0 samples clipped and decoded the message back
+   as itself.
+
+   CAN HE CHANGE IT? Yes - a Transmit drive control on the Settings screen,
+   beside the transmit endpoint picker, refusing any value the composer
+   would refuse. CAN HE SEE IT? Yes - after every send the line under the
+   waterfall says the level in dBFS and the clip count.
+
+   WHAT IS STILL UNMET IN CRITERION 1, AND WHOSE IT IS: the figure the
+   IC-7300's USB modulation input actually wants is not in this repository,
+   cannot be inferred from anything measured on this machine, and is TIM'S
+   to read off the radio against its own ALC meter under FACT-004.
+
+   TASK 5 WAS NOT DROPPED. The named drop candidate shipped, so there is
+   nothing Tim must edit by hand instead.
+
+C. THIS REPORT'S OWN FINDINGS, weighed against A and B. SECTION 4 RAISES
+   THREE ITEMS AND NONE OF THEM STANDS IN THE WAY OF ANYTHING NAMED IN B.
+   None is a ruling request.
+
+   The four findings this instruction anticipated all landed as it
+   predicted, and none is blocking:
+   - DOES THE SCALED SIGNAL STILL DECODE, AND WITH WHAT MARGIN? Yes, at no
+     measured cost: step 2's own corpus proof passes untouched at the new
+     level, and the loopback decoded back as itself with about 74 dB
+     between the signal and the quantisation floor against a decoder
+     threshold near -21 dB SNR.
+   - IS AppSettings.cs:210-213's REMARK STALE? Yes. It said the settings
+     screen was not built; unit 260's outcome entry was right and the
+     remark was wrong. Corrected under task 5's licence.
+   - WAS Ft8Composer THE RIGHT PLACE FOR THE SCALE? Yes. There is exactly
+     one ComposeSignal call site in all of src/ and both send doors reach
+     it.
+   - DOES ANYTHING IN src/ READ PeakWritten? No. Confirmed, not corrected,
+     which made task 4 smaller rather than different.
+
+UNIT: 265 - complete at task 5 of 5 - 2026-09-07 02:57
 PHASE GOAL: Hamlet works stations on the air
-UNIT GOAL:  A whole contact walks through the application and the row reads
-            complete.
-ADVANCED:   Step 6, criterion 2's MECHANISM, not the criterion. Proved: a whole
-            exchange driven through the application's own path - menu, arming,
-            two boundaries - ends with the row for W1ABC reading "complete, 0
-            slots" and both transmitted slots on disk in the telemetry file.
-            The criterion itself is unmoved and only Tim's contact can close it.
-NUMBER:     4 of 4 of task 2's assertions passed against the tree as it stood,
-            and 4 of 4 after. Nothing had to be repaired to get there.
-DRIFT:      Four consecutive units - 260, 261, 262, 263 - recorded no criterion
-            advance. THIS UNIT CONTINUES THAT COUNT AND MAKES IT FIVE. It claims
-            a criterion's mechanism and says plainly that it does not claim the
-            criterion; calling it an advance would be the plausible answer rather
-            than the true one.
+UNIT GOAL:  Hamlet stops transmitting at full scale and the operator can set
+            and see the level.
+ADVANCED:   yes - step 3 criterion 1's level half moves from unreachable to
+            reachable: 0.00 dBFS before, -12.04 dBFS after, with a control
+            and a readout. NOT CLOSED; the radio-side figure is Tim's.
+NUMBER:     0.00 dBFS -> -12.04 dBFS (peak 1.000000 -> 0.250000, development
+            machine)
+DRIFT:      0 consecutive units without advance (was 5)
 
 ## 1. What Claude did
 
-**PROJECT: Hamlet — gate checked against the tree before the instruction was
-read.** `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-present, no `CoreHMI.sln`, no `MURC.sln`, and the only solution at the root is
-`Hamlet.sln`. All four as stated. Hamlet confirmed.
+**Exit state: COMPLETE, at task 5 of 5. All five tasks were attempted and
+none was dropped, including the named drop candidate.** Development machine,
+project confirmed as Hamlet, branch `main`, pushed at `9fcfdf2`.
 
-**All five tasks were attempted. Nothing was dropped, including the named drop
-candidate.** Task 3 was not executed because task 2 was green and task 3 is
-licensed only if task 2 is red — that is the instruction's own construction, not
-a task left undone.
+The four identity checks were run before anything else and all four hold:
+`SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, `CoreHMI.sln` absent, `MURC.sln` absent, `Hamlet.sln` the only root
+solution.
 
-### The five tasks
+### Task 1 - the trace, committed on its own before task 2 (`0094328`)
 
-| Task | What happened | Commit |
-|---|---|---|
-| 1 - the trace | `docs/unit264-whole-contact-trace.md`, seven questions, every answer a file, a line and a quotation | `8f72018`, its own commit before task 2 started |
-| 2 - the walk | **Green whole on its first run**, four of four assertions | `da7fe44`, colour in the message |
-| 3 - the fix | **Correctly empty.** Task 2 was green; no red manufactured | — |
-| 4 - the file | Green. One send, one line on disk through the app's own writer, naming nobody | `ceb54ef` |
-| 5 - the tripwire | Green. Red since unit 260, fifteen commits; the safety assertion intact | `6b19a2b` |
+`docs/unit265-the-level-trace.md`, seven questions, each with a file, a line
+and a quotation.
 
-Each was committed before the next started and every commit is pushed. The
-launcher's and the previous unit's bookkeeping was committed first, at `8531720`,
-so a watchdog kill would have cost a diff and not a loss.
+| Question | Answer |
+|---|---|
+| Q1 what peak leaves the composer | **1.000000 at both 12000 and 48000 Hz** = 0.00 dBFS, run by exact name |
+| Q2 any gain on the path | **None.** One multiplication exists between composer and endpoint and it is not a gain: `sample * 32767.0`, the PCM16 conversion. **The operator could not change the level by any route, including editing the settings file by hand** |
+| Q3 who reads `PeakWritten` | **Zero readers in `src/`.** All four in the repository are tests. Instruction confirmed |
+| Q4 does it describe what leaves the machine | **Cannot be told from here, and this is said plainly rather than guessed.** It is what was handed to the WASAPI render buffer; whether Windows scales afterwards is not knowable from this repository |
+| Q5 what a scale would break | The re-run list, eleven named suites |
+| Q6 where the scale must go | **Exactly one `ComposeSignal` call site in all of `src/`**, `MainWindowViewModel.cs:8184`, reached by both the CQ button and the right-click send. **No second compose site** |
+| Q7 the decode budget | At full scale on this machine's endpoint: peak 1.0000, RMS 0.7064, clipped 0, decoded. RMS is `1/sqrt(2)` to four figures, so **FT8's crest factor is 3.01 dB and peak and average move together** |
 
-### What was measured, and on which machine
+### Task 2 - the drive, watched red first (`38d874b` red, `c56c7e9` green)
 
-**FACT-004. Every figure in this report came from the development machine**,
-which has never had a radio attached to it. **No serial port was opened, nothing
-was keyed, and no sound was played** — this unit had no real-endpoint task and
-wanted none. The port is `FakePort`, the sink arrives through the substituted
-factory units 260 and 262 left on the view model, and **nothing here says
-anything about the IC-7300's USB codec.**
+**The red, verbatim, against the untouched tree:**
 
-### Task 1 — the trace, and the seam it found
-
-`docs/unit264-whole-contact-trace.md`. The finding that shaped everything after
-it: **`PlaceRow` has exactly two callers in `src/`** —
-`MainWindowViewModel.cs:7770` from the decoder and `:7855` for tests — and
-`:7823` bakes the contact cell into the row with a `with` expression:
-
-```csharp
-row = row with { Contact = ContactTextFor(row) };
+```
+the composer was configured for a peak of 0.250000 (-12.04 dBFS)
+and produced 1.000000 (0.00 dBFS).
 ```
 
-`grep -n "Contact = "` returns that one line in the whole tree. Nothing
-enumerates `DigitalDecodes` after `:8279` books a send. **So a send changes the
-ledger and changes no row already on the table**, and the row that can read
-`complete` is the one placed afterwards. That is not a fault — it is what a table
-of decodes is, a record of moments — and it is why the walk reads the newest row.
+`Ft8Composer.DefaultDrivePeak = 0.25f`, applied in `Ft8Composer.Build` - one
+place, both compose routes - with the arithmetic written at the site.
+`Ft8ComposeRefusal.DriveLevelRefused` joins the four that were there.
+**`Ft8Sharp` is untouched.** 17 of 17 green, plus 3 of 3 on the application
+side: with 0.4 set in Settings, the CQ button and the right-click send both
+went out at 0.400000 and at the same number.
 
-Also measured: `_contacts` is one field, constructed at `:7904` only and read at
-`:7910` and `:8279`, so the reader and the writer are the same instance;
-`Ft8ContactStates.Read` uses its `nowUtc` argument for the **slot count only**,
-while `IsComplete` takes no moment at all; telemetry lands at
-`%AppData%\Hamlet\telemetry\yyyy-MM-dd.jsonl` under event `ft8_transmission` and
-category `Transmit`; and **no test anywhere read that line back through the
-application's own predicate** — the only transmit read-back builds
-`JsonlTelemetry` with `_ => true` in the engine's test project.
+### Task 3 - the neighbours (`545a1ba`)
 
-### Task 2 — the walk
+Every suite named in Q5, filtered by exact name. **29 of 29**, **15 of 15**,
+**32 of 32**, **5 of 6**, **2 of 2**, **1 of 1**. Three expectations changed,
+all of them the scale, each with the reason at the site. One failure that is
+not the scale, reported in section 4 and not chased.
 
-`tests/Hamlet.App.Tests/ViewModels/TheWholeContactWalksThroughTheApplicationTests.cs`.
+### Task 4 - the operator can see what went out (`c56c7e9`)
 
-**The breakage it would have caught:** Tim completes a QSO on the air and the row
-never says `complete`, or the slots he transmitted are not in the telemetry file
-— so step 6's second criterion fails **after the one event in this phase that
-cannot be repeated.**
+The line now reads what section 3 quotes. **It is the composed peak and the
+line says so**, because Q3 found no route to the sink's own `PeakWritten`
+from what the sequence returns, and building one would have meant touching
+the keying path units 255, 261 and 263 proved. **Nothing in that path was
+touched.**
 
-The operator's two messages are taken **off `SendMenuFor`'s own options** and sent
-through `SendMessageCommand` and `AtSlotBoundaryAsync`. Nothing calls
-`RecordSent` by hand. The verbatim runs are in section 3.
+### Task 5 - the Settings control (`9fcfdf2`)
 
-**One product-code line was added and it is read-only:**
-`MainWindowViewModel.ContactRecordForTests`, the same `internal` idiom as
-`AddDecodeRowForTests` and `UseArmedSendForTests` already in that file.
-`_contacts` is private, and assertion 2 — *the ledger holds two sent and three
-heard* — has no other way to see the ledger the application actually kept. A test
-that built its own ledger would prove nothing about the join, which is the whole
-subject. It writes nothing and decides nothing.
+**The named drop candidate, and it shipped.** 12 of 12, with the picker's own
+six unchanged beside it.
 
-### Task 4 — the transmitted slot, read back out of the application's own file
+### Decisions I made for myself, reproduced in full
 
-**The breakage it would have caught:** the transmit record written to a telemetry
-instance the application never gives the sequence, or to a category the
-operator's settings switch off, so the file Tim sends back after his contact has
-nothing in it.
-
-`JsonlTelemetry` built with the four arguments `App.axaml.cs:38-43` passes,
-including `category => settings.IsTelemetryEnabled(category)` off a real
-`AppSettings` and the byte cap. **HM-DEC-018 is asserted rather than trusted:**
-the raw text of the line is searched case-insensitively for both callsigns, both
-grids and both whole messages, and each must be absent.
-
-### Task 5 — the dark tripwire, and step 1's header word
-
-`ExactlyOneFileInTheShippedTreeCallsTheSequence` had been red since unit 260,
-fifteen commits, and it is not on `PHASE_PLAN.md`'s list of inherited reds, so it
-was a real red. **It went red on the exact commit that made step 5 work.**
-
-**The substantive question unit 263 named and left, decided: yes, the assertion
-should distinguish constructing an `Ft8TransmitSequence` from reaching `RunAsync`
-through one.** They are different properties and only the second is the safety
-property. Greping for the type's *name* and demanding a single file asks that the
-type be named where it is held and nowhere else — which forbids a composition
-root from existing at all, and the composition root is exactly where the port,
-the sink, the licence gate and the writer are supposed to come together.
-
-Three assertions now — wiring, keying, reach — and **the keying one is unchanged
-from unit 259**. Green, quoted in section 3.
-
-**Step 1 is set to `done` in the header lines of `PHASE_STATUS.md` and
-`PHASE_OUTCOME.md`. This was done on work instruction 264's authority, under the
-arbiter's recorded ruling that step 1's fifth criterion is a sequencing gate
-passed at unit 253's close rather than a standing invariant — and NOT on this
-unit's own judgment.** No other step's line was touched, no step 1 test was
-written, and nothing else about step 1 was changed. This unit measured nothing
-that bears on it.
-
-### One correction to this unit's own bookkeeping
-
-**The intermediate `PROJECT_STATUS.md` timestamps ran ahead of the real clock and
-are corrected here.** The session opened at `02:01` and closed at `02:23`; the
-in-flight `UPDATED:` lines were composed as increments — `02:12`, `02:24`,
-`02:41`, `02:52`, `03:05` — rather than read off it, which is exactly what unit
-263 was pulled up for and what the instruction's status-cadence section warns
-about. **The final `UPDATED:` and this report's `UNIT:` line are read from the
-clock.** No measurement in this report is affected: every figure quoted is a UTC
-stamp printed by the test run itself.
+1. **The default level, 0.25 = -12.04 dBFS.** The instruction deliberately
+   did not specify it, bounding it only at "at least 6 dB below full scale".
+   Chosen out of task 1's measured budget: twelve dB below full scale, twice
+   the required minimum, with about 74 dB of slack over the 16-bit
+   quantisation floor.
+2. **The scale applies to BOTH compose routes**, not only the on-air one,
+   because `Build` is literally one place and a future caller who plays the
+   padded slot cannot then get full scale by forgetting an argument. The cost
+   was three changed expectations, written against `DefaultDrivePeak` so they
+   cannot go stale against a constant again.
+3. **I ran the application-side loopback once at full scale against the
+   untouched tree**, to answer Q7. That is a second sound beyond the one task
+   3 item 3 names. Q7 asks for the device-side decode result at full scale;
+   no such figure existed anywhere in `docs/`, so it could only come from a
+   run, and having it makes the before-and-after pair a measurement on one
+   endpoint rather than an arithmetic claim.
+4. **The readout uses the composed `PeakSample`**, for the reason under task
+   4 above.
 
 ### The tool rule
 
-**`tools\arbiter\outcome-append.bat`, tried once, verbatim.** Refused. The refusal
-text, verbatim:
-
-```
-This command requires approval
-```
-
-That is the twelfth consecutive unit it has been refused for. Per the instruction,
-no second call was spent on it and the refusal was not treated as a halt: the
-`PHASE_OUTCOME.md` entry was appended with the file-editing tools in the exact
-format the script writes — **twelve fields, same order, ASCII, existing entries
-untouched.** A shell `cat >>` append was also blocked by the sandbox, so the
-editor did the work.
-
-`tools\arbiter\validate-output.bat output.md` was run against this report; the
-result is in section 3.
-
-**No existing `PHASE_OUTCOME.md` entry was edited.** Unit 258's ruling stands.
-One entry was appended, `## UNIT 264 - STEP 6`, and the only edit to an existing
-line is step 1's word in the header, which task 5 licenses.
+`tools\arbiter\outcome-append.bat` was tried once, verbatim, and refused:
+**"This command requires approval"** - the thirteenth consecutive refusal.
+The `PHASE_OUTCOME.md` entry was then appended with the file-editing tools in
+the format the script writes: twelve fields, same order, ASCII, **existing
+entries untouched.** `outcome-read.bat --approach` was not used; its
+apostrophe parse error is recorded at units 262 to 264 and is not this unit's
+to repair.
 
 ## 2. What the owner should expect
 
-**When you finish your contact, Hamlet will have the record of it. That is now
-proved rather than assumed.**
+**Hamlet no longer transmits at full scale.** Out of the box it sends at
+-12.04 dBFS, and that is the single most important sentence in this report.
 
-A whole exchange was walked through the application tonight — a station's CQ
-heard, your two right-click sends through the menu, his report and his sign-off
-heard — and at the end **the row for `W1ABC` read `complete, 0 slots`**. That is
-the string you would see, read off the row the way the screen reads it, not off
-the ledger underneath. Both slots the application transmitted in, `06:13:45` and
-`06:14:15` UTC, were **in the telemetry file on disk** with the times they went
-out.
+**What will look wrong but is not:**
 
-**Nothing in this changes what the application does.** No behaviour was altered,
-no send path was touched, and no line of `Ft8Sharp` or `Ft8Sharp.Deep` was
-changed. What changed is that the chain from your click to the word on the row is
-now walked by a test that runs every time, instead of being six parts that each
-worked alone.
-
-**One thing worth knowing before you sit down**, found in the trace and not a
-defect: **a row's contact cell is written once, when the row arrives, and does
-not move afterwards.** So the row that will say `complete` is the last one the
-station sent you — his `RR73` or his `73` — and the earlier rows in the same
-contact keep saying what they said at the time. That is deliberate: the table is
-a record of moments, and a row that restated itself all evening would stop you
-being able to see a contact progressing down it. It is worth knowing so that the
-first thing you do after your contact is not to look at the wrong row.
-
-**A second thing.** If Settings has no callsign in it, there is no contact ledger
-at all — so no right-click menu, and no contact cell on any row. Have your call
-in Settings before you start.
-
-**Step 6 is still yours and this unit did not close it and could not.** Proving a
-mechanism is not performing a contact: no unit can answer a CQ on 14.074, and no
-test result here is evidence that anything went on the air. What this unit did is
-make sure that when you do it, the evidence the phase asks for exists — because a
-contact cannot be made a second time to collect it.
-
-**And the level is still yours.** Nothing tonight measured it, inferred it or
-built a control for it.
+- **The signal is quieter than it was, on purpose, and Hamlet is still doing
+  the same thing.** A drive of 25 % is not Hamlet being timid; it is where
+  soundcard digital modes are supposed to start, and the number is meant to
+  be turned up against your own ALC.
+- **The number on the Settings screen is not the number your radio wants.**
+  Nothing in this repository knows that figure. The screen says so in its own
+  words, and it is deliberate that it does not offer you a "correct" value.
+- **The send line now has a second sentence on it.** After a send it reads
+  the level and the clipping as well as what went out and when.
+- **The level Hamlet reports is the level it composed, not the level that
+  reached the antenna.** Between the two lie this machine's own volume for
+  that device and then the radio's input gain. The line names both rather
+  than pretending the number is the whole story.
+- **Three tests changed their expectations tonight** and one of them changed
+  from `worstPeak > 0.99f`. That test used to require full scale. It was the
+  one assertion in the tree that would have made this unit impossible.
 
 ## 3. What you should see
 
-### Task 2's first run, against the untouched tree — GREEN, four of four
+**The answer to the question this unit was commissioned to ask, in one
+number, and it leads with the red as the work instruction requires.**
 
-**This is the state of the join in one block.** Run filtered by exact name,
-foregrounded, with a stated timeout of five minutes. Verbatim:
+Task 2's assertion, run against the untouched tree, one test filtered by
+exact name, no product code changed:
 
 ```
-  Passed Hamlet.App.Tests.ViewModels.TheWholeContactWalksThroughTheApplicationTests.AWholeContactWalksThroughAndTheRowReadsComplete [543 ms]
+Failed Hamlet.RadioEngine.Tests.Transmit.TheOperatorSetsTheLevelHamlet
+       TransmitsAtTests.WhatTheComposerProducesIsAtTheDriveLevelAndNot
+       AtFullScale [250 ms]
+  Error Message:
+   the composer was configured for a peak of 0.250000 (-12.04 dBFS) and
+   produced 1.000000 (0.00 dBFS).
   Standard Output Messages:
- heard  06:11:30  "CQ W1ABC EM12"  contact: "your move, 0 slots"
- menu on "CQ W1ABC EM12": Grid W1ABC KC3QIS FN00 | Report W1ABC KC3QIS -14 | RogerAndReport W1ABC KC3QIS R-14 | Acknowledge W1ABC KC3QIS RRR | Seventy3 W1ABC KC3QIS 73
- click  06:11:45  "W1ABC KC3QIS FN00"  -> Ran / sent=True
- heard  06:12:00  "KC3QIS W1ABC -09"  contact: "your move, 0 slots"
- menu on "KC3QIS W1ABC -09": Grid W1ABC KC3QIS FN00 | Report W1ABC KC3QIS -11 | RogerAndReport W1ABC KC3QIS R-11 | Acknowledge W1ABC KC3QIS RRR | Seventy3 W1ABC KC3QIS 73
- click  06:11:45  "W1ABC KC3QIS R-11"  -> Ran / sent=True
- heard  06:12:30  "KC3QIS W1ABC RR73"  contact: "complete, 0 slots"
- ASSERTION 1 - the two boundaries
-   first  : Ran / sent=True / slot=06:11:45
-   second : Ran / sent=True / slot=06:11:45
-   sink calls  : 2
-   port frames : 4
- ASSERTION 2 - the ledger the application kept
-   sent  : W1ABC KC3QIS FN00 | W1ABC KC3QIS R-11
-   heard : CQ W1ABC EM12 | KC3QIS W1ABC -09 | KC3QIS W1ABC RR73
-   heard to us : KC3QIS W1ABC -09 | KC3QIS W1ABC RR73
- ASSERTION 3 - what the table says, newest first
-   06:12:30  "KC3QIS W1ABC RR73"  contact: "complete, 0 slots"
-   06:12:00  "KC3QIS W1ABC -09"  contact: "your move, 0 slots"
-   06:11:30  "CQ W1ABC EM12"  contact: "your move, 0 slots"
- ASSERTION 4 - the application's own telemetry file
-   {"ts":"2026-09-07T06:11:31.913Z",...,"category":"transmit","event":"ft8_transmission","data":{"slotStartUtc":"2026-09-07T06:11:45.0000000Z",...}}
-   {"ts":"2026-09-07T06:11:31.920Z",...,"category":"transmit","event":"ft8_transmission","data":{"slotStartUtc":"2026-09-07T06:11:45.0000000Z",...}}
+   message        : CQ KC3QIS FN00
+   drive asked    : 0.250000  (-12.04 dBFS)
+   peak composed  : 1.000000  (0.00 dBFS)
 
-Test Run Successful.
-Total tests: 1
-     Passed: 1
+Test Run Failed.  Total tests: 1  Failed: 1
 ```
 
-**Which of the four held: all four.** Both boundaries `Ran` and reported
-`sent=True`; the ledger held two sent and three heard against `W1ABC`; the row
-read `complete, 0 slots`; and two `ft8_transmission` lines reached disk. **The
-walk existed and held.** Everything after this is a confirmation, not a repair.
+**That is the state of this phase's oldest deferral in a single number.** It
+was committed at the red, at `38d874b`, before anything was made green.
+Everything below is the repair.
 
-### The one weakness in that run, which was mine and not the tree's
+The same assertion after it: `Passed ... [9 ms]`, `Total tests: 17, Passed: 17`.
 
-Both clicks fell inside one fifteen-second slot, so both sends booked the **same**
-`slotStartUtc` — `06:11:45` twice. That makes *"both transmitted slots appear in
-telemetry"* one slot counted twice, which is weaker evidence than step 6's
-criterion 2 asks for.
+### In the application, in your own terms
 
-Fixed by letting the **real clock** reach slot 2 before the second click,
-bounded at sixty seconds and failing with figures rather than hanging.
-**`ClockOffset` was deliberately not moved by hand:** that would have proved the
-arithmetic rather than the join. The run that stands, verbatim:
+**You can now turn Hamlet down, and it starts turned down.**
 
-```
-  Passed ...AWholeContactWalksThroughAndTheRowReadsComplete [23 s]
- heard  06:13:30  "CQ W1ABC EM12"  contact: "your move, 0 slots"
- click  06:13:45  "W1ABC KC3QIS FN00"  -> Ran / sent=True
- waited 23425 ms for slot 06:14:00; the clock is in 06:14:00
- heard  06:14:00  "KC3QIS W1ABC -09"  contact: "your move, 0 slots"
- click  06:14:15  "W1ABC KC3QIS R-11"  -> Ran / sent=True
- heard  06:14:30  "KC3QIS W1ABC RR73"  contact: "complete, 0 slots"
- ASSERTION 1 - first : Ran / sent=True / slot=06:13:45
-               second: Ran / sent=True / slot=06:14:15
-               sink calls 2, port frames 4
- ASSERTION 2 - sent  : W1ABC KC3QIS FN00 | W1ABC KC3QIS R-11
-               heard : CQ W1ABC EM12 | KC3QIS W1ABC -09 | KC3QIS W1ABC RR73
- ASSERTION 3 - 06:14:30  "KC3QIS W1ABC RR73"  contact: "complete, 0 slots"
-               06:14:00  "KC3QIS W1ABC -09"   contact: "your move, 0 slots"
-               06:13:30  "CQ W1ABC EM12"      contact: "your move, 0 slots"
- ASSERTION 4 - slots armed  : 06:13:45, 06:14:15
-               slots on disk: 2026-09-07T06:13:45.0000000Z, 2026-09-07T06:14:15.0000000Z
+> Open Settings. Under the transmit endpoint picker there is a new box,
+> **Transmit drive**, showing **25 % of full scale**, and under it a line that
+> reads: *How hard Hamlet drives the radio's input - -12.0 dBFS at this
+> setting. This is a starting point, not a specification. Set it against your
+> own radio's ALC meter: turn it up until the ALC just begins to move and then
+> back off. Full scale is a wide, distorted signal over other people's band,
+> which is why Hamlet starts at 25 %.*
+>
+> Type a level it cannot use and it will not take it - the line tells you what
+> is still in force instead.
 
-Test Run Successful.  Total tests: 1  Passed: 1
-```
-
-**Two distinct slots, both on disk, both with the time they went out in.**
-
-### Task 4 — the line on disk, and it names nobody
+**And after you send, Hamlet tells you what went out.** The line beneath the
+waterfall now reads, verbatim from the test:
 
 ```
-  Passed ...OneSendLeavesOneLineOnDiskAndTheLineNamesNobody [2 s]
- MEASURED, development machine, FACT-004:
-   files  : 2026-09-07.jsonl
-   line   : {"ts":"2026-09-07T06:15:28.439Z","sessionId":"37c80182","level":"info",
-             "appVersion":"1.12.90","category":"transmit","event":"ft8_transmission",
-             "data":{"slotStartUtc":"2026-09-07T06:15:30.0000000Z",
-             "startSecondsIntoSlot":0.5,"frequencyHz":14074000,
-             "durationSeconds":12.64,"sampleRate":12000,"sampleCount":151680,
-             "messageType":"Standard","messageLength":17,"outcome":"Sent",
-             "cameOutOfTransmit":"OrdinaryUnkey","keyed":true}}
-   slot armed     : 2026-09-07T06:15:30.0000000Z
-   slot on disk   : 2026-09-07T06:15:30.0000000Z
-   seconds offered: 12.64      seconds on disk: 12.64
-   samples offered: 151680     samples on disk: 151680
-   rate on disk   : 12000
-   absent "KC3QIS": True
-   absent "W1ABC": True
-   absent "FN00": True
-   absent "EM12": True
-   absent "W1ABC KC3QIS FN00": True
-   absent "CQ W1ABC EM12": True
-
-Test Run Successful.  Total tests: 1  Passed: 1
+Sent "CQ KC3QIS FN00" in the slot at 06:46:30 UTC. It was composed at
+-12.0 dBFS with nothing clipped - that is the level Hamlet built, before
+this machine's own volume for that device and before the radio's input
+gain. Set the radio's drive against its own ALC meter.
 ```
 
-**Slot time and duration are the ones that went out**, matched against
-`run.SecondsOffered` and `run.SamplesOffered` rather than against a constant.
-**HM-DEC-018 holds, checked and not trusted** — the only thing the line says
-about the message is `messageLength: 17`, which the ruling names explicitly.
-**Development machine, FACT-004: no port, nothing keyed, no sound.**
+### The one sound this unit made deliberately, and the pair it belongs to
 
-### Task 5 — the dark tripwire, green after fifteen commits red
+Both runs, same endpoint, same message, **development machine**, through
+**S34J55x (3- HD Audio Driver for Display Audio)** at 48000 Hz:
 
-```
-  Passed Hamlet.RadioEngine.Tests.Transmit.TheUnkeyHappensWhateverGoesWrongTests.ExactlyOneFileInTheShippedTreeCallsTheSequence [195 ms]
-  Standard Output Messages:
- construct one          : MainWindowViewModel.cs
- call _sequence.RunAsync: Ft8ArmedSend.cs
- name it in code        : Ft8ArmedSend.cs, MainWindowViewModel.cs
-
-Test Run Successful.  Total tests: 1  Passed: 1
-```
-
-**The assertion carrying the safety property is intact and unchanged from unit
-259** — `Assert.Equal(["Ft8ArmedSend.cs"], runners)` over a `_sequence.RunAsync`
-grep of `src/`. It was confirmed independently by direct grep before the test was
-touched:
-
-```
-$ grep -rn "_sequence.RunAsync" --include=*.cs src/ | grep -v "/obj/" | grep -v "/bin/"
-src/Hamlet.RadioEngine/Transmit/Ft8ArmedSend.cs:471:  var run = await _sequence.RunAsync(send, source.Token).ConfigureAwait(false);
-```
-
-One line, one file. **The guard was broken; the thing it guards never was.**
-
-### The whole solution builds
-
-```
-Build succeeded.
-    0 Warning(s)
-    0 Error(s)
-```
-
-### What was NOT run, and why
-
-**No test suite was run and no unfiltered `dotnet test` was run** — the three
-rules that killed four sessions. Every run above is a single test filtered by
-exact name, foregrounded, with a stated timeout. **Nothing was backgrounded and
-polled for.**
-
-**The four neighbour suites task 3 names —** `TheOperatorCanStopItTests`,
-`OneClickSendsExactlyOneMessageTests`, `TheMenuIsUnderTheMouseTests`,
-`TheLedgerHoldsWhatPassedEachWayTests` **— were NOT run**, because task 3 is what
-licenses running them and task 3 did not happen. **Say plainly what that leaves
-unchecked:** the only product-code change this unit made is
-`MainWindowViewModel.ContactRecordForTests`, a new `internal` read-only member
-that returns `_contacts?.For(callsign)`. It adds a member, writes nothing and
-changes no existing line, and the whole solution compiles clean. **That is an
-argument, not a measurement**, and a neighbour not run is a neighbour not
-checked.
-
-### `validate-output.bat` — it could not be run, so this is a HAND CHECK standing in for a run
-
-**Say it plainly: the script was not run and the seven rules below were checked
-by hand against the copy the script prints in its own header.** Unit 263 recorded
-that the script holds its own rules and does not read them from `CLAUDE_CODE.md`
-at run time, which is what makes a hand check possible at all.
-
-Three forms tried, each once. The verbatim form was mangled by the shell rather
-than refused — it ate the backslashes:
-
-```
-$ tools\arbiter\validate-output.bat output.md
-/usr/bin/bash: line 1: toolsarbitervalidate-output.bat: command not found
-Exit code 127
-```
-
-```
-$ cmd //c "tools\arbiter\validate-output.bat output.md"
-This command requires approval
-```
-
-```
-$ ./tools/arbiter/validate-output.bat output.md
-This command requires approval
-```
-
-That is twenty-four forms across ten units. **The rules, checked by hand against
-the header the script prints, with what was measured beside each:**
-
-| Rule | What it wants | Measured |
+| | before (untouched tree) | after (new default) |
 |---|---|---|
-| 1 | a `UNIT:` line above section 1, parseable | present at line 45, inside the 60-line window the script reads |
-| 2 | the four top-level sections, in order, exact names | `## ` returns exactly `1. What Claude did`, `2. What the owner should expect`, `3. What you should see`, `4. What's blocking us`, at lines 62, 216, 257, 469 |
-| 3 | no fifth top-level section | four and only four; no `## ` inside any fenced block |
-| 4 | section 4 present even when empty | present, and not empty |
-| 5 | section 3 non-empty | 173 non-blank lines between the `## 3.` and `## 4.` headings |
-| 6 | the ordering block above `UNIT:`, A B C, and C naming a count | `READ IN THIS ORDER` ×1, `^A.` ×1, `^B.` ×1, `^C.` ×1, and `raises 3 items` ×1, all inside the first 60 lines |
-| 7 | no placeholder token in the header block | zero matches for `_PENDING`, `PENDING_`, `TBD`, `TODO`, `FIXME`, `XXX`, `<FILL`, `FILL IN>`, `PLACEHOLDER` before `## 1.` |
+| level asked | none - there was no argument | 0.25 (-12.04 dBFS) |
+| peak written | **1.0000 (0.00 dBFS)** | **0.2500 (-12.04 dBFS)** |
+| rms written | 0.7064 (-3.02 dBFS) | 0.1766 (-15.05 dBFS) |
+| clipped samples | 0 | **0** |
+| decoder returned | "CQ KC3QIS FN00" | **"CQ KC3QIS FN00"** |
 
-**All seven pass.** This is a hand check and not an exit code, and it is reported
-as such.
+The RMS ratio is `0.7064 / 0.1766 = 4.000` - exactly the 12.04 dB, which is
+task 1's prediction from the 3.01 dB crest factor confirmed by measurement.
 
-### Task 3 was empty and is left empty
+**FACT-004, and it is the point: every figure in this section was measured on
+the development machine, through a monitor's display-audio endpoint. No radio
+has ever been attached to this machine. NONE OF IT SAYS ANYTHING WHATEVER
+ABOUT THE IC-7300, and what its USB modulation input expects is not in this
+repository and is not claimed here.**
 
-The walk existing and passing is the real answer. **No decorative red was
-manufactured to fill it.** Unit 263's red was watched and real; a made-up one
-would be worse than none.
+### Every count, and which neighbours were run
+
+| Suite | Result |
+|---|---|
+| `TheOperatorSetsTheLevelHamletTransmitsAtTests` (new) | 17 of 17 |
+| `WhatTheTransmissionLooksLikeAsAudioTests` + `TheSeamTurnsWordsIntoASlotOfAudioTests` | 29 of 29 |
+| `HamletsOwnDecoderReadsBackWhatHamletComposedTests` + `TheRoundTripHoldsAtTheEndpointsRateTests` + `OneClickSendsExactlyOneMessageTests` | 15 of 15 |
+| app send-path suites (five, named in the task 3 commit) | 32 of 32 |
+| `TheApplicationSendsAtTheLevelTheOperatorSetTests` (new) | 3 of 3 |
+| `SettingsCarriesTheTransmitDriveTests` (new) + `SettingsNamesTheTransmitEndpointTests` | 12 of 12 |
+| `TheLoopbackProvesTheWholeChainTests` | 2 of 2 |
+| `TheLoopbackThroughTheApplicationsSendPathTests` | 1 of 1 |
+| `TheSinkPlaysToANamedEndpointTests` | **5 of 6** - see section 4 |
+
+**Not run, and why:** no unfiltered suite was run on any project, which is the
+standing rule. The inherited reds named in `PHASE_PLAN.md` -
+`CwAdjudicationTests.ASpeedChangeInRealisticAudio`, the 51 CW cases in
+`docs/unit239-failing-set.txt`, and the `Ft8Sharp.Deep.Tests` whole-type-list
+tripwire - were not run and are never chased.
+
+### The three expectations that changed, and why each is honest
+
+- **`NothingTheSeamProducesLeavesFullScale`** asserted `worstPeak > 0.99f`.
+  It was right while the seam could build nothing but a full-scale sine. It
+  now asserts the peak equals `Ft8Composer.DefaultDrivePeak` **and** is at
+  least 6 dB below full scale - so a future change putting the default back to
+  1.0 fails here too.
+- **`TheSixteenBitConversionOfARealTransmissionStaysInRange`** asserted
+  `max > 32000` and reported `max is 8192`. 8192 is `0.25 * 32767`. The
+  property it was really testing - that nothing wraps - is kept, written
+  against the drive.
+- Both are now expressed against the constant rather than against a literal,
+  so they cannot go stale the same way again.
+
+### The four things the instruction expected to be told it got wrong
+
+All four landed as it predicted. Full detail in the ordering block, section C.
 
 ## 4. What's blocking us
 
-**Nothing is blocking. Three items, all recorded for the record, none a ruling
-request, and none stands in the way of anything in B.**
+**Nothing is blocking. Three items are recorded for the record; none is a
+ruling request, and none stands in the way of anything named in B.**
 
-### 1. Task 2 was green against the tree as it stood
+### 1. An inherited red, found and deliberately not chased
 
-Reported because the instruction asked to be told either way and named this as
-the answer it expected might come back. **All four assertions held on the first
-run, 543 ms, with no change to any product code except a read-only accessor.**
-The join between unit 258's ledger, unit 259 and 260's arming and menu, and unit
-262's rate handling was already sound; it had simply never been walked. **Not
-blocking — it is the answer B asks for.**
+`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequence
+CallsItAudioFailed` fails: `Expected: AudioFailed, Actual: Cancelled`.
 
-### 2. The contact cell is computed as of the row's own slot, but only for the count
+**It is not the scale and it is not mine.** The test builds its own tone
+through `RenderChoice.Tone` and never touches `Ft8Composer`, so the drive
+level cannot reach it. `Ft8TransmitSequence.cs:296-305` is unit 263's new
+branch - a short play under cancellation now reports `Cancelled` rather than
+`AudioFailed`, deliberately, because "one is the sound card letting him down;
+the other is him pressing the button". The test asserts the pre-263 behaviour
+and was last touched at `77268f1`, before unit 263 existed.
 
-The instruction expected to be told it got this wrong, and it half did.
-`MainWindowViewModel.cs:7914` reads `Ft8ContactStates.Read(record, row.SlotStartUtc)`,
-so `nowUtc` is the row's own slot — **but `Read` uses that argument for the slot
-count alone.** `IsComplete` takes no moment at all and reads the whole record. So
-the state is as of the whole ledger and the number beside it is as of the row.
+Task 3 item 2 says: where a test fails for a reason that is not the scale,
+stop, report it, and do not chase it. **Reported, not chased.** The next unit
+inherits a one-line expectation change and the sentence explaining it.
 
-**What actually stops a row moving after a send is a different thing entirely:
-nothing recomputes it.** `PlaceRow` has two callers, `:7823` bakes the string in
-with a `with` expression, and nothing walks `DigitalDecodes` after `:8279`. That
-is a real property of the application and it is why the walk reads the newest
-row. **Not blocking, and not a defect** — §12.1 is untouched, the row's state
-still depends only on which messages passed, and nothing was changed about
-*what* the cell decides or *when* it is computed.
+### 2. Two places where the tree disagreed with the instruction
 
-### 3. Transmit telemetry does survive the app's own category predicate — and one instruction mismatch beside it
+Both reported and neither repaired, per "the tree wins".
 
-The instruction said to measure this rather than reason from `App.axaml.cs:42`
-and `AppSettings.cs:395`. **Measured: it survives.** A `JsonlTelemetry` built the
-way `App.axaml.cs:38-43` builds it, with the predicate off a real `AppSettings`
-and the byte cap, wrote `2026-09-07.jsonl` with the `ft8_transmission` line in
-category `transmit`, read back off disk. **Not blocking.**
+- The instruction refers to "the four at `Ft8Composer.cs:14-34`". The enum
+  runs to line 40 and holds **five** values - four refusals plus `None`. I
+  added the new refusal beside them as asked; the count and the line range in
+  the instruction are both slightly off and nothing turns on it.
+- `AppSettings.cs:210-213`'s remark was stale, as the instruction suspected.
+  **I corrected it**, and only because task 5 put the drive control beside
+  that picker, which is the exact condition the instruction set for touching
+  it. Had task 5 been dropped, the remark would have been left alone.
 
-**The mismatch, reported and not repaired, per `ARBITER.md` §5 — the tree wins.**
-Task 1 question 4 says `Ft8ContactState.cs:186` requires three things:
-`record.Sent.Count > 0`, `ours.Any(IsGridOrReport)` and
-`ours.Any(IsAcknowledgement)`. **The tree requires five:** those three plus
-`record.LastHeardToUs is not null`, `his.Any(IsGridOrReport)` and
-`his.Any(IsAcknowledgement)`. Both sides of the exchange must carry a
-grid-or-report and an acknowledgement. It changes nothing about the exchange task
-2 drives, which satisfies all five. **The instruction was not repaired and
-`PHASE_OUTCOME.md`'s existing entries were not touched;** the correction is here
-and in the appended entry.
+### 3. Carried forward, reported and not chased
 
-### One procedural conflict, resolved, and said out loud
+- `PROJECT_STATUS.md` carries `RULES_AT: HM-DEC-157 (2026-09-06)` while
+  `CLAUDE.md` §1's highest is `CPS-DEC-0152`. **Reported, not reconciled** -
+  the work instruction parks it explicitly.
+- `PHASE_OUTCOME.md`'s header says step 1 is `done` while an entry beneath it
+  says `partial`. **Expected, and not reconciled**: unit 264 set the header on
+  work instruction 264's authority and the entry predates it. No existing
+  entry was edited and no step's word in either header line was touched.
+- `outcome-append.bat` refused once, verbatim - the thirteenth consecutive
+  unit.
+- **`validate-output.bat` could not be run, and this report's validation is a
+  hand check standing in for a run.** Three forms were tried: the verbatim
+  backslash form, which the shell mangled into
+  `toolsarbitervalidate-output.bat: command not found`; the forward-slash
+  form; and `cmd /c "..."`. The last two were both refused with **"This
+  command requires approval"**. Following unit 263's recorded fallback, the
+  script's seven rules were checked by hand against the copy it prints in its
+  own header, and **all seven pass**: the `UNIT:` line is above section 1 and
+  parses; the four top-level sections are in order with exact names; there is
+  no fifth; section 4 is present and non-empty; section 3 is non-empty; the
+  ordering block sits above the `UNIT:` line with A, B and C, and C names how
+  many items section 4 raises; and the header block carries no placeholder
+  token.
+- **The bookkeeping the reload named was committed before task 2**, at
+  `96d7d2d`: `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`,
+  `SESSION.lock`, `WORK_INSTRUCTIONS.md` and the whole of `.run-unit/`. **What
+  I left:** none of it - `git status` was clean of the reload's list after
+  that commit. The only files I authored changes to among them are
+  `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line and `PROJECT_STATUS.md`'s
+  header; `HEARTBEAT:`, `CURRENT_STEP:` and the `STEP:` lines were not
+  touched and nothing below the `---` was changed.
 
-The session's standing cadence says the `STEP:` lines in `PHASE_STATUS.md` belong
-to the launcher and are not this session's to write. **Work instruction 264 task
-5 explicitly instructs this unit to set step 1 to `done` in that file's header
-lines and to say whose authority it acted on.** The instruction is specific and
-names the arbiter's ruling behind it, so it was followed: one word on one line,
-no other step touched, no reformatting, and nothing below the `---` altered.
-**Reported so that whoever owns that file knows a unit wrote to it and why.**
+### Not blocking, and not raised as questions
 
-### Parked, untouched, and not raised
-
-The level; step 4's criterion 6; unit 263's section 4 items 1 and 2; the
-`RULES_AT` disagreement between `PROJECT_STATUS.md` (`HM-DEC-157`) and
-`CLAUDE.md` §1 (`CPS-DEC-0152`), which is reported and not reconciled; the CW
-send and band-scan surface; and the inherited reds — `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
-the 51 CW cases in `docs/unit239-failing-set.txt`, and the `Ft8Sharp.Deep.Tests`
-whole-type-list tripwire — none of which was run or chased.
-
-### What was committed, and what was left
-
-Committed before task 2 started, at `8531720`: `PHASE_OUTCOME.md`,
-`RUN_LEDGER.md`, `WORK_INSTRUCTIONS.md`, `SESSION.lock` and the whole of
-`.run-unit/`. **Nothing was left uncommitted.** `SESSION.lock` was modified rather
-than deleted in the tree this unit found, and `.run-unit/watched.rc` was not
-present as an untracked file — both differ from what the instruction's reload
-section reported, and both are the launcher's, not this unit's to repair.
-
-### Step 6 is not closed and no unit can close it
-
-Said plainly because the instruction requires it: **proving a mechanism is not
-performing a contact.** All three of step 6's criteria need Tim, a radio and an
-antenna. Nothing in this report is evidence that anything went on the air.
+The parked list was honoured in full: the IC-7300's expected figure, the
+transmit audio base frequency, step 4's criterion 6, step 1's fifth criterion
+and both its header words, the CW send and band-scan members, the licence-gate
+wording, and the `RULES_AT` disagreement. **No step was closed. `TransmitGuard`
+was not touched, the drive level is not a gate, and neither the abort nor the
+stop was made conditional on anything added tonight.**
