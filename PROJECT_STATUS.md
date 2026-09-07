@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 270 - after his last transmission, the screen still says where the contact stands
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-158 (2026-09-07)
-UPDATED: 2026-09-07T12:19:30-04:00
-NOTE: PROJECT GATE PASSED - SHACK_FACTS.md and Cw/CwProbabilisticDecoder.cs both present, CoreHMI.sln and MURC.sln both absent. Reading the tree for the six trace questions before a line is written: PlaceRow confirmed at MainWindowViewModel.cs:7826 with the contact assignment at :7840 and exactly two callers (:7787 the decoder's door, :7872 AddDecodeRowForTests); ContactTextFor at :7901; the one RecordSent call site at :8474; the seam unit 269 used at :8489-8490. Ft8MessageFields is (To, From, Payload) and the app already forwards to Ft8MessageSplit from Ft8Vocabulary.cs:57 and DecodedFilter.cs:86, so question 3 is looking like the reachable route rather than the fallback - to be written up with quotations before task 2 starts. Root version reads 1.12.123 and will go to 1.12.124.
+UPDATED: 2026-09-07T12:27:49-04:00
+NOTE: THE HOLE IS THERE AND IT IS MEASURED, NOT REASONED. Task 1's trace is committed and pushed (7fdc88b). Task 2's measurement ran green once, alone by exact name, foregrounded, 20 s of wall time because it waits for a real slot boundary. On that run: the exchange was CQ W1ABC EM12 at 16:27:15, the operator's W1ABC KC3QIS FN00 at 16:27:30, KC3QIS W1ABC R-09 at 16:27:45, the operator's own W1ABC KC3QIS RRR at 16:28:00, and then nothing. THE LEDGER READS IsComplete=True AND "complete, 0 slots" at 16:28:00; THE NEWEST ROW ON THE TABLE STILL READS "your move, 0 slots" at 16:27:45; AND NEITHER LINE IN THE SEND AREA CARRIES ANY OF THE FOUR STATE WORDS, which are read off the enum rather than written out. It was added to the committed walk file rather than copied into a new one - Panel(), Heard, ClickAsync and WaitForSlotAsync are reused and no existing method lost a line. Next: task 3, the fourth line in the Send area, watched red before it is made green.
 
 ---
 

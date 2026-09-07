@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
+using Avalonia.Headless.XUnit;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
@@ -330,6 +331,170 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
         Assert.Equal(
             (His + " " + Mine + " FN00").Length,
             data.GetProperty("messageLength").GetInt32());
+    }
+
+    /// <summary>
+    /// **The ending nobody has driven: the operator's own last message is what
+    /// completes the exchange, and then the station goes quiet.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 270, task 2. **This is a measurement and not a
+    /// red.** It is added to this file rather than copied into a new one because
+    /// every part of the harness it needs - <c>Panel()</c>, <c>Heard</c>,
+    /// <c>ClickAsync</c>, <c>WaitForSlotAsync</c> - is already here and private,
+    /// and a second copy of a harness is a second thing to drift. **Not one line
+    /// of any existing method in this file was changed to make room for it**; the
+    /// only other edit is the <c>Avalonia.Headless.XUnit</c> using above.</para>
+    /// <para>**WHY IT IS AN `[AvaloniaFact]` WHERE THE WALK IS A `[Fact]`.** It
+    /// reads <c>DigitalSendLine</c> and <c>DigitalTransmitLevelLine</c>, which
+    /// <c>AtSlotBoundaryAsync</c> sets inside a
+    /// <c>Dispatcher.UIThread.Post</c> (`MainWindowViewModel.cs:8487-8491`). With
+    /// no dispatcher running, that post never executes and the two lines quoted
+    /// below would be the ones set at the click - which is a quotation of
+    /// something the operator never sees.</para>
+    /// <para>The exchange, four slots, and then silence:</para>
+    /// <list type="table">
+    /// <item><description>0 - `CQ W1ABC EM12`, heard</description></item>
+    /// <item><description>1 - `W1ABC KC3QIS FN00`, the operator, clicked</description></item>
+    /// <item><description>2 - `KC3QIS W1ABC R-09`, heard - **a report and a
+    /// roger in one field**</description></item>
+    /// <item><description>3 - `W1ABC KC3QIS RRR`, the operator, clicked -
+    /// **his own message is what completes the exchange**</description></item>
+    /// <item><description>4 - **nothing.** The station has gone.</description></item>
+    /// </list>
+    /// <para>**THE BREAKAGE THIS WOULD HAVE CAUGHT: A FUTURE UNIT "FIXING" THE
+    /// STALE CELL BY REWRITING ROWS ALREADY ON THE TABLE.** The obvious repair
+    /// for what this measures is to walk <c>DigitalDecodes</c> after a send and
+    /// recompute every <c>Contact</c> cell. That would make a table of moments
+    /// lie about its own moments: <c>ContactTextFor</c>'s own contract
+    /// (`MainWindowViewModel.cs:7885-7888`) is that a row shows where the contact
+    /// stood **in its own slot** and never restates itself, which is what lets a
+    /// reader watch a contact progress down the table. **So the stale cell
+    /// asserted here is not a defect to be repaired and these assertions must go
+    /// on passing unchanged.** The present state belongs in a line about the
+    /// present, which is work instruction 270 task 3's subject and is asserted
+    /// somewhere else.</para>
+    /// <para>**NOTHING IS OPENED, NOTHING IS KEYED, AND NO SOUND IS MADE**
+    /// (`SHACK_FACTS.md` FACT-004). The port is <see cref="FakePort"/> and the
+    /// sink arrives through the substituted factory. Every figure printed below
+    /// was measured on the development machine, which has never had a radio
+    /// attached to it, and none of it says anything about the IC-7300.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task AfterHisOwnLastMessageTheLedgerIsCompleteAndTheNewestRowIsNot()
+    {
+        var (panel, settings, _, telemetry) = Panel();
+        var port = new FakePort();
+
+        settings.AudioOutputDeviceId = NamedEndpoint;
+        panel.BuildTheArmedSend(port);
+
+        Assert.True(panel.HasSomethingToTransmitThrough, panel.DigitalSendLine);
+
+        var slot0 = Ft8Slots.SlotStart(DateTime.UtcNow);
+
+        // SLOT 0 - he calls CQ.
+        var cq = Heard(panel, slot0, "-14", "CQ " + His + " EM12");
+
+        // SLOT 1 - the operator answers a CQ with his grid.
+        var first = await ClickAsync(panel, cq, Ft8SendShape.Grid);
+
+        // The real clock, for the same reason the walk above waits for it: two
+        // clicks in one fifteen-second slot book one slot time twice.
+        var slot2 = await WaitForSlotAsync(slot0.AddSeconds(30));
+
+        // SLOT 2 - **a report and a roger in one field**, which
+        // `Ft8ContactState.cs:182-184` says counts as both.
+        var report = Heard(panel, slot2, MeasuredHim, Mine + " " + His + " R-09");
+
+        // SLOT 3 - **the operator's own RRR, which is the message that satisfies
+        // `IsComplete`.** Nothing is heard after it.
+        var second = await ClickAsync(panel, report, Ft8SendShape.Acknowledge);
+
+        Assert.True(
+            second.SlotUtc > first.SlotUtc,
+            "the two sends booked into the same slot: " + Stamp(first.SlotUtc));
+
+        // SLOT 4 - NOTHING IS HEARD. He got what he came for and moved on.
+
+        telemetry.Dispose();
+
+        // The posted lines, so what is quoted is what the operator would read.
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+
+        Assert.Equal(Ft8ArmOutcome.Ran, first.Result.Outcome);
+        Assert.Equal(Ft8ArmOutcome.Ran, second.Result.Outcome);
+        Assert.True(first.Result.Run!.Sent, first.Result.Run.Reason);
+        Assert.True(second.Result.Run!.Sent, second.Result.Run.Reason);
+
+        // ---- 1. THE LEDGER THE APPLICATION KEPT SAYS THE CONTACT IS COMPLETE.
+        var record = panel.ContactRecordForTests(His);
+
+        Assert.NotNull(record);
+
+        var complete = Ft8ContactStates.IsComplete(record!);
+        var read = Ft8ContactStates.Read(record!, second.SlotUtc);
+
+        _output.WriteLine("MEASURED, development machine, FACT-004:");
+        _output.WriteLine("MEASUREMENT 1 - the ledger, after his own last message");
+        _output.WriteLine("  sent  : " + string.Join(" | ", record!.Sent.Select(m => m.Message)));
+        _output.WriteLine("  heard : " + string.Join(" | ", record.Heard.Select(m => m.Message)));
+        _output.WriteLine("  IsComplete             : " + complete);
+        _output.WriteLine("  Read at " + Stamp(second.SlotUtc) + ", his send slot : \""
+            + read.Text + "\"");
+
+        Assert.True(
+            complete,
+            "the exchange does not satisfy IsComplete, so this test is not "
+            + "measuring the ending it was written for.");
+
+        Assert.Equal(Ft8ContactState.Complete, read.State);
+
+        // ---- 2. AND THE NEWEST ROW ON THE TABLE DOES NOT.
+        var rows = panel.DigitalDecodes.Where(r => r.Sender == His).ToList();
+
+        _output.WriteLine("MEASUREMENT 2 - what the table says, newest first");
+
+        foreach (var row in rows)
+        {
+            _output.WriteLine("  " + Stamp(row.SlotStartUtc) + "  \"" + row.Message
+                + "\"  contact: \"" + row.Contact + "\"");
+        }
+
+        // Two rows and no more: nothing was heard after his last transmission,
+        // so no row was placed after it.
+        Assert.Equal(2, rows.Count);
+
+        var newest = rows[0];
+
+        Assert.Equal(Mine + " " + His + " R-09", newest.Message);
+        Assert.Equal(slot2, newest.SlotStartUtc);
+
+        // **THE ROW IS A RECORD OF ITS OWN SLOT AND STAYS ONE.** At slot 2 the
+        // operator had not yet sent his RRR, so *your move* is what was true
+        // then and is what the cell must keep saying.
+        Assert.DoesNotContain("complete", newest.Contact, StringComparison.Ordinal);
+        Assert.Contains("your move", newest.Contact, StringComparison.Ordinal);
+
+        // ---- 3. AND THE SEND AREA NEVER SAYS WHERE THE CONTACT STANDS.
+        _output.WriteLine("MEASUREMENT 3 - the Send area under the waterfall, quoted whole");
+        _output.WriteLine("  DigitalSendLine          : \"" + panel.DigitalSendLine + "\"");
+        _output.WriteLine("  DigitalTransmitLevelLine : \"" + panel.DigitalTransmitLevelLine + "\"");
+
+        // **THE FOUR WORDS, ASKED OF THE ENUM RATHER THAN WRITTEN OUT**, so a
+        // fifth state or a renamed one could not slip past this.
+        var everyState = Enum.GetValues<Ft8ContactState>()
+            .Select(s => new Ft8ContactRead(His, s, 0).Words)
+            .ToList();
+
+        _output.WriteLine("  the four state words     : " + string.Join(" | ", everyState));
+
+        foreach (var words in everyState)
+        {
+            Assert.DoesNotContain(words, panel.DigitalSendLine, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain(
+                words, panel.DigitalTransmitLevelLine, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     /// <summary>Waits for the wall clock to reach a slot, and says which it is.</summary>
