@@ -94,9 +94,18 @@ public sealed class WhatTheSplitCostsTests
             + " pixels");
 
         // **WHAT IS LEFT FOR THE MESSAGE**, which is the list minus the fixed
-        // columns in front of it. The left list declares `76,48,48,54,*` with a
-        // 14-pixel gap after each; the mine list declares `76,62,*`.
-        const double LeftFixed = 76 + 48 + 48 + 54;
+        // columns in front of it.
+        //
+        // **THE LEFT LIST LOST `dt` AND `hz` ON 2026-09-07** (Tim, from five
+        // options with the numbers behind each), so it declares `76,48,Auto,*`
+        // where it declared `76,48,48,54,Auto,*`. The `Auto` is the `worked` mark
+        // and it takes no width on a row it has nothing to say about, which is
+        // the case measured here.
+        //
+        // **THE MINE LIST KEPT BOTH.** They are diagnostics about a contact he is
+        // in and there was never a shortage of width on that side. The two lists
+        // carry different columns now, deliberately.
+        const double LeftFixed = 76 + 48;
         const double MineFixed = 76 + 62;
 
         // The panel's own padding and the scroller, taken off both. Measured from

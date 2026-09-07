@@ -3634,7 +3634,7 @@
                                          declaration, because it checks the result
                                          rather than the intent. -->
                                     <Grid Grid.Row="1"
-                                          ColumnDefinitions="76,48,48,54,Auto,*"
+                                          ColumnDefinitions="76,48,Auto,*"
                                           RowDefinitions="Auto"
                                           IsVisible="{Binding HasDigitalDecodes}">
 
@@ -3648,18 +3648,24 @@
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="dt"
-                                                   ToolTip.Tip="{StaticResource HmDecodeDtHelp}"
-                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                                   Margin="0,0,14,4"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <TextBlock Grid.Row="0" Grid.Column="3" Text="hz"
-                                                   ToolTip.Tip="{StaticResource HmDecodeHzHelp}"
-                                                   TextAlignment="Right"
-                                                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                                   Margin="0,0,14,4"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <TextBlock Grid.Row="0" Grid.Column="5" Text="message"
+                                        <!-- **`dt` AND `hz` LEFT THIS LIST ON
+                                             2026-09-07** (Tim, choosing from five
+                                             options with the numbers behind each).
+                                             Unit 273 measured 75 pixels for the
+                                             message here against the 180 an
+                                             everyday `VP2MAA KC3QIS FN00` needs,
+                                             and this side CLIPS rather than
+                                             wrapping - so what reached the screen
+                                             was a callsign cut off partway, which
+                                             is a station misidentified.
+
+                                             **THEY ARE STILL ON THE MINE SIDE**,
+                                             where they are diagnostics about a
+                                             contact he is in and where there was
+                                             never a shortage of width. The two
+                                             lists carry different columns now, on
+                                             purpose. -->
+                                        <TextBlock Grid.Row="0" Grid.Column="3" Text="message"
                                                    ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
@@ -3751,26 +3757,12 @@
                                                      with and offer `RRR` as a first
                                                      send after it had already gone
                                                      twice. -->
-                                                <Grid ColumnDefinitions="76,48,48,54,Auto,*"
+                                                <Grid ColumnDefinitions="76,48,Auto,*"
                                                       Background="Transparent"
                                                       ContextRequested="OnDecodedRowContextRequested">
                                                     <TextBlock Grid.Column="0" Text="{Binding Utc}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                     <TextBlock Grid.Column="1" Text="{Binding Snr}"
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                                    <TextBlock Grid.Column="2" Text="{Binding Dt}"
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-
-                                                    <!-- **RIGHT-ALIGNED SO 231 AND
-                                                         2438 AGREE ON THEIR UNITS.**
-                                                         Left-aligned, the hundreds
-                                                         digit of one sits under the
-                                                         thousands digit of the other
-                                                         and the eye reads a column of
-                                                         numbers that are not
-                                                         comparable. -->
-                                                    <TextBlock Grid.Column="3" Text="{Binding Hz}"
-                                                               TextAlignment="Right"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                     <!-- **THE MESSAGE READS AS THREE
                                                          THINGS AT A GLANCE** (unit 241
@@ -3800,14 +3792,14 @@
                                                          sorted away or taken off the list. The mark says when and
                                                          on what band on hover, and it takes no width at all on a
                                                          row it has nothing to say about. -->
-                                                    <TextBlock Grid.Column="4" Text="worked"
+                                                    <TextBlock Grid.Column="2" Text="worked"
                                                                IsVisible="{Binding HasWorkedBefore}"
                                                                ToolTip.Tip="{Binding WorkedBefore}"
                                                                FontSize="10" VerticalAlignment="Center"
                                                                Margin="0,1,8,1"
                                                                Foreground="{StaticResource HmGreenBrush}" />
 
-                                                    <StackPanel Grid.Column="5"
+                                                    <StackPanel Grid.Column="3"
                                                                 Orientation="Horizontal"
                                                                 Spacing="0"
                                                                 IsVisible="{Binding HasFields}">
@@ -3835,7 +3827,7 @@
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                     </StackPanel>
 
-                                                    <TextBlock Grid.Column="5" Text="{Binding Unsplit}"
+                                                    <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
                                                                IsVisible="{Binding !HasFields}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
 
