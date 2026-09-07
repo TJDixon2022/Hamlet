@@ -1,7 +1,10 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
+using Avalonia.Input;
+using Avalonia.VisualTree;
 using Ft8Sharp.Dsp;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -67,6 +70,25 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
     /// <summary>What the row says he was heard at, so the menu can offer a report.</summary>
     private const string Report = "-10";
+
+    /// <summary>The slot the row on the table was heard in.</summary>
+    private static readonly DateTime RowSlot =
+        new(2026, 9, 7, 18, 0, 0, DateTimeKind.Utc);
+
+    /// <summary>What the operator heard from him, which is what puts a row up.</summary>
+    private const string HeardFromHim = "KC3QIS W1ABC R-15";
+
+    /// <summary>How long the card is listened to across a boundary nobody clicked.</summary>
+    private static readonly TimeSpan SilentStretch = TimeSpan.FromSeconds(3);
+
+    /// <summary>What the radio sees when it is keyed.</summary>
+    private const string KeyOn = "FE FE 94 E0 1C 00 01 FD";
+
+    /// <summary>The ordinary unkey, and the abort's second frame.</summary>
+    private const string KeyOff = "FE FE 94 E0 1C 00 00 FD";
+
+    /// <summary>The abort's first frame - CI-V `0x17` with `0xFF`.</summary>
+    private const string CwStop = "FE FE 94 E0 17 FF FD";
 
     /// <summary>
     /// **Where the application's own telemetry writer is pointed.**
@@ -205,19 +227,303 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             + "somewhere else.");
     }
 
+    /// <summary>
+    /// **One right-click, and the sound that comes back off the card is the text on
+    /// the item he clicked.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**STEP C'S CRITERIA 1, 2 AND 4, IN ONE METHOD.** A real
+    /// `ContextRequested` on a real row control in a real window; the menu item
+    /// itself invoked through its own `Command` and `CommandParameter`; compose,
+    /// key, play, unkey and the application's own telemetry line on disk; the
+    /// captured audio resampled and decoded; and a second boundary nobody clicked
+    /// with the card measured silent across it.</para>
+    /// <para>**THE BREAKAGE IT WOULD HAVE CAUGHT: a menu that offers one string and
+    /// a send path that transmits another.** The loopback test sends a literal it
+    /// chose itself (<c>TheLoopbackThroughTheApplicationsSendPathTests.cs:84</c>);
+    /// the menu tests never transmit. **Between them there is no test in the tree
+    /// that would fail if the two disagreed**, and the operator would be told he
+    /// sent one thing while another went out over the band.</para>
+    /// <para>**THE EXPECTED STRING IS NOT A LITERAL AND NOT A ROUND TRIP OF ONE.**
+    /// It is <c>MenuItem.CommandParameter</c> off the realized flyout - what the
+    /// markup's own handler hung on the thing the mouse hits.</para>
+    /// <para>**ASSERTED ON THE RUN'S OUTCOME AND NOT THE ARM OUTCOME.** A refusal
+    /// comes back as <see cref="Ft8ArmOutcome.Ran"/> at the boundary - the sequence
+    /// ran - and only <c>TransmitRun.Outcome</c> carries the real answer (unit 267's
+    /// recorded trap).</para>
+    /// <para>**CRITERION 3 IS NOT IN THIS METHOD AND THAT IS DELIBERATE.** A stopped
+    /// transmission does not decode: criterion 2 needs a whole 12.64-second slot to
+    /// reach the decoder and criterion 3 truncates one on purpose
+    /// (`docs/unit267-what-step-c-needs.md`). It is
+    /// <see cref="TheOperatorsStopButtonTakesARealTransmissionOffTheCardMidSlot"/>,
+    /// beside this one, on the same harness.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task OneRightClickDrivesTheWholeChainAndTheAudioDecodesBackAsTheClickedText()
+    {
+        var endpoint = Preferred(out var why);
+
+        if (endpoint is null)
+        {
+            NoEndpoint(why);
+
+            return;
+        }
+
+        using var scene = Scene(endpoint);
+
+        _output.WriteLine("chosen because   : " + why);
+        _output.WriteLine("endpoint         : " + endpoint.Name);
+        _output.WriteLine("endpoint declares: " + endpoint.SampleRate + " Hz");
+        _output.WriteLine("sink opened      : " + scene.Sink.DeviceName);
+        _output.WriteLine("row on the table : \"" + HeardFromHim + "\", heard at " + Report + " dB");
+
+        using var capture = new Capture(endpoint);
+
+        capture.Start();
+        await Task.Delay(PreRoll);
+
+        // ---- 1. THE RIGHT-CLICK, AND THE ITEM ITSELF ---------------------------
+        var flyout = RightClick(scene);
+        var item = TheOneThatComesNext(flyout);
+
+        var header = item.Header as string ?? "";
+        var clicked = item.CommandParameter as string;
+
+        Assert.True(
+            clicked is not null,
+            "the menu item under the mouse carried no message: header \"" + header + "\"");
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("the menu offered  : " + Options(flyout).Count + " clickable messages");
+
+        foreach (var option in Options(flyout))
+        {
+            _output.WriteLine("    " + (option.Header as string ?? ""));
+        }
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("HE CLICKED        : " + header);
+        _output.WriteLine("WHICH CARRIES     : \"" + clicked + "\"");
+
+        // **THE CLICK ITSELF**, through the item's own command with the item's own
+        // parameter - which is what a press on a `MenuItem` does.
+        Assert.True(item.Command!.CanExecute(clicked), "the item could not be executed");
+
+        var clock = Stopwatch.StartNew();
+
+        item.Command.Execute(clicked);
+
+        var slot = scene.Panel.ArmedForSlotUtc;
+
+        Assert.True(slot is not null, scene.Panel.DigitalSendLine);
+
+        var result = await scene.Panel.AtSlotBoundaryAsync(slot!.Value);
+
+        await Task.Delay(PostRoll);
+        clock.Stop();
+
+        Pump(scene.Window);
+
+        var run = result!.Run;
+        var sent = result.Send!.Transmission;
+        var played = run?.Played ?? new PlayedAudio(0, TimeSpan.Zero);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("armed for slot   : " + slot.Value.ToString("O", CultureInfo.InvariantCulture));
+        _output.WriteLine("composed at      : " + sent.SampleRate + " Hz");
+        _output.WriteLine("samples composed : " + sent.Samples.Length);
+        _output.WriteLine("outcome          : " + run?.Outcome);
+        _output.WriteLine("reason           : " + run?.Reason);
+        _output.WriteLine("keyed            : " + run?.Keyed);
+        _output.WriteLine("came out of tx   : " + run?.CameOutOfTransmit);
+        _output.WriteLine("samples played   : " + played.SamplesPlayed);
+        _output.WriteLine("peak written     : " + scene.Sink.PeakWritten.ToString("F4"));
+        _output.WriteLine("clipped samples  : " + scene.Sink.ClippedSamples);
+        _output.WriteLine("wire             : " + Wire(scene));
+        _output.WriteLine("wall clock       : " + clock.Elapsed.TotalSeconds.ToString("F2") + " s");
+        _output.WriteLine("the operator reads: " + scene.Panel.DigitalSendLine);
+
+        // ---- 2. COMPOSE, KEY, PLAY, UNKEY --------------------------------------
+        Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
+        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run.Keyed);
+        Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
+
+        // **THE FRAMES, READ RATHER THAN COUNTED.** A count of two is satisfied by
+        // two of anything (`docs/unit268-the-chain-trace.md` question 4).
+        Assert.Equal(new[] { KeyOn, KeyOff }, Frames(scene));
+
+        // AND WHAT WENT OUT IS WHAT WAS CLICKED, ON THE WAY IN AS WELL AS BACK.
+        Assert.Equal(clicked, sent.Text);
+        Assert.Equal(endpoint.SampleRate, sent.SampleRate);
+        Assert.Equal(sent.Samples.Length, played.SamplesPlayed);
+
+        // ---- 3. NOTHING TRANSMITS THAT WAS NOT CLICKED -------------------------
+        // **THE ENDPOINT IS STILL OPEN AND THE CAPTURE IS STILL RUNNING.** A second
+        // boundary, with nothing armed, listened to as sound rather than counted.
+        var quietFrom = capture.SamplesSeen;
+        var framesBefore = scene.Port.Written.Count;
+
+        var nothing = await scene.Panel.AtSlotBoundaryAsync(slot.Value.AddSeconds(15));
+
+        await Task.Delay(SilentStretch);
+
+        var quietCount = (int)(capture.SamplesSeen - quietFrom);
+        var acrossTheBoundary = capture.Window(quietFrom, quietCount);
+
+        capture.Stop();
+
+        Assert.True(nothing is not null, "the panel had no send path at the second boundary");
+        Assert.Equal(Ft8ArmOutcome.NothingArmed, nothing!.Outcome);
+        Assert.Null(nothing.Run);
+        Assert.Equal(framesBefore, scene.Port.Written.Count);
+
+        Assert.True(
+            acrossTheBoundary is not null && acrossTheBoundary.Samples.Length > 0,
+            "the capture delivered nothing across the unclicked boundary, so silence "
+            + "cannot be told from a capture that stopped");
+
+        var quiet = Level(acrossTheBoundary!.Samples);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- the boundary nobody clicked ----");
+        _output.WriteLine("second boundary  : " + nothing.Outcome + ", run " + (nothing.Run is null ? "null" : "not null"));
+        _output.WriteLine("frames on wire   : " + scene.Port.Written.Count + " (unchanged from " + framesBefore + ")");
+        _output.WriteLine("listened for     : " + (quietCount / (double)acrossTheBoundary.SampleRate).ToString("F2")
+            + " s, " + quietCount + " samples, card open");
+        _output.WriteLine("CARD ACROSS IT   : peak " + Db(quiet.PeakDb) + " dBFS, rms "
+            + Db(quiet.RmsDb) + " dBFS");
+        _output.WriteLine("silent means     : peak at or below " + AudioLevel.TooQuietDb
+            + " dBFS (AudioLevel.TooQuietDb)");
+
+        Assert.True(
+            quiet.PeakDb <= AudioLevel.TooQuietDb,
+            $"nobody clicked and the card made a sound: {quietCount} samples off "
+            + $"{scene.Sink.DeviceName} across a boundary with nothing armed, peaking at "
+            + $"{Db(quiet.PeakDb)} dBFS.");
+
+        // ---- 4. THE TELEMETRY LINE, OFF DISK -----------------------------------
+        scene.CloseTelemetry();
+
+        var lines = TransmitLines();
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("telemetry folder : " + _folder);
+
+        var line = Assert.Single(lines);
+
+        _output.WriteLine("telemetry line   : " + line);
+
+        using var doc = JsonDocument.Parse(line);
+        var data = doc.RootElement.GetProperty("data");
+
+        Assert.Equal(
+            TransmitRecord.EventName, doc.RootElement.GetProperty("event").GetString());
+        Assert.Equal(
+            slot.Value.ToString("O", CultureInfo.InvariantCulture),
+            data.GetProperty("slotStartUtc").GetString());
+        Assert.Equal(played.SamplesPlayed, data.GetProperty("sampleCount").GetInt32());
+
+        // ---- 5. THE DECODE, AND THIS IS THE ASSERTION THE STEP EXISTS FOR ------
+        var captured = capture.Snapshot();
+
+        Assert.True(
+            captured is not null && captured.Samples.Length > 0,
+            "the loopback capture started and delivered nothing while the endpoint was "
+            + $"rendering - {capture.SamplesSeen} samples reached the tap");
+
+        // The capture placed at the start of one slot: 12.64 s of signal with the
+        // pre-roll before it, and the rest silence - the shape the composer's own
+        // padded slot has.
+        var window = new float[(int)Math.Round(SlotSeconds * captured!.SampleRate)];
+        Array.Copy(
+            captured.Samples, window, Math.Min(captured.Samples.Length, window.Length));
+
+        var onTheGrid = Ft8Resample.ToFt8Rate(new MonoAudio(captured.SampleRate, window));
+        var texts = new Ft8SlotDecoder().Decode(onTheGrid.Samples).Texts;
+
+        var level = Level(window);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- the click and the sound, side by side ----");
+        _output.WriteLine("endpoint         : " + scene.Sink.DeviceName + " at "
+            + captured.SampleRate + " Hz");
+        _output.WriteLine("captured samples : " + captured.Samples.Length
+            + ", peak " + Db(level.PeakDb) + " dBFS");
+        _output.WriteLine("CLICKED          : \"" + clicked + "\"");
+        _output.WriteLine("DECODED          : "
+            + (texts.Count == 0 ? "nothing" : "\"" + string.Join("\", \"", texts) + "\""));
+        _output.WriteLine("run outcome      : " + run.Outcome
+            + ", unkey " + run.CameOutOfTransmit);
+
+        // **§0.0. A decode that did not happen is reported as one that did not
+        // happen**, with what did come back - and it is compared against the text
+        // on the item that was clicked, not against a literal this test chose.
+        Assert.True(
+            texts.Contains(clicked!, StringComparer.Ordinal),
+            $"the operator clicked a menu item reading \"{header}\", which carries "
+            + $"\"{clicked}\". That went out of {scene.Sink.DeviceName} at "
+            + $"{sent.SampleRate} Hz, peaking at {scene.Sink.PeakWritten:F4}, and the "
+            + "decoder returned "
+            + $"{(texts.Count == 0 ? "nothing" : "\"" + string.Join("\", \"", texts) + "\"")} "
+            + "from the captured audio. The message on the menu and the message on the "
+            + "air are not the same message.");
+    }
+
     // -------------------------------------------------------------------------
     // The scene: a real window, a real card, a fake wire.
     // -------------------------------------------------------------------------
 
-    /// <summary>Everything one run needs, and the two things that must be closed.</summary>
-    private sealed record Built(
-        MainWindow Window,
-        MainWindowViewModel Panel,
-        AppSettings Settings,
-        FakePort Port,
-        WasapiTransmitSink Sink,
-        JsonlTelemetry Telemetry) : IDisposable
+    /// <summary>Everything one run needs, and the three things that must be closed.</summary>
+    private sealed class Built(
+        MainWindow window,
+        MainWindowViewModel panel,
+        AppSettings settings,
+        FakePort port,
+        WasapiTransmitSink sink,
+        JsonlTelemetry telemetry) : IDisposable
     {
+        private bool _telemetryClosed;
+
+        /// <summary>The real window, shown.</summary>
+        public MainWindow Window { get; } = window;
+
+        /// <summary>The panel behind it.</summary>
+        public MainWindowViewModel Panel { get; } = panel;
+
+        /// <summary>The operator's own settings.</summary>
+        public AppSettings Settings { get; } = settings;
+
+        /// <summary>The wire, which is a fake and opens nothing.</summary>
+        public FakePort Port { get; } = port;
+
+        /// <summary>The card, which is real.</summary>
+        public WasapiTransmitSink Sink { get; } = sink;
+
+        /// <summary>The application's own telemetry writer.</summary>
+        public JsonlTelemetry Telemetry { get; } = telemetry;
+
+        /// <summary>
+        /// **Closes the writer so what it queued is on disk before it is read.**
+        /// </summary>
+        /// <remarks>
+        /// `JsonlTelemetry.Write` returns `void` and appends on a background
+        /// thread, so a call returning is not evidence a line was written
+        /// (`TheWholeContactWalksThroughTheApplicationTests.cs:445-448`). Idempotent,
+        /// because <see cref="Dispose"/> runs afterwards whatever the test did.
+        /// </remarks>
+        public void CloseTelemetry()
+        {
+            if (_telemetryClosed)
+            {
+                return;
+            }
+
+            _telemetryClosed = true;
+            Telemetry.Dispose();
+        }
+
         /// <inheritdoc/>
         public void Dispose()
         {
@@ -230,7 +536,7 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
                 // The window is scenery; a failure closing it must not mask the run.
             }
 
-            Telemetry.Dispose();
+            CloseTelemetry();
             Sink.Dispose();
         }
     }
@@ -293,6 +599,13 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             b => b.Band.LowHz <= Ft8On20m && b.Band.HighHz >= Ft8On20m);
         panel.FrequencyHz = Ft8On20m;
 
+        // **ONE ROW ON THE TABLE, PLACED THE WAY A DECODE PLACES ONE.** He is the
+        // sender and the operator is the addressee, which is what makes the row
+        // right-clickable and gives the menu a station to build against.
+        panel.AddDecodeRowForTests(
+            RowSlot.ToString("HHmmss", CultureInfo.InvariantCulture),
+            Report, "0.2", "1240", HeardFromHim, RowSlot);
+
         var port = new FakePort();
         WasapiTransmitSink? sink = null;
 
@@ -312,6 +625,88 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
         Pump(window);
 
         return new Built(window, panel, settings, port, sink!, telemetry);
+    }
+
+    // -------------------------------------------------------------------------
+    // The gesture, and the item under the mouse.
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// **Raises a real context request on the row that names him.**
+    /// </summary>
+    /// <remarks>
+    /// **THE EVENT IS RAISED ON THE ROW'S OWN CONTROL**, the `Grid` the
+    /// `DataTemplate` builds, whose `DataContext` is the row, and the flyout that
+    /// comes back is the one the markup's own handler built and showed. Nothing
+    /// here calls <c>SendFlyoutFor</c> directly - that is the fallback work
+    /// instruction 268 task 2 named and it is not taken. Driven exactly as
+    /// <c>TheMenuIsUnderTheMouseTests.RightClickRow</c> drives it.
+    /// </remarks>
+    private static MenuFlyout RightClick(Built scene)
+    {
+        Pump(scene.Window);
+
+        var rows = scene.Window.GetVisualDescendants()
+            .OfType<ItemsControl>()
+            .FirstOrDefault(c => c.Name == "DigitalDecodedRows");
+
+        Assert.True(rows is not null, "the decoded table is not on the realized window");
+
+        var grid = rows!.GetVisualDescendants()
+            .OfType<Grid>()
+            .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row
+                && row.Sender == His && row.Addressee == Mine);
+
+        Assert.True(
+            grid is not null,
+            "no realized row named " + His + ". Rows on the table: "
+            + scene.Panel.DigitalVisibleDecodes.Count);
+
+        grid!.RaiseEvent(new ContextRequestedEventArgs
+        {
+            RoutedEvent = Control.ContextRequestedEvent,
+            Source = grid,
+        });
+
+        var flyout = scene.Window.SendFlyoutUnderTheMouse;
+
+        Assert.True(flyout is not null, "the right-click produced no menu");
+
+        return flyout!;
+    }
+
+    /// <summary>The clickable messages - everything that carries the command.</summary>
+    /// <remarks>
+    /// A note carries no command and is not hit-testable
+    /// (<c>MainWindow.axaml.cs:245</c>), so this is exactly what a mouse can hit.
+    /// </remarks>
+    private static List<MenuItem> Options(MenuFlyout flyout)
+        => flyout.Items.OfType<MenuItem>().Where(i => i.Command is not null).ToList();
+
+    /// <summary>
+    /// **The item an operator would click, and what it is carrying.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ONE MARKED AS COMING NEXT**, which is the one the menu holds out
+    /// to him. Nothing is greyed and everything stays clickable (ruled 2026-09-06),
+    /// so this is a choice among live options and not the only live one.</para>
+    /// <para>**THE EXPECTED STRING IS READ OFF THE REALIZED ITEM AND NOT OUT OF
+    /// <c>SendMenuFor</c> A SECOND TIME.** Reading the view model again would
+    /// compare the send path against the same source that fed it; reading
+    /// <c>CommandParameter</c> reads what the markup's own handler put on the thing
+    /// the mouse hits (`docs/unit268-the-chain-trace.md` question 1).</para>
+    /// </remarks>
+    private static MenuItem TheOneThatComesNext(MenuFlyout flyout)
+    {
+        var options = Options(flyout);
+
+        Assert.NotEmpty(options);
+
+        var marked = options.FirstOrDefault(
+            i => (i.Header as string ?? "").Contains(
+                "the one that comes next", StringComparison.Ordinal));
+
+        return marked ?? options[0];
     }
 
     /// <summary>What the run says on a machine with no card, and why that is fine.</summary>
@@ -392,6 +787,12 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
         /// <summary>Everything the tap is holding.</summary>
         public MonoAudio? Snapshot() => _tap.Snapshot();
+
+        /// <summary>One stretch of it, addressed from the first sample ever taken.</summary>
+        /// <param name="firstSample">Where the stretch starts.</param>
+        /// <param name="count">How many samples of it.</param>
+        /// <returns>The samples, or null where the tap no longer holds them all.</returns>
+        public MonoAudio? Window(long firstSample, int count) => _tap.Window(firstSample, count);
 
         /// <inheritdoc/>
         public void Dispose()
@@ -495,6 +896,37 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
         return chosen;
     }
+
+    /// <summary>Every frame the fake wire took, as hex, in order.</summary>
+    private static string[] Frames(Built scene)
+        => scene.Port.Written.Select(Hex).ToArray();
+
+    /// <summary>The wire as one readable line.</summary>
+    private static string Wire(Built scene)
+    {
+        var frames = Frames(scene);
+
+        return frames.Length == 0 ? "nothing" : string.Join(" | ", frames);
+    }
+
+    /// <summary>One frame, as a reader sees it.</summary>
+    private static string Hex(IEnumerable<byte> bytes)
+        => string.Join(' ', bytes.Select(b => b.ToString("X2", CultureInfo.InvariantCulture)));
+
+    /// <summary>Every `ft8_transmission` line the application's writer left.</summary>
+    /// <remarks>
+    /// **READ BACK OFF DISK, NOT OFF A DOUBLE** (`CLAUDE.md` §0.0), the way
+    /// <c>TheWholeContactWalksThroughTheApplicationTests.TransmitLines</c> reads it.
+    /// </remarks>
+    private List<string> TransmitLines()
+        => !Directory.Exists(_folder)
+            ? []
+            : Directory.GetFiles(_folder, "*.jsonl")
+                .OrderBy(f => f, StringComparer.Ordinal)
+                .SelectMany(File.ReadAllLines)
+                .Where(l => l.Contains(
+                    "\"" + TransmitRecord.EventName + "\"", StringComparison.Ordinal))
+                .ToList();
 
     /// <summary>Runs the dispatcher and lays the window out.</summary>
     private static void Pump(Window window)
