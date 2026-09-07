@@ -139,12 +139,46 @@ says `IAudioClient::Stop` halts the stream without discarding what is queued, an
 setting the stream position back to zero. So the pair is *halt, then discard*:
 samples handed to the endpoint but not yet played are **dropped, not played out**.
 
-**This is documentation and this unit treats it as unmeasured.** Work instruction
-263 names it as one of the two things the instruction expects to be told it got
-wrong, and says to measure it rather than reason about it. **Task 5 is where it
-gets measured**, against a real render endpoint on this machine, by timing how
-long after the cancel the card actually goes quiet. Until then the number in the
-next section is an upper bound derived from the buffer, not an observation.
+**This was documentation when this section was first written, and task 5 then
+measured it.** Work instruction 263 named it as one of the two things the
+instruction expected to be told it got wrong, and said to measure it rather than
+reason about it.
+
+### Measured, task 5, on the development machine
+
+`TheStopStopsARealEndpointTests`, a full FT8 slot into a real render endpoint
+through the real `WasapiTransmitSink`, stopped a third of the way in. **No serial
+port was opened and nothing was keyed; the transport is `FakeSerialPort`.**
+
+```
+endpoint        : S34J55x (3- HD Audio Driver for Display Audio)  [development machine]
+endpoint format : 48000 Hz, 2 ch, Extensible 32-bit float          [development machine]
+buffer          : 9600 frames (200 ms)                             [development machine]
+the slot        : 606720 samples, 12.64 s
+stop pressed at : 4.228 s in
+StopNow took    : 1.3 ms (bound 250 ms)
+samples played  : 203040 of 606720, short by 403680
+audio that went : 4230 ms of 12640 ms
+CARD WENT QUIET : 20 ms after the stop                             [development machine]
+sink says took  : 4241 ms
+audio vs wall   : -11 ms
+```
+
+**`Reset()` discards; it does not play the buffer out.** That is what the last
+line settles. The endpoint granted a 9600-frame buffer, which is exactly the 200
+ms the arithmetic below predicts, so a buffer played out at the cancel would show
+wall time exceeding audio time by about 200 ms. It exceeds it by **11 ms** -
+start latency and one poll. The samples inside the endpoint at the moment of the
+cancel went nowhere.
+
+**And the card went quiet 20 ms after the stop**, measured as `PlayAsync`
+returning, which happens after its `finally` has called `_client.Stop()` and
+`_client.Reset()`. **Nothing here listened to the room** - there is no microphone
+in this measurement and it does not claim one.
+
+**FACT-004 applies to every line of it.** This is one display-audio endpoint on
+the development machine. **No radio has ever been attached to this machine**, and
+none of these numbers says anything about the IC-7300's USB codec.
 
 ### The arithmetic
 
@@ -154,7 +188,8 @@ Three quantities, all from this tree:
   endpoint is asked for.
 - `BufferFrames = _client.BufferSize` (`WasapiTransmitSink.cs:166`) - what it
   actually granted, which the endpoint may round up. **It is a runtime value and
-  is not knowable from source**; task 5 reads it.
+  is not knowable from source**; task 5 read it as **9600 frames** on the endpoint
+  above, which is the 200 ms asked for, granted exactly.
 - `WaitMilliseconds = 5` (`WasapiTransmitSink.cs:90`) - the poll interval.
 
 At 48000 Hz, a 200 ms buffer is `0.200 x 48000 = 9600 frames`.
@@ -176,6 +211,10 @@ endpoint            BufferFrames = 9600 frames at 48000 Hz
 TOTAL, if Reset() discards          <= ~15 ms of audio (the detection gap)
 TOTAL, if Reset() played it out     <= ~215 ms
 ```
+
+**Measured: 20 ms**, on the endpoint above - the first row, as predicted, since
+`Reset()` was measured to discard. The fake at real time gives 15 ms for the same
+thing, and the extra five is the real endpoint's own poll and teardown.
 
 **Both numbers are small, and the number they are being compared against is not.**
 A full FT8 transmission is 12.64 s. On the tree as it stands the token cannot be
@@ -383,8 +422,12 @@ written that way because nothing at the time could have stopped it - and the
 
 ---
 
-## What this task changed
+## What task 1 changed
 
-Nothing. **No product code, no test, no fake.** This document is the whole of
+Nothing. **No product code, no test, no fake.** This document was the whole of
 task 1's output, and the two line-number mismatches in Q1 are reported rather than
 repaired, per `ARBITER.md` §5 and work instruction 263's *What not to do* item 2.
+
+**Q3's measured block was added by task 5**, which is the only part of this
+document not written before any code was touched. It is marked as such where it
+sits.
