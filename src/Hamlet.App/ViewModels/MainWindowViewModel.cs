@@ -8348,6 +8348,97 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void SendCallToAnyone() => SendMessage(CallToAnyoneText);
 
+    /// <summary>
+    /// **The stop. One click, and whatever was going to happen does not.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS ALWAYS THERE AND ALWAYS PRESSABLE** - no
+    /// <c>CanExecute</c>, no <c>IsVisible</c> binding, nothing that reads a
+    /// state. `PHASE_PLAN.md` step 1 says the abort *cannot be disabled,
+    /// deferred, or made conditional*, and a button that greys out when the
+    /// application believes nothing is happening is disabled at exactly the
+    /// moment the application is wrong. **A control only visible while sending
+    /// is useless before the boundary, and one only visible while armed is
+    /// useless during the 12.64 seconds**; this is visible at both because it is
+    /// visible always.</para>
+    /// <para>**IT COMPOSES NOTHING, ARMS NOTHING AND OPENS NOTHING.** One call to
+    /// <see cref="Ft8ArmedSend.StopNow"/> with the port that is already open, and
+    /// a line of text. It is a route *out* of a transmission and there is no way
+    /// through it into one.</para>
+    /// <para>**AND IT ASKS NOTHING FIRST.** *Right-click sends immediately with
+    /// no confirmation* is ruled; a stop that asks *are you sure* while the radio
+    /// is keyed would be worse than the send that asks.</para>
+    /// <para>**WHERE THERE IS NO SEND PATH AT ALL IT SAYS SO RATHER THAN
+    /// PRETENDING.** <c>_armedSend</c> is null exactly when Hamlet has no way to
+    /// key anything - no radio, or no transmit audio device named - because
+    /// <see cref="Ft8TransmitSequence"/> is reachable through nothing else. So
+    /// there is nothing this application can have started, and the line says
+    /// which half is missing instead of claiming a frame went out.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void StopSending()
+    {
+        var stop = _armedSend?.StopNow(_rigPort);
+
+        DigitalSendLine = StopLine(_armedText, stop, _transmitRefusal);
+    }
+
+    /// <summary>What the Send area says after the stop was pressed.</summary>
+    /// <param name="text">What was armed, so the operator is told what did not go.</param>
+    /// <param name="stop">What the stop did, or null where there was no send path.</param>
+    /// <param name="refusal">Which half is missing, as the connect wrote it.</param>
+    /// <returns>One line, in the register the refusals in this area already use.</returns>
+    /// <remarks>
+    /// **THE ONE THAT MATTERS IS THE THIRD.** An abort whose frames did not reach
+    /// the radio is the only state in which the operator has to do something
+    /// himself, and it is said plainly rather than folded into the success
+    /// sentence - which is the defect unit 253 found in <c>AbortCw</c>, where a
+    /// failed abort and a successful one left the same trace.
+    /// </remarks>
+    private static string StopLine(string text, Ft8StopResult? stop, string refusal)
+    {
+        if (stop is null)
+        {
+            return "There was nothing to stop: "
+                + (refusal.Length == 0
+                    ? "no radio is connected and no transmit audio device is named "
+                      + "in Settings."
+                    : refusal + ".")
+                + " Nothing here has a way to key a radio.";
+        }
+
+        var what = stop.Unarmed
+            ? "\"" + text + "\" was taken off before its slot and will not go out"
+            : "nothing was waiting for a slot";
+
+        if (stop.Abort is null)
+        {
+            return "Stopped: " + what
+                + ". There is no radio connected, so there was nothing to tell.";
+        }
+
+        if (!stop.AnythingReachedTheRadio)
+        {
+            return "Hamlet told the radio to stop and neither frame got out: "
+                + (stop.Abort.PttOff.Failure ?? stop.Abort.CwStop.Failure
+                    ?? "the port took nothing")
+                + ". If it is still transmitting, stop it at the radio.";
+        }
+
+        return "Stopped: " + what + ", and the radio was told to stop transmitting.";
+    }
+
+    /// <summary>Give the stop a port to write to, for tests.</summary>
+    /// <param name="port">The fake wire a test built.</param>
+    /// <remarks>
+    /// **THE SEAM OPENS NOTHING** (`SHACK_FACTS.md` FACT-004), and it is not a
+    /// route to a transmission: <c>_rigPort</c> is read by
+    /// <see cref="StopSendingCommand"/> and by nothing that can key.
+    /// <see cref="UseArmedSendForTests"/> is its neighbour and has the same
+    /// reason.
+    /// </remarks>
+    internal void UseRigPortForTests(ISerialPort? port) => _rigPort = port;
+
     /// <summary>Give the send path something to transmit through, for tests.</summary>
     /// <param name="armed">The armed send over whatever fakes a test built.</param>
     /// <remarks>

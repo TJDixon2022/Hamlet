@@ -3092,12 +3092,38 @@
                                          operator's own, out of Settings, and
                                          the button goes through the same
                                          command a right-click does. -->
-                                    <Button x:Name="DigitalSendCqButton"
-                                            Content="CQ"
-                                            HorizontalAlignment="Left"
-                                            Padding="16,4"
-                                            Command="{Binding SendCallToAnyoneCommand}"
-                                            ToolTip.Tip="{Binding CallToAnyoneText}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                                HorizontalAlignment="Left">
+                                        <Button x:Name="DigitalSendCqButton"
+                                                Content="CQ"
+                                                Padding="16,4"
+                                                Command="{Binding SendCallToAnyoneCommand}"
+                                                ToolTip.Tip="{Binding CallToAnyoneText}" />
+
+                                        <!-- **ALWAYS THERE AND ALWAYS
+                                             PRESSABLE** (step 1: the abort
+                                             cannot be disabled, deferred or
+                                             made conditional). No IsVisible, no
+                                             CanExecute, nothing that reads a
+                                             state - because a stop that hides
+                                             when the application believes
+                                             nothing is happening is hidden at
+                                             exactly the moment the application
+                                             is wrong. It is here before the slot
+                                             boundary and it is here during the
+                                             12.64 seconds, and it is the same
+                                             button at both. The CW path's own
+                                             "Stop sending" is a different
+                                             button on a different view model
+                                             and never appears on this tab. -->
+                                        <Button x:Name="DigitalStopButton"
+                                                Content="Stop"
+                                                Padding="16,4"
+                                                Command="{Binding StopSendingCommand}"
+                                                Background="{StaticResource HmAmberDeepBrush}"
+                                                Foreground="White"
+                                                ToolTip.Tip="Un-arms anything waiting for a slot and tells the radio to stop transmitting. It asks nothing first." />
+                                    </StackPanel>
 
                                     <TextBlock x:Name="DigitalSendReservedLine"
                                                Text="{Binding DigitalSendLine}"

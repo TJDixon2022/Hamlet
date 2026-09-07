@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 261 - the operator can stop it
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T00:25:32-04:00
-NOTE: 12 of 12 green in 91 ms, every state's wire quoted. Two reds watched first - the un-arm-only stop leaving FE FE 94 E0 1C 00 01 FD on the wire with a keyed radio, and the shape assertion firing on a wait put into the path. Committing, then the button.
+UPDATED: 2026-09-07T00:32:24-04:00
+NOTE: The Stop button is on the real window beside CQ, always visible and never disabled, and a headless mouse pressed it at both moments - 6 of 6 green. Found an inherited red next door: TheDigitalTabIsTwoColumns asserts the Send area holds no buttons at all, and it went red when unit 260 put CQ there.
 
 ---
 
