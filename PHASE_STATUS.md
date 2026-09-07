@@ -2,7 +2,8 @@ PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-07
 DESCRIPTION: Re-cut so its steps can close - the contact state, the right-click menu, the whole chain at the bench, then Tim at the radio
 CURRENT_STEP: 0
-WORK_INSTRUCTION: 266 - the record is honest, and the row knows where the contact stands
+WORK_INSTRUCTION: 267 - right-click and it goes, and the licence gate holds from the click
+HEARTBEAT: 2026-09-07 10:29:46
 STEP: 0 | not started | the record is honest about where the phase stands
 STEP: A | not started | the row knows where the contact stands
 STEP: B | not started | right-click and it goes
