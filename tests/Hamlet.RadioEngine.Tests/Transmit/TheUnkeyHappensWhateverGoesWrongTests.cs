@@ -399,47 +399,80 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
     /// sentence about a type is not a call to it**, and a test that could not tell
     /// those apart would push this unit's own documentation out of the tree.
     /// </para>
+    /// <para>**AND SINCE UNIT 264 IT SEPARATES BUILDING ONE FROM RUNNING ONE,
+    /// BECAUSE THEY ARE DIFFERENT PROPERTIES AND ONLY ONE OF THEM IS THE SAFETY
+    /// PROPERTY.** As written at unit 259 the first assertion greped for the
+    /// type's *name* and demanded a single file, which asks that the type be
+    /// named where it is held and nowhere else - and that forbids a composition
+    /// root from existing at all. Unit 260 then gave the send path a real port
+    /// and a real sink at <c>MainWindowViewModel.cs:8049</c>, which is the line
+    /// that made the application able to transmit, and **this test went red on
+    /// exactly the commit that made step 5 work.** It stayed red for fifteen
+    /// commits, through units 260 to 263, while the thing it guards was never in
+    /// question: <c>_sequence.RunAsync</c> has had one caller throughout.</para>
+    /// <para>**WHAT THE THREE ASSERTIONS NOW MEAN, IN ORDER.** *Wiring* - one
+    /// file builds a sequence, and it is the shell where the port, the sink, the
+    /// licence gate and the writer are handed over. *Keying* - one file reaches
+    /// <c>RunAsync</c>, which is the property that says there is one way to put a
+    /// carrier on the air, and it is **unchanged from unit 259**. *Reach* - those
+    /// two files are the only ones in <c>src/</c> that name the type in code at
+    /// all, so a third file touching it still fails here, which is the tripwire
+    /// the original was for.</para>
     /// </remarks>
     [Fact]
     public void ExactlyOneFileInTheShippedTreeCallsTheSequence()
     {
         var source = Path.Combine(RepositoryRoot(), "src");
 
-        var callers = Directory
-            .EnumerateFiles(source, "*.cs", SearchOption.AllDirectories)
-            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-            .Where(file => Path.GetFileName(file) != "Ft8TransmitSequence.cs")
-            .Where(file => CodeOnly(File.ReadAllText(file))
-                .Contains("Ft8TransmitSequence", StringComparison.Ordinal))
-            .ToList();
+        // WIRING. One file builds a sequence, and it is the shell: that is where
+        // the port, the sink, the licence gate and the writer come together, and
+        // a second construction site would be a second set of parts nobody
+        // reviewed together.
+        var builders = FilesUnderSourceContaining(source, "new Ft8TransmitSequence");
 
-        foreach (var caller in callers)
-        {
-            _output.WriteLine($"caller: {caller}");
-        }
+        _output.WriteLine($"construct one          : {string.Join(", ", builders)}");
 
-        _output.WriteLine($"callers under src/: {callers.Count}");
+        Assert.Equal(["MainWindowViewModel.cs"], builders);
 
-        var only = Assert.Single(callers);
-
-        Assert.Equal("Ft8ArmedSend.cs", Path.GetFileName(only));
-
-        // AND THE KEYING FRAME IS STILL REACHED FROM ONE PLACE. RunAsync is
-        // called in that one file and in no other under src/.
-        var runners = Directory
-            .EnumerateFiles(source, "*.cs", SearchOption.AllDirectories)
-            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
-            .Where(file => CodeOnly(File.ReadAllText(file))
-                .Contains("_sequence.RunAsync", StringComparison.Ordinal))
-            .Select(Path.GetFileName)
-            .ToList();
+        // KEYING. **THE SAFETY PROPERTY, UNCHANGED FROM UNIT 259.** RunAsync is
+        // called in one file and in no other under src/, so there is one way to
+        // put a carrier on the air.
+        var runners = FilesUnderSourceContaining(source, "_sequence.RunAsync");
 
         _output.WriteLine($"call _sequence.RunAsync: {string.Join(", ", runners)}");
 
         Assert.Equal(["Ft8ArmedSend.cs"], runners);
+
+        // REACH. And those two are the only files in src/ that name the type in
+        // code at all, so a third one touching it fails here whoever adds it.
+        var namers = FilesUnderSourceContaining(source, "Ft8TransmitSequence")
+            .Where(file => file != "Ft8TransmitSequence.cs")
+            .ToList();
+
+        _output.WriteLine($"name it in code        : {string.Join(", ", namers)}");
+
+        Assert.Equal(["Ft8ArmedSend.cs", "MainWindowViewModel.cs"], namers);
     }
+
+    /// <summary>Every file under `src/` whose code, not its prose, says this.</summary>
+    /// <param name="source">The `src` folder.</param>
+    /// <param name="text">What to look for.</param>
+    /// <returns>The file names, sorted, so the assertions read in a fixed order.</returns>
+    /// <remarks>
+    /// **DOC COMMENTS ARE STRIPPED BY <c>CodeOnly</c> FIRST.** A sentence about a
+    /// type is not a use of it, and a grep that could not tell those apart would
+    /// push this repository's own documentation out of the tree.
+    /// </remarks>
+    private static List<string> FilesUnderSourceContaining(string source, string text)
+        => Directory
+            .EnumerateFiles(source, "*.cs", SearchOption.AllDirectories)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(file => CodeOnly(File.ReadAllText(file))
+                .Contains(text, StringComparison.Ordinal))
+            .Select(file => Path.GetFileName(file)!)
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToList();
 
     /// <summary>One operator's send, with everything the sequence needs.</summary>
     /// <param name="licenseClass">The operator's class.</param>

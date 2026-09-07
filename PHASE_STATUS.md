@@ -5,7 +5,7 @@ CURRENT_STEP: 1
 WORK_INSTRUCTION: 264 - the whole contact, end to end, through the application
 HEARTBEAT: 2026-09-07 02:01:25
 STEP: 0 | done | the dummy load is gone from the tree
-STEP: 1 | partial | the abort works before anything can key
+STEP: 1 | done | the abort works before anything can key
 STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
 STEP: 3 | partial | the audio reaches the radio and the radio keys
 STEP: 4 | partial | the row knows where the contact stands
