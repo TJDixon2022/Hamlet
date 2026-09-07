@@ -213,6 +213,32 @@
                             </ComboBox>
                         </Grid>
 
+                        <!-- **WHERE THE TRANSMISSION IS PLAYED** (work
+                             instruction 260, task 4). The same shape as the
+                             input picker above it, deliberately, and a
+                             different list: a capture device is something to
+                             listen to and a render endpoint is something to
+                             play into. **Nothing is chosen here on the
+                             operator's behalf** - with none named Hamlet
+                             refuses to transmit rather than playing the tones
+                             into whatever the computer defaults to (§0.0). -->
+                        <TextBlock Classes="hm-note" Text="{Binding TransmitEndpointNote}" />
+
+                        <Grid ColumnDefinitions="110,*" ColumnSpacing="8">
+                            <TextBlock Grid.Column="0" Text="Transmit" Classes="hm-field" />
+                            <ComboBox Grid.Column="1" MinWidth="260"
+                                      HorizontalAlignment="Left"
+                                      ItemsSource="{Binding TransmitEndpoints}"
+                                      SelectedItem="{Binding TransmitEndpoint}"
+                                      IsEnabled="{Binding HasTransmitEndpoints}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="audio:RenderEndpoint">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </Grid>
+
                         <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
                             <TextBlock Grid.Column="0" Text="CW pitch" Classes="hm-field" />
                             <NumericUpDown Grid.Column="1" Width="130"

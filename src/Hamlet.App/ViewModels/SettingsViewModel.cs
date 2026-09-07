@@ -138,10 +138,16 @@ public partial class SettingsViewModel : ObservableObject
     /// Where the capture device list comes from. Null uses WASAPI, which is
     /// what the running app wants and what a test never does.
     /// </param>
+    /// <param name="transmitEndpoints">
+    /// Where the render endpoint list comes from. **Null enumerates WASAPI, and
+    /// a test always passes one** - work instruction 260 task 4 says the
+    /// enumeration happens at run time and is never called from a test.
+    /// </param>
     public SettingsViewModel(
         AppSettings settings,
         JsonlTelemetry? telemetry,
-        IAudioDevices? audioDevices = null)
+        IAudioDevices? audioDevices = null,
+        Func<IReadOnlyList<RenderEndpoint>>? transmitEndpoints = null)
     {
         _settings = settings;
         _telemetry = telemetry;
@@ -149,6 +155,9 @@ public partial class SettingsViewModel : ObservableObject
 
         AudioDevices = (audioDevices ?? new WasapiAudioDevices()).List();
         _audioDevice = AudioDeviceChoice.Choose(AudioDevices, settings.AudioInputDeviceId);
+
+        TransmitEndpoints = ListEndpoints(transmitEndpoints);
+        _transmitEndpoint = ChooseEndpoint(TransmitEndpoints, settings.AudioOutputDeviceId);
         _cwPitchHz = settings.CwPitchHz;
         _copySpeedWpm = settings.CopySpeedWpm;
         _reconnectOnStartup = settings.ReconnectOnStartup;
@@ -239,6 +248,93 @@ public partial class SettingsViewModel : ObservableObject
             : "Pick the input the radio's audio arrives on. With an IC-7300 that "
               + "is its own USB codec, which Hamlet chooses for you when it "
               + "recognizes the name.";
+
+    // ---------------------------------------------------------------------
+    // THE TRANSMIT ENDPOINT. Work instruction 260, task 4.
+    // ---------------------------------------------------------------------
+
+    /// <summary>The render endpoints this machine offers; empty is normal.</summary>
+    /// <remarks>
+    /// **THE SAME SHAPE AS <see cref="AudioDevices"/> AND DELIBERATELY A
+    /// DIFFERENT LIST.** A capture device is something to listen to and a render
+    /// endpoint is something to play into; <c>RenderEndpoint</c>'s own remarks say
+    /// why the two may not be the same type.
+    /// </remarks>
+    public IReadOnlyList<RenderEndpoint> TransmitEndpoints { get; }
+
+    /// <summary>True when there is a render endpoint to choose between.</summary>
+    public bool HasTransmitEndpoints => TransmitEndpoints.Count > 0;
+
+    /// <summary>
+    /// What to say about the device the transmission is played into.
+    /// </summary>
+    /// <remarks>
+    /// **IT SAYS WHAT THE DEVICE IS FOR IN THE OPERATOR'S WORDS.** *The radio's
+    /// own USB audio input* is the thing being named, and naming it is not
+    /// optional: with none named Hamlet refuses to transmit rather than playing
+    /// into whatever the computer defaults to (0.0). An empty list is an ordinary
+    /// machine and reads as a fact, not a fault.
+    /// </remarks>
+    public string TransmitEndpointNote
+        => TransmitEndpoints.Count == 0
+            ? "Hamlet cannot see a playback device on this computer just now, so "
+              + "there is nothing to name here yet. Plug the radio in and reopen "
+              + "this window."
+            : "Pick the radio's own USB audio input, which is what carries FT8 out "
+              + "of the computer. Hamlet will not choose one for you: with none "
+              + "named it refuses to transmit rather than playing the tones into "
+              + "whatever this computer happens to default to.";
+
+    /// <summary>
+    /// Where a transmission's audio is played, or null where none is named.
+    /// </summary>
+    /// <remarks>
+    /// **NOTHING IS CHOSEN ON THE OPERATOR'S BEHALF.** Where the saved id names
+    /// no endpoint this comes back null and the box shows nothing selected, which
+    /// is the honest state - the alternative is Hamlet quietly moving his
+    /// transmission to a device he did not pick.
+    /// </remarks>
+    [ObservableProperty]
+    private RenderEndpoint? _transmitEndpoint;
+
+    partial void OnTransmitEndpointChanged(RenderEndpoint? value)
+    {
+        _settings.AudioOutputDeviceId = value?.Id;
+        SettingsStore.Save(_settings);
+    }
+
+    /// <summary>The endpoints, or none where the machine would not say.</summary>
+    /// <remarks>
+    /// **ENUMERATION IS A CALL INTO WINDOWS AND IT CAN FAIL.** A machine with the
+    /// audio service stopped throws here, and a Settings window that will not open
+    /// because of it is worse than one with an empty box that says so.
+    /// </remarks>
+    private static IReadOnlyList<RenderEndpoint> ListEndpoints(
+        Func<IReadOnlyList<RenderEndpoint>>? source)
+    {
+        try
+        {
+            return (source ?? WasapiTransmitSink.Endpoints)();
+        }
+        catch (Exception)
+        {
+            return Array.Empty<RenderEndpoint>();
+        }
+    }
+
+    /// <summary>The endpoint a saved id names, or null.</summary>
+    /// <remarks>
+    /// **BY ID, AND THERE IS NO FALLBACK.** <c>AudioDeviceChoice.Choose</c> may
+    /// land on a sensible capture device because listening to the wrong one is a
+    /// quiet waterfall; **transmitting into the wrong one puts FT8 somewhere the
+    /// operator did not send it**, so an id that matches nothing selects nothing.
+    /// </remarks>
+    private static RenderEndpoint? ChooseEndpoint(
+        IReadOnlyList<RenderEndpoint> endpoints, string? savedId)
+        => string.IsNullOrWhiteSpace(savedId)
+            ? null
+            : endpoints.FirstOrDefault(
+                e => string.Equals(e.Id, savedId, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>The switchable categories.</summary>
     public ObservableCollection<TelemetryCategoryViewModel> Categories { get; }
