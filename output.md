@@ -1,21 +1,20 @@
 READ IN THIS ORDER
 
 A. THE PHASE GOAL. Hamlet works stations on the air. It transmitted on a live
-   antenna on 2026-09-07, and since unit 271 every composed message round-trips
-   through the decoder.
+   antenna on 2026-09-07 and can write a contact down since unit 274.
 B. THE STEP AND ITS EXIT CRITERIA. Step E's bench half. It closes no criterion and
    does not claim to.
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on A: a
-   completed contact can be written down in one click, the file is ADIF a logger
-   will read, and a station already worked is obvious before he calls it. **Section
-   4 has no ask** — three things are stated rather than asked, and the queue is
-   carried outbound unchanged.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on A: the left
+   list stops clipping callsigns, a log entry records the dial the contact was
+   actually heard on, and the decision index is whole again. **Three of the four
+   asks the order carried inbound are discharged and leave the queue.** Section 4
+   has no ask; two things are stated.
 
-UNIT:       274 — complete at task 5 of 5 — 2026-09-07 19:13
+UNIT:       275 — complete at task 5 of 5 — 2026-09-07 19:38
 PHASE GOAL: Hamlet works stations on the air.
-UNIT GOAL:  A completed contact can be logged in one click, the entry says what was observed and what was typed, the file is ADIF a logger will read, and a station already worked is obvious before he calls it.
-ADVANCED:   yes — the log exists and the first contact is uploadable the day it lands. No step's criterion moved and the instruction says so itself.
-NUMBER:     265 bytes an entry, and the already-worked check runs **once** rather than per decode. There was no such figure before; task 5 is the first measurement of it.
+UNIT GOAL:  The left list shows whole callsigns, a logged contact records the dial it actually happened on, and the decision index is whole again.
+ADVANCED:   yes — three inbound asks discharged and two defects found that no task went looking for. No step's criterion moved and the instruction says so itself.
+NUMBER:     75 px → 177 px, the left list's message column. Predicted 177 and it is 177.
 DRIFT:      0 consecutive units without advance  (was 0)
 
 ---
@@ -29,250 +28,255 @@ DRIFT:      0 consecutive units without advance  (was 0)
 
 `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
 present, `CoreHMI.sln` absent, `MURC.sln` absent. **Hamlet confirmed.**
-`SESSION.lock` absent, one session, tree clean at `3232dc2` with unit 273 fully in.
+`SESSION.lock` absent, one session, tree clean at `0eaf738` with unit 274 fully in
+at 1.12.134.
 
 ### Shell refusals, recorded verbatim
 
-**None.** The same two tool facts as last unit and no new ones: this shell will not
-carry a quoted heredoc containing an apostrophe, and it collapses a doubled
-backslash inside one. Both were worked around with script files and the
-file-editing tools.
+**None.** The same two tool facts as the last two units and no new ones: this
+shell will not carry a quoted heredoc containing an apostrophe, and it collapses a
+doubled backslash inside one. Both worked around with script files.
 
 ### Task by task
 
-**1 — what the ledger knows.** Reading only, committed as
-`docs/unit274-what-the-ledger-knows.md` with file and line for each fact. Its two
-findings shaped everything after it.
+**1 — `dt` and `hz` leave the left list.** 75 → 177 px, exactly the predicted
+figure.
 
-**2 — the ADIF writer.** `AdifLog` in the engine, from the fetched specification.
+**2 — the column test is run.** It answered the instruction's question by
+measurement and then found something nobody was looking for.
 
-**3 and 4 — the dialog and the mark.** Committed together at `da2b903`, because the
-mark is what a written log is *for* and the write is what puts a station in it.
+**3 — a contact remembers its own dial.** And, on the way, a defect unit 274
+shipped.
 
-**5 — what the log costs.** Measured, nothing optimised.
+**4 — the decision index is whole again.** All seven rulings read and indexed.
+
+**5 — what the log's frequency was before this.** There is no log. See section 3.
+
+### Two defects found that no task went looking for
+
+**One: the mine list had been crooked since I built it, by twelve pixels.** Task
+2's whole point is that the column test had not run for two units. Run, it showed
+the mine header putting the message column at x=138 and its rows putting it at
+150. **Cause, measured cell by cell**: `from` was the only column on either side
+whose content has no bound, so a six-character callsign pushed the row's column
+past its header's — the sibling-grid drift unit 241 wrote that entire test class
+about, reproduced by me in unit 273 and never seen because the test only ever
+examined the left list.
+
+**Two: unit 274 was writing a band ADIF cannot read.** Pushing the application's
+own band name through the log for the first time produced `<BAND:4>20 m`.
+`HfBands` names bands for the screen and the log took the name straight through;
+ADIF's Band enumeration gives `20m`, and a logger has no row for `20 m`.
+
+**Why unit 274's round trip missed it, which is the lesson rather than the bug.**
+Every test in that file wrote a hand-made `"20m"` and read back `"20m"` — the
+writer and the reader agreeing perfectly about a value **the application never
+produces**. That is §12.5 in miniature: a fixture built from the same assumption
+as the code proves nothing about the code. What caught it was task 3 sending the
+real name through for the first time.
 
 ### Decisions made on this session's own authority, reproduced in full
 
-**One: a grid is a property of the sender and a report is a property of the pair,
-so they read different lists.** The first draft read both off `HeardToUs` and lost
-the grid on a complete exchange — because **that exchange opens with his CQ**,
-which is how nearly every contact opens, and a CQ is addressed to nobody in
-particular. `CQ IK4LZH JN54` says where IK4LZH is whoever he was calling. A report
-cannot be read the same way: `-12` in a message to W1ABC is what he heard **W1ABC**
-at, and putting it in this entry would be a stranger's number in the operator's
-log. The grid now reads `Heard`; the reports still read `HeardToUs` and `Sent`.
+**One: the `from` column left the mine list rather than being widened.** It was
+the cause of the misalignment, it duplicated the message beside it — which already
+opens with the sender — and widening it to fit a compound callsign would have cost
+the message about forty pixels on the side that had least. The sender's entity
+tooltip moved to the message cell and the `worked` mark moved under the time,
+where the 76 pixels the clock already has carry it for nothing. **The mine message
+column went 162 → 224 px** as a consequence.
 
-**Two: compound calls are different stations for the worked-before mark.** The
-instruction says to say what I did and to treat them as different where the answer
-is not certain. `W4/YV7AXM` and `YV7AXM` are the same licensee and arguably not the
-same contact: one is a Venezuelan station at home, the other that licensee in
-Florida, which is a different DXCC entity and a different contact to most award
-programmes. **The mark under-claims rather than over-claims**, so he is never told
-he has worked somebody he has not.
+**Two: the tone test is kept as a skipped record rather than deleted.** `hz` left
+the left list on your ruling and was never on the mine side, so there is no `hz`
+cell in the application to align and the test has no subject. Deleting it would
+destroy the record of a real fault and its fix; leaving it running would report a
+property nothing has. It carries what it proved and why it mattered.
 
-**Three: `INotifyPropertyChanged` came back to `DigitalDecodeRow`.** Unit 252
-removed it when the dimming it existed for went, on the reasoning that an event
-nobody raises is a promise the type cannot keep. Something raises one again: a row
-is drawn before the log is consulted and again after he logs a contact, and without
-it the mark would appear only on rows arriving afterwards.
+**Three: `AdifLog.BandValueFor` removes the space and nothing else.** Every ADIF
+band value is a number and a unit run together and every `HfBands` name is the
+same two with a space between; it is a format conversion rather than a
+translation. A name it cannot recognise returns null and the field is left out —
+the rule every other field in this log already follows.
 
-### What the tests found that reading would not have
+### One tree mismatch, reported and not repaired
 
-**Three real defects, all in code I had just written.**
-
-- **A note containing `<EOH>` cut the file in half.** The reader found the header
-  terminator by searching the text, and the operator's own words contained one, so
-  `100% <> :: <EOH> <EOR>` came back as two records, one of them nonsense. A
-  terminator inside a value is ordinary text; only a parser that skips values by
-  their declared length can tell the two apart. The pre-scan is gone.
-- **An end time with no start silently lost the end.** `TIME_OFF` has no date of
-  its own — the record's date is `QSO_DATE`, from the start — so an end time
-  written without one is a time of day belonging to no day, and a reader would have
-  to invent the date. The writer refuses it now.
-- **The grid, above.**
+**Task 1 says "the mine list keeps both [`dt` and `hz`]". It never had them.**
+Unit 273 built that side as `utc`, `from`, `message`. There was nothing to keep,
+and after task 2 it is `utc`, `message`.
 
 ## 2. What the owner should expect
 
-**He can write a contact down, and he can see who he has already worked.**
+**Whole callsigns on the left, and a log that records the band you actually
+worked.**
 
-- **Right-click a row on the mine side and there is a `Log this contact...` item**,
-  under a rule below the send options. It is on rows addressed to him and on
-  nothing else — a Log item on a CQ would offer to write down a contact that has
-  not happened.
-- **The dialog opens already filled** with everything Hamlet heard: the station,
-  his grid, both reports, both times, the band, the frequency, the mode, and the
-  operator's own callsign and grid.
-- **Every field says where it came from.** A field Hamlet heard is marked *heard by
-  Hamlet*; one it did not says **"Hamlet did not hear this"** rather than sitting
-  empty, and it is left out of the file rather than written blank.
-- **The observed fields cannot be typed over.** There is a notes box, it is his,
-  and it goes to the ADIF `COMMENT` field and nowhere else.
-- **Save writes one record. Cancel writes nothing** — the dialog never touches a
-  file at all.
-- **The file is `%AppData%\Hamlet\contacts.adi`**, beside `settings.json`, ADIF
-  from the first contact, and it appends rather than rewriting.
-- **A station already in the log carries a small green `worked`** on both lists,
-  and hovering it says when and on what band.
-- **Nothing is hidden or disabled by the mark.** Working somebody twice is his
-  choice on another band or another day.
+- **The left list drops `dt` and `hz`.** It keeps the time, the signal report, the
+  `worked` mark and the message, and the message column more than doubles.
+- **The mine list keeps everything that was on it and gained room too** — its
+  `from` column went, because the message beside it already names the sender, and
+  that took its message column from 162 to 224 pixels.
+- **Hovering a sender on the mine side still names the country**; that tooltip
+  moved onto the message cell rather than going away.
+- **A logged contact records the frequency it was heard on**, not the dial you
+  happen to be on when you right-click. The dialog's frequency field says *where
+  this was heard* instead of *where the dial is now*.
+- **A row decoded before this change has no dial**, and its entry carries no
+  frequency and no band at all rather than a plausible one. The dialog says the
+  dial was not recorded.
+- **The band in the file is now `20m`**, which is what ADIF spells it. It was
+  `20 m`, which a logger cannot read.
+- **`CLAUDE.md`'s decision table carries rulings 153 to 159 again**, including the
+  pronoun one.
 
-**What will look wrong and is not:**
+**What will look wrong and one thing that is:**
 
-- **A portable call is not marked as worked.** `W4/YV7AXM` after logging `YV7AXM`
-  shows nothing, deliberately — see section 1.
-- **The frequency in the dialog is where the dial is now.** If he has retuned since
-  the contact, that is not the frequency he worked the station on. Hamlet does not
-  know the contact's own dial; the row carries its slot and not the tuning. **The
-  dialog says so on the field** — *where the dial is now* — rather than recording a
-  band he may not have worked.
-- **A contact he answered on another program has no `RST_SENT`.** The ledger books
-  what actually went out through Hamlet's own send path, and an offer is not a
-  transmission.
+- **`VP2MAA KC3QIS FN00` is three pixels over on the left.** The ruling's
+  arithmetic predicted that ordinary traffic would fit; the everyday
+  eighteen-character message does not, by three pixels. Nothing was shrunk to hide
+  it. Three pixels is inside the uncertainty of a headless font measurement, so it
+  is on the boundary rather than clearly failing — see section 3.
+- **The two lists carry different columns.** That is deliberate and it is why each
+  header is now checked against its own rows.
+- **The `worked` mark on the mine side sits under the time**, not beside the
+  contact line, since the `from` column went.
 
-**Build:** clean, 0 warnings, 0 errors, whole solution, twelve times.
+**Build:** clean, 0 warnings, 0 errors, whole solution, fourteen times.
 
-**Tests:** filtered and foregrounded, all belonging to this instruction. Engine
-side `TheAdifLogRoundTripsTests` and `TheLogEntryIsWhatWasHeardTests` **22 of 22**;
-app side `TheLogDialogAndTheWorkedMarkTests` and
-`WhatTheLogCostsAfterAnEveningTests` **15 of 15**. No suite was run and nothing was
-backgrounded. **Every test that touches the log redirects `SettingsStore.DataFolder`
-to a temporary folder**, the seam unit 235 added, so none of them can append to his
-real log.
+**Tests:** filtered and foregrounded. `WhatTheSplitCostsTests` **1 of 1**;
+`TheDecodedColumnsLineUpTests` **2 passed, 1 skipped**;
+`AContactRemembersItsOwnDialTests` **5 of 5**; `TheAdifLogRoundTripsTests` and
+`TheLogEntryIsWhatWasHeardTests` **37 of 37**; `DecisionLogOrderTests` **2 of 2**.
+Every one is a test this unit wrote or rewrote, which is what the instruction
+permits. Nothing was backgrounded and no suite was run.
 
-**Not run, and you should know which:** the decoded row's own view tests —
-`TheDecodedColumnsLineUpTests` in particular — because the left row's grid gained
-an `Auto` column for the mark and its message moved from column 4 to column 5. Both
-the header and the row moved together, so the origins should still line up, but
-*should* is not *does*. They live in the `Views` namespace the standing rule keeps a
-unit out of.
-
-**Pushed to `main`:** `7424ab9`, `6e7009d`, `da2b903`, `51dddb6`. Version
-**1.12.130 → 1.12.134**. `Ft8Sharp` did not move.
+**Pushed to `main`:** `8c1c806`, `3649175`, `df65f2e`, `00a7e4b`, `cb3fa58`.
+Version **1.12.134 → 1.12.139**. `Ft8Sharp` did not move.
 
 ## 3. What you should see
 
-**1. One ADIF record, quoted whole**, with the header the file opens with. This is
-what the writer actually produced this session:
+**1. The left list's message column, before and after**, measured through the real
+window at your own 1400 by 1200:
 
 ```
-Hamlet contact log. ADI format, ADIF Specification 3.1.4, released 2022-12-06,
-https://www.adif.org/314/ADIF_314.htm, retrieved 2026-09-07.
-Fields Hamlet did not observe are absent rather than empty.
+                     before    after
+left message column    75 px   177 px
+mine message column   162 px   224 px
 
-<ADIF_VER:5>3.1.4
-<PROGRAMID:6>Hamlet
-<PROGRAMVERSION:8>1.12.132
-<EOH>
+   100 px  IS0/IK2YCW                          fits both
+   120 px  CQ W4/YV7AXM                        fits both
+   180 px  VP2MAA KC3QIS FN00        left: 3 px over    mine: fits
+   210 px  KC3QIS IS0/IK2YCW -12     left: 33 px over   mine: fits
+   210 px  W4/YV7AXM KC3QIS R-15     left: 33 px over   mine: fits
+   320 px  W4/YV7AXM/QRP W4/YV7AXM/QRP R-15    over on both
+```
+
+**The prediction was 177 and it is 177.** What the prediction also said — ordinary
+traffic fits, the rare long one does not — is not quite what came out: **the
+everyday eighteen-character message is three pixels over.** It is reported rather
+than rounded away, and nothing else was shrunk to hide it.
+
+**Three pixels is inside the uncertainty of the measurement.** The 180 is a
+`FormattedText` width taken with a fallback typeface in a headless test host, not
+a render on your screen. It is on the boundary; the honest statement is that it is
+on the boundary rather than that it fits or that it does not.
+
+The last row is **the widest a standard FT8 message can be** — thirteen characters
+a callsign field, twice, plus a report. No arrangement of a 330-pixel column
+would hold it.
+
+**2. `TheDecodedColumnsLineUpTests`, and what two units of drift had left in it.**
+
+**Before this unit: nothing.** Measured rather than assumed — I checked out
+`0eaf738`'s markup, rebuilt, and ran it: **2 of 2 green.** Unit 273's split and
+unit 274's mark column both kept the left header and its rows in step.
+
+**After: the mine side was crooked**, and had been since unit 273 built it:
+
+```
+mine header origins : 0, 76, 138
+mine row 0 origins  : 0, 76, 150
+
+   header col 1  x=76  w=48   "from"
+   row0   col 1  x=76  w=60   "TA3MPK"
+```
+
+Fixed, and now:
+
+```
+mine header origins : 0, 76
+mine row 0 origins  : 0, 76
+mine row 1 origins  : 0, 76
+```
+
+The class now holds two origins tests — one per side, each header against its own
+rows — and one skipped record where the `hz` alignment test used to be.
+
+**3. Two log records.** One for a contact heard on a dial that has since moved:
+
+```
 <CALL:6>IK4LZH
 <STATION_CALLSIGN:6>KC3QIS
 <QSO_DATE:8>20260907
 <TIME_ON:6>214130
-<TIME_OFF:6>214300
+<TIME_OFF:6>214130
 <BAND:3>20m
 <MODE:3>FT8
 <FREQ:9>14.074000
-<RST_SENT:3>-09
 <RST_RCVD:3>-12
-<GRIDSQUARE:4>JN54
 <MY_GRIDSQUARE:6>FN00DJ
-<COMMENT:21>First one into Italy.
 <EOR>
 ```
 
-**The round trip: every field came back as it went in.** The test compares the
-whole record rather than field by field, so a field the test forgot to name cannot
-slip through. A separate test walks the written text **without the reader**,
-checking every declared length against the character that follows it — so a writer
-and a reader wrong the same way cannot both pass (§12.5).
+**`14.074000` and `20m` are where it was heard.** The panel's own live dial reads
+7,028,000 Hz in that test, and the entry does not carry it — which is the whole
+point of the task. And **`20m` rather than `20 m`**, which is the defect task 3
+found on the way.
 
-**Eight note shapes survive intact**, including `<EOR> in the middle of a note` and
-`<CALL:5>FAKE1 pretending to be a field`. Nothing is escaped, and that is the
-format rather than an omission: ADI has no escape character, and **the length
-prefix is what makes an angle bracket inside a note ordinary text.**
-
-**2. An incomplete contact's record**, for a station answered somewhere other than
-Hamlet:
+And one for a row with no recorded dial — anything decoded before this change:
 
 ```
 <CALL:6>IK4LZH
 <STATION_CALLSIGN:6>KC3QIS
 <QSO_DATE:8>20260907
 <TIME_ON:6>214130
-<TIME_OFF:6>214200
+<TIME_OFF:6>214130
+<MODE:3>FT8
 <RST_RCVD:3>-12
+<MY_GRIDSQUARE:6>FN00DJ
 <EOR>
 ```
 
-**`RST_SENT` is absent, not `<RST_SENT:0>`** — which would assert an empty report
-was exchanged, a thing that did not happen. `RST_RCVD` is still there, so the
-absence reads as the missing fact rather than the writer having given up on the
-pair. `BAND`, `MODE`, `FREQ` and `MY_GRIDSQUARE` are absent for the same reason:
-nobody handed them in.
+**`FREQ` and `BAND` are absent, not guessed.** What was heard is still there, so
+the absence reads as the missing fact rather than the entry having given up.
 
-**3. A decoded row for a station already in the log**, and the mark on hover:
-
-```
-CQ IK4LZH JN54        worked
-                      -> "You worked IK4LZH before, on 2026-09-07, on 20m."
-
-CQ W1ABC FN31         (no mark)
-CQ W4/YV7AXM EL96     (no mark, after logging YV7AXM — see section 1)
-```
-
-**And what the log costs**, measured at a hundred entries:
-
-```
-100 entries          26,572 bytes      265 bytes an entry
-a thousand           about 259 KB
-
-reading the whole log, 20 times      median 0.217 ms, slowest 0.291 ms
-fourteen decodes placed, 10 slots    median 0.037 ms, slowest 0.043 ms
-                                     against a slot of 15,000 ms
-```
-
-**Per decode or once: ONCE.** The log is read into a dictionary the first time a
-row is placed and kept, and re-read only when a contact is logged — the one thing
-in the application that changes the file. The per-decode cost is a case-insensitive
-dictionary lookup on the sender's callsign.
-
-**That claim is asserted, not only timed.** A timing can be fast for the wrong
-reason and would go on passing after somebody put a read back in, so the second
-test **deletes the log file** after the first row and shows the mark still landing
-on the next one. If the file is gone and the answer is the same, nothing read it.
+**And what the log held before this: nothing.**
+`%AppData%\Hamlet\contacts.adi` does not exist on this machine — the folder holds
+`settings.json`, `layouts.json`, `scan-segments.json`, `spots.db` and `telemetry`.
+**Zero records, so nothing predates task 3.** Unit 274 built the dialog and the
+writer yesterday, unit 275 fixed the frequency today, and the first contact has not
+been logged yet: **neither defect ever reached a record.** Nothing was edited and
+nothing was written; a log record is a statement you made and it is not a unit's to
+revise.
 
 ## 4. What's blocking us
 
-**Nothing blocks the next unit, and there is no ask.** Three things stated.
+**Nothing blocks the next unit, and there is no ask.** Two things stated.
 
-**1. The frequency in a log entry is the dial at logging time, not at contact
-time.**
+**1. Three pixels.**
 
-Stated, and handled on screen rather than hidden. The row carries its slot and does
-not carry the tuning; **Hamlet does not know what dial a contact happened on**, and
-inventing one would be §0.0 exactly. So the dialog shows the frequency it is about
-to write, labelled *where the dial is now*, and he can see it before he saves.
+The left list still comes up three pixels short of the everyday
+`VP2MAA KC3QIS FN00`, on a measurement whose own uncertainty is about that size.
+**Nothing was shrunk to make it fit**, which is the instruction's rule, and I am
+not proposing a change: at this margin the honest move is to look at it on your
+own screen, where the real typeface renders, rather than to act on a headless
+figure. If a callsign is visibly cut there, the options unit 273 priced are still
+priced.
 
-**If it should be otherwise, the fix is that a row remembers its own dial**, which
-is a change to what a decode carries rather than to the log — and that is a
-different unit's work.
+**2. `dt` and `hz` were never on the mine list.**
 
-**2. One detail of the ADIF specification is not fully cited, and it is marked.**
-
-`FREQ`'s own field definition could not be retrieved: the spec is one very large
-page and four separate fetches truncated before the field-definition table. **The
-tag names are all cited**; what is not is `FREQ`'s unit. It is written in
-**megahertz**, which is what the Band enumeration on the same page states its own
-edges in, and `BAND` is written beside it and **is** fully cited — so every record
-carries its own cross-check and a unit error would be visible on the first import
-rather than silent. It is in the file's remarks as a marked assumption (§12.4)
-rather than glossed.
-
-**3. The decoded rows' view tests were not run and the left grid changed shape.**
-
-Named rather than left to be discovered. The left row and its header both gained an
-`Auto` column for the mark, moving the message from column 4 to column 5 — together,
-so `TheDecodedColumnsLineUpTests` should still hold. It is in the `Views` namespace
-whose stall unit 230 documented.
+Task 1 says it keeps both. Unit 273 built that side as `utc`, `from`, `message`,
+so there was nothing to keep — and after task 2 it is `utc`, `message`. Reported
+rather than repaired, as the instruction directs. **If you want them there**, that
+is a different change from the one you ruled, and the mine list now has 224 pixels
+of message to spend.
 
 ### Asks still outstanding
 
@@ -282,23 +286,21 @@ Carried outbound per HM-DEC-139.
    before it. **The author's error: an executed order must never be amended, only
    succeeded.** No unit action; recorded so the phase record's collision is
    explained when either is cited. **Unchanged this unit.**
-2. **`PM95` reads *southern Japan***, raised by unit 271 as the compass qualifier's
-   weakest reading. **Not a defect**; the table is where to argue with it.
-   **Unchanged this unit.**
-3. **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05, step 6's two unmet exit
-   criteria from the closed sensitivity phase. By HM-DEC-140 they live in
-   `OPEN_ISSUES.md` and not on this queue; named once so the next session stops
+2. **`PM95` reads *southern Japan***, raised by unit 271. **Not a defect**; the
+   table is where to argue with it. **Unchanged this unit.**
+3. **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05. By HM-DEC-140 they live
+   in `OPEN_ISSUES.md` and not on this queue; named once so the next session stops
    rediscovering them. **Unchanged this unit.**
-4. **The message column does not fit.** Raised by unit 273, 2026-09-07. Waiting on
-   your choice between five options with the numbers behind each, in unit 273's
-   section 4. **The change is not in the tree**: nothing was shrunk or wrapped, and
-   the left list clips today. **This unit did not touch it** — the `Auto` column
-   the mark added takes no width on a row it has nothing to say about, so the
-   figures unit 273 measured are unchanged for an unmarked row and narrower by the
-   width of the word *worked* for a marked one.
-5. **`CLAUDE.md` §1 stops indexing at HM-DEC-152.** Raised by unit 273. Rulings 153
-   to 159 are in `DECISIONS.md` and not in the index, and adding one would fail
-   `DecisionLogOrderTests`'s contiguity assertion on six rulings nobody in this
-   sequence wrote. **Unchanged this unit.**
 
-**Nothing was added to the queue by this unit**, and nothing was dropped.
+**Dropped this unit, all three discharged:**
+
+- **The message column does not fit.** Raised by unit 273, ruled by you on
+  2026-09-07, discharged by task 1. 75 → 177 px, with the three-pixel residue
+  above stated rather than hidden.
+- **The frequency in a log entry is the dial at logging time.** Raised by unit 274,
+  discharged by task 3.
+- **`CLAUDE.md` §1 stops indexing at HM-DEC-152.** Raised by unit 273, discharged
+  by task 4. All seven rulings read out of `DECISIONS.md` and indexed by what each
+  says, and `DecisionLogOrderTests` passes.
+
+**Nothing was added to the queue by this unit.**
