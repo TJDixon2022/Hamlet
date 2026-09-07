@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 256 - the audio leaves the machine, and Hamlet's decoder hears
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T20:20:37-04:00
-NOTE: ABOUT TO RUN IN REAL TIME - a single loopback is roughly fifteen seconds in which nothing is written here. The chain is assembled: ComposeSignal at the endpoint's own 48000 Hz, played by the real sink to the display-audio endpoint, WasapiLoopbackCapture on that same endpoint, the engine's own Downmix into AudioTap, Ft8Resample.ToFt8Rate down to 12000, and Ft8SlotDecoder. The same capture is decoded twice in one run so the rate lie - 48 kHz handed over as though it were 12 kHz - is watched returning nothing at no extra wall-clock cost. One message first, committed on its own before anything else is tried.
+UPDATED: 2026-09-06T20:23:09-04:00
+NOTE: IT DECODED, and it is committed and pushed on its own. "CQ KC3QIS FN00" left the sound card, came back through WasapiLoopbackCapture, AudioTap, Ft8Resample and Ft8SlotDecoder, and read back as "CQ KC3QIS FN00" - whole text, ordinal, 606720 of 606720 samples in 12.657 s, 14.686 s wall clock. The same capture handed over without the resampler returned nothing, which is the rate lie caught. ABOUT TO RUN IN REAL TIME AGAIN: the two further messages of other shapes, roughly 30 seconds. The tap's live meter reads the silence after the transmission rather than the transmission, so the capture's own peak is now reported beside it.
 
 ---
 

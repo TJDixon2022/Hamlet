@@ -45,8 +45,21 @@ public sealed class TheLoopbackProvesTheWholeChainTests
 
     /// <summary>
     /// **THE ONE. One message, out of the sound card and back into Hamlet's own
-    /// decoder as the same text.**
+    /// decoder as the same text - and the rate lie, in the same run, returning
+    /// nothing.**
     /// </summary>
+    /// <remarks>
+    /// <para>**THE BREAKAGE IS CARRIED HERE RATHER THAN IN A SECOND
+    /// TRANSMISSION.** The captured audio is at the endpoint's rate; hand it to
+    /// <c>Ft8SlotDecoder</c> without <c>Ft8Resample.ToFt8Rate</c> and the decoder
+    /// is being told that 48000 Hz samples are 12000 Hz samples - four times the
+    /// tone spacing, four times the symbol rate. **It returns nothing**, and
+    /// nothing about the chain looks broken: the audio played, the capture
+    /// arrived, the level was fine. That is the real defect this test exists to
+    /// catch.</para>
+    /// <para>Decoding the same capture twice costs no extra wall clock, and it
+    /// keeps this whole class inside the cap of three transmissions.</para>
+    /// </remarks>
     [Fact]
     public async Task AMessageHamletComposedLeavesThisMachineAndComesBackFromItsOwnDecoder()
     {
@@ -61,44 +74,69 @@ public sealed class TheLoopbackProvesTheWholeChainTests
         Assert.True(
             run.CameBack,
             $"the message \"{run.Sent}\" went out of {run.Endpoint} and the decoder returned "
-            + $"{Quoted(run.Texts)} from the captured audio. Tap level: peak {run.PeakDb:0.#} dB, "
-            + $"floor {run.FloorDb:0.#} dB, nearly silent: {run.NearlySilent}.");
+            + $"{Quoted(run.Texts)} from the captured audio. The capture peaked at "
+            + $"{run.CapturePeakDb:0.#} dB; the tap's live meter last read peak {run.PeakDb:0.#} dB, "
+            + $"floor {run.FloorDb:0.#} dB.");
+
+        // **AND THE RATE LIE RETURNS NOTHING**, watched red before this chain was
+        // right and kept as an assertion so it stays caught.
+        Assert.DoesNotContain(run.Expected, run.TextsUnresampled, StringComparer.Ordinal);
     }
 
     /// <summary>
-    /// **THE BREAKAGE THIS TEST EXISTS TO CATCH: one number wrong on the way
-    /// back, and a perfectly good transmission decodes to nothing.**
+    /// **Two more messages, of other shapes, out and back.**
     /// </summary>
     /// <remarks>
-    /// <para>The captured audio is at the endpoint's rate. Hand it to
-    /// <c>Ft8SlotDecoder</c> without <c>Ft8Resample.ToFt8Rate</c> and the decoder
-    /// is being told that 48000 Hz samples are 12000 Hz samples - four times the
-    /// tone spacing and four times the symbol rate. **It returns nothing**, and
-    /// nothing about the chain looks broken: the audio played, the capture
-    /// arrived, the level was fine.</para>
-    /// <para>**This assertion is the red watched and kept.** The same capture is
-    /// decoded twice in one run, so it costs no extra wall clock, and the defect
-    /// stays caught.</para>
+    /// <para>**THE NAMED DROP CANDIDATE** (work instruction 256, task 4). The
+    /// first message proves the chain; these two only widen it, and each costs
+    /// 12.64 seconds of wall clock. Three transmissions in this class in total,
+    /// which is the cap.</para>
+    /// <para>A report-with-grid and a signal report, rather than three CQs: the
+    /// point of widening is to send a different message type through the same
+    /// path, not the same one three times.</para>
     /// </remarks>
     [Fact]
-    public async Task TheSameCaptureDecodesToNothingWhenItsRateIsLiedAbout()
+    public async Task TwoMoreMessagesOfOtherShapesGoOutAndComeBack()
     {
-        var run = await Loopback("CQ KC3QIS FN00");
+        string[] messages = ["KC3QIS W9XYZ FN00", "W9XYZ KC3QIS -12"];
 
-        Report(run);
+        var back = 0;
+        var failures = new List<string>();
+        var clock = Stopwatch.StartNew();
 
-        Assert.True(run.Attempted, run.Note);
+        foreach (var message in messages)
+        {
+            var run = await Loopback(message);
 
-        _output.WriteLine("--- the rate lie ---");
-        _output.WriteLine($"told the decoder {run.CaptureRate} Hz audio was "
-            + $"{Ft8Resample.TargetSampleRate} Hz");
-        _output.WriteLine($"decoder returned : {Quoted(run.TextsUnresampled)}");
+            Report(run);
+            _output.WriteLine(string.Empty);
 
-        Assert.DoesNotContain(run.Expected, run.TextsUnresampled, StringComparer.Ordinal);
+            if (!run.Attempted)
+            {
+                failures.Add($"\"{message}\" - not attempted: {run.Note}");
+                continue;
+            }
 
-        // And the same samples, resampled, do come back. Without this the
-        // assertion above would also pass on a chain that captured silence.
-        Assert.Contains(run.Expected, run.Texts, StringComparer.Ordinal);
+            if (run.CameBack)
+            {
+                back++;
+            }
+            else
+            {
+                failures.Add(
+                    $"\"{message}\" went out and the decoder returned {Quoted(run.Texts)}; "
+                    + $"the capture peaked at {run.CapturePeakDb:0.#} dB");
+            }
+        }
+
+        clock.Stop();
+
+        _output.WriteLine($"came back  : {back} of {messages.Length}");
+        _output.WriteLine($"wall clock : {clock.Elapsed.TotalSeconds:0.###} s");
+
+        Assert.True(
+            failures.Count == 0,
+            string.Join("\n", failures));
     }
 
     /// <summary>Everything one loopback run measured.</summary>
@@ -120,6 +158,7 @@ public sealed class TheLoopbackProvesTheWholeChainTests
         double RmsWritten,
         long Clipped,
         long CapturedSamples,
+        double CapturePeakDb,
         double PeakDb,
         double FloorDb,
         bool NearlySilent,
@@ -250,6 +289,12 @@ public sealed class TheLoopbackProvesTheWholeChainTests
             sink.RmsWritten,
             sink.ClippedSamples,
             captured.Samples.Length,
+
+            // **THE PEAK OF THE WHOLE CAPTURE, NOT THE METER'S LAST READING.**
+            // AudioTap.Level is the last fifth of a second, which by the time a
+            // run finishes is the silence after the transmission - the tap's own
+            // remarks on PeakOf say exactly this and it is why PeakOf exists.
+            AudioTap.PeakOf(captured),
             tap.Level.PeakDb,
             tap.Level.FloorDb,
             tap.Level.NearlySilent,
@@ -259,7 +304,7 @@ public sealed class TheLoopbackProvesTheWholeChainTests
 
     /// <summary>A run that never got as far as playing anything.</summary>
     private static Run NotAttempted(string note) =>
-        new(false, note, "none", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, true, [], []);
+        new(false, note, "none", "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -90, 0, 0, true, [], []);
 
     /// <summary>Everything the run measured, printed.</summary>
     private void Report(Run run)
@@ -285,8 +330,11 @@ public sealed class TheLoopbackProvesTheWholeChainTests
         _output.WriteLine($"clipped         : {run.Clipped}");
         _output.WriteLine($"captured        : {run.CapturedSamples} samples on the tap, "
             + $"{run.CapturedSamples / (double)run.CaptureRate:0.###} s");
-        _output.WriteLine($"tap level       : peak {run.PeakDb:0.#} dB, floor {run.FloorDb:0.#} dB, "
-            + $"nearly silent: {run.NearlySilent}  [development machine]");
+        _output.WriteLine(
+            $"capture peak    : {run.CapturePeakDb:0.#} dBFS over the whole capture  [development machine]");
+        _output.WriteLine($"tap live meter  : peak {run.PeakDb:0.#} dB, floor {run.FloorDb:0.#} dB, "
+            + $"nearly silent: {run.NearlySilent} - the last 0.2 s, which is after the "
+            + "transmission  [development machine]");
         _output.WriteLine($"message in      : \"{run.Sent}\"");
         _output.WriteLine($"reads back as   : \"{run.Expected}\"");
         _output.WriteLine($"decoded         : {Quoted(run.Texts)}");
