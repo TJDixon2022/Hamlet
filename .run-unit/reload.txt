@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-07T00:40:09-04:00  root C:\Source\HamLet
+measured 2026-09-07T01:11:49-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -11,7 +11,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
   UNCOMMITTED      SESSION.lock is modified and uncommitted.
-  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
+  PHASE_OUTCOME    header says step 1 is partial; the last entry for it says blocked. The entries win.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -23,13 +23,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : a81d214
-  uncommitted at the root : 5
+  HEAD   : 5186820
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
       D SESSION.lock
-      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -372,15 +371,15 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     bug, the 101.33 ms pulse above 6 kHz, the CW decoder and its inherited reds.
 
   --- PHASE_STATUS.md ---
-  31 lines, 1342 bytes
+  31 lines, 1355 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   DESCRIPTION: One click one message - the abort, the waveform, the audio path, the contact state, the right-click menu, and a contact Tim makes
   CURRENT_STEP: 1
-  WORK_INSTRUCTION: 261 - the operator can stop it
-  HEARTBEAT: 2026-09-07 00:40:08
+  WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
+  HEARTBEAT: 2026-09-07 01:11:47
   STEP: 0 | done | the dummy load is gone from the tree
-  STEP: 1 | blocked | the abort works before anything can key
+  STEP: 1 | partial | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
   STEP: 3 | partial | the audio reaches the radio and the radio keys
   STEP: 4 | partial | the row knows where the contact stands
@@ -406,11 +405,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   The previous phase's final status is archived at `docs/phase-onair-run/PHASE_STATUS.md`.
 
   --- PHASE_OUTCOME.md ---
-  307 lines, 68454 bytes
+  337 lines, 77696 bytes
   PHASE: Hamlet works stations on the air
   PHASE_SET: 2026-09-06
   STEP: 0 | done | the dummy load is gone from the tree
-  STEP: 1 | blocked | the abort works before anything can key
+  STEP: 1 | partial | the abort works before anything can key
   STEP: 2 | partial | Hamlet's own decoder reads Hamlet's transmission
   STEP: 3 | partial | the audio reaches the radio and the radio keys
   STEP: 4 | partial | the row knows where the contact stands
@@ -714,6 +713,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: blocked
   STATE_WHY: The abort's four substantive criteria are evidenced with quoted wire bytes from all the required states including a dead port and a compile time no-await guarantee, but the step's final criterion, that no transmitting code exists when it closes, is already permanently violated by the keying sequence and the live CQ send in the tree, so no further work can close this step without a ruling amending the plan.
+  
+  ## UNIT 262 - STEP 3
+  
+  STEP: 3
+  APPROACH: compose the transmission at the sample rate the transmit endpoint declares instead of the 12000 Hz default, so the real sink stops refusing every send
+  HIT: Four things. The instruction named the engine's FakeTransmitAudioSink as the fake to make faithful, but the test it commissions lives in Hamlet.App.Tests, which cannot see that assembly's internals - the fake the application's send path actually runs against is FakeSink in tests/Hamlet.App.Tests/FakeTransmitParts.cs, and it was worse than the one named because it did not read the sampleRate argument at all. Both were given the behaviour. The shell refused both spellings of the enumeration script for task 1 question 5, so the instruction's own named fallback was used. Ft8Composer.RateIsUsable refuses no rate that any endpoint on this machine declares and none that ordinary consumer hardware declares - a channel symbol is 0.16 s, so the port's consistency condition is met by every rate a sound card announces - which means the refusal branch task 3 required is correct, tested, and unreachable on this machine's hardware, and its wording had to be measured against a constructed rate. And the task 5 loopback needed WasapiAudioSource.Downmix from a second test assembly.
+  MOVE: continue
+  WHY: Step 3 criterion 1 names the right device, the right rate and the right level; the device half was cut down and met by unit 256 and the level half is deferred to Tim under FACT-004, but the rate half had never been measured on the application own send path, and it was wrong there. MainWindowViewModel.cs:8120 composed with no rate argument, which is Ft8Waveform.DefaultSampleRate at 12000 Hz; WasapiTransmitSink.cs:301 throws on any rate that is not the endpoint mix format; Ft8TransmitSequence.cs:283 keys the radio before line 287 reaches the sink. All four active render endpoints on this machine declare 48000 Hz and not one declares 12000, so on every real click the radio keyed, the sink threw, the finally fired the abort and nothing went out. Nothing illegal happened and nothing was damaged, but the phase goal is a contact and on that path there could not be one.
+  DECIDED: Three on my own authority. First, the fix is placed at BuildTheArmedSend rather than at the click, because the keying write at Ft8TransmitSequence.cs:283 precedes the sink call at 287, so a rate that cannot work must be refused where the sink is constructed or the radio keys before anybody finds out - the tree agreed with the instruction on this ordering and was checked rather than assumed. Second, the interface member is named EndpointSampleRate rather than a new name, because WasapiTransmitSink already held that property at line 194 and matching it means the real sink gains no new member and there is one name for one fact. Third, Hamlet.App.Tests was added to the engine InternalsVisibleTo so task 5 could reach WasapiAudioSource.Downmix, whose own remark says it is internal and static so a test can reach it - the alternative was a second downmix living in a test, which is the thing that remark exists to prevent, and widening one assembly is narrower than making the method public.
+  LICENCE: PHASE_PLAN.md step 3 criterion 1 in its own words - audio plays at the right device, rate and level - together with the named alternatives to stopping: the tree wins, report the mismatch and continue. The steps are a hypothesis not a contract licenses both taking a partial step again on unattempted ground and moving step 1, a target found to have been measured wrong, from blocked back to partial with the evidence recorded. SHACK_FACTS.md FACT-004 licenses enumerating and playing into this machine own endpoints while forbidding any inference about the radio, and keeps the level half deferred and unclaimed. Step 2 criterion 3, reuse it rather than writing a second encoder, licenses task 4 reuse of the existing round trip.
+  COST: unknown
+  ACCOMPLISHED: When Tim clicks a station tonight, the sound Hamlet builds is at the rate his radio sound card actually speaks, so it reaches the radio instead of being refused at the last inch after the transmitter has already been keyed. Before tonight the application could transmit through none of this machine four render endpoints; now it can transmit through all four. And where he picks a sound device that cannot carry FT8 at all, Hamlet tells him so when he picks it, names the device and the rate it declared, and tells him to choose another one - instead of keying his radio and then saying nothing went out.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: The rate half of criterion 1 is met and measured on the application own send path: the red was watched with the radio keyed, nothing played and the operator sentence quoted, then the same test green with 48000 asked and 48000 got and 606720 of 606720 samples played; a dozen messages read back identically at 12000, 44100 and 48000 with the signal 12.6400 s at every one; and one message clicked through SendMessage went out of a real WasapiTransmitSink into a real sound card, was captured, resampled and decoded back as itself. The step stays partial because the level half of the same criterion is Tim to read off the radio under FACT-004 and is not claimed, and because no measurement taken on this machine says anything about the IC-7300 USB codec. The arming grep is 1, 1, 1 before and after.
+  
+  ## UNIT 5 - STEP 3
+  
+  STEP: 3
+  APPROACH: compose the transmission at the sample rate the transmit endpoint declares instead of the 12000 Hz default, so the real sink stops refusing every send
+  HIT: section 4 wants a ruling: no - The section states nothing is blocking and both items are notes recorded for the record, with the rejected alternatives already decided and acted on by the unit, so no decision is asked of the owner.
+  MOVE: continue
+  WHY: Step 3 criterion 1 names the right device, the right rate and the right level; the device half was cut down and met by unit 256 and the level half is deferred to Tim under FACT-004, but the rate half has never been measured on the application own send path, and I measured it wrong there - MainWindowViewModel.cs:8120 composes at Ft8Waveform default 12000 Hz, WasapiTransmitSink.cs:301 throws on any rate that is not the endpoint mix format, and Ft8TransmitSequence.cs:283 keys the radio before line 287 reaches the sink. So on every real click the radio keys, the sink throws, the finally unkeys and nothing goes out. The loop test returned NOT FOUND against all eighteen entries, and I judge it not a loop: unit 256 is the nearest neighbour and it composed at the endpoint rate inside its own loopback test, never touching the caller, which is the complement of this and not a repeat.
+  DECIDED: Three on my own authority. First, step 1 is moved from blocked back to partial and the unit is told to correct both header lines: the judging session read criterion 5, no transmitting code exists yet when this step closes, as a permanent invariant, and read that way it makes step 1 unclosable unless steps 3 and 5 are deleted - the criterion says yet, it is a sequencing gate, it was measured met at unit 253 close by a grep that returned only its own declaration, and it was overtaken by the plan own ordering. Second, the fix is placed at BuildTheArmedSend rather than at the click, because the keying write at line 283 precedes the sink call at 287, so a rate that cannot work must be refused where the sink is constructed or the radio keys before anybody finds out. Third, the transmit fake is given the one behaviour it lacks - a declared rate it can refuse on - because a fake more permissive 
+  LICENCE: PHASE_PLAN.md step 3 criterion 1 in its own words - audio plays at the right device, rate and level - together with the named alternatives to stopping: the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried. The steps are a hypothesis not a contract licenses both taking a partial step again on unattempted ground and moving step 1 target found to have been measured wrong, recording the evidence. SHACK_FACTS.md FACT-004 licenses enumerating and playing into this machine own endpoints while forbidding any inference about the radio, and keeps the level half deferred. Step 2 criterion 3, reuse it rather than writing a second encoder, licenses task 4 reuse of the existing round trip.
+  COST: 13.1356565
+  ACCOMPLISHED: When Tim clicks a station tonight, the sound Hamlet builds is at the rate his radio sound card actually speaks, so it reaches the radio instead of being refused at the last inch after the transmitter has already been keyed. And where he picks a sound device that cannot carry FT8 at all, Hamlet tells him so when he picks it, by name, instead of keying his radio and then saying nothing went out.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: The loopback closing evidence and the rate half of criterion 1 are shown with quoted decoder output and sample counts, but the level half is explicitly deferred under FACT-004 and the report shows nothing at all for the telemetry record of the transmitted slot or the licence gate test, so several must-pass criteria remain unmet.
 
   --- CLAUDE.md ---
   1376 lines, 188627 bytes
@@ -736,17 +765,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1326 bytes
+  19 lines, 1493 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: DONE
+  STATE: COMPLETED
   TASK: 5 of 5
-  WORK_INSTRUCTION: 261 - the operator can stop it
+  WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-157 (2026-09-06)
-  UPDATED: 2026-09-07T00:38:43-04:00
-  NOTE: All five tasks done, committed and pushed; 19 new tests green, nothing dropped including the named drop candidate. NUMBER is 6 of 6 - the stop was watched firing from every state a transmission can be in, with the wire quoted, and a real mouse pressed the real button on a shown headless window at both moments. Two reds watched first: the un-arm-only stop leaving a keyed radio keyed, and the no-wait shape assertion. Step 1 stays partial - this claims no criterion, it clears step 6's blocker. Section 4 raises 2: the abort takes the carrier off but not the audio, reported not repaired as instructed; and an inherited red from unit 260, TheDigitalTabIsTwoColumns asserting the Send area may hold no button, which wants a ruling on HM-DEC-087.
+  UPDATED: 2026-09-07T02:22:05-04:00
+  NOTE: All five tasks done, committed and pushed, nothing dropped including the named drop candidate. NUMBER is 0 of 4 to 4 of 4 - the send path could transmit through none of this machine's render endpoints and can now transmit through all four. The red was watched with the radio keyed, nothing played and the operator's sentence quoted, then green at 48000 asked and 48000 got. 19 new tests green; OneClickSendsExactlyOneMessageTests 8 of 8 and the arming grep 1, 1, 1 before and after. Step 1's header corrected from blocked to partial per the arbiter's ruling; step 3 stays partial because the level half of criterion 1 is Tim's under FACT-004 and is not claimed. Section 4 raises 2, neither blocking: the operator's refusal sentence carries the engine's developer-facing wording in its middle, and that branch is unreachable on any ordinary sound card so it is proved against a constructed rate.
   
   ---
   

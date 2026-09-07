@@ -1,14 +1,13 @@
-﻿   Bash  {"command":"sed -n \u00271150,1200p\u0027 src/Hamlet.App/Views/MainWindow.axaml | grep -n \"DataContext\\|Binding Transmit\" ; echo ---; awk \u0027NR\u003e=1050 \u0026\u0026 NR\u003c=1245 \u0026\u0026 (/DataContext/ || /x:Name=/)\u0027 src/ ...(truncated)
-   Bash  {"command":"grep -rn \"Arm(\\|_armedSend\\|Ft8TransmitSequence\\|Ft8ArmedSend\" src/ --include=*.cs --include=*.axaml \u003e docs/unit261-grep-before.txt; wc -l docs/unit261-grep-before.txt","description":"Save before-grep"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Try validate-output.bat via posix path"}
-   Bash  {"command":"git add -A \u0026\u0026 git commit -q -F - \u003c\u003c\u0027EOF\u0027 \u0026\u0026 git push -q \u0026\u0026 git log --oneline -1\ndocs(unit261): where the operator\u0027s stop would land, and what it would collide with\n\nThe t ...(truncated)
-   Write  {"file_path":"C:\\Source\\HamLet\\.git\\COMMIT_MSG_261.txt","content":"docs(unit261): where the operator\u0027s stop would land, and what it would collide with\n\nThe trace before the build. The port is reachable from a command at both\nmom ...(truncated)
-   Bash  {"command":"git add -A \u0026\u0026 git reset -q .commit-msg.tmp \u0026\u0026 git commit -q -F .commit-msg.tmp \u0026\u0026 git push -q \u0026\u0026 git log --oneline -1","description":"Commit and push task 1"}
-   Bash  {"command":"grep -n \"DefaultRadioAddress\\|DefaultControllerAddress\\|CmdSendCwMessage\\|CwStopByte\\|CmdTransceiverControl\\|SubPtt\\|PttOn\\|PttOff\" src/Hamlet.RadioEngine/Civ/CivConstants.cs | grep -v \"///\"","description":"Read CI-V  ...(truncated)
-   Bash  {"command":"grep -n \"Avalonia\" tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj; find ~/.nuget/packages/avalonia.headless -maxdepth 1 -type d 2\u003e/dev/null","description":"Check Avalonia.Headless package"}
-   Bash  {"command":"git checkout -- .commit-msg.tmp 2\u003e/dev/null; true","description":"No-op guard"}
-   Bash  {"command":"tools\\\\arbiter\\\\outcome-append.bat 261 1 partial \"test\" \"x\" \"work around\" \"y\" \"z\" \"l\" \"c\" \"a\"","description":"Try outcome-append.bat once verbatim"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","timeout":180000,"description":"Run the output validator"}
-   Bash  {"command":"bash tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Try the validator through bash"}
-   Bash  {"command":"awk \u0027NR\u003e223 \u0026\u0026 NR\u003c479 \u0026\u0026 NF\u003e0\u0027 output.md | wc -l; echo \"--- rule 7: placeholder tokens in header block (lines 1..63) ---\"; head -63 output.md | grep -cE \"_PENDING|PENDING_|TBD|TODO ...(truncated)
-   Bash  {"command":"rm -f .commit-msg.tmp \u0026\u0026 git status --short","description":"Clean the scratch file and check the tree"}
+﻿   Bash  {"command":"awk \u0027/^## ┬º8/,/^## ┬º9/\u0027 CLAUDE_CODE.md","description":"Read CLAUDE_CODE.md section 8"}
+   Bash  {"command":"where pwsh 2\u003e\u00261 | head -3; dotnet --version","description":"Check pwsh and dotnet"}
+   Bash  {"command":"pwsh -v 2\u003e\u00261 | head -2","description":"Check pwsh version"}
+   Bash  {"command":"pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:/Source/HamLet/.run-unit/enumerate-endpoints.ps1\"","timeout":120000,"description":"Run endpoint enumeration script"}
+   Bash  {"command":"powershell -NoProfile -File .run-unit/enumerate-endpoints.ps1","timeout":120000,"description":"Run endpoint enumeration via powershell"}
+   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Try outcome-append.bat once verbatim"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run validator with forward slashes"}
+   Bash  {"command":"sed -i \u0027s|\u003cVersion\u003e1.12.114\u003c/Version\u003e|\u003cVersion\u003e1.12.115\u003c/Version\u003e|\u0027 Directory.Build.props \u0026\u0026 grep -n \"\u003cVersion\u003e\" Directory.Build.props","description":"Bump  ...(truncated)
+   Bash  {"command":"cd C:/Source/HamLet \u0026\u0026 git rm --cached -q .run-unit/enumerate-endpoints.ps1 \u0026\u0026 rm .run-unit/enumerate-endpoints.ps1 \u0026\u0026 git commit -q -m \"docs(unit262): where the composed rate and the endpoint\u002 ...(truncated)
+   Bash  {"command":"git rm --cached -q .run-unit/enumerate-endpoints.ps1 \u0026\u0026 rm .run-unit/enumerate-endpoints.ps1 \u0026\u0026 git status --short | head -5","description":"Unstage and remove refused script"}
+   Bash  {"command":"git rm -q -f .run-unit/enumerate-endpoints.ps1","description":"Remove refused script from index and disk"}
+   Bash  {"command":"awk \u0027NR\u003e=8150 \u0026\u0026 NR\u003c=8215\u0027 src/Hamlet.App/ViewModels/MainWindowViewModel.cs | grep -n \"private void SendMessage\\|_armedSend.Arm(\\|DigitalSendLine = SendingLine\"","description":"Confirm arming li ...(truncated)
+   Bash  {"command":"python - \u003c\u003c\u0027EOF\u0027\nimport io\np = r\"C:\\Source\\HamLet\\tests\\Hamlet.App.Tests\\ViewModels\\TheLoopbackThroughTheApplicationsSendPathTests.cs\"\ns = io.open(p, encoding=\"utf-8\").read()\ns = s.replace(\".Co ...(truncated)

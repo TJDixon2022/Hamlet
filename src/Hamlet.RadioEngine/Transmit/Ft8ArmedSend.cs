@@ -72,7 +72,24 @@ public enum Ft8StopOutcome
 /// reduced to a boolean**, because the operator's next question after "did it
 /// stop" is "did anything reach the radio".
 /// </param>
-public sealed record Ft8StopResult(bool Unarmed, AbortRecord? Abort)
+/// <param name="AudioStopped">
+/// True where there was a transmission playing and it was told to stop.
+/// </param>
+/// <remarks>
+/// <para>**THREE FACTS, NOT TWO** (work instruction 263, task 4). Until this unit
+/// the stop reported what it had un-armed and what its frames did, and said
+/// nothing at all about the sound - because it did nothing at all about the
+/// sound. The operator read *"Stopped"* while Hamlet went on feeding the rest of
+/// a 12.64 second transmission into a radio it had just unkeyed, and **a sentence
+/// that says "stopped" when only half of it stopped is the failure this record
+/// exists to prevent** (§0.0.1).</para>
+/// <para>**FALSE IS NOT THE SAME AS "FAILED".** <see cref="AudioStopped"/> is
+/// false both when nothing was playing - the ordinary case, an operator changing
+/// his mind before the boundary - and when the cancel itself would not take.
+/// <see cref="Outcome"/> tells those apart by reading it beside
+/// <see cref="Unarmed"/>.</para>
+/// </remarks>
+public sealed record Ft8StopResult(bool Unarmed, AbortRecord? Abort, bool AudioStopped)
 {
     /// <summary>Which of the four this was.</summary>
     public Ft8StopOutcome Outcome => (Unarmed, Abort is not null) switch
@@ -139,6 +156,29 @@ public sealed class Ft8ArmedSend
     private readonly object _gate = new();
 
     private OperatorSend? _armed;
+
+    /// <summary>
+    /// The running transmission's cancellation source, or null where none is
+    /// running.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE OTHER HALF OF THE STOP, AND IT SITS BESIDE <c>_armed</c> FOR A
+    /// REASON.** Those two fields are the whole of what an operator can be holding:
+    /// a send waiting for its boundary, and a send that is going out of the radio
+    /// right now. <see cref="Cancel"/> takes the first away and this one takes the
+    /// second away, and <see cref="StopNow"/> does both without asking which he is
+    /// in - because the one moment the answer would be wrong is the moment it
+    /// matters.</para>
+    /// <para>**IT IS SET UNDER <c>_gate</c> IN THE SAME BLOCK THAT TAKES THE
+    /// SEND**, so there is no instant in which a transmission has been committed
+    /// to and the stop cannot reach it. Setting it afterwards would leave exactly
+    /// such a window, and it is the window in which the operator presses the
+    /// button.</para>
+    /// <para>**AND IT ADDS NO SECOND WAY TO UN-ARM.** It cannot un-arm anything:
+    /// <c>_armed</c> is already null by the time this is set, and nothing reads
+    /// this but <see cref="StopTheAudio"/>.</para>
+    /// </remarks>
+    private CancellationTokenSource? _transmitting;
 
     /// <summary>Arms over one sequence.</summary>
     /// <param name="sequence">The one path to a keying frame.</param>
@@ -208,11 +248,28 @@ public sealed class Ft8ArmedSend
     /// and changes nothing - `1C 00 00` is *be in receive*, an absolute state and
     /// not a toggle, and `17 FF` is a stop code a radio sending nothing has
     /// nothing to apply it to (`docs/unit261-stop-trace.md` Q5).</para>
-    /// <para>**THE UN-ARM COMES FIRST, AND THAT ORDER IS DELIBERATE.** Between the
-    /// two halves a slot boundary can arrive on another thread; clearing the field
-    /// before the frames go out means the boundary finds
-    /// <see cref="Ft8ArmOutcome.NothingArmed"/> rather than keying a radio one
-    /// microsecond after it was told to stop.</para>
+    /// <para>**THE ORDER IS UN-ARM, ABORT, AUDIO, AND EVERY STEP OF IT IS
+    /// DELIBERATE.**</para>
+    /// <para>*The un-arm comes first.* Between the halves a slot boundary can
+    /// arrive on another thread; clearing the field before the frames go out means
+    /// the boundary finds <see cref="Ft8ArmOutcome.NothingArmed"/> rather than
+    /// keying a radio one microsecond after it was told to stop.</para>
+    /// <para>*The abort comes before the audio, and that is the answer to "do not
+    /// put the abort behind anything new".* **The carrier is what is on other
+    /// people's band**; the sound is only going into a radio. So the two frames go
+    /// at the wire before this unit's new line runs at all, and **nothing added
+    /// here sits between the operator and his abort** - not a lock, not a null
+    /// check, not a cancel that might throw. Reversed, a cancel that hung or threw
+    /// would delay or lose the frames, and step 1's criterion is that the abort
+    /// cannot be deferred or made conditional. The cost of this order is the few
+    /// microseconds of audio that go into an already-unkeyed radio, which is
+    /// nothing at all.</para>
+    /// <para>*The audio last, and it cannot throw past this method.*
+    /// <see cref="StopTheAudio"/> swallows everything - see its own remarks - so
+    /// the result is always returned and the frames are always already gone.
+    /// <c>ACancelThatThrowsDoesNotCostTheOperatorHisAbort</c> makes the cancel
+    /// really throw, by registering a callback on the token from the sink's side,
+    /// and reads the wire.</para>
     /// <para>**AND IT CANNOT WAIT ON THE TRANSMISSION IT IS STOPPING.** The one
     /// wait on this path is <c>_gate</c>, and **no member of this type holds
     /// <c>_gate</c> across an <c>await</c>** - <see cref="AtBoundaryAsync"/> takes
@@ -243,7 +300,64 @@ public sealed class Ft8ArmedSend
             ? null
             : TransmitAbort.Fire(port, radioAddress, controllerAddress);
 
-        return new Ft8StopResult(unarmed, abort);
+        var audioStopped = StopTheAudio();
+
+        return new Ft8StopResult(unarmed, abort, audioStopped);
+    }
+
+    /// <summary>Tells a running transmission's audio to stop.</summary>
+    /// <returns>True where something was playing and it was told.</returns>
+    /// <remarks>
+    /// <para>**IT SETS A FLAG AND RETURNS, AND THAT IS THE WHOLE OF IT.**
+    /// <c>Cancel()</c> on a source runs every callback registered on it
+    /// synchronously on this thread - which is the hazard unit 261 named, and the
+    /// reason it recorded this work as a finding rather than doing it. **There are
+    /// no callbacks.** `grep -rn "Register("` over <c>WasapiTransmitSink.cs</c> and
+    /// the whole of <c>Transmit/</c> returns nothing
+    /// (<c>docs/unit263-stop-audio-trace.md</c> Q2 and Q5), so nothing runs here
+    /// but the state transition, and no WASAPI call touches the operator's thread.
+    /// The sink stops itself, on its own thread, by reading that flag at the top of
+    /// the loop it is already in - <c>WasapiTransmitSink.cs:339</c> and
+    /// <c>:372</c>.</para>
+    /// <para>**THE CANCEL IS NOT DONE UNDER <c>_gate</c>.** The field is read
+    /// under it and the <c>Cancel()</c> happens outside, because if a registration
+    /// ever did appear on this path, running somebody else's callback while
+    /// holding this type's lock is how a stop turns into a deadlock.</para>
+    /// <para>**AND NOTHING IT DOES CAN COST THE OPERATOR HIS ABORT.** The frames
+    /// have already gone by the time this is called - see
+    /// <see cref="StopNow"/>'s remarks on the order - and it swallows everything,
+    /// because a stop that threw on the way out would take the operator's whole
+    /// stop with it. A cancel that would not take reports false rather than
+    /// claiming the sound stopped.</para>
+    /// </remarks>
+    private bool StopTheAudio()
+    {
+        CancellationTokenSource? source;
+
+        lock (_gate)
+        {
+            source = _transmitting;
+        }
+
+        if (source is null)
+        {
+            return false;
+        }
+
+        try
+        {
+            source.Cancel();
+
+            return true;
+        }
+        catch (Exception)
+        {
+            // AN UNDERSTATEMENT, DELIBERATELY. A disposed source is a
+            // transmission that has already ended; a callback that threw has
+            // still marked the token. Neither is worth claiming as a success in
+            // front of an operator who wants to know whether he is off the air.
+            return false;
+        }
     }
 
     /// <summary>
@@ -266,6 +380,7 @@ public sealed class Ft8ArmedSend
         DateTime boundaryUtc, CancellationToken cancellationToken = default)
     {
         OperatorSend? send;
+        CancellationTokenSource source;
 
         lock (_gate)
         {
@@ -279,23 +394,52 @@ public sealed class Ft8ArmedSend
             }
 
             _armed = null;
+
+            if (send is null)
+            {
+                return new Ft8BoundaryResult(Ft8ArmOutcome.NothingArmed, null, null);
+            }
+
+            // THE STOP'S REACH INTO THE TRANSMISSION, INSTALLED BEFORE THE LOCK
+            // IS LET GO. The send has been taken and something is about to key;
+            // installing this afterwards would leave an instant in which a
+            // transmission is committed to and StopNow can find nothing to stop,
+            // and that instant is exactly when the operator presses the button.
+            // LINKED, NOT STANDALONE: a caller that has a token of its own keeps
+            // it, and the operator's stop is a second, independent way in.
+            source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _transmitting = source;
         }
 
-        if (send is null)
+        try
         {
-            return new Ft8BoundaryResult(Ft8ArmOutcome.NothingArmed, null, null);
-        }
+            if (boundaryUtc > send.SlotStartUtc)
+            {
+                // DISCARDED, NOT SENT LATE. The operator chose a slot; putting his
+                // message out in a different one is a transmission he did not ask
+                // for, and it is gone rather than moved.
+                return new Ft8BoundaryResult(Ft8ArmOutcome.TooLate, send, null);
+            }
 
-        if (boundaryUtc > send.SlotStartUtc)
+            var run = await _sequence.RunAsync(send, source.Token).ConfigureAwait(false);
+
+            return new Ft8BoundaryResult(Ft8ArmOutcome.Ran, send, run);
+        }
+        finally
         {
-            // DISCARDED, NOT SENT LATE. The operator chose a slot; putting his
-            // message out in a different one is a transmission he did not ask
-            // for, and it is gone rather than moved.
-            return new Ft8BoundaryResult(Ft8ArmOutcome.TooLate, send, null);
+            // CLEARED ONLY IF IT IS STILL OURS. Another boundary cannot overlap
+            // this one - the send was consumed under the lock - but a field that
+            // is only ever cleared by the run that set it cannot be got wrong
+            // later, and a stale source would be a stop that cancelled nothing.
+            lock (_gate)
+            {
+                if (ReferenceEquals(_transmitting, source))
+                {
+                    _transmitting = null;
+                }
+            }
+
+            source.Dispose();
         }
-
-        var run = await _sequence.RunAsync(send, cancellationToken).ConfigureAwait(false);
-
-        return new Ft8BoundaryResult(Ft8ArmOutcome.Ran, send, run);
     }
 }

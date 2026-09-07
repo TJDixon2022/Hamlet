@@ -212,6 +212,91 @@ public sealed class TheOperatorCanStopItTests
         Assert.Equal(new[] { KeyOn, CwStop, PttOff, PttOff }, Frames(scene));
     }
 
+    /// <summary>
+    /// **A real click stops the sound as well as the carrier, through the
+    /// application's own send path.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE BREAKAGE THIS WOULD HAVE CAUGHT, AND DID** (work instruction
+    /// 263). Its neighbour above proves the frames reach the wire and then
+    /// releases the transmission to finish - because until this unit nothing could
+    /// have stopped it. The application handed
+    /// <see cref="Ft8ArmedSend.AtBoundaryAsync"/> no token at all
+    /// (<c>MainWindowViewModel.cs:8258</c>), so the whole chain ran on
+    /// <c>CancellationToken.None</c>, and **the operator's stop unkeyed his radio
+    /// and left Hamlet feeding it the rest of the slot** -
+    /// <c>docs/unit263-stop-audio-trace.md</c> Q1.</para>
+    /// <para>**AND IT IS PROVED HERE, NOT ONLY IN THE ENGINE**, because this is
+    /// the fake the application's send path actually runs against and unit 262
+    /// found it the more permissive of the two. A green in
+    /// <c>Hamlet.RadioEngine.Tests</c> over an application that never reaches the
+    /// same code is the shape of that unit's whole finding.</para>
+    /// <para>**THE VIEW MODEL PASSES NO TOKEN AND STILL DOES NOT NEED TO.**
+    /// <c>Ft8ArmedSend</c> makes its own source at the boundary, so
+    /// <c>AtSlotBoundaryAsync</c> is unchanged and **there is still exactly one
+    /// stop entry point in the view model** - <c>StopSendingCommand</c>, which is
+    /// what this clicks.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier()
+    {
+        var playing = new FakeSink { PlaysOver = TimeSpan.FromSeconds(2) };
+        var scene = Scene(playing);
+
+        scene.Panel.SendMessageCommand.Execute("W1ABC KC3QIS -10");
+
+        var slot = scene.Panel.ArmedForSlotUtc!.Value;
+        var running = scene.Panel.AtSlotBoundaryAsync(slot);
+
+        Assert.True(playing.Entered.Wait(TimeSpan.FromSeconds(10)), "the sink was never reached");
+
+        var total = playing.SamplesHandedOver;
+        var rate = playing.RateAskedFor;
+
+        // Let some of it go out, so there is something left to stop.
+        var deadline = System.Diagnostics.Stopwatch.StartNew();
+
+        while (playing.PlayedSoFar < total / 4 && deadline.Elapsed < TimeSpan.FromSeconds(30))
+        {
+            await Task.Delay(2, CancellationToken.None);
+        }
+
+        var playedAtTheClick = playing.PlayedSoFar;
+
+        Assert.Equal(new[] { KeyOn }, Frames(scene));
+
+        Click(scene, StopButton(scene));
+
+        var whileRunning = Frames(scene);
+        var boundary = await running;
+        var playedInTheEnd = boundary!.Run!.Played!.Value.SamplesPlayed;
+        var afterTheClick = (playedInTheEnd - playedAtTheClick) * 1000.0 / rate;
+
+        Pump(scene.Window);
+
+        _output.WriteLine("the slot was        : " + total + " samples at " + rate + " Hz");
+        _output.WriteLine("played at the click : " + playedAtTheClick);
+        _output.WriteLine("played in the end   : " + playedInTheEnd + " of " + total);
+        _output.WriteLine("wire while running  : " + string.Join(" | ", whileRunning));
+        _output.WriteLine("the run said        : " + boundary.Run.Outcome);
+        _output.WriteLine("the operator reads  : " + scene.Panel.DigitalSendLine);
+        _output.WriteLine("AUDIO AFTER THE CLICK: " + afterTheClick.ToString("F0") + " ms");
+
+        // ---- the carrier, which already worked --------------------------------
+        Assert.Equal(new[] { KeyOn, CwStop, PttOff }, whileRunning);
+
+        // ---- the sound, which is what this unit is for ------------------------
+        Assert.True(
+            playing.StoppedByTheToken,
+            $"the sink played all {total} samples: the click never reached it");
+
+        Assert.True(
+            playedInTheEnd < total,
+            $"the whole slot went out anyway: {playedInTheEnd} of {total} samples");
+
+        Assert.Equal(Ft8TransmitOutcome.Cancelled, boundary.Run.Outcome);
+    }
+
     // ---- no radio: not a crash and not a lie ------------------------------
 
     /// <summary>

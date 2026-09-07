@@ -427,6 +427,15 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
     /// <c>await Task.Yield();</c> at the top of <c>StopNow</c>, this failed on
     /// both instruments at once: the reflection arm on
     /// <c>StopNow returns a task</c>, and the source arm on <c>await </c>.</para>
+    /// <para>**AND SINCE UNIT 263 IT COVERS EVERY LINE THE STOP REACHES, NOT JUST
+    /// THE ONES IN <c>StopNow</c>.** The stop grew a second half - it cancels the
+    /// running transmission's source as well as un-arming and firing the frames -
+    /// and that half lives in the private <c>StopTheAudio</c>. A scan that stopped
+    /// at <c>StopNow</c>'s own braces would have declared the stop wait-free while
+    /// the line that actually touches a running transmission went unread, which is
+    /// the shape of hole this whole file exists to close. <c>Cancel</c> is read
+    /// too, because <c>StopNow</c> calls it and unit 261's *one field, one lock,
+    /// one line* remark is the reason it may never grow one.</para>
     /// </remarks>
     [Fact]
     public void NothingOnTheStopPathWaitsForAnything()
@@ -456,19 +465,31 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
         Assert.NotNull(seam);
         Assert.Equal(typeof(void), seam!.ReturnType);
 
-        var body = StopNowBody();
+        // EVERY MEMBER THE STOP REACHES, NOT JUST THE ONE IT ENTERS BY.
+        string[] onThePath = ["StopNow", "StopTheAudio", "Cancel"];
 
-        _output.WriteLine("StopNow's body, comments stripped:");
-        _output.WriteLine(body);
+        foreach (var name in onThePath)
+        {
+            var body = BodyOf(name);
 
-        Assert.DoesNotContain("await ", body, StringComparison.Ordinal);
-        Assert.DoesNotContain("async ", body, StringComparison.Ordinal);
-        Assert.DoesNotContain("Task", body, StringComparison.Ordinal);
-        Assert.DoesNotContain(".Wait(", body, StringComparison.Ordinal);
-        Assert.DoesNotContain(".Result", body, StringComparison.Ordinal);
-        Assert.DoesNotContain("GetAwaiter", body, StringComparison.Ordinal);
-        Assert.DoesNotContain("Sleep", body, StringComparison.Ordinal);
-        Assert.DoesNotContain("Delay", body, StringComparison.Ordinal);
+            _output.WriteLine("---- " + name + ", comments stripped ----");
+            _output.WriteLine(body);
+
+            Assert.DoesNotContain("await ", body, StringComparison.Ordinal);
+            Assert.DoesNotContain("async ", body, StringComparison.Ordinal);
+            Assert.DoesNotContain("Task", body, StringComparison.Ordinal);
+            Assert.DoesNotContain(".Wait(", body, StringComparison.Ordinal);
+            Assert.DoesNotContain(".Result", body, StringComparison.Ordinal);
+            Assert.DoesNotContain("GetAwaiter", body, StringComparison.Ordinal);
+            Assert.DoesNotContain("Sleep", body, StringComparison.Ordinal);
+            Assert.DoesNotContain("Delay", body, StringComparison.Ordinal);
+            Assert.DoesNotContain("Join(", body, StringComparison.Ordinal);
+        }
+
+        // AND THE HELPER REALLY IS ON THE PATH. A scan of three members proves
+        // nothing if the stop stopped calling one of them.
+        Assert.Contains("StopTheAudio()", BodyOf("StopNow"), StringComparison.Ordinal);
+        Assert.Contains("Cancel()", BodyOf("StopNow"), StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -577,7 +598,24 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
     /// and sits ten lines away; a file-wide scan for <c>await</c> would either
     /// fail forever or have to be weakened until it caught nothing.
     /// </remarks>
-    private static string StopNowBody()
+    private static string StopNowBody() => BodyOf("StopNow");
+
+    /// <summary>
+    /// One named member of <see cref="Ft8ArmedSend"/>, comment lines removed, by
+    /// brace matching.
+    /// </summary>
+    /// <param name="member">The member's name, as it is declared.</param>
+    /// <returns>Its declaration and body, as source.</returns>
+    /// <remarks>
+    /// <para>**IT FINDS THE DECLARATION AND NOT A CALL.** <c>Cancel()</c> and
+    /// <c>StopTheAudio()</c> both appear inside <c>StopNow</c>, so a search for
+    /// the bare name would extract the wrong braces; the declaring line is the one
+    /// whose first word is an access modifier.</para>
+    /// <para>**IT TOOK A NAME FROM UNIT 263 ONWARD** because the stop grew a
+    /// second half. Scanning only the method the operator enters by would leave
+    /// the line that touches a running transmission unread.</para>
+    /// </remarks>
+    private static string BodyOf(string member)
     {
         var path = Path.Combine(
             TheUnkeyHappensWhateverGoesWrongTests.RepositoryRoot(),
@@ -587,28 +625,46 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
 
         var source = TheUnkeyHappensWhateverGoesWrongTests.CodeOnly(File.ReadAllText(path));
 
-        var start = source.IndexOf("public Ft8StopResult StopNow(", StringComparison.Ordinal);
-        Assert.True(start >= 0, "StopNow is not in the source");
+        var start = -1;
+
+        for (var at = source.IndexOf(member + "(", StringComparison.Ordinal);
+             at >= 0;
+             at = source.IndexOf(member + "(", at + 1, StringComparison.Ordinal))
+        {
+            var lineStart = source.LastIndexOf('\n', at) + 1;
+            var line = source[lineStart..at].TrimStart();
+
+            if (line.StartsWith("public ", StringComparison.Ordinal)
+                || line.StartsWith("private ", StringComparison.Ordinal)
+                || line.StartsWith("internal ", StringComparison.Ordinal)
+                || line.StartsWith("protected ", StringComparison.Ordinal))
+            {
+                start = lineStart;
+                break;
+            }
+        }
+
+        Assert.True(start >= 0, $"{member} is not declared in the source");
 
         var open = source.IndexOf('{', start);
-        Assert.True(open > start, "StopNow has no body");
+        Assert.True(open > start, $"{member} has no body");
 
         var depth = 0;
-        var at = open;
+        var end = open;
 
-        for (; at < source.Length; at++)
+        for (; end < source.Length; end++)
         {
-            if (source[at] == '{')
+            if (source[end] == '{')
             {
                 depth++;
             }
-            else if (source[at] == '}' && --depth == 0)
+            else if (source[end] == '}' && --depth == 0)
             {
                 break;
             }
         }
 
-        return source[start..(at + 1)];
+        return source[start..(end + 1)];
     }
 
     /// <summary>An armed send over the staged port and a sink that returns.</summary>

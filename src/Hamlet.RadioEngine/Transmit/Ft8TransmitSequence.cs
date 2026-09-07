@@ -291,13 +291,28 @@ public sealed class Ft8TransmitSequence
 
             if (went.SamplesPlayed != samples.Length)
             {
-                // A SINK THAT STOPPED EARLY IS A FAILURE, NOT A SUCCESS WITH A
-                // SMALLER NUMBER. Half a transmission on the air is a signal
-                // nobody can decode occupying somebody else's slot.
-                outcome = Ft8TransmitOutcome.AudioFailed;
-                reason =
-                    $"the audio path played {went.SamplesPlayed} of {samples.Length} samples and "
-                    + "returned, so only part of the transmission went out.";
+                // A SHORT PLAY HAS TWO CAUSES SINCE UNIT 263 AND THEY ARE NOT THE
+                // SAME SENTENCE TO PUT IN FRONT OF AN OPERATOR. One is the sound
+                // card letting him down; the other is him pressing the button.
+                // Before the stop could reach the sink there was only ever the
+                // first, so this branch read every short play as a fault.
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    outcome = Ft8TransmitOutcome.Cancelled;
+                    reason =
+                        $"the transmission was stopped after {went.SamplesPlayed} of "
+                        + $"{samples.Length} samples, so the rest of it did not go out.";
+                }
+                else
+                {
+                    // A SINK THAT STOPPED EARLY IS A FAILURE, NOT A SUCCESS WITH A
+                    // SMALLER NUMBER. Half a transmission on the air is a signal
+                    // nobody can decode occupying somebody else's slot.
+                    outcome = Ft8TransmitOutcome.AudioFailed;
+                    reason =
+                        $"the audio path played {went.SamplesPlayed} of {samples.Length} "
+                        + "samples and returned, so only part of the transmission went out.";
+                }
             }
         }
         catch (OperationCanceledException)

@@ -264,25 +264,35 @@ public sealed class TheStopStopsTheAudioTooTests
         var port = new RecordingPort();
         var sink = new FakeTransmitAudioSink { PlaysOver = TimeSpan.FromSeconds(12.64) };
         var armed = new Ft8ArmedSend(new Ft8TransmitSequence(port, sink));
+        var send = SendAt(Boundary);
+        var total = send.Transmission.Samples.Length;
+        var rate = send.Transmission.SampleRate;
 
-        armed.Arm(SendAt(Boundary));
+        armed.Arm(send);
 
         var running = armed.AtBoundaryAsync(Boundary);
 
         Assert.True(sink.Entered.Wait(TimeSpan.FromSeconds(10)), "the sink was never reached");
+
+        var playedAtStop = await PlayedPast(sink, 1);
 
         var clock = System.Diagnostics.Stopwatch.StartNew();
         var stop = armed.StopNow(port);
         clock.Stop();
 
         var boundary = await running;
+        var playedInTheEnd = boundary.Run!.Played!.Value.SamplesPlayed;
+        var afterTheStop = Milliseconds(playedInTheEnd - playedAtStop, rate);
 
         _output.WriteLine("the slot was      : 12.64 s of wall time, really in flight");
         _output.WriteLine("StopNow took      : "
             + clock.Elapsed.TotalMilliseconds.ToString("F1", CultureInfo.InvariantCulture)
             + " ms");
         _output.WriteLine("the bound is      : " + Bound + " ms");
-        _output.WriteLine("the run then said : " + boundary.Run!.Outcome);
+        _output.WriteLine("the run then said : " + boundary.Run.Outcome);
+        _output.WriteLine("played in the end : " + playedInTheEnd + " of " + total);
+        _output.WriteLine("AUDIO AFTER THE STOP, AT REAL TIME: "
+            + afterTheStop.ToString("F0", CultureInfo.InvariantCulture) + " ms");
 
         Assert.True(
             clock.Elapsed.TotalMilliseconds < Bound,
@@ -290,6 +300,15 @@ public sealed class TheStopStopsTheAudioTooTests
             + $"{Bound} ms bound - it waited for something");
 
         Assert.True(stop.AnythingReachedTheRadio);
+
+        // **THE HONEST FIGURE, AND THE ONE THE REPORT CARRIES.** The compressed
+        // test above runs 6.3 seconds of audio per second of wall time, so its
+        // number is that multiple of the poll granularity. Here one millisecond of
+        // wall time is one millisecond of audio, and what is left is the loop's own
+        // reaction: the sink notices the flag at the top of its next iteration.
+        Assert.True(
+            afterTheStop < Bound,
+            $"{afterTheStop:F0} ms of audio left the machine after the stop");
     }
 
     /// <summary>
