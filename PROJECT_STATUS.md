@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 260 - the menu under the mouse, and a route to the radio
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:41:00-04:00
-NOTE: Project checks passed - SHACK_FACTS.md and CwProbabilisticDecoder.cs present, neither foreign solution exists. Committing the root records units 256-259 left uncommitted, then reading the two routes out of the tree for the trace: where a right-click lands today, what the row's DataContext carries, the smallest seam that keeps the SystemSerialPort, what the sink would be built from, and the baseline grep of every place a transmission can begin.
+UPDATED: 2026-09-06T23:55:00-04:00
+NOTE: Root records committed and pushed at 2f68c40. All five trace questions measured out of the tree - no ContextRequested or ContextFlyout in any source file, the row template's Grid at MainWindow.axaml:3444, CreateRig discarding its SystemSerialPort at :9830, WasapiTransmitSink throwing on an unknown endpoint at :119, and the baseline arming grep showing one Arm call site at MainWindowViewModel.cs:8017. Writing docs/unit260-route-trace.md now.
 
 ---
 
