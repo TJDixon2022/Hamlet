@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 259 - right-click, and it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:44:05-04:00
-NOTE: The sentence that said Hamlet does not transmit yet is gone from MainWindow.axaml and the reserved region now binds what is going out and to whom, plus a CQ button through the same command and the guard's own words. Ten app tests green. A test assuming 14.074 MHz found that operator-origin frequencies are clamped to the selected band's map window - the licence line answered about the edge of 40 m - so the trace's question 1 gained that measurement and the test moved to 7.074 MHz. AudioOutputDeviceId added; a Settings screen for it is named as what remains.
+UPDATED: 2026-09-06T23:27:30-04:00
+NOTE: The named drop candidate, the row's ContextFlyout markup, is dropped and everything else stands. The greps are quoted: new Ft8TransmitSequence appears nowhere in src, _sequence.RunAsync appears once, Arm once, RecordSent once, and nothing added names PTT, CI-V or TransmitAbort. outcome-append.bat was refused for the seventh consecutive unit and the twelve-field entry was hand-written ASCII-only with the header's STEP 5 moved to partial. Writing output.md now.
 
 ---
 
