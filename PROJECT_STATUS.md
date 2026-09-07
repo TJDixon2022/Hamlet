@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T22:36:30-04:00
-NOTE: The splitter is down in the engine at src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs and the whole solution built green - 0 warnings, 0 errors, 8.18 s. Split, Ft8MessageFields, IsCallToAnyone, IsGrid and IsReport all moved; the app's four are one-line forwards now, which took three copies of the CQ rule down to one. Running the filtered behaviour test that the move changed nothing before committing.
+UPDATED: 2026-09-06T22:40:05-04:00
+NOTE: The red was watched and then closed. Holding only the last message, K9RST's three heard transmissions came back as ["KC3QIS K9RST 73"] alone and three tests failed; with the history in, 7 of 7 pass in 15 ms. The ledger books five stations off the corpus and neither CQ nor somebody else's addressee. Next, the four states derived from it, and the gone-quiet threshold argued as a choice rather than a specification.
 
 ---
 
