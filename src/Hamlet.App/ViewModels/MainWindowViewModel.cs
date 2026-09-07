@@ -7914,6 +7914,25 @@ public partial class MainWindowViewModel : ObservableObject
             : Ft8ContactStates.Read(record, row.SlotStartUtc).Text;
     }
 
+    /// <summary>What passed with one station, out of the ledger the app kept.</summary>
+    /// <param name="callsign">The station.</param>
+    /// <returns>The record, or null where no ledger or no such station.</returns>
+    /// <remarks>
+    /// <para>**READ-ONLY, AND IT DECIDES NOTHING** (work instruction 264, task 2).
+    /// <see cref="_contacts"/> is private and is built lazily by the first row
+    /// that arrives, so a test that wants to say *the ledger holds two sent and
+    /// three heard against this station* has no way to see the one the
+    /// application actually kept. It could build its own and prove nothing about
+    /// the join, which is the whole subject of that task.</para>
+    /// <para>**THE SAME IDIOM AS <see cref="AddDecodeRowForTests"/> AND
+    /// <c>UseArmedSendForTests</c>**, which are `internal` on this type for the
+    /// same reason. Nothing in `src/` calls this, it writes nothing, and
+    /// <see cref="Ft8StationRecord"/>'s own lists are already
+    /// <c>IReadOnlyList</c>.</para>
+    /// </remarks>
+    internal Ft8StationRecord? ContactRecordForTests(string callsign)
+        => _contacts?.For(callsign);
+
     // ---------------------------------------------------------------------
     // THE SEND PATH. One click, one message (ruled 2026-09-06).
     // ---------------------------------------------------------------------
