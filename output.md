@@ -1,326 +1,293 @@
 READ IN THIS ORDER
 
 A. THE PHASE GOAL. Hamlet works stations on the air. It transmitted on a live
-   antenna for the first time on 2026-09-07 and the machinery works.
-B. THE STEP AND ITS EXIT CRITERIA. Step E's bench half. The criteria themselves
-   are yours at the radio; this unit removes defects standing between you and
-   them, and closes none of them itself.
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on A. **Six of
-   the seven tasks were already in the tree** from the earlier issue of this same
-   order and were verified by re-running their own tests rather than repeated; the
-   amended task 6 is the new work. Section 4 raises 3 items and **none asks for a
-   ruling** — two are departures from the instruction's own wording, stated so you
-   can overrule them, and one is the standing asks queue.
+   antenna on 2026-09-07, and since unit 271 every composed message round-trips
+   through the decoder.
+B. THE STEP AND ITS EXIT CRITERIA. Step E's bench half. It closes no criterion and
+   does not claim to; the criteria are yours at the radio.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on A: what is
+   addressed to you now has its own column and cannot be buried, and the tooltip
+   says `He`. **Section 4 has one real ask** — the split does not fit at your
+   window size, the left list clips ordinary messages, and choosing what gives is
+   yours.
 
-UNIT:       271 — complete at task 7 of 7 — 2026-09-07 16:40
+UNIT:       273 — complete at task 5 of 5 — 2026-09-07 18:06
 PHASE GOAL: Hamlet works stations on the air.
-UNIT GOAL:  The CQ button calls CQ, the grid fits the message, the contact column speaks only about his own contacts, the stop control says what it is, and a grid tooltip says where the station is rather than where some square is.
-ADVANCED:   yes — one new task built, six verified. It advances no step's criterion and the instruction says so itself.
-NUMBER:     none for this session's own task. The unit's number is task 1's and it stands: `VP2MAA KC3QIS FN00DJ` went out as `<VP2MAA KC3QIS> FN00DJ` and decoded back to nothing at all.
+UNIT GOAL:  Anything addressed to him has its own column and can never be buried, and no tooltip contradicts a rule sitting in its own file.
+ADVANCED:   yes — the split is built, the pronoun ruling is discharged and recorded. No step's criterion moved and the instruction says so itself.
+NUMBER:     75 px — what the left list has left for the message at 1400 x 1200, against the 180 px an everyday `VP2MAA KC3QIS FN00` needs. There was no such figure before; task 5 is the first measurement of it.
 DRIFT:      0 consecutive units without advance  (was 0)
 
 ---
 
 ## 1. What Claude did
 
-**Complete, seven of seven, and only one of them was new work.** Machine
-`QUIVERFULL`, `C:\Source\HamLet`, branch `main`, pushed.
+**Complete, five of five.** The named drop candidate was attempted and is the
+reason this report has an ask in it. Machine `QUIVERFULL`, `C:\Source\HamLet`,
+branch `main`, all pushed.
 
 ### The gate
 
 `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
 present, `CoreHMI.sln` absent, `MURC.sln` absent. **Hamlet confirmed.**
-`SESSION.lock` absent and one session in the process list, checked before the
-order was read.
+`SESSION.lock` absent, one session in the process list, checked before the order
+was read. **This order is a new one and not a reissue** — the first in four that
+carries the asks queue inbound, and the pronoun ask unit 271 raised is discharged
+by task 3 and leaves the queue.
 
-### What this session found before it changed anything
+### Shell refusals, recorded verbatim
 
-**`WORK_INSTRUCTIONS.md` on disk is an amended issue of an order already
-executed.** Committed at HEAD it reads *271 — four faults the operator found on
-the air*; the working copy reads ***271 — six faults***, and the difference is a
-**new task 6** for the grid tooltip with the old task 6, the ALC level, renumbered
-to **task 7**.
-
-The four-fault issue ran to completion: `9690c28`, `6337b04`, `9eb7f13`,
-`ffe7d8c`, `2a73745`, `a999ec4`, `0eee73b`, with its report at `e25e883`. **Unit
-272 has run since**, and the root version was `1.12.126` rather than the
-`1.12.71`-ish a fresh 271 would imply.
-
-So tasks 1 to 5 and 7 were **verified rather than repeated**, and the verification
-is a re-run of each task's own tests, not a reading of its commit message. That
-distinction is the whole of why section 3 quotes numbers rather than claims.
+**None.** Two heredocs failed on their own content rather than being refused —
+this shell will not carry a quoted heredoc containing an apostrophe, and it
+collapses a doubled backslash inside one. Both were worked around with the
+file-editing tools and a script file. That is a tool fact, not a refusal, and it
+is the second unit it has cost time in.
 
 ### Task by task
 
-**1 — what went out on the air. Verified by re-running `WhatWentOutOnTheAirTests`
-this session.** The figures in section 3 are what came back today.
+**1, 2 and 4 — the split.** Committed together at `50e9389`, because the empty
+line and the shared clear are properties of the split rather than separate
+changes. `DigitalDecodes` stays the whole table; `DigitalVisibleDecodes` and a new
+`DigitalMineDecodes` are two mirrors of it, filled by **one decision with two
+arms** so nothing can land on both.
 
-**2 — the CQ button calls CQ. Verified by re-running `TheCqButtonCallsCqTests`.**
-Empty table, one row, several rows: the same string every time.
+**3 — the tooltip says `He`.** Committed at `4d147a9`, with the ruling recorded as
+**HM-DEC-159**.
 
-**3 — the grid fits the message.** `Ft8SendOptions.ForTheMessage` cuts to four
-characters at the one place both send routes pass through, and Settings keeps the
-six for distance and bearing. Verified by the round trips in section 3.
-
-**4 — the contact column. Verified by re-running
-`TheContactColumnSpeaksOnlyAboutHisContactsTests`.** Section 3 quotes the slot.
-
-**5 — the stop control says what it is.** `DigitalStopButton` carries
-`Content="{Binding StopLabel}"`, which reads **"Stop"** at rest and **"Stop
-transmitting"** while something is armed, with `Classes.hm-live` changing ink
-weight and border rather than filling a bar. Read from the markup; the abort
-behind it was not touched.
-
-**6 — a grid says where the station is. This session's only new work**, committed
-at `5ef559a`.
-
-**7 — the level that was measured.** Already in `SHACK_FACTS.md`: 25 per cent
-drive, -12.04 dBFS composed, ALC -2.0 to -1.5 inside the red zone, measured
-2026-09-07, with the consequence recorded that no unit may promise to defer it
-again.
+**5 — what the split costs.** Committed at `a76b761`. See section 3; it is the
+finding of the unit.
 
 ### Decisions made on this session's own authority, reproduced in full
 
-**One: the tooltip says *They* where the instruction's example says *He*.** The
-instruction's wording is *He is in grid JN54*. `Ft8Vocabulary`'s own rule, recorded
-in that file since unit 251, is that **no pronoun chooses a gender** — Hamlet has
-no way to know who is at the key. The substance of your ruling is that the distance
-belongs to the station, and that is untouched; only the pronoun follows the older
-rule. **It is section 4's first item so you can overrule it in a word.**
+**One: the `mine` toggle is retired rather than left inert.** The instruction says
+the button leaves the filter row. Removing only the button would have left
+`ShowsMine` persisting a setting that changes nothing and `DecodedFilterRule.Wants`
+carrying a `mine` arm no caller ever sets true — dead weight that gets re-wired by
+accident. So `Wants` is now `Wants(cq, addressee)`, `IsTheOperators` is gone, and
+`AppSettings.DecodedShowMine` is kept but marked *written by the migration and read
+by nothing*, which is the treatment `DecodedFilter` already had.
 
-**Two: the comma after *They are* goes when there is no country.** Built as one
-clause with an optional country in front, every station the DXCC table declines
-read *They are, in grid QG44* — a stumble mid-sentence that reads as though a word
-had gone missing. It had.
+**Two: the addressed-to-him rule moved into the engine and is asked once.** Unit
+271's contact column already gated on exactly this question. Two copies would
+disagree on the screen — a row on the mine side with a blank contact column, or a
+state beside a row he cannot find — so it is `Ft8MessageSplit.IsAddressedTo` and
+both ask it. **It is the to-field alone**, which is narrower than unit 252's
+toggle: that matched either field because you asked there for *his traffic*, and a
+contact is two sides.
 
-**Three: unit 252's place-name sweep was updated rather than deleted.** That test
-forbade **every** place name; your ruling of 2026-09-07 supersedes it for the
-country alone, and only when the country comes from the callsign. So it now runs
-against a sender the table declines — `ZZ9ZZZ` — where no country can arrive
-legitimately, and **any name at all that appears can only have come from the
-square**, which is the fault it still exists to catch. Deleting it would have
-removed the guard along with the rule it outgrew.
+**Three: half of `TheDecodedListFiltersByCategoryTests` moved rather than being
+deleted.** Every test that pressed a `mine` toggle is now asked of the side, in
+`TheDecodedAreaSplitsInTwoTests`. What stayed is what is still true.
+
+### One thing this unit got wrong and its own task 5 caught
+
+**The contact column was added to the mine side and not removed from the left
+one.** Task 1 says it **moves**. The first commit only added it, so the left row
+and its header still carried a 148-pixel column — blank on nearly every row, out
+of a list that is now 330 pixels wide. Task 5's measurement is what found it. It
+is gone from both grids in `a76b761`.
 
 ## 2. What the owner should expect
 
-**All six, in the order you found them:**
+**What is for you can no longer be buried.**
 
-- **The CQ button calls CQ.** It composes `CQ KC3QIS FN00` from Settings and reads
-  nothing off the table — not the selected row, not several rows, not a row that
-  is itself a CQ. It took `VP2MAA` because the send options were built from the
-  row under the cursor; they are built from your own profile now.
-- **The grid fits the message.** Your Settings still hold `FN00DJ` and always
-  will, because the extra two characters are what the distance and bearing are
-  measured from. What goes into a transmitted message is `FN00`.
-- **What you transmitted twice on 2026-09-07 was not decodable by anybody**, and
-  section 3 says exactly what went out instead. That is fixed, and unit 272 has
-  since put a guard in front of the send path as well.
-- **The contact column is quiet on rows you are not in.** A CQ gets nothing, two
-  other stations working each other get nothing, and only a message addressed to
-  `KC3QIS` carries a state.
-- **The stop control has a label.** "Stop" at rest, "Stop transmitting" while
-  something is armed. It is always there and always pressable, exactly as before;
-  only its appearance says more.
-- **A grid tooltip says where the station is.** *IK4LZH is calling anyone. They
-  are in northern Italy, in grid JN54, 4,400 miles away on a bearing of 53
-  degrees.*
+- **The decoded area is two lists.** Left: everything, or CQ, a toggle. **Right:
+  everything addressed to you, always.**
+- **The `mine` button is gone from the filter row**, because it is the right-hand
+  column now. There is no control that can hide it, and that is deliberate: a
+  control that can hide what is addressed to you is a control that can bury the
+  one thing you are waiting for.
+- **A message is on exactly one side.** Anything addressed to you is on the right
+  and not also on the left.
+- **A message you sent is on the left, not the right.** You ruled the side is for
+  what is addressed to you, and a sent message is not a decode.
+- **The right side says so when it is empty** rather than going blank, and its
+  header reads `nothing for you yet`.
+- **The contact column moved to the right side**, under the message rather than in
+  a column of its own, and it is gone from the left where it was blank on nearly
+  every row.
+- **One clear empties both sides.**
+- **The tooltip says `He`.**
 
-**What will look wrong and is not:**
+**What will look wrong, and one of them is:**
 
-- **Some stations get no country.** `VK9` is five different islands and `3D2` is
-  three; the table declines rather than guessing, and the sentence still gives the
-  square and the distance because those are arithmetic.
-- **Some countries get no compass word.** Belgium is 1.95 degrees tall, about two
-  grid squares. It is in the table's `declined` list with that reason written
-  beside it, so it reads as considered rather than forgotten.
-- **`PM95` reads *southern Japan*.** That is honest arithmetic on the stated
-  bounds — 35.6°N against a country running 31.03 to 45.55 — and it is the Tokyo
-  area, which some would call central. Thirds put it in the southern band.
+- **The left list truncates.** At 1400 by 1200 its message column is 75 pixels,
+  about ten characters, and `VP2MAA KC3QIS FN00` wants 180. **It clips rather than
+  wrapping**, so what you will see is a message cut off mid-callsign. That is
+  section 4's ask and it was not papered over.
+- **The right side wraps instead of clipping**, so it loses space rather than
+  characters. It is still short: 162 pixels against the 210 a compound callsign
+  with a report needs.
+- **A collapsed `For you` panel still carries its count**, as every panel does.
 
-**Build:** clean, 0 warnings, 0 errors, whole solution, six times.
+**Build:** clean, 0 warnings, 0 errors, whole solution, ten times.
 
-**Tests:** filtered and foregrounded, and every one of them belongs to this work
-instruction. New this session: `TheGridSaysWhereTheStationIsTests` **16 of 16**.
-Re-run to verify the earlier issue: `WhatWentOutOnTheAirTests` and
-`TheContactColumnSpeaksOnlyAboutHisContactsTests` **6 of 6**, `TheCqButtonCallsCqTests`
-green. Repaired because task 6 changed the wording they assert:
-`TheGridTooltipSaysHowFarTests` and `TheSenderTooltipNamesTheEntityTests`, now
-**42 of 42** with the new file. No suite was run and nothing was backgrounded.
+**Tests:** filtered and foregrounded, all belonging to this instruction.
+`TheDecodedAreaSplitsInTwoTests` and `TheDecodedListFiltersByCategoryTests`
+**43 of 43**; with `TheTooltipSaysHeTests`, `TheGridSaysWhereTheStationIsTests`,
+`TheGridTooltipSaysHowFarTests` and `TheSenderTooltipNamesTheEntityTests`,
+**92 of 92**; `WhatTheSplitCostsTests` **1 of 1**. No suite was run and nothing was
+backgrounded.
 
-**Pushed to `main`:** `5ef559a`. Version **1.12.126 → 1.12.127**, one patch for
-one task. `Ft8Sharp` did not move.
+**Not run, and you should know which:** `TheDecodedColumnsLineUpTests` asserts the
+left header's column origins equal every row's, and this unit changed both grids
+together from six columns to five. It compiles; it lives in the `Views` namespace
+whose stall unit 230 documented, and the standing rule keeps a unit out of a suite.
+It is named here rather than left to be discovered.
+
+**Pushed to `main`:** `50e9389`, `4d147a9`, `a76b761`. Version
+**1.12.127 → 1.12.130**. `Ft8Sharp` did not move.
 
 ## 3. What you should see
 
-**1. What `VP2MAA KC3QIS FN00DJ` decoded back to.** Re-measured this session
-through `Ft8Composer` and back through `Ft8Sharp`'s own `Ft8SlotDecoder`:
+**1. A slot with a CQ, a third-party exchange and a message to you.** Measured
+this session, callsign `KC3QIS`:
 
 ```
-ASKED FOR    : "VP2MAA KC3QIS FN00DJ"  (20 characters)
-AT 48000 Hz  : composed, NonstandardCallsign, bits say "<VP2MAA KC3QIS> FN00DJ"
-THE BITS SAY : "<VP2MAA KC3QIS> FN00DJ"
-    standard  "VP2MAA" / "KC3QIS" / "FN00DJ"      -> Ok, reads back "VP2MAA KC3QIS FN00"
-    standard  "VP2MAA KC3QIS" / "FN00DJ" / ""     -> FirstCallInvalid, reads back -
+  left    CQ VP2MAA FK52
+  left    K9TC KJ6IX RRR
+  RIGHT   KC3QIS W1ABC -12
+
+left summary : 214135 UTC · 2 shown · newest first
+mine summary : 1 for you
 ```
 
-**There is no `DECODED BACK` line, and its absence is the finding.** The standard
-packing succeeded and read back `VP2MAA KC3QIS FN00`, a **truncation of your own
-words**, so the composer's round-trip guard correctly refused it. The words then
-fell through to the pass that allows a callsign on the wire as a hash, where
-**`VP2MAA KC3QIS` was hashed as one callsign field** and what went out was
-`<VP2MAA KC3QIS> FN00DJ`. `Ft8SlotDecoder` returns nothing at all off that slot.
-**You transmitted something nobody could decode, twice, on a live antenna** —
-§0.0 pointed the other way, a transmission asserting something nobody receives.
+**Exactly one row on the right and the other two on the left.** The test asserts
+none is on both as an **intersection of the two collections**, not by the counts
+agreeing — two counts can agree while one row sits in both lists and a third has
+gone missing.
 
-`CQ KC3QIS FN00DJ` did the same thing: `composed, Standard, bits say
-"<CQ KC3QIS> <FN00DJ>"`, no decode back.
-
-**With the grid cut to four, both round-trip exactly:**
+Turning `CQ` on takes the third-party row off the left and **leaves the right
+untouched**:
 
 ```
-ASKED FOR    : "VP2MAA KC3QIS FN00"  (18 characters)  -> DECODED BACK: "VP2MAA KC3QIS FN00"
-ASKED FOR    : "CQ KC3QIS FN00"      (14 characters)  -> DECODED BACK: "CQ KC3QIS FN00"
+  left    CQ VP2MAA FK52
+  hidden  K9TC KJ6IX RRR
+  RIGHT   KC3QIS W1ABC -12
+
+left summary : 214135 UTC · 1 shown · 1 hidden by CQ · newest first
+mine summary : 1 for you
 ```
 
-**`messageLength: 16` measured the composed string and not the encoded message**,
-which is why it looked healthy: `CQ KC3QIS FN00DJ` is sixteen characters whether
-or not anything on the air could read it. Unit 272 has since changed what the
-telemetry line reports.
+And the contact column now has something to say where it sits: the mine row reads
+`your move, 0 slots` and the left row reads nothing at all.
 
-**2. The CQ button's composed string, with rows on the table.** Re-measured this
-session:
+**2. The mine side's empty line, quoted.**
 
-```
-empty table    : "CQ KC3QIS FN00"
-one row        : "CQ KC3QIS FN00"
-several rows   : "CQ KC3QIS FN00"
+> Nothing addressed to you yet. Anything a station sends to your callsign lands
+> here, and it stays out of the list on the left so it can never be buried.
 
-the CQ button composes: "CQ KC3QIS FN00"
-the bits say          : "CQ KC3QIS FN00"
-the decoder returns   : "CQ KC3QIS FN00"
-```
+With no callsign in Settings it says something different, because nothing can be
+addressed to a callsign the app has never been told and *nobody has called you*
+would be a claim about the band when the truth is a gap in Settings:
 
-It begins with `CQ `, it is the same string every time, and it round-trips.
+> Hamlet does not know your callsign yet, so it cannot tell which messages are for
+> you. Put it in Settings, under Operator, and anything addressed to you will
+> appear here.
 
-**3. A slot with a CQ, a third-party exchange and a message to the operator.**
-Re-measured this session:
+**3. The grid tooltip, reading `He`.**
 
-```
-"CQ VP2MAA FK52"    -> contact column: (nothing)
-"K9TC KJ6IX RRR"    -> contact column: (nothing)
-"KC3QIS W1ABC -12"  -> contact column: "your move, 0 slots"
-```
+> IK4LZH is calling anyone. He is in northern Italy, in grid JN54, 4,400 miles
+> away on a bearing of 53 degrees.
 
-**A state on exactly one row.** The test also records what the ungated read still
-says about the middle row — `"your move, 0 slots"` — so the gate is demonstrably
-doing the work rather than the ledger having changed. Your own compound forms
-still count: `KC3QIS/P` and `W4/KC3QIS` both carry the state.
+Nothing else about the wording moved. The country still comes from the callsign and
+never from the grid, the compass qualifier is still the committed table, and where
+the DXCC table declines there is no country at all:
 
-**4. `IK4LZH JN54`'s tooltip, and a Belgian callsign beside it.**
+> VK9XYZ is calling anyone. He is in grid QG44, 9,500 miles away on a bearing of
+> 275 degrees.
 
-```
-IK4LZH is calling anyone. They are in northern Italy, in grid JN54,
-    4,400 miles away on a bearing of 53 degrees.
+**The rule came out of `Ft8Vocabulary` rather than gaining an exception**, and one
+of task 3's tests reads the source file rather than calling the code — what it
+guards is a contradiction between a comment and the code beneath it, which is
+invisible to every test that only calls the code.
 
-ON4ABC is calling anyone. They are in Belgium, in grid JO20,
-    3,900 miles away on a bearing of 49 degrees.
-```
-
-The compass word is on one and not the other, and **the difference is a committed
-table with a reason beside each row**, `data/callsigns/entity-extents.json`. Italy
-is 10.5 degrees tall, about 725 miles from Sicily to the Alps, and *northern
-Italy* is ordinary English. Belgium is 1.95 degrees, barely two grid squares, and
-*northern Belgium* is not something people say. **Ten entities take a qualifier
-and six were considered and refused one**, each refusal with its reasoning, so
-Belgium reads as weighed rather than missed. The United Kingdom is the interesting
-refusal: it clears the span and fails the idiom, because nobody says *northern
-United Kingdom*.
-
-The same callsign moves with its grid and the country does not:
+**4. What the split costs.** Measured through the real window, headless, at your
+own 1400 by 1200:
 
 ```
-JN54 -> They are in northern Italy    JM88 -> They are in southern Italy
-JN62 -> They are in Italy             (the middle third takes no compass word)
+decoded area : x=700 y=520 w=671 h=615
+  left list  : x=705 y=520 w=330 h=615     message column   75 px
+  mine list  : x=1040 y=520 w=331 h=615    message column  162 px
+
+   120 px  CQ W4/YV7AXM
+   100 px  IS0/IK2YCW
+   210 px  KC3QIS IS0/IK2YCW -12
+   210 px  W4/YV7AXM KC3QIS R-15
+   180 px  VP2MAA KC3QIS FN00
+   320 px  W4/YV7AXM/QRP W4/YV7AXM/QRP R-15   (the widest a standard message can be)
 ```
 
-And where the callsign and the grid disagree, **the callsign wins**:
-
-```
-CQ W4/YV7AXM FK60 -> They are in United States of America, in grid FK60,
-                     2,200 miles away on a bearing of 156 degrees.
-```
-
-`FK60` is a Venezuelan square and the sentence names the United States, because
-that is where he is transmitting from. Where the DXCC table declines, no country
-at all: `VK9XYZ` reads *They are in grid QG44, 9,500 miles away on a bearing of
-275 degrees.*
+**It does not fit, and the left side is the worse of the two.** 75 pixels is about
+ten characters of 12-point Consolas. The two sides also fail differently: **the
+mine row declares `TextWrapping="Wrap"` and grows a line; the left row declares
+none and clips.**
 
 ## 4. What's blocking us
 
-**Nothing blocks the next unit.** Three items, none of which asks for a ruling.
+**One real ask, and two things stated rather than asked.**
 
-**1. The tooltip says *They* where your example says *He*.**
+**1. The message column does not fit, and what gives is yours to choose.**
 
-Stated so you can overrule it in a word, not asked.
+> **Ruling wanted: which of these gives, so the decoded lists stop clipping a
+> callsign.**
 
-Your example reads *He is in grid JN54*. `Ft8Vocabulary` has carried a rule since
-unit 251 — written into the file — that **no pronoun chooses a gender**, because
-Hamlet has no way to know who is at the key. Following the example would have
-broken a rule recorded in the very file being edited, so the wording follows the
-rule and the substance of your ruling is untouched: the distance belongs to the
-station.
+The instruction is explicit that a column is not to be shrunk silently and that the
+options come back to you, so nothing was changed to hide it. **A clipped callsign
+is a station misidentified**, which is §0.0 on the screen rather than a cosmetic
+complaint, and it is live now.
 
-**If you would rather it read *He*, say so and it is a one-line change.** It is
-here rather than in section 1 alone because it is the kind of thing that is easy
-to not notice and then live with for months.
+The options, with the numbers behind each:
 
-**2. The order on disk was an amended issue of one already executed.**
+| What gives | Left message column | Cost |
+|---|---|---|
+| **Wrap the left list**, as the right already does | 75 px, but nothing lost | Rows grow to two lines on a busy band; no information lost at all |
+| **Drop `dt` and `hz` from the left list** | 75 → 177 px | Two measurements leave the everything list; still 33 px short of the longest |
+| **Give the decoded area 60 per cent of the tab** instead of 50 | 75 → ~145 px | The waterfall narrows by about 130 px |
+| **Split the two lists unevenly**, left 60 / right 40 | 75 → ~140 px | The right list drops to about 260 px and starts wrapping more |
+| **A wider window** | ~200 px at 1920 | Nothing in the app changes; it is where you sit |
 
-Reported, not repaired, per the instruction's own rule about tree mismatches.
+**Wrapping is the only one that loses nothing**, and it is what the right side
+already does, so the two sides would then behave the same way. It is not applied
+because rows changing height on a busy band is a real cost and it is a choice about
+his screen rather than a defect with one right answer.
 
-HEAD carries *271 — four faults*, executed and reported at `e25e883`; the working
-copy carries *271 — six faults*, which inserts a new task 6 and renumbers the old
-one to 7. **Unit 272 has also run since**, so the tree was two units past the
-order's own assumptions and the root version read `1.12.126`.
+**2. `CLAUDE.md` §1 has stopped indexing the decision log, and this unit did not
+fix it.**
 
-§9.6 says a session opening an order dated earlier than `OUTPUT.md` is holding
-work already done, and should say so and stop. **This one is not that case** — it
-carries genuinely new work in its task 6 — so it was executed for the new task and
-verified for the rest. The mismatch is worth naming because the phase record
-indexes units by number, and two issues of 271 will collide in `PHASE_OUTCOME.md`
-the next time either is cited. **This is the second consecutive report saying
-that**; unit 252 was also issued twice under one number.
+Stated, not asked. The table's newest row is **HM-DEC-152**; rulings **153 to 158**
+are in `DECISIONS.md` and not in the index. HM-DEC-159 was **deliberately not added
+either**: `DecisionLogOrderTests` asserts the only missing ids up to the maximum are
+105 and 136, so adding 159 would raise the maximum and fail the assertion on six
+rulings this unit did not write. Filling the gap is somebody's half-hour and it is
+not this unit's (§12.6).
 
-**3. `PM95` reads *southern Japan*, and that is the qualifier's weakest reading.**
+**3. `TheDecodedColumnsLineUpTests` is expected to need a look and was not run.**
 
-Not a defect and not a question. It is honest arithmetic on the bounds the table
-records — 35.6°N in a country running 31.03 to 45.55 — and thirds put it in the
-southern band. Some would call the Tokyo area central. **The table is the place to
-argue with it**, which is why the rule, the banding and the reason for each entry
-are all in the data file rather than in code.
+It asserts the left header's column origins equal every row's, and both grids
+changed from six columns to five together, so it should still hold — but *should*
+is not *does*, and it lives in the `Views` namespace the standing rule keeps a unit
+out of.
 
 ### Asks still outstanding
 
-Carried verbatim until you rule, per HM-DEC-139.
+Carried outbound so the next order can carry it inbound, per HM-DEC-139.
 
-**This session cannot honestly reconstruct the queue, and that is now the fourth
-report in a row saying so.** HM-DEC-139 requires the work order to carry the
-outstanding asks inbound, and **work instruction 271 carries no
-`Asks still outstanding` heading**, which by §9.6 makes the order defective and
-obliges the session to rebuild the queue from `OPEN_ISSUES.md` and the recent
-reports. `output.md` is overwritten every unit, so the reports that would carry
-those asks are gone, and rebuilding from `OPEN_ISSUES.md` alone would produce the
-long list HM-DEC-140 expressly says does not belong here.
+1. **The message column does not fit.** Raised by unit 273, 2026-09-07. Waiting on
+   your choice between the five options in section 4 item 1. **The change is not in
+   the tree**: nothing was shrunk or wrapped, and the left list clips today.
+2. **Two issues of one work-instruction number.** Raised by unit 271, and by unit
+   252 before it. Recorded so the phase record's collision is explained when either
+   is cited. **No unit action.** Unchanged this unit.
+3. **`PM95` reads *southern Japan***, raised by unit 271 as the compass qualifier's
+   weakest reading. **Not a defect**; the table is where to argue with it.
+   Unchanged this unit.
+4. **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05, step 6's two unmet exit
+   criteria from the closed sensitivity phase. By HM-DEC-140 they live in
+   `OPEN_ISSUES.md` and not on this queue; named once so the next session stops
+   rediscovering them.
+5. **`CLAUDE.md` §1 stops indexing at HM-DEC-152.** Raised by unit 273. Section 4
+   item 2 says why 159 was not added either.
 
-What can be stated without a rebuild:
-
-- **The missing heading is itself the first ask.** It is a defect in the order
-  under §9.6 and HM-DEC-137. **Four consecutive orders have now been missing it**,
-  which is exactly the shape HM-DEC-137 was written about: a rule nothing carries
-  into the session is the same as no rule.
-- **The pronoun above is the only thing this unit hands back**, and it is a
-  preference rather than a ruling.
-- **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05, are step 6's two unmet
-  exit criteria from the closed sensitivity phase. They are recorded issues with
-  an id, an owner and a date, so by HM-DEC-140 they belong in `OPEN_ISSUES.md` and
-  not on this queue. Neither was touched.
+**Dropped this unit: the pronoun.** Raised by unit 271, ruled by you on 2026-09-07,
+discharged by task 3 and recorded as HM-DEC-159. It does not carry forward.

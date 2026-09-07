@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 7 of 7
-WORK_INSTRUCTION: 271 - six faults the operator found on the air
+TASK: 5 of 5
+WORK_INSTRUCTION: 273 - the decoded area splits, and He is He
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-155 (2026-09-05)
-UPDATED: 2026-09-07T16:40:00-04:00
-NOTE: Seven of seven. Six were already in the tree from the earlier four-fault issue of this same order and were verified by re-running their own tests rather than repeated - the task 1 measurement, the CQ composition and the contact column were all re-measured this session and quoted from what came back, not from a commit message. The one genuinely new task was the amended task 6, committed at 5ef559a, version 1.12.126 to 1.12.127. Two departures from the instruction's own wording are stated in the report: it uses they rather than he, and the comma after They are goes when there is no country to put in front of it. Writing output.md now.
+RULES_AT: HM-DEC-159 (2026-09-07)
+UPDATED: 2026-09-07T18:06:33-04:00
+NOTE: Five of five done and pushed, version 1.12.127 to 1.12.130. The drop candidate was attempted and it found the thing worth finding: at his own window size the left list has 75 pixels for the message where an ordinary VP2MAA KC3QIS FN00 wants 180, and that side clips where the mine side wraps. Nothing was shrunk to hide it - what would have to give is section 4 with numbers behind each option and it is his to choose. It also caught this unit's own omission, the 148-pixel contact column left on the everything side when task 1 says the column moves. Writing output.md now.
 
 ---
 
