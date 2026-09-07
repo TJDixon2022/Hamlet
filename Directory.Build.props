@@ -235,8 +235,36 @@
     and a resting state, with the abort behind it untouched. SHACK_FACTS.md gains the level the
     operator measured at his own radio, which no machine in this repository could know.
   -->
+  <!--
+    1.12.125 -> 1.12.126, UNIT 272. A PATCH, AND IT CLOSES THE CLASS UNIT 271 REPAIRED ONE MEMBER OF.
+    Unit 271 fixed the input that made both live transmissions unreadable - the six-character grid -
+    and left the hole that let it happen open. Ft8Composer computes, per transmission, whether the
+    message travels with a callsign as a 22-bit hash, and hands it back as
+    Ft8Transmission.CarriesHashedCallsign. NOTHING IN src/ READ IT: grep -rn CarriesHashedCallsign src/
+    returned Ft8Composer.cs and nothing else, so the application composed, saw Composed: true, armed
+    and keyed - which is exactly what it did twice on 14.074.
+
+    MEASURED, task 1, through the application's own route at 48000 Hz and read back through
+    Ft8Resample and Ft8Sharp's own Ft8SlotDecoder the way Ft8Reception reads every slot:
+
+      15 OF 43 MESSAGES THE MENU CAN OFFER WOULD BE KEYED TODAY AND READ BACK AS NOTHING.
+
+    It is compound PREFIXES, and it is not portable suffixes - "K1ABC/P KC3QIS FN00" packs standard
+    and reads back as itself. "VP2M/K1ABC KC3QIS FN00" goes out as "<VP2M/K1ABC> KC3QIS FN00" and the
+    decoder returns nothing, on all five menu shapes; so does "SV9/PA3EXX"; and so does the operator's
+    OWN compound form, "K1ABC W4/KC3QIS FN00" -> "K1ABC <W4/KC3QIS> FN00".
+
+    THE REFUSAL IS AT THE SEND PATH, WHERE THE LICENCE GATE ALREADY REFUSES, AND NOT IN THE MENU.
+    Nothing is removed, greyed, hidden or reordered; the rule lives in the engine as
+    Ft8ReadBack.WouldReachAnybody and the view model states no rule of its own. AND THE TELEMETRY LINE
+    NO LONGER DESCRIBES A HASHED TRANSMISSION AS A HEALTHY SIXTEEN-CHARACTER STANDARD MESSAGE:
+    ft8_transmission gains carriedHashedCallsign, and messageLength now counts the ENCODED message
+    rather than the composed string. HM-DEC-018 holds - a type, a flag and a length, and no words.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.125</Version>
+    <Version>1.12.126</Version>
   </PropertyGroup>
 
   <!--
