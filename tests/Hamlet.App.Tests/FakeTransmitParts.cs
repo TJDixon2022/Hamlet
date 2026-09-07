@@ -71,7 +71,7 @@ internal sealed class FakePort : ISerialPort
 /// runs against and the engine's is `internal` to the other assembly. See
 /// <see cref="DeclaredSampleRate"/>.</para>
 /// </remarks>
-internal sealed class FakeSink : ITransmitAudioSink
+internal sealed class FakeSink : ITransmitAudioSink, ITransmitLevelReport
 {
     /// <summary>How many times something asked it to play.</summary>
     public int TimesCalled { get; private set; }
@@ -103,6 +103,12 @@ internal sealed class FakeSink : ITransmitAudioSink
     /// when they differ.
     /// </remarks>
     public long ReportsClippedSamples { get; set; }
+
+    /// <inheritdoc/>
+    public double PeakWritten => ReportsPeakWritten;
+
+    /// <inheritdoc/>
+    public long ClippedSamples => ReportsClippedSamples;
 
     /// <summary>What rate it was asked for, last time.</summary>
     /// <remarks>

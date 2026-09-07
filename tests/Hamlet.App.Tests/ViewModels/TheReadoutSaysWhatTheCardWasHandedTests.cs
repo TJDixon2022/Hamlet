@@ -196,6 +196,43 @@ public sealed class TheReadoutSaysWhatTheCardWasHandedTests
         scene.Window.Close();
     }
 
+    /// <summary>
+    /// **The real sink satisfies the same route**, so the production path cannot
+    /// be forgotten while the fake one passes.
+    /// </summary>
+    /// <remarks>
+    /// <para>Asserted on the type rather than on a run, because running it would
+    /// mean opening a render endpoint and this unit opens none (FACT-004). The
+    /// property it guards is the one that would otherwise be invisible: a fake
+    /// that reports and a real sink that does not would leave every test in this
+    /// file green and the readout blank at the radio.</para>
+    /// <para>**AND THE INTERFACE THE SEQUENCE TALKS THROUGH IS NOT THE ONE THAT
+    /// CARRIES THE REPORT**, asserted here too, because that separation is the
+    /// whole reason the keying path did not have to be touched.</para>
+    /// </remarks>
+    [Fact]
+    public void TheRealSinkCarriesTheSameReport()
+    {
+        var real = typeof(Hamlet.RadioEngine.Audio.WasapiTransmitSink);
+
+        _output.WriteLine(real.FullName + " implements ITransmitLevelReport : "
+            + typeof(ITransmitLevelReport).IsAssignableFrom(real));
+        _output.WriteLine("ITransmitAudioSink carries a level : "
+            + typeof(ITransmitLevelReport).IsAssignableFrom(typeof(ITransmitAudioSink)));
+
+        Assert.True(
+            typeof(ITransmitLevelReport).IsAssignableFrom(real),
+            "WasapiTransmitSink does not implement ITransmitLevelReport, so the "
+            + "readout would be blank on the one path that has a real sound card.");
+
+        // **THE SEQUENCE'S OWN INTERFACE IS UNCHANGED**, which is what keeps this
+        // reading out of the keying path.
+        Assert.False(
+            typeof(ITransmitLevelReport).IsAssignableFrom(typeof(ITransmitAudioSink)),
+            "ITransmitAudioSink now carries the level report, which puts it in "
+            + "front of Ft8TransmitSequence and inside the keying path.");
+    }
+
     /// <summary>The CQ button, clicked, taken through its slot boundary.</summary>
     /// <param name="scene">The window and the fakes behind it.</param>
     /// <returns>The send the application armed.</returns>

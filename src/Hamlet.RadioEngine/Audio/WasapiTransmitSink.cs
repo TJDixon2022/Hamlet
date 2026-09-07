@@ -73,7 +73,7 @@ public sealed record RenderEndpoint(
 /// played. So the write loop is followed by a drain, and what comes back is what
 /// the endpoint had actually consumed.</para>
 /// </remarks>
-public sealed class WasapiTransmitSink : ITransmitAudioSink, IDisposable
+public sealed class WasapiTransmitSink : ITransmitAudioSink, ITransmitLevelReport, IDisposable
 {
     /// <summary>How much buffer to ask the endpoint for, in milliseconds.</summary>
     /// <remarks>
@@ -220,17 +220,22 @@ public sealed class WasapiTransmitSink : ITransmitAudioSink, IDisposable
     /// <summary>The rate that was played at, which is the endpoint's own.</summary>
     public int RateGot => EndpointSampleRate;
 
-    /// <summary>The largest magnitude actually written to the endpoint.</summary>
+    /// <inheritdoc/>
     /// <remarks>
     /// Measured on the way out, after clamping, so it is what the device was
     /// handed rather than what the caller supplied.
+    ///
+    /// **IT IS ON <see cref="ITransmitLevelReport"/> SINCE UNIT 269** so the
+    /// application can read it off the sink it built, after the boundary has
+    /// returned, without the keying path or <see cref="ITransmitAudioSink"/>
+    /// changing. The property itself is untouched.
     /// </remarks>
     public double PeakWritten { get; private set; }
 
     /// <summary>The root-mean-square of what was actually written.</summary>
     public double RmsWritten { get; private set; }
 
-    /// <summary>How many samples had to be clamped on the way out.</summary>
+    /// <inheritdoc/>
     /// <remarks>
     /// **Counted, never rounded away.** Zero is the expected answer for anything
     /// this repository composes, and a number other than zero is a finding.

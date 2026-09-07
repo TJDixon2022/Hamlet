@@ -3228,6 +3228,37 @@
                                                TextWrapping="Wrap"
                                                FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- **WHAT THE SOUND CARD WAS ACTUALLY
+                                         HANDED** (work instruction 269, task 3),
+                                         which is step D's first criterion's
+                                         other half: the dBFS and the clip count,
+                                         under the waterfall.
+
+                                         **IT IS A DIFFERENT QUANTITY FROM THE
+                                         LINE ABOVE IT AND THE WORDS SAY SO.**
+                                         The note above is the level Hamlet will
+                                         compose at — the drive setting — and
+                                         `DigitalSendReservedLine` reports the
+                                         composed peak of the transmission that
+                                         went. This one is the sink's own
+                                         `PeakWritten` and `ClippedSamples`,
+                                         measured on the way out to the endpoint.
+                                         At the radio the difference is between a
+                                         level he has verified and a number he
+                                         typed, and before unit 269 every reader
+                                         of those two figures in the whole
+                                         repository was a test.
+
+                                         **AND WHERE THERE IS NO MEASUREMENT IT
+                                         SAYS SO** rather than falling back to
+                                         the composed peak in a measurement's
+                                         words (§0.0). -->
+                                    <TextBlock x:Name="DigitalTransmitLevelText"
+                                               Text="{Binding DigitalTransmitLevelLine}"
+                                               TextWrapping="Wrap"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
                                 </StackPanel>
                             </Border>
                         </Grid>

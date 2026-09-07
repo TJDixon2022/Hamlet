@@ -8081,6 +8081,21 @@ public partial class MainWindowViewModel : ObservableObject
 
         _transmitSampleRate = rate;
 
+        // **THE ONE THING THIS VIEW MODEL KEEPS OF THE SINK, AND IT IS READ-ONLY**
+        // (work instruction 269, task 3). The sink was a local here and was
+        // dropped, so the two figures it measures on the way out - the peak the
+        // endpoint was actually handed and how many samples had to be clamped -
+        // reached nothing in `src/` and the operator was shown the composed peak
+        // instead, which is his own drive setting read back.
+        //
+        // **IT IS NOT A SECOND ROUTE TO ANYTHING.** `ITransmitLevelReport` has
+        // two properties and no methods; nothing on it is called while a
+        // transmission is running, and it is asked only after
+        // `AtBoundaryAsync` has already returned. What keys a radio is
+        // `Ft8TransmitSequence`, reached from `Ft8ArmedSend.AtBoundaryAsync`
+        // alone, and neither of those changed to carry this.
+        _transmitLevelReport = sink as ITransmitLevelReport;
+
         _armedSend = new Ft8ArmedSend(
             new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
     }
@@ -8104,6 +8119,18 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The last boundary handed to the armed send, so it is handed once.</summary>
     private DateTime _lastBoundaryDriven;
+
+    /// <summary>
+    /// The sink's own read-only report, where the sink in use offers one.
+    /// </summary>
+    /// <remarks>
+    /// **Null is a real answer and is said out loud on the screen.** Nothing
+    /// requires an <see cref="ITransmitAudioSink"/> to implement
+    /// <see cref="ITransmitLevelReport"/>, and a readout that quietly showed the
+    /// composed peak while implying it was what left the card would be worse than
+    /// no readout at all (§0.0).
+    /// </remarks>
+    private ITransmitLevelReport? _transmitLevelReport;
 
     /// <summary>What the reserved Send area says when nothing has gone out.</summary>
     internal const string NothingHasBeenSent =
@@ -8179,6 +8206,71 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public string TransmitDriveNote
         => TransmitDrive.NoteFor(TransmitDrivePercent, _settings.TransmitDrivePeak);
+
+    /// <summary>What the reserved Send area says before anything has gone out.</summary>
+    internal const string NothingHasBeenMeasured =
+        "Nothing has been transmitted yet, so there is no measured level. After a "
+        + "send this line says what the sound card was actually handed.";
+
+    /// <summary>
+    /// **The level the sound card was actually handed, and what had to be
+    /// clamped** - the measurement, as against the setting above it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS A DIFFERENT QUANTITY FROM <see cref="DigitalSendLine"/>'S
+    /// AND THE TWO SENTENCES ARE WORDED APART** (work instruction 269, task 3).
+    /// That line carries <c>LevelLine</c>, which is
+    /// <see cref="Ft8Transmission.PeakSample"/> - the peak of the array the
+    /// composer produced, which is the drive setting read back - and a clip count
+    /// over that same array, which the composer built inside the rails and which
+    /// is therefore zero by construction. This one is
+    /// <see cref="ITransmitLevelReport.PeakWritten"/> and
+    /// <see cref="ITransmitLevelReport.ClippedSamples"/>, measured by the sink on
+    /// the way out to the endpoint. **At the radio that is the difference between
+    /// a level he has verified and a number he typed**, and unit 265 recorded
+    /// that every reader of those two figures in the repository was a test.</para>
+    /// <para>**IT NEVER SHOWS A NUMBER WITHOUT SAYING WHICH NUMBER IT IS.** Where
+    /// the sink offers no report the line says there is no measurement rather
+    /// than falling back to the composed peak in a measurement's words - a
+    /// readout that did that would be worse than no readout (§0.0).</para>
+    /// <para>**WHAT LIES BEYOND IT IS STILL NAMED AND NOT FOLDED IN**: Windows'
+    /// own volume for that endpoint, and then the radio's own USB input gain and
+    /// its ALC. `SHACK_FACTS.md` FACT-004 - what the IC-7300's USB modulation
+    /// input expects is not in this repository, so this is a measurement of what
+    /// left Hamlet and never advice about a drive level.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _digitalTransmitLevelLine = NothingHasBeenMeasured;
+
+    /// <summary>What the sink says it handed the endpoint, in the operator's terms.</summary>
+    /// <param name="report">The sink's own report, or null where it offers none.</param>
+    /// <returns>One sentence, naming the quantity and what the count counts.</returns>
+    private static string MeasuredLevelLine(ITransmitLevelReport? report)
+    {
+        if (report is null)
+        {
+            return "Hamlet has no measurement of what the sound card was handed "
+                + "for that transmission - this transmit device does not report "
+                + "one. The level above is what Hamlet composed at, which is the "
+                + "drive setting and not a measurement.";
+        }
+
+        var peak = report.PeakWritten;
+
+        var level = peak > 0.0
+            ? (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture) + " dBFS"
+            : "silence";
+
+        return "The sound card was handed " + level + " - that is the peak the "
+            + "endpoint actually got, measured on the way out after clamping, and "
+            + "not the level Hamlet composed at. "
+            + (report.ClippedSamples == 0
+                ? "Nothing had to be clamped."
+                : report.ClippedSamples.ToString(CultureInfo.InvariantCulture)
+                  + " samples had to be clamped on the way out.")
+            + " Beyond this point are Windows' own volume for that device and "
+            + "the radio's input gain, which Hamlet cannot see.";
+    }
 
     /// <summary>Every message the operator may send to one row's station.</summary>
     /// <param name="row">The row he right-clicked.</param>
@@ -8382,7 +8474,21 @@ public partial class MainWindowViewModel : ObservableObject
             _contacts?.RecordSent(text, result.Send!.SlotStartUtc);
         }
 
-        Dispatcher.UIThread.Post(() => DigitalSendLine = WentLine(text, result));
+        // **READ AFTER THE BOUNDARY HAS RETURNED, WITH NOTHING KEYED** (work
+        // instruction 269, task 3). Sent and Cancelled are the two outcomes where
+        // audio actually reached the sink; the refusals key nothing and play
+        // nothing, so the sink's figures would be the previous transmission's and
+        // showing them would be the exact fault this line exists to prevent.
+        var measured = run.Outcome is Ft8TransmitOutcome.Sent or Ft8TransmitOutcome.Cancelled
+            ? MeasuredLevelLine(_transmitLevelReport)
+            : "Nothing was transmitted, so there is no measured level. After a "
+              + "send this line says what the sound card was actually handed.";
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            DigitalSendLine = WentLine(text, result);
+            DigitalTransmitLevelLine = measured;
+        });
 
         return result;
     }
