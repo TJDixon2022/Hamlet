@@ -1,360 +1,451 @@
 READ IN THIS ORDER
 
-A. THE PHASE GOAL. **Hamlet works stations on the air** - Tim answers a CQ on
+A. THE PHASE GOAL. **Hamlet works stations on the air** — Tim answers a CQ on
 14.074 or 7.074 from Hamlet and completes an exchange. Where every step stands
-after tonight: **step 0** *the record is honest about where the phase stands* -
-`done` before this unit began, by unit 266. **Step A** *the row knows where the
-contact stands* - `done` before this unit began, by unit 266. **Step B**
-*right-click and it goes* - `done` before this unit began, by unit 267, all four
-criteria on runs. **Step C** *the whole chain runs from one click, at the bench* -
-**this unit leaves it `done`**, all four criteria met on runs tonight and not one
-of them claimed by reading the tree, with criterion 1 met by the raised
-right-click rather than by the fallback. **Step D** *the drive level his radio
-wants* - `not started`, **Tim's, at the radio**. **Step E** *Tim works a station* -
-`not started`, **Tim's, at the radio**. Step C was the last thing in this phase
-that can be proved without a radio; everything left is Tim at his own station.
+after tonight: **0, A, B and C were all `done` before this unit began** — 0 and A
+by unit 266, B by unit 267, C by unit 268, whose clicked string decoded back off a
+real sound card as `"W1ABC KC3QIS RRR"`. **D is left `in progress`, which is what
+it can honestly be and no more.** E is `not started`. **All three of step D's exit
+criteria are Tim's, at his own radio, and this unit closed none of them** — it
+could not have; no unit can say what an IC-7300's ALC does at a given level,
+because that number is not in this repository.
 
-B. THIS STEP AND ITS EXIT CRITERIA. **Step C - the whole chain runs from one
-click, at the bench.** Four criteria, all four met, all four on a run tonight on
-the development machine:
-**1. One right-click drives menu, compose, key, play, unkey and telemetry in one
-test, with the endpoint on a loopback and CI-V on a fake transport** - MET, **by a
-real `ContextRequested` raised on the real row control in a real headless window
-and the menu item invoked through its own `Command` and `CommandParameter`, not by
-the fallback**; the fallback named in advance (driving `SendFlyoutFor` in a plain
-`[Fact]`) was **not taken and not needed**.
-**2. The audio that reaches the endpoint decodes back to the message the operator
-clicked** - MET, on a run: clicked `"W1ABC KC3QIS RRR"`, decoded
-`"W1ABC KC3QIS RRR"`, with the expected string read off the realized menu item
-rather than from a literal.
-**3. The abort fires from the middle of that chain and the sound stops** - MET, on
-a run: the real `DigitalStopButton` pressed with a real mouse 4.22 s in, 4.71 s of
-a 12.64 s slot off the card, quiet 456 ms after the press.
-**4. Nothing transmits that the operator did not click, across the whole chain** -
-MET, on a run: a second boundary with nothing armed, the endpoint still open and
-the capture still running, measured as a silent card rather than an untouched
-counter.
+B. THIS STEP AND ITS EXIT CRITERIA. **Step D, *the drive level his radio wants*,**
+and its three criteria:
 
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It adds the one
-measurement nobody had: **the text on the menu item the operator clicked and the
-text decoded out of the sound card, side by side.** Section 4 **raises 4 items,
-none of them in the way of a criterion in step C** and none of them blocking
-anything downstream: a refused script, a plan-versus-tree mismatch that belongs to
-step D, a harness fact about open menus, and the inherited reds. **Not one asks
-the owner to decide anything** - no ruling is wanted tonight.
+1. *Tim sets the Transmit drive control and reads the dBFS and clip count under
+   the waterfall.* **Half of this is a bench thing and it is this unit's whole
+   subject.** Nobody had built it: the drive control was behind a `ShowDialog`
+   modal covering the waterfall, the decode table and the always-pressable Stop
+   button, and no dBFS or clip count appeared under the waterfall at all. **The
+   bench half is now built and measured on runs tonight. The shack half — him,
+   setting it — is still his**, and the criterion is not met.
+2. *His radio's ALC behaviour at that level, in his words.* **Only he can meet it.
+   Untouched tonight.**
+3. *The value recorded in `SHACK_FACTS.md`.* **Only he can meet it. Untouched
+   tonight — `SHACK_FACTS.md` was not opened for writing.**
 
-UNIT:       268 — complete at task 6 of 6 — 2026-09-07 11:21
-PHASE GOAL: Hamlet works stations on the air — Tim answers a CQ on 14.074 or 7.074 and completes an exchange
-UNIT GOAL:  Step C closes — one right-click drives menu, compose, key, play, unkey and telemetry through a real endpoint on a loopback with CI-V on a fake transport; the audio decodes back to the text on the menu item that was clicked; the operator's Stop button takes a transmission off the card from the middle of that chain; and nothing transmits that was not clicked, with the card open and silent
-ADVANCED:   yes — step C closes done on runs tonight, all four criteria, and it was the last thing in this phase provable without a radio
-NUMBER:     0 -> 2 — tests anywhere in the tree that join the operator's own right-click to a real sound card
-DRIFT:      0 consecutive units without advance  (was 0)
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It adds the answer to
+the question this unit was commissioned to ask: **what it costs Tim to change the
+drive between two fifteen-second slots, and whether the number he reads back is a
+measurement or his own setting.** Both are answered on runs, not on reading.
+**Section 4 raises 5 items. None of them is in the way of a criterion in B, and
+none asks the owner to decide anything** — one is a shell refusal already worked
+around by the plan's named alternative, one is a mistake of mine corrected in
+place, two are record disagreements the instruction told me to report and not
+repair, and one is a bench gap named for step E and deliberately not built.
+**Task 3 did NOT take its fallback**: the route to the sink's own figures exists
+and the keying path was not touched, so the readout is a measurement and says so.
+
+---
+
+```
+UNIT:       269 — complete at task 6 of 6 — 2026-09-07 12:02
+PHASE GOAL: Hamlet works stations on the air — Tim answers a CQ on 14.074 or
+            7.074 and completes an exchange from Hamlet.
+UNIT GOAL:  The Transmit drive control and the level readout are under the
+            waterfall on the Digital tab, where step D says Tim reads them — one
+            setting through one validator, the dBFS visible as he moves the
+            control and before anything is sent, and after a send a figure that
+            says which number it is and what its clip count counts.
+ADVANCED:   no — no criterion of step D closed, and none could be: all three are
+            Tim's at his own radio. What moved is the blocker under criterion 1 —
+            the control is out of the modal dialog and under the waterfall, and
+            the dBFS and clip count are there beside it, with the measured one
+            read off the sink instead of off the setting he typed.
+NUMBER:     1 window and 4 controls -> 0 windows and 1 control (what it costs to
+            change the drive between two slots, with the band, the decode table
+            and the Stop button hidden before and nothing hidden after)
+DRIFT:      1 consecutive unit without advance (was 0) — and what was built in
+            that unit is the bench half of step D's first criterion: a drive
+            control and two named level figures under the waterfall, one of them
+            the first measurement of what left the machine that any Hamlet screen
+            has ever shown.
+```
 
 ## 1. What Claude did
 
-**Exit state: complete, at task 6 of 6.** Nothing was dropped, including the named
-drop candidate. Development machine, project claimed and confirmed as Hamlet
-(`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-present, `CoreHMI.sln` and `MURC.sln` absent, `Hamlet.sln` the only solution),
-branch `main`.
+**Exit state: complete, at task 6 of 6.** All six tasks done, committed and
+pushed, and **the named drop candidate was not dropped.**
 
-### Task 1 - the trace, its own commit before task 2
+Development machine, `C:\Source\HamLet`, project claimed and confirmed *Hamlet*
+(all four identity checks pass), branch `main`, nine commits from `016411c` to
+`7860c94`. Version `1.12.122` → `1.12.123`; `Ft8Sharp` untouched. `SHACK_FACTS.md`
+FACT-004 throughout: **no serial port was opened, no render endpoint was opened,
+nothing was keyed and no sound was made.** No figure below says anything about the
+IC-7300.
 
-`docs/unit268-the-chain-trace.md` at `0a04048`, six questions, each with a file, a
-line and a quotation. What it changed about the tasks after it:
+### The trace, task 1, its own commit before task 2 began
 
-- **Q1.** The clicked string is `Ft8SendOption.Text`, carried as
-  `MenuItem.CommandParameter` (`MainWindow.axaml.cs:190`). **The header is
-  decorated and is not the message** (`HeaderFor` at `:216`). So criterion 2
-  compares against the realized item's own `CommandParameter` and not against a
-  second read of `SendMenuFor`.
-- **Q2.** **No project-file edit was needed** - `Avalonia.Headless.XUnit` 11.3.0 is
-  at `Hamlet.App.Tests.csproj:12`, confirmed, and NAudio is named nowhere, arriving
-  transitively. And a multi-second real-time `await` inside an `[AvaloniaFact]` is
-  **already proved in this tree** (`TheOperatorCanStopItTests.cs:241`), so the
-  untried thing was narrower than "two hosts": opening a WASAPI render client from
-  the headless session's thread.
-- **Q5 is the trace's own finding, and it is not the trap unit 267 named.**
-  `StopNow`'s abort goes to `_rigPort`, which `BuildTheArmedSend` never assigns. **A
-  Stop pressed in the loopback harness would have fired `StopNow(null)`, taken no
-  abort at all, and left criterion 3's carrier half measuring nothing while looking
-  green.** The chain test calls `UseRigPortForTests` as well.
-- **Q6 is "none".** Nothing in the tree asserts on a quiet capture; the one place
-  one is measured at all is an unasserted printed peak
-  (`WhatThisMachineCanPlayAndCaptureTests.cs:157`).
+`docs/unit269-the-level-trace.md`, six questions, each with a file, a line and a
+quotation. **Its finding decided the shape of the whole night.**
 
-### Task 2 - the host question, answered yes on the first run
+**Question 3 — is there a route to the sink's own figures that leaves the keying
+path untouched? Yes, and it is not the route unit 265 looked for.** Unit 265 was
+right that there is none through what `Ft8TransmitSequence` returns: `PlayedAudio`
+is `(int SamplesPlayed, TimeSpan Took)` and carries no level. **But the route does
+not go through the sequence at all.** The application constructs the sink itself —
+`MainWindowViewModel.cs:8026`, `sink = TransmitSinkFactory(endpoint)`, a **local**
+that is read once for its rate and then dropped — so it can keep the reference and
+read the two figures off it after the boundary has already returned, with nothing
+keyed. **So task 3's fallback was written in advance, and was not needed.**
 
-`TheWholeChainRunsFromOneRightClickTests.OneClickInAHeadlessWindowMakesARealSoundOnARealCard`,
-21 s. **A real `MainWindow` shown in the Avalonia headless session opened a real
-`WasapiTransmitSink`, held a `WasapiLoopbackCapture` on the same endpoint, awaited a
-whole 12.64 s slot, and the card made a sound.** Unit 267 named this the most
-expensive thing step C needs; it cost one build. **The fallback was not taken.**
+**Question 1 — what it costs him today.** `ShowDialog` confirmed at
+`MainWindowViewModel.cs:4059`, over the same `AppSettings` instance the main window
+holds (`:4057`). The waterfall (`MainWindow.axaml:3025`), the decode table
+(`:3177`) and `DigitalStopButton` (`:3119`) are all on the window it is shown over.
+**And the slot boundary keeps being driven while it is up**, from the code and not
+from a guess: `_decodeTimer` is a 250 ms `DispatcherTimer` (`:3272` as it then
+stood), `OnDecodeTick` calls `OnSlotTick`, `OnSlotTick`'s first line is
+`DriveTheArmedSend()`, and the `await` at `:4059` yields to that same dispatcher.
+A transmission he armed before opening the dialog still goes out behind it, and he
+cannot see it go or reach Stop.
 
-The two permitted committed tests, each alone by exact name, foregrounded:
-`AMessageTheApplicationSentLeavesThisMachineAndComesBack` 15 s, decoder returned
-`"CQ KC3QIS FN00"` - the machine has not changed; and
-`ExactlyOneFileInTheShippedTreeCallsTheSequence` 145 ms.
+**Question 5 — the settings file.** Not a hazard, and the answer is *do nothing
+extra*: `TheOperatorsFolderIsNotOursTests.cs:42-55` is a `[ModuleInitializer]` that
+repoints `SettingsStore.DataFolder` at `%TEMP%\hamlet-app-tests-<pid>` before any
+test in the assembly runs, so the committed drive tests already write a temp
+`settings.json`. **No test of mine rewrites the operator's file.**
 
-### Tasks 3 and 4 - the chain, and the abort
+**Question 6 is "none"**, as the instruction expected: `grep -i drive` over
+`MainWindow.axaml` returns one prose *"driver"* in a comment at `:2280` and nothing
+else; `grep -i dbfs` returns nothing at all; and `WaterfallGain` at `:468` is the
+receive display control and is not it.
 
-Both green, in section 3. **Two reds were watched and both were committed before
-they were made green, and both were mine rather than the product's.**
+### Task 2 — the control under the waterfall, watched red first
 
-- **`daa1683`**, verbatim: *"the capture delivered nothing across the unclicked
-  boundary, so silence cannot be told from a capture that stopped."* A WASAPI
-  loopback is handed audio only while something renders, so a peak over a window of
-  zero samples is not a measurement. Fixed by counting **every** packet, empty ones
-  included, so that *the capture is alive* and *the endpoint rendered nothing* are
-  witnessed separately.
-- **`800ba8f`**: the Stop press reached nothing and a real 12.64 s transmission went
-  out of a real card whole - `Expected: [KeyOn, CwStop, PttOff]`,
-  `Actual: [KeyOn]`. **My first diagnosis of it was wrong and is recorded as
-  wrong**: I attributed it to the window being too short, resized to 1400x1400, and
-  the press still reached nothing. **The real cause is that an open `MenuFlyout` is a
-  popup with a light-dismiss layer over the window, and the next press lands on that
-  layer.** The test now closes the menu after invoking the item, which is what a
-  click on a menu item does in the application. **A harness fidelity fault, not a
-  product defect.**
+**The red was committed before it was made green** (`d4c6775`), and it was the
+product's state and not the harness's:
 
-**No product code was written and none was needed.** Nothing in the keying path,
-the abort or `Ft8TransmitSequence.RunAsync` was touched.
+> `TheControlUnderTheWaterfallOpensShowingTheLevelInForce` [FAIL, 728 ms] — *there
+> is no NumericUpDown called "DigitalTransmitDriveBox" on the realized window.*
+>
+> `TheLevelInDbfsIsOnScreenBeforeAnythingIsSent` [FAIL, 586 ms] — *there is no
+> TextBlock called "DigitalTransmitDriveNote" on the realized window.*
 
-### Task 5 - the bookkeeping
+**Green now, all five, each run alone by exact name**, on a real `MainWindow` shown
+headless on the Digital tab at 1400×1400 — and the control is found as a **visual
+descendant of `DigitalSendReserved`**, so *on the window somewhere* would not pass.
+`DigitalStopButton` is asserted in the same test to be visible, effectively enabled
+and inside the window's own bounds, because a new control in the Send area that
+pushed it off the screen would have broken the first of the three things no unit
+may reason past. It is placed **below** the button row for exactly that reason.
 
-**Step C recorded `done`** in `PHASE_OUTCOME.md`, fourteen fields, with criterion 1
-recorded as met **by the raised right-click and not by the fallback**. The header's
-`STEP: C` line moved in place. `PHASE_STATUS.md`'s `STEP:` lines were not touched -
-only `WORK_INSTRUCTION:`. **`outcome-append.bat` was refused, both forms** (section
-4), so the plan's named alternative was taken and an `APPENDED_BY:` line says on the
-entry's face that a script did not write it.
+**Sharing was possible and was taken rather than copying.**
+`src/Hamlet.App/ViewModels/TransmitDrive.cs` now holds the percent-to-peak
+conversion, the `Ft8Composer.DriveIsUsable` question and the note sentence, once;
+`SettingsViewModel` calls it and **its committed strings are byte-identical**,
+which is what the four committed `SettingsCarriesTheTransmitDriveTests` prove — all
+four pass, each run alone by exact name.
 
-### Task 6 - the named drop candidate, not dropped
+The third assertion — a level the composer would refuse is not written — goes
+through the view model and **not** through the spinner, deliberately: the spinner's
+own 1..100 ends are the same two ends the Settings spinner carries, so a refusal
+tested through it would agree by accident even if the refusal were missing. The
+expected sentence is **read off `Ft8Composer`** in the test rather than written out
+again.
 
-`docs/unit268-what-step-d-asks-tim.md`. One page in Tim's terms: where the Transmit
-drive control is, what the dBFS readout and clip count mean and where they are
-actually read, the three levels that multiply on the way to the antenna, what to
-watch on his own ALC, and the seven things step D asks him to write into
-`SHACK_FACTS.md`. **No number is chosen, no control added, no default changed, and
-`SHACK_FACTS.md` was not touched.**
+### Task 3 — the readout, watched red first
 
-### Decisions made for myself, reproduced in full
+Red at `9a16b82`: *there is no TextBlock called "DigitalTransmitLevelText" on the
+realized window.* **Green now, all four, each run alone by exact name.**
 
-**Two, both inside the instruction's own licence.** *First*, the expected string is
-read off the realized `MenuItem`'s `CommandParameter` rather than out of
-`vm.SendMenuFor` a second time, because reading the view model again would compare
-the send path against the same source that fed it, while `CommandParameter` is what
-the markup's own handler hung on the thing the mouse hits. *Second*, silence is
-measured as the peak absolute sample across the window in dBFS against the tree's
-own `AudioLevel.TooQuietDb` of -60, with the capture's packet count carried
-separately as a liveness witness, because a WASAPI loopback is handed audio only
-while something renders and a first version that conflated the two was the night's
-first watched red.
+**Exactly which files changed, and the point is what did not:**
 
-### Housekeeping
+| Changed | What |
+|---|---|
+| `src/Hamlet.RadioEngine/Transmit/ITransmitLevelReport.cs` | new; two properties, no methods |
+| `src/Hamlet.RadioEngine/Audio/WasapiTransmitSink.cs` | the declaration line and two doc comments; **both properties untouched** |
+| `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` | one field, one assignment beside the existing local in `BuildTheArmedSend`, the readout property, and one line where the boundary **has already returned** |
+| `src/Hamlet.App/Views/MainWindow.axaml` | one `TextBlock` |
+| `tests/Hamlet.App.Tests/FakeTransmitParts.cs` | the fake's two reported figures |
 
-Five distinct tests run tonight, **every one filtered by exact name and
-foregrounded; no suite, nothing unfiltered, nothing backgrounded**, and nothing
-outside task 2's two named tests and what this unit built. Root version read rather
-than assumed: `1.12.121` -> `1.12.122`; `Ft8Sharp` untouched. Six commits, each task
-pushed before the next began, and each watched red pushed before it was made green.
-**Three shell refusals, recorded verbatim in section 4.**
+**Not changed, not one line: `Ft8TransmitSequence.RunAsync`, the key, the sink
+call, the `finally`, the abort, the stop, `Ft8ArmedSend`, and
+`ITransmitAudioSink.PlayAsync`.** That last one is asserted on the type in the
+tests, both ways: the real sink implements the report, and the interface the
+sequence talks through does **not**.
 
-**One correction to my own bookkeeping:** the `UPDATED` timestamps I wrote into
-`PROJECT_STATUS.md` at tasks 3, 4 and 5 were composed rather than read from the
-clock and ran ahead of it. The final one is read from the clock, and the note says
-so.
+The one-click rule is asserted against the new reference, because a reference held
+is a second thing that could reach the sink: second boundary `NothingArmed`, **1
+sink call before and after, 2 frames on the wire before and after.**
 
-**FACT-004 throughout.** The device is a sound card and the port is `FakePort`. No
-serial port was opened, no radio was attached, and **nothing measured tonight says
-anything about the IC-7300.**
+`AfterASendTheLineSaysWhatLevelItWentOutAt` **did not have to change and was not
+changed.**
+
+### Task 4 — what the clip count can actually count
+
+Measured, not reasoned, at the ceiling and no higher. **No clip was added and the
+composer's ceiling was not raised.** See section 3.
+
+### Tasks 5 and 6
+
+Step D recorded `in progress` in `PHASE_OUTCOME.md`, appended by hand after the
+script was refused for the thirteenth consecutive unit. `docs/unit269-what-step-e-asks.md`
+written — the drop candidate, not dropped, building nothing.
+
+### Decisions I made for myself, reproduced in full
+
+1. **The drive control appears on the Digital tab *as well as* in Settings rather
+   than moving out of it**, because both write one `AppSettings.TransmitDrivePeak`
+   through one `Ft8Composer.DriveIsUsable`, and a control removed from Settings
+   would break unit 265's committed suite for no gain. The arithmetic that would
+   otherwise be copied went into one new file instead.
+2. **The readout is required to name which quantity it shows**, and where a sink
+   offers no report the line says there is no measurement rather than falling back
+   to the composed peak in a measurement's words — because the honest failure of
+   this unit is a screen that shows the operator his own setting back and calls it
+   a measurement.
+3. **Step D is recorded `in progress` and not `partial`**, because none of its
+   three criteria is met and `partial` would claim one that is Tim's.
+4. **Each of the two test files landed its red without the one assertion that
+   could only be written against a type or property that did not exist yet**, and
+   both of those assertions arrived with the green, said so at the site, and are
+   green. The reason is narrow: a file that does not compile takes the whole test
+   assembly down with it, including the seven committed tests this unit was
+   permitted to run. **This is a sizing decision I made and it is reported as
+   one.**
+
+### Everything run tonight
+
+**Fourteen distinct tests, every one filtered by exact name and foregrounded. No
+suite, nothing unfiltered, nothing backgrounded.** The nine this unit built, and
+the seven named committed ones from the instruction's bounded exception — all
+seven pass, each run alone. `Hamlet.RadioEngine.Tests` was not run at all. None of
+the inherited reds was run or chased.
 
 ## 2. What the owner should expect
 
-**Nothing on your screen has changed.** No control was added, no default was moved,
-no wording was altered and no product code was written. If you open Hamlet tonight
-it behaves exactly as it did this morning.
+**Unlike the last three units, something on your screen changes.**
 
-**What is now proved, which was not proved this morning:**
+**On the Digital tab, in the Send area under the waterfall, below the CQ and Stop
+buttons, there are now three things that were not there this morning:**
 
-- **The message you click is the message that leaves the machine.** Not "the send
-  path works" - the actual text on the actual menu item you right-clicked, decoded
-  back out of your own sound card. Until tonight the tree proved the menu offered
-  strings and proved the send path transmitted strings, and **nothing in it would
-  have failed if those were different strings.**
-- **Your Stop button takes a real transmission off a real card**, from the middle of
-  the chain, pressed with a mouse on the real button. The half that was proved
-  against a fake sink and the half that was proved in the engine with no operator
-  are now joined.
-- **The machine makes no sound you did not ask for**, measured as a silent card with
-  the endpoint open, not as a counter nobody incremented.
+- a **Transmit drive** spinner, in percent of full scale, 1 to 100;
+- the line under it saying what that works out to — *How hard Hamlet drives the
+  radio's input — **-12.0 dBFS** at this setting. This is a starting point, not a
+  specification…* — which **moves as you move the spinner and is there before you
+  transmit anything**;
+- a second line below that, which after each send says **what the sound card was
+  actually handed**, and before any send says *Nothing has been transmitted yet, so
+  there is no measured level.*
 
-**What will look wrong but is not:**
+**Nothing was taken away from Settings.** `TransmitDriveBox` is exactly where it
+was, under the Transmit endpoint picker. **Both controls write the same one
+setting**, so it does not matter which you use and they cannot disagree — change
+it on the tab and the Settings screen shows the new value; change it in Settings
+and the tab picks it up when the dialog closes.
 
-- **The chain test takes about 25 seconds and the abort test about 15.** That is
-  correct: one FT8 slot is 12.64 seconds of real audio out of a real sound card, with
-  a second either side. A slot going by is not a hang.
-- **These two tests make audible sound** on whatever endpoint they choose, and they
-  print which one and why they chose it.
-- **The card going quiet reads 456 ms here and unit 263 reported 15-20 ms.** Those
-  are different quantities, not a regression - see section 3.
-- **`PHASE_OUTCOME.md`'s newest entry says a script did not write it.** That is
-  deliberate and it is the twelfth-odd time.
+**The Stop button did not move**, and a test asserts it is visible, enabled and
+inside the window on every run.
+
+**What will look wrong but is not:** there are now **two dBFS figures and two clip
+counts** on that panel after a send, and they may show the same number. That is
+deliberate. One is what Hamlet *built* — your own setting read back — and one is
+what the sound card was *handed*. On an ordinary evening they agree; the point is
+that when they do not, you can see it. Each sentence says which it is.
+
+**And one of the two clip counts cannot move**, which is also deliberate and is now
+said on the screen: the count in the Send area line is over the audio Hamlet
+builds, and Hamlet will not build a sample outside the scale at any drive it
+accepts. **"nothing clipped" there is arithmetic and is not evidence that your
+drive is safe.** The count that can move is the measured one under the drive
+control.
+
+**No level was chosen for you and `SHACK_FACTS.md` was not touched.** The default
+is still 25 %, which is unit 265's -12.04 dBFS, and nothing tonight is a
+recommendation about your IC-7300 — this machine has never had a radio on it.
+
+`docs/unit268-what-step-d-asks-tim.md`, the page you follow at the rig, has been
+**corrected rather than rewritten**: same structure, same ALC procedure, same
+`SHACK_FACTS.md` list, with sections 1 and 2 now matching the tree.
 
 ## 3. What you should see
 
-### 1. The clicked string and the decoded string, side by side
+### 1. What he does at the rig now, against what he had to do this morning
 
-**Endpoint: S34J55x (3- HD Audio Driver for Display Audio), 48000 Hz**, chosen as a
-display-audio endpoint from 4 active render endpoints and not the default.
-Development machine, FACT-004.
+**This morning, between two fifteen-second slots:**
 
-```
-the menu offered  : 5 clickable messages
-    W1ABC KC3QIS FN00   grid
-    W1ABC KC3QIS -10   report
-    W1ABC KC3QIS R-10   roger and report
-    W1ABC KC3QIS RRR   acknowledge - the one that comes next
-    W1ABC KC3QIS 73   73
+> Press **Settings**, which opens a modal window **over the waterfall, over the
+> decode table and over the Stop button** → find the Transmit section → move
+> `TransmitDriveBox` → close the window → right-click a station → wait a slot →
+> read a sentence in the Send area → **press Settings again.**
 
-HE CLICKED        : W1ABC KC3QIS RRR   acknowledge - the one that comes next
-WHICH CARRIES     : "W1ABC KC3QIS RRR"
+**Slot boundaries keep arriving the whole time that dialog is up.** A transmission
+already armed goes out behind it and he cannot see it go or reach Stop.
 
-CLICKED           : "W1ABC KC3QIS RRR"
-DECODED           : "W1ABC KC3QIS RRR"
+**Tonight:**
 
-run outcome       : Sent, unkey OrdinaryUnkey
-```
+> Move the spinner under the waterfall. Read the line under it.
 
-**The expected string came off the realized menu item's own `CommandParameter`** -
-what the markup's handler hung on the thing the mouse hits - **not from a literal
-the test chose and not from a round trip of one.** The gesture was a real
-`ContextRequested` raised on the real row control in a real window, and the item was
-invoked through its own `Command`.
+|  | This morning | Tonight |
+|---|---|---|
+| **Windows to open** | **1**, modal | **0** |
+| **Controls to cross** | **4** | **1** |
+| Hidden while he does it | the waterfall, the decode table, **and the Stop button** | nothing |
 
-The rest of criterion 1, in the same run: composed at **48000 Hz, 606720 samples**;
-**606720 of 606720 played**, peak **0.2500**, **0 clipped**; the wire read
-`FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 1C 00 00 FD` - **read as hex, not counted**,
-because a count of two is satisfied by two of anything; and the application's own
-writer left **exactly one** `ft8_transmission` line on disk through its own
-enabled-category predicate, **naming nobody**:
+**That is the night's evidence.** The control is asserted to be a visual descendant
+of `DigitalSendReserved`, the area directly beneath `DigitalWaterfallPanel`, on a
+realized window — not merely present in markup.
 
-```
-{"category":"transmit","event":"ft8_transmission","data":{
- "slotStartUtc":"2026-09-07T15:10:45.0000000Z","durationSeconds":12.64,
- "sampleRate":48000,"sampleCount":606720,"messageLength":16,
- "outcome":"Sent","cameOutOfTransmit":"OrdinaryUnkey","keyed":true}}
-```
+### 2. The readout after one clicked send, as it appears on screen
 
-### 2. The abort, from the middle of the chain
+One `SendCallToAnyoneCommand` click taken through `AtSlotBoundaryAsync` on
+`FakePort` and a substituted sink factory, on a real window, run tonight. **The
+fake reported a peak of 0.5 against a composed 0.25, so a readout showing the
+setting could not have passed.** Word for word:
 
-His own right-click started it; the real `DigitalStopButton` on the realized window
-was pressed with a real mouse at the button's own place.
+> **The sound card was handed -6.0 dBFS** — that is the peak the endpoint actually
+> got, measured on the way out after clamping, and not the level Hamlet composed
+> at. **4 samples had to be clamped on the way out.** Beyond this point are
+> Windows' own volume for that device and the radio's input gain, which Hamlet
+> cannot see.
 
-```
-buffer            : 9600 frames (200.0 ms)
-STOP PRESSED AT   : 4.22 s into the transmission
-AUDIO OFF THE CARD: 4.71 s of the 12.64 s the slot would have been
-CARD WENT QUIET   : 456 ms after the press
-sink counted      : 206880 of 606720 samples, short by 399840
-the run said      : Cancelled, came out of tx TheAbort
-WIRE WHILE RUNNING: FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD
-                    | FE FE 94 E0 1C 00 00 FD
-and it stayed off : 49 packets over 3.0 s more with the endpoint open,
-                    0 samples, peak <= -90.0 dBFS
-```
+and above it, in the Send area, unchanged from unit 265 except for one added
+clause:
 
-**The abort's own two frames are there** - `17 FF` and `1C 00 00` - and what the
-operator was left reading at the press was: *Stopped: "W1ABC KC3QIS RRR" was going
-out and Hamlet stopped sending it part way through, and the radio was told to stop
-transmitting.*
+> Sent "CQ KC3QIS FN00" in the slot at 15:52:45 UTC. **It was composed at -12.0
+> dBFS with nothing clipped** — that is the level Hamlet built… The clipped count
+> here is of the audio Hamlet built, and the composer will not build above full
+> scale, so on this path it is always none. What the sound card actually had to
+> clamp is the measured line under the drive control.
 
-**What the 456 ms is and is not.** It is the wall clock from the press to **the last
-sample the loopback was handed** - the endpoint itself falling silent - and it
-includes the 200 ms already queued in the card's buffer and the capture's own
-delivery lag. **Unit 263's 15-20 ms is when the sink's own call returned**, which is
-a different quantity measured a different way. **No bound tighter than the tree's is
-asserted here**: `TheStopStopsARealEndpointTests.cs:187` asserts under a second, and
-this reports what it read.
+**Which quantity each number is.** `-6.0 dBFS` is `ITransmitLevelReport.PeakWritten`
+— the largest magnitude the sink actually wrote to the endpoint, measured after
+clamping. `4 samples` is `ClippedSamples`, the sink's own clamp count. `-12.0 dBFS`
+is `Ft8Transmission.PeakSample`, the peak of the array the composer produced, which
+is the drive setting read back. `nothing clipped` is a count over that same
+composed array.
 
-### 3. The card open and silent across a boundary nobody clicked
+**It came from the sink, not from the fallback.** The fallback was written in
+advance and was not taken. What made that possible: the report is a separate
+two-property interface that `ITransmitAudioSink` does not carry, read off the sink
+the view model already built, after the boundary returned, with nothing keyed.
 
-**The figure is the peak absolute sample across the window, in dBFS, against the
-tree's own `AudioLevel.TooQuietDb` of -60** - the constant `AudioLevel.NearlySilent`
-is already written against.
+And before anything is sent, which nothing in Hamlet could show this morning:
+
+> How hard Hamlet drives the radio's input — **-12.0 dBFS** at this setting. This
+> is a starting point, not a specification. Set it against your own radio's ALC
+> meter: turn it up until the ALC just begins to move and then back off…
+
+with the same sentence reading **-8.0 dBFS** the moment the spinner is moved to
+40 %.
+
+### 3. The clip count measurement
+
+**Drive 1.0 — the highest `Ft8Composer.DriveIsUsable` accepts, asserted as the
+ceiling in the same test — composed through the application's own `ComposeSignal`
+route at 48000 Hz:**
 
 ```
-second boundary  : NothingArmed, run null
-frames on wire   : 2 (unchanged from 2)
-listened for     : 3.0 s with the endpoint open and the capture running
-packets across   : 49 (the capture was alive)
-samples across   : 0 - the endpoint rendered nothing at all
-CARD ACROSS IT   : peak <= -90.0 dBFS, rms <= -90.0 dBFS
+drive              : 1.000000  (0.00 dBFS), the ceiling
+rate               : 48000 Hz
+samples composed   : 606720
+largest magnitude  : 1.000000
+outside [-1, +1]   : 0
 ```
 
-**And the instrument is not deaf, proved inside the same run**: the same capture on
-the same endpoint read **-12.0 dBFS** while the transmission was going out, minutes
-earlier in the same test method. **The packet count is the liveness witness and the
-level is the verdict** - which is the distinction the night's first red was worth.
+**The number is zero, and it is zero by construction.** The composer multiplies a
+unit-amplitude sine by the drive (`Ft8Composer.cs:390`) and refuses a drive above
+full scale, so no drive it accepts can put a sample outside the rails. **No clip
+was added, the ceiling was not raised, and none of this is a recommendation about
+a drive level** — the ceiling is the worst case for the question, not a level
+anybody should set.
 
-### Would you see any of this in the application?
+**Can the resampler overshoot? There is no resampler.** The one `ComposeSignal`
+call site in `src/` composes at the endpoint's own declared rate (unit 262), so
+nothing between the composer and the card can overshoot a composed peak there.
 
-**No visible change.** This unit only makes the tests catch a regression later - and
-catch one class of regression that nothing in the tree could catch before: a menu
-that offers one string while another goes out over the band.
+**What that changes for what the page tells him to watch.** It would have told him
+to watch a number that cannot move, and a zero he read as *my drive is safe* would
+have been the display being more confident than its input justified. **Both the
+screen line and the page now say what each count is of**, and the page says
+plainly: *Do not treat "nothing clipped" there as evidence that your level is
+safe. It would say that at any drive Hamlet allows.* The count that can move is
+the sink's, under the drive control.
 
 ## 4. What's blocking us
 
-**Nothing is blocking. Four items, none in the way of a step C criterion, and no
-ruling is wanted** - the one question this unit could have raised (whether the
-`456 ms` figure should replace the tree's stated bound) answers itself: it is a
-different quantity measured a different way, both are honest, and neither is
-asserted against the other.
+**Nothing is blocking. Five items, none in the way of a criterion, and none asking
+for a ruling.**
 
-### 1. `outcome-append.bat` was refused again, both forms
+### 1. `outcome-append.bat` refused again — the thirteenth consecutive unit
 
-Verbatim, in order:
+**No ruling wanted.** The plan's named alternative exists and was taken.
 
-```
-This Bash command contains multiple operations. The following part requires
-approval: tools\arbiter\outcome-append.bat 2>&1
-```
-```
-This command requires approval
-```
+Both invocation forms were refused, verbatim: `"This command requires approval"`
+for `tools\arbiter\outcome-append.bat`, and the same words for
+`cmd //c tools\\arbiter\\outcome-append.bat`. The unit 269 entry was appended with
+the file-editing tools in the format the existing entries use, with an
+`APPENDED_BY:` line saying on its face that a script did not write it, and the
+header's `STEP: D` line was moved in place, which is what the script does.
 
-The plan's own named alternative was taken: the entry was appended with the
-file-editing tools in the format the existing entries use, with an `APPENDED_BY:`
-line saying on its face that a script did not write it. **Halts nothing.** Two other
-shell calls were refused tonight and both were worked around the same way:
-`This Bash command contains multiple operations. The following part requires
-approval: cut -c1-2400 ; wc -c /tmp/prev-note.txt`, and `This command requires
-approval` for a multi-file grep.
+**A field-count mismatch, reported not repaired:** the instruction asks for
+fourteen fields; `tools/arbiter/outcome-entry.py:115-118`'s own `FIELDS` list has
+twelve. Twelve are written, plus `APPENDED_BY`.
 
-### 2. A plan-versus-tree mismatch, reported and not repaired - and it is step D's
+**Seven shell refusals in total tonight**, recorded verbatim:
+`"This Bash command contains multiple operations. The following part requires approval: ls ~/.nuget/packages/avalonia/ ; ls ~/.nuget/packages/"`;
+`"Contains simple_expansion"`;
+`"This Bash command contains multiple operations. The following part requires approval: grep -vE \"^\s*$\""`;
+`"This Bash command contains multiple operations. The following part requires approval: git rm -q --cached .commit-msg.txt .oa-267.bat"`;
+`"This command requires approval"` (three times — the bare `git rm`, and both
+`outcome-append.bat` forms). **The file-editing tools were unaffected throughout,
+the thirteenth consecutive unit to say so, and nothing halted the loop.** One
+consequence worth naming: the NuGet package folder is outside the working
+directory, so Avalonia's own `ShowDialog` source could not be quoted; the trace
+says what it could establish from the tree alone and says which part it could not.
 
-`PHASE_PLAN.md` step D's first criterion says Tim *"reads the dBFS and clip count
-**under the waterfall**"*. **In the tree they are in the Send area line after each
-send** - `MainWindowViewModel.LevelLine` - and there is no such readout under the
-waterfall. The figures exist and are readable, so **the criterion is satisfiable as
-written except for where it says to look**, and `docs/unit268-what-step-d-asks-tim.md`
-points Tim at the right place. **Not repaired, per the instruction.** Bears on step
-D, not on step C.
+### 2. My own mistake, corrected in place
 
-### 3. An open menu swallows the next press, and any future unit will hit it
+**No ruling wanted.** A `git add -A` at task 2 tracked `.commit-msg.txt` and
+`.oa-267.bat`, which task 5 names explicitly as *report, do not repair*. **That was
+a repair I was told not to make.** Both were removed from the index again in their
+own commit (`9510527`) and left on disk, which is the state the instruction
+describes and the state a fresh clone is in. The launcher's `.run-unit/` files,
+`SESSION.lock` and `RUN_LEDGER.md` were already tracked and have ridden unit
+commits since before unit 259; those were left as they were.
 
-A `MenuFlyout` shown by the right-click handler is a popup with a light-dismiss
-layer over the whole window. **Until it is closed, the next simulated press lands on
-that layer and not on the control underneath**, silently - it cost this unit a red
-whose first diagnosis was wrong. **This is a test-harness fact and not a product
-defect**: in the running application, clicking a menu item closes the flyout itself.
-Written down here so it is not rediscovered as a mystery.
+### 3. The record disagreements the instruction asked me to report — and one is in the instruction
 
-### 4. The inherited reds, none run and none chased
+**No ruling wanted; reported and not repaired, as told.**
 
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
-`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
-and
+`PROJECT_STATUS.md`'s `RULES_AT` reads `HM-DEC-158 (2026-09-07)`. `CLAUDE.md`
+section 1's newest row is **`HM-DEC-152`, dated 2026-08-31**. **The instruction
+names that row `CPS-DEC-0152`; no such id appears anywhere in this repository**, so
+the disagreement is six rulings and nine days rather than a spelling. `HM-DEC-158`
+is the phase re-cut, recorded in `PROJECT_CARD.md` by unit 266 and never added to
+the decision log's index.
+
+`.commit-msg.txt` and `.oa-267.bat` are untracked at the root — confirmed, and see
+item 2.
+
+### 4. A bench gap named for step E, and deliberately not built
+
+**No ruling wanted.** From task 6, and it is unit 264's finding restated for a man
+at a radio rather than for a test.
+
+**A row's `Contact` cell is computed once and never recomputed.** `PlaceRow`
+(`MainWindowViewModel.cs:7826`) sets it at `:7840` and has exactly two callers —
+the decoder's door at `:7787` and `AddDecodeRowForTests` at `:7872`. `RecordSent`
+at `:8474` books the send into the ledger and touches no row already on the table.
+So **the row he right-clicked does not change when his own transmission goes out**;
+the next row from that station does, fifteen seconds later. Inside a running
+exchange that is invisible. **After his last message, with the other station gone
+quiet, it is not** — the newest row for that callsign may be one placed before the
+send, so the cell can read *your move* while the ledger already says complete.
+
+**Named, not built.** It is a display refresh touching `PlaceRow`'s contract and
+the table's identity, and it is not step E's to fix on the evening step E runs.
+What step E should do is expect it and read the row that arrives **after** his last
+transmission rather than the one he clicked.
+
+### 5. The inherited reds, untouched and not chased
+
+**No ruling wanted.** `CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW
+cases in `docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list
+tripwire; and
 `TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`,
-which unit 265 recorded and units 266, 267 and now 268 have left alone. **None was
-run tonight and none is chased.**
+which unit 265 recorded and units 266, 267 and 268 have left alone. **None of them
+was run tonight** — running any would have been a test outside this unit's named,
+bounded exception.
