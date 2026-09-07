@@ -320,6 +320,131 @@ public sealed class TheOperatorCanStopItTests
         Assert.All(cw, b => Assert.False(b.IsVisible));
     }
 
+    // ---- the phase's one unrecoverable fault -----------------------------
+
+    /// <summary>
+    /// **The stop added no way to transmit: one arming call site, and it is still
+    /// the operator's own click.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS THE FAULT THE PHASE CANNOT RECOVER FROM** - a transmission
+    /// the operator did not ask for goes out over other people's band and cannot
+    /// be taken back. A unit that put a new button on the transmit surface owes
+    /// this evidence, and work instruction 261 task 5 asks for it as a grep. It
+    /// is kept here as a standing guard instead, so the next unit inherits the
+    /// count rather than having to remember to run it.</para>
+    /// <para>**THE THREE NUMBERS.** One line in `src/` calls
+    /// <c>Ft8ArmedSend.Arm</c> and it is inside <c>SendMessage</c>; one line
+    /// constructs an <c>Ft8ArmedSend</c>; one line constructs the
+    /// <c>Ft8TransmitSequence</c> behind it. <c>StopNow</c> is on the far side of
+    /// all three - it is a route out and there is no way through it into a
+    /// transmission.</para>
+    /// </remarks>
+    [Fact]
+    public void TheStopAddedNoNewRouteToATransmission()
+    {
+        var source = Directory
+            .EnumerateFiles(Path.Combine(RepositoryRoot(), "src"), "*.*", SearchOption.AllDirectories)
+            .Where(p => p.EndsWith(".cs", StringComparison.OrdinalIgnoreCase)
+                || p.EndsWith(".axaml", StringComparison.OrdinalIgnoreCase))
+            .Where(p => !p.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}",
+                StringComparison.OrdinalIgnoreCase))
+            .Where(p => !p.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}",
+                StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        var arms = Hits(source, "_armedSend.Arm(");
+        var builds = Hits(source, "new Ft8ArmedSend");
+        var sequences = Hits(source, "new Ft8TransmitSequence");
+
+        foreach (var hit in arms.Concat(builds).Concat(sequences))
+        {
+            _output.WriteLine(hit);
+        }
+
+        Assert.Single(arms);
+        Assert.Single(builds);
+        Assert.Single(sequences);
+
+        // AND THE ONE ARMING LINE IS STILL THE OPERATOR'S OWN CLICK.
+        var panel = File.ReadAllText(Path.Combine(
+            RepositoryRoot(), "src", "Hamlet.App", "ViewModels", "MainWindowViewModel.cs"));
+
+        Assert.Contains("_armedSend.Arm(", MethodBody(panel, "private void SendMessage("),
+            StringComparison.Ordinal);
+
+        // And the stop's own method arms nothing, composes nothing, keys nothing.
+        var stop = MethodBody(panel, "private void StopSending()");
+
+        _output.WriteLine("StopSending's body:" + Environment.NewLine + stop);
+
+        foreach (var forbidden in new[] { ".Arm(", "Compose", "RunAsync", "AtBoundary", "new " })
+        {
+            Assert.DoesNotContain(forbidden, stop, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>Every <c>path:line</c> in <paramref name="files"/> holding a needle.</summary>
+    private static List<string> Hits(IEnumerable<string> files, string needle)
+    {
+        var found = new List<string>();
+
+        foreach (var file in files)
+        {
+            var lines = File.ReadAllLines(file);
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains(needle, StringComparison.Ordinal))
+                {
+                    found.Add($"{needle} -> {Path.GetFileName(file)}:{i + 1}");
+                }
+            }
+        }
+
+        return found;
+    }
+
+    /// <summary>One method's body, by brace matching from its signature.</summary>
+    private static string MethodBody(string source, string signature)
+    {
+        var start = source.IndexOf(signature, StringComparison.Ordinal);
+
+        Assert.True(start >= 0, signature + " is not in the source");
+
+        var open = source.IndexOf('{', start);
+        var depth = 0;
+        var at = open;
+
+        for (; at < source.Length; at++)
+        {
+            if (source[at] == '{')
+            {
+                depth++;
+            }
+            else if (source[at] == '}' && --depth == 0)
+            {
+                break;
+            }
+        }
+
+        return source[start..(at + 1)];
+    }
+
+    /// <summary>The repository root, found from the test assembly's location.</summary>
+    private static string RepositoryRoot()
+    {
+        var at = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (at is not null && !File.Exists(Path.Combine(at.FullName, "Hamlet.sln")))
+        {
+            at = at.Parent;
+        }
+
+        return at?.FullName
+            ?? throw new InvalidOperationException("no Hamlet.sln above the test binary");
+    }
+
     // ---- the scene -------------------------------------------------------
 
     /// <summary>The window, the panel and the fakes behind them.</summary>

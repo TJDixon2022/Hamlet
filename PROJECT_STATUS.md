@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 261 - the operator can stop it
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T00:32:24-04:00
-NOTE: The Stop button is on the real window beside CQ, always visible and never disabled, and a headless mouse pressed it at both moments - 6 of 6 green. Found an inherited red next door: TheDigitalTabIsTwoColumns asserts the Send area holds no buttons at all, and it went red when unit 260 put CQ there.
+UPDATED: 2026-09-07T00:34:05-04:00
+NOTE: The two greps match: one arming line and it is still SendMessage, one new Ft8ArmedSend, one new Ft8TransmitSequence. Turned the grep into a standing guard rather than a one-off count, then writing the report.
 
 ---
 
