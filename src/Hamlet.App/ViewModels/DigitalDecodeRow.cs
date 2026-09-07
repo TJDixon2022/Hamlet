@@ -109,7 +109,8 @@ public sealed record DigitalDecodeRow(
     /// no colouring and no field tooltips, because labelling the wrong half of a
     /// message is worse than labelling none of it.
     /// </remarks>
-    public Ft8MessageFields? Fields => Ft8Vocabulary.Split(Message);
+    public Hamlet.RadioEngine.Contacts.Ft8MessageFields? Fields
+        => Ft8Vocabulary.Split(Message);
 
     /// <summary>Who the message is addressed to, or "".</summary>
     /// <remarks>

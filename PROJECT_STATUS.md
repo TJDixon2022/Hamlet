@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T22:34:10-04:00
-NOTE: CORPUS ROUTE is audio, settled on the first of three permitted attempts - both scene tests passed in 4 s, 21 of 21 composed signals decoded, none lost, 3.91 s of decoding for twelve slots. The corpus is what Ft8DeepSlotDecoder returned, not the script. The tree says 21 signals where the instruction said 22; the tree wins and is reported. Now the splitter move: Split and Ft8MessageFields into the engine so the ledger has one set of parsing rules to read and not two.
+UPDATED: 2026-09-06T22:36:30-04:00
+NOTE: The splitter is down in the engine at src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs and the whole solution built green - 0 warnings, 0 errors, 8.18 s. Split, Ft8MessageFields, IsCallToAnyone, IsGrid and IsReport all moved; the app's four are one-line forwards now, which took three copies of the CQ rule down to one. Running the filtered behaviour test that the move changed nothing before committing.
 
 ---
 

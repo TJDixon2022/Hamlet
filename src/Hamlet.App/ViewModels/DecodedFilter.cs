@@ -83,12 +83,7 @@ public static class DecodedFilterRule
     /// and this tests what that produced.
     /// </remarks>
     public static bool IsCallToAnyone(string? to)
-    {
-        var text = to?.Trim() ?? "";
-
-        return string.Equals(text, "CQ", StringComparison.OrdinalIgnoreCase)
-               || text.StartsWith("CQ ", StringComparison.OrdinalIgnoreCase);
-    }
+        => Hamlet.RadioEngine.Contacts.Ft8MessageSplit.IsCallToAnyone(to);
 
     /// <summary>Whether a row is the operator's own traffic.</summary>
     /// <param name="addressee">The to-field.</param>

@@ -1,4 +1,5 @@
 using System.Globalization;
+using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.ViewModels;
@@ -44,30 +45,16 @@ public static class Ft8Vocabulary
     /// it here is the view doing work the engine could hand over, and it is done
     /// this way because unit 241 may not change the engine. It is reported
     /// rather than worked around quietly.</para>
+    /// <para>**THE RULES THEMSELVES LIVE IN THE ENGINE SINCE UNIT 258** and this
+    /// is a one-line forward. The contact ledger divides messages the same way
+    /// and the engine may not reach the app (§0.1), so the division came down to
+    /// `Hamlet.RadioEngine.Contacts.Ft8MessageSplit` rather than being written
+    /// twice. **Every caller here keeps calling this**; the answer is the same
+    /// object it always was, and there is one set of parsing rules in this
+    /// repository rather than two.</para>
     /// </remarks>
     public static Ft8MessageFields? Split(string? message)
-    {
-        if (string.IsNullOrWhiteSpace(message))
-        {
-            return null;
-        }
-
-        var parts = message.Trim().Split(
-            ' ', StringSplitOptions.RemoveEmptyEntries);
-
-        // `CQ DX W1ABC FN42` and `CQ EU W1ABC FN42`: the call and its direction
-        // are one addressee in two words.
-        if (parts.Length == 4
-            && string.Equals(parts[0], "CQ", StringComparison.Ordinal))
-        {
-            return new Ft8MessageFields(
-                parts[0] + " " + parts[1], parts[2], parts[3]);
-        }
-
-        return parts.Length == 3
-            ? new Ft8MessageFields(parts[0], parts[1], parts[2])
-            : null;
-    }
+        => Ft8MessageSplit.Split(message);
 
     /// <summary>What a payload means, or null where it is not on the list.</summary>
     /// <param name="fields">
@@ -244,8 +231,7 @@ public static class Ft8Vocabulary
     /// in two words.
     /// </remarks>
     private static bool IsCallToAnyone(string field)
-        => string.Equals(field, "CQ", StringComparison.OrdinalIgnoreCase)
-           || field.StartsWith("CQ ", StringComparison.OrdinalIgnoreCase);
+        => Ft8MessageSplit.IsCallToAnyone(field);
 
     /// <summary>A four-character Maidenhead field, as FT8 sends it.</summary>
     /// <remarks>
@@ -254,41 +240,13 @@ public static class Ft8Vocabulary
     /// otherwise read as a grid square.
     /// </remarks>
     private static bool IsGrid(string text)
-        => text.Length == 4
-            && text[0] is >= 'A' and <= 'R'
-            && text[1] is >= 'A' and <= 'R'
-            && char.IsAsciiDigit(text[2])
-            && char.IsAsciiDigit(text[3]);
+        => Ft8MessageSplit.IsGrid(text);
 
     /// <summary>A signal report, with or without its roger.</summary>
+    /// <remarks>
+    /// **The engine's rule since unit 258**, so that the ledger and the tooltip
+    /// agree about what `R-09` is without either of them owning a second copy.
+    /// </remarks>
     private static bool IsReport(string text, out bool rogered, out int decibels)
-    {
-        rogered = false;
-        decibels = 0;
-
-        var body = text;
-
-        if (body.StartsWith('R') && body.Length > 1)
-        {
-            rogered = true;
-            body = body[1..];
-        }
-
-        // FT8 reports always carry their sign, which is what separates `-05`
-        // from a serial number in a contest exchange.
-        if (body.Length < 2 || (body[0] != '+' && body[0] != '-'))
-        {
-            return false;
-        }
-
-        return int.TryParse(
-            body, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture,
-            out decibels);
-    }
+        => Ft8MessageSplit.IsReport(text, out rogered, out decibels);
 }
-
-/// <summary>The three fields of a standard message.</summary>
-/// <param name="To">Who it is addressed to, which may be a call for anyone.</param>
-/// <param name="From">Who sent it.</param>
-/// <param name="Payload">The rest: a grid, a report, or a courtesy.</param>
-public sealed record Ft8MessageFields(string To, string From, string Payload);
