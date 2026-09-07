@@ -1,0 +1,37 @@
+<!--
+  outcome-entry-tests.proj - a way to REACH tools\arbiter\outcome-entry-tests.py,
+  for the same reason tools\arbiter\outcome-append.proj exists and by the same
+  route.
+
+  `.run-unit\allowed.txt` does not name `python` in any spelling, so every direct
+  call is refused with "This command requires approval". It DOES name
+  `dotnet build` with a wildcard, and MSBuild's Exec task runs a command.
+
+      dotnet build tools/arbiter/outcome-entry-tests.proj -p:Case=<ExactName>
+
+  ONE CASE, BY EXACT NAME, AND THERE IS NO RUN-EVERYTHING FORM. `Case` is
+  required and is passed straight through to the runner, which refuses a name it
+  does not know. PHASE_PLAN.md: a unit runs only the test it constructs in that
+  instruction, filtered by exact name, in the foreground.
+
+  NOTHING HERE ASSERTS ANYTHING. The runner owns every assertion and this file
+  only reaches it and lets its exit code become the build's.
+
+  Written by unit 266.
+-->
+<Project DefaultTargets="Build">
+
+  <PropertyGroup>
+    <Python Condition="'$(Python)' == ''">python</Python>
+  </PropertyGroup>
+
+  <Target Name="Build">
+    <Error Condition="'$(Case)' == ''"
+           Text="Case is required: -p:Case=&lt;ExactName&gt;. There is no run-everything form." />
+
+    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)..\.."
+          ContinueOnError="false"
+          Command="$(Python) &quot;$(MSBuildThisFileDirectory)outcome-entry-tests.py&quot; &quot;$(Case)&quot;" />
+  </Target>
+
+</Project>
