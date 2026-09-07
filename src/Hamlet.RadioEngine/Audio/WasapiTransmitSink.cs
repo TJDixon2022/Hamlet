@@ -190,7 +190,12 @@ public sealed class WasapiTransmitSink : ITransmitAudioSink, IDisposable
     /// <summary>The friendly name of the endpoint actually opened.</summary>
     public string DeviceName { get; } = string.Empty;
 
-    /// <summary>The rate the endpoint declared, which is the rate it will get.</summary>
+    /// <inheritdoc/>
+    /// <remarks>
+    /// The rate the endpoint declared, which is the rate it will get. **It was
+    /// already here before it was on the interface** (work instruction 262); what
+    /// changed is that a caller can now read it.
+    /// </remarks>
     public int EndpointSampleRate { get; }
 
     /// <summary>How many channels the endpoint declared.</summary>

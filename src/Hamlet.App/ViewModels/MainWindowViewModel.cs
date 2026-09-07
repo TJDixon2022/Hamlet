@@ -7971,6 +7971,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _armedSend = null;
         _transmitRefusal = "";
+        _transmitSampleRate = Ft8Composer.DefaultSampleRate;
 
         var endpoint = (_settings.AudioOutputDeviceId ?? "").Trim();
 
@@ -8019,9 +8020,48 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **THE RATE IS READ OFF THE SINK, HERE, AND NOT AT THE CLICK.**
+        // `Ft8TransmitSequence` writes PTT on at its line 283 and reaches the
+        // sink at 287, so an endpoint whose rate FT8 cannot be built at has to be
+        // refused where the sink is constructed - one frame later and the radio
+        // is already keyed when anybody finds out.
+        var rate = sink.EndpointSampleRate;
+
+        if (!Ft8Composer.RateIsUsable(rate, out var whyNot))
+        {
+            _transmitRefusal =
+                "the transmit audio device named in Settings, \"" + endpoint
+                + "\", speaks " + rate.ToString(CultureInfo.InvariantCulture)
+                + " samples per second, and an FT8 transmission cannot be built at "
+                + "that rate: " + whyNot
+                + " Nothing can be sent through this device, so choose another "
+                + "transmit audio device in Settings";
+
+            DigitalSendLine =
+                "Hamlet cannot transmit: " + _transmitRefusal + ".";
+
+            return;
+        }
+
+        _transmitSampleRate = rate;
+
         _armedSend = new Ft8ArmedSend(
             new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
     }
+
+    /// <summary>The rate the armed send's endpoint declared, and composes at.</summary>
+    /// <remarks>
+    /// <para>**IT IS WHAT THE ENDPOINT SAID, NOT A SETTING AND NOT A DEFAULT**
+    /// (work instruction 262). <see cref="BuildTheArmedSend"/> reads it off the
+    /// sink it has just built; <see cref="SendMessage"/> composes at it. The two
+    /// are separated by a click, which is why it is kept rather than fetched -
+    /// nothing between them may open a device.</para>
+    /// <para>**IT FALLS BACK TO THE DECODER'S RATE ONLY WHERE NOTHING IS ARMED**,
+    /// which is the case where the click is refused in words before any audio is
+    /// wanted. It is never a fallback on a live send path: where an endpoint's
+    /// rate is unusable, no armed send is built at all.</para>
+    /// </remarks>
+    private int _transmitSampleRate = Ft8Composer.DefaultSampleRate;
 
     /// <summary>The text of what is armed, so the ledger can be told what went.</summary>
     private string _armedText = "";
@@ -8117,7 +8157,12 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var composed = Ft8Composer.ComposeSignal(wanted);
+        // **AT THE RATE THE ENDPOINT DECLARED, NOT AT THE DECODER'S.**
+        // `_transmitSampleRate` was read off the sink when the radio connected.
+        // Composing at `Ft8Waveform.DefaultSampleRate` here is what made every
+        // send through a real endpoint throw after the radio was keyed (work
+        // instruction 262, task 1).
+        var composed = Ft8Composer.ComposeSignal(wanted, _transmitSampleRate);
 
         if (!composed.Composed)
         {
@@ -10060,6 +10105,7 @@ public partial class MainWindowViewModel : ObservableObject
             _rigPort = null;
             _armedSend = null;
             _transmitRefusal = "";
+            _transmitSampleRate = Ft8Composer.DefaultSampleRate;
 
             IsConnected = false;
             ConnectButtonText = "Connect";

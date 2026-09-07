@@ -41,14 +41,45 @@ public readonly record struct PlayedAudio(int SamplesPlayed, TimeSpan Took);
 /// the card consumed rather than what was handed to it. The other implementation
 /// is the tests' <c>FakeTransmitAudioSink</c>, and the sequence around this
 /// interface is proved against both.</para>
-/// <para>**THE RATE IS NOT NEGOTIABLE FROM THIS SIDE.** The real sink refuses a
-/// <c>sampleRate</c> that is not the endpoint's own rather than
-/// letting shared-mode WASAPI resample it quietly, so the caller composes at the
-/// rate the endpoint declares. That is a fact about sound cards, not a
+/// <para>**THE RATE IS NOT NEGOTIABLE FROM THIS SIDE, AND
+/// <see cref="EndpointSampleRate"/> IS HOW A CALLER FINDS OUT WHAT IT IS.** The
+/// real sink refuses a <c>sampleRate</c> that is not the endpoint's own rather
+/// than letting shared-mode WASAPI resample it quietly, so the caller composes at
+/// the rate the endpoint declares. That is a fact about sound cards, not a
 /// restriction this interface imposes.</para>
+/// <para>**THIS PARAGRAPH USED TO END THERE, AND IT INSTRUCTED A CALLER TO DO
+/// SOMETHING NO CALLER COULD DO** (work instruction 262). *The caller composes at
+/// the rate the endpoint declares* was written before anything on this interface
+/// carried that rate, so the one caller in the tree composed at
+/// <c>Ft8Waveform.DefaultSampleRate</c> instead - and every send through a real
+/// endpoint threw, after the radio had already been keyed. Prose a neighbour
+/// falsifies is worse than no prose, so the member was added rather than the
+/// sentence softened.</para>
 /// </remarks>
 public interface ITransmitAudioSink
 {
+    /// <summary>
+    /// The rate this sink will accept, and the rate a caller must compose at.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS THE ENDPOINT'S, NOT A PREFERENCE.** For
+    /// <c>WasapiTransmitSink</c> it is the shared-mode mix format the device
+    /// declared when it was opened - 48000 Hz on ordinary hardware - and
+    /// <see cref="PlayAsync"/> throws on any other number. A caller that hands
+    /// over something else has not made a slightly worse choice; it has made a
+    /// transmission that cannot go out.</para>
+    /// <para>**IT IS KNOWN AS SOON AS THE SINK EXISTS**, which is what lets a
+    /// caller refuse an unusable device at the moment it is chosen rather than
+    /// after the radio is keyed. `Ft8TransmitSequence` writes PTT on before it
+    /// reaches the sink, so a rate discovered inside <see cref="PlayAsync"/> is
+    /// discovered one frame too late.</para>
+    /// <para>**NOTHING HERE PROMISES FT8 CAN BE BUILT AT IT.** A sound card may
+    /// declare a rate at which a channel symbol is not a whole number of samples;
+    /// <c>Ft8Composer.RateIsUsable</c> is what answers that, and it is the
+    /// caller's to ask.</para>
+    /// </remarks>
+    int EndpointSampleRate { get; }
+
     /// <summary>Play these samples, and return when they have been played.</summary>
     /// <param name="samples">The audio, in the range -1 to +1.</param>
     /// <param name="sampleRate">Samples per second.</param>

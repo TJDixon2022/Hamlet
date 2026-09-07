@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 262 - the rate the endpoint actually speaks
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-07T01:22:15-04:00
-NOTE: Both transmit fakes now declare a rate and refuse every other one, in the same words WasapiTransmitSink.cs:306 uses, defaulted off so no existing test changes meaning. The new test drives the application's own send path against a sink declaring 48000 Hz and is RED ON PURPOSE, 3 of 4 failing: rate asked for 12000, keyed True, 3 frames on the wire, samples played empty, and the operator would read "the samples are at 12000 Hz and the endpoint speaks 48000 Hz". Arming grep before task 3 is 1, 1, 1. Committing the red, then task 3 turns it green.
+UPDATED: 2026-09-07T01:41:05-04:00
+NOTE: The send path now composes at the rate the endpoint declares. ITransmitAudioSink carries EndpointSampleRate and its closing para no longer instructs a caller to do something no caller could do; BuildTheArmedSend reads the rate off the sink it just built and refuses in words, naming the device and its rate, where FT8 cannot be built at it. Task 2's test is green 4 of 4 - 48000 asked and 48000 got, 606720 of 606720 samples played, keyed and ordinary unkey, 12.64 s. OneClickSendsExactlyOneMessageTests 8 of 8 and TheSendPathReachesARealRadioTests 7 of 7. Arming grep unchanged before and after: 1, 1, 1, and the Arm line is still inside SendMessage. Committing, then task 4's round trip at each rate.
 
 ---
 

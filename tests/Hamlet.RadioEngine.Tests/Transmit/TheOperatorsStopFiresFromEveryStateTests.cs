@@ -762,6 +762,14 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
         public void Release() => _release.Set();
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// The decoder's rate, which is what these tests compose at. **This sink
+        /// refuses nothing** - what it stands for is a transmission in progress,
+        /// not an endpoint.
+        /// </remarks>
+        public int EndpointSampleRate => Ft8Composer.DefaultSampleRate;
+
+        /// <inheritdoc/>
         public async Task<PlayedAudio> PlayAsync(
             ReadOnlyMemory<float> samples, int sampleRate, CancellationToken cancellationToken)
         {

@@ -57,6 +57,13 @@ internal sealed class FakeTransmitAudioSink : ITransmitAudioSink
     /// </remarks>
     public int? DeclaredSampleRate { get; set; }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// **12000 WHERE NOTHING WAS DECLARED**, which is the rate every test written
+    /// before unit 262 composes at, so those tests keep the meaning they had.
+    /// </remarks>
+    public int EndpointSampleRate => DeclaredSampleRate ?? Ft8Composer.DefaultSampleRate;
+
     /// <summary>How long it claims the playing took.</summary>
     public TimeSpan Took { get; set; } = TimeSpan.FromSeconds(12.64);
 

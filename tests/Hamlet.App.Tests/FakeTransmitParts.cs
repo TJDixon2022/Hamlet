@@ -101,6 +101,13 @@ internal sealed class FakeSink : ITransmitAudioSink
     /// </remarks>
     public int? DeclaredSampleRate { get; set; }
 
+    /// <inheritdoc/>
+    /// <remarks>
+    /// **12000 WHERE NOTHING WAS DECLARED**, which is the rate every test written
+    /// before unit 262 composes at, so those tests keep the meaning they had.
+    /// </remarks>
+    public int EndpointSampleRate => DeclaredSampleRate ?? Ft8Composer.DefaultSampleRate;
+
     /// <summary>True where nothing ever reached it.</summary>
     public bool WasNeverTouched => TimesCalled == 0;
 

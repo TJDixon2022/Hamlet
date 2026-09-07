@@ -124,7 +124,15 @@ public sealed class TheSendPathComposesAtTheEndpointsRateTests
         Assert.Equal(
             (int)Math.Round(12.64 * OrdinaryEndpointRate), result.Run.SamplesOffered);
 
-        Assert.Contains("Sent ", panel.DigitalSendLine, StringComparison.Ordinal);
+        // **AND NOTHING WAS EXPLAINED AWAY**, because there was nothing to
+        // explain. `WentLine` puts `run.Reason` in front of the operator only
+        // where the run did not send, and here it is empty.
+        Assert.Equal(string.Empty, result.Run.Reason);
+
+        // The reserved Send area is asserted at the click rather than at the
+        // boundary: `AtSlotBoundaryAsync` posts its line to the UI thread, and
+        // nothing pumps a dispatcher in a headless test.
+        Assert.Contains("Sending to W1ABC", panel.DigitalSendLine, StringComparison.Ordinal);
     }
 
     /// <summary>
