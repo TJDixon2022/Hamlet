@@ -297,6 +297,72 @@ public sealed class TheOperatorCanStopItTests
         Assert.Equal(Ft8TransmitOutcome.Cancelled, boundary.Run.Outcome);
     }
 
+    /// <summary>
+    /// **What he reads says what happened to both - the carrier and the sound -
+    /// and says it in seconds.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**A SENTENCE THAT SAYS "STOPPED" WHEN ONLY HALF OF IT STOPPED IS THE
+    /// FAILURE HERE** (work instruction 263, task 4). Until this unit the line read
+    /// *"Stopped: nothing was waiting for a slot, and the radio was told to stop
+    /// transmitting"* while Hamlet went on feeding the radio the rest of the slot -
+    /// true about the carrier, silent about the sound, and read by an operator as
+    /// meaning it had all stopped.</para>
+    /// <para>**AND THE LINE THAT SURVIVES IS THE BOUNDARY'S, NOT THE STOP'S.** The
+    /// stop writes on the click; the boundary's own line is posted a few
+    /// milliseconds later when the run ends and **overwrites it**. So both are read
+    /// here, in that order, and the second is the one he is left looking at. Before
+    /// this unit it read *"the transmission was stopped after 40890 of 151680
+    /// samples"* - the engine's own words, in samples, at an operator (§0.7).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task TheLineSaysWhatHappenedToTheCarrierAndToTheSound()
+    {
+        var playing = new FakeSink { PlaysOver = TimeSpan.FromSeconds(2) };
+        var scene = Scene(playing);
+
+        scene.Panel.SendMessageCommand.Execute("W1ABC KC3QIS -10");
+
+        var slot = scene.Panel.ArmedForSlotUtc!.Value;
+        var running = scene.Panel.AtSlotBoundaryAsync(slot);
+
+        Assert.True(playing.Entered.Wait(TimeSpan.FromSeconds(10)), "the sink was never reached");
+
+        var deadline = System.Diagnostics.Stopwatch.StartNew();
+
+        while (playing.PlayedSoFar < playing.SamplesHandedOver / 4
+               && deadline.Elapsed < TimeSpan.FromSeconds(30))
+        {
+            await Task.Delay(2, CancellationToken.None);
+        }
+
+        Click(scene, StopButton(scene));
+
+        var onTheClick = scene.Panel.DigitalSendLine;
+
+        await running;
+        Pump(scene.Window);
+
+        var afterTheRunEnded = scene.Panel.DigitalSendLine;
+
+        _output.WriteLine("on the click     : " + onTheClick);
+        _output.WriteLine("after it ended   : " + afterTheRunEnded);
+
+        // ---- the sentence on the click: both halves, named separately ---------
+        Assert.Contains("was going out and Hamlet stopped sending it", onTheClick, StringComparison.Ordinal);
+        Assert.Contains("the radio was told to stop transmitting", onTheClick, StringComparison.Ordinal);
+
+        // ---- the sentence he is left with: both halves, and in seconds --------
+        Assert.StartsWith("Stopped:", afterTheRunEnded, StringComparison.Ordinal);
+        Assert.Contains("seconds", afterTheRunEnded, StringComparison.Ordinal);
+        Assert.Contains("the rest of it did not", afterTheRunEnded, StringComparison.Ordinal);
+        Assert.Contains("The radio was told to stop transmitting.", afterTheRunEnded, StringComparison.Ordinal);
+
+        // NOT IN SAMPLES, AND NOT CLAIMING IT ALL WENT OUT.
+        Assert.DoesNotContain("samples", afterTheRunEnded, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("did not send", afterTheRunEnded, StringComparison.Ordinal);
+    }
+
     // ---- no radio: not a crash and not a lie ------------------------------
 
     /// <summary>

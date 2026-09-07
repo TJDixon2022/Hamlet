@@ -195,7 +195,15 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
         _output.WriteLine("the run said       : " + boundary.Run!.Outcome);
 
         Assert.NotNull(stop);
-        Assert.Equal(Ft8StopOutcome.ToldTheRadio, stop!.Outcome);
+
+        // UNIT 263 CHANGED WHAT THIS VALUE MEANS, AND THE BYTES BELOW ARE
+        // UNCHANGED. The stop lands after the boundary has committed to a
+        // transmission - the cancellation source is installed under the lock
+        // before anything keys - so it now reports that it stopped a transmission
+        // as well as telling the radio, where before there was nothing it could
+        // have done about the audio and every mid-slot state read alike.
+        Assert.Equal(Ft8StopOutcome.StoppedTheTransmissionAndToldTheRadio, stop!.Outcome);
+        Assert.True(stop.AudioToldToStop);
         Assert.True(stop.AnythingReachedTheRadio);
 
         // The abort's two frames reached the radio BEFORE the keying frame did.
@@ -248,7 +256,11 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
         _output.WriteLine("the run said       : " + boundary.Run!.Outcome);
         _output.WriteLine("came out of transmit: " + boundary.Run.CameOutOfTransmit);
 
-        Assert.Equal(Ft8StopOutcome.ToldTheRadio, stop.Outcome);
+        // UNIT 263 CHANGED WHAT THIS VALUE MEANS. This is the state the new value
+        // exists for: a transmission in progress, told to stop, at a radio that
+        // was told too. The bytes below are unchanged.
+        Assert.Equal(Ft8StopOutcome.StoppedTheTransmissionAndToldTheRadio, stop.Outcome);
+        Assert.True(stop.AudioToldToStop);
         Assert.True(stop.AnythingReachedTheRadio);
 
         // BOTH FRAMES ATTEMPTED, BOTH LANDED, WHILE THE RADIO WAS STILL KEYED.
@@ -345,7 +357,16 @@ public sealed class TheOperatorsStopFiresFromEveryStateTests
         _output.WriteLine("the run said       : " + boundary.Run!.Outcome);
 
         Assert.NotNull(stop);
-        Assert.Equal(Ft8StopOutcome.ToldTheRadio, stop!.Outcome);
+
+        // UNIT 263 CHANGED WHAT THIS VALUE MEANS, and it is worth being exact
+        // about why here: the audio has finished, but the run has not, so the
+        // cancellation source is still installed and the stop cancels it. **What
+        // the value claims is that the audio was told to stop, not that anything
+        // was still playing** - Ft8StopResult.AudioToldToStop is named for that
+        // distinction, and telling a finished transmission to stop costs a flag
+        // write and changes nothing, exactly as firing the abort at a radio
+        // already in receive does. The bytes below are unchanged.
+        Assert.Equal(Ft8StopOutcome.StoppedTheTransmissionAndToldTheRadio, stop!.Outcome);
         Assert.True(stop.AnythingReachedTheRadio);
         Assert.Equal(new[] { KeyOn, CwStop, PttOff, PttOff }, Wire(port));
     }

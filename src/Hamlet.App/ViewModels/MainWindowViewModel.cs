@@ -8285,10 +8285,36 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>What the Send area says once a boundary has been and gone.</summary>
+    /// <param name="text">What was armed.</param>
+    /// <param name="result">What the boundary did.</param>
+    /// <returns>One line, in the register the rest of this area uses.</returns>
+    /// <remarks>
+    /// <para>**THE CANCELLED CASE IS UNIT 263'S AND IT HAS TO BE HERE, NOT ONLY IN
+    /// <see cref="StopLine"/>.** The stop writes its sentence on the operator's
+    /// thread the instant he clicks; the boundary's own line is posted when the
+    /// run ends, a few milliseconds later, and **overwrites it**. So the last
+    /// sentence he is left looking at is this one, and before this unit it read
+    /// *"Hamlet did not send ...: the transmission was stopped after 40890 of
+    /// 151680 samples"* - the engine's own words, in samples, at an operator.</para>
+    /// <para>**AND IT SAYS WHAT BECAME OF THE CARRIER TOO**, from
+    /// <see cref="TransmitRun.CameOutOfTransmit"/> rather than from an assumption,
+    /// keeping unit 261's rule: a keyed radio with neither route out taken reads as
+    /// something he has to act on and never as safe.</para>
+    /// </remarks>
     private static string WentLine(string text, Ft8BoundaryResult result)
     {
         var run = result.Run!;
         var slot = result.Send!.SlotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+
+        if (run.Outcome == Ft8TransmitOutcome.Cancelled)
+        {
+            return "Stopped: \"" + text + "\" went out for " + HowFarItGot(run)
+                + " in the slot at " + slot + " UTC, and the rest of it did not. "
+                + (run.CameOutOfTransmit == UnkeyRoute.NothingReachedTheRadio
+                    ? "Nothing Hamlet sent to stop the radio got out - if it is still "
+                      + "transmitting, stop it at the radio."
+                    : "The radio was told to stop transmitting.");
+        }
 
         if (run.Outcome == Ft8TransmitOutcome.RefusedByLicence)
         {
@@ -8303,6 +8329,30 @@ public partial class MainWindowViewModel : ObservableObject
 
         return "Sent " + Addressed(text) + "\"" + text + "\" in the slot at "
             + slot + " UTC.";
+    }
+
+    /// <summary>How much of a stopped transmission went out, in seconds.</summary>
+    /// <param name="run">What the sequence did.</param>
+    /// <returns>Something like <c>"about 3.4 of its 12.6 seconds"</c>.</returns>
+    /// <remarks>
+    /// **SECONDS, BECAUSE THAT IS WHAT AN OPERATOR HAS** (§0.7). The number he
+    /// wants is how much of his twelve seconds got onto the band before he stopped
+    /// it, and "40890 of 151680 samples" is that number written in a unit belonging
+    /// to the inside of the program. **"About", because it is honestly about**: the
+    /// sink reports what the endpoint consumed, and the tail of it was still in
+    /// the air when this sentence was written.
+    /// </remarks>
+    private static string HowFarItGot(TransmitRun run)
+    {
+        if (run.Played is not { } played || run.SamplesOffered <= 0)
+        {
+            return "part of its slot";
+        }
+
+        var seconds = played.SamplesPlayed / (double)run.SamplesOffered * run.SecondsOffered;
+
+        return "about " + seconds.ToString("F1", CultureInfo.InvariantCulture) + " of its "
+            + run.SecondsOffered.ToString("F1", CultureInfo.InvariantCulture) + " seconds";
     }
 
     /// <summary>What the Send area says while a transmission is armed.</summary>
@@ -8434,11 +8484,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="refusal">Which half is missing, as the connect wrote it.</param>
     /// <returns>One line, in the register the refusals in this area already use.</returns>
     /// <remarks>
-    /// **THE ONE THAT MATTERS IS THE THIRD.** An abort whose frames did not reach
-    /// the radio is the only state in which the operator has to do something
+    /// <para>**THE ONE THAT MATTERS IS THE THIRD.** An abort whose frames did not
+    /// reach the radio is the only state in which the operator has to do something
     /// himself, and it is said plainly rather than folded into the success
     /// sentence - which is the defect unit 253 found in <c>AbortCw</c>, where a
-    /// failed abort and a successful one left the same trace.
+    /// failed abort and a successful one left the same trace.</para>
+    /// <para>**AND SINCE UNIT 263 IT SAYS WHAT HAPPENED TO BOTH HALVES.** Until
+    /// then this line said *"Stopped"* while Hamlet went on feeding the rest of a
+    /// 12.64 second transmission into a radio it had just unkeyed - **a sentence
+    /// that says "stopped" when only half of it stopped**, which is §0.0 broken by
+    /// a word. The two halves are named separately because they can genuinely
+    /// differ: the frames can fail while the sound stops, and that is the state in
+    /// which the operator has to walk to the radio.</para>
+    /// <para>**"HAMLET STOPPED SENDING" RATHER THAN "THE SOUND STOPPED"** (§0.0).
+    /// What the stop can honestly claim is that it told the audio path to stop, on
+    /// the calling thread, and the sink notices at the top of its next loop -
+    /// measured at 15 ms against the fake at real time. It is not in a position to
+    /// assert that the last sample has left the sound card, so it does not say so.
+    /// </para>
     /// </remarks>
     private static string StopLine(string text, Ft8StopResult? stop, string refusal)
     {
@@ -8452,9 +8515,13 @@ public partial class MainWindowViewModel : ObservableObject
                 + " Nothing here has a way to key a radio.";
         }
 
-        var what = stop.Unarmed
-            ? "\"" + text + "\" was taken off before its slot and will not go out"
-            : "nothing was waiting for a slot";
+        // THE TRANSMISSION IN PROGRESS OUTRANKS THE ONE WAITING FOR A SLOT,
+        // because it is the one already going out over other people's band.
+        var what = stop.AudioToldToStop
+            ? "\"" + text + "\" was going out and Hamlet stopped sending it part way through"
+            : stop.Unarmed
+                ? "\"" + text + "\" was taken off before its slot and will not go out"
+                : "nothing was waiting for a slot";
 
         if (stop.Abort is null)
         {
@@ -8464,7 +8531,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (!stop.AnythingReachedTheRadio)
         {
-            return "Hamlet told the radio to stop and neither frame got out: "
+            // THE HALF THAT WORKED IS STILL SAID, because "Hamlet stopped sending
+            // the tones" and "the radio may still be keyed" are both true here and
+            // the second is the one he has to act on.
+            return (stop.AudioToldToStop
+                    ? "Hamlet stopped sending the tones, but "
+                    : "Hamlet ")
+                + "told the radio to stop and neither frame got out: "
                 + (stop.Abort.PttOff.Failure ?? stop.Abort.CwStop.Failure
                     ?? "the port took nothing")
                 + ". If it is still transmitting, stop it at the radio.";

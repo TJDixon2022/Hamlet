@@ -58,6 +58,31 @@ public enum Ft8StopOutcome
 
     /// <summary>Both: an armed send was taken away *and* the radio was told.</summary>
     UnarmedAndToldTheRadio,
+
+    /// <summary>
+    /// A transmission was going out and was told to stop, and there was no port
+    /// to tell as well.
+    /// </summary>
+    /// <remarks>
+    /// **THE SIXTH STATE, AND IT DID NOT EXIST UNTIL UNIT 263** because there was
+    /// nothing that could stop a transmission's audio. Everything mid-slot read as
+    /// <see cref="ToldTheRadio"/>, which was true and was half the story: the
+    /// carrier came off and Hamlet went on feeding the radio for the rest of the
+    /// 12.64 seconds.
+    /// </remarks>
+    StoppedTheTransmission,
+
+    /// <summary>
+    /// **Both halves of a transmission in progress**: the audio was told to stop
+    /// and the radio was told to stop.
+    /// </summary>
+    /// <remarks>
+    /// The state an operator who presses stop mid-slot is actually in, and the one
+    /// this unit exists to be able to report. It is distinguished from
+    /// <see cref="ToldTheRadio"/> precisely because those two used to be the same
+    /// value while being very different situations.
+    /// </remarks>
+    StoppedTheTransmissionAndToldTheRadio,
 }
 
 /// <summary>What one press of the operator's stop did, in full.</summary>
@@ -72,8 +97,14 @@ public enum Ft8StopOutcome
 /// reduced to a boolean**, because the operator's next question after "did it
 /// stop" is "did anything reach the radio".
 /// </param>
-/// <param name="AudioStopped">
-/// True where there was a transmission playing and it was told to stop.
+/// <param name="AudioToldToStop">
+/// True where a transmission was in progress and its audio was told to stop.
+/// **"Told to", not "stopped"** (§0.0): the sink polls the flag at the top of
+/// its own loop, on its own thread, so what this can honestly claim is that the
+/// message was sent and not that the last sample has left the card. How long
+/// that takes is measured rather than assumed - 15 ms against the fake at real
+/// time, and <c>WasapiTransmitSink</c>'s own arithmetic in
+/// <c>docs/unit263-stop-audio-trace.md</c> Q3 for the endpoint.
 /// </param>
 /// <remarks>
 /// <para>**THREE FACTS, NOT TWO** (work instruction 263, task 4). Until this unit
@@ -83,20 +114,36 @@ public enum Ft8StopOutcome
 /// a 12.64 second transmission into a radio it had just unkeyed, and **a sentence
 /// that says "stopped" when only half of it stopped is the failure this record
 /// exists to prevent** (§0.0.1).</para>
-/// <para>**FALSE IS NOT THE SAME AS "FAILED".** <see cref="AudioStopped"/> is
+/// <para>**FALSE IS NOT THE SAME AS "FAILED".** <see cref="AudioToldToStop"/> is
 /// false both when nothing was playing - the ordinary case, an operator changing
 /// his mind before the boundary - and when the cancel itself would not take.
 /// <see cref="Outcome"/> tells those apart by reading it beside
 /// <see cref="Unarmed"/>.</para>
 /// </remarks>
-public sealed record Ft8StopResult(bool Unarmed, AbortRecord? Abort, bool AudioStopped)
+public sealed record Ft8StopResult(bool Unarmed, AbortRecord? Abort, bool AudioToldToStop)
 {
-    /// <summary>Which of the four this was.</summary>
-    public Ft8StopOutcome Outcome => (Unarmed, Abort is not null) switch
+    /// <summary>Which of the six this was.</summary>
+    /// <remarks>
+    /// <para>**THE AUDIO IS READ FIRST, BECAUSE IT IS THE ONE THAT MEANS THE
+    /// RADIO WAS ON THE AIR.** A stop that found a transmission running is a
+    /// different event from one that found a send waiting for its boundary, and
+    /// until unit 263 they were the same value - during a transmission
+    /// <c>_armed</c> is already null, so a mid-slot stop reported itself as
+    /// <see cref="Ft8StopOutcome.ToldTheRadio"/>, indistinguishable from a stop
+    /// pressed at an idle radio.</para>
+    /// <para>**<see cref="Unarmed"/> AND <see cref="AudioToldToStop"/> ARE NEVER
+    /// BOTH TRUE IN THE SHIPPED TREE** - the field is cleared under the lock
+    /// before anything keys - and the discards above say what would be reported if
+    /// they ever were: a transmission in progress outranks a send that has not
+    /// keyed, because it is the one already on somebody else's band.</para>
+    /// </remarks>
+    public Ft8StopOutcome Outcome => (Unarmed, Abort is not null, AudioToldToStop) switch
     {
-        (true, true) => Ft8StopOutcome.UnarmedAndToldTheRadio,
-        (true, false) => Ft8StopOutcome.Unarmed,
-        (false, true) => Ft8StopOutcome.ToldTheRadio,
+        (_, true, true) => Ft8StopOutcome.StoppedTheTransmissionAndToldTheRadio,
+        (_, false, true) => Ft8StopOutcome.StoppedTheTransmission,
+        (true, true, false) => Ft8StopOutcome.UnarmedAndToldTheRadio,
+        (true, false, false) => Ft8StopOutcome.Unarmed,
+        (false, true, false) => Ft8StopOutcome.ToldTheRadio,
         _ => Ft8StopOutcome.NothingToStop,
     };
 
@@ -300,9 +347,9 @@ public sealed class Ft8ArmedSend
             ? null
             : TransmitAbort.Fire(port, radioAddress, controllerAddress);
 
-        var audioStopped = StopTheAudio();
+        var audioToldToStop = StopTheAudio();
 
-        return new Ft8StopResult(unarmed, abort, audioStopped);
+        return new Ft8StopResult(unarmed, abort, audioToldToStop);
     }
 
     /// <summary>Tells a running transmission's audio to stop.</summary>
