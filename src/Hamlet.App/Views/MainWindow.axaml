@@ -3634,7 +3634,7 @@
                                          declaration, because it checks the result
                                          rather than the intent. -->
                                     <Grid Grid.Row="1"
-                                          ColumnDefinitions="76,48,48,54,*"
+                                          ColumnDefinitions="76,48,48,54,Auto,*"
                                           RowDefinitions="Auto"
                                           IsVisible="{Binding HasDigitalDecodes}">
 
@@ -3659,7 +3659,7 @@
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <TextBlock Grid.Row="0" Grid.Column="4" Text="message"
+                                        <TextBlock Grid.Row="0" Grid.Column="5" Text="message"
                                                    ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
@@ -3751,7 +3751,7 @@
                                                      with and offer `RRR` as a first
                                                      send after it had already gone
                                                      twice. -->
-                                                <Grid ColumnDefinitions="76,48,48,54,*"
+                                                <Grid ColumnDefinitions="76,48,48,54,Auto,*"
                                                       Background="Transparent"
                                                       ContextRequested="OnDecodedRowContextRequested">
                                                     <TextBlock Grid.Column="0" Text="{Binding Utc}"
@@ -3794,7 +3794,20 @@
                                                          exactly as it arrived rather
                                                          than being split at a boundary
                                                          nobody found. -->
-                                                    <StackPanel Grid.Column="4"
+                                                    <!-- **A STATION ALREADY IN THE LOG IS MARKED, NOT HIDDEN**
+                                                         (Tim, 2026-09-07). Working somebody twice is his choice,
+                                                         on another band or another day, so nothing is disabled,
+                                                         sorted away or taken off the list. The mark says when and
+                                                         on what band on hover, and it takes no width at all on a
+                                                         row it has nothing to say about. -->
+                                                    <TextBlock Grid.Column="4" Text="worked"
+                                                               IsVisible="{Binding HasWorkedBefore}"
+                                                               ToolTip.Tip="{Binding WorkedBefore}"
+                                                               FontSize="10" VerticalAlignment="Center"
+                                                               Margin="0,1,8,1"
+                                                               Foreground="{StaticResource HmGreenBrush}" />
+
+                                                    <StackPanel Grid.Column="5"
                                                                 Orientation="Horizontal"
                                                                 Spacing="0"
                                                                 IsVisible="{Binding HasFields}">
@@ -3822,7 +3835,7 @@
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                     </StackPanel>
 
-                                                    <TextBlock Grid.Column="4" Text="{Binding Unsplit}"
+                                                    <TextBlock Grid.Column="5" Text="{Binding Unsplit}"
                                                                IsVisible="{Binding !HasFields}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
 
@@ -3966,7 +3979,19 @@
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
                                                                        Margin="0,1,0,1" />
 
-                                                            <!-- **THE CONTACT COLUMN LIVES HERE NOW**, on its
+                                                            <!-- **THE SAME MARK THE LEFT LIST CARRIES**, so a station he
+                                     has worked is obvious wherever it appears (Tim,
+                                     2026-09-07). It sits on the contact line rather than in a
+                                     column of its own, because this side is half the width the
+                                     one list had and the message is what must not be
+                                     squeezed. -->
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="worked"
+                                           IsVisible="{Binding HasWorkedBefore}"
+                                           ToolTip.Tip="{Binding WorkedBefore}"
+                                           FontSize="10" Margin="0,0,14,4"
+                                           Foreground="{StaticResource HmGreenBrush}" />
+
+                                <!-- **THE CONTACT COLUMN LIVES HERE NOW**, on its
                                                                  own line under the message rather than in a
                                                                  column of its own, because this side is half
                                                                  the width the one list had and the message is

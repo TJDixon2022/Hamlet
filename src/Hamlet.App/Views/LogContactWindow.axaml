@@ -1,0 +1,111 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        x:Class="Hamlet.App.Views.LogContactWindow"
+        x:DataType="vm:LogContactViewModel"
+        Title="Log this contact"
+        Width="560" Height="640"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <Window.Styles>
+        <!-- **OBSERVED AND NOT OBSERVED READ DIFFERENTLY BY MORE THAN COLOUR**
+             (§0.6). The observed value is the panel's ordinary ink; a field
+             Hamlet did not hear is italic and muted AND says so in words, so the
+             distinction survives a greyscale print and a reader who cannot make
+             out the tint. -->
+        <Style Selector="TextBlock.hm-heard">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="Consolas,Menlo,monospace" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.hm-unheard">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontStyle" Value="Italic" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="18">
+
+        <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,12">
+            <TextBlock Text="Log this contact" FontSize="17" FontWeight="SemiBold"
+                       Foreground="{StaticResource HmGreenBrush}" />
+
+            <!-- **WHAT IS BELOW IS WHAT THE RADIO HEARD, AND IT IS NOT EDITABLE
+                 HERE.** Tim's ruling: Hamlet populates what it can and the
+                 operator adds notes. Nothing typed overwrites anything
+                 observed, and the surest way to keep that true is that there is
+                 nowhere to type over it. -->
+            <TextBlock x:Name="LogContactSummary"
+                       Text="{Binding Summary}"
+                       FontSize="12" TextWrapping="Wrap"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="LogContactFields" ItemsSource="{Binding Fields}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LogField">
+                        <Grid ColumnDefinitions="140,*" Margin="0,0,0,8">
+                            <StackPanel Grid.Column="0" Spacing="1">
+                                <TextBlock Text="{Binding Label}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                <TextBlock Text="{Binding AdifField}"
+                                           FontSize="10"
+                                           FontFamily="Consolas,Menlo,monospace"
+                                           Foreground="{StaticResource HmSlateEdgeBrush}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="2">
+                                <TextBlock Classes="hm-heard"
+                                           Text="{Binding Value}"
+                                           IsVisible="{Binding Observed}"
+                                           TextWrapping="Wrap" />
+
+                                <!-- **IT SAYS WHY IT IS EMPTY** rather than being
+                                     an empty box that reads as one he forgot to
+                                     fill. It will be left out of the file
+                                     entirely rather than written blank. -->
+                                <TextBlock Classes="hm-unheard"
+                                           Text="{Binding Shown}"
+                                           IsVisible="{Binding !Observed}"
+                                           TextWrapping="Wrap" />
+
+                                <TextBlock Text="heard by Hamlet"
+                                           IsVisible="{Binding Observed}"
+                                           FontSize="10"
+                                           Foreground="{StaticResource HmGreenBrush}" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Spacing="4" Margin="0,12,0,0">
+            <TextBlock Text="Your notes" FontSize="12"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+            <TextBlock Text="Yours, and nothing above is changed by what you write here. It goes in the ADIF COMMENT field."
+                       FontSize="11" TextWrapping="Wrap"
+                       Foreground="{StaticResource HmSlateEdgeBrush}" />
+            <TextBox x:Name="LogContactNotes"
+                     Text="{Binding Notes, Mode=TwoWay}"
+                     AcceptsReturn="True"
+                     Height="80"
+                     TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8"
+                    HorizontalAlignment="Right" Margin="0,14,0,0">
+            <!-- **CANCEL WRITES NOTHING**, and it is a plain close: the window
+                 never touches a file, and the caller writes only where Save was
+                 pressed. -->
+            <Button x:Name="LogContactCancel" Content="Cancel" Padding="16,5"
+                    Click="OnCancel" />
+            <Button x:Name="LogContactSave" Content="Save to log" Padding="16,5"
+                    Click="OnSave" />
+        </StackPanel>
+    </Grid>
+</Window>

@@ -201,6 +201,31 @@ public partial class MainWindow : Window
             flyout.Items.Add(Note(vm.DigitalSendLicenceLine));
         }
 
+        // **`Log` JOINS THE MENU STEP B BUILT RATHER THAN GETTING ONE OF ITS OWN**
+        // (work instruction 274 task 3). A second right-click menu on the same row
+        // is two menus that can disagree about what a row offers.
+        //
+        // **ONLY ON A ROW ADDRESSED TO HIM.** `CanLogRow` asks
+        // `Ft8MessageSplit.IsAddressedTo`, the same question the mine side and the
+        // contact column ask; a Log item on a CQ would offer to write down a
+        // contact that has not happened.
+        //
+        // **IT IS NOT A SEND OPTION AND CARRIES A DIFFERENT COMMAND.** Everything
+        // above hands `option.Text` to `SendMessageCommand`, which arms a
+        // transmission. This opens a dialog and transmits nothing, so it is
+        // separated by a rule the eye can see as well as by its wording.
+        if (vm.CanLogRow(row))
+        {
+            flyout.Items.Add(new Separator());
+
+            flyout.Items.Add(new MenuItem
+            {
+                Header = "Log this contact...",
+                Command = vm.LogContactCommand,
+                CommandParameter = row,
+            });
+        }
+
         return flyout;
     }
 

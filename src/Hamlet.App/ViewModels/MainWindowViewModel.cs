@@ -7883,6 +7883,15 @@ public partial class MainWindowViewModel : ObservableObject
         // contact stands.
         row = row with { Contact = ContactTextFor(row) };
 
+        // **THE LOG IS READ ONCE AND KEPT, NOT ONCE PER DECODE** (task 5's own
+        // concern). Fourteen messages a slot at four slots a minute is fifty-six
+        // of these a minute; a file read behind each would be free tonight and
+        // slow in March. It is re-read only when a contact is logged, which is
+        // the one thing in the application that changes the file.
+        _workedBefore ??= ReadWorkedBefore();
+
+        row.WorkedBefore = WorkedBeforeNote(row.Sender);
+
         _digitalArrivals.Add(row);
         DigitalDecodes.Insert(InsertAt(row), row);
 
@@ -8455,6 +8464,185 @@ public partial class MainWindowViewModel : ObservableObject
                 _settings.Operator.Callsign?.Trim() ?? "",
                 _settings.Operator.GridSquare,
                 MeasuredReport(row));
+    }
+
+    /// <summary>
+    /// Every callsign already in the log, as logged, for the worked-before mark.
+    /// </summary>
+    /// <remarks>
+    /// **READ ONCE AND KEPT, NOT READ PER DECODE** (work instruction 274 task 5's
+    /// own concern). Fourteen messages a slot and four slots a minute is fifty-six
+    /// checks a minute; a file read behind each of them is free tonight and slow in
+    /// March. It is refreshed when a contact is logged, which is the only thing in
+    /// the application that changes the file.
+    /// </remarks>
+    private Dictionary<string, AdifContact>? _workedBefore;
+
+    /// <summary>Re-read the log after it changed.</summary>
+    /// <remarks>
+    /// **THE LAST ENTRY FOR A CALLSIGN WINS**, so the mark says when he last worked
+    /// somebody rather than when he first did.
+    /// </remarks>
+    private void RefreshWorkedBefore()
+    {
+        _workedBefore = ReadWorkedBefore();
+
+        // **ROWS ALREADY ON SCREEN PICK THE MARK UP.** He logs a contact and the
+        // station's other rows from the same evening say *worked* at once, rather
+        // than only the rows that arrive after it.
+        foreach (var row in DigitalDecodes)
+        {
+            row.WorkedBefore = WorkedBeforeNote(row.Sender);
+        }
+    }
+
+    /// <summary>The log, by callsign, with the last entry for each winning.</summary>
+    private static Dictionary<string, AdifContact> ReadWorkedBefore()
+    {
+        var worked = new Dictionary<string, AdifContact>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var entry in ContactLogStore.Read())
+        {
+            if (!string.IsNullOrWhiteSpace(entry.Call))
+            {
+                worked[entry.Call.Trim()] = entry;
+            }
+        }
+
+        return worked;
+    }
+
+    /// <summary>Re-read the log, for a test that wrote to it directly.</summary>
+    internal void ReloadContactLogForTests() => RefreshWorkedBefore();
+
+    /// <summary>What the mark says about a station, or "" where he has not worked it.</summary>
+    /// <remarks>
+    /// <para>**MATCHING IS ON THE CALLSIGN EXACTLY AS LOGGED, AND COMPOUND CALLS
+    /// ARE DIFFERENT STATIONS.** `W4/YV7AXM` and `YV7AXM` are arguably the same
+    /// operator and arguably not: the second is a Venezuelan station at home and
+    /// the first is the same licensee transmitting from Florida, which is a
+    /// different DXCC entity and a different contact to most award programmes. The
+    /// instruction says that where the answer is not certain, treat them as
+    /// different — so a portable form is **not** marked as already worked, and the
+    /// mark under-claims rather than over-claims.</para>
+    /// <para>**IT MARKS AND IT RULES NOTHING.** Working somebody twice is his
+    /// choice, on another band or another day, and nothing here hides, disables or
+    /// sorts away a row.</para>
+    /// </remarks>
+    private string WorkedBeforeNote(string? callsign)
+    {
+        var call = (callsign ?? "").Trim();
+
+        if (call.Length == 0 || _workedBefore is null
+            || !_workedBefore.TryGetValue(call, out var entry))
+        {
+            return "";
+        }
+
+        var when = entry.StartedUtc is { } at
+            ? at.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+            : "a date Hamlet did not record";
+
+        var band = string.IsNullOrWhiteSpace(entry.Band)
+            ? "a band Hamlet did not record"
+            : entry.Band;
+
+        return $"You worked {call} before, on {when}, on {band}.";
+    }
+
+    /// <summary>Whether this row is one the Log item belongs on.</summary>
+    /// <param name="row">The row the mouse was over.</param>
+    /// <returns>True where the message is addressed to the operator.</returns>
+    /// <remarks>
+    /// **THE SAME QUESTION THE MINE SIDE AND THE CONTACT COLUMN ASK**, and asked
+    /// of the one place that answers it (§0). A Log item on a CQ would offer to
+    /// write down a contact that has not happened.
+    /// </remarks>
+    public bool CanLogRow(DigitalDecodeRow? row)
+        => row is not null
+           && Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
+
+    /// <summary>Open the Log dialog for one row, and write it if he saves.</summary>
+    /// <param name="row">The row the mouse was over.</param>
+    /// <remarks>
+    /// <para>**IT TRANSMITS NOTHING AND TOUCHES NO SEND PATH.** Logging is
+    /// bookkeeping over messages that already passed.</para>
+    /// <para>**THE DIAL IS READ NOW AND SHOWN, NOT ASSUMED** (task 1's second
+    /// finding). The frequency here is where the radio is **when he right-clicks**,
+    /// which is not necessarily where the contact happened if he has retuned
+    /// since. Rather than record a band he may not have worked the station on, the
+    /// dialog shows the frequency it is about to write and he can see it before he
+    /// saves. Hamlet does not know the contact's own dial: the row carries its slot
+    /// and not the tuning, and inventing one would be §0.0 exactly.</para>
+    /// <para>**CANCEL WRITES NOTHING**, which is guaranteed by this method writing
+    /// only where the dialog says Save was pressed. The window never touches a
+    /// file.</para>
+    /// </remarks>
+    [RelayCommand]
+    private async Task LogContactAsync(DigitalDecodeRow? row)
+    {
+        if (row is null || _contacts is null || !CanLogRow(row))
+        {
+            return;
+        }
+
+        var record = _contacts.For(row.Sender);
+
+        if (record is null)
+        {
+            return;
+        }
+
+        var hz = FrequencyHz;
+        var band = HfBands.BandFor(hz);
+
+        var entry = Ft8ContactLogEntry.For(
+            record,
+            _settings.Operator.Callsign,
+            new Ft8StationConditions(
+                hz,
+                band?.Name,
+                "FT8",
+                _settings.Operator.GridSquare));
+
+        var model = new LogContactViewModel(
+            entry,
+            hz > 0
+                ? (hz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture)
+                  + " MHz, where the dial is now"
+                : "");
+
+        if (Application.Current?.ApplicationLifetime
+            is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow is null)
+        {
+            return;
+        }
+
+        await new Views.LogContactWindow { DataContext = model }
+            .ShowDialog(desktop.MainWindow);
+
+        if (!model.Saved)
+        {
+            return;
+        }
+
+        var written = ContactLogStore.Append(model.Entry, AboutViewModel.AppVersion);
+
+        // **A FAILED WRITE IS SAID OUT LOUD.** A log entry that silently did not
+        // land is worse than one that never existed: he would believe the contact
+        // was written down (§0.0.1).
+        _digitalDecodeNote = written
+            ? $"Logged {entry.Call} to {ContactLogStore.LogPath}."
+            : "Hamlet could not write to the contact log at "
+              + ContactLogStore.LogPath + ", so nothing was logged.";
+
+        if (written)
+        {
+            RefreshWorkedBefore();
+        }
+
+        RaiseDigitalDecodeChanges();
     }
 
     /// <summary>The row's own ratio, in whole decibels, or null where none.</summary>

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel;
+using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
 
@@ -87,7 +88,53 @@ public sealed record DigitalDecodeRow(
     string ObserverGrid = "",
     DateTime SlotStartUtc = default,
     string Contact = "")
+    : INotifyPropertyChanged
 {
+    private string _workedBefore = "";
+
+    /// <summary>What the log says about this sender, or "".</summary>
+    /// <remarks>
+    /// <para>**MARKED, NOT HIDDEN AND NOT DISABLED** (Tim's ruling, 2026-09-07).
+    /// Working somebody twice is his choice, on another band or another day, and
+    /// nothing about this row changes except that it says so.</para>
+    /// <para>**THE ONE MUTABLE THING ON THIS RECORD, AND IT IS SET IN ONE PLACE.**
+    /// A row is born before the log is consulted and again after a contact is
+    /// written, so this is assigned by `MainWindowViewModel.RefreshWorkedBefore`
+    /// rather than being part of what the row is. It raises its own change so a
+    /// row already on screen picks up the mark the moment the log gains an entry.
+    /// </para>
+    /// </remarks>
+    public string WorkedBefore
+    {
+        get => _workedBefore;
+        set
+        {
+            if (_workedBefore == value)
+            {
+                return;
+            }
+
+            _workedBefore = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkedBefore)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasWorkedBefore)));
+        }
+    }
+
+    /// <summary>True where the log already holds this station.</summary>
+    public bool HasWorkedBefore => _workedBefore.Length > 0;
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// **IT CAME BACK FOR THE WORKED-BEFORE MARK** (work instruction 274 task 4).
+    /// Unit 252 took `INotifyPropertyChanged` off this record when the dimming it
+    /// existed for was removed, on the reasoning that an event nobody raises is a
+    /// promise the type cannot keep. Something raises one again: a row is drawn
+    /// before the log is consulted, and again after he logs a contact, and without
+    /// this the mark would appear only on rows that arrive afterwards.
+    /// </remarks>
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     /// <summary>What the `snr` cell says for a message whose ratio was not measured.</summary>
     /// <remarks>
     /// **NOT "while nothing measures one" ANY MORE.** Something does, since unit
