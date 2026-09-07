@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 259 - right-click, and it goes
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:07:05-04:00
-NOTE: Trace written, all six questions answered, and the predicted menus for the five stations are down on paper before any option list exists. Two findings: no seam reaches an ISerialPort today and the app keeps no reference to the port it constructs, and the live settings.json is outside the working directory so both tools refused it - the source defaults are recorded instead. Baseline build next, then commit before task 2 starts.
+UPDATED: 2026-09-06T23:14:20-04:00
+NOTE: The red was watched and quoted - K9RST reads complete and the expected-only list offered it nothing at all, Expected 5 Actual 0, no 73 and no second grid. The whole list then went in and all eight tests are green: NUMBER is 5 of 5, every station matching the set committed at 495a499 before the type existed. Nine verbs checked by reflection over four types; nothing can withhold an option. Task 3, the dangerous one, is next.
 
 ---
 
