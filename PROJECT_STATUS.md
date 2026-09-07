@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: DONE
 TASK: 5 of 5
 WORK_INSTRUCTION: 259 - right-click, and it goes
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T23:27:30-04:00
-NOTE: The named drop candidate, the row's ContextFlyout markup, is dropped and everything else stands. The greps are quoted: new Ft8TransmitSequence appears nowhere in src, _sequence.RunAsync appears once, Arm once, RecordSent once, and nothing added names PTT, CI-V or TransmitAbort. outcome-append.bat was refused for the seventh consecutive unit and the twelve-field entry was hand-written ASCII-only with the header's STEP 5 moved to partial. Writing output.md now.
+UPDATED: 2026-09-06T23:31:20-04:00
+NOTE: All five tasks done, committed and pushed; 26 new tests green and the build clean. NUMBER is 5 of 5 - every station's menu matched the set committed before the option list existed. Step 5 goes from not started to partial: criteria 1, 4, 5 and 6 met, criterion 2 met in substance with the named drop candidate dropped, criterion 3 met on the fake port and sink with the last mile named as step 6's. Both dangerous defaults were watched failing first and quoted. validate-output.bat was refused in two more forms and could not be started, so output.md was checked by hand against all seven rules the script itself prints; no exit code is quoted. Section 4 raises nothing.
 
 ---
 
