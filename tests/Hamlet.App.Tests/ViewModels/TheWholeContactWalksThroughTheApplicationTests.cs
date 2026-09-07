@@ -224,6 +224,114 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
         Assert.Contains(Iso(second.SlotUtc), slotsOnDisk);
     }
 
+    /// <summary>
+    /// **The transmitted slot, read back out of the application's own file - and
+    /// it names nobody.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 264, task 4. **The breakage this would have caught:**
+    /// the transmit record is written to a telemetry instance the application
+    /// never gives the sequence, or to a category the operator's settings switch
+    /// off, so the file Tim sends back after his contact has nothing in it.</para>
+    /// <para>**THE WRITER IS THE APPLICATION'S**, built by <see cref="Panel"/>
+    /// with the four arguments <c>App.axaml.cs:38-43</c> passes, including the
+    /// enabled-category predicate off a real <see cref="AppSettings"/> and the
+    /// byte cap - **not** the `_ => true` the engine's own
+    /// <c>WhereTheTransmissionStartsAndWhatTheRecordSaysTests</c> uses, which
+    /// cannot refuse and therefore says nothing about the operator's switches
+    /// (`docs/unit264-whole-contact-trace.md`, question 5).</para>
+    /// <para>**AND IT ASSERTS HM-DEC-018 RATHER THAN TRUSTING IT.** The raw text
+    /// of the line is searched for both callsigns, the grid and the whole message,
+    /// case-insensitively, and each must be absent. <see cref="TransmitRecord"/>'s
+    /// own rule is that the record carries when a slot went out, where, how long
+    /// for and how the radio came out of transmit - **never message content and
+    /// never a callsign** - and a rule nobody has watched hold is not a rule.</para>
+    /// <para>**FACT-004. Every figure below was measured on the development
+    /// machine**, which has never had a radio attached to it. Nothing was opened,
+    /// nothing was keyed and no sound was made: the port is a fake and the sink
+    /// arrives through the substituted factory. **None of it says anything about
+    /// the IC-7300's USB codec.**</para>
+    /// </remarks>
+    [Fact]
+    public async Task OneSendLeavesOneLineOnDiskAndTheLineNamesNobody()
+    {
+        var (panel, settings, _, telemetry) = Panel();
+        var port = new FakePort();
+
+        settings.AudioOutputDeviceId = NamedEndpoint;
+        panel.BuildTheArmedSend(port);
+
+        Assert.True(panel.HasSomethingToTransmitThrough, panel.DigitalSendLine);
+
+        var cq = Heard(
+            panel, Ft8Slots.SlotStart(DateTime.UtcNow), "-14", "CQ " + His + " EM12");
+
+        var sent = await ClickAsync(panel, cq, Ft8SendShape.Grid);
+
+        Assert.Equal(Ft8ArmOutcome.Ran, sent.Result.Outcome);
+        Assert.True(sent.Result.Run!.Sent, sent.Result.Run.Reason);
+
+        telemetry.Dispose();
+
+        // ---- 1. THE LINE IS ON DISK, FOUND BY ITS EVENT NAME.
+        var lines = TransmitLines();
+
+        _output.WriteLine("MEASURED, development machine, FACT-004:");
+        _output.WriteLine("  folder : " + _folder);
+        _output.WriteLine("  files  : " + string.Join(", ",
+            Directory.GetFiles(_folder, "*.jsonl").Select(Path.GetFileName)));
+
+        var line = Assert.Single(lines);
+
+        _output.WriteLine("  line   : " + line);
+
+        using var doc = JsonDocument.Parse(line);
+        var root = doc.RootElement;
+
+        Assert.Equal(TransmitRecord.EventName, root.GetProperty("event").GetString());
+        Assert.Equal("transmit", root.GetProperty("category").GetString());
+
+        // ---- 2. THE SLOT TIME AND THE DURATION ARE THE ONES THAT WENT OUT.
+        var data = root.GetProperty("data");
+
+        var slotOnDisk = data.GetProperty("slotStartUtc").GetString();
+        var secondsOnDisk = data.GetProperty("durationSeconds").GetDouble();
+        var samplesOnDisk = data.GetProperty("sampleCount").GetInt32();
+        var rateOnDisk = data.GetProperty("sampleRate").GetInt32();
+
+        _output.WriteLine("  slot armed     : " + Iso(sent.SlotUtc));
+        _output.WriteLine("  slot on disk   : " + slotOnDisk);
+        _output.WriteLine("  seconds offered: " + sent.Result.Run.SecondsOffered);
+        _output.WriteLine("  seconds on disk: " + secondsOnDisk);
+        _output.WriteLine("  samples offered: " + sent.Result.Run.SamplesOffered);
+        _output.WriteLine("  samples on disk: " + samplesOnDisk);
+        _output.WriteLine("  rate on disk   : " + rateOnDisk);
+
+        Assert.Equal(Iso(sent.SlotUtc), slotOnDisk);
+        Assert.Equal(sent.Result.Run.SecondsOffered, secondsOnDisk, 6);
+        Assert.Equal(sent.Result.Run.SamplesOffered, samplesOnDisk);
+
+        // ---- 3. IT NAMES NOBODY AND REPEATS NOTHING. HM-DEC-018.
+        string[] mustNotAppear =
+        [
+            Mine, His, "FN00", "EM12", His + " " + Mine + " FN00", "CQ " + His + " EM12",
+        ];
+
+        foreach (var forbidden in mustNotAppear)
+        {
+            _output.WriteLine("  absent \"" + forbidden + "\": "
+                + !line.Contains(forbidden, StringComparison.OrdinalIgnoreCase));
+
+            Assert.DoesNotContain(forbidden, line, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // AND THE ONE THING IT DOES SAY ABOUT THE MESSAGE IS A COUNT, WHICH THE
+        // RULING NAMES EXPLICITLY.
+        Assert.Equal(
+            (His + " " + Mine + " FN00").Length,
+            data.GetProperty("messageLength").GetInt32());
+    }
+
     /// <summary>Waits for the wall clock to reach a slot, and says which it is.</summary>
     /// <param name="wantedUtc">The slot boundary to wait for.</param>
     /// <returns>The slot the clock is in once it has arrived.</returns>
