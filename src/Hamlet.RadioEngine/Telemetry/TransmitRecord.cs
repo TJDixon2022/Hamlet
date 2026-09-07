@@ -14,9 +14,9 @@ namespace Hamlet.RadioEngine.Telemetry;
 /// count, the duration, the frequency and the mode make the transmission fully
 /// diagnosable and identify nobody"*. That is what this record holds.</para>
 /// <para>**THE SHAPE REFUSES RATHER THAN THE CALL SITE REMEMBERING.** Not one of
-/// its parameters is a string. A moment, five numbers, three enumerations and a
-/// flag - so <c>Ft8Transmission.Text</c> and <c>ReadsBackAs</c> have nowhere to
-/// be put, not by accident, not in a hurry, and not behind a flag. It is the
+/// its parameters is a string. A moment, five numbers, three enumerations and
+/// two flags - so <c>Ft8Transmission.Text</c> and <c>ReadsBackAs</c> have nowhere
+/// to be put, not by accident, not in a hurry, and not behind a flag. It is the
 /// same reasoning that gave <see cref="DecodeWindow"/> nowhere to hold decoded
 /// text, and <c>ATransmitRecordCannotCarryTheMessage</c> asserts it by
 /// reflection rather than by inspection.</para>
@@ -36,8 +36,18 @@ namespace Hamlet.RadioEngine.Telemetry;
 /// the format, never the message.
 /// </param>
 /// <param name="MessageLength">
-/// How many characters the message was. A count identifies nobody; the ruling
-/// names it explicitly.
+/// **How many characters the ENCODED message was** - <c>Ft8Transmission
+/// .ReadsBackAs</c>, the message as its own bits read back, which is what went on
+/// the air. A count identifies nobody; the ruling names it explicitly.
+/// </param>
+/// <param name="CarriedHashedCallsign">
+/// **Whether a callsign travelled as a 22-bit hash rather than as a callsign.**
+/// A receiver can put a name to that hash only if it heard the whole callsign in
+/// the same slot, so a slot carrying one hashed message decodes to nothing at
+/// all - which is what happened twice on a live antenna on 2026-09-07 while the
+/// line for it read <c>messageType: Standard, messageLength: 16</c>. **It is a
+/// flag about the encoding and it names nobody**; which callsign was hashed is
+/// exactly what it does not say.
 /// </param>
 /// <param name="Outcome">How the run ended.</param>
 /// <param name="CameOutOfTransmit">How the radio came back to receive.</param>
@@ -51,6 +61,7 @@ public sealed record TransmitRecord(
     int SampleCount,
     Ft8MessageType MessageType,
     int MessageLength,
+    bool CarriedHashedCallsign,
     Ft8TransmitOutcome Outcome,
     UnkeyRoute CameOutOfTransmit,
     bool Keyed)
@@ -90,6 +101,7 @@ public sealed record TransmitRecord(
             ["sampleCount"] = SampleCount,
             ["messageType"] = MessageType.ToString(),
             ["messageLength"] = MessageLength,
+            ["carriedHashedCallsign"] = CarriedHashedCallsign,
             ["outcome"] = Outcome.ToString(),
             ["cameOutOfTransmit"] = CameOutOfTransmit.ToString(),
             ["keyed"] = Keyed,

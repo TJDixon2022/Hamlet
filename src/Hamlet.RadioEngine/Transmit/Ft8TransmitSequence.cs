@@ -382,6 +382,15 @@ public sealed class Ft8TransmitSequence
     /// <see cref="TransmitRecord"/> has nowhere to put
     /// <c>Ft8Transmission.Text</c> or <c>ReadsBackAs</c>, which is why the length
     /// is passed and the message is not.</para>
+    /// <para>**AND THE LENGTH IS THE ENCODED MESSAGE'S** (work instruction 272,
+    /// task 3). It was <c>Text.Length</c> - the composed string's, the words the
+    /// operator asked for - which for a message that put a callsign on the wire as
+    /// a hash counted something that was never transmitted. On 2026-09-07 the line
+    /// read <c>messageType: Standard, messageLength: 16</c> for a slot that
+    /// actually carried <c>&lt;CQ KC3QIS&gt; &lt;FN00DJ&gt;</c> and decoded to
+    /// nothing. **A length that measures the wrong thing is worse than no
+    /// length**, so it counts <c>ReadsBackAs</c>, and the flag beside it says
+    /// which kind of message went out.</para>
     /// <para>A refusal is recorded too, with nothing offered and nothing keyed. A
     /// transmission that did not happen because the licence gate said no is worth
     /// exactly as much to somebody reading the log as one that did.</para>
@@ -396,7 +405,8 @@ public sealed class Ft8TransmitSequence
             send.Transmission.SampleRate,
             run.SamplesOffered,
             send.Transmission.Type,
-            send.Transmission.Text.Length,
+            send.Transmission.ReadsBackAs.Length,
+            send.Transmission.CarriesHashedCallsign,
             run.Outcome,
             run.CameOutOfTransmit,
             run.Keyed);
