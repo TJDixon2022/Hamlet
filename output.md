@@ -1,366 +1,360 @@
 READ IN THIS ORDER
 
-A. THE PHASE GOAL. Hamlet works stations on the air - Tim answers a CQ on 14.074
-or 7.074 from Hamlet and completes an exchange. After tonight: step 0 `done` and
-step A `done`, both closed by unit 266. **Step B is `done`** - this unit, all four
-must-pass criteria met on runs tonight, nothing deferred to Tim. Step C `not
-started` - the whole chain from one right-click at the bench, and task 5 names its
-pieces without building them. Steps D and E `not started` and both are Tim's, at
-the radio: the drive level his IC-7300 wants, and working a station.
+A. THE PHASE GOAL. **Hamlet works stations on the air** - Tim answers a CQ on
+14.074 or 7.074 from Hamlet and completes an exchange. Where every step stands
+after tonight: **step 0** *the record is honest about where the phase stands* -
+`done` before this unit began, by unit 266. **Step A** *the row knows where the
+contact stands* - `done` before this unit began, by unit 266. **Step B**
+*right-click and it goes* - `done` before this unit began, by unit 267, all four
+criteria on runs. **Step C** *the whole chain runs from one click, at the bench* -
+**this unit leaves it `done`**, all four criteria met on runs tonight and not one
+of them claimed by reading the tree, with criterion 1 met by the raised
+right-click rather than by the fallback. **Step D** *the drive level his radio
+wants* - `not started`, **Tim's, at the radio**. **Step E** *Tim works a station* -
+`not started`, **Tim's, at the radio**. Step C was the last thing in this phase
+that can be proved without a radio; everything left is Tim at his own station.
 
-B. THIS STEP AND ITS EXIT CRITERIA. Step B, *right-click and it goes*, four
-must-pass criteria, and **all four are met**. 1 - a CQ button sending `CQ KC3QIS
-FN00` from Settings with no typing: **met on a run tonight**. 2 - right-click a
-decoded row and every valid message is offered, the expected one highlighted, none
-forbidden, a repeat showing its count: **met on four runs tonight**, one of them a
-real right-click on a real row control. 3 - one click sends exactly one message,
-asserted by a test: **met on a run tonight**, two boundaries and one transmission.
-4 - what is being sent and to whom appears in the Send area, and out of licence
-privileges it says so and sends nothing: **met on runs tonight**, by the test this
-unit built. **No criterion was claimed by reading the tree**, which is the caveat
-step A closed with last night and the one this unit existed partly to avoid.
+B. THIS STEP AND ITS EXIT CRITERIA. **Step C - the whole chain runs from one
+click, at the bench.** Four criteria, all four met, all four on a run tonight on
+the development machine:
+**1. One right-click drives menu, compose, key, play, unkey and telemetry in one
+test, with the endpoint on a loopback and CI-V on a fake transport** - MET, **by a
+real `ContextRequested` raised on the real row control in a real headless window
+and the menu item invoked through its own `Command` and `CommandParameter`, not by
+the fallback**; the fallback named in advance (driving `SendFlyoutFor` in a plain
+`[Fact]`) was **not taken and not needed**.
+**2. The audio that reaches the endpoint decodes back to the message the operator
+clicked** - MET, on a run: clicked `"W1ABC KC3QIS RRR"`, decoded
+`"W1ABC KC3QIS RRR"`, with the expected string read off the realized menu item
+rather than from a literal.
+**3. The abort fires from the middle of that chain and the sound stops** - MET, on
+a run: the real `DigitalStopButton` pressed with a real mouse 4.22 s in, 4.71 s of
+a 12.64 s slot off the card, quiet 456 ms after the press.
+**4. Nothing transmits that the operator did not click, across the whole chain** -
+MET, on a run: a second boundary with nothing armed, the endpoint still open and
+the capture still running, measured as a silent card rather than an untouched
+counter.
 
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It adds the proof that
-the licence gate holds from the operator's own click through to a slot boundary -
-the one of step B's four criteria that had nothing behind it, and the third of the
-three things `PHASE_PLAN.md` says no unit may reason past.
-**Section 4 raises 4 items, and none is in the way of a criterion in B**, which is
-closed. One of the four asks the owner to decide something, and it is not
-blocking: what the
-send path should do when the operator switches the licence guard off in Settings.
-It is measured, quoted and left exactly as found.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It adds the one
+measurement nobody had: **the text on the menu item the operator clicked and the
+text decoded out of the sound card, side by side.** Section 4 **raises 4 items,
+none of them in the way of a criterion in step C** and none of them blocking
+anything downstream: a refused script, a plan-versus-tree mismatch that belongs to
+step D, a harness fact about open menus, and the inherited reds. **Not one asks
+the owner to decide anything** - no ruling is wanted tonight.
 
-UNIT:       267 — complete at task 5 of 5 — 2026-09-07 10:45
-PHASE GOAL: Hamlet works stations on the air - Tim answers a CQ from Hamlet and
-            completes an exchange on his own antenna
-UNIT GOAL:  Step B closes - the CQ button, the right-click menu and the Send area
-            proved on a run, and the licence gate proved to hold from the
-            operator's click through to the slot boundary
-ADVANCED:   yes — step B moved from `not started` to `done`, all four must-pass
-            criteria, and the criterion that had no proof behind it now has one
-NUMBER:     0 -> 5. Tests anywhere in the tree that drive an out-of-privileges
-            click through the application to a slot boundary
+UNIT:       268 — complete at task 6 of 6 — 2026-09-07 11:21
+PHASE GOAL: Hamlet works stations on the air — Tim answers a CQ on 14.074 or 7.074 and completes an exchange
+UNIT GOAL:  Step C closes — one right-click drives menu, compose, key, play, unkey and telemetry through a real endpoint on a loopback with CI-V on a fake transport; the audio decodes back to the text on the menu item that was clicked; the operator's Stop button takes a transmission off the card from the middle of that chain; and nothing transmits that was not clicked, with the card open and silent
+ADVANCED:   yes — step C closes done on runs tonight, all four criteria, and it was the last thing in this phase provable without a radio
+NUMBER:     0 -> 2 — tests anywhere in the tree that join the operator's own right-click to a real sound card
 DRIFT:      0 consecutive units without advance  (was 0)
 
 ## 1. What Claude did
 
-**Complete, at task 5 of 5.** Nothing was dropped, including the named drop
-candidate. Development machine QUIVERFULL, project confirmed as Hamlet against the
-tree - `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-present, `CoreHMI.sln` and `MURC.sln` both absent - branch `main`.
+**Exit state: complete, at task 6 of 6.** Nothing was dropped, including the named
+drop candidate. Development machine, project claimed and confirmed as Hamlet
+(`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, `CoreHMI.sln` and `MURC.sln` absent, `Hamlet.sln` the only solution),
+branch `main`.
 
-**FACT-004 throughout.** No serial port was opened, nothing was keyed, no sound was
-made, and nothing here says anything about the IC-7300.
+### Task 1 - the trace, its own commit before task 2
 
-### Task 1 - the trace, committed on its own at 4c01587
+`docs/unit268-the-chain-trace.md` at `0a04048`, six questions, each with a file, a
+line and a quotation. What it changed about the tasks after it:
 
-`docs/unit267-step-b-trace.md`, seven questions, each with a file, a line and a
-quotation. **The instruction was right about the thing it was least sure of.**
-Question 6 - *is there any test anywhere in which the operator's click, out of
-licence privileges, is driven through the application to a slot boundary* - answers
-**none**. `RefusedByLicence` appears nowhere in `tests/Hamlet.App.Tests` at all;
-every test hit is in the two engine suites, and both build their own
-`OperatorSend`. `MainWindowViewModel.cs:8346`'s `RefusedByLicence` branch - the
-sentence an operator reads when the gate refuses his click - **was asserted by
-nothing**, confirmed by grepping `Citation` across the project and finding three
-hits, all in `Licensing/` tests that never touch `DigitalSendLine`.
+- **Q1.** The clicked string is `Ft8SendOption.Text`, carried as
+  `MenuItem.CommandParameter` (`MainWindow.axaml.cs:190`). **The header is
+  decorated and is not the message** (`HeaderFor` at `:216`). So criterion 2
+  compares against the realized item's own `CommandParameter` and not against a
+  second read of `SendMenuFor`.
+- **Q2.** **No project-file edit was needed** - `Avalonia.Headless.XUnit` 11.3.0 is
+  at `Hamlet.App.Tests.csproj:12`, confirmed, and NAudio is named nowhere, arriving
+  transitively. And a multi-second real-time `await` inside an `[AvaloniaFact]` is
+  **already proved in this tree** (`TheOperatorCanStopItTests.cs:241`), so the
+  untried thing was narrower than "two hosts": opening a WASAPI render client from
+  the headless session's thread.
+- **Q5 is the trace's own finding, and it is not the trap unit 267 named.**
+  `StopNow`'s abort goes to `_rigPort`, which `BuildTheArmedSend` never assigns. **A
+  Stop pressed in the loopback harness would have fired `StopNow(null)`, taken no
+  abort at all, and left criterion 3's carrier half measuring nothing while looking
+  green.** The chain test calls `UseRigPortForTests` as well.
+- **Q6 is "none".** Nothing in the tree asserts on a quiet capture; the one place
+  one is measured at all is an unasserted printed peak
+  (`WhatThisMachineCanPlayAndCaptureTests.cs:157`).
 
-Question 3 answers **none** too, and it is the good kind: nothing is greyed,
-disabled, hidden, sorted away or filtered anywhere between `Ft8SendOptions.For`
-(`Ft8SendOptions.cs:99`) and the flyout (`MainWindow.axaml.cs:171`). The one
-`continue`, at `Ft8SendOptions.cs:118`, is a message that **does not exist** -
-no grid in Settings, no ratio measured - and its reason goes into `Absent`.
+### Task 2 - the host question, answered yes on the first run
 
-The trace also wrote down the trap task 2 would otherwise have walked into: a
-licence refusal comes back as **`Ft8ArmOutcome.Ran` at the boundary**
-(`Ft8ArmedSend.cs:473` returns `Ran` for anything the sequence ran) and only
-`TransmitRun.Outcome` carries `RefusedByLicence`. A test asserting on the arm
-outcome alone would read a refusal as a send.
+`TheWholeChainRunsFromOneRightClickTests.OneClickInAHeadlessWindowMakesARealSoundOnARealCard`,
+21 s. **A real `MainWindow` shown in the Avalonia headless session opened a real
+`WasapiTransmitSink`, held a `WasapiLoopbackCapture` on the same endpoint, awaited a
+whole 12.64 s slot, and the card made a sound.** Unit 267 named this the most
+expensive thing step C needs; it cost one build. **The fallback was not taken.**
 
-### Task 2 - the goal task, red at 5c91f7e then green at e34cf4e
+The two permitted committed tests, each alone by exact name, foregrounded:
+`AMessageTheApplicationSentLeavesThisMachineAndComesBack` 15 s, decoder returned
+`"CQ KC3QIS FN00"` - the machine has not changed; and
+`ExactlyOneFileInTheShippedTreeCallsTheSequence` 145 ms.
 
-`tests/Hamlet.App.Tests/ViewModels/TheLicenceGateHoldsFromTheClickTests.cs`, five
-assertions, each run alone by exact name. **Four of the five were green whole on
-their first run against the tree as it stands.** That is the finding: **no red was
-manufactured and no product code was written**, and none was needed.
+### Tasks 3 and 4 - the chain, and the abort
 
-**The one red was mine, and correcting it is a real measurement.** I wrote the
-guard-off case expecting the transmission to proceed on the operator's own
-authority, because `TransmitGuard.Check` returns `MayTransmit` true with
-`WasOverridden` true. It does not. Verbatim, committed at 5c91f7e before it was
-touched:
+Both green, in section 3. **Two reds were watched and both were committed before
+they were made green, and both were mine rather than the product's.**
 
-```
-Assert.Equal() Failure: Values differ
-Expected: Sent
-Actual:   RefusedByLicence
+- **`daa1683`**, verbatim: *"the capture delivered nothing across the unclicked
+  boundary, so silence cannot be told from a capture that stopped."* A WASAPI
+  loopback is handed audio only while something renders, so a peak over a window of
+  zero samples is not a measurement. Fixed by counting **every** packet, empty ones
+  included, so that *the capture is alive* and *the endpoint rendered nothing* are
+  witnessed separately.
+- **`800ba8f`**: the Stop press reached nothing and a real 12.64 s transmission went
+  out of a real card whole - `Expected: [KeyOn, CwStop, PttOff]`,
+  `Actual: [KeyOn]`. **My first diagnosis of it was wrong and is recorded as
+  wrong**: I attributed it to the window being too short, resized to 1400x1400, and
+  the press still reached nothing. **The real cause is that an open `MenuFlyout` is a
+  popup with a light-dismiss layer over the window, and the next press lands on that
+  layer.** The test now closes the menu after invoking the item, which is what a
+  click on a menu item does in the application. **A harness fidelity fault, not a
+  product defect.**
 
-guard enabled     : False
-licence class     : Technician
-run outcome       : RefusedByLicence
-sent              : False
-sink calls        : 0
-frames at the port: 0
-```
+**No product code was written and none was needed.** Nothing in the keying path,
+the abort or `Ft8TransmitSequence.RunAsync` was touched.
 
-`Ft8TransmitSequence.Permits` at `:443` refuses an overridden permit outright: the
-gate permits in three ways and this send path accepts one, because §0.2 says the
-Settings check is not bypassable from any send path. The expectation was corrected
-to what was measured; the product was not touched.
+### Task 5 - the bookkeeping
 
-### Task 3 - the seven committed tests, run rather than claimed
+**Step C recorded `done`** in `PHASE_OUTCOME.md`, fourteen fields, with criterion 1
+recorded as met **by the raised right-click and not by the fallback**. The header's
+`STEP: C` line moved in place. `PHASE_STATUS.md`'s `STEP:` lines were not touched -
+only `WORK_INSTRUCTION:`. **`outcome-append.bat` was refused, both forms** (section
+4), so the plan's named alternative was taken and an `APPENDED_BY:` line says on the
+entry's face that a script did not write it.
 
-All seven pass, each run **alone, by exact name, foregrounded**. No suite, nothing
-unfiltered, nothing backgrounded, nothing outside the seven and what task 2 built.
+### Task 6 - the named drop candidate, not dropped
 
-| Test | Result |
-|---|---|
-| `TheCqButtonSendsFromSettingsWithNoTypingAndNeverInventsAGrid` | passed, 186 ms |
-| `TheRowsMenuOffersEveryMessageWithTheExpectedOneMarked` | passed, 156 ms |
-| `ARowWithNoMeasuredRatioOffersNoReportAndSaysWhy` | passed, 183 ms |
-| `EveryStationsPredictedMenuAppearsUnderTheMouse` | passed, 855 ms, 5 of 5 stations |
-| `TheRepeatCountBelongsToTheClickAndNotToTheRow` | passed, 794 ms |
-| `OneClickIsOneMessageAcrossTwoBoundaries` | passed, 198 ms |
-| `WithNoGridTheSendAreaSaysSo` | passed, 153 ms |
-
-**Nothing red.**
-
-### Task 4 - the phase's bookkeeping
-
-Step B recorded **`done`** in `PHASE_OUTCOME.md`, with all fourteen fields and a
-`STATE_WHY` quoting the evidence for each of the four criteria. The header's
-`STEP: B` line moved from `not started` to `done` in place. No earlier entry body
-was touched. `PHASE_STATUS.md`'s `STEP:` lines were **not** written - they belong
-to the launcher; only `WORK_INSTRUCTION:` was.
-
-**`outcome-append.bat` was refused, both forms**, verbatim in section 4. The
-instruction's own named alternative was taken and the entry says so on its face in
-an `APPENDED_BY:` line.
-
-### Task 5 - the named drop candidate, not dropped
-
-`docs/unit267-what-step-c-needs.md`. **Named, not built** - no test was written and
-nothing was added to `tests/`. Each of step C's four criteria has its closest
-existing test with a file and a line, what that test lacks, and which harness
-pieces would have to be joined.
+`docs/unit268-what-step-d-asks-tim.md`. One page in Tim's terms: where the Transmit
+drive control is, what the dBFS readout and clip count mean and where they are
+actually read, the three levels that multiply on the way to the antenna, what to
+watch on his own ALC, and the seven things step D asks him to write into
+`SHACK_FACTS.md`. **No number is chosen, no control added, no default changed, and
+`SHACK_FACTS.md` was not touched.**
 
 ### Decisions made for myself, reproduced in full
 
-**One.** The Send area line after a *successful* send was measured by adding a
-print and an addressee assertion to the test task 2 built, rather than by running
-an eighth committed test. Task 3 asks the report to quote that line; none of the
-seven named tests carries it, and the no-suite rule permits only those seven and
-what task 2 builds. Adding it to my own test stays inside both.
+**Two, both inside the instruction's own licence.** *First*, the expected string is
+read off the realized `MenuItem`'s `CommandParameter` rather than out of
+`vm.SendMenuFor` a second time, because reading the view model again would compare
+the send path against the same source that fed it, while `CommandParameter` is what
+the markup's own handler hung on the thing the mouse hits. *Second*, silence is
+measured as the peak absolute sample across the window in dBFS against the tree's
+own `AudioLevel.TooQuietDb` of -60, with the capture's packet count carried
+separately as a liveness witness, because a WASAPI loopback is handed audio only
+while something renders and a first version that conflated the two was the night's
+first watched red.
 
-**Two.** The guard-off case is recorded as a measurement and left exactly as found.
-Work instruction 267 said to record it and not to decide it, and changing it would
-mean editing `Ft8TransmitSequence`'s own gate, which the instruction forbids.
+### Housekeeping
+
+Five distinct tests run tonight, **every one filtered by exact name and
+foregrounded; no suite, nothing unfiltered, nothing backgrounded**, and nothing
+outside task 2's two named tests and what this unit built. Root version read rather
+than assumed: `1.12.121` -> `1.12.122`; `Ft8Sharp` untouched. Six commits, each task
+pushed before the next began, and each watched red pushed before it was made green.
+**Three shell refusals, recorded verbatim in section 4.**
+
+**One correction to my own bookkeeping:** the `UPDATED` timestamps I wrote into
+`PROJECT_STATUS.md` at tasks 3, 4 and 5 were composed rather than read from the
+clock and ran ahead of it. The final one is read from the clock, and the note says
+so.
+
+**FACT-004 throughout.** The device is a sound card and the port is `FakePort`. No
+serial port was opened, no radio was attached, and **nothing measured tonight says
+anything about the IC-7300.**
 
 ## 2. What the owner should expect
 
-**He right-clicks a station he has decoded and sends it a message with one click.**
-The message that conventionally comes next is marked in words as well as in weight
-- *the one that comes next* - and **nothing is taken away from him**: all five
-message shapes stay on the menu and stay clickable, including ones he has already
-sent, which show their count instead. A message that does not exist because
-Settings has no grid, or because that station's ratio was never measured, is
-**absent with the reason said out loud** rather than drawn grey.
+**Nothing on your screen has changed.** No control was added, no default was moved,
+no wording was altered and no product code was written. If you open Hamlet tonight
+it behaves exactly as it did this morning.
 
-**The CQ button calls from his own Settings with no typing.** With his grid set it
-builds `CQ KC3QIS FN00`; with none it builds `CQ KC3QIS`, and **no locator is
-invented**. The Send area tells him what went out and to whom.
+**What is now proved, which was not proved this morning:**
 
-**And on a frequency his licence does not cover, Hamlet tells him so and transmits
-nothing.** Not a greyed button and not silence - a sentence naming the message that
-did not go, the regulator's reason and the paragraph it comes from.
+- **The message you click is the message that leaves the machine.** Not "the send
+  path works" - the actual text on the actual menu item you right-clicked, decoded
+  back out of your own sound card. Until tonight the tree proved the menu offered
+  strings and proved the send path transmitted strings, and **nothing in it would
+  have failed if those were different strings.**
+- **Your Stop button takes a real transmission off a real card**, from the middle of
+  the chain, pressed with a mouse on the real button. The half that was proved
+  against a fake sink and the half that was proved in the engine with no operator
+  are now joined.
+- **The machine makes no sound you did not ask for**, measured as a silent card with
+  the endpoint open, not as a counter nobody incremented.
 
-### What will look wrong but is not
+**What will look wrong but is not:**
 
-**The menu still offers everything while the licence refuses.** On a frequency he
-may not transmit on, the right-click menu is exactly as long as it always was, with
-the licence as a note underneath. That is ruled, not an oversight: nothing is
-forbidden in the menu, and a refusal at the gate is not a reason to take an option
-off it. The refusal happens where it can actually stop a transmission.
-
-**Switching the licence guard off in Settings does not let him transmit outside his
-privileges.** He gets a different sentence, not a transmission. See section 4.
-
-**Nothing on screen changed tonight.** No product code was written. What changed is
-what is proved, and the whole of it is in `tests/`.
+- **The chain test takes about 25 seconds and the abort test about 15.** That is
+  correct: one FT8 slot is 12.64 seconds of real audio out of a real sound card, with
+  a second either side. A slot going by is not a hang.
+- **These two tests make audible sound** on whatever endpoint they choose, and they
+  print which one and why they chose it.
+- **The card going quiet reads 456 ms here and unit 263 reported 15-20 ms.** Those
+  are different quantities, not a regression - see section 3.
+- **`PHASE_OUTCOME.md`'s newest entry says a script did not write it.** That is
+  deliberate and it is the twelfth-odd time.
 
 ## 3. What you should see
 
-### 1. The out-of-privileges click, quoted
+### 1. The clicked string and the decoded string, side by side
 
-`TheLicenceGateHoldsFromTheClickTests.OutOfPrivilegesTheClickReachesTheBoundaryAndNothingIsKeyed`,
-run alone by exact name, passed in 601 ms. A Technician licence class in Settings,
-the panel on 14.074 MHz, the operator's own click through `SendMessageCommand`,
-driven to its boundary with `AtSlotBoundaryAsync`:
-
-```
-licence class     : Technician
-frequency         : 14074000
-boundary outcome  : Ran
-run outcome       : RefusedByLicence
-sent              : False
-keyed             : False
-sink calls        : 0
-bytes at the port : 0
-reason            : Technician privileges do not reach this frequency; it needs General.
-citation          : 97.301(e)
-```
-
-**The sentence the operator is left looking at**, word for word, read off
-`DigitalSendLine` after the boundary and after the posted job ran:
-
-> Hamlet did not send "W1ABC KC3QIS -10": Technician privileges do not reach this frequency; it needs General. (97.301(e))
-
-Before tonight nothing in the tree asserted that sentence.
-
-### 2. The same click inside privileges, going
-
-`TheSameClickInsidePrivilegesRunsAndKeysTheRadio`, run alone, passed in 494 ms.
-**Same panel, same harness, same frequency, same click** - only the licence class
-in Settings differs:
+**Endpoint: S34J55x (3- HD Audio Driver for Display Audio), 48000 Hz**, chosen as a
+display-audio endpoint from 4 active render endpoints and not the default.
+Development machine, FACT-004.
 
 ```
-licence class     : General
-boundary outcome  : Ran
-run outcome       : Sent
-sent              : True
-sink calls        : 1
-frames at the port: 2
-```
-
-**That is what makes assertion 1 a gate and not a dead path.** Without it the whole
-class would pass against a send path that never worked at all.
-
-And the Send area after it, which is criterion 4's first half - *what is being sent
-and to whom* - measured on the same run:
-
-> Sent to W1ABC, "W1ABC KC3QIS -10" in the slot at 14:40:30 UTC. It was composed at -12.0 dBFS with nothing clipped - that is the level Hamlet built, before this machine's own volume for that device and before the radio's input gain. Set the radio's drive against its own ALC meter.
-
-### 3. One menu's header strings, verbatim, and the CQ text
-
-`EveryStationsPredictedMenuAppearsUnderTheMouse`, run alone, passed in 855 ms, 5 of
-5 stations matching. **W1ABC's menu as it appears under the mouse**, on a real
-`ContextRequested` raised on a real row control in a real window - the highlight and
-a repeat count both on it:
-
-```
-W1ABC - under the mouse:
+the menu offered  : 5 clickable messages
     W1ABC KC3QIS FN00   grid
     W1ABC KC3QIS -10   report
     W1ABC KC3QIS R-10   roger and report
-    W1ABC KC3QIS RRR   acknowledge, 2nd time - the one that comes next
+    W1ABC KC3QIS RRR   acknowledge - the one that comes next
     W1ABC KC3QIS 73   73
+
+HE CLICKED        : W1ABC KC3QIS RRR   acknowledge - the one that comes next
+WHICH CARRIES     : "W1ABC KC3QIS RRR"
+
+CLICKED           : "W1ABC KC3QIS RRR"
+DECODED           : "W1ABC KC3QIS RRR"
+
+run outcome       : Sent, unkey OrdinaryUnkey
 ```
 
-Every one of those five items came back `IsEnabled`. **The CQ text the button
-builds**, from `TheCqButtonSendsFromSettingsWithNoTypingAndNeverInventsAGrid`:
-`CQ KC3QIS FN00` with the grid set, and `CQ KC3QIS` with none.
+**The expected string came off the realized menu item's own `CommandParameter`** -
+what the markup's handler hung on the thing the mouse hits - **not from a literal
+the test chose and not from a round trip of one.** The gesture was a real
+`ContextRequested` raised on the real row control in a real window, and the item was
+invoked through its own `Command`.
 
-### The rest of the evidence, briefly
+The rest of criterion 1, in the same run: composed at **48000 Hz, 606720 samples**;
+**606720 of 606720 played**, peak **0.2500**, **0 clipped**; the wire read
+`FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 1C 00 00 FD` - **read as hex, not counted**,
+because a count of two is satisfied by two of anything; and the application's own
+writer left **exactly one** `ft8_transmission` line on disk through its own
+enabled-category predicate, **naming nobody**:
 
-- **Nothing is withheld while the licence refuses.**
-  `WhileTheLicenceRefusesTheMenuStillOffersEveryMessageAndSaysWhy`, passed: all
-  five shapes still on the menu with a Technician class set, and the licence note
-  reading *Technician privileges do not reach this frequency; it needs General.
-  (97.301(e))*.
-- **One click is one message.** `OneClickIsOneMessageAcrossTwoBoundaries`, passed:
-  first boundary `Ran`, second `NothingArmed`, 1 sink call, 2 port frames.
-- **A repeat shows its count.** `TheRepeatCountBelongsToTheClickAndNotToTheRow`,
-  passed: `VK2PQ KC3QIS 73   73` becomes `VK2PQ KC3QIS 73   73, 2nd time` after the
-  send, with the list the same length.
-- **Absent is not forbidden.** `ARowWithNoMeasuredRatioOffersNoReportAndSaysWhy`,
-  passed: *no signal report has been measured for this station, so the messages
-  that carry one are not offered*.
-- **The unset grid says so.** `WithNoGridTheSendAreaSaysSo`, passed: *Your grid
-  square is not set in Settings, so Hamlet calls CQ as "CQ KC3QIS" and does not
-  offer the messages that carry a grid. It will not invent one.*
+```
+{"category":"transmit","event":"ft8_transmission","data":{
+ "slotStartUtc":"2026-09-07T15:10:45.0000000Z","durationSeconds":12.64,
+ "sampleRate":48000,"sampleCount":606720,"messageLength":16,
+ "outcome":"Sent","cameOutOfTransmit":"OrdinaryUnkey","keyed":true}}
+```
 
-### The number
+### 2. The abort, from the middle of the chain
 
-**0 -> 5.** Before tonight, tests anywhere in the tree driving an out-of-privileges
-click through the application to a slot boundary: **zero**. After: **five
-assertions**, in one class, on the operator's own click with his own licence class
-and his own guard setting out of Settings.
+His own right-click started it; the real `DigitalStopButton` on the realized window
+was pressed with a real mouse at the button's own place.
 
-Version `1.12.120` -> `1.12.121`. `Ft8Sharp` did not move.
+```
+buffer            : 9600 frames (200.0 ms)
+STOP PRESSED AT   : 4.22 s into the transmission
+AUDIO OFF THE CARD: 4.71 s of the 12.64 s the slot would have been
+CARD WENT QUIET   : 456 ms after the press
+sink counted      : 206880 of 606720 samples, short by 399840
+the run said      : Cancelled, came out of tx TheAbort
+WIRE WHILE RUNNING: FE FE 94 E0 1C 00 01 FD | FE FE 94 E0 17 FF FD
+                    | FE FE 94 E0 1C 00 00 FD
+and it stayed off : 49 packets over 3.0 s more with the endpoint open,
+                    0 samples, peak <= -90.0 dBFS
+```
+
+**The abort's own two frames are there** - `17 FF` and `1C 00 00` - and what the
+operator was left reading at the press was: *Stopped: "W1ABC KC3QIS RRR" was going
+out and Hamlet stopped sending it part way through, and the radio was told to stop
+transmitting.*
+
+**What the 456 ms is and is not.** It is the wall clock from the press to **the last
+sample the loopback was handed** - the endpoint itself falling silent - and it
+includes the 200 ms already queued in the card's buffer and the capture's own
+delivery lag. **Unit 263's 15-20 ms is when the sink's own call returned**, which is
+a different quantity measured a different way. **No bound tighter than the tree's is
+asserted here**: `TheStopStopsARealEndpointTests.cs:187` asserts under a second, and
+this reports what it read.
+
+### 3. The card open and silent across a boundary nobody clicked
+
+**The figure is the peak absolute sample across the window, in dBFS, against the
+tree's own `AudioLevel.TooQuietDb` of -60** - the constant `AudioLevel.NearlySilent`
+is already written against.
+
+```
+second boundary  : NothingArmed, run null
+frames on wire   : 2 (unchanged from 2)
+listened for     : 3.0 s with the endpoint open and the capture running
+packets across   : 49 (the capture was alive)
+samples across   : 0 - the endpoint rendered nothing at all
+CARD ACROSS IT   : peak <= -90.0 dBFS, rms <= -90.0 dBFS
+```
+
+**And the instrument is not deaf, proved inside the same run**: the same capture on
+the same endpoint read **-12.0 dBFS** while the transmission was going out, minutes
+earlier in the same test method. **The packet count is the liveness witness and the
+level is the verdict** - which is the distinction the night's first red was worth.
+
+### Would you see any of this in the application?
+
+**No visible change.** This unit only makes the tests catch a regression later - and
+catch one class of regression that nothing in the tree could catch before: a menu
+that offers one string while another goes out over the band.
 
 ## 4. What's blocking us
 
-**Nothing is blocking, and no criterion of step B is held open by any of these
-four.** One asks the owner to decide something and it is not urgent.
+**Nothing is blocking. Four items, none in the way of a step C criterion, and no
+ruling is wanted** - the one question this unit could have raised (whether the
+`456 ms` figure should replace the tree's stated bound) answers itself: it is a
+different quantity measured a different way, both are honest, and neither is
+asserted against the other.
 
-### 1. A ruling is wanted here, and it is the only one - the licence guard's off switch
+### 1. `outcome-append.bat` was refused again, both forms
 
-**Ruling wanted: should the FT8 send path keep refusing when the operator has
-switched `RestrictTransmitToPrivileges` off in Settings?** My answer in a sentence:
-**yes, leave it exactly as it is** - a program that hands a slot of audio to a radio
-with nobody's hand on a key should not key on an answer it cannot stand behind, and
-the code already says so in its own words.
+Verbatim, in order:
 
-**The measurement, and it is not what I expected.** `TransmitGuard.Check` at
-`TransmitGuard.cs:88-91` returns `MayTransmit` true with `WasOverridden` true when
-the guard is off - so a reader would predict the transmission goes. **It does not.**
-`Ft8TransmitSequence.Permits` at `:443` accepts one of the gate's three ways of
-permitting and refuses the other two. With a Technician class on 14.074 and the
-guard switched off, measured tonight: `RefusedByLicence`, `Sent` false, `Keyed`
-false, 0 sink calls, 0 frames at the port, and the operator reads:
-
-> Hamlet did not send "W1ABC KC3QIS -10": the licence guard is switched off in Settings, so Hamlet has no answer it can stand behind about whether this frequency is inside your privileges. It will not key on that. What the guard said when it was last asked: Technician privileges do not reach this frequency; it needs General. (97.301(e))
-
-**Why it is raised at all:** the setting is presented to the operator as *only let
-me transmit where my licence allows*, and switching it off does not do the thing
-its wording implies on this path. **That is a wording question, not a safety one** -
-the safe direction is the one the code takes. It is left untouched, because work
-instruction 267 said to record it and not to decide it, and because changing it
-would mean editing the keying path's own gate. **Nothing in step B depends on the
-answer.**
-
-### 2. `outcome-append.bat` was refused, both forms
-
-Recorded, not a ruling ask. Two invocations, both refused with the same verbatim
-message:
-
+```
+This Bash command contains multiple operations. The following part requires
+approval: tools\arbiter\outcome-append.bat 2>&1
+```
 ```
 This command requires approval
 ```
 
-- `cmd //c .oa-267.bat` (a wrapper file written precisely to avoid the shell's
-  quoting problems)
-- `tools/arbiter/outcome-append.bat`
+The plan's own named alternative was taken: the entry was appended with the
+file-editing tools in the format the existing entries use, with an `APPENDED_BY:`
+line saying on its face that a script did not write it. **Halts nothing.** Two other
+shell calls were refused tonight and both were worked around the same way:
+`This Bash command contains multiple operations. The following part requires
+approval: cut -c1-2400 ; wc -c /tmp/prev-note.txt`, and `This command requires
+approval` for a multi-file grep.
 
-Task 4's named alternative was taken: appended with the file-editing tools in the
-format the existing entries use, with an `APPENDED_BY:` line saying so on its face.
-**Three other shell refusals happened tonight**, all worked around the same way and
-none of which stopped anything:
+### 2. A plan-versus-tree mismatch, reported and not repaired - and it is step D's
 
-```
-Contains brace with quote character (expansion obfuscation)
-Contains shell syntax (command) that cannot be statically analyzed
-This Bash command contains multiple operations. The following parts require approval
-```
+`PHASE_PLAN.md` step D's first criterion says Tim *"reads the dBFS and clip count
+**under the waterfall**"*. **In the tree they are in the Send area line after each
+send** - `MainWindowViewModel.LevelLine` - and there is no such readout under the
+waterfall. The figures exist and are readable, so **the criterion is satisfiable as
+written except for where it says to look**, and `docs/unit268-what-step-d-asks-tim.md`
+points Tim at the right place. **Not repaired, per the instruction.** Bears on step
+D, not on step C.
 
-### 3. `PHASE_OUTCOME.md` still carries a phantom step 1, from unit 266
+### 3. An open menu swallows the next press, and any future unit will hit it
 
-Reported, not chased, and **not the duplicate unit 266 fixed**. The file's header
-carries `STEP: 1 | not started | (described by the plan)` and the entries carry a
-`## UNIT 266 - STEP 1` whose body is mostly *not recorded*. **The live
-`PHASE_PLAN.md` has no step 1** - this cut's steps are 0, A, B, C, D, E. It appears
-to be the loop's own route calling `outcome-append.bat` with a step the plan does
-not have. It is cosmetic, it misleads nobody who reads the entries, and chasing it
-would mean editing the launcher's scripts, which is not this unit's subject.
+A `MenuFlyout` shown by the right-click handler is a popup with a light-dismiss
+layer over the whole window. **Until it is closed, the next simulated press lands on
+that layer and not on the control underneath**, silently - it cost this unit a red
+whose first diagnosis was wrong. **This is a test-harness fact and not a product
+defect**: in the running application, clicking a menu item closes the flyout itself.
+Written down here so it is not rediscovered as a mystery.
 
-### 4. Inherited reds, untouched and not chased
+### 4. The inherited reds, none run and none chased
 
-Exactly as work instruction 267 lists them, and **none was run tonight**:
 `CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
 `docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
 and
 `TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`,
-which unit 265 recorded and unit 266 left alone. **Twelve distinct tests ran
-tonight** - task 3's seven named, plus the five this unit built - every one
-filtered by exact name and foregrounded, with two of the five run twice.
-`Hamlet.RadioEngine.Tests` was not run at all.
+which unit 265 recorded and units 266, 267 and now 268 have left alone. **None was
+run tonight and none is chased.**
