@@ -2,10 +2,11 @@ PHASE: Hamlet works stations on the air
 PHASE_SET: 2026-09-07
 STEP: 0 | done | the record is honest about where the phase stands
 STEP: A | done | the row knows where the contact stands
-STEP: B | not started | right-click and it goes
+STEP: B | done | right-click and it goes
 STEP: C | not started | the whole chain runs from one click, at the bench
 STEP: D | not started | the drive level his radio wants
 STEP: E | not started | Tim works a station
+STEP: 1 | not started | (described by the plan)
 
 ---
 
@@ -65,3 +66,35 @@ ACCOMPLISHED: Every decoded row on the Digital tab says where its contact stands
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: All four must-pass criteria are met and every test named in the instruction is green, each run alone by exact name. Criterion 1 and criterion 3 by the ledger and the completeness rule with the no-73 exchange quoted message by message; criterion 4 by the interleaved station read at all thirteen slots and never once gone quiet, against the recorded multi-slot scene; criterion 2 by the four states with their slot counts, whose on-screen half is the Contact column unit 258 shipped and whose committed app-side test this instruction forbids running, so it is claimed on the tree and not on a run tonight. The new walk was red first with the scene absent and green on its first run, all twelve expectations written before they were read, against a scene composed by Hamlet's own encoder and read back through the decoder Hamlet actually runs: 6 composed, 6 decoded, 0 lost.
+
+## UNIT 266 - STEP 1
+
+UNIT_AS_CALLED: 1
+STEP: 1
+APPROACH: not recorded
+HIT: section 4 wants a ruling: no - The section records a fix already made, a caveat on a claim, a note for a later unit, and untouched inherited failures, and none of these ask the owner to decide anything or stop work pending his answer.
+MOVE: continue
+WHY: not recorded
+DECIDED: none
+LICENCE: none
+COST: 13.577231000000003
+ACCOMPLISHED: not recorded
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: The live plan carries no step 1, and the report shows work only on steps 0 and A, so nothing has been done toward the step being judged.
+
+## UNIT 267 - STEP B
+
+STEP: B
+APPROACH: Measure the four criteria of step B against what the previous cut already shipped, then build only the proof missing - an out-of-privileges click driven through the application to a slot boundary, nothing keyed and the Send area saying so - and close the three on-screen criteria on a run tonight instead of on committed markup.
+HIT: The instruction's expectation was right and the seam was genuinely empty: RefusedByLicence appeared nowhere in tests/Hamlet.App.Tests at all, and MainWindowViewModel.cs:8346's branch - the sentence an operator reads when the gate refuses his click - was asserted by nothing. What was NOT expected is the guard-off measurement. Switching RestrictTransmitToPrivileges off in Settings does not let the transmission through: Ft8TransmitSequence.Permits:443 accepts one of the gate's three ways of permitting and refuses an overridden permit outright, so the operator gets a different refusal rather than a transmission. Four of the five assertions were green whole on their first run; no product code was needed and none was written.
+MOVE: continue
+WHY: Step B had had no unit spent on it, and the previous cut built the menu, the CQ button and the Send area without ever joining the licence gate to the operator's click. The gate was proved inside Ft8TransmitSequence.RunAsync on a sequence a test constructed, and the menu was proved to say so on a panel nobody clicked. Nothing drove his own click, with his own licence class and his own guard setting out of Settings, to a slot boundary.
+DECIDED: Two on my own authority. First, the guard-off case is recorded as a measurement and left exactly as found, because work instruction 267 said to record it and not to decide it, and because changing it would mean editing the keying path's own gate. Second, the Send area line after a successful send was measured by adding a print and an addressee assertion to the test task 2 built, rather than by running an eighth committed test, because the seven named tests do not carry that string and the no-suite rule permits only those seven and what task 2 builds.
+LICENCE: PHASE_PLAN.md step B's four exit criteria; its rule that a bench step's criteria are all satisfiable with no radio and none deferred to Tim; the ruling that nothing is forbidden in the menu and a repeat shows its count; and the third of the three things no unit may reason past - the Settings gate is not bypassable from any send path. Work instruction 267 task 3's named, bounded exception to the no-suite rule licensed the seven committed tests, each run alone by exact name.
+COST: unknown
+ACCOMPLISHED: Tim can right-click a station he has decoded and send it a message with one click, with the one that conventionally comes next marked and nothing taken away from him, and he can call CQ from his own callsign and grid without typing. The Send area tells him what went out and to whom. And on a frequency his licence does not cover, Hamlet says so in the regulator's own words, cites the paragraph, names the message that did not go, and transmits nothing - proved from his click through the application to a slot boundary, with zero bytes at the port and the sound card never touched, rather than from a test that built its own transmitter.
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: All four must-pass criteria are met on evidence quotable from runs tonight, and none of them needed the radio. Criterion 1 by TheCqButtonSendsFromSettingsWithNoTypingAndNeverInventsAGrid, run alone: CQ KC3QIS FN00 with a grid set and CQ KC3QIS without, and no locator invented. Criterion 2 by four tests run alone, including EveryStationsPredictedMenuAppearsUnderTheMouse matching 5 of 5 stations' header strings on a real ContextRequested with every item enabled, and TheRepeatCountBelongsToTheClickAndNotToTheRow moving "73" to "73, 2nd time". Criterion 3 by OneClickIsOneMessageAcrossTwoBoundaries: first boundary Ran, second NothingArmed, 1 sink call, 2 port frames. Criterion 4 by the new TheLicenceGateHoldsFromTheClickTests, five assertions green: Technician on 14.074 through SendMessageCommand to AtSlotBoundaryAsync gives RefusedByLicence with Sent and Keyed both false, 0 sink calls and 0 bytes at the port; the same click as General sends, 1 sink call and 2 frames, so it is a gate and not a dead path; and the Send area reads - Hamlet did not send "W1ABC KC3QIS -10": Technician privileges do not reach this frequency; it needs General. (97.301(e))
+APPENDED_BY: the file-editing tools, not outcome-append.bat. Both invocation forms were refused by this session's shell with the same verbatim message - "This command requires approval" - so work instruction 267 task 4's named alternative was taken and the header's STEP: B line was updated in place by hand, in the format the existing entries use.
