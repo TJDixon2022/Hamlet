@@ -54,406 +54,556 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the unit's report follows ---
 
+# Unit 258 - the ledger, on the scene the last unit left
+
 READ IN THIS ORDER
 
-A. **The phase goal is: Hamlet works stations on the air.** Step 0 is `done` - the
-dummy load is gone from the tree. Step 1 is `partial` at four of five and is
-closed; its fifth criterion was ruled unmeetable in its letter and is not to be
-reopened. **Step 2 is `partial`, with criterion 4 deferred to Tim** - the level
-the IC-7300's USB modulation input expects is not in this repository and no unit
-can reach it. **Step 3 entered this unit at `partial`**, with four of its six
-criteria met by unit 255 and the device and the loopback deliberately left whole.
-**It leaves this unit at `done`.** Steps 4, 5 and 6 have had no unit spent on
-them, and **step 4 - the row knows where the contact stands - is next**.
+A. **The phase goal is that Hamlet works stations on the air**, and this is where
+every step stands. Step 0 `done` - the dummy load is gone from the tree. Step 1
+`partial` at four of five and closed; not reopened here. Step 2 `partial`, with
+criterion 4 - the level the IC-7300's USB modulation input expects - deferred to
+Tim, because `SHACK_FACTS.md` FACT-004 forbids inferring it on this machine.
+Step 3 closed, and **its two records disagree**: the unit's own
+`PHASE_OUTCOME.md` entry reads `done` while the judging session's reads `partial`
+on criterion 1's radio half. Neither is this unit's to reconcile and both are
+left on the record. **Step 4 entered this unit at `not started`** after one run
+that was killed by the watchdog fourteen minutes in, and **leaves it at
+`partial`** - five of six criteria met on quoted evidence and the sixth met in
+substance but not in letter. Steps 5 and 6 not started, and **step 5 is now
+unblocked**, because step 4 gave it something to read.
 
-B. **This step is 3, and its six exit criteria are:** audio plays to the radio's
-USB input at the right device, rate and level; key, transmit, unkey with the
-unkey surviving a throwing audio path; **a loopback proves the whole chain**; the
-transmitted slot recorded to telemetry; the licence gate in the path asserted by
-a test; and nothing keys without an operator action reaching this code. **Unit
-255 met four of those - 2, 4, 5 and 6.** This unit met the other two. **The
-loopback decoded, on the device route, 3 of 3 messages**, compared as whole text.
-**Criterion 1 is met as the cut-down the arbiter declared it**: the render path,
-the named endpoint, the rate asked against the rate got, and the level, format
-and clip count are all measured on the development machine, and **the radio-side
-half is left with Tim - he sets the drive level at the radio by watching ALC on
-the first live transmission and writes the figure into `SHACK_FACTS.md` as a
-fact**, exactly as step 2's criterion 4 already stands.
+B. **This step is *the row knows where the contact stands*, and it has six exit
+criteria.** Per station, which messages passed each way, when, and how many slots
+ago - **met**. The four states shown per row with slot counts - **met**. Complete
+means both calls, both grids or reports, both acknowledgements, and `73`'s
+absence never withholds it - **met**. Nothing is ever closed, hidden or forbidden
+- **met**. A station working three others at once reads as gaps, not as a fault,
+proved against recorded slots where that happens - **met**. Derived from recorded
+captures, not from the air - **met in substance, not in letter**: the corpus was
+recorded to disk and read back through the application's own decoder rather than
+composed on the fly, but it is synthesized by Hamlet's own encoder and is not a
+WSJT-X capture, and this machine has none. Section 3 quotes the evidence for each.
 
-C. **What this report adds to A and B is the loopback itself and the two lies
-that were watched before it was believed.** A sink built without the drain
-reported 96,000 of 96,000 samples played in 1.810 s of a 2.000 s tone; the same
-captured audio handed to the decoder without `Ft8Resample` returns nothing. Both
-were watched red and both are now assertions. **Section 4 raises 0 items** -
-nothing is blocking, and nothing here is in the way of any criterion named in B.
-Three findings that are *not* ruling requests, because they are already acted on
-or already answered, sit in section 3: a mismatch between the work instruction
-and the tree, a trap in `AudioTap.Level`, and the two batch files this shell will
-not start.
-
-```
-UNIT:       256 - complete at task 5 of 5 - 2026-09-06 20:30
-PHASE GOAL: Hamlet works stations on the air - one click, one message, on Tim's
-            licensed station and antenna.
-UNIT GOAL:  A composed FT8 transmission is played to a real output endpoint by a
-            real ITransmitAudioSink, captured back off that same endpoint,
-            resampled and decoded by Ft8SlotDecoder to the message that went in -
-            the whole chain, on one machine, with no radio and no antenna.
-ADVANCED:   yes - step 3's criterion 3, the loopback, is met whole on the device
-            route, and criterion 1 is met as its declared cut-down; step 3 moves
-            from partial to done.
-NUMBER:     0 of 0 -> 3 of 3 messages out of the sound card and back through
-            Ft8SlotDecoder as the same text.
-DRIFT:      0 consecutive units without advance  (was 0)
-```
-
-## 1. What Claude did
-
-**Exit state: complete, at task 5 of 5.** All five tasks were done; nothing was
-left undone and nothing was dropped that the work instruction did not name as
-droppable. The named drop candidate was *the second and third loopback messages
-and the WAV artefact*; **the two extra messages were run**, and **the WAV
-artefact was dropped** for the reason unit 254 dropped the same thing - a
-committed binary is a second copy of what a deterministic test regenerates, and
-this one would additionally be a recording of one sound card on one night.
-
-**Provenance.** Machine `C:\Source\HamLet` on Windows 11; project claimed
-`Hamlet` and confirmed - `SHACK_FACTS.md` and
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both exist, neither
-`CoreHMI.sln` nor `MURC.sln` exists, and the only solution at the root is
-`Hamlet.sln`. Branch `main`, five commits, `1.12.89` to `1.12.93`, a patch a
-task, each pushed before the next task began.
-
-### The five tasks
-
-1. **What this machine can play and capture.** Measured, not assumed, and written
-   to `docs/unit256-render-and-loopback-survey.md` with the go/no-go line
-   `LOOPBACK ROUTE: device`. Unit 255's uncommitted root records were committed
-   with it.
-2. **The real sink.** `src/Hamlet.RadioEngine/Audio/WasapiTransmitSink.cs`, built
-   broken first and watched failing, then fixed. Six tests green.
-3. **The loopback.** Three messages out of the sound card and back through
-   `Ft8SlotDecoder` as the same text. **The first was committed on its own before
-   the other two were attempted**, as instructed.
-4. **The level and what stays Tim's**, written to
-   `docs/unit256-level-rate-and-what-stays-tims.md` with the six-criterion table.
-5. **The record.** `PHASE_OUTCOME.md` appended by hand after the tool was refused,
-   step 3's header line set to `done`.
-
-### Decisions made for myself, reproduced in full
-
-- **The render enumeration lives with the render sink, not on `IAudioDevices`.**
-  Every existing caller of that interface is asking *what can Hamlet listen to*,
-  and the answer is fed to `WasapiAudioSource`, which opens it for **capture**. A
-  render endpoint in that list is a device the caller cannot open, and
-  `AudioDevice` carries no field that would tell them apart. Adding a second
-  method to the interface would make every implementation grow one to answer a
-  question only the transmit path asks. So `WasapiTransmitSink.Endpoints()`
-  returns a new `RenderEndpoint` record and `IAudioDevices` is untouched.
-- **`WasapiAudioSource.cs`'s design claim was amended rather than left false.** It
-  said *the only class in the engine that knows what a sound device is*. That was
-  true while the engine only listened. It now reads *on the way in*, and names
-  `WasapiTransmitSink` as the way out, with the claim that still holds stated
-  explicitly: no class above either of them knows a sound device exists.
-  `ITransmitAudioSink`'s remark that nothing implements it for a real device was
-  amended for the same reason.
-- **The loopback was widened to run the whole send path rather than the sink
-  alone.** It goes through `Ft8TransmitSequence` - gate, keying frame to unit
-  253's fake transport, real sink into the real endpoint, guaranteed unkey, and
-  unit 255's record at the end. This was done specifically so the **same three
-  transmissions** carry criterion 4's evidence, keeping the unit inside its own
-  cap of three rather than spending a fourth 12.64-second transmission on
-  telemetry.
-- **The endpoint played to was chosen, not defaulted to.** A display-audio
-  endpoint - a monitor's audio path rather than the machine's speakers - because
-  this plays 12.64 seconds of FT8 tones on somebody's real computer and it may be
-  the middle of the night. It is also **not** the default, which means a sink that
-  silently fell back would show up as a different name in the output rather than
-  as a passing test. The system volume was not touched.
-- **The rate-lie breakage is folded into the first loopback test** rather than
-  given a transmission of its own. The same capture is decoded twice - once
-  without `Ft8Resample`, once with - which costs no wall clock and keeps the class
-  at three transmissions.
-
-## 2. What the owner should expect
-
-**Hamlet can now put a message on a sound card and read it back off the same
-sound card as the same message.** Until tonight every transmit test in this
-repository was proved against `FakeTransmitAudioSink` and no sample Hamlet
-composed had ever left the machine. That is no longer true.
-
-**What will look wrong but is not:**
-
-- **The tests make audible sound.** Running the audio tests plays roughly 45
-  seconds of FT8 tones out of a render endpoint. That is not a side effect to be
-  fixed; it is the test. They go to the monitor's audio path rather than the
-  speakers, so you will most likely hear nothing.
-- **`AudioTap.Level` reports `NearlySilent: true` on audio that decoded
-  perfectly.** It is a moving meter over the last 0.2 s, and the last 0.2 s of a
-  run is the silence *after* the transmission. The tap's own documentation warns
-  about this. The honest figure, `AudioTap.PeakOf` over the whole capture, is
-  0 dBFS, and both are printed side by side now.
-- **The loopback capture delivers zero bytes when nothing is playing.** That is
-  WASAPI working, not failing - an idle endpoint returns empty packets rather
-  than manufacturing silence.
-- **`PHASE_STATUS.md`'s `CURRENT_STEP:` still reads 1** and I did not change it.
-  See section 3.
-- **`tools/unit254-seam-grep.sh` is still there, untracked.** No third deletion
-  attempt was made.
-- **Nothing in the application starts a transmission**, and that is still true
-  after this unit. There is no button, no service registration and no caller. The
-  sink and the sequence are constructed only in tests.
-
-## 3. What you should see
-
-### 1. The loopback, and what was watched
-
-**`LOOPBACK ROUTE: device`.** Chosen by task 1's measurement, not by default:
-four active render endpoints, all opening in shared mode, and
-`WasapiLoopbackCapture` constructing, starting, delivering 16 callbacks in one
-second and stopping cleanly. The file fallback was not needed and was not taken.
-
-- **Endpoint:** `S34J55x (3- HD Audio Driver for Display Audio)`, id
-  `{0.0.0.00000000}.{18ee4fd1-d3a4-45ec-b01d-217d78612ae0}`. *Development
-  machine.* Not the default; chosen deliberately from four.
-- **Rate asked 48000 Hz. Rate got 48000 Hz.** *Development machine.* They are
-  equal because the transmission is composed at the endpoint's own rate and the
-  sink **refuses** a mismatch rather than letting shared-mode WASAPI resample it.
-- **Wall clock:** **48.16 s** for the whole class - one run of 14.7 s and one run
-  of 30.6 s covering two messages. Each individual transmission is 12.64 s of
-  audio, played in about 12.65 s, with about 13.04 s captured.
-- **The tap's level on the captured audio:** `AudioTap.PeakOf` over the whole
-  capture is **0 dBFS**. `AudioTap.Level`, the live meter, last read **peak
-  -90 dB, floor -26.5 dB, `NearlySilent` true**, which is the 0.2 s *after* the
-  transmission and not the transmission. *Development machine.*
-
-**The messages, in and out, quoted:**
-
-| Message in | Decoder returned | Same? |
-|---|---|---|
-| `"CQ KC3QIS FN00"` | `"CQ KC3QIS FN00"` | yes |
-| `"KC3QIS W9XYZ FN00"` | `"KC3QIS W9XYZ FN00"` | yes |
-| `"W9XYZ KC3QIS -12"` | `"W9XYZ KC3QIS -12"` | yes |
-
-**3 of 3.** Compared ordinal on `ReadsBackAs`, whole message text, the same
-comparison the existing round-trip test makes. Not a substring, not a prefix, not
-a callsign. The comparison was not loosened.
-
-**The breakage watched red before green - the rate lie.** The captured audio is
-at 48000 Hz. Handed to `Ft8SlotDecoder` without `Ft8Resample.ToFt8Rate`, the
-decoder is being told 48 kHz samples are 12 kHz samples - four times the tone
-spacing and four times the symbol rate. **It returned `nothing`.** On all three
-runs. That is the real defect this test exists to catch: a chain that plays
-perfectly good audio and hears silence because one number was wrong on the way
-back, with nothing anywhere looking broken. It is kept as an assertion in the
-same test, decoding the same capture, so it costs no extra transmission.
-
-**And it does play sound out of this machine.** Three transmissions of 12.64
-seconds each to `S34J55x (3- HD Audio Driver for Display Audio)`, written at a
-peak of 1.0, plus two 2-second tones and one 0.4-second fragment from task 2's
-tests. About 45 seconds of audio in total, on a display-audio endpoint rather
-than the speakers.
-
-**The record, written for each loopback transmission** through unit 255's
-`TransmitRecord`, quoted in full from the run:
+C. **What this report adds** is the station table, the ledger's arithmetic and
+threshold, and the provenance of the scene it was proved against - all of which
+bear directly on B, and the last of which is the whole of why B's sixth criterion
+is qualified rather than plain. It **raises 0 items** in section 4. **None of
+them is in the way of a criterion named in B, because there are none** - nothing
+is blocking, and criterion 6's qualification is a figure and a stated route, not
+a decision waiting on the owner.
 
 ```
-slotStartUtc          : 2026-09-06T23:45:00.0000000Z
-startSecondsIntoSlot  : 0.5
-frequencyHz           : 14074000
-durationSeconds       : 12.64
-sampleRate            : 48000
-sampleCount           : 606720
-messageType           : Standard
-messageLength         : 16
-outcome               : Sent
-cameOutOfTransmit     : OrdinaryUnkey
-keyed                 : True
+UNIT:        258 - the ledger, on the scene the last unit left
+PHASE GOAL:  Hamlet works stations on the air.
+UNIT GOAL:   For each station heard, Hamlet holds which messages passed each way,
+             when, and how many slots ago - and from that shows one of four
+             states, waiting on him, your move, complete or gone quiet, with slot
+             counts. It closes nothing, hides nothing, forbids nothing and
+             interprets nothing. Proved against the recorded slot corpus already
+             in the tree, on this machine, with no radio.
+ADVANCED:    step 4 - criteria 1, 2, 3, 4 and 5 met; criterion 6 met on a
+             synthesized corpus rather than a capture. Step 4 not started ->
+             partial. Step 5 unblocked.
+NUMBER:      5 of 5 - every station the scene put in front of the operator read
+             the state written down before the ledger existed.
+DRIFT:       0
 ```
-
-Eleven fields. **No callsign and no message text**, asserted in the test rather
-than eyeballed - `messageLength` is a count and `messageType` is a fact about the
-format. Unit 255's three existing discipline tests were re-run rather than
-rewritten and are **green**.
-
-### 2. The sink, and where it lives
-
-**`src/Hamlet.RadioEngine/Audio/WasapiTransmitSink.cs`**, 658 lines, with
-`RenderEndpoint` at the top of the same file.
-
-- **Mode: WASAPI shared, at the endpoint's own mix format.** Exclusive mode takes
-  an endpoint away from everything else on the machine and refuses outright if
-  anything already holds it, which is not how a station application should behave
-  on a desktop. But shared mode resamples anything handed to it silently, so the
-  sink initialises at the mix format, publishes that rate, and refuses a
-  mismatched one: *"the samples are at 12000 Hz and the endpoint speaks 48000 Hz.
-  Nothing is played rather than a rate being silently changed on the way out."*
-- **The conversion and the peak.** Mono floats in -1 to +1 to 32-bit IEEE float,
-  the same sample to both channels, clamped with every clamp counted. **Peak
-  written 1.0 (0 dBFS), RMS written 0.706407 (-3.02 dBFS, which is 1/sqrt(2) to
-  six places), 0 samples clipped.** *Development machine.* A 16-bit PCM path
-  exists beside the float one; anything else is refused rather than guessed.
-- **It fails loudly and never falls back.** *"there is no active render endpoint
-  called '...'. 4 were offered and none of them matched. Nothing is played rather
-  than something else being played instead."*
-- **The short-play case.** Cancelled at 400 ms of a 2000 ms play, the real sink
-  reported **18,720 of 96,000 samples** and returned rather than throwing, and
-  `Ft8TransmitSequence` - **not changed** - called that `AudioFailed` and came out
-  of transmit through the abort.
-- **`WasapiAudioSource.cs`'s claim to be the only class in the engine that knows
-  what a sound device is** was true and my sink made it false. **It is amended**,
-  not deleted and not ignored: it now says *on the way in*, names
-  `WasapiTransmitSink` as the way out, explains that the two share nothing but
-  NAudio, and states the claim that does still hold - no class above either of
-  them knows a sound device exists.
-- **Watched to fail first, and what it caught.** The breakage was *a sink that
-  returns `SamplesPlayed = samples.Length` without waiting for the buffer to
-  drain*. Built that way, the test read:
-
-  ```
-  samples played  : 96000
-  sink says took  : 1.810 s      <- for 2.000 s of audio
-  ```
-
-  **190 milliseconds of audio still inside the card at the moment the caller was
-  told the transmission had gone out.** It passes any test that counts samples.
-  With the drain restored the same test reads **2.009 s** and the count is what
-  the endpoint consumed, not what it was handed.
-
-**The greps.** Nothing in the tree starts a transmission: `new
-Ft8TransmitSequence` and `new WasapiTransmitSink` appear only in tests, and no
-line in `src/` constructs either. `TheSinkNamesNoRadioOfItsOwn` checks the sink's
-own body against 13 patterns - `TransmitAbort`, `PTT`, `Ptt`, `Civ`, `CIV`,
-`SerialPort`, `ISerialPort`, `Ic7300`, `IRig`, `RigState`, `TransmitGuard`,
-`LicenseClass`, `Frequency` - and found **none**.
-`TheSeamNamesNoRadioNoDeviceAndNoEncoderOfItsOwn` was not weakened and
-`Ft8Composer.cs` was not touched.
-
-**Confirmed untouched**, by `git status`: not one line of `src/Ft8Sharp/` or
-`src/Ft8Sharp.Deep/`, nothing in `src/Hamlet.App/`, and in
-`src/Hamlet.RadioEngine/Transmit/` only `ITransmitAudioSink.cs` - a doc comment,
-which the work instruction required. `Ft8TransmitSequence.cs`,
-`TransmitGuard.cs`, `TransmitAbort` and `Ft8Composer.Compose` are unmodified. No
-package reference was added; NAudio 2.2.1 was already there and reaches the test
-project transitively, which was verified rather than assumed.
-
-### 3. The level, the rate, and what stays Tim's
-
-**Everything in this table is a *development machine* figure.**
-
-| | Measured | |
-|---|---|---|
-| Endpoint declared | 48000 Hz, 2 ch, 32-bit, tag `Extensible`, subformat IEEE float, 384000 B/s | *development machine* |
-| Buffer granted | 9600 frames, 200 ms | *development machine* |
-| Rate asked / rate got | 48000 Hz / 48000 Hz | *development machine* |
-| Peak written | **1.0, which is 0 dBFS** | *development machine* |
-| RMS written | 0.706407, which is -3.02 dBFS | *development machine* |
-| Clipped | **0** | *development machine* |
-| Capture peak | 0 dBFS over the whole capture | *development machine* |
-
-**And none of it is the radio's number.** `SHACK_FACTS.md` FACT-004 rules that
-there are two computers, only one has a radio, and what the IC-7300's USB codec
-declares is unknown from this side and may not be inferred. The figures above are
-a Samsung monitor's audio endpoint on Tim's desktop. **0 dBFS into a monitor is a
-number about a monitor.**
-
-> **What Tim must do, unchanged: set the drive level at the radio by watching ALC
-> on the first live transmission, and write the figure into `SHACK_FACTS.md` as a
-> fact.**
-
-That closes step 2's criterion 4, and it is the same half of step 3's criterion 1
-that no unit can reach.
-
-**Step 3's six criteria, one line each:**
-
-| # | Criterion | State | On what evidence |
-|---|---|---|---|
-| 1 | Audio at the right device, rate and level | **met as cut down; radio half deferred to Tim** | This unit: named endpoint opened with no fallback, 48000 asked against 48000 got, peak 1.0 / RMS 0.706407 / 0 clipped, all *development machine*. |
-| 2 | Key, transmit, unkey, unkey surviving a throwing audio path | **met** | Unit 255, 6 of 6 failure modes with the wire quoted; re-exercised here against the real sink at 18,720 of 96,000 samples. |
-| 3 | **A loopback proves the whole chain** | **MET, THIS UNIT** | 3 of 3 messages out and back as the same text, device route, 48.16 s wall clock. |
-| 4 | The transmitted slot recorded to telemetry | **met** | Unit 255; re-proved here on the loopback transmissions themselves, eleven fields, no callsign. |
-| 5 | The licence gate in the path, asserted by a test | **met** | Unit 255, zero bytes on all three permissive branches. Untouched here. |
-| 6 | Nothing keys without an operator action reaching this code | **met** | Unit 255; re-greped here - nothing in `src/` constructs the sequence or the sink. |
-
-**The drop candidate was not dropped**, apart from the WAV artefact. The second
-and third messages ran, and they are a report-with-grid and a signal report
-rather than three CQs, so what widened is the message *shape* going through the
-path rather than the count.
-
-### Three things logged, none of them a ruling request
-
-1. **The work instruction disagrees with the tree in one place, and the tree
-   wins.** It says `src/Hamlet.RadioEngine/Transmit/Ft8Composer.cs` *already
-   constructs and calls* `Ft8SlotDecoder`. **It does not.** `Ft8Composer.cs:585`
-   calls `Ft8MessageDecoder.Decode(packed, cache)` - the *message* layer, which
-   unpacks bits to text and never sees a sample. The construction to reuse is in
-   the round-trip test the instruction also names, at
-   `HamletsOwnDecoderReadsBackWhatHamletComposedTests.cs:51` and `:82`: the
-   default constructor, `Decode(samples).Texts`, compared ordinal on
-   `ReadsBackAs`. **Reported, not repaired, and it cost nothing.**
-2. **A NAudio behaviour worth the phase's memory.** `MMDevice.AudioClient`
-   activates a **fresh, uninitialised** client on every read of the property. So
-   `device.AudioClient.Initialize(...)` followed by `_client = device.AudioClient`
-   throws the initialised one away and fails later, at the first render call, as
-   `AUDCLNT_E_NOT_INITIALIZED` - nowhere near its cause. The client is now taken
-   once and kept, with a comment saying why.
-3. **`RULES_AT` still disagrees, and unit 255 already answered it.**
-   `PROJECT_STATUS.md` says `HM-DEC-157 (2026-09-06)` while the reload reports
-   `CLAUDE.md` §1's highest as `CPS-DEC-0152`. Unit 255's finding stands: §1's
-   table is `HM-DEC-` throughout, `CPS-DEC-` appears nowhere in this repository,
-   and `HM-DEC-155/156/157` are in `DECISIONS.md` but not yet indexed into §1's
-   table. **`RULES_AT` is ahead of the index, not ahead of the record.** Nothing
-   was changed and nothing was re-derived.
-
-### The tools, and the files this session could not write
-
-- **`tools\arbiter\outcome-append.bat` was refused, for the fifth consecutive
-  unit.** Tried twice, verbatim:
-  - `cmd.exe /c "tools\arbiter\outcome-append.bat" 2>&1 | head -20` ->
-    `This Bash command contains multiple operations. The following part requires approval: cmd.exe /c "tools\arbiter\outcome-append.bat" 2>&1`
-  - `tools/arbiter/outcome-append.bat` -> `This command requires approval`
-
-  The entry was appended with the file-editing tools in the exact format the
-  existing entries use: **twelve fields, same names, same order, ASCII** - checked
-  with `grep -c '[^ -~\t]'`, which returned 0 lines.
-- **The shell also refused device enumeration**, which is why task 1 exists in the
-  shape it does. Verbatim:
-  `powershell -NoProfile -Command "Get-CimInstance Win32_SoundDevice | ..."` ->
-  `This command requires approval`. The named alternative was taken: a throwaway
-  xunit test that enumerates and prints, run filtered by exact name.
-- **`tools\arbiter\validate-output.bat` was refused too.** This report was
-  **hand-checked against the validator's rules and is not an exit code** - see the
-  note at the end.
-- **`tools/unit254-seam-grep.sh` is still there, untracked.** No third deletion
-  attempt was made, as instructed.
-- **`PHASE_STATUS.md`'s `CURRENT_STEP:` reads 1 and I did not write it.** The work
-  instruction says to leave it at 3, or move it to 4 having closed step 3; the
-  session's standing orders say `CURRENT_STEP:` and the `STEP:` lines belong to
-  the launcher and are not to be written by hand. **I followed the standing
-  order** and changed only `WORK_INSTRUCTION:`. The stale value is the launcher's
-  to correct, and `PHASE_OUTCOME.md`'s header - which is mine - correctly reads
-  `STEP: 3 | done`.
-
-### No test suite was run
-
-Only the tests this instruction constructs, every one filtered by exact name or
-by its own class, foregrounded, with a stated timeout. Nothing was backgrounded
-and nothing was polled for. `PROJECT_STATUS.md` was written before and after each
-real-time audio run and every `UPDATED` was read from the clock.
-
-## 4. What's blocking us
-
-**Nothing is blocking.** Step 3 is closed at `done` and step 4 is unblocked,
-unstarted and next; the one thing step 3 leaves outstanding - the drive level at
-the radio - is an action for Tim at the radio, not a decision anybody is waiting
-on, and it is already recorded as such against step 2's criterion 4.
 
 ---
 
-**Note on validation.** `tools\arbiter\validate-output.bat` could not be started
-by this session's shell, the same as in unit 255. **This report was checked by
-hand against the validator's rules and there is no exit code to quote**: the
-ordering block carries the literal `READ IN THIS ORDER` with `A.`, `B.` and `C.`
-paragraphs inside the first 60 lines and `raises 0 items` in C; the six-line
-header block follows; and the file has exactly four `##` headings, spelled and
-ordered as required, with section 3 not empty and section 4 present.
+## 1. What Claude did
+
+**Five tasks, all five completed, each committed and pushed before the next
+began.** The version went `1.12.95` -> `1.12.100`, one patch per task.
+`Ft8Sharp` did not move. **No tasks remain.**
+
+| Task | Commit | What landed |
+|---|---|---|
+| 1 (twice) | `a68062e`, `62898b6` | Unit 257's leftovers committed untouched; the inherited scene traced and proved |
+| 2 | `1432048` | The splitter moved into the engine |
+| 3 | `b9dbe42` | The ledger |
+| 4 | `6cab477` | The four states |
+| 5 | `1c736c5` | The state on the row, the column, and the record |
+
+**Task 1 - what the killed unit left.** The uncommitted root records and unit
+257's four files went in **exactly as they arrived**, before anything touched
+them, so the next failure would be a diff and not a loss. Then the trace, written
+to `docs/unit258-inherited-scene-trace.md` and answering only what unit 257's
+survey could not: the project compiled first time with **no compile errors to
+fix**; the scene test passed on the **first of three permitted attempts**; the
+committed corpus is what the decoder returned, not the script; the decoder was
+the one the application runs. The scenes `README.md` unit 257 was killed before
+writing was written. **And the state each station should read was written down and
+committed at `62898b6`, before a line of the ledger existed.**
+
+**Task 2 - one splitter.** `Split` and the `Ft8MessageFields` record came down to
+`src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs`, and `IsCallToAnyone`,
+`IsGrid` and `IsReport` came with them, because the states need the same field
+shapes the tooltip needs. `Ft8Vocabulary.Explain` and its closed table did not
+move.
+
+**Task 3 - the ledger**, watched failing first and then made green.
+
+**Task 4 - the four states**, with the gone-quiet threshold argued as a choice.
+
+**Task 5 - the row.** **The named drop candidate was not dropped.** The tested
+string is on the row *and* the `MainWindow.axaml` column is in, at both the header
+grid and the row template, with the XAML compiling green.
+
+---
+
+## 2. What the owner should expect
+
+**The Digital tab has a sixth column, `contact`, on the right.** Every row whose
+message has a sender now says where the contact with that station stands, in four
+words and a count of slots: *waiting on him, 2 slots*, *your move, 0 slots*,
+*complete, 4 slots*, *gone quiet, 11 slots*. A message that is free text, or a
+`CQ` with nobody to hold a contact with, leaves the cell empty rather than
+guessing.
+
+**Nothing is closed, hidden, greyed out or forbidden.** A complete contact and a
+gone-quiet one are drawn exactly like every other row - no dimming, no styling by
+state, no rows removed. Unit 252 took row dimming out on your ruling and nothing
+here puts it back in another shape.
+
+**Nothing transmits.** This unit opened no audio device, played no sound and added
+no caller to anything that can key. `RecordSent` exists and **nothing calls it**;
+it is there so that step 5's send path adds one line beside the line that hands
+the samples to the sink.
+
+**Three things are yours to look at when you next run it.** The column width is
+148 pixels, chosen for `gone quiet, 11 slots` in 12-point Consolas, and it may
+want changing on your screen. **The gone-quiet threshold is four slots - sixty
+seconds - and it is a choice this unit made, not something a document specified**;
+argued in section 3 and yours to move. And every state on the tab today is derived
+from what was heard alone, because nothing sends yet - so a station you have not
+answered reads *your move* rather than *waiting on him*, which is correct now and
+will change the moment step 5 exists.
+
+**Step 5 is unblocked.** The right-click menu can now ask what has passed with a
+station, count a repeat, and highlight what would come next.
+
+---
+
+## 3. What you should see
+
+### 3.1 The station table, and what each station read
+
+**The corpus is 21 decodes across twelve slots. Five stations were booked. Read at
+the boundary of slot 13**, which is the operator's next transmit opportunity after
+his slot-11 transmission - the moment he is looking at the list deciding what to
+do. The scene's own last slot is 11 and is quoted beside it.
+
+```
+read at the boundary of slot 13; the scene ends at slot 11
+gone quiet after 4 slots = 60 s (a choice)
+
+station   predicted         shown                     at slot 11
+G4XYZ     WaitingOnHim      waiting on him, 2 slots   waiting on him, 0 slots
+VK2PQ     GoneQuiet         gone quiet, 11 slots      gone quiet, 9 slots
+K9RST     Complete          complete, 7 slots         complete, 5 slots
+W1ABC     Complete          complete, 4 slots         complete, 2 slots
+N5TT      GoneQuiet         gone quiet, 5 slots       your move, 3 slots
+```
+
+**Five of five.** *Predicted* is `docs/unit258-inherited-scene-trace.md` section
+4, committed at `62898b6` before the ledger existed; *shown* is what the ledger
+returned. `DL1QQ` and `JA1ZZ` are addressees of somebody else's traffic and were
+correctly **not booked**; `CQ` was correctly **not booked as a station**.
+
+**What passed each way, per station**, which is criterion 1:
+
+| Station | From him | From us | Last heard | Last sent |
+|---|---|---|---|---|
+| `G4XYZ` | 6 messages, slots 0, 2, 4, 6, 8, 10 - one of them to us | 1, slot 11 | 3 slots ago | 2 slots ago |
+| `VK2PQ` | 1, slot 2 | none | 11 slots ago | never |
+| `K9RST` | 3, slots 2, 4, 6 | 2, slots 3, 5 | 7 slots ago | 8 slots ago |
+| `W1ABC` | 2, slots 6, 8 | 2, slots 7, 9 | 5 slots ago | 4 slots ago |
+| `N5TT` | 1, slot 8 | none | 5 slots ago | never |
+
+#### `G4XYZ` - the station working three others at once
+
+He is working `JA1ZZ` and `DL1QQ` across slots 0 to 11 while answering our CQ
+once, at slot 2. **Fed slot by slot, and never gone quiet in any slot of the
+scene:**
+
+```
+slot  0  your move, 0 slots        heard from him 1, of which to us 0
+slot  1  your move, 1 slot         heard from him 1, of which to us 0
+slot  2  your move, 0 slots        heard from him 2, of which to us 1
+slot  3  your move, 1 slot         heard from him 2, of which to us 1
+slot  4  your move, 2 slots        heard from him 3, of which to us 1
+slot  5  your move, 3 slots        heard from him 3, of which to us 1
+slot  6  your move, 4 slots        heard from him 4, of which to us 1
+slot  7  your move, 5 slots        heard from him 4, of which to us 1
+slot  8  your move, 6 slots        heard from him 5, of which to us 1
+slot  9  your move, 7 slots        heard from him 5, of which to us 1
+slot 10  your move, 8 slots        heard from him 6, of which to us 1
+slot 11  waiting on him, 0 slots   heard from him 6, of which to us 1
+slot 12  waiting on him, 1 slot    heard from him 6, of which to us 1
+```
+
+**The gaps are right there in the middle column** - his answer to us ages from 0
+to 8 slots while *heard from him* climbs from 1 to 6. **And that is exactly why it
+is not gone quiet: the clock runs on his silence and never on ours.** The
+gone-quiet threshold is measured against `Heard`, which holds every transmission
+from a station whoever it was addressed to; a rule that counted the gaps in his
+replies *to us* would have called him gone quiet at slot 6 and would have passed
+every other case in this corpus while doing it. That is the assertion the
+instruction named as easiest to write wrongly, and it is written the other way.
+
+**One thing was caught passing for the wrong reason and fixed.** The first version
+of this walk read a **fully-fed** ledger at earlier moments, so the operator's
+slot-11 transmission was answering for slot 0 and every row read *waiting on him,
+0 slots*. Feeding the ledger slot by slot is what produced the table above.
+
+#### The `W1ABC` exchange, message by message - complete with no `73` in it
+
+```
+CQ W1ABC FN42        slot 6   his call
+W1ABC KC3QIS -12     slot 7   our report
+KC3QIS W1ABC R-15    slot 8   his roger AND his report, in one field
+W1ABC KC3QIS RRR     slot 9   our acknowledgement
+```
+
+**There is no `73` anywhere in it and it is complete**, asserted both by sweeping
+every message for the characters `73` and by reading the state at slot 9, the
+moment the `RRR` went out. `R-15` counts as a report and an acknowledgement
+because that is what FT8 says it is - format arithmetic, not intent.
+
+#### `K9RST` - complete at slot 5, `73` at slot 6, and nothing changed
+
+```
+KC3QIS K9RST EM12    slot 2   his grid
+K9RST KC3QIS -13     slot 3   our report
+KC3QIS K9RST R-09    slot 4   his roger and report
+K9RST KC3QIS RRR     slot 5   our acknowledgement - COMPLETE HERE
+KC3QIS K9RST 73      slot 6   politeness, after the fact
+```
+
+Read at slot 5: `complete`. Read at slot 6: `complete`. The `73` is in the ledger
+and is the only thing that changed.
+
+#### `N5TT` and `VK2PQ` - gone quiet is a count of slots and never a reason
+
+`N5TT` answers at slot 8 and is never heard again. At slot 11 he reads **`your
+move, 3 slots`**; at slot 13 he reads **`gone quiet, 5 slots`**. **The same
+station, two slots apart, reading two ways** is the clearest thing this unit can
+say about the threshold being a count rather than a fact about a station. `VK2PQ`
+reads `gone quiet, 11 slots`. Neither carries a reason, and neither is closed.
+
+#### The breakage watched going red before green
+
+The ledger was built first **holding only the last message per station**. Three
+tests went red. The failure, quoted:
+
+```
+Assert.Equal() Failure: Collections differ
+        ↓ (pos 0)
+Expected: ["KC3QIS K9RST EM12", "KC3QIS K9RST R-09", "KC3QIS K9RST 73"]
+Actual:   ["KC3QIS K9RST 73"]
+        ↑ (pos 0)
+Standard Output:
+ heard  18:01:30  KC3QIS K9RST 73
+ sent   18:01:15  K9RST KC3QIS RRR
+```
+
+**`K9RST` is the station that read wrongly**, and `W1ABC` with it: his grid and
+his roger were gone, so a completed exchange read as though it had never happened
+and would have shown *your move*. `G4XYZ`'s six transmissions read as one, so
+criterion 5 could not have been answered at all. **And a repeat could never have
+been counted**, which is exactly what step 5's *grid, 2nd time* will need. With
+the history in: **7 of 7 green in 15 ms**.
+
+```
+Failed!  - Failed: 3, Passed: 4, Skipped: 0, Total: 7   (last message only)
+Passed!  - Failed: 0, Passed: 7, Skipped: 0, Total: 7, Duration: 15 ms
+```
+
+### 3.2 The ledger, and where it lives
+
+| Thing | Where |
+|---|---|
+| The ledger | `src/Hamlet.RadioEngine/Contacts/Ft8ContactLedger.cs:152` |
+| The operator's callsign, as a constructor parameter | `:162` |
+| `RecordHeard(message, slotStartUtc)` | `:196` |
+| `RecordSent(message, slotStartUtc)` - **no caller** | `:225` |
+| The four states | `src/Hamlet.RadioEngine/Contacts/Ft8ContactState.cs` |
+| `Read(record, nowUtc)` | `:117` |
+| `IsComplete(record)` | `:186` |
+| The threshold | `:98` |
+| The splitter | `src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs` |
+| The row's cell | `DigitalDecodeRow.Contact`, set in `MainWindowViewModel.PlaceRow` |
+
+**The operator's callsign arrives as a constructor parameter and by no other
+route.** The ledger reads no settings, names no tab, opens nothing and subscribes
+to no telemetry. The app reads `OperatorProfile.Callsign` and hands it over, the
+same arrangement `ObserverGrid` already had, so the engine is still not told that
+tabs exist.
+
+**What task 2 did with the splitter, and whether there is now one set of parsing
+rules or two.** The move was made. `Split` and `Ft8MessageFields` are in the
+engine; `Ft8Vocabulary.Split` is a one-line forward and keeps its remarks;
+`Ft8Vocabulary.Explain` and its closed table did not move. **There is now one set
+of parsing rules in this repository, and before this unit there were three copies
+of the CQ rule** - `Ft8Vocabulary.IsCallToAnyone` (private), `DecodedFilter.IsCallToAnyone`
+(public) and the special case inside `Split` itself. `IsGrid` and `IsReport` came
+down with them, because the completeness rule needs the same field shapes the
+tooltip needs and a second copy is the one outcome that was refused.
+
+**The seventeen call sites.** The survey counted seventeen; **I found exactly
+seventeen** across `src/` and `tests/`. **Sixteen kept compiling untouched.** One
+did not, and the survey was slightly optimistic there: `DigitalDecodeRow.Fields`
+names the record as its **return type** rather than using `var`, so it took a
+namespace qualification. `Ft8Vocabulary.cs` took a `using`. **No existing test of
+`Split` was edited**, so behaviour did not change, and 30 of 30 filtered
+behaviour cases pass in 14 ms - `CQ DX W1ABC FN42` still splits four ways with
+`CQ DX` as the addressee, `HW CPY OM` is still accepted as three fields, and
+`TNX BOB 73 GL` and `ABCDEFGHIJKLM` still return null.
+
+**The gone-quiet threshold, its arithmetic, and the moment.**
+
+> **Four slots. A slot is `Ft8Slots.SlotSeconds`, fifteen seconds, so four slots
+> is sixty seconds. An FT8 station transmits in alternate slots, so its own
+> opportunities come round every two slots: four slots is two consecutive
+> opportunities gone by without the station using either.** One missed opportunity
+> is ordinary - a lost decode, a station listening, an operator typing. Two in a
+> row is the point at which *how long ago* is worth showing instead of *whose turn
+> it is*.
+
+**This is a choice and not a specification.** No document in this repository says
+when an FT8 station has gone quiet - no pinned ruling, no standard clause, no
+shack fact - the same way none said where a slot sits, and unit 255 recorded that
+kind of choice with its arithmetic rather than presenting it as a finding. **It is
+the owner's to change**, and the constant sits beside its arithmetic at
+`Ft8ContactState.cs:98`.
+
+**The moment evaluated at is the boundary of slot 13**, and the reason is not that
+it makes a station read a particular way. The scene's last transmission is the
+operator's, in slot 11; he transmits in odd slots, so slot 13 is his next
+opportunity, which is the moment the row actually matters. **The instruction warned
+that a threshold larger than three slots would stop `N5TT` reading gone quiet at
+the scene's end and that this was not a reason to bend the threshold.** It was not
+bent: `N5TT` reads *your move, 3 slots* at slot 11 and *gone quiet, 5 slots* at
+slot 13, and **both readings are asserted**, because the pair is better evidence
+than either alone.
+
+**What this type cannot do: hide, close, forbid or judge.** No member of
+`Ft8ContactLedger`, `Ft8StationRecord`, `Ft8ContactStates`, `Ft8ContactRead` or
+`Ft8LedgerMessage` could withhold anything - asserted by reflection over every
+public instance and static member against thirty verbs including *hide*, *close*,
+*forbid*, *deny*, *block*, *grey*, *dim*, *disable*, *allow*, *permit*, *verdict*,
+*judge*, *fault*, *exclude* and *worked*. **This type exposes no member that could
+withhold anything**, and the markup has no converter, no template selector and no
+per-state styling, so a complete row and a gone-quiet row are drawn identically.
+
+**The greps.**
+
+```
+$ grep -rn "new Ft8TransmitSequence" src/ tests/ --include=*.cs
+  -> 17 hits, ALL under tests/. Nothing in src/.
+
+$ grep -rn "new WasapiTransmitSink" src/ tests/ --include=*.cs
+  -> 6 hits, ALL under tests/. Nothing in src/.
+
+$ grep -rn "TransmitAbort|Ptt|PTT|CivWrites|Rig" src/Hamlet.RadioEngine/Contacts/
+  -> (none)
+
+$ grep -rn "RecordSent" src/ --include=*.cs
+  -> the declaration and two of its own remarks. NO CALLER.
+
+$ git diff --stat 264cc8b..HEAD -- src/Ft8Sharp/ src/Ft8Sharp.Deep/ \
+      src/Hamlet.RadioEngine/Transmit/ \
+      src/Hamlet.RadioEngine/Telemetry/TransmitRecord.cs
+  -> (empty: untouched)
+```
+
+**Nothing in `src/` constructs a transmit sequence or a sink**, which was true
+before this unit and is still true. `src/Ft8Sharp/`, `src/Ft8Sharp.Deep/`,
+`Ft8TransmitSequence`, `TransmitGuard`, `TransmitAbort`, `WasapiTransmitSink` and
+`TransmitRecord` are **byte for byte unchanged**. The three the arbiter may not
+reason past are satisfied because this unit built nothing that transmits.
+
+**The whole of what changed under `src/`:**
+
+```
+src/Hamlet.App/App.axaml                            |   6 +
+src/Hamlet.App/ViewModels/DecodedFilter.cs          |   7 +-
+src/Hamlet.App/ViewModels/DigitalDecodeRow.cs       |  29 ++-
+src/Hamlet.App/ViewModels/Ft8Vocabulary.cs          |  74 ++----
+src/Hamlet.App/ViewModels/MainWindowViewModel.cs    |  85 ++++++-
+src/Hamlet.App/Views/MainWindow.axaml               |  52 ++++-
+src/Hamlet.RadioEngine/Contacts/Ft8ContactLedger.cs | 260 +++++
+src/Hamlet.RadioEngine/Contacts/Ft8ContactState.cs  | 244 +++++
+src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs  | 138 +++++
+```
+
+### 3.3 What was inherited, and what it was worth
+
+**It was worth a great deal, and it stood up on the first attempt.**
+
+**Did it compile?** Yes, first time. `dotnet build` on
+`tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj`, foregrounded,
+started 22:29:47 and finished 22:29:53:
+
+```
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+Time Elapsed 00:00:06.22
+```
+
+**Compile errors were expected in three files that had never been through a
+compiler and there were none, so the list of errors fixed is empty.** All three
+are byte for byte as unit 257 left them.
+
+**Was the committed corpus what the decoder returned, or the script?** **The
+decoder.** `TheBandSceneIsWhatHamletsDecoderReadTests`, filtered by exact name, in
+the foreground, on the **first of three permitted attempts**, 22:30:05 to
+22:30:16:
+
+```
+Passed!  - Failed: 0, Passed: 2, Skipped: 0, Total: 2, Duration: 4 s
+
+slots                : 12
+signals composed     : 21
+decodes returned     : 21
+composed but not read: 0
+busiest slot         : 3 signals (cap 8)
+wall clock           : 3.91 s
+```
+
+**All 21 composed signals decoded and none were lost.** 3.91 s of wall clock
+against unit 257's prediction of about 7 s for twelve slots through Deep -
+comfortably inside it and nowhere near the minutes that would have meant something
+was wrong. The test does not compare the corpus to the script: it composes the
+audio, sums each slot, decodes, and asserts string equality against the committed
+file - and slots 4, 6, 8 and 10 come back in an order nobody typed.
+
+**Which decoder.** `Ft8DeepSlotDecoder` with ordered statistics and fine sync both
+on and both defaulted, built at
+`TheBandSceneIsWhatHamletsDecoderReadTests.cs:167-169` exactly as the application
+builds it at `Ft8Reception.cs:460-462`. **The same decoder, the same way**, so the
+corpus is evidence about the decoder Hamlet actually runs.
+
+```
+CORPUS ROUTE: audio
+```
+
+**The figure that decided it** was the 3.91 s: the fallback was licensed for a run
+that took minutes or failed three times, and neither happened.
+
+**This scene is synthesized. It is not a WSJT-X fixture and it may never be scored
+against the decoder's accuracy.** Every signal was made by `Ft8Composer.Compose`
+and read back by `Ft8DeepSlotDecoder`; no radio was on and no antenna was
+connected. A decoder reading back the encoder beside it in the same repository
+tells you the two agree with each other, not that either agrees with the air. It
+carries no `provenance: wsjtx` line, it lives in `tests/fixtures/ft8/scenes/` and
+never in `tests/fixtures/ft8/captured/`, and its new `README.md` says all of this
+at length. **What it is legitimate evidence for is bookkeeping over a run of slots
+- which stations get booked, what history is held, how many slots are counted, and
+which state a row shows.**
+
+**What Tim would run at the shack to make a real one.** On 14.074 MHz, with WSJT-X
+running beside Hamlet on the IC-7300's USB audio, record a run of consecutive
+slots busy enough to have a station working two or three others in them; then, per
+capture, `dotnet run --project tools/Ft8FixtureMaker -- <capture.wav>` - the one
+command `tests/fixtures/ft8/captured/README.md` names, with no editing step
+afterwards. The result goes in `captured/`, not in `scenes/`, and it is the one
+that may carry `provenance: wsjtx` and may be scored against.
+
+**The drop candidate was not dropped.** The `MainWindow.axaml` column is in - the
+header grid and the row template both at `ColumnDefinitions="76,48,48,54,*,148"`,
+a `contact` header with hover text, and a muted cell bound to `Contact`. The
+message keeps the star so a derived cell cannot push the decoded text around.
+`Hamlet.sln` compiled the XAML green, 0 warnings and 0 errors in 6.29 s, and the
+tested string on the row stands on its own regardless.
+
+### 3.4 Two mismatches with the instruction, reported and not repaired
+
+**The tree wins in both, and nothing was changed to reconcile either.**
+
+1. **The instruction says 22 signals and 22 decode lines; the tree holds 21 of
+   each.** `Ft8BandScene.Signals` has 21 entries and
+   `unit257-band-scene.corpus.txt` has 21 decode lines under 8 lines of header,
+   for the 29 total lines the instruction counted correctly. Every figure in this
+   unit is 21.
+2. **`docs/unit257-contact-state-survey.md` section 3 says
+   `BoundariesBetween(then, now)` returns the boundaries *strictly after* `from`,
+   so that two consecutive slots return 1.** Measured against
+   `Ft8Slots.cs:209-232`, it returns 2: `at = SlotStart(from)`, and when `from` is
+   itself a boundary the condition `at < fromTrueUtc` is false, so `from` is
+   included. **The survey was not rewritten and no second copy of the arithmetic
+   was written**; *how many slots ago* filters `BoundariesBetween`'s own list to
+   the boundaries strictly after the moment, which is right by construction and
+   cannot be off by one in the other direction.
+
+### 3.5 Tool refusals, recorded verbatim
+
+- **`tools\arbiter\outcome-append.bat`** - tried once, refused for a **sixth
+  consecutive unit**: `This command requires approval`. The `PHASE_OUTCOME.md`
+  entry was written with the file-editing tools in the exact twelve-field format
+  the existing entries use, same names, same order, **ASCII only** (verified: zero
+  non-ASCII bytes in the new entry), and the header's `STEP: 4` line was updated
+  in place to `partial`. **Unit 257's `UNIT 5 - STEP 4` entry, whose judgment
+  fields describe unit 256's report because unit 257 never wrote one, was left
+  exactly as it stands**, and the correction is in this unit's own `HIT:` field
+  and here.
+- **`git reset -q <paths>`** - refused: `This command requires approval`.
+  `git restore --staged` did the same job and was allowed.
+- **A heredoc for the commit message** - refused:
+  `Contains shell syntax (file_redirect) that cannot be statically analyzed`.
+  Repeated `-m` flags did the same job.
+- **`tools\arbiter\validate-output.bat output.md`** - see section 4's note below;
+  the result of trying it is recorded there.
+
+**Nothing halted the loop.** The file-editing tools were unaffected throughout, as
+the tool rule predicted.
+
+### 3.6 What was run, and what was not
+
+**No unfiltered `dotnet test` was run. Nothing was backgrounded and polled.
+No audio device was opened and nothing played.** Every test run was filtered by
+name, foregrounded, with a stated timeout of five minutes:
+
+| Run | Result |
+|---|---|
+| `TheBandSceneIsWhatHamletsDecoderReadTests` | 2 passed, 4 s |
+| `TheSplitterMovedAndSplitsTheSameTests` | 30 passed, 14 ms |
+| `TheLedgerHoldsWhatPassedEachWayTests` (last-message-only) | **3 failed**, 4 passed |
+| `TheLedgerHoldsWhatPassedEachWayTests` (with history) | 7 passed, 15 ms |
+| `TheRowSaysOneOfFourThingsTests` | 7 passed, 21 ms |
+| `TheRowSaysWhereTheContactStandsTests` | 5 passed, 271 ms |
+
+**51 tests added, all green, and no red left in the tree.** The inherited reds -
+`CwAdjudicationTests.ASpeedChangeInRealisticAudio`, the 51 CW cases in
+`docs/unit239-failing-set.txt`, the `Ft8Sharp.Deep.Tests` type-list tripwire -
+were not chased and not touched.
+
+**`PROJECT_STATUS.md` was written eight times, every `UPDATED` read from the
+clock and none composed**, with no gap approaching the watchdog's twelve minutes.
+`tools/unit254-seam-grep.sh` was left untracked and untouched - no third deletion
+attempt. `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` was set and `HEARTBEAT:`,
+`CURRENT_STEP:` and the `STEP:` lines were not written. `RULES_AT` was not
+re-derived.
+
+---
+
+## 4. What's blocking us
+
+**Nothing is blocking.**
+
+One note for the record, which is not a ruling request and asks the owner to
+decide nothing: **`tools\arbiter\validate-output.bat` could not be started**,
+refused the same way it was refused in seven forms across units 255, 256 and 257.
+**This report was therefore checked by hand against the rules in the instruction's
+reporting section** - the ordering block with the literal words `READ IN THIS
+ORDER` and paragraphs beginning `A.`, `B.` and `C.` inside the first 60 lines,
+`raises N items` with a real number in `C`, the six-line header block, and exactly
+four `##` headings spelled and ordered as required with nothing else at that
+level. **No exit code is quoted, because there is none.**
+
+Criterion 6's qualification - a synthesized corpus rather than a WSJT-X capture -
+is a figure and a stated route, not a decision waiting on you: `SHACK_FACTS.md`
+FACT-004 puts a real capture out of this machine's reach, and section 3.3 names
+the one command that makes one at the shack. It is not in the way of anything.

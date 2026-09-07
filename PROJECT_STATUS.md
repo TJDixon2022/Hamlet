@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 5 of 5
-WORK_INSTRUCTION: 258 - the ledger, on the scene the last unit left
-BALL: tim
+STATE: WORKING
+TASK: 1 of 5
+WORK_INSTRUCTION: 259 - right-click, and it goes
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-157 (2026-09-06)
-UPDATED: 2026-09-06T22:54:40-04:00
-NOTE: All five tasks done, committed and pushed; output.md written and hand-checked against validate-output.bat's own seven rules, which was refused in two more forms and could not be started. NUMBER is 5 of 5 - every station read the state written down before the ledger existed. Step 4 goes from not started to partial: five criteria met on quoted evidence, criterion 6 met on a synthesized corpus rather than a WSJT-X capture this machine cannot make. Section 4 raises nothing. Step 5 is unblocked.
+UPDATED: 2026-09-06T23:04:10-04:00
+NOTE: Project checks passed - Hamlet confirmed. Committing the four root records units 256-258 left modified, then tracing the send path: where the frequency is live, whether any seam reaches an ISerialPort, what Settings actually holds for callsign and grid on this machine, and the predicted menu for each of the corpus's five stations, which must be committed before the option list exists.
 
 ---
 

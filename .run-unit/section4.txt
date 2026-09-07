@@ -1,15 +1,17 @@
 ﻿
-**Nothing is blocking.** Step 3 is closed at `done` and step 4 is unblocked,
-unstarted and next; the one thing step 3 leaves outstanding - the drive level at
-the radio - is an action for Tim at the radio, not a decision anybody is waiting
-on, and it is already recorded as such against step 2's criterion 4.
+**Nothing is blocking.**
 
----
+One note for the record, which is not a ruling request and asks the owner to
+decide nothing: **`tools\arbiter\validate-output.bat` could not be started**,
+refused the same way it was refused in seven forms across units 255, 256 and 257.
+**This report was therefore checked by hand against the rules in the instruction's
+reporting section** - the ordering block with the literal words `READ IN THIS
+ORDER` and paragraphs beginning `A.`, `B.` and `C.` inside the first 60 lines,
+`raises N items` with a real number in `C`, the six-line header block, and exactly
+four `##` headings spelled and ordered as required with nothing else at that
+level. **No exit code is quoted, because there is none.**
 
-**Note on validation.** `tools\arbiter\validate-output.bat` could not be started
-by this session's shell, the same as in unit 255. **This report was checked by
-hand against the validator's rules and there is no exit code to quote**: the
-ordering block carries the literal `READ IN THIS ORDER` with `A.`, `B.` and `C.`
-paragraphs inside the first 60 lines and `raises 0 items` in C; the six-line
-header block follows; and the file has exactly four `##` headings, spelled and
-ordered as required, with section 3 not empty and section 4 present.
+Criterion 6's qualification - a synthesized corpus rather than a WSJT-X capture -
+is a figure and a stated route, not a decision waiting on you: `SHACK_FACTS.md`
+FACT-004 puts a real capture out of this machine's reach, and section 3.3 names
+the one command that makes one at the shack. It is not in the way of anything.

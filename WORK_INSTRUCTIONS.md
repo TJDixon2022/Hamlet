@@ -1,4 +1,4 @@
-# Work instruction 258 - the ledger, on the scene the last unit left
+# Work instruction 259 - right-click, and it goes
 
 ```
 STOP. Verify the project before reading any further.
@@ -20,7 +20,7 @@ Reply with only: the path you are in, which checks failed, and
 If all four hold, say "Hamlet confirmed" and continue.
 ```
 
-**All four were checked against the tree at 2026-09-06T22:25, at `HEAD 264cc8b`,
+**All four were checked against the tree at 2026-09-06T23:0x, at `HEAD e1f0b23`,
 while this instruction was written.** `SHACK_FACTS.md` and
 `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` are present; neither
 `CoreHMI.sln` nor `MURC.sln` exists; the only solution at the root is
@@ -30,8 +30,7 @@ while this instruction was written.** `SHACK_FACTS.md` and
 
 ## THE THREE RULES THAT KILLED FOUR SESSIONS
 
-**Tim's rulings of 2026-09-05, and one fact measured tonight. Not this unit's to
-weigh.**
+**Tim's rulings of 2026-09-05. Not this unit's to weigh.**
 
 **1. A unit runs no test suite.** **A unit may run only the unit test it
 constructs in that work instruction**, filtered by exact name, in the foreground,
@@ -43,25 +42,16 @@ the watchdog on 2026-09-05, at 33 to 38 minutes, each sitting in
 `until grep -q "exited with code" ...; do sleep 15; done` with a `900000` ms
 timeout.
 
-**3. THE WATCHDOG FIRES AFTER TWELVE MINUTES WITH NO STATUS WRITE, AND IT KILLED
-THE LAST UNIT.** Unit 257 launched at 20:43, wrote `PROJECT_STATUS.md` once at
-20:45:31, worked steadily, and was killed at 20:57 with three tasks of work
-uncommitted and **no `output.md` at all**. It did nothing wrong except stay quiet
-for eleven minutes while it wrote files. **Its report was never written, so the
-loop recorded judgment fields against the previous unit's report instead.**
-
-**So the status write is part of the work, not part of the reporting.** Write
-`PROJECT_STATUS.md` when you finish a file, before you start a build, before you
-start a filtered test run, and never let eight minutes pass without one. The
-cadence section below says it again because this is the one failure mode that
-loses everything this unit does.
+**3. THE WATCHDOG FIRES AFTER TWELVE MINUTES WITH NO STATUS WRITE.** It killed
+unit 257 at fourteen minutes with three files written and none committed. Unit
+258 wrote `PROJECT_STATUS.md` eight times and lost nothing. **The status write is
+part of the work, not part of the reporting.**
 
 `dotnet build` is allowed, foregrounded, with a timeout.
 
-**This unit opens no audio device and plays no sound.** Everything in it is
-samples in memory and text in files. The only thing that costs real seconds is
-the decoder, and task 1 spends that once, at a known price: unit 257 measured one
-slot at **582.5 ms through Deep via samples** and twelve slots at **6.99 s**.
+**This unit opens no audio device, opens no serial port, and plays no sound.**
+Every transmission in it goes to a fake sink and a fake port that already exist
+in the tree. See *What not to do* §1.
 
 ---
 
@@ -74,176 +64,179 @@ halts the loop.**
 
 Three tool facts earlier units paid for, carried forward unchanged:
 
-1. **`tools\arbiter\outcome-append.bat` has been refused for five consecutive
-   units** - 253, 254, 255, 256, and unit 257's refusals are in
-   `.run-unit/denials.txt` for a sixth. **Expect it.** Task 5 tells you what to
-   do instead: append the entry with the file-editing tools, in the exact
+1. **`tools\arbiter\outcome-append.bat` has been refused for six consecutive
+   units** - 253 through 258. **Expect a seventh.** Task 5 tells you what to do
+   instead: append the entry with the file-editing tools, in the exact
    twelve-field format the existing entries use, ASCII only.
-2. **`tools\arbiter\validate-output.bat` was refused in seven forms** by units
-   255 and 256, and refused again for unit 257 in two forms. **This shell may not
-   start a batch file.** Try it once; if it is refused, check the report by hand
-   against the rules in the reporting section below, say in the report that you
-   did, and **quote no exit code**, because there is none.
-3. **The shell has refused device enumeration, `powershell -NoProfile`, and
-   `sed -i`.** You need none of them.
+2. **`tools\arbiter\validate-output.bat` has been refused in nine forms** across
+   units 255, 256, 257 and 258. **This shell may not start a batch file.** Try it
+   once; if it is refused, check the report by hand against the rules in the
+   reporting section below, say in the report that you did, and **quote no exit
+   code**, because there is none.
+3. **The shell has refused device enumeration, `powershell -NoProfile`,
+   `git reset -q <paths>`, `sed -i`, and heredocs for commit messages.**
+   `git restore --staged` and repeated `-m` flags do the same jobs. You need
+   device enumeration for nothing in this unit.
 
 ---
 
 ## Why this unit exists
 
-**The count today.** Step 0 `done`, one unit. Step 1 `partial` at four of five
-and closed. Step 2 `partial` with criterion 4 deferred to Tim. Step 3 closed,
-four units. **Step 4 has had one unit launched at it and that unit was killed
-fourteen minutes in.** Steps 5 and 6 have had none.
+**The count today.** Step 0 `done`, one unit. Step 1 `partial` at four of five and
+closed. Step 2 `partial`, criterion 4 deferred to Tim. Step 3 `partial`, four
+units, closed on the loopback with the radio's own drive level deferred to Tim.
+Step 4 `partial`, three units, closed last night at five of six with the sixth met
+in substance. **Step 5 has had no unit spent on it. Step 6 cannot have one.**
 
-**What unit 257 got into the tree before it died, and it is worth having:**
+**So this is the last step any unit can move.** Everything that remains unmet in
+steps 1 to 4 is either closed on the record or is a number only Tim can read off a
+radio that has never been attached to this machine. Step 6 is Tim keying a
+transmitter. **Step 5 is the whole of what is left to build**, and after tonight
+the phase either has an operator who can click and be heard, or it does not.
 
-- `docs/unit257-contact-state-survey.md`, committed at `HEAD 264cc8b`. Three
-  hundred and thirty-nine lines of measurement with files and line numbers.
-  **Read it. Do not write it again.**
-- Three uncommitted files under `tests/Hamlet.RadioEngine.Tests/Contacts/` and
-  one uncommitted corpus at `tests/fixtures/ft8/scenes/`. **Never built, never
-  proved, no report says a word about them.**
+**What exists and is waiting to be joined.** These are not hopes; they were read
+out of the tree while this instruction was written and the line numbers are below.
 
-**What it did not get to is the whole of step 4.** There is no
-`src/Hamlet.RadioEngine/Contacts/` folder. `Ft8MessageSplit` appears nowhere in
-`src/`. Nothing in this repository holds two callsigns together and says what has
-passed between them. The Digital tab still shows a table of events - time, SNR,
-dt, Hz, text - and every row is an event that knows nothing about the row above
-it.
+- `Ft8TransmitSequence.RunAsync(OperatorSend)` - gate, key, play, unkey, abort on
+  every failing path. **Its own remarks say: "Nothing in this repository calls it.
+  The first caller is step 5's right-click."** That sentence is tonight's work.
+- `Ft8ContactLedger` and `Ft8ContactStates` - what passed each way with each
+  station, and which of the four states that is. **`RecordSent` exists and nothing
+  calls it**, put there so this unit adds one line beside the send.
+- `Ft8Composer.ComposeSignal` - words into the 12.64 s that goes on the air.
+- `DigitalSendReserved` - a named, empty, bordered region under the waterfall,
+  kept clear for exactly this, carrying a line that says transmit is not built.
+  **That line becomes false tonight.**
 
-**So the order of this unit is deliberately the opposite of the last one.** Unit
-257 spent its fourteen minutes on the survey and the fixture and died before the
-ledger existed. **This unit adopts the fixture in one bounded task and then
-builds the ledger.** If anything in this unit is not reached, it must be the row's
-markup - not the ledger, and not the four states.
-
-**The heavy hand is the plan's own ruling that Hamlet reports and does not rule.**
-A contact is never closed by the app. Nothing is forbidden, hidden or greyed out.
-`73` is politeness. A station working three others at once is a station being
-busy, not a fault. **Every one of those is a rule about what this unit must refuse
-to build**, and it is easier to write the type that decides than the type that
-only counts. Write the one that only counts.
+**The heavy hand is one click, one message.** Hamlet transmits because the
+operator clicked - never on a timer, never on a decode, never to continue a
+contact. A transmission he did not ask for is this phase's one unrecoverable
+fault, because it goes out over other people's band and cannot be taken back.
+**Everything in this unit that waits for a slot boundary is the place that fault
+would come from**, and task 3 is written to make it impossible rather than
+unlikely.
 
 ```
 PHASE GOAL:   Hamlet works stations on the air.
-UNIT GOAL:    For each station heard, Hamlet holds which messages passed each
-              way, when, and how many slots ago - and from that shows one of
-              four states, waiting on him, your move, complete or gone quiet,
-              with slot counts. It closes nothing, hides nothing, forbids
-              nothing and interprets nothing. Proved against the recorded slot
-              corpus already in the tree, on this machine, with no radio.
-ADVANCES:     step 4 - exit criteria 1 (which messages passed each way, when,
-              and how many slots ago), 2 (the four states shown per row with
-              slot counts), 3 (complete without 73), 4 (nothing closed, hidden
-              or forbidden), 5 (a station working three others reads as gaps)
-              and 6 (derived from recorded captures, not from the air).
+UNIT GOAL:    The operator right-clicks a decoded row and Hamlet offers every
+              message that is valid at that point, with the expected one
+              highlighted, none forbidden, and a repeat showing its count.
+              Choosing one arms exactly one transmission in the next slot, with
+              no confirmation, and nothing further goes out without another
+              click. A CQ button does the same from his own settings with no
+              typing. What is being sent, and to whom, appears in the reserved
+              Send area. Out of licence privileges the menu says so and sends
+              nothing. Proved on this machine against a fake port and a fake
+              sink, with no device opened.
+ADVANCES:     step 5 - exit criteria 1 (a CQ button from the operator's own
+              settings, no typing), 2 (right-click offers every valid message,
+              expected highlighted, none forbidden, a repeat shows its count),
+              3 (choosing one transmits in the next slot with no confirmation),
+              4 (one click sends exactly one message, asserted by a test),
+              5 (what is being sent, and to whom, in the reserved Send area)
+              and 6 (out of privileges the menu says so and sends nothing).
 ```
 
 ---
 
 ## Verify this instruction against the tree
 
-**Everything below was read from the tree at 2026-09-06T22:25 by a session that
+**Everything below was read from the tree at 2026-09-06T23:0x by a session that
 could not run the application.** Where this instruction and the tree disagree,
 **the tree wins** - `PHASE_PLAN.md` says so in its own table. **Report the
 mismatch in section 3 and continue. Do not repair the instruction and do not
 stop.**
 
-Unit 256 found one of these wrong and reported it at no cost, and unit 257
-confirmed the correction: `Ft8Composer.cs:585` calls `Ft8MessageDecoder.Decode`,
-the message layer, which never sees a sample. **The construction of a slot
-decoder to reuse is in the round-trip test, not in `Ft8Composer`.**
+Unit 256 found one of these wrong and reported it at no cost; unit 258 found two
+and reported them at no cost. **That is the behaviour that is wanted.**
 
 **What I measured, with where I read it:**
 
 | Claim | Where |
 |---|---|
-| **The engine has no `Contacts/` folder.** Its folders are `Audio, Bands, Civ, Cw, Explore, Licensing, Rig, Scan, Solar, Telemetry, Training, Transmit, Transport`. | `src/Hamlet.RadioEngine/` |
-| **`Ft8MessageSplit` exists nowhere in `src/`.** The only occurrence of the name in the whole tree is a remark inside an uncommitted test file. | grep over `src/` and `tests/` |
-| The splitter is still `Ft8Vocabulary.Split(string?)` returning `Ft8MessageFields?`, in the app, with the record declared at `:294`. | `src/Hamlet.App/ViewModels/Ft8Vocabulary.cs:48`, `:294` |
-| Unit 257's survey **decided** that the splitter moves into the engine as `src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs` and the app's `Split` becomes a one-line forward, having counted **seventeen call sites** that all use `var` or name `Ft8MessageFields`. **The decision was made; the move was not.** | `docs/unit257-contact-state-survey.md` §2 |
-| `Ft8Vocabulary.Explain` and its closed table **do not move.** Tim closed that table on 2026-09-04. | same survey, §2 |
-| *How many slots ago* is `Ft8Slots.BoundariesBetween(then, now).Count`, and no second copy of the arithmetic is to be written. | `src/Hamlet.RadioEngine/Audio/Ft8Slots.cs:209`; survey §3 |
-| `ContactStage` is the trap - right shape, wrong ruling, and on the parked CW path. The survey names it so nobody reaches for it. **Do not reach for it.** | `src/Hamlet.RadioEngine/Cw/ContactStage.cs:10`; survey §4 |
-| `TransmitRecord` has **no string parameter at all**, so the ledger cannot learn what we sent from telemetry. It is told, by an explicit `RecordSent(message, slotStartUtc)` that nothing calls yet and step 5 will call in one line. | `src/Hamlet.RadioEngine/Telemetry/TransmitRecord.cs:45`; survey §5 |
-| **There is no real capture in this tree.** Nine files under `tests/fixtures/ft8/`, one `.wav`, and its own README refuses it for scoring. | survey §6, verified against `tests/fixtures/ft8/` |
-| The row is `DigitalDecodeRow`; `AddDecodeRowForTests` is at `MainWindowViewModel.cs:7785` and lets a test assert row text **without opening a window**. | `src/Hamlet.App/ViewModels/MainWindowViewModel.cs:7785` |
-| The operator's own callsign lives in the **app**, defaulting to `KC3QIS`. | `src/Hamlet.App/Settings/OperatorProfile.cs:44` |
-| The root version reads `1.12.95`. Unit 257 bumped it once. | `Directory.Build.props:205` |
+| `Ft8TransmitSequence` is a sealed class taking `ISerialPort`, `ITransmitAudioSink`, an optional `TransmitGuard`, an optional `ITelemetry` and two CI-V addresses. | `src/Hamlet.RadioEngine/Transmit/Ft8TransmitSequence.cs:197`, ctor `:216` |
+| `RunAsync(OperatorSend, CancellationToken)` returns `TransmitRun`. **It never throws and never leaves the radio keyed.** | same file, `:249` |
+| `OperatorSend(Ft8Transmission, long FrequencyHz, LicenseClass, bool GuardEnabled, DateTime SlotStartUtc, double StartSecondsIntoSlot)`. **The slot's start and the offset arrive as values and are recorded, not waited for** - "a path that waits for a moment is a path that can arrive at one on its own". | same file, `:92`, and the remarks at `:182` |
+| `TransmitRun.Sent`, `.CameOutOfTransmit`, `.RadioIsInReceive`, `.Reason`, `.Citation`. | same file, `:129`, `:132`, `:163` |
+| The gate is **inside** `RunAsync`, before anything that can key, and is narrower there than `TransmitGuard.Check` is in general: an overridden permit and an unknown-class permit are both refusals inside this path. | same file, `:254`-`:263`, and the remarks at `:189` |
+| `TransmitGuard.Check(LicenseClass, long frequencyHz, TransmitMode, bool guardEnabled)` returns `TransmitDecision(MayTransmit, Reason, Citation, WasOverridden)`. | `src/Hamlet.RadioEngine/Licensing/TransmitGuard.cs:67`, `:11` |
+| `Ft8Composer.ComposeSignal(text, sampleRate, baseFrequencyHz)` is **the route that goes on the air**; `Compose` is the route that goes into a decoder. They differ in one call. | `src/Hamlet.RadioEngine/Transmit/Ft8Composer.cs:259`, and the remarks above it |
+| `Ft8ComposeResult` carries `Composed`, `Transmission`, `Refusal` and `Explanation` - **a refusal, not an exception**. | same file, `:131`-`:150` |
+| `Ft8ContactLedger(string operatorCallsign)`; `For(string?)` returns `Ft8StationRecord?`; `RecordHeard` `:196`; **`RecordSent(string?, DateTime)` at `:225` with no caller in `src/`**. | `src/Hamlet.RadioEngine/Contacts/Ft8ContactLedger.cs:152`, `:162`, `:183` |
+| `Ft8StationRecord` exposes `Callsign`, `Heard`, `HeardToUs`, `Sent`, `LastHeard`, `LastHeardToUs`, `LastSent`, `SlotsSinceHeard(now)`, `SlotsSinceSent(now)`. | same file, `:19`-`:76` |
+| `Ft8ContactStates.Read(record, nowUtc)` returns `Ft8ContactRead(Callsign, State, Slots)` with `.Words` and `.Text`; `IsComplete(record)` at `:186`; `GoneQuietAfterSlots = 4` at `:98`. | `src/Hamlet.RadioEngine/Contacts/Ft8ContactState.cs` |
+| `Ft8MessageSplit.Split`, `.IsCallToAnyone`, `.IsGrid`, `.IsReport(text, out rogered, out decibels)` - **one set of parsing rules, moved into the engine by unit 258**. | `src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs:53`, `:86`, `:102`, `:114` |
+| `Ft8Slots.SlotSeconds = 15`, `SlotStart(trueUtc)` `:182`, `IntoSlot(trueUtc)` `:195`, `TransmissionFits(secondsAfterBoundary)` `:162`, `BoundariesBetween` `:209`. **There is no `NextSlot` helper. Whatever you write for it, write it once.** | `src/Hamlet.RadioEngine/Audio/Ft8Slots.cs:119` |
+| `MainWindowViewModel` holds `private Ft8ContactLedger? _contacts` at `:1100`, built in `ContactTextFor` at `:7863`, fed by `RecordHeard` at `:7867`. **Every row goes through `PlaceRow` at `:7768`.** | `src/Hamlet.App/ViewModels/MainWindowViewModel.cs` |
+| `AddDecodeRowForTests(utc, snr, dt, hz, message, slotStartUtc)` at `:7810` lets a test assert row text **without opening a window**. Unit 258 used it and it worked. | same file |
+| `MainWindowViewModel.LicenseClass` at `:2508` reads `_settings.Operator.LicenseClass`; `private long _frequencyHz` at `:447`, seeded from `_selectedBand.Band.JumpHz` at `:3098` and updated by `OnRigFrequencyChanged` at `:9042`. | same file |
+| `private IRig? _rig` at `:217`; `internal void UseRigForTests(IRig?)` at `:6863`; the rig is built at `:9473` as `new Ic7300Rig(new SystemSerialPort(selection))`. | same file |
+| **`Ic7300Rig` holds its `ISerialPort` in a private field at `:39` and exposes no accessor for it.** So the app has no route today to hand `Ft8TransmitSequence` a port. **Task 1 settles what the smallest seam is.** | `src/Hamlet.RadioEngine/Rig/Ic7300Rig.cs` |
+| `AppSettings` has `AudioInputDeviceId` at `:193` and **no output device field at all**. So the app cannot name a transmit endpoint today. | `src/Hamlet.App/Settings/AppSettings.cs` |
+| `OperatorProfile.Callsign` defaults to `"KC3QIS"` at `:44`; **`GridSquare` at `:92` defaults to `""`** and may well be empty on this machine. | `src/Hamlet.App/Settings/OperatorProfile.cs` |
+| `DigitalSendReserved` is a `Border`, `MinHeight="72"`, at `MainWindow.axaml:3074`, holding one `TextBlock` named `DigitalSendReservedLine` at `:3082` whose text is *"Send lives here when it is built. Hamlet does not transmit yet..."*. **Its own comment says the transmit phase drops into it.** | `src/Hamlet.App/Views/MainWindow.axaml` |
+| The decoded table is `ItemsControl x:Name="DigitalDecodedRows"` at `:3388`, bound to `DigitalVisibleDecodes`, with a `DataTemplate x:DataType="vm:DigitalDecodeRow"` whose root is a `Grid ColumnDefinitions="76,48,48,54,*,148"` at `:3407`. **That `Grid` is where a `ContextFlyout` goes.** | same file |
+| The fakes already exist: `tests/Hamlet.RadioEngine.Tests/Transmit/FakeTransmitAudioSink.cs`, and a fake CI-V transport used by `TheUnkeyHappensWhateverGoesWrongTests` that can refuse to open, hang on a read, throw on a write, and die between the key and the unkey. **Reuse them. Do not write a third fake.** | `tests/Hamlet.RadioEngine.Tests/Transmit/` |
+| The scene corpus is `tests/fixtures/ft8/scenes/unit257-band-scene.corpus.txt` - 21 decode lines over twelve slots, five booked stations `G4XYZ`, `VK2PQ`, `K9RST`, `W1ABC`, `N5TT`, operator `KC3QIS`. | unit 258's report §3.1, verified against the file |
+| The root version reads `1.12.100`. | `Directory.Build.props:205` |
 
-**The four uncommitted files unit 257 left, measured but not proved:**
-
-| File | Bytes | What I could tell without building it |
-|---|---|---|
-| `tests/Hamlet.RadioEngine.Tests/Contacts/Ft8BandScene.cs` | 8,251 | The scene script. 12 slots, 22 signals, ends cleanly at a closing brace. Contains the CQ answered to completion with no `73`, `G4XYZ` working three others, `N5TT` answering once at slot 8 and never again, `KC3QIS K9RST 73` arriving at slot 6 after complete at slot 5, and two messages the splitter refuses at slots 4 and 10. |
-| `tests/Hamlet.RadioEngine.Tests/Contacts/Ft8SceneCorpus.cs` | 8,378 | The corpus reader and writer. Points at `tests/fixtures/ft8/scenes/unit257-band-scene.corpus.txt` and finds the root by walking up to `Hamlet.sln`. |
-| `tests/Hamlet.RadioEngine.Tests/Contacts/TheBandSceneIsWhatHamletsDecoderReadTests.cs` | 10,332 | Composes each slot at per-station frequencies, sums, scales to 0.8 peak, decodes, and asserts the committed corpus is what came back. Ends cleanly. Its remarks name the breakage it would catch: a corpus written from the script instead of from the decoder. |
-| `tests/fixtures/ft8/scenes/unit257-band-scene.corpus.txt` | 1,006 | 29 lines, 22 decode lines, header naming the operator and the first slot's UTC. **Whether these lines came out of the decoder or out of the script, I cannot tell from the file. Task 1 settles it by running the test.** |
-
-**There is no `README.md` beside the corpus.** Unit 257's survey said the scene
-folder gets one and the unit was killed before writing it. **You write it.**
-
-**Expected failures: the inherited test project may not compile.** Those three
-files have never been through a compiler. **A compile error in them is expected,
-is not a defect in the tree, and is task 1's work.** The rest of the build was
-green at `HEAD 264cc8b` when unit 257 measured it - 0 warnings, 0 errors in
-12.79 s.
+**Expected failures: none in the build.** The tree was green at `HEAD e1f0b23`
+with unit 258's 51 new tests all passing. **If the build is red before you have
+changed anything, that is a finding worth its own paragraph** - say so and say
+what it was.
 
 **`tools/unit254-seam-grep.sh` is still there, untracked, from unit 254. Leave
-it. No third deletion attempt.**
+it. No fourth deletion attempt.**
 
 ---
 
 ## What the reload measured, and what to do about it
 
-**Five disagreements, none of them yours to repair.**
+**Four disagreements, none of them yours to repair.**
 
 1. **`RULES_AT` disagrees with `CLAUDE.md` §1** - `PROJECT_STATUS.md` says
    `HM-DEC-157 (2026-09-06)`, the reload reads §1's highest as `CPS-DEC-0152`.
-   **Units 255, 256 and 257 all answered this:** §1's table is `HM-DEC-`
-   throughout, `CPS-DEC-` appears nowhere in this repository, and
+   **Units 255, 256, 257 and 258 have all answered this:** §1's table is
+   `HM-DEC-` throughout, `CPS-DEC-` appears nowhere in this repository, and
    `HM-DEC-155/156/157` are in `DECISIONS.md` but not yet indexed into §1's
    table. **`RULES_AT` is ahead of the index, not ahead of the record. Change
-   nothing. Do not re-derive it a fourth time.**
+   nothing. Do not re-derive it a fifth time.**
 2. **`PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` are modified and
-   uncommitted at the root, and `output.md` is deleted**, along with the
-   `.run-unit/` records. **Commit them at the start of task 1**, the way units
-   256 and 257 committed their predecessors' leftovers. The deleted `output.md`
-   is correct as a deletion - unit 257 never wrote one - and you will write a new
-   one at the end.
+   uncommitted at the root.** **Commit them at the start of task 1**, the way
+   units 256, 257 and 258 committed their predecessors' leftovers. `.run-unit/`
+   is the launcher's working area and changes under your feet; include it or
+   leave it as you find convenient, and do not spend a second on it either way.
 3. **`PHASE_STATUS.md`'s `CURRENT_STEP:` reads 1** and is stale. **It is the
-   launcher's field.** Do not write `CURRENT_STEP:` or the `STEP:` lines in
-   `PHASE_STATUS.md`. `WORK_INSTRUCTION:` is yours to set.
+   launcher's field.** Do not write `CURRENT_STEP:`, `HEARTBEAT:` or the `STEP:`
+   lines in `PHASE_STATUS.md`. `WORK_INSTRUCTION:` is yours to set.
    `PHASE_OUTCOME.md`'s header **is** yours - task 5.
-4. **Step 3's state is recorded twice and the two disagree** - the unit's own
+4. **Step 3's state is recorded twice and the two disagree** - unit 256's own
    entry reads `done`, the judging session's reads `partial` on criterion 1's
-   radio half. **Both are on the record and neither is yours to reconcile.**
-5. **`PHASE_OUTCOME.md`'s last entry, `UNIT 5 - STEP 4`, reads `FATE: executed`
-   and carries `HIT`, `STATE_AFTER` and `STATE_WHY` that describe unit 256's
-   report, because unit 257 was killed before writing one.** `RUN_LEDGER.md`'s
-   last row is the truth: `killed by the watchdog: no status write within 12 min
-   of the launch clock`. **Do not edit that entry. Do not correct it. Say what
-   happened in your own entry's `HIT` field and in the report, and leave the
-   record as it stands** - `PHASE_CONTROL.md` does not have units rewriting
-   entries that are not theirs.
+   radio half. **Both are on the record and neither is yours to reconcile.** The
+   same is true of the `UNIT 5 - STEP 4` entry whose judgment fields describe a
+   report unit 257 never wrote. **Do not edit either. Append yours.**
 
 ---
 
-## Steps 1, 2 and 3 are closed and are not yours
+## Steps 1, 2, 3 and 4 are closed and are not yours
 
 **Do not reopen them, do not improve them, do not add a test to them.**
 
-- **Step 1**, the abort: closed `partial` at four of five. Not to be reopened.
-- **Step 2**, the waveform: closed `partial`, 112 of 117 read back. Criterion 4
-  deferred to Tim - the level the IC-7300's USB modulation input expects is not
-  in this repository and `SHACK_FACTS.md` FACT-004 forbids inferring it here.
-- **Step 3**, the audio path: closed. The loopback decoded 3 of 3 on the device
+- **Step 1**, the abort: `partial` at four of five. `TransmitAbort` fires from
+  inside `Ft8TransmitSequence` and needs nothing from you.
+- **Step 2**, the waveform: `partial`, 112 of 117 read back. Criterion 4 deferred
+  to Tim.
+- **Step 3**, the audio path: `partial`. The loopback decoded 3 of 3 on the device
   route. What remains is the drive level Tim reads off the radio.
+- **Step 4**, the ledger: `partial` at five of six, the sixth met on a synthesized
+  corpus. **You call the ledger. You do not change it, and you do not re-argue the
+  four-slot gone-quiet threshold.**
 
-**You need two things from all of that and only two:** `Ft8Composer.Compose`
-turns a message into a slot of samples, and a slot decoder reads samples back
-into messages. **Call them. Do not change them.**
+**You need four things from all of that and only four:** `Ft8ContactLedger` says
+what passed with a station, `Ft8ContactStates` says which of the four that is,
+`Ft8Composer.ComposeSignal` turns words into the audio that goes on the air, and
+`Ft8TransmitSequence.RunAsync` keys, plays and unkeys. **Call them. Do not change
+them.**
 
 ---
 
@@ -258,10 +251,11 @@ a risk.**
 
 **One click, one message.** Ruled 2026-09-06. Hamlet transmits because the
 operator clicked. **Never on a timer, never on a decode, never to continue a
-contact.**
+contact.** *This unit is the one that could break it. Task 3 is written for that
+reason.*
 
 **Right-click sends immediately, in the next slot, with no confirmation.** Ruled
-2026-09-06. *That is step 5. This unit builds none of it.*
+2026-09-06. **No dialog, no "are you sure", no second click.**
 
 **Nothing is forbidden in the menu.** The expected next message is highlighted;
 everything valid stays clickable; **a repeat is correct behaviour and shows its
@@ -269,10 +263,16 @@ count.** FT8 loses transmissions constantly, so sending the grid a second time i
 correct behaviour, not a mistake to be greyed out.
 
 **A contact is never closed by the app.** Complete is shown when the exchange has
-what a QSO needs. **`73` is politeness, not a requirement.** Nobody is obliged to
-send it, an operator may be working three stations at once, and Hamlet is not the
-radio police. **A row shows *waiting on him*, *your move*, *complete* or *gone
-quiet*, with slot counts. It reports; it does not rule.**
+what a QSO needs. **`73` is politeness, not a requirement.** **A complete contact
+still offers `73`; a gone-quiet one still offers everything.**
+
+**Licence privileges.** Hamlet never transmits outside them. **The Settings gate
+is not bypassable from any send path.**
+
+**The abort.** Every path that keys the transmitter has a same-thread, no-await
+abort. **No unit ships a keying path before its abort is watched to fire.** It was
+watched in unit 253 and it is inside `Ft8TransmitSequence`; **you add no second
+route to a keying frame.**
 
 **`Ft8Sharp` is a faithful MIT port and nothing in this phase changes a line of
 it.** `Ft8Sharp.Deep` is GPL-3.0.
@@ -281,14 +281,9 @@ it.** `Ft8Sharp.Deep` is GPL-3.0.
 
 **Nothing interprets a message** (§12.1). **A row's state is derived from which
 messages passed between two callsigns, which is bookkeeping, not meaning.** That
-sentence is your licence for everything in this unit and it is also your limit:
-you may count what passed, you may not say what anybody meant by it.
-
-**The three the arbiter may not reason past, carried in full:** the abort on
-every keying path; one click, one transmission; licence privileges never
-exceeded. **This unit keys nothing, so all three are satisfied by building
-nothing that transmits** - and task 5 proves it with a grep rather than asserting
-it in prose.
+sentence is your licence for the option list and it is also your limit: **you may
+count what passed and say which message conventionally comes next in an FT8
+exchange, which is format arithmetic. You may not say what anybody meant.**
 
 **A unit may not add a test without naming the breakage it would have caught.**
 
@@ -301,8 +296,8 @@ tripwire.
 
 ## Status cadence
 
-**This is the section that kept the last unit's work out of the tree. Read it
-twice.**
+**This is the section that kept unit 257's work out of the tree and kept unit
+258's in it. Read it twice.**
 
 After each task, before starting the next, update `PROJECT_STATUS.md` per
 `CLAUDE.md` - `STATE`, `TASK: n of m`, `BALL`, `UPDATED` **read from the clock,
@@ -313,8 +308,7 @@ never composed**, and `NOTE` saying what is moving inside the task.
 - **Before every `dotnet build` and every filtered `dotnet test`.**
 - **After every file you finish writing**, not after every batch of them.
 - **Never more than eight minutes apart.** The watchdog fires at twelve, measured
-  from the launch clock and not from your last output, and it killed unit 257 at
-  fourteen minutes with three files written and none committed.
+  from the launch clock and not from your last output.
 
 **Use the file-editing tools if the shell refuses.** Unit 253 wrote three
 `UPDATED` values it composed, one of them 39 minutes ahead of the real clock.
@@ -324,187 +318,205 @@ never composed**, and `NOTE` saying what is moving inside the task.
 
 ## Tasks
 
-Five tasks. **Task 1 is bounded and mostly reading. Task 3 is the goal task.**
-Task 5 carries the named drop candidate.
+Five tasks. **Task 1 is bounded and mostly reading. Task 2 is the goal task and
+task 3 is the dangerous one.** Task 5 carries the named drop candidate.
 
-### Task 1 - what the killed unit left, and does it stand up. THE TRACE.
+### Task 1 - what the send path can actually reach. THE TRACE.
 
-**Commit the uncommitted root records first, as named above.** Then commit the
-four inherited files **exactly as they are, before you touch them**, so that
-whatever happens next is a diff rather than a loss. That is the one thing unit
-257 could not do.
+**Commit the uncommitted root records first**, as named above, before you touch
+anything.
 
-**Read `docs/unit257-contact-state-survey.md` and do not write it again.** It is
-committed, it is measured, and re-deriving it is how this unit dies in the same
-place. Your trace answers only what that survey could not, because the survey was
-written before the fixture existed:
+Then measure, and write it to `docs/unit259-send-path-trace.md`. **Every answer
+gets a file and a line number.** Six questions, and no others - this is a trace,
+not a survey, and unit 257 died writing a survey:
 
-1. **Does the inherited test project compile?** `dotnet build` on
-   `tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj`, foregrounded,
-   with a stated timeout. **Fix compile errors in the three inherited files
-   only.** Quote every one you fixed.
-2. **Is the committed corpus what the decoder returned?** Run
-   `TheBandSceneIsWhatHamletsDecoderReadTests` **filtered by exact name, in the
-   foreground, with a stated timeout of five minutes**, and write down: pass or
-   fail, the wall clock, how many of the 22 composed signals decoded, and which
-   were lost. Unit 257's figure says twelve slots costs about **7 s** of
-   decoding, so a run of minutes means something is wrong and is worth saying.
-3. **Which decoder did the inherited test actually use**, and is it the one the
-   application runs - `Ft8DeepSlotDecoder` with both stages on, the construction
-   at `Ft8Reception.cs:460-462`? Say which, with the line.
-4. **Name, from the scene script, the state each station should read** - before
-   any ledger exists. One line per station. **This is the list `NUMBER:` is
-   scored against and it must be written down before task 3 runs**, or the score
-   is written after the fact and means nothing.
+1. **Where does the app know the frequency the licence gate must be asked
+   about?** `_frequencyHz` at `MainWindowViewModel.cs:447` is seeded from the
+   band's `JumpHz` and updated by `OnRigFrequencyChanged`. **Is it live and true
+   while the Digital tab is running, or is it the band's jump frequency until a
+   radio moves?** Say which, because criterion 6 is asserted against it.
+2. **Can the app hand `Ft8TransmitSequence` an `ISerialPort` today?**
+   `Ic7300Rig._port` is private at `:39`. **Name the smallest seam that gives the
+   app one** - a property on `Ic7300Rig`, or the view model keeping the port it
+   already constructs at `:9473`. **Do not build a second CI-V transport and do
+   not open a port.** If the seam costs more than a few lines, say so and say what
+   the send path does instead.
+3. **What does the operator's settings supply?** Callsign, grid square, licence
+   class, and the guard toggle - **the actual values on this machine**, not the
+   defaults in the source. **`GridSquare` may be empty**; if it is, say so, and
+   see the ruling below.
+4. **Where would the transmit audio endpoint come from?** `AppSettings` has
+   `AudioInputDeviceId` at `:193` and no output field. `WasapiTransmitSink` at
+   `src/Hamlet.RadioEngine/Audio/WasapiTransmitSink.cs:110` takes a device name
+   and **fails loudly rather than playing to whatever the machine defaults to**.
+   Say what it would take to name one - **and open nothing.**
+5. **Confirm the four markup facts** in the table above: `DigitalSendReserved` at
+   `:3074`, `DigitalSendReservedLine` at `:3082`, `DigitalDecodedRows` at `:3388`,
+   the row template's root `Grid` at `:3407`. Any that is wrong, say so.
+6. **PREDICT THE MENU, BEFORE YOU BUILD IT.** For each of the five stations in
+   `tests/fixtures/ft8/scenes/unit257-band-scene.corpus.txt`, read at the boundary
+   of slot 13 - the moment unit 258 used - write down **every message the menu
+   should offer that station, which one is the expected next one, and any repeat
+   count.** One block per station. **Commit this before task 2 writes a line of
+   the option list**, or the score is written after the fact and means nothing.
 
-**The bound on this task, and it is a cap not a target: three attempts at
-green.** One build, and up to two runs of the scene test after fixing what the
-first one showed.
+**`NUMBER:` is scored against question 6** and against nothing else: how many of
+the five stations the option list produced the predicted set for, of five.
 
-**If it is green:** commit the corpus and the three files, write the missing
-`tests/fixtures/ft8/scenes/README.md` - what made it, that it is synthesized by
-Hamlet's own encoder, that it is **not** a WSJT-X capture, that it **may never be
-scored against the decoder's accuracy**, and what Tim would run at the shack to
-make a real one - and record `CORPUS ROUTE: audio` in the report.
+**The bound on this task, and it is a cap not a target: one build and one hour of
+reading.** If a question cannot be answered from the tree, write down that it
+cannot and why, and move on. **An unanswered question is a finding. A missing
+task 2 is a lost night.**
 
-**If it is not green after the third attempt: stop trying and take the fallback,
-which is already licensed.** Unit 257's own survey offers `CORPUS ROUTE: scripted
-decodes`. Keep the corpus text as the ledger's input, say in its README and in
-the report **in plain words** that these lines are the scene script and were not
-read back through the decoder, delete or disable nothing else, and **do not leave
-a red test in the tree** - if the generator cannot be made green, remove those
-three files in a commit of their own that says why. **Then go straight to task
-2.** Losing the audio provenance costs criterion 6 some of its weight and is
-reported as exactly that. Losing the ledger costs the whole unit.
+### Task 2 - what may be sent, and which one is expected. THE GOAL TASK.
 
-**Do not put anything in `tests/fixtures/ft8/captured/` and do not give anything
-you make the provenance `wsjtx`.**
+**A type in `src/Hamlet.RadioEngine/Contacts/` that, given a station record, the
+operator's callsign and his grid, returns the ordered list of every message that
+is valid at that point.** Suggested name `Ft8SendOptions`; the name is yours.
 
-### Task 2 - one splitter, not two
+Each option carries, at least:
 
-**Carry out the move unit 257's survey decided and did not perform.** The body of
-`Split` and the `Ft8MessageFields` record go to
-`src/Hamlet.RadioEngine/Contacts/Ft8MessageSplit.cs`, namespace
-`Hamlet.RadioEngine.Contacts`; `Ft8Vocabulary.Split` becomes a one-line forward
-and keeps its remarks; `Ft8Vocabulary.Explain` and its closed table **do not
-move**.
+- **the message text exactly as it would go on the air** - `W1ABC KC3QIS FN00`;
+- **whether it is the expected next one** - exactly one, or none where nothing is
+  expected;
+- **how many times that same message has already been sent to that station**, so
+  the menu can say *grid, 2nd time*;
+- **a short label a reader sees** - *grid*, *report*, *roger and report*,
+  *acknowledge*, *73*. **A label is format arithmetic, not meaning** - it names
+  which field shape the message is, the way `AddresseeHelp` names which field is
+  the addressee. It never says what the station wants.
 
-**The survey counted seventeen call sites and says every one keeps compiling.
-Verify that by building, and report the number you actually found.** If the tree
-disagrees with the survey, **the tree wins**: say so, and if the move cannot be
-made without editing call sites, make it and name every file you edited.
+**And a route for the CQ**, which has no station record: from the operator's
+callsign and grid alone, `CQ KC3QIS FN00`.
 
-**You may instead leave the splitter where it is** - the survey's own words are
-that either answer is acceptable - **but then you must say in the report how the
-engine gets fields without knowing the app exists, and there must still be one
-set of parsing rules in this repository and not two.** A second copy is the one
-outcome that is refused.
+**NOTHING IS REMOVED FROM THE LIST, EVER.** A complete contact still offers `73`
+and everything else. A gone-quiet one offers everything. **There is no method on
+this type that can withhold an option**, and you assert that the way unit 258 did
+- by reflection over every public member against the verbs *hide*, *close*,
+*forbid*, *deny*, *block*, *grey*, *dim*, *disable*, *exclude* - and you say so in
+the report in those words.
 
-**Behaviour does not change in this task.** `CQ DX W1ABC FN42` still splits four
-ways with `CQ DX` as the addressee; `HW CPY OM` is still accepted as three
-fields; `TNX BOB 73 GL` and `ABCDEFGHIJKLM` still return null. If any existing
-test of `Split` needs editing to keep passing, that is a behaviour change and it
-is out of scope - stop and report it instead.
+**Watch it fail first, and this is the breakage to name:** build it returning
+**only the expected next message**, and watch the *nothing is forbidden* case go
+red - a station the ledger reads as `complete` is offered nothing at all, so the
+operator who wants to send `73`, or his grid a second time because the first was
+lost, has no way to. **Then put the whole list in.** Quote the red and the green.
 
-### Task 3 - the ledger. THE GOAL TASK.
+**Assert it against task 1's written-down prediction, station by station**, with
+the sets quoted. It must not crash on the two messages the splitter refuses.
 
-**A type in `src/Hamlet.RadioEngine/Contacts/` that holds, per station, what
-passed each way.**
+**The grid may be empty, and this is ruled rather than left to you.** With no grid
+in Settings, the CQ is `CQ KC3QIS` - a legal FT8 message - and the grid options
+are absent from the list with the reason said out loud in the Send area. **Never
+invent, default or infer a grid** (§0.0). `FN00` in the plan is Tim's own square,
+not a fallback.
 
-It takes **the operator's own callsign as a constructor parameter**. It never
-reads settings, never names a tab, never opens anything, never subscribes to
-telemetry. It is fed decodes, and separately told what the operator sent, and it
-answers per station:
+### Task 3 - one click, one message. THE DANGEROUS TASK.
 
-- **which messages passed each way, in order, each with the slot it was in;**
-- **when the last one each way was, and how many slots ago** - by
-  `Ft8Slots.BoundariesBetween(then, now).Count` and by no second arithmetic;
-- and nothing else.
+**A command in the app that takes one option and arms exactly one transmission at
+the next slot boundary.**
 
-**Two methods, differing only in direction**, as the survey designed them:
-`RecordHeard(message, slotStartUtc)` - or `Record(Ft8Decode)` where a decode is in
-hand - and `RecordSent(message, slotStartUtc)`. **Nothing calls `RecordSent`
-today and nothing in this unit may make anything call it.** It exists so that
-step 5's send path adds one line beside the line that hands the samples to the
-sink.
+What it does, in order: read the operator's callsign, grid, licence class, guard
+toggle and the frequency from task 1's answer; `Ft8Composer.ComposeSignal` the
+text; work out the next slot boundary from `Ft8Slots.SlotStart` and
+`SlotSeconds`; build one `OperatorSend` with that boundary and the 0.5 s offset
+unit 255 recorded; call `Ft8TransmitSequence.RunAsync` **once**; and then call
+`_contacts.RecordSent(text, slotStartUtc)` - **the one line unit 258 left
+`RecordSent` in the tree for.**
 
-**`CQ` is an addressee and not a station.** `Ft8Vocabulary.IsCallToAnyone` at
-`:246` is the existing test for it - use that rule, not a second one.
+**THE FOUR THINGS THIS MUST NOT DO, AND EACH GETS AN ASSERTION:**
 
-**Watch it fail first, and this is the breakage to name:** build it holding only
-the **last** message per station, and watch the case that needs the whole exchange
-go red - a station we have heard twice and answered once reads as though the first
-exchange never happened, and a repeat can never be counted, which is exactly what
-step 5's *grid, 2nd time* will need. **Then put the history in.** Quote the red
-and the green.
+1. **It never asks for confirmation.** No dialog, no second click, no armed state
+   the operator has to confirm. Ruled 2026-09-06.
+2. **After a send, nothing further transmits without another click.** *This is
+   criterion 4 and it is a must-pass.* **Watch it fail first:** build the arming so
+   the armed send is not cleared once it has fired, drive two slot boundaries past
+   it, and watch a second transmission go out that nobody asked for. **Quote that
+   red.** Then clear it, and assert that two boundaries produce one transmission.
+   **That red is the whole reason this task exists** - it is the phase's one
+   unrecoverable fault, caught on a fake port where it costs nothing.
+3. **A second click replaces the armed send; it never adds one.** Two clicks a
+   second apart are one transmission in the next slot, not two.
+4. **Nothing arms itself.** No decode, no timer, no state change and no retry may
+   reach this command. **Assert it by reading the file** the way
+   `NothingInTheSequenceCanStartATransmissionOnItsOwn` reads
+   `Ft8TransmitSequence.cs`, and name the one entry point that exists.
 
-Assert it against task 1's corpus, station by station, with the counts quoted.
-**It must not crash on the two messages the splitter refuses** - the scene put
-them there for that.
+**An armed send that has not yet keyed can be cancelled**, and cancelling it is a
+flag set on the same thread, not an await. Once it has keyed, the route out is
+`Ft8TransmitSequence`'s own abort and you add nothing beside it.
 
-**It decides nothing.** No method on it may hide a station, close a contact,
-forbid a message or return a verdict about anybody's operating. If you find
-yourself writing one, that is the previous ruling arriving in code and the answer
-is to delete it.
+**Proved against the fakes that already exist** - `FakeTransmitAudioSink` and the
+fake CI-V transport in `tests/Hamlet.RadioEngine.Tests/Transmit/`. **Open no port
+and no device.** `SHACK_FACTS.md` FACT-004 rules that no radio has ever been
+attached to this machine, so a real port here measures nothing about the radio.
+**Criterion 3 is met on the fake wire - the keying frame, the samples, the unkey,
+and the recorded slot being the next boundary - and the last mile to a real radio
+is step 6's and Tim's.** Say exactly that in the report; do not claim more.
 
-### Task 4 - the four states, and what complete means
+**If task 1's answer to question 2 is that no seam reaches a port**, the command
+refuses with words - *no radio is connected* - and the test drives the sequence
+through the test seam instead. **That is an acceptable landing and it is reported
+as one.** What is not acceptable is a command that silently does nothing.
 
-**Derive the four from the ledger, with slot counts:** *waiting on him*, *your
-move*, *complete*, *gone quiet*. The words are `PHASE_PLAN.md`'s and are not to
-be renamed. **A fifth state is not permitted without a sentence in the report
-saying what it is and why the four could not carry it.**
+### Task 4 - the licence, and the Send area's words
 
-**Assertions, all must-pass:**
+**Criterion 6: out of licence privileges, the menu says so and sends nothing.**
 
-1. **Complete on an exchange with no `73` in it** - both calls, both grids or
-   reports, both acknowledgements. The scene's `W1ABC` exchange, slots 6 to 9, is
-   the one built for this. **The absence of `73` never withholds complete.**
-2. **`73` arriving after complete changes nothing.** The scene's `K9RST` is
-   complete at slot 5 and sends `73` at slot 6.
-3. **`G4XYZ` reads as gaps and is never *gone quiet* while it is transmitting in
-   those slots.** It is working `JA1ZZ` and `DL1QQ` across slots 0 to 11 while it
-   also answered our CQ at slot 2. *This is criterion 5 and it is the assertion
-   that is easiest to write wrongly: a rule that counted silence from us rather
-   than silence from him would pass every other case in the scene.*
-4. **Gone quiet is a count of slots and is stated as one.** `N5TT` answers at
-   slot 8 and is never heard again. Never a verdict about the station, never a
-   reason.
-5. **Nothing is closed, hidden or forbidden.** A complete contact and a gone-quiet
-   one are both still fully available. Since the list of what may be sent is step
-   5's and does not exist yet, **assert instead that this type exposes no member
-   that could withhold anything**, and say so in the report in those words.
+- **The menu still lists everything.** *Nothing is forbidden in the menu* is a
+  ruling about the contact state, not about the licence. What the menu gains is a
+  line saying the licence refuses at this frequency, in `TransmitDecision`'s own
+  `Reason` and `Citation` - **asked of `TransmitGuard.Check` for display, and not
+  a second copy of the rule.**
+- **The send refuses at the gate inside `Ft8TransmitSequence.RunAsync`**, which
+  already treats an overridden permit and an unknown class as refusals in this
+  path. **Assert zero bytes reached the fake port and the fake sink was never
+  touched**, the way unit 255 did.
+- **Do not change `TransmitGuard.Check` or any existing caller of it.**
 
-**The threshold that separates *gone quiet* from *waiting on him* is a number you
-choose.** Make it a named constant with the arithmetic beside it - a slot is 15
-seconds - and **report it as a choice, not as a specification.** This repository
-holds no pinned document saying when an FT8 station has gone quiet, the same way
-it held none for slot placement, and unit 255 handled that correctly by recording
-the choice with its arithmetic.
+**Criterion 5: the Send area.** `DigitalSendReservedLine` at
+`MainWindow.axaml:3082` currently says *"Send lives here when it is built. Hamlet
+does not transmit yet."* **That sentence becomes false tonight and must not
+survive.** In its place: what is being sent and to whom, bound to a view-model
+string, **formatted in the view model so a test can assert it without opening a
+window** - the same precedent `DigitalDecodeRow` and unit 258's `Contact` cell
+set. It says what went out, to whom, and in which slot; when nothing has been
+sent it says so plainly; when the licence refused it says that instead.
 
-**Note the scene ends at slot 11 and `N5TT` last spoke at slot 8.** If your
-threshold is larger than three slots, `N5TT` will not read *gone quiet* at the end
-of the scene. **That is not a reason to bend the threshold.** Evaluate the ledger
-at a stated moment after the scene's last slot, say what moment you chose and why,
-and let the threshold stay the number you argued for.
+**Criterion 1: the CQ button.** Sends `CQ KC3QIS FN00` from
+`OperatorProfile.Callsign` and `.GridSquare`, **with no typing**, through exactly
+the same command task 3 built. **One send path, not two.** With no grid set it is
+`CQ KC3QIS` and the Send area says the grid is unset.
 
-### Task 5 - the row shows it, and the record. **Drop candidate here.**
+**The transmit endpoint.** Add `AudioOutputDeviceId` to `AppSettings` beside
+`AudioInputDeviceId` at `:193`, in the same shape, if that is one field and
+whatever migration the existing ones have. **A Settings screen for it is out of
+scope**; name it as what remains. **If the field costs more than that, leave it
+out, have the send refuse with words when no endpoint is named, and report it.**
+**Never play to whatever the machine defaults to.**
 
-**The state reaches the operator's row.** `PHASE_PLAN.md` criterion 2 says the
-four states are *shown per row*, and `DigitalDecodeRow` already formats what a
-reader sees so that a test can assert it **without opening a window**. Follow that
-precedent: the state and its slot count become text on the row, asserted by a
-view-model test through `AddDecodeRowForTests` at `MainWindowViewModel.cs:7785`.
+### Task 5 - the markup, and the record. **Drop candidate here.**
 
-**THE NAMED DROP CANDIDATE IS THE MARKUP.** If this unit runs long, **drop the
-`MainWindow.axaml` column, tooltip or template change and keep the tested string
-on the row.** Say in the report that you dropped it and what remains. A row that
-carries the right text with an asserting test is criterion 2 met in substance and
-one afternoon from being on screen; a half-edited 3,000-line `.axaml` at the end
-of a long night is a broken window.
+**The right-click.** A `ContextFlyout` on the row template's root `Grid` at
+`MainWindow.axaml:3407`, listing the options from task 2 with the expected one
+highlighted and the repeat count shown beside a repeat. The `MenuItem` pattern
+with a bound `ItemsSource` and a command reached through
+`$parent[ItemsControl].((vm:MainWindowViewModel)DataContext)` is already used in
+this file at `:1299`-`:1396` - **follow it rather than inventing one.**
+
+**THE NAMED DROP CANDIDATE IS THE ROW'S `ContextFlyout` MARKUP.** If this unit
+runs long, **drop it and keep everything else** - the option list, the command,
+the CQ button and the Send area line. Say in the report that you dropped it and
+what remains: criterion 2 met in substance with an asserted option list and one
+afternoon from being on screen, and criteria 1 and 5 whole. **A half-edited
+3,600-line `.axaml` at the end of a long night is a broken window, and unit 258
+kept its markup change small enough to land - the flyout is bigger than the column
+was.**
 
 **Nothing in tasks 2, 3 or 4 is a drop candidate.** If you are out of time before
-task 4 is finished, write the report on what exists and name what is missing -
-**do not** shed the four states to reach task 5.
+task 3 is finished, write the report on what exists and name what is missing -
+**do not** shed the one-click assertion to reach the markup. **The assertion is the
+point of the unit.**
 
 **Then the record:**
 
@@ -512,43 +524,47 @@ task 4 is finished, write the report on what exists and name what is missing -
   `tools\arbiter\outcome-append.bat` once; when it is refused, write the entry
   with the file-editing tools in the exact twelve-field format the existing
   entries use, same names, same order, **ASCII only**, and update the header's
-  `STEP: 4` line in place. **Record the refusal verbatim in the report.** Your
-  `HIT:` field says what you inherited: unit 257 killed by the watchdog at
-  fourteen minutes, its survey committed, its fixture not.
-- **The greps that prove this unit built nothing that transmits.** `new
-  Ft8TransmitSequence` and `new WasapiTransmitSink` still appear only in tests;
-  nothing in `src/` constructs either; nothing you added names `TransmitAbort`,
-  PTT, CI-V or a rig. **Quote the greps.**
-- **`PROJECT_STATUS.md`** per the cadence. **Not `CURRENT_STEP:`, not the
-  `STEP:` lines.**
+  `STEP: 5` line in place. **Record the refusal verbatim in the report.**
+- **The greps that prove there is exactly one way to key.** `new
+  Ft8TransmitSequence` and `RunAsync` appear in `src/` only in the one command
+  task 3 built; nothing else in `src/` constructs a sequence or a sink; nothing
+  you added names PTT, CI-V or `TransmitAbort` directly. **Quote them.**
+- **`PROJECT_STATUS.md`** per the cadence. **Not `CURRENT_STEP:`, not
+  `HEARTBEAT:`, not the `STEP:` lines.**
 
 ---
 
 ## Parked - do not touch, do not raise
 
-**From `PHASE_PLAN.md`'s own list**, and it is not open for discussion:
-automatic sequencing; logging (FG-004); FT4, PSK31 and WSPR transmit; CW send;
-the OSD re-encoding count; `ReusableWindow`; `ProcessDelayForTests`; the tap's
-owner; the waterfall's first row; unit 237's Extensible conclusion; work
-instruction 231's four tree items; `validate-output.bat`'s permitted-spellings
-bug; the 101.33 ms pulse above 6 kHz; the CW decoder and its inherited reds.
+**From `PHASE_PLAN.md`'s own list**, and it is not open for discussion: automatic
+sequencing - *if I get a response, send `73`* is **deliberately out of this phase**
+and is the single most tempting thing to build tonight; logging (FG-004); FT4,
+PSK31 and WSPR transmit; CW send; the OSD re-encoding count; `ReusableWindow`;
+`ProcessDelayForTests`; the tap's owner; the waterfall's first row; unit 237's
+Extensible conclusion; work instruction 231's four tree items;
+`validate-output.bat`'s permitted-spellings bug; the 101.33 ms pulse above 6 kHz;
+the CW decoder and its inherited reds.
 
-**And these five, carried from units 253 to 257:**
+**And these six, carried from units 253 to 258:**
 
 - **`TransmitGuard.Check` permits when the operator's toggle is off.** Banked and
-  the owner's. Not re-raised, not widened, not in this unit's way.
+  the owner's. **Your send path already treats that as a refusal inside itself and
+  changes nothing about the guard.** Not re-raised, not widened.
 - **Five routes in the tree reach a keying frame**, including `AutoCaller` at
   `Cw/AutoCall.cs:272`, which keys repeatedly from one operator start. **On the
-  parked CW path. Logged. Do not touch it.**
+  parked CW path. Logged. Do not touch it, and do not copy its shape.**
 - **`SetSettingAsync(CivWrites.AntennaTuner, CivWrites.TuneNow)` writes
   `1C 01 02`**, a tuning cycle that transmits, called by no line in the tree.
   **Logged. Parked.**
-- **The IC-7300's USB modulation input level.** Deferred to Tim, twice over, at
-  step 2's criterion 4 and step 3's criterion 1. **Not this unit's and not
-  inferable from this machine** - `SHACK_FACTS.md` FACT-004.
+- **The IC-7300's USB modulation input level.** Deferred to Tim at step 2's
+  criterion 4 and step 3's criterion 1. **Not this unit's and not inferable from
+  this machine** - `SHACK_FACTS.md` FACT-004.
 - **`ContactStage`, `SendOption` and `ContactShape`.** Unit 257's survey settled
-  them: right shape, wrong ruling, parked path. **Read the survey's paragraph and
-  move on. Do not re-argue it and do not reach for them.**
+  them: right shape, wrong ruling, parked CW path. **Do not reach for them, and
+  if you name your option type `SendOption` you will collide with one of them -
+  check first.**
+- **The gone-quiet threshold of four slots** and the corpus's synthesized
+  provenance. Both argued, both recorded, neither yours.
 
 ---
 
@@ -556,75 +572,74 @@ bug; the 101.33 ms pulse above 6 kHz; the CW decoder and its inherited reds.
 
 **Citing rather than retyping where the rule is already written down.**
 
-1. **Do not open an audio device and do not play sound.** Step 3's loopback is
-   done and is not to be re-run. This unit is silent.
-2. **Do not change a line of `src/Ft8Sharp/` or `src/Ft8Sharp.Deep/`.** **Call
-   it. Read it. Leave it.**
+1. **Do not open a serial port and do not open an audio device.** FACT-004. Every
+   transmission in this unit goes to a fake. **A device opened here measures this
+   machine and says nothing about the radio.**
+2. **Do not change a line of `src/Ft8Sharp/` or `src/Ft8Sharp.Deep/`.**
 3. **Do not change `Ft8TransmitSequence`, `TransmitAbort`, `TransmitGuard`,
-   `WasapiTransmitSink` or `Ft8Composer`'s signature.** `Compose` may be *called*
-   by the scene generator. It may not be edited to make that easier.
-4. **Do not rewrite `docs/unit257-contact-state-survey.md`, and do not write a
-   second survey.** If you find something in it that the tree contradicts, say so
-   in the report - one paragraph, with the line - and continue.
-5. **Do not build a menu, a right-click, a CQ button or a Send area.** That is
-   step 5 in full. Building it early is how this unit ends with a half-menu and
-   no ledger.
-6. **Do not make anything transmit, and do not add a caller to anything that
-   can.** Nothing in `src/` constructs a transmit sequence today; **it must still
-   be true when you finish**, and task 5 proves it with a grep.
-7. **Do not interpret a message.** §12.1. Counting what passed between two calls
-   is bookkeeping and is licensed by the plan in those words. Wording what a
-   station meant, guessing at intent, or extending `Ft8Vocabulary.Explain`'s
-   closed table is not - **Tim closed that table on 2026-09-04.**
-8. **Do not add a fifth state, and do not rename the four.**
-9. **Do not close, hide, grey out, sort away or forbid anything.** Unit 252
-   already removed row dimming on Tim's ruling; do not reintroduce it in another
-   shape.
-10. **Do not edit `PHASE_OUTCOME.md`'s existing entries**, including the
-    `UNIT 5 - STEP 4` entry whose judgment fields describe a report that was
-    never written. Append yours; leave the record.
+   `WasapiTransmitSink`, `Ft8Composer`, `Ft8ContactLedger` or
+   `Ft8ContactStates`.** **Call them. Read them. Leave them.** If one of them
+   genuinely cannot be called without a change, that is a finding for section 3
+   with the line quoted - not a licence to edit it.
+4. **Do not add a second route to a keying frame.** There is one, it is
+   `Ft8TransmitSequence`, and its abort was watched to fire. Task 5 proves it with
+   a grep.
+5. **Do not build automatic sequencing.** No *if he answers, send the report*. No
+   retry. No continuation. **One click, one message**, and the sequence is a later
+   ruling once the single shot has been watched on a real band.
+6. **Do not add a confirmation.** Ruled 2026-09-06. No dialog, no "are you sure".
+7. **Do not remove, grey out, sort away or forbid an option** on the basis of the
+   contact state. Unit 252 removed row dimming on Tim's ruling; do not reintroduce
+   it in another shape.
+8. **Do not interpret a message.** §12.1. A label naming a field shape is
+   arithmetic; wording what a station meant is not, and **`Ft8Vocabulary.Explain`'s
+   table was closed by Tim on 2026-09-04.**
+9. **Do not invent a grid, a callsign, a frequency or a licence class.** §0.0. If
+   Settings has not got one, the message that needs it is absent and the Send area
+   says why.
+10. **Do not edit `PHASE_OUTCOME.md`'s existing entries**, including the two that
+    disagree with themselves. Append yours; leave the record.
 11. **Do not run an unfiltered `dotnet test`, and do not background a command and
     poll for it.** The rules at the top killed four sessions.
-12. **Do not chase the known reds** listed in the rulings.
+12. **Do not chase the known reds.**
 13. **Do not hand-write `HEARTBEAT:`, `CURRENT_STEP:` or the `STEP:` lines in
     `PHASE_STATUS.md`.**
-14. **Do not re-derive `RULES_AT`.** Three units have answered it.
+14. **Do not re-derive `RULES_AT`.** Four units have answered it.
+15. **Do not write a survey.** Task 1 is six questions with line numbers. Unit 257
+    died writing a survey and unit 258 landed by reading it in ten minutes.
 
 ---
 
 ## Committing and pushing
 
 Commit and push **each task before starting the next**. Bump the root version's
-patch by one per task from `1.12.95`, so `1.12.96` through `1.12.100`.
+patch by one per task from `1.12.100`, so `1.12.101` through `1.12.105`.
 **`Ft8Sharp` does not move.**
 
-**Task 1 commits twice**: once for the root records and the inherited files
-exactly as they arrived, and once for whatever it took to make them stand up.
-**The one thing this unit must not lose to a watchdog is work that is already
-written**, and unit 257 lost three files that way.
+**Task 1 commits twice**: once for the uncommitted root records exactly as they
+arrived, and once for the trace - **and the trace's question 6, the predicted
+menus, must be in a commit before task 2 starts.** That is what makes `NUMBER:`
+a measurement rather than a claim.
 
 ---
 
 ## Logged, not chased
 
-**Unit 257 wrote no `output.md`**, so there is no section 4 to weigh and no
-ruling request from it. The judging session that ran at 20:57 read unit 256's
-report instead and returned *none*. **Nothing is banked from the last unit
-because the last unit never spoke.**
+**Unit 258's section 4 raised nothing and asked for no ruling.** The judging
+session read it and returned *none*. **Nothing is banked from the last unit.**
 
 Four things carried forward so they are not lost, none of them a ruling request:
 
-1. **The watchdog killed unit 257 at fourteen minutes for a quiet eleven
-   minutes.** Recorded here, in the cadence section, and in `RUN_LEDGER.md`.
-   **The mitigation is entirely in your hands and it is the status write.**
-2. **`MMDevice.AudioClient` activates a fresh, uninitialised client on every read
-   of the property.** Worth the phase's memory. Irrelevant to this unit, which
-   opens no device.
-3. **`AudioTap.Level` is a 0.2 s moving meter**, so it reads `NearlySilent` on
-   audio that decoded perfectly. **Logged. Not in your way.**
-4. **The hand-checked report.** `validate-output.bat` could not be started in
-   seven forms across three units. **Logged, and the tool rule tells you what to
-   do about it.**
+1. **`validate-output.bat` could not be started in nine forms across four
+   units.** Logged, and the tool rule tells you what to do about it.
+2. **`Ft8ContactLedger.RecordSent` has had no caller since it was written**, on
+   purpose, waiting for you. Task 3 is where it stops being unreachable.
+3. **`AudioTap.Level` is a 0.2 s moving meter** and reads `NearlySilent` on audio
+   that decoded perfectly. **Logged. Not in your way** - you play nothing.
+4. **`BoundariesBetween` includes `from` when `from` is itself a boundary**, which
+   unit 257's survey got wrong and unit 258 measured. **Relevant to you**, because
+   task 3 counts to the next boundary. Read `Ft8Slots.cs:209-232` before you write
+   that arithmetic, and write it once.
 
 ---
 
@@ -638,90 +653,85 @@ three paragraphs beginning `A.`, `B.` and `C.` at the start of a line, all insid
 the first 60 lines of the file, and **C must contain the literal phrase `raises N
 items`** with a real number.
 
-- **A - the phase goal and where every step stands.** Hamlet works stations on
-  the air. Step 0 `done`. Step 1 `partial` at four of five and closed. Step 2
-  `partial` with criterion 4 deferred to Tim. **Step 3 closed - and say that its
-  two records disagree**, the unit's own entry reading `done` and the judging
-  session's reading `partial` on criterion 1's radio half, neither of them yours.
-  **Step 4 entering this unit at `not started` after one killed run, and leaving
-  it at whatever you actually reached.** Steps 5 and 6 not started, **and step 5
-  is unblocked only if step 4 gave it something to read.**
-- **B - this step and its exit criteria, and which were met.** Step 4's six, in
-  the plan's own words: which messages passed each way, when, and how many slots
-  ago; the four states shown per row with slot counts; **complete means both
-  calls, both grids or reports, both acknowledgements, and `73`'s absence never
-  withholds it**; nothing is ever closed, hidden or forbidden; **a station working
-  three others at once reads as gaps, not as a fault, proved against recorded
-  slots where that happens**; derived from recorded captures, not from the air.
-  **Say which of the six stand met, one line each, on quoted evidence** - and for
-  criterion 6 say plainly which corpus route task 1 landed on and what that makes
-  the evidence worth.
-- **C - what this report adds, weighed against A and B.** How many items section
-  4 raises, in the words `raises N items`, and **whether any of them is in the way
-  of a criterion named in B.** If none is, say so - that is a real answer and it
-  is not a ruling request.
+- **A - the phase goal and where every step stands.** Hamlet works stations on the
+  air. Step 0 `done`. Steps 1, 2, 3 and 4 `partial` and closed, **and say what is
+  outstanding in each is either on the record or a figure only Tim can read off a
+  radio.** **Step 5 entering this unit at `not started` and leaving it at whatever
+  you actually reached.** Step 6 not started, **and say plainly whether what you
+  built is enough for Tim to attempt it, or what stands between.**
+- **B - this step and its exit criteria, and which were met.** Step 5's six, in
+  the plan's own words: a CQ button from the operator's own settings, no typing;
+  right-click offers every message valid at that point with the expected one
+  highlighted and none forbidden, a repeat showing its count; choosing one
+  transmits in the next slot with no confirmation; one click sends exactly one
+  message, asserted by a test; what is being sent and to whom in the reserved Send
+  area; out of licence privileges the menu says so and sends nothing. **Say which
+  of the six stand met, one line each, on quoted evidence** - and for criterion 3
+  say plainly that the transmission was proved on a fake port and a fake sink and
+  what that leaves for step 6.
+- **C - what this report adds, weighed against A and B.** How many items section 4
+  raises, in the words `raises N items`, and **whether any of them is in the way of
+  a criterion named in B.** If none is, say so - that is a real answer and it is
+  not a ruling request.
 
 **Then the six-line header block**, from the clock, never composed:
 `UNIT:`, `PHASE GOAL:`, `UNIT GOAL:`, `ADVANCED:`, `NUMBER:`, `DRIFT:`.
 
-**`NUMBER:` for this unit is how many stations in the corpus the ledger read the
-right state for, of how many stations the scene put in it** - and *the right
-state* means the one **task 1 wrote down before the ledger existed**, not the one
-that came out. **`DRIFT:` - unit 256 reported 0 and unit 257 reported nothing.**
+**`NUMBER:` for this unit is how many of the corpus's five stations the option
+list produced the predicted set of messages for, of five** - and *predicted* means
+what task 1 question 6 wrote down and committed **before** task 2 existed, not what
+came out. **`DRIFT:` - unit 258 reported 0.**
 
 **Section 3 leads with three things, in this order:**
 
-1. **The station table, quoted.** Every station in the corpus, one row each: what
-   passed from him, what passed from us, how many slots ago each was, the state,
-   and the slot count shown with it, **beside the state task 1 predicted for it**.
-   **`G4XYZ` gets its own paragraph** showing the gaps in its replies to us and
-   the sentence saying why that is not *gone quiet*. **The `W1ABC` exchange is
-   quoted message by message** as complete with no `73` in it, with `K9RST`'s `73`
-   that arrived after complete and changed nothing. **And the breakage you watched
-   go red before green** - the last-message-only ledger, and which station read
-   wrongly under it.
-2. **The ledger, and where it lives** - its file and line, the operator's callsign
-   arriving as a parameter, **what task 2 did with the splitter and whether there
-   is now one set of parsing rules or two**, the gone-quiet threshold **with its
-   arithmetic, the moment you evaluated at, and the words saying it is a choice**,
-   and the sentence saying what this type cannot do: hide, close, forbid or judge.
-   **Plus the greps** showing nothing in `src/` constructs a transmit sequence or
-   a sink, and that `src/Ft8Sharp/`, `Ft8TransmitSequence`, `TransmitGuard` and
-   `TransmitAbort` are untouched.
-3. **What you inherited and what it was worth.** The three files and the corpus
-   as they arrived, whether they compiled, **whether the committed corpus was what
-   the decoder returned or the script**, every compile error you fixed, how many
-   of the 22 signals decoded and any that were lost, the wall clock, and
-   `CORPUS ROUTE:` as task 1 landed it with the figure that decided it. **The
-   sentence saying this scene is synthesized, is not a WSJT-X fixture, and may
-   never be scored against the decoder's accuracy.** Name what Tim would run at
-   the shack to make a real one. **If the drop candidate was dropped, say so here
-   and say what remains.**
+1. **The one-click assertion, and the red you watched first.** Quote the failing
+   run where an armed send that was not cleared transmitted a second time at the
+   next boundary with nobody clicking, and the green where two boundaries produce
+   one transmission. **Name the entry point - the only one - by which a
+   transmission can begin**, and quote the grep or the file-read that proves there
+   is no other. **This is the phase's one unrecoverable fault and this paragraph is
+   the evidence it cannot happen**; it comes first for that reason and not because
+   it is the largest piece of work.
+2. **The menu, station by station, against what task 1 predicted.** Every one of
+   the five, one block each: the options offered, which was expected, any repeat
+   count, and the predicted set beside it. **The station the ledger reads as
+   `complete` gets its own paragraph** showing that `73` and everything else are
+   still offered, with the sentence saying nothing was removed and the reflection
+   assertion that nothing could be. **And the red you watched first** - the
+   expected-message-only list, and which station it left with nothing to send.
+3. **What the licence gate did, and where the send path lives.** The refusal with
+   its `Reason` and `Citation`, **zero bytes at the fake port and the fake sink
+   never touched**, quoted. Then the file and line of the option list, of the
+   command, and of `RecordSent`'s one call site; what the Send area says now and
+   what the sentence it replaced said; where the frequency, callsign, grid and
+   licence class come from; and **whether the app can reach a real port and a real
+   endpoint, or what stands in the way.** **If the drop candidate was dropped, say
+   so here and say what remains.**
 
 **Section 4 is for what is genuinely in the way.** *Nothing is blocking* is a real
-answer and is written as one sentence. **A note, an observation or a
-recommendation you have already acted on is not a ruling request** - put it in
-section 3. **A criterion you could not fully reach is not a blockage either** - it
-is a figure and what was tried, and `PHASE_PLAN.md`'s own table says to close it
-that way and continue. Ask the owner to decide something only where work is
-actually stopped until he does.
+answer and is written as one sentence. **A note, an observation or a recommendation
+you have already acted on is not a ruling request** - put it in section 3. **A
+criterion you could not fully reach is not a blockage either** - it is a figure and
+what was tried, and `PHASE_PLAN.md`'s own table says to close it that way and
+continue. Ask the owner to decide something only where work is actually stopped
+until he does.
 
 **Write `output.md` before you stop, for any reason at all** - complete, blocked,
-failed or out of time are all reported the same way, and the last unit's silence
-is the reason this sentence is here. Then stop. Do not start the next unit.
+failed or out of time are all reported the same way. Then stop. Do not start the
+next unit.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 4
-APPROACH: Build the per-station contact ledger and the four row states in the engine, ledger first, proved against the band scene corpus unit 257 left in the tree rather than composing a scene again
+STEP: 5
+APPROACH: Wire the right-click menu, the CQ button and the Send area to the ledger and the transmit sequence so one click sends exactly one message in the next slot, proved against the fake port and fake sink already in the tree with no device opened
 MOVE: continue
-WHY: Step 4 is the only thing standing between this phase and step 5, and it has had one unit launched at it that was killed by the watchdog fourteen minutes in - RUN_LEDGER.md's last row says no status write within 12 min of the launch clock - having committed its survey and nothing else, so the ledger was never built and the approach was never carried out. The loop test was run on this approach and returned NOT FOUND; the resemblance to the unit 5 entry is real and I judge it not a loop, because that entry records an instruction that was launched rather than an approach that was tried, and this unit inverts its order so the fixture is adopted in one bounded task and the ledger is built before the night can end again.
+WHY: Step 5 has had no unit spent on it, both its entry steps are substantively met with only radio-side figures outstanding, and it is the last step any unit can move - step 6 is Tim keying a transmitter. The loop test was run on this approach and returned NOT FOUND against all twelve entries; none of the tried approaches - a documentation sweep, an abort, a waveform seam, a keying sequence, a render sink, a contact ledger - is the operator-facing join, and Ft8TransmitSequence's own remarks name step 5's right-click as the caller it was built for.
 STATE: not started
-DECIDED: Three on my own authority. First, the task order is inverted against the last instruction - the fixture is adopted, not composed, and task 1 is capped at three attempts at green with unit 257's own scripted-decodes route as the named fallback, because a unit that spends itself on evidence and never builds the thing the evidence is for has advanced nothing. Second, unit 257's four uncommitted files are committed exactly as they arrived before anything touches them, so the next failure is a diff and not a loss. Third, PHASE_OUTCOME.md's UNIT 5 entry, which reads FATE executed and carries judgment fields computed from unit 256's report because unit 257 never wrote one, is left exactly as it stands and the correction goes in this unit's own entry and report - a unit rewriting an entry that is not its own is worse than a record that disagrees with itself in public.
-LICENCE: PHASE_PLAN.md's named alternatives to stopping - the tree wins, report the mismatch and continue, and a target not reached is closed with the figure reached and what was tried - together with the plan's own ruling that a row's state is derived from which messages passed between two callsigns, which is bookkeeping, not meaning. ARBITER.md section 8 licenses treating a run that never carried out its instruction as evidence about the harness rather than about the approach. SHACK_FACTS.md FACT-004 rules out the radio-side alternative to a synthesized scene.
-ACCOMPLISHED: Hamlet stops showing a list of events and starts knowing where a contact stands. For each station it holds what passed each way and how long ago, and says one of four things about it - waiting on him, your move, complete, gone quiet - with the slot counts beside it. It says them about a station working three others at once without calling that a fault, it calls an exchange complete without waiting for a 73 nobody is obliged to send, and it closes, hides and forbids nothing. That is the last thing step 5's menu needs before a right-click can offer the operator anything.
-ADVANCES: step 4 - exit criterion 1 (per station, which messages passed each way, when, and how many slots ago), criterion 2 (the four states shown per row with slot counts), criterion 3 (complete means both calls, both grids or reports, both acknowledgements, and 73's absence never withholds it), criterion 4 (nothing ever closed, hidden or forbidden), criterion 5 (a station working three others at once reads as gaps, proved against recorded slots) and criterion 6 (derived from recorded captures, not from the air).
+DECIDED: Four on my own authority. First, criterion 3 is taken on the fake port and fake sink that units 253 to 255 left in the tree rather than on a real device, because SHACK_FACTS.md FACT-004 rules no radio has ever been attached to this machine, so the last mile is step 6's and is named rather than claimed. Second, the option list is built in the engine as a testable list with the expected one marked and repeats counted, not in the markup, so criterion 2 can be asserted without opening a window - the precedent unit 258 set with the contact cell. Third, criterion 6 is resolved against the nothing-is-forbidden ruling this way: the menu still lists every message and gains a line carrying TransmitGuard's own Reason and Citation, and the refusal that actually stops a transmission stays inside Ft8TransmitSequence where it already is, so no second copy of the licence rule is written. Fourth, with no grid in Settings the CQ is CQ KC3QIS and the grid options are absent with the reason said out loud, because inventing a locator is the fault section 0.0 exists for.
+LICENCE: PHASE_PLAN.md's own rulings of 2026-09-06 - one click one message, right-click sends immediately in the next slot with no confirmation, nothing forbidden in the menu, and a contact never closed by the app - together with its named alternatives to stopping: the tree wins, report the mismatch and continue, and where the radio is wanted the step is closed on what can be proved here with what Tim must do named. SHACK_FACTS.md FACT-004 licenses the fake port and fake sink and forbids the inference that would otherwise close criterion 3. The three the arbiter may not reason past license the ordering directly: the abort was watched to fire in unit 253 and lives inside Ft8TransmitSequence, so a caller may now ship, and it ships with the gate inside it and with one click proved to send exactly one message.
+ACCOMPLISHED: The operator right-clicks a station on the Digital tab and Hamlet offers him every message that is valid at that point, with the one that conventionally comes next highlighted, nothing greyed out, and a repeat showing that it is a repeat. He clicks one and exactly one transmission is armed for the next slot - no dialog, no second click, and nothing further goes out until he clicks again, which is watched failing first and then held. A CQ button does the same from his own callsign with no typing, the reserved space under the waterfall says what is going out and to whom, and outside his licence privileges the menu says so and not a byte reaches the radio. What is left after this is Tim, a radio and an antenna.
+ADVANCES: step 5 - exit criterion 1 (a CQ button sending CQ KC3QIS FN00 from the operator's own settings with no typing), criterion 2 (right-click offers every message valid at that point with the expected one highlighted, none forbidden, and a repeat showing its count), criterion 3 (choosing one transmits in the next slot with no confirmation), criterion 4 (one click sends exactly one message, asserted by a test that nothing further transmits without another click), criterion 5 (what is being sent and to whom appears in the Send area reserved beneath the waterfall) and criterion 6 (out of licence privileges the menu says so and sends nothing).
 END-ARBITER-DECISION
 ```

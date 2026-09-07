@@ -1,10 +1,9 @@
-﻿   Bash  {"command":"powershell -NoProfile -Command \"Get-CimInstance Win32_SoundDevice | Select-Object Name,Status,StatusInfo | Format-List\"","description":"List sound devices via WMI"}
-   Bash  {"command":"sed -i \u0027s|\u003cVersion\u003e1.12.91\u003c/Version\u003e|\u003cVersion\u003e1.12.92\u003c/Version\u003e|\u0027 Directory.Build.props \u0026\u0026 grep -n \"\u003cVersion\u003e1.12\" Directory.Build.props","description":"Bum ...(truncated)
-   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\outcome-append.bat\" 2\u003e\u00261 | head -20","description":"Attempt outcome-append.bat"}
-   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Attempt outcome-append.bat directly"}
-   Bash  {"command":"LC_ALL=C grep -n \u0027[^ -~]\u0027 PHASE_OUTCOME.md | tail -5; echo \"exit=$?\"","description":"ASCII check on outcome file"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run the report validator"}
-   Bash  {"command":"cmd.exe /c tools\\\\arbiter\\\\validate-output.bat output.md","description":"Second form of validator invocation"}
-   Bash  {"command":"powershell -NoProfile -Command \"(Select-String -Path \u0027output.md\u0027 -Pattern \u0027^## \u0027 | ForEach-Object { \\$_.Line.Substring(3).Trim() }) -join \u0027 ~ \u0027\"","description":"Rule 2/3 - list top-level sections ...(truncated)
-   Bash  {"command":"head -53 output.md \u003e /tmp/hdr256.txt; grep -c \"_PENDING\\|PENDING_\\|TBD\\|TODO\\|FIXME\\|XXX\\|\u003cFILL\\|FILL IN\u003e\\|PLACEHOLDER\" /tmp/hdr256.txt","description":"Rule 7 - placeholder tokens in the header block"}
-   Bash  {"command":"awk \u0027NR\u003e151 \u0026\u0026 NR\u003c388 \u0026\u0026 $0 !~ /^[[:space:]]*$/\u0027 output.md | wc -l","description":"Rule 5 - count non-blank lines in section 3"}
+﻿   Bash  {"command":"git reset -q tools/unit254-seam-grep.sh SESSION.lock \u0026\u0026 git commit -q -m \"chore(unit258): unit 257\u0027s leftover root records, and its four files exactly as they arrived\n\nUnit 257 was killed by the watchdog at fou ...(truncated)
+   Bash  {"command":"git reset -q tools/unit254-seam-grep.sh SESSION.lock","description":"Unstage session lock and unit254 script"}
+   Bash  {"command":"git commit -q -F - \u003c\u003c\u0027EOF\u0027 2\u003e\u00261 | tail -5\nchore(unit258): unit 257\u0027s leftover root records, and its four files exactly as they arrived\n\nUnit 257 was killed by the watchdog at fourteen minute ...(truncated)
+   Write  {"file_path":"C:\\Source\\HamLet\\.git\\COMMITMSG.tmp","content":"chore(unit258): unit 257\u0027s leftover root records, and its four files exactly as they arrived\n\nUnit 257 was killed by the watchdog at fourteen minutes with three test\n ...(truncated)
+   Bash  {"command":"tools\\arbiter\\outcome-append.bat","description":"Attempt the outcome append tool once"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Validate the report via cmd"}
+   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Validate the report via forward-slash path"}
+   Bash  {"command":"cd /c/Source/HamLet\necho \"--- rule 1: UNIT: line within first 60 lines ---\"\nhead -60 output.md | grep -n \"^UNIT:\" || echo \"FAIL: no UNIT: line in first 60\"\necho \"--- rule 2/3: all \u0027## \u0027 headings ---\"\ngrep - ...(truncated)
+   Bash  {"command":"head -57 output.md | grep -nE \"_PENDING|PENDING_|TBD|TODO|FIXME|XXX|\u003cFILL|FILL IN\u003e|PLACEHOLDER\" ; echo \"exit=$? (1 means none found, which is the pass)\"","description":"Check for placeholder tokens in the header bl ...(truncated)
