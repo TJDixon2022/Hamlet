@@ -8181,7 +8181,15 @@ public partial class MainWindowViewModel : ObservableObject
         // Composing at `Ft8Waveform.DefaultSampleRate` here is what made every
         // send through a real endpoint throw after the radio was keyed (work
         // instruction 262, task 1).
-        var composed = Ft8Composer.ComposeSignal(wanted, _transmitSampleRate);
+        // **AND AT THE DRIVE LEVEL THE OPERATOR SET**, read off the settings the
+        // same way `_transmitSampleRate` is. One line, one place: this is the
+        // only `ComposeSignal` call site in the whole of `src/`, so the CQ button
+        // and the right-click send are the same call and cannot get different
+        // levels. Before unit 265 there was no argument here and every
+        // transmission went out at unit amplitude - 0 dBFS - with nothing
+        // downstream able to change it.
+        var composed = Ft8Composer.ComposeSignal(
+            wanted, _transmitSampleRate, Ft8Composer.DefaultBaseFrequencyHz, _settings.TransmitDrivePeak);
 
         if (!composed.Composed)
         {
@@ -8347,7 +8355,68 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return "Sent " + Addressed(text) + "\"" + text + "\" in the slot at "
-            + slot + " UTC.";
+            + slot + " UTC. " + LevelLine(result.Send.Transmission);
+    }
+
+    /// <summary>What level the transmission went out at, for the operator to read.</summary>
+    /// <param name="transmission">The slot of audio that was played.</param>
+    /// <returns>One sentence, naming the level and the clipping.</returns>
+    /// <remarks>
+    /// <para>**THE CRITERION THIS EXISTS FOR.** `PHASE_PLAN.md` step 2's fourth
+    /// criterion asks for *level and clipping stated* and step 3's first asks for
+    /// audio at the right *level*. Before unit 265 the operator was shown neither:
+    /// <c>WasapiTransmitSink</c> measured both and **every reader of them in the
+    /// repository was a test**. A level he is asked to set his radio's ALC by, and
+    /// is never told, is a criterion nobody could have closed.</para>
+    /// <para>**THIS IS THE LEVEL HAMLET COMPOSED AT, NOT THE LEVEL THAT LEFT THE
+    /// MACHINE, AND THE SENTENCE SAYS SO.** It is
+    /// <see cref="Ft8Transmission.PeakSample"/>, measured over the array every
+    /// time it is asked for, so it is the peak of the very samples the sink was
+    /// handed. **What lies between that and the antenna is not knowable from
+    /// here** and is named rather than quietly folded in: Windows' own volume for
+    /// that endpoint, and then the radio's own USB input gain and its ALC.
+    /// `SHACK_FACTS.md` FACT-004 - no radio has ever been attached to the machine
+    /// Hamlet was written on, and what the IC-7300's USB modulation input expects
+    /// is not in this repository.</para>
+    /// <para>**WHY NOT THE SINK'S OWN <c>PeakWritten</c>, WHICH IS THE BETTER
+    /// NUMBER.** There is no route to it from what
+    /// <see cref="Ft8TransmitSequence"/> returns (unit 265, task 1, question 3),
+    /// and building one would mean changing the keying path - the key at
+    /// <c>Ft8TransmitSequence.cs:283</c>, the sink call at <c>:287</c>, the
+    /// <c>finally</c>, the abort and the stop - which units 255, 261 and 263
+    /// proved and which no unit disturbs to carry a number. **The difference
+    /// between the two is the clamping**, and the clamping is reported here from
+    /// the same array: where nothing is outside the rails the two figures are the
+    /// same number.</para>
+    /// <para>**A NUMBER, NOT A CALLSIGN.** HM-DEC-018 and
+    /// <c>TransmitRecord</c>'s rule govern telemetry and this is a screen line,
+    /// but the principle is kept anyway: this sentence adds a level and a count
+    /// and no string about who was worked.</para>
+    /// </remarks>
+    private static string LevelLine(Ft8Transmission transmission)
+    {
+        var peak = transmission.PeakSample;
+        var clipped = 0;
+
+        foreach (var sample in transmission.Samples)
+        {
+            if (sample is < -1.0f or > 1.0f)
+            {
+                clipped++;
+            }
+        }
+
+        var dbfs = peak > 0.0f
+            ? (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture)
+            : "silent";
+
+        return "It was composed at " + dbfs + " dBFS with "
+            + (clipped == 0
+                ? "nothing clipped"
+                : clipped.ToString(CultureInfo.InvariantCulture) + " samples clipped")
+            + " - that is the level Hamlet built, before this machine's own volume "
+            + "for that device and before the radio's input gain. Set the radio's "
+            + "drive against its own ALC meter.";
     }
 
     /// <summary>How much of a stopped transmission went out, in seconds.</summary>

@@ -37,6 +37,18 @@ public enum Ft8ComposeRefusal
     /// Nyquist limit where it would alias into the channel as a different tone.
     /// </summary>
     BaseFrequencyRefused,
+
+    /// <summary>
+    /// The transmit drive level is not a peak amplitude a slot of audio can be
+    /// built at - zero or below, above full scale, or not a number.
+    /// </summary>
+    /// <remarks>
+    /// **A refusal and not an exception, because every other refusal on this path
+    /// comes back as a sentence the operator reads.** A drive of zero is silence
+    /// with the transmitter keyed, and a drive above 1.0 is a slot the sink would
+    /// clamp - neither is a level, so neither is quietly rounded into one.
+    /// </remarks>
+    DriveLevelRefused,
 }
 
 /// <summary>
@@ -204,6 +216,42 @@ public static class Ft8Composer
     public const float DefaultBaseFrequencyHz = Ft8Waveform.DefaultBaseFrequency;
 
     /// <summary>
+    /// The peak amplitude a transmission is built at unless another is asked for -
+    /// **0.25, which is -12.04 dBFS.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS A STARTING POINT THE OPERATOR SETS AGAINST HIS OWN RADIO'S
+    /// ALC. IT IS NOT A FIGURE THIS REPOSITORY KNOWS.** `SHACK_FACTS.md` FACT-004
+    /// rules that what the IC-7300's USB modulation input expects is not in this
+    /// repository and may not be inferred from anything measured on the machine
+    /// this code was written on. What the number below is, is a conservative place
+    /// to start from that will not put a heavily overdriven signal on the band
+    /// before he has looked at his ALC meter once.</para>
+    /// <para>**THE ARITHMETIC IT WAS CHOSEN BY** (unit 265 task 1, written out in
+    /// `docs/unit265-the-level-trace.md`):</para>
+    /// <para>`20*log10(0.25) = -12.04 dBFS`, which is twelve dB below full scale
+    /// and twice the six dB the unit was required to leave as a minimum.</para>
+    /// <para>What that costs: the transmit path's only quantisation is the
+    /// float-to-PCM16 conversion in <c>WasapiTransmitSink</c>, where each 6.02 dB
+    /// of drive reduction costs one bit of a sixteen-bit word. At -12.04 dBFS
+    /// about fourteen bits are in use and the quantisation floor sits near -86
+    /// dBFS, so there is about **74 dB** between the signal and its own noise.
+    /// FT8 decodes at about -21 dB SNR. **The drive level is not what limits the
+    /// decode on this path**, which is why the choice could be made on what is
+    /// sensible to hand a radio rather than on what a loopback can survive.</para>
+    /// <para>Measured rather than reasoned: at full scale one 12.64 s
+    /// transmission through a real render endpoint on the development machine
+    /// reported `peak written 1.0000, rms 0.7064, clipped 0` and decoded back as
+    /// itself. The RMS is `1/sqrt(2)` to four figures, so FT8's crest factor is
+    /// 3.01 dB and **its peak and its average move together** - scaling the peak
+    /// down by n dB scales the average down by exactly n dB, with no peaky-waveform
+    /// surprise in between.</para>
+    /// <para>**The same treatment unit 255 gave the 0.5 s slot offset**: a choice
+    /// recorded with its arithmetic, not quoted as a specification.</para>
+    /// </remarks>
+    public const float DefaultDrivePeak = 0.25f;
+
+    /// <summary>
     /// Turns what the operator wants to say into one slot of audio.
     /// </summary>
     /// <param name="text">
@@ -220,12 +268,18 @@ public static class Ft8Composer
     /// exception.
     /// </param>
     /// <param name="baseFrequencyHz">The audio frequency of tone 0.</param>
+    /// <param name="drivePeak">
+    /// The peak amplitude to build at. Defaults to <see cref="DefaultDrivePeak"/>,
+    /// **so that a caller who forgets the argument gets the conservative level
+    /// rather than full scale.**
+    /// </param>
     /// <returns>A slot of audio, or a refusal naming what would not pack.</returns>
     public static Ft8ComposeResult Compose(
         string? text,
         int sampleRate = DefaultSampleRate,
-        float baseFrequencyHz = DefaultBaseFrequencyHz)
-        => Build(text, sampleRate, baseFrequencyHz, wholeSlot: true);
+        float baseFrequencyHz = DefaultBaseFrequencyHz,
+        float drivePeak = DefaultDrivePeak)
+        => Build(text, sampleRate, baseFrequencyHz, drivePeak, wholeSlot: true);
 
     /// <summary>
     /// Turns what the operator wants to say into the signal alone - the 12.64 s
@@ -234,6 +288,11 @@ public static class Ft8Composer
     /// <param name="text">The message, in the operator's own words.</param>
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="baseFrequencyHz">The audio frequency of tone 0.</param>
+    /// <param name="drivePeak">
+    /// The peak amplitude to build at. Defaults to <see cref="DefaultDrivePeak"/>,
+    /// **so that a caller who forgets the argument gets the conservative level
+    /// rather than full scale** - and this is the route that goes on the air.
+    /// </param>
     /// <returns>The signal, or a refusal naming what would not pack.</returns>
     /// <remarks>
     /// <para>**THIS IS THE ROUTE THAT GOES ON THE AIR, AND
@@ -259,20 +318,35 @@ public static class Ft8Composer
     public static Ft8ComposeResult ComposeSignal(
         string? text,
         int sampleRate = DefaultSampleRate,
-        float baseFrequencyHz = DefaultBaseFrequencyHz)
-        => Build(text, sampleRate, baseFrequencyHz, wholeSlot: false);
+        float baseFrequencyHz = DefaultBaseFrequencyHz,
+        float drivePeak = DefaultDrivePeak)
+        => Build(text, sampleRate, baseFrequencyHz, drivePeak, wholeSlot: false);
 
     /// <summary>Both routes, which differ in one call.</summary>
     /// <param name="text">The message, in the operator's own words.</param>
     /// <param name="sampleRate">Samples per second.</param>
     /// <param name="baseFrequencyHz">The audio frequency of tone 0.</param>
+    /// <param name="drivePeak">The peak amplitude to build at.</param>
     /// <param name="wholeSlot">
     /// True for the padded 15 s slot, false for the 12.64 s signal alone.
     /// </param>
+    /// <remarks>
+    /// **THIS IS THE ONE PLACE THE TRANSMIT DRIVE IS APPLIED, AND IT IS APPLIED
+    /// HERE RATHER THAN IN THE SINK ON PURPOSE.**
+    /// <see cref="Ft8Transmission.PeakSample"/> is measured off the array every
+    /// time it is asked for, so a transmission scaled at compose time **carries
+    /// the peak it will actually play at**. A gain applied further down would
+    /// hand <c>Ft8TransmitSequence</c> an object claiming a peak its own samples
+    /// do not have - the same class of lie unit 256 caught in
+    /// <c>SamplesPlayed</c>. It is also the only place available: the synthesis
+    /// itself is <c>Ft8Waveform.cs:199</c>, and <c>Ft8Sharp</c> is a faithful MIT
+    /// port that nothing in this phase changes a line of.
+    /// </remarks>
     private static Ft8ComposeResult Build(
         string? text,
         int sampleRate,
         float baseFrequencyHz,
+        float drivePeak,
         bool wholeSlot)
     {
         var wanted = Normalise(text);
@@ -293,6 +367,11 @@ public static class Ft8Composer
             return Ft8ComposeResult.No(Ft8ComposeRefusal.BaseFrequencyRefused, baseExplanation);
         }
 
+        if (!DriveIsUsable(drivePeak, out var driveExplanation))
+        {
+            return Ft8ComposeResult.No(Ft8ComposeRefusal.DriveLevelRefused, driveExplanation);
+        }
+
         var packing = PackAsItself(wanted, out var packExplanation);
         if (packing is null)
         {
@@ -305,6 +384,16 @@ public static class Ft8Composer
         var audio = wholeSlot
             ? Ft8Waveform.SynthesizeSlot(symbols, sampleRate, baseFrequencyHz)
             : Ft8Waveform.Synthesize(symbols, sampleRate, baseFrequencyHz);
+
+        // THE DRIVE, APPLIED ONCE, AFTER THE PORT HAS RETURNED AND BEFORE THE
+        // ARRAY IS HANDED TO ANYBODY. The port builds a sine of unit amplitude at
+        // Ft8Waveform.cs:199 and stays that way; the level is this assembly's.
+        // Multiplying in place is safe because the array was made by the port for
+        // this call and has no other owner.
+        for (var i = 0; i < audio.Length; i++)
+        {
+            audio[i] *= drivePeak;
+        }
 
         return Ft8ComposeResult.Ok(new Ft8Transmission(
             wanted,
@@ -350,6 +439,57 @@ public static class Ft8Composer
                 + "The slot is laid out from the first and written from the second, so every sample "
                 + "after the signal starts would be at the wrong offset. Use a rate at which a symbol "
                 + $"is a whole number of samples — {DefaultSampleRate} is the one FT8 is decoded at.";
+            return false;
+        }
+
+        explanation = string.Empty;
+        return true;
+    }
+
+    /// <summary>
+    /// Whether a transmit drive level is a peak amplitude audio can be built at.
+    /// </summary>
+    /// <param name="drivePeak">The peak amplitude asked for.</param>
+    /// <param name="explanation">What is wrong with it, in words. Empty when it is usable.</param>
+    /// <remarks>
+    /// **Refused with a sentence rather than an exception**, because every other
+    /// refusal on this path comes back as something the operator reads. The two
+    /// ends are not arbitrary: at or below zero there is no transmission, only a
+    /// keyed transmitter sending silence, and above 1.0 every sample past the rail
+    /// is clamped by the sink and counted as a clip - which is distortion on the
+    /// band rather than a louder signal. **What lies between them is the
+    /// operator's business and this method has no opinion about it**; how loud is
+    /// right is set against his own radio's ALC and is not a figure this
+    /// repository knows (FACT-004).
+    /// </remarks>
+    public static bool DriveIsUsable(float drivePeak, out string explanation)
+    {
+        if (float.IsNaN(drivePeak))
+        {
+            explanation =
+                "the transmit drive level is not a number, so there is no level to build the "
+                + "transmission at.";
+            return false;
+        }
+
+        if (drivePeak <= 0.0f)
+        {
+            explanation =
+                $"a transmit drive level of {drivePeak} is not a level. At or below zero there is "
+                + "no transmission to send, only a keyed transmitter sending silence. Set a peak "
+                + $"amplitude above 0 and no more than 1 - {DefaultDrivePeak} is "
+                + $"{20.0 * Math.Log10(DefaultDrivePeak):0.##} dBFS and is where Hamlet starts.";
+            return false;
+        }
+
+        if (drivePeak > 1.0f)
+        {
+            explanation =
+                $"a transmit drive level of {drivePeak} is above full scale. Every sample past the "
+                + "rail would be clamped on the way out and counted as a clip, which is distortion "
+                + "on the band rather than a louder signal. Set a peak amplitude above 0 and no "
+                + $"more than 1 - {DefaultDrivePeak} is "
+                + $"{20.0 * Math.Log10(DefaultDrivePeak):0.##} dBFS and is where Hamlet starts.";
             return false;
         }
 

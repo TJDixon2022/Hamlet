@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
+using Hamlet.RadioEngine.Transmit;
 
 namespace Hamlet.App.Settings;
 
@@ -213,6 +214,40 @@ public sealed class AppSettings
     /// says so.</para>
     /// </remarks>
     public string? AudioOutputDeviceId { get; set; }
+
+    /// <summary>
+    /// The peak amplitude Hamlet builds a transmission at - **0.25, which is
+    /// -12.04 dBFS.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS A STARTING POINT THE OPERATOR ADJUSTS AGAINST HIS OWN
+    /// RADIO'S ALC. IT IS NOT A FIGURE THIS REPOSITORY KNOWS.** `SHACK_FACTS.md`
+    /// FACT-004 rules that what the IC-7300's USB modulation input expects is not
+    /// in this repository and cannot be inferred from anything measured on the
+    /// machine Hamlet was written on - no radio has ever been attached to it.
+    /// What this default is, is a conservative place to start from, so that a
+    /// first transmission is not a heavily overdriven signal over other people's
+    /// band before he has looked at his ALC meter once.</para>
+    /// <para>**THE ARITHMETIC IT WAS CHOSEN BY** (unit 265, and written out at
+    /// length in `docs/unit265-the-level-trace.md`): `20*log10(0.25) = -12.04
+    /// dBFS`, twelve dB below full scale and twice the six dB the unit was
+    /// required to leave as a minimum. The transmit path's only quantisation is
+    /// the float-to-PCM16 conversion in `WasapiTransmitSink`, where each 6.02 dB
+    /// of drive costs one bit of a sixteen-bit word; at -12.04 dBFS about
+    /// fourteen bits are in use and the quantisation floor is near -86 dBFS,
+    /// leaving some 74 dB against a decoder that works at about -21 dB SNR. **The
+    /// drive is not what limits the decode**, so the number could be chosen for
+    /// what is sensible to hand a radio.</para>
+    /// <para>**Before unit 265 there was no such field and no other way to set a
+    /// level**: Hamlet composed at unit amplitude and transmitted at 0 dBFS, and
+    /// nothing between the composer and the sound card multiplied a sample by
+    /// anything. The value here is the only control there is.</para>
+    /// <para>**Out of range is refused with a sentence, not clamped.** Zero or
+    /// below and above 1.0 come back from `Ft8Composer` as
+    /// `Ft8ComposeRefusal.DriveLevelRefused` with words the operator reads,
+    /// because a level quietly corrected is a level he believes he set.</para>
+    /// </remarks>
+    public float TransmitDrivePeak { get; set; } = Ft8Composer.DefaultDrivePeak;
 
     /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
