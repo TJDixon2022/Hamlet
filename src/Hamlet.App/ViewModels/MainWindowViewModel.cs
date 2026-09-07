@@ -8504,6 +8504,10 @@ public partial class MainWindowViewModel : ObservableObject
             StartSecondsIntoSlot));
 
         DigitalSendLine = SendingLine(wanted, next);
+
+        // **THE STOP NOW HAS SOMETHING TO STOP, AND SAYS SO.** Appearance only -
+        // the button was pressable before this line and is pressable after it.
+        RaiseStopControl();
     }
 
     /// <summary>Where in the slot the signal begins, as unit 255 recorded it.</summary>
@@ -8571,6 +8575,10 @@ public partial class MainWindowViewModel : ObservableObject
                     + "than sent in a slot you did not choose.");
             }
 
+            // The boundary refused it, so nothing is waiting any more. Appearance
+            // only, and posted because this runs off the UI thread.
+            Dispatcher.UIThread.Post(RaiseStopControl);
+
             return result;
         }
 
@@ -8605,6 +8613,10 @@ public partial class MainWindowViewModel : ObservableObject
             DigitalSendLine = WentLine(text, result);
             DigitalTransmitLevelLine = measured;
             DigitalContactStandsLine = stands;
+
+            // The boundary has been and gone, so there is nothing waiting for one
+            // any more and the stop says so. Appearance only.
+            RaiseStopControl();
         });
 
         return result;
@@ -8878,6 +8890,62 @@ public partial class MainWindowViewModel : ObservableObject
         var stop = _armedSend?.StopNow(_rigPort);
 
         DigitalSendLine = StopLine(_armedText, stop, _transmitRefusal);
+        RaiseStopControl();
+    }
+
+    /// <summary>
+    /// **Whether there is anything for the stop to stop right now.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT CHANGES HOW THE CONTROL LOOKS AND NEVER WHETHER IT WORKS**
+    /// (work instruction 271 task 5; `PHASE_PLAN.md` step 1). The abort cannot be
+    /// disabled, deferred or made conditional, so nothing binds this to
+    /// <c>IsEnabled</c>, to <c>IsVisible</c> or to a <c>CanExecute</c>: the button
+    /// is pressable at every instant whatever this says. **A control only visible
+    /// while sending is useless before the boundary**, and one that greys out when
+    /// the application believes nothing is happening is dead at exactly the moment
+    /// the application is wrong.</para>
+    /// <para>**AND IT IS NEVER DRAWN GREY** (§0.5.1, HM-DEC-087). Grey is reserved
+    /// for what genuinely cannot be used, and this can always be used. Resting and
+    /// live differ by ink weight, by a border and **by the words on the face of
+    /// it** - which is the non-colour carrier §0.6 requires.</para>
+    /// <para>**IT ASKS THE ARMED SEND AND ASSERTS NOTHING OF ITS OWN.**
+    /// <see cref="Ft8ArmedSend.IsArmed"/> is the same field
+    /// <see cref="DriveTheArmedSend"/> reads, so the button and the boundary
+    /// cannot disagree about whether something is waiting.</para>
+    /// </remarks>
+    public bool HasSomethingToStop => _armedSend?.IsArmed == true;
+
+    /// <summary>What the stop control says on its face.</summary>
+    /// <remarks>
+    /// **THE MOST CONSEQUENTIAL CONTROL IN THE APPLICATION WAS AN UNLABELLED
+    /// COLOURED BLOCK AND THE OPERATOR HAD TO ASK WHAT IT WAS** (Tim, 2026-09-07).
+    /// It carries a word in both states and the word says which state it is in:
+    /// there is nothing to stop before he presses CQ, and there is a transmission
+    /// to stop after he does.
+    /// </remarks>
+    public string StopLabel => HasSomethingToStop ? "Stop transmitting" : "Stop";
+
+    /// <summary>What the stop control says on hover, in both states.</summary>
+    public string StopTip
+        => HasSomethingToStop
+            ? "Stops the transmission. It un-arms anything waiting for a slot and "
+              + "tells the radio to stop transmitting, and it asks nothing first."
+            : "Stops a transmission. Nothing is waiting for a slot at the moment, "
+              + "so there is nothing to stop - but it is pressable at every "
+              + "instant, because a stop that hides when Hamlet believes nothing "
+              + "is happening is hidden exactly when Hamlet is wrong.";
+
+    /// <summary>Bring the stop control level with what is armed.</summary>
+    /// <remarks>
+    /// Called where the armed send is armed, fired or cleared, and nowhere else.
+    /// **It touches no transmit state**: it raises three property notifications.
+    /// </remarks>
+    private void RaiseStopControl()
+    {
+        OnPropertyChanged(nameof(HasSomethingToStop));
+        OnPropertyChanged(nameof(StopLabel));
+        OnPropertyChanged(nameof(StopTip));
     }
 
     /// <summary>What the Send area says after the stop was pressed.</summary>

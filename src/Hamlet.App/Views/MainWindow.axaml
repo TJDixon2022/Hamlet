@@ -72,6 +72,62 @@
             <Setter Property="Foreground" Value="White" />
         </Style>
 
+        <!-- **THE STOP CONTROL** (work instruction 271, task 5).
+
+             **FAMILY COLOUR IS TEXT COLOUR ONLY** (HM-DEC-012, §0.5). It used to
+             be a filled `HmAmberDeepBrush` block, which is the transmitter's own
+             amber used as a fill, and the operator read it as an unlabelled
+             orange rectangle. The ink is amber in both states now; what changes
+             is the paper behind it and the weight of the word on it.
+
+             **GREY IS NOT ONE OF ITS STATES** (§0.5.1, HM-DEC-087). Grey is
+             reserved for what genuinely cannot be used, and this can always be
+             used. The resting state is a live control with nothing to do, not a
+             dead one — so it keeps its amber ink and its amber edge and only
+             stops shouting.
+
+             **COLOUR IS NOT THE ONLY CARRIER** (§0.6). The word on the face
+             changes with the state — "Stop" at rest, "Stop transmitting" when
+             something is armed — so the two survive a greyscale print and a
+             colour vision deficiency alike. -->
+        <Style Selector="Button.hm-stop">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="Button.hm-stop /template/ ContentPresenter">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style Selector="Button.hm-stop:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberEdgeBrush}" />
+        </Style>
+
+        <!-- There is something to stop. Louder, and it says so in words. -->
+        <Style Selector="Button.hm-stop.hm-live /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+
+        <!-- **THE HOVER INVERTS RATHER THAN DARKENING** (HM-DEC-036). The
+             obvious deeper fill is `HmAmberEdgeBrush`, and `HmAmberDeep` ink on
+             it measures 3.70:1 — under the 4.5:1 this project allows no
+             exceptions to. Paper behind the same ink is 6.27:1 and the flip
+             against the tint beside it is the hover cue. -->
+        <Style Selector="Button.hm-stop.hm-live:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberDeepBrush}" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+
         <!-- The one state grey is for. -->
         <Style Selector="Button.hm-send.refused /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
@@ -3116,13 +3172,53 @@
                                              "Stop sending" is a different
                                              button on a different view model
                                              and never appears on this tab. -->
+                                        <!-- **IT SAYS WHAT IT IS** (Tim,
+                                             2026-09-07). The most consequential
+                                             control in the application was an
+                                             unlabelled coloured block and the
+                                             operator had to ask what it was. The
+                                             word is bound rather than fixed
+                                             because it names the state as well
+                                             as the action.
+
+                                             **AND IT IS NOT FILLED WITH THE
+                                             FAMILY COLOUR** (HM-DEC-012, §0.5).
+                                             It was filled `HmAmberDeepBrush`,
+                                             which is amber — this application's
+                                             Morse and transmitter colour — used
+                                             as a fill. Family colour is text
+                                             colour only. The ink is amber in
+                                             both states now and the fill is
+                                             paper at rest and a tint when there
+                                             is something to stop.
+
+                                             **THE STYLES TARGET `/template/
+                                             ContentPresenter`**, which is the
+                                             lesson HM-DEC-080 records at the top
+                                             of this file: a Background set on
+                                             the Button itself is overridden by
+                                             the theme's own ContentPresenter
+                                             setters in the pointerover and
+                                             pressed states, so the button looked
+                                             like one thing at rest and another
+                                             under the mouse.
+
+                                             **NOTHING HERE READS A STATE TO
+                                             DECIDE WHETHER IT WORKS.** No
+                                             IsVisible, no IsEnabled, no
+                                             CanExecute — `hm-live` is a class
+                                             that changes ink weight and a
+                                             border, and the command is the same
+                                             command at every instant. Step 1:
+                                             the abort cannot be disabled,
+                                             deferred or made conditional. -->
                                         <Button x:Name="DigitalStopButton"
-                                                Content="Stop"
+                                                Classes="hm-stop"
+                                                Classes.hm-live="{Binding HasSomethingToStop}"
+                                                Content="{Binding StopLabel}"
                                                 Padding="16,4"
                                                 Command="{Binding StopSendingCommand}"
-                                                Background="{StaticResource HmAmberDeepBrush}"
-                                                Foreground="White"
-                                                ToolTip.Tip="Un-arms anything waiting for a slot and tells the radio to stop transmitting. It asks nothing first." />
+                                                ToolTip.Tip="{Binding StopTip}" />
                                     </StackPanel>
 
                                     <TextBlock x:Name="DigitalSendReservedLine"
