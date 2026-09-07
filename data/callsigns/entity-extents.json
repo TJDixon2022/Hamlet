@@ -1,0 +1,110 @@
+{
+  "source": {
+    "name": "Country bounding boxes",
+    "url": "https://raw.githubusercontent.com/sandstrom/country-bounding-boxes/master/bounding-boxes.json",
+    "retrieved": "2026-09-07",
+    "licence": "The file states no source and no licence, and that is recorded rather than glossed. What is taken from it is the north and south latitude of a country, which is a geographic fact rather than anybody's expression, and every figure below can be checked against any atlas.",
+    "note": "Latitudes are the bounding box's south and north edges, in degrees, copied verbatim. The entity names are the ARRL DXCC list's own, so they match data/callsigns/dxcc-prefixes.json exactly and a typo cannot silently stop a row matching."
+  },
+  "rule": {
+    "bands": "thirds",
+    "how": "The station's latitude comes from its own grid square. Below the southern third it reads southern; above the northern third it reads northern; in the middle third the country is named with no compass word at all.",
+    "whyNoMiddleWord": "Central Italy is a thing people say and central Norway is not, so a middle band would need its own judgement per entity for a word that adds nothing. The country alone is always true.",
+    "whyThirds": "Two bands would put a station one mile south of the midpoint in the southern half of a country it is plainly in the middle of. Thirds leave the ambiguous middle unqualified, which is the honest reading of a grid square seventy miles across.",
+    "admission": "An entry needs BOTH a latitude span of at least 5 degrees, which is about 350 miles and comfortably more than a grid square, AND a compass form people actually say. Both are stated per entry, because the second is a judgement and a judgement belongs where it can be argued with rather than buried in code."
+  },
+  "qualified": [
+    {
+      "entity": "Italy",
+      "south": 36.62,
+      "north": 47.12,
+      "reason": "10.5 degrees, about 725 miles from Sicily to the Alps, and northern Italy and southern Italy are ordinary English that a newcomer will already have heard."
+    },
+    {
+      "entity": "Norway",
+      "south": 58.08,
+      "north": 70.92,
+      "reason": "12.8 degrees. Northern Norway is inside the Arctic Circle and southern Norway is not, which is a difference an operator can hear on the bands."
+    },
+    {
+      "entity": "Chile",
+      "south": -55.61,
+      "north": -17.58,
+      "reason": "38 degrees, the most elongated entity in this table, running from the Atacama to Cape Horn."
+    },
+    {
+      "entity": "Japan",
+      "south": 31.03,
+      "north": 45.55,
+      "reason": "14.5 degrees. Northern Japan and southern Japan are both said in English and the archipelago is long enough for the distinction to be real."
+    },
+    {
+      "entity": "Sweden",
+      "south": 55.36,
+      "north": 69.11,
+      "reason": "13.8 degrees, and the same Arctic Circle argument as Norway."
+    },
+    {
+      "entity": "Finland",
+      "south": 59.85,
+      "north": 70.16,
+      "reason": "10.3 degrees, crossing the Arctic Circle."
+    },
+    {
+      "entity": "Viet Nam",
+      "south": 8.6,
+      "north": 23.35,
+      "reason": "14.8 degrees. Northern Vietnam and southern Vietnam are among the most commonly said compass qualifiers in English."
+    },
+    {
+      "entity": "Argentina",
+      "south": -55.25,
+      "north": -21.83,
+      "reason": "33.4 degrees, subtropical at one end and subantarctic at the other."
+    },
+    {
+      "entity": "Madagascar",
+      "south": -25.6,
+      "north": -12.04,
+      "reason": "13.6 degrees, and northern Madagascar is a phrase people use."
+    },
+    {
+      "entity": "Portugal",
+      "south": 36.84,
+      "north": 42.28,
+      "reason": "5.4 degrees, which is the narrowest entry admitted. Northern Portugal and southern Portugal are ordinary usage and the span clears the five-degree bar. Note that the Azores and Madeira are separate DXCC entities and are not covered by this row."
+    }
+  ],
+  "declined": [
+    {
+      "entity": "Belgium",
+      "span": 1.95,
+      "reason": "Under two degrees, about 135 miles. Northern Belgium is not something people say and the whole country is barely two grid squares tall."
+    },
+    {
+      "entity": "Netherlands",
+      "span": 2.71,
+      "reason": "Under three degrees. Same argument as Belgium."
+    },
+    {
+      "entity": "Switzerland",
+      "span": 2.05,
+      "reason": "Two degrees. People divide Switzerland by language rather than by compass point, and this table names no place below the country."
+    },
+    {
+      "entity": "Luxembourg",
+      "span": 0.69,
+      "reason": "Two thirds of a degree, which is smaller than one four-character grid square. A compass word here would claim precision the grid does not have."
+    },
+    {
+      "entity": "United Kingdom",
+      "span": 8.68,
+      "reason": "The span clears the bar and the phrase does not: nobody says northern United Kingdom. They say northern England, and England is not what this entity is called. Scotland, Wales and Northern Ireland are separate DXCC entities in any case, so the compass word would be answering a question the prefix already answered."
+    },
+    {
+      "entity": "New Zealand",
+      "span": 12.19,
+      "reason": "The span clears the bar and the idiom is different: New Zealanders say North Island and South Island, which are place names, and this table names no place below the country."
+    }
+  ]
+}

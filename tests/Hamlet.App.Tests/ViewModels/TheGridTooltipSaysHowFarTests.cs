@@ -66,7 +66,13 @@ public sealed class TheGridTooltipSaysHowFarTests
         Assert.Contains("N5CH", help, StringComparison.Ordinal);
         Assert.Contains("KE9COB", help, StringComparison.Ordinal);
         Assert.Contains("EM12", help, StringComparison.Ordinal);
-        Assert.Contains("from you", help, StringComparison.Ordinal);
+        // **THE DISTANCE MOVED OFF THE SQUARE AND ONTO THE STATION** (Tim,
+        // 2026-09-07, unit 271 task 6). It read `which is 1,100 miles away from
+        // you`, where *which* attached to the grid; it now reads `They are ...
+        // 1,100 miles away`, and the operator is still not in the message.
+        Assert.Contains("They are in", help, StringComparison.Ordinal);
+        Assert.Contains(
+            "miles away on a bearing of", help, StringComparison.Ordinal);
         Assert.DoesNotContain(" you are ", help, StringComparison.Ordinal);
     }
 
@@ -113,17 +119,23 @@ public sealed class TheGridTooltipSaysHowFarTests
     }
 
     /// <summary>
-    /// No grid tooltip, in any state, contains the name of a place.
+    /// No grid tooltip ever names a place from the square it was handed.
     /// </summary>
     /// <remarks>
-    /// **THE GUARD THAT REPLACES WITHHOLDING THE CHARACTERS.** The list below is
-    /// deliberately made of the names these very squares would attract if anybody
-    /// ever wired a lookup in: `JN86` is Hungary, `EM12` is Texas, `IO91` is
-    /// England, `PM95` is Japan. If one of them ever appears here, the ruling has
-    /// been broken and this fails.
+    /// <para>**THIS GUARD CHANGED SHAPE ON 2026-09-07 AND WAS NOT DELETED.** Unit
+    /// 252 forbade every place name; Tim's ruling of 2026-09-07 supersedes that
+    /// for the country alone, and only when it comes **from the callsign**. So the
+    /// question this asks is no longer *is there a country here* but *could this
+    /// country have come from the square*.</para>
+    /// <para>**WHICH IS WHY THE SENDER IS ONE THE DXCC TABLE DECLINES.**
+    /// `ZZ9ZZZ` resolves to nothing, so no country can arrive legitimately in
+    /// these rows and **any name at all that appears can only have come from the
+    /// grid** — which is the fault this still exists to catch. The list keeps the
+    /// countries those squares would attract, and adds the cities and provinces
+    /// that are forbidden however they were arrived at.</para>
     /// </remarks>
     [Fact]
-    public void NoGridTooltipEverNamesAPlace()
+    public void NoGridTooltipEverNamesAPlaceFromTheSquare()
     {
         string[] squares = { "JN86", "EM12", "IO91", "PM95", "FN00", "OF88" };
 
@@ -131,14 +143,14 @@ public sealed class TheGridTooltipSaysHowFarTests
         {
             "Hungary", "Budapest", "Texas", "Houston", "England", "London",
             "Japan", "Tokyo", "Pennsylvania", "Australia", "Perth", "Europe",
-            "Asia", "America", "United States", "Africa",
+            "Asia", "Africa", "Tuscany", "Bavaria", "Ontario",
         };
 
         foreach (var square in squares)
         {
             foreach (var his in new[] { HisGrid, "" })
             {
-                var help = Help("CQ HA1BF " + square, his);
+                var help = Help("CQ ZZ9ZZZ " + square, his);
 
                 _output.WriteLine(square + " / [" + his + "] -> " + help);
 

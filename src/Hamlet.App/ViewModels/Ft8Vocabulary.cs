@@ -141,10 +141,12 @@ public static class Ft8Vocabulary
 
         if (IsGrid(text))
         {
-            // **STILL NEVER WHERE THAT IS** (Tim's ruling, 2026-09-05: a grid is
-            // roughly 70 by 100 miles, so *Texas* is fair and *Houston* is a lie,
-            // and neither is shown). What unit 252 adds is arithmetic on the
-            // square rather than a name for it: how far away it is and which way.
+            // **NO PLACE BELOW THE COUNTRY** (Tim's rulings, 2026-09-05 and
+            // 2026-09-07: a grid is roughly 70 by 100 miles, so *Texas* is fair
+            // and *Houston* is a lie). Unit 252 added arithmetic on the square;
+            // unit 271 adds the country, and it takes it from the CALLSIGN rather
+            // than from the square, because a square straddles borders and a
+            // prefix does not.
             //
             // **THE FOUR CHARACTERS ARE NOW SAID, WHERE UNIT 241 WITHHELD THEM.**
             // That was a good instinct against a sentence growing a country on the
@@ -152,13 +154,19 @@ public static class Ft8Vocabulary
             // carries a distance and the operator has to be able to see which
             // square it was measured from. The guard that replaces it is a test
             // sweeping every output for a place name.
+            // **THE DISTANCE BELONGS TO THE STATION, NOT TO THE SQUARE** (Tim,
+            // 2026-09-07). It read `IK4LZH is calling anyone from grid JN54,
+            // which is 4,400 miles away from you` — and *which* attaches to the
+            // grid, so the sentence says the square is four thousand miles away
+            // and leaves open where IK4LZH is calling from. He is in it. Two
+            // sentences: what he is doing, then where he is.
             var grid = text.ToUpperInvariant();
 
-            var opening = callingAnyone
-                ? $"{from} is calling anyone from grid {grid}"
-                : $"{from} is telling {to} they are transmitting from grid {grid}";
+            var doing = callingAnyone
+                ? $"{from} is calling anyone."
+                : $"{from} is telling {to} where they are transmitting from.";
 
-            return opening + ", " + DescribeWhereThatIs(grid, observerGrid) + ".";
+            return doing + " " + WhereTheyAre(from, grid, observerGrid);
         }
 
         if (IsReport(text, out var rogered, out var decibels))
@@ -188,40 +196,56 @@ public static class Ft8Vocabulary
         return null;
     }
 
-    /// <summary>How far away a grid square is and which way, or what is missing.</summary>
+    /// <summary>Where a station is: the country, the square, and how far.</summary>
+    /// <param name="sender">The station's callsign, which is what names the country.</param>
     /// <param name="grid">The station's four-character locator, upper case.</param>
     /// <param name="observerGrid">The operator's own locator, or "" / null.</param>
-    /// <returns>A clause, without a leading capital or a trailing stop.</returns>
+    /// <returns>One sentence, capitalised, with its full stop.</returns>
     /// <remarks>
-    /// <para>**NO PLACE NAME, EVER** (Tim's ruling, 2026-09-05). Not a country,
-    /// not a state, not a city. A four-character square is roughly 70 by 100
-    /// miles, so the honest thing it supports is a distance and a direction, and
-    /// nothing else about it is knowable from four characters.</para>
-    /// <para>**WITH NO GRID OF HIS OWN IT SAYS SO RATHER THAN FALLING SILENT.**
-    /// The instruction is explicit and it is right: the grid still means something
-    /// without his own square, so the tooltip says what the square is and what
-    /// Hamlet would need to measure from it. Going quiet would read as the grid
-    /// being meaningless, and guessing his location from anything at all is the
-    /// §0.0 fault this whole unit is exposed to.</para>
-    /// <para>**IT IS THE INITIAL BEARING**, which is what an operator points an
-    /// antenna along from here. On a long path the far end differs by tens of
-    /// degrees, so the word is not decoration.</para>
+    /// <para>**THE COUNTRY COMES FROM THE CALLSIGN AND NEVER FROM THE GRID**
+    /// (Tim, 2026-09-07). A grid square is about 70 by 100 miles and straddles
+    /// borders, and `W4/YV7AXM` is in the United States whatever his grid says.
+    /// **Where the two disagree the callsign wins**, and where `DxccPrefixes`
+    /// declines — a shared prefix, a station at sea — no country is named at all.
+    /// Tim's ruling of 2026-09-06 is untouched: certain, or silent.</para>
+    /// <para>**THE GRID SUPPLIES ONLY A LATITUDE**, which places the station
+    /// inside a country the callsign already settled, and that is arithmetic on a
+    /// value the message itself carries rather than a lookup of any kind
+    /// (§12.1).</para>
+    /// <para>**NO PRONOUN CHOOSES A GENDER.** The instruction's own example reads
+    /// *He is in grid JN54*, and this file's rule since unit 251 is that every
+    /// sentence names the stations and uses `they` — Hamlet has no way to know who
+    /// is at the key. The wording follows the rule and the substance of the ruling
+    /// is untouched: the distance belongs to the station.</para>
+    /// <para>**IT IS ONE SENTENCE AND IT CARRIES ONE DASH AT MOST** (§0.7,
+    /// HM-DEC-040) — it carries none.</para>
     /// </remarks>
-    private static string DescribeWhereThatIs(string grid, string? observerGrid)
+    private static string WhereTheyAre(
+        string sender, string grid, string? observerGrid)
     {
+        var entity = DxccPrefixes.EntityOf(sender);
+
+        // **WITH NO COUNTRY THE COMMA GOES TOO.** Built as one clause with an
+        // optional country in front, `They are, in grid QG44` came out for every
+        // station the table declines, which is a stumble in the middle of the
+        // sentence and reads as though a word had gone missing. It had.
+        var place = entity is null
+            ? $"in grid {grid}"
+            : $"in {EntityQualifier.DescribeFromGrid(entity, grid)}, in grid {grid}";
+
         var mine = OperatorLocation.FromGrid(observerGrid);
         var theirs = OperatorLocation.FromGrid(grid);
 
         if (mine is not { } here || theirs is not { } there)
         {
-            return "and Hamlet needs your own grid square in Settings before it "
-                   + "can say how far away that is";
+            return $"They are {place}, and Hamlet needs your own grid square in "
+                   + "Settings before it can say how far away that is.";
         }
 
         var miles = GridPath.DescribeMiles(GridPath.MilesBetween(here, there));
         var bearing = GridPath.DescribeBearing(GridPath.BearingDegrees(here, there));
 
-        return $"which is {miles} away from you, on a bearing of {bearing}";
+        return $"They are {place}, {miles} away on a bearing of {bearing}.";
     }
 
     /// <summary>Whether an addressee field is a call to anyone rather than a station.</summary>

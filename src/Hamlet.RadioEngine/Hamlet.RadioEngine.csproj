@@ -71,6 +71,7 @@
        file (work instruction 252 task 3). -->
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\callsigns\dxcc-prefixes.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-prefixes.json" />
+    <EmbeddedResource Include="..\..\data\callsigns\entity-extents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.entity-extents.json" />
   </ItemGroup>
 
   <!-- The telemetry line format is an internal detail with a public promise
