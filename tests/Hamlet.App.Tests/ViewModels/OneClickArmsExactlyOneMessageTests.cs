@@ -2,6 +2,7 @@ using System.Globalization;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Contacts;
+using Hamlet.RadioEngine.Licensing;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -163,6 +164,133 @@ public sealed class OneClickArmsExactlyOneMessageTests
             o => o.Shape is Ft8SendShape.Report or Ft8SendShape.RogerAndReport);
 
         Assert.Contains(menu.Absent, r => r.Contains("report", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// **With no grid in Settings the CQ is `CQ KC3QIS` and nothing is invented.**
+    /// </summary>
+    /// <remarks>
+    /// Step 5's criterion 1, and §0.0's rule about a locator. `FN00` is Tim's own
+    /// square and is never a fallback. The breakage this would have caught:
+    /// defaulting the grid so the CQ always looks complete.
+    /// </remarks>
+    [Fact]
+    public void TheCqButtonSendsFromSettingsWithNoTypingAndNeverInventsAGrid()
+    {
+        var (panel, settings) = Panel();
+
+        Assert.Equal("", settings.Operator.GridSquare);
+        Assert.Equal("CQ KC3QIS", panel.CallToAnyoneText);
+
+        settings.Operator.GridSquare = "FN00";
+
+        Assert.Equal("CQ KC3QIS FN00", panel.CallToAnyoneText);
+
+        // AND IT GOES THROUGH THE SAME COMMAND. One send path, not two.
+        panel.SendCallToAnyoneCommand.Execute(null);
+
+        _output.WriteLine(panel.DigitalSendLine);
+
+        Assert.Contains("CQ KC3QIS FN00", panel.DigitalSendLine, StringComparison.Ordinal);
+    }
+
+    /// <summary>**The grid being unset is said out loud in the Send area.**</summary>
+    [Fact]
+    public void WithNoGridTheSendAreaSaysSo()
+    {
+        var (panel, settings) = Panel();
+
+        _output.WriteLine(panel.DigitalSendUnset);
+
+        Assert.True(panel.HasDigitalSendUnset);
+        Assert.Contains("grid", panel.DigitalSendUnset, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("CQ KC3QIS", panel.DigitalSendUnset, StringComparison.Ordinal);
+
+        settings.Operator.GridSquare = "FN00";
+
+        Assert.False(panel.HasDigitalSendUnset);
+    }
+
+    /// <summary>
+    /// **The licence line is the guard's own words, and the menu still lists
+    /// everything.**
+    /// </summary>
+    /// <remarks>
+    /// Step 5's criterion 6's first half. *Nothing is forbidden in the menu* is a
+    /// ruling about the contact state, not about the licence: what the menu gains
+    /// is a line, not a shorter list. **The refusal that actually stops a
+    /// transmission stays inside <c>Ft8TransmitSequence</c>**, and the engine's
+    /// <c>OutOfPrivilegesNothingReachesThePortOrTheSink</c> is what proves it.
+    /// </remarks>
+    [Fact]
+    public void TheLicenceLineIsTheGuardsOwnWordsAndTheMenuStillListsEverything()
+    {
+        var (panel, settings) = Panel();
+
+        settings.Operator.GridSquare = "FN00";
+        settings.Operator.LicenseClass = LicenseClass.Technician;
+
+        // **40 m, BECAUSE THE FREQUENCY IS CLAMPED TO THE SELECTED BAND'S MAP
+        // WINDOW** (`OnFrequencyHzChanged`). Asking for 14.074 MHz while 40 m is
+        // selected lands at the edge of 40 m's picture and the guard answers
+        // about *that*, which is what `docs/unit259-send-path-trace.md` question
+        // 1 measured: the frequency is the band's, until a radio moves it.
+        // 7.074 MHz is FT8's watering hole on 40 m, where a Technician has CW
+        // and no data.
+        panel.FrequencyHz = 7_074_000;
+
+        var row = Add(panel, 8, "KC3QIS W1ABC R-15", snr: "-14");
+
+        _output.WriteLine("frequency : " + panel.FrequencyHz);
+        _output.WriteLine("licence   : " + panel.DigitalSendLicenceLine);
+
+        Assert.True(panel.HasDigitalSendLicenceLine);
+        Assert.NotEmpty(panel.DigitalSendLicenceLine);
+
+        // THE MENU LOSES NOTHING TO THE LICENCE. All five, still.
+        Assert.Equal(5, panel.SendMenuFor(row)!.Options.Count);
+    }
+
+    /// <summary>
+    /// **A licence that permits cleanly says nothing at all.**
+    /// </summary>
+    /// <remarks>
+    /// The breakage: a line that is always there, which teaches the operator to
+    /// stop reading that part of the window.
+    /// </remarks>
+    [Fact]
+    public void AClassThatMayTransmitHereGetsNoLicenceLine()
+    {
+        var (panel, settings) = Panel();
+
+        settings.Operator.LicenseClass = LicenseClass.Extra;
+        panel.FrequencyHz = 7_074_000;
+
+        _output.WriteLine("frequency   : " + panel.FrequencyHz);
+        _output.WriteLine("licence line: \"" + panel.DigitalSendLicenceLine + "\"");
+
+        Assert.False(panel.HasDigitalSendLicenceLine);
+    }
+
+    /// <summary>
+    /// **Settings can name a transmit endpoint, and names none by default.**
+    /// </summary>
+    /// <remarks>
+    /// The breakage: playing to whatever the machine defaults to. FT8 tones
+    /// through the laptop speakers while the operator believes he is on the air.
+    /// **A Settings screen for it is not built** and is named as what remains.
+    /// </remarks>
+    [Fact]
+    public void SettingsCarriesATransmitEndpointAndNamesNoneUntilOneIsSet()
+    {
+        var settings = new AppSettings();
+
+        Assert.Null(settings.AudioOutputDeviceId);
+
+        settings.AudioOutputDeviceId = "{0.0.0.00000000}.{some-render-endpoint}";
+
+        Assert.Equal(
+            "{0.0.0.00000000}.{some-render-endpoint}", settings.AudioOutputDeviceId);
     }
 
     private static (MainWindowViewModel Panel, AppSettings Settings) Panel()

@@ -3064,13 +3064,20 @@
                                  name in the markup — `DigitalSendReserved` —
                                  so the transmit phase drops into it.
 
-                                 **IT SAYS TRANSMIT IS NOT BUILT** (§0.0,
-                                 §0.5.1). An empty bordered box where a Send
-                                 panel will go reads as a Send panel that is
-                                 broken. There is no control in it, live or
-                                 greyed, because a greyed control claims a
-                                 feature exists and is unavailable, and this
-                                 one does not exist at all. -->
+                                 **IT SAID TRANSMIT WAS NOT BUILT UNTIL UNIT
+                                 259, AND THAT SENTENCE IS NOW FALSE.** It used
+                                 to read "Send lives here when it is built.
+                                 Hamlet does not transmit yet." The region kept
+                                 itself clear for exactly this and the send path
+                                 has dropped into it, so what stands here now is
+                                 what is going out and to whom.
+
+                                 **EVERY WORD IS FORMATTED IN THE VIEW MODEL**
+                                 (unit 258's precedent, and `DigitalDecodeRow`'s
+                                 before it), so what a reader sees is asserted
+                                 by `OneClickArmsExactlyOneMessageTests` without
+                                 a window being opened. Nothing here does
+                                 arithmetic. -->
                             <Border Grid.Row="1" x:Name="DigitalSendReserved"
                                     Margin="0,10,0,0"
                                     MinHeight="72"
@@ -3079,12 +3086,42 @@
                                     Background="Transparent"
                                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                     BorderThickness="1">
-                                <TextBlock x:Name="DigitalSendReservedLine"
-                                           Text="Send lives here when it is built. Hamlet does not transmit yet, and this space is kept clear so the waterfall above it never has to move again."
-                                           TextWrapping="Wrap"
-                                           VerticalAlignment="Top"
-                                           FontSize="11"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                <StackPanel Orientation="Vertical" Spacing="6">
+                                    <!-- **NO TYPING** (step 5, criterion 1).
+                                         The callsign and grid are the
+                                         operator's own, out of Settings, and
+                                         the button goes through the same
+                                         command a right-click does. -->
+                                    <Button x:Name="DigitalSendCqButton"
+                                            Content="CQ"
+                                            HorizontalAlignment="Left"
+                                            Padding="16,4"
+                                            Command="{Binding SendCallToAnyoneCommand}"
+                                            ToolTip.Tip="{Binding CallToAnyoneText}" />
+
+                                    <TextBlock x:Name="DigitalSendReservedLine"
+                                               Text="{Binding DigitalSendLine}"
+                                               TextWrapping="Wrap"
+                                               VerticalAlignment="Top"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- The guard's own reason and citation,
+                                         shown rather than restated. -->
+                                    <TextBlock x:Name="DigitalSendLicenceText"
+                                               Text="{Binding DigitalSendLicenceLine}"
+                                               IsVisible="{Binding HasDigitalSendLicenceLine}"
+                                               TextWrapping="Wrap"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <TextBlock x:Name="DigitalSendUnsetText"
+                                               Text="{Binding DigitalSendUnset}"
+                                               IsVisible="{Binding HasDigitalSendUnset}"
+                                               TextWrapping="Wrap"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
                             </Border>
                         </Grid>
                         </ScrollViewer>

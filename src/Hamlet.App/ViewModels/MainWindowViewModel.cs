@@ -8143,6 +8143,79 @@ public partial class MainWindowViewModel : ObservableObject
             : "to " + fields.To + ", ";
     }
 
+    /// <summary>The licence gate, asked for display and never for permission.</summary>
+    /// <remarks>
+    /// **THE REFUSAL THAT ACTUALLY STOPS A TRANSMISSION IS NOT HERE.** It is
+    /// inside <see cref="Ft8TransmitSequence.RunAsync"/>, before anything that can
+    /// key, and it is narrower there than <see cref="TransmitGuard.Check"/> is in
+    /// general. This asks the same guard the same question **so the menu can say
+    /// what it said**, which is criterion 6's first half - and it is a second
+    /// *reader* of the rule, not a second copy of it.
+    /// </remarks>
+    private readonly TransmitGuard _sendLicence = new();
+
+    /// <summary>What the licence says about transmitting here, or "".</summary>
+    /// <remarks>
+    /// **THE GUARD'S OWN WORDS**, its <c>Reason</c> and its <c>Citation</c>. It is
+    /// empty exactly when the guard had nothing to say - a clean permit - so the
+    /// line appears whenever anything at all stands between the operator and the
+    /// air, including a guard he has switched off and a class Hamlet does not
+    /// know.
+    /// </remarks>
+    public string DigitalSendLicenceLine
+    {
+        get
+        {
+            var decision = _sendLicence.Check(
+                LicenseClass, FrequencyHz, TransmitMode.Data,
+                _settings.RestrictTransmitToPrivileges);
+
+            if (string.IsNullOrEmpty(decision.Reason))
+            {
+                return "";
+            }
+
+            return string.IsNullOrEmpty(decision.Citation)
+                ? decision.Reason
+                : decision.Reason + " (" + decision.Citation + ")";
+        }
+    }
+
+    /// <summary>Whether the licence has anything to say about this frequency.</summary>
+    public bool HasDigitalSendLicenceLine => DigitalSendLicenceLine.Length > 0;
+
+    /// <summary>The call to anyone, from the operator's own settings.</summary>
+    /// <remarks>
+    /// **NO TYPING** (criterion 1). Callsign and grid straight out of
+    /// <see cref="OperatorProfile"/>; with no grid set it is `CQ KC3QIS`, which is
+    /// a legal FT8 message, and **no locator is invented** (§0.0).
+    /// </remarks>
+    public string CallToAnyoneText
+        => Ft8SendOptions.CallToAnyone(
+            _settings.Operator.Callsign?.Trim() ?? "", _settings.Operator.GridSquare);
+
+    /// <summary>What is missing from Settings, said out loud, or "".</summary>
+    public string DigitalSendUnset
+        => string.IsNullOrWhiteSpace(_settings.Operator.GridSquare)
+            ? "Your grid square is not set in Settings, so Hamlet calls CQ as \""
+              + CallToAnyoneText + "\" and does not offer the messages that carry "
+              + "a grid. It will not invent one."
+            : "";
+
+    /// <summary>Whether anything the send path needs is unset.</summary>
+    public bool HasDigitalSendUnset => DigitalSendUnset.Length > 0;
+
+    /// <summary>
+    /// **The CQ button. Same command, same one route to a keying frame.**
+    /// </summary>
+    /// <remarks>
+    /// It calls <see cref="SendMessage"/> and adds nothing: **one send path, not
+    /// two**, so everything asserted about one click applies to this one without
+    /// being asserted twice.
+    /// </remarks>
+    [RelayCommand]
+    private void SendCallToAnyone() => SendMessage(CallToAnyoneText);
+
     /// <summary>Give the send path something to transmit through, for tests.</summary>
     /// <param name="armed">The armed send over whatever fakes a test built.</param>
     /// <remarks>

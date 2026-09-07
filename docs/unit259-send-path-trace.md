@@ -31,6 +31,17 @@ asserted against it, and the assertion is therefore about the gate being asked
 the app's own frequency, not about the app's frequency being a measurement of a
 radio. **Said out loud here so the report does not claim more.**
 
+**Measured again in task 4, and it is narrower than the above.**
+`OnFrequencyHzChanged` at `MainWindowViewModel.cs:6701` clamps every
+operator-origin frequency to `Math.Clamp(value, MapLowHz, MapHighHz)` - the
+selected band's picture, `:491` and `:494` - and only a rig-origin reading
+(`_updatingFromRig`) escapes it. So **the frequency the licence gate is asked
+about cannot leave the selected band unless a radio moves it.** Asking for
+14.074 MHz while 40 m is selected lands at the edge of 40 m's map and the guard
+answers *"No US license class may transmit here"* about that edge, which is a
+correct answer to a question nobody meant to ask. **Found by a test that assumed
+otherwise; the test now uses 7.074 MHz.**
+
 The same value already feeds the existing CW guard through
 `BuildTransmitContext()` at `:2471`, which passes `FrequencyHz` and
 `_settings.RestrictTransmitToPrivileges`. **The send path reads the same two

@@ -193,6 +193,28 @@ public sealed class AppSettings
     public string? AudioInputDeviceId { get; set; }
 
     /// <summary>
+    /// The render device the operator's transmit audio goes to, or null where
+    /// none has been named.
+    /// </summary>
+    /// <remarks>
+    /// <para>**NULL MEANS THE SEND REFUSES, NOT THAT HAMLET PICKS**, and that is
+    /// the whole difference between this and <see cref="AudioInputDeviceId"/>
+    /// above. Listening to the wrong device is a quiet waterfall; transmitting to
+    /// the wrong device puts FT8 tones through the laptop speakers, or into
+    /// whatever the machine happens to default to, while the operator believes
+    /// he is on the air. <c>WasapiTransmitSink</c> takes a name and **refuses
+    /// rather than falling back** for the same reason.</para>
+    /// <para>**THE SAME SHAPE AND THE SAME REASONING AS THE INPUT FIELD**: the
+    /// device's own id, because names change when a driver updates and an id does
+    /// not.</para>
+    /// <para>**A SETTINGS SCREEN FOR IT IS NOT BUILT** (work instruction 259,
+    /// task 4, which names it as what remains). The field exists so the send path
+    /// has somewhere to read a name from; until something writes one, the send
+    /// says so.</para>
+    /// </remarks>
+    public string? AudioOutputDeviceId { get; set; }
+
+    /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
     /// </summary>
     /// <remarks>
