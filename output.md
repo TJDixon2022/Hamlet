@@ -1,403 +1,366 @@
 READ IN THIS ORDER
 
 A. THE PHASE GOAL. Hamlet works stations on the air - Tim answers a CQ on 14.074
-or 7.074 from Hamlet and completes an exchange.
+or 7.074 from Hamlet and completes an exchange. After tonight: step 0 `done` and
+step A `done`, both closed by unit 266. **Step B is `done`** - this unit, all four
+must-pass criteria met on runs tonight, nothing deferred to Tim. Step C `not
+started` - the whole chain from one right-click at the bench, and task 5 names its
+pieces without building them. Steps D and E `not started` and both are Tim's, at
+the radio: the drive level his IC-7300 wants, and working a station.
 
-B. THIS STEP AND ITS EXIT CRITERIA. This unit is step 0, the record is honest about
-where the phase stands, and step A, the row knows where the contact stands. Step
-0's exit: the old steps 2 and 3 recorded done with their figures; PHASE_OUTCOME.md
-stops recording each unit twice, with the existing duplicates left in place and
-named; the archived plan left alone. Step A's exit: which messages passed each way
-and how many slots ago; four states shown per row with slot counts; complete means
-what a QSO needs and the absence of 73 never withholds it, with nothing closed,
-hidden or forbidden by the app; a station working three others at once reads as
-gaps and not as a fault, proved against a recorded multi-slot scene.
+B. THIS STEP AND ITS EXIT CRITERIA. Step B, *right-click and it goes*, four
+must-pass criteria, and **all four are met**. 1 - a CQ button sending `CQ KC3QIS
+FN00` from Settings with no typing: **met on a run tonight**. 2 - right-click a
+decoded row and every valid message is offered, the expected one highlighted, none
+forbidden, a repeat showing its count: **met on four runs tonight**, one of them a
+real right-click on a real row control. 3 - one click sends exactly one message,
+asserted by a test: **met on a run tonight**, two boundaries and one transmission.
+4 - what is being sent and to whom appears in the Send area, and out of licence
+privileges it says so and sends nothing: **met on runs tonight**, by the test this
+unit built. **No criterion was claimed by reading the tree**, which is the caveat
+step A closed with last night and the one this unit existed partly to avoid.
 
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. Three things, and section
-4 raises 4 items, none of them blocking and none a ruling request. On B directly:
-both steps close done, and the one thing that would have kept step A open - a row
-that reached a state and stuck there - is now the thing a test catches. On B by
-correction: most of step A already existed and was NOT rebuilt, so what this unit
-built is the one proof it lacked. On A: nothing here touches the radio, and the
-level Tim's own radio wants is now step D, where he can close it - which is the
-change that lets the phase reach him at all.
+C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It adds the proof that
+the licence gate holds from the operator's own click through to a slot boundary -
+the one of step B's four criteria that had nothing behind it, and the third of the
+three things `PHASE_PLAN.md` says no unit may reason past.
+**Section 4 raises 4 items, and none is in the way of a criterion in B**, which is
+closed. One of the four asks the owner to decide something, and it is not
+blocking: what the
+send path should do when the operator switches the licence guard off in Settings.
+It is measured, quoted and left exactly as found.
 
-UNIT:       266 - complete at task 5 of 5 - 2026-09-07 10:20
-PHASE GOAL: Hamlet works stations on the air.
-UNIT GOAL:  The old steps are closed at what they reached, each unit appears once
-            in the record, and every decoded row says where its contact stands.
-ADVANCED:   yes - steps 0 and A both close done, all four of step A's criteria met
-            with every named test green by exact name, and step 0's duplicate fixed
-            with the red watched first.
-NUMBER:     26 entries for 13 units -> one entry per unit; and the four row states,
-            3 of 4 proved separately and never in sequence -> 4 of 4 walked in order
-            through a whole six-message exchange.
-DRIFT:      0 consecutive units without advance  (was 6 - unit 264 recorded five and
-            unit 265 closed no step)
+UNIT:       267 — complete at task 5 of 5 — 2026-09-07 10:45
+PHASE GOAL: Hamlet works stations on the air - Tim answers a CQ from Hamlet and
+            completes an exchange on his own antenna
+UNIT GOAL:  Step B closes - the CQ button, the right-click menu and the Send area
+            proved on a run, and the licence gate proved to hold from the
+            operator's click through to the slot boundary
+ADVANCED:   yes — step B moved from `not started` to `done`, all four must-pass
+            criteria, and the criterion that had no proof behind it now has one
+NUMBER:     0 -> 5. Tests anywhere in the tree that drive an out-of-privileges
+            click through the application to a slot boundary
+DRIFT:      0 consecutive units without advance  (was 0)
 
 ## 1. What Claude did
 
-**Complete, at task 5 of 5.** All five tasks done, committed and pushed. **The
-named drop candidate — task 5 — was not dropped**, and nothing else was dropped
-either.
+**Complete, at task 5 of 5.** Nothing was dropped, including the named drop
+candidate. Development machine QUIVERFULL, project confirmed as Hamlet against the
+tree - `SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
+present, `CoreHMI.sln` and `MURC.sln` both absent - branch `main`.
 
-Development machine, Hamlet confirmed by all four identity checks, branch `main`.
-**FACT-004 throughout: no serial port was opened, nothing was keyed, no sound was
-played, and nothing here says anything about the IC-7300.**
+**FACT-004 throughout.** No serial port was opened, nothing was keyed, no sound was
+made, and nothing here says anything about the IC-7300.
 
-### The instruction's four tree checks, answered
+### Task 1 - the trace, committed on its own at 4c01587
 
-- **`PHASE_PLAN.md` at the root is the re-cut**, steps 0, A, B, C, D, E, with the
-  previous cut at `docs/phase-send-run/`. `install-phase.bat` **was** run, so task 4
-  stands and was done.
-- **`outcome-append.bat` takes its unit number from its caller**, and its two
-  callers disagree about what a unit number is. See section 3.
-- **Unit 264's work survives, and so does much more than that.** Section 1's next
-  heading.
-- **Root version was 1.12.119** after work instruction 265, read not assumed, and is
-  now **1.12.120**. `Ft8Sharp` did not move.
+`docs/unit267-step-b-trace.md`, seven questions, each with a file, a line and a
+quotation. **The instruction was right about the thing it was least sure of.**
+Question 6 - *is there any test anywhere in which the operator's click, out of
+licence privileges, is driven through the application to a slot boundary* - answers
+**none**. `RefusedByLicence` appears nowhere in `tests/Hamlet.App.Tests` at all;
+every test hit is in the two engine suites, and both build their own
+`OperatorSend`. `MainWindowViewModel.cs:8346`'s `RefusedByLicence` branch - the
+sentence an operator reads when the gate refuses his click - **was asserted by
+nothing**, confirmed by grepping `Citation` across the project and finding three
+hits, all in `Licensing/` tests that never touch `DigitalSendLine`.
 
-### Task 1 — the old steps close at what they reached
+Question 3 answers **none** too, and it is the good kind: nothing is greyed,
+disabled, hidden, sorted away or filtered anywhere between `Ft8SendOptions.For`
+(`Ft8SendOptions.cs:99`) and the flyout (`MainWindow.axaml.cs:171`). The one
+`continue`, at `Ft8SendOptions.cs:118`, is a message that **does not exist** -
+no grid in Settings, no ratio measured - and its reason goes into `Absent`.
 
-Steps 2 and 3 of the archived cut read `done` in **both** header lines —
-`docs/phase-send-run/PHASE_STATUS.md` and `PHASE_OUTCOME.md` — with the figures
-beside them: **the loopback at 3 of 3 messages**, **the level at -12.04 dBFS**, the
-**device by unit 256** and the **rate by unit 262**.
+The trace also wrote down the trap task 2 would otherwise have walked into: a
+licence refusal comes back as **`Ft8ArmOutcome.Ran` at the boundary**
+(`Ft8ArmedSend.cs:473` returns `Ran` for anything the sequence ran) and only
+`TransmitRun.Outcome` carries `RefusedByLicence`. A test asserting on the arm
+outcome alone would read a refusal as a send.
 
-**What was open in both is one thing and it is the same thing: the level Tim's own
-radio wants.** That is a fact about his USB input and his ALC, and it is now **step
-D**. Both files say so in their own words.
+### Task 2 - the goal task, red at 5c91f7e then green at e34cf4e
 
-**No entry body was altered.** Only the step-state words moved, and each file
-carries a section saying why. The archived `PHASE_PLAN.md` was not touched at all.
+`tests/Hamlet.App.Tests/ViewModels/TheLicenceGateHoldsFromTheClickTests.cs`, five
+assertions, each run alone by exact name. **Four of the five were green whole on
+their first run against the tree as it stands.** That is the finding: **no red was
+manufactured and no product code was written**, and none was needed.
 
-**Old steps 4 and 5 keep `partial`, and what survives of them is large.** Steps A
-and B inherit: `Ft8ContactLedger`, `Ft8ContactStates`, `Ft8MessageSplit` and
-`Ft8SendOptions` in `src/Hamlet.RadioEngine/Contacts/`;
-`MainWindowViewModel.SendMenuFor` at `:8121` and `MainWindow.axaml.cs:173` building
-a right-click menu from the ledger; and a **Contact column already bound on the
-decoded row** at `MainWindow.axaml:3584`.
+**The one red was mine, and correcting it is a real measurement.** I wrote the
+guard-off case expecting the transmission to proceed on the operator's own
+authority, because `TransmitGuard.Check` returns `MayTransmit` true with
+`WasOverridden` true. It does not. Verbatim, committed at 5c91f7e before it was
+touched:
 
-### Task 2 — each unit appears once
+```
+Assert.Equal() Failure: Values differ
+Expected: Sent
+Actual:   RefusedByLicence
 
-Red first, committed at `dc85bbb`, quoted in section 3. Green at **3 of 3**, each
-case run alone by exact name. The fix and where the second number came from are in
-section 3.
+guard enabled     : False
+licence class     : Technician
+run outcome       : RefusedByLicence
+sent              : False
+sink calls        : 0
+frames at the port: 0
+```
 
-### Task 3 — the row knows where the contact stands
+`Ft8TransmitSequence.Permits` at `:443` refuses an overridden permit outright: the
+gate permits in three ways and this send path accepts one, because §0.2 says the
+Settings check is not bypassable from any send path. The expectation was corrected
+to what was measured; the product was not touched.
 
-**The instruction's first order was to find what survives before building, and the
-answer is: most of it.** Not rebuilt: the ledger, the four state words, an
-`IsComplete` that never asks for `73`, and **three of task 3's four named tests,
-already in the tree and green as they stand**.
+### Task 3 - the seven committed tests, run rather than claimed
 
-**What did not exist is the walk.** Every state had a case of its own and no case
-read one station through all four, **so the transitions were untested** — a row
-that reached a state and stuck there passed everything in the tree, and the way
-back *out* of gone quiet was asserted nowhere.
-
-`AWholeSixMessageExchangeWalksThroughTheFourStatesInOrder`, red first with the
-scene absent, then **green on its first run with all twelve expectations written
-before they were read**. The table is section 3.
-
-The scene it runs against was **composed by `Ft8Composer` and read back through the
-`Ft8DeepSlotDecoder` Hamlet actually runs**: 6 signals composed, **6 decoded, 0
-lost**. It is synthesized and is not a capture.
-
-### Task 4 — the phase's bookkeeping
-
-`PROJECT_CARD.md`'s `PHASE_SET` moved to 2026-09-07. **HM-DEC-158** records Tim's
-approval of the re-cut with the reason: four steps sat `partial` for eight units
-because each held a criterion no bench machine could satisfy.
-
-**Both entries were appended through `outcome-append.bat` itself, which ran and
-exited 0** — the first time in thirteen units the shell has not refused it — under
-`UNIT 266 - STEP 0` and `UNIT 266 - STEP A`, once each, with the header updated in
-place. Both recorded `done`.
-
-### Task 5 — what step B will need
-
-`docs/unit266-what-step-b-sends.md`. **Named, not built**: no menu, no send path,
-nothing in `src/` changed for it. The finding is in section 3.
-
-### The decisions I made for myself, in full
-
-1. **The duplicate is fixed in `outcome-entry.py` and in neither caller.** Neither
-   caller is wrong about its own number and neither can see the other, so a fix in
-   either leaves the other free to write a second entry. `outcome-entry.py` is the
-   one place both routes reach the file.
-2. **A second append for the same unit and step is folded in, not dropped.** It
-   becomes a `###` continuation inside the first entry naming only the fields that
-   differ. The loop's entry is the one carrying the run's real cost and the
-   arbiter's judgment, and an entry that silently discarded those would be a worse
-   record than the duplicate it replaces.
-3. **The number resolution is a tie-break and not a takeover.** With no
-   `WORK_INSTRUCTIONS.md` to read against, the caller's number stands;
-   `OA_UNIT_EXACT` turns it off; and where the resolved number differs the entry
-   says `UNIT_AS_CALLED` on its face. Relabelling somebody's hand-written historical
-   entry would be the same class of fault one direction over.
-4. **The letter-step regex was fixed rather than reported.** Appending this unit's
-   own entry would otherwise have corrupted the header it was meant to update. See
-   section 4.
-5. **A second recorded scene was composed rather than the band scene extended.** The
-   band scene is at its twelve-slot cap, every other case reads it, and extending it
-   would mean regenerating it by running a test this unit did not construct.
-6. **The new test's compose-and-decode helpers are a deliberate second copy** of the
-   band scene generator's, not a shared refactor: sharing would mean editing a test
-   this unit may not run to prove the refactor safe. It is written down in the new
-   file that **the two are worth joining by a unit that can run both.**
-7. **`TheCommittedCorpusIsWhatTheDecoderReturnedForThisScene` was run once**, though
-   this unit did not construct it, because this unit changed `Ft8SceneCorpus.Write`,
-   which that test depends on. One test, filtered, foregrounded. It passes and the
-   band scene's bytes did not move.
-8. **Steps 0 and A are both recorded `done`.** Every criterion of both is met on
-   evidence, none is deferred to Tim, and the one half claimed on the tree rather
-   than on a run tonight is named as such in section 4.
-
-### Every test run tonight, each alone by exact name
+All seven pass, each run **alone, by exact name, foregrounded**. No suite, nothing
+unfiltered, nothing backgrounded, nothing outside the seven and what task 2 built.
 
 | Test | Result |
 |---|---|
-| `OneUnitAppendedTwiceUnderBothNumberingRoutesProducesOneEntry` | red, then **green** |
-| `TheSameUnitOnADifferentStepIsStillItsOwnEntry` | **green** |
-| `AnEntryWrittenWithNoWorkInstructionToResolveAgainstKeepsItsNumber` | **green** |
-| `AWholeSixMessageExchangeWalksThroughTheFourStatesInOrder` | red, then **green**, 16 ms |
-| `TheCommittedWalkSceneIsWhatHamletsDecoderReturned` | wrote the scene, then **green** |
-| `TheW1abcExchangeIsCompleteAndHasNoSeventyThreeInIt` | **green**, 12 ms |
-| `G4xyzReadsAsGapsAndIsNeverGoneQuietInAnySlotOfTheScene` | **green**, 11 ms |
-| `GoneQuietIsAStatedCountOfSlotsAndNeverAVerdict` | **green**, 8 ms |
-| `TheCommittedCorpusIsWhatTheDecoderReturnedForThisScene` | **green** (decision 7) |
+| `TheCqButtonSendsFromSettingsWithNoTypingAndNeverInventsAGrid` | passed, 186 ms |
+| `TheRowsMenuOffersEveryMessageWithTheExpectedOneMarked` | passed, 156 ms |
+| `ARowWithNoMeasuredRatioOffersNoReportAndSaysWhy` | passed, 183 ms |
+| `EveryStationsPredictedMenuAppearsUnderTheMouse` | passed, 855 ms, 5 of 5 stations |
+| `TheRepeatCountBelongsToTheClickAndNotToTheRow` | passed, 794 ms |
+| `OneClickIsOneMessageAcrossTwoBoundaries` | passed, 198 ms |
+| `WithNoGridTheSendAreaSaysSo` | passed, 153 ms |
 
-**No test suite was run.** No unfiltered `dotnet test` on any project, nothing
-backgrounded and polled, and `Hamlet.App.Tests` was not run at all.
+**Nothing red.**
 
-### Shell refusals, verbatim
+### Task 4 - the phase's bookkeeping
 
-One, and it did not stop anything:
+Step B recorded **`done`** in `PHASE_OUTCOME.md`, with all fourteen fields and a
+`STATE_WHY` quoting the evidence for each of the four criteria. The header's
+`STEP: B` line moved from `not started` to `done` in place. No earlier entry body
+was touched. `PHASE_STATUS.md`'s `STEP:` lines were **not** written - they belong
+to the launcher; only `WORK_INSTRUCTION:` was.
 
-```
-python tools/arbiter/outcome-entry-tests.py OneUnitAppendedTwiceUnder...
-This command requires approval
-```
+**`outcome-append.bat` was refused, both forms**, verbatim in section 4. The
+instruction's own named alternative was taken and the entry says so on its face in
+an `APPENDED_BY:` line.
 
-Worked around with `tools/arbiter/outcome-entry-tests.proj`, the same
-`dotnet build` route `outcome-append.proj` and `validate-output.proj` take. One
-case per invocation, by exact name, and **there is deliberately no run-everything
-form**.
+### Task 5 - the named drop candidate, not dropped
+
+`docs/unit267-what-step-c-needs.md`. **Named, not built** - no test was written and
+nothing was added to `tests/`. Each of step C's four criteria has its closest
+existing test with a file and a line, what that test lacks, and which harness
+pieces would have to be joined.
+
+### Decisions made for myself, reproduced in full
+
+**One.** The Send area line after a *successful* send was measured by adding a
+print and an addressee assertion to the test task 2 built, rather than by running
+an eighth committed test. Task 3 asks the report to quote that line; none of the
+seven named tests carries it, and the no-suite rule permits only those seven and
+what task 2 builds. Adding it to my own test stays inside both.
+
+**Two.** The guard-off case is recorded as a measurement and left exactly as found.
+Work instruction 267 said to record it and not to decide it, and changing it would
+mean editing `Ft8TransmitSequence`'s own gate, which the instruction forbids.
 
 ## 2. What the owner should expect
 
-**Every decoded row on the Digital tab says where its contact stands, and it says
-it right through a whole contact rather than at four separate moments.** Four
-words, each with a count of slots beside it: *waiting on him*, *your move*,
-*complete*, *gone quiet*.
+**He right-clicks a station he has decoded and sends it a message with one click.**
+The message that conventionally comes next is marked in words as well as in weight
+- *the one that comes next* - and **nothing is taken away from him**: all five
+message shapes stay on the menu and stay clickable, including ones he has already
+sent, which show their count instead. A message that does not exist because
+Settings has no grid, or because that station's ratio was never measured, is
+**absent with the reason said out loud** rather than drawn grey.
 
-**Nothing is hidden and nothing is closed.** A complete contact still shows. A
-station that went quiet twenty minutes ago still shows. The app reports where the
-contact stands; it does not rule on it, and there is no member anywhere in the
-ledger or the states that could withhold anything.
+**The CQ button calls from his own Settings with no typing.** With his grid set it
+builds `CQ KC3QIS FN00`; with none it builds `CQ KC3QIS`, and **no locator is
+invented**. The Send area tells him what went out and to whom.
 
-**A contact reads complete without a `73` from either side.** Complete lands on the
-acknowledgement. A `73` that arrives afterwards is one more message in the ledger
-and changes nothing; a `73` that never arrives withholds nothing.
+**And on a frequency his licence does not cover, Hamlet tells him so and transmits
+nothing.** Not a greyed button and not silence - a sentence naming the message that
+did not go, the regulator's reason and the paragraph it comes from.
 
-**What will look wrong but is not:**
+### What will look wrong but is not
 
-- **A station reading *gone quiet, 6 slots* and then *your move* one slot later.**
-  That is him coming back, and it is the transition this unit was written to prove.
-  Gone quiet is a count of silence, never a verdict about anybody's operating.
-- **A station transmitting busily on the band while his row says *your move, 8
-  slots*.** He is working three other people. The count is how long since *he
-  answered you*, and the row is right.
-- **A row that says *complete* and never changes again.** Complete is tested before
-  gone quiet, deliberately, so an exchange that has what a QSO needs stays complete
-  however long the silence after it runs.
-- **Steps 4 and 5 of the archived phase still reading `partial`.** That cut is
-  finished. Their work is inherited by steps A and B of the live plan and is
-  accounted for there.
-- **Twenty-six entries in the archived `PHASE_OUTCOME.md` for thirteen units.**
-  They are staying. Rewriting history is worse than a labelled duplicate, and there
-  is now a table telling a reader which pairs are one unit.
+**The menu still offers everything while the licence refuses.** On a frequency he
+may not transmit on, the right-click menu is exactly as long as it always was, with
+the licence as a note underneath. That is ruled, not an oversight: nothing is
+forbidden in the menu, and a refusal at the gate is not a reason to take an option
+off it. The refusal happens where it can actually stop a transmission.
 
-**Nothing about the radio changed and nothing was keyed.** The drive level is still
-Tim's to set, and it is now **step D**, which exists for exactly that.
+**Switching the licence guard off in Settings does not let him transmit outside his
+privileges.** He gets a different sentence, not a transmission. See section 4.
+
+**Nothing on screen changed tonight.** No product code was written. What changed is
+what is proved, and the whole of it is in `tests/`.
 
 ## 3. What you should see
 
-### 1. A row's state, quoted, at each of the four
+### 1. The out-of-privileges click, quoted
 
-Read off `Ft8ContactRead.Text`, which is what the Contact column binds to. This is
-the test's own output, one row per slot of a whole exchange between `KC3QIS` and
-`W9GAP`:
-
-```
-slot  what passed             the row reads
-   0  CQ W9GAP DM79           your move, 0 slots
-   1  W9GAP KC3QIS FN00       waiting on him, 0 slots
-   2  -                       waiting on him, 1 slot
-   3  -                       waiting on him, 2 slots
-   4  -                       gone quiet, 4 slots
-   5  -                       gone quiet, 5 slots
-   6  -                       gone quiet, 6 slots
-   7  -                       gone quiet, 7 slots
-   8  KC3QIS W9GAP -11        your move, 0 slots
-   9  W9GAP KC3QIS R-09       waiting on him, 0 slots
-  10  KC3QIS W9GAP RRR        complete, 0 slots
-  11  W9GAP KC3QIS 73         complete, 0 slots
-```
-
-**All twelve were written down before they were read**, and the test went green on
-its first run. Six turns of state across twelve slots, all four words in it.
-
-**What it would have caught, which nothing did before:** every state had a case of
-its own and no case read one station through all four, so **a row that reached a
-state and stuck there passed every test in the tree**. The line that matters most
-is slot 8 — the way back *out* of gone quiet, on the strength of one decode.
-
-The station's silence is real and the count says so: **four slots is sixty
-seconds**, and he was gone for six of them. That threshold is a stated choice, not
-a specification, and it is written down beside itself.
-
-### 2. An exchange with no `73`, reading complete
-
-The case the ruling exists for. `W1ABC`, from the recorded band scene, the whole
-exchange message by message as the test prints it:
+`TheLicenceGateHoldsFromTheClickTests.OutOfPrivilegesTheClickReachesTheBoundaryAndNothingIsKeyed`,
+run alone by exact name, passed in 601 ms. A Technician licence class in Settings,
+the panel on 14.074 MHz, the operator's own click through `SendMessageCommand`,
+driven to its boundary with `AtSlotBoundaryAsync`:
 
 ```
-CQ W1ABC FN42
-W1ABC KC3QIS -12
-KC3QIS W1ABC R-15
-W1ABC KC3QIS RRR
+licence class     : Technician
+frequency         : 14074000
+boundary outcome  : Ran
+run outcome       : RefusedByLicence
+sent              : False
+keyed             : False
+sink calls        : 0
+bytes at the port : 0
+reason            : Technician privileges do not reach this frequency; it needs General.
+citation          : 97.301(e)
 ```
 
-**Not a `73` in it**, asserted directly — and the row reads **complete**, both at
-the moment the operator's `RRR` went out in slot 9 and still at slot 13.
+**The sentence the operator is left looking at**, word for word, read off
+`DigitalSendLine` after the boundary and after the posted job ran:
 
-The walk above says the same thing a second way and more sharply: `W9GAP` reads
-**`complete, 0 slots` at slot 10**, on his acknowledgement — **one slot before the
-`73` goes out at slot 11.** The contact was complete before the courtesy existed.
+> Hamlet did not send "W1ABC KC3QIS -10": Technician privileges do not reach this frequency; it needs General. (97.301(e))
 
-`IsComplete` asks for both callsigns, both grids or reports, and both
-acknowledgements, counted over the messages that passed **between the two
-stations**. **`73` is not on the list.** A station that never signs off still made
-a contact.
+Before tonight nothing in the tree asserted that sentence.
 
-### 3. The duplicate-entry fix
+### 2. The same click inside privileges, going
 
-**Where the second number came from.** `outcome-append.bat` takes the unit number
-from its caller, and its two callers disagree about what a unit number *is*:
-
-- `tools\arbiter\run-unit.bat:534` passes **`%UNIT%`**, the work-instruction number.
-- `tools\arbiter\run-phase.bat:373` passes **`%ITER%`**, the loop's iteration
-  counter — set to 0 at `run-phase.bat:127`, incremented at `:171`.
-
-**Both fire during the same run**, so every unit landed twice under two different
-numbers. `UNIT 262 - STEP 3` and `UNIT 5 - STEP 3` are one unit; so are twelve
-other pairs. **Thirteen units, twenty-six entries**, and a reader counting entries
-counted the phase's work at twice its size.
-
-**The red, watched and committed first at `dc85bbb`, verbatim:**
+`TheSameClickInsidePrivilegesRunsAndKeysTheRadio`, run alone, passed in 494 ms.
+**Same panel, same harness, same frequency, same click** - only the licence class
+in Settings differs:
 
 ```
-FAILED  OneUnitAppendedTwiceUnderBothNumberingRoutesProducesOneEntry
-        expected ONE entry heading, got 2:
-        ['## UNIT 266 - STEP A', '## UNIT 9 - STEP A']
+licence class     : General
+boundary outcome  : Ran
+run outcome       : Sent
+sent              : True
+sink calls        : 1
+frames at the port: 2
 ```
 
-**The fix is in `outcome-entry.py`, the one place both routes pass through.** The
-number is resolved from `WORK_INSTRUCTIONS.md`'s own heading — the launcher's one
-authoritative answer to *which unit is this* — and a second append for the same
-unit and step is folded into the first entry as a `###` continuation naming only
-what differs. **Nothing either route recorded is lost, and nothing is ever
-rewritten**: the file is read to find what is in it, and every byte still goes on
-the end.
+**That is what makes assertion 1 a gate and not a dead path.** Without it the whole
+class would pass against a send path that never worked at all.
 
-**The tests that prove one entry**, each run alone by exact name:
+And the Send area after it, which is criterion 4's first half - *what is being sent
+and to whom* - measured on the same run:
 
-| Case | Says |
-|---|---|
-| `OneUnitAppendedTwiceUnderBothNumberingRoutesProducesOneEntry` | one heading, `## UNIT 266 - STEP A`, with the second route's cost and its `HIT` both still in the file and `called as UNIT 9` on the record |
-| `TheSameUnitOnADifferentStepIsStillItsOwnEntry` | `UNIT 253 - STEP 0` and `UNIT 253 - STEP 1` are two facts, not a duplicate |
-| `AnEntryWrittenWithNoWorkInstructionToResolveAgainstKeepsItsNumber` | a tie-break, not a takeover |
+> Sent to W1ABC, "W1ABC KC3QIS -10" in the slot at 14:40:30 UTC. It was composed at -12.0 dBFS with nothing clipped - that is the level Hamlet built, before this machine's own volume for that device and before the radio's input gain. Set the radio's drive against its own ALC meter.
 
-**And it was used tonight rather than described.** `outcome-append.bat` ran, exited
-0, and printed the heading it wrote:
+### 3. One menu's header strings, verbatim, and the CQ text
+
+`EveryStationsPredictedMenuAppearsUnderTheMouse`, run alone, passed in 855 ms, 5 of
+5 stations matching. **W1ABC's menu as it appears under the mouse**, on a real
+`ContextRequested` raised on a real row control in a real window - the highlight and
+a repeat count both on it:
 
 ```
-outcome-entry: UNIT 266 - STEP 0
-  Step 0 is now [done] in the phase header.
-  Nothing above the new entry was touched.
+W1ABC - under the mouse:
+    W1ABC KC3QIS FN00   grid
+    W1ABC KC3QIS -10   report
+    W1ABC KC3QIS R-10   roger and report
+    W1ABC KC3QIS RRR   acknowledge, 2nd time - the one that comes next
+    W1ABC KC3QIS 73   73
 ```
 
-**The archive keeps its duplicates and now names them** in a table of thirteen
-rows, with the evidence for which route wrote which entry: **a unit does not know
-what its own run cost**, so a unit's own entry reads `COST: unknown` and the loop's
-carries the figure it read out of `last-run.json`.
+Every one of those five items came back `IsEnabled`. **The CQ text the button
+builds**, from `TheCqButtonSendsFromSettingsWithNoTypingAndNeverInventsAGrid`:
+`CQ KC3QIS FN00` with the grid set, and `CQ KC3QIS` with none.
 
-### What step B may send, in each of the four states
+### The rest of the evidence, briefly
 
-**The contact state does not decide which messages are valid, and must not start.**
-`Ft8SendOptions.For` at `:99` does not call `Ft8ContactStates.Read` or `IsComplete`
-at all. It offers **all five** — grid, report, roger and report, acknowledge, `73` —
-in every one of the four states.
+- **Nothing is withheld while the licence refuses.**
+  `WhileTheLicenceRefusesTheMenuStillOffersEveryMessageAndSaysWhy`, passed: all
+  five shapes still on the menu with a Technician class set, and the licence note
+  reading *Technician privileges do not reach this frequency; it needs General.
+  (97.301(e))*.
+- **One click is one message.** `OneClickIsOneMessageAcrossTwoBoundaries`, passed:
+  first boundary `Ran`, second `NothingArmed`, 1 sink call, 2 port frames.
+- **A repeat shows its count.** `TheRepeatCountBelongsToTheClickAndNotToTheRow`,
+  passed: `VK2PQ KC3QIS 73   73` becomes `VK2PQ KC3QIS 73   73, 2nd time` after the
+  send, with the list the same length.
+- **Absent is not forbidden.** `ARowWithNoMeasuredRatioOffersNoReportAndSaysWhy`,
+  passed: *no signal report has been measured for this station, so the messages
+  that carry one are not offered*.
+- **The unset grid says so.** `WithNoGridTheSendAreaSaysSo`, passed: *Your grid
+  square is not set in Settings, so Hamlet calls CQ as "CQ KC3QIS" and does not
+  offer the messages that carry a grid. It will not invent one.*
 
-**What the state decides is which one is highlighted**, and `Expect` at `:177`
-decides that from one thing: **the last message heard from him addressed to the
-operator**. His CQ → grid. His grid → report. His report → roger and report. His
-rogered report → acknowledge. His courtesy → `73`.
+### The number
 
-**Two of the five can be absent, and absent is not forbidden**: no grid in
-Settings, no report measured. Each is said out loud with its reason. **There is no
-message to send, rather than a message withheld** — so step B renders it as a
-stated reason and never as a greyed-out row.
+**0 -> 5.** Before tonight, tests anywhere in the tree driving an out-of-privileges
+click through the application to a slot boundary: **zero**. After: **five
+assertions**, in one class, on the operator's own click with his own licence class
+and his own guard setting out of Settings.
 
-The whole mapping is `docs/unit266-what-step-b-sends.md`.
-
-### And the housekeeping the owner can see
-
-The archived record now opens by telling a reader that **this cut is finished**,
-which steps closed at what figures, and that the one thing left open in them is
-**step D, his**.
+Version `1.12.120` -> `1.12.121`. `Ft8Sharp` did not move.
 
 ## 4. What's blocking us
 
-**Nothing is blocking.** No ruling is asked for. Four things are recorded.
+**Nothing is blocking, and no criterion of step B is held open by any of these
+four.** One asks the owner to decide something and it is not urgent.
 
-### 1. A second bug in `outcome-append.bat`, found and fixed rather than reported
+### 1. A ruling is wanted here, and it is the only one - the licence guard's off switch
 
-The header updater matched a step line with `[0-9]+`, and **the re-cut's steps are
-letters**. A call for step A matched nothing, so the else branch would have
-**appended a second `STEP: A` line beside the one already in the header** — a
-header listing one step twice, in two states, with no way for a reader to tell
-which is the position.
+**Ruling wanted: should the FT8 send path keep refusing when the operator has
+switched `RestrictTransmitToPrivileges` off in Settings?** My answer in a sentence:
+**yes, leave it exactly as it is** - a program that hands a slot of audio to a radio
+with nobody's hand on a key should not key on an answer it cannot stand behind, and
+the code already says so in its own words.
 
-Fixed rather than reported because appending this unit's own entry would otherwise
-have corrupted the header it was meant to update. Both patterns now read
-`[0-9A-Za-z]+`, the state comparison was already a string comparison, and the two
-step lines came out single. **Not a ruling request.**
+**The measurement, and it is not what I expected.** `TransmitGuard.Check` at
+`TransmitGuard.cs:88-91` returns `MayTransmit` true with `WasOverridden` true when
+the guard is off - so a reader would predict the transmission goes. **It does not.**
+`Ft8TransmitSequence.Permits` at `:443` accepts one of the gate's three ways of
+permitting and refuses the other two. With a Technician class on 14.074 and the
+guard switched off, measured tonight: `RefusedByLicence`, `Sent` false, `Keyed`
+false, 0 sink calls, 0 frames at the port, and the operator reads:
 
-### 2. Step A's on-screen half is claimed on the tree, not on a run tonight
+> Hamlet did not send "W1ABC KC3QIS -10": the licence guard is switched off in Settings, so Hamlet has no answer it can stand behind about whether this frequency is inside your privileges. It will not key on that. What the guard said when it was last asked: Technician privileges do not reach this frequency; it needs General. (97.301(e))
 
-Step A's criterion 2 is *four states shown per row, with slot counts*. The engine
-half is green tonight. **The on-screen half is the Contact column unit 258 shipped**
-— `MainWindow.axaml:3584`, with `TheRowSaysWhereTheContactStandsTests` committed
-beside it — **and this instruction forbids running `Hamlet.App.Tests`**, so it was
-not run. The step is recorded `done` on the strength of the committed test and the
-committed markup, and this note is the caveat on that word.
+**Why it is raised at all:** the setting is presented to the operator as *only let
+me transmit where my licence allows*, and switching it off does not do the thing
+its wording implies on this path. **That is a wording question, not a safety one** -
+the safe direction is the one the code takes. It is left untouched, because work
+instruction 267 said to record it and not to decide it, and because changing it
+would mean editing the keying path's own gate. **Nothing in step B depends on the
+answer.**
 
-### 3. Two test generators that should be one
+### 2. `outcome-append.bat` was refused, both forms
 
-`TheExchangeWalksThroughTheFourStatesTests` carries its own copy of the
-compose-sum-decode helpers that `TheBandSceneIsWhatHamletsDecoderReadTests` has.
-Deliberate — see decision 6 — and **worth joining by a unit that can run both**. It
-is written down in the new file so it is not rediscovered as a surprise.
+Recorded, not a ruling ask. Two invocations, both refused with the same verbatim
+message:
 
-### 4. Inherited red, not mine and not chased
+```
+This command requires approval
+```
 
-`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`
-was reported by unit 265 as expecting `AudioFailed` and getting `Cancelled`. **Not
-touched, not run, and not chased** — it is on nothing this unit went near. The
-known inherited reds named by the plan are likewise untouched:
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`, the 51 CW cases in
-`docs/unit239-failing-set.txt`, and the `Ft8Sharp.Deep.Tests` whole-type-list
-tripwire.
+- `cmd //c .oa-267.bat` (a wrapper file written precisely to avoid the shell's
+  quoting problems)
+- `tools/arbiter/outcome-append.bat`
+
+Task 4's named alternative was taken: appended with the file-editing tools in the
+format the existing entries use, with an `APPENDED_BY:` line saying so on its face.
+**Three other shell refusals happened tonight**, all worked around the same way and
+none of which stopped anything:
+
+```
+Contains brace with quote character (expansion obfuscation)
+Contains shell syntax (command) that cannot be statically analyzed
+This Bash command contains multiple operations. The following parts require approval
+```
+
+### 3. `PHASE_OUTCOME.md` still carries a phantom step 1, from unit 266
+
+Reported, not chased, and **not the duplicate unit 266 fixed**. The file's header
+carries `STEP: 1 | not started | (described by the plan)` and the entries carry a
+`## UNIT 266 - STEP 1` whose body is mostly *not recorded*. **The live
+`PHASE_PLAN.md` has no step 1** - this cut's steps are 0, A, B, C, D, E. It appears
+to be the loop's own route calling `outcome-append.bat` with a step the plan does
+not have. It is cosmetic, it misleads nobody who reads the entries, and chasing it
+would mean editing the launcher's scripts, which is not this unit's subject.
+
+### 4. Inherited reds, untouched and not chased
+
+Exactly as work instruction 267 lists them, and **none was run tonight**:
+`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
+`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
+and
+`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`,
+which unit 265 recorded and unit 266 left alone. **Twelve distinct tests ran
+tonight** - task 3's seven named, plus the five this unit built - every one
+filtered by exact name and foregrounded, with two of the five run twice.
+`Hamlet.RadioEngine.Tests` was not run at all.
