@@ -79,6 +79,31 @@ internal sealed class FakeSink : ITransmitAudioSink
     /// <summary>How many samples it was handed, last time.</summary>
     public int SamplesHandedOver { get; private set; }
 
+    /// <summary>
+    /// The peak this sink says the endpoint was actually handed.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS SET BY THE TEST AND IT IS DELIBERATELY NOT THE COMPOSED
+    /// PEAK** (work instruction 269, task 3). The whole failure this unit exists
+    /// to make impossible is a readout that shows the operator his own drive
+    /// setting and calls it a measurement, and the only way a test can tell those
+    /// two apart is for the two numbers to be different.</para>
+    /// <para>**ZERO BY DEFAULT, SO NO EXISTING TEST CHANGES MEANING.**
+    /// <c>WasapiTransmitSink.PeakWritten</c> is also zero until something has
+    /// been played.</para>
+    /// </remarks>
+    public double ReportsPeakWritten { get; set; }
+
+    /// <summary>How many samples this sink says it had to clamp on the way out.</summary>
+    /// <remarks>
+    /// Set by the test, for the same reason as
+    /// <see cref="ReportsPeakWritten"/>: the composed array is built inside the
+    /// rails and its own clip count is zero by construction, so a readout showing
+    /// the sink's count and one showing the composer's are only distinguishable
+    /// when they differ.
+    /// </remarks>
+    public long ReportsClippedSamples { get; set; }
+
     /// <summary>What rate it was asked for, last time.</summary>
     /// <remarks>
     /// Zero until something has been played. **It was not read at all before unit
