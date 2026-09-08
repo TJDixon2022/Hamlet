@@ -3263,8 +3263,42 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(HasReceiveOffer));
     }
 
+    /// <summary>
+    /// **False, because the panel this would open is not on any screen.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**A CONTROL'S RESTING APPEARANCE SAYS IT CAN BE PRESSED** (§0.5.1,
+    /// HM-DEC-087), and this one could not do anything at all. `widget.receiveHelp`
+    /// is one of thirteen data templates in `MainWindow.axaml` that nothing
+    /// references, so setting <see cref="ReceiveHelpExpanded"/> expands a panel that
+    /// is not in the tree. **Pressing it looked exactly like pressing a button that
+    /// works**, which is the fault that rule exists for and the one
+    /// `BindingHealthTests` cannot see, because the binding resolves perfectly onto
+    /// a property nothing renders.</para>
+    /// <para>**IT IS DISABLED RATHER THAN REMOVED, ON PURPOSE.** Whether to rehome
+    /// the widget, delete the templates or fold the advice somewhere else is
+    /// `HM-OPEN-087` and Tim's to rule; taking the button away would tidy the
+    /// evidence out of sight before he has seen it. The exception §0.5.1 carries is
+    /// for a control that genuinely cannot be used, and it still has to say why —
+    /// which the tooltip does.</para>
+    /// </remarks>
+    public bool CanOpenReceiveHelp => false;
+
+    /// <summary>Why the offer's button cannot be pressed.</summary>
+    /// <remarks>
+    /// **IT NAMES NO PLACE TO GO INSTEAD, BECAUSE THERE IS NOT ONE.** A first
+    /// draft of this sentence sent him to the Radio menu; that menu carries
+    /// Connect, Favorites and Recent and has never carried the receive help. A
+    /// tooltip pointing at a screen that does not exist is the same fault as the
+    /// button, one level along (§0.0).
+    /// </remarks>
+    public const string ReceiveHelpUnreachable =
+        "The panel this opens is not on any screen at the moment, so this cannot "
+        + "do anything. Hamlet has still worked out what it would change, and the "
+        + "line beside this button says what it noticed.";
+
     /// <summary>Open the panel from the offer.</summary>
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanOpenReceiveHelp))]
     private void OpenReceiveHelp()
     {
         ReceiveHelpExpanded = true;

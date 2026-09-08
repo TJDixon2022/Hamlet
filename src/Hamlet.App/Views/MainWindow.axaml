@@ -1271,9 +1271,20 @@
                             FontSize="11" LineSpacing="1.4"
                             Margin="0,0,8,0"
                             Foreground="{StaticResource HmBlueBrush}" />
-                        <Button Grid.Column="1" Content="Have a look"
+                        <!-- **IT CANNOT BE PRESSED AND IT SAYS SO** (work
+                             instruction 282 task 4). The panel it opens is one of
+                             thirteen unreferenced widget templates, so this expanded
+                             something that is not in the tree and looked exactly
+                             like a button that works (§0.5.1, HM-DEC-087).
+                             **Disabled rather than removed**: whether to rehome the
+                             widget or delete the templates is HM-OPEN-087 and Tim's,
+                             and taking the button away would tidy the evidence out
+                             of sight before he has ruled. -->
+                        <Button x:Name="ReceiveHelpOfferButton"
+                                Grid.Column="1" Content="Have a look"
                                 FontSize="11" Padding="8,3" Margin="0,0,6,0"
                                 IsVisible="{Binding HasReceiveOffer}"
+                                ToolTip.Tip="{x:Static vm:MainWindowViewModel.ReceiveHelpUnreachable}"
                                 Command="{Binding OpenReceiveHelpCommand}" />
                         <Button Grid.Column="2" Content="No thanks"
                                 FontSize="11" Padding="8,3"
