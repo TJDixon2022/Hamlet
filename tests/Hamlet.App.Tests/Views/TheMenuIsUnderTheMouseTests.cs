@@ -554,8 +554,13 @@ public sealed class TheMenuIsUnderTheMouseTests
             "expected both decoded lists in the window, found "
             + string.Join(", ", lists.Select(l => l.Name)));
 
+        // **`Panel` AND NOT `Grid`, SINCE UNIT 280.** The For you side became a
+        // conversation of bubbles that day and its row root is a `StackPanel`, so a
+        // `Grid` search found the left list and silently missed the other. `Panel`
+        // covers both roots and still cannot match a `TextBlock` child, whose
+        // `DataContext` is the same row by inheritance.
         var grid = lists
-            .SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
+            .SelectMany(l => l.GetVisualDescendants().OfType<Panel>())
             .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row && which(row));
 
         Assert.True(
@@ -563,7 +568,7 @@ public sealed class TheMenuIsUnderTheMouseTests
             "no realized row matched. Left rows: "
             + scene.Panel.DigitalVisibleDecodes.Count
             + "; mine rows: " + scene.Panel.DigitalMineDecodes.Count
-            + "; realized grids with a row DataContext: "
+            + "; realized row roots with a row DataContext: "
             + lists.SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
                 .Count(g => g.DataContext is DigitalDecodeRow));
 

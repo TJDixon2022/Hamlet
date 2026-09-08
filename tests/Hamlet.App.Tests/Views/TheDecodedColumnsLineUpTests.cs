@@ -150,22 +150,22 @@ public sealed class TheDecodedColumnsLineUpTests
     }
 
     /// <summary>
-    /// The mine list's header sits over its own columns, which are not the left
-    /// list's.
+    /// **The For you side has no column header, because it has no columns.**
     /// </summary>
     /// <remarks>
-    /// <para>**EACH HEADER AGAINST ITS OWN ROWS, SINCE THE TWO SIDES DIFFER**
-    /// (work instruction 275 task 2). The left list dropped `dt` and `hz` on
-    /// 2026-09-07 and the mine list kept them, so the sides carry different
-    /// columns deliberately — and a test that compared one side's header with the
-    /// other's rows would fail for the right reason and tell nobody
-    /// anything.</para>
-    /// <para>**THE HEADER IS FOUND BY `from`, WHICH ONLY THIS SIDE HAS.** The left
-    /// list has no such column, so there is no way for this to pick up the wrong
-    /// grid.</para>
+    /// <para>**THIS TEST USED TO COMPARE THE MINE HEADER'S COLUMN ORIGINS WITH ITS
+    /// ROWS'.** On 2026-09-08 Tim ruled *show, do not tell* and that side stopped
+    /// being a table: it is a conversation of bubbles, his own aligned right and
+    /// what he heard aligned left, with the time under each one. **There are no
+    /// columns left to line up**, so the assertion it used to make has no subject
+    /// and is not restated in a weaker form.</para>
+    /// <para>**WHAT IS ASSERTED INSTEAD IS THAT THE HEADER IS GONE**, which is the
+    /// fact that replaced it: a `utc | message` header over a conversation labels
+    /// columns that do not exist, and leaving it would have been the tell the ruling
+    /// was about. The left list keeps its header and its own test above.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void TheMineHeaderAndItsRowsShareColumnOrigins()
+    public void TheForYouSideHasNoColumnHeader()
     {
         var model = new MainWindowViewModel(new AppSettings(), null)
         {
@@ -190,19 +190,12 @@ public sealed class TheDecodedColumnsLineUpTests
 
         Assert.True(
             model.DigitalMineDecodes.Count >= 2,
-            "the fixture put fewer than two rows on the mine side, so there is "
-            + "nothing to compare");
+            "the fixture put fewer than two rows on the mine side, so the "
+            + "conversation was not drawn at all");
 
-        var rows = window.GetVisualDescendants()
-            .OfType<ItemsControl>()
-            .FirstOrDefault(c => c.Name == "DigitalMineRows");
-
-        Assert.NotNull(rows);
-
-        // **THE MINE HEADER IS THE ONE WITH TWO COLUMNS.** Both sides label a
-        // `message` column, and since the `from` column went on 2026-09-07 there
-        // is no heading unique to this side - so it is found by shape: `utc` and
-        // `message` and nothing else.
+        // **THE TWO-COLUMN HEADER IS THE ONE THAT WENT.** It was found by shape -
+        // `utc` and `message` and nothing else - and the left list's header has
+        // three text blocks, so this cannot pick up the wrong grid.
         var header = window.GetVisualDescendants()
             .OfType<Grid>()
             .FirstOrDefault(g =>
@@ -210,45 +203,25 @@ public sealed class TheDecodedColumnsLineUpTests
                 && g.Children.OfType<TextBlock>().Any(t => t.Text == "message")
                 && g.Children.OfType<TextBlock>().Count() == 2);
 
-        Assert.NotNull(header);
+        Assert.True(
+            header is null,
+            "the For you side still carries a two-column header over a "
+            + "conversation that has no columns");
 
-        var rowGrids = rows!.GetVisualDescendants().OfType<Grid>().ToList();
+        // **AND THE LEFT LIST KEPT ITS OWN**, so this did not take both away.
+        var left = window.GetVisualDescendants()
+            .OfType<Grid>()
+            .FirstOrDefault(g =>
+                g.Children.OfType<TextBlock>().Any(t => t.Text == "utc")
+                && g.Children.OfType<TextBlock>().Any(t => t.Text == "snr"));
 
         Assert.True(
-            rowGrids.Count >= 2,
-            "fewer than two mine rows were realized");
-
-        var headerOrigins = Origins(header!);
-
-        _output.WriteLine("mine header origins : "
-            + string.Join(", ", headerOrigins.Select(o => o.ToString("0.##"))));
-
-        for (var i = 0; i < rowGrids.Count; i++)
-        {
-            var origins = Origins(rowGrids[i]);
-
-            _output.WriteLine("mine row " + i + " origins  : "
-                + string.Join(", ", origins.Select(o => o.ToString("0.##"))));
-
-            // **THE ROW HAS A SECOND LINE THE HEADER DOES NOT.** The contact
-            // text and the worked mark sit under the message, so a row can carry
-            // a column the header has no cell for. What must hold is that every
-            // column the header names starts where the row's does.
-            for (var column = 0; column < headerOrigins.Count
-                 && column < origins.Count; column++)
-            {
-                Assert.True(
-                    Math.Abs(headerOrigins[column] - origins[column]) < 0.5,
-                    "column " + column + " of mine row " + i + " starts at "
-                    + origins[column].ToString("0.##")
-                    + " and its header starts at "
-                    + headerOrigins[column].ToString("0.##"));
-            }
-        }
-
-        window.Close();
+            left is not null,
+            "the left list lost its column header too. Grids with a text block "
+            + "reading \"utc\": "
+            + window.GetVisualDescendants().OfType<Grid>()
+                .Count(g => g.Children.OfType<TextBlock>().Any(t => t.Text == "utc")));
     }
-
     /// <summary>
     /// **THE `hz` COLUMN NO LONGER EXISTS ANYWHERE, AND THIS IS THE RECORD OF
     /// WHAT IT USED TO PROVE.**

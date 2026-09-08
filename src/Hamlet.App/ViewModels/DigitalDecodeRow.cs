@@ -223,6 +223,21 @@ public sealed record DigitalDecodeRow(
             ? Message + " x" + RepeatCount.ToString(CultureInfo.InvariantCulture)
             : Message;
 
+    /// <summary>The time, and whether he sent it, beneath the message.</summary>
+    /// <remarks>
+    /// <para>**REMOVING WORDS IS NOT REMOVING FACTS** (Tim's ruling, 2026-09-08,
+    /// and the standing §0.0 rule). The conversation now carries its direction in
+    /// the alignment - his own on the right, what he heard on the left - which is
+    /// what a reader takes in without reading anything. **The word stays anyway**,
+    /// because alignment alone is a shape and §0.6 does not let a shape be the only
+    /// carrier of a meaning.</para>
+    /// <para>**AND THE TIME STAYS.** It is the one thing on the row that lets him
+    /// see he answered a slot late, which is the whole reason the conversation was
+    /// built.</para>
+    /// </remarks>
+    public string Caption
+        => IsSent ? Utc + " · sent" : Utc;
+
     /// <summary>What the row says it is, for a reader who cannot see colour.</summary>
     /// <remarks>
     /// **COLOUR IS NEVER THE ONLY CARRIER** (§0.6). The two kinds of row must be

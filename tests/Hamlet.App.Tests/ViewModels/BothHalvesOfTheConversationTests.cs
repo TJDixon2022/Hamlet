@@ -78,30 +78,71 @@ public sealed class BothHalvesOfTheConversationTests
     }
 
     /// <summary>
-    /// **The order button turns the conversation over and keeps it a conversation.**
+    /// **The conversation reads forwards, and the sort toggle does not reach it.**
     /// </summary>
     /// <remarks>
-    /// The two halves are ordered by one rule, so reversing cannot separate them:
-    /// a list that reversed only the decoded rows would put every transmission at
-    /// one end and read as two lists in one column.
+    /// <para>**IT USED TO INHERIT THE DECODED LIST'S NEWEST-FIRST SORT** (Tim's
+    /// ruling, 2026-09-08), which put `R+02` above `+27` above `FN00`: the exchange
+    /// in reverse. **The two lists do different jobs.** The left one is for scanning
+    /// a band, where the newest line belongs at the top; this one is a conversation,
+    /// which runs forwards or it is not one.</para>
+    /// <para>**THE LEFT LIST STILL FOLLOWS THE TOGGLE**, which is asserted here so
+    /// that unhooking the conversation cannot quietly unhook both.</para>
     /// </remarks>
     [Fact]
-    public void NewestFirstReversesBothHalvesTogether()
+    public void TheConversationReadsForwardsWhicheverWayTheToggleIsSet()
     {
         var model = TheK9xpExchange(newestFirst: true);
 
         Print(model);
 
+        // Oldest at the top, with the toggle set the other way.
         Assert.Equal(
-            new[] { "021315", "021245", "021215", "021115", "021100" },
+            new[] { "021100", "021115", "021215", "021245", "021315" },
             model.DigitalMineDecodes.Select(r => r.Utc).ToArray());
 
-        // **AND THE ALTERNATION SURVIVES IT**, which is the point of the panel.
         Assert.Equal(
             new[] { true, false, true, false, true },
             model.DigitalMineDecodes.Select(r => r.IsSent).ToArray());
+
+        // And it reads the same way with the toggle the other way about.
+        model.DigitalNewestFirst = false;
+
+        Assert.Equal(
+            new[] { "021100", "021115", "021215", "021245", "021315" },
+            model.DigitalMineDecodes.Select(r => r.Utc).ToArray());
     }
 
+    /// <summary>**The toggle still governs the left list.**</summary>
+    /// <remarks>
+    /// Written because unhooking the conversation from the toggle could as easily
+    /// have unhooked the list the toggle is for, and nothing else would have said
+    /// so.
+    /// </remarks>
+    [Fact]
+    public void TheToggleStillTurnsTheLeftListOver()
+    {
+        var model = new MainWindowViewModel(Settings(), null)
+        {
+            DigitalNewestFirst = false,
+        };
+
+        Heard(model, "02:11:15", "CQ W3YNI FN00");
+        Heard(model, "02:11:45", "CQ K5MGY EM12");
+
+        Assert.Equal(
+            new[] { "021115", "021145" },
+            model.DigitalVisibleDecodes.Select(r => r.Utc).ToArray());
+
+        model.DigitalNewestFirst = true;
+
+        Assert.Equal(
+            new[] { "021145", "021115" },
+            model.DigitalVisibleDecodes.Select(r => r.Utc).ToArray());
+
+        // **AND THE CONVERSATION IS UNMOVED BY IT.**
+        Assert.Empty(model.DigitalMineDecodes);
+    }
     /// <summary>
     /// **A sent row carries no signal report and no time offset, and they are
     /// empty rather than zero.**

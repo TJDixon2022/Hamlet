@@ -23,6 +23,42 @@
              word `sent` under the time already makes, so the two kinds of row
              separate in colour and in grayscale both (§0.6). Amber is the tuning
              family's ink and is used as ink here, never as a fill (§0.5). -->
+        <!-- **THE CONVERSATION'S TWO SIDES** (Tim's ruling, 2026-09-08). What he
+             heard sits left, what he sent sits right, and the alternation is read
+             without reading a word.
+
+             **BORDERED AND NEVER FILLED WITH A FAMILY COLOUR** (HM-DEC-012, §0.5).
+             The tint is the panel's own slate, the same neutral every other card on
+             this screen uses; the amber is an edge and a text colour only.
+
+             **THE SENT BUBBLE IS NARROWER THAN THE COLUMN ON PURPOSE.** A bubble
+             that filled the width would align with the received one and the shape
+             would say nothing. -->
+        <Style Selector="Border.hm-bubble">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="MaxWidth" Value="330" />
+            <Setter Property="Padding" Value="8,5" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="Background" Value="White" />
+        </Style>
+
+        <Style Selector="Border.hm-bubble.hm-sent">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.hm-caption">
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Margin" Value="4,2,0,0" />
+        </Style>
+
+        <Style Selector="TextBlock.hm-caption.hm-sent">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Margin" Value="0,2,4,0" />
+        </Style>
+
         <Style Selector="TextBlock.hm-sent">
             <Setter Property="Foreground" Value="{StaticResource HmAmberBrush}" />
         </Style>
@@ -3552,7 +3588,7 @@
                                                  somebody who has never seen FT8. -->
                                             <Button x:Name="DigitalOrderToggle"
                                                     Content="{Binding DigitalOrderLabel}"
-                                                    ToolTip.Tip="Which end the newest slot is at. Messages decoded from the same slot keep the order they were found in either way."
+                                                    ToolTip.Tip="Which end the newest slot is at, on this list. The For you conversation always reads forwards, oldest at the top. Messages decoded from the same slot keep the order they were found in either way."
                                                     FontSize="11"
                                                     Padding="10,3"
                                                     Command="{Binding ToggleDigitalOrderCommand}"
@@ -4042,32 +4078,13 @@
                                             </ItemsControl>
                                         </StackPanel>
 
-                                        <Grid Grid.Row="1" ColumnDefinitions="76,*"
-                                              IsVisible="{Binding HasDigitalMineDecodes}">
-                                            <TextBlock Grid.Column="0" Text="utc"
-                                                       FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                                       Margin="0,0,14,4"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                            <!-- **THE `from` COLUMN WENT ON 2026-09-07
-                                                 AND IT WAS MINE TO LOSE.** Unit 273
-                                                 put it here and unit 275 measured
-                                                 what it cost: it is the only column
-                                                 on this side whose content has no
-                                                 bound, so a six-character callsign
-                                                 pushed the row's message column to
-                                                 150 where the header's sat at 138 -
-                                                 the sibling-grid drift unit 241 wrote
-                                                 this test class about, reproduced.
-                                                 And it duplicated the message beside
-                                                 it, which already opens with the
-                                                 sender. The tooltip that named the
-                                                 entity moved to the message cell. -->
-                                            <TextBlock Grid.Column="1" Text="message"
-                                                       FontFamily="Consolas,Menlo,monospace" FontSize="11"
-                                                       Margin="0,0,0,4"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                        </Grid>
-
+                                        <!-- **THE COLUMN HEADER CAME OUT ON 2026-09-08**
+                                             (Tim: show, do not tell). This side stopped
+                                             being a table that day: it is a conversation of
+                                             bubbles, his own on the right and what he heard
+                                             on the left, and `utc | message` over the top of
+                                             it labelled columns that no longer exist. The
+                                             time is under each bubble where it belongs. -->
                                         <ScrollViewer Grid.Row="2" Margin="0,6,0,0"
                                                       VerticalScrollBarVisibility="Auto"
                                                       HorizontalScrollBarVisibility="Disabled"
@@ -4103,61 +4120,48 @@
                                                              CARRIES**, so a station he has
                                                              worked recedes wherever it
                                                              appears (Tim, 2026-09-08). -->
-                                                        <Grid ColumnDefinitions="76,*" RowDefinitions="Auto,Auto"
-                                                              Background="Transparent"
-                                                              Opacity="{Binding RowOpacity}"
-                                                              ToolTip.Tip="{Binding WorkedTip}"
-                                                              ContextRequested="OnDecodedRowContextRequested">
-                                                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Utc}"
-                                                                       FontFamily="Consolas,Menlo,monospace" FontSize="12"
-                                                                       Margin="0,1,14,1" />
+                                                        <!-- **A CONVERSATION, NOT A TABLE** (Tim's ruling,
+                                                             2026-09-08). His own messages sit on the right
+                                                             and what he heard sits on the left, so the
+                                                             alternation is read at a glance without reading
+                                                             a word of it. That is what the ruling asked
+                                                             for: show, do not tell.
 
-                                                            <!-- **HIS OWN TRANSMISSIONS ARE IN THE
-                                                                 CONVERSATION AND MUST NOT READ LIKE
-                                                                 SOMEBODY ELSE'S** (Tim's ruling,
-                                                                 2026-09-08). The alternation is the whole
-                                                                 value: seeing that he answered a slot or
-                                                                 two after the station gave up is the thing
-                                                                 the panel never told him.
+                                                             **THE WORD STAYS UNDER THE BUBBLE ANYWAY.**
+                                                             Alignment is a shape, and §0.6 does not let a
+                                                             shape be the only carrier of a meaning; the
+                                                             caption says `sent` and carries the slot time,
+                                                             which is the one thing that shows him he
+                                                             answered late.
 
-                                                                 **THE WORD CARRIES IT AND THE COLOUR
-                                                                 AGREES WITH THE WORD** (§0.6). `sent` is
-                                                                 drawn under the time, in the same 76 the
-                                                                 `worked` mark uses, and the message goes
-                                                                 amber. In grayscale the word is still
-                                                                 there; with the word unread the colour
-                                                                 still separates the two.
+                                                             **BORDERED, NEVER FILLED WITH A FAMILY
+                                                             COLOUR** (HM-DEC-012, §0.5). -->
+                                                        <StackPanel Background="Transparent"
+                                                                    Margin="0,3,0,3"
+                                                                    Opacity="{Binding RowOpacity}"
+                                                                    ToolTip.Tip="{Binding WorkedTip}"
+                                                                    ContextRequested="OnDecodedRowContextRequested">
+                                                            <Border Classes="hm-bubble"
+                                                                    Classes.hm-sent="{Binding IsSent}">
+                                                                <TextBlock Text="{Binding Shown}"
+                                                                           ToolTip.Tip="{Binding PayloadHelp}"
+                                                                           TextWrapping="Wrap"
+                                                                           FontFamily="Consolas,Menlo,monospace"
+                                                                           FontSize="12" />
+                                                            </Border>
 
-                                                                 **IT SHARES THE CELL WITH `worked` AND
-                                                                 CANNOT COLLIDE WITH IT.** That mark is
-                                                                 written by `RefreshWorkedBefore`, which
-                                                                 walks `DigitalDecodes` - and a sent row is
-                                                                 deliberately not in that table, so its
-                                                                 `HasWorkedBefore` is false for the life of
-                                                                 the row. -->
-                                                            <TextBlock Grid.Row="1" Grid.Column="0"
-                                                                       Text="{Binding Direction}"
-                                                                       IsVisible="{Binding HasDirection}"
-                                                                       FontSize="10" Margin="0,0,14,4"
-                                                                       Foreground="{StaticResource HmAmberBrush}" />
-
-                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Shown}"
+                                                            <TextBlock Classes="hm-caption"
                                                                        Classes.hm-sent="{Binding IsSent}"
-                                                                       ToolTip.Tip="{Binding PayloadHelp}"
-                                                                       TextWrapping="Wrap"
-                                                                       FontFamily="Consolas,Menlo,monospace" FontSize="12"
-                                                                       Margin="0,1,0,1" />
+                                                                       Text="{Binding Caption}"
+                                                                       FontFamily="Consolas,Menlo,monospace"
+                                                                       FontSize="10"
+                                                                       Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                <!-- **THE CONTACT COLUMN LIVES HERE NOW**, on its
-                                                                 own line under the message rather than in a
-                                                                 column of its own, because this side is half
-                                                                 the width the one list had and the message is
-                                                                 what must not be squeezed. -->
                                                             <TextBlock Grid.Row="1" Grid.Column="1"
                                                                        Text="{Binding Contact}"
                                                                        FontSize="11" Margin="0,0,0,4"
                                                                        Foreground="{StaticResource HmGreenBrush}" />
-                                                        </Grid>
+                                                        </StackPanel>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
                                             </ItemsControl>

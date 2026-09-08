@@ -1685,7 +1685,9 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (row.SlotStartUtc == default)
         {
-            return _digitalNewestFirst ? 0 : DigitalMineDecodes.Count;
+            // **OLDEST FIRST, ALWAYS**, so a row with no slot goes where a new row
+            // goes: at the end. The conversation does not follow the sort toggle.
+            return DigitalMineDecodes.Count;
         }
 
         var at = 0;
@@ -1700,9 +1702,7 @@ public partial class MainWindowViewModel : ObservableObject
                 continue;
             }
 
-            var before = _digitalNewestFirst
-                ? here >= row.SlotStartUtc
-                : here <= row.SlotStartUtc;
+            var before = here <= row.SlotStartUtc;
 
             if (!before)
             {
@@ -1936,10 +1936,16 @@ public partial class MainWindowViewModel : ObservableObject
             DigitalMineDecodes.Add(row);
         }
 
-        if (_digitalNewestFirst)
-        {
-            Reverse(DigitalMineDecodes);
-        }
+        // **THE CONVERSATION READS FORWARDS AND THE TOGGLE DOES NOT REACH IT**
+        // (Tim's ruling, 2026-09-08). It inherited the decoded list's newest-first
+        // sort, which put `R+02` above `+27` above `FN00` - the exchange in
+        // reverse. **The two lists do different jobs**: the left one is for
+        // scanning a band, where the newest line is the one you want at the top,
+        // and this one is a conversation, which runs forwards or it is not one.
+        //
+        // The rows are built oldest-first above and the reverse that used to sit
+        // here is gone rather than made conditional, because there is no state in
+        // which a conversation should be read backwards.
 
         RebuildWaiting(station);
     }
