@@ -1,13 +1,13 @@
-# Work instruction 283 — every mode's status bar, not the one the author named
+# Work instruction 284 — split the admissions from the advice
 
 ```
-UNIT:      283
-TASKS:     6 of 6, none dropped
-NUMBER:    the Digital tab, 1,201 -> 1,118 characters
-           (the line that left it is 304 on the branch his radio takes)
+UNIT:      284
+TASKS:     4 of 4, none dropped
+NUMBER:    the bar in the reproduced state, 590 -> 184 characters
+           (596 on the hover, every word, nothing deleted)
 ADVANCED:  no
-DRIFT:     6 consecutive units without advance, carried from unit 282
-VERSION:   1.12.189 -> 1.12.195
+DRIFT:     7 consecutive units without advance, carried from unit 283
+VERSION:   1.12.195 -> 1.12.199
 BRANCH:    main, pushed
 ```
 
@@ -18,224 +18,169 @@ BRANCH:    main, pushed
 **Surface: Claude Code, on the development computer, on `main`.** The prompt claimed
 `PROJECT: Hamlet` and the tree confirmed it — `SHACK_FACTS.md` and
 `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
-`MURC.sln` absent, `Hamlet.sln` at the root. **Nothing in this report is evidence
-about the radio**: there is no rig and no antenna here.
+`MURC.sln` absent, `Hamlet.sln` at the root. **Nothing here is evidence about the
+radio**: this is the simulated one.
 
-**Nothing was recorded under §12.1.** No shell refusals: every script went through a
-file from the start.
+**Nothing was recorded under §12.1.** No shell refusals.
 
-### Task 1 — the count, and the instruction's premise
+### Task 1 — the reproduction, and the path followed back
 
-**There is one path that composes receiver-conditions narration onto the status bar,
-not one per mode.** The bar is shared chrome: measured on all three tabs, **one
-`StatusBarText`, none of them inside a workspace grid.** So unit 282's change cleared
-it for every mode.
+**It reproduces.** Simulated radio, Digital tab, 20 m, 14.074 MHz, driving connect
+and the tune-in through the view model's own commands. The bar rendered **590
+characters**, his screenshot word for word.
 
-**Proved on the tab this order is about**: an FT8 tune-in composes 448 characters and
-the Digital tab's bar draws **none** of them, with all 448 on the mark. An FT8
-admission still speaks — *I could not read the noise reduction, so I have not touched
-it.*
+**Five clauses, and the order's reading of them is right:**
 
-**The shipped rows confirm as stated**: CW nine rows, 884 characters; FT8 four rows,
-448. **FT4 is a fourth mode the order does not mention**, aliased to FT8's rows, and
-it composes 448 as well.
+| Chars | Kind | Outcome |
+|---:|---|---|
+| 180 (three clauses) | **admission** — *I could not read the …* | `NotRead` |
+| 410 (two clauses) | **advice** — *…usually wants to be…*, *…I cannot set from here* | `SpokenOnly` |
 
-**And the paragraph he is pointing at is somewhere else entirely.**
+**Followed the running value, not a grep.** `StatusOnScreen` reads the spoken half,
+set by `Narrate` at `MainWindowViewModel.cs:8433` from `ReceiverSetupVoice.Admissions`
+— which at `ReceiverSetupVoice.cs:111` gathered `NotConfirmed`, `NotRead` **and, at
+line 135, `SpokenOnly`.** Both advice clauses come from there
+(`ReceiverSetup.cs:153` and `:216`). **That is the join.**
 
-`LinkCheckLine` renders at `MainWindow.axaml:2530`, in the **top strip** under the
-frequency readout — shared chrome, permanently visible, on every tab. **Its longest
-branch is 304 characters**, longer than anything unit 282 moved, **and it is the
-branch his own radio takes**: `CivTransceive` is off, and HM-DEC-138 measured 5,499
-frames in sixty-one seconds with `inboundTransceive` zero.
+**Two fixture faults found on the way, recorded rather than quietly fixed**, because
+each made the bar say something else and each would have read as a clean result:
 
-**Units 280 and 281 both measured that line and printed it, and neither recognised
-it** — because it reads 83 characters in a headless fixture and 304 in his shack.
-That is the same failure in a new place: the instrument was right, and nobody had put
-it in the state where the fault exists.
+- **The connect command is a toggle** and the panel starts connected, so the first
+  run disconnected it. The bar read `Disconnected`.
+- **`OnFrequencyHzChanged` clamps the operator's own tuning to the band map on
+  screen**, so setting 14.074 while the panel sat on 40 m landed on 40 m and composed
+  nothing.
 
-Nothing was fixed in this task.
+`FollowTheMapForTests` is the seam, and it is a weaker one than `NarrateForTests`: it
+hands over nothing, so what the bar shows is composed by the application from the rig
+it is talking to. The tune-in otherwise fires from a settle timer that does not run
+headless.
 
-### Task 2 — the top strip, on every tab
+### Task 2 — the split
 
-`LinkCheck` gains a `Concern` beside its `Headline`, **decided from the same inputs in
-the same place** rather than the headline being cut up by a caller — the shape
-`ReceiverSetupVoice.Admissions` already uses, so what he hovers and what he is shown
-cannot disagree.
+**One line.** `Admissions` stops gathering `SpokenOnly`.
 
-**Three branches go to the mark, two still speak.** A stale frequency and a frequency
-nobody has heard are the two things this class was built to say out loud; going unsaid
-cost two builds. **The stale branch is trimmed, not moved**: its closing *Hamlet is
-still asking* is narration and hovers, the part saying the number is old stays.
+**The line is drawn on whether Hamlet tried.** `NotConfirmed` and `NotRead` are
+attempts that came back with nothing, so the operator is left not knowing where a
+control is and has to be told. `SpokenOnly` leaves him knowing exactly where
+everything is: it names a change Hamlet **could** make and has **decided not to**, and
+says why. **Hamlet did not try and fail; it chose not to try.** That is advice.
 
-**Nothing is deleted.** The advice about turning CI-V Transceive on is asserted by
-phrase, because it is the one clause of the 304 he could act on.
+**Split at the source.** `Say` still composes all five kinds and `Admissions` filters
+the same results, so what he hovers and what he is shown come from one place and
+cannot disagree. **One rule for which clause is which**, and nothing downstream cuts a
+finished string up.
 
-Measured after: **every tab is 83 characters lighter** — CW 611→528, Digital
-1,201→1,118, Voice 601→518.
+### Task 3 — the test, and an invariant that outlives the wording
 
-### Task 3 — eleven ceilings, and one of them is a state
+The reproduction test was watched failing first in task 1. It gains the structural
+form of the rule: **every advice clause joins its reason with *because*, and neither
+admission shape has one**, so the bar may not contain the word at all and every
+sentence on it must open with one of the two admission shapes. **A sixth kind of
+clause arriving with a reason attached fails here even if nobody adds a phrase for
+it.**
 
-**Every window already had one** — eight windows, the main one as three tabs — so no
-surface was uncapped. **The gap was elsewhere: a ceiling caps a state, not just a
-surface.** Unit 282's composed send line is 473 characters and appears only after a
-transmission; this unit's link-check branch is 304 and appears only on a radio that
-does not announce. **An idle window sees neither.**
+That it bites is not asserted from theory: **the 590-character bar recorded before the
+split carries *because* twice.**
 
-So the Digital tab is capped **twice** — at rest and working, with traffic on both
-lists, a sent message, the link check his radio produces, and a tune-in's narration.
+### Task 4 — what moved, listed and measured
 
-**The working tab measures 1,087 against the idle 1,118.** It says *less*, which is
-the shape of the whole phase. **The figure was guessed at 1,424 when the row was
-written and the measurement corrected it downward**; the guess is not what shipped.
-
-Same margin and reasoning as unit 282 — measured + 100, rounded up to the next 50,
-asserted as arithmetic. The red is now demonstrated on the Digital tab: 400 characters
-takes it 1,118 → 1,518 against 1,250.
-
-### Task 4 — the shape, swept for once more
-
-**533 strings across eleven surfaces; thirteen are ≥100 characters**, each checked
-against the source.
-
-**One is of the shape.** `DigitalReadiness` composes its 219-character training-radio
-line across concatenated fragments, so a whole-phrase search returns nothing.
-**It is a boundary statement and correctly visible** — nothing off the air can reach
-the decoder — and it shows only on the training radio. Nothing to move.
-
-The other twelve are literals findable by phrase; eight explain an absence, two are on
-parked surfaces.
-
-**What no sweep here can see, said plainly**: a state the fixture never enters — no
-send refusal, no licence refusal, no scan, no capture refusal, no receive offer,
-nothing from the panel HM-OPEN-087 leaves unreachable. **That is the same limit that
-let three paragraphs through.**
-
-**One observation, printed with its uncertainty and not fixed**: the working tab draws
-*nothing on this frequency yet* while two rows are on the lists. It is **not** the
-mine list's empty state — that is correctly hidden — it is `DigitalModeStripStatus`, a
-third element carrying the same sentence. The rows go in through a test seam that may
-not feed what the strip reads.
-
-### Task 5 — what moved, listed and measured
-
-`docs/unit283-what-was-removed.md`. **No fact removed**; nothing deleted.
-
-### Task 6 — the outcome entry
-
-Appended by `tools\arbiter\outcome-append.bat`, exit 0, as `UNIT 283 - STEP E`. Units
-273, 274 and 275 were not back-filled.
+`docs/unit284-what-was-removed.md`. **No fact removed**; nothing deleted.
 
 ---
 
 ## 2. What Tim should expect
 
-**The paragraph is off the screen on the tab you actually use — and it was never on
-the status bar.**
+**The bar says what Hamlet could not do, and nothing else.**
 
-It sat in the **top strip, under the frequency readout**, on every tab, and it said
-your radio is not announcing its own changes so Hamlet asks instead, and that turning
-CI-V Transceive on would be quicker and quieter. Three hundred and four characters,
-every time you looked at the window. **Hover the small ring beside where it was and
-the whole thing is there**, the CI-V advice included.
+On the simulated radio, tuned into the FT8 block, it now reads three sentences —
+*I could not read the noise blanker, so I have not touched it*, and the same for the
+noise reduction and the auto notch. **That is all.**
 
-**Except when something is wrong.** If the frequency on screen has gone stale, or
-Hamlet has not heard where the radio is at all, **that still says so without being
-hovered** — those are the two things that line was built for.
+**The advice is on the hover**: the AGC wanting to be slow and why, and the scope span
+wanting to be 3 kHz across and why. Hover the small ring at the left of the bar and
+all 596 characters are there, admissions included.
 
 ### What will look wrong and is not
 
-- **An empty space under the frequency readout is the normal state now.** The small
-  ring is the hover.
-- **On the training radio nothing changes** in the strip, because that branch never
-  applied there.
-- **Settings, About and the rig diagnostics are unchanged.** Parked, capped, not
-  swept.
+- **Three sentences on the bar is the new normal on the simulated radio**, because
+  the simulator answers no setting read. **On your own radio those clauses only
+  appear when a read genuinely fails.**
+- **Nothing else changed.** No ceiling, no other surface, no sweep. This unit did one
+  thing.
 
 ### The build and the tests
 
-Build clean, no warnings. **This unit ran no suite** (HM-DEC-155): only the tests it
-wrote or rewrote, filtered by name, foregrounded.
+Build clean, no warnings. **This unit ran no suite** (HM-DEC-155): only the test it
+wrote, plus the classes its one-line change could have disturbed.
 
 | Class | Result |
 |---|---|
-| `WhichPathsPutNarrationOnTheBarTests` | 5 of 5 — new |
-| `TheTopStripStopsLecturingTests` | 4 of 4 — new |
-| `WhatElseIsComposedAtRuntimeTests` | 1 of 1 — new |
-| `HowMuchTheApplicationSaysTests` | 5 of 5 — ceilings re-set, working state added |
+| `TheBarSaysWhatHamletCouldNotDoTests` | 3 of 3 — new |
 | `TheStatusBarStopsLecturingTests` | 4 of 4 |
-| `TheLogShowsBothGridsTests` | 3 of 3 |
-| `TheLogDoesNotClipItsColumnsTests` | 4 of 4 |
-| `WhyTheReportsAreEmptyTests` | 4 of 4 |
-| `TheOfferButtonCannotBePressedTests` | 2 of 2 |
-| `TheGridInSettingsReachesEveryRowTests` | 5 of 5 |
-| **Total** | **38 of 38** |
+| `WhichPathsPutNarrationOnTheBarTests` | 5 of 5 |
+| `TheTopStripStopsLecturingTests` | 4 of 4 |
+| `HowMuchTheApplicationSaysTests` | 6 of 6 |
+| `HamletSaysWhatItChangedTests` (engine) | 5 of 5 |
+| **Total** | **27 of 27** |
 
-The inherited reds were not touched: `HM-OPEN-088`'s ten in
-`TheMessageReadsAsThreePartsTests`, the CW set, the `Ft8Sharp.Deep` tripwire.
+Inherited reds untouched: `HM-OPEN-088`'s ten, the CW set, the `Ft8Sharp.Deep`
+tripwire.
 
-**Six commits, all on `main`, all pushed**, 1.12.189 → 1.12.195. Nothing uncommitted.
+**One environment fault, recorded**: a build was interrupted and left the XAML
+precompilation broken, which failed two tests with *No precompiled XAML found for
+Hamlet.App.App*. Cleared by deleting `obj/Debug` and `bin/Debug` for the app and the
+test project and rebuilding. Nothing in the tree caused it and nothing in the tree
+was changed for it.
+
+**Four commits, all on `main`, all pushed**, 1.12.195 → 1.12.199. Nothing uncommitted.
 
 ---
 
 ## 3. What we should do next
 
-### How many paths, which mode, and which unit 282 cleared
+### The bar as it renders now, verbatim
 
-| Path | Surface | Mode | Chars | Cleared by |
-|---|---|---|---:|---|
-| `MainWindowViewModel` receiver-conditions narration | status bar | **every mode** — one shared bar | CW 884, FT8 448, FT4 448 | **unit 282** |
-| `MainWindowViewModel` mode-follow narration | status bar | every mode | varies | **unit 282** |
-| **`LinkCheckLine`** | **top strip** | **every tab, permanently** | **304** on his radio | **not cleared — this unit** |
+> I could not read the noise blanker, so I have not touched it. I could not read the
+> noise reduction, so I have not touched it. I could not read the auto notch, so I
+> have not touched it.
 
-**One composition path onto the bar, not one per mode.** The instruction expected one
-per tab; the bar is shared chrome and unit 282's fix was already app-wide.
+**184 characters.** Before: 590.
 
-### The Digital tab as it now renders, and the paragraph from its hover
+### The hover, verbatim
 
-The strip under the readout draws **nothing**. Hovering the ring gives, verbatim:
+> tip — I could not read the noise blanker, so I have not touched it. I could not read
+> the noise reduction, so I have not touched it. I could not read the auto notch, so I
+> have not touched it. The AGC usually wants to be slow here, because dozens of
+> stations transmit together here and the gain would ride up and down under the
+> loudest of them, and that is not settled well enough for me to change it on your
+> radio. Your scope span wants to be 3 kHz across, because a scope showing a couple of
+> hundred kilohertz draws the whole block about seven pixels wide, and that is one I
+> cannot set from here.
 
-> measurement — Your radio is not announcing its own changes, so Hamlet asks it where
-> it is several times a second instead. That keeps the screen honest and it costs a
-> little of the cable. Turning CI-V Transceive on at the radio would let it simply say
-> so, which is quicker and quieter, and it is your setting to change.
+**596 characters. Both advice clauses arrived**, asserted by phrase.
 
-And where the frequency has gone stale, this stays **on** the strip:
+### The test's red, before the split
 
-> The frequency on screen is about a minute old, so treat it as where the radio was
-> rather than where it is.
+```
+Assert.DoesNotContain() Failure: Sub-string found
+                             ↓ (pos 193)
+String: ···"touched it. The AGC usually wants to be s"···
+Found:  "usually wants to be"
+```
 
-### The ceilings, per surface
-
-| Surface | Holds | Ceiling |
-|---|---:|---:|
-| SettingsWindow | 1,628 | 1,750 |
-| RigDiagnosticsWindow | 1,346 | 1,450 |
-| MainWindow — Digital tab | 1,118 | 1,250 |
-| MainWindow — Digital tab, **working** | 1,087 | 1,200 |
-| AboutWindow | 726 | 850 |
-| LogContactWindow | 716 | 850 |
-| MainWindow — CW tab | 528 | 650 |
-| MainWindow — Voice tab | 518 | 650 |
-| FavoritesWindow | 280 | 400 |
-| ContactLogWindow | 246 | 350 |
-| DecisionLogWindow | 196 | 300 |
-
-**No surface is without one.** What is without one is a **state**: everything the
-fixture cannot enter, named in task 4.
-
-### What task 4 found, and what it looked at
-
-**533 strings, eleven surfaces, thirteen at or over a hundred characters.** One of the
-shape — `DigitalReadiness`'s 219-character line, correctly visible and only on the
-training radio. Twelve findable by phrase. **The limit is stated rather than implied.**
+The red quotes the paragraph on his screen, from a fixture that stood the application
+up rather than handing a string to a seam.
 
 ### Then
 
-1. **Rule on HM-OPEN-087** — the thirteen dead widget templates.
-2. **Look at a hover ring on a real screen.** Asked by units 281, 282 and now 283;
-   still unanswered, and it now carries the receive narration *and* the link check.
-3. **Rule on HM-OPEN-088.**
-4. **Then back to the radio.** Every bench step is closed.
+1. **Look at it on the real radio.** On the IC-7300 those three admissions should not
+   appear at all — a read that succeeds produces no clause. **If they do appear, the
+   settings genuinely are not being read**, and that is a different fault worth its
+   own unit.
+2. **The parked queue is untouched** — `HM-OPEN-087`, `HM-OPEN-088`, the hover ring's
+   findability, the ceilings, Settings, `AboutWindow`.
+3. **Then back to the radio.** Every bench step is closed.
 
 ---
 
@@ -243,55 +188,47 @@ training radio. Twelve findable by phrase. **The limit is stated rather than imp
 
 Nothing blocks the next unit.
 
-### Whether the hover ring is findable
+### Whether three admissions on the simulated radio is right
 
-**Ruling asked for:** whether a 14-pixel ring is enough to tell him there is something
-to hover. **Third unit asking.**
+**Ruling asked for:** on the simulator, every owned setting comes back unread, so the
+bar carries three sentences whenever you tune into a block. That is honest — Hamlet
+genuinely could not read them — but the simulator is a training tool and *could not
+read* is arguably not a fault there so much as a fact about a simulator.
 
-**Why:** it now carries the receive-setup narration *and* the link check — two of the
-most useful things Hamlet says about his radio. **Nobody has looked at one on a
-screen.** If it is too quiet to find, a moved sentence is a deleted one in practice
-and every test still passes.
+**Why it is worth a ruling rather than a session's judgement:** it touches what the
+display asserts, which §12.1 keeps yours without exception. Silencing them on the
+training radio would also mean the one screen a newcomer learns on shows a state the
+real radio does not, and that trade is not mine.
 
-### How an order should name a surface
-
-**Ruling asked for:** whether a work instruction should name a *behaviour and a
-measurement* rather than a file and line.
-
-**Why:** this order says so itself, and then repeated the error one level up — it
-named the status bar, and the paragraph was in the top strip. **Unit 282 was given one
-line and found two; unit 283 was given a surface and found a different one.** Three
-units have now fixed a real instance and missed the next, and each time the miss was
-where the order pointed.
-
-**Rejected:** treating it as this session's to fix. It is how orders are written.
+**Rejected:** doing it here. This order says one thing, and widening past the subject
+is what the last five units were criticised for.
 
 ### Asks still outstanding
 
-Carried forward per HM-DEC-139, with this order's numbering.
+Carried forward per HM-DEC-139. **All of it is parked by this order and none of it is
+this unit's**, listed so the queue survives.
 
-1. **Two issues of one work-instruction number.** Unit 271, and 252 before it.
-   **The author's error.** No unit action.
+1. **Two issues of one work-instruction number.** Unit 271, and 252 before it. **The
+   author's error.** No unit action.
 2. **`PM95` reads *southern Japan***, unit 271. **Not a defect.**
 3. **`HM-OPEN-083` and `HM-OPEN-084`.** In `OPEN_ISSUES.md` by HM-DEC-140.
 4. **Three pixels.** **Waiting on Tim.**
 5. **`dt` and `hz` were never on the mine list.** **Waiting on Tim.**
 6. **Where an outcome entry goes when the unit it corrects has none.** **Tim's.**
 7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** **The
-   author's.** Units 281, 282 and 283 were each told to run it and did.
+   author's.** **Unit 284 was not told to run it and did not** — the order has no
+   outcome task.
 8. **Where the repeat fold stops**, unit 277. **Still open.**
 9. **Whether a faded row needs a second carrier of its meaning**, unit 279. **Tim's.**
 10. **Whether counting subjects is a new assertion**, unit 279. **Tim's.**
 11. **Whether the fade is still obvious now the row is a bubble**, unit 280.
-12. **`HM-OPEN-087`** — thirteen unreferenced `widget.*` templates. Unit 282 disabled
-    the button pointing at them; unit 283 touched no template. **Still Tim's.**
-13. **Whether a 14-pixel hover ring is findable**, units 281, 282 and **283**. **Not
-    seen by anybody on a real screen**, and it now carries the receive narration and
-    the link check.
-14. **Whether `AboutWindow` is in scope for the terseness ruling**, unit 281. Capped,
-    not swept.
-15. **What `SenderHelp` is for**, unit 281. `HM-OPEN-088`. **Ten inherited reds hang
-    on it.**
+12. **`HM-OPEN-087`** — thirteen unreferenced `widget.*` templates. **Still Tim's.**
+13. **Whether a 14-pixel hover ring is findable**, units 281, 282, 283. **Not seen by
+    anybody on a real screen**, and it now carries the receive narration, the link
+    check **and this unit's advice**.
+14. **Whether `AboutWindow` is in scope for the terseness ruling**, unit 281.
+15. **What `SenderHelp` is for**, unit 281. `HM-OPEN-088`. **Ten inherited reds.**
 16. **Whether an order should name a behaviour rather than a file and line**, unit
-    283. **Three units have now missed the next instance at the place the order
-    pointed.**
+    283. **Answered by this order in practice**: it named a reproduction instead, and
+    the paragraph was found and split in one unit. Worth keeping as the pattern.
+17. **Whether three admissions on the simulated radio is right**, unit 284. **New.**
