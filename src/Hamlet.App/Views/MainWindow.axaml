@@ -37,6 +37,23 @@
         <!-- **THE RING'S FOUR STATES** (Tim, 2026-09-08). Each is separable in
              grayscale: unknown by its dashes, on air by its thickness, his slot
              and theirs by the caption beside them as well as by ink. -->
+        <!-- **RADIO TIPS** (Tim's ruling, 2026-09-08: show, do not tell). Advice
+             does not occupy the screen while he operates. It is not thrown away -
+             it moves onto hover behind a small mark, where somebody who wants it
+             can find it and somebody working a station is not reading it.
+
+             **A MARK AND NOT A BUTTON.** It opens nothing and changes nothing, so
+             a button would promise an action it does not have (§0.5.1). -->
+        <Style Selector="TextBlock.hm-tip">
+            <Setter Property="Text" Value="?" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Width" Value="15" />
+            <Setter Property="Height" Value="15" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
         <Style Selector="Arc">
             <Setter Property="StrokeThickness" Value="3" />
             <Setter Property="Stroke" Value="{StaticResource HmTextMutedBrush}" />
@@ -2989,10 +3006,22 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center">
 
-                                <TextBlock Text="{Binding ClockOffsetLine}"
+                                <!-- **A FINE CLOCK IS A GLYPH** (Tim's ruling,
+                                     2026-09-08: show, do not tell). It read
+                                     `clock is 0.09 s slow, checked just now`,
+                                     permanently, when it is fine - thirty-eight
+                                     characters saying nothing is wrong. The
+                                     detail is on hover and unchanged.
+
+                                     **A CLOCK THAT IS NOT FINE IS STILL WORDS**,
+                                     below, because that is a fault and a fault
+                                     gets a sentence (§0.0). Shortening the one
+                                     that matters would be removing a fact rather
+                                     than a sentence. -->
+                                <TextBlock Text="◷"
+                                           ToolTip.Tip="{Binding ClockOffsetLine}"
                                            VerticalAlignment="Center"
-                                           FontSize="12"
-                                           TextTrimming="CharacterEllipsis"
+                                           FontSize="13"
                                            IsVisible="{Binding !ClockIsConcerning}"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
 
@@ -3297,6 +3326,7 @@
 
                                     <TextBlock x:Name="DigitalSendReservedLine"
                                                Text="{Binding DigitalSendLine}"
+                                               ToolTip.Tip="{x:Static vm:MainWindowViewModel.SendIdleTip}"
                                                TextWrapping="Wrap"
                                                VerticalAlignment="Top"
                                                FontSize="11"
@@ -3426,6 +3456,7 @@
                                          words (§0.0). -->
                                     <TextBlock x:Name="DigitalTransmitLevelText"
                                                Text="{Binding DigitalTransmitLevelLine}"
+                                               ToolTip.Tip="{x:Static vm:MainWindowViewModel.TransmitLevelIdleTip}"
                                                TextWrapping="Wrap"
                                                FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
@@ -3472,6 +3503,7 @@
                                          markup binds and does no arithmetic. -->
                                     <TextBlock x:Name="DigitalContactStandsText"
                                                Text="{Binding DigitalContactStandsLine}"
+                                               ToolTip.Tip="{x:Static vm:MainWindowViewModel.ContactStandsIdleTip}"
                                                TextWrapping="Wrap"
                                                FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />

@@ -9002,8 +9002,20 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What the reserved Send area says when nothing has gone out.</summary>
     internal const string NothingHasBeenSent =
-        "Nothing has been sent. Right-click a decoded row to choose a message, "
-        + "or press CQ.";
+        // **SHORTENED ON 2026-09-08, AND THE HOW-TO MOVED TO HOVER** (Tim: show,
+        // do not tell). The fact is that nothing has gone out; how to make
+        // something go out is advice, and advice does not occupy the screen
+        // while he operates. `SendIdleTip` carries it a hover away.
+        "nothing sent yet";
+
+    /// <summary>How to send, for the hover behind the send line.</summary>
+    /// <remarks>
+    /// **THE SENTENCE IS NOT THROWN AWAY, IT IS MOVED.** Removing words must
+    /// not remove facts, and for somebody who has never worked a station this
+    /// one is the difference between a quiet screen and a usable one.
+    /// </remarks>
+    public static string SendIdleTip
+        => "Right-click a decoded row to choose a message, or press CQ.";
 
     /// <summary>
     /// What is being sent, and to whom - the reserved area's one line.
@@ -9077,8 +9089,21 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What the reserved Send area says before anything has gone out.</summary>
     internal const string NothingHasBeenMeasured =
-        "Nothing has been transmitted yet, so there is no measured level. After a "
-        + "send this line says what the sound card was actually handed.";
+        // **SHORTENED ON 2026-09-08** (Tim: show, do not tell). What this line
+        // will say after a send is a description of itself, which is the purest
+        // form of telling. It is on hover.
+        "no level measured yet";
+
+    /// <summary>What the level line will carry, for its hover.</summary>
+    /// <remarks>
+    /// **THE §0.0 BOUNDARY IS THE PART THAT MATTERS AND IT IS KEPT VERBATIM.**
+    /// *What the sound card was actually handed* is a statement about what
+    /// Hamlet can and cannot observe, not advice, and it is why this line exists
+    /// at all.
+    /// </remarks>
+    public static string TransmitLevelIdleTip
+        => "After a send this line says what the sound card was actually handed, "
+            + "which is the last thing Hamlet can see before the radio.";
 
     /// <summary>
     /// **The level the sound card was actually handed, and what had to be
@@ -9142,10 +9167,16 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What the Send area says about a contact before anything is sent.</summary>
     internal const string NoContactStandsYet =
-        "Nothing has been sent, so there is no contact to report on. After a "
-        + "transmission this line says where that contact stands - the station, "
-        + "the state in the same words the table's Contact column uses, the slot "
-        + "count, and the slot it was read at.";
+        // **SHORTENED ON 2026-09-08** (Tim: show, do not tell). Two hundred and
+        // forty-two characters describing what a line would say if there were
+        // anything to say. The description is on hover.
+        "no contact yet";
+
+    /// <summary>What the contact line will carry, for its hover.</summary>
+    public static string ContactStandsIdleTip
+        => "After a transmission this line says where that contact stands: the "
+            + "station, the state, the slot count and the slot it was read at.";
+
 
     /// <summary>
     /// **Where the contact stands after the operator's own last transmission**,
