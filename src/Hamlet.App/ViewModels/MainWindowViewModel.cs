@@ -9315,6 +9315,31 @@ public partial class MainWindowViewModel : ObservableObject
         return worked;
     }
 
+    /// <summary>Hand the log in, for a test that has no file to read.</summary>
+    /// <param name="worked">The log, by callsign, as `ReadWorkedBefore` builds it.</param>
+    /// <remarks>
+    /// <para>**THE DEVELOPMENT MACHINE HAS NO CONTACT LOG AND NEVER WILL** (Tim's
+    /// ruling, 2026-09-08; `SHACK_FACTS.md`). Contacts are logged where the radio
+    /// is, so a test whose subject is the *worked* mark has nothing to read here
+    /// unless it writes a file first. Writing one is what
+    /// `TheLogDialogAndTheWorkedMarkTests` does through the redirected data folder,
+    /// and that is right where the file itself is the subject; where the subject is
+    /// what the row does about it, a file is a slower way of saying the same thing.
+    /// </para>
+    /// <para>**IT SETS THE SAME FIELD THE READ SETS AND NOTHING ELSE.** No file is
+    /// touched, and the rows already on screen pick the mark up exactly as they do
+    /// after a contact is logged.</para>
+    /// </remarks>
+    internal void UseWorkedBeforeForTests(Dictionary<string, AdifContact> worked)
+    {
+        _workedBefore = worked;
+
+        foreach (var row in DigitalDecodes)
+        {
+            row.WorkedBefore = WorkedBeforeNote(row.Sender);
+        }
+    }
+
     /// <summary>Re-read the log, for a test that wrote to it directly.</summary>
     internal void ReloadContactLogForTests() => RefreshWorkedBefore();
 

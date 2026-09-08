@@ -3649,8 +3649,15 @@
                                          row's. That is a stronger guard than one
                                          declaration, because it checks the result
                                          rather than the intent. -->
+                                    <!-- **THE MARK'S COLUMN CAME OUT ON 2026-09-08**
+                                         (Tim). Unit 274 added an `Auto` column here
+                                         to hold a green `worked` beside the
+                                         callsign; the word is gone and a station
+                                         already in the log fades instead, so there
+                                         is nothing for the column to hold and the
+                                         width goes back to the message. -->
                                     <Grid Grid.Row="1"
-                                          ColumnDefinitions="76,48,Auto,*"
+                                          ColumnDefinitions="76,48,*"
                                           RowDefinitions="Auto"
                                           IsVisible="{Binding HasDigitalDecodes}">
 
@@ -3681,7 +3688,7 @@
                                              never a shortage of width. The two
                                              lists carry different columns now, on
                                              purpose. -->
-                                        <TextBlock Grid.Row="0" Grid.Column="3" Text="message"
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="message"
                                                    ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
@@ -3773,8 +3780,33 @@
                                                      with and offer `RRR` as a first
                                                      send after it had already gone
                                                      twice. -->
-                                                <Grid ColumnDefinitions="76,48,Auto,*"
+                                                <!-- **A STATION HE HAS WORKED FADES**
+                                                     (Tim, 2026-09-08), replacing unit
+                                                     274's green `worked` beside the
+                                                     callsign.
+
+                                                     **FADED IS NOT DISABLED.** Grey is
+                                                     this project's reserved signal for
+                                                     a control that genuinely cannot be
+                                                     used (§0.5.1, HM-DEC-087), and
+                                                     greying would have borrowed it for
+                                                     a row he is free to work again.
+                                                     Opacity keeps every colour the row
+                                                     already has, softer, where greying
+                                                     replaces them with the disabled
+                                                     palette.
+
+                                                     **NOTHING IS FORBIDDEN.** Same
+                                                     right-click menu, same items,
+                                                     still clickable.
+
+                                                     **THE HOVER TEXT IS UNIT 274'S,
+                                                     MOVED HERE** from the marker that
+                                                     no longer exists. -->
+                                                <Grid ColumnDefinitions="76,48,*"
                                                       Background="Transparent"
+                                                      Opacity="{Binding RowOpacity}"
+                                                      ToolTip.Tip="{Binding WorkedTip}"
                                                       ContextRequested="OnDecodedRowContextRequested">
                                                     <TextBlock Grid.Column="0" Text="{Binding Utc}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
@@ -3802,20 +3834,7 @@
                                                          exactly as it arrived rather
                                                          than being split at a boundary
                                                          nobody found. -->
-                                                    <!-- **A STATION ALREADY IN THE LOG IS MARKED, NOT HIDDEN**
-                                                         (Tim, 2026-09-07). Working somebody twice is his choice,
-                                                         on another band or another day, so nothing is disabled,
-                                                         sorted away or taken off the list. The mark says when and
-                                                         on what band on hover, and it takes no width at all on a
-                                                         row it has nothing to say about. -->
-                                                    <TextBlock Grid.Column="2" Text="worked"
-                                                               IsVisible="{Binding HasWorkedBefore}"
-                                                               ToolTip.Tip="{Binding WorkedBefore}"
-                                                               FontSize="10" VerticalAlignment="Center"
-                                                               Margin="0,1,8,1"
-                                                               Foreground="{StaticResource HmGreenBrush}" />
-
-                                                    <StackPanel Grid.Column="3"
+                                                    <StackPanel Grid.Column="2"
                                                                 Orientation="Horizontal"
                                                                 Spacing="0"
                                                                 IsVisible="{Binding HasFields}">
@@ -3843,7 +3862,7 @@
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                     </StackPanel>
 
-                                                    <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
+                                                    <TextBlock Grid.Column="2" Text="{Binding Unsplit}"
                                                                IsVisible="{Binding !HasFields}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
 
@@ -4080,8 +4099,14 @@
                                                              row off its own control's `DataContext`, so it
                                                              does not know or care which list the row was
                                                              drawn in. -->
+                                                        <!-- **THE SAME FADE THE LEFT LIST
+                                                             CARRIES**, so a station he has
+                                                             worked recedes wherever it
+                                                             appears (Tim, 2026-09-08). -->
                                                         <Grid ColumnDefinitions="76,*" RowDefinitions="Auto,Auto"
                                                               Background="Transparent"
+                                                              Opacity="{Binding RowOpacity}"
+                                                              ToolTip.Tip="{Binding WorkedTip}"
                                                               ContextRequested="OnDecodedRowContextRequested">
                                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Utc}"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
@@ -4122,24 +4147,6 @@
                                                                        TextWrapping="Wrap"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
                                                                        Margin="0,1,0,1" />
-
-                                                            <!-- **THE SAME MARK THE LEFT LIST CARRIES**, so a station he
-                                     has worked is obvious wherever it appears (Tim,
-                                     2026-09-07). It sits on the contact line rather than in a
-                                     column of its own, because this side is half the width the
-                                     one list had and the message is what must not be
-                                     squeezed. -->
-                                <!-- **UNDER THE TIME RATHER THAN BESIDE THE
-                                     CONTACT**, since the `from` column went on
-                                     2026-09-07 and the contact line took column 1.
-                                     `worked` at ten point fits inside the 76 the
-                                     time column already has, so the mark costs the
-                                     message nothing. -->
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="worked"
-                                           IsVisible="{Binding HasWorkedBefore}"
-                                           ToolTip.Tip="{Binding WorkedBefore}"
-                                           FontSize="10" Margin="0,0,14,4"
-                                           Foreground="{StaticResource HmGreenBrush}" />
 
                                 <!-- **THE CONTACT COLUMN LIVES HERE NOW**, on its
                                                                  own line under the message rather than in a

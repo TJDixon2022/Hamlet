@@ -47,14 +47,24 @@ namespace Hamlet.App.ViewModels;
 /// sign.</para>
 /// </remarks>
 /// <remarks>
-/// **NOTHING ON THIS ROW CHANGES AFTER IT ARRIVES, SINCE UNIT 252.** It carried
-/// `INotifyPropertyChanged` for one mutable flag — `IsDimmed`, and the
-/// `RowOpacity` derived from it — and Tim's ruling of 2026-09-06 removed the
-/// dimming those existed for. A row the filter does not want is not on the table
-/// at all now, so there is no per-row appearance to carry and nothing here to
-/// raise an event about. **The interface came off with them rather than being
-/// left behind empty**: an event nobody raises is a promise the type cannot keep,
-/// and a reader would reasonably conclude something on this row still moves.
+/// <para>**THREE THINGS ON THIS ROW CHANGE AFTER IT ARRIVES**, and the list is
+/// here because it has been wrong twice. <see cref="WorkedBefore"/> and the
+/// <see cref="RowOpacity"/> and <see cref="WorkedTip"/> derived from it are
+/// written when the log is read; <see cref="RepeatCount"/> is written when the
+/// same message arrives again. Everything else is fixed at construction.</para>
+/// <para>**THE HISTORY, BECAUSE THE REMARK THAT USED TO SIT HERE WAS FALSE BY THE
+/// TIME ANYBODY READ IT.** Unit 252 removed a `RowOpacity` derived from an
+/// `IsDimmed` flag, because Tim's ruling of 2026-09-06 took a filtered-out row off
+/// the table entirely rather than dimming it, and this remark then said nothing on
+/// the row ever changes. Unit 274 gave it a mutable `WorkedBefore`, unit 277 a
+/// mutable `RepeatCount`, and the remark stayed. **A file that states a rule its
+/// own code breaks is worse than either answer** (HM-DEC-159), because the next
+/// session reads the rule, believes it, and writes against it.</para>
+/// <para>**AND `RowOpacity` IS BACK FOR A DIFFERENT REASON THAN IT LEFT.** It went
+/// because a row the filter did not want should not be on the table at all; it
+/// returns because a station he has already worked should still be on the table
+/// and should recede (Tim's ruling, 2026-09-08). Those are opposite situations and
+/// the second does not reopen the first.</para>
 /// </remarks>
 /// <param name="ObserverGrid">
 /// The operator's own Maidenhead locator from Settings, or "" where he has not
@@ -252,11 +262,52 @@ public sealed record DigitalDecodeRow(
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkedBefore)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasWorkedBefore)));
+
+            // **THE ROW FADES THE MOMENT THE LOG GAINS THE ENTRY** (Tim,
+            // 2026-09-08). He logs a contact and that station's other rows from
+            // the same evening recede at once, rather than only the rows that
+            // arrive after it.
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowOpacity)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkedTip)));
         }
     }
 
     /// <summary>True where the log already holds this station.</summary>
     public bool HasWorkedBefore => _workedBefore.Length > 0;
+
+    /// <summary>How strongly the row is drawn.</summary>
+    /// <remarks>
+    /// <para>**A STATION HE HAS WORKED FADES RATHER THAN WEARING A LABEL** (Tim's
+    /// ruling, 2026-09-08, replacing unit 274's green `worked` beside the
+    /// callsign). The word cost a column on the narrower of the two lists and said
+    /// in five characters what the whole row can say by receding.</para>
+    /// <para>**FADED IS NOT DISABLED, AND THE DIFFERENCE IS DELIBERATE IN THE
+    /// MECHANISM** (§0.5.1, HM-DEC-087). Grey is this project's reserved signal
+    /// for a control that genuinely cannot be used, and greying the row would have
+    /// borrowed exactly that signal for a row he is free to work again. Opacity
+    /// **keeps every colour the row already has** - the addressee, the sender and
+    /// the payload stay their own family colours, softer - where greying would
+    /// replace them with the disabled palette. So a faded row reads as *already
+    /// dealt with* and a grey control still reads as *you cannot press this*, and
+    /// the two do not collide.</para>
+    /// <para>**NOTHING ABOUT THE ROW IS FORBIDDEN.** It keeps the full right-click
+    /// menu with the same items, it is still clickable, and working the same
+    /// station again on another band or another day is his choice.</para>
+    /// <para>**0.55 RATHER THAN FAINTER.** It has to be obvious at a glance across
+    /// a list of fourteen rows a slot, and it has to stay readable: this is the
+    /// list he reads callsigns off, and a callsign he has to lean in for is worse
+    /// than a label he has to ignore.</para>
+    /// </remarks>
+    public double RowOpacity => HasWorkedBefore ? 0.55 : 1.0;
+
+    /// <summary>The hover text, or null where there is none.</summary>
+    /// <remarks>
+    /// **UNIT 274'S OWN WORDING, MOVED ONTO THE ROW** rather than onto a marker
+    /// that no longer exists. **Null and not the empty string**, because Avalonia
+    /// draws an empty tooltip for `""` and a blank box following the pointer down
+    /// a list of unworked stations would be worse than the label this replaced.
+    /// </remarks>
+    public string? WorkedTip => HasWorkedBefore ? _workedBefore : null;
 
     /// <inheritdoc/>
     /// <remarks>
