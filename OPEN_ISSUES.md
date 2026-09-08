@@ -5,7 +5,8 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-086
-status: open - read from the code by unit 276 task 5, 2026-09-07, and deliberately not repaired
+status: closed
+closed: 2026-09-08
 owner: unassigned
 raised: 2026-09-07
 severity: slows
@@ -32,6 +33,20 @@ watching it fail before anything is changed.
 in the sibling helper - but it wants its own unit, because a test nobody watched
 go green is how this defect survived three units in the first place. It was left
 alone here under CLAUDE.md 12.6.
+
+**CLOSED 2026-09-08 by work instruction 279 task 5.** The helper now searches both
+lists by name, the same fix units 276 and 277 made to the same shape, and **the
+class is green for the first time since unit 273 split the decoded area**: 3 of 3,
+in 59 seconds.
+
+**It uncovered nothing.** The instruction said to report a real defect in the chain
+and not repair it there; there is none. The whole chain has run from one right
+click all along, behind a helper that could not reach it.
+
+**And the red was read rather than run when it was found**, which unit 276 said at
+the time. That was right and it is why this sat for two units: the standing rule of
+HM-DEC-155 keeps a unit out of a class it did not write, so nobody was allowed to
+look until an instruction named it.
 
 ---
 id: HM-OPEN-085
