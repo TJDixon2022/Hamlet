@@ -363,6 +363,195 @@ public sealed class BothHalvesOfTheConversationTests
         Assert.Equal(His, model.ConversationStation());
     }
 
+    /// <summary>
+    /// **Two stations calling him give one conversation and one waiting row.**
+    /// </summary>
+    /// <remarks>
+    /// Work instruction 277, task 4. The panel follows whoever most recently called
+    /// him, and the other is above it with what it sent and how long it has been
+    /// quiet. **Nothing is hidden**: both are on the screen, one as a conversation
+    /// and one as a row he can click.
+    /// </remarks>
+    [Fact]
+    public void TwoStationsGiveOneConversationAndOneWaitingRow()
+    {
+        var model = TwoCalling();
+
+        PrintWaiting(model);
+
+        // W1ABC called last, so the panel is following W1ABC.
+        Assert.Equal("W1ABC", model.ConversationStation());
+
+        // **ONE ROW, AND THE MESSAGE TO K1ABC IS NOT IN IT.** W1ABC sent the same
+        // report twice running, which folds; and a message he sent to a third
+        // station belongs to that station's conversation, not to this one. Reading
+        // the sender of a sent row would have filed it under his own callsign.
+        Assert.Equal(
+            new[] { HisCall + " W1ABC -14 x2" },
+            model.DigitalMineDecodes.Select(r => r.Shown).ToArray());
+
+        var waiting = Assert.Single(model.DigitalWaiting);
+
+        Assert.Equal(His, waiting.Callsign);
+        Assert.Equal(2, waiting.Messages);
+        Assert.True(model.HasDigitalWaiting);
+    }
+
+    /// <summary>
+    /// **Clicking a waiting row switches the conversation and loses neither.**
+    /// </summary>
+    /// <remarks>
+    /// The station he was reading moves to the waiting strip, which is where the
+    /// one he clicked came from. Every message either station sent is still on the
+    /// screen somewhere, which is the whole of *nothing is hidden*.
+    /// </remarks>
+    [Fact]
+    public void ClickingAWaitingRowSwitchesAndKeepsTheOther()
+    {
+        var model = TwoCalling();
+
+        model.ShowConversationCommand.Execute(His);
+
+        PrintWaiting(model);
+
+        Assert.Equal(His, model.ConversationStation());
+
+        // K9XP's two messages and his own answer to K9XP are the conversation now.
+        // **THREE ROWS AND NOT TWO**, because his answer came between the two
+        // identical reports. That is the whole reason the fold stops at anything
+        // in between: the second -09 says K9XP did not hear him.
+        Assert.Equal(
+            new[]
+            {
+                HisCall + " " + His + " -09",
+                His + " " + HisCall + " R-09",
+                HisCall + " " + His + " -09",
+            },
+            model.DigitalMineDecodes.Select(r => r.Message).ToArray());
+
+        // And W1ABC is not lost: it is the waiting row now.
+        var waiting = Assert.Single(model.DigitalWaiting);
+
+        Assert.Equal("W1ABC", waiting.Callsign);
+
+        // **NOTHING WENT MISSING IN THE SWITCH.** Every message addressed to him is
+        // still accounted for, on the panel or on the strip.
+        Assert.Equal(
+            4,
+            model.DigitalMineDecodes.Where(r => !r.IsSent).Sum(r => r.RepeatCount)
+                + model.DigitalWaiting.Sum(w => w.Messages));
+    }
+
+    /// <summary>
+    /// **His choice sticks, and a later call from somebody else does not steal it.**
+    /// </summary>
+    /// <remarks>
+    /// A panel that jumped away while he was reading it would be worse than one
+    /// that never moved, and this is the case that happens on a busy band: he
+    /// clicks a station and a third one calls him a slot later.
+    /// </remarks>
+    [Fact]
+    public void OnceHeHasChosenThePanelStaysWhereHePutIt()
+    {
+        var model = TwoCalling();
+
+        model.ShowConversationCommand.Execute(His);
+
+        Heard(model, "02:14:15", HisCall + " W1ABC -14");
+
+        Assert.Equal(His, model.ConversationStation());
+
+        // W1ABC is still the waiting row and its count has gone up, so the new
+        // call is visible without having stolen the panel.
+        Assert.Equal(3, model.DigitalWaiting.Single().Messages);
+    }
+
+    /// <summary>
+    /// **The summary counts everybody, not the conversation on show.**
+    /// </summary>
+    /// <remarks>
+    /// §0.0 and HM-DEC-092. The panel draws one conversation, so a summary counting
+    /// what is drawn would read `1 for you` on an evening when two stations were
+    /// calling, and a collapsed panel saying that is a false picture of how busy he
+    /// is. It binds as hard as a false sentence.
+    /// </remarks>
+    [Fact]
+    public void TheSummaryCountsEverybodyCallingHim()
+    {
+        var model = TwoCalling();
+
+        Assert.Equal("4 for you", model.DigitalMineSummary);
+
+        // And the hidden count still balances: four heard, all for him, none held
+        // back by the left list's toggles.
+        Assert.Equal(4, model.DigitalDecodes.Count);
+        Assert.Equal(0, model.DigitalHiddenCount);
+    }
+
+    /// <summary>
+    /// **The turn follows the conversation, not whichever station spoke last.**
+    /// </summary>
+    /// <remarks>
+    /// Two stations calling him can be using opposite halves of the minute. Reading
+    /// the newest row whoever sent it would flip the turn line every time the other
+    /// one transmitted, which is a claim about his slot that changes under him for
+    /// a reason he cannot see.
+    /// </remarks>
+    [Fact]
+    public void TheBeatFollowsWhoeverHeIsWorking()
+    {
+        var model = TwoCalling();
+
+        // W1ABC transmits on the even half; K9XP on the odd one.
+        model.ShowConversationCommand.Execute("W1ABC");
+        Assert.Equal("W1ABC", model.ConversationStation());
+
+        model.ShowConversationCommand.Execute(His);
+        Assert.Equal(His, model.ConversationStation());
+    }
+
+    /// <summary>Two stations calling him in the same few minutes.</summary>
+    /// <remarks>
+    /// **K9XP IS ON THE ODD HALF AND W1ABC ON THE EVEN ONE**, so the two disagree
+    /// about whose turn it is and a panel reading the wrong one is caught.
+    /// </remarks>
+    private static MainWindowViewModel TwoCalling()
+    {
+        var model = new MainWindowViewModel(Settings(), null) { DigitalNewestFirst = false };
+
+        Heard(model, "02:11:15", HisCall + " " + His + " -09");
+        Sent(model, "02:11:30", His + " " + HisCall + " R-09");
+        Heard(model, "02:11:45", HisCall + " " + His + " -09");
+        Heard(model, "02:12:00", HisCall + " W1ABC -14");
+
+        // Something he sent to a third station, which belongs to neither of these
+        // two conversations and must not appear in either.
+        Sent(model, "02:12:30", "K1ABC " + HisCall + " RRR");
+        Heard(model, "02:13:00", HisCall + " W1ABC -14");
+
+        return model;
+    }
+
+    /// <summary>The waiting strip, so a failure shows who was on it.</summary>
+    private void PrintWaiting(MainWindowViewModel model)
+    {
+        _output.WriteLine("conversation: " + model.ConversationStation());
+
+        foreach (var row in model.DigitalMineDecodes)
+        {
+            _output.WriteLine("    " + Shown(row));
+        }
+
+        _output.WriteLine("waiting: " + model.DigitalWaitingSummary);
+
+        foreach (var waiting in model.DigitalWaiting)
+        {
+            _output.WriteLine("    " + waiting.Callsign + "  " + waiting.Detail);
+        }
+
+        _output.WriteLine("");
+    }
+
     /// <summary>The exchange of 2026-09-08, from its own figures.</summary>
     /// <param name="newestFirst">Which way round the panel is showing.</param>
     /// <returns>The panel, with all six messages placed.</returns>

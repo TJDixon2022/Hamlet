@@ -506,8 +506,21 @@ public sealed class TheMenuIsUnderTheMouseTests
     /// <summary>
     /// **Raises a real context request on the row that names one station.**
     /// </summary>
+    /// <remarks>
+    /// **THE CONVERSATION IS SWITCHED TO THAT STATION FIRST, SINCE UNIT 277.** The
+    /// For you panel shows one conversation with the others waiting above it (Tim's
+    /// ruling, 2026-09-08), so a station that is not the one on show has no
+    /// realized row to right-click. Clicking its waiting row is exactly what the
+    /// operator does, and doing it here means this class proves the switch works as
+    /// well as the menu.
+    /// </remarks>
     private MenuFlyout? RightClick(Scene scene, string station)
-        => RightClickRow(scene, r => r.Sender == station && r.Addressee == "KC3QIS");
+    {
+        scene.Panel.ShowConversationCommand.Execute(station);
+        Pump(scene.Window);
+
+        return RightClickRow(scene, r => r.Sender == station && r.Addressee == "KC3QIS");
+    }
 
     /// <summary>Raises a real context request on the first row that matches.</summary>
     /// <remarks>

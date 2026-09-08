@@ -302,8 +302,14 @@ public sealed class TheDecodedColumnsLineUpTests
         // column origins.
         Place(samples, Rate, "CQ", "TA3MPK", "KM39", 800f);
         Place(samples, Rate, "W4WTM", "K1ABC", "EM74", 1500f);
-        Place(samples, Rate, "KC3QIS", "TA3MPK", "KM39", 231f);
-        Place(samples, Rate, "KC3QIS", "K1ABC", "EM74", 2438f);
+        // **BOTH FROM ONE STATION, SINCE UNIT 277.** The For you panel shows one
+        // conversation with the others waiting above it (Tim's ruling,
+        // 2026-09-08), so two rows from two stations put one row on the panel and
+        // this test needs two to compare origins with. Two messages from the same
+        // station is what a conversation is, and the tones are still the
+        // three-digit and four-digit pair the test exists for.
+        Place(samples, Rate, "KC3QIS", "K1ABC", "EM74", 231f);
+        Place(samples, Rate, "KC3QIS", "K1ABC", "FN31", 2438f);
 
         model.ShowDecodes(
             new MonoAudio(Rate, samples),

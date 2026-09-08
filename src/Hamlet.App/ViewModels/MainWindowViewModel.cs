@@ -1366,12 +1366,20 @@ public partial class MainWindowViewModel : ObservableObject
     /// and a shut panel that goes silent on the one column he is waiting on is
     /// §0.0 broken by omission.
     /// </remarks>
+    /// <remarks>
+    /// **IT COUNTS EVERY MESSAGE ADDRESSED TO HIM AND NOT THE ROWS ON SHOW**
+    /// (§0.0, HM-DEC-092). The panel draws one conversation, so counting what is
+    /// drawn would say *1 for you* on an evening when two stations were calling,
+    /// and a collapsed panel reading that would be a false picture of how busy he
+    /// is. The others are on the waiting strip with their own count; this number
+    /// is the total, which is what a summary is for.
+    /// </remarks>
     public string DigitalMineSummary
-        => DigitalMineCount == 0
+        => _mineAll.Count == 0
             ? "nothing for you yet"
-            : DigitalMineCount == 1
+            : _mineAll.Count == 1
                 ? "1 for you"
-                : $"{DigitalMineCount} for you";
+                : $"{_mineAll.Count} for you";
 
     /// <summary>How many rows the toggles are holding off the list.</summary>
     /// <remarks>
@@ -1450,9 +1458,18 @@ public partial class MainWindowViewModel : ObservableObject
             foreach (DigitalDecodeRow row in e.OldItems)
             {
                 DigitalVisibleDecodes.Remove(row);
-                DigitalMineDecodes.Remove(row);
+
+                // **OUT OF THE MASTER AS WELL AS OFF THE PANEL.** The trim drops
+                // the oldest rows, and one left behind here would keep a station
+                // on the waiting list with nothing to show for it.
+                if (_mineAll.Remove(row))
+                {
+                    DigitalMineDecodes.Remove(row);
+                }
             }
         }
+
+        var rebuild = false;
 
         if (e.NewItems is not null)
         {
@@ -1466,13 +1483,12 @@ public partial class MainWindowViewModel : ObservableObject
                 // list would land on both.
                 if (IsForHim(row))
                 {
-                    // **A REPEAT COUNTS RATHER THAN ADDING A LINE.** Where this
-                    // returns true the row is already on the panel and has said
-                    // so; nothing is inserted and nothing is lost.
-                    if (!CountedAsRepeat(row))
-                    {
-                        DigitalMineDecodes.Insert(MineInsertIndex(row, at), row);
-                    }
+                    // **COLLECTED, THEN THE CONVERSATION IS REBUILT.** Which rows
+                    // are on the panel now depends on which station he is
+                    // following and on what came immediately before each row, so
+                    // there is no position to compute for a row on its own.
+                    _mineAll.Add(row);
+                    rebuild = true;
                 }
                 else if (WantsRow(row))
                 {
@@ -1481,6 +1497,11 @@ public partial class MainWindowViewModel : ObservableObject
 
                 at++;
             }
+        }
+
+        if (rebuild)
+        {
+            RebuildConversation();
         }
 
         RecountDecodedFilter();
@@ -1581,32 +1602,6 @@ public partial class MainWindowViewModel : ObservableObject
         return best;
     }
 
-    /// <summary>Whoever most recently called him, or "".</summary>
-    /// <remarks>
-    /// **IT FOLLOWS THE LAST STATION TO CALL HIM**, which is the rule task 4 makes
-    /// switchable. A message he sent names no station he is working, so sent rows
-    /// are passed over here.
-    /// </remarks>
-    internal string ConversationStation()
-    {
-        DigitalDecodeRow? newest = null;
-
-        foreach (var row in DigitalMineDecodes)
-        {
-            if (row.IsSent || row.SlotStartUtc == default || row.Sender.Length == 0)
-            {
-                continue;
-            }
-
-            if (newest is null || row.SlotStartUtc > newest.SlotStartUtc)
-            {
-                newest = row;
-            }
-        }
-
-        return newest?.Sender ?? "";
-    }
-
     /// <summary>Read the beat once, for a test, without waiting on a timer.</summary>
     internal void RefreshTurnForTests() => RefreshTurn();
 
@@ -1682,18 +1677,56 @@ public partial class MainWindowViewModel : ObservableObject
         return at;
     }
 
-    /// <summary>The newest message on the For you panel, whichever way it is sorted.</summary>
+    /// <summary>Every message addressed to him, whoever sent it, in arrival order.</summary>
     /// <remarks>
-    /// **BY SLOT AND NOT BY POSITION.** The order button turns the list over, so
-    /// index nought is the newest row on some evenings and the oldest on others,
-    /// and a rule written against the index would silently invert with it.
+    /// **THE PANEL SHOWS ONE CONVERSATION AND THIS HOLDS THEM ALL** (Tim's ruling,
+    /// 2026-09-08). Nothing is hidden by showing one: a station that called him is
+    /// on the waiting list the moment it is not the one being shown, and everything
+    /// it sent is still here to come back to.
     /// </remarks>
-    private DigitalDecodeRow? NewestOnTheConversation()
-    {
-        DigitalDecodeRow? newest = null;
+    private readonly List<DigitalDecodeRow> _mineAll = new();
 
-        foreach (var row in DigitalMineDecodes)
+    /// <summary>Whose conversation he has chosen, or "" to follow the last caller.</summary>
+    /// <remarks>
+    /// **EMPTY IS A REAL STATE AND IS THE DEFAULT.** Before he has clicked
+    /// anything the panel follows whoever most recently called him, which is what
+    /// somebody working a run wants and needs no decision from him. The moment he
+    /// clicks a waiting station it stays put, because a panel that jumped away
+    /// while he was reading it would be worse than one that never moved.
+    /// </remarks>
+    private string _conversationWith = "";
+
+    /// <summary>The station whose conversation is on the panel, or "".</summary>
+    /// <remarks>
+    /// **HIS CHOICE WINS WHILE THE STATION IS STILL THERE**, and the trim can take
+    /// it away: a chosen station whose every message has aged off the table leaves
+    /// nothing to show, so the panel falls back to following rather than sitting
+    /// empty with a callsign at the top of it.
+    /// </remarks>
+    internal string ConversationStation()
+    {
+        if (_conversationWith.Length > 0 && HasAnythingFrom(_conversationWith))
         {
+            return _conversationWith;
+        }
+
+        // **A SLOT IS FOR ORDERING AND IS NOT A CONDITION OF MEMBERSHIP.**
+        // `SlotStartUtc` is `default` on anything decoded before it was carried,
+        // and requiring one here emptied the whole panel for every such row: the
+        // station came back as "" and nothing matched it. So the newest by slot
+        // wins where any row has one, and arrival order decides where none does.
+        DigitalDecodeRow? newest = null;
+        DigitalDecodeRow? lastArrived = null;
+
+        foreach (var row in _mineAll)
+        {
+            if (row.Sender.Length == 0)
+            {
+                continue;
+            }
+
+            lastArrived = row;
+
             if (row.SlotStartUtc == default)
             {
                 continue;
@@ -1705,90 +1738,243 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
-        return newest;
+        return (newest ?? lastArrived)?.Sender ?? "";
+    }
+
+    /// <summary>Whether that station has anything left on the table.</summary>
+    private bool HasAnythingFrom(string callsign)
+    {
+        foreach (var row in _mineAll)
+        {
+            if (string.Equals(row.Sender, callsign, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>Which station a row belongs to, whichever way it went.</summary>
+    /// <remarks>
+    /// **A CONVERSATION HAS TWO DIRECTIONS AND ONE OTHER PARTY.** For something
+    /// heard that is whoever sent it; for something he transmitted it is whoever it
+    /// was addressed to. Reading the sender of both would file every one of his own
+    /// messages under his own callsign, which is a conversation with himself.
+    /// </remarks>
+    private static string StationOf(DigitalDecodeRow row)
+        => row.IsSent ? row.Addressee : row.Sender;
+
+    /// <summary>The stations that have called him and are not the one on show.</summary>
+    /// <remarks>
+    /// **NOTHING IS HIDDEN** (Tim's ruling, 2026-09-08). Every station that called
+    /// him is either the conversation or a row here, and a row here says how long
+    /// it has been quiet so a stale one is obvious at a glance.
+    /// </remarks>
+    public ObservableCollection<Ft8WaitingStation> DigitalWaiting { get; } = new();
+
+    /// <summary>True where somebody else is waiting.</summary>
+    public bool HasDigitalWaiting => DigitalWaiting.Count > 0;
+
+    /// <summary>What the waiting strip says about itself when collapsed.</summary>
+    /// <remarks>
+    /// §0.5: a shut panel still carries its news, and a count is the news here.
+    /// </remarks>
+    public string DigitalWaitingSummary
+        => DigitalWaiting.Count switch
+        {
+            0 => "",
+            1 => "1 other station is calling you",
+            _ => DigitalWaiting.Count.ToString(CultureInfo.InvariantCulture)
+                + " other stations are calling you",
+        };
+
+    /// <summary>**Show this station's conversation instead.**</summary>
+    /// <param name="callsign">Whose, from the waiting row he clicked.</param>
+    /// <remarks>
+    /// **IT SWITCHES A VIEW AND NOTHING ELSE.** No message is composed, nothing is
+    /// armed, and the station he was reading keeps every message it sent: it moves
+    /// to the waiting list, which is where it was before he clicked.
+    /// </remarks>
+    [RelayCommand]
+    private void ShowConversation(string? callsign)
+    {
+        var wanted = (callsign ?? "").Trim();
+
+        if (wanted.Length == 0 || !HasAnythingFrom(wanted))
+        {
+            return;
+        }
+
+        _conversationWith = wanted;
+
+        RebuildConversation();
+        RecountDecodedFilter();
+        RefreshTurn();
     }
 
     /// <summary>
-    /// **The same message again, from the same station, with nothing in between.**
+    /// **Draw one conversation, and list whoever else is calling him.**
     /// </summary>
-    /// <param name="row">The row that has just arrived.</param>
-    /// <returns>True where it was counted onto an existing row instead of added.</returns>
     /// <remarks>
-    /// <para>**THE TEST IS THE NEWEST ROW ON THE PANEL, NOT THE NEWEST MATCHING
-    /// ONE.** A repeat that arrives after he transmitted is a different fact from
-    /// one that arrives before: it says the station did not hear his answer, which
-    /// is the most useful thing the whole panel has to tell him. Searching back
-    /// past his transmission for something to fold into would put that repeat
-    /// above his own message and hide it.</para>
-    /// <para>**IT COMPARES THE MESSAGE AND THE SENDER**, so two stations sending
-    /// the same report in successive slots stay two rows. The text is compared
-    /// exactly, because two FT8 messages that differ by a character are two
-    /// different messages.</para>
-    /// <para>**A ROW WITH NO SLOT NEVER FOLDS.** Ordering it is not possible, so
-    /// neither is saying what it is adjacent to.</para>
+    /// <para>**THE WHOLE SIDE IS REBUILT RATHER THAN PATCHED.** Which rows are on
+    /// the panel depends on the station he is following and on what came
+    /// immediately before each row, so there is no position to compute for a row on
+    /// its own. It is affordable because this side carries his own traffic, which
+    /// is a handful of rows where the left list carries the band.</para>
+    /// <para>**THE FOLD RUNS FORWARDS IN TIME, INSIDE ONE CONVERSATION.** A repeat
+    /// is the same message from the same station with nothing between it and the
+    /// one before, and *nothing between* means nothing in this conversation: a
+    /// third station calling in the gap does not make two identical reports into
+    /// separate news.</para>
     /// </remarks>
-    private bool CountedAsRepeat(DigitalDecodeRow row)
+    private void RebuildConversation()
     {
-        if (row.SlotStartUtc == default)
+        var station = ConversationStation();
+
+        DigitalMineDecodes.Clear();
+
+        var rows = new List<DigitalDecodeRow>();
+
+        foreach (var row in _mineAll)
         {
-            return false;
-        }
+            row.RepeatCount = 1;
 
-        var newest = NewestOnTheConversation();
-
-        if (newest is null
-            || newest.IsSent
-            || newest.SlotStartUtc >= row.SlotStartUtc
-            || !string.Equals(newest.Message, row.Message, StringComparison.Ordinal)
-            || !string.Equals(newest.Sender, row.Sender, StringComparison.OrdinalIgnoreCase))
-        {
-            return false;
-        }
-
-        newest.RepeatCount++;
-
-        return true;
-    }
-
-    /// <summary>Where a decoded row for him goes, now that the list has two kinds.</summary>
-    /// <param name="row">The row that just arrived.</param>
-    /// <param name="index">Its index in <see cref="DigitalDecodes"/>.</param>
-    /// <returns>The index to insert it at in the For you list.</returns>
-    /// <remarks>
-    /// <para>**THE TWO RULES AGREE WHEREVER BOTH APPLY**, which is why this can
-    /// choose between them without the list ever disagreeing with itself. The
-    /// decoded table is already in slot order, so a row's position among the
-    /// decoded rows and its position by slot are the same position. Slot order
-    /// is used because it is the only one a sent row can be placed by.</para>
-    /// <para>**A ROW WITH NO SLOT FALLS BACK TO THE OLD RULE.** `SlotStartUtc` is
-    /// `default` on anything that arrived before it was carried, and on rows a
-    /// test adds without one. Time-ordering those is not possible, so they keep
-    /// the decoded table's own ordering, counted past any sent rows in the way.
-    /// **That is the case this method exists for**: without it, adding the sent
-    /// rows would have silently changed where every slotless row lands.</para>
-    /// </remarks>
-    private int MineInsertIndex(DigitalDecodeRow row, int index)
-    {
-        if (row.SlotStartUtc != default)
-        {
-            return MineIndexFor(row);
-        }
-
-        var wanted = SideIndexOf(index, IsForHim);
-        var seen = 0;
-        var at = 0;
-
-        while (at < DigitalMineDecodes.Count && seen < wanted)
-        {
-            if (!DigitalMineDecodes[at].IsSent)
+            if (string.Equals(StationOf(row), station, StringComparison.OrdinalIgnoreCase))
             {
-                seen++;
+                rows.Add(row);
+            }
+        }
+
+        foreach (var row in _digitalSent)
+        {
+            row.RepeatCount = 1;
+
+            if (string.Equals(StationOf(row), station, StringComparison.OrdinalIgnoreCase))
+            {
+                rows.Add(row);
+            }
+        }
+
+        DigitalDecodeRow? last = null;
+
+        foreach (var row in rows.OrderBy(r => r.SlotStartUtc))
+        {
+            // **THE SAME MESSAGE AGAIN, WITH NOTHING IN BETWEEN.** A repeat that
+            // arrives after he transmitted is a different fact from one that
+            // arrives before: it says the station did not hear his answer, which is
+            // the most useful thing this panel has to tell him. Folding it back
+            // above his own transmission would destroy exactly that.
+            if (last is not null
+                && !last.IsSent
+                && !row.IsSent
+                && row.SlotStartUtc != default
+                && string.Equals(last.Message, row.Message, StringComparison.Ordinal))
+            {
+                last.RepeatCount++;
+                continue;
             }
 
-            at++;
+            last = row;
+            DigitalMineDecodes.Add(row);
         }
 
-        return at;
+        if (_digitalNewestFirst)
+        {
+            Reverse(DigitalMineDecodes);
+        }
+
+        RebuildWaiting(station);
+    }
+
+    /// <summary>Turn a bound collection over in place.</summary>
+    /// <remarks>
+    /// **BUILT OLDEST FIRST AND TURNED OVER**, rather than built in the display
+    /// direction, because the fold above can only be done walking forwards in time
+    /// and doing both at once is how the order button un-folded the panel once
+    /// already.
+    /// </remarks>
+    private static void Reverse(ObservableCollection<DigitalDecodeRow> rows)
+    {
+        for (var at = 1; at < rows.Count; at++)
+        {
+            rows.Move(at, 0);
+        }
+    }
+
+    /// <summary>List everybody calling him who is not on the panel.</summary>
+    /// <param name="station">Whose conversation is being shown.</param>
+    private void RebuildWaiting(string station)
+    {
+        var order = new List<string>();
+        var last = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
+        var count = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var row in _mineAll)
+        {
+            var who = row.Sender;
+
+            if (who.Length == 0
+                || string.Equals(who, station, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (!count.ContainsKey(who))
+            {
+                order.Add(who);
+                count[who] = 0;
+                last[who] = row.SlotStartUtc;
+            }
+
+            count[who]++;
+
+            if (row.SlotStartUtc > last[who])
+            {
+                last[who] = row.SlotStartUtc;
+            }
+        }
+
+        DigitalWaiting.Clear();
+
+        // **THE ONE WHO SPOKE MOST RECENTLY IS AT THE TOP**, because that is who
+        // is most likely still there.
+        foreach (var who in order.OrderByDescending(w => last[w]))
+        {
+            DigitalWaiting.Add(new Ft8WaitingStation(
+                who, count[who], Quiet(last[who]), last[who]));
+        }
+
+        OnPropertyChanged(nameof(HasDigitalWaiting));
+        OnPropertyChanged(nameof(DigitalWaitingSummary));
+    }
+
+    /// <summary>How long a station has been quiet, in slots, or "".</summary>
+    /// <remarks>
+    /// <para>**IN SLOTS, BECAUSE THE SLOT IS THE UNIT THE BEAT IS IN.** *Four slots
+    /// ago* tells him the station has had four chances to hear him and taken none;
+    /// *a minute ago* makes him do the arithmetic that matters.</para>
+    /// <para>**NO CLOCK MEANS NO AGE** (§0.0). Without a measured offset there is
+    /// no way to place a boundary, so counting slots would be counting from a
+    /// reading nobody took.</para>
+    /// </remarks>
+    private string Quiet(DateTime lastSlotUtc)
+    {
+        if (lastSlotUtc == default
+            || Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) is not { } trueUtc)
+        {
+            return "";
+        }
+
+        var slots = (int)Math.Floor(
+            (Ft8Slots.SlotStart(trueUtc) - lastSlotUtc).TotalSeconds / Ft8Slots.SlotSeconds);
+
+        return slots switch
+        {
+            <= 0 => "this slot",
+            1 => "1 slot ago",
+            _ => slots.ToString(CultureInfo.InvariantCulture) + " slots ago",
+        };
     }
 
     /// <summary>
@@ -1811,9 +1997,10 @@ public partial class MainWindowViewModel : ObservableObject
         var row = DigitalDecodeRow.Sent(message, slotStartUtc);
 
         _digitalSent.Add(row);
-        DigitalMineDecodes.Insert(MineIndexFor(row), row);
 
+        RebuildConversation();
         RecountDecodedFilter();
+        RefreshTurn();
 
         return row;
     }
@@ -1887,14 +2074,13 @@ public partial class MainWindowViewModel : ObservableObject
         // repeat is a statement about which message came next, so it can only be
         // done walking forwards in time; done down a newest-first table it would
         // find every pair in the wrong order and fold nothing at all.
-        var conversation = new List<DigitalDecodeRow>();
+        _mineAll.Clear();
 
         foreach (var row in DigitalDecodes)
         {
             if (IsForHim(row))
             {
-                row.RepeatCount = 1;
-                conversation.Add(row);
+                _mineAll.Add(row);
             }
             else if (WantsRow(row))
             {
@@ -1902,23 +2088,7 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
-        // **AND HIS OWN TRANSMISSIONS GO BACK IN, IN THE SAME PASS** (Tim's
-        // ruling, 2026-09-08). A rebuild answers something he did, and it walks
-        // `DigitalDecodes`, which a sent message is deliberately not in: without
-        // this every rebuild would empty half the conversation, and the half it
-        // emptied would be the half showing he answered at all.
-        // **THEY HAVE TO BE HERE RATHER THAN APPENDED AFTERWARDS**, because a
-        // repeat only folds where nothing came between, and a transmission added
-        // after the folding could not have come between anything.
-        conversation.AddRange(_digitalSent);
-
-        foreach (var row in conversation.OrderBy(r => r.SlotStartUtc))
-        {
-            if (!CountedAsRepeat(row))
-            {
-                DigitalMineDecodes.Insert(MineIndexFor(row), row);
-            }
-        }
+        RebuildConversation();
 
         RecountDecodedFilter();
 
@@ -1944,21 +2114,16 @@ public partial class MainWindowViewModel : ObservableObject
         // of the evening would make the left summary claim one fewer message was
         // hidden than is, and enough sends would drive it negative. Only the
         // decoded rows on that side are subtracted.
-        // **AND A FOLDED REPEAT IS STILL EVERY MESSAGE IT STANDS FOR.** One row
-        // reading `-09 x3` is three decodes off the air, so counting the row once
-        // would leave two of them looking hidden on a panel that is showing them.
-        var mineDecodes = 0;
-
-        foreach (var row in DigitalMineDecodes)
-        {
-            if (!row.IsSent)
-            {
-                mineDecodes += row.RepeatCount;
-            }
-        }
-
+        // **EVERY MESSAGE ADDRESSED TO HIM, WHOEVER SENT IT AND WHATEVER THE
+        // PANEL IS SHOWING.** The hidden count answers *what did the band do that
+        // I cannot see*, and a station on the waiting list is not hidden: it is on
+        // the screen with a count beside it and one click away. Counting only the
+        // conversation would make the left summary claim the band was busier than
+        // what it is showing by exactly the number of messages he most wanted.
+        // **AND A FOLDED REPEAT IS STILL EVERY MESSAGE IT STANDS FOR**, which is
+        // why this counts `_mineAll` rather than the rows on the panel.
         DigitalHiddenCount =
-            DigitalDecodes.Count - DigitalShownCount - mineDecodes;
+            DigitalDecodes.Count - DigitalShownCount - _mineAll.Count;
 
         OnPropertyChanged(nameof(DigitalShownCount));
         OnPropertyChanged(nameof(DigitalMineCount));

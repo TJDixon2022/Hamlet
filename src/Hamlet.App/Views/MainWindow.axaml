@@ -3967,11 +3967,54 @@
                                              (§0.5), and the colour is only ever a
                                              second carrier: every state says what it
                                              is in words. -->
-                                        <TextBlock Grid.Row="0"
-                                                   Text="{Binding DigitalTurnLine}"
-                                                   Classes.hm-sent="{Binding DigitalTurnIsMine}"
-                                                   TextWrapping="Wrap"
-                                                   FontSize="12" Margin="0,0,0,6" />
+                                        <StackPanel Grid.Row="0">
+                                            <TextBlock Text="{Binding DigitalTurnLine}"
+                                                       Classes.hm-sent="{Binding DigitalTurnIsMine}"
+                                                       TextWrapping="Wrap"
+                                                       FontSize="12" Margin="0,0,0,6" />
+
+                                            <!-- **NOTHING IS HIDDEN** (Tim's ruling,
+                                                 2026-09-08). The panel below shows one
+                                                 conversation, so every other station
+                                                 calling him is a row here, with how many
+                                                 messages it has sent and how long it has
+                                                 been quiet. A station he cannot see is a
+                                                 station he will not answer.
+
+                                                 **CLICKING ONE SWITCHES THE VIEW AND
+                                                 NOTHING ELSE.** No message is composed,
+                                                 nothing is armed, and the conversation he
+                                                 was reading moves up here rather than
+                                                 being lost.
+
+                                                 **THE AGE IS IN SLOTS**, because the slot
+                                                 is the unit the beat is in: four slots
+                                                 quiet means four chances to hear him,
+                                                 taken none. -->
+                                            <ItemsControl x:Name="DigitalWaitingRows"
+                                                          ItemsSource="{Binding DigitalWaiting}"
+                                                          IsVisible="{Binding HasDigitalWaiting}"
+                                                          Margin="0,0,0,8">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:Ft8WaitingStation">
+                                                        <Button Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowConversationCommand}"
+                                                                CommandParameter="{Binding Callsign}"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Padding="8,4" Margin="0,0,0,3">
+                                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                                <TextBlock Text="{Binding Callsign}"
+                                                                           FontFamily="Consolas,Menlo,monospace"
+                                                                           FontSize="12" FontWeight="SemiBold" />
+                                                                <TextBlock Text="{Binding Detail}"
+                                                                           FontSize="11"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
 
                                         <Grid Grid.Row="1" ColumnDefinitions="76,*"
                                               IsVisible="{Binding HasDigitalMineDecodes}">
