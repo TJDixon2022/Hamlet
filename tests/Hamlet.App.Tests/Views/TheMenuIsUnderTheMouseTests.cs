@@ -177,7 +177,20 @@ public sealed class TheMenuIsUnderTheMouseTests
                 _output.WriteLine("    " + header);
             }
 
-            Assert.Equal(expected, headers);
+            // **THE SEND OPTIONS ARE ASSERTED AGAINST THE PREDICTION AND THE LOG
+            // ITEM IS ASSERTED SEPARATELY**, because they are different kinds of
+            // thing: one arms a transmission and one opens a dialog. Unit 274
+            // added Log after these five predictions were written, and folding it
+            // into them would bury the distinction the next reader needs most.
+            Assert.Equal(
+                expected,
+                headers.Where(h => h != LogHeader).ToArray());
+
+            // **AND IT IS LAST, UNDER A RULE.** Every one of these rows is
+            // addressed to the operator, so every one of them offers it - which
+            // is the whole of what work instruction 276 restored.
+            Assert.Equal(LogHeader, headers[^1]);
+            Assert.NotNull(LogItem(flyout!));
 
             // NOTHING IS GREYED, EVER (ruled 2026-09-06).
             Assert.All(Options(flyout!), item => Assert.True(item.IsEnabled));
@@ -507,21 +520,38 @@ public sealed class TheMenuIsUnderTheMouseTests
     {
         Pump(scene.Window);
 
-        var rows = scene.Window.GetVisualDescendants()
+        // **BOTH LISTS, SINCE WORK INSTRUCTION 276.** Unit 273 split the decoded
+        // area and moved everything addressed to the operator to the right-hand
+        // list; this searched `DigitalDecodedRows` alone, so from that day it
+        // could not find the very rows it asks for and every test here went red.
+        // **It stayed red for three units** because it lives in the `Views`
+        // namespace and HM-DEC-155 means a unit runs only the tests it writes.
+        //
+        // **THE SEARCH IS OVER BOTH RATHER THAN OVER THE RIGHT ONE**, so a later
+        // unit moving a row between the lists does not silently take this test's
+        // subject away again. What it asserts is that the row can be
+        // right-clicked wherever it is drawn.
+        var lists = scene.Window.GetVisualDescendants()
             .OfType<ItemsControl>()
-            .FirstOrDefault(c => c.Name == "DigitalDecodedRows");
+            .Where(c => c.Name is "DigitalDecodedRows" or "DigitalMineRows")
+            .ToList();
 
-        Assert.NotNull(rows);
+        Assert.True(
+            lists.Count == 2,
+            "expected both decoded lists in the window, found "
+            + string.Join(", ", lists.Select(l => l.Name)));
 
-        var grid = rows!.GetVisualDescendants()
-            .OfType<Grid>()
+        var grid = lists
+            .SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
             .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row && which(row));
 
         Assert.True(
             grid is not null,
-            "no realized row matched. Rows on the table: " + scene.Panel.DigitalVisibleDecodes.Count
+            "no realized row matched. Left rows: "
+            + scene.Panel.DigitalVisibleDecodes.Count
+            + "; mine rows: " + scene.Panel.DigitalMineDecodes.Count
             + "; realized grids with a row DataContext: "
-            + rows.GetVisualDescendants().OfType<Grid>()
+            + lists.SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
                 .Count(g => g.DataContext is DigitalDecodeRow));
 
         grid!.RaiseEvent(new ContextRequestedEventArgs
@@ -533,13 +563,162 @@ public sealed class TheMenuIsUnderTheMouseTests
         return scene.Window.SendFlyoutUnderTheMouse;
     }
 
+    /// <summary>
+    /// Work instruction 276 task 3: a row on each list has a menu, and Log is on
+    /// the one it belongs on.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS THE ASSERTION THAT WAS MISSING** — not that a menu opens,
+    /// which the tests above have always done, but that it opens on **each list**.
+    /// Unit 273 split the decoded area and carried the menu to neither; it stayed
+    /// on the left, and the right-hand list — the only place a reply is ever sent
+    /// from — had nothing to right-click for three units.</para>
+    /// <para>**AND LOG IS ASSERTED ABSENT AS WELL AS PRESENT.** It is gated on the
+    /// message being addressed to the operator, which on the mine side is every
+    /// row and on the left side is none. A test that only checked it was there
+    /// would pass on a gate that had been removed altogether.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task BothListsCarryTheMenuAndLogIsOnTheRightOne()
+    {
+        var scene = await SceneAsync();
+
+        // **A ROW ON EACH SIDE, FOUND IN THE LISTS THEMSELVES** rather than
+        // assumed, so this fails loudly if a later unit moves either.
+        var mine = Assert.Single(
+            scene.Panel.DigitalMineDecodes, r => r.Sender == "N5TT");
+        var left = scene.Panel.DigitalVisibleDecodes.First(
+            r => r.Addressee.StartsWith("CQ", StringComparison.Ordinal));
+
+        _output.WriteLine("mine row : " + mine.Message);
+        _output.WriteLine("left row : " + left.Message);
+        _output.WriteLine("");
+
+        // ---- the mine side -------------------------------------------------
+        var onMine = RightClickRow(scene, r => ReferenceEquals(r, mine));
+
+        // **THE ONE ASSERTION THAT WAS MISSING FOR THREE UNITS.** Against the
+        // tree as the operator found it this is null: the row is realized, the
+        // context request is raised on it, and no flyout comes back, because the
+        // handler was never carried to this list.
+        Assert.True(
+            onMine is not null,
+            "right-clicking a row on the mine list produced no menu. The list "
+            + "carries every message addressed to the operator, so it is the one "
+            + "place a reply is ever sent from.");
+
+        _output.WriteLine("right-click on the mine row:");
+
+        foreach (var header in Headers(onMine!))
+        {
+            _output.WriteLine("    " + header);
+        }
+
+        Assert.NotEmpty(Options(onMine!));
+        Assert.All(Options(onMine!), o => Assert.True(o.IsEnabled));
+
+        var log = LogItem(onMine!);
+
+        Assert.NotNull(log);
+        Assert.Equal(LogHeader, Header(log!));
+
+        // **IT TRANSMITS NOTHING**, which is checked by what it carries rather
+        // than by trusting the header: a send item hands the command a message,
+        // and this hands it the row.
+        Assert.IsType<DigitalDecodeRow>(log!.CommandParameter);
+        Assert.Same(mine, log.CommandParameter);
+
+        // ---- the left side -------------------------------------------------
+        var onLeft = RightClickRow(scene, r => ReferenceEquals(r, left));
+
+        Assert.NotNull(onLeft);
+
+        _output.WriteLine("");
+        _output.WriteLine("right-click on the left row (" + left.Message + "):");
+
+        foreach (var header in Headers(onLeft!))
+        {
+            _output.WriteLine("    " + header);
+        }
+
+        // **A CQ IS NOT A CONTACT**, so there is nothing to log and the item is
+        // absent rather than present and disabled — grey is reserved for what
+        // genuinely cannot be used (§0.5.1).
+        Assert.Null(LogItem(onLeft!));
+        Assert.DoesNotContain(LogHeader, Headers(onLeft!));
+
+        scene.Window.Close();
+    }
+
+    /// <summary>
+    /// A third-party exchange on the left has a menu and no Log.
+    /// </summary>
+    /// <remarks>
+    /// **TWO OTHER STATIONS WORKING EACH OTHER ARE NOT HIS CONTACT**, so the menu
+    /// still offers what he could send them and offers nothing to write down.
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task AThirdPartyExchangeHasAMenuAndNoLog()
+    {
+        var scene = await SceneAsync();
+
+        Add(scene.Panel, 40, "K9TC KJ6IX RRR");
+
+        Pump(scene.Window);
+
+        var row = scene.Panel.DigitalVisibleDecodes.Single(
+            r => r.Message == "K9TC KJ6IX RRR");
+
+        var flyout = RightClickRow(scene, r => ReferenceEquals(r, row));
+
+        Assert.NotNull(flyout);
+
+        _output.WriteLine("right-click on K9TC KJ6IX RRR:");
+
+        foreach (var header in Headers(flyout!))
+        {
+            _output.WriteLine("    " + header);
+        }
+
+        // The menu is there and it offers messages, because nothing is forbidden.
+        Assert.NotEmpty(Options(flyout!));
+
+        // And there is nothing of his to log.
+        Assert.Null(LogItem(flyout!));
+
+        scene.Window.Close();
+    }
+
+    /// <summary>What unit 274's Log item reads as.</summary>
+    private const string LogHeader = "Log this contact...";
+
     /// <summary>What the operator reads, item by item, in the order shown.</summary>
     private static List<string> Headers(MenuFlyout flyout)
         => flyout.Items.OfType<MenuItem>().Select(Header).ToList();
 
-    /// <summary>The clickable messages - everything that carries the command.</summary>
+    /// <summary>The clickable messages - everything that would transmit.</summary>
+    /// <remarks>
+    /// **A SEND OPTION IS DISCRIMINATED BY WHAT IT CARRIES, NOT BY POSITION.**
+    /// Every send item hands `SendMessageCommand` the message text, so its
+    /// parameter is a `string`; unit 274's Log item hands `LogContactCommand` the
+    /// row, so its parameter is a `DigitalDecodeRow`. **That distinction is the
+    /// one this file exists to police**: this unit adds a second place to click
+    /// and must not add a second way to transmit, and counting "items with a
+    /// command" would have blurred exactly that.
+    /// </remarks>
     private static List<MenuItem> Options(MenuFlyout flyout)
-        => flyout.Items.OfType<MenuItem>().Where(i => i.Command is not null).ToList();
+        => flyout.Items.OfType<MenuItem>()
+            .Where(i => i.Command is not null && i.CommandParameter is string)
+            .ToList();
+
+    /// <summary>The Log item, or null where the menu does not offer one.</summary>
+    /// <remarks>
+    /// **IT TRANSMITS NOTHING**, and it is found by its parameter being the row
+    /// rather than a message - see <see cref="Options"/>.
+    /// </remarks>
+    private static MenuItem? LogItem(MenuFlyout flyout)
+        => flyout.Items.OfType<MenuItem>()
+            .FirstOrDefault(i => i.CommandParameter is DigitalDecodeRow);
 
     /// <summary>The notes - everything that says something and cannot be clicked.</summary>
     private static List<MenuItem> Notes(MenuFlyout flyout)

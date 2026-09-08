@@ -3967,7 +3967,31 @@
                                                           ItemsSource="{Binding DigitalMineDecodes}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate x:DataType="vm:DigitalDecodeRow">
-                                                        <Grid ColumnDefinitions="76,*" RowDefinitions="Auto,Auto">
+                                                        <!-- **THE SAME HANDLER THE LEFT LIST USES, NOT A
+                                                             SECOND MENU** (Tim, 2026-09-07: *there is on
+                                                             the CQ or the everything, the left panel, but
+                                                             nothing on the right panel*).
+
+                                                             **THIS LIST IS WHERE A REPLY IS EVER SENT
+                                                             FROM.** Unit 273 split the decoded area and
+                                                             moved everything addressed to him here, and the
+                                                             menu stayed behind on the list of other
+                                                             people's traffic - so the one place he needs to
+                                                             answer from had nothing to right-click, and the
+                                                             `Log this contact...` item unit 274 added has
+                                                             never once been shown, because it is gated on
+                                                             the same predicate that decides a row belongs
+                                                             on this side.
+
+                                                             **`OnDecodedRowContextRequested` AND NOT A COPY
+                                                             OF IT.** Two menus drift, and one of them is
+                                                             the one nobody tests. The handler reads the
+                                                             row off its own control's `DataContext`, so it
+                                                             does not know or care which list the row was
+                                                             drawn in. -->
+                                                        <Grid ColumnDefinitions="76,*" RowDefinitions="Auto,Auto"
+                                                              Background="Transparent"
+                                                              ContextRequested="OnDecodedRowContextRequested">
                                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Utc}"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
                                                                        Margin="0,1,14,1" />
