@@ -44,16 +44,6 @@
 
              **A MARK AND NOT A BUTTON.** It opens nothing and changes nothing, so
              a button would promise an action it does not have (§0.5.1). -->
-        <Style Selector="TextBlock.hm-tip">
-            <Setter Property="Text" Value="?" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="Width" Value="15" />
-            <Setter Property="Height" Value="15" />
-            <Setter Property="TextAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
-        </Style>
-
         <Style Selector="Arc">
             <Setter Property="StrokeThickness" Value="3" />
             <Setter Property="Stroke" Value="{StaticResource HmTextMutedBrush}" />
@@ -61,6 +51,14 @@
 
         <Style Selector="Arc.hm-his">
             <Setter Property="Stroke" Value="{StaticResource HmAmberBrush}" />
+        </Style>
+
+        <!-- **THEIRS IS THINNER, AND THAT IS WHAT SURVIVES GRAYSCALE** (§0.6,
+             work instruction 281 task 3). The caption `yours is next` used to be
+             the non-colour carrier separating his slot from theirs; with it gone
+             the hue would have been alone. -->
+        <Style Selector="Arc.hm-theirs">
+            <Setter Property="StrokeThickness" Value="1.5" />
         </Style>
 
         <Style Selector="Arc.hm-onair">
@@ -3326,7 +3324,7 @@
 
                                     <TextBlock x:Name="DigitalSendReservedLine"
                                                Text="{Binding DigitalSendLine}"
-                                               ToolTip.Tip="{x:Static vm:MainWindowViewModel.SendIdleTip}"
+                                               ToolTip.Tip="{Binding DigitalSendLineTip}"
                                                TextWrapping="Wrap"
                                                VerticalAlignment="Top"
                                                FontSize="11"
@@ -3437,9 +3435,14 @@
                                                    FontSize="11"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                        <TextBlock Classes="hm-tip"
-                                                   x:Name="DigitalTransmitDriveTip"
-                                                   ToolTip.Tip="{Binding TransmitDriveTip}" />
+                                        <!-- **ONE MARK IDIOM AND NOT TWO** (§0). Unit
+                                             280 drew this as a styled TextBlock reading
+                                             `?`; work instruction 281 built the control
+                                             for it, which also says what kind of thing
+                                             it holds. -->
+                                        <ctl:HintMarkControl x:Name="DigitalTransmitDriveTip"
+                                            Kind="Tip" VerticalAlignment="Center"
+                                            Text="{Binding TransmitDriveTip}" />
                                     </StackPanel>
 
                                     <!-- **WHAT THE SOUND CARD WAS ACTUALLY
@@ -3467,12 +3470,28 @@
                                          SAYS SO** rather than falling back to
                                          the composed peak in a measurement's
                                          words (§0.0). -->
-                                    <TextBlock x:Name="DigitalTransmitLevelText"
-                                               Text="{Binding DigitalTransmitLevelLine}"
-                                               ToolTip.Tip="{x:Static vm:MainWindowViewModel.TransmitLevelIdleTip}"
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <!-- **THE FACTS, AND THE REST ON THE MARK** (work
+                                         instruction 281 task 3). What the card got and
+                                         whether anything had to be clamped are facts and
+                                         stay; the clamp sentence and the boundary past
+                                         the sound card - Windows own volume and the
+                                         radio input gain - are on the mark beside it.
+                                         **The author told unit 280 to keep them visible
+                                         and that was wrong**: a hover preserves a fact
+                                         exactly as well as a paragraph does. -->
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock x:Name="DigitalTransmitLevelText"
+                                                   Text="{Binding DigitalTransmitLevelLine}"
+                                                   ToolTip.Tip="{x:Static vm:MainWindowViewModel.TransmitLevelIdleTip}"
+                                                   TextWrapping="Wrap"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <ctl:HintMarkControl x:Name="DigitalTransmitLevelTip"
+                                            Kind="Boundary" VerticalAlignment="Center"
+                                            Text="{x:Static vm:MainWindowViewModel.TransmitLevelTip}" />
+                                    </StackPanel>
 
                                     <!-- **WHERE THE CONTACT STANDS AFTER HIS OWN
                                          LAST TRANSMISSION** (work instruction
@@ -4122,7 +4141,13 @@
                                                  arc is a fraction of whichever this is - so
                                                  a full ring means all of it either way, and
                                                  the thickness and the caption say which. -->
-                                            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,8">
+                                            <!-- **THE WHOLE SENTENCE IS ON THE RING**
+                                                 (work instruction 281 task 3). Three of
+                                                 the six captions left the screen; hovering
+                                                 the ring answers for all six. -->
+                                            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,8"
+                                                  Background="Transparent"
+                                                  ToolTip.Tip="{Binding TurnRingTip}">
                                                 <Panel Grid.Column="0" Width="44" Height="44">
                                                     <Ellipse Width="40" Height="40"
                                                              StrokeThickness="3"
@@ -4134,6 +4159,7 @@
                                                          SweepAngle="{Binding TurnRingSweep}"
                                                          Classes.hm-unknown="{Binding TurnRingIsUnknown}"
                                                          Classes.hm-onair="{Binding TurnRingIsOnAir}"
+                                                         Classes.hm-theirs="{Binding TurnRingIsTheirs}"
                                                          Classes.hm-his="{Binding TurnRingIsHis}" />
 
                                                     <TextBlock x:Name="DigitalTurnCount"
@@ -4272,6 +4298,7 @@
                                                             <TextBlock Classes="hm-caption"
                                                                        Classes.hm-sent="{Binding IsSent}"
                                                                        Text="{Binding Caption}"
+                                                                       ToolTip.Tip="{Binding DirectionTip}"
                                                                        FontFamily="Consolas,Menlo,monospace"
                                                                        FontSize="10"
                                                                        Foreground="{StaticResource HmTextMutedBrush}" />
@@ -4387,11 +4414,6 @@
                                VerticalAlignment="Center"
                                FontSize="20" FontWeight="Bold"
                                Foreground="{StaticResource HmGreenBrush}" />
-
-                    <TextBlock Text="{Binding ContactCountWord}"
-                               VerticalAlignment="Bottom" Margin="0,0,0,3"
-                               FontSize="11"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
 
                     <TextBlock x:Name="ContactBadgeProgress"
                                Text="{Binding ContactBadgeProgress}"

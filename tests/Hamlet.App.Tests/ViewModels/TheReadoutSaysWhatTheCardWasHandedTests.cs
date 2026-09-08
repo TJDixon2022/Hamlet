@@ -113,12 +113,15 @@ public sealed class TheReadoutSaysWhatTheCardWasHandedTests
     /// guessing whether he is reading his own setting back.
     /// </summary>
     /// <remarks>
-    /// Composed peak and written peak are different quantities and the screen
-    /// carries both, in two sentences that are worded apart: unit 268's 456 ms
-    /// against unit 263's 15-20 ms is the precedent for saying so on the face of
-    /// it. **The clip count is named for what it counts too** - clamping on the
-    /// way out of the sink, which is not the same thing as the composed array
-    /// having a sample outside the rails.
+    /// <para>Composed peak and written peak are different quantities and the screen
+    /// carries both, worded apart: unit 268's 456 ms against unit 263's 15-20 ms is
+    /// the precedent for saying so on the face of it.</para>
+    /// <para>**AND ON 2026-09-08 THE SENTENCES ROUND THEM WENT TO A HOVER** (work
+    /// instruction 281 task 3). What stays on the screen is what the card got and
+    /// whether anything had to be clamped, which are the facts; the clamp sentence
+    /// and the boundary past the sound card are on the mark beside it. **So this
+    /// asserts both halves** — the numbers unhovered, the statement behind the mark
+    /// — because a fact that reached neither would have been deleted.</para>
     /// </remarks>
     [AvaloniaFact]
     public async Task TheReadoutNamesTheQuantityItIsShowing()
@@ -139,8 +142,8 @@ public sealed class TheReadoutSaysWhatTheCardWasHandedTests
         _output.WriteLine("the composed line beside it reads:");
         _output.WriteLine("  " + composed);
 
-        // **THE MEASURED ONE SAYS THE CARD WAS HANDED IT.**
-        Assert.Contains("handed", measured, StringComparison.OrdinalIgnoreCase);
+        // **THE MEASURED ONE STILL NAMES THE THING THAT GOT IT**, which is what
+        // keeps it from reading as the drive setting.
         Assert.Contains("sound card", measured, StringComparison.OrdinalIgnoreCase);
 
         // **AND SAYS WHAT THE CLIP COUNT COUNTS.**
@@ -149,6 +152,21 @@ public sealed class TheReadoutSaysWhatTheCardWasHandedTests
         // **AND THE OTHER ONE STILL SAYS IT IS THE COMPOSED LEVEL**, so the two
         // quantities on the screen are never one number wearing two hats.
         Assert.Contains("composed", composed, StringComparison.OrdinalIgnoreCase);
+
+        // **NOTHING WAS DELETED, IT MOVED** (§0.0, HM-DEC-092). The sentence that
+        // left the screen says what the number is and what lies past it; if it is
+        // not on the mark it is gone.
+        var mark = Named<Hamlet.App.Controls.HintMarkControl>(
+            scene.Window, "DigitalTransmitLevelTip");
+
+        var behind = Avalonia.Controls.ToolTip.GetTip(mark) as string ?? "";
+
+        _output.WriteLine("and the mark beside it holds:");
+        _output.WriteLine("  " + behind);
+
+        Assert.Contains("after clamping", behind, StringComparison.Ordinal);
+        Assert.Contains("not the level Hamlet composed at", behind, StringComparison.Ordinal);
+        Assert.Contains("which Hamlet cannot see", behind, StringComparison.Ordinal);
 
         scene.Window.Close();
     }

@@ -220,14 +220,16 @@ public sealed record DigitalDecodeRow(
     /// </remarks>
     public string Shown => Message;
 
-    /// <summary>The time, and whether he sent it, beneath the message.</summary>
+    /// <summary>The time beneath the message, and how often it was heard.</summary>
     /// <remarks>
-    /// <para>**REMOVING WORDS IS NOT REMOVING FACTS** (Tim's ruling, 2026-09-08,
-    /// and the standing §0.0 rule). The conversation now carries its direction in
-    /// the alignment - his own on the right, what he heard on the left - which is
-    /// what a reader takes in without reading anything. **The word stays anyway**,
-    /// because alignment alone is a shape and §0.6 does not let a shape be the only
-    /// carrier of a meaning.</para>
+    /// <para>**`sent` CAME OUT ON 2026-09-08** (Tim, work instruction 281 task 3:
+    /// *the alignment says it*). His own messages sit on the right in an amber-edged
+    /// bubble and what he heard sits on the left, and that is read without reading.
+    /// **Unit 280 kept the word citing §0.6 and the citation was wrong**: that rule
+    /// is about colour, and its own practical test is whether the screen still reads
+    /// in grayscale. Alignment is exactly what does survive grayscale.</para>
+    /// <para>**THE FACT IS ONE HOVER AWAY** (<see cref="DirectionTip"/>), not
+    /// deleted.</para>
     /// <para>**AND THE TIME STAYS.** It is the one thing on the row that lets him
     /// see he answered a slot late, which is the whole reason the conversation was
     /// built.</para>
@@ -236,7 +238,7 @@ public sealed record DigitalDecodeRow(
     {
         get
         {
-            var when = IsSent ? Utc + " · sent" : Utc;
+            var when = Utc;
 
             // **THE FOLD MOVED UNDER THE MESSAGE ON 2026-09-08** (Tim: show, do
             // not tell). `x2` sat inside the message text, where it read as part
@@ -253,6 +255,16 @@ public sealed record DigitalDecodeRow(
             };
         }
     }
+
+    /// <summary>Which way this message went, for the caption's own hover.</summary>
+    /// <remarks>
+    /// **MOVED, NOT DELETED.** The word `sent` left the caption on 2026-09-08 and
+    /// this is where it went, with the slot time beside it (§0.0, HM-DEC-092).
+    /// </remarks>
+    public string DirectionTip
+        => IsSent
+            ? "You sent this at " + Utc + " UTC."
+            : "Hamlet heard this at " + Utc + " UTC.";
 
     /// <summary>What the row says it is, for a reader who cannot see colour.</summary>
     /// <remarks>

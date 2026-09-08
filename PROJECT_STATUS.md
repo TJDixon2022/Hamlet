@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 8
+TASK: 3 of 8
 WORK_INSTRUCTION: 281 - text only where he hovers
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T13:34:04-04:00
-NOTE: Task 2 - building the hover mark and moving advice behind it. Task 1 found ReceiveAdvice reaches no screen at all (raised HM-OPEN-087); the largest real instance is SettingsWindow at 6,845 characters, 92 per cent of it teaching prose.
+UPDATED: 2026-09-08T13:40:57-04:00
+NOTE: Task 3 - the turn ring captions, sent under a bubble, contacts and 6 to 10 beside the count, and the two Send-block strings unit 280 was told to keep. Task 2 done: Settings 6,845 to 1,628 with 31 hover marks and nothing deleted.
 
 ---
 

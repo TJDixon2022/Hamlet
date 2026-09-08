@@ -1601,26 +1601,62 @@ public partial class MainWindowViewModel : ObservableObject
                 ? "?"
                 : _turn.SecondsLeft.Value.ToString(CultureInfo.InvariantCulture);
 
-    /// <summary>At most three words under the ring.</summary>
+    /// <summary>What is beside the ring, which for four of six states is nothing.</summary>
     /// <remarks>
-    /// <para>**NO SENTENCES** (Tim's ruling, 2026-09-08: show, do not tell). The
-    /// two-sentence transmitting line went with this; what is left says which of
-    /// the states it is in and nothing more.</para>
-    /// <para>**AND IT IS THE NON-COLOUR CARRIER** (§0.6). His slot and theirs are
-    /// an accent ring and a muted one, which is a hue difference and may not be the
-    /// only one: the caption separates them in grayscale and in print.</para>
-    /// <para>**THE ON-AIR CAPTION IS THE MESSAGE ITSELF**, which is the most useful
-    /// three-ish words available while his carrier is up: what is going out.</para>
+    /// <para>**TEXT ONLY WHERE HE HOVERS** (Tim's ruling, 2026-09-08, work
+    /// instruction 281 task 3). *click a reply*, *yours is next* and *nothing heard
+    /// yet* are gone from the screen and are in <see cref="TurnRingTip"/>. The ring
+    /// carries those states on its own.</para>
+    /// <para>**TWO OF THE SIX STAY, AND BOTH ARE FAULTS.** A clock that has not been
+    /// measured and a transmission that stopped partway are things gone wrong, and a
+    /// fault speaks unasked — the single exception to the ruling. Hiding either
+    /// behind a hover would be §0.0 broken by omission.</para>
+    /// <para>**THE ON-AIR LINE IS NOT A CAPTION.** It is the message going out,
+    /// which is a fact and the most useful thing on the screen while his carrier is
+    /// up.</para>
+    /// <para>**AND REMOVING THE WORDS MOVED THE GRAYSCALE CARRIER RATHER THAN
+    /// DROPPING IT** (§0.6). His slot and theirs used to separate by hue and by
+    /// caption; with the caption gone the hue would have been alone, so the two are
+    /// now drawn at different stroke thicknesses. Colour is still never the only
+    /// carrier — it is now never a carrier at all.</para>
     /// </remarks>
     public string TurnRingCaption
         => _turn.State switch
         {
-            Ft8TurnState.Mine => "click a reply",
-            Ft8TurnState.Theirs => "yours is next",
             Ft8TurnState.Transmitting => _armedText.Length > 0 ? _armedText : "on air",
             Ft8TurnState.Stopped => "stopped partway",
             Ft8TurnState.NoClock => "clock not measured",
-            _ => "nothing heard yet",
+            _ => string.Empty,
+        };
+
+    /// <summary>The whole sentence for whichever state the ring is in.</summary>
+    /// <remarks>
+    /// **NOTHING WAS DELETED, IT MOVED** (§0.0, HM-DEC-092). Every state answers,
+    /// including the three that still show words, because a hover that sometimes
+    /// says nothing teaches somebody not to bother hovering.
+    /// </remarks>
+    public string TurnRingTip
+        => _turn.State switch
+        {
+            Ft8TurnState.Mine =>
+                "This slot is yours and nothing is going out in it. Right-click a "
+                + "decoded message to answer whoever sent it, or press CQ.",
+            Ft8TurnState.Theirs =>
+                "The station you are working has this slot, so the next one is "
+                + "yours. The number is how many seconds are left of theirs.",
+            Ft8TurnState.Transmitting =>
+                "Your carrier is up and this is what is going out. The number is "
+                + "how much of the transmission is left.",
+            Ft8TurnState.Stopped =>
+                "You stopped a transmission partway through, so what went out was "
+                + "not a whole message and nobody will decode it.",
+            Ft8TurnState.NoClock =>
+                "Hamlet has not measured this computer's clock against the slot "
+                + "boundaries yet, so it does not know where a slot starts and "
+                + "cannot work out whose turn it is.",
+            _ =>
+                "Nothing has been heard on this frequency yet, so there is nobody "
+                + "to take a turn with and no turn to work out.",
         };
 
     /// <summary>True where the ring is drawn dashed and empty.</summary>
@@ -1642,6 +1678,16 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>True where the slot running is his own and free.</summary>
     public bool TurnRingIsHis => _turn.State == Ft8TurnState.Mine;
+
+    /// <summary>True where the slot running belongs to the other station.</summary>
+    /// <remarks>
+    /// **THE GRAYSCALE CARRIER THE CAPTION USED TO BE** (§0.6, work instruction 281
+    /// task 3). *yours is next* left the screen, and hue alone cannot tell his slot
+    /// from theirs on a printed page or to one man in twelve, so theirs is drawn at
+    /// a thinner stroke. Four states, four appearances, none of them a colour: thin
+    /// is theirs, ordinary is his, thick is on air, dashed is not known.
+    /// </remarks>
+    public bool TurnRingIsTheirs => _turn.State == Ft8TurnState.Theirs;
 
     /// <summary>True where a turn has actually been derived.</summary>
     /// <remarks>
@@ -1706,9 +1752,11 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(TurnRingSweep));
         OnPropertyChanged(nameof(TurnRingCount));
         OnPropertyChanged(nameof(TurnRingCaption));
+        OnPropertyChanged(nameof(TurnRingTip));
         OnPropertyChanged(nameof(TurnRingIsUnknown));
         OnPropertyChanged(nameof(TurnRingIsOnAir));
         OnPropertyChanged(nameof(TurnRingIsHis));
+        OnPropertyChanged(nameof(TurnRingIsTheirs));
     }
 
     /// <summary>The slot of the last thing heard from the station he is working.</summary>
@@ -1805,9 +1853,11 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(TurnRingSweep));
         OnPropertyChanged(nameof(TurnRingCount));
         OnPropertyChanged(nameof(TurnRingCaption));
+        OnPropertyChanged(nameof(TurnRingTip));
         OnPropertyChanged(nameof(TurnRingIsUnknown));
         OnPropertyChanged(nameof(TurnRingIsOnAir));
         OnPropertyChanged(nameof(TurnRingIsHis));
+        OnPropertyChanged(nameof(TurnRingIsTheirs));
     }
 
     /// <summary>Read the beat once, for a test, without waiting on a timer.</summary>
@@ -9082,6 +9132,20 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private string _digitalSendLine = NothingHasBeenSent;
 
+    /// <summary>What the send line's own hover holds, which follows the line.</summary>
+    /// <remarks>
+    /// **A STATIC TOOLTIP COULD NOT FOLLOW IT** (work instruction 281 task 3). The
+    /// idle line and the after-a-send line say different things, so one fixed
+    /// sentence behind both would have been right about one of them. Idle it says
+    /// what the line will carry; once something has gone out it says what the
+    /// composed level is, and what it cannot tell him (<see cref="ComposedLevelTip"/>).
+    /// </remarks>
+    public string DigitalSendLineTip
+        => DigitalSendLine == NothingHasBeenSent ? SendIdleTip : ComposedLevelTip;
+
+    partial void OnDigitalSendLineChanged(string value)
+        => OnPropertyChanged(nameof(DigitalSendLineTip));
+
     /// <summary>
     /// The peak amplitude Hamlet builds a transmission at, as a percentage of
     /// full scale - **the same setting the Settings screen writes, on the tab.**
@@ -9202,12 +9266,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// <returns>One sentence, naming the quantity and what the count counts.</returns>
     private static string MeasuredLevelLine(ITransmitLevelReport? report)
     {
+        // **A DEVICE THAT WILL NOT SAY IS A FAULT AND SPEAKS UNASKED** (Tim,
+        // 2026-09-08). Short, because a fault is a sentence and not a paragraph;
+        // what the level above actually is stays with it, since reading a drive
+        // setting as a measurement is the misreading this line exists to stop.
         if (report is null)
         {
-            return "Hamlet has no measurement of what the sound card was handed "
-                + "for that transmission - this transmit device does not report "
-                + "one. The level above is what Hamlet composed at, which is the "
-                + "drive setting and not a measurement.";
+            return "this transmit device reports no level";
         }
 
         var peak = report.PeakWritten;
@@ -9216,16 +9281,33 @@ public partial class MainWindowViewModel : ObservableObject
             ? (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture) + " dBFS"
             : "silence";
 
-        return "The sound card was handed " + level + " - that is the peak the "
-            + "endpoint actually got, measured on the way out after clamping, and "
-            + "not the level Hamlet composed at. "
-            + (report.ClippedSamples == 0
-                ? "Nothing had to be clamped."
-                : report.ClippedSamples.ToString(CultureInfo.InvariantCulture)
-                  + " samples had to be clamped on the way out.")
-            + " Beyond this point are Windows' own volume for that device and "
-            + "the radio's input gain, which Hamlet cannot see.";
+        // **THE FACTS AND NOTHING ROUND THEM** (work instruction 281 task 3): what
+        // the card got, and whether anything had to be clamped to hand it over. The
+        // clamp sentence and the boundary past the sound card are in
+        // <see cref="TransmitLevelTip"/>, one hover away.
+        return report.ClippedSamples == 0
+            ? "sound card got " + level + " · nothing clamped"
+            : "sound card got " + level + " · "
+              + report.ClippedSamples.ToString(CultureInfo.InvariantCulture)
+              + " samples clamped";
     }
+
+    /// <summary>What the measured level means, and what lies past it.</summary>
+    /// <remarks>
+    /// <para>**THE AUTHOR TOLD UNIT 280 TO KEEP THESE VISIBLE AND THAT WAS WRONG**
+    /// (work instruction 281 task 3). They are facts, and a hover preserves a fact
+    /// exactly as well as a paragraph does.</para>
+    /// <para>**THE BOUNDARY IS THE HALF THAT MATTERS** (§0.0): what Hamlet handed
+    /// the sound card is not what left the radio, because Windows' own volume for
+    /// that endpoint and the radio's input gain are both past the last thing Hamlet
+    /// can see. `SHACK_FACTS.md` FACT-004.</para>
+    /// </remarks>
+    public const string TransmitLevelTip =
+        "That is the peak the sound card actually got, measured on the way out "
+        + "after clamping, and not the level Hamlet composed at. Anything clamped "
+        + "was a sample too loud to hand over, trimmed to fit. Beyond this point "
+        + "are Windows' own volume for that device and the radio's input gain, "
+        + "which Hamlet cannot see.";
 
     /// <summary>What the Send area says about a contact before anything is sent.</summary>
     internal const string NoContactStandsYet =
@@ -10126,29 +10208,40 @@ public partial class MainWindowViewModel : ObservableObject
             ? (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture)
             : "silent";
 
-        return "It was composed at " + dbfs + " dBFS with "
+        // **THE FACTS, AND THE PARAGRAPH ON THE MARK** (work instruction 281 task
+        // 3). This ran to 473 characters on the screen after every send, and task
+        // 1's measurement never saw it because it only appears once something has
+        // gone out. **What is a fact stays**: the level Hamlet built at, and
+        // whether anything clipped getting there. What is a boundary statement or
+        // a piece of advice is ComposedLevelTip, one hover away.
+        return "composed at " + dbfs + " dBFS \u00b7 "
             + (clipped == 0
                 ? "nothing clipped"
-                : clipped.ToString(CultureInfo.InvariantCulture) + " samples clipped")
-            + " - that is the level Hamlet built, before this machine's own volume "
-            + "for that device and before the radio's input gain. Set the radio's "
-            + "drive against its own ALC meter. "
-
-            // **THE CLIP COUNT HERE CANNOT MOVE, AND SAYING SO IS THE POINT**
-            // (work instruction 269, task 4). Measured tonight: at 1.0, the
-            // highest drive `Ft8Composer.DriveIsUsable` accepts, a whole slot
-            // composed at 48000 Hz is 606720 samples with a largest magnitude of
-            // exactly 1.000000 and 0 outside the rails. It is zero by
-            // construction - the composer multiplies a unit-amplitude sine by the
-            // drive and refuses a drive above full scale - so an operator who
-            // read "nothing clipped" as evidence that his drive is safe would
-            // have been told something by a screen that cannot say it (§0.0).
-            // The count that can move is the sink's, and it is the other line.
-            + "The clipped count here is of the audio Hamlet built, and the "
-            + "composer will not build above full scale, so on this path it is "
-            + "always none. What the sound card actually had to clamp is the "
-            + "measured line under the drive control.";
+                : clipped.ToString(CultureInfo.InvariantCulture) + " samples clipped");
     }
+
+    /// <summary>What the composed level means, and what it cannot tell him.</summary>
+    /// <remarks>
+    /// <para>**THE CLIP COUNT HERE CANNOT MOVE, AND SAYING SO IS THE POINT** (work
+    /// instruction 269, task 4). Measured: at 1.0, the highest drive
+    /// <c>Ft8Composer.DriveIsUsable</c> accepts, a whole slot composed at 48000 Hz
+    /// is 606720 samples with a largest magnitude of exactly 1.000000 and 0 outside
+    /// the rails. It is zero by construction, since the composer multiplies a
+    /// unit-amplitude sine by the drive and refuses a drive above full scale, so an
+    /// operator who read *nothing clipped* as evidence that his drive is safe would
+    /// have been told something by a screen that cannot say it (§0.0). The count
+    /// that can move is the sink's, and it is the other line.</para>
+    /// <para>**MOVED TO A HOVER ON 2026-09-08 AND NOT DELETED** (work instruction
+    /// 281 task 3). It is a boundary statement, and a hover preserves one exactly as
+    /// well as a paragraph does.</para>
+    /// </remarks>
+    public const string ComposedLevelTip =
+        "That is the level Hamlet built, before this machine's own volume for that "
+        + "device and before the radio's input gain. Set the radio's drive against "
+        + "its own ALC meter. The clipped count here is of the audio Hamlet built, "
+        + "and the composer will not build above full scale, so on this path it is "
+        + "always none. What the sound card actually had to clamp is the measured "
+        + "line under the drive control.";
 
     /// <summary>How much of a stopped transmission went out, in seconds.</summary>
     /// <param name="run">What the sequence did.</param>

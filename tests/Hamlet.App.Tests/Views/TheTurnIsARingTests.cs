@@ -13,21 +13,25 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.Views;
 
 /// <summary>
-/// Work instruction 280, task 3: the beat is a ring with a countdown in it, and
-/// none of its four states is a sentence.
+/// Work instruction 281, task 3: the ring carries its states with no captions at
+/// all, and hovering it says which in words.
 /// </summary>
 /// <remarks>
-/// <para>**TIM'S RULING, 2026-09-08: show, do not tell.** The line it replaced read
-/// *You are transmitting, with 2 seconds of it left. This slot is yours and you are
-/// using it, so there is nothing to send into until it finishes* — two sentences to
-/// say one thing, on the screen he watches with fourteen seconds to decide in.</para>
+/// <para>**TIM'S RULING, 2026-09-08**: *"I want clean visual screens with text only
+/// where I, the user, intentionally hover."* Unit 280 cut the two-sentence turn line
+/// down to two- and three-word captions; this cuts the captions. *click a reply*,
+/// *yours is next* and *nothing heard yet* are on the ring's own hover.</para>
+/// <para>**TWO CAPTIONS STAY AND BOTH ARE FAULTS.** A clock that has not been
+/// measured and a transmission stopped partway are things gone wrong, and a fault
+/// speaks unasked — the one exception the ruling carries. The on-air line is not a
+/// caption either: it is the message going out, which is a fact.</para>
 /// <para>**IT COUNTS DOWN AND DOES NOTHING ELSE** (§0.2). Nothing reads it, nothing
 /// arms on it, and reaching zero sends nothing.</para>
-/// <para>**AND THE FOUR SEPARATE WITHOUT COLOUR** (§0.6). Roughly one man in twelve
-/// has a colour vision deficiency and this hobby's demographics make that a real
-/// slice of the people who will use this, so the ring carries its state in its dash
-/// pattern and its thickness as well as its ink, and the caption differs in every
-/// state.</para>
+/// <para>**AND THE FOUR SEPARATE WITHOUT COLOUR OR WORDS** (§0.6). The caption used
+/// to be one of the carriers, so taking it away would have left hue alone to tell
+/// his slot from theirs; theirs is now drawn at a thinner stroke. Roughly one man in
+/// twelve has a colour vision deficiency and this hobby's demographics make that a
+/// real slice of the people who will use this.</para>
 /// </remarks>
 public sealed class TheTurnIsARingTests
 {
@@ -38,9 +42,13 @@ public sealed class TheTurnIsARingTests
     public TheTurnIsARingTests(ITestOutputHelper output)
         => _output = output;
 
-    /// <summary>**Each state draws its own ring, and none of them is a sentence.**</summary>
+    /// <summary>**The three captions the ruling names are gone from the screen.**</summary>
+    /// <remarks>
+    /// Watched failing first: with the old switch in place all four states carried
+    /// words, and this asserted an empty caption for three of them.
+    /// </remarks>
     [AvaloniaFact]
-    public void EachStateDrawsItsOwnRingAndNoneIsASentence()
+    public void TheRingSaysNothingUntilItIsHovered()
     {
         foreach (var (name, turn) in States())
         {
@@ -51,23 +59,81 @@ public sealed class TheTurnIsARingTests
                 + "°  count \"" + panel.TurnRingCount + "\"  caption \""
                 + panel.TurnRingCaption + "\"");
 
-            // **NO SENTENCES.** A caption is at most a few words, so it carries no
-            // full stop and does not run past what a glance takes in.
-            Assert.DoesNotContain(".", panel.TurnRingCaption, StringComparison.Ordinal);
+            // **ON AIR IS THE ONE THAT SPEAKS**, and what it says is the message
+            // going out rather than a caption about the state.
+            if (name == "on air")
+            {
+                continue;
+            }
+
             Assert.True(
-                panel.TurnRingCaption.Split(' ').Length <= 3,
-                name + "'s caption is " + panel.TurnRingCaption.Split(' ').Length
-                + " words: \"" + panel.TurnRingCaption + "\"");
+                panel.TurnRingCaption.Length == 0,
+                name + " still carries a caption: \"" + panel.TurnRingCaption + "\"");
         }
+    }
+
+    /// <summary>**A fault still speaks, and is not behind the hover.**</summary>
+    /// <remarks>
+    /// The single exception to the ruling. An unmeasured clock and a transmission
+    /// stopped partway are both things gone wrong, and §0.0 is broken by omission if
+    /// either waits to be asked about.
+    /// </remarks>
+    [AvaloniaFact]
+    public void AFaultKeepsItsWords()
+    {
+        var noClock = Panel(Ft8Turn.Read(At(7), ClockOffset.Unknown, Slot(45)));
+
+        _output.WriteLine("no clock -> \"" + noClock.TurnRingCaption + "\"");
+
+        Assert.Equal("clock not measured", noClock.TurnRingCaption);
+    }
+
+    /// <summary>**Every state answers when it is hovered, and nothing was lost.**</summary>
+    /// <remarks>
+    /// §0.0 and HM-DEC-092: moving a sentence behind a hover and deleting it look
+    /// identical on the screen, and only one of them is allowed.
+    /// </remarks>
+    [AvaloniaFact]
+    public void HoveringTheRingAnswersInEveryState()
+    {
+        foreach (var (name, turn) in States())
+        {
+            var panel = Panel(turn);
+
+            _output.WriteLine(name.PadRight(12) + panel.TurnRingTip);
+
+            Assert.False(
+                string.IsNullOrWhiteSpace(panel.TurnRingTip),
+                name + " has nothing behind its hover");
+        }
+
+        // The three that left the screen are reachable, in words a person reads.
+        Assert.Contains(
+            "Right-click a decoded message",
+            Panel(Ft8Turn.Read(At(3), Measured(), Slot(45))).TurnRingTip,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "the next one is",
+            Panel(Ft8Turn.Read(At(18), Measured(), Slot(45))).TurnRingTip,
+            StringComparison.Ordinal);
+
+        Assert.Contains(
+            "Nothing has been heard on this frequency yet",
+            Panel(Ft8Turn.Read(At(3), Measured(), null)).TurnRingTip,
+            StringComparison.Ordinal);
     }
 
     /// <summary>
     /// **The four are distinguishable in grayscale**, by dash and thickness.
     /// </summary>
     /// <remarks>
-    /// §0.6. Hue is stripped out here on purpose: what is compared is the dash
-    /// pattern, the stroke thickness and the caption, which is everything that
-    /// survives a black and white printer.
+    /// **AND THE CAPTION IS NO LONGER ONE OF THE CARRIERS**, which is what makes
+    /// this the load-bearing test of task 3. Hue is stripped out on purpose and so
+    /// are the words: what is compared is the dash pattern and the stroke thickness
+    /// alone, which is all that survives a black and white printer once the captions
+    /// have gone. Watched failing first — before the thin ring for their slot, his
+    /// and theirs were both solid 3px and this found two identical shapes.
     /// </remarks>
     [AvaloniaFact]
     public void TheFourStatesSeparateWithoutHue()
@@ -88,14 +154,12 @@ public sealed class TheTurnIsARingTests
                 + ". Arcs found: " + window.GetVisualDescendants().OfType<Arc>().Count());
 
             var dashed = arc!.StrokeDashArray is { Count: > 0 };
-            var caption = ((MainWindowViewModel)window.DataContext!).TurnRingCaption;
             var shape = (dashed ? "dashed" : "solid") + " "
-                + arc.StrokeThickness.ToString("0") + "px";
+                + arc.StrokeThickness.ToString("0.#") + "px";
 
-            _output.WriteLine(
-                name.PadRight(12) + shape.PadRight(14) + "\"" + caption + "\"");
+            _output.WriteLine(name.PadRight(12) + shape);
 
-            seen.Add(shape + "|" + caption);
+            seen.Add(shape);
         }
 
         // **NO TWO STATES LOOK ALIKE ONCE HUE IS GONE.**
@@ -150,6 +214,7 @@ public sealed class TheTurnIsARingTests
             Assert.Equal("?", panel.TurnRingCount);
             Assert.True(panel.TurnRingIsUnknown);
             Assert.False(panel.TurnRingIsHis);
+            Assert.False(panel.TurnRingIsTheirs);
             Assert.False(panel.TurnRingIsOnAir);
         }
     }
