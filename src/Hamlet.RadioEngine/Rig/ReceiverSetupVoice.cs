@@ -95,18 +95,33 @@ public static class ReceiverSetupVoice
     /// <returns>The admissions, or "" where every condition was settled.</returns>
     /// <remarks>
     /// <para>**A FAULT IS NOT ADVICE AND DOES NOT GO BEHIND A HOVER** (Tim,
-    /// 2026-09-08). <see cref="Say"/> composes one string out of five different
-    /// kinds of clause, and three of them are Hamlet admitting it does not know
-    /// something: a setting the radio would not confirm, a setting it could not
-    /// read, and a setting it cannot reach at all. **Moving the whole string to a
-    /// hover would have taken those with it**, which is §0.0 broken by omission and
-    /// exactly what work instruction 282 forbids.</para>
+    /// 2026-09-08). <see cref="Say"/> composes one string out of five kinds of
+    /// clause, and two of them are Hamlet admitting it does not know something: a
+    /// setting the radio would not confirm, and a setting it could not read.
+    /// **Moving the whole string to a hover would take those with it**, which is
+    /// §0.0 broken by omission.</para>
+    /// <para>**AND `SpokenOnly` IS NOT ONE OF THEM, WHICH IS WHAT WORK INSTRUCTION
+    /// 284 CORRECTS.** Unit 282 gathered it here, and it is the clause that put the
+    /// operator\u0027s paragraph on his bar: *The AGC usually wants to be slow here,
+    /// because dozens of stations transmit together here and the gain would ride up
+    /// and down under the loudest of them, and that is not settled well enough for
+    /// me to change it on your radio.* **That is a suggestion about a setting, not a
+    /// report of a failure.** Hamlet did not try and fail; it decided not to try,
+    /// and said what it would have done and why. Reproduced on the simulated radio
+    /// it composed **590 characters onto the bar**, of which 180 were the three
+    /// admissions and 410 were these two clauses.</para>
+    /// <para>**THE LINE IS DRAWN ON WHETHER HAMLET TRIED.** `NotConfirmed` and
+    /// `NotRead` are both attempts that came back with nothing, so the operator is
+    /// left not knowing where a control is and has to be told. `SpokenOnly` leaves
+    /// him knowing exactly where everything is; it offers him a change he could
+    /// make. That is advice, and advice waits to be asked for.</para>
     /// <para>**IT IS THE SAME CLAUSES FROM THE SAME PLACE**, filtered rather than
     /// written again, so the sentence he hovers and the sentence he is shown cannot
-    /// come to disagree (§0).</para>
-    /// <para>**WHAT CHANGED AND WHAT HIS OWN HAND IS HOLDING ARE NOT ADMISSIONS.**
-    /// Both are Hamlet reporting something that worked, and both are on the
-    /// hover.</para>
+    /// come to disagree (§0). **And there is one rule and not two**: this method
+    /// decides, and nothing downstream cuts a finished string up.</para>
+    /// <para>**WHAT CHANGED AND WHAT HIS OWN HAND IS HOLDING ARE NOT ADMISSIONS
+    /// EITHER.** Both are Hamlet reporting something that worked, and both are on
+    /// the hover.</para>
     /// </remarks>
     public static string Admissions(IReadOnlyList<ConditionResult> results)
     {
@@ -131,12 +146,11 @@ public static class ReceiverSetupVoice
                 + "touched it.");
         }
 
-        foreach (var result in results.Where(
-                     r => r.Outcome == ConditionOutcome.SpokenOnly))
-        {
-            said.Add(Cannot(result));
-        }
-
+        // **`SpokenOnly` IS NOT GATHERED HERE, AND THAT IS THE WHOLE OF WORK
+        // INSTRUCTION 284.** It is Hamlet naming a change it could make and has
+        // decided not to, which leaves the operator knowing where every control is.
+        // An admission leaves him not knowing. `Say` still carries it, so every word
+        // is one hover away.
         return string.Join(" ", said);
     }
 
