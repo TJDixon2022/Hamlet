@@ -9141,6 +9141,14 @@ public partial class MainWindowViewModel : ObservableObject
     public string TransmitDriveNote
         => TransmitDrive.NoteFor(TransmitDrivePercent, _settings.TransmitDrivePeak);
 
+    /// <summary>How to set the drive, behind the Radio tips mark.</summary>
+    /// <remarks>
+    /// **MOVED, NOT DELETED** (work instruction 280 task 8). The advice is useful
+    /// the first time somebody sets this and is noise every time after, so it is a
+    /// hover rather than a paragraph on the screen he operates from.
+    /// </remarks>
+    public static string TransmitDriveTip => TransmitDrive.Tip;
+
     /// <summary>What the reserved Send area says before anything has gone out.</summary>
     internal const string NothingHasBeenMeasured =
         // **SHORTENED ON 2026-09-08** (Tim: show, do not tell). What this line

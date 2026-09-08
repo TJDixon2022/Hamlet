@@ -89,14 +89,31 @@ internal static class TransmitDrive
                 + " %. " + char.ToUpperInvariant(why[0]) + why[1..];
         }
 
-        return "How hard Hamlet drives the radio's input - "
-            + (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture)
-            + " dBFS at this setting. This is a starting point, not a "
-            + "specification. Set it against your own radio's ALC meter: turn "
-            + "it up until the ALC just begins to move and then back off. Full "
-            + "scale is a wide, distorted signal over other people's band, which "
-            + "is why Hamlet starts at "
+        // **THE NUMBER AND ITS UNITS, AND NOTHING ELSE** (Tim's ruling,
+        // 2026-09-08: show, do not tell). This read three hundred and
+        // twenty-five characters of ALC theory, permanently, under a control he
+        // sets once. **The advice is not thrown away** - it is
+        // <see cref="Tip"/>, a hover behind the Radio tips mark.
+        return (20.0 * Math.Log10(peak)).ToString("0.0", CultureInfo.InvariantCulture)
+            + " dBFS";
+    }
+
+    /// <summary>How to set the drive, for the Radio tips hover.</summary>
+    /// <remarks>
+    /// <para>**MOVED, NOT DELETED** (work instruction 280 task 8). Removing words
+    /// must not remove facts, and this is genuinely useful the first time
+    /// somebody sets it: it is advice, and advice does not occupy the screen
+    /// while he operates.</para>
+    /// <para>**IT IS ALSO IN `SHACK_FACTS.md` AS FACT-005**, where his own
+    /// reading against his own ALC meter is recorded: 25 per cent, -12.04 dBFS,
+    /// ALC -2.0 to -1.5. That is the measured version of this paragraph and it
+    /// outranks it.</para>
+    /// </remarks>
+    internal static string Tip
+        => "This is a starting point, not a specification. Set it against your "
+            + "own radio's ALC meter: turn it up until the ALC just begins to "
+            + "move and then back off. Full scale is a wide, distorted signal "
+            + "over other people's band, which is why Hamlet starts at "
             + (Ft8Composer.DefaultDrivePeak * 100.0).ToString("0.#", CultureInfo.InvariantCulture)
             + " %.";
-    }
 }
