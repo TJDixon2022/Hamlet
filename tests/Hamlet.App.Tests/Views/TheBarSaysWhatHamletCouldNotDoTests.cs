@@ -75,6 +75,24 @@ public sealed class TheBarSaysWhatHamletCouldNotDoTests
         Assert.DoesNotContain("I cannot set from here", bar, StringComparison.Ordinal);
         Assert.DoesNotContain("scope span", bar, StringComparison.Ordinal);
 
+        // **THE BAR NEVER CARRIES A REASON**, which is the structural form of the
+        // same rule and does not depend on today's wording. Every advice clause
+        // explains why - `Did` and `Cannot` both join their reason with *because* -
+        // and neither admission shape has one: *I could not read the auto notch, so
+        // I have not touched it* says what failed and stops. **A sixth kind of
+        // clause arriving on the bar with a reason attached fails here** even if
+        // nobody thinks to add a phrase for it.
+        Assert.DoesNotContain(" because ", bar, StringComparison.Ordinal);
+
+        // And every sentence on it is one of the two admission shapes.
+        foreach (var sentence in bar.Split(". ", StringSplitOptions.RemoveEmptyEntries))
+        {
+            Assert.True(
+                sentence.StartsWith("I could not read the", StringComparison.Ordinal)
+                || sentence.StartsWith("I asked for the", StringComparison.Ordinal),
+                "the bar carries a sentence that is not an admission: \"" + sentence + "\"");
+        }
+
         GC.KeepAlive(panel);
     }
 
