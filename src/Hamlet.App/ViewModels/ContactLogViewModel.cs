@@ -166,7 +166,7 @@ public sealed class ContactLogViewModel
     public string CountLine
         => Count == 1
             ? "1 contact logged."
-            : Count.ToString(CultureInfo.InvariantCulture) + " contacts logged.";
+            : Count.ToString("N0", CultureInfo.InvariantCulture) + " contacts logged.";
 
     /// <summary>What the window says about damage, or "".</summary>
     /// <remarks>
@@ -180,7 +180,7 @@ public sealed class ContactLogViewModel
             : Damaged == 1
                 ? "One record could not be read whole. It is still listed, marked, "
                     + "rather than left out."
-                : Damaged.ToString(CultureInfo.InvariantCulture)
+                : Damaged.ToString("N0", CultureInfo.InvariantCulture)
                     + " records could not be read whole. They are still listed, "
                     + "marked, rather than left out.";
 

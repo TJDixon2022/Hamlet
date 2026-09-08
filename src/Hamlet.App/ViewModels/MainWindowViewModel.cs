@@ -9232,6 +9232,21 @@ public partial class MainWindowViewModel : ObservableObject
     private void AnnounceBadges(ContactMilestones milestones)
     {
         var was = _settings.ContactBadgeAnnounced;
+
+        // **THE FIRST LOOK SEEDS AND SAYS NOTHING** (measured in task 5). Hamlet
+        // installed beside a log of ten thousand contacts would otherwise
+        // congratulate him for all nine badges in one line, which is a wall of
+        // text rather than the quiet acknowledgement he asked for. An
+        // acknowledgement is for a milestone he has just passed, and Hamlet was
+        // not there for the others.
+        if (was < 0)
+        {
+            _settings.ContactBadgeAnnounced = milestones.Highest ?? 0;
+            SettingsStore.Save(_settings);
+
+            return;
+        }
+
         var line = milestones.Announcement(was);
 
         if (line.Length == 0)
@@ -9256,7 +9271,10 @@ public partial class MainWindowViewModel : ObservableObject
     public string ContactCountLine
         => LoggedContacts == 1
             ? "1 contact logged"
-            : LoggedContacts.ToString(CultureInfo.InvariantCulture) + " contacts logged";
+            // **THE SAME SHAPE AS THE BADGE LINE** (found in task 5). One read
+            // "10000 contacts logged" and the other "10,000 contacts logged",
+            // for the same fact, a few inches apart.
+            : LoggedContacts.ToString("N0", CultureInfo.InvariantCulture) + " contacts logged";
 
     /// <summary>The log, by callsign, with the last entry for each winning.</summary>
     /// <remarks>

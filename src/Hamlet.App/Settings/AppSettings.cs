@@ -259,9 +259,18 @@ public sealed class AppSettings
     /// cannot see. This is the other fact: whether the congratulation has already
     /// been given, which is about Hamlet rather than about the log, and saying it
     /// twice would be worse than not remembering.</para>
-    /// <para>Zero means nothing has been mentioned yet.</para>
+    /// <para>**MINUS ONE MEANS HAMLET HAS NEVER LOOKED**, which is not the same as
+    /// nothing having been mentioned. On the first read it is seeded to where the
+    /// log already stands and **nothing is announced**: installing Hamlet beside a
+    /// log of ten thousand contacts would otherwise congratulate him for all nine
+    /// badges at once, in one line, which is a wall of text rather than the quiet
+    /// acknowledgement he asked for. An acknowledgement is for a milestone he has
+    /// just passed. Measured at ten thousand records in work instruction 278 task
+    /// 5, where it read *That is 10 and 25 and 50 and 100 and 500 and 1,000 and
+    /// 2,000 and 5,000 and 10,000 contacts logged.*</para>
+    /// <para>Zero means Hamlet has looked and he had passed nothing yet.</para>
     /// </remarks>
-    public int ContactBadgeAnnounced { get; set; }
+    public int ContactBadgeAnnounced { get; set; } = -1;
 
     /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
