@@ -4213,8 +4213,29 @@
                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
                 BorderThickness="1" CornerRadius="6"
                 Padding="12,6" Margin="0,12,0,0">
-            <TextBlock Text="{Binding StatusText}" FontSize="12"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0" Text="{Binding StatusText}" FontSize="12"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                <!-- **THE COUNT, QUIETLY** (Tim, 2026-09-08: *just sort of an
+                     acknowledgment that you're making contacts*). It is the
+                     number of records in the log and nothing else: work the same
+                     station on three bands and that is three.
+
+                     **HERE RATHER THAN ANYWHERE IT COMPETES** with the band, the
+                     frequency or a decode. A number that grows a few times an
+                     evening does not need to announce itself, and this is the one
+                     strip on the screen that is already for things worth knowing
+                     and not worth watching.
+
+                     It is absent rather than reading zero before he has logged
+                     anything, because "0 contacts logged" on a first launch is a
+                     scoreboard nobody asked for. -->
+                <TextBlock Grid.Column="1" Text="{Binding ContactCountLine}"
+                           IsVisible="{Binding HasLoggedContacts}"
+                           FontSize="12" Margin="16,0,0,0"
+                           Foreground="{StaticResource HmGreenBrush}" />
+            </Grid>
         </Border>
     </Grid>
 </Window>

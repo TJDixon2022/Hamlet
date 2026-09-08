@@ -9150,15 +9150,86 @@ public partial class MainWindowViewModel : ObservableObject
         {
             row.WorkedBefore = WorkedBeforeNote(row.Sender);
         }
+
+        OnPropertyChanged(nameof(LoggedContacts));
+        OnPropertyChanged(nameof(ContactCountLine));
+        OnPropertyChanged(nameof(HasLoggedContacts));
     }
 
-    /// <summary>The log, by callsign, with the last entry for each winning.</summary>
-    private static Dictionary<string, AdifContact> ReadWorkedBefore()
+    /// <summary>How many records are in the contact log.</summary>
+    /// <remarks>
+    /// <para>**IT IS THE NUMBER OF RECORDS AND NOTHING ELSE** (Tim's ruling,
+    /// 2026-09-08). Not distinct callsigns, not confirmed contacts, not an
+    /// estimate. Work the same station on three bands and that is three.</para>
+    /// <para>**THE DICTIONARY BESIDE IT WOULD HAVE BEEN THE WRONG NUMBER.**
+    /// `_workedBefore` is keyed by callsign and drops any record with no `CALL`,
+    /// so its `Count` is distinct stations. Reaching for it would have understated
+    /// his own operating on the screen and in whatever he told somebody about it,
+    /// which is §0.0 exactly: a number that is not the number of records is a
+    /// false claim, and it is the kind of number a person repeats.</para>
+    /// <para>**A DAMAGED RECORD IS COUNTED.** He made that contact; the file was
+    /// cut off or a field went bad afterwards. Leaving it out would make the count
+    /// disagree with the log window standing beside it, which lists it. The window
+    /// says separately how many could not be read whole.</para>
+    /// </remarks>
+    /// <para>**IT READS THE FILE ON FIRST ASK RATHER THAN AT STARTUP.** The
+    /// status bar binds before a single decode has arrived, and the mark's own
+    /// read is lazy for the same reason it always was, so the first of the two to
+    /// be wanted pays for the read and the other gets it free.</para>
+    public int LoggedContacts
     {
+        get
+        {
+            _workedBefore ??= ReadWorkedBefore();
+
+            return _loggedContacts;
+        }
+    }
+
+    private int _loggedContacts;
+
+    /// <summary>True once anything has been logged.</summary>
+    public bool HasLoggedContacts => LoggedContacts > 0;
+
+    /// <summary>The count, as the main screen says it.</summary>
+    /// <remarks>
+    /// **QUIETLY** (work instruction 278). It sits in the status bar rather than
+    /// anywhere it competes with the band, the frequency or a decode. A number
+    /// that grows a few times an evening does not need to announce itself.
+    /// </remarks>
+    public string ContactCountLine
+        => LoggedContacts == 1
+            ? "1 contact logged"
+            : LoggedContacts.ToString(CultureInfo.InvariantCulture) + " contacts logged";
+
+    /// <summary>The log, by callsign, with the last entry for each winning.</summary>
+    /// <remarks>
+    /// **ONE READ OF THE FILE, TWO DERIVATIONS FROM IT** (work instruction 278
+    /// task 3). The count and the mark answer different questions of the same
+    /// records, and a second pass over the file to answer the second one would be
+    /// a second place for the two to disagree.
+    /// </remarks>
+    private Dictionary<string, AdifContact> ReadWorkedBefore()
+    {
+        var records = ContactLogStore.ReadRecords();
+
+        _loggedContacts = records.Count;
+
         var worked = new Dictionary<string, AdifContact>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var entry in ContactLogStore.Read())
+        foreach (var record in records)
         {
+            // **THE MARK KEEPS THE SOURCE IT ALWAYS HAD.** It was built from
+            // `Read`, which leaves out a record with no end marker, and a station
+            // marked worked off a half-written line is a claim this unit was not
+            // asked to make. The count is the thing that changed, not the mark.
+            if (!record.Terminated)
+            {
+                continue;
+            }
+
+            var entry = record.Contact;
+
             if (!string.IsNullOrWhiteSpace(entry.Call))
             {
                 worked[entry.Call.Trim()] = entry;
