@@ -1,306 +1,264 @@
-READ IN THIS ORDER
-
-A. THE PHASE GOAL. Hamlet works stations on the air. It transmitted on a live
-   antenna on 2026-09-07 and can write a contact down since unit 274.
-B. THE STEP AND ITS EXIT CRITERIA. Step E's bench half. It closes no criterion and
-   does not claim to.
-C. WHAT THIS REPORT ADDS, AND WHETHER IT BEARS ON A OR B. It bears on A: the left
-   list stops clipping callsigns, a log entry records the dial the contact was
-   actually heard on, and the decision index is whole again. **Three of the four
-   asks the order carried inbound are discharged and leave the queue.** Section 4
-   has no ask; two things are stated.
-
-UNIT:       275 — complete at task 5 of 5 — 2026-09-07 19:38
-PHASE GOAL: Hamlet works stations on the air.
-UNIT GOAL:  The left list shows whole callsigns, a logged contact records the dial it actually happened on, and the decision index is whole again.
-ADVANCED:   yes — three inbound asks discharged and two defects found that no task went looking for. No step's criterion moved and the instruction says so itself.
-NUMBER:     75 px → 177 px, the left list's message column. Predicted 177 and it is 177.
-DRIFT:      0 consecutive units without advance  (was 0)
-
----
+UNIT:       276 — complete at task 5 of 5 — 2026-09-07 21:44
+PHASE GOAL: Hamlet works stations on the air. Not decodes them, not shows them —
+            the operator makes a contact with his own radio.
+UNIT GOAL:  Every decoded row he can act on has a menu offering what he can do
+            with it, and a test opens that menu so the claim cannot be made
+            untruthfully again.
+ADVANCED:   no — this removed a blocker standing in front of step E's bench half
+            and closed no criterion. The instruction said so itself and this
+            report does not upgrade it. No decoder path was touched.
+NUMBER:     none — and that is a finding. The instruction's goal block carries
+            PHASE GOAL, UNIT GOAL and ADVANCES and **no figure at all**, so there
+            is nothing to report a before and after for. A phase with a goal and
+            no scoreboard cannot tell repair from thrash.
+DRIFT:      unknown — the instruction carried no drift count for this session to
+            increment, and it cannot be recovered from here, because output.md is
+            overwritten and a session cannot read prior reports. The next author
+            has to reseed it.
 
 ## 1. What Claude did
 
-**Complete, five of five.** The named drop candidate was attempted. Machine
-`QUIVERFULL`, `C:\Source\HamLet`, branch `main`, all pushed.
+**Complete. Five tasks of five, none dropped** — including task 5, which the
+instruction named as the drop candidate. Windows, `PROJECT: Hamlet` claimed and
+confirmed, branch `main`, pushed at every task. Version `1.12.139` -> `1.12.143`.
 
-### The gate
+**The unit's premise was right about the defect and wrong about why it survived,
+and that changes what the unit is.**
 
-`SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs`
-present, `CoreHMI.sln` absent, `MURC.sln` absent. **Hamlet confirmed.**
-`SESSION.lock` absent, one session, tree clean at `0eaf738` with unit 274 fully in
-at 1.12.134.
+**Task 1 — where the menu actually is.** Reading only, written up in
+`docs/unit276-where-the-menu-is.md` (commit `c61d2c9`). One `ContextRequested`
+handler existed in the whole application and it was on `DigitalDecodedRows`, the
+**left** list. `DigitalMineRows` had none. The `Log this contact...` item unit 274
+added is gated on `CanLogRow`, which is
+`Ft8MessageSplit.IsAddressedTo(row.Message, callsign)` — **the same predicate that
+decides a row belongs on the mine list.** So the item's condition and the item's
+list were mutually exclusive by construction, and **it had never once been shown.**
 
-### Shell refusals, recorded verbatim
+**And the instruction's central claim, that nothing could have caught it, is not
+true.** `Views/TheMenuIsUnderTheMouseTests` raises a real `ContextRequested` on a
+real row control in a real window and reads the flyout's items. Its row finder asks
+for a row addressed to the operator, inside the list unit 273 stopped putting them
+in. **It went red the day that split landed and stood at 5 of 6 failing**, with
 
-**None.** The same two tool facts as the last two units and no new ones: this
-shell will not carry a quoted heredoc containing an apostrophe, and it collapses a
-doubled backslash inside one. Both worked around with script files.
+```
+no realized row matched. Rows on the table: 8;
+realized grids with a row DataContext: 8
+```
 
-### Task by task
+**It stayed red for three units because nothing was allowed to run it.** It is in
+the `Views` namespace whose stall unit 230 documented, and HM-DEC-155 rules that a
+unit runs only the test it constructs. Units 273, 274 and 275 each reported it or
+its neighbours as *not run, and you should know which*, and each was right to.
 
-**1 — `dt` and `hz` leave the left list.** 75 → 177 px, exactly the predicted
-figure.
+**Tasks 2 and 3 — the fix and the test, committed together at `c5bb1dc`**, because
+the fix and the test that catches it are one change. The mine row's outer `Grid`
+gained `ContextRequested="OnDecodedRowContextRequested"` — **the same handler, not a
+copy.** The handler reads the row off its own control's `DataContext`, so it neither
+knows nor cares which list drew it, and there is no second menu to drift.
 
-**2 — the column test is run.** It answered the instruction's question by
-measurement and then found something nobody was looking for.
+The test's row finder now searches both lists by name; `Options()` discriminates a
+send item by its `CommandParameter is string` rather than by having any command,
+which had been sweeping up the Log item and blurring the very distinction that class
+exists to police. Two tests added. **The new tests were watched failing first**, by
+stashing the markup back to what the operator found. **8 of 8 green** — the first
+time that class has been green since unit 273.
 
-**3 — a contact remembers its own dial.** And, on the way, a defect unit 274
-shipped.
+**Task 4 — the record, and a mismatch worth naming.** Committed at `50768aa`.
 
-**4 — the decision index is whole again.** All seven rulings read and indexed.
+> **The instruction says to append the correction beneath unit 274's entry in
+> `PHASE_OUTCOME.md`, because that is where the untrue claim survives. There is no
+> unit 274 entry.** The file's last entry was `## UNIT 272 - STEP E`. **Units 273,
+> 274 and 275 wrote none at all.**
 
-**5 — what the log's frequency was before this.** There is no log. See section 3.
+So the correction went into this unit's own entry, quoting the claim in full so a
+reader who goes looking finds it. Inventing a `UNIT 274` block to append beneath
+would fabricate a record of a unit nobody here ran, which is worse than the gap it
+papers over. The step header was not touched: **E stays `not started`.**
 
-### Two defects found that no task went looking for
+**What made the false claim possible, which the instruction asked for and got
+wrong.** Not that nothing could contradict it. **Something did, and nobody was
+allowed to look.** A report can describe a menu item from the code that declares it
+without anything ever opening the menu, and that half is right. But the test that
+opens it existed, was thorough, and was already red. **The gap is not a missing
+test. It is a test that was red and unread.** No blame attaches to unit 274: its
+instruction did not ask for the menu to be moved, and the one thing that would have
+contradicted it was a test that unit was forbidden to run.
 
-**One: the mine list had been crooked since I built it, by twelve pixels.** Task
-2's whole point is that the column test had not run for two units. Run, it showed
-the mine header putting the message column at x=138 and its rows putting it at
-150. **Cause, measured cell by cell**: `from` was the only column on either side
-whose content has no bound, so a six-character callsign pushed the row's column
-past its header's — the sibling-grid drift unit 241 wrote that entire test class
-about, reproduced by me in unit 273 and never seen because the test only ever
-examined the left list.
+**Task 5 — the sweep, taken rather than dropped.**
+`docs/unit276-every-context-menu.md`, commit `3986c50`. **Two context menus in the
+whole application and they are the same menu.** Four hits across nine `.axaml`
+files, two of them comments; eight of the nine files have no hit at all. No other
+control in the app — band cards, spot cards, map dots, dial tape, waterfall, canvas
+widgets, the six other windows — has ever declared one, recorded so the next sweep
+does not read that as a list of omissions.
 
-**Two: unit 274 was writing a band ADIF cannot read.** Pushing the application's
-own band name through the log for the first time produced `<BAND:4>20 m`.
-`HfBands` names bands for the screen and the log took the name straight through;
-ADIF's Band enumeration gives `20m`, and a logger has no row for `20 m`.
+**One finding, reported and not repaired.**
+`ViewModels/TheWholeChainRunsFromOneRightClickTests` has the **same defect this unit
+fixed**, and task 3 did not reach it: its `RightClick` helper at `:895` asks the left
+list for a row whose addressee is the operator, and `WantsRow` is
+`!IsForHim(row) && ...`, so no such row is ever there. Both of that class's
+menu-opening tests go through it. **Read from the code, not from a run** —
+HM-DEC-155 again — and recorded as **HM-OPEN-086**, left alone under §12.6. The
+repair looks like one line, the same list widening task 3 made, but it wants its own
+unit, because a test nobody watched go green is how this survived three units.
 
-**Why unit 274's round trip missed it, which is the lesson rather than the bug.**
-Every test in that file wrote a hand-made `"20m"` and read back `"20m"` — the
-writer and the reader agreeing perfectly about a value **the application never
-produces**. That is §12.5 in miniature: a fixture built from the same assumption
-as the code proves nothing about the code. What caught it was task 3 sending the
-real name through for the first time.
-
-### Decisions made on this session's own authority, reproduced in full
-
-**One: the `from` column left the mine list rather than being widened.** It was
-the cause of the misalignment, it duplicated the message beside it — which already
-opens with the sender — and widening it to fit a compound callsign would have cost
-the message about forty pixels on the side that had least. The sender's entity
-tooltip moved to the message cell and the `worked` mark moved under the time,
-where the 76 pixels the clock already has carry it for nothing. **The mine message
-column went 162 → 224 px** as a consequence.
-
-**Two: the tone test is kept as a skipped record rather than deleted.** `hz` left
-the left list on your ruling and was never on the mine side, so there is no `hz`
-cell in the application to align and the test has no subject. Deleting it would
-destroy the record of a real fault and its fix; leaving it running would report a
-property nothing has. It carries what it proved and why it mattered.
-
-**Three: `AdifLog.BandValueFor` removes the space and nothing else.** Every ADIF
-band value is a number and a unit run together and every `HfBands` name is the
-same two with a space between; it is a format conversion rather than a
-translation. A name it cannot recognise returns null and the field is left out —
-the rule every other field in this log already follows.
-
-### One tree mismatch, reported and not repaired
-
-**Task 1 says "the mine list keeps both [`dt` and `hz`]". It never had them.**
-Unit 273 built that side as `utc`, `from`, `message`. There was nothing to keep,
-and after task 2 it is `utc`, `message`.
+**Decisions this session made for itself:** where a correction goes when the entry it
+was aimed at does not exist (task 4 above, reproduced in `PHASE_OUTCOME.md` in full),
+and two test-shape choices recorded in `c5bb1dc`. Nothing touching §0.0, what the
+display asserts, or transmit.
 
 ## 2. What the owner should expect
 
-**Whole callsigns on the left, and a log that records the band you actually
-worked.**
+**He can right-click a message addressed to him and answer it.** That is the whole
+change on his screen. The right-hand list — the one carrying his own traffic, which
+is the only place a reply is ever sent from — now opens the same menu the left list
+has had since step B: the reply the ledger says comes next highlighted, the others
+offered, a repeat showing its count, and beneath a rule, `Log this contact...`.
 
-- **The left list drops `dt` and `hz`.** It keeps the time, the signal report, the
-  `worked` mark and the message, and the message column more than doubles.
-- **The mine list keeps everything that was on it and gained room too** — its
-  `from` column went, because the message beside it already names the sender, and
-  that took its message column from 162 to 224 pixels.
-- **Hovering a sender on the mine side still names the country**; that tooltip
-  moved onto the message cell rather than going away.
-- **A logged contact records the frequency it was heard on**, not the dial you
-  happen to be on when you right-click. The dialog's frequency field says *where
-  this was heard* instead of *where the dial is now*.
-- **A row decoded before this change has no dial**, and its entry carries no
-  frequency and no band at all rather than a plausible one. The dialog says the
-  dial was not recorded.
-- **The band in the file is now `20m`**, which is what ADIF spells it. It was
-  `20 m`, which a logger cannot read.
-- **`CLAUDE.md`'s decision table carries rulings 153 to 159 again**, including the
-  pronoun one.
+**Nothing else moved.** No column changed width, no row changed shape, no filter
+behaves differently. The left list is exactly as unit 275 left it.
 
-**What will look wrong and one thing that is:**
+**What will look wrong and is not:**
 
-- **`VP2MAA KC3QIS FN00` is three pixels over on the left.** The ruling's
-  arithmetic predicted that ordinary traffic would fit; the everyday
-  eighteen-character message does not, by three pixels. Nothing was shrunk to hide
-  it. Three pixels is inside the uncertainty of a headless font measurement, so it
-  is on the boundary rather than clearly failing — see section 3.
-- **The two lists carry different columns.** That is deliberate and it is why each
-  header is now checked against its own rows.
-- **The `worked` mark on the mine side sits under the time**, not beside the
-  contact line, since the `from` column went.
-
-**Build:** clean, 0 warnings, 0 errors, whole solution, fourteen times.
-
-**Tests:** filtered and foregrounded. `WhatTheSplitCostsTests` **1 of 1**;
-`TheDecodedColumnsLineUpTests` **2 passed, 1 skipped**;
-`AContactRemembersItsOwnDialTests` **5 of 5**; `TheAdifLogRoundTripsTests` and
-`TheLogEntryIsWhatWasHeardTests` **37 of 37**; `DecisionLogOrderTests` **2 of 2**.
-Every one is a test this unit wrote or rewrote, which is what the instruction
-permits. Nothing was backgrounded and no suite was run.
-
-**Pushed to `main`:** `8c1c806`, `3649175`, `df65f2e`, `00a7e4b`, `cb3fa58`.
-Version **1.12.134 → 1.12.139**. `Ft8Sharp` did not move.
+- **`Log this contact...` appears on the right list only, never on the left.** That
+  is correct and is now what the tests assert. It is gated on the message being
+  addressed to him, and every such row is on the right.
+- **A third-party exchange, two other stations working each other, still opens a
+  menu with five send options and no Log.** Offering him a way to break in is the
+  point; offering to log a contact he was not part of would be a false claim.
+- **`PHASE_OUTCOME.md` has no unit 273, 274 or 275 entry.** That is the tree, not a
+  deletion by this unit.
+- **Inherited reds are untouched and unrun**:
+  `CwAdjudicationTests.ASpeedChangeInRealisticAudio`, the 51 CW cases in
+  `docs/unit239-failing-set.txt`, the `Ft8Sharp.Deep.Tests` whole-type-list
+  tripwire, and now **HM-OPEN-086**, which this unit found by reading and
+  deliberately did not fix.
+- **No suite was run.** Per HM-DEC-155 this unit ran one filtered class, its own.
 
 ## 3. What you should see
 
-**1. The left list's message column, before and after**, measured through the real
-window at your own 1400 by 1200:
+**The menu opened on a mine row, its items in order.** Row `KC3QIS N5TT EM10`,
+N5TT calling him:
 
 ```
-                     before    after
-left message column    75 px   177 px
-mine message column   162 px   224 px
-
-   100 px  IS0/IK2YCW                          fits both
-   120 px  CQ W4/YV7AXM                        fits both
-   180 px  VP2MAA KC3QIS FN00        left: 3 px over    mine: fits
-   210 px  KC3QIS IS0/IK2YCW -12     left: 33 px over   mine: fits
-   210 px  W4/YV7AXM KC3QIS R-15     left: 33 px over   mine: fits
-   320 px  W4/YV7AXM/QRP W4/YV7AXM/QRP R-15    over on both
+    N5TT KC3QIS FN00   grid
+    N5TT KC3QIS -10    report - the one that comes next
+    N5TT KC3QIS R-10   roger and report
+    N5TT KC3QIS RRR    acknowledge
+    N5TT KC3QIS 73     73
+    ----------------
+    Log this contact...
 ```
 
-**The prediction was 177 and it is 177.** What the prediction also said — ordinary
-traffic fits, the rare long one does not — is not quite what came out: **the
-everyday eighteen-character message is three pixels over.** It is reported rather
-than rounded away, and nothing else was shrunk to hide it.
+Five send options, every one enabled, then a rule, then Log. The Log item carries
+the **row** where a send item carries a **message string**, which is how the test
+knows it transmits nothing rather than trusting its wording.
 
-**Three pixels is inside the uncertainty of the measurement.** The 180 is a
-`FormattedText` width taken with a fallback typeface in a headless test host, not
-a render on your screen. It is on the boundary; the honest statement is that it is
-on the boundary rather than that it fits or that it does not.
-
-The last row is **the widest a standard FT8 message can be** — thirteen characters
-a callsign field, twice, plus a report. No arrangement of a 330-pixel column
-would hold it.
-
-**2. `TheDecodedColumnsLineUpTests`, and what two units of drift had left in it.**
-
-**Before this unit: nothing.** Measured rather than assumed — I checked out
-`0eaf738`'s markup, rebuilt, and ran it: **2 of 2 green.** Unit 273's split and
-unit 274's mark column both kept the left header and its rows in step.
-
-**After: the mine side was crooked**, and had been since unit 273 built it:
+**The menu opened on a left row.** A CQ, `CQ G4XYZ IO91`:
 
 ```
-mine header origins : 0, 76, 138
-mine row 0 origins  : 0, 76, 150
-
-   header col 1  x=76  w=48   "from"
-   row0   col 1  x=76  w=60   "TA3MPK"
+    G4XYZ KC3QIS FN00   grid
+    G4XYZ KC3QIS -10    report - the one that comes next
+    G4XYZ KC3QIS R-10   roger and report
+    G4XYZ KC3QIS RRR    acknowledge
+    G4XYZ KC3QIS 73     73
 ```
 
-Fixed, and now:
+and a third-party exchange, `K9TC KJ6IX RRR`, two other stations working each
+other:
 
 ```
-mine header origins : 0, 76
-mine row 0 origins  : 0, 76
-mine row 1 origins  : 0, 76
+    KJ6IX KC3QIS FN00   grid - the one that comes next
+    KJ6IX KC3QIS -10    report
+    KJ6IX KC3QIS R-10   roger and report
+    KJ6IX KC3QIS RRR    acknowledge
+    KJ6IX KC3QIS 73     73
 ```
 
-The class now holds two origins tests — one per side, each header against its own
-rows — and one skipped record where the `hz` alignment test used to be.
+**Both offer the sends. Neither offers Log**, and no rule is drawn where there is
+nothing under it. The highlight moves, too: `grid` comes next against a station he
+has no exchange with, `report` against one that has already called him.
 
-**3. Two log records.** One for a contact heard on a dial that has since moved:
-
-```
-<CALL:6>IK4LZH
-<STATION_CALLSIGN:6>KC3QIS
-<QSO_DATE:8>20260907
-<TIME_ON:6>214130
-<TIME_OFF:6>214130
-<BAND:3>20m
-<MODE:3>FT8
-<FREQ:9>14.074000
-<RST_RCVD:3>-12
-<MY_GRIDSQUARE:6>FN00DJ
-<EOR>
-```
-
-**`14.074000` and `20m` are where it was heard.** The panel's own live dial reads
-7,028,000 Hz in that test, and the entry does not carry it — which is the whole
-point of the task. And **`20m` rather than `20 m`**, which is the defect task 3
-found on the way.
-
-And one for a row with no recorded dial — anything decoded before this change:
+**The test watched failing first**, against the tree as the operator found it:
 
 ```
-<CALL:6>IK4LZH
-<STATION_CALLSIGN:6>KC3QIS
-<QSO_DATE:8>20260907
-<TIME_ON:6>214130
-<TIME_OFF:6>214130
-<MODE:3>FT8
-<RST_RCVD:3>-12
-<MY_GRIDSQUARE:6>FN00DJ
-<EOR>
+Failed  OutOfPrivilegesTheMenuSaysSoAndForbidsNothing
+Failed  EveryStationsPredictedMenuAppearsUnderTheMouse
+Failed  TheRepeatCountBelongsToTheClickAndNotToTheRow
+Failed  WithNoGridTheReasonIsANoteAndTheRestStayClickable
+Failed  ChoosingOneGoesThroughTheOneCommandThatArms
+
+Failed! - Failed: 5, Passed: 1, Skipped: 0, Total: 6
 ```
 
-**`FREQ` and `BAND` are absent, not guessed.** What was heard is still there, so
-the absence reads as the missing fact rather than the entry having given up.
+and with the markup stashed back, the new test's own red said the defect in words:
 
-**And what the log held before this: nothing.**
-`%AppData%\Hamlet\contacts.adi` does not exist on this machine — the folder holds
-`settings.json`, `layouts.json`, `scan-segments.json`, `spots.db` and `telemetry`.
-**Zero records, so nothing predates task 3.** Unit 274 built the dialog and the
-writer yesterday, unit 275 fixed the frequency today, and the first contact has not
-been logged yet: **neither defect ever reached a record.** Nothing was edited and
-nothing was written; a log record is a statement you made and it is not a unit's to
-revise.
+```
+right-clicking a row on the mine list produced no menu. The list carries every
+message addressed to the operator, so it is the one place a reply is ever sent
+from.
+```
+
+After tasks 2 and 3: **`Passed: 8, Failed: 0`**, 4.1 seconds.
 
 ## 4. What's blocking us
 
-**Nothing blocks the next unit, and there is no ask.** Two things stated.
+Nothing blocks the next unit. Two things want a ruling, neither urgent.
 
-**1. Three pixels.**
+---
 
-The left list still comes up three pixels short of the everyday
-`VP2MAA KC3QIS FN00`, on a measurement whose own uncertainty is about that size.
-**Nothing was shrunk to make it fit**, which is the instruction's rule, and I am
-not proposing a change: at this margin the honest move is to look at it on your
-own screen, where the real typeface renders, rather than to act on a headless
-figure. If a callsign is visibly cut there, the options unit 273 priced are still
-priced.
+**`PHASE_OUTCOME.md` is written by a tool no unit is told to run, and three units in
+a row did not run it.**
 
-**2. `dt` and `hz` were never on the mine list.**
+Units 273, 274 and 275 wrote no outcome entry. This unit only noticed because task 4
+sent it looking for one. The file is the phase's only durable record, since
+`output.md` is overwritten every unit, so three units' findings survive nowhere but
+commit messages, and a correcting instruction aimed at one of them had nothing to
+aim at.
 
-Task 1 says it keeps both. Unit 273 built that side as `utc`, `from`, `message`,
-so there was nothing to keep — and after task 2 it is `utc`, `message`. Reported
-rather than repaired, as the instruction directs. **If you want them there**, that
-is a different change from the one you ruled, and the mine list now has 224 pixels
-of message to spend.
+*Rejected: making every unit write one by habit.* Habit is what failed here. Three
+consecutive units had that habit and it produced nothing. The write should be a task
+in the instruction, or the tool should run at the end of the loop where the caller
+can see that it did not.
 
-### Asks still outstanding
+*Rejected: back-filling entries for 273, 274 and 275.* Nobody here ran them, and a
+reconstructed entry is a fabricated record.
 
-Carried outbound per HM-DEC-139.
+---
+
+**A work instruction with no figure in its goal block cannot report a number.**
+
+`CLAUDE_CODE.md` §8 requires `NUMBER: <before> -> <after>` and says `none` is a
+finding. This instruction's block carries no figure, so `none` is what the header
+says. That is the second half of the drift problem rather than a separate one:
+**this report also cannot carry `DRIFT` forward**, because the instruction did not
+carry a count in and `output.md` is overwritten, so the count cannot be recovered
+from inside a session. It has to be reseeded by the next author.
+
+*Rejected: inventing a plausible drift count.* §13.3 and §12.4 both forbid it, and a
+laundered number is worse than an admitted gap.
+
+---
+
+## Asks still outstanding
+
+Carried per HM-DEC-139. Five inbound, all still open, carried verbatim; one added.
 
 1. **Two issues of one work-instruction number.** Raised by unit 271, and unit 252
    before it. **The author's error: an executed order must never be amended, only
-   succeeded.** No unit action; recorded so the phase record's collision is
-   explained when either is cited. **Unchanged this unit.**
+   succeeded.** No unit action.
 2. **`PM95` reads *southern Japan***, raised by unit 271. **Not a defect**; the
-   table is where to argue with it. **Unchanged this unit.**
+   table is where to argue with it.
 3. **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05. By HM-DEC-140 they live
-   in `OPEN_ISSUES.md` and not on this queue; named once so the next session stops
-   rediscovering them. **Unchanged this unit.**
-
-**Dropped this unit, all three discharged:**
-
-- **The message column does not fit.** Raised by unit 273, ruled by you on
-  2026-09-07, discharged by task 1. 75 → 177 px, with the three-pixel residue
-  above stated rather than hidden.
-- **The frequency in a log entry is the dial at logging time.** Raised by unit 274,
-  discharged by task 3.
-- **`CLAUDE.md` §1 stops indexing at HM-DEC-152.** Raised by unit 273, discharged
-  by task 4. All seven rulings read out of `DECISIONS.md` and indexed by what each
-  says, and `DecisionLogOrderTests` passes.
-
-**Nothing was added to the queue by this unit.**
+   in `OPEN_ISSUES.md` and not on this queue.
+4. **Three pixels.** Unit 275 left `VP2MAA KC3QIS FN00` three pixels over on the
+   left list, on a headless measurement whose own uncertainty is about that size,
+   and proposed no change. **Tim is looking at it on his own screen.** No unit
+   action until he says.
+5. **`dt` and `hz` were never on the mine list.** Unit 275 reported the mismatch
+   rather than repairing it. The mine list now has 224 px of message to spend if he
+   wants them there. **No unit action until he says.**
+6. **Where an outcome entry goes when the unit it corrects has none**, raised by
+   this unit, 2026-09-07. Decided one way here and written into `PHASE_OUTCOME.md`
+   under `## UNIT 276 - STEP E`; the ruling above is what wants his eye. The change
+   is already in the tree at `50768aa`.
