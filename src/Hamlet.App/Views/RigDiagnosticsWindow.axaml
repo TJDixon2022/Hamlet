@@ -43,9 +43,14 @@
                        TextWrapping="Wrap" Margin="0,6,0,0"
                        IsVisible="{Binding HasModeFollowLine}" />
 
-            <TextBlock Text="Everything Hamlet has asked the radio, with what each answer was and when it arrived. A row that says unknown is one nobody has managed to read, which is not the same as a radio that does not have it."
-                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
+            <!-- **THE HEADER SENTENCE IS ON A MARK** (Tim, 2026-09-08: text
+                 only where he hovers). The window's own title says what it is;
+                 this said it again at length. The empty state stays, because it
+                 explains an absence, which is the one thing §0.0 requires a
+                 sentence for. -->
+            <ctl:HintMarkControl HorizontalAlignment="Left" Margin="0,4,0,0"
+                Kind="Boundary"
+                Text="Everything Hamlet has asked the radio, with what each answer was and when it arrived. A row that says unknown is one nobody has managed to read, which is not the same as a radio that does not have it." />
         </StackPanel>
 
         <!-- What the numbers add up to, when they add up to anything. Every

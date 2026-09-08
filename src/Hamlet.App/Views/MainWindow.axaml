@@ -353,9 +353,12 @@
                                   Summary="{Binding MapSummary}"
                                   IsExpanded="{Binding MapExpanded, Mode=TwoWay}">
                 <StackPanel Spacing="6">
-                    <TextBlock Text="hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune"
-                               FontSize="12" TextWrapping="Wrap"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                    <!-- **THE HOW-TO IS ON A MARK** (Tim, 2026-09-08). It sat above
+                         the map on every tab, permanently, telling him things he
+                         learns by moving the pointer once. -->
+                    <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
+                        Foreground="{StaticResource HmBlueBrush}"
+                        Text="hover a dot to see who it is · click a dot to tune there · click the background for a neighborhood's story · drag to tune" />
                     <ctl:NeighborhoodMapControl Height="44"
                         FrequencyHz="{Binding FrequencyHz}"
                         BandLowHz="{Binding MapLowHz}"
@@ -951,11 +954,11 @@
                          can copy somebody needs the number more
                          than anything else on this panel. -->
                     <Grid ColumnDefinitions="*,Auto,Auto">
-                        <TextBlock
-                                   Text="what the radio is hearing, as it arrives"
-                                   FontSize="12" VerticalAlignment="Center"
-                                   TextWrapping="Wrap"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                        <!-- The panel is titled CW terminal and this said the same
+                             thing again in a longer way. -->
+                        <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="what the radio is hearing, as it arrives" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal"
                                     Spacing="6">
                             <!-- THE RECEIVER'S FRONT END, WHERE HE IS ALREADY
@@ -1237,11 +1240,10 @@
                          regression test, and without one it is an argument that
                          runs for three sessions. -->
                     <Grid ColumnDefinitions="*,Auto" Margin="0,2,0,0">
-                        <TextBlock Grid.Column="0"
-                                   Text="Press this whenever you can hear a station, whether or not anything appeared here. It keeps the last half minute and puts the station on tonight's list, and the list is the only place the ones Hamlet missed are counted at all."
-                                   FontSize="11" TextWrapping="Wrap"
-                                   VerticalAlignment="Center" Margin="0,0,10,0"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                        <ctl:HintMarkControl Grid.Column="0" Kind="Boundary"
+                            HorizontalAlignment="Left" VerticalAlignment="Center"
+                            Margin="0,0,10,0"
+                            Text="Press this whenever you can hear a station, whether or not anything appeared here. It keeps the last half minute and puts the station on tonight's list, and the list is the only place the ones Hamlet missed are counted at all." />
 
                         <!-- **THE PRESS ASSERTS SOMETHING HAMLET CANNOT KNOW.**
                              Every other number it holds is downstream of its own
@@ -1279,9 +1281,8 @@
                                 Command="{Binding DismissReceiveOfferCommand}" />
                     </Grid>
 
-                    <TextBlock Text="a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it."
-                               FontSize="12" TextWrapping="Wrap"
-                               Foreground="{StaticResource HmTextMutedBrush}" />
+                    <ctl:HintMarkControl Kind="Boundary" HorizontalAlignment="Left"
+                        Text="a dimmed character is one Hamlet is not sure of, and a block is something it heard and could not read. You can select any of this and copy it." />
                 </StackPanel>
             </ctl:CollapsiblePanel>
         </DataTemplate>
@@ -2838,9 +2839,9 @@
                                  voice (§0.7). The paragraph that used to sit here
                                  said nothing leaves the radio, which stopped
                                  being true the moment the button came back. -->
-                            <TextBlock TextWrapping="Wrap" FontSize="11"
-                                       Foreground="{StaticResource HmTextMutedBrush}"
-                                       Text="CQ tells the band you are looking for a conversation and puts your callsign on it. RST is the signal report, which is your honest word on how well you are hearing the other station. 73 is how a contact ends, and it means best wishes. Clear empties the line and sends nothing. Send puts what is on the line on the air." />
+                            <ctl:HintMarkControl Kind="Tip" HorizontalAlignment="Left"
+                                Foreground="{StaticResource HmAmberDeepBrush}"
+                                Text="CQ tells the band you are looking for a conversation and puts your callsign on it. RST is the signal report, which is your honest word on how well you are hearing the other station. 73 is how a contact ends, and it means best wishes. Clear empties the line and sends nothing. Send puts what is on the line on the air." />
                         </StackPanel>
                     </Border>
 

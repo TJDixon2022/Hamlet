@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:vm="using:Hamlet.App.ViewModels"
         x:Class="Hamlet.App.Views.DecisionLogWindow"
         x:DataType="vm:DecisionLogViewModel"
@@ -19,10 +20,9 @@
 
     <Grid RowDefinitions="Auto,*,Auto" Margin="16">
 
-        <TextBlock Grid.Row="0" Margin="0,0,0,10"
-                   Text="Every time Hamlet worked something out and it came out differently from last time, it is here with the reason beside it. A refused line is Hamlet declining on purpose, and the reason says what decided it."
-                   FontSize="12" TextWrapping="Wrap"
-                   Foreground="{StaticResource HmTextMutedBrush}" />
+        <ctl:HintMarkControl Grid.Row="0" Margin="0,0,0,10"
+            HorizontalAlignment="Left" Kind="Tip"
+            Text="Every time Hamlet worked something out and it came out differently from last time, it is here with the reason beside it. A refused line is Hamlet declining on purpose, and the reason says what decided it." />
 
         <Border Grid.Row="1" Background="White" CornerRadius="8"
                 BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1">

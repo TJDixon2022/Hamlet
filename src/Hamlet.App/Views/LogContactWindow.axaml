@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:vm="using:Hamlet.App.ViewModels"
         x:Class="Hamlet.App.Views.LogContactWindow"
         x:DataType="vm:LogContactViewModel"
@@ -85,11 +86,13 @@
         </ScrollViewer>
 
         <StackPanel Grid.Row="2" Spacing="4" Margin="0,12,0,0">
-            <TextBlock Text="Your notes" FontSize="12"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
-            <TextBlock Text="Yours, and nothing above is changed by what you write here. It goes in the ADIF COMMENT field."
-                       FontSize="11" TextWrapping="Wrap"
-                       Foreground="{StaticResource HmSlateEdgeBrush}" />
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock Text="Your notes" FontSize="12"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+                <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                    Text="Yours, and nothing above is changed by what you write here. It goes in the ADIF COMMENT field." />
+            </StackPanel>
             <TextBox x:Name="LogContactNotes"
                      Text="{Binding Notes, Mode=TwoWay}"
                      AcceptsReturn="True"

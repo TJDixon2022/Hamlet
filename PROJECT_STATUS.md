@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 6 of 8
+TASK: 7 of 8
 WORK_INSTRUCTION: 281 - text only where he hovers
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T13:58:43-04:00
-NOTE: Task 6 - finding why the distance calculation cannot reach a grid that is set. ObserverGrid works when passed - the sender test measured 250 miles on a bearing of 87 with FN00DJ - so the fault is on the path that fills it.
+UPDATED: 2026-09-08T14:06:22-04:00
+NOTE: Task 7 done: 14,670 characters to 7,665 across the whole application, the removal list written, and the nothing-was-lost sweep green. Task 8 next, the outcome entry.
 
 ---
 

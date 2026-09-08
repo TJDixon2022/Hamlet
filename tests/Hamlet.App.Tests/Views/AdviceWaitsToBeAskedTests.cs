@@ -89,6 +89,82 @@ public sealed class AdviceWaitsToBeAskedTests
             + "were deleted rather than moved: " + string.Join(" | ", missing));
     }
 
+    /// <summary>**Every sentence that left the main window is still one hover away.**</summary>
+    /// <remarks>
+    /// <para>Task 7's real check, and the reason this unit is not just tidying:
+    /// **moving a sentence behind a mark and deleting it look identical on the
+    /// screen** (§0.0, HM-DEC-092). This walks the realized main window in every
+    /// operating mode and asserts that each sentence that stopped being drawn is
+    /// held by something on it.</para>
+    /// <para>It sweeps every tooltip and not only the marks, because some of what
+    /// moved went onto a control's own hover — the turn ring's, the send line's, the
+    /// bubble caption's — rather than onto a mark of its own.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void EverySentenceThatLeftTheMainWindowIsStillOneHoverAway()
+    {
+        var moved = new[]
+        {
+            // Task 2's second pass, on the tabs
+            "hover a dot to see who it is",
+            "what the radio is hearing, as it arrives",
+            "puts the station on tonight's list",
+            "a dimmed character is one Hamlet is not sure of",
+            "CQ tells the band you are looking for a conversation",
+
+            // Task 3. **THE TURN RING'S SENTENCE IS THE ONE FOR THE STATE IT IS
+            // IN**, and a panel with no radio behind it has no measured clock, so
+            // that is the sentence on the ring here. The other five states are
+            // asserted one at a time by `TheTurnIsARingTests`, which is where a
+            // state machine belongs; sweeping for all six here would be asking a
+            // realized window to be in six states at once.
+            "has not measured this computer's clock",
+            "after clamping",
+            "which Hamlet cannot see",
+
+            // Task 4
+            "belt",
+        };
+
+        var held = new List<string>();
+
+        foreach (var mode in new[] { "CW", "Digital", "Voice" })
+        {
+            var settings = new AppSettings();
+
+            settings.Operator.Callsign = "KC3QIS";
+            settings.Operator.GridSquare = "FN00DJ";
+
+            var panel = new MainWindowViewModel(settings, null)
+            {
+                OperatingMode = mode,
+                DigitalDecodedExpanded = true,
+            };
+
+            var window = new MainWindow { DataContext = panel };
+
+            window.Show();
+            HowMuchTheApplicationSaysTests.Pump(window);
+
+            held.AddRange(window.GetVisualDescendants()
+                .OfType<Control>()
+                .Select(c => ToolTip.GetTip(c) as string)
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .Select(t => t!));
+        }
+
+        _output.WriteLine(held.Count + " tooltips across the three tabs");
+
+        var missing = moved
+            .Where(phrase => !held.Any(t => t.Contains(phrase, StringComparison.Ordinal)))
+            .ToList();
+
+        Assert.True(
+            missing.Count == 0,
+            "these left the screen and are behind nothing, so they were deleted "
+            + "rather than moved: " + string.Join(" | ", missing));
+    }
+
     /// <summary>**The mark carries the kind in words, never in the glyph alone.**</summary>
     /// <remarks>
     /// §0.6. A shape is a color's cousin: somebody who does not recognise it has no

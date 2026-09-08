@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:vm="using:Hamlet.App.ViewModels"
         x:Class="Hamlet.App.Views.ContactLogWindow"
         x:DataType="vm:ContactLogViewModel"
@@ -40,9 +41,14 @@
                        FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
                        Foreground="{StaticResource HmAmberBrush}" />
 
-            <TextBlock Text="Every contact you have logged, newest first. Hamlet reads this file and never changes it, so anything you want to correct is corrected where you made it."
-                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
+            <!-- **THE HEADER SENTENCE IS ON A MARK** (Tim, 2026-09-08: text
+                 only where he hovers). The window's own title says what it is;
+                 this said it again at length. The empty state stays, because it
+                 explains an absence, which is the one thing §0.0 requires a
+                 sentence for. -->
+            <ctl:HintMarkControl HorizontalAlignment="Left" Margin="0,4,0,0"
+                Kind="Boundary"
+                Text="Every contact you have logged, newest first. Hamlet reads this file and never changes it, so anything you want to correct is corrected where you made it." />
         </StackPanel>
 
         <!-- **DAMAGE IS NAMED AT THE TOP AS WELL AS ON THE ROW.** A bad record

@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:vm="using:Hamlet.App.ViewModels"
         x:Class="Hamlet.App.Views.FavoritesWindow"
         x:DataType="vm:FavoritesViewModel"
@@ -14,10 +15,9 @@
 
     <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="16">
 
-        <TextBlock Grid.Row="0" Margin="0,0,0,10"
-                   Text="Each one remembers what it was for, which is the thing a numbered memory channel cannot tell you."
-                   FontSize="12" TextWrapping="Wrap"
-                   Foreground="{StaticResource HmTextMutedBrush}" />
+        <ctl:HintMarkControl Grid.Row="0" Margin="0,0,0,10"
+            HorizontalAlignment="Left" Kind="Tip"
+            Text="Each one remembers what it was for, which is the thing a numbered memory channel cannot tell you." />
 
         <Border Grid.Row="1" Background="White" CornerRadius="8"
                 BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1">
