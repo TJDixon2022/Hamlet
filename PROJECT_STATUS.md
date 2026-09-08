@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 8
+TASK: 2 of 8
 WORK_INSTRUCTION: 281 - text only where he hovers
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T13:27:47-04:00
-NOTE: Task 1 - measuring every permanently-visible string across the whole application, not the Digital tab alone. Reading the unit 280 removal list and the existing realized-window harness first.
+UPDATED: 2026-09-08T13:34:04-04:00
+NOTE: Task 2 - building the hover mark and moving advice behind it. Task 1 found ReceiveAdvice reaches no screen at all (raised HM-OPEN-087); the largest real instance is SettingsWindow at 6,845 characters, 92 per cent of it teaching prose.
 
 ---
 

@@ -252,6 +252,26 @@ public partial class SettingsViewModel : ObservableObject
               + "is its own USB codec, which Hamlet chooses for you when it "
               + "recognizes the name.";
 
+    /// <summary>
+    /// The half of <see cref="AudioDeviceNote"/> that is a fault, or empty.
+    /// </summary>
+    /// <remarks>
+    /// **A FAULT SPEAKS UNASKED AND ADVICE DOES NOT** (Tim, 2026-09-08). One
+    /// property was carrying both: no capture device is something wrong the
+    /// operator needs told, and which device to pick is a tip he can hover for.
+    /// Splitting them is what lets the second move behind a mark without taking
+    /// the first with it.
+    /// </remarks>
+    public string AudioDeviceFault
+        => AudioDevices.Count == 0 ? AudioDeviceNote : string.Empty;
+
+    /// <summary>The half of <see cref="AudioDeviceNote"/> that is a tip, or empty.</summary>
+    public string AudioDeviceTip
+        => AudioDevices.Count == 0 ? string.Empty : AudioDeviceNote;
+
+    /// <summary>True while there is a fault worth a sentence on the screen.</summary>
+    public bool HasAudioDeviceFault => AudioDeviceFault.Length > 0;
+
     // ---------------------------------------------------------------------
     // THE TRANSMIT ENDPOINT. Work instruction 260, task 4.
     // ---------------------------------------------------------------------
@@ -287,6 +307,24 @@ public partial class SettingsViewModel : ObservableObject
               + "of the computer. Hamlet will not choose one for you: with none "
               + "named it refuses to transmit rather than playing the tones into "
               + "whatever this computer happens to default to.";
+
+    /// <summary>
+    /// The half of <see cref="TransmitEndpointNote"/> that is a fault, or empty.
+    /// </summary>
+    /// <remarks>
+    /// Split for <see cref="AudioDeviceFault"/>'s reason. **Nothing to play a
+    /// transmission into is a fault on the screen that decides whether he can
+    /// transmit at all**, so it does not go behind a hover.
+    /// </remarks>
+    public string TransmitEndpointFault
+        => TransmitEndpoints.Count == 0 ? TransmitEndpointNote : string.Empty;
+
+    /// <summary>The tip half, or empty.</summary>
+    public string TransmitEndpointTip
+        => TransmitEndpoints.Count == 0 ? string.Empty : TransmitEndpointNote;
+
+    /// <summary>True while there is a fault worth a sentence on the screen.</summary>
+    public bool HasTransmitEndpointFault => TransmitEndpointFault.Length > 0;
 
     /// <summary>
     /// Where a transmission's audio is played, or null where none is named.

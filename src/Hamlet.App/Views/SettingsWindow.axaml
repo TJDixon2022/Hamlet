@@ -54,10 +54,10 @@
                                        Foreground="{StaticResource HmGreenBrush}" />
                             <TextBlock Text="Operator" Classes="hm-section"
                                        Foreground="{StaticResource HmGreenBrush}" />
+                            <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                                Foreground="{StaticResource HmGreenBrush}"
+                                Text="Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only. It is never written to telemetry and never uploaded." />
                         </StackPanel>
-
-                        <TextBlock Classes="hm-note"
-                                   Text="Who is at the key. Used for display in the app and, later, for your log (FG-004). Stored on this computer only. It is never written to telemetry and never uploaded." />
 
                         <Grid ColumnDefinitions="110,*" RowDefinitions="Auto,Auto,Auto,Auto"
                               RowSpacing="10">
@@ -90,9 +90,13 @@
                                  and the provenance under its box, so a
                                  centered label would drift away from the field
                                  it names. -->
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Grid square"
-                                       Classes="hm-field" VerticalAlignment="Top"
-                                       Margin="0,6,0,0" />
+                            <StackPanel Grid.Row="3" Grid.Column="0"
+                                        Orientation="Horizontal" Spacing="5"
+                                        VerticalAlignment="Top" Margin="0,6,0,0">
+                                <TextBlock Text="Grid square" Classes="hm-field" />
+                                <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                                     Text="{Binding GridExplanation}" />
+                            </StackPanel>
                             <StackPanel Grid.Row="3" Grid.Column="1" Spacing="5">
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <TextBox Grid.Column="0" Text="{Binding GridSquare}"
@@ -104,13 +108,6 @@
                                                           VerticalAlignment="Center"
                                                           Badge="{Binding GridBadge}" />
                                 </Grid>
-
-                                <!-- The jargon gets dissolved where it appears,
-                                     not in a help page nobody opens
-                                     (HM-DEC-034, HM-DEC-037). -->
-                                <ctl:GlossaryTextControl Text="{Binding GridExplanation}"
-                                                         FontSize="12" LineSpacing="1.4"
-                                                         Foreground="{StaticResource HmTextMutedBrush}" />
 
                                 <StackPanel Orientation="Horizontal" Spacing="6">
                                     <TextBlock Text="&#x2691;" FontSize="11"
@@ -137,10 +134,10 @@
                                        Foreground="{StaticResource HmAmberDeepBrush}" />
                             <TextBlock Text="License" Classes="hm-section"
                                        Foreground="{StaticResource HmAmberDeepBrush}" />
+                            <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                Foreground="{StaticResource HmAmberDeepBrush}"
+                                Text="Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself. If they disagree it shows you both and lets you choose. Listening is never restricted by any of this." />
                         </StackPanel>
-
-                        <TextBlock Classes="hm-note"
-                                   Text="Your class decides what the band map shows as yours to use. Hamlet looks it up from your callsign when it can, and never overwrites a value you set yourself. If they disagree it shows you both and lets you choose. Listening is never restricted by any of this." />
 
                         <Grid ColumnDefinitions="110,*,Auto" ColumnSpacing="8">
                             <TextBlock Grid.Column="0" Text="Class" Classes="hm-field" />
@@ -165,17 +162,17 @@
                         <Border Background="White" CornerRadius="8" Padding="12,10"
                                 BorderBrush="{StaticResource HmAmberEdgeBrush}"
                                 BorderThickness="1">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                    <TextBlock Text="Only let me transmit where my license allows"
-                                               FontWeight="SemiBold" FontSize="13"
-                                               TextWrapping="Wrap" />
-                                    <ctl:GlossaryTextControl
-                                        Text="Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving, because those are not regulated. There is no transmit path yet, so this takes effect when CW send lands."
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Margin="0,0,10,0"
+                                           Text="Only let me transmit where my license allows"
+                                           FontWeight="SemiBold" FontSize="13"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap" />
+                                <ctl:HintMarkControl Grid.Column="1" Kind="Boundary"
+                                    VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Foreground="{StaticResource HmAmberDeepBrush}"
+                                    Text="Holds a transmission back when the frequency is outside your privileges. It never restricts tuning or receiving, because those are not regulated. There is no transmit path yet, so this takes effect when CW send lands." />
+                                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
                                               IsChecked="{Binding RestrictTransmitToPrivileges}" />
                             </Grid>
                         </Border>
@@ -196,10 +193,19 @@
                                        Foreground="{StaticResource HmGreenBrush}" />
                         </StackPanel>
 
-                        <TextBlock Classes="hm-note" Text="{Binding AudioDeviceNote}" />
+                        <!-- **THE FAULT SPEAKS AND THE TIP WAITS TO BE ASKED**
+                             (Tim, 2026-09-08). One property was carrying both
+                             halves; no capture device is something wrong the
+                             operator needs told, and which one to pick is a tip. -->
+                        <TextBlock Classes="hm-note" Text="{Binding AudioDeviceFault}"
+                                   IsVisible="{Binding HasAudioDeviceFault}" />
 
                         <Grid ColumnDefinitions="110,*" ColumnSpacing="8">
-                            <TextBlock Grid.Column="0" Text="Input" Classes="hm-field" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Input" Classes="hm-field" />
+                                <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                                     Text="{Binding AudioDeviceTip}" />
+                            </StackPanel>
                             <ComboBox Grid.Column="1" MinWidth="260"
                                       HorizontalAlignment="Left"
                                       ItemsSource="{Binding AudioDevices}"
@@ -222,10 +228,15 @@
                              operator's behalf** - with none named Hamlet
                              refuses to transmit rather than playing the tones
                              into whatever the computer defaults to (§0.0). -->
-                        <TextBlock Classes="hm-note" Text="{Binding TransmitEndpointNote}" />
+                        <TextBlock Classes="hm-note" Text="{Binding TransmitEndpointFault}"
+                                   IsVisible="{Binding HasTransmitEndpointFault}" />
 
                         <Grid ColumnDefinitions="110,*" ColumnSpacing="8">
-                            <TextBlock Grid.Column="0" Text="Transmit" Classes="hm-field" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Transmit" Classes="hm-field" />
+                                <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                                                     Text="{Binding TransmitEndpointTip}" />
+                            </StackPanel>
                             <ComboBox Grid.Column="1" MinWidth="260"
                                       HorizontalAlignment="Left"
                                       ItemsSource="{Binding TransmitEndpoints}"
@@ -257,7 +268,11 @@
                              the view model asks the composer rather than
                              deciding again. -->
                         <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
-                            <TextBlock Grid.Column="0" Text="Transmit drive" Classes="hm-field" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Transmit drive" Classes="hm-field" />
+                                <ctl:HintMarkControl Kind="Measurement" VerticalAlignment="Center"
+                                                     Text="{Binding TransmitDriveNote}" />
+                            </StackPanel>
                             <NumericUpDown Grid.Column="1" Width="130"
                                            x:Name="TransmitDriveBox"
                                            Minimum="1" Maximum="100" Increment="1"
@@ -268,11 +283,12 @@
                                        VerticalAlignment="Center" />
                         </Grid>
 
-                        <TextBlock Classes="hm-note" TextWrapping="Wrap"
-                                   Text="{Binding TransmitDriveNote}" />
-
                         <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
-                            <TextBlock Grid.Column="0" Text="CW pitch" Classes="hm-field" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="CW pitch" Classes="hm-field" />
+                                <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                    Text="This is the note a CW signal turns into when your radio is tuned to it, and the IC-7300 puts it anywhere from 300 to 900 Hz. Set it to match the radio and the decoder starts in the right place. It hunts a little either side of this anyway, because nobody lands exactly on a signal and the sender has no idea where you are listening from." />
+                            </StackPanel>
                             <NumericUpDown Grid.Column="1" Width="130"
                                            Minimum="300" Maximum="900" Increment="5"
                                            FormatString="0"
@@ -281,19 +297,17 @@
                                        VerticalAlignment="Center" />
                         </Grid>
 
-                        <ctl:GlossaryTextControl
-                            Text="This is the note a CW signal turns into when your radio is tuned to it, and the IC-7300 puts it anywhere from 300 to 900 Hz. Set it to match the radio and the decoder starts in the right place. It hunts a little either side of this anyway, because nobody lands exactly on a signal and the sender has no idea where you are listening from."
-                            FontSize="12" LineSpacing="1.4"
-                            Foreground="{StaticResource HmTextMutedBrush}" />
-
                         <!-- A preference and never a measurement (HM-DEC-066,
                              HM-OPEN-006). The copy says what the number is for
                              and what it is not, because a speed box in a radio
                              program reads like a test unless somebody says
                              otherwise. -->
                         <Grid ColumnDefinitions="110,Auto,*" ColumnSpacing="8">
-                            <TextBlock Grid.Column="0" Text="Morse speed"
-                                       Classes="hm-field" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+                                <TextBlock Text="Morse speed" Classes="hm-field" />
+                                <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                                     Text="{Binding CopySpeedNote}" />
+                            </StackPanel>
                             <NumericUpDown Grid.Column="1" Width="130"
                                            Minimum="5" Maximum="40" Increment="1"
                                            FormatString="0"
@@ -303,28 +317,23 @@
                                        VerticalAlignment="Center" />
                         </Grid>
 
-                        <ctl:GlossaryTextControl
-                            Text="{Binding CopySpeedNote}"
-                            FontSize="12" LineSpacing="1.4"
-                            Foreground="{StaticResource HmTextMutedBrush}" />
-
                         <!-- Beside the audio settings rather than buried, since
                              it is about the same thing: what Hamlet is listening
                              to when you open it (HM-DEC-052). -->
                         <Border Background="White" CornerRadius="8" Padding="12,10"
                                 BorderBrush="{StaticResource HmGreenEdgeBrush}"
                                 BorderThickness="1">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                    <TextBlock Text="Connect to my last radio when Hamlet opens"
-                                               FontWeight="SemiBold" FontSize="13"
-                                               TextWrapping="Wrap" />
-                                    <ctl:GlossaryTextControl
-                                        Text="Saves clicking Connect every time. If the radio is switched off, or Windows has moved it to a different COM port, Hamlet says so in the line at the bottom of the window and carries on with the training radio. It tries once and then leaves it to you."
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Margin="0,0,10,0"
+                                           Text="Connect to my last radio when Hamlet opens"
+                                           FontWeight="SemiBold" FontSize="13"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap" />
+                                <ctl:HintMarkControl Grid.Column="1" Kind="Tip"
+                                    VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Foreground="{StaticResource HmGreenBrush}"
+                                    Text="Saves clicking Connect every time. If the radio is switched off, or Windows has moved it to a different COM port, Hamlet says so in the line at the bottom of the window and carries on with the training radio. It tries once and then leaves it to you." />
+                                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
                                               IsChecked="{Binding ReconnectOnStartup}" />
                             </Grid>
                         </Border>
@@ -335,17 +344,17 @@
                         <Border Background="White" CornerRadius="8" Padding="12,10"
                                 BorderBrush="{StaticResource HmGreenEdgeBrush}"
                                 BorderThickness="1">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
-                                    <TextBlock Text="Set the mode to match where I am tuned"
-                                               FontWeight="SemiBold" FontSize="13"
-                                               TextWrapping="Wrap" />
-                                    <ctl:GlossaryTextControl
-                                        Text="Every part of a band has a mode the people there are using, and getting it wrong is why a beginner hears nothing. Hamlet changes the radio to match the block you are tuned into, and says in the line at the bottom of the window what it did and why. Change the mode yourself at any time and it stops until you next switch bands."
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
-                                <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBlock Grid.Column="0" Margin="0,0,10,0"
+                                           Text="Set the mode to match where I am tuned"
+                                           FontWeight="SemiBold" FontSize="13"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap" />
+                                <ctl:HintMarkControl Grid.Column="1" Kind="Tip"
+                                    VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Foreground="{StaticResource HmGreenBrush}"
+                                    Text="Every part of a band has a mode the people there are using, and getting it wrong is why a beginner hears nothing. Hamlet changes the radio to match the block you are tuned into, and says in the line at the bottom of the window what it did and why. Change the mode yourself at any time and it stops until you next switch bands." />
+                                <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
                                               IsChecked="{Binding ModeFollowsTheMap}" />
                             </Grid>
                         </Border>
@@ -361,22 +370,26 @@
                         <Border Background="White" CornerRadius="8" Padding="12,10"
                                 BorderBrush="{StaticResource HmGreenEdgeBrush}"
                                 BorderThickness="1">
-                            <Grid ColumnDefinitions="*,Auto">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
                                 <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
                                     <TextBlock Text="Where the scanner may take your dial"
                                                FontWeight="SemiBold" FontSize="13"
                                                TextWrapping="Wrap" />
-                                    <ctl:GlossaryTextControl
-                                        Text="The scanner will not tune outside the stretches in this file, whatever else goes wrong, so it is worth a look before you first run one. Hamlet wrote it once from the Morse parts of its own band data and will never touch it again, and every stretch in it says where its numbers came from. Delete one and the scanner will not go there."
-                                        FontSize="12" LineSpacing="1.4"
-                                        Foreground="{StaticResource HmTextMutedBrush}" />
 
+                                    <!-- **THE PATH IS A FACT AND IT STAYS.** It is
+                                         where the file he is being told he may edit
+                                         actually is, which he cannot hover a button
+                                         to find out. -->
                                     <TextBlock Text="{Binding ScanFilePath}"
                                                FontFamily="Consolas,Menlo,monospace"
                                                FontSize="11" TextWrapping="Wrap"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
                                 </StackPanel>
-                                <Button Grid.Column="1" VerticalAlignment="Center"
+                                <ctl:HintMarkControl Grid.Column="1" Kind="Boundary"
+                                    VerticalAlignment="Center" Margin="0,0,10,0"
+                                    Foreground="{StaticResource HmGreenBrush}"
+                                    Text="The scanner will not tune outside the stretches in this file, whatever else goes wrong, so it is worth a look before you first run one. Hamlet wrote it once from the Morse parts of its own band data and will never touch it again, and every stretch in it says where its numbers came from. Delete one and the scanner will not go there." />
+                                <Button Grid.Column="2" VerticalAlignment="Center"
                                         Content="Open it"
                                         Command="{Binding OpenScanFileCommand}" />
                             </Grid>
@@ -397,22 +410,24 @@
                                        Foreground="{StaticResource HmBlueBrush}" />
                             <TextBlock Text="Happening now" Classes="hm-section"
                                        Foreground="{StaticResource HmBlueBrush}" />
+                            <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                Foreground="{StaticResource HmBlueBrush}"
+                                Text="How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is out of sight." />
                         </StackPanel>
-
-                        <TextBlock Classes="hm-note"
-                                   Text="How often the spot feed reloads. The panel always shows how old its data is, whatever this is set to, and refreshing pauses while the window is out of sight." />
 
                         <Border Background="White" CornerRadius="8" Padding="12,10"
                                 BorderBrush="{StaticResource HmBlueEdgeBrush}"
                                 BorderThickness="1">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5"
+                                            Margin="0,0,10,0" VerticalAlignment="Center">
                                     <TextBlock Text="Auto-refresh" FontWeight="SemiBold"
                                                FontSize="13" />
-                                    <TextBlock Classes="hm-note"
-                                               Text="Refresh spots by hand any time from Explore ▸ Refresh spots." />
+                                    <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                        Foreground="{StaticResource HmBlueBrush}"
+                                        Text="Refresh spots by hand any time from Explore ▸ Refresh spots." />
                                 </StackPanel>
-                                <ComboBox Grid.Column="1" MinWidth="170" VerticalAlignment="Center"
+                                <ComboBox Grid.Column="2" MinWidth="170" VerticalAlignment="Center"
                                           ItemsSource="{Binding SpotRefreshChoices}"
                                           SelectedItem="{Binding SpotRefresh}">
                                     <ComboBox.ItemTemplate>
@@ -429,14 +444,14 @@
                              depends on how somebody operates, and generous by
                              default because the old ten-minute window threw
                              away perfectly good invitations. -->
-                        <TextBlock Text="How long a spot stays worth chasing" FontSize="14"
-                                   FontWeight="SemiBold" Margin="0,4,0,0"
-                                   Foreground="{StaticResource HmBlueBrush}" />
-
-                        <ctl:GlossaryTextControl
-                            Text="The question is not how old a spot is, it is whether that person is probably still on that frequency. A park or summit activator hauled gear somewhere and stays put working callers, so their spot is good for a long while. A skimmer report only means somebody called CQ at that moment, which says much less about now."
-                            FontSize="12" LineSpacing="1.4"
-                            Foreground="{StaticResource HmTextMutedBrush}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                            <TextBlock Text="How long a spot stays worth chasing" FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmBlueBrush}" />
+                            <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                                Foreground="{StaticResource HmBlueBrush}"
+                                Text="The question is not how old a spot is, it is whether that person is probably still on that frequency. A park or summit activator hauled gear somewhere and stays put working callers, so their spot is good for a long while. A skimmer report only means somebody called CQ at that moment, which says much less about now." />
+                        </StackPanel>
 
                         <Border Background="White" CornerRadius="8" Padding="12,10"
                                 BorderBrush="{StaticResource HmBlueEdgeBrush}"
@@ -445,10 +460,13 @@
                                   RowSpacing="10">
                                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="1"
                                             Margin="0,0,10,0">
-                                    <TextBlock Text="Park and summit activations"
-                                               FontWeight="SemiBold" FontSize="13" />
-                                    <TextBlock Classes="hm-note"
-                                               Text="They stay put for the whole activation, often well over an hour." />
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="Park and summit activations"
+                                                   FontWeight="SemiBold" FontSize="13" />
+                                        <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                            Foreground="{StaticResource HmBlueBrush}"
+                                            Text="They stay put for the whole activation, often well over an hour." />
+                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
                                             Spacing="6" VerticalAlignment="Center">
@@ -461,10 +479,13 @@
 
                                 <StackPanel Grid.Row="1" Grid.Column="0" Spacing="1"
                                             Margin="0,0,10,0">
-                                    <TextBlock Text="Skimmer reports"
-                                               FontWeight="SemiBold" FontSize="13" />
-                                    <TextBlock Classes="hm-note"
-                                               Text="An automated receiver heard somebody call. Weaker evidence they are still calling." />
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="Skimmer reports"
+                                                   FontWeight="SemiBold" FontSize="13" />
+                                        <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                                            Foreground="{StaticResource HmBlueBrush}"
+                                            Text="An automated receiver heard somebody call. Weaker evidence they are still calling." />
+                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal"
                                             Spacing="6" VerticalAlignment="Center">
@@ -477,10 +498,13 @@
 
                                 <StackPanel Grid.Row="2" Grid.Column="0" Spacing="1"
                                             Margin="0,0,10,0">
-                                    <TextBlock Text="Contest activity"
-                                               FontWeight="SemiBold" FontSize="13" />
-                                    <TextBlock Classes="hm-note"
-                                               Text="Contest stations sit on one frequency for the whole event." />
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="Contest activity"
+                                                   FontWeight="SemiBold" FontSize="13" />
+                                        <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                            Foreground="{StaticResource HmBlueBrush}"
+                                            Text="Contest stations sit on one frequency for the whole event." />
+                                    </StackPanel>
                                 </StackPanel>
                                 <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal"
                                             Spacing="6" VerticalAlignment="Center">
@@ -493,14 +517,14 @@
                             </Grid>
                         </Border>
 
-                        <TextBlock Text="Where spots come from" FontSize="14"
-                                   FontWeight="SemiBold" Margin="0,4,0,0"
-                                   Foreground="{StaticResource HmBlueBrush}" />
-
-                        <ctl:GlossaryTextControl
-                            Text="Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet."
-                            FontSize="12" LineSpacing="1.4"
-                            Foreground="{StaticResource HmTextMutedBrush}" />
+                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                            <TextBlock Text="Where spots come from" FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource HmBlueBrush}" />
+                            <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                                Foreground="{StaticResource HmBlueBrush}"
+                                Text="Each network Hamlet asks about what is on the air. Every request identifies Hamlet, its version and your callsign, because these are volunteer-run services and they are owed knowing who is calling. A source that stops answering leaves its last spots on screen, ageing, and Hamlet says which network went quiet rather than pretending the band went quiet." />
+                        </StackPanel>
 
                         <ItemsControl ItemsSource="{Binding Sources}">
                             <ItemsControl.ItemTemplate>
@@ -509,22 +533,29 @@
                                             BorderBrush="{StaticResource HmBlueEdgeBrush}"
                                             BorderThickness="1" CornerRadius="8"
                                             Padding="12,10" Margin="0,0,0,8">
-                                        <Grid ColumnDefinitions="*,Auto">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
                                             <StackPanel Grid.Column="0" Spacing="3"
                                                         Margin="0,0,10,0">
                                                 <TextBlock Text="{Binding SourceName}"
                                                            FontWeight="SemiBold" FontSize="13"
                                                            Foreground="{StaticResource HmBlueBrush}" />
-                                                <ctl:GlossaryTextControl
-                                                    Text="{Binding Description}"
-                                                    FontSize="12" LineSpacing="1.4"
-                                                    Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                <!-- **THE NOTE STAYS AND THE DESCRIPTION
+                                                     GOES BEHIND THE MARK.** A note here is
+                                                     why a source is switched off - SOTA
+                                                     waiting on its own approval - which is
+                                                     a refusal explaining itself, and those
+                                                     speak unasked. -->
                                                 <TextBlock Classes="hm-note"
                                                            IsVisible="{Binding HasNote}"
                                                            Foreground="{StaticResource HmAmberDeepBrush}"
                                                            Text="{Binding Note}" />
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                            <ctl:HintMarkControl Grid.Column="1" Kind="Tip"
+                                                VerticalAlignment="Center" Margin="0,0,10,0"
+                                                Foreground="{StaticResource HmBlueBrush}"
+                                                Text="{Binding Description}" />
+                                            <ToggleSwitch Grid.Column="2" VerticalAlignment="Center"
                                                           IsChecked="{Binding IsEnabled}" />
                                         </Grid>
                                     </Border>
@@ -546,10 +577,10 @@
                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
                             <TextBlock Text="Telemetry" Classes="hm-section"
                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
+                            <ctl:HintMarkControl Kind="Boundary" VerticalAlignment="Center"
+                                Foreground="{StaticResource HmTextPrimaryBrush}"
+                                Text="Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written." />
                         </StackPanel>
-
-                        <TextBlock Classes="hm-note"
-                                   Text="Everything Hamlet records stays on this computer. Nothing is uploaded. No callsigns, no decoded message content, and no machine identifier are ever written." />
 
                         <ItemsControl ItemsSource="{Binding Categories}">
                             <ItemsControl.ItemTemplate>
@@ -558,16 +589,17 @@
                                             BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                             BorderThickness="1" CornerRadius="8"
                                             Padding="12,10" Margin="0,0,0,8">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <StackPanel Grid.Column="0" Spacing="2"
-                                                        Margin="0,0,10,0">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal"
+                                                        Spacing="5" Margin="0,0,10,0"
+                                                        VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Name}"
                                                            FontWeight="SemiBold" FontSize="13" />
-                                                <TextBlock Text="{Binding Description}"
-                                                           FontSize="12" TextWrapping="Wrap"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                <ctl:HintMarkControl Kind="Tip"
+                                                    VerticalAlignment="Center"
+                                                    Text="{Binding Description}" />
                                             </StackPanel>
-                                            <ToggleSwitch Grid.Column="1"
+                                            <ToggleSwitch Grid.Column="2"
                                                           IsChecked="{Binding IsEnabled}"
                                                           OnContent="On" OffContent="Off"
                                                           VerticalAlignment="Center" />
@@ -582,11 +614,13 @@
                                 BorderThickness="1" CornerRadius="8" Padding="12,10">
                             <StackPanel Spacing="8">
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel Grid.Column="0" Spacing="2" Margin="0,0,10,0">
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal"
+                                                Spacing="5" Margin="0,0,10,0"
+                                                VerticalAlignment="Center">
                                         <TextBlock Text="Disk limit" FontWeight="SemiBold"
                                                    FontSize="13" />
-                                        <TextBlock Classes="hm-note"
-                                                   Text="Daily files are kept until the folder passes this size, then the oldest are deleted." />
+                                        <ctl:HintMarkControl Kind="Tip" VerticalAlignment="Center"
+                                            Text="Daily files are kept until the folder passes this size, then the oldest are deleted." />
                                     </StackPanel>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6"
                                                 VerticalAlignment="Center">
