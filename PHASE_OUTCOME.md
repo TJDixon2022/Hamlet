@@ -344,3 +344,18 @@ ACCOMPLISHED: he can read his own log inside Hamlet instead of opening the file 
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Step E's criteria are Tim at his own radio working a station and no unit can meet them. This one adds what happens after a contact rather than during it, and closes nothing.
+
+## UNIT 279 - STEP E
+
+STEP: E
+APPROACH: delete the worked label and fade the row instead, write the standing rule about the log this machine will never have, measure what the column gave back, sweep every test finder that could fail to find its subject, close HM-OPEN-086, and stop the turn line lying while he transmits
+HIT: the unit's own theme bit its own first test twice: the finder threw a bare LINQ exception naming neither the station nor the lists, and the right-click reported no menu without saying the ledger was empty. Both were made to speak before task 5 asked for it
+MOVE: build on
+WHY: HM-OPEN-086's class ran green for the first time since unit 273 split the decoded area and uncovered nothing, so the whole chain has worked all along behind a helper that could not reach it. And the sweep found two tests that do not fail obscurely but PASS: both find a band's label in its card and silently continue when it is missing, so a run finding none collects nothing and goes green
+DECIDED: that dimming is opacity rather than a greyed foreground, because grey is the reserved signal for a control that genuinely cannot be used and borrowing it for a row he is free to work again is the confusion the ruling exists to prevent; and that a test which examined no subjects has not passed, which adds a guard without touching what either test asserts
+LICENCE: work instruction 279 tasks 1 to 7, and Tim's rulings of 2026-09-08 that the worked text goes, that dimmed is not disabled, that the hover text stays as unit 274 wrote it, and that this machine has no contact log
+COST: unknown
+ACCOMPLISHED: a station he has worked fades rather than wearing a label, the turn line stops saying his slot is open while his own carrier is on it, and three classes of test can no longer fail to find their subject in silence
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one says so plainly rather than dressing up an advance.
