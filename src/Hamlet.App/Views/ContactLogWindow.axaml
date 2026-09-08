@@ -1,0 +1,134 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        x:Class="Hamlet.App.Views.ContactLogWindow"
+        x:DataType="vm:ContactLogViewModel"
+        Title="My contacts"
+        Width="900" Height="640"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <!-- **HE HAS LOGGED CONTACTS AND COULD NOT SEE THEM** (work instruction 278).
+         `AdifLog` has written `%AppData%\Hamlet\contacts.adi` since unit 274 and
+         read it back for the *worked* mark, and nothing in the application ever
+         showed it to him. Reading his own log meant opening the file in Notepad.
+
+         **IT READS AND IT NEVER WRITES.** No editing, no deleting, no reordering
+         the file. A log record is a statement the operator made, and a window is
+         not the place to revise one.
+
+         **A FIELD THE RECORD DOES NOT CARRY SAYS SO** (§0.0). Records written
+         before unit 275 have no band and no frequency, because Hamlet did not
+         observe where the contact happened. A blank cell is a hole a reader fills
+         in from habit, and the habit here is to assume the band he is on now. -->
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16">
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="{Binding CountLine}"
+                       FontSize="16" FontWeight="SemiBold"
+                       Foreground="{StaticResource HmGreenBrush}" />
+
+            <TextBlock Text="Every contact you have logged, newest first. Hamlet reads this file and never changes it, so anything you want to correct is corrected where you made it."
+                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Foreground="{StaticResource HmTextMutedBrush}" />
+        </StackPanel>
+
+        <!-- **DAMAGE IS NAMED AT THE TOP AS WELL AS ON THE ROW.** A bad record
+             five hundred rows down is one he will never scroll to, and the count
+             of them is what would send him looking. -->
+        <Border Grid.Row="1" IsVisible="{Binding HasDamage}"
+                Background="White" CornerRadius="6" Padding="10,7" Margin="0,0,0,8"
+                BorderBrush="{StaticResource HmAmberBrush}" BorderThickness="1">
+            <TextBlock Text="{Binding DamageLine}"
+                       FontSize="12" TextWrapping="Wrap"
+                       Foreground="{StaticResource HmAmberBrush}" />
+        </Border>
+
+        <Border Grid.Row="2" Background="White" CornerRadius="8"
+                BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1">
+            <Grid>
+                <!-- **AN EMPTY LOG SAYS SO IN HIS WORDS** (§0.7). An empty table
+                     with headings over it looks like something that failed to
+                     load, and the true answer teaches what would change it. -->
+                <TextBlock Text="{Binding Idle}"
+                           IsVisible="{Binding !HasContacts}"
+                           Margin="16" FontSize="12" TextWrapping="Wrap"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                <Grid IsVisible="{Binding HasContacts}" RowDefinitions="Auto,*">
+
+                    <!-- The header and the rows share one column string, because
+                         two copies of a column list is how they drift apart, which
+                         unit 241 wrote a whole test class about. -->
+                    <Grid Grid.Row="0" ColumnDefinitions="96,150,64,64,64,64,80,*"
+                          Margin="10,10,10,4">
+                        <TextBlock Grid.Column="0" Text="call" />
+                        <TextBlock Grid.Column="1" Text="when (UTC)" />
+                        <TextBlock Grid.Column="2" Text="band" />
+                        <TextBlock Grid.Column="3" Text="mode" />
+                        <TextBlock Grid.Column="4" Text="sent" />
+                        <TextBlock Grid.Column="5" Text="rcvd" />
+                        <TextBlock Grid.Column="6" Text="my grid" />
+                        <TextBlock Grid.Column="7" Text="notes" />
+                        <Grid.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="FontFamily" Value="Consolas,Menlo,monospace" />
+                                <Setter Property="FontSize" Value="11" />
+                                <Setter Property="Margin" Value="0,0,10,0" />
+                                <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+                            </Style>
+                        </Grid.Styles>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl x:Name="ContactLogRows"
+                                      ItemsSource="{Binding Contacts}" Margin="10,0,10,10">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ContactLogRow">
+                                    <StackPanel Margin="0,3">
+                                        <Grid ColumnDefinitions="96,150,64,64,64,64,80,*">
+                                            <TextBlock Grid.Column="0" Text="{Binding Call}"
+                                                       FontWeight="SemiBold" />
+                                            <TextBlock Grid.Column="1" Text="{Binding WhenUtc}" />
+                                            <TextBlock Grid.Column="2" Text="{Binding Band}" />
+                                            <TextBlock Grid.Column="3" Text="{Binding Mode}" />
+                                            <TextBlock Grid.Column="4" Text="{Binding ReportSent}" />
+                                            <TextBlock Grid.Column="5" Text="{Binding ReportReceived}" />
+                                            <TextBlock Grid.Column="6" Text="{Binding MyGridSquare}" />
+                                            <TextBlock Grid.Column="7" Text="{Binding Comment}"
+                                                       TextWrapping="Wrap" />
+                                            <Grid.Styles>
+                                                <Style Selector="TextBlock">
+                                                    <Setter Property="FontFamily" Value="Consolas,Menlo,monospace" />
+                                                    <Setter Property="FontSize" Value="12" />
+                                                    <Setter Property="Margin" Value="0,0,10,0" />
+                                                </Style>
+                                            </Grid.Styles>
+                                        </Grid>
+
+                                        <!-- **SHOWN, NOT SKIPPED.** He can see a
+                                             damaged line and go and look; he cannot
+                                             see a line that is not there. -->
+                                        <TextBlock Text="{Binding Fault}"
+                                                   IsVisible="{Binding HasFault}"
+                                                   FontSize="11" TextWrapping="Wrap"
+                                                   Margin="0,2,0,4"
+                                                   Foreground="{StaticResource HmAmberBrush}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <TextBlock Grid.Row="3" Text="{Binding LogPath}" Margin="0,10,0,0"
+                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                   TextWrapping="Wrap"
+                   Foreground="{StaticResource HmTextMutedBrush}" />
+    </Grid>
+</Window>

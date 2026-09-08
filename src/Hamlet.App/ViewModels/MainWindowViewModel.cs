@@ -2898,6 +2898,33 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
     public DecisionLogViewModel Decisions { get; } = new();
 
+    /// <summary>**Show him his own log**, which nothing in the app ever did.</summary>
+    /// <remarks>
+    /// <para>**IT OPENS A READER AND NOTHING ELSE.** The window has no handler of
+    /// its own, so there is no path from it to the file at all: a log record is a
+    /// statement the operator made and this is not the place to revise one.</para>
+    /// <para>**THE READ IS THE ONE THE MARK ALREADY DOES**, taken through
+    /// `ContactLogStore` so there is one route to the file and one parser behind
+    /// it, rather than a window that learns the format a second time.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void OpenContactLog()
+    {
+        var owner = (Application.Current?.ApplicationLifetime
+            as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+        if (owner is null)
+        {
+            return;
+        }
+
+        new Views.ContactLogWindow
+        {
+            DataContext = new ContactLogViewModel(
+                ContactLogStore.ReadRecords(), ContactLogStore.LogPath),
+        }.ShowDialog(owner);
+    }
+
     /// <summary>Open the record of what Hamlet decided.</summary>
     [RelayCommand]
     private void OpenDecisionLog()

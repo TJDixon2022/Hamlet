@@ -2181,6 +2181,13 @@
                     <Separator />
                     <MenuItem Header="What the radio is doing…"
                               Command="{Binding OpenRigDiagnosticsCommand}" />
+                    <!-- **HIS OWN CONTACTS, WHICH THE APP HAD NEVER SHOWN HIM**
+                         (work instruction 278). Hamlet has written
+                         `contacts.adi` since unit 274 and read it back for the
+                         *worked* mark, and reading his own log meant opening the
+                         file in Notepad. It reads and never writes. -->
+                    <MenuItem Header="My contacts…"
+                              Command="{Binding OpenContactLogCommand}" />
                     <MenuItem Header="What Hamlet decided…"
                               Command="{Binding OpenDecisionLogCommand}" />
                     <Separator />

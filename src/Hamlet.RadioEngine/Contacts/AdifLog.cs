@@ -54,6 +54,34 @@ public sealed record AdifContact
     public string? Comment { get; init; }
 }
 
+/// <summary>One record as the file actually holds it, damage included.</summary>
+/// <remarks>
+/// <para>**A LOG THAT QUIETLY DROPS A RECORD IS WORSE THAN ONE THAT SHOWS A BAD
+/// ONE** (work instruction 278). The plain reader cannot tell a caller the
+/// difference between a field Hamlet never observed and a field it wrote and cannot
+/// read back: both arrive as null. A window drawing them alike tells the operator
+/// his radio did not know the band when the truth is that the file is damaged.</para>
+/// <para>**IT CARRIES NO OPINION ABOUT WHAT TO DO.** Nothing here hides, drops or
+/// repairs a record. It reports, and what to draw is the view's business.</para>
+/// </remarks>
+/// <param name="Contact">Everything that could be read, with the rest left null.</param>
+/// <param name="Faults">
+/// What could not be read, in the operator's words rather than the parser's, empty
+/// where the record is sound.
+/// </param>
+/// <param name="Terminated">
+/// **False where the record has no `&lt;EOR&gt;`**, which means the file was cut off
+/// while it was being written. Such a record is returned rather than dropped, and
+/// <see cref="AdifLog.Read"/> still leaves it out, because every caller of that
+/// wants contacts the operator finished writing.
+/// </param>
+public sealed record AdifLogRecord(
+    AdifContact Contact, IReadOnlyList<string> Faults, bool Terminated)
+{
+    /// <summary>True where the record is whole and every field was readable.</summary>
+    public bool IsSound => Terminated && Faults.Count == 0;
+}
+
 /// <summary>
 /// Reads and writes the ADI data format, so a contact Hamlet logged opens in
 /// somebody else's logger.
@@ -247,6 +275,48 @@ public static class AdifLog
     /// </remarks>
     public static IReadOnlyList<AdifContact> Read(string? text)
     {
+        var records = ReadRecords(text);
+        var contacts = new List<AdifContact>(records.Count);
+
+        foreach (var record in records)
+        {
+            // **THE UNTERMINATED TAIL IS NOT A RECORD TO THIS READER.** It was
+            // dropped silently before <see cref="ReadRecords"/> existed and it is
+            // dropped deliberately here, because every caller of this method wants
+            // contacts the operator finished writing. The one that wants to see the
+            // damage asks for it by name.
+            if (record.Terminated)
+            {
+                contacts.Add(record.Contact);
+            }
+        }
+
+        return contacts;
+    }
+
+    /// <summary>
+    /// **Read every record, and say what could not be read**, for a reader that
+    /// has to show damage rather than inherit it.
+    /// </summary>
+    /// <param name="text">The file's whole content.</param>
+    /// <returns>One entry per record, in file order, faults and all.</returns>
+    /// <remarks>
+    /// <para>**ONE PARSER, TWO DOORS.** <see cref="Read"/> is written in terms of
+    /// this and there is no second scan of the text anywhere in this file. A second
+    /// ADI parser is exactly the thing work instruction 278 forbids, and it would
+    /// disagree with this one the first time either was touched.</para>
+    /// <para>**WHY IT EXISTS.** The plain reader cannot tell a caller the
+    /// difference between a field Hamlet never observed and a field it wrote and
+    /// cannot read back. Both arrive as null, and a log window drawing them the
+    /// same way tells the operator his radio did not know the band when in fact the
+    /// file is damaged. **A log that quietly drops a record is worse than one that
+    /// shows a bad one**, and the same is true of a field.</para>
+    /// <para>**IT NEVER THROWS AND NEVER STOPS.** A fault is recorded against the
+    /// record it was found in and the scan carries on, so one bad byte costs one
+    /// field rather than the rest of the file.</para>
+    /// </remarks>
+    public static IReadOnlyList<AdifLogRecord> ReadRecords(string? text)
+    {
         // **THE HEADER IS FOUND BY PARSING AND NEVER BY SEARCHING FOR `<EOH>`.**
         // The first draft did `IndexOf("<EOH>")` and a note reading
         // `100% <> :: <EOH> <EOR>` cut the file in half at the operator's own
@@ -255,8 +325,10 @@ public static class AdifLog
         // apart. It came back as two records, one of them nonsense.
         var body = text ?? "";
 
-        var records = new List<AdifContact>();
+        var records = new List<AdifLogRecord>();
         var fields = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var faults = new List<string>();
+        var started = false;
         var i = 0;
 
         while (i < body.Length)
@@ -272,6 +344,13 @@ public static class AdifLog
 
             if (close < 0)
             {
+                // **A TAG THAT NEVER CLOSES ENDS THE FILE**, and the record it was
+                // in is unterminated. Saying so is the whole point of this method:
+                // before it, this was where a record vanished.
+                faults.Add(
+                    "the file ends in the middle of a tag, so the rest of this "
+                    + "record was never written");
+                started = true;
                 break;
             }
 
@@ -279,8 +358,10 @@ public static class AdifLog
 
             if (string.Equals(tag, "EOR", StringComparison.OrdinalIgnoreCase))
             {
-                records.Add(From(fields));
+                records.Add(new AdifLogRecord(From(fields), faults.ToArray(), true));
                 fields.Clear();
+                faults.Clear();
+                started = false;
                 i = close + 1;
                 continue;
             }
@@ -291,9 +372,13 @@ public static class AdifLog
             if (string.Equals(tag, "EOH", StringComparison.OrdinalIgnoreCase))
             {
                 fields.Clear();
+                faults.Clear();
+                started = false;
                 i = close + 1;
                 continue;
             }
+
+            started = true;
 
             var parts = tag.Split(':');
 
@@ -301,6 +386,12 @@ public static class AdifLog
                     parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture,
                     out var length))
             {
+                // **THE FIELD IS NAMED, BECAUSE WHICH ONE IS MISSING IS THE POINT.**
+                // A record that lost its band reads very differently from one that
+                // lost a note.
+                faults.Add(
+                    "a field written as \"" + tag + "\" has no readable length, so "
+                    + "its value could not be found and the field was left out");
                 i = close + 1;
                 continue;
             }
@@ -311,8 +402,28 @@ public static class AdifLog
             var from = close + 1;
             var take = Math.Min(length, body.Length - from);
 
+            if (take < length)
+            {
+                faults.Add(
+                    "the field \"" + parts[0] + "\" says it is " + length
+                    + " characters and the file ends after " + take
+                    + ", so it was cut off");
+            }
+
             fields[parts[0]] = body.Substring(from, take);
             i = from + take;
+        }
+
+        // **THE TAIL IS EMITTED RATHER THAN DROPPED.** A file truncated mid-record
+        // used to lose that record with no trace anywhere, which is the silent skip
+        // this method was written to end.
+        if (started || fields.Count > 0)
+        {
+            faults.Add(
+                "this record has no end marker, so the file was cut off while it "
+                + "was being written");
+
+            records.Add(new AdifLogRecord(From(fields), faults.ToArray(), false));
         }
 
         return records;

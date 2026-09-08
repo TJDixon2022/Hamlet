@@ -94,4 +94,31 @@ public static class ContactLogStore
             return [];
         }
     }
+
+    /// <summary>Every record in the log, damage included, or an empty list.</summary>
+    /// <remarks>
+    /// <para>**THE SAME FILE AND THE SAME PARSER AS <see cref="Read"/>**, asked
+    /// the fuller question. The log window has to show a record it could not read
+    /// rather than inherit the silence, because a log that quietly drops a record
+    /// is worse than one that shows a bad one.</para>
+    /// <para>**AN UNREADABLE FILE IS STILL AN EMPTY LIST HERE.** A permissions
+    /// failure or a file being written to at that instant is not a damaged record
+    /// and must not be drawn as one; the window says the log is empty, which is
+    /// what it can see.</para>
+    /// </remarks>
+    public static IReadOnlyList<AdifLogRecord> ReadRecords()
+    {
+        try
+        {
+            var path = LogPath;
+
+            return File.Exists(path)
+                ? AdifLog.ReadRecords(File.ReadAllText(path))
+                : [];
+        }
+        catch (Exception)
+        {
+            return [];
+        }
+    }
 }
