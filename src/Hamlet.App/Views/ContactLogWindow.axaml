@@ -5,7 +5,7 @@
         x:Class="Hamlet.App.Views.ContactLogWindow"
         x:DataType="vm:ContactLogViewModel"
         Title="My contacts"
-        Width="900" Height="640"
+        Width="1000" Height="640"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource HmBackgroundBrush}">
 
@@ -74,14 +74,50 @@
                            VerticalAlignment="Center"
                            Foreground="{StaticResource HmTextMutedBrush}" />
 
-                <Grid IsVisible="{Binding HasContacts}" RowDefinitions="Auto,*">
+                <!-- **THE COLUMNS SIZE THEMSELVES TO WHAT IS IN THEM** (work
+                     instruction 282 task 5). They were fixed pixel widths, and the
+                     widest thing they carry is `not recorded` — twelve characters,
+                     which did not fit in sixty-four pixels and came out as
+                     `not recorc`. **A clipped word is not a shorter word**; it is a
+                     string that means nothing, and a reader who has not seen the
+                     whole one cannot tell it from a value (§0.0).
 
-                    <!-- The header and the rows share one column string, because
-                         two copies of a column list is how they drift apart, which
-                         unit 241 wrote a whole test class about. -->
+                     **AND PIXELS WERE THE WRONG UNIT FOR IT.** How wide twelve
+                     characters of Consolas are depends on the machine: measured
+                     here at 120 px and narrower on his own screen. A number chosen
+                     against one font clips on the other, whichever way it is
+                     rounded, so the Grid is asked instead of told.
+
+                     **ONE SHARED SIZE SCOPE KEEPS THE HEADER OVER ITS OWN CELLS.**
+                     Auto columns in two grids would size independently, and a
+                     header sitting over the wrong column is worse than either width
+                     alone — which is the drift unit 241 wrote a class about. -->
+                <!-- **AND IF IT IS STILL WIDER THAN THE WINDOW, IT SCROLLS**
+                     rather than squeezing a column to nothing. Eight columns of
+                     content plus a notes column do not fit every window, and the
+                     answer to that is not to give notes no room; it is to let him
+                     move sideways. **The header is inside the same scroller as the
+                     rows**, so the two cannot come apart. -->
+                <ScrollViewer IsVisible="{Binding HasContacts}"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                <Grid RowDefinitions="Auto,*"
+                      Grid.IsSharedSizeScope="True">
+
                     <Grid Grid.Row="0" x:Name="ContactLogHeader"
-                          ColumnDefinitions="96,150,64,64,96,96,88,88,*"
                           Margin="10,10,10,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogCall" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogWhen" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogBand" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogMode" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogSent" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogRcvd" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogTheirGrid" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogMyGrid" />
+                            <ColumnDefinition Width="*" MinWidth="160" />
+                        </Grid.ColumnDefinitions>
+
                         <TextBlock Grid.Column="0" Text="call" />
                         <TextBlock Grid.Column="1" Text="when (UTC)" />
                         <TextBlock Grid.Column="2" Text="band" />
@@ -109,14 +145,26 @@
                     </Grid>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled">
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  MaxHeight="470">
                         <ItemsControl x:Name="ContactLogRows"
                                       ItemsSource="{Binding Contacts}" Margin="10,0,10,10">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:ContactLogRow">
                                     <StackPanel Margin="0,3">
-                                        <Grid x:Name="ContactLogRowCells"
-                                              ColumnDefinitions="96,150,64,64,96,96,88,88,*">
+                                        <Grid x:Name="ContactLogRowCells">
+                                            <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogCall" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogWhen" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogBand" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogMode" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogSent" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogRcvd" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogTheirGrid" />
+                                            <ColumnDefinition Width="Auto" SharedSizeGroup="LogMyGrid" />
+                                            <ColumnDefinition Width="*" MinWidth="160" />
+                                        </Grid.ColumnDefinitions>
+
                                             <TextBlock Grid.Column="0" Text="{Binding Call}"
                                                        FontWeight="SemiBold" />
                                             <TextBlock Grid.Column="1" Text="{Binding WhenUtc}" />
@@ -151,6 +199,7 @@
                         </ItemsControl>
                     </ScrollViewer>
                 </Grid>
+                </ScrollViewer>
             </Grid>
         </Border>
 

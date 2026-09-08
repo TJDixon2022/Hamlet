@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 8
+TASK: 5 of 8
 WORK_INSTRUCTION: 282 - the composed paragraph, and the log shows his contacts
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T14:46:14-04:00
-NOTE: Task 4 - whether the reports were not recorded or recorded and not reaching the entry, plus the Have a look button that expands a panel not in the tree.
+UPDATED: 2026-09-08T14:50:16-04:00
+NOTE: Task 5 - the log window stops truncating. Measuring the rendered width of not recorded against each column before choosing widths.
 
 ---
 
