@@ -236,9 +236,13 @@ public sealed class TheLogDialogAndTheWorkedMarkTests : IDisposable
 
         // **THE MARK SAYS WHEN AND ON WHAT BAND**, which is what makes it useful
         // rather than only a warning.
-        Assert.Contains("2026-09-07", worked.WorkedBefore, StringComparison.Ordinal);
-        Assert.Contains("20m", worked.WorkedBefore, StringComparison.Ordinal);
+        // **TIM'S WORDING SINCE UNIT 280**, replacing unit 274's. The date is his
+        // format rather than ISO, and **the band came out**: it was a third clause
+        // on a hover that already had two, and a date is what he wants when a
+        // callsign looks familiar.
+        Assert.Contains("09/07/26", worked.WorkedBefore, StringComparison.Ordinal);
         Assert.Contains(His, worked.WorkedBefore, StringComparison.Ordinal);
+        Assert.DoesNotContain("20m", worked.WorkedBefore, StringComparison.Ordinal);
     }
 
     /// <summary>A compound call is a different station, and that is deliberate.</summary>

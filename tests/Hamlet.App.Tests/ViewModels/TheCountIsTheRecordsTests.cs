@@ -80,7 +80,11 @@ public sealed class TheCountIsTheRecordsTests : IDisposable
         _output.WriteLine(model.ContactCountLine);
 
         Assert.Equal(3, model.LoggedContacts);
-        Assert.Equal("3 contacts logged", model.ContactCountLine);
+        // **THE COUNT IS A NUMBER SINCE UNIT 280** (Tim: the contacts are
+        // understated). It is drawn large with the word small beside it, so the
+        // line itself is the figure and the word is its own property.
+        Assert.Equal("3", model.ContactCountLine);
+        Assert.Equal("contacts", model.ContactCountWord);
         Assert.True(model.HasLoggedContacts);
     }
 

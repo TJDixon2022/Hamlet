@@ -171,9 +171,16 @@ public sealed class AWorkedStationIsDimTests
         _output.WriteLine(Fresh + ":  " + (fresh.WorkedTip ?? "(none)"));
 
         Assert.NotNull(worked.WorkedTip);
-        Assert.Contains("You worked " + Worked, worked.WorkedTip!, StringComparison.Ordinal);
-        Assert.Contains("2026-09-07", worked.WorkedTip!, StringComparison.Ordinal);
-        Assert.Contains("20m", worked.WorkedTip!, StringComparison.Ordinal);
+
+        // **TIM'S OWN WORDING, 2026-09-08**, replacing unit 274's, and asserted as
+        // the whole string rather than in pieces because the shape is the ruling.
+        // **The band came out with it**: a date is what he wants when a callsign
+        // looks familiar, and the band was a third clause on a two-clause hover.
+        Assert.Equal(
+            "You logged a contact with " + Worked + " on 09/07/26",
+            worked.WorkedTip);
+
+        Assert.DoesNotContain("20m", worked.WorkedTip!, StringComparison.Ordinal);
 
         Assert.Null(fresh.WorkedTip);
 

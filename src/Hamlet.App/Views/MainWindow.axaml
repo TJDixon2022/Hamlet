@@ -4360,10 +4360,34 @@
                            FontSize="12" Margin="16,0,0,0" FontWeight="SemiBold"
                            Foreground="{StaticResource HmAmberBrush}" />
 
-                <TextBlock Grid.Column="2" Text="{Binding ContactCountLine}"
-                           IsVisible="{Binding HasLoggedContacts}"
-                           FontSize="12" Margin="16,0,0,0"
-                           Foreground="{StaticResource HmGreenBrush}" />
+                <!-- **THE COUNT STOPPED BEING A WHISPER ON 2026-09-08** (Tim: *the
+                     contacts are understated*). It was a sentence at the tail of a
+                     status bar carrying a paragraph. **What he is building is the
+                     count, so the count is the big thing** and the word beside it
+                     is small, with how far the next badge is after that. -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal"
+                            Spacing="5" Margin="16,0,0,0"
+                            VerticalAlignment="Center"
+                            IsVisible="{Binding HasLoggedContacts}">
+                    <TextBlock x:Name="ContactCountNumber"
+                               Text="{Binding ContactCountLine}"
+                               VerticalAlignment="Center"
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="{StaticResource HmGreenBrush}" />
+
+                    <TextBlock Text="{Binding ContactCountWord}"
+                               VerticalAlignment="Bottom" Margin="0,0,0,3"
+                               FontSize="11"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <TextBlock x:Name="ContactBadgeProgress"
+                               Text="{Binding ContactBadgeProgress}"
+                               IsVisible="{Binding HasContactBadgeProgress}"
+                               ToolTip.Tip="{Binding Milestones.Line}"
+                               VerticalAlignment="Bottom" Margin="6,0,0,3"
+                               FontSize="11"
+                               Foreground="{StaticResource HmAmberBrush}" />
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>

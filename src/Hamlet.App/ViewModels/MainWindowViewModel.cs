@@ -9344,6 +9344,9 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(LoggedContacts));
         OnPropertyChanged(nameof(ContactCountLine));
+        OnPropertyChanged(nameof(ContactCountWord));
+        OnPropertyChanged(nameof(ContactBadgeProgress));
+        OnPropertyChanged(nameof(HasContactBadgeProgress));
         OnPropertyChanged(nameof(HasLoggedContacts));
         OnPropertyChanged(nameof(Milestones));
     }
@@ -9459,13 +9462,33 @@ public partial class MainWindowViewModel : ObservableObject
     /// anywhere it competes with the band, the frequency or a decode. A number
     /// that grows a few times an evening does not need to announce itself.
     /// </remarks>
+    /// <para>**IT STOPPED BEING A WHISPER ON 2026-09-08** (Tim: *the contacts are
+    /// understated*). It was a sentence at the end of a status bar carrying a
+    /// paragraph. It is a number now, drawn large, and the words beside it are
+    /// small: **what he is building is the count, so the count is what is big.**
+    /// </para>
     public string ContactCountLine
-        => LoggedContacts == 1
-            ? "1 contact logged"
-            // **THE SAME SHAPE AS THE BADGE LINE** (found in task 5). One read
-            // "10000 contacts logged" and the other "10,000 contacts logged",
-            // for the same fact, a few inches apart.
-            : LoggedContacts.ToString("N0", CultureInfo.InvariantCulture) + " contacts logged";
+        => LoggedContacts.ToString("N0", CultureInfo.InvariantCulture);
+
+    /// <summary>The word beside the count, small.</summary>
+    public string ContactCountWord
+        => LoggedContacts == 1 ? "contact" : "contacts";
+
+    /// <summary>How far the next badge is, beside the count.</summary>
+    /// <remarks>
+    /// **THE PROGRESS COMES OUT OF THE LOG WINDOW AND ONTO THE SCREEN** (work
+    /// instruction 280 task 5). It was only visible in `Tools > My contacts…`,
+    /// which is not where he is while he is making them.
+    /// **IT IS THE SHORT FORM**: the log window keeps the full sentence.
+    /// </remarks>
+    public string ContactBadgeProgress
+        => Milestones.ToGo is { } toGo && Milestones.Next is { } next
+            ? toGo.ToString("N0", CultureInfo.InvariantCulture) + " to "
+                + next.ToString("N0", CultureInfo.InvariantCulture)
+            : "";
+
+    /// <summary>True where there is a next badge to show progress toward.</summary>
+    public bool HasContactBadgeProgress => ContactBadgeProgress.Length > 0;
 
     /// <summary>The log, by callsign, with the last entry for each winning.</summary>
     /// <remarks>
@@ -9558,15 +9581,17 @@ public partial class MainWindowViewModel : ObservableObject
             return "";
         }
 
+        // **TIM'S OWN WORDING, 2026-09-08**, replacing unit 274's. The band came
+        // out with it: a date is what he wants to know when a callsign looks
+        // familiar, and the band was a third clause on a hover that already had
+        // two.
+        // **THE DATE IS HIS FORMAT AND NOT ISO** - `09/07/26` - because this is a
+        // sentence he reads rather than a field anything parses.
         var when = entry.StartedUtc is { } at
-            ? at.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+            ? at.ToString("MM/dd/yy", CultureInfo.InvariantCulture)
             : "a date Hamlet did not record";
 
-        var band = string.IsNullOrWhiteSpace(entry.Band)
-            ? "a band Hamlet did not record"
-            : entry.Band;
-
-        return $"You worked {call} before, on {when}, on {band}.";
+        return $"You logged a contact with {call} on {when}";
     }
 
     /// <summary>Whether this row is one the Log item belongs on.</summary>

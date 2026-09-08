@@ -144,7 +144,8 @@ public sealed class WhatTheLogCostsAtTenThousandTests : IDisposable
         _output.WriteLine("badge line: [" + model.ContactBadgeLine + "]");
 
         Assert.Equal(10_000, count);
-        Assert.Equal("10,000 contacts logged", model.ContactCountLine);
+        Assert.Equal("10,000", model.ContactCountLine);
+        Assert.Equal("contacts", model.ContactCountWord);
 
         // **AND HE IS NOT CONGRATULATED FOR NINE BADGES AT ONCE**, which is what
         // this measurement found: installed beside a log of ten thousand it read
