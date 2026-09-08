@@ -4,6 +4,36 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-086
+status: open - read from the code by unit 276 task 5, 2026-09-07, and deliberately not repaired
+owner: unassigned
+raised: 2026-09-07
+severity: slows
+blocks: nothing the operator can see. It blocks the send chain having a green end-to-end test: both of that class's menu-opening tests go through one helper that cannot find its row, so the whole-chain claim rests on nothing until somebody watches it pass
+refs: tests/Hamlet.App.Tests/ViewModels/TheWholeChainRunsFromOneRightClickTests.cs:895, src/Hamlet.App/ViewModels/MainWindowViewModel.cs:1413, docs/unit276-every-context-menu.md
+---
+
+`TheWholeChainRunsFromOneRightClickTests` carries the same defect unit 276 fixed
+in `TheMenuIsUnderTheMouseTests`, and unit 276 did not reach it.
+
+Its `RightClick` helper asks `DigitalDecodedRows` - the left list - for a realized
+row whose `Addressee` is the operator. `MainWindowViewModel.WantsRow` is
+`!IsForHim(row) && ...`, so no such row is ever on that list. The search cannot
+succeed, and both tests in the class go through it. It went red the day unit 273
+split the decoded area, for precisely the reason the other class did.
+
+**This is read from the code and not from a run.** HM-DEC-155 rules that a unit
+runs only the test it constructs, and unit 276 constructed the other class. The
+red is asserted from the two lines quoted above and should be confirmed by
+watching it fail before anything is changed.
+
+**The repair looks like one line** - the same
+`Where(c => c.Name is "DigitalDecodedRows" or "DigitalMineRows")` that task 3 put
+in the sibling helper - but it wants its own unit, because a test nobody watched
+go green is how this defect survived three units in the first place. It was left
+alone here under CLAUDE.md 12.6.
+
+---
 id: HM-OPEN-085
 status: open — measured by unit 251, 2026-09-05, and deliberately not corrected
 owner: tim
