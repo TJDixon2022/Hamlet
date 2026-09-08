@@ -1432,6 +1432,11 @@ public partial class MainWindowViewModel : ObservableObject
     private void OnDigitalDecodesChanged(
         object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (_reordering)
+        {
+            return;
+        }
+
         if (e.Action is NotifyCollectionChangedAction.Reset
             or NotifyCollectionChangedAction.Move
             or NotifyCollectionChangedAction.Replace)
@@ -1461,7 +1466,13 @@ public partial class MainWindowViewModel : ObservableObject
                 // list would land on both.
                 if (IsForHim(row))
                 {
-                    DigitalMineDecodes.Insert(MineInsertIndex(row, at), row);
+                    // **A REPEAT COUNTS RATHER THAN ADDING A LINE.** Where this
+                    // returns true the row is already on the panel and has said
+                    // so; nothing is inserted and nothing is lost.
+                    if (!CountedAsRepeat(row))
+                    {
+                        DigitalMineDecodes.Insert(MineInsertIndex(row, at), row);
+                    }
                 }
                 else if (WantsRow(row))
                 {
@@ -1474,6 +1485,130 @@ public partial class MainWindowViewModel : ObservableObject
 
         RecountDecodedFilter();
     }
+
+    /// <summary>The beat, as the panel last read it.</summary>
+    private Ft8Turn _turn = new(Ft8TurnState.NoClock, null, null);
+
+    /// <summary>**Whose slot this is and how much of it is left**, in one sentence.</summary>
+    /// <remarks>
+    /// **IT SAYS AND IT DOES NOT ACT** (§0.2). Nothing reads this to decide
+    /// anything; it is text on a panel. The countdown reaching its last second
+    /// arms nothing, queues nothing and sends nothing, because there is no line
+    /// anywhere that watches it.
+    /// </remarks>
+    public string DigitalTurnLine => _turn.Line();
+
+    /// <summary>True where a turn has actually been derived.</summary>
+    /// <remarks>
+    /// **NOT AN INVITATION** (§0.0). It is false while the clock is unmeasured and
+    /// false while nothing has been heard, so anything drawing emphasis from it
+    /// stays quiet in exactly the cases where a confident line would be a guess.
+    /// </remarks>
+    public bool DigitalTurnIsKnown => _turn.IsKnown;
+
+    /// <summary>True where the slot now running is the operator's own.</summary>
+    public bool DigitalTurnIsMine => _turn.MineNow;
+
+    /// <summary>Seconds left of the slot now running, or 0 where none is placed.</summary>
+    public int DigitalTurnSecondsLeft => _turn.SecondsLeft ?? 0;
+
+    /// <summary>
+    /// **Read the beat again**, from the corrected clock and the station he is working.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT RIDES THE TICK THAT WAS ALREADY THERE.** `_decodeTimer` runs four
+    /// times a second, which is sixty looks inside every fifteen-second slot and
+    /// ample for a countdown reading in whole seconds. A timer of its own would be
+    /// a second timing source, and the instruction that asked for this forbids one.
+    /// </para>
+    /// <para>**THE PARITY IS THE STATION'S AND NOT THE PANEL'S.** It comes from the
+    /// most recent message actually heard from the station he is working, so a
+    /// panel with nothing on it says it does not know rather than defaulting to a
+    /// half.</para>
+    /// </remarks>
+    private void RefreshTurn()
+    {
+        var was = _turn;
+
+        _turn = Ft8Turn.Read(DateTime.UtcNow, ClockOffset, TheirLastSlot());
+
+        if (was == _turn)
+        {
+            return;
+        }
+
+        OnPropertyChanged(nameof(DigitalTurnLine));
+        OnPropertyChanged(nameof(DigitalTurnIsKnown));
+        OnPropertyChanged(nameof(DigitalTurnIsMine));
+        OnPropertyChanged(nameof(DigitalTurnSecondsLeft));
+    }
+
+    /// <summary>The slot of the last thing heard from the station he is working.</summary>
+    /// <returns>The boundary, or null where that station has sent nothing.</returns>
+    /// <remarks>
+    /// **ONE STATION'S PARITY, NOT THE PANEL'S NEWEST ROW.** Two stations calling
+    /// him can be using opposite halves of the minute, so reading the newest row
+    /// whoever sent it would flip the turn line every time the other one
+    /// transmitted. The station is whoever most recently called him, which is who
+    /// the panel is following.
+    /// </remarks>
+    private DateTime? TheirLastSlot()
+    {
+        var station = ConversationStation();
+
+        if (station.Length == 0)
+        {
+            return null;
+        }
+
+        DateTime? best = null;
+
+        foreach (var row in DigitalMineDecodes)
+        {
+            if (row.IsSent
+                || row.SlotStartUtc == default
+                || !string.Equals(row.Sender, station, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (best is null || row.SlotStartUtc > best)
+            {
+                best = row.SlotStartUtc;
+            }
+        }
+
+        return best;
+    }
+
+    /// <summary>Whoever most recently called him, or "".</summary>
+    /// <remarks>
+    /// **IT FOLLOWS THE LAST STATION TO CALL HIM**, which is the rule task 4 makes
+    /// switchable. A message he sent names no station he is working, so sent rows
+    /// are passed over here.
+    /// </remarks>
+    internal string ConversationStation()
+    {
+        DigitalDecodeRow? newest = null;
+
+        foreach (var row in DigitalMineDecodes)
+        {
+            if (row.IsSent || row.SlotStartUtc == default || row.Sender.Length == 0)
+            {
+                continue;
+            }
+
+            if (newest is null || row.SlotStartUtc > newest.SlotStartUtc)
+            {
+                newest = row;
+            }
+        }
+
+        return newest?.Sender ?? "";
+    }
+
+    /// <summary>Read the beat once, for a test, without waiting on a timer.</summary>
+    internal void RefreshTurnForTests() => RefreshTurn();
 
     /// <summary>His own transmissions, oldest first, as rows.</summary>
     /// <remarks>
@@ -1545,6 +1680,74 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return at;
+    }
+
+    /// <summary>The newest message on the For you panel, whichever way it is sorted.</summary>
+    /// <remarks>
+    /// **BY SLOT AND NOT BY POSITION.** The order button turns the list over, so
+    /// index nought is the newest row on some evenings and the oldest on others,
+    /// and a rule written against the index would silently invert with it.
+    /// </remarks>
+    private DigitalDecodeRow? NewestOnTheConversation()
+    {
+        DigitalDecodeRow? newest = null;
+
+        foreach (var row in DigitalMineDecodes)
+        {
+            if (row.SlotStartUtc == default)
+            {
+                continue;
+            }
+
+            if (newest is null || row.SlotStartUtc > newest.SlotStartUtc)
+            {
+                newest = row;
+            }
+        }
+
+        return newest;
+    }
+
+    /// <summary>
+    /// **The same message again, from the same station, with nothing in between.**
+    /// </summary>
+    /// <param name="row">The row that has just arrived.</param>
+    /// <returns>True where it was counted onto an existing row instead of added.</returns>
+    /// <remarks>
+    /// <para>**THE TEST IS THE NEWEST ROW ON THE PANEL, NOT THE NEWEST MATCHING
+    /// ONE.** A repeat that arrives after he transmitted is a different fact from
+    /// one that arrives before: it says the station did not hear his answer, which
+    /// is the most useful thing the whole panel has to tell him. Searching back
+    /// past his transmission for something to fold into would put that repeat
+    /// above his own message and hide it.</para>
+    /// <para>**IT COMPARES THE MESSAGE AND THE SENDER**, so two stations sending
+    /// the same report in successive slots stay two rows. The text is compared
+    /// exactly, because two FT8 messages that differ by a character are two
+    /// different messages.</para>
+    /// <para>**A ROW WITH NO SLOT NEVER FOLDS.** Ordering it is not possible, so
+    /// neither is saying what it is adjacent to.</para>
+    /// </remarks>
+    private bool CountedAsRepeat(DigitalDecodeRow row)
+    {
+        if (row.SlotStartUtc == default)
+        {
+            return false;
+        }
+
+        var newest = NewestOnTheConversation();
+
+        if (newest is null
+            || newest.IsSent
+            || newest.SlotStartUtc >= row.SlotStartUtc
+            || !string.Equals(newest.Message, row.Message, StringComparison.Ordinal)
+            || !string.Equals(newest.Sender, row.Sender, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        newest.RepeatCount++;
+
+        return true;
     }
 
     /// <summary>Where a decoded row for him goes, now that the list has two kinds.</summary>
@@ -1679,11 +1882,19 @@ public partial class MainWindowViewModel : ObservableObject
         DigitalVisibleDecodes.Clear();
         DigitalMineDecodes.Clear();
 
+        // **THE CONVERSATION IS REBUILT IN THE ORDER IT HAPPENED AND THEN SORTED**,
+        // rather than in the order the decoded table happens to be in. Folding a
+        // repeat is a statement about which message came next, so it can only be
+        // done walking forwards in time; done down a newest-first table it would
+        // find every pair in the wrong order and fold nothing at all.
+        var conversation = new List<DigitalDecodeRow>();
+
         foreach (var row in DigitalDecodes)
         {
             if (IsForHim(row))
             {
-                DigitalMineDecodes.Add(row);
+                row.RepeatCount = 1;
+                conversation.Add(row);
             }
             else if (WantsRow(row))
             {
@@ -1691,15 +1902,22 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
-        // **AND HIS OWN TRANSMISSIONS GO BACK IN** (Tim's ruling, 2026-09-08).
-        // A rebuild is an answer to something he did — a toggle, the order
-        // button, a clear — and it walks `DigitalDecodes`, which a sent message
-        // is deliberately not in. Without this line every rebuild would silently
-        // empty half the conversation, and the half it emptied would be the half
-        // that shows he answered at all.
-        foreach (var sent in _digitalSent)
+        // **AND HIS OWN TRANSMISSIONS GO BACK IN, IN THE SAME PASS** (Tim's
+        // ruling, 2026-09-08). A rebuild answers something he did, and it walks
+        // `DigitalDecodes`, which a sent message is deliberately not in: without
+        // this every rebuild would empty half the conversation, and the half it
+        // emptied would be the half showing he answered at all.
+        // **THEY HAVE TO BE HERE RATHER THAN APPENDED AFTERWARDS**, because a
+        // repeat only folds where nothing came between, and a transmission added
+        // after the folding could not have come between anything.
+        conversation.AddRange(_digitalSent);
+
+        foreach (var row in conversation.OrderBy(r => r.SlotStartUtc))
         {
-            DigitalMineDecodes.Insert(MineIndexFor(sent), sent);
+            if (!CountedAsRepeat(row))
+            {
+                DigitalMineDecodes.Insert(MineIndexFor(row), row);
+            }
         }
 
         RecountDecodedFilter();
@@ -1726,13 +1944,16 @@ public partial class MainWindowViewModel : ObservableObject
         // of the evening would make the left summary claim one fewer message was
         // hidden than is, and enough sends would drive it negative. Only the
         // decoded rows on that side are subtracted.
+        // **AND A FOLDED REPEAT IS STILL EVERY MESSAGE IT STANDS FOR.** One row
+        // reading `-09 x3` is three decodes off the air, so counting the row once
+        // would leave two of them looking hidden on a panel that is showing them.
         var mineDecodes = 0;
 
         foreach (var row in DigitalMineDecodes)
         {
             if (!row.IsSent)
             {
-                mineDecodes++;
+                mineDecodes += row.RepeatCount;
             }
         }
 
@@ -5138,6 +5359,12 @@ public partial class MainWindowViewModel : ObservableObject
         // second is sixty inside every fifteen-second slot, and exactly one of
         // them can produce a decode.
         OnSlotTick();
+
+        // **AND SO DOES THE BEAT** (Tim's ruling, 2026-09-08). It reads the clock
+        // and two lists and raises a change only where the sentence would differ,
+        // so a countdown standing still costs nothing. **It arms nothing**: this
+        // is the read, and there is no line anywhere watching it reach zero.
+        RefreshTurn();
     }
 
     /// <summary>
@@ -9580,6 +9807,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// takes them newest-slot-first or oldest-slot-first, and inside each slot
     /// keeps the arrival order untouched.
     /// </remarks>
+    /// <summary>True while <see cref="Reorder"/> is refilling the decoded table.</summary>
+    /// <remarks>
+    /// **A REORDER IS ONE EVENT WEARING THE COSTUME OF MANY** (task 3). It clears
+    /// the table and adds every row back, so the mirror sees a reset followed by a
+    /// hundred arrivals, each landing on the incremental path as though it had just
+    /// come off the air. That was harmless while the two sides only filtered, and
+    /// it stopped being harmless the moment a row's placement depended on the row
+    /// before it: the rows come back in **display** order, which under newest-first
+    /// is newest to oldest, so every repeat met its own successor rather than its
+    /// predecessor and nothing folded at all. The panel silently un-folded itself
+    /// on the first press of the order button, and the count on the folded row went
+    /// with it.
+    /// </remarks>
+    private bool _reordering;
+
     private void Reorder()
     {
         var slots = new List<string>();
@@ -9602,15 +9844,30 @@ public partial class MainWindowViewModel : ObservableObject
             slots.Reverse();
         }
 
-        DigitalDecodes.Clear();
+        // **THE MIRROR IS HELD OFF AND REBUILT ONCE AT THE END**, rather than
+        // being driven a row at a time in display order. `ApplyDecodedFilter`
+        // walks the whole table forwards in time, which is the only order a
+        // repeat can be folded in.
+        _reordering = true;
 
-        foreach (var slot in slots)
+        try
         {
-            foreach (var row in bySlot[slot])
+            DigitalDecodes.Clear();
+
+            foreach (var slot in slots)
             {
-                DigitalDecodes.Add(row);
+                foreach (var row in bySlot[slot])
+                {
+                    DigitalDecodes.Add(row);
+                }
             }
         }
+        finally
+        {
+            _reordering = false;
+        }
+
+        ApplyDecodedFilter();
     }
 
     /// <summary>How many rows the cap has dropped since the panel was cleared.</summary>

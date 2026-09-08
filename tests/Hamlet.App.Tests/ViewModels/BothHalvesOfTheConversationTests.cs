@@ -61,13 +61,19 @@ public sealed class BothHalvesOfTheConversationTests
             new[]
             {
                 "021100 sent      " + His + " " + HisCall + " R-09",
-                "021115 received  " + HisCall + " " + His + " -09",
-                "021145 received  " + HisCall + " " + His + " -09",
+                "021115 received  " + HisCall + " " + His + " -09 x2",
                 "021215 sent      " + His + " " + HisCall + " R-09",
                 "021245 received  " + HisCall + " " + His + " -09",
                 "021315 sent      " + His + " " + HisCall + " RRR",
             },
-            model.DigitalMineDecodes.Select(Describe).ToArray());
+            model.DigitalMineDecodes.Select(Shown).ToArray());
+
+        // **ALL SIX MOMENTS ARE STILL THERE.** The pair at 021115 and 021145 is
+        // one row saying so, which is task 3's ruling, and nothing was dropped:
+        // three transmissions and three decodes are accounted for.
+        Assert.Equal(3, model.DigitalMineDecodes.Count(r => r.IsSent));
+        Assert.Equal(
+            3, model.DigitalMineDecodes.Where(r => !r.IsSent).Sum(r => r.RepeatCount));
     }
 
     /// <summary>
@@ -86,12 +92,12 @@ public sealed class BothHalvesOfTheConversationTests
         Print(model);
 
         Assert.Equal(
-            new[] { "021315", "021245", "021215", "021145", "021115", "021100" },
+            new[] { "021315", "021245", "021215", "021115", "021100" },
             model.DigitalMineDecodes.Select(r => r.Utc).ToArray());
 
         // **AND THE ALTERNATION SURVIVES IT**, which is the point of the panel.
         Assert.Equal(
-            new[] { true, false, true, false, false, true },
+            new[] { true, false, true, false, true },
             model.DigitalMineDecodes.Select(r => r.IsSent).ToArray());
     }
 
@@ -155,7 +161,7 @@ public sealed class BothHalvesOfTheConversationTests
         // received one and every assertion in the loop holds. A test that passes
         // because the thing it is about is absent is worse than no test.
         Assert.Equal(3, model.DigitalMineDecodes.Count(r => r.IsSent));
-        Assert.Equal(3, model.DigitalMineDecodes.Count(r => !r.IsSent));
+        Assert.Equal(2, model.DigitalMineDecodes.Count(r => !r.IsSent));
 
         foreach (var row in model.DigitalMineDecodes)
         {
@@ -213,7 +219,10 @@ public sealed class BothHalvesOfTheConversationTests
         Assert.Equal(3, model.DigitalDecodes.Count);
         Assert.Equal(0, model.DigitalShownCount);
         Assert.Equal(0, model.DigitalHiddenCount);
-        Assert.Equal(6, model.DigitalMineCount);
+
+        // **FIVE ROWS FOR SIX MOMENTS**, because the pair of repeats is one row
+        // that says it is two (task 3).
+        Assert.Equal(5, model.DigitalMineCount);
     }
 
     /// <summary>
@@ -230,14 +239,128 @@ public sealed class BothHalvesOfTheConversationTests
     {
         var model = TheK9xpExchange(newestFirst: false);
 
-        Assert.Equal(6, model.DigitalMineDecodes.Count);
+        Assert.Equal(5, model.DigitalMineDecodes.Count);
 
         model.DigitalNewestFirst = true;
 
         Print(model);
 
-        Assert.Equal(6, model.DigitalMineDecodes.Count);
+        Assert.Equal(5, model.DigitalMineDecodes.Count);
         Assert.Equal(3, model.DigitalMineDecodes.Count(r => r.IsSent));
+
+        // **AND THE REBUILD FOLDS AGAIN RATHER THAN INHERITING THE COUNT.** A
+        // rebuild walks the decoded table, where all three repeats still sit as
+        // three rows, so the fold has to happen a second time and happen
+        // forwards in time. Done down a newest-first table it would find every
+        // pair the wrong way round and fold nothing.
+        Assert.Equal(
+            3, model.DigitalMineDecodes.Where(r => !r.IsSent).Sum(r => r.RepeatCount));
+    }
+
+    /// <summary>
+    /// **Two identical messages running fold into one row with a count.**
+    /// </summary>
+    /// <remarks>
+    /// **THREE COPIES MEAN HE IS NOT BEING HEARD, AND THREE ROWS HIDE IT** (Tim's
+    /// ruling, 2026-09-08). `02:11:15` and `02:11:45` are the same report with
+    /// nothing between them, so they are one row saying `-09 x2`.
+    /// </remarks>
+    [Fact]
+    public void TwoOfTheSameRunningAreOneRowWithACount()
+    {
+        var model = TheK9xpExchange(newestFirst: false);
+
+        Print(model);
+
+        var first = model.DigitalMineDecodes.First(r => !r.IsSent);
+
+        Assert.Equal(2, first.RepeatCount);
+        Assert.True(first.HasRepeats);
+        Assert.Equal(HisCall + " " + His + " -09 x2", first.Shown);
+
+        // **AND `Message` IS UNTOUCHED**, so everything that reasons about the
+        // text still sees the text that was sent.
+        Assert.Equal(HisCall + " " + His + " -09", first.Message);
+    }
+
+    /// <summary>
+    /// **A repeat that arrives after he transmitted does not fold backwards.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS IS THE MOST DIAGNOSTIC FACT IN THE WHOLE EXCHANGE**, and a
+    /// literal reading of *three identical messages read as one row* would destroy
+    /// it. The third `-09` came at `02:12:45`, after he transmitted at `02:12:15`:
+    /// it says the station did not hear his answer. Folded into the row above his
+    /// transmission it would say only that the station repeated itself early on,
+    /// which is a different and much less useful claim, and the panel would be
+    /// hiding the very thing it was built to show.</para>
+    /// <para>**SO THE COUNT STOPS AT ANYTHING IN BETWEEN**, and the exchange reads
+    /// as `x2`, his answer, then a fresh `x1`.</para>
+    /// </remarks>
+    [Fact]
+    public void ARepeatAfterHisAnswerIsItsOwnRowAndSaysSo()
+    {
+        var model = TheK9xpExchange(newestFirst: false);
+
+        Assert.Equal(
+            new[]
+            {
+                "021100 sent      " + His + " " + HisCall + " R-09",
+                "021115 received  " + HisCall + " " + His + " -09 x2",
+                "021215 sent      " + His + " " + HisCall + " R-09",
+                "021245 received  " + HisCall + " " + His + " -09",
+                "021315 sent      " + His + " " + HisCall + " RRR",
+            },
+            model.DigitalMineDecodes.Select(Shown).ToArray());
+
+        var after = model.DigitalMineDecodes.Last(r => !r.IsSent);
+
+        Assert.Equal(1, after.RepeatCount);
+        Assert.False(after.HasRepeats);
+    }
+
+    /// <summary>
+    /// **A folded repeat is still every message it stands for, in the counts.**
+    /// </summary>
+    /// <remarks>
+    /// The left summary's hidden count is `heard - shown - his`. Counting the
+    /// folded row once would leave one decode looking hidden on a panel that is
+    /// showing it.
+    /// </remarks>
+    [Fact]
+    public void FoldingARepeatHidesNothingFromTheTotals()
+    {
+        var model = TheK9xpExchange(newestFirst: false);
+
+        Assert.Equal(3, model.DigitalDecodes.Count);
+        Assert.Equal(0, model.DigitalHiddenCount);
+    }
+
+    /// <summary>
+    /// **The panel says whose slot it is, and will not guess before it can.**
+    /// </summary>
+    /// <remarks>
+    /// K9XP transmitted on `:15` and `:45`, so his own slots are `:00` and `:30`.
+    /// This is the same rule the engine test asserts, read through the panel, so a
+    /// turn line wired to the wrong station or the wrong list fails here even
+    /// though the arithmetic is right.
+    /// </remarks>
+    [Fact]
+    public void ThePanelReadsTheBeatFromTheStationItIsFollowing()
+    {
+        var empty = new MainWindowViewModel(Settings(), null);
+
+        empty.RefreshTurnForTests();
+
+        // Nothing heard, so no turn is claimed however the clock reads.
+        Assert.False(empty.DigitalTurnIsKnown);
+        Assert.False(empty.DigitalTurnIsMine);
+        _output.WriteLine("empty panel: " + empty.DigitalTurnLine);
+
+        var model = TheK9xpExchange(newestFirst: false);
+
+        // And the station it is following is the one that called him.
+        Assert.Equal(His, model.ConversationStation());
     }
 
     /// <summary>The exchange of 2026-09-08, from its own figures.</summary>
@@ -252,11 +375,7 @@ public sealed class BothHalvesOfTheConversationTests
     /// </remarks>
     private static MainWindowViewModel TheK9xpExchange(bool newestFirst)
     {
-        var settings = new AppSettings();
-
-        settings.Operator.Callsign = HisCall;
-
-        var model = new MainWindowViewModel(settings, null) { DigitalNewestFirst = newestFirst };
+        var model = new MainWindowViewModel(Settings(), null) { DigitalNewestFirst = newestFirst };
 
         Sent(model, "02:11:00", His + " " + HisCall + " R-09");
         Heard(model, "02:11:15", HisCall + " " + His + " -09");
@@ -267,6 +386,21 @@ public sealed class BothHalvesOfTheConversationTests
 
         return model;
     }
+
+    /// <summary>Settings as they stand on his machine, with his callsign.</summary>
+    private static AppSettings Settings()
+    {
+        var settings = new AppSettings();
+
+        settings.Operator.Callsign = HisCall;
+
+        return settings;
+    }
+
+    /// <summary>One row as the panel draws it, with any repeat count.</summary>
+    private static string Shown(DigitalDecodeRow row)
+        => row.Utc + " " + (row.IsSent ? "sent    " : "received").PadRight(9)
+            + " " + row.Shown;
 
     /// <summary>One message off the air, in its slot.</summary>
     private static void Heard(MainWindowViewModel model, string at, string message)

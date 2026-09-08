@@ -160,6 +160,59 @@ public sealed record DigitalDecodeRow(
             HeardOnHz: 0,
             IsSent: true);
 
+    private int _repeatCount = 1;
+
+    /// <summary>How many times this identical message arrived in a row.</summary>
+    /// <remarks>
+    /// <para>**THREE COPIES OF ONE MESSAGE MEAN HE IS NOT BEING HEARD, AND THREE
+    /// ROWS HIDE IT** (Tim's ruling, 2026-09-08). A station that sends the same
+    /// report again has not received an answer it recognised, and read as three
+    /// separate lines that reads as three pieces of news rather than one fact
+    /// repeated.</para>
+    /// <para>**ONLY WHERE NOTHING CAME BETWEEN.** A repeat that arrives after he
+    /// transmitted is a different fact from one that arrives before, and it is the
+    /// single most diagnostic thing in the exchange this unit was written for: it
+    /// says the station did not hear his answer. Folding it back into a row above
+    /// his transmission would destroy exactly what the panel exists to show, so
+    /// counting stops at anything in between.</para>
+    /// <para>**IT IS THE ONE OTHER MUTABLE THING HERE**, for
+    /// <see cref="WorkedBefore"/>'s reason: the row is already on the screen when
+    /// the second copy arrives, and it has to say so without being replaced.</para>
+    /// </remarks>
+    public int RepeatCount
+    {
+        get => _repeatCount;
+        set
+        {
+            if (_repeatCount == value)
+            {
+                return;
+            }
+
+            _repeatCount = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RepeatCount)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Shown)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasRepeats)));
+        }
+    }
+
+    /// <summary>True where this message arrived more than once running.</summary>
+    public bool HasRepeats => RepeatCount > 1;
+
+    /// <summary>The message as the conversation draws it, with any repeat count.</summary>
+    /// <remarks>
+    /// **THE COUNT IS ON THE MESSAGE AND NOT IN A COLUMN OF ITS OWN**, because it
+    /// is a fact about that message rather than about the slot: `-09 x3` is one
+    /// station saying one thing three times. <see cref="Message"/> is left exactly
+    /// as it was sent, so everything that reasons about the text still sees the
+    /// text.
+    /// </remarks>
+    public string Shown
+        => RepeatCount > 1
+            ? Message + " x" + RepeatCount.ToString(CultureInfo.InvariantCulture)
+            : Message;
+
     /// <summary>What the row says it is, for a reader who cannot see colour.</summary>
     /// <remarks>
     /// **COLOUR IS NEVER THE ONLY CARRIER** (§0.6). The two kinds of row must be

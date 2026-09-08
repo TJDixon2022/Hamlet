@@ -3939,9 +3939,41 @@
                                                       Summary="{Binding DigitalMineSummary}"
                                                       IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
 
-                                    <Grid RowDefinitions="Auto,*,Auto">
+                                    <Grid RowDefinitions="Auto,Auto,*,Auto">
 
-                                        <Grid Grid.Row="0" ColumnDefinitions="76,*"
+                                        <!-- **THE BEAT** (Tim's ruling, 2026-09-08:
+                                             *I need visual context of what to answer
+                                             and when. If I'm missing the beat I need
+                                             to understand how to do it*).
+
+                                             **IT COUNTS DOWN AND IT DOES NOTHING
+                                             ELSE.** Nothing reads it, nothing arms
+                                             on it, and its last second does not
+                                             transmit. A clock that sends when it
+                                             reaches zero is automatic sequencing in
+                                             disguise and this phase forbids it
+                                             outright (§0.2).
+
+                                             **IT IS ALWAYS HERE, INCLUDING WHEN IT
+                                             DOES NOT KNOW.** An absent line and a
+                                             line saying nothing has been heard yet
+                                             are the same sight, and the second is
+                                             the one that teaches (§0.0, §0.7). So
+                                             there is no `IsVisible` on it: the four
+                                             states are four sentences, not three
+                                             sentences and a blank.
+
+                                             **AMBER AS INK AND NEVER AS FILL**
+                                             (§0.5), and the colour is only ever a
+                                             second carrier: every state says what it
+                                             is in words. -->
+                                        <TextBlock Grid.Row="0"
+                                                   Text="{Binding DigitalTurnLine}"
+                                                   Classes.hm-sent="{Binding DigitalTurnIsMine}"
+                                                   TextWrapping="Wrap"
+                                                   FontSize="12" Margin="0,0,0,6" />
+
+                                        <Grid Grid.Row="1" ColumnDefinitions="76,*"
                                               IsVisible="{Binding HasDigitalMineDecodes}">
                                             <TextBlock Grid.Column="0" Text="utc"
                                                        FontFamily="Consolas,Menlo,monospace" FontSize="11"
@@ -3967,7 +3999,7 @@
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
                                         </Grid>
 
-                                        <ScrollViewer Grid.Row="1" Margin="0,6,0,0"
+                                        <ScrollViewer Grid.Row="2" Margin="0,6,0,0"
                                                       VerticalScrollBarVisibility="Auto"
                                                       HorizontalScrollBarVisibility="Disabled"
                                                       IsVisible="{Binding HasDigitalMineDecodes}">
@@ -4034,7 +4066,7 @@
                                                                        FontSize="10" Margin="0,0,14,4"
                                                                        Foreground="{StaticResource HmAmberBrush}" />
 
-                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Message}"
+                                                            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Shown}"
                                                                        Classes.hm-sent="{Binding IsSent}"
                                                                        ToolTip.Tip="{Binding PayloadHelp}"
                                                                        TextWrapping="Wrap"
@@ -4079,7 +4111,7 @@
                                              is working, and this is the column he watches hardest: on
                                              the evening it stays empty he needs to know that is the
                                              band and not the panel. -->
-                                        <ctl:GlossaryTextControl Grid.Row="2"
+                                        <ctl:GlossaryTextControl Grid.Row="3"
                                                                  x:Name="DigitalMineIdleLine"
                                                                  Text="{Binding DigitalMineIdle}"
                                                                  IsVisible="{Binding !HasDigitalMineDecodes}"
