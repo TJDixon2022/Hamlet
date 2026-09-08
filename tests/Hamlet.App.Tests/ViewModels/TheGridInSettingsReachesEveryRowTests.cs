@@ -146,6 +146,64 @@ public sealed class TheGridInSettingsReachesEveryRowTests
         Assert.Equal(HisGrid, after.ObserverGrid);
     }
 
+    /// <summary>**No row on any bound list is missing the grid.**</summary>
+    /// <remarks>
+    /// <para>**THE GUARD THAT SURVIVES A FOURTH BUILDER** (work instruction 282 task
+    /// 6). Unit 281 fixed the one construction site that bypassed the door, and
+    /// counting call sites is exactly the check that passed for six units while
+    /// `KeepSentRow` sat outside it. This asks the lists instead: whatever built a
+    /// row, if it reached the screen without the operator's grid it is here.</para>
+    /// <para>Confirmed 2026-09-08 against the tree: three sites build a row and all
+    /// three go through `WithOperatorGrid`, so this is a ratchet rather than a
+    /// repair.</para>
+    /// </remarks>
+    [Fact]
+    public void NoRowOnAnyBoundListIsMissingTheGrid()
+    {
+        var panel = Panel(HisGrid);
+        var slot = new DateTime(2026, 9, 8, 21, 41, 30, DateTimeKind.Utc);
+
+        panel.AddDecodeRowForTests(
+            "214130", "-11", "0.2", "1240", "CQ W3YNI FN20", slot, 14_074_000);
+        panel.AddDecodeRowForTests(
+            "214130", "-13", "0.3", "1310", "KC3QIS W3YNI +02", slot, 14_074_000);
+        panel.AddSentRowForTests("KC3QIS W3YNI R-09", slot.AddSeconds(15));
+
+        var lists = new (string Name, System.Collections.Generic.IEnumerable<DigitalDecodeRow> Rows)[]
+        {
+            ("DigitalDecodes", panel.DigitalDecodes),
+            ("DigitalVisibleDecodes", panel.DigitalVisibleDecodes),
+            ("DigitalMineDecodes", panel.DigitalMineDecodes),
+        };
+
+        var seen = 0;
+        var blank = new System.Collections.Generic.List<string>();
+
+        foreach (var (name, rows) in lists)
+        {
+            foreach (var row in rows)
+            {
+                seen++;
+
+                _output.WriteLine(
+                    name.PadRight(22) + "[" + row.ObserverGrid + "]  " + row.Message);
+
+                if (row.ObserverGrid != HisGrid)
+                {
+                    blank.Add(name + ": " + row.Message);
+                }
+            }
+        }
+
+        // **A SWEEP THAT SWEPT NOTHING HAS NOT PASSED** (unit 279's rule).
+        Assert.True(seen > 0, "no rows reached any bound list, so nothing was checked");
+
+        Assert.True(
+            blank.Count == 0,
+            "these rows reached the screen without the operator's grid: "
+            + string.Join(" | ", blank));
+    }
+
     /// <summary>A panel with a grid in its settings.</summary>
     /// <param name="grid">What Settings holds.</param>
     /// <returns>The panel.</returns>
