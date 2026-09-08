@@ -374,3 +374,18 @@ ACCOMPLISHED: the conversation reads the right way round with his own messages o
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one says so plainly rather than dressing up an advance.
+
+## UNIT 281 - STEP E
+
+STEP: E
+APPROACH: measure every permanently-visible string in the whole application first, then move advice behind a hover mark wherever it stands beside a control, cut the captions off the turn ring, put a belt round the contact count, stop explaining his own messages back to him, and find why a grid that was set could not be reached
+HIT: ReceiveAdvice, the goal task's own subject, is on no screen at all: thirteen of the fifteen widget templates in MainWindow are referenced by nothing and receiveHelp is one of them, so its 18 KB reaches nobody and the Have a look button on the CW tab expands a panel that is not in the tree
+MOVE: build on
+WHY: 14,670 characters to 7,665 across the application, and the largest instance was not where the order placed it - Settings held 6,845 of the 14,670, ninety-two per cent of that screen, and ReceiveAdvice held none of it. The measurement also corrected unit 280's: it counted TextBlock alone and GlossaryTextControl draws its own text, so its after figure of 529 excluded the 124-character empty state its own list records as deliberately kept
+DECIDED: that a fault is not advice and does not go behind a hover, which split two Settings properties each carrying both halves in one string; that removing the turn ring captions moved a grayscale carrier rather than dropping it, so their slot is now a thinner stroke where hue would otherwise have been alone; and that the ARRL entity names are shortened for speech in a layer over the cited file rather than in it, with the two Congos deliberately left long because a name that names the wrong country is worse than a name that is long
+LICENCE: work instruction 281 tasks 1 to 8, and Tim's rulings of 2026-09-08 that text appears only where he intentionally hovers, that a fault speaks unasked, that the count wears a martial-arts belt with gold at ten thousand, and that ReceiveAdvice is in scope
+COST: unknown
+ACCOMPLISHED: the screens are quiet, and everything they used to say is one hover away and proved to be by a test that names thirty sentences and fails if any is behind nothing; his contact count wears a rank he can read across the room without the rank carrying any meaning of its own; and a message he transmitted no longer carries the operator's grid as a blank while Settings holds one
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one changes what the screen says rather than what Hamlet can do, and closes nothing.
