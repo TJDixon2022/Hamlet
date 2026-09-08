@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 278 - the log has a window, and the count is acknowledged
+TASK: 7 of 7
+WORK_INSTRUCTION: 279 - a worked station is dim, and tests say when they cannot see
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T10:09:40-04:00
-NOTE: All six tasks done, none dropped, pushed through 2b88ad6, version 1.12.155. He can read his own log under Tools without opening Notepad, and the count sits quietly at the right of the status bar. The mismatch worth his eye first: there is no contacts.adi on this machine, which SHACK_FACTS says is expected on the development box, so the premise could not be checked here and everything was built against synthesised logs. Two counts nearly went wrong and tests now catch both - the obvious count was distinct callsigns rather than records, and the badge rule reported only the highest crossed threshold. Task 5 earned its keep twice: at ten thousand from a cold start the status bar congratulated him for all nine badges in one line, and the same number was formatted two ways inches apart. Neither was findable by reading the code.
+UPDATED: 2026-09-08T10:59:20-04:00
+NOTE: All seven tasks done, none dropped, pushed through 836ebb7, version 1.12.163. A worked station fades at 0.55 with its menu untouched, and the turn line stops saying his slot is open while his own carrier is on it. The three-pixel ask is not settled - 177 px against 180, unchanged - and the reason is that Auto took no width on a row with nothing to show, so the removal buys back the 68 px the label was taking on worked rows instead. HM-OPEN-086 is closed and its class green for the first time since unit 273, uncovering nothing. The sweep's own find is the one to read: two tests find a band label in its card, silently continue when it is missing, and pass having measured nothing, guarding the defect that put 10 n on his screen in August.
 
 ---
 
