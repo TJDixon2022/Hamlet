@@ -1,4 +1,4 @@
-# Work instruction 283 - every mode's status bar, not the one the author named
+# Work instruction 284 - split the admissions from the advice
 
 ```
 STOP. Verify the project before reading any further.
@@ -24,309 +24,178 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 ## THE TWO RULES THAT KILLED SESSIONS
 
-**Tim's rulings of 2026-09-05, HM-DEC-155. Not this unit's to weigh.**
+**Tim's rulings of 2026-09-05, HM-DEC-155.**
 
-**1. A unit runs no test suite.** **A unit may run only the unit test it
-constructs or rewrites in that work instruction**, filtered by exact name, in the
-foreground, with a stated timeout of a few minutes. **An unfiltered `dotnet test`
-on any project is forbidden.**
+**1. A unit runs no test suite.** **Only the unit test it constructs or rewrites in
+this work instruction**, filtered by exact name, foregrounded, with a stated
+timeout. **An unfiltered `dotnet test` on any project is forbidden.**
 
-**2. Never background a command and poll for it.** Sessions were killed by the
-watchdog sitting in `until grep -q "exited with code" ...; do sleep 15; done`
-against a twelve-minute watchdog.
+**2. Never background a command and poll for it.** The watchdog fires after twelve
+minutes with no status write.
 
 `dotnet build` is allowed, foregrounded, with a timeout.
 
----
-
-## THE TOOL RULE
-
-**This session's shell may refuse calls.** A refused shell call is a signal to
-reach for the other tool, not to stop. Record every refusal verbatim. **Nothing in
-this unit halts the loop.**
-
-**Ten units have paid for these two tool facts:** this shell will not carry a
-quoted heredoc containing an apostrophe, and it collapses a doubled backslash
-inside one. Use script files and the file-editing tools.
+**Tool fact, ten units old:** this shell will not carry a quoted heredoc containing
+an apostrophe, and it collapses a doubled backslash inside one. Use script files.
 
 ---
 
 ## `ADVANCED` and `DRIFT`
 
-**Every bench step of this phase is closed.** Steps D and E are Tim at his own
-radio. **Every unit from here reports `ADVANCED: no` by construction.**
+Every bench step of this phase is closed; steps D and E are Tim at his radio.
+**`ADVANCED: no` by construction.**
 
 ```
-DRIFT:  5 consecutive units without advance, carried from unit 282.
-```
-
----
-
-## Asks still outstanding
-
-Carried inbound per HM-DEC-139. **Read unit 282's outbound queue and carry
-anything it added; the numbering below is this order's.**
-
-1. **Two issues of one work-instruction number.** Unit 271, and 252 before it.
-   **The author's error.** No unit action.
-2. **`PM95` reads *southern Japan***, unit 271. **Not a defect.**
-3. **`HM-OPEN-083` and `HM-OPEN-084`.** In `OPEN_ISSUES.md` by HM-DEC-140.
-4. **Three pixels.** **Waiting on Tim.**
-5. **`dt` and `hz` were never on the mine list.** **Waiting on Tim.**
-6. **Where an outcome entry goes when the unit it corrects has none.** **Tim's.**
-7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** Named in
-   task 6; **the general question is the author's.**
-8. **Where the repeat fold stops**, unit 277. **Still open.**
-9. **Whether a faded row needs a second carrier of its meaning**, unit 279.
-   **Tim's.**
-10. **Whether counting subjects is a new assertion**, unit 279. **Tim's.**
-11. **Whether the fade is still obvious now the row is a bubble**, unit 280.
-12. **`HM-OPEN-087`** - thirteen unreferenced `widget.*` templates. Unit 282
-    disabled the button pointing at them and touched no template. **Still Tim's.**
-13. **Whether a 14-pixel ring at the left of the status bar is findable**, unit
-    282. **Not seen by anybody on a real screen** and it now carries the whole
-    receive narration.
-14. **Whether `AboutWindow` is in scope for the terseness ruling**, unit 281. Unit
-    282 capped it and did not sweep.
-
----
-
-## Why this unit exists
-
-**The paragraph is still on the operator's screen, and unit 282 did exactly what
-it was asked.**
-
-**282 measured, capped and cleared the CW tab.** 884 characters to 0, from *the
-nine rows the shipped `mode-receiver-conditions.json` states for CW*. **Its own
-report says, one line later: `FT8 composes 448 the same way`.**
-
-**He operates on the Digital tab.** The FT8 rows go onto the bar exactly as they
-always did.
-
-**The root cause is the author's, and it is the same one twice.** Task 1 of unit
-282 named **one** call site, `MainWindowViewModel.cs:8179`. The session found a
-**second at 8137**, reported it as a mismatch, and fixed the one it was given.
-**Naming a line number instead of a behaviour is how a fix reaches one surface out
-of two** - the same error as naming one tab in unit 280 when the ruling was
-app-wide.
-
-**So this order names no line numbers.** It names the behaviour and asks for the
-count.
-
-**And the earlier misses have a different cause worth keeping in view**: the text
-is composed at runtime from parts whose only literal form is XML doc comments, so
-**every source sweep returned empty and read as clean.**
-
-```
-PHASE GOAL:   Hamlet works stations on the air.
-UNIT GOAL:    No mode puts a paragraph on the status bar, and no surface in the
-              application can grow one without a test failing.
-ADVANCES:     nothing. Every bench step is closed and this unit says so plainly.
+DRIFT:  6 consecutive units without advance, carried from unit 283.
 ```
 
 ---
 
-## Verify this instruction against the tree
+## This unit does one thing
 
-**Nothing here describes the tree.** Check every claim and report mismatches.
-Report them; do not repair the instruction.
+**Five work instructions have aimed at this paragraph and every one missed.**
 
-- **Unit 282 reported `MainWindowViewModel.cs:8207`** as the assignment that puts
-  the narration on the bar, **and a second at `8137` for mode-follow.** The lines
-  the author gave it - `OwnedSettings.cs:65`, `ReceiverConditions.cs:102` - are
-  **class declarations, not the composition.**
-- **`mode-receiver-conditions.json`** ships the rows. **CW states nine; FT8
-  composes 448 characters.** Confirm both figures.
-- **`ReceiverSetupVoice.Say`** composes the narration and
-  **`ReceiverSetupVoice.Admissions`** filters the same clauses out of the same
-  results - **a setting the radio would not confirm, one Hamlet could not read, one
-  it cannot reach at all.** **Those go on the bar unhovered, deliberately, because
-  they are faults.**
-- **`ReceiverConditions.ForMode`** was added by unit 282; before it the only way to
-  ask what a mode needs was `ForBlock`, which wants a whole `Neighborhood`.
-- **`HowMuchTheApplicationSaysTests`** holds per-surface ceilings. **The CW tab
-  measures 611 against 750** and would have measured 1,495 with the paragraph.
-  **Find out which surfaces have a ceiling and which do not.**
-- Root version after unit 282 was **1.12.189**. **Read it, do not assume.**
+The reason is the author's and it is the same every time: **each order told the
+session where the text was, and each location was wrong.** The status bar. Then
+`ReceiveAdvice`. Then one call site. Then one path per mode. Then the top strip.
+Each session fixed exactly what it was pointed at, correctly, and the paragraph
+stayed on the operator's screen.
 
-Known reds, inherited, **never chased**:
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
-`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list
-tripwire.
+**So this order names no file, no line, no class and no surface.** It gives a
+reproduction and asks for one change.
 
----
+**What changed today: it reproduces on the development machine.** Against the
+simulated radio, Digital tab, FT8, the bar renders this - his screenshot,
+2026-09-08:
 
-## Rulings in force
+```
+I could not read the noise blanker, so I have not touched it. I could not read
+the noise reduction, so I have not touched it. I could not read the auto notch,
+so I have not touched it. The AGC usually wants to be slow here, because dozens
+of stations transmit together here and the gain would ride up and down under the
+loudest of them, and that is not settled well enough for me to change it on your
+radio. Your scope span wants to be 3 kHz across, because a scope showing a couple
+of hundred k...
+```
 
-**Tim's, 2026-09-08:**
+**Read what that is.** The first three clauses are **admissions** - Hamlet could
+not read a setting and says so. **Those are faults and they belong on the bar
+unhovered.** Unit 282 built them deliberately and they are working.
 
-- **Text only where he intentionally hovers.** App-wide, every screen, **every
-  mode.**
-- **A fault speaks unasked.** The only exception, and unit 282 built it correctly.
+**Everything after them is advice**, and it is **in the same string**. That is why
+no sweep could move it: moving the advice would have taken the admissions with it,
+and clearing the line would have hidden a fault.
 
-**Standing:**
+**The change is to split the two.** One value for what Hamlet could not do, one for
+what it suggests. The first goes on the bar. The second goes on the hover.
 
-- **§0.0 and HM-DEC-092.** **Removing words must not remove a fact.** Advice moved
-  to hover is preserved; advice deleted is a fact lost.
-- **§12.5.** A fixture built from the same assumption as the code proves nothing
-  about the code. **A source search for a runtime-composed string is that fault**,
-  and it is why three sweeps missed this.
-- **One click, one transmission.** Nothing here transmits, arms or cancels.
-- **§0.6.** Colour is never the only carrier of meaning.
-- **HM-DEC-012 and §0.5.** Family colour is text colour only.
-- **§0.1.** The engine is not told that tabs exist.
-- **`Ft8Sharp` is a faithful MIT port and nothing changes a line of it.**
-
----
-
-## Status cadence
-
-After each task, before starting the next, update `PROJECT_STATUS.md` per
-`CLAUDE.md` - `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, and
-`NOTE` saying what is moving inside the task. The same every ten minutes while a
-task is running. **Use the file-editing tools if the shell refuses.**
+```
+UNIT GOAL:    The bar shows only what Hamlet could not do. The advice is on the
+              hover. Nothing is deleted.
+ADVANCES:     nothing.
+```
 
 ---
 
 ## Tasks
 
-### Task 1 - every path that puts narration on the status bar
+### Task 1 - stand it up and read what it says
 
-**Reading only. Fix nothing in this task. No line numbers are given on purpose.**
+**Do not search the source for the sentence.** Five orders have done that and it is
+composed at runtime from fragments, so a search returns empty and reads as clean.
 
-- **Find every call site that composes receiver-conditions narration onto the
-  status bar**, for **every mode and every tab** - CW, Digital, Voice, and anything
-  else that reaches that surface.
-- **Report the count**, with file and line for each. **Unit 282 was given one and
-  found two. Say how many there actually are.**
-- **For each, say which mode or tab it feeds** and how many characters it composes
-  from the shipped rows.
-- **Say which of them unit 282 already cleared** and which it did not.
-- **Do not stop at the ones this order's background section mentions.** The author
-  has now been wrong twice about where this text lives.
+- **Stand the application up against the simulated radio, on the Digital tab, on
+  FT8**, in the state the screenshot shows.
+- **Print what the bar actually renders**, verbatim.
+- **Then follow that string back to the code that built it**, and report the path
+  with file and line - **found by following the running value, not by grepping.**
+- **Report every clause and which kind it is**: an admission, or advice.
 
-### Task 2 - every mode's bar, not one
+**If the reproduction does not appear, say so and stop.** Do not fix a paragraph you
+cannot see; that is what the last five units were asked to do.
 
-**This is the goal task.**
+### Task 2 - split them
 
-- **Apply unit 282's change to every path task 1 found.** Advice goes behind the
-  hover; **the bar keeps the count, the belt and the glyphs.**
-- **A fault still speaks unasked** - a setting the radio would not confirm, one
-  Hamlet could not read, one it cannot reach at all. **Unit 282 built that
-  correctly through `Admissions` and it is not to be undone.**
-- **Nothing is deleted.** Every sentence still exists, one hover away.
-- **The Digital tab is the one the operator uses**, and it is where the paragraph
-  is today. **If any path resists the change, say which and why** rather than
-  clearing the others and reporting success.
+- **Two values where there is one.** What Hamlet could not read or could not reach
+  is one; what it suggests is the other.
+- **The admissions go on the bar, unhovered.** They are faults and unit 282's
+  `Admissions` already decides which clauses those are. **Use it rather than
+  writing a second rule** - two rules disagree eventually.
+- **The advice goes on the hover.** Every word of it, nothing deleted.
+- **Split at the source of the composition**, not by cutting the finished string at
+  a caller. A caller that slices a sentence is the same fault one layer up.
 
-### Task 3 - the ceiling covers every surface
+### Task 3 - a test that stands it up the same way
 
-- **Every surface in `HowMuchTheApplicationSaysTests` has a ceiling**, not the ones
-  a previous order happened to name.
-- **The Digital tab's ceiling is set from what it holds after task 2**, with a
-  stated margin. Unit 282 chose its margin against the fault rather than the noise
-  - a paragraph is 448 to 884 characters, so a margin of 100 cannot hide one.
-  **Use the same reasoning and say so.**
-- **A surface with no ceiling is a surface this can come back on.** Report any that
-  cannot be capped and why.
-- Test, watched failing first: adding a sentence to the Digital tab turns it red.
+**The test is the point. Five orders' worth of tests all passed while the paragraph
+was on his screen.**
 
-### Task 4 - the same fault, looked for once more
+- **Stand the application up in the state task 1 reproduced** - simulated radio,
+  Digital tab, FT8, the settings unreadable - and **assert what the bar renders.**
+- **Assert the admissions are present and the advice is absent**, by phrase.
+- **Assert the advice is reachable on the hover**, so a moved sentence is not a
+  deleted one.
+- **Watched failing first**, against the tree as it stands, so the red is the
+  paragraph the operator is looking at.
+- **A headless fixture that cannot enter this state is not a test of it.** If the
+  harness will not reproduce it, **say so plainly and say what would.**
 
-**Named drop candidate, and the reason the last three units each fixed one
-instance.**
+### Task 4 - what moved
 
-**Runtime-composed text is invisible to a source search.** Look for the shape
-rather than the string:
-
-- **Anything that builds a user-visible sentence from parts** - a `Say`, a
-  narration, a description assembled from several sources - **and reaches a
-  permanently-visible surface.**
-- **Report what you looked at, not only what you found**, as unit 276's
-  context-menu sweep and unit 279's finder sweep both did.
-- **Do not fix what you find.** Report it. **This unit is already fixing one
-  instance and taking on more is how a unit stops finishing.**
-
-### Task 5 - what moved, listed and measured
-
-- **Every string this unit moved**, with where it went, appended to the removal log
-  units 280, 281 and 282 keep.
-- **If a fact was lost rather than a sentence moved, say so under its own
+- **Every clause, and where it went.** Appended to the removal log units 280 to 283
+  keep.
+- **If any fact left the screen without arriving on the hover, say so under its own
   heading.**
-- **Measure the Digital tab before and after**, and the whole application against
-  unit 282's figure.
-
-### Task 6 - the outcome entry
-
-- **Append this unit's entry to `PHASE_OUTCOME.md`** through
-  `tools\arbiter\outcome-append.bat`. **If the shell refuses, append with the
-  file-editing tools in the format the existing entries use** and say so.
-- **Do not back-fill units 273, 274 or 275.**
-
----
-
-## Parked - do not touch, do not raise
-
-- **The thirteen unreferenced `widget.*` templates.** `HM-OPEN-087`, Tim's.
-- **Settings' 6,845 characters** and **`AboutWindow`.** Capped, not swept.
-- **The three pixels**, **`dt` and `hz` on the mine list**, **where the repeat fold
-  stops**, **whether the fade needs a glyph**, **whether the fade reads on a
-  bubble**, **whether the hover ring is findable**. All Tim's.
-- **FT4.** On hold.
-- **Editing or deleting a log record**, awards beyond the count, uploading
-  anywhere.
-- **The send path, the abort, the composer, the waiting-stations row.**
-- **Anything in `src/Ft8Sharp/`.**
-- The OSD re-encoding count, `ReusableWindow`, `ProcessDelayForTests`, the tap's
-  owner, the waterfall's first row, unit 237's Extensible conclusion, work
-  instruction 231's four tree items, `validate-output.bat`'s permitted-spellings
-  bug, the 101.33 ms pulse above 6 kHz, the CW decoder and its inherited reds.
+- **Measure the Digital tab before and after** in the reproduced state, not the
+  idle one.
 
 ---
 
 ## What not to do
 
-- **Do not fix only the paths this order mentions.** Find them all.
-- **Do not delete a sentence.** Move it to hover.
-- **Do not undo `Admissions`.** Faults speak unasked.
-- **Do not search source to prove a surface is clean.** Measure the window.
-- **Do not fix what task 4 finds.** Report it.
-- **Do not sweep Settings or `AboutWindow`.**
+- **Do not search source for the sentence.** Follow the running value.
+- **Do not delete a clause.** Move it.
+- **Do not move an admission to the hover.** Faults speak unasked.
+- **Do not write a second rule for which clause is which.** `Admissions` decides.
+- **Do not slice the finished string at a caller.**
+- **Do not fix anything else.** Not a ceiling, not another surface, not a sweep.
+  **Five units have been widened past their subject and this one is not.**
 - **Do not touch `src/Ft8Sharp/`.**
-- **Do not run a test suite.** Only the tests you write or rewrite here, filtered,
-  foregrounded, with a timeout.
+- **Do not run a test suite.** Only the test you write here.
 - **Do not background a command and poll for it.**
-- **Do not ship a placeholder token in a reported number.**
 - **Do not report `ADVANCED: yes`.**
+
+---
+
+## Parked
+
+Everything on the asks queue, `HM-OPEN-087`, `HM-OPEN-088`, the ceilings, Settings,
+`AboutWindow`, the hover ring's findability, the log, the send path, FT4.
+**None of it is this unit's.**
 
 ---
 
 ## Committing and pushing
 
-Commit and push each task before starting the next. Bump the root version's patch
-by one from whatever the tree carries. **`Ft8Sharp` does not move.**
+Commit and push each task before starting the next. Bump the root version's patch by
+one. **`Ft8Sharp` does not move.**
 
 ---
 
 ## Reporting
 
 `output.md` at the repository root, overwritten, four sections per
-`CLAUDE_CODE.md` §8 with the header block above section 1.
+`CLAUDE_CODE.md` §8.
 
-**NUMBER: the Digital tab's rendered characters, before and after** - the surface
-the operator actually uses, and the one three units have not touched.
+**NUMBER: the bar's rendered characters in the reproduced state, before and after.**
 
-**Section 3 leads with four things:**
+**Section 3 leads with three things:**
 
-1. **How many paths put narration on the status bar**, which mode each feeds, and
-   which unit 282 had already cleared.
-2. **The Digital tab as it now renders**, and the paragraph quoted from its hover.
-3. **The ceilings, per surface**, and which surfaces still have none.
-4. **What task 4 found**, and what it looked at.
+1. **The bar as it renders now**, verbatim, in the state the screenshot shows.
+2. **The hover**, verbatim, showing every advice clause arrived.
+3. **The test's red**, quoted, from before the split.
 
-**Section 2 says what he will see change on his screen**, in his own terms: the
-paragraph is off the bar on the tab he actually uses.
+**Section 2 says what he will see**: the bar says what Hamlet could not do, and
+nothing else.
 
-**Carry the asks queue outbound, and carry `DRIFT` forward.**
-
-Write `output.md`, then stop. Do not start the next unit.
+Write `output.md`, then stop.

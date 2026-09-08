@@ -8230,6 +8230,21 @@ public partial class MainWindowViewModel : ObservableObject
     /// assumed. The rig reports that itself, so the badge empties and the screen
     /// stops claiming to know something it does not (§0.0).</para>
     /// </remarks>
+    /// <summary>Follow the map now, for a test, without waiting on a timer.</summary>
+    /// <returns>A task that completes when the tune-in has been established.</returns>
+    /// <remarks>
+    /// <para>**THE REAL DOOR, NOT A STRING HANDED OVER** (work instruction 284 task
+    /// 1). The tune-in composes its narration inside
+    /// <see cref="EstablishReceiveConditionsAsync"/>, and reaching that from a test
+    /// otherwise means waiting on the mode-settle timer or the dwell timer, neither
+    /// of which runs headless.</para>
+    /// <para>**IT IS THE SAME IDIOM AS <see cref="NarrateForTests"/> AND A WEAKER
+    /// SEAM THAN IT**: this one hands over nothing at all, so what the bar ends up
+    /// showing is composed by the application from the rig it is actually talking
+    /// to. Nothing in `src/` calls it.</para>
+    /// </remarks>
+    internal Task FollowTheMapForTests() => FollowTheMapAsync();
+
     private async Task FollowTheMapAsync()
     {
         var rig = _rig;

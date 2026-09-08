@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 283 - every mode's status bar, not the one the author named
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 284 - split the admissions from the advice
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T16:15:40-04:00
-NOTE: All six tasks done, none dropped, pushed through 1.12.195. The instruction's premise did not survive the measurement: there is one composition path onto the status bar and not one per mode, because the bar is shared chrome above all three workspaces, so unit 282 had already cleared it for every mode - an FT8 tune-in puts none of its 448 characters on the Digital tab. The paragraph he keeps pointing at is LinkCheckLine in the top strip under the frequency readout, 304 characters on the branch his own radio takes, drawn on every tab. Units 280 and 281 both measured and printed that line and neither recognised it, because it reads 83 in a headless fixture and 304 in his shack. Now off all three tabs, 249 characters. Eleven ceilings, one of them a state. 38 of 38.
+UPDATED: 2026-09-08T16:34:53-04:00
+NOTE: Task 1 - standing the application up against the simulated radio on the Digital tab and printing what the bar renders, then following the running value back to the code.
 
 ---
 
