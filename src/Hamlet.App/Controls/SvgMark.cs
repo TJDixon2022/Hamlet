@@ -39,6 +39,23 @@ public static class SvgMark
     /// <summary>Where the small mark lives.</summary>
     public const string SmallMarkUri = "avares://Hamlet.App/Assets/hamlet-mark-small.svg";
 
+    private static readonly Lazy<DrawingImage> FullImage =
+        new(() => new DrawingImage(Load(FullMarkUri)));
+
+    private static readonly Lazy<DrawingImage> SmallImage =
+        new(() => new DrawingImage(Load(SmallMarkUri)));
+
+    /// <summary>The full mark, for an `Image` to bind to.</summary>
+    /// <remarks>
+    /// **LAZY, BECAUSE LOADING REACHES THE ASSET LOADER** and a static that ran at
+    /// type-load would throw anywhere an Avalonia application had not been set up
+    /// yet — a designer, a unit test of something else entirely.
+    /// </remarks>
+    public static DrawingImage Full => FullImage.Value;
+
+    /// <summary>The small mark, for an `Image` to bind to.</summary>
+    public static DrawingImage Small => SmallImage.Value;
+
     /// <summary>Load one of the marks as something Avalonia can draw.</summary>
     /// <param name="uri">An `avares://` URI naming an SVG in this assembly.</param>
     /// <returns>The drawing, with its own viewBox as its bounds.</returns>
@@ -56,6 +73,19 @@ public static class SvgMark
         var box = ViewBox(root);
 
         var group = new DrawingGroup();
+
+        // **THE VIEWBOX IS THE PICTURE, WHICH IS WHAT A BROWSER SCALES.** Without
+        // this, the drawing's bounds are its ink, and an `Image` would scale the ink
+        // to the control instead of the box — so the mark would sit differently here
+        // from everywhere else, and the clipping below would eat a different part of
+        // it. An invisible rectangle over the box makes the two agree. It draws
+        // nothing: no brush, no pen.
+        group.Children.Add(new GeometryDrawing
+        {
+            Geometry = new RectangleGeometry(box),
+            Brush = null,
+            Pen = null,
+        });
 
         foreach (var drawing in Children(root, Matrix.Identity))
         {
@@ -101,16 +131,9 @@ public static class SvgMark
     /// </remarks>
     public static Rect Extent(string uri)
     {
-        ArgumentNullException.ThrowIfNull(uri);
-
-        using var stream = AssetLoader.Open(new Uri(uri));
-
-        var root = XDocument.Load(stream).Root
-            ?? throw new NotSupportedException(uri + " has no root element");
-
         Rect? bounds = null;
 
-        foreach (var drawing in Children(root, Matrix.Identity))
+        foreach (var drawing in Shapes(uri))
         {
             var here = drawing.GetBounds();
 
@@ -118,6 +141,28 @@ public static class SvgMark
         }
 
         return bounds ?? default;
+    }
+
+    /// <summary>
+    /// **Only the shapes the file draws**, without the viewBox spacer.
+    /// </summary>
+    /// <param name="uri">An `avares://` URI naming an SVG in this assembly.</param>
+    /// <returns>One drawing per element in the file.</returns>
+    /// <remarks>
+    /// <see cref="Load"/> puts an invisible rectangle over the viewBox in front of
+    /// these so an `Image` scales the box rather than the ink. That rectangle is not
+    /// part of the mark, and anything asking what the file draws wants this.
+    /// </remarks>
+    public static IReadOnlyList<GeometryDrawing> Shapes(string uri)
+    {
+        ArgumentNullException.ThrowIfNull(uri);
+
+        using var stream = AssetLoader.Open(new Uri(uri));
+
+        var root = XDocument.Load(stream).Root
+            ?? throw new NotSupportedException(uri + " has no root element");
+
+        return Children(root, Matrix.Identity).ToList();
     }
 
     /// <summary>Every drawable under one element, with the transform applied.</summary>

@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
+        xmlns:ctl="using:Hamlet.App.Controls"
         x:Class="Hamlet.App.Views.AboutWindow"
         x:DataType="vm:AboutViewModel"
         Title="About Hamlet"
@@ -26,7 +27,20 @@
 
     <Grid RowDefinitions="Auto,*,Auto" Margin="18">
 
-        <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,14">
+        <!-- **THE MARK SITS WITH THE NAME RATHER THAN REPLACING IT** (work
+             instruction 285 task 2). The wordmark is the name and the mark is a
+             picture of the thing; both belong, and neither is a caption for the
+             other. **No label under it** — a logo is not text he asked for. -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,14">
+
+            <Image x:Name="HamletMark" Grid.Column="0"
+                   Source="{x:Static ctl:SvgMark.Full}"
+                   Width="164" Height="140"
+                   Stretch="Uniform"
+                   VerticalAlignment="Top"
+                   Margin="0,2,16,0" />
+
+        <StackPanel Grid.Column="1" Spacing="6">
             <StackPanel Orientation="Horizontal" Spacing="0">
                 <TextBlock Text="Ham" FontSize="30" FontWeight="Bold"
                            Foreground="{StaticResource HmAmberBrush}" />
@@ -43,6 +57,7 @@
                        IsVisible="{Binding HasByline}"
                        Foreground="{StaticResource HmTextPrimaryBrush}" />
         </StackPanel>
+        </Grid>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel Spacing="10">

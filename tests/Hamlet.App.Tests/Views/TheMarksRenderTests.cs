@@ -45,10 +45,11 @@ public sealed class TheMarksRenderTests
 
             _output.WriteLine(
                 uri.Split('/').Last().PadRight(24)
-                + drawing.Children.Count + " shapes, bounds " + drawing.GetBounds());
+                + SvgMark.Shapes(uri).Count + " shapes, drawing bounds "
+                + drawing.GetBounds());
 
             Assert.True(
-                drawing.Children.Count > 0,
+                SvgMark.Shapes(uri).Count > 0,
                 uri + " loaded no shapes at all");
         }
     }
@@ -164,11 +165,11 @@ public sealed class TheMarksRenderTests
             ("small", SvgMark.SmallMarkUri),
         })
         {
-            var drawing = SvgMark.Load(uri);
+            var shapes = SvgMark.Shapes(uri);
 
             var blank = 0;
 
-            foreach (var child in drawing.Children.OfType<GeometryDrawing>())
+            foreach (var child in shapes)
             {
                 var bounds = child.GetBounds();
 
@@ -181,7 +182,7 @@ public sealed class TheMarksRenderTests
             }
 
             _output.WriteLine(
-                name.PadRight(8) + drawing.Children.Count + " shapes, "
+                name.PadRight(8) + shapes.Count + " shapes, "
                 + blank + " of them with no ink or no size");
 
             Assert.Equal(0, blank);

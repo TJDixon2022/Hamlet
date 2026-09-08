@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 285 - the logo goes into the application
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T16:46:07-04:00
-NOTE: Task 1 - finding where this tree keeps application resources, moving the two SVGs there, and confirming both parse and render.
+UPDATED: 2026-09-08T16:52:16-04:00
+NOTE: Task 2 - placing the full mark in the About window beside the wordmark. Task 1 found both marks overflow their own viewBox; reported, not redesigned.
 
 ---
 
