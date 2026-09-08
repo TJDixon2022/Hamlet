@@ -168,9 +168,13 @@ public sealed class HowMuchTheApplicationSaysTests
     public static IReadOnlyList<(string Surface, int Measured, int Ceiling)> Ceilings { get; }
         = new[]
         {
-            ("MainWindow — CW tab", 611, 750),
-            ("MainWindow — Digital tab", 1201, 1350),
-            ("MainWindow — Voice tab", 601, 750),
+            ("MainWindow — CW tab", 528, 650),
+            ("MainWindow — Digital tab", 1118, 1250),
+            // **THE WORKING TAB SAYS LESS THAN THE IDLE ONE**, which is the whole
+            // shape of this phase: the empty-state explanations go away once there
+            // is traffic, and everything composed at run time is now on a hover.
+            ("MainWindow — Digital tab, working", 1087, 1200),
+            ("MainWindow — Voice tab", 518, 650),
             ("SettingsWindow", 1628, 1750),
             ("RigDiagnosticsWindow", 1346, 1450),
             ("AboutWindow", 726, 850),
@@ -269,10 +273,10 @@ public sealed class HowMuchTheApplicationSaysTests
     [AvaloniaFact]
     public void AddingASentenceToACappedSurfaceTurnsItRed()
     {
-        var window = OperatingWindow("Voice", out _);
+        var window = OperatingWindow("Digital", out _);
 
         var before = Chars(window);
-        var ceiling = Ceilings.First(c => c.Surface == "MainWindow — Voice tab").Ceiling;
+        var ceiling = Ceilings.First(c => c.Surface == "MainWindow — Digital tab").Ceiling;
 
         Assert.True(before <= ceiling, "the fixture starts over its own ceiling");
 
@@ -323,8 +327,21 @@ public sealed class HowMuchTheApplicationSaysTests
     /// <summary>The realized window for one row of <see cref="Ceilings"/>.</summary>
     /// <param name="surface">The row's name.</param>
     /// <returns>The shown window.</returns>
+    /// <remarks>
+    /// **A CEILING CAPS A STATE AND NOT ONLY A SURFACE**, which is the lesson of
+    /// three units in a row. Unit 282's composed send line is 473 characters and
+    /// appears only after a transmission; unit 283's link-check branch is 304 and
+    /// appears only on a radio that does not announce. **An idle window cannot see
+    /// either**, so the Digital tab is capped twice — once at rest, and once in the
+    /// state the operator actually sits in.
+    /// </remarks>
     private static Window Surface(string surface)
     {
+        if (surface.EndsWith("working", StringComparison.Ordinal))
+        {
+            return Working();
+        }
+
         if (surface.StartsWith("MainWindow", StringComparison.Ordinal))
         {
             return OperatingWindow(surface.Split("— ")[1].Split(' ')[0], out _);
@@ -383,6 +400,53 @@ public sealed class HowMuchTheApplicationSaysTests
             })
             .Where(t => !string.IsNullOrWhiteSpace(t))
             .Sum(t => t!.Length);
+
+    /// <summary>
+    /// **The Digital tab in the state he operates it in**, not at rest.
+    /// </summary>
+    /// <returns>The shown window.</returns>
+    /// <remarks>
+    /// Traffic on both lists, a message he sent, the long link-check branch his own
+    /// radio produces, and the receiver narration a tune-in composes. **Every one of
+    /// those is a string an idle measurement never sees**, and two of the three were
+    /// found by a unit only after they had shipped.
+    /// </remarks>
+    private static Window Working()
+    {
+        var window = OperatingWindow("Digital", out var panel);
+
+        var slot = new DateTime(2026, 9, 8, 21, 41, 30, DateTimeKind.Utc);
+
+        panel.AddDecodeRowForTests(
+            "214130", "-11", "0.2", "1240", "CQ W3YNI FN20", slot, 14_074_000);
+        panel.AddDecodeRowForTests(
+            "214130", "-13", "0.3", "1310", "KC3QIS W3YNI +02", slot, 14_074_000);
+        panel.AddSentRowForTests("W3YNI KC3QIS R-09", slot.AddSeconds(15));
+
+        // The link check his own radio produces: it does not announce its own
+        // changes, which is the 304-character branch.
+        panel.UseLinkCheckForTests(LinkSelfCheck.Describe(
+            null,
+            RigState.Empty
+                .With(RigValue.Known(
+                    RigField.Frequency, 14_074_000, "14.074000", slot, "poll"))
+                .With(RigValue.Known(
+                    RigField.CivTransceive, 0, "off", slot, "poll")),
+            slot,
+            true));
+
+        // And a tune-in's narration on the status line.
+        panel.NarrateForTests(
+            ReceiverSetupVoice.Say(
+                ReceiverConditions.ForMode("FT8")
+                    .Select(c => new ConditionResult(c, ConditionOutcome.Changed, "", ""))
+                    .ToList()),
+            "");
+
+        Pump(window);
+
+        return window;
+    }
 
     /// <summary>The main window in one operating mode, realized.</summary>
     /// <param name="mode">CW, Digital or Voice.</param>

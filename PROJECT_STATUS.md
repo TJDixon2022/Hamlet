@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 283 - every mode's status bar, not the one the author named
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T16:04:11-04:00
-NOTE: Task 2 - the link-check line. Task 1 found the status bar was already clear on every tab; the 304-character paragraph is LinkCheckLine in the top strip, which no order has named.
+UPDATED: 2026-09-08T16:06:44-04:00
+NOTE: Task 3 - re-setting the ceilings from what each surface holds after task 2, and checking whether any surface has none.
 
 ---
 
