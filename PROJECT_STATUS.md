@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 4
+TASK: 4 of 4
 WORK_INSTRUCTION: 284 - split the admissions from the advice
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T16:40:37-04:00
-NOTE: Task 3 - strengthening the reproduction test with the structural invariant: the bar never carries a reason, because every advice clause explains why and no admission does.
+UPDATED: 2026-09-08T16:41:15-04:00
+NOTE: Task 4 - the removal list and the Digital tab measured in the reproduced state rather than the idle one.
 
 ---
 

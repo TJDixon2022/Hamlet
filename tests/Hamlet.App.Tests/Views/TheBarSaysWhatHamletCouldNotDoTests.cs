@@ -136,6 +136,34 @@ public sealed class TheBarSaysWhatHamletCouldNotDoTests
         GC.KeepAlive(panel);
     }
 
+    /// <summary>**The whole tab measured in the state the screenshot shows.**</summary>
+    /// <remarks>
+    /// Task 4's number. The idle tab is not the surface this unit changed, so the
+    /// measurement is taken with the radio connected and the tune-in composed —
+    /// which is the state five units' worth of idle measurements could not see.
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task TheTabIsMeasuredInTheReproducedState()
+    {
+        var (window, panel) = await TunedToFt8Async();
+
+        var shown = HowMuchTheApplicationSaysTests.Shown(window).ToList();
+
+        _output.WriteLine(
+            shown.Sum(t => t.Length) + " characters in " + shown.Count
+            + " blocks, Digital tab, connected and tuned to the FT8 block");
+        _output.WriteLine("");
+
+        foreach (var t in shown.OrderByDescending(t => t.Length).Take(6))
+        {
+            _output.WriteLine(t.Length.ToString().PadLeft(5) + "  " + t);
+        }
+
+        Assert.True(shown.Count > 0, "the tab drew nothing");
+
+        GC.KeepAlive(panel);
+    }
+
     /// <summary>
     /// The application connected to the simulated radio, on the Digital tab, on FT8.
     /// </summary>
