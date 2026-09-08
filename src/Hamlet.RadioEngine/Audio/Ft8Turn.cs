@@ -22,6 +22,22 @@ public enum Ft8TurnState
 
     /// <summary>The current slot belongs to the operator.</summary>
     Mine,
+
+    /// <summary>**His own transmission is going out right now.**</summary>
+    /// <remarks>
+    /// It is his slot and he is using it, which is a different sentence from his
+    /// slot being open. Telling him it is open while his own carrier is on it is
+    /// the §0.0 exposure this state exists to close.
+    /// </remarks>
+    Transmitting,
+
+    /// <summary>A transmission was stopped before its slot ran out.</summary>
+    /// <remarks>
+    /// **NOT THE SAME AS THE SLOT HAVING RUN ITS COURSE.** Part of a message went
+    /// out and the rest did not, so whoever was listening heard something
+    /// incomplete, and a line saying the slot simply ended would hide that.
+    /// </remarks>
+    Stopped,
 }
 
 /// <summary>
@@ -98,12 +114,46 @@ public readonly record struct Ft8Turn(
     /// clock and presented as the beat is a measurement the application did not
     /// make.</para>
     /// </remarks>
+    /// <param name="sendingSlotUtc">
+    /// The slot his own transmission is going out in, or null where none is.
+    /// </param>
+    /// <param name="stopped">
+    /// True where that transmission was stopped before its slot ran out.
+    /// </param>
     public static Ft8Turn Read(
-        DateTime pcUtc, ClockOffset offset, DateTime? theirLastSlotUtc)
+        DateTime pcUtc,
+        ClockOffset offset,
+        DateTime? theirLastSlotUtc,
+        DateTime? sendingSlotUtc = null,
+        bool stopped = false)
     {
         if (Ft8Slots.TrueUtc(pcUtc, offset) is not { } trueUtc)
         {
             return new Ft8Turn(Ft8TurnState.NoClock, null, null);
+        }
+
+        // **HIS OWN CARRIER OUTRANKS EVERY OTHER READING.** Whose slot it is by
+        // parity is still true and is no longer the useful sentence: he is
+        // transmitting, and a line saying his slot is open while it is his own
+        // signal filling it is the one thing this must not say (§0.0).
+        if (sendingSlotUtc is { } slot)
+        {
+            if (stopped)
+            {
+                return new Ft8Turn(Ft8TurnState.Stopped, null, TheirHalf(theirLastSlotUtc));
+            }
+
+            var goneSeconds = (trueUtc - slot).TotalSeconds;
+
+            if (goneSeconds >= 0 && goneSeconds < Ft8Slots.TransmissionSeconds)
+            {
+                var over = (int)Math.Ceiling(Ft8Slots.TransmissionSeconds - goneSeconds);
+
+                return new Ft8Turn(
+                    Ft8TurnState.Transmitting,
+                    Math.Clamp(over, 1, (int)Math.Ceiling(Ft8Slots.TransmissionSeconds)),
+                    TheirHalf(theirLastSlotUtc));
+            }
         }
 
         var left = Left(trueUtc);
@@ -121,6 +171,12 @@ public readonly record struct Ft8Turn(
             left,
             theirParity * Slot);
     }
+
+    /// <summary>The half the other station uses, or null.</summary>
+    private static int? TheirHalf(DateTime? theirLastSlotUtc)
+        => theirLastSlotUtc is { } theirs && theirs != default
+            ? ParityOf(theirs) * Slot
+            : null;
 
     /// <summary>Which of the two alternating halves a slot belongs to.</summary>
     /// <param name="slotStartUtc">A slot boundary, corrected.</param>
@@ -164,6 +220,16 @@ public readonly record struct Ft8Turn(
 
         return State switch
         {
+            Ft8TurnState.Transmitting =>
+                "You are transmitting, with " + seconds + " of it left. This slot is "
+                + "yours and you are using it, so there is nothing to send into "
+                + "until it finishes.",
+
+            Ft8TurnState.Stopped =>
+                "You stopped that transmission partway through its slot, so only "
+                + "part of the message went out and whoever was listening heard "
+                + "something incomplete.",
+
             Ft8TurnState.NoClock =>
                 "Hamlet has not measured the clock yet, so it cannot say where the "
                 + "slot boundaries fall or whose turn this is.",

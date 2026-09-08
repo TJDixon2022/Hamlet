@@ -234,6 +234,125 @@ public sealed class TheBeatIsDerivedNotGuessedTests
         Assert.Contains("slot late", lines[3], StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// **While his own transmission is going out, the line says so.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 279 task 6. **This unit's §0.0 exposure**: telling him
+    /// his slot is open while his own carrier is on it is worse than saying nothing,
+    /// because the one thing he might do about an open slot is fill it.</para>
+    /// <para>**IT COUNTS DOWN THE TRANSMISSION AND NOT THE SLOT.** A transmission
+    /// occupies 12.64 s of a 15 s slot, so the two numbers are different and the one
+    /// he wants is how long his own signal has left to run.</para>
+    /// </remarks>
+    [Fact]
+    public void ATransmissionInFlightSaysSoRatherThanSayingHisSlotIsOpen()
+    {
+        var slot = Slot(0);
+        var turn = Ft8Turn.Read(At(3, 0), Measured(), Slot(45), slot);
+
+        _output.WriteLine("3 s into his own transmission: " + turn.Line());
+
+        Assert.Equal(Ft8TurnState.Transmitting, turn.State);
+
+        // **10 s LEFT OF 12.64**, rounded up, which is the transmission and not the
+        // twelve seconds left of the slot.
+        Assert.Equal(10, turn.SecondsLeft);
+
+        // **AND IT DOES NOT SAY THE SLOT IS OPEN.** The parity says this is his
+        // slot, which is true and is no longer the useful sentence.
+        Assert.DoesNotContain("Yours is next", turn.Line(), StringComparison.Ordinal);
+        Assert.DoesNotContain("click now", turn.Line(), StringComparison.Ordinal);
+        Assert.Contains("You are transmitting", turn.Line(), StringComparison.Ordinal);
+
+        // **IT IS NOT A TURN.** Nothing that decides whether to encourage him
+        // should read this as his slot standing open.
+        Assert.False(turn.IsKnown);
+        Assert.False(turn.MineNow);
+    }
+
+    /// <summary>**After it ends, the turn line comes back.**</summary>
+    /// <remarks>
+    /// A transmission runs 12.64 s of the slot, so the last two seconds belong to
+    /// the beat again and the line says whose they are.
+    /// </remarks>
+    [Fact]
+    public void AfterItEndsTheTurnLineReturns()
+    {
+        // 13 s in: the transmission finished at 12.64.
+        var turn = Ft8Turn.Read(At(13, 0), Measured(), Slot(45), Slot(0));
+
+        _output.WriteLine("13 s in, transmission over: " + turn.Line());
+
+        Assert.Equal(Ft8TurnState.Mine, turn.State);
+        Assert.Equal(2, turn.SecondsLeft);
+        Assert.True(turn.IsKnown);
+    }
+
+    /// <summary>**Stopped early says stopped, not that the slot ran out.**</summary>
+    /// <remarks>
+    /// Part of a message went out and the rest did not, so whoever was listening
+    /// heard something incomplete. A line saying the slot ran its course would hide
+    /// that at the one moment it matters.
+    /// </remarks>
+    [Fact]
+    public void StoppedEarlySaysSoRatherThanPretendingItRan()
+    {
+        var turn = Ft8Turn.Read(At(6, 0), Measured(), Slot(45), Slot(0), stopped: true);
+
+        _output.WriteLine("stopped at 6 s: " + turn.Line());
+
+        Assert.Equal(Ft8TurnState.Stopped, turn.State);
+
+        // **NO COUNTDOWN.** There is nothing left running to count.
+        Assert.Null(turn.SecondsLeft);
+
+        Assert.Contains("stopped", turn.Line(), StringComparison.Ordinal);
+        Assert.Contains("incomplete", turn.Line(), StringComparison.Ordinal);
+        Assert.False(turn.IsKnown);
+        Assert.False(turn.MineNow);
+    }
+
+    /// <summary>**A transmission in a slot that is not now does not claim the line.**</summary>
+    /// <remarks>
+    /// The slot it went out in is remembered until the run comes back, and a stale
+    /// value must not keep saying he is transmitting a minute later.
+    /// </remarks>
+    [Fact]
+    public void AStaleSendingSlotDoesNotHoldTheLine()
+    {
+        // A transmission from a slot two minutes ago, with the clock now here.
+        var old = Slot(0).AddMinutes(-2);
+        var turn = Ft8Turn.Read(At(3, 0), Measured(), Slot(45), old);
+
+        _output.WriteLine("stale sending slot: " + turn.Line());
+
+        Assert.NotEqual(Ft8TurnState.Transmitting, turn.State);
+        Assert.Equal(Ft8TurnState.Mine, turn.State);
+    }
+
+    /// <summary>**Every state still says what it is, including the two new ones.**</summary>
+    [Fact]
+    public void TheTwoNewStatesSayWhatTheyAreToo()
+    {
+        var lines = new[]
+        {
+            Ft8Turn.Read(At(3, 0), Measured(), Slot(45), Slot(0)).Line(),
+            Ft8Turn.Read(At(3, 0), Measured(), Slot(45), Slot(0), stopped: true).Line(),
+        };
+
+        foreach (var line in lines)
+        {
+            _output.WriteLine(line);
+
+            Assert.NotEqual("", line);
+            Assert.DoesNotContain("—", line);
+            Assert.DoesNotContain("unknown", line, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Equal(2, new HashSet<string>(lines, StringComparer.Ordinal).Count);
+    }
+
     /// <summary>An offset that has been measured, so slots can be placed.</summary>
     private static ClockOffset Measured()
         => new(0.0, new DateTime(2026, 9, 8, 2, 11, 0, DateTimeKind.Utc));

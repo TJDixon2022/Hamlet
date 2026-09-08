@@ -1507,6 +1507,27 @@ public partial class MainWindowViewModel : ObservableObject
         RecountDecodedFilter();
     }
 
+    /// <summary>The slot his own transmission is going out in, or null.</summary>
+    /// <remarks>
+    /// <para>**IT IS A READING AND NOTHING ACTS ON IT** (§0.2). Nothing arms on it,
+    /// nothing cancels on it, and its running out sends nothing: it is set where the
+    /// boundary hands the transmission over and cleared where the run comes back,
+    /// and the only line that reads it is a sentence on a panel.</para>
+    /// <para>**WRITTEN OFF THE UI THREAD AND READ ON IT.** `AtSlotBoundaryAsync`
+    /// runs on the pool; a `DateTime?` is not torn, and the tick that reads it four
+    /// times a second will see the write on its next pass. A slot late is a quarter
+    /// of a second on a fifteen-second beat.</para>
+    /// </remarks>
+    private DateTime? _sendingSlotUtc;
+
+    /// <summary>True where that transmission was stopped partway.</summary>
+    /// <remarks>
+    /// **STOPPED IS NOT THE SAME AS FINISHED.** Part of a message went out and the
+    /// rest did not, so a line saying the slot ran its course would hide that from
+    /// him at the one moment it matters.
+    /// </remarks>
+    private bool _sendWasStopped;
+
     /// <summary>The beat, as the panel last read it.</summary>
     private Ft8Turn _turn = new(Ft8TurnState.NoClock, null, null);
 
@@ -1551,7 +1572,24 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var was = _turn;
 
-        _turn = Ft8Turn.Read(DateTime.UtcNow, ClockOffset, TheirLastSlot());
+        // **THE STOPPED SENTENCE LASTS UNTIL THE NEXT SLOT AND NO LONGER.** It is
+        // news about the slot it happened in, and carrying it further would have it
+        // describing a slot it has nothing to do with.
+        // **CLEARED HERE RATHER THAN AT THE BOUNDARY DRIVER**, which returns early
+        // when nothing is armed - and after a stop nothing is. Put there, the
+        // sentence would have stood for the rest of the evening.
+        if (_sendWasStopped
+            && _sendingSlotUtc is { } stoppedIn
+            && Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) is { } nowUtc
+            && Ft8Slots.SlotStart(nowUtc) > stoppedIn)
+        {
+            _sendWasStopped = false;
+            _sendingSlotUtc = null;
+        }
+
+        _turn = Ft8Turn.Read(
+            DateTime.UtcNow, ClockOffset, TheirLastSlot(),
+            _sendingSlotUtc, _sendWasStopped);
 
         if (was == _turn)
         {
@@ -9630,6 +9668,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+
         _lastBoundaryDriven = boundary;
 
         _ = AtSlotBoundaryAsync(boundary);
@@ -9653,10 +9692,23 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var text = _armedText;
+
+        // **THE TURN LINE STOPS SAYING HIS SLOT IS OPEN WHILE HE IS FILLING IT**
+        // (work instruction 279 task 6). Set before the run and cleared after it,
+        // so the sentence covers exactly the stretch his carrier is on the air.
+        // **Nothing reads these to act.** No arm, no cancel, and the transmission
+        // ending sends nothing: the only reader is `RefreshTurn`, which writes a
+        // sentence.
+        _sendingSlotUtc = boundaryUtc;
+        _sendWasStopped = false;
+
         var result = await _armedSend.AtBoundaryAsync(boundaryUtc).ConfigureAwait(false);
 
         if (result.Outcome != Ft8ArmOutcome.Ran)
         {
+            // Nothing went out, so nothing is in flight to describe.
+            _sendingSlotUtc = null;
+
             if (result.Outcome == Ft8ArmOutcome.TooLate)
             {
                 Dispatcher.UIThread.Post(() => DigitalSendLine =
@@ -9673,6 +9725,13 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var run = result.Run!;
+
+        // **STOPPED IS ITS OWN SENTENCE AND IT REPLACES THE COUNTDOWN.** Part of a
+        // message went out and the rest did not; a line saying the slot ran its
+        // course would hide that at the one moment it matters. It stands until the
+        // next boundary, which is where `_sendWasStopped` is cleared.
+        _sendWasStopped = run.Outcome == Ft8TransmitOutcome.Cancelled;
+        _sendingSlotUtc = _sendWasStopped ? result.Send!.SlotStartUtc : null;
 
         if (run.Sent)
         {
