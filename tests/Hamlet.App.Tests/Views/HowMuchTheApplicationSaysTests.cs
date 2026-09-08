@@ -324,6 +324,16 @@ public sealed class HowMuchTheApplicationSaysTests
         }
     }
 
+    /// <summary>The realized window for one capped surface, for another class.</summary>
+    /// <param name="surface">The row's name in <see cref="Ceilings"/>.</param>
+    /// <returns>The shown window.</returns>
+    /// <remarks>
+    /// **ONE PLACE BUILDS A SURFACE** (§0). Work instruction 283's sweep walks the
+    /// same windows this class caps, and a second copy of that list is how the two
+    /// come to disagree about what has been looked at.
+    /// </remarks>
+    public static Window SurfaceForSweep(string surface) => Surface(surface);
+
     /// <summary>The realized window for one row of <see cref="Ceilings"/>.</summary>
     /// <param name="surface">The row's name.</param>
     /// <returns>The shown window.</returns>
