@@ -9488,8 +9488,9 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(LoggedContacts));
         OnPropertyChanged(nameof(ContactCountLine));
-        OnPropertyChanged(nameof(ContactCountWord));
-        OnPropertyChanged(nameof(ContactBadgeProgress));
+        OnPropertyChanged(nameof(ContactBeltInk));
+        OnPropertyChanged(nameof(ContactBeltProgress));
+        OnPropertyChanged(nameof(ContactBeltTip));
         OnPropertyChanged(nameof(HasContactBadgeProgress));
         OnPropertyChanged(nameof(HasLoggedContacts));
         OnPropertyChanged(nameof(Milestones));
@@ -9614,25 +9615,33 @@ public partial class MainWindowViewModel : ObservableObject
     public string ContactCountLine
         => LoggedContacts.ToString("N0", CultureInfo.InvariantCulture);
 
-    /// <summary>The word beside the count, small.</summary>
-    public string ContactCountWord
-        => LoggedContacts == 1 ? "contact" : "contacts";
-
-    /// <summary>How far the next badge is, beside the count.</summary>
+    /// <summary>The rank the count wears, as a hex colour for the ring.</summary>
     /// <remarks>
-    /// **THE PROGRESS COMES OUT OF THE LOG WINDOW AND ONTO THE SCREEN** (work
-    /// instruction 280 task 5). It was only visible in `Tools > My contacts…`,
-    /// which is not where he is while he is making them.
-    /// **IT IS THE SHORT FORM**: the log window keeps the full sentence.
+    /// **A BORDER AND NEVER A FILL** (HM-DEC-012, work instruction 281 task 4). The
+    /// markup binds this to a `BorderBrush` with a transparent background; a filled
+    /// disc in a status bar reads as a status light, which is a different claim.
     /// </remarks>
-    public string ContactBadgeProgress
-        => Milestones.ToGo is { } toGo && Milestones.Next is { } next
-            ? toGo.ToString("N0", CultureInfo.InvariantCulture) + " to "
-                + next.ToString("N0", CultureInfo.InvariantCulture)
-            : "";
+    public string ContactBeltInk => ContactBelt.For(LoggedContacts).Ink;
 
-    /// <summary>True where there is a next badge to show progress toward.</summary>
-    public bool HasContactBadgeProgress => ContactBadgeProgress.Length > 0;
+    /// <summary>How far the count is between this rank and the next, 0 to 1.</summary>
+    public double ContactBeltProgress => ContactBelt.Progress(LoggedContacts);
+
+    /// <summary>The rank, the next colour, and how many contacts away.</summary>
+    /// <remarks>
+    /// **THE WORDS THAT LEFT THE SCREEN** (Tim, 2026-09-08). *contacts* beside the
+    /// number and *6 to 10* beside the bar are both in this sentence, and the number
+    /// and the ring carry them unhovered.
+    /// </remarks>
+    public string ContactBeltTip => ContactBelt.Tip(LoggedContacts);
+
+    /// <summary>True where there is a next rank to show progress toward.</summary>
+    /// <remarks>
+    /// **THE LABEL BECAME A BAR ON 2026-09-08** (work instruction 281 task 4). This
+    /// used to gate the words *6 to 10*; it now gates
+    /// <see cref="ContactBeltProgress"/>, which is the same fact drawn instead of
+    /// written. At the gold there is nothing further to go and the bar is not drawn.
+    /// </remarks>
+    public bool HasContactBadgeProgress => ContactBelt.After(LoggedContacts) is not null;
 
     /// <summary>The log, by callsign, with the last entry for each winning.</summary>
     /// <remarks>

@@ -32,15 +32,19 @@ namespace Hamlet.App.ViewModels;
 /// <param name="Count">How many records are in the log.</param>
 public sealed record ContactMilestones(int Count)
 {
-    /// <summary>The nine, in one place.</summary>
+    /// <summary>The nine, in one place, and that place is the belt.</summary>
     /// <remarks>
-    /// **ONE LIST, NOT SCATTERED** (work instruction 278). A threshold written in
-    /// two places is a threshold that disagrees with itself the first time one is
-    /// changed, and this list is read by the badge line, the next-badge line and
-    /// the announcement alike.
+    /// <para>**ONE LIST, NOT SCATTERED** (work instruction 278). A threshold written
+    /// in two places is a threshold that disagrees with itself the first time one is
+    /// changed, and this list is read by the badge line, the next-badge line and the
+    /// announcement alike.</para>
+    /// <para>**AND FROM 281 TASK 4 THE LIST IS <see cref="ContactBelt.Ranks"/>**,
+    /// rather than the same nine numbers typed out twice. The white rank is the one
+    /// that is not a threshold: it is where everybody starts, and *that is 0 contacts
+    /// logged* would be a congratulation for having done nothing.</para>
     /// </remarks>
     public static IReadOnlyList<int> Thresholds { get; } =
-        new[] { 10, 25, 50, 100, 500, 1000, 2000, 5000, 10000 };
+        ContactBelt.Ranks.Where(r => r.At > 0).Select(r => r.At).ToList();
 
     /// <summary>Every badge the count has reached, lowest first.</summary>
     public IReadOnlyList<int> Earned

@@ -4409,19 +4409,41 @@
                             Spacing="5" Margin="16,0,0,0"
                             VerticalAlignment="Center"
                             IsVisible="{Binding HasLoggedContacts}">
-                    <TextBlock x:Name="ContactCountNumber"
-                               Text="{Binding ContactCountLine}"
-                               VerticalAlignment="Center"
-                               FontSize="20" FontWeight="Bold"
-                               Foreground="{StaticResource HmGreenBrush}" />
+                    <!-- **THE COUNT WEARS A RANK** (Tim, 2026-09-08: a coloured
+                         ring that rises with the count, martial-arts order, and
+                         gold at ten thousand).
 
-                    <TextBlock x:Name="ContactBadgeProgress"
-                               Text="{Binding ContactBadgeProgress}"
-                               IsVisible="{Binding HasContactBadgeProgress}"
-                               ToolTip.Tip="{Binding Milestones.Line}"
-                               VerticalAlignment="Bottom" Margin="6,0,0,3"
-                               FontSize="11"
-                               Foreground="{StaticResource HmAmberBrush}" />
+                         **A BORDER AND NEVER A FILL** (HM-DEC-012). The background
+                         is transparent on purpose: a filled disc in a status bar
+                         reads as a status light, which is a different claim.
+
+                         **AND THE RANK IS THE DECORATION, NOT THE MEANING** (§0.6).
+                         The number inside is the primary carrier and the bar beside
+                         it is drawn in a neutral ink, so in grayscale he still
+                         knows how many contacts he has and how far the next rank
+                         is. What grayscale loses is only which colour it is. -->
+                    <Border x:Name="ContactBeltRing"
+                            BorderBrush="{Binding ContactBeltInk}"
+                            BorderThickness="2"
+                            Background="Transparent"
+                            CornerRadius="16"
+                            Padding="11,1" MinWidth="46"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="{Binding ContactBeltTip}">
+                        <TextBlock x:Name="ContactCountNumber"
+                                   Text="{Binding ContactCountLine}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="20" FontWeight="Bold"
+                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    </Border>
+
+                    <ctl:BadgeProgressControl x:Name="ContactBadgeProgress"
+                                              Fraction="{Binding ContactBeltProgress}"
+                                              IsVisible="{Binding HasContactBadgeProgress}"
+                                              ToolTip.Tip="{Binding ContactBeltTip}"
+                                              VerticalAlignment="Center"
+                                              Margin="6,0,0,0" />
                 </StackPanel>
             </Grid>
         </Border>

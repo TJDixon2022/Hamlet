@@ -145,7 +145,12 @@ public sealed class WhatTheLogCostsAtTenThousandTests : IDisposable
 
         Assert.Equal(10_000, count);
         Assert.Equal("10,000", model.ContactCountLine);
-        Assert.Equal("contacts", model.ContactCountWord);
+
+        // **AND AT TEN THOUSAND THE RING IS GOLD** (Tim, 2026-09-08: go for the
+        // gold). The word `contacts` left the screen with work instruction 281 and
+        // is in the sentence behind the ring.
+        Assert.Contains("contacts", model.ContactBeltTip, StringComparison.Ordinal);
+        Assert.Equal("gold", ContactBelt.For(count).Name);
 
         // **AND HE IS NOT CONGRATULATED FOR NINE BADGES AT ONCE**, which is what
         // this measurement found: installed beside a log of ten thousand it read
