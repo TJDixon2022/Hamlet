@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 5 of 5
-WORK_INSTRUCTION: 275 - the left list stops clipping, and a contact remembers its own dial
+WORK_INSTRUCTION: 276 - the right-click menu reaches the list it is for
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-07T19:38:00-04:00
-NOTE: Five of five done and pushed, version 1.12.134 to 1.12.139, and three of the four asks the order carried inbound are discharged. Two defects found that neither task went looking for - the mine list had been crooked by twelve pixels since I built it in unit 273, and unit 274 was writing BAND as 20 m where ADIF spells it 20m, which its own round trip could not catch because every case in it used a hand-made 20m the application never produces. One thing the ruling's arithmetic did not predict and it is reported rather than rounded away: the everyday eighteen-character message is three pixels over on the left. Writing output.md now.
+UPDATED: 2026-09-07T21:47:30-04:00
+NOTE: All five tasks done, none dropped, pushed through 40c2446, version 1.12.143. He can now right-click a message addressed to him and answer it - the menu was on the left list only and the Log item unit 274 added had never once been shown, because it is gated on the same predicate that moves a row to the other side. Two mismatches are in the report rather than repaired: PHASE_OUTCOME.md has no unit 274 entry to correct and units 273 through 275 wrote none, and the instruction's goal block carries no figure so NUMBER is none and DRIFT cannot be carried forward. HM-OPEN-086 raised and left alone - the sibling whole-chain test is blind to the same list.
 
 ---
 
