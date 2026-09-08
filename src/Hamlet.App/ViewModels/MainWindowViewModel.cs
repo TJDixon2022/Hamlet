@@ -1738,7 +1738,26 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
-        return (newest ?? lastArrived)?.Sender ?? "";
+        if ((newest ?? lastArrived) is { } caller)
+        {
+            return caller.Sender;
+        }
+
+        // **BEFORE ANYBODY ANSWERS, HE IS STILL WORKING SOMEBODY.** The
+        // reconstruction of 2026-09-08 caught this: at the first moment of the
+        // evening he had transmitted to K9XP and the panel was empty, because the
+        // station is derived from what has been heard and nothing had been. His
+        // own call is the evidence of who he is calling, so the last station he
+        // transmitted to is the conversation until one answers.
+        for (var at = _digitalSent.Count - 1; at >= 0; at--)
+        {
+            if (_digitalSent[at].Addressee.Length > 0)
+            {
+                return _digitalSent[at].Addressee;
+            }
+        }
+
+        return "";
     }
 
     /// <summary>Whether that station has anything left on the table.</summary>

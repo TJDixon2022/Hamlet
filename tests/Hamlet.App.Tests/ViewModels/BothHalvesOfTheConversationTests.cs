@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
+using Hamlet.RadioEngine.Audio;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -551,6 +552,128 @@ public sealed class BothHalvesOfTheConversationTests
 
         _output.WriteLine("");
     }
+
+    /// <summary>
+    /// **The evening of 2026-09-08, step by step, as the panel would now draw it.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 277, task 5, and it is the honest check on the other
+    /// four rather than a nicety. **If the missed beat is not obvious here, the unit
+    /// has failed**, whatever its tests say.</para>
+    /// <para>**THE FIGURES ARE THE TELEMETRY'S OWN.** Three received at `02:11:15`,
+    /// `02:11:45` and `02:12:45`; three sent at `02:11:00`, `02:12:15` and
+    /// `02:13:15`. Nothing here is composed for the reconstruction.</para>
+    /// <para>**THE TURN LINE IS READ A SECOND INTO EACH SLOT**, from the same
+    /// engine call the panel uses, so what is printed is what he would have been
+    /// looking at rather than a description of it.</para>
+    /// </remarks>
+    [Fact]
+    public void TheEveningOf20260908AsItWouldNowRead()
+    {
+        var model = new MainWindowViewModel(Settings(), null) { DigitalNewestFirst = false };
+
+        Step(model, "02:11:00", sent: true, His + " " + HisCall + " R-09");
+        Step(model, "02:11:15", sent: false, HisCall + " " + His + " -09");
+        Step(model, "02:11:45", sent: false, HisCall + " " + His + " -09");
+        Step(model, "02:12:15", sent: true, His + " " + HisCall + " R-09");
+        Step(model, "02:12:45", sent: false, HisCall + " " + His + " -09");
+        Step(model, "02:13:15", sent: true, His + " " + HisCall + " RRR");
+
+        // **THE CLAIM THE RECONSTRUCTION HAS TO SUPPORT**, asserted rather than
+        // left to the reader of the printout: his three transmissions are on the
+        // panel, the repeat before his answer is folded, and the repeat after it
+        // stands alone as its own row.
+        Assert.Equal(
+            new[]
+            {
+                "021100 sent      " + His + " " + HisCall + " R-09",
+                "021115 received  " + HisCall + " " + His + " -09 x2",
+                "021215 sent      " + His + " " + HisCall + " R-09",
+                "021245 received  " + HisCall + " " + His + " -09",
+                "021315 sent      " + His + " " + HisCall + " RRR",
+            },
+            model.DigitalMineDecodes.Select(Shown).ToArray());
+
+        // **THE DIAGNOSIS, IN THE ONE PLACE IT CAN BE STATED AS A FACT.** K9XP
+        // transmits on the odd half, so the operator's slots are `:00` and `:30`.
+        // His first call went out in his own slot and was correct; **both of the
+        // replies that followed went out in K9XP's**, which is the missed beat,
+        // and each of those is a reply arriving a slot after the one it answered.
+        var theirs = Slot("02:11:45");
+
+        Assert.Equal(
+            Ft8TurnState.Mine,
+            Ft8Turn.Read(Slot("02:11:00").AddSeconds(1), Offset(), theirs).State);
+
+        foreach (var at in new[] { "02:12:15", "02:13:15" })
+        {
+            var turn = Ft8Turn.Read(Slot(at).AddSeconds(1), Offset(), theirs);
+
+            Assert.Equal(Ft8TurnState.Theirs, turn.State);
+
+            // And the sentence he would have been reading names it.
+            Assert.Contains("Their slot", turn.Line(), StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>One moment of that evening, placed and then printed.</summary>
+    /// <param name="model">The panel.</param>
+    /// <param name="at">The slot it happened in.</param>
+    /// <param name="sent">True where he transmitted it.</param>
+    /// <param name="message">The text.</param>
+    private void Step(
+        MainWindowViewModel model, string at, bool sent, string message)
+    {
+        if (sent)
+        {
+            Sent(model, at, message);
+        }
+        else
+        {
+            Heard(model, at, message);
+        }
+
+        // **A SECOND INTO THE SLOT**, which is where he would be looking: the
+        // decode has landed and there are fourteen seconds of the slot to go.
+        var turn = Ft8Turn.Read(Slot(at).AddSeconds(1), Offset(), LastHeard(model));
+
+        _output.WriteLine(
+            "=== " + at + " UTC, he " + (sent ? "transmits" : "hears") + " ===");
+        _output.WriteLine("  turn: " + turn.Line());
+        _output.WriteLine("  For you (" + model.ConversationStation() + "):");
+
+        foreach (var row in model.DigitalMineDecodes)
+        {
+            _output.WriteLine("      " + Shown(row));
+        }
+
+        _output.WriteLine("");
+    }
+
+    /// <summary>The last slot K9XP was heard in, as the panel knows it.</summary>
+    private static DateTime? LastHeard(MainWindowViewModel model)
+    {
+        DateTime? best = null;
+
+        foreach (var row in model.DigitalMineDecodes)
+        {
+            if (row.IsSent || row.SlotStartUtc == default)
+            {
+                continue;
+            }
+
+            if (best is null || row.SlotStartUtc > best)
+            {
+                best = row.SlotStartUtc;
+            }
+        }
+
+        return best;
+    }
+
+    /// <summary>A clock offset that has been measured, so slots can be placed.</summary>
+    private static ClockOffset Offset()
+        => new(0.0, new DateTime(2026, 9, 8, 2, 10, 0, DateTimeKind.Utc));
 
     /// <summary>The exchange of 2026-09-08, from its own figures.</summary>
     /// <param name="newestFirst">Which way round the panel is showing.</param>
