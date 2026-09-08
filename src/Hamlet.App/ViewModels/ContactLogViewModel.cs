@@ -41,6 +41,7 @@ public sealed class ContactLogRow
         Mode = Or(c.Mode);
         ReportSent = Or(c.ReportSent);
         ReportReceived = Or(c.ReportReceived);
+        TheirGridSquare = Or(c.GridSquare);
         MyGridSquare = Or(c.MyGridSquare);
         Comment = Or(c.Comment);
 
@@ -67,6 +68,20 @@ public sealed class ContactLogRow
 
     /// <summary>The report he received, or that it was not recorded.</summary>
     public string ReportReceived { get; }
+
+    /// <summary>The station's locator, or that it was not recorded.</summary>
+    /// <remarks>
+    /// <para>**IT WAS WRITTEN AND NOT SHOWN** (work instruction 282 task 3).
+    /// `AdifLog` has written `GRIDSQUARE` and `MY_GRIDSQUARE` as separate fields
+    /// since unit 274, and the window carried a column for the second and none at
+    /// all for the first — so a log of contacts said where he was standing and never
+    /// where the other station was, which is the half of a contact worth keeping.
+    /// </para>
+    /// <para>**AND THE TWO ARE LABELLED APART.** `my grid` and `their grid`, not one
+    /// column called `grid`: a locator with nobody's name on it is a number a reader
+    /// attaches to whichever station he was thinking of.</para>
+    /// </remarks>
+    public string TheirGridSquare { get; }
 
     /// <summary>His own locator at the time, or that it was not recorded.</summary>
     public string MyGridSquare { get; }

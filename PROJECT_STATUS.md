@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 8
+TASK: 3 of 8
 WORK_INSTRUCTION: 282 - the composed paragraph, and the log shows his contacts
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T14:35:46-04:00
-NOTE: Task 2 - a per-surface ceiling on permanently-visible text, asserted off the realized window, so a surface that grows a paragraph again turns a test red. Task 1 done: 884 characters off the CW status bar, none deleted.
+UPDATED: 2026-09-08T14:44:14-04:00
+NOTE: Task 3 - a column for the station's grid beside my grid. Task 2 done: ten surfaces capped, and the ceiling proved tight enough to have caught the paragraph.
 
 ---
 

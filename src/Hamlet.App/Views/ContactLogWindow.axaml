@@ -79,7 +79,8 @@
                     <!-- The header and the rows share one column string, because
                          two copies of a column list is how they drift apart, which
                          unit 241 wrote a whole test class about. -->
-                    <Grid Grid.Row="0" ColumnDefinitions="96,150,64,64,64,64,80,*"
+                    <Grid Grid.Row="0" x:Name="ContactLogHeader"
+                          ColumnDefinitions="96,150,64,64,96,96,88,88,*"
                           Margin="10,10,10,4">
                         <TextBlock Grid.Column="0" Text="call" />
                         <TextBlock Grid.Column="1" Text="when (UTC)" />
@@ -87,8 +88,16 @@
                         <TextBlock Grid.Column="3" Text="mode" />
                         <TextBlock Grid.Column="4" Text="sent" />
                         <TextBlock Grid.Column="5" Text="rcvd" />
-                        <TextBlock Grid.Column="6" Text="my grid" />
-                        <TextBlock Grid.Column="7" Text="notes" />
+
+                        <!-- **THEIRS, THEN HIS** (work instruction 282 task 3).
+                             `GRIDSQUARE` has been written since unit 274 and never
+                             shown, so the log said where he was standing and never
+                             where the other station was. The two are labelled apart
+                             because a locator with nobody's name on it is a number a
+                             reader attaches to whichever station he had in mind. -->
+                        <TextBlock Grid.Column="6" Text="their grid" />
+                        <TextBlock Grid.Column="7" Text="my grid" />
+                        <TextBlock Grid.Column="8" Text="notes" />
                         <Grid.Styles>
                             <Style Selector="TextBlock">
                                 <Setter Property="FontFamily" Value="Consolas,Menlo,monospace" />
@@ -106,7 +115,8 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:ContactLogRow">
                                     <StackPanel Margin="0,3">
-                                        <Grid ColumnDefinitions="96,150,64,64,64,64,80,*">
+                                        <Grid x:Name="ContactLogRowCells"
+                                              ColumnDefinitions="96,150,64,64,96,96,88,88,*">
                                             <TextBlock Grid.Column="0" Text="{Binding Call}"
                                                        FontWeight="SemiBold" />
                                             <TextBlock Grid.Column="1" Text="{Binding WhenUtc}" />
@@ -114,8 +124,9 @@
                                             <TextBlock Grid.Column="3" Text="{Binding Mode}" />
                                             <TextBlock Grid.Column="4" Text="{Binding ReportSent}" />
                                             <TextBlock Grid.Column="5" Text="{Binding ReportReceived}" />
-                                            <TextBlock Grid.Column="6" Text="{Binding MyGridSquare}" />
-                                            <TextBlock Grid.Column="7" Text="{Binding Comment}"
+                                            <TextBlock Grid.Column="6" Text="{Binding TheirGridSquare}" />
+                                            <TextBlock Grid.Column="7" Text="{Binding MyGridSquare}" />
+                                            <TextBlock Grid.Column="8" Text="{Binding Comment}"
                                                        TextWrapping="Wrap" />
                                             <Grid.Styles>
                                                 <Style Selector="TextBlock">
