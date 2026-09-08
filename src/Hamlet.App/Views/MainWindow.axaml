@@ -2381,7 +2381,13 @@
                 </StackPanel>
             </Border>
 
-            <TextBlock Text="{Binding Byline}"
+            <!-- **NAMED SO THE CEILING CAN LEAVE IT OUT** (work instruction 282
+                 task 2). It rotates through forty-five lines of 20 to 104
+                 characters (HM-DEC-039), which is an 84-character swing between
+                 one launch and the next - more than the whole margin a ceiling
+                 has to play with. It is a deliberate flourish rather than prose
+                 about the radio, so it is measured and printed and not capped. -->
+            <TextBlock x:Name="Byline" Text="{Binding Byline}"
                        IsVisible="{Binding HasByline}"
                        FontSize="12.5" FontStyle="Italic"
                        Margin="2,0,0,0"

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 8
+TASK: 2 of 8
 WORK_INSTRUCTION: 282 - the composed paragraph, and the log shows his contacts
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T14:28:58-04:00
-NOTE: Task 1 - confirming the three lines the operator located, then moving the composed status-bar paragraph behind the tips mark.
+UPDATED: 2026-09-08T14:35:46-04:00
+NOTE: Task 2 - a per-surface ceiling on permanently-visible text, asserted off the realized window, so a surface that grows a paragraph again turns a test red. Task 1 done: 884 characters off the CW status bar, none deleted.
 
 ---
 
