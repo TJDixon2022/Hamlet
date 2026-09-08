@@ -97,10 +97,21 @@ public sealed class WhatTheSplitCostsTests
         // columns in front of it.
         //
         // **THE LEFT LIST LOST `dt` AND `hz` ON 2026-09-07** (Tim, from five
-        // options with the numbers behind each), so it declares `76,48,Auto,*`
-        // where it declared `76,48,48,54,Auto,*`. The `Auto` is the `worked` mark
-        // and it takes no width on a row it has nothing to say about, which is
-        // the case measured here.
+        // options with the numbers behind each), so it went from
+        // `76,48,48,54,Auto,*` to `76,48,Auto,*`.
+        //
+        // **AND IT LOST THE `Auto` ON 2026-09-08**, so it now declares `76,48,*`.
+        // That column held unit 274's green `worked`, and Tim's ruling of that
+        // day removed the word and fades the whole row instead, so there is
+        // nothing left for the column to hold.
+        //
+        // **THE ARITHMETIC HERE DOES NOT CHANGE, AND THAT IS THE POINT WORTH
+        // KNOWING.** `Auto` took no width on a row with nothing to say, and the
+        // rows measured here have nothing to say, so `LeftFixed` was already
+        // `76 + 48` before the column came out. **The width the message gets back
+        // is therefore nought on these rows** - what the removal buys is the
+        // width the mark took on the rows that *did* carry it, which is every row
+        // for a station already in the log.
         //
         // **THE MINE LIST LOST ITS `from` COLUMN ON 2026-09-07**, so it declares
         // `76,*` where it declared `76,62,*`. That column was the only one on
