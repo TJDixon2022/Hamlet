@@ -9154,6 +9154,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(LoggedContacts));
         OnPropertyChanged(nameof(ContactCountLine));
         OnPropertyChanged(nameof(HasLoggedContacts));
+        OnPropertyChanged(nameof(Milestones));
     }
 
     /// <summary>How many records are in the contact log.</summary>
@@ -9187,6 +9188,61 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     private int _loggedContacts;
+
+    /// <summary>Where he stands against the badges.</summary>
+    /// <remarks>
+    /// **DERIVED, NEVER STORED.** Reading it off the count every time is what
+    /// keeps a badge from outliving the records behind it.
+    /// </remarks>
+    public ContactMilestones Milestones => new(LoggedContacts);
+
+    /// <summary>What Hamlet said about a badge, once, or "".</summary>
+    /// <remarks>
+    /// **ONCE, QUIETLY, AND NOT IN A DIALOG** (work instruction 278). It sits in
+    /// the status bar beside the count. He is often mid-exchange with fifteen
+    /// seconds to answer in, and a modal window there costs him the contact it is
+    /// congratulating him for.
+    /// </remarks>
+    public string ContactBadgeLine
+    {
+        get
+        {
+            _workedBefore ??= ReadWorkedBefore();
+
+            return _contactBadgeLine;
+        }
+    }
+
+    /// <summary>True where there is a badge to mention.</summary>
+    public bool HasContactBadge => ContactBadgeLine.Length > 0;
+
+    private string _contactBadgeLine = "";
+
+    /// <summary>Say it once if the count has crossed something.</summary>
+    /// <param name="milestones">Where the count now stands.</param>
+    /// <remarks>
+    /// <para>**EVERY BADGE THE JUMP PASSED, NOT ONLY THE HIGHEST.** A quiet evening
+    /// on FT8 crosses two of these at once, and naming only the top one would
+    /// swallow a milestone he actually reached.</para>
+    /// <para>**AND IT IS WRITTEN DOWN SO IT IS NOT SAID TWICE**, which is a fact
+    /// about what Hamlet has said rather than about what the log holds. The badges
+    /// themselves stay derived from the count, so nothing here can make one outlive
+    /// its records.</para>
+    /// </remarks>
+    private void AnnounceBadges(ContactMilestones milestones)
+    {
+        var was = _settings.ContactBadgeAnnounced;
+        var line = milestones.Announcement(was);
+
+        if (line.Length == 0)
+        {
+            return;
+        }
+
+        _contactBadgeLine = line;
+        _settings.ContactBadgeAnnounced = milestones.Highest ?? was;
+        SettingsStore.Save(_settings);
+    }
 
     /// <summary>True once anything has been logged.</summary>
     public bool HasLoggedContacts => LoggedContacts > 0;
@@ -9235,6 +9291,8 @@ public partial class MainWindowViewModel : ObservableObject
                 worked[entry.Call.Trim()] = entry;
             }
         }
+
+        AnnounceBadges(new ContactMilestones(_loggedContacts));
 
         return worked;
     }

@@ -29,6 +29,17 @@
                        FontSize="16" FontWeight="SemiBold"
                        Foreground="{StaticResource HmGreenBrush}" />
 
+            <!-- **WHERE HE STANDS AGAINST THE BADGES** (Tim, 2026-09-08: *just
+                 sort of an acknowledgment that you're making contacts*). What he
+                 has passed and what is next, in a sentence.
+
+                 **NO BADGE IS AWARDED FOR ANYTHING BUT THE COUNT.** Not for a
+                 country, not for a band, not for a first contact of the day.
+                 Those are worth having and none of them is what he ruled. -->
+            <TextBlock Text="{Binding Milestones.Line}"
+                       FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Foreground="{StaticResource HmAmberBrush}" />
+
             <TextBlock Text="Every contact you have logged, newest first. Hamlet reads this file and never changes it, so anything you want to correct is corrected where you made it."
                        FontSize="12" TextWrapping="Wrap" Margin="0,4,0,0"
                        Foreground="{StaticResource HmTextMutedBrush}" />

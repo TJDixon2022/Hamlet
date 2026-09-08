@@ -251,6 +251,18 @@ public sealed class AppSettings
     /// </remarks>
     public float TransmitDrivePeak { get; set; } = Ft8Composer.DefaultDrivePeak;
 
+    /// <summary>The highest contact badge Hamlet has already mentioned.</summary>
+    /// <remarks>
+    /// <para>**IT REMEMBERS WHAT WAS SAID, NOT WHAT WAS EARNED** (work instruction
+    /// 278). Which badges he has is derived from the log every time it is read, so
+    /// a log that shrinks shows fewer of them and Hamlet never asserts a number it
+    /// cannot see. This is the other fact: whether the congratulation has already
+    /// been given, which is about Hamlet rather than about the log, and saying it
+    /// twice would be worse than not remembering.</para>
+    /// <para>Zero means nothing has been mentioned yet.</para>
+    /// </remarks>
+    public int ContactBadgeAnnounced { get; set; }
+
     /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
     /// </summary>

@@ -184,6 +184,13 @@ public sealed class ContactLogViewModel
                     + " records could not be read whole. They are still listed, "
                     + "marked, rather than left out.";
 
+    /// <summary>Where he stands against the badges.</summary>
+    /// <remarks>
+    /// **DERIVED FROM THE COUNT EVERY TIME.** A badge says the log holds a certain
+    /// number of contacts, so it cannot be remembered past the records behind it.
+    /// </remarks>
+    public ContactMilestones Milestones => new(Count);
+
     /// <summary>True where there is damage to mention.</summary>
     public bool HasDamage => Damaged > 0;
 

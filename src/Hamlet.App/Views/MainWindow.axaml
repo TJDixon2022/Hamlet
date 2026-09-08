@@ -877,7 +877,7 @@
                          because an operator deciding whether they
                          can copy somebody needs the number more
                          than anything else on this panel. -->
-                    <Grid ColumnDefinitions="*,Auto">
+                    <Grid ColumnDefinitions="*,Auto,Auto">
                         <TextBlock
                                    Text="what the radio is hearing, as it arrives"
                                    FontSize="12" VerticalAlignment="Center"
@@ -4231,7 +4231,16 @@
                      It is absent rather than reading zero before he has logged
                      anything, because "0 contacts logged" on a first launch is a
                      scoreboard nobody asked for. -->
-                <TextBlock Grid.Column="1" Text="{Binding ContactCountLine}"
+                <!-- **SAID ONCE, QUIETLY, WHERE HE WILL SEE IT** (work instruction
+                     278). Never a dialog: he is often mid-exchange with fifteen
+                     seconds to answer in, and a modal window there costs him the
+                     contact it is congratulating him for. -->
+                <TextBlock Grid.Column="1" Text="{Binding ContactBadgeLine}"
+                           IsVisible="{Binding HasContactBadge}"
+                           FontSize="12" Margin="16,0,0,0" FontWeight="SemiBold"
+                           Foreground="{StaticResource HmAmberBrush}" />
+
+                <TextBlock Grid.Column="2" Text="{Binding ContactCountLine}"
                            IsVisible="{Binding HasLoggedContacts}"
                            FontSize="12" Margin="16,0,0,0"
                            Foreground="{StaticResource HmGreenBrush}" />
