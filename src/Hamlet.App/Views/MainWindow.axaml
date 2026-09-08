@@ -4157,10 +4157,13 @@
                                                                        FontSize="10"
                                                                        Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                                            <TextBlock Grid.Row="1" Grid.Column="1"
-                                                                       Text="{Binding Contact}"
-                                                                       FontSize="11" Margin="0,0,0,4"
-                                                                       Foreground="{StaticResource HmGreenBrush}" />
+                                                            <!-- **`your move, 0 slots` CAME OUT ON 2026-09-08**
+                                                                 (Tim). It was a leftover from when the contact
+                                                                 state was a column of the table, and it sat under
+                                                                 a received message saying what the turn indicator
+                                                                 above the conversation says better and once. Two
+                                                                 places saying whose move it is disagree the first
+                                                                 time one of them is wrong. -->
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>

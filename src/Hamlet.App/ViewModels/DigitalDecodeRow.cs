@@ -218,10 +218,7 @@ public sealed record DigitalDecodeRow(
     /// as it was sent, so everything that reasons about the text still sees the
     /// text.
     /// </remarks>
-    public string Shown
-        => RepeatCount > 1
-            ? Message + " x" + RepeatCount.ToString(CultureInfo.InvariantCulture)
-            : Message;
+    public string Shown => Message;
 
     /// <summary>The time, and whether he sent it, beneath the message.</summary>
     /// <remarks>
@@ -236,7 +233,26 @@ public sealed record DigitalDecodeRow(
     /// built.</para>
     /// </remarks>
     public string Caption
-        => IsSent ? Utc + " · sent" : Utc;
+    {
+        get
+        {
+            var when = IsSent ? Utc + " · sent" : Utc;
+
+            // **THE FOLD MOVED UNDER THE MESSAGE ON 2026-09-08** (Tim: show, do
+            // not tell). `x2` sat inside the message text, where it read as part
+            // of what the station transmitted - and the message is the one string
+            // on this row that must be exactly what went out. **Where the fold
+            // stops has not changed**, only where it is shown.
+            return RepeatCount switch
+            {
+                <= 1 => when,
+                2 => when + " · heard twice",
+                3 => when + " · heard three times",
+                _ => when + " · heard "
+                    + RepeatCount.ToString(CultureInfo.InvariantCulture) + " times",
+            };
+        }
+    }
 
     /// <summary>What the row says it is, for a reader who cannot see colour.</summary>
     /// <remarks>

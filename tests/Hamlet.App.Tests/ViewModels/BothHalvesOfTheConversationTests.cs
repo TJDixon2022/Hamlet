@@ -62,7 +62,7 @@ public sealed class BothHalvesOfTheConversationTests
             new[]
             {
                 "021100 sent      " + His + " " + HisCall + " R-09",
-                "021115 received  " + HisCall + " " + His + " -09 x2",
+                "021115 received  " + HisCall + " " + His + " -09  (heard twice)",
                 "021215 sent      " + His + " " + HisCall + " R-09",
                 "021245 received  " + HisCall + " " + His + " -09",
                 "021315 sent      " + His + " " + HisCall + " RRR",
@@ -318,7 +318,13 @@ public sealed class BothHalvesOfTheConversationTests
 
         Assert.Equal(2, first.RepeatCount);
         Assert.True(first.HasRepeats);
-        Assert.Equal(HisCall + " " + His + " -09 x2", first.Shown);
+
+        // **THE FOLD IS UNDER THE MESSAGE SINCE UNIT 280**, not inside it.
+        // `x2` sat in the message text, where it read as part of what the
+        // station transmitted, and the message is the one string on this row
+        // that must be exactly what went out.
+        Assert.Equal(HisCall + " " + His + " -09", first.Shown);
+        Assert.Contains("heard twice", first.Caption, StringComparison.Ordinal);
 
         // **AND `Message` IS UNTOUCHED**, so everything that reasons about the
         // text still sees the text that was sent.
@@ -348,7 +354,7 @@ public sealed class BothHalvesOfTheConversationTests
             new[]
             {
                 "021100 sent      " + His + " " + HisCall + " R-09",
-                "021115 received  " + HisCall + " " + His + " -09 x2",
+                "021115 received  " + HisCall + " " + His + " -09  (heard twice)",
                 "021215 sent      " + His + " " + HisCall + " R-09",
                 "021245 received  " + HisCall + " " + His + " -09",
                 "021315 sent      " + His + " " + HisCall + " RRR",
@@ -429,7 +435,7 @@ public sealed class BothHalvesOfTheConversationTests
         // station belongs to that station's conversation, not to this one. Reading
         // the sender of a sent row would have filed it under his own callsign.
         Assert.Equal(
-            new[] { HisCall + " W1ABC -14 x2" },
+            new[] { HisCall + " W1ABC -14" },
             model.DigitalMineDecodes.Select(r => r.Shown).ToArray());
 
         var waiting = Assert.Single(model.DigitalWaiting);
@@ -628,7 +634,7 @@ public sealed class BothHalvesOfTheConversationTests
             new[]
             {
                 "021100 sent      " + His + " " + HisCall + " R-09",
-                "021115 received  " + HisCall + " " + His + " -09 x2",
+                "021115 received  " + HisCall + " " + His + " -09  (heard twice)",
                 "021215 sent      " + His + " " + HisCall + " R-09",
                 "021245 received  " + HisCall + " " + His + " -09",
                 "021315 sent      " + His + " " + HisCall + " RRR",
@@ -771,10 +777,20 @@ public sealed class BothHalvesOfTheConversationTests
         return settings;
     }
 
-    /// <summary>One row as the panel draws it, with any repeat count.</summary>
+    /// <summary>One row as the panel draws it, message then caption.</summary>
+    /// <remarks>
+    /// **THE FOLD IS IN THE CAPTION SINCE UNIT 280**, so it is printed from there.
+    /// The message is exactly what went out, which is what it has to be.
+    /// </remarks>
     private static string Shown(DigitalDecodeRow row)
-        => row.Utc + " " + (row.IsSent ? "sent    " : "received").PadRight(9)
-            + " " + row.Shown;
+    {
+        var fold = row.HasRepeats
+            ? row.Caption[(row.Caption.IndexOf("heard", StringComparison.Ordinal))..]
+            : "";
+
+        return row.Utc + " " + (row.IsSent ? "sent    " : "received").PadRight(9)
+            + " " + row.Shown + (fold.Length == 0 ? "" : "  (" + fold + ")");
+    }
 
     /// <summary>One message off the air, in its slot.</summary>
     private static void Heard(MainWindowViewModel model, string at, string message)
