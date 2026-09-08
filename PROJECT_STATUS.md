@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 276 - the right-click menu reaches the list it is for
+TASK: 6 of 6
+WORK_INSTRUCTION: 277 - the conversation, with the beat on it
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-07T21:47:30-04:00
-NOTE: All five tasks done, none dropped, pushed through 40c2446, version 1.12.143. He can now right-click a message addressed to him and answer it - the menu was on the left list only and the Log item unit 274 added had never once been shown, because it is gated on the same predicate that moves a row to the other side. Two mismatches are in the report rather than repaired: PHASE_OUTCOME.md has no unit 274 entry to correct and units 273 through 275 wrote none, and the instruction's goal block carries no figure so NUMBER is none and DRIFT cannot be carried forward. HM-OPEN-086 raised and left alone - the sibling whole-chain test is blind to the same list.
+UPDATED: 2026-09-07T23:47:30-04:00
+NOTE: All six tasks done, none dropped, pushed through 6ed56ed, version 1.12.149. He can see both halves of a contact and whose fifteen seconds it is, and the countdown arms nothing. Three asks are in section 4 and the first is the one to read: the repeat fold stops at anything in between, because the instruction's literal reading folds the 02:12:45 repeat back above his own transmission and destroys the one fact the panel exists to show. Three faults surfaced on the way and all three were mine, the worst of them caught only by the reconstruction - his own opening call was invisible until somebody answered it, which would have shipped looking exactly like the bug the unit was written to fix. The outcome tool ran and exited 0 after fourteen units of being refused, called through cmd from a batch file.
 
 ---
 
