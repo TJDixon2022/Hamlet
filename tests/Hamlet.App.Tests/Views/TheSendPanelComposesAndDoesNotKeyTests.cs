@@ -116,9 +116,16 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
 
         Assert.NotNull(panel);
 
+        // **IT NAMES THE FACE AND WHAT WAS THERE** (work instruction 279 task 5).
         var button = panel!.GetVisualDescendants()
             .OfType<Button>()
-            .First(b => b.Content as string == face);
+            .FirstOrDefault(b => b.Content as string == face);
+
+        Assert.True(
+            button is not null,
+            "no button on the send panel reads \"" + face + "\". Buttons: ["
+            + string.Join(", ", panel.GetVisualDescendants().OfType<Button>()
+                .Select(b => "\"" + (b.Content as string ?? "?") + "\"")) + "]");
 
         Assert.True(
             button.IsEffectivelyVisible,
@@ -230,9 +237,21 @@ public sealed class TheSendPanelComposesAndDoesNotKeyTests
             // **AND WHAT IS ASSERTED IS WHAT THE BOX SHOWS**, not what the view
             // model holds: the operator reads the line, and a property that is
             // right behind a box that is not bound to it is no use to him.
-            TextBox Line() => window.GetVisualDescendants()
-                .OfType<TextBox>()
-                .First(t => t.Watermark == "what you would send");
+            TextBox Line()
+            {
+                var box = window.GetVisualDescendants()
+                    .OfType<TextBox>()
+                    .FirstOrDefault(t => t.Watermark == "what you would send");
+
+                Assert.True(
+                    box is not null,
+                    "no text box carries the watermark \"what you would send\". "
+                    + "Watermarks: [" + string.Join(", ",
+                        window.GetVisualDescendants().OfType<TextBox>()
+                            .Select(t => "\"" + (t.Watermark ?? "?") + "\"")) + "]");
+
+                return box!;
+            }
 
             foreach (var (face, wanted) in new[]
             {

@@ -192,8 +192,8 @@ public sealed class BothHalvesOfTheConversationTests
     {
         var model = TheK9xpExchange(newestFirst: false);
 
-        var sent = model.DigitalMineDecodes.First(r => r.IsSent);
-        var received = model.DigitalMineDecodes.First(r => !r.IsSent);
+        var sent = OnlyOne(model, r => r.IsSent, "a message he sent");
+        var received = OnlyOne(model, r => !r.IsSent, "a message he heard");
 
         Assert.Null(model.SendMenuFor(sent));
 
@@ -273,7 +273,7 @@ public sealed class BothHalvesOfTheConversationTests
 
         Print(model);
 
-        var first = model.DigitalMineDecodes.First(r => !r.IsSent);
+        var first = OnlyOne(model, r => !r.IsSent, "a message he heard");
 
         Assert.Equal(2, first.RepeatCount);
         Assert.True(first.HasRepeats);
@@ -697,6 +697,27 @@ public sealed class BothHalvesOfTheConversationTests
         Sent(model, "02:13:15", His + " " + HisCall + " RRR");
 
         return model;
+    }
+
+    /// <summary>The first row matching, or a failure that says what was there.</summary>
+    /// <remarks>
+    /// **A BARE `First` THREW `Sequence contains no matching element`** (work
+    /// instruction 279 task 4, case 7), naming neither what it wanted nor what the
+    /// panel held. Nothing this class asserts has changed; only what it says when
+    /// the conversation cannot produce a subject.
+    /// </remarks>
+    private static DigitalDecodeRow OnlyOne(
+        MainWindowViewModel model, Func<DigitalDecodeRow, bool> wanted, string what)
+    {
+        var row = model.DigitalMineDecodes.FirstOrDefault(wanted);
+
+        Assert.True(
+            row is not null,
+            "the conversation holds no row that is " + what + ". Rows: ["
+            + string.Join(", ", model.DigitalMineDecodes.Select(
+                r => (r.IsSent ? "sent " : "heard ") + r.Message)) + "]");
+
+        return row!;
     }
 
     /// <summary>Settings as they stand on his machine, with his callsign.</summary>

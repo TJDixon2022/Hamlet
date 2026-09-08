@@ -152,6 +152,7 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
         With(width, (window, cards) =>
         {
             var cut = new List<string>();
+            var examined = 0;
 
             foreach (var card in cards)
             {
@@ -163,8 +164,18 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
 
                 if (label is null)
                 {
+                    // **SKIPPED, AND COUNTED** (work instruction 279 task 5). A
+                    // card without a realized label may be a legitimate state
+                    // during layout, so skipping one is right. **Skipping every
+                    // one and passing is not**: this loop collects the labels that
+                    // are cut short and asserts the collection is empty, so before
+                    // the count below, a run that found no labels at all collected
+                    // nothing and went green - a test named for every band label
+                    // rendering, passing with none of them rendered.
                     continue;
                 }
+
+                examined++;
 
                 label.Measure(Size.Infinity);
 
@@ -178,6 +189,17 @@ public sealed class TheOperatingScreenIsLaidOutAsRuledTests
                     cut.Add($"{band} (wants {wanted:0}, has {got:0})");
                 }
             }
+
+            // **A TEST THAT EXAMINED NO SUBJECTS HAS NOT PASSED.** This does not
+            // change what the test asserts about clipping; it says so when the
+            // fixture produced nothing to assert about.
+            Assert.True(
+                examined > 0,
+                $"at {width} px no band label was found in any of the "
+                + cards.Count + " cards, so nothing was measured. Cards seen: ["
+                + string.Join(", ", cards.Select(c =>
+                    (c.DataContext as BandButtonViewModel)?.Band.Name ?? "?"))
+                + "]");
 
             Assert.True(
                 cut.Count == 0,

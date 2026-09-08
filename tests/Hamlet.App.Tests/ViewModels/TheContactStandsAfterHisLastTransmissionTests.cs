@@ -136,7 +136,20 @@ public sealed class TheContactStandsAfterHisLastTransmissionTests
 
         foreach (var (message, before) in walk.CellsBefore)
         {
-            var now = scene.Panel.DigitalDecodes.First(r => r.Message == message).Contact;
+            // **IT NAMES THE MESSAGE AND THE TABLE** (work instruction 279 task
+            // 5). A bare `First` threw `Sequence contains no matching element`,
+            // which says neither which message went missing nor what was there.
+            var found = scene.Panel.DigitalDecodes
+                .FirstOrDefault(r => r.Message == message);
+
+            Assert.True(
+                found is not null,
+                "no row on the decoded table reads \"" + message + "\". Rows: "
+                + scene.Panel.DigitalDecodes.Count + " ["
+                + string.Join(", ", scene.Panel.DigitalDecodes
+                    .Select(r => "\"" + r.Message + "\"")) + "]");
+
+            var now = found!.Contact;
 
             _output.WriteLine("  \"" + message + "\"  before: \"" + before
                 + "\"  after: \"" + now + "\"");

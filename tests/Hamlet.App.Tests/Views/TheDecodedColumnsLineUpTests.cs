@@ -83,14 +83,26 @@ public sealed class TheDecodedColumnsLineUpTests
             .OfType<ItemsControl>()
             .FirstOrDefault(c => c.Name == "DigitalDecodedRows");
 
-        Assert.NotNull(rows);
+        Assert.True(
+            rows is not null,
+            "DigitalDecodedRows is not on the realized window. Named items "
+            + "controls: [" + string.Join(", ", window.GetVisualDescendants()
+                .OfType<ItemsControl>().Where(c => c.Name is not null)
+                .Select(c => c.Name)) + "]");
 
         var header = window.GetVisualDescendants()
             .OfType<Grid>()
             .FirstOrDefault(g => g.Children.OfType<TextBlock>()
                 .Any(t => t.Text == "utc"));
 
-        Assert.NotNull(header);
+        // **IT SAYS WHAT IT WAS LOOKING FOR** (work instruction 279 task 5).
+        // `Assert.NotNull` alone says *Value is null*, naming neither the text
+        // it wanted nor the tree it searched.
+        Assert.True(
+            header is not null,
+            "no grid contains a text block reading \"utc\", so the decoded "
+            + "header was not realized. Grids on the window: "
+            + window.GetVisualDescendants().OfType<Grid>().Count());
 
         var rowGrids = rows.GetVisualDescendants()
             .OfType<Grid>()

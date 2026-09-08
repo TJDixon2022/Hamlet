@@ -896,21 +896,47 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
     {
         Pump(scene.Window);
 
-        var rows = scene.Window.GetVisualDescendants()
+        // **BOTH LISTS, BY NAME** (`HM-OPEN-086`, closed by work instruction 279
+        // task 5). This asked `DigitalDecodedRows` alone for a row whose addressee
+        // is the operator, and `MainWindowViewModel.WantsRow` is
+        // `!IsForHim(row) && ...` - so from the day unit 273 split the decoded area
+        // that list has never held one and this helper could not succeed. Units 276
+        // and 277 fixed the same shape in two sibling classes; this is the third and
+        // it is deliberately the same fix rather than a new approach.
+        var lists = scene.Window.GetVisualDescendants()
             .OfType<ItemsControl>()
-            .FirstOrDefault(c => c.Name == "DigitalDecodedRows");
+            .Where(c => c.Name is "DigitalDecodedRows" or "DigitalMineRows")
+            .ToList();
 
-        Assert.True(rows is not null, "the decoded table is not on the realized window");
+        Assert.True(
+            lists.Count > 0,
+            "neither decoded list is on the realized window. Items controls with a "
+            + "name: ["
+            + string.Join(", ", scene.Window.GetVisualDescendants()
+                .OfType<ItemsControl>().Where(c => c.Name is not null)
+                .Select(c => c.Name)) + "]");
 
-        var grid = rows!.GetVisualDescendants()
-            .OfType<Grid>()
+        var grid = lists
+            .SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
             .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row
                 && row.Sender == His && row.Addressee == Mine);
 
+        // **IT SAYS WHAT IT WAS LOOKING FOR AND WHAT WAS THERE** (task 5). The old
+        // message named the station and one list's count, which is why the same
+        // defect in a sibling class took three units to notice.
         Assert.True(
             grid is not null,
-            "no realized row named " + His + ". Rows on the table: "
-            + scene.Panel.DigitalVisibleDecodes.Count);
+            "no realized row from " + His + " addressed to " + Mine
+            + ". Left rows: " + scene.Panel.DigitalVisibleDecodes.Count
+            + "; mine rows: " + scene.Panel.DigitalMineDecodes.Count
+            + "; realized grids with a row DataContext: "
+            + lists.SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
+                .Count(g => g.DataContext is DigitalDecodeRow)
+            + "; rows seen: ["
+            + string.Join(", ", lists
+                .SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
+                .Select(g => g.DataContext).OfType<DigitalDecodeRow>()
+                .Select(r => "\"" + r.Message + "\"")) + "]");
 
         grid!.RaiseEvent(new ContextRequestedEventArgs
         {
