@@ -98,14 +98,79 @@ namespace Hamlet.App.ViewModels;
 /// It is set in one place, `MainWindowViewModel.PlaceRow`, beside
 /// <paramref name="ObserverGrid"/>.
 /// </param>
+/// <param name="IsSent">
+/// **True where this row is a message the operator transmitted**, rather than one
+/// the decoder read off the air.
+/// <para>**THIS REVERSES UNIT 273'S INSTRUCTION**, which said a sent message is
+/// not a decode and does not belong in a decoded list. It was right about what a
+/// sent message is and wrong about what the panel is for: **a conversation with
+/// one side missing is unreadable.** On 2026-09-08 a station came back to him
+/// three times at -09 and the panel showed three identical rows, with his own
+/// three transmissions nowhere, so nothing on the screen said he was answering
+/// late (Tim's ruling, 2026-09-08).</para>
+/// <para>**A SENT ROW CARRIES NO `Snr` AND NO `Dt`, AND THEY ARE EMPTY RATHER
+/// THAN ZERO** (§0.0). Nothing measured a signal-to-noise ratio for a message
+/// this station transmitted, and nothing measured how late into the slot it
+/// arrived, because it did not arrive. A zero in either cell is a measurement
+/// that was never taken, drawn as one that was.</para>
+/// <para>**IT IS NOT IN <c>DigitalDecodes</c>.** The master table is what the
+/// decoder read, and its counts and its hidden arithmetic are about the band. A
+/// sent row lives only on the For you side, which is a conversation rather than
+/// a table of decodes.</para>
+/// </param>
 public sealed record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message,
     string ObserverGrid = "",
     DateTime SlotStartUtc = default,
     string Contact = "",
-    long HeardOnHz = 0)
+    long HeardOnHz = 0,
+    bool IsSent = false)
     : INotifyPropertyChanged
 {
+    /// <summary>What a sent row puts in a cell nothing measured.</summary>
+    /// <remarks>
+    /// **EMPTY, AND NOT <see cref="NoMeasurement"/>.** The dash means *this was
+    /// measured and the measurement failed*, which is a claim about a reading
+    /// that was attempted. A transmitted message was never a candidate for one:
+    /// there is no attempt to report on, so there is nothing to say.
+    /// </remarks>
+    public const string NotMeasured = "";
+
+    /// <summary>
+    /// A row for a message this station transmitted, in the slot it went out in.
+    /// </summary>
+    /// <param name="message">The text, exactly as it went on the air.</param>
+    /// <param name="slotStartUtc">The boundary of the slot it occupied, corrected.</param>
+    /// <returns>The row.</returns>
+    /// <remarks>
+    /// **ONE PLACE BUILDS A SENT ROW**, so the empty cells cannot be filled in by
+    /// a second call site in a hurry. The `Utc` cell is formatted exactly as a
+    /// decoded row's is, because the two are read down one column.
+    /// </remarks>
+    public static DigitalDecodeRow Sent(string message, DateTime slotStartUtc)
+        => new(
+            slotStartUtc.ToString("HHmmss", CultureInfo.InvariantCulture),
+            NotMeasured,
+            NotMeasured,
+            NotMeasured,
+            message ?? "",
+            ObserverGrid: "",
+            SlotStartUtc: slotStartUtc,
+            Contact: "",
+            HeardOnHz: 0,
+            IsSent: true);
+
+    /// <summary>What the row says it is, for a reader who cannot see colour.</summary>
+    /// <remarks>
+    /// **COLOUR IS NEVER THE ONLY CARRIER** (§0.6). The two kinds of row must be
+    /// tellable apart at a glance and also in grayscale, so the mark is a word
+    /// and the colour is a second signal saying the same thing.
+    /// </remarks>
+    public string Direction => IsSent ? "sent" : "";
+
+    /// <summary>True where the direction mark should be drawn.</summary>
+    public bool HasDirection => Direction.Length > 0;
+
     private string _workedBefore = "";
 
     /// <summary>What the log says about this sender, or "".</summary>

@@ -18,6 +18,15 @@
     </Design.DataContext>
 
     <Window.Styles>
+        <!-- **A MESSAGE HE SENT, IN THE CONVERSATION WITH THE ONES HE HEARD**
+             (Tim's ruling, 2026-09-08). The second carrier of a distinction the
+             word `sent` under the time already makes, so the two kinds of row
+             separate in colour and in grayscale both (§0.6). Amber is the tuning
+             family's ink and is used as ink here, never as a fill (§0.5). -->
+        <Style Selector="TextBlock.hm-sent">
+            <Setter Property="Foreground" Value="{StaticResource HmAmberBrush}" />
+        </Style>
+
         <Style Selector="Button.hm-connect">
             <Setter Property="Background" Value="{StaticResource HmAmberBrush}" />
             <Setter Property="Foreground" Value="White" />
@@ -3995,7 +4004,38 @@
                                                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Utc}"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"
                                                                        Margin="0,1,14,1" />
+
+                                                            <!-- **HIS OWN TRANSMISSIONS ARE IN THE
+                                                                 CONVERSATION AND MUST NOT READ LIKE
+                                                                 SOMEBODY ELSE'S** (Tim's ruling,
+                                                                 2026-09-08). The alternation is the whole
+                                                                 value: seeing that he answered a slot or
+                                                                 two after the station gave up is the thing
+                                                                 the panel never told him.
+
+                                                                 **THE WORD CARRIES IT AND THE COLOUR
+                                                                 AGREES WITH THE WORD** (§0.6). `sent` is
+                                                                 drawn under the time, in the same 76 the
+                                                                 `worked` mark uses, and the message goes
+                                                                 amber. In grayscale the word is still
+                                                                 there; with the word unread the colour
+                                                                 still separates the two.
+
+                                                                 **IT SHARES THE CELL WITH `worked` AND
+                                                                 CANNOT COLLIDE WITH IT.** That mark is
+                                                                 written by `RefreshWorkedBefore`, which
+                                                                 walks `DigitalDecodes` - and a sent row is
+                                                                 deliberately not in that table, so its
+                                                                 `HasWorkedBefore` is false for the life of
+                                                                 the row. -->
+                                                            <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                       Text="{Binding Direction}"
+                                                                       IsVisible="{Binding HasDirection}"
+                                                                       FontSize="10" Margin="0,0,14,4"
+                                                                       Foreground="{StaticResource HmAmberBrush}" />
+
                                                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Message}"
+                                                                       Classes.hm-sent="{Binding IsSent}"
                                                                        ToolTip.Tip="{Binding PayloadHelp}"
                                                                        TextWrapping="Wrap"
                                                                        FontFamily="Consolas,Menlo,monospace" FontSize="12"

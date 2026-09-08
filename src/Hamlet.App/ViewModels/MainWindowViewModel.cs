@@ -1461,7 +1461,7 @@ public partial class MainWindowViewModel : ObservableObject
                 // list would land on both.
                 if (IsForHim(row))
                 {
-                    DigitalMineDecodes.Insert(SideIndexOf(at, IsForHim), row);
+                    DigitalMineDecodes.Insert(MineInsertIndex(row, at), row);
                 }
                 else if (WantsRow(row))
                 {
@@ -1474,6 +1474,159 @@ public partial class MainWindowViewModel : ObservableObject
 
         RecountDecodedFilter();
     }
+
+    /// <summary>His own transmissions, oldest first, as rows.</summary>
+    /// <remarks>
+    /// <para>**THE ROWS ARE KEPT HERE AND NOT IN <see cref="DigitalDecodes"/>**,
+    /// because a transmitted message is not a decode: it did not come out of the
+    /// decoder, it has no signal report and no time offset, and the decoded
+    /// table's counts are about what the band was doing. Putting it there would
+    /// have made the shown, hidden and mine totals disagree with the panel they
+    /// describe.</para>
+    /// <para>**THE TEXT ITSELF IS ALREADY KEPT BY THE ENGINE'S LEDGER** —
+    /// `Ft8ContactLedger.RecordSent` books the message, its fields and its slot
+    /// against the station it was addressed to. This is the view's copy, in the
+    /// shape the list draws, and it is built from the same call that books the
+    /// ledger entry so the two cannot disagree about what went out.</para>
+    /// <para>**NOTHING HERE REACHES TELEMETRY.** HM-DEC-018 stands untouched:
+    /// `TransmitRecord` has no string parameter and cannot carry a message, and
+    /// this list is application state on the operator's own machine that is
+    /// never written to the record and never uploaded.</para>
+    /// </remarks>
+    private readonly List<DigitalDecodeRow> _digitalSent = new();
+
+    /// <summary>Where a row belongs in the For you list, by its own slot.</summary>
+    /// <param name="row">The row being placed.</param>
+    /// <returns>The index to insert it at.</returns>
+    /// <remarks>
+    /// <para>**THIS SIDE ORDERS ITSELF, BECAUSE HALF ITS ROWS ARE NOT ON THE
+    /// DECODED TABLE.** <see cref="SideIndexOf"/> counts a row's position by
+    /// walking `DigitalDecodes`, which is exactly right for a row that is in it
+    /// and has nothing to say about a sent one. So placement here is by the slot
+    /// the message occupied, which both kinds of row carry.</para>
+    /// <para>**IT FOLLOWS THE ORDER BUTTON**, so the conversation reads the same
+    /// way round as the table beside it. Within one slot the arrival order is
+    /// preserved, for `InsertAt`'s reason: the air did not put two messages in a
+    /// sequence and neither may this.</para>
+    /// <para>**A ROW WITH NO SLOT GOES WHERE A NEW ROW GOES** rather than being
+    /// sorted to one end. `SlotStartUtc` is `default` on anything decoded before
+    /// it was carried, and treating that as the beginning of time would file it
+    /// under the year one.</para>
+    /// </remarks>
+    private int MineIndexFor(DigitalDecodeRow row)
+    {
+        if (row.SlotStartUtc == default)
+        {
+            return _digitalNewestFirst ? 0 : DigitalMineDecodes.Count;
+        }
+
+        var at = 0;
+
+        while (at < DigitalMineDecodes.Count)
+        {
+            var here = DigitalMineDecodes[at].SlotStartUtc;
+
+            if (here == default)
+            {
+                at++;
+                continue;
+            }
+
+            var before = _digitalNewestFirst
+                ? here >= row.SlotStartUtc
+                : here <= row.SlotStartUtc;
+
+            if (!before)
+            {
+                break;
+            }
+
+            at++;
+        }
+
+        return at;
+    }
+
+    /// <summary>Where a decoded row for him goes, now that the list has two kinds.</summary>
+    /// <param name="row">The row that just arrived.</param>
+    /// <param name="index">Its index in <see cref="DigitalDecodes"/>.</param>
+    /// <returns>The index to insert it at in the For you list.</returns>
+    /// <remarks>
+    /// <para>**THE TWO RULES AGREE WHEREVER BOTH APPLY**, which is why this can
+    /// choose between them without the list ever disagreeing with itself. The
+    /// decoded table is already in slot order, so a row's position among the
+    /// decoded rows and its position by slot are the same position. Slot order
+    /// is used because it is the only one a sent row can be placed by.</para>
+    /// <para>**A ROW WITH NO SLOT FALLS BACK TO THE OLD RULE.** `SlotStartUtc` is
+    /// `default` on anything that arrived before it was carried, and on rows a
+    /// test adds without one. Time-ordering those is not possible, so they keep
+    /// the decoded table's own ordering, counted past any sent rows in the way.
+    /// **That is the case this method exists for**: without it, adding the sent
+    /// rows would have silently changed where every slotless row lands.</para>
+    /// </remarks>
+    private int MineInsertIndex(DigitalDecodeRow row, int index)
+    {
+        if (row.SlotStartUtc != default)
+        {
+            return MineIndexFor(row);
+        }
+
+        var wanted = SideIndexOf(index, IsForHim);
+        var seen = 0;
+        var at = 0;
+
+        while (at < DigitalMineDecodes.Count && seen < wanted)
+        {
+            if (!DigitalMineDecodes[at].IsSent)
+            {
+                seen++;
+            }
+
+            at++;
+        }
+
+        return at;
+    }
+
+    /// <summary>
+    /// **Keep a message this station transmitted, and put it in the conversation.**
+    /// </summary>
+    /// <param name="message">The text, exactly as it went on the air.</param>
+    /// <param name="slotStartUtc">The slot it occupied, in corrected UTC.</param>
+    /// <returns>The row, so a test can look at what became of it.</returns>
+    /// <remarks>
+    /// <para>**CALLED WHERE THE LEDGER IS TOLD, AND NOWHERE ELSE.** The one call
+    /// site is beside `RecordSent` in <see cref="AtSlotBoundaryAsync"/>, which
+    /// runs only where the transmission actually went out and the radio unkeyed.
+    /// A row written at the moment of arming would show him a message a licence
+    /// refusal, a stop or a missed boundary meant nobody ever heard.</para>
+    /// <para>**IT TRANSMITS NOTHING AND ARMS NOTHING.** This is a list and a
+    /// string; the send happened before it was called.</para>
+    /// </remarks>
+    private DigitalDecodeRow KeepSentRow(string message, DateTime slotStartUtc)
+    {
+        var row = DigitalDecodeRow.Sent(message, slotStartUtc);
+
+        _digitalSent.Add(row);
+        DigitalMineDecodes.Insert(MineIndexFor(row), row);
+
+        RecountDecodedFilter();
+
+        return row;
+    }
+
+    /// <summary>The same door the send path uses, for a test.</summary>
+    /// <param name="message">The text that went out.</param>
+    /// <param name="slotStartUtc">The slot it occupied.</param>
+    /// <returns>The row.</returns>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="AddDecodeRowForTests"/>.** Driving a real
+    /// transmission to prove where a row lands would need a radio, an audio
+    /// endpoint and a slot boundary to arrive, for a question about placement.
+    /// Nothing in `src/` calls this.
+    /// </remarks>
+    internal DigitalDecodeRow AddSentRowForTests(string message, DateTime slotStartUtc)
+        => KeepSentRow(message, slotStartUtc);
 
     /// <summary>Where a row at this place on the whole table sits on one side.</summary>
     /// <param name="index">The row's index in <see cref="DigitalDecodes"/>.</param>
@@ -1538,6 +1691,17 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
+        // **AND HIS OWN TRANSMISSIONS GO BACK IN** (Tim's ruling, 2026-09-08).
+        // A rebuild is an answer to something he did — a toggle, the order
+        // button, a clear — and it walks `DigitalDecodes`, which a sent message
+        // is deliberately not in. Without this line every rebuild would silently
+        // empty half the conversation, and the half it emptied would be the half
+        // that shows he answered at all.
+        foreach (var sent in _digitalSent)
+        {
+            DigitalMineDecodes.Insert(MineIndexFor(sent), sent);
+        }
+
         RecountDecodedFilter();
 
         OnPropertyChanged(nameof(DigitalDecodedSummary));
@@ -1555,8 +1719,25 @@ public partial class MainWindowViewModel : ObservableObject
     {
         DigitalShownCount = DigitalVisibleDecodes.Count;
         DigitalMineCount = DigitalMineDecodes.Count;
+
+        // **THE HIDDEN COUNT IS ARITHMETIC ON THE DECODED TABLE, AND A SENT ROW
+        // IS NOT IN IT.** Subtracting the whole mine count would take his own
+        // transmissions off a total they were never part of, so the first send
+        // of the evening would make the left summary claim one fewer message was
+        // hidden than is, and enough sends would drive it negative. Only the
+        // decoded rows on that side are subtracted.
+        var mineDecodes = 0;
+
+        foreach (var row in DigitalMineDecodes)
+        {
+            if (!row.IsSent)
+            {
+                mineDecodes++;
+            }
+        }
+
         DigitalHiddenCount =
-            DigitalDecodes.Count - DigitalShownCount - DigitalMineCount;
+            DigitalDecodes.Count - DigitalShownCount - mineDecodes;
 
         OnPropertyChanged(nameof(DigitalShownCount));
         OnPropertyChanged(nameof(DigitalMineCount));
@@ -8478,6 +8659,15 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public Ft8SendMenu? SendMenuFor(DigitalDecodeRow? row)
     {
+        // **A ROW HE SENT OFFERS NOTHING TO SEND** (Tim's ruling, 2026-09-08).
+        // The sender of his own transmission is his own callsign, so without this
+        // line the menu would compose replies addressed from him to him and offer
+        // to transmit them. There is no station on that row to answer.
+        if (row is not null && row.IsSent)
+        {
+            return null;
+        }
+
         if (row is null || _contacts is null)
         {
             return null;
@@ -8903,6 +9093,16 @@ public partial class MainWindowViewModel : ObservableObject
             DigitalSendLine = WentLine(text, result);
             DigitalTransmitLevelLine = measured;
             DigitalContactStandsLine = stands;
+
+            // **HIS OWN HALF OF THE CONVERSATION REACHES THE PANEL** (Tim's
+            // ruling, 2026-09-08), posted rather than booked above because
+            // `DigitalMineDecodes` is bound and this method runs off the UI
+            // thread. It is inside the `run.Sent` arm's own post, so a refusal,
+            // a stop or a missed boundary still puts nothing on screen.
+            if (run.Sent)
+            {
+                KeepSentRow(text, result.Send!.SlotStartUtc);
+            }
 
             // The boundary has been and gone, so there is nothing waiting for one
             // any more and the stop says so. Appearance only.
