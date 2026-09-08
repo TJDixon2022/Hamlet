@@ -419,3 +419,18 @@ ACCOMPLISHED: the paragraph is off the tab he actually operates from and off the
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one changes what the screen says rather than what Hamlet can do, and closes nothing.
+
+## UNIT 285 - STEP E
+
+STEP: E
+APPROACH: put the two approved SVGs where Avalonia looks for a resource, read them at run time rather than transcribing them, place the full mark beside the wordmark in About, render the small one into the window icon, and measure everything that could be measured without a rasteriser
+HIT: both marks draw outside their own viewBox and SVG clips to it, so both lose ink wherever they are drawn. The full mark loses 18.5 of 260 off the bottom - the lower edge of the faceplate - and the small one loses 15.5 of 68 off the top, which is a little over half the quill and the quill is the joke
+MOVE: build on
+WHY: the marks are in the application and referenced rather than shipped and forgotten, which is the fault HM-OPEN-087 is about one folder along. And the defects are measured rather than argued: a browser clips to the viewBox and so does this, so the numbers are the same wherever the mark is drawn. Both are pinned in the test, so whichever way Tim rules one of them changes and it goes red
+DECIDED: that the loader reads the SVG rather than a transcription of it, because a logo copied into markup is a second drawing that disagrees with the first the moment anybody edits either; that it handles the seven things these two files use and throws on anything else, because a mark that silently loses an element is worse than one that fails to load; and that the icon is rasterised from the file at startup rather than shipped as an ico, so there is no second artefact to fall out of step
+LICENCE: work instruction 285 tasks 1 to 6, and Tim's approval of the mark on 2026-09-08
+COST: unknown
+ACCOMPLISHED: Hamlet has a face: the mark is in the About window at 161 by 140 and on the window and taskbar, drawn from the files he approved rather than from a copy of them - and the two places the drawing does not fit its own box are measured, pinned and handed back rather than quietly corrected
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one gives the application a mark rather than changing what it can do, and closes nothing.
