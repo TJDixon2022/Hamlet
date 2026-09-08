@@ -1,173 +1,162 @@
-UNIT:       279 — complete at task 7 of 7 — 2026-09-08 10:55
+UNIT:       280 — complete at task 9 of 9 — 2026-09-08 11:46
 PHASE GOAL: Hamlet works stations on the air. Not decodes them, not shows them —
             the operator makes a contact with his own radio.
-UNIT GOAL:  A station he has worked is dim rather than labelled, no test can
-            silently fail to find its own subject, and the turn line tells the
-            truth while he is transmitting.
+UNIT GOAL:  The conversation reads forwards with his side on the right, the turn is
+            a ring he reads at a glance, and the screen stops lecturing him while
+            he operates.
 ADVANCED:   no. Every bench step of this phase is closed and steps D and E are Tim
             at his own radio, so no unit can meet their criteria. The author said
             so at the head of this order and this report does not dress it up.
-NUMBER:     177 px -> 177 px. The left list's message column is unchanged, against
-            the 180 px `VP2MAA KC3QIS FN00` needs. **The three-pixel ask is NOT
-            settled** and nothing was shrunk to pretend otherwise. What the removal
-            did buy is below.
-DRIFT:      2 consecutive units without advance (was 1, carried from unit 278).
+NUMBER:     1,367 -> 529 characters of permanently-visible text on the Digital tab,
+            across 43 text blocks before and 42 after. **Measured off the realized
+            window, not counted in source** — the whole Digital workspace holds ten
+            literal strings totalling 71 characters, so a source count would have
+            found nothing to count and then flattered the result.
+DRIFT:      3 consecutive units without advance (was 2, carried from unit 279).
 
 ## 1. What Claude did
 
-**Complete. Seven tasks of seven, none dropped** — including task 6, the named drop
-candidate. Windows, `PROJECT: Hamlet` claimed and confirmed against all four gate
-checks, branch `main`, pushed at every task. Version `1.12.155` -> `1.12.163`.
+**Complete. Nine tasks of nine, none dropped.** Windows, `PROJECT: Hamlet` claimed
+and confirmed against all four gate checks, branch `main`, pushed at every task.
+Version `1.12.163` -> `1.12.173`.
 
-**Task 1 — the fade** (`4464439`). The word `worked` is gone from both lists and a
-station already in the log is drawn at **0.55 opacity**. **The mechanism carries the
-ruling**: grey is this project's reserved signal for a control that genuinely cannot
-be used (§0.5.1, HM-DEC-087), so greying would have borrowed exactly that signal for
-a row he is free to work again. Opacity keeps every colour the row already has where
-greying replaces them with the disabled palette. Unit 274's hover wording moved onto
-the row, null rather than empty where there is nothing to say.
+**Two departures from the order, both reported rather than quiet.**
 
-**And the class remark on `DigitalDecodeRow` was false and is corrected.** It said
-nothing on the row changes after it arrives, written by unit 252 when that was true;
-unit 274 gave it a mutable `WorkedBefore` and unit 277 a mutable `RepeatCount` and
-the remark stayed. HM-DEC-159 is about exactly that.
+- **Task 6 was written after tasks 7 and 8.** It is the list of every string this
+  unit removed, and writing it before the last two removals would have produced a
+  list that was wrong by construction.
+- **The baseline was measured before task 1**, in its own commit, because the
+  unit's `NUMBER` cannot be recovered once the strings are gone.
 
-**Task 2 — `FACT-006`** (`02b9dc1`). The development machine has no contact log and
-never will. It rules out a unit writing a task that needs the real log, names the two
-seams a test uses instead, and records his reading: **684 bytes, 2 records, about 342
-each**, against the 240 unit 278 synthesised.
+**Task 1 — the conversation reads forwards** (`25a8e75`). Oldest at the top, his own
+messages aligned right, received left, bordered and never filled with a family
+colour. The sort toggle no longer reaches it and its tooltip says which list it
+governs; **the left list still follows it, asserted, so unhooking one could not
+quietly unhook both.** The For you column header came out: that side stopped being a
+table, so `utc | message` labelled columns that no longer exist.
 
-**Task 3 — measured** (`e959899`). See section 3.
+**Task 2 — two things left the conversation body** (`5ae1690`). `your move, 0 slots`
+is gone; the ring above says it and would disagree with it the first time one of
+them was wrong. `x2` moved out from inside the message text to a phrase beneath it.
+**Where the fold stops is unchanged and ask 8 stays open.**
 
-**Task 4 — the sweep** (`docs/unit279-tests-that-cannot-see.md`, `3eca8a2`). Reading
-only, no suite run. **594 test files, 172 carrying a predicate finder, nine of the
-dangerous shape**, and the doc says why the rest are safe so the next reader does not
-mistake silence for omission.
+**Task 3 — the turn is a ring** (`3dde179`). Four draining arcs with the count
+inside. See section 3.
 
-**Task 5 — `HM-OPEN-086` closed** (`4d91bfe`, `85481b3`). See section 3.
+**Task 4 — the screen stops lecturing** (`a2ec95c`). 1,249 -> 843.
 
-**Task 6 — the turn line while transmitting** (`3f0b204`). Two new states. **The
-exposure is the one the instruction named**: telling him his slot is open while his
-own carrier is on it is worse than saying nothing, because the one thing he might do
-about an open slot is fill it. It counts the transmission, not the slot. **Nothing
-reads it to act** — no arm, no cancel, and a transmission ending sends nothing.
+**Task 5 — the count is not a whisper** (`9390e6b`). A figure at 20 point with the
+word small beside it and the badge progress after, replacing a sentence at the tail
+of a status bar. The dimmed row now reads *You logged a contact with CO8LY on
+09/07/26*.
 
-**Task 7 — the outcome entry** (`0ceb54b`), written by the tool, exit 0.
+**Task 7 — a slot he transmitted in says so** (`db70f9b`). See section 3.
 
-**Decisions this session made for itself**, both in the outcome entry in full: that
-dimming is opacity rather than a greyed foreground, and that a test which examined no
-subjects has not passed.
+**Task 8 — the Send block is facts** (`9cbdd03`). 843 -> 529.
+
+**Task 6 — the removal list** (`docs/unit280-what-was-removed.md`, `cd57f28`).
+
+**Task 9 — the outcome entry** (`610f22b`), written by the tool, exit 0.
+
+**One mismatch with the instruction.** It places the AGC paragraph *in the status
+bar across the full width*. It is not there: `ReceiveAdvice` surfaces in a
+collapsible Receive-help widget on the canvas, and the status bar carries
+`StatusText`, the badge and the count. Reported, not repaired.
+
+**One shell refusal**, verbatim: `/usr/bin/bash: -c: line 125: unexpected EOF while
+looking for matching `'``, on a heredoc containing an apostrophe — the documented
+fault, seventh unit. Worked around with a script file.
 
 ## 2. What the owner should expect
 
-**A station he has worked fades rather than wearing a label, and the turn line stops
-lying while he transmits.**
+**The conversation reads the right way round and the screen stops talking at him.**
 
-The green `worked` is gone from both lists. A row for a station already in his log is
-drawn softer, keeps its full right-click menu with the same items, is still
-clickable, and says on hover *You worked IK4LZH before, on 2026-09-07, on 20m*.
-
-While his own transmission is going out, the line above the For you panel says he is
-transmitting and how long is left of it, instead of telling him his slot is open.
+His own messages sit on the right in their own bubbles, what he heard sits on the
+left, oldest at the top. Above them a ring drains with the seconds left in it and
+two or three words beside it instead of two sentences. The contact count is a large
+figure in the status bar with how far the next badge is, instead of a whisper after
+somebody else's paragraph.
 
 **What will look wrong and is not:**
 
-- **The message column is no wider on an ordinary row.** The mark's column took no
-  width on a row with nothing to show. What it gives back is the ~68 px it was taking
-  on rows for stations he had worked, which were the rows clipping worst.
-- **A faded row is not a disabled row.** Nothing on it is forbidden.
-- **The two band-label tests now fail if they find no labels.** They pass today.
+- **The For you side has no column header.** It is a conversation, not a table.
+- **The drive control says `-12.0 dBFS` and nothing else.** The ALC advice is on the
+  `?` beside it.
+- **A fine clock is a small glyph.** A clock that is *not* fine still gets words,
+  because that is a fault.
+- **The census reads `15:16:45 UTC · 0 candidates`** instead of a sentence. Every
+  number it used to carry is still there.
+- **The band is gone from the worked-station hover.** That is a fact removed rather
+  than a sentence shortened, it was your ruling, and it is on the list under its own
+  heading.
 - **Inherited reds, untouched and unrun**: `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
   the 51 CW cases in `docs/unit239-failing-set.txt`, the `Ft8Sharp.Deep.Tests`
   whole-type-list tripwire.
-- **`src/Ft8Sharp/` is untouched** and its version did not move.
-
-**One mismatch with the instruction**: it says unit 274 added the `Auto` column *to
-both grids*. It is on the **left list only** — the mine side's mark shared the 76 px
-the time column already had. So removing it gives the mine side nothing.
 
 ## 3. What you should see
 
-**1. A dimmed row and an undimmed one, with the dimmed one's menu open.**
+**1. The K9XP exchange as the panel now draws it**, printed by the reconstruction:
 
 ```
-IK4LZH opacity 0.55
-W1ABC  opacity 1
-text blocks reading "worked": 0
-
-menu on the faded IK4LZH:          menu on W1ABC:
-    IK4LZH KC3QIS FN00   grid          W1ABC KC3QIS FN00   grid
-    IK4LZH KC3QIS -11    report        W1ABC KC3QIS -13    report
-    IK4LZH KC3QIS R-11   roger…        W1ABC KC3QIS R-13   roger…
-    IK4LZH KC3QIS RRR    acknowledge   W1ABC KC3QIS RRR    acknowledge
-    IK4LZH KC3QIS 73     73            W1ABC KC3QIS 73     73
+For you (K9XP):
+    021100 sent      K9XP KC3QIS R-09
+    021115 received  KC3QIS K9XP -09  (heard twice)
+    021215 sent      K9XP KC3QIS R-09
+    021245 received  KC3QIS K9XP -09
+    021315 sent      K9XP KC3QIS RRR
 ```
 
-**The same five options, none disabled.** The hover text, on the row:
+**Oldest at the top.** The `sent` rows draw right-aligned in bordered bubbles and the
+received ones left, so the alternation is read without reading. The fold is under the
+message rather than inside it, and **there is no `your move, 0 slots` line anywhere
+in the body.**
 
-> You worked IK4LZH before, on 2026-09-07, on 20m.
-
-and on `W1ABC`, nothing at all rather than an empty box.
-
-**Watched failing first** with the markup put back exactly as unit 274 left it:
-*text blocks reading "worked": 2*, and the row's tooltip null.
-
-**2. The column measurement, at 1400 × 1200 through the real window.**
+**2. The four ring states, as they render.**
 
 ```
-left  message column : 177 px      (unit 275 measured 177)
-mine  message column : 225 px
-VP2MAA KC3QIS FN00   : 180 px
-left  headroom       : -143 px  (against the widest legal message, 320 px)
+his slot     solid 3px amber    "click a reply"      288°  count "12"
+their slot   solid 3px muted    "yours is next"      288°  count "12"
+on air       solid 6px green    the message going out 285° count "10"
+unknown      dashed 3px         "nothing heard yet"        count "?"
 ```
 
-**The three pixels are not settled.** The reason is the useful half: `Auto` takes no
-width on a row with nothing to show, so `LeftFixed` was already `76 + 48` before the
-column came out and is `76 + 48` after. **On an unworked row the removal buys
-nothing.** What it buys is the width the label was taking on rows that carried it —
-measured at **60 px plus an 8 px margin** in the realized window during the
-watched-failing run — so a row for a worked station had **109 px** of message where
-every other row had 177, and now has 177 like the rest.
+**In grayscale they are still four.** A test strips hue out and compares dash
+pattern, stroke thickness and caption: no two states match. Unknown is the dashed
+one, on air is the thick one, and his slot and theirs differ by caption as well as
+ink. **Two lengths share one shape** — a slot is 15 s and a transmission 12.64 s — so
+the arc is drawn as a fraction of whichever this is: 8 of 15 and 7 of 12.64 both draw
+about 195°, and the thickness and the caption say which it is rather than the angle.
 
-So the removal helps precisely the rows it was taking width from, and the three pixels
-were never about the mark.
+**3. What was removed** — `docs/unit280-what-was-removed.md`, in full. The shape of
+it:
 
-**3. `TheWholeChainRunsFromOneRightClickTests`, run for the first time since the
-split.**
+- **five strings moved to hover**, the largest being the 325-character drive
+  paragraph;
+- **three replaced by shapes**, including `x2`, which was a correction as much as a
+  shortening: it sat inside the message string where it read as part of what the
+  station transmitted;
+- **four removed outright**, each with why it was not a fact;
+- **one fact removed and named under its own heading**: the band came out of the
+  worked-station hover;
+- **six things kept with the reason**, including the 124-character empty-band line.
+
+**4. A slot he transmitted in, and a quiet one.**
 
 ```
-Passed!  - Failed: 0, Passed: 3, Skipped: 0, Total: 3, Duration: 59 s
+transmitted slot : 15:16:45 UTC was yours - Hamlet was transmitting and did not listen
+quiet slot       : 15:16:45 UTC · 0 candidates
 ```
 
-**Green, and it uncovered nothing.** The instruction says to report a real defect in
-the chain and not repair it here; there is none. **The whole chain has run from one
-right click all along, behind a helper that could not reach it.** Its `RightClick`
-asked `DigitalDecodedRows` alone for a row whose addressee is the operator, and
-`WantsRow` is `!IsForHim(row) && ...`. Fixed the way units 276 and 277 fixed the same
-shape, deliberately rather than inventing a third approach.
+The first was reading *…the search found no place in it that looked like the start of
+an FT8 transmission, so nothing reached the decoder at all, read by Ft8Sharp.Deep with
+fine sync and ordered statistics* — **for a slot Hamlet had deliberately not listened
+to.** Nothing needed measuring: the transmission was already in `ft8_transmission`
+telemetry with its `slotStartUtc`.
 
-**And the sweep's own find, which is worse than that shape.**
-`TheOperatingScreenIsLaidOutAsRuledTests` and `TheBandRowIsWhereItWasRuledTests` both
-carry this at line 166:
-
-```csharp
-var label = card.GetVisualDescendants().OfType<TextBlock>()
-    .FirstOrDefault(t => t.Text == band);
-
-if (label is null)
-{
-    continue;
-}
-```
-
-They collect the labels that are cut short and assert the collection is empty. **A
-run that finds no labels collects nothing and passes** — a test named *every band
-label renders inside its own card* going green with none of them rendering, guarding
-the very defect that put `10 n` on his screen on 2026-08-26.
-
-**Tests.** 58 passed and 1 skipped across the nine app classes this unit wrote or
-rewrote, plus 13 in the engine's beat class. All green. Every one was run because
-this unit changed code it guards.
+**Tests.** 66 passed and 1 skipped across the twelve classes this unit wrote or
+rewrote. Every one was run because this unit changed code it guards. **Three watched
+failing first**: the conversation came back reversed, the ring's caption came back a
+sentence, and the transmitted slot came back claiming a search.
 
 ## 4. What's blocking us
 
@@ -175,63 +164,56 @@ Nothing blocks the next unit. Two things want a ruling.
 
 ---
 
-**A faded row carries its meaning in appearance alone, and §0.6 says colour may never
-be the only carrier.**
+**The bubble width and the fade were not looked at together, and they interact.**
 
-Your ruling was explicit and it is built exactly as ruled: the word is gone, the row
-fades. **The thing worth your eye is what the fade costs a reader who cannot see it.**
-Printed in grayscale, or by somebody with a colour vision deficiency, a 0.55 row is
-still visibly lighter, so the signal survives — that is why opacity rather than a hue
-change. But the *meaning* of the fade is carried only by the hover text, and hover is
-not available at a glance.
+A worked station's row is drawn at 0.55 opacity (unit 279) and is now also a bordered
+bubble. **A faded border on a white bubble is a fainter thing than a faded row of
+text was**, and I did not measure whether it is still obvious at a glance across a
+column of fourteen rows a slot.
 
-**No change is proposed and none was made.** The options if you want one are a small
-glyph in the time column, or leaving it exactly as it is on the grounds that the fade
-is a nicety and the log window is where the answer really lives.
-
-*Rejected: quietly putting a word back.* You removed it.
+*Rejected: deepening the fade on my own authority.* §0.6 and the grayscale question
+are yours, ask 9 is already open on exactly this, and changing the number without
+looking at a screen would be guessing.
 
 ---
 
-**The two band-label tests now fail when they find nothing, and that is a new
-assertion however narrow.**
+**`ReceiveAdvice` is 18 KB of prose that this unit did not sweep.**
 
-The instruction says to change only what a test says when its fixture cannot produce
-a subject. A count of subjects examined is arguably a new assertion rather than a
-better message, and I made it on the grounds that **a test that examined nothing has
-not passed**. Both pass today, so nothing changed colour.
+The instruction pointed at the status bar and the paragraph is not there — it feeds a
+collapsible Receive-help widget on the canvas. That widget is advice by definition,
+and the same ruling plainly applies to it, but it is a different surface from the one
+every task named and restructuring an engine file feeding it is not what this unit
+was asked for.
 
-*Rejected: only improving the message.* There is no message to improve — the failure
-mode is silence, and a better sentence nobody ever sees fixes nothing.
+*Rejected: sweeping it anyway.* The order names the Digital tab in every task and
+lists the send path and the composer as parked; taking on a third panel on my own
+reading of the ruling is the scope creep §12.6 exists to stop.
 
 ---
 
 ## Asks still outstanding
 
-Carried per HM-DEC-139. Eleven inbound; three discharged by this unit, eight carried,
-two added.
+Carried per HM-DEC-139. Ten inbound, all carried, two added.
 
-1. **Two issues of one work-instruction number.** Unit 271, and 252 before it. **The
-   author's error.** No unit action.
+1. **Two issues of one work-instruction number.** Unit 271, and 252 before it.
+   **The author's error.** No unit action.
 2. **`PM95` reads *southern Japan***, unit 271. **Not a defect.**
 3. **`HM-OPEN-083` and `HM-OPEN-084`.** In `OPEN_ISSUES.md` by HM-DEC-140.
-4. **Three pixels.** **Task 3 did not settle it**, and the measurement above says why:
-   177 px against 180, unchanged, because the mark's column took no width on the rows
-   measured. **Still waiting on Tim.**
+4. **Three pixels.** Unit 279 measured 177 px against 180 and did not settle it.
+   **Waiting on Tim.**
 5. **`dt` and `hz` were never on the mine list.** **Waiting on Tim.**
 6. **Where an outcome entry goes when the unit it corrects has none.** Unit 276, in
    the tree. **The ruling wants Tim's eye.**
-7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** Units 277, 278
-   and 279 each wrote one because their instructions named the tool. **The general
-   question is the author's and still open.**
-8. **Where the repeat fold stops**, unit 277, in the tree at `0c359cc`. **The ruling
-   wants Tim's eye.**
-9. **Whether a faded row needs a second carrier of its meaning**, raised by this unit,
-   2026-09-08. Built exactly as ruled; the question is what the fade costs a reader
-   who cannot see it.
-10. **Whether counting subjects is a new assertion**, raised by this unit,
-    2026-09-08. In the tree at `4d91bfe`, both tests passing.
-
-**Discharged by this unit:** ask 8 of the inbound queue, `HM-OPEN-086`, now closed in
-`OPEN_ISSUES.md`; ask 10, the turn line during a transmission, built in task 6; and
-ask 11, the real log, closed permanently by `FACT-006`.
+7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** Task 9 wrote
+   one because this order named the tool; **the general question is the author's.**
+8. **Where the repeat fold stops**, unit 277, in the tree at `0c359cc`. **Task 2
+   moved where the fold is shown and did not change where it stops.** Still open.
+9. **Whether a faded row needs a second carrier of its meaning**, unit 279. **The
+   hover now carries it in words**; whether it needs a glyph as well is still Tim's,
+   and item 11 below is the same question from a new angle.
+10. **Whether counting subjects is a new assertion**, unit 279, in the tree at
+    `4d91bfe`, both tests passing. **The ruling wants Tim's eye.**
+11. **Whether the fade is still obvious now the row is a bubble**, raised by this
+    unit, 2026-09-08. Not measured; it interacts with item 9.
+12. **Whether `ReceiveAdvice` is in scope for the same ruling**, raised by this unit,
+    2026-09-08. Not swept, and the reason is in section 4.
