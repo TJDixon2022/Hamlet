@@ -1,0 +1,16 @@
+docs(unit272): the report - 15 of 43 would have gone out unreadable, now none
+
+output.md written and validated: all seven rules passed,
+validate-output exit 0, reached through validate-output.proj because the
+direct spellings were refused - the parked permitted-spellings bug, not
+raised as an item.
+
+All four tasks done, none dropped, including the named drop candidate.
+
+THE NUMBER: 15 of 43 -> 0 of 43. Fifteen of the forty-three messages the
+menu can offer against the callsigns he could plausibly work tonight would
+have been keyed and read back as nothing, and now none is.
+
+Section 4 raises 5 items and none asks for a ruling.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

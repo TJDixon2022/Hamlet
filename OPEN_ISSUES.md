@@ -4,6 +4,42 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-087
+status: open
+owner: tim
+raised: 2026-09-08
+severity: slows
+blocks: nothing the operator can reach. It blocks any claim that the receive-help feature exists, and it leaves a live-looking button on the CW tab that does nothing
+refs: src/Hamlet.App/Views/MainWindow.axaml:1277, src/Hamlet.App/Views/MainWindow.axaml:1647, src/Hamlet.App/ViewModels/MainWindowViewModel.cs:3080, src/Hamlet.RadioEngine/Rig/ReceiveAdvice.cs, docs/unit281-what-the-screens-say.md
+---
+
+Thirteen of the fifteen `widget.*` data templates in `MainWindow.axaml` are
+referenced by nothing, and one of them is the whole of HM-DEC-084's receive help.
+
+Only `widget.map` and `widget.terminal` are used. `widget.tape`, `widget.waterfall`,
+`widget.autocall`, `widget.scan`, `widget.send`, `widget.phrasebook`,
+`widget.receiveHelp`, `widget.heard`, `widget.lead`, `widget.spots`, `widget.story`,
+`widget.guide` and `widget.contact` are declared and never instantiated. They are
+what the canvas of HM-DEC-086 used before the tabs replaced it; nothing removed
+them and nothing rehomed them.
+
+**The consequence with a face on it**: the CW tab carries a *Have a look* button
+bound to `OpenReceiveHelpCommand`, which sets `ReceiveHelpExpanded = true` on a
+panel that is not in the tree. **Pressing it does nothing at all, and it looks
+exactly like a button that works** - §0.5.1 and HM-DEC-087, which is the fault
+`BindingHealthTests` was built for and cannot see, because the binding resolves
+perfectly well onto a property nothing renders.
+
+**And `ReceiveAdvice`'s eight sentences reach no screen.** Work instruction 281
+was written believing they were on one; they are not. Whether the answer is to
+rehome the widget, to delete the dead templates, or to fold the advice into the
+Radio menu is a ruling, not a session's call, because it decides whether a
+ratified feature is in the application or out of it.
+
+Left alone under CLAUDE.md 12.6 - unit 281 was measuring, and repairing a feature
+it found missing is exactly the drive-by repair that rule forbids.
+
+---
 id: HM-OPEN-086
 status: closed
 closed: 2026-09-08

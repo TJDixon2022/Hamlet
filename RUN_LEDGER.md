@@ -95,3 +95,9 @@ the owner reads instead of watching.
 | 1 | 2026-09-07T09:59 | 2026-09-07T10:23 | complete | 13.577231000000003 | ran unattended, 145 turns, 4 denied call(s) worked around, report valid |
 | 2 | 2026-09-07T10:29 | 2026-09-07T10:47 | complete | 12.125338 | ran unattended, 145 turns, 12 denied call(s) worked around, report valid |
 | 3 | 2026-09-07T10:54 | 2026-09-07T11:23 | complete | 16.319568000000007 | ran unattended, 170 turns, 6 denied call(s) worked around, report valid |
+| 4 | 2026-09-07T11:33 | 2026-09-07T12:05 | complete | 24.625143 | ran unattended, 224 turns, 12 denied call(s) worked around, report valid |
+| 5 | 2026-09-07T12:17 | 2026-09-07T12:44 | complete | 15.337653000000003 | ran unattended, 151 turns, 8 denied call(s) worked around, report valid |
+| phase | 2026-09-07T12:49 | 2026-09-07T12:49 | halted | 81.9849 | stop 4: the arbiter declared a decision the owner's |
+| 1 | 2026-09-07T13:20 | 2026-09-07T13:45 | complete | 16.066289 | ran unattended, 163 turns, 5 denied call(s) worked around, report valid |
+| 2 | 2026-09-07T13:53 | 2026-09-07T14:15 | complete | 14.203481999999997 | ran unattended, 151 turns, 4 denied call(s) worked around, report valid |
+| phase | 2026-09-07T14:19 | 2026-09-07T14:19 | halted | 30.2698 | stop 4: the arbiter declared a decision the owner's |

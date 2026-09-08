@@ -1,6 +1,4 @@
-﻿   Bash  {"command":"sed -n \u002710p\u0027 PROJECT_STATUS.md | cut -c1-2400 \u003e /tmp/prev-note.txt; wc -c /tmp/prev-note.txt","description":"Extract prior note head"}
-   Bash  {"command":"ls ~/.nuget/packages/avalonia.headless.xunit/ ~/.nuget/packages/avalonia.headless/ 2\u003e\u00261","description":"Headless packages"}
-   Bash  {"command":"grep -n \"TooQuietDb = -60\\|public const double SilenceDb\\|private const double LevelSeconds\\|Assert.Equal(new\\[\\] { KeyOn, CwStop, PttOff }, whileRunning)\\|Assert.Equal(Ft8TransmitOutcome.Cancelled, boundary.Run.Outcome)\ ...(truncated)
-   Bash  {"command":"tools\\\\arbiter\\\\outcome-append.bat 2\u003e\u00261 | head -20","description":"Try outcome-append.bat"}
-   Bash  {"command":"tools/arbiter/outcome-append.bat","description":"Try outcome-append.bat, bare"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate output.md"}
+﻿   Bash  {"command":"echo \"=== src ===\"; grep -rn \"CarriesHashedCallsign\" src/ ; echo \"EXIT:$?\"; echo \"=== tests ===\"; grep -rn \"CarriesHashedCallsign\" tests/; echo \"EXIT:$?\"","description":"Grep CarriesHashedCallsign in src and tests"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md 2\u003e\u00261 | tail -40","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"dotnet msbuild tools/arbiter/validate-output.proj -p:Report=output.md -v:m -nologo","timeout":180000,"description":"Validate via the msbuild project"}

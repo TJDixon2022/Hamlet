@@ -1,22 +1,14 @@
-﻿## Step C - the whole chain runs from one click, at the bench
+﻿## Step E - Tim works a station
 
-**Delivers:** click to keyed to unkeyed, proven end to end with no radio.
+**Delivers:** a contact.
 
-**Entry:** steps A and B.
+**Entry:** step D.
 
 **Exit:**
-- **One right-click drives the whole chain**: menu, compose, key, play, unkey,
-  telemetry - **exercised in one test**, with the transmit endpoint on a loopback
-  and CI-V on a fake transport. *must-pass*
-- **The audio that reaches the endpoint decodes back to the message the operator
-  clicked.** *must-pass*
-- **The abort fires from the middle of that chain** and the sound stops.
+- **He answers a CQ on 14.074 or 7.074 and completes an exchange.** *must-pass*
+- The transmitted slots appear in telemetry and the row reads complete.
   *must-pass*
-- **Nothing transmits that the operator did not click**, asserted across the whole
-  chain rather than at the menu alone. *must-pass*
+- **What he saw, and anything that surprised him**, recorded. *must-pass*
 
-**This is the last thing that can be proved without a radio.** Everything after it
-is Tim.
-
-**Depends on:** steps A and B.
+**Depends on:** step D.
 

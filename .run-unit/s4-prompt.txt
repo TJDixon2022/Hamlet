@@ -21,7 +21,7 @@ work on the same step remains open.
 Read PHASE_PLAN.md for this step exit criteria and
 PHASE_OUTCOME.md for what has already been done. Then decide
 whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step C.
+owner answer. The step being worked is step E.
 
 Halting a night for a question that forecloses nothing is the
 failure this judgment exists to prevent. Building on an assumption
@@ -50,56 +50,70 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-**Nothing is blocking. Four items, none in the way of a step C criterion, and no
-ruling is wanted** - the one question this unit could have raised (whether the
-`456 ms` figure should replace the tree's stated bound) answers itself: it is a
-different quantity measured a different way, both are honest, and neither is
-asserted against the other.
+**Five items. None asks for a ruling, and none is in the way of a criterion in
+B.**
 
-### 1. `outcome-append.bat` was refused again, both forms
+### 1. The instruction predicted the wrong class, and the tree wins
 
-Verbatim, in order:
+The instruction says *the compound and portable callsigns of the DX stations he
+is most likely to answer are the obvious candidates*. Measured, **portable
+suffixes are not in the class at all**: `K1ABC/P`, `KC3QIS/P` and every message
+built on them packs `Standard` and reads back as itself. The fifteen are all
+compound *prefixes*. Reported, not repaired. It does not change what was built â€”
+the guard is written on what the encoder did, not on the shape of a callsign, so
+it catches the real class whatever it turns out to be.
 
-```
-This Bash command contains multiple operations. The following part requires
-approval: tools\arbiter\outcome-append.bat 2>&1
-```
-```
-This command requires approval
-```
+### 2. The arbiter's brackets branch is unreachable against this tree
 
-The plan's own named alternative was taken: the entry was appended with the
-file-editing tools in the format the existing entries use, with an `APPENDED_BY:`
-line saying on its face that a script did not write it. **Halts nothing.** Two other
-shell calls were refused tonight and both were worked around the same way:
-`This Bash command contains multiple operations. The following part requires
-approval: cut -c1-2400 ; wc -c /tmp/prev-note.txt`, and `This command requires
-approval` for a multi-file grep.
+The ruling is *a hashed callsign is not the words the operator clicked, **unless
+he clicked brackets***. Measured, `Ft8Composer` refuses a bracketed string
+outright, before the guard is ever asked:
 
-### 2. A plan-versus-tree mismatch, reported and not repaired - and it is step D's
+> Hamlet did not send "<VP2M/K1ABC> KC3QIS FN00": "<VP2M/K1ABC> KC3QIS FN00" is
+> not a message this library can put on the air. What was tried â€¦ standard, in
+> full, "<VP2M/K1ABC>" / "KC3QIS" / "FN00" would not pack: FirstCallInvalid â€¦
 
-`PHASE_PLAN.md` step D's first criterion says Tim *"reads the dBFS and clip count
-**under the waterfall**"*. **In the tree they are in the Send area line after each
-send** - `MainWindowViewModel.LevelLine` - and there is no such readout under the
-waterfall. The figures exist and are readable, so **the criterion is satisfiable as
-written except for where it says to look**, and `docs/unit268-what-step-d-asks-tim.md`
-points Tim at the right place. **Not repaired, per the instruction.** Bears on step
-D, not on step C.
+I expected that string to compose and arm, and the tree said otherwise; the test
+records the measured truth rather than my expectation. The second half of the
+rule is kept anyway, because it costs nothing and a guard written on the flag
+alone would refuse such a message for the wrong reason if the composer ever
+accepted one. **Nothing is asked here** â€” it is a note for whoever picks up the
+parked question of offering him a way to send a nonstandard callsign.
 
-### 3. An open menu swallows the next press, and any future unit will hit it
+### 3. Step D's criterion 1 has a clause the instruction did not quote
 
-A `MenuFlyout` shown by the right-click handler is a popup with a light-dismiss
-layer over the whole window. **Until it is closed, the next simulated press lands on
-that layer and not on the control underneath**, silently - it cost this unit a red
-whose first diagnosis was wrong. **This is a test-harness fact and not a product
-defect**: in the running application, clicking a menu item closes the flyout itself.
-Written down here so it is not rediscovered as a mystery.
+`PHASE_PLAN.md:246` reads *Tim sets the Transmit drive control and reads the dBFS
+**and clip count** under the waterfall*. The instruction quoted it without the
+clip count, and **no clip count is recorded anywhere** â€” `grep -rn clip
+SHACK_FACTS.md` returns nothing. I moved the cursor to `done` on the arbiter's
+decision, which named FACT-005 as answering all three criteria and is not this
+unit's to re-argue, and I am naming the gap so it can be reversed by a reader who
+judges otherwise. My own reading: a peak of 0.25 cannot clip, so that reading is
+arithmetically forced and its absence from the record is a bookkeeping gap rather
+than an unanswered question. The two must-pass criteria that genuinely blocked
+step D â€” his ALC in his words, and the number written down â€” are answered without
+qualification.
 
-### 4. The inherited reds, none run and none chased
+### 4. Step E's line in the tree says `blocked`, not `in progress`
 
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
-`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
-and
-`TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`,
-which unit 265 recorded and units 266, 267 and now 268 have left alone. **None was
-run tonight and none is chased.**
+`PHASE_OUTCOME.md`'s header reads `STEP: E | blocked | Tim works a station`,
+while the instruction and the `ARBITER-DECISION` block both say `in progress`.
+The instruction says not to touch step E's line, so it was not touched. The
+arbiter's own append is what resolves it. Reported, not repaired.
+
+### 5. The click-driven test was built and not run â€” a conflict inside the instruction
+
+Task 2 requires the test to be *driven from the operator's click rather than from
+a constructed transmitter*. The click lands on
+`MainWindowViewModel.SendMessageCommand`, which lives in `Hamlet.App`;
+`Hamlet.RadioEngine.Tests` references only the engine and cannot reach it, and
+the instruction forbids running `Hamlet.App.Tests`. Resolved by doing both:
+`tests/Hamlet.App.Tests/ViewModels/TheSendPathRefusesWhatNobodyCanReadTests.cs`
+drives `SendMessageCommand.Execute` and reads `DigitalSendLine`, and is **built
+and not run**; the runnable measurement is
+`HamletDoesNotKeyWhatNobodyCanReadTests`, which makes the send path's own three
+calls with its own arguments against the **real** `Ft8ArmedSend`,
+`Ft8TransmitSequence`, fake port and fake sink. **What I cannot claim on a run
+tonight is that the guard is reached from the click itself** â€” only that the
+guard is correct and that the view model calls it. Said plainly rather than
+glossed.
