@@ -189,6 +189,75 @@ public sealed class TheMarksRenderTests
         }
     }
 
+    /// <summary>**What survives of the small mark at icon sizes.**</summary>
+    /// <remarks>
+    /// <para>**NOTHING LOOKED AT THESE AND THIS DOES NOT PRETEND OTHERWISE.** The
+    /// harness cannot rasterise, so this reports the arithmetic instead: how many
+    /// device pixels each stroke of the mark is given at 16, 32 and 48. A stroke
+    /// under one pixel is a grey smear rather than a line, and that is a statement
+    /// about the drawing that can be made without seeing it.</para>
+    /// <para>The mark is 68 units across, so a pixel at size N is 68/N units.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void WhatSurvivesOfTheSmallMarkAtIconSizes()
+    {
+        // The four strokes the file states, in its own units.
+        var strokes = new (string What, double Units)[]
+        {
+            ("plate outline", 3.4),
+            ("whip", 4.0),
+            ("feather outline", 3.0),
+        };
+
+        foreach (var side in new[] { 16, 32, 48, 256 })
+        {
+            var scale = side / 68.0;
+
+            _output.WriteLine(side + " px  (one pixel is "
+                + (68.0 / side).ToString("0.0") + " units)");
+
+            foreach (var (what, units) in strokes)
+            {
+                var px = units * scale;
+
+                _output.WriteLine(
+                    "   " + what.PadRight(18) + px.ToString("0.00").PadLeft(6)
+                    + " px" + (px < 1 ? "   sub-pixel" : ""));
+            }
+
+            _output.WriteLine("");
+        }
+
+        // **THE ONE ASSERTION IS THE ONE THAT MATTERS**: at 16 px every stroke in
+        // this mark is thinner than a pixel, so the icon is a dark disc with a
+        // suggestion on it. That is a fact about the drawing, and it is reported
+        // rather than repaired.
+        var at16 = 16 / 68.0;
+
+        Assert.True(
+            strokes.All(s => s.Units * at16 < 1.0),
+            "some stroke is at least a pixel wide at 16 px; the report's account of "
+            + "what survives there needs re-taking");
+    }
+
+    /// <summary>**The icon builds, at the size it says it does.**</summary>
+    /// <remarks>
+    /// It cannot assert what the icon looks like — the harness has no rasteriser —
+    /// only that the path from the file to a bitmap runs and produces the size it
+    /// claims.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheIconBuildsAtTheSizeItClaims()
+    {
+        using var raster = AppIcon.Raster(AppIcon.RenderedAt);
+
+        _output.WriteLine(
+            "rendered " + raster.PixelSize.Width + " x " + raster.PixelSize.Height);
+
+        Assert.Equal(AppIcon.RenderedAt, raster.PixelSize.Width);
+        Assert.Equal(AppIcon.RenderedAt, raster.PixelSize.Height);
+    }
+
     /// <summary>One mark's viewBox.</summary>
     /// <param name="uri">Which mark.</param>
     /// <returns>The rectangle.</returns>

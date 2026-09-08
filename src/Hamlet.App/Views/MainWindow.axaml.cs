@@ -18,6 +18,17 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
+        // **THE WINDOW AND THE TASKBAR CARRY THE MARK** (work instruction 285 task
+        // 3). It is rendered from `Assets/hamlet-mark-small.svg` rather than shipped
+        // as a second drawing, and it is set here rather than in the markup because
+        // rasterising wants a platform that can draw. **Null where one cannot** -
+        // a headless run has no rasteriser, and a window that refused to open
+        // because it could not draw a picture of itself would be a poor trade.
+        if (Controls.AppIcon.Small is { } mark)
+        {
+            Icon = mark;
+        }
+
         // Arrow keys = ±10 Hz, the headphone-tuning path (HM-DEC-015).
         AddHandler(KeyDownEvent, OnTuneKey, handledEventsToo: false);
 
