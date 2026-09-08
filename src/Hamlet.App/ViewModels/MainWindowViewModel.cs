@@ -5277,14 +5277,57 @@ public partial class MainWindowViewModel : ObservableObject
     /// four times a second while being a minute old. Everything needed to say so
     /// was already in the app and nothing assembled it.
     /// </remarks>
-    public string LinkCheckLine => LinkSelfCheck
-        .Describe((_rig as Ic7300Rig)?.Link, RigState, DateTime.UtcNow, IsConnected)
-        .Headline;
+    public string LinkCheckLine => Link().Headline;
+
+    /// <summary>The check, or the one a test handed over.</summary>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="NarrateForTests"/>.** Composing this from a
+    /// real rig needs a radio, a link and a poll history, for a question about which
+    /// of two strings the strip draws. Nothing in `src/` calls the setter.
+    /// </remarks>
+    /// <returns>The check the strip is showing.</returns>
+    private LinkCheck Link()
+        => _linkCheckForTests ?? LinkSelfCheck.Describe(
+            (_rig as Ic7300Rig)?.Link, RigState, DateTime.UtcNow, IsConnected);
+
+    private LinkCheck? _linkCheckForTests;
+
+    /// <summary>Show one link check, for a test.</summary>
+    /// <param name="check">What the strip should be drawing.</param>
+    internal void UseLinkCheckForTests(LinkCheck check)
+    {
+        _linkCheckForTests = check;
+
+        OnPropertyChanged(nameof(LinkCheckLine));
+        OnPropertyChanged(nameof(LinkCheckDetail));
+        OnPropertyChanged(nameof(LinkCheckConcern));
+        OnPropertyChanged(nameof(HasLinkCheck));
+        OnPropertyChanged(nameof(HasLinkCheckConcern));
+    }
 
     /// <summary>The numbers behind that sentence, for the diagnostics screen.</summary>
-    public string LinkCheckDetail => LinkSelfCheck
-        .Describe((_rig as Ic7300Rig)?.Link, RigState, DateTime.UtcNow, IsConnected)
-        .Detail;
+    public string LinkCheckDetail => Link().Detail;
+
+    /// <summary>
+    /// The part of the link check that is something gone wrong, or "".
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE PARAGRAPH THREE UNITS LOOKED PAST** (work instruction 283). This
+    /// line is drawn in the top strip, under the frequency readout, permanently and
+    /// on every tab — **not on the status bar**, which is where units 280, 281 and
+    /// 282 were all looking. Its longest branch is 304 characters and it is the
+    /// branch this operator's own radio takes, because `CivTransceive` is off and
+    /// HM-DEC-138 measured 5,499 frames in sixty-one seconds with
+    /// `inboundTransceive` zero.</para>
+    /// <para>**A FAULT SPEAKS UNASKED AND THE REST WAITS TO BE ASKED.** A stale
+    /// frequency and a frequency nobody has heard are both this class's own reason
+    /// for existing; a radio that is being polled instead of announcing is Hamlet
+    /// describing itself working.</para>
+    /// </remarks>
+    public string LinkCheckConcern => Link().Concern;
+
+    /// <summary>True while something about the link has to be read unhovered.</summary>
+    public bool HasLinkCheckConcern => LinkCheckConcern.Length > 0;
 
     /// <summary>True while there is a link check worth showing.</summary>
     public bool HasLinkCheck => LinkCheckLine.Length > 0;
@@ -5601,6 +5644,8 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(LinkCheckLine));
         OnPropertyChanged(nameof(LinkCheckDetail));
         OnPropertyChanged(nameof(HasLinkCheck));
+        OnPropertyChanged(nameof(LinkCheckConcern));
+        OnPropertyChanged(nameof(HasLinkCheckConcern));
         OnPropertyChanged(nameof(FrequencyAgeNote));
         OnPropertyChanged(nameof(HasFrequencyAgeNote));
 

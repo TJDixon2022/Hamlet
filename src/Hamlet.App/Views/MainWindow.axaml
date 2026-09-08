@@ -2526,13 +2526,33 @@
                        Foreground="{StaticResource HmAmberBrush}" />
 
             <!-- How the conversation itself is going, which lived only in a
-                 telemetry file the operator had to upload (§0.0.1). -->
-            <TextBlock Text="{Binding LinkCheckLine}"
-                       FontSize="11" HorizontalAlignment="Center"
-                       TextWrapping="Wrap" TextAlignment="Center"
-                       MaxWidth="420"
-                       IsVisible="{Binding HasLinkCheck}"
-                       Foreground="{StaticResource HmTextMutedBrush}" />
+                 telemetry file the operator had to upload (§0.0.1).
+
+                 **AND SINCE 2026-09-08 ONLY THE PART THAT IS WRONG IS DRAWN**
+                 (work instruction 283 task 2). This is the paragraph he kept
+                 pointing at: 304 characters under the frequency readout, on every
+                 tab, permanently, because his radio does not announce its own
+                 changes. **Units 280, 281 and 282 all swept the status bar and
+                 this is not on it.**
+
+                 **A stale frequency and a frequency nobody has heard still
+                 speak**, because this class exists precisely because they went
+                 unsaid for two builds. Everything else is one hover away. -->
+            <StackPanel Orientation="Horizontal" Spacing="6"
+                        HorizontalAlignment="Center"
+                        IsVisible="{Binding HasLinkCheck}">
+                <ctl:HintMarkControl x:Name="LinkCheckMark"
+                                     Kind="Measurement" VerticalAlignment="Center"
+                                     Text="{Binding LinkCheckLine}" />
+
+                <TextBlock x:Name="LinkCheckConcernText"
+                           Text="{Binding LinkCheckConcern}"
+                           IsVisible="{Binding HasLinkCheckConcern}"
+                           FontSize="11" VerticalAlignment="Center"
+                           TextWrapping="Wrap" TextAlignment="Center"
+                           MaxWidth="420"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+            </StackPanel>
         </StackPanel>
     </Border>
 

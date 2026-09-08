@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 283 - every mode's status bar, not the one the author named
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T16:00:29-04:00
-NOTE: Task 1 - finding every call site that composes receiver-conditions narration onto the status bar, for every mode and tab. Reading only.
+UPDATED: 2026-09-08T16:04:11-04:00
+NOTE: Task 2 - the link-check line. Task 1 found the status bar was already clear on every tab; the 304-character paragraph is LinkCheckLine in the top strip, which no order has named.
 
 ---
 

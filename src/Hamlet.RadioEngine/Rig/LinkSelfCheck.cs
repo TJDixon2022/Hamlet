@@ -14,8 +14,12 @@ namespace Hamlet.RadioEngine.Rig;
 /// <param name="Detail">
 /// The numbers behind the headline, for the diagnostics screen, or "".
 /// </param>
+/// <param name="Concern">
+/// The part of <paramref name="Headline"/> that is something gone wrong, or "".
+/// </param>
 public readonly record struct LinkCheck(
-    string Headline, bool? IsAnnouncing, bool TracksTheDial, string Detail);
+    string Headline, bool? IsAnnouncing, bool TracksTheDial, string Detail,
+    string Concern);
 
 /// <summary>
 /// The check Hamlet runs on its own link, and says out loud (§0.0.1).
@@ -55,7 +59,10 @@ public static class LinkSelfCheck
 
         if (!isConnected)
         {
-            return new LinkCheck("", null, false, "");
+            // **NOTHING CONNECTED IS NOT A CONCERN OF THIS LINE.** The top strip
+            // says so where it belongs, and a second sentence about it here would
+            // be the same fact twice (HM-DEC-068).
+            return new LinkCheck("", null, false, "", "");
         }
 
         var frequency = state[RigField.Frequency];
@@ -84,7 +91,42 @@ public static class LinkSelfCheck
             Headline(announcing, current, age),
             announcing,
             current,
-            Detail(link, frequency, age));
+            Detail(link, frequency, age),
+            Concern(current, age));
+    }
+
+    /// <summary>
+    /// **The part of the headline the operator must read without hovering.**
+    /// </summary>
+    /// <param name="current">Whether the frequency on screen is being kept fresh.</param>
+    /// <param name="age">How old the reading is, or null where there is none.</param>
+    /// <returns>The sentence, or "" where nothing is wrong.</returns>
+    /// <remarks>
+    /// <para>**TWO OF THE FIVE BRANCHES ARE FAULTS AND THREE ARE NARRATION** (work
+    /// instruction 283 task 2, Tim's ruling of 2026-09-08). A frequency that is
+    /// stale, and a frequency nobody has heard yet, are both the display being
+    /// wrong or blank about the one number every other surface trusts — and this
+    /// whole class exists because that went unsaid for two builds. **Those speak.**
+    /// A radio that is keeping up, and a radio that is polled rather than
+    /// announcing, are Hamlet describing itself working; the second ends in advice
+    /// about a setting he could change, which is exactly what a hover is for.</para>
+    /// <para>**IT IS THE SAME BRANCHES FROM THE SAME INPUTS**, decided again here
+    /// rather than the headline being cut up by a caller, so the sentence he hovers
+    /// and the sentence he is shown cannot come to disagree (§0) — the shape
+    /// <see cref="ReceiverSetupVoice.Admissions"/> already uses.</para>
+    /// </remarks>
+    private static string Concern(bool current, TimeSpan? age)
+    {
+        if (current)
+        {
+            return "";
+        }
+
+        return age is { } old
+            ? "The frequency on screen is " + Spoken(old)
+              + " old, so treat it as where the radio was rather than where it is."
+            : "Hamlet has not heard where the radio is yet, so the frequency is "
+              + "blank rather than guessed at.";
     }
 
     private static string Headline(bool? announcing, bool current, TimeSpan? age)
