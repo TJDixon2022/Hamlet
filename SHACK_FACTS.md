@@ -1,4 +1,4 @@
-**PROJECT: Hamlet**
+﻿**PROJECT: Hamlet**
 
 # Standing shack facts — read before advising anything at the radio
 
@@ -12,6 +12,12 @@ attached to it.
 **FACT-005 added 2026-09-07**, the day Hamlet first transmitted on a live
 antenna: the drive level the operator read off his own ALC meter, which four
 unit reports had promised to defer to him and none had written down.
+
+**FACT-006 added 2026-09-08**, after unit 278 went looking for a contact log
+on the development machine, found none, and could not check its own
+instruction's opening premise from this side. FACT-004 already covered
+captures; this covers the log, and closes the question permanently rather
+than answering it once.
 
 ---
 id: FACT-001
@@ -157,3 +163,42 @@ measurement. **It has now been measured, and it is the same number.**
   0.25, the drive control under the waterfall is unchanged, and the level
   remains his to set. This records what he read; it does not turn a reading
   into a default.
+
+---
+id: FACT-006
+status: standing
+source: operator statement and his own reading, 2026-09-08
+---
+
+**The development machine has no contact log and never will.**
+
+`%AppData%\Hamlet\contacts.adi` is written by logging a contact, and
+contacts are logged where the radio is. **This is FACT-004 applied to the log**,
+and it is written separately because a session looking for a log does not think
+of itself as looking for a capture.
+
+**Consequences, and no session may reason past them:**
+
+- **An absent `contacts.adi` on the development machine is the expected state.**
+  It is not a finding, not evidence of a defect in the log code, and not a
+  reason to author a unit.
+- **No unit may write a task whose result depends on reading the real log**, and
+  none may defer a criterion to the operator for want of one. Unit 278 built the
+  log window, the count and the badges entirely against synthesised logs in a
+  redirected folder, and that was correct rather than a compromise.
+- **`SettingsStore.DataFolder` is the seam** a test redirects to write and read a
+  log of its own, and `MainWindowViewModel.UseWorkedBeforeForTests` hands one in
+  where the file itself is not the subject.
+- **A count of zero here says nothing about how many contacts he has made.**
+
+**The reading he took, 2026-09-08**, on the shack machine:
+
+- **684 bytes, 2 records.** About **342 bytes a record**.
+- Unit 278 measured **240 bytes** a record synthesised, so **a real record is
+  about a hundred bytes larger** than the ones that unit sized anything against.
+  The likeliest reason is notes, which the synthesis left short.
+- **A future unit sizing the log uses 342 rather than 240**, and says which it
+  used.
+
+**This is the only figure in this repository about the real log**, and it is his
+reading rather than a measurement any session made.
