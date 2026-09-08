@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 7 of 7
-WORK_INSTRUCTION: 279 - a worked station is dim, and tests say when they cannot see
+TASK: 9 of 9
+WORK_INSTRUCTION: 280 - show, do not tell
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T10:59:20-04:00
-NOTE: All seven tasks done, none dropped, pushed through 836ebb7, version 1.12.163. A worked station fades at 0.55 with its menu untouched, and the turn line stops saying his slot is open while his own carrier is on it. The three-pixel ask is not settled - 177 px against 180, unchanged - and the reason is that Auto took no width on a row with nothing to show, so the removal buys back the 68 px the label was taking on worked rows instead. HM-OPEN-086 is closed and its class green for the first time since unit 273, uncovering nothing. The sweep's own find is the one to read: two tests find a band label in its card, silently continue when it is missing, and pass having measured nothing, guarding the defect that put 10 n on his screen in August.
+UPDATED: 2026-09-08T11:49:40-04:00
+NOTE: All nine tasks done, none dropped, pushed through c536168, version 1.12.173. The Digital tab went from 1,367 permanently visible characters to 529, measured off the realized window both times because counting source would have found only 71 characters of literals and flattered the result. The conversation reads forwards with his own messages in bubbles on the right, the beat is a ring whose four states stay distinct in grayscale, and the count is a figure rather than a footnote. Two changes were corrections rather than shortenings: x2 sat inside the message string where it read as part of what the station sent, and the census was reporting a search result for slots Hamlet had deliberately not listened to. One fact was removed and is named under its own heading - the band came out of the worked-station hover.
 
 ---
 
