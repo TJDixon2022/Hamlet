@@ -359,3 +359,18 @@ ACCOMPLISHED: a station he has worked fades rather than wearing a label, the tur
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one says so plainly rather than dressing up an advance.
+
+## UNIT 280 - STEP E
+
+STEP: E
+APPROACH: measure the permanently-visible text before touching anything, then turn the conversation forwards with his own side on the right, replace the turn sentences with a ring, move advice to hover, make the count a figure rather than a whisper, stop the census describing a suspension as a search, and list every string removed
+HIT: counting source would have measured the wrong thing and then flattered the result: the whole Digital workspace holds ten literal strings totalling 71 characters, because the wording is bound to properties that compose sentences. The number had to be walked off the realized window instead
+MOVE: build on
+WHY: 1,367 characters to 529, and nothing was deleted that was a fact except one, which is named under its own heading rather than let go quietly. Two changes turned out to be corrections rather than shortenings: x2 sat inside the message string where it read as part of what the station sent, and the census was reporting a search result for slots Hamlet had deliberately not listened to
+DECIDED: that a fine clock is a glyph and a clock that is not fine keeps its words, because a fault gets a sentence; and that the empty-band line stays at 124 characters, because an empty panel that says nothing reads as a broken program and that is the 0.0 fault the whole terseness rule is subordinate to
+LICENCE: work instruction 280 tasks 1 to 9, and Tim's ruling of 2026-09-08 that this is so full of unneeded text and the contacts are understated
+COST: unknown
+ACCOMPLISHED: the conversation reads the right way round with his own messages on the right, the beat is a ring he reads at a glance, the count is a figure rather than a footnote, and a slot he transmitted in no longer claims a search that never ran
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one says so plainly rather than dressing up an advance.
