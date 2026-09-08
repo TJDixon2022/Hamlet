@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 6 of 8
+TASK: 7 of 8
 WORK_INSTRUCTION: 282 - the composed paragraph, and the log shows his contacts
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T14:54:39-04:00
-NOTE: Task 6 - confirming unit 281's sender tooltip and grid fixes are in the tree before building anything.
+UPDATED: 2026-09-08T14:55:53-04:00
+NOTE: Task 7 - listing what this unit moved and re-measuring the whole application against unit 281's 7,665.
 
 ---
 
