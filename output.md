@@ -1,252 +1,237 @@
-UNIT:       278 — complete at task 6 of 6 — 2026-09-08 10:06
+UNIT:       279 — complete at task 7 of 7 — 2026-09-08 10:55
 PHASE GOAL: Hamlet works stations on the air. Not decodes them, not shows them —
             the operator makes a contact with his own radio.
-UNIT GOAL:  He can see his own log inside Hamlet, and the application notices when
-            he passes a milestone.
-ADVANCED:   no — it advances step E's bench half and closes no criterion, which the
-            instruction said itself. Step E's criteria are Tim at his own radio
-            working a station, and this unit adds what happens after a contact
-            rather than during one.
-NUMBER:     0 -> 0 records on this machine, and that is a mismatch rather than a
-            result. **There is no `contacts.adi` here.** By `SHACK_FACTS.md` that is
-            the expected state on the development box, so the count the instruction
-            asked for is zero because the file does not exist, and the premise *he
-            has logged contacts and cannot see them* could not be checked from this
-            side. What was measured instead, synthesised: **240 bytes an entry,
-            59.58 ms to open the window at 10,000 records.**
-DRIFT:      1 consecutive unit without advance (was 0). Reseeded by the author at
-            the head of this order, which answers the ask two reports had raised;
-            incremented here because `ADVANCED` is no.
+UNIT GOAL:  A station he has worked is dim rather than labelled, no test can
+            silently fail to find its own subject, and the turn line tells the
+            truth while he is transmitting.
+ADVANCED:   no. Every bench step of this phase is closed and steps D and E are Tim
+            at his own radio, so no unit can meet their criteria. The author said
+            so at the head of this order and this report does not dress it up.
+NUMBER:     177 px -> 177 px. The left list's message column is unchanged, against
+            the 180 px `VP2MAA KC3QIS FN00` needs. **The three-pixel ask is NOT
+            settled** and nothing was shrunk to pretend otherwise. What the removal
+            did buy is below.
+DRIFT:      2 consecutive units without advance (was 1, carried from unit 278).
 
 ## 1. What Claude did
 
-**Complete. Six tasks of six, none dropped** — including task 5, the named drop
-candidate, which found two defects nothing else would have. Windows, `PROJECT:
-Hamlet` claimed and confirmed against all four gate checks, branch `main`, pushed at
-every task. Version `1.12.149` -> `1.12.155`.
+**Complete. Seven tasks of seven, none dropped** — including task 6, the named drop
+candidate. Windows, `PROJECT: Hamlet` claimed and confirmed against all four gate
+checks, branch `main`, pushed at every task. Version `1.12.155` -> `1.12.163`.
 
-**Task 1 — reading only** (`docs/unit278-what-the-log-gives-back.md`, `6d987f0`).
-Two findings shaped everything after.
+**Task 1 — the fade** (`4464439`). The word `worked` is gone from both lists and a
+station already in the log is drawn at **0.55 opacity**. **The mechanism carries the
+ruling**: grey is this project's reserved signal for a control that genuinely cannot
+be used (§0.5.1, HM-DEC-087), so greying would have borrowed exactly that signal for
+a row he is free to work again. Opacity keeps every colour the row already has where
+greying replaces them with the disabled palette. Unit 274's hover wording moved onto
+the row, null rather than empty where there is nothing to say.
 
-- **`AdifLog.Read` never stops and never throws**, but it had three silent
-  behaviours. **A field whose length cannot be read was stepped over** and the
-  record came back missing it, indistinguishable from a field Hamlet never observed.
-  **A record with no `<EOR>` was dropped entirely with no trace.** An `<EOR>` with
-  nothing before it is a contact of thirteen nulls and counts.
-- **The obvious count was the wrong number.** `ReadWorkedBefore` drops any record
-  with no `CALL` and keys its dictionary by callsign, so `_workedBefore.Count` is
-  distinct stations. Three contacts with one station would have read as **one**,
-  where the ruling is that every logged contact counts.
+**And the class remark on `DigitalDecodeRow` was false and is corrected.** It said
+nothing on the row changes after it arrives, written by unit 252 when that was true;
+unit 274 gave it a mutable `WorkedBefore` and unit 277 a mutable `RepeatCount` and
+the remark stayed. HM-DEC-159 is about exactly that.
 
-**Task 2 — the window** (`af47113`). `Tools > My contacts…`. **It reads and never
-writes**: the code-behind has no handler at all, so there is no path from it to the
-file. **One parser, two doors** — `AdifLog.ReadRecords` does the scanning and `Read`
-is written in terms of it, so no second ADI parser exists; the 31 round-trip tests
-are green against the rewritten reader. A missing field says `not recorded`, a word
-rather than a dash, because a dash in a column of reports reads as a report.
+**Task 2 — `FACT-006`** (`02b9dc1`). The development machine has no contact log and
+never will. It rules out a unit writing a task that needs the real log, names the two
+seams a test uses instead, and records his reading: **684 bytes, 2 records, about 342
+each**, against the 240 unit 278 synthesised.
 
-**Task 3 — the count** (`a070a05`). The number of records, quietly at the right-hand
-end of the status bar, absent rather than reading zero before he has logged
-anything. **One read, two derivations**, which is what the task asked for. **Mutating
-the count to the worked-mark dictionary turns two tests red**, so they catch the
-mistake rather than agreeing with whatever was written.
+**Task 3 — measured** (`e959899`). See section 3.
 
-**Task 4 — the badges** (`db38915`). Nine thresholds in one list.
-**Watched failing by mutation**: making the earn rule report only the highest crossed
-threshold turns the instruction's own nine-to-twenty-six case red, `[10, 25]`
-becoming `[25]`.
+**Task 4 — the sweep** (`docs/unit279-tests-that-cannot-see.md`, `3eca8a2`). Reading
+only, no suite run. **594 test files, 172 carrying a predicate finder, nine of the
+dangerous shape**, and the doc says why the rest are safe so the next reader does not
+mistake silence for omission.
 
-**Task 5 — measured** (`docs/unit278-what-the-log-costs.md`, `63b330b`). See section
-3. It found two defects and neither was findable by reading the code.
+**Task 5 — `HM-OPEN-086` closed** (`4d91bfe`, `85481b3`). See section 3.
 
-**Task 6 — the outcome entry** (`56c1258`), written by
-`tools/arbiter/outcome-append.bat`, exit 0. **Second unit running the tool has
-worked**, after the fourteen in which it was refused. Step E stays `not started`.
+**Task 6 — the turn line while transmitting** (`3f0b204`). Two new states. **The
+exposure is the one the instruction named**: telling him his slot is open while his
+own carrier is on it is worse than saying nothing, because the one thing he might do
+about an open slot is fill it. It counts the transmission, not the slot. **Nothing
+reads it to act** — no arm, no cancel, and a transmission ending sends nothing.
 
-**Decisions this session made for itself**, both reproduced in the outcome entry:
-that a damaged record is counted rather than excluded, so the status bar and the log
-window cannot disagree; and that the first look at the log seeds the badge level
-silently. Nothing touching transmit, and the one §0.0 exposure the instruction named
-— the count — is settled by a test that fails if anybody reaches for the dictionary.
+**Task 7 — the outcome entry** (`0ceb54b`), written by the tool, exit 0.
+
+**Decisions this session made for itself**, both in the outcome entry in full: that
+dimming is opacity rather than a greyed foreground, and that a test which examined no
+subjects has not passed.
 
 ## 2. What the owner should expect
 
-**He can look at his own contacts without opening Notepad.** `Tools > My contacts…`
-lists them newest first with the callsign, the time in UTC, the band, the mode, both
-reports, his grid and his notes. **The status bar carries the count**, quietly, at
-the right-hand end, and the window says where he stands against the badges and how
-far the next one is.
+**A station he has worked fades rather than wearing a label, and the turn line stops
+lying while he transmits.**
+
+The green `worked` is gone from both lists. A row for a station already in his log is
+drawn softer, keeps its full right-click menu with the same items, is still
+clickable, and says on hover *You worked IK4LZH before, on 2026-09-07, on 20m*.
+
+While his own transmission is going out, the line above the For you panel says he is
+transmitting and how long is left of it, instead of telling him his slot is open.
 
 **What will look wrong and is not:**
 
-- **The log will be empty on this machine.** There is no `contacts.adi` here, and
-  `SHACK_FACTS.md` says that is expected: this is the development box and a log is
-  written where contacts are. **On the shack machine it should list what he has
-  logged since unit 274.**
-- **Older records say `not recorded` under band.** Records written before unit 275
-  carry no band and no frequency, because Hamlet did not observe where the contact
-  happened. That is not damage and the row does not mark it as such.
-- **A damaged record is listed, marked in amber, rather than left out**, and it
-  counts. The status bar and the window will always agree on the total.
-- **No badge is announced on first launch**, however many contacts the log already
-  holds. That is deliberate and is the fix task 5 found.
+- **The message column is no wider on an ordinary row.** The mark's column took no
+  width on a row with nothing to show. What it gives back is the ~68 px it was taking
+  on rows for stations he had worked, which were the rows clipping worst.
+- **A faded row is not a disabled row.** Nothing on it is forbidden.
+- **The two band-label tests now fail if they find no labels.** They pass today.
 - **Inherited reds, untouched and unrun**: `CwAdjudicationTests.ASpeedChangeInRealisticAudio`,
   the 51 CW cases in `docs/unit239-failing-set.txt`, the `Ft8Sharp.Deep.Tests`
-  whole-type-list tripwire, and `HM-OPEN-086`.
+  whole-type-list tripwire.
 - **`src/Ft8Sharp/` is untouched** and its version did not move.
+
+**One mismatch with the instruction**: it says unit 274 added the `Auto` column *to
+both grids*. It is on the **left list only** — the mine side's mark shared the 76 px
+the time column already had. So removing it gives the mine side nothing.
 
 ## 3. What you should see
 
-**1. His own log as the window draws it.** On this machine there are no records, so
-this is what the window actually shows, and it is the empty state rather than a
-demonstration dressed up as his:
-
-> **0 contacts logged.**
->
-> Nothing here yet. Hamlet writes a line into this log every time you fill in the
-> contact dialog after working somebody, and this window is where those lines come
-> back. The file lives at `C:\Users\TimDi\AppData\Roaming\Hamlet\contacts.adi`.
-
-**With records in it**, from the tests, including one written before unit 275 and one
-the file cut off:
+**1. A dimmed row and an undimmed one, with the dimmed one's menu open.**
 
 ```
-3 contacts logged.
-One record could not be read whole. It is still listed, marked, rather than left out.
+IK4LZH opacity 0.55
+W1ABC  opacity 1
+text blocks reading "worked": 0
 
-  call     when (UTC)           band  mode  sent  rcvd  my grid  notes
-  VP2MAA   not recorded         not recorded ...
-      ! the field "TIME_ON" says it is 6 characters and the file ends after 4,
-        so it was cut off  this record has no end marker, so the file was cut
-        off while it was being written
-  W1ABC    2026-09-08 03:15:00  40m   FT8   -11   -08   FN00     second
-  K9XP     2026-09-08 02:13:15  20m   FT8   -09   -14   FN00     first one
+menu on the faded IK4LZH:          menu on W1ABC:
+    IK4LZH KC3QIS FN00   grid          W1ABC KC3QIS FN00   grid
+    IK4LZH KC3QIS -11    report        W1ABC KC3QIS -13    report
+    IK4LZH KC3QIS R-11   roger…        W1ABC KC3QIS R-13   roger…
+    IK4LZH KC3QIS RRR    acknowledge   W1ABC KC3QIS RRR    acknowledge
+    IK4LZH KC3QIS 73     73            W1ABC KC3QIS 73     73
 ```
 
-and a pre-275 record, which is sound and simply carries less:
+**The same five options, none disabled.** The hover text, on the row:
+
+> You worked IK4LZH before, on 2026-09-07, on 20m.
+
+and on `W1ABC`, nothing at all rather than an empty box.
+
+**Watched failing first** with the markup put back exactly as unit 274 left it:
+*text blocks reading "worked": 2*, and the row's tooltip null.
+
+**2. The column measurement, at 1400 × 1200 through the real window.**
 
 ```
-  K9XP     2026-09-08 02:13:15  not recorded  FT8   not recorded ...
+left  message column : 177 px      (unit 275 measured 177)
+mine  message column : 225 px
+VP2MAA KC3QIS FN00   : 180 px
+left  headroom       : -143 px  (against the widest legal message, 320 px)
 ```
 
-**No fault line under it**, because nothing is damaged: Hamlet did not observe the
-band, and saying so is different from saying the file is broken.
+**The three pixels are not settled.** The reason is the useful half: `Auto` takes no
+width on a row with nothing to show, so `LeftFixed` was already `76 + 48` before the
+column came out and is `76 + 48` after. **On an unworked row the removal buys
+nothing.** What it buys is the width the label was taking on rows that carried it —
+measured at **60 px plus an 8 px margin** in the realized window during the
+watched-failing run — so a row for a worked station had **109 px** of message where
+every other row had 177, and now has 177 like the rest.
 
-**2. The count, and the badge line.**
+So the removal helps precisely the rows it was taking width from, and the three pixels
+were never about the mark.
 
-Status bar, right-hand end: **`3 contacts logged`**
-
-Log window, under the total:
-
-> **You have passed 10 contacts. 15 to go until 25.**
-
-and at the top of the range:
-
-> **You have passed 10,000 contacts. That is every badge there is.**
-
-and at 1,000, from the measurement:
-
-> **You have passed 1,000 contacts. 1,000 to go until 2,000.**
-
-**3. Nine to twenty-six, both badges earned.**
+**3. `TheWholeChainRunsFromOneRightClickTests`, run for the first time since the
+split.**
 
 ```
-9 -> 26 earned: 10, 25
-9 -> 26 says:   That is 10 and 25 contacts logged.
+Passed!  - Failed: 0, Passed: 3, Skipped: 0, Total: 3, Duration: 59 s
 ```
 
-**Both named, not only the highest.** Mutating `EarnedSince` to take the last one
-turns that assertion red with `Expected: [10, 25]` and `Actual: [25]`, which is the
-ten silently swallowed.
+**Green, and it uncovered nothing.** The instruction says to report a real defect in
+the chain and not repair it here; there is none. **The whole chain has run from one
+right click all along, behind a helper that could not reach it.** Its `RightClick`
+asked `DigitalDecodedRows` alone for a row whose addressee is the operator, and
+`WantsRow` is `!IsForHim(row) && ...`. Fixed the way units 276 and 277 fixed the same
+shape, deliberately rather than inventing a third approach.
 
-**What ten thousand costs**, Debug build, so these are the slow figures:
+**And the sweep's own find, which is worse than that shape.**
+`TheOperatingScreenIsLaidOutAsRuledTests` and `TheBandRowIsWhereItWasRuledTests` both
+carry this at line 166:
 
-| | 1,000 | 10,000 |
-|---|---|---|
-| File | 240,272 bytes | 2,400,272 bytes |
-| Read and parse | 1.37 ms | **40.09 ms** |
-| Build the rows | 0.35 ms | 19.49 ms |
-| **Open the window** | 1.72 ms | **59.58 ms** |
+```csharp
+var label = card.GetVisualDescendants().OfType<TextBlock>()
+    .FirstOrDefault(t => t.Text == band);
 
-The count on the main screen: **49.19 ms first ask, 0.000 ms after.**
-**No paging was added and the numbers do not ask for one.** Named as unmeasured: the
-`ItemsControl` realizes every row rather than virtualizing, so the rendering half is
-still open and is not claimed either way.
+if (label is null)
+{
+    continue;
+}
+```
 
-**Tests.** 22 new across four classes; 22 in the log-dialog, dial, binding-health
-and voice classes; 31 ADIF tests in the engine. **All green**, and every one of them
-run because this unit changed code they guard.
+They collect the labels that are cut short and assert the collection is empty. **A
+run that finds no labels collects nothing and passes** — a test named *every band
+label renders inside its own card* going green with none of them rendering, guarding
+the very defect that put `10 n` on his screen on 2026-08-26.
+
+**Tests.** 58 passed and 1 skipped across the nine app classes this unit wrote or
+rewrote, plus 13 in the engine's beat class. All green. Every one was run because
+this unit changed code it guards.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. Two things want a ruling, one is a standing question.
+Nothing blocks the next unit. Two things want a ruling.
 
 ---
 
-**The unit's opening premise could not be checked, and the same will be true of the
-next log unit written from this side.**
+**A faded row carries its meaning in appearance alone, and §0.6 says colour may never
+be the only carrier.**
 
-*He has logged contacts and cannot see them* may well be true, and there is no
-`contacts.adi` on the development machine to confirm it. Everything in this unit was
-built and measured against synthesised logs, which is sound for the code and proves
-nothing about what his actual file contains: how many records, whether any predate
-unit 275, whether any is damaged.
+Your ruling was explicit and it is built exactly as ruled: the word is gone, the row
+fades. **The thing worth your eye is what the fade costs a reader who cannot see it.**
+Printed in grayscale, or by somebody with a colour vision deficiency, a 0.55 row is
+still visibly lighter, so the signal survives — that is why opacity rather than a hue
+change. But the *meaning* of the fade is carried only by the hover text, and hover is
+not available at a glance.
 
-**What would settle it in one line**: the record count and the file size from the
-shack machine, or the file itself if he is willing to have it in the repository —
-which §2.1 would need a ruling on, since a log carries callsigns and is his.
+**No change is proposed and none was made.** The options if you want one are a small
+glyph in the time column, or leaving it exactly as it is on the grounds that the fade
+is a nicety and the log window is where the answer really lives.
 
-*Rejected: inferring from telemetry.* Nothing on this machine records a contact
-having been logged, and the telemetry here is the development box's.
+*Rejected: quietly putting a word back.* You removed it.
 
 ---
 
-**A log window that shows a damaged record cannot offer to do anything about it, and
-at some point that will be the obvious next question.**
+**The two band-label tests now fail when they find nothing, and that is a new
+assertion however narrow.**
 
-This unit shows damage and stops there, correctly: **a log record is a statement the
-operator made and is not a unit's to revise**, and editing is parked. But a record
-the file cut off is not a statement he finished making, and the honest options are
-to leave it, to let him delete it, or to let him complete it.
+The instruction says to change only what a test says when its fixture cannot produce
+a subject. A count of subjects examined is arguably a new assertion rather than a
+better message, and I made it on the grounds that **a test that examined nothing has
+not passed**. Both pass today, so nothing changed colour.
 
-*Rejected: doing anything about it here.* Editing is parked by name in this
-instruction, and a window that reads is a window with no path to the file at all,
-which is a property worth keeping until there is a reason to spend it.
+*Rejected: only improving the message.* There is no message to improve — the failure
+mode is silence, and a better sentence nobody ever sees fixes nothing.
 
 ---
 
 ## Asks still outstanding
 
-Carried per HM-DEC-139. Nine inbound; one dropped as answered by this unit, eight
-carried, two added.
+Carried per HM-DEC-139. Eleven inbound; three discharged by this unit, eight carried,
+two added.
 
-1. **Two issues of one work-instruction number.** Raised by unit 271, and unit 252
-   before it. **The author's error: an executed order must never be amended, only
-   succeeded.** No unit action.
-2. **`PM95` reads *southern Japan***, raised by unit 271. **Not a defect.**
-3. **`HM-OPEN-083` and `HM-OPEN-084`**, raised 2026-09-05. By HM-DEC-140 they live
-   in `OPEN_ISSUES.md` and not on this queue.
-4. **Three pixels.** Unit 275 left `VP2MAA KC3QIS FN00` three pixels over on the
-   left list. **No unit action until Tim says.**
-5. **`dt` and `hz` were never on the mine list.** **No unit action until Tim says.**
-6. **Where an outcome entry goes when the unit it corrects has none.** Decided by
-   unit 276 and already in the tree; **the ruling wants Tim's eye.**
-7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** Units 273,
-   274 and 275 wrote no entry. Units 277 and 278 both wrote one because their
-   instructions named the tool. **The general question stands: it is still not a
-   task unless an instruction says so.**
-8. **`HM-OPEN-086`** — `TheWholeChainRunsFromOneRightClickTests` asks the left list
-   for a row addressed to the operator, which `WantsRow` excludes. **Its own unit's
-   work.** Unit 277 fixed the same fault in a sibling class, so there are now two
-   precedents for the repair.
-9. **Where the repeat fold stops**, raised by unit 277, 2026-09-08. Built the
-   conservative way and in the tree at `0c359cc`. **The ruling wants Tim's eye.**
-10. **What the turn line says during a transmission already going out**, raised by
-    unit 277, 2026-09-08. Nothing is in the tree for it.
-11. **The real log cannot be seen from the development machine**, raised by this
-    unit, 2026-09-08. The record count and file size from the shack machine would
-    settle what this unit could only synthesise.
+1. **Two issues of one work-instruction number.** Unit 271, and 252 before it. **The
+   author's error.** No unit action.
+2. **`PM95` reads *southern Japan***, unit 271. **Not a defect.**
+3. **`HM-OPEN-083` and `HM-OPEN-084`.** In `OPEN_ISSUES.md` by HM-DEC-140.
+4. **Three pixels.** **Task 3 did not settle it**, and the measurement above says why:
+   177 px against 180, unchanged, because the mark's column took no width on the rows
+   measured. **Still waiting on Tim.**
+5. **`dt` and `hz` were never on the mine list.** **Waiting on Tim.**
+6. **Where an outcome entry goes when the unit it corrects has none.** Unit 276, in
+   the tree. **The ruling wants Tim's eye.**
+7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** Units 277, 278
+   and 279 each wrote one because their instructions named the tool. **The general
+   question is the author's and still open.**
+8. **Where the repeat fold stops**, unit 277, in the tree at `0c359cc`. **The ruling
+   wants Tim's eye.**
+9. **Whether a faded row needs a second carrier of its meaning**, raised by this unit,
+   2026-09-08. Built exactly as ruled; the question is what the fade costs a reader
+   who cannot see it.
+10. **Whether counting subjects is a new assertion**, raised by this unit,
+    2026-09-08. In the tree at `4d91bfe`, both tests passing.
 
-**Dropped as answered:** unit 277's `DRIFT` ask. The author reseeded it at the head
-of this order, which is what two reports had asked for, and it is carried forward in
-this report's header block.
+**Discharged by this unit:** ask 8 of the inbound queue, `HM-OPEN-086`, now closed in
+`OPEN_ISSUES.md`; ask 10, the turn line during a transmission, built in task 6; and
+ask 11, the real log, closed permanently by `FACT-006`.
