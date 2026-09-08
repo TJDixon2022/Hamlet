@@ -296,3 +296,36 @@ report written from the code that declares a menu item rather than from the menu
 **No blame attaches to unit 274.** Its instruction did not ask for the menu to be
 moved, and the one thing that would have contradicted it was a test that unit was
 forbidden to run.
+
+## UNIT 277 - STEP E
+
+STEP: E
+APPROACH: carry the sent half of the conversation onto the panel from the ledger that already held it, derive the slot parity from the station's own transmissions, scope the panel to one conversation, and reconstruct the evening that prompted it
+HIT: three of the four pieces task 1 went looking for already existed and none of them was on screen: the sent text was in Ft8ContactLedger, the parity is arithmetic on a slot boundary, and a 250 ms tick was already running
+MOVE: build on
+WHY: the work was surfacing rather than building, so the unit went further than a fresh mechanism would have. The reconstruction in task 5 then found a defect that would otherwise have shipped looking exactly like the bug the unit was written to fix
+DECIDED: where the repeat fold stops - at anything in between rather than across a whole exchange - because the literal reading destroys the one fact the panel exists to show. Raised for a ruling rather than settled, since it is what the display asserts
+LICENCE: work instruction 277 tasks 1 to 6, and Tim's rulings of 2026-09-08 that his own transmissions are interleaved, that one conversation shows with the others above it, and that the panel says whose turn it is
+COST: unknown
+ACCOMPLISHED: he can see both halves of a contact and whose fifteen seconds it is, which is what he asked for after an exchange failed and he could not see why. The turn line arms nothing and reaching zero does nothing
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Step E's criteria are Tim at his own radio working a station and no unit can meet them. This removed what stood between him and them and closes nothing.
+
+### THE RECORD IS MISSING THREE UNITS, AND THEY ARE NOT BACK-FILLED
+
+**Units 273, 274 and 275 wrote no outcome entry at all.** Unit 276 found it while
+looking for a unit 274 entry to correct, and wrote its correction into its own entry
+instead. So between `## UNIT 272` and `## UNIT 276` this file has nothing, and three
+units' findings survive only in their commit messages.
+
+**They are deliberately not reconstructed.** Nobody running now ran them, and an
+entry composed from their commits would be a fabricated record of work this session
+did not do, which is worse than the gap it would cover.
+
+**The cause is known and is not carelessness.** `PHASE_OUTCOME.md` is written by
+`tools/arbiter/outcome-append.bat`, which no work instruction told those units to
+run. This unit ran it because task 6 named it. Until the write is a task in the
+instruction, or the tool runs at the end of the loop where its absence is visible,
+the same gap will open again.
+
