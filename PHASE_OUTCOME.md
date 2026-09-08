@@ -329,3 +329,18 @@ run. This unit ran it because task 6 named it. Until the write is a task in the
 instruction, or the tool runs at the end of the loop where its absence is visible,
 the same gap will open again.
 
+
+## UNIT 278 - STEP E
+
+STEP: E
+APPROACH: read what AdifLog already gives back, give the log a window that shows damage rather than inheriting it, take the count off the read the worked mark already does, and measure what all of it costs at ten thousand
+HIT: there is no contacts.adi on this machine at all, so the instruction's opening premise could not be checked from here. By SHACK_FACTS.md that is the expected state on the development box rather than a finding, and the count on this machine is zero because the file does not exist
+MOVE: work around
+WHY: the unit was built and measured against synthesised logs in a redirected folder, which task 5 licensed anyway, and section 3's real records are honestly reported as the empty state rather than dressed up. Nothing was written to any log
+DECIDED: that a damaged record is counted rather than excluded, so the status bar and the log window cannot disagree; and that the first look at the log seeds the badge level silently, because congratulating him for nine badges at once is what the measurement actually produced
+LICENCE: work instruction 278 tasks 1 to 6, and Tim's rulings of 2026-09-08 that a badge sits at nine thresholds and that every logged contact counts
+COST: unknown
+ACCOMPLISHED: he can read his own log inside Hamlet instead of opening the file in Notepad, and the count is acknowledged where he will see it without being interrupted mid-exchange
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Step E's criteria are Tim at his own radio working a station and no unit can meet them. This one adds what happens after a contact rather than during it, and closes nothing.
