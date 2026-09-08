@@ -404,3 +404,18 @@ ACCOMPLISHED: the paragraph he kept pointing at is off his status bar with every
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one changes what the screen says and what the log shows rather than what Hamlet can do, and closes nothing.
+
+## UNIT 283 - STEP E
+
+STEP: E
+APPROACH: find every path that composes narration onto a permanently-visible surface by measuring realized windows rather than searching source, apply unit 282's split to whatever that finds, cap every surface in the state he operates it in rather than at rest, and sweep once more for the shape
+HIT: the instruction's premise did not survive the measurement. There is one composition path onto the status bar and not one per mode, because the bar is shared chrome above all three workspaces - so unit 282 had already cleared it for every mode, and an FT8 tune-in was measured putting none of its 448 characters on the Digital tab. The paragraph he keeps pointing at is somewhere else entirely: LinkCheckLine, in the top strip under the frequency readout, 304 characters on the branch his own radio takes
+MOVE: build on
+WHY: units 280 and 281 both measured that line and printed it and neither recognised it, because it reads 83 characters in a headless fixture and 304 in his shack - CivTransceive is off on his radio and HM-DEC-138 measured 5,499 frames in sixty-one seconds with inboundTransceive zero. That is the same failure in a new place: the instrument was right and nobody had put it in the state where the fault exists
+DECIDED: that two of the five link-check branches are faults and still speak - a stale frequency and a frequency nobody has heard are the two things this class was built to say out loud, and going unsaid cost two builds; that the stale branch is trimmed rather than moved, its narration going to the hover and the part saying the number is old staying; and that a ceiling caps a state and not only a surface, so the Digital tab is capped twice, at rest and working
+LICENCE: work instruction 283 tasks 1 to 6, and Tim's rulings of 2026-09-08 that text appears only where he intentionally hovers and that a fault speaks unasked
+COST: unknown
+ACCOMPLISHED: the paragraph is off the tab he actually operates from and off the other two with it, 249 characters for one line drawn three times; eleven surfaces are capped including the Digital tab in the state he uses it in; and the sweep says what it looked at and what no sweep here can see, which is the state a fixture never enters
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one changes what the screen says rather than what Hamlet can do, and closes nothing.
