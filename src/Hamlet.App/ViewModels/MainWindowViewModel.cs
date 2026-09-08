@@ -476,7 +476,112 @@ public partial class MainWindowViewModel : ObservableObject
     private long _frequencyHz;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusOnScreen))]
+    [NotifyPropertyChangedFor(nameof(StatusSpeaks))]
+    [NotifyPropertyChangedFor(nameof(StatusTip))]
+    [NotifyPropertyChangedFor(nameof(HasStatusTip))]
     private string _statusText = "Pick a port and connect";
+
+    /// <summary>
+    /// **Whether the status line is something gone wrong, or Hamlet narrating.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT DEFAULTS TO SPEAKING, AND THAT DIRECTION IS THE WHOLE DESIGN**
+    /// (work instruction 282 task 1). Thirty-one sites write this line, and a
+    /// classification that guessed wrong in the quiet direction would hide a fault,
+    /// which is §0.0 broken by omission. A site is a fault unless it was deliberately
+    /// marked as narration through <see cref="Narrate"/>, so the cost of a
+    /// misjudgement is a sentence he did not need rather than one he did — and a new
+    /// call site added by a session that never read this file speaks.</para>
+    /// <para>**ONE PIECE OF STATE, NOT TWO.** The bar and the mark read the same
+    /// string through two properties, so there is no second copy to drift and every
+    /// line this application has ever put on the bar is reachable on the hover,
+    /// whichever kind it was.</para>
+    /// </remarks>
+    private bool _statusIsNarration;
+
+    /// <summary>What the bar draws where the line is a narration, usually nothing.</summary>
+    /// <remarks>
+    /// **A LINE CAN BE MOSTLY NARRATION AND STILL CARRY AN ADMISSION.**
+    /// `ReceiverSetupVoice` composes one string out of five kinds of clause, three
+    /// of which are Hamlet saying it does not know something. Moving the whole
+    /// string to a hover would take those with it, so <see cref="Narrate"/> takes
+    /// what must still speak and this is where it goes.
+    /// </remarks>
+    private string _statusSpoken = "";
+
+    /// <summary>True where the line is something the operator has to act on.</summary>
+    public bool StatusSpeaks => StatusOnScreen.Length > 0;
+
+    /// <summary>What the status bar draws, which for narration is nothing.</summary>
+    /// <remarks>
+    /// **TIM'S RULING, 2026-09-08**: text only where he intentionally hovers, and a
+    /// fault is the one exception. Before this the bar carried an 884-character
+    /// paragraph on every tune-in to a CW block — measured rather than estimated,
+    /// from <see cref="ReceiverSetupVoice.Say"/> over the nine conditions the CW row
+    /// of `mode-receiver-conditions.json` states.
+    /// </remarks>
+    public string StatusOnScreen
+        => _statusIsNarration ? _statusSpoken : StatusText;
+
+    /// <summary>The whole line, whichever kind it is, for the mark beside the count.</summary>
+    /// <remarks>
+    /// **NOTHING IS DELETED** (§0.0, HM-DEC-092). Every line is behind the mark
+    /// including the ones that are also on the screen: a hover that sometimes says
+    /// nothing teaches somebody not to bother hovering.
+    /// </remarks>
+    public string StatusTip => StatusText;
+
+    /// <summary>True while there is anything behind the mark.</summary>
+    public bool HasStatusTip => StatusText.Length > 0;
+
+    /// <summary>
+    /// **Say something that is Hamlet describing itself, not something gone wrong.**
+    /// </summary>
+    /// <param name="line">The sentence.</param>
+    /// <remarks>
+    /// <para>It goes behind the mark rather than onto the bar. Use it only where the
+    /// line reports something that worked; anything that refused, failed, could not
+    /// be read, or wants him to do something stays a plain assignment and
+    /// speaks.</para>
+    /// <para>**THE FLAG IS SET AFTER THE ASSIGNMENT AND THE NOTIFICATIONS ARE
+    /// RE-RAISED**, because the generated setter resets it on the way through. That
+    /// is the ordering that keeps the default safe: the reset is automatic and the
+    /// exception is deliberate.</para>
+    /// </remarks>
+    /// <param name="speaks">
+    /// The part of <paramref name="line"/> that is an admission and must be read
+    /// without hovering, or "" where the whole line is a narration.
+    /// </param>
+    private void Narrate(string line, string speaks = "")
+    {
+        StatusText = line;
+
+        _statusIsNarration = true;
+        _statusSpoken = speaks;
+
+        OnPropertyChanged(nameof(StatusSpeaks));
+        OnPropertyChanged(nameof(StatusOnScreen));
+    }
+
+    /// <summary>The same door the tune-in uses, for a test.</summary>
+    /// <param name="line">The whole line.</param>
+    /// <param name="speaks">The part of it that is an admission, or "".</param>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="AddSentRowForTests"/>.** Driving a real
+    /// tune-in to prove which of two strings the bar draws would need a rig, a
+    /// neighborhood and a settled dial, for a question about two bindings. Nothing
+    /// in `src/` calls this.
+    /// </remarks>
+    internal void NarrateForTests(string line, string speaks)
+        => Narrate(line, speaks);
+
+    /// <summary>Every plain assignment is a fault until <see cref="Narrate"/> says otherwise.</summary>
+    partial void OnStatusTextChanging(string value)
+    {
+        _statusIsNarration = false;
+        _statusSpoken = "";
+    }
 
     [ObservableProperty]
     private string _modeLineText = "";
@@ -3178,7 +3283,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="change">What changed.</param>
     private void OnSettingChanged(SettingChange change)
     {
-        StatusText = change.Says;
+        // A setting Hamlet changed, successfully, at the operator's request.
+        Narrate(change.Says);
 
         AppEvents.SettingChanged(
             _telemetry, change.Write.Field.ToString(), change.Write.Label,
@@ -4678,7 +4784,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             Favorites.Add(favorite);
             AppEvents.FavoriteSaved(_telemetry, favorite.BandName);
-            StatusText = $"Saved as \"{favorite.Name}\".";
+            Narrate($"Saved as \"{favorite.Name}\".");
         }
 
         PersistFavorites();
@@ -5527,8 +5633,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         _modeFollow = _modeFollow.SuspendedByOperator();
         ModeFollowSuspended = true;
-        StatusText = $"You set the radio to {mode.Text}, so Hamlet will leave the "
-                   + "mode alone until you next change band.";
+        Narrate($"You set the radio to {mode.Text}, so Hamlet will leave the "
+                + "mode alone until you next change band.");
     }
 
     /// <summary>
@@ -6184,9 +6290,9 @@ public partial class MainWindowViewModel : ObservableObject
             // two things and the second one is the one he pressed it for. The
             // sentence says the pitch is the loudest bin rather than a station
             // Hamlet found, so nothing here implies more than happened (§0.0).
-            StatusText =
+            Narrate(
                 $"Kept the last {audio.Duration.TotalSeconds:0} seconds of what the "
-                + "decoder heard, with what the radio was doing beside it.";
+                + "decoder heard, with what the radio was doing beside it.");
 
             MarkCase(
                 wav: Path.GetFileName(wav),
@@ -7505,7 +7611,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var (rig, rigPort) = CreateRig(port);
         var rigType = port == TrainingRadio ? "simulated" : "IC-7300";
-        StatusText = $"Connecting to {port}…";
+        // Progress, not a fault. It is replaced a moment later either way.
+        Narrate($"Connecting to {port}…");
 
         if (!await rig.ConnectAsync())
         {
@@ -8131,10 +8238,21 @@ public partial class MainWindowViewModel : ObservableObject
             // A radio that has no such mode says so by having nothing to say,
             // and blanking the status line over it would wipe whatever the
             // operator was reading.
+            //
+            // **THE TWO ARMS ARE DIFFERENT KINDS** (work instruction 282 task 1).
+            // `decision.Narration` is Hamlet saying what it did and goes behind
+            // the mark; `result.Detail` is the radio declining and speaks.
             var say = result.Worked ? decision.Narration : result.Detail;
             if (say.Length > 0)
             {
-                StatusText = say;
+                if (result.Worked)
+                {
+                    Narrate(say);
+                }
+                else
+                {
+                    StatusText = say;
+                }
             }
 
             AppEvents.ModeFollowed(
@@ -8197,14 +8315,28 @@ public partial class MainWindowViewModel : ObservableObject
             _receiverMemory = memory;
             LastReceiverSetup = results;
 
-            // **HE IS TOLD WHAT CHANGED AND WHY** (task 4). Silence where
-            // nothing needed doing, because a status line that congratulates
-            // itself on every tune-in is one nobody reads by the third time.
+            // **HE IS TOLD WHAT CHANGED AND WHY** (work instruction 042 task 4),
+            // **AND SINCE 2026-09-08 HE IS TOLD ON HOVER** (work instruction 282
+            // task 1). This is the paragraph he kept pointing at: nine conditions
+            // on a CW block compose to 884 characters, full width, across the
+            // bottom of the window on every tune-in. **Not one word of it is
+            // deleted** - `Narrate` puts it behind the mark beside the count, and
+            // it is a narration of things that worked rather than a fault.
+            //
+            // **THE FAULTS INSIDE IT STILL SPEAK.** A condition the radio did not
+            // confirm, one Hamlet could not read, and one it cannot reach at all
+            // are all folded into the same string by `ReceiverSetupVoice`, so
+            // narrating the whole thing would have hidden three admissions behind
+            // a hover. `Admissions` filters the same clauses out of the same
+            // results and those go on the bar.
             var say = ReceiverSetupVoice.Say(results);
 
             if (say.Length > 0)
             {
-                StatusText = say;
+                // **THE ADMISSIONS ARE THE SAME CLAUSES FROM THE SAME PLACE**,
+                // filtered rather than written again, so what he hovers and what
+                // he is shown cannot disagree.
+                Narrate(say, ReceiverSetupVoice.Admissions(results));
             }
         }
         catch (Exception ex)
@@ -8468,10 +8600,10 @@ public partial class MainWindowViewModel : ObservableObject
                     // second time to write this.
                     heard.Decodes));
 
-            StatusText =
+            Narrate(
                 $"{_digitalDecodeNote}. Kept the last "
                 + $"{audio.Duration.TotalSeconds:0} seconds in {folder}, with "
-                + "what the radio was doing beside it.";
+                + "what the radio was doing beside it.");
         }
         catch (IOException error)
         {
@@ -11157,7 +11289,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         Favorites.Add(favorite);
         AppEvents.FavoriteSaved(_telemetry, favorite.BandName);
-        StatusText = $"Saved as \"{favorite.Name}\".";
+        Narrate($"Saved as \"{favorite.Name}\".");
 
         PersistFavorites();
     }
@@ -11964,7 +12096,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (showNarration)
         {
-            StatusText = ProfileResolver.LookingUpNarration(callsign);
+            Narrate(ProfileResolver.LookingUpNarration(callsign));
         }
 
         ProfileResolution resolution;
@@ -12098,7 +12230,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(GridProvenance));
         UpdateBandCharacter(DateTime.UtcNow);
         UpdateSpotDistances();
-        StatusText = GridResolver.DescribeProvenance(_settings.Operator);
+        Narrate(GridResolver.DescribeProvenance(_settings.Operator));
     }
 
     /// <summary>Keep the grid the operator typed, and stop asking.</summary>
@@ -12120,7 +12252,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         GridMismatch = null;
         OnPropertyChanged(nameof(GridProvenance));
-        StatusText = GridResolver.DescribeProvenance(_settings.Operator);
+        Narrate(GridResolver.DescribeProvenance(_settings.Operator));
     }
 
     /// <summary>Take the looked-up class in place of the hand-set one.</summary>
@@ -12140,7 +12272,7 @@ public partial class MainWindowViewModel : ObservableObject
             _telemetry, PrivilegePlan.Describe(mismatch.Found), mismatch.SourceName);
 
         LicenseMismatch = null;
-        StatusText = LicenseResolver.DescribeProvenance(_settings.Operator);
+        Narrate(LicenseResolver.DescribeProvenance(_settings.Operator));
         UpdatePrivileges();
     }
 
@@ -12163,7 +12295,7 @@ public partial class MainWindowViewModel : ObservableObject
         SettingsStore.Save(_settings);
 
         LicenseMismatch = null;
-        StatusText = LicenseResolver.DescribeProvenance(_settings.Operator);
+        Narrate(LicenseResolver.DescribeProvenance(_settings.Operator));
         UpdatePrivileges();
     }
 

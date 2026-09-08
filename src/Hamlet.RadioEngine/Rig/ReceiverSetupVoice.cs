@@ -88,6 +88,58 @@ public static class ReceiverSetupVoice
         return string.Join(" ", said);
     }
 
+    /// <summary>
+    /// **Only the clauses that are admissions, for the line that speaks unasked.**
+    /// </summary>
+    /// <param name="results">What happened to each condition.</param>
+    /// <returns>The admissions, or "" where every condition was settled.</returns>
+    /// <remarks>
+    /// <para>**A FAULT IS NOT ADVICE AND DOES NOT GO BEHIND A HOVER** (Tim,
+    /// 2026-09-08). <see cref="Say"/> composes one string out of five different
+    /// kinds of clause, and three of them are Hamlet admitting it does not know
+    /// something: a setting the radio would not confirm, a setting it could not
+    /// read, and a setting it cannot reach at all. **Moving the whole string to a
+    /// hover would have taken those with it**, which is §0.0 broken by omission and
+    /// exactly what work instruction 282 forbids.</para>
+    /// <para>**IT IS THE SAME CLAUSES FROM THE SAME PLACE**, filtered rather than
+    /// written again, so the sentence he hovers and the sentence he is shown cannot
+    /// come to disagree (§0).</para>
+    /// <para>**WHAT CHANGED AND WHAT HIS OWN HAND IS HOLDING ARE NOT ADMISSIONS.**
+    /// Both are Hamlet reporting something that worked, and both are on the
+    /// hover.</para>
+    /// </remarks>
+    public static string Admissions(IReadOnlyList<ConditionResult> results)
+    {
+        ArgumentNullException.ThrowIfNull(results);
+
+        var said = new List<string>();
+
+        foreach (var result in results.Where(
+                     r => r.Outcome == ConditionOutcome.NotConfirmed))
+        {
+            said.Add(
+                $"I asked for the {result.Condition.Control} to be "
+                + $"{result.Condition.WantedText} and the radio did not confirm it, "
+                + "so I do not know where it is now.");
+        }
+
+        foreach (var result in results.Where(
+                     r => r.Outcome == ConditionOutcome.NotRead))
+        {
+            said.Add(
+                $"I could not read the {result.Condition.Control}, so I have not "
+                + "touched it.");
+        }
+
+        foreach (var result in results.Where(
+                     r => r.Outcome == ConditionOutcome.SpokenOnly))
+        {
+            said.Add(Cannot(result));
+        }
+
+        return string.Join(" ", said);
+    }
+
     private static string Did(ConditionResult result)
     {
         var condition = result.Condition;

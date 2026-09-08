@@ -120,6 +120,31 @@ public static class ReceiverConditions
     /// <summary>What the file deliberately does not cover.</summary>
     public static IReadOnlyList<NeighborhoodUnknown> Unknowns => Shared.Value.Unknowns;
 
+    /// <summary>What the file states for one mode, before the block adds its width.</summary>
+    /// <param name="mode">The mode label, as the file spells it.</param>
+    /// <returns>The conditions, or an empty list for a mode the file does not cover.</returns>
+    /// <remarks>
+    /// <para>**THE FILE IS KEYED BY MODE AND THIS IS THAT LOOKUP** — this class's own
+    /// remarks say so, and until work instruction 282 the only way to reach it was
+    /// through <see cref="ForBlock"/>, which needs a whole `Neighborhood` to answer
+    /// a question about a mode.</para>
+    /// <para>**IT EXISTS BECAUSE NOBODY COULD MEASURE WHAT THESE ROWS COMPOSE TO**
+    /// (§12.5). The paragraph they build reached the status bar for months and three
+    /// separate sweeps for permanently-visible text walked past it, because its only
+    /// literal text in `src/` is doc comments and a source search comes back
+    /// empty.</para>
+    /// <para>A mode this file cannot speak for returns nothing, which is the same
+    /// answer <see cref="ForBlock"/> has always given.</para>
+    /// </remarks>
+    public static IReadOnlyList<ReceiverCondition> ForMode(string? mode)
+    {
+        var key = (mode ?? "").Trim().ToUpperInvariant();
+
+        return key.Length > 0 && Shared.Value.ByMode.TryGetValue(key, out var stated)
+            ? stated
+            : Array.Empty<ReceiverCondition>();
+    }
+
     /// <summary>
     /// What the receiver has to be, to work the mode that lives in this block.
     /// </summary>
@@ -143,14 +168,12 @@ public static class ReceiverConditions
             return Array.Empty<ReceiverCondition>();
         }
 
-        var key = hood.ShortName.Trim().ToUpperInvariant();
+        var all = new List<ReceiverCondition>(ForMode(hood.ShortName));
 
-        if (!Shared.Value.ByMode.TryGetValue(key, out var stated))
+        if (all.Count == 0)
         {
             return Array.Empty<ReceiverCondition>();
         }
-
-        var all = new List<ReceiverCondition>(stated);
 
         if (hood.PassbandHz is { } wideHz)
         {

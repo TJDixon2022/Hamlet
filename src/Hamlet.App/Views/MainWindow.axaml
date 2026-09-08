@@ -4375,8 +4375,23 @@
                 BorderThickness="1" CornerRadius="6"
                 Padding="12,6" Margin="0,12,0,0">
             <Grid ColumnDefinitions="*,Auto">
-                <TextBlock Grid.Column="0" Text="{Binding StatusText}" FontSize="12"
-                           Foreground="{StaticResource HmTextMutedBrush}" />
+                <!-- **ONLY WHAT SPEAKS** (Tim, 2026-09-08: text only where he
+                     intentionally hovers, and a fault is the one exception). This
+                     bound to `StatusText` and carried an 884-character paragraph
+                     across the bottom of the window on every tune-in to a CW block.
+                     **Nothing is deleted**: the mark beside it holds every line,
+                     whichever kind it is. -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
+                    <ctl:HintMarkControl x:Name="StatusTipMark"
+                                         Kind="Tip" VerticalAlignment="Center"
+                                         Text="{Binding StatusTip}" />
+
+                    <TextBlock x:Name="StatusBarText"
+                               Text="{Binding StatusOnScreen}" FontSize="12"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+                </StackPanel>
 
                 <!-- **THE COUNT, QUIETLY** (Tim, 2026-09-08: *just sort of an
                      acknowledgment that you're making contacts*). It is the
