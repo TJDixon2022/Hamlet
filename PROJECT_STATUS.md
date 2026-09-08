@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 7 of 8
+STATE: COMPLETED
+TASK: 8 of 8
 WORK_INSTRUCTION: 282 - the composed paragraph, and the log shows his contacts
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T14:55:53-04:00
-NOTE: Task 7 - listing what this unit moved and re-measuring the whole application against unit 281's 7,665.
+UPDATED: 2026-09-08T14:59:29-04:00
+NOTE: All eight tasks done, none dropped, pushed through 1.12.189. The status bar on a CW tune-in goes from 884 characters to none, measured from the nine shipped conditions rows rather than estimated, with every word on the mark beside it and the three admissions inside it still spoken. Ten surfaces capped in HowMuchTheApplicationSaysTests, and the ceiling is tight enough to have caught the paragraph: the CW tab measures 611 and would have measured 1,495 with it on the bar, against 750. Two measurement faults fixed first - a race with the licence lookup and the 84-character byline die roll. sent is empty because it was never recorded, proved by driving the whole ledger path. The log shows their grid beside my grid and the columns size themselves. 47 of 47 in this unit's classes.
 
 ---
 
