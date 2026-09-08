@@ -389,3 +389,18 @@ ACCOMPLISHED: the screens are quiet, and everything they used to say is one hove
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one changes what the screen says rather than what Hamlet can do, and closes nothing.
+
+## UNIT 282 - STEP E
+
+STEP: E
+APPROACH: confirm the three lines the operator located, move the composed tune-in paragraph behind the status mark without taking its admissions with it, then put a ceiling on every surface so the next one cannot arrive quietly, and give the log the station's grid and columns that do not cut words in half
+HIT: the paragraph is 884 characters and no source search can find it. It is composed at run time from rows in a data file whose only literal text in src is doc comments, so a grep comes back empty and reads exactly like a clean sweep - and units 280 and 281 both walked the realized window honestly, because on a headless training radio no receiver setup ever runs and the bar holds a short line at measurement time
+MOVE: build on
+WHY: the ceiling is the part that outlives the paragraph, and it is set against the fault rather than against today's figure: the CW tab measures 611 and would have measured 1,495 with the paragraph on the bar, against a ceiling of 750. Two things had to be fixed before a ceiling could mean anything - the measurement was racing a network lookup for the licence class, the same window reading 541 unresolved and 623 resolved, and the Shakespeare byline is an 84-character die roll, more than the whole margin
+DECIDED: that a plain assignment to the status line is a fault until a call site says otherwise, so a site nobody classified stays on the screen and a new one added by a session that never read the file speaks; that the admissions inside the tune-in paragraph are filtered out of the same results rather than written a second time, because narrating the whole string would have hidden three of them behind a hover; and that the log's columns are sized by the Grid rather than in pixels, because how wide twelve characters of Consolas are depends on the machine
+LICENCE: work instruction 282 tasks 1 to 8, and Tim's rulings of 2026-09-08 that text appears only where he intentionally hovers and that a fault speaks unasked
+COST: unknown
+ACCOMPLISHED: the paragraph he kept pointing at is off his status bar with every word of it one hover away, no surface can grow another one without a test going red, and his log now says who he worked, where they were, and where he was, without cutting a word in half
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one changes what the screen says and what the log shows rather than what Hamlet can do, and closes nothing.
