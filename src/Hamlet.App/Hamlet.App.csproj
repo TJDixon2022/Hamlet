@@ -41,6 +41,14 @@
                       LogicalName="Hamlet.App.Data.bylines.json" />
   </ItemGroup>
 
+  <!-- **THE MARKS, WHERE AVALONIA LOOKS FOR A RESOURCE.** They are not `/data`:
+       that folder holds cited facts the application reads and reasons from, and a
+       logo is neither cited nor reasoned from. It is a resource of the shell, and
+       the shell is the only thing that may know what a picture is (§0.1). -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
   <!-- The sample provider is an implementation detail of playback with a
        promise attached: it must hand back every generated sample, in order,
        for every mode. The test reaches it directly rather than the type being
