@@ -456,9 +456,24 @@ public sealed record DigitalDecodeRow(
     /// the station is comes from a grid square or from nowhere.</para>
     /// </remarks>
     public string SenderHelp
-        => DxccPrefixes.EntityOf(Sender) is { } entity
-            ? $"Who sent it. {Sender} is a callsign from {Sentence(entity)}"
-            : "Who sent it.";
+    {
+        get
+        {
+            // **HE KNOWS WHO SENT IT** (Tim, 2026-09-08, work instruction 281 task
+            // 5). Observed on his own CQ: Hamlet told him his own callsign is from
+            // the United States and offered to work out how far away he is. A
+            // message he sent gets no sender tooltip at all.
+            if (IsSent)
+            {
+                return "";
+            }
+
+            return DxccPrefixes.EntityOf(Sender) is { } entity
+                ? $"Who sent it. {Sender} is a callsign from "
+                  + Sentence(EntitySpoken.Of(entity))
+                : "Who sent it.";
+        }
+    }
 
     /// <summary>An entity name finished as a sentence.</summary>
     /// <remarks>
@@ -482,8 +497,15 @@ public sealed record DigitalDecodeRow(
     /// 4). A report is a report from one named station to another, and until now
     /// this handed `Explain` three characters with no way of knowing whose report
     /// it was — so it said *hears you*, about a contact the operator was not in.</para>
+    /// <para>**AND A MESSAGE HE SENT IS NOT EXPLAINED BACK TO HIM** (Tim,
+    /// 2026-09-08, work instruction 281 task 5). Every sentence this table produces
+    /// is about the sender: who they are, where they are, what they are asking for.
+    /// On his own transmission the sender is him, and he composed it, saw it before
+    /// it went, and clicked once to send it. <see cref="DirectionTip"/> still says
+    /// when it went out.</para>
     /// </remarks>
-    public string PayloadHelp => Ft8Vocabulary.Explain(Fields, ObserverGrid) ?? "";
+    public string PayloadHelp
+        => IsSent ? "" : Ft8Vocabulary.Explain(Fields, ObserverGrid) ?? "";
 
     /// <summary>True where the payload is on the list and has hover text.</summary>
     public bool HasPayloadHelp => PayloadHelp.Length > 0;

@@ -50,6 +50,17 @@ public static class DxccPrefixes
     /// <summary>How many prefixes are shared and therefore silent.</summary>
     public static int SharedPrefixCount => Shared.Value.Shared.Count;
 
+    /// <summary>Every entity name in the cited list, in the ARRL's own words.</summary>
+    /// <remarks>
+    /// **SO A NAME WRITTEN DOWN SOMEWHERE ELSE CAN BE CHECKED AGAINST IT** (work
+    /// instruction 281 task 5). <see cref="EntitySpoken"/> keys a short spoken form
+    /// by the ARRL's name; a key that stops matching one, because the list was
+    /// re-transcribed or a name changed, would silently do nothing at all. This is
+    /// what lets a test say so instead.
+    /// </remarks>
+    public static IReadOnlySet<string> Entities
+        => Shared.Value.Prefixes.Values.ToHashSet(StringComparer.Ordinal);
+
     /// <summary>Where the table came from, for the About window and the record.</summary>
     public static string SourceLine
         => $"{Shared.Value.Source.Name}, {Shared.Value.Source.DocumentDate}, "

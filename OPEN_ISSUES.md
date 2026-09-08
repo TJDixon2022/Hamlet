@@ -4,6 +4,43 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-088
+status: open
+owner: claude
+raised: 2026-09-08
+severity: slows
+blocks: nothing the operator can see. It blocks any future unit trusting `TheMessageReadsAsThreePartsTests` as a gate on the FT8 vocabulary, because ten of its cases assert wording the application stopped producing
+refs: tests/Hamlet.App.Tests/ViewModels/TheMessageReadsAsThreePartsTests.cs:133, tests/Hamlet.App.Tests/ViewModels/TheMessageReadsAsThreePartsTests.cs:361, src/Hamlet.App/ViewModels/Ft8Vocabulary.cs:171
+---
+
+Ten cases in `TheMessageReadsAsThreePartsTests` assert wording units 271 and 281
+replaced, and they were already red when work instruction 281 opened.
+
+Measured on 2026-09-08 with this unit's own changes stashed: 91 tests in the five
+tooltip classes, 81 green, **10 red before anything in this unit was applied.** They
+are not in `docs/unit239-failing-set.txt` and work instruction 281 does not name
+them among the inherited reds, so they are an inherited red nobody has recorded.
+
+Two shapes:
+
+- **Seven** expect *is telling W4WTM which grid square they are in* and *saying
+  which grid square*. The application says *is telling W4WTM where he is
+  transmitting from*, which is unit 271's own wording under HM-DEC-159 — the
+  ruling that settled the pronoun and removed the no-gendered-pronoun rule from
+  `Ft8Vocabulary`. The test was not brought along.
+- **Three** expect `SenderHelp` to be exactly *Who sent it.* The application has
+  appended the entity since unit 271, deliberately, and
+  `TheSenderTooltipNamesTheEntityTests` asserts that it does. **The two classes
+  assert opposite things about the same property**, which is the part worth
+  reporting: one of them has to give, and which one is a question about what that
+  tooltip is for rather than a typo.
+
+Left alone under CLAUDE.md 12.6. Work instruction 281 rewrote the tests its own
+changes broke — two of the twelve seen — and repairing eight more on the way past
+is the drive-by repair that rule forbids. **Whoever takes it must decide the second
+shape rather than just make the strings match**, or the contradiction comes back.
+
+---
 id: HM-OPEN-087
 status: open
 owner: tim

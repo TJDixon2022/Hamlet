@@ -157,8 +157,11 @@ public sealed class TheGridSaysWhereTheStationIsTests
 
         _output.WriteLine(help);
 
+        // **THE SPOKEN FORM** (work instruction 281 task 5). The claim under test
+        // is unchanged - the country comes from the callsign and not the grid -
+        // and only the way the name is said has moved.
         Assert.Contains(
-            "in United States of America,", help, StringComparison.Ordinal);
+            "in the United States,", help, StringComparison.Ordinal);
         Assert.DoesNotContain("Venezuela", help, StringComparison.OrdinalIgnoreCase);
     }
 

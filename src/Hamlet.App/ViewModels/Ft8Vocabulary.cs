@@ -234,9 +234,15 @@ public static class Ft8Vocabulary
         // optional country in front, `He is, in grid QG44` came out for every
         // station the table declines, which is a stumble in the middle of the
         // sentence and reads as though a word had gone missing. It had.
+        // **THE NAME AS A PERSON WOULD SAY IT** (work instruction 281 task 5).
+        // `United States of America` is the ARRL's own wording and it is correct;
+        // it reads as officialese where every other entity in the sentence reads
+        // short. The cited file is untouched — `EntitySpoken` is a spoken form
+        // laid over it, used only where a name goes into prose.
         var place = entity is null
             ? $"in grid {grid}"
-            : $"in {EntityQualifier.DescribeFromGrid(entity, grid)}, in grid {grid}";
+            : $"in {EntitySpoken.Of(EntityQualifier.DescribeFromGrid(entity, grid))}, "
+              + $"in grid {grid}";
 
         var mine = OperatorLocation.FromGrid(observerGrid);
         var theirs = OperatorLocation.FromGrid(grid);

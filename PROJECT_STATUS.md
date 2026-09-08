@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 8
+TASK: 5 of 8
 WORK_INSTRUCTION: 281 - text only where he hovers
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T13:48:43-04:00
-NOTE: Task 4 - the belt. Ten ranks white through gold, a ring around the count and never a fill, the number staying the primary carrier so it and the progress still read in grayscale.
+UPDATED: 2026-09-08T13:53:18-04:00
+NOTE: Task 5 - a message he sent gets no sender tooltip, and the entity name shortens. Task 4 shipped: ten belt ranks white to gold, a border ring, the label replaced by a drawn bar, 5 of 5.
 
 ---
 

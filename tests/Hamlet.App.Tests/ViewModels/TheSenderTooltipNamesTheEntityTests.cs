@@ -28,7 +28,10 @@ public sealed class TheSenderTooltipNamesTheEntityTests
     [Theory]
     [InlineData("CQ HA1BF JN86", "HA1BF is a callsign from Hungary.")]
     [InlineData("CQ IS0AAA JM49", "IS0AAA is a callsign from Sardinia.")]
-    [InlineData("KE9COB N5CH R+14", "N5CH is a callsign from United States of America.")]
+    // **THE SPOKEN FORM, NOT THE ARRL'S** (work instruction 281 task 5). The
+    // cited list still says `United States of America`; a name going into a
+    // sentence is said the way a person says it (§0.7, `EntitySpoken`).
+    [InlineData("KE9COB N5CH R+14", "N5CH is a callsign from the United States.")]
     public void TheSenderTooltipNamesTheEntity(string message, string expected)
     {
         var help = Row(message).SenderHelp;
