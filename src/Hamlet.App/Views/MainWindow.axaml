@@ -34,6 +34,28 @@
              **THE SENT BUBBLE IS NARROWER THAN THE COLUMN ON PURPOSE.** A bubble
              that filled the width would align with the received one and the shape
              would say nothing. -->
+        <!-- **THE RING'S FOUR STATES** (Tim, 2026-09-08). Each is separable in
+             grayscale: unknown by its dashes, on air by its thickness, his slot
+             and theirs by the caption beside them as well as by ink. -->
+        <Style Selector="Arc">
+            <Setter Property="StrokeThickness" Value="3" />
+            <Setter Property="Stroke" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
+        <Style Selector="Arc.hm-his">
+            <Setter Property="Stroke" Value="{StaticResource HmAmberBrush}" />
+        </Style>
+
+        <Style Selector="Arc.hm-onair">
+            <Setter Property="StrokeThickness" Value="6" />
+            <Setter Property="Stroke" Value="{StaticResource HmGreenBrush}" />
+        </Style>
+
+        <Style Selector="Arc.hm-unknown">
+            <Setter Property="StrokeDashArray" Value="2,2" />
+            <Setter Property="Stroke" Value="{StaticResource HmSlateEdgeBrush}" />
+        </Style>
+
         <Style Selector="Border.hm-bubble">
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="MaxWidth" Value="330" />
@@ -4030,10 +4052,62 @@
                                              second carrier: every state says what it
                                              is in words. -->
                                         <StackPanel Grid.Row="0">
-                                            <TextBlock Text="{Binding DigitalTurnLine}"
-                                                       Classes.hm-sent="{Binding DigitalTurnIsMine}"
-                                                       TextWrapping="Wrap"
-                                                       FontSize="12" Margin="0,0,0,6" />
+                                            <!-- **THE BEAT IS A RING** (Tim's ruling,
+                                                 2026-09-08: show, do not tell). It replaced
+                                                 two sentences saying one thing, on the
+                                                 screen he watches with fourteen seconds to
+                                                 decide in.
+
+                                                 **IT COUNTS DOWN AND DOES NOTHING ELSE**
+                                                 (§0.2). Nothing reads it, nothing arms on
+                                                 it, and reaching zero sends nothing. A
+                                                 countdown that fires is automatic
+                                                 sequencing wearing a clock's face.
+
+                                                 **THE FOUR STATES SEPARATE WITHOUT COLOUR**
+                                                 (§0.6). Unknown is dashed with a question
+                                                 mark; on air is drawn thick and captioned
+                                                 with the message going out; his slot and
+                                                 theirs differ by the caption as well as by
+                                                 accent against muted. Printed in grey the
+                                                 four are still four.
+
+                                                 **TWO LENGTHS SHARE ONE SHAPE.** A slot is
+                                                 15 s and a transmission is 12.64 s, and the
+                                                 arc is a fraction of whichever this is - so
+                                                 a full ring means all of it either way, and
+                                                 the thickness and the caption say which. -->
+                                            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,8">
+                                                <Panel Grid.Column="0" Width="44" Height="44">
+                                                    <Ellipse Width="40" Height="40"
+                                                             StrokeThickness="3"
+                                                             Stroke="{StaticResource HmSlateEdgeBrush}" />
+
+                                                    <Arc x:Name="DigitalTurnRing"
+                                                         Width="40" Height="40"
+                                                         StartAngle="-90"
+                                                         SweepAngle="{Binding TurnRingSweep}"
+                                                         Classes.hm-unknown="{Binding TurnRingIsUnknown}"
+                                                         Classes.hm-onair="{Binding TurnRingIsOnAir}"
+                                                         Classes.hm-his="{Binding TurnRingIsHis}" />
+
+                                                    <TextBlock x:Name="DigitalTurnCount"
+                                                               Text="{Binding TurnRingCount}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               FontFamily="Consolas,Menlo,monospace"
+                                                               FontSize="14" FontWeight="SemiBold" />
+                                                </Panel>
+
+                                                <TextBlock x:Name="DigitalTurnCaption"
+                                                           Grid.Column="1"
+                                                           Text="{Binding TurnRingCaption}"
+                                                           VerticalAlignment="Center"
+                                                           TextWrapping="Wrap"
+                                                           Margin="10,0,0,0"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </Grid>
 
                                             <!-- **NOTHING IS HIDDEN** (Tim's ruling,
                                                  2026-09-08). The panel below shows one

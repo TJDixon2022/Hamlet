@@ -1540,6 +1540,92 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public string DigitalTurnLine => _turn.Line();
 
+    /// <summary>How far round the ring is still drawn, in degrees.</summary>
+    /// <remarks>
+    /// <para>**THE RING DRAINS AND DOES NOTHING ELSE** (§0.2). Nothing reads it,
+    /// nothing arms on it, and reaching zero sends nothing: a countdown that fires
+    /// is automatic sequencing wearing a clock's face, and this phase forbids it
+    /// outright.</para>
+    /// <para>**TWO LENGTHS SHARE ONE SHAPE, AND THE RING IS DRAWN AS A FRACTION**
+    /// rather than as seconds, which is what lets them. A slot is 15 s and a
+    /// transmission is 12.64 s, so a full ring means *all of whatever this is*
+    /// either way. **What says which it is, is not the ring**: the on-air state is
+    /// drawn thicker and captioned with the message going out, so nobody has to
+    /// infer the length from the arc.</para>
+    /// </remarks>
+    public double TurnRingSweep
+    {
+        get
+        {
+            if (_turn.SecondsLeft is not { } left)
+            {
+                return 0;
+            }
+
+            var whole = _turn.State == Ft8TurnState.Transmitting
+                ? Ft8Slots.TransmissionSeconds
+                : Ft8Slots.SlotSeconds;
+
+            return Math.Clamp(left / whole, 0, 1) * 360.0;
+        }
+    }
+
+    /// <summary>The number inside the ring, or a question mark.</summary>
+    /// <remarks>
+    /// **A QUESTION MARK IS NOT A NUMBER AND MUST NOT LOOK LIKE ONE** (§0.0).
+    /// Before a station has transmitted there is no parity to derive, so there is
+    /// no countdown to show either, and a zero there would be a reading nobody
+    /// took.
+    /// </remarks>
+    public string TurnRingCount
+        => _turn.State == Ft8TurnState.NoClock
+            || _turn.State == Ft8TurnState.NoStationYet
+            || _turn.SecondsLeft is null
+                ? "?"
+                : _turn.SecondsLeft.Value.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>At most three words under the ring.</summary>
+    /// <remarks>
+    /// <para>**NO SENTENCES** (Tim's ruling, 2026-09-08: show, do not tell). The
+    /// two-sentence transmitting line went with this; what is left says which of
+    /// the states it is in and nothing more.</para>
+    /// <para>**AND IT IS THE NON-COLOUR CARRIER** (§0.6). His slot and theirs are
+    /// an accent ring and a muted one, which is a hue difference and may not be the
+    /// only one: the caption separates them in grayscale and in print.</para>
+    /// <para>**THE ON-AIR CAPTION IS THE MESSAGE ITSELF**, which is the most useful
+    /// three-ish words available while his carrier is up: what is going out.</para>
+    /// </remarks>
+    public string TurnRingCaption
+        => _turn.State switch
+        {
+            Ft8TurnState.Mine => "click a reply",
+            Ft8TurnState.Theirs => "yours is next",
+            Ft8TurnState.Transmitting => _armedText.Length > 0 ? _armedText : "on air",
+            Ft8TurnState.Stopped => "stopped partway",
+            Ft8TurnState.NoClock => "clock not measured",
+            _ => "nothing heard yet",
+        };
+
+    /// <summary>True where the ring is drawn dashed and empty.</summary>
+    /// <remarks>
+    /// **THE UNKNOWN STATES KEEP THEIR DASHES AND THEIR QUESTION MARK** and never
+    /// pick a side (unit 277's rule). The dash pattern is what separates them in
+    /// grayscale from the two that are known.
+    /// </remarks>
+    public bool TurnRingIsUnknown
+        => _turn.State is Ft8TurnState.NoClock or Ft8TurnState.NoStationYet;
+
+    /// <summary>True while his own carrier is up.</summary>
+    /// <remarks>
+    /// **DRAWN THICKER, WHICH IS THE GRAYSCALE CARRIER FOR THIS STATE.** It has its
+    /// own colour, neither the accent nor the muted one, and a colour alone would
+    /// not survive being printed.
+    /// </remarks>
+    public bool TurnRingIsOnAir => _turn.State == Ft8TurnState.Transmitting;
+
+    /// <summary>True where the slot running is his own and free.</summary>
+    public bool TurnRingIsHis => _turn.State == Ft8TurnState.Mine;
+
     /// <summary>True where a turn has actually been derived.</summary>
     /// <remarks>
     /// **NOT AN INVITATION** (§0.0). It is false while the clock is unmeasured and
@@ -1600,6 +1686,12 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(DigitalTurnIsKnown));
         OnPropertyChanged(nameof(DigitalTurnIsMine));
         OnPropertyChanged(nameof(DigitalTurnSecondsLeft));
+        OnPropertyChanged(nameof(TurnRingSweep));
+        OnPropertyChanged(nameof(TurnRingCount));
+        OnPropertyChanged(nameof(TurnRingCaption));
+        OnPropertyChanged(nameof(TurnRingIsUnknown));
+        OnPropertyChanged(nameof(TurnRingIsOnAir));
+        OnPropertyChanged(nameof(TurnRingIsHis));
     }
 
     /// <summary>The slot of the last thing heard from the station he is working.</summary>
@@ -1638,6 +1730,30 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return best;
+    }
+
+    /// <summary>Hold one turn state, for a test that has no clock to drive.</summary>
+    /// <param name="turn">The state the ring should draw.</param>
+    /// <param name="sending">What is going out, for the on-air caption.</param>
+    /// <remarks>
+    /// **THE RING'S FOUR STATES CANNOT ALL BE REACHED BY WAITING.** Two of them
+    /// need a transmission in flight and one needs an unmeasured clock, and driving
+    /// a real send to look at a caption would need a radio, an audio endpoint and a
+    /// slot boundary to arrive. This sets what `RefreshTurn` would have set and
+    /// touches nothing else.
+    /// </remarks>
+    internal void UseTurnForTests(Ft8Turn turn, string sending = "")
+    {
+        _turn = turn;
+        _armedText = sending;
+
+        OnPropertyChanged(nameof(DigitalTurnLine));
+        OnPropertyChanged(nameof(TurnRingSweep));
+        OnPropertyChanged(nameof(TurnRingCount));
+        OnPropertyChanged(nameof(TurnRingCaption));
+        OnPropertyChanged(nameof(TurnRingIsUnknown));
+        OnPropertyChanged(nameof(TurnRingIsOnAir));
+        OnPropertyChanged(nameof(TurnRingIsHis));
     }
 
     /// <summary>Read the beat once, for a test, without waiting on a timer.</summary>
