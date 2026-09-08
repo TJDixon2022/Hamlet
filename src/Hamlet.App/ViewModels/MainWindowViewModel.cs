@@ -1528,6 +1528,23 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private bool _sendWasStopped;
 
+    /// <summary>Every slot Hamlet actually transmitted in this session.</summary>
+    /// <remarks>
+    /// <para>**A SLOT HE USED WAS NEVER SEARCHED** (HM-DEC-147). Hamlet suspends
+    /// decoding while the radio is transmitting, so a slot he keyed produces no
+    /// decodes **by design** - and the census was describing that deliberate
+    /// suspension as *the search found no place in it that looked like the start
+    /// of an FT8 transmission*, which is a claim about the band that Hamlet never
+    /// made a measurement to support (§0.0).</para>
+    /// <para>**NOTHING NEEDED MEASURING TO FIX IT.** The transmission is already
+    /// in `ft8_transmission` telemetry with its `slotStartUtc`; this is the same
+    /// fact kept where the census can read it.</para>
+    /// <para>**IT IS A READING AND NOTHING ACTS ON IT.** Nothing arms, cancels or
+    /// decodes differently because a slot is in here; one line of prose changes.
+    /// </para>
+    /// </remarks>
+    private readonly HashSet<DateTime> _transmittedSlots = new();
+
     /// <summary>The beat, as the panel last read it.</summary>
     private Ft8Turn _turn = new(Ft8TurnState.NoClock, null, null);
 
@@ -1730,6 +1747,43 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         return best;
+    }
+
+    /// <summary>Remember a slot as one he transmitted in, for a test.</summary>
+    /// <remarks>
+    /// **THE REAL ROUTE NEEDS A RADIO.** A slot is booked where a run says the
+    /// whole transmission went out and the radio unkeyed, which needs a port, an
+    /// audio endpoint and a boundary to arrive - for a question about one line of
+    /// prose. This sets what that path sets and nothing else.
+    /// </remarks>
+    internal void RememberTransmittedSlotForTests(DateTime slotStartUtc)
+        => _transmittedSlots.Add(slotStartUtc);
+
+    /// <summary>What the census would say about one slot, for a test.</summary>
+    /// <param name="slotStartUtc">The slot.</param>
+    /// <param name="candidates">Places that looked like the start of a signal.</param>
+    /// <param name="codewords">How many of those came out as valid codewords.</param>
+    /// <param name="checksums">How many of those carried their own checksum.</param>
+    /// <returns>The line, exactly as the panel would show it.</returns>
+    /// <remarks>
+    /// **THE SAME METHOD THE PANEL USES**, handed one slot rather than a whole
+    /// reception, so what is tested is the wording rule and not a second copy of
+    /// it. Synthesising audio to reach one sentence would spend a minute of
+    /// decode on a question about a string.
+    /// </remarks>
+    internal string CensusForTests(
+        DateTime slotStartUtc, int candidates, int codewords = 0, int checksums = 0)
+    {
+        var reception = new Ft8Reception([], 1, candidates, "")
+        {
+            Slots =
+            [
+                new Ft8SlotCensus(
+                    slotStartUtc, candidates, codewords, checksums, 0, 0, [], 48_000),
+            ],
+        };
+
+        return DescribeCensus(reception);
     }
 
     /// <summary>Hold one turn state, for a test that has no clock to drive.</summary>
@@ -9916,6 +9970,12 @@ public partial class MainWindowViewModel : ObservableObject
             // **THE ONE CALL SITE OF `RecordSent` IN THE TREE**, which is the line
             // unit 258 left it unreachable for.
             _contacts?.RecordSent(text, result.Send!.SlotStartUtc);
+
+            // **AND THE SLOT IS REMEMBERED AS ONE HE USED**, so the census does
+            // not describe a deliberate suspension as a search that found
+            // nothing. Booked here for RecordSent own reason: only where the
+            // whole transmission went out and the radio unkeyed.
+            _transmittedSlots.Add(result.Send!.SlotStartUtc);
         }
 
         // **READ AFTER THE BOUNDARY HAS RETURNED, WITH NOTHING KEYED** (work
@@ -10614,7 +10674,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// scores are not shown here at all — a bare number on a screen beside the word
     /// *signal* is exactly how one gets read as decibels.</para>
     /// </remarks>
-    private static string DescribeCensus(Ft8Reception heard)
+    private string DescribeCensus(Ft8Reception heard)
     {
         if (heard.Refusal.Length > 0 || heard.Slots.Count == 0)
         {
@@ -10643,44 +10703,48 @@ public partial class MainWindowViewModel : ObservableObject
 
         var at = worst.SlotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
 
-        // **AND WHAT READ IT** (unit 249). This line only ever speaks about a
-        // slot that gave up nothing readable, which is exactly the moment the
-        // operator wants to know what had already been tried on it. It names
-        // the decoder and stops there: whether a stage would have helped is the
-        // ladder's to say over hundreds of trials, and one slot cannot support
-        // that claim either way (§0.0).
-        var by = worst.Decoder.IsRecorded
-            ? ", read by " + worst.Decoder
-            : "";
-
-        if (worst.CandidateCount == 0)
+        // **A SLOT HE TRANSMITTED IN WAS NOT SEARCHED, AND SAYS SO** (work
+        // instruction 280 task 7). Hamlet suspends decoding while the radio is
+        // transmitting (HM-DEC-147), so this slot produced nothing **by design**.
+        // Reporting a candidate count for it would be a claim about the band
+        // drawn from a measurement nobody took (§0.0), and it is what this line
+        // said on 2026-09-08 about a slot at 15:16:45 while its neighbours
+        // decoded two stations.
+        if (_transmittedSlots.Contains(worst.SlotStartUtc))
         {
-            return $"the slot at {at} UTC was decoded and the search found no "
-                + "place in it that looked like the start of an FT8 transmission, "
-                + "so nothing reached the decoder at all" + by;
+            return $"{at} UTC was yours - Hamlet was transmitting and did not "
+                + "listen";
         }
 
-        var places = worst.CandidateCount == 1
-            ? "one place that looked like the start of an FT8 transmission"
-            : $"{worst.CandidateCount} places that looked like the start of an "
-              + "FT8 transmission";
+        // **THE DECODER AND ITS STAGE LIST CAME OFF THE LINE ON 2026-09-08**
+        // (Tim: show, do not tell). They belong in the sidecar and on hover,
+        // not repeated four times a minute at somebody working a station.
+        // **Nothing about what is decoded changed**; this is what the line says.
+        if (worst.CandidateCount == 0)
+        {
+            // **A QUIET SLOT IS A NUMBER.** Zero candidates reads as zero
+            // candidates.
+            return $"{at} UTC · 0 candidates";
+        }
 
+        // **THE STAGES ARE COUNTS AND NOT CLAUSES.** Each number is where the
+        // reading stopped: candidates found, of those how many were valid
+        // codewords, of those how many carried their own checksum. Nothing here
+        // diagnoses (§12.1) and **no number is lost** - the same figures are on
+        // the line without the sentence around them.
         if (worst.ParitySatisfiedCount == 0)
         {
-            return $"the slot at {at} UTC gave up {places}, and not one of them "
-                + "came out as a valid codeword" + by;
+            return $"{at} UTC · {worst.CandidateCount} candidates · 0 codewords";
         }
 
         if (worst.ChecksumPassedCount == 0)
         {
-            return $"the slot at {at} UTC gave up {places}, "
-                + $"{worst.ParitySatisfiedCount} of them came out as valid "
-                + "codewords, and not one of those carried its own checksum" + by;
+            return $"{at} UTC · {worst.CandidateCount} candidates · "
+                + $"{worst.ParitySatisfiedCount} codewords · 0 checksums";
         }
 
-        return $"the slot at {at} UTC gave up {places}, "
-            + $"{worst.ChecksumPassedCount} of them carried their own checksum, "
-            + "and not one of those could be put into words" + by;
+        return $"{at} UTC · {worst.CandidateCount} candidates · "
+            + $"{worst.ChecksumPassedCount} checksums · 0 read";
     }
 
     /// <summary>What a press made of the audio, in one line.</summary>
