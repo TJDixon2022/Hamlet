@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 8
+TASK: 6 of 8
 WORK_INSTRUCTION: 281 - text only where he hovers
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T13:53:18-04:00
-NOTE: Task 5 - a message he sent gets no sender tooltip, and the entity name shortens. Task 4 shipped: ten belt ranks white to gold, a border ring, the label replaced by a drawn bar, 5 of 5.
+UPDATED: 2026-09-08T13:58:43-04:00
+NOTE: Task 6 - finding why the distance calculation cannot reach a grid that is set. ObserverGrid works when passed - the sender test measured 250 miles on a bearing of 87 with FN00DJ - so the fault is on the path that fills it.
 
 ---
 

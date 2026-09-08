@@ -2277,7 +2277,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private DigitalDecodeRow KeepSentRow(string message, DateTime slotStartUtc)
     {
-        var row = DigitalDecodeRow.Sent(message, slotStartUtc);
+        // **THROUGH THE SAME DOOR AS EVERY OTHER ROW** (work instruction 281 task
+        // 6). `DigitalDecodeRow.Sent` built its row with the grid blank and this
+        // method does not call `PlaceRow`, so a sent row was the one row in the
+        // application the operator's own grid never reached.
+        var row = WithOperatorGrid(DigitalDecodeRow.Sent(message, slotStartUtc));
 
         _digitalSent.Add(row);
 
@@ -2287,6 +2291,35 @@ public partial class MainWindowViewModel : ObservableObject
 
         return row;
     }
+
+    /// <summary>
+    /// **The one place the operator's own grid reaches a row.**
+    /// </summary>
+    /// <param name="row">The row, however it was built.</param>
+    /// <returns>The same row carrying the grid from Settings.</returns>
+    /// <remarks>
+    /// <para>**IT IS A METHOD BECAUSE IT WAS NOT ONE PLACE** (work instruction 281
+    /// task 6). `PlaceRow`'s own remarks have said *the one place the operator's own
+    /// grid reaches a row* since unit 252, and it stopped being true the moment
+    /// `KeepSentRow` was added: that method builds its row through
+    /// <see cref="DigitalDecodeRow.Sent"/>, which passes `ObserverGrid: ""`, and it
+    /// does not call `PlaceRow`. So a message the operator transmitted carried a
+    /// blank grid while Settings held `FN00DJ`, verified from callook.info, and the
+    /// tooltip on his own CQ told him Hamlet needed a grid square he had already
+    /// given it.</para>
+    /// <para>**IT IS THE THIRD OF THIS SHAPE** — the menu on the wrong list, the Log
+    /// item gated where it could never fire, and now this. All three are a second
+    /// construction site added later that does not go through the door the first one
+    /// uses, and in all three the value was plainly present the whole time. **A
+    /// remark claiming there is one place is not one place**; a method that has to
+    /// be called is closer, and the test that goes with this asserts it of a sent
+    /// row and a received row together.</para>
+    /// <para>**READ FRESH EVERY TIME**, so a grid typed in Settings shows up on the
+    /// next row rather than at the next launch, and so no second copy of it lives
+    /// anywhere. `OperatorProfile.GridSquare` stays the only one.</para>
+    /// </remarks>
+    private DigitalDecodeRow WithOperatorGrid(DigitalDecodeRow row)
+        => row with { ObserverGrid = _settings.Operator.GridSquare ?? "" };
 
     /// <summary>The same door the send path uses, for a test.</summary>
     /// <param name="message">The text that went out.</param>
@@ -8752,13 +8785,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private DigitalDecodeRow PlaceRow(DigitalDecodeRow row)
     {
-        // **THE ONE PLACE THE OPERATOR'S OWN GRID REACHES A ROW** (unit 252 task
-        // 2). Every row goes through here, so the tooltip can measure a distance
-        // without `Ft8Vocabulary` — a static table — being handed a settings
-        // object, and without a second copy of the grid living anywhere.
-        // `OperatorProfile.GridSquare` stays the only one, and this reads it
-        // fresh each time so a grid typed in Settings shows up on the next slot.
-        row = row with { ObserverGrid = _settings.Operator.GridSquare };
+        // **THE OPERATOR'S OWN GRID** (unit 252 task 2), through the one call
+        // that reads it. See <see cref="WithOperatorGrid"/> for why that call
+        // exists rather than the read sitting inline here, which is where it was
+        // until work instruction 281 task 6.
+        row = WithOperatorGrid(row);
 
         // **AND THE ONE PLACE THE CONTACT STATE REACHES A ROW** (unit 258). Same
         // door, same reason: every row goes through here, so there is one place

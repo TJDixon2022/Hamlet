@@ -153,9 +153,14 @@ public sealed record DigitalDecodeRow(
     /// <param name="slotStartUtc">The boundary of the slot it occupied, corrected.</param>
     /// <returns>The row.</returns>
     /// <remarks>
-    /// **ONE PLACE BUILDS A SENT ROW**, so the empty cells cannot be filled in by
-    /// a second call site in a hurry. The `Utc` cell is formatted exactly as a
-    /// decoded row's is, because the two are read down one column.
+    /// <para>**ONE PLACE BUILDS A SENT ROW**, so the empty cells cannot be filled in
+    /// by a second call site in a hurry. The `Utc` cell is formatted exactly as a
+    /// decoded row's is, because the two are read down one column.</para>
+    /// <para>**THE GRID IS NOT ITS TO FILL AND THE CALLER MUST** (work instruction
+    /// 281 task 6). This is a static builder and the operator's grid lives in
+    /// settings, so it passes the empty string and `MainWindowViewModel.KeepSentRow`
+    /// puts the real one on through `WithOperatorGrid`. **It was the blank that
+    /// shipped**, for six units, because nothing said the caller owed it one.</para>
     /// </remarks>
     public static DigitalDecodeRow Sent(string message, DateTime slotStartUtc)
         => new(
