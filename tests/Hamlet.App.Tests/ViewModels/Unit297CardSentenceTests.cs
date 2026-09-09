@@ -273,6 +273,28 @@ public sealed class Unit297CardSentenceTests
             StringComparison.Ordinal);
     }
 
+
+    /// <summary>**The your-turn hover, printed whole for the report.**</summary>
+    /// <remarks>
+    /// **THE CARD THE REPORT QUOTES IS THE ONE HE IS DECIDING ABOUT.** A hover that
+    /// teaches is worth reading on the card that has a button on it, and the
+    /// finished card's hover is already printed by
+    /// <c>TheDetailKeepsWhatTheFaceGaveUp</c>.
+    /// </remarks>
+    [Fact]
+    public void TheYourTurnHoverTeaches()
+    {
+        var card = Print(HeAnswered());
+
+        _output.WriteLine("");
+        _output.WriteLine(card.Detail);
+
+        Assert.Contains("-9 dB", card.Detail, StringComparison.Ordinal);
+        Assert.Contains("-21", card.Detail, StringComparison.Ordinal);
+        Assert.Contains("1240 Hz", card.Detail, StringComparison.Ordinal);
+        Assert.Contains("14.074000 MHz", card.Detail, StringComparison.Ordinal);
+    }
+
     /// <summary>Every fixture, for the sweeps.</summary>
     private IEnumerable<Ft8ContactCard> Every()
     {
