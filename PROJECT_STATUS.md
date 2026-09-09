@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 7 of 8
-WORK_INSTRUCTION: 293 - one click, one FT4 transmission, through the same abort
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 7
+WORK_INSTRUCTION: 294 - the FT4 signal report, and the ledger on FT4's grid
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T12:08:37-04:00
-NOTE: 7 of 8, task 8 dropped whole as the named drop candidate with both ledger gaps named and standing. Step 4 goes partial to done - criteria 3 and 4 met, so every bench step in the phase is answered and what is left is Tim at his own radio. One right click on an FT4 row put 5.04 s of FT4 tones out of a real card and the loopback decoded them back as the exact string the menu offered: 0 missed, 0 wrong. The log writes MODE=MFSK plus SUBMODE=FT4. 20 places were FT8 by construction, 17 now follow the mode, 3 stand and two of those by design. FT8 sample-identical and byte-identical throughout. validate-output exit 0, all seven rules. Eight items back, one beside a criterion and none blocking.
+UPDATED: 2026-09-09T12:27:12-04:00
+NOTE: Task 1 driven and committed - a station heard 4 FT4 slots ago reads "your move, 2 slots" and gone quiet trips at 8 FT4 slots not 4; the menu offers 3 on FT4 against 5 on FT8. Now threading SlotGrid through Ft8StationRecord.SlotsAgo and removing the second copy of the arithmetic at MainWindowViewModel:2524.
 
 ---
 
