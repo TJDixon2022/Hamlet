@@ -1,4 +1,4 @@
-# Work instruction 286 - the ring counts down, the badge announces itself, and Hamlet gets a face
+# Work instruction 287 - an achievements screen, and the first of each mode
 
 ```
 STOP. Verify the project before reading any further.
@@ -35,7 +35,7 @@ minutes with no status write.
 
 `dotnet build` is allowed, foregrounded, with a timeout.
 
-**Tool fact, twelve units old:** this shell will not carry a quoted heredoc
+**Tool fact, thirteen units old:** this shell will not carry a quoted heredoc
 containing an apostrophe, and it collapses a doubled backslash inside one. Use
 script files.
 
@@ -47,64 +47,42 @@ Every bench step of this phase is closed; steps D and E are Tim at his radio.
 **`ADVANCED: no` by construction.**
 
 ```
-DRIFT:  8 consecutive units without advance, carried from unit 285.
+DRIFT:  9 consecutive units without advance, carried from unit 286.
 ```
 
 ---
 
 ## Why this unit exists
 
-**Three things the operator asked for, 2026-09-08.**
+**Tim's ruling, 2026-09-08: an achievements screen, off the Tools menu, beside the
+contact log.**
 
-**One. The ring never counts down until somebody has transmitted.** Unit 277 ruled
-that **whose turn it is** is unknown before a station has spoken, which is right -
-parity is derived from what the other station sent and guessing would send him into
-their slot. **But the slot clock is not the turn.** FT8 boundaries land on `:00`,
-`:15`, `:30` and `:45` whatever anybody is doing.
+**Not Help.** Help is *how do I use this*. **Achievements are his own operating
+record**, which is the same kind of thing as his log, and unit 278 already put
+`Tools > My contacts...` there.
 
-**The author let the turn rule suppress the countdown too.** They are different
-facts and only one of them is ever unknown. His words: *"Nobody's responded, but I
-want to know how long I have till the next transmit cycle. That might make me
-decide, oh, I'll do a CQ or I'll respond to this guy."*
+**And a second kind of achievement.** The belt is one ladder climbed by counting.
+**These are a card filled in** - the first contact in each mode - and the empty ones
+say what he has not tried yet.
 
-**Right now the empty For you panel shows a bare `?` and no number**, which is the
-one place he most needs the clock, because it is where he is deciding whether to
-call.
+His list: **CW, FT8, FT4, PSK31, WSPR, Voice.**
 
-**Two. A badge should announce itself.** Unit 278 built the thresholds and shows
-progress inside the log window. **He is at 8 contacts.** At 10 he wants a dialog
-saying what he has earned. **The author previously ruled against a dialog and he has
-overruled it**; what remains is that it must not cost him a contact.
+**Two of those need care and neither is a reason to drop them.**
 
-**Three. Hamlet has a face, and unit 285's drawing had two defects.** Both files ran
-outside their own viewBox - the full mark by 18.5 units, the small one by 15.5,
-cutting half the quill at every icon size. **Both are redrawn and both are fixed**,
-verified by rasterising and reading the ink's bounding box rather than by reading
-the numbers.
+**Five of the six cannot be earned yet.** Only FT8 can transmit; CW, FT4, PSK31 and
+Voice have no send path. **They show as awaiting one, not as failures**, because a
+thing he has not been given the means to do is not a thing he has failed to do.
+
+**WSPR is not a contact mode at all.** It is a beacon: he transmits and sees where he
+was heard, and nobody works anybody. **A *first WSPR contact* can never fire from a
+contact log.** It belongs on the card as something measured differently, or it is
+left off with the reason recorded. **Do not quietly make it a QSO.**
 
 ```
-UNIT GOAL:    The ring always shows the seconds, a badge says so when it is earned
-              without costing him a contact, and Hamlet has a face at every size it
-              is drawn.
+UNIT GOAL:    Tools > Achievements shows the belt and the first contact in each
+              mode, earned ones lit and the rest honest about why not.
 ADVANCES:     nothing.
 ```
-
----
-
-## What ships with this instruction
-
-**`assets/hamlet-logo.svg`** - 380 x 360. The transceiver display in the
-application's parchment bezel: `USB-D`, `FIL1`, `RX`, `UTC`, the frequency in amber,
-the S-meter with cream bars and rust past S9 - and the quill as the antenna, with a
-spine and barbs branching off it **inside** the vane.
-
-**`assets/hamlet-mark-small.svg`** - 64 x 64. A rust tile, a cream faceplate with a
-dark display and knob, and the quill. **Not a shrink of the full mark**: a faithful
-reduction made the feather a sliver, so the small one is a sibling drawn to survive
-16 px.
-
-**Both were rasterised and looked at**, at 380, 256, 48, 32 and 16 px. **The full
-mark's ink sits at 18,5 to 359,348 in a 380 x 360 box** - inside, with margin.
 
 ---
 
@@ -113,22 +91,25 @@ mark's ink sits at 18,5 to 359,348 in a 380 x 360 box** - inside, with margin.
 **Nothing here describes the tree.** Check every claim and report mismatches.
 Report them; do not repair the instruction.
 
-- **Unit 285 built `SvgMark`**, which reads these files rather than transcribing
-  them, is deliberately narrow, and **throws on anything it does not know**. **The
-  two new files may use a construct it does not handle** - `<text>`, plain `<line>`,
-  many `<rect>`s. **Check before assuming they load, and report what it refused.**
-- **Unit 285 built `AppIcon`**, rasterising the small mark at 256 px at startup, and
-  set `Window.Icon`. **The files change; the mechanism should not need to.**
-- **Unit 285 pinned both files' clipping defects in `TheMarksRenderTests`.** Those
-  assertions describe the old drawings and **will go red.** **Update them to the new
-  geometry** - the ink inside the box - rather than deleting them.
-- **Unit 277 built the turn ring** in four states, deriving parity from what the
-  other station has sent.
-- **Unit 278 built the badge thresholds** - 10, 25, 50, 100, 500, 1000, 2000, 5000,
-  10000 - and unit 281 made them belt ranks ending gold. **The count is every logged
-  contact.** Unit 278 also made the first look at the log **seed the level silently**,
-  so a fresh install does not announce nine badges at once. **Do not undo that.**
-- Root version after unit 285 was **1.12.205**. **Read it, do not assume.**
+- **`Tools > My contacts...`** is unit 278's log window. **`Tools > About`** exists.
+  **Find where a third item goes** and follow the menu's own convention.
+- **`AdifLog` writes `MODE` on every record** and unit 275 fixed `BAND` to ADIF's
+  spelling. **Check what `MODE` actually contains** - the values, not the field -
+  before matching on it.
+- **Unit 278 built the badge thresholds**; unit 281 made them belt ranks ending gold;
+  unit 286 built `BadgeAward` and `BadgeWindow`, which **does not activate, does not
+  enter the taskbar, and leaves after eight seconds.** **Reuse that for a mode first;
+  do not build a second notice.**
+- **Unit 278 seeds the badge level silently on a first look**, so a fresh install
+  announces nothing. **A mode first needs the same treatment** or an existing log
+  announces six at once.
+- **`HowMuchTheApplicationSaysTests` caps every window.** A new window needs a
+  ceiling, measured from what it holds, with the margin chosen as unit 282 chose
+  its - **against the fault rather than the noise.**
+- **`FACT-006`**: this machine has no contact log and never will. **Build against
+  synthesised logs.** His real log held 5 records on 2026-09-08 and he reported 8
+  contacts on 2026-09-08.
+- Root version after unit 286 was **1.12.210**. **Read it, do not assume.**
 
 Known reds, inherited, **never chased**:
 `CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
@@ -141,23 +122,24 @@ Known reds, inherited, **never chased**:
 
 **Tim's, 2026-09-08:**
 
-- **The ring always shows the seconds to the next slot**, including where the For
-  you panel is empty and the turn is unknown.
-- **A dialog announces a badge when it is earned**, naming what was earned.
-- **Rust for the tray icon.** **The approved marks ship with this order and are not
-  to be redesigned.**
+- **An achievements screen off the Tools menu**, beside the contact log.
+- **The first contact in each mode is an achievement**: CW, FT8, FT4, PSK31, WSPR,
+  Voice.
+- **Text only where he hovers**, and a fault speaks unasked.
+- **The count is every logged contact**, not distinct callsigns.
 
 **Standing:**
 
-- **One click, one transmission.** **The ring counts down and does nothing else** -
-  it arms nothing, cancels nothing, and reaching zero sends nothing. **A countdown
-  that fires is automatic sequencing in disguise and this phase forbids it.**
-- **§0.0 and HM-DEC-092.** Never present a guess as a decode. **The turn stays
-  unknown when it is unknown**; only the count is added.
-- **§0.6.** Colour is never the only carrier. **The unknown ring keeps its dashed
-  stroke** so it still reads as four states and not three.
-- **Text only where he hovers**, and a fault speaks unasked.
+- **§0.0 and HM-DEC-092.** Never present a guess as a decode. **This unit's exposure
+  is an achievement claimed that was not earned**, and a screen of his own record is
+  a place he will trust without checking.
+- **A log record is a statement the operator made and is not a unit's to revise.**
+  **This unit reads and never writes.**
+- **§0.6.** Colour is never the only carrier. **Earned and unearned must differ by
+  more than a hue.**
 - **§0.1.** The engine is not told that tabs exist.
+- **One click, one transmission.** **Nothing in this unit transmits**, and nothing on
+  an achievements screen may reach a send path.
 - **`Ft8Sharp` is a faithful MIT port and nothing changes a line of it.**
 
 ---
@@ -173,74 +155,69 @@ task is running. **Use the file-editing tools if the shell refuses.**
 
 ## Tasks
 
-### Task 1 - the ring always counts down
+### Task 1 - what the log can actually tell you about a mode
+
+**Reading only. Build nothing.**
+
+- **What `MODE` holds** on a real-shaped record, and what value each of the six modes
+  would write. **ADIF has its own spellings** - report them and cite where you read
+  them, as unit 274 cited the specification.
+- **Which of the six can be logged at all today**, and which have no send path.
+- **What a WSPR record would even look like**, if one could exist. **Say plainly
+  whether it can**, and if not, what would have to be measured instead.
+- **Do not guess a mode's spelling.** A first that never fires because the string is
+  wrong is worse than one that is missing, because it looks earned-able and is not.
+
+### Task 2 - the achievements screen
 
 **This is the goal task.**
 
-- **The ring drains and shows the seconds to the next slot boundary, always** -
-  including in an empty For you panel where the turn is unknown. **The bare `?` with
-  no number goes.**
-- **The turn stays unknown when it is unknown.** Unit 277's rule is untouched: no
-  parity is guessed. **The dashed ring says the turn is unknown; the number says the
-  clock is not.**
-- **The clock is `Ft8Slots.TrueUtc` and the measured offset**, not a second timing
-  source.
-- **It counts down and does nothing else.**
-- **The hover says what the count is** - *next slot in 7 seconds* - rather than a
-  claim about whose it is.
-- Test, watched failing first: with no station having transmitted, the ring shows a
-  count **and** the turn still reads unknown; the count comes from corrected UTC.
+- **`Tools > Achievements...`**, beside the contact log, following the menu's
+  convention.
+- **The belt at the top** - the rank, the count, the progress to the next.
+- **The mode firsts below**, as a card. **Earned ones show what was earned**: the
+  callsign, the date, the band.
+- **Unearned ones say why they are unearned**, and there are two different reasons:
+  **not yet done** for a mode he can transmit in, and **awaiting a send path** for
+  one he cannot. **Those must not look the same** - the second is not his failure.
+- **Earned and unearned differ by more than colour** (§0.6).
+- **It reads and never writes.**
+- **A new window needs a ceiling** in `HowMuchTheApplicationSaysTests`.
 
-### Task 2 - a badge announces itself
+### Task 3 - a mode first announces itself
 
-**He is at 8 contacts. The next one it can fire on is 10.**
+- **Reuse `BadgeAward` and `BadgeWindow`.** **Do not build a second notice.**
+- **It fires once, on the first contact in a mode**, and never again for that mode.
+- **It never fires on a first look at an existing log.** Unit 278's seeding rule
+  applies to mode firsts too, or **an existing log announces six at once.**
+- **It must not cost him a contact**: no focus, no blocked click, no closing an open
+  right-click menu. Unit 286 built that and it is not to be weakened.
+- Test, watched failing first: a first FT8 contact fires once; a second does not; a
+  fresh log holding three modes announces nothing on first look, and then a fourth
+  mode does fire.
 
-- **When a threshold is crossed, a dialog appears naming what was earned** - the
-  rank and the count.
-- **It must not cost him a contact.** He is often mid-exchange with fourteen seconds
-  to reply. **It takes no keyboard focus, blocks no click, and does not close the
-  right-click menu or the Send controls.** If it cannot be made non-blocking, **say
-  so and say what it would take** rather than shipping one that steals focus.
-- **It fires once per threshold**, on the crossing, and never again for that rank.
-- **It never fires on first launch**, however many contacts the log already holds.
-  **Unit 278 built that seeding deliberately** - do not undo it.
-- **Crossing more than one threshold at once names them all.** Unit 278's rule:
-  nine to twenty-six earns 10 **and** 25, not only the highest.
-- Test, watched failing first: crossing 10 shows the dialog once; the same count
-  again shows nothing; a fresh log at 40 contacts shows nothing on first look;
-  crossing 9 to 26 names both.
+### Task 4 - WSPR, decided honestly
 
-### Task 3 - the new marks replace the old
+**Whatever task 1 found, act on it and say which:**
 
-- **Both files from `assets/` replace the ones unit 285 installed**, in the same
-  place, by the same mechanism.
-- **`SvgMark` may refuse a construct it does not know.** **Report exactly what it
-  refused** and extend it narrowly, or say plainly what cannot be drawn. **Do not
-  redraw the mark to suit the loader** - the mark is approved and the loader is not.
-- **`TheMarksRenderTests` pins the old clipping figures and will go red.** **Update
-  the assertions to the new geometry** - that the ink is inside the box - rather
-  than removing them. **The assertion that a mark stays inside its own viewBox is
-  worth keeping; it is the defect this replaces.**
-- **The About window and the icon keep the placements unit 285 built.**
+- **If a WSPR record can exist and be recognised**, it is a mode first like the
+  others.
+- **If it cannot** - and a beacon mode has no contacts - **the card says so in his
+  own terms** rather than showing a first that can never be earned. **A row that can
+  never light is a promise the application cannot keep.**
+- **Do not invent a WSPR achievement** from spots or anything else. **Name what it
+  would take and leave it** - that is a ruling and it is Tim's.
 
-### Task 4 - what the marks look like where they are used
-
-- **Report what each renders as** at 16, 32, 48 and 256 px and in About.
-- **Say which you verified and how, and which you could not.** Unit 285 could verify
-  none, because the headless backend composes without rasterising and `CopyPixels`
-  throws. **If that is still true, say so** - do not compute a stroke width and call
-  it a look.
-- **Whether a rasterising harness is worth a package is on the asks queue and is
-  Tim's.** Do not add one.
-
-### Task 5 - what changed, listed
+### Task 5 - what the screen says it has, against what the log holds
 
 **Named drop candidate.**
 
-- Every string and every assertion this unit changed, appended to the log units 280
-  to 285 keep.
-- **If a fact left a screen without arriving on a hover, say so under its own
-  heading.**
+- **Run the screen against a synthesised log** holding contacts in two modes and
+  report what it shows for all six.
+- **Report the count it derives against the number of records**, so the belt and the
+  card cannot disagree with the log window.
+- **If any figure on this screen is derived rather than read**, say which and from
+  what.
 
 ### Task 6 - the outcome entry
 
@@ -252,27 +229,28 @@ task is running. **Use the file-editing tools if the shell refuses.**
 
 ## Parked - do not touch, do not raise
 
-**The whole asks queue**: the three pixels, `dt` and `hz` on the mine list, the
-repeat fold, the fade's second carrier, counting subjects, the fade on a bubble,
-`HM-OPEN-087`, the hover ring's findability, `AboutWindow`'s terseness,
-`HM-OPEN-088`, three admissions on the simulated radio, and whether a rasterising
-harness is worth a package. **None of it is this unit's.**
+**The whole asks queue**, including whether the ring counts down after a stop, the
+three pixels, `HM-OPEN-087`, `HM-OPEN-088`, the hover ring's findability, and whether
+a rasterising harness is worth a package. **None of it is this unit's.**
 
-Also parked: FT4, the send path, the abort, the composer, the log's fields, the
-ceilings, Settings. **Anything in `src/Ft8Sharp/`.**
+Also parked: **achievements beyond the belt and the mode firsts** - first DX, first
+band, first thousand miles, first weak signal. **Named so they are not invented
+here.** FT4, the send path, the abort, the composer, the log's fields, Settings.
+**Anything in `src/Ft8Sharp/`.**
 
 ---
 
 ## What not to do
 
-- **Do not let the ring transmit, arm, or cancel anything.**
-- **Do not guess whose turn it is.** Only the count is added.
-- **Do not let the badge dialog take focus or block a click.**
-- **Do not fire a badge on first launch.**
-- **Do not redraw the marks.** Report what will not load.
-- **Do not delete the viewBox assertions.** Update them.
-- **Do not add a rasterising package.**
-- **Do not compute a size and call it verified.**
+- **Do not write to his log.** Read only.
+- **Do not guess a mode's ADIF spelling.** Cite it.
+- **Do not show a first that can never be earned** without saying so.
+- **Do not make a mode without a send path look like a failure.**
+- **Do not build a second notice window.**
+- **Do not fire on a first look at an existing log.**
+- **Do not invent an achievement this order does not name.**
+- **Do not let anything on this screen reach a send path.**
+- **Do not distinguish earned from unearned by colour alone.**
 - **Do not touch `src/Ft8Sharp/`.**
 - **Do not run a test suite.**
 - **Do not background a command and poll for it.**
@@ -292,17 +270,18 @@ one. **`Ft8Sharp` does not move.**
 `output.md` at the repository root, overwritten, four sections per
 `CLAUDE_CODE.md` §8.
 
-**NUMBER: the seconds the ring shows with the turn unknown, before and after.** It
-showed none.
+**NUMBER: how many of the six mode firsts can be earned today, and why the rest
+cannot.**
 
 **Section 3 leads with four things:**
 
-1. **The ring with the turn unknown**, showing a count and still reading unknown.
-2. **The badge dialog at 10**, quoted - and what it does at 9 to 26.
-3. **What `SvgMark` refused**, if anything, and what was done about it.
-4. **What was verified by looking**, and what was not.
+1. **The achievements screen against a two-mode log**, showing all six rows and what
+   each says.
+2. **The ADIF mode strings**, cited.
+3. **What WSPR does on the card**, and why.
+4. **The notice on a first FT8 contact**, quoted.
 
-**Section 2 says what he will see**: the clock is there whether or not anybody has
-spoken, the tenth contact says so, and the taskbar is not ugly.
+**Section 2 says what he will see**: a screen that says what he has done and what he
+has not tried.
 
 Write `output.md`, then stop.
