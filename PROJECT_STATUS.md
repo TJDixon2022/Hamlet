@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 295 - the report goes on the wire, and the column tells the truth about the mode
 BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T14:02:00-04:00
-NOTE: Criterion 4 now rests on a capture. The whole FT4 exchange runs on the report shape from two right clicks on a REAL loopback - the snr cell showed -8, the menu carried "W1ABC KC3QIS -08", the decoder read back "W1ABC KC3QIS -08", and those three are asserted as one equality rather than three prints. The log on that leg wrote MODE=MFSK, SUBMODE=FT4, RST_SENT=-08. Four frames on the wire for two clicks and nothing on the boundary nobody clicked. Arm still has exactly one caller in src, counted. Unit 293's false remark about every FT4 row's ratio is struck. Task 3 committing, then task 4 is the FT8 control.
+UPDATED: 2026-09-09T14:19:00-04:00
+NOTE: The FT8 control is two thirds green and the red is inherited, measured rather than argued. TheWholeChainRunsFromOneRightClickTests is 1 of 3 - OneClickInAHeadlessWindowMakesARealSoundOnARealCard passes on a real card with a real capture, and the other two die in the row finder before the chain begins, on OfType<Grid>() where unit 280 made the For-you row root a StackPanel. Reverting this unit's only src change and re-running gave the identical failure, so it is not this unit's. The FT8 snr tooltip still carries 0.26/0.62 over 510 attributed to FT8, asserted against docs/unit251-snr-trace.md. Ft8Unit251SnrAgreementTests not run: Ft8Sharp.Tests references only Ft8Sharp and Ft8Sharp.Deep and cannot see Hamlet.App at all. Task 4 committing, then task 5, the named drop candidate.
 
 ---
 
