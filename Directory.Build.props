@@ -374,8 +374,23 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.228 -> 1.12.229, UNIT 291, UNDER HM-DEC-150. A PATCH, AND IT CLOSES THE WALK.
+
+      The task 1 sweep for sentences the new field falsifies was re-run over the test tree as well
+      as the source tree, and found two more in TheAchievementsScreenTests: :129 said AdifContact
+      carries no submode at all, and :390 said only three of the six can be matched from a record
+      at all today. Both were true when unit 287 wrote them and neither is now. Rewritten to say
+      what the tests actually assert - records that carry no submode, which is every record written
+      before unit 291 - rather than a fact about the type that has changed underneath them.
+
+      That takes the count to EIGHT sentences in the tree that asserted Hamlet could not write an
+      FT4 record, two of them on screen. TheAchievementsScreenTests is 10 of 10, unchanged.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.228</Version>
+    <Version>1.12.229</Version>
   </PropertyGroup>
 
   <!--

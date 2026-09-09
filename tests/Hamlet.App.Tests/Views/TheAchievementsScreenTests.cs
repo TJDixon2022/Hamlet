@@ -126,9 +126,12 @@ public sealed class TheAchievementsScreenTests
     /// <remarks>
     /// <para>**THIS IS §0.0 ON A CARD, AND IT IS THE WHOLE REASON TASK 1 WENT AND
     /// READ THE SPECIFICATION.** ADIF files FT4 as a submode of `MFSK` and PSK31 as
-    /// a submode of `PSK`, and <see cref="AdifContact"/> carries no submode at all.
-    /// So `MODE=PSK` is *some kind of phase-shift keying* and reading it as PSK31
-    /// would show him a first he never made.</para>
+    /// a submode of `PSK`, and **the records below carry no submode**, so
+    /// `MODE=PSK` is *some kind of phase-shift keying* and reading it as PSK31
+    /// would show him a first he never made. <see cref="AdifContact"/> gained a
+    /// `SUBMODE` in work instruction 291 and **this test is unchanged by that**:
+    /// what it asserts is about records that do not carry one, which is every
+    /// record written before that unit.</para>
     /// <para>**AND `MODE=FT4` IS NOT VALID ADIF**, so a file carrying it is one
     /// somebody wrote by hand. It is still not FT4 by the specification's own
     /// spelling, and guessing that it was meant to be is the guess this project
@@ -387,11 +390,20 @@ public sealed class TheAchievementsScreenTests
     /// notice for every mode in it at once**, one on top of another, for contacts
     /// Hamlet was not there for.</para>
     /// <para>**THE ORDER ASKED FOR THREE MODES AND THEN A FOURTH, AND THERE IS NO
-    /// FOURTH TO HAVE.** Only three of the six can be matched from a record at all
-    /// today: FT4 and PSK31 are ADIF submodes and <see cref="AdifContact"/> carries
-    /// no `SUBMODE`, and WSPR is a beacon that nobody works. So this seeds with two
-    /// and fires on the third, which is the same shape against the modes that
-    /// exist. Reported rather than worked around.</para>
+    /// FOURTH TO HAVE.** When unit 287 wrote this, only three of the six could be
+    /// matched from a record at all: FT4 and PSK31 are ADIF submodes and
+    /// <see cref="AdifContact"/> carried no `SUBMODE`, and WSPR is a beacon that
+    /// nobody works. So this seeds with two and fires on the third, which was the
+    /// same shape against the modes that existed. Reported rather than worked
+    /// around.</para>
+    /// <para>**FIVE OF THE SIX CAN BE MATCHED SINCE WORK INSTRUCTION 291**, which
+    /// gave the record its `SUBMODE`. This test is left at two and a third
+    /// deliberately — the shape it is asserting is *seed, then fire*, and it does
+    /// not get sharper with more modes in it.
+    /// <c>AnFt4RecordAlreadyInTheLogAnnouncesNothingOnTheNextLaunch</c> below is
+    /// the one that exercises the new case, because the submode landing is the one
+    /// moment an existing log could fire a first for a contact made years ago in
+    /// somebody else's program.</para>
     /// <para>**WATCHED FAILING FIRST**: with the seeding branch removed, the first
     /// look raised two awards instead of none.</para>
     /// </remarks>
