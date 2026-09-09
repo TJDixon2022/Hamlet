@@ -230,7 +230,14 @@ public sealed class AchievementsViewModel
     public string FirstsLine
         => "The first of each mode: " + EarnedCount + " of " + Firsts.Count + ".";
 
-    /// <summary>How many of the six a record could carry at all today.</summary>
+    /// <summary>How many of the six the operator could go and earn today.</summary>
+    /// <remarks>
+    /// **THE WORDING CHANGED WITH THE FACT** (work instruction 291 task 4). It
+    /// said *how many of the six a record could carry at all*, which was the same
+    /// count while the log could only hold FT8. A record can now carry FT4 and
+    /// PSK31 too, and neither is earnable, so the two questions came apart and
+    /// this one counts the rows he can act on.
+    /// </remarks>
     public int EarnableCount
         => Firsts.Count(
             f => f.State is ModeFirstState.Earned or ModeFirstState.YoursToGo);
@@ -309,11 +316,20 @@ public sealed class AchievementsViewModel
             .Where(r => r.Terminated)
             .Select(r => r.Contact)
 
-            // **NO RECORD CARRIES A SUBMODE, AND THAT IS SAID HERE RATHER THAN
-            // ASSUMED.** `AdifContact` has no such field, so this is null for
-            // every record there has ever been, and FT4 and PSK31 therefore match
-            // nothing. When the log gains the field this line is where it goes.
-            .Where(c => mode.Matches(c.Mode, null))
+            // **AND HERE IS WHERE IT WENT** (work instruction 291 task 4). Until
+            // this unit `AdifContact` had no submode, so this line handed in a
+            // literal null and FT4 and PSK31 matched nothing whatever the file
+            // said. It now reads the record's own, which is what lets an
+            // `MODE=MFSK, SUBMODE=FT4` record light the FT4 row.
+            //
+            // **A BARE `MODE=MFSK` STILL LIGHTS NOTHING**, and that is
+            // deliberate: `Matches` refuses a mode whose submode the record does
+            // not carry (`ContactModes.cs:36-42`), because *some kind of
+            // multi-frequency shift keying* read as FT4 would show him a first he
+            // had not made. Records written before this unit have no submode and
+            // so are unaffected, which is the right answer rather than a
+            // limitation.
+            .Where(c => mode.Matches(c.Mode, c.Submode))
             .OrderBy(c => c.StartedUtc ?? DateTime.MaxValue)
             .FirstOrDefault();
 
@@ -338,10 +354,19 @@ public sealed class AchievementsViewModel
     /// <returns>The state an unearned row is in.</returns>
     /// <remarks>
     /// <para>**READ FROM THE TREE ON 2026-09-08, NOT ASSUMED** (work instruction
-    /// 287 task 1). There is one path into the contact log and it is
-    /// `LogContactAsync`, which takes a decoded FT8 row; the mode it writes is the
-    /// hardcoded literal `"FT8"`, and the log dialog does not let the operator edit
-    /// it. **So FT8 is the only mode a record can be written in.**</para>
+    /// 287 task 1, and re-read on 2026-09-09 for 291 task 4). There is one path
+    /// into the contact log and it is `LogContactAsync`, which takes a decoded FT8
+    /// row; the mode it writes is unconditionally FT8 — the literal `"FT8"` until
+    /// work instruction 291 and `ContactModes.Named("FT8")` since, which is a type
+    /// change and not a condition — and the log dialog does not let the operator
+    /// edit it. **So FT8 is still the only mode Hamlet writes a record in**, and
+    /// that is what these states are about.</para>
+    /// <para>**WHAT THE LOG CAN HOLD AND WHAT HAMLET CAN WRITE ARE NOW DIFFERENT
+    /// QUESTIONS** (work instruction 291). A record can carry `MODE=MFSK,
+    /// SUBMODE=FT4`, so an FT4 contact imported from another logger lights the row
+    /// off the file; what Hamlet cannot do is make one. That is why FT4 stays
+    /// `WaitingOnHamlet` when unearned rather than becoming `YoursToGo`, and the
+    /// hover says which of the two gaps closed.</para>
     /// <para>**CW IS THE ONE THE WORK INSTRUCTION HAD WRONG.** It said CW has no
     /// send path; HM-DEC-059 built one and `MainWindowViewModel` attaches a
     /// `CwTransmitter` over a `KeyerCwSender`. He can work a station on the key
@@ -371,16 +396,29 @@ public sealed class AchievementsViewModel
             + "key does not reach the file. That is the application's gap "
             + "rather than yours. A record would spell it MODE=CW.",
 
-        "FT4" => "Two things stand in the way, and neither is yours. Hamlet can "
-            + "tune you to the FT4 frequencies and cannot work them, and the "
-            + "record has no room for the mode either: ADIF files FT4 as a "
-            + "submode of MFSK, and Hamlet writes no submode. A record would "
-            + "spell it MODE=MFSK with SUBMODE=FT4.",
+        // **ONE THING STANDS IN THE WAY WHERE TWO DID** (work instruction 291
+        // task 4). This sentence used to say the record had no room for the mode
+        // either, and that stopped being true the moment `AdifContact` gained
+        // `SUBMODE`. A screen telling the operator Hamlet cannot do something it
+        // can now do is the §0.0 fault this card was built to avoid, so the
+        // sentence names only the gap that remains.
+        "FT4" => "One thing stands in the way, and it is not yours. Hamlet can "
+            + "tune you to the FT4 frequencies and cannot work them yet. The "
+            + "log itself is ready: ADIF files FT4 as a submode of MFSK, and "
+            + "Hamlet now writes both halves, so an FT4 contact would be "
+            + "recorded correctly the day you can make one. A record spells it "
+            + "MODE=MFSK with SUBMODE=FT4.",
 
-        "PSK31" => "The same two things as FT4, and neither is yours. Hamlet can "
-            + "tune you to the PSK31 watering holes and cannot work them, and "
-            + "ADIF files PSK31 as a submode of PSK, which Hamlet does not "
-            + "write. A record would spell it MODE=PSK with SUBMODE=PSK31.",
+        // **IT USED TO OPEN WITH \"THE SAME TWO THINGS AS FT4\" AND WENT STALE BY
+        // REFERENCE.** PSK31's record room now exists as a side effect of the
+        // submode landing; its send path does not, and nothing in this project
+        // has started one. It says its own reasons rather than borrowing FT4's.
+        "PSK31" => "One thing stands in the way, and it is not yours. Hamlet can "
+            + "tune you to the PSK31 watering holes and cannot work them. The "
+            + "log has room for it: ADIF files PSK31 as a submode of PSK, and "
+            + "Hamlet learned to write a submode when it learned to write FT4, "
+            + "so this one came along for the ride. A record spells it "
+            + "MODE=PSK with SUBMODE=PSK31.",
 
         "WSPR" => "WSPR is a beacon rather than a conversation. You send a "
             + "two-minute signal carrying your callsign, your grid and your "

@@ -474,6 +474,177 @@ public sealed class TheAchievementsScreenTests
         notice.Close();
     }
 
+    /// <summary>
+    /// **The FT4 row lights from a real record, and unit 287's four states still
+    /// read correctly.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 291 task 4, step 3's fourth exit criterion. Until
+    /// this unit `Row` handed `Matches` a literal null for the submode, because
+    /// `AdifContact` had no such field, so the FT4 row could not light off any
+    /// file whatever it said.</para>
+    /// <para>**THE BREAKAGE THIS CATCHES**, and it is the one the instruction
+    /// names: the row lighting from a `MODE=MFSK` record with **no submode at
+    /// all** — some other digital mode counted as an FT4 first. Both records are
+    /// in the log below, and only the one carrying `SUBMODE=FT4` may light it.</para>
+    /// <para>**AND IT CHECKS THE OTHER THREE STATES SURVIVED**, because a change
+    /// to the matching line is exactly where they would quietly stop resolving.
+    /// **WSPR stays `NotAContact` with a `MODE=WSPR` record in the file** — the
+    /// fault the screen exists to avoid, watched failing first at
+    /// `AchievementsViewModel.cs:294-301` — and FT4 unearned stays
+    /// `WaitingOnHamlet`, because the log now has room for the mode and Hamlet
+    /// still cannot work a station on it.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheFt4RowLightsFromARealRecordAndTheFourStatesStillRead()
+    {
+        var ft4 = ContactModes.Named("FT4")!;
+
+        var log = new[]
+        {
+            // **THE ONE THAT MAY NOT LIGHT IT.** `MODE=MFSK` on its own is some
+            // kind of multi-frequency shift keying, and reading it as FT4 would
+            // show him a first he had not made.
+            Record("K3CCC", "MFSK", "20m",
+                new DateTime(2026, 9, 1, 0, 0, 0, DateTimeKind.Utc)),
+
+            // **AND THE ONE THAT MAY**, spelled out of `ContactModes` rather than
+            // typed here, so a fixture and a writer cannot agree on a spelling
+            // the specification does not have (§12.5, unit 274's `20 m`).
+            Record("K7GGG", ft4.AdifModes[0], "40m",
+                new DateTime(2026, 9, 6, 18, 30, 0, DateTimeKind.Utc),
+                ft4.AdifSubmode),
+
+            Record("W3YNI", "FT8", "20m",
+                new DateTime(2026, 8, 14, 21, 41, 30, DateTimeKind.Utc)),
+
+            // A legal ADIF beacon record, which still names nobody he worked.
+            Record("KC3QIS", "WSPR", "20m",
+                new DateTime(2026, 9, 5, 0, 0, 0, DateTimeKind.Utc)),
+        };
+
+        var screen = new AchievementsViewModel(log);
+
+        foreach (var row in screen.Firsts)
+        {
+            _output.WriteLine(
+                row.Mark + "  " + row.Name.PadRight(7) + row.Standing.PadRight(18)
+                + row.Evidence);
+        }
+
+        var row4 = screen.Firsts.Single(f => f.Name == "FT4");
+
+        Assert.True(row4.Earned);
+
+        // **OFF THE RECORD THAT CARRIED BOTH HALVES, AND NOT OFF THE BARE ONE**,
+        // which sits five days earlier in the log and would have won on date. If
+        // this reads `K3CCC` the row has lit from a `MODE=MFSK` record that says
+        // nothing about FT4, which is the breakage named above.
+        Assert.Equal("K7GGG", row4.Station);
+        Assert.Equal("MODE=MFSK, SUBMODE=FT4", row4.AdifSpelling);
+
+        // **ALL FOUR OF UNIT 287'S STATES STILL RESOLVE.** Three of them are on
+        // this card: `Earned` on FT8 and FT4, `WaitingOnHamlet` on PSK31, Voice
+        // and CW, and `NotAContact` on WSPR.
+        Assert.Equal(ModeFirstState.Earned, row4.State);
+        Assert.Equal(
+            ModeFirstState.Earned,
+            screen.Firsts.Single(f => f.Name == "FT8").State);
+        Assert.Equal(
+            ModeFirstState.WaitingOnHamlet,
+            screen.Firsts.Single(f => f.Name == "PSK31").State);
+        Assert.Equal(
+            ModeFirstState.WaitingOnHamlet,
+            screen.Firsts.Single(f => f.Name == "Voice").State);
+        Assert.Equal(
+            ModeFirstState.NotAContact,
+            screen.Firsts.Single(f => f.Name == "WSPR").State);
+
+        // **AND THE FOURTH IS FT8 WITH NOTHING IN THE FILE**, which is the only
+        // row the operator can go and fill in himself. It is asserted off its own
+        // log because this one has an FT8 contact in it.
+        Assert.Equal(
+            ModeFirstState.YoursToGo,
+            new AchievementsViewModel(Array.Empty<AdifLogRecord>())
+                .Firsts.Single(f => f.Name == "FT8").State);
+
+        // **AND FT4 UNEARNED IS STILL WAITING ON HAMLET**, which is the honest
+        // answer after this unit: one gap where there were two.
+        var without = new AchievementsViewModel(new[] { log[0], log[2], log[3] });
+
+        var unearned = without.Firsts.Single(f => f.Name == "FT4");
+
+        _output.WriteLine("");
+        _output.WriteLine("with only the bare MFSK record : " + unearned.Standing);
+        _output.WriteLine(unearned.Why);
+
+        Assert.False(unearned.Earned);
+        Assert.Equal(ModeFirstState.WaitingOnHamlet, unearned.State);
+
+        // **AND THE SCREEN NO LONGER TELLS HIM HAMLET CANNOT WRITE IT DOWN.**
+        // That sentence was true until task 2 and is the §0.0 breach this unit
+        // was most exposed to: a screen asserting a limitation that no longer
+        // exists. It names the gap that remains and no more.
+        Assert.DoesNotContain("no submode", unearned.Why, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Two things", unearned.Why, StringComparison.Ordinal);
+        Assert.Contains("cannot work them", unearned.Why, StringComparison.Ordinal);
+
+        // PSK31's opened with "The same two things as FT4" and went stale by
+        // reference. It says its own reasons now.
+        var psk = without.Firsts.Single(f => f.Name == "PSK31");
+
+        _output.WriteLine("");
+        _output.WriteLine(psk.Why);
+
+        Assert.DoesNotContain("The same two things", psk.Why, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "does not write", psk.Why, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// **An FT4 record already in the log announces nothing on the next launch.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 291 task 4, and unit 278's seeding rule under it.
+    /// The first look seeds and says nothing; an acknowledgement is for something
+    /// the operator has just done.</para>
+    /// <para>**THE BREAKAGE THIS CATCHES.** The submode landing makes a whole
+    /// class of record matchable that never was before, so the first launch after
+    /// this unit is the one moment an existing log could fire an FT4 first for a
+    /// contact made in somebody else's program years ago. **Watched failing
+    /// first**: with the seeding branch removed, the first look raised one.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void AnFt4RecordAlreadyInTheLogAnnouncesNothingOnTheNextLaunch()
+    {
+        var ft4 = ContactModes.Named("FT4")!;
+
+        var panel = Panel(alreadySaid: null);
+        var awards = Watch(panel);
+
+        var held = new[]
+        {
+            Record("W3YNI", "FT8", "20m",
+                new DateTime(2026, 8, 14, 21, 41, 30, DateTimeKind.Utc)),
+            Record("K7GGG", ft4.AdifModes[0], "40m",
+                new DateTime(2026, 9, 6, 18, 30, 0, DateTimeKind.Utc),
+                ft4.AdifSubmode),
+        };
+
+        panel.AnnounceModeFirstsForTests(held);
+
+        _output.WriteLine("first look, FT4 already in the file : " + Describe(awards));
+
+        Assert.Empty(awards);
+
+        // **AND THE SEED TOOK THE FT4 IN**, so looking again says nothing either.
+        panel.AnnounceModeFirstsForTests(held);
+
+        _output.WriteLine("second look, same file              : " + Describe(awards));
+
+        Assert.Empty(awards);
+    }
+
     /// <summary>A panel whose mode firsts have been seeded.</summary>
     /// <param name="alreadySaid">
     /// The modes already announced, or null for a log never looked at.
@@ -515,14 +686,24 @@ public sealed class TheAchievementsScreenTests
             : string.Join(" | ", awards.Select(a => a.Heading + " - " + a.Says));
 
     /// <summary>One sound record, for a synthesised log.</summary>
+    /// <param name="call">The station worked.</param>
+    /// <param name="mode">The record's `MODE`.</param>
+    /// <param name="band">The record's `BAND`.</param>
+    /// <param name="startedUtc">When it started.</param>
+    /// <param name="submode">
+    /// The record's `SUBMODE`, or **null for the ordinary case**, which is every
+    /// record written before work instruction 291 and every FT8 record after it.
+    /// </param>
     private static AdifLogRecord Record(
-        string call, string mode, string band, DateTime startedUtc)
+        string call, string mode, string band, DateTime startedUtc,
+        string? submode = null)
         => new(
             new AdifContact
             {
                 Call = call,
                 StationCallsign = "KC3QIS",
                 Mode = mode,
+                Submode = submode,
                 Band = band,
                 StartedUtc = startedUtc,
             },

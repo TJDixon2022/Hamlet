@@ -15,8 +15,10 @@ namespace Hamlet.RadioEngine.Contacts;
 /// </param>
 /// <param name="AdifSubmode">
 /// The value of `SUBMODE` a record would also need, or null where the mode stands
-/// on its own. **A mode with one of these cannot be recognized today**, because
-/// <see cref="AdifContact"/> carries no submode at all.
+/// on its own. **A record must carry both halves to be this mode** — a bare
+/// `MODE=MFSK` is not FT4 and never becomes it. <see cref="AdifContact"/> gained
+/// its `SUBMODE` in work instruction 291; before that no record could carry one,
+/// and those older records still match nothing here, correctly.
 /// </param>
 /// <param name="IsContactMode">
 /// **False where nobody works anybody.** WSPR is a beacon, so a QSO record for it
@@ -37,9 +39,11 @@ public sealed record ContactMode(
     /// MISS**, deliberately and permanently. `MODE=PSK` on its own is *some kind of
     /// phase-shift keying*, and reading it as PSK31 would be exactly the guess §0.0
     /// forbids: the operator would be shown a first he had not made.</para>
-    /// <para>**AND THAT IS WHY FT4 AND PSK31 CANNOT LIGHT TODAY** rather than
-    /// merely having not lit yet. It is a fact about the record's fields, not about
-    /// his operating, and the screen says which.</para>
+    /// <para>**AND IT IS WHY A RECORD SAYING ONLY `MODE=MFSK` LIGHTS NOTHING**,
+    /// including now that the log can write the other half. Until work instruction
+    /// 291 no record carried a submode at all, so FT4 and PSK31 could not light
+    /// from any file; what changed is that a record can now say enough, not that
+    /// this method reads a half-record charitably. It never will.</para>
     /// </remarks>
     public bool Matches(string? mode, string? submode)
     {
@@ -136,7 +140,7 @@ public static class ContactModes
         new ContactMode("CW", new[] { "CW" }, null, true),
         new ContactMode("FT8", new[] { "FT8" }, null, true),
 
-        // **A SUBMODE OF `MFSK`, WHICH IS WHY IT CANNOT BE RECOGNIZED YET.**
+        // **A SUBMODE OF `MFSK`, AND SINCE UNIT 291 A RECORD CAN SAY SO.**
         new ContactMode("FT4", new[] { "MFSK" }, "FT4", true),
 
         // **A SUBMODE OF `PSK`.** `MODE=PSK31` is not valid ADIF.

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 291 - the log can say FT4
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:18:42-04:00
-NOTE: Field landed and absent stays absent; the FT8 record is byte-identical, pinned as a whole-string comparison. Ft8StationConditions.Mode is now a ContactMode rather than a string, so MODE and SUBMODE are both projections of one object and cannot be set to disagree. FT8 control 8 of 8 unchanged.
+UPDATED: 2026-09-09T10:22:31-04:00
+NOTE: All four step 3 criteria closed. FT4 row lights off a real MODE=MFSK SUBMODE=FT4 record and a bare MFSK one still lights nothing; unit 287s four states all resolve; both stale hovers rewritten so the screen no longer claims Hamlet writes no submode. Achievements 10 of 10. Bookkeeping next.
 
 ---
 

@@ -327,8 +327,32 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.226 -> 1.12.227, UNIT 291 TASK 4, UNDER HM-DEC-150. A PATCH, AND IT CHANGES WHAT THE SCREEN
+    SAYS TO THE OPERATOR.
+
+      AchievementsViewModel.Row handed Matches a literal null for the submode, because AdifContact
+      had no such field. It now reads the records own, so an MODE=MFSK, SUBMODE=FT4 record lights
+      the FT4 row. A bare MODE=MFSK still lights nothing, deliberately: some kind of multi-frequency
+      shift keying read as FT4 would show him a first he had not made.
+
+      AND THE SCREEN STOPPED SAYING HAMLET CANNOT WRITE THE MODE DOWN. FT4s hover gave two reasons
+      and one of them stopped being true in task 2 - a screen asserting a limitation that no longer
+      exists is the 0.0 fault unit 287 built this card to avoid. It names the one gap that remains:
+      Hamlet can tune him to the FT4 frequencies and cannot work them yet. PSK31s opened with "The
+      same two things as FT4" and went stale by reference; it says its own reasons now, and notes
+      that its record room arrived as a side effect while its send path did not.
+
+      FT4 UNEARNED IS STILL WAITING ON HAMLET, which is the honest answer: one gap where there were
+      two. What the log can hold and what Hamlet can write are now different questions.
+
+      TheAchievementsScreenTests is 10 of 10 - unit 287s eight unchanged, and two added. None of the
+      eight went red.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.226</Version>
+    <Version>1.12.227</Version>
   </PropertyGroup>
 
   <!--
