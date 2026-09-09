@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Hamlet.RadioEngine.Explore;
 
@@ -42,6 +42,19 @@ public static class EntitySpoken
             ["Tanzania (United Republic of)"] = "Tanzania",
         };
 
+    /// <summary>
+    /// The longest a name may be before a card looks for a shorter one.
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED RATHER THAN CHOSEN** (work instruction 299 task 4). Over the 275
+    /// entities the cited table holds, the median name is **8 characters** and the
+    /// longest is **33** - `Sovereign Military Order of Malta`. **31 names run over
+    /// 16 and 13 run over 20.** Sixteen is where the tail starts: under it are the
+    /// ordinary country names a card carries beside a callsign and a distance, and
+    /// over it are the constructions nobody says out loud.
+    /// </remarks>
+    public const int CardLimit = 16;
+
     /// <summary>The name to put in a sentence.</summary>
     /// <param name="entity">The entity, exactly as `DxccPrefixes` gives it.</param>
     /// <returns>The spoken form, or the name unchanged.</returns>
@@ -53,4 +66,89 @@ public static class EntitySpoken
             ? spoken
             : name;
     }
+
+    /// <summary>
+    /// **The shortest honest name for a place, for a card that has a callsign and a
+    /// distance beside it.**
+    /// </summary>
+    /// <param name="entity">The entity, exactly as `DxccPrefixes` gives it.</param>
+    /// <returns>A short form, or the spoken form where it is already short.</returns>
+    /// <remarks>
+    /// <para>**TIM RAISED IT ON 2026-09-09**: `the United States` where the card
+    /// wants a place. The same fault had been raised against the tooltips and never
+    /// fixed.</para>
+    /// <para>**IT SHORTENS AND IT NEVER NARROWS.** Nothing here names a place
+    /// *below* the country - not a state, not a city - because the callsign gives
+    /// neither and a four-character grid square is a box seventy miles across that
+    /// straddles state lines. **`the United States` becomes `United States` and never
+    /// `Arizona`**; unit 297 and unit 298 both found the same wall and the state
+    /// waits on the parked callook instruction rather than on a shorter string.</para>
+    /// <para>**THE RULES ARE MECHANICAL AND THE EXCEPTIONS ARE DECLARED.** A leading
+    /// article goes, a trailing parenthetical goes, and `Is.` stays as the ARRL
+    /// abbreviates it. What those cannot reach is in <see cref="OnACard"/>'s own
+    /// table above, where a test checks every key against the cited file - so a name
+    /// that stops existing fails rather than silently doing nothing.</para>
+    /// </remarks>
+    public static string Short(string? entity)
+    {
+        var name = Of(entity);
+
+        if (name.Length == 0)
+        {
+            return "";
+        }
+
+        if (OnACard.TryGetValue(name, out var shortened))
+        {
+            return shortened;
+        }
+
+        // **A LEADING ARTICLE IS PROSE AND A CARD IS NOT PROSE.** `the United
+        // States` reads correctly in a sentence and wastes four characters in a
+        // header beside a callsign.
+        if (name.StartsWith("the ", StringComparison.Ordinal))
+        {
+            name = name[4..];
+        }
+
+        // **A PARENTHETICAL IS THE ARRL DISAMBIGUATING, NOT PART OF THE NAME.**
+        var bracket = name.IndexOf(" (", StringComparison.Ordinal);
+
+        if (bracket > 0)
+        {
+            name = name[..bracket];
+        }
+
+        return name;
+    }
+
+    /// <summary>What a card calls the places whose names the rules cannot reach.</summary>
+    /// <remarks>
+    /// <para>**EVERY KEY IS A NAME THE CITED TABLE ACTUALLY HOLDS**, checked by a
+    /// test, and every value is the ordinary English for the same place. **Nothing
+    /// here renames a country into something it is not** and nothing narrows one to a
+    /// region inside it.</para>
+    /// <para>**THE LIST IS SHORT BECAUSE THE MEASUREMENT SAID IT COULD BE.** Thirteen
+    /// names run over twenty characters and these are the ones a card would otherwise
+    /// carry unreadably.</para>
+    /// </remarks>
+    public static IReadOnlyDictionary<string, string> OnACard { get; } =
+        new Dictionary<string, string>
+        {
+            ["the United States"] = "United States",
+            ["Sovereign Military Order of Malta"] = "Order of Malta",
+            ["New Zealand Subantarctic Islands"] = "NZ Subantarctic",
+            ["Democratic Republic of the Congo"] = "DR Congo",
+            ["Republic of the Congo"] = "Congo",
+            ["Tristan da Cunha & Gough I."] = "Tristan da Cunha",
+            ["Prince Edward & Marion Is."] = "Prince Edward Is.",
+            ["Agalega & St. Brandon Is."] = "Agalega Is.",
+            ["St. Pierre & Miquelon"] = "St. Pierre",
+            ["Andaman & Nicobar Is."] = "Andaman Is.",
+            ["United Arab Emirates"] = "UAE",
+            ["Syrian Arab Republic"] = "Syria",
+            ["Palmyra & Jarvis Is."] = "Palmyra I.",
+            ["Baker & Howland Is."] = "Baker I.",
+            ["Sao Tome & Principe"] = "Sao Tome",
+        };
 }

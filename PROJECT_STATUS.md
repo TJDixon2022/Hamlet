@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 299 - the card header does what it promised
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T18:46:16-04:00
-NOTE: Task 3 done - the globe, placed by the coastline's own projection. 20 of 20 green. Committing.
+UPDATED: 2026-09-09T18:48:17-04:00
+NOTE: Task 4 done - longest name 33 to 19 characters, and nothing narrows below a country. Committing.
 
 ---
 

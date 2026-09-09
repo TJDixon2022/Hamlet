@@ -719,9 +719,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
     {
         var entity = DxccPrefixes.EntityOf(facts.Callsign);
 
+        // **THE FACE TAKES THE SHORT FORM AND THE HOVER KEEPS THE SPOKEN ONE**
+        // (Tim, 2026-09-09: `the United States` where the card wants a place). It
+        // shortens and never narrows: nothing here names a place below the country,
+        // because the callsign gives none and a grid square straddles state lines.
         var country = entity is null
             ? ""
-            : EntitySpoken.Of(EntityQualifier.DescribeFromGrid(entity, facts.Grid));
+            : EntitySpoken.Short(EntityQualifier.DescribeFromGrid(entity, facts.Grid));
 
         var here = OperatorLocation.FromGrid(operatorGrid);
         var there = OperatorLocation.FromGrid(facts.Grid);
