@@ -5,18 +5,27 @@ namespace Hamlet.RadioEngine.Contacts;
 /// </summary>
 /// <param name="FrequencyHz">The dial, in hertz, or null where it is not known.</param>
 /// <param name="Band">The band's name, or null.</param>
-/// <param name="Mode">The mode, or null.</param>
+/// <param name="Mode">The mode, as one thing, or null.</param>
 /// <param name="OperatorGridSquare">The operator's own locator, or null.</param>
 /// <remarks>
-/// **THESE ARE HANDED IN BECAUSE THE LEDGER IS NOT A RADIO** (work instruction
-/// 274 task 1). It is mode-neutral and dial-neutral on purpose, so CW inherits it
-/// when CW send arrives, and a ledger holding a frequency would hold the one it
-/// was constructed at rather than the one a contact happened on.
+/// <para>**THESE ARE HANDED IN BECAUSE THE LEDGER IS NOT A RADIO** (work
+/// instruction 274 task 1). It is mode-neutral and dial-neutral on purpose, so CW
+/// inherits it when CW send arrives, and a ledger holding a frequency would hold
+/// the one it was constructed at rather than the one a contact happened on.</para>
+/// <para>**THE MODE IS ONE FIELD AND NOT TWO, AND THAT IS THE WHOLE POINT** (work
+/// instruction 291 task 3). It was a `string` until this unit. Three of the six
+/// modes need `MODE` and `SUBMODE` together to be named at all, and the cheap
+/// shape — two independent strings here — is exactly how a record comes to read
+/// `MODE=FT8, SUBMODE=FT4`. **There is nothing here for the two halves to
+/// disagree about**, because a caller hands in one <see cref="ContactMode"/> and
+/// both tags are read off it; a caller cannot construct a disagreement, and the
+/// compiler refuses a mode that is not one of the six rather than letting a typo
+/// drop the field silently (§0, let the compiler catch it).</para>
 /// </remarks>
 public sealed record Ft8StationConditions(
     long? FrequencyHz,
     string? Band,
-    string? Mode,
+    ContactMode? Mode,
     string? OperatorGridSquare);
 
 /// <summary>
@@ -71,6 +80,14 @@ public static class Ft8ContactLogEntry
 
         var moments = his.Concat(ours).Select(m => m.SlotStartUtc).ToList();
 
+        // **BOTH HALVES OR NEITHER, READ OFF ONE OBJECT** (work instruction 291
+        // task 3). `AdifMode` is null where the mode is a family — Voice is `SSB`,
+        // `AM` and `FM`, and picking one would name a mode the operator may not
+        // have worked — and where it is null the submode goes out too, because a
+        // `SUBMODE` with no `MODE` beside it names nothing at all.
+        var mode = conditions?.Mode;
+        var adifMode = mode?.AdifMode;
+
         return new AdifContact
         {
             Call = Blank(record.Callsign),
@@ -95,7 +112,14 @@ public static class Ft8ContactLogEntry
             // it. A name the enumeration has no row for is left out rather than
             // written wrong.
             Band = AdifLog.BandValueFor(conditions?.Band),
-            Mode = Blank(conditions?.Mode),
+
+            // **THE PAIR, AND IT CANNOT COME APART.** `MODE=MFSK` alone is some
+            // kind of multi-frequency shift keying and `MODE=FT4` is not valid
+            // ADIF; only the pair names FT4. Both are projections of one
+            // `ContactMode`, so there is no assignment anywhere that could set
+            // one without the other.
+            Mode = adifMode,
+            Submode = adifMode is null ? null : Blank(mode!.AdifSubmode),
 
             // **HERTZ TO MEGAHERTZ HERE AND NOWHERE ELSE**, so the one place that
             // knows what ADIF wants is the one place that converts.

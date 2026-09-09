@@ -61,6 +61,23 @@ public sealed record ContactMode(
                 StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// The one value of `MODE` a record carries for this mode, or **null where
+    /// this is a family and a record could not say which**.
+    /// </summary>
+    /// <remarks>
+    /// <para>**VOICE IS THE ONE THAT COMES BACK NULL, AND THAT IS §0.0 RATHER
+    /// THAN A GAP.** *Voice* is Hamlet's own word for `SSB`, `AM` and `FM`, and
+    /// writing the first of the three into a log record would name a mode the
+    /// operator may not have worked. There is nothing later that could tell such
+    /// a record from a true one, so the mode is left out rather than guessed.</para>
+    /// <para>**IT IS THE WRITE HALF OF <see cref="Matches"/>.** `Matches` accepts
+    /// any of <see cref="AdifModes"/>, because a record made elsewhere may say any
+    /// of them; this says what Hamlet may write, which is only ever the
+    /// unambiguous one.</para>
+    /// </remarks>
+    public string? AdifMode => AdifModes.Count == 1 ? AdifModes[0] : null;
+
     /// <summary>How a record would have to spell this, for a reader.</summary>
     /// <returns>The tag values, in the form a record writes them.</returns>
     /// <remarks>

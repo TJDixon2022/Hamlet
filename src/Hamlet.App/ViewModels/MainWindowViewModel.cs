@@ -10285,7 +10285,18 @@ public partial class MainWindowViewModel : ObservableObject
             new Ft8StationConditions(
                 hz,
                 band?.Name,
-                "FT8",
+
+                // **STILL UNCONDITIONALLY FT8, AND DELIBERATELY SO.** This is the
+                // one write path into the log, and work instruction 291 gives the
+                // record room for a mode that needs two tags without deciding
+                // what fills it. What makes this line say anything else is the
+                // Digital tab's mode wiring, which is step 4's; until then a
+                // contact logged here was made on FT8 and says so.
+                //
+                // It stopped being the literal `"FT8"` only because the mode now
+                // travels as one object rather than as a bare string, so `MODE`
+                // and `SUBMODE` cannot be set to disagree.
+                ContactModes.Named("FT8"),
                 _settings.Operator.GridSquare));
 
         var model = new LogContactViewModel(

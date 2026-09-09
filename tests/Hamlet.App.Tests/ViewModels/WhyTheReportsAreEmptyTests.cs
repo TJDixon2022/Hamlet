@@ -167,5 +167,6 @@ public sealed class WhyTheReportsAreEmptyTests
         => Ft8ContactLogEntry.For(
             ledger.For(Theirs)!,
             His,
-            new Ft8StationConditions(14_074_000, "20 m", "FT8", "FN00DJ"));
+            new Ft8StationConditions(
+                14_074_000, "20 m", ContactModes.Named("FT8"), "FN00DJ"));
 }

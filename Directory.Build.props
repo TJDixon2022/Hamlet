@@ -300,8 +300,35 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.225 -> 1.12.226, UNIT 291 TASK 3, UNDER HM-DEC-150. A PATCH. AN FT4 CONTACT NOW LOGS AS
+    MODE=MFSK, SUBMODE=FT4 - AND THE TWO CANNOT BE SET TO DISAGREE.
+
+      Ft8StationConditions.Mode was a string and is now a ContactMode. That is the whole of it. The
+      cheap and wrong shape is two independent strings, which is exactly how a record comes to read
+      MODE=FT8, SUBMODE=FT4; with one object there is nothing for the halves to disagree about,
+      because both tags are projections of it and no assignment anywhere sets one without the other.
+      The compiler now refuses a mode that is not one of the six, rather than letting a typo drop
+      the field silently - governing principle 0, let the compiler catch it.
+
+      AND VOICE COMES OUT WITH NO MODE AT ALL, WHICH IS THE RIGHT ANSWER. ContactMode.AdifMode is
+      null where the mode names more than one ADIF value. Voice is Hamlets own word for SSB, AM and
+      FM; writing the first of the three would name a mode the operator may not have worked, and
+      there is nothing later that could tell such a record from a true one. Where the mode goes out,
+      the submode goes with it: a SUBMODE with no MODE beside it names nothing.
+
+      THE ONE WRITE PATH IS STILL UNCONDITIONALLY FT8. MainWindowViewModel stopped saying the
+      literal "FT8" and now says ContactModes.Named("FT8") - a type change, not a condition. What
+      makes that line say anything else is the Digital tabs mode wiring, which is step 4s.
+
+      FT8 IS UNCHANGED, ASSERTED RATHER THAN ASSUMED. TheLogEntryIsWhatWasHeardTests, the FT8
+      control, is 8 of 8; an FT8 contact still carries MODE=FT8 with the string SUBMODE nowhere in
+      the record.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.225</Version>
+    <Version>1.12.226</Version>
   </PropertyGroup>
 
   <!--

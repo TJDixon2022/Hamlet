@@ -162,25 +162,99 @@ public sealed class TheLogCanSayFt4Tests
         Assert.True(ft4.Matches(whole.Mode, whole.Submode));
     }
 
-    /// <summary>An FT4 contact as the file would hold it.</summary>
+    /// <summary>
+    /// The two tags come from one source and cannot be made to disagree.
+    /// </summary>
     /// <remarks>
-    /// **AT TASK 2 THE SUBMODE IS SET ON THE CONTACT AND NOT CARRIED IN THROUGH
-    /// THE CONDITIONS**, because the conditions record still takes two independent
-    /// strings and that is the shape task 3 replaces. This method is what changes
-    /// there; what it asserts about the file does not.
+    /// <para>**THE CHEAP AND WRONG SHAPE IS TWO INDEPENDENT STRINGS**, which is
+    /// exactly how a record comes to read `MODE=FT8, SUBMODE=FT4`. What stops it
+    /// here is that `Ft8StationConditions` carries one <see cref="ContactMode"/>
+    /// and `Ft8ContactLogEntry.For` reads both tags off it, so there is no
+    /// assignment anywhere that could set one without the other. **The proof is
+    /// this assertion and not the paragraph**: every one of the six goes through
+    /// the write path, and each comes out spelled the way `ContactModes` spells
+    /// it or not at all.</para>
+    /// <para>**AND VOICE COMES OUT WITH NO MODE, WHICH IS THE RIGHT ANSWER.**
+    /// *Voice* is Hamlet's own word for `SSB`, `AM` and `FM`; writing the first of
+    /// the three would name a mode the operator may not have worked, and there is
+    /// nothing later that could tell such a record from a true one (§0.0).</para>
     /// </remarks>
-    private static AdifContact Ft4Contact()
+    [Fact]
+    public void EverySpellingComesFromTheOneTableOrNotAtAll()
     {
-        var ft4 = ContactModes.Named("FT4")!;
+        foreach (var mode in ContactModes.Six)
+        {
+            var contact = Contact(mode);
 
-        return Contact(ft4.AdifModes[0]) with { Submode = ft4.AdifSubmode };
+            _output.WriteLine(
+                mode.Name.PadRight(6) + " spells " + mode.AdifSpelling.PadRight(28)
+                + " -> MODE=" + (contact.Mode ?? "(absent)")
+                + ", SUBMODE=" + (contact.Submode ?? "(absent)"));
+
+            if (mode.AdifModes.Count > 1)
+            {
+                // A family, and a record cannot say which. Both halves out.
+                Assert.Null(contact.Mode);
+                Assert.Null(contact.Submode);
+
+                continue;
+            }
+
+            Assert.Equal(mode.AdifModes[0], contact.Mode);
+            Assert.Equal(mode.AdifSubmode, contact.Submode);
+
+            // **NEITHER HALF EVER STANDS ALONE.** A submode with no mode beside
+            // it names nothing at all, and a mode that needs one and lacks it is
+            // a record no row may light from.
+            Assert.False(contact.Submode is not null && contact.Mode is null);
+        }
+
+        // And with no conditions at all, neither tag is invented.
+        var bare = Contact(null);
+
+        Assert.Null(bare.Mode);
+        Assert.Null(bare.Submode);
     }
 
+    /// <summary>An FT8 contact still logs exactly as it does today.</summary>
+    /// <remarks>
+    /// **THE FAILURE MODE OF A SHARED SOURCE IS THAT FT8 QUIETLY GROWS A
+    /// SUBMODE.** `FT8` is a Mode and takes no submode (`AdifLog.cs:104`), so the
+    /// record must read `MODE=FT8` with the string `SUBMODE` nowhere in it, exactly
+    /// as it did before this unit.
+    /// </remarks>
+    [Fact]
+    public void AnFt8ContactStillLogsAsItAlwaysDid()
+    {
+        var contact = Ft8Contact();
+
+        Assert.Equal("FT8", contact.Mode);
+        Assert.Null(contact.Submode);
+
+        var text = AdifLog.Record(contact);
+
+        _output.WriteLine(text);
+
+        Assert.Contains("<MODE:3>FT8", text, System.StringComparison.Ordinal);
+        Assert.DoesNotContain("SUBMODE", text, System.StringComparison.Ordinal);
+        Assert.DoesNotContain("MFSK", text, System.StringComparison.Ordinal);
+    }
+
+    /// <summary>An FT4 contact as the one write path would produce it.</summary>
+    /// <remarks>
+    /// **NOTHING IS SET ON THE CONTACT AFTERWARDS** (work instruction 291 task 3).
+    /// The mode goes in through the conditions as one object and both tags come
+    /// out of it. At task 2 this method had to reach in and set `Submode` by hand,
+    /// because the conditions still took a bare string; that it no longer does is
+    /// the assertion.
+    /// </remarks>
+    private static AdifContact Ft4Contact() => Contact(ContactModes.Named("FT4"));
+
     /// <summary>The same, on FT8, which takes no submode.</summary>
-    private static AdifContact Ft8Contact() => Contact("FT8");
+    private static AdifContact Ft8Contact() => Contact(ContactModes.Named("FT8"));
 
     /// <summary>One contact off the ledger, in the mode handed in.</summary>
-    private static AdifContact Contact(string mode)
+    private static AdifContact Contact(ContactMode? mode)
     {
         var ledger = new Ft8ContactLedger("KC3QIS");
         var slot = new System.DateTime(2026, 9, 9, 14, 22, 30, System.DateTimeKind.Utc);

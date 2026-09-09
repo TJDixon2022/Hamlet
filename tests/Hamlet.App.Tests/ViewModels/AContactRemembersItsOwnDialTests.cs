@@ -206,7 +206,8 @@ public sealed class AContactRemembersItsOwnDialTests : IDisposable
             record!,
             Mine,
             new Ft8StationConditions(
-                hz > 0 ? hz : null, band?.Name, "FT8", "FN00DJ"));
+                hz > 0 ? hz : null, band?.Name,
+                Hamlet.RadioEngine.Contacts.ContactModes.Named("FT8"), "FN00DJ"));
     }
 
     private static MainWindowViewModel Panel()

@@ -50,7 +50,8 @@ public sealed class TheLogEntryIsWhatWasHeardTests
         var entry = Ft8ContactLogEntry.For(
             ledger.For(His)!,
             Mine,
-            new Ft8StationConditions(14_074_000, "20m", "FT8", "FN00DJ"));
+            new Ft8StationConditions(
+                14_074_000, "20m", ContactModes.Named("FT8"), "FN00DJ"));
 
         _output.WriteLine(AdifLog.Record(entry));
 
