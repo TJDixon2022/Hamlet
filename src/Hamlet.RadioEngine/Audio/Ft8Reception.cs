@@ -455,6 +455,11 @@ public static class Ft8Reader
             };
         }
 
+        if (mode == DigitalMode.Ft4)
+        {
+            return ReadFt4(cut, offset, compareWithThePort);
+        }
+
         // **HAMLET DECODES THROUGH `Ft8Sharp.Deep` SINCE UNIT 249** (Tim's
         // ruling, 2026-09-05), with fine sync and ordered statistics both on.
         //
@@ -599,6 +604,124 @@ public static class Ft8Reader
                 });
             }
         }
+
+        return new Ft8Reception(found, cut.Slots.Count, candidates, "")
+        {
+            Slots = census,
+            Offset = offset,
+        };
+    }
+
+    /// <summary>Read every slot of an FT4 cut through the port's FT4 decoder.</summary>
+    /// <param name="cut">The slots, already cut on FT4's 7.5-second grid.</param>
+    /// <param name="offset">The offset they were cut against.</param>
+    /// <param name="compareWithThePort">Whatever the settings file asked for.</param>
+    /// <returns>The messages, and why there are as many as there are.</returns>
+    /// <remarks>
+    /// <para>**A BRANCH BESIDE FT8'S PATH RATHER THAN A FLAG INSIDE IT** (work
+    /// instruction 292 task 3), and it is <see cref="Ft4SlotDecoder"/>'s own reasoning
+    /// one layer up: five of the things this wires together are FT4's - the geometry,
+    /// the search, the extraction, the layout and the exclusive-OR - and the shared
+    /// parts are called rather than copied. **Threading a protocol flag through the
+    /// FT8 loop would have put a branch on every line of a path that has been byte-
+    /// identical since unit 249**, and the one thing this unit was told not to move is
+    /// what an FT8 press does.</para>
+    /// <para>**THE DECODER IS THE PORT'S AND IS NAMED AS SUCH.** `Ft8Sharp.Deep` has no
+    /// FT4 decoder of any kind, so <see cref="Ft8DecoderIdentity.Port"/> is not a
+    /// default here - it is the measurement. A sheet naming Deep for an FT4 slot would
+    /// be naming a decoder that does not exist.</para>
+    /// <para>**AND `compareWithThePort` IS ANSWERED HONESTLY RATHER THAN DROPPED.**
+    /// The comparison decodes each slot through the port as well as through Deep, and
+    /// on FT4 the port IS what ran - there is no second decoder to compare it with.
+    /// **So no comparison is recorded**, which
+    /// <see cref="Ft8SlotCensus.PortComparison"/> already expresses as null meaning
+    /// nobody took one. Running the same decoder twice and printing the agreement
+    /// would be a measurement of nothing wearing evidence's clothes (§0.0).</para>
+    /// <para>**NO SIGNAL-TO-NOISE RATIO IS PRODUCED, AND NONE IS INVENTED.**
+    /// <see cref="Measure"/> packs the decoded text back to FT8's 79 symbols through
+    /// `Ft8DeepMessageSymbols`, which is FT8's modulation and not FT4's. There is no
+    /// FT4 equivalent in this tree, so every FT4 row carries **null**, which is *not
+    /// observed* and renders as a dash. **A number produced by measuring FT4 tones
+    /// against FT8's symbol layout would be a plausible figure in a column headed
+    /// `snr`, which is exactly the fault §0.0 names.** It is a gap and it is named in
+    /// this unit's report.</para>
+    /// </remarks>
+    private static Ft8Reception ReadFt4(
+        SlotCut cut, ClockOffset offset, bool compareWithThePort)
+    {
+        var decoder = new Ft4SlotDecoder();
+
+        // The same mirror of the decoder's own search FT8's path builds, and for the
+        // same one thing the result type cannot give: the highest Costas match counts
+        // in a slot that decoded NOTHING. **Built from what the decoder publishes**,
+        // including the sweep, so the two cannot come apart.
+        var search = new Ft4SyncSearch(
+            decoder.CandidateLimit,
+            decoder.MinimumScore,
+            decoder.FirstBlockOffset,
+            decoder.LastBlockOffset);
+
+        var monitor = new Ft8Monitor(decoder.Geometry);
+
+        var found = new List<Ft8Decode>();
+        var census = new List<Ft8SlotCensus>();
+        var candidates = 0;
+
+        foreach (var slot in cut.Slots)
+        {
+            // **THE SAME TWELVE KILOHERTZ GRID.** `Ft4WaterfallGeometry` takes
+            // upstream's own passband and upstream's own rate; only the symbol period
+            // differs, so the resampler is shared and its FT8-shaped name is the only
+            // thing about it that is FT8's.
+            var samples = Ft8Resample.ToFt8Rate(slot.Audio).Samples;
+
+            var waterfall = monitor.Analyse(samples);
+            var places = search.Find(waterfall);
+
+            // **THE WATERFALL OVERLOAD, AND HERE IT COSTS NOTHING.** `Ft4SlotDecoder`
+            // has no fine sync and no ordered statistics - there is no re-sync stage
+            // that wants the samples back - so passing the waterfall that was just
+            // built is the same decode as passing the samples and one analysis fewer.
+            var result = decoder.Decode(waterfall);
+
+            candidates += result.CandidateCount;
+
+            census.Add(new Ft8SlotCensus(
+                slot.StartUtc,
+                result.CandidateCount,
+                result.ParitySatisfiedCount,
+                result.ChecksumPassedCount,
+                result.BecameTextCount,
+                result.DuplicateCount,
+                TopScores(places),
+                slot.Audio.SampleRate)
+            {
+                Decoder = Ft8DecoderIdentity.Port,
+
+                // Null on both counts, and both nulls mean *nobody measured*. See the
+                // remarks above: there is no second decoder to compare the port with,
+                // and no FT4 symbol layout to measure a ratio against.
+                PortComparison = null,
+
+                Level = Ft8SlotLevel.Of(slot.Audio),
+                SignalToNoise = Summarise(Array.Empty<double?>()),
+            });
+
+            foreach (var message in result.Messages)
+            {
+                found.Add(new Ft8Decode(
+                    slot.StartUtc,
+                    message.TimeSeconds(decoder.Geometry),
+                    message.FrequencyHz(decoder.Geometry),
+                    message.Candidate.Score,
+                    message.Text));
+            }
+        }
+
+        // **THE FLAG IS READ AND THE ANSWER IS THAT NOTHING RAN.** It is not silently
+        // dropped: the census carries no comparison on every slot, which is the record
+        // saying nobody took one rather than the record saying they agreed.
+        _ = compareWithThePort;
 
         return new Ft8Reception(found, cut.Slots.Count, candidates, "")
         {

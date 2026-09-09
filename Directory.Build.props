@@ -425,8 +425,32 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.231 -> 1.12.232, UNIT 292 TASK 3, UNDER HM-DEC-150. A PATCH, AND IT IS THE ONE WHERE THE
+    FT4 BUTTON STARTS DECODING.
+
+      Ft8Reader.Read branches on the DigitalMode task 2 threaded: FT4 goes to ReadFt4, which builds
+      Ft4SlotDecoder, Ft4SyncSearch and Ft4WaterfallGeometry and calls unit 289's decoder unchanged.
+      A branch beside FT8's loop rather than a protocol flag inside it - that loop has been
+      byte-identical since unit 249 and what this unit was told not to move is what an FT8 press
+      does.
+
+      The sheet names Ft8Sharp for an FT4 slot and never Ft8Sharp.Deep, which has no FT4 decoder of
+      any kind. compareWithThePort is answered rather than dropped: on FT4 the port IS what ran, so
+      there is nothing to compare with and PortComparison stays null, which is the record saying
+      nobody took one. No signal-to-noise ratio either, and none invented - the estimator packs the
+      text back to FT8's 79 symbols and there is no FT4 equivalent, so every FT4 row carries null.
+      Both are named as gaps in the report.
+
+      Measured through the application and not through Ft4SlotDecoder: thirty seconds of band
+      carrying four FT4 transmissions, in at ShowDecodes, cut on 7.5 s, back as four rows whose
+      text equals the text that went in. 0 missed, 0 wrong. FT8's real-audio route is 9 of 9
+      unchanged.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.231</Version>
+    <Version>1.12.232</Version>
   </PropertyGroup>
 
   <!--

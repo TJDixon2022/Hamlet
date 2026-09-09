@@ -59,23 +59,21 @@ public sealed class PressingFt4TunesAndDecodesFt4Tests
     };
 
     /// <summary>
-    /// Task 2's halfway position: the grid follows the press, and the decoder does not
-    /// follow it yet.
+    /// Criterion 1: an FT4 press cuts 7.5-second slots, reads them with FT4's decoder,
+    /// and the text that comes out is the text that went in.
     /// </summary>
     /// <remarks>
-    /// <para>**REWRITTEN FROM TASK 1'S STARTING POSITION, WHICH THIS REPLACES.** What
-    /// task 1 measured, on the same recording, was two FIFTEEN-second slots read by
-    /// `Ft8Sharp.Deep` and nought of the four messages back. The slots move here and
-    /// nothing else does.</para>
-    /// <para>**AND THE HALFWAY STATE IS WORTH ASSERTING RATHER THAN SKIPPING PAST**,
-    /// because it is the failure this unit's two halves exist to keep apart: the ring
-    /// counting down 7.5 s while the reader still reads FT8 is two halves of the tab on
-    /// different clocks, each internally consistent, with nothing on screen able to say
-    /// which is right. Task 3 rewrites this again into
-    /// <see cref="AnFt4PressCutsSevenAndAHalfAndReadsFt4"/>.</para>
+    /// <para>**REWRITTEN TWICE FROM TASK 1'S STARTING POSITION, WHICH IT REPLACES.** On
+    /// this same recording task 1 measured two FIFTEEN-second slots read by
+    /// `Ft8Sharp.Deep` with nought of the four messages back, and task 2 measured four
+    /// 7.5-second slots read by `Ft8Sharp.Deep` with nought of the four messages
+    /// back.</para>
+    /// <para>**BOTH COUNTS ARE REPORTED EVEN WHERE ONE IS ZERO** (standing ruling). A
+    /// missed decode is a receiver that could not hear; a wrong one is §0.0's own
+    /// failure, a message on the screen nobody sent.</para>
     /// </remarks>
     [Fact]
-    public void AfterTaskTwoAnFt4PressCutsSevenAndAHalfAndStillReadsWithFt8s()
+    public void AnFt4PressCutsSevenAndAHalfAndReadsFt4()
     {
         var panel = Panel("FT4");
 
@@ -87,13 +85,117 @@ public sealed class PressingFt4TunesAndDecodesFt4Tests
         _output.WriteLine("  grid     : " + panel.DigitalGrid.Describe());
         _output.WriteLine("  slots    : " + heard.SlotsDecoded);
         _output.WriteLine("  decoder  : " + Decoder(heard));
-        _output.WriteLine("  messages : " + heard.Decodes.Count);
 
-        // Four whole FT4 slots out of thirty seconds, where task 1 measured two FT8
-        // ones. **The reader is still FT8's**, so the messages are still nought.
+        foreach (var decode in heard.Decodes)
+        {
+            _output.WriteLine(
+                $"  row      : {decode.SlotStartUtc:HH:mm:ss.f}  "
+                + $"{decode.FrequencyHz,7:0.0} Hz  score {decode.SyncScore,3}  "
+                + $"snr {(decode.SignalToNoiseDb is { } db ? db.ToString("0.0") : "-"),5}  "
+                + decode.Message);
+        }
+
         Assert.Equal(4, heard.SlotsDecoded);
-        Assert.Equal("Ft8Sharp.Deep", Decoder(heard));
-        Assert.Empty(heard.Decodes);
+
+        // **THE SHEET NAMES THE PORT AND NEVER DEEP.** `Ft8Sharp.Deep` has no FT4
+        // decoder of any kind, so a sheet naming it for an FT4 slot would be naming a
+        // decoder that does not exist (`Ft8Reception.cs:274-291`).
+        Assert.Equal("Ft8Sharp", Decoder(heard));
+        Assert.All(heard.Slots, slot => Assert.Equal(Ft8DecoderIdentity.Port, slot.Decoder));
+
+        // The text out equals the text in, message for message.
+        var wanted = Corpus.Select(one => Spoken(one.To, one.De, one.Extra)).ToArray();
+        var got = heard.Decodes.Select(one => one.Message.Trim()).ToArray();
+
+        var missed = wanted.Where(one => !got.Contains(one, StringComparer.Ordinal)).ToArray();
+        var wrong = got.Where(one => !wanted.Contains(one, StringComparer.Ordinal)).ToArray();
+
+        _output.WriteLine($"  read {got.Length} of {wanted.Length}, "
+            + $"{missed.Length} missed, {wrong.Length} wrong");
+
+        Assert.Empty(wrong);
+        Assert.Empty(missed);
+    }
+
+    /// <summary>
+    /// With the comparison flag on and FT4 chosen, no comparison is recorded and none
+    /// is invented.
+    /// </summary>
+    /// <remarks>
+    /// **THERE IS NOTHING TO COMPARE AGAINST.** `compareWithThePort` decodes each slot
+    /// through the faithful port beside Deep; on FT4 the port IS what ran, and
+    /// `Ft8Sharp.Deep` has no FT4 decoder. **Running the same decoder twice and
+    /// printing the agreement would be a measurement of nothing wearing evidence's
+    /// clothes.** `PortComparison` being null is the record saying nobody took one,
+    /// which is what null means everywhere in this tree.
+    /// </remarks>
+    [Fact]
+    public void WithTheComparisonOnAnFt4SlotRecordsNoComparisonRatherThanAnInventedOne()
+    {
+        var settings = new AppSettings { LastDigitalSubMode = "FT4" };
+
+        settings.CompareWithThePort = true;
+
+        var panel = new MainWindowViewModel(settings, null);
+
+        var heard = Read(panel);
+
+        _output.WriteLine($"  compareWithThePort : {settings.CompareWithThePort}");
+        _output.WriteLine($"  slots              : {heard.SlotsDecoded}");
+        _output.WriteLine($"  comparisons        : "
+            + heard.Slots.Count(slot => slot.PortComparison is not null));
+
+        Assert.Equal(4, heard.SlotsDecoded);
+        Assert.NotEmpty(heard.Decodes);
+        Assert.All(heard.Slots, slot => Assert.Null(slot.PortComparison));
+
+        // **AND NO RATIO EITHER, FOR THE SAME REASON.** The estimator packs the text
+        // back to FT8's 79 symbols, which is FT8's modulation; there is no FT4
+        // equivalent in this tree, so every row is *not observed* rather than a
+        // plausible number in a column headed `snr`.
+        Assert.All(heard.Decodes, decode => Assert.Null(decode.SignalToNoiseDb));
+        Assert.All(heard.Slots, slot => Assert.Equal(0, slot.SignalToNoise.Measured));
+    }
+
+    /// <summary>
+    /// FT8's route through the reader is proved unchanged rather than described as
+    /// unchanged.
+    /// </summary>
+    /// <remarks>
+    /// **THE SAME RECORDING, THE SAME CALL, THE SAME ANSWER TASK 1 MEASURED AT HEAD
+    /// `9449d02`**: two whole fifteen-second slots, read by `Ft8Sharp.Deep` with both
+    /// stages on, and nothing read out of FT4 tones. Nothing chosen and FT8 chosen are
+    /// both asserted, because they are different states of the same field and only one
+    /// of them was the default before this unit.
+    /// </remarks>
+    [Fact]
+    public void AnFt8ReadIsWhatItWasBeforeThisUnit()
+    {
+        foreach (var chosen in new[] { "FT8", null })
+        {
+            var panel = Panel(chosen);
+
+            Assert.Equal(SlotGrid.Ft8, panel.DigitalGrid);
+
+            var heard = Read(panel);
+
+            _output.WriteLine($"  {chosen ?? "<none>",-6}: {panel.DigitalGrid.Describe()}, "
+                + $"{heard.SlotsDecoded} slot(s), {Decoder(heard)}, "
+                + $"{heard.Decodes.Count} message(s)");
+
+            Assert.Equal(2, heard.SlotsDecoded);
+            Assert.Equal("Ft8Sharp.Deep", Decoder(heard));
+
+            // Deep with both stages on, which is what `Ft8Reader.Read` defaults to and
+            // what the sheet must go on naming.
+            Assert.All(heard.Slots, slot =>
+            {
+                Assert.True(slot.Decoder.FineSync);
+                Assert.True(slot.Decoder.OrderedStatistics);
+            });
+
+            Assert.Empty(heard.Decodes);
+        }
     }
 
     /// <summary>
