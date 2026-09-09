@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -47,6 +47,13 @@
        the shell is the only thing that may know what a picture is (§0.1). -->
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+
+    <!-- The world coastline ships at the repository root because it is a
+         PROJECT asset rather than an application one: it was drawn for this
+         project, it is not survey data, and the note beside it says so.
+         Linked rather than copied so there is one file (work instruction 299
+         task 3). -->
+    <AvaloniaResource Include="..\..\assets\world-coastline.svg" Link="Assets\world-coastline.svg" />
   </ItemGroup>
 
   <!-- The sample provider is an implementation detail of playback with a

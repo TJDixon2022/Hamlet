@@ -306,6 +306,33 @@ public sealed partial class Ft8ContactCard : ObservableObject
            + "never looks like a whole one. It transmits nothing, and nothing is "
            + "written until you press Save.";
 
+
+    /// <summary>**Where the two stations are, for the globe beside the `i`.**</summary>
+    /// <remarks>
+    /// <para>**TIM ASKED FOR IT ON 2026-09-08, A DESIGN WAS APPROVED, AND THE AUTHOR
+    /// QUEUED IT INSTEAD OF WRITING IT** (work instruction 299). It is here now.
+    /// </para>
+    /// <para>**THE PLACE IS THE FACE'S OWN**, so the caption under the map and the
+    /// line on the card cannot come to disagree about where he is (§0).</para>
+    /// <para>**NOTHING IS LOOKED UP AND NOTHING IS FETCHED.** Both positions are the
+    /// two grid squares put through the coastline's own projection, which is
+    /// arithmetic on values the messages themselves carried.</para>
+    /// </remarks>
+    public Ft8GlobePlot Globe => _globe ??= new Ft8GlobePlot(
+        _operatorGrid, _facts.Grid, Callsign, _place);
+
+    private Ft8GlobePlot? _globe;
+
+    /// <summary>True where the globe has anything at all to draw.</summary>
+    /// <remarks>
+    /// **A STATION WITH NO GRID STILL GETS THE MARK**, because the answer *Hamlet
+    /// does not know where he is* is worth a hover: it tells him the station never
+    /// sent one, which is a fact about the contact rather than a gap in the screen.
+    /// The mark goes only where neither end is known at all, which is a station with
+    /// no grid on a machine with no grid in Settings, and there is nothing to say.
+    /// </remarks>
+    public bool ShowsGlobe => Globe.HasMap;
+
     /// <summary>True where the card is drawn back, so the live ones lead.</summary>
     /// <remarks>
     /// **DIMMED AND NEVER REMOVED** (Tim's ruling, 2026-09-08). A card never

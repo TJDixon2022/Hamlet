@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 299 - the card header does what it promised
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T18:41:55-04:00
-NOTE: Task 2 done - the i was not empty; the band paragraph now survives the table clearing. 12 of 12 green.
+UPDATED: 2026-09-09T18:46:16-04:00
+NOTE: Task 3 done - the globe, placed by the coastline's own projection. 20 of 20 green. Committing.
 
 ---
 

@@ -4284,7 +4284,7 @@
                                                             <!-- THE HEADER: who, where, and
                                                                  what state it is in. -->
                                                             <Grid Grid.Row="0"
-                                                                  ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                                                                  ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
                                                                 <TextBlock Grid.Column="0"
                                                                            Text="{Binding Callsign}"
                                                                            VerticalAlignment="Center"
@@ -4360,7 +4360,60 @@
                                                                      no measurements behind
                                                                      it carries no mark to
                                                                      hover. -->
-                                                                <ctl:HintMarkControl Grid.Column="3"
+                                                                <!-- **THE GLOBE, BESIDE
+                                                                     THE `i`** (Tim,
+                                                                     2026-09-08). Hovering
+                                                                     shows where he is:
+                                                                     the operator, the
+                                                                     station and a line
+                                                                     between, over a
+                                                                     coastline drawn for
+                                                                     this project.
+
+                                                                     **A PICTURE BINDS AS
+                                                                     HARD AS A SENTENCE**
+                                                                     (HM-DEC-092), so both
+                                                                     dots are placed by
+                                                                     the coastline own
+                                                                     projection and a
+                                                                     station with no grid
+                                                                     gets no dot at all.
+
+                                                                     **THE MARK IS A
+                                                                     BORDER SO THE POINTER
+                                                                     HAS ONE TARGET** for
+                                                                     the glyph and the
+                                                                     tooltip together. -->
+                                                                <Border Grid.Column="3"
+                                                                        IsVisible="{Binding ShowsGlobe}"
+                                                                        Background="Transparent"
+                                                                        VerticalAlignment="Center"
+                                                                        Margin="0,0,6,0"
+                                                                        Width="16" Height="16">
+                                                                    <ToolTip.Tip>
+                                                                        <StackPanel Width="300" Spacing="6">
+                                                                            <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                                    BorderThickness="1"
+                                                                                    CornerRadius="4">
+                                                                                <ctl:Ft8GlobeControl Height="150"
+                                                                                                     Plot="{Binding Globe}" />
+                                                                            </Border>
+
+                                                                            <TextBlock Text="{Binding Globe.Caption}"
+                                                                                       TextWrapping="Wrap"
+                                                                                       FontSize="11"
+                                                                                       LineSpacing="1.3" />
+                                                                        </StackPanel>
+                                                                    </ToolTip.Tip>
+
+                                                                    <TextBlock Text="&#x1F310;"
+                                                                               FontSize="12"
+                                                                               HorizontalAlignment="Center"
+                                                                               VerticalAlignment="Center"
+                                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                </Border>
+
+                                                                <ctl:HintMarkControl Grid.Column="4"
                                                                                      Kind="Detail"
                                                                                      VerticalAlignment="Center"
                                                                                      Margin="0,0,6,0"
@@ -4372,7 +4425,7 @@
                                                                      the card off the panel
                                                                      and touches nothing
                                                                      else. -->
-                                                                <Button Grid.Column="4"
+                                                                <Button Grid.Column="5"
                                                                         Classes="hm-cardx"
                                                                         Content="✕"
                                                                         VerticalAlignment="Center"
