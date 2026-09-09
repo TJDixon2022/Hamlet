@@ -684,11 +684,20 @@ public static class Ft8Reader
     /// that decoding the same FT4 slot again after this has run returns the identical
     /// `Ft8SlotResult`.</para>
     /// <para>**AND WHAT ITS ERROR IS, BECAUSE THE OPERATOR SENDS IT.** Measured over
-    /// 970 synthesized messages at five rungs FT4 decodes at, the mean absolute error
-    /// against the delivered ratio is **0.58 dB and the 95th percentile 1.41 dB**. The
-    /// error is not flat: it reads about **1.2 dB low at -1 dB** and about 0.03 dB low
+    /// 1048 synthesized messages at five rungs FT4 decodes at, the mean absolute error
+    /// against the delivered ratio is **0.56 dB and the 95th percentile 1.39 dB**. The
+    /// error is not flat: it reads about **1.2 dB low at -1 dB** and about 0.05 dB low
     /// at -13 dB, for the reason `Ft4DeepSignalToNoise`'s remarks give. **A message
     /// whose symbols could not be recovered gets null and never a floor.**</para>
+    /// <para>**RE-MEASURED AT THE GRID UNIT 296 ADOPTED, BECAUSE THE OLD FIGURE WAS
+    /// ABOUT A DECODER THAT NO LONGER EXISTS.** Unit 294 measured 0.58 dB and 1.41 dB
+    /// over 970 messages, and it measured them through `new Ft4SlotDecoder()` at
+    /// `Ft4WaterfallGeometry`'s then-default 2 analyses per symbol. Unit 296 moved that
+    /// default to 4 and re-ran the same test unchanged: **0.56 dB and 1.39 dB over 1048
+    /// messages**. The agreement barely moved; the *count* did, and that is the finding
+    /// - the cell-centre rung at -13 dB went from 17 of 106 decoding to **95 of 106**,
+    /// so the figure is now taken on a far less selected sample. Both figures are on
+    /// the record and this one is the live one.</para>
     /// </remarks>
     private static Ft8Reception ReadFt4(
         SlotCut cut, ClockOffset offset, bool compareWithThePort)

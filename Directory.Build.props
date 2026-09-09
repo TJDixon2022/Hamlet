@@ -543,8 +543,26 @@
     95 of 106 at 2x2 against 105 of 106 at 4x2, still zero wrong. Ft4RoundTripTests's on-grid
     assertion is untouched and still reads 106 of 106 at the new grid.
   -->
+  <!--
+    1.12.256 -> 1.12.257, UNIT 296 TASK 6, UNDER HM-DEC-150. A PATCH, AND THE ONE OPERATOR-VISIBLE
+    LINE IN IT IS A FIGURE THAT WOULD OTHERWISE HAVE GONE STALE. The controls: git diff --stat
+    against a5b9628 shows three files under src/ and no more - Ft4WaterfallGeometry.cs,
+    Ft8Reception.cs and src/Ft8Sharp/Directory.Build.props - nothing under src/Ft8Sharp.Deep/ and no
+    FT8 decode-path file. FT8's own defaults are asserted at 2 and 2. The FT8 whole-chain control is
+    3 of 3. One FT4 slot through Ft8Reader.Read with DigitalMode.Ft4, station a third of a bin and a
+    third of a sub-block off grid: the decoder reports 4 analyses per symbol and a 144-sample
+    sub-block, "CQ W9GAP EM12" comes back at 3.3 dB, 84 ms a slot through the whole reader, both
+    slots stamped Ft8Sharp with fine sync and ordered statistics off.
+
+    AND THE ESTIMATOR'S FIGURES MOVED, SO THE TOOLTIP MOVED WITH THEM. Ft4Unit294SnrAgreementTests
+    builds new Ft4SlotDecoder(), so its inputs are the new grid. Re-run unchanged: 0.56 dB mean
+    absolute error and 1.39 dB at the 95th percentile over 1048 messages, against unit 294's 0.58
+    and 1.41 over 970. The agreement barely moved; the COUNT did, because the cell-centre rung at
+    -13 dB went from 17 of 106 decoding to 95 of 106. Both figures are on the record and the new one
+    is on the snr tooltip and in ReadFt4's remarks.
+  -->
   <PropertyGroup>
-    <Version>1.12.256</Version>
+    <Version>1.12.257</Version>
   </PropertyGroup>
 
   <!--

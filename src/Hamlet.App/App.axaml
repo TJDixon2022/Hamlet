@@ -55,7 +55,7 @@
              **EVERY FIGURE BELOW IS READ FROM THE TREE AND NONE IS COMPOSED.**
              FT8: 0.26 dB and 0.62 dB over 510 messages, recorded in
              `docs/unit251-snr-trace.md` §6, produced by
-             `Ft8Unit251SnrAgreementTests`. FT4: 0.58 dB and 1.41 dB over 970
+             `Ft8Unit251SnrAgreementTests`. FT4: 0.56 dB and 1.39 dB over 1048
              messages, recorded at
              `src/Hamlet.RadioEngine/Audio/Ft8Reception.cs`'s `ReadFt4` remarks,
              produced by `Ft4Unit294SnrAgreementTests`, which also record the
@@ -68,9 +68,18 @@
              ON AN FT4 ROW**, and the `utc` line called the grid fifteen seconds
              whatever mode was running. Both had been false since unit 292 put
              FT4 on the tab, and `Unit295TheColumnsSayWhatTheRunningModeDoesTests`
-             is what catches it coming back. -->
+             is what catches it coming back.
+
+             **AND WORK INSTRUCTION 296 MOVED FT4'S ANALYSIS GRID**, so unit
+             294's 0.58 dB and 1.41 dB over 970 messages was a figure about a
+             decoder that no longer exists. The same test was re-run unchanged at
+             the new grid and the figures above are its answer. The agreement
+             barely moved; the *count* did, because the cell-centre rung at
+             -13 dB went from 17 of 106 decoding to 95 of 106, so the figure is
+             taken on a far less selected sample than it was. -->
+
         <x:String x:Key="HmDecodeUtcHelp">When the slot started, as hhmmss. Slots run on a strict grid - fifteen seconds on FT8, 7.5 seconds on FT4 - so every message decoded from one slot carries the same time.</x:String>
-        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels in a 2500 Hz reference bandwidth, which is how these modes are normally quoted. It is measured for each message from the power in the tone that was sent against the tones that were not - seven of them on FT8, three on FT4. Over 510 synthesized FT8 messages it agreed with the ratio actually delivered to 0.26 dB on average and 0.62 dB at the 95th percentile; over 970 FT4 messages, to 0.58 dB on average and 1.41 dB at the 95th percentile, and on FT4 it reads about 1.2 dB low on a very strong signal. It is shown in whole decibels and should not be read closer than about one on FT8 or about one and a half on FT4. A dash means this message's ratio could not be measured.</x:String>
+        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels in a 2500 Hz reference bandwidth, which is how these modes are normally quoted. It is measured for each message from the power in the tone that was sent against the tones that were not - seven of them on FT8, three on FT4. Over 510 synthesized FT8 messages it agreed with the ratio actually delivered to 0.26 dB on average and 0.62 dB at the 95th percentile; over 1048 FT4 messages, to 0.56 dB on average and 1.39 dB at the 95th percentile, and on FT4 it reads about 1.2 dB low on a very strong signal. It is shown in whole decibels and should not be read closer than about one on FT8 or about one and a half on FT4. A dash means this message's ratio could not be measured.</x:String>
         <x:String x:Key="HmDecodeDtHelp">Seconds from the start of the slot to the moment that station began transmitting.</x:String>
         <x:String x:Key="HmDecodeHzHelp">The audio tone above the dial. The station is on the dial frequency plus this.</x:String>
         <x:String x:Key="HmDecodeMessageHelp">What was sent. Thirteen characters in three parts: who it is to, who it is from, and the payload.</x:String>
