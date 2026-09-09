@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 288 - where FT4 lives, decided by reading
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-09T08:19:46-04:00
-NOTE: Task 5 done - ten gaps named, none fixed. Committing.---
+UPDATED: 2026-09-09T08:21:59-04:00
+NOTE: Task 6 done - card, ruling, index, version and the outcome entry. Writing output.md.---
 
 Written by a Claude Code session per CLAUDE.md 13 and ANNUNCIATOR.md.
 

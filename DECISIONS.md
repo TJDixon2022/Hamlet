@@ -4,6 +4,45 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-160
+date: 2026-09-08
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, CLAUDE.md 13.3
+---
+
+**`PHASE_PLAN.md` is approved: the phase is "FT4 works exactly the way FT8 does",
+set 2026-09-08, seven steps numbered 0 to 6.** Tim, 2026-09-08.
+
+`PROJECT_CARD.md` changes only by ruling (13.3), and this is the ruling that
+changes it. `PHASE` and `PHASE_SET` move; nothing else on the card does.
+
+Why. The phase it replaces closed with Hamlet transmitting on a live antenna on
+2026-09-07 and the operator logging his first contacts, so the application can now
+work a station in FT8 from the first CQ to the log. **FT4 is a button on the
+Digital tab that does nothing**, and it has been one since work instruction 037.
+A mode strip offering four modes and answering for one is a picture that asserts
+something untrue (HM-DEC-092), and the cheapest honest states are either to remove
+three chips or to make them work. He chose to make FT4 work.
+
+**FT4 works exactly the way FT8 does.** That is the phase in one sentence and it
+is deliberately not scoped by a unit: **anything FT8 does that FT4 does not is a
+gap to be named**, not a line a session may quietly draw. The turn ring, the
+contact ledger, the capture sidecar, the log, the achievements row and the
+signal-to-noise column are all in, and a unit that finds one of them unaffordable
+says so and hands it back.
+
+**Where FT4 lives follows what upstream does, read rather than assumed.** If
+`ft8_lib` carries FT4 the port carries FT4 and the fidelity tests extend to cover
+it; if it does not, FT4 is new work and belongs in `Ft8Sharp.Deep` or a sibling.
+The reason the question is settled by reading is that **`Ft8Sharp`'s whole value is
+that it cannot drift from upstream** -- that byte-fidelity is the instrument every
+measurement of the sensitivity phase leaned on, and it is not spent on a memory.
+
+What was rejected. **Deciding the decoder's home in the plan**, which would have
+been a preference dressed as a ruling, and the whole of step 0 exists to answer it
+with file and line instead. **Carrying FT4 as a gap list without a phase**, which
+is what the last three hundred units did and is why the button is still dead.
+
+---
 id: HM-DEC-159
 date: 2026-09-07
 refs: src/Hamlet.App/ViewModels/Ft8Vocabulary.cs, work instruction 273 task 3, unit 271
