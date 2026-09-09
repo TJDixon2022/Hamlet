@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: COMPLETED
 TASK: 6 of 6
 WORK_INSTRUCTION: 291 - the log can say FT4
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:27:45-04:00
-NOTE: Field guide FT4 row in, frequency read from the convention data rather than recalled, and no slot length in its text. Checking the five older rows against the same data turned up two inherited mismatches - RTTY and PSK31 - named and left standing. Writing output.md.
+UPDATED: 2026-09-09T10:32:19-04:00
+NOTE: 6 of 6, nothing dropped, and the named drop candidate was taken. Step 3 done on all four criteria: SUBMODE on AdifContact round-tripping like every other field, an FT4 contact writing MODE:4 MFSK then SUBMODE:3 FT4, a record with no submode absent rather than empty across all three shapes, and the FT4 row lighting off a real record while a bare MFSK one five days earlier lights nothing. FT8 byte-identical. 8 stale sentences found and rewritten, 2 of them on screen. validate-output exit 0, all seven rules. Four items back, none blocking.
 
 ---
 
