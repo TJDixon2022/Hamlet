@@ -256,7 +256,12 @@ public sealed class TheDecodedTableIsRealTests
 
         _output.WriteLine($"  strip  [{model.DigitalModeStripLine}]");
 
-        Assert.Equal(DigitalIdleText.ModeStrip, model.DigitalModeStripLine);
+        // **AN UPDATED CALL, NOT A CHANGED EXPECTATION** (unit 290 task 7).
+        // `ModeStrip` was a const saying *FT8 runs in fifteen second slots*; it is
+        // now a function of the grid the tab is running on, which is still FT8's.
+        Assert.Equal(
+            DigitalIdleText.ModeStripFor(Hamlet.RadioEngine.Audio.SlotGrid.Ft8),
+            model.DigitalModeStripLine);
     }
 
     /// <summary>

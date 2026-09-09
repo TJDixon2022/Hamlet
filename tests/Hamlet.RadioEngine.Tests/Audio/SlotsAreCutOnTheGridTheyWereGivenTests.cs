@@ -187,15 +187,14 @@ public sealed class SlotsAreCutOnTheGridTheyWereGivenTests
             Assert.Empty(cut.Slots);
             Assert.Equal(Ft8SlotCutter.NoOffset, cut.Reason);
 
-            // **AND THIS IS THE §0.0 BREACH TASK 1'S CENSUS NAMED, ON THE
-            // RECORD.** `Ft8SlotCutter.NoOffset` says *fifteen-second* whichever
-            // grid was asked for, so an FT4 operator with an unmeasured clock is
-            // told about a boundary spacing his mode does not use. It is left
-            // standing deliberately: it is one of the on-screen sentences, and a
-            // screen that says two different things about the same grid is worse
-            // than one that says the same wrong thing twice.
-            Assert.Contains(
-                "fifteen-second", cut.Reason, StringComparison.Ordinal);
+            // **AND THE REFUSAL NAMES NO LENGTH** (task 7). It used to say
+            // *fifteen-second* whichever grid was asked for, which told an FT4
+            // operator with an unmeasured clock about a boundary spacing his mode
+            // does not use - inside the one sentence whose whole content is that
+            // nothing was cut at all.
+            Assert.DoesNotContain(
+                "fifteen", cut.Reason, StringComparison.OrdinalIgnoreCase);
+            Assert.DoesNotContain("15", cut.Reason, StringComparison.Ordinal);
         }
     }
 

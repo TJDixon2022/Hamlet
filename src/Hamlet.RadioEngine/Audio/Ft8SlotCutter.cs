@@ -76,8 +76,16 @@ public sealed record SlotCut(
 public static class Ft8SlotCutter
 {
     /// <summary>What is said when there is no offset to cut against.</summary>
+    /// <remarks>
+    /// **IT NAMES NO LENGTH, BECAUSE NO GRID IS PLACED HERE** (unit 290 task 7). It
+    /// used to say *the fifteen-second boundaries*, which is a spacing rather than a
+    /// fact about this refusal, and on a 7.5-second grid it was a spacing the
+    /// application was not cutting on - said in the one sentence whose whole content
+    /// is that nothing was cut at all. The operator meets this state through several
+    /// doors and reads one answer at all of them, so it changed in one place.
+    /// </remarks>
     public const string NoOffset =
-        "the clock offset has not been measured, so where the fifteen-second "
+        "the clock offset has not been measured, so where the slot "
         + "boundaries fall is not known and nothing was cut";
 
     /// <summary>What is said when the recording is shorter than one slot.</summary>

@@ -88,8 +88,13 @@ public static class DigitalReadiness
         //    against a clock that is known to be out.
         if (!clock.IsKnown)
         {
+            // **AND IT DOES NOT NAME A LENGTH, BECAUSE NO GRID IS PLACED HERE**
+            // (unit 290 task 7). It used to say *the fifteen second boundaries*,
+            // which on a 7.5-second grid described a spacing the application was
+            // not cutting on, in the one sentence whose job is to say that nothing
+            // is being cut at all.
             return "the clock has not been checked against UTC yet, so where "
-                + "the fifteen second boundaries fall is not known and nothing "
+                + "the slot boundaries fall is not known and nothing "
                 + "is being cut into slots. It settles itself when the time "
                 + "check answers, so this one is usually worth a moment before "
                 + "you go looking anywhere else.";

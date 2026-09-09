@@ -935,8 +935,13 @@ public partial class MainWindowViewModel : ObservableObject
             var band = $"{AudioSpectrumSource.LowHz}–"
                 + $"{AudioSpectrumSource.HighHz} Hz";
 
+            // **IT SAID `15 s slots` FLAT UNTIL UNIT 290 TASK 7.** On a 7.5-second
+            // grid that is a caption under a picture asserting a boundary spacing the
+            // waterfall is not drawing, which HM-DEC-092 binds as hard as a sentence.
+            // On FT8 it still renders exactly `15 s slots`.
             var grid = ClockOffset.IsKnown
-                ? "15 s slots"
+                ? DigitalGrid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture)
+                  + " s slots"
                 : "no slot grid until the clock is checked";
 
             return DigitalSpectrum.IsSimulated
@@ -1652,6 +1657,37 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The beat, as the panel last read it.</summary>
     private Ft8Turn _turn = new(Ft8TurnState.NoClock, null, null);
+
+    private SlotGrid _digitalGrid = SlotGrid.Ft8;
+
+    /// <summary>**Which grid the Digital tab is running on.**</summary>
+    /// <remarks>
+    /// <para>**IT IS FT8'S AND THERE IS NOTHING THAT CHANGES IT** (work instruction
+    /// 290). This unit delivers the seam and nothing that presses it: which grid the
+    /// application chooses at runtime is step 4's, along with the FT4 button and the
+    /// Digital tab's mode wiring. **One property, so that when step 4 arrives it is
+    /// one place and not a search.**</para>
+    /// <para>**AND IT IS WHY THE TWO SENTENCES ON SCREEN CAN STOP SAYING FIFTEEN.**
+    /// The idle line and the waterfall summary both read it, so they cannot come to
+    /// disagree with each other about the same grid - which is the failure task 7
+    /// says is worse than the one it fixes.</para>
+    /// </remarks>
+    internal SlotGrid DigitalGrid => _digitalGrid;
+
+    /// <summary>Run the tab on another grid, for a test.</summary>
+    /// <param name="grid">The grid.</param>
+    /// <remarks>
+    /// **THE REAL ROUTE DOES NOT EXIST YET AND THAT IS DELIBERATE** (§0.2, and the
+    /// parked list). Nothing in the application calls this; it is here so the
+    /// sentences can be shown to follow the grid rather than asserted to.
+    /// </remarks>
+    internal void UseGridForTests(SlotGrid grid)
+    {
+        _digitalGrid = grid;
+
+        OnPropertyChanged(nameof(DigitalModeStripLine));
+        OnPropertyChanged(nameof(DigitalWaterfallSummary));
+    }
 
     /// <summary>**Whose slot this is and how much of it is left**, in one sentence.</summary>
     /// <remarks>
@@ -2633,7 +2669,7 @@ public partial class MainWindowViewModel : ObservableObject
             ? _digitalRefusal
             : _digitalDecodeNote.Length > 0
                 ? _digitalDecodeNote
-                : DigitalIdleText.ModeStrip;
+                : DigitalIdleText.ModeStripFor(DigitalGrid);
 
     /// <summary>The decoded panel's collapsed summary.</summary>
     /// <remarks>
