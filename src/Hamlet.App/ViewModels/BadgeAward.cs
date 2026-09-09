@@ -36,6 +36,22 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     /// </remarks>
     public ModeFirstRow? First { get; init; }
 
+    /// <summary>
+    /// A group of the achievements screen that has just opened, or null.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE THIRD KIND THROUGH THE SAME WINDOW** (work instruction 298 task
+    /// 6: reuse unit 286's notice, do not build a second one). A belt, a mode first
+    /// and a group opening are three ladders read off one log, and every one of them
+    /// has to keep the one property that matters: **it never takes his focus**. A
+    /// second window would be a second place for that to be got wrong, and the first
+    /// to drift would be the one nobody was watching.</para>
+    /// <para>**§3.2 MADE VISIBLE.** *One contact in, three or four possibilities
+    /// out.* This carries what opened and how many cards came with it, which is that
+    /// sentence turned into something he can see happen.</para>
+    /// </remarks>
+    public AchievementOpening? Opened { get; init; }
+
     /// <summary>The belt he is now on.</summary>
     public BeltRank Rank => ContactBelt.For(Count);
 
@@ -45,9 +61,11 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     /// contacts and a mode first is not counted at all, so putting the running total
     /// in it would answer a question nobody asked.
     /// </remarks>
-    public string Ring => First is null
-        ? Count.ToString("N0", CultureInfo.InvariantCulture)
-        : First.Name;
+    public string Ring => Opened is { } opening
+        ? opening.Cards.ToString("N0", CultureInfo.InvariantCulture)
+        : First is null
+            ? Count.ToString("N0", CultureInfo.InvariantCulture)
+            : First.Name;
 
     /// <summary>The ring's ink.</summary>
     /// <remarks>
@@ -60,9 +78,11 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     /// <remarks>
     /// **THE RANK, IN HIS OWN VOCABULARY.** He asked for a belt and this is the belt.
     /// </remarks>
-    public string Heading => First is null
-        ? Rank.Name + " belt"
-        : "first " + First.Name + " contact";
+    public string Heading => Opened is { } opening
+        ? opening.Title + " is open"
+        : First is null
+            ? Rank.Name + " belt"
+            : "first " + First.Name + " contact";
 
     /// <summary>
     /// What was earned, naming every threshold this rise passed.
@@ -79,6 +99,18 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     {
         get
         {
+            if (Opened is { } opening)
+            {
+                // **WHAT OPENED AND HOW MUCH CAME WITH IT** (§3.2). The count is the
+                // point: an unlock that revealed one card is a filled slot, and one
+                // that revealed several is the screen growing.
+                return opening.Cards == 1
+                    ? "That opens " + opening.Title + ", with one new record in it."
+                    : "That opens " + opening.Title + ", with "
+                      + opening.Cards.ToString("N0", CultureInfo.InvariantCulture)
+                      + " new records in it.";
+            }
+
             if (First is not null)
             {
                 // **THE STATION IS NAMED WHERE THE RECORD CARRIES ONE**, because
@@ -114,6 +146,11 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     {
         get
         {
+            if (Opened is not null)
+            {
+                return "It is on the achievements screen from now on.";
+            }
+
             if (First is not null)
             {
                 // **WHERE IT WENT, RATHER THAN WHAT IS LEFT.** Five modes to go

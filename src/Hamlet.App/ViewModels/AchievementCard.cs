@@ -202,3 +202,21 @@ public sealed record AchievementGroup(
     /// <summary>How many cards it holds.</summary>
     public int Count => Cards.Count;
 }
+
+/// <summary>
+/// **One group of the achievements screen that has just opened.**
+/// </summary>
+/// <remarks>
+/// <para>**§3.2 MADE VISIBLE**: *one contact in, three or four possibilities out.*
+/// The count is the point of it - an unlock that revealed one card is a filled slot,
+/// and one that revealed several is the screen growing, which is *itself the reward*
+/// (§3.1).</para>
+/// <para>**NEVER ON A FIRST LOOK AT AN EXISTING LOG** (the instruction, and unit
+/// 278's rule). Whoever raises one of these seeds silently the first time, or a man
+/// who imports fourteen contacts gets fourteen notices for things he did last year.
+/// </para>
+/// </remarks>
+/// <param name="Key">The group's stable key.</param>
+/// <param name="Title">What it is called, as the screen draws it.</param>
+/// <param name="Cards">How many records came with it.</param>
+public sealed record AchievementOpening(string Key, string Title, int Cards);

@@ -10930,8 +10930,84 @@ public partial class MainWindowViewModel : ObservableObject
         // firsts, so the three cannot come to disagree about what is in it.
         AnnounceModeFirsts(records);
 
+        // **THE THIRD LADDER, OFF THE SAME READING** (work instruction 298 task 6).
+        // One read of the file answers the count, the *worked* mark, the mode firsts
+        // and which groups of the achievements screen are open, so the four cannot
+        // come to disagree about what is in it.
+        AnnounceOpenings(records);
+
         return worked;
     }
+
+    /// <summary>**Say once when a group of the achievements screen opens.**</summary>
+    /// <param name="records">Every record in the file.</param>
+    /// <remarks>
+    /// <para>**§3.2 MADE VISIBLE.** *One contact in, three or four possibilities
+    /// out*, and *a new tab appearing is itself the reward* (§3.1). Without this the
+    /// screen grows in a window he is not looking at.</para>
+    /// <para>**NEVER ON A FIRST LOOK AT AN EXISTING LOG** (the instruction, and unit
+    /// 278's rule, which this copies rather than reinvents). `null` means nobody has
+    /// looked yet: the open keys are written down and **nothing at all is said**, so
+    /// a man who imports fourteen contacts gets fourteen groups and no notices.
+    /// `empty` means we looked and nothing was open, which is a fresh install, and
+    /// that is where the first real reveal comes from.</para>
+    /// <para>**WRITTEN DOWN BEFORE ANYBODY IS TOLD**, which is what makes the
+    /// once-rule hold even if showing a notice throws.</para>
+    /// <para>**THE SAME WINDOW UNIT 286 BUILT** and not a second one. A group opening
+    /// travels as a `BadgeAward` with an `Opened` on it, so the one property that has
+    /// to be right - that the notice never takes his focus - is checked in one
+    /// place.</para>
+    /// </remarks>
+    private void AnnounceOpenings(IReadOnlyList<AdifLogRecord> records)
+    {
+        var screen = new AchievementScreen(
+            new AchievementLog(records, _settings.Operator.GridSquare));
+
+        var open = screen.OpenKeys.ToList();
+
+        if (_settings.AchievementGroupsAnnounced is null)
+        {
+            _settings.AchievementGroupsAnnounced = open;
+            SettingsStore.Save(_settings);
+
+            return;
+        }
+
+        var said = _settings.AchievementGroupsAnnounced;
+
+        var fresh = screen.Scopes
+            .Select(t => new AchievementOpening(t.Key, t.Title, t.Count))
+            .Concat(screen.Places.Select(
+                p => new AchievementOpening(p.Key, p.Title, p.Count)))
+            .Where(o => !said.Contains(o.Key, StringComparer.OrdinalIgnoreCase))
+            .ToList();
+
+        if (fresh.Count == 0)
+        {
+            return;
+        }
+
+        _settings.AchievementGroupsAnnounced = open;
+        SettingsStore.Save(_settings);
+
+        foreach (var opening in fresh)
+        {
+            BadgeEarned?.Invoke(
+                this,
+                new BadgeAward(records.Count, Array.Empty<int>())
+                {
+                    Opened = opening,
+                });
+        }
+    }
+
+    /// <summary>Announce openings against a log, for a test.</summary>
+    /// <remarks>
+    /// **THE SAME DOOR THE LOG READ USES.** This machine has no contact log and never
+    /// will (`FACT-006`), so a test's log is one it builds.
+    /// </remarks>
+    internal void AnnounceOpeningsForTests(IReadOnlyList<AdifLogRecord> records)
+        => AnnounceOpenings(records);
 
     /// <summary>Hand the log in, for a test that has no file to read.</summary>
     /// <param name="worked">The log, by callsign, as `ReadWorkedBefore` builds it.</param>

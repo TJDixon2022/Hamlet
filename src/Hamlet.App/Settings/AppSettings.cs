@@ -287,7 +287,24 @@ public sealed class AppSettings
     /// <para>**AN EMPTY LIST MEANS HAMLET HAS LOOKED AND HE HAD NONE**, which is a
     /// different fact and the one a new operator is in.</para>
     /// </remarks>
-    public List<string>? ContactModeFirstsAnnounced { get; set; }
+    public List<string>? ContactModeFirstsAnnounced { get; set; }
+
+    /// <summary>
+    /// Which groups of the achievements screen have already been announced, or
+    /// null before the first look.
+    /// </summary>
+    /// <remarks>
+    /// <para>**NULL AND EMPTY MEAN DIFFERENT THINGS, WHICH IS THE WHOLE POINT**
+    /// (unit 278's rule, and work instruction 298 task 6). **Null is *nobody has
+    /// looked yet*** and seeds silently: a man who imports fourteen contacts from
+    /// another logger gets no notices at all for things he did last year. **Empty is
+    /// *we looked and nothing was open***, which is a fresh install and where the
+    /// first real reveal comes from.</para>
+    /// <para>**IT HOLDS KEYS AND NOT TITLES.** `band-40m` survives a change to how a
+    /// heading is worded; `40 m` would announce every group again the day somebody
+    /// improved the copy.</para>
+    /// </remarks>
+    public List<string>? AchievementGroupsAnnounced { get; set; }
 
     /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
