@@ -404,8 +404,29 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.230 -> 1.12.231, UNIT 292 TASK 2, UNDER HM-DEC-150. A PATCH, AND IT PRESSES THE SEAM UNIT
+    290 CUT.
+
+      _digitalGrid stopped being a field with a test-only writer and became DigitalGrid, derived
+      from a new DigitalMode that follows ChosenDigitalMode - the chip he pressed, never the chip
+      the map lit. The mode reaches the watch, which is rebuilt rather than retuned because
+      Ft8SlotWatch.Grid is init for a reason its own remark gives; the cutter, through one new
+      DigitalMode argument on Ft8Reader.Read; the capture sidecar, whose grid parameter unit 290
+      added and nothing passed; and the arrival window, which was Ft8Slots.SlotSeconds flat.
+
+      Four sentences stopped saying fifteen where the tab is not cutting fifteen: the census line,
+      the sidecar's arrival line, Ft8SlotWatch.AudioShort and - already, from unit 290 - the two on
+      the strip. AudioShort gained a second format argument, so its one test moved with it.
+
+      FT8 is unchanged: 5 boundaries in a minute tick-identical to Ft8Slots' own arithmetic, both
+      screen sentences byte-identical after a round trip through FT4, and Ft8Turn still records a
+      null grid on FT8 so not a byte of that record moved.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.230</Version>
+    <Version>1.12.231</Version>
   </PropertyGroup>
 
   <!--

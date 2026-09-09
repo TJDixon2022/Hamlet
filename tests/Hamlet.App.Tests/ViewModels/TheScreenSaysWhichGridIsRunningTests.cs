@@ -72,7 +72,7 @@ public sealed class TheScreenSaysWhichGridIsRunningTests
     {
         var panel = Panel();
 
-        panel.UseGridForTests(SlotGrid.Ft4);
+        panel.UseModeForTests(DigitalMode.Ft4);
 
         var idle = panel.DigitalModeStripLine;
 
@@ -100,7 +100,7 @@ public sealed class TheScreenSaysWhichGridIsRunningTests
         // on either grid: with no offset there is no grid to name (HM-DEC-009).
         var unknown = Panel();
 
-        unknown.UseGridForTests(SlotGrid.Ft4);
+        unknown.UseModeForTests(DigitalMode.Ft4);
         unknown.DigitalSpectrum = new AudioSpectrumSource(48000, simulated: false);
 
         _output.WriteLine("  no clock  : " + Summary(unknown));
@@ -154,7 +154,11 @@ public sealed class TheScreenSaysWhichGridIsRunningTests
     {
         var panel = Panel();
 
-        panel.UseGridForTests(grid);
+        // **THE SEAM IS THE MODE SINCE UNIT 292, NOT THE GRID.** The grid is derived
+        // from the mode and no longer stored, so there is nothing left that could set
+        // one without the other.
+        panel.UseModeForTests(
+            grid == SlotGrid.Ft4 ? DigitalMode.Ft4 : DigitalMode.Ft8);
         panel.DigitalSpectrum = new AudioSpectrumSource(48000, simulated: false);
         panel.ClockOffset = new ClockOffset(0, DateTime.UtcNow);
 

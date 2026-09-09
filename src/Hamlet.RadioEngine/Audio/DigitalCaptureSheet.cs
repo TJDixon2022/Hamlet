@@ -326,10 +326,16 @@ public static class DigitalCaptureSheet
         // **NOT MEASURED IS SAID AND NEVER GUESSED** (HM-DEC-009). A capture
         // taken before the tap had a slot's worth of history has no ratio, and
         // a zero there would read as a dead sound card.
+        // **THE WINDOW IS ONE SLOT OF THIS CAPTURE'S OWN GRID AND IS NAMED AS SUCH**
+        // (work instruction 292 task 2). It read `the last fifteen seconds` flat, which
+        // on a 7.5-second grid described a window twice the one the ratio was measured
+        // across - in a file whose whole purpose is to be readable a year later.
+        var window = grid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture);
+
         line("arrival", double.IsNaN(arrival.RecentRatio)
             ? Unread + "  (no arrival ratio was taken for this capture)"
             : arrival.RecentText
-              + "  (samples the sound card delivered over the last fifteen "
+              + $"  (samples the sound card delivered over the last {window} "
               + "seconds, divided by the samples a continuous stream would "
               + "have delivered in the same wall clock; below 100% this file "
               + "is fragments with gaps in it rather than a recording)");

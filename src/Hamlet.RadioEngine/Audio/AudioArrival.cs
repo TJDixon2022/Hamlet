@@ -5,9 +5,12 @@
 /// operator reads.
 /// </summary>
 /// <param name="RecentRatio">
-/// Samples delivered over the last fifteen seconds divided by the samples a
-/// continuous stream would have delivered in the same wall clock. NaN where
-/// there is not enough history to say.
+/// Samples delivered over the last slot's worth of wall clock divided by the
+/// samples a continuous stream would have delivered in it. NaN where there is not
+/// enough history to say.
+/// **THE WINDOW IS THE CALLER'S GRID AND NOT FIFTEEN SECONDS** (work instruction
+/// 292 task 2): it read `the last fifteen seconds` here and on both surfaces that
+/// print it, which on FT4's grid named a window twice the one measured.
 /// </param>
 /// <param name="SlotRatio">
 /// The same fraction across one slot's own wall-clock span, or NaN.

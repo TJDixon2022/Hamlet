@@ -187,7 +187,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// coming back never claims a slot that closed while nothing was watching.
     /// </para>
     /// </remarks>
-    private readonly Ft8SlotWatch _slotWatch = new();
+    /// <remarks>
+    /// **NOT `readonly` SINCE UNIT 292, BECAUSE A MODE CHANGE REPLACES IT.**
+    /// <see cref="Ft8SlotWatch.Grid"/> is an `init` property and its own remark says why
+    /// a watch may not change grid in flight; <see cref="FollowTheChosenMode"/> builds a
+    /// new one instead.
+    /// </remarks>
+    private Ft8SlotWatch _slotWatch = new();
 
     /// <summary>True while a slot is being decoded off the UI thread.</summary>
     private bool _slotDecodeRunning;
@@ -325,6 +331,12 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _settings.LastDigitalSubMode = value;
         SettingsStore.Save(_settings);
+
+        // **THIS IS THE ROUTE UNIT 290 CUT AND LEFT UNPRESSED** (work instruction 292
+        // task 2). The grid, the watch and the two sentences follow the chip he pressed
+        // and nothing else - see the remarks on `DigitalMode` for why `IsLit` may not
+        // drive it.
+        FollowTheChosenMode(DigitalModeFor(value));
     }
 
     /// <summary>Which mode the licence card should answer for.</summary>
@@ -1658,36 +1670,104 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The beat, as the panel last read it.</summary>
     private Ft8Turn _turn = new(Ft8TurnState.NoClock, null, null);
 
-    private SlotGrid _digitalGrid = SlotGrid.Ft8;
+    private DigitalMode _digitalMode = DigitalMode.Ft8;
+
+    /// <summary>**Which digital mode the Digital tab is running.**</summary>
+    /// <remarks>
+    /// <para>**IT FOLLOWS `IsChosen` AND NEVER `IsLit`** (work instruction 292 task 1).
+    /// The chip keeps two facts apart on purpose: `IsLit` is *the dial is inside this
+    /// mode's block, and the map is what answers*, and `IsChosen` is *this is the chip
+    /// he pressed* (`DigitalModeChip.cs:70-78`). **Only the second one may drive this**,
+    /// because which mode Hamlet is trying to decode is the operator's instruction and
+    /// not a reading of anything. Driving it from `IsLit` would have the tab change
+    /// decoder under him when he turned the dial, and would let the map override a
+    /// button he pressed.</para>
+    /// <para>**AND THE `IsChosenElsewhere` CASE NEEDS NO SECOND VOICE.** He pressed FT4
+    /// and the dial is in the FT8 block, or nowhere the map knows: the tab runs FT4,
+    /// because that is what he asked for, and the disagreement is already drawn - the
+    /// chip has its own appearance for it (`DigitalModeChip.cs:40`) and
+    /// <see cref="DigitalTuneLine"/> already says the tune did not take or that the band
+    /// has no FT4 row. Nothing here asserts anything about the band; the grid is a fact
+    /// about what Hamlet is cutting.</para>
+    /// <para>**THE STRIP'S OTHER TWO LABELS RUN FT8'S GRID, WHICH IS WHAT THEY RAN
+    /// BEFORE.** PSK31 and WSPR have no decoder, no grid and no frequency row anywhere
+    /// in this tree, and giving either one a path is not this unit's. **It is named in
+    /// the report as a gap rather than papered over here.**</para>
+    /// </remarks>
+    internal DigitalMode DigitalMode => _digitalMode;
 
     /// <summary>**Which grid the Digital tab is running on.**</summary>
     /// <remarks>
-    /// <para>**IT IS FT8'S AND THERE IS NOTHING THAT CHANGES IT** (work instruction
-    /// 290). This unit delivers the seam and nothing that presses it: which grid the
-    /// application chooses at runtime is step 4's, along with the FT4 button and the
-    /// Digital tab's mode wiring. **One property, so that when step 4 arrives it is
-    /// one place and not a search.**</para>
+    /// <para>**IT IS DERIVED AND NEVER STORED** (work instruction 292 task 2). Unit 290
+    /// left this as a field with `UseGridForTests` as its only writer and a remark saying
+    /// the real route did not exist yet. It exists now, and it is
+    /// <see cref="ChosenDigitalMode"/> - so the mode and the grid cannot come apart,
+    /// because there is only the mode.</para>
     /// <para>**AND IT IS WHY THE TWO SENTENCES ON SCREEN CAN STOP SAYING FIFTEEN.**
     /// The idle line and the waterfall summary both read it, so they cannot come to
-    /// disagree with each other about the same grid - which is the failure task 7
-    /// says is worse than the one it fixes.</para>
+    /// disagree with each other about the same grid.</para>
     /// </remarks>
-    internal SlotGrid DigitalGrid => _digitalGrid;
+    internal SlotGrid DigitalGrid => _digitalMode.Grid();
 
-    /// <summary>Run the tab on another grid, for a test.</summary>
-    /// <param name="grid">The grid.</param>
+    /// <summary>Run the tab in another mode, for a test.</summary>
+    /// <param name="mode">The mode.</param>
     /// <remarks>
-    /// **THE REAL ROUTE DOES NOT EXIST YET AND THAT IS DELIBERATE** (§0.2, and the
-    /// parked list). Nothing in the application calls this; it is here so the
-    /// sentences can be shown to follow the grid rather than asserted to.
+    /// **THE REAL ROUTE EXISTS NOW AND THIS IS BESIDE IT, NOT INSTEAD OF IT** (work
+    /// instruction 292 task 2). Setting <see cref="ChosenDigitalMode"/> is what the
+    /// button does and what the application does; this is the same one line without
+    /// the settings write, for a test that is asserting about the grid rather than
+    /// about the press.
     /// </remarks>
-    internal void UseGridForTests(SlotGrid grid)
+    internal void UseModeForTests(DigitalMode mode)
+        => FollowTheChosenMode(mode);
+
+    /// <summary>Put the tab's grid, watch and sentences onto a mode.</summary>
+    /// <param name="mode">The mode the operator chose.</param>
+    /// <remarks>
+    /// <para>**THE WATCH IS REBUILT RATHER THAN RETUNED, AND ITS OWN REMARK IS WHY**
+    /// (`Ft8SlotWatch.cs:86-98`). `Grid` is an `init` property because a watch that
+    /// changed grid mid-flight would hold `_lastSeenSlotStart` on one grid and the
+    /// current boundary on another, and the comparison between the two is what decides
+    /// whether a slot closed - so the change would surface as a skipped slot or a
+    /// duplicated one rather than as an error. **A mode change builds a new watch,
+    /// which arms afresh**, which is what <c>Rearm</c> already exists to make safe.</para>
+    /// <para>**SO THE SLOT IN FLIGHT IS DROPPED, DELIBERATELY.** The audio in the ring
+    /// was cut on the old grid and belongs to a slot on it; reporting it under the new
+    /// grid's boundary would be two moments under one heading (§0.0.1). The first look
+    /// after a mode change arms and decodes nothing, exactly as the first look after
+    /// arriving on the tab does.</para>
+    /// <para>**IT IS IDEMPOTENT AND SILENT WHERE NOTHING MOVED**, so re-pressing the
+    /// chip he is already on does not throw away a slot.</para>
+    /// </remarks>
+    private void FollowTheChosenMode(DigitalMode mode)
     {
-        _digitalGrid = grid;
+        if (_digitalMode == mode)
+        {
+            return;
+        }
+
+        _digitalMode = mode;
+        _slotWatch = new Ft8SlotWatch { Grid = mode.Grid() };
 
         OnPropertyChanged(nameof(DigitalModeStripLine));
         OnPropertyChanged(nameof(DigitalWaterfallSummary));
+
+        RefreshTurn();
     }
+
+    /// <summary>Which mode one of the strip's four labels runs the tab in.</summary>
+    /// <param name="chosen">The canonical label, or null where he has chosen none.</param>
+    /// <returns>The mode.</returns>
+    /// <remarks>
+    /// **FT8 IS WHAT EVERYTHING ELSE ANSWERS, AND THAT IS THE STATUS QUO RATHER THAN A
+    /// CLAIM.** Nothing chosen, PSK31 and WSPR all leave the tab exactly where it was
+    /// before this unit: FT8's grid and FT8's decoder. **PSK31 and WSPR having no path
+    /// at all is a gap named in this unit's report**, and filling it is not this unit's.
+    /// </remarks>
+    private static DigitalMode DigitalModeFor(string? chosen)
+        => string.Equals(chosen, "FT4", StringComparison.Ordinal)
+            ? DigitalMode.Ft4
+            : DigitalMode.Ft8;
 
     /// <summary>**Whose slot this is and how much of it is left**, in one sentence.</summary>
     /// <remarks>
@@ -1922,7 +2002,14 @@ public partial class MainWindowViewModel : ObservableObject
 
         _turn = Ft8Turn.Read(
             DateTime.UtcNow, ClockOffset, TheirLastSlot(),
-            _sendingSlotUtc, _sendWasStopped);
+            _sendingSlotUtc, _sendWasStopped,
+
+            // **NULL ON FT8, AND THAT IS THE BYTE THE RECORD ALREADY HELD** (work
+            // instruction 292 task 2). `Ft8Turn.On` reads `Grid ?? SlotGrid.Ft8`, so
+            // handing FT8's grid in explicitly would behave identically and record
+            // differently - and *not a byte of a record* is what this unit was told
+            // about an FT8 press.
+            _digitalMode == DigitalMode.Ft4 ? SlotGrid.Ft4 : null);
 
         if (was == _turn)
         {
@@ -2755,7 +2842,12 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var wasapi = _audioInput as WasapiAudioSource;
-        var slotSpan = TimeSpan.FromSeconds(Ft8Slots.SlotSeconds);
+
+        // **ONE SLOT OF THE GRID THE TAB IS ACTUALLY RUNNING** (work instruction 292
+        // task 2). It was `Ft8Slots.SlotSeconds` flat, so on FT4 the ratio the census
+        // and the sidecar print was taken over fifteen seconds and compared against a
+        // threshold that exists to judge one 7.5-second slot.
+        var slotSpan = TimeSpan.FromSeconds(DigitalGrid.SlotSeconds);
         var now = DateTime.UtcNow;
 
         return new AudioArrival(
@@ -2790,7 +2882,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// one that stops being read, which is the reasoning the readiness strip
     /// already carries.</para>
     /// </remarks>
-    private static string ArrivalSuffix(AudioArrival arrival)
+    /// <param name="arrival">What the audio path delivered.</param>
+    /// <param name="grid">The grid the ratio was measured across one slot of.</param>
+    /// <returns>The sentence, or "" where there is nothing to say.</returns>
+    private static string ArrivalSuffix(AudioArrival arrival, SlotGrid grid)
     {
         if (double.IsNaN(arrival.RecentRatio))
         {
@@ -2802,8 +2897,14 @@ public partial class MainWindowViewModel : ObservableObject
             return "";
         }
 
+        // **THE LENGTH IS THE GRID'S AND NOT THE WORD `fifteen`** (work instruction 292
+        // task 2). `MeasureArrival` takes the ratio across one slot of the grid the tab
+        // is running, so on FT4 this sentence was naming a window twice the one behind
+        // the percentage beside it.
         var line = "  The sound card delivered " + arrival.RecentText
-            + " of the last fifteen seconds, so this slot is fragments.";
+            + " of the last "
+            + grid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture)
+            + " seconds, so this slot is fragments.";
 
         // **AND WHETHER THE CALLBACK WAS THE REASON**, which is the one thing
         // the operator can act on from here: a card that is delivering short
@@ -4333,6 +4434,15 @@ public partial class MainWindowViewModel : ObservableObject
         // **AND WITHIN DIGITAL, THE SUB-MODE.** What he chose, which is not where
         // the dial is; see `DigitalModeChip.For`. Nothing is tuned by reading it.
         _chosenDigitalMode = DigitalModeChip.Canonical(settings.LastDigitalSubMode);
+
+        // **AND THE GRID GOES WITH IT AT START-UP, NOT ONLY ON A PRESS** (work
+        // instruction 292 task 2). The field above is assigned rather than set, so the
+        // generated `OnChosenDigitalModeChanged` does not run; an operator who left the
+        // app on FT4 would otherwise open it on FT4's chip and FT8's grid. **Nothing
+        // here reaches the radio** - this is the same start-up rule
+        // `TheAppOpensWhereItWasLeftTests` holds the tab to.
+        _digitalMode = DigitalModeFor(_chosenDigitalMode);
+        _slotWatch = new Ft8SlotWatch { Grid = _digitalMode.Grid() };
 
         Bands = new ObservableCollection<BandButtonViewModel>(
             HfBands.Bands.Select(b => new BandButtonViewModel(b)));
@@ -8804,7 +8914,14 @@ public partial class MainWindowViewModel : ObservableObject
                     // **THE MESSAGES, SO THE SHEET CAN CARRY THEIR RATIOS**
                     // (unit 251). Already decoded above; nothing is decoded a
                     // second time to write this.
-                    heard.Decodes));
+                    heard.Decodes,
+
+                    // **AND THE GRID IT WAS ACTUALLY CUT ON** (work instruction 292
+                    // task 2). Unit 290 gave the sheet this parameter and nothing
+                    // passed it, so a capture pressed on FT4 said `15.00 s slots` on
+                    // its own face about audio cut at 7.5. A sidecar read a year from
+                    // now is the whole reason that parameter exists.
+                    DigitalGrid));
 
             Narrate(
                 $"{_digitalDecodeNote}. Kept the last "
@@ -8898,7 +9015,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var heard = Ft8Reader.Read(
             audio, endedAtPcUtc, offset,
-            compareWithThePort: _settings.CompareWithThePort);
+            compareWithThePort: _settings.CompareWithThePort,
+            mode: _digitalMode);
 
         NoteSlot(heard);
 
@@ -8980,12 +9098,20 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _slotDecodeRunning = true;
 
+        // **READ ON THIS THREAD, BEFORE THE WORK GOES OFF IT** (work instruction 292
+        // task 2). The operator can press a different chip while a slot is decoding,
+        // and a decode that read the mode inside the worker would read whichever value
+        // it happened to see - so the slot would be cut on one grid and read on
+        // another. The slot that is in flight finishes in the mode it started in.
+        var mode = _digitalMode;
+
         try
         {
             var heard = await Task
                 .Run(() => Ft8Reader.Read(
                     ready.Audio, ready.EndedAtPcUtc, offset,
-                    compareWithThePort: _settings.CompareWithThePort))
+                    compareWithThePort: _settings.CompareWithThePort,
+                    mode: mode))
                 .ConfigureAwait(true);
 
             NoteSlot(heard);
@@ -9051,7 +9177,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _digitalDecodeNote = DescribeDecodes(heard);
-        _digitalCensusLine = DescribeCensus(heard) + ArrivalSuffix(arrival);
+        _digitalCensusLine = DescribeCensus(heard) + ArrivalSuffix(arrival, DigitalGrid);
 
         RaiseDigitalDecodeChanges();
     }

@@ -149,14 +149,19 @@ public sealed class Ft8SlotWatch
 
     /// <summary>What the operator reads when the sound card fell behind.</summary>
     /// <remarks>
-    /// **THIS IS THE SENTENCE THAT SHOULD HAVE BEEN ON SCREEN ON 2026-09-03.**
+    /// <para>**THIS IS THE SENTENCE THAT SHOULD HAVE BEEN ON SCREEN ON 2026-09-03.**
     /// What was there instead was `nothing decoded yet`, which reads as an empty
     /// band and sent three units looking at the decoder. The percentage is
     /// filled in by the caller, because a refusal that cannot say how short it
-    /// was is the same unfalsifiable shrug in politer words.
+    /// was is the same unfalsifiable shrug in politer words.</para>
+    /// <para>**AND THE LENGTH IS THE SECOND ARGUMENT SINCE UNIT 292, WHERE IT USED
+    /// TO SAY `fifteen`.** The ratio is measured across one slot of this watch's own
+    /// grid, so on FT4 the sentence was naming a window twice as long as the one it
+    /// had measured - a number the operator cannot check against a capture, in the
+    /// one sentence whose whole job is to say how short the audio was (§0.0).</para>
     /// </remarks>
     public const string AudioShort =
-        "the sound card delivered {0} of the last fifteen seconds, so this slot "
+        "the sound card delivered {0} of the last {1} seconds, so this slot "
         + "is fragments and cannot be decoded";
 
     /// <summary>What is said when the samples have stopped keeping up.</summary>
@@ -385,7 +390,9 @@ public sealed class Ft8SlotWatch
                 string.Format(
                     System.Globalization.CultureInfo.InvariantCulture,
                     AudioShort,
-                    arrival.ToString("P0", System.Globalization.CultureInfo.InvariantCulture)),
+                    arrival.ToString("P0", System.Globalization.CultureInfo.InvariantCulture),
+                    Grid.SlotSeconds.ToString(
+                        "0.##", System.Globalization.CultureInfo.InvariantCulture)),
                 closed);
         }
 

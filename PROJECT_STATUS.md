@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 292 - pressing FT4 tunes and decodes FT4
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:48:04-04:00
-NOTE: Trace closed and the starting position is measured rather than described - thirty seconds of band carrying four real FT4 transmissions, driven through ShowDecodes with FT4 chosen, cuts two FIFTEEN-second slots, is read by Ft8Sharp.Deep and returns nought of four. IsChosen is the fact that will drive the grid; IsLit is the map's reading and may not. Now giving _digitalGrid its route.
+UPDATED: 2026-09-09T10:56:52-04:00
+NOTE: The grid now follows the chip he pressed. Same recording, same call: four 7.5 s slots where task 1 measured two of fifteen - so the cutter, the watch, the sidecar and the arrival window all moved, and four sentences stopped saying fifteen. The reader is still FT8's, which is the halfway state task 3 closes. FT8 controls green: 5 boundaries tick-identical, both screen sentences byte-identical after an FT4 round trip, 21 of 21 filtered.
 
 ---
 

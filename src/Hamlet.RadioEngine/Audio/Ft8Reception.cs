@@ -416,18 +416,32 @@ public static class Ft8Reader
     /// counts go onto the census as evidence and the messages shown are Deep's
     /// alone.
     /// </param>
+    /// <param name="mode">
+    /// Which mode to read. **FT8 when nothing is asked for**, so every caller that
+    /// existed before this parameter does exactly what it did.
+    /// </param>
     /// <returns>The messages, and why there are as many as there are.</returns>
     /// <exception cref="ArgumentNullException">The audio is null.</exception>
+    /// <remarks>
+    /// <para>**THE MODE IS ONE ARGUMENT AND NOT TWO** (work instruction 292 tasks 2
+    /// and 3). The grid to cut on and the decoder to read with are the two things that
+    /// have to change together, and handing them in separately is precisely how a
+    /// reader comes to cut 7.5-second slots and give them to FT8's decoder - which
+    /// reads nothing out of them and draws an empty table on a live band. Both are
+    /// derived here from the one value, so there is nothing for them to disagree
+    /// about.</para>
+    /// </remarks>
     public static Ft8Reception Read(
         MonoAudio audio,
         DateTime endedAtPcUtc,
         ClockOffset offset,
         Ft8DeepSlotDecoder? decoder = null,
-        bool compareWithThePort = false)
+        bool compareWithThePort = false,
+        DigitalMode mode = DigitalMode.Ft8)
     {
         ArgumentNullException.ThrowIfNull(audio);
 
-        var cut = Ft8SlotCutter.Cut(audio, endedAtPcUtc, offset);
+        var cut = Ft8SlotCutter.Cut(audio, endedAtPcUtc, offset, mode.Grid());
 
         if (cut.Slots.Count == 0)
         {

@@ -144,16 +144,23 @@ public sealed class TheSlotSaysHowMuchAudioArrivedTests
     [Fact]
     public void TheRefusalNamesTheSoundCardAndNotTheBand()
     {
+        // **THE LENGTH IS THE SECOND ARGUMENT SINCE UNIT 292.** It used to read
+        // `the last fifteen seconds`, which on FT4's grid named a window twice
+        // as long as the one the ratio was measured across.
         var sentence = string.Format(
             System.Globalization.CultureInfo.InvariantCulture,
             Ft8SlotWatch.AudioShort,
-            0.13.ToString("P0", System.Globalization.CultureInfo.InvariantCulture));
+            0.13.ToString("P0", System.Globalization.CultureInfo.InvariantCulture),
+            SlotGrid.Ft8.SlotSeconds.ToString(
+                "0.##", System.Globalization.CultureInfo.InvariantCulture));
 
         _output.WriteLine(sentence);
 
         Assert.Contains("sound card", sentence, StringComparison.Ordinal);
         Assert.Contains("13", sentence, StringComparison.Ordinal);
+        Assert.Contains("15 seconds", sentence, StringComparison.Ordinal);
         Assert.Contains("fragments", sentence, StringComparison.Ordinal);
+        Assert.DoesNotContain("fifteen", sentence, StringComparison.OrdinalIgnoreCase);
 
         // The old sentence sent three units to the decoder. It must not be what
         // an operator reads about a starved sound card.

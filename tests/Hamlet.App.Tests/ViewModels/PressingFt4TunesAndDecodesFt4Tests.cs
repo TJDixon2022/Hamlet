@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Ft8Sharp.Encode;
 using Ft8Sharp.Message;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Bands;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -58,25 +59,28 @@ public sealed class PressingFt4TunesAndDecodesFt4Tests
     };
 
     /// <summary>
-    /// The starting position, measured against today's code: FT4 chosen, and the tab
-    /// still cuts fifteen and still hands the slot to the FT8 reader.
+    /// Task 2's halfway position: the grid follows the press, and the decoder does not
+    /// follow it yet.
     /// </summary>
     /// <remarks>
-    /// **THIS IS TASK 1'S TEST AND IT IS DELIBERATELY AN ASSERTION OF THE FAULT.** It is
-    /// rewritten by tasks 2 and 3 into
-    /// <see cref="AnFt4PressCutsSevenAndAHalfAndReadsFt4"/>; what it records is that the
-    /// two facts it names were measured rather than assumed before anything was threaded.
+    /// <para>**REWRITTEN FROM TASK 1'S STARTING POSITION, WHICH THIS REPLACES.** What
+    /// task 1 measured, on the same recording, was two FIFTEEN-second slots read by
+    /// `Ft8Sharp.Deep` and nought of the four messages back. The slots move here and
+    /// nothing else does.</para>
+    /// <para>**AND THE HALFWAY STATE IS WORTH ASSERTING RATHER THAN SKIPPING PAST**,
+    /// because it is the failure this unit's two halves exist to keep apart: the ring
+    /// counting down 7.5 s while the reader still reads FT8 is two halves of the tab on
+    /// different clocks, each internally consistent, with nothing on screen able to say
+    /// which is right. Task 3 rewrites this again into
+    /// <see cref="AnFt4PressCutsSevenAndAHalfAndReadsFt4"/>.</para>
     /// </remarks>
     [Fact]
-    public void TodayAnFt4PressStillCutsFifteenAndReadsWithTheFt8Decoder()
+    public void AfterTaskTwoAnFt4PressCutsSevenAndAHalfAndStillReadsWithFt8s()
     {
         var panel = Panel("FT4");
 
-        // **THE CHOICE IS RECORDED AND THE GRID DOES NOT FOLLOW IT.** `_digitalGrid` is
-        // `SlotGrid.Ft8` and `UseGridForTests` is its only writer
-        // (`MainWindowViewModel.cs:1661`, `:1684`).
         Assert.Equal("FT4", panel.ChosenDigitalMode);
-        Assert.Equal(SlotGrid.Ft8, panel.DigitalGrid);
+        Assert.Equal(SlotGrid.Ft4, panel.DigitalGrid);
 
         var heard = Read(panel);
 
@@ -85,15 +89,180 @@ public sealed class PressingFt4TunesAndDecodesFt4Tests
         _output.WriteLine("  decoder  : " + Decoder(heard));
         _output.WriteLine("  messages : " + heard.Decodes.Count);
 
-        // Two whole FT8 slots were cut out of thirty seconds of FT4, which is the
-        // arithmetic working correctly on the wrong grid.
-        Assert.Equal(2, heard.SlotsDecoded);
+        // Four whole FT4 slots out of thirty seconds, where task 1 measured two FT8
+        // ones. **The reader is still FT8's**, so the messages are still nought.
+        Assert.Equal(4, heard.SlotsDecoded);
         Assert.Equal("Ft8Sharp.Deep", Decoder(heard));
-
-        // **AND NOT ONE OF THE FOUR MESSAGES CAME BACK.** Zero read, four missed, zero
-        // wrong - the standing ruling counts a wrong decode separately from a missed one
-        // and both are reported even when one is zero.
         Assert.Empty(heard.Decodes);
+    }
+
+    /// <summary>
+    /// Task 2: the grid follows the chip he pressed, and never the block the dial
+    /// happens to be in.
+    /// </summary>
+    /// <remarks>
+    /// **THE CHOICE UNDERNEATH THE THREADING, ASSERTED RATHER THAN DESCRIBED.**
+    /// `DigitalModeChip` keeps `IsLit` and `IsChosen` apart on purpose, and only one of
+    /// them may drive a decoder. Every press below happens with no radio attached, so
+    /// nothing is lit and every chip is in the `IsChosenElsewhere` state - which is
+    /// exactly the case that separates the two answers.
+    /// </remarks>
+    [Fact]
+    public async Task TheGridFollowsTheChipHePressedAndNotTheDialItLandedOn()
+    {
+        var panel = Panel(null);
+
+        Assert.Equal(SlotGrid.Ft8, panel.DigitalGrid);
+
+        await panel.ChooseDigitalModeCommand.ExecuteAsync("FT4");
+
+        _output.WriteLine("  after FT4 : " + panel.DigitalGrid.Describe());
+
+        Assert.Equal(SlotGrid.Ft4, panel.DigitalGrid);
+        Assert.Equal(DigitalMode.Ft4, panel.DigitalMode);
+
+        // **AND NOTHING IS LIT, SO THE GRID CANNOT HAVE COME FROM THE MAP.** No rig is
+        // attached and nothing tuned, so FT4 is chosen with the dial elsewhere - its own
+        // appearance (`DigitalModeChip.cs:40`), and the state a grid driven by `IsLit`
+        // would have left on fifteen seconds.
+        var ft4 = panel.DigitalModeChips.Single(chip => chip.Label == "FT4");
+
+        Assert.True(ft4.IsChosenElsewhere);
+        Assert.False(ft4.IsLit);
+        Assert.All(panel.DigitalModeChips, chip => Assert.False(chip.IsLit));
+
+        await panel.ChooseDigitalModeCommand.ExecuteAsync("FT8");
+
+        _output.WriteLine("  after FT8 : " + panel.DigitalGrid.Describe());
+
+        Assert.Equal(SlotGrid.Ft8, panel.DigitalGrid);
+
+        // **PSK31 AND WSPR RUN FT8'S GRID, WHICH IS WHAT THEY RAN BEFORE THIS UNIT.**
+        // Neither has a decoder, a grid or a cited frequency row anywhere in this tree.
+        // **That is a gap this unit names and does not fill**, and it is asserted here
+        // so that filling it later is a deliberate change rather than a surprise.
+        foreach (var label in new[] { "PSK31", "WSPR" })
+        {
+            await panel.ChooseDigitalModeCommand.ExecuteAsync(label);
+
+            _output.WriteLine($"  after {label,-5}: {panel.DigitalGrid.Describe()}");
+
+            Assert.Equal(label, panel.ChosenDigitalMode);
+            Assert.Equal(SlotGrid.Ft8, panel.DigitalGrid);
+        }
+    }
+
+    /// <summary>
+    /// A band with no FT4 row moves nothing, says so, and still runs the tab on FT4.
+    /// </summary>
+    /// <remarks>
+    /// **THE TUNE AND THE GRID ARE DIFFERENT ANSWERS TO DIFFERENT QUESTIONS.** §0.2.1
+    /// says a frequency is never written from memory, so 30 m moves nothing; but he did
+    /// press FT4, and a tab that quietly went on cutting fifteen seconds because the
+    /// dial could not follow would be deciding for him. **The disagreement is on screen
+    /// already** - `DigitalTuneLine` says which bands have a row - so nothing here adds
+    /// a second voice about it.
+    /// </remarks>
+    [Fact]
+    public async Task ABandWithNoFt4RowMovesNothingAndTheTabStillRunsFt4()
+    {
+        // Asserted from the tree rather than assumed, so this fails loudly if the data
+        // gains a 30 m FT4 row rather than quietly testing nothing.
+        Assert.Null(DigitalCallingFrequencies.Find("30 m", "FT4"));
+
+        var panel = Panel(null);
+
+        panel.SelectedBand = panel.Bands.First(band => band.Band.Name == "30 m");
+        panel.FrequencyHz = panel.SelectedBand.Band.JumpHz;
+
+        var before = panel.FrequencyHz;
+
+        await panel.ChooseDigitalModeCommand.ExecuteAsync("FT4");
+
+        _output.WriteLine("  line : " + panel.DigitalTuneLine);
+        _output.WriteLine("  grid : " + panel.DigitalGrid.Describe());
+
+        Assert.Equal(before, panel.FrequencyHz);
+        Assert.True(panel.DigitalTuneFailed);
+        Assert.Equal(SlotGrid.Ft4, panel.DigitalGrid);
+    }
+
+    /// <summary>
+    /// The two sentences on screen follow the grid, and neither states a transmission
+    /// length.
+    /// </summary>
+    /// <remarks>
+    /// **4.48 AGAINST 5.04 IS TIM'S AND A SENTENCE STATING EITHER WOULD ANSWER IT.**
+    /// The slot length is measured and settled on both readings; the occupancy is not,
+    /// so the screen names the one and never the other.
+    /// </remarks>
+    [Fact]
+    public async Task TheSentencesFollowTheChosenModeAndNameNoTransmissionLength()
+    {
+        foreach (var (label, slots, idle) in
+                 new[] { ("FT4", "7.5 s slots", "7.5 seconds"), ("FT8", "15 s slots", "15 seconds") })
+        {
+            var panel = Panel(null);
+
+            panel.DigitalSpectrum = new AudioSpectrumSource(48000, simulated: false);
+            panel.ClockOffset = new ClockOffset(0, DateTime.UtcNow);
+
+            await panel.ChooseDigitalModeCommand.ExecuteAsync(label);
+
+            _output.WriteLine($"  {label} idle : " + panel.DigitalModeStripLine);
+            _output.WriteLine($"  {label} wfall: " + panel.DigitalWaterfallSummary);
+
+            Assert.Contains(idle, panel.DigitalModeStripLine, StringComparison.Ordinal);
+            Assert.Contains(slots, panel.DigitalWaterfallSummary, StringComparison.Ordinal);
+
+            // Neither sentence carries an occupancy on either grid, so neither of them
+            // is capable of answering a question that is with the owner.
+            foreach (var figure in new[] { "4.48", "5.04", "12.64" })
+            {
+                Assert.DoesNotContain(
+                    figure, panel.DigitalModeStripLine, StringComparison.Ordinal);
+                Assert.DoesNotContain(
+                    figure, panel.DigitalWaterfallSummary, StringComparison.Ordinal);
+            }
+        }
+    }
+
+    /// <summary>
+    /// FT8's boundaries and FT8's sentences are what they were, including after a round
+    /// trip through FT4.
+    /// </summary>
+    /// <remarks>
+    /// **THE CONTROL.** Threading a mode is exactly how an FT8 boundary moves by a tick
+    /// with nobody noticing. Every boundary in a minute is compared against
+    /// <see cref="Ft8Slots"/>' own arithmetic, which unit 290 pinned at 3,888
+    /// tick-identical moments and which this unit did not touch.
+    /// </remarks>
+    [Fact]
+    public async Task AnFt8PressLeavesEveryBoundaryAndSentenceWhereItWas()
+    {
+        var fresh = Panel(null);
+        var toured = Panel(null);
+
+        await toured.ChooseDigitalModeCommand.ExecuteAsync("FT4");
+        await toured.ChooseDigitalModeCommand.ExecuteAsync("FT8");
+
+        Assert.Equal(SlotGrid.Ft8, toured.DigitalGrid);
+        Assert.Equal(fresh.DigitalModeStripLine, toured.DigitalModeStripLine);
+        Assert.Equal(fresh.DigitalWaterfallSummary, toured.DigitalWaterfallSummary);
+
+        var from = new DateTime(2026, 9, 9, 12, 0, 0, DateTimeKind.Utc);
+
+        var mine = toured.DigitalGrid.BoundariesBetween(from, from.AddMinutes(1));
+        var theirs = Ft8Slots.BoundariesBetween(from, from.AddMinutes(1));
+
+        _output.WriteLine($"  {mine.Count} boundaries, first {mine[0]:HH:mm:ss.fffffff}");
+
+        Assert.Equal(theirs.Count, mine.Count);
+
+        for (var i = 0; i < mine.Count; i++)
+        {
+            Assert.Equal(theirs[i].Ticks, mine[i].Ticks);
+        }
     }
 
     /// <summary>A panel with a sub-mode already chosen, as a restarted app has.</summary>
