@@ -305,6 +305,41 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>True where there is anything to show.</summary>
     public bool HasMessages => _facts.Messages > 0;
 
+
+    /// <summary>
+    /// **True where the X has been pressed on a finished contact that is not in
+    /// the log, and the card is saying so before it goes.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**A FINISHED CARD THAT HAS NOT BEEN LOGGED IS THE HAZARD** (work
+    /// instruction 297 task 4). Clearing it drops a contact he could still have
+    /// written down, and the whole point of the state word *Finished* is that this
+    /// is the card he is most likely to tidy away. **It is not silently discarded**:
+    /// the first press says what is about to be lost, the Log button is still on the
+    /// card, and a second press clears it.</para>
+    /// <para>**IT IS A WARNING AND NEVER A REFUSAL** (§0.5.1). Nothing here can stop
+    /// him clearing anything; the second press always works, and the X is never
+    /// greyed. He is being told, not asked for permission.</para>
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ClearWarning))]
+    private bool _warnsBeforeClearing;
+
+    /// <summary>What the card says before it lets a finished contact go.</summary>
+    /// <remarks>
+    /// **IT SAYS WHAT IS BEING DROPPED AND NOT THAT SOMETHING WENT WRONG.** Nothing
+    /// has gone wrong; he pressed a control and it is telling him the consequence
+    /// before it happens, which is what the instruction asks for in place of a
+    /// silent discard.
+    /// </remarks>
+    public string ClearWarning
+        => WarnsBeforeClearing
+            ? $"You finished this contact with {Callsign} and it is not in your "
+              + "log. Clearing the card lets it go, and Hamlet keeps no record of "
+              + "it anywhere else. Log it first if you want it, or press the X "
+              + "again to clear it anyway."
+            : "";
+
     /// <summary>The facts behind the card, for the hover and for tests.</summary>
     public Ft8CardFacts Facts => _facts;
 

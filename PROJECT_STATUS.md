@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 297 - the conversation becomes cards
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T16:23:18-04:00
-NOTE: Task 3 done - the i hover, and the empty panel now says which of three things is wrong. Committing.
+UPDATED: 2026-09-09T16:28:42-04:00
+NOTE: Task 4 done - the X warns once on a finished unlogged contact. 8 of 8 green, watched failing at 2 of 8. Committing.
 
 ---
 

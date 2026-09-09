@@ -1505,7 +1505,7 @@ public partial class MainWindowViewModel : ObservableObject
                 return DigitalMineIdle;
             }
 
-            if (Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) is null)
+            if (CardsNow is null)
             {
                 return "Hamlet has not been able to check the clock against a time "
                        + "server yet, and everything on a card is counted from the "
@@ -2668,6 +2668,25 @@ public partial class MainWindowViewModel : ObservableObject
     private bool WasCleared(string callsign, DateTime newestSlotUtc)
         => _cardsCleared.TryGetValue(callsign, out var when) && newestSlotUtc <= when;
 
+
+    /// <summary>Corrected UTC for the cards, or a fixed moment under test.</summary>
+    /// <remarks>
+    /// **THE SEAM IS HERE AND NOT INSIDE THE CARD** (§0.1, and this tree's own
+    /// habit - `RefreshTurnForTests` and `UseWorkedBeforeForTests` are the same
+    /// shape). A card's state is counted in slots between two moments, so a fixture
+    /// written against a real evening is thousands of slots old by the time it runs
+    /// and every card in it would read *gone quiet*. **Production behaviour does not
+    /// move**: the field is null unless a test sets it.
+    /// </remarks>
+    internal DateTime? CardsNowForTests { get; set; }
+
+    /// <summary>The moment the cards are read at, or null with no measured clock.</summary>
+    private DateTime? CardsNow
+        => CardsNowForTests ?? Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset);
+
+    /// <summary>Rebuild the cards without waiting for a decode, for a test.</summary>
+    internal void RebuildCardsForTests() => RebuildCards();
+
     /// <summary>Build every card from the ledger.</summary>
     /// <remarks>
     /// <para>**THE WHOLE LIST IS REBUILT RATHER THAN PATCHED**, for the reason
@@ -2709,7 +2728,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var nowUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset);
+        var nowUtc = CardsNow;
 
         foreach (var card in DigitalCards)
         {
@@ -2725,7 +2744,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (_contacts is not null
             && mine.Length > 0
-            && Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) is { } nowUtc)
+            && CardsNow is { } nowUtc)
         {
             foreach (var who in CardStations())
             {
@@ -2978,6 +2997,23 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        var card = DigitalCards.FirstOrDefault(
+            c => string.Equals(c.Callsign, who, StringComparison.OrdinalIgnoreCase));
+
+        // **THE ONE CASE THAT SAYS SOMETHING FIRST.** A finished contact that is
+        // not in the log is a contact he could still have written down, and it is
+        // exactly the card he is most likely to tidy away. The first press states
+        // what is about to be lost; the second press clears it, because this warns
+        // and never refuses.
+        if (card is not null
+            && !card.WarnsBeforeClearing
+            && card.Facts.State == Ft8ContactState.Complete
+            && !ThisContactIsLogged(card.Facts))
+        {
+            card.WarnsBeforeClearing = true;
+            return;
+        }
+
         _cardsCleared[who] = LatestSlotFor(who);
 
         if (string.Equals(_messagesOpenFor, who, StringComparison.OrdinalIgnoreCase))
@@ -2986,6 +3022,36 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         RebuildCards();
+    }
+
+    /// <summary>Whether **this** contact is already in the contact log.</summary>
+    /// <param name="facts">What the ledger says about the station.</param>
+    /// <returns>True where the log holds an entry that is this exchange.</returns>
+    /// <remarks>
+    /// <para>**THE CALLSIGN ALONE CANNOT ANSWER THIS** (work instruction 297 task
+    /// 1). `_workedBefore` is the log keyed by callsign, so it says *you have logged
+    /// a contact with this station* and never *you have logged this one*. A second
+    /// contact with the same station on another evening would read as already
+    /// logged, and the card would then let a real contact go without a word.</para>
+    /// <para>**THE ENTRY'S OWN START DECIDES IT, AND IT IS EXACT.** `_workedBefore`
+    /// keeps the newest entry per callsign, and nothing newer than this contact can
+    /// have been logged for this station, so an entry that starts at or after this
+    /// contact's first message **is** this contact and one that starts before it is
+    /// an earlier one. `Ft8ContactLogEntry.For` sets that start from the ledger's own
+    /// moments, so the two figures come from one place.</para>
+    /// <para>**WHERE IT CANNOT TELL, IT WARNS** (§0.0). An entry with no start
+    /// recorded, or a contact whose own first moment is unknown, leaves the question
+    /// open - and the two costs are not equal: a warning nobody needed costs one
+    /// press, and a silence that was wrong costs the contact.</para>
+    /// </remarks>
+    private bool ThisContactIsLogged(Ft8CardFacts facts)
+    {
+        _workedBefore ??= ReadWorkedBefore();
+
+        return _workedBefore.TryGetValue(facts.Callsign.Trim(), out var entry)
+               && entry.StartedUtc is { } logged
+               && facts.FirstAtUtc is { } began
+               && logged >= began;
     }
 
     /// <summary>The newest slot either way with one station.</summary>
@@ -9848,6 +9914,50 @@ public partial class MainWindowViewModel : ObservableObject
         RaiseDigitalDecodeChanges();
 
         return row;
+    }
+
+
+    /// <summary>Book one transmission into the ledger, for a test.</summary>
+    /// <param name="message">The text that went out.</param>
+    /// <param name="slotStartUtc">The slot it occupied.</param>
+    /// <remarks>
+    /// <para>**IT EXISTS BECAUSE <see cref="AddSentRowForTests"/> IS HALF A DOOR**,
+    /// and that is reported rather than quietly widened (work instruction 297 task
+    /// 4). That hook says in its own remarks that it is *the same door the send path
+    /// uses*, and the send path does two things on adjacent lines: it keeps the
+    /// panel row **and** it tells the ledger. The hook does only the first, so
+    /// `Ft8StationRecord.Sent` is empty in every test that uses it and
+    /// `Ft8ContactStates.IsComplete` can never be satisfied through it. **No test in
+    /// this repository could reach a finished contact state that way**, which is
+    /// what this unit found when its first fixture read *Your turn* over an exchange
+    /// that had everything a QSO needs.</para>
+    /// <para>**WIDENING THE EXISTING HOOK WAS NOT DONE HERE** (§12.6). Four test
+    /// files call it, two of them sweeps that measure how much text the application
+    /// puts on screen, and booking the ledger inside it would put cards on a panel
+    /// those sweeps count. That is a change worth making and it is not this unit's
+    /// to make blind, under HM-DEC-155's rule that a unit runs only the tests it
+    /// wrote.</para>
+    /// <para>**IT OPENS THE LEDGER IF THERE IS NOT ONE**, the same way and on the
+    /// same condition the decode path does, so a fixture whose first event is a
+    /// transmission books correctly.</para>
+    /// </remarks>
+    internal void RecordSentForTests(string message, DateTime slotStartUtc)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+
+        if (mine.Length == 0)
+        {
+            return;
+        }
+
+        if (_contacts is null
+            || !string.Equals(_contactsFor, mine, StringComparison.OrdinalIgnoreCase))
+        {
+            _contacts = new Ft8ContactLedger(mine);
+            _contactsFor = mine;
+        }
+
+        _contacts.RecordSent(message, slotStartUtc);
     }
 
     /// <summary>Where the contact with this row's sender stands, as text.</summary>
