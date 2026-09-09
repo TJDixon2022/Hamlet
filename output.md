@@ -1,444 +1,605 @@
 READ IN THIS ORDER
 
-A. The phase goal is **FT4 works exactly the way FT8 does**. Where every step stands:
-   step 0 done; **step 1 done**; steps 2, 3, 4, 5 and 6 not started. Nothing this unit
-   found changes the state of any step other than 1. It did measure two things step 2
-   will need — the candidate window and the placement — and they are in section 2.
+A. The phase goal is **FT4 works exactly the way FT8 does.** Step 0 done; step 1
+   done; **step 2 done**; steps 3, 4, 5 and 6 not started. Nothing this unit found
+   changes the state of another step, and two things step 3 and step 4 must know
+   are in section 2: the census names five on-screen sentences and one field-guide
+   row that still assume fifteen seconds and need a mode threaded to them, and the
+   transmit guard at `Ft8TransmitSequence.cs:497-530` is one of the places that
+   needs it.
 
-B. Step 1 and its four exit criteria:
-   1. a hundred-plus messages round-tripping to themselves, with compound callsigns,
-      grids, reports and RR73                                   must-pass   **MET**
-      106 sent, 106 read back as themselves.
-   2. the timing measured from the audio and stated with its source, and the 4.48
-      against 5.04 disagreement named with both numbers          must-pass   **MET**
-      (moved from "4.48 seconds of transmission" by the arbiter)
-   3. zero wrong decodes, counted separately from missed ones    must-pass   **MET**
-      0 wrong and 0 missed on the round trip; 0 wrong over a further 848 ladder trials.
-   4. a sensitivity ladder with its trial count and its wrong count
-                                                                nice-to-pass **MET**
-      848 trials over eight rungs, 0 wrong, 0 out of noise alone.
+B. Step 2 and its four exit criteria:
+   1. slots cut on 7.5-second boundaries from corrected UTC, and a capture's
+      sidecar says which grid it used                          must-pass **MET**
+   2. the turn ring counts down 7.5 seconds, and whose turn it is derives from
+      what the other station sent on that grid                 must-pass **MET**
+   3. a slot the operator transmitted in says so and reports no search result,
+      as unit 282 built for FT8                                must-pass **MET**
+   4. nothing assumes fifteen seconds anywhere, and the report names what it
+      found that did                                           must-pass **MET**
+      (closed by task 1's census, which is section 3's first item)
 
-C. This report's own findings, weighed against A and B. **Section 4 raises 4 items.**
-   None of the four is in the way of a criterion in B — all four criteria are met and
-   evidenced, and every item is beside them rather than under them. Two are questions
-   already with Tim and carried forward unchanged (the 4.48 timing figure, the version
-   scheme); one is new and is the single number in the FT4 path that is not upstream's
-   (the widened candidate sweep, which criterion 1 depended on and which is already
-   done rather than pending); one is a conflict between this session's prompt and task
-   7 about who owns `PHASE_STATUS.md`'s step lines, which cost one file edit that was
-   made and then reverted. **Task 8 was not dropped.** The named drop candidate was
-   taken and criterion 4 is met rather than unmet by choice.
+C. This report's own findings. **Section 4 raises 5 items and none of them is in
+   the way of a criterion in B.** Three are the questions already with Tim and
+   carried unchanged - the 4.48 against 5.04 timing, the version scheme, and unit
+   289's widened candidate sweep - and step 2 was built so none of the three can
+   block it. The fourth is four inherited red tests found while running the
+   controls, none about the grid and none chased. The fifth is the
+   `PHASE_STATUS.md` ownership mismatch, reported and not repaired.
+   **Task 7, the named drop candidate, was taken rather than dropped**, so
+   criterion 4 is met twice over: by the census naming what assumes fifteen, and
+   by the two sentences unit 288 found no longer saying it.
 
-UNIT:       289 - complete at task 8 of 8, nothing dropped - 2026-09-09 09:08
+UNIT:       290 - complete at task 7 of 7, none dropped - 2026-09-09 09:53
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  A message becomes FT4 symbols, becomes audio, and decodes back to the same
-            message - with the symbols and the samples proved identical to upstream's
-            own generator first, so the round trip is evidence rather than a tautology.
-ADVANCED:   yes - step 1's four exit criteria all moved from untried to met, three
-            must-pass and the nice-to-pass one, and an FT4 decoder now exists.
-NUMBER:     the round trip - 106 messages sent, 106 read back as themselves,
-            0 wrong decodes, 0 missed decodes.
-DRIFT:      0 consecutive units without advance  (was 0)
+UNIT GOAL:  Slots are cut, watched, counted and counted down on a 7.5-second grid
+            from corrected UTC, and every fifteen-second assumption left in the
+            tree is named, whether or not it was changed.
+ADVANCED:   yes - step 2, all four exit criteria, from not started to done
+NUMBER:     the census, measured at 2edfb6a before any arithmetic moved: **47
+            arithmetic**, **72 prose** and **15 on screen** in `Hamlet.RadioEngine`
+            and `Hamlet.App`. The on-screen count separately: 11 of the 15 wrote
+            fifteen as a literal and 4 formatted it from the constant. Six of
+            those 11 now follow the grid or name no length; 5 stand. The port
+            carries 4 more arithmetic sites and 12 more prose lines, named and
+            left alone.
+DRIFT:      0 consecutive units without advance (was 0)
 
 ## 1. What Claude did
 
-**Exit state: complete, at task 8 of 8, with nothing dropped.** Windows 11, project
-gate `PROJECT: Hamlet` verified against the tree — `SHACK_FACTS.md` present,
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
-`MURC.sln` both absent — branch `main`, eight commits pushed, one per task.
+**Complete at task 7 of 7. Nothing was dropped, including the named drop
+candidate.** This machine, `C:\Source\HamLet`, project gate `PROJECT: Hamlet`
+verified against the tree - `SHACK_FACTS.md` present,
+`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln`
+absent, `MURC.sln` absent - branch `main`, seven commits pushed.
+
+### The order of the work, and why task 7 came before task 6
+
+Tasks 1 to 5 ran in order. **Task 7 was then done before task 6**, which is the
+one sequencing decision this session made for itself. Task 6 is bookkeeping and
+its `PHASE_OUTCOME.md` entry records what the unit ended as; running it last
+meant the entry could say *seven of seven, none dropped* as a fact rather than as
+a forecast. Task 6's own instruction - *do this even if task 7 is dropped* -
+survives the swap intact, because both were done.
+
+### What was verified against the instruction, and what did not match
+
+Everything the instruction stated about the tree held. Root version `1.12.216`
+at `Directory.Build.props:267` and `Ft8Sharp` at `0.11.0` at
+`src/Ft8Sharp/Directory.Build.props:438`, both read. `Ft8Slots.SlotSeconds` at
+`:126` and `TransmissionSeconds` at `:135`, and the five functions at `:162`,
+`:174`, `:182`, `:195` and `:209`, all exactly where it said. **103 references to
+`Ft8Slots.` - 49 in `src`, 54 in `tests`, across the 8 named files - counted and
+identical.** `Ft8Turn`'s truncation at `:77` and its countdown at `:210-211`,
+`Ft4Timing.SlotSeconds = 7.5f` at `:51` and `OccupancySeconds` at `:63`, the
+`ProjectReference` at `Hamlet.RadioEngine.csproj:33`, the sidecar's `slotGrid`
+key at `:282` and its counts at `:292` and `:357`, the two on-screen sentences,
+and `_transmittedSlots` at `:1651` with its three call sites: all confirmed.
+
+**One thing the instruction named that turned out to be understated**, and it is
+a finding rather than a mismatch. It said the tree holds three independent copies
+of 15 - `Ft8Slots.SlotSeconds`, `Ft8WaterfallGeometry.SlotSeconds` and
+`Ft8Waveform.SlotSeconds`. **There are five.** The training path carries two more:
+`SignalSynthesizer.Ft8Period` (`:20`, `TimeSpan.FromSeconds(15)`) and
+`ModeAudio.cs:53` (`TrainingMode.Ft8 => TimeSpan.FromSeconds(15)`). And 12.64 has
+**two** independent copies - `Ft8Slots.TransmissionSeconds` and
+`SignalSynthesizer.Ft8Transmission` - beside the port's, which derives it as
+79 x 0.16 rather than storing it. **None of the five or the two was consolidated**;
+the port's are not this unit's, and the training path's are step 4's or later.
+
+### The decisions this session made for itself, in full
+
+**One: what the ring shows on a slot that is not a whole number of seconds.** The
+instruction named this as arithmetic meeting a type and asked what was done about
+it. The ring shows **one decimal where the slot is fractional and whole seconds
+where it is not**, and the rule keys off the slot rather than the moment - which
+is what keeps FT8's countdown reading whole seconds in every state including the
+one where its 12.64-second transmission is running. Rounding up in whole seconds
+would have opened an FT4 slot at **8**, and 8 is a slot length nothing in this
+application is cutting on: a countdown asserting a grid the cutter is not cutting,
+on the one screen the operator times his transmission by. `TurnRingSweep` was
+already drawn as a fraction and its own remark said that is what lets two lengths
+share one shape; four lengths share it now and only the denominator moved.
+`Ft8Turn.SecondsLeft` keeps its `int` and its ceiling, and nothing on screen reads
+it any more.
+
+**Two: the sidecar and the two sentences name the slot LENGTH rather than the
+mode name.** The length is what the application measured and the name is a label;
+and while the 4.48 against 5.04 question is open, a sheet or a screen reading
+`FT4` would be asserting an answer to it. This is the same reasoning in three
+places, applied once.
+
+**Three: the sequencing swap above.**
+
+**Nothing else was decided.** The 4.48 against 5.04 figure, the widened candidate
+sweep and the version scheme all stay with Tim, untouched, and step 2 was built so
+that none of them can block it - the slot is 7.5 seconds on either timing answer,
+and every criterion in this step is about the grid rather than the occupancy.
+`5.04` and `7.5` are typed nowhere in `Hamlet.RadioEngine` or `Hamlet.App`: both
+arrive from `Ft8Sharp.Ft4Timing` through `SlotGrid.Ft4`, so a ruling still costs
+one edit in one file. **That was checked by grep at the end and by an assertion in
+the tests, not assumed.**
 
 ### What was built
 
-FT4 is now in `src/Ft8Sharp` as **six new library files plus one that holds its
-timing**, and two shared files gained one seam each:
+`SlotGrid` is a `readonly record struct` carrying the slot length and the
+transmission length together, with `SlotStart`, `IntoSlot`, `BoundariesBetween`,
+`TransmissionFits`, `SlotsPerMinute` and `Describe` on it. `SlotGrid.Ft8` hands in
+`Ft8Slots`'s own constants and `SlotGrid.Ft4` reads both numbers from the port.
+`Ft8Slots` keeps its constants and its five functions and is now a forwarder onto
+`SlotGrid.Ft8` - unit 289's own device for `Ft8WaterfallGeometry` - so there is
+one implementation and not two that could drift apart.
 
-| File | What it is |
-|---|---|
-| `Encode/Ft4SymbolEncoder.cs` | `ft4_encode` — payload XOR, CRC-14, `encode174`, 87 data symbols of 2 bits, Gray map, two ramps, four Costas rows |
-| `Encode/Ft4Waveform.cs` | 4-tone GFSK at BT 1.0, 105 symbols of 0.048 s, upstream's own slot layout |
-| `Ft4Timing.cs` | **the one place FT4's timing lives** |
-| `Dsp/Ft4WaterfallGeometry.cs` | the geometry re-derived at 0.048f |
-| `Dsp/Ft4SyncSearch.cs` | `ft4_sync_score` over four *different* Costas rows from symbol 1 |
-| `Dsp/Ft4SoftSymbols.cs` | `ft4_extract_likelihood` — 2 bits over 4 bins, 5-then-9-then-13 skip |
-| `Dsp/Ft4SlotDecoder.cs` | the whole FT4 path, wiring only |
-| `Dsp/Ft8WaterfallGeometry.cs` | *edited*: a protected constructor taking a symbol period and a slot length. The public constructor hands in FT8's own two constants, so every FT8 number it has ever produced is produced by the same arithmetic in the same precision. |
-| `Ldpc/Ft8CodewordDecoder.cs` | *edited*: an optional payload-XOR argument, applied after the CRC check and before the payload is handed on — where `ftx_decode_candidate` puts it |
-| `Encode/Ft8Waveform.cs` | *edited*: one internal accessor to its error function. No constant moved and the padding is untouched. |
+The arithmetic is in **ticks, floored from the top of the minute**. Whole seconds
+could not express a 7.5-second boundary at all. The minute is the anchor because
+it is the largest unit both lengths divide exactly - four FT8 slots, eight FT4
+slots - so nothing accumulates across an hour or a day, and `BoundariesBetween`
+steps in ticks rather than by `AddSeconds` so a boundary list cannot drift off its
+own grid.
 
-`Ft8SymbolEncoder` was not touched at all, and
-`EverySymbolOfEveryMessageIsIdenticalToUpstreams` was not generalised.
+`Ft8SlotCutter.Cut`, `DigitalCaptureSheet.Compose` and `Ft8Turn.Read` take an
+optional `SlotGrid`; `Ft8SlotWatch` carries one as an init-only property. **All
+four default to FT8**, so every caller written before this unit does exactly what
+it did. The watch's grid is init-only deliberately: a watch that changed grid
+mid-flight would hold `_lastSeenSlotStart` on one grid and compare it against
+`current` on another, and that comparison is what decides whether a slot closed -
+so the fault would surface as a skipped or duplicated slot rather than as an
+error. A mode change builds a new watch, which arms afresh.
 
-The three FT4 tables now come out of `Ft8TableConverter` rather than a keyboard —
-16, 4 and 10 elements — and the sentence in two places saying they were deliberately
-skipped is rewritten rather than left standing.
+### Tests, all foregrounded and filtered by exact name. No suite was run.
 
-### Decisions this session made for itself, reproduced in full
-
-**One.** *The FT4 candidate sweep is widened to blocks -10 to 51 where the demo
-application uses -10 to 19.* Task 1 measured that upstream's sweep, at FT4's 0.048 s
-block, reaches 0.912 s, and that upstream's own generator centres its signal at 1.23 s —
-so upstream's decoder cannot see upstream's generator, which is the symptom unit 288
-found and could not explain. The waveform is kept as upstream's, because a waveform that
-is not upstream's is not a faithful port; the sweep bound is what moved, and it is **not
-in `ft8/` at all** — it is a file-scope judgement in `demo/decode_ft8.c` about how much
-work to do, the same class of number as `kMin_score` and `kMax_candidates`, and it was
-already a constructor parameter in this port before this unit. 51 is 156 blocks in a slot
-less 105 in a transmission, so it covers every placement a well-formed FT4 signal can
-have, including upstream's own centred 25. Nothing about the modulation, the tables, the
-codeword or the waveform is changed, and a caller who asks for upstream's own sweep gets
-upstream's own result, which is nothing. **It is raised in section 4 as an item for the
-record rather than as a question holding anything up.**
-
-**Two.** *`PHASE_STATUS.md`'s `STEP:` lines and `CURRENT_STEP` were left alone, against
-task 7.* Task 7 says to bring them into line with `PHASE_OUTCOME.md`'s header. This
-session's own prompt says `HEARTBEAT:`, `CURRENT_STEP:` and the `STEP:` lines belong to
-the launcher and are not to be written. The prompt is an explicit prohibition addressed
-to this session and it wins; the edit was made, then reverted. The fact it would have
-recorded is recorded in `PHASE_OUTCOME.md`, whose header now reads `STEP: 1 | done`, and
-which is the file the arbiter reads. Raised in section 4.
-
-**Three.** *`tools\arbiter\validate-output.bat` could not be run either, and the seven
-rules were applied by hand instead.* **This is an environment fact and not a question, so
-it is not one of section 4's four items — but it is a pass/fail condition of this unit and
-it is said here rather than left to be discovered.** This session's shell will run
-`dotnet`, `git` and the ordinary file utilities and **refuses `cmd`, `powershell` and any
-`.bat`**; every invocation form was tried — `cmd //c`, `cmd.exe /c`, the full path to
-`cmd.exe`, and the script directly — and all four were refused, in a session that cannot
-be asked to approve them. So the rules were applied one at a time against this file with
-tools that do work, and this is the result:
-
-| Rule | Check | Result |
+| Test | Count | What it is |
 |---|---|---|
-| 1 | a `UNIT:` line above section 1, parseable | present, line 32 |
-| 2 | the four top-level sections, in order, exact names | lines 43, 146, 180, 370, exact |
-| 3 | no fifth top-level section | four `## ` headings and no more |
-| 4 | section 4 present even when empty | present, and not empty |
-| 5 | section 3 non-empty | 153 non-blank lines |
-| 6 | the ordering block above `UNIT:` — header, A, B, C, and C naming a count | all five present inside the first 60 lines |
-| 7 | no placeholder token in the header block | zero matches on the validator's own token list |
+| `TheGridIsNotAConstantTests` | 5 of 5 | new - both grids, and FT8 unchanged |
+| `SlotsAreCutOnTheGridTheyWereGivenTests` | 5 of 5 | new - criterion 1 |
+| `TheRingCountsDownSevenAndAHalfTests` | 5 of 5 | new - criterion 2 |
+| `ASlotHeTransmittedInOnFt4sGridSaysSoTests` | 4 of 4 | new - criterion 3 |
+| `TheScreenSaysWhichGridIsRunningTests` | 4 of 4 | new - task 7 |
+| `TheClockIsMeasuredNotCorrectedTests` + `TheCutterAndTheSidecarAgreeTests` | 19 of 19 | FT8 control, unchanged |
+| `TheBeatIsDerivedNotGuessedTests` | 13 of 13 | FT8 control, unchanged |
+| `TheTurnIsARingTests` | 9 of 9 | FT8 control, unchanged |
+| `ASlotHeTransmittedInSaysSoTests` | 3 of 3 | unit 282's control, unchanged |
+| `TheSlotCutterTests`, `TheSlotWatchTests`, `TheDigitalTabDecodesWhatItKeptTests`, `ACapturedFileDiagnosesItselfTests` and the new cutter test | 36 of 36 | FT8 controls, unchanged |
+| `TheTabSaysWhyNothingIsDecodingTests`, `TheDecodedTableIsRealTests`, `TheTabHearsEverySlotTests`, `EverySlotLeavesALineTests` | 45 of 47 | 2 inherited reds, section 4 |
+| `TheSheetSaysWhichAudioPathItRanOnTests` | 8 of 10 | 2 inherited reds, section 4 |
 
-**That is not the same thing as the script exiting 0** and it is not claimed to be. The
-same two rules the script holds and this session cannot: that its copy of the rules and
-`CLAUDE_CODE.md` §8 still agree, and that its own reading of "no other headings" is the
-one applied. Both were read out of the script's own comments rather than assumed.
+**No FT8 test's expected value was changed.** One call was updated - the const
+`DigitalIdleText.ModeStrip` became `ModeStripFor(SlotGrid)` - which the
+instruction names as an updated call rather than a changed expectation, and the
+value it is compared against is still FT8's grid.
 
-**Four.** *The `PHASE_OUTCOME.md` entry was written by hand.*
-`tools\arbiter\outcome-append.bat` could not be run — the shell refused the invocation
-and this session is non-interactive, so there was no way to answer for it. Task 7
-anticipated exactly this and required it to be said, so the entry says it on its own
-face. The arguments the script would have been given are committed at
-`tools/arbiter/unit289-append.bat` with no apostrophes in any of them, so the entry can
-be reproduced rather than reconstructed.
+### Task 6, and what the shell would not do
 
-### One correction
+`tools\arbiter\outcome-append.bat` was tried once, in three invocation forms - a
+relative path with a redirection, `cmd //c`, and `./tools/arbiter/...` - and all
+three were refused by the sandbox. **This is a non-interactive session, so there
+was nobody to approve them.** This is the refusal unit 289 measured and the
+instruction anticipated, and no more time was spent on it. The entry was written
+with the file-editing tools in the format `outcome-entry.py` produces, it says so
+on its own face under `APPENDED BY HAND:`, and the arguments the script would have
+been given are committed at `tools/arbiter/unit290-append.bat` so it can be
+replayed rather than reconstructed. **Unit 289's two entries were not touched.**
+`tools\arbiter\validate-output.bat` met the same refusal; what was done instead is
+in section 3.
 
-The intermediate `UPDATED:` timestamps in `PROJECT_STATUS.md` during tasks 2 to 7 were
-composed rather than read from the clock, and ran about an hour and a quarter fast. The
-final one is read. Nothing else in this report or in any commit depends on them, and the
-unit ran about 32 minutes wall clock from 08:36 to 09:08.
+### Two pieces of litter, named because neither could be swept up
 
-### How tests were run
+**`.commit-msg.txt` is a tracked file and this session overwrote it seven times**,
+once per commit, using it to pass multi-line messages to `git commit -F` because
+this shell will not carry a heredoc containing an apostrophe. It should not have
+been the file used: it was already in the repository, holding unit 272's commit
+message. **It has been restored to its committed content and the working tree
+shows no diff on it.** Unit 269 untracked it once (`9510527`) and it came back, so
+it is worth someone deciding whether it belongs in the repository at all.
 
-**No suite was run.** Every test was filtered by exact name or exact type, foregrounded,
-with a stated 10-minute timeout, per HM-DEC-155. Nothing was backgrounded and nothing was
-polled. `dotnet build` was run foregrounded three times.
+**`tools/census15.sh` is an untracked leftover.** It was written early in task 1 to
+run the prose census as a script, was never run - the shell refuses scripts too -
+and the census was done with plain `grep` instead. **The sandbox refused every
+attempt to delete it**, so it is named here rather than silently left. It is not
+staged, not committed and reads nothing but `src`.
 
 ## 2. What the owner should expect
 
-**An FT4 decoder now exists in `Ft8Sharp` and it can be trusted about as far as FT8's
-could be after unit 216 — which is a long way for synthesized audio and not at all for a
-radio.** Hamlet can turn a message into an FT4 transmission whose tones and whose samples
-are upstream's own, and read it back as the same message, a hundred and six times out of
-a hundred and six, with nothing wrong coming out.
+**The slot machinery can now run FT4.** Everything that cuts a slot, watches for
+one closing, counts them into a capture sidecar, counts down inside one, or says
+whose it is, will run on a 7.5-second grid the moment something hands it one. All
+of it is proved on FT4's real numbers rather than on a stand-in.
 
-**What will look wrong and is not.**
+**Nothing has changed on the screen for FT8**, and that is deliberate. The
+waterfall summary still reads `15 s slots` character for character. The turn ring
+still counts 15, 14, 13 down to 1. Every slot boundary is identical to the tick.
 
-- **The FT4 button still does nothing.** This unit changed nothing in `src/Hamlet.App` or
-  `src/Hamlet.RadioEngine` — it is not allowed to, and step 4 owns that.
-- **The screen still says "fifteen second slots" and `"15 s slots"`.** Both are real §0.0
-  breaches, both were named by unit 288, and both are step 2's.
-- **`Ft8Sharp` jumped a minor rather than a patch**, from 0.10.7 to 0.11.0, where the last
-  seven units all took patches. The rule is the one that file's own comment block states:
-  bump when the library gains a capability of its own, minor for an addition rather than a
-  correction. A second modulation is an addition. The root took a patch, 1.12.215 to
-  1.12.216, as instructed.
-- **`PHASE_STATUS.md` still reads step 0 and step 1 as `not started`.** That is deliberate
-  and section 4 explains it. `PHASE_OUTCOME.md` is right.
+**What will look wrong but is not.** The idle line on the Digital tab changed its
+wording: it used to say *FT8 runs in fifteen second slots* and now says *Slots
+here run 15 seconds*. It stopped naming a mode because the tab has no way yet to
+know which mode it is running, and a sentence naming FT8 on a 7.5-second grid
+would be wrong twice over.
 
-**What step 2 inherits, and it is the thing that will bite the slot machinery.**
+**The FT4 button still does nothing.** This unit built the seam and nothing that
+presses it. `MainWindowViewModel.DigitalGrid` is get-only, always FT8's, and no
+code in the application sets it.
 
-- **The placement.** An FT4 signal sits **1.23 s** into its 7.5 s slot, occupies **5.04 s**,
-  and leaves 1.23 s behind it. `Ft8Slots.SlotSeconds` and `TransmissionSeconds` and the
-  eight files that compute from them are all FT8's today.
-- **The candidate window.** `Ft4SyncSearch` sweeps blocks **-10 to 51**, which is
-  **-0.48 s to +2.448 s**. That is wider than upstream's and it is why the chain works.
-  If step 2 ever moves where the signal is placed in the slot, this bound is what has to
-  move with it, and it is one named constant in one file.
-- **One timing constant.** If Tim rules that FT4's transmission is 4.48 s rather than
-  5.04 s, the change is `src/Ft8Sharp/Ft4Timing.cs` and nothing else in the library.
+### What step 4 inherits
+
+Step 4 has to thread a mode from the button to these places. They are named here
+so it is a list rather than a search:
+
+- **`MainWindowViewModel.DigitalGrid`** - one property, and the two on-screen
+  sentences already read it. This is the intended entry point.
+- **`MainWindowViewModel.DriveTheArmedSend`** (`:10437-10438`) and the next-
+  boundary arithmetic at `:10381` - **both still call `Ft8Slots.SlotStart`
+  directly.** This matters more than it looks: the send path books a slot key that
+  `_transmittedSlots` is read against, so on FT4 the send side would key at `:15`
+  while the watch reported a slot at `:07.5`, and the `HashSet<DateTime>` would
+  miss silently. Task 5 proved the key holds **when both sides are on the same
+  grid**; making both sides be on the same grid is step 4's, and it is the single
+  highest-value thing on this list.
+- **`Ft8TransmitSequence.cs:497-530`** - **yes, this is one of them.** It guards a
+  send against `Ft8Slots.SlotSeconds` at `:497` and `:505` and against
+  `Ft8Slots.TransmissionFits` at `:507`, and its refusal sentences format the FT8
+  constants at `:501`, `:512` and `:530`. Parked by this instruction and untouched.
+  On FT4 it would refuse or admit a send against the wrong slot length.
+- **The construction of `Ft8SlotWatch`** - it takes its grid at construction, so
+  a mode change must build a new watch rather than mutate one.
+- **`Ft8Composer`** - its padded slot comes from `Ft8Waveform.SlotSeconds` in the
+  port. `Ft4Waveform` already has its own, reading `Ft4Timing`, so this is a call
+  to switch rather than arithmetic to write.
+- **`SignalSynthesizer.Ft8Period` and `ModeAudio.cs:53`** - the training radio's
+  own copies of 15 and 12.64. Not on the receive path.
+
+### What step 3 should know
+
+**`ModeGuide.cs:55` describes FT8 as `15-second warbles` and there is no FT4 row
+at all.** That is correct about FT8 and is a gap rather than an error - it wants a
+row beside it, not an edit. Step 3 owns `SUBMODE`, the ADIF log and the
+achievements FT4 row, and the field guide belongs in the same conversation.
 
 ## 3. What you should see
 
-### 1. The round trip's numbers
+### 1. The census - criterion 4, which no other task closes
 
-**106 messages sent. 106 read back as themselves. 0 wrong decodes. 0 missed decodes.**
+Measured over the whole tree at commit `2edfb6a`, **before any arithmetic moved**,
+which is why it runs first: a census written from a diff is a list of its author's
+own edits wearing a survey's clothes.
 
-Each one composed from fields, packed to 77 bits, encoded to 105 FT4 symbols, synthesized
-to audio, decoded, and compared against **the string it was composed from** — never
-against the decoder's own reading of its own bits. Sent at eight frequencies across the
-passband rather than one, so a hundred agreements are a hundred places in the waterfall.
+**`Hamlet.RadioEngine` and `Hamlet.App`: 47 arithmetic, 72 prose, 15 on screen.**
 
-| Kind | Read back |
-|---|---|
-| CQ with a grid | 10 of 10 |
-| a directed CQ | 10 of 10 |
-| a signal report | 14 of 14 |
-| a report acknowledged | 14 of 14 |
-| RRR | 10 of 10 |
-| **RR73** | **10 of 10** |
-| 73 | 10 of 10 |
-| nothing at all | 10 of 10 |
-| **a compound callsign** | **6 of 6** |
-| a portable suffix | 4 of 4 |
-| free text | 8 of 8 |
+**The arithmetic list in full**, file and line, at `2edfb6a`:
 
-A wrong decode is counted separately from a missed one, and both are reported at zero.
-One transmission goes into each slot, so anything else coming out of it is counted wrong
-whatever else the slot did.
-
-### 2. The upstream comparison
-
-**51 of 51** corpus messages with a text form are identical to `gen_ft8 -ft4` **symbol for
-symbol**, 105 symbols each. Five telemetry entries have no text form and are named as not
-compared rather than left out silently.
-
-**And 51 of 51 again at the sample level**: every sample of every FT4 slot this library
-synthesizes agrees with the WAV upstream's generator writes for the same message to
-**within one count of 32767** — the same rounding-level agreement unit 212 measured for
-FT8, and no disagreement anywhere was larger than one.
-
-**What a mismatch would have looked like.** The comparator names the position and says
-what kind of position it is, because the three faults are different: a difference at a
-ramp implicates the ends of the transmission; inside a sync group it implicates that
-group's *row* of the Costas table — FT4 sends four different patterns and a port
-repeating row 0 shows up exactly there; anywhere else it implicates the codeword, the
-Gray map direction, the two-bit walk, or the payload exclusive-OR, which would move
-nearly every data symbol at once. All three refusals were watched firing.
-
-**This is what makes the round trip evidence rather than a tautology**, and it is why it
-ran first. Hamlet's encoder into Hamlet's decoder is self-consistent by construction: a
-wrong Gray map, a wrong Costas row, a wrong XOR byte or a wrong ramp position is applied
-at one end and undone at the other and every message comes back perfect. The round trip
-above is not offered as proof on its own.
-
-### 3. The measured timing
-
-Measured from the audio buffer, not read back off the constant it came from:
-
-| | |
-|---|---|
-| sample rate | 12000 Hz |
-| samples per symbol | 576 |
-| **symbol period** | **0.048000 s** |
-| **symbol count** | **105** |
-| **occupancy** | **5.0400 s** (60480 samples) |
-| **tone count** | **4** |
-| **tone spacing** | **20.8333 Hz** |
-| **slot length** | **7.5000 s** (90000 samples) |
-| signal starts at | 1.2300 s |
-
-The four tones were also read back out of the audio by counting zero crossings — 1000.000,
-1020.588, 1041.667 and 1062.500 Hz — which is 62.500 Hz across three steps against 62.500
-expected.
-
-**The 4.48 against 5.04 disagreement, with both numbers.** `PHASE_PLAN.md` step 1 calls
-FT4's transmission **4.48 seconds**. Upstream's `FT4_SYMBOL_PERIOD` is `0.048f`
-(`ft8/constants.h:14`), which puts 105 symbols at **5.04 seconds** and the tone spacing at
-20.833 Hz. **The string `4.48` appears nowhere in the pinned clone.** Measured from this
-audio: **5.0400 s.**
-
-**This unit built on 5.04**, because the standing ruling is that `Ft8Sharp` is a faithful
-MIT port and a deliberate divergence from upstream is not a unit's to make. **Nothing here
-settles it.** The question is Tim's and it is carried in section 4 unchanged.
-
-### 4. Where the FT4 timing constants live
-
-**`src/Ft8Sharp/Ft4Timing.cs`, and nowhere else.** There is no `0.048f` and no `7.5f`
-anywhere else in the FT4 path — the synthesizer, the waterfall geometry, the tone
-spacing, the slot length and the block count all read from that one file. **A ruling the
-other way costs one edit.**
-
-### The sensitivity ladder — criterion 4, taken rather than dropped
-
-Eight rungs, 106 messages a rung, **848 trials**, seed 289, one frequency, and the SNR
-delivered at each rung measured from the samples rather than assumed from the request.
-The axis is power in a 2500 Hz reference bandwidth, the same one unit 222 checked against
-a second instrument and found agreeing to a mean of 0.0098 dB.
-
-| requested | delivered | trials | decoded | **WRONG** | missed |
-|---|---|---|---|---|---|
-| 0.0 | 0.000 | 106 | 106 | **0** | 0 |
-| -5.0 | -5.000 | 106 | 106 | **0** | 0 |
-| -10.0 | -10.000 | 106 | 106 | **0** | 0 |
-| -13.0 | -13.000 | 106 | 106 | **0** | 0 |
-| -15.0 | -15.000 | 106 | 49 | **0** | 57 |
-| -17.0 | -17.000 | 106 | 0 | **0** | 106 |
-| -19.0 | -19.000 | 106 | 0 | **0** | 106 |
-| -21.0 | -21.000 | 106 | 0 | **0** | 106 |
-
-**0 wrong decodes across all 848**, and **0 messages out of twenty slots of noise alone.**
-The 50 per cent crossing sits between -13 and -17 dB, near -15.
-
-**It is not a step 6 result and it is not compared with any published FT4 figure.** One
-process, one seed, one frequency, over audio this library synthesized itself — no fading,
-no drift, no neighbours. It was not re-drawn in a second process. Comparing it with a
-published threshold needs a citation this tree does not carry, and this unit does not
-supply uncited numbers; that is the same treatment the 4.48 question gets.
-
-### The geometry, re-derived rather than inherited
-
-Unit 288 said explicitly that FT8's truncation match was derived at `0.160f` and does not
-carry. It was re-taken at `0.048f`, both columns computed and printed:
-
-| | in float (upstream, and this) | the same constant in double |
+| File | Lines | What it computes |
 |---|---|---|
-| block size | 576 | 576 |
-| first kept bin | 9 | 9 |
-| last kept bin | 145 | 145 |
-| blocks in a slot | 156 | 156 |
+| `Audio/Ft8Slots.cs` | 126, 135 | the two constants themselves |
+| `Audio/Ft8Slots.cs` | 163 | `TransmissionFits` against 12.64 |
+| `Audio/Ft8Slots.cs` | 184, 186 | `SlotStart` - the `(int)` cast and the whole-second `DateTime` |
+| `Audio/Ft8Slots.cs` | 196 | `IntoSlot`, via `SlotStart` |
+| `Audio/Ft8Slots.cs` | 222, 228 | `BoundariesBetween`, stepping by `AddSeconds(15)` |
+| `Audio/Ft8SlotCutter.cs` | 115, 117 | samples per slot and per transmission |
+| `Audio/Ft8SlotCutter.cs` | 129, 153 | the boundary list and the fit test |
+| `Audio/Ft8SlotWatch.cs` | 262 | the current slot |
+| `Audio/Ft8SlotWatch.cs` | 285 | how many slots closed between two looks |
+| `Audio/Ft8SlotWatch.cs` | 295 | samples per slot |
+| `Audio/Ft8SlotWatch.cs` | 360, 380 | the arrival window and the slot handed over |
+| `Audio/Ft8Turn.cs` | 77 | `private const int Slot = (int)Ft8Slots.SlotSeconds` |
+| `Audio/Ft8Turn.cs` | 163, 165, 169 | the transmitting countdown against 12.64 |
+| `Audio/Ft8Turn.cs` | 180 | the current slot for parity |
+| `Audio/Ft8Turn.cs` | 185, 191 | `TheirSlotSecond` as parity x 15 |
+| `Audio/Ft8Turn.cs` | 198 | `ParityOf`, `(second / 15) % 2` |
+| `Audio/Ft8Turn.cs` | 211, 213 | the countdown and its clamp |
+| `Audio/DigitalCaptureSheet.cs` | 287, 292, 357 | the boundary list and the two whole-transmission counts |
+| `Contacts/Ft8ContactLedger.cs` | 96 | slots between two moments |
+| `Contacts/Ft8ContactState.cs` | 102 | `GoneQuietAfterSlots * SlotSeconds` |
+| `ViewModels/MainWindowViewModel.cs` | 1688, 1689 | the ring's denominator |
+| `ViewModels/MainWindowViewModel.cs` | 1870 | has the slot moved past a stop |
+| `ViewModels/MainWindowViewModel.cs` | 2390 | slots since the last heard message |
+| `ViewModels/MainWindowViewModel.cs` | 2711 | a slot as a `TimeSpan` |
+| `ViewModels/MainWindowViewModel.cs` | 10370 | the next boundary |
+| `ViewModels/MainWindowViewModel.cs` | 10427 | the boundary the armed send is driven on |
+| `Transmit/Ft8TransmitSequence.cs` | 497, 505, 507 | **PARKED, step 4** - the send guard |
+| `Training/SignalSynthesizer.cs` | 20, 23, 258 | the training radio's own 15 and 12.64 |
+| `Training/ModeAudio.cs` | 53, 159 | the training cycle |
 
-**At FT4's period the two columns agree everywhere, and at FT8's they do not** — FT8's
-block is 1920 in float and 1919 in double, a whole sample per symbol, and its first bin 32
-against 31, which is a whole tone of frequency error. So the single precision is
-load-bearing for FT8 and buys FT4 nothing. It is kept anyway, because it is what upstream
-does and because a port that is right for a reason that has stopped applying is a port
-waiting to be wrong.
+**Prose: 72 lines across 27 files.** `Ft8SlotWatch.cs` carries 12, `Ft8Slots.cs`
+9, `MainWindowViewModel.cs` 16, `Ft8SlotCutter.cs` 5, `Ft8Composer.cs` 4,
+`Ft8Reception.cs` 3, `AudioSpectrumSource.cs` 3, `AudioHandoff.cs` 2,
+`Ft8ArmedSend.cs` 2, `SignalSynthesizer.cs` 2, `ModeAudio.cs` 2,
+`Ft8TransmitSequence.cs` 2, and one each in `AudioArrival.cs`, `AudioTap.cs`,
+`DigitalCaptureSheet.cs`, `Ft8Resample.cs`, `Ft8Turn.cs`, `ReusableWindow.cs`,
+`Ft8ContactState.cs`, `SyntheticSignal.cs`, `FollowingScroll.cs` and
+`ContactMilestones.cs`. **Wrong documentation, not wrong behaviour, and none of it
+was rewritten.** Excluded as not about the slot grid, and named so the count can be
+checked: eleven CW lines, `WasapiTransmitSink.cs:81` (fifteen *milliseconds*),
+`SourceHealth.cs:70` and `MainWindowViewModel.cs:11721` (fifteen *minutes*), and
+`ScanStop.cs:194`.
 
-FT4 keeps **136 bins** where FT8 keeps 449, out of the same 200–3000 Hz passband, because
-a bin is one tone spacing and FT4's tones are 20.833 Hz apart rather than 6.25.
+**On screen: 15, of which 11 wrote fifteen as a literal.** These are the §0.0
+breaches, because they are what the operator reads:
 
-### The predicted failures, and which one happened
+| Where | What it said | Now |
+|---|---|---|
+| `DigitalIdleText.cs:24` | "FT8 runs in fifteen second slots" | **follows the grid** |
+| `MainWindowViewModel.cs:939` | "15 s slots" | **follows the grid** |
+| `DigitalReadiness.cs:92` | "the fifteen second boundaries fall is not known" | **names no length** |
+| `Ft8SlotCutter.cs:80` (`NoOffset`) | "where the fifteen-second boundaries fall" | **names no length** |
+| `DigitalCaptureSheet.cs:282` | sidecar, clock unread | **names the grid** |
+| `DigitalCaptureSheet.cs:338` | "no fifteen-second boundary falls inside this window" | **names the grid** |
+| `MainWindowViewModel.cs:2759` | "of the last fifteen seconds, so this slot is fragments" | **stands** |
+| `Ft8SlotWatch.cs:145` (`AudioShort`) | "delivered {0} of the last fifteen seconds" | **stands** |
+| `Ft8Reception.cs:399` | "there is not a whole fifteen-second slot in what was kept" | **stands** |
+| `DigitalCaptureSheet.cs:311` | "over the last fifteen seconds" | **stands** |
+| `Explore/ModeGuide.cs:55` | FT8's row: "15-second warbles" | **stands - true of FT8** |
 
-- **"The first FT4 round trip may decode zero messages."** It did not, because task 1 did
-  its arithmetic *before* anything was built and the sweep was widened at task 5 rather
-  than discovered at task 6. Task 1's arithmetic is what explains why it would have.
-- **"The FT4 waterfall geometry may not match upstream's float truncation."** Re-derived
-  at 0.048f, table above. Nothing turned on it at that period.
+The four that formatted fifteen from the constant rather than writing it -
+`Ft8TransmitSequence.cs:501`, `:512`, `:530` and `DigitalCaptureSheet.cs:349` -
+follow whatever grid the constant carries and are not literals. **Three of the
+four that stand describe an arrival window whose length happens to be the slot**;
+they need the grid threaded to them and that is step 4's work, not a wording fix.
 
-### Mismatches between the work instruction and the tree — reported, not repaired
+**`Ft8Sharp` and `Ft8Sharp.Deep`, marked separately and changed in no way:** 4
+arithmetic sites - `Ft8WaterfallGeometry.cs:52` and `:106`, `Ft8Waveform.cs:69`
+and `:128` - and 12 prose lines. **FT4 already has its own beside every one of
+them**: `Ft4WaterfallGeometry.cs:58` and `Ft4Waveform.cs:72` and `:130`, all
+reading `Ft4Timing.SlotSeconds`. The port is faithful and it is not this unit's.
 
-1. **`src/Ft8Sharp` is 29 C# files, not 33.** Counted with `find … -name '*.cs'` excluding
-   `bin/` and `obj/`. It is 34 files of all kinds including `LICENSE`, `NOTICE`,
-   `porting-notes.md`, `Ft8Sharp.csproj` and `Directory.Build.props`, which may be where
-   the 33 came from. Unit 288's *proportions* — 28 of 33 protocol-neutral — should be read
-   against whichever denominator it actually counted.
-2. **`CLAUDE.md` §1 does not hold `CPS-DEC-0160`.** The prefix `CPS-DEC-` appears nowhere
-   in `CLAUDE.md`, `DECISIONS.md` or `PROJECT_STATUS.md`. It survives in
-   `.run-unit/reload.txt`, which is the launcher's file and not mine; in one `.bak` and one
-   archived example; and in three script comments citing another project's rulings.
-   **`HM-DEC-nnn` is this project's form**, `HM-DEC-160` is the correct spelling, and
-   `PROJECT_STATUS.md` and `CLAUDE.md` §1 already agree with each other.
-   `docs/unit255-keying-path-survey.md:311` recorded the same finding already. **There was
-   nothing to repair.** Separately, `HM-OPEN-077`'s premise — that §1's table stops short
-   of the recent rulings — has since been repaired: §1 now runs to HM-DEC-160 and carries
-   153, 154 and 155.
-3. **The five-file list is right about the five and is not the whole list.** Two more
-   files carried an FT8 assumption: `Dsp/Ft8SlotDecoder.cs`, which hardwires the FT8
-   extractor and the FT8 search, and `Ldpc/Ft8CodewordDecoder.cs`, which had no seam for
-   the payload XOR. Add `Tables/Ft8Tables.g.cs`, whose header asserted the FT4 tables were
-   deliberately absent. All three were addressed.
-4. **FT4 came to seven new files rather than five**, because a slot decoder and a place for
-   the timing constants are both wanted and neither is one of the five.
+**How many independent copies of each number the tree holds: five of 15 and two of
+12.64.** Named in section 1. None consolidated.
 
-Everything else in the instruction's verification list checked out: root `1.12.215` and
-`Ft8Sharp` `0.10.7` before the bumps; both oracle binaries present at
-`C:\Source\ft8_lib\build\`; six `TableSpec` entries with the skip stated at `:42-44`;
-`Ft8Oracle.Generate` at `:99` with no protocol argument; `Ft8SlotDecoder.Decode` at `:133`;
-`ftx_find_candidates` sweeping -10 to +19 at `decode.c:205`; and `PHASE_STATUS.md`'s
-`STEP:` lines stale exactly as unit 288 reported.
+### 2. The boundaries, both grids, side by side
 
-### How the upstream C was read
+`SlotStart` at a handful of moments past the top of a minute. The FT4 column
+includes what the arithmetic this unit replaced would have produced if its
+constant had simply been changed to 7.5 - which is what a session reaching for a
+one-line fix would have shipped.
 
-A session's file tools are confined to this repository and the pinned clone is outside it,
-so a throwaway probe in the test project staged `ft8/constants.h`, `ft8/constants.c`,
-`ft8/encode.c`, `ft8/decode.c`, `demo/gen_ft8.c` and `common/monitor.c` into `artifacts/`,
-which `.gitignore` already excludes. **This is unit 203's own device and its own
-precedent** — `TempEncoderProbe.cs` still carries that unit's note about it. Nothing
-upstream was committed. The probe has been emptied to a comment rather than deleted,
-because this sandbox refuses file deletion, and it was never `git add`ed.
+| Moment | FT8 grid | FT4 grid | what a changed constant gave |
+|---|---|---|---|
+| `:00.000` | `:00` | `:00.0` | `:00` - right, by coincidence |
+| `:07.000` | `:00` | `:00.0` | `:07` |
+| `:07.500` | `:00` | `:07.5` | `:07` |
+| `:08.000` | `:00` | `:07.5` | `:07` |
+| `:14.900` | `:00` | `:07.5` | `:14` |
+| `:15.000` | `:15` | `:15.0` | `:14` |
+| `:22.500` | `:15` | `:22.5` | `:21` |
+| `:29.999` | `:15` | `:22.5` | `:28` |
+| `:37.500` | `:30` | `:37.5` | `:35` |
+| `:45.000` | `:45` | `:45.0` | `:42` |
+| `:52.500` | `:45` | `:52.5` | `:49` |
+| `:59.999` | `:45` | `:52.5` | `:56` |
+
+`(int)7.5` is `7`. The old arithmetic agreed with the real 7.5-second grid at
+exactly one of those eleven boundaries, `:00`, and by three and a half seconds at
+`:52.5`. **And it could not have expressed four of the eight boundaries anyway**:
+its `DateTime` constructor took whole seconds and had no field for the half.
+
+**The evidence that FT8's column is identical to what it was before this unit.**
+`Ft8sBoundariesAreTickIdenticalToTheWholeSecondArithmetic` keeps a transcription
+of the replaced arithmetic as a control that nothing in the application calls, and
+compares the shipping code against it over **3,888 moments** - every sixteenth of
+a second across four minutes, which crosses three minute boundaries and all four
+slots in each, plus a spread of awkward tick offsets including one tick either
+side of every boundary. **Every one is identical to the tick.** Not a rounding
+comparison: `Ticks` against `Ticks`.
+
+A minute of silence at 12 kHz, cut:
+
+```
+FT8 (15.00 s slots, 12.64 s transmission): 4 slots
+  14:22:00.000  sample      0  180000 samples, padded 0.00 s
+  14:22:15.000  sample 180000  180000 samples, padded 0.00 s
+  14:22:30.000  sample 360000  180000 samples, padded 0.00 s
+  14:22:45.000  sample 540000  180000 samples, padded 0.00 s
+FT4 (7.50 s slots, 5.04 s transmission): 8 slots
+  14:22:00.000  sample      0   90000 samples, padded 0.00 s
+  14:22:07.500  sample  90000   90000 samples, padded 0.00 s
+  14:22:15.000  sample 180000   90000 samples, padded 0.00 s
+  14:22:22.500  sample 270000   90000 samples, padded 0.00 s
+  14:22:30.000  sample 360000   90000 samples, padded 0.00 s
+  14:22:37.500  sample 450000   90000 samples, padded 0.00 s
+  14:22:45.000  sample 540000   90000 samples, padded 0.00 s
+  14:22:52.500  sample 630000   90000 samples, padded 0.00 s
+```
+
+And the watch, stepped a quarter-second at a time through the same minute:
+
+```
+FT8 boundaries seen: 15.0, 30.0, 45.0, 60.0
+FT4 boundaries seen: 7.5, 15.0, 22.5, 30.0, 37.5, 45.0, 52.5, 60.0
+```
+
+**With an unmeasured offset both grids cut nothing and say so.** A mode parameter
+decides which boundaries exist; the measured offset decides where they fall in
+wall-clock time, and without one the answer stays unknown. That is HM-DEC-009 and
+it is asserted on both grids.
+
+### 3. The turn
+
+**What the ring shows on a 7.5-second slot, tenth by tenth:**
+
+```
+7.5 7.4 7.3 7.2 7.1 7.0 6.9 6.8 6.7 6.6 6.5 6.4 6.3 6.2 6.1 6.0 5.9 5.8 5.7 5.6
+5.5 5.4 5.3 5.2 5.1 5.0 4.9 4.8 4.7 4.6 4.5 4.4 4.3 4.2 4.1 4.0 3.9 3.8 3.7 3.6
+3.5 3.4 3.3 3.2 3.1 3.0 2.9 2.8 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.9 1.8 1.7 1.6
+1.5 1.4 1.3 1.2 1.1 1.0 0.9 0.8 0.7 0.6 0.5 0.4 0.3 0.2 0.1
+```
+
+and at `:07.5` the next slot opens at `7.5`. **It never reads 8 and it never reads
+0.** FT8's control column beside it, unchanged: `15 15 14 14 13 13 12 ... 2 2 1 1`.
+
+**How the whole-second countdown was resolved against a half-second slot.** The
+measurement and the display were separated. `Ft8Turn` now carries
+`SecondsLeftExact` as a `double?` beside the existing `int? SecondsLeft`, and a
+`CountText` property renders it - whole seconds where the slot is a whole number
+of seconds, one decimal otherwise. **The rule keys off the slot rather than the
+moment**, which is what keeps FT8 reading whole seconds even while its 12.64-second
+transmission is counting down. `SecondsLeft` keeps its `int`, its ceiling and its
+clamp, and nothing on screen reads it any longer. One decimal rather than two
+because the tick that drives the ring runs four times a second, so a hundredth
+would be a digit the reading cannot support. It rounds up to its own last digit
+and never to zero, for the reason it never did on FT8: a zero says the slot is
+over while a station is still transmitting in it.
+
+**Parity, and unit 277's rule.** Unchanged in shape and unchanged in force. What
+moved is only how a boundary becomes an index: it counts whole slots from the top
+of the minute instead of dividing the second-of-minute by fifteen, because four of
+FT4's eight boundaries are not on a whole second at all.
+
+```
+parity across the minute: 0 1 0 1 0 1 0 1
+```
+
+and the same eight an hour later, a day later and a minute later. **It does not
+shift at a minute or an hour** because eight slots to the minute is even, exactly
+as four was. A station heard on the `:07.5` half makes the `:07.5` slots theirs
+and the `:00` slots his, derived from its transmission and not from a default.
+`NoStationYet` is still a real state and still refuses to pick a side, and an
+unmeasured clock still produces no count at all.
+
+One thing to record: `Ft8Turn.TheirSlotSecond` is an `int?` and on FT4 it rounds
+to `7` where the half is `7.5`. **`TheirSlotSecondExact` carries the measurement**
+and nothing on screen reads either today; anything that starts to must read the
+exact one.
+
+**And reaching zero sends nothing.** The countdown is run to its last tenth and
+across the boundary. Because a side effect would not show up in a return value,
+the test also asserts the type's whole public surface - printed in the test output
+- contains no member whose name reads like an action, and that `Ft8Turn.cs`
+mentions no `ICivLink`, no `Ptt`, no `Ft8ArmedSend` and no `SendAsync`. **The
+transmitting countdown's denominator is `Ft8Sharp.Ft4Timing.OccupancySeconds`,
+asserted against the port rather than pinned to a typed 5.04.**
+
+### 4. What the sidecar now says about its grid
+
+Verbatim, known case:
+
+```
+slotGrid   5 boundaries, corrected to UTC, on 15.00 s slots, 12.64 s transmission
+wholeSlots 4  (of 5 boundaries, this many are followed by the whole 12.64 s transmission inside the audio)
+
+slotGrid   9 boundaries, corrected to UTC, on 7.50 s slots, 5.04 s transmission
+wholeSlots 8  (of 9 boundaries, this many are followed by the whole 5.04 s transmission inside the audio)
+```
+
+Verbatim, unknown case - **it still says unknown**:
+
+```
+slotGrid   unknown (not read)  (the clock offset has not been measured, so where the boundaries of the 15.00 s slots, 12.64 s transmission fall is not known)
+slotGrid   unknown (not read)  (the clock offset has not been measured, so where the boundaries of the 7.50 s slots, 5.04 s transmission fall is not known)
+```
+
+It names which grid it *would* have used, which is a fact about the capture, and
+withholds where the boundaries fall, which is the thing nobody measured. There is
+a third case - a window with no boundary in it at all - and it names the grid too,
+because that is the capture where the spacing cannot be inferred from the list and
+so is the one that most needs telling.
+
+**`TransmissionFits` is still one function.** It was made one because two answers
+disagreed in consecutive lines of one sidecar on `ft8-2026-09-03-210644`. The grid
+travels into it; the arithmetic did not fork.
+
+### The transmitted-slot key, and the two sentences
+
+**300 of 300 moments across four FT4 slots resolved the key correctly, 0 missed**,
+and exactly the 75 tenths inside the keyed slot report it as his. The census stamp
+gained a tenth of a second and only where the boundary carries one:
+
+```
+15:16:07.5 UTC was yours - Hamlet was transmitting and did not listen
+15:16:45 UTC was yours - Hamlet was transmitting and did not listen
+```
+
+Every FT8 stamp takes the whole-second branch and is byte-identical.
+
+The two sentences, on both grids:
+
+```
+15   idle : nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or two before deciding the band is empty.
+15   wfall: 200-3000 Hz - 15 s slots
+7.5  idle : nothing on this frequency yet. Slots here run 7.5 seconds, so give it a slot or two before deciding the band is empty.
+7.5  wfall: 200-3000 Hz - 7.5 s slots
+```
+
+**The waterfall summary's FT8 rendering is byte-identical.** Both read one
+`DigitalGrid` property, and that they cannot come to disagree is asserted rather
+than arranged.
+
+### The report validator, checked by hand
+
+`tools\arbiter\validate-output.bat` met the same shell refusal as
+`outcome-append.bat`. **A hand check is not the same thing as the script exiting
+`0`**, and this is what a hand check of its seven rules against this file found:
+
+| Rule | Result |
+|---|---|
+| 1 - a `UNIT:` line above section 1, parseable | pass - line 33, within the 60-line window |
+| 2 - the four top-level sections, in order, exact names | pass - and no other `##` anywhere |
+| 3 - no fifth top-level section | pass |
+| 4 - section 4 present even when empty | pass - present and not empty |
+| 5 - section 3 non-empty | pass |
+| 6 - the ordering block above `UNIT:`, with `A.`, `B.`, `C.` and C naming a count | pass - `READ IN THIS ORDER` at line 1, and C says section 4 raises 5 items |
+| 7 - no placeholder token in the header block | pass - no `_PENDING`, `PENDING_`, `TBD`, `TODO`, `FIXME`, `XXX`, `<FILL`, `FILL IN>` or `PLACEHOLDER` before `## 1.` |
 
 ## 4. What's blocking us
 
-Four items. **None of them is in the way of a criterion in section B** — all four criteria
-are met — and two of the four are carried forward from unit 288 unchanged.
+**Five items. None is in the way of a step 2 criterion.** Three are questions
+already with Tim, carried unchanged and not re-argued.
 
-### Is FT4's transmission 4.48 seconds or 5.04 seconds? — Tim's, carried from unit 288
+### 1. FT4's transmission: 4.48 seconds or 5.04? Still with Tim.
 
-**The ruling wanted:** which figure is right, and if it is 4.48, what symbol period and
-symbol count produce it.
+Raised by unit 288, carried by 289, carried again here and **not settled, not from
+memory and not from a model's knowledge of FT4**. `PHASE_PLAN.md` step 1 says 4.48
+s; upstream's `FT4_SYMBOL_PERIOD` of `0.048f` puts 105 symbols at 5.04 s and the
+string `4.48` appears nowhere in the pinned clone. **Step 2 did not depend on the
+answer** - the slot is 7.5 seconds on either figure - and the constant is still in
+exactly one file, `src/Ft8Sharp/Ft4Timing.cs`, so a ruling costs one edit. What
+changed is that more now reads from it: the ring's transmitting denominator, the
+sidecar's whole-transmission count and `SlotGrid.Ft4` all take it from there, and
+`5.04` is typed nowhere in `Hamlet.RadioEngine` or `Hamlet.App`. **Most blocking of
+the five, because it is the only one that will move a number the application
+displays.**
 
-**The reasoning.** `PHASE_PLAN.md` step 1 says 4.48 s. `ft8/constants.h:14` says
-`FT4_SYMBOL_PERIOD (0.048f)`, and 105 symbols at 0.048 s is 5.04 s with tones 20.833 Hz
-apart. The string `4.48` appears nowhere in the pinned clone. They cannot both be true and
-settling it needs the cited QEX paper or a real off-air recording; this tree has neither.
+### 2. The version scheme. With Tim since unit 288.
 
-**What was rejected.** Settling it from a model's knowledge of FT4 — forbidden outright,
-and it is exactly the class of uncited number this project's own history says gets quoted
-forever afterwards. Building on 4.48 — that is a deliberate divergence from upstream and
-not a unit's to make. **What was done instead**: built on upstream's 0.048f, put it in one
-file so a ruling costs one edit, and reported the measured figure rather than the asserted
-one.
+HM-DEC-150 against what `Directory.Build.props` has been doing. Bumped as
+instructed, one patch per committed task: `1.12.216` to `1.12.222`. Not resolved,
+not reasoned about.
 
-### The FT4 candidate sweep is -10 to 51 blocks where upstream's demo uses -10 to 19
+### 3. Unit 289's widened FT4 candidate sweep, -10 to 51 blocks. With Tim.
 
-**The ruling wanted:** confirmation that this is accepted as this port's own, or an
-instruction to do it another way.
+Its own decision, on the record with its reasoning, and named as an item for
+confirmation rather than a blocker. **This unit did not touch it and had no reason
+to** - it moves nothing about where an FT4 signal sits in its slot.
 
-**The reasoning.** Upstream's own FT4 decoder reads zero messages out of upstream's own
-FT4 generator. The cause is measured: at a 0.048 s block, -10 to +19 reaches 0.912 s, and
-the generator centres its signal at 1.23 s. The bound is not in `ft8/` at all — it is a
-file-scope constant in `demo/decode_ft8.c`, the same class as `kMin_score` and
-`kMax_candidates`, and it was already a constructor parameter in this port. 51 is 156
-blocks in a slot less 105 in a transmission. Nothing about the modulation, the tables, the
-codeword or the waveform changed, and the encoder and the waveform are still upstream's
-byte for byte.
+### 4. Four inherited red tests, none about the grid and none chased.
 
-**What was rejected.** Moving the signal instead — a waveform that is not upstream's is
-not a faithful port, and it would have broken the sample comparison that makes this unit's
-round trip evidence. Leaving the sweep at 19 and reporting a decoder that reads nothing —
-that would have been accurate and would have closed no criterion, and the phase would have
-been no further forward.
+Found while running FT8 controls. None is on the known-reds list
+(`CwAdjudicationTests.ASpeedChangeInRealisticAudio`, the 51 CW cases in
+`docs/unit239-failing-set.txt`, the `Ft8Sharp.Deep.Tests` type-list tripwire,
+`HM-OPEN-088`'s ten), so the ruling wanted is whether they are fixed or added to
+it.
 
-### Who owns `PHASE_STATUS.md`'s `STEP:` lines and `CURRENT_STEP`?
+| Test | Why it fails | Since |
+|---|---|---|
+| `TheSheetSaysWhichAudioPathItRanOnTests.TheCensusNamesTheStageEachSlotReached` | asserts `DoesNotContain("snr")`; the sheet grew an `snr` line per census slot | `8f53e79`, 2026-09-05 |
+| `TheSheetSaysWhichAudioPathItRanOnTests.TheSheetSaysHowLoudTheAudioInEachSlotWas` | same assertion, same cause | `8f53e79`, 2026-09-05 |
+| `TheDecodedTableIsRealTests.NoInventedDecodeIsLeftInTheMarkup` | looks for `{Binding DigitalDecodes}`, which the markup no longer has | markup last changed `dab335a`, 2026-09-08 |
+| `TheTabHearsEverySlotTests.AFullTableStillSaysNothingAboutWhatAMessageMeans` | forbids translating a message; translation was later permitted by ruling | test last touched 2026-09-05 |
 
-**The ruling wanted:** which of the two instructions stands.
+All four tests were last touched on 2026-09-05 and all four causes landed on or
+after that date. **They were failing before this unit started and this unit did
+not touch any of the code involved.**
 
-**The reasoning.** Work instruction 289 task 7 says the `STEP:` lines are stale and to
-bring them and `CURRENT_STEP` into line with `PHASE_OUTCOME.md`'s header. This session's
-prompt says `HEARTBEAT:`, `CURRENT_STEP:` and the `STEP:` lines belong to the launcher and
-are not to be written. Both cannot hold. The prompt won, because it is the explicit
-prohibition addressed to this session, so `PHASE_STATUS.md` still reads step 0 and step 1
-as `not started` while `PHASE_OUTCOME.md` reads step 0 done and step 1 done.
+### 5. `PHASE_STATUS.md` disagrees with the record. Reported, not repaired.
 
-**What was rejected.** Doing both — the edit was made and then reverted rather than left
-in, because a half-applied header is worse than either state. Doing neither and saying
-nothing — that is how unit 288's report described the same lines as stale and nothing
-moved.
+`STEP: 1 | partial` and `CURRENT_STEP: 1`, while `PHASE_OUTCOME.md` carries both
+`done` and `partial` for unit 289 and this instruction's arbiter reads step 1 as
+`done`. **Those lines and `HEARTBEAT:` belong to the launcher and were not
+written.** Unit 289 was told to write them by its instruction and forbidden by its
+prompt, and the conflict cost an edit made and reverted; this instruction resolves
+it the same way and so does this unit. Only `WORK_INSTRUCTION:` was set, to
+`290 - the slot machinery is FT4's`.
 
-### The version scheme — carried from unit 288, unchanged and unruled
-
-**The ruling wanted:** HM-DEC-150 says the minor is the phase number and the patch is the
-work unit within it, with no second copy of the minor. What `Directory.Build.props` has
-actually been doing does not match that.
-
-**What this unit did meanwhile**, exactly as instructed: bumped the root patch by one,
-1.12.215 to 1.12.216, and resolved nothing.
-
-### Outstanding asks
-
-Per HM-DEC-139 this heading appears whether or not anything is under it. **The queue
-carried since unit 271 is carried forward unchanged and untouched** — work instruction 289
-parks it explicitly and this unit did not open it. The two new asks this unit adds are the
-candidate sweep and the `PHASE_STATUS.md` ownership conflict above; the 4.48 timing figure
-and the version scheme were already on it from unit 288 and are repeated here verbatim in
-substance rather than assumed remembered.
+**Not an ask, recorded so nobody chases it:** `RULES_AT` needed no repair.
+`.run-unit/reload.txt` reports *CLAUDE.md section 1 holds CPS-DEC-0160*, and
+**`CPS-DEC-` appears nowhere in `CLAUDE.md`, `DECISIONS.md` or
+`PROJECT_STATUS.md`.** `CLAUDE.md:360`, `DECISIONS.md:7` and `PROJECT_STATUS.md`
+all say `HM-DEC-160`, dated 2026-09-08, and agree with each other. **The reload is
+the launcher's file** and its reading is stale.
