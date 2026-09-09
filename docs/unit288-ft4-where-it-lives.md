@@ -241,3 +241,166 @@ and says in as many words that this is the 51 the phrase refers to.
 protocol flag (`Ft8Oracle.cs:99-107`), so it generates FT8 today. Upstream takes `-ft4`
 as the **fourth positional argument** (`demo/gen_ft8.c:130`), which means the oracle
 wrapper needs one optional argument and not a second wrapper.
+
+---
+
+## Task 3 - the decision, with its reason
+
+### The decision: FT4 goes in the port, `src/Ft8Sharp`
+
+The rule Tim ruled on 2026-09-08 is conditional and task 1 satisfied the condition.
+`ft8_lib` carries FT4 - `ft4_encode` at `ft8/encode.c:127`, four decoder branches at
+`ft8/decode.c:127`, `192`, `253` and `454`, three FT4 tables at `ft8/constants.c:5-27`,
+and `-ft4` on both console programs. So **the port carries FT4 and the fidelity tests
+extend to cover it.** The rule decided this; this unit only read.
+
+Three things follow that are worth writing down, because each of them would have been
+an argument if the reading had gone the other way.
+
+**The licence story does not move.** `ft8_lib` is MIT (`C:\Source\ft8_lib\LICENSE:1`,
+"MIT License, Copyright (c) 2018 Kārlis Goba") and `Ft8Sharp` is MIT because of it.
+FT4 in the port is a port of MIT code into an MIT library. FT4 in `Ft8Sharp.Deep` would
+have been GPL-3.0 code re-deriving something that already exists under MIT, which is
+work done twice and licensed worse.
+
+**The instrument exists only because upstream carries FT4.** The reason `Ft8Sharp` is
+worth its constraint is that `gen_ft8.exe` will say what upstream's tones are for any
+message, and 51 of 51 already match symbol for symbol. That binary takes `-ft4`, and
+**it was run in this unit rather than assumed to work** - see the measurement below.
+A sibling implementation of FT4 would have no such reference at all: it would be proved
+against itself.
+
+**A sibling would have had to rewrite the five files anyway.** Task 2 named them. Not
+one of the five is reachable for extension from outside: `Ft8SymbolEncoder`'s seven
+constants are `public const`, but `Ft8SyncSearch`, `Ft8SoftSymbols` and
+`Ft8WaterfallGeometry` compute from them internally, and `Ft8CodewordResult` cannot be
+constructed outside the assembly at all (`Ft8CodewordDecoder.cs:176`, `:198-204`). A
+sibling would reproduce the port's loop the way `Ft8DeepSlotDecoder` already does, then
+reimplement five files, and end with no upstream reference to hold them to.
+
+**So: nothing in this decision needs the port to open.** That answers task 3's "what
+has to open, minimally" - the question does not arise, and it is worth saying so
+plainly, because the alternative was where the opening would have been forced.
+
+### Measured, not assumed: upstream's FT4 round-trips, and it took a shift to see it
+
+Both oracle binaries were already built at `C:\Source\ft8_lib\build\` and dated
+2026-09-02, so nothing was compiled in this unit.
+
+```
+gen_ft8.exe "CQ KC3QIS FN00" ft4probe.wav 1000 -ft4
+  -> Packed data: 00 00 00 24 b1 97 80 0a 0f 08
+  -> FSK tones: 105 of them, first 0 and last 0, which are the ramp symbols
+  -> a 7.500 s WAV, 90 000 frames at 12 000 Hz
+
+decode_ft8.exe -ft4 ft4probe.wav
+  -> Block size = 576, N_FFT = 1152        (576 = 12000 x 0.048, so the flag is read)
+  -> DECODED 0 MESSAGES
+```
+
+**Upstream's own FT4 decoder read nothing from upstream's own FT4 generator**, which
+looks at first like FT4 support being hollow after all. It is not, and the cause is
+placement rather than protocol.
+
+`ftx_find_candidates` searches `candidate.time_offset` from **-10 to 19 blocks**
+(`ft8/decode.c:205`). A block is one symbol period, so for FT8 that window is -1.6 s to
++3.0 s and for FT4 it is **-0.48 s to +0.91 s**. `demo/gen_ft8.c:173` centres the
+transmission in the slot, which for FT4 puts its first symbol at 14 760 samples, or
+**1.23 s** - outside the window by a third of a second.
+
+Shifting the identical audio forward by 0.99 s and zero-padding the tail, changing no
+sample value:
+
+```
+decode_ft8.exe -ft4 ft4shift.wav
+  -> Decoded 1 messages, callsign hashtable size 1
+  -> 000000 +19.5 +0.29 1000 ~  CQ KC3QIS FN00
+```
+
+The message comes back as itself. The FT8 control does the same thing without a shift
+(`+16.5 +1.36 1000 ~ CQ KC3QIS FN00`), because FT8's window is four times wider in
+seconds and its centred placement lands inside it.
+
+**Two things follow for the first build unit**, and both are the kind of thing that
+otherwise gets found by an evening of an FT4 tab showing nothing:
+
+1. **Upstream's FT4 encoder and decoder agree**, over the message layer, the CRC-14,
+   the LDPC code, the four Costas groups, the Gray map, the payload XOR and the ramp
+   symbols. That is the whole chain, proved end to end, in this unit.
+2. **The candidate search window is a quarter as wide in seconds for FT4**, so whatever
+   cuts an FT4 slot must place the transmission within about 0.9 s of the slot start.
+   Hamlet's `Ft8SlotCutter` cuts on a measured offset for FT8; whether that offset
+   satisfies a window this narrow is a measurement the first build unit owes, not an
+   assumption it may make.
+
+### What the 51 fidelity tests become
+
+They stay exactly as they are and gain a second protocol beside them.
+
+- **The corpus does not change at all.** `EncodeCorpus.Build()` is a message-layer
+  corpus and the message layer is shared, so all 51 texts with a text form are valid
+  FT4 messages unchanged. No new messages are invented and no message is dropped.
+- **`Ft8Oracle.Generate` gains one optional protocol argument**, appended as
+  `gen_ft8`'s fourth positional (`demo/gen_ft8.c:130`). One wrapper, not two.
+- **`EverySymbolOfEveryMessageIsIdenticalToUpstreams` gains a protocol dimension**:
+  51 comparisons at 79 symbols and 51 at 105, so **102 rather than 51**. The FT8
+  assertion is left untouched rather than generalised, so a regression on the FT8 side
+  stays attributable to the FT8 side.
+- **Two things get compared that FT8 has no analogue for**: the payload XOR
+  (`ft8/constants.c:16-27`, applied at `encode.c:132-137`) and the two ramp symbols. A
+  symbol-for-symbol comparison covers both without naming them, which is the point of
+  comparing symbols rather than intermediate values.
+- **`Ft8TableConverter.Manifest` grows by three entries** and
+  `CheckedInTablesAreWhatTheConverterProduces` then covers the FT4 tables for free. The
+  converter's own remark that the three are deliberately skipped
+  (`Ft8TableConverter.cs:42-44`) is what is being reversed, and it should be reversed
+  in words as well as in code.
+
+### How upstream parity stays provable - and the thing it stops proving
+
+**Parity is proved against upstream's binary and never against the published
+description**, and that arrangement is unchanged. `gen_ft8.exe -ft4` answers for any
+message; the comparison is symbol for symbol; a divergence is a red test naming a
+position. Nothing about adding FT4 weakens that, and the pin is the same commit the
+FT8 side is already held to.
+
+**What does change is that faithfulness and correctness come apart, for the first time
+in this project.** Until now the port being byte-identical to upstream and the port
+being right were the same statement, because upstream is a well-exercised FT8 decoder
+read against real off-air recordings. For FT4 there is a number in upstream that this
+tree cannot corroborate: `FT4_SYMBOL_PERIOD` is `0.048f` (`ft8/constants.h:14`), which
+puts 105 symbols at **5.04 s** and the tone spacing at **20.833 Hz**, where both
+`WORK_INSTRUCTIONS.md` and `PHASE_PLAN.md` step 1 say the transmission is **4.48 s**.
+The string `4.48` appears **nowhere in the upstream clone**, and neither does a baud
+figure or a bandwidth figure - `grep -rn "4\.48|23\.4375|20\.8|baud|bandwidth"` over
+every `.c`, `.h` and `.md` in the clone returns only the two `SYMBOL_BT` lines.
+
+So a faithful port of FT4 can be provably faithful and still unable to hear a real FT4
+station, and **no test in this repository could tell the difference**, because every
+FT4 test available today is Hamlet's encoder against Hamlet's decoder or against
+upstream's, and all three would share the same 0.048 s. This is HM-DEC-091's finding
+in a new place: the seven synthetic CW fixtures all passed while the decoder was deaf
+on the air.
+
+### What I would need that I do not have
+
+Three things, in the order they block work.
+
+1. **A ruling on which figure step 1 is measured against.** `PHASE_PLAN.md` step 1
+   makes "the timing is FT4's: 7.5-second slots, 4.48 seconds of transmission, four
+   tones - measured, not asserted" a *must-pass*, and a faithful port of `ft8_lib`
+   measures 5.04 s. Those cannot both hold. Either the criterion moves to upstream's
+   figure, or the port deliberately diverges from upstream on one constant and says so
+   - and a deliberate divergence in `Ft8Sharp` is exactly the thing the ruling in force
+   says is not spent casually. **This blocks step 1's exit, not its start.**
+2. **The published description.** `ft8_lib`'s `README.md:47` cites
+   `https://physics.princeton.edu/pulsar/k1jt/FT4_FT8_QEX.pdf`. No copy of it is in this
+   repository or in the clone, and §4's rule is that a figure comes from a citation
+   rather than from a model's memory - so this unit states the conflict and does not
+   resolve it. A vendored page under `data/vendor/` would settle item 1 without a
+   ruling, if the paper's terms allow it.
+3. **A real off-air FT4 recording**, which this tree does not have. `ft8_lib`'s
+   `test/wav/` is FT8 throughout and `tests/fixtures/` has no FT4 audio. Until one
+   exists, every FT4 decode this project can demonstrate is self-consistent by
+   construction, and item 1 is unfalsifiable from inside. One recording answers items 1
+   and 3 together and outranks every synthetic fixture (HM-DEC-091).
