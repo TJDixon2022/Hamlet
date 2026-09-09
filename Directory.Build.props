@@ -573,8 +573,18 @@
     the on-grid ladder's and it is STATED: sixteen messages a cell, 400 trials a rung. No rung is
     skipped, because a ladder missing rungs reads like a complete one.
   -->
+  <!--
+    1.12.258 -> 1.12.259, UNIT 296 TASK 8, UNDER HM-DEC-150. A PATCH, AND IT IS BOOKKEEPING.
+    PHASE_OUTCOME.md gains unit 296's entry, written with the file editing tools in the format
+    outcome-entry.py produces and saying so on its own face; the arguments are committed at
+    tools/arbiter/unit296-append.bat so it can be replayed rather than reconstructed. Units 288 to
+    295's entries were not touched, including the two STATE_AFTER verdicts each carries, and neither
+    was the header block - it is a cursor and the entries win. PHASE_STATUS.md's WORK_INSTRUCTION
+    line is set and nothing else. The validator exits 0, VALID, all seven rules, after failing rule 6
+    once on an ordering block that carried no READ IN THIS ORDER line and spelled its count in words.
+  -->
   <PropertyGroup>
-    <Version>1.12.258</Version>
+    <Version>1.12.259</Version>
   </PropertyGroup>
 
   <!--
