@@ -71,6 +71,73 @@
             <Setter Property="Stroke" Value="{StaticResource HmSlateEdgeBrush}" />
         </Style>
 
+        <!-- **A CARD IS A BORDERED PANEL ON THE PAPER, NEVER A FILLED ONE**
+             (HM-DEC-012, §0.5). Family colour is text colour; a column of filled
+             cards reads as stripes rather than as structure. -->
+        <Style Selector="Border.hm-card">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <!-- **THE FOUR STATES ARE DRAWN THE SAME AND THE WORD SEPARATES THEM**
+             (§0.6). Printed in grayscale the card still says Finished, Your turn,
+             Waiting on him or Gone quiet, because the hue was never carrying it. -->
+        <Style Selector="Border.hm-state">
+            <Setter Property="Background" Value="{StaticResource HmSlateTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="7,2" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+        </Style>
+
+        <!-- **THE ACTION LOOKS PRESSABLE AT REST** (§0.5.1, HM-DEC-087). Grey is
+             reserved for what genuinely cannot be used, and this can always be
+             used. -->
+        <Style Selector="Button.hm-cardaction /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmAmberTintBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmAmberBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="10,4" />
+        </Style>
+
+        <Style Selector="Button.hm-cardaction">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <!-- **A LINK AND NOT A SECOND ACTION.** It carries no chrome, so the one
+             obvious action on the card stays the one obvious action. -->
+        <Style Selector="Button.hm-cardlink /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="4,2" />
+        </Style>
+
+        <Style Selector="Button.hm-cardlink">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
+        <Style Selector="Button.hm-cardx /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="5,1" />
+        </Style>
+
+        <Style Selector="Button.hm-cardx">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
         <Style Selector="Border.hm-bubble">
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="MaxWidth" Value="330" />
@@ -4168,113 +4235,256 @@
                                              (§0.5), and the colour is only ever a
                                              second carrier: every state says what it
                                              is in words. -->
-                                        <StackPanel Grid.Row="0">
-                                            <!-- **THE BEAT IS A RING** (Tim's ruling,
-                                                 2026-09-08: show, do not tell). It replaced
-                                                 two sentences saying one thing, on the
-                                                 screen he watches with fourteen seconds to
-                                                 decide in.
+                                        <!-- **THE PANEL IS CARDS** (Tim's ruling,
+                                             2026-09-08). His words: *"I have trouble
+                                             following what message was replied to, what
+                                             the timing is, the sequence... Who responded?
+                                             When did they respond? Did I respond to them?
+                                             Is this over? Is it time to log? This feels
+                                             like I still need secret knowledge."*
 
-                                                 **IT COUNTS DOWN AND DOES NOTHING ELSE**
-                                                 (§0.2). Nothing reads it, nothing arms on
-                                                 it, and reaching zero sends nothing. A
-                                                 countdown that fires is automatic
-                                                 sequencing wearing a clock's face.
+                                             One card per station, each saying in plain
+                                             words what happened, how long ago, and the one
+                                             thing to do next.
 
-                                                 **THE FOUR STATES SEPARATE WITHOUT COLOUR**
-                                                 (§0.6). Unknown is dashed with a question
-                                                 mark; on air is drawn thick and captioned
-                                                 with the message going out; his slot and
-                                                 theirs differ by the caption as well as by
-                                                 accent against muted. Printed in grey the
-                                                 four are still four.
+                                             **THE FACE NEEDS NO RADIO KNOWLEDGE.** No dB,
+                                             no hertz, no time offset, no bearing, no
+                                             `RR73`. Every one of those is behind the `i`
+                                             mark, where a deliberate look finds it, and
+                                             none of them is deleted.
 
-                                                 **TWO LENGTHS SHARE ONE SHAPE.** A slot is
-                                                 15 s and a transmission is 12.64 s, and the
-                                                 arc is a fraction of whichever this is - so
-                                                 a full ring means all of it either way, and
-                                                 the thickness and the caption say which. -->
-                                            <!-- **THE WHOLE SENTENCE IS ON THE RING**
-                                                 (work instruction 281 task 3). Three of
-                                                 the six captions left the screen; hovering
-                                                 the ring answers for all six. -->
-                                            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,8"
-                                                  Background="Transparent"
-                                                  ToolTip.Tip="{Binding TurnRingTip}">
-                                                <Panel Grid.Column="0" Width="44" Height="44">
-                                                    <Ellipse Width="40" Height="40"
-                                                             StrokeThickness="3"
-                                                             Stroke="{StaticResource HmSlateEdgeBrush}" />
+                                             **THE WAITING STRIP AND THE STANDALONE RING
+                                             BOTH CAME OUT WITH THE LIST.** The strip
+                                             existed because the panel drew one
+                                             conversation and everybody else had to be
+                                             visible somehow; every station has a card now,
+                                             so a second list of the ones not on show would
+                                             be this list with less on it. The ring moved
+                                             to beside the button that needs it, so its
+                                             seconds read as *how long to press this*
+                                             rather than as a clock to relate to something.
+                                             -->
+                                        <ItemsControl Grid.Row="0"
+                                                      x:Name="DigitalContactCards"
+                                                      ItemsSource="{Binding DigitalCards}"
+                                                      IsVisible="{Binding HasDigitalCards}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:Ft8ContactCard">
+                                                    <!-- **DIMMED, NEVER REMOVED** (Tim's
+                                                         ruling, 2026-09-08). A card never
+                                                         disappears on its own; three cards
+                                                         competing equally is the fault this
+                                                         answers. **The word says it too**
+                                                         (§0.6): printed in grey, *Gone
+                                                         quiet* still reads. -->
+                                                    <Border Classes="hm-card"
+                                                            Opacity="{Binding CardOpacity}">
+                                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto">
 
-                                                    <Arc x:Name="DigitalTurnRing"
-                                                         Width="40" Height="40"
-                                                         StartAngle="-90"
-                                                         SweepAngle="{Binding TurnRingSweep}"
-                                                         Classes.hm-unknown="{Binding TurnRingIsUnknown}"
-                                                         Classes.hm-onair="{Binding TurnRingIsOnAir}"
-                                                         Classes.hm-theirs="{Binding TurnRingIsTheirs}"
-                                                         Classes.hm-his="{Binding TurnRingIsHis}" />
-
-                                                    <TextBlock x:Name="DigitalTurnCount"
-                                                               Text="{Binding TurnRingCount}"
-                                                               HorizontalAlignment="Center"
-                                                               VerticalAlignment="Center"
-                                                               FontFamily="Consolas,Menlo,monospace"
-                                                               FontSize="14" FontWeight="SemiBold" />
-                                                </Panel>
-
-                                                <TextBlock x:Name="DigitalTurnCaption"
-                                                           Grid.Column="1"
-                                                           Text="{Binding TurnRingCaption}"
-                                                           VerticalAlignment="Center"
-                                                           TextWrapping="Wrap"
-                                                           Margin="10,0,0,0"
-                                                           FontSize="12"
-                                                           Foreground="{StaticResource HmTextMutedBrush}" />
-                                            </Grid>
-
-                                            <!-- **NOTHING IS HIDDEN** (Tim's ruling,
-                                                 2026-09-08). The panel below shows one
-                                                 conversation, so every other station
-                                                 calling him is a row here, with how many
-                                                 messages it has sent and how long it has
-                                                 been quiet. A station he cannot see is a
-                                                 station he will not answer.
-
-                                                 **CLICKING ONE SWITCHES THE VIEW AND
-                                                 NOTHING ELSE.** No message is composed,
-                                                 nothing is armed, and the conversation he
-                                                 was reading moves up here rather than
-                                                 being lost.
-
-                                                 **THE AGE IS IN SLOTS**, because the slot
-                                                 is the unit the beat is in: four slots
-                                                 quiet means four chances to hear him,
-                                                 taken none. -->
-                                            <ItemsControl x:Name="DigitalWaitingRows"
-                                                          ItemsSource="{Binding DigitalWaiting}"
-                                                          IsVisible="{Binding HasDigitalWaiting}"
-                                                          Margin="0,0,0,8">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="vm:Ft8WaitingStation">
-                                                        <Button Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowConversationCommand}"
-                                                                CommandParameter="{Binding Callsign}"
-                                                                HorizontalAlignment="Stretch"
-                                                                HorizontalContentAlignment="Left"
-                                                                Padding="8,4" Margin="0,0,0,3">
-                                                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                                                <TextBlock Text="{Binding Callsign}"
+                                                            <!-- THE HEADER: who, where, and
+                                                                 what state it is in. -->
+                                                            <Grid Grid.Row="0"
+                                                                  ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                <TextBlock Grid.Column="0"
+                                                                           Text="{Binding Callsign}"
+                                                                           VerticalAlignment="Center"
                                                                            FontFamily="Consolas,Menlo,monospace"
-                                                                           FontSize="12" FontWeight="SemiBold" />
-                                                                <TextBlock Text="{Binding Detail}"
+                                                                           FontSize="14"
+                                                                           FontWeight="SemiBold" />
+
+                                                                <!-- **A COUNTRY AND A
+                                                                     DISTANCE, AND NO
+                                                                     BEARING** (Tim:
+                                                                     *"what am I, some sort
+                                                                     of submarine
+                                                                     captain?"*). The whole
+                                                                     row is gone where
+                                                                     neither is known,
+                                                                     rather than showing an
+                                                                     empty space where a
+                                                                     place should be. -->
+                                                                <TextBlock Grid.Column="1"
+                                                                           Text="{Binding Place}"
+                                                                           IsVisible="{Binding HasPlace}"
+                                                                           VerticalAlignment="Center"
+                                                                           Margin="10,0,10,0"
+                                                                           TextTrimming="CharacterEllipsis"
                                                                            FontSize="11"
                                                                            Foreground="{StaticResource HmTextMutedBrush}" />
-                                                            </StackPanel>
-                                                        </Button>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
+
+                                                                <!-- **A STATE WORD, NOT A
+                                                                     SLOT COUNT** (Tim's
+                                                                     ruling, 2026-09-08).
+                                                                     **AND NO FAMILY COLOUR
+                                                                     IN THE FILL**
+                                                                     (HM-DEC-012, §0.5):
+                                                                     all four states are
+                                                                     drawn the same and the
+                                                                     word is what
+                                                                     separates them, so
+                                                                     nothing here needs a
+                                                                     hue to be read. -->
+                                                                <Border Grid.Column="2"
+                                                                        Classes="hm-state"
+                                                                        VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding StateWord}"
+                                                                               FontSize="11"
+                                                                               FontWeight="SemiBold" />
+                                                                </Border>
+
+                                                                <!-- **AN X ON EVERY CARD**
+                                                                     (Tim's ruling,
+                                                                     2026-09-08). It takes
+                                                                     the card off the panel
+                                                                     and touches nothing
+                                                                     else. -->
+                                                                <Button Grid.Column="3"
+                                                                        Classes="hm-cardx"
+                                                                        Content="✕"
+                                                                        VerticalAlignment="Center"
+                                                                        Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ClearCardCommand}"
+                                                                        CommandParameter="{Binding Callsign}"
+                                                                        ToolTip.Tip="Take this card off the panel. Nothing is logged, nothing is deleted, and the card comes back if this station transmits again." />
+                                                            </Grid>
+
+                                                            <!-- WHAT HAPPENED, in words
+                                                                 that need no radio
+                                                                 knowledge. Every clause of
+                                                                 it traces to a fact in the
+                                                                 ledger. -->
+                                                            <TextBlock Grid.Row="1"
+                                                                       Text="{Binding Sentence}"
+                                                                       TextWrapping="Wrap"
+                                                                       Margin="0,6,0,0"
+                                                                       FontSize="12"
+                                                                       LineSpacing="1.3" />
+
+                                                            <!-- **THE TIME BOTH WAYS**
+                                                                 (Tim's ruling,
+                                                                 2026-09-08). The UTC ties
+                                                                 it to the band and to the
+                                                                 log; the relative half
+                                                                 says how stale the card
+                                                                 is. **The relative half is
+                                                                 absent with no measured
+                                                                 clock** (§0.0). -->
+                                                            <TextBlock Grid.Row="2"
+                                                                       Text="{Binding TimeLine}"
+                                                                       Margin="0,4,0,0"
+                                                                       FontFamily="Consolas,Menlo,monospace"
+                                                                       FontSize="10"
+                                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                            <!-- THE ONE ACTION, and the way
+                                                                 down to the raw messages. -->
+                                                            <Grid Grid.Row="3"
+                                                                  Margin="0,8,0,0"
+                                                                  ColumnDefinitions="Auto,Auto,*,Auto">
+
+                                                                <!-- **THE RING SITS BESIDE
+                                                                     THE BUTTON THAT NEEDS
+                                                                     IT** (Tim's ruling,
+                                                                     2026-09-08), so the
+                                                                     seconds mean *how long
+                                                                     to press this*.
+
+                                                                     **IT COUNTS DOWN AND
+                                                                     DOES NOTHING ELSE**
+                                                                     (§0.2). Nothing reads
+                                                                     it, nothing arms on
+                                                                     it, and its last
+                                                                     second transmits
+                                                                     nothing.
+
+                                                                     **ONLY THE TWO
+                                                                     STATION-INDEPENDENT
+                                                                     CLASSES ARE BOUND.**
+                                                                     Seconds to the next
+                                                                     boundary is one fact
+                                                                     for every card;
+                                                                     *his slot* and
+                                                                     *theirs* are the
+                                                                     conversation
+                                                                     station's parity, and
+                                                                     drawing them on
+                                                                     another station's card
+                                                                     would be a claim about
+                                                                     a station they were
+                                                                     not measured from
+                                                                     (§0.0). -->
+                                                                <Panel Grid.Column="0"
+                                                                       Width="34" Height="34"
+                                                                       Margin="0,0,8,0"
+                                                                       Background="Transparent"
+                                                                       IsVisible="{Binding ShowsRing}"
+                                                                       ToolTip.Tip="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingTip}">
+                                                                    <Ellipse Width="30" Height="30"
+                                                                             StrokeThickness="3"
+                                                                             Stroke="{StaticResource HmSlateEdgeBrush}" />
+
+                                                                    <Arc Width="30" Height="30"
+                                                                         StartAngle="-90"
+                                                                         SweepAngle="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingSweep}"
+                                                                         Classes.hm-unknown="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingIsUnknown}"
+                                                                         Classes.hm-onair="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingIsOnAir}" />
+
+                                                                    <TextBlock Text="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingCount}"
+                                                                               HorizontalAlignment="Center"
+                                                                               VerticalAlignment="Center"
+                                                                               FontFamily="Consolas,Menlo,monospace"
+                                                                               FontSize="12"
+                                                                               FontWeight="SemiBold" />
+                                                                </Panel>
+
+                                                                <!-- **ONE OBVIOUS ACTION**
+                                                                     (Tim's ruling,
+                                                                     2026-09-08), and
+                                                                     **one click, one
+                                                                     transmission** (§0.2).
+                                                                     A send button hands
+                                                                     one message to the
+                                                                     application's one send
+                                                                     entry point; a
+                                                                     finished card opens
+                                                                     unit 274's Log dialog
+                                                                     and transmits nothing.
+
+                                                                     **THE MESSAGE ITSELF
+                                                                     IS ON THE HOVER**, so
+                                                                     he can see exactly
+                                                                     what would go out
+                                                                     without it being on
+                                                                     the face. -->
+                                                                <Button Grid.Column="1"
+                                                                        Classes="hm-cardaction"
+                                                                        IsVisible="{Binding HasAction}"
+                                                                        VerticalAlignment="Center"
+                                                                        Content="{Binding ActionLabel}"
+                                                                        Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).CardActionCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        ToolTip.Tip="{Binding ActionTip}" />
+
+                                                                <!-- **NOTHING IS HIDDEN**
+                                                                     (Tim's ruling,
+                                                                     2026-09-08). The raw
+                                                                     messages are one press
+                                                                     down and never gone,
+                                                                     and the count is on
+                                                                     the button so he knows
+                                                                     what he is opening. -->
+                                                                <Button Grid.Column="3"
+                                                                        Classes="hm-cardlink"
+                                                                        IsVisible="{Binding HasMessages}"
+                                                                        VerticalAlignment="Center"
+                                                                        Content="{Binding MessagesLabel}"
+                                                                        Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowMessagesCommand}"
+                                                                        CommandParameter="{Binding Callsign}" />
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
 
                                         <!-- **THE COLUMN HEADER CAME OUT ON 2026-09-08**
                                              (Tim: show, do not tell). This side stopped
@@ -4283,10 +4493,30 @@
                                              on the left, and `utc | message` over the top of
                                              it labelled columns that no longer exist. The
                                              time is under each bubble where it belongs. -->
+                                        <!-- **ONE PRESS DOWN, NEVER GONE** (Tim's
+                                             ruling, 2026-09-08: nothing is hidden). The
+                                             cards summarize; this is the thing they
+                                             summarize, opened by *show the N messages* on
+                                             a card and shut by the same press or by the
+                                             heading's own control. -->
+                                        <Grid Grid.Row="1" Margin="0,10,0,0"
+                                              ColumnDefinitions="*,Auto"
+                                              IsVisible="{Binding ShowsConversation}">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding ConversationHeading}"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                            <Button Grid.Column="1"
+                                                    Classes="hm-cardlink"
+                                                    Content="hide them again"
+                                                    Command="{Binding HideMessagesCommand}" />
+                                        </Grid>
+
                                         <ScrollViewer Grid.Row="2" Margin="0,6,0,0"
                                                       VerticalScrollBarVisibility="Auto"
                                                       HorizontalScrollBarVisibility="Disabled"
-                                                      IsVisible="{Binding HasDigitalMineDecodes}">
+                                                      IsVisible="{Binding ShowsConversation}">
                                             <ItemsControl x:Name="DigitalMineRows"
                                                           ctl:FollowingScroll.Follows="True"
                                                           ItemsSource="{Binding DigitalMineDecodes}">
@@ -4377,7 +4607,7 @@
                                         <ctl:GlossaryTextControl Grid.Row="3"
                                                                  x:Name="DigitalMineIdleLine"
                                                                  Text="{Binding DigitalMineIdle}"
-                                                                 IsVisible="{Binding !HasDigitalMineDecodes}"
+                                                                 IsVisible="{Binding !HasDigitalCards}"
                                                                  Margin="0,6,0,0"
                                                                  FontSize="11" LineSpacing="1.4"
                                                                  Foreground="{StaticResource HmTextMutedBrush}" />

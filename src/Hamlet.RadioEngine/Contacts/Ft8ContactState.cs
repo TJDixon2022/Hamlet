@@ -337,6 +337,12 @@ public static class Ft8ContactStates
         => IsCourtesy(payload)
             || (Ft8MessageSplit.IsReport(payload, out var rogered, out _) && rogered);
 
+    /// <remarks>
+    /// **THE FOUR STRINGS MOVED TO <see cref="Ft8MessageSplit.IsCourtesy"/>**
+    /// (work instruction 297 task 2), so that the sign-off test can sit beside
+    /// them and there is one answer to *what is a courtesy* rather than two.
+    /// Behaviour here is unchanged.
+    /// </remarks>
     private static bool IsCourtesy(string payload)
-        => payload is "RRR" or "RR73" or "R73" or "73";
+        => Ft8MessageSplit.IsCourtesy(payload);
 }

@@ -2439,6 +2439,7 @@ public partial class MainWindowViewModel : ObservableObject
         // which a conversation should be read backwards.
 
         RebuildWaiting(station);
+        RebuildCards();
     }
 
     /// <summary>Turn a bound collection over in place.</summary>
@@ -2501,6 +2502,438 @@ public partial class MainWindowViewModel : ObservableObject
 
         OnPropertyChanged(nameof(HasDigitalWaiting));
         OnPropertyChanged(nameof(DigitalWaitingSummary));
+    }
+
+    /// <summary>**One card per station he is in contact with.**</summary>
+    /// <remarks>
+    /// <para>**THE PANEL IS CARDS AND NOT A LIST OF MESSAGES** (Tim's ruling,
+    /// 2026-09-08). His words: *"I have trouble following what message was replied
+    /// to, what the timing is, the sequence... Who responded? When did they respond?
+    /// Did I respond to them? Is this over? Is it time to log?"* A list of messages
+    /// answers none of those without the reader assembling them, and assembling them
+    /// is the secret knowledge this panel exists to stop needing.</para>
+    /// <para>**IT REPLACES THE WAITING STRIP AS WELL AS THE LIST.** That strip
+    /// existed because the panel drew one conversation and everybody else had to be
+    /// visible somehow. Every station now has a card, so a second list of the ones
+    /// that are not on show would be a copy of this one with less on it.</para>
+    /// <para>**NOTHING IS HIDDEN.** Every station that has called him, or that he has
+    /// called, is here; the raw messages are one press down and never gone.</para>
+    /// </remarks>
+    public ObservableCollection<Ft8ContactCard> DigitalCards { get; } = new();
+
+    /// <summary>True where there is at least one card.</summary>
+    public bool HasDigitalCards => DigitalCards.Count > 0;
+
+    /// <summary>Whose messages are open under the cards, or "".</summary>
+    private string _messagesOpenFor = "";
+
+    /// <summary>Stations whose card he has cleared, by callsign.</summary>
+    /// <remarks>
+    /// **HE CLEARED A CARD, NOT A STATION** (Tim's ruling, 2026-09-08). This holds
+    /// the moment each was cleared, and <see cref="RebuildCards"/> puts a station
+    /// back the instant anything newer than that arrives from it. **The ledger, the
+    /// log and the telemetry are untouched by it** - clearing removes a card from a
+    /// panel and nothing else.
+    /// </remarks>
+    private readonly Dictionary<string, DateTime> _cardsCleared =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>True while the raw messages are open under the cards.</summary>
+    public bool ShowsConversation => _messagesOpenFor.Length > 0;
+
+    /// <summary>Whose messages are open, for the heading over them.</summary>
+    public string ConversationHeading
+        => _messagesOpenFor.Length == 0
+            ? ""
+            : "Every message with " + _messagesOpenFor + ", oldest first";
+
+    /// <summary>**Open one station's raw messages under the cards.**</summary>
+    /// <param name="callsign">Whose, from the card he pressed.</param>
+    /// <remarks>
+    /// **IT OPENS A VIEW AND NOTHING ELSE** (§0.2). No message is composed, nothing
+    /// is armed, and pressing it again shuts it. **Nothing is hidden** (Tim's ruling,
+    /// 2026-09-08): a card is a summary and this is the thing it summarizes, one
+    /// press away.
+    /// </remarks>
+    [RelayCommand]
+    private void ShowMessages(string? callsign)
+    {
+        var wanted = (callsign ?? "").Trim();
+
+        if (wanted.Length == 0)
+        {
+            return;
+        }
+
+        _messagesOpenFor =
+            string.Equals(_messagesOpenFor, wanted, StringComparison.OrdinalIgnoreCase)
+                ? ""
+                : wanted;
+
+        if (_messagesOpenFor.Length > 0)
+        {
+            ShowConversation(_messagesOpenFor);
+        }
+
+        OnPropertyChanged(nameof(ShowsConversation));
+        OnPropertyChanged(nameof(ConversationHeading));
+    }
+
+    /// <summary>Shut the raw messages again.</summary>
+    [RelayCommand]
+    private void HideMessages()
+    {
+        _messagesOpenFor = "";
+
+        OnPropertyChanged(nameof(ShowsConversation));
+        OnPropertyChanged(nameof(ConversationHeading));
+    }
+
+    /// <summary>Every station with a card, in the order they are drawn.</summary>
+    /// <remarks>
+    /// **THE ONE HE HEARD FROM MOST RECENTLY LEADS**, because that is who is most
+    /// likely still there. Cards he has cleared are absent until that station
+    /// transmits again.
+    /// </remarks>
+    private List<string> CardStations()
+    {
+        var newest = new Dictionary<string, DateTime>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var row in _mineAll.Concat(_digitalSent))
+        {
+            var who = StationOf(row);
+
+            if (who.Length == 0)
+            {
+                continue;
+            }
+
+            if (!newest.TryGetValue(who, out var had) || row.SlotStartUtc > had)
+            {
+                newest[who] = row.SlotStartUtc;
+            }
+        }
+
+        return newest
+            .Where(pair => !WasCleared(pair.Key, pair.Value))
+            .OrderByDescending(pair => pair.Value)
+            .Select(pair => pair.Key)
+            .ToList();
+    }
+
+    /// <summary>Whether a station's card is cleared and nothing newer has arrived.</summary>
+    /// <remarks>
+    /// **A CLEARED CARD COMES BACK IF THAT STATION TRANSMITS AGAIN** (Tim's ruling,
+    /// 2026-09-08). The comparison is against the newest message either way, so a
+    /// message that arrived after the clear brings the card back and one that
+    /// arrived before it does not.
+    /// </remarks>
+    private bool WasCleared(string callsign, DateTime newestSlotUtc)
+        => _cardsCleared.TryGetValue(callsign, out var when) && newestSlotUtc <= when;
+
+    /// <summary>Build every card from the ledger.</summary>
+    /// <remarks>
+    /// <para>**THE WHOLE LIST IS REBUILT RATHER THAN PATCHED**, for the reason
+    /// <see cref="RebuildConversation"/> gives one method up: which cards exist and
+    /// what each says depends on the whole ledger, and this side carries his own
+    /// traffic, which is a handful of stations.</para>
+    /// <para>**THE FACTS ARE THE ENGINE'S AND THE WORDS ARE THE CARD'S** (§0.1).
+    /// Nothing here composes a sentence and nothing in `Ft8ContactCard` reads a
+    /// ledger.</para>
+    /// <para>**IT NEEDS A MEASURED CLOCK FOR THE STATE AND SAYS SO BY BUILDING
+    /// NOTHING WITHOUT ONE** (§0.0). `Ft8ContactStates.Read` counts slots between two
+    /// moments, and without an offset there is no corrected now to count to. The
+    /// panel's idle line already says what is wrong in that case, and a card built
+    /// against the machine's own clock would be a state derived from a reading
+    /// nobody took.</para>
+    /// </remarks>
+
+    /// <summary>Move every card's relative time on, once a second.</summary>
+    /// <remarks>
+    /// <para>**ONCE A SECOND, ON THE TICK THAT WAS ALREADY THERE.** The relative
+    /// half of a card's time line is in seconds under a minute, so a slower cadence
+    /// would show a stale count on the exact card he is deciding about and a faster
+    /// one would redraw text that has not changed. The age timer already runs at one
+    /// second for the spot ages, so this rides it rather than adding a timer of its
+    /// own - the same argument the turn ring makes about `_decodeTimer`.</para>
+    /// <para>**IT RETIMES AND NEVER REBUILDS.** Everything else on a card is a
+    /// function of the ledger and changes when the ledger does. Rebuilding the list
+    /// every second would replace the control under his mouse once a second, which
+    /// is how the send buttons came to be dead in unit 251's predecessor
+    /// (HM-DEC-078).</para>
+    /// <para>**NO CLOCK MEANS NO RELATIVE AGE, AND THAT REACHES THE CARD** (§0.0).
+    /// `TrueUtc` returns null with no measured offset and the card prints the slot's
+    /// UTC on its own rather than counting from a reading nobody took.</para>
+    /// </remarks>
+    private void RetimeCards()
+    {
+        if (DigitalCards.Count == 0)
+        {
+            return;
+        }
+
+        var nowUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset);
+
+        foreach (var card in DigitalCards)
+        {
+            card.Retime(nowUtc);
+        }
+    }
+
+    private void RebuildCards()
+    {
+        DigitalCards.Clear();
+
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+
+        if (_contacts is not null
+            && mine.Length > 0
+            && Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) is { } nowUtc)
+        {
+            foreach (var who in CardStations())
+            {
+                if (_contacts.For(who) is not { } record)
+                {
+                    continue;
+                }
+
+                var facts = Ft8CardFacts.For(record, nowUtc, DigitalGrid);
+                var action = ActionFor(facts, record, mine);
+
+                DigitalCards.Add(new Ft8ContactCard(
+                    facts,
+                    _settings.Operator.GridSquare,
+                    action.Kind,
+                    action.Label,
+                    action.Message,
+                    nowUtc));
+            }
+        }
+
+        OnPropertyChanged(nameof(HasDigitalCards));
+    }
+
+    /// <summary>The one thing a card offers to do.</summary>
+    /// <param name="facts">What the ledger says about the station.</param>
+    /// <param name="record">The station's record, for the send menu.</param>
+    /// <param name="mine">The operator's own callsign.</param>
+    /// <returns>Which button, what it reads, and what it would send.</returns>
+    /// <remarks>
+    /// <para>**WHICH MESSAGE COMES NEXT IS `Ft8SendOptions`' ANSWER AND NOT A SECOND
+    /// ONE** (§0). `Ft8SendOption.IsExpected` has meant *the one that conventionally
+    /// comes next* since it was ruled on 2026-09-06, and reading it here is what
+    /// stops this card and the right-click menu disagreeing about what an exchange
+    /// wants. **This unit invents no sequencing rule.**</para>
+    /// <para>**ONE CLICK, ONE TRANSMISSION** (§0.2). The button hands one message to
+    /// <see cref="SendMessageCommand"/>, which is the one entry point in the
+    /// application and arms exactly one transmission for the next slot. Nothing here
+    /// runs on a timer, nothing chains, and a finished card offers a dialog rather
+    /// than a transmission.</para>
+    /// <para>**NOTHING IS WITHHELD ON ACCOUNT OF THE STATE.** This picks what the
+    /// one obvious button does; every other message the format allows is still on
+    /// the right-click menu, which `Ft8SendOptions` says in its own remarks may
+    /// never be filtered. A card offering *send it again* has not closed anything.
+    /// </para>
+    /// </remarks>
+    private (Ft8CardActionKind Kind, string Label, string Message) ActionFor(
+        Ft8CardFacts facts, Ft8StationRecord record, string mine)
+    {
+        if (facts.State == Ft8ContactState.Complete)
+        {
+            return (Ft8CardActionKind.Log, "Log this contact", "");
+        }
+
+        var expected = Ft8SendOptions
+            .For(record, mine, _settings.Operator.GridSquare, ReportFor(facts.Callsign))
+            .Options
+            .FirstOrDefault(option => option.IsExpected);
+
+        // **HIS TURN TO ANSWER: THE MESSAGE THE EXCHANGE IS WAITING FOR.**
+        if (facts.State == Ft8ContactState.YourMove && expected is not null)
+        {
+            return (Ft8CardActionKind.Send, PlainSendLabel(expected.Shape), expected.Text);
+        }
+
+        // **NOTHING HAS COME BACK: THE OBVIOUS THING IS TO SAY IT AGAIN.** It is the
+        // text that actually went out, read off the ledger, so *again* means again
+        // rather than something new the operator did not choose the first time.
+        if (facts.YourLastMessage is { Length: > 0 } again)
+        {
+            return (Ft8CardActionKind.Send, "Send it again", again);
+        }
+
+        return expected is null
+            ? (Ft8CardActionKind.None, "", "")
+            : (Ft8CardActionKind.Send, PlainSendLabel(expected.Shape), expected.Text);
+    }
+
+    /// <summary>The signal report measured for one station, or null.</summary>
+    /// <remarks>
+    /// **THE NEWEST ROW'S OWN RATIO**, which is what a signal report is, and the
+    /// same value <see cref="SendMenuFor"/> hands the menu for the same station. A
+    /// station whose ratio was never measured gets null and the report-bearing
+    /// messages are simply not offered, rather than a number being invented (§0.0).
+    /// </remarks>
+    private int? ReportFor(string callsign)
+    {
+        DigitalDecodeRow? newest = null;
+
+        foreach (var row in _mineAll)
+        {
+            if (!string.Equals(row.Sender, callsign, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (newest is null || row.SlotStartUtc > newest.SlotStartUtc)
+            {
+                newest = row;
+            }
+        }
+
+        return newest is null ? null : MeasuredReport(newest);
+    }
+
+    /// <summary>What a send button reads, with no radio knowledge in it.</summary>
+    /// <remarks>
+    /// **`Ft8SendOptions.LabelFor` NAMES THE FIELD SHAPE AND THIS NAMES THE ACT.**
+    /// *roger and report* is exactly right on a menu of message shapes and is four
+    /// words of jargon on a button; the two say the same thing to two different
+    /// readers and neither is a copy of the other. **No `dB`, no `RR73`, no `73`**
+    /// - the message itself is on the hover, where a deliberate look finds it.
+    /// </remarks>
+    private static string PlainSendLabel(Ft8SendShape shape) => shape switch
+    {
+        Ft8SendShape.Grid => "Tell him where I am",
+        Ft8SendShape.Report => "Tell him how he is coming through",
+        Ft8SendShape.RogerAndReport => "Confirm, and tell him how he is coming through",
+        Ft8SendShape.Acknowledge => "Confirm I got that",
+        Ft8SendShape.Seventy3 => "Send my sign-off",
+        _ => "Send",
+    };
+
+    /// <summary>**Do the one thing a card offers.**</summary>
+    /// <param name="card">The card whose button was pressed.</param>
+    /// <remarks>
+    /// <para>**ONE CLICK, ONE TRANSMISSION** (§0.2). A send hands one message to
+    /// <see cref="SendMessageCommand"/>, which is the application's one send entry
+    /// point and arms exactly one transmission for the next slot. **Nothing here
+    /// runs on a timer, nothing chains and nothing retries**: this method is reached
+    /// by a press and by nothing else.</para>
+    /// <para>**AND IT IS NOT A SECOND SEND PATH.** Every guard the send entry point
+    /// carries - the licence gate, the read-back refusal, the composer, the drive
+    /// level, the mode - applies unchanged, because this calls that method rather
+    /// than reaching past it.</para>
+    /// <para>**LOGGING TRANSMITS NOTHING** and opens unit 274's dialog rather than a
+    /// second one.</para>
+    /// </remarks>
+    [RelayCommand]
+    private async Task CardActionAsync(Ft8ContactCard? card)
+    {
+        if (card is null)
+        {
+            return;
+        }
+
+        switch (card.ActionKind)
+        {
+            case Ft8CardActionKind.Send:
+                SendMessage(card.ActionMessage);
+                break;
+
+            case Ft8CardActionKind.Log:
+                await LogStationAsync(card.Callsign).ConfigureAwait(true);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /// <summary>Open the Log dialog for a station, from its card.</summary>
+    /// <param name="callsign">Whose.</param>
+    /// <remarks>
+    /// **UNIT 274'S DIALOG AND NOT A SECOND ONE.** It finds the newest row that
+    /// station addressed to the operator and hands it to
+    /// <see cref="LogContactAsync"/>, so the entry, the window, the Save gate and
+    /// the write are all the ones that already exist. **Two log dialogs would drift,
+    /// and one of them is the one nobody tests.**
+    /// </remarks>
+    private async Task LogStationAsync(string callsign)
+    {
+        if (NewestRowFrom(callsign) is { } row)
+        {
+            await LogContactAsync(row).ConfigureAwait(true);
+        }
+    }
+
+    /// <summary>The newest row that station addressed to the operator, or null.</summary>
+    private DigitalDecodeRow? NewestRowFrom(string callsign)
+    {
+        DigitalDecodeRow? newest = null;
+
+        foreach (var row in _mineAll)
+        {
+            if (!string.Equals(row.Sender, callsign, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (newest is null || row.SlotStartUtc > newest.SlotStartUtc)
+            {
+                newest = row;
+            }
+        }
+
+        return newest;
+    }
+
+    /// <summary>**Take one card off the panel.**</summary>
+    /// <param name="callsign">Whose card.</param>
+    /// <remarks>
+    /// <para>**IT REMOVES A CARD AND NOTHING ELSE** (Tim's ruling, 2026-09-08). The
+    /// ledger is untouched, the log is untouched, the telemetry is untouched and no
+    /// message is deleted: `_cardsCleared` is a note about what the panel draws.
+    /// </para>
+    /// <para>**A CLEARED CARD COMES BACK IF THAT STATION TRANSMITS AGAIN.** He
+    /// cleared a card, not a station, and a station that calls him after he cleared
+    /// it is news.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void ClearCard(string? callsign)
+    {
+        var who = (callsign ?? "").Trim();
+
+        if (who.Length == 0)
+        {
+            return;
+        }
+
+        _cardsCleared[who] = LatestSlotFor(who);
+
+        if (string.Equals(_messagesOpenFor, who, StringComparison.OrdinalIgnoreCase))
+        {
+            HideMessages();
+        }
+
+        RebuildCards();
+    }
+
+    /// <summary>The newest slot either way with one station.</summary>
+    private DateTime LatestSlotFor(string callsign)
+    {
+        var newest = DateTime.MinValue;
+
+        foreach (var row in _mineAll.Concat(_digitalSent))
+        {
+            if (string.Equals(StationOf(row), callsign, StringComparison.OrdinalIgnoreCase)
+                && row.SlotStartUtc > newest)
+            {
+                newest = row.SlotStartUtc;
+            }
+        }
+
+        return newest;
     }
 
     /// <summary>How long a station has been quiet, in slots, or "".</summary>
@@ -8682,6 +9115,8 @@ public partial class MainWindowViewModel : ObservableObject
         NoteDwell(now);
         RefreshHeard(now);
         Heartbeat(now);
+
+        RetimeCards();
 
         // A SECOND WAY FOR THE TRANSMISSION TO END (HM-DEC-085). The latch is
         // normally released by the rig poll, which runs four times a second while

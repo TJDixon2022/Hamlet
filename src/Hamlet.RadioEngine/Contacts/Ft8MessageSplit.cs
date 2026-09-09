@@ -207,6 +207,41 @@ public static class Ft8MessageSplit
                && IsSameStation(fields.To, operatorCallsign);
     }
 
+    /// <summary>One of the four courtesies FT8 ends an exchange with.</summary>
+    /// <param name="text">The payload field.</param>
+    /// <returns>True for `RRR`, `RR73`, `R73` or `73`.</returns>
+    /// <remarks>
+    /// **THE SAME FOUR STRINGS `Ft8ContactStates` HAS ALWAYS TESTED**, moved here
+    /// so that <see cref="IsSignOff"/> can sit beside it and so that the ledger,
+    /// the vocabulary and the card cannot come to different answers about what a
+    /// courtesy is (§0). `Ft8ContactStates.IsCourtesy` now calls this.
+    /// </remarks>
+    public static bool IsCourtesy(string text)
+        => text is "RRR" or "RR73" or "R73" or "73";
+
+    /// <summary>A courtesy that says goodbye, as opposed to one that only rogers.</summary>
+    /// <param name="text">The payload field.</param>
+    /// <returns>True for `RR73`, `R73` and `73`; false for `RRR`.</returns>
+    /// <remarks>
+    /// <para>**`RRR` IS NOT A SIGN-OFF AND THIS IS THE WHOLE POINT OF THE
+    /// PREDICATE** (work instruction 297 task 1). It is a roger: *I received
+    /// you*. The three that end in `73` say goodbye as well, and `73` on its own
+    /// is the bare farewell.</para>
+    /// <para>**IT EXISTS BECAUSE THE CONTACT STATE CANNOT ANSWER THIS.**
+    /// <see cref="Ft8ContactStates.IsComplete"/> counts `RRR` as an
+    /// acknowledgement and says in its own remarks that `73`'s absence never
+    /// withholds completeness - correctly, because a contact that ends `RRR` is a
+    /// contact. So a card that reads *he signed off* off the Complete state would
+    /// be wrong every time an exchange ended that way, which is §0.0 in the one
+    /// place the operator would act on it without checking. **A sign-off is
+    /// tested for on its own or it is not claimed.**</para>
+    /// <para>**A SHAPE TEST AND NOT A READING** (§12.1). It asks what the payload
+    /// field is, exactly as <see cref="IsGrid"/> and <see cref="IsReport"/> do,
+    /// and it never asks what anybody meant by it.</para>
+    /// </remarks>
+    public static bool IsSignOff(string text)
+        => text is "RR73" or "R73" or "73";
+
     /// <param name="text">The payload field.</param>
     /// <returns>True when it has a grid square's shape.</returns>
     /// <remarks>

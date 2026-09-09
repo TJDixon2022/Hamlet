@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 297 - the conversation becomes cards
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T16:08:33-04:00
-NOTE: Task 1 done - what the ledger can and cannot say. Committing.
+UPDATED: 2026-09-09T16:19:57-04:00
+NOTE: Task 2 done - the panel is cards. App builds and stands up clean. Committing.
 
 ---
 
