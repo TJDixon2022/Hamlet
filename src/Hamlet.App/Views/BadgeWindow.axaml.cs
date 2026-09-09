@@ -29,6 +29,19 @@ public partial class BadgeWindow : Window
     /// </remarks>
     public static TimeSpan Stays => TimeSpan.FromSeconds(8);
 
+    /// <summary>How far up each further notice sits, in pixels.</summary>
+    /// <remarks>
+    /// **TWO ACHIEVEMENTS CAN LAND ON ONE CONTACT.** A belt crossing and a mode
+    /// first are separate ladders read off the same log, so both can fire at once,
+    /// and without this they would be placed at the same point with one hiding the
+    /// other completely. **A notice that is covered is a notice he never got**, and
+    /// the acknowledgement he would lose is the rarer of the two.
+    /// </remarks>
+    private const int Stacks = 108;
+
+    /// <summary>How many notices are on screen right now.</summary>
+    private static int _showing;
+
     private readonly DispatcherTimer _leaves;
 
     /// <summary>Creates the notice.</summary>
@@ -41,6 +54,8 @@ public partial class BadgeWindow : Window
 
         Opened += (_, _) => _leaves.Start();
         PointerPressed += (_, _) => Leave();
+
+        Closed += (_, _) => _showing = Math.Max(0, _showing - 1);
     }
 
     /// <summary>
@@ -73,10 +88,18 @@ public partial class BadgeWindow : Window
                 // Bottom-right of the owner, out of the way of the decoded lists
                 // and the Send controls, which are where he is looking and
                 // clicking.
+                //
+                // **AND ABOVE ANYTHING ALREADY THERE.** A belt crossing and a mode
+                // first are two ladders read off one log, so both can arrive on the
+                // same contact, and stacked is the difference between two
+                // acknowledgements and one.
                 notice.Position = new Avalonia.PixelPoint(
                     owner.Position.X + Math.Max(0, (int)owner.Width - 360),
-                    owner.Position.Y + Math.Max(0, (int)owner.Height - 200));
+                    owner.Position.Y
+                        + Math.Max(0, (int)owner.Height - 200 - (_showing * Stacks)));
             }
+
+            _showing++;
 
             notice.Show();
         }

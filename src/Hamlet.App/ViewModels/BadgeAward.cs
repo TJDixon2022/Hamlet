@@ -21,14 +21,48 @@ namespace Hamlet.App.ViewModels;
 /// </remarks>
 public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyList<int> Crossed)
 {
+    /// <summary>
+    /// The mode worked for the first time, or null where this is a belt.
+    /// </summary>
+    /// <remarks>
+    /// <para>**ONE NOTICE FOR BOTH KINDS OF ACHIEVEMENT** (work instruction 287
+    /// task 3: reuse this, do not build a second notice). A second window would be
+    /// a second place for the one property that matters here to be got wrong, which
+    /// is that it never takes his focus, and the first one to drift would be the one
+    /// nobody was watching.</para>
+    /// <para>**SO EVERY DIFFERENCE BETWEEN A BELT AND A MODE FIRST IS FOUR STRINGS
+    /// AND A COLOR**, decided here where a test can read them, rather than anywhere
+    /// a window has to be opened to find out.</para>
+    /// </remarks>
+    public ModeFirstRow? First { get; init; }
+
     /// <summary>The belt he is now on.</summary>
     public BeltRank Rank => ContactBelt.For(Count);
+
+    /// <summary>What goes in the ring: the count, or the mode.</summary>
+    /// <remarks>
+    /// **THE RING SHOWS WHAT THE ACHIEVEMENT IS COUNTED IN.** A belt is counted in
+    /// contacts and a mode first is not counted at all, so putting the running total
+    /// in it would answer a question nobody asked.
+    /// </remarks>
+    public string Ring => First is null
+        ? Count.ToString("N0", CultureInfo.InvariantCulture)
+        : First.Name;
+
+    /// <summary>The ring's ink.</summary>
+    /// <remarks>
+    /// **A MODE FIRST WEARS THE CARD'S OWN EARNED INK**, so the notice and the row
+    /// it just filled in are the same green rather than two greens (§0).
+    /// </remarks>
+    public string Ink => First?.Ink ?? Rank.Ink;
 
     /// <summary>What the dialog's heading says.</summary>
     /// <remarks>
     /// **THE RANK, IN HIS OWN VOCABULARY.** He asked for a belt and this is the belt.
     /// </remarks>
-    public string Heading => Rank.Name + " belt";
+    public string Heading => First is null
+        ? Rank.Name + " belt"
+        : "first " + First.Name + " contact";
 
     /// <summary>
     /// What was earned, naming every threshold this rise passed.
@@ -45,6 +79,18 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     {
         get
         {
+            if (First is not null)
+            {
+                // **THE STATION IS NAMED WHERE THE RECORD CARRIES ONE**, because
+                // that is the thing he will remember about it, and left out where
+                // it does not rather than filled in with something plausible
+                // (§0.0). Every record Hamlet writes carries a callsign, so the
+                // second branch is about a file another logger wrote.
+                return First.Station.Length > 0
+                    ? First.Station + " is your first contact on " + First.Name + "."
+                    : "That is your first contact on " + First.Name + ".";
+            }
+
             if (Crossed.Count == 0)
             {
                 return "";
@@ -65,9 +111,22 @@ public sealed record BadgeAward(int Count, System.Collections.Generic.IReadOnlyL
     /// cannot come to disagree about how far the next one is (§0).
     /// </remarks>
     public string Next
-        => ContactBelt.After(Count) is { } next
-            ? N(next.At - Count) + " more and the ring turns " + next.Name + "."
-            : "That is the top of the belt.";
+    {
+        get
+        {
+            if (First is not null)
+            {
+                // **WHERE IT WENT, RATHER THAN WHAT IS LEFT.** Five modes to go
+                // would be a scoreboard, and most of the five are not his to have
+                // done anyway.
+                return "It is on the achievements screen from now on.";
+            }
+
+            return ContactBelt.After(Count) is { } next
+                ? N(next.At - Count) + " more and the ring turns " + next.Name + "."
+                : "That is the top of the belt.";
+        }
+    }
 
     /// <summary>A number with its thousands separated.</summary>
     private static string N(int value)

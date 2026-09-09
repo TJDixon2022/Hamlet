@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 287 - an achievements screen, and the first of each mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T23:29:59-04:00
-NOTE: Task 2 done - the achievements screen, 10 of 10 green, ceilings 412 and 443 against 550. A watched red caught a MODE=WSPR record lighting the row as earned. Next task 3, the notice.
+UPDATED: 2026-09-08T23:46:04-04:00
+NOTE: Tasks 3 and 4 done - the mode first reuses BadgeAward and BadgeWindow, 23 of 23 green including unit 286s six. Two watched reds recorded. Next task 5, the two-mode run.
 
 ---
 

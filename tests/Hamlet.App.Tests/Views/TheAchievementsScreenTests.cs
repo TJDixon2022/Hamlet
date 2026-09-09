@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
+using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
 using Hamlet.RadioEngine.Contacts;
@@ -68,10 +70,10 @@ public sealed class TheAchievementsScreenTests
     /// assertions look at, because the thing being reported is the whole card and a
     /// test that prints only what it asserts hides the rows nobody thought
     /// about.</para>
-    /// <para>**WATCHED FAILING FIRST**: with `ContactMode.Matches` comparing
-    /// ordinally rather than case-insensitively, the two CW records written as `CW`
-    /// still matched and a record written `cw` by another logger did not, which is
-    /// the fault a portable format makes likely.</para>
+    /// <para>**THE EARLIEST IN EACH MODE IS THE ASSERTION WORTH HAVING HERE.** The
+    /// CW records sit in the file out of date order on purpose, so a screen taking
+    /// the first match rather than the earliest one names `N4L` and this goes red.
+    /// Case is a separate question and is asserted where the near misses are.</para>
     /// </remarks>
     [AvaloniaFact]
     public void TheScreenSaysWhatTheLogHoldsAndNotOneModeMore()
@@ -163,6 +165,23 @@ public sealed class TheAchievementsScreenTests
         });
 
         Assert.True(voice.Firsts.Single(f => f.Name == "Voice").Earned);
+
+        // **CASE IS NOT PART OF THE SPELLING.** ADI is a portable format and his
+        // log can hold records another program wrote; a logger that writes `cw`
+        // has still recorded a contact on CW. **Watched failing first**: with the
+        // comparison ordinal, this record matched nothing and the row read
+        // *waiting on Hamlet* while a contact in that mode sat in the file.
+        var lower = new AchievementsViewModel(new[]
+        {
+            Record("K6FFF", "cw", "40m", new DateTime(2026, 9, 2, 0, 0, 0, DateTimeKind.Utc)),
+        });
+
+        _output.WriteLine("");
+        _output.WriteLine(
+            "a record written lowercase `cw` : "
+            + lower.Firsts.Single(f => f.Name == "CW").Standing);
+
+        Assert.True(lower.Firsts.Single(f => f.Name == "CW").Earned);
     }
 
     /// <summary>
@@ -307,6 +326,193 @@ public sealed class TheAchievementsScreenTests
             ContactModes.Six,
             m => Assert.Contains(m.Name, shown, StringComparison.Ordinal));
     }
+
+    /// <summary>**A first FT8 contact announces once, and a second does not.**</summary>
+    /// <remarks>
+    /// <para>Work instruction 287 task 3. **The once rule is what this holds
+    /// down**, and it is why the seed is written before anybody is told rather than
+    /// after: a notice that threw on its way to the screen would otherwise leave
+    /// the first unrecorded and fire again on the next contact. **That ordering is
+    /// reasoning and not a watched red**, because nothing here can make the event
+    /// throw; what was watched is below.</para>
+    /// <para>**IT REUSES `BadgeAward`**, which is why the assertions here are about
+    /// strings on a record rather than about a window. What he is told and when is
+    /// then provable without opening anything.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void AFirstFt8ContactAnnouncesOnceAndASecondDoesNot()
+    {
+        var panel = Panel(alreadySaid: Array.Empty<string>());
+        var awards = Watch(panel);
+
+        var one = new[]
+        {
+            Record("W3YNI", "FT8", "20m",
+                new DateTime(2026, 9, 8, 21, 41, 30, DateTimeKind.Utc)),
+        };
+
+        panel.AnnounceModeFirstsForTests(one);
+
+        _output.WriteLine("first FT8 contact : " + Describe(awards));
+
+        Assert.Single(awards);
+        Assert.Equal("first FT8 contact", awards[0].Heading);
+        Assert.Equal("W3YNI is your first contact on FT8.", awards[0].Says);
+        Assert.Equal("It is on the achievements screen from now on.", awards[0].Next);
+        Assert.Equal("FT8", awards[0].Ring);
+
+        // **A SECOND FT8 CONTACT IS NOT A FIRST.** The same log again, and a longer
+        // one, both say nothing.
+        panel.AnnounceModeFirstsForTests(one);
+
+        panel.AnnounceModeFirstsForTests(new[]
+        {
+            one[0],
+            Record("K2ABC", "FT8", "40m",
+                new DateTime(2026, 9, 8, 22, 0, 0, DateTimeKind.Utc)),
+        });
+
+        _output.WriteLine("and a second      : " + Describe(awards));
+
+        Assert.Single(awards);
+    }
+
+    /// <summary>
+    /// **A first look at a log that already holds modes announces nothing, and the
+    /// next mode after that does.**
+    /// </summary>
+    /// <remarks>
+    /// <para>Work instruction 287 task 3, and unit 278's seeding rule underneath
+    /// it. **Without the seed, installing Hamlet beside an existing log fires a
+    /// notice for every mode in it at once**, one on top of another, for contacts
+    /// Hamlet was not there for.</para>
+    /// <para>**THE ORDER ASKED FOR THREE MODES AND THEN A FOURTH, AND THERE IS NO
+    /// FOURTH TO HAVE.** Only three of the six can be matched from a record at all
+    /// today: FT4 and PSK31 are ADIF submodes and <see cref="AdifContact"/> carries
+    /// no `SUBMODE`, and WSPR is a beacon that nobody works. So this seeds with two
+    /// and fires on the third, which is the same shape against the modes that
+    /// exist. Reported rather than worked around.</para>
+    /// <para>**WATCHED FAILING FIRST**: with the seeding branch removed, the first
+    /// look raised two awards instead of none.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void AFirstLookSaysNothingAndTheModeAfterItDoes()
+    {
+        // **NULL IS A LOG NEVER LOOKED AT**, which is what a fresh install holds.
+        // The panel's own construction reads the empty file on disk and seeds an
+        // empty list from it, so the fixture puts it back to never-looked rather
+        // than pretending an untouched panel is in that state.
+        var panel = Panel(alreadySaid: null);
+        var awards = Watch(panel);
+
+        var two = new[]
+        {
+            Record("W3YNI", "FT8", "20m",
+                new DateTime(2026, 8, 14, 21, 41, 30, DateTimeKind.Utc)),
+            Record("VA3VRR", "CW", "40m",
+                new DateTime(2026, 8, 17, 1, 33, 47, DateTimeKind.Utc)),
+        };
+
+        panel.AnnounceModeFirstsForTests(two);
+
+        _output.WriteLine("first look at 2 modes : " + Describe(awards));
+
+        Assert.Empty(awards);
+
+        // **AND THE ONE AFTER IT DOES FIRE**, so seeding silences the past and
+        // never the future.
+        panel.AnnounceModeFirstsForTests(new[]
+        {
+            two[0],
+            two[1],
+            Record("K5EEE", "SSB", "20m",
+                new DateTime(2026, 9, 8, 23, 10, 0, DateTimeKind.Utc)),
+        });
+
+        _output.WriteLine("then a voice contact  : " + Describe(awards));
+
+        Assert.Single(awards);
+        Assert.Equal("first Voice contact", awards[0].Heading);
+    }
+
+    /// <summary>**The mode notice takes nothing from him either.**</summary>
+    /// <remarks>
+    /// <para>Unit 286 built these properties for the belt and the order says they
+    /// are not to be weakened. **Reusing the window is exactly how they would be
+    /// weakened without anybody noticing**, so they are asserted again with a mode
+    /// first in it rather than assumed to have survived.</para>
+    /// <para>**`ShowActivated` IS THE ONE THAT MATTERS.** A window that activates
+    /// closes an open right-click menu, which is the precise way a notice would
+    /// cost him the contact it is congratulating him for.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheModeNoticeTakesNoFocusAndLeavesOnItsOwn()
+    {
+        var row = new AchievementsViewModel(TwoModeLog())
+            .Firsts.Single(f => f.Name == "FT8");
+
+        var award = new BadgeAward(3, Array.Empty<int>()) { First = row };
+
+        var notice = new BadgeWindow { DataContext = award };
+
+        _output.WriteLine("heading  : " + award.Heading);
+        _output.WriteLine("says     : " + award.Says);
+        _output.WriteLine("next     : " + award.Next);
+        _output.WriteLine("ring     : " + award.Ring + "   ink " + award.Ink);
+        _output.WriteLine("stays    : " + BadgeWindow.Stays.TotalSeconds + " s");
+
+        Assert.False(notice.ShowActivated);
+        Assert.False(notice.ShowInTaskbar);
+        Assert.True(notice.Topmost);
+        Assert.Equal(TimeSpan.FromSeconds(8), BadgeWindow.Stays);
+
+        // **AND IT SAYS SOMETHING**, which is what `Announce` gates on: an award
+        // with an empty `Says` is shown to nobody, and a mode first that came out
+        // empty would vanish without a trace.
+        Assert.NotEqual("", award.Says);
+
+        notice.Close();
+    }
+
+    /// <summary>A panel whose mode firsts have been seeded.</summary>
+    /// <param name="alreadySaid">
+    /// The modes already announced, or null for a log never looked at.
+    /// </param>
+    /// <returns>The panel.</returns>
+    private static MainWindowViewModel Panel(IReadOnlyList<string>? alreadySaid)
+    {
+        // Nothing on disk, so the log is only ever what a test hands over
+        // (`FACT-006`: this machine has no contact log and never will).
+        File.WriteAllText(ContactLogStore.LogPath, AdifLog.Header("1.12.212"));
+
+        var settings = HowMuchTheApplicationSaysTests.Settled();
+
+        var panel = new MainWindowViewModel(settings, null)
+        {
+            OperatingMode = "Digital",
+        };
+
+        settings.ContactModeFirstsAnnounced =
+            alreadySaid is null ? null : alreadySaid.ToList();
+
+        return panel;
+    }
+
+    /// <summary>Collect every award a panel raises.</summary>
+    private static List<BadgeAward> Watch(MainWindowViewModel panel)
+    {
+        var awards = new List<BadgeAward>();
+
+        panel.BadgeEarned += (_, award) => awards.Add(award);
+
+        return awards;
+    }
+
+    /// <summary>The awards, for the printout.</summary>
+    private static string Describe(IReadOnlyList<BadgeAward> awards)
+        => awards.Count == 0
+            ? "nothing"
+            : string.Join(" | ", awards.Select(a => a.Heading + " - " + a.Says));
 
     /// <summary>One sound record, for a synthesised log.</summary>
     private static AdifLogRecord Record(

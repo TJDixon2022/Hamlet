@@ -37,13 +37,13 @@
                  shape the status bar already uses, so the rank he is told about
                  looks like the rank he can see. -->
             <Border Grid.Column="0" x:Name="BadgeRing"
-                    BorderBrush="{Binding Rank.Ink}"
+                    BorderBrush="{Binding Ink}"
                     BorderThickness="3"
                     Background="Transparent"
                     CornerRadius="24"
                     Width="48" Height="48"
                     VerticalAlignment="Top">
-                <TextBlock Text="{Binding Count}"
+                <TextBlock Text="{Binding Ring}"
                            HorizontalAlignment="Center" VerticalAlignment="Center"
                            FontSize="16" FontWeight="Bold"
                            Foreground="{StaticResource HmTextPrimaryBrush}" />

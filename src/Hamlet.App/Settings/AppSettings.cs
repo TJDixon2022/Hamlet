@@ -272,6 +272,23 @@ public sealed class AppSettings
     /// </remarks>
     public int ContactBadgeAnnounced { get; set; } = -1;
 
+    /// <summary>The modes whose first contact Hamlet has already mentioned.</summary>
+    /// <remarks>
+    /// <para>**THE SAME FACT AS <see cref="ContactBadgeAnnounced"/>, ABOUT A
+    /// DIFFERENT ACHIEVEMENT** (work instruction 287 task 3). Which firsts he has
+    /// is derived from the log every time it is read, so nothing here can make one
+    /// outlive its record. This remembers only whether the congratulation has
+    /// already been given.</para>
+    /// <para>**NULL MEANS HAMLET HAS NEVER LOOKED**, which is unit 278's rule
+    /// wearing a different type. On the first read it is seeded to whatever the log
+    /// already holds and **nothing is announced**, because a log with three modes in
+    /// it would otherwise fire three notices at once on a fresh install, one on top
+    /// of another, for contacts Hamlet was not there for.</para>
+    /// <para>**AN EMPTY LIST MEANS HAMLET HAS LOOKED AND HE HAD NONE**, which is a
+    /// different fact and the one a new operator is in.</para>
+    /// </remarks>
+    public List<string>? ContactModeFirstsAnnounced { get; set; }
+
     /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
     /// </summary>

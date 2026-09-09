@@ -9954,6 +9954,77 @@ public partial class MainWindowViewModel : ObservableObject
     internal void AnnounceBadgesForTests(int records)
         => AnnounceBadges(new ContactMilestones(records));
 
+    /// <summary>Say it once when a mode is worked for the first time.</summary>
+    /// <param name="records">Every record in the log, as it was just read.</param>
+    /// <remarks>
+    /// <para>**TIM'S RULING, 2026-09-08**: the first contact in each mode is an
+    /// achievement. This is unit 278's badge rule applied to a different ladder,
+    /// and every part of that rule is kept rather than re-argued.</para>
+    /// <para>**THE FIRST LOOK SEEDS AND SAYS NOTHING.** A log that already holds
+    /// contacts in three modes would otherwise announce three at once on a fresh
+    /// install, for firsts Hamlet was not there for. An acknowledgement is for
+    /// something he has just done.</para>
+    /// <para>**AND WHAT IS REMEMBERED IS WHAT WAS SAID, NEVER WHAT WAS EARNED.**
+    /// The firsts themselves stay derived from the records every time they are read
+    /// (<see cref="AchievementsViewModel"/>), so nothing here can make one outlive
+    /// the record behind it. If the file shrinks, the card shows fewer, and this
+    /// list only stops the same congratulation being given twice.</para>
+    /// <para>**IT REUSES `BadgeAward` AND `BadgeWindow`** (the order: do not build a
+    /// second notice). A second window would be a second place to get the one
+    /// property that matters wrong, which is that it never takes his focus, and the
+    /// one to drift would be whichever nobody was watching.</para>
+    /// </remarks>
+    private void AnnounceModeFirsts(IReadOnlyList<AdifLogRecord> records)
+    {
+        var card = new AchievementsViewModel(records);
+
+        var earned = card.Firsts
+            .Where(f => f.Earned)
+            .Select(f => f.Name)
+            .ToList();
+
+        if (_settings.ContactModeFirstsAnnounced is null)
+        {
+            _settings.ContactModeFirstsAnnounced = earned;
+            SettingsStore.Save(_settings);
+
+            return;
+        }
+
+        var said = _settings.ContactModeFirstsAnnounced;
+
+        var fresh = card.Firsts
+            .Where(f => f.Earned
+                && !said.Contains(f.Name, StringComparer.OrdinalIgnoreCase))
+            .ToList();
+
+        if (fresh.Count == 0)
+        {
+            return;
+        }
+
+        // **WRITTEN DOWN BEFORE ANYBODY IS TOLD**, which is what makes the once
+        // rule hold even if showing the notice throws.
+        _settings.ContactModeFirstsAnnounced = earned;
+        SettingsStore.Save(_settings);
+
+        foreach (var row in fresh)
+        {
+            BadgeEarned?.Invoke(
+                this,
+                new BadgeAward(records.Count, Array.Empty<int>()) { First = row });
+        }
+    }
+
+    /// <summary>Announce mode firsts against a log, for a test.</summary>
+    /// <param name="records">The synthesised log.</param>
+    /// <remarks>
+    /// **THE SAME DOOR THE LOG READ USES.** This machine has no contact log and
+    /// never will (`FACT-006`), so a test's log is one it builds.
+    /// </remarks>
+    internal void AnnounceModeFirstsForTests(IReadOnlyList<AdifLogRecord> records)
+        => AnnounceModeFirsts(records);
+
     /// <summary>True once anything has been logged.</summary>
     public bool HasLoggedContacts => LoggedContacts > 0;
 
@@ -10034,6 +10105,11 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         AnnounceBadges(new ContactMilestones(_loggedContacts));
+
+        // **THE SECOND LADDER, OFF THE SAME READING** (work instruction 287). One
+        // read of the file answers the count, the *worked* mark and the mode
+        // firsts, so the three cannot come to disagree about what is in it.
+        AnnounceModeFirsts(records);
 
         return worked;
     }

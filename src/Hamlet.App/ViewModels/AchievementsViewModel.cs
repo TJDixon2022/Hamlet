@@ -63,6 +63,10 @@ public sealed class ModeFirstRow
         Evidence = first is null
             ? ""
             : Describe(first);
+
+        Station = first is null || string.IsNullOrWhiteSpace(first.Call)
+            ? ""
+            : first.Call.Trim();
     }
 
     /// <summary>The mode, in Hamlet's own words.</summary>
@@ -82,6 +86,14 @@ public sealed class ModeFirstRow
 
     /// <summary>True where there is evidence to draw.</summary>
     public bool HasEvidence => Evidence.Length > 0;
+
+    /// <summary>The station worked, or "".</summary>
+    /// <remarks>
+    /// **NAMED SEPARATELY BECAUSE THE NOTICE SAYS IT IN A SENTENCE** and the card
+    /// says it in a line, and splitting the line back apart to build the sentence
+    /// is how the two come to disagree.
+    /// </remarks>
+    public string Station { get; }
 
     /// <summary>What the hover explains about this row.</summary>
     /// <remarks>
