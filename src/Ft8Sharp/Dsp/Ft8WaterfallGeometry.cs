@@ -38,7 +38,7 @@ namespace Ft8Sharp.Dsp;
 /// <c>porting-notes.md</c>.
 /// </para>
 /// </remarks>
-public sealed class Ft8WaterfallGeometry
+public class Ft8WaterfallGeometry
 {
     /// <summary>
     /// The FT8 symbol period in seconds, <b>as a single-precision value</b> because that is what
@@ -101,7 +101,64 @@ public sealed class Ft8WaterfallGeometry
         float maxFrequencyHz = DefaultMaxFrequencyHz,
         int timeOversampling = DefaultTimeOversampling,
         int frequencyOversampling = DefaultFrequencyOversampling)
+        : this(
+            SymbolPeriodSeconds,
+            SlotSeconds,
+            sampleRate,
+            minFrequencyHz,
+            maxFrequencyHz,
+            timeOversampling,
+            frequencyOversampling)
     {
+    }
+
+    /// <summary>
+    /// The same, at a stated symbol period and slot length, so that a second protocol can have its
+    /// own geometry without a second copy of upstream's <c>monitor_init</c>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <b>Added by unit 289 and it changes nothing about FT8.</b> The public constructor above hands
+    /// in <see cref="SymbolPeriodSeconds"/> and <see cref="SlotSeconds"/>, so every FT8 number this
+    /// type has ever produced is produced by the same arithmetic in the same precision. The two
+    /// constants stay where they are and stay public: they are FT8's published figures and a caller
+    /// reading them is reading a fact rather than a default.
+    /// </para>
+    /// <para>
+    /// <b>Protected rather than public.</b> A geometry is only meaningful at a period some protocol
+    /// actually uses, and a public constructor taking an arbitrary one would let a caller build a
+    /// waterfall no modulation matches and then report the emptiness as a quiet band.
+    /// <c>Ft4WaterfallGeometry</c> is the only thing that reaches this, and it hands in
+    /// <c>Ft4Timing</c>'s figures.
+    /// </para>
+    /// <para>
+    /// <b>The truncations are NOT inherited — they are re-computed here at whatever period is handed
+    /// in.</b> The remarks on this type record a truncation match derived at <c>0.160f</c>
+    /// specifically, and nothing about that derivation carries to another period. Each protocol's
+    /// own geometry test is what establishes which way its own products fall.
+    /// </para>
+    /// </remarks>
+    protected Ft8WaterfallGeometry(
+        float symbolPeriodSeconds,
+        float slotSeconds,
+        int sampleRate,
+        float minFrequencyHz,
+        float maxFrequencyHz,
+        int timeOversampling,
+        int frequencyOversampling)
+    {
+        if (!(symbolPeriodSeconds > 0.0f) || !(slotSeconds > 0.0f))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(symbolPeriodSeconds),
+                symbolPeriodSeconds,
+                $"A symbol period of {symbolPeriodSeconds} s in a slot of {slotSeconds} s describes "
+                + "no modulation. Both must be above zero.");
+        }
+
+        SymbolPeriod = symbolPeriodSeconds;
+        SlotLengthSeconds = slotSeconds;
+
         if (sampleRate < 1)
         {
             throw new ArgumentOutOfRangeException(
@@ -134,17 +191,18 @@ public sealed class Ft8WaterfallGeometry
         }
 
         // Single precision, deliberately. See the remarks on this type.
-        var exactBlock = (float)(sampleRate * SymbolPeriodSeconds);
+        var exactBlock = (float)(sampleRate * SymbolPeriod);
         BlockSize = (int)exactBlock;
 
         if (BlockSize < 1 || Math.Abs(exactBlock - BlockSize) > 0)
         {
             throw new ArgumentException(
-                $"At {sampleRate} Hz a symbol is {exactBlock} samples, which is not a whole number. "
-                + "A block that does not cover exactly one symbol puts every symbol after the first "
-                + "at a growing offset, so the rate is refused rather than truncated to "
-                + $"{BlockSize}. FT8 is decoded at {DefaultSampleRate} Hz, where a symbol is exactly "
-                + $"{(int)(DefaultSampleRate * SymbolPeriodSeconds)} samples.",
+                $"At {sampleRate} Hz a symbol of {SymbolPeriod} s is {exactBlock} samples, which is "
+                + "not a whole number. A block that does not cover exactly one symbol puts every "
+                + "symbol after the first at a growing offset, so the rate is refused rather than "
+                + $"truncated to {BlockSize}. FT8 and FT4 are both decoded at {DefaultSampleRate} "
+                + $"Hz, where a symbol is exactly "
+                + $"{(int)(float)(DefaultSampleRate * SymbolPeriod)} samples.",
                 nameof(sampleRate));
         }
 
@@ -166,9 +224,9 @@ public sealed class Ft8WaterfallGeometry
 
         SubblockSize = BlockSize / timeOversampling;
         TransformLength = BlockSize * frequencyOversampling;
-        MaxBlocks = (int)(float)(SlotSeconds / SymbolPeriodSeconds);
-        MinBin = (int)(float)(minFrequencyHz * SymbolPeriodSeconds);
-        MaxBin = (int)(float)(maxFrequencyHz * SymbolPeriodSeconds) + 1;
+        MaxBlocks = (int)(float)(SlotLengthSeconds / SymbolPeriod);
+        MinBin = (int)(float)(minFrequencyHz * SymbolPeriod);
+        MaxBin = (int)(float)(maxFrequencyHz * SymbolPeriod) + 1;
         BinCount = MaxBin - MinBin;
         BlockStride = timeOversampling * frequencyOversampling * BinCount;
 
@@ -187,6 +245,15 @@ public sealed class Ft8WaterfallGeometry
         // transform is exactly frequencyOversampling symbols long.
         TransformBinSpacingHz = (double)sampleRate / TransformLength;
     }
+
+    /// <summary>
+    /// The symbol period this geometry was built at, in seconds, single precision. <b>0.160f for
+    /// FT8 and 0.048f for FT4</b>, and every truncation above turns on which.
+    /// </summary>
+    public float SymbolPeriod { get; }
+
+    /// <summary>The slot this geometry was built for, in seconds. 15 for FT8 and 7.5 for FT4.</summary>
+    public float SlotLengthSeconds { get; }
 
     /// <summary>Samples per second of the audio analysed.</summary>
     public int SampleRate { get; }
@@ -231,7 +298,7 @@ public sealed class Ft8WaterfallGeometry
     public double TransformBinSpacingHz { get; }
 
     /// <summary>Hertz between adjacent waterfall bins at the same sub-offset — the tone spacing.</summary>
-    public double ToneSpacingHz => 1.0 / SymbolPeriodSeconds;
+    public double ToneSpacingHz => 1.0 / SymbolPeriod;
 
     /// <summary>Magnitudes a whole slot's waterfall holds.</summary>
     public int MagnitudeCount => MaxBlocks * BlockStride;
@@ -245,7 +312,7 @@ public sealed class Ft8WaterfallGeometry
     /// period. Dividing by the symbol period is multiplying by the tone spacing.
     /// </remarks>
     public double FrequencyHz(int bin, int frequencySubOffset) =>
-        (MinBin + bin + ((double)frequencySubOffset / FrequencyOversampling)) / SymbolPeriodSeconds;
+        (MinBin + bin + ((double)frequencySubOffset / FrequencyOversampling)) / SymbolPeriod;
 
     /// <summary>The index into the underlying transform of a waterfall bin at a sub-offset.</summary>
     public int TransformBin(int bin, int frequencySubOffset) =>
@@ -261,7 +328,7 @@ public sealed class Ft8WaterfallGeometry
     /// the exact alignment by reading and it is not asserted as one here.
     /// </remarks>
     public double TimeSeconds(int block, int timeSubOffset) =>
-        (block + ((double)timeSubOffset / TimeOversampling)) * SymbolPeriodSeconds;
+        (block + ((double)timeSubOffset / TimeOversampling)) * SymbolPeriod;
 
     /// <summary>The nearest waterfall bin to a frequency, and its sub-offset.</summary>
     /// <returns>
@@ -271,7 +338,7 @@ public sealed class Ft8WaterfallGeometry
     /// </returns>
     public bool TryBinFor(double frequencyHz, out int bin, out int frequencySubOffset)
     {
-        var subBins = (int)Math.Round(frequencyHz * SymbolPeriodSeconds * FrequencyOversampling);
+        var subBins = (int)Math.Round(frequencyHz * SymbolPeriod * FrequencyOversampling);
         var relative = subBins - (MinBin * FrequencyOversampling);
 
         bin = Math.Clamp(

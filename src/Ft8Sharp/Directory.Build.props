@@ -391,9 +391,51 @@
     MEASUREMENT rather than by an untested inference, so what remains is the owner's: the reference
     decoder under HM-OPEN-065, or the ruling on whether this library may deliberately hear better than
     the code it came from. NEITHER IS TAKEN HERE.
+
+    0.10.7 -> 0.11.0, UNIT 289. THE LIBRARY LEARNS A SECOND MODULATION.
+
+    Every version from 0.1.0 to 0.10.7 knew one protocol. This one adds FT4: a message becomes 105
+    channel symbols (Ft4SymbolEncoder), the symbols become 4-tone GFSK audio at BT 1.0
+    (Ft4Waveform), and the audio becomes the message again through FT4's own waterfall geometry,
+    its own Costas search over four DIFFERENT sync groups, and its own two-bits-per-symbol
+    extraction (Ft4WaterfallGeometry, Ft4SyncSearch, Ft4SoftSymbols, Ft4SlotDecoder). A MINOR by
+    the rule this file has applied eight times already: a capability the library did not have,
+    rather than a correction to one it did.
+
+    AND IT WAS JUDGED BY SOMEBODY OTHER THAN ITSELF BEFORE THE ROUND TRIP WAS BELIEVED. A round
+    trip through one library's own encoder and its own decoder is self-consistent by construction:
+    a wrong Gray map, a wrong Costas row, a wrong XOR byte or a wrong ramp position is applied at
+    one end and undone at the other, and the message comes back perfect. So the encoder was nailed
+    to gen_ft8 -ft4 first - 51 OF 51 CORPUS MESSAGES IDENTICAL SYMBOL FOR SYMBOL, 105 symbols each
+    - and the waveform to the WAV that generator writes, EVERY SAMPLE OF 51 SLOTS AGREEING TO
+    WITHIN ONE COUNT OF 32767.
+
+    WHAT THIS MINOR DOES NOT CLAIM.
+
+    NOTHING HERE IS SCHEDULED, and Ft4Timing.SlotSeconds is a buffer length rather than a clock:
+    the library decodes a buffer somebody hands it and has no idea what time it is. NOTHING HERE
+    TRANSMITS - the synthesizer returns an array and nothing in this library opens a device, a
+    stream or a port. NO FT4 AUDIO HAS COME OFF A RADIO; every measurement is over audio this
+    library or upstream's generator synthesized, which has no fading, no drift and no neighbours.
+    AND THE FT4 SENSITIVITY IS UNMEASURED - there is no ladder, no decibel figure and no comparison
+    with any published threshold.
+
+    ONE NUMBER IN THE FT4 PATH IS NOT UPSTREAM'S AND IT IS NAMED RATHER THAN BURIED.
+    Ft4SyncSearch.DefaultLastBlockOffset is 51 where demo/decode_ft8.c sweeps to 19. At FT4's
+    0.048 s block, 19 blocks is 0.912 s and upstream's own generator centres its signal at 1.23 s,
+    which is why upstream's own decoder reads zero messages out of upstream's own generator. The
+    bound is not in ft8/ at all - it is the same class of file-scope application judgement as
+    kMin_score and kMax_candidates - and nothing about the modulation, the tables, the codeword or
+    the waveform is changed. 51 is 156 blocks in a slot less 105 in a transmission.
+
+    AND THE TIMING QUESTION IS OPEN AND IS THE OWNER'S. PHASE_PLAN.md calls FT4's transmission
+    4.48 s; upstream's FT4_SYMBOL_PERIOD of 0.048f puts 105 symbols at 5.04 s, and 4.48 appears
+    nowhere in the pinned clone. This version builds on upstream's figure, because the standing
+    ruling is a faithful port, and puts it in ONE PLACE - src/Ft8Sharp/Ft4Timing.cs - so a ruling
+    the other way is one edit. NOTHING HERE SETTLES IT.
   -->
   <PropertyGroup>
-    <Version>0.10.7</Version>
+    <Version>0.11.0</Version>
   </PropertyGroup>
 
   <!--

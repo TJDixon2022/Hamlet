@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 8
+TASK: 6 of 8
 WORK_INSTRUCTION: 289 - FT4 decodes a signal Hamlet made
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T09:26:00-04:00
-NOTE: The audio is upstream's own to within one count of 32767 over 51 messages, and the timing is now measured from the buffer rather than read back off a constant - 0.048 s a symbol, 105 symbols, 5.04 s in a 7.5 s slot, four tones 20.8333 Hz apart. Next is the decoder, geometry first.
+UPDATED: 2026-09-09T09:52:00-04:00
+NOTE: The FT4 decoder exists and the chain closes - CQ K1ABC FN42 back as itself, candidate at block 26 sub 1, 1.272 s, score 35. Geometry re-derived at 0.048f, sync skip 5-9-13 agreeing with upstream on all 87, XOR undone after the checksum. Next is the hundred-message run.
 
 ---
 

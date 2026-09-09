@@ -67,10 +67,25 @@ public static class Ft8CodewordDecoder
     /// <paramref name="ratios"/> is the wrong length or <paramref name="maxIterations"/> is
     /// negative. Refused by <see cref="LdpcDecoder"/> on the same terms.
     /// </exception>
+    /// <param name="payloadXor">
+    /// A <see cref="Ft8Payload.MessageBytes"/>-byte sequence to exclusive-OR the message with once
+    /// its checksum has been checked, or empty for none. <b>FT4 hands in
+    /// <c>Ft8Tables.Ft4XorSequence</c> and FT8 hands in nothing</b>, which is exactly where and how
+    /// <c>ftx_decode_candidate</c> applies it.
+    /// </param>
+    /// <remarks>
+    /// <b>The exclusive-OR is undone AFTER the checksum and BEFORE the payload is handed on</b>, and
+    /// the order is the whole of the point. FT4 scrambles the 77 bits and <em>then</em> computes the
+    /// CRC-14 and the parity over the scrambled bits, so on the way back the checksum is checked
+    /// against what was actually transmitted and only then is the message unscrambled. A port that
+    /// unscrambled first would be checksumming something nobody sent, and every FT4 decode in the
+    /// world would fail gate 2.
+    /// </remarks>
     public static Ft8CodewordResult Decode(
         ReadOnlySpan<float> ratios,
         Ft8CallsignCache? cache = null,
-        int maxIterations = LdpcDecoder.DefaultMaxIterations)
+        int maxIterations = LdpcDecoder.DefaultMaxIterations,
+        ReadOnlySpan<byte> payloadXor = default)
     {
         Span<byte> codewordBits = stackalloc byte[LdpcDecoder.CodewordBits];
         var correction = LdpcDecoder.Decode(ratios, codewordBits, maxIterations);
@@ -97,6 +112,27 @@ public static class Ft8CodewordDecoder
         if (!Ft8Payload.TryRead(payload, message))
         {
             return Ft8CodewordResult.Refused(Ft8CodewordStatus.ChecksumFailed, correction);
+        }
+
+        // FT4's payload exclusive-OR, undone here and nowhere else: after the checksum has been
+        // checked against the bits that were actually transmitted, and before the message is handed
+        // to the unpacker. Empty for FT8, which is every caller that does not ask.
+        if (payloadXor.Length > 0)
+        {
+            if (payloadXor.Length != Ft8Payload.MessageBytes)
+            {
+                throw new ArgumentException(
+                    $"A payload exclusive-OR sequence covers all {Ft8Payload.MessageBytes} message "
+                    + $"bytes and this one is {payloadXor.Length}. Applying a short one would "
+                    + "unscramble part of a message and leave the rest scrambled, which decodes to "
+                    + "words nobody sent.",
+                    nameof(payloadXor));
+            }
+
+            for (var i = 0; i < message.Length; i++)
+            {
+                message[i] ^= payloadXor[i];
+            }
         }
 
         // Past both gates: 77 bits that form a codeword and carry their own checksum. What they
