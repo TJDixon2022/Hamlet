@@ -434,3 +434,18 @@ ACCOMPLISHED: Hamlet has a face: the mark is in the About window at 161 by 140 a
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one gives the application a mark rather than changing what it can do, and closes nothing.
+
+## UNIT 286 - STEP E
+
+STEP: E
+APPROACH: separate the slot clock from the turn so the ring counts down whether or not anybody has spoken, raise a badge award as an event and show it in a window that cannot take his focus, and install the redrawn marks after finding out what the loader refuses
+HIT: the engine never suppressed the countdown. Ft8Turn.Read has returned the seconds for the no-station state since unit 277 wrote it, and the number was thrown away one layer up by a view-model condition that named the state instead of asking whether a count existed. And the loader refused the new full mark on <text>, exactly as the order predicted
+MOVE: build on
+WHY: the count with the turn unknown is what he asked for and it cost one line, because the fact was already there. The badge is an event rather than a window call, so what he is told and when is provable without opening anything and nothing about a badge can reach the send path. And both redrawn marks fit their own boxes - 0 outside on every side - which is the pair of defects unit 285 measured and pinned rather than repaired
+DECIDED: that a question mark now means there is no count rather than no turn, while the turn itself stays unknown and the ring stays dashed; that the badge notice never activates, because a window that activates closes an open right-click menu and that is exactly how a dialog would cost him the reply it congratulates him for; and that the loader is extended for <text> rather than the mark redrawn, since the mark is approved and the loader is not
+LICENCE: work instruction 286 tasks 1 to 6, and Tim's rulings of 2026-09-08 that the ring always shows the seconds, that a badge announces itself, and that the shipped marks are not to be redesigned
+COST: unknown
+ACCOMPLISHED: the clock is on the screen whether or not anybody has spoken, the tenth contact says so without costing him the one he is in the middle of, and Hamlet has a face that stays inside its own frame at every size it is drawn
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: Every bench step of this phase is closed and steps D and E are Tim at his own radio, so no unit can meet their criteria. This one adds a reading, a notice and a mark rather than changing what Hamlet can do, and closes nothing.

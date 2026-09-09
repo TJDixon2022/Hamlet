@@ -1,16 +1,15 @@
-# Work instruction 285 — the logo goes into the application
+# Work instruction 286 — the ring counts down, the badge announces itself, and Hamlet gets a face
 
 ```
-UNIT:      285
+UNIT:      286
 TASKS:     6 of 6, none dropped
-NUMBER:    sizes the mark was verified at, and by what —
-           161 x 140 px in About (realized visual tree)
-           256 x 256 px as an icon (rasterised through AppIcon)
-           16 / 32 / 48 / 256 px stroke widths (arithmetic, nothing looked)
-           0 px verified by eye. Nothing rendered a pixel anybody saw.
+NUMBER:    the seconds the ring shows with the turn unknown
+           before: none, a bare ?
+           after:  the seconds to the next boundary, 1 to 15
+                   (7 s into a slot with nothing heard, it reads 8)
 ADVANCED:  no
-DRIFT:     7 consecutive units without advance, carried from unit 283
-VERSION:   1.12.199 -> 1.12.205
+DRIFT:     9 consecutive units without advance, carried from unit 285
+VERSION:   1.12.205 -> 1.12.210
 BRANCH:    main, pushed
 ```
 
@@ -26,171 +25,185 @@ radio.**
 
 **Nothing was recorded under §12.1.** No shell refusals.
 
-### Task 1 — the files, and a defect in both of them
+### Task 1 — the ring counts down
 
-**`src/Hamlet.App/Assets/`**, registered as `AvaloniaResource`. **Not `/data`**: that
-folder holds cited facts the application reads and reasons from, and a logo is neither
-cited nor reasoned from. It is a resource of the shell, and the shell is the only
-thing that may know what a picture is (§0.1).
+**The engine never suppressed it.** `Ft8Turn.Read` has returned the seconds for the
+no-station state since unit 277 wrote it; **the number was thrown away one layer up**,
+by a view-model condition that named the state instead of asking whether a count
+existed. `TurnRingCount` now reads the count, so **a question mark means there is no
+count rather than no turn.**
 
-**Both parse and both draw** — 26 shapes and 4. **And both run outside their own
-viewBox**, measured through the loader rather than argued from the spec:
+**Unit 277's rule is untouched.** No parity is guessed, `TurnRingIsUnknown` still reads
+true, the ring is still dashed, and the four states still separate without colour: **the
+dash says the turn is unknown and the number says the clock is not.** Only `NoClock`
+keeps the `?`, because with no measured offset there is no boundary to count to.
 
-| File | Ink | viewBox | Outside |
-|---|---|---|---|
-| `hamlet-logo.svg` | 7.5, 5.75 → 312.5, 278.5 | 320 × 260 | **18.5 below** |
-| `hamlet-mark-small.svg` | 0, −15.5 → 68, 68 | 68 × 68 | **15.5 above** |
+**One change was made and reverted.** Reading *always* literally, I extended the count
+to the `Stopped` state as well. That collided with unit 277's
+`StoppedEarlySaysSoRatherThanPretendingItRan`, which states there is nothing left
+running to count. **Reverted and raised for a ruling** rather than pushed through.
 
-SVG clips to the viewBox, so that ink is lost in a browser, in this application and in
-an icon alike. **Reported and not redesigned.** Both figures are pinned in the test.
+### Task 2 — the badge announces itself
 
-`SvgMark` reads the files rather than transcribing them, so **the file Tim approved is
-the file that renders**. It is deliberately narrow — the seven things these two files
-use — and **throws on anything else**, because a mark that silently loses an element is
-worse than one that fails to load. **No new dependency**: Avalonia's geometry parser
-already speaks the SVG path mini-language, which was the only hard part.
+`BadgeAward` is a record the view model raises; `BadgeWindow` shows it. **That split is
+what makes *what he is told and when* provable without opening a window**, and it means
+nothing about a badge can reach the send path — an event cannot ask a subscriber to
+transmit.
 
-### Task 2 — the mark in About
+**It cannot cost him a contact, and that is one property with one mechanism.**
+`ShowActivated="False"`, so the window never activates — **and a window that activates
+closes an open right-click menu**, which is exactly how a dialog would cost him the
+reply it is congratulating him for. `Show` not `ShowDialog`. Not in the taskbar. Gone in
+eight seconds on its own, because a notice he has to dismiss is a click he did not ask
+for at the moment he can least afford one. **Asserted on the window**, because a default
+is easy to lose.
 
-**161 × 140 px**, measured off the realized window, left of the wordmark. Clears the
-150 the order asks for. **It sits with the name rather than replacing it. No caption.**
+**Everything unit 278 built is untouched and re-asserted**: once per rank, every rank a
+jump passes, and nothing on a first look at a log Hamlet was not there for.
 
-**One thing had to be right first.** An `Image` scales its source's bounds, and a
-drawing's bounds are its *ink* — so the mark would have been laid out from its ink and
-clipped somewhere other than a browser clips it, and any description of how it looks
-would have been about a rendering nobody else gets. `Load` now puts an invisible
-rectangle over the viewBox in front of the shapes, so **the box is what gets scaled.**
+### Task 3 — the new marks
 
-**The theme question needs no dark variant.** `App.axaml` sets
-`RequestedThemeVariant="Light"` and HM-DEC-012 rules the application a light theme with
-colour rather than dark mode. If that ruling changes, the mark wants looking at again.
-
-**Ceiling confirmed rather than assumed**: About holds **726 of 850**, unchanged.
-
-### Task 3 — the window and the taskbar
-
-**There was no icon before this.** `Hamlet.App.csproj` sets no `<ApplicationIcon>` and
-no window set `Icon`.
-
-`AppIcon` rasterises the small mark at **256 px** at startup — the largest size Windows
-asks for, so every smaller one is a downscale — and `MainWindow` sets `Window.Icon`.
-**Null where the platform cannot raster, and the window opens anyway.**
-
-### Task 4 — the test, watched failing on absence
-
-**It had not actually been watched.** It was written before the mark was placed and
-first run after, where it went red on the *size* assertion — a different red from the
-one the order asks to see. Renaming the element and re-running gives it:
+**`SvgMark` refused the full mark**, exactly as the order predicted:
 
 ```
-no Image named HamletMark on the realized About window. Images found: [NotTheMark]
+System.NotSupportedException : the mark uses <text>, which this loader does not
+handle. It is deliberately narrow: an element it drew wrongly would be worse
+than one it refused.
 ```
 
-Restored, six green. **Recorded rather than left as an assumption**, because a test
-believed to have been watched and never watched is worth less than one nobody claims
-for.
+**Extended narrowly rather than the mark redrawn** — the mark is approved and the loader
+is not. Text becomes glyph outlines, so the letters scale with everything else and the
+mark stays one object. SVG puts the baseline at `y` and `FormattedText` puts the top
+there, so the baseline distance is subtracted; without it every label sits a line low.
 
-### Task 5 — what nobody looked at
+**Both defects are gone: 0 outside on every side.** The full mark's ink is
+**18, 5.75 → 358.25, 348** in a 380 × 360 box, confirming the instruction's figure to a
+quarter unit; the small mark fills its 64 × 64 exactly.
 
-`docs/unit285-the-mark.md`. Eight things measured with their method; **four listed as
-not verified.**
+**The viewBox assertions are turned the right way round rather than deleted.** What was
+worth keeping was never 18.5 and 15.5 — it was the property that a mark stays inside the
+box it declares.
+
+**And one stale fact was caught.** Unit 285's account of what survives at 16 px described
+a 68-unit drawing with 3.4, 4.0 and 3.0 strokes. That drawing is gone, and the test
+**would have gone on passing while describing something no longer in the tree.**
+
+### Tasks 4 and 5 — measured, and listed
+
+`docs/unit286-what-changed.md`. **No fact left a screen.**
 
 ### Task 6 — the outcome entry
 
-Appended by `tools\arbiter\outcome-append.bat`, exit 0, as `UNIT 285 - STEP E`.
+Appended by `tools\arbiter\outcome-append.bat`, exit 0, as `UNIT 286 - STEP E`.
 
 ---
 
 ## 2. What Tim should expect
 
-**Hamlet has a face.**
+**The clock is there whether or not anybody has spoken.** Open the Digital tab with an
+empty For you panel and the ring drains with a number in it — the seconds to the next
+`:00`, `:15`, `:30` or `:45`. The ring is still dashed, because **Hamlet still does not
+know whose slot it is and is not going to guess.** Hover it and it says so, and then
+tells you the count: *…no turn to work out. The next slot starts in 8 seconds.*
 
-Open **Tools ▸ About** and the transceiver sits to the left of the wordmark at about
-160 px — the LCD, the S-meter trace, the VFO knob with its detents, the three band
-buttons with one lit, and the quill coming up off the top edge. The name is still
-beside it; the mark did not replace it, and nothing labels it.
+**Your tenth contact says so.** A small notice appears at the bottom-right of the
+window: **yellow belt**, *That is 10 contacts logged.*, *15 more and the ring turns
+orange.* **It takes nothing from you** — no focus, no click, and it will not close a
+right-click menu you have open. It leaves after eight seconds, or sooner if you click
+it.
 
-**The window and the taskbar carry the small mark** instead of Avalonia's default
-feather.
+**The taskbar is not ugly.** The rust tile with the faceplate and the quill, and the
+full transceiver in About at about 170 px.
 
-### What will look wrong, and two of them are
+### What will look wrong and is not
 
-- **The bottom edge of the faceplate is missing** in the About window. That is not a
-  layout fault: the drawing runs 18.5 units past the bottom of its own viewBox, and
-  every renderer cuts it there. **About 7 per cent of its height.**
-- **The icon is missing half the quill.** The small mark draws 15.5 of its 68 units
-  above its own box, so the feather is cut roughly in half — **at every size, in the
-  taskbar and the title bar both.** That is the part that makes it a quill rather than
-  a whip.
-- **At 16 px it is a dark disc with a suggestion on it.** Every stroke in the drawing
-  is thinner than one pixel at that size. Computed, not seen.
-
-**Both are reported rather than fixed, because the mark is yours.** What I would change
-is in §3.
+- **The ring is dashed while showing a number.** Deliberate: the dash is the turn being
+  unknown, the number is the clock being known.
+- **At 16 px the quill's inner detail is gone.** The whip survives at 1.38 px; the spine
+  and barbs are sub-pixel. Computed, not seen.
+- **A badge will not fire on a fresh install** however many contacts your log holds.
+  Unit 278's rule, untouched.
 
 ### The build and the tests
 
 Build clean, no warnings. **This unit ran no suite** (HM-DEC-155): only the tests it
-wrote, plus `BindingHealthTests` because new markup went into a window.
+wrote or rewrote, plus the neighbours its changes could disturb.
 
 | Class | Result |
 |---|---|
-| `TheMarksRenderTests` | 6 of 6 — new |
-| `HowMuchTheApplicationSaysTests` | 5 of 5 |
+| `TheTurnIsARingTests` | 9 of 9 — three new, one replaced |
+| `TheBadgeAnnouncesItselfTests` | 6 of 6 — new |
+| `TheMarksRenderTests` | 6 of 6 — three assertions re-taken |
+| `TheBeatIsDerivedNotGuessedTests` (engine) | 13 of 13 |
+| `BothHalvesOfTheConversationTests` | 18 of 18 |
+| `TheCountWearsARankTests` | 5 of 5 |
 | `BindingHealthTests` | 1 of 1 |
-| **Total** | **12 of 12** |
+| `HowMuchTheApplicationSaysTests` ceiling | 1 of 1 |
+| **Total** | **46 of 46** in the app run, plus 13 in the engine |
 
 Inherited reds untouched: `HM-OPEN-088`'s ten, the CW set, the `Ft8Sharp.Deep`
 tripwire.
 
-**Six commits, all on `main`, all pushed**, 1.12.199 → 1.12.205. Nothing uncommitted.
+**Six commits, all on `main`, all pushed**, 1.12.205 → 1.12.210. Nothing uncommitted.
 
 ---
 
 ## 3. What we should do next
 
-### Where the files went, and why
+### The ring with the turn unknown
 
-**`src/Hamlet.App/Assets/`**, as `AvaloniaResource`. The tree had **no convention for
-images at all** — `/data` holds cited data embedded with a `LogicalName`, and every one
-of those files is something the application reads and reasons from. A logo is neither.
-It is a resource of the shell, it is only ever drawn, and Avalonia's own convention for
-a drawable resource is exactly this. **The engine never learns it exists** (§0.1).
+7 s into a slot, nothing heard from anybody, a measured offset:
 
-### What the mark renders as in About
+```
+no station : count "8"  unknown True  sweep 192°
+no clock   : count "?"  unknown True
+```
 
-**161 × 140 px**, top-aligned to the left of the wordmark, tagline and mission
-paragraph. **One theme only** — the application is `Light` by ruling, so the parchment
-plate never lands on a dark ground and no dark variant is needed. **The bottom edge of
-the faceplate is cut**, by 18.5 of 260.
+**A count and still unknown.** And the count is the corrected clock, not the machine's —
+the same PC moment under a 4-second offset reads **4** instead of **8**.
 
-### What it looks like at 16 px, and whether anything looked
+The hover:
 
-**Nothing looked. Not at 16, not at 32, not at 48, not in the taskbar, not in About.**
+> Nothing has been heard on this frequency yet, so there is nobody to take a turn with
+> and no turn to work out. The next slot starts in 8 seconds.
 
-The tests run on Avalonia's headless *drawing* backend, which composes a visual tree
-and rasterises nothing. `CopyPixels` throws *“CopyPixels is not supported for this
-bitmap type”*, and a first attempt that used the saved PNG's compressed length as a
-proxy **reported the full mark as blank when it is not** — removed rather than tuned.
-Real pixels want `Avalonia.Headless.Skia`, and **a package is a dependency decision**.
+### The badge dialog at 10, and at 9 → 26
 
-What can be said is arithmetic. The mark is 68 units across:
+**At 10:**
 
-| Size | One pixel | plate outline | whip | feather outline |
-|---:|---:|---:|---:|---:|
-| **16 px** | 4.3 units | **0.80 px** | **0.94 px** | **0.71 px** |
-| 32 px | 2.1 units | 1.60 px | 1.88 px | 1.41 px |
-| 48 px | 1.4 units | 2.40 px | 2.82 px | 2.12 px |
+> **yellow belt**
+> That is 10 contacts logged.
+> 15 more and the ring turns orange.
 
-**At 16 every stroke is sub-pixel.** At 32 they become lines. At 48 they are
-comfortable.
+**At 0 → 26**, one notice naming both: *That is 10 and 25 contacts logged.*, headed
+**orange belt**. Not only 25.
+
+**At 10 again, and at 11:** nothing. **At a fresh log of 40 on first look:** nothing —
+and then 50 does fire, so seeding silences the past and not the future.
+
+### What `SvgMark` refused, and what was done
+
+**`<text>`**, with the exception quoted in §1. **The loader was extended, not the mark
+redrawn.** Seven of the full mark's 35 shapes are text and now draw as glyph outlines:
+`USB-D`, `FIL1`, `RX`, `UTC`, `7.074`, `.0` and the S-meter's `S`.
+
+### What was verified by looking
+
+**Nothing.** The limit was re-checked, not assumed: the headless drawing backend
+composes a visual tree and rasterises nothing, and `CopyPixels` still throws *“CopyPixels
+is not supported for this bitmap type”*. Seven things were measured — shape counts, ink
+against viewBox, the realized 170 × 161 in About, the 256 × 256 icon — and **four are
+listed as not verified**: the taskbar, the title-bar icon at 16 px, whether the About
+layout looks balanced, and **whether the display reads as a transceiver and the quill as
+a quill**, which is the whole point of the mark.
 
 ### Then
 
-1. **Look at it.** Run the app, open About, look at the taskbar. Everything above is
-   geometry, and the one question that matters — does it read as a radio with a quill
-   — is the one nothing here can answer.
-2. **Rule on the two clipping defects** (§4).
+1. **Run it and look.** The ring, the mark in About, the taskbar. Everything about
+   appearance here is geometry.
+2. **Make your tenth contact** and see whether the notice lands where it should and
+   leaves when it should.
+3. **Rule on the `Stopped` ring** (§4).
 
 ---
 
@@ -198,46 +211,24 @@ comfortable.
 
 Nothing blocks the next unit.
 
-### The full mark loses the bottom edge of its faceplate
+### Whether the ring should count down after a stop
 
-**Ruling asked for:** the drawing runs to y = 278.5 against a viewBox ending at 260.
-**18.5 units, about 7 per cent.**
+**Ruling asked for:** you ruled the ring *always* shows the seconds to the next slot
+boundary. Unit 277 ruled the `Stopped` state shows no count, with a test that says so in
+as many words: *there is nothing left running to count.*
 
-**What I would change:** the viewBox to `0 0 320 280`. It shows the drawing whole and
-moves nothing. **It changes the aspect ratio from 1.23 to 1.14**, which is a
-composition decision and therefore yours.
+**Why they collide:** those two rules were about different quantities. Unit 277 meant
+the stopped **transmission** has nothing left to count. The next **slot boundary** is
+still fifteen seconds away and still knowable, and that is what you asked for
+everywhere else.
 
-**Rejected:** doing it. The order says report and do not redesign, and a viewBox is
-part of the mark.
+**What I did:** extended the count to `Stopped`, watched unit 277's test go red, and
+**reverted it.** Your ruling named the empty-panel case and its test criterion names
+that case; overruling a deliberate prior ruling on my reading of one word is not a
+session's call.
 
-### The small mark loses half the quill
-
-**Ruling asked for:** ink starts at y = −15.5 against a box starting at 0. **15.5 of 68
-units — a little over half the feather, at every size the icon is ever drawn.**
-
-**This one is worse than a trim**, because the feather is the joke. An icon that is a
-disc, a plate outline and half a stub is not the mark you approved.
-
-**What I would change: nothing that is not a redesign.** `viewBox="0 -16 68 84"` shows
-it all but makes the mark 68 × 84, and an icon has to be square. Squaring it means
-re-placing the circle, the plate and the quill inside the box — **which is composing
-the mark again.**
-
-**Rejected:** guessing at a new composition. Both figures are pinned in the test, so
-whichever way you rule, one of them changes and it goes red.
-
-### Whether a rasterising test harness is worth a package
-
-**Ruling asked for:** whether to add `Avalonia.Headless.Skia` so tests can look at
-pixels.
-
-**Why it is worth asking:** this unit could not verify a single thing about how the
-mark *looks*, and neither will the next one. **The same gap let three paragraphs
-through on the text side** — a harness that composes but does not draw cannot see a
-class of fault. Against that: a package is a licence, a supply chain and a slower test
-run, and this is the first unit that has ever wanted one.
-
-**Rejected:** adding it unilaterally. §0.4.
+**Rejected:** changing unit 277's test to match. That is deciding the question by
+editing the thing that objected.
 
 ### Asks still outstanding
 
@@ -252,7 +243,6 @@ survives.
 5. **`dt` and `hz` were never on the mine list.** **Waiting on Tim.**
 6. **Where an outcome entry goes when the unit it corrects has none.** **Tim's.**
 7. **`PHASE_OUTCOME.md` is written by a tool no unit is told to run.** **The author's.**
-   Unit 284's order had no outcome task and did not append; this one did.
 8. **Where the repeat fold stops**, unit 277.
 9. **Whether a faded row needs a second carrier of its meaning**, unit 279.
 10. **Whether counting subjects is a new assertion**, unit 279.
@@ -262,10 +252,12 @@ survives.
 14. **Whether `AboutWindow` is in scope for the terseness ruling**, unit 281.
 15. **What `SenderHelp` is for**, unit 281. `HM-OPEN-088`. **Ten inherited reds.**
 16. **Whether an order should name a behaviour rather than a file and line**, unit 283.
-    **Answered in practice by unit 284**, which named a reproduction and found the
-    thing in one unit.
+    **Answered in practice by unit 284.**
 17. **Whether three admissions on the simulated radio is right**, unit 284.
-18. **The full mark's viewBox**, unit 285. **New.**
-19. **The small mark's clipped quill**, unit 285. **New, and the more serious of the
-    two.**
-20. **Whether a rasterising test harness is worth a package**, unit 285. **New.**
+18. **The full mark's viewBox**, unit 285. **Closed by this unit** — the redrawn mark
+    fits.
+19. **The small mark's clipped quill**, unit 285. **Closed by this unit** — the redrawn
+    mark fits.
+20. **Whether a rasterising test harness is worth a package**, unit 285. **Still open,
+    and this unit is the second that could verify nothing about appearance.**
+21. **Whether the ring should count down after a stop**, unit 286. **New.**
