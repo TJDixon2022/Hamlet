@@ -1,15 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 287 - an achievements screen, and the first of each mode
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 6
+WORK_INSTRUCTION: 288 - where FT4 lives, decided by reading
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T23:48:58-04:00
-NOTE: 6 of 6, none dropped. One of the six mode firsts can be earned today and the screen says which. 23 of 23 green, three watched reds. Three asks back.
-
----
+UPDATED: 2026-09-09T08:06:58-04:00
+NOTE: Task 1 done - upstream carries FT4, encoder and decoder, no stub. Committing.---
 
 Written by a Claude Code session per CLAUDE.md 13 and ANNUNCIATOR.md.
 
