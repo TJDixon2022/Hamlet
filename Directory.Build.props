@@ -389,8 +389,23 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.229 -> 1.12.230, UNIT 292 TASK 1, UNDER HM-DEC-150. A PATCH, AND IT CHANGES NO BEHAVIOUR AT
+    ALL - IT MEASURES ONE.
+
+      Step 4's trace ran before anything was threaded, and it needed a measurement rather than a
+      reading: PressingFt4TunesAndDecodesFt4Tests drives thirty seconds of band carrying four real
+      FT4 transmissions through MainWindowViewModel.ShowDecodes with FT4 chosen, and records what
+      the tab does with it today. Two whole FIFTEEN-second slots cut, read by Ft8Sharp.Deep, and
+      nought of the four messages back. That is the button that tunes correctly and then decodes
+      nothing for the rest of the evening, held as a fact rather than described as one.
+
+      The test is rewritten by tasks 2 and 3 to assert the right answers. Nothing in src/ changed.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.229</Version>
+    <Version>1.12.230</Version>
   </PropertyGroup>
 
   <!--

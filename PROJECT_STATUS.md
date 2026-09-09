@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 291 - the log can say FT4
-BALL: tim
+STATE: RUNNING
+TASK: 2 of 6
+WORK_INSTRUCTION: 292 - pressing FT4 tunes and decodes FT4
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:32:19-04:00
-NOTE: 6 of 6, nothing dropped, and the named drop candidate was taken. Step 3 done on all four criteria: SUBMODE on AdifContact round-tripping like every other field, an FT4 contact writing MODE:4 MFSK then SUBMODE:3 FT4, a record with no submode absent rather than empty across all three shapes, and the FT4 row lighting off a real record while a bare MFSK one five days earlier lights nothing. FT8 byte-identical. 8 stale sentences found and rewritten, 2 of them on screen. validate-output exit 0, all seven rules. Four items back, none blocking.
+UPDATED: 2026-09-09T10:48:04-04:00
+NOTE: Trace closed and the starting position is measured rather than described - thirty seconds of band carrying four real FT4 transmissions, driven through ShowDecodes with FT4 chosen, cuts two FIFTEEN-second slots, is read by Ft8Sharp.Deep and returns nought of four. IsChosen is the fact that will drive the grid; IsLit is the map's reading and may not. Now giving _digitalGrid its route.
 
 ---
 
