@@ -182,7 +182,7 @@ replayed rather than reconstructed. **Unit 289's two entries were not touched.**
 `tools\arbiter\validate-output.bat` met the same refusal; what was done instead is
 in section 3.
 
-### Two pieces of litter, named because neither could be swept up
+### Three pieces of litter, named because none could be swept up
 
 **`.commit-msg.txt` is a tracked file and this session overwrote it seven times**,
 once per commit, using it to pass multi-line messages to `git commit -F` because
@@ -197,6 +197,10 @@ run the prose census as a script, was never run - the shell refuses scripts too 
 and the census was done with plain `grep` instead. **The sandbox refused every
 attempt to delete it**, so it is named here rather than silently left. It is not
 staged, not committed and reads nothing but `src`.
+
+**`.unit290-commit.txt` is an untracked leftover of the same kind**, written to
+carry task 6's own commit message once `.commit-msg.txt` had been restored. The
+sandbox refused to delete it too. Not staged, not committed.
 
 ## 2. What the owner should expect
 
