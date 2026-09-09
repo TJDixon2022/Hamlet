@@ -51,14 +51,14 @@ public sealed class Unit298UnlockTests
 
         Print(screen);
 
-        Assert.Contains(screen.Groups, g => g.Title == "20 m");
+        Assert.Contains(screen.Scopes, t => t.Title == "20 m");
 
-        Assert.DoesNotContain(screen.Groups, g => g.Title == "40 m");
+        Assert.DoesNotContain(screen.Scopes, t => t.Title == "40 m");
 
         Assert.True(
-            screen.Groups.All(g => !g.Key.Contains("40 m", StringComparison.Ordinal)),
-            "a band he has never worked has a group: ["
-            + string.Join(", ", screen.Groups.Select(g => g.Key)) + "]");
+            screen.Scopes.All(t => !t.Title.Contains("40 m", StringComparison.Ordinal)),
+            "a band he has never worked has a tab: ["
+            + string.Join(", ", screen.Scopes.Select(t => t.Title)) + "]");
     }
 
     /// <summary>**A mode he has never worked has no group and no cards.**</summary>
@@ -67,11 +67,11 @@ public sealed class Unit298UnlockTests
     {
         var screen = Screen(TwentyMetreFt8());
 
-        Assert.Contains(screen.Groups, g => g.Title == "FT8");
+        Assert.Contains(screen.Scopes, t => t.Title == "FT8");
 
         foreach (var never in new[] { "FT4", "CW", "PSK31", "WSPR", "Voice" })
         {
-            Assert.DoesNotContain(screen.Groups, g => g.Title == never);
+            Assert.DoesNotContain(screen.Scopes, t => t.Title == never);
         }
     }
 
@@ -84,15 +84,15 @@ public sealed class Unit298UnlockTests
     {
         var screen = Screen(TwentyMetreFt8());
 
-        Assert.Contains(screen.Groups, g => g.Title == "North America");
+        Assert.Contains(screen.Places, p => p.Title == "North America");
 
         foreach (var never in new[] { "Africa", "Asia", "Europe", "Oceania" })
         {
-            Assert.DoesNotContain(screen.Groups, g => g.Title == never);
+            Assert.DoesNotContain(screen.Places, p => p.Title == never);
         }
     }
 
-    /// <summary>**One 40 m contact opens the 40 m group and more than one card.**</summary>
+    /// <summary>**One 40 m contact opens the 40 m tab and more than one card.**</summary>
     /// <remarks>
     /// **§3.2: ONE CONTACT IN, THREE OR FOUR POSSIBILITIES OUT.** The instruction
     /// asks for *more than one card*; what it actually yields is printed, so the
@@ -108,10 +108,10 @@ public sealed class Unit298UnlockTests
 
         var after = Screen(log);
 
-        _output.WriteLine("before : " + before.Groups.Count + " groups, "
-            + before.Groups.Sum(g => g.Count) + " cards");
-        _output.WriteLine("after  : " + after.Groups.Count + " groups, "
-            + after.Groups.Sum(g => g.Count) + " cards");
+        _output.WriteLine("before : " + before.Scopes.Count + " tabs, "
+            + Cards(before) + " cards");
+        _output.WriteLine("after  : " + after.Scopes.Count + " tabs, "
+            + Cards(after) + " cards");
         _output.WriteLine("");
 
         Print(after);
@@ -121,9 +121,9 @@ public sealed class Unit298UnlockTests
         _output.WriteLine("");
         _output.WriteLine("opened : " + string.Join(", ", opened));
 
-        Assert.Contains(after.Groups, g => g.Title == "40 m");
+        Assert.Contains(after.Scopes, t => t.Title == "40 m");
 
-        var forty = after.Groups.Single(g => g.Title == "40 m");
+        var forty = after.Scopes.Single(t => t.Title == "40 m");
 
         Assert.True(
             forty.Count > 1,
@@ -131,7 +131,7 @@ public sealed class Unit298UnlockTests
             + "unlock to reveal more than it fills");
 
         Assert.True(
-            after.Groups.Sum(g => g.Count) - before.Groups.Sum(g => g.Count) >= 3,
+            Cards(after) - Cards(before) >= 3,
             "one contact yielded fewer than three new cards across the screen");
     }
 
@@ -148,6 +148,7 @@ public sealed class Unit298UnlockTests
 
         var lines = new List<string> { screen.OpenedLine };
 
+        lines.AddRange(screen.Scopes.Select(t => t.Summary));
         lines.AddRange(screen.Groups.Select(g => g.Summary));
 
         foreach (var line in lines)
@@ -170,7 +171,8 @@ public sealed class Unit298UnlockTests
     {
         var screen = Screen(Array.Empty<AdifLogRecord>());
 
-        Assert.Empty(screen.Groups);
+        Assert.Empty(screen.Scopes);
+        Assert.Empty(screen.Places);
         Assert.False(screen.HasGroups);
 
         _output.WriteLine(screen.OpenedLine);
@@ -210,26 +212,47 @@ public sealed class Unit298UnlockTests
         Assert.Contains(records, t => t.StartsWith("Busiest day", StringComparison.Ordinal));
     }
 
+    /// <summary>How many cards the whole screen holds.</summary>
+    private static int Cards(AchievementScreen screen)
+        => screen.Scopes.Sum(t => t.Count) + screen.Places.Sum(p => p.Count);
+
     /// <summary>Print the whole screen, as the report quotes it.</summary>
     private void Print(AchievementScreen screen)
     {
         _output.WriteLine(screen.OpenedLine);
 
-        foreach (var group in screen.Groups)
+        foreach (var scope in screen.Scopes)
         {
             _output.WriteLine("");
-            _output.WriteLine("[" + group.Title + "]  " + group.Summary
-                + (group.HasNote ? "   (" + group.Note + ")" : ""));
+            _output.WriteLine("=== " + scope.Title + " ===  " + scope.Summary);
 
-            foreach (var card in group.Cards)
+            foreach (var group in scope.Groups)
+            {
+                _output.WriteLine("  " + group.Title);
+
+                foreach (var card in group.Cards)
+                {
+                    _output.WriteLine("    " + card.Title + " : " + card.Figure
+                        + (card.HasStation ? "   " + card.Station : ""));
+                }
+            }
+        }
+
+        foreach (var place in screen.Places)
+        {
+            _output.WriteLine("");
+            _output.WriteLine("=== " + place.Title + " ===  " + place.Summary
+                + (place.HasNote ? "   (" + place.Note + ")" : ""));
+
+            foreach (var card in place.Cards)
             {
                 _output.WriteLine("    " + card.Title + " : " + card.Figure
                     + (card.HasStation ? "   " + card.Station : ""));
             }
 
-            if (group.HasNudge)
+            if (place.HasNudge)
             {
-                _output.WriteLine("    -> " + group.Nudge);
+                _output.WriteLine("    -> " + place.Nudge);
             }
         }
     }

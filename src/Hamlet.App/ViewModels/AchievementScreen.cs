@@ -8,6 +8,35 @@ using Hamlet.RadioEngine.Explore;
 namespace Hamlet.App.ViewModels;
 
 /// <summary>
+/// **One tab: the whole log, or a band, or a mode he has opened.**
+/// </summary>
+/// <remarks>
+/// **THERE IS NO TAB FOR A BAND HE HAS NEVER WORKED** (§3.1). *No empty 80 m tab* is
+/// the philosophy's own phrase, and these come out of his log rather than out of a
+/// list of bands with the unworked ones filtered off. The difference matters because
+/// there is then no list to forget to filter.
+/// </remarks>
+/// <param name="Key">A stable id, for the reveal to remember it by.</param>
+/// <param name="Title">What the tab reads: `Everything`, `40 m`, `FT8`.</param>
+/// <param name="Kind">`all`, `band` or `mode`, for ordering and for a test.</param>
+/// <param name="Groups">
+/// The records inside it, grouped by what they are about. **Only the groups this
+/// scope can actually fill.**
+/// </param>
+public sealed record AchievementScope(
+    string Key,
+    string Title,
+    string Kind,
+    IReadOnlyList<AchievementGroup> Groups)
+{
+    /// <summary>How many cards the tab holds.</summary>
+    public int Count => Groups.Sum(g => g.Count);
+
+    /// <summary>What the tab says about itself. Never a count of what is missing.</summary>
+    public string Summary => Count == 1 ? "1 record" : Count + " records";
+}
+
+/// <summary>
 /// **The achievements screen: only what he has opened, and a handful of standing
 /// targets.**
 /// </summary>
@@ -17,13 +46,16 @@ namespace Hamlet.App.ViewModels;
 /// somebody who has felt like a failure at this hobby for years.* Nothing here can
 /// produce an unearned record card, and there is no member that counts what he has
 /// not done.</para>
-/// <para>**THE SHAPE, IN ONE PARAGRAPH.** A band, a mode or a continent has no group
-/// until he has made a contact in it (§3.1). Opening one brings its group and the
-/// records inside it that his own log can already fill (§3.2), so one contact yields
-/// several cards that are all *filled* rather than several blanks. **The
-/// possibilities come from the challenges**, which stand whether or not they are
-/// earned (§3.4), and from a group's own nudge, which is shown only inside a group
-/// he has already opened.</para>
+/// <para>**THE SHAPE, IN ONE PARAGRAPH.** A band or a mode has no tab until he has
+/// made a contact in it, and a continent has no card until he has worked one there
+/// (§3.1). Opening a tab brings the records inside it that his own log can already
+/// fill (§3.2), so one contact yields several cards that are all **filled** rather
+/// than several blanks. **The possibilities come from the challenges**, which stand
+/// whether or not they are earned (§3.4), and from a place's own nudge, which is
+/// shown only inside a group he has already opened.</para>
+/// <para>**RECORDS ARE GROUPED BY WHAT THEY ARE ABOUT AND TABBED BY SCOPE** (work
+/// instruction 298 task 3): how far, how faint and when, down the page; everything,
+/// then each band, then each mode, across the top.</para>
 /// <para>**IT READS AND IT NEVER WRITES.** There is no path from this type to the
 /// contact log, to a send path or to the radio. A log record is a statement the
 /// operator made and a screen about it may not revise one.</para>
@@ -33,9 +65,7 @@ namespace Hamlet.App.ViewModels;
 /// </remarks>
 public sealed class AchievementScreen
 {
-    /// <summary>
-    /// How many entities of a continent to name in its nudge.
-    /// </summary>
+    /// <summary>How many entities of a group to name in a nudge.</summary>
     /// <remarks>
     /// **FOUR IS A GIFT AND FORTY IS A CHORE LIST** (§3.3). The instruction's own
     /// example names four prefixes, and §3.2's is four countries.
@@ -48,9 +78,9 @@ public sealed class AchievementScreen
     /// <param name="log">What the contact log holds.</param>
     /// <param name="challenges">
     /// The standing targets, which are always visible. **They are handed in rather
-    /// than built here** because they are the one kind of card that does not come
-    /// out of the unlock rule: this type decides what he has opened, and what to
-    /// aim him at next is a separate judgement with its own file.
+    /// than built here** because they are the one kind of card that does not come out
+    /// of the unlock rule: this type decides what he has opened, and what to aim him
+    /// at next is a separate judgement with its own file.
     /// </param>
     /// <exception cref="ArgumentNullException">There is no log.</exception>
     public AchievementScreen(
@@ -60,12 +90,16 @@ public sealed class AchievementScreen
 
         _log = log;
 
-        Groups = Build().ToList();
+        Scopes = BuildScopes().ToList();
+        Places = BuildPlaces().ToList();
         Challenges = challenges ?? Array.Empty<AchievementCard>();
     }
 
-    /// <summary>The groups he has opened, in the order they are drawn.</summary>
-    public IReadOnlyList<AchievementGroup> Groups { get; }
+    /// <summary>The tabs he has opened: everything, then bands, then modes.</summary>
+    public IReadOnlyList<AchievementScope> Scopes { get; }
+
+    /// <summary>The continents he has worked, each with the countries in it.</summary>
+    public IReadOnlyList<AchievementGroup> Places { get; }
 
     /// <summary>The standing targets, which are always here.</summary>
     /// <remarks>
@@ -74,11 +108,21 @@ public sealed class AchievementScreen
     /// </remarks>
     public IReadOnlyList<AchievementCard> Challenges { get; }
 
-    /// <summary>True where anything at all has been opened.</summary>
-    public bool HasGroups => Groups.Count > 0;
+    /// <summary>Every group on the screen, flattened, for a sweep.</summary>
+    public IReadOnlyList<AchievementGroup> Groups
+        => Scopes.SelectMany(s => s.Groups).Concat(Places).ToList();
 
-    /// <summary>Every group key that is open, for the reveal to compare against.</summary>
-    public IReadOnlyList<string> OpenKeys => Groups.Select(g => g.Key).ToList();
+    /// <summary>True where anything at all has been opened.</summary>
+    public bool HasGroups => Scopes.Count > 0 || Places.Count > 0;
+
+    /// <summary>Every key that is open, for the reveal to compare with what it saw.</summary>
+    /// <remarks>
+    /// **THE SCOPES AND THE PLACES, NOT THE CARDS.** §3.2's reveal is about a group
+    /// opening - *a new tab appearing is itself the reward* - and announcing every
+    /// new record card would fire on a contact that merely beat one.
+    /// </remarks>
+    public IReadOnlyList<string> OpenKeys
+        => Scopes.Select(s => s.Key).Concat(Places.Select(p => p.Key)).ToList();
 
     /// <summary>What the screen says about itself, counting only what is open.</summary>
     /// <remarks>
@@ -96,36 +140,33 @@ public sealed class AchievementScreen
                     + "first of these, and every one after that opens more.";
             }
 
-            var cards = Groups.Sum(g => g.Count);
+            var cards = Scopes.Sum(s => s.Count) + Places.Sum(p => p.Count);
 
-            var groups = Groups.Count == 1 ? "1 group" : Groups.Count + " groups";
+            var tabs = Scopes.Count == 1 ? "1 view" : Scopes.Count + " views";
             var kept = cards == 1 ? "1 record" : cards + " records";
 
-            return $"{groups} open, {kept} in them.";
+            return $"{tabs} open, {kept} in them.";
         }
     }
 
-    /// <summary>Build every group he has opened.</summary>
-    private IEnumerable<AchievementGroup> Build()
+    /// <summary>The tabs, in the order they are drawn.</summary>
+    private IEnumerable<AchievementScope> BuildScopes()
     {
         if (_log.Count == 0)
         {
             yield break;
         }
 
-        // **THE WHOLE-LOG GROUP OPENS ON THE FIRST CONTACT**, because every card in
-        // it is about the log entire and one contact is a log.
-        var overall = Records("all", "so far", _log.Contacts);
+        var everything = Grouped("all", "so far", _log.Contacts);
 
-        if (overall.Count > 0)
+        if (everything.Count > 0)
         {
-            yield return new AchievementGroup(
-                "records", "Your records", Kept(overall.Count), "", "", overall);
+            yield return new AchievementScope("all", "Everything", "all", everything);
         }
 
-        // **A BAND HAS NO GROUP UNTIL HE HAS WORKED IT** (§3.1). Not dimmed, not
-        // dashed - absent. There is no list of bands here to filter; the bands come
-        // out of his own log.
+        // **THE BANDS COME OUT OF HIS LOG** (§3.1), not out of `HfBands.Names` with
+        // the unworked ones filtered off, because then there is a list to forget to
+        // filter.
         foreach (var band in _log.Bands)
         {
             // **THE HEADING IS WHAT A PERSON READS AND THE KEY IS WHAT THE RECORD
@@ -134,43 +175,219 @@ public sealed class AchievementScreen
             // `20m` here and nowhere else, which is the application disagreeing with
             // itself about a word.
             var shown = AdifLog.BandDisplayNameFor(band);
+            var groups = Grouped("band-" + band, "on " + shown, _log.OnBand(band));
 
-            var cards = Records("band-" + band, "on " + shown, _log.OnBand(band));
-
-            if (cards.Count > 0)
+            if (groups.Count > 0)
             {
-                yield return new AchievementGroup(
-                    "band-" + band, shown, Kept(cards.Count), "", "", cards);
+                yield return new AchievementScope(
+                    "band-" + band, shown, "band", groups);
             }
         }
 
         foreach (var mode in _log.Modes)
         {
-            var cards = Records("mode-" + mode, "on " + mode, _log.InMode(mode));
+            var groups = Grouped("mode-" + mode, "on " + mode, _log.InMode(mode));
 
-            if (cards.Count > 0)
+            if (groups.Count > 0)
             {
-                yield return new AchievementGroup(
-                    "mode-" + mode, mode, Kept(cards.Count), "", "", cards);
+                yield return new AchievementScope("mode-" + mode, mode, "mode", groups);
             }
         }
+    }
 
-        foreach (var group in Continents())
+    /// <summary>The records for one scope, grouped by what they are about.</summary>
+    /// <param name="prefix">A stable key prefix for this scope.</param>
+    /// <param name="scope">How the scope is said: `on 40 m`, `so far`.</param>
+    /// <param name="among">The contacts in scope.</param>
+    /// <returns>Only the groups this scope can fill.</returns>
+    /// <remarks>
+    /// **HOW FAR, HOW FAINT, WHEN** (work instruction 298 task 3). Three things a
+    /// record can be about, and a group with nothing in it is not emitted at all -
+    /// which is what stops a scope whose contacts carried no grid squares showing an
+    /// empty distance heading.
+    /// </remarks>
+    private static List<AchievementGroup> Grouped(
+        string prefix, string scope, IReadOnlyList<AchievementContact> among)
+    {
+        var groups = new List<AchievementGroup>();
+
+        Add(groups, prefix + "-distance", "How far", Distance(prefix, scope, among));
+        Add(groups, prefix + "-signal", "How faint", Signal(prefix, scope, among));
+        Add(groups, prefix + "-days", "When", Days(prefix, scope, among));
+
+        return groups;
+    }
+
+    private static void Add(
+        List<AchievementGroup> into, string key, string title,
+        List<AchievementCard> cards)
+    {
+        if (cards.Count > 0)
         {
-            yield return group;
+            into.Add(new AchievementGroup(
+                key, title, cards.Count == 1 ? "1 record" : cards.Count + " records",
+                "", "", cards));
         }
+    }
+
+    /// <summary>The distance records, or none.</summary>
+    private static List<AchievementCard> Distance(
+        string prefix, string scope, IReadOnlyList<AchievementContact> among)
+    {
+        var cards = new List<AchievementCard>();
+
+        if (AchievementLog.Furthest(among) is { Miles: { } miles } furthest)
+        {
+            cards.Add(new AchievementCard(
+                key: prefix + "-furthest",
+                kind: AchievementKind.Record,
+                title: "Furthest " + scope,
+                figure: GridPath.DescribeMiles(miles),
+                station: AchievementCard.StationLine(furthest),
+                detail: Bearing(furthest)
+                    + "It is the great-circle distance from your own grid square to "
+                    + "his, which is the way a radio signal actually travels rather "
+                    + "than the way a flat map is drawn. A four-character grid square "
+                    + "is a box about seventy miles across, so this figure is good to "
+                    + "about that and no better.",
+                earned: true));
+        }
+
+        return cards;
+    }
+
+    /// <summary>The signal records, or none.</summary>
+    private static List<AchievementCard> Signal(
+        string prefix, string scope, IReadOnlyList<AchievementContact> among)
+    {
+        var cards = new List<AchievementCard>();
+
+        if (AchievementLog.WeakestReceived(among) is { ReportReceived: { } given } weakest)
+        {
+            cards.Add(new AchievementCard(
+                key: prefix + "-weakest-received",
+                kind: AchievementKind.Record,
+                title: "Faintest you have been heard " + scope,
+                figure: AchievementCard.Signed(given) + " dB",
+                station: AchievementCard.StationLine(weakest),
+                detail: "This is how far into the noise your signal was when he read "
+                    + "it, in decibels, and a lower number is the better record: it "
+                    + "means less of you arrived and he read you anyway. FT8 decodes "
+                    + "down to about -21 dB, which is well below what an ear can hear "
+                    + "at all, so a report near that is your signal at the edge of "
+                    + "what any receiver can do with it.",
+                earned: true));
+        }
+
+        if (AchievementLog.WeakestSent(among) is { ReportSent: { } gave } heard)
+        {
+            cards.Add(new AchievementCard(
+                key: prefix + "-weakest-sent",
+                kind: AchievementKind.Record,
+                title: "Faintest you have heard " + scope,
+                figure: AchievementCard.Signed(gave) + " dB",
+                station: AchievementCard.StationLine(heard),
+                detail: "The weakest signal you pulled out of the noise and answered. "
+                    + "This one is about your receiving rather than your "
+                    + "transmitting: your antenna, how electrically quiet your house "
+                    + "is, and how much of the band you were listening across. It is "
+                    + "the half of a contact you have the most control over.",
+                earned: true));
+        }
+
+        return cards;
+    }
+
+    /// <summary>The time records, or none.</summary>
+    private static List<AchievementCard> Days(
+        string prefix, string scope, IReadOnlyList<AchievementContact> among)
+    {
+        var cards = new List<AchievementCard>();
+
+        if (AchievementLog.First(among) is { StartedUtc: { } began } first)
+        {
+            cards.Add(new AchievementCard(
+                key: prefix + "-first",
+                kind: AchievementKind.Record,
+                title: "First " + scope,
+                figure: began.ToString("d MMMM yyyy", CultureInfo.InvariantCulture),
+                station: AchievementCard.StationLine(first),
+                detail: "The one that started it. Every log is kept in UTC, which is "
+                    + "the one clock everybody on the band shares, so a late evening "
+                    + "contact can carry tomorrow's date and still be the same "
+                    + "evening to you.",
+                earned: true));
+        }
+
+        if (AchievementLog.BusiestDay(among) is { } day)
+        {
+            cards.Add(new AchievementCard(
+                key: prefix + "-busiest-day",
+                kind: AchievementKind.Record,
+                title: "Busiest day " + scope,
+                figure: day.Count == 1
+                    ? "1 contact"
+                    : day.Count.ToString(CultureInfo.InvariantCulture) + " contacts",
+                station: day.Day.ToString("d MMMM yyyy", CultureInfo.InvariantCulture),
+                detail: "Counted in UTC. A day when the band is open and you happen "
+                    + "to be at the radio is worth several ordinary ones, which is "
+                    + "why a good day is a record worth keeping rather than just a "
+                    + "busy afternoon.",
+                earned: true));
+        }
+
+        if (AchievementLog.BusiestHour(among) is { } hour)
+        {
+            cards.Add(new AchievementCard(
+                key: prefix + "-busiest-hour",
+                kind: AchievementKind.Record,
+                title: "Busiest hour " + scope,
+                figure: hour.Hour.ToString("00", CultureInfo.InvariantCulture)
+                    + ":00 UTC",
+                station: hour.Count == 1
+                    ? "1 contact"
+                    : hour.Count.ToString(CultureInfo.InvariantCulture) + " contacts",
+                detail: "The hour of the day you have worked most in, in UTC. This is "
+                    + "worth watching: the bands are not the same at every hour, and "
+                    + "an hour that keeps coming up is usually one where the path you "
+                    + "are working happens to be open.",
+                earned: true));
+        }
+
+        return cards;
+    }
+
+    /// <summary>The bearing clause for a distance hover, or "".</summary>
+    /// <remarks>
+    /// **NO BEARING ON THE FACE** (Tim's ruling, 2026-09-08: *what am I, some sort of
+    /// submarine captain?*). It lives here, on the hover, with everything else
+    /// technical, and it is not deleted.
+    /// </remarks>
+    private static string Bearing(AchievementContact contact)
+    {
+        var here = OperatorLocation.FromGrid(contact.MyGrid);
+        var there = OperatorLocation.FromGrid(contact.Grid);
+
+        if (here is not { } from || there is not { } to)
+        {
+            return "";
+        }
+
+        return "He was on an initial bearing of "
+            + GridPath.DescribeBearing(GridPath.BearingDegrees(from, to))
+            + " from you. ";
     }
 
     /// <summary>One continent group per continent he has worked.</summary>
     /// <remarks>
-    /// <para>**THE COUNT SAYS *WORKED* AND NEVER *CONFIRMED*** (§4). DXCC is
-    /// counted by confirmations and Hamlet has none of them; it has contacts.</para>
-    /// <para>**THE DENOMINATOR IS WHAT HAMLET CAN RECOGNISE**, which is the 303
-    /// entities the cited continent table carries rather than the publication's 340.
+    /// <para>**THE COUNT SAYS *WORKED* AND NEVER *CONFIRMED*** (§4). DXCC is counted
+    /// by confirmations and Hamlet has none of them; it has contacts.</para>
+    /// <para>**THE DENOMINATOR IS WHAT HAMLET CAN RECOGNISE**, which is the entities
+    /// the cited continent table carries rather than the publication's own total.
     /// That is a smaller claim than the truth and it is the honest direction to be
     /// wrong in: every entity counted is one a callsign here can resolve to.</para>
     /// </remarks>
-    private IEnumerable<AchievementGroup> Continents()
+    private IEnumerable<AchievementGroup> BuildPlaces()
     {
         foreach (var code in _log.Continents)
         {
@@ -207,7 +424,7 @@ public sealed class AchievementScreen
             : "a date the record does not carry";
 
         var many = among.Count == 1
-            ? "one contact"
+            ? "1 contact"
             : among.Count.ToString(CultureInfo.InvariantCulture) + " contacts";
 
         return new AchievementCard(
@@ -217,96 +434,10 @@ public sealed class AchievementScreen
             figure: many,
             station: AchievementCard.StationLine(first),
             detail: $"You first worked {EntitySpoken.Of(entity)} on {when}, and it "
-                + $"counts toward {continent}. **The count says worked and not "
-                + "confirmed**: DXCC awards are counted from cards and confirmations, "
-                + "and Hamlet only knows what passed on the air from your own log.",
+                + $"counts toward {continent}. The count says worked rather than "
+                + "confirmed: the DXCC award is counted from confirmations, on paper "
+                + "or electronic, and Hamlet only knows what passed on the air from "
+                + "your own log.",
             earned: true);
     }
-
-    /// <summary>The record cards one set of contacts can fill, and no others.</summary>
-    /// <param name="prefix">A stable key prefix for this scope.</param>
-    /// <param name="scope">How the scope is said: `on 40 m`, `so far`.</param>
-    /// <param name="among">The contacts in scope.</param>
-    /// <returns>Only the cards this scope can actually fill.</returns>
-    /// <remarks>
-    /// **A RECORD HE CANNOT YET HOLD DOES NOT APPEAR** (the instruction, §3.1).
-    /// *Furthest on 80 m* does not exist until he has worked 80 m, and it does not
-    /// exist on 80 m either until some 80 m contact carried a grid square.
-    /// </remarks>
-    private static List<AchievementCard> Records(
-        string prefix, string scope, IReadOnlyList<AchievementContact> among)
-    {
-        var cards = new List<AchievementCard>();
-
-        if (AchievementLog.Furthest(among) is { Miles: { } miles } furthest)
-        {
-            cards.Add(new AchievementCard(
-                key: prefix + "-furthest",
-                kind: AchievementKind.Record,
-                title: "Furthest " + scope,
-                figure: GridPath.DescribeMiles(miles),
-                station: AchievementCard.StationLine(furthest),
-                detail: "The great-circle distance from your own grid square to his, "
-                    + "which is the way a radio signal actually travels rather than "
-                    + "the way a map is drawn. A four-character grid square is a box "
-                    + "about seventy miles across, so this is good to about that and "
-                    + "no better.",
-                earned: true));
-        }
-
-        if (AchievementLog.WeakestReceived(among) is { ReportReceived: { } given } weakest)
-        {
-            cards.Add(new AchievementCard(
-                key: prefix + "-weakest-received",
-                kind: AchievementKind.Record,
-                title: "Faintest you have been heard " + scope,
-                figure: AchievementCard.Signed(given) + " dB",
-                station: AchievementCard.StationLine(weakest),
-                detail: "This is how far into the noise your signal was when he read "
-                    + "it, in decibels, and a lower number is the better record: it "
-                    + "means less of you arrived and he read you anyway. FT8 decodes "
-                    + "down to about -21, so a report near that is your signal at the "
-                    + "edge of what any receiver can do with it.",
-                earned: true));
-        }
-
-        if (AchievementLog.WeakestSent(among) is { ReportSent: { } gave } heard)
-        {
-            cards.Add(new AchievementCard(
-                key: prefix + "-weakest-sent",
-                kind: AchievementKind.Record,
-                title: "Faintest you have heard " + scope,
-                figure: AchievementCard.Signed(gave) + " dB",
-                station: AchievementCard.StationLine(heard),
-                detail: "The weakest signal you pulled out of the noise and answered. "
-                    + "This one is about your receiving: your antenna, how quiet your "
-                    + "location is, and how much of the band you were listening "
-                    + "across. It is the half of a contact you have most control "
-                    + "over.",
-                earned: true));
-        }
-
-        if (AchievementLog.BusiestDay(among) is { } day)
-        {
-            cards.Add(new AchievementCard(
-                key: prefix + "-busiest-day",
-                kind: AchievementKind.Record,
-                title: "Busiest day " + scope,
-                figure: day.Count == 1
-                    ? "1 contact"
-                    : day.Count.ToString(CultureInfo.InvariantCulture) + " contacts",
-                station: day.Day.ToString("d MMMM yyyy", CultureInfo.InvariantCulture),
-                detail: "Counted in UTC, which is the day your log is kept in and "
-                    + "which is why a late evening contact can land on tomorrow's "
-                    + "date. Every operator's log runs on UTC for exactly that "
-                    + "reason: it is the one clock everybody on the band shares.",
-                earned: true));
-        }
-
-        return cards;
-    }
-
-    /// <summary>How a group says what is in it, counting only what is there.</summary>
-    private static string Kept(int cards)
-        => cards == 1 ? "1 record" : cards + " records";
 }

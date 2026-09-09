@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.RadioEngine.Contacts;
@@ -24,6 +24,12 @@ namespace Hamlet.RadioEngine.Contacts;
 /// <param name="StartedUtc">When it started, or null.</param>
 /// <param name="EndedUtc">When it ended, or null.</param>
 /// <param name="Grid">His four-character locator, upper case, or null.</param>
+/// <param name="MyGrid">
+/// The operator's own locator **as that record carries it**, or null. It is the
+/// record's and not Settings', because a contact made from somewhere else was
+/// made from somewhere else and a bearing computed from today's grid would be
+/// about a path that never existed.
+/// </param>
 /// <param name="ReportSent">The report the operator sent, in decibels, or null.</param>
 /// <param name="ReportReceived">The report he sent back, in decibels, or null.</param>
 /// <param name="Miles">
@@ -39,6 +45,7 @@ public sealed record AchievementContact(
     DateTime? StartedUtc,
     DateTime? EndedUtc,
     string? Grid,
+    string? MyGrid,
     int? ReportSent,
     int? ReportReceived,
     double? Miles);
@@ -240,6 +247,7 @@ public sealed class AchievementLog
             StartedUtc: contact.StartedUtc,
             EndedUtc: contact.EndedUtc,
             Grid: grid,
+            MyGrid: Blank(contact.MyGridSquare)?.ToUpperInvariant(),
             ReportSent: Decibels(contact.ReportSent),
             ReportReceived: Decibels(contact.ReportReceived),
             Miles: here is { } from && there is { } to
