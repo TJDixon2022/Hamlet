@@ -337,57 +337,90 @@ public sealed class OneClickOneFt4TransmissionTests
     }
 
     /// <summary>
-    /// **What the right-click menu offers on an FT4 row, counted.**
+    /// **What the right-click menu offers on an FT4 row, counted — with a measured
+    /// ratio and without one.**
     /// </summary>
     /// <remarks>
-    /// **THE TWO MISSING SHAPES ARE A NAMED GAP AND NOT THIS UNIT'S WORK.** Every
-    /// FT4 row's ratio is null - `Ft8DeepSignalToNoise.Estimate` is welded to
-    /// `Ft8SymbolEncoder.SymbolCount` and `ToneCount` and there is no FT4 equivalent
-    /// in this tree - so `MainWindowViewModel.MeasuredReport` returns null and
-    /// `Ft8SendOptions.For` returns null text for `Report` and `RogerAndReport`.
-    /// **The absence is said out loud in `Ft8SendMenu.Absent`**, which is §0.0
-    /// satisfied rather than breached.
+    /// <para>**THE GAP UNIT 293 NAMED HERE IS CLOSED** (work instruction 294 task 5).
+    /// This case asserted that an FT4 row is short two shapes, on the reasoning that
+    /// every FT4 row's ratio is null because `Ft8DeepSignalToNoise.Estimate` is welded
+    /// to `Ft8SymbolEncoder`'s counts and there is no FT4 equivalent in the tree.
+    /// **There is one now**: `Ft4DeepSignalToNoise`, derived at FT4's own 0.048 s
+    /// symbol period, whose error was measured at 0.58 dB over 970 messages before the
+    /// figure was allowed onto a menu.</para>
+    /// <para>**SO THE ROW WITH A RATIO IS THE CASE THAT MOVED AND THE ROW WITHOUT ONE
+    /// IS THE CASE THAT MUST NOT.** Both are asserted. Null still means not observed,
+    /// the absence is still said out loud in `Ft8SendMenu.Absent`, and an FT4 row in
+    /// that position still behaves exactly as an FT8 row in it does - which is what
+    /// stops a later unit making the report unconditional by substituting a floor.
+    /// </para>
+    /// <para>**AND THE COUNTS ARE BOTH ASSERTED EVEN WHERE THEY ARE NOW EQUAL**, so
+    /// that a change taking a shape off one path cannot pass on the other.</para>
     /// </remarks>
     [Fact]
-    public void TheFt4MenuIsShortTwoShapesAndSaysWhy()
+    public void TheFt4MenuOffersFiveWithAMeasuredRatioAndThreeWithoutOne()
     {
         var scene = Scene(DigitalMode.Ft4, Ft4On20m);
-        var ft4Row = Add(scene.Panel, 2, Mine + " " + His + " FN42",
+
+        // AN FT4 ROW THAT WAS MEASURED, which is what ReadFt4 now produces.
+        var measuredRow = Add(scene.Panel, 2, Mine + " " + His + " FN42", snr: "-14");
+        var measured = scene.Panel.SendMenuFor(measuredRow)!;
+
+        // AND ONE THAT WAS NOT - a message whose symbols could not be packed back out
+        // of its own text. Null means not observed, on either mode.
+        var unmeasuredRow = Add(scene.Panel, 4, Mine + " " + His + " FN42",
             snr: DigitalDecodeRow.NoMeasurement);
-        var ft4Menu = scene.Panel.SendMenuFor(ft4Row)!;
+        var unmeasured = scene.Panel.SendMenuFor(unmeasuredRow)!;
 
         var ft8Scene = Scene(DigitalMode.Ft8, Ft8On20m);
         var ft8Row = Add(ft8Scene.Panel, 2, Mine + " " + His + " FN42", snr: "-14");
         var ft8Menu = ft8Scene.Panel.SendMenuFor(ft8Row)!;
 
-        _output.WriteLine("FT4 row snr      : \"" + ft4Row.Snr + "\"");
-        _output.WriteLine("FT4 menu offers  : " + ft4Menu.Options.Count);
+        _output.WriteLine("FT4 row, measured  snr \"" + measuredRow.Snr + "\" -> "
+            + measured.Options.Count + " shapes");
 
-        foreach (var option in ft4Menu.Options)
+        foreach (var option in measured.Options)
         {
             _output.WriteLine("    " + option.Label + " : " + option.Text);
         }
 
-        foreach (var absent in ft4Menu.Absent)
+        _output.WriteLine("FT4 row, no measurement  snr \"" + unmeasuredRow.Snr + "\" -> "
+            + unmeasured.Options.Count + " shapes");
+
+        foreach (var absent in unmeasured.Absent)
         {
             _output.WriteLine("    ABSENT: " + absent);
         }
 
-        _output.WriteLine("FT8 menu offers  : " + ft8Menu.Options.Count);
+        _output.WriteLine("FT8 row, measured  snr \"" + ft8Row.Snr + "\" -> "
+            + ft8Menu.Options.Count + " shapes");
 
         foreach (var option in ft8Menu.Options)
         {
             _output.WriteLine("    " + option.Label + " : " + option.Text);
         }
 
-        Assert.Equal(3, ft4Menu.Options.Count);
+        // THE SAME FIVE, IN THE SAME ORDER, ON BOTH MODES.
+        Assert.Equal(5, measured.Options.Count);
         Assert.Equal(5, ft8Menu.Options.Count);
+        Assert.Equal(
+            ft8Menu.Options.Select(o => o.Shape).ToArray(),
+            measured.Options.Select(o => o.Shape).ToArray());
+        Assert.Empty(measured.Absent);
 
+        // AND THE FT4 REPORT CARRIES THE ROW'S OWN NUMBER rather than any other, so
+        // the operator and the band cannot read different figures.
+        Assert.Contains(
+            "-14",
+            measured.Options.Single(o => o.Shape == Ft8SendShape.Report).Text,
+            StringComparison.Ordinal);
+
+        // THE UNMEASURED ROW IS UNCHANGED, and is the case that keeps null honest.
+        Assert.Equal(3, unmeasured.Options.Count);
         Assert.DoesNotContain(
-            ft4Menu.Options,
+            unmeasured.Options,
             o => o.Shape is Ft8SendShape.Report or Ft8SendShape.RogerAndReport);
-
-        Assert.Contains(ft4Menu.Absent, r => r.Contains("report", StringComparison.Ordinal));
+        Assert.Contains(unmeasured.Absent, r => r.Contains("report", StringComparison.Ordinal));
     }
 
     // -------------------------------------------------------------------------

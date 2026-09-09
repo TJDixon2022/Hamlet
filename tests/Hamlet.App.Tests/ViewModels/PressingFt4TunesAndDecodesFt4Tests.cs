@@ -128,6 +128,11 @@ public sealed class PressingFt4TunesAndDecodesFt4Tests
     /// printing the agreement would be a measurement of nothing wearing evidence's
     /// clothes.** `PortComparison` being null is the record saying nobody took one,
     /// which is what null means everywhere in this tree.
+    ///
+    /// **THE RATIO BESIDE IT IS A DIFFERENT QUESTION AND IT NOW HAS A DIFFERENT
+    /// ANSWER** (work instruction 294 task 5). Unit 292 asserted both nulls together
+    /// under one reason; they were never one reason, and the second is now a measured
+    /// figure from `Ft4DeepSignalToNoise`.
     /// </remarks>
     [Fact]
     public void WithTheComparisonOnAnFt4SlotRecordsNoComparisonRatherThanAnInventedOne()
@@ -149,12 +154,44 @@ public sealed class PressingFt4TunesAndDecodesFt4Tests
         Assert.NotEmpty(heard.Decodes);
         Assert.All(heard.Slots, slot => Assert.Null(slot.PortComparison));
 
-        // **AND NO RATIO EITHER, FOR THE SAME REASON.** The estimator packs the text
-        // back to FT8's 79 symbols, which is FT8's modulation; there is no FT4
-        // equivalent in this tree, so every row is *not observed* rather than a
-        // plausible number in a column headed `snr`.
-        Assert.All(heard.Decodes, decode => Assert.Null(decode.SignalToNoiseDb));
-        Assert.All(heard.Slots, slot => Assert.Equal(0, slot.SignalToNoise.Measured));
+        // **AND A RATIO NOW, WHICH IS NOT THE SAME REASON AND NEVER WAS** (work
+        // instruction 294 task 5). This block asserted `Assert.Null(SignalToNoiseDb)`
+        // when unit 292 wrote it, on the reasoning that the estimator packs the text
+        // back to FT8's 79 symbols and there was no FT4 equivalent in the tree.
+        // **Unit 289 had already built the FT4 symbol layout, so that clause was
+        // already stale when it was written**; unit 294 built `Ft4DeepSignalToNoise`
+        // on top of it and the ratio is now measured at FT4's own symbol period.
+        // **This assertion went red for the right reason and the behaviour is what
+        // changed, not the expectation.**
+        //
+        // The two questions were never the same one: whether a SECOND DECODER exists
+        // to compare the port against is about `PortComparison` and is still no, and
+        // it stays null above.
+        foreach (var decode in heard.Decodes)
+        {
+            _output.WriteLine(
+                $"  \"{decode.Message}\" snr {decode.SignalToNoiseDb:F2} dB");
+        }
+
+        Assert.All(
+            heard.Decodes,
+            decode =>
+            {
+                Assert.NotNull(decode.SignalToNoiseDb);
+                Assert.False(double.IsNaN(decode.SignalToNoiseDb!.Value));
+            });
+
+        Assert.All(heard.Slots, slot => Assert.True(slot.SignalToNoise.Measured > 0));
+
+        // **THESE SLOTS CARRY NO NOISE AT ALL**, so the figures are high and that is
+        // the right answer rather than a suspicious one. What is asserted is that they
+        // are measurements and not floors; `Ft4Unit294SnrAgreementTests` is where the
+        // agreement with a commanded ratio is measured, over 970 messages.
+        Assert.All(
+            heard.Decodes,
+            decode => Assert.True(
+                decode.SignalToNoiseDb!.Value > 0.0,
+                $"a slot with no noise added read {decode.SignalToNoiseDb.Value:F2} dB"));
     }
 
     /// <summary>

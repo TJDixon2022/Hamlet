@@ -192,57 +192,70 @@ public sealed class Unit294WhatTheOperatorIsToldAboutAnFt4StationTests(ITestOutp
     }
 
     /// <summary>
-    /// **The right-click menu on an FT4 row against the same row on FT8.**
+    /// **The menu gap unit 294 closed, and the one thing that was ever behind it.**
     /// </summary>
     /// <remarks>
-    /// The only thing that differs between the two calls is the report: an FT8 row
-    /// carries a measured ratio and an FT4 row carries null, because
-    /// <c>Ft8Reception.ReadFt4</c> measures nothing. Everything downstream -
-    /// <c>DigitalDecodeRow.FormatSnr</c>, <c>MainWindowViewModel.MeasuredReport</c>,
-    /// <c>Ft8SendOptions.TextFor</c> - is the same code on both paths.
-    /// **This case still asserts the starting position; task 5 rewrites it.**
+    /// <para>**THE MENU CODE WAS NEVER THE DEFECT AND THIS IS WHERE THAT SHOWS.**
+    /// <c>Ft8SendOptions</c> asks one question - is there a measured report - and
+    /// offers five shapes when there is and three when there is not, on either mode.
+    /// It is the same code on both paths and always was. Before this unit
+    /// <c>Ft8Reception.ReadFt4</c> measured nothing, so the answer on FT4 was always
+    /// *there is not*, and the menu offered three.</para>
+    /// <para>**SO THE TWO CALLS BELOW DIFFER IN ONE ARGUMENT** - the report - and the
+    /// left-hand column is what every FT4 row got at HEAD <c>36dc001</c> while the
+    /// right-hand column is what every FT8 row got. **Task 5 made an FT4 row take the
+    /// right-hand column**, and
+    /// <c>Unit294AnFt4RowCarriesAMeasuredReportTests</c> proves it end to end through
+    /// the reader rather than by passing a number in here.</para>
+    /// <para>**AND THE SHAPE THAT WAS MISSING IS THE ONE STEP 6 NEEDS.** The station
+    /// sent his grid, so what conventionally answers him is a report - and it was the
+    /// one shape the FT4 menu could not offer at all, which is why an FT4 exchange
+    /// could not be completed.</para>
     /// </remarks>
     [Fact]
-    public void TheFt4MenuOffersThreeShapesWhereTheFt8MenuOffersFive()
+    public void TheMenuOffersThreeShapesWithNoReportAndFiveWithOneOnEitherMode()
     {
         var ledger = new Ft8ContactLedger(Operator);
         ledger.RecordHeard(Operator + " " + Station + " EM12", Ft4SlotUtc(0));
         var record = ledger.For(Station)!;
 
-        // The FT4 row: no ratio was measured, so there is no report to send.
-        var ft4 = Ft8SendOptions.For(record, Operator, "FN00", reportDecibels: null);
+        // WHAT EVERY FT4 ROW GOT AT HEAD 36dc001: no ratio was measured, so there was
+        // no report to send.
+        var withoutReport = Ft8SendOptions.For(record, Operator, "FN00", reportDecibels: null);
 
-        // The same row on FT8, where unit 251's estimator measured one.
-        var ft8 = Ft8SendOptions.For(record, Operator, "FN00", reportDecibels: -12);
+        // AND WHAT EVERY FT8 ROW GOT, AND WHAT AN FT4 ROW GETS NOW.
+        var withReport = Ft8SendOptions.For(record, Operator, "FN00", reportDecibels: -12);
 
-        output.WriteLine("THE RIGHT-CLICK MENU, BEFORE UNIT 294 CHANGED ANYTHING");
-        output.WriteLine($"  on an FT4 row   {ft4.Options.Count} shapes: "
-            + string.Join(", ", ft4.Options.Select(o => o.Label)));
-        output.WriteLine($"  on an FT8 row   {ft8.Options.Count} shapes: "
-            + string.Join(", ", ft8.Options.Select(o => o.Label)));
+        output.WriteLine("THE RIGHT-CLICK MENU, BY WHETHER A RATIO WAS MEASURED");
+        output.WriteLine($"  no report   {withoutReport.Options.Count} shapes: "
+            + string.Join(", ", withoutReport.Options.Select(o => o.Label)));
+        output.WriteLine($"  a report    {withReport.Options.Count} shapes: "
+            + string.Join(", ", withReport.Options.Select(o => o.Label)));
         output.WriteLine(string.Empty);
-        output.WriteLine("  what the FT4 row says is absent");
-        foreach (var line in ft4.Absent)
+        output.WriteLine("  at HEAD 36dc001 every FT4 row took the first line and every");
+        output.WriteLine("  FT8 row took the second. Task 5 made FT4 take the second.");
+        output.WriteLine(string.Empty);
+        output.WriteLine("  what the first line says is absent");
+        foreach (var line in withoutReport.Absent)
         {
             output.WriteLine("    " + line);
         }
 
-        Assert.Equal(3, ft4.Options.Count);
-        Assert.Equal(5, ft8.Options.Count);
+        Assert.Equal(3, withoutReport.Options.Count);
+        Assert.Equal(5, withReport.Options.Count);
 
-        Assert.DoesNotContain(ft4.Options, o => o.Shape == Ft8SendShape.Report);
-        Assert.DoesNotContain(ft4.Options, o => o.Shape == Ft8SendShape.RogerAndReport);
-        Assert.Contains(ft8.Options, o => o.Shape == Ft8SendShape.Report);
-        Assert.Contains(ft8.Options, o => o.Shape == Ft8SendShape.RogerAndReport);
+        Assert.DoesNotContain(withoutReport.Options, o => o.Shape == Ft8SendShape.Report);
+        Assert.DoesNotContain(withoutReport.Options, o => o.Shape == Ft8SendShape.RogerAndReport);
+        Assert.Contains(withReport.Options, o => o.Shape == Ft8SendShape.Report);
+        Assert.Contains(withReport.Options, o => o.Shape == Ft8SendShape.RogerAndReport);
 
-        // AND THE ONE THAT REACHES STEP 6. The station sent his grid, so what
-        // conventionally answers him is a report - and it is the one shape the FT4
-        // menu cannot offer at all.
-        Assert.Contains(ft8.Options, o => o.Shape == Ft8SendShape.Report && o.IsExpected);
-        Assert.DoesNotContain(ft4.Options, o => o.IsExpected);
+        // THE SHAPE THAT REACHES STEP 6. It is the expected one and it was the missing
+        // one, which is the whole of why an FT4 exchange could not be completed.
+        Assert.Contains(withReport.Options, o => o.Shape == Ft8SendShape.Report && o.IsExpected);
+        Assert.DoesNotContain(withoutReport.Options, o => o.IsExpected);
 
         Assert.Contains(
-            ft4.Absent,
+            withoutReport.Absent,
             line => line.Contains("no signal report has been measured", StringComparison.Ordinal));
     }
 }

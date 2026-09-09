@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 7
+TASK: 6 of 7
 WORK_INSTRUCTION: 294 - the FT4 signal report, and the ledger on FT4's grid
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T12:52:50-04:00
-NOTE: Task 4's gate is OPEN - 0.58 dB mean absolute error and 1.41 dB at the 95th percentile over 970 measured messages at five rungs FT4 decodes at, against a 2.0 dB threshold written down before the run. The FT4 candidate time bias measured to one value on all 529 on-grid trials. Now task 5: carrying the ratio through ReadFt4 to the row and the two new menu shapes.
+UPDATED: 2026-09-09T13:03:05-04:00
+NOTE: Task 5 done and criterion 2's two surfaces are closed. Two inherited tests went red for the right reason and were fixed rather than the behaviour - unit 292's asserting FT4 rows carry no ratio, unit 293's asserting the FT4 menu is short two shapes. 16 of 16 FT4 chain tests pass. Now task 6: the PHASE_OUTCOME entry, the replay arguments and the validator.
 
 ---
 

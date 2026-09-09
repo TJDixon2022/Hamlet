@@ -379,12 +379,18 @@ public sealed record Ft8Reception(
 /// file owns the three lines between them — cut on the quarter minute, put each
 /// slot on the twelve kilohertz grid, hand it over — and owns no decoding of its
 /// own.</para>
-/// <para>**NO SIGNAL-TO-NOISE RATIO IS PRODUCED, AND NONE IS INVENTED** (§0.0).
-/// The library returns a sync score, which counts how far the Costas pattern
-/// stood above the average of the eight tones; it is not decibels and it is not
-/// calibrated against anything. A plausible number in a column headed `snr`
-/// would be read as a measurement by every reader of the screen, which is
-/// exactly the fault §0.0 names.</para>
+/// <para>**A SIGNAL-TO-NOISE RATIO IS PRODUCED, AND NONE IS INVENTED** (§0.0).
+/// **This paragraph said no ratio was produced until work instruction 294 walked
+/// for sentences of that shape**; it stopped being true on FT8 at unit 251 and on
+/// FT4 at 294, and a remark asserting a limitation that no longer exists is the
+/// same §0.0 fault as a screen doing it. What the *library* returns is a sync
+/// score, which counts how far the Costas pattern stood above the average of the
+/// tones; it is not decibels and it is not calibrated against anything, and it is
+/// **not** what reaches the `snr` column. The ratio comes from
+/// `Ft8DeepSignalToNoise` on FT8's path and `Ft4DeepSignalToNoise` on FT4's, both
+/// report-only, both in the same 2500 Hz reference bandwidth, and **a message
+/// neither can measure carries null rather than a plausible number** — which is
+/// the fault §0.0 actually names.</para>
 /// <para>**AN UNKNOWN CLOCK MEANS NO DECODES RATHER THAN GUESSED ONES.** The cut
 /// refuses without a measured offset and says why, and that sentence is what
 /// reaches the operator — a blank table and a wrong clock are the commonest
@@ -637,14 +643,30 @@ public static class Ft8Reader
     /// <see cref="Ft8SlotCensus.PortComparison"/> already expresses as null meaning
     /// nobody took one. Running the same decoder twice and printing the agreement
     /// would be a measurement of nothing wearing evidence's clothes (§0.0).</para>
-    /// <para>**NO SIGNAL-TO-NOISE RATIO IS PRODUCED, AND NONE IS INVENTED.**
-    /// <see cref="Measure"/> packs the decoded text back to FT8's 79 symbols through
-    /// `Ft8DeepMessageSymbols`, which is FT8's modulation and not FT4's. There is no
-    /// FT4 equivalent in this tree, so every FT4 row carries **null**, which is *not
-    /// observed* and renders as a dash. **A number produced by measuring FT4 tones
-    /// against FT8's symbol layout would be a plausible figure in a column headed
-    /// `snr`, which is exactly the fault §0.0 names.** It is a gap and it is named in
-    /// this unit's report.</para>
+    /// <para>**A SIGNAL-TO-NOISE RATIO IS MEASURED, AND IT IS FT4'S OWN** (work
+    /// instruction 294 task 5). Until this unit the paragraph here said there was no
+    /// FT4 symbol layout to measure a ratio against and every FT4 row carried null.
+    /// **Unit 289 had already built the layout and the sentence had stopped being
+    /// true**, which is the §0.0 fault unit 291 found seven of. <see cref="MeasureFt4"/>
+    /// packs the decoded text back to FT4's 105 symbols through
+    /// `Ft4DeepMessageSymbols` and measures with `Ft4DeepSignalToNoise`, whose
+    /// reference offset is derived at FT4's own 0.048 s symbol period - 20.79 dB
+    /// against FT8's 26.02. **Measuring FT4 tones against FT8's symbol layout would
+    /// have been a plausible figure in a column headed `snr` and a wrong report on the
+    /// air, which is exactly the fault §0.0 names**, and that is why the layout had to
+    /// exist first rather than the number being reached for.</para>
+    /// <para>**IT IS REPORT-ONLY AND IT DECIDES NOTHING**, the same property
+    /// <see cref="Measure"/> has on FT8's path. It runs after the decoder has answered,
+    /// over the same samples the decoder was given, and the result is carried to the
+    /// record and to the screen and nowhere else. `Ft4Unit294SnrAgreementTests` asserts
+    /// that decoding the same FT4 slot again after this has run returns the identical
+    /// `Ft8SlotResult`.</para>
+    /// <para>**AND WHAT ITS ERROR IS, BECAUSE THE OPERATOR SENDS IT.** Measured over
+    /// 970 synthesized messages at five rungs FT4 decodes at, the mean absolute error
+    /// against the delivered ratio is **0.58 dB and the 95th percentile 1.41 dB**. The
+    /// error is not flat: it reads about **1.2 dB low at -1 dB** and about 0.03 dB low
+    /// at -13 dB, for the reason `Ft4DeepSignalToNoise`'s remarks give. **A message
+    /// whose symbols could not be recovered gets null and never a floor.**</para>
     /// </remarks>
     private static Ft8Reception ReadFt4(
         SlotCut cut, ClockOffset offset, bool compareWithThePort)
@@ -686,6 +708,13 @@ public static class Ft8Reader
 
             candidates += result.CandidateCount;
 
+            // **HOW STRONG EACH MESSAGE WAS, MEASURED** (work instruction 294 task 5),
+            // and it is the FT8 path's own arrangement at `Measure`: taken here rather
+            // than inside the decoder because it is REPORT-ONLY. It changes no ratio,
+            // no gate, no count and no decision, and `Ft4SlotDecoder` does not know it
+            // exists.
+            var strengths = MeasureFt4(samples, result, decoder.Geometry);
+
             census.Add(new Ft8SlotCensus(
                 slot.StartUtc,
                 result.CandidateCount,
@@ -698,23 +727,35 @@ public static class Ft8Reader
             {
                 Decoder = Ft8DecoderIdentity.Port,
 
-                // Null on both counts, and both nulls mean *nobody measured*. See the
-                // remarks above: there is no second decoder to compare the port with,
-                // and no FT4 symbol layout to measure a ratio against.
+                // **STILL NULL, AND STILL BECAUSE NOBODY TOOK ONE.** On FT4 the port
+                // IS what ran, so there is no second decoder to compare it with. The
+                // ratio beside it is no longer null and that clause has gone.
                 PortComparison = null,
 
+                // **MEASURED FROM `slot.Audio`, NOT FROM `samples`** (unit 236), for
+                // the reason the FT8 path gives: the resampler is one of the things a
+                // slot that found nothing could be.
                 Level = Ft8SlotLevel.Of(slot.Audio),
-                SignalToNoise = Summarise(Array.Empty<double?>()),
+
+                // **THE SPREAD, AND NOT ONE OF THE MESSAGES.** The census is what
+                // telemetry is handed, and HM-DEC-018 keeps decoded message content
+                // out of it.
+                SignalToNoise = Summarise(strengths),
             });
 
-            foreach (var message in result.Messages)
+            for (var i = 0; i < result.Messages.Count; i++)
             {
+                var message = result.Messages[i];
+
                 found.Add(new Ft8Decode(
                     slot.StartUtc,
                     message.TimeSeconds(decoder.Geometry),
                     message.FrequencyHz(decoder.Geometry),
                     message.Candidate.Score,
-                    message.Text));
+                    message.Text)
+                {
+                    SignalToNoiseDb = strengths[i],
+                });
             }
         }
 
@@ -781,6 +822,81 @@ public static class Ft8Reader
                 geometry.SampleRate,
                 message.FrequencyHz(geometry),
                 message.TimeSeconds(geometry) + Ft8DeepSlotDecoder.CandidateTimeBiasSeconds,
+                symbols);
+
+            if (estimate.IsMeasured)
+            {
+                strengths[i] = estimate.Decibels;
+            }
+        }
+
+        return strengths;
+    }
+
+    /// <summary>
+    /// How strong each of one <b>FT4</b> slot's messages was, in decibels in the 2500 Hz
+    /// reference bandwidth, with null for one that could not be measured.
+    /// </summary>
+    /// <param name="samples">The slot's audio on the twelve kilohertz grid.</param>
+    /// <param name="result">What the FT4 decoder answered.</param>
+    /// <param name="geometry">FT4's waterfall geometry, at its own 0.048 s period.</param>
+    /// <returns>One figure a message, in the decoder's own order, null where none.</returns>
+    /// <remarks>
+    /// <para>**BESIDE <see cref="Measure"/> AND NOT INSIDE IT**, which is
+    /// <see cref="ReadFt4"/>'s own reasoning one layer down: the two differ in every
+    /// line that names a protocol - the symbol count, the estimator, the reference
+    /// offset and the time bias - and threading a flag through would put a branch on a
+    /// path that has been byte-identical since unit 249.</para>
+    /// <para>**PURE, AND IT DECIDES NOTHING.** Nothing here is fed back into the
+    /// decode. It runs after the decoder has answered, over the same samples the
+    /// decoder was given, and the result is carried to the record and to the screen and
+    /// nowhere else. `Ft4Unit294SnrAgreementTests` asserts that decoding the same FT4
+    /// slot again after this has run returns the identical `Ft8SlotResult`, and that
+    /// the samples come back unchanged.</para>
+    /// <para>**THE PLACE IS THE CANDIDATE'S, BIASED - AND BY FT4'S OWN FIGURE.**
+    /// `Ft8SlotMessage.TimeSeconds` is the coarse candidate's nominal time and the
+    /// signal starts one **FT4** symbol period before it.
+    /// `Ft4DeepSignalToNoise.Ft4CandidateTimeBiasSeconds` is -0.048 s and **it is
+    /// measured rather than assumed from FT8's**: work instruction 294 task 4
+    /// synthesized slots whose signal start was known exactly and subtracted the
+    /// decoder's reported time, getting one distinct value on all 529 on-grid trials.
+    /// **FT8's -0.160 s here would read a window two symbols late and would look like
+    /// an estimator that does not work.**</para>
+    /// <para>**AND THE SYMBOL SEQUENCE IS PACKED BACK OUT OF THE MESSAGE**, with a
+    /// round trip through the shared message layer as the guard, because the decode
+    /// result hands back text and carries no bits. Where the round trip does not hold -
+    /// a hashed callsign that would pack to different bits than were sent - there is
+    /// **no measurement**, which is a null and not a floor. **That matters more here
+    /// than on FT8**: this number is offered to the operator as a signal report, and a
+    /// figure measured against a transmission nobody made would go on the air and into
+    /// somebody else's log.</para>
+    /// <para>**ONE BASEBAND BUILD PER MESSAGE, AND IT IS THE COST OF THIS FEATURE.**
+    /// The FT4 decoder builds no baseband at all - it has no fine sync and no ordered
+    /// statistics - so every measured message pays for one. An FT4 slot is 7.5 s rather
+    /// than 15, so the budget is half FT8's; the mixing is over 7.5 s of audio rather
+    /// than 15, so the cost is halved with it.</para>
+    /// </remarks>
+    private static double?[] MeasureFt4(
+        ReadOnlySpan<float> samples, Ft8SlotResult result, Ft4WaterfallGeometry geometry)
+    {
+        var strengths = new double?[result.Messages.Count];
+        Span<byte> symbols = stackalloc byte[Ft4SymbolEncoder.SymbolCount];
+
+        for (var i = 0; i < result.Messages.Count; i++)
+        {
+            var message = result.Messages[i];
+
+            if (!Ft4DeepMessageSymbols.TryEncode(message.Result.Message, symbols))
+            {
+                continue;
+            }
+
+            var estimate = Ft4DeepSignalToNoise.Estimate(
+                samples,
+                geometry.SampleRate,
+                message.FrequencyHz(geometry),
+                message.TimeSeconds(geometry)
+                    + Ft4DeepSignalToNoise.Ft4CandidateTimeBiasSeconds,
                 symbols);
 
             if (estimate.IsMeasured)
