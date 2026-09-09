@@ -107,6 +107,11 @@ public static class DigitalCaptureSheet
     /// as <paramref name="census"/>. Null and empty are different facts and the
     /// sheet prints different lines for them.
     /// </param>
+    /// <param name="grid">
+    /// Which grid the audio was cut and counted on. **FT8's when nothing is asked
+    /// for**, so a caller written before this parameter existed produces the sheet
+    /// it always produced.
+    /// </param>
     /// <returns>The sheet, ready to write.</returns>
     public static string Compose(
         DateTime capturedUtc,
@@ -121,7 +126,8 @@ public static class DigitalCaptureSheet
         IReadOnlyList<Ft8SlotCensus>? census = null,
         string refusal = "",
         AudioArrival arrival = default,
-        IReadOnlyList<Ft8Decode>? decodes = null)
+        IReadOnlyList<Ft8Decode>? decodes = null,
+        SlotGrid? grid = null)
     {
         ArgumentNullException.ThrowIfNull(state);
 
@@ -246,7 +252,9 @@ public static class DigitalCaptureSheet
         // captured* are different statements and only one of them is about the
         // decoder. A press lands wherever the operator's thumb lands, so a
         // thirty-second grab holds one whole slot, or two, or none.
-        AppendGeometry(Line, sheet, startUtc, capturedUtc, clock, arrival);
+        AppendGeometry(
+            Line, sheet, startUtc, capturedUtc, clock, arrival,
+            grid ?? SlotGrid.Ft8);
 
         sheet.Append('\n');
 
@@ -266,30 +274,43 @@ public static class DigitalCaptureSheet
     }
 
     /// <summary>Where the slot boundaries fell inside the window.</summary>
+    /// <remarks>
+    /// **THE SHEET SAYS WHICH GRID IT COUNTED ON** (work instruction 290 task 3).
+    /// A capture read a year from now had to have its grid inferred from the
+    /// spacing of the boundary list, and on a file with one boundary in it there was
+    /// nothing to infer from. The two lengths are printed rather than the mode's
+    /// name, because the mode's name is a label and the lengths are the measurement
+    /// - and because the 4.48-against-5.04 question is open, so a sheet that says
+    /// `FT4` would be claiming an occupancy nobody has ruled on.
+    /// </remarks>
     private static void AppendGeometry(
         Action<string, string> line,
         StringBuilder sheet,
         DateTime startPcUtc,
         DateTime endPcUtc,
         ClockOffset clock,
-        AudioArrival arrival)
+        AudioArrival arrival,
+        SlotGrid grid)
     {
         if (Ft8Slots.TrueUtc(startPcUtc, clock) is not { } from
             || Ft8Slots.TrueUtc(endPcUtc, clock) is not { } to)
         {
+            // **THE UNREAD CASE STILL SAYS UNKNOWN** (HM-DEC-009). It names the
+            // grid it would have used, which is a fact about this capture, and it
+            // does not name a boundary, which is the thing nobody measured.
             line("slotGrid", Unread
                 + "  (the clock offset has not been measured, so where the "
-                + "fifteen-second boundaries fall is not known)");
+                + $"boundaries of the {grid.Describe()} fall is not known)");
             line("wholeSlots", Unread);
             return;
         }
 
-        var boundaries = Ft8Slots.BoundariesBetween(from, to);
+        var boundaries = grid.BoundariesBetween(from, to);
         var whole = 0;
 
         foreach (var boundary in boundaries)
         {
-            if (boundary.AddSeconds(Ft8Slots.TransmissionSeconds) <= to)
+            if (boundary.AddSeconds(grid.TransmissionSeconds) <= to)
             {
                 whole++;
             }
@@ -334,9 +355,13 @@ public static class DigitalCaptureSheet
             // months from now needs to see which of the two happened.
             arrival.FrameWorkerText));
 
+        // **AND IT SAYS WHICH GRID IN BOTH CASES.** A capture with no boundary in
+        // it is the one where the spacing cannot be inferred, so it is the one that
+        // most needs to be told.
         line("slotGrid", boundaries.Count == 0
-            ? "no fifteen-second boundary falls inside this window at all"
-            : $"{boundaries.Count} boundaries, corrected to UTC");
+            ? $"{grid.Describe()}; no boundary falls inside this window at all"
+            : $"{boundaries.Count} boundaries, corrected to UTC, on "
+              + $"{grid.Describe()}");
 
         // **ITS OWN FIELD, BECAUSE ZERO IS THE ANSWER THAT MATTERS.** A capture
         // holding no whole transmission decodes nothing however good the decoder
@@ -346,15 +371,16 @@ public static class DigitalCaptureSheet
               + "could decode whatever was on the air)"
             : whole.ToString(CultureInfo.InvariantCulture)
               + $"  (of {boundaries.Count} boundaries, this many are followed by "
-              + $"the whole {Ft8Slots.TransmissionSeconds:0.00} s transmission "
+              + $"the whole {grid.TransmissionSeconds:0.00} s transmission "
               + "inside the audio)");
 
         foreach (var boundary in boundaries)
         {
-            // **THE SAME FUNCTION THE CUTTER USES.** These two lines printed
-            // contradictory answers on ft8-2026-09-03-210644 because each had
-            // its own arithmetic; now there is one.
-            var fits = Ft8Slots.TransmissionFits((to - boundary).TotalSeconds);
+            // **THE SAME FUNCTION THE CUTTER USES, ON THE SAME GRID.** These two
+            // lines printed contradictory answers on ft8-2026-09-03-210644 because
+            // each had its own arithmetic; now there is one, and the grid travels
+            // into it rather than being read from a `const` at each end.
+            var fits = grid.TransmissionFits((to - boundary).TotalSeconds);
 
             sheet
                 .Append("  slot     ")

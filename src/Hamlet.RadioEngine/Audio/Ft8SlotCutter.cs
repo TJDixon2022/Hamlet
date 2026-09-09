@@ -93,17 +93,33 @@ public static class Ft8SlotCutter
     /// press, which is the end of the window.
     /// </param>
     /// <param name="offset">The measured clock offset.</param>
+    /// <param name="grid">
+    /// Which grid to cut on. **FT8's when nothing is asked for**, so a caller who
+    /// says nothing gets exactly what it got before this parameter existed.
+    /// </param>
     /// <returns>The slots, and why there are as many as there are.</returns>
     /// <remarks>
-    /// **A SHORT SLOT IS DISCARDED RATHER THAN PADDED OR KEPT.** Padding it
+    /// <para>**A SHORT SLOT IS DISCARDED RATHER THAN PADDED OR KEPT.** Padding it
     /// would put silence on the air that nobody transmitted, and keeping it
     /// would hand a decoder a fragment and let the empty result read as an empty
-    /// band.
+    /// band.</para>
+    /// <para>**THE GRID IS HANDED IN AND THE CLOCK IS NOT** (work instruction 290
+    /// task 3). Which boundaries to cut on is a mode's fact; where they fall in
+    /// wall-clock time is a measurement, and it still comes through
+    /// <see cref="Ft8Slots.TrueUtc"/> from an offset somebody queried. **An offset
+    /// nobody has measured still means no slots on either grid** - the answer stays
+    /// unknown, which is HM-DEC-009 and is not what a mode parameter is allowed to
+    /// change.</para>
     /// </remarks>
     public static SlotCut Cut(
-        MonoAudio audio, DateTime endedAtPcUtc, ClockOffset offset)
+        MonoAudio audio,
+        DateTime endedAtPcUtc,
+        ClockOffset offset,
+        SlotGrid? grid = null)
     {
         ArgumentNullException.ThrowIfNull(audio);
+
+        var on = grid ?? SlotGrid.Ft8;
 
         if (Ft8Slots.TrueUtc(endedAtPcUtc, offset) is not { } endedAt)
         {
@@ -112,9 +128,9 @@ public static class Ft8SlotCutter
 
         var rate = audio.SampleRate;
         var total = audio.Samples.Length;
-        var perSlot = (int)Math.Round(Ft8Slots.SlotSeconds * rate);
+        var perSlot = (int)Math.Round(on.SlotSeconds * rate);
 
-        var perTransmission = (int)Math.Round(Ft8Slots.TransmissionSeconds * rate);
+        var perTransmission = (int)Math.Round(on.TransmissionSeconds * rate);
 
         if (rate <= 0 || perSlot <= 0 || total < perTransmission)
         {
@@ -126,7 +142,7 @@ public static class Ft8SlotCutter
 
         var startedAt = endedAt.AddSeconds(-(total / (double)rate));
 
-        var boundaries = Ft8Slots.BoundariesBetween(startedAt, endedAt);
+        var boundaries = on.BoundariesBetween(startedAt, endedAt);
 
         var slots = new List<AudioSlot>();
 
@@ -142,15 +158,17 @@ public static class Ft8SlotCutter
                 continue;
             }
 
-            // **THE TRANSMISSION IS WHAT HAS TO FIT, NOT THE SLOT.** A slot is
-            // 15 s of grid and the signal occupies 12.64 s of it, so requiring a
+            // **THE TRANSMISSION IS WHAT HAS TO FIT, NOT THE SLOT.** On FT8 a slot
+            // is 15 s of grid and the signal occupies 12.64 s of it, so requiring a
             // full slot discarded decodable audio for the sake of trailing
-            // silence. `Ft8Slots.TransmissionFits` is the one answer the sidecar
+            // silence. `SlotGrid.TransmissionFits` is the one answer the sidecar
             // reads too, which is what stops the two disagreeing in consecutive
-            // lines the way they did on ft8-2026-09-03-210644.
+            // lines the way they did on ft8-2026-09-03-210644. **It is still one
+            // function on two grids** - the grid travels, the arithmetic does not
+            // fork.
             var available = (total - at) / (double)rate;
 
-            if (!Ft8Slots.TransmissionFits(available))
+            if (!on.TransmissionFits(available))
             {
                 continue;
             }

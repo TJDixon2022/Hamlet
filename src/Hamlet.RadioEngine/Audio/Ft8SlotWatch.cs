@@ -83,6 +83,20 @@ public sealed record Ft8SlotLook(Ft8SlotReady? Ready, string Refusal, int Skippe
 /// </remarks>
 public sealed class Ft8SlotWatch
 {
+    /// <summary>Which grid this watch cuts and counts on.</summary>
+    /// <remarks>
+    /// <para>**FT8'S UNLESS IT IS GIVEN ANOTHER** (work instruction 290 task 3), so
+    /// <c>new Ft8SlotWatch()</c> means exactly what it has always meant and every
+    /// caller that existed before this property does the same thing it did.</para>
+    /// <para>**IT IS SET AT CONSTRUCTION AND NOT AFTERWARDS.** A watch that changed
+    /// grid mid-flight would have `_lastSeenSlotStart` on one grid and `current` on
+    /// another, and the comparison between them decides whether a slot closed - so
+    /// the change would show up as a skipped slot or a duplicated one rather than as
+    /// an error. A mode change builds a new watch, which arms afresh, which is
+    /// already what <see cref="Rearm"/> exists to make safe.</para>
+    /// </remarks>
+    public SlotGrid Grid { get; init; } = SlotGrid.Ft8;
+
     /// <summary>What is said when the offset is too old to cut against.</summary>
     /// <remarks>
     /// **THE AGE COMES FROM <see cref="ClockOffset.IsStale"/> AND NOT FROM HERE.**
@@ -259,7 +273,7 @@ public sealed class Ft8SlotWatch
             _anchorPcUtc = nowPcUtc;
         }
 
-        var current = Ft8Slots.SlotStart(trueNow);
+        var current = Grid.SlotStart(trueNow);
 
         if (_lastSeenSlotStart is not { } wasIn)
         {
@@ -282,7 +296,7 @@ public sealed class Ft8SlotWatch
         // How many whole slots closed between the two looks. One of them is the
         // slot that just ended and is about to be decoded; the rest are gone.
         var closed = (int)Math.Round(
-            (current - wasIn).TotalSeconds / Ft8Slots.SlotSeconds);
+            (current - wasIn).TotalSeconds / Grid.SlotSeconds);
         var skipped = Math.Max(0, closed - 1);
 
         var rate = tap.SampleRate;
@@ -292,7 +306,7 @@ public sealed class Ft8SlotWatch
             return new Ft8SlotLook(null, NoAudio, closed);
         }
 
-        var perSlot = (int)Math.Round(Ft8Slots.SlotSeconds * rate);
+        var perSlot = (int)Math.Round(Grid.SlotSeconds * rate);
 
         // **THE BOUNDARY, BACK ON THE PC'S OWN CLOCK.** `TrueUtc` adds the
         // offset, so undoing it subtracts. The tap counts samples and knows
@@ -357,7 +371,7 @@ public sealed class Ft8SlotWatch
         // fragments wearing one slot's timestamp, and every check passed
         // (HM-DEC-093: the path was uncounted, so nothing could say so).
         var arrival = tap.ArrivalRatioBetween(
-            endedAtPcUtc.AddSeconds(-Ft8Slots.SlotSeconds), endedAtPcUtc);
+            endedAtPcUtc.AddSeconds(-Grid.SlotSeconds), endedAtPcUtc);
 
         // NaN is *nobody measured* and never a refusal: a watch that has just
         // started has no marks reaching back a slot, and refusing there would
@@ -377,7 +391,7 @@ public sealed class Ft8SlotWatch
 
         return new Ft8SlotLook(
             new Ft8SlotReady(
-                current.AddSeconds(-Ft8Slots.SlotSeconds), endedAtPcUtc, audio),
+                current.AddSeconds(-Grid.SlotSeconds), endedAtPcUtc, audio),
             "",
             skipped);
     }
