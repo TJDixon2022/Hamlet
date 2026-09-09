@@ -1,339 +1,394 @@
-# Work instruction 297 — the conversation becomes cards
+# Work instruction 298 — the achievements screen grows as he operates
 
-**READ IN THIS ORDER.** The panel he could not follow is now cards, so section 3 is
-what he will see.
+**READ IN THIS ORDER.** The screen is the deliverable, so section 3 is what he will
+see.
 
 A. **The phase goal — FT4 works exactly the way FT8 does.** This unit advanced no
-   step of it. It rebuilt the For you panel, which is what step 4's second criterion
-   is written about, and that criterion now describes a different panel.
+   step of it. It rebuilt the achievements screen, which is what step 3's fourth
+   criterion is written about, and that criterion now means something different.
 
-B. **Step 4 and its exit criteria** — pressing FT4 tunes and decodes; the panel, the
-   conversation, the ring, the filters, the tooltips, the ledger and the right-click
-   menu all work unchanged; one click, one transmission; a whole exchange from one
-   right click at the bench. **None was measured tonight**, so step 4 stays `partial`
-   exactly where unit 296 left it.
+B. **Step 3 and its exit criteria** — `SUBMODE` carried and round-tripping; an FT4
+   contact logging as `MODE=MFSK, SUBMODE=FT4`; a record with no submode still
+   round-tripping; and **the achievements screen's FT4 row lighting, with unit 287's
+   four states still reading correctly.** The first three were not touched. The
+   fourth is the one to read: the four states are still computed and the mode-first
+   badge still fires off them, but the window no longer draws six rows, so what
+   lights for FT4 is a mode tab that appears the moment an FT4 contact is logged.
+   Step 3 stays `done`.
 
-C. **The report last, and section 4 raises 3 items.** None blocks the next unit from
-   starting. Two are wordings Tim has not ruled on and one is a defect in a test seam
-   that this unit worked around rather than widened.
+C. **The report last, and section 4 raises 4 items.** None blocks the next unit.
+   Two want a ruling, one is a defect in the work-instruction template that has now
+   bitten twice, and one is a limitation named rather than repaired.
 
 ```
-UNIT:       297 — complete at task 6 of 6, none dropped — 2026-09-09 16:35
+UNIT:       298 — complete at task 8 of 8, none dropped — 2026-09-09 17:28
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  Each station he is in contact with becomes a card saying what happened,
-            how long ago and what to do next, readable with no radio knowledge, with
-            the technical detail one deliberate hover away.
-ADVANCED:   no — no phase step moved. Step 4 stays partial: nothing was tuned,
-            nothing transmitted, no exchange run at the bench. This unit re-cut the
-            panel that step 4's second criterion is about.
-NUMBER:     how many of the four states produce a sentence every clause of which
-            traces to a ledger fact
-            0 of 4 -> 4 of 4
-            The panel had no sentences at all before tonight; it had messages.
-DRIFT:      1 consecutive unit without advance  (was 0, carried from unit 296)
+UNIT GOAL:  The achievements screen shows only what he has opened, every unlock
+            reveals more than it fills, and a handful of named challenges stay
+            visible because their purpose is to be a target.
+ADVANCED:   no — no phase step moved. Step 3 stays done and none of its criteria
+            changed value; this unit re-cut the screen its fourth is about.
+NUMBER:     how many cards a fresh log shows, and how many one 40 m contact reveals
+            A FRESH LOG:      0 record cards, 8 standing targets
+            ONE 40 m CONTACT: +1 tab, +1 continent, +7 records (20 -> 27)
+            and every one of the seven is filled rather than blank.
+DRIFT:      2 consecutive units without advance  (was 1, carried from unit 297)
 ```
 
 ---
 
 ## 1. What Claude did
 
-**Complete. Six tasks of six, none dropped, including the named drop candidate.**
-Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, eight commits,
-all pushed. Root version 1.12.259 to **1.12.260**, bumped once. `Ft8Sharp` and
-`Ft8Sharp.Deep` do not move; **no file under `src/Ft8Sharp/` was touched.**
+**Complete. Eight tasks of eight, none dropped, including the named drop candidate.**
+Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, nine commits,
+all pushed. Root version 1.12.260 to **1.12.261**, bumped once. **No file under
+`src/Ft8Sharp/` was touched**, and nothing here reaches a send path.
+
+**`ACHIEVEMENTS_PHILOSOPHY.md` was read in full before task 1**, as the instruction
+requires, and its §2 governed every decision below: *a wall of empty cards reads as
+failure to somebody who has felt like a failure at this hobby for years.*
 
 The gate held: `SHACK_FACTS.md` present, `CwProbabilisticDecoder.cs` present, no
-`CoreHMI.sln`, no `MURC.sln`. This unit was numbered **297** from `PHASE_OUTCOME.md`
-as the instruction directs; the last entry there was 296.
+`CoreHMI.sln`, no `MURC.sln`. This unit was numbered **298** from `PHASE_OUTCOME.md`;
+the last entry there was 297.
 
-**No test suite was run.** Twenty tests were constructed in this instruction, across
-three classes, and run filtered by exact name, foregrounded, with a 500-second
-timeout: **20 of 20 green.** Every `dotnet build` was foregrounded. Nothing was
+**No test suite was run.** Twenty-five tests were constructed in this instruction
+across four classes and run filtered by exact name, foregrounded, with a 500-second
+timeout: **25 of 25 green.** Every `dotnet build` was foregrounded. Nothing was
 backgrounded and nothing was polled.
 
-**Task 1 — reading only.** The whole finding is in
-`docs/unit297-cards.md`. The ledger holds three never-overwritten lists per station,
-each entry carrying the raw text, its split fields and its slot boundary, so almost
-everything a card needs is already a function of what is there. **Seven things it
-cannot support are named**, and the sharpest is in section 3.
+**Task 1 — reading only**, in `docs/unit298-achievements.md`. Nine of the eleven
+cards the instruction lists are computable with file and line; two are not.
 
-**Task 2 — the panel is cards.** The interleaved list, the waiting strip and the
-standalone turn ring all came out together. The seam is where §0.1 puts it:
-`Ft8CardFacts` in the engine derives what passed and composes no words;
-`Ft8ContactCard` in the shell composes words and reads no ledger.
+**Task 2 — the unlock model, and a continent that is cited.** The finding that
+decided the shape of the night is in section 3.
 
-**Task 3 — the `i` hover.** `HintKind` gains a fourth kind whose glyph is the `i` Tim
-asked for. One mark, not a second control.
+**Task 3 — records sliced.** How far, how faint, when; tabbed Everything, then each
+band, then each mode.
 
-**Task 4 — clearing.** The X removes a card and touches nothing else. The one
-hazardous case warns once and clears on the second press.
+**Task 4 — continents and regions.** Three regions ship, one was refused by its own
+generator.
 
-**Task 5 — the trace.** A ledger built in each state, each sentence quoted, each
-clause traced. **The measurement corrected the test twice and the card neither time.**
+**Task 5 — eight standing challenges**, each with a hover that teaches.
 
-**Task 6 — the outcome entry.** `outcome-append.bat` ran clean and exited 0.
+**Task 6 — the reveal**, through unit 286's window, never on a first look.
 
-**Four decisions made for themselves, each a sizing call and none a trade-off.**
+**Task 7 — the trace**, done by subtraction, and the screen wired to the window.
 
-1. **The waiting strip and the standalone ring were removed rather than left beside
-   the cards.** The strip existed only because the panel drew one conversation and
-   everybody else had to be visible somehow; every station has a card now, so a
-   second list would be this one with less on it. The ring moved to beside the button
-   that needs it, which is what the ruling asks for. Two lists of the same stations
-   and two rings differ only in which one is stale.
-2. **The card ring binds only the two station-independent classes** — unknown, and on
-   air — and not *his slot* or *theirs*. Seconds to the next boundary is one fact for
-   every card; the parity belongs to the conversation station, and drawing it on
-   another station's card would be a claim about a station it was not measured from.
-3. **A narrow `RecordSentForTests` was added rather than widening
-   `AddSentRowForTests`**, which four test files call and two of which are sweeps that
-   count how much text the application shows — tests HM-DEC-155 forbids this unit to
-   run. Reported in section 4.
-4. **`DigitalCardsIdle` was split three ways**, so an empty panel with no measured
-   clock stops saying *nothing addressed to you yet* while stations sit in its own
-   ledger.
+**Task 8 — the outcome entry**, filed against step 3.
 
-**Four mismatches against the instruction, reported and not repaired.**
+**Four decisions made for themselves, each reported.**
 
-1. **The ruling's own example, `Arizona, 2,100 mi`, is unreachable.**
-   `DxccPrefixes.EntityOf` names a DXCC entity — a country — and
-   `EntityQualifier.Describe` adds only *northern* or *southern*. There is no state,
-   province or town anywhere in this tree. The face says `the United States · 320
-   miles` instead. The distance half of his example is exactly right and is built.
-2. **`Ft8ContactLedger.cs:158` says in bold that nothing calls `RecordSent`.** It has
-   a call site at `MainWindowViewModel.cs:10820`, and `Ft8ContactLogEntry.cs:66` says
-   so in as many words. That is HM-DEC-159's shape: a file stating something its own
-   tree contradicts.
-3. **`WORK_INSTRUCTIONS.md`'s heading carries no unit number.** It reads `# Work
-   instruction - the conversation becomes cards`, and tells the session to take the
-   next number from `PHASE_OUTCOME.md`. But `outcome-append.bat` resolves the number
-   from that heading — unit 266's repair, and it is right — so it fell back to 296 and
-   filed this entry as unit 296. **The instruction was not repaired.** The entry's own
-   body already carried `UNIT_AS_CALLED: 297`; its heading is corrected in place to
-   `## UNIT 297 - STEP 4`, with the correction stated on its face, rather than
-   appending a second entry that would describe one night twice.
-4. **The instruction says unit 274's Log dialog is populated from the ledger and that
-   the card's Log button is that dialog.** It is, and it reaches it through
-   `LogContactAsync` unchanged — but that method takes a `DigitalDecodeRow`, so the
-   card finds the newest row that station addressed to the operator and hands it over.
-   A station the operator called that has never come back has no such row and so no
-   Log button, which is correct: there is no contact to log.
+1. **The six mode-first rows came off the window.** §3.1 forbids a card for something
+   he has not opened and the instruction says the `1 of 6` style must not survive.
+   **But the fact underneath four of them is kept**, as one line: *Hamlet cannot work
+   CW, FT4, PSK31 and Voice yet, so nothing here is waiting on you for those.* That
+   is the application owning up rather than four things he has not got round to, and
+   deleting it would have been a regression dressed as a tidy-up.
+2. **The Mediterranean is refused by its own generator rather than filed under one of
+   its two continents.** Its members span Asia and Europe — Cyprus is `AS` in the
+   ARRL's own column — and a region is drawn inside a continent. It is in the data
+   file's `refused` list with its reason, and `HamletRegions.Refused` reads it back,
+   so the omission is visible rather than silent.
+3. **Sub-region membership is editorial, and it is declared as such in three places**
+   — the data file, the generator's header, and on every group on screen. Every
+   entity name and every prefix is verified against a cited table, so nothing
+   invented can get in.
+4. **The screen was wired into the window**, which the instruction does not name as a
+   task. A screen nobody can open is HM-DEC-154's own finding in a smaller place: *a
+   measured gain nobody can see is indistinguishable from none.*
 
-**And one thing this unit swept in that is not its own.** `git add -A tests/` in task
-4 committed `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`, which had been sitting
-untracked since unit 289. It builds and it is harmless, and it is named here rather
-than deleted, because removing another unit's file is worse than committing it.
+**Three mismatches against the instruction, reported and not repaired.**
+
+1. **Contact duration is not absent.** The instruction says *transmit power and
+   contact duration are likely absent — name them and leave them.* `TIME_OFF` is
+   written (`AdifLog.cs:268`) and read back (`:479`), so the span of an exchange is
+   derivable. **Transmit power genuinely is absent**, and by decision rather than
+   oversight: HM-DEC-074 and HM-DEC-082 have Hamlet report power as a percentage and
+   never as a wattage, so there is no wattage anywhere in the application to log.
+2. **`WORK_INSTRUCTIONS.md`'s heading carries no unit number, for the second unit
+   running.** `outcome-append.bat` resolves the number from that heading — unit 266's
+   repair, and it is right — so it fell back and filed this entry as 296. The entry
+   body already carried `UNIT_AS_CALLED: 298`; the heading was corrected in place, as
+   unit 297 did. **The instruction was not repaired.** Two in a row is worth a line in
+   the next order rather than a third correction, and it is section 4's third item.
+3. **Unit 252's DXCC table carries no continent**, which the instruction asks about
+   directly. It does now — see section 3.
 
 ## 2. What the owner should expect
 
-**The For you panel is not a list of messages any more.** Each station he is working
-is a card that says, in a sentence with no radio words in it, who came back and when
-and what to do next — with one button on it that does that thing, a countdown ring
-beside the button telling him how long he has to press it, an `i` to hover if he wants
-the numbers, and an X to take the card away.
-
-**Nothing is hidden.** Every message is still there behind *show the N messages*, and
-every decibel, hertz, time offset, bearing and courtesy token the face gave up is on
-the hover. A sweep asserts both halves: nothing nerdy on any face, and all of it in
-the hover, so deleting the facts cannot pass.
+**A screen that grows as he operates and always has a next thing on it.** Open it on
+a fresh log and there are no records at all — not dimmed, not dashed, absent — and
+eight things to go and try, each with a sentence explaining why it is worth trying.
+Log a contact on a band he has not worked and a tab appears with the records his own
+log can already fill, and a notice says so once.
 
 **What will look wrong and is not.**
 
-- **The waiting strip is gone and the ring has moved.** Both were replaced rather than
-  removed: every station that was on the strip has a card of its own, and the ring
-  now sits beside a send button so its seconds mean *how long to press this*.
-- **A station calling CQ gets no card.** That is correct and it is asserted — a card
-  is a station he is in **contact** with, and a CQ is an invitation. Callers are on
-  the decoded list to the left, where answering one starts from.
-- **A card in `Gone quiet` is drawn faded.** It has not been removed and never will
-  be on its own; the word says the same thing, so it survives grayscale.
-- **The first press of the X on a `Finished` card that is not in the log does not
-  clear it.** It says what is about to be lost. The second press always clears.
-- **`PHASE_STATUS.md` still names unit 296 and step 1.** The launcher owns that file
-  and task 6 did not name it; `PHASE_OUTCOME.md`'s header is the one the script keeps
-  current, and it reads step 4 `partial`.
+- **The six mode-first rows are gone.** They are replaced by mode tabs that appear
+  when he works a mode, and by one line saying which modes Hamlet cannot work yet.
+- **The header says `4 views open, 27 records in them` and never `27 of 90`.** There
+  is no total on this screen, deliberately, and a sweep asserts it.
+- **A continent card says `2 of 45 worked`.** That denominator is what Hamlet can
+  *recognise* — 303 entities out of the publication's 340 — rather than DXCC's own
+  total. It is a smaller claim than the truth and the honest direction to be wrong in.
+- **The Mediterranean is not there.** Refused with its reason; see section 4.
+- **A challenge that is not earned is drawn a little quieter but is not greyed.** It
+  is a target, not a disabled control.
+- **Nothing on this screen says `confirmed`**, and a sweep asserts it. DXCC is counted
+  by confirmations and Hamlet has none of them.
 - **The suite was not run and its state is unknown to this unit.** The four inherited
-  reds named in the instruction were not chased and not looked at.
+  reds were not chased and not looked at.
 
 ## 3. What you should see
 
-### 1. A card in each of the four states, quoted whole
+### 1. A fresh log's screen, quoted whole
 
-These are printed by `Unit297CardSentenceTests` itself, so what follows is the test's
-own output rather than a transcription of it.
+Printed by the headless window test, so this is what the window actually drew:
 
 ```
-K9XP   the United States   [Your turn]
-  K9XP came back to you, and it is your turn to answer him.
-  02:11:15 UTC · 45 seconds ago
-  [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
+0
+0 contacts logged, on the white belt.
+10 to go until 10.
+Nothing here yet. The first contact you log opens the first of these, and every
+one after that opens more.
+Hamlet cannot work CW, FT4, PSK31 and Voice yet, so nothing here is waiting on
+you for those.
 
-K9XP   the United States   [Waiting on him]
-  You answered K9XP and he has not come back yet.
-  02:11:30 UTC · 15 seconds ago
-  [Send it again]  (ring)   show the 3 messages
-
-K9XP   the United States · 320 miles   [Finished]
-  You and K9XP got through to each other and you both confirmed it.
-  02:11:45 UTC · 15 seconds ago
-  [Log this contact]   show the 4 messages
-
-K9XP   the United States   [Gone quiet]
-  Nothing more has been heard from K9XP. He may have moved on.
-  02:11:15 UTC · a minute ago
-  [Send it again]  (ring)   show the 2 messages
+Things to go and try
+  First past 500 miles
+    No contact has carried a grid square yet, so there is nothing to measure this against.
+  First report below -10 dB
+    No contact has carried a report yet, so there is nothing to measure this against.
+  A contact on 80 m
+    No band worked yet.
+  A contact on 80 m or 40 m after dark
+    Nothing on 80 m or 40 m after dark yet.
+  A contact on the grey line
+    No contact yet inside the hour either side of your sunrise or sunset.
+  A contact on a new continent
+    No contact has resolved to a continent yet.
+  5 grid squares worked
+    No contact has carried a grid square yet.
+  5 contacts in one day
+    No contact carries a date yet.
 ```
 
-The same finished exchange ending `RR73` instead of `RRR` reads **You and K9XP got
-through to each other and you both confirmed it. He said goodbye.**
+**Nothing unearned is on it, and that is asserted rather than eyeballed.** The test
+sweeps for `Furthest`, `Faintest` and `Busiest` and finds none, and separately
+asserts the targets *are* there — because the failure mode is a tidy-up that removes
+both halves.
 
-### 2. The trace: every clause against the fact it came from
+### 2. The same screen after one 40 m contact
 
-| Clause | Fact | Where |
+Three FT8 contacts on 20 m give **3 tabs and 20 cards**. One contact with Ireland on
+40 m gives **4 tabs and 27 cards**:
+
+```
+4 views open, 27 records in them.
+
+=== 40 m ===  6 records
+  How far
+    Furthest on 40 m : 3,400 miles   EI4GNB · Ireland · 3,400 miles
+  How faint
+    Faintest you have been heard on 40 m : -9 dB    EI4GNB · Ireland · 3,400 miles
+    Faintest you have heard on 40 m : -14 dB        EI4GNB · Ireland · 3,400 miles
+  When
+    First on 40 m : 10 September 2026                EI4GNB · Ireland · 3,400 miles
+    Busiest day on 40 m : 1 contact                  10 September 2026
+    Busiest hour on 40 m : 02:00 UTC                 1 contact
+
+=== Europe ===  1 of 63 worked
+    Ireland : 1 contact   EI4GNB · Ireland · 3,400 miles
+
+opened : band-40m, continent-EU
+```
+
+**And it says so once**, through unit 286's window and not a second one:
+
+> **40 m is open** — That opens 40 m, with 6 new records in it.
+> **Europe is open** — That opens Europe, with one new record in it.
+
+**Never on a first look.** A log of fourteen imported contacts announces **nothing**;
+it writes down what it saw and stays quiet, so the next contact is news. Watched
+failing: replacing the silent-seed branch gives **4 notices** on a log the operator
+has never seen Hamlet read.
+
+**A region appears only once he has worked something in it**, and names what to look
+for next:
+
+```
+Central America  1 of 7 worked
+  (Hamlet's own grouping, not an official DXCC category)
+  -> look for V3 HU TD HQ
+```
+
+Those four prefixes were **read out of the cited table**, not typed.
+
+### 3. The visible challenges, and one hover in full
+
+The eight are quoted above. Here is *A contact on 80 m or 40 m after dark*, whole:
+
+> **Daylight thickens a layer of the atmosphere that soaks up low frequencies, and
+> after dark it thins.** That is the whole reason 40 m is a short, noisy band in the
+> afternoon and a long-distance band at midnight, and why the people you hear on it
+> at those two hours are completely different. It is the single easiest piece of
+> propagation to go and prove to yourself.
+
+**That sentence is §3.5's own claim about what the product is**, and the card is the
+reason he reads it. A sweep asserts every card's hover is a paragraph rather than a
+label and is never merely its own title.
+
+**And the grey line challenge is computed, not decorative**: it looks for a contact
+inside an hour either side of *his* sunrise or sunset, from his own coordinates,
+using the same figure the sentence claims.
+
+### 4. Task 7's trace, and what failed a §5 question
+
+**§5 question 1 is proved by subtraction rather than asserted.** Take a field out of
+the log and watch the cards that claim it disappear:
+
+| Field removed | Cards that go |
+|---|---|
+| `GRIDSQUARE` | Furthest so far, on 20 m, on 40 m, on FT8 |
+| `RST_RCVD` | Faintest you have been heard — all four scopes |
+| `RST_SENT` | Faintest you have heard — all four scopes |
+| `QSO_DATE` | First, Busiest day and Busiest hour — all twelve |
+
+**A log with a callsign, a band and a mode and nothing else claims no figure at all.**
+
+**§5 question 4 is swept**: every card on the screen carries a hover of more than 150
+characters that is not its own title.
+
+**§5 question 3, the half that can be asserted**: no string the screen produces
+contains *failed*, *failure*, *streak*, *you have not operated*, *you have only*, *you
+did not* or *behind*. **The sweep corrected itself once** — the bare word *only* is
+not a shame marker, because the faint-signal hover reads *a person would hear only
+hiss*, which is teaching.
+
+**One card failed a §5 question and does not ship.** *The Mediterranean* fails
+question 1 in an unusual way: its members are computable, but **the group cannot be
+placed**, because §3.1 draws a region inside a continent and this one spans two.
+Refusing it is the generator's own doing and the reason is in the data file.
+
+**§5 questions 2 and 3 are judgements and here is the card-by-card answer.**
+
+| Card | Q2 — worth trying? | Q3 — invitation or failure? |
 |---|---|---|
-| `K9XP` | `Ft8CardFacts.Callsign` | the ledger's own key |
-| *came back to you* | `HeCameBack` = `LastHeardToUs is not null` | cannot be satisfied by a CQ, by construction |
-| *it is your turn* | `State == YourMove` | `Ft8ContactStates.Read` |
-| *You answered … and he has not come back* | `YouCalledHim` and `State == WaitingOnHim` | `Sent.Count > 0`, and `Read` |
-| *each told the other how you were coming through* | `ReportsBothWays` | last report each way over `HeardToUs` and `Sent` |
-| *got through to each other … you both confirmed it* | `State == Complete` | `IsComplete`: both calls, a grid or report each way, an acknowledgement each way |
-| *He said goodbye* | `HeSignedOff` | **`Ft8MessageSplit.IsSignOff` over what he actually sent** |
-| *Nothing more has been heard* | `State == GoneQuiet` | `SlotsSinceHeard` against four slots, counted over **everything** he transmitted |
-| `the United States` | `DxccPrefixes.EntityOf` | the callsign, never the grid |
-| `320 miles` | `GridPath.MilesBetween` | his grid and the operator's |
-| `02:11:15 UTC` | `Ft8CardFacts.LastAtUtc` | the slot boundary the decode carried |
-| `45 seconds ago` | that boundary against corrected now | absent with no measured clock |
-| *show the 2 messages* | `HisMessages + YourMessages` | this conversation, never everything heard from him |
-| `Confirm, and tell him…` | `Ft8SendOption.IsExpected` | the engine's own answer since 2026-09-06 |
+| Distance ladder | Yes. It is the fact that HF distance is about the hour and the band, not power | Invitation. It shows his own best beside it |
+| Faint ladder | Yes. It teaches that a minus number is ordinary | Invitation |
+| A new band | Yes. §3.5's own example | Invitation, and it names **one** band rather than the six he has not worked |
+| Low band after dark | Yes. The easiest propagation to prove to yourself | Invitation |
+| Grey line | Yes. Something he would not know to try | Invitation |
+| A new continent | Yes | Invitation |
+| Grid squares | Yes. It maps what his station actually covers | Invitation |
+| A busy day | Yes. It teaches what a band does while you watch it | Invitation. It says contests are the easiest place and that he need not enter one |
+| Record cards | Not applicable — they are *look what you collected* | Never shown unearned, so the question does not arise |
+| Continent and country cards | Not applicable | Never shown unearned |
 
-**Not one clause failed to trace, and the one that could have been confidently wrong
-is the goodbye.** `Ft8ContactStates.IsComplete` counts `RRR` as an acknowledgement and
-says in its own remarks that `73`'s absence never withholds completeness — correctly,
-because a contact that ends `RRR` is a contact. So reading the farewell off the
-`Complete` state would have had this card announcing a goodbye nobody sent, on an
-ordinary way for an FT8 contact to end. It is its own shape test now, and
-`TheFinishedSentenceNeverInventsAGoodbye` is that case.
-
-**Two clauses were corrected by measurement, and the card was right both times.** The
-first draft of the test expected the Finished sentence to name both reports; over a
-grid-then-report exchange only one report passed, and the card said *got through to
-each other* rather than claiming a swap. The second expected a card for a bare CQ;
-there is none, and there should not be.
-
-### 3. The `i` hover on a your-turn card, quoted whole
-
-> He hears you at -9 dB, and you have not told him how he is coming through yet. Those
-> are decibels against the noise, so a minus number is the ordinary case here: this
-> decoder reads down to about -21, and anything well above that is a comfortable
-> signal rather than a marginal one. He has not put a grid square on the air, so
-> Hamlet has no way to say how far away he is. His tone sat 1240 Hz up inside the
-> receiver's passband while the dial was on 14.074000 MHz. Everybody on the band
-> shares one dial setting and takes a different slice of the audio, which is how
-> dozens of stations fit where one voice would go. His transmission began 0.2 seconds
-> into the slot. Both clocks have to agree within about a second for this to decode at
-> all, so a small number here is the two of you keeping the same time. This ran from
-> 02:11:00 to 02:11:15 UTC. That is 3 slots ago, counted in the transmit-and-listen
-> turns the band runs on rather than in seconds. The last thing he sent you was -09,
-> which is how well he is hearing you, in decibels against the noise.
-
-**Every clause carries its reason and no clause is a bare number.** Where a fact is
-missing the clause says so — *he has not put a grid square on the air* — rather than
-being dropped silently or filled in.
-
-**The decode floor is FT8's and FT4 gets none.** The sensitivity phase measured FT8's
-whole curve against a published -21 dB; unit 288 found upstream states no FT4
-equivalent and nothing in this tree does either. On FT4 the paragraph teaches the sign
-and the direction and invents no number.
-
-### 4. Clearing a finished, unlogged card
-
-The first press does not clear it. The card says:
-
-> You finished this contact with K9XP and it is not in your log. Clearing the card
-> lets it go, and Hamlet keeps no record of it anywhere else. Log it first if you want
-> it, or press the X again to clear it anyway.
-
-The second press clears it. **It warns and never refuses**: the X is never greyed and
-the second press always works.
-
-**Whether *this* contact is logged is decided against the log entry's own start and
-never by the callsign.** `_workedBefore` holds the newest entry per callsign, so a
-station worked last month would have read as logged and tonight's finished contact
-would have gone without a word. That case is its own test,
-`AnOlderContactWithTheSameStationDoesNotCountAsThisOne`. Where it cannot tell — no
-start recorded — it warns, because a warning nobody needed costs one press and a
-silence that was wrong costs the contact.
-
-**And clearing touches nothing else**, asserted: no write to the log, every message
-still in the ledger, and the station's card back the moment it transmits again.
+**No record card can fail question 3 by construction**, because a record that cannot
+be filled is not built.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. Three items want a ruling or a decision, in the order
-they matter.
+Nothing blocks the next unit. Four items, in the order they matter.
 
 ---
 
-**Hamlet cannot name a place finer than a country, and the card says `the United
-States · 320 miles` where the ruling's example says `Arizona, 2,100 mi` — either the
-example stands as a country plus a distance, or naming a state becomes work with a
-citation behind it.**
+**The DXCC continent column is now in the tree, transcribed from the cited
+publication and cross-checked — and whether that download counts as a transcription
+is Tim's to confirm.**
 
-`DxccPrefixes.EntityOf` answers with a DXCC entity and `EntityQualifier.Describe` adds
-only *northern* or *southern* where the entity is tall enough for the word to mean
-something. **Nothing in this tree holds a state, a province or a town**, and the
-callook owner-and-town lookup is parked to its own instruction by this order.
+Task 1 found `data/callsigns/dxcc-prefixes.json` carried no continent and that the
+string does not occur in it. **Task 4 cannot exist without one.** The cited ARRL DXCC
+List does carry a Continent column, and the file downloaded from the URL in the
+source note **agrees with that note on both the document date (January 2026) and the
+stated entity total (340)**.
 
-What was rejected. **Deriving a US state from the callsign prefix**, which is wrong:
-US call areas are historical and an operator keeps his callsign when he moves, so
-`W6` in Ohio is ordinary. **Deriving one from the four-character grid**, which is a box
-about seventy miles across that straddles borders, and would need a cited
-grid-to-state table this repository does not have. **Wording round it** — *somewhere in
-the United States* — which is longer and says less.
+So it was transcribed the way unit 252 transcribed the prefixes:
+`tools/dxcc/transcribe-continents.py` reads the column and **cross-checks every row
+against `arrl-dxcc-current.txt`**, which unit 252 transcribed from the same
+publication and committed. **282 rows join on prefix and entity name, 23 more on a
+prefix that is unique in the publication, 1 does not join and is dropped, and 2 that
+carry two continents — Maldives `AS,AF` and Republic of Turkiye `EU,AS` — are
+declined rather than having one chosen.** 303 entities carry a continent and the
+counts are written into the data file.
 
-What would settle it. The parked callook instruction may bring a town with a source
-behind it, which is the honest route to `Arizona`. Until then the face carries the
-country and the distance, which is what the tree can support.
+What was rejected. **Writing 275 entity-to-continent pairs from a model's memory**,
+which is exactly what unit 252 built the expander to prevent and is the one thing
+nobody would ever check — a continent card is not a figure anybody verifies.
+**Abandoning task 4**, which was the alternative before the column was found, and
+which would have cost the whole of §3.2's own worked example.
 
----
-
-**A wording exists that no card can reach today: `K9XP is calling and nobody has
-answered him yet`.**
-
-`Ft8ContactStates.Read` documents a `YourMove` case for a station heard calling anyone
-and not yet answered, and `Ft8ContactCard` words it separately from *he came back to
-you* — they are different news and one wording for both would tell him a stranger had
-answered a call he never made. **But a CQ is not addressed to the operator, so it
-never enters the mine side and never becomes a card**, which
-`ABareCallToAnyoneIsNotACard` asserts.
-
-The branch is kept rather than deleted, because `Read` documents that state and a card
-built from `Ft8CardFacts` elsewhere would reach it. **Whether an unanswered caller
-should get a card is Tim's**: it would make the panel a list of everybody calling him
-rather than of contacts he is in, which is a different panel from the one he ruled on.
-
-What was rejected. **Deleting the branch**, which would leave `Read`'s documented state
-with no wording and the next unit to reach it inventing one. **Putting callers on
-cards on this unit's own authority**, which is a scope decision his ruling did not
-make.
+**What wants confirming**: that fetching the cited URL and machine-checking it
+against an existing committed transcription is *transcription* rather than *a second
+source*. The reasoning is that both files are the same publication, the cross-check is
+the evidence, and every disagreement is printed. **If that is not what he wants, the
+table comes out and task 4 with it**, and that is a one-line change to the csproj.
 
 ---
 
-**`AddSentRowForTests` says in its own remarks that it is *the same door the send path
-uses* and it is half of one, so no test in this repository can reach a finished
-contact state through it.**
+**The Mediterranean spans two continents and is refused. Either it loses a member, or
+regions stop living inside continents.**
 
-The send path does two things on adjacent lines: it keeps the panel row **and** it
-tells the ledger. The hook does only the first, so `Ft8StationRecord.Sent` is empty in
-every test that uses it and `Ft8ContactStates.IsComplete` can never be satisfied. **This
-unit found it by measurement**: its first fixture read *Your turn* over an exchange
-that had everything a QSO needs.
+Its members are Croatia, Cyprus, Greece, Italy, Malta, Portugal and Spain. **Cyprus is
+`AS` in the ARRL's own column**, so the region spans Asia and Europe, and the screen
+draws a region inside a continent — filing it under either would put it in the wrong
+place. The generator refuses it, records the reason in the data file, and
+`HamletRegions.Refused` reads that back.
 
-A narrow `RecordSentForTests` was added beside it and this unit's fixtures call both.
+What was rejected. **Dropping Cyprus on this unit's own authority**, which is an
+editorial call about somebody else's country made to make a layout work.
+**Filing it under Europe anyway**, which is the misplacement the check exists to
+catch. **Showing it at the top level rather than inside a continent**, which is a
+layout change that would want its own look.
 
-What was rejected, and it is the item that wants a decision. **Widening the existing
-hook**, which is the right repair and was not done here: four test files call it, two
-of them sweeps that count how much text the application puts on screen, and booking
-the ledger inside it would put cards on a panel those sweeps count. Under HM-DEC-155
-this unit may run only the tests it wrote, so it cannot see what that would break.
-**A unit that may run those four files should widen it and delete the narrow hook.**
+What would settle it. Either a ruling that Cyprus comes out of Hamlet's Mediterranean,
+or a ruling that a spanning region is drawn above the continents rather than inside
+one. **Three regions ship meanwhile** and the fourth is one line in
+`tools/dxcc/hamlet-subregions.txt` away.
+
+---
+
+**A work instruction's heading should carry its unit number, because the arbiter's own
+script reads it from there.**
+
+`outcome-append.bat` resolves the unit number from `WORK_INSTRUCTIONS.md`'s heading
+rather than from the argument it is given. That is unit 266's repair and it is right:
+two callers were passing different numbers and the heading is the tie-break.
+
+**But the last two orders have carried no number in their headings** — `# Work
+instruction - the conversation becomes cards` and `# Work instruction - the
+achievements screen grows as he operates` — and instead tell the session to take the
+next number from `PHASE_OUTCOME.md`. **The script cannot read that instruction**, so
+it falls back and files the entry under the previous unit's number, and both units
+have corrected the heading by hand afterwards.
+
+What was rejected. **Changing the script to prefer its argument**, which would undo
+unit 266's repair and reintroduce the double-entry it fixed. **Repairing the
+instruction**, which its own *report mismatches, do not repair* rule forbids.
+
+What would settle it: the order's heading reads `# Work instruction 299 — ...`, or the
+numbering line tells the session to write the number into the heading before task 1.
+
+---
+
+**The screen still cannot name a US state, and that closes a whole family of
+achievements the philosophy explicitly lists.**
+
+`ACHIEVEMENTS_PHILOSOPHY.md` §3.8 names **US states** among the eight things 150 to
+250 achievements are to be built from. Hamlet cannot compute one. `DxccPrefixes` names
+a DXCC entity, which for all fifty states is *United States of America*; a US call
+area is historical rather than a residence, so `W6` in Ohio is ordinary; and a
+four-character grid square is a box about seventy miles across that straddles state
+lines. **This is unit 297's finding again, and it now blocks a named part of the
+plan.**
+
+What was rejected. **Deriving a state from the callsign prefix** and **deriving one
+from the grid**, both for the reasons above. **Writing a grid-to-state table**, which
+is the memory-transcription this unit spent its second task avoiding.
+
+What would settle it. The parked callook lookup returns a licensee's address, which is
+cited data with a state in it — so **the Worked All States family waits on that
+instruction rather than on a ruling**, and it is named here so the next author does
+not plan it before the data exists.
