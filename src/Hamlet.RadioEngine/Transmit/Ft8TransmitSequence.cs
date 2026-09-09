@@ -95,7 +95,34 @@ public sealed record OperatorSend(
     LicenseClass LicenseClass,
     bool GuardEnabled,
     DateTime SlotStartUtc,
-    double StartSecondsIntoSlot);
+    double StartSecondsIntoSlot)
+{
+    /// <summary>
+    /// **Which grid the slot above is a slot on.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT BELONGS ON THIS RECORD AND NOT ON THE SEQUENCE** (work
+    /// instruction 293 task 3). <see cref="Ft8TransmitSequence"/> is built once,
+    /// when the radio connects, and outlives any number of presses of the mode
+    /// strip; a grid held there would be a second place the operator's choice
+    /// lives, able to disagree with the audio in the very record it was being
+    /// asked about. **The grid is part of what he asked for** - this message, at
+    /// this frequency, in this slot, on this grid - and the whole reason this type
+    /// exists is that his intent travels as one value.</para>
+    /// <para>**FT8'S GRID IS THE DEFAULT, WHICH IS THE STATUS QUO RATHER THAN A
+    /// CLAIM.** Every caller that existed before this property got FT8's fifteen
+    /// seconds and still gets them, which is the same rule
+    /// <c>DigitalModes.Grid()</c> already states for anything that is not FT4. It
+    /// is an <c>init</c> property for the reason <c>Ft8SlotWatch.Grid</c> is one:
+    /// a grid that could change after the send was armed would leave the boundary
+    /// it was armed for and the boundary it is measured against on two different
+    /// grids.</para>
+    /// <para>**AND IT CARRIES NO CLOCK AND NO SCHEDULE.** A <see cref="SlotGrid"/>
+    /// is two numbers and a name; nothing on it waits, fires or decides that a
+    /// moment has come.</para>
+    /// </remarks>
+    public SlotGrid Grid { get; init; } = SlotGrid.Ft8;
+}
 
 /// <summary>What one run of the sequence did, in full.</summary>
 /// <param name="Outcome">Which of the six ways it ended.</param>
@@ -480,36 +507,45 @@ public sealed class Ft8TransmitSequence
     /// <param name="why">What is wrong with it, in the operator's words.</param>
     /// <returns>True where it can be sent as asked.</returns>
     /// <remarks>
-    /// **THE FIT IS ARITHMETIC, NOT A WAIT.** <c>Ft8Slots.TransmissionFits</c>
-    /// answers whether 12.64 s of tones still lands inside the slot when it starts
-    /// this far after the boundary. A transmission that would run past the
-    /// boundary into the next slot is refused before anything keys, rather than
-    /// truncated on the air.
+    /// <para>**THE FIT IS ARITHMETIC, NOT A WAIT.** <c>SlotGrid.TransmissionFits</c>
+    /// answers whether the tones still land inside the slot when they start this
+    /// far after the boundary. A transmission that would run past the boundary into
+    /// the next slot is refused before anything keys, rather than truncated on the
+    /// air.</para>
+    /// <para>**AND IT IS ASKED ABOUT THE GRID THE TRANSMISSION IS ON** (work
+    /// instruction 293 task 3). This measured against <c>Ft8Slots</c> literals in
+    /// four places, so an FT4 transmission - 7.5 s of slot - was tested against
+    /// fifteen and accepted whatever it was. **Every number below now comes off
+    /// <c>send.Grid</c> and none of them is written here**, including the two in the
+    /// sentences the operator reads: the open 4.48-against-5.04 question is the
+    /// owner's and a literal in a refusal would be answering it.</para>
     /// </remarks>
     private static bool Sendable(OperatorSend send, out string why)
     {
+        var grid = send.Grid;
+
         if (send.Transmission.Samples.Length == 0)
         {
             why = "there is no audio in this transmission, so there is nothing to send.";
             return false;
         }
 
-        if (send.StartSecondsIntoSlot < 0 || send.StartSecondsIntoSlot >= Ft8Slots.SlotSeconds)
+        if (send.StartSecondsIntoSlot < 0 || send.StartSecondsIntoSlot >= grid.SlotSeconds)
         {
             why =
                 $"a transmission cannot start {send.StartSecondsIntoSlot:0.###} s into a "
-                + $"{Ft8Slots.SlotSeconds:0} s slot.";
+                + $"{grid.SlotSeconds:0} s slot.";
             return false;
         }
 
-        var left = Ft8Slots.SlotSeconds - send.StartSecondsIntoSlot;
+        var left = grid.SlotSeconds - send.StartSecondsIntoSlot;
 
-        if (!Ft8Slots.TransmissionFits(left))
+        if (!grid.TransmissionFits(left))
         {
             why =
                 $"starting {send.StartSecondsIntoSlot:0.###} s into the slot leaves "
-                + $"{left:0.###} s of it, and an FT8 transmission needs "
-                + $"{Ft8Slots.TransmissionSeconds:0.##} s. It would run into the next slot.";
+                + $"{left:0.###} s of it, and an {grid.Name} transmission needs "
+                + $"{grid.TransmissionSeconds:0.##} s. It would run into the next slot.";
             return false;
         }
 
@@ -526,8 +562,8 @@ public sealed class Ft8TransmitSequence
             // out.
             why =
                 $"this is {audioSeconds:0.###} s of audio and only {left:0.###} s of the slot is "
-                + $"left after {send.StartSecondsIntoSlot:0.###} s. An FT8 transmission is "
-                + $"{Ft8Slots.TransmissionSeconds:0.##} s of tones with no silence on either end - "
+                + $"left after {send.StartSecondsIntoSlot:0.###} s. An {grid.Name} transmission is "
+                + $"{grid.TransmissionSeconds:0.##} s of tones with no silence on either end - "
                 + "a padded slot is what a decoder reads, not what goes on the air.";
             return false;
         }

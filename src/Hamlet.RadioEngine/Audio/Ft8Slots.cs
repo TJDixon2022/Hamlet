@@ -107,9 +107,18 @@ public readonly record struct ClockOffset(
 /// One mode's slot grid: how long a slot runs, and how long the transmission
 /// inside it runs.
 /// </summary>
+/// <param name="Name">
+/// What the mode is called in a sentence the operator reads.
+/// </param>
 /// <param name="SlotSeconds">How long one slot runs, boundary to boundary.</param>
 /// <param name="TransmissionSeconds">How long the signal inside it occupies.</param>
 /// <remarks>
+/// <para>**THE NAME TRAVELS WITH THE TWO NUMBERS FOR THE SAME REASON THEY TRAVEL
+/// WITH EACH OTHER** (work instruction 293 task 3). A refusal the operator reads
+/// says *starting 0.5 s into the slot leaves 7.0 s, and an FT4 transmission needs
+/// 5.04 s*: the length, the slot and the mode's name are one fact and a sentence
+/// that took the numbers from one grid and the name from somewhere else would be
+/// the §0.0 fault in the one place he is being told why nothing went out.</para>
 /// <para>**THE TWO NUMBERS TRAVEL TOGETHER BECAUSE THEY ARE ONE FACT** (work
 /// instruction 290 task 2). A slot length without its occupancy answers *did a
 /// whole slot fit* and cannot answer *did a whole transmission fit*, and those are
@@ -134,11 +143,12 @@ public readonly record struct ClockOffset(
 /// pure over a corrected moment. Nothing decides when to transmit, and reaching a
 /// boundary does nothing at all.</para>
 /// </remarks>
-public readonly record struct SlotGrid(double SlotSeconds, double TransmissionSeconds)
+public readonly record struct SlotGrid(
+    string Name, double SlotSeconds, double TransmissionSeconds)
 {
     /// <summary>FT8's grid: fifteen seconds, four to the minute, 12.64 s of tones.</summary>
     public static SlotGrid Ft8 { get; } =
-        new(Ft8Slots.SlotSeconds, Ft8Slots.TransmissionSeconds);
+        new("FT8", Ft8Slots.SlotSeconds, Ft8Slots.TransmissionSeconds);
 
     /// <summary>FT4's grid, read from the port and typed nowhere in this assembly.</summary>
     /// <remarks>
@@ -151,7 +161,7 @@ public readonly record struct SlotGrid(double SlotSeconds, double TransmissionSe
     /// while the occupancy is still open.</para>
     /// </remarks>
     public static SlotGrid Ft4 { get; } =
-        new(Ft8Sharp.Ft4Timing.SlotSeconds, Ft8Sharp.Ft4Timing.OccupancySeconds);
+        new("FT4", Ft8Sharp.Ft4Timing.SlotSeconds, Ft8Sharp.Ft4Timing.OccupancySeconds);
 
     /// <summary>The slot length in ticks, which is what the arithmetic runs on.</summary>
     private long SlotTicks => (long)Math.Round(SlotSeconds * TimeSpan.TicksPerSecond);

@@ -12,21 +12,23 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// **What the transmit path does when the operator has chosen FT4.** Work
-/// instruction 293, task 1 - the trace.
+/// **One click, one FT4 transmission, on FT4's own grid.** Work instruction 293,
+/// tasks 1 and 3 - step 4's criterion 3, the arithmetic half.
 /// </summary>
 /// <remarks>
-/// <para>**IT IS A MEASUREMENT OF THE STARTING POSITION AND NOTHING LATER CAN
-/// RECOVER IT.** Unit 292's arbiter split step 4 on the reading that the transmit
-/// half "has no FT4 in it at all". That is true of the code and it is **not** the
-/// same as saying nothing happens: with FT4 chosen the send path is reachable and
-/// every line of it is FT8's.</para>
-/// <para>**THE BREAKAGE IT WOULD HAVE CAUGHT** (`CLAUDE.md`: a unit may not add a
-/// test without naming it): **Hamlet keying the transmitter on an FT4 calling
-/// frequency with an FT8 waveform at an FT8 boundary** - a signal on the band that
-/// no station can read, and that no sentence on screen distinguishes from a good
-/// one. Before this unit there was no test in the tree that would have failed if
-/// pressing FT4 and right-clicking a row had done exactly that.</para>
+/// <para>**WHAT THIS MEASURED BEFORE IT ASSERTED ANYTHING** (task 1, the trace).
+/// With FT4 chosen and the dial on 14.080 MHz, `SendMessage` composed 151 680
+/// samples - 12.64 s of FT8 tones, 79 symbols of 8 tones at 6.25 Hz - armed them
+/// for a quarter-minute boundary, keyed the radio, played them, unkeyed and told
+/// the operator it had sent. **Nothing between the click and the keying frame
+/// noticed that the operator had asked for FT4.** That is what Tim's radio would
+/// have done, and the assertions below are what it does instead.</para>
+/// <para>**THE BREAKAGE THESE CATCH** (`CLAUDE.md`: a unit may not add a test
+/// without naming it): **an FT4 transmission armed for a fifteen-second boundary**
+/// - keyed up to 7.5 s late, landing across the boundary into the next slot,
+/// decodable by nobody, with the log saying `Sent`; and its twin, **an FT8 waveform
+/// on an FT4 calling frequency**, which is a signal on the band no station can read
+/// and which no sentence on screen distinguishes from a good one.</para>
 /// <para>**NOTHING HERE OPENS A DEVICE OR A PORT** (`SHACK_FACTS.md` FACT-004).
 /// The wire is <see cref="FakePort"/> and the card is <see cref="FakeSink"/>,
 /// through <c>MainWindowViewModel.TransmitSinkFactory</c>. **Nothing measured here
@@ -46,7 +48,7 @@ public sealed class OneClickOneFt4TransmissionTests
     /// <summary>FT8's watering hole on 20 m, where the control runs.</summary>
     private const long Ft8On20m = 14_074_000;
 
-    /// <summary>A moment inside an FT4 slot that is not an FT8 boundary.</summary>
+    /// <summary>A slot the seeded rows sit in.</summary>
     private static readonly DateTime SlotZero =
         new(2026, 9, 9, 18, 0, 0, DateTimeKind.Utc);
 
@@ -58,20 +60,17 @@ public sealed class OneClickOneFt4TransmissionTests
         => _output = output;
 
     /// <summary>
-    /// **With FT4 chosen, the send path composes an FT8 waveform and arms it for a
-    /// fifteen-second boundary on an FT4 frequency.**
+    /// **With FT4 chosen, one click composes FT4 tones and arms them for the next
+    /// 7.5-second boundary.**
     /// </summary>
     /// <remarks>
-    /// <para>**THIS IS WHAT TIM'S RADIO WOULD HAVE DONE**, and it is the number
-    /// task 1 exists to produce. It is asserted rather than described so that the
-    /// starting position is on the record when tasks 2 and 3 move it.</para>
-    /// <para>**IT DOES NOT REFUSE.** `Ft8TransmitSequence.Sendable` measures
-    /// against `Ft8Slots` literals - 0.5 s into a 15 s slot leaves 14.5 s and
-    /// 12.64 s fits - so nothing between the click and the keying frame notices
-    /// that the operator asked for FT4.</para>
+    /// **THE BOUNDARY IS CHECKED AS A BOUNDARY AND NOT AS A NUMBER.** It is
+    /// asserted to be on FT4's grid - a whole number of 7.5-second slots from the
+    /// top of the minute - which is the same test for the four boundaries that are
+    /// also quarter-minutes and the four that are not.
     /// </remarks>
     [Fact]
-    public async Task TodayAnFt4PressComposesFt8TonesAndArmsThemForAnFt8Boundary()
+    public async Task AnFt4PressComposesFt4TonesAndArmsThemOnFt4sGrid()
     {
         var scene = Scene(DigitalMode.Ft4, Ft4On20m);
 
@@ -83,108 +82,164 @@ public sealed class OneClickOneFt4TransmissionTests
 
         Assert.True(armed is not null, scene.Panel.DigitalSendLine);
 
-        // **THE SEND IS READ OFF THE BOUNDARY'S OWN RESULT**, which is the same
-        // object the arm holds, rather than through a new accessor on the panel.
         var result = await scene.Panel.AtSlotBoundaryAsync(armed.Value);
         var send = result!.Send!;
         var audioSeconds =
             send.Transmission.Samples.Length / (double)send.Transmission.SampleRate;
 
-        _output.WriteLine("---- the starting position, before this unit changed anything ----");
         _output.WriteLine("mode chosen      : " + scene.Panel.DigitalMode);
         _output.WriteLine("grid the tab runs: " + scene.Panel.DigitalGrid.Describe());
-        _output.WriteLine("dial             : " + scene.Panel.FrequencyHz + " Hz (FT4's 20 m row)");
+        _output.WriteLine("grid on the send : " + send.Grid.Describe()
+            + ", named " + send.Grid.Name);
+        _output.WriteLine("dial             : " + scene.Panel.FrequencyHz + " Hz");
         _output.WriteLine("message          : \"" + message + "\"");
         _output.WriteLine("composed samples : " + send.Transmission.Samples.Length
             + " at " + send.Transmission.SampleRate + " Hz");
-        _output.WriteLine("which is         : " + audioSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " s of tones");
-        _output.WriteLine("FT8 synthesises  : " + Ft8Waveform.SymbolCount + " symbols, "
-            + Ft8Waveform.ToneCount + " tones at "
-            + Ft8Waveform.ToneSpacingHz.ToString("0.####", CultureInfo.InvariantCulture) + " Hz");
-        _output.WriteLine("FT4 synthesises  : " + Ft4Waveform.SymbolCount + " symbols, "
-            + Ft4Waveform.ToneCount + " tones at "
-            + Ft4Waveform.ToneSpacingHz.ToString("0.####", CultureInfo.InvariantCulture) + " Hz");
-        _output.WriteLine("armed for        : " + armed.Value.ToString("O", CultureInfo.InvariantCulture));
+        _output.WriteLine("which is         : "
+            + audioSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " s of tones");
+        _output.WriteLine("armed for        : "
+            + armed.Value.ToString("O", CultureInfo.InvariantCulture));
         _output.WriteLine("seconds into min : "
-            + (armed.Value.TimeOfDay.TotalSeconds % 60).ToString("0.###", CultureInfo.InvariantCulture));
+            + (armed.Value.TimeOfDay.TotalSeconds % 60)
+                .ToString("0.###", CultureInfo.InvariantCulture));
+        _output.WriteLine("the operator reads: " + scene.Panel.DigitalSendLine);
 
-        // **IT IS FT8'S WAVEFORM.** 79 symbols at 0.16 s, not 105 at 0.048 s.
+        // ---- 1. IT IS FT4'S WAVEFORM, FROM THE PORT ----------------------------
         Assert.Equal(
-            Ft8Waveform.SymbolCount * Ft8Waveform.SamplesPerSymbol(send.Transmission.SampleRate),
-            send.Transmission.Samples.Length);
-
-        Assert.NotEqual(
             Ft4Waveform.SymbolCount * Ft4Waveform.SamplesPerSymbol(send.Transmission.SampleRate),
             send.Transmission.Samples.Length);
 
-        // **AND IT IS ARMED FOR A FIFTEEN-SECOND BOUNDARY.** Every FT8 boundary is
-        // on a quarter-minute; half of FT4's eight are not, and this one is.
-        Assert.Equal(0.0, armed.Value.TimeOfDay.TotalSeconds % Ft8Slots.SlotSeconds, 6);
+        Assert.NotEqual(
+            Ft8Waveform.SymbolCount * Ft8Waveform.SamplesPerSymbol(send.Transmission.SampleRate),
+            send.Transmission.Samples.Length);
 
-        // ---- AND NOTHING BETWEEN THE CLICK AND THE KEYING FRAME REFUSES --------
+        // ---- 2. AND IT IS ARMED FOR A 7.5-SECOND BOUNDARY ----------------------
+        var intoMinute = armed.Value.Ticks % TimeSpan.TicksPerMinute;
+        var slotTicks = (long)Math.Round(SlotGrid.Ft4.SlotSeconds * TimeSpan.TicksPerSecond);
+
+        Assert.Equal(0, intoMinute % slotTicks);
+        Assert.Equal(SlotGrid.Ft4, send.Grid);
+
+        // ---- 3. AND NOTHING BETWEEN THE CLICK AND THE UNKEY REFUSED ------------
         _output.WriteLine(string.Empty);
-        _output.WriteLine("boundary outcome : " + result!.Outcome);
+        _output.WriteLine("boundary outcome : " + result.Outcome);
         _output.WriteLine("run outcome      : " + result.Run?.Outcome);
         _output.WriteLine("run reason       : \"" + result.Run?.Reason + "\"");
         _output.WriteLine("keyed            : " + result.Run?.Keyed);
         _output.WriteLine("came out of tx   : " + result.Run?.CameOutOfTransmit);
         _output.WriteLine("samples to sink  : " + scene.Sink.SamplesHandedOver);
+        _output.WriteLine("radio in receive : " + result.Run?.RadioIsInReceive);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
         Assert.True(result.Run!.Sent, result.Run.Reason);
         Assert.True(result.Run.Keyed);
+        Assert.Equal(UnkeyRoute.OrdinaryUnkey, result.Run.CameOutOfTransmit);
+        Assert.True(result.Run.RadioIsInReceive);
+        Assert.Equal(send.Transmission.Samples.Length, scene.Sink.SamplesHandedOver);
 
-        _output.WriteLine(string.Empty);
-        _output.WriteLine(
-            "READ AS A SENTENCE: with FT4 chosen and the dial on FT4's 20 m frequency, "
-            + "Hamlet composed " + audioSeconds.ToString("0.##", CultureInfo.InvariantCulture)
-            + " s of FT8 tones, armed them for a fifteen-second boundary, keyed the radio, "
-            + "played them and unkeyed - and told the operator it had sent.");
+        // ---- 4. AND THE SENTENCE NAMES THE MOMENT IT ACTUALLY STARTS AT --------
+        // **FOUR OF FT4'S EIGHT BOUNDARIES A MINUTE END IN .5**, and `HH:mm:ss`
+        // read `:22.5` as `22` - a sentence naming a moment the transmission does
+        // not start at, in the one line telling him what is about to go out.
+        Assert.Contains(
+            armed.Value.ToString(
+                armed.Value.Millisecond == 0 ? "HH:mm:ss" : "HH:mm:ss.f",
+                CultureInfo.InvariantCulture),
+            scene.Panel.DigitalSendLine,
+            StringComparison.Ordinal);
     }
 
     /// <summary>
-    /// **The fit guard measures against FT8's slot whatever mode is chosen.**
+    /// **The tick recognises the boundary an FT4 send was armed for.**
     /// </summary>
     /// <remarks>
-    /// The arithmetic in `Ft8TransmitSequence.Sendable` is FT8's in four places and
-    /// the two refusal sentences say *an FT8 transmission needs 12.64 s*. On a
-    /// 7.5-second grid a 0.5 s offset leaves 7.0 s, which does not hold 12.64 s of
-    /// tones - so a transmission that is refused on FT4's own arithmetic is accepted
-    /// here.
+    /// **THE HALF OF THE ARITHMETIC THAT WOULD HAVE FAILED SILENTLY.**
+    /// `DriveTheArmedSend` computed `Ft8Slots.SlotStart`, a quarter-minute whatever
+    /// mode was running. An FT4 send armed for `:07.5` would then be compared
+    /// against `:00` - <c>NotDue</c> - and against `:15` - <c>TooLate</c>, discarded
+    /// rather than sent late, which is correct behaviour producing a wrong outcome:
+    /// **the operator clicked and nothing ever went out.** The boundary now comes
+    /// off the armed send's own grid.
     /// </remarks>
     [Fact]
-    public void TodayTheFitGuardAsksAboutFifteenSecondsWhateverModeIsRunning()
+    public void EveryFt4BoundaryIsOneTheTickCanRecogniseAndFourOfEightAreNotQuarterMinutes()
     {
-        var composed = Ft8Composer.ComposeSignal(His + " " + Mine + " FN00");
+        var topOfMinute = new DateTime(2026, 9, 9, 18, 0, 0, DateTimeKind.Utc);
+        var quarterMinutes = 0;
 
-        Assert.True(composed.Composed, composed.Explanation);
+        for (var slot = 0; slot < 8; slot++)
+        {
+            var inside = topOfMinute.AddSeconds((slot * SlotGrid.Ft4.SlotSeconds) + 1.0);
+            var boundary = SlotGrid.Ft4.SlotStart(inside);
+            var isQuarterMinute = boundary.TimeOfDay.TotalSeconds % Ft8Slots.SlotSeconds == 0;
 
-        var left = Ft8Slots.SlotSeconds - MainWindowViewModel.StartSecondsIntoSlot;
-        var leftOnFt4 = SlotGrid.Ft4.SlotSeconds - MainWindowViewModel.StartSecondsIntoSlot;
+            if (isQuarterMinute)
+            {
+                quarterMinutes++;
+            }
 
-        _output.WriteLine("start into slot  : " + MainWindowViewModel.StartSecondsIntoSlot + " s");
-        _output.WriteLine("FT8 slot leaves  : " + left + " s, needs "
-            + SlotGrid.Ft8.TransmissionSeconds + " s");
-        _output.WriteLine("FT4 slot leaves  : " + leftOnFt4 + " s, needs "
-            + SlotGrid.Ft4.TransmissionSeconds + " s");
-        _output.WriteLine("FT8 audio is     : "
-            + (composed.Transmission!.Samples.Length
-               / (double)composed.Transmission.SampleRate)
-                .ToString("0.###", CultureInfo.InvariantCulture) + " s");
+            _output.WriteLine(
+                "slot " + slot + " : boundary "
+                + boundary.ToString("mm:ss.f", CultureInfo.InvariantCulture)
+                + (isQuarterMinute ? "  (also an FT8 boundary)" : "  (FT4 only)"));
 
-        // The guard the sequence actually asks, which is FT8's forwarder.
-        Assert.True(Ft8Slots.TransmissionFits(left));
+            Assert.Equal(
+                topOfMinute.AddSeconds(slot * SlotGrid.Ft4.SlotSeconds), boundary);
 
-        // **AND THE SAME AUDIO DOES NOT FIT AN FT4 SLOT AT ALL**, which is the
-        // arithmetic nothing on the send path performs today.
-        Assert.False(leftOnFt4 >= SlotGrid.Ft8.TransmissionSeconds);
+            // **AND FT8'S GRID WOULD HAVE GOT IT WRONG FOR FOUR OF THE EIGHT.**
+            if (!isQuarterMinute)
+            {
+                Assert.NotEqual(boundary, Ft8Slots.SlotStart(inside));
+            }
+        }
 
-        // **WHILE FT4'S OWN TRANSMISSION FITS WITH ROOM**, on either figure of the
-        // open 4.48-against-5.04 question - which is why the 0.5 s offset needs no
-        // ruling.
-        Assert.True(SlotGrid.Ft4.TransmissionFits(leftOnFt4));
-        Assert.True(leftOnFt4 >= 5.04);
-        Assert.True(leftOnFt4 >= 4.48);
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("of FT4's eight boundaries a minute, " + quarterMinutes
+            + " are also FT8 boundaries and " + (8 - quarterMinutes) + " are not");
+
+        Assert.Equal(4, quarterMinutes);
+    }
+
+    /// <summary>
+    /// **THE CONTROL: an FT8 press composes the same array and arms the same
+    /// boundary it did before this unit.**
+    /// </summary>
+    /// <remarks>
+    /// **THE TWO REFUSAL SENTENCES ARE PINNED IN THE ENGINE**, where the guard
+    /// lives, by <c>TheFitGuardAsksAboutTheGridTheSendIsOnTests</c>. What this pins
+    /// is the half only the application can answer: which array a press composes and
+    /// which boundary it arms for.
+    /// </remarks>
+    [Fact]
+    public async Task AnFt8PressLeavesTheBoundaryAndTheArrayWhereTheyWere()
+    {
+        var scene = Scene(DigitalMode.Ft8, Ft8On20m);
+
+        var message = His + " " + Mine + " FN00";
+
+        scene.Panel.SendMessageCommand.Execute(message);
+
+        var armed = scene.Panel.ArmedForSlotUtc;
+
+        Assert.True(armed is not null, scene.Panel.DigitalSendLine);
+
+        var result = await scene.Panel.AtSlotBoundaryAsync(armed.Value);
+        var send = result!.Send!;
+
+        _output.WriteLine("composed samples : " + send.Transmission.Samples.Length);
+        _output.WriteLine("armed for        : "
+            + armed.Value.ToString("O", CultureInfo.InvariantCulture));
+        _output.WriteLine("grid on the send : " + send.Grid.Describe());
+        _output.WriteLine("run outcome      : " + result.Run?.Outcome);
+
+        Assert.Equal(151_680, send.Transmission.Samples.Length);
+        Assert.Equal(
+            Ft8Waveform.SymbolCount * Ft8Waveform.SamplesPerSymbol(send.Transmission.SampleRate),
+            send.Transmission.Samples.Length);
+        Assert.Equal(0.0, armed.Value.TimeOfDay.TotalSeconds % Ft8Slots.SlotSeconds, 6);
+        Assert.Equal(SlotGrid.Ft8, send.Grid);
+        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.Equal(UnkeyRoute.OrdinaryUnkey, result.Run.CameOutOfTransmit);
     }
 
     /// <summary>
@@ -196,26 +251,19 @@ public sealed class OneClickOneFt4TransmissionTests
     /// `Ft8SymbolEncoder.SymbolCount` and `ToneCount` and there is no FT4 equivalent
     /// in this tree - so `MainWindowViewModel.MeasuredReport` returns null and
     /// `Ft8SendOptions.For` returns null text for `Report` and `RogerAndReport`.
-    /// **The absence is said out loud in `Ft8SendMenu.Absent`**, which is 0.0
+    /// **The absence is said out loud in `Ft8SendMenu.Absent`**, which is §0.0
     /// satisfied rather than breached.
     /// </remarks>
     [Fact]
     public void TheFt4MenuIsShortTwoShapesAndSaysWhy()
     {
         var scene = Scene(DigitalMode.Ft4, Ft4On20m);
-
-        scene.Settings.Operator.GridSquare = "FN00";
-
-        var ft4Row = Add(scene.Panel, 2, His + " heard on FT4", Mine + " " + His + " FN42",
+        var ft4Row = Add(scene.Panel, 2, Mine + " " + His + " FN42",
             snr: DigitalDecodeRow.NoMeasurement);
         var ft4Menu = scene.Panel.SendMenuFor(ft4Row)!;
 
         var ft8Scene = Scene(DigitalMode.Ft8, Ft8On20m);
-
-        ft8Scene.Settings.Operator.GridSquare = "FN00";
-
-        var ft8Row = Add(ft8Scene.Panel, 2, His + " heard on FT8", Mine + " " + His + " FN42",
-            snr: "-14");
+        var ft8Row = Add(ft8Scene.Panel, 2, Mine + " " + His + " FN42", snr: "-14");
         var ft8Menu = ft8Scene.Panel.SendMenuFor(ft8Row)!;
 
         _output.WriteLine("FT4 row snr      : \"" + ft4Row.Snr + "\"");
@@ -245,7 +293,6 @@ public sealed class OneClickOneFt4TransmissionTests
             ft4Menu.Options,
             o => o.Shape is Ft8SendShape.Report or Ft8SendShape.RogerAndReport);
 
-        // **SAID OUT LOUD**, which is what keeps a short menu from being a silent one.
         Assert.Contains(ft4Menu.Absent, r => r.Contains("report", StringComparison.Ordinal));
     }
 
@@ -254,11 +301,11 @@ public sealed class OneClickOneFt4TransmissionTests
     // -------------------------------------------------------------------------
 
     /// <summary>The panel, the settings, the wire and the card.</summary>
-    private sealed record Built(
+    internal sealed record Built(
         MainWindowViewModel Panel, AppSettings Settings, FakePort Port, FakeSink Sink);
 
     /// <summary>A panel running one mode, with something to transmit through.</summary>
-    private static Built Scene(DigitalMode mode, long frequencyHz)
+    internal static Built Scene(DigitalMode mode, long frequencyHz)
     {
         var settings = new AppSettings();
 
@@ -288,8 +335,8 @@ public sealed class OneClickOneFt4TransmissionTests
     }
 
     /// <summary>One row on the table, placed the way a decode places one.</summary>
-    private static DigitalDecodeRow Add(
-        MainWindowViewModel panel, int slot, string _, string message, string snr)
+    internal static DigitalDecodeRow Add(
+        MainWindowViewModel panel, int slot, string message, string snr)
     {
         var utc = SlotZero.AddSeconds(slot * 15);
 

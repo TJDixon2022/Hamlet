@@ -10517,8 +10517,14 @@ public partial class MainWindowViewModel : ObservableObject
         // levels. Before unit 265 there was no argument here and every
         // transmission went out at unit amplitude - 0 dBFS - with nothing
         // downstream able to change it.
-        var composed = Ft8Composer.ComposeSignal(
-            wanted, _transmitSampleRate, Ft8Composer.DefaultBaseFrequencyHz, _settings.TransmitDrivePeak);
+        // **AND IN THE MODE THE TAB IS RUNNING** (work instruction 293 task 3).
+        // Before tonight this was `Ft8Composer.ComposeSignal` unconditionally, so
+        // pressing FT4 and answering a station composed 12.64 s of FT8 tones and
+        // put them on an FT4 calling frequency - measured, not deduced, by
+        // `OneClickOneFt4TransmissionTests`. It follows `DigitalMode`, which is the
+        // same one value the grid, the cutter and the decoder already derive from,
+        // and not a second notion of which mode is running.
+        var composed = ComposeForTheChosenMode(wanted);
 
         if (!composed.Composed)
         {
@@ -10550,8 +10556,14 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **THE NEXT BOUNDARY ON THE GRID THE TAB IS CUTTING ON.** `Ft8Slots` is
+        // FT8's forwarder and computed a quarter-minute whatever mode was running;
+        // on FT4 that is a boundary up to 7.5 s away from the one every other
+        // station on the band starts at. The arithmetic is `SlotGrid`'s, in ticks,
+        // which is what makes a 7.5 s boundary expressible at all (unit 290).
+        var grid = DigitalGrid;
         var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
-        var next = Ft8Slots.SlotStart(trueUtc).AddSeconds(Ft8Slots.SlotSeconds);
+        var next = grid.SlotStart(trueUtc).AddSeconds(grid.SlotSeconds);
 
         if (_armedSend is null)
         {
@@ -10576,7 +10588,15 @@ public partial class MainWindowViewModel : ObservableObject
             LicenseClass,
             _settings.RestrictTransmitToPrivileges,
             next,
-            StartSecondsIntoSlot));
+            StartSecondsIntoSlot)
+        {
+            // **THE GRID GOES WITH THE SLOT IT IS A SLOT ON.** `Sendable` measures
+            // the fit against this and both of its refusal sentences read their
+            // numbers off it, so a transmission is never tested against a grid it
+            // is not on. See `OperatorSend.Grid` for why it rides here rather than
+            // on the sequence.
+            Grid = grid,
+        });
 
         DigitalSendLine = SendingLine(wanted, next);
 
@@ -10587,18 +10607,66 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>Where in the slot the signal begins, as unit 255 recorded it.</summary>
     /// <remarks>
-    /// **HALF A SECOND AFTER THE BOUNDARY**, which leaves 14.5 s for a 12.64 s
-    /// transmission. <see cref="Ft8Slots.TransmissionFits"/> is what says that is
-    /// enough, and it is asserted rather than assumed.
+    /// <para>**HALF A SECOND AFTER THE BOUNDARY**, which leaves 14.5 s of an FT8
+    /// slot for a 12.64 s transmission. <see cref="SlotGrid.TransmissionFits"/> is
+    /// what says that is enough, and it is asserted rather than assumed.</para>
+    /// <para>**AND THE SAME HALF SECOND SERVES FT4** (work instruction 293's
+    /// arithmetic, worked before the unit ran so it could be checked rather than
+    /// discovered). It leaves 7.0 s of a 7.5 s slot, which holds FT4's occupancy
+    /// with room to spare **on either answer to the open 4.48-against-5.04
+    /// question** - so the offset needed no ruling and settling that question is
+    /// not a thing this figure waits on.</para>
     /// </remarks>
     internal const double StartSecondsIntoSlot = 0.5;
 
+    /// <summary>Composes one message in the mode the Digital tab is running.</summary>
+    /// <param name="wanted">The message, exactly as it would go on the air.</param>
+    /// <returns>The signal alone, or a refusal naming what would not pack.</returns>
+    /// <remarks>
+    /// <para>**ONE VALUE DECIDES IT AND IT IS THE SAME ONE THE RECEIVE HALF USES**
+    /// (work instruction 293 task 3). <see cref="DigitalMode"/> is what the grid,
+    /// the cutter, the slot watch and the decoder already derive from; the transmit
+    /// half follows it rather than inventing a second notion of which mode is
+    /// running, because two notions is how a path comes to compose FT4 tones and arm
+    /// them on a fifteen-second grid.</para>
+    /// <para>**BOTH ROUTES ARE `ComposeSignal` AND NEITHER IS `Compose`.** The
+    /// padded slot is what a decoder reads; on the air the silence at either end is
+    /// time, and where the transmission starts is
+    /// <see cref="StartSecondsIntoSlot"/>'s to say.</para>
+    /// <para>**EACH MODE'S BASE FREQUENCY COMES FROM ITS OWN COMPOSER.** The two
+    /// are the same 1 000 Hz today and they are read separately anyway, so a change
+    /// upstream to one cannot silently move the other.</para>
+    /// </remarks>
+    private Ft8ComposeResult ComposeForTheChosenMode(string wanted)
+        => _digitalMode == DigitalMode.Ft4
+            ? Ft4Composer.ComposeSignal(
+                wanted,
+                _transmitSampleRate,
+                Ft4Composer.DefaultBaseFrequencyHz,
+                _settings.TransmitDrivePeak)
+            : Ft8Composer.ComposeSignal(
+                wanted,
+                _transmitSampleRate,
+                Ft8Composer.DefaultBaseFrequencyHz,
+                _settings.TransmitDrivePeak);
+
     /// <summary>Hands the armed send its boundary, at most once per boundary.</summary>
     /// <remarks>
-    /// **THIS CAN FIRE WHAT WAS ARMED AND CANNOT ARM ANYTHING.** It is the
+    /// <para>**THIS CAN FIRE WHAT WAS ARMED AND CANNOT ARM ANYTHING.** It is the
     /// existing slot tick, which is where the clock is already read, and it is
     /// driven before the digital-mode check so an operator who clicked and then
-    /// changed tab still gets the transmission he asked for.
+    /// changed tab still gets the transmission he asked for. **That property is not
+    /// weakened by anything below**: it reads the armed send, computes a boundary
+    /// and hands it over. There is no <c>Arm</c> on this path and no way to reach
+    /// one.</para>
+    /// <para>**AND THE BOUNDARY IS ON THE ARMED SEND'S OWN GRID** (work instruction
+    /// 293 task 3). It used to be <c>Ft8Slots.SlotStart</c>, which is a
+    /// quarter-minute whatever mode is running; an FT4 send armed for `:07.5` would
+    /// then be compared against `:00`, come back <c>NotDue</c> at the boundary it
+    /// was armed for and <c>TooLate</c> at the next quarter-minute - **discarded
+    /// every time, with the operator having clicked and nothing going out.** It is
+    /// read off the send rather than off the tab, so a mode change between the click
+    /// and the boundary cannot move the transmission he already armed.</para>
     /// </remarks>
     private void DriveTheArmedSend()
     {
@@ -10608,7 +10676,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
-        var boundary = Ft8Slots.SlotStart(trueUtc);
+        var boundary = (_armedSend.Armed?.Grid ?? DigitalGrid).SlotStart(trueUtc);
 
         if (boundary == _lastBoundaryDriven)
         {
@@ -10893,9 +10961,25 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>What the Send area says while a transmission is armed.</summary>
+    /// <param name="text">The message, exactly as it would go on the air.</param>
+    /// <param name="slotStartUtc">The boundary it is armed for, in true UTC.</param>
+    /// <remarks>
+    /// **THE HALF SECOND IS SHOWN WHERE THE BOUNDARY HAS ONE** (work instruction
+    /// 293 task 3). This formatted `HH:mm:ss`, which was every FT8 boundary exactly
+    /// and **four of FT4's eight wrong by half a second** - `:07.5` read as `07`,
+    /// `:22.5` as `22`. A sentence naming a moment the transmission does not start
+    /// at is §0.0 in the one line telling him what is about to go out on the band,
+    /// and it only became reachable tonight, when the arm started following FT4's
+    /// grid. **It is asked of the boundary rather than of the mode**, so nothing
+    /// here has to know which grid is running, and FT8's sentence is unchanged
+    /// character for character.
+    /// </remarks>
     private static string SendingLine(string text, DateTime slotStartUtc)
         => "Sending " + Addressed(text) + "\"" + text + "\" in the slot at "
-            + slotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture) + " UTC.";
+            + slotStartUtc.ToString(
+                slotStartUtc.Millisecond == 0 ? "HH:mm:ss" : "HH:mm:ss.f",
+                CultureInfo.InvariantCulture)
+            + " UTC.";
 
     /// <summary>"to W1ABC, " where there is an addressee, or "" for a call to anyone.</summary>
     private static string Addressed(string text)

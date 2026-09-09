@@ -1,27 +1,37 @@
-feat(unit293): task 2 - Ft4Composer, beside Ft8Composer and not inside it
+feat(unit293): task 3 - the fit guard and the arm follow the mode
 
-The words-to-audio half of criterion 3. Both composers are now faces onto a
-shared DigitalComposer that holds the packing, the round trip, the five refusals
-and the drive; what each face supplies is a ComposeGeometry - four constants and
-three port calls, read off Ft8Sharp and typed nowhere in this assembly.
+The arithmetic half of criterion 3. OperatorSend now carries the grid the slot it
+names is a slot on. It rides there rather than on the sequence because the
+sequence is built once when the radio connects and outlives any number of presses
+of the mode strip - a grid held there would be a second place the operator's
+choice lives, able to disagree with the audio in the very record it was being
+asked about. It is an init property defaulting to FT8's grid, which is the status
+quo written down: every caller that existed before tonight got fifteen seconds
+and still gets them, the same rule DigitalModes.Grid() already states.
 
-The seam was chosen this way because the two honest alternatives were one
-implementation taking the modulation as a value, or two copies of a file. The
-copy is what the port's whole argument is against: a second packer beside the
-first is a second thing to drift, and the drift would be a message that says one
-thing on FT8 and another on FT4.
+Sendable measures against send.Grid in all four places, and both refusal
+sentences read their numbers and the mode's name off it. Nothing is typed in, so
+the open 4.48-against-5.04 question still costs one edit to settle.
 
-Ft4SymbolEncoder.Encode and Ft4Waveform.Synthesize are called and nothing in
-them is changed. The audio is asserted against the port sample for sample -
-60480 samples, 105 symbols - so this seam cannot drift from what unit 289
-nailed to gen_ft8 -ft4.
+SendMessage composes through the mode's own composer and arms for the next
+boundary on DigitalGrid; DriveTheArmedSend computes the boundary on the armed
+send's own grid. Without the second half an FT4 send armed for :07.5 would come
+back NotDue at :00 and TooLate at :15 - discarded every time, with the operator
+having clicked and nothing going out.
 
-All five refusals are sentences on FT4 and none is an exception. The Nyquist
-arithmetic is FT4's own: at tone 0 = 5950 Hz FT4's top tone is 6012.5 Hz and
-refuses, FT8's is 5993.75 Hz and composes.
+One click with FT4 chosen now composes 60480 samples of FT4 tones and arms them
+for 15:45:22.5 UTC, which is a boundary FT8's grid cannot express.
 
-FT8 is untouched and it is asserted rather than described: ComposeSignal
-produces the same array Ft8Waveform.Synthesize does for the same bits, and 53
-existing FT8 composer tests are green.
+Found and fixed a screen this change would otherwise have broken: SendingLine
+formatted HH:mm:ss, which is every FT8 boundary exactly and four of FT4's eight
+wrong by half a second. A sentence naming a moment the transmission does not
+start at is 0.0 in the one line telling him what is about to go on the band.
+
+Ft8ArmedSend.Arm has exactly one caller in src/, counted by reading every .cs
+file under it. DriveTheArmedSend reads the armed send and cannot write it.
+
+FT8 is untouched: same array, same quarter-minute boundary, and both refusal
+sentences pinned character for character against what this tree produced at
+9a81d4d. 122 control tests green across both projects.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
