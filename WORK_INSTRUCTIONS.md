@@ -1,4 +1,4 @@
-# Work instruction 287 - an achievements screen, and the first of each mode
+# Work instruction 288 - where FT4 lives, decided by reading
 
 ```
 STOP. Verify the project before reading any further.
@@ -27,89 +27,70 @@ If all four hold, say "Hamlet confirmed" and continue.
 **Tim's rulings of 2026-09-05, HM-DEC-155.**
 
 **1. A unit runs no test suite.** **Only the unit tests it constructs or rewrites in
-this work instruction**, filtered by exact name, foregrounded, with a stated
-timeout. **An unfiltered `dotnet test` on any project is forbidden.**
+this work instruction**, filtered by exact name, foregrounded, with a stated timeout.
+**An unfiltered `dotnet test` on any project is forbidden.**
 
 **2. Never background a command and poll for it.** The watchdog fires after twelve
 minutes with no status write.
 
 `dotnet build` is allowed, foregrounded, with a timeout.
 
-**Tool fact, thirteen units old:** this shell will not carry a quoted heredoc
-containing an apostrophe, and it collapses a doubled backslash inside one. Use
-script files.
-
----
-
-## `ADVANCED` and `DRIFT`
-
-Every bench step of this phase is closed; steps D and E are Tim at his radio.
-**`ADVANCED: no` by construction.**
-
-```
-DRIFT:  9 consecutive units without advance, carried from unit 286.
-```
+**Tool fact, fourteen units old:** this shell will not carry a quoted heredoc
+containing an apostrophe, and it collapses a doubled backslash inside one. Use script
+files.
 
 ---
 
 ## Why this unit exists
 
-**Tim's ruling, 2026-09-08: an achievements screen, off the Tools menu, beside the
-contact log.**
+**This is the first unit of a new phase and it builds nothing.**
 
-**Not Help.** Help is *how do I use this*. **Achievements are his own operating
-record**, which is the same kind of thing as his log, and unit 278 already put
-`Tools > My contacts...` there.
+**FT4 is a button on the Digital tab that does nothing**, and Tim ruled on 2026-09-08
+that **FT4 works exactly the way FT8 does.**
 
-**And a second kind of achievement.** The belt is one ladder climbed by counting.
-**These are a card filled in** - the first contact in each mode - and the empty ones
-say what he has not tried yet.
+Most of the work looks done: FT4 shares FT8's 77-bit payload, its LDPC(174,91) code
+and its CRC-14. What differs is the clock and the modulation - **7.5-second slots,
+four tones, 4.48 seconds of transmission** - and everything above the decoder is
+already mode-neutral or nearly so.
 
-His list: **CW, FT8, FT4, PSK31, WSPR, Voice.**
+**But where the FT4 decoder goes is a real decision and it is not the author's to make
+from memory.**
 
-**Two of those need care and neither is a reason to drop them.**
+**The rule, ruled 2026-09-08:** if **`ft8_lib` carries FT4**, the port carries FT4 and
+the fidelity tests extend to cover it. If it **does not**, FT4 is new work and belongs
+in `Ft8Sharp.Deep` or a sibling - **because `Ft8Sharp`'s value is that it cannot drift
+from upstream**, and that byte-fidelity is the instrument every measurement in the
+sensitivity phase leaned on.
 
-**Five of the six cannot be earned yet.** Only FT8 can transmit; CW, FT4, PSK31 and
-Voice have no send path. **They show as awaiting one, not as failures**, because a
-thing he has not been given the means to do is not a thing he has failed to do.
-
-**WSPR is not a contact mode at all.** It is a beacon: he transmits and sees where he
-was heard, and nobody works anybody. **A *first WSPR contact* can never fire from a
-contact log.** It belongs on the card as something measured differently, or it is
-left off with the reason recorded. **Do not quietly make it a QSO.**
+**This unit reads and reports. It decides that question with evidence and stops.**
 
 ```
-UNIT GOAL:    Tools > Achievements shows the belt and the first contact in each
-              mode, earned ones lit and the rest honest about why not.
-ADVANCES:     nothing.
+PHASE GOAL:   FT4 works exactly the way FT8 does.
+UNIT GOAL:    Where the FT4 decoder goes is answered from the tree, with what is
+              already shared listed so nothing is written twice.
+ADVANCES:     step 0.
 ```
 
 ---
 
 ## Verify this instruction against the tree
 
-**Nothing here describes the tree.** Check every claim and report mismatches.
-Report them; do not repair the instruction.
+**Nothing here describes the tree.** Check every claim and report mismatches. Report
+them; do not repair the instruction.
 
-- **`Tools > My contacts...`** is unit 278's log window. **`Tools > About`** exists.
-  **Find where a third item goes** and follow the menu's own convention.
-- **`AdifLog` writes `MODE` on every record** and unit 275 fixed `BAND` to ADIF's
-  spelling. **Check what `MODE` actually contains** - the values, not the field -
-  before matching on it.
-- **Unit 278 built the badge thresholds**; unit 281 made them belt ranks ending gold;
-  unit 286 built `BadgeAward` and `BadgeWindow`, which **does not activate, does not
-  enter the taskbar, and leaves after eight seconds.** **Reuse that for a mode first;
-  do not build a second notice.**
-- **Unit 278 seeds the badge level silently on a first look**, so a fresh install
-  announces nothing. **A mode first needs the same treatment** or an existing log
-  announces six at once.
-- **`HowMuchTheApplicationSaysTests` caps every window.** A new window needs a
-  ceiling, measured from what it holds, with the margin chosen as unit 282 chose
-  its - **against the fault rather than the noise.**
-- **`FACT-006`**: this machine has no contact log and never will. **Build against
-  synthesised logs.** His real log held 5 records on 2026-09-08 and he reported 8
-  contacts on 2026-09-08.
-- Root version after unit 286 was **1.12.210**. **Read it, do not assume.**
+- **`tools/build-ft8-oracle.bat`** builds `decode_ft8.exe` from a vendored or cloned
+  `ft8_lib`. **Find where that source is** - it may be outside the repository.
+- **`Ft8Sharp` is at `0.10.7`** and **51 of 51 fidelity tests** pass against upstream.
+- **`Ft8Sharp.Deep` is GPL-3.0**, built in the sensitivity phase, and consumes the
+  port's candidates and soft values.
+- **Unit 245 found that nothing outside `Ft8Sharp` can construct an
+  `Ft8CodewordResult`** - the port is deliberately closed, and that matters if FT4
+  lives outside it.
+- **Unit 287 found FT4 is an ADIF submode** - `MODE=MFSK, SUBMODE=FT4` - and
+  `AdifContact` has no `SUBMODE` field. **`MODE=FT4` is invalid ADIF.**
+- **The Digital tab's FT4 button exists** and unit 251 made the mode buttons tune.
+  **Report what pressing FT4 does today.**
+- Root version after unit 287 was **1.12.214**. **Read it, do not assume.**
 
 Known reds, inherited, **never chased**:
 `CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
@@ -122,146 +103,128 @@ Known reds, inherited, **never chased**:
 
 **Tim's, 2026-09-08:**
 
-- **An achievements screen off the Tools menu**, beside the contact log.
-- **The first contact in each mode is an achievement**: CW, FT8, FT4, PSK31, WSPR,
-  Voice.
-- **Text only where he hovers**, and a fault speaks unasked.
-- **The count is every logged contact**, not distinct callsigns.
+- **FT4 works exactly the way FT8 does.** **Anything FT8 does that FT4 does not is a
+  gap to be named**, not a scope decision a unit may make.
+- **Where FT4 lives follows what upstream does**, read rather than assumed.
 
 **Standing:**
 
-- **§0.0 and HM-DEC-092.** Never present a guess as a decode. **This unit's exposure
-  is an achievement claimed that was not earned**, and a screen of his own record is
-  a place he will trust without checking.
-- **A log record is a statement the operator made and is not a unit's to revise.**
-  **This unit reads and never writes.**
-- **§0.6.** Colour is never the only carrier. **Earned and unearned must differ by
-  more than a hue.**
-- **§0.1.** The engine is not told that tabs exist.
-- **One click, one transmission.** **Nothing in this unit transmits**, and nothing on
-  an achievements screen may reach a send path.
-- **`Ft8Sharp` is a faithful MIT port and nothing changes a line of it.**
+- **`Ft8Sharp` is a faithful MIT port and its byte-fidelity is not to be spent
+  casually.** `Ft8Sharp.Deep` is GPL-3.0.
+- **No algorithm comes from WSJT-X's source.** Published description only.
+- **One click, one transmission.** **Nothing in this unit transmits.**
+- **§0.0.** Never present a guess as a decode.
 
 ---
 
 ## Status cadence
 
 After each task, before starting the next, update `PROJECT_STATUS.md` per
-`CLAUDE.md` - `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, and
-`NOTE` saying what is moving inside the task. The same every ten minutes while a
-task is running. **Use the file-editing tools if the shell refuses.**
+`CLAUDE.md` - `STATE`, `TASK: n of m`, `BALL`, `UPDATED` from the clock, and `NOTE`
+saying what is moving inside the task. The same every ten minutes while a task is
+running. **Use the file-editing tools if the shell refuses.**
 
 ---
 
 ## Tasks
 
-### Task 1 - what the log can actually tell you about a mode
+### Task 1 - what upstream actually carries
 
-**Reading only. Build nothing.**
+**Reading only. Build nothing, change nothing.**
 
-- **What `MODE` holds** on a real-shaped record, and what value each of the six modes
-  would write. **ADIF has its own spellings** - report them and cite where you read
-  them, as unit 274 cited the specification.
-- **Which of the six can be logged at all today**, and which have no send path.
-- **What a WSPR record would even look like**, if one could exist. **Say plainly
-  whether it can**, and if not, what would have to be measured instead.
-- **Do not guess a mode's spelling.** A first that never fires because the string is
-  wrong is worse than one that is missing, because it looks earned-able and is not.
+- **Find `ft8_lib`'s source** and say where it is. `tools/build-ft8-oracle.bat` names
+  a path; **check it exists** and report if it does not.
+- **Does it carry FT4?** With file and line. **If it does**: its sync pattern, its
+  symbol timing, its tone count, its slot length, and whether its encoder and decoder
+  are shared with FT8 or separate.
+- **If it does not carry FT4, say so plainly.** That is a finding and it decides the
+  question in the other direction.
+- **Do not infer from a filename.** A file called `ft4.c` that is a stub is not
+  support.
 
-### Task 2 - the achievements screen
+### Task 2 - what `Ft8Sharp` already shares
 
-**This is the goal task.**
+**Reading only.**
 
-- **`Tools > Achievements...`**, beside the contact log, following the menu's
-  convention.
-- **The belt at the top** - the rank, the count, the progress to the next.
-- **The mode firsts below**, as a card. **Earned ones show what was earned**: the
-  callsign, the date, the band.
-- **Unearned ones say why they are unearned**, and there are two different reasons:
-  **not yet done** for a mode he can transmit in, and **awaiting a send path** for
-  one he cannot. **Those must not look the same** - the second is not his failure.
-- **Earned and unearned differ by more than colour** (§0.6).
-- **It reads and never writes.**
-- **A new window needs a ceiling** in `HowMuchTheApplicationSaysTests`.
+- **A list, with file and line**, of everything in the port that FT4 would use
+  unchanged: the message layer, the LDPC code, the CRC-14, the callsign fields,
+  anything else.
+- **And what it could not use**: anything that assumes eight tones, 15-second slots,
+  0.16-second symbols or FT8's Costas array. **Name each with the assumption it
+  makes.**
+- **This list is what stops FT4 being written twice**, so err toward listing.
 
-### Task 3 - a mode first announces itself
+### Task 3 - the decision, with its reason
 
-- **Reuse `BadgeAward` and `BadgeWindow`.** **Do not build a second notice.**
-- **It fires once, on the first contact in a mode**, and never again for that mode.
-- **It never fires on a first look at an existing log.** Unit 278's seeding rule
-  applies to mode firsts too, or **an existing log announces six at once.**
-- **It must not cost him a contact**: no focus, no blocked click, no closing an open
-  right-click menu. Unit 286 built that and it is not to be weakened.
-- Test, watched failing first: a first FT8 contact fires once; a second does not; a
-  fresh log holding three modes announces nothing on first look, and then a fourth
-  mode does fire.
+- **Port or sibling**, following the ruled rule and task 1's evidence.
+- **If the port**: what the 51 fidelity tests become, and how upstream parity is still
+  provable once the port carries something upstream may implement differently.
+- **If a sibling**: how it reaches the shared parts, given unit 245 found the port
+  deliberately closed - **and what has to open, minimally, for that to work.**
+- **Say what you would need that you do not have.** A decision that needs a ruling
+  from Tim is better named now than discovered in step 1.
 
-### Task 4 - WSPR, decided honestly
+### Task 4 - what the FT4 button does today
 
-**Whatever task 1 found, act on it and say which:**
+- **Press it, in the running application, and report what happens.** Unit 284 proved
+  that standing the application up beats searching the source, and five orders before
+  it proved the opposite.
+- **Does it tune? Does it change the decoder? Does it change the slot grid?**
+- **What breaks, and what silently does nothing.**
 
-- **If a WSPR record can exist and be recognised**, it is a mode first like the
-  others.
-- **If it cannot** - and a beacon mode has no contacts - **the card says so in his
-  own terms** rather than showing a first that can never be earned. **A row that can
-  never light is a promise the application cannot keep.**
-- **Do not invent a WSPR achievement** from spots or anything else. **Name what it
-  would take and leave it** - that is a ruling and it is Tim's.
-
-### Task 5 - what the screen says it has, against what the log holds
+### Task 5 - the gaps, named
 
 **Named drop candidate.**
 
-- **Run the screen against a synthesised log** holding contacts in two modes and
-  report what it shows for all six.
-- **Report the count it derives against the number of records**, so the belt and the
-  card cannot disagree with the log window.
-- **If any figure on this screen is derived rather than read**, say which and from
-  what.
+**Tim's ruling is *exactly the way FT8 does*.** List what FT8 has that FT4 would not,
+beyond the decoder: the log's missing `SUBMODE`, the achievements row, the frequency
+table, the slot arithmetic, the sidecar, the turn ring, anything else.
 
-### Task 6 - the outcome entry
+**Name them. Fix none.** This is step 0 and the phase's later steps are where they go.
 
+### Task 6 - the phase's bookkeeping
+
+**File edits only.**
+
+- `PROJECT_CARD.md` gains the new `PHASE` and `PHASE_SET` from `PHASE_STATUS.md`'s
+  header. **This file changes only by ruling** (§13.3); the ruling is Tim's approval
+  of `PHASE_PLAN.md` on 2026-09-08.
+- Append that ruling to `DECISIONS.md`, next id in sequence.
 - **Append this unit's entry to `PHASE_OUTCOME.md`** through
   `tools\arbiter\outcome-append.bat`. **If the shell refuses, append with the
-  file-editing tools in the format the existing entries use** and say so.
+  file-editing tools** and say so.
+- **If `install-phase.bat` was not run**, say so and skip the card and the ruling.
 
 ---
 
 ## Parked - do not touch, do not raise
 
-**The whole asks queue**, including whether the ring counts down after a stop, the
-three pixels, `HM-OPEN-087`, `HM-OPEN-088`, the hover ring's findability, and whether
-a rasterising harness is worth a package. **None of it is this unit's.**
-
-Also parked: **achievements beyond the belt and the mode firsts** - first DX, first
-band, first thousand miles, first weak signal. **Named so they are not invented
-here.** FT4, the send path, the abort, the composer, the log's fields, Settings.
-**Anything in `src/Ft8Sharp/`.**
+- **Building anything for FT4.** Steps 1 to 4.
+- **`SUBMODE`.** Step 3 of the phase.
+- **The whole asks queue** carried since unit 271.
+- **PSK31, WSPR, Voice**, and a WSPR achievement measured from spots.
+- **Automatic sequencing.**
+- **Anything in `src/Ft8Sharp/`** - this unit changes no code at all.
 
 ---
 
 ## What not to do
 
-- **Do not write to his log.** Read only.
-- **Do not guess a mode's ADIF spelling.** Cite it.
-- **Do not show a first that can never be earned** without saying so.
-- **Do not make a mode without a send path look like a failure.**
-- **Do not build a second notice window.**
-- **Do not fire on a first look at an existing log.**
-- **Do not invent an achievement this order does not name.**
-- **Do not let anything on this screen reach a send path.**
-- **Do not distinguish earned from unearned by colour alone.**
+- **Do not build anything.**
+- **Do not decide where FT4 lives from memory.** Read upstream.
+- **Do not infer support from a filename.**
+- **Do not fix a gap task 5 finds.**
 - **Do not touch `src/Ft8Sharp/`.**
 - **Do not run a test suite.**
 - **Do not background a command and poll for it.**
-- **Do not report `ADVANCED: yes`.**
+- **Do not ship a placeholder token in a reported number.**
 
 ---
 
 ## Committing and pushing
 
 Commit and push each task before starting the next. Bump the root version's patch by
-one. **`Ft8Sharp` does not move.**
+one if anything was committed. **`Ft8Sharp` does not move.**
 
 ---
 
@@ -270,18 +233,17 @@ one. **`Ft8Sharp` does not move.**
 `output.md` at the repository root, overwritten, four sections per
 `CLAUDE_CODE.md` §8.
 
-**NUMBER: how many of the six mode firsts can be earned today, and why the rest
-cannot.**
+**NUMBER: how much of FT4 already exists in this tree** - the shared parts counted
+against what would be new.
 
 **Section 3 leads with four things:**
 
-1. **The achievements screen against a two-mode log**, showing all six rows and what
-   each says.
-2. **The ADIF mode strings**, cited.
-3. **What WSPR does on the card**, and why.
-4. **The notice on a first FT8 contact**, quoted.
+1. **Whether `ft8_lib` carries FT4**, with file and line, or that it does not.
+2. **The decision** - port or sibling - and the reason it follows from task 1.
+3. **What pressing the FT4 button does today.**
+4. **The gaps**, listed, none fixed.
 
-**Section 2 says what he will see**: a screen that says what he has done and what he
-has not tried.
+**Section 2 says what this means for the phase**: how much is already there and what
+the first build unit will actually have to write.
 
 Write `output.md`, then stop.

@@ -2,7 +2,7 @@
 setlocal EnableExtensions
 
 rem  install-phase.bat
-rem  Generated 2026-09-07 for: hamlet-phase-send2-2026-09-07.zip
+rem  Generated 2026-09-08 for: hamlet-phase-ft4-2026-09-08.zip
 rem
 rem  Installs the new phase layer at the repository root.
 rem  RUN THIS YOURSELF, BEFORE THE LOOP. It is not a work unit's job:
@@ -19,8 +19,8 @@ set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\HamLet"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
-set "STAGE=%REPO%\docs\phase-send2"
-set "ARCHIVE=%REPO%\docs\phase-send-run"
+set "STAGE=%REPO%\docs\phase-ft4"
+set "ARCHIVE=%REPO%\docs\phase-send2-run"
 
 echo.
 echo   Repo root : %REPO%
@@ -78,10 +78,10 @@ echo.
 echo   ================================================================
 echo    PHASE INSTALLED
 echo   ================================================================
-echo    Archived : docs\phase-send-run\  (plan, status, outcome)
+echo    Archived : docs\phase-send2-run\  (plan, status, outcome)
 echo    Installed: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md
 echo.
-echo    STILL TO DO, and unit 266 does it with its file tools:
+echo    STILL TO DO, and unit 288 does it with its file tools:
 echo      PROJECT_CARD.md  PHASE and PHASE_SET
 echo      DECISIONS.md     the ruling that set them
 echo.
@@ -124,7 +124,7 @@ goto :end
 
 :already
 echo.
-echo   REFUSED: docs\phase-send-run\PHASE_OUTCOME.md already exists,
+echo   REFUSED: docs\phase-send2-run\PHASE_OUTCOME.md already exists,
 echo   so this has already run. Nothing was changed.
 goto :end
 
@@ -144,13 +144,13 @@ goto :end
 :archivefailed
 echo.
 echo   REFUSED: the archive copy did not match the original.
-echo   The new phase was NOT installed. Check docs\phase-send-run\.
+echo   The new phase was NOT installed. Check docs\phase-send2-run\.
 goto :end
 
 :installfailed
 echo.
 echo   FAILED: the archive succeeded but the install did not.
-echo   The old files are in docs\phase-send-run\. Copy the three files from
+echo   The old files are in docs\phase-send2-run\. Copy the three files from
 echo   %STAGE% to the root by hand.
 goto :end
 
