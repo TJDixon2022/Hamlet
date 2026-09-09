@@ -1,14 +1,38 @@
-chore(unit293): untrack the leftover unit 289 source probe, committed by mistake
+test(unit293): task 6 - criterion 4, the whole FT4 chain from one right click
 
-Task 5's commit staged tests/ wholesale and swept in
-tests/Ft8Sharp.Tests/Unit289SourceProbe.cs, which five units have carried as an
-untracked leftover and which work instruction 293 says plainly is not to be
-committed to make a warning go away. This takes it back out of the index.
+Proved on a real render endpoint and a real loopback capture, not on a fake. The
+machine has four active render endpoints; a display-audio one was chosen
+deliberately rather than defaulted to, on unit 256's reasoning.
 
-It stays on disk as an untracked file, because this shell refuses every form of
-file deletion available here - git rm, git update-index --force-remove and a
-shell rm were each tried once and each answered "this command requires
-approval", with nobody to approve it. The instruction's own fallback applies:
-say so and leave it.
+One real ContextRequested on the realized row from W1ABC addressed to KC3QIS; the
+menu came back with three message shapes and the Log item; the acknowledgement
+was the one marked as coming next and was invoked through its own command with
+its own CommandParameter, which is what a press on a MenuItem does. It carries
+"W1ABC KC3QIS RRR".
+
+That composed 241920 samples of FT4 tones at the endpoint's own 48 kHz - 5.04 s -
+armed for 16:01:30, keyed the radio, played, unkeyed, and wrote key-on and
+key-off and nothing else. The loopback captured 261120 samples peaking at -12.0
+dBFS. One 7.5 s slot was cut around the measured tone onset and handed to the
+tab's own ShowDecodes with the tab in FT4, which read back "W1ABC KC3QIS RRR" -
+the string the menu item was carrying, not a literal this test chose.
+
+1 transmission in, 0 missed, 0 wrong, counted separately. The sheet names the
+decoder Ft8Sharp; Ft8Sharp.Deep has no FT4 decoder and never appears.
+
+The seeded row was chosen so the reply needs no measured ratio: he rogered and
+reported, so an acknowledgement comes next and RRR carries no report. Every FT4
+row's ratio is null and the menu is short the Report and RogerAndReport shapes -
+three against FT8's five - which is a named gap and not a failure of this task.
+No ratio is invented and none is substituted.
+
+The same chain also runs end to end through FakeSink and FakePort by decoding the
+samples the sink was actually handed, and is reported as what it is: no sound was
+made and it is not a loopback run. FakeSink gained LastSamples for it, because a
+count cannot answer "was it the right audio".
+
+The row search is over Panel and not Grid - unit 280 made the For-you side a
+conversation of bubbles whose row root is a StackPanel, and a Grid search finds
+the left list and silently misses the one a reply is ever sent from.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

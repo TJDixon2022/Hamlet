@@ -80,6 +80,18 @@ internal sealed class FakeSink : ITransmitAudioSink, ITransmitLevelReport
     public int SamplesHandedOver { get; private set; }
 
     /// <summary>
+    /// **The samples themselves, as they were handed over.**
+    /// </summary>
+    /// <remarks>
+    /// **A COUNT CANNOT ANSWER *WAS IT THE RIGHT AUDIO*** (work instruction 293
+    /// task 6). Proving the whole chain on a machine with no render endpoint means
+    /// decoding what the sink was actually given, and until this was here the only
+    /// thing this fake kept about a transmission was how long it was. **Empty until
+    /// something has played**, so no existing test changes meaning.
+    /// </remarks>
+    public float[] LastSamples { get; private set; } = [];
+
+    /// <summary>
     /// The peak this sink says the endpoint was actually handed.
     /// </summary>
     /// <remarks>
@@ -187,6 +199,7 @@ internal sealed class FakeSink : ITransmitAudioSink, ITransmitLevelReport
     {
         TimesCalled++;
         SamplesHandedOver = samples.Length;
+        LastSamples = samples.ToArray();
         RateAskedFor = sampleRate;
 
         if (DeclaredSampleRate is int declared && sampleRate != declared)
