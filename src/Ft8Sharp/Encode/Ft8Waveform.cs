@@ -325,6 +325,21 @@ public static class Ft8Waveform
     /// below the resolution of a double, so it is returned as one rather than summed for.
     /// </para>
     /// </remarks>
+    /// <summary>
+    /// The same error function, reachable from inside this assembly, so that
+    /// <see cref="Ft4Waveform"/> shapes its pulse with the identical series rather than a second copy
+    /// of it.
+    /// </summary>
+    /// <remarks>
+    /// <b>An accessor and nothing else.</b> Unit 289 added this line and changed nothing about how
+    /// FT8 is synthesized: no constant moved, the padding is untouched, and
+    /// <c>Ft8WaveformComparisonTests</c> still holds every sample of fifty-one messages against
+    /// upstream's own WAV. Duplicating the series into the FT4 file was the alternative, and a second
+    /// copy of numerically delicate code that the sample comparison depends on is the more expensive
+    /// of the two mistakes.
+    /// </remarks>
+    internal static float ErrorFunction(float x) => Erf(x);
+
     private static float Erf(float x)
     {
         var v = (double)x;

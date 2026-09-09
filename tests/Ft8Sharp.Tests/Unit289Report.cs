@@ -22,7 +22,18 @@ namespace Ft8Sharp.Tests;
 /// </remarks>
 internal sealed class Unit289Report
 {
-    private readonly List<string> _lines = [];
+    /// <summary>
+    /// Paths this process has already started writing.
+    /// </summary>
+    /// <remarks>
+    /// <b>xUnit builds a fresh instance of a test class per test method</b>, so several tests of one
+    /// class each construct one of these against the same path. Truncating in the constructor would
+    /// leave the file holding whichever method happened to run last, which is how a measurement
+    /// quietly stops being a measurement. The file is emptied once per process and appended to
+    /// thereafter.
+    /// </remarks>
+    private static readonly HashSet<string> Started = new(StringComparer.OrdinalIgnoreCase);
+
     private readonly string _path;
     private readonly Xunit.Abstractions.ITestOutputHelper? _output;
 
@@ -32,19 +43,27 @@ internal sealed class Unit289Report
         var folder = Path.Combine(RepositoryTree.Root, "artifacts", "unit289");
         Directory.CreateDirectory(folder);
         _path = Path.Combine(folder, name + ".txt");
+
+        lock (Started)
+        {
+            if (Started.Add(_path))
+            {
+                File.WriteAllText(_path, string.Empty);
+            }
+        }
     }
 
     /// <summary>Both channels at once — the test log, and a file that can be read afterwards.</summary>
+    /// <remarks>
+    /// <b>Appended line by line rather than buffered</b>, so a run that throws part way through still
+    /// leaves everything it had measured up to the throw.
+    /// </remarks>
     public void WriteLine(string text = "")
     {
         _output?.WriteLine(text);
-        _lines.Add(text);
-        Flush();
+        lock (Started)
+        {
+            File.AppendAllText(_path, text + Environment.NewLine);
+        }
     }
-
-    /// <summary>
-    /// Written after every line rather than at the end, so a run that throws part way through still
-    /// leaves everything it had measured up to the throw.
-    /// </summary>
-    private void Flush() => File.WriteAllLines(_path, _lines);
 }

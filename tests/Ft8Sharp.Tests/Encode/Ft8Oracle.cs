@@ -190,7 +190,7 @@ internal static class Ft8Oracle
     /// <see cref="Path.GetTempPath"/> and never under the tree.
     /// </para>
     /// </remarks>
-    public static KeptRun GenerateKeepingWav(string messageText)
+    public static KeptRun GenerateKeepingWav(string messageText, Protocol protocol = Protocol.Ft8)
     {
         var wav = Path.Combine(
             Path.GetTempPath(),
@@ -198,7 +198,8 @@ internal static class Ft8Oracle
 
         try
         {
-            return new KeptRun(Invoke(wav, messageText, wav), wav);
+            return new KeptRun(
+                Invoke(wav, [messageText, wav, .. TrailingArguments(protocol)]), wav);
         }
         catch
         {
