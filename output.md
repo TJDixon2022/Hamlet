@@ -137,8 +137,10 @@ protocol-neutral and get used unchanged.
 - **The operator's `settings.json` was touched and put back.** Pressing the FT4
   chip persists `LastDigitalSubMode`, which went `FT8` to `FT4`; it was backed up
   before the run and restored to `FT8` after, and it is `FT8` now.
-- **Two loose files in the tree that are not this unit's.** `.oa-287.bat` was
-  already untracked when this session started and was left alone (§12.6).
+- **`.oa-287.bat` at the repository root is not loose and is not this unit's.**
+  The git snapshot this session opened with showed it untracked, which was already
+  out of date: `install-phase.bat`'s own commit `048a158` had committed it along
+  with the FT4 phase files. It is tracked and clean and was not touched.
 - **The version is 1.12.215 and not 1.13.0.** See the second ask in section 4.
 
 ## 3. What you should see
