@@ -12,7 +12,7 @@ NUMBER:    how many of the six mode firsts can be earned today
            WSPR  : a beacon, so there is no contact to have
 ADVANCED:  no
 DRIFT:     10 consecutive units without advance, carried from unit 286
-VERSION:   1.12.210 -> 1.12.213
+VERSION:   1.12.210 -> 1.12.214
 BRANCH:    main, pushed
 ```
 
@@ -151,7 +151,7 @@ standing.**
 Inherited reds untouched: `HM-OPEN-088`'s ten, the CW set, the `Ft8Sharp.Deep`
 tripwire.
 
-**Four commits, all on `main`, all pushed**, 1.12.210 → 1.12.213. Nothing
+**Five commits, all on `main`, all pushed**, 1.12.210 → 1.12.214. Nothing
 uncommitted.
 
 ---
