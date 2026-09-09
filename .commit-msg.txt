@@ -1,31 +1,9 @@
-docs(unit293): task 7 - the bookkeeping, the report, and the validator exits 0
+docs(unit293): drop an uncounted build count rather than ship a wrong number
 
-PHASE_OUTCOME.md carries unit 293's entry with STATE_AFTER done: all four of step
-4's exit criteria are met, so the last bench step of the phase closes and what
-remains is Tim at his own radio. It was written with the file-editing tools in
-the format outcome-entry.py produces and says so on its own face. No .bat under
-tools/arbiter was attempted at all - four consecutive units measured that refusal
-and the instruction says a fifth measurement is worth nothing. The arguments the
-script would have been given are at tools/arbiter/unit293-append.bat so the entry
-can be replayed rather than reconstructed. Units 289 to 292 were not touched,
-including the two STATE_AFTER verdicts each carries.
-
-PHASE_STATUS.md: WORK_INSTRUCTION only. CURRENT_STEP still reads 1 while the
-phase is on step 4 - reported again, not repaired.
-
-RULES_AT: nothing to repair. CPS-DEC- appears zero times in CLAUDE.md,
-DECISIONS.md and PROJECT_STATUS.md; HM-DEC-160 appears once in each; the three
-agree. .run-unit/reload.txt still disagrees and is the launcher's file.
-
-output.md written and validated: dotnet build tools/arbiter/validate-output.proj,
-all seven rules, exit 0. It failed rule 6 on the first run - no READ IN THIS
-ORDER header and a section 4 count spelled as a word where the rule wants a digit
-- and was fixed and run again. That is the script exiting 0 and not a hand check.
-
-Task 8 is dropped whole, as the named drop candidate. No criterion depended on
-it, and both ledger gaps - Ft8ContactLedger.SlotsAgo and
-Ft8ContactStates.GoneQuietAfterSeconds - are named and left standing rather than
-half done, because a ledger where slots ago follows the mode and gone quiet does
-not is worse than neither.
+The report and the outcome entry both said "twelve dotnet builds". I did not keep
+a count and could not reconstruct one, so the figure was approximate presented as
+exact - which is the one thing a reported number may not be. All three places now
+say every build was foregrounded with the same timeout and that none of them was
+counted. validate-output re-run: all seven rules, exit 0.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

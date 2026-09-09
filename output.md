@@ -99,8 +99,9 @@ own grid. 9 tests, all green.
 
 **Test discipline.** **No test suite was run.** Every run was filtered by exact
 class name, foregrounded, with a `timeout 600` on the shell call - 600 000 ms, the
-tool's maximum. Twelve `dotnet build` calls, all foregrounded with the same timeout.
-**Nothing was backgrounded and nothing was polled for.**
+tool's maximum. **Every `dotnet build` was foregrounded with the same timeout** - I did
+not keep an exact count of them and am not going to invent one. **Nothing was
+backgrounded and nothing was polled for.**
 
 **Counts.** 30 tests constructed or rewritten by this unit, all green. 195 control
 tests run by exact name across both projects, all green: 53 FT8 composer, 73 engine
