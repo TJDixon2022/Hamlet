@@ -5,9 +5,11 @@ TASK: 6 of 6
 WORK_INSTRUCTION: 288 - where FT4 lives, decided by reading
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-159 (2026-09-07)
+RULES_AT: HM-DEC-160 (2026-09-08)
 UPDATED: 2026-09-09T08:25:25-04:00
-NOTE: 6 of 6, none dropped. The port carries FT4: upstream carries it complete and its own chain round-trips. 28 of 33 port files already protocol-neutral. Ten gaps named, none fixed. Two asks back.---
+NOTE: 6 of 6, none dropped. The port carries FT4: upstream carries it complete and its own chain round-trips. 28 of 33 port files already protocol-neutral. Ten gaps named, none fixed. Two asks back.
+
+---
 
 Written by a Claude Code session per CLAUDE.md 13 and ANNUNCIATOR.md.
 
