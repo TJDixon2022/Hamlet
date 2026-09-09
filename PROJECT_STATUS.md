@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 288 - where FT4 lives, decided by reading
-BALL: tim
+STATE: EXECUTING
+TASK: 2 of 8
+WORK_INSTRUCTION: 289 - FT4 decodes a signal Hamlet made
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T08:25:25-04:00
-NOTE: 6 of 6, none dropped. The port carries FT4: upstream carries it complete and its own chain round-trips. 28 of 33 port files already protocol-neutral. Ten gaps named, none fixed. Two asks back.
+UPDATED: 2026-09-09T08:52:00-04:00
+NOTE: The placement is measured and it is the finding task 1 existed for. A centred FT4 signal starts at 1.23 s and the demo application's candidate sweep stops at 0.912 s, so upstream's own decoder cannot reach upstream's own generator. Moving to the three FT4 tables, generated rather than typed.
 
 ---
 
