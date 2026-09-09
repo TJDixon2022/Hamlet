@@ -1674,6 +1674,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// either way. **What says which it is, is not the ring**: the on-air state is
     /// drawn thicker and captioned with the message going out, so nobody has to
     /// infer the length from the arc.</para>
+    /// <para>**AND THAT IS WHY FOUR LENGTHS NOW SHARE IT WITHOUT A LINE CHANGING
+    /// SHAPE** (work instruction 290 task 4). FT4's 7.5 s slot and its transmission
+    /// go round the same ring as FT8's two, because the fraction was already the
+    /// drawing and the seconds were only ever the caption. **The denominator comes
+    /// from the grid the beat was read on**, which for FT4 means it comes from
+    /// <c>Ft8Sharp.Ft4Timing</c> through <c>SlotGrid.Ft4</c> and is typed nowhere in
+    /// this assembly.</para>
     /// </remarks>
     public double TurnRingSweep
     {
@@ -1685,8 +1692,8 @@ public partial class MainWindowViewModel : ObservableObject
             }
 
             var whole = _turn.State == Ft8TurnState.Transmitting
-                ? Ft8Slots.TransmissionSeconds
-                : Ft8Slots.SlotSeconds;
+                ? _turn.On.TransmissionSeconds
+                : _turn.On.SlotSeconds;
 
             return Math.Clamp(left / whole, 0, 1) * 360.0;
         }
@@ -1713,10 +1720,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// without colour (§0.6): the dash says the turn is unknown, the number says the
     /// clock is not.</para>
     /// </remarks>
+    /// <remarks>
+    /// **AND IT READS `CountText` RATHER THAN THE INTEGER SINCE UNIT 290.** On FT8's
+    /// grid the two are the same digits; on a 7.5-second slot the integer rounds up
+    /// to 8 for the first half-second, and 8 is a slot length nothing here is
+    /// cutting on.
+    /// </remarks>
     public string TurnRingCount
-        => _turn.SecondsLeft is { } left
-            ? left.ToString(CultureInfo.InvariantCulture)
-            : "?";
+        => _turn.CountText.Length > 0 ? _turn.CountText : "?";
 
     /// <summary>What is beside the ring, which for four of six states is nothing.</summary>
     /// <remarks>
@@ -1790,10 +1801,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// because whether to call is his and the ring arms nothing (§0.2).</para>
     /// </remarks>
     private string NextSlotSentence()
-        => _turn.SecondsLeft is { } left
+        => _turn.CountText.Length > 0
             ? " The next slot starts in "
-              + left.ToString(CultureInfo.InvariantCulture)
-              + (left == 1 ? " second." : " seconds.")
+              + _turn.CountText
+              + (_turn.CountText == "1" ? " second." : " seconds.")
             : "";
 
     /// <summary>True where the ring is drawn dashed and empty.</summary>

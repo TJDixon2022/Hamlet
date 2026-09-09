@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 290 - the slot machinery is FT4s
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T09:35:22-04:00
-NOTE: Cutter, watch and sidecar all take the grid now. One minute of audio cuts 4 FT8 slots on the quarter minutes and 8 FT4 slots including four half-second edges; the sidecar prints 7.50 s slots, 5.04 s transmission on its own face. Two inherited reds found in the sheet tests, unrelated to the grid. Committing before task 4.
+UPDATED: 2026-09-09T09:42:43-04:00
+NOTE: The ring reads 7.5 7.4 7.3 down to 0.1 on FT4 and never 8 and never 0; FT8 still reads 15 down to 1 in whole seconds. Parity 0 1 0 1 0 1 0 1 across the minute and unchanged an hour and a day later. 5 of 5 new, 13 of 13 beat, 9 of 9 ring. Committing before task 5.
 
 ---
 
