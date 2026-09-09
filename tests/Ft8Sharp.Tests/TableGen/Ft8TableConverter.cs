@@ -39,10 +39,14 @@ public sealed record ConversionResult(
 /// diff what falls out.
 /// </para>
 /// <para>
-/// <b>The three FT4-only tables are deliberately not converted.</b>
-/// <c>kFT4_Costas_pattern</c>, <c>kFT4_Gray_map</c> and <c>kFT4_XOR_sequence</c> are in
-/// the same file and are left in it: FT4 is parked, and a converter that emits everything
-/// it finds would put an unused, unproven table into a published library.
+/// <b>The three FT4 tables are converted, and the remark that said they were not is
+/// gone rather than left standing.</b> <c>kFT4_Costas_pattern</c>, <c>kFT4_Gray_map</c>
+/// and <c>kFT4_XOR_sequence</c> were skipped while FT4 was parked, on the reasoning that
+/// an unused, unproven table in a published library is a liability. HM-DEC-160 unparked
+/// it and unit 288 read upstream and found the port carries FT4, so the reasoning has
+/// expired. <b>A remark describing a skip that no longer happens is worse than no remark
+/// at all</b> — the next reader believes it and reinstates the skip from habit, which is
+/// the failure HM-DEC-159 is about.
 /// </para>
 /// </remarks>
 public static class Ft8TableConverter
@@ -63,7 +67,15 @@ public static class Ft8TableConverter
     public const string RegenerateCommand =
         "dotnet test tests/Ft8Sharp.Tests -e FT8_TABLEGEN_WRITE=1";
 
-    /// <summary>The six tables, in the order they are emitted.</summary>
+    /// <summary>The nine tables, in the order they are emitted.</summary>
+    /// <remarks>
+    /// <b>The third field is the element count and not a row width.</b> It is what the parse must
+    /// come to once the initialiser has been flattened, so a two-dimensional table's entry is the
+    /// product of its dimensions: <c>kFT4_Costas_pattern</c> is <c>[4][4]</c> and its expectation is
+    /// therefore 16 rather than 4. The count is a cross-check and never a source — the converter
+    /// counts what it parsed and then compares, so a source that has moved off the pin fails by
+    /// name instead of being padded or truncated to fit.
+    /// </remarks>
     public static readonly IReadOnlyList<TableSpec> Manifest = new[]
     {
         new TableSpec(
@@ -76,6 +88,21 @@ public static class Ft8TableConverter
             "Ft8GrayMap",
             8,
             "The Gray code that maps a three-bit symbol value onto one of the eight tones."),
+        new TableSpec(
+            "kFT4_Costas_pattern",
+            "Ft4CostasPattern",
+            16,
+            "The four DIFFERENT four-tone Costas arrays FT4 synchronises on, one per sync group, four rows of four."),
+        new TableSpec(
+            "kFT4_Gray_map",
+            "Ft4GrayMap",
+            4,
+            "The Gray code that maps a two-bit symbol value onto one of the four tones."),
+        new TableSpec(
+            "kFT4_XOR_sequence",
+            "Ft4XorSequence",
+            10,
+            "The pseudorandom sequence an FT4 message is exclusive-ORed with before its checksum and parity are computed."),
         new TableSpec(
             "kFTX_LDPC_generator",
             "LdpcGenerator",
@@ -223,9 +250,12 @@ public static class Ft8TableConverter
         Line("//     produces the same bytes, and a clock would make it differ from itself on every");
         Line("//     run, which would destroy exactly that proof.");
         Line("//");
-        Line("//     The three FT4-only tables in the same source -- kFT4_Costas_pattern,");
-        Line("//     kFT4_Gray_map and kFT4_XOR_sequence -- are deliberately not converted. FT4 is");
-        Line("//     parked, and an unused table in a published library is a liability.");
+        Line("//     THE THREE FT4 TABLES ARE HERE NOW. Until unit 289 this header said they were");
+        Line("//     deliberately not converted, because FT4 was parked and an unused table in a");
+        Line("//     published library is a liability. HM-DEC-160 unparked it and unit 288 read");
+        Line("//     upstream: ft8_lib carries FT4, so the port carries FT4. The old sentence was");
+        Line("//     rewritten rather than left standing, because a remark describing a skip that");
+        Line("//     no longer happens is what makes the next reader reinstate it from habit.");
         Line("//");
         Line("// </auto-generated>");
         Line();

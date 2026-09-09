@@ -18,9 +18,12 @@
 //     produces the same bytes, and a clock would make it differ from itself on every
 //     run, which would destroy exactly that proof.
 //
-//     The three FT4-only tables in the same source -- kFT4_Costas_pattern,
-//     kFT4_Gray_map and kFT4_XOR_sequence -- are deliberately not converted. FT4 is
-//     parked, and an unused table in a published library is a liability.
+//     THE THREE FT4 TABLES ARE HERE NOW. Until unit 289 this header said they were
+//     deliberately not converted, because FT4 was parked and an unused table in a
+//     published library is a liability. HM-DEC-160 unparked it and unit 288 read
+//     upstream: ft8_lib carries FT4, so the port carries FT4. The old sentence was
+//     rewritten rather than left standing, because a remark describing a skip that
+//     no longer happens is what makes the next reader reinstate it from habit.
 //
 // </auto-generated>
 
@@ -69,6 +72,30 @@ public static class Ft8Tables
     public static ReadOnlySpan<byte> Ft8GrayMap => new byte[]
     {
         0x00, 0x01, 0x03, 0x02, 0x05, 0x06, 0x04, 0x07,
+    };
+
+    /// <summary>The four DIFFERENT four-tone Costas arrays FT4 synchronises on, one per sync group, four rows of four.</summary>
+    /// <remarks>kFT4_Costas_pattern [4][4], 16 elements.</remarks>
+    public static ReadOnlySpan<byte> Ft4CostasPattern => new byte[]
+    {
+        0x00, 0x01, 0x03, 0x02,
+        0x01, 0x00, 0x02, 0x03,
+        0x02, 0x03, 0x01, 0x00,
+        0x03, 0x02, 0x00, 0x01,
+    };
+
+    /// <summary>The Gray code that maps a two-bit symbol value onto one of the four tones.</summary>
+    /// <remarks>kFT4_Gray_map [4], 4 elements.</remarks>
+    public static ReadOnlySpan<byte> Ft4GrayMap => new byte[]
+    {
+        0x00, 0x01, 0x03, 0x02,
+    };
+
+    /// <summary>The pseudorandom sequence an FT4 message is exclusive-ORed with before its checksum and parity are computed.</summary>
+    /// <remarks>kFT4_XOR_sequence [10], 10 elements.</remarks>
+    public static ReadOnlySpan<byte> Ft4XorSequence => new byte[]
+    {
+        0x4A, 0x5E, 0x89, 0xB4, 0xB0, 0x8A, 0x79, 0x55, 0xBE, 0x28,
     };
 
     /// <summary>The LDPC(174,91) generator matrix, LdpcM rows of LdpcKBytes bytes, most significant bit first.</summary>
