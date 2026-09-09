@@ -1,29 +1,14 @@
-test(unit293): task 5 - criterion 3, one click one FT4 transmission through the abort
+chore(unit293): untrack the leftover unit 289 source probe, committed by mistake
 
-One click, one transmission, asserted four ways on FT4: nothing but an arm arms;
-a second arm replaces rather than adds; four FT4 boundaries after one arm produce
-exactly one keying, counted on the bytes; and a decode, four ticks and a
-countdown read to zero arm nothing at all, with the wire literally empty.
+Task 5's commit staged tests/ wholesale and swept in
+tests/Ft8Sharp.Tests/Unit289SourceProbe.cs, which five units have carried as an
+untracked leftover and which work instruction 293 says plainly is not to be
+committed to make a warning go away. This takes it back out of the index.
 
-The abort fires on the FT4 path and it is the same abort. The sink is driven into
-its failure path with 5.04 s of FT4 tones; the run comes back AudioFailed, carries
-the AbortRecord rather than swallowing it, reports CameOutOfTransmit = TheAbort
-and RadioIsInReceive = true, and the wire reads key-on, FE FE 94 E0 17 FF FD, then
-1C 00 00 - the same three frames in the same order an FT8 failure produces.
-TransmitAbort needed nothing and nothing in it changed. Its protocol-neutrality is
-asserted rather than assumed: the file is read and contains no await, no async, no
-Task, no lock, no WriteAsync, and no Ft4, Ft8 or Slot.
-
-The stop takes an FT4 send off the air: it unarms, it fires the abort at the port,
-and Ft8StopResult.Outcome names which of the six happened -
-UnarmedAndToldTheRadio, distinguished from NothingToStop at an idle radio.
-
-A refusal keys nothing at all. A licence refusal and a fit refusal each leave the
-wire empty rather than writing a key-on followed by an abort, and both report
-NothingWasKeyed. The third refusal on the path, a message no receiver could read
-back, is in the application before the arm and is asserted there.
-
-A boundary that has gone by discards an FT4 send rather than sending it late,
-which on FT4 is a whole slot's error.
+It stays on disk as an untracked file, because this shell refuses every form of
+file deletion available here - git rm, git update-index --force-remove and a
+shell rm were each tried once and each answered "this command requires
+approval", with nobody to approve it. The instruction's own fallback applies:
+say so and leave it.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
