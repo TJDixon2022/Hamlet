@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 6
+STATE: COMPLETED
+TASK: 6 of 6
 WORK_INSTRUCTION: 287 - an achievements screen, and the first of each mode
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T23:46:04-04:00
-NOTE: Tasks 3 and 4 done - the mode first reuses BadgeAward and BadgeWindow, 23 of 23 green including unit 286s six. Two watched reds recorded. Next task 5, the two-mode run.
+UPDATED: 2026-09-08T23:48:58-04:00
+NOTE: 6 of 6, none dropped. One of the six mode firsts can be earned today and the screen says which. 23 of 23 green, three watched reds. Three asks back.
 
 ---
 

@@ -1,15 +1,18 @@
-# Work instruction 286 — the ring counts down, the badge announces itself, and Hamlet gets a face
+# Work instruction 287 — an achievements screen, and the first of each mode
 
 ```
-UNIT:      286
+UNIT:      287
 TASKS:     6 of 6, none dropped
-NUMBER:    the seconds the ring shows with the turn unknown
-           before: none, a bare ?
-           after:  the seconds to the next boundary, 1 to 15
-                   (7 s into a slot with nothing heard, it reads 8)
+NUMBER:    how many of the six mode firsts can be earned today
+           1 - FT8
+           CW    : Hamlet keys it and cannot log it
+           Voice : Hamlet has no voice path at all
+           FT4   : an ADIF submode of MFSK, and no SUBMODE field exists
+           PSK31 : an ADIF submode of PSK, and no SUBMODE field exists
+           WSPR  : a beacon, so there is no contact to have
 ADVANCED:  no
-DRIFT:     9 consecutive units without advance, carried from unit 285
-VERSION:   1.12.205 -> 1.12.210
+DRIFT:     10 consecutive units without advance, carried from unit 286
+VERSION:   1.12.210 -> 1.12.213
 BRANCH:    main, pushed
 ```
 
@@ -23,106 +26,107 @@ BRANCH:    main, pushed
 `MURC.sln` absent, `Hamlet.sln` at the root. **Nothing here is evidence about the
 radio.**
 
-**Nothing was recorded under §12.1.** No shell refusals.
+**Nothing was recorded under §12.1.** One shell refusal: a heredoc hung and was
+backgrounded by the harness; it was stopped rather than polled, and every edit after
+it went through a script file, which is the tool fact this order carries.
 
-### Task 1 — the ring counts down
+### Task 1 — what the log can tell you about a mode
 
-**The engine never suppressed it.** `Ft8Turn.Read` has returned the seconds for the
-no-station state since unit 277 wrote it; **the number was thrown away one layer up**,
-by a view-model condition that named the state instead of asking whether a count
-existed. `TurnRingCount` now reads the count, so **a question mark means there is no
-count rather than no turn.**
+**`MODE` holds one value and it is a literal.** `MainWindowViewModel.cs:10132` hands
+`Ft8StationConditions` the string `"FT8"`, and `LogContactAsync` takes a decoded FT8
+row and is the only route into the log. **The dialog does not let him edit it
+either**: `LogContactViewModel`'s own remarks say the observed fields are not editable
+and his words go in `COMMENT` and nowhere else.
 
-**Unit 277's rule is untouched.** No parity is guessed, `TurnRingIsUnknown` still reads
-true, the ring is still dashed, and the four states still separate without colour: **the
-dash says the turn is unknown and the number says the clock is not.** Only `NoClock`
-keeps the `?`, because with no measured offset there is no boundary to count to.
+**Three claims in the order did not survive the tree**, all reported and none
+repaired:
 
-**One change was made and reverted.** Reading *always* literally, I extended the count
-to the `Stopped` state as well. That collided with unit 277's
-`StoppedEarlySaysSoRatherThanPretendingItRan`, which states there is nothing left
-running to count. **Reverted and raised for a ruling** rather than pushed through.
+| The order says | The tree says |
+|---|---|
+| CW has no send path | **HM-DEC-059 built one.** `MainWindowViewModel.cs:7791` attaches a `CwTransmitter` over a `KeyerCwSender`. What CW lacks is a way into the log |
+| `Tools > My contacts…` | It is under **Radio**, and has been since unit 278 |
+| three modes then a fourth fires | **Only three of the six can be matched from a record at all**, so there is no fourth |
 
-### Task 2 — the badge announces itself
+**And a second obstacle the order does not mention.** `AdifContact` has no `SUBMODE`
+field, so FT4 and PSK31 are not waiting on a transmitter, they are unrepresentable.
+Written up in `docs/unit287-what-the-log-says-about-a-mode.md`.
 
-`BadgeAward` is a record the view model raises; `BadgeWindow` shows it. **That split is
-what makes *what he is told and when* provable without opening a window**, and it means
-nothing about a badge can reach the send path — an event cannot ask a subscriber to
-transmit.
+### Task 2 — the achievements screen
 
-**It cannot cost him a contact, and that is one property with one mechanism.**
-`ShowActivated="False"`, so the window never activates — **and a window that activates
-closes an open right-click menu**, which is exactly how a dialog would cost him the
-reply it is congratulating him for. `Show` not `ShowDialog`. Not in the taskbar. Gone in
-eight seconds on its own, because a notice he has to dismiss is a click he did not ask
-for at the moment he can least afford one. **Asserted on the window**, because a default
-is easy to lose.
+**`Radio > Achievements…`, directly beneath `My contacts…`.** His ruling has two
+halves that disagree in the tree, and *beside the contact log* is the half carrying
+its own reason: achievements are his operating record, the same kind of thing as his
+log. **Raised in §4 in case he meant the other half.**
 
-**Everything unit 278 built is untouched and re-asserted**: once per rank, every rank a
-jump passes, and nothing on a first look at a log Hamlet was not there for.
+**Four states, because the tree holds four.** The order names two and they are not
+enough: CW can be sent and not logged, and WSPR is not a contact. **Each state has
+its own mark, its own word and its own sentence**, and an earned row carries a line
+of evidence no other row has, so the card reads in grayscale (§0.6).
 
-### Task 3 — the new marks
+**A watched red caught a real one.** A `MODE=WSPR` record lit the row as **earned**
+and the hover said *you worked this one*, naming a station and a date. That line is
+legal ADIF any logger would write, and it still describes a beacon nobody answered.
+**A beacon mode is now never earned, including from a record that says it.**
 
-**`SvgMark` refused the full mark**, exactly as the order predicted:
+### Task 3 — a mode first announces itself
 
-```
-System.NotSupportedException : the mark uses <text>, which this loader does not
-handle. It is deliberately narrow: an element it drew wrongly would be worse
-than one it refused.
-```
+**`BadgeAward` gained a mode-first shape and `BadgeWindow` shows it.** No second
+notice: a second window would be a second place to get wrong the one property that
+matters, which is that it never takes his focus, and the one to drift would be
+whichever nobody was watching. **Unit 286's six badge tests pass unchanged.**
 
-**Extended narrowly rather than the mark redrawn** — the mark is approved and the loader
-is not. Text becomes glyph outlines, so the letters scale with everything else and the
-mark stays one object. SVG puts the baseline at `y` and `FormattedText` puts the top
-there, so the baseline distance is subtracted; without it every label sits a line low.
+**Seeded exactly as unit 278 seeds the belt**, and watched failing without it: a first
+look at a log holding FT8 and CW raised **two** notices for contacts Hamlet was not
+there for.
 
-**Both defects are gone: 0 outside on every side.** The full mark's ink is
-**18, 5.75 → 358.25, 348** in a 380 × 360 box, confirming the instruction's figure to a
-quarter unit; the small mark fills its 64 × 64 exactly.
+**Two notices can now stack rather than land on one another.** A belt crossing and a
+mode first are separate ladders off the same log, and a notice that is covered is a
+notice he never got.
 
-**The viewBox assertions are turned the right way round rather than deleted.** What was
-worth keeping was never 18.5 and 15.5 — it was the property that a mark stays inside the
-box it declares.
+### Task 4 — WSPR, decided honestly
 
-**And one stale fact was caught.** Unit 285's account of what survives at 16 px described
-a 68-unit drawing with 3.4, 4.0 and 3.0 strokes. That drawing is gone, and the test
-**would have gone on passing while describing something no longer in the tree.**
+**The row says `not a contact mode`** and the card says why unasked. **No WSPR
+achievement was invented.** What it would take is named and left: his own callsign in
+the `wsprnet.org` spot database, which is the shape HM-DEC-075 already built for the
+skimmer watch — *who heard me*, not *who did I work*. **That is a ruling and it is
+his** (§4).
 
-### Tasks 4 and 5 — measured, and listed
+### Tasks 5 and 6
 
-`docs/unit286-what-changed.md`. **No fact left a screen.**
-
-### Task 6 — the outcome entry
-
-Appended by `tools\arbiter\outcome-append.bat`, exit 0, as `UNIT 286 - STEP E`.
+`docs/unit287-what-the-screen-says.md`. **No fact left a screen.** The outcome entry
+was appended by `tools\arbiter\outcome-append.bat`, exit 0, as `UNIT 287 - STEP E`.
 
 ---
 
 ## 2. What Tim should expect
 
-**The clock is there whether or not anybody has spoken.** Open the Digital tab with an
-empty For you panel and the ring drains with a number in it — the seconds to the next
-`:00`, `:15`, `:30` or `:45`. The ring is still dashed, because **Hamlet still does not
-know whose slot it is and is not going to guess.** Hover it and it says so, and then
-tells you the count: *…no turn to work out. The next slot starts in 8 seconds.*
+**A screen that says what you have done and what you have not tried.** Radio menu,
+under *My contacts…*. The belt at the top with the ring, the count and the bar; the
+six modes below.
 
-**Your tenth contact says so.** A small notice appears at the bottom-right of the
-window: **yellow belt**, *That is 10 contacts logged.*, *15 more and the ring turns
-orange.* **It takes nothing from you** — no focus, no click, and it will not close a
-right-click menu you have open. It leaves after eight seconds, or sooner if you click
-it.
+**One of the six is yours to go and do and the card says which.** FT8 reads *not yet
+done* with a hollow ring. CW, FT4, PSK31 and Voice read *waiting on Hamlet* with a
+dashed one, because **a thing you have not been given the means to do is not a thing
+you have failed to do**. WSPR reads *not a contact mode*, because nobody works
+anybody on a beacon.
 
-**The taskbar is not ugly.** The rust tile with the faceplate and the quill, and the
-full transceiver in About at about 170 px.
+**Hover any row and it says what stands in the way**, in its own words. The six
+explanations run to 1,557 characters and none of them is on the screen until you ask.
+
+**Your first FT8 contact will say so**, in the same small notice the tenth contact
+uses. It takes no focus and leaves after eight seconds.
 
 ### What will look wrong and is not
 
-- **The ring is dashed while showing a number.** Deliberate: the dash is the turn being
-  unknown, the number is the clock being known.
-- **At 16 px the quill's inner detail is gone.** The whip survives at 1.38 px; the spine
-  and barbs are sub-pixel. Computed, not seen.
-- **A badge will not fire on a fresh install** however many contacts your log holds.
-  Unit 278's rule, untouched.
+- **The achievements item is under Radio, not Tools.** Your log is there, and beside
+  your log is where you put this. Say the word and it moves.
+- **CW says *waiting on Hamlet* even though Hamlet can key CW.** It can. It cannot
+  write the contact down: logging happens from a decoded FT8 line and from nothing
+  else.
+- **A CW row could still light.** An ADI file is portable, so a record another logger
+  wrote into `contacts.adi` counts. That is right: the achievement is what your log
+  says you did.
+- **Nothing announces on a first look**, however many modes your log holds.
 
 ### The build and the tests
 
@@ -131,79 +135,108 @@ wrote or rewrote, plus the neighbours its changes could disturb.
 
 | Class | Result |
 |---|---|
-| `TheTurnIsARingTests` | 9 of 9 — three new, one replaced |
-| `TheBadgeAnnouncesItselfTests` | 6 of 6 — new |
-| `TheMarksRenderTests` | 6 of 6 — three assertions re-taken |
-| `TheBeatIsDerivedNotGuessedTests` (engine) | 13 of 13 |
-| `BothHalvesOfTheConversationTests` | 18 of 18 |
-| `TheCountWearsARankTests` | 5 of 5 |
+| `TheAchievementsScreenTests` | 8 of 8 — new |
+| `HowMuchTheApplicationSaysTests` | 5 of 5 — two ceilings added |
+| `TheBadgeAnnouncesItselfTests` | 6 of 6 — unchanged, and that is the point |
 | `BindingHealthTests` | 1 of 1 |
-| `HowMuchTheApplicationSaysTests` ceiling | 1 of 1 |
-| **Total** | **46 of 46** in the app run, plus 13 in the engine |
+| `VoiceTests` | 3 of 3 |
+| **Total** | **23 of 23** |
+
+**Three reds were watched before they were fixed**, each named in the test that holds
+it: the WSPR record lighting the row, the missing seed raising two notices, and an
+ordinal comparison reading a lowercase `cw` record as unearned. **Two remarks that
+claimed more than had actually been watched were corrected rather than left
+standing.**
 
 Inherited reds untouched: `HM-OPEN-088`'s ten, the CW set, the `Ft8Sharp.Deep`
 tripwire.
 
-**Six commits, all on `main`, all pushed**, 1.12.205 → 1.12.210. Nothing uncommitted.
+**Four commits, all on `main`, all pushed**, 1.12.210 → 1.12.213. Nothing
+uncommitted.
 
 ---
 
 ## 3. What we should do next
 
-### The ring with the turn unknown
+### The screen against a two-mode log
 
-7 s into a slot, nothing heard from anybody, a measured offset:
+Five records, three FT8 and two CW, `W3YNI` twice so a screen counting stations
+rather than contacts would read 4 and be caught.
 
 ```
-no station : count "8"  unknown True  sweep 192°
-no clock   : count "?"  unknown True
+the log holds 5 records
+the screen counts 5
+the belt reads   5 contacts logged, on the white belt.
+the card reads   The first of each mode: 2 of 6.
+
+●  CW     earned              VA3VRR on 2026-08-17, 40m
+●  FT8    earned              W3YNI on 2026-08-14, 20m
+◌  FT4    waiting on Hamlet   (nothing to show)
+◌  PSK31  waiting on Hamlet   (nothing to show)
+—  WSPR   not a contact mode  (nothing to show)
+◌  Voice  waiting on Hamlet   (nothing to show)
+
+unasked: 3 of these are waiting on Hamlet rather than on you. WSPR is a beacon
+rather than a conversation, so there is no contact to log and no first to earn.
+Hover any row and it says what stands in the way.
 ```
 
-**A count and still unknown.** And the count is the corrected clock, not the machine's —
-the same PC moment under a 4-second offset reads **4** instead of **8**.
+**5 and 5.** One reading through `ContactLogStore`, so the belt, the card and the log
+window cannot disagree. **And the earned rows name the earliest contact in the mode**:
+the CW records sit out of date order on purpose, and a screen taking the first match
+would name `N4L`.
 
-The hover:
+### The ADIF mode strings, cited
 
-> Nothing has been heard on this frequency yet, so there is nobody to take a turn with
-> and no turn to work out. The next slot starts in 8 seconds.
+Read from the **ADIF Specification, version 3.1.4, released 6 December 2022**, at
+`https://www.adif.org/314/ADIF_314.htm`, retrieved **2026-09-08** — the same edition
+and page `AdifLog` already cites, so there is one source and not two.
 
-### The badge dialog at 10, and at 9 → 26
+| Hamlet's name | ADIF | A record spells it |
+|---|---|---|
+| CW | **Mode `CW`** | `MODE=CW` |
+| FT8 | **Mode `FT8`** | `MODE=FT8` |
+| WSPR | **Mode `WSPR`** | `MODE=WSPR` |
+| FT4 | **Submode of `MFSK`** | `MODE=MFSK, SUBMODE=FT4` |
+| PSK31 | **Submode of `PSK`** | `MODE=PSK, SUBMODE=PSK31` |
+| Voice | **not in the specification** | `MODE=SSB`, `AM` or `FM` |
 
-**At 10:**
+**`MODE=FT4`, `MODE=PSK31` and `MODE=Voice` are all invalid ADIF.** A first matching
+on the obvious string would never fire, and a row that looks earnable and is not is
+worse than one that is missing.
 
-> **yellow belt**
-> That is 10 contacts logged.
-> 15 more and the ring turns orange.
+### What WSPR does on the card, and why
 
-**At 0 → 26**, one notice naming both: *That is 10 and 25 contacts logged.*, headed
-**orange belt**. Not only 25.
+**It reads `not a contact mode`**, and the card's unasked line explains it: *WSPR is a
+beacon rather than a conversation, so there is no contact to log and no first to
+earn.*
 
-**At 10 again, and at 11:** nothing. **At a fresh log of 40 on first look:** nothing —
-and then 50 does fire, so seeding silences the past and not the future.
+**A `MODE=WSPR` record does not light it.** Such a record is legal ADIF, any logger
+would write it, and it would name a station he never worked: a beacon has no
+addressee, no exchange and no moment at which two operators agreed they had made
+contact. **That was the watched red of task 2**, and it arrived by the one route
+nobody expects, which is a perfectly valid record.
 
-### What `SvgMark` refused, and what was done
+**What it would take instead is a different measurement** and it is not this unit's to
+invent (§4).
 
-**`<text>`**, with the exception quoted in §1. **The loader was extended, not the mark
-redrawn.** Seven of the full mark's 35 shapes are text and now draw as glyph outlines:
-`USB-D`, `FIL1`, `RX`, `UTC`, `7.074`, `.0` and the S-meter's `S`.
+### The notice on a first FT8 contact
 
-### What was verified by looking
+```
+first FT8 contact
+W3YNI is your first contact on FT8.
+It is on the achievements screen from now on.
+```
 
-**Nothing.** The limit was re-checked, not assumed: the headless drawing backend
-composes a visual tree and rasterises nothing, and `CopyPixels` still throws *“CopyPixels
-is not supported for this bitmap type”*. Seven things were measured — shape counts, ink
-against viewBox, the realized 170 × 161 in About, the 256 × 256 icon — and **four are
-listed as not verified**: the taskbar, the title-bar icon at 16 px, whether the About
-layout looks balanced, and **whether the display reads as a transceiver and the quill as
-a quill**, which is the whole point of the mark.
+The ring reads **FT8** rather than a running total, in the card's own earned green.
+**A second FT8 contact says nothing.**
 
 ### Then
 
-1. **Run it and look.** The ring, the mark in About, the taskbar. Everything about
-   appearance here is geometry.
-2. **Make your tenth contact** and see whether the notice lands where it should and
-   leaves when it should.
-3. **Rule on the `Stopped` ring** (§4).
+1. **Run it and look.** Radio > Achievements. The four marks, the belt, and whether
+   the rows read at a glance.
+2. **Rule on where the menu item goes** (§4).
+3. **Rule on WSPR** if you want it measured rather than explained (§4).
 
 ---
 
@@ -211,28 +244,40 @@ a quill**, which is the whole point of the mark.
 
 Nothing blocks the next unit.
 
-### Whether the ring should count down after a stop
+### Whether Achievements belongs under Radio or under Tools
 
-**Ruling asked for:** you ruled the ring *always* shows the seconds to the next slot
-boundary. Unit 277 ruled the `Stopped` state shows no count, with a test that says so in
-as many words: *there is nothing left running to count.*
+**Ruling asked for:** you ruled *an achievements screen off the Tools menu, beside the
+contact log*. **The contact log is not under Tools.** It is under Radio, beneath *What
+the radio is doing…*, and has been since unit 278.
 
-**Why they collide:** those two rules were about different quantities. Unit 277 meant
-the stopped **transmission** has nothing left to count. The next **slot boundary** is
-still fifteen seconds away and still knowable, and that is what you asked for
-everywhere else.
+**What I did:** put Achievements directly beneath *My contacts…* under Radio, because
+your reason for it not being under Help is that it is your operating record, *the same
+kind of thing as your log*, and that reason points at the log rather than at a menu
+name. Tools' own comment in the markup says it keeps the things about Hamlet rather
+than about the rig, which cuts the other way.
 
-**What I did:** extended the count to `Stopped`, watched unit 277's test go red, and
-**reverted it.** Your ruling named the empty-panel case and its test criterion names
-that case; overruling a deliberate prior ruling on my reading of one word is not a
-session's call.
+**Rejected:** putting it under Tools away from the log, which satisfies the letter and
+separates the two screens that answer the same question; and moving the contact log to
+Tools as well, which is a second ruling nobody asked for.
 
-**Rejected:** changing unit 277's test to match. That is deciding the question by
-editing the thing that objected.
+### Whether WSPR gets an achievement of its own, measured differently
+
+**Ruling asked for:** a first WSPR contact cannot exist. **What could exist is a first
+WSPR spot**: your callsign turning up in the `wsprnet.org` database, which is *who
+heard me* rather than *who did I work*, and is the shape HM-DEC-075 already built for
+the skimmer watch.
+
+**Why it is yours:** it is a new assertion from a new source, it needs a rule about
+what counts as a spot, and the order says in as many words not to invent it. The card
+names it in the hover and claims nothing.
+
+**Rejected:** deriving it from a log, which is the thing that cannot be done; and
+leaving WSPR off the card entirely, which loses the explanation of why it is not
+there.
 
 ### Asks still outstanding
 
-Carried forward per HM-DEC-139. **This order parks all of it**; listed so the queue
+Carried forward per HM-DEC-139. **This order parks the whole queue**; listed so it
 survives.
 
 1. **Two issues of one work-instruction number.** Unit 271, and 252 before it. **The
@@ -254,10 +299,11 @@ survives.
 16. **Whether an order should name a behaviour rather than a file and line**, unit 283.
     **Answered in practice by unit 284.**
 17. **Whether three admissions on the simulated radio is right**, unit 284.
-18. **The full mark's viewBox**, unit 285. **Closed by this unit** — the redrawn mark
-    fits.
-19. **The small mark's clipped quill**, unit 285. **Closed by this unit** — the redrawn
-    mark fits.
-20. **Whether a rasterising test harness is worth a package**, unit 285. **Still open,
-    and this unit is the second that could verify nothing about appearance.**
-21. **Whether the ring should count down after a stop**, unit 286. **New.**
+18. **Whether a rasterising test harness is worth a package**, unit 285. **Still open,
+    and this unit is the third that could verify nothing about appearance.**
+19. **Whether the ring should count down after a stop**, unit 286.
+20. **Whether Achievements belongs under Radio or under Tools**, unit 287. **New.**
+21. **Whether WSPR gets an achievement measured from spots**, unit 287. **New.**
+22. **Whether the log should carry `SUBMODE`**, unit 287. **New.** Without it FT4 and
+    PSK31 can never light, and two ADIF submodes of one mode would collapse onto one
+    row even with a transmitter for them.
