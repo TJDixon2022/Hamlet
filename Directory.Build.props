@@ -533,8 +533,18 @@
     from stations that did not land on Hamlet's analysis grid, which is all of them; nothing else on
     a screen moves.
   -->
+  <!--
+    1.12.255 -> 1.12.256, UNIT 296 TASK 5, UNDER HM-DEC-150. A PATCH: no file under src/ changed and
+    the product is step 1's two must-pass criteria re-taken at placements Hamlet did not choose.
+    Criterion 1 off grid, in clear air, 106 messages each at a frequency drawn uniform in one whole
+    tone spacing and a lead drawn uniform in one whole symbol period, seed 296: 106 of 106 at
+    upstream's 2x2 and 106 of 106 at the shipping 4x2, 0 wrong and 0 missed at both. Criterion 3 is
+    zero wrong decodes and it is zero. At -13 dB on the same draws the grid shows what it bought:
+    95 of 106 at 2x2 against 105 of 106 at 4x2, still zero wrong. Ft4RoundTripTests's on-grid
+    assertion is untouched and still reads 106 of 106 at the new grid.
+  -->
   <PropertyGroup>
-    <Version>1.12.255</Version>
+    <Version>1.12.256</Version>
   </PropertyGroup>
 
   <!--
