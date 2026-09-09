@@ -1,5 +1,6 @@
 using System.Globalization;
 using Ft8Sharp.Deep;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Transmit;
 using Xunit;
@@ -92,7 +93,7 @@ public sealed class TheExchangeWalksThroughTheFourStatesTests
             + $"{Ft8FourStateWalkScene.SlotCount} slots");
         _output.WriteLine(
             $"gone quiet after {Ft8ContactStates.GoneQuietAfterSlots} slots = "
-            + $"{Ft8ContactStates.GoneQuietAfterSeconds:F0} s (a choice, not a "
+            + $"{Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft8):F0} s (a choice, not a "
             + "specification)");
         _output.WriteLine(string.Empty);
         _output.WriteLine($"{"slot",4}  {"what passed",-22}  the row reads");
@@ -109,7 +110,7 @@ public sealed class TheExchangeWalksThroughTheFourStatesTests
 
             Assert.NotNull(record);
 
-            var row = Ft8ContactStates.Read(record!, corpus.SlotUtc(slot));
+            var row = Ft8ContactStates.Read(record!, corpus.SlotUtc(slot), SlotGrid.Ft8);
 
             var passed = corpus.Lines.Where(line => line.Slot == slot)
                 .Select(line => line.Message)

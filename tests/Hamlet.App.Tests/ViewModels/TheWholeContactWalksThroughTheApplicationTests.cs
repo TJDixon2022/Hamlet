@@ -433,7 +433,7 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
         Assert.NotNull(record);
 
         var complete = Ft8ContactStates.IsComplete(record!);
-        var read = Ft8ContactStates.Read(record!, second.SlotUtc);
+        var read = Ft8ContactStates.Read(record!, second.SlotUtc, SlotGrid.Ft8);
 
         _output.WriteLine("MEASURED, development machine, FACT-004:");
         _output.WriteLine("MEASUREMENT 1 - the ledger, after his own last message");

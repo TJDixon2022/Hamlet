@@ -6,9 +6,9 @@ using Xunit.Abstractions;
 namespace Hamlet.RadioEngine.Tests.Contacts;
 
 /// <summary>
-/// **Work instruction 294 task 1 - the starting position, driven rather than read.**
-/// What the contact ledger answers when the traffic is FT4, and how many messages
-/// the right-click menu offers on a row that carries no measured ratio.
+/// **Work instruction 294 tasks 1 and 2 - what the operator is told about an FT4
+/// station.** What the contact ledger answers when the traffic is FT4, and how many
+/// messages the right-click menu offers on a row that carries no measured ratio.
 /// </summary>
 /// <remarks>
 /// <para>**WHY THIS EXISTS: NOBODY HAD EVER RUN AN FT4 SLOT THROUGH THE
@@ -18,17 +18,26 @@ namespace Hamlet.RadioEngine.Tests.Contacts;
 /// was already right because a report said the fix was one line**, when nobody had
 /// run a slot through it and nothing afterwards can recover the starting figure.
 /// </para>
-/// <para>**IT ASSERTS TODAY AND NOT THE RIGHT ANSWER.** Every assertion below is
-/// on the behaviour at HEAD <c>36dc001</c>, wrong figures included, and it is
-/// rewritten by tasks 2 and 5 to assert the right ones - the shape units 292 and
-/// 293 used for their own traces. A number that is wrong and recorded is worth
-/// more than a number that is wrong and never printed.</para>
-/// <para>**THE TWO GRIDS ARE BOTH REAL AND ONLY ONE IS REACHED.**
-/// <see cref="SlotGrid.Ft4"/> exists, carries the instance
-/// <c>BoundariesBetween</c> and is what the FT4 tab runs on;
-/// <see cref="Ft8StationRecord.SlotsAgo"/> calls the static
-/// <c>Ft8Slots.BoundariesBetween</c>, which is <see cref="SlotGrid.Ft8"/>'s. So
-/// the arithmetic is right and the grid reaching it is not.</para>
+/// <para>**WHAT IT ASSERTED FIRST AND WHAT IT ASSERTS NOW.** As written for task 1
+/// it asserted the behaviour at HEAD <c>36dc001</c>, wrong figures included: a
+/// station heard four FT4 slots ago read *your move, 2 slots*, and gone quiet was
+/// first reported at eight FT4 slots rather than four. **Task 2 rewrote the ledger
+/// case to assert the right answers**, with the wrong ones quoted in the comments
+/// beside them so that what moved is on the record. The menu case still asserts
+/// today, and task 5 rewrites that one.</para>
+/// <para>**THE TWO GRIDS WERE BOTH REAL AND ONLY ONE WAS REACHED.**
+/// <see cref="SlotGrid.Ft4"/> existed, carried the instance
+/// <c>BoundariesBetween</c> and was what the FT4 tab ran on;
+/// <see cref="Ft8StationRecord.SlotsAgo"/> called the static
+/// <c>Ft8Slots.BoundariesBetween</c>, which is <see cref="SlotGrid.Ft8"/>'s. So the
+/// arithmetic was right and the grid reaching it was not, and task 2's whole change
+/// is the grid arriving as a parameter with no default.</para>
+/// <para>**ONE ROOT CAUSE AND NOT TWO.** Unit 293's section 4 gave *gone quiet* and
+/// *slots ago* as separate defects. They are one: the decision in
+/// <c>Ft8ContactStates.Read</c> is <c>sinceHeard &gt;= GoneQuietAfterSlots</c>, in
+/// slots, and <c>sinceHeard</c> is <c>SlotsAgo</c>'s answer - so the grid reaching
+/// <c>SlotsAgo</c> reached the threshold with it. The walk below asserts both in one
+/// table, which is where a partial fix would show.</para>
 /// <para>**NOTHING HERE DECODES OR TRANSMITS.** It is the ledger, the four states
 /// and <see cref="Ft8SendOptions"/>, all of which are pure over values.</para>
 /// </remarks>
@@ -48,90 +57,138 @@ public sealed class Unit294WhatTheOperatorIsToldAboutAnFt4StationTests(ITestOutp
         SlotZeroUtc.AddTicks((long)(slot * SlotGrid.Ft4.SlotSeconds * TimeSpan.TicksPerSecond));
 
     /// <summary>
-    /// **The ledger, driven with FT4 traffic, printed beside the true count.**
+    /// **The ledger, driven with FT4 traffic, counting on FT4's grid.**
     /// </summary>
     /// <remarks>
     /// A station heard in FT4 slot 0 and read at FT4 slots 1 to 12. The true count
-    /// is the slot index, because the grid steps every 7.5 s; what
-    /// <see cref="Ft8StationRecord.SlotsSinceHeard"/> answers is the count of
-    /// **fifteen-second** boundaries, which is half of it.
+    /// is the slot index, because the grid steps every 7.5 s. Before task 2
+    /// <see cref="Ft8StationRecord.SlotsSinceHeard"/> answered the count of
+    /// **fifteen-second** boundaries, which is half of it, and *gone quiet* -
+    /// tested in slots against the same figure - therefore waited twice as long.
     /// </remarks>
     [Fact]
-    public void TheLedgerCountsFt4TrafficOnFt8sGridAndTheRowSaysHalfTheTrueAge()
+    public void TheLedgerCountsFt4TrafficOnFt4sGridAndGoneQuietFollowsItInTheSameRow()
     {
         var ledger = new Ft8ContactLedger(Operator);
         ledger.RecordHeard(Operator + " " + Station + " EM12", Ft4SlotUtc(0));
 
-        output.WriteLine("THE LEDGER ON FT4 TRAFFIC, BEFORE UNIT 294 CHANGED ANYTHING");
+        output.WriteLine("THE LEDGER ON FT4 TRAFFIC");
         output.WriteLine($"  grid the tab is running   {SlotGrid.Ft4.Name}, "
             + $"{SlotGrid.Ft4.SlotSeconds:F1} s a slot");
-        output.WriteLine($"  grid SlotsAgo counts on   {SlotGrid.Ft8.Name}, "
-            + $"{SlotGrid.Ft8.SlotSeconds:F1} s a slot");
         output.WriteLine($"  gone quiet after          {Ft8ContactStates.GoneQuietAfterSlots} slots "
-            + $"= {Ft8ContactStates.GoneQuietAfterSeconds:F0} s (the constant, on FT8's grid)");
+            + $"= {Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft4):F0} s on FT4, "
+            + $"{Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft8):F0} s on FT8");
         output.WriteLine(string.Empty);
-        output.WriteLine($"{"true FT4",-10}{"seconds",-10}{"SlotsSinceHeard",-18}{"row says",-24}what it should say");
+        output.WriteLine(
+            $"{"true FT4",-10}{"seconds",-10}{"SlotsSinceHeard",-18}{"the row reads",-24}"
+            + "what it read at 36dc001");
 
         var record = ledger.For(Station)!;
-        var firstQuietReported = -1;
-        var firstQuietTrue = -1;
+        var firstQuiet = -1;
 
         for (var slot = 1; slot <= 12; slot++)
         {
             var at = Ft4SlotUtc(slot);
-            var answered = record.SlotsSinceHeard(at)!.Value;
-            var read = Ft8ContactStates.Read(record, at);
-            var trueRead = slot >= Ft8ContactStates.GoneQuietAfterSlots
-                ? $"gone quiet, {slot} slots"
-                : $"your move, {slot} slots";
+            var answered = record.SlotsSinceHeard(at, SlotGrid.Ft4)!.Value;
+            var read = Ft8ContactStates.Read(record, at, SlotGrid.Ft4);
 
-            if (firstQuietReported < 0 && read.State == Ft8ContactState.GoneQuiet)
-            {
-                firstQuietReported = slot;
-            }
+            // What the same moment said before task 2: the FT8 grid, whatever mode
+            // the tab was running. Printed rather than remembered.
+            var before = Ft8ContactStates.Read(record, at, SlotGrid.Ft8);
 
-            if (firstQuietTrue < 0 && slot >= Ft8ContactStates.GoneQuietAfterSlots)
+            if (firstQuiet < 0 && read.State == Ft8ContactState.GoneQuiet)
             {
-                firstQuietTrue = slot;
+                firstQuiet = slot;
             }
 
             output.WriteLine(
                 $"{slot,-10}{(at - Ft4SlotUtc(0)).TotalSeconds,-10:F1}{answered,-18}"
-                + $"{read.Text,-24}{trueRead}");
+                + $"{read.Text,-24}{before.Text}");
+
+            // **THE COUNT IS THE TRUE COUNT AT EVERY SLOT OF THE WALK**, which is
+            // what a partial fix could not do: threading the grid into SlotsAgo
+            // without the threshold following, or the other way round, breaks this
+            // table in the middle rather than at one row.
+            Assert.Equal(slot, answered);
+            Assert.Equal(slot, read.Slots);
         }
 
         output.WriteLine(string.Empty);
         output.WriteLine("  A STATION HEARD FOUR FT4 SLOTS AGO");
         var atFour = Ft4SlotUtc(4);
-        output.WriteLine($"    true                    4 FT4 slots, 30.0 s");
-        output.WriteLine($"    SlotsSinceHeard         {record.SlotsSinceHeard(atFour)}");
-        output.WriteLine($"    the row                 \"{Ft8ContactStates.Read(record, atFour).Text}\"");
-        output.WriteLine($"    it should say           \"gone quiet, 4 slots\"");
+        output.WriteLine("    true                    4 FT4 slots, 30.0 s");
+        output.WriteLine($"    SlotsSinceHeard         {record.SlotsSinceHeard(atFour, SlotGrid.Ft4)}");
+        output.WriteLine($"    the row                 "
+            + $"\"{Ft8ContactStates.Read(record, atFour, SlotGrid.Ft4).Text}\"");
+        output.WriteLine("    it read at 36dc001      \"your move, 2 slots\"");
         output.WriteLine(string.Empty);
-        output.WriteLine($"  gone quiet is first reported at FT4 slot {firstQuietReported} "
-            + $"({firstQuietReported * SlotGrid.Ft4.SlotSeconds:F1} s); "
-            + $"it is true from FT4 slot {firstQuietTrue} "
-            + $"({firstQuietTrue * SlotGrid.Ft4.SlotSeconds:F1} s)");
+        output.WriteLine($"  gone quiet is first reported at FT4 slot {firstQuiet} "
+            + $"({firstQuiet * SlotGrid.Ft4.SlotSeconds:F1} s); at 36dc001 it was slot 8 (60.0 s)");
 
-        // TODAY'S ANSWERS. Four FT4 slots after he was heard the ledger says two,
-        // because it counted the two fifteen-second boundaries that fell in those
-        // thirty seconds.
-        Assert.Equal(2, record.SlotsSinceHeard(atFour));
-        Assert.Equal("your move, 2 slots", Ft8ContactStates.Read(record, atFour).Text);
+        // FOUR FT4 SLOTS IS FOUR. It read 2 at HEAD 36dc001.
+        Assert.Equal(4, record.SlotsSinceHeard(atFour, SlotGrid.Ft4));
 
-        // AND THE THRESHOLD FOLLOWS IT, WHICH IS THE ONE-ROOT-CAUSE READING.
-        // The decision at Ft8ContactState.cs:141 is `sinceHeard >= 4` in slots and
-        // sinceHeard is SlotsAgo's answer, so gone quiet trips at eight FT4 slots
-        // rather than four. Nothing reads GoneQuietAfterSeconds to decide anything.
-        Assert.Equal(8, firstQuietReported);
-        Assert.Equal(4, firstQuietTrue);
-        Assert.Equal("gone quiet, 4 slots", Ft8ContactStates.Read(record, Ft4SlotUtc(8)).Text);
+        // AND THE ROW SAYS SO. It read "your move, 2 slots" at HEAD 36dc001, about
+        // a station that had been silent for half a minute.
+        Assert.Equal("gone quiet, 4 slots", Ft8ContactStates.Read(record, atFour, SlotGrid.Ft4).Text);
 
-        // The grid that would have been right is already a value and already has
-        // the arithmetic. It is simply never asked.
+        // THE THRESHOLD FOLLOWED THE COUNT WITHOUT BEING TOUCHED. It tripped at
+        // FT4 slot 8 at HEAD 36dc001 and trips at 4 now.
+        Assert.Equal(Ft8ContactStates.GoneQuietAfterSlots, firstQuiet);
         Assert.Equal(
-            4,
-            SlotGrid.Ft4.BoundariesBetween(Ft4SlotUtc(0), atFour).Count(b => b > Ft4SlotUtc(0)));
+            Ft8ContactState.YourMove,
+            Ft8ContactStates.Read(record, Ft4SlotUtc(3), SlotGrid.Ft4).State);
+
+        // The seconds figure is derived and follows the grid too.
+        Assert.Equal(30.0, Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft4));
+        Assert.Equal(60.0, Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft8));
+    }
+
+    /// <summary>
+    /// **FT8's own answers, in the same walk, on fifteen-second traffic.**
+    /// </summary>
+    /// <remarks>
+    /// The control for *do not change what an FT8 ledger row does*. The same
+    /// station, heard on FT8's grid and read on FT8's grid: four slots is four,
+    /// gone quiet trips at four, and that is what it did at HEAD <c>36dc001</c>.
+    /// </remarks>
+    [Fact]
+    public void AnFt8RowCountsAndTripsExactlyWhereItDidBefore()
+    {
+        var ledger = new Ft8ContactLedger(Operator);
+        var heard = SlotZeroUtc;
+        ledger.RecordHeard(Operator + " " + Station + " EM12", heard);
+        var record = ledger.For(Station)!;
+
+        output.WriteLine("THE SAME WALK ON FT8, WHICH MUST NOT HAVE MOVED");
+        output.WriteLine($"{"slot",-8}{"seconds",-10}{"SlotsSinceHeard",-18}the row reads");
+
+        var firstQuiet = -1;
+
+        for (var slot = 1; slot <= 8; slot++)
+        {
+            var at = heard.AddSeconds(slot * SlotGrid.Ft8.SlotSeconds);
+            var answered = record.SlotsSinceHeard(at, SlotGrid.Ft8)!.Value;
+            var read = Ft8ContactStates.Read(record, at, SlotGrid.Ft8);
+
+            if (firstQuiet < 0 && read.State == Ft8ContactState.GoneQuiet)
+            {
+                firstQuiet = slot;
+            }
+
+            output.WriteLine(
+                $"{slot,-8}{(at - heard).TotalSeconds,-10:F1}{answered,-18}{read.Text}");
+
+            Assert.Equal(slot, answered);
+        }
+
+        Assert.Equal(4, firstQuiet);
+        Assert.Equal(
+            "gone quiet, 4 slots",
+            Ft8ContactStates.Read(record, heard.AddSeconds(60), SlotGrid.Ft8).Text);
+        Assert.Equal(
+            "your move, 3 slots",
+            Ft8ContactStates.Read(record, heard.AddSeconds(45), SlotGrid.Ft8).Text);
     }
 
     /// <summary>
@@ -143,6 +200,7 @@ public sealed class Unit294WhatTheOperatorIsToldAboutAnFt4StationTests(ITestOutp
     /// <c>Ft8Reception.ReadFt4</c> measures nothing. Everything downstream -
     /// <c>DigitalDecodeRow.FormatSnr</c>, <c>MainWindowViewModel.MeasuredReport</c>,
     /// <c>Ft8SendOptions.TextFor</c> - is the same code on both paths.
+    /// **This case still asserts the starting position; task 5 rewrites it.**
     /// </remarks>
     [Fact]
     public void TheFt4MenuOffersThreeShapesWhereTheFt8MenuOffersFive()

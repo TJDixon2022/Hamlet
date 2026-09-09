@@ -1,4 +1,5 @@
 using System.Reflection;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Contacts;
 using Xunit;
 using Xunit.Abstractions;
@@ -50,7 +51,7 @@ public sealed class TheRowSaysOneOfFourThingsTests
         var now = corpus.SlotUtc(atSlot);
 
         return ledger.Stations
-            .Select(call => Ft8ContactStates.Read(ledger.For(call)!, now))
+            .Select(call => Ft8ContactStates.Read(ledger.For(call)!, now, SlotGrid.Ft8))
             .ToList();
     }
 
@@ -77,7 +78,7 @@ public sealed class TheRowSaysOneOfFourThingsTests
             $"read at the boundary of slot {ReadAtSlot}; the scene ends at slot 11");
         _output.WriteLine(
             $"gone quiet after {Ft8ContactStates.GoneQuietAfterSlots} slots "
-            + $"= {Ft8ContactStates.GoneQuietAfterSeconds:F0} s (a choice)");
+            + $"= {Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft8):F0} s (a choice)");
         _output.WriteLine(string.Empty);
         _output.WriteLine(
             $"{"station",-8}  {"predicted",-16}  {"shown",-24}  at slot 11");
@@ -123,12 +124,12 @@ public sealed class TheRowSaysOneOfFourThingsTests
 
         Assert.Equal(
             Ft8ContactState.Complete,
-            Ft8ContactStates.Read(w1abc, corpus.SlotUtc(ReadAtSlot)).State);
+            Ft8ContactStates.Read(w1abc, corpus.SlotUtc(ReadAtSlot), SlotGrid.Ft8).State);
 
         // And it was complete the moment the operator's RRR went out, in slot 9.
         Assert.Equal(
             Ft8ContactState.Complete,
-            Ft8ContactStates.Read(w1abc, corpus.SlotUtc(9)).State);
+            Ft8ContactStates.Read(w1abc, corpus.SlotUtc(9), SlotGrid.Ft8).State);
     }
 
     /// <summary>
@@ -140,8 +141,8 @@ public sealed class TheRowSaysOneOfFourThingsTests
         var (ledger, corpus) = TheLedgerHoldsWhatPassedEachWayTests.FedFromTheScene();
         var k9rst = ledger.For("K9RST")!;
 
-        var atFive = Ft8ContactStates.Read(k9rst, corpus.SlotUtc(5));
-        var atSix = Ft8ContactStates.Read(k9rst, corpus.SlotUtc(6));
+        var atFive = Ft8ContactStates.Read(k9rst, corpus.SlotUtc(5), SlotGrid.Ft8);
+        var atSix = Ft8ContactStates.Read(k9rst, corpus.SlotUtc(6), SlotGrid.Ft8);
 
         _output.WriteLine("at slot 5: " + atFive.Text);
         _output.WriteLine("at slot 6: " + atSix.Text + "   (his 73 arrived here)");
@@ -173,7 +174,7 @@ public sealed class TheRowSaysOneOfFourThingsTests
                 TheLedgerHoldsWhatPassedEachWayTests.FedFromTheScene(slot);
 
             var him = ledger.For("G4XYZ")!;
-            var read = Ft8ContactStates.Read(him, sofar.SlotUtc(slot));
+            var read = Ft8ContactStates.Read(him, sofar.SlotUtc(slot), SlotGrid.Ft8);
 
             _output.WriteLine(
                 $"slot {slot,2}  {read.Text,-24}  heard from him "
@@ -195,7 +196,7 @@ public sealed class TheRowSaysOneOfFourThingsTests
 
         // And at slot 11 his silence towards us is nine slots long while his
         // silence on the air is one slot long. The row shows the second.
-        Assert.Equal(1, g4xyz.SlotsSinceHeard(corpus.SlotUtc(11)));
+        Assert.Equal(1, g4xyz.SlotsSinceHeard(corpus.SlotUtc(11), SlotGrid.Ft8));
     }
 
     /// <summary>
@@ -209,15 +210,16 @@ public sealed class TheRowSaysOneOfFourThingsTests
         var n5tt = ledger.For("N5TT")!;
         var vk2pq = ledger.For("VK2PQ")!;
 
-        var n5ttAtEleven = Ft8ContactStates.Read(n5tt, corpus.SlotUtc(11));
-        var n5ttAtThirteen = Ft8ContactStates.Read(n5tt, corpus.SlotUtc(13));
+        var n5ttAtEleven = Ft8ContactStates.Read(n5tt, corpus.SlotUtc(11), SlotGrid.Ft8);
+        var n5ttAtThirteen = Ft8ContactStates.Read(n5tt, corpus.SlotUtc(13), SlotGrid.Ft8);
 
         _output.WriteLine("N5TT  last spoke in slot 8");
         _output.WriteLine("  at slot 11: " + n5ttAtEleven.Text);
         _output.WriteLine("  at slot 13: " + n5ttAtThirteen.Text);
         _output.WriteLine("VK2PQ last spoke in slot 2");
         _output.WriteLine(
-            "  at slot 13: " + Ft8ContactStates.Read(vk2pq, corpus.SlotUtc(13)).Text);
+            "  at slot 13: "
+            + Ft8ContactStates.Read(vk2pq, corpus.SlotUtc(13), SlotGrid.Ft8).Text);
 
         // THE THRESHOLD IS A COUNT OF SLOTS AND NOTHING ELSE, which is why the
         // same station reads two ways two slots apart.
@@ -229,11 +231,20 @@ public sealed class TheRowSaysOneOfFourThingsTests
         Assert.Equal("gone quiet, 5 slots", n5ttAtThirteen.Text);
 
         Assert.Equal("gone quiet, 11 slots",
-            Ft8ContactStates.Read(vk2pq, corpus.SlotUtc(13)).Text);
+            Ft8ContactStates.Read(vk2pq, corpus.SlotUtc(13), SlotGrid.Ft8).Text);
 
         // The arithmetic behind the threshold, written down beside it.
+        //
+        // **THE SECONDS FIGURE FOLLOWS THE GRID SINCE WORK INSTRUCTION 294** and
+        // this line went red for the right reason when it did. What the threshold
+        // IS has not moved - it is four slots, it always was four slots, and the
+        // decision in `Ft8ContactStates.Read` reads it in slots. What changed is
+        // that a derived seconds figure quoted at FT8's fifteen was being quoted
+        // beside FT4 rows too. On FT8 it is still sixty; the FT4 figure is asserted
+        // beside it so that the two cannot drift apart unnoticed.
         Assert.Equal(4, Ft8ContactStates.GoneQuietAfterSlots);
-        Assert.Equal(60.0, Ft8ContactStates.GoneQuietAfterSeconds);
+        Assert.Equal(60.0, Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft8));
+        Assert.Equal(30.0, Ft8ContactStates.GoneQuietAfterSeconds(SlotGrid.Ft4));
     }
 
     /// <summary>

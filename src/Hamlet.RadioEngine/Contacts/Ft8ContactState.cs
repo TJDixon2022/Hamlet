@@ -82,14 +82,16 @@ public static class Ft8ContactStates
     /// repository says when an FT8 station has gone quiet - there is no pinned
     /// ruling, no standard clause and no shack fact - so the number is argued
     /// here and is the owner's to change.</para>
-    /// <para>**THE ARITHMETIC.** A slot is `Ft8Slots.SlotSeconds`, fifteen
-    /// seconds, so four slots is **sixty seconds**. An FT8 station transmits in
-    /// alternate slots, so its own transmission opportunities come round every
-    /// two slots: four slots is **two consecutive opportunities gone by without
-    /// the station using either**. One missed opportunity is ordinary - a lost
-    /// decode, a station listening, an operator typing. Two in a row is the point
-    /// at which *how long ago* is worth showing instead of *whose turn it is*.
-    /// </para>
+    /// <para>**THE ARITHMETIC, AND IT IS IN SLOTS RATHER THAN IN SECONDS.** A
+    /// station transmits in alternate slots, so its own transmission opportunities
+    /// come round every two slots: four slots is **two consecutive opportunities
+    /// gone by without the station using either**. One missed opportunity is
+    /// ordinary - a lost decode, a station listening, an operator typing. Two in a
+    /// row is the point at which *how long ago* is worth showing instead of *whose
+    /// turn it is*. **That argument is about opportunities and not about seconds**,
+    /// which is why it carries unchanged from FT8's fifteen-second slot to FT4's
+    /// seven-and-a-half-second one: sixty seconds on FT8 and thirty on FT4, and
+    /// two missed turns on both.</para>
     /// <para>**IT IS DELIBERATELY NOT LARGE.** A generous threshold makes the row
     /// say *your move* about a station that left twenty minutes ago, which is the
     /// row being wrong quietly. The count of slots is shown beside the state
@@ -97,24 +99,43 @@ public static class Ft8ContactStates
     /// </remarks>
     public const int GoneQuietAfterSlots = 4;
 
-    /// <summary>How many seconds of silence that is.</summary>
-    public const double GoneQuietAfterSeconds =
-        GoneQuietAfterSlots * Ft8Slots.SlotSeconds;
+    /// <summary>How many seconds of silence that is, on the grid the tab is running.</summary>
+    /// <param name="grid">The grid the tab is running.</param>
+    /// <returns>Sixty seconds on FT8, thirty on FT4.</returns>
+    /// <remarks>
+    /// **A DERIVED FIGURE AND NOT THE DECISION** (work instruction 294 task 2). It
+    /// was `const double GoneQuietAfterSeconds = GoneQuietAfterSlots *
+    /// Ft8Slots.SlotSeconds`, sixty on both modes, and it was misleading rather
+    /// than wrong: **nothing in `src/` ever read it**. <see cref="Read"/> decides
+    /// in slots, at the line below, and always did. Two test messages print it, and
+    /// a figure printed beside a row is a thing Hamlet asserts to the operator, so
+    /// it follows the grid rather than staying at FT8's number.
+    /// </remarks>
+    public static double GoneQuietAfterSeconds(SlotGrid grid)
+        => GoneQuietAfterSlots * grid.SlotSeconds;
 
     /// <summary>What a row says about one station at a given moment.</summary>
     /// <param name="record">What passed with the station.</param>
     /// <param name="nowUtc">The moment the row is being read at.</param>
+    /// <param name="grid">The grid the tab is running: 15 s on FT8, 7.5 s on FT4.</param>
     /// <returns>The state and the slot count shown with it.</returns>
     /// <exception cref="ArgumentNullException">There is no record.</exception>
     /// <remarks>
-    /// **THE ORDER THE FOUR ARE TESTED IN, AND WHY.** Complete first, because an
-    /// exchange that has what a QSO needs stays complete however long the silence
-    /// afterwards runs - which is what makes `73` arriving late, or never,
+    /// <para>**THE ORDER THE FOUR ARE TESTED IN, AND WHY.** Complete first, because
+    /// an exchange that has what a QSO needs stays complete however long the
+    /// silence afterwards runs - which is what makes `73` arriving late, or never,
     /// change nothing. Gone quiet next, because *how long since he transmitted at
     /// all* outranks *whose turn it is* once the silence is long enough to matter.
     /// Then the turn, which is simply whichever of the two directions spoke last.
+    /// </para>
+    /// <para>**EVERY COUNT ON THIS PATH IS ON ONE GRID AND IT IS THE ONE PASSED
+    /// IN.** The four counts below and the threshold they are tested against all
+    /// come from <see cref="Ft8StationRecord.SlotsAgo"/> with this grid, so *gone
+    /// quiet* and *slots ago* cannot follow different modes. They sit in the same
+    /// row and one following FT4 while the other followed FT8 would be worse than
+    /// neither.</para>
     /// </remarks>
-    public static Ft8ContactRead Read(Ft8StationRecord record, DateTime nowUtc)
+    public static Ft8ContactRead Read(Ft8StationRecord record, DateTime nowUtc, SlotGrid grid)
     {
         ArgumentNullException.ThrowIfNull(record);
 
@@ -131,12 +152,17 @@ public static class Ft8ContactStates
             return new Ft8ContactRead(
                 record.Callsign,
                 Ft8ContactState.Complete,
-                Ft8StationRecord.SlotsAgo(last, nowUtc));
+                Ft8StationRecord.SlotsAgo(last, nowUtc, grid));
         }
 
         // GONE QUIET. A count of slots since he last transmitted, whoever he was
         // transmitting to. Never a verdict about the station and never a reason.
-        var sinceHeard = record.SlotsSinceHeard(nowUtc);
+        //
+        // **IN SLOTS, WHICH IS WHY THE THRESHOLD NEEDED NO REPAIR OF ITS OWN**
+        // (work instruction 294 task 2). `sinceHeard` is SlotsAgo's answer on the
+        // grid above, so putting the grid into SlotsAgo put it here too: on FT4
+        // this used to trip after eight slots because it was counting FT8's.
+        var sinceHeard = record.SlotsSinceHeard(nowUtc, grid);
 
         if (sinceHeard >= GoneQuietAfterSlots)
         {
@@ -155,7 +181,7 @@ public static class Ft8ContactStates
             return new Ft8ContactRead(
                 record.Callsign,
                 Ft8ContactState.WaitingOnHim,
-                Ft8StationRecord.SlotsAgo(ours.Value, nowUtc));
+                Ft8StationRecord.SlotsAgo(ours.Value, nowUtc, grid));
         }
 
         // YOUR MOVE, including a station heard calling anyone and not yet
@@ -165,7 +191,7 @@ public static class Ft8ContactStates
         return new Ft8ContactRead(
             record.Callsign,
             Ft8ContactState.YourMove,
-            Ft8StationRecord.SlotsAgo(theirs, nowUtc));
+            Ft8StationRecord.SlotsAgo(theirs, nowUtc, grid));
     }
 
     /// <summary>
@@ -176,6 +202,7 @@ public static class Ft8ContactStates
     /// <param name="operatorCallsign">The operator's own callsign.</param>
     /// <param name="record">What passed with the sender, or null where nothing has.</param>
     /// <param name="slotUtc">The boundary of the slot the message was in.</param>
+    /// <param name="grid">The grid the tab is running: 15 s on FT8, 7.5 s on FT4.</param>
     /// <returns>The state and its slot count, or "" where the column says nothing.</returns>
     /// <remarks>
     /// <para>**TIM'S RULING, 2026-09-07: THE CONTACT COLUMN SPEAKS ONLY ABOUT
@@ -212,7 +239,8 @@ public static class Ft8ContactStates
         string? message,
         string? operatorCallsign,
         Ft8StationRecord? record,
-        DateTime slotUtc)
+        DateTime slotUtc,
+        SlotGrid grid)
     {
         if (record is null || string.IsNullOrWhiteSpace(operatorCallsign))
         {
@@ -235,7 +263,7 @@ public static class Ft8ContactStates
             return "";
         }
 
-        return Read(record, slotUtc).Text;
+        return Read(record, slotUtc, grid).Text;
     }
 
     /// <summary>Whether an exchange has what a QSO needs.</summary>

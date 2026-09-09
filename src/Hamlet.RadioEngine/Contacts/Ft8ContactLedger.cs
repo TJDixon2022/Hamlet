@@ -66,34 +66,53 @@ public sealed class Ft8StationRecord
 
     /// <summary>How many slots ago this station was last heard.</summary>
     /// <param name="nowUtc">The moment being read at.</param>
+    /// <param name="grid">The grid the tab is running: 15 s on FT8, 7.5 s on FT4.</param>
     /// <returns>The count of slot boundaries crossed, or null where never heard.</returns>
-    public int? SlotsSinceHeard(DateTime nowUtc)
-        => LastHeard is null ? null : SlotsAgo(LastHeard.SlotStartUtc, nowUtc);
+    public int? SlotsSinceHeard(DateTime nowUtc, SlotGrid grid)
+        => LastHeard is null ? null : SlotsAgo(LastHeard.SlotStartUtc, nowUtc, grid);
 
     /// <summary>How many slots ago the operator last sent to this station.</summary>
     /// <param name="nowUtc">The moment being read at.</param>
+    /// <param name="grid">The grid the tab is running: 15 s on FT8, 7.5 s on FT4.</param>
     /// <returns>The count of slot boundaries crossed, or null where never sent.</returns>
-    public int? SlotsSinceSent(DateTime nowUtc)
-        => LastSent is null ? null : SlotsAgo(LastSent.SlotStartUtc, nowUtc);
+    public int? SlotsSinceSent(DateTime nowUtc, SlotGrid grid)
+        => LastSent is null ? null : SlotsAgo(LastSent.SlotStartUtc, nowUtc, grid);
 
-    /// <summary>How many slots ago a moment was.</summary>
+    /// <summary>How many slots ago a moment was, on the grid the tab is running.</summary>
     /// <param name="thenUtc">The earlier slot boundary.</param>
     /// <param name="nowUtc">The moment being read at.</param>
+    /// <param name="grid">The grid the tab is running.</param>
     /// <returns>The number of slot boundaries strictly after <paramref name="thenUtc"/>.</returns>
     /// <remarks>
-    /// <para>**THE ARITHMETIC IS `Ft8Slots.BoundariesBetween` AND THERE IS NO
+    /// <para>**THE ARITHMETIC IS `SlotGrid.BoundariesBetween` AND THERE IS NO
     /// SECOND COPY OF IT.** Not `(now - then).TotalSeconds / 15`: that is a
     /// second copy of the slot period, it drifts on the rounding
     /// `Ft8Slots`'s own epsilon remark was written about, and it answers 0 for
-    /// two slot starts 14.9 s apart.</para>
+    /// two slot starts 14.9 s apart. **Work instruction 294 task 2 found the
+    /// second copy this paragraph says does not exist**, at
+    /// `MainWindowViewModel.Quiet`, doing exactly the division named above; it was
+    /// removed rather than threaded, and that method now calls this one.</para>
+    /// <para>**THE GRID IS A PARAMETER AND HAS NO DEFAULT** (work instruction 294
+    /// task 2). It used to be `Ft8Slots.BoundariesBetween`, the static
+    /// fifteen-second one, whatever mode the tab was running: **a station heard
+    /// four FT4 slots ago read as two**, and *gone quiet* - which is this count
+    /// against <see cref="Ft8ContactStates.GoneQuietAfterSlots"/>, in slots -
+    /// tripped after eight FT4 slots rather than four, so a row said *your move*
+    /// about a station that had been silent for half a minute. A default of FT8's
+    /// grid would have kept every existing caller compiling and would have let the
+    /// next FT4 caller reintroduce the same silence, so there is none.</para>
     /// <para>**BOUNDARIES STRICTLY AFTER `then`.** `BoundariesBetween` includes
     /// its own start when the start is itself a boundary - measured against the
     /// tree, and unit 257's survey says otherwise - so the count is filtered
     /// rather than decremented, which keeps this free of arithmetic that could
     /// be wrong by one in the other direction.</para>
+    /// <para>**PUBLIC BECAUSE THE COPY HAD TO GO SOMEWHERE.** It was internal, and
+    /// the one caller outside this assembly that wanted it - the view model's
+    /// *heard N slots ago* line - wrote its own division instead. It is a query
+    /// over two moments and a grid and it decides nothing.</para>
     /// </remarks>
-    internal static int SlotsAgo(DateTime thenUtc, DateTime nowUtc)
-        => Ft8Slots.BoundariesBetween(thenUtc, nowUtc).Count(at => at > thenUtc);
+    public static int SlotsAgo(DateTime thenUtc, DateTime nowUtc, SlotGrid grid)
+        => grid.BoundariesBetween(thenUtc, nowUtc).Count(at => at > thenUtc);
 
     /// <remarks>
     /// **THE WHOLE HISTORY, AND THIS WAS WATCHED FAILING THE OTHER WAY.** Built

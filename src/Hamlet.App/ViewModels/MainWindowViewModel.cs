@@ -2511,6 +2511,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>**NO CLOCK MEANS NO AGE** (§0.0). Without a measured offset there is
     /// no way to place a boundary, so counting slots would be counting from a
     /// reading nobody took.</para>
+    /// <para>**AND THE ARITHMETIC IS THE LEDGER'S, BECAUSE THERE IS ONLY ONE OF
+    /// IT** (work instruction 294 task 2). This line was
+    /// `(Ft8Slots.SlotStart(trueUtc) - lastSlotUtc).TotalSeconds /
+    /// Ft8Slots.SlotSeconds`, floored - **the second copy
+    /// <see cref="Ft8StationRecord.SlotsAgo"/>'s own remark says in those words
+    /// does not exist**, and it carried both of that remark's faults: a copy of the
+    /// slot period, and FT8's period at that, so on FT4 the waiting list said
+    /// *2 slots ago* about a station last heard four slots back. It was removed
+    /// rather than threaded. The grid is <see cref="DigitalGrid"/>, which is the
+    /// one the tab is running.</para>
     /// </remarks>
     private string Quiet(DateTime lastSlotUtc)
     {
@@ -2520,8 +2530,7 @@ public partial class MainWindowViewModel : ObservableObject
             return "";
         }
 
-        var slots = (int)Math.Floor(
-            (Ft8Slots.SlotStart(trueUtc) - lastSlotUtc).TotalSeconds / Ft8Slots.SlotSeconds);
+        var slots = Ft8StationRecord.SlotsAgo(lastSlotUtc, trueUtc, DigitalGrid);
 
         return slots switch
         {
@@ -9395,7 +9404,7 @@ public partial class MainWindowViewModel : ObservableObject
         // his callsign. Before this, `K9TC KJ6IX RRR` read `your move, 0 slots` on
         // his screen and he is in none of it.
         return Ft8ContactStates.ColumnTextFor(
-            row.Message, mine, _contacts.For(row.Sender), row.SlotStartUtc);
+            row.Message, mine, _contacts.For(row.Sender), row.SlotStartUtc, DigitalGrid);
     }
 
     /// <summary>What passed with one station, out of the ledger the app kept.</summary>
@@ -9903,7 +9912,7 @@ public partial class MainWindowViewModel : ObservableObject
                 + "nothing to report about where that contact stands.";
         }
 
-        var read = Ft8ContactStates.Read(record, slotUtc);
+        var read = Ft8ContactStates.Read(record, slotUtc, DigitalGrid);
 
         return "Where the contact with " + read.Callsign + " stands: " + read.Text
             + ", read at the " + slot + " UTC slot. That is what passed between "

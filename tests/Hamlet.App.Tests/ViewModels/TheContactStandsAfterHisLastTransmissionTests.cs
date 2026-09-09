@@ -111,7 +111,7 @@ public sealed class TheContactStandsAfterHisLastTransmissionTests
 
         Assert.NotNull(record);
 
-        var read = Ft8ContactStates.Read(record!, walk.Second.SlotUtc);
+        var read = Ft8ContactStates.Read(record!, walk.Second.SlotUtc, SlotGrid.Ft8);
 
         _output.WriteLine("MEASURED, development machine, FACT-004:");
         _output.WriteLine("the ledger, read at " + Stamp(walk.Second.SlotUtc)

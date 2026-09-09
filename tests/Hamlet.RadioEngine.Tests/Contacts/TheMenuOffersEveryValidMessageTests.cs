@@ -1,4 +1,5 @@
 using System.Reflection;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Contacts;
 using Xunit;
 using Xunit.Abstractions;
@@ -180,7 +181,7 @@ public sealed class TheMenuOffersEveryValidMessageTests
 
         Assert.Equal(
             Ft8ContactState.GoneQuiet,
-            Ft8ContactStates.Read(quiet, Corpus().SlotUtc(ReadAtSlot)).State);
+            Ft8ContactStates.Read(quiet, Corpus().SlotUtc(ReadAtSlot), SlotGrid.Ft8).State);
 
         Assert.Equal(
             5, Ft8SendOptions.For(quiet, "KC3QIS", Grid, Report).Options.Count);
@@ -357,7 +358,7 @@ public sealed class TheMenuOffersEveryValidMessageTests
 
     private static string State(string callsign)
         => Ft8ContactStates
-            .Read(Ledger().For(callsign)!, Corpus().SlotUtc(ReadAtSlot))
+            .Read(Ledger().For(callsign)!, Corpus().SlotUtc(ReadAtSlot), SlotGrid.Ft8)
             .Text;
 
     private static Ft8ContactLedger Ledger()

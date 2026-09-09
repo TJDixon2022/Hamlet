@@ -1,3 +1,4 @@
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Contacts;
 using Xunit;
 using Xunit.Abstractions;
@@ -206,28 +207,44 @@ public sealed class TheLedgerHoldsWhatPassedEachWayTests
 
     /// <summary>How many slots ago, by the engine's own boundary arithmetic.</summary>
     /// <remarks>
-    /// The scene's last slot is 11 and the moment read at is the boundary of slot
-    /// 13. <c>N5TT</c> last spoke in slot 8, which is five boundaries back.
+    /// <para>The scene's last slot is 11 and the moment read at is the boundary of
+    /// slot 13. <c>N5TT</c> last spoke in slot 8, which is five boundaries back.
+    /// </para>
+    /// <para>**THIS IS THE FT8 CONTROL FOR WORK INSTRUCTION 294 TASK 2.** The
+    /// scene is FT8 and the grid is now named at every call rather than assumed,
+    /// and **every figure below is the one this file asserted at HEAD
+    /// `36dc001`** - unchanged, to the count. The grid became a parameter; on FT8
+    /// nothing it answers moved.</para>
     /// </remarks>
     [Fact]
     public void HowManySlotsAgoIsCountedInBoundariesCrossed()
     {
         var (ledger, corpus) = FedFromTheScene();
         var at13 = corpus.SlotUtc(13);
+        var ft8 = SlotGrid.Ft8;
 
-        Assert.Equal(5, ledger.For("N5TT")!.SlotsSinceHeard(at13));
-        Assert.Equal(11, ledger.For("VK2PQ")!.SlotsSinceHeard(at13));
-        Assert.Equal(3, ledger.For("G4XYZ")!.SlotsSinceHeard(at13));
-        Assert.Equal(2, ledger.For("G4XYZ")!.SlotsSinceSent(at13));
-        Assert.Equal(5, ledger.For("W1ABC")!.SlotsSinceHeard(at13));
-        Assert.Equal(4, ledger.For("W1ABC")!.SlotsSinceSent(at13));
+        Assert.Equal(5, ledger.For("N5TT")!.SlotsSinceHeard(at13, ft8));
+        Assert.Equal(11, ledger.For("VK2PQ")!.SlotsSinceHeard(at13, ft8));
+        Assert.Equal(3, ledger.For("G4XYZ")!.SlotsSinceHeard(at13, ft8));
+        Assert.Equal(2, ledger.For("G4XYZ")!.SlotsSinceSent(at13, ft8));
+        Assert.Equal(5, ledger.For("W1ABC")!.SlotsSinceHeard(at13, ft8));
+        Assert.Equal(4, ledger.For("W1ABC")!.SlotsSinceSent(at13, ft8));
 
         // Never sent to, so there is nothing to count rather than a zero.
-        Assert.Null(ledger.For("N5TT")!.SlotsSinceSent(at13));
+        Assert.Null(ledger.For("N5TT")!.SlotsSinceSent(at13, ft8));
 
         // The same slot is nought slots ago, not one.
         Assert.Equal(
-            0, ledger.For("G4XYZ")!.SlotsSinceHeard(corpus.SlotUtc(10)));
+            0, ledger.For("G4XYZ")!.SlotsSinceHeard(corpus.SlotUtc(10), ft8));
+
+        // **AND THE SAME MOMENTS READ ON FT4'S GRID ARE DOUBLE, WHICH IS THE
+        // WHOLE OF THE DEFECT.** The scene's slots are fifteen seconds apart, so
+        // asking FT4's grid how many of ITS boundaries they span is twice the
+        // count - and until work instruction 294 that was the arithmetic every FT4
+        // row ran the other way round, counting fifteen-second boundaries in
+        // seven-and-a-half-second traffic and answering half.
+        Assert.Equal(10, ledger.For("N5TT")!.SlotsSinceHeard(at13, SlotGrid.Ft4));
+        Assert.Equal(22, ledger.For("VK2PQ")!.SlotsSinceHeard(at13, SlotGrid.Ft4));
     }
 
     /// <summary>

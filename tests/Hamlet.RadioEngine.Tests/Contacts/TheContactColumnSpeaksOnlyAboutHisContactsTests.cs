@@ -1,3 +1,4 @@
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Contacts;
 using Xunit;
 using Xunit.Abstractions;
@@ -56,7 +57,7 @@ public sealed class TheContactColumnSpeaksOnlyAboutHisContactsTests
         {
             var sender = Ft8MessageSplit.Split(message)?.From;
             var text = Ft8ContactStates.ColumnTextFor(
-                message, OperatorCall, ledger.For(sender), Slot);
+                message, OperatorCall, ledger.For(sender), Slot, SlotGrid.Ft8);
 
             _output.WriteLine(
                 $"\"{message,-20}\" -> contact column: "
@@ -89,7 +90,8 @@ public sealed class TheContactColumnSpeaksOnlyAboutHisContactsTests
         // that had a sender. Asked about KJ6IX - who was telling K9TC he received,
         // with the operator in none of it - it still answers, and what it answers
         // is what was on Tim's screen.
-        var whatUnit266Showed = Ft8ContactStates.Read(ledger.For("KJ6IX")!, Slot).Text;
+        var whatUnit266Showed =
+            Ft8ContactStates.Read(ledger.For("KJ6IX")!, Slot, SlotGrid.Ft8).Text;
 
         _output.WriteLine(string.Empty);
         _output.WriteLine(
@@ -112,7 +114,7 @@ public sealed class TheContactColumnSpeaksOnlyAboutHisContactsTests
 
             var sender = Ft8MessageSplit.Split(message)?.From;
             var text = Ft8ContactStates.ColumnTextFor(
-                message, OperatorCall, ledger.For(sender), Slot);
+                message, OperatorCall, ledger.For(sender), Slot, SlotGrid.Ft8);
 
             _output.WriteLine($"\"{message}\" -> \"{text}\"");
             Assert.Equal("", text);
@@ -145,7 +147,7 @@ public sealed class TheContactColumnSpeaksOnlyAboutHisContactsTests
         {
             var sender = Ft8MessageSplit.Split(message)?.From;
             var text = Ft8ContactStates.ColumnTextFor(
-                message, OperatorCall, ledger.For(sender), Slot);
+                message, OperatorCall, ledger.For(sender), Slot, SlotGrid.Ft8);
 
             _output.WriteLine($"\"{message}\" -> \"{text}\"");
             Assert.Equal("", text);
@@ -170,7 +172,7 @@ public sealed class TheContactColumnSpeaksOnlyAboutHisContactsTests
             ledger.RecordHeard(message, Slot);
 
             var text = Ft8ContactStates.ColumnTextFor(
-                message, OperatorCall, ledger.For("W1ABC"), Slot);
+                message, OperatorCall, ledger.For("W1ABC"), Slot, SlotGrid.Ft8);
 
             _output.WriteLine($"\"{message}\" -> \"{text}\"");
             Assert.NotEqual("", text);
@@ -188,10 +190,12 @@ public sealed class TheContactColumnSpeaksOnlyAboutHisContactsTests
         ledger.RecordHeard("KC3QIS W1ABC -12", Slot);
         var record = ledger.For("W1ABC");
 
-        Assert.Equal("", Ft8ContactStates.ColumnTextFor("KC3QIS W1ABC -12", "", record, Slot));
-        Assert.Equal("", Ft8ContactStates.ColumnTextFor("KC3QIS W1ABC -12", null, record, Slot));
-        Assert.Equal("", Ft8ContactStates.ColumnTextFor("KC3QIS W1ABC -12", OperatorCall, null, Slot));
-        Assert.Equal("", Ft8ContactStates.ColumnTextFor("GL IN TEST DE ME", OperatorCall, record, Slot));
-        Assert.Equal("", Ft8ContactStates.ColumnTextFor(null, OperatorCall, record, Slot));
+        var ft8 = SlotGrid.Ft8;
+
+        Assert.Equal("", Ft8ContactStates.ColumnTextFor("KC3QIS W1ABC -12", "", record, Slot, ft8));
+        Assert.Equal("", Ft8ContactStates.ColumnTextFor("KC3QIS W1ABC -12", null, record, Slot, ft8));
+        Assert.Equal("", Ft8ContactStates.ColumnTextFor("KC3QIS W1ABC -12", OperatorCall, null, Slot, ft8));
+        Assert.Equal("", Ft8ContactStates.ColumnTextFor("GL IN TEST DE ME", OperatorCall, record, Slot, ft8));
+        Assert.Equal("", Ft8ContactStates.ColumnTextFor(null, OperatorCall, record, Slot, ft8));
     }
 }
