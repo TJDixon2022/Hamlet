@@ -1,0 +1,46 @@
+UNIT 296 TASK 7 - THE SENSITIVITY LADDER, RE-DRAWN PLACEMENT-AVERAGED
+
+Step 1's fourth criterion is nice-to-pass and was the named drop candidate for this unit.
+It was not dropped. All eight of Ft4SensitivityLadderTests's own rungs are drawn, over the
+25-cell lattice, at the grid unit 296 adopted. Console output of one filtered run on
+2026-09-09, Debug build, net8.0.
+
+  grid              the shipping one - time oversampling 4, frequency oversampling 2
+  lattice           25 cells spanning one whole tone spacing (20.8333 Hz) and one whole
+                    symbol period (576 samples)
+  corpus subset     every 7th of 106 = 16 messages, each sent once per cell per rung
+  trials a rung     16 on grid, 400 placement-averaged
+  noise             white Gaussian, seed 296, the same draw at every cell of a rung
+  axis              power in a 2500 Hz reference bandwidth, measured per trial
+
+rung    delivered   on grid         worst cell          placement-averaged      WRONG
+0.0     0.00        16 of 16 (100%) 16 of 16 at (0,0)   400 of 400 (100.0%)     0
+-5.0    -5.01       16 of 16 (100%) 16 of 16 at (0,0)   400 of 400 (100.0%)     0
+-10.0   -9.99       16 of 16 (100%) 16 of 16 at (0,0)   400 of 400 (100.0%)     0
+-13.0   -12.99      16 of 16 (100%) 15 of 16 at (4,1)   396 of 400 ( 99.0%)     0
+-15.0   -15.00      10 of 16 ( 62%)  0 of 16 at (4,2)   188 of 400 ( 47.0%)     0
+-17.0   -16.99       0 of 16 (  0%)  0 of 16 at (0,0)     2 of 400 (  0.5%)     0
+-19.0   -19.00       0 of 16 (  0%)  0 of 16 at (0,0)     0 of 400 (  0.0%)     0
+-21.0   -21.00       0 of 16 (  0%)  0 of 16 at (0,0)     0 of 400 (  0.0%)     0
+
+WRONG DECODES OVER THE WHOLE LADDER: 0 in 3200 slots.
+Drawn in 7.5 minutes at 140 ms a slot including synthesis and noise.
+
+WHAT THE CURVE SAYS. Down to -13 dB the placement costs almost nothing at the shipping
+grid: 396 of 400 placement-averaged, with the worst of the twenty-five cells at 15 of 16.
+The knee is between -13 and -15 dB and it is sharp - 99.0% to 47.0% in two decibels - and
+below -15 the mode is gone, 2 of 400 at -17 and nothing at all below that. On grid the
+knee is one rung further down: 62% at -15 against the lattice's 47%, so what remains of
+the placement penalty lives entirely in that one rung.
+
+AGAINST THE ON-GRID LADDER AT HEAD'S GRID, which is what the phase has been quoting.
+Ft4SensitivityLadderTests read 106 of 106 at 0, -5, -10 and -13, 49 of 106 at -15, and 0
+at -17, -19 and -21. This ladder's on-grid column reproduces that shape at a sixth of the
+trials: 100% down to -13, 62% at -15, 0 below. The difference between the two columns HERE
+is the placement and nothing else, because both are drawn in the same run at the same grid
+on the same messages with the same noise draws.
+
+WHAT THIS IS NOT. Everything Ft4SensitivityLadderTests disclaims applies unchanged: not a
+step 6 result, not comparable with any published FT4 threshold, a curve over audio this
+library synthesized itself - no fading, no drift, no neighbours, one signal in an empty
+slot, one process, one seed. What it adds is the one axis that ladder had no way to vary.

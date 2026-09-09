@@ -561,8 +561,20 @@
     -13 dB went from 17 of 106 decoding to 95 of 106. Both figures are on the record and the new one
     is on the snr tooltip and in ReadFt4's remarks.
   -->
+  <!--
+    1.12.257 -> 1.12.258, UNIT 296 TASK 7, UNDER HM-DEC-150. A PATCH: no src/ file changed and the
+    product is step 1's one nice-to-pass criterion, re-drawn. It was the named drop candidate and it
+    was not dropped. All eight of Ft4SensitivityLadderTests's rungs, placement-averaged over the
+    25-cell lattice, BESIDE the on-grid column rather than instead of it, with the worst cell named
+    at every rung and the wrong count separate: 400 of 400 at 0, -5 and -10 dB, 396 of 400 at -13,
+    188 of 400 at -15, 2 of 400 at -17, nothing below. 0 wrong in 3200 slots. The knee is between
+    -13 and -15 dB and it is sharp, and what remains of the placement penalty lives entirely in that
+    one rung - 62% on grid against 47% over the lattice at -15. The corpus subset is smaller than
+    the on-grid ladder's and it is STATED: sixteen messages a cell, 400 trials a rung. No rung is
+    skipped, because a ladder missing rungs reads like a complete one.
+  -->
   <PropertyGroup>
-    <Version>1.12.257</Version>
+    <Version>1.12.258</Version>
   </PropertyGroup>
 
   <!--
