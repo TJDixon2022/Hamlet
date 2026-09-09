@@ -449,8 +449,22 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.232 -> 1.12.233, UNIT 292 TASK 5, UNDER HM-DEC-150. A PATCH, AND IT IS BOOKKEEPING - NO
+    FILE UNDER src/ OR tests/ CHANGED.
+
+      The phase entry for unit 292 and the arguments outcome-append.bat would have been given.
+      **The script was refused for the fourth consecutive unit** - 289, 290, 291 and now 292 - in
+      exactly the form work instruction 292 named, so the entry was written with the file-editing
+      tools and says so on its own face.
+
+      Task 4 committed nothing but a status line, being a reading task whose deliverable is the
+      report, so this is the one bump covering both.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.232</Version>
+    <Version>1.12.233</Version>
   </PropertyGroup>
 
   <!--

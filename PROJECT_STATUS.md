@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 292 - pressing FT4 tunes and decodes FT4
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T11:03:33-04:00
-NOTE: Criterion 2 walked, seven rows and no gaps: panel, conversation, ring and filters work - two of them because of a change this unit made - tooltips and ledger do not, and the right-click menu works up to the point where it would key. Nine gaps named and none fixed, the sharpest being the one write path into the log still handing in ContactModes.Named FT8, which is unreachable until unit 293 and must land with it. Now the bookkeeping.
+UPDATED: 2026-09-09T11:05:55-04:00
+NOTE: Bookkeeping done. outcome-append.bat refused for the fourth consecutive unit in exactly the form the instruction named, so the entry is hand-written in outcome-entry.py's format and the arguments are committed at tools/arbiter/unit292-append.bat. Step 4 reads partial in PHASE_OUTCOME. RULES_AT agrees across all three files for the fourth time and the launcher's reload still disagrees. The three untracked leftovers refused deletion by both routes and were left rather than committed.
 
 ---
 
