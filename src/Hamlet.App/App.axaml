@@ -37,26 +37,63 @@
              now measures one per message, so that sentence became FALSE and had
              to be rewritten whichever way the plan's gate fell (§0.0).
 
-             **AND IT CARRIES THE SPREAD, NOT ONLY THE AVERAGE.** Over 510
-             synthesized messages at five rungs and two placements the estimate
-             agreed with the commanded ratio to a mean absolute error of 0.26 dB
-             and a 95th percentile of 0.62 dB. The 95th is the one an operator
-             needs, because the mean is the number that flatters it: a reader
-             told only the average would take a one-decibel difference between
-             two stations as real. The measurement is in
-             `docs/unit251-snr-trace.md` §6 and the test that produced it is
-             `Ft8Unit251SnrAgreementTests`. -->
-        <x:String x:Key="HmDecodeUtcHelp">When the slot started, as hhmmss. FT8 runs on a strict fifteen-second grid, so every message decoded from one slot carries the same time.</x:String>
-        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels in a 2500 Hz reference bandwidth, which is how this mode is normally quoted. It is measured for each message from the power in the tone that was sent against the seven tones that were not. Over 510 synthesized messages it agreed with the ratio actually delivered to 0.26 dB on average and 0.62 dB at the 95th percentile, so it is shown in whole decibels and should not be read closer than about one. A dash means this message's ratio could not be measured.</x:String>
+             **AND IT CARRIES THE SPREAD, NOT ONLY THE AVERAGE.** The 95th is the
+             one an operator needs, because the mean is the number that flatters
+             it: a reader told only the average would take a one-decibel
+             difference between two stations as real.
+
+             **THESE THREE NAME BOTH MODES EXPLICITLY, AND THAT IS THE CHOICE**
+             (work instruction 295 task 2). The other honest shape was text that
+             follows `DigitalMode`, which would mean a view-model property and a
+             new binding on a live column header. It was not taken, for two
+             reasons. **A tooltip that names both modes is true whichever the tab
+             is running**, so it cannot go stale the way the mode-following one
+             can when a third mode arrives; and the operator switching between
+             FT8 and FT4 wants to know what the OTHER mode does, which is exactly
+             what a mode-following string hides from him.
+
+             **EVERY FIGURE BELOW IS READ FROM THE TREE AND NONE IS COMPOSED.**
+             FT8: 0.26 dB and 0.62 dB over 510 messages, recorded in
+             `docs/unit251-snr-trace.md` §6, produced by
+             `Ft8Unit251SnrAgreementTests`. FT4: 0.58 dB and 1.41 dB over 970
+             messages, recorded at
+             `src/Hamlet.RadioEngine/Audio/Ft8Reception.cs`'s `ReadFt4` remarks,
+             produced by `Ft4Unit294SnrAgreementTests`, which also record the
+             strong-signal bias quoted here. The tone counts are
+             `Ft8SymbolEncoder.BitsPerSymbol` = 3, so eight tones and seven that
+             were not sent, and `Ft4SymbolEncoder.BitsPerSymbol` = 2, so four and
+             three.
+
+             **UNTIL WORK INSTRUCTION 295 THE `snr` LINE QUOTED FT8'S PRECISION
+             ON AN FT4 ROW**, and the `utc` line called the grid fifteen seconds
+             whatever mode was running. Both had been false since unit 292 put
+             FT4 on the tab, and `Unit295TheColumnsSayWhatTheRunningModeDoesTests`
+             is what catches it coming back. -->
+        <x:String x:Key="HmDecodeUtcHelp">When the slot started, as hhmmss. Slots run on a strict grid - fifteen seconds on FT8, 7.5 seconds on FT4 - so every message decoded from one slot carries the same time.</x:String>
+        <x:String x:Key="HmDecodeSnrHelp">Signal-to-noise in decibels in a 2500 Hz reference bandwidth, which is how these modes are normally quoted. It is measured for each message from the power in the tone that was sent against the tones that were not - seven of them on FT8, three on FT4. Over 510 synthesized FT8 messages it agreed with the ratio actually delivered to 0.26 dB on average and 0.62 dB at the 95th percentile; over 970 FT4 messages, to 0.58 dB on average and 1.41 dB at the 95th percentile, and on FT4 it reads about 1.2 dB low on a very strong signal. It is shown in whole decibels and should not be read closer than about one on FT8 or about one and a half on FT4. A dash means this message's ratio could not be measured.</x:String>
         <x:String x:Key="HmDecodeDtHelp">Seconds from the start of the slot to the moment that station began transmitting.</x:String>
         <x:String x:Key="HmDecodeHzHelp">The audio tone above the dial. The station is on the dial frequency plus this.</x:String>
         <x:String x:Key="HmDecodeMessageHelp">What was sent. Thirteen characters in three parts: who it is to, who it is from, and the payload.</x:String>
         <!-- **IT REPORTS AND IT DOES NOT RULE** (PHASE_PLAN.md). The four words
-             are the plan's own and the number beside them is a count of slots, a
-             slot being fifteen seconds. Nothing here closes a contact, and gone
-             quiet is a measurement of silence rather than a statement about the
-             station: an operator working three others at once is being busy. -->
-        <x:String x:Key="HmDecodeContactHelp">Where the contact with the sender stands, and how many slots ago. Waiting on him, your move, complete, or gone quiet. Complete means both callsigns, both grids or reports, and both acknowledgements have passed - a 73 is politeness and its absence does not withhold it. Nothing here is ever closed or withdrawn.</x:String>
+             are the plan's own and the number beside them is a count of slots,
+             **a slot being whatever the running mode's slot is** - fifteen
+             seconds on FT8 and 7.5 seconds on FT4, which is what
+             `SlotGrid.Ft8` and `SlotGrid.Ft4` hold. This comment said fifteen
+             seconds flat until work instruction 295, and unit 294 had already
+             made the ledger count FT4's slots on FT4's grid, so the sentence was
+             describing arithmetic the code had stopped doing. Nothing here closes
+             a contact, and gone quiet is a measurement of silence rather than a
+             statement about the station: an operator working three others at
+             once is being busy.
+
+             **THIS ONE IS NOT BOUND TO ANYTHING** and was not bound by unit 295.
+             It is a `StaticResource` no view references, measured rather than
+             assumed by `Unit295ReportLegTraceTests.TheThreeTooltipsAsTheTreeHoldsThem`,
+             which prints every site under `src/` that names it. It is corrected
+             because a false sentence in the tree is false whether or not a screen
+             is showing it; putting a new tooltip on screen is a different
+             decision and is not this unit's to make. -->
+        <x:String x:Key="HmDecodeContactHelp">Where the contact with the sender stands, and how many slots ago - a slot being fifteen seconds on FT8 and 7.5 seconds on FT4. Waiting on him, your move, complete, or gone quiet. Complete means both callsigns, both grids or reports, and both acknowledgements have passed - a 73 is politeness and its absence does not withhold it. Nothing here is ever closed or withdrawn.</x:String>
 
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,
