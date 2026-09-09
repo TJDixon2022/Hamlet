@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 7
+TASK: 5 of 7
 WORK_INSTRUCTION: 290 - the slot machinery is FT4s
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T09:42:43-04:00
-NOTE: The ring reads 7.5 7.4 7.3 down to 0.1 on FT4 and never 8 and never 0; FT8 still reads 15 down to 1 in whole seconds. Parity 0 1 0 1 0 1 0 1 across the minute and unchanged an hour and a day later. 5 of 5 new, 13 of 13 beat, 9 of 9 ring. Committing before task 5.
+UPDATED: 2026-09-09T09:45:50-04:00
+NOTE: The transmitted-slot key holds on the half-second grid - 300 of 300 moments across four FT4 slots answered correctly, 0 missed, and the census stamp now carries the tenth only where a boundary has one. 4 of 4 new, 3 of 3 on unit 282s FT8 control. Committing before task 6.
 
 ---
 

@@ -11192,6 +11192,21 @@ public partial class MainWindowViewModel : ObservableObject
     }
 
     /// <summary>Everything on the tab that reads the decoded table.</summary>
+    /// <summary>A slot boundary as the census names it.</summary>
+    /// <param name="slotStartUtc">The boundary the slot opened on, corrected.</param>
+    /// <returns>The stamp, with a tenth only where the boundary carries one.</returns>
+    /// <remarks>
+    /// **THE HALF SECOND APPEARS ONLY WHERE THERE IS ONE** (work instruction 290
+    /// task 5). Four of FT4's eight boundaries in a minute fall on a half second, and
+    /// a line naming a slot at `:07` that began at `:07.5` is a stamp the operator
+    /// could not match against a capture. **Every FT8 stamp is unchanged**, because
+    /// every FT8 boundary is on a whole second and takes the first branch.
+    /// </remarks>
+    private static string SlotStamp(DateTime slotStartUtc)
+        => slotStartUtc.Ticks % TimeSpan.TicksPerSecond == 0
+            ? slotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+            : slotStartUtc.ToString("HH:mm:ss.f", CultureInfo.InvariantCulture);
+
     private void RaiseDigitalDecodeChanges()
     {
         // **THE COUNTS BEFORE THE SUMMARY THAT QUOTES THEM.** Rows arrive already
@@ -11254,7 +11269,7 @@ public partial class MainWindowViewModel : ObservableObject
             return "";
         }
 
-        var at = worst.SlotStartUtc.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        var at = SlotStamp(worst.SlotStartUtc);
 
         // **A SLOT HE TRANSMITTED IN WAS NOT SEARCHED, AND SAYS SO** (work
         // instruction 280 task 7). Hamlet suspends decoding while the radio is
