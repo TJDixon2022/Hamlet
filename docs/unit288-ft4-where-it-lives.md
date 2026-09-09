@@ -404,3 +404,97 @@ Three things, in the order they block work.
    exists, every FT4 decode this project can demonstrate is self-consistent by
    construction, and item 1 is unfalsifiable from inside. One recording answers items 1
    and 3 together and outranks every synthetic fixture (HM-DEC-091).
+
+---
+
+## Task 4 - what the FT4 button does today
+
+**Pressed in the running application**, not read out of the source. `Hamlet.App` was
+built (`dotnet build`, 9.05 s, 0 warnings, 0 errors), launched, and the FT4 chip was
+found and invoked through Windows UI Automation. The whole visible text of the window
+was captured before the press and after it and the two were differenced, so what
+follows is what changed on screen and not what a reading predicts would change.
+
+**The operator's settings were backed up before the run and restored after it.**
+Pressing the chip persists `LastDigitalSubMode`, which went `FT8` to `FT4`; it is back
+at `FT8`.
+
+### Finding the chip took two attempts, and that is itself a finding
+
+The four chips are `Button`s whose whole content is a `Panel`
+(`MainWindow.axaml:2985-2991`), so UI Automation reports their names as
+`Avalonia.Controls.Panel` and a search for a button called `FT4` finds nothing. The
+label lives one level down, on a `TextBlock` inside. Once matched that way all four
+are there, enabled, on screen, and correctly ordered:
+
+```
+'FT8'    enabled=True  offscreen=False  rect=445,769,45,23
+'FT4'    enabled=True  offscreen=False  rect=496,770,42,21
+'PSK31'  enabled=True  offscreen=False  rect=544,770,57,21
+'WSPR'   enabled=True  offscreen=False  rect=607,770,55,21
+```
+
+They support `Invoke`, so they are live controls and not labels.
+
+### It tunes, and the display waits for the radio
+
+Starting state: training radio, 40 m, **7.030 MHz**, FT8 the chosen mode. After the
+press:
+
+| | Before | After |
+|---|---|---|
+| Frequency readout | `7.030 MHz · yours to use` | `7.047 MHz · yours to use` |
+| The press line | *not shown* | `FT4 on 40 m — the radio confirmed 7.047000 MHz.` |
+| Licence line | `Your General license covers digital modes here. Call away.` | `Your General license covers digital modes here.` |
+
+7.047000 MHz is `data/bands/us-neighborhoods.json:293-295`, the 40 m FT4 row's
+`jumpHz`. Nothing was invented and the wording is the read-back wording, so
+`TuneToDigitalModeAsync`'s promise that the display moves on the read-back and never on
+the command is being kept (`MainWindowViewModel.cs:1016-1022`).
+
+**So: yes, it tunes.** That half works exactly as unit 251 built it.
+
+### It changes nothing else, and one of those nothings is a wrong sentence
+
+Everything else on the window was identical before and after. In particular, **with the
+dial on 7.047 and FT4 chosen, the decoded panel still reads**:
+
+> nothing on this frequency yet. **FT8 runs in fifteen second slots**, so give it a
+> slot or two before deciding the band is empty.
+
+That sentence is now false about the frequency the application just tuned to, and it is
+the application telling the operator to wait for something that will not arrive. FT4's
+slot is 7.5 s (`ft8/constants.h:15`), and the thing actually cutting slots is
+`Ft8Slots.SlotSeconds`, `public const double SlotSeconds = 15`
+(`src/Hamlet.RadioEngine/Audio/Ft8Slots.cs:126`) - a constant with no mode in it.
+`DigitalWaterfallSummary` prints `"15 s slots"` from a literal at
+`MainWindowViewModel.cs:939`, likewise unconditional.
+
+**This is the §0.0 half of the finding and it is worth separating from the missing
+decoder.** A decoder that has not been written is an absence and the screen can say so.
+A sentence that asserts a fifteen-second slot grid on an FT4 frequency is a claim, it is
+wrong, and the operator acting on it waits for a decode that no amount of waiting
+produces.
+
+### What silently does nothing
+
+`ChosenDigitalMode` is read by exactly two things in the whole application -
+`grep -rn ChosenDigitalMode src/Hamlet.App` returns three hits and one of them is the
+assignment:
+
+- `MainWindowViewModel.cs:324-328`, which persists it to `settings.json`;
+- `MainWindowViewModel.cs:982`, which hands it to `DigitalModeChip.For` so the chip
+  draws as chosen.
+
+**Nothing in the decode path reads it at all.** `Ft8SlotWatch`
+(`MainWindowViewModel.cs:190`), `Ft8Slots.SlotStart`, `Ft8Reception` and the decode
+timer are all unconditional FT8. So after the press the application sits on an FT4
+calling frequency cutting fifteen-second FT8 slots and running the FT8 decoder over
+them, and it will do that indefinitely without an error, a warning or an empty-looking
+failure - it looks exactly like a quiet band.
+
+### Nothing broke
+
+No exception, no dialog, no unresponsive control, and the window closed cleanly with
+exit code 0. `Invoke()` returned without throwing. There is nothing to repair in what
+the button does; there is only the far larger thing it does not do yet.
