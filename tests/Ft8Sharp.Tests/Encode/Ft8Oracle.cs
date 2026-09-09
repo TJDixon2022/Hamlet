@@ -96,7 +96,7 @@ internal static class Ft8Oracle
     /// under <see cref="Path.GetTempPath"/>, never under the tree, and removed as we go rather than
     /// at the end, so a run that throws part way through does not leave a pile behind.
     /// </remarks>
-    public static Run Generate(string messageText)
+    public static Run Generate(string messageText, Protocol protocol = Protocol.Ft8)
     {
         var wav = Path.Combine(
             Path.GetTempPath(),
@@ -104,7 +104,7 @@ internal static class Ft8Oracle
 
         try
         {
-            return Invoke(wav, messageText, wav);
+            return Invoke(wav, [messageText, wav, .. TrailingArguments(protocol)]);
         }
         finally
         {
@@ -121,6 +121,48 @@ internal static class Ft8Oracle
             }
         }
     }
+
+    /// <summary>Which modulation upstream's generator is asked for.</summary>
+    /// <remarks>
+    /// <b>One wrapper, not two.</b> <c>gen_ft8</c> selects FT4 with a fourth positional argument —
+    /// <c>bool is_ft4 = (argc &gt; 4) &amp;&amp; (0 == strcmp(argv[4], "-ft4"))</c> at
+    /// <c>demo/gen_ft8.c:130</c> — and its third positional is the base frequency, so asking for FT4
+    /// means supplying the frequency the generator would otherwise have defaulted to. That default
+    /// is <c>1000.0</c> at <c>:125</c> and it is passed explicitly rather than assumed to be
+    /// reachable any other way.
+    /// </remarks>
+    public enum Protocol
+    {
+        /// <summary>The default: no fourth argument, and upstream's own default frequency.</summary>
+        Ft8,
+
+        /// <summary>Upstream's <c>-ft4</c>, which needs the frequency argument in front of it.</summary>
+        Ft4,
+    }
+
+    /// <summary>Upstream's own default base frequency, from <c>demo/gen_ft8.c:125</c>.</summary>
+    public const string DefaultBaseFrequencyArgument = "1000.0";
+
+    /// <summary>The arguments after the message and the WAV path, for one protocol.</summary>
+    private static string[] TrailingArguments(Protocol protocol) => protocol switch
+    {
+        Protocol.Ft8 => [],
+        Protocol.Ft4 => [DefaultBaseFrequencyArgument, "-ft4"],
+        _ => throw new ArgumentOutOfRangeException(nameof(protocol), protocol, "Unknown protocol."),
+    };
+
+    /// <summary>How many channel symbols one transmission of the given protocol carries.</summary>
+    /// <remarks>
+    /// Held here rather than reached for through the library, for the same reason
+    /// <see cref="ToneSequenceLength"/> is: a parser that took its expected length from the port
+    /// could not disagree with the port about it.
+    /// </remarks>
+    public static int ToneSequenceLengthFor(Protocol protocol) => protocol switch
+    {
+        Protocol.Ft8 => ToneSequenceLength,
+        Protocol.Ft4 => Ft4ToneSequenceLength,
+        _ => throw new ArgumentOutOfRangeException(nameof(protocol), protocol, "Unknown protocol."),
+    };
 
     /// <summary>One run of the generator whose WAV was kept rather than deleted.</summary>
     /// <param name="Run">Everything <see cref="Generate"/> would have reported.</param>
@@ -501,6 +543,12 @@ internal static class Ft8Oracle
     /// through the library so the parser cannot be made to agree with the port by construction.
     /// </summary>
     public const int ToneSequenceLength = 79;
+
+    /// <summary>
+    /// The same for FT4, and held here for the same reason: <c>FT4_NN</c>, read off
+    /// <c>ft8/constants.h:36</c> rather than taken from <see cref="Ft8Sharp.Encode.Ft4SymbolEncoder"/>.
+    /// </summary>
+    public const int Ft4ToneSequenceLength = 105;
 
     /// <summary>Describes a line without reproducing it, for a report that may not carry values.</summary>
     public static string Shape(string line)

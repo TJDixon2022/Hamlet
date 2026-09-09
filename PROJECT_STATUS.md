@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 8
+TASK: 4 of 8
 WORK_INSTRUCTION: 289 - FT4 decodes a signal Hamlet made
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T08:58:00-04:00
-NOTE: Three FT4 tables now come out of the converter rather than a keyboard - 16, 4 and 10 elements, and the sentence in two places saying they were deliberately skipped is rewritten rather than left standing. Next is the FT4 encoder and nailing it to gen_ft8 -ft4.
+UPDATED: 2026-09-09T09:12:00-04:00
+NOTE: The encoder is nailed to the only witness in the building that does not share its constants with it - 51 of 51 corpus messages identical to gen_ft8 -ft4, symbol for symbol, 105 symbols each. Next is the waveform and where the signal sits in its slot.
 
 ---
 
