@@ -1,0 +1,211 @@
+UNIT 296 TASK 1 - THE TRACE AT HEAD a5b9628, BEFORE ANY DEFAULT MOVED
+
+Transcribed from the console output of two filtered runs on 2026-09-09, Debug build,
+net8.0, xUnit 2.8.2. This file exists because the starting position cannot be recovered
+once task 4 has moved an analysis default: every later figure in this unit is read
+against these.
+
+  Ft8Sharp.Tests.Dsp.Ft4Unit296PlacementTraceTests.OneFt4SlotDecodeIsTimedAtHeadsGeometry
+  Ft8Sharp.Tests.Dsp.Ft4Unit296PlacementTraceTests.TheFt4DecodeRateIsMeasuredOnAPlacementLatticeAtHead
+
+================================================================================
+TASK 1A - THE CLOCK
+================================================================================
+
+THE CLOCK, AT HEAD'S GEOMETRY
+  time oversampling 2, frequency oversampling 2
+  block 576 samples, sub-block 288, transform 1152, bins 136, blocks 156
+  21 repetitions each, median reported
+
+  one signal at -10 dB   median     66.9 ms per slot
+  noise only             median     64.9 ms per slot
+
+  the slot is 7.5 s, so one decode is 0.89% of it
+
+SIZING EVERY LATER RUN IN THIS UNIT FROM THAT NUMBER
+  task 1b lattice: 25 cells x 3 rungs x 36 messages = 2700 decodes, about 3.0 minutes
+  task 1d deficit: 8 rungs x 36 messages on grid = 288 decodes, about 0.3 minutes
+
+================================================================================
+TASK 1B AND 1D - THE PLACEMENT LATTICE AND THE DEFICIT IN DECIBELS
+================================================================================
+
+THE INSTRUMENT IS GRID-INDEPENDENT, ASSERTED BEFORE ANYTHING IS MEASURED
+  at 2x2, 2x4, 4x4, 4x8 and 8x8 exactly one of the 25 cells is on the analysis grid,
+  and it is the same cell (0,0) every time. Five divisions, and no power of two
+  divides five.
+  HEAD's sub-block is 288 samples and its bin is 10.4167 Hz
+
+THE PLACEMENT LATTICE, AT HEAD'S GEOMETRY
+  grid              time oversampling 2, frequency oversampling 2
+  lattice           5 x 5 = 25 cells, spanning one whole tone spacing (20.8333 Hz) and one whole symbol period (576 samples, 0.048 s)
+  corpus subset     every 3rd of Ft4RoundTripCorpus's 106 = 36 messages, each sent once per cell per rung
+  seed              296, and the same noise draw at every cell of a rung
+  axis              power in a 2500 Hz reference bandwidth, measured per trial
+
+RUNG -10 dB
+cell    freq Hz     lead     grid   trials  decoded  WRONG  missed
+(0,0)   1000.0000   14688    ON     36      36       0      0
+(0,1)   1000.0000   14803    off    36      36       0      0
+(0,2)   1000.0000   14918    off    36      36       0      0
+(0,3)   1000.0000   15033    off    36      36       0      0
+(0,4)   1000.0000   15148    off    36      36       0      0
+(1,0)   1004.1667   14688    off    36      36       0      0
+(1,1)   1004.1667   14803    off    36      36       0      0
+(1,2)   1004.1667   14918    off    36      36       0      0
+(1,3)   1004.1667   15033    off    36      36       0      0
+(1,4)   1004.1667   15148    off    36      36       0      0
+(2,0)   1008.3333   14688    off    36      36       0      0
+(2,1)   1008.3333   14803    off    36      36       0      0
+(2,2)   1008.3333   14918    off    36      36       0      0
+(2,3)   1008.3333   15033    off    36      36       0      0
+(2,4)   1008.3333   15148    off    36      36       0      0
+(3,0)   1012.5000   14688    off    36      36       0      0
+(3,1)   1012.5000   14803    off    36      36       0      0
+(3,2)   1012.5000   14918    off    36      36       0      0
+(3,3)   1012.5000   15033    off    36      36       0      0
+(3,4)   1012.5000   15148    off    36      36       0      0
+(4,0)   1016.6667   14688    off    36      36       0      0
+(4,1)   1016.6667   14803    off    36      36       0      0
+(4,2)   1016.6667   14918    off    36      36       0      0
+(4,3)   1016.6667   15033    off    36      36       0      0
+(4,4)   1016.6667   15148    off    36      36       0      0
+  on grid (0,0)        36 of 36 (100.0%), 0 wrong
+  worst cell (0,0)     36 of 36 (100.0%), 0 wrong
+  best cell  (0,0)     36 of 36 (100.0%), 0 wrong
+  placement-averaged   900 of 900 (100.0%), 0 wrong
+  delivered SNR        -10.00 dB against -10 dB requested
+
+RUNG -13 dB
+cell    freq Hz     lead     grid   trials  decoded  WRONG  missed
+(0,0)   1000.0000   14688    ON     36      36       0      0
+(0,1)   1000.0000   14803    off    36      33       0      3
+(0,2)   1000.0000   14918    off    36      36       0      0
+(0,3)   1000.0000   15033    off    36      35       0      1
+(0,4)   1000.0000   15148    off    36      35       0      1
+(1,0)   1004.1667   14688    off    36      36       0      0
+(1,1)   1004.1667   14803    off    36      19       0      17
+(1,2)   1004.1667   14918    off    36      35       0      1
+(1,3)   1004.1667   15033    off    36      35       0      1
+(1,4)   1004.1667   15148    off    36      21       0      15
+(2,0)   1008.3333   14688    off    36      36       0      0
+(2,1)   1008.3333   14803    off    36      32       0      4
+(2,2)   1008.3333   14918    off    36      36       0      0
+(2,3)   1008.3333   15033    off    36      36       0      0
+(2,4)   1008.3333   15148    off    36      32       0      4
+(3,0)   1012.5000   14688    off    36      36       0      0
+(3,1)   1012.5000   14803    off    36      31       0      5
+(3,2)   1012.5000   14918    off    36      35       0      1
+(3,3)   1012.5000   15033    off    36      36       0      0
+(3,4)   1012.5000   15148    off    36      32       0      4
+(4,0)   1016.6667   14688    off    36      36       0      0
+(4,1)   1016.6667   14803    off    36      20       0      16
+(4,2)   1016.6667   14918    off    36      34       0      2
+(4,3)   1016.6667   15033    off    36      34       0      2
+(4,4)   1016.6667   15148    off    36      21       0      15
+  on grid (0,0)        36 of 36 (100.0%), 0 wrong
+  worst cell (1,1)     19 of 36 (52.8%), 0 wrong
+  best cell  (0,0)     36 of 36 (100.0%), 0 wrong
+  placement-averaged   808 of 900 (89.8%), 0 wrong
+  delivered SNR        -13.00 dB against -13 dB requested
+
+RUNG -15 dB
+cell    freq Hz     lead     grid   trials  decoded  WRONG  missed
+(0,0)   1000.0000   14688    ON     36      25       0      11
+(0,1)   1000.0000   14803    off    36      5        0      31
+(0,2)   1000.0000   14918    off    36      17       0      19
+(0,3)   1000.0000   15033    off    36      15       0      21
+(0,4)   1000.0000   15148    off    36      7        0      29
+(1,0)   1004.1667   14688    off    36      5        0      31
+(1,1)   1004.1667   14803    off    36      0        0      36
+(1,2)   1004.1667   14918    off    36      3        0      33
+(1,3)   1004.1667   15033    off    36      2        0      34
+(1,4)   1004.1667   15148    off    36      0        0      36
+(2,0)   1008.3333   14688    off    36      18       0      18
+(2,1)   1008.3333   14803    off    36      1        0      35
+(2,2)   1008.3333   14918    off    36      15       0      21
+(2,3)   1008.3333   15033    off    36      11       0      25
+(2,4)   1008.3333   15148    off    36      4        0      32
+(3,0)   1012.5000   14688    off    36      25       0      11
+(3,1)   1012.5000   14803    off    36      1        0      35
+(3,2)   1012.5000   14918    off    36      13       0      23
+(3,3)   1012.5000   15033    off    36      13       0      23
+(3,4)   1012.5000   15148    off    36      4        0      32
+(4,0)   1016.6667   14688    off    36      3        0      33
+(4,1)   1016.6667   14803    off    36      0        0      36
+(4,2)   1016.6667   14918    off    36      4        0      32
+(4,3)   1016.6667   15033    off    36      2        0      34
+(4,4)   1016.6667   15148    off    36      1        0      35
+  on grid (0,0)        25 of 36 (69.4%), 0 wrong
+  worst cell (1,1)     0 of 36 (0.0%), 0 wrong
+  best cell  (0,0)     25 of 36 (69.4%), 0 wrong
+  placement-averaged   194 of 900 (21.6%), 0 wrong
+  delivered SNR        -15.00 dB against -15 dB requested
+
+THE THREE NUMBERS, TOGETHER
+rung    on grid     worst cell            placement-averaged    WRONG
+-10     36 of 36    36 of 36 at (0,0)     900 of 900 (100.0%)   0
+-13     36 of 36    19 of 36 at (1,1)     808 of 900 (89.8%)    0
+-15     25 of 36    0 of 36 at (1,1)      194 of 900 (21.6%)    0
+
+WRONG DECODES OVER THE WHOLE LATTICE: 0
+MISSED DECODES OVER THE WHOLE LATTICE: 798
+  reported explicitly whether zero or not, per the phase's own ruling
+
+TASK 1D - THE DEFICIT IN DECIBELS, NOT ONLY IN MESSAGES
+  the on-grid ladder re-taken a decibel at a time, so the rate the worst cell reaches
+  can be found on it and the gap quoted in dB rather than guessed at
+
+rung    trials  decoded  rate     WRONG
+-10     36      36       100.0%   0
+-11     36      36       100.0%   0
+-12     36      36       100.0%   0
+-13     36      36       100.0%   0
+-14     36      36       100.0%   0
+-15     36      25       69.4%    0
+-16     36      8        22.2%    0
+-17     36      0        0.0%     0
+
+  at -10 dB the worst cell (0,0) reaches 100.0%: the on-grid ladder is no better here, so the deficit is 0 dB
+  at -10 dB the lattice average reaches 100.0%: the on-grid ladder is no better here, so the deficit is 0 dB
+  at -13 dB the worst cell (1,1) reaches 52.8%: the on-grid ladder first falls to it at -16 dB, so the deficit is 3 dB
+  at -13 dB the lattice average reaches 89.8%: the on-grid ladder first falls to it at -15 dB, so the deficit is 2 dB
+  at -15 dB the worst cell (1,1) reaches 0.0%: the on-grid ladder first falls to it at -17 dB, so the deficit is 2 dB
+  at -15 dB the lattice average reaches 21.6%: the on-grid ladder first falls to it at -17 dB, so the deficit is 2 dB
+
+the whole trace took 3.7 minutes
+
+================================================================================
+TASK 1C - FT8'S OWN TWO PLACEMENTS, TRANSCRIBED FROM THE TREE, NOT RE-RUN
+================================================================================
+
+tests/Ft8Sharp.Tests/Dsp/Ft8Unit256CrossingIntervalTests.cs:66-76, the Published table,
+306 trials a cell, at -19 dB and -20 dB:
+
+    ("Ft8Sharp",         "on grid",     248,  73),
+    ("Deep all off",     "on grid",     248,  73),
+    ("fine sync only",   "on grid",     268,  95),
+    ("OSD only",         "on grid",     276, 125),
+    ("SHIPPING",         "on grid",     283, 138),
+    ("subtraction only", "on grid",     248,  73),
+    ("fine sync only",   "cell centre", 277,  73),
+    ("SHIPPING",         "cell centre", 278,  73),
+
+tests/Ft8Sharp.Tests/Dsp/Ft8Unit257PlacementPanelTests.cs:363, the doc comment on
+ThePlacementPanelAtCellCentreAtMinus19:
+
+    /// <summary>At the cell centre, -19 dB. §3.2 reads the bare port at <b>6 of 306</b> here.</summary>
+
+MISMATCH WITH THE WORK INSTRUCTION, REPORTED RATHER THAN REPAIRED. The instruction
+attributes both bare-port figures to Ft8Unit256CrossingIntervalTests.cs:68-75. The table
+there carries no bare-port cell-centre row at all - the 6 of 306 is a remark in unit
+257's doc comment citing §3.2 of another document. Both numbers the instruction quotes
+are in the tree and both read as it says; only the citation for the second is wrong.
+
+THE COMPARISON, IN ONE SENTENCE. Going off grid at -19 dB the shipping FT8 decoder loses
+5 of 306 (283 -> 278, under two per cent) while the bare port loses 242 of 306 (248 -> 6,
+ninety-eight per cent), and FT4 sits at the port's end of that range and not the shipping
+one - at -13 dB where FT4's on-grid rate is exactly one, its worst lattice cell keeps
+52.8% and its placement average 89.8%, and at -15 dB the worst cell keeps nothing at all.
+The collapse is the port's in both modes; FT8 escapes it only because Ft8Sharp.Deep's
+fine sync recovers the placement, and FT4 has no such stage.

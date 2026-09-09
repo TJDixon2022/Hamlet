@@ -484,8 +484,20 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.251 -> 1.12.252, UNIT 296 TASK 1, UNDER HM-DEC-150. A PATCH BECAUSE THE NIGHT'S WHOLE
+    PRODUCT SO FAR IS A MEASUREMENT: no file under src/ changed, and what was added is an instrument
+    and the trace it took. FT4's decode rate is measured for the first time on a lattice that
+    belongs to no analysis grid - twenty-five placements spanning one whole tone spacing and one
+    whole symbol period, five divisions a side so that no power-of-two oversampling can turn an
+    off-grid cell into an on-grid one. At -13 dB, where the on-grid rate is exactly one, the worst
+    cell keeps 19 of 36 and the placement average 808 of 900; at -15 dB the worst cell keeps
+    nothing. The deficit the tree had guessed at two to three decibels is measured: 3 dB at the
+    worst cell and 2 dB placement-averaged. Zero wrong decodes over all 2988 slots. One slot decodes
+    in 66.9 ms, which is 0.89% of a slot.
+  -->
   <PropertyGroup>
-    <Version>1.12.251</Version>
+    <Version>1.12.252</Version>
   </PropertyGroup>
 
   <!--

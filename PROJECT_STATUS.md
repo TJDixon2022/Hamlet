@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 295 - the report goes on the wire, and the column tells the truth about the mode
-BALL: tim
+STATE: WORKING
+TASK: 1 of 8
+WORK_INSTRUCTION: 296 - FT4 decodes where a real station lands, not where Hamlet put it
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T13:53:03-04:00
-NOTE: 6 of 6, nothing dropped including the named drop candidate. Step 4 goes partial to done - criterion 4 comes off carry-forward and onto a capture, and criterion 2's last untouched surface of seven is closed. The snr cell showed -8, the menu carried "W1ABC KC3QIS -08", and a real WASAPI loopback gave back "W1ABC KC3QIS -08"; those three are one equality, not three prints. The log on that leg wrote MODE=MFSK, SUBMODE=FT4, RST_SENT=-08. The three decode tooltips now name both modes, carrying 0.26/0.62 over 510 for FT8 and 0.58/1.41 over 970 for FT4, every figure read out of the file that recorded it. The FT8 control is 1 of 3 green and the red was proved inherited by reverting and re-running. validate-output exit 0, all seven rules. Four items back, two wanting a ruling and none in the way of a criterion.
+UPDATED: 2026-09-09T14:33:00-04:00
+NOTE: Task 1 done, committing. The number the unit was commissioned for: at -13 dB, where FT4's on-grid rate is exactly one, the worst lattice cell keeps 19 of 36 (52.8%) and the placement average 808 of 900 (89.8%); at -15 dB the worst cell keeps 0 of 36 and the average 194 of 900. Zero wrong decodes over all 2988 slots. The tree's guess of two to three decibels is replaced by a measurement: 3 dB at the worst cell, 2 dB placement-averaged. Task 1a is measured: one FT4 slot decodes in 66.9 ms median over 21 repetitions at HEAD's 2x2 grid, 64.9 ms on noise only - 0.89 percent of the 7.5 s slot, in a Debug build. Everything else is sized from it. The 5x5 placement lattice at 3 rungs over a 36-message subset (every third of the corpus's 106) is 2700 decodes, about 3 minutes, and the 8-rung on-grid deficit ladder another 0.3. Five divisions rather than four because no power of two divides five, so exactly one of the 25 cells is on the analysis grid at 2x2, 2x4, 4x4, 4x8 and 8x8 - asserted before anything is measured. Starting that run now; expect it back inside 5 minutes.
 
 ---
 
