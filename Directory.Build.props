@@ -545,7 +545,7 @@
   -->
   <!--
     1.12.256 -> 1.12.257, UNIT 296 TASK 6, UNDER HM-DEC-150. A PATCH, AND THE ONE OPERATOR-VISIBLE
-    LINE IN IT IS A FIGURE THAT WOULD OTHERWISE HAVE GONE STALE. The controls: git diff --stat
+    LINE IN IT IS A FIGURE THAT WOULD OTHERWISE HAVE GONE STALE. The controls: a git diff stat
     against a5b9628 shows three files under src/ and no more - Ft4WaterfallGeometry.cs,
     Ft8Reception.cs and src/Ft8Sharp/Directory.Build.props - nothing under src/Ft8Sharp.Deep/ and no
     FT8 decode-path file. FT8's own defaults are asserted at 2 and 2. The FT8 whole-chain control is
