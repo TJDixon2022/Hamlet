@@ -52,16 +52,17 @@ public enum Ft8ComposeRefusal
 }
 
 /// <summary>
-/// One FT8 slot of audio, and what it says.
+/// One slot of audio, and what it says.
 /// </summary>
 /// <remarks>
 /// <para>**Two texts, because for one kind of message they differ and hiding
 /// that would be the fault this seam exists to prevent.** <see cref="Text"/> is
 /// what the operator asked to send. <see cref="ReadsBackAs"/> is what the message
 /// layer produces when the packed bits are unpacked again — the same call the
-/// receive path's decoder ends in. <see cref="Ft8Composer"/> refuses to return
-/// this record at all unless the two are identical **or** differ only by the angle
-/// brackets the port puts round a callsign it recovered from a hash.</para>
+/// receive path's decoder ends in. <see cref="Ft8Composer"/> and
+/// <see cref="Ft4Composer"/> refuse to return this record at all unless the two
+/// are identical **or** differ only by the angle brackets the port puts round a
+/// callsign it recovered from a hash.</para>
 /// <para>**<see cref="Samples"/> is whatever the route that made it produces, and
 /// there are two.** <see cref="Ft8Composer.Compose"/> gives a whole slot -
 /// silence, signal, silence - from <c>Ft8Waveform.SynthesizeSlot</c>, which is
@@ -69,7 +70,9 @@ public enum Ft8ComposeRefusal
 /// signal alone, with no padding at either end, from <c>Ft8Waveform.Synthesize</c>
 /// - which is what goes out on the air, because on the air the silence is time
 /// rather than samples. Where the signal sits inside the padded slot is the
-/// port's placement and is measured rather than asserted here.</para>
+/// port's placement and is measured rather than asserted here.
+/// <see cref="Ft4Composer"/>'s two routes are the same two, over FT4's own pair of
+/// port calls.</para>
 /// </remarks>
 /// <param name="Text">The message, as the operator asked for it.</param>
 /// <param name="ReadsBackAs">
@@ -87,7 +90,7 @@ public enum Ft8ComposeRefusal
 /// name to that hash if it heard the full callsign in the same slot — the cache
 /// in <c>Ft8SlotDecoder.Decode</c> is created per slot and dropped when the call
 /// returns — so a transmission with this set **will not read back as itself on its
-/// own**, and that is a fact about FT8 rather than about this seam.
+/// own**, and that is a fact about the message layer rather than about this seam.
 /// </param>
 public sealed record Ft8Transmission(
     string Text,
@@ -102,10 +105,9 @@ public sealed record Ft8Transmission(
     /// How long the audio is, in seconds, from the array and the rate.
     /// </summary>
     /// <remarks>
-    /// 15 s for <see cref="Ft8Composer.Compose"/>'s padded slot and 12.64 s for
-    /// <see cref="Ft8Composer.ComposeSignal"/>'s bare signal. **Measured off the
-    /// array rather than stored**, so it cannot disagree with the samples it
-    /// describes.
+    /// **Measured off the array rather than stored**, so it cannot disagree with
+    /// the samples it describes - and so that it says the right thing for either
+    /// mode and either route without being told which made it.
     /// </remarks>
     public double SlotSeconds => Samples.Length / (double)SampleRate;
 
@@ -183,12 +185,21 @@ public readonly struct Ft8ComposeResult
 /// table, no phase accumulator, no Gaussian and no symbol assembly of any kind**,
 /// and there never will be — <c>Ft8Sharp</c> is a faithful MIT port and a second
 /// encoder beside it would be a second thing to drift.</para>
+/// <para>**AND SINCE UNIT 293 IT IS A FACE ONTO <see cref="DigitalComposer"/>
+/// RATHER THAN THE IMPLEMENTATION ITSELF.** FT4 needed the same packing, the same
+/// five refusals and the same round trip over a different modulation, and the two
+/// honest ways to have that are one implementation taking the modulation as a
+/// value or two copies of a file. **The copy is what the port's whole argument is
+/// against**, so the shared half moved down and this type kept every member it
+/// had. **What FT8 composes did not move**: the geometry handed in is
+/// <c>ComposeGeometry.Ft8</c>, which is a list of <c>Ft8Waveform</c>'s and
+/// <c>Ft8SymbolEncoder</c>'s own members, and
+/// <c>AnFt8PressComposesTheSameArrayItDidBeforeThisUnit</c> asserts the audio
+/// sample for sample against what this tree produced at HEAD `9a81d4d`.</para>
 /// <para>**IT KEYS NOTHING AND OPENS NOTHING.** No audio device, no thread, no
 /// timer, no clock, no file, no serial port. It names no rig type, no PTT, no
 /// CI-V command and not <c>TransmitAbort</c>. It takes words and returns an array
-/// of floats, and that is the whole of what it does. Playing them into a radio is
-/// step 3's and it will go through the abort (§0.2), which is built and proven
-/// and correctly has no caller yet.</para>
+/// of floats, and that is the whole of what it does.</para>
 /// <para>**IT REFUSES RATHER THAN GUESSING, AND THE REFUSAL IS PROVED BY A ROUND
 /// TRIP THROUGH THE MESSAGE LAYER.** Every candidate packing is unpacked again
 /// through <c>Ft8MessageDecoder</c> — the same call the receive path ends in — and
@@ -246,6 +257,10 @@ public static class Ft8Composer
     /// 3.01 dB and **its peak and its average move together** - scaling the peak
     /// down by n dB scales the average down by exactly n dB, with no peaky-waveform
     /// surprise in between.</para>
+    /// <para>**THE SAME LEVEL IS FT4'S** (work instruction 293 task 2). It is a
+    /// property of what a radio's modulation input wants and not of how many tones
+    /// a mode has, so <see cref="Ft4Composer"/> reads this one rather than
+    /// declaring a second. **There is one drive level in this assembly.**</para>
     /// <para>**The same treatment unit 255 gave the 0.5 s slot offset**: a choice
     /// recorded with its arithmetic, not quoted as a specification.</para>
     /// </remarks>
@@ -279,11 +294,12 @@ public static class Ft8Composer
         int sampleRate = DefaultSampleRate,
         float baseFrequencyHz = DefaultBaseFrequencyHz,
         float drivePeak = DefaultDrivePeak)
-        => Build(text, sampleRate, baseFrequencyHz, drivePeak, wholeSlot: true);
+        => DigitalComposer.Build(
+            ComposeGeometry.Ft8, text, sampleRate, baseFrequencyHz, drivePeak, wholeSlot: true);
 
     /// <summary>
-    /// Turns what the operator wants to say into the signal alone - the 12.64 s
-    /// of tones, with no silence at either end.
+    /// Turns what the operator wants to say into the signal alone - the tones,
+    /// with no silence at either end.
     /// </summary>
     /// <param name="text">The message, in the operator's own words.</param>
     /// <param name="sampleRate">Samples per second.</param>
@@ -320,93 +336,11 @@ public static class Ft8Composer
         int sampleRate = DefaultSampleRate,
         float baseFrequencyHz = DefaultBaseFrequencyHz,
         float drivePeak = DefaultDrivePeak)
-        => Build(text, sampleRate, baseFrequencyHz, drivePeak, wholeSlot: false);
-
-    /// <summary>Both routes, which differ in one call.</summary>
-    /// <param name="text">The message, in the operator's own words.</param>
-    /// <param name="sampleRate">Samples per second.</param>
-    /// <param name="baseFrequencyHz">The audio frequency of tone 0.</param>
-    /// <param name="drivePeak">The peak amplitude to build at.</param>
-    /// <param name="wholeSlot">
-    /// True for the padded 15 s slot, false for the 12.64 s signal alone.
-    /// </param>
-    /// <remarks>
-    /// **THIS IS THE ONE PLACE THE TRANSMIT DRIVE IS APPLIED, AND IT IS APPLIED
-    /// HERE RATHER THAN IN THE SINK ON PURPOSE.**
-    /// <see cref="Ft8Transmission.PeakSample"/> is measured off the array every
-    /// time it is asked for, so a transmission scaled at compose time **carries
-    /// the peak it will actually play at**. A gain applied further down would
-    /// hand <c>Ft8TransmitSequence</c> an object claiming a peak its own samples
-    /// do not have - the same class of lie unit 256 caught in
-    /// <c>SamplesPlayed</c>. It is also the only place available: the synthesis
-    /// itself is <c>Ft8Waveform.cs:199</c>, and <c>Ft8Sharp</c> is a faithful MIT
-    /// port that nothing in this phase changes a line of.
-    /// </remarks>
-    private static Ft8ComposeResult Build(
-        string? text,
-        int sampleRate,
-        float baseFrequencyHz,
-        float drivePeak,
-        bool wholeSlot)
-    {
-        var wanted = Normalise(text);
-        if (wanted.Length == 0)
-        {
-            return Ft8ComposeResult.No(
-                Ft8ComposeRefusal.NothingToSay,
-                "there were no words to send. A transmission carries a message and this one is empty.");
-        }
-
-        if (!RateIsUsable(sampleRate, out var rateExplanation))
-        {
-            return Ft8ComposeResult.No(Ft8ComposeRefusal.SampleRateRefused, rateExplanation);
-        }
-
-        if (!BaseFrequencyIsUsable(baseFrequencyHz, sampleRate, out var baseExplanation))
-        {
-            return Ft8ComposeResult.No(Ft8ComposeRefusal.BaseFrequencyRefused, baseExplanation);
-        }
-
-        if (!DriveIsUsable(drivePeak, out var driveExplanation))
-        {
-            return Ft8ComposeResult.No(Ft8ComposeRefusal.DriveLevelRefused, driveExplanation);
-        }
-
-        var packing = PackAsItself(wanted, out var packExplanation);
-        if (packing is null)
-        {
-            return Ft8ComposeResult.No(Ft8ComposeRefusal.WillNotPack, packExplanation);
-        }
-
-        // From here down every step is the port's. Nothing below chooses a tone,
-        // places a synchronisation block or advances a phase.
-        var symbols = Ft8SymbolEncoder.Encode(packing.Bits);
-        var audio = wholeSlot
-            ? Ft8Waveform.SynthesizeSlot(symbols, sampleRate, baseFrequencyHz)
-            : Ft8Waveform.Synthesize(symbols, sampleRate, baseFrequencyHz);
-
-        // THE DRIVE, APPLIED ONCE, AFTER THE PORT HAS RETURNED AND BEFORE THE
-        // ARRAY IS HANDED TO ANYBODY. The port builds a sine of unit amplitude at
-        // Ft8Waveform.cs:199 and stays that way; the level is this assembly's.
-        // Multiplying in place is safe because the array was made by the port for
-        // this call and has no other owner.
-        for (var i = 0; i < audio.Length; i++)
-        {
-            audio[i] *= drivePeak;
-        }
-
-        return Ft8ComposeResult.Ok(new Ft8Transmission(
-            wanted,
-            packing.ReadsBackAs,
-            packing.Type,
-            audio,
-            sampleRate,
-            baseFrequencyHz,
-            packing.CarriesHashedCallsign));
-    }
+        => DigitalComposer.Build(
+            ComposeGeometry.Ft8, text, sampleRate, baseFrequencyHz, drivePeak, wholeSlot: false);
 
     /// <summary>
-    /// Whether the port will synthesise at this rate, asked of the port rather
+    /// Whether the port will synthesise FT8 at this rate, asked of the port rather
     /// than decided here.
     /// </summary>
     /// <remarks>
@@ -419,32 +353,7 @@ public static class Ft8Composer
     /// different answers.
     /// </remarks>
     public static bool RateIsUsable(int sampleRate, out string explanation)
-    {
-        if (sampleRate <= 0)
-        {
-            explanation =
-                $"{sampleRate} samples per second is not a sample rate. Audio cannot be synthesised "
-                + "at zero or fewer.";
-            return false;
-        }
-
-        var fromDuration = Ft8Waveform.SampleCount(sampleRate);
-        var fromSymbols = Ft8Waveform.SymbolCount * Ft8Waveform.SamplesPerSymbol(sampleRate);
-        if (fromDuration != fromSymbols)
-        {
-            explanation =
-                $"at {sampleRate} samples per second the signal is {fromDuration} samples long measured "
-                + $"from the transmission's duration and {fromSymbols} measured as "
-                + $"{Ft8Waveform.SymbolCount} symbols of {Ft8Waveform.SamplesPerSymbol(sampleRate)}. "
-                + "The slot is laid out from the first and written from the second, so every sample "
-                + "after the signal starts would be at the wrong offset. Use a rate at which a symbol "
-                + $"is a whole number of samples — {DefaultSampleRate} is the one FT8 is decoded at.";
-            return false;
-        }
-
-        explanation = string.Empty;
-        return true;
-    }
+        => DigitalComposer.RateIsUsable(ComposeGeometry.Ft8, sampleRate, out explanation);
 
     /// <summary>
     /// Whether a transmit drive level is a peak amplitude audio can be built at.
@@ -463,340 +372,10 @@ public static class Ft8Composer
     /// repository knows (FACT-004).
     /// </remarks>
     public static bool DriveIsUsable(float drivePeak, out string explanation)
-    {
-        if (float.IsNaN(drivePeak))
-        {
-            explanation =
-                "the transmit drive level is not a number, so there is no level to build the "
-                + "transmission at.";
-            return false;
-        }
+        => DigitalComposer.DriveIsUsable(drivePeak, out explanation);
 
-        if (drivePeak <= 0.0f)
-        {
-            explanation =
-                $"a transmit drive level of {drivePeak} is not a level. At or below zero there is "
-                + "no transmission to send, only a keyed transmitter sending silence. Set a peak "
-                + $"amplitude above 0 and no more than 1 - {DefaultDrivePeak} is "
-                + $"{20.0 * Math.Log10(DefaultDrivePeak):0.##} dBFS and is where Hamlet starts.";
-            return false;
-        }
-
-        if (drivePeak > 1.0f)
-        {
-            explanation =
-                $"a transmit drive level of {drivePeak} is above full scale. Every sample past the "
-                + "rail would be clamped on the way out and counted as a clip, which is distortion "
-                + "on the band rather than a louder signal. Set a peak amplitude above 0 and no "
-                + $"more than 1 - {DefaultDrivePeak} is "
-                + $"{20.0 * Math.Log10(DefaultDrivePeak):0.##} dBFS and is where Hamlet starts.";
-            return false;
-        }
-
-        explanation = string.Empty;
-        return true;
-    }
-
-    /// <summary>Whether every tone would fit in the channel at this rate.</summary>
+    /// <summary>Whether every FT8 tone would fit in the channel at this rate.</summary>
     public static bool BaseFrequencyIsUsable(float baseFrequencyHz, int sampleRate, out string explanation)
-    {
-        if (float.IsNaN(baseFrequencyHz) || baseFrequencyHz <= 0.0f)
-        {
-            explanation =
-                $"{baseFrequencyHz} Hz puts tone 0 at or below DC, where it is not a tone at all.";
-            return false;
-        }
-
-        var top = baseFrequencyHz + ((Ft8Waveform.ToneCount - 1) * Ft8Waveform.ToneSpacingHz);
-        var nyquist = sampleRate / 2.0f;
-        if (top >= nyquist)
-        {
-            explanation =
-                $"with tone 0 at {baseFrequencyHz} Hz the top tone would sit at {top} Hz, at or above "
-                + $"the {nyquist} Hz Nyquist limit of a {sampleRate} Hz rate, where it would alias down "
-                + "into the channel as a different tone instead of being synthesised.";
-            return false;
-        }
-
-        explanation = string.Empty;
-        return true;
-    }
-
-    /// <summary>
-    /// Packs the words, and accepts a packing only if unpacking it again gives
-    /// back the same words.
-    /// </summary>
-    /// <remarks>
-    /// <para>**The round trip is the whole of the refusal.** Every candidate is
-    /// offered to the packers and then read back through <c>Ft8MessageDecoder</c>,
-    /// which is the call the receive path itself ends in. A packing that succeeds
-    /// but does not reproduce its own text is discarded exactly like one that
-    /// failed — audio for a message the operator did not ask for is the fault this
-    /// method exists to prevent.</para>
-    /// <para>**THREE PASSES, AND THE ORDER IS A RULING ABOUT HASHES RATHER THAN A
-    /// PREFERENCE.** A message that puts a callsign on the wire as a hash can be
-    /// read back only by a receiver that heard the full call in the same slot; a
-    /// message that carries everything in full can be read by anybody. So anything
-    /// sayable without a hash is said without one: first the structured types with
-    /// no callsign cache at all, then free text, and only then the structured types
-    /// with a cache.</para>
-    /// <para>**The unit that wrote this had the order wrong and the corpus caught
-    /// it.** With hashing allowed in the first pass, `GL IN TEST` packed as a
-    /// standard message whose two callsign fields were the hashes of `GL IN` and
-    /// `TEST` — nonsense on the air that rendered back as the right words, which is
-    /// precisely the failure §0.0's principle forbids in the other direction. It is
-    /// now free text, because free text is offered before anything is hashed.</para>
-    /// </remarks>
-    private static Packing? PackAsItself(string wanted, out string explanation)
-    {
-        var refusals = new List<string>();
-        var words = wanted.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-        // Pass one: everything carried in full.
-        var whole = TryStructured(words, wanted, refusals, allowHashing: false);
-        if (whole is not null)
-        {
-            explanation = string.Empty;
-            return whole;
-        }
-
-        // Pass two: free text, which carries thirteen characters and hashes
-        // nothing.
-        var freeText = TryRoute(
-            (_, buffer) => Ft8FreeText.TryPackText(wanted, buffer),
-            wanted,
-            Ft8MessageType.FreeText,
-            refusals,
-            "free text",
-            allowHashing: false);
-        if (freeText is not null)
-        {
-            explanation = string.Empty;
-            return freeText;
-        }
-
-        // Pass three: a callsign on the wire as a hash, which is the only way to
-        // say some things and is reported as what it is.
-        var hashed = TryStructured(words, wanted, refusals, allowHashing: true);
-        if (hashed is not null)
-        {
-            explanation = string.Empty;
-            return hashed;
-        }
-
-        explanation =
-            $"\"{wanted}\" is not a message this library can put on the air. What was tried, and what "
-            + "each one said: " + string.Join("; ", refusals) + ".";
-        return null;
-    }
-
-    /// <summary>
-    /// Offers the structured message types every field arrangement these words
-    /// admit.
-    /// </summary>
-    /// <remarks>
-    /// Standard before non-standard: it is most of what a band carries, and it is
-    /// the form that puts two whole callsigns on the wire.
-    /// </remarks>
-    private static Packing? TryStructured(
-        string[] words, string wanted, List<string> refusals, bool allowHashing)
-    {
-        var pass = allowHashing ? "hashed" : "in full";
-
-        foreach (var (to, de, extra) in FieldArrangements(words))
-        {
-            var standard = TryRoute(
-                (cache, buffer) => Ft8StandardMessage.TryPack(to, de, extra, cache, buffer),
-                wanted,
-                Ft8MessageType.Standard,
-                refusals,
-                $"standard, {pass}, \"{to}\" / \"{de}\" / \"{extra}\"",
-                allowHashing);
-            if (standard is not null)
-            {
-                return standard;
-            }
-
-            var nonstandard = TryRoute(
-                (cache, buffer) => Ft8NonstandardMessage.TryPack(to, de, extra, cache, buffer),
-                wanted,
-                Ft8MessageType.NonstandardCallsign,
-                refusals,
-                $"non-standard callsign, {pass}, \"{to}\" / \"{de}\" / \"{extra}\"",
-                allowHashing);
-            if (nonstandard is not null)
-            {
-                return nonstandard;
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Offers one packing route and keeps it only if it reads back as itself.
-    /// </summary>
-    /// <remarks>
-    /// **Whether a callsign is on the wire as a hash is measured rather than
-    /// guessed.** A message packed without a cache carries every callsign in full
-    /// by construction; one that refuses for want of a cache has a callsign that
-    /// can only travel as a hash. That is read off the port's own refusal rather
-    /// than inferred from the shape of a callsign — and on the pass where hashing
-    /// is not allowed, that refusal is simply the end of the route.
-    /// </remarks>
-    private static Packing? TryRoute(
-        Func<Ft8CallsignCache?, byte[], Ft8PackResult> pack,
-        string wanted,
-        Ft8MessageType type,
-        List<string> refusals,
-        string label,
-        bool allowHashing)
-    {
-        var buffer = new byte[Ft8Payload.MessageBytes];
-
-        var result = pack(null, buffer);
-        if (result is Ft8PackResult.FirstCallRequiresHashCache or Ft8PackResult.SecondCallRequiresHashCache)
-        {
-            if (!allowHashing)
-            {
-                refusals.Add($"{label} needs a callsign on the wire as a hash: {result}");
-                return null;
-            }
-
-            var cache = new Ft8CallsignCache();
-            result = pack(cache, buffer);
-            if (result != Ft8PackResult.Ok)
-            {
-                refusals.Add($"{label} would not pack even with a callsign cache: {result}");
-                return null;
-            }
-
-            if (!ReadsBackAsItself(buffer, cache, wanted, allowHashMarking: true, out var hashedText))
-            {
-                refusals.Add(
-                    $"{label} packed with a callsign cache but read back as \"{hashedText}\"");
-                return null;
-            }
-
-            return new Packing(buffer, type, CarriesHashedCallsign: true, hashedText);
-        }
-
-        if (result != Ft8PackResult.Ok)
-        {
-            refusals.Add($"{label} would not pack: {result}");
-            return null;
-        }
-
-        if (!ReadsBackAsItself(buffer, null, wanted, allowHashMarking: false, out var text))
-        {
-            refusals.Add($"{label} packed but read back as \"{text}\"");
-            return null;
-        }
-
-        return new Packing(buffer, type, CarriesHashedCallsign: false, text);
-    }
-
-    /// <summary>
-    /// Unpacks a packed message and asks whether it says what it was asked to say.
-    /// </summary>
-    /// <param name="packed">The 77 bits, as ten bytes.</param>
-    /// <param name="cache">The cache the message was packed with, or null.</param>
-    /// <param name="wanted">The words the operator asked for.</param>
-    /// <param name="readsBackAs">What the message layer made of the bits.</param>
-    /// <param name="allowHashMarking">
-    /// True only where the message was packed with a callsign cache, and therefore
-    /// carries a callsign as a hash. **The port marks a callsign it recovered from
-    /// a hash by putting it in angle brackets** — <c>Ft8CallsignField.Bracket</c>,
-    /// and the convention is written out at
-    /// <c>Ft8NonstandardMessage.TryPack</c>'s remarks: the brackets say *this name
-    /// came from a hash rather than off the wire*. They are a marking on the
-    /// reading, not a difference in the message, so a hashed message is allowed to
-    /// come back wearing them. Everything else must match character for character,
-    /// and the call inside the brackets still has to be the call that was asked
-    /// for — which it can only be if it is the one this seam hashed.
-    /// </param>
-    private static bool ReadsBackAsItself(
-        byte[] packed,
-        Ft8CallsignCache? cache,
-        string wanted,
-        bool allowHashMarking,
-        out string readsBackAs)
-    {
-        var read = Ft8MessageDecoder.Decode(packed, cache);
-        readsBackAs = read.Text;
-
-        if (!read.Decoded)
-        {
-            return false;
-        }
-
-        if (string.Equals(read.Text, wanted, StringComparison.Ordinal))
-        {
-            return true;
-        }
-
-        return allowHashMarking
-            && string.Equals(
-                read.Text.Replace("<", string.Empty, StringComparison.Ordinal)
-                    .Replace(">", string.Empty, StringComparison.Ordinal),
-                wanted,
-                StringComparison.Ordinal);
-    }
-
-    /// <summary>One packing that survived its own round trip.</summary>
-    private sealed record Packing(
-        byte[] Bits, Ft8MessageType Type, bool CarriesHashedCallsign, string ReadsBackAs);
-
-    /// <summary>
-    /// The ways FT8's own message types can carry these words across three fields.
-    /// </summary>
-    /// <remarks>
-    /// **These are arrangements, not readings.** A standard or non-standard
-    /// message is an addressed station, a transmitting station and one more thing;
-    /// the addressed station is one word except in the lettered and numbered
-    /// general-call forms, where it is two. So two words admit one arrangement,
-    /// three admit two, and four admit one. Nothing here decides which is right —
-    /// the round trip does, by refusing every arrangement that does not reproduce
-    /// the words it was built from.
-    /// </remarks>
-    private static IEnumerable<(string To, string De, string Extra)> FieldArrangements(string[] words)
-    {
-        switch (words.Length)
-        {
-            case 2:
-                yield return (words[0], words[1], string.Empty);
-                break;
-
-            case 3:
-                yield return (words[0], words[1], words[2]);
-                yield return ($"{words[0]} {words[1]}", words[2], string.Empty);
-                break;
-
-            case 4:
-                yield return ($"{words[0]} {words[1]}", words[2], words[3]);
-                break;
-        }
-    }
-
-    /// <summary>
-    /// Trimmed, upper-cased, single-spaced — and nothing else.
-    /// </summary>
-    /// <remarks>
-    /// FT8's fields hold no lower case, so upper-casing is what the format does
-    /// rather than a liberty taken with the operator's words. **Nothing else is
-    /// changed**: no callsign is corrected, no grid completed, no report signed,
-    /// and no word is added or removed. A message that is wrong is transmitted
-    /// wrong or refused, never quietly fixed.
-    /// </remarks>
-    private static string Normalise(string? text)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-        {
-            return string.Empty;
-        }
-
-        return string.Join(
-            ' ',
-            text.ToUpperInvariant().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
-    }
+        => DigitalComposer.BaseFrequencyIsUsable(
+            ComposeGeometry.Ft8, baseFrequencyHz, sampleRate, out explanation);
 }

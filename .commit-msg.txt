@@ -1,19 +1,27 @@
-test(unit293): task 1 - what the transmit path does today with FT4 chosen
+feat(unit293): task 2 - Ft4Composer, beside Ft8Composer and not inside it
 
-The trace, measured rather than described. With FT4 chosen and the dial on
-14.080 MHz, SendMessage composes 12.64 s of FT8 tones (79 symbols, 8 tones at
-6.25 Hz), arms them for a fifteen-second boundary, and the sequence keys, plays
-and unkeys - telling the operator it had sent. Nothing between the click and
-the keying frame notices that the operator asked for FT4.
+The words-to-audio half of criterion 3. Both composers are now faces onto a
+shared DigitalComposer that holds the packing, the round trip, the five refusals
+and the drive; what each face supplies is a ComposeGeometry - four constants and
+three port calls, read off Ft8Sharp and typed nowhere in this assembly.
 
-The fit guard is FT8's in four places: 0.5 s into a 15 s slot leaves 14.5 s and
-12.64 s fits. On FT4's 7.5 s slot the same offset leaves 7.0 s, which holds
-FT4's 5.04 s with 1.96 s to spare and does not hold 12.64 s at all.
+The seam was chosen this way because the two honest alternatives were one
+implementation taking the modulation as a value, or two copies of a file. The
+copy is what the port's whole argument is against: a second packer beside the
+first is a second thing to drift, and the drift would be a message that says one
+thing on FT8 and another on FT4.
 
-The right-click menu offers 3 shapes on an FT4 row against 5 on an FT8 row -
-Report and RogerAndReport are absent because every FT4 row's ratio is null, and
-the absence is said out loud in Ft8SendMenu.Absent.
+Ft4SymbolEncoder.Encode and Ft4Waveform.Synthesize are called and nothing in
+them is changed. The audio is asserted against the port sample for sample -
+60480 samples, 105 symbols - so this seam cannot drift from what unit 289
+nailed to gen_ft8 -ft4.
 
-Ft8ArmedSend.Arm has exactly one caller in src/.
+All five refusals are sentences on FT4 and none is an exception. The Nyquist
+arithmetic is FT4's own: at tone 0 = 5950 Hz FT4's top tone is 6012.5 Hz and
+refuses, FT8's is 5993.75 Hz and composes.
+
+FT8 is untouched and it is asserted rather than described: ComposeSignal
+produces the same array Ft8Waveform.Synthesize does for the same bits, and 53
+existing FT8 composer tests are green.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
