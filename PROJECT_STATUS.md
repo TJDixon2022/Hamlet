@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 8 of 8
-WORK_INSTRUCTION: 289 - FT4 decodes a signal Hamlet made
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 7
+WORK_INSTRUCTION: 290 - the slot machinery is FT4s
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T09:08:00-04:00
-NOTE: 8 of 8, none dropped, and the named drop candidate was taken rather than dropped. 106 of 106 round trip with 0 wrong and 0 missed; 51 of 51 symbol sequences and 51 of 51 waveforms identical to gen_ft8 -ft4; a ladder over 848 trials with 0 wrong and 0 out of noise alone, crossing near -15 dB. Two asks back.
+UPDATED: 2026-09-09T09:21:03-04:00
+NOTE: Census of fifteen running over the whole tree before any arithmetic moves. 103 Ft8Slots references confirmed - 49 in src, 54 in tests, across 8 source files, matching the instruction. Sorting the src hits into arithmetic, prose and on screen.
 
 ---
 

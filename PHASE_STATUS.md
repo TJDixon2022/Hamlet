@@ -1,11 +1,11 @@
 PHASE: FT4 works exactly the way FT8 does
 PHASE_SET: 2026-09-08
 DESCRIPTION: Where FT4 lives decided by reading upstream, then the decoder, the 7.5 second slot machinery, the ADIF submode, the button, and Tim at the radio
-CURRENT_STEP: 0
-WORK_INSTRUCTION: 289 - FT4 decodes a signal Hamlet made
-HEARTBEAT: 2026-09-09 08:34:19
-STEP: 0 | not started | where FT4 lives, decided by reading
-STEP: 1 | not started | FT4 decodes a signal Hamlet made
+CURRENT_STEP: 1
+WORK_INSTRUCTION: 290 - the slot machinery is FT4's
+HEARTBEAT: 2026-09-09 09:20:10
+STEP: 0 | done | where FT4 lives, decided by reading
+STEP: 1 | partial | FT4 decodes a signal Hamlet made
 STEP: 2 | not started | the slot machinery is FT4's
 STEP: 3 | not started | the log can say FT4
 STEP: 4 | not started | the FT4 button works
