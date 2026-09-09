@@ -1,0 +1,147 @@
+UNIT 296 TASK 3 - THE GRID SWEEP. NO FILE UNDER src/ CHANGED FOR ANY OF IT.
+
+Transcribed from the console output of four filtered runs on 2026-09-09, Debug build,
+net8.0. Ft4WaterfallGeometry already takes timeOversampling and frequencyOversampling and
+Ft4SlotDecoder already takes a geometry, so a denser analysis grid costs zero lines of
+source to try. Every run uses task 1b's lattice unchanged - 25 placements spanning one
+whole tone spacing and one whole symbol period, five divisions a side - and task 1b's
+corpus subset and seed, so every figure below is comparable trial for trial.
+
+================================================================================
+THE REFUSAL BOUNDARY, MEASURED AND NOT TRUSTED
+================================================================================
+
+  FT4's block is 576 samples
+  timeOversampling  1  accepted, sub-block 576
+  timeOversampling  2  accepted, sub-block 288
+  timeOversampling  3  accepted, sub-block 192
+  timeOversampling  4  accepted, sub-block 144
+  timeOversampling  5  REFUSED: A block of 576 samples does not divide into 5 analyses.
+  timeOversampling  6  accepted, sub-block 96
+  timeOversampling  7  REFUSED: A block of 576 samples does not divide into 7 analyses.
+  timeOversampling  8  accepted, sub-block 72
+  timeOversampling  9  accepted, sub-block 64
+  timeOversampling 16  accepted, sub-block 36
+  freqOversampling  1  accepted, transform 576, bin 20.8333 Hz
+  freqOversampling  2  accepted, transform 1152, bin 10.4167 Hz
+  freqOversampling  3  accepted, transform 1728, bin 6.9444 Hz
+  freqOversampling  4  accepted, transform 2304, bin 5.2083 Hz
+  freqOversampling  5  accepted, transform 2880, bin 4.1667 Hz
+  freqOversampling  8  accepted, transform 4608, bin 2.6042 Hz
+  freqOversampling 16  accepted, transform 9216, bin 1.3021 Hz
+
+576 is 2^6 x 3^2, so the refusal falls exactly where the arithmetic says it should: 5 and
+7 are refused in words and 1, 2, 3, 4, 6, 8, 9 and 16 are accepted. Frequency
+oversampling divides nothing and is bounded by nothing.
+
+================================================================================
+THE CLOCK AT EVERY GRID
+================================================================================
+
+grid    sub-block  transform  bin Hz    blocks  ms/slot   x HEAD
+2x2     288        1152       10.4167   156     66.3      1.00
+2x4     288        2304       5.2083    156     74.1      1.12
+4x2     144        1152       10.4167   156     151.3*    2.28
+4x4     144        2304       5.2083    156     151.3     2.28
+4x8     144        4608       2.6042    156     224.2     3.38
+
+* 4x2 was not in the timing table's own list; 141.5 ms a slot including synthesis and
+  noise was measured over its 2700-slot sweep, against 139.7 for 4x4 and 73.1 for 2x2.
+  The two are within a per cent of each other, which is what the arithmetic predicts:
+  time oversampling doubles the number of transforms and frequency oversampling doubles
+  the length of each.
+
+================================================================================
+THE LATTICE AT EVERY GRID
+================================================================================
+
+2x2 - HEAD. Reproduces task 1b trial for trial, which is the harness's own control.
+rung    on grid     worst cell            placement-averaged    WRONG
+-10     36 of 36    36 of 36 at (0,0)     900 of 900 (100.0%)   0
+-13     36 of 36    19 of 36 at (1,1)     808 of 900 ( 89.8%)   0
+-15     25 of 36     0 of 36 at (1,1)     194 of 900 ( 21.6%)   0
+  wrong 0, missed 798
+
+2x4
+rung    on grid     worst cell            placement-averaged    WRONG
+-10     25 of 36    10 of 36 at (0,1)     591 of 900 ( 65.7%)   0
+-13      0 of 36     0 of 36 at (0,0)      16 of 900 (  1.8%)   0
+-15      0 of 36     0 of 36 at (0,0)       0 of 900 (  0.0%)   0
+  wrong 0, missed 2093
+
+4x4
+rung    on grid     worst cell            placement-averaged    WRONG
+-10     25 of 36    22 of 36 at (0,1)     748 of 900 ( 83.1%)   0
+-13      0 of 36     0 of 36 at (0,0)      29 of 900 (  3.2%)   0
+-15      0 of 36     0 of 36 at (0,0)       0 of 900 (  0.0%)   0
+  wrong 0, missed 1923
+
+4x2 - THE ONE THAT WORKS
+rung    on grid     worst cell            placement-averaged    WRONG
+-10     36 of 36    36 of 36 at (0,0)     900 of 900 (100.0%)   0
+-13     36 of 36    34 of 36 at (4,2)     894 of 900 ( 99.3%)   0
+-15     25 of 36     1 of 36 at (1,1)     327 of 900 ( 36.3%)   0
+  wrong 0, missed 579
+
+Every cell at -13 dB, 4x2, so the average is not hiding one bad placement:
+  36 36 36 36 36 36 36 35 35 36 36 36 36 36 36 36 36 36 36 36 36 35 34 35 36
+
+Every cell at -13 dB, 2x2, for the same reading:
+  36 33 36 35 35 36 19 35 35 21 36 32 36 36 32 36 31 35 36 32 36 20 34 34 21
+
+================================================================================
+THE THREE QUESTIONS TASK 3 ASKS, ANSWERED
+================================================================================
+
+1. DOES ANY GRID CLOSE THE GAP? YES, AND IT IS 4x2 - AND THE AXIS THAT CLOSES IT IS NOT
+   THE ONE THE INSTRUCTION EXPECTED.
+
+   Task 1d measured HEAD's deficit at -13 dB as 3 dB at the worst cell and 2 dB
+   placement-averaged, against an on-grid ladder taken a decibel at a time. At 4x2 the
+   worst cell goes from 19 of 36 to 34 of 36 and the placement average from 808 of 900 to
+   894 of 900 - 89.8% to 99.3% - while the on-grid cell does not move at all, still 36 of
+   36. Interpolated on the same on-grid ladder (100% at -14, 69.4% at -15, 22.2% at -16)
+   HEAD's placement average of 89.8% sits at -14.3 dB and its worst cell's 52.8% at
+   -15.4 dB; 4x2's 99.3% sits above -14 dB and its worst cell's 94.4% at about -14.2 dB.
+   The gap closes from 2.4 dB at the worst cell to under half a decibel.
+
+   At -15 dB, where HEAD keeps 194 of 900, 4x2 keeps 327 of 900 - not closed, but 69%
+   more messages, and that rung is below where either placement decodes reliably.
+
+2. DOES IT FIT IN THE SLOT? YES, WITH TWO ORDERS OF MAGNITUDE TO SPARE.
+
+   151.3 ms against a 7.5 s slot is 2.0% of it, in a DEBUG build, on this machine. The
+   budget judged against is 10% of the slot - 750 ms - which leaves the tab's own work,
+   the SNR estimate, the waterfall paint and the ledger write nine tenths of the slot.
+   HEAD spends 0.9%. Even 4x8, the densest grid tried, spends 3.0%.
+
+3. DOES THE WRONG COUNT STAY AT ZERO? YES, AT EVERY GRID.
+
+   0 wrong decodes in 2700 slots at each of the four grids, 10800 slots in all, and the
+   count is reported per cell and per rung rather than summed at the end. A denser grid
+   makes more hypotheses and more hypotheses is how a decoder starts inventing messages;
+   it did not happen here, and it was looked for at every cell.
+
+================================================================================
+AND WHY THE FREQUENCY AXIS DESTROYS WHAT THE TIME AXIS REPAIRS
+================================================================================
+
+This is read out of the port rather than guessed at. Ft8Monitor.ProcessBlock analyses a
+sliding frame of TransformLength = BlockSize x FrequencyOversampling samples, advancing it
+by SubblockSize each sub-block. So FREQUENCY OVERSAMPLING LENGTHENS THE ANALYSIS WINDOW:
+at 2 the transform spans two whole FT4 symbol periods, at 4 it spans four. FT4 is 4-FSK
+and its tone changes every symbol, so a window spanning four symbols sees four different
+tones and the Costas correlation the sync search is built on is smeared away. That is
+exactly what the table shows - every grid with frequencyOversampling above 2 loses its
+ON-GRID decodes first, which is not what an off-grid problem looks like.
+
+TIME OVERSAMPLING COSTS NOTHING OF THE KIND. It changes only how often the same-length
+frame is sampled, so it buys sub-symbol alignment resolution with no smearing at all - and
+sub-symbol alignment is precisely the axis the off-grid loss lives on. At 4x2 every one of
+the twenty-five cells at -13 dB is at 34 or better, including the frequency-offset ones,
+which says the dominant off-grid loss was never in frequency.
+
+The port is faithful in all of this. Nothing here is a defect in it: freq_osr is a
+parameter of monitor_init and demo/decode_ft8.c passes 2, and 2 is the largest value that
+does not span more than one FT4 symbol change. What the sweep found is that upstream's
+number is right for the frequency axis and improvable on the time one.

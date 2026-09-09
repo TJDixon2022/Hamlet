@@ -510,8 +510,20 @@
     been a StackPanel since unit 280, which is unit 293's fix in the FT4 sibling made here. Two of
     its three tests were dying in the finder, measured by reverting; all three pass.
   -->
+  <!--
+    1.12.253 -> 1.12.254, UNIT 296 TASK 3, UNDER HM-DEC-150. A PATCH, AND AGAIN THE PRODUCT IS A
+    MEASUREMENT: no file under src/ changed. A denser FT4 analysis grid costs zero lines of source
+    to try, so four were tried on task 1b's own lattice. The answer is one axis and not the other.
+    Frequency oversampling above 2 destroys the decode and destroys the ON-GRID one first - 2x4 and
+    4x4 both fall from 36 of 36 to 0 of 36 at -13 dB - because Ft8Monitor's analysis frame is
+    BlockSize x FrequencyOversampling samples long, so at 4 it spans four FT4 symbols and a 4-FSK
+    tone that changes every symbol is smeared across the window. Time oversampling costs nothing of
+    the kind: at 4x2 the placement average at -13 dB goes 808 of 900 to 894 of 900 and the worst
+    cell 19 of 36 to 34 of 36, the on-grid cell does not move, and one slot costs 151 ms against a
+    7.5 s slot. Zero wrong decodes in 10800 slots across the four grids.
+  -->
   <PropertyGroup>
-    <Version>1.12.253</Version>
+    <Version>1.12.254</Version>
   </PropertyGroup>
 
   <!--
