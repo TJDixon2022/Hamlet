@@ -23,8 +23,8 @@ B. Step 4 and its four exit criteria.
       loopback                                             must-pass - **BOOKED TO
       UNIT 293**, same booking, same reason
 
-C. This report raises 10 items in section 4 and **none of them is in the way of
-   criterion 1 or criterion 2**; four are with Tim, four are the launcher's or the
+C. This report raises 11 items in section 4 and **none of them is in the way of
+   criterion 1 or criterion 2**; four are with Tim, five are the launcher's or the
    sandbox's, and two need a citation. Task 4 named **13 gaps**. One of them -
    the log's write path still handing in `ContactModes.Named("FT8")` - is in the
    way of unit 293 and must land with it; three more are unit 293's own; the other
@@ -433,7 +433,9 @@ writer, `SlotGrid` at `Ft8Slots.cs:137` with `Ft4` at `:153` reading both number
 
 ## 4. What's blocking us
 
-**10 items. None blocks criterion 1 or criterion 2, and none blocked this unit.**
+**11 items. None blocks criterion 1 or criterion 2, and none blocked this unit.**
+Numbered 1 to 10 with a `6b`, because item 6b arrived after the ordering block was
+written and renumbering the rest would break the cross-references in section 2.
 
 ### Four with Tim, all four carried and none settled here
 
@@ -455,7 +457,7 @@ writer, `SlotGrid` at `Ft8Slots.cs:137` with `Ft4` at `:153` reading both number
    unit changed that sheet's arrival line, and the count is **unchanged at 2 of 11**.
    The other two were not run. Beside both criteria.
 
-### Four that are the launcher's or the sandbox's
+### Five that are the launcher's or the sandbox's
 
 5. **Every `.bat` in `tools/arbiter/` is refused, for the fourth consecutive unit.**
    Work instruction 292 said the authoring session had run `outcome-read.bat`
@@ -475,6 +477,15 @@ writer, `SlotGrid` at `Ft8Slots.cs:137` with `Ft4` at `:153` reading both number
    rather than committed. **The third is the one that matters**: it is a `.cs` file in
    a test project, so the tree this session tested is not the tree a fresh clone
    builds - four units old now, and still a standing item.
+6b. **`.commit-msg.txt` is left modified in the working tree**, and this is the same
+    refusal one notch along. It is a **tracked** scratch file - its history shows unit
+    269 untracking it and a later unit re-tracking it - and this session used it to
+    carry each task's commit message, because this shell will not take a quoted
+    heredoc containing an apostrophe. **Nothing was committed from it**; every commit
+    used `-F` and staged only named paths. Restoring it with `git checkout --` was
+    refused for approval, so it is left holding the last commit message. **A next
+    session will see it modified in `git status` and can discard it freely.**
+
 7. **`PHASE_STATUS.md`'s `CURRENT_STEP:` still reads `1`** while the phase is on step
    4. It is the launcher's line and was not written. Reported again, as unit 291 was
    told to do; repairing it is not this unit's.
