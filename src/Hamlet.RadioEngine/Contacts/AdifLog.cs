@@ -38,6 +38,21 @@ public sealed record AdifContact
     /// <summary>The mode. ADIF `MODE`.</summary>
     public string? Mode { get; init; }
 
+    /// <summary>The submode, where the mode has one. ADIF `SUBMODE`.</summary>
+    /// <remarks>
+    /// <para>**NULL IS THE ORDINARY ANSWER AND NOT A GAP.** Most modes stand on
+    /// their own — `FT8` is a Mode and takes no submode — so a record with
+    /// `MODE=FT8` and nothing here is complete rather than missing something. The
+    /// field is null on every record Hamlet wrote before work instruction 291 and
+    /// on every FT8 record it will ever write.</para>
+    /// <para>**IT NAMES THE MODE WHERE `MODE` CANNOT.** `MODE=MFSK` on its own is
+    /// *some kind of multi-frequency shift keying*; the pair `MODE=MFSK,
+    /// SUBMODE=FT4` is FT4 and is what every other logger has a row for. See
+    /// <see cref="ContactModes"/>, which holds the pairs, and never set this
+    /// without setting <see cref="Mode"/> from the same source.</para>
+    /// </remarks>
+    public string? Submode { get; init; }
+
     /// <summary>The report the operator sent. ADIF `RST_SENT`.</summary>
     public string? ReportSent { get; init; }
 
@@ -102,6 +117,23 @@ public sealed record AdifLogRecord(
 /// throwing them away would lose a fact the ledger holds. `String` is "a sequence
 /// of Characters", ASCII 32 to 126. The Band enumeration gives `20m` for
 /// "14.0" to "14.35" MHz. `FT8` is a Mode and takes no submode.</para>
+/// <para>**`SUBMODE` IS THE COMPANION `MODE` NEEDS FOR THREE OF THE SIX, AND ITS
+/// NAME IS A READING RATHER THAN A FETCH** (work instruction 291 task 1). It
+/// carries the specific mode where `MODE` carries only the family: `MODE=MFSK`
+/// alone is *some kind of multi-frequency shift keying*, and it is the pair
+/// `MODE=MFSK, SUBMODE=FT4` that names FT4. **`MODE=FT4` is not valid ADIF** and a
+/// logger has no row for it. Where a mode stands on its own the field is absent,
+/// which is every FT8 record.</para>
+/// <para>**WHAT COULD NOT BE DONE, SAID PLAINLY (§12.4).** This session could not
+/// reach `https://www.adif.org/314/ADIF_314.htm` — the shell refused the fetch, so
+/// there was no page to truncate — and there is no pinned copy under `data/vendor/`.
+/// The tag name `SUBMODE` and the pairing `MFSK`/`FT4` therefore rest on **unit
+/// 287's in-tree reading of the same edition**, recorded at
+/// <see cref="ContactModes.Cite"/> as retrieved 2026-09-08 and quoted at
+/// `ContactModes.cs:98-104`. **That is a reading carried forward, not a fetch made
+/// here**, and it is marked the way `FREQ` below is marked rather than written with
+/// the confidence of something this session verified. It was not recalled from
+/// memory, which is the one thing forbidden.</para>
 /// <para>**THE LENGTH IS THE ESCAPE, AND THAT IS WHY NOTHING IS ESCAPED HERE.**
 /// ADI has no escape character: a reader takes exactly `length` characters after
 /// the `&gt;`. So an angle bracket, a colon or a newline inside the operator's
@@ -241,6 +273,13 @@ public static class AdifLog
 
         Field(text, "BAND", contact.Band);
         Field(text, "MODE", contact.Mode);
+
+        // **BESIDE `MODE` BECAUSE A PERSON READS THEM AS A PAIR.** The order means
+        // nothing to a reader (see the remark above); it means a great deal to
+        // somebody opening the file in an editor to check what he worked.
+        // `Field` writes nothing at all where there is no submode, which is every
+        // FT8 record and most others.
+        Field(text, "SUBMODE", contact.Submode);
 
         if (contact.FrequencyMhz is { } mhz)
         {
@@ -440,6 +479,7 @@ public static class AdifLog
             EndedUtc = Moment(Get(fields, "QSO_DATE"), Get(fields, "TIME_OFF")),
             Band = Get(fields, "BAND"),
             Mode = Get(fields, "MODE"),
+            Submode = Get(fields, "SUBMODE"),
             FrequencyMhz = Get(fields, "FREQ") is { } f
                 && double.TryParse(
                     f, NumberStyles.Float, CultureInfo.InvariantCulture, out var mhz)

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 291 - the log can say FT4
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:09:00-04:00
-NOTE: Walking the log write path from the literal FT8 at MainWindowViewModel 10288 down to the bytes on disk, and reading the three readers back out, before any field is added.
+UPDATED: 2026-09-09T10:11:22-04:00
+NOTE: Walk done and committed - 5 places must agree for MODE=MFSK SUBMODE=FT4, and 7 sentences in the tree assert Hamlet cannot write it. Now adding Submode to AdifContact beside Mode and threading it to the writer, From and the two round-trip guards.
 
 ---
 

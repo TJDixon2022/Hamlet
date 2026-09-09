@@ -45,6 +45,7 @@ public sealed class TheAdifLogRoundTripsTests
         Assert.Equal(contact.EndedUtc, read.EndedUtc);
         Assert.Equal(contact.Band, read.Band);
         Assert.Equal(contact.Mode, read.Mode);
+        Assert.Equal(contact.Submode, read.Submode);
         Assert.Equal(contact.FrequencyMhz, read.FrequencyMhz);
         Assert.Equal(contact.ReportSent, read.ReportSent);
         Assert.Equal(contact.ReportReceived, read.ReportReceived);
@@ -56,6 +57,23 @@ public sealed class TheAdifLogRoundTripsTests
         // themselves catches a field this test forgot to name, which is the
         // failure a list of assertions cannot see.
         Assert.Equal(contact, read);
+
+        // **AND THE SAME WALK WITH A SUBMODE ON IT** (work instruction 291 task
+        // 2). `Complete()` is FT8 and FT8 takes no submode, so every assertion
+        // above compares null with null for the new field — which is exactly the
+        // fixture-built-from-the-same-assumption fault §12.5 names, and the
+        // reason this is extended rather than trusted.
+        var ft4 = CompleteFt4();
+
+        var ft4Text = AdifLog.Record(ft4);
+
+        _output.WriteLine(ft4Text);
+
+        var ft4Read = Assert.Single(AdifLog.Read(ft4Text));
+
+        Assert.Equal("MFSK", ft4Read.Mode);
+        Assert.Equal("FT4", ft4Read.Submode);
+        Assert.Equal(ft4, ft4Read);
     }
 
     /// <summary>
@@ -120,6 +138,13 @@ public sealed class TheAdifLogRoundTripsTests
             ("GRIDSQUARE", Complete() with { GridSquare = null }),
             ("MY_GRIDSQUARE", Complete() with { MyGridSquare = null }),
             ("COMMENT", Complete() with { Comment = null }),
+
+            // **THE ABSENT SUBMODE, TAKEN OFF A RECORD THAT HAD ONE** (work
+            // instruction 291 task 2, step 3's third criterion). Dropping it from
+            // `Complete()` would prove nothing: FT8 never had one. Dropped from
+            // the FT4 record it leaves `MODE=MFSK` behind, which is the shape a
+            // careless writer produces and which no row may light from.
+            ("SUBMODE", CompleteFt4() with { Submode = null }),
         };
 
         foreach (var (name, contact) in withouts)
@@ -243,20 +268,94 @@ public sealed class TheAdifLogRoundTripsTests
         Assert.Contains("<MODE:3>FT8", text, StringComparison.Ordinal);
 
         Assert.Contains("<EOR>", text, StringComparison.Ordinal);
+
+        // **`SUBMODE` IS ABSENT FROM AN FT8 RECORD AND THE STRING DOES NOT
+        // APPEAR** (work instruction 291 task 2). Not `<SUBMODE:0>`, which
+        // asserts an empty submode was observed. `FT8` is a Mode and takes no
+        // submode, so this is the honest shape rather than a missing one.
+        Assert.DoesNotContain("SUBMODE", text, StringComparison.Ordinal);
+
+        // **AND ON A RECORD THAT HAS ONE, THE TAG IS THE SPECIFICATION'S.**
+        // `SUBMODE`, read from ADIF 3.1.4 as unit 287 read it and carried at
+        // `ContactModes.Cite`, and never written from memory. `MODE=FT4` is not
+        // valid ADIF; `MODE=MFSK` with `SUBMODE=FT4` is FT4.
+        var ft4 = AdifLog.Record(CompleteFt4());
+
+        _output.WriteLine(ft4);
+
+        Assert.Contains("<MODE:4>MFSK", ft4, StringComparison.Ordinal);
+        Assert.Contains("<SUBMODE:3>FT4", ft4, StringComparison.Ordinal);
+        Assert.DoesNotContain("<MODE:3>FT4", ft4, StringComparison.Ordinal);
+    }
+
+    /// <summary>An FT8 record is byte-for-byte what it was before unit 291.</summary>
+    /// <remarks>
+    /// <para>**NOT A TAG, NOT A LENGTH, NOT A BYTE** (work instruction 291 task
+    /// 2). The log outlives everything else here, and a file the operator has
+    /// already got must keep reading the way it reads today.</para>
+    /// <para>**IT IS A WHOLE-STRING COMPARISON AND THAT IS THE POINT.** A
+    /// `Contains` check would pass with a field inserted, a length changed or a
+    /// separator moved. This is the assertion that cannot.</para>
+    /// <para>**HOW THE LITERAL WAS ESTABLISHED, SAID PLAINLY BECAUSE IT IS
+    /// EVIDENCE.** The pre-unit commit could not be built here — this session's
+    /// shell refused `git worktree` — so the baseline is not a dump of the old
+    /// binary. It rests on two things instead. First, `git diff f13b644 --
+    /// AdifLog.cs` shows exactly three code changes: the `Submode` property, the
+    /// one `Field(text, "SUBMODE", contact.Submode)` call, and one `Get` in
+    /// `From`. Second, `Field` returns without writing on a null or empty value,
+    /// and `Submode` is null on every record written before unit 291. **So the
+    /// added call is a no-op for an FT8 contact by construction**, and the literal
+    /// below is that construction written out. It is an argument plus a pin,
+    /// rather than a measurement, and it is marked as one.</para>
+    /// </remarks>
+    [Fact]
+    public void AnFt8RecordIsByteIdenticalToWhatItWasBeforeTheSubmode()
+    {
+        const string Before =
+            "<CALL:6>IK4LZH\n"
+            + "<STATION_CALLSIGN:6>KC3QIS\n"
+            + "<QSO_DATE:8>20260907\n"
+            + "<TIME_ON:6>214130\n"
+            + "<TIME_OFF:6>214300\n"
+            + "<BAND:3>20m\n"
+            + "<MODE:3>FT8\n"
+            + "<FREQ:9>14.074000\n"
+            + "<RST_SENT:3>-09\n"
+            + "<RST_RCVD:3>-12\n"
+            + "<GRIDSQUARE:4>JN54\n"
+            + "<MY_GRIDSQUARE:6>FN00DJ\n"
+            + "<COMMENT:21>First one into Italy.\n"
+            + "<EOR>\n";
+
+        var now = AdifLog.Record(Complete());
+
+        _output.WriteLine(now);
+
+        Assert.Equal(Before, now);
+        Assert.Equal(Before.Length, now.Length);
     }
 
     /// <summary>Every declared length is the true length of its value.</summary>
     /// <remarks>
-    /// **THIS IS THE ONE THAT CATCHES AN OFF-BY-ONE**, which is the failure that
-    /// makes another program reject the file without saying why. It is asserted
-    /// independently of the reader, so a writer and a reader that are wrong the
-    /// same way cannot both pass (§12.5).
+    /// <para>**THIS IS THE ONE THAT CATCHES AN OFF-BY-ONE**, which is the failure
+    /// that makes another program reject the file without saying why. It is
+    /// asserted independently of the reader, so a writer and a reader that are
+    /// wrong the same way cannot both pass (§12.5).</para>
+    /// <para>**AND IT NOW RUNS OVER THE SUBMODE RECORD TOO** (work instruction 291
+    /// task 2). A `SUBMODE` written one character short is the exact breakage this
+    /// unit was told to catch, and it would be invisible in a round trip whose
+    /// writer and reader are both off by the same one. Unit 274 shipped `20 m` for
+    /// `20m` and the round trip did not notice, for that reason.</para>
     /// </remarks>
-    [Fact]
-    public void EveryDeclaredLengthIsTrue()
+    [Theory]
+    [InlineData("FT8")]
+    [InlineData("FT4")]
+    public void EveryDeclaredLengthIsTrue(string which)
     {
+        var contact = which == "FT4" ? CompleteFt4() : Complete();
+
         var text = AdifLog.Record(
-            Complete() with { Comment = "a note with <brackets> and a : colon" });
+            contact with { Comment = "a note with <brackets> and a : colon" });
 
         var i = 0;
         var checkedFields = 0;
@@ -298,7 +397,12 @@ public sealed class TheAdifLogRoundTripsTests
             i = close + 1 + declared;
         }
 
-        Assert.True(checkedFields >= 12, "only " + checkedFields + " fields were checked");
+        _output.WriteLine(which + ": " + checkedFields + " fields checked");
+
+        // Twelve on an FT8 record and thirteen once the submode is on it.
+        Assert.True(
+            checkedFields >= (which == "FT4" ? 13 : 12),
+            "only " + checkedFields + " fields were checked on the " + which + " record");
     }
 
     /// <summary>
@@ -362,4 +466,24 @@ public sealed class TheAdifLogRoundTripsTests
         MyGridSquare = "FN00DJ",
         Comment = "First one into Italy.",
     };
+
+    /// <summary>The same contact worked on FT4, which needs both halves.</summary>
+    /// <remarks>
+    /// **THE PAIR IS READ OUT OF `ContactModes` AND NOT TYPED HERE** (work
+    /// instruction 291 task 2). A fixture that spelled `MFSK` and `FT4` by hand
+    /// would agree with a writer that spelled them by hand, and neither would be
+    /// the specification's — which is unit 274's `20 m` exactly.
+    /// </remarks>
+    private static AdifContact CompleteFt4()
+    {
+        var ft4 = ContactModes.Named("FT4")!;
+
+        return Complete() with
+        {
+            Band = "40m",
+            FrequencyMhz = 7.0475,
+            Mode = ft4.AdifModes[0],
+            Submode = ft4.AdifSubmode,
+        };
+    }
 }

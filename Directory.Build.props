@@ -276,8 +276,32 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.224 -> 1.12.225, UNIT 291 TASK 2, UNDER HM-DEC-150. A PATCH, AND THE FIRST TIME THE LOG HAS
+    ROOM FOR A MODE THAT NEEDS TWO FIELDS TO NAME IT.
+
+      AdifContact gains SUBMODE - thirteen init properties where there were twelve - written beside
+      MODE at AdifLog.Record and read beside it in From. MODE=MFSK on its own is some kind of
+      multi-frequency shift keying; the pair MODE=MFSK, SUBMODE=FT4 is FT4, and MODE=FT4 is not
+      valid ADIF.
+
+      ABSENT IS ABSENT AND THAT IS THE CRITERION A CARELESS IMPLEMENTATION BREAKS. Field already
+      returns without writing on a null or empty value, so a contact with no submode produces a
+      record in which the string SUBMODE does not appear at all - not <SUBMODE:0>, which would
+      assert that an empty submode was observed. The round trip brings it back null and never "".
+
+      AND NOT A BYTE OF AN FT8 RECORD MOVED. AnFt8RecordIsByteIdenticalToWhatItWasBeforeTheSubmode
+      pins the whole 245-character record as a single string comparison rather than a Contains.
+
+      THE TAG NAME IS A READING AND IT IS MARKED AS ONE. adif.org could not be reached from this
+      session - the shell refused the fetch - and there is no pinned copy under data/vendor/. So
+      SUBMODE and the MFSK/FT4 pairing rest on unit 287s in-tree reading of ADIF 3.1.4, carried at
+      ContactModes.Cite. Marked the way FREQ is already marked, per 12.4. Not recalled from memory.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.224</Version>
+    <Version>1.12.225</Version>
   </PropertyGroup>
 
   <!--
