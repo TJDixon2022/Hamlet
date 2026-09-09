@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: WORKING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 291 - the log can say FT4
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:24:40-04:00
-NOTE: PHASE_OUTCOME entry for 291 written by hand - the bat was tried once in the form the instruction named and refused again - with the arguments committed at tools/arbiter/unit291-append.bat. RULES_AT checked and needs nothing. The three leftovers could not be deleted and are not being committed. Field guide row next.
+UPDATED: 2026-09-09T10:27:45-04:00
+NOTE: Field guide FT4 row in, frequency read from the convention data rather than recalled, and no slot length in its text. Checking the five older rows against the same data turned up two inherited mismatches - RTTY and PSK31 - named and left standing. Writing output.md.
 
 ---
 

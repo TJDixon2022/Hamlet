@@ -351,8 +351,31 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.227 -> 1.12.228, UNIT 291 TASK 6, UNDER HM-DEC-150. A PATCH. THE FIELD GUIDE GAINS THE FT4
+    ROW UNIT 290s CENSUS FOUND MISSING - THE NAMED DROP CANDIDATE, TAKEN AND NOT DROPPED.
+
+      ModeGuide.cs:127 had sorted the string FT4 into ModeFamily.Digital all along, so every surface
+      that colours a mode already had an answer for FT4 while the guide beside it had no entry.
+
+      NOTHING IN THE ROW SAYS HOW LONG A SLOT IS. The 4.48 against 5.04 transmission figure is with
+      Tim and a guide stating either would be answering it. The row says half-length slots, which is
+      true on both readings, and the test asserts the words 4.48, 5.04, 7.5, seven and a half and
+      second appear in none of its three prose fields.
+
+      THE FREQUENCY IS READ AND NOT RECALLED. 7.047 MHz is the jumpHz of the FT4 sprint row for 40 m
+      in data/bands/us-neighborhoods.json, which cites the WSJT-X default frequency table.
+
+      AND CHECKING IT AGAINST THE DATA TURNED UP TWO INHERITED DISAGREEMENTS THIS UNIT DID NOT CAUSE
+      AND DOES NOT REPAIR. RTTYs field-guide home is 7.062 MHz where the data says 7.040, and PSK31s
+      is 7.065 where the data says 7.070. A frequency change needs a citation and which source is
+      right is not a sessions to decide. They are asserted as a known set rather than skipped, so a
+      third would go red and so would a fix, and they are named in section 4 of the report.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.227</Version>
+    <Version>1.12.228</Version>
   </PropertyGroup>
 
   <!--

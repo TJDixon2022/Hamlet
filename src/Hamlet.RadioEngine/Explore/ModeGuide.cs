@@ -58,6 +58,32 @@ public static class ModeGuide
             + "your callsign come back from Japan never gets old, and nobody on "
             + "the other end knows or cares what your station cost.",
             7_074_000, ModeFamily.Digital),
+
+        // **THE ROW UNIT 290'S CENSUS FOUND MISSING.** `:127` below has sorted
+        // the string `FT4` into `ModeFamily.Digital` all along, so every surface
+        // that colours a mode already had an answer for FT4 while the guide it
+        // sits beside had no entry at all.
+        //
+        // **NOTHING HERE SAYS HOW LONG A SLOT IS.** The transmission figure —
+        // 4.48 seconds against 5.04 — is a live question with Tim, and a field
+        // guide stating either would be answering it. *Half-length* is true on
+        // both readings and is what the operator needs to know anyway.
+        //
+        // **THE FREQUENCY IS READ AND NOT RECALLED** (§0, §0.2.1). 7.047 MHz is
+        // the `jumpHz` of the `FT4 sprint` row for 40 m in
+        // `data/bands/us-neighborhoods.json`, which cites the WSJT-X default
+        // frequency table. `TheFieldGuideRowsMatchTheConventionData` asserts this
+        // literal against that row rather than trusting this comment, because a
+        // wrong frequency in a field guide is the same class of fault as a wrong
+        // ADIF tag name.
+        new ModeInfo("FT4", "FT8 in a hurry", "Short clipped warbles",
+            SignatureKind.Blocks, "Easy",
+            "The same trick as FT8 with the clock wound on: half-length slots, "
+            + "built for contest weekends when the point is how many rather "
+            + "than how far. It lives just up the band from FT8 so the two do "
+            + "not tread on each other, and everything you learn on one you "
+            + "already know on the other.",
+            7_047_000, ModeFamily.Digital),
         new ModeInfo("SSB", "Voice", "Duck talk until tuned",
             SignatureKind.Smear, "Easy",
             "Actual conversation with actual humans, no infrastructure "
