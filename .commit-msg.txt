@@ -1,37 +1,30 @@
-feat(unit293): task 3 - the fit guard and the arm follow the mode
+feat(unit293): task 4 - the log says the mode it was actually made in
 
-The arithmetic half of criterion 3. OperatorSend now carries the grid the slot it
-names is a slot on. It rides there rather than on the sequence because the
-sequence is built once when the radio connects and outlives any number of presses
-of the mode strip - a grid held there would be a second place the operator's
-choice lives, able to disagree with the audio in the very record it was being
-asked about. It is an init property defaulting to FT8's grid, which is the status
-quo written down: every caller that existed before tonight got fifteen seconds
-and still gets them, the same rule DigitalModes.Grid() already states.
+One line, and it is the only thing in this unit that could be wrong for as long
+as the log exists. MainWindowViewModel's one write path handed in
+ContactModes.Named("FT8") unconditionally. It was unreachable on FT4 only
+because CanLogRow needs a station to have addressed the operator, and nothing
+could address him on FT4 until Hamlet could transmit on it - which tasks 2 and 3
+made possible, so it changes in the same unit.
 
-Sendable measures against send.Grid in all four places, and both refusal
-sentences read their numbers and the mode's name off it. Nothing is typed in, so
-the open 4.48-against-5.04 question still costs one edit to settle.
+The mode is now DigitalMode.Contact(), a lookup on the same one value the grid,
+the cutter, the slot watch and the decoder already derive from. Not a second
+source, not a string, and not the chip's lit state, which is a reading of where
+the dial is rather than an instruction about what Hamlet is doing. The mapping
+onto MODE=MFSK plus SUBMODE=FT4 is unit 291's table and is not re-derived.
 
-SendMessage composes through the mode's own composer and arms for the next
-boundary on DigitalGrid; DriveTheArmedSend computes the boundary on the armed
-send's own grid. Without the second half an FT4 send armed for :07.5 would come
-back NotDue at :00 and TooLate at :15 - discarded every time, with the operator
-having clicked and nothing going out.
+The record construction is lifted out of LogContactAsync into
+ContactLogEntryFor, which writes nothing and opens nothing, so what goes into
+the permanent record can be asserted without a dialog.
 
-One click with FT4 chosen now composes 60480 samples of FT4 tones and arms them
-for 15:45:22.5 UTC, which is a boundary FT8's grid cannot express.
+Both directions are asserted. FT4: MODE=MFSK, SUBMODE=FT4, and the string FT8
+appears nowhere in the record. FT8: MODE=FT8 with SUBMODE absent rather than
+empty, exactly as unit 291 pinned it. The same seeded row logged under each mode
+in turn gives each answer, so the mode follows the tab and nothing else.
 
-Found and fixed a screen this change would otherwise have broken: SendingLine
-formatted HH:mm:ss, which is every FT8 boundary exactly and four of FT4's eight
-wrong by half a second. A sentence naming a moment the transmission does not
-start at is 0.0 in the one line telling him what is about to go on the band.
+The achievements FT4 row lights off a record this write path made rather than
+off a forced one - the first unit in which a real FT4 contact is reachable.
 
-Ft8ArmedSend.Arm has exactly one caller in src/, counted by reading every .cs
-file under it. DriveTheArmedSend reads the armed send and cannot write it.
-
-FT8 is untouched: same array, same quarter-minute boundary, and both refusal
-sentences pinned character for character against what this tree produced at
-9a81d4d. 122 control tests green across both projects.
+78 log control tests green across both projects.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

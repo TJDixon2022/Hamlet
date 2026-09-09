@@ -47,4 +47,25 @@ public static class DigitalModes
     /// </remarks>
     public static SlotGrid Grid(this DigitalMode mode)
         => mode == DigitalMode.Ft4 ? SlotGrid.Ft4 : SlotGrid.Ft8;
+
+    /// <summary>How the permanent log names a contact made in this mode.</summary>
+    /// <param name="mode">The mode.</param>
+    /// <returns>The log's entry for it, or null where it has none.</returns>
+    /// <remarks>
+    /// <para>**THE MODE WRITTEN INTO THE LOG IS THE MODE THE TAB WAS RUNNING**
+    /// (work instruction 293 task 4). It is derived from the same one value the
+    /// grid, the cutter, the slot watch and the decoder derive from - **not a second
+    /// source, not a string, and not the chip's lit state**, which is a reading of
+    /// where the dial is and not an instruction about what Hamlet is doing.</para>
+    /// <para>**A LOG RECORD NAMING A MODE THE CONTACT WAS NOT MADE IN IS WRONG FOR
+    /// AS LONG AS THE LOG EXISTS** (§0.0, §12.1). That is why this is a lookup on
+    /// one enum rather than a string handed in at the call site: there is no
+    /// argument to get wrong and no spelling to drift.</para>
+    /// <para>**THE MAPPING ITSELF IS UNIT 291'S AND IS NOT RE-DERIVED HERE.**
+    /// <see cref="Contacts.ContactModes"/> is where FT4 is `MODE=MFSK` plus
+    /// `SUBMODE=FT4`, with its citation; this names an entry in that table and
+    /// decides nothing about what an entry contains.</para>
+    /// </remarks>
+    public static Contacts.ContactMode? Contact(this DigitalMode mode)
+        => Contacts.ContactModes.Named(mode == DigitalMode.Ft4 ? "FT4" : "FT8");
 }

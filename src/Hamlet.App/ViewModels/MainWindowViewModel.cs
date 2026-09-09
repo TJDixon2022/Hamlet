@@ -10388,42 +10388,14 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var record = _contacts.For(row.Sender);
+        var entry = ContactLogEntryFor(row);
 
-        if (record is null)
+        if (entry is null)
         {
             return;
         }
 
-        // **THE DIAL THE ROW WAS HEARD ON, NOT THE ONE THE RADIO IS ON NOW**
-        // (work instruction 275 task 3). A contact logged after he retuned used to
-        // record the band he had moved to.
-        //
-        // **ZERO MEANS NOT RECORDED AND THE FIELDS GO OUT ENTIRELY.** Anything
-        // decoded before this change carries no dial, and a plausible frequency in
-        // a permanent record is the fault §0.0 exists for.
         var hz = row.HeardOnHz;
-        var band = hz > 0 ? HfBands.BandFor(hz) : null;
-
-        var entry = Ft8ContactLogEntry.For(
-            record,
-            _settings.Operator.Callsign,
-            new Ft8StationConditions(
-                hz,
-                band?.Name,
-
-                // **STILL UNCONDITIONALLY FT8, AND DELIBERATELY SO.** This is the
-                // one write path into the log, and work instruction 291 gives the
-                // record room for a mode that needs two tags without deciding
-                // what fills it. What makes this line say anything else is the
-                // Digital tab's mode wiring, which is step 4's; until then a
-                // contact logged here was made on FT8 and says so.
-                //
-                // It stopped being the literal `"FT8"` only because the mode now
-                // travels as one object rather than as a bare string, so `MODE`
-                // and `SUBMODE` cannot be set to disagree.
-                ContactModes.Named("FT8"),
-                _settings.Operator.GridSquare));
 
         var model = new LogContactViewModel(
             entry,
@@ -10463,6 +10435,67 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>
+    /// **The log record one row would produce, before any window is opened.**
+    /// </summary>
+    /// <param name="row">The row the mouse was over.</param>
+    /// <returns>The entry, or null where this row cannot be logged.</returns>
+    /// <remarks>
+    /// <para>**IT IS THE ONE PLACE A CONTACT'S MODE IS DECIDED** (work instruction
+    /// 293 task 4), lifted out of <see cref="LogContactAsync"/> so that what goes
+    /// into the permanent record can be asserted without a dialog. **It writes
+    /// nothing and opens nothing**; the file is touched by
+    /// <see cref="LogContactAsync"/> and only where the operator pressed Save.</para>
+    /// <para>**THE DIAL IS THE ROW'S OWN, NOT THE ONE THE RADIO IS ON NOW** (work
+    /// instruction 275 task 3). A contact logged after he retuned used to record the
+    /// band he had moved to. **Zero means not recorded and the fields go out
+    /// entirely**: anything decoded before that change carries no dial, and a
+    /// plausible frequency in a permanent record is the fault §0.0 exists for.</para>
+    /// </remarks>
+    internal AdifContact? ContactLogEntryFor(DigitalDecodeRow? row)
+    {
+        if (row is null || _contacts is null || !CanLogRow(row))
+        {
+            return null;
+        }
+
+        var record = _contacts.For(row.Sender);
+
+        if (record is null)
+        {
+            return null;
+        }
+
+        var hz = row.HeardOnHz;
+        var band = hz > 0 ? HfBands.BandFor(hz) : null;
+
+        return Ft8ContactLogEntry.For(
+            record,
+            _settings.Operator.Callsign,
+            new Ft8StationConditions(
+                hz,
+                band?.Name,
+
+                // **THE MODE THE TAB WAS ACTUALLY RUNNING** (work instruction 293
+                // task 4). This was `ContactModes.Named("FT8")` unconditionally,
+                // and it was unreachable on FT4 only because `CanLogRow` needs a
+                // station to have addressed the operator and nothing could address
+                // him on FT4 until Hamlet could transmit on it. **Tasks 2 and 3
+                // made it reachable, so it changes in the same unit** - a log
+                // record naming a mode the contact was not made in is wrong for as
+                // long as the log exists, and no later unit can repair it, because
+                // by then nobody knows which records were wrong.
+                //
+                // **IT IS `DigitalMode` AND NOT A SECOND SOURCE.** The same one
+                // value the grid, the cutter and the decoder derive from; the
+                // mapping onto `MODE=MFSK` plus `SUBMODE=FT4` is unit 291's and is
+                // not re-derived here. The mode travels as one object rather than
+                // as a bare string, so `MODE` and `SUBMODE` cannot be set to
+                // disagree.
+                _digitalMode.Contact(),
+                _settings.Operator.GridSquare));
     }
 
     /// <summary>The row's own ratio, in whole decibels, or null where none.</summary>
