@@ -253,11 +253,73 @@ public static class SvgMark
                 (string?)element.Attribute("d")
                 ?? throw new NotSupportedException("a path with no d")),
 
+            "text" => Text(element),
+
             _ => throw new NotSupportedException(
                 "the mark uses <" + element.Name.LocalName + ">, which this loader "
                 + "does not handle. It is deliberately narrow: an element it drew "
                 + "wrongly would be worse than one it refused."),
         };
+
+    /// <summary>
+    /// **A `text` element, as geometry.**
+    /// </summary>
+    /// <param name="element">The element.</param>
+    /// <returns>The outlines of its glyphs.</returns>
+    /// <remarks>
+    /// <para>**ADDED FOR THE MARK OF WORK INSTRUCTION 286, WHICH PUTS `USB-D`, `FIL1`,
+    /// `RX`, `UTC` AND THE FREQUENCY ON THE DISPLAY.** The loader refused it exactly as
+    /// unit 285 built it to — *the mark uses &lt;text&gt;, which this loader does not
+    /// handle* — and the order's rule is that **the mark is approved and the loader is
+    /// not**, so the loader is what changes.</para>
+    /// <para>**GLYPH OUTLINES RATHER THAN A TEXT DRAWING**, because a `DrawingGroup`
+    /// holds geometry and Avalonia has no text drawing to put in one. It also means
+    /// the letters scale with everything else and the mark stays one object.</para>
+    /// <para>**SVG PUTS THE BASELINE AT `y` AND `FormattedText` PUTS THE TOP THERE.**
+    /// The difference is the baseline distance, and it is subtracted rather than
+    /// eyeballed — without it every label on the display sits a line too low.</para>
+    /// <para>**A FONT THIS MACHINE DOES NOT HAVE FALLS BACK RATHER THAN FAILING.**
+    /// `Consolas, monospace` is what the file asks for and what the application's own
+    /// readouts use; where it is missing the platform substitutes, which changes the
+    /// letterforms and not whether the mark draws.</para>
+    /// </remarks>
+    private static Geometry Text(XElement element)
+    {
+        var body = element.Value;
+
+        if (string.IsNullOrEmpty(body))
+        {
+            throw new NotSupportedException("a text element with nothing in it");
+        }
+
+        var weight = (string?)element.Attribute("font-weight") switch
+        {
+            "bold" or "700" => FontWeight.Bold,
+            "600" => FontWeight.SemiBold,
+            "500" => FontWeight.Medium,
+            _ => FontWeight.Normal,
+        };
+
+        var typeface = new Typeface(
+            new FontFamily((string?)element.Attribute("font-family") ?? "monospace"),
+            FontStyle.Normal,
+            weight);
+
+        var text = new FormattedText(
+            body,
+            CultureInfo.InvariantCulture,
+            FlowDirection.LeftToRight,
+            typeface,
+            Number(element, "font-size", 12),
+            Brushes.Black);
+
+        var x = Number(element, "x", 0);
+        var y = Number(element, "y", 0);
+
+        return text.BuildGeometry(new Point(x, y - text.Baseline))
+            ?? throw new NotSupportedException(
+                "the text \"" + body + "\" produced no geometry");
+    }
 
     /// <summary>A `translate` on a group, or the identity.</summary>
     /// <param name="element">The group.</param>

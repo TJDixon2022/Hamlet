@@ -35,7 +35,7 @@
 
             <Image x:Name="HamletMark" Grid.Column="0"
                    Source="{x:Static ctl:SvgMark.Full}"
-                   Width="164" Height="140"
+                   Width="170" Height="162"
                    Stretch="Uniform"
                    VerticalAlignment="Top"
                    Margin="0,2,16,0" />

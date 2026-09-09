@@ -86,23 +86,32 @@ public sealed class TheMarksRenderTests
             _output.WriteLine("");
         }
 
-        // **NEITHER MARK FITS ITS OWN VIEWBOX, AND BOTH FIGURES ARE PINNED HERE.**
-        // This asserted a fit when it was written, on the assumption that a drawing
-        // fits the box it declares. It does not, and the measurement said so:
+        // **BOTH MARKS NOW FIT, AND THIS IS THE ASSERTION THAT SAYS SO.**
         //
-        //   hamlet-logo.svg       18.5 of 260 clipped off the BOTTOM - the lower
-        //                         edge of the faceplate, about 7 per cent
-        //   hamlet-mark-small.svg 15.5 of 68 clipped off the TOP - a little over
-        //                         half the feather, which is the joke
+        // Unit 285 measured the drawings it was given running outside their own
+        // boxes - the full mark 18.5 units off the bottom, cutting the lower edge of
+        // the faceplate, and the small one 15.5 off the top, cutting a little over
+        // half the quill at every icon size. It pinned both figures rather than
+        // repairing them, because a mark is Tim's and not a session's.
         //
-        // **PINNED RATHER THAN FIXED** (work instruction 285: report, do not
-        // redesign). Whichever way Tim rules, one of these numbers changes and this
-        // goes red, which is the point of writing them down.
-        var full = SvgMark.Extent(SvgMark.FullMarkUri);
-        var small = SvgMark.Extent(SvgMark.SmallMarkUri);
+        // **WORK INSTRUCTION 286 SHIPPED NEW DRAWINGS AND THEY FIT.** The pins are
+        // turned the right way round rather than deleted: what is worth keeping is
+        // the property, and the property is that a mark stays inside the box it
+        // declares. Measured: the full mark's ink is 18, 5.75 to 358.25, 348 in a
+        // 380 x 360 box, and the small mark's fills its 64 x 64 exactly.
+        foreach (var uri in new[] { SvgMark.FullMarkUri, SvgMark.SmallMarkUri })
+        {
+            var ink = SvgMark.Extent(uri);
+            var box = Box(uri);
 
-        Assert.Equal(18.5, full.Bottom - Box(SvgMark.FullMarkUri).Bottom, 1);
-        Assert.Equal(15.5, Box(SvgMark.SmallMarkUri).Y - small.Y, 1);
+            Assert.True(
+                ink.Y >= box.Y - 0.01
+                && ink.Bottom <= box.Bottom + 0.01
+                && ink.X >= box.X - 0.01
+                && ink.Right <= box.Right + 0.01,
+                uri.Split('/').Last() + " draws outside its own viewBox - ink " + ink
+                + " against " + box + " - so that ink is lost wherever it is drawn");
+        }
     }
 
     /// <summary>**The About window draws the full mark, at a size.**</summary>
@@ -192,52 +201,66 @@ public sealed class TheMarksRenderTests
     /// <summary>**What survives of the small mark at icon sizes.**</summary>
     /// <remarks>
     /// <para>**NOTHING LOOKED AT THESE AND THIS DOES NOT PRETEND OTHERWISE.** The
-    /// harness cannot rasterise, so this reports the arithmetic instead: how many
-    /// device pixels each stroke of the mark is given at 16, 32 and 48. A stroke
-    /// under one pixel is a grey smear rather than a line, and that is a statement
-    /// about the drawing that can be made without seeing it.</para>
-    /// <para>The mark is 68 units across, so a pixel at size N is 68/N units.</para>
+    /// harness cannot rasterise — Avalonia's headless drawing backend composes a
+    /// visual tree and draws nothing, and `CopyPixels` throws — so this reports the
+    /// arithmetic instead: how many device pixels each stroke of the mark is given.
+    /// A stroke under one pixel is a grey smear rather than a line, and that is a
+    /// statement about the drawing that can be made without seeing it.</para>
+    /// <para>**THE FIGURES ARE THE NEW MARK'S** (work instruction 286). Unit 285's
+    /// version of this test described a 68-unit drawing with 3.4, 4.0 and 3.0 strokes.
+    /// That drawing is gone, and a test carrying its numbers would have gone on
+    /// passing while describing something no longer in the tree — which is worth
+    /// naming, because a stale fact that stays green is the harder kind to catch.</para>
+    /// <para>**AND THE NEW MARK IS A SIBLING RATHER THAN A SHRINK**: it leans on
+    /// filled shapes where the old one leaned on outlines, so most of it has no
+    /// stroke to lose at all.</para>
     /// </remarks>
     [AvaloniaFact]
     public void WhatSurvivesOfTheSmallMarkAtIconSizes()
     {
-        // The four strokes the file states, in its own units.
+        // Every stroke the file states, in its own units. The tile, the faceplate,
+        // the display, the knob and the vane are filled and carry none.
         var strokes = new (string What, double Units)[]
         {
-            ("plate outline", 3.4),
-            ("whip", 4.0),
-            ("feather outline", 3.0),
+            ("whip", 5.5),
+            ("quill spine", 2.2),
+            ("quill barbs", 1.8),
         };
+
+        const double Across = 64.0;
 
         foreach (var side in new[] { 16, 32, 48, 256 })
         {
-            var scale = side / 68.0;
+            var scale = side / Across;
 
             _output.WriteLine(side + " px  (one pixel is "
-                + (68.0 / side).ToString("0.0") + " units)");
+                + (Across / side).ToString("0.0") + " units)");
 
             foreach (var (what, units) in strokes)
             {
                 var px = units * scale;
 
                 _output.WriteLine(
-                    "   " + what.PadRight(18) + px.ToString("0.00").PadLeft(6)
+                    "   " + what.PadRight(14) + px.ToString("0.00").PadLeft(6)
                     + " px" + (px < 1 ? "   sub-pixel" : ""));
             }
 
             _output.WriteLine("");
         }
 
-        // **THE ONE ASSERTION IS THE ONE THAT MATTERS**: at 16 px every stroke in
-        // this mark is thinner than a pixel, so the icon is a dark disc with a
-        // suggestion on it. That is a fact about the drawing, and it is reported
-        // rather than repaired.
-        var at16 = 16 / 68.0;
+        // **AT 16 PX THE WHIP SURVIVES AND THE BARBS DO NOT**, which is the useful
+        // thing to know about this drawing: the shape reads because it is mostly
+        // filled, and the fine detail inside the vane does not.
+        var at16 = 16 / Across;
 
         Assert.True(
-            strokes.All(s => s.Units * at16 < 1.0),
-            "some stroke is at least a pixel wide at 16 px; the report's account of "
-            + "what survives there needs re-taking");
+            5.5 * at16 >= 1.0,
+            "the whip is sub-pixel at 16 px, so the mark has no antenna at icon size");
+
+        Assert.True(
+            1.8 * at16 < 1.0,
+            "the barbs are at least a pixel at 16 px; the report's account of what "
+            + "survives there needs re-taking");
     }
 
     /// <summary>**The icon builds, at the size it says it does.**</summary>
