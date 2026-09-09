@@ -4145,7 +4145,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         new Views.AchievementsWindow
         {
-            DataContext = new AchievementsViewModel(ContactLogStore.ReadRecords())
+            DataContext = new AchievementsViewModel(
+                ContactLogStore.ReadRecords(), _settings.Operator.GridSquare)
             {
                 LogPath = ContactLogStore.LogPath,
             },

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -196,6 +196,35 @@ public sealed class AchievementsViewModel
         Firsts = ContactModes.Six.Select(m => Row(m, records)).ToList();
     }
 
+    /// <summary>Build the screen from the log and the operator's own grid.</summary>
+    /// <param name="records">Every record in the file, faults and all.</param>
+    /// <param name="operatorGrid">His locator, for distances and for the grey line.</param>
+    /// <exception cref="ArgumentNullException">The records are null.</exception>
+    public AchievementsViewModel(
+        IReadOnlyList<AdifLogRecord> records, string? operatorGrid)
+        : this(records)
+    {
+        var log = new AchievementLog(records, operatorGrid);
+
+        Screen = new AchievementScreen(
+            log, AchievementChallenges.For(log, operatorGrid));
+    }
+
+    /// <summary>
+    /// **What he has opened, and the standing targets.**
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS THE SCREEN FROM WORK INSTRUCTION 298 ONWARD** and the six mode-first
+    /// rows below it are what it replaces. `ACHIEVEMENTS_PHILOSOPHY.md` §3.1 forbids a
+    /// card for something he has not opened, and unit 287's card drew all six modes
+    /// always - four of which can never light on this application - under a heading
+    /// reading `1 of 6`, which advertises five slots he cannot see.
+    /// </remarks>
+    public AchievementScreen? Screen { get; }
+
+    /// <summary>True where the screen has been built.</summary>
+    public bool HasScreen => Screen is not null;
+
     /// <summary>How many records the log holds.</summary>
     public int Count { get; }
 
@@ -257,27 +286,28 @@ public sealed class AchievementsViewModel
     {
         get
         {
-            var waiting = Firsts.Count(
-                f => f.State == ModeFirstState.WaitingOnHamlet);
+            var waiting = Firsts
+                .Where(f => f.State is ModeFirstState.WaitingOnHamlet)
+                .Select(f => f.Name)
+                .ToList();
 
-            var beacon = Firsts.Count(f => f.State == ModeFirstState.NotAContact);
-
-            if (waiting == 0 && beacon == 0)
+            if (waiting.Count == 0)
             {
                 return "";
             }
 
-            var said = waiting == 1
-                ? "One of these is waiting on Hamlet rather than on you. "
-                : waiting + " of these are waiting on Hamlet rather than on you. ";
+            // **ONE LINE, AND THE SIX ROWS IT USED TO CAPTION ARE GONE** (work
+            // instruction 298 task 2). A card of six with one filled in is the wall
+            // §2 forbids; **the fact underneath it is not** - what Hamlet cannot yet
+            // do is a thing the application owes him, and it is said in a sentence
+            // rather than in four unearnable rows.
+            var named = waiting.Count == 1
+                ? waiting[0]
+                : string.Join(", ", waiting.Take(waiting.Count - 1))
+                  + " and " + waiting[^1];
 
-            if (beacon > 0)
-            {
-                said += "WSPR is a beacon rather than a conversation, so there is "
-                    + "no contact to log and no first to earn. ";
-            }
-
-            return said + "Hover any row and it says what stands in the way.";
+            return "Hamlet cannot work " + named + " yet, so nothing here is "
+                + "waiting on you for those.";
         }
     }
 
