@@ -80,6 +80,13 @@
          transcribed from the same publication, and a row that cannot be
          joined is excluded rather than guessed at. -->
     <EmbeddedResource Include="..\..\data\callsigns\dxcc-continents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-continents.json" />
+
+    <!-- Hamlet's OWN groupings inside a continent, which the screen says are
+         its own (ACHIEVEMENTS_PHILOSOPHY.md section 4). The editorial part is
+         tools/dxcc/hamlet-subregions.txt; every entity name in it is checked
+         against the cited transcription and every prefix is read out of the
+         generated prefix table by tools/dxcc/build-subregions.py. -->
+    <EmbeddedResource Include="..\..\data\callsigns\hamlet-subregions.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.hamlet-subregions.json" />
   </ItemGroup>
 
   <!-- The telemetry line format is an internal detail with a public promise

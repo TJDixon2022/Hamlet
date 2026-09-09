@@ -409,6 +409,74 @@ public sealed class AchievementScreen
                 "",
                 "",
                 cards);
+
+            // **A REGION APPEARS ONLY ONCE HE HAS WORKED SOMETHING IN IT** (§3.1),
+            // and its nudge names the members he has not - which is §3.2's own
+            // example, *his first Central America contact reveals the Central
+            // America group, and inside it a handful he can now see are reachable*.
+            foreach (var region in Regions(code))
+            {
+                yield return region;
+            }
+        }
+    }
+
+    /// <summary>Hamlet's own regions inside one continent, where he has opened them.</summary>
+    /// <remarks>
+    /// <para>**HAMLET'S OWN GROUPING, AND THE GROUP SAYS SO** (§4). DXCC defines
+    /// continents; *Central America* and *the Caribbean* are this application's idea
+    /// and the screen may not imply anybody else recognises them.
+    /// <see cref="HamletRegions.Note"/> is the sentence and it is carried on every
+    /// one.</para>
+    /// <para>**THE NUDGE IS INSIDE A GROUP HE HAS ALREADY OPENED AND NOWHERE ELSE**
+    /// (the instruction). A list of prefixes for a region he has never touched is a
+    /// list of things he has not done, which is the one thing §2 forbids.</para>
+    /// <para>**THE PREFIXES COME OUT OF THE CITED TABLE** and are not typed. They are
+    /// the shortest form each entity holds, which is what a callsign starts with and
+    /// what he will actually see in the decoded list.</para>
+    /// </remarks>
+    private IEnumerable<AchievementGroup> Regions(string code)
+    {
+        foreach (var region in HamletRegions.On(code))
+        {
+            var worked = region.Members
+                .Where(m => _log.Entities.Contains(
+                    m.Entity, StringComparer.OrdinalIgnoreCase))
+                .ToList();
+
+            // **NOT OPENED, SO IT DOES NOT EXIST.**
+            if (worked.Count == 0)
+            {
+                continue;
+            }
+
+            var cards = worked
+                .Select(m => _log.Contacts
+                    .Where(c => string.Equals(
+                        c.Entity, m.Entity, StringComparison.OrdinalIgnoreCase))
+                    .ToList())
+                .Where(among => among.Count > 0)
+                .Select(among => Entity(
+                    code, region.Name, among[0].Entity!, among))
+                .ToList();
+
+            var toFind = region.Members
+                .Where(m => !_log.Entities.Contains(
+                    m.Entity, StringComparer.OrdinalIgnoreCase))
+                .Where(m => m.Prefix is { Length: > 0 })
+                .Take(NearestFew)
+                .Select(m => m.Prefix!)
+                .ToList();
+
+            yield return new AchievementGroup(
+                "region-" + region.Name,
+                region.Name,
+                $"{worked.Count} of {region.Members.Count} worked",
+                HamletRegions.Note,
+                toFind.Count == 0
+                    ? ""
+                    : "look for " + string.Join(" ", toFind),
+                cards);
         }
     }
 

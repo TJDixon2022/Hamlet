@@ -1,0 +1,120 @@
+{
+  "source": {
+    "name": "Hamlet's own groupings",
+    "note": "THESE ARE NOT DXCC CATEGORIES AND THE SCREEN SAYS SO. DXCC defines continents; Central America, the Caribbean, Scandinavia and the Mediterranean are this application's own way of grouping entities inside one, licensed by ACHIEVEMENTS_PHILOSOPHY.md section 4 and required by it to be declared. Which regions exist and who is in each is editorial; every entity name was checked against tools/dxcc/arrl-dxcc-current.txt and every prefix was read out of data/callsigns/dxcc-prefixes.json, so nothing here names a country or a prefix that does not exist.",
+    "editorial": "tools/dxcc/hamlet-subregions.txt",
+    "generatedBy": "tools/dxcc/build-subregions.py"
+  },
+  "refused": [
+    {
+      "region": "The Mediterranean",
+      "entity": "Croatia, Cyprus, Greece, Italy, Malta, Portugal, Spain",
+      "why": "the region spans AS and EU, and a sub-region is drawn inside one continent"
+    }
+  ],
+  "regions": [
+    {
+      "name": "Central America",
+      "continent": "NA",
+      "members": [
+        {
+          "entity": "Belize",
+          "continent": "NA",
+          "prefix": "V3"
+        },
+        {
+          "entity": "Costa Rica",
+          "continent": "NA",
+          "prefix": "TE"
+        },
+        {
+          "entity": "El Salvador",
+          "continent": "NA",
+          "prefix": "HU"
+        },
+        {
+          "entity": "Guatemala",
+          "continent": "NA",
+          "prefix": "TD"
+        },
+        {
+          "entity": "Honduras",
+          "continent": "NA",
+          "prefix": "HQ"
+        },
+        {
+          "entity": "Nicaragua",
+          "continent": "NA",
+          "prefix": "HT"
+        },
+        {
+          "entity": "Panama",
+          "continent": "NA",
+          "prefix": "HO"
+        }
+      ]
+    },
+    {
+      "name": "The Caribbean",
+      "continent": "NA",
+      "members": [
+        {
+          "entity": "Bahamas",
+          "continent": "NA",
+          "prefix": "C6"
+        },
+        {
+          "entity": "Barbados",
+          "continent": "NA",
+          "prefix": "8P"
+        },
+        {
+          "entity": "Cuba",
+          "continent": "NA",
+          "prefix": "CL"
+        },
+        {
+          "entity": "Haiti",
+          "continent": "NA",
+          "prefix": "HH"
+        },
+        {
+          "entity": "Jamaica",
+          "continent": "NA",
+          "prefix": "6Y"
+        }
+      ]
+    },
+    {
+      "name": "Scandinavia",
+      "continent": "EU",
+      "members": [
+        {
+          "entity": "Denmark",
+          "continent": "EU",
+          "prefix": "OU"
+        },
+        {
+          "entity": "Finland",
+          "continent": "EU",
+          "prefix": "OF"
+        },
+        {
+          "entity": "Iceland",
+          "continent": "EU",
+          "prefix": "TF"
+        },
+        {
+          "entity": "Norway",
+          "continent": "EU",
+          "prefix": "LA"
+        },
+        {
+          "entity": "Sweden",
+          "continent": "EU",
+          "prefix": "7S"
+        }
+      ]
+    }
+  ]
+}

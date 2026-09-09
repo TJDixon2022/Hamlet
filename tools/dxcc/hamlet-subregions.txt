@@ -1,0 +1,34 @@
+# HAMLET'S OWN GROUPINGS. NOT DXCC'S, NOT ANYBODY ELSE'S.
+#
+# ACHIEVEMENTS_PHILOSOPHY.md section 4: "No sub-region is presented as official.
+# DXCC defines continents. Scandinavia, Central America and the Caribbean are
+# Hamlet's own groupings and the screen says so rather than implying a category
+# somebody else recognises."
+#
+# WHAT IS EDITORIAL HERE AND WHAT IS NOT.
+#
+#   EDITORIAL: which regions exist and which entities are in each. There is no
+#   published list this could be transcribed from, these are ordinary English
+#   words for parts of the world, and the screen says on its face that they are
+#   Hamlet's own.
+#
+#   NOT EDITORIAL: every entity name below, and every prefix the nudge shows.
+#   The generator REFUSES a name that is not in tools/dxcc/arrl-dxcc-current.txt
+#   exactly as spelled, and it reads the prefixes out of the generated table
+#   rather than having them typed here. So a region cannot name a country that
+#   does not exist, and a nudge cannot name a prefix nobody holds.
+#
+# WHY THESE FOUR AND NOT FORTY. Section 3.3: four new cards is a gift and forty
+# is a chore list. Each of these is a phrase a newcomer would already use, and
+# each is a group whose members are genuinely reachable from one another once a
+# path opens. A region nobody says out loud teaches nothing.
+#
+#   Region = Entity, Entity, ...
+
+Central America = Belize, Costa Rica, El Salvador, Guatemala, Honduras, Nicaragua, Panama
+
+The Caribbean = Bahamas, Barbados, Cuba, Haiti, Jamaica
+
+Scandinavia = Denmark, Finland, Iceland, Norway, Sweden
+
+The Mediterranean = Croatia, Cyprus, Greece, Italy, Malta, Portugal, Spain

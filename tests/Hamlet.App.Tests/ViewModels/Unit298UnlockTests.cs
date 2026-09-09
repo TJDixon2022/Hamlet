@@ -212,6 +212,86 @@ public sealed class Unit298UnlockTests
         Assert.Contains(records, t => t.StartsWith("Busiest day", StringComparison.Ordinal));
     }
 
+
+    /// <summary>**A region appears only once he has worked something in it.**</summary>
+    /// <remarks>
+    /// §3.1's own rule, and §3.2's own example: *his first Central America contact
+    /// reveals the Central America group, and inside it a handful he can now see are
+    /// reachable.*
+    /// </remarks>
+    [Fact]
+    public void ARegionAppearsOnlyWhenSomethingInItIsWorked()
+    {
+        var before = Screen(TwentyMetreFt8());
+
+        Assert.DoesNotContain(before.Places, p => p.Title == "Central America");
+
+        var log = TwentyMetreFt8().ToList();
+        log.Add(Contact("TI2ABC", "20m", "FT8", null, "EJ79", -13, -08, "2026-09-10 02:30:00"));
+
+        var after = Screen(log);
+
+        Print(after);
+
+        var region = after.Places.SingleOrDefault(p => p.Title == "Central America");
+
+        Assert.True(region is not null, "one Costa Rica contact opened no region");
+
+        Assert.Equal("1 of 7 worked", region!.Summary);
+    }
+
+    /// <summary>**A region says it is Hamlet's own and names what to look for.**</summary>
+    /// <remarks>
+    /// <para>**§4: NO SUB-REGION IS PRESENTED AS OFFICIAL.** DXCC defines continents
+    /// and this does not, so the group carries the note on its face.</para>
+    /// <para>**AND THE NUDGE IS THE PREFIXES, READ OUT OF THE CITED TABLE.** The
+    /// instruction's own example is `look for TI HP YS TG`.</para>
+    /// </remarks>
+    [Fact]
+    public void ARegionSaysItIsHamletsOwnAndNamesPrefixesToLookFor()
+    {
+        var log = TwentyMetreFt8().ToList();
+        log.Add(Contact("TI2ABC", "20m", "FT8", null, "EJ79", -13, -08, "2026-09-10 02:30:00"));
+
+        var region = Screen(log).Places.Single(p => p.Title == "Central America");
+
+        _output.WriteLine(region.Title + "  " + region.Summary);
+        _output.WriteLine("  (" + region.Note + ")");
+        _output.WriteLine("  -> " + region.Nudge);
+
+        Assert.True(region.HasNote, "a grouping of Hamlet's own does not say so");
+        Assert.Contains("not an official", region.Note, StringComparison.Ordinal);
+
+        Assert.True(region.HasNudge, "an opened region names nothing to look for");
+        Assert.StartsWith("look for ", region.Nudge, StringComparison.Ordinal);
+
+        // Four, not forty (§3.3).
+        Assert.Equal(
+            AchievementScreen.NearestFew,
+            region.Nudge["look for ".Length..].Split(' ').Length);
+    }
+
+    /// <summary>**A nudge never appears for a region he has not opened.**</summary>
+    /// <remarks>
+    /// **THE INSTRUCTION IS EXPLICIT** - the nudge *is only shown inside a group he
+    /// has already opened* - and a list of prefixes for a region he has never touched
+    /// is a list of things he has not done, which is the one thing §2 forbids.
+    /// </remarks>
+    [Fact]
+    public void NoNudgeForARegionHeHasNotOpened()
+    {
+        var screen = Screen(TwentyMetreFt8());
+
+        foreach (var place in screen.Places)
+        {
+            _output.WriteLine(place.Title + " : nudge=" + (place.HasNudge ? place.Nudge : "none"));
+        }
+
+        Assert.DoesNotContain(screen.Places, p => p.Title == "Central America");
+        Assert.DoesNotContain(screen.Places, p => p.Title == "The Caribbean");
+        Assert.DoesNotContain(screen.Places, p => p.Title == "Scandinavia");
+    }
+
     /// <summary>How many cards the whole screen holds.</summary>
     private static int Cards(AchievementScreen screen)
         => screen.Scopes.Sum(t => t.Count) + screen.Places.Sum(p => p.Count);
