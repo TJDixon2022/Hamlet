@@ -2835,9 +2835,43 @@ public partial class MainWindowViewModel : ObservableObject
     /// has no band paragraph.
     /// </remarks>
     private Ft8CardTechnical? TechnicalFor(string callsign)
-        => NewestRowFrom(callsign) is { } row
-            ? new Ft8CardTechnical(row.Hz, row.Dt, row.HeardOnHz)
-            : null;
+    {
+        var who = (callsign ?? "").Trim();
+
+        if (who.Length == 0)
+        {
+            return null;
+        }
+
+        // **THE ROW WHERE THERE IS ONE, AND WHAT WAS OBSERVED WHERE THERE IS NOT.**
+        if (NewestRowFrom(who) is { } row)
+        {
+            return new Ft8CardTechnical(row.Hz, row.Dt, row.HeardOnHz);
+        }
+
+        return _technicalSeen.TryGetValue(who, out var kept) ? kept : null;
+    }
+
+    /// <summary>
+    /// The last audio offset, time offset and dial observed for each station.
+    /// </summary>
+    /// <remarks>
+    /// <para>**A CARD OUTLIVES ITS ROWS AND THE HOVER USED TO GO THIN WHEN IT DID**
+    /// (work instruction 299 task 2). The decoded table is bounded and it clears on
+    /// a band change, and the cards are rebuilt from the ledger, which persists - so
+    /// after a retune the `i` silently lost the frequency and the time-offset
+    /// sentences while keeping the rest. **Measured, not deduced**: with the main
+    /// window up over a card whose station had been heard, the mine side held one
+    /// row and it was the operator's own transmission.</para>
+    /// <para>**IT IS A MEMORY OF WHAT WAS OBSERVED AND NOT A GUESS.** Every entry
+    /// was on a row that actually decoded, so a card showing one is reporting a
+    /// measurement about **that station** rather than reading the dial the radio
+    /// happens to be standing on now (§0.0). A station never heard is not in here at
+    /// all, and its hover has no band paragraph - which is correct, because nothing
+    /// measured one.</para>
+    /// </remarks>
+    private readonly Dictionary<string, Ft8CardTechnical> _technicalSeen =
+        new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>About how far below the noise the running mode decodes, or null.</summary>
     /// <remarks>
@@ -9852,6 +9886,21 @@ public partial class MainWindowViewModel : ObservableObject
         // exists rather than the read sitting inline here, which is where it was
         // until work instruction 281 task 6.
         row = WithOperatorGrid(row);
+
+        // **WHAT WAS MEASURED ABOUT THIS STATION, KEPT PAST THE TABLE** (work
+        // instruction 299 task 2). The row can age off or be cleared by a band
+        // change; the card behind it is rebuilt from the ledger and survives, and
+        // its `i` hover should not quietly lose the frequency and the time offset
+        // when that happens. **Only a decoded row writes here** - a sent row
+        // carries neither - so nothing in this dictionary was ever anything but a
+        // measurement.
+        if (!row.IsSent
+            && row.Sender is { Length: > 0 } heardFrom
+            && (row.Hz.Length > 0 || row.HeardOnHz > 0))
+        {
+            _technicalSeen[heardFrom] =
+                new Ft8CardTechnical(row.Hz, row.Dt, row.HeardOnHz);
+        }
 
         // **AND THE ONE PLACE THE CONTACT STATE REACHES A ROW** (unit 258). Same
         // door, same reason: every row goes through here, so there is one place

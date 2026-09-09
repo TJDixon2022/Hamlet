@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 299 - the card header does what it promised
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T18:38:37-04:00
-NOTE: Task 1 done - Log on every card in every state. 5 of 5 green. Committing.
+UPDATED: 2026-09-09T18:41:55-04:00
+NOTE: Task 2 done - the i was not empty; the band paragraph now survives the table clearing. 12 of 12 green.
 
 ---
 

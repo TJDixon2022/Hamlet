@@ -44,7 +44,11 @@ public sealed class Unit299HeaderProbeTests
     [AvaloniaFact]
     public void TheCardsInfoMarkIsProbed()
     {
-        var window = new MainWindow { DataContext = APanelWithOneCard() };
+        var settings = Settings();
+        var window = new MainWindow { DataContext = APanelWithOneCard(settings) };
+
+        _output.WriteLine("grid in settings before the window: \""
+            + settings.Operator.GridSquare + "\"");
 
         window.Show();
 
@@ -92,6 +96,10 @@ public sealed class Unit299HeaderProbeTests
         }
 
         _output.WriteLine("cards: " + model.DigitalCards.Count);
+        _output.WriteLine("grid in settings after the window: \""
+            + settings.Operator.GridSquare + "\"");
+        _output.WriteLine("card place: " + model.DigitalCards[0].Place);
+        _output.WriteLine("card facts grid: " + (model.DigitalCards[0].Facts.Grid ?? "(none)"));
         _output.WriteLine("card detail length: "
             + (model.DigitalCards.Count > 0 ? model.DigitalCards[0].Detail.Length : -1));
 
@@ -176,17 +184,28 @@ public sealed class Unit299HeaderProbeTests
         var card = model.DigitalCards[0];
 
         _output.WriteLine("");
+        _output.WriteLine("card place: " + card.Place);
+        _output.WriteLine("card facts grid: " + (card.Facts.Grid ?? "(none)"));
         _output.WriteLine("card detail: " + card.Detail);
     }
 
     /// <summary>A panel holding exactly one card, in the your-turn state.</summary>
-    private static MainWindowViewModel APanelWithOneCard()
+    private static AppSettings Settings()
     {
         var settings = new AppSettings();
 
         settings.Operator.Callsign = HisCall;
         settings.Operator.GridSquare = "FN00";
 
+        return settings;
+    }
+
+    /// <summary>A panel holding exactly one card, in the your-turn state.</summary>
+    private static MainWindowViewModel APanelWithOneCard()
+        => APanelWithOneCard(Settings());
+
+    private static MainWindowViewModel APanelWithOneCard(AppSettings settings)
+    {
         var model = new MainWindowViewModel(settings, null)
         {
             DigitalNewestFirst = false,
