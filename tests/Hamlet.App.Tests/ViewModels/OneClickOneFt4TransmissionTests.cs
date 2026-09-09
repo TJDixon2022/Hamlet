@@ -243,6 +243,100 @@ public sealed class OneClickOneFt4TransmissionTests
     }
 
     /// <summary>
+    /// **On FT4, a decode, a slot tick and a countdown reaching zero arm nothing.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**§0.2, and `PHASE_PLAN.md` says FT4 is where the temptation is
+    /// twice as strong** - the slots are half as long, so an operator has half the
+    /// time to answer and the pressure to answer for him is doubled. **Hamlet
+    /// transmits because the operator clicked and for no other reason.**</para>
+    /// <para>**IT IS COUNTED ON THE WIRE, NOT ON A FLAG.** Rows arrive, four FT4
+    /// boundaries go by and the countdown is read to zero; the port is asked what it
+    /// was given, and the answer is nothing at all.</para>
+    /// </remarks>
+    [Fact]
+    public async Task OnFt4ADecodeATickAndACountdownAllArmNothing()
+    {
+        var scene = Scene(DigitalMode.Ft4, Ft4On20m);
+
+        Assert.Null(scene.Panel.ArmedForSlotUtc);
+
+        // ---- 1. A DECODE ARRIVES, ADDRESSED TO HIM -----------------------------
+        Add(scene.Panel, 1, Mine + " " + His + " FN42", snr: DigitalDecodeRow.NoMeasurement);
+        Add(scene.Panel, 2, Mine + " " + His + " R-15", snr: DigitalDecodeRow.NoMeasurement);
+        Add(scene.Panel, 3, "CQ " + His + " FN42", snr: DigitalDecodeRow.NoMeasurement);
+
+        Assert.Null(scene.Panel.ArmedForSlotUtc);
+
+        // ---- 2. THE COUNTDOWN IS READ, INCLUDING TO ZERO -----------------------
+        var turn = scene.Panel.DigitalTurnLine;
+        var secondsLeft = scene.Panel.DigitalTurnSecondsLeft;
+
+        // ---- 3. FOUR FT4 BOUNDARIES GO BY --------------------------------------
+        var boundary = SlotGrid.Ft4.SlotStart(DateTime.UtcNow);
+        var outcomes = new List<Ft8ArmOutcome>();
+
+        for (var slot = 0; slot < 4; slot++)
+        {
+            var result = await scene.Panel.AtSlotBoundaryAsync(
+                boundary.AddSeconds(slot * SlotGrid.Ft4.SlotSeconds));
+
+            outcomes.Add(result!.Outcome);
+
+            Assert.Null(result.Run);
+        }
+
+        _output.WriteLine("rows on the table : " + scene.Panel.DigitalDecodes.Count);
+        _output.WriteLine("turn line         : " + turn);
+        _output.WriteLine("countdown         : " + secondsLeft + " s left");
+        _output.WriteLine("FT4 boundaries    : " + string.Join(", ", outcomes));
+        _output.WriteLine("armed             : "
+            + (scene.Panel.ArmedForSlotUtc?.ToString("O", CultureInfo.InvariantCulture) ?? "nothing"));
+        _output.WriteLine("frames on the wire: " + scene.Port.Written.Count);
+        _output.WriteLine("times sink played : " + scene.Sink.TimesCalled);
+
+        Assert.All(outcomes, o => Assert.Equal(Ft8ArmOutcome.NothingArmed, o));
+        Assert.Null(scene.Panel.ArmedForSlotUtc);
+        Assert.Empty(scene.Port.Written);
+        Assert.Equal(0, scene.Sink.TimesCalled);
+    }
+
+    /// <summary>
+    /// **A message no receiver could read back arms nothing and keys nothing on
+    /// FT4.**
+    /// </summary>
+    /// <remarks>
+    /// **THE THIRD REFUSAL ON THE PATH, AND IT IS BEFORE THE ARM.** A callsign that
+    /// can only travel as a 22-bit hash reads back as itself only for a receiver
+    /// that heard the full call in the same slot, so the transmission would be
+    /// undecodable on the band - which is what happened twice on 14.074 on
+    /// 2026-09-07 with the log saying `Sent`. `Ft8ReadBack` is the message layer's
+    /// question and is shared between the two modes, so FT4 gets the same refusal
+    /// and gets it for the same reason.
+    /// </remarks>
+    [Fact]
+    public void AnUnreadableMessageOnFt4ArmsNothingAndKeysNothing()
+    {
+        var scene = Scene(DigitalMode.Ft4, Ft4On20m);
+
+        // His grid whole, which is what forced the hash on 2026-09-07.
+        scene.Panel.SendMessageCommand.Execute("VP2MAA " + Mine + " FN00DJ");
+
+        _output.WriteLine("the operator reads: " + scene.Panel.DigitalSendLine);
+        _output.WriteLine("armed             : "
+            + (scene.Panel.ArmedForSlotUtc?.ToString("O", CultureInfo.InvariantCulture) ?? "nothing"));
+        _output.WriteLine("frames on the wire: " + scene.Port.Written.Count);
+
+        Assert.Null(scene.Panel.ArmedForSlotUtc);
+        Assert.Empty(scene.Port.Written);
+        Assert.Equal(0, scene.Sink.TimesCalled);
+
+        // **AND IT IS SAID OUT LOUD RATHER THAN SWALLOWED.**
+        Assert.NotEqual(MainWindowViewModel.NothingHasBeenSent, scene.Panel.DigitalSendLine);
+        Assert.NotEmpty(scene.Panel.DigitalSendLine);
+    }
+
+    /// <summary>
     /// **What the right-click menu offers on an FT4 row, counted.**
     /// </summary>
     /// <remarks>
