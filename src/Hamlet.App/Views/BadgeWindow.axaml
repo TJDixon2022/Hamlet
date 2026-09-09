@@ -1,0 +1,67 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        x:Class="Hamlet.App.Views.BadgeWindow"
+        x:DataType="vm:BadgeAward"
+        Title="Hamlet"
+        Width="320" SizeToContent="Height"
+        CanResize="False"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Topmost="True"
+        SystemDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent">
+
+    <!-- **IT MUST NOT COST HIM A CONTACT** (Tim, 2026-09-08). He is often
+         mid-exchange with fourteen seconds to reply, so this window takes no
+         keyboard focus, blocks no click, and is not modal:
+
+           ShowActivated="False"  is what keeps his focus and his open
+                                  right-click menu where they are - a window that
+                                  activates closes a context menu, which is the
+                                  exact way a dialog would cost him the reply
+           ShowInTaskbar="False"  it is a notice, not a place
+           Show() not ShowDialog  nothing is blocked and nothing is awaited
+
+         **AND IT LEAVES ON ITS OWN.** A notice he has to dismiss is a click he
+         did not ask for at the moment he can least afford one. -->
+    <Border Background="{StaticResource HmBackgroundBrush}"
+            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+            BorderThickness="1" CornerRadius="10"
+            Padding="16,14" Margin="8">
+
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+
+            <!-- **THE BELT, AS A RING AND NEVER A FILL** (HM-DEC-012). The same
+                 shape the status bar already uses, so the rank he is told about
+                 looks like the rank he can see. -->
+            <Border Grid.Column="0" x:Name="BadgeRing"
+                    BorderBrush="{Binding Rank.Ink}"
+                    BorderThickness="3"
+                    Background="Transparent"
+                    CornerRadius="24"
+                    Width="48" Height="48"
+                    VerticalAlignment="Top">
+                <TextBlock Text="{Binding Count}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontSize="16" FontWeight="Bold"
+                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+            </Border>
+
+            <StackPanel Grid.Column="1" Spacing="3">
+                <TextBlock x:Name="BadgeHeading" Text="{Binding Heading}"
+                           FontSize="16" FontWeight="Bold"
+                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                <TextBlock x:Name="BadgeSays" Text="{Binding Says}"
+                           FontSize="13" TextWrapping="Wrap"
+                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                <TextBlock Text="{Binding Next}"
+                           FontSize="12" TextWrapping="Wrap"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

@@ -29,6 +29,18 @@ public partial class MainWindow : Window
             Icon = mark;
         }
 
+        // **A BADGE SAYS SO ON THE SCREEN** (Tim, 2026-09-08, work instruction 286
+        // task 2). Subscribed here rather than in the view model, so the view model
+        // decides what he is told and the view decides what a notice looks like.
+        DataContextChanged += (_, _) =>
+        {
+            if (DataContext is MainWindowViewModel panel)
+            {
+                panel.BadgeEarned -= OnBadgeEarned;
+                panel.BadgeEarned += OnBadgeEarned;
+            }
+        };
+
         // Arrow keys = ±10 Hz, the headphone-tuning path (HM-DEC-015).
         AddHandler(KeyDownEvent, OnTuneKey, handledEventsToo: false);
 
@@ -314,4 +326,11 @@ public partial class MainWindow : Window
             e.Handled = true;
         }
     }
+
+    /// <summary>Show the notice, on his thread, without taking his focus.</summary>
+    /// <param name="sender">The panel.</param>
+    /// <param name="award">What was earned.</param>
+    private void OnBadgeEarned(object? sender, ViewModels.BadgeAward award)
+        => Avalonia.Threading.Dispatcher.UIThread.Post(
+            () => BadgeWindow.Announce(this, award));
 }

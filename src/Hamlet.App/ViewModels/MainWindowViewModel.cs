@@ -9885,7 +9885,41 @@ public partial class MainWindowViewModel : ObservableObject
         _contactBadgeLine = line;
         _settings.ContactBadgeAnnounced = milestones.Highest ?? was;
         SettingsStore.Save(_settings);
+
+        // **AND IT SAYS SO ON THE SCREEN** (Tim, 2026-09-08, overruling the author's
+        // earlier ruling against a dialog). The event is raised here rather than a
+        // window being opened, because everything about *what he is told and when* is
+        // then provable without one - and the single thing that has to be true of the
+        // window, that it never takes his focus, is checked on the window.
+        //
+        // **IT CANNOT FIRE TWICE FOR A RANK.** This line is only reached where
+        // `Announcement` produced something, which is only where a threshold was
+        // crossed since the last one recorded - and the record is written above,
+        // before anybody is told.
+        BadgeEarned?.Invoke(
+            this, new BadgeAward(milestones.Count, milestones.EarnedSince(was)));
     }
+
+    /// <summary>Raised once when a badge threshold is crossed.</summary>
+    /// <remarks>
+    /// <para>**NEVER ON A FIRST LOOK**, however many contacts the log already holds.
+    /// The seeding above returns before this is reached, which is unit 278's ruling
+    /// and is not undone here.</para>
+    /// <para>**AND IT IS AN EVENT RATHER THAN A COMMAND**, so nothing about the badge
+    /// can reach the send path: there is no way for a subscriber to be asked to
+    /// transmit, arm or cancel anything (§0.2).</para>
+    /// </remarks>
+    public event EventHandler<BadgeAward>? BadgeEarned;
+
+    /// <summary>Read the log and announce anything crossed, for a test.</summary>
+    /// <param name="records">How many contacts the log holds.</param>
+    /// <remarks>
+    /// **THE SAME DOOR THE LOG WRITE USES.** Driving a real contact through the log
+    /// dialog to prove which rank is announced would want a window and a file for a
+    /// question about arithmetic.
+    /// </remarks>
+    internal void AnnounceBadgesForTests(int records)
+        => AnnounceBadges(new ContactMilestones(records));
 
     /// <summary>True once anything has been logged.</summary>
     public bool HasLoggedContacts => LoggedContacts > 0;

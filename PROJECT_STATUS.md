@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 286 - the ring counts down, the badge announces itself, and Hamlet gets a face
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T21:38:36-04:00
-NOTE: Task 1 - the ring always shows the seconds to the next slot boundary, including where the turn is unknown. Reading the turn ring's count and sweep first.
+UPDATED: 2026-09-08T21:43:00-04:00
+NOTE: Task 2 - a badge dialog that names what was earned and cannot cost him a contact. Reading the announcement path unit 278 built.
 
 ---
 
