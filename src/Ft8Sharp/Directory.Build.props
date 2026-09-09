@@ -434,8 +434,40 @@
     ruling is a faithful port, and puts it in ONE PLACE - src/Ft8Sharp/Ft4Timing.cs - so a ruling
     the other way is one edit. NOTHING HERE SETTLES IT.
   -->
+  <!--
+    0.11.0 -> 0.12.0, UNIT 296 TASK 4. A MINOR BECAUSE A PUBLIC CONSTANT IS ADDED AND THE FT4
+    DECODER BEHAVES DIFFERENTLY FOR A CALLER WHO ASKS FOR NOTHING.
+
+    A SECOND NUMBER IN THE FT4 PATH IS NOW NOT UPSTREAM'S, AND IT IS NAMED RATHER THAN BURIED.
+    Ft4WaterfallGeometry.DefaultTimeOversampling is 4 where demo/decode_ft8.c passes time_osr = 2.
+    Measured, not preferred: unit 296 took FT4's decode rate on a lattice of twenty-five placements
+    spanning one whole tone spacing and one whole symbol period - a lattice defined against the
+    protocol so no analysis grid can flatter it - and at -13 dB, where the on-grid rate is exactly
+    one, 2 kept 808 of 900 placement-averaged and 19 of 36 at its worst cell while 4 keeps 894 of
+    900 and 34 of 36, with the on-grid cell unmoved. The worst placement cost 2.4 dB at 2 and under
+    half a decibel at 4. One slot costs 151 ms against a 7.5 s slot. Zero wrong decodes in 10800
+    slots across the sweep.
+
+    THE FREQUENCY AXIS DID NOT MOVE AND THE SAME SWEEP IS WHY. Ft8Monitor's analysis frame is
+    BlockSize x FrequencyOversampling samples, so frequency oversampling LENGTHENS THE WINDOW - at 2
+    it spans two FT4 symbol periods and at 4 it spans four. FT4 is 4-FSK and its tone changes every
+    symbol, so 2x4 and 4x4 both fall from 36 of 36 to 0 of 36 ON GRID at -13 dB. Upstream's 2 is the
+    largest value that does not span more than one symbol change, and it stays.
+
+    time_osr and freq_osr are PARAMETERS of monitor_init and 2 and 2 are demo/decode_ft8.c's
+    file-scope judgement about how much work to do, the same class of number as kMin_score and
+    kMax_candidates. Nothing about the modulation, the tone spacing, the symbol period, the symbol
+    count, the sync patterns, the Costas tables, the codeword, the CRC or the waveform changes - and
+    Ft4Unit296TheGridMovedAndFt8sDidNotTests asserts extent by extent that only the sub-block and
+    the block stride differ between upstream's grid and this one. A caller who asks for upstream's
+    own 2 and 2 still gets upstream's own result, asserted rather than promised.
+
+    FT8'S ANALYSIS GRID DOES NOT MOVE BY ANY ROUTE. Ft8WaterfallGeometry's own defaults still read
+    2 and 2 and that is asserted too, because the port's byte-fidelity to upstream on FT8 is the
+    instrument every sensitivity figure in this project leans on.
+  -->
   <PropertyGroup>
-    <Version>0.11.0</Version>
+    <Version>0.12.0</Version>
   </PropertyGroup>
 
   <!--

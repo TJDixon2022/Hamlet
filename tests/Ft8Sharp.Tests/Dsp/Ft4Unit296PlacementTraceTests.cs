@@ -40,6 +40,21 @@ public class Ft4Unit296PlacementTraceTests(ITestOutputHelper output)
     private const int Seed = 296;
 
     /// <summary>
+    /// <b>HEAD's grid, written out rather than taken from the default — and after task 4 that is
+    /// the difference between a trace and a tautology.</b>
+    /// </summary>
+    /// <remarks>
+    /// These tests were run at <c>a5b9628</c>, where <c>new Ft4WaterfallGeometry()</c> was 2 and 2.
+    /// Task 4 moved <see cref="Ft4WaterfallGeometry.DefaultTimeOversampling"/> to 4 on the strength
+    /// of what they measured. <b>Had they gone on asking for the default they would now measure the
+    /// new grid and report it as the starting position</b>, and the one measurement in this unit
+    /// that cannot be recovered afterwards would have been quietly overwritten by its own result.
+    /// Pinned at 2 and 2, they still say what HEAD did.
+    /// </remarks>
+    private static Ft4WaterfallGeometry Head =>
+        new(timeOversampling: 2, frequencyOversampling: 2);
+
+    /// <summary>
     /// <b>The corpus subset, named rather than left implicit.</b> Every third entry of
     /// <c>Ft4RoundTripCorpus</c>'s 106, which is 36 messages spanning the corpus's kinds rather than
     /// a block of one of them. Twenty-five cells times three rungs times 36 messages is 2700 slot
@@ -85,7 +100,7 @@ public class Ft4Unit296PlacementTraceTests(ITestOutputHelper output)
     {
         const int repetitions = 21;
         var corpus = Ft4RoundTripCorpus.Build();
-        var decoder = new Ft4SlotDecoder();
+        var decoder = new Ft4SlotDecoder(Head);
         var geometry = decoder.Geometry;
 
         output.WriteLine("THE CLOCK, AT HEAD'S GEOMETRY");
@@ -165,7 +180,7 @@ public class Ft4Unit296PlacementTraceTests(ITestOutputHelper output)
         var started = Stopwatch.StartNew();
         var corpus = Ft4RoundTripCorpus.Build();
         var subset = Ft4Unit296PlacementLattice.Subset(corpus, SubsetStride);
-        var decoder = new Ft4SlotDecoder();
+        var decoder = new Ft4SlotDecoder(Head);
         var geometry = decoder.Geometry;
         var lattice = Ft4Unit296PlacementLattice.Build();
 

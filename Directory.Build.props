@@ -522,8 +522,19 @@
     cell 19 of 36 to 34 of 36, the on-grid cell does not move, and one slot costs 151 ms against a
     7.5 s slot. Zero wrong decodes in 10800 slots across the four grids.
   -->
+  <!--
+    1.12.254 -> 1.12.255, UNIT 296 TASK 4, UNDER HM-DEC-150. A PATCH AT THE ROOT AND A MINOR IN
+    Ft8Sharp, WHICH GOES 0.11.0 -> 0.12.0. One file under src/ changed and it is
+    Ft4WaterfallGeometry.cs: FT4 gets its own named DefaultTimeOversampling of 4, shadowing FT8's 2,
+    with the whole measurement written into the file the way unit 289 wrote the widened candidate
+    sweep into Ft4SyncSearch. DefaultFrequencyOversampling is written out beside it at upstream's 2,
+    so the number that stayed is as visible as the one that moved. Ft8Reception.ReadFt4 builds
+    new Ft4SlotDecoder() with no arguments, so this reaches the tab. The operator sees FT4 decodes
+    from stations that did not land on Hamlet's analysis grid, which is all of them; nothing else on
+    a screen moves.
+  -->
   <PropertyGroup>
-    <Version>1.12.254</Version>
+    <Version>1.12.255</Version>
   </PropertyGroup>
 
   <!--
