@@ -136,8 +136,23 @@ public readonly record struct Ft8Turn(
         // parity is still true and is no longer the useful sentence: he is
         // transmitting, and a line saying his slot is open while it is his own
         // signal filling it is the one thing this must not say (§0.0).
+        // **THE SLOT CLOCK IS NOT THE TURN AND IS COMPUTED FIRST** (work
+        // instruction 286 task 1). Boundaries land on :00, :15, :30 and :45 whatever
+        // anybody is doing, so the count is available in every state a corrected
+        // clock exists in - including the two where whose turn it is cannot be
+        // derived. **Only `NoClock` has no count**, because with no measured offset
+        // there is no boundary to count to.
+        var left = Left(trueUtc);
+
         if (sendingSlotUtc is { } slot)
         {
+            // **STOPPED KEEPS ITS NULL, AND THAT IS UNIT 277'S RULING RATHER THAN
+            // AN OVERSIGHT.** `StoppedEarlySaysSoRatherThanPretendingItRan` states
+            // it in as many words: there is nothing left running to count. Work
+            // instruction 286 extends the count to the state where nothing has been
+            // heard, which is the case Tim ruled on and the case its test names;
+            // whether a stop should also show the next boundary is the same question
+            // one state along and it is his, not this unit's to answer.
             if (stopped)
             {
                 return new Ft8Turn(Ft8TurnState.Stopped, null, TheirHalf(theirLastSlotUtc));
@@ -155,8 +170,6 @@ public readonly record struct Ft8Turn(
                     TheirHalf(theirLastSlotUtc));
             }
         }
-
-        var left = Left(trueUtc);
 
         if (theirLastSlotUtc is not { } theirs || theirs == default)
         {

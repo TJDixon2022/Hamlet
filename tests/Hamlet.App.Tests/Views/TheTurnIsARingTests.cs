@@ -192,31 +192,93 @@ public sealed class TheTurnIsARingTests
         Assert.False(halfSlot.TurnRingIsOnAir);
     }
 
-    /// <summary>**Unknown keeps its question mark and never picks a side.**</summary>
+    /// <summary>
+    /// **The clock counts down even where the turn is unknown, and the turn stays
+    /// unknown.**
+    /// </summary>
     /// <remarks>
-    /// Unit 277's rule: before a station has transmitted there is no parity to
-    /// derive, so there is no countdown to show either. A zero there would be a
-    /// reading nobody took (§0.0).
+    /// <para>**TIM'S RULING, 2026-09-08** (work instruction 286 task 1): *"Nobody's
+    /// responded, but I want to know how long I have till the next transmit cycle.
+    /// That might make me decide, oh, I'll do a CQ or I'll respond to this
+    /// guy."*</para>
+    /// <para>**THIS REPLACES UNIT 277'S `UnknownShowsAQuestionMarkAndNotAZero`**,
+    /// which asserted a question mark for both unknown states. That was right about
+    /// one of them and wrong about the other, and the red it gave when the rule
+    /// changed said so: *Expected "?" / Actual "8"*.</para>
+    /// <para>**THE TWO UNKNOWNS ARE NOT THE SAME UNKNOWN.** With no measured offset
+    /// there is no boundary to count to, so `NoClock` still shows a question mark —
+    /// a zero there would be a reading nobody took (§0.0). With a clock but no
+    /// station, the boundary is known to the second and only the parity is not.</para>
+    /// <para>**AND THE TURN IS NOT GUESSED EITHER WAY.** Unit 277's rule is
+    /// untouched: `TurnRingIsUnknown` stays true, the ring stays dashed, and neither
+    /// side is claimed (§0.6 — the dash is the carrier, not the number).</para>
     /// </remarks>
     [AvaloniaFact]
-    public void UnknownShowsAQuestionMarkAndNotAZero()
+    public void TheClockCountsDownEvenWhereTheTurnIsUnknown()
     {
-        foreach (var turn in new[]
-        {
-            Ft8Turn.Read(At(7), Measured(), null),
-            Ft8Turn.Read(At(7), ClockOffset.Unknown, Slot(45)),
-        })
-        {
-            var panel = Panel(turn);
+        // A clock, and nothing heard from anybody. 7 s into the slot leaves 8.
+        var noStation = Panel(Ft8Turn.Read(At(7), Measured(), null));
 
-            _output.WriteLine(turn.State + " -> \"" + panel.TurnRingCount + "\"");
+        _output.WriteLine(
+            "no station : count \"" + noStation.TurnRingCount + "\"  unknown "
+            + noStation.TurnRingIsUnknown + "  sweep "
+            + noStation.TurnRingSweep.ToString("0") + "°");
 
-            Assert.Equal("?", panel.TurnRingCount);
-            Assert.True(panel.TurnRingIsUnknown);
-            Assert.False(panel.TurnRingIsHis);
-            Assert.False(panel.TurnRingIsTheirs);
-            Assert.False(panel.TurnRingIsOnAir);
-        }
+        Assert.Equal("8", noStation.TurnRingCount);
+        Assert.True(noStation.TurnRingIsUnknown, "the turn is being claimed");
+        Assert.False(noStation.TurnRingIsHis);
+        Assert.False(noStation.TurnRingIsTheirs);
+        Assert.False(noStation.TurnRingIsOnAir);
+        Assert.True(noStation.TurnRingSweep > 0, "the ring is not draining");
+
+        // No offset: no boundary, so no count. This half is unit 277's and stands.
+        var noClock = Panel(Ft8Turn.Read(At(7), ClockOffset.Unknown, Slot(45)));
+
+        _output.WriteLine(
+            "no clock   : count \"" + noClock.TurnRingCount + "\"  unknown "
+            + noClock.TurnRingIsUnknown);
+
+        Assert.Equal("?", noClock.TurnRingCount);
+        Assert.True(noClock.TurnRingIsUnknown);
+    }
+
+    /// <summary>**The count is the corrected clock and not the machine's.**</summary>
+    /// <remarks>
+    /// The order names the source: `Ft8Slots.TrueUtc` and the measured offset, not a
+    /// second timing source. So the same PC moment under two different offsets must
+    /// give two different counts.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheCountComesFromCorrectedUtc()
+    {
+        var pc = At(7);
+
+        // Same machine moment; the second offset moves the true time on by 4 s.
+        var onTime = Panel(Ft8Turn.Read(pc, Measured(), null));
+        var late = Panel(Ft8Turn.Read(
+            pc, new ClockOffset(4.0, At(0)), null));
+
+        _output.WriteLine("offset 0 s : " + onTime.TurnRingCount);
+        _output.WriteLine("offset 4 s : " + late.TurnRingCount);
+
+        Assert.Equal("8", onTime.TurnRingCount);
+        Assert.Equal("4", late.TurnRingCount);
+    }
+
+    /// <summary>**The hover says what the count is, not whose slot it is.**</summary>
+    [AvaloniaFact]
+    public void TheHoverSaysWhatTheCountIs()
+    {
+        var panel = Panel(Ft8Turn.Read(At(7), Measured(), null));
+
+        _output.WriteLine(panel.TurnRingTip);
+
+        Assert.Contains(
+            "next slot starts in 8 seconds", panel.TurnRingTip, StringComparison.Ordinal);
+
+        // And it still says the turn is not known, because it is not.
+        Assert.Contains(
+            "no turn to work out", panel.TurnRingTip, StringComparison.Ordinal);
     }
 
     /// <summary>**The on-air caption names the message going out.**</summary>

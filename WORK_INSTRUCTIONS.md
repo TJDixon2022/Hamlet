@@ -1,4 +1,4 @@
-# Work instruction 285 - the logo goes into the application
+# Work instruction 286 - the ring counts down, the badge announces itself, and Hamlet gets a face
 
 ```
 STOP. Verify the project before reading any further.
@@ -26,7 +26,7 @@ If all four hold, say "Hamlet confirmed" and continue.
 
 **Tim's rulings of 2026-09-05, HM-DEC-155.**
 
-**1. A unit runs no test suite.** **Only the unit test it constructs or rewrites in
+**1. A unit runs no test suite.** **Only the unit tests it constructs or rewrites in
 this work instruction**, filtered by exact name, foregrounded, with a stated
 timeout. **An unfiltered `dotnet test` on any project is forbidden.**
 
@@ -35,7 +35,7 @@ minutes with no status write.
 
 `dotnet build` is allowed, foregrounded, with a timeout.
 
-**Tool fact, eleven units old:** this shell will not carry a quoted heredoc
+**Tool fact, twelve units old:** this shell will not carry a quoted heredoc
 containing an apostrophe, and it collapses a doubled backslash inside one. Use
 script files.
 
@@ -47,38 +47,64 @@ Every bench step of this phase is closed; steps D and E are Tim at his radio.
 **`ADVANCED: no` by construction.**
 
 ```
-DRIFT:  6 consecutive units without advance, carried from unit 283.
+DRIFT:  8 consecutive units without advance, carried from unit 285.
 ```
 
 ---
 
 ## Why this unit exists
 
-**Hamlet has no logo.** The About window carries the name in text and nothing else,
-and the window and taskbar carry whatever Avalonia's default is.
+**Three things the operator asked for, 2026-09-08.**
 
-**Tim approved a mark on 2026-09-08.** A transceiver faceplate - LCD, S-meter with
-a needle trace, a VFO knob with detent marks and a skirt, three band buttons with
-one lit, and two smaller controls - **with a quill rising from the top edge as the
-antenna.** The whip becomes a feather. That is the joke and it is the point: the
-name is Shakespeare and the thing is a radio.
+**One. The ring never counts down until somebody has transmitted.** Unit 277 ruled
+that **whose turn it is** is unknown before a station has spoken, which is right -
+parity is derived from what the other station sent and guessing would send him into
+their slot. **But the slot clock is not the turn.** FT8 boundaries land on `:00`,
+`:15`, `:30` and `:45` whatever anybody is doing.
 
-**Two files ship with this instruction, in `assets/`:**
+**The author let the turn rule suppress the countdown too.** They are different
+facts and only one of them is ever unknown. His words: *"Nobody's responded, but I
+want to know how long I have till the next transmit cycle. That might make me
+decide, oh, I'll do a CQ or I'll respond to this guy."*
 
-- **`hamlet-logo.svg`** - the full mark, 320 x 260, faceplate and quill.
-- **`hamlet-mark-small.svg`** - 68 x 68, a filled circle with a plate outline and
-  the quill. **The faceplate detail collapses below about 56 px**, so this is a
-  different drawing rather than the same one shrunk, and it is what belongs at
-  taskbar and favicon sizes.
+**Right now the empty For you panel shows a bare `?` and no number**, which is the
+one place he most needs the clock, because it is where he is deciding whether to
+call.
 
-**The palette is the application's own**: parchment `#E8E2D6`, ink `#2E2A22`, the
-rust `#993C1D` of the sender field, the amber `#EF9F27` of a strong signal.
+**Two. A badge should announce itself.** Unit 278 built the thresholds and shows
+progress inside the log window. **He is at 8 contacts.** At 10 he wants a dialog
+saying what he has earned. **The author previously ruled against a dialog and he has
+overruled it**; what remains is that it must not cost him a contact.
+
+**Three. Hamlet has a face, and unit 285's drawing had two defects.** Both files ran
+outside their own viewBox - the full mark by 18.5 units, the small one by 15.5,
+cutting half the quill at every icon size. **Both are redrawn and both are fixed**,
+verified by rasterising and reading the ink's bounding box rather than by reading
+the numbers.
 
 ```
-UNIT GOAL:    Hamlet has a logo, it is in the About window and on the window and
-              taskbar, and it renders at every size it is used at.
+UNIT GOAL:    The ring always shows the seconds, a badge says so when it is earned
+              without costing him a contact, and Hamlet has a face at every size it
+              is drawn.
 ADVANCES:     nothing.
 ```
+
+---
+
+## What ships with this instruction
+
+**`assets/hamlet-logo.svg`** - 380 x 360. The transceiver display in the
+application's parchment bezel: `USB-D`, `FIL1`, `RX`, `UTC`, the frequency in amber,
+the S-meter with cream bars and rust past S9 - and the quill as the antenna, with a
+spine and barbs branching off it **inside** the vane.
+
+**`assets/hamlet-mark-small.svg`** - 64 x 64. A rust tile, a cream faceplate with a
+dark display and knob, and the quill. **Not a shrink of the full mark**: a faithful
+reduction made the feather a sliver, so the small one is a sibling drawn to survive
+16 px.
+
+**Both were rasterised and looked at**, at 380, 256, 48, 32 and 16 px. **The full
+mark's ink sits at 18,5 to 359,348 in a 380 x 360 box** - inside, with margin.
 
 ---
 
@@ -87,36 +113,52 @@ ADVANCES:     nothing.
 **Nothing here describes the tree.** Check every claim and report mismatches.
 Report them; do not repair the instruction.
 
-- **`AboutWindow`** carries the name, the tagline *Let me ham. The radio,
-  demystified.*, a build panel and a diagnostics panel. **Find where a mark would
-  sit** and say so before placing it.
-- **The application's icon** is whatever `Hamlet.App.csproj` sets, if anything.
-  **Report what is there now.**
-- **`AboutWindow` is capped by `HowMuchTheApplicationSaysTests` at 850 characters
-  and holds 726.** An image adds no characters, but **check the ceiling still
-  passes** rather than assuming.
-- Root version - **read it, do not assume.**
+- **Unit 285 built `SvgMark`**, which reads these files rather than transcribing
+  them, is deliberately narrow, and **throws on anything it does not know**. **The
+  two new files may use a construct it does not handle** - `<text>`, plain `<line>`,
+  many `<rect>`s. **Check before assuming they load, and report what it refused.**
+- **Unit 285 built `AppIcon`**, rasterising the small mark at 256 px at startup, and
+  set `Window.Icon`. **The files change; the mechanism should not need to.**
+- **Unit 285 pinned both files' clipping defects in `TheMarksRenderTests`.** Those
+  assertions describe the old drawings and **will go red.** **Update them to the new
+  geometry** - the ink inside the box - rather than deleting them.
+- **Unit 277 built the turn ring** in four states, deriving parity from what the
+  other station has sent.
+- **Unit 278 built the badge thresholds** - 10, 25, 50, 100, 500, 1000, 2000, 5000,
+  10000 - and unit 281 made them belt ranks ending gold. **The count is every logged
+  contact.** Unit 278 also made the first look at the log **seed the level silently**,
+  so a fresh install does not announce nine badges at once. **Do not undo that.**
+- Root version after unit 285 was **1.12.205**. **Read it, do not assume.**
 
 Known reds, inherited, **never chased**:
 `CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
 `docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
-`HM-OPEN-088`'s ten in `TheMessageReadsAsThreePartsTests`.
+`HM-OPEN-088`'s ten.
 
 ---
 
 ## Rulings in force
 
-- **Tim approved this mark**, 2026-09-08. **Do not redesign it.** If something
-  cannot be rendered as drawn, **report it and say what you would change** rather
-  than changing it.
-- **§0.6.** Colour is never the only carrier of meaning. **A logo carries no
-  meaning the application depends on**, so this does not constrain it - but the
-  mark must be legible in both light and dark themes, and **the small mark's dark
-  fill needs checking against a dark background.**
-- **Text only where he hovers.** **A logo is not a caption.** Do not add a line of
-  text under it explaining what it is.
+**Tim's, 2026-09-08:**
+
+- **The ring always shows the seconds to the next slot**, including where the For
+  you panel is empty and the turn is unknown.
+- **A dialog announces a badge when it is earned**, naming what was earned.
+- **Rust for the tray icon.** **The approved marks ship with this order and are not
+  to be redesigned.**
+
+**Standing:**
+
+- **One click, one transmission.** **The ring counts down and does nothing else** -
+  it arms nothing, cancels nothing, and reaching zero sends nothing. **A countdown
+  that fires is automatic sequencing in disguise and this phase forbids it.**
+- **§0.0 and HM-DEC-092.** Never present a guess as a decode. **The turn stays
+  unknown when it is unknown**; only the count is added.
+- **§0.6.** Colour is never the only carrier. **The unknown ring keeps its dashed
+  stroke** so it still reads as four states and not three.
+- **Text only where he hovers**, and a fault speaks unasked.
+- **§0.1.** The engine is not told that tabs exist.
 - **`Ft8Sharp` is a faithful MIT port and nothing changes a line of it.**
-- **Nothing in this unit transmits, arms or cancels.**
 
 ---
 
@@ -131,59 +173,74 @@ task is running. **Use the file-editing tools if the shell refuses.**
 
 ## Tasks
 
-### Task 1 - the files land where the application can reach them
-
-- **Move `assets/hamlet-logo.svg` and `assets/hamlet-mark-small.svg`** to wherever
-  this application already keeps its own resources. **Follow the tree's existing
-  convention** rather than inventing a folder.
-- **Report where they went and why that is the right place.**
-- **Confirm both parse and both render** before anything binds to them.
-
-### Task 2 - the mark is in the About window
+### Task 1 - the ring always counts down
 
 **This is the goal task.**
 
-- **The full mark appears in `AboutWindow`**, at a size where the faceplate detail
-  reads - **150 px or larger.**
-- **It sits with the name rather than replacing it.** The name is a wordmark and
-  the logo is a picture; both belong.
-- **No caption.** The mark is not labelled.
-- **Check it in both themes.** The parchment fill is light; on a dark background
-  the plate should still read as a plate rather than a bright rectangle. **If it
-  does not, say so and say what would fix it** - a dark variant is a legitimate
-  answer and is Tim's to approve.
-- **The character ceiling still passes.** An image adds no characters; confirm
-  rather than assume.
+- **The ring drains and shows the seconds to the next slot boundary, always** -
+  including in an empty For you panel where the turn is unknown. **The bare `?` with
+  no number goes.**
+- **The turn stays unknown when it is unknown.** Unit 277's rule is untouched: no
+  parity is guessed. **The dashed ring says the turn is unknown; the number says the
+  clock is not.**
+- **The clock is `Ft8Slots.TrueUtc` and the measured offset**, not a second timing
+  source.
+- **It counts down and does nothing else.**
+- **The hover says what the count is** - *next slot in 7 seconds* - rather than a
+  claim about whose it is.
+- Test, watched failing first: with no station having transmitted, the ring shows a
+  count **and** the turn still reads unknown; the count comes from corrected UTC.
 
-### Task 3 - the window and the taskbar
+### Task 2 - a badge announces itself
 
-- **The application window and the taskbar carry the small mark.**
-- **Whatever format the platform needs**, produced from `hamlet-mark-small.svg`
-  rather than drawn again. **Say what you produced and how.**
-- **Check it at 16 px.** That is the size where a logo either survives or turns to
-  mush, and it is the one nobody looks at until it is shipped.
-- **Report what it looked like** at 16, 32 and 48 px.
+**He is at 8 contacts. The next one it can fire on is 10.**
 
-### Task 4 - a test that the mark is there
+- **When a threshold is crossed, a dialog appears naming what was earned** - the
+  rank and the count.
+- **It must not cost him a contact.** He is often mid-exchange with fourteen seconds
+  to reply. **It takes no keyboard focus, blocks no click, and does not close the
+  right-click menu or the Send controls.** If it cannot be made non-blocking, **say
+  so and say what it would take** rather than shipping one that steals focus.
+- **It fires once per threshold**, on the crossing, and never again for that rank.
+- **It never fires on first launch**, however many contacts the log already holds.
+  **Unit 278 built that seeding deliberately** - do not undo it.
+- **Crossing more than one threshold at once names them all.** Unit 278's rule:
+  nine to twenty-six earns 10 **and** 25, not only the highest.
+- Test, watched failing first: crossing 10 shows the dialog once; the same count
+  again shows nothing; a fresh log at 40 contacts shows nothing on first look;
+  crossing 9 to 26 names both.
 
-- **Assert the About window renders the mark**, not that a file exists on disk.
-  **A resource that is present and unreferenced is the fault `HM-OPEN-087` is
-  about** - thirteen `widget.*` templates in this tree are declared and reachable
-  by nothing.
-- **Watched failing first.**
-- **A test that checks a path string is not a test of a rendered image.** Assert
-  the visual element is in the tree with non-zero size.
+### Task 3 - the new marks replace the old
 
-### Task 5 - what the mark looks like where it is used
+- **Both files from `assets/` replace the ones unit 285 installed**, in the same
+  place, by the same mechanism.
+- **`SvgMark` may refuse a construct it does not know.** **Report exactly what it
+  refused** and extend it narrowly, or say plainly what cannot be drawn. **Do not
+  redraw the mark to suit the loader** - the mark is approved and the loader is not.
+- **`TheMarksRenderTests` pins the old clipping figures and will go red.** **Update
+  the assertions to the new geometry** - that the ink is inside the box - rather
+  than removing them. **The assertion that a mark stays inside its own viewBox is
+  worth keeping; it is the defect this replaces.**
+- **The About window and the icon keep the placements unit 285 built.**
+
+### Task 4 - what the marks look like where they are used
+
+- **Report what each renders as** at 16, 32, 48 and 256 px and in About.
+- **Say which you verified and how, and which you could not.** Unit 285 could verify
+  none, because the headless backend composes without rasterising and `CopyPixels`
+  throws. **If that is still true, say so** - do not compute a stroke width and call
+  it a look.
+- **Whether a rasterising harness is worth a package is on the asks queue and is
+  Tim's.** Do not add one.
+
+### Task 5 - what changed, listed
 
 **Named drop candidate.**
 
-**Report, in words, what the mark renders as** at each place it now appears - the
-About window in both themes, the window frame, the taskbar, and 16 px. **Say which
-of those you could verify and which you could not**, because a headless run cannot
-see a taskbar.
-
-**Do not claim a size looks right if nothing looked at it.**
+- Every string and every assertion this unit changed, appended to the log units 280
+  to 285 keep.
+- **If a fact left a screen without arriving on a hover, say so under its own
+  heading.**
 
 ### Task 6 - the outcome entry
 
@@ -195,23 +252,29 @@ see a taskbar.
 
 ## Parked - do not touch, do not raise
 
-**Everything.** The status-bar paragraph, the asks queue, `HM-OPEN-087`,
-`HM-OPEN-088`, the ceilings, Settings, the log, the send path, FT4, the hover
-ring's findability. **None of it is this unit's and this unit is not to be
-widened.**
+**The whole asks queue**: the three pixels, `dt` and `hz` on the mine list, the
+repeat fold, the fade's second carrier, counting subjects, the fade on a bubble,
+`HM-OPEN-087`, the hover ring's findability, `AboutWindow`'s terseness,
+`HM-OPEN-088`, three admissions on the simulated radio, and whether a rasterising
+harness is worth a package. **None of it is this unit's.**
+
+Also parked: FT4, the send path, the abort, the composer, the log's fields, the
+ceilings, Settings. **Anything in `src/Ft8Sharp/`.**
 
 ---
 
 ## What not to do
 
-- **Do not redesign the mark.** Report what will not render and stop.
-- **Do not caption the logo.**
-- **Do not draw the small mark again.** Produce it from the file.
-- **Do not assert a file exists and call it a test.** Assert it renders.
-- **Do not claim a size looks right if nothing looked at it.**
-- **Do not fix anything else.**
+- **Do not let the ring transmit, arm, or cancel anything.**
+- **Do not guess whose turn it is.** Only the count is added.
+- **Do not let the badge dialog take focus or block a click.**
+- **Do not fire a badge on first launch.**
+- **Do not redraw the marks.** Report what will not load.
+- **Do not delete the viewBox assertions.** Update them.
+- **Do not add a rasterising package.**
+- **Do not compute a size and call it verified.**
 - **Do not touch `src/Ft8Sharp/`.**
-- **Do not run a test suite.** Only the test you write here.
+- **Do not run a test suite.**
 - **Do not background a command and poll for it.**
 - **Do not report `ADVANCED: yes`.**
 
@@ -229,14 +292,17 @@ one. **`Ft8Sharp` does not move.**
 `output.md` at the repository root, overwritten, four sections per
 `CLAUDE_CODE.md` §8.
 
-**NUMBER: the sizes the mark was verified at, and by what.**
+**NUMBER: the seconds the ring shows with the turn unknown, before and after.** It
+showed none.
 
-**Section 3 leads with three things:**
+**Section 3 leads with four things:**
 
-1. **Where the files went** and why that is the tree's convention.
-2. **What the mark renders as** in the About window, both themes.
-3. **What it looks like at 16 px**, and whether anything actually looked.
+1. **The ring with the turn unknown**, showing a count and still reading unknown.
+2. **The badge dialog at 10**, quoted - and what it does at 9 to 26.
+3. **What `SvgMark` refused**, if anything, and what was done about it.
+4. **What was verified by looking**, and what was not.
 
-**Section 2 says what he will see**: Hamlet has a face.
+**Section 2 says what he will see**: the clock is there whether or not anybody has
+spoken, the tenth contact says so, and the taskbar is not ugly.
 
 Write `output.md`, then stop.

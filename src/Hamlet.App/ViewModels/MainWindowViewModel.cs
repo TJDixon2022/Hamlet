@@ -1692,19 +1692,31 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
-    /// <summary>The number inside the ring, or a question mark.</summary>
+    /// <summary>The seconds to the next slot boundary, or a question mark.</summary>
     /// <remarks>
-    /// **A QUESTION MARK IS NOT A NUMBER AND MUST NOT LOOK LIKE ONE** (§0.0).
-    /// Before a station has transmitted there is no parity to derive, so there is
-    /// no countdown to show either, and a zero there would be a reading nobody
-    /// took.
+    /// <para>**THE SLOT CLOCK IS NOT THE TURN, AND THIS USED TO CONFLATE THEM** (Tim,
+    /// 2026-09-08, work instruction 286 task 1). Unit 277 ruled that whose turn it is
+    /// is unknown before a station has spoken, and that is right — parity comes from
+    /// what the other station sent and guessing it would send him into their slot.
+    /// **But the boundaries land on `:00`, `:15`, `:30` and `:45` whatever anybody is
+    /// doing.** His words: *"Nobody's responded, but I want to know how long I have
+    /// till the next transmit cycle."*</para>
+    /// <para>**AND THE ENGINE NEVER SUPPRESSED IT.** `Ft8Turn.Read` has returned the
+    /// seconds for `NoStationYet` since unit 277 wrote it; the number was thrown away
+    /// here, one layer up, by a condition that named the state instead of asking
+    /// whether a count existed. The empty For you panel showed a bare `?`.</para>
+    /// <para>**A QUESTION MARK IS STILL NOT A NUMBER** (§0.0). It is what
+    /// `NoClock` gets, because with no measured offset there is no boundary to count
+    /// to and a zero there would be a reading nobody took.</para>
+    /// <para>**THE TURN IS UNTOUCHED.** <see cref="TurnRingIsUnknown"/> still reads
+    /// true here and the ring is still dashed, so the four states still separate
+    /// without colour (§0.6): the dash says the turn is unknown, the number says the
+    /// clock is not.</para>
     /// </remarks>
     public string TurnRingCount
-        => _turn.State == Ft8TurnState.NoClock
-            || _turn.State == Ft8TurnState.NoStationYet
-            || _turn.SecondsLeft is null
-                ? "?"
-                : _turn.SecondsLeft.Value.ToString(CultureInfo.InvariantCulture);
+        => _turn.SecondsLeft is { } left
+            ? left.ToString(CultureInfo.InvariantCulture)
+            : "?";
 
     /// <summary>What is beside the ring, which for four of six states is nothing.</summary>
     /// <remarks>
@@ -1761,8 +1773,28 @@ public partial class MainWindowViewModel : ObservableObject
                 + "cannot work out whose turn it is.",
             _ =>
                 "Nothing has been heard on this frequency yet, so there is nobody "
-                + "to take a turn with and no turn to work out.",
+                + "to take a turn with and no turn to work out."
+                + NextSlotSentence(),
         };
+
+    /// <summary>
+    /// **What the count is, for the states where the turn is not the answer.**
+    /// </summary>
+    /// <returns>A sentence about the clock, or "" where there is no count.</returns>
+    /// <remarks>
+    /// <para>**IT SAYS WHAT THE NUMBER IS AND NEVER WHOSE SLOT IT IS** (work
+    /// instruction 286 task 1, §0.0). Where nothing has been heard the turn is
+    /// genuinely unknown and the hover keeps saying so; what it adds is the one thing
+    /// that is known, which is how long he has before the next boundary.</para>
+    /// <para>**AND IT IS A READING, NOT AN INVITATION.** It does not suggest calling,
+    /// because whether to call is his and the ring arms nothing (§0.2).</para>
+    /// </remarks>
+    private string NextSlotSentence()
+        => _turn.SecondsLeft is { } left
+            ? " The next slot starts in "
+              + left.ToString(CultureInfo.InvariantCulture)
+              + (left == 1 ? " second." : " seconds.")
+            : "";
 
     /// <summary>True where the ring is drawn dashed and empty.</summary>
     /// <remarks>
