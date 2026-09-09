@@ -67,6 +67,34 @@ public static class Ft8DeepMessageSymbols
                 nameof(symbols));
         }
 
+        Span<byte> message = stackalloc byte[Ft8Payload.MessageBytes];
+
+        if (!TryPackAgain(decoded, message))
+        {
+            return false;
+        }
+
+        Ft8SymbolEncoder.Encode(message, symbols);
+        return true;
+    }
+
+    /// <summary>
+    /// <b>The 77 bits behind a decoded message, packed again and proved by round trip.</b> The whole
+    /// of this route except the modulation.
+    /// </summary>
+    /// <param name="decoded">What the message layer made of the bits.</param>
+    /// <param name="message"><see cref="Ft8Payload.MessageBytes"/> bytes, written only on success.</param>
+    /// <returns>True where the round trip held.</returns>
+    /// <remarks>
+    /// <b>SHARED WITH FT4, BECAUSE THE MESSAGE LAYER IS SHARED</b> (work instruction 294 task 3).
+    /// The two protocols carry the same 77-bit container, the same CRC-14 and the same (174,91) LDPC
+    /// code; they differ in the modulation and in FT4's payload exclusive-OR, both of which live
+    /// below this line. <c>Ft4DeepMessageSymbols</c> calls this and then
+    /// <c>Ft4SymbolEncoder.Encode</c>, so <b>the difference between the two routes is one call</b>
+    /// and the packing, the callsign cache and the guard are one copy.
+    /// </remarks>
+    internal static bool TryPackAgain(in Ft8DecodeResult decoded, Span<byte> message)
+    {
         if (!decoded.Decoded)
         {
             return false;
@@ -76,22 +104,22 @@ public static class Ft8DeepMessageSymbols
         // cache and then resolved back out of it, so the round trip below compares like with like.
         // A cache per call and never shared: nothing here depends on what any other message said.
         var cache = new Ft8CallsignCache();
-        Span<byte> message = stackalloc byte[Ft8Payload.MessageBytes];
+        Span<byte> packed = stackalloc byte[Ft8Payload.MessageBytes];
 
-        if (!TryPack(decoded, cache, message))
+        if (!TryPack(decoded, cache, packed))
         {
             return false;
         }
 
         // THE GUARD. Ordinal, because a comparison that ignores case or culture would let through
         // exactly the near-misses this is here to catch.
-        var again = Ft8MessageDecoder.Decode(message, cache);
+        var again = Ft8MessageDecoder.Decode(packed, cache);
         if (!again.Decoded || !string.Equals(again.Text, decoded.Text, StringComparison.Ordinal))
         {
             return false;
         }
 
-        Ft8SymbolEncoder.Encode(message, symbols);
+        packed.CopyTo(message);
         return true;
     }
 

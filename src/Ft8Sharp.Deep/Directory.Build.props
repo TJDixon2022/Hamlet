@@ -152,7 +152,7 @@
     docs/unit254-combining-depth.md section 1.3 writes the arithmetic out.
   -->
   <PropertyGroup>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
   </PropertyGroup>
 
   <!--

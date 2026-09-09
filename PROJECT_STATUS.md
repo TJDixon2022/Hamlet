@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 7
+TASK: 5 of 7
 WORK_INSTRUCTION: 294 - the FT4 signal report, and the ledger on FT4's grid
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T12:34:36-04:00
-NOTE: Task 2 - the grid is threaded, SlotsAgo counts on the mode the tab is running, and the second copy of the arithmetic in MainWindowViewModel.Quiet is deleted rather than threaded. 32 of 32 contact tests pass in 3.46 s with the four FT8 controls naming SlotGrid.Ft8 explicitly. Running the two Avalonia contact controls before committing.
+UPDATED: 2026-09-09T12:52:50-04:00
+NOTE: Task 4's gate is OPEN - 0.58 dB mean absolute error and 1.41 dB at the 95th percentile over 970 measured messages at five rungs FT4 decodes at, against a 2.0 dB threshold written down before the run. The FT4 candidate time bias measured to one value on all 529 on-grid trials. Now task 5: carrying the ratio through ReadFt4 to the row and the two new menu shapes.
 
 ---
 
