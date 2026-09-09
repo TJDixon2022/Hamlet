@@ -3394,6 +3394,39 @@ public partial class MainWindowViewModel : ObservableObject
         }.ShowDialog(owner);
     }
 
+    /// <summary>**Show him what he has done**, which is not the same as his log.</summary>
+    /// <remarks>
+    /// <para>**TIM'S RULING, 2026-09-08**: an achievements screen beside the contact
+    /// log, carrying the belt and the first contact in each mode. **Not under Help** -
+    /// Help is *how do I use this*, and this is his own operating record.</para>
+    /// <para>**IT OPENS A READER AND NOTHING ELSE**, the same shape as the log
+    /// window. The read is the read `ContactLogStore` already does, so the count on
+    /// this screen and the count on that one cannot come to disagree: there is one
+    /// route to the file and one parser behind it.</para>
+    /// <para>**AND NOTHING ON IT REACHES A SEND PATH.** The window is handed a list
+    /// of records and has no reference to the panel, the rig or the transmitter at
+    /// all.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void OpenAchievements()
+    {
+        var owner = (Application.Current?.ApplicationLifetime
+            as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+        if (owner is null)
+        {
+            return;
+        }
+
+        new Views.AchievementsWindow
+        {
+            DataContext = new AchievementsViewModel(ContactLogStore.ReadRecords())
+            {
+                LogPath = ContactLogStore.LogPath,
+            },
+        }.ShowDialog(owner);
+    }
+
     /// <summary>Open the record of what Hamlet decided.</summary>
     [RelayCommand]
     private void OpenDecisionLog()

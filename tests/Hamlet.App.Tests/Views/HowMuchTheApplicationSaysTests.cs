@@ -182,6 +182,23 @@ public sealed class HowMuchTheApplicationSaysTests
             ("FavoritesWindow", 280, 400),
             ("ContactLogWindow", 246, 350),
             ("DecisionLogWindow", 196, 300),
+
+            // **THE ACHIEVEMENTS SCREEN IS CAPPED TWICE, AND FOR THE REASON THE
+            // DIGITAL TAB IS**: a ceiling caps a state and not only a surface. An
+            // empty log draws six rows nobody has earned; a log with contacts in it
+            // draws a callsign, a date and a band on every earned row, which is
+            // text an idle measurement never sees. **Measured, the worked state is
+            // 31 characters larger**, and the two land on the same ceiling because
+            // the margin is wider than the difference.
+            //
+            // **THE SIX EXPLANATIONS ARE NOT IN EITHER FIGURE AND THAT IS THE
+            // POINT.** Every row's account of what stands in its way is on a
+            // `HintMarkControl`, which draws nothing until he hovers it, so the
+            // worked card carries 1,557 characters of prose that no ceiling has to
+            // hold down. That is Tim's ruling of 2026-09-08 working rather than
+            // being worked around: text only where he hovers.
+            ("AchievementsWindow", 412, 550),
+            ("AchievementsWindow, worked", 443, 550),
         };
 
     /// <summary>**No surface says more than its ceiling allows.**</summary>
@@ -371,6 +388,16 @@ public sealed class HowMuchTheApplicationSaysTests
             {
                 DataContext = new ContactLogViewModel(
                     Array.Empty<AdifLogRecord>(), "contacts.adi"),
+            },
+            "AchievementsWindow" => new AchievementsWindow
+            {
+                DataContext = new AchievementsViewModel(
+                    Array.Empty<AdifLogRecord>()),
+            },
+            "AchievementsWindow, worked" => new AchievementsWindow
+            {
+                DataContext = new AchievementsViewModel(
+                    TheAchievementsScreenTests.TwoModeLog()),
             },
             _ => new LogContactWindow
             {

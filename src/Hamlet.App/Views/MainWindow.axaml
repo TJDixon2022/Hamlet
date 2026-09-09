@@ -2273,6 +2273,21 @@
                          file in Notepad. It reads and never writes. -->
                     <MenuItem Header="My contacts…"
                               Command="{Binding OpenContactLogCommand}" />
+                    <!-- **BESIDE THE LOG, WHICH IS WHERE HE RULED IT GOES** (Tim,
+                         2026-09-08: *an achievements screen off the Tools menu,
+                         beside the contact log*). **The two halves of that ruling
+                         disagree in the tree**: `My contacts...` is here under
+                         Radio and not under Tools, and has been since unit 278.
+
+                         **BESIDE THE LOG IS THE HALF THAT CARRIES THE REASON.**
+                         His own words for why it is not under Help are that
+                         achievements are his operating record, *the same kind of
+                         thing as his log*, and the menu's own convention below
+                         says Tools keeps the things that are about Hamlet rather
+                         than about the rig. Reported in the session report so he
+                         can move it if he meant the other half. -->
+                    <MenuItem Header="Achievements…"
+                              Command="{Binding OpenAchievementsCommand}" />
                     <MenuItem Header="What Hamlet decided…"
                               Command="{Binding OpenDecisionLogCommand}" />
                     <Separator />

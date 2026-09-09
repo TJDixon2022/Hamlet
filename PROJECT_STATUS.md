@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 287 - an achievements screen, and the first of each mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-159 (2026-09-07)
-UPDATED: 2026-09-08T23:19:42-04:00
-NOTE: Task 1 done - FT8 is the only mode that can be logged today. Found the order wrong about CW: it has a send path (HM-DEC-059) and no way into the log. Committing task 1.
+UPDATED: 2026-09-08T23:29:59-04:00
+NOTE: Task 2 done - the achievements screen, 10 of 10 green, ceilings 412 and 443 against 550. A watched red caught a MODE=WSPR record lighting the row as earned. Next task 3, the notice.
 
 ---
 

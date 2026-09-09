@@ -1,0 +1,152 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ctl="using:Hamlet.App.Controls"
+        xmlns:vm="using:Hamlet.App.ViewModels"
+        x:Class="Hamlet.App.Views.AchievementsWindow"
+        x:DataType="vm:AchievementsViewModel"
+        Title="Achievements"
+        Width="620" Height="560"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource HmBackgroundBrush}">
+
+    <!-- **HIS OWN OPERATING RECORD, WHICH IS THE SAME KIND OF THING AS HIS LOG**
+         (Tim's ruling, 2026-09-08). Not Help: Help is *how do I use this*, and
+         this is *what have I done*. It sits directly under `My contacts…` for
+         that reason.
+
+         **IT READS AND IT NEVER WRITES.** The window has no handler of its own,
+         so there is no path from it to the file, and nothing on it reaches a send
+         path at all.
+
+         **THE EXPOSURE HERE IS AN ACHIEVEMENT CLAIMED THAT WAS NOT EARNED**
+         (§0.0). A screen of his own record is a place he will trust without
+         checking, so every figure on it is derived from the records at the moment
+         it is opened and nothing is remembered. Its quieter twin is a row that
+         looks earnable and never can be, which is why five of the six say what
+         stands in the way. -->
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="16">
+
+        <!-- ============ THE BELT ============ -->
+        <Border Grid.Row="0" Background="White" CornerRadius="8"
+                BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1"
+                Padding="14,12" Margin="0,0,0,10">
+            <StackPanel Spacing="6">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <!-- **A BORDER AND NEVER A FILL** (HM-DEC-012), and the same
+                         ring the status bar already draws, so the rank he is shown
+                         here looks like the rank he can see there. -->
+                    <Border x:Name="AchievementsBeltRing"
+                            BorderBrush="{Binding Rank.Ink}"
+                            BorderThickness="3"
+                            Background="Transparent"
+                            CornerRadius="26"
+                            Width="52" Height="52"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Count}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="18" FontWeight="Bold"
+                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                    </Border>
+
+                    <StackPanel VerticalAlignment="Center" Spacing="3">
+                        <TextBlock x:Name="AchievementsBeltLine"
+                                   Text="{Binding BeltLine}"
+                                   FontSize="16" FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmGreenBrush}" />
+
+                        <TextBlock Text="{Binding Milestones.Line}"
+                                   FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmAmberBrush}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- **THE GRAYSCALE CARRIER OF PROGRESS** (§0.6). Drawn in a
+                     neutral ink, so how far the next rank is survives a reader who
+                     cannot tell the hues apart. -->
+                <ctl:BadgeProgressControl x:Name="AchievementsBeltProgress"
+                                          Fraction="{Binding Progress}"
+                                          HorizontalAlignment="Stretch"
+                                          Margin="0,2,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- ============ THE CARD ============ -->
+        <TextBlock Grid.Row="1" x:Name="AchievementsFirstsLine"
+                   Text="{Binding FirstsLine}"
+                   FontSize="14" FontWeight="SemiBold" Margin="2,0,0,4"
+                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+        <!-- **A FAULT SPEAKS UNASKED** (Tim, 2026-09-08). Everything else on this
+             screen that explains itself does so on a hover; this does not, because
+             a card of six rows with one filled in reads as five things he has not
+             got round to, and that is not what it is. -->
+        <TextBlock Grid.Row="2" x:Name="AchievementsHonesty"
+                   Text="{Binding Honesty}"
+                   FontSize="12" TextWrapping="Wrap" Margin="2,0,0,8"
+                   Foreground="{StaticResource HmAmberBrush}" />
+
+        <Border Grid.Row="3" Background="White" CornerRadius="8"
+                BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="AchievementsModeRows"
+                              ItemsSource="{Binding Firsts}" Margin="12,10">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ModeFirstRow">
+
+                            <!-- **FOUR CARRIERS BEFORE ANY COLOR** (§0.6): the
+                                 mark's own shape, the mode's weight, the standing
+                                 in words, and a line of evidence that only an
+                                 earned row has. Print this in grayscale and it
+                                 reads the same. -->
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                                  Margin="0,7">
+                                <TextBlock Grid.Column="0" Text="{Binding Mark}"
+                                           FontSize="16" Width="24"
+                                           VerticalAlignment="Center"
+                                           Foreground="{Binding Ink}" />
+
+                                <StackPanel Grid.Column="1" Spacing="1">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="14" FontWeight="SemiBold"
+                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                    <!-- **WHAT WAS EARNED, FROM THE RECORD**: the
+                                         station, the date and the band. An
+                                         unearned row has no such line at all,
+                                         which is the difference a hue could never
+                                         carry on its own. -->
+                                    <TextBlock Text="{Binding Evidence}"
+                                               IsVisible="{Binding HasEvidence}"
+                                               FontFamily="Consolas,Menlo,monospace"
+                                               FontSize="12"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="2" Text="{Binding Standing}"
+                                           FontSize="12" VerticalAlignment="Center"
+                                           Margin="8,0,6,0"
+                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                <!-- **TEXT ONLY WHERE HE HOVERS** (Tim,
+                                     2026-09-08). Six paragraphs on a card is a
+                                     wall; the standing is already there in a
+                                     word, and the mark says why on request. -->
+                                <ctl:HintMarkControl Grid.Column="3"
+                                                     VerticalAlignment="Center"
+                                                     Kind="Tip"
+                                                     Text="{Binding Why}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <TextBlock Grid.Row="4" Text="{Binding LogPath}" Margin="0,10,0,0"
+                   FontFamily="Consolas,Menlo,monospace" FontSize="11"
+                   TextWrapping="Wrap"
+                   Foreground="{StaticResource HmTextMutedBrush}" />
+    </Grid>
+</Window>
