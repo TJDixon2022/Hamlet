@@ -76,6 +76,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
     private readonly Ft8CardFacts _facts;
     private readonly string _place;
+    private readonly string _country;
     private readonly string? _operatorGrid;
     private readonly Ft8CardTechnical? _technical;
     private readonly int? _floorDb;
@@ -120,6 +121,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
         _facts = facts;
         _nowUtc = nowUtc;
         _place = WhereHeIs(facts, operatorGrid);
+        _country = CountryOf(facts);
         _operatorGrid = operatorGrid;
         _technical = technical;
         _floorDb = decodeFloorDb;
@@ -319,7 +321,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// arithmetic on values the messages themselves carried.</para>
     /// </remarks>
     public Ft8GlobePlot Globe => _globe ??= new Ft8GlobePlot(
-        _operatorGrid, _facts.Grid, Callsign, _place);
+        _operatorGrid, _facts.Grid, Callsign, _country);
 
     private Ft8GlobePlot? _globe;
 
@@ -715,6 +717,23 @@ public sealed partial class Ft8ContactCard : ObservableObject
     }
 
     /// <summary>The country and the distance, or "" where neither is known.</summary>
+    /// <summary>The country alone, in the short form, or "".</summary>
+    /// <remarks>
+    /// **THE GLOBE CAPTION WANTS A PLACE AND NOT THE WHOLE HEADER LINE.** Handing it
+    /// <see cref="Place"/> put the distance in twice and leaked the header's own
+    /// separator into a sentence: *K9XP is in United States · 500 miles, grid EN52.
+    /// That is 500 miles from you.* The caption composes its own distance, so it
+    /// needs the country and nothing else.
+    /// </remarks>
+    private static string CountryOf(Ft8CardFacts facts)
+    {
+        var entity = DxccPrefixes.EntityOf(facts.Callsign);
+
+        return entity is null
+            ? ""
+            : EntitySpoken.Short(EntityQualifier.DescribeFromGrid(entity, facts.Grid));
+    }
+
     private static string WhereHeIs(Ft8CardFacts facts, string? operatorGrid)
     {
         var entity = DxccPrefixes.EntityOf(facts.Callsign);

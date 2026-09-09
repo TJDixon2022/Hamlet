@@ -115,6 +115,69 @@ public sealed class Unit299HeaderProbeTests
     }
 
 
+
+    /// <summary>**The globe is on the card and it draws.**</summary>
+    /// <remarks>
+    /// **HM-DEC-154 IN A SMALLER PLACE.** A plot nothing renders is a measured gain
+    /// nobody can see, and this unit added a column to the card header, so the mark
+    /// and the two controls beside it are read off the realized window rather than
+    /// assumed to have landed.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheGlobeIsOnTheCard()
+    {
+        var window = new MainWindow { DataContext = APanelWithOneCard() };
+
+        window.Show();
+
+        for (var i = 0; i < 5; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+        }
+
+        var cards = window.FindControl<ItemsControl>("DigitalContactCards");
+
+        Assert.True(cards is not null, "the cards list is not in the window");
+
+        var globes = cards!.GetVisualDescendants()
+            .OfType<Hamlet.App.Controls.Ft8GlobeControl>()
+            .ToList();
+
+        var marks = cards.GetVisualDescendants().OfType<HintMarkControl>().ToList();
+
+        var buttons = cards.GetVisualDescendants().OfType<Button>()
+            .Where(b => b.Classes.Contains("hm-cardx")
+                        || b.Classes.Contains("hm-cardlink")
+                        || b.Classes.Contains("hm-cardaction"))
+            .ToList();
+
+        _output.WriteLine("globe controls realized: " + globes.Count
+            + "   (they live inside a tooltip and are built when it opens)");
+        _output.WriteLine("hint marks: " + marks.Count);
+        _output.WriteLine("card buttons: " + buttons.Count
+            + "  [" + string.Join(", ", buttons.Select(
+                b => b.Classes.FirstOrDefault(c => c.StartsWith("hm-", StringComparison.Ordinal))
+                     + ":" + (b.Content as string ?? "x"))) + "]");
+
+        var model = (MainWindowViewModel)window.DataContext!;
+        var card = model.DigitalCards.Single();
+
+        _output.WriteLine("");
+        _output.WriteLine("the plot the tooltip would draw:");
+        _output.WriteLine("  " + card.Globe.FrameLine);
+        _output.WriteLine("  " + card.Globe.Caption);
+
+        // **THE MARK IS THERE AND THE PLOT BEHIND IT IS REAL.**
+        Assert.True(card.ShowsGlobe, "the card offers no globe");
+        Assert.True(card.Globe.HasStation, "the plot has no station dot");
+
+        // **AND THE HEADER STILL CARRIES EVERYTHING ELSE** after gaining a column.
+        Assert.Contains(marks, m => m.Kind == HintKind.Detail);
+        Assert.Contains(buttons, b => b.Classes.Contains("hm-cardx"));
+
+        window.Close();
+    }
+
     /// <summary>**Where the band paragraph goes: card, or view model?**</summary>
     /// <remarks>
     /// The window probe showed the hover carrying the grid and the slots and **no
