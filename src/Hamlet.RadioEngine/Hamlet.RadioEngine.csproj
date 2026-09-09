@@ -72,6 +72,14 @@
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\callsigns\dxcc-prefixes.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-prefixes.json" />
     <EmbeddedResource Include="..\..\data\callsigns\entity-extents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.entity-extents.json" />
+
+    <!-- The continent column of the same publication, transcribed into
+         tools/dxcc/arrl-dxcc-continents.txt and generated into this file by
+         tools/dxcc/transcribe-continents.py (work instruction 298 task 2).
+         Every row is cross-checked against the prefix table above, which was
+         transcribed from the same publication, and a row that cannot be
+         joined is excluded rather than guessed at. -->
+    <EmbeddedResource Include="..\..\data\callsigns\dxcc-continents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-continents.json" />
   </ItemGroup>
 
   <!-- The telemetry line format is an internal detail with a public promise

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
 namespace Hamlet.RadioEngine.Contacts;
@@ -189,6 +189,44 @@ public static class AdifLog
         var unit = name[digits..];
 
         return digits > 0 && unit is "m" or "cm" ? name : null;
+    }
+
+    /// <summary>The name a person reads, for a band value ADIF spells.</summary>
+    /// <param name="bandValue">The record's `BAND`, e.g. `20m`.</param>
+    /// <returns>`20 m`, or the value unchanged where it is not one Hamlet names.</returns>
+    /// <remarks>
+    /// <para>**THE INVERSE OF <see cref="BandValueFor"/> AND IN THE SAME PLACE**
+    /// (§0). One file knows that the log spells a band `20m` and a person reads it
+    /// `20 m`, so the two answers cannot drift apart. Work instruction 298 task 2
+    /// needed this because a group heading taken straight from the record read
+    /// `20m` on a screen where every other band on every other screen reads
+    /// `20 m`.</para>
+    /// <para>**AN UNRECOGNISED VALUE COMES BACK UNCHANGED RATHER THAN NULL.** A
+    /// record imported from another logger may name a band Hamlet does not offer,
+    /// and the honest thing on a screen about **his** log is to show what his record
+    /// says. This differs from <see cref="BandValueFor"/> deliberately: that one
+    /// writes a permanent record and leaves out what it cannot spell, and this one
+    /// draws a heading and shows what is there.</para>
+    /// </remarks>
+    public static string BandDisplayNameFor(string? bandValue)
+    {
+        var value = (bandValue ?? "").Trim();
+
+        if (value.Length == 0)
+        {
+            return "";
+        }
+
+        foreach (var name in Bands.HfBands.Names)
+        {
+            if (string.Equals(
+                    BandValueFor(name), value, StringComparison.OrdinalIgnoreCase))
+            {
+                return name;
+            }
+        }
+
+        return value;
     }
 
     /// <summary>The specification this file was written from.</summary>

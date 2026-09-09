@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 8
+TASK: 2 of 8
 WORK_INSTRUCTION: 298 - the achievements screen grows as he operates
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T16:57:30-04:00
-NOTE: Task 1 done - nine of eleven cards computable, continents and states are not. Committing.
+UPDATED: 2026-09-09T17:09:42-04:00
+NOTE: Task 2 done - the unlock model, and the continent column transcribed from the cited publication. 7 of 7 green.
 
 ---
 
