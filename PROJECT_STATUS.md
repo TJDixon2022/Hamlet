@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 7 of 7
 WORK_INSTRUCTION: 294 - the FT4 signal report, and the ledger on FT4's grid
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T13:09:00-04:00
-NOTE: Tasks 6 and 7 done - the PHASE_OUTCOME entry and its replay arguments written by hand, and the drop candidate was not dropped. The connect-time rate guard now asks the mode the tab is running and names it, and the fit refusal offers the padded slot as the commonest cause rather than asserting it. 21 of 21 rate-guard and transmit-refusal tests pass. Writing output.md and running the validator.
+UPDATED: 2026-09-09T13:13:23-04:00
+NOTE: 7 of 7, nothing dropped including the named drop candidate. Step 4 goes partial to done - criterion 2's two surfaces are closed under both readings. An FT4 row carries a measured signal report: 0.58 dB mean absolute error and 1.41 dB at the 95th percentile over 970 messages, against a 2 dB gate written down before the run, so the menu offers 5 shapes on FT4 where it offered 3. The ledger counts FT4 slots on FT4's grid - a station heard 4 slots ago read "your move, 2 slots" and reads "gone quiet, 4 slots". FT8 identical to unit 251's record, 0.26 dB over 510 of 510. validate-output exit 0, all seven rules. Three items back, all beside a criterion and none blocking.
 
 ---
 
