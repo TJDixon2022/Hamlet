@@ -292,6 +292,118 @@ public sealed class Unit298UnlockTests
         Assert.DoesNotContain(screen.Places, p => p.Title == "Scandinavia");
     }
 
+
+    /// <summary>**The challenges are here on an empty log, and they invite.**</summary>
+    /// <remarks>
+    /// **§3.4: HIDING THEM DEFEATS THEM.** They are the only cards that may appear
+    /// unearned, and the emptiest log is exactly when a target matters most.
+    /// </remarks>
+    [Fact]
+    public void TheChallengesStandOnAnEmptyLog()
+    {
+        var challenges = AchievementChallenges.For(
+            new AchievementLog(Array.Empty<AdifLogRecord>(), HisGrid), HisGrid);
+
+        foreach (var card in challenges)
+        {
+            _output.WriteLine(card.Title);
+            _output.WriteLine("    " + card.Progress);
+        }
+
+        Assert.True(
+            challenges.Count is >= 6 and <= 10,
+            "the instruction asks for six to ten and there are " + challenges.Count);
+
+        Assert.All(challenges, c => Assert.False(c.Earned));
+        Assert.All(challenges, c => Assert.True(c.HasProgress));
+    }
+
+    /// <summary>**Every challenge hover teaches something true about radio.**</summary>
+    /// <remarks>
+    /// **§5 QUESTION 4, AND §3.5 SAYS IT IS THE PRODUCT**: *that sentence is the
+    /// actual product. The card is the reason he reads it.* A hover that only
+    /// restated the title would fail the question, so this asserts each is a real
+    /// paragraph rather than a label.
+    /// </remarks>
+    [Fact]
+    public void EveryChallengeHoverTeaches()
+    {
+        var challenges = AchievementChallenges.For(Log(TwentyMetreFt8()), HisGrid);
+
+        foreach (var card in challenges)
+        {
+            Assert.True(
+                card.HasDetail,
+                card.Title + " has no hover, and a challenge whose hover teaches "
+                + "nothing fails §5 question 4");
+
+            Assert.True(
+                card.Detail.Length > 200,
+                card.Title + " has a hover of " + card.Detail.Length
+                + " characters, which is a label rather than an explanation");
+        }
+    }
+
+    /// <summary>**No challenge shames.**</summary>
+    /// <remarks>
+    /// **§4: NOTHING SHAMES.** No streak he broke, no elapsed silence, no card whose
+    /// purpose is to name a thing he failed to do. This sweeps every word a challenge
+    /// puts on screen over an empty log, which is the state most likely to.
+    /// </remarks>
+    [Fact]
+    public void NoChallengeShames()
+    {
+        var challenges = AchievementChallenges.For(
+            new AchievementLog(Array.Empty<AdifLogRecord>(), HisGrid), HisGrid);
+
+        foreach (var card in challenges)
+        {
+            var words = card.Title + " " + card.Progress + " " + card.Detail;
+
+            foreach (var shame in new[]
+            {
+                // **THE BARE WORD `only` IS NOT A SHAME MARKER AND WAS THE FIRST
+                // DRAFT'S MISTAKE**: the faint-signal hover reads *a person would
+                // hear only hiss*, which is teaching rather than scolding. What
+                // shames is `you have only`, and that is what is swept for.
+                "failed", "failure", "you have not operated", "streak",
+                "still have not", "missing out", "should have", "you have only",
+                "you did not", "no thanks to",
+            })
+            {
+                Assert.False(
+                    words.Contains(shame, StringComparison.OrdinalIgnoreCase),
+                    card.Title + " says \"" + shame + "\"");
+            }
+        }
+    }
+
+    /// <summary>**A challenge shows the next rung, never the whole ladder.**</summary>
+    /// <remarks>
+    /// **§3.3: FOUR NEW CARDS IS A GIFT AND FORTY IS A CHORE LIST.** Five distance
+    /// cards would be four things he has not done and one he is aiming at.
+    /// </remarks>
+    [Fact]
+    public void ADistanceChallengeShowsOneRung()
+    {
+        var challenges = AchievementChallenges.For(Log(TwentyMetreFt8()), HisGrid);
+
+        var distance = challenges.Where(
+            c => c.Title.Contains("miles", StringComparison.Ordinal)).ToList();
+
+        Assert.Single(distance);
+
+        _output.WriteLine(distance[0].Title + "  ·  " + distance[0].Progress);
+
+        // Best so far in the fixture is 540 miles, so the next rung is 1,000.
+        Assert.Equal("First past 1,000 miles", distance[0].Title);
+        Assert.Contains("540 miles", distance[0].Progress, StringComparison.Ordinal);
+    }
+
+    /// <summary>The log behind a fixture.</summary>
+    private static AchievementLog Log(IReadOnlyList<AdifLogRecord> records)
+        => new(records, HisGrid);
+
     /// <summary>How many cards the whole screen holds.</summary>
     private static int Cards(AchievementScreen screen)
         => screen.Scopes.Sum(t => t.Count) + screen.Places.Sum(p => p.Count);
