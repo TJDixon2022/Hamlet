@@ -916,8 +916,18 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
                 .OfType<ItemsControl>().Where(c => c.Name is not null)
                 .Select(c => c.Name)) + "]");
 
+        // **`Panel` AND NOT `Grid`, SINCE UNIT 280** (work instruction 296 task 2b).
+        // The For-you side became a conversation of bubbles that day and its row
+        // root is a `StackPanel`, so a `Grid` search finds the left list and
+        // silently misses the other - which is where a row addressed to the operator
+        // is drawn, and this helper is looking for exactly that row. `Panel` covers
+        // both roots. Unit 293 made this same one-identifier change in the FT4
+        // sibling `TheWholeFt4ChainRunsFromOneRightClickTests`; this is deliberately
+        // the same fix rather than a new approach, and it is the fourth time a row
+        // finder in this family has been repaired by copying the sibling that
+        // already worked.
         var grid = lists
-            .SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
+            .SelectMany(l => l.GetVisualDescendants().OfType<Panel>())
             .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row
                 && row.Sender == His && row.Addressee == Mine);
 
@@ -929,12 +939,12 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
             "no realized row from " + His + " addressed to " + Mine
             + ". Left rows: " + scene.Panel.DigitalVisibleDecodes.Count
             + "; mine rows: " + scene.Panel.DigitalMineDecodes.Count
-            + "; realized grids with a row DataContext: "
-            + lists.SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
+            + "; realized row roots with a row DataContext: "
+            + lists.SelectMany(l => l.GetVisualDescendants().OfType<Panel>())
                 .Count(g => g.DataContext is DigitalDecodeRow)
             + "; rows seen: ["
             + string.Join(", ", lists
-                .SelectMany(l => l.GetVisualDescendants().OfType<Grid>())
+                .SelectMany(l => l.GetVisualDescendants().OfType<Panel>())
                 .Select(g => g.DataContext).OfType<DigitalDecodeRow>()
                 .Select(r => "\"" + r.Message + "\"")) + "]");
 

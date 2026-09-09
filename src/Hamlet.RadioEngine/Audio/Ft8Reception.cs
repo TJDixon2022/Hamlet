@@ -401,9 +401,31 @@ public sealed record Ft8Reception(
 public static class Ft8Reader
 {
     /// <summary>What is said when the audio holds no whole slot.</summary>
+    /// <remarks>
+    /// <para>**IT NAMES NO LENGTH, BECAUSE THIS READER CANNOT KNOW ONE** (work
+    /// instruction 296 task 2a). It read *there is not a whole fifteen-second slot
+    /// in what was kept* and it reaches the operator's own screen through
+    /// <c>Ft8Heard.Refusal</c>, the mode strip line and the decoded summary — so on
+    /// FT4, whose slot is 7.5 seconds, it named a length twice the one that was
+    /// being cut, in the one sentence whose whole job is to say that nothing was
+    /// cut at all. That is the same fault unit 290 corrected two sentences below in
+    /// the cutter and unit 292 corrected in <c>AudioArrival</c>; this one was missed
+    /// and five units have passed over it.</para>
+    /// <para>**AND IT IS A CONSTANT ON A STATIC READER, WHICH IS WHY THE HONEST
+    /// CORRECTION HAS NO NUMBER IN IT.** The length of a slot is the running mode's,
+    /// decided per call; nothing reachable from a <c>const</c> here knows which mode
+    /// the audio was captured on. A sentence that named 7.5 instead of 15 would be
+    /// wrong on FT8 exactly as often as this one was wrong on FT4. It names the
+    /// *slot* — which is what was being cut — and says the audio did not hold a
+    /// whole one, and that is true on both grids.</para>
+    /// <para>**THE PARKED FIGURE IS NOT WHAT THIS IS** (`CLAUDE.md` §0.0). The
+    /// 4.48-against-5.04 disagreement is about how long a *transmission* is and is
+    /// with the owner; a slot is not a transmission and no length of either goes on
+    /// a screen here.</para>
+    /// </remarks>
     public const string NoWholeSlot =
-        "there is not a whole fifteen-second slot in what was kept, so there was "
-        + "nothing to decode";
+        "there is not a whole slot in what was kept, so there was nothing to "
+        + "decode";
 
     /// <summary>Decode every whole slot in a recording.</summary>
     /// <param name="audio">The recording, at whatever rate it was captured.</param>

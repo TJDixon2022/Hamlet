@@ -496,8 +496,22 @@
     worst cell and 2 dB placement-averaged. Zero wrong decodes over all 2988 slots. One slot decodes
     in 66.9 ms, which is 0.89% of a slot.
   -->
+  <!--
+    1.12.252 -> 1.12.253, UNIT 296 TASK 2, UNDER HM-DEC-150. A PATCH, AND THE OPERATOR CAN SEE HALF
+    OF IT. Ft8Reader.NoWholeSlot read "there is not a whole fifteen-second slot in what was kept" and
+    it reaches the mode strip line and the decoded summary through Ft8Heard.Refusal, so on FT4 -
+    whose slot is 7.5 seconds - it named a length twice the one being cut, in the one sentence whose
+    whole job is to say that nothing was cut at all. It now names no length: a const on a static
+    reader cannot know which mode the audio was captured on, so 7.5 would be wrong on FT8 exactly as
+    often as fifteen was wrong on FT4. Four assertions enforce it across all three refusals on the
+    decode path, and the rule they enforce is the unit of time rather than the number, so the
+    cutter's honest "one whole transmission" is not refused. The other half is a test file:
+    TheWholeChainRunsFromOneRightClickTests's row finder asked OfType<Grid> for a row whose root has
+    been a StackPanel since unit 280, which is unit 293's fix in the FT4 sibling made here. Two of
+    its three tests were dying in the finder, measured by reverting; all three pass.
+  -->
   <PropertyGroup>
-    <Version>1.12.252</Version>
+    <Version>1.12.253</Version>
   </PropertyGroup>
 
   <!--
