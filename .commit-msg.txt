@@ -1,16 +1,19 @@
-docs(unit272): the report - 15 of 43 would have gone out unreadable, now none
+test(unit293): task 1 - what the transmit path does today with FT4 chosen
 
-output.md written and validated: all seven rules passed,
-validate-output exit 0, reached through validate-output.proj because the
-direct spellings were refused - the parked permitted-spellings bug, not
-raised as an item.
+The trace, measured rather than described. With FT4 chosen and the dial on
+14.080 MHz, SendMessage composes 12.64 s of FT8 tones (79 symbols, 8 tones at
+6.25 Hz), arms them for a fifteen-second boundary, and the sequence keys, plays
+and unkeys - telling the operator it had sent. Nothing between the click and
+the keying frame notices that the operator asked for FT4.
 
-All four tasks done, none dropped, including the named drop candidate.
+The fit guard is FT8's in four places: 0.5 s into a 15 s slot leaves 14.5 s and
+12.64 s fits. On FT4's 7.5 s slot the same offset leaves 7.0 s, which holds
+FT4's 5.04 s with 1.96 s to spare and does not hold 12.64 s at all.
 
-THE NUMBER: 15 of 43 -> 0 of 43. Fifteen of the forty-three messages the
-menu can offer against the callsigns he could plausibly work tonight would
-have been keyed and read back as nothing, and now none is.
+The right-click menu offers 3 shapes on an FT4 row against 5 on an FT8 row -
+Report and RogerAndReport are absent because every FT4 row's ratio is null, and
+the absence is said out loud in Ft8SendMenu.Absent.
 
-Section 4 raises 5 items and none asks for a ruling.
+Ft8ArmedSend.Arm has exactly one caller in src/.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

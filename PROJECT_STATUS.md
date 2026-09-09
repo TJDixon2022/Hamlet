@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 292 - pressing FT4 tunes and decodes FT4
-BALL: tim
+STATE: WORKING
+TASK: 1 of 8
+WORK_INSTRUCTION: 293 - one click, one FT4 transmission, through the same abort
+BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T11:15:20-04:00
-NOTE: 6 of 6, nothing dropped, and the named drop candidate was taken whole. Step 4 partial by plan: criteria 1 and 2 met, 3 and 4 booked to unit 293 before this unit ran. Pressing FT4 tunes to the cited frequency, cuts 7.5 s and reads FT4 - four transmissions in at ShowDecodes, four rows out, 0 missed, 0 wrong, named as read by Ft8Sharp. 17 places were FT8 by construction and 13 gaps are named with file and line. FT8 tick-identical and byte-identical throughout. validate-output exit 0, all seven rules. Ten items back, none blocking.
+UPDATED: 2026-09-09T11:28:00-04:00
+NOTE: Gate passed, four checks read from the tree. Task 1 opening: reading SendMessage, Ft8Composer, Ft8TransmitSequence.Sendable and the log write to measure what the transmit path does today with FT4 chosen, before anything changes.
 
 ---
 
