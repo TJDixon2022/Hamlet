@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -21,6 +21,23 @@ public enum HintKind
 
     /// <summary>What Hamlet can and cannot see past (§0.0).</summary>
     Boundary,
+
+    /// <summary>
+    /// The technical detail a surface deliberately kept off its face.
+    /// </summary>
+    /// <remarks>
+    /// **TIM'S RULING, 2026-09-08, AND IT IS THE `i` HE ASKED FOR.** His reason:
+    /// *"My goal is that somebody first overcomes their failure and their inability
+    /// to accomplish anything. And as they get more interested and have more
+    /// success, they start looking at the technical details. But the details are
+    /// nerdy and geeky, and I want to hide them behind an intentional decision to
+    /// look at them."*
+    /// **IT IS A KIND AND NOT A SECOND CONTROL.** The mark already exists, already
+    /// leads its tooltip with the kind in words, and already refuses to draw when
+    /// it has nothing to say; a second one beside it would be a copy that drifts
+    /// (§0).
+    /// </remarks>
+    Detail,
 }
 
 /// <summary>
@@ -108,6 +125,7 @@ public sealed class HintMarkControl : Control
     {
         HintKind.Measurement => "#",
         HintKind.Boundary => "⊣",
+        HintKind.Detail => "i",
         _ => "?",
     };
 
@@ -118,6 +136,7 @@ public sealed class HintMarkControl : Control
     {
         HintKind.Measurement => "measurement",
         HintKind.Boundary => "what Hamlet can see",
+        HintKind.Detail => "the detail behind this",
         _ => "tip",
     };
 

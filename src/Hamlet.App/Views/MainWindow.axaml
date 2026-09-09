@@ -4284,7 +4284,7 @@
                                                             <!-- THE HEADER: who, where, and
                                                                  what state it is in. -->
                                                             <Grid Grid.Row="0"
-                                                                  ColumnDefinitions="Auto,*,Auto,Auto">
+                                                                  ColumnDefinitions="Auto,*,Auto,Auto,Auto">
                                                                 <TextBlock Grid.Column="0"
                                                                            Text="{Binding Callsign}"
                                                                            VerticalAlignment="Center"
@@ -4332,13 +4332,47 @@
                                                                                FontWeight="SemiBold" />
                                                                 </Border>
 
+                                                                <!-- **THE `i`, AND EVERY
+                                                                     TECHNICAL DETAIL IS
+                                                                     BEHIND IT** (Tim's
+                                                                     ruling, 2026-09-08).
+                                                                     The reports and their
+                                                                     scale, his grid, the
+                                                                     distance and the
+                                                                     bearing, where his
+                                                                     tone sat and where the
+                                                                     dial was, how far into
+                                                                     the slot he started,
+                                                                     the slot times and
+                                                                     what closed the
+                                                                     exchange.
+
+                                                                     **NOTHING IS DELETED.**
+                                                                     Every fact the old
+                                                                     panel showed is one
+                                                                     deliberate hover away.
+
+                                                                     **AND IT DRAWS NOTHING
+                                                                     WHEN IT HAS NOTHING TO
+                                                                     SAY**, which the mark
+                                                                     already does for
+                                                                     itself, so a card with
+                                                                     no measurements behind
+                                                                     it carries no mark to
+                                                                     hover. -->
+                                                                <ctl:HintMarkControl Grid.Column="3"
+                                                                                     Kind="Detail"
+                                                                                     VerticalAlignment="Center"
+                                                                                     Margin="0,0,6,0"
+                                                                                     Text="{Binding Detail}" />
+
                                                                 <!-- **AN X ON EVERY CARD**
                                                                      (Tim's ruling,
                                                                      2026-09-08). It takes
                                                                      the card off the panel
                                                                      and touches nothing
                                                                      else. -->
-                                                                <Button Grid.Column="3"
+                                                                <Button Grid.Column="4"
                                                                         Classes="hm-cardx"
                                                                         Content="✕"
                                                                         VerticalAlignment="Center"
@@ -4606,7 +4640,7 @@
                                              band and not the panel. -->
                                         <ctl:GlossaryTextControl Grid.Row="3"
                                                                  x:Name="DigitalMineIdleLine"
-                                                                 Text="{Binding DigitalMineIdle}"
+                                                                 Text="{Binding DigitalCardsIdle}"
                                                                  IsVisible="{Binding !HasDigitalCards}"
                                                                  Margin="0,6,0,0"
                                                                  FontSize="11" LineSpacing="1.4"

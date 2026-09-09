@@ -1481,6 +1481,43 @@ public partial class MainWindowViewModel : ObservableObject
               + "callsign lands here, and it stays out of the list on the left so "
               + "it can never be buried.";
 
+
+    /// <summary>What the cards side says when there are no cards.</summary>
+    /// <remarks>
+    /// <para>**A FAULT SPEAKS UNASKED** (Tim's ruling, 2026-09-08, and the standing
+    /// exception to it). Cards are built from `Ft8ContactStates.Read`, which counts
+    /// slots between two moments, so without a measured clock offset there is no
+    /// corrected now to count to and no card can honestly be built. **Saying
+    /// *nothing addressed to you yet* in that state would be a claim about the band
+    /// while the truth is a reading nobody has taken** (§0.0), and it would be a
+    /// claim made while stations were on the panel's own ledger.</para>
+    /// <para>**THREE CAUSES AND THREE SENTENCES, IN THE ORDER THEY BITE.** A missing
+    /// callsign means nothing can be addressed to him at all; an unchecked clock
+    /// means the states cannot be counted; and after both of those, an empty panel
+    /// really is an empty band and says so.</para>
+    /// </remarks>
+    public string DigitalCardsIdle
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_settings.Operator.Callsign))
+            {
+                return DigitalMineIdle;
+            }
+
+            if (Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) is null)
+            {
+                return "Hamlet has not been able to check the clock against a time "
+                       + "server yet, and everything on a card is counted from the "
+                       + "slot boundaries, so there is nothing here it could say "
+                       + "honestly. Messages are still arriving and are still on "
+                       + "the list to the left.";
+            }
+
+            return DigitalMineIdle;
+        }
+    }
+
     /// <summary>The mine panel's own summary, in its header.</summary>
     /// <remarks>
     /// **IT SAYS WHEN IT IS EMPTY RATHER THAN SAYING NOTHING** (HM-DEC-021, and
@@ -2706,7 +2743,9 @@ public partial class MainWindowViewModel : ObservableObject
                     action.Kind,
                     action.Label,
                     action.Message,
-                    nowUtc));
+                    nowUtc,
+                    TechnicalFor(who),
+                    DecodeFloorDb));
             }
         }
 
@@ -2766,6 +2805,36 @@ public partial class MainWindowViewModel : ObservableObject
             ? (Ft8CardActionKind.None, "", "")
             : (Ft8CardActionKind.Send, PlainSendLabel(expected.Shape), expected.Text);
     }
+
+
+    /// <summary>The numbers the `i` hover holds, off that station's newest row.</summary>
+    /// <remarks>
+    /// **THE ROW'S OWN FIGURES, ALREADY FORMATTED** (§0). `DigitalDecodeRow` rounded
+    /// them when the decode arrived and rounding them a second time here would be
+    /// two answers to one measurement. A station with no decoded row - one the
+    /// operator called and that has never come back - gets null and the hover simply
+    /// has no band paragraph.
+    /// </remarks>
+    private Ft8CardTechnical? TechnicalFor(string callsign)
+        => NewestRowFrom(callsign) is { } row
+            ? new Ft8CardTechnical(row.Hz, row.Dt, row.HeardOnHz)
+            : null;
+
+    /// <summary>About how far below the noise the running mode decodes, or null.</summary>
+    /// <remarks>
+    /// <para>**FT8'S FIGURE IS THE ONE THIS TREE HAS MEASURED AGAINST AND FT4 HAS
+    /// NONE** (§12.4, HM-DEC-153). The sensitivity phase took FT8's whole curve
+    /// against a published -21 dB, over 306 trials a rung, with the decibel axis
+    /// checked against a second instrument; that number is in this repository's own
+    /// record. **No equivalent figure for FT4 is anywhere in this tree**, and unit
+    /// 288 found that even upstream states no such thing.</para>
+    /// <para>**SO FT4 GETS NULL AND THE HOVER SAYS LESS**, rather than borrowing
+    /// FT8's number for a mode it was not measured on. A plausible figure inside a
+    /// paragraph whose whole purpose is to teach the operator what a scale means is
+    /// exactly the fault §0.0 exists for.</para>
+    /// </remarks>
+    private int? DecodeFloorDb
+        => _digitalMode == DigitalMode.Ft4 ? null : -21;
 
     /// <summary>The signal report measured for one station, or null.</summary>
     /// <remarks>

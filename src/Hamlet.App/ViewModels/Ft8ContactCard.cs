@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Hamlet.RadioEngine.Contacts;
@@ -18,6 +19,19 @@ public enum Ft8CardActionKind
     /// <summary>It opens the Log dialog. It transmits nothing.</summary>
     Log,
 }
+
+/// <summary>
+/// **The numbers a card keeps off its face, as the decode measured them.**
+/// </summary>
+/// <remarks>
+/// **STRINGS BECAUSE THEY ARE ALREADY FORMATTED** where the decode row formatted
+/// them, and reformatting them here would be a second rounding of the same
+/// measurement (§0). An empty one is a real answer and its clause is simply absent.
+/// </remarks>
+/// <param name="AudioHz">Where his tone sat in the passband, in hertz.</param>
+/// <param name="Dt">How far into the slot his transmission began, in seconds.</param>
+/// <param name="DialHz">Where the radio was tuned when he was heard, or 0.</param>
+public sealed record Ft8CardTechnical(string AudioHz, string Dt, long DialHz);
 
 /// <summary>
 /// **One station he is in contact with, said in words that need no radio
@@ -62,6 +76,9 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
     private readonly Ft8CardFacts _facts;
     private readonly string _place;
+    private readonly string? _operatorGrid;
+    private readonly Ft8CardTechnical? _technical;
+    private readonly int? _floorDb;
 
     private DateTime? _nowUtc;
 
@@ -78,6 +95,15 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// Corrected UTC, or null where no clock offset has been measured. **Null is a
     /// real answer** and produces a time line with no relative half (§0.0).
     /// </param>
+    /// <param name="technical">
+    /// The numbers the face keeps off itself, for the `i` hover, or null where the
+    /// station has no decoded row to read them from.
+    /// </param>
+    /// <param name="decodeFloorDb">
+    /// About how far below the noise this mode decodes, where the tree has a cited
+    /// figure for it, and null otherwise. **Null is a real answer** (§12.4): the
+    /// hover then teaches the sign and the direction and invents no number.
+    /// </param>
     /// <exception cref="ArgumentNullException">There are no facts.</exception>
     public Ft8ContactCard(
         Ft8CardFacts facts,
@@ -85,13 +111,18 @@ public sealed partial class Ft8ContactCard : ObservableObject
         Ft8CardActionKind action,
         string actionLabel,
         string actionMessage,
-        DateTime? nowUtc)
+        DateTime? nowUtc,
+        Ft8CardTechnical? technical = null,
+        int? decodeFloorDb = null)
     {
         ArgumentNullException.ThrowIfNull(facts);
 
         _facts = facts;
         _nowUtc = nowUtc;
         _place = WhereHeIs(facts, operatorGrid);
+        _operatorGrid = operatorGrid;
+        _technical = technical;
+        _floorDb = decodeFloorDb;
 
         ActionKind = action;
         ActionLabel = actionLabel;
@@ -276,6 +307,237 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
     /// <summary>The facts behind the card, for the hover and for tests.</summary>
     public Ft8CardFacts Facts => _facts;
+
+
+    /// <summary>
+    /// **What the `i` mark holds: every technical detail the face gave up, with the
+    /// context that makes a number mean something.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**NOTHING IS DELETED** (Tim's ruling, 2026-09-08). Every fact the old
+    /// panel put on the screen is here, one deliberate hover away. The face carries
+    /// what happened; this carries what it was made of.</para>
+    /// <para>**WITH CONTEXT AND NOT BARE NUMBERS**, which is the stated purpose:
+    /// *"a number alone teaches nobody."* `-4 dB` on its own is a reading somebody
+    /// has to already understand; `-4 dB, and this decoder reads down to about -21,
+    /// so you are a long way above the floor` is the same reading and an
+    /// explanation of the scale it sits on.</para>
+    /// <para>**EVERY CLAUSE IS ABSENT WHERE ITS FACT IS** (§0.0). No grid, no
+    /// distance and no bearing; no measured ratio, no report sentence; no dial, no
+    /// frequency sentence. A hover that filled a gap with a plausible figure would
+    /// be worse than one that came up short, because a deliberate look is exactly
+    /// when the operator is most inclined to believe what he finds.</para>
+    /// <para>**AND IT NEVER DIAGNOSES.** It says where the numbers sit on their
+    /// scales and stops. Nothing here is about propagation, his equipment or his
+    /// attention.</para>
+    /// </remarks>
+    public string Detail
+    {
+        get
+        {
+            var parts = new List<string>();
+
+            if (Reports() is { Length: > 0 } reports)
+            {
+                parts.Add(reports);
+            }
+
+            if (WhereOnEarth() is { Length: > 0 } where)
+            {
+                parts.Add(where);
+            }
+
+            if (WhereOnTheBand() is { Length: > 0 } band)
+            {
+                parts.Add(band);
+            }
+
+            if (Slots() is { Length: > 0 } slots)
+            {
+                parts.Add(slots);
+            }
+
+            return string.Join(" ", parts);
+        }
+    }
+
+    /// <summary>True where the `i` mark has anything to hold.</summary>
+    public bool HasDetail => Detail.Length > 0;
+
+    /// <summary>The reports each way, and what the scale means.</summary>
+    /// <remarks>
+    /// **THE FLOOR IS NAMED ONLY WHERE THE TREE HAS A FIGURE FOR IT** (§12.4). The
+    /// sensitivity phase measured this decoder against a published -21 dB for FT8
+    /// and no equivalent figure for FT4 exists anywhere in this repository, so on
+    /// FT4 the sentence teaches the sign and the direction and does not invent a
+    /// number to teach the distance.
+    /// </remarks>
+    private string Reports()
+    {
+        var his = _facts.ReportFromHim;
+        var ours = _facts.ReportToHim;
+
+        if (his is null && ours is null)
+        {
+            return "";
+        }
+
+        var swap = his is not null && ours is not null
+            ? $"He hears you at {Signed(his.Value)} dB and you hear him at "
+              + $"{Signed(ours.Value)} dB."
+            : his is not null
+                ? $"He hears you at {Signed(his.Value)} dB, and you have not told "
+                  + "him how he is coming through yet."
+                : $"You told him he is coming through at {Signed(ours!.Value)} dB, "
+                  + "and he has not told you how you are doing yet.";
+
+        var scale = _floorDb is { } floor
+            ? "Those are decibels against the noise, so a minus number is the "
+              + $"ordinary case here: this decoder reads down to about {floor}, and "
+              + "anything well above that is a comfortable signal rather than a "
+              + "marginal one."
+            : "Those are decibels against the noise, and the decoder reads a long "
+              + "way below zero, so a minus number is the ordinary case rather "
+              + "than a problem.";
+
+        return swap + " " + scale;
+    }
+
+    /// <summary>His grid, the distance and the bearing.</summary>
+    /// <remarks>
+    /// **THE BEARING LIVES HERE** (Tim's ruling, 2026-09-08). It came off the face
+    /// because he is not pointing a beam by hand at an FT8 station, and it is kept
+    /// because somebody who later puts up a directional antenna will want it.
+    /// </remarks>
+    private string WhereOnEarth()
+    {
+        if (_facts.Grid is not { Length: > 0 } grid)
+        {
+            return "He has not put a grid square on the air, so Hamlet has no way "
+                   + "to say how far away he is.";
+        }
+
+        var here = OperatorLocation.FromGrid(_operatorGrid);
+        var there = OperatorLocation.FromGrid(grid);
+
+        if (here is not { } from || there is not { } to)
+        {
+            return $"He is in grid {grid}, and Hamlet needs your own grid square "
+                   + "in Settings before it can work out how far that is.";
+        }
+
+        var miles = GridPath.DescribeMiles(GridPath.MilesBetween(from, to));
+        var bearing = GridPath.DescribeBearing(GridPath.BearingDegrees(from, to));
+
+        return $"He is in grid {grid}, {miles} away, on an initial bearing of "
+               + $"{bearing} from you. A four-character grid is a box about seventy "
+               + "miles across, so the distance is good to about that and no better.";
+    }
+
+    /// <summary>Where in the passband and on the dial, and how the clocks agreed.</summary>
+    private string WhereOnTheBand()
+    {
+        if (_technical is not { } tech)
+        {
+            return "";
+        }
+
+        var said = new List<string>();
+
+        if (tech.AudioHz.Length > 0 && tech.DialHz > 0)
+        {
+            var mhz = (tech.DialHz / 1_000_000.0)
+                .ToString("0.000000", CultureInfo.InvariantCulture);
+
+            said.Add($"His tone sat {tech.AudioHz} Hz up inside the receiver's "
+                     + $"passband while the dial was on {mhz} MHz. Everybody on the "
+                     + "band shares one dial setting and takes a different slice of "
+                     + "the audio, which is how dozens of stations fit where one "
+                     + "voice would go.");
+        }
+
+        if (tech.Dt.Length > 0)
+        {
+            said.Add($"His transmission began {tech.Dt} seconds into the slot. Both "
+                     + "clocks have to agree within about a second for this to "
+                     + "decode at all, so a small number here is the two of you "
+                     + "keeping the same time.");
+        }
+
+        return string.Join(" ", said);
+    }
+
+    /// <summary>The slot times, the slot count, and what closed the exchange.</summary>
+    private string Slots()
+    {
+        var said = new List<string>();
+
+        if (_facts.FirstAtUtc is { } first && _facts.LastAtUtc is { } last
+            && first != last)
+        {
+            said.Add("This ran from "
+                     + first.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                     + " to "
+                     + last.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                     + " UTC.");
+        }
+
+        said.Add(_facts.Slots == 1
+            ? "That is one slot ago."
+            : $"That is {_facts.Slots.ToString(CultureInfo.InvariantCulture)} slots "
+              + "ago, counted in the transmit-and-listen turns the band runs on "
+              + "rather than in seconds.");
+
+        if (_facts.HisLastPayload is { Length: > 0 } closing
+            && Closing(closing) is { Length: > 0 } explained)
+        {
+            said.Add($"The last thing he sent you was {closing}, {explained}");
+        }
+
+        return string.Join(" ", said);
+    }
+
+    /// <summary>What a closing payload is, in a clause.</summary>
+    /// <remarks>
+    /// **NOT A SECOND COPY OF `Ft8Vocabulary.Explain`**, which answers a different
+    /// question at a different length: it says who a station is and what he is
+    /// asking for, in whole sentences, on a message row. This is a clause inside a
+    /// longer paragraph naming what one field shape is, and the shapes it names are
+    /// the ones `Ft8MessageSplit` already tests for.
+    /// </remarks>
+    private static string Closing(string payload)
+    {
+        if (payload is "RRR")
+        {
+            return "which is a roger: he received you and did not say goodbye, so "
+                   + "the contact is finished either way.";
+        }
+
+        if (payload is "RR73")
+        {
+            return "which is a roger and a goodbye in one.";
+        }
+
+        if (payload is "R73" or "73")
+        {
+            return "which is the goodbye people say at the end of a contact.";
+        }
+
+        if (Ft8MessageSplit.IsReport(payload, out var rogered, out var decibels))
+        {
+            return rogered
+                ? $"which says he got your report and puts you at {Signed(decibels)} dB."
+                : $"which is how well he is hearing you, in decibels against the noise.";
+        }
+
+        return Ft8MessageSplit.IsGrid(payload)
+            ? "which is his grid square, the box on the map he is transmitting from."
+            : "";
+    }
+
+    /// <summary>A report with its sign always shown, the way the air carries it.</summary>
+    private static string Signed(int decibels)
+        => decibels.ToString("+0;-0;0", CultureInfo.InvariantCulture);
 
     /// <summary>Move the relative time on, without rebuilding the card.</summary>
     /// <param name="nowUtc">Corrected UTC, or null where no offset is measured.</param>
