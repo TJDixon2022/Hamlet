@@ -498,3 +498,134 @@ failure - it looks exactly like a quiet band.
 No exception, no dialog, no unresponsive control, and the window closed cleanly with
 exit code 0. `Invoke()` returned without throwing. There is nothing to repair in what
 the button does; there is only the far larger thing it does not do yet.
+
+---
+
+## Task 5 - the gaps, named
+
+Tim's ruling is **exactly the way FT8 does**, so every one of these is a thing FT8 has
+and FT4 would not. **None is fixed here** and none is a scope decision this unit is
+making; they are named so the phase's later steps have a list rather than a memory.
+
+The shape of the problem in one sentence: `Ft8Slots` holds two `const double`s -
+`SlotSeconds = 15` (`:126`) and `TransmissionSeconds = 12.64` (`:135`) - and **eight
+files across the engine and the application compute from them with no mode in the
+question.**
+
+### 1. The slot clock, and the eight things that read it
+
+| File | What it does with the fifteen |
+|---|---|
+| `Audio/Ft8SlotWatch.cs` | decides when a slot has closed, and cuts `SlotSeconds * rate` samples |
+| `Audio/Ft8SlotCutter.cs` | cuts a slot's audio, and refuses one that cannot hold `TransmissionSeconds` |
+| `Audio/Ft8Turn.cs` | the turn ring - how long is left, and whose turn it is |
+| `Audio/DigitalCaptureSheet.cs` | writes the sidecar's boundary list and its "12.64 s transmission" line |
+| `Contacts/Ft8ContactState.cs` | how long a contact may stand before it goes stale |
+| `Contacts/Ft8ContactLedger.cs` | counts slots between two moments |
+| `Transmit/Ft8TransmitSequence.cs` | `TransmissionFits` - whether 12.64 s of tones still lands inside the slot |
+| `ViewModels/MainWindowViewModel.cs` | rides the decode tick, and prints the grid |
+
+FT4's figures are 7.5 s (`ft8/constants.h:15`) and, on upstream's constant,
+105 x 0.048 = 5.04 s - which is the number task 3 says needs a ruling before it is
+written anywhere.
+
+### 2. Two sentences on screen that would be wrong rather than absent
+
+Task 4 measured both of these live.
+
+- **`nothing on this frequency yet. FT8 runs in fifteen second slots, so give it a
+  slot or two before deciding the band is empty.`** Still shown, word for word, with
+  the dial on 7.047 and FT4 chosen.
+- **`DigitalWaterfallSummary` prints `"15 s slots"`** from a literal at
+  `MainWindowViewModel.cs:939`.
+
+These two are different in kind from everything else on this list: **a missing FT4
+decoder is an absence and the screen can say so, but these are claims** (§0.0,
+HM-DEC-092). They are also the cheapest items here.
+
+### 3. The transmit chain is FT8 end to end
+
+`Ft8Composer.Compose` calls `Ft8SymbolEncoder.Encode` and then
+`Ft8Waveform.SynthesizeSlot` or `Synthesize` (`Ft8Composer.cs:383-386`), and task 2
+named both of those as FT8-assuming. `Ft8Composer.cs:181-182` says in its own remarks
+that there is no Costas array in it, which is exactly why the whole thing follows the
+port. There is no FT4 path and there is no seam where one would go.
+
+`Ft8ReadBack.WouldReachAnybody` (`Ft8ReadBack.cs:63-69`) refuses a send whose callsign
+would travel as a hash, by decoding it back through `Ft8SlotDecoder`. That gate is
+unit 272's whole answer to the two live transmissions of 2026-09-07, and **it has no
+FT4 equivalent**, so an FT4 send path built without one would reopen a defect this
+project has already put on an antenna.
+
+### 4. The log has no room for the mode - already found, still true
+
+Unit 287's finding holds and this unit confirms it in the code:
+`AchievementsViewModel.cs:311-315` says so in its own comment, and matches on
+`mode.Matches(c.Mode, null)` because `AdifContact` has no `SUBMODE` field. FT4 is
+`MODE=MFSK, SUBMODE=FT4` in ADIF, so **`MODE=FT4` is invalid** and there is nowhere
+valid to write it. This is step 3 of the phase and is parked; it is listed because it
+is on the "exactly the way FT8 does" ledger.
+
+### 5. The achievements row cannot be earned, by construction
+
+`AchievementsViewModel.cs:374-378` already tells the operator this in as many words -
+that Hamlet can tune him to FT4 and cannot work it, and that the record has no room for
+the mode either. That copy is honest today and becomes wrong the day either half lands,
+so it is a gap with a second edge: **the screen has to stop saying it at the right
+moment.**
+
+### 6. The frequency table covers five bands of seven
+
+Counted from `data/bands/us-neighborhoods.json`:
+
+| Band | FT8 | FT4 |
+|---|---|---|
+| 80 m | 3.573 | 3.575 |
+| 40 m | 7.074 | 7.047 |
+| **30 m** | 10.136 | **none** |
+| 20 m | 14.074 | 14.080 |
+| **17 m** | 18.100 | **none** |
+| 15 m | 21.074 | 21.140 |
+| 10 m | 28.074 | 28.180 |
+
+`MainWindowViewModel.cs:1060-1063` already knows and says so on screen rather than
+inventing a number. Whether 30 m and 17 m genuinely have no FT4 convention or the rows
+are merely unsourced is **not** something this unit can settle - it needs a citation,
+which is §0's rule and not a preference.
+
+### 7. The signal-to-noise column would read the wrong number
+
+`Ft8DeepSignalToNoise` carries a per-bin ratio to the 2500 Hz reference through
+`10 log10(2500 / 6.25) = 26.0206 dB` (`Ft8DeepSignalToNoise.cs:114-131`). The 6.25 is
+**the reciprocal of FT8's symbol period** and its own remark at `:103` says so. On
+FT4's symbol period the bin is 1/0.048 = 20.833 Hz and the constant would be
+`10 log10(2500 / 20.833) = 20.79 dB` - **5.2 dB out** if the FT8 constant were reused.
+Unit 251 measured that estimate to a mean absolute error of 0.26 dB, so reusing the
+constant would put a number in the `snr` column that is wrong by twenty times the
+error it was accepted at, on all three surfaces it reaches: the panel cell, the
+per-slot telemetry line and the capture sidecar.
+
+**This one is worth flagging above the others** because it fails quietly and
+plausibly - a decoded FT4 message with an SNR five decibels optimistic looks exactly
+like a decoded FT4 message.
+
+### 8. Telemetry says `ft8_slot` and means it
+
+`AppEvents.cs:940` and `:1010` emit `ft8_slot`. HM-DEC-077 makes a reason token stable
+on purpose, so this is not a rename to be done casually: either FT4 slots carry a
+protocol field on the same event, or they get their own token, and either way every
+comparison across sessions has to survive it.
+
+### 9. The capture sidecar names one transmission length
+
+`DigitalCaptureSheet` writes the `12.64 s transmission` line and the slot boundary list
+from `Ft8Slots`. A sidecar is the thing that makes a wrong decode a regression test
+(§0.0.1), so a sidecar that says 12.64 next to FT4 audio is worse than one that says
+nothing.
+
+### 10. The decoder itself
+
+Named last because it is the one thing everybody already knows is missing, and because
+tasks 1 to 3 established that it is the *smallest* of the ten in terms of what has to be
+newly reasoned: five files in the port, three table entries, and upstream's own answer
+for every one of them.
