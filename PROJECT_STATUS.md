@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 292 - pressing FT4 tunes and decodes FT4
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T11:05:55-04:00
-NOTE: Bookkeeping done. outcome-append.bat refused for the fourth consecutive unit in exactly the form the instruction named, so the entry is hand-written in outcome-entry.py's format and the arguments are committed at tools/arbiter/unit292-append.bat. Step 4 reads partial in PHASE_OUTCOME. RULES_AT agrees across all three files for the fourth time and the launcher's reload still disagrees. The three untracked leftovers refused deletion by both routes and were left rather than committed.
+UPDATED: 2026-09-09T11:10:06-04:00
+NOTE: The named drop candidate was taken, and taken whole. Both ledger surfaces carry the submode - the log window's mode cell and a Submode row in the dialog with its SUBMODE tag - and the FT8 half is asserted as hard as the FT4 half: no cell reading not recorded, no row reading Hamlet did not hear this, and the dialog still saying it heard all eleven. 4 new tests, 36 of 36 inherited ledger tests green. Writing the report.
 
 ---
 

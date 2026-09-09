@@ -75,8 +75,8 @@ public sealed partial class LogContactViewModel : ObservableObject
 
         _observed = observed;
 
-        Fields = new ObservableCollection<LogField>(
-        [
+        var fields = new List<LogField>
+        {
             new("Station", observed.Call ?? "", "CALL"),
             new("Their grid", observed.GridSquare ?? "", "GRIDSQUARE"),
             new("Report you sent", observed.ReportSent ?? "", "RST_SENT"),
@@ -93,9 +93,33 @@ public sealed partial class LogContactViewModel : ObservableObject
                 "Hamlet did not record the dial for this row, so the frequency "
                 + "and the band are left out of the entry."),
             new("Mode", observed.Mode ?? "", "MODE"),
-            new("Your callsign", observed.StationCallsign ?? "", "STATION_CALLSIGN"),
-            new("Your grid", observed.MyGridSquare ?? "", "MY_GRIDSQUARE"),
-        ]);
+        };
+
+        // **THE SUBMODE ROW IS THERE WHERE THERE IS A SUBMODE, AND NOT OTHERWISE**
+        // (work instruction 292 task 6).
+        //
+        // **AN FT8 CONTACT'S SUBMODE IS NOT UNOBSERVED - IT DOES NOT EXIST.** FT8 is an
+        // ADIF mode in its own right and unit 291 proved the record it writes carries
+        // no `SUBMODE` tag at all. An always-present row would show `Hamlet did not hear
+        // this` beside `SUBMODE`, which says Hamlet failed at something it did
+        // perfectly, and `Summary` would count it: *Hamlet heard 11 of these 12*, about
+        // a contact where it heard everything there was. That is a claim nobody
+        // measured, in the dialog that decides what goes into the permanent record
+        // (§0.0).
+        //
+        // **SO ABSENT IS ABSENT ON SCREEN EXACTLY AS IT IS IN THE FILE.** No row, no
+        // empty box, no count. `TheLogDialogShowsTheSubmodeTests` asserts the FT8 case
+        // and not only the FT4 one, because the FT8 case is the one that could go
+        // quietly wrong.
+        if (!string.IsNullOrWhiteSpace(observed.Submode))
+        {
+            fields.Add(new("Submode", observed.Submode!.Trim(), "SUBMODE"));
+        }
+
+        fields.Add(new("Your callsign", observed.StationCallsign ?? "", "STATION_CALLSIGN"));
+        fields.Add(new("Your grid", observed.MyGridSquare ?? "", "MY_GRIDSQUARE"));
+
+        Fields = new ObservableCollection<LogField>(fields);
     }
 
     /// <summary>What Hamlet observed, in the order a person reads it.</summary>

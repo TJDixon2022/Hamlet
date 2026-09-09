@@ -463,8 +463,29 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.233 -> 1.12.234, UNIT 292 TASK 6, UNDER HM-DEC-150. A PATCH. THE NAMED DROP CANDIDATE,
+    TAKEN, AND TAKEN WHOLE.
+
+      MFSK is the ADIF mode FT4, JS8, MSK144 and half a dozen others share, so both ledger surfaces
+      showed three different modes under one word. The log window's mode cell now reads MFSK dot FT4
+      where the record carries a submode, and the Log dialog gains a Submode row carrying SUBMODE
+      beside the mode row's MODE.
+
+      **ABSENT IS ABSENT, AND THAT IS THE HALF THAT COULD HAVE GONE QUIETLY WRONG.** An FT8
+      contact's submode is not unrecorded - it does not exist, and unit 291 proved the record
+      carries no SUBMODE tag at all. So there is no cell reading `not recorded` on every FT8 row in
+      a table whose other absences are real, and no dialog row reading `Hamlet did not hear this`
+      about a field it heard everything of. An FT8 contact's cell is byte-identical and its dialog
+      still says `Hamlet heard all 11 of these`.
+
+      Both surfaces or neither: a window that shows it beside a dialog that does not teaches the
+      operator to trust one screen and not the other. 4 new, 36 of 36 inherited ledger tests green.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.233</Version>
+    <Version>1.12.234</Version>
   </PropertyGroup>
 
   <!--

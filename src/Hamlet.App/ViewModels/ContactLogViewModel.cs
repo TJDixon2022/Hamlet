@@ -38,7 +38,8 @@ public sealed class ContactLogRow
             ? t.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
             : Absent;
         Band = Or(c.Band);
-        Mode = Or(c.Mode);
+        Submode = (c.Submode ?? "").Trim();
+        Mode = WithSubmode(Or(c.Mode), Submode);
         ReportSent = Or(c.ReportSent);
         ReportReceived = Or(c.ReportReceived);
         TheirGridSquare = Or(c.GridSquare);
@@ -60,8 +61,32 @@ public sealed class ContactLogRow
     /// <summary>The band, or that it was not recorded.</summary>
     public string Band { get; }
 
-    /// <summary>The mode, or that it was not recorded.</summary>
+    /// <summary>The mode, with the submode beside it where the record carries one.</summary>
+    /// <remarks>
+    /// <para>**AN FT4 CONTACT READ AS `MFSK` UNTIL UNIT 292**, which is the ADIF mode
+    /// FT4, FT8, JS8 and half a dozen others all share. Unit 291 gave the record its
+    /// `SUBMODE` and named this window as the surface that still dropped it; a log whose
+    /// whole purpose is to say what he worked cannot show three different modes under
+    /// one word.</para>
+    /// <para>**ONE CELL AND NOT A SUBMODE COLUMN, AND THAT IS A CHOICE WITH A REASON.**
+    /// Every other absent cell in this table means *Hamlet did not record this*, which
+    /// is what <see cref="Absent"/> says. An FT8 contact's submode is not unrecorded -
+    /// **it does not exist**, because FT8 is an ADIF mode in its own right and unit 291
+    /// proved the record carries no `SUBMODE` tag at all. A column reading `not
+    /// recorded` on every FT8 row would assert a hole where there is none, in a table
+    /// whose other holes are real (§0.0).</para>
+    /// <para>**FT8'S CELL IS BYTE-IDENTICAL TO WHAT IT WAS**: no submode, no separator,
+    /// the mode alone. The composition only ever adds.</para>
+    /// </remarks>
     public string Mode { get; }
+
+    /// <summary>The submode as the record carries it, or "" where there is none.</summary>
+    /// <remarks>
+    /// **"" AND NOT <see cref="Absent"/>**, because absent here is a real answer rather
+    /// than a gap: most modes have no submode. This is the raw field, kept beside the
+    /// composed cell so a reader of this type can tell the two apart.
+    /// </remarks>
+    public string Submode { get; }
 
     /// <summary>The report he sent, or that it was not recorded.</summary>
     public string ReportSent { get; }
@@ -106,6 +131,18 @@ public sealed class ContactLogRow
 
     private static string Or(string? value)
         => string.IsNullOrWhiteSpace(value) ? Absent : value.Trim();
+
+    /// <summary>The mode cell, with the submode after it where there is one.</summary>
+    /// <param name="mode">The mode, already resolved through <see cref="Or"/>.</param>
+    /// <param name="submode">The submode, or "" where the record carries none.</param>
+    /// <returns>The cell.</returns>
+    /// <remarks>
+    /// **A MIDDLE DOT AND NOT A SLASH.** `MFSK/FT4` reads as one token and is what a
+    /// reader would take for a mode name; the dot is the separator this application
+    /// already uses between two facts on one line, as the waterfall summary does.
+    /// </remarks>
+    private static string WithSubmode(string mode, string submode)
+        => submode.Length == 0 ? mode : mode + " · " + submode;
 
     /// <summary>What the row says about a record that could not be read whole.</summary>
     /// <remarks>
