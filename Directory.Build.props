@@ -263,8 +263,21 @@
 
     No file under src/Ft8Sharp/ changed.
   -->
+  <!--
+    1.12.223 -> 1.12.224, UNIT 291 TASK 1, UNDER HM-DEC-150. A PATCH, AND IT ADDS NO BEHAVIOUR AT
+    ALL: it records the starting position before the log gains a submode.
+
+      THE WALK, AND THE ONE THING IT FOUND THAT A FIELD ALONE WOULD NOT HAVE.
+      TheLogCanSayFt4Tests asserts, against today's code, that an FT4 contact CANNOT be expressed -
+      AdifContact has twelve public properties and none of them is a submode, a contact driven
+      through Ft8ContactLogEntry.For with MFSK conditions writes <MODE:4>MFSK and the string SUBMODE
+      appears nowhere in the record, and ContactModes.Named("FT4").Matches("MFSK", null) is false.
+      Three tests, three passing, and every one of them is written to go red the moment task 2 lands.
+
+    No file under src/Ft8Sharp/ changed.
+  -->
   <PropertyGroup>
-    <Version>1.12.223</Version>
+    <Version>1.12.224</Version>
   </PropertyGroup>
 
   <!--
