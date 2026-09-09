@@ -9,6 +9,7 @@ using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transmit;
@@ -35,13 +36,19 @@ namespace Hamlet.App.Tests.ViewModels;
 /// transmitting another** - unit 268's own words for why it exists - **now with two
 /// composers in the tree instead of one**, which is exactly the condition under
 /// which that failure returns.</para>
-/// <para>**THE SEEDED ROW IS CHOSEN SO THE REPLY NEEDS NO MEASURED RATIO.** He
-/// rogered and reported, so what conventionally comes next is an acknowledgement -
-/// `RRR`, which carries no signal report. **Every FT4 row's ratio is null** because
-/// `Ft8DeepSignalToNoise.Estimate` is welded to FT8's symbol count and tone count
-/// and there is no FT4 equivalent in this tree, so the FT4 menu is short the
-/// `Report` and `RogerAndReport` shapes. **That is a named gap and not a failure of
-/// this test**, and no ratio is invented or substituted for one here.</para>
+/// <para>**THE `RRR` LEG'S SEEDED ROW, AND WHY ITS STATED REASON IS NO LONGER TRUE**
+/// (work instruction 295 task 3). Unit 293 wrote here that the seeded row was chosen
+/// so the reply needed no measured ratio, *because* every FT4 row's ratio was null -
+/// `Ft8DeepSignalToNoise.Estimate` being welded to FT8's symbol and tone counts with
+/// no FT4 equivalent in the tree, leaving the FT4 menu short the `Report` and
+/// `RogerAndReport` shapes. **Unit 294 falsified that.** `Ft4DeepSignalToNoise`
+/// exists, every FT4 row now carries a ratio, and the FT4 menu offers all five
+/// shapes. **The sentence is struck rather than edited, because a criterion resting
+/// on a test whose written justification is no longer true is resting on nothing.**
+/// The `RRR` leg is kept as it stands - it is a good proof of the acknowledgement
+/// shape and nothing about it broke - and
+/// <see cref="TheWholeExchangeOnTheReportShapeRunsFromTwoRightClicks"/> below is the
+/// proof at the width the report shapes now allow.</para>
 /// <para>**NOTHING HERE OPENS A SERIAL PORT** (`SHACK_FACTS.md` FACT-004). The
 /// device is a sound card and the port is <see cref="FakePort"/>. **Nothing
 /// measured here says anything about the IC-7300.**</para>
@@ -445,6 +452,521 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
     }
 
     // -------------------------------------------------------------------------
+    // Work instruction 295 task 3 - the exchange on the report shape.
+    // -------------------------------------------------------------------------
+
+    /// <summary>His grid, which is what makes a report the next thing to send.</summary>
+    private const string HisGrid = "FN31";
+
+    /// <summary>What the operator hears first: a call to him, carrying a grid.</summary>
+    private const string HeCallsWithHisGrid = Mine + " " + His + " " + HisGrid;
+
+    /// <summary>What he sends back after the operator's report.</summary>
+    private const string HeRogersAndReports = Mine + " " + His + " R-12";
+
+    /// <summary>What a sound card delivers, and what a received slot is drawn at.</summary>
+    private const int ReceivedRate = 12_000;
+
+    /// <summary>Where a synthesized transmission is put, in the passband.</summary>
+    private const float PlacedAtHz = 1240.0f;
+
+    /// <summary>The ratio commanded into the slot the report is measured from.</summary>
+    private const double Commanded = -8.0;
+
+    /// <summary>
+    /// **THE WHOLE FT4 EXCHANGE ON THE REPORT SHAPE, TWO RIGHT CLICKS, AT THE
+    /// BENCH - step 4's criterion 4 at the width unit 293 could not reach.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE NUMBER IS THE WHOLE POINT.** A signal report is the one thing
+    /// Hamlet composes that is a *measurement* rather than a fixed string. `RRR`,
+    /// `73` and a grid are constants: if they survive the wire they survive it every
+    /// time. A report carries a number that came off Hamlet's own receiver, is
+    /// formatted into thirteen characters, is packed into a 77-bit payload, and lands
+    /// **in another operator's log**. So the ratio the row showed, the number the
+    /// menu item carried and the number the decoder read back off the capture are
+    /// asserted as **one equality** rather than three prints that a reader has to
+    /// compare by eye.</para>
+    /// <para>**NO ROW IS SEEDED.** The row is made the way the band makes one -
+    /// synthesized FT4 audio through the tab's own `ShowDecodes`, in FT4 - and
+    /// whatever ratio that decode measures is what the `snr` cell shows and what the
+    /// menu is handed. Seeding the ratio would be this file deciding the number the
+    /// proof is about.</para>
+    /// <para>**TWO LEGS AND BOTH ARE CLICKS** (`CLAUDE.md` §0.2). The report goes out
+    /// because the operator right-clicked, and the acknowledgement goes out because
+    /// he right-clicked a second time. **Nothing here composes a reply because a
+    /// decode arrived**, which is the automatic sequencing this phase excludes by
+    /// name, and the boundary nobody clicked is asserted to transmit nothing.</para>
+    /// <para>**THE BREAKAGE IT CATCHES:** the operator reading one number off his
+    /// screen while the band receives another - the estimator, the `snr` cell, the
+    /// menu text, the packer and the decoder disagreeing anywhere along a path none
+    /// of them can see the whole of. Unit 293 could not catch it because the leg it
+    /// proved carried no number.</para>
+    /// <para>**A MACHINE WITH NO RENDER ENDPOINT IS A NORMAL MACHINE** - unit 256's
+    /// precedent. Where there is none this states it plainly and runs the fake, and
+    /// **a fake-sink run is never reported as a loopback run.**</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task TheWholeExchangeOnTheReportShapeRunsFromTwoRightClicks()
+    {
+        var endpoint = Preferred(out var why);
+
+        using var scene = Scene(endpoint, seedTheRow: false);
+        using var capture = endpoint is null ? null : new Capture(endpoint);
+
+        _output.WriteLine("chosen because   : "
+            + (endpoint is null ? "NO RENDER ENDPOINT - " + why : why));
+        _output.WriteLine("mode chosen      : " + scene.Panel.DigitalMode);
+        _output.WriteLine("grid the tab runs: " + scene.Panel.DigitalGrid.Describe());
+        _output.WriteLine("dial             : " + scene.Panel.FrequencyHz + " Hz");
+
+        // ---- 0. HE CALLS, WITH A GRID, AND THE ROW IS MEASURED -----------------
+        var received = Ft4SlotCarrying(HeCallsWithHisGrid, seed: 295, out var delivered);
+        var incoming = scene.Panel.ShowDecodes(
+            received, HeardEndedAt, new ClockOffset(0, HeardEndedAt.AddMinutes(-2)));
+
+        Pump(scene.Window);
+
+        var row = TheRowSaying(scene, HeCallsWithHisGrid);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- he calls, with a grid ----");
+        _output.WriteLine("synthesized      : \"" + HeCallsWithHisGrid + "\" at "
+            + PlacedAtHz.ToString("F0", CultureInfo.InvariantCulture) + " Hz");
+        _output.WriteLine("delivered        : "
+            + delivered.ToString("F2", CultureInfo.InvariantCulture) + " dB in 2500 Hz");
+        _output.WriteLine("decoded          : \""
+            + string.Join("\", \"", incoming.Decodes.Select(d => d.Message)) + "\"");
+        _output.WriteLine("THE snr CELL     : \"" + row.Snr + "\"");
+
+        // ---- 1. THE FIRST RIGHT CLICK: THE REPORT ------------------------------
+        capture?.Start();
+
+        if (capture is not null)
+        {
+            await Task.Delay(PreRoll);
+        }
+
+        var flyout = RightClick(scene, HeCallsWithHisGrid);
+        var options = Options(flyout);
+        var item = TheOneThatComesNext(flyout);
+        var clicked = item.CommandParameter as string ?? "";
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- the first right click ----");
+        _output.WriteLine("the menu offered : " + options.Count + " clickable messages");
+
+        foreach (var option in options)
+        {
+            _output.WriteLine("    " + (option.Header as string ?? ""));
+        }
+
+        _output.WriteLine("HE CLICKED       : " + (item.Header as string ?? ""));
+        _output.WriteLine("WHICH CARRIES    : \"" + clicked + "\"");
+
+        // **THE ONE THAT COMES NEXT IS THE REPORT**, because he sent a grid. If this
+        // is not the report shape the rest of the test is measuring something else.
+        Assert.Contains("report", item.Header as string ?? "", StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "roger and report", item.Header as string ?? "", StringComparison.Ordinal);
+
+        item.Command!.Execute(clicked);
+
+        var slot = scene.Panel.ArmedForSlotUtc;
+
+        Assert.True(slot is not null, scene.Panel.DigitalSendLine);
+
+        var result = await scene.Panel.AtSlotBoundaryAsync(slot!.Value);
+
+        if (capture is not null)
+        {
+            await Task.Delay(PostRoll);
+            capture.Stop();
+        }
+
+        Pump(scene.Window);
+
+        var run = result!.Run;
+        var sent = result.Send!;
+        var played = run?.Played ?? new PlayedAudio(0, TimeSpan.Zero);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("armed for slot   : "
+            + slot.Value.ToString("O", CultureInfo.InvariantCulture));
+        _output.WriteLine("COMPOSER GOT     : \"" + sent.Transmission.Text + "\"");
+        _output.WriteLine("grid on the send : " + sent.Grid.Describe()
+            + ", named " + sent.Grid.Name);
+        _output.WriteLine("composed at      : " + sent.Transmission.SampleRate + " Hz, "
+            + sent.Transmission.Samples.Length + " samples");
+        _output.WriteLine("outcome          : " + run?.Outcome);
+        _output.WriteLine("keyed            : " + run?.Keyed);
+        _output.WriteLine("came out of tx   : " + run?.CameOutOfTransmit);
+        _output.WriteLine("samples played   : " + played.SamplesPlayed);
+        _output.WriteLine("THE WIRE         : " + Wire(scene));
+
+        // ---- 2. THE SAME FOUR-WAY ASSERTION UNIT 293 MADE ON `RRR` -------------
+        Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
+        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run.Keyed);
+
+        // **IT WENT THROUGH THE SAME ABORT.** `UnkeyRoute.OrdinaryUnkey` is the
+        // no-await path §0.2 requires every keying route to have, and the two frames
+        // beside it are the whole of what the wire saw: key on, key off, nothing else.
+        Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
+        Assert.Equal(new[] { KeyOn, KeyOff }, Frames(scene));
+
+        Assert.Equal(SlotGrid.Ft4, sent.Grid);
+        Assert.Equal(clicked, sent.Transmission.Text);
+        Assert.Equal(sent.Transmission.Samples.Length, played.SamplesPlayed);
+
+        // ---- 3. WHAT CAME BACK OFF THE CAPTURE --------------------------------
+        var (back, half) = ReadBack(scene, capture, sent);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("DECODED BACK     : "
+            + (back.Length == 0 ? "nothing" : "\"" + string.Join("\", \"", back) + "\""));
+        _output.WriteLine("WHICH HALF       : " + half);
+
+        var arrived = back.FirstOrDefault(
+            t => string.Equals(t, clicked, StringComparison.Ordinal)) ?? "";
+
+        Assert.True(
+            arrived.Length > 0,
+            $"the operator clicked an item carrying \"{clicked}\". That went out at "
+            + $"{sent.Transmission.SampleRate} Hz and the FT4 decoder returned "
+            + (back.Length == 0 ? "nothing" : "\"" + string.Join("\", \"", back) + "\"")
+            + ". The message on the menu and the message on the air are not the same.");
+
+        // ---- 4. THE NUMBER SURVIVES, AS ONE EQUALITY --------------------------
+        var onTheRow = int.Parse(row.Snr, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture);
+        var inTheMenu = ReportIn(clicked);
+        var offTheAir = ReportIn(arrived);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- THE NUMBER ----");
+        _output.WriteLine("delivered to the receiver : "
+            + delivered.ToString("F2", CultureInfo.InvariantCulture) + " dB");
+        _output.WriteLine("the snr cell showed       : " + onTheRow);
+        _output.WriteLine("the menu item carried     : " + inTheMenu
+            + "   (in \"" + clicked + "\")");
+        _output.WriteLine("the decoder read back     : " + offTheAir
+            + "   (in \"" + arrived + "\")");
+
+        Assert.Equal(
+            (onTheRow, onTheRow),
+            (inTheMenu, offTheAir));
+
+        // ---- 5. AND THE LOG ON THAT LEG SAYS WHAT IT WAS MADE IN --------------
+        var contact = scene.Panel.ContactLogEntryFor(row);
+
+        Assert.True(contact is not null, "the report leg's row could not be logged");
+
+        var record = AdifLog.Record(contact!);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- the log write on that leg ----");
+        _output.WriteLine("MODE             : " + contact!.Mode);
+        _output.WriteLine("SUBMODE          : " + contact.Submode);
+        _output.WriteLine(record.Trim());
+
+        Assert.Equal("MFSK", contact.Mode);
+        Assert.Equal("FT4", contact.Submode);
+        Assert.Contains("<MODE:4>MFSK", record, StringComparison.Ordinal);
+        Assert.Contains("<SUBMODE:3>FT4", record, StringComparison.Ordinal);
+
+        // ---- 6. HE ANSWERS, AND THE SECOND LEG IS A SECOND CLICK --------------
+        // **NOTHING HERE COMPOSES A REPLY BECAUSE A DECODE ARRIVED.** His answer only
+        // puts a row on the table; the transmission below happens because the operator
+        // right-clicked it, and for no other reason.
+        var answer = Ft4SlotCarrying(HeRogersAndReports, seed: 2951, out _);
+
+        scene.Panel.ShowDecodes(
+            answer,
+            HeardEndedAt.AddMinutes(1),
+            new ClockOffset(0, HeardEndedAt.AddMinutes(-2)));
+
+        Pump(scene.Window);
+
+        var framesBeforeTheSecondClick = scene.Port.Written.Count;
+        var second = RightClick(scene, HeRogersAndReports);
+        var secondItem = TheOneThatComesNext(second);
+        var secondClicked = secondItem.CommandParameter as string ?? "";
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- he answers, and the operator clicks again ----");
+        _output.WriteLine("he sent          : \"" + HeRogersAndReports + "\"");
+        _output.WriteLine("HE CLICKED       : " + (secondItem.Header as string ?? ""));
+        _output.WriteLine("WHICH CARRIES    : \"" + secondClicked + "\"");
+        _output.WriteLine("frames before it : " + framesBeforeTheSecondClick);
+
+        secondItem.Command!.Execute(secondClicked);
+
+        var secondSlot = scene.Panel.ArmedForSlotUtc;
+
+        Assert.True(secondSlot is not null, scene.Panel.DigitalSendLine);
+
+        var secondResult = await scene.Panel.AtSlotBoundaryAsync(secondSlot!.Value);
+        var secondRun = secondResult!.Run;
+
+        Pump(scene.Window);
+
+        _output.WriteLine("outcome          : " + secondResult.Outcome);
+        _output.WriteLine("COMPOSER GOT     : \"" + secondResult.Send!.Transmission.Text + "\"");
+        _output.WriteLine("came out of tx   : " + secondRun?.CameOutOfTransmit);
+        _output.WriteLine("THE WIRE         : " + Wire(scene));
+
+        Assert.Equal(Ft8ArmOutcome.Ran, secondResult.Outcome);
+        Assert.True(secondRun!.Sent, secondRun.Reason);
+        Assert.True(secondRun.Keyed);
+        Assert.Equal(UnkeyRoute.OrdinaryUnkey, secondRun.CameOutOfTransmit);
+        Assert.Equal(secondClicked, secondResult.Send!.Transmission.Text);
+        Assert.Equal(SlotGrid.Ft4, secondResult.Send.Grid);
+
+        // Two legs, two clicks, four frames and no more.
+        Assert.Equal(new[] { KeyOn, KeyOff, KeyOn, KeyOff }, Frames(scene));
+
+        // ---- 7. AND THE BOUNDARY NOBODY CLICKED SENDS NOTHING -----------------
+        var framesAfter = scene.Port.Written.Count;
+        var nothing = await scene.Panel.AtSlotBoundaryAsync(
+            secondSlot.Value.AddSeconds(SlotGrid.Ft4.SlotSeconds));
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("---- the FT4 boundary nobody clicked ----");
+        _output.WriteLine("outcome          : " + nothing!.Outcome);
+        _output.WriteLine("frames on wire   : " + scene.Port.Written.Count
+            + " (unchanged from " + framesAfter + ")");
+
+        Assert.Equal(Ft8ArmOutcome.NothingArmed, nothing.Outcome);
+        Assert.Null(nothing.Run);
+        Assert.Equal(framesAfter, scene.Port.Written.Count);
+
+        _output.WriteLine(string.Empty);
+        _output.WriteLine("WHICH HALF IS EVIDENCE: " + half);
+    }
+
+    /// <summary>
+    /// **`Ft8ArmedSend.Arm` still has exactly one caller in `src/`.**
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS WHAT MAKES *one click, one transmission* A STRUCTURAL FACT RATHER
+    /// THAN A HABIT** (`CLAUDE.md` §0.2). The exchange above sends two legs, and the
+    /// only thing keeping it from becoming automatic sequencing is that nothing in
+    /// the application can arm a transmission except the command a click invokes. It
+    /// is counted rather than asserted from memory, because a second caller is
+    /// exactly the change that would look harmless in review.
+    /// </remarks>
+    [Fact]
+    public void ArmHasExactlyOneCallerInSrc()
+    {
+        var root = RepositoryRoot();
+        var callers = new List<string>();
+
+        foreach (var file in Directory.EnumerateFiles(
+                     Path.Combine(root, "src"), "*.cs", SearchOption.AllDirectories))
+        {
+            if (file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal)
+                || file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var lines = File.ReadAllLines(file);
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains(".Arm(", StringComparison.Ordinal))
+                {
+                    callers.Add(Path.GetRelativePath(root, file) + ":" + (i + 1)
+                        + "   " + lines[i].Trim());
+                }
+            }
+        }
+
+        _output.WriteLine("callers of .Arm( under src/: " + callers.Count);
+
+        foreach (var caller in callers)
+        {
+            _output.WriteLine("    " + caller);
+        }
+
+        Assert.Single(callers);
+        Assert.Contains("MainWindowViewModel.cs", callers[0], StringComparison.Ordinal);
+    }
+
+    /// <summary>The moment the received recording ended, on an FT4 boundary.</summary>
+    private static readonly DateTime HeardEndedAt =
+        new(2026, 9, 9, 14, 22, 45, DateTimeKind.Utc);
+
+    /// <summary>Fifteen seconds of audio with one FT4 transmission in it.</summary>
+    /// <param name="text">What the synthesized station sends.</param>
+    /// <param name="seed">The noise draw, so each slot is its own and both repeat.</param>
+    /// <param name="delivered">What ratio the drawn noise actually delivered.</param>
+    /// <remarks>
+    /// **THE SAME ARITHMETIC UNIT 294'S LADDER USES**, so the delivered ratio is a
+    /// fact about this buffer rather than about the sigma that was asked for.
+    /// </remarks>
+    private static MonoAudio Ft4SlotCarrying(string text, int seed, out double delivered)
+    {
+        var parts = text.Split(' ');
+        var message = new byte[Ft8Sharp.Message.Ft8Payload.MessageBytes];
+
+        Assert.Equal(
+            Ft8Sharp.Message.Ft8PackResult.Ok,
+            Ft8Sharp.Message.Ft8StandardMessage.TryPack(parts[0], parts[1], parts[2], message));
+
+        var symbols = Ft8Sharp.Encode.Ft4SymbolEncoder.Encode(message);
+        var signal = Ft8Sharp.Encode.Ft4Waveform.Synthesize(symbols, ReceivedRate, PlacedAtHz);
+
+        var samples = new float[ReceivedRate * 15];
+        var lead = (ReceivedRate * 15 / 2)
+            + Ft8Sharp.Encode.Ft4Waveform.PaddingSampleCount(ReceivedRate);
+
+        signal.CopyTo(samples.AsSpan(lead));
+
+        var signalPower = MeanSquare(signal);
+        var sigma = NoiseAmplitudeFor(signalPower, Commanded, ReceivedRate);
+        var random = new Random(seed);
+        var noisePower = 0.0;
+
+        for (var i = 0; i < samples.Length; i++)
+        {
+            var draw = Gaussian(random) * sigma;
+            noisePower += draw * draw;
+            samples[i] = (float)(samples[i] + draw);
+        }
+
+        noisePower /= samples.Length;
+        delivered = DecibelsFor(signalPower, noisePower, ReceivedRate);
+
+        return new MonoAudio(ReceivedRate, samples);
+    }
+
+    private static double MeanSquare(ReadOnlySpan<float> samples)
+    {
+        var sum = 0.0;
+
+        foreach (var sample in samples)
+        {
+            sum += (double)sample * sample;
+        }
+
+        return sum / samples.Length;
+    }
+
+    private static double NoiseAmplitudeFor(double signalPower, double decibels, int sampleRate)
+        => Math.Sqrt(
+            signalPower / Math.Pow(10.0, decibels / 10.0) * (sampleRate / 2.0) / 2500.0);
+
+    private static double DecibelsFor(double signalPower, double totalNoisePower, int sampleRate)
+        => 10.0 * Math.Log10(
+            signalPower / (totalNoisePower * 2500.0 / (sampleRate / 2.0)));
+
+    /// <summary>One standard normal, Box-Muller in its polar form.</summary>
+    private static double Gaussian(Random random)
+    {
+        double u, v, s;
+
+        do
+        {
+            u = (random.NextDouble() * 2) - 1;
+            v = (random.NextDouble() * 2) - 1;
+            s = (u * u) + (v * v);
+        }
+        while (s >= 1.0 || s == 0.0);
+
+        return u * Math.Sqrt(-2.0 * Math.Log(s) / s);
+    }
+
+    /// <summary>The signal report carried in a thirteen-character message.</summary>
+    /// <remarks>
+    /// **THE PAYLOAD AND NOT A SUBSTRING SEARCH.** A callsign can contain digits and
+    /// a hyphen is legal in neither, but reading the third field is what the message
+    /// grammar says and a search over the whole string is not.
+    /// </remarks>
+    private static int ReportIn(string message)
+    {
+        var parts = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        Assert.True(parts.Length == 3, "\"" + message + "\" is not a three-part message");
+
+        var payload = parts[2].StartsWith('R') ? parts[2][1..] : parts[2];
+
+        return int.Parse(payload, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>The row on the table whose message is this one.</summary>
+    private static DigitalDecodeRow TheRowSaying(Built scene, string message)
+    {
+        var row = scene.Panel.DigitalDecodes.FirstOrDefault(
+            r => r.Message == message && !r.IsSent);
+
+        Assert.True(
+            row is not null,
+            "no row saying \"" + message + "\" reached the table. Rows: "
+            + string.Join(" | ", scene.Panel.DigitalDecodes.Select(r => r.Message)));
+
+        return row!;
+    }
+
+    /// <summary>What the decoder makes of what went out, and which half that is.</summary>
+    private static (string[] Back, string Half) ReadBack(
+        Built scene, Capture? capture, OperatorSend sent)
+    {
+        var endedAt = new DateTime(2026, 9, 9, 12, 0, 0, DateTimeKind.Utc);
+        var offset = new ClockOffset(0, endedAt.AddSeconds(-1));
+
+        if (capture is not null)
+        {
+            var captured = capture.Snapshot();
+
+            Assert.True(
+                captured is not null && captured.Samples.Length > 0,
+                "the loopback capture delivered nothing while the endpoint was rendering - "
+                + capture.SamplesSeen + " samples reached the tap");
+
+            var slotAudio = OneFt4SlotAround(captured!, out _);
+            var heard = scene.Panel.ShowDecodes(slotAudio, endedAt, offset);
+
+            Assert.All(heard.Slots, s => Assert.Equal("Ft8Sharp", s.Decoder.Name));
+
+            return (
+                heard.Decodes.Select(d => d.Message).ToArray(),
+                "A REAL WASAPI RENDER ENDPOINT AND A REAL LOOPBACK CAPTURE. The sound was "
+                + "made on " + scene.Sink.DeviceName + " and read back off it.");
+        }
+
+        var rate = sent.Transmission.SampleRate;
+        var whole = new float[(int)Math.Round(SlotGrid.Ft4.SlotSeconds * rate)];
+        var offsetSamples = (int)Math.Round(MainWindowViewModel.StartSecondsIntoSlot * rate);
+
+        Array.Copy(
+            scene.FakeSink!.LastSamples, 0, whole, offsetSamples,
+            Math.Min(scene.FakeSink.LastSamples.Length, whole.Length - offsetSamples));
+
+        var fake = scene.Panel.ShowDecodes(new MonoAudio(rate, whole), endedAt, offset);
+
+        return (
+            fake.Decodes.Select(d => d.Message).ToArray(),
+            "THE FAKE SINK. NO SOUND WAS MADE, NO CARD WAS OPENED, AND THIS IS NOT A "
+            + "LOOPBACK RUN. Criterion 4 is partial on this machine, not met.");
+    }
+
+    /// <summary>The repository root, found by walking up to the solution.</summary>
+    private static string RepositoryRoot()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "Hamlet.sln")))
+        {
+            dir = dir.Parent;
+        }
+
+        Assert.True(dir is not null, "no Hamlet.sln above " + AppContext.BaseDirectory);
+
+        return dir!.FullName;
+    }
+
+    // -------------------------------------------------------------------------
     // The scene.
     // -------------------------------------------------------------------------
 
@@ -502,7 +1024,14 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
     /// The real window, the fake wire, one FT4 row, and either a real card or a
     /// fake one.
     /// </summary>
-    private Built Scene(RenderEndpoint? endpoint)
+    /// <param name="endpoint">The card to make sound on, or null for the fake sink.</param>
+    /// <param name="seedTheRow">
+    /// **False where the row is to be made the way the band makes one** - work
+    /// instruction 295's report leg puts synthesized FT4 audio through the tab's own
+    /// <c>ShowDecodes</c> and takes whatever ratio that decode measures, because a
+    /// seeded ratio would be this file deciding the number the whole proof is about.
+    /// </param>
+    private Built Scene(RenderEndpoint? endpoint, bool seedTheRow = true)
     {
         var settings = new AppSettings();
 
@@ -535,10 +1064,15 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
             b => b.Band.LowHz <= Ft4On20m && b.Band.HighHz >= Ft4On20m);
         panel.FrequencyHz = Ft4On20m;
 
-        // **ONE ROW, WITH NO MEASURED RATIO**, which is every FT4 row in this tree.
-        panel.AddDecodeRowForTests(
-            RowSlot.ToString("HHmmss", CultureInfo.InvariantCulture),
-            DigitalDecodeRow.NoMeasurement, "0.2", "1240", HeardFromHim, RowSlot);
+        // **ONE ROW WITH NO MEASURED RATIO**, which is the `RRR` leg's row. It is a
+        // row whose ratio could not be taken - not every FT4 row, which is what unit
+        // 293 believed and unit 294 falsified.
+        if (seedTheRow)
+        {
+            panel.AddDecodeRowForTests(
+                RowSlot.ToString("HHmmss", CultureInfo.InvariantCulture),
+                DigitalDecodeRow.NoMeasurement, "0.2", "1240", HeardFromHim, RowSlot);
+        }
 
         var port = new FakePort();
         WasapiTransmitSink? real = null;
@@ -573,8 +1107,26 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
     // The gesture, and the item under the mouse.
     // -------------------------------------------------------------------------
 
+    /// <summary>Raises a real context request on the row carrying one message.</summary>
+    /// <remarks>
+    /// **THE EXCHANGE HAS TWO ROWS FROM HIM AND THE CLICK MUST LAND ON THE RIGHT
+    /// ONE** (work instruction 295 task 3). The sender-and-addressee search below
+    /// matches both, and taking whichever the visual tree realized first would make
+    /// which leg was proved a property of layout order.
+    /// </remarks>
+    private static MenuFlyout RightClick(Built scene, string message)
+        => RightClick(scene, r => r.Message == message && !r.IsSent, "saying \"" + message + "\"");
+
     /// <summary>Raises a real context request on the row that names him.</summary>
     private static MenuFlyout RightClick(Built scene)
+        => RightClick(
+            scene,
+            r => r.Sender == His && r.Addressee == Mine,
+            "from " + His + " addressed to " + Mine);
+
+    /// <summary>Raises a real context request on the first row a predicate takes.</summary>
+    private static MenuFlyout RightClick(
+        Built scene, Func<DigitalDecodeRow, bool> wanted, string described)
     {
         Pump(scene.Window);
 
@@ -591,12 +1143,11 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
         // where a row addressed to the operator is drawn. `Panel` covers both roots.
         var grid = lists
             .SelectMany(l => l.GetVisualDescendants().OfType<Panel>())
-            .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row
-                && row.Sender == His && row.Addressee == Mine);
+            .FirstOrDefault(g => g.DataContext is DigitalDecodeRow row && wanted(row));
 
         Assert.True(
             grid is not null,
-            "no realized row from " + His + " addressed to " + Mine
+            "no realized row " + described
             + ". Left rows: " + scene.Panel.DigitalVisibleDecodes.Count
             + "; mine rows: " + scene.Panel.DigitalMineDecodes.Count
             + "; realized row roots with a row DataContext: "
