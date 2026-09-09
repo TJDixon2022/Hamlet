@@ -137,3 +137,107 @@ and that the number the port would inherit is upstream's 0.048 s. It is raised i
 synthesized or cut, because a slot cutter built to 4.48 s and a decoder built to 5.04 s
 would disagree by more than half a second and every symptom of that lands on the
 decoder.
+
+---
+
+## Task 2 - what `Ft8Sharp` already shares
+
+`src/Ft8Sharp` is **33 C# files, 7,926 lines** excluding `obj/` and `bin/`. Of those,
+**five files and 1,766 lines carry an assumption FT4 breaks**. The other **28 files and
+6,160 lines are protocol-neutral today** and would be used by FT4 unchanged - not
+adaptable, unchanged, because nothing in them mentions a tone count, a symbol count, a
+slot length or a Costas array at all.
+
+That is measured rather than estimated: `grep -rn` for `Costas`, `GrayMap`, `= 79`,
+`= 58`, `ToneCount`, `SymbolCount`, `0.160`, `15.0`, `SymbolPeriod` and `SlotSeconds`
+over `src/Ft8Sharp/**/*.cs` returns hits in exactly five files.
+
+### Used unchanged - the whole message layer, the code, and the checksum
+
+| What | Where | Note |
+|---|---|---|
+| 77-bit payload container | `Message/Ft8Payload.cs` (216) | FT4 and FT8 carry the identical 77 bits; `ft8/message.c` has no `ft4` hit at all |
+| Standard messages | `Message/Ft8StandardMessage.cs` (294) | |
+| Non-standard messages | `Message/Ft8NonstandardMessage.cs` (460) | the `58` in it is the 58-bit callsign field, not FT8's data-symbol count |
+| Callsign field, hash, cache | `Message/Ft8CallsignField.cs` (672), `Ft8CallsignHash.cs` (206), `Ft8CallsignCache.cs` (382) | |
+| Grid field | `Message/Ft8GridField.cs` (273) | |
+| Free text and telemetry | `Message/Ft8FreeText.cs` (274) | |
+| Message type dispatch and decode | `Message/Ft8MessageTypes.cs` (167), `Ft8MessageDecoder.cs` (193) | |
+| Character tables | `Message/Ft8Text.cs` (356) | |
+| **CRC-14** | `Message/Crc14.cs` (131) | upstream's own header calls it the FT8/FT4 CRC polynomial, `ft8/crc.h:12` |
+| **LDPC(174,91) encode** | `Ldpc/LdpcEncoder.cs` (175) | `ft4_encode` calls the same `encode174`, `ft8/encode.c:144` |
+| **LDPC belief propagation** | `Ldpc/LdpcDecoder.cs` (355), `LdpcDecodeResult.cs` (62) | `ftx_decode_candidate` runs one `bp_decode` for both protocols, `ft8/decode.c:342` |
+| Codeword gate | `Ldpc/Ft8CodewordDecoder.cs` (206) | see the caveat below |
+| FFT | `Dsp/Ft8Fft.cs` (336), `Ft8RealFft.cs` (182) | |
+| Waterfall store | `Dsp/Ft8Waterfall.cs` (120) | shaped entirely by the geometry handed to it |
+| Spectrogram build | `Dsp/Ft8Monitor.cs` (234) | every extent comes from `Geometry`, `Ft8Monitor.cs:48-70` |
+| Candidate record | `Dsp/Ft8Candidate.cs` (108) | |
+| Slot orchestration | `Dsp/Ft8SlotDecoder.cs` (292) | see the caveat below |
+| LDPC generator, `Nm`, `Mn`, `NumRows` | `Tables/Ft8Tables.g.cs:76-443` | all `FTX_`-prefixed upstream, which is upstream's own mark for what the two modes share |
+
+**One caveat on the last two.** `Ft8CodewordDecoder.Decode` and `Ft8SlotDecoder` are
+protocol-neutral in their arithmetic and not yet in their interface:
+`Ft8CodewordDecoder` takes 174 ratios and knows nothing about tones, but it does not
+apply FT4's payload XOR, which upstream does inside `ftx_decode_candidate`
+(`decode.c:369-380`) - after the CRC check and before the payload is handed on.
+Whoever adds FT4 must put that XOR somewhere, and `Ft8CodewordDecoder` is where
+upstream puts it.
+
+### Could not be used - five files, each with the assumption named
+
+| File | Lines | The assumption |
+|---|---|---|
+| `Encode/Ft8SymbolEncoder.cs` | 289 | `SymbolCount = 79` (`:58`), `DataSymbolCount = 58` (`:61`), `SyncBlockLength = 7` (`:64`), `SyncBlockCount = 3` (`:67`), `SyncBlockOffset = 36` (`:79`), `BitsPerSymbol = 3` (`:82`), `ToneCount = 1 << BitsPerSymbol` (`:88`). Every one of the seven differs for FT4, and there is no ramp symbol and no payload XOR anywhere in it. |
+| `Encode/Ft8Waveform.cs` | 451 | `SymbolPeriodSeconds = 0.160f` (`:66`), `SlotSeconds = 15.0f` (`:69`), `ToneSpacingHz = 1/0.160` (`:72`), `SymbolCount` taken from the encoder (`:53`). Its GFSK shaping is written for FT8's BT of 2.0, where upstream uses 1.0 for FT4 (`demo/gen_ft8.c:17`). |
+| `Dsp/Ft8WaterfallGeometry.cs` | 284 | `SymbolPeriodSeconds = 0.160f` (`:49`), `SlotSeconds = 15.0f` (`:52`). Block size, bin extents, `MaxBlocks`, tone spacing and both the frequency and the time mapping are computed from those two (`:137`, `:169-171`, `:234`, `:248`, `:264`, `:274`). **This file also carries a deliberate float-truncation match to upstream** (`:13-21`) which is `0.160f` specifically, so an FT4 geometry is not this class with a different number handed in - that truncation has to be re-derived at 0.048f. |
+| `Dsp/Ft8SyncSearch.cs` | 376 | `ToneCount = 8` (`:62`), the seven-symbol sync group (`:52`), and the whole score written against `Ft8Tables.Ft8CostasPattern` (`:306`) as one pattern repeated three times. FT4 has **four different** patterns, one per group (`ft8/constants.c:5-10`). That is a structural difference and not a constant. |
+| `Dsp/Ft8SoftSymbols.cs` | 366 | `Ft8SymbolEncoder.ToneCount` and `SymbolCount` throughout (`:134`, `:158`, `:162`, `:184`, `:215`, `:237`), three bits per symbol, and the 7-then-14 sync skip. FT4's skip is 5-then-9-then-13 (`ft8/decode.c:261`). |
+
+### The three FT4 tables, and the one decision that stops them existing
+
+`src/Ft8Sharp/Tables/Ft8Tables.g.cs` is machine-generated from
+`C:\Source\ft8_lib\ft8\constants.c` by `Ft8Sharp.Tests.TableGen.Ft8TableConverter`, at
+the same pin. **The converter already reads the file the FT4 tables are in and
+deliberately steps over them**, and says so in the generated header and in its own
+remarks:
+
+> The three FT4-only tables in the same source -- `kFT4_Costas_pattern`,
+> `kFT4_Gray_map` and `kFT4_XOR_sequence` -- are deliberately not converted. FT4 is
+> parked, and an unused table in a published library is a liability.
+
+`Ft8Tables.g.cs:21-24`, written by `Ft8TableConverter.cs:226-227`, with the decision
+recorded at `Ft8TableConverter.cs:42-44`.
+
+So the tables are not a transcription job. `Ft8TableConverter.Manifest`
+(`Ft8TableConverter.cs:67-99`) holds six `TableSpec` entries; FT4 costs **three more
+entries** and a regeneration, and the parser already handles a two-dimensional
+initialiser because `kFTX_LDPC_generator` is `[83][12]`. Nothing is retyped by hand and
+`Ft8TableGenerationTests.CheckedInTablesAreWhatTheConverterProduces` keeps proving it.
+
+### The port is closed, and that is measured rather than recalled
+
+`Ft8CodewordResult`'s only constructor is `private` (`Ldpc/Ft8CodewordDecoder.cs:176`)
+and its three factories are `internal` (`:198`, `:201`, `:204`). No `InternalsVisibleTo`
+names `Ft8Sharp.Deep` - `grep -rn InternalsVisibleTo src/` finds them only on
+`Hamlet.App` and `Hamlet.RadioEngine`, each pointing at its own test project. Unit 245's
+finding holds exactly as stated.
+
+`Ft8Sharp.Deep` (0.8.0, GPL-3.0) works around that by **reproducing the port's
+per-candidate loop through public members** rather than by opening anything -
+`Ft8DeepSlotDecoder.cs:10-42` states this and names it route A of
+`docs/unit245-deep-seam.md` section 4. It has exactly one `ProjectReference`, to
+`..\Ft8Sharp\Ft8Sharp.csproj` (`Ft8Sharp.Deep.csproj:30`).
+
+### The 51 fidelity tests, identified
+
+They are `Ft8SymbolBitIdentityTests.EverySymbolOfEveryMessageIsIdenticalToUpstreams`
+(`tests/Ft8Sharp.Tests/Encode/Ft8SymbolBitIdentityTests.cs:41-42`), running over
+`EncodeCorpus.Build()`. The corpus holds 56 entries of which **51 have a text form**,
+and it is those 51 that go to `Ft8Oracle.Generate` and come back as tones compared
+symbol for symbol; `docs/unit254-transmit-survey.md:309-330` counts them from source
+and says in as many words that this is the 51 the phrase refers to.
+
+`Ft8Oracle.Generate` invokes `build\gen_ft8.exe` with `(messageText, wavPath)` and no
+protocol flag (`Ft8Oracle.cs:99-107`), so it generates FT8 today. Upstream takes `-ft4`
+as the **fourth positional argument** (`demo/gen_ft8.c:130`), which means the oracle
+wrapper needs one optional argument and not a second wrapper.
