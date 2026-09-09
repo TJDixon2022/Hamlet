@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 7 of 8
+TASK: 8 of 8
 WORK_INSTRUCTION: 289 - FT4 decodes a signal Hamlet made
 BALL: claude
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T10:06:00-04:00
-NOTE: Step 1's exit is taken. 106 messages sent, 106 read back as themselves, 0 wrong and 0 missed, across eight frequencies - compound callsigns, grids, reports and RR73 all included. Next is the bookkeeping, then the ladder if the clock allows.
+UPDATED: 2026-09-09T10:18:00-04:00
+NOTE: Bookkeeping done. The phase record carries unit 289 at step 1 done, written by hand because the shell refused outcome-append.bat in a non-interactive session, with the arguments committed beside it. PHASE_STATUS.md's STEP lines were left alone on the prompt's own instruction and the conflict is going into section 4. Last is the ladder.
 
 ---
 

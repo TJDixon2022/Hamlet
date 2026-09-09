@@ -1,7 +1,7 @@
 PHASE: FT4 works exactly the way FT8 does
 PHASE_SET: 2026-09-08
 STEP: 0 | done | where FT4 lives, decided by reading
-STEP: 1 | not started | FT4 decodes a signal Hamlet made
+STEP: 1 | done | FT4 decodes a signal Hamlet made
 STEP: 2 | not started | the slot machinery is FT4's
 STEP: 3 | not started | the log can say FT4
 STEP: 4 | not started | the FT4 button works
@@ -47,3 +47,19 @@ ACCOMPLISHED: Where the FT4 decoder goes is answered from the tree with file and
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: All four of step 0's must-pass exits are met: what upstream carries with file and line, what the port already shares, the decision with its reason, and what the 51 fidelity tests would have to become.
+
+## UNIT 289 - STEP 1
+
+STEP: 1
+APPROACH: Ported upstream FT4 into new files beside the FT8 ones rather than parameterising them, nailed the encoder to gen_ft8 -ft4 symbol for symbol and the waveform to its own WAV sample for sample BEFORE writing the decoder, then round tripped 106 messages through Hamlet's own chain.
+HIT: Upstream's own candidate sweep of -10 to 19 blocks cannot reach an FT4 signal centred in its own slot. At a 0.048 s block that sweep ends at 0.912 s and the generator starts the signal at 1.23 s. Measured in task 1, and it is why upstream's decoder reads zero messages out of upstream's generator - unit 288 saw the symptom and this unit has the arithmetic.
+MOVE: continue
+WHY: Step 1 had all four exit criteria untried and every later step depends on an FT4 decoder existing. Three must-pass criteria were reachable in one unit because 28 of 33 port files were already protocol-neutral and upstream carried working C for every one of the rest.
+DECIDED: The FT4 candidate sweep is widened to blocks -10 to 51 where the demo application uses -10 to 19. That bound is not in the ft8 library at all - it is a file-scope judgement in demo/decode_ft8.c about how much work to do, the same class as kMin_score and kMax_candidates, and it was already a constructor parameter in this port. 51 is 156 blocks in a slot less 105 in a transmission, so it covers every placement a well-formed FT4 signal can have including upstream's own centred 25. Nothing about the modulation, the tables, the codeword or the waveform is changed. The 4.48 against 5.04 timing question is NOT settled here - it stays with Tim, and the constant now lives in exactly one file, src/Ft8Sharp/Ft4Timing.cs, so a ruling costs one edit.
+LICENCE: PHASE_PLAN.md's named-alternatives table - the tree disagrees with this plan, the tree wins, report the mismatch and continue - together with the arbiter's own moved second exit criterion for step 1.
+COST: one session, seven of eight tasks, no test suite run, every test filtered by exact name and foregrounded
+ACCOMPLISHED: Hamlet can make an FT4 transmission and read it back as the message it started as, 106 of 106 with zero wrong decodes, and its tones and its samples are proved identical to upstream's own generator rather than only to itself.
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: All three must-pass criteria are met and evidenced: 106 of 106 messages round tripping to themselves including compound callsigns, grids, reports and RR73; the timing measured from the audio - 0.048 s a symbol, 105 symbols, 5.04 s of occupancy, 4 tones 20.8333 Hz apart, a 7.5 s slot - with the 4.48 against 5.04 disagreement named with both numbers; and zero wrong decodes counted separately from zero missed. The nice-to-pass sensitivity ladder is the named drop candidate and is unmet by choice.
+APPENDED BY HAND: tools/arbiter/outcome-append.bat could not be run in this session - the shell refused the invocation and this is a non-interactive session, so there was no way to answer for it. The entry above was written with the file-editing tools in the format outcome-entry.py produces, and the header's STEP: 1 line was updated in place by the same means. The arguments the script would have been given are committed at tools/arbiter/unit289-append.bat, so the entry can be reproduced rather than reconstructed. Work instruction 289 task 7 anticipated this and required it to be said.
