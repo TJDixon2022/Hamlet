@@ -1,373 +1,339 @@
-READ IN THIS ORDER.
+# Work instruction 297 — the conversation becomes cards
 
-A. THE PHASE GOAL IS **FT4 works exactly the way FT8 does**. Step 0 `done`; **step 1 `partial` ->
-`done`**, and it is the step tonight aimed at - the first unit in five not to aim at step 4 - with
-all four criteria now met **at a placement Hamlet did not choose**, which is what they had never
-been; step 2 `partial`, and **its criterion 4 lost its last live on-screen item on task 2a**, where
-`Ft8Reader.NoWholeSlot` said *fifteen-second slot* on the operator's own screen while FT4 cut 7.5
-second ones, with nothing else on his decode path still saying fifteen; step 3 `done`; step 4
-`partial`, unchanged and untouched. **Steps 5 and 6 are Tim's, at the shack, and tonight makes his
-night more likely to work**: a station drawn at random inside one tone spacing and one symbol
-period, at -13 dB, now decodes **105 times in 106 where it decoded 95**.
+**READ IN THIS ORDER.** The panel he could not follow is now cards, so section 3 is
+what he will see.
 
-B. STEP 1'S FOUR EXIT CRITERIA, EACH WITH THE PLACEMENT IT WAS MEASURED AT.
+A. **The phase goal — FT4 works exactly the way FT8 does.** This unit advanced no
+   step of it. It rebuilt the For you panel, which is what step 4's second criterion
+   is written about, and that criterion now describes a different panel.
 
-1. **The round trip over at least a hundred messages - MET.** Unit 289 measured it **on grid**;
-   task 5 measured it **off grid** at drawn placements, seed 296: **decoded 106, missed 0, wrong 0**
-   at the shipping grid, and 105/1/0 at -13 dB against upstream's grid at 95/11/0.
-2. **The timing is FT4's, measured - MET, and it is unit 289's**, judged as measured from the audio
-   with the 4.48-against-5.04 disagreement named with both numbers. **Not re-measured tonight** and
-   not restated as mine.
-3. **Zero wrong decodes - MET off grid: 0 wrong**, stated apart from the missed count everywhere -
-   across the sweep's 10800 slots, both round trips at both grids and the ladder's 3200.
-4. **The sensitivity ladder - *nice-to-pass*, MET, and it was the named drop candidate and it was
-   NOT dropped**: all eight rungs placement-averaged, 400 trials a rung, 0 wrong.
+B. **Step 4 and its exit criteria** — pressing FT4 tunes and decodes; the panel, the
+   conversation, the ring, the filters, the tooltips, the ledger and the right-click
+   menu all work unchanged; one click, one transmission; a whole exchange from one
+   right click at the bench. **None was measured tonight**, so step 4 stays `partial`
+   exactly where unit 296 left it.
 
-C. WHAT THIS REPORT ADDS, LEADING WITH THE NUMBER. **At -13 dB on the same lattice: the worst cell
-19 of 36 -> 34 of 36, and placement-averaged 808 of 900 (89.8%) -> 894 of 900 (99.3%), at 66.3 ->
-151.3 ms per slot decode.** The worst placement cost **2.4 dB** at HEAD and under half a decibel
-now; the tree guessed two to three and was right. **Section 4 raises 4 items. One asks for a
-ruling - a shipped constant in `Ft4DeepSignalToNoise` is stale by one sub-block at the new grid -
-and none of the four is in the way of a criterion in B.**
+C. **The report last, and section 4 raises 3 items.** None blocks the next unit from
+   starting. Two are wordings Tim has not ruled on and one is a defect in a test seam
+   that this unit worked around rather than widened.
 
-UNIT:       296 - complete at task 8 of 8 - 2026-09-09 15:22
+```
+UNIT:       297 — complete at task 6 of 6, none dropped — 2026-09-09 16:35
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  FT4 decodes a signal that landed where a real station lands rather than
-            where Hamlet placed it, measured on a lattice no analysis grid can
-            flatter, and FT8's own grid does not move by any route.
-ADVANCED:   yes - step 1, exit criteria 1 and 3 re-taken off grid and criterion 4
-            re-drawn placement-averaged; and step 2's criterion 4 lost its last
-            live on-screen fifteen-second sentence
-NUMBER:     the placement-averaged FT4 decode rate at -13 dB, 808 of 900 (89.8%)
-            -> 894 of 900 (99.3%), at 66.3 -> 151.3 ms per slot decode
-DRIFT:      0 consecutive units without advance  (was 0)
+UNIT GOAL:  Each station he is in contact with becomes a card saying what happened,
+            how long ago and what to do next, readable with no radio knowledge, with
+            the technical detail one deliberate hover away.
+ADVANCED:   no — no phase step moved. Step 4 stays partial: nothing was tuned,
+            nothing transmitted, no exchange run at the bench. This unit re-cut the
+            panel that step 4's second criterion is about.
+NUMBER:     how many of the four states produce a sentence every clause of which
+            traces to a ledger fact
+            0 of 4 -> 4 of 4
+            The panel had no sentences at all before tonight; it had messages.
+DRIFT:      1 consecutive unit without advance  (was 0, carried from unit 296)
+```
+
+---
 
 ## 1. What Claude did
 
-**Exit state: complete, at task 8 of 8. Nothing was dropped, including the named drop candidate.**
-Machine `C:\Source\HamLet`, project claimed and confirmed Hamlet - all four checks held
-(`SHACK_FACTS.md` present, `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present,
-`CoreHMI.sln` absent, `MURC.sln` absent) - branch `main`, from `a5b9628` to `65a4c82`, eight
-commits pushed. Root version `1.12.251` read from the tree, now `1.12.258`; `Ft8Sharp`'s own
-`0.11.0` to `0.12.0`, a minor because task 4 added a public constant.
+**Complete. Six tasks of six, none dropped, including the named drop candidate.**
+Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, eight commits,
+all pushed. Root version 1.12.259 to **1.12.260**, bumped once. `Ft8Sharp` and
+`Ft8Sharp.Deep` do not move; **no file under `src/Ft8Sharp/` was touched.**
 
-### Task 1 - the trace, and it is the thing that cannot be recovered
+The gate held: `SHACK_FACTS.md` present, `CwProbabilisticDecoder.cs` present, no
+`CoreHMI.sln`, no `MURC.sln`. This unit was numbered **297** from `PHASE_OUTCOME.md`
+as the instruction directs; the last entry there was 296.
 
-`docs/unit296-runs/head-placement-lattice.txt` holds it whole. One FT4 slot decodes in **66.9 ms**
-median over 21 repetitions at HEAD's 2x2, 64.9 ms on noise only, 0.89% of a 7.5 s slot. Every later
-run was sized from that.
+**No test suite was run.** Twenty tests were constructed in this instruction, across
+three classes, and run filtered by exact name, foregrounded, with a 500-second
+timeout: **20 of 20 green.** Every `dotnet build` was foregrounded. Nothing was
+backgrounded and nothing was polled.
 
-The instrument is grid-independent by construction and that is the whole of it. Unit 294's *cell
-centre* is defined against the analysis grid, so densifying the grid would turn that same physical
-placement into an on-grid point and a re-measurement there would read beautifully while nothing had
-improved for a real station. This lattice is defined against the **protocol**: twenty-five
-placements spanning one whole tone spacing (20.8333 Hz) and one whole symbol period (576 samples),
-**five divisions a side because no power of two divides five**. Exactly one cell is on the analysis
-grid, and it is the same cell at 2x2, 2x4, 4x4, 4x8 and 8x8 - asserted before anything is measured.
+**Task 1 — reading only.** The whole finding is in
+`docs/unit297-cards.md`. The ledger holds three never-overwritten lists per station,
+each entry carrying the raw text, its split fields and its slot boundary, so almost
+everything a card needs is already a function of what is there. **Seven things it
+cannot support are named**, and the sharpest is in section 3.
 
-At HEAD, 36 messages a cell (every third of the corpus's 106), seed 296, the same noise draw at
-every cell of a rung so placement is the only difference:
+**Task 2 — the panel is cards.** The interleaved list, the waiting strip and the
+standalone turn ring all came out together. The seam is where §0.1 puts it:
+`Ft8CardFacts` in the engine derives what passed and composes no words;
+`Ft8ContactCard` in the shell composes words and reads no ledger.
 
-| rung | on grid | worst cell | placement-averaged | WRONG |
-|---|---|---|---|---|
-| -10 | 36 of 36 | 36 of 36 at (0,0) | 900 of 900 (100.0%) | 0 |
-| -13 | 36 of 36 | 19 of 36 at (1,1) | 808 of 900 (89.8%) | 0 |
-| -15 | 25 of 36 | 0 of 36 at (1,1) | 194 of 900 (21.6%) | 0 |
+**Task 3 — the `i` hover.** `HintKind` gains a fourth kind whose glyph is the `i` Tim
+asked for. One mark, not a second control.
 
-### Task 2 - the two corrections
+**Task 4 — clearing.** The X removes a card and touches nothing else. The one
+hazardous case warns once and clears on the second press.
 
-`Ft8Reader.NoWholeSlot` read *"there is not a whole fifteen-second slot in what was kept"* and
-reaches the mode strip line and the decoded summary. It now reads **"there is not a whole slot in
-what was kept, so there was nothing to decode"** - no length at all, because it is a `const` on a
-static reader and cannot know which mode's slot it is talking about. Four assertions enforce it
-across all three refusals on the decode path, and the rule they enforce is **the unit of time and
-not the number**, so the cutter's honest *one whole transmission* is not refused while
-*fifteen-second* is. The FT8 whole-chain row finder took `OfType<Grid>()` for a row root that has
-been a `StackPanel` since unit 280; one identifier, the same change unit 293 made in the FT4
-sibling.
+**Task 5 — the trace.** A ledger built in each state, each sentence quoted, each
+clause traced. **The measurement corrected the test twice and the card neither time.**
 
-### Task 3 - the grid sweep, and the finding that decided the night
+**Task 6 — the outcome entry.** `outcome-append.bat` ran clean and exited 0.
 
-`docs/unit296-runs/grid-sweep.txt`. The refusal boundary was measured, not trusted: 576 is 2^6 x
-3^2 and the geometry accepts time oversampling 1, 2, 3, 4, 6, 8, 9, 16 and refuses 5 and 7 in words.
+**Four decisions made for themselves, each a sizing call and none a trade-off.**
 
-| grid | -13 dB on grid | -13 dB worst cell | -13 dB averaged | ms/slot | WRONG |
-|---|---|---|---|---|---|
-| 2x2 | 36 of 36 | 19 of 36 | 808 of 900 (89.8%) | 66.3 | 0 |
-| 2x4 | **0 of 36** | 0 of 36 | 16 of 900 (1.8%) | 74.1 | 0 |
-| 4x4 | **0 of 36** | 0 of 36 | 29 of 900 (3.2%) | 151.3 | 0 |
-| 4x2 | 36 of 36 | **34 of 36** | **894 of 900 (99.3%)** | 151.3 | 0 |
+1. **The waiting strip and the standalone ring were removed rather than left beside
+   the cards.** The strip existed only because the panel drew one conversation and
+   everybody else had to be visible somehow; every station has a card now, so a
+   second list would be this one with less on it. The ring moved to beside the button
+   that needs it, which is what the ruling asks for. Two lists of the same stations
+   and two rings differ only in which one is stale.
+2. **The card ring binds only the two station-independent classes** — unknown, and on
+   air — and not *his slot* or *theirs*. Seconds to the next boundary is one fact for
+   every card; the parity belongs to the conversation station, and drawing it on
+   another station's card would be a claim about a station it was not measured from.
+3. **A narrow `RecordSentForTests` was added rather than widening
+   `AddSentRowForTests`**, which four test files call and two of which are sweeps that
+   count how much text the application shows — tests HM-DEC-155 forbids this unit to
+   run. Reported in section 4.
+4. **`DigitalCardsIdle` was split three ways**, so an empty panel with no measured
+   clock stops saying *nothing addressed to you yet* while stations sit in its own
+   ledger.
 
-**Frequency oversampling above 2 destroys the decode and destroys the on-grid one first**, and the
-reason is read out of `Ft8Monitor.ProcessBlock` rather than guessed: the analysis frame is
-`BlockSize x FrequencyOversampling` samples, so frequency oversampling **lengthens the window** - at
-2 it spans two FT4 symbol periods and at 4 it spans four. FT4 is 4-FSK and its tone changes every
-symbol, so the Costas correlation is smeared away. Time oversampling only samples the same-length
-frame more often, and sub-symbol alignment is the axis the off-grid loss lives on.
+**Four mismatches against the instruction, reported and not repaired.**
 
-### Decisions I made for myself, reproduced in full
+1. **The ruling's own example, `Arizona, 2,100 mi`, is unreachable.**
+   `DxccPrefixes.EntityOf` names a DXCC entity — a country — and
+   `EntityQualifier.Describe` adds only *northern* or *southern*. There is no state,
+   province or town anywhere in this tree. The face says `the United States · 320
+   miles` instead. The distance half of his example is exactly right and is built.
+2. **`Ft8ContactLedger.cs:158` says in bold that nothing calls `RecordSent`.** It has
+   a call site at `MainWindowViewModel.cs:10820`, and `Ft8ContactLogEntry.cs:66` says
+   so in as many words. That is HM-DEC-159's shape: a file stating something its own
+   tree contradicts.
+3. **`WORK_INSTRUCTIONS.md`'s heading carries no unit number.** It reads `# Work
+   instruction - the conversation becomes cards`, and tells the session to take the
+   next number from `PHASE_OUTCOME.md`. But `outcome-append.bat` resolves the number
+   from that heading — unit 266's repair, and it is right — so it fell back to 296 and
+   filed this entry as unit 296. **The instruction was not repaired.** The entry's own
+   body already carried `UNIT_AS_CALLED: 297`; its heading is corrected in place to
+   `## UNIT 297 - STEP 4`, with the correction stated on its face, rather than
+   appending a second entry that would describe one night twice.
+4. **The instruction says unit 274's Log dialog is populated from the ledger and that
+   the card's Log button is that dialog.** It is, and it reaches it through
+   `LogContactAsync` unchanged — but that method takes a `DigitalDecodeRow`, so the
+   card finds the newest row that station addressed to the operator and hands it over.
+   A station the operator called that has never come back has no such row and so no
+   Log button, which is correct: there is no contact to log.
 
-1. **I added a 4x2 cell to the sweep, which the instruction's list does not contain.** 2x4
-   collapsed, and a sweep that only ever moved both axes together could not say which one did it.
-   It turned out to be the whole answer.
-2. **I did not run 4x8.** The instruction lists it as conditional on the clock. It carries frequency
-   oversampling 8, the axis two separate grids had already shown to be destructive for a reason read
-   out of the source, and it cost ten minutes to confirm a third collapse. **That is a sizing
-   decision this session made and it is reported as one.** Nothing else was dropped.
-3. **I left `Ft4Unit294SnrAgreementTests` RED rather than weakening it to green.** It asserts the
-   measured candidate time bias equals `Ft4DeepSignalToNoise.Ft4CandidateTimeBiasSeconds`, which was
-   a true statement about one geometry and is a false one about the shipping geometry. The
-   correction is one line in `src/Ft8Sharp.Deep/`, which this instruction forbids this unit to
-   touch. **The red is this unit's, it is not inherited, and it is section 4's one ruling request.**
-4. **I updated the `snr` tooltip and `ReadFt4`'s remarks** from 0.58/1.41 over 970 to 0.56/1.39 over
-   1048, which task 6 licenses. A stale figure on a live tooltip is the fault this project keeps a
-   card against.
-5. **I pinned `Ft4Unit296PlacementTraceTests` to 2x2 explicitly.** It asked for the default, and
-   after task 4 the default is the new grid - so the one measurement in this unit that cannot be
-   recovered afterwards would have been quietly overwritten by its own result.
-
-### Two things to own
-
-**I broke the tree for one commit.** Task 6's version note quoted the command it ran, and two
-hyphens inside an XML comment are something MSBuild refuses. Every project imports
-`Directory.Build.props`, so the solution stopped loading. Caught on the next build, fixed and pushed
-as its own commit, `a7b6f8d`.
-
-**`PROJECT_STATUS.md`'s `UPDATED` was composed and not read for most of this session.** I wrote
-plausible-looking times that ran about two hours ahead of the machine clock. `CLAUDE_CODE.md` §7
-says that field is read from the clock and never composed, precisely because a timestamp written
-into the future defeats the one signal that catches a stopped session. The final write is from the
-clock. The status file moved at every task boundary and the cadence itself was kept.
+**And one thing this unit swept in that is not its own.** `git add -A tests/` in task
+4 committed `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`, which had been sitting
+untracked since unit 289. It builds and it is harmless, and it is named here rather
+than deleted, because removing another unit's file is worse than committing it.
 
 ## 2. What the owner should expect
 
-**FT4 now reads stations that landed where stations land.** Nothing on the screen changes shape and
-no new control appears. What changes is how many rows arrive: at a signal strength where the bench
-used to decode everything it placed for itself and about half of what it did not, it now decodes
-almost everything either way.
+**The For you panel is not a list of messages any more.** Each station he is working
+is a card that says, in a sentence with no radio words in it, who came back and when
+and what to do next — with one button on it that does that thing, a countdown ring
+beside the button telling him how long he has to press it, an `i` to hover if he wants
+the numbers, and an X to take the card away.
 
-**One number on a screen moved, and it is the `snr` column's tooltip.** It said the FT4 estimate
-agrees to 0.58 dB on average and 1.41 dB at the 95th percentile over 970 messages. It now says 0.56
-and 1.39 over 1048. Both figures are true; the old one was measured on a decoder that no longer
-exists, and re-measuring it was task 6's own instruction.
+**Nothing is hidden.** Every message is still there behind *show the N messages*, and
+every decibel, hertz, time offset, bearing and courtesy token the face gave up is on
+the hover. A sweep asserts both halves: nothing nerdy on any face, and all of it in
+the hover, so deleting the facts cannot pass.
 
-**One sentence on the operator's screen stopped saying fifteen.** When a capture is too short to
-hold a whole slot, the refusal used to name a fifteen-second slot even while FT4 was cutting 7.5
-second ones. It now names the slot and no length.
+**What will look wrong and is not.**
 
-### What will look wrong but is not
-
-- **One FT4 slot now takes 151 ms to decode instead of 67.** That is the price of the fix and it is
-  2.0% of a 7.5 second slot in a debug build. The tab has the other 98%.
-- **`Ft4Unit294SnrAgreementTests` is red.** It is red because tonight's change made one of its
-  assertions false, the assertion is right to be there, and the correction is in a file this unit
-  was forbidden to touch. Section 4 asks for the ruling. **The estimator itself is not broken** -
-  its measured accuracy improved slightly.
-- **`Ft4SensitivityLadderTests`'s on-grid figures did not move.** They should not have. The grid
-  change buys nothing on grid, which is the point: the on-grid column was never the problem.
-- **`Ft8Sharp` jumped a minor version, 0.11.0 to 0.12.0.** A public constant was added and the FT4
-  decoder behaves differently for a caller who asks for nothing. FT8's behaviour is byte-identical
-  and that is asserted.
+- **The waiting strip is gone and the ring has moved.** Both were replaced rather than
+  removed: every station that was on the strip has a card of its own, and the ring
+  now sits beside a send button so its seconds mean *how long to press this*.
+- **A station calling CQ gets no card.** That is correct and it is asserted — a card
+  is a station he is in **contact** with, and a CQ is an invitation. Callers are on
+  the decoded list to the left, where answering one starts from.
+- **A card in `Gone quiet` is drawn faded.** It has not been removed and never will
+  be on its own; the word says the same thing, so it survives grayscale.
+- **The first press of the X on a `Finished` card that is not in the log does not
+  clear it.** It says what is about to be lost. The second press always clears.
+- **`PHASE_STATUS.md` still names unit 296 and step 1.** The launcher owns that file
+  and task 6 did not name it; `PHASE_OUTCOME.md`'s header is the one the script keeps
+  current, and it reads step 4 `partial`.
+- **The suite was not run and its state is unknown to this unit.** The four inherited
+  reds named in the instruction were not chased and not looked at.
 
 ## 3. What you should see
 
-### The answer this unit was commissioned to get, and it leads because it cannot be recovered
+### 1. A card in each of the four states, quoted whole
 
-**Task 1b and 1d - the placement instrument at HEAD, and the deficit in decibels.** Once task 4
-moved a default the starting position was gone, so it is first here as it was first in the night.
-Twenty-five placements spanning one whole FT4 tone spacing and one whole FT4 symbol period, five
-divisions a side, exactly one on the analysis grid at every oversampling and asserted so before a
-single decode. At HEAD: **-13 dB, where the on-grid rate is exactly one, kept 19 of 36 at its worst
-cell and 808 of 900 averaged over all twenty-five; -15 dB kept 0 of 36 at its worst cell and 194 of
-900 averaged.** Zero wrong decodes in 2988 slots.
+These are printed by `Unit297CardSentenceTests` itself, so what follows is the test's
+own output rather than a transcription of it.
 
-**The deficit, in decibels rather than in messages.** Against an on-grid ladder re-drawn a decibel
-at a time (100% down to -14, 69.4% at -15, 22.2% at -16, 0% at -17), HEAD's worst placement at
--13 dB sits at **-15.4 dB** and its lattice average at **-14.3 dB**. So the worst placement cost
-**2.4 dB** and the average **1.3 dB**. `Ft4Unit294SnrAgreementTests.cs:42` guessed *something like
-two to three decibels*; it was right, and it is now a figure.
+```
+K9XP   the United States   [Your turn]
+  K9XP came back to you, and it is your turn to answer him.
+  02:11:15 UTC · 45 seconds ago
+  [Confirm, and tell him how he is coming through]  (ring)   show the 2 messages
 
-### FT8's own two placements, read out of the tree and not re-run
+K9XP   the United States   [Waiting on him]
+  You answered K9XP and he has not come back yet.
+  02:11:30 UTC · 15 seconds ago
+  [Send it again]  (ring)   show the 3 messages
 
-`Ft8Unit256CrossingIntervalTests.cs:66-76`, the `Published` table, 306 trials a cell at -19 dB:
-the bare port `Ft8Sharp` **248 of 306 on grid**; the shipping decoder **283 on grid and 278 at the
-cell centre**; fine sync only, 268 on grid and 277 at the cell centre.
-`Ft8Unit257PlacementPanelTests.cs:363`, the doc comment on `ThePlacementPanelAtCellCentreAtMinus19`:
-*"§3.2 reads the bare port at **6 of 306** here."*
+K9XP   the United States · 320 miles   [Finished]
+  You and K9XP got through to each other and you both confirmed it.
+  02:11:45 UTC · 15 seconds ago
+  [Log this contact]   show the 4 messages
 
-**The comparison in one sentence:** going off grid at -19 dB the shipping FT8 decoder loses 5 of
-306 - under two per cent - while the bare port loses 242 of 306, and FT4 sat at the port's end of
-that range rather than the shipping one, because `Ft8Sharp.Deep`'s fine sync recovers FT8's
-placement and FT4 has no such stage.
+K9XP   the United States   [Gone quiet]
+  Nothing more has been heard from K9XP. He may have moved on.
+  02:11:15 UTC · a minute ago
+  [Send it again]  (ring)   show the 2 messages
+```
 
-**A mismatch with the work instruction, reported and not repaired.** It attributes both bare-port
-figures to `Ft8Unit256CrossingIntervalTests.cs:68-75`. That table carries **no bare-port cell-centre
-row at all** - the 6 of 306 is a remark in unit 257's doc comment citing §3.2 of another document.
-Both numbers read as the instruction says; one citation does not.
+The same finished exchange ending `RR73` instead of `RRR` reads **You and K9XP got
+through to each other and you both confirmed it. He said goodbye.**
 
-### The grid sweep, its times and its wrong counts
+### 2. The trace: every clause against the fact it came from
 
-Four grids, task 1b's lattice unchanged, task 1b's seed and subset, comparable trial for trial. The
-table is in section 1 and the whole of it in `docs/unit296-runs/grid-sweep.txt`. **2x2 reproduced
-task 1b trial for trial**, which is the harness's own control. **The three questions task 3 asks:**
+| Clause | Fact | Where |
+|---|---|---|
+| `K9XP` | `Ft8CardFacts.Callsign` | the ledger's own key |
+| *came back to you* | `HeCameBack` = `LastHeardToUs is not null` | cannot be satisfied by a CQ, by construction |
+| *it is your turn* | `State == YourMove` | `Ft8ContactStates.Read` |
+| *You answered … and he has not come back* | `YouCalledHim` and `State == WaitingOnHim` | `Sent.Count > 0`, and `Read` |
+| *each told the other how you were coming through* | `ReportsBothWays` | last report each way over `HeardToUs` and `Sent` |
+| *got through to each other … you both confirmed it* | `State == Complete` | `IsComplete`: both calls, a grid or report each way, an acknowledgement each way |
+| *He said goodbye* | `HeSignedOff` | **`Ft8MessageSplit.IsSignOff` over what he actually sent** |
+| *Nothing more has been heard* | `State == GoneQuiet` | `SlotsSinceHeard` against four slots, counted over **everything** he transmitted |
+| `the United States` | `DxccPrefixes.EntityOf` | the callsign, never the grid |
+| `320 miles` | `GridPath.MilesBetween` | his grid and the operator's |
+| `02:11:15 UTC` | `Ft8CardFacts.LastAtUtc` | the slot boundary the decode carried |
+| `45 seconds ago` | that boundary against corrected now | absent with no measured clock |
+| *show the 2 messages* | `HisMessages + YourMessages` | this conversation, never everything heard from him |
+| `Confirm, and tell him…` | `Ft8SendOption.IsExpected` | the engine's own answer since 2026-09-06 |
 
-1. **Does any grid close the gap?** Yes, 4x2, and the axis is time and not frequency.
-2. **Does it fit in the slot?** 151.3 ms against 7.5 s is 2.0%, in a Debug build. **The budget
-   judged against is 10% of the slot - 750 ms** - leaving the tab's own work, the estimate, the
-   waterfall paint and the ledger write nine tenths of it. HEAD spent 0.9%; even 4x8 spends 3.0%.
-3. **Does the wrong count stay at zero?** Yes, at every grid: 0 in 2700 slots each, **10800 in
-   all**, counted per cell and per rung rather than summed at the end.
+**Not one clause failed to trace, and the one that could have been confidently wrong
+is the goodbye.** `Ft8ContactStates.IsComplete` counts `RRR` as an acknowledgement and
+says in its own remarks that `73`'s absence never withholds completeness — correctly,
+because a contact that ends `RRR` is a contact. So reading the farewell off the
+`Complete` state would have had this card announcing a goodbye nobody sent, on an
+ordinary way for an FT8 contact to end. It is its own shape test now, and
+`TheFinishedSentenceNeverInventsAGoodbye` is that case.
 
-### What task 4 adopted, and why it is not a divergence
+**Two clauses were corrected by measurement, and the card was right both times.** The
+first draft of the test expected the Finished sentence to name both reports; over a
+grid-then-report exchange only one report passed, and the card said *got through to
+each other* rather than claiming a swap. The second expected a card for a bare CQ;
+there is none, and there should not be.
 
-One file: `src/Ft8Sharp/Dsp/Ft4WaterfallGeometry.cs`. `DefaultTimeOversampling` is **4**, a `new`
-constant shadowing FT8's 2, with the whole measurement written into it the way unit 289 wrote the
-widened candidate sweep into `Ft4SyncSearch`. `DefaultFrequencyOversampling` is written out beside
-it at upstream's **2**, so the number that stayed is as visible as the one that moved.
+### 3. The `i` hover on a your-turn card, quoted whole
 
-`time_osr` and `freq_osr` are **parameters** of `monitor_init`; 2 and 2 are `demo/decode_ft8.c`'s
-file-scope judgement about how much work to do, the same class as `kMin_score` and
-`kMax_candidates`. **Nothing about the modulation, the tone spacing, the symbol period, the symbol
-count, the sync patterns, the Costas tables, the codeword, the CRC or the waveform changes** -
-`Ft4Unit296TheGridMovedAndFt8sDidNotTests` asserts that extent by extent, and the transform length
-is **identical**, which is the whole of why the frequency axis did not move. Only the sub-block and
-the block stride differ.
+> He hears you at -9 dB, and you have not told him how he is coming through yet. Those
+> are decibels against the noise, so a minus number is the ordinary case here: this
+> decoder reads down to about -21, and anything well above that is a comfortable
+> signal rather than a marginal one. He has not put a grid square on the air, so
+> Hamlet has no way to say how far away he is. His tone sat 1240 Hz up inside the
+> receiver's passband while the dial was on 14.074000 MHz. Everybody on the band
+> shares one dial setting and takes a different slice of the audio, which is how
+> dozens of stations fit where one voice would go. His transmission began 0.2 seconds
+> into the slot. Both clocks have to agree within about a second for this to decode at
+> all, so a small number here is the two of you keeping the same time. This ran from
+> 02:11:00 to 02:11:15 UTC. That is 3 slots ago, counted in the transmit-and-listen
+> turns the band runs on rather than in seconds. The last thing he sent you was -09,
+> which is how well he is hearing you, in decibels against the noise.
 
-### The off-grid round trip
+**Every clause carries its reason and no clause is a bare number.** Where a fact is
+missing the clause says so — *he has not put a grid square on the air* — rather than
+being dropped silently or filled in.
 
-106 messages, each at a frequency drawn uniform in [0, 20.8333 Hz) and a lead uniform in [0, 576
-samples) from seed 296. Draws landed between 1000.296 and 1020.824 Hz at leads 14689 to 15259. In
-clear air: **106 decoded, 0 missed, 0 wrong at the shipping grid and the same at upstream's.** At
--13 dB on the same draws: **105 / 1 / 0** against upstream's **95 / 11 / 0**. The one message still
-missed is named with its placement - `"G4ABC K10ABC RRR"` at 1004.818 Hz, lead 14880, 0 messages
-from 140 candidates. `Ft4RoundTripTests` was not edited and re-ran at the new grid: 106 sent, 106
-read back, 0 missed.
+**The decode floor is FT8's and FT4 gets none.** The sensitivity phase measured FT8's
+whole curve against a published -21 dB; unit 288 found upstream states no FT4
+equivalent and nothing in this tree does either. On FT4 the paragraph teaches the sign
+and the direction and invents no number.
 
-### The controls
+### 4. Clearing a finished, unlogged card
 
-- **No FT8 file changed, proved.** A git diff stat against `a5b9628` for `src/`:
-  `src/Ft8Sharp/Directory.Build.props` (34 lines), `src/Ft8Sharp/Dsp/Ft4WaterfallGeometry.cs` (73),
-  `src/Hamlet.RadioEngine/Audio/Ft8Reception.cs` (26). **Nothing under `src/Ft8Sharp.Deep/`. No FT8
-  decode-path file.** **A second mismatch with the instruction, reported:** task 6 asks that the
-  only file under `src/Ft8Sharp/` be `Ft4WaterfallGeometry.cs`, and there are two - the other is the
-  library's own version file, which task 8 requires bumping when task 4 adds a public constant. The
-  two instructions meet in the same directory.
-- **FT8's defaults still read 2 and 2**, asserted on the constants and on a built geometry carrying
-  block 1920, sub-block 960, transform 3840, 449 bins, 93 blocks.
-- **The FT8 whole-chain control: 3 of 3 green.** Two of them are an **inherited red cleared and not
-  a green this unit earned**, and that was measured rather than assumed - putting `OfType<Grid>()`
-  back and re-running failed exactly those two in the row finder. No further failure appeared behind
-  the finder.
-- **The operator's path carries it.** One FT4 slot through `Ft8Reader.Read` with `DigitalMode.Ft4`,
-  station a third of a bin above a centre and a third of a sub-block late: the decoder reports
-  **time oversampling 4, sub-block 144**, `"CQ W9GAP EM12"` comes back at 1239.6 Hz with snr 3.3 dB,
-  **84 ms a slot through the whole reader**, and both slots are stamped **`Ft8Sharp`** with fine
-  sync and ordered statistics off.
-- **The estimator's figures.** The change does reach `Ft4Unit294SnrAgreementTests`'s inputs. Re-run
-  unchanged: **0.56 dB mean absolute error, 1.39 dB at the 95th percentile, over 1048 messages**,
-  against unit 294's 0.58 / 1.41 over 970. The agreement barely moved; **the count did** - the
-  cell-centre rung at -13 dB went from **17 of 106 to 95 of 106** - so the figure is taken on a far
-  less selected sample. Tooltip and remarks updated, both figures on the record, unit 295's guard
-  still green.
+The first press does not clear it. The card says:
 
-### The ladder, and it was the drop candidate and it was not dropped
+> You finished this contact with K9XP and it is not in your log. Clearing the card
+> lets it go, and Hamlet keeps no record of it anywhere else. Log it first if you want
+> it, or press the X again to clear it anyway.
 
-All eight of `Ft4SensitivityLadderTests`'s own rungs, placement-averaged over the lattice, beside
-the on-grid column, at the shipping grid. 400 trials a rung on a stated subset - every seventh of
-the 106, sixteen messages a cell.
+The second press clears it. **It warns and never refuses**: the X is never greyed and
+the second press always works.
 
-| rung | on grid | worst cell | placement-averaged | WRONG |
-|---|---|---|---|---|
-| 0 | 16 of 16 | 16 of 16 | 400 of 400 (100.0%) | 0 |
-| -5 | 16 of 16 | 16 of 16 | 400 of 400 (100.0%) | 0 |
-| -10 | 16 of 16 | 16 of 16 | 400 of 400 (100.0%) | 0 |
-| -13 | 16 of 16 | 15 of 16 | 396 of 400 (99.0%) | 0 |
-| -15 | 10 of 16 | 0 of 16 | 188 of 400 (47.0%) | 0 |
-| -17 | 0 of 16 | 0 of 16 | 2 of 400 (0.5%) | 0 |
-| -19 | 0 of 16 | 0 of 16 | 0 of 400 (0.0%) | 0 |
-| -21 | 0 of 16 | 0 of 16 | 0 of 400 (0.0%) | 0 |
+**Whether *this* contact is logged is decided against the log entry's own start and
+never by the callsign.** `_workedBefore` holds the newest entry per callsign, so a
+station worked last month would have read as logged and tonight's finished contact
+would have gone without a word. That case is its own test,
+`AnOlderContactWithTheSameStationDoesNotCountAsThisOne`. Where it cannot tell — no
+start recorded — it warns, because a warning nobody needed costs one press and a
+silence that was wrong costs the contact.
 
-**0 wrong in 3200 slots.** The knee is between -13 and -15 dB and it is sharp, and what remains of
-the placement penalty lives entirely in that one rung. No rung is skipped, because a ladder missing
-rungs reads like a complete one.
-
-### The two readings this unit was told to report and not repair
-
-- **`PHASE_STATUS.md`'s `CURRENT_STEP:` reads `1`.** It has read `1` while the phase ran on step 4
-  and been reported six times. **Tonight the phase is genuinely on step 1, so it happens to be right
-  by accident.** Not repaired.
-- **`RULES_AT`**: the reload calls `HM-DEC-160` against `CPS-DEC-0160` a disagreement. It was not
-  measured an eighth time. It is the reload's own.
-
-### The bookkeeping
-
-`PHASE_OUTCOME.md` carries unit 296's entry, appended with the file-editing tools in the format
-`outcome-entry.py` produces, saying on its own face that it was written by hand and why; the
-arguments are committed at `tools/arbiter/unit296-append.bat` so it can be replayed. Units 288 to
-295's entries were not touched, including the two `STATE_AFTER` verdicts each carries, and neither
-was the header block. `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line is set and nothing else.
-
-**The validator: `dotnet build tools/arbiter/validate-output.proj` - `validate-output exit 0`,
-VALID, all seven rules passed.** They are: 1, a parseable `UNIT:` line above section 1; 2, the four
-top-level sections in order with exact names; 3, no fifth top-level section; 4, section 4 present
-even when empty; 5, section 3 non-empty - it read 116 non-blank lines; 6, the ordering block above
-the `UNIT:` line with an A, a B, a C and a count of section 4's items; 7, no placeholder token in
-the header block. **It failed once first, on rule 6**, because the block carried no
-`READ IN THIS ORDER` line and spelled its section 4 count in words where the rule wants a digit; the
-block was rewritten and re-run. No `.bat` under `tools/arbiter/` was attempted directly -
-five executing sessions have been refused and a sixth measurement is worth nothing. This session met
-the same class of refusal four times on ordinary work (`sed -i`, a heredoc to `/tmp`, a `python`
-rewrite of a status file, `git stash push`) and used the file-editing tools instead.
+**And clearing touches nothing else**, asserted: no write to the log, every message
+still in the ledger, and the station's card back the moment it transmits again.
 
 ## 4. What's blocking us
 
-**Four items. One asks for a ruling. None is in the way of an exit criterion in B.**
+Nothing blocks the next unit. Three items want a ruling or a decision, in the order
+they matter.
 
-### 1. A ruling is wanted: `Ft4CandidateTimeBiasSeconds` is stale by one sub-block, and the estimator absorbs it at exactly its own limit
+---
 
-**Ruling asked for:** may a unit change `src/Ft8Sharp.Deep/Ft4DeepSignalToNoise.cs` to derive the
-candidate time bias from the geometry rather than pin it at minus one FT4 symbol period?
+**Hamlet cannot name a place finer than a country, and the card says `the United
+States · 320 miles` where the ruling's example says `Arizona, 2,100 mi` — either the
+example stands as a country plus a distance, or naming a state becomes work with a
+citation behind it.**
 
-**The reasoning.** The constant is `-0.048` s and unit 294 measured exactly that on every on-grid
-trial at two analyses per symbol. At the four this unit adopted the measured bias is **`-0.060` s**,
-one further sub-block, because a sub-block at 4 is 144 samples rather than 288. The estimator's
-window therefore opens **12 ms late**, and `TimeSearchSeconds` is **±12 ms**, so the alignment
-search recovers it **at its own limit with no margin left**. It works - the measured agreement is
-0.56 dB over 1048 messages, better than the 0.58 it read before - and it works for a reason nobody
-chose. `Ft4Unit296CandidateTimeBiasTests` measures it at both grids, prints the margin (12.0 ms
-spare at 2x2, 0.0 at 4x2) and is green at zero margin and red the moment anything worsens.
+`DxccPrefixes.EntityOf` answers with a DXCC entity and `EntityQualifier.Describe` adds
+only *northern* or *southern* where the entity is tall enough for the word to mean
+something. **Nothing in this tree holds a state, a province or a town**, and the
+callook owner-and-town lookup is parked to its own instruction by this order.
 
-**What was rejected and why.** Fixing it: forbidden - *the permitted `src/` change tonight is
-`Ft4WaterfallGeometry.cs` and task 2a's one sentence, and that is all of it*. Weakening unit 294's
-assertion to green: that would hide a shipped constant that no longer matches the decoder it
-describes, which is the fault this project keeps a card against. So
-**`Ft4Unit294SnrAgreementTests` is left RED. The red is this unit's and is not inherited.**
+What was rejected. **Deriving a US state from the callsign prefix**, which is wrong:
+US call areas are historical and an operator keeps his callsign when he moves, so
+`W6` in Ohio is ordinary. **Deriving one from the four-character grid**, which is a box
+about seventy miles across that straddles borders, and would need a cited
+grid-to-state table this repository does not have. **Wording round it** — *somewhere in
+the United States* — which is longer and says less.
 
-**Not in the way of anything in B.** The estimator is report-only; it changes no ratio, no gate, no
-count and no decision, and step 1's four criteria are decode-rate and wrong-count criteria measured
-with no estimator in the loop.
+What would settle it. The parked callook instruction may bring a town with a source
+behind it, which is the honest route to `Arizona`. Until then the face carries the
+country and the distance, which is what the tree can support.
 
-### 2. Recorded, not a ruling request: two mismatches between the work instruction and the tree
+---
 
-Both are reported per `PHASE_PLAN.md`'s named-alternatives table and neither was repaired. First,
-the bare-port cell-centre figure of 6 of 306 is not in `Ft8Unit256CrossingIntervalTests`'s table; it
-is a remark in unit 257's doc comment. Second, task 6 asks that only `Ft4WaterfallGeometry.cs` move
-under `src/Ft8Sharp/`, while task 8 requires bumping a version that lives at
-`src/Ft8Sharp/Directory.Build.props`. Two files moved there and both are named.
+**A wording exists that no card can reach today: `K9XP is calling and nobody has
+answered him yet`.**
 
-### 3. Recorded, not a ruling request: 4x8 was not run
+`Ft8ContactStates.Read` documents a `YourMove` case for a station heard calling anyone
+and not yet answered, and `Ft8ContactCard` words it separately from *he came back to
+you* — they are different news and one wording for both would tell him a stranger had
+answered a call he never made. **But a CQ is not addressed to the operator, so it
+never enters the mine side and never becomes a card**, which
+`ABareCallToAnyoneIsNotACard` asserts.
 
-The instruction lists it as conditional on the clock. It carries frequency oversampling 8, the axis
-two grids had already shown destructive for a reason read out of `Ft8Monitor`'s source, and it cost
-ten minutes to confirm a third collapse. **A sizing decision this session made, reported as one.**
+The branch is kept rather than deleted, because `Read` documents that state and a card
+built from `Ft8CardFacts` elsewhere would reach it. **Whether an unanswered caller
+should get a card is Tim's**: it would make the panel a list of everybody calling him
+rather than of contacts he is in, which is a different panel from the one he ruled on.
 
-### 4. Recorded, not a ruling request: five untracked files are still carried
+What was rejected. **Deleting the branch**, which would leave `Read`'s documented state
+with no wording and the next unit to reach it inventing one. **Putting callers on
+cards on this unit's own authority**, which is a scope decision his ruling did not
+make.
 
-`.unit290-commit.txt`, `.unit295-msg.txt`, `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`,
-`tools/census15.sh`, `tools/unit294-thread-grid.py`. **Five, unchanged. No attempt was made to
-remove them** - six sessions have measured the harness refusing it. This session added a sixth,
-`.unit296-msg.txt`, used to carry commit messages past a shell that will not hold a heredoc
-containing an apostrophe; it is the same kind of file as `.unit295-msg.txt` and is left with them.
+---
 
-**Nothing else is blocking.** Step 1's four exit criteria are met, the two closing steps are Tim's,
-and the one number that decides whether his night at the radio works is measured and moved.
+**`AddSentRowForTests` says in its own remarks that it is *the same door the send path
+uses* and it is half of one, so no test in this repository can reach a finished
+contact state through it.**
+
+The send path does two things on adjacent lines: it keeps the panel row **and** it
+tells the ledger. The hook does only the first, so `Ft8StationRecord.Sent` is empty in
+every test that uses it and `Ft8ContactStates.IsComplete` can never be satisfied. **This
+unit found it by measurement**: its first fixture read *Your turn* over an exchange
+that had everything a QSO needs.
+
+A narrow `RecordSentForTests` was added beside it and this unit's fixtures call both.
+
+What was rejected, and it is the item that wants a decision. **Widening the existing
+hook**, which is the right repair and was not done here: four test files call it, two
+of them sweeps that count how much text the application puts on screen, and booking
+the ledger inside it would put cards on a panel those sweeps count. Under HM-DEC-155
+this unit may run only the tests it wrote, so it cannot see what that would break.
+**A unit that may run those four files should widen it and delete the narrow hook.**
