@@ -9539,13 +9539,36 @@ public partial class MainWindowViewModel : ObservableObject
         // is already keyed when anybody finds out.
         var rate = sink.EndpointSampleRate;
 
-        if (!Ft8Composer.RateIsUsable(rate, out var whyNot))
+        // **THE QUESTION IS ASKED OF THE MODE THE TAB IS RUNNING, AND THE SENTENCE
+        // NAMES IT** (work instruction 294 task 7). This asked
+        // `Ft8Composer.RateIsUsable` unconditionally and said *an FT8 transmission
+        // cannot be built at that rate* whatever mode was chosen - so on a machine
+        // whose endpoint neither mode can be built at, an operator running FT4 was
+        // told about FT8. **Nothing reaches it wrongly today**: at 12 000 and at
+        // 48 000 the two modes agree, which is why this is wording and not a
+        // repair. The mode's name comes off `SlotGrid`, which is the same one value
+        // the grid, the cutter and the decoder derive from, so there is no second
+        // spelling of it to drift.
+        //
+        // **AND IT IS NOT THE LAST GUARD.** `DigitalComposer.RateIsUsable` is asked
+        // again at compose time with the mode's own geometry, so an operator who
+        // connects on one mode and presses the other is still refused before
+        // anything keys.
+        var mode = _digitalMode.Grid().Name;
+
+        var usable = _digitalMode == DigitalMode.Ft4
+            ? Ft4Composer.RateIsUsable(rate, out var whyNot)
+            : Ft8Composer.RateIsUsable(rate, out whyNot);
+
+        if (!usable)
         {
             _transmitRefusal =
                 "the transmit audio device named in Settings, \"" + endpoint
                 + "\", speaks " + rate.ToString(CultureInfo.InvariantCulture)
-                + " samples per second, and an FT8 transmission cannot be built at "
-                + "that rate: " + whyNot
+                // "an" serves both: FT4 and FT8 are read as "eff four" and "eff
+                // eight", so neither takes "a".
+                + " samples per second, and an " + mode
+                + " transmission cannot be built at that rate: " + whyNot
                 + " Nothing can be sent through this device, so choose another "
                 + "transmit audio device in Settings";
 

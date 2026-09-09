@@ -1,5 +1,6 @@
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
+using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Transmit;
 using Xunit;
@@ -181,6 +182,67 @@ public sealed class TheSendPathComposesAtTheEndpointsRateTests
         Assert.True(factory.Sink.WasNeverTouched);
 
         // AND HE IS TOLD WHICH DEVICE, WHAT IT DECLARED, AND TO GO AND CHANGE IT.
+        Assert.Contains(NamedEndpoint, panel.DigitalSendLine, StringComparison.Ordinal);
+        Assert.Contains("8001", panel.DigitalSendLine, StringComparison.Ordinal);
+        Assert.Contains(
+            "another transmit audio device", panel.DigitalSendLine, StringComparison.Ordinal);
+
+        // **AND IT NAMES THE MODE THE TAB IS RUNNING** (work instruction 294 task 7).
+        // The panel is on FT8 here, which is the default, so the sentence says FT8 -
+        // and it says it because the mode was asked rather than because FT8 was
+        // written into the line.
+        Assert.Contains(
+            "an FT8 transmission cannot be built at that rate",
+            panel.DigitalSendLine,
+            StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// **The same endpoint with FT4 chosen names FT4 and not FT8.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SENTENCE NAMED FT8 WHATEVER THE TAB WAS RUNNING** until work
+    /// instruction 294 task 7. The guard asked `Ft8Composer.RateIsUsable`
+    /// unconditionally, so an operator running FT4 on a machine whose endpoint
+    /// neither mode can be built at was told about a mode he had not chosen.</para>
+    /// <para>**NOTHING REACHED IT WRONGLY AND THAT IS WHY THIS IS WORDING.** At
+    /// 12 000 and at 48 000 - every rate a real endpoint on this machine declares -
+    /// the two modes agree, so no operator has been refused for the wrong mode. What
+    /// was wrong was the sentence, and a sentence naming the wrong mode is what
+    /// §0.0 is about whether or not anybody has hit it yet.</para>
+    /// <para>**8001 IS REFUSED BY BOTH.** 8001 x 0.16 is 1280.16 and 8001 x 0.048 is
+    /// 384.048, neither a whole number of samples, so the two modes agree here as
+    /// well - which is what makes this a clean test of the wording rather than of
+    /// the arithmetic.</para>
+    /// </remarks>
+    [Fact]
+    public void TheSameRefusalOnFt4NamesFt4AndNotFt8()
+    {
+        var (panel, settings, factory) = Panel();
+        var port = new FakePort();
+
+        settings.AudioOutputDeviceId = NamedEndpoint;
+        factory.Sink.DeclaredSampleRate = 8001;
+
+        panel.UseModeForTests(DigitalMode.Ft4);
+
+        panel.BuildTheArmedSend(port);
+
+        _output.WriteLine("send area at connect : " + panel.DigitalSendLine);
+
+        Assert.False(panel.HasSomethingToTransmitThrough);
+        Assert.True(port.WasNeverWrittenTo);
+        Assert.True(factory.Sink.WasNeverTouched);
+
+        Assert.Contains(
+            "an FT4 transmission cannot be built at that rate",
+            panel.DigitalSendLine,
+            StringComparison.Ordinal);
+
+        Assert.DoesNotContain("FT8", panel.DigitalSendLine, StringComparison.Ordinal);
+
+        // The device, the rate and the instruction are all still there - only the
+        // mode's name moved.
         Assert.Contains(NamedEndpoint, panel.DigitalSendLine, StringComparison.Ordinal);
         Assert.Contains("8001", panel.DigitalSendLine, StringComparison.Ordinal);
         Assert.Contains(

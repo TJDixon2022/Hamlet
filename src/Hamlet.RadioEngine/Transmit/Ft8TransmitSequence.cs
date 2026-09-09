@@ -554,17 +554,24 @@ public sealed class Ft8TransmitSequence
 
         if (audioSeconds > left + 1e-6)
         {
-            // THE PADDED SLOT IS CAUGHT HERE. Ft8Composer.Compose returns 15 s
-            // with the signal centred, which is what a decoder reads and not what
-            // goes on the air: handing it to this path with any offset at all
-            // would run past the boundary, and playing it at offset zero would
-            // put the tones 1.180 s late. ComposeSignal is the route that goes
-            // out.
+            // THE PADDED SLOT IS THE COMMONEST THING CAUGHT HERE AND IT IS NOT THE
+            // ONLY ONE. Ft8Composer.Compose returns a whole slot with the signal
+            // centred, which is what a decoder reads and not what goes on the air;
+            // ComposeSignal is the route that goes out. But this branch fires on any
+            // audio longer than the slot has room for, whatever produced it.
+            //
+            // **SO THE SENTENCE STATES THE MEASUREMENT AND OFFERS THE CAUSE AS A
+            // LIKELIHOOD** (work instruction 294 task 7, §12.1). It read "a padded
+            // slot is what a decoder reads, not what goes on the air" as a flat
+            // assertion of the cause, which is a diagnosis this line has not made:
+            // it has measured two lengths. Every number in it was right and stays
+            // right, and all of them still come off `send.Grid`.
             why =
                 $"this is {audioSeconds:0.###} s of audio and only {left:0.###} s of the slot is "
                 + $"left after {send.StartSecondsIntoSlot:0.###} s. An {grid.Name} transmission is "
-                + $"{grid.TransmissionSeconds:0.##} s of tones with no silence on either end - "
-                + "a padded slot is what a decoder reads, not what goes on the air.";
+                + $"{grid.TransmissionSeconds:0.##} s of tones with no silence on either end. "
+                + "The commonest cause is a padded slot - what a decoder reads rather than what "
+                + "goes on the air - but what is measured here is the length and not the reason.";
             return false;
         }
 

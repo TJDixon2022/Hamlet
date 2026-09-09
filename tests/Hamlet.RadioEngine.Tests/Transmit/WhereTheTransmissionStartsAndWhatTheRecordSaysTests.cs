@@ -218,7 +218,19 @@ public sealed class WhereTheTransmissionStartsAndWhatTheRecordSaysTests
         Assert.Empty(port.Written);
         Assert.Equal(0, port.WritesAttempted);
         Assert.True(sink.WasNeverTouched);
-        Assert.Contains("a padded slot is what a decoder reads", run.Reason, StringComparison.Ordinal);
+        // **THE CLAUSE IS NOW OFFERED AS A LIKELIHOOD RATHER THAN ASSERTED AS THE
+        // CAUSE** (work instruction 294 task 7). This branch fires on any audio
+        // longer than the slot has room for; a padded slot is the commonest thing
+        // that produces one and is not the only thing, and this line has measured
+        // two lengths rather than made a diagnosis. **The measurement is what the
+        // test holds it to**, so the numbers are asserted and the hint is asserted
+        // as a hint.
+        Assert.Contains("The commonest cause is a padded slot", run.Reason, StringComparison.Ordinal);
+        Assert.Contains(
+            "what is measured here is the length and not the reason",
+            run.Reason,
+            StringComparison.Ordinal);
+        Assert.Contains("s of audio and only", run.Reason, StringComparison.Ordinal);
     }
 
     /// <summary>

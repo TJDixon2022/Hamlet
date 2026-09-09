@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 6 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 294 - the FT4 signal report, and the ledger on FT4's grid
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T13:03:05-04:00
-NOTE: Task 5 done and criterion 2's two surfaces are closed. Two inherited tests went red for the right reason and were fixed rather than the behaviour - unit 292's asserting FT4 rows carry no ratio, unit 293's asserting the FT4 menu is short two shapes. 16 of 16 FT4 chain tests pass. Now task 6: the PHASE_OUTCOME entry, the replay arguments and the validator.
+UPDATED: 2026-09-09T13:09:00-04:00
+NOTE: Tasks 6 and 7 done - the PHASE_OUTCOME entry and its replay arguments written by hand, and the drop candidate was not dropped. The connect-time rate guard now asks the mode the tab is running and names it, and the fit refusal offers the padded slot as the commonest cause rather than asserting it. 21 of 21 rate-guard and transmit-refusal tests pass. Writing output.md and running the validator.
 
 ---
 
