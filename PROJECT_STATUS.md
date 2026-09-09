@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 6
+TASK: 5 of 6
 WORK_INSTRUCTION: 299 - the card header does what it promised
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T18:48:17-04:00
-NOTE: Task 4 done - longest name 33 to 19 characters, and nothing narrows below a country. Committing.
+UPDATED: 2026-09-09T18:48:51-04:00
+NOTE: Task 5 done - the map says what it is and is not. Committing.
 
 ---
 
