@@ -104,6 +104,177 @@ public readonly record struct ClockOffset(
 }
 
 /// <summary>
+/// One mode's slot grid: how long a slot runs, and how long the transmission
+/// inside it runs.
+/// </summary>
+/// <param name="SlotSeconds">How long one slot runs, boundary to boundary.</param>
+/// <param name="TransmissionSeconds">How long the signal inside it occupies.</param>
+/// <remarks>
+/// <para>**THE TWO NUMBERS TRAVEL TOGETHER BECAUSE THEY ARE ONE FACT** (work
+/// instruction 290 task 2). A slot length without its occupancy answers *did a
+/// whole slot fit* and cannot answer *did a whole transmission fit*, and those are
+/// the two questions a sidecar has already been caught printing different answers
+/// to on consecutive lines. Handing them around as a pair is what stops a caller
+/// pairing FT4's slot with FT8's transmission.</para>
+/// <para>**THE ARITHMETIC IS IN TICKS, ANCHORED ON THE MINUTE.** Whole seconds
+/// cannot hold a 7.5-second boundary at all - the old
+/// <c>new DateTime(y, m, d, h, min, second)</c> had no field for the half, and
+/// <c>(int)7.5</c> is <c>7</c>, which is a seven-second grid wearing a
+/// 7.5-second grid's name. The minute is the anchor because it is the largest
+/// unit both lengths divide exactly: four FT8 slots to the minute, eight FT4
+/// slots, so no error accumulates across an hour or a day, and
+/// <see cref="DateTime.Ticks"/> is exact for both.</para>
+/// <para>**FT8'S NUMBERS COME OUT OF THIS SAME ARITHMETIC AND ARE UNCHANGED BY
+/// IT.** <see cref="Ft8Slots"/> is a thin forwarder onto <see cref="Ft8"/>, which
+/// is unit 289's own device for <c>Ft8WaterfallGeometry</c>: one implementation,
+/// the mode's own constants handed in, so a divergence between the two grids
+/// cannot be a second copy of the arithmetic drifting. If an FT8 boundary moves by
+/// a tick that is a defect and not a rounding difference.</para>
+/// <para>**IT IS NOT A SCHEDULE AND IT READS NO CLOCK.** Every function here is
+/// pure over a corrected moment. Nothing decides when to transmit, and reaching a
+/// boundary does nothing at all.</para>
+/// </remarks>
+public readonly record struct SlotGrid(double SlotSeconds, double TransmissionSeconds)
+{
+    /// <summary>FT8's grid: fifteen seconds, four to the minute, 12.64 s of tones.</summary>
+    public static SlotGrid Ft8 { get; } =
+        new(Ft8Slots.SlotSeconds, Ft8Slots.TransmissionSeconds);
+
+    /// <summary>FT4's grid, read from the port and typed nowhere in this assembly.</summary>
+    /// <remarks>
+    /// <para>**BOTH NUMBERS COME FROM <c>Ft8Sharp.Ft4Timing</c>** and neither is
+    /// written down here. Unit 289 put FT4's timing in one file precisely so that
+    /// the open 4.48-against-5.04 question costs one edit to settle, and a copy in
+    /// this assembly would make it cost two and let them disagree in between. The
+    /// question is the owner's and nothing here settles it.</para>
+    /// <para>The slot is 7.5 s on either figure, which is why the grid can be built
+    /// while the occupancy is still open.</para>
+    /// </remarks>
+    public static SlotGrid Ft4 { get; } =
+        new(Ft8Sharp.Ft4Timing.SlotSeconds, Ft8Sharp.Ft4Timing.OccupancySeconds);
+
+    /// <summary>The slot length in ticks, which is what the arithmetic runs on.</summary>
+    private long SlotTicks => (long)Math.Round(SlotSeconds * TimeSpan.TicksPerSecond);
+
+    /// <summary>How many slots fall inside one minute of UTC.</summary>
+    /// <remarks>
+    /// Four for FT8 and eight for FT4. **Both are even**, which is what lets
+    /// <c>Ft8Turn.ParityOf</c> keep working: the alternating halves do not swap over
+    /// at a minute or an hour boundary on either grid.
+    /// </remarks>
+    public int SlotsPerMinute => (int)(TimeSpan.TicksPerMinute / SlotTicks);
+
+    /// <summary>
+    /// Whether a whole transmission fits after a boundary, given how much audio
+    /// follows it.
+    /// </summary>
+    /// <param name="secondsAfterBoundary">Audio available after the boundary.</param>
+    /// <returns>True where the whole transmission is inside the audio.</returns>
+    /// <remarks>
+    /// <para>**ONE FUNCTION, BECAUSE TWO ANSWERS DISAGREED IN CONSECUTIVE
+    /// LINES.** On capture `ft8-2026-09-03-210644` the sidecar wrote
+    /// `wholeSlots 1 ... whole transmission inside the audio` and, on the line
+    /// under it, `refusal no whole slot fits inside the recording`. The sheet
+    /// measured the 12.64 s a transmission occupies; the cutter required a full
+    /// 15 s slot. Both were reasonable and they cannot both be printed.</para>
+    /// <para>**AND THE OCCUPANCY IS THE RIGHT ONE**, because it is what the signal
+    /// actually occupies. A boundary with 13 s of audio after it holds the whole
+    /// FT8 transmission; refusing it discards a decodable slot for the sake of
+    /// 2.36 s of silence that carries nothing.</para>
+    /// <para>**TWO GRIDS MUST NOT BECOME TWO ANSWERS AGAIN.** It is still one
+    /// function; what changed is that the number it measures against arrives with
+    /// the grid rather than from a `const`.</para>
+    /// <para>**THE EPSILON IS FOR ROUNDING AND NOTHING ELSE.** A boundary
+    /// computed in ticks and a sample count computed by rounding disagree in the
+    /// last decimal place, and a slot refused for a nanosecond is a slot refused
+    /// for arithmetic.</para>
+    /// </remarks>
+    public bool TransmissionFits(double secondsAfterBoundary)
+        => secondsAfterBoundary + 1e-6 >= TransmissionSeconds;
+
+    /// <summary>The start of the slot a moment falls in.</summary>
+    /// <param name="trueUtc">A corrected moment.</param>
+    /// <returns>The boundary at or before it, always <see cref="DateTimeKind.Utc"/>.</returns>
+    /// <remarks>
+    /// **FLOOR ONTO THE GRID, IN TICKS, FROM THE TOP OF THE MINUTE.** On FT8 this
+    /// is the quarter-minute and is the same value the whole-second arithmetic gave;
+    /// on FT4 it is one of the eight boundaries at `:00`, `:07.5`, `:15`, `:22.5`,
+    /// `:30`, `:37.5`, `:45` and `:52.5`, four of which no whole-second return type
+    /// could have expressed.
+    /// </remarks>
+    public DateTime SlotStart(DateTime trueUtc)
+    {
+        var sinceMinute = trueUtc.Ticks % TimeSpan.TicksPerMinute;
+        var slot = SlotTicks;
+
+        return new DateTime(
+            trueUtc.Ticks - sinceMinute + (sinceMinute / slot * slot),
+            DateTimeKind.Utc);
+    }
+
+    /// <summary>How far into its slot a moment is.</summary>
+    /// <param name="trueUtc">A corrected moment.</param>
+    /// <returns>Seconds since the slot began, 0 up to <see cref="SlotSeconds"/>.</returns>
+    public double IntoSlot(DateTime trueUtc)
+        => (trueUtc - SlotStart(trueUtc)).TotalSeconds;
+
+    /// <summary>
+    /// Every slot boundary inside a stretch of time, oldest first.
+    /// </summary>
+    /// <param name="fromTrueUtc">The start of the stretch, corrected.</param>
+    /// <param name="toTrueUtc">The end of it, corrected.</param>
+    /// <returns>The boundaries, which may be empty.</returns>
+    /// <remarks>
+    /// <para>**THIS IS WHAT THE WATERFALL DRAWS ITS RULES FROM.** It is a list of
+    /// moments rather than pixel positions, so the control decides where they
+    /// land on the screen and this decides nothing about drawing.</para>
+    /// <para>**IT STEPS IN TICKS RATHER THAN BY `AddSeconds`.** A half-second step
+    /// added a thousand times in floating point is a boundary list that drifts off
+    /// its own grid, and the drift would be invisible on FT8 and silent on FT4.</para>
+    /// </remarks>
+    public IReadOnlyList<DateTime> BoundariesBetween(
+        DateTime fromTrueUtc, DateTime toTrueUtc)
+    {
+        if (toTrueUtc <= fromTrueUtc)
+        {
+            return Array.Empty<DateTime>();
+        }
+
+        var found = new List<DateTime>();
+        var slot = SlotTicks;
+        var at = SlotStart(fromTrueUtc);
+
+        if (at < fromTrueUtc)
+        {
+            at = new DateTime(at.Ticks + slot, DateTimeKind.Utc);
+        }
+
+        while (at <= toTrueUtc)
+        {
+            found.Add(at);
+            at = new DateTime(at.Ticks + slot, DateTimeKind.Utc);
+        }
+
+        return found;
+    }
+
+    /// <summary>What this grid is, in one phrase, for a capture to carry.</summary>
+    /// <returns>A phrase such as <c>7.50 s slots, 5.04 s transmission</c>.</returns>
+    /// <remarks>
+    /// **A CAPTURE READ A YEAR FROM NOW SAYS WHAT IT WAS CUT ON** rather than
+    /// leaving it to be inferred from the boundary spacing. Two decimal places on
+    /// both, because 12.64 and 5.04 both need them and a grid printed as `8 s` is
+    /// the same §0.0 exposure one rounding along.
+    /// </remarks>
+    public string Describe()
+        => string.Format(
+            System.Globalization.CultureInfo.InvariantCulture,
+            "{0:0.00} s slots, {1:0.00} s transmission",
+            SlotSeconds,
+            TransmissionSeconds);
+}
+
+/// <summary>
 /// Where the fifteen-second FT8 slots fall, given a measured clock offset.
 /// </summary>
 /// <remarks>
@@ -160,7 +331,7 @@ public static class Ft8Slots
     /// for arithmetic.</para>
     /// </remarks>
     public static bool TransmissionFits(double secondsAfterBoundary)
-        => secondsAfterBoundary + 1e-6 >= TransmissionSeconds;
+        => SlotGrid.Ft8.TransmissionFits(secondsAfterBoundary);
 
     /// <summary>True UTC, from a PC time and a measured offset.</summary>
     /// <param name="pcUtc">What the machine believes.</param>
@@ -179,21 +350,22 @@ public static class Ft8Slots
     /// <summary>The start of the slot a moment falls in.</summary>
     /// <param name="trueUtc">A corrected moment.</param>
     /// <returns>The quarter-minute boundary at or before it.</returns>
+    /// <remarks>
+    /// **THE ARITHMETIC MOVED TO TICKS AND THIS ANSWER DID NOT** (work instruction
+    /// 290 task 2). It used to floor the second onto a multiple of fifteen and
+    /// rebuild the <see cref="DateTime"/> from whole seconds; it now floors the
+    /// tick count onto a multiple of the slot from the top of the minute, which is
+    /// the same value for every moment on a fifteen-second grid and is the only one
+    /// of the two that can express a half-second boundary.
+    /// </remarks>
     public static DateTime SlotStart(DateTime trueUtc)
-    {
-        var second = (trueUtc.Second / (int)SlotSeconds) * (int)SlotSeconds;
-
-        return new DateTime(
-            trueUtc.Year, trueUtc.Month, trueUtc.Day,
-            trueUtc.Hour, trueUtc.Minute, second,
-            DateTimeKind.Utc);
-    }
+        => SlotGrid.Ft8.SlotStart(trueUtc);
 
     /// <summary>How far into its slot a moment is.</summary>
     /// <param name="trueUtc">A corrected moment.</param>
     /// <returns>Seconds since the slot began, 0 to 15.</returns>
     public static double IntoSlot(DateTime trueUtc)
-        => (trueUtc - SlotStart(trueUtc)).TotalSeconds;
+        => SlotGrid.Ft8.IntoSlot(trueUtc);
 
     /// <summary>
     /// Every slot boundary inside a stretch of time, oldest first.
@@ -208,26 +380,5 @@ public static class Ft8Slots
     /// </remarks>
     public static IReadOnlyList<DateTime> BoundariesBetween(
         DateTime fromTrueUtc, DateTime toTrueUtc)
-    {
-        if (toTrueUtc <= fromTrueUtc)
-        {
-            return Array.Empty<DateTime>();
-        }
-
-        var found = new List<DateTime>();
-        var at = SlotStart(fromTrueUtc);
-
-        if (at < fromTrueUtc)
-        {
-            at = at.AddSeconds(SlotSeconds);
-        }
-
-        while (at <= toTrueUtc)
-        {
-            found.Add(at);
-            at = at.AddSeconds(SlotSeconds);
-        }
-
-        return found;
-    }
+        => SlotGrid.Ft8.BoundariesBetween(fromTrueUtc, toTrueUtc);
 }
