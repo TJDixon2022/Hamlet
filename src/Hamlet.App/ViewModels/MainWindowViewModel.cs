@@ -2947,12 +2947,30 @@ public partial class MainWindowViewModel : ObservableObject
     /// the write are all the ones that already exist. **Two log dialogs would drift,
     /// and one of them is the one nobody tests.**
     /// </remarks>
+    [RelayCommand]
     private async Task LogStationAsync(string callsign)
     {
-        if (NewestRowFrom(callsign) is { } row)
+        var who = (callsign ?? "").Trim();
+
+        if (who.Length == 0 || _contacts is null)
         {
-            await LogContactAsync(row).ConfigureAwait(true);
+            return;
         }
+
+        // **THE DIAL COMES FROM A ROW WHERE THERE IS ONE AND IS ABSENT WHERE THERE
+        // IS NOT** (§0.0). A card can outlive its rows, and a frequency taken from
+        // where the radio is standing now would put a band in a permanent record
+        // that the contact may not have been made on.
+        var hz = NewestRowFrom(who)?.HeardOnHz ?? 0;
+
+        var entry = ContactLogEntryForStation(who, hz);
+
+        if (entry is null)
+        {
+            return;
+        }
+
+        await OpenLogWindowAsync(entry, hz).ConfigureAwait(true);
     }
 
     /// <summary>The newest row that station addressed to the operator, or null.</summary>
@@ -11118,12 +11136,24 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var hz = row.HeardOnHz;
+        await OpenLogWindowAsync(entry, row.HeardOnHz).ConfigureAwait(true);
+    }
 
+    /// <summary>**Open unit 274 log window on one entry, and write it if he saves.**</summary>
+    /// <param name="entry">What the record would contain.</param>
+    /// <param name="heardOnHz">The dial, or 0 where no row carried one.</param>
+    /// <remarks>
+    /// **ONE DIALOG AND ONE WRITE, REACHED FROM TWO PLACES** (the instruction:
+    /// *reuse unit 274 dialog, do not build a second*). The right-click menu comes
+    /// in with a row and a card comes in with a station; both arrive here, so the
+    /// window, the Save gate and the file write cannot drift apart.
+    /// </remarks>
+    private async Task OpenLogWindowAsync(AdifContact entry, long heardOnHz)
+    {
         var model = new LogContactViewModel(
             entry,
-            hz > 0
-                ? (hz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture)
+            heardOnHz > 0
+                ? (heardOnHz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture)
                   + " MHz, where this was heard"
                 : "");
 
@@ -11178,20 +11208,50 @@ public partial class MainWindowViewModel : ObservableObject
     /// plausible frequency in a permanent record is the fault §0.0 exists for.</para>
     /// </remarks>
     internal AdifContact? ContactLogEntryFor(DigitalDecodeRow? row)
+        => row is null || !CanLogRow(row)
+            ? null
+            : ContactLogEntryForStation(row.Sender, row.HeardOnHz);
+
+    /// <summary>
+    /// **The log record one station would produce, whether or not a row is on the
+    /// table.**
+    /// </summary>
+    /// <param name="callsign">The station.</param>
+    /// <param name="heardOnHz">
+    /// The dial that station was heard on, or 0 where no row carries one. **Zero
+    /// means the frequency and the band go out of the record entirely** rather than
+    /// being filled from where the radio happens to be now.
+    /// </param>
+    /// <returns>The entry, or null where the ledger holds nothing for that station.</returns>
+    /// <remarks>
+    /// <para>**IT TOOK A ROW UNTIL WORK INSTRUCTION 299** and Tim ruled on
+    /// 2026-09-09 that the Log option is available on every card in every state:
+    /// *"the log option is always available... it should be up to me what I want to
+    /// log."* A card can outlive the rows behind it - the decoded table is bounded
+    /// and clears on a band change - so a Log that needed a row was a Log that could
+    /// vanish while the contact it was about was still on screen.</para>
+    /// <para>**THE LEDGER IS WHAT IT READS**, which is the same source
+    /// `Ft8ContactLogEntry.For` always used; the row was only ever carrying the
+    /// dial. **Hamlet still decides nothing about what counts as a contact** - it
+    /// builds the record and he presses Save or he does not.</para>
+    /// </remarks>
+    internal AdifContact? ContactLogEntryForStation(string? callsign, long heardOnHz)
     {
-        if (row is null || _contacts is null || !CanLogRow(row))
+        var who = (callsign ?? "").Trim();
+
+        if (who.Length == 0 || _contacts is null)
         {
             return null;
         }
 
-        var record = _contacts.For(row.Sender);
+        var record = _contacts.For(who);
 
         if (record is null)
         {
             return null;
         }
 
-        var hz = row.HeardOnHz;
+        var hz = heardOnHz;
         var band = hz > 0 ? HfBands.BandFor(hz) : null;
 
         return Ft8ContactLogEntry.For(

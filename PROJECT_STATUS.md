@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 8 of 8
-WORK_INSTRUCTION: 298 - the achievements screen grows as he operates
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 6
+WORK_INSTRUCTION: 299 - the card header does what it promised
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T17:30:41-04:00
-NOTE: 8 of 8, none dropped including the named drop candidate. ACHIEVEMENTS_PHILOSOPHY.md read in full first and its section 2 governed. The screen shows only what he has opened: a fresh log has 0 records and 8 standing targets, and one 40 m contact opens a tab, a continent and 7 filled records. The DXCC table carried no continent; the cited ARRL column was transcribed and cross-checked against unit 252's committed rows, 303 entities, 2 declined for carrying two continents. Regions are Hamlet's own and say so; the Mediterranean was refused by its own generator for spanning Asia and Europe. Every card traces to a log field, proved by removing the field. 25 of 25 tests green, all written tonight, filtered and foregrounded; no suite run. No phase step moved. Four asks back.
+UPDATED: 2026-09-09T18:38:37-04:00
+NOTE: Task 1 done - Log on every card in every state. 5 of 5 green. Committing.
 
 ---
 

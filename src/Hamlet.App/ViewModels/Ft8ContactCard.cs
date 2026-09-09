@@ -274,6 +274,38 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     public bool ShowsRing => ActionKind == Ft8CardActionKind.Send;
 
+
+    /// <summary>True where the card shows Log as a second control beside the action.</summary>
+    /// <remarks>
+    /// <para>**TIM RULED ON 2026-09-09 THAT THE LOG OPTION IS ALWAYS AVAILABLE**:
+    /// *"the log option is always available... I just may be interested in everyone
+    /// who responded to me, even if they do not respond back to me responding to
+    /// them. It should be up to me what I want to log."* **Hamlet does not decide
+    /// what counts as a contact.** A card that withheld it was the application
+    /// asserting a standard he did not set.</para>
+    /// <para>**IT IS FALSE ON A FINISHED CARD ONLY BECAUSE LOG IS ALREADY THE
+    /// ACTION THERE**, so the option is present on every card in every state and is
+    /// never drawn twice on one.</para>
+    /// </remarks>
+    public bool ShowsLogLink => ActionKind != Ft8CardActionKind.Log;
+
+    /// <summary>What the always-available Log control reads.</summary>
+    public string LogLabel => "Log this contact";
+
+    /// <summary>What its hover says.</summary>
+    /// <remarks>
+    /// **IT SAYS THE RECORD WILL BE HONEST**, because the thing he is being offered
+    /// on an unfinished contact is a partial record, and a partial record that
+    /// looked complete would be worse than none (§0.0). The dialog shows him every
+    /// field before anything is written.
+    /// </remarks>
+    public string LogTip
+        => $"Opens the log window with whatever passed between you and {Callsign}, "
+           + "however far it got. Anything Hamlet did not observe is shown as not "
+           + "recorded and is left out of the record entirely, so a half exchange "
+           + "never looks like a whole one. It transmits nothing, and nothing is "
+           + "written until you press Save.";
+
     /// <summary>True where the card is drawn back, so the live ones lead.</summary>
     /// <remarks>
     /// **DIMMED AND NEVER REMOVED** (Tim's ruling, 2026-09-08). A card never

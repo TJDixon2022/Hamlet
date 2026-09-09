@@ -4530,6 +4530,31 @@
                                                                      and the count is on
                                                                      the button so he knows
                                                                      what he is opening. -->
+                                                                <!-- **THE LOG OPTION IS
+                                                                     ALWAYS AVAILABLE**
+                                                                     (Tim, 2026-09-09:
+                                                                     *it should be up to
+                                                                     me what I want to
+                                                                     log*). Hamlet does
+                                                                     not decide what
+                                                                     counts as a contact,
+                                                                     so no state withholds
+                                                                     this. It is absent on
+                                                                     a finished card only
+                                                                     because Log is
+                                                                     already the action
+                                                                     there. -->
+                                                                <Button Grid.Column="2"
+                                                                        Classes="hm-cardlink"
+                                                                        IsVisible="{Binding ShowsLogLink}"
+                                                                        VerticalAlignment="Center"
+                                                                        HorizontalAlignment="Right"
+                                                                        Margin="0,0,10,0"
+                                                                        Content="{Binding LogLabel}"
+                                                                        ToolTip.Tip="{Binding LogTip}"
+                                                                        Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).LogStationCommand}"
+                                                                        CommandParameter="{Binding Callsign}" />
+
                                                                 <Button Grid.Column="3"
                                                                         Classes="hm-cardlink"
                                                                         IsVisible="{Binding HasMessages}"
