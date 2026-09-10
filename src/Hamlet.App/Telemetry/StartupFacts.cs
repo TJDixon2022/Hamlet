@@ -35,6 +35,10 @@ public static class StartupFacts
     /// <param name="audioDevices">The input devices, or null to enumerate.</param>
     /// <param name="transmitEndpoints">The output devices, or null to enumerate.</param>
     /// <param name="categoriesOn">Which telemetry categories are switched on.</param>
+    /// <param name="when">Which of the two snapshots this is.</param>
+    /// <param name="alsoKnown">
+    /// Fills in what only the caller can reach - the radio, the clock and readiness.
+    /// </param>
     /// <remarks>
     /// **IT IS WRITTEN EVEN WHEN IT IS BAD NEWS, ESPECIALLY THEN**, and it is written
     /// under `Diagnostics`, which is the category documented as the application's own
@@ -45,7 +49,9 @@ public static class StartupFacts
         AppSettings? settings,
         IAudioDevices? audioDevices = null,
         Func<IReadOnlyList<RenderEndpoint>>? transmitEndpoints = null,
-        Func<TelemetryCategory, bool>? categoriesOn = null)
+        Func<TelemetryCategory, bool>? categoriesOn = null,
+        string when = StartupSnapshot.AtStart,
+        Action<SnapshotParts>? alsoKnown = null)
     {
         if (telemetry is null)
         {
@@ -55,7 +61,15 @@ public static class StartupFacts
         try
         {
             var parts = Gather(
-                settings, audioDevices, transmitEndpoints, categoriesOn, telemetry);
+                settings, audioDevices, transmitEndpoints, categoriesOn, telemetry,
+                when);
+
+            // **THE CALLER FILLS IN WHAT ONLY IT CAN REACH.** The radio, the clock
+            // and transmit readiness live on the view model, which does not exist
+            // when the early snapshot is written - so the settled one is handed a
+            // way to add them rather than this file learning about a view model
+            // (§0.1).
+            alsoKnown?.Invoke(parts);
 
             telemetry.Write(
                 TelemetryCategory.Diagnostics,
@@ -91,13 +105,15 @@ public static class StartupFacts
     /// <param name="transmitEndpoints">The output devices, or null to enumerate.</param>
     /// <param name="categoriesOn">Which categories are switched on.</param>
     /// <param name="telemetry">The sink, for its own dropped count.</param>
+    /// <param name="when">Which of the two snapshots this is.</param>
     /// <returns>The parts, with every failure recorded rather than thrown.</returns>
     public static SnapshotParts Gather(
         AppSettings? settings,
         IAudioDevices? audioDevices = null,
         Func<IReadOnlyList<RenderEndpoint>>? transmitEndpoints = null,
         Func<TelemetryCategory, bool>? categoriesOn = null,
-        ITelemetry? telemetry = null)
+        ITelemetry? telemetry = null,
+        string when = StartupSnapshot.AtStart)
     {
         var notKnown = new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -135,6 +151,8 @@ public static class StartupFacts
 
         var parts = new SnapshotParts
         {
+            When = when,
+
             AppVersion = Try(Version, notKnown, "appVersion"),
             // **AN ASSEMBLY THAT IS NOT LOADED IS AN UNKNOWN WITH A REASON, NOT A
             // VALUE THAT READS LIKE ONE.** These returned the string

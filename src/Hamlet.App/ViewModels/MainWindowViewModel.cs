@@ -3778,6 +3778,26 @@ public partial class MainWindowViewModel : ObservableObject
     private void OnReadinessChanged(
         CwReadiness readiness, TransmitContext context, string trigger)
     {
+        // **THE MORSE GATE JUDGES ONLY MORSE** (work instruction 305 task 3).
+        //
+        // **WHICH OF THE TWO FAULTS IT WAS, ESTABLISHED BEFORE ANYTHING CHANGED:**
+        // `TransmitReadiness.Check` has exactly **one** production caller,
+        // `CwTransmitter.Check`, so the gate is CW-only and **its refusals never
+        // reach the FT8 send path.** It was not blocking anything. What it was doing
+        // is **filling the record with refusals for a send nobody asked for** - the
+        // panel recomputes on every rig poll through `ApplyRigState`, and on FT8 the
+        // radio is in USB-D, so the gate says `not_in_morse` about a keyer the
+        // operator is not using. **56 of those cost the author an hour**, reading
+        // them as evidence the send chain was broken when a sound card was missing.
+        //
+        // **THE CHECK IS NOT WEAKENED. ITS SCOPE IS.** A CW send still asks the gate
+        // and still needs the radio in CW; `CwTransmitter` is untouched. What stops
+        // is recording a verdict about a transmitter nobody is operating.
+        if (!IsCwMode)
+        {
+            return;
+        }
+
         AppEvents.TransmitReadinessEvaluated(
             _telemetry, readiness, context.State, trigger);
 
@@ -5385,6 +5405,23 @@ public partial class MainWindowViewModel : ObservableObject
         // The first reading is wanted before ten minutes have passed, and the
         // query is awaited nowhere: it lands when it lands.
         _ = QueryTheClockAsync();
+
+        // **AND THE SNAPSHOT IS WRITTEN AGAIN ONCE THOSE HAVE LANDED** (work
+        // instruction 305 task 2). The early one fires before this type exists, so
+        // the radio, the clock and readiness all read `unknown` in it - sixteen of
+        // fifty-six fields on this machine. **This is a wait rather than a
+        // condition**: what has not arrived by then is still reported as unknown
+        // with its reason, because a snapshot that waited for a radio nobody
+        // plugged in would never write at all.
+        // **A DELAY THAT POSTS BACK RATHER THAN A `DispatcherTimer`.** Measured: a
+        // timer does not tick under the headless harness's `RunJobs`, so the settled
+        // snapshot was never written in a test and the fault would have shipped
+        // looking green. The gather reads this type's own state, so it is posted to
+        // the UI thread rather than run on the delay's own.
+        _ = Task.Delay(SettledSnapshotAfter).ContinueWith(
+            _ => Dispatcher.UIThread.Post(
+                WriteSettledSnapshot, DispatcherPriority.Background),
+            TaskScheduler.Default);
         _ageTimer.Stop();
 
         _activitySource = BuildSources();
@@ -6060,6 +6097,96 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void OnClockTick(object? sender, EventArgs e)
         => _ = QueryTheClockAsync();
+
+    /// <summary>How long the settled snapshot waits for the facts to arrive.</summary>
+    /// <remarks>
+    /// <para>**FIVE SECONDS, AND THE FIGURE IS MEASURED RATHER THAN CHOSEN** (work
+    /// instruction 305 task 2). On this machine the clock query answered 264 ms after
+    /// the early snapshot; on the shack machine the radio, the clock and readiness all
+    /// landed **1.0 to 1.3 seconds** after it. Five seconds is comfortably past both
+    /// and is still a wait nobody notices.</para>
+    /// <para>**IT IS A WAIT AND NOT A CONDITION**, which is the instruction's own
+    /// rule: a snapshot that waited for a radio nobody plugged in would never write
+    /// at all. **What has not arrived by then is reported as `unknown` with its
+    /// reason**, exactly as before.</para>
+    /// </remarks>
+    internal static readonly TimeSpan SettledSnapshotAfter = TimeSpan.FromSeconds(5);
+
+    /// <summary>
+    /// **Write the snapshot again, once the facts that arrive on their own have.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE EARLY ONE IS NOT REPLACED AND THAT IS THE POINT.** A machine that
+    /// dies during startup is exactly the machine somebody needs a record of, and it
+    /// leaves the early one behind. This is the second, under the same event name,
+    /// marked `settled`.</para>
+    /// <para>**IT CARRIES WHAT ONLY THIS TYPE CAN REACH**: the radio's port and model
+    /// as read, the clock offset and its age, and the transmit readiness with what
+    /// decided it. Those are the sixteen fields that read `unknown` at start.</para>
+    /// </remarks>
+    private void WriteSettledSnapshot()
+    {
+        try
+        {
+            Telemetry.StartupFacts.Write(
+                _telemetry,
+                _settings,
+                categoriesOn: _settings.IsTelemetryEnabled,
+                when: StartupSnapshot.Settled,
+                alsoKnown: parts => FillInWhatIsKnownNow(parts));
+        }
+        catch (Exception)
+        {
+            // Logging that can crash the app is worse than no logging (§8).
+        }
+    }
+
+    /// <summary>Everything about the radio and the clock this type can say now.</summary>
+    /// <remarks>
+    /// **EVERY READ IS ITS OWN**, so a radio that answers and a clock that has not
+    /// do not cost each other. A fact still missing stays null, which the snapshot
+    /// turns into `unknown` and a reason.
+    /// </remarks>
+    private void FillInWhatIsKnownNow(SnapshotParts parts)
+    {
+        var state = RigState;
+        var now = DateTime.UtcNow;
+
+        parts.RadioConnected = IsConnected;
+        parts.RadioPort = _settings.LastPort;
+
+        if (state[RigField.Mode] is { IsKnown: true } mode)
+        {
+            parts.RadioModel = "mode " + mode.Text;
+        }
+
+        // **THE NEWEST READING OF ANY FIELD**, which is the honest answer to *when
+        // did the radio last answer anything*: a link that has gone quiet stops
+        // moving this on whatever else the state still holds.
+        var newest = state.All()
+            .Where(v => v.AtUtc is not null)
+            .Select(v => v.AtUtc!.Value)
+            .DefaultIfEmpty()
+            .Max();
+
+        parts.RadioLastAnsweredSecondsAgo = newest == default
+            ? null
+            : StartupSnapshot.AgeSeconds(newest, now);
+
+        parts.ClockOffsetKnown = ClockOffset.IsKnown;
+        parts.ClockOffsetSeconds = StartupSnapshot.Round(ClockOffset.OffsetSeconds);
+        parts.ClockOffsetAgeSeconds = StartupSnapshot.AgeSeconds(
+            ClockOffset.MeasuredAtUtc, now);
+        parts.ClockLastQueryReason = _lastClockAnswer?.Reason;
+
+        // **THE READINESS THE OPERATOR IS ACTUALLY IN, NOT THE MORSE GATE'S**
+        // (work instruction 305 task 3). On FT8 the CW gate says `not_in_morse`
+        // about a send nobody asked for, so the snapshot records the operating mode
+        // rather than repeating a verdict that is about a different transmitter.
+        parts.TransmitReadiness = OperatingMode;
+        parts.TransmitReadinessDecidedBy =
+            "the operating mode the panel is on; the Morse gate is asked only in CW";
+    }
 
     /// <summary>Ask once, and record whatever comes back.</summary>
     /// <remarks>

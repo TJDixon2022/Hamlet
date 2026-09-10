@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace Hamlet.RadioEngine.Telemetry;
 
@@ -34,6 +34,32 @@ public static class StartupSnapshot
     /// <summary>The one name a reader looks for.</summary>
     public const string EventName = "startup_snapshot";
 
+    /// <summary>Which of the two snapshots this is.</summary>
+    /// <remarks>
+    /// <para>**THE EARLY ONE FIRES BEFORE THE FACTS EXIST AND THAT IS NOT A DEFECT
+    /// TO REMOVE** (work instruction 305 task 2). Measured on this machine: the
+    /// snapshot is written at 246 ms and the clock query answers 264 ms after it; on
+    /// the shack machine the gap was 1.0 to 1.3 seconds. **The one event designed to
+    /// say what state the machine is in could not see the state of the machine.**
+    /// </para>
+    /// <para>**BOTH ARE WRITTEN, AND EACH IS READABLE ON ITS OWN.** The early one is
+    /// what a machine that dies during startup leaves behind, which is exactly the
+    /// machine somebody needs a record of; the settled one is what a reader wants
+    /// when the application got going. **Waiting instead of writing twice would
+    /// trade the first for the second**, and the instruction's own rule is not to
+    /// wait indefinitely for a fact that may never arrive - a radio nobody plugged
+    /// in never arrives at all.</para>
+    /// <para>**ONE STABLE EVENT NAME EITHER WAY**, so a reader still has one line to
+    /// find; this field says which of the two they are looking at.</para>
+    /// </remarks>
+    public const string WhenField = "when";
+
+    /// <summary>Written before the application had a chance to learn anything.</summary>
+    public const string AtStart = "at_start";
+
+    /// <summary>Written once the facts that arrive on their own have arrived.</summary>
+    public const string Settled = "settled";
+
     /// <summary>What a fact says when it could not be determined.</summary>
     /// <remarks>
     /// **`unknown` IS A REAL ANSWER AND A DEFAULT IS NOT** (§0.0). It is always
@@ -54,6 +80,10 @@ public static class StartupSnapshot
         ArgumentNullException.ThrowIfNull(parts);
 
         var bag = new Dictionary<string, object?>(StringComparer.Ordinal);
+
+        // **WHICH OF THE TWO THIS IS, FIRST**, so a reader knows before anything
+        // else whether an `unknown` below means *not yet* or *not at all*.
+        bag[WhenField] = parts.When;
 
         Add(bag, "appVersion", parts.AppVersion);
         Add(bag, "ft8SharpVersion", parts.Ft8SharpVersion);
@@ -171,6 +201,9 @@ public static class StartupSnapshot
 /// </remarks>
 public sealed class SnapshotParts
 {
+    /// <summary>Which of the two snapshots this is.</summary>
+    public string When { get; init; } = StartupSnapshot.AtStart;
+
     /// <summary>Facts that are known to be unknowable, with why.</summary>
     /// <remarks>
     /// **A READER NEEDS THE DIFFERENCE BETWEEN *NOBODY ASKED* AND *IT CANNOT BE
@@ -226,10 +259,10 @@ public sealed class SnapshotParts
     public bool? TransmitDevicePresent { get; init; }
 
     /// <summary>Whether the radio is connected.</summary>
-    public bool? RadioConnected { get; init; }
+    public bool? RadioConnected { get; set; }
 
     /// <summary>The serial port.</summary>
-    public string? RadioPort { get; init; }
+    public string? RadioPort { get; set; }
 
     /// <summary>The baud rate.</summary>
     public int? RadioBaud { get; init; }
@@ -238,28 +271,28 @@ public sealed class SnapshotParts
     public string? RadioCivAddress { get; init; }
 
     /// <summary>The model as read from the radio, never as assumed.</summary>
-    public string? RadioModel { get; init; }
+    public string? RadioModel { get; set; }
 
     /// <summary>How long ago the radio last answered anything.</summary>
-    public double? RadioLastAnsweredSecondsAgo { get; init; }
+    public double? RadioLastAnsweredSecondsAgo { get; set; }
 
     /// <summary>Whether an offset is held at all.</summary>
-    public bool? ClockOffsetKnown { get; init; }
+    public bool? ClockOffsetKnown { get; set; }
 
     /// <summary>The offset in seconds, where one is held.</summary>
-    public double? ClockOffsetSeconds { get; init; }
+    public double? ClockOffsetSeconds { get; set; }
 
     /// <summary>How old the offset is.</summary>
-    public double? ClockOffsetAgeSeconds { get; init; }
+    public double? ClockOffsetAgeSeconds { get; set; }
 
     /// <summary>Unit 303's token for the last query, or that none has finished.</summary>
-    public string? ClockLastQueryReason { get; init; }
+    public string? ClockLastQueryReason { get; set; }
 
     /// <summary>The readiness state.</summary>
-    public string? TransmitReadiness { get; init; }
+    public string? TransmitReadiness { get; set; }
 
     /// <summary>The fields readiness was decided from.</summary>
-    public string? TransmitReadinessDecidedBy { get; init; }
+    public string? TransmitReadinessDecidedBy { get; set; }
 
     /// <summary>Whether the settings file was read successfully.</summary>
     public bool? SettingsLoaded { get; init; }

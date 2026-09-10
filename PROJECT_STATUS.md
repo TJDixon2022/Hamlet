@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 7 of 7
-WORK_INSTRUCTION: 304 - telemetry solves the mystery without asking him anything
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 4 of 6
+WORK_INSTRUCTION: 305 - the snapshot lands after the facts, and the Morse gate stops judging FT8
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T12:05:32-04:00
-NOTE: 7 of 7, none dropped including the named drop candidate. TWO OF THREE MYSTERIES now diagnosable from one file, against none before; the third is named and what is missing is named with it. One startup_snapshot line of 2,381 bytes carries the devices, which is selected, whether it exists, the settings absences, versions and which categories are on - measured while reading that a category being off drops events silently and that DroppedEventCount was never written. state_changed says the moment a device goes, at warning. Copy diagnostics grew to the whole picture, 3.0 KB, still one paste, and its own test caught two fields putting the reason inside the value. Refusal audit: six visible, one unknown and reported as unknown. I reverted my own seam change after measuring the claim behind it was false. Growth on a healthy machine is zero. 21 of 21 tests green, 41 of 41 with the gates; no suite run. Version 1.12.266 to 1.12.267. No phase step moved. Five asks back, one of them the ruling that closes mystery three.
+UPDATED: 2026-09-10T13:54:41-04:00
+NOTE: Tasks 1 to 3 green - snapshot written twice, unknown fields 16 to 9; the Morse gate was filling the record rather than blocking, and its scope is narrowed.
 
 ---
 
