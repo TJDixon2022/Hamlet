@@ -11795,6 +11795,9 @@ public partial class MainWindowViewModel : ObservableObject
         // `OneClickOneFt4TransmissionTests`. It follows `DigitalMode`, which is the
         // same one value the grid, the cutter and the decoder already derive from,
         // and not a second notion of which mode is running.
+        // **THE STAGE BEFORE THE STAGE RUNS** (work instruction 305 task 3).
+        SendStage.Entered(_telemetry, SendStage.Composed, _digitalMode.ToString());
+
         var composed = ComposeForTheChosenMode(wanted);
 
         if (!composed.Composed)
@@ -11819,6 +11822,10 @@ public partial class MainWindowViewModel : ObservableObject
         // **AND IT IS NOT A CHANGE TO THE MENU.** This is the send path, where
         // the licence gate already refuses. `SendMenuFor` is untouched and
         // nothing is removed, greyed, hidden or reordered.
+        SendStage.Entered(
+            _telemetry, SendStage.ReadBack,
+            composed.Transmission!.Type.ToString());
+
         var readBack = Ft8ReadBack.Check(composed.Transmission!);
 
         if (!readBack.WouldReachAnybody)
@@ -11852,6 +11859,10 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         _armedText = wanted;
+
+        SendStage.Entered(
+            _telemetry, SendStage.Armed,
+            next.ToString("HHmmss", CultureInfo.InvariantCulture) + " UTC");
 
         _armedSend.Arm(new OperatorSend(
             composed.Transmission!,
@@ -11956,6 +11967,13 @@ public partial class MainWindowViewModel : ObservableObject
 
 
         _lastBoundaryDriven = boundary;
+
+        // **THE BOUNDARY ARRIVED AND THE SEND WAS HANDED OVER.** Everything after
+        // this is the engine's own stages, and a file that stops here says the
+        // transmission was armed and the boundary came and nothing keyed.
+        SendStage.Entered(
+            _telemetry, SendStage.BoundaryReached,
+            boundary.ToString("HHmmss", CultureInfo.InvariantCulture) + " UTC");
 
         _ = AtSlotBoundaryAsync(boundary);
     }

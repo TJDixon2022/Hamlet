@@ -309,6 +309,22 @@ public sealed class Ft8TransmitSequence
     {
         ArgumentNullException.ThrowIfNull(send);
 
+        // **THE STAGE IS WRITTEN BEFORE THE STAGE RUNS** (work instruction 305
+        // task 3). A transmission the operator watched the radio make left no
+        // record at all, because only outcomes were written and this path
+        // produced none - so *never entered* and *entered and died* were one
+        // empty file.
+        var stages = new List<string>();
+
+        void Entering(string stage, string? detail = null)
+        {
+            stages.Add(stage);
+            SendStage.Entered(_telemetry, stage, detail);
+        }
+
+        Entering(SendStage.GateAsked, send.FrequencyHz.ToString(
+            System.Globalization.CultureInfo.InvariantCulture) + " Hz");
+
         // THE GATE FIRST, AND NOTHING BEFORE IT BUT A NULL CHECK. Everything
         // after this line can key a radio; nothing before it can.
         var decision = _guard.Check(
@@ -317,13 +333,17 @@ public sealed class Ft8TransmitSequence
         if (!Permits(decision, out var refusal))
         {
             return Recorded(
-                send, Refused(Ft8TransmitOutcome.RefusedByLicence, refusal, decision.Citation));
+                send,
+                Refused(Ft8TransmitOutcome.RefusedByLicence, refusal, decision.Citation),
+                stages);
         }
 
         if (!Sendable(send, out var unsendable))
         {
             return Recorded(
-                send, Refused(Ft8TransmitOutcome.RefusedAsUnsendable, unsendable, string.Empty));
+                send,
+                Refused(Ft8TransmitOutcome.RefusedAsUnsendable, unsendable, string.Empty),
+                stages);
         }
 
         var samples = send.Transmission.Samples;
@@ -338,9 +358,16 @@ public sealed class Ft8TransmitSequence
 
         try
         {
+            Entering(SendStage.Keyed);
+
             await _port.WriteAsync(Frame(CivConstants.PttOn), cancellationToken)
                 .ConfigureAwait(false);
             keyed = true;
+
+            Entering(
+                SendStage.HandedToTheSoundCard,
+                samples.Length.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture) + " samples");
 
             var went = await _sink
                 .PlayAsync(samples, send.Transmission.SampleRate, cancellationToken)
@@ -393,6 +420,8 @@ public sealed class Ft8TransmitSequence
             {
                 try
                 {
+                    Entering(SendStage.Unkeyed);
+
                     // CancellationToken.None: whoever cancelled wanted the
                     // transmission stopped, which is the opposite of wanting this
                     // write skipped.
@@ -422,7 +451,8 @@ public sealed class Ft8TransmitSequence
             send,
             new TransmitRun(
                 outcome, reason, string.Empty, keyed, unkeyedNormally, abort, played,
-                samples.Length, seconds));
+                samples.Length, seconds),
+            stages);
     }
 
     /// <summary>
@@ -431,6 +461,7 @@ public sealed class Ft8TransmitSequence
     /// </summary>
     /// <param name="send">What the operator asked for.</param>
     /// <param name="run">What became of it.</param>
+    /// <param name="stages">Which stages the path entered, in order.</param>
     /// <returns><paramref name="run"/>.</returns>
     /// <remarks>
     /// <para>**AFTER THE RADIO IS OUT OF TRANSMIT, NEVER BEFORE.** Writing a
@@ -453,7 +484,8 @@ public sealed class Ft8TransmitSequence
     /// transmission that did not happen because the licence gate said no is worth
     /// exactly as much to somebody reading the log as one that did.</para>
     /// </remarks>
-    private TransmitRun Recorded(OperatorSend send, TransmitRun run)
+    private TransmitRun Recorded(
+        OperatorSend send, TransmitRun run, IReadOnlyList<string>? stages = null)
     {
         var record = new TransmitRecord(
             send.SlotStartUtc,
@@ -469,8 +501,17 @@ public sealed class Ft8TransmitSequence
             run.CameOutOfTransmit,
             run.Keyed);
 
+        var bag = new Dictionary<string, object?>(record.ToBag());
+
+        // **WHICH STAGES THIS TRANSMISSION ACTUALLY REACHED** (work instruction 305
+        // task 3). The record stays exactly what it was and gains one field, so a
+        // reader with only this line still learns where the path got to.
+        bag["stagesEntered"] = stages is { Count: > 0 }
+            ? string.Join(" | ", stages)
+            : StartupSnapshot.Unknown;
+
         _telemetry.Write(
-            TelemetryCategory.Transmit, TransmitRecord.EventName, record.ToBag(), record.Level);
+            TelemetryCategory.Transmit, TransmitRecord.EventName, bag, record.Level);
 
         return run;
     }
