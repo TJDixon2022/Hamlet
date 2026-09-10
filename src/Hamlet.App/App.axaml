@@ -104,6 +104,18 @@
              decision and is not this unit's to make. -->
         <x:String x:Key="HmDecodeContactHelp">Where the contact with the sender stands, and how many slots ago - a slot being fifteen seconds on FT8 and 7.5 seconds on FT4. Waiting on him, your move, complete, or gone quiet. Complete means both callsigns, both grids or reports, and both acknowledgements have passed - a 73 is politeness and its absence does not withhold it. Nothing here is ever closed or withdrawn.</x:String>
 
+        <!-- **HOW BIG THE THINGS IN THE STATUS BAR ARE, IN ONE PLACE** (work
+             instruction 301 task 2). The achievement quill and the contact belt
+             ring both read this, so neither can drift into looking noticeably
+             smaller than the other.
+
+             **IT IS THE BAR'S INSIDE LESS FOUR PIXELS.** Measured on the realized
+             window: the bar is 40 pixels tall outside and 30 inside once its own
+             padding and border are taken off, so 26 fills it with two pixels of
+             headroom above and below. **The bar's height did not change** - the
+             room came out of padding that was there before. -->
+        <x:Double x:Key="HmStatusMarkSize">26</x:Double>
+
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,
              green = decode. -->
@@ -227,11 +239,15 @@
         <!-- A tray icon: no chrome at rest, a solid hit target everywhere
              inside it, and a quiet ground on hover so it reads as pressable
              (0.5.1). -->
+        <!-- **THE MARK IS THE TALLEST THING IN THE STATUS BAR, SO ITS PADDING IS
+             THE BAR'S HEADROOM** (work instruction 301 task 2). Two pixels each
+             side rather than three: the bar's height is unchanged and the quill
+             inside it grew, which is the whole point of the task. -->
         <Style Selector="Button.hm-trayicon /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="CornerRadius" Value="4" />
-            <Setter Property="Padding" Value="3" />
+            <Setter Property="Padding" Value="2" />
         </Style>
 
         <Style Selector="Button.hm-trayicon:pointerover /template/ ContentPresenter">

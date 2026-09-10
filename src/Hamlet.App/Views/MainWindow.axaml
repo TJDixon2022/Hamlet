@@ -4788,10 +4788,11 @@
 
         <!-- Status bar -->
         <Border Grid.Row="2"
+                x:Name="StatusBar"
                 Background="{StaticResource HmSlateTintBrush}"
                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
                 BorderThickness="1" CornerRadius="6"
-                Padding="12,6" Margin="0,12,0,0">
+                Padding="12,4" Margin="0,12,0,0">
             <!-- **FOUR COLUMNS SINCE WORK INSTRUCTION 300.** It was two, with the
                  badge line and the belt strip both asking for a column that did
                  not exist; the achievement mark needs one of its own between
@@ -4859,8 +4860,18 @@
                         VerticalAlignment="Center"
                         Command="{Binding OpenAchievementsCommand}"
                         ToolTip.Tip="{Binding AchievementsMarkTip}">
+                    <!-- **AN OBJECT THAT FILLS THE BAR, NOT A GLYPH IN IT** (Tim,
+                         2026-09-09: *it is a tiny dot lost in the sea of the
+                         tray*). Measured before the change: the bar's inside is 26
+                         pixels and the quill was 20 of them.
+
+                         **THE SIZE IS A RESOURCE AND NOT A NUMBER TYPED TWICE.**
+                         The belt ring beside it reads the same one, so the two
+                         cannot drift into one looking noticeably smaller than the
+                         other. -->
                     <ctl:AchievementMarkControl x:Name="AchievementMark"
-                                                Width="20" Height="20"
+                                                Width="{StaticResource HmStatusMarkSize}"
+                                                Height="{StaticResource HmStatusMarkSize}"
                                                 IsNew="{Binding AchievementsUnseen}" />
                 </Button>
 
@@ -4897,6 +4908,7 @@
                             Background="Transparent"
                             CornerRadius="16"
                             Padding="11,1" MinWidth="46"
+                            Height="{StaticResource HmStatusMarkSize}"
                             VerticalAlignment="Center"
                             ToolTip.Tip="{Binding ContactBeltTip}">
                         <TextBlock x:Name="ContactCountNumber"

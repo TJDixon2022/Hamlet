@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 301 - the hint mark, the achievement mark size, and a real map
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T22:46:48-04:00
-NOTE: Task 1 green - the i mark had no hit target at all, 9 of 9 points found nothing; now 0 of 9 miss. Reaches 42 uses across 8 windows.
+UPDATED: 2026-09-09T22:50:00-04:00
+NOTE: Task 2 green - status bar 40 outside, 30 inside; the quill 20 to 26 with the belt matching, and the bar height unchanged.
 
 ---
 
