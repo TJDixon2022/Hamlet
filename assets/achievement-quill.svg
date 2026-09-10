@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="44" height="44" role="img" aria-label="Achievements">
+  <title>Achievements</title>
+  <desc>The quill vane, Hamlet's own mark. Drawn for the achievements tray icon. The
+  fill and the stroke are set by the application: muted outline at rest, decode green
+  filled when something is new. The orbit ring is drawn in code, not here.</desc>
+  <path id="vane" d="M22 8 C15 15, 15 27, 22 36 C29 27, 29 15, 22 8 Z"
+        fill="currentColor" stroke="context-stroke" stroke-width="2.2" stroke-linejoin="round"/>
+  <line id="spine" x1="22" y1="12" x2="22" y2="33" stroke="context-stroke" stroke-width="1.7"/>
+</svg>

@@ -307,6 +307,19 @@ public sealed class AppSettings
     public List<string>? AchievementGroupsAnnounced { get; set; }
 
     /// <summary>
+    /// True while something has been earned that he has not looked at.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS PERSISTED ON PURPOSE** (work instruction 300 task 2: *it must
+    /// not clear itself*). If it lived only in memory, closing Hamlet on an evening
+    /// he never opened the screen would throw away the one thing telling him
+    /// something happened. **He earned it; the mark waits.**</para>
+    /// <para>**IT IS SET WHERE A NOTICE IS RAISED AND CLEARED WHERE THE SCREEN IS
+    /// OPENED**, and nowhere else. Nothing on a timer clears it.</para>
+    /// </remarks>
+    public bool AchievementsUnseen { get; set; }
+
+    /// <summary>
     /// True once the operator has tuned with the scroll wheel (HM-DEC-141).
     /// </summary>
     /// <remarks>

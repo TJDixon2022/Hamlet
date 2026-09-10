@@ -224,6 +224,24 @@
              separates this from a label, and it is the same slate tint the panel
              headers use for the same purpose. Grey stays reserved for what
              genuinely cannot be used, so a chip is never greyed. -->
+        <!-- A tray icon: no chrome at rest, a solid hit target everywhere
+             inside it, and a quiet ground on hover so it reads as pressable
+             (0.5.1). -->
+        <Style Selector="Button.hm-trayicon /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="3" />
+        </Style>
+
+        <Style Selector="Button.hm-trayicon:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HmSlateTintBrush}" />
+        </Style>
+
+        <Style Selector="Button.hm-trayicon">
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
         <Style Selector="Button.hm-chip /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />

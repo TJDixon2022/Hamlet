@@ -4792,7 +4792,11 @@
                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
                 BorderThickness="1" CornerRadius="6"
                 Padding="12,6" Margin="0,12,0,0">
-            <Grid ColumnDefinitions="*,Auto">
+            <!-- **FOUR COLUMNS SINCE WORK INSTRUCTION 300.** It was two, with the
+                 badge line and the belt strip both asking for a column that did
+                 not exist; the achievement mark needs one of its own between
+                 them, so they are named rather than clamped. -->
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
                 <!-- **ONLY WHAT SPEAKS** (Tim, 2026-09-08: text only where he
                      intentionally hovers, and a fault is the one exception). This
                      bound to `StatusText` and carried an 884-character paragraph
@@ -4829,7 +4833,38 @@
                      278). Never a dialog: he is often mid-exchange with fifteen
                      seconds to answer in, and a modal window there costs him the
                      contact it is congratulating him for. -->
-                <TextBlock Grid.Column="1" Text="{Binding ContactBadgeLine}"
+                <!-- **THE ACHIEVEMENT MARK** (Tim, 2026-09-09: *I want to add an
+                     achievement icon to the bottom tray... if you click on that
+                     icon, the achievements pop up*).
+
+                     **A FEATHER IN YOUR CAP**, and it is the quill already in the
+                     logo, the app icon and the tray rather than a new metaphor.
+
+                     **THE TWO STATES DIFFER BY SHAPE AND NOT ONLY BY COLOUR**
+                     (0.6): outlined with no ring at rest, filled with a ring when
+                     something is unseen. Printed in greyscale the two are still
+                     two.
+
+                     **A BUTTON AND NOT A BARE CONTROL**, which is unit 299 finding
+                     applied: a control that draws an outline is not a hit target in
+                     its middle, and this is a solid one that the pointer can land
+                     anywhere in.
+
+                     **IT OPENS THE SCREEN THE MENU OPENS.** There is no second
+                     window. -->
+                <Button Grid.Column="1"
+                        x:Name="AchievementMarkButton"
+                        Classes="hm-trayicon"
+                        Margin="16,0,0,0"
+                        VerticalAlignment="Center"
+                        Command="{Binding OpenAchievementsCommand}"
+                        ToolTip.Tip="{Binding AchievementsMarkTip}">
+                    <ctl:AchievementMarkControl x:Name="AchievementMark"
+                                                Width="20" Height="20"
+                                                IsNew="{Binding AchievementsUnseen}" />
+                </Button>
+
+                <TextBlock Grid.Column="2" Text="{Binding ContactBadgeLine}"
                            IsVisible="{Binding HasContactBadge}"
                            FontSize="12" Margin="16,0,0,0" FontWeight="SemiBold"
                            Foreground="{StaticResource HmAmberBrush}" />
@@ -4839,7 +4874,7 @@
                      status bar carrying a paragraph. **What he is building is the
                      count, so the count is the big thing** and the word beside it
                      is small, with how far the next badge is after that. -->
-                <StackPanel Grid.Column="2" Orientation="Horizontal"
+                <StackPanel Grid.Column="3" Orientation="Horizontal"
                             Spacing="5" Margin="16,0,0,0"
                             VerticalAlignment="Center"
                             IsVisible="{Binding HasLoggedContacts}">

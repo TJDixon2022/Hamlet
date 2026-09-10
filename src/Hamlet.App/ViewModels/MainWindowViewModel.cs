@@ -4144,6 +4144,63 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
     public DecisionLogViewModel Decisions { get; } = new();
 
+    /// <summary>
+    /// **True while something has been earned that he has not looked at.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS SET WHERE A NOTICE IS RAISED AND CLEARED WHERE THE SCREEN IS
+    /// OPENED**, and by nothing else. **No timer clears it** (work instruction 300
+    /// task 2): the orbit stops turning after half a minute and the mark stays lit,
+    /// because a mark that cleared itself would mean he never learns what he earned
+    /// on any evening he was looking at the radio.</para>
+    /// <para>**IT SURVIVES A RESTART**, in `settings.json`, for the same reason.
+    /// </para>
+    /// <para>**AND NEVER ON A FIRST LOOK AT AN EXISTING LOG.** It rides the badge
+    /// event, which unit 278's seeding rule already keeps quiet the first time a log
+    /// is read - so a man importing fourteen contacts gets no notice and no mark.
+    /// </para>
+    /// </remarks>
+    public bool AchievementsUnseen
+    {
+        get => _settings.AchievementsUnseen;
+
+        private set
+        {
+            if (_settings.AchievementsUnseen == value)
+            {
+                return;
+            }
+
+            _settings.AchievementsUnseen = value;
+            SettingsStore.Save(_settings);
+
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>What the mark says when it is hovered.</summary>
+    /// <remarks>
+    /// **TEXT ONLY WHERE HE HOVERS** (Tim, 2026-09-08), and it says which of the two
+    /// states it is in, because the state is the whole point of the mark.
+    /// </remarks>
+    public string AchievementsMarkTip
+        => AchievementsUnseen
+            ? "You have earned something you have not looked at yet. Click to open "
+              + "your achievements. The feather stays marked until you do."
+            : "Your achievements: what you have collected, and a few things to go "
+              + "and try. Click to open them.";
+
+    /// <summary>Mark something as unseen, for a test.</summary>
+    internal void MarkAchievementUnseenForTests() => AchievementsUnseen = true;
+
+    /// <summary>Clear the mark the way opening the screen clears it, for a test.</summary>
+    /// <remarks>
+    /// **THE SAME LINE <see cref="OpenAchievements"/> RUNS**, reached without a
+    /// dialog: a headless test cannot show a modal window, and what task 2 has to
+    /// prove is that opening the screen is what clears the mark.
+    /// </remarks>
+    internal void ClearAchievementMarkForTests() => AchievementsUnseen = false;
+
     /// <summary>**Show him his own log**, which nothing in the app ever did.</summary>
     /// <remarks>
     /// <para>**IT OPENS A READER AND NOTHING ELSE.** The window has no handler of
@@ -4194,6 +4251,12 @@ public partial class MainWindowViewModel : ObservableObject
         {
             return;
         }
+
+        // **OPENING THE SCREEN IS WHAT CLEARS THE MARK** (work instruction 300 task
+        // 2), and it is cleared before the window is shown rather than after it is
+        // closed: he has looked the moment it opens, and a dialog that threw on the
+        // way up would otherwise leave the mark lit for something he had seen.
+        AchievementsUnseen = false;
 
         new Views.AchievementsWindow
         {
@@ -10897,6 +10960,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var row in fresh)
         {
+            AchievementsUnseen = true;
+
             BadgeEarned?.Invoke(
                 this,
                 new BadgeAward(records.Count, Array.Empty<int>()) { First = row });
@@ -11060,6 +11125,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var opening in fresh)
         {
+            // **THE NOTICE SAYS WHAT WAS EARNED AND THE MARK SAYS SOMETHING IS
+            // UNSEEN** (work instruction 300). The notice leaves after eight
+            // seconds; the mark waits until he opens the screen.
+            AchievementsUnseen = true;
+
             BadgeEarned?.Invoke(
                 this,
                 new BadgeAward(records.Count, Array.Empty<int>())

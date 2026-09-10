@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -207,12 +207,16 @@ public static class SvgMark
         geometry.Transform = new MatrixTransform(transform);
 
         var stroke = Paint(element, "stroke");
+        var deferred = Defers(element, "stroke");
 
+        // **A DEFERRED STROKE KEEPS ITS WIDTH AND LOSES ITS COLOUR**, so the caller
+        // can paint it without re-reading the file for a number that is already
+        // here. A `Pen` with a null brush draws nothing until one is given.
         return new GeometryDrawing
         {
             Geometry = geometry,
             Brush = Paint(element, "fill"),
-            Pen = stroke is null
+            Pen = stroke is null && !deferred
                 ? null
                 : new Pen(
                     stroke,
@@ -353,6 +357,25 @@ public static class SvgMark
     {
         var raw = (string?)element.Attribute(attribute);
 
+        // **A MARK MAY SAY *THE APPLICATION DECIDES* AND THIS UNDERSTANDS THAT**
+        // (work instruction 300). The achievement quill is drawn once and painted
+        // two ways - muted and outlined at rest, decode green and filled when
+        // something is new - so its own file cannot name a colour without picking
+        // one of the two. `currentColor` is SVG's own word for it and
+        // `context-fill` and `context-stroke` are the same idea for a referenced
+        // mark; all three come back null and the caller paints.
+        //
+        // **THE ALTERNATIVE WAS MEASURED AND IT THREW**: before this,
+        // `Color.Parse("context-stroke")` raised
+        // *Invalid color string: 'context-stroke'*, which is unit 285's own rule
+        // working correctly - it refuses what it does not understand rather than
+        // drawing it wrongly. Unit 286's precedent decides what to do about it:
+        // **the mark is approved and the loader is not, so the loader changes.**
+        if (Deferred(raw))
+        {
+            return null;
+        }
+
         if (attribute == "fill" && raw is null)
         {
             // SVG fills black by default, and every shape in these two files that
@@ -364,6 +387,21 @@ public static class SvgMark
             ? null
             : new SolidColorBrush(Color.Parse(raw));
     }
+
+    /// <summary>Whether a paint attribute defers to the caller.</summary>
+    /// <param name="element">The element.</param>
+    /// <param name="attribute">`fill` or `stroke`.</param>
+    /// <returns>True where the file says the application decides.</returns>
+    public static bool Defers(XElement element, string attribute)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+
+        return Deferred((string?)element.Attribute(attribute));
+    }
+
+    /// <summary>Whether a paint value defers to the caller.</summary>
+    private static bool Deferred(string? raw)
+        => raw is "currentColor" or "context-fill" or "context-stroke";
 
     /// <summary>The line cap, defaulting to butt as SVG does.</summary>
     /// <param name="element">The element.</param>

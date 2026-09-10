@@ -54,6 +54,14 @@
          Linked rather than copied so there is one file (work instruction 299
          task 3). -->
     <AvaloniaResource Include="..\..\assets\world-coastline.svg" Link="Assets\world-coastline.svg" />
+    <AvaloniaResource Include="..\..\assets\achievement-quill.svg" Link="Assets\achievement-quill.svg" />
+
+    <!-- The world coastline ships at the repository root because it is a
+         PROJECT asset rather than an application one: it was drawn for this
+         project, it is not survey data, and the note beside it says so.
+         Linked rather than copied so there is one file (work instruction 299
+         task 3). -->
+    <AvaloniaResource Include="..\..\assets\world-coastline.svg" Link="Assets\world-coastline.svg" />
   </ItemGroup>
 
   <!-- The sample provider is an implementation detail of playback with a
