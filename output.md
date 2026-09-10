@@ -1,35 +1,36 @@
-﻿# Work instruction 302 — the moving string, and a name for the station
+# Work instruction 303 — the clock query says what it did
 
-**READ IN THIS ORDER.** The instruction expected one moving string. **There were
-four**, and only two of them were strings.
+**READ IN THIS ORDER.** The clock query **works on this machine**, every time, and I
+could not reproduce your fault here. What I did instead is make it impossible for the
+next occurrence to be invisible, and I found two other things that were asserting
+what they did not know.
 
 A. **The phase goal — FT4 works exactly the way FT8 does.** This unit advanced no
-   step of it. It made the character ceiling measurable and gave a US station's card
-   a name and a town.
+   step of it. It closed a hole in the record, corrected two false sentences, and
+   changed one word that mattered.
 
 B. **Step 4 and its exit criteria** — pressing FT4 tunes and decodes; the panel, the
    conversation, the ring, the filters, the tooltips, the ledger and the right-click
    menu all working unchanged; one click, one transmission; a whole exchange from one
-   right click at the bench. **None was measured tonight.** Step 4 stays `partial`,
-   and its second criterion now describes a card that names a US operator.
+   right click at the bench. **None was measured tonight.** Step 4 stays `partial`.
 
-C. **The report last, and section 4 raises 3 items.** Two asks are closed by this
-   unit. Nothing blocks the next one.
+C. **The report last, and section 4 raises 4 items.** One needs a measurement from
+   your machine and nothing else will settle it.
 
 ```
-UNIT:       302 — complete at task 7 of 7, none dropped — 2026-09-10 09:13
+UNIT:       303 — complete at task 7 of 7, none dropped — 2026-09-10 11:33
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  The Digital tab's character count holds still, and a US station's card
-            says who and where he is.
+UNIT GOAL:  The clock query records what it did, the reason it is not happening is
+            found, a lost audio device is not silent, and Sent means sent.
 ADVANCED:   no — no phase step moved. Step 4 stays partial: nothing tuned, nothing
             transmitted, no exchange run at the bench.
-NUMBER:     the Digital tab's character count, measured twice
-            BEFORE: 1234 then 1233, thirty-seven seconds apart. Across nights it
-            had read 1281, 1293, 1259 — never the same figure twice.
-            AFTER:  1194 then 1194, and 1193 then 1193 for the working state,
-            with the countdown reading 13 and then 11 in between. Reproduced
-            across repeated class runs and from a second test class.
-DRIFT:      6 consecutive units without advance  (was 5, carried from unit 301)
+NUMBER:     clock telemetry events, before and after
+            BEFORE: 0. Across 2,600 events and eleven app starts, not one naming a
+            time server, an offset, an attempt or a failure.
+            AFTER:  2 per query — the attempt, then the outcome — with six failure
+            paths each carrying their own stable token. Measured from the real
+            view model: 2 records written, offset 1.884 s.
+DRIFT:      7 consecutive units without advance  (was 6, carried from unit 302)
 ```
 
 ---
@@ -37,232 +38,273 @@ DRIFT:      6 consecutive units without advance  (was 5, carried from unit 301)
 ## 1. What Claude did
 
 **Complete. Seven tasks of seven, none dropped, including the named drop candidate.**
-Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, three commits,
-all pushed. Root version 1.12.264 to **1.12.265**, bumped once. **No file under
+Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, six commits,
+all pushed. Root version 1.12.265 to **1.12.266**, bumped once. **No file under
 `src/Ft8Sharp/` was touched**, and nothing here transmits.
 
-**Nothing in this report is evidence about the radio.** Nothing was tuned, nothing
-was transmitted, and no audio was captured.
+**Nothing in this report is evidence about the radio computer** (`SHACK_FACTS.md`,
+HM-DEC-093). That matters more than usual tonight: the fault you are seeing is on
+your machine and every measurement below is from this one.
 
-**Nothing was recorded to `DECISIONS.md`.** The four judgements made on this session's
-authority are in `PHASE_OUTCOME.md`'s entry and are listed below.
+**Nothing was recorded to `DECISIONS.md`.** The five judgements made on this
+session's authority are in `PHASE_OUTCOME.md`'s entry and listed below.
 
-**One defect in the order, reported and not repaired** (§9.6): the file carries
-`PROJECT:` but **no `ISSUED:` line**. It is plainly this unit's — it is the only order
-in the tree and its heading carries 302 — so the work proceeded.
+### Task 1 — the query records what it did
 
-### Task 1 — the moving string, found by standing the application up
+**Two events per query: the attempt, then the outcome.** The attempt is written
+**before the socket opens**, which is the half that makes an absence readable — after
+this, no record at all means nothing was tried.
 
-**Not searched for.** The probe realizes the Digital tab, writes down every string
-with the control that owns it, and two runs are diffed. **Thirty-seven seconds apart
-it found the first one immediately.**
+**Six ways to fail returned one value.** `SntpClock` collapsed a name that would not
+resolve, a packet that never came back, a reply shorter than 48 bytes and a timestamp
+that would not parse into `ClockOffset.Unknown`, with nothing to tell them apart.
 
-Following each to what composes it gave four causes, not one:
+**And its caller claimed nothing could throw, with nothing verifying it.**
+`QueryTheClockAsync`'s own remarks said every failure returns unknown; `SntpClock`
+catches four exception types and there are more than four ways to fail. An unhandled
+one inside a fire-and-forget task takes the application down. It now catches and
+records.
 
-| # | What moves | What makes it move |
-|---|---|---|
-| 1 | **The slot countdown**, `10` then `3` | `Ft8Turn.CountText` off `DateTime.UtcNow`. 1 to 3 characters |
-| 2 | **The card's relative age** | `Ft8ContactCard.Ago` against a fixture whose slot was fixed and whose *now* was not |
-| 3 | **The waterfall summary**, `not listening yet` | `ReconnectOnStartup` ships on, so a background connect starts the spectrum |
-| 4 | **The clock-offset line** | `QueryTheClockAsync` runs a **live SNTP network call** |
+**`Diagnostics`, not an eighth category** — About still reports 7 of 7.
 
-**Number 2 is worse than a string changing width.** The seeded card aged out of the
-list entirely, and the empty-state prose it had been hiding came back: **the total
-rose 16 while the block count fell 10.**
+### Task 2 — why it is not asking
 
-**Number 3 is why both Digital rows fell by exactly 17 together** on some class runs
-and not others. **Number 4 is why the first window built in a process measured 1240
-and every later one 1194** — the time server having replied in between.
+**It is asking, and it is working.** Section 3 carries the stage-by-stage run.
 
-**Unit 284's rule held exactly.** All four are composed at run time; a source search
-would have come back empty and read as clean.
+**What I can rule out for your machine**, from what the code does rather than from a
+theory: it is called from the constructor unconditionally and on a ten-minute timer,
+so it is not a call that never happens; and **Hamlet binds an ephemeral port and only
+sends to 123**, so whatever holds 123 on your machine is not in the way. That removes
+the port-contention theory your table records as already tried.
 
-### Task 2 — the ceiling holds still
+**I did not claim a repair for a cause I could not see.**
 
-**Two of the four belong on screen and neither moved behind a hover.** The countdown
-is Tim's own ask — *nobody has responded, but I want to know how long I have till the
-next transmit cycle* — and how stale a card is, is why its time line exists. **Both
-are live measurements, not prose, and the ceiling exists to stop prose growing.** So
-the sweep counts each at its widest reading, derived and stated: countdown **3**, time
-line **28**, clock line **47**. A readout that grows past its stated width **fails
-loudly** rather than being quietly clamped.
+### Task 3 — the message says the true fault
 
-**The other two were fixture nondeterminism** and are pinned: the card's clock, and
-the clock offset stated rather than raced.
+`ClockOffset.Describe` says *clock not checked yet, so slots cannot be cut* for **both**
+no-offset states. **Saying "not checked yet" about a query that was made and failed is
+the application asserting something it does not know**, and it is the sentence that
+sent twenty minutes to the wrong machine. Watched failing before it was fixed.
 
-**All four MainWindow rows re-set** from figures reproduced across repeated runs:
-CW **426**, Digital **1194**, Digital working **1193**, Voice **468**. They are lower
-than before because with the offset stated the strip carries the unmeasured line
-rather than a measured one.
+### Task 4 — a lost audio device is not silent
 
-### Tasks 3 to 6 — callook, and a name on the card
+**Reported before changed, as the instruction asks.** `ChooseEndpoint` returns null
+where the saved id names no endpoint; nothing is substituted and the id is kept. That
+half was already right.
 
-**No second client.** `CallookCallsignLookup` has been how Settings resolved the
-operator's own class, coordinates and grid since 2026-08-14. `StationDirectory` is a
-cache and a parser over that same one, handed in rather than built.
+**What was missing was the visible statement**, and it is now on the Settings window
+in amber, naming the device.
 
-**The parser's own restraint was narrowed, not undone.** That file has declined the
-whole name-and-address block since it was written, with the reason stated in its
-remarks. Somebody has now asked — for two fields. **The street is still named nowhere
-in this application.**
+**And what I did not find, which matters more.** I suspected the two-way picker
+binding of erasing the saved device, **wrote a guard for it, then measured it innocent
+twice**, and removed the guard rather than ship a fix for a mechanism I had disproved.
+The disproof is written into the handler's own remarks.
+
+### Task 5 — the achievement mark, option B
+
+No pill, **27 px**, filled green at rest, orbit ring when something is new, belt pill
+unchanged. **The ceiling was confirmed rather than assumed.**
+
+### Task 6 — `Sent` means sent
+
+**It never did.** Section 3 carries what it meant and what it means now.
 
 ### Task 7 — the outcome entry
 
-Filed as **`UNIT 302 - STEP 4`** with nothing renumbered by hand.
+Filed as **`UNIT 303 - STEP 4`** with nothing renumbered by hand.
 
-### The four things decided on this session's authority
+### The five things decided on this session's authority
 
-1. **The two real live readouts stay on screen** and the ceiling bounds what it counts.
-2. **The two fixture races are pinned in the fixture**, not worked around in the sweep.
-3. **The name replaces the country on a card** rather than joining it.
-4. **The street address is still read nowhere.**
+1. **The attempt is written before the socket opens**, so an absence is readable.
+2. **`Diagnostics` rather than an eighth category.**
+3. **The caller catches and records**, because it catches more than `SntpClock` does.
+4. **I removed my own speculative guard** rather than shipping a disproved fix.
+5. **Option B spends one of the mark's two greyscale carriers**, deliberately, on your
+   ruling — the ring is now doing that work alone.
 
 ---
 
 ## 2. What the owner should expect
 
-**A US station's card says who he is.** `W7PP · Richard, Sun City AZ · 1,900 miles`
-where it used to say `United States`. **Everyone else's card reads exactly as it did**
-— `VP2MAA · Montserrat · 1,900 miles`, unchanged — because callook only holds US
-licences and silence is the right answer rather than a gap.
+**The clock line tells you which problem you have.** If nothing has come back yet it
+says Hamlet is asking. If a query was made and failed it says so and names what
+failed. **It will no longer tell you the clock has never been checked when it has.**
 
-**It never waits for the network.** The card is drawn from what is already known and
-the answer arrives on its own; if the lookup is slow, or fails, or you are offline,
-the card reads as it does today. No spinner, no error, no gap where a name would be.
+**And the next occurrence will be in the file.** Open `%AppData%\Hamlet\telemetry\`
+and look for `clock_query_started` and `clock_query_finished`. **If you see a started
+with no finished, the query hung. If you see neither, nothing asked.** Those were the
+same picture before tonight.
 
-**Two red tests are green** for the first time in three units.
+**A missing sound card says so.** Open Settings and, if the transmit device named in
+your file is not on the machine, an amber line says which one is missing and that
+sending is refused until it comes back or you pick another. Nothing is substituted.
+
+**The feather is bigger and green at rest**, 27 px, filling the bar.
 
 **What will look wrong and is not:**
 
-- **The character ceilings all got smaller.** CW 650→550, Digital 1250→1300 with a
-  lower measured figure, Voice 650→600. The surfaces genuinely say less, because the
-  sweep now states the clock's condition instead of racing a time server for it.
-- **`TheAchievementsScreenTests` has 2 red.** Measured with this unit's changes
-  stashed: **the same 2 were red before it started.** Inherited, not caused, and left
-  alone under §12.6.
+- **`ft8_transmission` says `Played` where it used to say `Sent`.** The behaviour did
+  not change; the word did, because it was false. Old records saying `Sent` mean
+  exactly what `Played` means now, and none were deleted.
+- **Two inherited reds.** `TheFitGuardAsksAboutTheGridTheSendIsOnTests` has one and
+  `TheAchievementsScreenTests` has two; all three fail identically with this unit's
+  changes stashed. Left alone under §12.6.
 
-**Build:** succeeded, 0 warnings, 0 errors. **Tests:** 21 constructed in this
-instruction across four classes, **all green**, each filtered by exact name and
-foregrounded. **No suite was run** (HM-DEC-155). Gates re-run: `BindingHealthTests`
-green, `HowMuchTheApplicationSaysTests` 5 of 5 green.
+**Build:** succeeded, 0 warnings, 0 errors. **Tests:** 20 constructed in this
+instruction across six classes, **all green**, filtered by exact name and foregrounded.
+**No suite was run** (HM-DEC-155). Gates re-run: `BindingHealthTests` green, the
+character ceiling 5 of 5 green, `VoiceTests` green.
 
-**Pushed:** three commits to `main`. Nothing of this unit's is uncommitted.
+**Pushed:** six commits to `main`.
 
 ---
 
 ## 3. What you should see
 
-### 1. The moving string, quoted, and what makes it move
+### 1. Three clock records, quoted
 
 ```
-run a at 2026-09-10 08:45:33   total 1234   blocks 80
-run b at 2026-09-10 08:46:10   total 1233   blocks 80
+{"event":"clock_query_started","data":{"server":"pool.ntp.org"}}
 
-ONLY IN THE FIRST RUN  (1)
-  - 0002  DigitalContactCards  |10|
-ONLY IN THE SECOND RUN (1)
-  + 0001  DigitalContactCards  |3|
+{"event":"clock_query_finished","level":"info",
+ "data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured",
+         "detail":"the server answered in 78 ms",
+         "offsetSeconds":1.884,"roundTripMs":78.4}}
+
+{"event":"clock_query_finished","level":"warn",
+ "data":{"server":"pool.ntp.org","outcome":"failed","reason":"timeout",
+         "detail":"nothing came back within 3000 ms"}}
+
+{"event":"clock_query_finished","level":"warn",
+ "data":{"server":"pool.ntp.org","outcome":"failed",
+         "reason":"threw_InvalidOperationException",
+         "detail":"the socket was already in use"}}
 ```
 
-**That is the slot countdown**, `TurnRingCount` → `Ft8Turn.CountText`, composed in
-`RefreshTurn` from `DateTime.UtcNow`. Seconds to the next slot boundary.
+**A failure is a warning and a measurement is not**, so a query nobody could complete
+can be found by scanning. **Nothing personal is written** and a sweep asserts it: a
+hostname is not personal and neither is an offset.
 
-The other three, each quoted from the diff at the moment it moved:
+### 2. Why the query is not happening — and on this machine, it is
 
-```
-  - |clock is 1.68 s slow, checked just now|      ClockOffset.Describe, off a live
-  + |clock is 1.67 s slow, checked just now|      SNTP call
-
-  - |21:41:30 UTC · 39 hours ago|                 Ft8ContactCard.Ago, against a
-                                                  fixture slot fixed at 2026-09-08
-
-     |not listening yet|                          DigitalWaterfallSummary, present
-                                                  only until a background reconnect
-                                                  starts the spectrum
-```
-
-### 2. Two measurements of the same tree, matching
+Stood up, not searched for. Each stage on its own:
 
 ```
-MainWindow — Digital tab           1194  then  1194   same
-      live readouts, first  : TurnRingCountText="13"  CardTimeLineText="…2 minutes ago"
-      live readouts, second : TurnRingCountText="11"  CardTimeLineText="…2 minutes ago"
-MainWindow — Digital tab, working  1193  then  1193   same
-MainWindow — CW tab                 426  then   426   same
+resolve : 4 addresses, first 142.248.80.92
+send    : 48 bytes away
+receive : 48 bytes from 142.248.80.92:123
+parse   : 2026-09-10T15:17:48.2589990Z
+offset  : 1.874 s, in 61 ms
 ```
 
-**The countdown read 13 and then 11 between the two sweeps.** The surface moved and
-the figure did not, which is the property the ceiling needs. The second measurement is
-taken **after a readout has really changed**, and with other surfaces built in
-between, because that is the condition the sweep actually runs in.
-
-### 3. A US card and a non-US card, quoted
+And the **real view model**, built with a real telemetry sink, `MainWindowViewModel`'s
+own constructor at `MainWindowViewModel.cs:5386`:
 
 ```
-US station     : W7PP   · Richard, Sun City AZ · 1,900 miles
-everybody else : VP2MAA · Montserrat           · 1,900 miles
-
-nothing asked yet : W7PP · United States · 1,900 miles
-with no network   : W7PP · United States · 1,900 miles
+clock records written: 2
+  clock_query_started   server=pool.ntp.org
+  clock_query_finished  outcome=measured  offsetSeconds=1.884
+ClockOffset.IsKnown = True
+the line on screen  = clock is 1.88 s slow, checked just now
 ```
 
-**What the live service actually returns**, read on 2026-09-10 rather than assumed:
+**So it does not stop anywhere here.** It is called at `MainWindowViewModel.cs:5386`
+from the constructor and at `:6061` from a ten-minute timer, and both work.
+
+**One theory removed for your machine**: Hamlet's socket binds an **ephemeral** port
+(61906 this run) and only sends *to* 123, so `w32time` holding 123 cannot be in the
+way. That is consistent with what you already found — stopping the service changed
+nothing.
+
+**I am not claiming a repair for your fault**, because I have not seen it.
+
+### 3. The message, for the fault that is actually true
 
 ```
-W7PP    "status":"VALID"    name "RICHARD R HALE"   line2 "SUN CITY, AZ 85373"
-VP2MAA  {"status": "INVALID"}                       and nothing else at all
+never asked yet :  Hamlet is asking a time server what the time really is, and
+                   until it answers there is no way to cut the slots.
+
+timed out       :  Hamlet asked pool.ntp.org what the time really is and nothing
+                   came back, so the slots cannot be cut yet. It will keep trying.
+
+no such host    :  ...and that name could not be looked up, which usually means
+                   there is no network just now, so the slots cannot be cut yet.
+
+threw           :  ...and something went wrong inside Hamlet, so the slots cannot
+                   be cut yet.
 ```
 
-**The cost, measured.** A lookup takes **0.12 to 0.15 s**. A busy slot of 14 messages
-naming 3 stations, seen over 4 slots — **56 messages — makes 3 requests**, one per
-distinct callsign, with one in flight per callsign. **The answer that there is nothing
-to know is cached too**, or a non-US callsign would be asked about every slot for
-ever. **A transport failure is deliberately not cached**: the network being down says
-nothing about a callsign, so the next ask is allowed to succeed. **The cache is in
-memory and does not survive a restart**, so a hundred distinct callsigns in an evening
-is a hundred requests that evening and a hundred again tomorrow.
+**Before, all four read *clock not checked yet, so slots cannot be cut*.** One is
+*wait a moment* and the others are *something is wrong*. A measured offset reads
+exactly as it always did. It stays on screen unhovered, because `Ft8Slots.TrueUtc`
+returns **null** without an offset, so no slot boundary can be cut at all.
 
-### 4. The resolve rate, and whether the state ask is closed
+### 4. What `Sent` meant, and what it says now
 
-```
-callsigns asked about : 10
-a state               : 1   W7PP
-country only          : 9   W3YNI, W1ABC, KC3QIS, K4XYZ, VP2MAA,
-                            IK4LZH, EI4GNB, VA3VRR, N4L
-```
+**It was set by three local successes and nothing else:**
 
-**It narrows the ask; it does not close it, and the shape of what is left is the
-point.** Hamlet can now say Arizona **for a US callsign and for nothing else**. The
-figure above is against a fake that resolves one callsign, so it measures the shape of
-the answer rather than the service's coverage — but the shape is the whole finding:
-**every callsign outside the United States gets a country and nothing below it, for
-ever, because callook holds only US licences.**
+1. a CI-V PTT-on frame handed to the serial port **without throwing**;
+2. the sink reporting it played **every sample** it was given;
+3. a PTT-off frame handed to the port **without throwing**.
 
-That is correct behaviour under the standing rule rather than a shortfall. **The ask
-is closed for the case it was raised about** — units 297, 298 and 299 each hit *the
-United States* with no way to say which state — **and it stays open for everywhere
-else**, where the honest answer is that Hamlet does not know and says nothing.
+Its own doc comment said *the whole signal went out and the radio came back to
+receive*. **Not one of those three is a fact about the radio.** Writing bytes to a COM
+port succeeds whether or not a radio is listening at the other end — which is exactly
+how 21 records came to say `Sent` for transmissions that never keyed a transmitter.
+
+**It is now `Played`.** The enum's own remarks carry the whole finding, `TransmitRun.Sent`
+became `AudioWentOut`, **and no record was deleted.**
+
+**Can Hamlet know the real thing? Partly, and that is a real repair I did not make.**
+The radio reports transmit state on `1C 00`, which HM-DEC-147 already polls four times
+a second, and power on `15 11`, which HM-DEC-082 already reads as *power made*. Joining
+those to this outcome would let the record say the transmitter keyed. **The instruction
+scopes task 6 to the word and I kept to it.**
 
 ---
 
 ## 4. What's blocking us
 
-**Nothing blocks the next unit.**
+### 1. The clock fault is on your machine and needs one measurement from it
 
-### 1. `TheAchievementsScreenTests` has two red, inherited
+**This is the only item that needs you, and it will settle in a minute.**
 
-Measured with this unit's changes stashed: `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo`
-and `TheWindowDrawsEverySixRows` were **already red before this unit started**. They
-are not in `docs/unit239-failing-set.txt` and no order names them, so they are an
-inherited red nobody has recorded. Left alone under §12.6.
+Run Hamlet, then open `%AppData%\Hamlet\telemetry\` and find today's file:
 
-### 2. Two ±2 wobbles remain on other surfaces
+- **`clock_query_started` with no `clock_query_finished`** — the query hung; the
+  `detail` on the next one that does finish will say where.
+- **`clock_query_finished` with `reason` set** — that token is the answer. `timeout`,
+  `socket_HostNotFound`, `socket_NetworkUnreachable` and the rest each mean something
+  different and each has its own fix.
+- **Neither** — nothing asked, and that is a different bug from any of the above.
 
-`SettingsWindow` reads 1628 or 1626 and `AboutWindow` 726 or 725 across runs. **Both
-are far under their ceilings and neither is a Digital row**, so neither was chased.
-Named here so the next unit to touch the ceiling knows they exist.
+**Before tonight all three of those looked identical.** They do not any more.
 
-### 3. `Ft8Sharp` did not move
+### 2. Whether the transmission record should ask the radio
+
+**A ruling, and it is the one with the most behind it.** `Played` is honest but it is
+not what you want to know. Hamlet already polls `1C 00` four times a second and reads
+`15 11` for power made.
+
+> **The transmission record says whether the transmitter keyed, taken from the radio
+> rather than from the port write.** `Played` stays as what the audio path did;
+> a second fact says what the radio did, and where the radio did not answer it says
+> unknown rather than assuming either way.
+>
+> **Why:** the record exists to tell whether a fault is in the signal, the radio or
+> Hamlet (§0.0.1), and today it cannot distinguish *the radio was off* from *it went
+> out fine*. **What is rejected:** inferring keying from a successful port write,
+> which is what produced the 21 records.
+
+**Not started.** It is a change to what the record asserts, which is yours (§12.1).
+
+### 3. Two inherited reds, named and left alone
+
+`TheFitGuardAsksAboutTheGridTheSendIsOnTests.BothFt8RefusalSentencesAreWhereTheyWereBeforeThisUnit`,
+and `TheAchievementsScreenTests`' two. **All three fail identically with this unit's
+changes stashed**, proved by stashing. Neither is in `docs/unit239-failing-set.txt`.
+
+### 4. `Ft8Sharp` did not move
 
 No file under `src/Ft8Sharp/` was read, edited or built.
 
@@ -271,21 +313,22 @@ No file under `src/Ft8Sharp/` was read, edited or built.
 Carried verbatim per HM-DEC-139.
 
 1. **Nothing in this repository can look at a picture.** *First made 2026-09-09, unit
-   300.* Five units running have now reported every appearance claim as computed
-   rather than seen. Real pixels want `Avalonia.Headless.Skia`, and **a package is a
-   dependency decision rather than a session's** (§0.4). **Waiting on:** your ruling.
-   **Where it sits:** nowhere — no package has been added.
+   300.* Six units running. Real pixels want `Avalonia.Headless.Skia`, and **a package
+   is a dependency decision rather than a session's** (§0.4). **Waiting on:** your
+   ruling. **Where it sits:** nowhere — no package has been added.
 
 2. **The map image.** *First made 2026-09-09, unit 301.* The projection is built and
-   proved against independent trigonometry; what is missing is the picture and its
-   three numbers. **Waiting on:** a file from you, not a session. **Where it sits:**
-   `assets/azimuthal-map.md` carries what is needed and the five steps to finish.
+   proved against independent trigonometry; the picture and its three numbers are
+   missing. **Waiting on:** a file from you. **Where it sits:**
+   `assets/azimuthal-map.md`.
 
-**And two that are dropped rather than carried.**
+3. **`TheAchievementsScreenTests` has two red, inherited.** *First made 2026-09-10,
+   unit 302.* Not in `docs/unit239-failing-set.txt` and named by no order. **Waiting
+   on:** an order that takes them. **Where it sits:** unchanged.
 
-**`HM-OPEN-089` is closed by task 1**, four causes found and measured, two ceiling rows
-green. The entry in `OPEN_ISSUES.md` is marked `closed: 2026-09-10` and carries all
-four causes, so the next reader gets the finding rather than the question.
+4. **Two ±2 wobbles** on `SettingsWindow` and `AboutWindow`, far under their ceilings.
+   *First made 2026-09-10, unit 302.* **Waiting on:** an order that takes them.
+   **Where it sits:** unchanged, and both still read 1628 and 726 tonight.
 
-**The US state ask is closed for the case it was raised about**, and section 3 says
-plainly where it stays open.
+**And one dropped rather than carried.** The achievement mark's size was ask 5 inbound;
+task 5 built option B and it is closed.
