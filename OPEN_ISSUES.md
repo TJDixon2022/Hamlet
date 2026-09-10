@@ -4,6 +4,44 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-089
+status: open
+owner: claude
+raised: 2026-09-09
+severity: slows
+blocks: nothing the operator can see. It blocks the character ceiling as a gate: two of its five tests are red before a unit starts, so a unit that grew a surface would land on a red that was already there and could not tell the difference
+refs: tests/Hamlet.App.Tests/Views/HowMuchTheApplicationSaysTests.cs:171, tests/Hamlet.App.Tests/Views/HowMuchTheApplicationSaysTests.cs:210
+---
+
+The Digital tab is over its character ceiling, and the figure moves between runs of
+the same code.
+
+**Measured on 2026-09-09 with this unit's own changes stashed**, twice. At the
+commit work instruction 300 opened on, `NoSurfaceSaysMoreThanItsCeiling` reported
+`MainWindow - Digital tab holds 1281, ceiling 1250` and
+`MainWindow - Digital tab, working holds 1233, ceiling 1200`. The rows were set from
+1118 and 1087, so the surface has grown by 163 and 146 characters since somebody last
+measured it. **`AddingASentenceToACappedSurfaceTurnsItRed` fails for the same reason
+and is not a second defect**: it starts by asserting the tab is under its ceiling,
+adds a sentence, and expects that to turn it red - and a tab already over cannot
+demonstrate anything.
+
+**The CW tab reads 528 and the Voice tab 518, both exactly the figures they were set
+from.** So this is the Digital tab alone and nothing shared between the three.
+
+**The second half is stranger and is why this is an issue rather than a re-measure.**
+Two runs of the same tree an hour apart read **1281 and then 1293**, twelve characters
+apart, while every other row held still. Something on that tab composes text from the
+clock - a slot, an age, a countdown - so the figure is not a property of the code
+alone. **A ceiling measured against a moving number cannot be set correctly**, and
+raising the row to whatever it read this evening would only move the failure.
+
+Left alone under `CLAUDE.md` §12.6. Work instruction 300 is about the achievement
+mark and the achievements screen; the two rows it did touch were re-measured and are
+green. **Whoever takes this has to find the moving string first**, because the
+re-measure is worthless until the figure holds still.
+
+---
 id: HM-OPEN-088
 status: open
 owner: claude

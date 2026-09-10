@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -197,8 +197,21 @@ public sealed class HowMuchTheApplicationSaysTests
             // worked card carries 1,557 characters of prose that no ceiling has to
             // hold down. That is Tim's ruling of 2026-09-08 working rather than
             // being worked around: text only where he hovers.
-            ("AchievementsWindow", 412, 550),
-            ("AchievementsWindow, worked", 443, 550),
+            // **RE-MEASURED BY WORK INSTRUCTION 300, WHICH RE-PRESENTED THIS
+            // SCREEN**, and the figures fell hard: 412 to 158, and 443 to 153. Two
+            // separate things account for it, and only the second is this unit's.
+            //
+            // **THE FIRST WAS ALREADY THERE**: measured at this unit's own starting
+            // commit, before a line was changed, the two states read 149 and 144.
+            // So the row had been three and a half times its surface for at least a
+            // unit, which is a ceiling guarding nothing.
+            //
+            // **THE SECOND IS THE POINT OF THE UNIT**: *no sentence carries what a
+            // figure can.* The prose lines under the targets became rings with the
+            // remaining figure in them, and the screen says less because the
+            // information moved rather than went.
+            ("AchievementsWindow", 158, 300),
+            ("AchievementsWindow, worked", 153, 300),
         };
 
     /// <summary>**No surface says more than its ceiling allows.**</summary>

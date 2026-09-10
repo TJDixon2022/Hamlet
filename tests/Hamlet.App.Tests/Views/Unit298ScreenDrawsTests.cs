@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -81,7 +81,11 @@ public sealed class Unit298ScreenDrawsTests
 
             // **THE THINGS THIS UNIT BUILT ARE ON THE SCREEN**, not merely in a
             // view model somewhere behind it.
-            Assert.Contains(drawn, t => t == "Things to go and try");
+            //
+            // **THE HEADING IS `Go and try` FROM WORK INSTRUCTION 300**, which named
+            // the three sections of the screen it re-presented. The section is the
+            // same section and it holds the same cards; only its title is shorter.
+            Assert.Contains(drawn, t => t == "Go and try");
             Assert.Contains(drawn, t => t.StartsWith("Furthest", StringComparison.Ordinal));
             Assert.Contains(drawn, t => t.Contains("views open", StringComparison.Ordinal));
 
@@ -146,7 +150,7 @@ public sealed class Unit298ScreenDrawsTests
         }
 
         // **BUT THE TARGETS ARE HERE** (§3.4), which is the whole point of them.
-        Assert.Contains(drawn, t => t == "Things to go and try");
+        Assert.Contains(drawn, t => t == "Go and try");
 
         window.Close();
     }

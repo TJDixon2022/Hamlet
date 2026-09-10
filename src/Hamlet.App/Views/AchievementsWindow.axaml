@@ -103,17 +103,197 @@
         <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
             <StackPanel Spacing="12">
 
-                <!-- ============ THE STANDING TARGETS ============ -->
+                <!-- ============ YOUR BEST ============ -->
+                <!-- **A COLLECTION AND NOT A LIST** (work instruction 300 task 3).
+                     These are the same records the `Everything` tab drew, in the
+                     shape a collection is kept in: **a figure large enough to be
+                     the thing you look at, and the station under it.**
+
+                     **THE FIGURE IS SAID ONCE.** The line under a tile is the
+                     callsign and the country and nothing else, because a tile that
+                     repeats its own number reads as two facts rather than one.
+
+                     **NOTHING HERE IS NEW AND NOTHING UNLOCKS DIFFERENTLY.** The
+                     tab this came from is gone from the strip below, so the screen
+                     does not say a thing twice. -->
+                <Border Background="White" CornerRadius="8"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1" Padding="14,12"
+                        IsVisible="{Binding Screen.HasBest}">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Your best"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                        <ItemsControl x:Name="AchievementsBest"
+                                      ItemsSource="{Binding Screen.Best}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:AchievementCard">
+                                    <Border Background="{StaticResource HmBackgroundBrush}"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="8,7"
+                                            Margin="0,0,6,6">
+                                        <StackPanel Spacing="2">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Figure}"
+                                                           FontSize="17"
+                                                           FontWeight="Bold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{StaticResource HmGreenBrush}" />
+
+                                                <!-- **THE HOVER IS THE PRODUCT**
+                                                     (3.5), and a tile is small
+                                                     enough that everything else
+                                                     belongs on it. -->
+                                                <ctl:HintMarkControl Grid.Column="1"
+                                                                     Kind="Detail"
+                                                                     VerticalAlignment="Top"
+                                                                     Text="{Binding Detail}" />
+                                            </Grid>
+
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="11"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                            <TextBlock Text="{Binding TileLine}"
+                                                       IsVisible="{Binding HasTileLine}"
+                                                       FontFamily="Consolas,Menlo,monospace"
+                                                       FontSize="10"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- ============ PLACES ============ -->
+                <!-- **A CONTINENT HE HAS NOT WORKED DOES NOT APPEAR** (section 3.1:
+                     *no Africa card on day one*), and a grouping that is this
+                     application own invention says so on its face (section 4).
+
+                     **THE BAR IS A COUNT OF COUNTRIES AND OF NOTHING ELSE** (task
+                     4). Worked over what Hamlet can recognise, both whole numbers,
+                     and the words beside it say exactly that - so there is no
+                     percentage on this screen whose meaning is left to be guessed
+                     at. -->
+                <ItemsControl x:Name="AchievementsPlaces"
+                              ItemsSource="{Binding Screen.Places}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AchievementGroup">
+                            <Border Background="White" CornerRadius="8"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    BorderThickness="1" Padding="14,12"
+                                    Margin="0,0,0,8">
+                                <StackPanel Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Grid.Column="0"
+                                                   Text="{Binding Title}"
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                        <!-- **WORKED, NEVER CONFIRMED** (section
+                                             4). DXCC is counted by confirmations
+                                             and Hamlet has none of them. -->
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Summary}"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                    </Grid>
+
+                                    <ctl:BadgeProgressControl
+                                        Fraction="{Binding Fraction}"
+                                        IsVisible="{Binding HasFraction}"
+                                        HorizontalAlignment="Stretch" />
+
+                                    <TextBlock Text="{Binding Note}"
+                                               IsVisible="{Binding HasNote}"
+                                               FontSize="11" FontStyle="Italic"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <!-- **THE ENTITIES NAMED**, as small tiles: the
+                                         country, how many contacts, and the hover. -->
+                                    <ItemsControl ItemsSource="{Binding Cards}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:AchievementCard">
+                                                <Border Background="{StaticResource HmBackgroundBrush}"
+                                                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="6"
+                                                        Padding="8,5"
+                                                        Margin="0,3,6,3">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Spacing="7">
+                                                        <TextBlock Text="{Binding Title}"
+                                                                   FontSize="12"
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                                        <TextBlock Text="{Binding Figure}"
+                                                                   FontSize="11"
+                                                                   VerticalAlignment="Center"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                        <ctl:HintMarkControl Kind="Detail"
+                                                                             VerticalAlignment="Center"
+                                                                             Text="{Binding Detail}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- **THE NUDGE, INSIDE AN OPENED GROUP AND
+                                         NOWHERE ELSE.** A list of prefixes for a
+                                         region he has never touched is a list of
+                                         things he has not done. -->
+                                    <TextBlock Text="{Binding Nudge}"
+                                               IsVisible="{Binding HasNudge}"
+                                               FontSize="12" Margin="0,2,0,0"
+                                               Foreground="{StaticResource HmAmberBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- ============ GO AND TRY ============ -->
                 <!-- **SECTION 3.4: THESE ARE THE GO AND TRY THIS HALF AND HIDING
                      THEM DEFEATS THEM.** They are the only cards on this screen
                      that may appear unearned, and they are here on the emptiest
-                     log, which is when a target matters most. -->
+                     log, which is when a target matters most.
+
+                     **EVERY RING SAYS WHAT ITS NUMBER IS OF, ON ITS FACE** (task
+                     4). A ring reading 63% with nothing beside it is a figure the
+                     reader will take for a likelihood, and how likely the next
+                     thousand miles is, is a thing Hamlet does not know. -->
                 <Border Background="White" CornerRadius="8"
                         BorderBrush="{StaticResource HmSlateEdgeBrush}"
                         BorderThickness="1" Padding="14,12"
                         IsVisible="{Binding HasScreen}">
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Things to go and try"
+                        <TextBlock Text="Go and try"
                                    FontSize="14" FontWeight="SemiBold"
                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
 
@@ -121,32 +301,48 @@
                                       ItemsSource="{Binding Screen.Challenges}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:AchievementCard">
-                                    <Grid ColumnDefinitions="*,Auto" Margin="0,5"
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+                                          Margin="0,6"
                                           Opacity="{Binding CardOpacity}">
-                                        <StackPanel Grid.Column="0" Spacing="2">
+                                        <!-- **ITS OWN SMALL MARK**, so a column of
+                                             eight stops reading as one thing. -->
+                                        <ctl:AchievementGlyphControl
+                                            Grid.Column="0"
+                                            Glyph="{Binding Glyph}"
+                                            Width="16" Height="16"
+                                            Margin="0,2,10,0"
+                                            VerticalAlignment="Top" />
+
+                                        <StackPanel Grid.Column="1" Spacing="2">
                                             <TextBlock Text="{Binding Title}"
                                                        FontSize="13"
                                                        FontWeight="SemiBold"
                                                        TextWrapping="Wrap"
                                                        Foreground="{StaticResource HmTextPrimaryBrush}" />
 
-                                            <!-- **HOW CLOSE HE IS, FROM HIS OWN
-                                                 LOG** (section 3.4). Where there
-                                                 is nothing to measure against the
-                                                 line says that rather than showing
-                                                 a zero, because a zero is a score
-                                                 and this is not one. -->
-                                            <TextBlock Text="{Binding Progress}"
-                                                       IsVisible="{Binding HasProgress}"
+                                            <!-- **WHAT THE RING IS A PERCENTAGE
+                                                 OF, AND WHAT IS LEFT.** It carries
+                                                 the figure remaining, which is what
+                                                 the old prose line used to say at
+                                                 greater length. -->
+                                            <TextBlock Text="{Binding RingMeans}"
+                                                       IsVisible="{Binding HasRingMeans}"
                                                        FontSize="11"
                                                        TextWrapping="Wrap"
                                                        Foreground="{StaticResource HmTextMutedBrush}" />
                                         </StackPanel>
 
-                                        <!-- **THE HOVER IS THE PRODUCT** (section
-                                             3.5). The card is the reason he reads
-                                             the sentence. -->
-                                        <ctl:HintMarkControl Grid.Column="1"
+                                        <ctl:AchievementRingControl
+                                            Grid.Column="2"
+                                            Fraction="{Binding Ring}"
+                                            IsOpen="{Binding RingIsOpen}"
+                                            Word="{Binding RingWord}"
+                                            IsEarned="{Binding Earned}"
+                                            Width="46" Height="46"
+                                            Margin="10,0,8,0"
+                                            VerticalAlignment="Center" />
+
+                                        <ctl:HintMarkControl Grid.Column="3"
                                                              Kind="Detail"
                                                              VerticalAlignment="Center"
                                                              Text="{Binding Detail}" />
@@ -157,13 +353,14 @@
                     </StackPanel>
                 </Border>
 
-                <!-- ============ THE RECORDS, TABBED BY SCOPE ============ -->
+                <!-- ============ THE REST OF THE RECORDS, TABBED BY SCOPE ======= -->
                 <!-- **THERE IS NO TAB FOR A BAND HE HAS NEVER WORKED** (section
                      3.1): *no empty 80 m tab, no ghost FT4 records.* The tabs come
-                     out of his own log. -->
+                     out of his own log, and `Everything` is not among them any more
+                     because it is the tiles at the top of the screen. -->
                 <TabControl x:Name="AchievementsScopes"
-                            ItemsSource="{Binding Screen.Scopes}"
-                            IsVisible="{Binding HasScreen}">
+                            ItemsSource="{Binding Screen.Tabs}"
+                            IsVisible="{Binding Screen.HasTabs}">
                     <TabControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:AchievementScope">
                             <TextBlock Text="{Binding Title}" FontSize="12" />
@@ -229,81 +426,6 @@
                         </DataTemplate>
                     </TabControl.ContentTemplate>
                 </TabControl>
-
-                <!-- ============ WHERE HE HAS BEEN ============ -->
-                <!-- **A CONTINENT HE HAS NOT WORKED DOES NOT APPEAR** (section
-                     3.1: *no Africa card on day one*), and a grouping that is
-                     this application own invention says so on its face
-                     (section 4). -->
-                <ItemsControl x:Name="AchievementsPlaces"
-                              ItemsSource="{Binding Screen.Places}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:AchievementGroup">
-                            <Border Background="White" CornerRadius="8"
-                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                    BorderThickness="1" Padding="14,12"
-                                    Margin="0,0,0,8">
-                                <StackPanel Spacing="4">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <TextBlock Grid.Column="0"
-                                                   Text="{Binding Title}"
-                                                   FontSize="14"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                        <!-- **WORKED, NEVER CONFIRMED** (section
-                                             4). DXCC is counted by confirmations
-                                             and Hamlet has none of them. -->
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding Summary}"
-                                                   FontSize="12"
-                                                   VerticalAlignment="Center"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                                    </Grid>
-
-                                    <TextBlock Text="{Binding Note}"
-                                               IsVisible="{Binding HasNote}"
-                                               FontSize="11" FontStyle="Italic"
-                                               TextWrapping="Wrap"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                    <ItemsControl ItemsSource="{Binding Cards}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:AchievementCard">
-                                                <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,3">
-                                                    <TextBlock Grid.Column="0"
-                                                               Text="{Binding Title}"
-                                                               FontSize="13"
-                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                                    <TextBlock Grid.Column="1"
-                                                               Text="{Binding Figure}"
-                                                               Margin="10,0,8,0"
-                                                               FontSize="12"
-                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                                    <ctl:HintMarkControl Grid.Column="2"
-                                                                         Kind="Detail"
-                                                                         VerticalAlignment="Center"
-                                                                         Text="{Binding Detail}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-
-                                    <!-- **THE NUDGE, INSIDE AN OPENED GROUP AND
-                                         NOWHERE ELSE.** A list of prefixes for a
-                                         region he has never touched is a list of
-                                         things he has not done. -->
-                                    <TextBlock Text="{Binding Nudge}"
-                                               IsVisible="{Binding HasNudge}"
-                                               FontSize="12" Margin="0,4,0,0"
-                                               Foreground="{StaticResource HmAmberBrush}" />
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
             </StackPanel>
         </ScrollViewer>
 

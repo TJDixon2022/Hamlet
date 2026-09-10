@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -97,6 +97,31 @@ public sealed class AchievementScreen
 
     /// <summary>The tabs he has opened: everything, then bands, then modes.</summary>
     public IReadOnlyList<AchievementScope> Scopes { get; }
+
+    /// <summary>**His best, across the whole log, as tiles.**</summary>
+    /// <remarks>
+    /// <para>**IT IS THE `Everything` SCOPE IN A DIFFERENT SHAPE AND NOT A NEW
+    /// CLAIM** (work instruction 300 task 3: *presentation only*). Every tile here is
+    /// a card the screen already drew inside a tab; what changed is that a collection
+    /// is the first thing on the screen rather than the fourth.</para>
+    /// <para>**AND THE TAB IT CAME FROM IS GONE FROM <see cref="Tabs"/>**, because a
+    /// screen that says a thing twice reads as two facts. The band and mode tabs are
+    /// untouched.</para>
+    /// </remarks>
+    public IReadOnlyList<AchievementCard> Best
+        => Scopes.FirstOrDefault(s => s.Kind == "all")?.Groups
+            .SelectMany(g => g.Cards).ToList()
+            ?? (IReadOnlyList<AchievementCard>)Array.Empty<AchievementCard>();
+
+    /// <summary>True where there is a best to draw.</summary>
+    public bool HasBest => Best.Count > 0;
+
+    /// <summary>The tabs below the tiles: the bands and modes, and not everything.</summary>
+    public IReadOnlyList<AchievementScope> Tabs
+        => Scopes.Where(s => s.Kind != "all").ToList();
+
+    /// <summary>True where there is a tab to draw.</summary>
+    public bool HasTabs => Tabs.Count > 0;
 
     /// <summary>The continents he has worked, each with the countries in it.</summary>
     public IReadOnlyList<AchievementGroup> Places { get; }
@@ -244,6 +269,9 @@ public sealed class AchievementScreen
                 title: "Furthest " + scope,
                 figure: GridPath.DescribeMiles(miles),
                 station: AchievementCard.StationLine(furthest),
+                // **THE TILE SAYS THE MILES ONCE**, in the big figure, so its second
+                // line is who and where and nothing else.
+                under: AchievementCard.ShortStation(furthest),
                 detail: Bearing(furthest)
                     + "It is the great-circle distance from your own grid square to "
                     + "his, which is the way a radio signal actually travels rather "
@@ -270,6 +298,7 @@ public sealed class AchievementScreen
                 title: "Faintest you have been heard " + scope,
                 figure: AchievementCard.Signed(given) + " dB",
                 station: AchievementCard.StationLine(weakest),
+                under: AchievementCard.ShortStation(weakest),
                 detail: "This is how far into the noise your signal was when he read "
                     + "it, in decibels, and a lower number is the better record: it "
                     + "means less of you arrived and he read you anyway. FT8 decodes "
@@ -287,6 +316,7 @@ public sealed class AchievementScreen
                 title: "Faintest you have heard " + scope,
                 figure: AchievementCard.Signed(gave) + " dB",
                 station: AchievementCard.StationLine(heard),
+                under: AchievementCard.ShortStation(heard),
                 detail: "The weakest signal you pulled out of the noise and answered. "
                     + "This one is about your receiving rather than your "
                     + "transmitting: your antenna, how electrically quiet your house "
@@ -312,6 +342,7 @@ public sealed class AchievementScreen
                 title: "First " + scope,
                 figure: began.ToString("d MMMM yyyy", CultureInfo.InvariantCulture),
                 station: AchievementCard.StationLine(first),
+                under: AchievementCard.ShortStation(first),
                 detail: "The one that started it. Every log is kept in UTC, which is "
                     + "the one clock everybody on the band shares, so a late evening "
                     + "contact can carry tomorrow's date and still be the same "
@@ -408,7 +439,11 @@ public sealed class AchievementScreen
                 $"{worked} of {total} worked",
                 "",
                 "",
-                cards);
+                cards)
+            {
+                Worked = worked,
+                Total = total,
+            };
 
             // **A REGION APPEARS ONLY ONCE HE HAS WORKED SOMETHING IN IT** (§3.1),
             // and its nudge names the members he has not - which is §3.2's own
@@ -476,7 +511,11 @@ public sealed class AchievementScreen
                 toFind.Count == 0
                     ? ""
                     : "look for " + string.Join(" ", toFind),
-                cards);
+                cards)
+            {
+                Worked = worked.Count,
+                Total = region.Members.Count,
+            };
         }
     }
 

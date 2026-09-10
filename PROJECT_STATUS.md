@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 300 - the achievement mark, and the screen it opens
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T21:16:26-04:00
-NOTE: Tasks 1 and 2 green - the mark is in the status bar, it lights on an earning and only opening the screen clears it.
+UPDATED: 2026-09-09T21:27:55-04:00
+NOTE: Tasks 3 and 4 green - the screen is tiles, places with bars, and rings that say what they are a percentage of.
 
 ---
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -114,7 +114,30 @@ public static class AchievementChallenges
             progress: best <= 0
                 ? "No contact has carried a grid square yet, so there is nothing to "
                   + "measure this against."
-                : "Best so far " + GridPath.DescribeMiles(best) + ".");
+                : "Best so far " + GridPath.DescribeMiles(best) + ".")
+        {
+            Glyph = AchievementGlyph.Distance,
+
+            // **NO GRID SQUARE ANYWHERE IN THE LOG IS NOT THE SAME AS ZERO MILES.**
+            // One is unmeasured and the other is a measurement, and drawing 0% for
+            // the first would be a figure with nothing behind it.
+            HasRing = best > 0,
+            Ring = earned || target == 0 ? 1 : (double)best / target,
+            Target = earned
+                ? "done"
+                : target.ToString("N0", CultureInfo.InvariantCulture) + " mi",
+            RingMeans = earned
+                ? "Past the last rung on the ladder."
+                : best <= 0
+                    ? "No contact has carried a grid square, so there is no distance "
+                      + "to measure."
+                    : GridPath.DescribeMiles(best) + " of "
+                      + target.ToString("N0", CultureInfo.InvariantCulture)
+                      + ", so " + GridPath.DescribeMiles(target - best)
+                      + " to go. The ring is miles covered and not how likely the "
+                      + "rest is, and the next thousand is much harder than the "
+                      + "last.",
+        };
     }
 
     /// <summary>Be heard when almost nothing of you arrives.</summary>
@@ -149,7 +172,30 @@ public static class AchievementChallenges
             progress: best is null
                 ? "No contact has carried a report yet, so there is nothing to "
                   + "measure this against."
-                : "Faintest so far " + AchievementCard.Signed(best.Value) + " dB.");
+                : "Faintest so far " + AchievementCard.Signed(best.Value) + " dB.")
+        {
+            Glyph = AchievementGlyph.Faint,
+
+            // **COUNTED FROM 0 dB, WHERE YOUR SIGNAL AND THE NOISE ARE THE SAME
+            // SIZE**, which is a real place on the scale rather than a chosen one. A
+            // report above it is not partway to anything, so it reads as nothing
+            // covered rather than as a negative fraction.
+            HasRing = best is not null,
+            Ring = earned || target == 0
+                ? 1
+                : Math.Clamp((double)-(best ?? 0) / -target, 0, 1),
+            Target = earned ? "done" : target + " dB",
+            RingMeans = earned
+                ? "Past the last rung on the ladder."
+                : best is null
+                    ? "No contact has carried a report, so there is nothing to "
+                      + "measure."
+                    : AchievementCard.Signed(best.Value) + " dB of " + target
+                      + " dB, counting down from 0 dB, where your signal and the "
+                      + "noise are the same size. It is decibels covered and not "
+                      + "how likely the rest is: every one of them is harder than "
+                      + "the one before.",
+        };
     }
 
     /// <summary>Try a band you have not been on.</summary>
@@ -189,7 +235,22 @@ public static class AchievementChallenges
                 : worked.Count == 1
                     ? "One band worked so far: " + worked[0] + "."
                     : worked.Count + " bands worked so far: "
-                      + string.Join(", ", worked) + ".");
+                      + string.Join(", ", worked) + ".")
+        {
+            Glyph = AchievementGlyph.Band,
+
+            // **THERE IS NO HALF-WORKED BAND** (work instruction 300 task 4). Any
+            // fraction here would have to be invented: bands worked over bands
+            // offered measures something this card is not about, since the card is
+            // about one contact on one band he has not been on.
+            HasRing = earned,
+            Ring = earned ? 1 : 0,
+            Target = earned ? "done" : next ?? "",
+            RingMeans = earned
+                ? "Every band Hamlet offers has a contact on it."
+                : "There is no half of this to be in, so there is no percentage. "
+                  + next + " is the nearest one you have not been on.",
+        };
     }
 
     /// <summary>Work a low band after the sun has gone.</summary>
@@ -224,7 +285,20 @@ public static class AchievementChallenges
                   + "when the sun goes down where you are."
                 : done
                     ? "You have done this one."
-                    : "Nothing on 80 m or 40 m after dark yet.");
+                    : "Nothing on 80 m or 40 m after dark yet.")
+        {
+            Glyph = AchievementGlyph.Night,
+            HasRing = done,
+            Ring = done ? 1 : 0,
+            Target = done ? "done" : "80 m 40 m",
+            RingMeans = done
+                ? "You have done this one."
+                : here is null
+                    ? "Hamlet needs your grid square before it knows when your sun "
+                      + "goes down, so there is nothing to measure."
+                    : "You have either done this or you have not, so there is no "
+                      + "percentage to show.",
+        };
     }
 
     /// <summary>Work somebody in the hour around sunrise or sunset.</summary>
@@ -255,7 +329,20 @@ public static class AchievementChallenges
                 : done
                     ? "You have done this one."
                     : "No contact yet inside the hour either side of your sunrise or "
-                      + "sunset.");
+                      + "sunset.")
+        {
+            Glyph = AchievementGlyph.GreyLine,
+            HasRing = done,
+            Ring = done ? 1 : 0,
+            Target = done ? "done" : "1 hr",
+            RingMeans = done
+                ? "You have done this one."
+                : here is null
+                    ? "Hamlet needs your grid square before it knows when your "
+                      + "sunrise and sunset are, so there is nothing to measure."
+                    : "You have either done this or you have not, so there is no "
+                      + "percentage to show.",
+        };
     }
 
     /// <summary>Reach a continent you have not reached.</summary>
@@ -279,7 +366,24 @@ public static class AchievementChallenges
             earned: earned,
             progress: worked.Count == 0
                 ? "No contact has resolved to a continent yet."
-                : worked.Count + " so far: " + string.Join(", ", worked) + ".");
+                : worked.Count + " so far: " + string.Join(", ", worked) + ".")
+        {
+            Glyph = AchievementGlyph.Continent,
+
+            // **THE CARD IS ABOUT REACHING ONE MORE AND NOT ABOUT REACHING THEM
+            // ALL**, so continents worked over continents that exist would be a
+            // percentage of a different question. It stays dashed until the last
+            // one lands.
+            HasRing = earned,
+            Ring = earned ? 1 : 0,
+            Target = earned ? "done" : "one more",
+            RingMeans = earned
+                ? "Every continent has a contact on it."
+                : worked.Count == 0
+                    ? "No contact has resolved to a continent yet."
+                    : "There is no part of a continent to have reached, so there is "
+                      + "no percentage. So far: " + string.Join(", ", worked) + ".",
+        };
     }
 
     /// <summary>Collect grid squares.</summary>
@@ -308,7 +412,22 @@ public static class AchievementChallenges
                 ? "No contact has carried a grid square yet."
                 : count == 1
                     ? "1 so far."
-                    : count + " so far.");
+                    : count + " so far.")
+        {
+            Glyph = AchievementGlyph.Grid,
+
+            // **BOTH HALVES ARE WHOLE NUMBERS HE COULD COUNT HIMSELF**, which makes
+            // this the plainest ring on the screen. It still says nothing about how
+            // hard the rest are.
+            HasRing = true,
+            Ring = earned || target == 0 ? 1 : (double)count / target,
+            Target = earned ? "done" : target.ToString(CultureInfo.InvariantCulture),
+            RingMeans = earned
+                ? "Two hundred and fifty squares worked."
+                : count + " squares of " + target + ", so " + (target - count)
+                  + " to go. It is a count of squares and not how likely the rest "
+                  + "are, and the ones you have not got are mostly the far ones.",
+        };
     }
 
     /// <summary>Have a proper session at the radio.</summary>
@@ -336,7 +455,19 @@ public static class AchievementChallenges
             progress: best == 0
                 ? "No contact carries a date yet."
                 : "Best day so far: " + best
-                  + (best == 1 ? " contact." : " contacts."));
+                  + (best == 1 ? " contact." : " contacts."))
+        {
+            Glyph = AchievementGlyph.Day,
+            HasRing = true,
+            Ring = earned || target == 0 ? 1 : (double)best / target,
+            Target = earned ? "done" : target.ToString(CultureInfo.InvariantCulture),
+            RingMeans = earned
+                ? "Fifty contacts in one day."
+                : best + " contacts of " + target + " in one day, so "
+                  + (target - best) + " more in a single sitting. It is a count of "
+                  + "contacts and not how likely the rest are, and that depends far "
+                  + "more on the band being open than on you.",
+        };
     }
 
     /// <summary>Whether a band value is one of the two low ones.</summary>
