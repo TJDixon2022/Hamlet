@@ -1,36 +1,34 @@
-# Work instruction 303 — the clock query says what it did
+# Work instruction 304 — telemetry solves the mystery without asking him anything
 
-**READ IN THIS ORDER.** The clock query **works on this machine**, every time, and I
-could not reproduce your fault here. What I did instead is make it impossible for the
-next occurrence to be invisible, and I found two other things that were asserting
-what they did not know.
+**READ IN THIS ORDER.** Two of the three mysteries can now be answered from one
+uploaded file. **The third cannot, and section 3 says so plainly rather than dressing
+it up** — a standard this unit fails on its own case is worth knowing tonight.
 
 A. **The phase goal — FT4 works exactly the way FT8 does.** This unit advanced no
-   step of it. It closed a hole in the record, corrected two false sentences, and
-   changed one word that mattered.
+   step of it. It changed the record rather than the application: **no screen
+   changed.**
 
 B. **Step 4 and its exit criteria** — pressing FT4 tunes and decodes; the panel, the
    conversation, the ring, the filters, the tooltips, the ledger and the right-click
    menu all working unchanged; one click, one transmission; a whole exchange from one
    right click at the bench. **None was measured tonight.** Step 4 stays `partial`.
 
-C. **The report last, and section 4 raises 4 items.** One needs a measurement from
-   your machine and nothing else will settle it.
+C. **The report last, and section 4 raises 3 items.** One is the ruling that would
+   close the third mystery.
 
 ```
-UNIT:       303 — complete at task 7 of 7, none dropped — 2026-09-10 11:33
+UNIT:       304 — complete at task 7 of 7, none dropped — 2026-09-10 12:04
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  The clock query records what it did, the reason it is not happening is
-            found, a lost audio device is not silent, and Sent means sent.
+UNIT GOAL:  One uploaded telemetry file says what state Hamlet was in, what changed,
+            and what refused - and a bundle says the same about now.
 ADVANCED:   no — no phase step moved. Step 4 stays partial: nothing tuned, nothing
             transmitted, no exchange run at the bench.
-NUMBER:     clock telemetry events, before and after
-            BEFORE: 0. Across 2,600 events and eleven app starts, not one naming a
-            time server, an offset, an attempt or a failure.
-            AFTER:  2 per query — the attempt, then the outcome — with six failure
-            paths each carrying their own stable token. Measured from the real
-            view model: 2 records written, offset 1.884 s.
-DRIFT:      7 consecutive units without advance  (was 6, carried from unit 302)
+NUMBER:     of the three mysteries, how many are now diagnosable from the file alone
+            BEFORE: none.
+            AFTER:  two. The clock that never asked, and the transmit device that
+            was not there. The third — did anything actually transmit — still
+            cannot be answered, and section 3 names exactly what is missing.
+DRIFT:      8 consecutive units without advance  (was 7, carried from unit 303)
 ```
 
 ---
@@ -39,121 +37,112 @@ DRIFT:      7 consecutive units without advance  (was 6, carried from unit 302)
 
 **Complete. Seven tasks of seven, none dropped, including the named drop candidate.**
 Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, six commits,
-all pushed. Root version 1.12.265 to **1.12.266**, bumped once. **No file under
+all pushed. Root version 1.12.266 to **1.12.267**, bumped once. **No file under
 `src/Ft8Sharp/` was touched**, and nothing here transmits.
 
-**Nothing in this report is evidence about the radio computer** (`SHACK_FACTS.md`,
-HM-DEC-093). That matters more than usual tonight: the fault you are seeing is on
-your machine and every measurement below is from this one.
+**Nothing in this report is evidence about the radio computer** (HM-DEC-093).
 
-**Nothing was recorded to `DECISIONS.md`.** The five judgements made on this
-session's authority are in `PHASE_OUTCOME.md`'s entry and listed below.
+**Nothing was recorded to `DECISIONS.md`.** The four judgements made on this session's
+authority are in `PHASE_OUTCOME.md`'s entry and listed below.
 
-### Task 1 — the query records what it did
+### Task 1 — what the record cannot currently answer
 
-**Two events per query: the attempt, then the outcome.** The attempt is written
-**before the socket opens**, which is the half that makes an absence readable — after
-this, no record at all means nothing was tried.
+**Reading only, and it is the task that made the rest correct.** Written to
+`docs/telemetry-diagnoses-it.md` before a line of code.
 
-**Six ways to fail returned one value.** `SntpClock` collapsed a name that would not
-resolve, a packet that never came back, a reply shorter than 48 bytes and a timestamp
-that would not parse into `ClockOffset.Unknown`, with nothing to tell them apart.
+**The reframing is the finding: all three failures were states nobody could see, not
+events nobody logged.** The application writes 2,600 events on an ordinary day and
+almost all of them are *things that happened*. What was missing each time was **what
+was true**.
 
-**And its caller claimed nothing could throw, with nothing verifying it.**
-`QueryTheClockAsync`'s own remarks said every failure returns unknown; `SntpClock`
-catches four exception types and there are more than four ways to fail. An unhandled
-one inside a fire-and-forget task takes the application down. It now catches and
-records.
+Seven groups of facts came out of it, and three things were found while reading:
 
-**`Diagnostics`, not an eighth category** — About still reports 7 of 7.
+- **A telemetry category that is off drops its events silently.** `JsonlTelemetry.Write`
+  returns before serialising, so a reader could not tell *nothing happened* from *not
+  recorded*.
+- **`DroppedEventCount` has existed all along and nothing ever wrote it.** A file that
+  lost events looked exactly like a quiet evening.
+- **`audio_device_chosen` carries one boolean**, `looksLikeRadio`, and nothing else.
 
-### Task 2 — why it is not asking
+### Task 2 — the startup snapshot
 
-**It is asking, and it is working.** Section 3 carries the stage-by-stage run.
+One event, one stable name, **written before the window is built** — so a machine
+broken enough that the window never appears has still said what was wrong with it.
 
-**What I can rule out for your machine**, from what the code does rather than from a
-theory: it is called from the constructor unconditionally and on a ten-minute timer,
-so it is not a call that never happens; and **Hamlet binds an ephemeral port and only
-sends to 123**, so whatever holds 123 on your machine is not in the way. That removes
-the port-contention theory your table records as already tried.
+**A fact that cannot be determined says `unknown` and why.** Every reader is wrapped
+**on its own**, so a sound card driver that throws records its own failure and the
+other twenty facts still go out.
 
-**I did not claim a repair for a cause I could not see.**
+### Task 3 — the stream, and the refusal audit
 
-### Task 3 — the message says the true fault
+**What was already right was checked before anything was added:** readiness already
+fires on change with `determinedBy`, the radio's connect and drop already write, unit
+303's clock events are untouched as instructed, and the arrival ratio was already
+there.
 
-`ClockOffset.Describe` says *clock not checked yet, so slots cannot be cut* for **both**
-no-offset states. **Saying "not checked yet" about a query that was made and failed is
-the application asserting something it does not know**, and it is the sentence that
-sent twenty minutes to the wrong machine. Watched failing before it was fixed.
+**What was missing** is a device that goes and a setting that changes. Both now write
+one `state_changed` with `what`, `from`, `to`, `why`.
 
-### Task 4 — a lost audio device is not silent
+**The refusal audit is the list, not the fixes** (§12.6). Section 3 carries it.
 
-**Reported before changed, as the instruction asks.** `ChooseEndpoint` returns null
-where the saved id names no endpoint; nothing is substituted and the id is kept. That
-half was already right.
+### Task 4 — the bundle
 
-**What was missing was the visible statement**, and it is now on the Settings window
-in amber, naming the device.
+`Copy diagnostics` went from eight lines to the whole picture: **the same facts in the
+same words as the snapshot**, plus the last 40 telemetry lines. **Still one paste**,
+3.0 KB.
 
-**And what I did not find, which matters more.** I suspected the two-way picker
-binding of erasing the saved device, **wrote a guard for it, then measured it innocent
-twice**, and removed the guard rather than ship a fix for a mechanism I had disproved.
-The disproof is written into the handler's own remarks.
+### Task 5 — the honest test
 
-### Task 5 — the achievement mark, option B
+Two of three. Section 3 carries all three verdicts.
 
-No pill, **27 px**, filled green at rest, orbit ring when something is new, belt pill
-unchanged. **The ceiling was confirmed rather than assumed.**
+### Task 6 — what it costs
 
-### Task 6 — `Sent` means sent
-
-**It never did.** Section 3 carries what it meant and what it means now.
+Measured off real writes, not estimated. Section 3.
 
 ### Task 7 — the outcome entry
 
-Filed as **`UNIT 303 - STEP 4`** with nothing renumbered by hand.
+Filed as **`UNIT 304 - STEP 4`** with nothing renumbered by hand.
 
-### The five things decided on this session's authority
+### The four things decided on this session's authority
 
-1. **The attempt is written before the socket opens**, so an absence is readable.
-2. **`Diagnostics` rather than an eighth category.**
-3. **The caller catches and records**, because it catches more than `SntpClock` does.
-4. **I removed my own speculative guard** rather than shipping a disproved fix.
-5. **Option B spends one of the mark's two greyscale carriers**, deliberately, on your
-   ruling — the ring is now doing that work alone.
+1. **The snapshot is written before the window**, so a machine that never shows one
+   still describes itself.
+2. **`Diagnostics` rather than an eighth category** — About still reports 7 of 7.
+3. **Every reader is wrapped on its own**, not the gather as a whole.
+4. **I reverted my own change.** I widened `SettingsViewModel`'s telemetry seam to the
+   interface to make a test easier, claiming nothing there wanted the concrete type.
+   **It does** — `ClearAll` and `TotalBytes` — so I undid it and the test reads a real
+   `JsonlTelemetry` writing to a temp folder instead, which is the stronger
+   measurement anyway.
 
 ---
 
 ## 2. What the owner should expect
 
-**The clock line tells you which problem you have.** If nothing has come back yet it
-says Hamlet is asking. If a query was made and failed it says so and names what
-failed. **It will no longer tell you the clock has never been checked when it has.**
+**Nothing on screen changes.** Not one pixel. This unit changed what the file holds.
 
-**And the next occurrence will be in the file.** Open `%AppData%\Hamlet\telemetry\`
-and look for `clock_query_started` and `clock_query_finished`. **If you see a started
-with no finished, the query hung. If you see neither, nothing asked.** Those were the
-same picture before tonight.
+**The next time something breaks, upload one file and get an answer.** Every session
+now begins with a single `startup_snapshot` line saying which sound cards exist, which
+one is selected for receive and for transmit, **whether the selected one is actually
+there**, what the settings file named that this machine has not got, the versions, and
+which telemetry categories are on.
 
-**A missing sound card says so.** Open Settings and, if the transmit device named in
-your file is not on the machine, an amber line says which one is missing and that
-sending is refused until it comes back or you pick another. Nothing is substituted.
-
-**The feather is bigger and green at rest**, 27 px, filling the bar.
+**And `App > About > Copy diagnostics` is now the whole picture in one paste** — the
+same facts read fresh, plus the last 40 lines of the stream, so the run-up to a fault
+comes with it. It still says, and still keeps, *no callsign, no name and no location*.
 
 **What will look wrong and is not:**
 
-- **`ft8_transmission` says `Played` where it used to say `Sent`.** The behaviour did
-  not change; the word did, because it was false. Old records saying `Sent` mean
-  exactly what `Played` means now, and none were deleted.
-- **Two inherited reds.** `TheFitGuardAsksAboutTheGridTheSendIsOnTests` has one and
-  `TheAchievementsScreenTests` has two; all three fail identically with this unit's
-  changes stashed. Left alone under §12.6.
+- **The bundle got much longer** — eight lines to sixty-three. That is the point.
+- **A lot of the snapshot says `unknown` on this machine.** The radio, the clock and
+  readiness are not reachable where it runs, and it says so with a reason rather than
+  leaving the fields out. **On your machine with a radio connected, most of those will
+  carry values.**
 
-**Build:** succeeded, 0 warnings, 0 errors. **Tests:** 20 constructed in this
-instruction across six classes, **all green**, filtered by exact name and foregrounded.
-**No suite was run** (HM-DEC-155). Gates re-run: `BindingHealthTests` green, the
-character ceiling 5 of 5 green, `VoiceTests` green.
+**Build:** succeeded, 0 warnings, 0 errors. **Tests:** 21 constructed in this
+instruction across four classes, **all green**, filtered by exact name and
+foregrounded. **No suite was run** (HM-DEC-155). Gates re-run: `BindingHealthTests`
+green, unit 303's device tests green — 41 of 41 in that filtered set.
 
 **Pushed:** six commits to `main`.
 
@@ -161,150 +150,145 @@ character ceiling 5 of 5 green, `VoiceTests` green.
 
 ## 3. What you should see
 
-### 1. Three clock records, quoted
+### 1. The startup snapshot, quoted whole, from this machine
 
 ```
-{"event":"clock_query_started","data":{"server":"pool.ntp.org"}}
-
-{"event":"clock_query_finished","level":"info",
- "data":{"server":"pool.ntp.org","outcome":"measured","reason":"measured",
-         "detail":"the server answered in 78 ms",
-         "offsetSeconds":1.884,"roundTripMs":78.4}}
-
-{"event":"clock_query_finished","level":"warn",
- "data":{"server":"pool.ntp.org","outcome":"failed","reason":"timeout",
-         "detail":"nothing came back within 3000 ms"}}
-
-{"event":"clock_query_finished","level":"warn",
- "data":{"server":"pool.ntp.org","outcome":"failed",
-         "reason":"threw_InvalidOperationException",
-         "detail":"the socket was already in use"}}
+{"ts":"...","sessionId":"...","level":"info","appVersion":"1.12.267",
+ "category":"diagnostics","event":"startup_snapshot","data":{
+  "appVersion":"1.12.267+...","ft8SharpVersion":"unknown",
+  "ft8SharpVersionWhy":"Ft8Sharp is not loaded in this process yet, which is
+                        ordinary before anything has decoded",
+  "framework":".NET 8.0.x","osBuild":"Microsoft Windows 10.0.26200",
+  "processBits":64,
+  "audioInputCount":2,
+  "audioInputs":"{in}.{mic} Microphone | {in}.{codec} USB Audio CODEC",
+  "audioInputSelected":"(none named, so Hamlet preselects and never claims)",
+  "audioInputPresent":"unknown","audioInputChosenBy":"not remembered",
+  "audioOutputCount":2,
+  "audioOutputs":"{...}.{speakers} Speakers | {...}.{usb-codec} USB Audio CODEC",
+  "transmitDeviceSelected":"(none named, so a send refuses)",
+  "transmitDevicePresent":"unknown",
+  "radioConnected":"unknown","radioPort":"unknown","radioModel":"unknown",
+  "clockOffsetKnown":"unknown","clockLastQueryReason":"unknown",
+  "settingsLoaded":true,"settingsPathExists":true,
+  "settingsNamedButAbsent":"(none)",
+  "telemetryCategoriesOn":"Diagnostics | Rig | Tuning | Explore | Decode |
+                           Transmit | Performance",
+  "telemetryCategoriesOff":"(none)","telemetryEventsDropped":0}}
 ```
 
-**A failure is a warning and a measurement is not**, so a query nobody could complete
-can be found by scanning. **Nothing personal is written** and a sweep asserts it: a
-hostname is not personal and neither is an offset.
+**One line, 2,381 bytes.** Every `unknown` above is followed by its own `…Why`.
 
-### 2. Why the query is not happening — and on this machine, it is
+### 2. The three replays, each with its verdict
 
-Stood up, not searched for. Each stage on its own:
+**1. A clock query that never happens — YES, diagnosable.**
+The snapshot says the offset is unknown and why; **there is no `clock_query_started`
+anywhere in the file**, which since unit 303 means *nothing tried* rather than *tried
+and failed*. Those two were the same empty file on the day it cost twenty minutes.
 
+**2. A transmit device that is not present — YES, diagnosable.**
 ```
-resolve : 4 addresses, first 142.248.80.92
-send    : 48 bytes away
-receive : 48 bytes from 142.248.80.92:123
-parse   : 2026-09-10T15:17:48.2589990Z
-offset  : 1.874 s, in 61 ms
+"transmitDevicePresent":false
+"settingsNamedButAbsent":"transmit device {0.0.0.00000000}.{a-device-that-is-gone}"
+"audioOutputs":"{...}.{speakers} Speakers | {...}.{usb-codec} USB Audio CODEC"
 ```
-
-And the **real view model**, built with a real telemetry sink, `MainWindowViewModel`'s
-own constructor at `MainWindowViewModel.cs:5386`:
-
+plus, at **warning**, the moment it was noticed:
 ```
-clock records written: 2
-  clock_query_started   server=pool.ntp.org
-  clock_query_finished  outcome=measured  offsetSeconds=1.884
-ClockOffset.IsKnown = True
-the line on screen  = clock is 1.88 s slow, checked just now
+"event":"state_changed","data":{"what":"transmitDevicePresent","from":"true",
+ "to":"false","why":"settings name {...}.{a-device-that-is-gone} and this machine
+ has 2 output devices, none of them that one"}
 ```
+On the day, 56 refusals each named the field that decided them and **not one named the
+device**.
 
-**So it does not stop anywhere here.** It is called at `MainWindowViewModel.cs:5386`
-from the constructor and at `:6061` from a ten-minute timer, and both work.
+**3. Did anything actually transmit — NO, and only partly better.**
+The record reads `"outcome":"Played"`. Unit 303 stopped it lying, but **the question
+is still unanswerable from the file.**
 
-**One theory removed for your machine**: Hamlet's socket binds an **ephemeral** port
-(61906 this run) and only sends *to* 123, so `w32time` holding 123 cannot be in the
-way. That is consistent with what you already found — stopping the service changed
-nothing.
+**What is missing:** whether the radio was at the other end of that port at that
+moment, and whether it keyed. **Hamlet already polls `1C 00` four times a second and
+reads `15 11` for power made**, so it is knowable — joining them to the transmission
+record is ask 1, which is yours and which this instruction parks.
 
-**I am not claiming a repair for your fault**, because I have not seen it.
+**What did improve:** the snapshot beside it names which audio devices exist and which
+was selected, so *played into the wrong sound card* is now separable from *played into
+the right one*. That was not answerable on the day either.
 
-### 3. The message, for the fault that is actually true
+### 3. The refusals that are silent on screen
 
-```
-never asked yet :  Hamlet is asking a time server what the time really is, and
-                   until it answers there is no way to cut the slots.
+| Refusal | In the file | On screen |
+|---|---|---|
+| `transmit_readiness` | Yes, with `determinedBy` | **Yes** — `Decisions.Note` and the digital send line |
+| `digital_capture_refused`, all four sites | Yes | **Yes** — each sets `StatusText` in the same breath |
+| `cw_send_ended` | Yes | **Yes** |
+| A transmit device that is absent | **Yes, new** | **Yes**, since unit 303's amber line |
+| A category being off | **No, and it cannot be** | No — **a fact for the file, and the snapshot now names it** |
+| A dropped telemetry event | **Yes, new** | No — rightly a file fact |
+| `RigWriteOutcome.Refused` | Yes, in the result | **Unknown** |
 
-timed out       :  Hamlet asked pool.ntp.org what the time really is and nothing
-                   came back, so the slots cannot be cut yet. It will keep trying.
+**One honest gap: the last row.** `RigWriteOutcome.Refused` has **no consumer in
+`MainWindowViewModel`**, so whether any live write refuses through that path could not
+be settled by reading. **Reported as unknown rather than guessed either way** — it
+wants a bench measurement against a radio.
 
-no such host    :  ...and that name could not be looked up, which usually means
-                   there is no network just now, so the slots cannot be cut yet.
+**Nothing above was fixed.** The list is this unit's; the fixes are not (§12.6).
 
-threw           :  ...and something went wrong inside Hamlet, so the slots cannot
-                   be cut yet.
-```
+### 4. What the snapshot says it does not know, and why
 
-**Before, all four read *clock not checked yet, so slots cannot be cut*.** One is
-*wait a moment* and the others are *something is wrong*. A measured offset reads
-exactly as it always did. It stays on screen unhovered, because `Ft8Slots.TrueUtc`
-returns **null** without an offset, so no slot boundary can be cut at all.
+On this machine, with no radio and before any decode:
 
-### 4. What `Sent` meant, and what it says now
+| Field | Why |
+|---|---|
+| `radioConnected`, `radioPort`, `radioModel`, `radioBaud`, `radioCivAddress` | not reachable where the snapshot runs — it is written before the view model exists |
+| `clockOffsetKnown`, `clockOffsetSeconds`, `clockLastQueryReason` | same, and the query is asynchronous — unit 303's two events carry it when it lands |
+| `transmitReadiness` | same |
+| `ft8SharpVersion`, `ft8SharpDeepVersion` | not loaded in this process yet, which is ordinary before anything has decoded |
+| `audioInputPresent`, `transmitDevicePresent` | nothing is named in settings, so there is nothing to check for |
 
-**It was set by three local successes and nothing else:**
+**Every one carries its own `…Why`.** The bundle's own test asserts that, and **it
+caught two fields that were doing it wrong**: `ft8SharpVersion` and
+`ft8SharpDeepVersion` returned the string `unknown (not loaded yet)`, putting the
+reason inside the value with no `…Why` beside it. **The one rule this whole unit turns
+on held everywhere except in those two fields.** Fixed.
 
-1. a CI-V PTT-on frame handed to the serial port **without throwing**;
-2. the sink reporting it played **every sample** it was given;
-3. a PTT-off frame handed to the port **without throwing**.
+### What it costs
 
-Its own doc comment said *the whole signal went out and the radio came back to
-receive*. **Not one of those three is a fact about the radio.** Writing bytes to a COM
-port succeeds whether or not a radio is listening at the other end — which is exactly
-how 21 records came to say `Sent` for transmissions that never keyed a transmitter.
-
-**It is now `Played`.** The enum's own remarks carry the whole finding, `TransmitRun.Sent`
-became `AudioWentOut`, **and no record was deleted.**
-
-**Can Hamlet know the real thing? Partly, and that is a real repair I did not make.**
-The radio reports transmit state on `1C 00`, which HM-DEC-147 already polls four times
-a second, and power on `15 11`, which HM-DEC-082 already reads as *power made*. Joining
-those to this outcome would let the record say the transmitter keyed. **The instruction
-scopes task 6 to the word and I kept to it.**
+- **The snapshot:** one line, **2,381 bytes**, once per session — 2.33 KB per start
+  against an ordinary day of ~2,600 events.
+- **The bundle:** 3,108 characters, 63 lines, **3.0 KB**. A paste, not a file.
+- **The growth on a healthy machine: none.** The state-change events fire on change,
+  not on a tick — an evening with Settings opened a dozen times and the device present
+  writes **zero** of them. On the machine that lost its device it writes one each time
+  Settings is opened, which is exactly when somebody is looking.
 
 ---
 
 ## 4. What's blocking us
 
-### 1. The clock fault is on your machine and needs one measurement from it
+### 1. The ruling that closes the third mystery
 
-**This is the only item that needs you, and it will settle in a minute.**
-
-Run Hamlet, then open `%AppData%\Hamlet\telemetry\` and find today's file:
-
-- **`clock_query_started` with no `clock_query_finished`** — the query hung; the
-  `detail` on the next one that does finish will say where.
-- **`clock_query_finished` with `reason` set** — that token is the answer. `timeout`,
-  `socket_HostNotFound`, `socket_NetworkUnreachable` and the rest each mean something
-  different and each has its own fix.
-- **Neither** — nothing asked, and that is a different bug from any of the above.
-
-**Before tonight all three of those looked identical.** They do not any more.
-
-### 2. Whether the transmission record should ask the radio
-
-**A ruling, and it is the one with the most behind it.** `Played` is honest but it is
-not what you want to know. Hamlet already polls `1C 00` four times a second and reads
-`15 11` for power made.
+**Carried from unit 303 and now with a measurement behind it.** Task 5 shows this is
+the one case the standard fails.
 
 > **The transmission record says whether the transmitter keyed, taken from the radio
-> rather than from the port write.** `Played` stays as what the audio path did;
-> a second fact says what the radio did, and where the radio did not answer it says
-> unknown rather than assuming either way.
+> rather than from the port write.** `Played` stays as what the audio path did; a
+> second fact says what the radio did, and where the radio did not answer it says
+> `unknown` rather than assuming either way.
 >
 > **Why:** the record exists to tell whether a fault is in the signal, the radio or
-> Hamlet (§0.0.1), and today it cannot distinguish *the radio was off* from *it went
-> out fine*. **What is rejected:** inferring keying from a successful port write,
-> which is what produced the 21 records.
+> Hamlet (§0.0.1), and it still cannot distinguish *the radio was off* from *it went
+> out fine*. Hamlet already polls `1C 00` four times a second and reads `15 11`.
+> **What is rejected:** inferring keying from a successful port write, which is what
+> produced the 21 records.
 
-**Not started.** It is a change to what the record asserts, which is yours (§12.1).
+**Not started.** It changes what the record asserts, which is yours (§12.1).
 
-### 3. Two inherited reds, named and left alone
+### 2. `RigWriteOutcome.Refused` has no consumer
 
-`TheFitGuardAsksAboutTheGridTheSendIsOnTests.BothFt8RefusalSentencesAreWhereTheyWereBeforeThisUnit`,
-and `TheAchievementsScreenTests`' two. **All three fail identically with this unit's
-changes stashed**, proved by stashing. Neither is in `docs/unit239-failing-set.txt`.
+Reported above. Settling it wants a live write against a radio, which is a bench
+measurement.
 
-### 4. `Ft8Sharp` did not move
+### 3. `Ft8Sharp` did not move
 
 No file under `src/Ft8Sharp/` was read, edited or built.
 
@@ -312,23 +296,25 @@ No file under `src/Ft8Sharp/` was read, edited or built.
 
 Carried verbatim per HM-DEC-139.
 
-1. **Nothing in this repository can look at a picture.** *First made 2026-09-09, unit
-   300.* Six units running. Real pixels want `Avalonia.Headless.Skia`, and **a package
-   is a dependency decision rather than a session's** (§0.4). **Waiting on:** your
-   ruling. **Where it sits:** nowhere — no package has been added.
+1. **Whether the transmission record asks the radio whether it keyed.** *First made
+   2026-09-10, unit 303.* Restated above with task 5's measurement behind it.
+   **Waiting on:** your ruling. **Where it sits:** `Played` is honest and unchanged.
 
-2. **The map image.** *First made 2026-09-09, unit 301.* The projection is built and
-   proved against independent trigonometry; the picture and its three numbers are
-   missing. **Waiting on:** a file from you. **Where it sits:**
-   `assets/azimuthal-map.md`.
+2. **Nothing in this repository can look at a picture.** *First made 2026-09-09, unit
+   300.* Seven units running. Real pixels want `Avalonia.Headless.Skia`, and **a
+   package is a dependency decision** (§0.4). **Waiting on:** your ruling. **Where it
+   sits:** nowhere.
 
-3. **`TheAchievementsScreenTests` has two red, inherited.** *First made 2026-09-10,
-   unit 302.* Not in `docs/unit239-failing-set.txt` and named by no order. **Waiting
-   on:** an order that takes them. **Where it sits:** unchanged.
+3. **The map image.** *First made 2026-09-09, unit 301.* The projection is built and
+   proved; the picture and its three numbers are missing. **Waiting on:** a file.
+   **Where it sits:** `assets/azimuthal-map.md`.
 
-4. **Two ±2 wobbles** on `SettingsWindow` and `AboutWindow`, far under their ceilings.
+4. **Three inherited reds** — `TheAchievementsScreenTests`' two and
+   `TheFitGuardAsksAboutTheGridTheSendIsOnTests`' one. *First made 2026-09-10, units
+   302 and 303.* All proved red with the previous unit's changes stashed, and named by
+   no order. **Waiting on:** an order that takes them.
+
+5. **Two ±2 wobbles** on `SettingsWindow` and `AboutWindow`, far under their ceilings.
    *First made 2026-09-10, unit 302.* **Waiting on:** an order that takes them.
-   **Where it sits:** unchanged, and both still read 1628 and 726 tonight.
-
-**And one dropped rather than carried.** The achievement mark's size was ask 5 inbound;
-task 5 built option B and it is closed.
+   **Note:** the About wobble may now move, because this unit made that window's text
+   depend on the machine's device list.

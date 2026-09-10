@@ -2,7 +2,7 @@ PHASE: FT4 works exactly the way FT8 does
 PHASE_SET: 2026-09-08
 DESCRIPTION: Where FT4 lives decided by reading upstream, then the decoder, the 7.5 second slot machinery, the ADIF submode, the button, and Tim at the radio
 CURRENT_STEP: 1
-WORK_INSTRUCTION: 303 - the clock query says what it did
+WORK_INSTRUCTION: 304 - telemetry solves the mystery without asking him anything
 STEP: 0 | done | where FT4 lives, decided by reading
 STEP: 1 | partial | FT4 decodes a signal Hamlet made
 STEP: 2 | partial | the slot machinery is FT4's
