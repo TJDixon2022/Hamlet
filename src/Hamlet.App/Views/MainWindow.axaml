@@ -4479,7 +4479,7 @@
                                                                                      Kind="Detail"
                                                                                      VerticalAlignment="Center"
                                                                                      Margin="0,0,6,0"
-                                                                                     Text="{Binding Detail}" />
+                                                                                     Text="{Binding DetailHover}" />
 
                                                                 <!-- **AN X ON EVERY CARD**
                                                                      (Tim's ruling,

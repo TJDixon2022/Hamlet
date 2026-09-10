@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -172,7 +172,15 @@ public sealed class HintMarkControl : Control
             return default;
         }
 
-        ToolTip.SetTip(this, Word(Kind) + " — " + text.Trim());
+        // **A LIST GETS ITS HEADING ON ITS OWN LINE** (work instruction 306
+        // task 4). Where the text is several rows, running the word and the
+        // first bullet together makes the first fact read differently from the
+        // rest.
+        ToolTip.SetTip(
+            this,
+            text.Contains('\n', System.StringComparison.Ordinal)
+                ? Word(Kind) + System.Environment.NewLine + text.Trim()
+                : Word(Kind) + " —  " + text.Trim());
 
         return new Size(Diameter, Diameter);
     }

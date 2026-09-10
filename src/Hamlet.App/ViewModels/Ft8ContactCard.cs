@@ -436,41 +436,66 @@ public sealed partial class Ft8ContactCard : ObservableObject
     {
         get
         {
-            // **THE CALL-TO-ANYBODY CARD HAS ITS OWN FACTS** (work instruction 305
-            // task 2). Nobody has answered, so there is no *he*: no report either
-            // way, no grid, no distance and nothing about how the clocks agreed.
-            // Everything the other branches would say about a station would be a
-            // sentence about somebody who is not there.
-            if (IsCallToAnyone)
-            {
-                return CallFacts();
-            }
-
-            var parts = new List<string>();
-
-            if (Reports() is { Length: > 0 } reports)
-            {
-                parts.Add(reports);
-            }
-
-            if (WhereOnEarth() is { Length: > 0 } where)
-            {
-                parts.Add(where);
-            }
-
-            if (WhereOnTheBand() is { Length: > 0 } band)
-            {
-                parts.Add(band);
-            }
-
-            if (Slots() is { Length: > 0 } slots)
-            {
-                parts.Add(slots);
-            }
-
-            return string.Join(Between, parts);
+            return string.Join(Between, DetailRows);
         }
     }
+
+    /// <summary>**The same facts, one group to a row, for the view to stack.**</summary>
+    /// <remarks>
+    /// <para>**TWELVE BULLETS IN ONE FLAT STACK IS THE SAME WALL, SHORTER** (Tim,
+    /// 2026-09-10: *"I like that you shortened it, but make those bullet points and
+    /// easy to see"*). So the rows are groups a reader takes in at a glance - what
+    /// the signals were, where he is, where on the band, when - **and the last thing
+    /// he sent on its own at the bottom**, because that is the one that says whether
+    /// the contact is finished.</para>
+    /// <para>**A ROW IS ABSENT WHERE ITS FACTS ARE** (§0.0). No reports, no signal
+    /// row; no grid, no place row. A hover that filled a gap with a plausible figure
+    /// would be worse than one that came up short, because a deliberate look is
+    /// exactly when the operator is most inclined to believe what he finds.</para>
+    /// </remarks>
+    public IReadOnlyList<string> DetailRows
+    {
+        get
+        {
+            if (IsCallToAnyone)
+            {
+                return CallRows();
+            }
+
+            var rows = new List<string>();
+
+            foreach (var group in new[]
+            {
+                Reports(), WhereOnEarth(), WhereOnTheBand(), Slots(),
+            })
+            {
+                if (group.Length > 0)
+                {
+                    rows.Add(group);
+                }
+            }
+
+            if (_facts.HisLastPayload is { Length: > 0 } closing)
+            {
+                rows.Add("He last sent " + closing);
+            }
+
+            return rows;
+        }
+    }
+
+    /// <summary>**What the `i` shows: one bullet to a row.**</summary>
+    /// <remarks>
+    /// <para>**BULLETS, BECAUSE HE ASKED FOR BULLETS** (Tim, 2026-09-10: *"I like
+    /// that you shortened it, but make those bullet points and easy to see"*). A
+    /// hover is read at a glance or it is not read, and a row of facts separated by
+    /// middle dots is still one line to scan.</para>
+    /// <para>**THE ROWS ARE <see cref="DetailRows"/> AND THE MARKER IS ADDED HERE**,
+    /// so nothing that reads the facts has to strip decoration off them.</para>
+    /// </remarks>
+    public string DetailHover
+        => string.Join(
+            "\n", DetailRows.Select(row => "\u2022  " + row));
 
     /// <summary>True where the `i` mark has anything to hold.</summary>
     public bool HasDetail => Detail.Length > 0;
@@ -498,7 +523,10 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <para>**THE TEXT IS THE ONE THAT WENT OUT**, taken from the ledger's own
     /// record of what was sent rather than recomposed here.</para>
     /// </remarks>
-    private string CallFacts()
+    private string CallFacts() => string.Join(Between, CallRows());
+
+    /// <summary>What was called, when, and how many times, one to a row.</summary>
+    private List<string> CallRows()
     {
         var said = new List<string>();
 
@@ -528,7 +556,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
               + _facts.YourMessages.ToString(CultureInfo.InvariantCulture)
               + " times.");
 
-        return string.Join(Between, said);
+        return said;
     }
 
     /// <summary>The reports each way, and what the scale means.</summary>
@@ -584,8 +612,17 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
         if (here is { } from && there is { } to)
         {
-            said.Add(GridPath.DescribeMiles(GridPath.MilesBetween(from, to)));
-            said.Add(GridPath.DescribeBearing(GridPath.BearingDegrees(from, to)));
+            // **THE DISTANCE AND THE DIRECTION ARE ONE FACT AND READ AS ONE ROW**
+            // (work instruction 306 task 4). **The degrees are gone and the compass
+            // word stays**: HM-DEC-038 has said for months that a bearing is one of
+            // sixteen points and never a number, and this hover was the one place in
+            // the tree still printing the reading off an instrument. *480 miles
+            // northeast* is a direction a person can picture.
+            said.Add(
+                GridPath.DescribeMiles(GridPath.MilesBetween(from, to))
+                + " "
+                + OperatorLocation.DescribeCompass(
+                    GridPath.BearingDegrees(from, to)));
         }
 
         return string.Join(Between, said);
@@ -640,11 +677,9 @@ public sealed partial class Ft8ContactCard : ObservableObject
             ? "1 slot ago"
             : _facts.Slots.ToString(CultureInfo.InvariantCulture) + " slots ago");
 
-        if (_facts.HisLastPayload is { Length: > 0 } closing)
-        {
-            said.Add("He last sent " + closing);
-        }
-
+        // **WHAT HE LAST SENT IS NOT A TIMING FACT AND HAS ITS OWN ROW**
+        // (work instruction 306 task 4). <see cref="DetailRows"/> adds it at the
+        // bottom, because it is the one that says whether the contact is finished.
         return string.Join(Between, said);
     }
 

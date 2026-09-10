@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -41,46 +41,84 @@ public sealed class TheReadinessHoverTests
     /// <param name="output">Where the hover is printed and measured.</param>
     public TheReadinessHoverTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>**The hover is facts only.**</summary>
+    /// <summary>**The hover is a list of facts, not one string.**</summary>
     [Fact]
-    public void TheHoverIsFactsOnly()
+    public void TheHoverIsAListOfFactsAndNotOneString()
     {
         var card = AFullExchange().DigitalCards.Single();
 
-        var detail = card.Detail;
+        foreach (var row in card.DetailRows)
+        {
+            _output.WriteLine("  " + row);
+        }
 
-        _output.WriteLine(detail);
         _output.WriteLine("");
-        _output.WriteLine("characters : " + detail.Length);
+        _output.WriteLine("rows : " + card.DetailRows.Count);
 
-        var facts = detail
-            .Split('·', StringSplitOptions.RemoveEmptyEntries)
-            .Select(f => f.Trim())
-            .Where(f => f.Length > 0)
-            .ToList();
+        // **A LIST THE VIEW STACKS**, rather than a line it has to break.
+        Assert.NotEmpty(card.DetailRows);
 
-        _output.WriteLine("facts      : " + facts.Count);
-
-        foreach (var fact in facts)
-        {
-            _output.WriteLine("  - " + fact);
-        }
-
-        // **INSIDE THE BUDGET**, which is the measurement the task is judged on.
+        // **FOUR GROUPS AND THE LAST THING HE SENT ON ITS OWN AT THE BOTTOM.**
+        // Twelve bullets in one flat stack is the same wall, shorter.
         Assert.True(
-            detail.Length <= Budget,
-            "the hover is " + detail.Length + " characters, over the "
-            + Budget + " the instruction budgets");
+            card.DetailRows.Count <= 6,
+            "the hover is " + card.DetailRows.Count
+            + " rows, which is a flat stack rather than groups");
 
-        // **AND NO FACT CARRIES A SECOND SENTENCE.** One full stop inside a fact
-        // is a decimal point or an abbreviation; a second clause explaining the
-        // first is what this task removes.
-        foreach (var fact in facts)
+        Assert.StartsWith(
+            "He last sent", card.DetailRows[^1], StringComparison.Ordinal);
+    }
+
+    /// <summary>**Every row is one fact and carries no second sentence.**</summary>
+    [Fact]
+    public void EveryRowIsOneFactAndCarriesNoSecondSentence()
+    {
+        var card = AFullExchange().DigitalCards.Single();
+
+        foreach (var row in card.DetailRows)
         {
-            Assert.DoesNotContain(", so ", fact, StringComparison.Ordinal);
-            Assert.DoesNotContain(", which is ", fact, StringComparison.Ordinal);
-            Assert.DoesNotContain(" rather than ", fact, StringComparison.Ordinal);
+            _output.WriteLine(
+                row.Length.ToString(CultureInfo.InvariantCulture).PadLeft(3)
+                + "  " + row);
+
+            Assert.DoesNotContain(", so ", row, StringComparison.Ordinal);
+            Assert.DoesNotContain(", which is ", row, StringComparison.Ordinal);
+            Assert.DoesNotContain(" rather than ", row, StringComparison.Ordinal);
+
+            // **A ROW IS READ AT A GLANCE OR IT IS NOT A BULLET.**
+            Assert.True(
+                row.Length <= 80,
+                "a row is " + row.Length + " characters: " + row);
         }
+    }
+
+    /// <summary>**No row carries a bearing in degrees.**</summary>
+    /// <remarks>
+    /// **THE COMPASS WORD STAYS AND THE NUMBER GOES** - the author's proposal under
+    /// the rulings block, reproduced in the report for Tim to overrule. HM-DEC-038
+    /// already says a bearing is one of sixteen points and never degrees; the hover
+    /// was the one place in the tree still printing the number.
+    /// </remarks>
+    [Fact]
+    public void NoRowCarriesABearingInDegrees()
+    {
+        var card = AFullExchange().DigitalCards.Single();
+
+        foreach (var row in card.DetailRows)
+        {
+            _output.WriteLine("  " + row);
+
+            Assert.DoesNotContain("degrees", row, StringComparison.Ordinal);
+        }
+
+        // **AND THE DIRECTION IS STILL THERE, AS A WORD A PERSON CAN PICTURE.**
+        Assert.Contains(
+            card.DetailRows,
+            r => r.Contains("miles", StringComparison.Ordinal)
+                 && (r.Contains("west", StringComparison.Ordinal)
+                     || r.Contains("east", StringComparison.Ordinal)
+                     || r.Contains("north", StringComparison.Ordinal)
+                     || r.Contains("south", StringComparison.Ordinal)));
     }
 
     /// <summary>**Every fact the long form carried is still here.**</summary>
@@ -103,7 +141,10 @@ public sealed class TheReadinessHoverTests
             ("the decoder's floor", "-21"),
             ("his grid", "EN52"),
             ("the distance", "miles"),
-            ("the bearing", "288"),
+            // **THE COMPASS WORD, NOT THE DEGREES** (work instruction 306
+            // task 4). The fact is the direction and it is still required;
+            // what went is the reading off an instrument (HM-DEC-038).
+            ("the bearing", "west-northwest"),
             ("his tone", "1240"),
             ("the dial", "14.074000"),
             ("the time offset", "0.2"),

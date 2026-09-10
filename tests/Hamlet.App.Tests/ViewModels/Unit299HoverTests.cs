@@ -61,7 +61,10 @@ public sealed class Unit299HoverTests
             // off every fact: the bearing reads `288 degrees` where it used to read
             // `on an initial bearing of 288 degrees from you`. **The fact is the
             // same fact** and this test still requires it.
-            ("the bearing", "288 degrees"),
+            // **REWRITTEN AGAIN BY UNIT 306 TASK 4.** Unit 305 cut the
+            // sentence round the bearing; this one cuts the degrees, leaving
+            // the sixteen-point compass word HM-DEC-038 has always asked for.
+            ("the bearing", "west-northwest"),
             ("the audio offset", "1240 Hz"),
             ("the dial", "14.074000 MHz"),
             ("the time offset", "0.2 s into the slot"),
