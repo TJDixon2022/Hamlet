@@ -122,6 +122,16 @@ public static class StartupSnapshot
         Add(bag, "transmitReadiness", parts.TransmitReadiness);
         Add(bag, "transmitReadinessDecidedBy", parts.TransmitReadinessDecidedBy);
 
+        // **WHICH MODE AND WHICH TAB THE APPLICATION WAS ON** (work instruction 305
+        // task 4). The file from 2026-09-10 could not say: the only hint anywhere in
+        // seventeen events that the operator was on CW was a `neighborhood_clicked`
+        // reading *CW main street*, which is where he tuned rather than what Hamlet
+        // was running. **Nothing else in the record can be read without it** - an
+        // absence of slots means one thing on the Digital tab and nothing at all
+        // anywhere else.
+        Add(bag, "appOperatingMode", parts.AppOperatingMode);
+        Add(bag, "appDigitalMode", parts.AppDigitalMode);
+
         Add(bag, "settingsLoaded", parts.SettingsLoaded);
         Add(bag, "settingsPathExists", parts.SettingsPathExists);
         Add(bag, "settingsNamedButAbsent", Join(parts.SettingsNamedButAbsent));
@@ -293,6 +303,12 @@ public sealed class SnapshotParts
 
     /// <summary>The fields readiness was decided from.</summary>
     public string? TransmitReadinessDecidedBy { get; set; }
+
+    /// <summary>Which tab the application is on - CW, Digital, Voice.</summary>
+    public string? AppOperatingMode { get; set; }
+
+    /// <summary>Which digital mode the Digital tab is running.</summary>
+    public string? AppDigitalMode { get; set; }
 
     /// <summary>Whether the settings file was read successfully.</summary>
     public bool? SettingsLoaded { get; init; }

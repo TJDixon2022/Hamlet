@@ -101,6 +101,7 @@ public static class AppEvents
     /// <param name="to">What it is now.</param>
     /// <param name="why">What caused it, in a few words.</param>
     /// <param name="level">How loud it is; a loss is a warning.</param>
+    /// <param name="mode">Which mode the application was on, or null.</param>
     /// <remarks>
     /// <para>**A SNAPSHOT IS A PICTURE OF STARTUP AND TODAY'S FAULTS HAPPENED LATER**
     /// (work instruction 304 task 3). The transmit device did not go missing while
@@ -119,7 +120,8 @@ public static class AppEvents
         string? from,
         string to,
         string why,
-        TelemetryLevel level = TelemetryLevel.Info)
+        TelemetryLevel level = TelemetryLevel.Info,
+        string? mode = null)
         => telemetry?.Write(
             TelemetryCategory.Diagnostics,
             "state_changed",
@@ -131,6 +133,14 @@ public static class AppEvents
                     : from,
                 ["to"] = to,
                 ["why"] = why,
+
+                // **WHICH MODE THE APPLICATION WAS ON WHEN IT CHANGED** (work
+                // instruction 305 task 4). A state change reads differently on CW
+                // and on FT8, and until this field the record could not say which
+                // one the operator was looking at.
+                ["mode"] = string.IsNullOrWhiteSpace(mode)
+                    ? StartupSnapshot.Unknown
+                    : mode,
             },
             level);
 
@@ -630,6 +640,41 @@ public static class AppEvents
             new Dictionary<string, object?> { ["knownValues"] = knownCount });
 
     /// <summary>
+    /// **The digital decoder says it exists**, as the CW decoder already does.
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="mode">FT8 or FT4.</param>
+    /// <param name="slotSeconds">How long one slot runs on that grid.</param>
+    /// <param name="sampleRate">What the audio path declared.</param>
+    /// <param name="device">The capture device, by name, or null.</param>
+    /// <remarks>
+    /// <para>**THE FT8 DECODER NEVER SAID IT EXISTED, SO ITS SILENCE WAS
+    /// UNREADABLE** (work instruction 305 task 4). The file from 2026-09-10 carried
+    /// `decoder_started` with `pitchHz 600` and two `decode_quality` events counting
+    /// elements and characters - **all three of those are the CW decoder.** Nothing
+    /// anywhere said a digital decoder had started, so a Digital tab that decoded
+    /// nothing and a Digital tab that was never listening were the same file.</para>
+    /// <para>**A DEVICE NAME IS NOT PERSONAL** (§2.1, and Tim of 2026-09-10 in those
+    /// words). No callsign, no name, no grid and no location goes in one.</para>
+    /// </remarks>
+    public static void DigitalDecoderStarted(
+        ITelemetry? telemetry,
+        string mode,
+        double slotSeconds,
+        int sampleRate,
+        string? device)
+        => telemetry?.Write(TelemetryCategory.Decode, "digital_decoder_started",
+            new Dictionary<string, object?>
+            {
+                ["mode"] = mode,
+                ["slotSeconds"] = slotSeconds,
+                ["sampleRate"] = sampleRate,
+                ["device"] = string.IsNullOrWhiteSpace(device)
+                    ? StartupSnapshot.Unknown
+                    : device,
+            });
+
+    /// <summary>
     /// The CW decoder started listening (HM-DEC-048).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>
@@ -978,6 +1023,7 @@ public static class AppEvents
     /// <param name="offset">The clock offset the reading was cut against.</param>
     /// <param name="nowUtc">
     /// <param name="arrival">What the audio path delivered, as counts.</param>
+    /// <param name="level">How loud the audio is, or null where nothing measured it.</param>
     /// The moment the line is written, by the PC clock, used only to age the clock
     /// measurement. Passed rather than read, so the payload is a function of its
     /// arguments.
@@ -1025,7 +1071,8 @@ public static class AppEvents
         string refusal,
         ClockOffset offset,
         DateTime nowUtc,
-        AudioArrival arrival = default)
+        AudioArrival arrival = default,
+        AudioLevel? level = null)
     {
         if (telemetry is null)
         {
@@ -1086,6 +1133,20 @@ public static class AppEvents
                     ["droppedFrames"] = arrival.DroppedFrames,
                     ["longestFrameMicroseconds"] =
                         Math.Round(arrival.LongestFrameMicroseconds, 0),
+
+                    // **AUDIO HEALTH ON THE DIGITAL SIDE, AS THE CW DECODER HAS
+                    // ALWAYS HAD IT** (work instruction 305 task 4). The collapse
+                    // from -12.9 dB to -67.9 dB on 2026-09-10 was caught only
+                    // because the CW decoder happened to be sampling; on FT8 there
+                    // was nothing at all. **Null where nothing supplied it**, which
+                    // is a different fact from a measured silence (§0.0).
+                    ["audioPeakDb"] = level is { } peak
+                        ? Math.Round(peak.PeakDb, 1)
+                        : null,
+                    ["audioFloorDb"] = level is { } floor
+                        ? Math.Round(floor.FloorDb, 1)
+                        : null,
+                    ["nearlySilent"] = level?.NearlySilent,
                 },
                 TelemetryLevel.Warn);
 

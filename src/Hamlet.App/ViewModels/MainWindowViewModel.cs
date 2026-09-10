@@ -964,7 +964,8 @@ public partial class MainWindowViewModel : ObservableObject
             newValue.IsKnown ? "known" : "unknown",
             newValue.IsKnown
                 ? "a time server answered, so slots can be cut and cards counted"
-                : "the offset was lost, so nothing can be counted from a boundary");
+                : "the offset was lost, so nothing can be counted from a boundary",
+            mode: OperatingMode);
 
         if (!newValue.IsKnown)
         {
@@ -6254,6 +6255,12 @@ public partial class MainWindowViewModel : ObservableObject
         // (work instruction 305 task 3). On FT8 the CW gate says `not_in_morse`
         // about a send nobody asked for, so the snapshot records the operating mode
         // rather than repeating a verdict that is about a different transmitter.
+        // **WHICH MODE AND WHICH TAB** (work instruction 305 task 4). Every other
+        // field in the snapshot is read differently depending on this one, and the
+        // record could not say it.
+        parts.AppOperatingMode = OperatingMode;
+        parts.AppDigitalMode = _digitalMode.ToString();
+
         parts.TransmitReadiness = OperatingMode;
         parts.TransmitReadinessDecidedBy =
             "the operating mode the panel is on; the Morse gate is asked only in CW";
@@ -10072,7 +10079,7 @@ public partial class MainWindowViewModel : ObservableObject
         // transmission he asked for; nothing here can arm one (§0.2).
         DriveTheArmedSend();
 
-        var tap = _decoder?.Tap;
+        var tap = TapForTests ?? _decoder?.Tap;
 
         // **THE DECODER IS TOLD WHICH MODE IT IS IN, ON THE TICK THAT ALREADY
         // KNOWS.** Work instruction 238 task 5: in Digital the CW decode is
@@ -10091,12 +10098,31 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **THE DIGITAL DECODER SAYS IT EXISTS** (work instruction 305 task 4).
+        // The CW decoder has announced itself since unit 088; this one never did,
+        // so a Digital tab that decoded nothing and a Digital tab that was never
+        // listening left the same file. Written once per mode and rate, not per
+        // tick.
+        AnnounceTheDigitalDecoder(tap);
+
         var offset = ClockOffset;
         var look = _slotWatch.Look(tap, DateTime.UtcNow, offset);
 
         if (look.Refusal != _digitalRefusal)
         {
             _digitalRefusal = look.Refusal;
+
+            // **A REFUSAL IS A SLOT THAT WAS NOT CUT, AND IT IS WRITTEN DOWN.**
+            // Until this line the only route to an `ft8_slot` event was a slot that
+            // had already been cut and decoded, so a session that cut none wrote
+            // nothing at all - which is exactly the file this unit was handed.
+            if (look.Refusal.Length > 0)
+            {
+                AppEvents.Ft8SlotsRead(
+                    _telemetry, slots: null, look.Refusal, offset, DateTime.UtcNow,
+                    MeasureArrival(), tap.Level);
+            }
+
             RaiseDigitalDecodeChanges();
         }
 
@@ -10104,6 +10130,51 @@ public partial class MainWindowViewModel : ObservableObject
         {
             _ = DecodeTheSlotAsync(ready, offset);
         }
+    }
+
+    /// <summary>An audio tap a test supplies, or null in the application.</summary>
+    /// <remarks>
+    /// **THE SEAM IS HERE AND THE TICK IS THE REAL ONE** (this tree's own habit -
+    /// `CardsNowForTests` and `RefreshTurnForTests` are the same shape). The slot
+    /// look needs audio and audio needs a sound card; without this a test can only
+    /// assert what the tick would have done, which is the kind of assertion unit
+    /// 284 ruled out. **Production behaviour does not move**: the field is null
+    /// unless a test sets it.
+    /// </remarks>
+    internal AudioTap? TapForTests { get; set; }
+
+    /// <summary>Run one slot look, the way the tick does.</summary>
+    internal void LookForASlotForTests() => OnSlotTick();
+
+    /// <summary>What the digital decoder last announced itself as.</summary>
+    /// <remarks>
+    /// **ONCE PER SHAPE, NOT ONCE PER TICK.** The slot tick runs four times a
+    /// second; an announcement on each would be 14,400 lines an hour saying the
+    /// same thing, which is a record nobody can read (§8's never-throw discipline
+    /// has the same shape - the file has to stay affordable).
+    /// </remarks>
+    private string _digitalDecoderAnnounced = "";
+
+    /// <summary>Say the digital decoder exists, once per mode and rate.</summary>
+    /// <param name="tap">The audio it is listening on.</param>
+    private void AnnounceTheDigitalDecoder(AudioTap tap)
+    {
+        var device = _settings.AudioInputDeviceId;
+        var shape = _digitalMode + "|" + tap.SampleRate + "|" + device;
+
+        if (shape == _digitalDecoderAnnounced)
+        {
+            return;
+        }
+
+        _digitalDecoderAnnounced = shape;
+
+        AppEvents.DigitalDecoderStarted(
+            _telemetry,
+            _digitalMode.ToString(),
+            DigitalGrid.SlotSeconds,
+            tap.SampleRate,
+            device);
     }
 
     /// <summary>Decode one completed slot and put what came out on the table.</summary>
@@ -10173,7 +10244,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         AppEvents.Ft8SlotsRead(
             _telemetry, heard.Slots, heard.Refusal, heard.Offset, DateTime.UtcNow,
-            arrival);
+            arrival, _decoder?.Tap?.Level);
 
         if (heard.Refusal.Length > 0)
         {
