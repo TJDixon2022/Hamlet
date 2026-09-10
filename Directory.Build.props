@@ -584,7 +584,7 @@
     once on an ordering block that carried no READ IN THIS ORDER line and spelled its count in words.
   -->
   <PropertyGroup>
-    <Version>1.12.268</Version>
+    <Version>1.12.269</Version>
   </PropertyGroup>
 
   <!--

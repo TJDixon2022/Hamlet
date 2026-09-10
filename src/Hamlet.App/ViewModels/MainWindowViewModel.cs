@@ -911,13 +911,70 @@ public partial class MainWindowViewModel : ObservableObject
     private AudioSpectrumSource? _digitalSpectrum;
 
     /// <summary>How far the PC clock is from UTC, measured and never corrected.</summary>
+    /// <remarks>
+    /// <para>**THE CARDS PANEL WAS NOT ON THIS LIST AND THAT WAS THE WIRE** (work
+    /// instruction 305 task 1). One telemetry file from the operator's own machine
+    /// carried `clock_query_finished` with `offsetSeconds 0.033` and, five seconds
+    /// later, a settled `startup_snapshot` reading the same figure off this very
+    /// property - while the panel beside it said the clock had never been checked.
+    /// **Both readers are on this one object**, so the value was never lost: five
+    /// surfaces were told it had arrived and the sixth was not, so its binding kept
+    /// the sentence composed at startup when the offset really was unknown.</para>
+    /// <para>**AND A NOTIFICATION ALONE IS NOT THE WHOLE MEND**, which is why
+    /// <c>OnClockOffsetChanged</c> sits below it. Cards are built only when
+    /// <see cref="CardsNow"/> is non-null, so every message that arrived before the
+    /// clock answered built no card at all, and telling the idle line to recompute
+    /// would leave an empty panel truthfully explaining itself. The arrival of the
+    /// first measurement has to rebuild them.</para>
+    /// </remarks>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ClockOffsetLine))]
     [NotifyPropertyChangedFor(nameof(ClockIsConcerning))]
     [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
     [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
     [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
+    [NotifyPropertyChangedFor(nameof(DigitalCardsIdle))]
     private ClockOffset _clockOffset = ClockOffset.Unknown;
+
+    /// <summary>Everything that was waiting on a measured clock, told it arrived.</summary>
+    /// <param name="oldValue">What the offset was.</param>
+    /// <param name="newValue">What it now is.</param>
+    /// <remarks>
+    /// <para>**THE REBUILD FIRES ON THE CROSSING AND NOT ON EVERY MEASUREMENT.** The
+    /// clock is asked again on a timer, and rebuilding the card list on each answer
+    /// would replace the control under the operator's mouse every few minutes, which
+    /// is how the send buttons came to be dead (HM-DEC-078). What changes the picture
+    /// is *unknown becoming known*, and that happens once.</para>
+    /// <para>**IT IS RECORDED, BECAUSE THAT IS WHAT WAS MISSING.** With nothing
+    /// written here, a measured offset that reached the snapshot and no other reader
+    /// left no trace at all, and the author spent a day on `w32time` for a fault that
+    /// was one attribute wide.</para>
+    /// </remarks>
+    partial void OnClockOffsetChanged(ClockOffset oldValue, ClockOffset newValue)
+    {
+        if (oldValue.IsKnown == newValue.IsKnown)
+        {
+            return;
+        }
+
+        AppEvents.StateChanged(
+            _telemetry,
+            "clock_offset",
+            oldValue.IsKnown ? "known" : "unknown",
+            newValue.IsKnown ? "known" : "unknown",
+            newValue.IsKnown
+                ? "a time server answered, so slots can be cut and cards counted"
+                : "the offset was lost, so nothing can be counted from a boundary");
+
+        if (!newValue.IsKnown)
+        {
+            return;
+        }
+
+        // **EVERY MESSAGE THAT ARRIVED BEFORE THE CLOCK DID BUILT NO CARD.**
+        RebuildCards();
+        RetimeCards();
+    }
 
     /// <summary>What the Digital tab says about the clock.</summary>
     public string ClockOffsetLine
