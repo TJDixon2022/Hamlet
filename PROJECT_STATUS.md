@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 300 - the achievement mark, and the screen it opens
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 6
+WORK_INSTRUCTION: 301 - the hint mark, the achievement mark size, and a real map
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T21:33:48-04:00
-NOTE: 6 of 6, none dropped including the named drop candidate. THE MARK STAYS LIT UNTIL HE OPENS THE SCREEN and nothing else clears it - persisted, so it survives a restart; the orbit runs 30 seconds and settling is not clearing, watched failing. The two states differ by shape, 2 drawings against 4, so they survive greyscale. SvgMark refused context-stroke and now defers a paint. The screen is a collection: best as tiles, places with worked-of-total bars, targets with rings - and every ring says on its face what its number is a percentage of, with no percentage at all where nothing is linear. Nothing looked at a pixel: re-tested, and the raster fails silently rather than throwing. 13 of 13 tests green, all written tonight, filtered and foregrounded; no suite run. HM-OPEN-089 raised: the Digital tab is over its ceiling before this unit started and its figure moves between runs. Version 1.12.262 to 1.12.263. No phase step moved. Two asks back.
+UPDATED: 2026-09-09T22:46:48-04:00
+NOTE: Task 1 green - the i mark had no hit target at all, 9 of 9 points found nothing; now 0 of 9 miss. Reaches 42 uses across 8 windows.
 
 ---
 

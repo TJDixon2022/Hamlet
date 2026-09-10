@@ -60,9 +60,30 @@ public enum HintKind
 /// <para>**IT DRAWS NOTHING WHEN IT HOLDS NOTHING.** An empty mark is a hover target
 /// for a sentence that does not exist, which teaches somebody that hovering is not
 /// worth it.</para>
-/// <para>Drawn rather than composed, following <see cref="FactBadgeControl"/>: a
-/// Border wrapping a TextBlock would hand the pointer two hit targets for one idea,
-/// and the ring and the glyph have to share one tooltip.</para>
+/// <para>**THE MARK IS STILL DRAWN AND IT NOW HAS A BACKGROUND UNDER IT** (work
+/// instruction 301 task 1, Tim's ruling of 2026-09-09 after comparing this against
+/// unit 299's globe and finding the globe wins). The original note here argued
+/// against composing this from a `Border` wrapping a `TextBlock`, and **that
+/// argument still holds and is not what changed**: two hit targets for one idea, and
+/// the ring and the glyph must share one tooltip. Nothing is composed, nothing is
+/// nested, and there is still exactly one control and one tooltip. **One line was
+/// added to `Render`.**</para>
+/// <para>**WHAT WAS MEASURED, BECAUSE THE FIRST TWO ANSWERS WERE WRONG.** As it
+/// stood, the mark was **not hit-testable anywhere** - nine points across it, the
+/// centre included, found nothing at all behind the pointer, so it was worse than a
+/// thin outline. **Giving the drawn ring a transparent fill did not fix it**: the
+/// ellipse's fill reaches the picture and not the pointer. **Deriving from `Border`
+/// or `Panel` is not available** - both seal `Render`, so neither can also draw a
+/// ring. What does register is **a transparent rectangle over the control's own
+/// bounds**, which is the same shape `Border` paints for its `Background`, and that
+/// is the line below.</para>
+/// <para>**SO THE TARGET IS THE MARK'S WHOLE BOX RATHER THAN THE DISC INSIDE THE
+/// RING**, by about a fifth of its area at the corners. That is the forgiving
+/// direction to be wrong in for somebody who has been aiming at this and missing.
+/// </para>
+/// <para>**A MARK HOLDING NOTHING IS STILL NOT A TARGET.** `MeasureOverride` gives it
+/// no size when it holds no sentence, so the rectangle has nothing to cover and an
+/// empty mark stays unhoverable, exactly as before.</para>
 /// </remarks>
 public sealed class HintMarkControl : Control
 {
@@ -166,6 +187,11 @@ public sealed class HintMarkControl : Control
 
         var ink = Foreground ?? Muted;
         var middle = Diameter / 2;
+
+        // **THE TRANSPARENT BACKGROUND, WHICH IS THE HIT TARGET AND IS THE WHOLE
+        // OF THIS UNIT'S TASK 1.** It paints nothing. Without it the middle of this
+        // mark belongs to whatever is behind it, which is what Tim was hitting.
+        context.FillRectangle(Brushes.Transparent, new Rect(Bounds.Size));
 
         // **A RING, NEVER A FILL** (HM-DEC-012). A column of filled marks reads as
         // dots of ink somebody spilled; an outline reads as somewhere to point.
