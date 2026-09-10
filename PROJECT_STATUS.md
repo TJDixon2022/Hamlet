@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 7
+TASK: 7 of 7
 WORK_INSTRUCTION: 304 - telemetry solves the mystery without asking him anything
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T11:56:43-04:00
-NOTE: Task 4 green - Copy diagnostics now carries the state and the last 40 lines, and its own test caught two fields putting the reason inside the value.
+UPDATED: 2026-09-10T12:03:16-04:00
+NOTE: Tasks 5 and 6 green - TWO OF THREE mysteries diagnosable from the file alone, the third named and why. Snapshot 2381 bytes once per session; bundle 3.0 KB.
 
 ---
 
