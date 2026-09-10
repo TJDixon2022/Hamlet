@@ -18,13 +18,14 @@ namespace Hamlet.App.ViewModels;
 /// is the one surface on which nobody would ever check.</para>
 /// <para>**A STATION WITH NO GRID GETS NO DOT.** Not a guess from the callsign: a
 /// DXCC entity is a country and a country is not a point, and Russia and the United
-/// States are each several thousand miles wide. <see cref="HasStation"/> is false and
-/// the caption says Hamlet does not know where he is.</para>
-/// <para>**THE LINE IS STRAIGHT ON THIS PROJECTION AND THAT IS A SIMPLIFICATION.**
-/// A real signal follows a great circle, which on an equirectangular map is a curve,
-/// and a path near a pole looks nothing like a straight line. <see cref="Caveat"/>
-/// says so and the caption carries it, so the picture never presents itself as the
-/// path the signal took.</para>
+/// States are each several thousand miles wide. <see cref="StationGridResolved"/> is
+/// false and the caption says Hamlet does not know where he is.</para>
+/// <para>**A LINE THROUGH THE CENTRE OF THIS PROJECTION IS THE GREAT-CIRCLE PATH**
+/// (work instruction 306). The old caveat said the opposite, correctly, about the
+/// equirectangular coastline this replaced; carrying it onto an azimuthal
+/// equidistant picture would be telling the operator something untrue about a
+/// picture that is now right (§0.0). **What is said instead is where the picture
+/// stops**: see <see cref="OffTheMap"/>.</para>
 /// </remarks>
 public sealed class Ft8GlobePlot
 {
@@ -52,10 +53,20 @@ public sealed class Ft8GlobePlot
     public const double SmallestFrame = 120;
 
     /// <summary>What the sentence says about the straight line, once.</summary>
-    public const string Caveat =
-        "The line is drawn straight on this flat map. A real signal follows a great "
-        + "circle, which curves on a picture like this one, so the line says who is "
-        + "where rather than the path the signal took.";
+    /// <summary>
+    /// **What the picture cannot draw, said in words rather than at the rim.**
+    /// </summary>
+    /// <remarks>
+    /// **THIS REPLACED A CAVEAT ABOUT A FLAT MAP** (work instruction 306). The old
+    /// sentence said the line was straight on a flat picture and a real signal curves
+    /// away from it, which was true of the drawn coastline and is **not true of this
+    /// one**: on an azimuthal equidistant projection a line through the centre is the
+    /// great-circle path, and repeating the caveat would be telling the operator
+    /// something untrue about a picture that is now right (§0.0).
+    /// </remarks>
+    public const string OffTheMap =
+        "This map reaches from the North Pole to the equator, so there is nowhere on "
+        + "it to draw him.";
 
     /// <summary>Plot the two stations.</summary>
     /// <param name="operatorGrid">The operator's own locator, or null.</param>
@@ -167,7 +178,12 @@ public sealed class Ft8GlobePlot
     {
         get
         {
-            if (!HasStation)
+            // **NOT KNOWING WHERE HE IS AND HAVING NOWHERE TO DRAW HIM ARE
+            // DIFFERENT FACTS** (§0.0, and this was caught by a test rather than
+            // reasoned about). A station south of the equator did put a grid on the
+            // air; saying Hamlet does not know where he is would be untrue about a
+            // station who told it.
+            if (!StationGridResolved)
             {
                 return $"Hamlet does not know where {Callsign} is. He has not put a "
                     + "grid square on the air, and a callsign only names a country, "
@@ -188,7 +204,9 @@ public sealed class Ft8GlobePlot
                     + "can put you on the map beside him.";
             }
 
-            return HasPath ? said + " " + Caveat : said;
+            // **THE COVERAGE LIMIT IS NAMED WHERE IT BITES**, so an absent marker
+            // reads as this picture running out rather than as Hamlet being unsure.
+            return HasStation ? said : said + " " + OffTheMap;
         }
     }
 
