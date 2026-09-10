@@ -3707,9 +3707,61 @@
                                  these are filled by one decision with two arms rather than by two
                                  tests, so nothing can land on both. -->
                             <Grid Grid.Column="1" x:Name="DigitalDecodedPanes"
+                                  RowDefinitions="Auto,*"
                                   ColumnDefinitions="*,*">
-                            
-                                <ctl:CollapsiblePanel Grid.Column="0"
+
+                                <!-- **THE SLOT CLOCK, ABOVE THE PANELS AND OUTSIDE
+                                     THEM** (work instruction 305 task 3, on
+                                     HM-DEC-086's precedent that some things are
+                                     always on screen).
+
+                                     **IT USED TO LIVE INSIDE A CARD** and a card is
+                                     built from the ledger, so on the evening the
+                                     operator pressed CQ and nobody answered there
+                                     were no cards, the `ItemsControl` was collapsed
+                                     by `HasDigitalCards`, and the countdown he was
+                                     watching to decide whether anybody had come back
+                                     did not exist at all. **The slot clock is always
+                                     knowable** (unit 286): it derives from the system
+                                     clock and the measured offset, and neither of
+                                     those waits on a decode.
+
+                                     **THE SAME BOUNDARY THE SEND GATE USES.** Every
+                                     figure here is `Ft8Turn.Read`'s, which is the one
+                                     the armed send is compared against - there is no
+                                     second timing source and nothing here can arm,
+                                     fire or extend anything.
+
+                                     **NO LABEL, AND THE NUMBER IS THE CARRIER**
+                                     (§0.6). The remaining seconds read as a number
+                                     whatever the colour is doing. -->
+                                <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                       x:Name="SlotClock"
+                                       Width="34" Height="34"
+                                       Margin="0,0,0,6"
+                                       HorizontalAlignment="Left"
+                                       Background="Transparent"
+                                       ToolTip.Tip="{Binding TurnRingTip}">
+                                    <Ellipse Width="30" Height="30"
+                                             StrokeThickness="3"
+                                             Stroke="{StaticResource HmSlateEdgeBrush}" />
+
+                                    <Arc Width="30" Height="30"
+                                         StartAngle="-90"
+                                         SweepAngle="{Binding TurnRingSweep}"
+                                         Classes.hm-unknown="{Binding TurnRingIsUnknown}"
+                                         Classes.hm-onair="{Binding TurnRingIsOnAir}" />
+
+                                    <TextBlock x:Name="SlotClockCountText"
+                                               Text="{Binding TurnRingCount}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontFamily="Consolas,Menlo,monospace"
+                                               FontSize="12"
+                                               FontWeight="SemiBold" />
+                                </Panel>
+
+                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="0"
                                                       Margin="5,0,0,0"
                                                       x:Name="DigitalDecodedPanel"
                                                       Family="Green"
@@ -4209,7 +4261,7 @@
                                      filled (HM-DEC-012, 0.5); `CollapsiblePanel` applies the
                                      family to the title and the edge and nothing here changes
                                      that. -->
-                                <ctl:CollapsiblePanel Grid.Column="1"
+                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="1"
                                                       Margin="5,0,0,0"
                                                       x:Name="DigitalMinePanel"
                                                       Family="Green"
@@ -4540,39 +4592,18 @@
                                                                      a station they were
                                                                      not measured from
                                                                      (§0.0). -->
-                                                                <Panel Grid.Column="0"
-                                                                       Width="34" Height="34"
-                                                                       Margin="0,0,8,0"
-                                                                       Background="Transparent"
-                                                                       IsVisible="{Binding ShowsRing}"
-                                                                       ToolTip.Tip="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingTip}">
-                                                                    <Ellipse Width="30" Height="30"
-                                                                             StrokeThickness="3"
-                                                                             Stroke="{StaticResource HmSlateEdgeBrush}" />
-
-                                                                    <Arc Width="30" Height="30"
-                                                                         StartAngle="-90"
-                                                                         SweepAngle="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingSweep}"
-                                                                         Classes.hm-unknown="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingIsUnknown}"
-                                                                         Classes.hm-onair="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingIsOnAir}" />
-
-                                                                    <!-- **A LIVE READOUT, AND IT IS NAMED SO THE CHARACTER
-                                                                         CEILING CAN BOUND IT** (work instruction 302 task 2).
-                                                                         It changes every second by the clock, so a sweep that
-                                                                         counted whatever it happened to say measured the
-                                                                         moment rather than the surface. **It stays on screen
-                                                                         exactly as it is**: Tim asked for it in as many words
-                                                                         - *nobody has responded, but I want to know how long I
-                                                                         have till the next transmit cycle* - and it is a live
-                                                                         measurement, not prose. -->
-                                                                    <TextBlock x:Name="TurnRingCountText"
-                                                                               Text="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingCount}"
-                                                                               HorizontalAlignment="Center"
-                                                                               VerticalAlignment="Center"
-                                                                               FontFamily="Consolas,Menlo,monospace"
-                                                                               FontSize="12"
-                                                                               FontWeight="SemiBold" />
-                                                                </Panel>
+                                                                <!-- **THE RING LEFT THIS CARD IN UNIT 305.**
+                                                                     It counted the slot down, and a slot
+                                                                     clock does not belong inside a
+                                                                     container that may not exist: the
+                                                                     evening the operator pressed CQ and
+                                                                     nobody answered there were no cards at
+                                                                     all, so the countdown he was watching
+                                                                     was not on the screen. It is above the
+                                                                     panels now, on `SlotClock`, reading the
+                                                                     same `Ft8Turn` values these bindings
+                                                                     read. **Nothing was duplicated**: there
+                                                                     is one ring and one timing source. -->
 
                                                                 <!-- **ONE OBVIOUS ACTION**
                                                                      (Tim's ruling,
