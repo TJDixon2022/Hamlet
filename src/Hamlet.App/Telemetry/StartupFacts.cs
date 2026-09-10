@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -136,10 +136,18 @@ public static class StartupFacts
         var parts = new SnapshotParts
         {
             AppVersion = Try(Version, notKnown, "appVersion"),
+            // **AN ASSEMBLY THAT IS NOT LOADED IS AN UNKNOWN WITH A REASON, NOT A
+            // VALUE THAT READS LIKE ONE.** These returned the string
+            // `unknown (not loaded yet)`, which put the reason inside the value and
+            // left no `…Why` field beside it - so the one rule this unit turns on
+            // held everywhere except in two fields. Caught by the bundle's own test
+            // asserting every `unknown` has its reason.
             Ft8SharpVersion = Try(
-                () => VersionOf("Ft8Sharp"), notKnown, "ft8SharpVersion"),
+                () => VersionOf("Ft8Sharp", notKnown, "ft8SharpVersion"),
+                notKnown, "ft8SharpVersion"),
             Ft8SharpDeepVersion = Try(
-                () => VersionOf("Ft8Sharp.Deep"), notKnown, "ft8SharpDeepVersion"),
+                () => VersionOf("Ft8Sharp.Deep", notKnown, "ft8SharpDeepVersion"),
+                notKnown, "ft8SharpDeepVersion"),
             Framework = Try(
                 () => RuntimeInformation.FrameworkDescription, notKnown, "framework"),
             OsBuild = Try(
@@ -262,7 +270,8 @@ public static class StartupFacts
         ?? typeof(StartupFacts).Assembly.GetName().Version?.ToString()
         ?? StartupSnapshot.Unknown;
 
-    private static string VersionOf(string assemblyName)
+    private static string? VersionOf(
+        string assemblyName, Dictionary<string, string> notKnown, string key)
     {
         var found = AppDomain.CurrentDomain.GetAssemblies()
             .FirstOrDefault(a => string.Equals(
@@ -270,12 +279,16 @@ public static class StartupFacts
 
         if (found is null)
         {
-            return StartupSnapshot.Unknown + " (not loaded yet)";
+            // **NULL, SO `Compose` WRITES THE WORD AND THE REASON AS TWO FIELDS.**
+            notKnown[key] = assemblyName
+                + " is not loaded in this process yet, which is ordinary before "
+                + "anything has decoded";
+
+            return null;
         }
 
         return found.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                 ?.InformationalVersion
-            ?? found.GetName().Version?.ToString()
-            ?? StartupSnapshot.Unknown;
+            ?? found.GetName().Version?.ToString();
     }
 }

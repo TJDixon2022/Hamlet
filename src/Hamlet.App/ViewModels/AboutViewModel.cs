@@ -1,6 +1,10 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Reflection;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using Hamlet.App.Telemetry;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -57,7 +61,7 @@ public partial class AboutViewModel : ObservableObject
         TelemetryStatus = string.Create(CultureInfo.InvariantCulture,
             $"{enabled} of {total} categories on · {megabytes:0.00} MB on disk");
 
-        DiagnosticsText = BuildDiagnostics(enabled, total, megabytes);
+        DiagnosticsText = BuildDiagnostics(enabled, total, megabytes, settings);
     }
 
     /// <summary>Assembly version, e.g. "0.1.0".</summary>
@@ -128,9 +132,27 @@ public partial class AboutViewModel : ObservableObject
     public void ReportCopyFailed()
         => CopyStatus = "Clipboard unavailable, so the block is shown above.";
 
-    private string BuildDiagnostics(int enabled, int total, double megabytes)
+    /// <summary>How many recent lines of the stream the bundle carries.</summary>
+    /// <remarks>
+    /// <para>**FORTY, AND THE FIGURE IS A JUDGEMENT WRITTEN DOWN RATHER THAN BURIED**
+    /// (work instruction 304 task 4, which asks how much was chosen and why).</para>
+    /// <para>**IT IS THE RUN-UP TO A FAULT AND NOT A DAY'S HISTORY.** An FT8 slot
+    /// produces on the order of a dozen events, so forty lines is roughly the last
+    /// three or four slots - the minute before he noticed something was wrong, which
+    /// is the window in which the cause is. **The whole day is already in the folder**
+    /// and the bundle names the path to it; what the bundle exists for is the paste
+    /// that needs no folder.</para>
+    /// <para>**AND IT IS ONE PASTE** (the instruction). Forty lines of JSON is a few
+    /// kilobytes, which a chat window takes without complaint; four hundred would be
+    /// a file he has to attach, which is the thing this replaces.</para>
+    /// </remarks>
+    public const int RecentLines = 40;
+
+    private string BuildDiagnostics(
+        int enabled, int total, double megabytes, AppSettings settings)
     {
-        var sb = new StringBuilder(320);
+        var sb = new StringBuilder(4096);
+
         sb.Append("Hamlet ").Append(Version)
           .Append(" (built ").Append(BuildDate).AppendLine(")");
         sb.Append("OS: ").AppendLine(OperatingSystem);
@@ -141,7 +163,104 @@ public partial class AboutViewModel : ObservableObject
         sb.Append(string.Create(CultureInfo.InvariantCulture,
             $"Telemetry: {enabled} of {total} categories on, {megabytes:0.00} MB, "))
           .Append(_telemetry?.DroppedEventCount ?? 0).AppendLine(" events dropped");
+
+        // **THE STATE, NOT ONLY THE VERSIONS** (work instruction 304 task 4). What
+        // the button copied before this was enough to say which build he was on and
+        // nothing whatever about what the machine was doing - and every one of the
+        // three failures of 2026-09-10 was a state nobody could see.
+        //
+        // **IT IS THE SAME FACTS AND THE SAME WORDS AS THE STARTUP SNAPSHOT**, read
+        // fresh here, so a reader comparing the two is comparing like with like and
+        // an `unknown` means the same thing in both.
+        sb.AppendLine();
+        sb.AppendLine("--- state now ---");
+
+        AppendState(sb, settings);
+
+        // **AND THE RUN-UP TO THE FAULT.** A picture of now cannot say what led to
+        // it, and the operator opens About *after* something has gone wrong.
+        sb.AppendLine();
+        sb.Append("--- last ").Append(RecentLines)
+          .AppendLine(" telemetry lines ---");
+
+        AppendRecent(sb);
+
         return sb.ToString();
+    }
+
+    /// <summary>The startup snapshot's own facts, read again right now.</summary>
+    private void AppendState(StringBuilder sb, AppSettings settings)
+    {
+        try
+        {
+            var parts = StartupFacts.Gather(
+                settings,
+                categoriesOn: settings.IsTelemetryEnabled,
+                telemetry: _telemetry);
+
+            foreach (var (key, value) in StartupSnapshot.Compose(parts)
+                .OrderBy(k => k.Key, StringComparer.Ordinal))
+            {
+                sb.Append(key).Append(": ").AppendLine(value?.ToString() ?? "");
+            }
+        }
+        catch (Exception error)
+        {
+            // **THE BUNDLE IS FOR A BROKEN MACHINE, SO IT SAYS WHEN IT BROKE.**
+            sb.Append("state could not be gathered: ")
+              .Append(error.GetType().Name).Append(": ")
+              .AppendLine(error.Message);
+        }
+    }
+
+    /// <summary>The tail of today's telemetry, or why there is none.</summary>
+    private void AppendRecent(StringBuilder sb)
+    {
+        try
+        {
+            var newest = Directory
+                .GetFiles(SettingsStore.TelemetryFolder, "*.jsonl")
+                .OrderByDescending(File.GetLastWriteTimeUtc)
+                .FirstOrDefault();
+
+            if (newest is null)
+            {
+                sb.AppendLine("(no telemetry file yet)");
+
+                return;
+            }
+
+            // **READ SHARED, BECAUSE THE WRITER STILL HAS IT OPEN.** A bundle that
+            // threw while the application was running would be worthless exactly
+            // when it is wanted.
+            using var stream = new FileStream(
+                newest, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+            using var reader = new StreamReader(stream);
+
+            var tail = new Queue<string>(RecentLines);
+
+            while (reader.ReadLine() is { } line)
+            {
+                if (tail.Count == RecentLines)
+                {
+                    tail.Dequeue();
+                }
+
+                tail.Enqueue(line);
+            }
+
+            foreach (var line in tail)
+            {
+                sb.AppendLine(line);
+            }
+        }
+        catch (Exception error)
+        {
+            sb.Append("(the telemetry could not be read: ")
+              .Append(error.GetType().Name).Append(": ")
+              .Append(error.Message).AppendLine(")");
+        }
     }
 
     /// <summary>
