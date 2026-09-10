@@ -78,6 +78,7 @@ public sealed class Ft8GlobePlot
     {
         Callsign = callsign;
         StationGrid = (stationGrid ?? "").Trim().ToUpperInvariant();
+        _mineGrid = (operatorGrid ?? "").Trim();
 
         var here = OperatorLocation.FromGrid(operatorGrid);
         var there = OperatorLocation.FromGrid(stationGrid);
@@ -227,6 +228,48 @@ public sealed class Ft8GlobePlot
 
     /// <summary>The initial bearing to the station, or null.</summary>
     public double? Bearing { get; }
+
+    /// <summary>The operator's own grid, as it was handed in.</summary>
+    private readonly string _mineGrid;
+
+    /// <summary>What the operator's own marker says on a deliberate look.</summary>
+    /// <remarks>
+    /// **NOTHING ON THE FACE** (Tim: *"I want clean visual screens with text only
+    /// where I, the user, intentionally hover"*). The marker is a ring on a
+    /// photograph and says nothing until it is asked.
+    /// </remarks>
+    public string OperatorTip
+        => HasOperator ? "You, in grid " + _mineGrid.ToUpperInvariant() + "." : "";
+
+    /// <summary>What the station's marker says on a deliberate look.</summary>
+    /// <remarks>
+    /// <para>**THE DISTANCE AND A COMPASS WORD, NEVER A NUMBER OF DEGREES**
+    /// (HM-DEC-038). *480 miles northeast* is a direction a person can picture;
+    /// *480 miles at 47 degrees* is a reading off an instrument.</para>
+    /// <para>**EACH PART IS ABSENT WHERE ITS FACT IS** (§0.0). No operator grid
+    /// means no distance and no direction, because both are measured between two
+    /// points and there is only one.</para>
+    /// </remarks>
+    public string StationTip
+    {
+        get
+        {
+            if (!HasStation)
+            {
+                return "";
+            }
+
+            var said = Callsign + ", in grid " + StationGrid + ".";
+
+            if (Miles is { } miles && Bearing is { } bearing)
+            {
+                said += " " + GridPath.DescribeMiles(miles) + " "
+                    + OperatorLocation.DescribeCompass(bearing) + " of you.";
+            }
+
+            return said;
+        }
+    }
 
     /// <summary>The window the map draws, fitted to whatever is known.</summary>
     /// <remarks>
