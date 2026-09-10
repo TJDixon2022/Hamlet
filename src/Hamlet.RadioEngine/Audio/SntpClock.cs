@@ -248,3 +248,70 @@ public sealed record ClockAnswer(
     public static ClockAnswer Failed(string server, string reason, string detail)
         => new(server, ClockOffset.Unknown, reason, detail);
 }
+
+/// <summary>**What the strip says about the clock, for the fault that is true.**</summary>
+/// <remarks>
+/// <para>**ONE SENTENCE USED TO COVER TWO DIFFERENT PROBLEMS** (work instruction 303
+/// task 3). `ClockOffset.Describe` says *clock not checked yet, so slots cannot be
+/// cut* whenever there is no offset, and there are two quite separate ways to have no
+/// offset: **nothing has asked yet**, and **something asked and it failed.** The
+/// first is *wait a moment* and the second is *something is wrong*, and the operator
+/// spent twenty minutes on the wrong machine because the screen could not tell him
+/// which one he had.</para>
+/// <para>**IT IS STILL A FAULT SPEAKING UNASKED AND IT STAYS ON SCREEN.** Slot
+/// boundaries cannot be cut without an offset - `Ft8Slots.TrueUtc` returns null - so
+/// this is a real condition rather than a caption, and hiding it behind a hover would
+/// be §0.0 broken by omission.</para>
+/// <para>**AND IT NEVER CLAIMS A CHECK THAT WAS NOT MADE.** Where nothing has come
+/// back yet the line says so; where a query failed it says what failed, in the words
+/// the query itself recorded.</para>
+/// </remarks>
+public static class ClockWords
+{
+    /// <summary>The line for the strip.</summary>
+    /// <param name="offset">The offset Hamlet holds, known or not.</param>
+    /// <param name="last">What the last finished query did, or null if none has.</param>
+    /// <param name="nowUtc">The moment being asked about.</param>
+    /// <returns>One line, in the application's voice.</returns>
+    public static string Line(ClockOffset offset, ClockAnswer? last, DateTime nowUtc)
+    {
+        // A measured offset is the ordinary case and its wording is unchanged.
+        if (offset.IsKnown)
+        {
+            return offset.Describe(nowUtc);
+        }
+
+        if (last is null)
+        {
+            return "Hamlet is asking a time server what the time really is, and "
+                + "until it answers there is no way to cut the slots.";
+        }
+
+        return "Hamlet asked " + last.Server + " what the time really is and "
+            + Because(last) + ", so the slots cannot be cut yet. It will keep "
+            + "trying.";
+    }
+
+    /// <summary>Why the query did not measure anything, in ordinary words.</summary>
+    /// <remarks>
+    /// **THE REASON IS ATTACHED TO THE FACT** (§0.7), and it is the query's own
+    /// finding rather than a guess: each of these is a branch the query actually took
+    /// and recorded.
+    /// </remarks>
+    private static string Because(ClockAnswer last)
+        => last.Reason switch
+        {
+            "timeout" => "nothing came back",
+            "short_reply" => "what came back was too short to be a time",
+            "unreadable_timestamp" => "what came back carried no time in it",
+            "disposed" => "the connection closed while it was asking",
+            _ when last.Reason.StartsWith("socket_HostNotFound", StringComparison.Ordinal)
+                => "that name could not be looked up, which usually means there is "
+                   + "no network just now",
+            _ when last.Reason.StartsWith("socket_", StringComparison.Ordinal)
+                => "the network refused the request",
+            _ when last.Reason.StartsWith("threw_", StringComparison.Ordinal)
+                => "something went wrong inside Hamlet",
+            _ => "it did not answer",
+        };
+}

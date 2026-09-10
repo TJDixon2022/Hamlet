@@ -920,7 +920,8 @@ public partial class MainWindowViewModel : ObservableObject
     private ClockOffset _clockOffset = ClockOffset.Unknown;
 
     /// <summary>What the Digital tab says about the clock.</summary>
-    public string ClockOffsetLine => ClockOffset.Describe(DateTime.UtcNow);
+    public string ClockOffsetLine
+        => ClockWords.Line(ClockOffset, _lastClockAnswer, DateTime.UtcNow);
 
     /// <summary>Whether the clock is far enough out to draw in amber.</summary>
     public bool ClockIsConcerning
