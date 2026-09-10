@@ -5,9 +5,10 @@ Questions with owner and severity. `owner` is who must act next. Format in
 
 ---
 id: HM-OPEN-089
-status: open
+status: closed
 owner: claude
 raised: 2026-09-09
+closed: 2026-09-10
 severity: slows
 blocks: nothing the operator can see. It blocks the character ceiling as a gate: two of its five tests are red before a unit starts, so a unit that grew a surface would land on a red that was already there and could not tell the difference
 refs: tests/Hamlet.App.Tests/Views/HowMuchTheApplicationSaysTests.cs:171, tests/Hamlet.App.Tests/Views/HowMuchTheApplicationSaysTests.cs:210
@@ -40,6 +41,34 @@ Left alone under `CLAUDE.md` §12.6. Work instruction 300 is about the achieveme
 mark and the achievements screen; the two rows it did touch were re-measured and are
 green. **Whoever takes this has to find the moving string first**, because the
 re-measure is worthless until the figure holds still.
+
+**CLOSED 2026-09-10 BY WORK INSTRUCTION 302, TASK 1. There were four causes, not
+one**, and none of them would have been found by reading the source:
+
+1. **The slot countdown**, `Ft8Turn.CountText` off `DateTime.UtcNow` - 1 to 3
+   characters, ticking every second. Found in 37 seconds by standing the tab up twice
+   and diffing what it rendered.
+2. **The card's relative age**, `Ft8ContactCard.Ago`, against a fixture whose slot was
+   fixed and whose *now* was not. Worse than a width change: the card aged out of the
+   list entirely and the empty-state prose it had been hiding came back, so the total
+   **rose 16 while the block count fell 10**.
+3. **A background reconnect.** `ReconnectOnStartup` ships on, so the fixture started
+   the training radio; when that landed the waterfall summary stopped saying
+   `not listening yet` and took **17 characters** with it. That is why both Digital
+   rows fell by exactly 17 together on some class runs and not others.
+4. **A live SNTP network call.** `QueryTheClockAsync` assigns whenever it answers, and
+   `ClockIsConcerning` decides whether the offset line is on the strip at all - worth
+   **46**. The first window built in a process measured 1240 and every later one 1194.
+
+**The two that are real belong on screen and neither moved behind a hover**: the
+countdown is Tim's own ask and a card's staleness is why its time line exists. The
+sweep counts each live readout at its widest reading instead - countdown 3, time line
+28, clock line 47 - and a readout that grows past its stated width fails loudly. The
+other two were fixture nondeterminism and are pinned.
+
+**All four MainWindow rows re-set** from figures reproduced across repeated class runs
+and from a second test class: CW 426, Digital 1194, Digital working 1193, Voice 468.
+Two rows that had been red for three units are green.
 
 ---
 id: HM-OPEN-088
