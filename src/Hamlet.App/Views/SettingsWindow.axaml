@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -230,6 +230,25 @@
                              into whatever the computer defaults to (§0.0). -->
                         <TextBlock Classes="hm-note" Text="{Binding TransmitEndpointFault}"
                                    IsVisible="{Binding HasTransmitEndpointFault}" />
+
+                        <!-- **A FAULT SPEAKS UNASKED, AND THIS ONE SAID NOTHING AT
+                             ALL** (work instruction 303 task 4). A reboot left the
+                             settings without a transmit device; the operator pressed
+                             CQ, nothing happened, the Send line never changed and
+                             the stop control never armed. `transmit_readiness`
+                             refused **56 times** and the only record was a reason
+                             buried in telemetry. **A refusal the operator cannot see
+                             is a button that appears broken.**
+
+                             **IT NAMES THE DEVICE**, because reconnecting or
+                             re-picking that particular sound card is the thing he
+                             has to do about it. -->
+                        <TextBlock x:Name="TransmitDeviceMissing"
+                                   Classes="hm-note"
+                                   Text="{Binding TransmitDeviceWarning}"
+                                   IsVisible="{Binding HasTransmitDeviceWarning}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource HmAmberDeepBrush}" />
 
                         <Grid ColumnDefinitions="110,*" ColumnSpacing="8">
                             <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">

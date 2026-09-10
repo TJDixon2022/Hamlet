@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -160,6 +160,16 @@ public partial class SettingsViewModel : ObservableObject
 
         TransmitEndpoints = ListEndpoints(transmitEndpoints);
         _transmitEndpoint = ChooseEndpoint(TransmitEndpoints, settings.AudioOutputDeviceId);
+
+        // **WHAT THE FILE NAMED, KEPT SO AN ABSENCE CAN BE TOLD FROM AN UNCHOOSING**
+        // (work instruction 303 task 4). A device the operator deselected and a
+        // device that did not come back after a reboot leave the picker looking
+        // identical, and they are not the same thing at all.
+        _missingTransmitDevice =
+            _transmitEndpoint is null
+            && !string.IsNullOrWhiteSpace(settings.AudioOutputDeviceId)
+                ? settings.AudioOutputDeviceId
+                : null;
         _transmitDrivePercent = settings.TransmitDrivePeak * 100.0;
         _cwPitchHz = settings.CwPitchHz;
         _copySpeedWpm = settings.CopySpeedWpm;
@@ -340,9 +350,55 @@ public partial class SettingsViewModel : ObservableObject
 
     partial void OnTransmitEndpointChanged(RenderEndpoint? value)
     {
+        // **THIS PATH WAS SUSPECTED OF LOSING THE OPERATOR'S DEVICE AND IT WAS
+        // MEASURED INNOCENT** (work instruction 303 task 4). The theory was that the
+        // two-way binding writes null back when the saved selection is not among the
+        // picker's items, erasing the id. **Two measurements say otherwise**:
+        // realizing `SettingsWindow` headless leaves the saved id untouched, and
+        // setting the selection to null does not even reach this handler, because
+        // where the device is missing the selection is *already* null and the
+        // generated setter stops on equality.
+        //
+        // **SO THE ERASURE THE OPERATOR SAW DID NOT COME FROM HERE**, and no guard
+        // was added to pretend otherwise. What this unit does about a lost device is
+        // make it **visible**, below.
         _settings.AudioOutputDeviceId = value?.Id;
+
+        // Choosing a real device is what clears the warning.
+        _missingTransmitDevice = null;
+
+        OnPropertyChanged(nameof(TransmitDeviceWarning));
+        OnPropertyChanged(nameof(HasTransmitDeviceWarning));
+
         SettingsStore.Save(_settings);
     }
+
+    /// <summary>The transmit device named in settings that this machine has not got.</summary>
+    private string? _missingTransmitDevice;
+
+    /// <summary>
+    /// **What is said on screen when the transmit device named in settings is not
+    /// here.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**A FAULT SPEAKS UNASKED, AND THIS ONE SAID NOTHING AT ALL.** The
+    /// operator pressed CQ, nothing happened, the Send line never changed and the
+    /// stop control never armed; the only record was a refusal reason inside
+    /// telemetry. **A refusal the operator cannot see is a button that appears
+    /// broken.**</para>
+    /// <para>**IT NAMES THE DEVICE RATHER THAN SAYING SOMETHING WENT WRONG**, because
+    /// the thing he has to do about it is reconnect or re-select that particular
+    /// sound card.</para>
+    /// </remarks>
+    public string TransmitDeviceWarning
+        => _missingTransmitDevice is { Length: > 0 } missing
+            ? "The sound card Hamlet was told to transmit through is not on this "
+              + "machine just now, so sending is refused until it comes back or you "
+              + "pick another one. It was saved as " + missing + "."
+            : "";
+
+    /// <summary>True where a saved transmit device is missing.</summary>
+    public bool HasTransmitDeviceWarning => TransmitDeviceWarning.Length > 0;
 
     /// <summary>
     /// The peak amplitude Hamlet builds a transmission at, as a percentage of

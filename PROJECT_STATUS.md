@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 7
+TASK: 5 of 7
 WORK_INSTRUCTION: 303 - the clock query says what it did
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T11:21:14-04:00
-NOTE: Tasks 2 and 3 green - THE QUERY WORKS ON THIS MACHINE, offset 1.884 s, all four stages. Cannot reproduce his fault here; the message now tells waiting from failed. Task 4 next.
+UPDATED: 2026-09-10T11:25:53-04:00
+NOTE: Task 4 green - a missing transmit device now says so on screen and names itself. The erasing path was suspected, measured innocent twice, and the speculative guard removed rather than shipped.
 
 ---
 
