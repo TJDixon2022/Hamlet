@@ -434,6 +434,16 @@ public sealed partial class Ft8ContactCard : ObservableObject
     {
         get
         {
+            // **THE CALL-TO-ANYBODY CARD HAS ITS OWN FACTS** (work instruction 305
+            // task 2). Nobody has answered, so there is no *he*: no report either
+            // way, no grid, no distance and nothing about how the clocks agreed.
+            // Everything the other branches would say about a station would be a
+            // sentence about somebody who is not there.
+            if (IsCallToAnyone)
+            {
+                return CallFacts();
+            }
+
             var parts = new List<string>();
 
             if (Reports() is { Length: > 0 } reports)
@@ -462,6 +472,53 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
     /// <summary>True where the `i` mark has anything to hold.</summary>
     public bool HasDetail => Detail.Length > 0;
+
+    /// <summary>Whether this card is the operator's own call to anybody.</summary>
+    public bool IsCallToAnyone
+        => string.Equals(
+            Callsign, Ft8ContactLedger.CallToAnyone, StringComparison.Ordinal);
+
+    /// <summary>What was called, when, and how many times.</summary>
+    /// <remarks>
+    /// <para>**THREE FACTS AND NOT ONE WORD ABOUT WHETHER ANYBODY WILL ANSWER**
+    /// (§0.0). The elapsed time and the count are measurements; *waiting for a
+    /// reply* is a prediction, and a card that made one would be the application
+    /// telling the operator something it does not know.</para>
+    /// <para>**THE TEXT IS THE ONE THAT WENT OUT**, taken from the ledger's own
+    /// record of what was sent rather than recomposed here.</para>
+    /// </remarks>
+    private string CallFacts()
+    {
+        var said = new List<string>();
+
+        if (_facts.YourLastMessage is { Length: > 0 } sent)
+        {
+            said.Add("Sent " + sent + ".");
+        }
+
+        if (_facts.FirstAtUtc is { } first)
+        {
+            said.Add("First at "
+                     + first.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                     + " UTC.");
+        }
+
+        if (_facts.LastAtUtc is { } last
+            && _facts.FirstAtUtc is { } began && last != began)
+        {
+            said.Add("Last at "
+                     + last.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                     + " UTC.");
+        }
+
+        said.Add(_facts.YourMessages == 1
+            ? "Sent once."
+            : "Sent "
+              + _facts.YourMessages.ToString(CultureInfo.InvariantCulture)
+              + " times.");
+
+        return string.Join(" ", said);
+    }
 
     /// <summary>The reports each way, and what the scale means.</summary>
     /// <remarks>

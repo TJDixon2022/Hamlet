@@ -2710,6 +2710,16 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
+        // **THE CALL TO ANYBODY IS A CARD TOO** (work instruction 305 task 2). It
+        // is booked in the ledger rather than on a decoded row, because nothing was
+        // decoded - the operator transmitted and nobody has answered yet - so it
+        // cannot come from the loop above and is taken from the ledger directly.
+        if (_contacts?.For(Ft8ContactLedger.CallToAnyone) is { } cq
+            && cq.LastSent is { } lastCq)
+        {
+            newest[Ft8ContactLedger.CallToAnyone] = lastCq.SlotStartUtc;
+        }
+
         return newest
             .Where(pair => !WasCleared(pair.Key, pair.Value))
             .OrderByDescending(pair => pair.Value)
@@ -2745,6 +2755,15 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>Rebuild the cards without waiting for a decode, for a test.</summary>
     internal void RebuildCardsForTests() => RebuildCards();
+
+    /// <summary>The ledger the cards are built from, for a test to read back.</summary>
+    /// <remarks>
+    /// **READ ONLY, AND NOTHING IN `src/` TOUCHES IT.** A test asserting that the
+    /// CQ moved into the answering station's record has to see the record; asserting
+    /// it through the card face would be asserting the rendering rather than the
+    /// fact.
+    /// </remarks>
+    internal Ft8ContactLedger? LedgerForTests => _contacts;
 
     /// <summary>Build every card from the ledger.</summary>
     /// <remarks>
@@ -2831,7 +2850,16 @@ public partial class MainWindowViewModel : ObservableObject
                 // asked before, and the answer arrives on its own; the card is
                 // composed from what is already known, so a slow network never keeps
                 // a card off the screen.
-                AskWhoHeIs(facts.Callsign);
+                // **AND NEVER FOR THE CALL-TO-ANYBODY CARD**, which is not a
+                // callsign and belongs to nobody: asking a licence service who `CQ`
+                // is would be a request about a station that does not exist.
+                if (!string.Equals(
+                        facts.Callsign,
+                        Ft8ContactLedger.CallToAnyone,
+                        StringComparison.Ordinal))
+                {
+                    AskWhoHeIs(facts.Callsign);
+                }
             }
         }
 
@@ -2863,6 +2891,19 @@ public partial class MainWindowViewModel : ObservableObject
     private (Ft8CardActionKind Kind, string Label, string Message) ActionFor(
         Ft8CardFacts facts, Ft8StationRecord record, string mine)
     {
+        // **THE CALL-TO-ANYBODY CARD OFFERS A LOG AND NEVER A SEND** (work
+        // instruction 305 task 2). There is nobody to answer yet, so a send button
+        // would have no addressee; the log is there from the moment the card
+        // appears, because *it should be up to me what I want to log* (Tim,
+        // 2026-09-08) and this card is a card.
+        if (string.Equals(
+                facts.Callsign,
+                Ft8ContactLedger.CallToAnyone,
+                StringComparison.Ordinal))
+        {
+            return (Ft8CardActionKind.Log, "Log this call", "");
+        }
+
         if (facts.State == Ft8ContactState.Complete)
         {
             return (Ft8CardActionKind.Log, "Log this contact", "");

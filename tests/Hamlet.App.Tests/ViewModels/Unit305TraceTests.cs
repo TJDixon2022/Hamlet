@@ -32,7 +32,14 @@ public sealed class Unit305TraceTests
     /// <param name="output">Where the measurements are printed.</param>
     public Unit305TraceTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>**What a CQ press puts on the screen today.**</summary>
+    /// <summary>**What a CQ press puts on the screen.**</summary>
+    /// <remarks>
+    /// **MEASURED BEFORE TASK 2 AND AGAIN AFTER IT: 0 cards, then 1.** The
+    /// explanation printed below is the trace that found the cause, and it is kept
+    /// because the cause is what makes the number mean something: the ledger is
+    /// keyed by callsign and a CQ is addressed to nobody, so nothing was booked and
+    /// the card list rebuilt from an empty ledger.
+    /// </remarks>
     [Fact]
     public void WhatACqPressPutsOnTheScreenToday()
     {
@@ -54,9 +61,11 @@ public sealed class Unit305TraceTests
             + "returns without booking anything when the message is addressed to "
             + "nobody - `Ft8MessageSplit.IsCallToAnyone(fields.To)` - and the "
             + "ledger is keyed by callsign, so a CQ has no station to key on. The "
-            + "card list is rebuilt from that ledger, so it stays empty.");
+            + "card list was rebuilt from that ledger, so it stayed empty. It is "
+            + "now booked under its own key and the first station to answer takes "
+            + "the record over.");
 
-        Assert.Empty(after.DigitalCards);
+        Assert.Single(after.DigitalCards);
     }
 
     /// <summary>**How long the `i` hover is today, and how many facts it carries.**</summary>

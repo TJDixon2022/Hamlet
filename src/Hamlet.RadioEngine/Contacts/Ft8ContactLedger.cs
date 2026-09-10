@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.RadioEngine.Contacts;
 
@@ -193,6 +193,19 @@ public sealed class Ft8ContactLedger
     /// <summary>The operator's own callsign, as it was passed in.</summary>
     public string OperatorCallsign { get; }
 
+    /// <summary>The key a call to anybody is booked under.</summary>
+    /// <remarks>
+    /// <para>**A CQ IS ADDRESSED TO NOBODY AND USED TO BOOK NOBODY** (work
+    /// instruction 305 task 2). That was defensible while a card meant a contact
+    /// with a station, and it meant the operator pressed CQ on a live radio, put a
+    /// transmission on the air, and watched a panel that stayed completely empty.
+    /// **The transmission is a fact and it now has somewhere to live.**</para>
+    /// <para>**IT IS NOT A CALLSIGN AND NOTHING TREATS IT AS ONE.** No lookup is
+    /// made against it, nothing is claimed about where it is, and the first station
+    /// to answer takes the record over - see <see cref="Adopt"/>.</para>
+    /// </remarks>
+    public const string CallToAnyone = "CQ";
+
     /// <summary>Every station booked, in the order each was first seen.</summary>
     public IReadOnlyList<string> Stations => _order;
 
@@ -229,6 +242,16 @@ public sealed class Ft8ContactLedger
         var record = Book(fields.From);
         var toUs = IsOperator(fields.To);
 
+        // **THE FIRST STATION TO ANSWER TAKES THE CQ CARD OVER** (Tim, 2026-09-10:
+        // *pressing CQ must make a card of its own, and when somebody answers it
+        // becomes their card and the exchange continues in it*). It happens before
+        // his message is booked, so the CQ really is the first thing in the
+        // exchange rather than something filed behind it.
+        if (toUs)
+        {
+            Adopt(record);
+        }
+
         record.AddHeard(
             new Ft8LedgerMessage(message!.Trim(), fields, slotStartUtc), toUs);
     }
@@ -245,7 +268,7 @@ public sealed class Ft8ContactLedger
     {
         var fields = Ft8MessageSplit.Split(message);
 
-        if (fields is null || Ft8MessageSplit.IsCallToAnyone(fields.To))
+        if (fields is null)
         {
             return;
         }
@@ -255,8 +278,42 @@ public sealed class Ft8ContactLedger
             return;
         }
 
-        Book(fields.To).AddSent(
+        // **A CALL TO ANYBODY IS BOOKED UNDER ITS OWN KEY** rather than dropped.
+        // See <see cref="CallToAnyone"/> for what changed and why.
+        var who = Ft8MessageSplit.IsCallToAnyone(fields.To)
+            ? CallToAnyone
+            : fields.To;
+
+        Book(who).AddSent(
             new Ft8LedgerMessage(message!.Trim(), fields, slotStartUtc));
+    }
+
+    /// <summary>Hand the call-to-anybody record to the station that answered.</summary>
+    /// <param name="record">The answering station.</param>
+    /// <remarks>
+    /// <para>**IT MOVES, IT DOES NOT COPY.** Two cards carrying the same
+    /// transmission would say the operator called twice, which is a claim about
+    /// what went on the air and is not true (§0.0).</para>
+    /// <para>**AND ONLY THE FIRST ANSWER GETS IT.** A second station answering the
+    /// same CQ finds nothing to adopt and opens its own record in the ordinary way -
+    /// nothing is discarded and nothing is swallowed, because nothing is hidden by
+    /// the application. **That half is the author's proposal and not a ruling.**
+    /// </para>
+    /// </remarks>
+    private void Adopt(Ft8StationRecord record)
+    {
+        if (!_stations.TryGetValue(CallToAnyone, out var cq))
+        {
+            return;
+        }
+
+        foreach (var message in cq.Sent)
+        {
+            record.AddSent(message);
+        }
+
+        _stations.Remove(CallToAnyone);
+        _order.Remove(CallToAnyone);
     }
 
     private bool IsOperator(string field)
