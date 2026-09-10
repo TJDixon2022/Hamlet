@@ -3023,6 +3023,12 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **WHICH KIND OF ACTION, NEVER WHOSE CARD** (§2.1). That a reply was
+        // chosen is the fact worth recording; the station it is addressed to is
+        // not, and this payload has nowhere to put it.
+        AppEvents.OperatorAction(
+            _telemetry, "card_action", OperatingMode, card.ActionKind.ToString());
+
         switch (card.ActionKind)
         {
             case Ft8CardActionKind.Send:
@@ -3109,6 +3115,14 @@ public partial class MainWindowViewModel : ObservableObject
     private void ClearCard(string? callsign)
     {
         var who = (callsign ?? "").Trim();
+
+        // **THE PRESS, NOT THE CALLSIGN** (§2.1). The first press of a finished
+        // unlogged card warns rather than clearing, and the record says which of
+        // the two this was, because a card that vanished and a card that asked
+        // first are different evenings.
+        AppEvents.OperatorAction(
+            _telemetry, "card_cleared", OperatingMode,
+            who.Length == 0 ? "no_card" : "asked");
 
         if (who.Length == 0)
         {
@@ -11747,6 +11761,15 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var wanted = (text ?? "").Trim();
 
+        // **ENTRY, BEFORE THE FIRST REFUSAL.** This is the one door to a keying
+        // frame, so a send that stops anywhere - including on the empty string
+        // below - has a line ahead of wherever it stopped. **The text is not
+        // written and its length is** (§2.1): a CQ is the operator's own callsign
+        // twice over.
+        AppEvents.OperatorAction(
+            _telemetry, "send_requested", OperatingMode,
+            wanted.Length + " characters");
+
         if (wanted.Length == 0)
         {
             DigitalSendLine = "There was nothing to send.";
@@ -12310,7 +12333,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// being asserted twice.
     /// </remarks>
     [RelayCommand]
-    private void SendCallToAnyone() => SendMessage(CallToAnyoneText);
+    private void SendCallToAnyone()
+    {
+        // **THE PRESS IS WRITTEN BEFORE ANYTHING IT TRIGGERS** (work instruction
+        // 305 task 2). He pressed this and nothing recorded it, so *he did not
+        // press* and *he pressed and nothing happened* were the same file.
+        AppEvents.OperatorAction(
+            _telemetry, "cq_pressed", OperatingMode, _digitalMode.ToString());
+
+
+        SendMessage(CallToAnyoneText);
+    }
 
     /// <summary>
     /// **The stop. One click, and whatever was going to happen does not.**
@@ -12342,6 +12375,13 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void StopSending()
     {
+        // **BEFORE THE ABORT AND NOT AFTER IT** (work instruction 305 task 2). The
+        // stop is the most consequential control in the application and a press of
+        // it that reached nothing left no trace at all.
+        AppEvents.OperatorAction(
+            _telemetry, "stop_pressed", OperatingMode,
+            _armedSend?.IsArmed == true ? "something_armed" : "nothing_armed");
+
         var stop = _armedSend?.StopNow(_rigPort);
 
         DigitalSendLine = StopLine(_armedText, stop, _transmitRefusal);

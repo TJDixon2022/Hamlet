@@ -1485,6 +1485,40 @@ public static class AppEvents
     }
 
     /// <summary>
+    /// **The operator did something.** Written the moment the action is taken and
+    /// before anything it triggers (work instruction 305 task 2).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="action">A stable token for what was done.</param>
+    /// <param name="mode">Which tab or mode it was done on.</param>
+    /// <param name="detail">A stable token for the variant, or null.</param>
+    /// <remarks>
+    /// <para>**HE PRESSED CQ AND NOTHING RECORDED THE PRESS.** One telemetry file
+    /// from 2026-09-10 holds seventeen events and not one of them is an operator
+    /// doing anything, so **he did not press** and **he pressed and nothing
+    /// happened** are the same file. This is the event that separates them, and it
+    /// is written first so an action with no outcome after it reads as an action
+    /// that went nowhere.</para>
+    /// <para>**IT CARRIES WHAT WAS DONE AND NEVER TO WHOM** (§2.1). That a reply was
+    /// chosen is the fact; which station it was addressed to and what it said are
+    /// not, and this payload has nowhere to put them.</para>
+    /// <para>**INFO RATHER THAN WARNING**, because an operator acting is the normal
+    /// case. What makes it findable is that it is there at all.</para>
+    /// </remarks>
+    public static void OperatorAction(
+        ITelemetry? telemetry, string action, string mode, string? detail = null)
+        => telemetry?.Write(
+            TelemetryCategory.Transmit, "operator_action",
+            new Dictionary<string, object?>
+            {
+                ["action"] = action,
+                ["mode"] = mode,
+                ["detail"] = string.IsNullOrWhiteSpace(detail)
+                    ? StartupSnapshot.Unknown
+                    : detail,
+            });
+
+    /// <summary>
     /// A message went to the radio (HM-DEC-079).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>
