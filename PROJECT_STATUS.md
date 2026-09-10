@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 301 - the hint mark, the achievement mark size, and a real map
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T22:50:00-04:00
-NOTE: Task 2 green - status bar 40 outside, 30 inside; the quill 20 to 26 with the belt matching, and the bar height unchanged.
+UPDATED: 2026-09-09T22:53:45-04:00
+NOTE: Tasks 3 and 4 - the map image is not in the tree, so the hover is left alone per task 4. The projection is built and cross-checked against GridPath: every station to the mile, every bearing to 0.00 degrees.
 
 ---
 
