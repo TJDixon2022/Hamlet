@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -42,6 +42,22 @@ public partial class App : Application
                 category => _settings.IsTelemetryEnabled(category),
                 _settings.TelemetryMaxMegabytes * 1024L * 1024L);
             AppEvents.AppStart(_telemetry);
+
+            // **ONE PICTURE OF WHAT STATE THIS MACHINE IS IN** (work instruction 304
+            // task 2, Tim's ruling of 2026-09-10: *telemetry should be able to
+            // diagnose any issue*). It is written here, as early as there is a sink
+            // and settings to describe, and **before the window is built** - so a
+            // machine broken enough that the window never appears has still said what
+            // was wrong with it.
+            //
+            // **THE RADIO, THE CLOCK AND READINESS ARE NOT KNOWN YET AT THIS POINT**
+            // and the snapshot says `unknown` with a reason for each rather than
+            // leaving the field out. Task 3's state-change events carry them the
+            // moment they become true.
+            StartupFacts.Write(
+                _telemetry,
+                _settings,
+                categoriesOn: category => _settings.IsTelemetryEnabled(category));
 
             var window = new MainWindow
             {
