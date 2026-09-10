@@ -1,38 +1,39 @@
-# Work instruction 299 — the card's header does what it promised
+# Work instruction 300 — the achievement mark, and the screen it opens
 
-**READ IN THIS ORDER.** One of the four faults was not a fault, and the measurement
-that says so is the most useful thing in this report.
+**READ IN THIS ORDER.** The number below is the whole unit in one line: **the mark
+stays lit until he opens the screen, and nothing else clears it.**
 
 A. **The phase goal — FT4 works exactly the way FT8 does.** This unit advanced no
-   step of it. It repaired the conversation card's header, which is part of step 4's
-   second criterion.
+   step of it. It built the achievement mark in the status bar and re-presented the
+   achievements screen, neither of which is FT4.
 
 B. **Step 4 and its exit criteria** — pressing FT4 tunes and decodes; the panel, the
    conversation, the ring, the filters, the tooltips, the ledger and the right-click
    menu all working unchanged; one click, one transmission; a whole exchange from one
-   right click at the bench. **None was measured tonight.** Step 4 stays `partial`
-   exactly where unit 297 left it, and its second criterion now describes a card that
-   carries a working `i`, a globe, a short place name and an always-available Log.
+   right click at the bench. **None was measured tonight.** Step 4 stays `partial`,
+   and its second criterion now describes a status bar with a fourth thing on it.
 
 C. **The report last, and section 4 raises 3 items.** None blocks the next unit. One
-   is a ruling, one is a template defect that has now bitten three units running, and
-   one is a limitation named rather than repaired.
+   is an inherited red measured and recorded rather than repaired, one is the ask
+   carried since unit 299, and one is a limitation re-tested rather than inherited.
 
 ```
-UNIT:       299 — complete at task 6 of 6, none dropped — 2026-09-09 18:50
+UNIT:       300 — complete at task 6 of 6, none dropped — 2026-09-09 21:32
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  The card's header carries the technical detail, a globe showing where
-            the station is, a short place name, and a Log option that is always
-            available.
+UNIT GOAL:  A green quill in the status bar orbits when something new is earned and
+            opens the achievements screen, and that screen reads as a collection
+            rather than a list.
 ADVANCED:   no — no phase step moved. Step 4 stays partial: nothing tuned, nothing
             transmitted, no exchange run at the bench.
-NUMBER:     how many facts the i hover carries, against how many its card holds
-            THE INSTRUCTION SAYS IT CARRIED NONE. MEASURED, IT CARRIED 444
-            CHARACTERS AND 8 OF THE 12 FACTS ITS CARD HELD.
-            The four it dropped were the audio offset, the dial, the time offset
-            and their context, and it dropped them whenever the decoded table had
-            been cleared. Now 12 of 12, and 875 characters through the window.
-DRIFT:      3 consecutive units without advance  (was 2, carried from unit 298)
+NUMBER:     how long the mark stays lit, and what clears it
+            IT STAYS LIT UNTIL HE OPENS THE ACHIEVEMENTS SCREEN. There is no other
+            path that clears it, and it is written to settings.json, so it survives
+            closing Hamlet and reopening it a week later.
+            THE MOTION IS A SEPARATE THING AND IT LASTS 30 SECONDS — ten turns of
+            three. When it ends the ring and the fill stay exactly as they were.
+            Watched failing: with the orbit's end also clearing the flag, the mark
+            reports itself dark with nothing having been opened.
+DRIFT:      4 consecutive units without advance  (was 3, carried from unit 299)
 ```
 
 ---
@@ -40,278 +41,338 @@ DRIFT:      3 consecutive units without advance  (was 2, carried from unit 298)
 ## 1. What Claude did
 
 **Complete. Six tasks of six, none dropped, including the named drop candidate.**
-Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, eight commits,
-all pushed. Root version 1.12.261 to **1.12.262**, bumped once. **No file under
+Development machine, prompt claimed `PROJECT: Hamlet`, branch `main`, three commits,
+all pushed. Root version 1.12.262 to **1.12.263**, bumped once. **No file under
 `src/Ft8Sharp/` was touched**, and nothing here reaches a send path.
 
-The gate held: `SHACK_FACTS.md` present, `CwProbabilisticDecoder.cs` present, no
-`CoreHMI.sln`, no `MURC.sln`. This unit was numbered **299** from `PHASE_OUTCOME.md`;
-the last entry there was 298.
+**Nothing in this report is evidence about the radio.** Nothing was tuned, nothing
+was transmitted, and no audio was captured.
 
-**No test suite was run.** Twenty-five tests were constructed in this instruction
-across five classes and run filtered by exact name, foregrounded, with a 500-second
-timeout: **25 of 25 green.** Every `dotnet build` was foregrounded. Nothing was
-backgrounded and nothing was polled.
+**Nothing was recorded to `DECISIONS.md`.** The four judgements this unit made on
+its own authority are in `PHASE_OUTCOME.md`'s entry and are listed below; none of
+them supersedes a ruling and none weighs two costs.
 
-**Task 1 — Log on every card, in every state.** The ruling from use, and it went
-first.
+### Task 1 — the mark at rest
 
-**Task 2 — the `i`.** Measured before anything was changed; see section 3.
+**The shipped mark was measured before anything was built, and it refused to load.**
+`SvgMark.Shapes` threw `FormatException: Invalid color string: 'context-stroke'`.
+That is unit 285's rule working exactly as written — the loader refuses a paint it
+does not understand rather than drawing it wrongly — and unit 286's precedent
+decides what to do about it: **the mark is approved and the loader is not.** So
+`SvgMark` now understands `currentColor`, `context-fill` and `context-stroke` as
+deferrals: they come back `null`, the stroke keeps its width, and the caller paints.
+The quill loads as 2 shapes, one path and one line, both with a deferred pen.
 
-**Task 3 — the globe**, placed by the coastline's own projection.
+**The mark is a `Button` wrapping the drawn control and not a bare control.** That is
+unit 299's finding applied: `HintMarkControl` draws a ring with no fill, so its
+middle is not a hit target. Measured in the realized window, the button is
+**26 × 26 px** with the mark 20 × 20 inside it, and its command is the same
+`OpenAchievementsCommand` the menu uses. **There is no second achievements window.**
 
-**Task 4 — the place name**, measured across all 275 entities before shortening one.
+**The status bar's ceiling was confirmed rather than assumed.** The CW tab reads
+**528 of 650** and the Voice tab **518 of 650**, both exactly the figures the rows
+were set from — the icon added no characters, because its only words are a tooltip
+and no ceiling counts hover text. (The Digital tab is over its ceiling; it was over
+before this unit started. Section 4.)
 
-**Task 5 — `assets/world-coastline.md`**, the named drop candidate, not dropped.
+### Task 2 — the orbit, when something is new
 
-**Task 6 — the outcome entry**, filed against step 4.
+**`AchievementsUnseen` is set where a badge is raised and cleared where the screen is
+opened, and nowhere else.** It is persisted in `settings.json`. It rides the badge
+event, so unit 278's silent-seeding rule already keeps a first look at an existing
+log quiet — measured: fourteen imported contacts light nothing, and one contact on a
+band he has never worked lights it.
 
-**Three decisions made for themselves, each reported.**
+**It is cleared before the dialog is shown rather than after it closes.** He has
+looked the moment it opens, and a dialog that threw on the way up would otherwise
+leave the mark lit for something he had already seen.
 
-1. **I measured the `i` before repairing it, and did not repair it, because it was
-   not broken.** The instruction's own rule is *report mismatches; do not repair the
-   instruction*, and the same rule points the other way here: do not repair code
-   against a claim you have not checked.
-2. **The band paragraph's fix is a per-station memory written only by a decoded
-   row**, so every figure it hands back was measured about **that station** rather
-   than read off the dial the radio happens to be standing on now (§0.0).
-3. **The short place forms shorten and never narrow.** Task 4's first line offers a
-   US state *if callook or the grid can give one*; neither can, so nothing below the
-   country is named.
+**The two states differ by shape.** At rest: no ring, hollow vane. Lit: a ring, a
+filled vane, and a bead going round it. **Watched failing**, with `OnTick`'s settle
+branch also clearing `IsNew`: `after the orbit settles: IsNew=False IsOrbiting=False`
+with nothing having been opened.
 
-**Two mismatches against the instruction, reported and not repaired.**
+### Task 3 — the screen becomes a collection
 
-1. **"The `i` icon does nothing. It is on the card and it is empty."** It is not.
-   See section 3, which quotes the measurement.
-2. **`WORK_INSTRUCTIONS.md`'s heading carries no unit number, for the third unit
-   running.** Section 4's second item.
+**Presentation only. Nothing changed about what is visible or what unlocks.**
+
+*Your best* is the `Everything` scope as tiles, four across. **That tab came off the
+strip below** rather than being drawn twice.
+
+*Places* carry `worked of total`, a bar that is those same two numbers, the countries
+named as small tiles, and the prefixes to look for inside a group already opened.
+
+*Go and try* carries a ring, the figure remaining, and its own small glyph — drawn
+from primitives, never from a font, because a glyph that renders as a box on one
+machine is not a carrier of anything.
+
+**The CW, PSK31 and Voice note is untouched**, and the header still counts only what
+he has opened.
+
+### Task 4 — the percentages, made honest
+
+**Every ring says on its face what its number is a percentage of.** Not on the hover:
+a hover is read by somebody who already wondered, and the person this protects is the
+one who glanced at 63% and did not wonder at all. Every ring and its meaning is in
+section 3 below.
+
+**Where there is no linear measure there is no percentage.** A band is worked or it
+is not; there is no part of a continent to have reached. Those rings are **dashed,
+with the target inside them and no number anywhere on them**. So is the distance ring
+when no contact in the log has carried a grid square — **nothing measured is not the
+same as measured zero.**
+
+**A ring he has finished says `done` rather than `100%`**, so no full ring invites
+the others to be read as the same kind of number.
+
+**Watched failing**, with the band challenge given a ring: it draws `0%` for a target
+that has no fraction to be part of.
+
+### Task 5 — what it looks like, and what nobody looked at
+
+**Named drop candidate, not dropped.** Section 3 carries the figures. The short
+version: **nothing in this repository looked at a pixel**, re-tested rather than
+inherited, and the measurement caught a defect this unit had introduced.
+
+### Task 6 — the outcome entry
+
+Appended through `tools\arbiter\outcome-append.bat`, which resolved the unit number
+from the instruction's own heading and filed it as **`UNIT 300 - STEP 4`** with no
+correction by hand. **That is three units' ask closed** — units 297, 298 and 299 each
+had to renumber the heading afterwards, and this heading carries `300`.
+
+### The four things decided on this session's authority
+
+1. **`SvgMark` understands a deferred paint.** Unit 286's precedent, one way.
+2. **The `Everything` tab came off the tab strip**, because its records are the tiles
+   at the top now and a screen that says a thing twice reads as two facts. Nothing
+   became invisible and nothing unlocks differently.
+3. **The two `AchievementsWindow` ceiling rows were re-measured**, 412 → 158 and
+   443 → 153, with the reason in the row's own comment. Part of that drop was already
+   there before this unit: measured at its starting commit, 149 and 144.
+4. **An earned ring says `done`.**
+
+---
 
 ## 2. What the owner should expect
 
-**The icons work, the globe shows where they are, and he can log whatever he likes.**
+**A green feather in the bottom bar, on the left of the contact badge.** Hover it and
+it says which of its two states it is in. Click it and the achievements open — the
+same window the menu opens.
 
-- **Every card carries `Log this contact`**, in all four states. On a finished card
-  it is already the action, so it is never drawn twice on one.
-- **The `i` carries the reports both ways with the scale they sit on, his grid, the
-  distance, the bearing, where his tone sat, what the dial was on, how far into the
-  slot he started, the slot times and what closed the exchange** — and it keeps
-  carrying the band half after a retune, which it did not before.
-- **A globe sits beside the `i`.** Hovering shows him and the station over a
-  coastline, with a line between and a caption naming the place, the grid and the
-  distance.
-- **`the United States` reads `United States`** beside a callsign and a distance.
+**When you earn something, it stirs.** A bead goes round it for half a minute and
+then stops, and the feather stays green and ringed until you open the screen. **If
+you were looking at the radio the whole time you have missed nothing**: close Hamlet,
+come back next week, and it is still marked.
 
-**What will look wrong and is not.**
+**The screen behind it looks like a collection now.** Your best across the top as
+tiles — `3,400 miles / Furthest so far / EI4GNB · Ireland` — then your places with a
+bar and the countries in them, then the things to go and try, each with a ring.
 
-- **The globe is a 16-pixel target and so is the `i`.** Both need a moment's hover.
-  If the `i` felt dead before, that is worth trying again deliberately: it was
-  carrying 444 characters the whole time.
-- **A station that never sent a grid gets no dot**, and the caption says Hamlet does
-  not know where he is rather than guessing from the callsign.
-- **The line on the map is straight and the caption says that is a simplification.**
-  It is not the path the signal took.
-- **Fourteen country names still run over sixteen characters** — `Kingdom of
-  Eswatini`, `Republic of Turkiye` and so on. They are printed by the test rather
-  than padded down, and every one is a name people actually say.
-- **The suite was not run and its state is unknown to this unit.** The four inherited
-  reds were not chased.
+**What will look wrong and is not:**
+
+- **Some rings are dashed with a word in them instead of a percentage.** That is
+  deliberate and it is the most careful thing in this unit. There is no half-worked
+  band, so there is no number to put there.
+- **The `Everything` tab is gone from the strip.** Its records are the tiles at the
+  top; nothing was removed.
+- **The achievements screen says fewer words than it did.** The prose lines under the
+  targets became rings with the figure remaining in them.
+- **The character-ceiling test is red on two of five.** Both are the Digital tab and
+  both were red at the commit this unit opened on. Section 4.
+
+**Build:** succeeded, 0 warnings, 0 errors. **Tests:** 13 constructed in this
+instruction across four classes, **13 of 13 green**, each run filtered by exact name
+and foregrounded. **No suite was run** (HM-DEC-155). The gates re-run because this
+unit touched their surfaces: `BindingHealthTests` green,
+`EveryResourceKeyResolvesTests` green, `Unit298UnlockTests` 14 of 14 green,
+`Unit298ScreenDrawsTests` 2 of 2 green after following the renamed heading,
+`HowMuchTheApplicationSaysTests` 3 of 5 — the same 2 red as at the starting commit.
+
+**Pushed:** three commits to `main`, nothing uncommitted that belongs to this unit.
+
+---
 
 ## 3. What you should see
 
-### 1. The `i` hover, quoted whole, on a your-turn card
+### 1. The mark in both states, and how they differ without colour
 
-**First, the measurement the instruction's claim did not survive.**
-`Unit299HeaderProbeTests` reads the tooltip off the realized control in the real
-window rather than off the property behind it:
+|  | at rest | something new |
+|---|---|---|
+| ring | **absent** | present, 1.6 px |
+| bead | absent | present, going round |
+| vane | **hollow** | **filled** |
+| shapes drawn | **2** | **4** |
+| ink | muted grey `#6E6E66` | decode green `#3B6D11` |
 
-```
-hint marks realized inside the card: 1
-  kind=Detail  bounds=172, 0, 14, 14  text length=444  tip length=469
-```
+**The difference is a count of shapes, not a hue.** Print it in greyscale and one has
+a circle round it and a solid body and the other has neither. Measured by running the
+control's own `Render` and recording what came out of it — at 16, 24 and 32 px, in
+both states, the resting mark emits 2 drawings and fills none of them, and the lit
+one emits 4 and fills two.
 
-**It was bound, it drew, and it carried 444 characters.** The claim is a mismatch and
-is reported rather than repaired.
+### 2. The screen's *Your best* and *Places* as they now render
 
-**What was actually wrong is smaller and real, and the probe found it.** The band
-paragraph came off the newest decoded row for that station. The decoded table is
-bounded and **clears on a band change**, while the cards are rebuilt from the ledger
-and survive — so after a retune the hover quietly lost the frequency and the time
-offset and kept the rest. In the window probe the mine side held one row and it was
-the operator's own transmission. **444 characters before, 875 after.**
-
-The hover now, whole:
-
-> He hears you at **-9 dB** and you hear him at **-12 dB**. Those are decibels
-> against the noise, so a minus number is the ordinary case here: this decoder reads
-> down to about **-21**, and anything well above that is a comfortable signal rather
-> than a marginal one. He is in grid **EN52**, **540 miles** away, on an initial
-> **bearing of 288 degrees** from you. A four-character grid is a box about seventy
-> miles across, so the distance is good to about that and no better. His tone sat
-> **1240 Hz** up inside the receiver's passband while the dial was on **14.074000
-> MHz**. Everybody on the band shares one dial setting and takes a different slice of
-> the audio, which is how dozens of stations fit where one voice would go. His
-> transmission began **0.2 seconds into the slot**. Both clocks have to agree within
-> about a second for this to decode at all, so a small number here is the two of you
-> keeping the same time. This ran from **02:11:00 to 02:12:00 UTC**. That is **one
-> slot ago**. The last thing he sent you was **RR73**, which is a roger and a goodbye
-> in one.
-
-**Twelve facts, each with the context that makes it mean something**, and a test
-names all twelve. A second test asserts the opposite half: an exchange with no report
-and no grid produces a hover with no decibel figure, no distance and no bearing at
-all — and says *he has not put a grid square on the air* rather than leaving a hole.
-
-### 2. The globe's map for a known pair
-
-`FN00` to `IO63`, EI4GNB in Ireland:
+From the real window, two contacts in the log:
 
 ```
-operator FN00 at 40.5, -79  ->  x 202, y 99
-station  IO63 at 53.5, -7   ->  x 346, y 73
-frame: left 162, top 30, 224 by 112
+Your best
+  3,400 miles          Furthest so far                       EI4GNB · Ireland
+  -9 dB                Faintest you have been heard so far   EI4GNB · Ireland
+  -14 dB               Faintest you have heard so far        EI4GNB · Ireland
+  10 September 2026    First so far                          W1ABC · United States
+  2 contacts           Busiest day so far                    10 September 2026
+  02:00 UTC            Busiest hour so far                   2 contacts
+
+North America        1 of 45 worked   [bar]   the United States  1 contact
+Europe               1 of 63 worked   [bar]   Ireland            1 contact
 ```
 
-**The projection is the coastline's own and there is not a second one anywhere.**
-`assets/world-coastline.svg` writes it into its own `<desc>`:
+**The figure is said once.** The line under a tile is the callsign and the country,
+never the distance again — unit 299's caption fault kept out of a smaller frame.
+
+**The bar and the words are the same two numbers**, and the denominator is what
+Hamlet can recognise rather than the publication's own total, which is the smaller
+claim and the honest direction to be wrong in.
+
+### 3. Every ring's number and what it is a percentage of
+
+Measured against a four-contact log reaching 1,900 miles with a -19 dB report:
+
+| ring | reads | what the number is of |
+|---|---|---|
+| First past 3,000 miles | **64%** | **miles covered.** *1,900 miles of 3,000, so 1,100 miles to go. The ring is miles covered and not how likely the rest is, and the next thousand is much harder than the last.* |
+| First report below -21 dB | **90%** | **decibels covered, counted down from 0 dB**, where a signal and the noise are the same size. *It is decibels covered and not how likely the rest is: every one of them is harder than the one before.* |
+| A contact on 80 m | **dashed, `80 m`** | **nothing.** *There is no half of this to be in, so there is no percentage.* |
+| A contact on 80 m or 40 m after dark | **`done`** | already held. |
+| A contact on the grey line | **dashed, `1 hr`** | **nothing.** *You have either done this or you have not.* |
+| A contact on a new continent | **dashed, `one more`** | **nothing.** *There is no part of a continent to have reached.* |
+| 5 grid squares worked | **80%** | **a count of squares.** *4 squares of 5, so 1 to go.* |
+| 5 contacts in one day | **60%** | **a count of contacts.** *3 contacts of 5 in one day, so 2 more in a single sitting.* |
+
+**And one more, which is the case worth reading twice.** Given a log whose contacts
+carry no grid square at all, the distance ring goes **dashed with no number**, not to
+0%: *No contact has carried a grid square, so there is no distance to measure.*
+
+The places bar is the ninth measured figure: **countries worked over countries Hamlet
+can recognise**, both whole numbers, with `1 of 45 worked` in words beside it.
+
+### 4. What was verified by looking, and what was not
+
+**Nothing was verified by looking. Nothing in this repository can rasterise, and that
+was re-tested tonight rather than inherited from units 285 and 286.**
+
+The wall is the same and its symptom is worth writing down, because it is not what
+those units reported: `RenderTargetBitmap.Render` and `Save` **both return without
+complaint and no file appears on disk.** It fails silently rather than throwing, so a
+session that only checked for an exception would conclude it had a picture.
+
+**What was measured instead**, and it is stronger than reading the renderer's
+arithmetic back out of the renderer: `Render` was run at each size into a recording
+context and what it emitted was captured.
 
 ```
-x = (longitude + 180) * 2
-y = (90 - latitude) * 2
+16 px, at rest        : 2 drawings   vane 2.2 px pen, no fill   spine 1.7 px pen
+16 px, something new  : 4 drawings   ring 14.0 across at 1.6    bead 3.5 filled
+                                     vane 2.2 px pen, FILLED    spine 1.7 px pen
+24 px, at rest        : 2 drawings
+24 px, something new  : 4 drawings   ring 22.0 across           bead 5.3 filled
+32 px, at rest        : 2 drawings
+32 px, something new  : 4 drawings   ring 30.0 across           bead 7.0 filled
 ```
 
-`TheProjectionIsTheCoastlineOwn` **reads that `<desc>` and the `viewBox` back out of
-the file** and asserts the code agrees, so a map redrawn on another projection fails
-here rather than silently moving every dot over a coastline that is still correct.
-Watched failing: with `X` returning `* 4` instead of `* 2`, three of the eight globe
-tests go red.
+**That measurement caught a defect this unit had introduced.** The orbiting bead was
+a fixed 2.2 radius whatever the box, so in a 16 px mark it was a third of the width
+of the 7 px ring it runs round — a blob rather than a bead going somewhere. It scales
+with the box now, which is where 3.5, 5.3 and 7.0 come from.
 
-**The frame fits both points with a margin**, asserted over four pairs:
-
-```
-Ireland, across an ocean       left 162, top 30,  224 by 112
-Japan, most of the way round   left 162, top 0,   516 by 258
-the Caribbean, close to home   left 88,  top 59,  268 by 134
-the next state                 left 140, top 57,  164 by 82
-```
-
-and it stops shrinking at 120 map units, because below that this outline has nothing
-in it to recognise.
-
-The caption:
-
-> EI4GNB is in Ireland, grid IO63. That is 3,180 miles from you. **The line is drawn
-> straight on this flat map. A real signal follows a great circle, which curves on a
-> picture like this one, so the line says who is where rather than the path the
-> signal took.**
-
-That last sentence appears **wherever a line is drawn and nowhere else**, and a test
-asserts both halves.
-
-### 3. The globe on a station with no grid
-
-> Hamlet does not know where K9XP is. He has not put a grid square on the air, and a
-> callsign only names a country, which is not a point on a map.
-
-**No dot, no line, no distance.** The mark is still there, because *he never sent
-one* is a fact about the contact worth a hover rather than a gap in the screen.
-
-### 4. A partial contact's log dialog, and the record it saves
-
-He answered, the station came back with a grid, and it stopped there. Before tonight
-that card offered no Log at all. It builds:
+**And one figure is arithmetic and is labelled as arithmetic**, because the
+instruction is explicit that computing a stroke width is not looking:
 
 ```
-CALL          : K9XP
-GRIDSQUARE    : EN52
-RST_SENT      : (not recorded)
-RST_RCVD      : (not recorded)
-BAND          : 20m
+ARITHMETIC, NOT A LOOK. Nothing below was rasterised or looked at.
+ 16 px box: quill 3.2 x 6.3 px, its outline 0.50 px, the spine 0.38 px
+ 24 px box: quill 4.7 x 9.5 px, its outline 0.74 px, the spine 0.57 px
+ 32 px box: quill 6.3 x 12.6 px, its outline 0.99 px, the spine 0.77 px
 ```
 
-and writes:
+**At 16 px the quill's own outline works out to about half a device pixel and its
+spine to 0.38.** Whether those render as faint lines, as solid ones, or as nothing at
+all is exactly the question nothing here can answer. **The status bar draws the mark
+at 20 px, so no surface that ships is at 16** — the smallest case is hypothetical
+until somebody puts it in a smaller frame or looks at it on a real screen.
 
-```
-<CALL:4>K9XP<STATION_CALLSIGN:6>KC3QIS<QSO_DATE:8>20260908<TIME_ON:6>021100
-<TIME_OFF:6>021115<BAND:3>20m<MODE:3>FT8<FREQ:9>14.074000
-<GRIDSQUARE:4>EN52<MY_GRIDSQUARE:4>FN00<EOR>
-```
-
-**Neither report field reaches the file**, asserted against the ADIF text itself, so
-a half exchange never looks like a whole one. And a card whose rows have aged off
-still logs, with `FREQ` and `BAND` **absent entirely** rather than taken from wherever
-the radio is standing now.
-
-**And the X keeps its guard**: clearing a finished, unlogged card still says what is
-being dropped.
+---
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. Three items.
+**Nothing blocks the next unit.** Three items, ordered with the one blocking the most
+work first.
 
----
+### 1. The Digital tab is over its character ceiling, and the figure moves
 
-**The `i` was never empty, so something else made it feel dead — and the likeliest
-thing is that it is fourteen pixels wide.**
+**Recorded as `HM-OPEN-089`, owner `claude`, severity `slows`. Not a ruling ask** —
+it is here because two of the five character-ceiling tests are red and the next unit
+will see them.
 
-Measured: bound, drawn at `14 by 14`, carrying 444 characters and a 469-character
-tooltip with a 150 ms show delay. **The claim in the instruction is a mismatch**, and
-the real defect the probe found — the band paragraph vanishing after a retune — is
-fixed and would not have made the mark look dead, only thinner.
+Measured with this unit's changes stashed, at the commit it opened on:
+`MainWindow — Digital tab holds 1281, ceiling 1250`, set from 1118, and
+`Digital tab, working holds 1233, ceiling 1200`, set from 1087.
+`AddingASentenceToACappedSurfaceTurnsItRed` fails for the same reason and is not a
+second defect: it asserts the tab is under its ceiling, adds a sentence, and expects
+that to turn it red — a tab already over cannot demonstrate anything.
 
-So what is left is the target. `HintMarkControl` draws a **ring with no fill**: the
-glyph and the outline are ink and the middle is empty, and it is a bare `Control`
-rather than a `Border`. **The globe this unit added is deliberately a `Border` with
-`Background="Transparent"`**, which is a solid 16-pixel hit target, and it is worth
-comparing the two by hand before changing anything.
+**The CW tab reads 528 and the Voice tab 518, both exactly what they were set from**,
+so this is the Digital tab alone.
 
-What was rejected. **Widening the mark on this unit's own authority**, which changes
-every hint mark on every screen in the application on a guess about one hover.
-**Doing nothing**, because he reported it and the report should say what was found
-rather than closing the question.
+**The part that makes it an issue rather than a re-measure:** two runs of the same
+tree an hour apart read **1281 and then 1293**, twelve characters apart, while every
+other row held still. Something on that tab composes text from the clock. **A ceiling
+set against a moving number cannot be set correctly**, so raising the row would only
+move the failure. Left alone under §12.6; whoever takes it has to find the moving
+string first.
 
-What would settle it: he hovers the globe and the `i` side by side on the same card
-and says whether one is easier to hit than the other. If it is, the mark becomes a
-`Border` like the globe, everywhere, in one change.
+### 2. Nothing in this repository can look at a picture
 
----
+Named rather than repaired, and it now has a second measurement behind it. Real
+pixels want `Avalonia.Headless.Skia`, and **a new package is a dependency decision
+rather than a session's** (§0.4). It is raised here because three units running have
+had to write *nobody looked* into a report about something drawn, and the cost of
+that is quietly compounding: this unit shipped a bead that was the wrong size at
+small scales and only found it by arithmetic.
 
-**A work instruction's heading should carry its unit number. This is the third unit
-running that has had to correct the entry by hand.**
+**Not a ruling ask unless you want it to be.** If a picture ever needs to be
+*correct* rather than *present*, this is what it costs.
 
-`outcome-append.bat` resolves the unit number from `WORK_INSTRUCTIONS.md`'s heading
-rather than from the argument it is given. That is unit 266's repair and it is right:
-two callers were passing different numbers and the heading is the tie-break.
+### 3. `Ft8Sharp` did not move
 
-**The last three orders have carried no number there** — `# Work instruction - the
-conversation becomes cards`, `# Work instruction - the achievements screen grows as
-he operates`, `# Work instruction - the card's header does what it promised` — and
-instead tell the session to take the next number from `PHASE_OUTCOME.md`, which the
-script cannot read. It falls back to the previous unit's number every time, and units
-297, 298 and 299 have each corrected the heading afterwards and reported it.
+Stated because the instruction requires it. No file under `src/Ft8Sharp/` was read,
+edited or built.
 
-What was rejected. **Changing the script to prefer its argument**, which undoes unit
-266's repair and reintroduces the double-entry it fixed. **Repairing the
-instruction**, which its own rule forbids.
+### Asks still outstanding
 
-What would settle it, and it is one line: the order's heading reads `# Work
-instruction 300 — ...`, **or** the numbering paragraph says *write that number into
-the heading before task 1*.
+Carried verbatim per HM-DEC-139.
 
----
+1. **The `i` hint mark's hit target.** *First made 2026-09-09, unit 299.* Unit 299
+   measured it: bound, drawn at 14 by 14, carrying 444 characters — **it was never
+   empty.** `HintMarkControl` is a bare `Control` drawing a ring **with no fill**, so
+   the middle is not a target. The globe unit 299 added is a `Border` with a
+   transparent background and is a solid 16-pixel target. **Waiting on:** Tim hovering
+   the two side by side and saying whether one is easier to hit. If it is, the mark
+   becomes a `Border` everywhere in one change. **Where the change already sits:**
+   `src/Hamlet.App/Controls/HintMarkControl.cs`, unchanged. **This unit did not touch
+   it**, and the achievement mark it built is a `Button` for exactly the reason the
+   ask exists.
 
-**The card still cannot say a US state, and the instruction asked for one.**
+2. **A US state, from callook.** *First made 2026-09-08, unit 297; hit again by units
+   298 and 299.* Hamlet cannot name a US state: neither the grid square nor the DXCC
+   entity carries one, so every place name for a US station stops at *the United
+   States*. **Waiting on:** the parked callook instruction. **Where the change already
+   sits:** nowhere — nothing has been built against it, and every unit that has hit it
+   has stopped at the country rather than inferring below it.
 
-Task 4's first line is *for a US station, the state if callook or the grid can give
-one*. **Neither can.** `DxccPrefixes` names a DXCC entity, which for all fifty states
-is *United States of America*; a US call area is historical rather than a residence,
-so `W6` in Ohio is ordinary; and a four-character grid square is a box about seventy
-miles across that straddles state lines.
-
-So the face reads `United States` — the country said shorter — and never `Arizona`.
-**Units 297, 298 and 299 have now each hit the same wall from a different direction**:
-the card's place line, the achievements screen's Worked All States family, and this.
-
-What would settle it. **The parked callook instruction returns a licensee's address**,
-which is cited data with a state in it. Until then nothing below the country is
-honest, and it is named here so the next author does not plan around a state that
-does not exist yet.
+**And one that is dropped rather than carried.** Three consecutive orders shipped with
+no unit number in the heading and `outcome-append.bat` had to be corrected by hand
+each time. **This order's heading carries `300`, the script resolved it, and the entry
+filed as `UNIT 300 - STEP 4` with nothing renumbered.** The ask is closed by the
+author's own fix and is not carried forward.
