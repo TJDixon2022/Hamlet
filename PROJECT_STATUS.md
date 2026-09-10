@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 6
+TASK: 5 of 6
 WORK_INSTRUCTION: 300 - the achievement mark, and the screen it opens
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-09T21:27:55-04:00
-NOTE: Tasks 3 and 4 green - the screen is tiles, places with bars, and rings that say what they are a percentage of.
+UPDATED: 2026-09-09T21:30:56-04:00
+NOTE: Task 5 measured - what the mark emits at 16, 24 and 32 px, and nothing here can rasterise, re-tested rather than inherited.
 
 ---
 

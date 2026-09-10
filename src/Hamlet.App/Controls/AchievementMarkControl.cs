@@ -234,8 +234,12 @@ public sealed class AchievementMarkControl : Control
                     new Point(
                         middle.X + Math.Cos(angle) * radius,
                         middle.Y + Math.Sin(angle) * radius),
-                    2.2,
-                    2.2);
+                    // **THE BEAD SCALES WITH THE BOX**, which task 5's measurement
+                    // is what caught: it was a fixed 2.2 radius, so in a 16 px box
+                    // it was a third of the width of the 7 px ring it runs round and
+                    // read as a blob rather than as a bead going somewhere.
+                    side * 0.11,
+                    side * 0.11);
             }
         }
 
