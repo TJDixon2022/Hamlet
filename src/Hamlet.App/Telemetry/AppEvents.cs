@@ -94,6 +94,46 @@ public static class AppEvents
             answer.DidMeasure ? TelemetryLevel.Info : TelemetryLevel.Warn);
     }
 
+    /// <summary>Something consequential changed, and the record says what.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="what">What changed, as a stable token.</param>
+    /// <param name="from">What it was, or `unknown`.</param>
+    /// <param name="to">What it is now.</param>
+    /// <param name="why">What caused it, in a few words.</param>
+    /// <param name="level">How loud it is; a loss is a warning.</param>
+    /// <remarks>
+    /// <para>**A SNAPSHOT IS A PICTURE OF STARTUP AND TODAY'S FAULTS HAPPENED LATER**
+    /// (work instruction 304 task 3). The transmit device did not go missing while
+    /// Hamlet was starting; it went missing across a reboot, and the file has to be
+    /// able to say when a fact stopped being what the snapshot said.</para>
+    /// <para>**ONE STABLE NAME, AND `from` AND `to` RATHER THAN JUST THE NEW VALUE.**
+    /// A reader diffing a day's file wants the transition, because the transition is
+    /// what a person can act on.</para>
+    /// <para>**NOTHING PERSONAL** (§2.1). A device name, a port and a version are
+    /// not personal; a callsign, a name, a grid and a location are, and nothing here
+    /// takes one.</para>
+    /// </remarks>
+    public static void StateChanged(
+        ITelemetry? telemetry,
+        string what,
+        string? from,
+        string to,
+        string why,
+        TelemetryLevel level = TelemetryLevel.Info)
+        => telemetry?.Write(
+            TelemetryCategory.Diagnostics,
+            "state_changed",
+            new Dictionary<string, object?>
+            {
+                ["what"] = what,
+                ["from"] = string.IsNullOrWhiteSpace(from)
+                    ? StartupSnapshot.Unknown
+                    : from,
+                ["to"] = to,
+                ["why"] = why,
+            },
+            level);
+
     /// <summary>The About window was opened.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     public static void AboutOpened(ITelemetry? telemetry)

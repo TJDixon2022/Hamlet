@@ -7,6 +7,7 @@ using Hamlet.App.Licensing;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transmit;
 
@@ -170,6 +171,25 @@ public partial class SettingsViewModel : ObservableObject
             && !string.IsNullOrWhiteSpace(settings.AudioOutputDeviceId)
                 ? settings.AudioOutputDeviceId
                 : null;
+
+        // **A DEVICE THAT HAS GONE IS A STATE CHANGE AND IT GOES IN THE FILE** (work
+        // instruction 304 task 3). The snapshot says what was true at startup; this
+        // says the moment Hamlet noticed the transmit device it was told to use is
+        // not on the machine. **It is a warning**, because a send will refuse and the
+        // operator will press CQ and see nothing happen.
+        if (_missingTransmitDevice is { Length: > 0 } gone)
+        {
+            AppEvents.StateChanged(
+                telemetry,
+                "transmitDevicePresent",
+                from: "true",
+                to: "false",
+                why: "settings name " + gone + " and this machine has "
+                    + TransmitEndpoints.Count.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)
+                    + " output devices, none of them that one",
+                level: TelemetryLevel.Warn);
+        }
         _transmitDrivePercent = settings.TransmitDrivePeak * 100.0;
         _cwPitchHz = settings.CwPitchHz;
         _copySpeedWpm = settings.CopySpeedWpm;
@@ -362,6 +382,17 @@ public partial class SettingsViewModel : ObservableObject
         // **SO THE ERASURE THE OPERATOR SAW DID NOT COME FROM HERE**, and no guard
         // was added to pretend otherwise. What this unit does about a lost device is
         // make it **visible**, below.
+        // **AND A SETTING THE OPERATOR CHANGES IS A STATE CHANGE TOO.** Which sound
+        // card a transmission goes to is exactly the fact that went missing across a
+        // reboot, so a deliberate change to it belongs in the record beside the
+        // accidental one.
+        AppEvents.StateChanged(
+            _telemetry,
+            "transmitDeviceSelected",
+            from: _settings.AudioOutputDeviceId,
+            to: value?.Id ?? "(none named, so a send refuses)",
+            why: "the operator picked it in Settings");
+
         _settings.AudioOutputDeviceId = value?.Id;
 
         // Choosing a real device is what clears the warning.

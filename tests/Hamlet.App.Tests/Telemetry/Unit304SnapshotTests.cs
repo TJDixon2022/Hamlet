@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hamlet.App.Settings;
@@ -241,6 +241,97 @@ public sealed class Unit304SnapshotTests
         Assert.Single(sink.Events);
         Assert.Equal(StartupSnapshot.EventName, sink.Events[0].Name);
         Assert.Equal(TelemetryCategory.Diagnostics, sink.Events[0].Category);
+    }
+
+    /// <summary>**A device that has gone is a state change in the file.**</summary>
+    /// <remarks>
+    /// **THE SNAPSHOT IS A PICTURE OF STARTUP AND TODAY'S FAULTS HAPPENED LATER**
+    /// (task 3). The transmit device did not go missing while Hamlet was starting; it
+    /// went missing across a reboot, so the file has to be able to say when a fact
+    /// stopped being what the snapshot said.
+    /// </remarks>
+    [Fact]
+    public void ADeviceThatHasGoneIsAStateChange()
+    {
+        var settings = Settings();
+
+        settings.AudioOutputDeviceId = "{0.0.0.00000000}.{a-device-that-is-gone}";
+
+        // **THROUGH A REAL SINK, WHICH IS THE STRONGER MEASUREMENT.** Settings holds
+        // a `JsonlTelemetry` because it genuinely needs `ClearAll` and `TotalBytes`,
+        // so this reads the lines it actually wrote to disk rather than a stand-in.
+        var lines = WhatSettingsWrote(settings);
+
+        foreach (var line in lines)
+        {
+            _output.WriteLine("  " + line);
+        }
+
+        Assert.Contains(
+            lines,
+            l => l.Contains("state_changed", StringComparison.Ordinal)
+                 && l.Contains("transmitDevicePresent", StringComparison.Ordinal));
+
+        // **A LOSS IS A WARNING**, because a send will refuse and he will press CQ
+        // and see nothing happen.
+        Assert.Contains(
+            lines,
+            l => l.Contains("transmitDevicePresent", StringComparison.Ordinal)
+                 && l.Contains("\"level\":\"warn\"", StringComparison.Ordinal));
+    }
+
+    /// <summary>**A device that is present raises no alarm.**</summary>
+    [Fact]
+    public void ADeviceThatIsPresentRaisesNoAlarm()
+    {
+        var settings = Settings();
+
+        settings.AudioOutputDeviceId = Outputs()[1].Id;
+
+        var lines = WhatSettingsWrote(settings);
+
+        var warnings = lines
+            .Where(l => l.Contains("\"level\":\"warn\"", StringComparison.Ordinal))
+            .ToList();
+
+        _output.WriteLine("lines written   : " + lines.Count);
+        _output.WriteLine("warnings written: " + warnings.Count);
+
+        Assert.Empty(warnings);
+    }
+
+    /// <summary>Build the Settings screen over a real sink and read what it wrote.</summary>
+    private static IReadOnlyList<string> WhatSettingsWrote(AppSettings settings)
+    {
+        var folder = System.IO.Path.Combine(
+            System.IO.Path.GetTempPath(),
+            "hamlet-unit304-" + Guid.NewGuid().ToString("N"));
+
+        System.IO.Directory.CreateDirectory(folder);
+
+        try
+        {
+            using (var telemetry = new JsonlTelemetry(folder, "1.12.267", _ => true))
+            {
+                _ = new Hamlet.App.ViewModels.SettingsViewModel(
+                    settings, telemetry, new FakeInputs(), () => Outputs());
+            }
+
+            return System.IO.Directory.GetFiles(folder, "*.jsonl")
+                .SelectMany(System.IO.File.ReadAllLines)
+                .ToList();
+        }
+        finally
+        {
+            try
+            {
+                System.IO.Directory.Delete(folder, recursive: true);
+            }
+            catch (System.IO.IOException)
+            {
+                // A file still held open is not this test's business.
+            }
+        }
     }
 
     private static AppSettings Settings()

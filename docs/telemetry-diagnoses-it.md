@@ -1,4 +1,4 @@
-# What the record has to hold to answer a question without asking him
+﻿# What the record has to hold to answer a question without asking him
 
 **Work instruction 304, task 1. Reading only; nothing was added while writing this.**
 
@@ -184,3 +184,35 @@ the About window already promises exactly that.
 
 **Whether the transmitter keyed** is ask 1 and is Tim's. Task 3 records the readiness
 fields either way.
+
+
+---
+
+# Task 3: which refusals are silent on screen
+
+**The list is this unit's; the fixes are not** (the instruction's own words, and
+`CLAUDE.md` §12.6). Every row below was checked by reading the call site, not by
+assuming from the event name.
+
+**A refusal the operator cannot see is a button that appears broken.** That is not a
+new rule - it is what cost the CQ evening, when `transmit_readiness` refused 56 times
+and the screen said nothing.
+
+| Refusal | In the file | On screen | Verdict |
+|---|---|---|---|
+| `transmit_readiness` | **Yes**, with `determinedBy` naming every field | **Yes** - `OnReadinessChanged` writes `Decisions.Note`, and the digital tab carries `_digitalRefusal` on its send line | **Visible**, and the shape every other refusal should copy |
+| `digital_capture_refused`, all four call sites | **Yes** | **Yes** - each sets `StatusText` in the same breath | **Visible** |
+| `cw_send_ended` | **Yes** | **Yes** - the CW send path narrates | **Visible** |
+| **A transmit device named in settings that is absent** | **Yes, since unit 303 and task 3 of this unit** - `state_changed` at warning | **Yes, since unit 303** - the amber line in Settings | **Visible now; it was the silent one** |
+| **A telemetry category being off** | **No, and it cannot be** - `JsonlTelemetry.Write` returns before serialising | **No** | **Not a refusal the operator sees, and the snapshot now names it** |
+| **A dropped telemetry event** | `DroppedEventCount` exists and **nothing wrote it before this unit** | **No** | **In the snapshot now.** Still nothing on screen, which is right: it is a fact for the file |
+| `RigWriteOutcome.Refused` | **Yes**, in the write result | **Not reached from `MainWindowViewModel`** - no call site consumes it there | **Unknown, and reported as unknown.** The path exists; whether any live write refuses through it was not established here |
+
+**One honest gap.** The last row is the only one I could not settle by reading, and I
+have not claimed either way. Establishing it wants a live write against a radio, which
+is a bench measurement rather than a reading, and nothing on this machine can stand in
+for it (HM-DEC-093).
+
+**Nothing above was fixed.** Every one that is visible was already visible; the one
+that was not is the transmit device, and unit 303 put the amber line in Settings
+before this unit added the record beside it.
