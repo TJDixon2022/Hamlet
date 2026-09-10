@@ -2764,7 +2764,15 @@ public partial class MainWindowViewModel : ObservableObject
                     action.Message,
                     nowUtc,
                     TechnicalFor(who),
-                    DecodeFloorDb));
+                    DecodeFloorDb,
+                    _stations?.Known(facts.Callsign)));
+
+                // **ASKED ONCE PER CALLSIGN AND NEVER PER DECODE** (work instruction
+                // 302 task 4). This returns immediately whether or not it has been
+                // asked before, and the answer arrives on its own; the card is
+                // composed from what is already known, so a slow network never keeps
+                // a card off the screen.
+                AskWhoHeIs(facts.Callsign);
             }
         }
 
@@ -4143,6 +4151,86 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What Hamlet has recently decided (HM-DEC-077).</summary>
     public DecisionLogViewModel Decisions { get; } = new();
+
+    /// <summary>
+    /// **Who the stations on screen are, where callook can say.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT REUSES THE CLIENT SETTINGS ALREADY HAS** (work instruction 302
+    /// task 3: do not write a second callook client). `CallookCallsignLookup` has
+    /// been how the operator's own class, coordinates and grid reached Settings
+    /// since 2026-08-14, and this is a cache and a parser over the same one.</para>
+    /// <para>**IT IS NULL UNTIL SOMETHING ASKS**, and it is null for ever in a test
+    /// that never sets it, so nothing in this application reaches the network
+    /// because a card was drawn.</para>
+    /// </remarks>
+    private StationDirectory? _stations;
+
+    /// <summary>Give the view model a station directory.</summary>
+    /// <param name="stations">The directory, or null to look nothing up.</param>
+    /// <remarks>
+    /// **HANDED IN RATHER THAN BUILT HERE**, so a test drives a fake client and the
+    /// application drives the real one, and neither has to know about the other.
+    /// </remarks>
+    public void UseStationDirectory(StationDirectory? stations)
+    {
+        if (_stations is not null)
+        {
+            _stations.Learned -= OnStationLearned;
+        }
+
+        _stations = stations;
+
+        if (_stations is not null)
+        {
+            _stations.Learned += OnStationLearned;
+        }
+    }
+
+    /// <summary>A name arrived, so the cards that wanted it are rebuilt.</summary>
+    /// <remarks>
+    /// **THE CARD IS NOT REACHED INTO.** It is composed from what is known at the
+    /// moment it is built, so learning something means building it again, which is
+    /// the same path every other change to a card takes.
+    /// </remarks>
+    private void OnStationLearned(object? sender, StationName learned)
+    {
+        if (DigitalCards.Any(c => string.Equals(
+                c.Callsign, learned.Callsign, StringComparison.OrdinalIgnoreCase)))
+        {
+            RebuildCards();
+        }
+    }
+
+    /// <summary>Ask who a callsign belongs to, at most once, never waiting.</summary>
+    /// <remarks>
+    /// <para>**NOTHING AWAITS THIS AND NOTHING SHOWS A SPINNER** (the instruction).
+    /// A card is composed on the UI thread while decodes are arriving, so the ask is
+    /// started and left; if it never answers, the card reads exactly as it does
+    /// today.</para>
+    /// <para>**AND IT SWALLOWS EVERYTHING**, because a lookup that threw into a
+    /// fire-and-forget task would take the application down for a network that was
+    /// briefly unreachable (§8's never-throw discipline).</para>
+    /// </remarks>
+    private void AskWhoHeIs(string? callsign)
+    {
+        if (_stations is null || callsign is not { Length: > 0 })
+        {
+            return;
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await _stations.AskAboutAsync(callsign).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // Unreachable is a condition, not an error.
+            }
+        });
+    }
 
     /// <summary>
     /// **True while something has been earned that he has not looked at.**

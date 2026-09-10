@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
+using Hamlet.RadioEngine.Licensing;
 
 namespace Hamlet.App.ViewModels;
 
@@ -106,6 +107,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// hover then teaches the sign and the direction and invents no number.
     /// </param>
     /// <exception cref="ArgumentNullException">There are no facts.</exception>
+    /// <param name="who">Who the operator is and what town, where callook knows.</param>
     public Ft8ContactCard(
         Ft8CardFacts facts,
         string? operatorGrid,
@@ -114,13 +116,14 @@ public sealed partial class Ft8ContactCard : ObservableObject
         string actionMessage,
         DateTime? nowUtc,
         Ft8CardTechnical? technical = null,
-        int? decodeFloorDb = null)
+        int? decodeFloorDb = null,
+        StationName? who = null)
     {
         ArgumentNullException.ThrowIfNull(facts);
 
         _facts = facts;
         _nowUtc = nowUtc;
-        _place = WhereHeIs(facts, operatorGrid);
+        _place = WhereHeIs(facts, operatorGrid, who);
         _country = CountryOf(facts);
         _operatorGrid = operatorGrid;
         _technical = technical;
@@ -734,7 +737,8 @@ public sealed partial class Ft8ContactCard : ObservableObject
             : EntitySpoken.Short(EntityQualifier.DescribeFromGrid(entity, facts.Grid));
     }
 
-    private static string WhereHeIs(Ft8CardFacts facts, string? operatorGrid)
+    private static string WhereHeIs(
+        Ft8CardFacts facts, string? operatorGrid, StationName? who)
     {
         var entity = DxccPrefixes.EntityOf(facts.Callsign);
 
@@ -753,11 +757,46 @@ public sealed partial class Ft8ContactCard : ObservableObject
             ? GridPath.DescribeMiles(GridPath.MilesBetween(from, to))
             : "";
 
-        if (country.Length == 0)
+        // **WHO HE IS AND WHAT TOWN HE IS IN, WHERE CALLOOK KNOWS** (work
+        // instruction 302 tasks 4 and 5, Tim's ruling of 2026-09-09). It replaces
+        // the country rather than joining it: `Richard, Sun City AZ` already says
+        // the United States to anybody reading it, and a card that said both would
+        // be saying one thing twice.
+        //
+        // **AND IT IS SILENT EVERYWHERE ELSE.** `VP2MAA` answers `INVALID` and gets
+        // `Montserrat` exactly as it always did - **silence is the correct answer
+        // and not a gap** (Tim, 2026-09-08). Most of what makes FT8 interesting is
+        // outside the United States and none of those cards change.
+        //
+        // **NOTHING BELOW THE COUNTRY IS EVER INFERRED.** Not from the grid, which
+        // is a box that straddles state lines, and not from the call area, which is
+        // where somebody was licensed rather than where they live. This is the only
+        // source in the application that can honestly say Arizona.
+        var him = Named(who);
+
+        var place = him.Length > 0 ? him : country;
+
+        if (place.Length == 0)
         {
             return miles;
         }
 
-        return miles.Length == 0 ? country : country + " · " + miles;
+        return miles.Length == 0 ? place : place + " · " + miles;
+    }
+
+    /// <summary>`Richard, Sun City AZ`, or as much of it as is known.</summary>
+    private static string Named(StationName? who)
+    {
+        if (who is null || !who.HasAnything)
+        {
+            return "";
+        }
+
+        if (who.Name.Length == 0)
+        {
+            return who.Town;
+        }
+
+        return who.Town.Length == 0 ? who.Name : who.Name + ", " + who.Town;
     }
 }

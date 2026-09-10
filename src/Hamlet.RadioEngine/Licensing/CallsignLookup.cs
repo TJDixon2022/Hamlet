@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -24,6 +24,31 @@ public sealed record CallsignLookupResult(
     /// and every distance wrong while looking entirely confident (HM-DEC-009).
     /// </remarks>
     public LatLon? Location { get; init; }
+
+    /// <summary>
+    /// The licensee's name as the service holds it, or null when it did not say.
+    /// </summary>
+    /// <remarks>
+    /// **READ FROM 2026-09-10, ON TIM'S RULING, AND THE STREET STILL IS NOT**
+    /// (work instruction 302 task 4). This file's own parser has declined the whole
+    /// name-and-address block since it was written, on the argument that a program
+    /// which quietly harvested a home address because it happened to be in the
+    /// payload would be doing something nobody asked it to do. **That argument still
+    /// stands and the street address is still not read anywhere in this
+    /// application.** What changed is that somebody did ask, for the two fields an
+    /// operator would say out loud: who you are and what town you are in.
+    /// </remarks>
+    public string? LicenseeName { get; init; }
+
+    /// <summary>
+    /// The town-and-state line, `SUN CITY, AZ 85373`, or null when it did not say.
+    /// </summary>
+    /// <remarks>
+    /// **THIS IS THE SECOND ADDRESS LINE AND NEVER THE FIRST.** The first is the
+    /// street and it is not named in the parser at all, so there is nothing to
+    /// accidentally start using.
+    /// </remarks>
+    public string? TownLine { get; init; }
 }
 
 /// <summary>Looks up a US callsign's operator class.</summary>
@@ -62,11 +87,19 @@ public interface ICallsignLookup
 /// callsign is asked about once rather than on every profile touch.</para>
 /// <para>WHAT IS READ, AND WHAT IS DELIBERATELY NOT. The response carries the
 /// licensee's full name, street address, coordinates and grid square. Hamlet
-/// reads the operator class and the coordinates, and nothing else. It is the
-/// operator's own record, but a program that quietly harvested a home address
+/// reads the operator class, the coordinates, the name and the town, and
+/// nothing else. **The street address is still not read**, here or anywhere
+/// else in this application: a program that quietly harvested a home address
 /// because it happened to be in the payload would be doing something nobody
 /// asked it to do — and the parser is the natural place for that restraint to
 /// be visible.</para>
+/// <para>THE NAME AND THE TOWN WERE ADDED 2026-09-10 ON TIM'S RULING (work
+/// instruction 302), so a US station's card can say who he is: `W7PP · Richard,
+/// Sun City AZ`. That is the granularity one operator gives another on the air,
+/// and it is exactly the two fields the second address line and the name block
+/// carry. **A callsign the service does not know gets nothing** — measured,
+/// `VP2MAA` returns `{"status": "INVALID"}` and nothing else — and those cards
+/// read as they always did.</para>
 /// <para>The coordinates were added deliberately and are used for exactly two
 /// things (HM-DEC-037): the grid square, so nobody has to be told what
 /// "Maidenhead locator" means, and sunrise and sunset for the band cards. The
@@ -168,6 +201,8 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
             _utcNow())
         {
             Location = ParseLocation(dto.Location),
+            LicenseeName = dto.Name,
+            TownLine = dto.Address?.Line2,
         };
     }
 
@@ -249,6 +284,14 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
         [JsonPropertyName("location")]
         public CallookLocation? Location { get; set; }
 
+        /// <summary>The licensee's name.</summary>
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+
+        /// <summary>The address block, of which only the second line is named.</summary>
+        [JsonPropertyName("address")]
+        public CallookAddress? Address { get; set; }
+
         public sealed class CurrentBlock
         {
             [JsonPropertyName("callsign")]
@@ -257,6 +300,22 @@ public sealed class CallookCallsignLookup : ICallsignLookup, IDisposable
             [JsonPropertyName("operClass")]
             public string? OperClass { get; set; }
         }
+    }
+
+    /// <summary>
+    /// callook's address block, of which **only the second line is named**.
+    /// </summary>
+    /// <remarks>
+    /// **`line1` IS THE STREET AND IT IS NOT HERE.** The payload carries it and this
+    /// type has nowhere to put it, which is the same restraint that kept the whole
+    /// block out until work instruction 302 asked for a town. `line2` is
+    /// `TOWN, XX ZIP` - the granularity one operator gives another on the air.
+    /// </remarks>
+    internal sealed class CallookAddress
+    {
+        /// <summary>The town, state and ZIP, as one line.</summary>
+        [JsonPropertyName("line2")]
+        public string? Line2 { get; set; }
     }
 
     /// <summary>

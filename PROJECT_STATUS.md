@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 7
+TASK: 6 of 7
 WORK_INSTRUCTION: 302 - the moving string, and a name for the station
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T09:04:50-04:00
-NOTE: Tasks 1 and 2 green - FOUR movers found by standing the app up, all measured; the ceiling holds still across three class runs. Callook reading next.
+UPDATED: 2026-09-10T09:13:02-04:00
+NOTE: Tasks 3 to 6 green - a US card reads W7PP - Richard, Sun City AZ; VP2MAA reads Montserrat exactly as before. One request per callsign, 56 messages to 3 requests.
 
 ---
 
