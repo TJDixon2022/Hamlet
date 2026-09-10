@@ -114,7 +114,7 @@
              padding and border are taken off, so 26 fills it with two pixels of
              headroom above and below. **The bar's height did not change** - the
              room came out of padding that was there before. -->
-        <x:Double x:Key="HmStatusMarkSize">26</x:Double>
+        <x:Double x:Key="HmStatusMarkSize">27</x:Double>
 
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,

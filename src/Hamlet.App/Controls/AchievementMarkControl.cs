@@ -30,11 +30,16 @@ public static class AchievementQuill
 /// <para>**A FEATHER IN YOUR CAP**, chosen over medals, cups, stars and compasses. The
 /// quill is already in the logo, the app icon and the tray, so this is the same object
 /// in a third place rather than a new metaphor.</para>
-/// <para>**THE TWO STATES DIFFER BY SHAPE AND NOT ONLY BY COLOUR** (§0.6). At rest the
-/// vane is an **outline** and there is **no ring**; when something is unseen the vane
-/// is **filled** and a **ring is present**. Printed in greyscale the two are still two:
-/// one has a circle round it and a solid body, the other has neither. Roughly one man
-/// in twelve cannot rely on the hue, and everybody can be looking somewhere else.</para>
+/// <para>**FILLED GREEN AT REST SINCE 2026-09-10** (Tim's ruling, option B of three
+/// he was shown). At rest the quill was a grey outline and his word for it was *not
+/// noticeable*, so the mark is now the same filled green object at all times and it
+/// is about 27 px rather than 20.</para>
+/// <para>**THE TWO STATES STILL DIFFER BY SHAPE AND NOT ONLY BY COLOUR** (§0.6), and
+/// that survives the change because **the ring was always the carrier**: it is
+/// present when something is unseen and absent when nothing is. What used to be a
+/// second carrier - outlined against filled - is gone, so the ring is now doing the
+/// work alone. It is a shape rather than a hue, so a greyscale printer keeps it, and
+/// the orbiting bead adds motion on top while it turns.</para>
 /// <para>**THE MOTION ENDS AND THE MARK DOES NOT** (work instruction 300 task 2).
 /// Motion in peripheral vision is genuinely unpleasant for some people, so the orbit
 /// turns for <see cref="OrbitsFor"/> and then stops - but the fill and the ring stay
@@ -253,7 +258,11 @@ public sealed class AchievementMarkControl : Control
             Matrix.CreateScale(scale, scale)
             * Matrix.CreateTranslation(middle.X - art / 2, middle.Y - art / 2)))
         {
-            var ink = IsNew ? Edge : Muted;
+            // **FILLED GREEN AT REST, NOT OUTLINED** (Tim's ruling of 2026-09-10,
+            // option B of three he was shown). At rest it was a grey sliver and his
+            // word for it was *not noticeable*. The quill is now the same green
+            // object whether or not something is new.
+            var ink = Edge;
 
             foreach (var shape in Quill.Value)
             {
@@ -266,14 +275,15 @@ public sealed class AchievementMarkControl : Control
                 // would paint nothing here and something on another backend.
                 var line = shape.Geometry is LineGeometry;
 
-                var fill = line
-                    ? null
-                    : IsNew ? Green : null;
+                // **THE VANE IS ALWAYS FILLED NOW**, which is what option B is. A
+                // line still has no interior: SVG's default black fill on one would
+                // paint nothing here and something on another backend.
+                var fill = line ? null : Green;
 
                 var pen = shape.Pen is null
                     ? null
                     : new Pen(
-                        line && IsNew ? Spine : ink,
+                        line ? Spine : ink,
                         shape.Pen.Thickness,
                         lineCap: shape.Pen.LineCap,
                         lineJoin: shape.Pen.LineJoin);
