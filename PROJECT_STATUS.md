@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 305 - the snapshot lands after the facts, and the Morse gate stops judging FT8
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T13:54:41-04:00
-NOTE: Tasks 1 to 3 green - snapshot written twice, unknown fields 16 to 9; the Morse gate was filling the record rather than blocking, and its scope is narrowed.
+UPDATED: 2026-09-10T13:55:56-04:00
+NOTE: Tasks 4 and 5 - task 4 was already shipped by unit 303 and is confirmed not redone; the replay says no command needed for the sound card or the clock.
 
 ---
 
