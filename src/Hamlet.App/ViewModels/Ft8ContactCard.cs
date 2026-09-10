@@ -409,18 +409,20 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
 
     /// <summary>
-    /// **What the `i` mark holds: every technical detail the face gave up, with the
-    /// context that makes a number mean something.**
+    /// **What the `i` mark holds: every technical detail the face gave up, as
+    /// facts.**
     /// </summary>
     /// <remarks>
     /// <para>**NOTHING IS DELETED** (Tim's ruling, 2026-09-08). Every fact the old
     /// panel put on the screen is here, one deliberate hover away. The face carries
     /// what happened; this carries what it was made of.</para>
-    /// <para>**WITH CONTEXT AND NOT BARE NUMBERS**, which is the stated purpose:
-    /// *"a number alone teaches nobody."* `-4 dB` on its own is a reading somebody
-    /// has to already understand; `-4 dB, and this decoder reads down to about -21,
-    /// so you are a long way above the floor` is the same reading and an
-    /// explanation of the scale it sits on.</para>
+    /// <para>**AND THE EXPLANATIONS ARE WITHDRAWN** (work instruction 305 task 4).
+    /// This used to carry the context that makes a number mean something - unit 299
+    /// was told to and did exactly that - and it reached **1015 characters over
+    /// thirteen sentences**, which the operator hovered and could not read. **Show,
+    /// do not tell**: a fact he hovers for is a fact, not a lesson, and the cut form
+    /// measures 230 characters carrying the same twelve figures. The long wording is
+    /// in git history and is not reproduced anywhere.</para>
     /// <para>**EVERY CLAUSE IS ABSENT WHERE ITS FACT IS** (§0.0). No grid, no
     /// distance and no bearing; no measured ratio, no report sentence; no dial, no
     /// frequency sentence. A hover that filled a gap with a plausible figure would
@@ -466,12 +468,21 @@ public sealed partial class Ft8ContactCard : ObservableObject
                 parts.Add(slots);
             }
 
-            return string.Join(" ", parts);
+            return string.Join(Between, parts);
         }
     }
 
     /// <summary>True where the `i` mark has anything to hold.</summary>
     public bool HasDetail => Detail.Length > 0;
+
+    /// <summary>What separates one fact from the next in the hover.</summary>
+    /// <remarks>
+    /// **A MIDDLE DOT AND NOT A FULL STOP** (work instruction 305 task 4). Facts in a
+    /// row are a list rather than prose, and a full stop between them invites the
+    /// sentence that used to follow it. It is the same separator the card face and
+    /// the panel summaries already use, so it is not a new thing to learn.
+    /// </remarks>
+    private const string Between = " · ";
 
     /// <summary>Whether this card is the operator's own call to anybody.</summary>
     public bool IsCallToAnyone
@@ -517,7 +528,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
               + _facts.YourMessages.ToString(CultureInfo.InvariantCulture)
               + " times.");
 
-        return string.Join(" ", said);
+        return string.Join(Between, said);
     }
 
     /// <summary>The reports each way, and what the scale means.</summary>
@@ -533,30 +544,24 @@ public sealed partial class Ft8ContactCard : ObservableObject
         var his = _facts.ReportFromHim;
         var ours = _facts.ReportToHim;
 
-        if (his is null && ours is null)
+        var said = new List<string>();
+
+        if (his is { } h)
         {
-            return "";
+            said.Add("He hears you " + Signed(h) + " dB");
         }
 
-        var swap = his is not null && ours is not null
-            ? $"He hears you at {Signed(his.Value)} dB and you hear him at "
-              + $"{Signed(ours.Value)} dB."
-            : his is not null
-                ? $"He hears you at {Signed(his.Value)} dB, and you have not told "
-                  + "him how he is coming through yet."
-                : $"You told him he is coming through at {Signed(ours!.Value)} dB, "
-                  + "and he has not told you how you are doing yet.";
+        if (ours is { } o)
+        {
+            said.Add("You hear him " + Signed(o) + " dB");
+        }
 
-        var scale = _floorDb is { } floor
-            ? "Those are decibels against the noise, so a minus number is the "
-              + $"ordinary case here: this decoder reads down to about {floor}, and "
-              + "anything well above that is a comfortable signal rather than a "
-              + "marginal one."
-            : "Those are decibels against the noise, and the decoder reads a long "
-              + "way below zero, so a minus number is the ordinary case rather "
-              + "than a problem.";
+        if (said.Count > 0 && _floorDb is { } floor)
+        {
+            said.Add("Decoder floor " + floor + " dB");
+        }
 
-        return swap + " " + scale;
+        return string.Join(Between, said);
     }
 
     /// <summary>His grid, the distance and the bearing.</summary>
@@ -569,25 +574,21 @@ public sealed partial class Ft8ContactCard : ObservableObject
     {
         if (_facts.Grid is not { Length: > 0 } grid)
         {
-            return "He has not put a grid square on the air, so Hamlet has no way "
-                   + "to say how far away he is.";
+            return "";
         }
+
+        var said = new List<string> { "Grid " + grid };
 
         var here = OperatorLocation.FromGrid(_operatorGrid);
         var there = OperatorLocation.FromGrid(grid);
 
-        if (here is not { } from || there is not { } to)
+        if (here is { } from && there is { } to)
         {
-            return $"He is in grid {grid}, and Hamlet needs your own grid square "
-                   + "in Settings before it can work out how far that is.";
+            said.Add(GridPath.DescribeMiles(GridPath.MilesBetween(from, to)));
+            said.Add(GridPath.DescribeBearing(GridPath.BearingDegrees(from, to)));
         }
 
-        var miles = GridPath.DescribeMiles(GridPath.MilesBetween(from, to));
-        var bearing = GridPath.DescribeBearing(GridPath.BearingDegrees(from, to));
-
-        return $"He is in grid {grid}, {miles} away, on an initial bearing of "
-               + $"{bearing} from you. A four-character grid is a box about seventy "
-               + "miles across, so the distance is good to about that and no better.";
+        return string.Join(Between, said);
     }
 
     /// <summary>Where in the passband and on the dial, and how the clocks agreed.</summary>
@@ -600,27 +601,25 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
         var said = new List<string>();
 
-        if (tech.AudioHz.Length > 0 && tech.DialHz > 0)
+        if (tech.AudioHz.Length > 0)
         {
-            var mhz = (tech.DialHz / 1_000_000.0)
-                .ToString("0.000000", CultureInfo.InvariantCulture);
+            said.Add(tech.AudioHz + " Hz in the passband");
+        }
 
-            said.Add($"His tone sat {tech.AudioHz} Hz up inside the receiver's "
-                     + $"passband while the dial was on {mhz} MHz. Everybody on the "
-                     + "band shares one dial setting and takes a different slice of "
-                     + "the audio, which is how dozens of stations fit where one "
-                     + "voice would go.");
+        if (tech.DialHz > 0)
+        {
+            said.Add("Dial "
+                     + (tech.DialHz / 1_000_000.0)
+                         .ToString("0.000000", CultureInfo.InvariantCulture)
+                     + " MHz");
         }
 
         if (tech.Dt.Length > 0)
         {
-            said.Add($"His transmission began {tech.Dt} seconds into the slot. Both "
-                     + "clocks have to agree within about a second for this to "
-                     + "decode at all, so a small number here is the two of you "
-                     + "keeping the same time.");
+            said.Add(tech.Dt + " s into the slot");
         }
 
-        return string.Join(" ", said);
+        return string.Join(Between, said);
     }
 
     /// <summary>The slot times, the slot count, and what closed the exchange.</summary>
@@ -631,30 +630,32 @@ public sealed partial class Ft8ContactCard : ObservableObject
         if (_facts.FirstAtUtc is { } first && _facts.LastAtUtc is { } last
             && first != last)
         {
-            said.Add("This ran from "
-                     + first.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+            said.Add(first.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
                      + " to "
                      + last.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
-                     + " UTC.");
+                     + " UTC");
         }
 
         said.Add(_facts.Slots == 1
-            ? "That is one slot ago."
-            : $"That is {_facts.Slots.ToString(CultureInfo.InvariantCulture)} slots "
-              + "ago, counted in the transmit-and-listen turns the band runs on "
-              + "rather than in seconds.");
+            ? "1 slot ago"
+            : _facts.Slots.ToString(CultureInfo.InvariantCulture) + " slots ago");
 
-        if (_facts.HisLastPayload is { Length: > 0 } closing
-            && Closing(closing) is { Length: > 0 } explained)
+        if (_facts.HisLastPayload is { Length: > 0 } closing)
         {
-            said.Add($"The last thing he sent you was {closing}, {explained}");
+            said.Add("He last sent " + closing);
         }
 
-        return string.Join(" ", said);
+        return string.Join(Between, said);
     }
 
     /// <summary>What a closing payload is, in a clause.</summary>
     /// <remarks>
+    /// <para>**NOTHING CALLS THIS SINCE UNIT 305 TASK 4**, which took the
+    /// explanatory clause off the hover: the fact that survives is *He last sent
+    /// RR73*, and what `RR73` means is a lesson rather than a fact. **It is left
+    /// standing on purpose** - that instruction says the explanatory text is not to
+    /// be deleted, moved or commented out while whether it lives anywhere else is
+    /// Tim's question, asked separately.</para>
     /// **NOT A SECOND COPY OF `Ft8Vocabulary.Explain`**, which answers a different
     /// question at a different length: it says who a station is and what he is
     /// asking for, in whole sentences, on a message row. This is a clause inside a

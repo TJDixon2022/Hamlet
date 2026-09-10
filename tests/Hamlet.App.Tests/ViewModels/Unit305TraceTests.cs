@@ -94,11 +94,13 @@ public sealed class Unit305TraceTests
             _output.WriteLine("  - " + sentence + ".");
         }
 
-        // **OVER THE BUDGET THE INSTRUCTION SETS**, which is the fault task 4
-        // exists to fix. Stated as an assertion so it turns red when it is fixed.
+        // **MEASURED BEFORE TASK 4 AT 1015 CHARACTERS OVER 13 SENTENCES**, with a
+        // dial known, and 773 over 10 without one. The instruction carried 875 and
+        // is neither. What it reads now is the cut form, and the budget is asserted
+        // in `TheReadinessHoverTests` where the task's own numbers live.
         Assert.True(
-            detail.Length > 300,
-            "the hover is already inside the budget at " + detail.Length);
+            detail.Length <= 300,
+            "the hover is " + detail.Length + " characters");
     }
 
     /// <summary>An exchange with every fact the ledger can hold.</summary>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -57,10 +57,14 @@ public sealed class Unit299HoverTests
             ("where the decoder reads to", "-21"),
             ("his grid", "EN52"),
             ("the distance", "miles"),
-            ("the bearing", "bearing of"),
+            // **REWRITTEN BY UNIT 305 TASK 4**, which cut the explanatory sentence
+            // off every fact: the bearing reads `288 degrees` where it used to read
+            // `on an initial bearing of 288 degrees from you`. **The fact is the
+            // same fact** and this test still requires it.
+            ("the bearing", "288 degrees"),
             ("the audio offset", "1240 Hz"),
             ("the dial", "14.074000 MHz"),
-            ("the time offset", "0.2 seconds into the slot"),
+            ("the time offset", "0.2 s into the slot"),
             ("the slot times", "02:11:00 to"),
             // The wording is singular at one slot, which is why this matches the
             // stem rather than the plural.
@@ -90,12 +94,14 @@ public sealed class Unit299HoverTests
 
         Assert.DoesNotContain(" dB", card.Detail, StringComparison.Ordinal);
         Assert.DoesNotContain(" miles", card.Detail, StringComparison.Ordinal);
-        Assert.DoesNotContain("bearing", card.Detail, StringComparison.Ordinal);
+        Assert.DoesNotContain("degrees", card.Detail, StringComparison.Ordinal);
 
-        // **AND IT SAYS SO** rather than leaving a gap.
-        Assert.Contains(
-            "has not put a grid square on the air", card.Detail,
-            StringComparison.Ordinal);
+        // **AND IT SAYS NOTHING RATHER THAN SAYING WHY** (unit 305 task 4). The
+        // long form filled the gap with *he has not put a grid square on the air*,
+        // which is a sentence explaining an absence; **show, do not tell** takes it
+        // off the hover, and the absence itself is still the whole of the claim -
+        // no grid figure is shown and none is invented (§0.0).
+        Assert.DoesNotContain("Grid ", card.Detail, StringComparison.Ordinal);
     }
 
     /// <summary>**The band paragraph survives the decoded table being cleared.**</summary>
