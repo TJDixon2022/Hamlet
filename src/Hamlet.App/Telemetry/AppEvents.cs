@@ -1013,6 +1013,54 @@ public static class AppEvents
 
 
     /// <summary>
+    /// **What the screen actually drew when a slot decoded** (work instruction 305
+    /// task 5).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="decodes">How many messages came out of the slot.</param>
+    /// <param name="rowsAdded">How many of them became rows on the whole table.</param>
+    /// <param name="rowsShown">How many rows the filters left on the visible one.</param>
+    /// <param name="mine">How many rows are addressed to the operator.</param>
+    /// <param name="cards">How many contact cards stand after it.</param>
+    /// <remarks>
+    /// <para>**A SLOT THAT DECODES AND SHOWS NO ROW IS INVISIBLE.** The record could
+    /// say a slot was cut and what came out of the decoder, and stopped there - so a
+    /// message that decoded and was filtered out, a message that decoded and was
+    /// swallowed as a duplicate, and a message that reached the screen all left the
+    /// same line. **This closes the last gap between *it decoded* and *he saw
+    /// it*.**</para>
+    /// <para>**COUNTS AND NEVER CONTENT** (§2.1, HM-DEC-018). How many rows landed
+    /// on which list makes the screen readable; what any of them said does not, and
+    /// this payload has nowhere to put it.</para>
+    /// <para>**ONE EVENT PER SLOT**, which the instruction says is enough. A line
+    /// per row would be four a second on a busy band and would drown the file it is
+    /// meant to make readable.</para>
+    /// </remarks>
+    public static void DecodesReachedTheScreen(
+        ITelemetry? telemetry,
+        int decodes,
+        int rowsAdded,
+        int rowsShown,
+        int mine,
+        int cards)
+        => telemetry?.Write(TelemetryCategory.Decode, "decodes_drawn",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = rowsAdded > 0 ? "proceeded" : "degraded",
+                ["reason"] = decodes == 0
+                    ? "nothing_decoded"
+                    : rowsAdded == 0
+                        ? "decoded_but_no_row_added"
+                        : "drawn",
+                ["decodes"] = decodes,
+                ["rowsAdded"] = rowsAdded,
+                ["rowsOnTheTable"] = rowsShown,
+                ["rowsAddressedToTheOperator"] = mine,
+                ["cards"] = cards,
+            },
+            decodes > 0 && rowsAdded == 0 ? TelemetryLevel.Warn : TelemetryLevel.Info);
+
+    /// <summary>
     /// What every FT8 slot the tab decoded gave up, one line each (unit 233).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>

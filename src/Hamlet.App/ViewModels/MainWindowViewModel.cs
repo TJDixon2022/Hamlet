@@ -10264,15 +10264,33 @@ public partial class MainWindowViewModel : ObservableObject
 
         _digitalRefusal = "";
 
+        var added = 0;
+
         foreach (var decode in heard.Decodes)
         {
-            AddDecodeRow(decode);
+            if (AddDecodeRow(decode))
+            {
+                added++;
+            }
         }
 
         _digitalDecodeNote = DescribeDecodes(heard);
         _digitalCensusLine = DescribeCensus(heard) + ArrivalSuffix(arrival, DigitalGrid);
 
         RaiseDigitalDecodeChanges();
+
+        // **WHAT THE SCREEN ACTUALLY DREW** (work instruction 305 task 5). Written
+        // after the rows are placed and the panels are told, so the counts are the
+        // ones the operator is looking at rather than the ones the decoder offered.
+        // A slot that decoded and put nothing on the table is the case worth
+        // finding by scanning, and until this line it was invisible.
+        AppEvents.DecodesReachedTheScreen(
+            _telemetry,
+            heard.Decodes.Count,
+            added,
+            DigitalVisibleDecodes.Count,
+            DigitalMineDecodes.Count,
+            DigitalCards.Count);
     }
 
     /// <summary>Put one decode on the table, unless it is already there.</summary>
