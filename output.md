@@ -1,32 +1,31 @@
-# Work instruction 305 - the CQ makes a card, the slot clock leaves the card panel, and the `i` hover is cut to facts
+# Work instruction 306 - the map renders, both stations are placed on it, and the `i` becomes bullets
 
 **READ IN THIS ORDER.**
 
 A. **The phase goal - FT4 does everything FT8 does.** This unit advanced no step of
-   it, and steps 5 and 6 are you at your own radio, which no session can meet.
+   it. Steps 5 and 6 are you at your own radio, which no session can meet.
 
 B. **Step 4 and its exit criteria** - pressing FT4 tunes and decodes; the panel, the
    conversation, the ring, the filters, the tooltips, the ledger and the right-click
    menu working unchanged; one click, one transmission; a whole exchange from one
-   right click at the bench. **None was measured tonight.** Step 4 stays `partial` -
-   though the ring moved, so criterion 2 has something new to look at.
+   right click at the bench. **None was measured tonight.** Step 4 stays `partial`,
+   though the card's own hover and its map both changed, so criterion 2 has two new
+   things to look at.
 
-C. **The report last, and section 4 raises 3 items** on top of a carried queue of
-   four.
+C. **The report last, and section 4 raises 4 items** on top of a carried queue of six.
 
 ```
-UNIT:       305 - complete at task 5 of 5, none dropped - 2026-09-10 17:11
+UNIT:       306 - complete at task 5 of 5, none dropped - 2026-09-10 19:01
 PHASE GOAL: FT4 does everything FT8 does. Steps 0 and 3 are done; 1, 2 and 4 are
             partial; 5 and 6 are you at your own radio and no session can meet them.
-UNIT GOAL:  Make the screen answer you during the wait after a CQ - a card for the
-            call itself, a countdown that exists when no cards do - and cut the `i`
-            hover back to facts.
-ADVANCED:   no - all three faults are in the shared FT8/FT4 surface and none is a
-            phase step; steps 5 and 6 cannot be met by a unit at all.
-NUMBER:     cards after a CQ 0 -> 1; countdown visible 0 -> all of it, with no cards
-            and through a collapse; hover 875 -> 1015 measured -> 230
-DRIFT:      11 consecutive units without advance  (was 10, read from the output.md
-            this file overwrote)
+UNIT GOAL:  Put the two stations on a real map, and make the `i` readable at a
+            glance instead of readable at all.
+ADVANCED:   no - this is the shared FT8/FT4 surface again and no step of the phase
+            moves; steps 5 and 6 cannot be met by a unit at all.
+NUMBER:     AzimuthalMap callers in the app 0 -> 1; stations placed 0 -> 2;
+            hover one line -> 5 rows
+DRIFT:      12 consecutive units without advance  (was 11, carried in the
+            instruction)
 ```
 
 ## 1. What Claude did
@@ -34,247 +33,242 @@ DRIFT:      11 consecutive units without advance  (was 10, read from the output.
 **Complete. Five tasks of five, none dropped, including the named drop candidate.**
 Development machine, prompt claimed `PROJECT: Hamlet`, and the tree confirmed it:
 `SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present,
-`CoreHMI.sln` and `MURC.sln` absent. Branch **`main`**, five commits, **all pushed,
-none refused**. Root version 1.12.269 to **1.12.270**. Nothing under `src/Ft8Sharp/`
+`CoreHMI.sln` and `MURC.sln` absent. Branch **`main`**, six commits, **all pushed,
+none refused**. Root version 1.12.270 to **1.12.271**. Nothing under `src/Ft8Sharp/`
 was touched, nothing that keys the transmitter was touched, and no package was added.
 
 **Nothing was written to `DECISIONS.md`.**
 
-### Task 1 - the trace, and it found five things
+### Task 1 - the trace
 
-**1. What a CQ press does to the model.** `Ft8ContactLedger.RecordSent`
-(`src/Hamlet.RadioEngine/Contacts/Ft8ContactLedger.cs:244`) returned without booking
-anything when `Ft8MessageSplit.IsCallToAnyone(fields.To)` was true. The ledger is
-keyed by callsign and a CQ is addressed to nobody, so there was no station to key on;
-the card list rebuilds from that ledger, so it stayed empty. **Confirmed by
-measurement, not assumed: 0 cards.** Its one call site is
-`MainWindowViewModel.cs:12133`, on the send path, which was not touched.
+**`PHASE_OUTCOME.md` carries no `UNIT 306`.** The fold is clear.
 
-**2. Where the countdown ring lived.** `MainWindow.axaml`, inside the `DataTemplate`
-of the `ItemsControl` named `DigitalContactCards`. **Worse than the instruction says**:
-that control carries `ItemsSource="{Binding DigitalCards}"` *and*
-`IsVisible="{Binding HasDigitalCards}"`, so with no cards it could not draw for two
-reasons rather than one. **Its driver was already fine** - `RefreshTurn` rides
-`_decodeTimer` and reads the clock and the ledger, and depends on no decode having
-happened; every property it binds (`TurnRingCount`, `TurnRingSweep`, `TurnRingTip`,
-`TurnRingIsUnknown`, `TurnRingIsOnAir`) was already on `MainWindowViewModel`.
+**The asset is in the tree and is the file the instruction describes.** 899 by 602,
+RGBA, and its SHA-256 is `1e85c81b…272838` to the character.
 
-**3. Where the `i` hover is composed.** **One place**: `Ft8ContactCard.Detail`
-(`src/Hamlet.App/ViewModels/Ft8ContactCard.cs:433`), assembled from four private
-composers - `Reports`, `WhereOnEarth`, `WhereOnTheBand`, `Slots` - plus a `Closing`
-clause. **Measured, and the instruction's 875 is wrong in both directions: 1015
-characters over 13 sentences where a dial is known, and 773 over 10 where it is not.**
+**What drew the globe.** `Ft8GlobeControl` filled a sea-coloured rectangle, drew
+`assets/world-coastline.svg` through a translate-and-scale taken from
+`Ft8GlobePlot.Frame`, then a dashed line and two dots at screen scale - a ring for the
+operator, filled for the station. `Ft8GlobePlot` carried **its own flat projection**,
+`X = (longitude + 180) * 2` and `Y = (90 - latitude) * 2`, a 720 by 360 map, a zoom
+fitted to both points with a 40 px margin and a 120 px floor, and a `Caveat` string
+about straight lines on a flat map. The card builds it at `Ft8ContactCard.cs:326`.
 
-**4. Whether the `i` mark draws. It does.** `HintMarkControl.Render`
-(`src/Hamlet.App/Controls/HintMarkControl.cs:181`) draws a ring and a glyph, and
-line 194 paints a transparent rectangle over the bounds as the hit target.
-**Unit 301's hole was repaired.**
+**`AzimuthalMap.Settings` was exactly the three fields the instruction names**, at
+`:52`. `Place` at `:98` returns **offsets from the centre, not absolute pixels**, with
+y already flipped for the screen; `FromCentre` at `:144`. Its only caller in the tree
+was `AzimuthalMapTests`.
 
-**5. What already existed unwired - and this is real tokens back.** The countdown's
-whole view-model side was already shell-level, so task 3 was a placement change and
-not a rebuild. Nothing existed for the CQ card.
+**The operator's grid** reaches the card as `_operatorGrid` (`Ft8ContactCard.cs:81`),
+handed in from `_settings.Operator.GridSquare` when the cards are rebuilt.
+`OperatorLocation.FromGrid` returns null when it does not resolve, and the plot already
+coped.
+
+**`Detail` after unit 305** was one joined string, twelve facts on middle dots, bound
+straight into a `HintMarkControl.Text` at `MainWindow.axaml:4482`.
+
+**The finding that made this unit smaller.** The tree's existing `Place`, centred on
+the pole, **reproduces the delivered image's documented formula exactly** once turned
+by 289.109° and moved to the centre pixel. Measured against the fourteen city dots:
+**identical to the direct formula to twelve decimal places, worst error 0.902 px, mean
+0.43.** So there is no second projection anywhere, and a test asserts the two agree.
 
 ### Mismatches against this instruction
 
 Reported, not repaired.
 
-1. **`output.md` was not unit 304's report.** It was the previous work instruction
-   305's, carrying `DRIFT: 10`. I read the figure from there and incremented it, as
-   instructed, and the provenance line above says so.
-2. **Three different orders now share the number 305**, each with a different title.
-   This one, *the offset reaches the snapshot and not the app*, and *the snapshot
-   lands after the facts*. `PHASE_OUTCOME.md` folds appends by unit and step, so all
-   three landed under `UNIT 305 - STEP 4`.
-3. **The hover is 1015 characters, not 875.**
-4. **The ring's containment is worse than described**, per task 1 above.
-5. **The `i` mark is not a hole**, per task 1 above.
-6. **§12.1 is *What a session may record itself*** (`CLAUDE.md:1148`); **§12.5 is the
-   fixture rule** (`:1251`). *Nothing interprets a message* is neither of them and is
-   not in §12 at all - it is this instruction's own words, and I followed it as one.
-7. **This instruction's report template omits the A/B/C ordering block**, which
-   `tools/arbiter/validate-output.bat` requires and refuses the file without. It is
-   above, in the shape that tool and unit 050's ruling ask for.
-8. **`CLAUDE.md` §0.2 does not carry the dummy-load sentences as a requirement.** It
-   names the requirement once, to record that it is withdrawn in full. Nothing to fix.
-9. **Task 3 undoes a deliberate earlier placement.** The ring was moved into the card
-   on purpose, so its seconds would read as *how long to press this* rather than as a
-   free-standing clock. Your instruction is explicit that it comes out; it is out, and
-   there is exactly one ring, not two.
+1. **The instruction's orientation figures are right and my own first check was
+   wrong.** FN00DJ lands at **696.3, 325.1** against the stated 696, 325 - my first
+   latitude and longitude for that grid were wrong, not the instruction. Dublin,
+   Reykjavik and Anchorage all land where it says, and Sydney and Cape Town are off the
+   bitmap as stated.
+2. **The three-number record could not be extended without rewriting a proved test.**
+   `AzimuthalMapTests` drives `Settings` as it stands and is green by inheritance, so
+   the five numbers plus the hash went into a **new record**, `AzimuthalImage`, that
+   parameterises the same `Place` rather than replacing it. The instruction says *the
+   record needs* those fields; it does not say which record, and this way nothing proved
+   gets rewritten.
+3. **`GridPath.DescribeBearing` returns degrees, not one of sixteen points.** The
+   instruction cites "`SpotDistance` and HM-DEC-038's sixteen compass points"; the
+   sixteen points are in `OperatorLocation.DescribeCompass`. The hover was calling the
+   degrees one, which is why task 4 had a number to remove.
+4. **Task 2 could not be delivered without task 3's placement.** Rendering the new
+   picture while the dots were still placed by the flat projection would have put every
+   station in the wrong place on a real map, which is the exact §0.0 fault this unit is
+   about. The projection moved in task 2's commit; the two-marker behaviour and its
+   refusals in task 3's.
+5. **`Unit299GlobeTests` had to be rewritten, and it is a third type.** The instruction
+   authorises rewriting `TheReadinessHoverTests` and `Unit299HoverTests` for task 4;
+   this one reads the coastline projection that task 2 removes, so it could not compile.
+   What it guards is unchanged - one projection, belonging to the map being drawn, both
+   dots placed by it, a station with no grid getting no dot. The coastline `desc` oracle
+   and the four zoom tests are gone with the things they described.
+6. **The flat-map caveat became a false sentence and was replaced.** On an azimuthal
+   equidistant picture a line through the centre **is** the great-circle path. Carrying
+   the old wording would have been telling you something untrue about a picture that is
+   now right.
 
-### What was built
+### The fault the tests caught
 
-**Task 2.** A call to anybody is booked under its own key,
-`Ft8ContactLedger.CallToAnyone`. The card carries what was sent, when it was first
-sent and how many times, and nothing else - no elapsed-time claim, no *waiting for a
-reply*, no interpretation. It offers **Log** from the moment it appears and never a
-send, because there is nobody to send to. When a station answers, `Adopt` moves the
-record into theirs, so the CQ is the first thing in the exchange rather than a second
-card beside it. **No lookup is ever made against `CQ`** - it is not a callsign.
-
-**Task 3.** The countdown moved out of the card template to `SlotClock`, above both
-panels and outside the collapsible, in `DigitalDecodedPanes`. One ring, one timing
-source, no label; the number carries the meaning whatever the colour does.
-
-**Task 4.** 1015 characters to **230**, twelve facts, all twelve figures kept.
-
-**Task 5.** Answered as a written specification in section 4. **Not dropped.**
+**The caption said Hamlet did not know where a station was, about a station who had
+told it.** It keyed off whether a marker could be drawn, so `VK2ABC` in `QF56` - a grid
+on the air, 9,600 miles measured - was described as one with no grid at all.
+`AStationSouthOfTheEquatorIsNotPlacedAndNothingIsClaimed` failed on it. The caption now
+separates *he sent no grid* from *this picture has nowhere to draw him*, and the
+distance stays, because it is a fact about two grids rather than about the image.
 
 ### Tests
 
 **No suite was run.** Every run was filtered by exact name, foregrounded, with a
-480-second timeout, and the status file was written after each.
+480-second timeout, and `PROJECT_STATUS.md` was written after each.
 
-- `ThePressingOfCqTests` - 5 tests, in `tests/Hamlet.App.Tests/ViewModels/`. **Your
-  five names, used exactly.** Watched failing at compile - the types they name did
-  not exist - then green.
-- `TheSlotClockTests` - 3 tests, in `tests/Hamlet.App.Tests/Views/` rather than
-  `ViewModels/`, because they stand the real window up. **Watched failing properly**:
-  with the old markup stashed, all three red on `Assert.NotNull` for the control.
-- `TheReadinessHoverTests` - 2 tests. Watched failing at **1015 against a 300 budget**.
-- `Unit305TraceTests` - 2 tests, task 1's measurements.
-- `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` - passes on the XAML added.
+- `TheAzimuthalAssetTests` - **17 tests**, in `tests/Hamlet.RadioEngine.Tests/Explore/`.
+  Watched failing at compile, then green: hash, fourteen cities, refusal on a tampered
+  byte, and the agreement with the generic projection.
+- `TheGlobePlacesStationsTests` - 5 tests. Watched failing; one failed for a real
+  reason, above.
+- `TheGlobeLineTests` - 3 tests. Watched failing at compile.
+- `TheReadinessHoverTests` - 4 tests, rewritten for rows. Watched failing at compile.
+- `Unit299HoverTests`, `Unit299GlobeTests` - rewritten, per mismatches 3 and 5.
+- `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` - passes.
 
-**`Unit299HoverTests` was rewritten rather than left to fail.** Task 4 withdraws what
-that unit was told to build, so four of its assertions named wording that no longer
-exists. The facts it requires are unchanged; only the phrasing it matches moved.
+**22 green in the app project and 17 in the engine project, on this unit's names.**
 
-**Every appearance claim here is computed, not seen.** The window is built headless
-and the visual tree walked, which says a control exists, is visible and is where it
-is, and says nothing about what it looks like.
+**Every appearance claim here is computed, not seen.** Nothing in this repository can
+look at a picture. What is asserted is the arithmetic that decides where a dot goes,
+and the fourteen dots it is checked against were found in the image by measurement
+rather than by this code.
 
 ## 2. What the owner should expect
 
-**Press CQ and a card appears.** It is titled `CQ`, it says what went out, when, and
-how many times, and it has a Log option on it from the first second.
+**The globe is a photograph now.** Open the `i` on a card and the map under the dots is
+the north-polar picture, not a drawn coastline, and it is the same picture whoever is at
+the radio.
 
-**The countdown is on the screen before any of that.** It sits above the two panels
-and stays there with no cards, with the panel collapsed, and before anything has ever
-decoded.
+**Where you are on it comes from your own grid in Settings.** Change it and your marker
+moves; the station you are working does not.
 
-**The `i` reads as a line of facts** separated by middle dots, about a fifth of its
-old length.
+**The `i` is five bulleted rows** instead of one line of middle dots.
 
-**What will look wrong and is not.**
+### The coverage limit, in plain words
 
-- **The ring is no longer beside the send button on a card.** There is one, above the
-  panels. That is the move, and mismatch 8 above says what it costs.
-- **The `i` no longer explains anything.** No "which is a roger and a goodbye in one",
-  no "a four-character grid is a box about seventy miles across". The figures are all
-  still there. The wording is in git history and was not deleted, moved or commented
-  out.
-- **A card headed `CQ` is not a station.** Nothing looks it up and nothing claims to
-  know where it is.
+**This picture runs from the North Pole to the equator, and that is the whole of it.**
+Measured by area:
 
-**What I could not check.** `Ft8ContactCard.Closing` is now uncalled - it explained a
-closing payload, which is a lesson rather than a fact. **It is left standing on
-purpose**, because your instruction says that text is not to be deleted while its fate
-is your question. And other tests read `Detail` and the card list; I rewrote the ones
-about this hover and **the rule forbidding suites means I cannot tell you whether some
-other test reads a phrase I changed.**
+- **40.4% of the globe is on the picture.**
+- **80.8% of the northern hemisphere is.**
+- **19.2% of the northern hemisphere is inside the projection and cropped off the
+  file**, because the disc is cut top and bottom by the frame.
+
+So of the places you might work: **Dublin, Tokyo, Madrid, Singapore, Anchorage and
+Reykjavik are on it. Nairobi, Buenos Aires, Sydney, Cape Town, São Paulo, Lima and
+Auckland have no place on it at all - and neither does Honolulu**, which is northern
+and falls in the cropped strip.
+
+**A station Hamlet cannot place gets no marker and no line, and the card says so in
+words** rather than putting him near the rim. The distance is still measured and still
+shown. **This is the asset's coverage, not a bug**, and swapping in a full-disc image
+later changes the numbers in one record and no code.
+
+**What I could not check.** The instruction asks for the count of *your recent decodes*
+falling outside. **This machine has no ledger from your station** (HM-DEC-093), so the
+figures above are the geometry rather than your evening; the answer for your actual log
+is one telemetry file away.
+
+**Other things that will look wrong and are not.** `assets/world-coastline.svg` is
+still in the tree and nothing draws it - it is not deleted, and `CoastlineUri` still
+names it. The zoom is gone: the map is always the whole picture.
 
 ## 3. What you should see
 
-**1. A CQ press now puts a card on the screen.** Measured, quoted from the test:
+**1. The globe shows the real map.** The north-polar photograph with its own degree
+ring, coastlines and city dots, drawn whole, with the two markers on top of it. The ring
+of degrees round the edge is part of the picture; Hamlet adds no tick, label or bearing
+readout of its own.
+
+**2. Where you are.** A ring marker at your own grid. `FN00DJ` lands at 696, 325 on the
+picture - eastern North America, where it should be. Move your grid to `JO65` and the
+marker moves 309 px across the map; the station stays put.
+
+**3. Where the station you are working is.** A filled marker, and a dashed line between
+the two **only when both can be drawn**. `EI4GNB` in `IO63` places at 531, 123, and the
+words on his marker read:
 
 ```
-CARD  CQ
-  face   : 02:11:00 UTC · 15 seconds ago
-  action : Log this call
-  detail : Sent CQ KC3QIS FN00. First at 02:11:00 UTC. Sent once.
+EI4GNB, in grid IO63. 3,400 miles northeast of you.
 ```
 
-Press it twice more and the same card reads `Sent 3 times`. **One card, never three.**
-
-**2. When somebody answers, it becomes their card.** Same run, after `K9XP` comes
-back:
+**4. What the `i` now reads as, row by row:**
 
 ```
-CARD  K9XP
-  face   : 02:11:15 UTC · 15 seconds ago
-  action : Tell him how he is coming through
+•  He hears you -9 dB · You hear him -12 dB · Decoder floor -21 dB
+•  Grid EN52 · 540 miles west-northwest
+•  1240 Hz in the passband · Dial 14.074000 MHz · 0.2 s into the slot
+•  02:11:00 to 02:12:00 UTC · 1 slot ago
+•  He last sent RR73
 ```
 
-Your CQ is inside his record as the first thing you sent. The `CQ` card is gone,
-because it became this one.
-
-**3. The countdown is above the panels and no longer inside a card.** With zero cards
-the control is present and visible, it is not a descendant of `DigitalContactCards`,
-and it survives the panel being collapsed. It reads the same `Ft8Turn` values the
-armed send is measured against - asserted against an independently computed
-`Ft8Turn.Read`, agreeing to within the second the clock turned over.
-
-**4. The `i` hover, whole, as it now reads:**
-
-```
-He hears you -9 dB · You hear him -12 dB · Decoder floor -21 dB · Grid EN52 ·
-540 miles · 288 degrees · 1240 Hz in the passband · Dial 14.074000 MHz ·
-0.2 s into the slot · 02:11:00 to 02:12:00 UTC · 1 slot ago · He last sent RR73
-```
-
-**230 characters. Twelve facts. 1015 before.**
-
-**5. The globe still shows drawn blobs, and it is blocked, not broken.** Nothing was
-drawn, substituted or attempted. Section 4 carries the specification.
+**Five rows, none longer than 66 characters, the last thing he sent on its own at the
+bottom.** The degrees are gone and the compass word is there instead.
 
 ## 4. What's blocking us
 
-**1. The two-answer rule is the author's proposal, not your ruling.** Reproduced in
-full, as instructed:
+**1. The bearing amendment, reproduced in full and marked as the author's.**
 
-> *The first answer adopts the card; a second station answering the same CQ opens its
-> own station card in the normal way. Nothing is discarded and nothing is swallowed,
-> because nothing is hidden by the app.*
+> **Author's proposal, marked as such under §4.4 and not Tim's ruling.** He said that
+> about an image centred on his own station, where he sits at the middle and the line
+> out of the middle *is* the direction. This asset is centred on the North Pole and he
+> is off to one side of it, so a line no longer reads as a bearing from him. **The
+> proposal: the degrees come off the hover, and the sixteen-point compass word stays.**
+> HM-DEC-038 is otherwise untouched - it also feeds happening-now cards and map-dot
+> tooltips, which have no line to read, and there the compass word is the only answer
+> there is. Reproduce this block in section 4 for him to overrule.
 
-It is built that way and it is yours to overrule. The alternative worth naming: the
-CQ card could stay standing until you clear it, with every answer opening its own
-card. That keeps the count of calls visible for the whole session; it also leaves a
-card on screen that nothing will ever finish.
+Built that way. Overruling it means putting `288 degrees` back on one row.
 
-**2. The task 5 specification - what lands the azimuthal map.**
+**2. Where the marker hovers should surface.** The two sets of words are built and
+asserted - *You, in grid FN00DJ* and the station's distance and compass word - and
+**they are not attached to the dots**, because the globe already lives inside the `i`
+tooltip and a tooltip inside a tooltip is not a thing. Three ways out: put the globe
+somewhere it can own its own hit targets, put the station's words in the caption under
+the map, or leave them unshown until the globe moves. **I did not choose one**, because
+each changes where a picture lives on your screen.
 
-- **The three numbers live in `AzimuthalMap.Settings`**, the record at
-  `src/Hamlet.RadioEngine/Explore/AzimuthalMap.cs:52`: `CentreLatitude`,
-  `CentreLongitude`, `RimRadiusPixels`. **The exact call sites that consume them** are
-  `AzimuthalMap.Place(Settings, latitude, longitude)` at `:98`, which returns the
-  pixel position of a station, and `AzimuthalMap.FromCentre(Settings, ...)` at `:144`,
-  which returns its distance from the centre in pixels.
-- **The image goes in `assets/`**, beside `assets/azimuthal-map.md`, and is linked as
-  an `AvaloniaResource` in `src/Hamlet.App/Hamlet.App.csproj` next to line 57's
-  `achievement-quill.svg`, with the same `Link="Assets\..."` shape.
-- **What would still be missing, and it is more than the numbers: the consumer.**
-  Nothing in `src/Hamlet.App` calls `AzimuthalMap` at all today - the only caller in
-  the tree is `AzimuthalMapTests`. The card's globe is `Ft8GlobePlot` drawn by
-  `Ft8GlobeControl` over `assets/world-coastline.svg`, on its own flat placement. So
-  landing the image is two changes: the asset and its three numbers, then pointing the
-  globe at `AzimuthalMap.Place`. On that projection a straight line from the centre is
-  the great-circle path, so the old caveat is not carried across.
-- **The third number must be measured off the delivered image.** The 371 from the
-  817-by-916 sample is not it: that sample is centred on the wrong point and is not
-  the asset.
+**3. The full-disc image, now with numbers under it.** 40.4% of the globe, 80.8% of the
+northern hemisphere, and Honolulu off the edge. If a full-disc equidistant image centred
+on the pole is available, it changes `AzimuthalMap.NorthPolar`'s numbers and its hash
+and nothing else - the code that reads them is done.
 
-**3. Whether the explanatory wording lives anywhere.** Task 4 took it off the hover
-and, as instructed, deleted nothing. `Ft8ContactCard.Closing` is now uncalled and is
-left standing. If the answer is *nowhere*, that method and the wording inside the four
-composers can go in one commit; if it is *somewhere else*, it needs a home.
+**4. `Ft8GlobePlot`'s framing constants are now unused.** `MapWidth`, `MapHeight`,
+`Margin` and `SmallestFrame` describe the zoom that went. Nothing in `src/` reads them.
+They are left standing rather than removed on my own judgment, in the same spirit as
+`Ft8ContactCard.Closing`.
 
 ### Asks still outstanding
 
-Carried inbound per HM-DEC-139, verbatim, plus what this unit adds.
+Carried inbound per HM-DEC-139, verbatim where unresolved, plus what this unit adds.
 
-1. **Does the transmission record ask the radio whether it keyed?** Unit 303's
-   proposal, still yours to rule on: `Played` stays a statement about what the audio
-   path did; a second, separate fact says what the radio did, read from `1C 00` and
-   `15 11`, which Hamlet already polls four times a second; and where the radio does
-   not answer, the second fact is **unknown**. This touches what the display asserts,
-   so it is yours without exception (§12.1).
-2. **Nothing in this repository can look at a picture.** Seven units have now reported
-   every appearance claim as computed rather than seen. Real pixels want
-   `Avalonia.Headless.Skia`, and **a package is a dependency decision and yours, not a
-   session's** (§0.4). Raised once, not added.
-3. **Three inherited reds, proved red before the units that found them**, never
-   chased: two in `TheAchievementsScreenTests` and one in
+1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
+   still yours: `Played` stays a statement about what the audio path did; a second,
+   separate fact says what the radio did, read from `1C 00` and `15 11`, which Hamlet
+   already polls four times a second; **unknown** where the radio does not answer.
+   Touches what the display asserts, so yours without exception (§12.1).
+2. **Nothing in this repository can look at a picture.** Eight units have reported every
+   appearance claim as computed rather than seen. Real pixels want
+   `Avalonia.Headless.Skia`, and **a package is yours, not a session's** (§0.4). **This
+   unit makes it sharper**: it renders a photograph and puts two dots on it, and no test
+   in this tree can see either.
+3. **Three inherited reds**, proved red before the units that found them, never chased:
+   two in `TheAchievementsScreenTests`, one in
    `TheFitGuardAsksAboutTheGridTheSendIsOnTests`.
-4. **The azimuthal map asset.** Blocked on a file that is not in the tree, and it
-   stays blocked. The specification above is what unblocks it.
-5. **New: the two-answer rule**, item 1 of this section.
-6. **New: whether the explanatory wording lives anywhere**, item 3 of this section.
+4. **The two-answer rule from unit 305.** Built as the author's proposal and still yours
+   to overrule: the first answer adopts the CQ card; a second station answering the same
+   CQ opens its own. Not rebuilt and not changed here.
+5. **Where the explanatory hover wording lives, if anywhere.** Unit 305 took it off the
+   hover and deleted nothing; `Ft8ContactCard.Closing` is uncalled and left standing.
+   This unit did not delete it either.
+6. **Unit numbering has collided.** Unit 305's report found three different orders
+   sharing the number 305, all folded under `UNIT 305 - STEP 4`. **This one is 306 and
+   `PHASE_OUTCOME.md` carried no `UNIT 306` when it started**, so the fold is clean.
+7. **New: where the marker hovers surface**, item 2 above.
+8. **New: the unused framing constants**, item 4 above.

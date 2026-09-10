@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: 5 of 5
-WORK_INSTRUCTION: 305 - the CQ makes a card, the slot clock leaves the card panel, and the i hover is cut to facts
+WORK_INSTRUCTION: 306 - the map renders, both stations are placed on it, and the i becomes bullets
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T17:13:08-04:00
-NOTE: Complete - five tasks of five, none dropped. A CQ makes a card, the countdown is above the panels with no cards, and the i hover is 230 characters where it measured 1015.
+UPDATED: 2026-09-10T19:03:49-04:00
+NOTE: Complete - five tasks of five, none dropped. The map renders, both stations are placed on it within 0.902 px on fourteen city dots, and the i is five bulleted rows.
 
 ---
 
