@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
 using Hamlet.App.Settings;
@@ -347,7 +347,7 @@ public sealed class TheReadoutSaysWhatTheCardWasHandedTests
 
         Assert.NotNull(result);
         Assert.Equal(Ft8ArmOutcome.Ran, result!.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
         Assert.NotNull(result.Send);
 
         return result.Send!;

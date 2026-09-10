@@ -1,4 +1,4 @@
-using Ft8Sharp.Message;
+﻿using Ft8Sharp.Message;
 using Hamlet.RadioEngine.Transmit;
 
 namespace Hamlet.RadioEngine.Telemetry;
@@ -77,7 +77,7 @@ public sealed record TransmitRecord(
     /// normal transmission is the ordinary state of a station working somebody,
     /// and an abort, a refusal or a dead port is not.
     /// </remarks>
-    public TelemetryLevel Level => Outcome == Ft8TransmitOutcome.Sent
+    public TelemetryLevel Level => Outcome == Ft8TransmitOutcome.Played
         ? TelemetryLevel.Info
         : TelemetryLevel.Warn;
 

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Licensing;
@@ -124,7 +124,7 @@ public sealed class OneFt4ClickOneFt4TransmissionThroughTheSameAbortTests
         _output.WriteLine("wire                 : " + Hex(port.Written));
 
         Assert.Equal(Ft8ArmOutcome.Ran, at.Outcome);
-        Assert.True(at.Run!.Sent, at.Run.Reason);
+        Assert.True(at.Run!.AudioWentOut, at.Run.Reason);
 
         // **THE WHOLE POINT.** The send was consumed, so nothing further went out.
         Assert.Equal(Ft8ArmOutcome.NothingArmed, next.Outcome);

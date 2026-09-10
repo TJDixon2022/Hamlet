@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Ft8Sharp.Dsp;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Licensing;
@@ -87,7 +87,7 @@ public sealed class TheLoopbackProvesTheWholeChainTests
 
         // The whole send path ran: the gate permitted, the radio was keyed and it
         // came back out of transmit the ordinary way.
-        Assert.Equal(Ft8TransmitOutcome.Sent.ToString(), run.Outcome);
+        Assert.Equal(Ft8TransmitOutcome.Played.ToString(), run.Outcome);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey.ToString(), run.CameOutOfTransmit);
 
         // **AND THE RECORD CARRIES NO CALLSIGN AND NO MESSAGE** (HM-DEC-018).

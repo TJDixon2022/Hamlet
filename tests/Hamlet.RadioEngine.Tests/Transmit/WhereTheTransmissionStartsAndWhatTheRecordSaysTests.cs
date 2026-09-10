@@ -261,7 +261,7 @@ public sealed class WhereTheTransmissionStartsAndWhatTheRecordSaysTests
             _output.WriteLine($"  {pair.Key,-22}: {pair.Value}");
         }
 
-        Assert.Equal(Ft8TransmitOutcome.Sent, run.Outcome);
+        Assert.Equal(Ft8TransmitOutcome.Played, run.Outcome);
         Assert.Equal(TelemetryCategory.Transmit, written.Category);
         Assert.Equal("ft8_transmission", written.Event);
         Assert.Equal(TelemetryLevel.Info, written.Level);
@@ -281,7 +281,7 @@ public sealed class WhereTheTransmissionStartsAndWhatTheRecordSaysTests
         Assert.Equal("CQ KC3QIS FN00".Length, written.Data["messageLength"]);
 
         // And how it ended.
-        Assert.Equal(Ft8TransmitOutcome.Sent.ToString(), written.Data["outcome"]);
+        Assert.Equal(Ft8TransmitOutcome.Played.ToString(), written.Data["outcome"]);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey.ToString(), written.Data["cameOutOfTransmit"]);
         Assert.Equal(true, written.Data["keyed"]);
     }

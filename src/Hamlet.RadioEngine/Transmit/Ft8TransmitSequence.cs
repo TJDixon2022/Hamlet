@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Telemetry;
@@ -9,8 +9,34 @@ namespace Hamlet.RadioEngine.Transmit;
 /// <summary>What became of one attempt to put a transmission on the air.</summary>
 public enum Ft8TransmitOutcome
 {
-    /// <summary>The whole signal went out and the radio came back to receive.</summary>
-    Sent,
+    /// <summary>
+    /// **Every sample was played to the named sound card and the keying frames were
+    /// written to the port.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS WAS CALLED `Sent` AND THAT WORD WAS FALSE** (work instruction 303
+    /// task 6). It said *the whole signal went out and the radio came back to
+    /// receive*, and **`ft8_transmission` wrote 21 records reading `Sent` with
+    /// `cameOutOfTransmit: OrdinaryUnkey` for transmissions that never keyed a
+    /// transmitter.** Those records were then read back as evidence that the path
+    /// worked, which is §0.0 broken in the one place this project treats as
+    /// evidence.</para>
+    /// <para>**WHAT THE CODE ACTUALLY CHECKS, AND IT IS ALL IT CHECKS.** A CI-V
+    /// PTT-on frame was handed to the serial port without throwing; the sink reported
+    /// playing every sample it was given; a PTT-off frame was handed to the port
+    /// without throwing. **That is three local successes and not one fact about the
+    /// radio.**</para>
+    /// <para>**WHAT IT CANNOT TELL YOU.** Writing bytes to a COM port succeeds
+    /// whether or not a radio is listening at the other end, so nothing here knows
+    /// the frame was understood, that the transmitter keyed, that any power was made,
+    /// or that the audio reached the radio rather than a laptop speaker.</para>
+    /// <para>**HAMLET COULD KNOW SOME OF IT AND THIS PATH DOES NOT ASK.** The radio
+    /// reports transmit state on `1C 00`, which HM-DEC-147 already polls four times a
+    /// second, and power on `15 11`, which HM-DEC-082 already reads as *power made*.
+    /// **Joining those to this outcome is a real repair and it is not this unit's**:
+    /// the instruction scopes task 6 to the word.</para>
+    /// </remarks>
+    Played,
 
     /// <summary>The licence gate did not positively permit it. Nothing keyed.</summary>
     RefusedByLicence,
@@ -153,7 +179,12 @@ public sealed record TransmitRun(
     double SecondsOffered)
 {
     /// <summary>True only where the whole transmission went out and the radio unkeyed.</summary>
-    public bool Sent => Outcome == Ft8TransmitOutcome.Sent;
+    /// <remarks>
+    /// **RENAMED FROM `Sent` BY WORK INSTRUCTION 303**, because it never meant sent.
+    /// See <see cref="Ft8TransmitOutcome.Played"/> for what it does mean and for the
+    /// 21 records that were read back as evidence of a working path.
+    /// </remarks>
+    public bool AudioWentOut => Outcome == Ft8TransmitOutcome.Played;
 
     /// <summary>How the radio came back to receive.</summary>
     public UnkeyRoute CameOutOfTransmit
@@ -298,7 +329,7 @@ public sealed class Ft8TransmitSequence
         var samples = send.Transmission.Samples;
         var seconds = samples.Length / (double)send.Transmission.SampleRate;
 
-        var outcome = Ft8TransmitOutcome.Sent;
+        var outcome = Ft8TransmitOutcome.Played;
         var reason = string.Empty;
         var keyed = false;
         var unkeyedNormally = false;
@@ -358,7 +389,7 @@ public sealed class Ft8TransmitSequence
         {
             // THE UNKEY, ON EVERY PATH OUT OF THE BLOCK ABOVE. Nothing in it can
             // return, throw or be cancelled past this point.
-            if (outcome == Ft8TransmitOutcome.Sent)
+            if (outcome == Ft8TransmitOutcome.Played)
             {
                 try
                 {

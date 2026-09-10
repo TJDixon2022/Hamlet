@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
@@ -263,7 +263,7 @@ public sealed class TheContactStandsAfterHisLastTransmissionTests
 
         Assert.NotNull(result);
         Assert.Equal(Ft8ArmOutcome.Ran, result!.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
 
         Pump(scene.Window);
 
@@ -450,10 +450,10 @@ public sealed class TheContactStandsAfterHisLastTransmissionTests
         Assert.NotNull(result);
 
         _output.WriteLine("click  " + Stamp(slot.Value) + "  \"" + option.Text
-            + "\"  -> " + result!.Outcome + " / sent=" + result.Run?.Sent);
+            + "\"  -> " + result!.Outcome + " / sent=" + result.Run?.AudioWentOut);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
 
         return (slot.Value, result);
     }

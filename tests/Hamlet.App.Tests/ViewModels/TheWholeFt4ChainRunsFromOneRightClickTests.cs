@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
@@ -235,7 +235,7 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
 
         // ---- 2. COMPOSE, KEY, PLAY, UNKEY --------------------------------------
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run!.AudioWentOut, run.Reason);
         Assert.True(run.Keyed);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
         Assert.Equal(new[] { KeyOn, KeyOff }, Frames(scene));
@@ -406,7 +406,7 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
         _output.WriteLine("the operator reads: " + scene.Panel.DigitalSendLine);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run!.AudioWentOut, run.Reason);
         Assert.Equal(new[] { KeyOn, KeyOff }, Frames(scene));
         Assert.Equal(clicked, sent.Transmission.Text);
         Assert.Equal(SlotGrid.Ft4, sent.Grid);
@@ -606,7 +606,7 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
 
         // ---- 2. THE SAME FOUR-WAY ASSERTION UNIT 293 MADE ON `RRR` -------------
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run!.AudioWentOut, run.Reason);
         Assert.True(run.Keyed);
 
         // **IT WENT THROUGH THE SAME ABORT.** `UnkeyRoute.OrdinaryUnkey` is the
@@ -716,7 +716,7 @@ public sealed class TheWholeFt4ChainRunsFromOneRightClickTests : IDisposable
         _output.WriteLine("THE WIRE         : " + Wire(scene));
 
         Assert.Equal(Ft8ArmOutcome.Ran, secondResult.Outcome);
-        Assert.True(secondRun!.Sent, secondRun.Reason);
+        Assert.True(secondRun!.AudioWentOut, secondRun.Reason);
         Assert.True(secondRun.Keyed);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, secondRun.CameOutOfTransmit);
         Assert.Equal(secondClicked, secondResult.Send!.Transmission.Text);

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using Avalonia.Headless.XUnit;
 using Hamlet.App.Settings;
@@ -152,16 +152,16 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
         // ---- 1. BOTH BOUNDARIES RAN AND BOTH REPORTED THE TRANSMISSION SENT.
         _output.WriteLine("ASSERTION 1 - the two boundaries");
         _output.WriteLine("  first  : " + first.Result.Outcome
-            + " / sent=" + first.Result.Run?.Sent + " / slot=" + Stamp(first.SlotUtc));
+            + " / sent=" + first.Result.Run?.AudioWentOut + " / slot=" + Stamp(first.SlotUtc));
         _output.WriteLine("  second : " + second.Result.Outcome
-            + " / sent=" + second.Result.Run?.Sent + " / slot=" + Stamp(second.SlotUtc));
+            + " / sent=" + second.Result.Run?.AudioWentOut + " / slot=" + Stamp(second.SlotUtc));
         _output.WriteLine("  sink calls  : " + factory.Sink.TimesCalled);
         _output.WriteLine("  port frames : " + port.Written.Count);
 
         Assert.Equal(Ft8ArmOutcome.Ran, first.Result.Outcome);
         Assert.Equal(Ft8ArmOutcome.Ran, second.Result.Outcome);
-        Assert.True(first.Result.Run!.Sent, first.Result.Run.Reason);
-        Assert.True(second.Result.Run!.Sent, second.Result.Run.Reason);
+        Assert.True(first.Result.Run!.AudioWentOut, first.Result.Run.Reason);
+        Assert.True(second.Result.Run!.AudioWentOut, second.Result.Run.Reason);
 
         // ---- 2. THE LEDGER HOLDS TWO SENT AND THREE HEARD AGAINST W1ABC.
         var record = panel.ContactRecordForTests(His);
@@ -270,7 +270,7 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
         var sent = await ClickAsync(panel, cq, Ft8SendShape.Grid);
 
         Assert.Equal(Ft8ArmOutcome.Ran, sent.Result.Outcome);
-        Assert.True(sent.Result.Run!.Sent, sent.Result.Run.Reason);
+        Assert.True(sent.Result.Run!.AudioWentOut, sent.Result.Run.Reason);
 
         telemetry.Dispose();
 
@@ -424,8 +424,8 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
 
         Assert.Equal(Ft8ArmOutcome.Ran, first.Result.Outcome);
         Assert.Equal(Ft8ArmOutcome.Ran, second.Result.Outcome);
-        Assert.True(first.Result.Run!.Sent, first.Result.Run.Reason);
-        Assert.True(second.Result.Run!.Sent, second.Result.Run.Reason);
+        Assert.True(first.Result.Run!.AudioWentOut, first.Result.Run.Reason);
+        Assert.True(second.Result.Run!.AudioWentOut, second.Result.Run.Reason);
 
         // ---- 1. THE LEDGER THE APPLICATION KEPT SAYS THE CONTACT IS COMPLETE.
         var record = panel.ContactRecordForTests(His);
@@ -598,7 +598,7 @@ public sealed class TheWholeContactWalksThroughTheApplicationTests : IDisposable
         Assert.NotNull(result);
 
         _output.WriteLine("click  " + Stamp(slot.Value) + "  \"" + option.Text
-            + "\"  -> " + result!.Outcome + " / sent=" + result.Run?.Sent);
+            + "\"  -> " + result!.Outcome + " / sent=" + result.Run?.AudioWentOut);
 
         return (slot.Value, result);
     }

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia.Threading;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -99,7 +99,7 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         _output.WriteLine("frequency         : " + panel.FrequencyHz);
         _output.WriteLine("boundary outcome  : " + result!.Outcome);
         _output.WriteLine("run outcome       : " + result.Run!.Outcome);
-        _output.WriteLine("sent              : " + result.Run.Sent);
+        _output.WriteLine("sent              : " + result.Run.AudioWentOut);
         _output.WriteLine("keyed             : " + result.Run.Keyed);
         _output.WriteLine("sink calls        : " + factory.Sink.TimesCalled);
         _output.WriteLine("bytes at the port : " + BytesAt(port));
@@ -110,7 +110,7 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
         Assert.Equal(Ft8TransmitOutcome.RefusedByLicence, result.Run.Outcome);
 
-        Assert.False(result.Run.Sent);
+        Assert.False(result.Run.AudioWentOut);
         Assert.False(result.Run.Keyed);
 
         // NOTHING PLAYED AND NOTHING ON THE WIRE.
@@ -201,14 +201,14 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         _output.WriteLine("licence class     : " + panel.LicenseClass);
         _output.WriteLine("boundary outcome  : " + result!.Outcome);
         _output.WriteLine("run outcome       : " + result.Run!.Outcome);
-        _output.WriteLine("sent              : " + result.Run.Sent);
+        _output.WriteLine("sent              : " + result.Run.AudioWentOut);
         _output.WriteLine("sink calls        : " + factory.Sink.TimesCalled);
         _output.WriteLine("frames at the port: " + port.Written.Count);
         _output.WriteLine("the sentence      : " + panel.DigitalSendLine);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.Equal(Ft8TransmitOutcome.Sent, result.Run.Outcome);
-        Assert.True(result.Run.Sent);
+        Assert.Equal(Ft8TransmitOutcome.Played, result.Run.Outcome);
+        Assert.True(result.Run.AudioWentOut);
 
         // ONE TRANSMISSION, KEYED AND UNKEYED.
         Assert.Equal(1, factory.Sink.TimesCalled);
@@ -320,7 +320,7 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         _output.WriteLine("guard enabled     : " + settings.RestrictTransmitToPrivileges);
         _output.WriteLine("licence class     : " + panel.LicenseClass);
         _output.WriteLine("run outcome       : " + result!.Run!.Outcome);
-        _output.WriteLine("sent              : " + result.Run.Sent);
+        _output.WriteLine("sent              : " + result.Run.AudioWentOut);
         _output.WriteLine("sink calls        : " + factory.Sink.TimesCalled);
         _output.WriteLine("frames at the port: " + port.Written.Count);
         _output.WriteLine("the sentence      : " + panel.DigitalSendLine);
@@ -328,7 +328,7 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         // **STILL REFUSED, AND STILL NOTHING ON THE WIRE.** The switch does not
         // open a route to the air.
         Assert.Equal(Ft8TransmitOutcome.RefusedByLicence, result.Run.Outcome);
-        Assert.False(result.Run.Sent);
+        Assert.False(result.Run.AudioWentOut);
         Assert.False(result.Run.Keyed);
         Assert.Equal(0, factory.Sink.TimesCalled);
         Assert.Empty(port.Written);

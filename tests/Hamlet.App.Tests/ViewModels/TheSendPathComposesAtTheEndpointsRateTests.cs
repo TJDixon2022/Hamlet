@@ -1,4 +1,4 @@
-using Hamlet.App.Settings;
+﻿using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Licensing;
@@ -92,7 +92,7 @@ public sealed class TheSendPathComposesAtTheEndpointsRateTests
         _output.WriteLine("rate asked for    : " + factory.Sink.RateAskedFor + " Hz");
         _output.WriteLine("outcome           : " + result!.Outcome);
         _output.WriteLine("run outcome       : " + result.Run?.Outcome);
-        _output.WriteLine("sent              : " + result.Run?.Sent);
+        _output.WriteLine("sent              : " + result.Run?.AudioWentOut);
         _output.WriteLine("keyed             : " + result.Run?.Keyed);
         _output.WriteLine("came out of tx    : " + result.Run?.CameOutOfTransmit);
         _output.WriteLine("samples offered   : " + result.Run?.SamplesOffered);
@@ -114,7 +114,7 @@ public sealed class TheSendPathComposesAtTheEndpointsRateTests
 
         // AND A WHOLE TRANSMISSION WENT OUT.
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
         Assert.True(result.Run.Keyed);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, result.Run.CameOutOfTransmit);
         Assert.Equal(
@@ -317,10 +317,10 @@ public sealed class TheSendPathComposesAtTheEndpointsRateTests
 
         _output.WriteLine("endpoint declares : 12000 Hz");
         _output.WriteLine("rate asked for    : " + factory.Sink.RateAskedFor + " Hz");
-        _output.WriteLine("sent              : " + result!.Run?.Sent);
+        _output.WriteLine("sent              : " + result!.Run?.AudioWentOut);
 
         Assert.Equal(12_000, factory.Sink.RateAskedFor);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
     }
 
     /// <summary>A panel on 20 m, a licence that permits, and a recording factory.</summary>

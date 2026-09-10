@@ -1,4 +1,4 @@
-using Hamlet.RadioEngine.Audio;
+﻿using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Tests.Rig;
 using Hamlet.RadioEngine.Transmit;
@@ -69,7 +69,7 @@ public sealed class OneClickSendsExactlyOneMessageTests
             + TheUnkeyHappensWhateverGoesWrongTests.Hex(port.Written));
 
         Assert.Equal(Ft8ArmOutcome.Ran, first.Outcome);
-        Assert.True(first.Run!.Sent, first.Run.Reason);
+        Assert.True(first.Run!.AudioWentOut, first.Run.Reason);
 
         // THE WHOLE POINT. Nothing was armed any more, so nothing went out.
         Assert.Equal(Ft8ArmOutcome.NothingArmed, second.Outcome);
@@ -215,7 +215,7 @@ public sealed class OneClickSendsExactlyOneMessageTests
         _output.WriteLine("sink touched      : " + !sink.WasNeverTouched);
 
         Assert.Equal(Ft8TransmitOutcome.RefusedByLicence, boundary.Run.Outcome);
-        Assert.False(boundary.Run.Sent);
+        Assert.False(boundary.Run.AudioWentOut);
         Assert.False(boundary.Run.Keyed);
 
         Assert.Empty(port.Written);

@@ -1,4 +1,4 @@
-using Hamlet.App.Settings;
+﻿using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Transmit;
@@ -186,13 +186,13 @@ public sealed class TheSendPathReachesARealRadioTests
         var result = await panel.AtSlotBoundaryAsync(slot!.Value);
 
         _output.WriteLine("outcome        : " + result!.Outcome);
-        _output.WriteLine("sent           : " + result.Run?.Sent);
+        _output.WriteLine("sent           : " + result.Run?.AudioWentOut);
         _output.WriteLine("sink calls     : " + factory.Sink.TimesCalled);
         _output.WriteLine("frames written : " + port.Written.Count);
         _output.WriteLine(panel.DigitalSendLine);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(result.Run!.Sent);
+        Assert.True(result.Run!.AudioWentOut);
 
         // **ONE TRANSMISSION, THROUGH THE SINK THIS CODE BUILT.**
         Assert.Equal(1, factory.Sink.TimesCalled);

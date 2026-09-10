@@ -173,7 +173,7 @@ public sealed class HamletDoesNotKeyWhatNobodyCanReadTests
 
         _output.WriteLine($"\"{clicked}\" -> \"{click.ReadsBackAs}\"");
         _output.WriteLine("outcome           : " + due.Outcome);
-        _output.WriteLine("sent              : " + due.Run!.Sent);
+        _output.WriteLine("sent              : " + due.Run!.AudioWentOut);
         _output.WriteLine("bytes at the port : " + click.Port.Written.Length);
         _output.WriteLine("wire              : "
             + TheUnkeyHappensWhateverGoesWrongTests.Hex(click.Port.Written));
@@ -181,7 +181,7 @@ public sealed class HamletDoesNotKeyWhatNobodyCanReadTests
             + " at " + click.Sink.RateAskedFor + " Hz");
 
         Assert.Equal(Ft8ArmOutcome.Ran, due.Outcome);
-        Assert.True(due.Run.Sent, due.Run.Reason);
+        Assert.True(due.Run.AudioWentOut, due.Run.Reason);
 
         // THE PORT CARRIED ITS FRAMES and the card was handed the audio.
         Assert.NotEmpty(click.Port.Written);

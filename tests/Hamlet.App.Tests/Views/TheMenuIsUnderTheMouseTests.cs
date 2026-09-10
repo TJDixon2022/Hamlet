@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
@@ -498,7 +498,7 @@ public sealed class TheMenuIsUnderTheMouseTests
 
         Assert.NotNull(result);
         Assert.True(
-            result!.Run?.Sent == true,
+            result!.Run?.AudioWentOut == true,
             "\"" + message + "\" did not go out: " + result.Outcome + " / "
             + result.Run?.Reason);
     }

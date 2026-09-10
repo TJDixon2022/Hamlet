@@ -179,7 +179,7 @@ public sealed class TheLicenceGateIsInsideThePathTests
         Assert.False(decision.WasOverridden);
         Assert.NotEmpty(decision.Citation);
 
-        Assert.Equal(Ft8TransmitOutcome.Sent, run.Outcome);
+        Assert.Equal(Ft8TransmitOutcome.Played, run.Outcome);
         Assert.True(run.Keyed);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
         Assert.Equal(1, sink.TimesCalled);

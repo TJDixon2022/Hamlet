@@ -149,7 +149,7 @@ public sealed class TheTelemetryLineSaysWhatActuallyWentOutTests
         // reads back as itself the two counts are the same count.
         Assert.Equal("CQ KC3QIS FN00".Length, bag["messageLength"]);
         Assert.Equal("Standard", bag["messageType"]);
-        Assert.Equal(Ft8TransmitOutcome.Sent.ToString(), bag["outcome"]);
+        Assert.Equal(Ft8TransmitOutcome.Played.ToString(), bag["outcome"]);
         Assert.Equal(true, bag["keyed"]);
     }
 

@@ -81,7 +81,7 @@ public sealed class TheFitGuardAsksAboutTheGridTheSendIsOnTests
         _output.WriteLine(string.Empty);
         _output.WriteLine("FT4 on FT4       : " + good.Outcome + " - \"" + good.Reason + "\"");
 
-        Assert.True(good.Sent, good.Reason);
+        Assert.True(good.AudioWentOut, good.Reason);
         Assert.True(good.Keyed);
         Assert.Equal(ft4.Transmission!.Samples.Length, sink.SamplesHandedOver);
 

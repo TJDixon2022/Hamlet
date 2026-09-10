@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Transmit;
 using Hamlet.RadioEngine.Transport;
@@ -187,10 +187,10 @@ public sealed class TheStopStopsTheAudioTooTests
 
         _output.WriteLine("the run said : " + boundary.Run!.Outcome);
         _output.WriteLine("because      : " + boundary.Run.Reason);
-        _output.WriteLine("sent         : " + boundary.Run.Sent);
+        _output.WriteLine("sent         : " + boundary.Run.AudioWentOut);
 
         Assert.Equal(Ft8TransmitOutcome.Cancelled, boundary.Run.Outcome);
-        Assert.False(boundary.Run.Sent);
+        Assert.False(boundary.Run.AudioWentOut);
         Assert.Contains("stopped", boundary.Run.Reason, StringComparison.OrdinalIgnoreCase);
     }
 

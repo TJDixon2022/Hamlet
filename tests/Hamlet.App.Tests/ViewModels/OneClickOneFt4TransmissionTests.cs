@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Ft8Sharp.Encode;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -131,7 +131,7 @@ public sealed class OneClickOneFt4TransmissionTests
         _output.WriteLine("radio in receive : " + result.Run?.RadioIsInReceive);
 
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
         Assert.True(result.Run.Keyed);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, result.Run.CameOutOfTransmit);
         Assert.True(result.Run.RadioIsInReceive);
@@ -238,7 +238,7 @@ public sealed class OneClickOneFt4TransmissionTests
             send.Transmission.Samples.Length);
         Assert.Equal(0.0, armed.Value.TimeOfDay.TotalSeconds % Ft8Slots.SlotSeconds, 6);
         Assert.Equal(SlotGrid.Ft8, send.Grid);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, result.Run.CameOutOfTransmit);
     }
 

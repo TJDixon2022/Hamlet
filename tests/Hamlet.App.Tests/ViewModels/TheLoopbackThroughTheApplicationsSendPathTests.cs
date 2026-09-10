@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Ft8Sharp.Dsp;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -185,7 +185,7 @@ public sealed class TheLoopbackThroughTheApplicationsSendPathTests
 
             // **THE SEND PATH RAN WHOLE.**
             Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-            Assert.True(run!.Sent, run.Reason);
+            Assert.True(run!.AudioWentOut, run.Reason);
             Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
 
             // **AND IT ASKED FOR THE RATE THE ENDPOINT DECLARES**, which is the

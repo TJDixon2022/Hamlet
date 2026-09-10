@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using Avalonia;
@@ -201,7 +201,7 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
         // **THE RUN'S OUTCOME, NOT THE ARM OUTCOME** - unit 267's recorded trap.
         // `Ft8ArmedSend.cs` returns `Ran` for anything the sequence ran at all.
-        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run!.AudioWentOut, run.Reason);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
 
         // ---- AND THE CARD MADE A SOUND -----------------------------------------
@@ -351,7 +351,7 @@ public sealed class TheWholeChainRunsFromOneRightClickTests : IDisposable
 
         // ---- 2. COMPOSE, KEY, PLAY, UNKEY --------------------------------------
         Assert.Equal(Ft8ArmOutcome.Ran, result.Outcome);
-        Assert.True(run!.Sent, run.Reason);
+        Assert.True(run!.AudioWentOut, run.Reason);
         Assert.True(run.Keyed);
         Assert.Equal(UnkeyRoute.OrdinaryUnkey, run.CameOutOfTransmit);
 

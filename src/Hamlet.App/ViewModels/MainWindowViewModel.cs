@@ -11812,7 +11812,7 @@ public partial class MainWindowViewModel : ObservableObject
         _sendWasStopped = run.Outcome == Ft8TransmitOutcome.Cancelled;
         _sendingSlotUtc = _sendWasStopped ? result.Send!.SlotStartUtc : null;
 
-        if (run.Sent)
+        if (run.AudioWentOut)
         {
             // **THE ONE CALL SITE OF `RecordSent` IN THE TREE**, which is the line
             // unit 258 left it unreachable for.
@@ -11830,7 +11830,7 @@ public partial class MainWindowViewModel : ObservableObject
         // audio actually reached the sink; the refusals key nothing and play
         // nothing, so the sink's figures would be the previous transmission's and
         // showing them would be the exact fault this line exists to prevent.
-        var measured = run.Outcome is Ft8TransmitOutcome.Sent or Ft8TransmitOutcome.Cancelled
+        var measured = run.Outcome is Ft8TransmitOutcome.Played or Ft8TransmitOutcome.Cancelled
             ? MeasuredLevelLine(_transmitLevelReport)
             : "Nothing was transmitted, so there is no measured level. After a "
               + "send this line says what the sound card was actually handed.";
@@ -11851,9 +11851,9 @@ public partial class MainWindowViewModel : ObservableObject
             // **HIS OWN HALF OF THE CONVERSATION REACHES THE PANEL** (Tim's
             // ruling, 2026-09-08), posted rather than booked above because
             // `DigitalMineDecodes` is bound and this method runs off the UI
-            // thread. It is inside the `run.Sent` arm's own post, so a refusal,
+            // thread. It is inside the `run.AudioWentOut` arm's own post, so a refusal,
             // a stop or a missed boundary still puts nothing on screen.
-            if (run.Sent)
+            if (run.AudioWentOut)
             {
                 KeepSentRow(text, result.Send!.SlotStartUtc);
             }
@@ -11904,7 +11904,7 @@ public partial class MainWindowViewModel : ObservableObject
                 + " (" + run.Citation + ")";
         }
 
-        if (!run.Sent)
+        if (!run.AudioWentOut)
         {
             return "Hamlet did not send \"" + text + "\": " + run.Reason;
         }

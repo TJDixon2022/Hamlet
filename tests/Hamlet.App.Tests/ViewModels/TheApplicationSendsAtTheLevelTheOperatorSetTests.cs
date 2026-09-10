@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia.Threading;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -255,7 +255,7 @@ public sealed class TheApplicationSendsAtTheLevelTheOperatorSetTests : IDisposab
 
         Assert.NotNull(result);
         Assert.Equal(Ft8ArmOutcome.Ran, result!.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
         Assert.NotNull(result.Send);
 
         return result.Send!;
@@ -292,7 +292,7 @@ public sealed class TheApplicationSendsAtTheLevelTheOperatorSetTests : IDisposab
 
         Assert.NotNull(result);
         Assert.Equal(Ft8ArmOutcome.Ran, result!.Outcome);
-        Assert.True(result.Run!.Sent, result.Run.Reason);
+        Assert.True(result.Run!.AudioWentOut, result.Run.Reason);
         Assert.NotNull(result.Send);
 
         return result.Send!;

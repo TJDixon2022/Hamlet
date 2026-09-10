@@ -71,7 +71,7 @@ public sealed class TheUnkeyHappensWhateverGoesWrongTests
         _output.WriteLine($"samples offered : {run.SamplesOffered} at {sink.RateAskedFor} Hz");
         _output.WriteLine($"seconds offered : {run.SecondsOffered:0.###}");
 
-        Assert.Equal(Ft8TransmitOutcome.Sent, run.Outcome);
+        Assert.Equal(Ft8TransmitOutcome.Played, run.Outcome);
         Assert.True(run.Keyed);
         Assert.True(run.UnkeyedNormally);
         Assert.Null(run.Abort);
