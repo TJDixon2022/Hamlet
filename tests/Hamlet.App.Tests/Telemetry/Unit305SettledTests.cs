@@ -217,6 +217,17 @@ public sealed class Unit305SettledTests
             panel.ApplyRigState(usbD);
         });
 
+        // **THE SNAPSHOT FROM A START WHERE THE RADIO ANSWERED**, quoted whole for
+        // the report. The rig state above is the one a real poll delivers, so the
+        // radio fields the settled write fills are the ones it fills at the shack.
+        var answered = lines.Single(
+            l => l.Contains(StartupSnapshot.EventName, StringComparison.Ordinal)
+                 && Field(l, StartupSnapshot.WhenField) == StartupSnapshot.Settled);
+
+        _output.WriteLine("SETTLED, WITH THE RADIO ANSWERING");
+        _output.WriteLine("  " + answered);
+        _output.WriteLine("");
+
         var refusals = lines
             .Where(l => l.Contains("transmit_readiness", StringComparison.Ordinal))
             .ToList();
