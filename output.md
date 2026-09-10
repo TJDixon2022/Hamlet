@@ -1,310 +1,357 @@
-# Work instruction 305 — the snapshot lands after the facts, and the Morse gate stops judging FT8
+# Work instruction 305 — the offset reaches the snapshot and not the app
 
-**READ IN THIS ORDER.** The unit did five things and reported a sixth as already
-done. **Task 4 was shipped by unit 303 the same day**, so it is confirmed here rather
-than rebuilt, and section 1 shows the measurement that settled it.
+**READ IN THIS ORDER.** The wire is found, mended and proved. **One thing in the
+instruction did not survive contact with the tree and section 1 says so plainly** —
+the wire explains the screen, and the record could not say whether it explains the
+missing slots, because nothing in it said which mode the application was on. Task 4
+closes that gap rather than guessing at it.
 
-A. **The phase goal — FT4 works exactly the way FT8 does.** This unit advanced no
-   step of it. It changed the record and one recording gate: **no screen changed.**
+A. **The phase goal — FT4 works exactly the way FT8 does.** No step of it moved. But
+   **the clock wire is what stood between a measured offset and a slot boundary**,
+   and no FT4 or FT8 decode happens without one.
 
 B. **Step 4 and its exit criteria** — pressing FT4 tunes and decodes; the panel, the
    conversation, the ring, the filters, the tooltips, the ledger and the right-click
-   menu all working unchanged; one click, one transmission; a whole exchange from one
+   menu working unchanged; one click, one transmission; a whole exchange from one
    right click at the bench. **None was measured tonight.** Step 4 stays `partial`.
 
-C. **The report last, and section 4 raises 2 items** on top of a queue of five that
-   you have not yet ruled on.
+C. **The report last, and section 4 raises 2 items** on top of a queue of five you
+   have not yet ruled on.
 
 ```
-UNIT:       305 — complete at task 6 of 6, none dropped — 2026-09-10 14:01
+UNIT:       305 — complete at task 7 of 7, none dropped — 2026-09-10 15:31
 PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  The startup snapshot lands after the facts arrive, and the Morse gate
-            stops writing a verdict about a transmitter nobody is operating.
+UNIT GOAL:  The measured offset reaches every reader that needs it, and the record
+            says an attempt was made before it says what became of it.
 ADVANCED:   no — no phase step moved. Step 4 stays partial: nothing tuned, nothing
             transmitted, no exchange run at the bench.
-NUMBER:     how many of the snapshot's fields read `unknown` on a normal start
-            BEFORE: 16
-            AFTER:  9
-            Of the snapshot's 50 data fields, 56 counting the event envelope. The
-            nine that remain are the audio input, the transmit device, and the
-            radio's port, baud, CI-V address and model — every one of them a fact
-            nothing on this machine supplies, said with its reason.
-DRIFT:      9 consecutive units without advance  (was 8, carried from unit 304)
+NUMBER:     whether a slot is cut after the wire is mended
+            BEFORE: 0 slots cut, and the cutter refuses in words.
+            AFTER:  1 slot cut from the same audio and the same clock, and
+            `CQ K1ABC FN42` decoded out of it.
+DRIFT:      10 consecutive units without advance  (was 9, carried from unit 305a)
 ```
 
 ---
 
 ## 1. What Claude did
 
-**Complete. Six tasks of six, none dropped, including the named drop candidate.**
-Development machine, prompt claimed `PROJECT: Hamlet`, and the tree confirmed it:
-`SHACK_FACTS.md` and `src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both
-present, `CoreHMI.sln` and `MURC.sln` both absent. Branch `main`, three commits, all
-pushed. Root version 1.12.267 to **1.12.268**, bumped once. **No file under
-`src/Ft8Sharp/` was touched**, and its own version did not move.
+**Complete. Seven tasks of seven, none dropped.** Development machine, prompt claimed
+`PROJECT: Hamlet`, and the tree confirmed it: `SHACK_FACTS.md` and
+`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` both present, `CoreHMI.sln` and
+`MURC.sln` both absent. Branch `main`, seven commits, all pushed. Root version
+1.12.268 to **1.12.269**, bumped once. **No file under `src/Ft8Sharp/` was touched.**
 
-**Nothing in this report is evidence about the radio** (HM-DEC-093). This machine has
-no IC-7300 on it. Where a measurement needed a connected radio, it says so instead of
-approximating one.
+**Nothing in this report is evidence about the radio** (HM-DEC-093). No IC-7300 is on
+this machine, and no port was opened and nothing was transmitted.
 
-**Nothing was recorded to `DECISIONS.md`.** The four judgments below were made inside
-the order's own licence and are named here so you can overturn any of them.
+**Nothing was recorded to `DECISIONS.md`.** Five judgments were made inside the
+order's licence and are named below so you can overturn any of them.
 
-**Task 1 — when each fact actually arrives.** Measured on a real start rather than
-reasoned about. The early snapshot is written at **246 ms**; the clock query answers
-**264 ms after it**; on your machine this morning the radio, the clock and readiness
-all landed **1.0 to 1.3 s** after it. **Sixteen of the snapshot's fifty data fields
-read `unknown`** in that early write, and every one of them was a fact that arrives
-on its own a moment later.
+### Task 1 — the wire, found before it was mended
 
-**Task 2 — the snapshot is written twice.** Same event name, a `when` field carrying
-`at_start` or `settled`, five seconds apart, **each readable entirely on its own**
-rather than the second being a diff against the first. The engine holds the shape
-(`StartupSnapshot`), the app does the gathering (`StartupFacts`), which is §0.1.
+**Where it stopped: `src/Hamlet.App/ViewModels/MainWindowViewModel.cs:913-920`**, the
+`[NotifyPropertyChangedFor]` list on `_clockOffset`.
 
-**Judgment 1: write twice rather than wait once.** Waiting would have traded the
-early snapshot away, and the early one is exactly what a machine that dies during
-startup leaves behind — which is the machine somebody needs a record of.
+**How it was found: by comparing two readers rather than searching.** The instruction
+is right that the snapshot has the offset and the screen does not, and the reason it
+is findable that way is that **both readers are on the same object**. The settled
+snapshot reads `ClockOffset` at line 6176; the sentence he read is
+`DigitalCardsIdle` at line 1509, which asks `CardsNow`, which asks the same property.
+The value was never lost.
 
-**Judgment 2: five seconds, and it is a wait rather than a condition.** Past both the
-264 ms measured here and the 1.3 s measured at the shack. A condition would have
-waited forever for a radio nobody plugged in; this writes regardless, and what has
-not arrived is `unknown` with its reason.
+**Stood up and measured** (unit 284's method), before the mend:
 
-**Task 3 — which of the two Morse-gate faults it was, established before touching
-it.** The order named two possibilities and it is **the second**:
-`TransmitReadiness.Check` has **exactly one production caller**, so it was never
-blocking an FT8 send. What it was doing was writing `not_in_morse` into the record
-about a keyer nobody was using — 56 times in the file you read this morning, which
-is what sent you after a broken send chain when the fault was a missing sound card.
+```
+BEFORE THE OFFSET ARRIVES
+  ClockOffset.IsKnown : False
+  DigitalCardsIdle    : Hamlet has not been able to check the clock against a...
 
-**Judgment 3: the scope is narrowed at the recording point and not in the check.** A
-CW send still asks the gate and still needs the radio in CW. A test asserts exactly
-that: asked about USB-D on 14.074000 the gate still answers `NotInMorse`, and it is
-right to.
+AFTER THE OFFSET ARRIVES
+  ClockOffset.IsKnown : True
+  DigitalCardsIdle    : Nothing addressed to you yet. Anything a station sends...
 
-**Task 4 — reported as a mismatch against the tree rather than redone.** The order
-presents the achievement mark's option B as outstanding. **Unit 303 task 5 shipped
-it**, and it was confirmed by measurement rather than taken on trust:
-`HmStatusMarkSize` is **27**, the mark draws `var ink = Edge` with
-`var fill = line ? null : Green`, greyscale gives **2 shapes at rest against 4 lit**
-so colour is not the only carrier (§0.6), the belt matches off the same resource, and
-all four MainWindow ceiling rows sit exactly at their set-from figures — CW 426,
-Digital 1194, working 1193, Voice 468.
+WHAT THE OBJECT TOLD THE SCREEN
+  raised: ClockIsConcerning
+  raised: ClockOffset
+  raised: ClockOffsetLine
+  raised: DigitalReadinessLine
+  raised: DigitalWaterfallSummary
+  raised: HasDigitalReadiness
 
-**Judgment 4: confirming beats rebuilding.** Redoing shipped work to make an
-instruction come true would have put a second answer in the tree for one question.
+WHAT IT DID NOT TELL THE SCREEN
+  never raised: DigitalCardsIdle
+```
 
-**Task 5 — this morning, constructed and replayed.** Section 3 carries it whole.
+**Five surfaces were told and the sixth was not**, so its binding kept the sentence
+composed at startup, when the clock really was unknown. `DigitalCardsIdle` computes
+the right answer the moment anything asks it. Nothing ever asked it again.
 
-**Task 6 — the outcome entry.** Appended through `tools\arbiter\outcome-append.bat`
-as `UNIT 305 - STEP 4`, state `partial`, fate `executed`, with the state's reason
-saying plainly that nothing in step 4 was measured tonight.
+**MISMATCH AGAINST THE TREE, AND IT IS THE ONE THAT MATTERS.** The instruction's
+table says the missing offset explains the absent `ft8_slot` events. **On this tree it
+does not.** `OnSlotTick` reads `ClockOffset` live off the same property four times a
+second (`MainWindowViewModel.cs:10023`), so from 19:01:05 the watch could cut. Two
+explanations are consistent with the file as quoted, **and the record cannot choose
+between them**: he was on CW, where no slot is cut and none should be; or the extract
+spans about five seconds and an FT8 slot closes every fifteen, so it could not hold one
+either way. **That the record cannot say is the fault, and task 4 fixes it** — the mode
+is now in the snapshot and on every state change. **I did not repair the
+instruction** (§12.6, and the order's own rule).
 
-**What was watched failing, twice.** A `DispatcherTimer` **does not tick under the
-headless harness's `RunJobs`**, so the settled snapshot was written by a timer that
-never fired and the whole task would have shipped looking green. It was caught only
-because the test asserts *two* snapshots and found one; the timer was replaced with
-`Task.Delay(...).ContinueWith(_ => Dispatcher.UIThread.Post(...))`. And
-`NothingRecordsAMorseRefusalOnADigitalMode` **passed with the guard removed** —
-because `CwTransmitViewModel.Refresh` returns early while `_transmitter` is null.
-The test was strengthened to drive `ApplyRigState`, still could not reach the path,
-and **now prints plainly what it cannot reach** rather than passing for the wrong
-reason.
+**Then mended, and a decode proved it:**
 
-**No test suite was run** (HM-DEC-155). Seven tests were constructed across three
-classes and every run was filtered by exact name, foregrounded, with a 300 to 500 s
-timeout. Every `dotnet build` was foregrounded. Nothing was backgrounded and polled.
+```
+WITH NO MEASURED OFFSET
+  slots cut : 0
+  refusal   : the clock offset has not been measured, so where the slot
+              boundaries fall is not known and nothing was cut
+  decoded   : (nothing)
+
+WITH THE MEASURED OFFSET
+  slots cut : 1
+  decoded   : CQ K1ABC FN42
+```
+
+**Judgment 1: the mend is a notification *and* a rebuild.** Cards are built only where
+a corrected now exists, so every message that arrived before the clock answered built
+no card at all. A notification alone would have left an empty panel truthfully
+explaining itself.
+
+**Judgment 2: the rebuild fires on the crossing, not on every measurement.** The clock
+is asked again on a timer, and rebuilding the card list on each answer replaces the
+control under his mouse (HM-DEC-078).
+
+### Task 2 — an operator action is recorded
+
+**Five presses now write one line each, before anything they trigger**: the CQ button,
+the one send door, the stop, a card action, a card cleared. What was done and on which
+mode; **never to whom and never what it said** (§2.1).
+
+**Watched failing.** With the CQ write removed the test fails; restored, three pass.
+
+### Task 3 — a pipeline stage records entry
+
+**Eight stages write on entry.** Application side: composed, read back, armed,
+boundary reached. Engine side, in `Ft8TransmitSequence`: gate asked, keyed, handed to
+the sound card, unkeyed. **The existing transmission record is unchanged and gains
+`stagesEntered`.** `Played` asserts exactly what it asserted before — that is ask 1
+and yours.
+
+### Task 4 — the FT8 decoder says it exists
+
+`digital_decoder_started` names the mode, the slot length, the sample rate and the
+device — **once per shape, not once per tick**, which would be 14,400 lines an hour.
+**A slot the watch refused now writes its own `ft8_slot` line** with the reason
+verbatim; before this the only route to that event was a slot already decoded, so a
+session that cut none wrote nothing. The snapshot carries `appOperatingMode` and
+`appDigitalMode`, and `state_changed` carries the mode. **Audio health reaches the
+digital side**: the tap's own peak, floor and `nearlySilent` ride every slot line.
+
+**Judgment 3: once per mode-and-rate for the announcement.**
+**Judgment 4: one `decodes_drawn` line per slot**, which the order allows in words.
+
+### Task 5 — what the screen drew
+
+One event per slot: how many messages came out, how many became rows, how many the
+filters left on the table he is reading, how many are addressed to him, how many cards
+stand. **A slot that decoded and drew nothing is a warning**, because it is the case
+worth finding by scanning (§8.1).
+
+### Task 6 — the honest test
+
+**Five for five, each constructed and run, with one limit stated.** Section 3 carries
+them.
+
+**Judgment 5: I reported the task 1 mismatch rather than repairing it**, which is the
+order's own instruction.
+
+**No test suite was run** (HM-DEC-155). Fourteen tests were constructed across five
+classes and every run was filtered by exact name, foregrounded, with a 600 s timeout.
+Every `dotnet build` was foregrounded. Nothing was backgrounded and polled.
 
 ---
 
 ## 2. What the owner should expect
 
-**Two things you will notice, and one of them is not this unit's doing.**
+**The clock line goes.** Once a time server answers, the cards panel stops saying the
+clock has never been checked — it was saying that five seconds after it stopped being
+true, and would have said it all evening.
 
-**The feather is noticeable.** It is 27 px, filled green at rest, and reads as two
-distinct shapes against four when the colour is taken away, so it survives a
-greyscale print. **It arrived in 1.12.266 with unit 303**, not tonight — this unit
-measured it and left it alone.
+**Messages arrive again, and his own CQ appears where he sent it** — *provided the
+Digital tab is what he is on*. That last clause is not hedging: it is the thing the
+old record could not tell you and the new one can. If the next file shows the mode as
+Digital and still no slots, the refusal lines will say why in his own words.
 
-**And the next telemetry file says what your machine was actually doing.** Upload one
-after a start and you will find two `startup_snapshot` lines rather than one: the
-first at about a quarter of a second, the second five seconds in with the radio, the
-clock and the readiness filled in. **The number that matters is 16 down to 9**, and
-the nine that remain each say why.
+**What will look wrong and is not.** The telemetry file is **noticeably larger**. A
+press writes a line, each send stage writes a line, and every refusal to cut a slot
+writes one. That is the whole point of the unit, and the cadence is bounded: the
+decoder announces itself once per shape, a refusal is written when the refusal
+*changes* rather than on every tick, and there is one drawn line per slot rather than
+one per row.
 
-**What will look wrong and is not.** `transmit_readiness` events **no longer appear
-at all while you are on a digital mode.** That is deliberate and it is the whole of
-task 3. Their absence on FT8 is not the panel going quiet; a later session reading a
-telemetry file for evidence about the panel needs to know those events are now
-CW-only by design.
+**What I could not check, and it is a real risk.** This unit added `stagesEntered` to
+the existing `ft8_transmission` record and two fields to the startup snapshot.
+**Other tests read both of those events, and HM-DEC-155 forbids running their
+suites**, so I cannot tell you whether one of them now fails on a field count or an
+exact-shape assertion. Every test this unit constructed passes and every project
+builds clean with no new warnings.
 
-**Build clean, no new warnings.** Three inherited reds are unchanged and unnamed by
-any order — `TheAchievementsScreenTests`' two and
-`TheFitGuardAsksAboutTheGridTheSendIsOnTests`' one. **Nothing was run beyond the
-seven tests this instruction constructed**, so this report claims nothing about the
-rest of the suite.
+**Three inherited reds are unchanged and unnamed by any order** —
+`TheAchievementsScreenTests`' two and
+`TheFitGuardAsksAboutTheGridTheSendIsOnTests`' one.
 
 ---
 
 ## 3. What you should see
 
-### 1. The snapshot, whole, from a start where the radio answered
+### 1. Where the offset stopped, with file and line, and how it was found
 
-The rig state below is the one a real poll delivers — USB-D on 14.074000, receiving —
-pushed through `ApplyRigState`. **The radio fields the settled write fills are the
-ones it fills at the shack.** What this machine cannot supply is a connected port, so
-`radioConnected` reads `false` and the port, baud and CI-V address stay `unknown`
-with their reasons; that is the honest edge of what a bench with no radio can show.
+**`src/Hamlet.App/ViewModels/MainWindowViewModel.cs:913-920`** — the notify list on
+`_clockOffset` named five properties and not `DigitalCardsIdle`.
+
+**Found by comparing two readers on one object**, not by searching. The settled
+snapshot reads the property at `:6176`; the sentence he read composes at `:1509` from
+`CardsNow` at `:2686`, which reads the same property. So the only thing that can
+differ between them is *when each is asked* — and the printout above shows the object
+telling five surfaces and not the sixth. That is a missing notification and nothing
+else.
+
+**The arithmetic was never in question.** `Ft8Slots.TrueUtc` returns null only when
+`OffsetSeconds` is null; with `0.033` it returns a corrected moment, measured.
+
+### 2. A slot cut from a measured offset, and a decode from it
+
+Same audio, same clock, the watch driven twice:
+
+```
+WITH NO MEASURED OFFSET
+  slots cut : 0
+  refusal   : the clock offset has not been measured, so where the slot
+              boundaries fall is not known and nothing was cut
+  decoded   : (nothing)
+
+WITH THE MEASURED OFFSET
+  slots cut : 1
+  decoded   : CQ K1ABC FN42
+```
+
+And the arrival of the offset is now a line of its own:
 
 ```json
-{"ts":"2026-09-10T18:00:27.203Z","sessionId":"75596026","level":"info","appVersion":"1.12.268","category":"diagnostics","event":"startup_snapshot","data":{"when":"settled","appVersion":"1.12.268+a7db557","ft8SharpVersion":"unknown","ft8SharpVersionWhy":"Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded","ft8SharpDeepVersion":"unknown","ft8SharpDeepVersionWhy":"Ft8Sharp.Deep is not loaded in this process yet, which is ordinary before anything has decoded","framework":".NET 8.0.24","osBuild":"Microsoft Windows 10.0.26200","processBits":64,"audioInputCount":2,"audioInputs":"... Microphone (EMEET SmartCam C960) | ... Microphone (USB Audio)","audioInputSelected":"(none named, so Hamlet preselects and never claims)","audioInputPresent":"unknown","audioInputPresentWhy":"nothing supplied this fact","audioInputChosenBy":"not remembered","audioOutputCount":4,"audioOutputs":"... S34J55x (3- HD Audio Driver for Display Audio) | ... S34J55x -2 (HD Audio Driver for Display Audio) | ... Ball Speaker (USBAudio2.0) | ... Speakers (USB Audio)","transmitDeviceSelected":"(none named, so a send refuses)","transmitDevicePresent":"unknown","transmitDevicePresentWhy":"nothing supplied this fact","radioConnected":false,"radioPort":"unknown","radioPortWhy":"nothing supplied this fact","radioBaud":"unknown","radioBaudWhy":"nothing supplied this fact","radioCivAddress":"unknown","radioCivAddressWhy":"nothing supplied this fact","radioModel":"mode USB","radioLastAnsweredSecondsAgo":5.1,"clockOffsetKnown":true,"clockOffsetSeconds":2.115,"clockOffsetAgeSeconds":5.2,"clockLastQueryReason":"measured","transmitReadiness":"Digital","transmitReadinessDecidedBy":"the operating mode the panel is on; the Morse gate is asked only in CW","settingsLoaded":true,"settingsPathExists":true,"settingsNamedButAbsent":"(none)","telemetryCategoriesOn":"Diagnostics | Rig | Tuning | Explore | Decode | Transmit | Performance","telemetryCategoriesOff":"(none)","telemetryEventsDropped":0}}
+{"ts":"2026-09-10T19:15:47.366Z","level":"info","appVersion":"1.12.269","category":"diagnostics","event":"state_changed","data":{"what":"clock_offset","from":"unknown","to":"known","why":"a time server answered, so slots can be cut and cards counted","mode":"Digital"}}
 ```
 
-**The four fields to read**: `radioModel` says `mode USB` because the radio answered,
-`radioLastAnsweredSecondsAgo` says `5.1` so its age travels with it, `clockOffsetKnown`
-is `true` with the offset, its age and the query's own token beside it, and
-`transmitReadiness` says `Digital` rather than repeating a Morse verdict.
+### 3. Task 6's five cases
 
-*(The audio device ids are elided above only to keep the line readable. The real line
-carries them in full, and no callsign, name, grid or location is in it — §2.1.)*
+**1. A measured offset that reaches the snapshot and no other reader — today's own
+fault. YES.** The crossing from unknown to known is its own line, with the mode beside
+it. A file carrying `clock_query_finished` and **no** `state_changed` for
+`clock_offset` says the measurement was taken and never delivered.
 
-### 2. The same start, with no radio at all — it still writes
-
-Both snapshots from one session, quoted whole, so you can see what the second write
-buys. **16 unknown fields become 9.**
-
-```
-at_start    unknown fields: 16
-settled     unknown fields: 9
-```
+**2. A CQ press that produces no transmission. YES.** Quoted whole from a run on a
+machine with no radio and no sound card:
 
 ```json
-{"ts":"2026-09-10T17:59:33.367Z","sessionId":"6db52e44","level":"info","appVersion":"1.12.268","category":"diagnostics","event":"startup_snapshot","data":{"when":"at_start","appVersion":"1.12.268+a7db557","ft8SharpVersion":"unknown","ft8SharpVersionWhy":"Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded","ft8SharpDeepVersion":"unknown","ft8SharpDeepVersionWhy":"Ft8Sharp.Deep is not loaded in this process yet, which is ordinary before anything has decoded","framework":".NET 8.0.24","osBuild":"Microsoft Windows 10.0.26200","processBits":64,"audioInputCount":2,"audioInputs":"... Microphone (EMEET SmartCam C960) | ... Microphone (USB Audio)","audioInputSelected":"(none named, so Hamlet preselects and never claims)","audioInputPresent":"unknown","audioInputPresentWhy":"nothing supplied this fact","audioInputChosenBy":"not remembered","audioOutputCount":4,"audioOutputs":"... S34J55x | ... S34J55x -2 | ... Ball Speaker (USBAudio2.0) | ... Speakers (USB Audio)","transmitDeviceSelected":"(none named, so a send refuses)","transmitDevicePresent":"unknown","transmitDevicePresentWhy":"nothing supplied this fact","radioConnected":"unknown","radioConnectedWhy":"nothing supplied this fact","radioPort":"unknown","radioPortWhy":"nothing supplied this fact","radioBaud":"unknown","radioBaudWhy":"nothing supplied this fact","radioCivAddress":"unknown","radioCivAddressWhy":"nothing supplied this fact","radioModel":"unknown","radioModelWhy":"nothing supplied this fact","radioLastAnsweredSecondsAgo":"unknown","radioLastAnsweredSecondsAgoWhy":"nothing supplied this fact","clockOffsetKnown":"unknown","clockOffsetKnownWhy":"nothing supplied this fact","clockOffsetSeconds":"unknown","clockOffsetSecondsWhy":"nothing supplied this fact","clockOffsetAgeSeconds":"unknown","clockOffsetAgeSecondsWhy":"nothing supplied this fact","clockLastQueryReason":"unknown","clockLastQueryReasonWhy":"nothing supplied this fact","transmitReadiness":"unknown","transmitReadinessWhy":"nothing supplied this fact","transmitReadinessDecidedBy":"unknown","transmitReadinessDecidedByWhy":"nothing supplied this fact","settingsLoaded":true,"settingsPathExists":false,"settingsNamedButAbsent":"(none)","telemetryCategoriesOn":"Diagnostics | Rig | Tuning | Explore | Decode | Transmit | Performance","telemetryCategoriesOff":"(none)","telemetryEventsDropped":0}}
+{"event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"Ft8"}}
+{"event":"operator_action","data":{"action":"send_requested","mode":"Digital","detail":"9 characters"}}
+{"event":"send_stage","data":{"stage":"composed","entered":true,"detail":"Ft8"}}
+{"event":"send_stage","data":{"stage":"read_back","entered":true,"detail":"Standard"}}
 ```
+
+The last stage is `read_back` and nothing follows it, which reads as **composed and
+never armed**. Through a fake port and sink the same path writes `gate_asked`,
+`keyed`, `handed_to_the_sound_card`, `unkeyed`, in that order, and comes out `Played`.
+
+**3. A slot that is never cut. YES.**
 
 ```json
-{"ts":"2026-09-10T17:59:38.676Z","sessionId":"6db52e44","level":"info","appVersion":"1.12.268","category":"diagnostics","event":"startup_snapshot","data":{"when":"settled","appVersion":"1.12.268+a7db557","ft8SharpVersion":"unknown","ft8SharpVersionWhy":"Ft8Sharp is not loaded in this process yet, which is ordinary before anything has decoded","ft8SharpDeepVersion":"unknown","ft8SharpDeepVersionWhy":"Ft8Sharp.Deep is not loaded in this process yet, which is ordinary before anything has decoded","framework":".NET 8.0.24","osBuild":"Microsoft Windows 10.0.26200","processBits":64,"audioInputCount":2,"audioInputs":"... Microphone (EMEET SmartCam C960) | ... Microphone (USB Audio)","audioInputSelected":"(none named, so Hamlet preselects and never claims)","audioInputPresent":"unknown","audioInputPresentWhy":"nothing supplied this fact","audioInputChosenBy":"not remembered","audioOutputCount":4,"audioOutputs":"... S34J55x | ... S34J55x -2 | ... Ball Speaker (USBAudio2.0) | ... Speakers (USB Audio)","transmitDeviceSelected":"(none named, so a send refuses)","transmitDevicePresent":"unknown","transmitDevicePresentWhy":"nothing supplied this fact","radioConnected":false,"radioPort":"unknown","radioPortWhy":"nothing supplied this fact","radioBaud":"unknown","radioBaudWhy":"nothing supplied this fact","radioCivAddress":"unknown","radioCivAddressWhy":"nothing supplied this fact","radioModel":"unknown","radioModelWhy":"nothing supplied this fact","radioLastAnsweredSecondsAgo":"unknown","radioLastAnsweredSecondsAgoWhy":"nothing supplied this fact","clockOffsetKnown":true,"clockOffsetSeconds":2.117,"clockOffsetAgeSeconds":5.2,"clockLastQueryReason":"measured","transmitReadiness":"Digital","transmitReadinessDecidedBy":"the operating mode the panel is on; the Morse gate is asked only in CW","settingsLoaded":true,"settingsPathExists":true,"settingsNamedButAbsent":"(none)","telemetryCategoriesOn":"Diagnostics | Rig | Tuning | Explore | Decode | Transmit | Performance","telemetryCategoriesOff":"(none)","telemetryEventsDropped":0}}
+{"event":"digital_decoder_started","data":{"mode":"Ft8","slotSeconds":15,"sampleRate":12000,"device":"unknown"}}
+{"level":"warn","event":"ft8_slot","data":{"outcome":"refused","refusal":"the clock offset has not been measured, so where the slot boundaries fall is not known and nothing was cut","audioPeakDb":-90,"audioFloorDb":-90,"nearlySilent":true}}
 ```
 
-**`radioConnected` goes from `unknown` to `false`, and those are different facts.**
-The first says nothing supplied it; the second says Hamlet looked and there is no
-radio. The clock filled itself in between the two writes, which is the whole reason
-the second one exists.
+A decoder start with no slot at all now means the tab was never looked at; refusals
+mean it was looking and could not cut, and say why.
 
-### 3. Which of the two Morse-gate faults it was, and what a digital send records now
+**4. A decode that reaches no panel. YES.** The same slot offered twice:
 
-**It was the second.** `TransmitReadiness.Check` has one production caller, so it
-**never refused an FT8 send** — the send path does not consult it. What it did was
-fill the record with a verdict about a keyer nobody was using, which is what made 56
-`not_in_morse` lines look like a broken send chain.
-
-Asked directly about your own state — USB-D, 14.074000, receiving — the gate is
-unchanged and still refuses:
-
-```
-the CW gate, asked about USB-D:
-  state  : NotInMorse
-  reason : not_in_morse
+```json
+{"level":"info","event":"decodes_drawn","data":{"outcome":"proceeded","reason":"drawn","decodes":2,"rowsAdded":2,"rowsOnTheTable":2,"rowsAddressedToTheOperator":0,"cards":0}}
+{"level":"warn","event":"decodes_drawn","data":{"outcome":"degraded","reason":"decoded_but_no_row_added","decodes":2,"rowsAdded":0,"rowsOnTheTable":2,"rowsAddressedToTheOperator":0,"cards":0}}
 ```
 
-**And on a digital session nothing records it:**
+And with the CQ filter on, one line separates three numbers that used to be one:
+`decodes 2, rowsAdded 2, rowsOnTheTable 1`.
 
-```
-transmit_readiness events on the Digital tab: 0
-```
+**5. Receive audio collapsing while FT8 is running. YES, with one honest limit.** The
+tap's peak, floor and `nearlySilent` ride every FT8 slot line, so the collapse from
+-12.9 dB to -67.9 dB would be caught on the digital side rather than only where the CW
+decoder happened to be sampling. **The limit: a slot line is written when a slot is
+cut or refused.** A tab nobody is on writes none, and audio health while the operator
+is on Voice is still nowhere.
 
-**What that test cannot reach, said plainly rather than claimed.** The readiness
-callback fires only once a transmitter exists, and a transmitter exists only once a
-radio is connected — `CwTransmitViewModel.Refresh` returns early while `_transmitter`
-is null. **So a headless session writes no `transmit_readiness` events with the guard
-in or out**, measured both ways. Reproducing the 56 refusals needs a connected radio
-in USB-D, which this machine cannot stage. What is proved here is the deterministic
-half: the CW check still refuses USB-D, so nothing was weakened, and a digital session
-records no Morse verdict.
+**Five for five, and the fifth is qualified rather than claimed clean.**
 
-### 4. Task 5 — this morning, replayed, and whether a command would have been needed
+### 4. What the record still cannot answer
 
-Your state constructed: a transmit device named in settings and absent from the
-machine, a clock that had not answered, a radio not connected.
+**Whether anything actually keyed the transmitter.** `unkeyed` says Hamlet wrote the
+frame; it does not say the radio transmitted. That is ask 1, it is yours, and this
+unit did not touch what `Played` asserts.
 
-```
-when                      settled
-transmitDevicePresent     false
-settingsNamedButAbsent    transmit device {0.0.0.00000000...
-audioOutputCount          4
-radioConnected            false
-clockOffsetKnown          true
-clockLastQueryReason      measured
-transmitReadiness         Digital
-not_in_morse refusals in the file : 0
-```
+**Whether a send that stopped mid-path stopped for the reason the last stage
+suggests.** The stages say where it got to. Why it stopped there is still the outcome
+event's job, and a stage with no outcome after it is a question rather than an answer.
 
-**For the sound card, no command would have been needed.** `transmitDevicePresent`
-reads false, `settingsNamedButAbsent` names the device that went away, and
-`audioOutputCount` says how many the machine does have. That is the whole of this
-morning's hour, answered in three fields of one uploaded file.
+**Audio health anywhere but the digital slot path**, as case 5 says.
 
-**For the clock, no.** The settled snapshot carries whether an offset is held, its
-age, and the last query's own token, so a reader sees the state rather than inferring
-it from an absence.
-
-**And the record is no longer misleading.** There are no `not_in_morse` lines to read
-as a broken send chain.
-
-**What is still missing, and this unit does not claim it.** Whether anything actually
-keyed the transmitter. That is ask 1 below, unchanged since unit 303: the radio's own
-transmit state is still not joined to the transmission record.
+**And whether this unit broke a test it is forbidden to run.** Named in section 2.
 
 ---
 
 ## 4. What's blocking us
 
-**Nothing blocks the next unit.** Two items want a ruling before the work they
-concern can be done well.
+**Nothing blocks the next unit.** Two items want a ruling.
 
-**1. The one thing an uploaded file still cannot answer is whether anything keyed.**
+**1. Whether the next unit should run the tests this one could not.**
 
-> Hamlet's transmission record says a message was **played** and never that the radio
-> **transmitted**, and it stays that way until the radio's own transmit state is
-> joined to it.
+> A unit that changes the shape of an existing telemetry event runs the tests that
+> read that event, filtered by exact name, before it reports.
 >
-> Why: `Ft8TransmitOutcome.Played` and `TransmitRun.AudioWentOut` were renamed in unit
-> 303 precisely because the old names claimed something the code had not measured, and
-> that honesty is worth keeping. But the radio broadcasts `1C 00` four times a second
-> and the record does not consume it, so a send with the antenna disconnected and a
-> send that put a hundred watts out look identical in the file. This morning that was
-> the third of three mysteries and it is still the third.
+> Why: HM-DEC-155 exists because three sessions died polling a suite, and it is right.
+> But it leaves a real hole — this unit added a field to `ft8_transmission` and two to
+> `startup_snapshot`, both of which other tests read, and **the rule that keeps the
+> session alive is also the rule that stops it checking.** A named, filtered,
+> foregrounded run of the handful of tests that read a changed event is not a suite
+> and is not a poll.
 >
-> Rejected: inferring it from the Po meter, which is only meaningful while
-> transmitting and so answers a question about the moment rather than about the send;
-> and inferring it from the audio path, which is the same category error the rename
-> was made to stop.
+> Rejected: running the whole project, which is the thing that killed three sessions;
+> and leaving it as it is, which means every unit that touches a shared event ships a
+> risk it names and cannot measure.
 
-**2. Whether `transmit_readiness` should be recorded at all outside CW.**
+**2. Whether a fault should speak on the screen as well as in the file.**
 
-> This unit narrowed the recording to CW and left the check untouched. **A weaker
-> option exists and was not taken**: record it everywhere but at `debug` level.
+> Where the application knows a stage of the send path was entered and none after it,
+> it says so on the screen rather than only in the telemetry.
 >
-> Why the narrow one was chosen: §8.1 says anything a person would want to find by
-> scanning is not `info`, and a Morse verdict about a digital send is not a thing
-> anybody wants to find at all — it is noise that already cost you an hour. But the
-> absence is itself a fact a future reader has to know about, which is a real cost and
-> is why this is here rather than settled.
+> Why: your standing rule is that a fault speaks unasked, on screen and in the file.
+> This unit did the file half everywhere and the screen half nowhere, deliberately —
+> the order's tasks are about the record. **But the file is the second line of defence
+> and the screen is the first** (§8.1), and a send that stopped at `read_back` is
+> something he could be told in a sentence at the moment it happens.
 >
-> Rejected: removing the check's Morse condition, which would have weakened a gate
-> that is right.
+> Rejected: doing it inside this unit, which would have been scope nobody asked for on
+> the one screen a wrong sentence is most expensive.
 
 ### Asks still outstanding
 
 Carried verbatim per HM-DEC-139.
 
 1. **Whether the transmission record asks the radio whether it keyed.** *First made
-   2026-09-10, unit 303.* Restated above with task 5's measurement behind it.
-   **Waiting on:** your ruling. **Where it sits:** `Played` is honest and unchanged.
+   2026-09-10, unit 303.* **Waiting on:** your ruling. **Where it sits:** `Played` is
+   honest and unchanged; `unkeyed` now says Hamlet wrote the frame and claims nothing
+   about the radio.
 
 2. **Nothing in this repository can look at a picture.** *First made 2026-09-09, unit
-   300.* Eight units running. Real pixels want `Avalonia.Headless.Skia`, and **a
+   300.* Nine units running. Real pixels want `Avalonia.Headless.Skia`, and **a
    package is a dependency decision** (§0.4). **Waiting on:** your ruling. **Where it
    sits:** nowhere.
 
