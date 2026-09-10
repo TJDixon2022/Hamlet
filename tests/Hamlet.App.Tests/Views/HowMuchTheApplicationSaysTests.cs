@@ -168,13 +168,34 @@ public sealed class HowMuchTheApplicationSaysTests
     public static IReadOnlyList<(string Surface, int Measured, int Ceiling)> Ceilings { get; }
         = new[]
         {
-            ("MainWindow — CW tab", 528, 650),
-            ("MainWindow — Digital tab", 1118, 1250),
+            ("MainWindow — CW tab", 426, 550),
+            // **RE-SET BY WORK INSTRUCTION 302 ONCE THE FIGURE HELD STILL.** These
+            // two rows were red for three units and could not be raised, because the
+            // number they cap moved by itself: 1281 and 1293 an hour apart in unit
+            // 300, 1259 in unit 301. **Three live readouts were the cause** - the
+            // slot countdown, the card's relative age, and the clock-offset line -
+            // and all three now contribute their widest reading rather than their
+            // current one, so two sweeps of the same tree agree.
+            //
+            // **AND FOUR CAUSES WERE FOUND, NOT ONE.** Three live readouts now
+            // contribute their widest reading rather than their current one; the
+            // seeded card's clock is pinned, so it no longer ages out of the list
+            // mid-sweep and lets the empty-state prose back in; and the fixture no
+            // longer races a background reconnect, which was worth 17 characters
+            // depending on whether it had landed. **Measured four class runs
+            // running: 426, 1194, 1193 and 468 every time, in this class and in
+            // another.**
+            //
+            // **THE FOUR MAINWINDOW ROWS ALL FELL, AND THAT IS THE PINNED CLOCK.**
+            // With the offset stated rather than raced, the strip carries the
+            // unmeasured line instead of a measured one, so the surfaces genuinely
+            // say less than the figures they were set from a unit ago.
+            ("MainWindow — Digital tab", 1194, 1300),
             // **THE WORKING TAB SAYS LESS THAN THE IDLE ONE**, which is the whole
             // shape of this phase: the empty-state explanations go away once there
             // is traffic, and everything composed at run time is now on a hover.
-            ("MainWindow — Digital tab, working", 1087, 1200),
-            ("MainWindow — Voice tab", 518, 650),
+            ("MainWindow — Digital tab, working", 1193, 1300),
+            ("MainWindow — Voice tab", 468, 600),
             ("SettingsWindow", 1628, 1750),
             ("RigDiagnosticsWindow", 1346, 1450),
             ("AboutWindow", 726, 850),
@@ -439,17 +460,99 @@ public sealed class HowMuchTheApplicationSaysTests
     /// screen and this harness does not pretend otherwise. What it is not is prose
     /// about the radio, which is the thing the ceiling exists to hold down.</para>
     /// </remarks>
+    /// <summary>
+    /// **The live readouts, and the widest each can ever be.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**A CEILING SET AGAINST A MOVING NUMBER CANNOT BE SET CORRECTLY**, and
+    /// two rows were red and unraisable for three units because of it (work
+    /// instruction 302, `HM-OPEN-089`). Measured by standing the tab up twice 37
+    /// seconds apart: the slot countdown rendered `10` and then `3`, and that was
+    /// the only difference between the two runs.</para>
+    /// <para>**BOTH OF THESE BELONG ON SCREEN AND NEITHER MOVES BEHIND A HOVER.**
+    /// The countdown is Tim's own ask - *nobody has responded, but I want to know
+    /// how long I have till the next transmit cycle* - and how stale a card is, is
+    /// the whole reason its time line exists. **They are live measurements, not
+    /// prose**, and the ceiling exists to stop prose growing.</para>
+    /// <para>**SO THE SWEEP COUNTS EACH AT ITS WIDEST READING** rather than at
+    /// whatever the clock happened to say. That keeps them inside the ceiling's
+    /// remit - turn one into a sentence and the figure still moves - while making
+    /// the figure the same on two runs of the same tree.</para>
+    /// <para>**THE WIDTHS ARE THE WORST CASE AND ARE DERIVED, NOT GUESSED.** The
+    /// countdown is `Ft8Turn.CountText`: whole seconds on FT8, so at most `15`, and
+    /// one decimal on FT4's 7.5-second slot, so at most `7.5` - three characters,
+    /// and `?` where no clock has been measured. The time line is
+    /// `HH:mm:ss UTC · <age>`, which is 12 characters of clock plus the longest age
+    /// `Ft8ContactCard.Ago` can compose; `999 hours ago` is 13, so 12 + 3 + 13 is
+    /// 28. The clock line is `Ft8Slots.ClockOffset.Describe`: `clock is ` is 9, the
+    /// offset formats to two decimals, ` s slow` is 7, `, checked ` is 10 and the
+    /// longest age it composes is `89 minutes ago` at 14 - so 47 covers an offset up
+    /// to four figures, and the unmeasured branch, `clock not checked yet, so slots
+    /// cannot be cut`, is 44 and fits under it.</para>
+    /// </remarks>
+    private static readonly Dictionary<string, int> LiveReadouts = new()
+    {
+        ["TurnRingCountText"] = 3,
+        ["CardTimeLineText"] = 28,
+        ["ClockOffsetLineText"] = 47,
+    };
+
+    /// <summary>
+    /// How many characters one control contributes to its surface's total.
+    /// </summary>
+    /// <remarks>
+    /// **A LIVE READOUT CONTRIBUTES ITS CEILING AND NOT ITS CURRENT READING**, so
+    /// two sweeps of the same tree agree. Everything else contributes what it says.
+    /// **A live readout that grew past its stated width is a defect and fails
+    /// loudly** rather than being quietly clamped: it means the reading is no longer
+    /// what this table says it is.
+    /// </remarks>
+    private static int Contribution(Control control, string text)
+    {
+        if (control.Name is not { } name || !LiveReadouts.TryGetValue(name, out var most))
+        {
+            return text.Length;
+        }
+
+        Assert.True(
+            text.Length <= most,
+            name + " rendered " + text.Length + " characters (\"" + text
+            + "\"), past the " + most + " this sweep counts it as. Either the "
+            + "readout changed or the stated width was wrong; re-derive it.");
+
+        return most;
+    }
+
+    /// <summary>The same count, for another class.</summary>
+    /// <param name="root">A realized surface.</param>
+    /// <returns>What it says, with its live readouts counted at their widest.</returns>
+    /// <remarks>
+    /// **ONE PLACE COUNTS A SURFACE** (§0), for the same reason one place builds one:
+    /// a second copy of this sweep is how two tests come to disagree about what a
+    /// surface holds.
+    /// </remarks>
+    public static int CharsForSweep(Window root) => Chars(root);
+
     private static int Chars(Window root)
         => root.GetVisualDescendants()
             .Where(v => (v as Control)?.Name != "Byline")
             .Select(v => v switch
             {
-                TextBlock block when block.IsEffectivelyVisible => block.Text,
-                GlossaryTextControl gloss when gloss.IsEffectivelyVisible => gloss.Text,
+                TextBlock block when block.IsEffectivelyVisible
+                    => (Control?)block,
+                GlossaryTextControl gloss when gloss.IsEffectivelyVisible
+                    => gloss,
                 _ => null,
             })
-            .Where(t => !string.IsNullOrWhiteSpace(t))
-            .Sum(t => t!.Length);
+            .Where(c => c is not null)
+            .Select(c => (Control: c!, Text: c switch
+            {
+                TextBlock block => block.Text,
+                GlossaryTextControl gloss => gloss.Text,
+                _ => null,
+            }))
+            .Where(pair => !string.IsNullOrWhiteSpace(pair.Text))
+            .Sum(pair => Contribution(pair.Control, pair.Text!));
 
     /// <summary>
     /// **The Digital tab in the state he operates it in**, not at rest.
@@ -521,6 +624,20 @@ public sealed class HowMuchTheApplicationSaysTests
         {
             var slot = new DateTime(2026, 9, 8, 21, 41, 30, DateTimeKind.Utc);
 
+            // **THE CARD'S CLOCK IS PINNED, AND THAT IS THE THIRD MOVER** (work
+            // instruction 302 task 2). The slot was already fixed and *now* was not,
+            // so the seeded contact aged against the wall clock: measured five times
+            // in six seconds, this surface read 1293 with 76 blocks and then 1309
+            // with 66 - **the card dropped out of the list and the empty-state
+            // explanation it had been hiding came back**, which is why the total rose
+            // while the block count fell.
+            //
+            // **A CEILING CANNOT CAP A SURFACE THAT PICKS ITS OWN STATE FROM THE
+            // HOUR IT RAN.** Two minutes is a card he is still looking at, which is
+            // the state the panel is built around, and it is the same two minutes on
+            // every run for ever.
+            panel.CardsNowForTests = slot.AddMinutes(2);
+
             panel.AddDecodeRowForTests(
                 "214130", "-11", "0.2", "1240", "CQ W3YNI FN00", slot, 14_074_000);
             panel.AddDecodeRowForTests(
@@ -528,6 +645,25 @@ public sealed class HowMuchTheApplicationSaysTests
 
             Pump(window);
         }
+
+        // **THE CLOCK IS PUT IN A STATED CONDITION LAST, AND THIS IS THE FOURTH
+        // MOVER** (work instruction 302 task 2). `ClockIsConcerning` decides whether
+        // the offset line is on the strip at all, and the sweep counts that line as
+        // 47 - so its presence alone is worth 46 against the glyph that replaces it.
+        //
+        // **WHAT WAS MOVING IT IS A LIVE NETWORK CALL.** `QueryTheClockAsync` runs an
+        // SNTP query and assigns the result whenever it lands, so the first window
+        // built in a process measured 1240 and every later one 1194 - the query
+        // having answered in between. **A ceiling cannot be set against a figure
+        // that depends on whether a time server replied yet.**
+        //
+        // **IT IS SET AFTER THE PUMP AND NOT BEFORE**, because an assignment at
+        // construction is simply overwritten by the reply. Unknown is the honest
+        // condition for a window with no radio behind it: the clock has not been
+        // checked, so the line says so and says it at a length that does not move.
+        panel.ClockOffset = Hamlet.RadioEngine.Audio.ClockOffset.Unknown;
+
+        Pump(window);
 
         return window;
     }
@@ -608,6 +744,19 @@ public sealed class HowMuchTheApplicationSaysTests
     public static AppSettings Settled()
     {
         var settings = new AppSettings();
+
+        // **THE SWEEP DOES NOT RACE A RECONNECT** (work instruction 302 task 2).
+        // `ReconnectOnStartup` ships on (HM-DEC-052), so the fixture was starting the
+        // training radio in the background; when that landed before a sweep it
+        // created the spectrum source and the waterfall's collapsed summary stopped
+        // saying `not listening yet`, taking **17 characters** off the total.
+        //
+        // **THAT IS WHY BOTH DIGITAL ROWS FELL BY EXACTLY 17 TOGETHER** on some runs
+        // of this class and not others - measured, 1293 and 1245 against 1276 and
+        // 1228 - while the surface was rock steady across thirty-four sweeps on its
+        // own. **A ceiling cannot be set against a figure that depends on whether a
+        // background connect has finished yet.**
+        settings.ReconnectOnStartup = false;
 
         settings.Operator.Callsign = "KC3QIS";
         settings.Operator.GridSquare = "FN00DJ";

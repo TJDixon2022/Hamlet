@@ -3143,7 +3143,17 @@
                                            IsVisible="{Binding !ClockIsConcerning}"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                <TextBlock Text="{Binding ClockOffsetLine}"
+                                <!-- **A FAULT SPEAKING, AND A LIVE READOUT** (work
+                                     instruction 302 task 2). A clock that is out is
+                                     a thing gone wrong and it stays unhovered - but
+                                     it carries a measured offset and how long ago it
+                                     was checked, so it reads *clock is 1.66 s slow,
+                                     checked just now* and then *1.67 s* a moment
+                                     later. **Named so the character ceiling counts
+                                     it at its widest rather than at whatever the
+                                     clock happened to say.** -->
+                                <TextBlock x:Name="ClockOffsetLineText"
+                                           Text="{Binding ClockOffsetLine}"
                                            VerticalAlignment="Center"
                                            FontSize="12"
                                            FontWeight="SemiBold"
@@ -4455,7 +4465,14 @@
                                                                  is. **The relative half is
                                                                  absent with no measured
                                                                  clock** (§0.0). -->
+                                                            <!-- **THE SECOND LIVE READOUT, NAMED FOR THE SAME
+                                                                 REASON.** *39 hours ago* is composed against the
+                                                                 clock, so it grows a digit as an evening wears on
+                                                                 and the surface's character count grows with it.
+                                                                 **It stays on screen**: how stale a card is, is
+                                                                 the whole reason the line exists. -->
                                                             <TextBlock Grid.Row="2"
+                                                                       x:Name="CardTimeLineText"
                                                                        Text="{Binding TimeLine}"
                                                                        Margin="0,4,0,0"
                                                                        FontFamily="Consolas,Menlo,monospace"
@@ -4539,7 +4556,17 @@
                                                                          Classes.hm-unknown="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingIsUnknown}"
                                                                          Classes.hm-onair="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingIsOnAir}" />
 
-                                                                    <TextBlock Text="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingCount}"
+                                                                    <!-- **A LIVE READOUT, AND IT IS NAMED SO THE CHARACTER
+                                                                         CEILING CAN BOUND IT** (work instruction 302 task 2).
+                                                                         It changes every second by the clock, so a sweep that
+                                                                         counted whatever it happened to say measured the
+                                                                         moment rather than the surface. **It stays on screen
+                                                                         exactly as it is**: Tim asked for it in as many words
+                                                                         - *nobody has responded, but I want to know how long I
+                                                                         have till the next transmit cycle* - and it is a live
+                                                                         measurement, not prose. -->
+                                                                    <TextBlock x:Name="TurnRingCountText"
+                                                                               Text="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).TurnRingCount}"
                                                                                HorizontalAlignment="Center"
                                                                                VerticalAlignment="Center"
                                                                                FontFamily="Consolas,Menlo,monospace"
