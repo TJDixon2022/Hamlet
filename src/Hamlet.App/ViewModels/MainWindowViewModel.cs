@@ -6082,22 +6082,62 @@ public partial class MainWindowViewModel : ObservableObject
 
         _clockQueryRunning = true;
 
+        // **THE ATTEMPT IS WRITTEN BEFORE THE SOCKET IS OPENED** (work instruction
+        // 303 task 1). That ordering is the finding, not a detail: with only an
+        // outcome event, a query nobody made and a query that died on the way out
+        // leave the same empty file, and **that is the pair that cost twenty minutes
+        // on the wrong machine.** After this, no record at all means nothing tried.
+        AppEvents.ClockQueryStarted(_telemetry, SntpClock.DefaultServer);
+
         try
         {
-            var measured = await SntpClock
-                .QueryAsync(DateTime.UtcNow)
+            var answer = await SntpClock
+                .AskAsync(DateTime.UtcNow)
                 .ConfigureAwait(true);
 
-            if (measured.IsKnown || !ClockOffset.IsKnown)
+            // **AND WHAT CAME BACK IS WRITTEN WHETHER OR NOT IT WORKED.** A failure
+            // is a warning rather than information: slot timing depends on this, so
+            // a query nobody could complete is something to find by scanning.
+            AppEvents.ClockQueryFinished(_telemetry, answer);
+
+            _lastClockAnswer = answer;
+
+            if (answer.Offset.IsKnown || !ClockOffset.IsKnown)
             {
-                ClockOffset = measured;
+                ClockOffset = answer.Offset;
             }
+
+            OnPropertyChanged(nameof(ClockOffsetLine));
+            OnPropertyChanged(nameof(ClockIsConcerning));
+        }
+        catch (Exception error)
+        {
+            // **THIS FILE CLAIMED NOTHING HERE COULD THROW AND NOTHING VERIFIED IT**
+            // (§8's never-throw discipline). `SntpClock` catches four exception types
+            // and there are more than four ways to fail; an unhandled one inside a
+            // fire-and-forget task takes the application down. **It is recorded
+            // rather than swallowed silently**, because an exception nobody wrote
+            // down is the hole this whole unit exists to close.
+            AppEvents.ClockQueryFinished(
+                _telemetry,
+                ClockAnswer.Failed(
+                    SntpClock.DefaultServer,
+                    "threw_" + error.GetType().Name,
+                    error.Message));
         }
         finally
         {
             _clockQueryRunning = false;
         }
     }
+
+    /// <summary>What the last clock query did, or null before one has finished.</summary>
+    /// <remarks>
+    /// **THE SCREEN HAS TO TELL *NEVER ASKED* FROM *ASKED AND FAILED*** (work
+    /// instruction 303 task 3), and until this existed it could not: both states
+    /// reached `ClockOffset.Unknown` and the line said the same thing about each.
+    /// </remarks>
+    private ClockAnswer? _lastClockAnswer;
 
     partial void OnWaterfallExpandedChanged(bool value)
         => PersistPanel(PanelKeys.Waterfall, value);

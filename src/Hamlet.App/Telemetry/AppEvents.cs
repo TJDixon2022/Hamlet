@@ -33,6 +33,67 @@ public static class AppEvents
     public static void AppStop(ITelemetry? telemetry)
         => telemetry?.Write(TelemetryCategory.Diagnostics, "app_stop");
 
+    /// <summary>A clock query is about to be made.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="server">Which server is about to be asked.</param>
+    /// <remarks>
+    /// <para>**THE ATTEMPT IS RECORDED BEFORE THE RESULT, AND THAT IS THE WHOLE
+    /// POINT** (work instruction 303 task 1). With only an outcome event, a query
+    /// that was never made and one that died on the way out look identical - and
+    /// **that is exactly the pair that cost twenty minutes on the wrong machine.**
+    /// With this line, *no record at all* means *nothing was tried*, which is a
+    /// fact somebody can act on.</para>
+    /// <para>**A HOSTNAME IS NOT PERSONAL** (§2.1). Nothing about the operator is
+    /// written here: `pool.ntp.org` is a public address and an offset is a property
+    /// of this machine's clock.</para>
+    /// </remarks>
+    public static void ClockQueryStarted(ITelemetry? telemetry, string server)
+        => telemetry?.Write(
+            TelemetryCategory.Diagnostics,
+            "clock_query_started",
+            new Dictionary<string, object?> { ["server"] = server });
+
+    /// <summary>A clock query finished, however it finished.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="answer">What the query did.</param>
+    /// <remarks>
+    /// <para>**ONE EVENT, THREE SHAPES, AND THE OUTCOME IS ALWAYS NAMED** (§8.1). A
+    /// measurement carries the offset and the round trip; a failure carries the
+    /// stable token that says which failure it was. **Six ways to fail used to
+    /// return one value and leave no trace.**</para>
+    /// <para>**A FAILURE IS A WARNING AND NOT INFORMATION.** Slot timing depends on
+    /// this, so a query nobody could complete is something a person would want to
+    /// find by scanning the file.</para>
+    /// </remarks>
+    public static void ClockQueryFinished(ITelemetry? telemetry, ClockAnswer answer)
+    {
+        ArgumentNullException.ThrowIfNull(answer);
+
+        var data = new Dictionary<string, object?>
+        {
+            ["server"] = answer.Server,
+            ["outcome"] = answer.DidMeasure ? "measured" : "failed",
+            ["reason"] = answer.Reason,
+            ["detail"] = answer.Detail,
+        };
+
+        if (answer.DidMeasure)
+        {
+            data["offsetSeconds"] = Math.Round(answer.Offset.OffsetSeconds ?? 0, 3);
+        }
+
+        if (answer.RoundTrip is { } trip)
+        {
+            data["roundTripMs"] = Math.Round(trip.TotalMilliseconds, 1);
+        }
+
+        telemetry?.Write(
+            TelemetryCategory.Diagnostics,
+            "clock_query_finished",
+            data,
+            answer.DidMeasure ? TelemetryLevel.Info : TelemetryLevel.Warn);
+    }
+
     /// <summary>The About window was opened.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     public static void AboutOpened(ITelemetry? telemetry)

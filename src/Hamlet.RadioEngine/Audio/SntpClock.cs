@@ -1,4 +1,4 @@
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 
 namespace Hamlet.RadioEngine.Audio;
 
@@ -46,7 +46,33 @@ public static class SntpClock
     /// </remarks>
     public static async Task<ClockOffset> QueryAsync(
         DateTime pcUtcNow, string? server = null)
+        => (await AskAsync(pcUtcNow, server).ConfigureAwait(false)).Offset;
+
+    /// <summary>
+    /// **Ask a time server, and say what happened either way.**
+    /// </summary>
+    /// <param name="pcUtcNow">What this machine believes the time is.</param>
+    /// <param name="server">The server to ask, or null for the pool.</param>
+    /// <returns>The offset where one was measured, and always the reason.</returns>
+    /// <remarks>
+    /// <para>**SIX WAYS TO FAIL AND ONE ANSWER** (work instruction 303 task 1). Every
+    /// path below used to return `ClockOffset.Unknown` and nothing else, so a name
+    /// that would not resolve, a packet that never came back, a reply too short and a
+    /// timestamp that would not parse were **indistinguishable from each other and
+    /// from never having asked at all.**</para>
+    /// <para>**THAT IS WHAT COST THE TWENTY MINUTES.** The screen said Hamlet had not
+    /// been able to check the clock, which is a sentence about a failure, while the
+    /// record held nothing whatever - and *asked and failed* and *never asked* are
+    /// different problems with different fixes.</para>
+    /// <para>**THE OFFSET IS UNCHANGED.** This returns exactly what `QueryAsync`
+    /// returned; what is added is the reason beside it, for the caller to record.
+    /// </para>
+    /// </remarks>
+    public static async Task<ClockAnswer> AskAsync(
+        DateTime pcUtcNow, string? server = null)
     {
+        var asked = server ?? DefaultServer;
+
         try
         {
             using var client = new UdpClient();
@@ -73,14 +99,19 @@ public static class SntpClock
 
             if (reply.Buffer.Length < 48)
             {
-                return ClockOffset.Unknown;
+                return ClockAnswer.Failed(
+                    asked, "short_reply",
+                    "the reply was " + reply.Buffer.Length
+                    + " bytes and an SNTP reply is 48");
             }
 
             var serverUtc = TransmitTimestamp(reply.Buffer);
 
             if (serverUtc is not { } theirs)
             {
-                return ClockOffset.Unknown;
+                return ClockAnswer.Failed(
+                    asked, "unreadable_timestamp",
+                    "the reply carried no transmit timestamp");
             }
 
             // The reply describes the moment the server sent it, which is about
@@ -88,24 +119,35 @@ public static class SntpClock
             var roundTrip = received - sent;
             var hereWhenTheySent = received - (roundTrip / 2);
 
-            return new ClockOffset(
-                (theirs - hereWhenTheySent).TotalSeconds, received);
+            return ClockAnswer.Measured(
+                asked,
+                new ClockOffset(
+                    (theirs - hereWhenTheySent).TotalSeconds, received),
+                roundTrip);
         }
-        catch (SocketException)
+        catch (SocketException error)
         {
-            return ClockOffset.Unknown;
+            // **THE ONE THAT NAMES ITSELF.** A name that will not resolve, a refused
+            // port and a network that is not there all arrive here, and the socket
+            // error code is what tells them apart - so it is recorded rather than
+            // thrown away.
+            return ClockAnswer.Failed(
+                asked, "socket_" + error.SocketErrorCode, error.Message);
         }
         catch (TimeoutException)
         {
-            return ClockOffset.Unknown;
+            return ClockAnswer.Failed(
+                asked, "timeout",
+                "nothing came back within " + TimeoutMilliseconds + " ms");
         }
         catch (ObjectDisposedException)
         {
-            return ClockOffset.Unknown;
+            return ClockAnswer.Failed(
+                asked, "disposed", "the socket was closed while asking");
         }
-        catch (InvalidOperationException)
+        catch (InvalidOperationException error)
         {
-            return ClockOffset.Unknown;
+            return ClockAnswer.Failed(asked, "invalid_operation", error.Message);
         }
     }
 
@@ -152,4 +194,57 @@ public static class SntpClock
         return new DateTime(1900, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             .AddMilliseconds(milliseconds);
     }
+}
+
+/// <summary>What one clock query did, whether or not it measured anything.</summary>
+/// <param name="Server">Which server was asked.</param>
+/// <param name="Offset">The offset, or <see cref="ClockOffset.Unknown"/>.</param>
+/// <param name="Reason">
+/// A **stable machine token** for what happened: `measured`, `timeout`,
+/// `short_reply`, `unreadable_timestamp`, `disposed`, `invalid_operation`, or
+/// `socket_` and the socket error code.
+/// </param>
+/// <param name="Detail">The same thing in words, for a person reading the file.</param>
+/// <param name="RoundTrip">How long the exchange took, where it completed.</param>
+/// <remarks>
+/// <para>**A STABLE TOKEN AND A SENTENCE, WHICH IS §8.1'S OWN SHAPE.** The token is
+/// what a comparison across sessions is made on; the sentence is what a person reads.
+/// A display string alone gets reworded the next time somebody improves the copy and
+/// takes every comparison with it.</para>
+/// <para>**NOTHING HERE IS PERSONAL** (§2.1). A time server's hostname is not
+/// personal and neither is an offset.</para>
+/// </remarks>
+public sealed record ClockAnswer(
+    string Server,
+    ClockOffset Offset,
+    string Reason,
+    string Detail,
+    TimeSpan? RoundTrip = null)
+{
+    /// <summary>True where a server answered and the offset is real.</summary>
+    public bool DidMeasure => Offset.IsKnown;
+
+    /// <summary>A query that worked.</summary>
+    /// <param name="server">Which server answered.</param>
+    /// <param name="offset">What it measured.</param>
+    /// <param name="roundTrip">How long the exchange took.</param>
+    /// <returns>The answer.</returns>
+    public static ClockAnswer Measured(
+        string server, ClockOffset offset, TimeSpan roundTrip)
+        => new(
+            server,
+            offset,
+            "measured",
+            "the server answered in "
+                + roundTrip.TotalMilliseconds.ToString("0")
+                + " ms",
+            roundTrip);
+
+    /// <summary>A query that did not work, and why.</summary>
+    /// <param name="server">Which server was asked.</param>
+    /// <param name="reason">The stable token.</param>
+    /// <param name="detail">The same thing in words.</param>
+    /// <returns>The answer.</returns>
+    public static ClockAnswer Failed(string server, string reason, string detail)
+        => new(server, ClockOffset.Unknown, reason, detail);
 }
