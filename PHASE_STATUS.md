@@ -2,7 +2,7 @@ PHASE: FT4 works exactly the way FT8 does
 PHASE_SET: 2026-09-08
 DESCRIPTION: Where FT4 lives decided by reading upstream, then the decoder, the 7.5 second slot machinery, the ADIF submode, the button, and Tim at the radio
 CURRENT_STEP: 1
-WORK_INSTRUCTION: 305 - the offset reaches the snapshot and not the app
+WORK_INSTRUCTION: 305 - the CQ makes a card, the slot clock leaves the card panel, and the i hover is cut to facts
 STEP: 0 | done | where FT4 lives, decided by reading
 STEP: 1 | partial | FT4 decodes a signal Hamlet made
 STEP: 2 | partial | the slot machinery is FT4's
