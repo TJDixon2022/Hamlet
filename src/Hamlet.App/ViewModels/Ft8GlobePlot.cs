@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using Hamlet.RadioEngine.Explore;
 
@@ -71,23 +71,42 @@ public sealed class Ft8GlobePlot
         var here = OperatorLocation.FromGrid(operatorGrid);
         var there = OperatorLocation.FromGrid(stationGrid);
 
-        HasOperator = here is not null;
-        HasStation = there is not null;
+        // **PLACED ON THE PICTURE, NOT ON A FLAT RECTANGLE** (work instruction 306).
+        // `AzimuthalMap.NorthPolar.Place` answers null in two separate cases - past
+        // the rim, which on this asset is the equator, and outside the cropped
+        // bitmap - and **null means no marker at all** rather than one pushed to the
+        // edge. A dot is a claim (§0.0).
+        var mine = here is { } a ? Map.Place(a.Latitude, a.Longitude) : null;
+        var his = there is { } b ? Map.Place(b.Latitude, b.Longitude) : null;
 
-        if (here is { } from)
+        HasOperator = mine is not null;
+        HasStation = his is not null;
+
+        // **A GRID THAT RESOLVED AND A PLACE ON THIS MAP ARE DIFFERENT FACTS**, and
+        // the caption needs both: a station south of the equator did put a grid on
+        // the air, and saying Hamlet does not know where he is would be untrue.
+        StationGridResolved = there is not null;
+        OperatorGridResolved = here is not null;
+
+        if (mine is { } m)
         {
-            OperatorX = X(from.Longitude);
-            OperatorY = Y(from.Latitude);
+            (OperatorX, OperatorY) = m;
         }
 
-        if (there is { } to)
+        if (his is { } h)
         {
-            StationX = X(to.Longitude);
-            StationY = Y(to.Latitude);
+            (StationX, StationY) = h;
         }
 
-        Miles = here is { } a && there is { } b
-            ? GridPath.MilesBetween(a, b)
+        // **THE DISTANCE IS A FACT ABOUT TWO GRIDS AND NOT ABOUT THIS PICTURE.**
+        // A station off the southern edge is still a measured number of miles away,
+        // and the number is honest even where the marker cannot be drawn.
+        Miles = here is { } from && there is { } to
+            ? GridPath.MilesBetween(from, to)
+            : null;
+
+        Bearing = here is { } start && there is { } end
+            ? GridPath.BearingDegrees(start, end)
             : null;
 
         Place = place;
@@ -173,73 +192,40 @@ public sealed class Ft8GlobePlot
         }
     }
 
-    /// <summary>Longitude to the coastline's own x.</summary>
-    /// <remarks>**THE `&lt;desc&gt;`'S OWN ARITHMETIC**, and nothing else's.</remarks>
-    public static double X(double longitude) => (longitude + 180.0) * 2.0;
+    /// <summary>The picture everything here is placed on.</summary>
+    public static AzimuthalImage Map => AzimuthalMap.NorthPolar;
 
-    /// <summary>Latitude to the coastline's own y.</summary>
-    public static double Y(double latitude) => (90.0 - latitude) * 2.0;
+    /// <summary>Whether the station put a grid on the air at all.</summary>
+    /// <remarks>
+    /// **DIFFERENT FROM <see cref="HasStation"/>**, which is whether he can be drawn
+    /// on this particular picture. A station in the southern hemisphere is known and
+    /// unplaceable, and conflating the two would have the caption say Hamlet does not
+    /// know where he is about a station who told it.
+    /// </remarks>
+    public bool StationGridResolved { get; }
+
+    /// <summary>Whether the operator's own grid resolved at all.</summary>
+    public bool OperatorGridResolved { get; }
+
+    /// <summary>The initial bearing to the station, or null.</summary>
+    public double? Bearing { get; }
 
     /// <summary>The window the map draws, fitted to whatever is known.</summary>
     /// <remarks>
-    /// **IT FRAMES TO FIT BOTH POINTS WITH A MARGIN** (the instruction), stops
-    /// shrinking at <see cref="SmallestFrame"/>, and is clamped inside the map so a
-    /// station near the date line does not frame empty space off the edge.
+    /// **IT IS THE WHOLE PICTURE SINCE UNIT 306.** It used to fit both points with a
+    /// margin, which is right for a drawn coastline that can be zoomed and wrong for
+    /// a photograph. <see cref="MapWidth"/>, <see cref="MapHeight"/>,
+    /// <see cref="Margin"/> and <see cref="SmallestFrame"/> describe that older
+    /// arrangement and are read by its tests; nothing in `src/` uses them now.
     /// </remarks>
     private (double, double, double, double) Framed()
     {
-        if (!HasMap)
-        {
-            return (0, 0, MapWidth, MapHeight);
-        }
-
-        var left = HasOperator ? OperatorX : StationX;
-        var right = left;
-        var top = HasOperator ? OperatorY : StationY;
-        var bottom = top;
-
-        if (HasStation)
-        {
-            left = Math.Min(left, StationX);
-            right = Math.Max(right, StationX);
-            top = Math.Min(top, StationY);
-            bottom = Math.Max(bottom, StationY);
-        }
-
-        left -= Margin;
-        right += Margin;
-        top -= Margin;
-        bottom += Margin;
-
-        var width = Math.Max(right - left, SmallestFrame);
-        var height = Math.Max(bottom - top, SmallestFrame * MapHeight / MapWidth);
-
-        // **THE SAME SHAPE AS THE MAP**, so nothing is squashed: whichever axis needs
-        // more room decides, and the other grows to match.
-        var ratio = MapHeight / MapWidth;
-
-        if (height < width * ratio)
-        {
-            var grew = width * ratio;
-
-            top -= (grew - height) / 2;
-            height = grew;
-        }
-        else
-        {
-            var grew = height / ratio;
-
-            left -= (grew - width) / 2;
-            width = grew;
-        }
-
-        width = Math.Min(width, MapWidth);
-        height = Math.Min(height, MapHeight);
-
-        left = Math.Clamp(left, 0, MapWidth - width);
-        top = Math.Clamp(top, 0, MapHeight - height);
-
-        return (left, top, width, height);
+        // **THE WHOLE PICTURE, ALWAYS** (work instruction 306). The old frame zoomed
+        // to fit two points on a drawn coastline, which a photograph cannot do
+        // without either scaling badly or cropping the land the operator is reading.
+        // **The map is the map**: it is small, both stations are on it, and a fixed
+        // frame is one fewer thing that can put a dot somewhere it does not belong.
+        return (0, 0, Map.WidthPixels, Map.HeightPixels);
     }
 
     /// <summary>The frame, as a reader sees it, for a test and for the record.</summary>

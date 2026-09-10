@@ -1,10 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Hamlet.App.ViewModels;
+using Hamlet.RadioEngine.Explore;
+using System.IO;
 
 namespace Hamlet.App.Controls;
 
@@ -31,6 +35,12 @@ namespace Hamlet.App.Controls;
 public sealed class Ft8GlobeControl : Control
 {
     /// <summary>Where the coastline lives.</summary>
+    /// <remarks>
+    /// **NOTHING HERE DRAWS IT SINCE UNIT 306**, which put a real photograph under
+    /// the dots. The file is not deleted and this constant is not removed, because
+    /// the asset note beside it records what it is and other surfaces may reach for
+    /// it.
+    /// </remarks>
     public const string CoastlineUri =
         "avares://Hamlet.App/Assets/world-coastline.svg";
 
@@ -38,10 +48,23 @@ public sealed class Ft8GlobeControl : Control
     public static readonly StyledProperty<Ft8GlobePlot?> PlotProperty =
         AvaloniaProperty.Register<Ft8GlobeControl, Ft8GlobePlot?>(nameof(Plot));
 
-    private static readonly Lazy<IReadOnlyList<GeometryDrawing>> Land =
-        new(() => SvgMark.Shapes(CoastlineUri));
+    /// <summary>
+    /// **The map itself, loaded once and only where its bytes are recognised.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE HASH IS THE GATE AND A FAILURE SPEAKS UNASKED** (§0.0,
+    /// HM-DEC-092). The geometry that places the dots describes one particular file;
+    /// against a re-saved or re-cropped one every station would land somewhere
+    /// plausible and untrue, and nobody ever checks a dot. So the bitmap is only
+    /// accepted where <see cref="AzimuthalImage.Describes"/> says yes, and where it
+    /// does not there is no picture and therefore no dots.</para>
+    /// <para>**READ THROUGH THE ASSET LOADER**, which is how every other resource in
+    /// this application is reached, so nothing here depends on a file path at run
+    /// time.</para>
+    /// </remarks>
+    private static readonly Lazy<Bitmap?> Map = new(LoadTheMap);
 
-    private static readonly IBrush Sea = new SolidColorBrush(Color.Parse("#DDE6EC"));
+    private static readonly IBrush Paper = new SolidColorBrush(Color.Parse("#DDE6EC"));
     private static readonly IBrush Ink = new SolidColorBrush(Color.Parse("#5F5C53"));
     private static readonly IBrush Mine = new SolidColorBrush(Color.Parse("#C8842A"));
     private static readonly IBrush Theirs = new SolidColorBrush(Color.Parse("#2F7D4F"));
@@ -56,6 +79,16 @@ public sealed class Ft8GlobeControl : Control
     }
 
     /// <inheritdoc/>
+    /// <remarks>
+    /// <para>**THE PICTURE IS THE MAP AND THE CODE PUTS DOTS ON IT.** Nothing here
+    /// draws a coastline, a graticule or a degree label; the ring of degrees printed
+    /// round the asset is part of the photograph and is not Hamlet asserting
+    /// anything (Tim, 2026-09-10).</para>
+    /// <para>**NO MAP MEANS NO DOTS.** Where the bitmap is missing or its bytes are
+    /// not the ones the geometry describes, this draws the plain ground and stops -
+    /// a dot without the picture it was placed against is a claim with nothing
+    /// behind it.</para>
+    /// </remarks>
     public override void Render(DrawingContext context)
     {
         if (Plot is not { } plot || Bounds.Width <= 0 || Bounds.Height <= 0)
@@ -70,24 +103,22 @@ public sealed class Ft8GlobeControl : Control
             return;
         }
 
-        var scale = Math.Min(Bounds.Width / width, Bounds.Height / height);
+        context.FillRectangle(Paper, new Rect(Bounds.Size));
 
-        context.FillRectangle(Sea, new Rect(Bounds.Size));
-
-        // **THE COASTLINE, THROUGH THE FRAME**, so the land and the dots are placed
-        // by one transform and cannot come apart.
-        using (context.PushClip(new Rect(Bounds.Size)))
-        using (context.PushTransform(
-            Matrix.CreateTranslation(-left, -top) * Matrix.CreateScale(scale, scale)))
+        if (Map.Value is not { } map)
         {
-            foreach (var shape in Land.Value)
-            {
-                context.DrawGeometry(shape.Brush, shape.Pen, shape.Geometry!);
-            }
+            return;
         }
 
-        // **THE LINE AND THE DOTS ARE DRAWN AT SCREEN SCALE**, so a wide frame does
-        // not turn a dot into a smear or a hairline.
+        var scale = Math.Min(Bounds.Width / width, Bounds.Height / height);
+
+        context.DrawImage(
+            map,
+            new Rect(left, top, width, height),
+            new Rect(0, 0, width * scale, height * scale));
+
+        // **THE DOTS ARE DRAWN AT SCREEN SCALE**, so a small hover does not turn one
+        // into a smear or a hairline.
         Point At(double x, double y)
             => new((x - left) * scale, (y - top) * scale);
 
@@ -107,6 +138,38 @@ public sealed class Ft8GlobeControl : Control
         if (plot.HasStation)
         {
             Dot(context, At(plot.StationX, plot.StationY), Theirs);
+        }
+    }
+
+    /// <summary>The map, or null where this build cannot stand behind it.</summary>
+    private static Bitmap? LoadTheMap()
+    {
+        try
+        {
+            var uri = new Uri(AzimuthalMap.NorthPolar.Resource);
+
+            using var stream = AssetLoader.Open(uri);
+            using var memory = new MemoryStream();
+
+            stream.CopyTo(memory);
+
+            var bytes = memory.ToArray();
+
+            if (!AzimuthalMap.NorthPolar.Describes(bytes))
+            {
+                return null;
+            }
+
+            memory.Position = 0;
+
+            return new Bitmap(memory);
+        }
+        catch (Exception)
+        {
+            // **A MISSING OR UNREADABLE MAP IS NO MAP** (§8's never-throw
+            // discipline). Drawing nothing is the honest answer and the caption
+            // beside it still says where the station is in words.
+            return null;
         }
     }
 

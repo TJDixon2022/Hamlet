@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -55,6 +55,13 @@
          task 3). -->
     <AvaloniaResource Include="..\..\assets\world-coastline.svg" Link="Assets\world-coastline.svg" />
     <AvaloniaResource Include="..\..\assets\achievement-quill.svg" Link="Assets\achievement-quill.svg" />
+
+    <!-- The azimuthal map, centred on the North Pole so it is the same
+         picture for every operator rather than one file per station
+         (Tim, 2026-09-10). Its geometry and its SHA-256 live together in
+         AzimuthalMap.NorthPolar, and placing refuses against a file the
+         hash does not recognise. -->
+    <AvaloniaResource Include="..\..\assets\azimuthal-north-polar.png" Link="Assets\azimuthal-north-polar.png" />
 
     <!-- The world coastline ships at the repository root because it is a
          PROJECT asset rather than an application one: it was drawn for this

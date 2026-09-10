@@ -54,6 +54,35 @@ public static class AzimuthalMap
         double CentreLongitude,
         double RimRadiusPixels);
 
+    /// <summary>**The map Hamlet ships, and every number that describes it.**</summary>
+    /// <remarks>
+    /// <para>**IT IS CENTRED ON THE POLE AND NOT ON THE OPERATOR**, which is Tim's
+    /// own decision of 2026-09-10 and the reason this file exists at all: *"The idea
+    /// behind the map is not that it is specific to me, but that it will work for
+    /// anyone."* A station-centred image is one file per operator, and he does not
+    /// edit files.</para>
+    /// <para>**THE NUMBERS WERE MEASURED OFF THE PICTURE.** The latitude circles fall
+    /// at 0.333, 0.500, 0.667 and 0.833 of the rim radius - exactly linear, fifteen
+    /// degrees apart - which is what tells an equidistant projection from a
+    /// stereographic or an orthographic one. `TheAzimuthalAssetTests` checks them
+    /// against fourteen city dots found in the image itself.</para>
+    /// <para>**THE RIM IS THE EQUATOR AND THAT IS A REAL LIMIT.** A station in the
+    /// southern hemisphere has no place on this picture, and Hamlet has heard five
+    /// continents from one slot on 14.074. It gets no marker at all rather than one
+    /// near the edge (§0.0).</para>
+    /// </remarks>
+    public static AzimuthalImage NorthPolar { get; } = new(
+        Resource: "avares://Hamlet.App/Assets/azimuthal-north-polar.png",
+        Sha256: "1e85c81ba87dd718e6f08604ff3e1b1811c43344952e1b698880cf272b272838",
+        WidthPixels: 899,
+        HeightPixels: 602,
+        CentreX: 451.10,
+        CentreY: 287.07,
+        CentreLatitude: 90.0,
+        PixelsPerDegree: 5.0030,
+        RotationDegrees: 289.109,
+        RimDegrees: 90.0);
+
     /// <summary>Half a turn, in radians.</summary>
     private const double Half = Math.PI;
 
