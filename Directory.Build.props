@@ -602,8 +602,15 @@
     chain-guarding engine 82 of 93 and app 50 of 63, every red named in output.md. No production
     code moves in this task.
   -->
+  <!--
+    1.13.5 -> 1.13.6, UNIT 319 TASK 1, UNDER HM-DEC-150. A PATCH, AND ONLY THE TRACE. Step 4's
+    card half entry run rather than read - the exchange parser 8 of 8 and the message split 3 of 3,
+    the modulator and the unslotted send green - and the before-counts: carry-forward app 123 of
+    123 and engine 108 of 108; chain-guarding engine 82 of 93, the same 11 reds as unit 318. No
+    production code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.5</Version>
+    <Version>1.13.6</Version>
   </PropertyGroup>
 
   <!--
