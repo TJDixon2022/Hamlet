@@ -187,16 +187,21 @@ public sealed class ThePsk31SeamTests : IDisposable
             "mode target   : " + target.Mode + ", data " + target.DataMode);
     }
 
-    /// <summary>**The panel names the mode and says nothing decodes.**</summary>
+    /// <summary>**The panel names the mode and says what it is doing about it.**</summary>
     /// <remarks>
-    /// **IT USED TO TALK ABOUT SLOTS.** `DigitalIdleText.ModeStripFor` names the slot
-    /// length, which is the right sentence for FT8 and FT4 and a false one here: PSK31
-    /// is a continuous carrier carrying free text and has no slots to wait for. A line
-    /// telling the operator to give it a slot or two is telling him to wait for
-    /// something that never arrives.
+    /// <para>**IT USED TO TALK ABOUT SLOTS.** `DigitalIdleText.ModeStripFor` names the
+    /// slot length, which is the right sentence for FT8 and FT4 and a false one here:
+    /// PSK31 is a continuous carrier carrying free text and has no slots to wait for. A
+    /// line telling the operator to give it a slot or two is telling him to wait for
+    /// something that never arrives.</para>
+    /// <para>**AND IT USED TO SAY HAMLET COULD NOT READ THE MODE, WHICH IS NO LONGER
+    /// TRUE.** Work instruction 314 task 3 built the demodulator and task 4 put it
+    /// behind the tab, so the line now says where it is listening. **This assertion was
+    /// rewritten rather than deleted**: what it protects is that the line is *about
+    /// PSK31* and says nothing about slots, and both of those still hold.</para>
     /// </remarks>
     [Fact]
-    public void ThePanelNamesTheModeAndSaysNothingDecodes()
+    public void ThePanelNamesTheModeAndSaysWhatItIsDoingAboutIt()
     {
         var model = Panel(null);
 
@@ -208,8 +213,9 @@ public sealed class ThePsk31SeamTests : IDisposable
 
         Assert.Contains(Mode, line, StringComparison.Ordinal);
 
-        // **IT SAYS IT CANNOT READ THIS YET.**
-        Assert.Contains("cannot", line, StringComparison.OrdinalIgnoreCase);
+        // **IT SAYS WHERE IT IS LISTENING**, and says that it is one place.
+        Assert.Contains("listening", line, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("one spot", line, StringComparison.OrdinalIgnoreCase);
 
         // **AND IT SAYS NOTHING ABOUT SLOTS**, because this mode has none.
         foreach (var slotted in new[] { "slot", "seconds" })

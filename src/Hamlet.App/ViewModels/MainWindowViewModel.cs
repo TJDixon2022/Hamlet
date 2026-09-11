@@ -11,7 +11,9 @@ using Hamlet.App.Licensing;
 using Hamlet.App.Settings;
 using Hamlet.App.Startup;
 using Hamlet.App.Telemetry;
+using System.Text;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Psk31;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Contacts;
@@ -1871,6 +1873,12 @@ public partial class MainWindowViewModel : ObservableObject
         _digitalMode = mode;
         _slotWatch = new Ft8SlotWatch { Grid = mode.Grid() };
 
+        // **A MODE CHANGE STARTS THE PSK31 CHANNEL OVER**, for the reason the slot
+        // watch is rebuilt rather than retuned: text read before the change belongs to
+        // what he was listening to then, and carrying it forward would put one mode's
+        // reading under another mode's heading.
+        ForgetPsk31();
+
         OnPropertyChanged(nameof(DigitalModeStripLine));
         OnPropertyChanged(nameof(DigitalWaterfallSummary));
 
@@ -1937,6 +1945,124 @@ public partial class MainWindowViewModel : ObservableObject
         => chosen is null
             || string.Equals(chosen, "FT8", StringComparison.Ordinal)
             || string.Equals(chosen, "FT4", StringComparison.Ordinal);
+
+    /// <summary>True while the operator has PSK31 pressed.</summary>
+    private bool IsPsk31Chosen
+        => string.Equals(ChosenDigitalMode, "PSK31", StringComparison.Ordinal);
+
+    /// <summary>The one channel, or null until PSK31 is pressed.</summary>
+    private Psk31Demodulator? _psk31;
+
+    /// <summary>The next sample the channel wants from the tap.</summary>
+    private long _psk31At;
+
+    /// <summary>Where the channel's text is on the panel, or -1.</summary>
+    private int _psk31Row = -1;
+
+    /// <summary>Everything the channel has read since it opened.</summary>
+    private readonly StringBuilder _psk31Text = new();
+
+    /// <summary>A buffer the tap copies into, so the tick allocates nothing.</summary>
+    private float[] _psk31Buffer = Array.Empty<float>();
+
+    /// <summary>Read whatever has arrived since the last tick.</summary>
+    /// <param name="tap">The same audio the FT8 decoder is fed from.</param>
+    /// <remarks>
+    /// <para>**CHARACTERS, NOT MESSAGES** (`PHASE_PLAN.md` §3.4). PSK31 has no slots
+    /// and no fixed length, so there is nothing to wait for the end of: what has been
+    /// read goes on the panel and the rest follows as it arrives.</para>
+    /// <para>**ONE LINE FOR ONE SIGNAL**, which is the shape the step that finds
+    /// signals across the passband will want - a line each, rather than one line the
+    /// whole band shares.</para>
+    /// <para>**IT PARSES NOTHING AND CLAIMS NOTHING** (§R3). The text is text. No
+    /// callsign is read out of it, no state is inferred, nothing is offered to answer,
+    /// and it reaches no send path (§0.2).</para>
+    /// </remarks>
+    private void HearPsk31(AudioTap tap)
+    {
+        _psk31 ??= new Psk31Demodulator(tap.SampleRate, Psk31Listening.OffsetHz);
+
+        if (_psk31At <= 0)
+        {
+            // **START FROM WHAT HAS ALREADY ARRIVED**, not from the beginning of a
+            // ring the operator was not listening to.
+            _psk31At = Math.Max(0, tap.SamplesSeen - tap.SamplesHeld);
+        }
+
+        var wanted = (int)Math.Min(tap.SamplesSeen - _psk31At, tap.SamplesHeld);
+
+        if (wanted <= 0)
+        {
+            return;
+        }
+
+        if (_psk31Buffer.Length < wanted)
+        {
+            _psk31Buffer = new float[wanted];
+        }
+
+        if (!tap.Window(_psk31At, wanted, _psk31Buffer, out _))
+        {
+            // **THE AUDIO WENT PAST BEFORE IT WAS READ**, which is a dropped read and
+            // not a decode. Catch up rather than decoding a gap as though it were
+            // continuous, because a demodulator handed a splice reads noise across it.
+            _psk31At = tap.SamplesSeen;
+            return;
+        }
+
+        _psk31At += wanted;
+
+        var heard = _psk31.Add(_psk31Buffer.AsSpan(0, wanted));
+
+        if (heard.Length == 0)
+        {
+            return;
+        }
+
+        _psk31Text.Append(heard);
+
+        ShowPsk31Text();
+    }
+
+    /// <summary>Put what has been read on the panel.</summary>
+    /// <remarks>
+    /// **THE ROW IS REPLACED IN PLACE RATHER THAN THE LIST REBUILT.** A clear and
+    /// refill raises a reset, and a reset sends a list back to the top under the
+    /// operator's eyes - which unit 313 measured on the card panel and which would be
+    /// worse here, because this row grows several times a second.
+    /// </remarks>
+    private void ShowPsk31Text()
+    {
+        var row = new DigitalDecodeRow(
+            DateTime.UtcNow.ToString("HHmmss", CultureInfo.InvariantCulture),
+            DigitalDecodeRow.NotMeasured,
+            DigitalDecodeRow.NotMeasured,
+            Psk31Listening.OffsetHz.ToString("0", CultureInfo.InvariantCulture),
+            _psk31Text.ToString(),
+            ObserverGrid: _settings.Operator.GridSquare ?? "",
+            HeardOnHz: FrequencyHz);
+
+        if (_psk31Row >= 0 && _psk31Row < DigitalDecodes.Count)
+        {
+            DigitalDecodes[_psk31Row] = row;
+        }
+        else
+        {
+            DigitalDecodes.Add(row);
+            _psk31Row = DigitalDecodes.Count - 1;
+        }
+
+        RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>Forget what the channel heard, when the mode changes.</summary>
+    private void ForgetPsk31()
+    {
+        _psk31 = null;
+        _psk31At = 0;
+        _psk31Row = -1;
+        _psk31Text.Clear();
+    }
 
     /// <summary>How many slots the tick has read, for a test.</summary>
     /// <remarks>
@@ -3641,7 +3767,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// the strip's own idle line, written in August.
     /// </remarks>
     public string DigitalModeStripLine
-        => !CanDecode(ChosenDigitalMode)
+        => IsPsk31Chosen
+            ? DigitalIdleText.ListeningAtOneSpot(
+                ChosenDigitalMode!,
+                Psk31Listening.OffsetHz,
+                FrequencyHz > 0 ? FrequencyHz + (long)Psk31Listening.OffsetHz : 0)
+            : !CanDecode(ChosenDigitalMode)
             ? DigitalIdleText.NotYetReadable(ChosenDigitalMode!)
             : _digitalRefusal.Length > 0
                 ? _digitalRefusal
@@ -10287,6 +10418,18 @@ public partial class MainWindowViewModel : ObservableObject
         if (!CanDecode(ChosenDigitalMode))
         {
             _slotWatch.Rearm();
+
+            // **EXCEPT THAT PSK31 HAS ITS OWN LISTENING NOW** (work instruction 314
+            // task 4). It is not slotted, so it takes no part in any of the machinery
+            // above: it reads whatever audio has arrived since the last tick and
+            // yields characters as they complete. **The same tap the FT8 decoder is
+            // fed from**, because there is one audio source and a second one would be
+            // a second thing to go wrong.
+            if (IsPsk31Chosen)
+            {
+                HearPsk31(tap);
+            }
+
             return;
         }
 

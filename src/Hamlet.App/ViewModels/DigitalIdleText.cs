@@ -66,6 +66,36 @@ public static class DigitalIdleText
             + "read " + mode + " yet, so nothing will appear below. You can still "
             + "hear it, and it sounds like a warble you could almost hum.";
 
+    /// <summary>The mode strip, for a mode Hamlet reads at one spot.</summary>
+    /// <param name="mode">The mode the operator pressed.</param>
+    /// <param name="offsetHz">How far above the dial the channel listens.</param>
+    /// <param name="spotHz">Where that puts it, or 0 where the dial is unknown.</param>
+    /// <returns>One sentence saying where it is listening and how widely.</returns>
+    /// <remarks>
+    /// <para>**IT REPLACES <see cref="NotYetReadable"/> FOR PSK31** (work instruction
+    /// 314 task 4). That line said Hamlet could not read the mode, which was true until
+    /// this step and is not any more.</para>
+    /// <para>**IT SAYS ONE SPOT, AND THAT IS THE POINT OF IT** (0.0). This step built
+    /// one channel at one offset; a panel that said *listening* without saying how
+    /// widely would let an empty list read as an empty band, when what it really means
+    /// is that nobody looked anywhere else. The step that finds signals across the
+    /// passband is what removes that sentence.</para>
+    /// </remarks>
+    public static string ListeningAtOneSpot(string mode, double offsetHz, long spotHz)
+    {
+        var where = spotHz > 0
+            ? ", which puts it at "
+                + (spotHz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture)
+                + " MHz just now"
+            : "";
+
+        return "listening for " + mode + " at one spot, "
+            + offsetHz.ToString("0", CultureInfo.InvariantCulture)
+            + " hertz above the dial" + where
+            + ". Anything further along the band is out there and Hamlet is not "
+            + "looking at it yet, so a quiet list here does not mean a quiet band.";
+    }
+
     /// <summary>The waterfall, before any spectrum has arrived.</summary>
     /// <remarks>
     /// **THE CONTROL DRAWS ITS OWN EMPTY STATE ALREADY**, saying no spectrum has
