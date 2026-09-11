@@ -66,6 +66,15 @@ public static class DxccPrefixes
         => $"{Shared.Value.Source.Name}, {Shared.Value.Source.DocumentDate}, "
            + $"retrieved {Shared.Value.Source.Retrieved}";
 
+    /// <summary>The word a call to anybody is booked and shown under.</summary>
+    /// <remarks>
+    /// **IT IS DELIBERATELY NOT A REFERENCE TO `Ft8ContactLedger.CallToAnyone`.**
+    /// This assembly layer cannot see the contacts layer, and a second copy of a
+    /// two-letter word is cheaper than a dependency in the wrong direction. **The
+    /// two are asserted equal by a test** so they cannot drift.
+    /// </remarks>
+    public const string Ft8CallToAnyone = "CQ";
+
     /// <summary>
     /// The entity a callsign belongs to, or null where that is not certain.
     /// </summary>
@@ -97,6 +106,27 @@ public static class DxccPrefixes
         var call = (callsign ?? "").Trim().ToUpperInvariant();
 
         if (call.Length == 0)
+        {
+            return null;
+        }
+
+        // **A CALL TO ANYBODY IS NOT A CALLSIGN, AND `CQ` IS A REAL PORTUGUESE
+        // PREFIX** (work instruction 310 task 2). CT, CR and CQ all belong to
+        // Portugal, so the literal string `CQ` matched and Hamlet labelled the
+        // operator own general call a station in Portugal - on the card header, in
+        // the caption, and in the CQ-list nudge, which would have offered his own
+        // call as a country to chase.
+        //
+        // **THE GUARD IS HERE BECAUSE THIS IS WHERE THE QUESTION IS ASKED.** Seven
+        // sites call this method and only two of them consulted the ledger, which
+        // has known the difference since unit 305. Putting it at the header would
+        // have left the other six.
+        //
+        // **IT IS THE BARE WORD AND NOTHING ELSE.** `CQ7ABC` and `CT1ABC` are real
+        // Portuguese stations and still answer Portugal; what is refused is the
+        // string a general call is booked under (§0.0 - never present a guess as a
+        // decode).
+        if (call is Ft8CallToAnyone or "CQDX" or "QRZ")
         {
             return null;
         }

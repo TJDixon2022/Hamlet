@@ -153,7 +153,15 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <para>**NO BEARING** (Tim's ruling, 2026-09-08: *"what am I, some sort of
     /// submarine captain?"*). It is on the hover.</para>
     /// </remarks>
-    public string Place => _place;
+    /// <summary>Where the station is, in words, or "" on a receipt.</summary>
+    /// <remarks>
+    /// **A CALL TO ANYBODY HAS NO PLACE** (R1, R2, Tim 2026-09-11). This slot held
+    /// `Portugal` on his screen, because `CQ` is a real Portuguese prefix and the
+    /// card was the conversation frame with the other station set to the literal
+    /// string. **The lookup refuses it now** and this refuses it again, because a
+    /// receipt should not be asking the question at all.
+    /// </remarks>
+    public string Place => IsCallToAnyone ? "" : _place;
 
     /// <summary>True where there is anything to say about where he is.</summary>
     public bool HasPlace => _place.Length > 0;
@@ -165,7 +173,9 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// count is arithmetic the reader should not have to do, and the relative time
     /// beside it already says how stale this is. The count is on the hover.
     /// </remarks>
-    public string StateWord => _facts.State switch
+    public string StateWord => IsCallToAnyone
+        ? ReceiptWord
+        : _facts.State switch
     {
         Ft8ContactState.Complete => "Finished",
         Ft8ContactState.YourMove => "Your turn",
@@ -188,7 +198,9 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// one is a conversation waiting on him, the other is an invitation nobody has
     /// taken.</para>
     /// </remarks>
-    public string Sentence => _facts.State switch
+    public string Sentence => IsCallToAnyone
+        ? ReceiptSentence
+        : _facts.State switch
     {
         Ft8ContactState.Complete => Finished(),
         Ft8ContactState.YourMove => _facts.HeCameBack
@@ -336,7 +348,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// The mark goes only where neither end is known at all, which is a station with
     /// no grid on a machine with no grid in Settings, and there is nothing to say.
     /// </remarks>
-    public bool ShowsGlobe => Globe.HasMap;
+    /// <summary>True where the card has a map worth drawing.</summary>
+    /// <remarks>
+    /// **A RECEIPT HAS NO MAP** (R2). There is no other station, so there is nothing
+    /// to place and nothing for a caption to be about - and the caption it did carry
+    /// explained the whereabouts of something that does not exist.
+    /// </remarks>
+    public bool ShowsGlobe => !IsCallToAnyone && Globe.HasMap;
 
     /// <summary>True where the card is drawn back, so the live ones lead.</summary>
     /// <remarks>
@@ -509,6 +527,24 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     private const string Between = " · ";
 
+    /// <summary>What a receipt says where a conversation says its state.</summary>
+    /// <remarks>
+    /// **IT SAYS WHAT HAPPENED, NOT WHAT HAS NOT** (R4, Tim 2026-09-11: *"just the
+    /// last I don't want reminders of failures"*). *Waiting on him* and *he has not
+    /// answered yet* both frame ordinary silence twenty seconds into a slot as a
+    /// station failing to come back, and there is no him to fail. **He called. That
+    /// is the fact, and the time beside it says it is live.**
+    /// </remarks>
+    public const string ReceiptWord = "Calling";
+
+    /// <summary>The one line a receipt carries.</summary>
+    /// <remarks>
+    /// **A PLACEHOLDER SHOULD READ AS ONE** (R2). It is quieter than a conversation
+    /// card rather than the same frame with empty slots in it - **empty slots are
+    /// what produced Portugal.**
+    /// </remarks>
+    public const string ReceiptSentence = "Your call went out to anyone listening.";
+
     /// <summary>Whether this card is the operator's own call to anybody.</summary>
     public bool IsCallToAnyone
         => string.Equals(
@@ -525,36 +561,31 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     private string CallFacts() => string.Join(Between, CallRows());
 
-    /// <summary>What was called, when, and how many times, one to a row.</summary>
+    /// <summary>What a receipt says: the call, and when it went out.</summary>
+    /// <remarks>
+    /// <para>**NO COUNT** (R4, Tim 2026-09-11: *"just the last I don't want reminders
+    /// of failures"*). Unit 305 built a *sent n times* tally here; it comes off. **A
+    /// rising number on an unanswered call is a score of the silence**, and
+    /// `ACHIEVEMENTS_PHILOSOPHY.md` §2 is the same instinct one screen over - a wall
+    /// of blanks reeks of failure.</para>
+    /// <para>**THE LAST CALL ONLY** (R3). Pressing again refreshes this to the new
+    /// slot rather than adding to it, so what the row says is always the live one.
+    /// </para>
+    /// </remarks>
     private List<string> CallRows()
     {
         var said = new List<string>();
 
         if (_facts.YourLastMessage is { Length: > 0 } sent)
         {
-            said.Add("Sent " + sent + ".");
+            said.Add("Sent " + sent);
         }
 
-        if (_facts.FirstAtUtc is { } first)
+        if (_facts.LastAtUtc is { } last)
         {
-            said.Add("First at "
-                     + first.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
-                     + " UTC.");
+            said.Add("At " + last.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
+                     + " UTC");
         }
-
-        if (_facts.LastAtUtc is { } last
-            && _facts.FirstAtUtc is { } began && last != began)
-        {
-            said.Add("Last at "
-                     + last.ToString("HH:mm:ss", CultureInfo.InvariantCulture)
-                     + " UTC.");
-        }
-
-        said.Add(_facts.YourMessages == 1
-            ? "Sent once."
-            : "Sent "
-              + _facts.YourMessages.ToString(CultureInfo.InvariantCulture)
-              + " times.");
 
         return said;
     }

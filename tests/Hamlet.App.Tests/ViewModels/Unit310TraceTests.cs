@@ -48,12 +48,17 @@ public sealed class Unit310TraceTests
         _output.WriteLine("NudgeSet.WouldOpen(CQ)        : "
             + nudges.WouldOpen("CQ").Kind);
 
-        // **THE LOOKUP MATCHES, WHICH IS THE WHOLE FAULT.**
-        Assert.Equal("Portugal", DxccPrefixes.EntityOf("CQ"));
+        // **MEASURED BEFORE TASK 2: `Portugal`, continent `EU`, and the nudge
+        // marked it a `Door`.** CT, CR and CQ all belong to Portugal, so the literal
+        // string matched and the operator own general call was labelled a station
+        // there. **Task 2 refuses it at the lookup**, which is where the question is
+        // asked, so every one of the seven call sites is covered.
+        Assert.Null(DxccPrefixes.EntityOf("CQ"));
+        Assert.Null(DxccContinents.ForCallsign("CQ"));
+        Assert.Equal(NudgeKind.None, nudges.WouldOpen("CQ").Kind);
 
-        // **AND IT REACHES THE NUDGE TOO**, so the operator own call would be
-        // highlighted as a country to chase.
-        Assert.NotEqual(NudgeKind.None, nudges.WouldOpen("CQ").Kind);
+        // **AND REAL PORTUGUESE STATIONS ARE UNTOUCHED.**
+        Assert.Equal("Portugal", DxccPrefixes.EntityOf("CQ7ABC"));
     }
 
     /// <summary>**What the CQ card says today, word for word.**</summary>
@@ -76,14 +81,16 @@ public sealed class Unit310TraceTests
         _output.WriteLine("globe caption: " + card.Globe.Caption);
         _output.WriteLine("detail       : " + card.Detail);
 
-        // **THE HEADER CARRIES A COUNTRY THE OPERATOR NEVER CALLED.**
+        // **WHAT IT SAID BEFORE TASK 2, MEASURED:** place `Portugal`, state word
+        // `Waiting on him`, the sentence *You called CQ and he has not answered
+        // yet*, a map row, and a caption explaining that Hamlet does not know where
+        // CQ is. **Every one of those is a station slot filling itself in on a card
+        // with no station.**
         Assert.Equal(Ft8ContactLedger.CallToAnyone, card.Callsign);
-        Assert.Contains("Portugal", card.Place, StringComparison.Ordinal);
 
-        // **AND A MAP ROW WITH A CAPTION ABOUT WHERE NOTHING IS.**
-        Assert.True(card.ShowsGlobe);
-        Assert.Contains(
-            "does not know where", card.Globe.Caption, StringComparison.Ordinal);
+        Assert.Empty(card.Place);
+        Assert.False(card.ShowsGlobe);
+        Assert.DoesNotContain("Portugal", card.Place, StringComparison.Ordinal);
     }
 
     /// <summary>**Does a second conversation destroy the first, or hide it?**</summary>
