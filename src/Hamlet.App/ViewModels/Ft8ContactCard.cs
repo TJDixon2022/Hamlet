@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Psk31;
 
 namespace Hamlet.App.ViewModels;
 
@@ -82,8 +83,76 @@ public sealed partial class Ft8ContactCard : ObservableObject
     private readonly string? _operatorGrid;
     private readonly Ft8CardTechnical? _technical;
     private readonly int? _floorDb;
+    private readonly Psk31TurnReading? _turn;
 
     private DateTime? _nowUtc;
+
+    /// <summary>**Builds a PSK31 conversation card: one station certainly calling the operator, and whose turn it is.**</summary>
+    /// <param name="callsign">The station, as the parse read it.</param>
+    /// <param name="turn">Whose turn it is on his channel (`Psk31Turn`).</param>
+    /// <param name="operatorGrid">The operator's own locator, or null.</param>
+    /// <returns>The card.</returns>
+    /// <remarks>
+    /// <para>**THE SAME CARD TYPE, NOT A THIRD** (work instruction 319 task 3, §2). Where FT8's
+    /// card shows the ledger's state word, this one shows whose turn it is.</para>
+    /// <para>**WHERE PSK31 HAS NO FACT, THE CARD SHOWS NOTHING RATHER THAN A STAND-IN.** There is no
+    /// FT8 ledger behind it, so there is no time line, no slot count, no report, no message count and
+    /// no `i` detail. The facts record below carries only the callsign; its other members are empty
+    /// and nothing on a PSK31 card reads them.</para>
+    /// <para>**NOTHING ON IT TRANSMITS AND NOTHING ON IT LOGS** (§0.2, §6 of the instruction): no
+    /// action, no Log link. The send door stays shut, and the Log is step 5's.</para>
+    /// </remarks>
+    public static Ft8ContactCard ForPsk31(string callsign, Psk31TurnReading turn, string? operatorGrid)
+    {
+        ArgumentNullException.ThrowIfNull(turn);
+
+        var facts = new Ft8CardFacts(
+            callsign, Ft8ContactState.WaitingOnHim, 0, null, null, false, false, 0, 0, 0,
+            null, null, false, false, false, false, null, null, null);
+
+        return new Ft8ContactCard(facts, operatorGrid, turn);
+    }
+
+    private Ft8ContactCard(Ft8CardFacts facts, string? operatorGrid, Psk31TurnReading turn)
+        : this(facts, operatorGrid, Ft8CardActionKind.None, "", "", null)
+        => _turn = turn;
+
+    /// <summary>True where this is a PSK31 conversation card.</summary>
+    public bool IsPsk31 => _turn is not null;
+
+    /// <summary>Whose turn it is, on a PSK31 card, or null on an FT8 card.</summary>
+    public Psk31TurnReading? Turn => _turn;
+
+    /// <summary>**Whose turn it is, in words, where FT8's card has its state word.**</summary>
+    /// <remarks>
+    /// <para>**A GUESS SAYS SO IN WORDS** (§R1, §0.6): *a guess* is part of the word, so printed in
+    /// grey it still reads as one. *Unknown* where Hamlet cannot tell.</para>
+    /// <para>**THE WORDING IS A SESSION'S** (work instruction 319), not a ruling, beside unit 316's
+    /// *guess* and *unknown* on the row.</para>
+    /// </remarks>
+    public string TurnWord => _turn is not { } turn
+        ? ""
+        : turn.State switch
+        {
+            Psk31TurnState.YourTurn => turn.IsCertain ? "Your turn" : "Your turn, a guess",
+            Psk31TurnState.HisTurn => turn.IsCertain ? "His turn" : "His turn, a guess",
+            Psk31TurnState.HeIsSending => "He is still sending",
+            _ => "Unknown",
+        };
+
+    /// <summary>True where the turn word is a guess or an unknown.</summary>
+    public bool TurnIsGuess => _turn is { IsCertain: false };
+
+    /// <summary>What a PSK31 card says, one sentence per turn state.</summary>
+    private string TurnSentence() => _turn!.State switch
+    {
+        Psk31TurnState.YourTurn when _turn.IsCertain => $"{Callsign} handed over to you, and it is your turn.",
+        Psk31TurnState.YourTurn => $"{Callsign} seems to have handed over to you, but part of it did not read cleanly, so that is a guess.",
+        Psk31TurnState.HisTurn when _turn.IsCertain => $"You handed over to {Callsign}, and it is his turn.",
+        Psk31TurnState.HisTurn => $"It looks like his turn, but part of it did not read cleanly, so that is a guess.",
+        Psk31TurnState.HeIsSending => $"Text is still arriving on the frequency {Callsign} called you on.",
+        _ => $"Hamlet cannot tell whose turn it is with {Callsign}.",
+    };
 
     /// <summary>Builds the card for one station.</summary>
     /// <param name="facts">What the ledger says about that station.</param>
@@ -174,7 +243,9 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// count is arithmetic the reader should not have to do, and the relative time
     /// beside it already says how stale this is. The count is on the hover.
     /// </remarks>
-    public string StateWord => IsCallToAnyone
+    public string StateWord => IsPsk31
+        ? TurnWord
+        : IsCallToAnyone
         ? ReceiptWord
         : _facts.State switch
     {
@@ -199,7 +270,9 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// one is a conversation waiting on him, the other is an invitation nobody has
     /// taken.</para>
     /// </remarks>
-    public string Sentence => IsCallToAnyone
+    public string Sentence => IsPsk31
+        ? TurnSentence()
+        : IsCallToAnyone
         ? ReceiptSentence
         : _facts.State switch
     {
@@ -319,7 +392,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// action here* and that became true the moment the action became None. A CQ is
     /// not a contact by either route.</para>
     public bool ShowsLogLink
-        => !IsCallToAnyone && ActionKind != Ft8CardActionKind.Log;
+        => !IsPsk31 && !IsCallToAnyone && ActionKind != Ft8CardActionKind.Log;
 
     /// <summary>What the always-available Log control reads.</summary>
     public string LogLabel => "Log this contact";
@@ -531,6 +604,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
             if (IsCallToAnyone)
             {
                 return CallRows();
+            }
+
+            // **A PSK31 CARD HAS NO LEDGER BEHIND IT**, so no report, place, band or slot row is a
+            // fact on it, and `Slots()` would print *0 slots ago* as one.
+            if (IsPsk31)
+            {
+                return Array.Empty<string>();
             }
 
             var rows = new List<string>();

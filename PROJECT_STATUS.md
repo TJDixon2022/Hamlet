@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 4
+TASK: 4 of 4
 WORK_INSTRUCTION: 319 - say it, the card half: whose turn it is, on a PSK31 conversation card, with the door still shut
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T14:49:02-04:00
-NOTE: Task 2 in: turn reader 8/8, 7 of 8 messages to the operator a certain your turn, state changes 1 character after the turnover. Committing it, then the PSK31 card on the view model.
+UPDATED: 2026-09-11T14:58:38-04:00
+NOTE: Task 3 in: card tests 8/8, app carry-forward 130/131 - the one red is unit 316's no-W1AW-card assertion (line 414), which the card now contradicts; not edited, ruling wanted. Starting the offer gate.
 
 ---
 

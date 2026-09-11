@@ -3738,6 +3738,7 @@
                                      whatever the colour is doing. -->
                                 <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                                        x:Name="SlotClock"
+                                       IsVisible="{Binding ShowsSlotClock}"
                                        Width="34" Height="34"
                                        Margin="0,0,0,6"
                                        HorizontalAlignment="Left"

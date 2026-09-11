@@ -47,6 +47,7 @@ ThePsk31TabIsInertTests
 ThePsk31PanelHearsTests
 ThePsk31HearsEveryoneTests
 ThePsk31ReadsTheConversationTests
+ThePsk31ConversationCardTests
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj

@@ -335,7 +335,16 @@ public partial class MainWindowViewModel : ObservableObject
     // from FT8 is exactly that case - the label changed, the decoder did not, and
     // the sentence on the panel is about the label.
     [NotifyPropertyChangedFor(nameof(DigitalModeStripLine))]
+    [NotifyPropertyChangedFor(nameof(ShowsSlotClock))]
     private string? _chosenDigitalMode;
+
+    /// <summary>True where the slot clock is drawn.</summary>
+    /// <remarks>
+    /// **PSK31 HAS NO SLOTS** (`PHASE_PLAN.md` §3.1: *the `SlotClock` control has no meaning in a
+    /// mode with no slots*). On a PSK31 card its place is taken by whose turn it is. FT8, FT4 and no
+    /// mode chosen still draw it, exactly as before (work instruction 319 task 3).
+    /// </remarks>
+    public bool ShowsSlotClock => !IsPsk31Chosen;
 
     partial void OnChosenDigitalModeChanged(string? value)
     {
@@ -2003,6 +2012,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (reading.Splitter.Add(channel.Text[at]) is { } message)
             {
                 reading.Latest = message.Exchange;
+                reading.Messages.Add(message);
             }
         }
 
@@ -2011,7 +2021,7 @@ public partial class MainWindowViewModel : ObservableObject
         return reading.Latest;
     }
 
-    /// <summary>One channel's splitter, how far it has read, and what the latest message said.</summary>
+    /// <summary>One channel's splitter, how far it has read, and what its messages said.</summary>
     private sealed class Psk31ChannelReading
     {
         public Psk31ChannelReading(Psk31MessageSplitter splitter) => Splitter = splitter;
@@ -2021,7 +2031,33 @@ public partial class MainWindowViewModel : ObservableObject
         public int Fed { get; set; }
 
         public Psk31Exchange? Latest { get; set; }
+
+        /// <summary>Every complete message on the channel, oldest first, for whose turn it is.</summary>
+        public List<Psk31Message> Messages { get; } = new();
     }
+
+    /// <summary>One PSK31 conversation card, the channel it is read from, and what he cleared.</summary>
+    private sealed class Psk31CardState
+    {
+        public Psk31CardState(Ft8ContactCard card, int channelId)
+        {
+            Card = card;
+            ChannelId = channelId;
+        }
+
+        public Ft8ContactCard Card { get; set; }
+
+        public int ChannelId { get; set; }
+
+        /// <summary>How many messages the conversation holds, as last read.</summary>
+        public int Messages { get; set; }
+
+        /// <summary>How many it held when he cleared the card, or null where it is on the panel.</summary>
+        public int? ClearedAtMessages { get; set; }
+    }
+
+    /// <summary>Every PSK31 conversation card, by the calling station.</summary>
+    private readonly Dictionary<string, Psk31CardState> _psk31Cards = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>A buffer the tap copies into, so the tick allocates nothing.</summary>
     private float[] _psk31Buffer = Array.Empty<float>();
@@ -2174,6 +2210,13 @@ public partial class MainWindowViewModel : ObservableObject
                 DigitalDecodes.RemoveAt(index);
             }
 
+            // **THE CARRIER WENT, SO NOTHING IS STILL ARRIVING.** The card stays, read one last
+            // time with no characters pending, rather than saying *he is still sending* for ever.
+            if (_psk31Readings.TryGetValue(id, out var gone))
+            {
+                ShowPsk31Cards(id, gone, sending: false);
+            }
+
             _psk31Rows.Remove(id);
             _psk31FirstHeard.Remove(id);
             _psk31Readings.Remove(id);
@@ -2182,7 +2225,106 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (changed)
         {
+            foreach (var id in _psk31Rows.Keys)
+            {
+                if (_psk31Readings.TryGetValue(id, out var reading))
+                {
+                    ShowPsk31Cards(id, reading, reading.Splitter.Pending.Trim().Length > 0);
+                }
+            }
+
+            OnPropertyChanged(nameof(HasDigitalCards));
             RaiseDigitalDecodeChanges();
+        }
+    }
+
+    /// <summary>Open, or update in place, the card of every station certainly calling the operator on one channel.</summary>
+    /// <param name="channelId">The channel.</param>
+    /// <param name="reading">Its messages.</param>
+    /// <param name="sending">Whether characters have arrived since its last message.</param>
+    /// <remarks>
+    /// <para>**WHICH MESSAGE OPENS A CARD** (work instruction 319, the arbiter's decision): only one
+    /// the parse is certain of, that names its speaker, that is addressed to the operator, and whose
+    /// speaker is not the operator. A guessed addressee stays a row on his side, as step 3 left it -
+    /// a card is where a click will send a macro once the door opens, and a card opened on a guess
+    /// invites him into a conversation that may not exist.</para>
+    /// <para>**THE CARD'S TURN IS READ FROM THAT STATION'S CONVERSATION ON THE CHANNEL**: the
+    /// messages he spoke or that were addressed to him, handed to `Psk31Turn` with the channel's
+    /// carrier-present fact and the operator's callsign (§0.1).</para>
+    /// <para>**REPLACED IN PLACE, NEVER THE LIST REBUILT** (§6, unit 314's answer to the card-rebuild
+    /// root): a card whose reading has not moved is left alone, and one whose reading has is swapped
+    /// at its own index.</para>
+    /// <para>**NOTHING HERE TRANSMITS OR ARMS** (§0.2). The card carries no action.</para>
+    /// </remarks>
+    private void ShowPsk31Cards(int channelId, Psk31ChannelReading reading, bool sending)
+    {
+        var mine = _settings.Operator.Callsign;
+
+        var callers = reading.Messages
+            .Select(m => m.Exchange)
+            .Where(e => e is { IsCertain: true, IsForOperator: true, Speaker: not null }
+                && !Ft8MessageSplit.IsSameStation(e.Speaker, mine))
+            .Select(e => e.Speaker!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        foreach (var station in callers)
+        {
+            var talk = reading.Messages
+                .Where(m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station)
+                    || Ft8MessageSplit.IsSameStation(m.Exchange.Addressee, station))
+                .ToList();
+
+            var turn = Psk31Turn.Read(talk, sending, mine);
+
+            if (!_psk31Cards.TryGetValue(station, out var state))
+            {
+                state = new Psk31CardState(Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare), channelId)
+                {
+                    Messages = talk.Count,
+                };
+
+                _psk31Cards[station] = state;
+                DigitalCards.Add(state.Card);
+                continue;
+            }
+
+            state.ChannelId = channelId;
+            state.Messages = talk.Count;
+
+            if (state.ClearedAtMessages is { } cleared)
+            {
+                // **A CLEARED CARD COMES BACK IF THAT STATION'S CONVERSATION MOVES**, the same
+                // promise an FT8 card makes (Tim's ruling, 2026-09-08).
+                if (talk.Count <= cleared)
+                {
+                    continue;
+                }
+
+                state.ClearedAtMessages = null;
+                state.Card = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare);
+                DigitalCards.Add(state.Card);
+                continue;
+            }
+
+            if (state.Card.Turn == turn)
+            {
+                continue;
+            }
+
+            var fresh = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare);
+            var index = DigitalCards.IndexOf(state.Card);
+
+            state.Card = fresh;
+
+            if (index >= 0)
+            {
+                DigitalCards[index] = fresh;
+            }
+            else
+            {
+                DigitalCards.Add(fresh);
+            }
         }
     }
 
@@ -2218,6 +2360,17 @@ public partial class MainWindowViewModel : ObservableObject
                 DigitalDecodes.RemoveAt(index);
             }
         }
+
+        // **AND ITS CARDS**, which are read from the channels that are going.
+        foreach (var state in _psk31Cards.Values)
+        {
+            DigitalCards.Remove(state.Card);
+        }
+
+        had |= _psk31Cards.Count > 0;
+
+        _psk31Cards.Clear();
+        OnPropertyChanged(nameof(HasDigitalCards));
 
         _psk31 = null;
         _psk31At = 0;
@@ -3275,6 +3428,13 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
+        // **PSK31'S CARDS ARE NOT IN THE FT8 LEDGER**, so the clear above would lose them. They are
+        // put back as they stood, the same instances, rather than remade (§6).
+        foreach (var state in _psk31Cards.Values.Where(s => s.ClearedAtMessages is null))
+        {
+            DigitalCards.Add(state.Card);
+        }
+
         OnPropertyChanged(nameof(HasDigitalCards));
     }
 
@@ -3584,6 +3744,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (who.Length == 0)
         {
+            return;
+        }
+
+        // **A PSK31 CARD IS CLEARED AGAINST ITS MESSAGE COUNT**, because it has no slot to remember.
+        // It comes back when that station's conversation moves.
+        if (_psk31Cards.TryGetValue(who, out var psk31) && DigitalCards.Contains(psk31.Card))
+        {
+            psk31.ClearedAtMessages = psk31.Messages;
+            DigitalCards.Remove(psk31.Card);
+            OnPropertyChanged(nameof(HasDigitalCards));
+
             return;
         }
 
