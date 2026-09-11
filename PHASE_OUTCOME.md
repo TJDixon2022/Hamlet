@@ -39,3 +39,18 @@ COST: one session, no test suite run, every run filtered by exact name and foreg
 ACCOMPLISHED: Pressing PSK31 takes the radio to the cited watering hole in USB-D, the panel says the mode by name and says Hamlet cannot read it yet, the log already spells it the way ADIF does, the record can tell a PSK31 evening from an FT8 one, and the map picks out the block he asked for. Nothing decodes, nothing transmits, and the reference is pinned at one commit with nothing read from it.
 STATE_AFTER: done
 STATE_WHY: STEP 0 IS done. Every must-pass met: the press tunes to the cited 14.070 in USB-D, the panel names the mode, the log offers it, BindingHealthTests is green, and the family is the map own answer with this unit adding ink and never a fill. The nice-to-pass is met too. NOTHING WAS MEASURED AT A RADIO - FACT-006, this machine has none - so every appearance claim is computed.
+
+## UNIT 313 - STEP 0
+
+STEP: 0
+APPROACH: Read Tim own screenshot directly, sampled the glyph colour out of its pixels, then stood the real window up headless with six cards and read back where the layout put each one.
+HIT: THE PANEL HAS NO SCROLL CONTAINER AT ALL AND THE POPUP MAGNIFIES FOUR TIMES. Measured on the real window: the cards control lays out 1748 px of cards inside a panel 264 px tall, five of six cards start below the bottom edge, and the nearest ScrollViewer above the cards is NONE. The card is 301 px wide inside a 331 px panel, so nothing is clipped horizontally - the truncation on the screenshot is the screenshot own crop at 1207 px. The F4DIA popup is 3.98x, the zoom floor unit 310 set permits 4.13x, and a same-state contact hits exactly that. AND THE GREEN CIRCLED GLYPHS ARE UNIT 309 ACHIEVEMENT QUILLS, decode green 3B6D11 sampled exactly off 21 pixels of the screenshot.
+MOVE: Cap the magnification rather than floor the frame, and put the cards in the same kind of scroll container the two lists beside them already use.
+WHY: A floor on the frame was the wrong instrument: tight enough to stay sharp is a floor of the whole file, which is no zoom at all. And a card that cannot be reached is a contact that cannot be logged.
+DECIDED: Nothing yet. Task 1 changed no production file except the version.
+LICENCE: Work instruction 313 tasks 1 to 4 under R9 and R10 of 2026-09-11, with unit 310 R1 to R8 unchanged.
+COST: one session, no test suite run, sixteen named types run filtered and foregrounded before anything changed
+ACCOMPLISHED: The two faults are measured rather than described, and the third thing the instruction asked about is settled: the achievement marks Tim called a total failure are on his list and drawn in the ruled colour.
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: THIS UNIT ADVANCES NO STEP OF THE PSK31 PHASE and is recorded against step 0 because that is the step the phase has reached. It is carried repair of two FT8 and FT4 faults on surfaces PSK31 will inherit. NOTHING WAS MEASURED AT A RADIO.

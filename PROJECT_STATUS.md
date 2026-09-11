@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 312 - PSK31 exists as a mode
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 313 - the popup stops blurring, and the panel scrolls
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T02:00:17-04:00
-NOTE: Unit 312 complete, none dropped. Step 0 done - PSK31 exists as a mode.
+UPDATED: 2026-09-11T08:16:01-04:00
+NOTE: Task 1 done - no ScrollViewer at all, popup at 3.98x, glyphs are unit 309 quills. Task 2 next.
 
 ---
 
