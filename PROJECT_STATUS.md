@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 319 - say it, the card half: whose turn it is, on a PSK31 conversation card, with the door still shut
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T15:06:01-04:00
-NOTE: Task 4 in: 7 offers on a certain your turn, 0 on anything else, none drawn. After-counts engine 120/120 and guarding 82/93; app 132/133, the one red task 3's line-414 conflict. Committing, then the report.
+UPDATED: 2026-09-11T15:08:02-04:00
+NOTE: Unit 319 complete, nothing dropped: PSK31 card opens on a certain call and says whose turn it is; 7 offers on a certain turn, 0 otherwise. One carry-forward red to rule on (item 39).
 
 ---
 
