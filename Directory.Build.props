@@ -609,8 +609,17 @@
     123 and engine 108 of 108; chain-guarding engine 82 of 93, the same 11 reds as unit 318. No
     production code moves in this task.
   -->
+  <!--
+    1.13.6 -> 1.13.7, UNIT 320 TASK 1, UNDER HM-DEC-150. A PATCH, AND ONLY THE TRACE. Step 4's
+    press half entry run rather than read - the conversation card, the turn and both offers green,
+    the modulator, the unslotted send and the byte-identical pins green - and the before-counts:
+    carry-forward app 132 of 133 (the one red is item 39's) and engine 120 of 120; chain-guarding
+    engine 82 of 93, the same 11 reds as unit 319, and app 50 of 63 across all eleven classes, the
+    same 13 reds. The chain-guarding list is written into docs/chain-guarding-tests.txt. No
+    production code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.6</Version>
+    <Version>1.13.7</Version>
   </PropertyGroup>
 
   <!--

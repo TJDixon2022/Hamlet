@@ -1,0 +1,67 @@
+Chain-guarding tests
+===================
+
+Unit 320 wrote this file (work instruction 320 task 1c, item 40). The list lived only
+in work instruction 318 section 2, which is in git history and nowhere a unit can run it
+from. Work instruction 320 section 2 transcribed it from 708a511; this is that
+transcription, plus every class added since a36ce1e that names Ft8TransmitSequence,
+Ft8ArmedSend or OperatorSend.
+
+WHAT THIS IS. Every test class that names Ft8TransmitSequence, Ft8ArmedSend or
+OperatorSend - the classes that guard the transmit chain. A unit that goes near the send
+path runs these, filtered by exact name and foregrounded, before and after, and compares
+the reds by name.
+
+WHAT IS DIFFERENT FROM docs/carry-forward-tests.txt. Known reds ARE on this list. It is
+the list of what guards the chain, not a list that should be green; the reds on it are
+named in each unit's report and are carried as ask 35. A red here is compared by name
+against the unit before, never chased.
+
+HOW TO RUN ONE
+    timeout 480 dotnet test <project> --filter "FullyQualifiedName~TypeName"
+
+-- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
+
+Transmit:
+HamletDoesNotKeyWhatNobodyCanReadTests
+OneClickSendsExactlyOneMessageTests
+OneFt4ClickOneFt4TransmissionThroughTheSameAbortTests
+TheFitGuardAsksAboutTheGridTheSendIsOnTests
+TheLicenceGateIsInsideThePathTests
+TheOperatorsStopFiresFromEveryStateTests
+TheStopStopsTheAudioTooTests
+TheTelemetryLineSaysWhatActuallyWentOutTests
+TheUnkeyHappensWhateverGoesWrongTests
+WhereTheTransmissionStartsAndWhatTheRecordSaysTests
+
+Audio:
+TheLoopbackProvesTheWholeChainTests
+TheRingCountsDownSevenAndAHalfTests
+TheSinkPlaysToANamedEndpointTests
+TheStopStopsARealEndpointTests
+Unit294AnFt4RowCarriesAMeasuredReportTests
+
+Added since a36ce1e (unit 318), and also on docs/carry-forward-tests.txt:
+TheFt8AndFt4SendsAreByteIdenticalTests
+TheUnslottedSendTests
+
+-- app project: tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj ---------------
+
+Unit305StageTests
+OneClickArmsExactlyOneMessageTests
+TheApplicationSendsAtTheLevelTheOperatorSetTests
+TheLicenceGateHoldsFromTheClickTests
+TheReadoutSaysWhatTheCardWasHandedTests
+TheSendPathComposesAtTheEndpointsRateTests
+TheSendPathReachesARealRadioTests
+TheWholeChainRunsFromOneRightClickTests
+TheWholeFt4ChainRunsFromOneRightClickTests
+TheMenuIsUnderTheMouseTests
+TheOperatorCanStopItTests
+
+-- found by --------------------------------------------------------------------
+
+    grep -rlE "Ft8TransmitSequence|Ft8ArmedSend|OperatorSend" tests --include=*.cs
+
+run at 9e55e32 by unit 320: 17 engine files and 11 app files, the 26 transcribed and the
+two engine classes above. No app class was added.

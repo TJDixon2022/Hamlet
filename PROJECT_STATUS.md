@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 319 - say it, the card half: whose turn it is, on a PSK31 conversation card, with the door still shut
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 320 - say it, the press half: a PSK31 CQ that makes a receipt at the bench, behind a door only drive and power can open
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T15:08:02-04:00
-NOTE: Unit 319 complete, nothing dropped: PSK31 card opens on a certain call and says whose turn it is; 7 offers on a certain turn, 0 otherwise. One carry-forward red to rule on (item 39).
+UPDATED: 2026-09-11T15:34:39-04:00
+NOTE: Task 1 - entry green (engine 38/38, app 10/10), trace read; starting the before-counts, carry-forward and chain-guarding, engine then app.
 
 ---
 
