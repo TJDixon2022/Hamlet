@@ -99,30 +99,140 @@ public enum UnkeyRoute
 /// <para>**THE MOMENT COMES IN RATHER THAN BEING READ.** The sequence never asks
 /// what time it is. A path that could read a clock could decide for itself that
 /// the moment had come, and that is the fault this phase cannot survive.</para>
+/// <para>**A SEND CARRIES A SLOT, OR IT CARRIES NOW** (`PHASE_PLAN.md` §R10, Tim,
+/// 2026-09-11; work instruction 318 task 3). The constructor every FT8 and FT4 caller
+/// has used since unit 253 makes a slotted send, exactly as it always did.
+/// <see cref="Now"/> makes a send with no slot, for a mode whose transmission lasts as
+/// long as its text: <see cref="HasSlot"/> is false, its audio is an
+/// <see cref="UnslottedTransmission"/>, and **there is no slot start, no offset and no
+/// grid to read** - not a default <see cref="DateTime"/> standing in for a slot, which the
+/// evidence record would then carry as a moment that never existed. Asking a send with no
+/// slot for any of those three, or for an FT8 <see cref="Transmission"/>, throws, so an
+/// FT8-only assumption that meets a PSK31 send fails where it stands instead of inventing
+/// a value.</para>
+/// <para>**AND NOW IS HANDED IN TOO, NEVER READ.** A send with no slot is fired by the
+/// operator's own action through <see cref="Ft8ArmedSend.NowAsync"/>, not by anything that
+/// looks at a clock.</para>
 /// </remarks>
-/// <param name="Transmission">The audio, and what it says.</param>
-/// <param name="FrequencyHz">Where it would go out - what the gate is asked about.</param>
-/// <param name="LicenseClass">The operator's class, as Settings holds it.</param>
-/// <param name="GuardEnabled">
-/// The operator's "only let me transmit where my licence allows" setting. **On
-/// this path, false is a refusal** - see <see cref="Ft8TransmitSequence"/>.
-/// </param>
-/// <param name="SlotStartUtc">
-/// The start of the slot this belongs to, in true UTC. Recorded, not waited for.
-/// </param>
-/// <param name="StartSecondsIntoSlot">
-/// How far after the boundary the signal begins. The sequence checks that the
-/// whole transmission still fits and records the figure; **it does not wait for
-/// the moment to arrive**, because waiting is watching a clock.
-/// </param>
-public sealed record OperatorSend(
-    Ft8Transmission Transmission,
-    long FrequencyHz,
-    LicenseClass LicenseClass,
-    bool GuardEnabled,
-    DateTime SlotStartUtc,
-    double StartSecondsIntoSlot)
+public sealed record OperatorSend
 {
+    /// <summary>**The longest a send with no slot may be: thirty seconds.**</summary>
+    /// <remarks>
+    /// <para>**WHY A CAP AT ALL** (§R10). A slotted send is held to its slot and cannot run
+    /// past the boundary. A send with no slot has nothing to hold it, and PSK31 is a
+    /// continuous carrier at full duty (§3.3), so without a number here a composing fault
+    /// or a runaway text would be a carrier that simply stays on.</para>
+    /// <para>**WHY THIRTY.** It is the most §R10 allows, and every macro §R2 rules fits under
+    /// it with its idle: measured on work instruction 318's bench at 48 000 Hz, CQ is 11.46 s,
+    /// the answer 7.84 s, the confirmation 16.26 s and the report - the longest - 24.80 s to
+    /// W1AW and **28.19 s to VP2V/W1AW**. Anything shorter than about 28.2 s would refuse the
+    /// report to a compound callsign, which is a contact §R2 has to be able to make; the
+    /// 1.8 s left over is all the room a longer name or place in Settings gets, and a report
+    /// longer than that is refused with its length rather than cut short.</para>
+    /// </remarks>
+    public const double LongestUnslottedSeconds = 30;
+
+    private readonly Ft8Transmission? _transmission;
+    private readonly UnslottedTransmission? _unslotted;
+    private readonly DateTime _slotStartUtc;
+    private readonly double _startSecondsIntoSlot;
+    private readonly SlotGrid _grid = SlotGrid.Ft8;
+
+    /// <summary>A send in a slot - the one every FT8 and FT4 caller makes.</summary>
+    /// <param name="Transmission">The audio, and what it says.</param>
+    /// <param name="FrequencyHz">Where it would go out - what the gate is asked about.</param>
+    /// <param name="LicenseClass">The operator's class, as Settings holds it.</param>
+    /// <param name="GuardEnabled">
+    /// The operator's "only let me transmit where my licence allows" setting. **On
+    /// this path, false is a refusal** - see <see cref="Ft8TransmitSequence"/>.
+    /// </param>
+    /// <param name="SlotStartUtc">
+    /// The start of the slot this belongs to, in true UTC. Recorded, not waited for.
+    /// </param>
+    /// <param name="StartSecondsIntoSlot">
+    /// How far after the boundary the signal begins. The sequence checks that the
+    /// whole transmission still fits and records the figure; **it does not wait for
+    /// the moment to arrive**, because waiting is watching a clock.
+    /// </param>
+    /// <remarks>
+    /// **THE PARAMETER NAMES ARE THE ONES THE POSITIONAL RECORD HAD**, so every caller that
+    /// named its arguments still compiles and still means the same thing.
+    /// </remarks>
+    public OperatorSend(
+        Ft8Transmission Transmission,
+        long FrequencyHz,
+        LicenseClass LicenseClass,
+        bool GuardEnabled,
+        DateTime SlotStartUtc,
+        double StartSecondsIntoSlot)
+    {
+        _transmission = Transmission;
+        this.FrequencyHz = FrequencyHz;
+        this.LicenseClass = LicenseClass;
+        this.GuardEnabled = GuardEnabled;
+        _slotStartUtc = SlotStartUtc;
+        _startSecondsIntoSlot = StartSecondsIntoSlot;
+        HasSlot = true;
+    }
+
+    private OperatorSend(
+        UnslottedTransmission unslotted, long frequencyHz, LicenseClass licenseClass, bool guardEnabled)
+    {
+        _unslotted = unslotted;
+        FrequencyHz = frequencyHz;
+        LicenseClass = licenseClass;
+        GuardEnabled = guardEnabled;
+    }
+
+    /// <summary>**A send with no slot**, to be fired by the operator's action rather than a boundary.</summary>
+    /// <param name="transmission">The audio, and the shape of what it says.</param>
+    /// <param name="frequencyHz">Where it would go out - what the gate is asked about.</param>
+    /// <param name="licenseClass">The operator's class, as Settings holds it.</param>
+    /// <param name="guardEnabled">The licence guard setting. **False is a refusal on this path.**</param>
+    /// <returns>A send whose <see cref="HasSlot"/> is false.</returns>
+    /// <exception cref="ArgumentNullException">There is no transmission.</exception>
+    public static OperatorSend Now(
+        UnslottedTransmission transmission, long frequencyHz, LicenseClass licenseClass, bool guardEnabled)
+    {
+        ArgumentNullException.ThrowIfNull(transmission);
+
+        return new OperatorSend(transmission, frequencyHz, licenseClass, guardEnabled);
+    }
+
+    /// <summary>True for a send in a slot; false for a send fired now.</summary>
+    public bool HasSlot { get; }
+
+    /// <summary>The FT8 or FT4 audio, and what it says.</summary>
+    /// <exception cref="InvalidOperationException">This send has no slot, and so no FT8 transmission.</exception>
+    public Ft8Transmission Transmission => HasSlot ? _transmission! : throw NoSlot(nameof(Transmission));
+
+    /// <summary>The audio of a send with no slot, or null for a slotted send.</summary>
+    public UnslottedTransmission? Unslotted => _unslotted;
+
+    /// <summary>Where it would go out - what the gate is asked about.</summary>
+    public long FrequencyHz { get; }
+
+    /// <summary>The operator's class, as Settings holds it.</summary>
+    public LicenseClass LicenseClass { get; }
+
+    /// <summary>The licence guard setting. **On this path, false is a refusal.**</summary>
+    public bool GuardEnabled { get; }
+
+    /// <summary>The start of the slot this belongs to, in true UTC.</summary>
+    /// <exception cref="InvalidOperationException">This send has no slot.</exception>
+    public DateTime SlotStartUtc => HasSlot ? _slotStartUtc : throw NoSlot(nameof(SlotStartUtc));
+
+    /// <summary>How far after the boundary the signal begins.</summary>
+    /// <exception cref="InvalidOperationException">This send has no slot.</exception>
+    public double StartSecondsIntoSlot
+        => HasSlot ? _startSecondsIntoSlot : throw NoSlot(nameof(StartSecondsIntoSlot));
+
+    /// <summary>The samples the sink is handed, whichever kind of send this is.</summary>
+    public float[] Samples => HasSlot ? Transmission.Samples : _unslotted!.Samples;
+
+    /// <summary>Their rate, whichever kind of send this is.</summary>
+    public int SampleRate => HasSlot ? Transmission.SampleRate : _unslotted!.SampleRate;
+
     /// <summary>
     /// **Which grid the slot above is a slot on.**
     /// </summary>
@@ -146,8 +256,48 @@ public sealed record OperatorSend(
     /// <para>**AND IT CARRIES NO CLOCK AND NO SCHEDULE.** A <see cref="SlotGrid"/>
     /// is two numbers and a name; nothing on it waits, fires or decides that a
     /// moment has come.</para>
+    /// <para>**A SEND WITH NO SLOT HAS NO GRID** (work instruction 318 task 3), and
+    /// asking one for it throws rather than answering FT8's.</para>
     /// </remarks>
-    public SlotGrid Grid { get; init; } = SlotGrid.Ft8;
+    /// <exception cref="InvalidOperationException">This send has no slot.</exception>
+    public SlotGrid Grid
+    {
+        get => HasSlot ? _grid : throw NoSlot(nameof(Grid));
+        init => _grid = value;
+    }
+
+    /// <summary>What asking a send with no slot about a slot says.</summary>
+    private InvalidOperationException NoSlot(string member)
+        => new($"this send has no slot, so it has no {member}: it is {_unslotted?.Mode} audio "
+            + "fired by the operator's own action, and nothing about a slot applies to it.");
+
+    /// <summary>The record's text form, which never asks a send with no slot about a slot.</summary>
+    /// <remarks>
+    /// **A SLOTTED SEND PRINTS THE MEMBERS THE POSITIONAL RECORD PRINTED**, in the same order.
+    /// </remarks>
+    private bool PrintMembers(System.Text.StringBuilder builder)
+    {
+        if (HasSlot)
+        {
+            builder.Append("Transmission = ").Append(_transmission)
+                .Append(", FrequencyHz = ").Append(FrequencyHz)
+                .Append(", LicenseClass = ").Append(LicenseClass)
+                .Append(", GuardEnabled = ").Append(GuardEnabled)
+                .Append(", SlotStartUtc = ").Append(_slotStartUtc)
+                .Append(", StartSecondsIntoSlot = ").Append(_startSecondsIntoSlot)
+                .Append(", Grid = ").Append(_grid);
+        }
+        else
+        {
+            builder.Append("Unslotted = ").Append(_unslotted)
+                .Append(", FrequencyHz = ").Append(FrequencyHz)
+                .Append(", LicenseClass = ").Append(LicenseClass)
+                .Append(", GuardEnabled = ").Append(GuardEnabled)
+                .Append(", HasSlot = False");
+        }
+
+        return true;
+    }
 }
 
 /// <summary>What one run of the sequence did, in full.</summary>
@@ -346,8 +496,8 @@ public sealed class Ft8TransmitSequence
                 stages);
         }
 
-        var samples = send.Transmission.Samples;
-        var seconds = samples.Length / (double)send.Transmission.SampleRate;
+        var samples = send.Samples;
+        var seconds = samples.Length / (double)send.SampleRate;
 
         var outcome = Ft8TransmitOutcome.Played;
         var reason = string.Empty;
@@ -370,7 +520,7 @@ public sealed class Ft8TransmitSequence
                     System.Globalization.CultureInfo.InvariantCulture) + " samples");
 
             var went = await _sink
-                .PlayAsync(samples, send.Transmission.SampleRate, cancellationToken)
+                .PlayAsync(samples, send.SampleRate, cancellationToken)
                 .ConfigureAwait(false);
             played = went;
 
@@ -487,19 +637,36 @@ public sealed class Ft8TransmitSequence
     private TransmitRun Recorded(
         OperatorSend send, TransmitRun run, IReadOnlyList<string>? stages = null)
     {
-        var record = new TransmitRecord(
-            send.SlotStartUtc,
-            send.StartSecondsIntoSlot,
-            send.FrequencyHz,
-            run.SecondsOffered,
-            send.Transmission.SampleRate,
-            run.SamplesOffered,
-            send.Transmission.Type,
-            send.Transmission.ReadsBackAs.Length,
-            send.Transmission.CarriesHashedCallsign,
-            run.Outcome,
-            run.CameOutOfTransmit,
-            run.Keyed);
+        var record = send.HasSlot
+            ? new TransmitRecord(
+                send.SlotStartUtc,
+                send.StartSecondsIntoSlot,
+                send.FrequencyHz,
+                run.SecondsOffered,
+                send.Transmission.SampleRate,
+                run.SamplesOffered,
+                send.Transmission.Type,
+                send.Transmission.ReadsBackAs.Length,
+                send.Transmission.CarriesHashedCallsign,
+                run.Outcome,
+                run.CameOutOfTransmit,
+                run.Keyed)
+            : new TransmitRecord(
+                SlotStartUtc: null,
+                StartSecondsIntoSlot: null,
+                FrequencyHz: send.FrequencyHz,
+                DurationSeconds: run.SecondsOffered,
+                SampleRate: send.SampleRate,
+                SampleCount: run.SamplesOffered,
+                MessageType: null,
+                MessageLength: send.Unslotted!.MessageLength,
+                CarriedHashedCallsign: null,
+                Outcome: run.Outcome,
+                CameOutOfTransmit: run.CameOutOfTransmit,
+                Keyed: run.Keyed,
+                Mode: send.Unslotted.Mode,
+                Fit: send.Unslotted.Fit,
+                AudioSeconds: send.Unslotted.Seconds);
 
         var bag = new Dictionary<string, object?>(record.ToBag());
 
@@ -574,6 +741,66 @@ public sealed class Ft8TransmitSequence
         return true;
     }
 
+    /// <summary>
+    /// **A send with no slot that would run on is refused here, before it is armed**, and
+    /// the refusal is written as a record.
+    /// </summary>
+    /// <param name="send">What the operator asked for.</param>
+    /// <returns>The refusal, already recorded, or null where the send may be armed.</returns>
+    /// <remarks>
+    /// <para>**ONLY A SEND WITH NO SLOT IS ASKED** (work instruction 318 task 3). A slotted
+    /// send is armed exactly as it always was and meets its fit inside
+    /// <see cref="RunAsync"/>, so nothing on the FT8 and FT4 path writes a line it did not
+    /// write before.</para>
+    /// <para>**IT KEYS NOTHING AND ASKS NO GATE.** It measures the audio against the cap and
+    /// writes what it found. The gate is asked when the send is fired, first, as it is for
+    /// every send - and <see cref="Sendable"/> asks this same question again there, as the
+    /// backstop for a send that reached <see cref="RunAsync"/> without being armed.</para>
+    /// </remarks>
+    internal TransmitRun? RefusedBeforeArming(OperatorSend send)
+    {
+        ArgumentNullException.ThrowIfNull(send);
+
+        if (send.HasSlot || SendableWithNoSlot(send, out var why))
+        {
+            return null;
+        }
+
+        return Recorded(send, Refused(Ft8TransmitOutcome.RefusedAsUnsendable, why, string.Empty));
+    }
+
+    /// <summary>Whether a send with no slot has audio, and no more of it than the cap.</summary>
+    /// <param name="send">A send whose <see cref="OperatorSend.HasSlot"/> is false.</param>
+    /// <param name="why">What is wrong with it, in the operator's words.</param>
+    /// <returns>True where it may go.</returns>
+    /// <remarks>
+    /// **NO SLOT, SO NO SLOT FIT** (§R10). What holds it is
+    /// <see cref="OperatorSend.LongestUnslottedSeconds"/>, and the sentence reads the number
+    /// off that constant rather than writing it here.
+    /// </remarks>
+    private static bool SendableWithNoSlot(OperatorSend send, out string why)
+    {
+        var audio = send.Unslotted!;
+
+        switch (audio.Fit)
+        {
+            case UnslottedFit.NoAudio:
+                why = "there is no audio in this transmission, so there is nothing to send.";
+                return false;
+
+            case UnslottedFit.LongerThanTheCap:
+                why =
+                    $"this is {audio.Seconds:0.##} s of {audio.Mode} audio, and a send with no slot "
+                    + $"may be at most {OperatorSend.LongestUnslottedSeconds:0} s so that a continuous "
+                    + "carrier cannot run on. Nothing keyed.";
+                return false;
+
+            default:
+                why = string.Empty;
+                return true;
+        }
+    }
+
     /// <summary>Whether there is a transmission here that fits where it is going.</summary>
     /// <param name="send">What the operator asked for.</param>
     /// <param name="why">What is wrong with it, in the operator's words.</param>
@@ -591,9 +818,16 @@ public sealed class Ft8TransmitSequence
     /// <c>send.Grid</c> and none of them is written here**, including the two in the
     /// sentences the operator reads: the open 4.48-against-5.04 question is the
     /// owner's and a literal in a refusal would be answering it.</para>
+    /// <para>**A SEND WITH NO SLOT IS ASKED ONLY ABOUT THE CAP** (work instruction 318
+    /// task 3), by <see cref="SendableWithNoSlot"/>, before anything below reads a slot.</para>
     /// </remarks>
     private static bool Sendable(OperatorSend send, out string why)
     {
+        if (!send.HasSlot)
+        {
+            return SendableWithNoSlot(send, out why);
+        }
+
         var grid = send.Grid;
 
         if (send.Transmission.Samples.Length == 0)

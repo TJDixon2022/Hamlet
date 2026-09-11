@@ -59,6 +59,8 @@ ThePsk31CarrierSearchTests
 ThePsk31ExchangeParserTests
 ThePsk31MessageSplitTests
 ThePsk31ModulatorTests
+TheFt8AndFt4SendsAreByteIdenticalTests
+TheUnslottedSendTests
 TheAzimuthalAssetTests
 AzimuthalMapTests
 

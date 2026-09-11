@@ -3,7 +3,7 @@ using Hamlet.RadioEngine.Transport;
 
 namespace Hamlet.RadioEngine.Transmit;
 
-/// <summary>What a slot boundary did about the armed send.</summary>
+/// <summary>What a slot boundary, or the operator's now, did about the armed send.</summary>
 public enum Ft8ArmOutcome
 {
     /// <summary>Nothing was armed, so nothing happened.</summary>
@@ -18,8 +18,20 @@ public enum Ft8ArmOutcome
     /// </summary>
     TooLate,
 
-    /// <summary>It was its boundary, and the sequence ran.</summary>
+    /// <summary>It was its boundary, or the operator's now, and the sequence ran.</summary>
     Ran,
+
+    /// <summary>
+    /// **What is armed has no slot, so a boundary does not run it.** It stays armed for the
+    /// operator's own now (work instruction 318 task 3).
+    /// </summary>
+    HasNoSlot,
+
+    /// <summary>
+    /// **What is armed is for a slot boundary, so now does not run it.** It stays armed for
+    /// its boundary.
+    /// </summary>
+    WaitsForItsSlot,
 }
 
 /// <summary>What one slot boundary did.</summary>
@@ -177,8 +189,11 @@ public sealed record Ft8StopResult(bool Unarmed, AbortRecord? Abort, bool AudioT
 /// <see cref="Arm"/> is the only member that writes the field and the only caller
 /// of it in the shipped tree is the operator's own command.</para>
 /// <para>**AND THERE IS ONE WAY TO A KEYING FRAME**, which is
-/// <see cref="Ft8TransmitSequence.RunAsync"/> inside
-/// <see cref="AtBoundaryAsync"/>. This type adds no second route: it keys
+/// <see cref="Ft8TransmitSequence.RunAsync"/> - reached from
+/// <see cref="AtBoundaryAsync"/> for a slotted send, and since work instruction 318 from
+/// <see cref="NowAsync"/> for a send with no slot (`PHASE_PLAN.md` §R10). Both reach the
+/// same sequence, so the gate, the single keying write and the <c>finally</c> that unkeys
+/// or aborts are one path for all three modes. This type adds no second route: it keys
 /// nothing itself, names no CI-V constant and touches no port.</para>
 /// <para>**AN ARMED SEND THAT HAS NOT KEYED CAN BE CANCELLED**, and
 /// <see cref="Cancel"/> is a field cleared under a lock on the calling thread
@@ -246,20 +261,36 @@ public sealed class Ft8ArmedSend
     /// Arms one transmission, replacing anything already armed.
     /// </summary>
     /// <param name="send">What the operator asked for.</param>
+    /// <returns>
+    /// Null where it is armed. **Where a send with no slot is longer than the cap, the
+    /// refusal** - already written as a record, with nothing armed and nothing keyed.
+    /// </returns>
     /// <exception cref="ArgumentNullException">There is nothing to send.</exception>
     /// <remarks>
-    /// **IT REPLACES AND IT NEVER ADDS.** Two clicks a second apart are one
+    /// <para>**IT REPLACES AND IT NEVER ADDS.** Two clicks a second apart are one
     /// transmission in the next slot, not two: there is one field and this
-    /// assigns it.
+    /// assigns it.</para>
+    /// <para>**A SEND WITH NO SLOT THAT WOULD RUN ON NEVER REACHES THE FIELD** (§R10, work
+    /// instruction 318 task 3). The sequence measures it against
+    /// <see cref="OperatorSend.LongestUnslottedSeconds"/> and writes the refusal, and this
+    /// returns before the lock, so there is nothing for <see cref="NowAsync"/> or a boundary
+    /// to find. A slotted send is not asked and is armed exactly as it always was.</para>
     /// </remarks>
-    public void Arm(OperatorSend send)
+    public TransmitRun? Arm(OperatorSend send)
     {
         ArgumentNullException.ThrowIfNull(send);
+
+        if (_sequence.RefusedBeforeArming(send) is { } refused)
+        {
+            return refused;
+        }
 
         lock (_gate)
         {
             _armed = send;
         }
+
+        return null;
     }
 
     /// <summary>Cancels an armed send that has not keyed.</summary>
@@ -433,8 +464,16 @@ public sealed class Ft8ArmedSend
         {
             send = _armed;
 
-            // NOT DUE YET IS THE ONE CASE THAT KEEPS IT. Everything else takes
-            // it, so a send can be consumed exactly once whatever happens next.
+            // A SEND WITH NO SLOT IS NEVER A BOUNDARY'S (R10). It is kept for the
+            // operator's own now: a boundary that took it would put a carrier out at a
+            // moment he did not choose, and one that discarded it would lose his click.
+            if (send is { HasSlot: false })
+            {
+                return new Ft8BoundaryResult(Ft8ArmOutcome.HasNoSlot, send, null);
+            }
+
+            // NOT DUE YET, AND NO SLOT ABOVE, ARE THE CASES THAT KEEP IT. Everything else
+            // takes it, so a send can be consumed exactly once whatever happens next.
             if (send is not null && boundaryUtc < send.SlotStartUtc)
             {
                 return new Ft8BoundaryResult(Ft8ArmOutcome.NotDue, send, null);
@@ -478,6 +517,74 @@ public sealed class Ft8ArmedSend
             // this one - the send was consumed under the lock - but a field that
             // is only ever cleared by the run that set it cannot be got wrong
             // later, and a stale source would be a stop that cancelled nothing.
+            lock (_gate)
+            {
+                if (ReferenceEquals(_transmitting, source))
+                {
+                    _transmitting = null;
+                }
+            }
+
+            source.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// **The operator's now: fires a send with no slot at once, through the one sequence.**
+    /// </summary>
+    /// <param name="cancellationToken">Stops the transmission.</param>
+    /// <returns>What now did.</returns>
+    /// <remarks>
+    /// <para>**THE OPERATOR'S CLICK IS THE MOMENT** (`PHASE_PLAN.md` §R10, work instruction
+    /// 318 task 3). A send with no slot has no boundary to wait for, so the action that armed
+    /// it fires it. No clock is read and nothing waits; it is called by the same click, never
+    /// by a tick.</para>
+    /// <para>**THE SAME STEPS AS A BOUNDARY, UNDER THE SAME LOCK.** The send is taken, the field
+    /// is cleared, and the stop's reach is installed in <c>_transmitting</c>, all in one block
+    /// under <c>_gate</c> before anything is awaited - so the send is consumed exactly once and
+    /// there is no instant in which it is committed to and <see cref="StopNow"/> cannot reach
+    /// it. Then <see cref="Ft8TransmitSequence.RunAsync"/>: the gate, the single keying write,
+    /// and the <c>finally</c> that unkeys or aborts, exactly as for FT8 and FT4.</para>
+    /// <para>**IT TAKES THE SEND WITH <see cref="Cancel"/>**, the line that clears the field for
+    /// an un-arm, rather than adding a fourth write to the field: it keeps one way in and the
+    /// two ways out it had, and a way out that takes a send in order to fire it is still a way
+    /// out.</para>
+    /// <para>**NOW NEVER RUNS A SLOTTED SEND.** One armed for a boundary is left armed for it,
+    /// and <see cref="Ft8ArmOutcome.WaitsForItsSlot"/> says so.</para>
+    /// </remarks>
+    public async Task<Ft8BoundaryResult> NowAsync(CancellationToken cancellationToken = default)
+    {
+        OperatorSend? send;
+        CancellationTokenSource source;
+
+        lock (_gate)
+        {
+            send = _armed;
+
+            if (send is null)
+            {
+                return new Ft8BoundaryResult(Ft8ArmOutcome.NothingArmed, null, null);
+            }
+
+            if (send.HasSlot)
+            {
+                return new Ft8BoundaryResult(Ft8ArmOutcome.WaitsForItsSlot, send, null);
+            }
+
+            Cancel();
+
+            source = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _transmitting = source;
+        }
+
+        try
+        {
+            var run = await _sequence.RunAsync(send, source.Token).ConfigureAwait(false);
+
+            return new Ft8BoundaryResult(Ft8ArmOutcome.Ran, send, run);
+        }
+        finally
+        {
             lock (_gate)
             {
                 if (ReferenceEquals(_transmitting, source))

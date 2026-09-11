@@ -74,6 +74,20 @@ public static class Psk31Modulator
     public static float[] Modulate(string text, int sampleRate, double offsetHz, float peak)
         => Modulate(text, sampleRate, offsetHz, peak, IdleBitsBefore, IdleBitsAfter);
 
+    /// <summary>The audio for this text, as a send with no slot carries it.</summary>
+    /// <param name="text">What to send.</param>
+    /// <param name="sampleRate">Samples a second - the transmit endpoint's.</param>
+    /// <param name="offsetHz">Where the carrier sits in the passband.</param>
+    /// <param name="peak">The drive level the operator set.</param>
+    /// <returns>The samples, the rate, the mode and the text's length - and not the text.</returns>
+    public static Transmit.UnslottedTransmission Compose(
+        string text, int sampleRate, double offsetHz, float peak)
+        => new(
+            Transmit.UnslottedMode.Psk31,
+            Modulate(text, sampleRate, offsetHz, peak),
+            sampleRate,
+            text.Length);
+
     /// <summary>The audio for this text, with the idle stated.</summary>
     /// <param name="text">What to send.</param>
     /// <param name="sampleRate">Samples a second.</param>
