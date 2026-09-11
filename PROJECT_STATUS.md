@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 308 - the whole world on one map, true paths across it, and the CQ list starts nudging
+TASK: 5 of 5
+WORK_INSTRUCTION: 309 - the line he cannot see, and the marks that never appeared
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T20:27:10-04:00
-NOTE: Complete - six tasks of six, none dropped. Coverage 40.4 to 93.7 per cent, paths are sampled great circles, the map is on the card face, and the CQ list marks at most two callers who would open something.
+UPDATED: 2026-09-10T21:22:15-04:00
+NOTE: Complete - five tasks of five, none dropped. The line and both markers are cased, the CQ list marks 13 of 14 on an empty log with nothing ranked, and pressing CQ makes a card again.
 
 ---
 
