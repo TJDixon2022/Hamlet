@@ -1,133 +1,178 @@
-# Work instruction 310 - two kinds of card, a panel that holds all of them, and a map you can open
+# Work instruction 312 - PSK31 exists as a mode
 
 **READ IN THIS ORDER.**
 
-A. **The phase goal - FT4 does everything FT8 does.** This unit worked the shared
-   FT8/FT4 card panel and the map on a card face, so everything below lands on both
-   modes at once.
+A. **The phase goal - Hamlet works PSK31 the way it works FT8.** A third digital mode
+   with the same two cards, the same one-click exchange, the same log and the same
+   achievements, on a modem Hamlet builds itself.
 
-B. **Step 4 and its exit criteria** - pressing FT4 tunes and decodes; the panel, the
-   conversation, the ring, the filters, the tooltips, the ledger and the right-click
-   menu working unchanged; one click, one transmission; a whole exchange from one right
-   click at the bench. **Criterion 2 is the one this unit moved**: what the panel holds
-   and what a card says both changed, deliberately. **No criterion was measured at a
-   radio**, and steps 5 and 6 are you at yours. Step 4 stays `partial`.
+B. **Step 0 and its exit criteria** - pressing PSK31 tunes to 14.070 USB-D; the panel
+   names the mode; the log offers the mode; `BindingHealthTests` green; the mode is in
+   the Digital family and draws with text colour only. Nice: the map's PSK31 ribbon
+   lights when the tab is selected. **Every one of those is met, including the
+   nice-to-pass**, and step 0 is recorded `done`. **Nothing was measured at a radio.**
 
-C. **The report last, and section 4 raises 4 items** on top of a carried queue of ten.
+C. **The report last, and section 4 raises 4 items** on top of a carried queue of eleven.
 
 ```
-UNIT:       310 - complete at task 5 of 5, none dropped - 2026-09-10 22:05
-PHASE GOAL: FT4 does everything FT8 does. Steps 0 and 3 are done; 1, 2 and 4 are
-            partial; 5 and 6 are you at your own radio.
-UNIT GOAL:  Stop drawing a call to nobody as a conversation with somebody in
-            Portugal, let the panel hold every conversation at once, fit the map
-            row to the map, and let the map open.
-ADVANCED:   no - the panel is repaired rather than advanced, and no exit criterion
-            of step 4 can be met without you at your radio.
-NUMBER:     card types 1 -> 2; grey beside the map at a 480 px card 260 px -> 0.16;
-            map row 480 x 120 -> 220 x 120; the two stations 154 px apart on the
-            card map -> 614 px in the popup, at the same size
-DRIFT:      15 consecutive units without advance  (was 14, carried from unit 309)
+UNIT:       312 - complete at task 4 of 4, none dropped - 2026-09-11 01:52
+PHASE GOAL: Hamlet works PSK31 the way it works FT8 - the same cards, the same one
+            click, the same log, on a modem this project writes itself.
+UNIT GOAL:  Step 0. Tell the whole application that PSK31 exists, take the radio to
+            the cited watering hole when it is pressed, and say plainly that nothing
+            can be read there yet.
+ADVANCED:   yes - step 0, wholly. It is the first unit of the phase.
+NUMBER:     version 1.12.274 -> 1.13.0; blocks picked out on the map 0 -> 1 of 13;
+            the record's mode field on a PSK31 press Ft8 -> PSK31
+DRIFT:      0 consecutive units without advance  (new phase)
 ```
 
 **Every appearance claim in this report is computed, not seen.** Nothing in this
-repository can look at a picture. What is asserted is the size a control asks for, the
-window of the file it frames, the geometry a render would decide and the words a card
-holds - never that any of it looked right on your screen.
+repository can look at a picture. What is asserted is a view-model value, a lookup, a
+telemetry file and a rule the render asks - never that any of it looked right on your
+screen. **And nothing here is evidence about the radio**: this is the development
+computer, it has none, and no frequency was written and no audio was heard.
 
 ## 1. What Claude did
 
-Development computer, no radio attached; **nothing here is evidence about the radio.**
-The prompt said `PROJECT: Hamlet` and the tree agrees: `Hamlet.sln` at the root,
-`Hamlet.*` namespaces, `PROJECT_CARD.md` naming Hamlet. Branch **`main`**, six commits,
-each pushed before the next task started. Version **1.12.273 -> 1.12.274**, bumped at
-task 1.
+**The gate passed on all four checks.** `SHACK_FACTS.md` present,
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no
+`MURC.sln`, root at `C:\Source\HamLet`. The prompt said `PROJECT: Hamlet` and so does
+`PROJECT_CARD.md`. Branch **`main`**, five commits, each pushed before the next task
+started.
 
 **The three questions, one line each.**
 
-- **Did unit 309 run? Yes.** `PHASE_OUTCOME.md` carries a `UNIT 309 - STEP 4` entry, its
-  five commits are in `main` (`5c562ae`, `80142ab`, `b6be927`, `a36c1a1`, `ee9c97f`), and
-  its code is in the tree. **The instruction's doubt was wrong**, and the two-unit hole in
-  the phase record is 306 and 307, not 309.
-- **Was a replaced conversation card destroyed or hidden? Neither, in every path I could
-  drive.** Two stations answering one CQ produced two cards with the ledger holding both,
-  and a second conversation arriving left the first card and its whole ledger history
-  standing. **The fault you saw did not reproduce**, so what this unit shipped is the
-  invariant asserted six ways so it cannot regress - not a fix for a loss I found.
-- **Where `CQ` was being treated as a station: seven sites, all through one method.**
-  `DxccPrefixes.EntityOf` answers **Portugal** for the literal string `CQ`, because CQ is
-  a real Portuguese prefix alongside CT and CR. Its callers are `DigitalDecodeRow`,
-  `Ft8ContactCard` (twice), `Ft8Vocabulary`, `AchievementLog`, `NudgeSet` and
-  `DxccContinents` - so the card said Portugal, and **the CQ-list nudge marked your own
-  general call as a door: a continent to go and chase.** The guard went into `EntityOf`
-  itself, where the question is asked, rather than into the header where you saw it.
+- **Did unit 311 run? No.** Nothing in git history mentions it, `PHASE_OUTCOME.md` has
+  no entry for it, and neither the zoom cap nor the For You scroll is in the tree. The
+  last commit before this unit is unit 310's report. **Reported and not folded in**, as
+  the instruction requires.
+- **The version: 1.12.274 → 1.13.0.** The minor bumped for the new phase and the patch
+  reset, per `PHASE_PLAN.md` §R7. `PROJECT_STATUS.md` carries no version field, so
+  nothing there made it ambiguous. **One reading is worth stating**: HM-DEC-150 taken
+  strictly says a phase bumps the minor and resets the patch to zero *and* each unit
+  bumps the patch, which would make this unit 1.13.1. The instruction says bump and
+  reset; §R7 says the first PSK31 unit lands on the new minor. I followed the
+  instruction.
+- **The cited band row says the PSK31 activity centre is 14.070 000 MHz exactly.** The
+  20 m row in `data/bands/us-neighborhoods.json` is `lowHz 14070000`, `highHz 14074000`,
+  `jumpHz 14070000`, family `digital`, cite `podxs070`. **The block is 4 kHz wide, not
+  the 2.5 kHz §R6 describes** - see the mismatches below.
 
-**Task 1 - the measurements, before a word was changed.** The carry-forward list ran 18
-of 18 green first. The trace recorded the before-state in comments and now asserts the
-after-state.
+### Task 1 - the trace
 
-**Task 2 - the receipt stops being a conversation with blanks.** `Place`, `StateWord`,
-`Sentence` and `ShowsGlobe` all answer for a receipt before they answer for a station, so
-a call to anybody carries no callsign, no country, no grid, no distance, no map and no
-sentence about somebody who does not exist. The message rows dropped the tally.
+The three phase files at the root are the PSK31 phase's, set 2026-09-11, seven steps all
+`not started`; the FT4 phase's `PHASE_OUTCOME.md` was replaced, and its content is in git
+history. `UNIT 312` is appended under step 0.
 
-**Task 3 - one receipt, unlimited conversations, and `Adopt` withdrawn.** The ledger's
-`Adopt` is replaced by `Retire`: when anybody answers, the receipt goes and **neither
-station inherits the call.** This **withdraws the author's own unit 305 proposal**, which
-had the first answering station take the CQ card over; R5 rules the opposite, and the
-reason is plain once two stations answer, because a call to everybody belongs to nobody.
-Two assertions in `ThePressingOfCqTests` asserted the withdrawn behaviour and were
-rewritten:
-`AnAnswerAdoptsTheCqCardAndTheExchangeContinuesInIt` became
-`AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard`, and
-`ASecondAnsweringStationGetsItsOwnCard` now asserts that neither station inherits it.
+**The carry-forward list ran first, before anything changed: 19 named types, 106 of 106
+green.** Nothing on it is red, so every red in this unit is this unit's.
 
-**Task 4 - the map row shrinks to the map.** The row was taking the card's whole width
-and fitting the picture inside it by height, so everything to the right was ground: at a
-480 px card the image drew 219.8 px and **260 px of the row were grey.** The control now
-measures itself, asking for the largest box at the map's own proportions that fits what
-it is offered - the same box the render already draws into - and the border round it
-shrinks to its child. Measured at offered widths 240, 320, 480 and 640: the row is
-**220 x 120 every time**, the map 219.84 x 120 inside it, **aspect 1.8320 exactly**,
-0.16 px spare. No number is hard-coded: both figures come from the picture record.
+**How FT4 was added, which task 2 copies** - and the finding is that PSK31 was mostly
+added with it:
 
-**Task 5 - the map opens.** A popup with a dismiss X, framed on the path. The frame is
-the box holding **all 181 sampled great-circle points and both markers**, plus a margin
-of 6 per cent of its own longer side, grown about its centre to a floor and clamped
-inside the file.
+| Seam | Where | PSK31 before this unit |
+| --- | --- | --- |
+| The mode strip | `DigitalModeChip.cs:61`, `Labels` | **already there**, one of the four |
+| The press | `MainWindowViewModel.cs:1109` `ChooseDigitalModeAsync` | **already generic** |
+| The frequency | `DigitalCallingFrequencies.Find(band, label)` reading the cited rows | **already found** |
+| USB-D | `ModeFollowPlan.cs:219` lists PSK31 with FT8, FT4, JS8 and RTTY | **already written** |
+| The log | `ContactModes.cs:147`, `MODE=PSK` + `SUBMODE=PSK31`, ADIF 3.1.4 cited | **already there**, unit 287 |
+| The decoder and grid | `DigitalMode` (engine), two members, and `DigitalModeFor` | **mapped onto `Ft8`** |
+| The panel line | `DigitalIdleText.ModeStripFor(grid)` | **talked about slots** |
+| The record's mode field | `_digitalMode.ToString()` | **said `Ft8`** |
+| The map ribbon | `NeighborhoodMapControl.Render` | **no ribbon lit, for any mode** |
 
-**The zoom floor is a quarter of the file - 174.5 by 95.3 px - and here is the reason.**
-The popup is about the width of the file itself, so a frame of a quarter of it is
-magnified about four times, and at four times one pixel of the photograph has become a
-block four pixels across. That is where a relief map stops carrying coastline and starts
-carrying squares. **It is an arithmetic argument and not a seen one.** A 248-mile contact
-therefore does not fill the frame, which is correct: two stations that close together
-really are close together, and zooming until they looked far apart would assert something
-the distance denies.
+**So the fault was not a missing mode, it was a dishonest one.** Pressing PSK31 tuned
+correctly to 14.070 and then ran FT8's slot grid and FT8's decoder on it, under a line
+reading *nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or
+two before deciding the band is empty* - a sentence about FT8, on a mode with no slots,
+telling the operator to wait for something that is never coming (§0.0, HM-DEC-092).
 
-**Nothing was recorded in `DECISIONS.md`.** The instruction forbids it (§12.1) and no
-entry was written.
+**`PHASE_PLAN.md` §1 and §R1, restated as asked.**
 
-### Three mismatches with the instruction, reported and not repaired
+**§1 in my own words:** FT8 hands Hamlet a protocol - fixed slots, thirteen characters, a
+grammar with six moves - so *whose turn it is* can be read straight off the wire. PSK31
+hands it a conversation: two people typing at each other at 31 baud, in whatever words
+they like, with no acknowledgement primitive and no fixed length. The convention most
+operators follow looks like a QSO, but it is a convention and not a protocol, so Hamlet
+will sometimes be unable to tell where an exchange has got to. **That is why the honest
+display has a state called unknown**, and why "exactly like FT8" can be promised at the
+product layer - the same cards, the same one click, the same log - and never at the wire.
 
-- **The Tokyo path cannot prove what it is named to prove.** The instruction uses FN00DJ
-  to Tokyo as the case showing the frame follows the arc rather than the endpoints.
-  Measured: that path **crosses the antimeridian**, so it is two runs against opposite
-  edges and R8's own date-line rule takes it - it shows the whole world. The bulge is on
-  screen either way, so assertion 3 passes, but by the wrong mechanism. **Moscow proves
-  it instead**: FN00DJ to KO85 stays on one side of the date line, its arc peaks at y 72.8
-  where 66.8N sits at y 70.5, and the frame starts at y **55.3** where an endpoints-only
-  box would start at 97.3. Both cases are tested and both are named in the test's own
-  remarks.
-- **A station the picture cannot place does have a map row.** The instruction says it has
-  none. `HasMap` is an *or*: the operator is placed even when the station is not, so the
-  row appears with his own marker on it and the caption says where the picture stops.
-  What is gated is **the opening**, which is what R8 is about - no path, nothing to zoom
-  to, no button drawn and the command refuses on its own account.
-- **And the instruction carries no `Asks still outstanding` queue inbound**, which §9.6
-  and HM-DEC-139 require. It names "a carried queue of thirteen"; the queue in unit 309's
-  report holds twelve, two of which that report already marked closed. Reconstructed
-  below from that report and `OPEN_ISSUES.md`, with the two settled ones dropped.
+**§R1 in my own words:** how much Hamlet is allowed to assert about an exchange it can
+only half read, and the answer splits by consequence. **Anything that could put a signal
+on the air is strict**: a macro is offered for one click only where the parser is certain
+whose turn it is, because a wrong guess there transmits into somebody else's over. **What
+the card merely displays is permissive**, because a card saying *unknown* through most of
+a real QSO reads as broken - but a state that was inferred is visibly marked as inferred,
+and not by colour alone.
+
+**`SlotClock`** is bound in `MainWindow.axaml` on the digital card face and is untouched;
+step 4 owns replacing it for this mode. **It is not shown for PSK31 today** because the
+card panel it lives on is built from decoded rows and PSK31 produces none.
+
+### Task 2 - the seam
+
+`CanDecode` now names the two modes that have a decoder, rather than `DigitalModeFor`'s
+answer being read as one. The strip line for a mode with no decoder says so by name. The
+record carries the label the operator pressed as its own `state_changed` event, so a file
+from a PSK31 evening can be told from an FT8 one - it could not before, because the mode
+field is `DigitalMode`, which has two members and answered `Ft8` for both labels it does
+not carry.
+
+**Measured: the press goes to the cited row on all four bands that have one** - 3.580,
+7.070, 10.130 and 14.070 - so no constant in code can satisfy the test.
+
+**What was not built, deliberately:** no decoder, no modulator, no parser, no card, no
+macro, no turn indicator, no achievement, no RST field, no ADIF submode added (the
+submode was already there from unit 287 and was not touched). **The engine was not told a
+tab exists** (§0.1): `DigitalMode` keeps its two members, and its own remarks say why a
+third for a mode nothing can decode would assert a capability the application does not
+have.
+
+### Task 3 - the reference, pinned
+
+`fldigi` cloned to `C:\Source\fldigi`, outside the tree, **never committed**, pinned at
+**`61b97f4133c488063f3de1795c894d22d5032e8a`** - Version 4.1.23, 2022-06-23. **GPL-3**,
+read from the clone's own `COPYING` rather than recalled, so it is compatible with
+Hamlet's own licence. `docs/psk31-reference.md` records all of it, the rule that it is
+read and never ported wholesale, and the two files at that commit that carry the varicode
+table with the header recording the chain from Martinez through gmfsk to fldigi.
+**Nothing was read from it in this unit.**
+
+**The clone needed one exclusion.** `flarq_doxygen/user_src_doc/aux/ARQ2.pdf` cannot be
+written on Windows, because `aux` is a reserved device name, so a plain `git clone`
+reports `error: invalid path` and leaves an empty working tree. It is sparse - `src`,
+`COPYING`, `README` - and the note says so, because the next person to clone it meets the
+same error.
+
+### Task 4 - the ribbon, taken rather than dropped
+
+The map now picks out the block the operator asked for: an outline in the family's own
+ink and a heavier label. **Not by colour** - every block is already filled from its
+family, so a hue here would be a second language over the top of HM-DEC-032's, and a
+reader who cannot separate two fills would be told nothing (§0.6). Measured on 20 m with
+PSK31 chosen: **one block of thirteen picked out, PSK31 at 14.070.**
+
+**Nothing was recorded in `DECISIONS.md`.** The instruction forbids it (§12.1).
+
+### Four mismatches with the instruction, reported and not repaired
+
+1. **No ribbon lit before this unit, for any mode.** The instruction says the PSK31
+   ribbon should light *the way the FT8 ribbon lights at 14.074*. The map filled every
+   block from its family and picked out none of them. Task 4 therefore **built the
+   mechanism rather than copying one**, and it serves FT8 and FT4 in the same change.
+2. **§R6 says the ribbon of signals runs from about 14.0700 to 14.0725. The cited row
+   says 14.070 to 14.074.** The row is the source of record (HM-DEC-054) and is what the
+   code reads; §R6's figure is not in the tree anywhere. The map's own tiling trims the
+   block to 14.073999 so it does not overlap the FT8 block that starts at 14.074.
+3. **The instruction's *do not add an ADIF submode* was already moot.** `ContactModes`
+   has carried `MODE=PSK` + `SUBMODE=PSK31` since unit 287, cited to ADIF 3.1.4. Nothing
+   was added and nothing was removed.
+4. **The instruction carries its `Asks still outstanding` queue and is not defective**
+   (§9.6) - noted because the previous unit's order was not, and the rule only works if
+   the compliant case is confirmed as well as the missing one.
 
 ### Tests, all filtered by exact name, foregrounded, 480 s timeout
 
@@ -135,166 +180,135 @@ entry was written.
 polled** (HM-DEC-155).
 
 | Test type | Result |
-|---|---|
-| `TheMapRowFitsTests` (new, task 4) | **5 of 5**, watched failing at compile first |
-| `TheMapOpensTests` (new, task 5) | **9 of 9**, watched failing at compile first |
-| `TheCqReceiptTests` (new, task 2) | **6 of 6** - one added after the report quoted the hover |
-| `ThePanelHoldsThemAllTests` (new, task 3) | 6 of 6 |
-| `Unit310TraceTests` (new, task 1) | 4 of 4 |
-| `TheCqPressMakesACardTests` | 4 of 4 |
-| `ThePressingOfCqTests` | 5 of 5, two assertions rewritten |
-| `TheCqListNudgeTests` | 9 of 9 |
-| `TheGlobeOnTheCardFaceTests` | 4 of 4 |
-| `TheGlobeLineTests` | 3 of 3 |
-| `TheGlobePlacesStationsTests` | 6 of 6 |
-| `Unit299GlobeTests` | 5 of 5 |
-| `TheNudgeHoverTests` | 6 of 6 |
-| `TheReadinessHoverTests` | 4 of 4 |
-| `TheSlotClockTests` | 3 of 3 |
+| --- | --- |
+| `ThePsk31SeamTests` (new, tasks 2 and 4) | **7 of 7**, watched failing first at three of six |
+| `ThePsk31ReferenceIsPinnedTests` (new, engine, task 3) | **2 of 2**, watched failing first |
+| The carry-forward list, 19 types, run before anything changed | **106 of 106** |
 | `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` | 1 of 1, re-run after each markup change |
-| `TheFlatWorldAssetTests`, `TheGreatCirclePathTests` (engine) | 5 of 5, 7 of 7 |
 | `VoiceTests` | 3 of 3, run because this unit adds copy the operator reads |
+| `TheReadinessHoverTests`, `TheSlotClockTests` | 4 of 4, 3 of 3 |
 
-**Nothing new is red.** The inherited reds were not run and were not chased.
+**Nothing new is red.** The inherited reds in section 10 were not run and were not
+chased.
 
 ## 2. What the owner should expect
 
 **The build is clean** - zero warnings, zero errors, `TreatWarningsAsErrors` on.
 
-**Press CQ and you get a receipt, not a conversation.** No callsign, no country, no grid,
-no distance, no map, and no sentence about a station. Press it again and the same receipt
-refreshes to the newest slot; there is never a second one and nothing counts how many
-times you have called.
+**Press PSK31 and the radio goes to the PSK31 block of the band you are on.** On 20 m
+that is 14.070 000 MHz; on 40 m, 7.070; on 30 m, 10.130; on 80 m, 3.580. The block asks
+for USB with the data flag, which is USB-D, through the same mode-follow path FT8 uses.
 
-**When somebody answers, the receipt goes and their own card opens.** Two stations
-answering give two cards and neither inherits your call. **This is a change of behaviour
-from unit 305** and it is R5, not a bug.
+**The panel then tells you it cannot read it.** It does not sit there looking like a
+band that has gone quiet, and it does not talk about slots, because this mode has none.
 
-**The map row is now 220 px wide instead of the card's full width.** It sits at the left
-of the row. The map itself is exactly the size it was - the grey to the right of it is
-what went away, and that is 260 px at a 480 px card.
+**The map picks out the block you chose.** One outline, one heavier label, on the block
+for the mode you pressed. This is new for FT8 and FT4 as well.
 
-**Click the map and it opens.** The picture zooms to the path with a margin, there is an
-X at the top right, and clicking outside also closes it. The marker hovers work inside
-the popup - that was the instruction's drop candidate and it came for free, because the
-hover asks the same one place for the frame that the render does.
+**What will look wrong and is not.** Nothing appears in the decoded table on PSK31: there
+is no decoder, that is step 1, and the panel says so in words. The PSK31 block on the map
+ends at 14.073 999 rather than 14.074: that is the map's own tiling keeping it off the
+FT8 block, not a wrong row.
 
-**What will look wrong and is not.** A short contact does not fill the popup: that is the
-zoom floor, and it is the honest picture. A path across the date line shows the whole
-world rather than zooming: that is R8's own rule, because the two runs sit against
-opposite edges and anything tighter needs a re-centred map this unit did not build. A
-station in Antarctica still gets a map row with only your own marker on it, and it does
-not open.
+**What I cannot promise.** That any of it looks right, and anything at all about the
+radio. No frequency was written, no audio was heard, and every claim above is computed.
 
-**What I cannot promise.** That any of it looks right. Every claim above is computed.
-
-**Pushed to `main`**, six commits, nothing uncommitted:
-`1d5f72b`, `936301b`, `9215875`, `22ff972`, `a00e900` and the hover fix of section 3.
+**Pushed to `main`**, five commits, nothing uncommitted:
+`c8da770`, `c5c0c96`, `fbce700`, `f00f645` and this report.
 
 ## 3. What you should see
 
-**The CQ receipt, word for word.** You have seen the wrong version, so here is the right
-one rather than a description of it:
+**The PSK31 panel, word for word.** This is the line on the mode strip with PSK31
+selected and nothing decoded:
 
 ```
-CQ
-Calling
-02:03:45 UTC · just now
-
-Your call went out to anyone listening.
-
-Sent CQ KC3QIS FN00 · At 02:03:45 UTC
-
-[ Log this call ]
-
-hover on that button:
-  Opens the log window with your own call already filled in, so you can look at
-  it before anything is written down. It transmits nothing.
+the radio is on the PSK31 calling frequency and Hamlet cannot read PSK31 yet,
+so nothing will appear below. You can still hear it, and it sounds like a
+warble you could almost hum.
 ```
 
-`Calling` is the state word. `Your call went out to anyone listening.` is the whole
-sentence. There is no country line, no grid, no distance, no map, no caption and no count
-of how many times you have called - and where a conversation card would say *Waiting on
-him*, this says nothing about anybody, because there is nobody.
+**And FT8's line, unchanged, for contrast:**
 
-**One more of the same fault turned up while quoting it, and it is fixed.** That hover
-read *"Opens the log window with what passed between you and CQ already filled in"* - the
-conversation wording with the literal string dropped into it, exactly like the country
-line, one hover further down. It is the sixth commit of this unit and it has its own
-test. **Quoting the thing word for word is what found it**; describing it would not have.
+```
+nothing on this frequency yet. Slots here run 15 seconds, so give it a slot or
+two before deciding the band is empty.
+```
 
-**The card's map row.** 220 px wide and 120 tall, left-aligned, the picture filling it to
-within 0.16 px. Under it the caption you already have.
+**The tune line under the mode strip**, with nothing connected:
 
-**The opened map.** Centred over the window, the station's callsign at the top left and
-an X at the top right, the picture below it framed on the path with a margin, and the
-same caption underneath. At a 720 by 400 ceiling, a contact to England puts the two
-markers **614 px apart** where the whole-file map puts them 154 px apart at that same
-size.
+```
+Nothing is connected, so the dial has not moved. PSK31 on 20 m is 14.070000 MHz
+when a radio is.
+```
 
-**One thing to check that I cannot.** Whether the popup lands somewhere sensible on your
-screen and whether 720 by 400 is the right size for it. Both are numbers I chose, and
-section 4 raises the second.
+**The map, on 20 m.** Thirteen blocks, one of them outlined and its label a shade
+heavier:
+
+```
+  CW DX   14.000 000 - 14.024 999
+  CW      14.025 000 - 14.059 999
+  QRP     14.060 000 - 14.069 999
+* PSK31   14.070 000 - 14.073 999      <- outlined, label heavier
+  FT8     14.074 000 - 14.076 999
+  JS8     14.078 000 - 14.079 999
+  FT4     14.080 000 - 14.082 999
+  RTTY    14.083 000 - 14.094 999
+  ...
+```
+
+**One thing to check that I cannot.** Whether a two-pixel outline actually reads as
+emphasis on a forty-four pixel map at your screen's scale. It is the one number in this
+unit that was chosen rather than derived, and section 4 raises it.
 
 ## 4. What's blocking us
 
-Nothing blocks the next unit. Four items want your ruling.
+Nothing blocks step 1. Four items want your ruling.
 
-1. **The popup's size is a number I chose: 720 by 400.** It is a ceiling rather than a
-   shape - the control fits the frame inside it - but it is still a figure with no source,
-   and the instruction says not to hard-code a width or a height. **The alternative is a
-   share of the window**, which needs a converter this app does not have. Ruling wanted:
-   the ceiling as it stands, a share of the window, or a size you name.
+1. **Unit 311 never ran, and its work is still outstanding.** The zoom cap and the For
+   You scroll were delivered on 2026-09-11 and are not in the tree. **They are not folded
+   in here**, per the instruction. They need a unit of their own or an explicit drop.
 
-2. **Card ordering under scroll** (inbound ask 13, raised and deliberately not ruled).
-   The panel now holds an unlimited number of conversations with a vertical scroll, and
-   nothing says which one is at the top when six are live. **No ordering rule was
-   invented**, per the instruction.
+2. **`PHASE_PLAN.md` §R6 disagrees with the cited band row.** §R6 says the PSK31 ribbon
+   runs from about 14.0700 to 14.0725; the row says 14.070 to 14.074. The code reads the
+   row (HM-DEC-054) and §R6's figure is nowhere in the tree. Either the row is right and
+   §R6 is prose to be corrected, or the row wants re-citing - and a band row is cited
+   data, so that is not a session's to change.
 
-3. **The zoom floor is mine to revisit.** A quarter of the file, argued from magnification
-   rather than from looking at it. If a contact across two states looks too far out when
-   you open it, the number is the thing to change and the reason is written beside it.
+3. **The outline width, 2 px, is a number I chose.** Everything else on the map derives
+   from the band edges or the palette. A hairline vanishes against a filled block and
+   anything heavier starts reading as a boundary of its own, but I cannot see the result.
 
-4. **The single-card fault is unfound, not fixed.** Two stations answering produced two
-   cards in every path I could drive. Whatever you saw came from somewhere this trace does
-   not reach. **If it happens again, the useful thing is which two callsigns and roughly
-   when** - the ledger and the telemetry will then say whether the card went or the
-   booking did.
+4. **Version 1.13.0 or 1.13.1?** HM-DEC-150 read strictly gives the phase the minor with
+   the patch reset to zero *and* each unit a patch bump, which makes the first unit of a
+   phase 1.13.1. The instruction and §R7 say this unit lands on the new minor. I followed
+   the instruction; one word settles which reading stands for the rest of the phase.
 
 ### Asks still outstanding
 
-Carried per HM-DEC-139. **Two items were marked closed in unit 309's report and are
-dropped here** rather than carried a second time - where the globe lives, and the
-full-disc polar image.
+Carried per HM-DEC-139, verbatim where unresolved.
 
 1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
-   still yours: `Played` stays a statement about what the audio path did; a second,
-   separate fact says what the radio did, read from `1C 00` and `15 11`; **unknown** where
-   the radio does not answer. Touches what the display asserts, so yours without exception
-   (§12.1).
-2. **Nothing in this repository can look at a picture.** Twelve units now. This unit is
-   another instalment of the bill: the map row and the popup are both asserted from
-   computed sizes, and **the one fault of this kind you found yourself - `CQ  Portugal` -
-   was invisible to every test in the tree.** Real pixels want `Avalonia.Headless.Skia`,
-   and **a package is yours** (§0.4).
+   still Tim's: `Played` stays a statement about what the audio path did; a second,
+   separate fact says what the radio did, read from `1C 00` and `15 11`, which Hamlet
+   already polls four times a second; **unknown** where the radio does not answer.
+   **PSK31 sharpens it**: a continuous carrier that did not key is a long silence, not a
+   missed slot.
+2. **Nothing in this repository can look at a picture.** Real pixels want
+   `Avalonia.Headless.Skia`, and **a package is Tim's, not a session's** (§0.4). This
+   unit adds a third thing asserted from a rule rather than from a screen.
 3. **Three inherited reds, never chased.** Two in `TheAchievementsScreenTests` -
-   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` - and
-   one in `TheFitGuardAsksAboutTheGridTheSendIsOnTests`, in the engine test project.
-4. **The two-answer CQ rule. Ruled and dropped after this report** - R5 of 2026-09-11
-   answers it: the receipt retires and each answering station opens its own card. The
-   unit 305 proposal it replaces is withdrawn in the code and in its tests.
-5. **Where the explanatory hover wording lives, if anything.** `Ft8ContactCard.Closing`
+   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` -
+   and one in `TheFitGuardAsksAboutTheGridTheSendIsOnTests`, in the engine test project.
+4. **Where the explanatory hover wording lives, if anywhere.** `Ft8ContactCard.Closing`
    is uncalled and left standing.
-6. **`Ft8GlobePlot`'s unused framing constants** - `MapWidth`, `MapHeight`, `Margin`,
-   `SmallestFrame`. Still unread by anything in `src/`, and the new framing does not use
-   them either. Left standing.
-7. **The licence of `assets/world-flat-relief.png` is unknown.** In the tree by your
-   ruling, no watermark, no recorded origin, and Hamlet is GPL-3.0. See
-   `assets/PROVENANCE.md`. Raised, not resolved, and no licence claim is written anywhere.
-8. **`PHASE_OUTCOME.md` has a two-unit hole** - no `UNIT 306`, no `UNIT 307`. This unit
-   appended itself and back-filled neither, and task 1 confirmed **309 is not one of the
-   missing**.
-9. **The door sentence is a placeholder.** Still yours.
-10. **Acknowledgement indicators.** You named these as one of four things wrong with the
-    screen and which of two things you meant has not been established. **Nothing was built
-    and nothing was guessed at.**
+5. **`Ft8GlobePlot`'s unused framing constants.** Report; leave standing.
+6. **The licence of `assets/world-flat-relief.png` is unknown.** See
+   `assets/PROVENANCE.md`. Raise; do not resolve.
+7. **The door sentence is a placeholder.** Carried.
+8. **Acknowledgement indicators.** Named by Tim, not yet defined. **`PHASE_PLAN.md` §3.1
+   builds a turn indicator in step 4, which may be what he meant. It is not assumed to
+   be.**
+9. **Card ordering under scroll.** Raised twice, unruled.
+10. **The popup's size** - 720 by 400, a number unit 310 chose.
+11. **Unit 311 may or may not have run.** **Answered by this unit: it did not.** It is
+    carried as item 1 of the new asks above and drops off this queue.

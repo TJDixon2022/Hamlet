@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 312 - PSK31 exists as a mode
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T01:56:07-04:00
-NOTE: Task 4 green - the map picks out the chosen block. The report next.
+UPDATED: 2026-09-11T02:00:17-04:00
+NOTE: Unit 312 complete, none dropped. Step 0 done - PSK31 exists as a mode.
 
 ---
 
