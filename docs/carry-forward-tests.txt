@@ -8,7 +8,8 @@ unit adding copy should run. Unit 312, the first of the PSK31 phase, added its
 own two, and unit 313 added its two plus TheConnectionLineReadsTests, which its
 own instruction named and which was not on here. Unit 314 added its four. Unit 315
 added its two, one each side. Unit 316 added its three, two engine and one app.
-Unit 318 added its engine types as each went green.
+Unit 318 added its engine types as each went green. Unit 319 added its own the same
+way.
 
 WHAT THIS IS. The test names a unit runs, filtered by exact name and
 foregrounded, BEFORE it changes anything - so that a red found afterwards can be
@@ -61,6 +62,7 @@ ThePsk31MessageSplitTests
 ThePsk31ModulatorTests
 TheFt8AndFt4SendsAreByteIdenticalTests
 TheUnslottedSendTests
+ThePsk31TurnTests
 TheAzimuthalAssetTests
 AzimuthalMapTests
 
