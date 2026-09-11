@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 315 - hear everyone
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 316 - read the conversation
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T12:04:24-04:00
-NOTE: Unit 315 complete, none dropped. Step 2 met: four stations read at once at CER 0.0000, noise 0 rows, ratio 0.004. Validator refused by the shell.
+UPDATED: 2026-09-11T12:15:36-04:00
+NOTE: Entry green, two rows at CER 0.0000; carry-forward app 115 of 115, engine 71 of 71; version to 1.13.4, committing before the parser.
 
 ---
 
