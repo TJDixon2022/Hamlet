@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 309 - the line he cannot see, and the marks that never appeared
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 4 of 5
+WORK_INSTRUCTION: 310 - two kinds of card, a panel that holds all of them, and a map you can open
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T21:22:15-04:00
-NOTE: Complete - five tasks of five, none dropped. The line and both markers are cased, the CQ list marks 13 of 14 on an empty log with nothing ranked, and pressing CQ makes a card again.
+UPDATED: 2026-09-10T21:50:44-04:00
+NOTE: Task 4 green - the map row is 220 x 120 whatever the card width. Task 5 next.
 
 ---
 

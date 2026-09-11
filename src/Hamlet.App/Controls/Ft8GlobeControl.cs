@@ -290,6 +290,82 @@ public sealed class Ft8GlobeControl : Control
         set => SetValue(PlotProperty, value);
     }
 
+    /// <summary>How tall the map is at a given width.</summary>
+    /// <param name="width">A width in the control own units.</param>
+    /// <returns>The height that keeps the picture own proportions exactly.</returns>
+    /// <remarks>
+    /// **THE ASPECT IS READ FROM THE PICTURE RECORD**, so a different map changes
+    /// this with it and there is no second copy of the number to drift (0).
+    /// </remarks>
+    public static double HeightFor(double width)
+        => width <= 0
+            ? 0
+            : width * FlatWorldMap.Relief.HeightPixels
+              / FlatWorldMap.Relief.WidthPixels;
+
+    /// <summary>How wide the map is at a given height.</summary>
+    /// <param name="height">A height in the control own units.</param>
+    /// <returns>The width that keeps the picture own proportions exactly.</returns>
+    public static double WidthFor(double height)
+        => height <= 0
+            ? 0
+            : height * FlatWorldMap.Relief.WidthPixels
+              / FlatWorldMap.Relief.HeightPixels;
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// <para>**THE ROW SHRINKS TO THE MAP** (R7, Tim 2026-09-11, choosing that over
+    /// cropping the picture and over stretching it). This asks for **the largest box
+    /// at the map own proportions that fits in what it is offered**, which is exactly
+    /// the box <see cref="Render"/> already draws into. So the control and the
+    /// picture become the same rectangle and there is nothing left over to be
+    /// grey.</para>
+    /// <para>**STRETCHING WAS NEVER ON THE TABLE.** The projection six measured
+    /// constants describe this bitmap at its own proportions, and filling a row of
+    /// some other shape would move every marker off the place it belongs - the fault
+    /// those constants exist to prevent (0.0, HM-DEC-092).</para>
+    /// <para>**NOTHING HERE IS A HARD-CODED SIZE.** Both figures come from the
+    /// picture record; what the card offers decides the rest.</para>
+    /// </remarks>
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        var width = availableSize.Width;
+        var height = availableSize.Height;
+
+        // **OFFERED NOTHING, IT ASKS FOR THE FILE OWN SIZE.** A control with no
+        // constraint at all is still the right shape.
+        if (double.IsInfinity(width) && double.IsInfinity(height))
+        {
+            return new Size(
+                FlatWorldMap.Relief.WidthPixels, FlatWorldMap.Relief.HeightPixels);
+        }
+
+        if (double.IsInfinity(width))
+        {
+            width = WidthFor(height);
+        }
+
+        if (double.IsInfinity(height))
+        {
+            height = HeightFor(width);
+        }
+
+        if (width <= 0 || height <= 0)
+        {
+            return default;
+        }
+
+        // **THE SAME FIT THE RENDER MAKES**, written once in each place because the
+        // render needs it against `Bounds` and this needs it against an offer.
+        var scale = Math.Min(
+            width / FlatWorldMap.Relief.WidthPixels,
+            height / FlatWorldMap.Relief.HeightPixels);
+
+        return new Size(
+            FlatWorldMap.Relief.WidthPixels * scale,
+            FlatWorldMap.Relief.HeightPixels * scale);
+    }
+
     /// <inheritdoc/>
     /// <remarks>
     /// <para>**THE PICTURE IS THE MAP AND THE CODE PUTS DOTS ON IT.** Nothing here

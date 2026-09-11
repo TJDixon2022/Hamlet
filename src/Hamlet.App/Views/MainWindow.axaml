@@ -4695,7 +4695,8 @@
                                                                 <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                                                         BorderThickness="1"
                                                                         CornerRadius="4"
-                                                                        ClipToBounds="True">
+                                                                        ClipToBounds="True"
+                                                                        HorizontalAlignment="Left">
                                                                     <ctl:Ft8GlobeControl x:Name="CardGlobe"
                                                                                          Height="120"
                                                                                          Plot="{Binding Globe}" />
