@@ -54,13 +54,19 @@ public static class Psk31Events
     /// <param name="dialHz">Where the radio was, or 0 where it is unknown.</param>
     /// <param name="lowHz">The bottom of the passband searched.</param>
     /// <param name="highHz">The top of it.</param>
-    /// <param name="sampleRate">The audio rate the path is running at.</param>
+    /// <param name="sampleRate">The audio rate the path is decoded at.</param>
+    /// <param name="deviceSampleRate">The rate the audio device is handing over.</param>
+    /// <param name="resampleRatio">Input samples per output sample, 1 where it passes through.</param>
     /// <param name="squelch">The squelch threshold the demodulators use.</param>
     /// <param name="retireSeconds">How long a carrier may go unheard before retiring.</param>
     /// <remarks>
-    /// **IT WRITES THE THRESHOLDS, NOT ONLY THE FACT OF STARTING.** Every number in this
-    /// path was chosen against synthetic fixtures, and the first question about a session
-    /// that heard nothing is what the thresholds were that evening.
+    /// <para>**IT WRITES THE THRESHOLDS, NOT ONLY THE FACT OF STARTING.** Every number in
+    /// this path was chosen against synthetic fixtures, and the first question about a
+    /// session that heard nothing is what the thresholds were that evening.</para>
+    /// <para>**AND BOTH RATES, SINCE UNIT 324** (§R13). The operator's evening of
+    /// 2026-09-11 wrote `sampleRate: 48000` and there was nothing in the line to say
+    /// whether that was the device or the decoder - it was both, and that was the fault.
+    /// Two fields and the ratio between them cannot be read the same way twice.</para>
     /// </remarks>
     public static void ListeningStarted(
         ITelemetry? telemetry,
@@ -68,6 +74,8 @@ public static class Psk31Events
         double lowHz,
         double highHz,
         int sampleRate,
+        int deviceSampleRate,
+        double resampleRatio,
         double squelch,
         double retireSeconds)
         => telemetry?.Write(
@@ -81,6 +89,8 @@ public static class Psk31Events
                 ["passbandLowHz"] = Math.Round(lowHz),
                 ["passbandHighHz"] = Math.Round(highHz),
                 ["sampleRate"] = sampleRate,
+                ["deviceSampleRate"] = deviceSampleRate,
+                ["resampleRatio"] = Math.Round(resampleRatio, 4),
                 ["squelchQuality"] = squelch,
                 ["retireSeconds"] = retireSeconds,
                 ["searchRule"] = Psk31CarrierSearch.SearchRule,

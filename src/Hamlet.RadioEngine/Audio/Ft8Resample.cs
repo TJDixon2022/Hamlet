@@ -20,6 +20,11 @@ namespace Hamlet.RadioEngine.Audio;
 /// instead.</para>
 /// <para>**PURE, AND NO CLOCK IS READ.** Samples in, samples out, so the same
 /// recording resamples identically on any machine at any hour (§5).</para>
+/// <para>**THE FILTER ITSELF LIVES IN <see cref="SincKernel"/>**, beside this, because
+/// unit 324 needed the same filter for a live stream rather than a slot
+/// (<see cref="Psk31Resampler"/>) and a hand-copied second set of taps is a second
+/// place for them to drift (§0). Nothing about this class's arithmetic changed when it
+/// moved.</para>
 /// </remarks>
 public static class Ft8Resample
 {
@@ -146,68 +151,5 @@ public static class Ft8Resample
         }
 
         return output;
-    }
-
-    /// <summary>
-    /// A windowed sinc, tabulated once and read with linear interpolation.
-    /// </summary>
-    /// <remarks>
-    /// A slot at 48 kHz needs about twenty-five million taps. Evaluating a sine
-    /// for each is a second of arithmetic on the press; reading a table of nine
-    /// thousand entries is a few milliseconds, and the interpolation error is
-    /// orders below the quantisation of the audio it is filtering.
-    /// </remarks>
-    private sealed class SincKernel
-    {
-        private const int PerSample = 128;
-
-        private readonly double[] _taps;
-
-        internal SincKernel(double cutoff, int zeroCrossings)
-        {
-            HalfWidth = zeroCrossings / (2 * cutoff);
-
-            _taps = new double[(int)Math.Ceiling(HalfWidth * PerSample) + 2];
-
-            for (var k = 0; k < _taps.Length; k++)
-            {
-                var x = k / (double)PerSample;
-                _taps[k] = x > HalfWidth
-                    ? 0
-                    : Sinc(2 * cutoff * x) * Blackman(x / HalfWidth);
-            }
-        }
-
-        /// <summary>How far the kernel reaches, in input samples.</summary>
-        internal double HalfWidth { get; }
-
-        /// <summary>The tap at a distance, in input samples, from the centre.</summary>
-        internal double At(double x)
-        {
-            var place = Math.Abs(x) * PerSample;
-            var k = (int)place;
-
-            if (k + 1 >= _taps.Length)
-            {
-                return 0;
-            }
-
-            var fraction = place - k;
-
-            return (_taps[k] * (1 - fraction)) + (_taps[k + 1] * fraction);
-        }
-
-        private static double Sinc(double u)
-            => u == 0 ? 1 : Math.Sin(Math.PI * u) / (Math.PI * u);
-
-        /// <summary>The Blackman window, over a half-width normalised to one.</summary>
-        private static double Blackman(double w)
-        {
-            var t = (Math.Clamp(w, -1, 1) + 1) / 2;
-
-            return 0.42
-                - (0.5 * Math.Cos(2 * Math.PI * t))
-                + (0.08 * Math.Cos(4 * Math.PI * t));
-        }
     }
 }

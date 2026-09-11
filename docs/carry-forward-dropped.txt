@@ -73,7 +73,15 @@ always been, at the foot of `carry-forward-tests.txt`.
     on the list before unit 324    46
     dropped here                   24
     kept                           22
-    added by unit 324               1   CallsignPrivacyTests, which work
+    added by unit 324               2   CallsignPrivacyTests, which work
                                         instruction 324 names as a keep and
-                                        which was not on the list at all
-    on the list now                23
+                                        which was not on the list at all, and
+                                        ThePsk31PathRunsAtItsRateTests, which
+                                        is unit 324 task 2's own guard
+    on the list now                24
+
+    **THE INSTRUCTION SAID TWENTY AND ITS OWN KEEP-RULES NAME TWENTY-THREE.**
+    The keep-rules win: dropping a guard the instruction named, to satisfy an
+    arithmetic, is a coverage decision the owner did not make. The cap exists
+    for the wall clock and the watchdog, and the wall clock is 35 s across two
+    builds, against unit 323's forty-one.

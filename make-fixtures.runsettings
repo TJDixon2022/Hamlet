@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Turns on Unit324Fixtures, the tool that writes the two fixtures work instruction 324
+  needs. It is a run setting rather than a shell variable because the environment this
+  unit ran in refuses a variable assignment in front of a command.
+
+  Run it once, read the hashes off the console, pin them in manifest-step2.json:
+
+    dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
+      (filter) FullyQualifiedName~Unit324Fixtures
+      (settings) make-fixtures.runsettings
+      (logger) console;verbosity=detailed
+-->
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <HAMLET_MAKE_FIXTURES>1</HAMLET_MAKE_FIXTURES>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>

@@ -65,6 +65,23 @@ public sealed class Psk31CarrierSearch
         + " without a pass. Its offset is the probe's frequency plus the error the squared "
         + "phasor's angle measures.";
 
+    /// <summary>**The bottom of the passband PSK31 is worked in, in hertz.**</summary>
+    /// <remarks>
+    /// <para>**IT COMES FROM THE MODE, NOT FROM THE SAMPLE RATE** (work instruction 324
+    /// task 2). Until unit 324 the range was *whatever the samples can carry*, less a
+    /// signal's width at each end, and on the operator's own evening that wrote
+    /// `passbandLowHz: 64, passbandHighHz: 23936` into the record - a claim to be
+    /// searching twenty-four kilohertz of a receiver that passes three.</para>
+    /// <para>**200 TO 3000 IS THE SSB PASSBAND A PSK31 STATION IS WORKED THROUGH**, the
+    /// same sliver FT8 lives in (`Ft8Resample`), and it is a property of the mode and the
+    /// receiver rather than of the sound card. Nothing outside it can be a station Hamlet
+    /// could work, and everything outside it is somewhere for a probe to waste itself.</para>
+    /// </remarks>
+    public const double PassbandLowHz = 200;
+
+    /// <summary>**The top of it, in hertz.**</summary>
+    public const double PassbandHighHz = 3000;
+
     /// <summary>The coarsest spectrum bin the search will accept, in hertz.</summary>
     /// <remarks>
     /// **ABOUT AN EIGHTH OF A PSK31 SIGNAL'S WIDTH**, so the power centroid lands within a
@@ -283,11 +300,13 @@ public sealed class Psk31CarrierSearch
 
         _halfBins = Math.Max(1, (int)Math.Round(SignalHalfWidthHz / _binHz));
 
-        // **THE RANGE IS WHATEVER THE SAMPLES CAN CARRY**, less one signal's width at
-        // each end so a probe is never asked to mix down at a place a whole PSK31 signal
-        // could not fit.
-        _lowBin = (int)Math.Ceiling(2 * SignalHalfWidthHz / _binHz);
-        _highBin = (int)Math.Floor(((sampleRate / 2.0) - (2 * SignalHalfWidthHz)) / _binHz);
+        // **THE RANGE IS THE MODE'S PASSBAND**, and the rate only ever narrows it: a rate
+        // too low to carry 3 000 Hz stops at what it can carry, less one signal's width,
+        // so a probe is never asked to mix down where a whole PSK31 signal could not fit.
+        _lowBin = (int)Math.Ceiling(PassbandLowHz / _binHz);
+        _highBin = Math.Min(
+            (int)Math.Floor(PassbandHighHz / _binHz),
+            (int)Math.Floor(((sampleRate / 2.0) - (2 * SignalHalfWidthHz)) / _binHz));
 
         _history = new float[Math.Max(size, (int)(HistorySeconds * sampleRate))];
         _toHop = _hop;
@@ -301,9 +320,10 @@ public sealed class Psk31CarrierSearch
 
     /// <summary>The bottom of the passband this search looks at, in hertz.</summary>
     /// <remarks>
-    /// **DERIVED FROM THE RATE AND THE SIGNAL WIDTH, NOT TYPED** (work instruction 322
-    /// task 2). A record that named a passband the search was not actually looking at
-    /// would be worse than naming none, so this reads back the bins it really uses.
+    /// **READ BACK FROM THE BINS IT REALLY USES, NOT TYPED** (work instruction 322 task
+    /// 2). A record that named a passband the search was not actually looking at would be
+    /// worse than naming none. The bins come from <see cref="PassbandLowHz"/> and
+    /// <see cref="PassbandHighHz"/>, so this lands within one bin of them.
     /// </remarks>
     public double LowestHz => _lowBin * _binHz;
 

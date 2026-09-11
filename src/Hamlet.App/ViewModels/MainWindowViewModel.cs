@@ -2041,6 +2041,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Every PSK31 signal in the passband, or null until PSK31 is pressed.</summary>
     private Psk31Listener? _psk31;
 
+    /// <summary>What puts the device's audio on the PSK31 path's own rate.</summary>
+    /// <remarks>
+    /// **IT LIVES AS LONG AS THE LISTENER DOES**, because it carries the filter's tail
+    /// and the output phase across ticks; a new one every quarter second would splice.
+    /// </remarks>
+    private Psk31Resampler? _psk31Resampler;
+
     /// <summary>The next sample the listener wants from the tap.</summary>
     private long _psk31At;
 
@@ -2198,7 +2205,12 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (_psk31 is null)
         {
-            _psk31 = new Psk31Listener(tap.SampleRate);
+            // **THE DEVICE DOES NOT SET THE DECODER'S RATE** (work instruction 324 task
+            // 2). Everything in the PSK31 path was proved at 8 kHz; the resampler is the
+            // one place that knows what the sound card is doing, and past it the rate is
+            // always `Psk31Resampler.TargetSampleRate`.
+            _psk31Resampler = new Psk31Resampler(tap.SampleRate);
+            _psk31 = new Psk31Listener(Psk31Resampler.TargetSampleRate);
             _psk31StartedUtc = DateTime.UtcNow;
             _psk31CarriersSeen = 0;
             _psk31LinesParsed = 0;
@@ -2212,7 +2224,9 @@ public partial class MainWindowViewModel : ObservableObject
                 FrequencyHz,
                 _psk31.LowestHz,
                 _psk31.HighestHz,
-                tap.SampleRate,
+                _psk31.SampleRate,
+                _psk31Resampler.DeviceSampleRate,
+                _psk31Resampler.Ratio,
                 Psk31Demodulator.SquelchQuality,
                 Psk31CarrierSearch.RetireAfterSeconds);
         }
@@ -2247,7 +2261,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31At += wanted;
 
-        _psk31.Add(_psk31Buffer.AsSpan(0, wanted));
+        // **THROUGH THE RESAMPLER, WHATEVER THE DEVICE GAVE.** At 8 kHz it hands the
+        // samples straight back; at anything else it filters them onto the grid and
+        // carries its phase from one lump to the next, so the answer does not depend on
+        // where the tick cut the stream.
+        _psk31.Add(_psk31Resampler!.Take(_psk31Buffer.AsSpan(0, wanted)));
 
         ShowPsk31Channels();
 
@@ -2879,6 +2897,7 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(HasDigitalCards));
 
         _psk31 = null;
+        _psk31Resampler = null;
         _psk31At = 0;
         _psk31Rows.Clear();
         _psk31FirstHeard.Clear();

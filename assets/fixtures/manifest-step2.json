@@ -28,5 +28,34 @@
    "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
    "C": "CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\n"
   }
+ },
+ {
+  "file": "psk31-four-signals-48k.wav",
+  "sha256": "872b15459228d4b4d583ace6363da507c913a629e3df94360191e722ec4cbe49",
+  "sample_rate": 48000,
+  "made_by": "tests/Hamlet.RadioEngine.Tests/Psk31/Unit324Fixtures.cs, work instruction 324 task 2",
+  "note": "psk31-four-signals.wav, the same four carriers and the same words, raised from 8000 Hz to 48000 Hz with the band-limited filter in Ft8Resample - the rate the operator's own sound card handed the PSK31 path on 2026-09-11, where a real carrier 62 dB over the floor was found three times and read nothing. IT HOLDS NOTHING ABOVE 4 kHz, so it proves that the path comes down to 8 kHz and decodes, and it cannot prove the anti-alias filter; that is proved directly against Psk31Resampler by a tone above the new Nyquist.",
+  "texts": {
+   "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
+   "B": "KC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA BTU W1AW de KC3QIS K\r\n",
+   "C": "CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\n",
+   "D": "VE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW? VE3XN de F4DIA K\r\nVE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW? VE3XN de F4DIA K\r\n"
+  }
+ },
+ {
+  "file": "psk31-idle-gap-1000hz.wav",
+  "sha256": "d0045825854665029bd6b205472d06a5072225b561a6a4724aae7df2cb40c57b",
+  "sample_rate": 8000,
+  "carrier_hz": 1000,
+  "idle_gap_bits": 188,
+  "idle_gap_seconds": 6.016,
+  "snr_db_2500": 10,
+  "seed": 324,
+  "made_by": "tests/Hamlet.RadioEngine.Tests/Psk31/Unit324Fixtures.cs, work instruction 324 task 3",
+  "note": "One station at 1000 Hz that says the CQ, idles for 188 bits - 6.016 s of continuous phase reversals, which is keying and not silence - and says it again. A search that retires a carrier when the signal goes holds one carrier across the gap; a search that retires it when the characters stop cannot. The two halves are laid end to end with the join in the middle of the gap, where the modulator's half-symbol fade to zero and back falls on no character, and the idle before the join is made an odd or even number of bits so the symbol across it is a reversal like every other idle symbol.",
+  "texts": {
+   "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
+   "B": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n"
+  }
  }
 ]
