@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 320 - say it, the press half: a PSK31 CQ that makes a receipt at the bench, behind a door only drive and power can open
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T15:34:39-04:00
-NOTE: Task 1 - entry green (engine 38/38, app 10/10), trace read; starting the before-counts, carry-forward and chain-guarding, engine then app.
+UPDATED: 2026-09-11T15:45:03-04:00
+NOTE: Item 41 green - W1AW card now holds FN31 from his certain report, a guessed grid is not handed; 38 of 38 with the map and card tests. Committing, then the after-counts.
 
 ---
 

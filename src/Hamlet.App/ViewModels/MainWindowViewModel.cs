@@ -2281,9 +2281,18 @@ public partial class MainWindowViewModel : ObservableObject
             // (§R1, `Psk31Offer`). The card holds it; nothing draws it while the door is shut.
             var offered = Psk31Offer.For(talk, turn, mine);
 
+            // **HIS GRID, FROM A MESSAGE HE CERTAINLY SENT** (work instruction 320, item 41). The latest one
+            // wins, the way FT8's card takes the last grid he put on the air. A grid read from a guess, and
+            // the operator's own grid in his own report, are never handed (§R1).
+            var grid = talk
+                .Where(m => m.Exchange is { IsCertain: true, Grid: { Length: > 0 } }
+                    && Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station))
+                .Select(m => m.Exchange.Grid)
+                .LastOrDefault();
+
             if (!_psk31Cards.TryGetValue(station, out var state))
             {
-                state = new Psk31CardState(Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered), channelId)
+                state = new Psk31CardState(Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered, grid), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -2306,17 +2315,17 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 state.ClearedAtMessages = null;
-                state.Card = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered);
+                state.Card = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered, grid);
                 DigitalCards.Add(state.Card);
                 continue;
             }
 
-            if (state.Card.Turn == turn && state.Card.Offered == offered)
+            if (state.Card.Turn == turn && state.Card.Offered == offered && state.Card.Facts.Grid == grid)
             {
                 continue;
             }
 
-            var fresh = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered);
+            var fresh = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered, grid);
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;

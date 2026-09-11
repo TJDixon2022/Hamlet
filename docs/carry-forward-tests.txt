@@ -9,7 +9,7 @@ own two, and unit 313 added its two plus TheConnectionLineReadsTests, which its
 own instruction named and which was not on here. Unit 314 added its four. Unit 315
 added its two, one each side. Unit 316 added its three, two engine and one app.
 Unit 318 added its engine types as each went green. Unit 319 added its own the same
-way.
+way. Unit 320 added its one app class, for item 41.
 
 WHAT THIS IS. The test names a unit runs, filtered by exact name and
 foregrounded, BEFORE it changes anything - so that a red found afterwards can be
@@ -49,6 +49,7 @@ ThePsk31HearsEveryoneTests
 ThePsk31ReadsTheConversationTests
 ThePsk31ConversationCardTests
 Hamlet.App.Tests.ViewModels.ThePsk31OfferTests
+ThePsk31CardIsHandedHisGridTests
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj

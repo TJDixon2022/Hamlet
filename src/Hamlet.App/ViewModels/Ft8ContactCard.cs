@@ -92,25 +92,30 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <param name="turn">Whose turn it is on his channel (`Psk31Turn`).</param>
     /// <param name="operatorGrid">The operator's own locator, or null.</param>
     /// <param name="offered">Which macro the card would offer (`Psk31Offer`); held, never drawn.</param>
+    /// <param name="grid">His grid, from a message he certainly sent, or null.</param>
     /// <returns>The card.</returns>
     /// <remarks>
     /// <para>**THE SAME CARD TYPE, NOT A THIRD** (work instruction 319 task 3, §2). Where FT8's
     /// card shows the ledger's state word, this one shows whose turn it is.</para>
     /// <para>**WHERE PSK31 HAS NO FACT, THE CARD SHOWS NOTHING RATHER THAN A STAND-IN.** There is no
     /// FT8 ledger behind it, so there is no time line, no slot count, no report, no message count and
-    /// no `i` detail. The facts record below carries only the callsign; its other members are empty
-    /// and nothing on a PSK31 card reads them.</para>
+    /// no `i` detail. The facts record below carries the callsign and his grid; its other members are
+    /// empty and nothing on a PSK31 card reads them.</para>
+    /// <para>**HIS GRID IS HANDED ONLY FROM A CERTAIN MESSAGE** (work instruction 320, item 41). Without
+    /// it the map row said he had not put a grid square on the air after his certain report carried
+    /// one, which is a false sentence (HM-DEC-092). A grid read from a guess is not handed (§R1).</para>
     /// <para>**NOTHING ON IT TRANSMITS AND NOTHING ON IT LOGS** (§0.2, §6 of the instruction): no
     /// action, no Log link. The send door stays shut, and the Log is step 5's.</para>
     /// </remarks>
     public static Ft8ContactCard ForPsk31(
-        string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None)
+        string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None,
+        string? grid = null)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
         var facts = new Ft8CardFacts(
             callsign, Ft8ContactState.WaitingOnHim, 0, null, null, false, false, 0, 0, 0,
-            null, null, false, false, false, false, null, null, null);
+            null, null, false, false, false, false, grid, null, null);
 
         return new Ft8ContactCard(facts, operatorGrid, turn, offered);
     }
