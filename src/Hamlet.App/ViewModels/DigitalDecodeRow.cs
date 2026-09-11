@@ -129,13 +129,22 @@ namespace Hamlet.App.ViewModels;
 /// sent row lives only on the For you side, which is a conversation rather than
 /// a table of decodes.</para>
 /// </param>
+/// <param name="IsTextOnly">
+/// **True where this row is free text and nothing may be read out of it** (work
+/// instruction 315 task 3). A PSK31 row is a conversation arriving a character at a time,
+/// not an FT8 message: at the moment it reads `CQ CQ CQ` it is three words, and without
+/// this <see cref="Fields"/> would call the first one an addressee and the CQ filter, the
+/// operator's own side and the sender's tooltip would all act on it. **No field, no
+/// addressee, no sender**, until the step that parses PSK31 says otherwise.
+/// </param>
 public sealed record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message,
     string ObserverGrid = "",
     DateTime SlotStartUtc = default,
     string Contact = "",
     long HeardOnHz = 0,
-    bool IsSent = false)
+    bool IsSent = false,
+    bool IsTextOnly = false)
     : INotifyPropertyChanged
 {
     /// <summary>What a sent row puts in a cell nothing measured.</summary>
@@ -471,7 +480,7 @@ public sealed record DigitalDecodeRow(
     /// message is worse than labelling none of it.
     /// </remarks>
     public Hamlet.RadioEngine.Contacts.Ft8MessageFields? Fields
-        => Ft8Vocabulary.Split(Message);
+        => IsTextOnly ? null : Ft8Vocabulary.Split(Message);
 
     /// <summary>Who the message is addressed to, or "".</summary>
     /// <remarks>

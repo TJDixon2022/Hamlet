@@ -66,35 +66,22 @@ public static class DigitalIdleText
             + "read " + mode + " yet, so nothing will appear below. You can still "
             + "hear it, and it sounds like a warble you could almost hum.";
 
-    /// <summary>The mode strip, for a mode Hamlet reads at one spot.</summary>
+    /// <summary>The mode strip, for a mode Hamlet reads across the whole passband.</summary>
     /// <param name="mode">The mode the operator pressed.</param>
-    /// <param name="offsetHz">How far above the dial the channel listens.</param>
-    /// <param name="spotHz">Where that puts it, or 0 where the dial is unknown.</param>
-    /// <returns>One sentence saying where it is listening and how widely.</returns>
+    /// <returns>One sentence saying how widely it is listening and what a line is.</returns>
     /// <remarks>
-    /// <para>**IT REPLACES <see cref="NotYetReadable"/> FOR PSK31** (work instruction
-    /// 314 task 4). That line said Hamlet could not read the mode, which was true until
-    /// this step and is not any more.</para>
-    /// <para>**IT SAYS ONE SPOT, AND THAT IS THE POINT OF IT** (0.0). This step built
-    /// one channel at one offset; a panel that said *listening* without saying how
-    /// widely would let an empty list read as an empty band, when what it really means
-    /// is that nobody looked anywhere else. The step that finds signals across the
-    /// passband is what removes that sentence.</para>
+    /// <para>**IT REPLACES UNIT 314'S ONE-SPOT SENTENCE** (work instruction 315 task 3),
+    /// which said, correctly then, that Hamlet listened a thousand hertz above the dial
+    /// and nowhere else. It now looks at everything the receiver passes, so a quiet list
+    /// does mean nothing Hamlet can be sure is PSK31 is there.</para>
+    /// <para>**IT SAYS THE LINES CANNOT BE ANSWERED** (0.0, 0.2), because a line of text
+    /// with a callsign in it looks like something to click, and nothing on it is.</para>
     /// </remarks>
-    public static string ListeningAtOneSpot(string mode, double offsetHz, long spotHz)
-    {
-        var where = spotHz > 0
-            ? ", which puts it at "
-                + (spotHz / 1_000_000.0).ToString("0.000000", CultureInfo.InvariantCulture)
-                + " MHz just now"
-            : "";
-
-        return "listening for " + mode + " at one spot, "
-            + offsetHz.ToString("0", CultureInfo.InvariantCulture)
-            + " hertz above the dial" + where
-            + ". Anything further along the band is out there and Hamlet is not "
-            + "looking at it yet, so a quiet list here does not mean a quiet band.";
-    }
+    public static string ListeningAcrossThePassband(string mode)
+        => "listening for " + mode + " across the whole passband. Every signal Hamlet is "
+            + "sure is " + mode + " gets a line of its own below, with where it sits, how "
+            + "strong it is and its text as it arrives. Nothing on those lines can be "
+            + "answered yet.";
 
     /// <summary>The waterfall, before any spectrum has arrived.</summary>
     /// <remarks>

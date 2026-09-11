@@ -213,9 +213,11 @@ public sealed class ThePsk31SeamTests : IDisposable
 
         Assert.Contains(Mode, line, StringComparison.Ordinal);
 
-        // **IT SAYS WHERE IT IS LISTENING**, and says that it is one place.
+        // **IT SAYS WHERE IT IS LISTENING**, which since work instruction 315 is the
+        // whole passband rather than unit 314's one spot.
         Assert.Contains("listening", line, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("one spot", line, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("passband", line, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("one spot", line, StringComparison.OrdinalIgnoreCase);
 
         // **AND IT SAYS NOTHING ABOUT SLOTS**, because this mode has none.
         foreach (var slotted in new[] { "slot", "seconds" })

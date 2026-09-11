@@ -10,7 +10,13 @@ namespace Hamlet.RadioEngine.Psk31;
 /// Its power over the noise in <see cref="Psk31CarrierSearch.ReferenceBandwidthHz"/>, in
 /// decibels, or NaN where the spectrum could not measure it.
 /// </param>
-public sealed record Psk31Carrier(int Id, double OffsetHz, double StrengthDb);
+/// <param name="KeyedUntilSample">
+/// The sample count at the last reading that found it keyed. **A reading, not a
+/// promise**: the measure takes most of <see cref="Psk31CarrierSearch.MeasureSymbols"/>
+/// symbols to let go after keying stops, so the keying really stopped up to that long
+/// before this.
+/// </param>
+public sealed record Psk31Carrier(int Id, double OffsetHz, double StrengthDb, long KeyedUntilSample = 0);
 
 /// <summary>
 /// **Every PSK31 carrier in the passband, found by measurement.**
@@ -343,7 +349,7 @@ public sealed class Psk31CarrierSearch
 
         _carriers = _probes
             .Where(p => p.Listed)
-            .Select(p => new Psk31Carrier(p.Id, p.OffsetHz, StrengthAt(p.OffsetHz)))
+            .Select(p => new Psk31Carrier(p.Id, p.OffsetHz, StrengthAt(p.OffsetHz), p.LastPassAt))
             .OrderBy(c => c.OffsetHz)
             .ToList();
     }

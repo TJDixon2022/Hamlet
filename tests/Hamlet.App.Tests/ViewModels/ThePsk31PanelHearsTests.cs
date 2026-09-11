@@ -19,9 +19,11 @@ namespace Hamlet.App.Tests.ViewModels;
 /// </summary>
 /// <remarks>
 /// <para>**THE DEMODULATOR BEHIND THE TAB, FED FROM THE SAME AUDIO THE FT8 DECODER
-/// USES.** One channel at one spot, 1000 Hz above the dial. Text lands on the
-/// decoded-text panel as characters arrive rather than a message at a time, which is
-/// what a mode with no slots needs and what the *hear everyone* step will want.</para>
+/// USES.** Unit 314 built one channel at one spot, 1000 Hz above the dial; since work
+/// instruction 315 there is one channel per carrier the search finds, and the clean
+/// fixture has one carrier, so everything here still holds of its one row. Text lands on
+/// the decoded-text panel as characters arrive rather than a message at a time, which is
+/// what a mode with no slots needs.</para>
 /// <para>**THE TAB STAYS INERT FOR SENDING.** Nothing here reconnects the send path, and
 /// `ThePsk31TabIsInertTests` is re-run after this to say so.</para>
 /// <para>**COMPUTED, NOT SEEN.** A fixture is pushed through the real audio tap and the
@@ -112,6 +114,13 @@ public sealed class ThePsk31PanelHearsTests
     }
 
     /// <summary>**The line says where it is listening.**</summary>
+    /// <remarks>
+    /// **REWRITTEN BY WORK INSTRUCTION 315 TASK 3, NOT DELETED.** Unit 314's line named one
+    /// spot a thousand hertz above the dial and said there was only one, which was true of
+    /// what that step built. The listener now searches the whole passband, so what is
+    /// protected is the same thing turned round: the line says how widely it listens, and
+    /// names no fixed offset that would suggest it looks anywhere less.
+    /// </remarks>
     [Fact]
     public void TheLineSaysWhereItIsListening()
     {
@@ -121,18 +130,10 @@ public sealed class ThePsk31PanelHearsTests
 
         _output.WriteLine("line : " + line);
 
-        // **IT NAMES THE SPOT** rather than saying it cannot read the mode.
         Assert.DoesNotContain("cannot read", line, StringComparison.OrdinalIgnoreCase);
-
-        Assert.Contains(
-            Psk31Listening.OffsetHz.ToString("0", CultureInfo.InvariantCulture),
-            line,
-            StringComparison.Ordinal);
-
-        // **AND IT SAYS THERE IS ONLY ONE OF THEM**, because one channel is what this
-        // step built and a panel that implied otherwise would be claiming the passband
-        // was empty when it had not been looked at.
-        Assert.Contains("one", line, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("passband", line, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("one spot", line, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("1000", line, StringComparison.Ordinal);
     }
 
     /// <summary>**Nothing on the panel can be answered.**</summary>

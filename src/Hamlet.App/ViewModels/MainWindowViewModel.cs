@@ -1648,7 +1648,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// row he cannot find.
     /// </remarks>
     private bool IsForHim(DigitalDecodeRow row)
-        => Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
+        => !row.IsTextOnly
+            && Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
 
     /// <summary>Whether a row belongs on the left-hand list.</summary>
     /// <param name="row">The row.</param>
@@ -1950,17 +1951,17 @@ public partial class MainWindowViewModel : ObservableObject
     private bool IsPsk31Chosen
         => string.Equals(ChosenDigitalMode, "PSK31", StringComparison.Ordinal);
 
-    /// <summary>The one channel, or null until PSK31 is pressed.</summary>
-    private Psk31Demodulator? _psk31;
+    /// <summary>Every PSK31 signal in the passband, or null until PSK31 is pressed.</summary>
+    private Psk31Listener? _psk31;
 
-    /// <summary>The next sample the channel wants from the tap.</summary>
+    /// <summary>The next sample the listener wants from the tap.</summary>
     private long _psk31At;
 
-    /// <summary>Where the channel's text is on the panel, or -1.</summary>
-    private int _psk31Row = -1;
+    /// <summary>Which row on the panel is which channel's, by the carrier's id.</summary>
+    private readonly Dictionary<int, DigitalDecodeRow> _psk31Rows = new();
 
-    /// <summary>Everything the channel has read since it opened.</summary>
-    private readonly StringBuilder _psk31Text = new();
+    /// <summary>When each channel's row first went up, as its time cell.</summary>
+    private readonly Dictionary<int, string> _psk31FirstHeard = new();
 
     /// <summary>A buffer the tap copies into, so the tick allocates nothing.</summary>
     private float[] _psk31Buffer = Array.Empty<float>();
@@ -1971,16 +1972,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>**CHARACTERS, NOT MESSAGES** (`PHASE_PLAN.md` §3.4). PSK31 has no slots
     /// and no fixed length, so there is nothing to wait for the end of: what has been
     /// read goes on the panel and the rest follows as it arrives.</para>
-    /// <para>**ONE LINE FOR ONE SIGNAL**, which is the shape the step that finds
-    /// signals across the passband will want - a line each, rather than one line the
-    /// whole band shares.</para>
+    /// <para>**ONE LINE FOR EVERY SIGNAL** (work instruction 315 task 3). The listener
+    /// finds each PSK31 carrier in the passband and reads each with its own demodulator,
+    /// and every one of them is a line of its own.</para>
     /// <para>**IT PARSES NOTHING AND CLAIMS NOTHING** (§R3). The text is text. No
     /// callsign is read out of it, no state is inferred, nothing is offered to answer,
     /// and it reaches no send path (§0.2).</para>
     /// </remarks>
     private void HearPsk31(AudioTap tap)
     {
-        _psk31 ??= new Psk31Demodulator(tap.SampleRate, Psk31Listening.OffsetHz);
+        _psk31 ??= new Psk31Listener(tap.SampleRate);
 
         if (_psk31At <= 0)
         {
@@ -2012,56 +2013,136 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31At += wanted;
 
-        var heard = _psk31.Add(_psk31Buffer.AsSpan(0, wanted));
+        _psk31.Add(_psk31Buffer.AsSpan(0, wanted));
 
-        if (heard.Length == 0)
-        {
-            return;
-        }
-
-        _psk31Text.Append(heard);
-
-        ShowPsk31Text();
+        ShowPsk31Channels();
     }
 
-    /// <summary>Put what has been read on the panel.</summary>
+    /// <summary>Put every channel on the panel, and take down the ones that went.</summary>
     /// <remarks>
-    /// **THE ROW IS REPLACED IN PLACE RATHER THAN THE LIST REBUILT.** A clear and
-    /// refill raises a reset, and a reset sends a list back to the top under the
-    /// operator's eyes - which unit 313 measured on the card panel and which would be
-    /// worse here, because this row grows several times a second.
+    /// <para>**EACH ROW IS REPLACED IN PLACE RATHER THAN THE LIST REBUILT**, unit 314's
+    /// answer to the card-rebuild root and still the right one: a clear and refill raises
+    /// a reset, a reset sends the list back to the top under the operator's eyes, and
+    /// these rows grow several times a second each.</para>
+    /// <para>**A ROW GOES WHEN ITS CARRIER GOES** (`Psk31Listener.RetireRule`). A station
+    /// that has stopped sending is not left on the list as a ghost of the last thing it
+    /// said.</para>
+    /// <para>**THE STRENGTH IS A MEASUREMENT OR A DASH** (§0.0), in the same column and on
+    /// the same terms as FT8's: decibels over the noise in 2500 Hz, whole, with the sign.
+    /// The time is when the row first went up, since there is no slot to name.</para>
     /// </remarks>
-    private void ShowPsk31Text()
+    private void ShowPsk31Channels()
     {
-        var row = new DigitalDecodeRow(
-            DateTime.UtcNow.ToString("HHmmss", CultureInfo.InvariantCulture),
-            DigitalDecodeRow.NotMeasured,
-            DigitalDecodeRow.NotMeasured,
-            Psk31Listening.OffsetHz.ToString("0", CultureInfo.InvariantCulture),
-            _psk31Text.ToString(),
-            ObserverGrid: _settings.Operator.GridSquare ?? "",
-            HeardOnHz: FrequencyHz);
+        var changed = false;
+        var live = new HashSet<int>();
 
-        if (_psk31Row >= 0 && _psk31Row < DigitalDecodes.Count)
+        foreach (var channel in _psk31!.Channels)
         {
-            DigitalDecodes[_psk31Row] = row;
-        }
-        else
-        {
-            DigitalDecodes.Add(row);
-            _psk31Row = DigitalDecodes.Count - 1;
+            live.Add(channel.Id);
+
+            if (!_psk31FirstHeard.TryGetValue(channel.Id, out var firstHeard))
+            {
+                firstHeard = DateTime.UtcNow.ToString("HHmmss", CultureInfo.InvariantCulture);
+                _psk31FirstHeard[channel.Id] = firstHeard;
+            }
+
+            var snr = DigitalDecodeRow.FormatSnr(
+                double.IsNaN(channel.StrengthDb) ? null : channel.StrengthDb);
+            var hz = channel.OffsetHz.ToString("0", CultureInfo.InvariantCulture);
+
+            if (_psk31Rows.TryGetValue(channel.Id, out var shown)
+                && shown.Snr == snr && shown.Hz == hz && shown.Message == channel.Text)
+            {
+                continue;
+            }
+
+            var row = new DigitalDecodeRow(
+                firstHeard,
+                snr,
+                DigitalDecodeRow.NotMeasured,
+                hz,
+                channel.Text,
+                ObserverGrid: _settings.Operator.GridSquare ?? "",
+                HeardOnHz: FrequencyHz,
+                IsTextOnly: true);
+
+            var index = shown is null ? -1 : IndexOfPsk31Row(shown);
+
+            if (index >= 0)
+            {
+                DigitalDecodes[index] = row;
+            }
+            else
+            {
+                DigitalDecodes.Add(row);
+            }
+
+            _psk31Rows[channel.Id] = row;
+            changed = true;
         }
 
-        RaiseDigitalDecodeChanges();
+        foreach (var id in _psk31Rows.Keys.Where(id => !live.Contains(id)).ToList())
+        {
+            var index = IndexOfPsk31Row(_psk31Rows[id]);
+
+            if (index >= 0)
+            {
+                DigitalDecodes.RemoveAt(index);
+            }
+
+            _psk31Rows.Remove(id);
+            _psk31FirstHeard.Remove(id);
+            changed = true;
+        }
+
+        if (changed)
+        {
+            RaiseDigitalDecodeChanges();
+        }
     }
 
-    /// <summary>Forget what the channel heard, when the mode changes.</summary>
+    /// <summary>Where a PSK31 row is on the panel, by identity, or -1.</summary>
+    /// <remarks>
+    /// **BY IDENTITY AND NOT BY VALUE.** The row is a record, so two rows with the same
+    /// cells compare equal, and a position found by value could be somebody else's.
+    /// </remarks>
+    private int IndexOfPsk31Row(DigitalDecodeRow row)
+    {
+        for (var i = 0; i < DigitalDecodes.Count; i++)
+        {
+            if (ReferenceEquals(DigitalDecodes[i], row))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /// <summary>Forget what the listener heard, and take its rows down, when the mode changes.</summary>
     private void ForgetPsk31()
     {
+        var had = _psk31Rows.Count > 0;
+
+        foreach (var row in _psk31Rows.Values)
+        {
+            var index = IndexOfPsk31Row(row);
+
+            if (index >= 0)
+            {
+                DigitalDecodes.RemoveAt(index);
+            }
+        }
+
         _psk31 = null;
         _psk31At = 0;
-        _psk31Row = -1;
-        _psk31Text.Clear();
+        _psk31Rows.Clear();
+        _psk31FirstHeard.Clear();
+
+        if (had)
+        {
+            RaiseDigitalDecodeChanges();
+        }
     }
 
     /// <summary>How many slots the tick has read, for a test.</summary>
@@ -3768,10 +3849,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public string DigitalModeStripLine
         => IsPsk31Chosen
-            ? DigitalIdleText.ListeningAtOneSpot(
-                ChosenDigitalMode!,
-                Psk31Listening.OffsetHz,
-                FrequencyHz > 0 ? FrequencyHz + (long)Psk31Listening.OffsetHz : 0)
+            ? DigitalIdleText.ListeningAcrossThePassband(ChosenDigitalMode!)
             : !CanDecode(ChosenDigitalMode)
             ? DigitalIdleText.NotYetReadable(ChosenDigitalMode!)
             : _digitalRefusal.Length > 0
