@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
-TASK: 3 of 4
-WORK_INSTRUCTION: 320 - say it, the press half: a PSK31 CQ that makes a receipt at the bench, behind a door only drive and power can open
-BALL: web
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 322 - the PSK31 path becomes visible in the record
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T15:56:54-04:00
-NOTE: Unit 320 stopped: PSK31 press not built - a carry-forward test pins no NowAsync and the door text (item 45). Carry-forward green again; item 39 narrowed, item 41 built.
+UPDATED: 2026-09-11T16:26:15-04:00
+NOTE: Task 1 done - 255 of 255 green, the path mapped, 1b answered. Task 2 next.
 
 ---
 

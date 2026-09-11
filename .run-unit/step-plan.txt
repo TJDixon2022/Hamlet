@@ -1,37 +1,37 @@
-﻿STEP: 3 | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-## Step 3 - Read the conversation
+﻿STEP: 4 | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+## Step 4 - Say it
 
-**Delivers:** the parser that turns each row's free text into exchange state - callsigns,
-`de`, `CQ`, RST, grid, the turnover words, 73 and the closers - with an explicit
-**unknown** where the text does not support a state. The CQ filter becomes the rows
-whose text parses as a CQ. Rows become stations: worked-fade, entity resolution and the
-achievement nudge run on PSK31 rows unchanged.
+**Delivers:** the modulator and the four macros of Â§R2 through the proved transmit
+chain, one click one transmission; the CQ receipt and conversation cards on the PSK31
+panel under R1-R6 and R8; the slot clock replaced by whose turn it is - *your turn*,
+*his turn*, *he is still sending*, *unknown*; drive level and power visible on the panel
+under Â§R4.
 
-**Entry:** step 2 done - the two-signal fixture yields two rows of text, checked by
-running that test first.
+**Entry:** step 3 done - the parser is certain whose turn it is on the clean corpus
+entries, checked by running that test first. The chain `cq_pressed â†’ â€¦ â†’ Played` is as
+`2026-09-10.jsonl` proved it, and Â§R10 is the only licence to change it.
 
 **Exit:**
-- `assets/fixtures/psk31-transcripts/corpus.json` - eight transcripts, 32 lines, each
-  line carrying what a correct parser must conclude - yields, per line, the speaker,
-  the addressee, the kind and the turnover as the corpus states them, and **no state is
-  asserted that the corpus marks uncertain**. *must-pass*
-- The unknown rate per transcript is stated as a number beside the corpus's expected
-  rate; on the garbled transcript it is **not lower** than the corpus expects.
+- **Loopback:** each of the four macros is modulated by Hamlet, decoded by Hamlet's own
+  demodulator, and comes back identical. *must-pass*
+- The modulated signal is BPSK at 31.25 baud with raised-cosine envelope, measured:
+  occupied bandwidth stated, and under 100 Hz at -30 dB. *must-pass*
+- Pressing CQ under PSK31 makes a receipt with no station facts and no Log; an answer
+  retires the receipt and opens a conversation card; two answers make two cards.
   *must-pass*
-- A row addressed to the operator's own callsign is recognised as such. *must-pass*
-- The CQ filter selects exactly the rows whose text parses as a CQ, and nothing else.
-  *must-pass*
-- Worked-fade, `DxccPrefixes.EntityOf` with its `CQ` guard, and the nudge run on PSK31
-  rows **with no change to their code**; a Costa Rican station calling CQ gets the same
-  quill it would on FT8. *must-pass*
-- Guessed states are distinguishable from certain ones in what the view model exposes
-  (Â§R1), not by colour alone. *must-pass*
-- Name and QTH are shown as text and never parsed into state (Â§R3). *must-pass*
-- A non-standard exchange that skips the report still lands on 73 correctly.
+- A macro is offered for one click only when the parser is certain whose turn it is
+  (Â§R1 strict side). *must-pass*
+- The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
+  does not know, and the `SlotClock` is not shown for this mode. *must-pass*
+- Drive level and RF power for PSK31 are shown on the panel; the defaults are the ALC
+  at no deflection and half rated power, both changeable by Tim (Â§R4). *must-pass*
+- Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
+  Â§R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
+  guarding tests, and a no-slot send capped at a stated length. *must-pass*
+- A no-slot send longer than the cap is refused before it arms, and the refusal is a
+  record, not a silence. *must-pass*
+- The turn indicator changes within one character of the other station's turnover word.
   *nice-to-pass*
 
-**Nothing in this step transmits or offers a click that transmits.** Rows become
-clickable stations only in the sense FT8 rows are; the action behind the click is step 4.
-
-**Depends on:** step 2.
+**Depends on:** step 3.
 

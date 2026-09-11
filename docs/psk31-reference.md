@@ -96,3 +96,26 @@ sparse: `src`, `COPYING` and `README` are checked out and the doxygen trees are 
 **That costs nothing this phase needs** — the excluded path is generated documentation —
 and it is recorded here because the next person to clone it will hit the same error and
 should know it is expected rather than a corrupt download.
+
+## The two manual pages, items 32 and 33 (work instruction 322 task 1e)
+
+**Answered by the web thread from the IC-7300 manual in its project knowledge, and
+recorded here because this session cannot read outside the tree.** That limit stands: the
+pages below were not opened by any Claude Code session, and this note says so rather than
+implying a reading nobody made.
+
+| what | where | value |
+| --- | --- | --- |
+| USB MOD Level | `MENU » SET > Connectors`, **page 12-10** | default **50%**, range **0-100%** |
+| Data-mode drive level | **page 4-31** | *adjust the device's output level within the ALC zone* |
+
+**Neither number is acted on anywhere in the tree.** Item 43 - what Hamlet should do about
+drive and power against HM-DEC-084 - is Tim's and is unruled; this unit builds nothing for
+it. What the pages settle is only that the two figures are cited rather than recalled the
+next time somebody reaches for them.
+
+**§4 of `CLAUDE.md` binds the edition, not just the page.** These two rows come from a
+reading of the manual held in another surface's project knowledge, and that surface did
+not state which publication it read. **So they are marked as cited-at-one-remove**: good
+enough to write down, not good enough to put a number on a screen from. A unit that needs
+to act on either one re-reads it against `A7292-4EX-6` first.

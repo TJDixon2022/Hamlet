@@ -113,3 +113,6 @@ the owner reads instead of watching.
 | 1 | 2026-09-11T11:10 | 2026-09-11T12:05 | complete | 24.949754000000002 | ran unattended, 263 turns, 17 denied call(s) worked around, report valid |
 | 2 | 2026-09-11T12:11 | 2026-09-11T12:58 | complete | 19.498643 | ran unattended, 171 turns, 9 denied call(s) worked around, report valid |
 | phase | 2026-09-11T13:07 | 2026-09-11T13:07 | halted | 44.4484 | stop 4: the arbiter declared a decision the owner's |
+| 1 | 2026-09-11T13:30 | 2026-09-11T14:28 | complete | 22.346655000000002 | ran unattended, 219 turns, 13 denied call(s) worked around, report valid |
+| 2 | 2026-09-11T14:36 | 2026-09-11T15:13 | complete | 14.774045999999997 | ran unattended, 162 turns, 6 denied call(s) worked around, report valid |
+| phase | 2026-09-11T16:08 | 2026-09-11T16:08 | halted | 50.7568 | the run could not take the session lock |

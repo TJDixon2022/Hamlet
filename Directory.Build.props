@@ -619,7 +619,7 @@
     production code moves in this task.
   -->
   <PropertyGroup>
-    <Version>1.13.7</Version>
+    <Version>1.13.8</Version>
   </PropertyGroup>
 
   <!--
