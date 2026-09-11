@@ -81,9 +81,17 @@ public sealed class ThePressingOfCqTests
         Assert.Contains("3", card.Detail, StringComparison.Ordinal);
     }
 
-    /// <summary>**An answer adopts the CQ card and the exchange continues in it.**</summary>
+    /// <summary>**An answer retires the receipt and opens the station's own card.**</summary>
+    /// <remarks>
+    /// **REWRITTEN BY UNIT 310, BECAUSE R5 WITHDREW WHAT IT USED TO ASSERT.** It said
+    /// the first answering station adopted the CQ card so the call stayed inside that
+    /// exchange - the unit 305 proposal, never a ruling. Tim, 2026-09-11: *"No, the
+    /// placeholder goes away and two conversation card appear."* **A call to everybody
+    /// belongs to nobody**, and giving it to whichever station answered first is a
+    /// claim about who it was for.
+    /// </remarks>
     [Fact]
-    public void AnAnswerAdoptsTheCqCardAndTheExchangeContinuesInIt()
+    public void AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard()
     {
         var model = Panel();
 
@@ -97,14 +105,15 @@ public sealed class ThePressingOfCqTests
         // **IT BECAME HIS CARD.**
         Assert.Equal(First, card.Callsign);
 
-        // **AND THE CQ IS STILL INSIDE IT**, as the first thing in the exchange.
+        // **AND THE CQ IS NOT INSIDE IT** (R5). His record holds what passed
+        // between the two of them and nothing that was addressed to everybody.
         var record = model.LedgerForTests!.For(First)!;
 
-        Assert.Contains(
+        Assert.DoesNotContain(
             record.Sent, m => m.Message.StartsWith("CQ ", StringComparison.Ordinal));
 
-        // **AND THE CQ CARD IS GONE**, because it became this one rather than
-        // sitting beside it.
+        // **AND THE RECEIPT IS GONE**, because it retired rather than being handed
+        // over.
         Assert.Null(model.LedgerForTests.For(Ft8ContactLedger.CallToAnyone));
     }
 
@@ -128,14 +137,19 @@ public sealed class ThePressingOfCqTests
         Assert.Contains(cards, c => c.Callsign == First);
         Assert.Contains(cards, c => c.Callsign == Second);
 
-        // **AND THE CQ WENT TO THE FIRST ONE TO ANSWER**, not to both.
-        Assert.Contains(
-            model.LedgerForTests!.For(First)!.Sent,
-            m => m.Message.StartsWith("CQ ", StringComparison.Ordinal));
+        // **AND THE CQ WENT TO NEITHER OF THEM** (R5, Tim 2026-09-11, rewritten by
+        // unit 310). This used to assert that the first to answer took the call over.
+        // **Two stations answering is exactly where that proposal shows its seam**:
+        // the call went to everybody, so putting it in one of these two records is a
+        // claim about who it was for. The receipt retires instead.
+        foreach (var who in new[] { First, Second })
+        {
+            Assert.DoesNotContain(
+                model.LedgerForTests!.For(who)!.Sent,
+                m => m.Message.StartsWith("CQ ", StringComparison.Ordinal));
+        }
 
-        Assert.DoesNotContain(
-            model.LedgerForTests.For(Second)!.Sent,
-            m => m.Message.StartsWith("CQ ", StringComparison.Ordinal));
+        Assert.Null(model.LedgerForTests!.For(Ft8ContactLedger.CallToAnyone));
     }
 
     /// <summary>**The CQ card carries the Log option before anybody answers.**</summary>

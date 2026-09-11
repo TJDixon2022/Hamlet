@@ -202,7 +202,7 @@ public sealed class Ft8ContactLedger
     /// **The transmission is a fact and it now has somewhere to live.**</para>
     /// <para>**IT IS NOT A CALLSIGN AND NOTHING TREATS IT AS ONE.** No lookup is
     /// made against it, nothing is claimed about where it is, and the first station
-    /// to answer takes the record over - see <see cref="Adopt"/>.</para>
+    /// to answer takes the record over - see <c>Retire</c>.</para>
     /// </remarks>
     public const string CallToAnyone = "CQ";
 
@@ -242,14 +242,16 @@ public sealed class Ft8ContactLedger
         var record = Book(fields.From);
         var toUs = IsOperator(fields.To);
 
-        // **THE FIRST STATION TO ANSWER TAKES THE CQ CARD OVER** (Tim, 2026-09-10:
-        // *pressing CQ must make a card of its own, and when somebody answers it
-        // becomes their card and the exchange continues in it*). It happens before
-        // his message is booked, so the CQ really is the first thing in the
-        // exchange rather than something filed behind it.
+        // **THE RECEIPT RETIRES; IT IS NEVER ADOPTED** (R5, Tim 2026-09-11: *"No,
+        // the placeholder goes away and two conversation card appear."*). **This
+        // withdraws the unit 305 proposal**, which had the first answering station
+        // inherit the call so it stayed inside that exchange. The ruling is the
+        // opposite, and the reason is plain once two stations answer: the call went
+        // to everybody, so giving it to whichever of them happened to come back
+        // first is a claim about who it was for.
         if (toUs)
         {
-            Adopt(record);
+            Retire();
         }
 
         record.AddHeard(
@@ -288,30 +290,22 @@ public sealed class Ft8ContactLedger
             new Ft8LedgerMessage(message!.Trim(), fields, slotStartUtc));
     }
 
-    /// <summary>Hand the call-to-anybody record to the station that answered.</summary>
-    /// <param name="record">The answering station.</param>
+    /// <summary>Retire the call-to-anybody record once anybody has answered.</summary>
     /// <remarks>
-    /// <para>**IT MOVES, IT DOES NOT COPY.** Two cards carrying the same
-    /// transmission would say the operator called twice, which is a claim about
-    /// what went on the air and is not true (§0.0).</para>
-    /// <para>**AND ONLY THE FIRST ANSWER GETS IT.** A second station answering the
-    /// same CQ finds nothing to adopt and opens its own record in the ordinary way -
-    /// nothing is discarded and nothing is swallowed, because nothing is hidden by
-    /// the application. **That half is the author's proposal and not a ruling.**
-    /// </para>
+    /// <para>**IT GOES; IT IS NOT HANDED TO ANYBODY** (R5). Unit 305 moved its
+    /// messages into the first answering station, which put the operator own general
+    /// call inside one station exchange as though it had been addressed to him. **A
+    /// call to everybody belongs to nobody**, and the moment two stations answer the
+    /// claim is visibly wrong.</para>
+    /// <para>**THE TRANSMISSION IS NOT LOST TO THE RECORD.** What went on the air is
+    /// in the telemetry and in the log; what retires here is a placeholder on a
+    /// panel, which is what it was called from the start.</para>
     /// </remarks>
-    private void Adopt(Ft8StationRecord record)
+    public void RetireTheCall() => Retire();
+
+    /// <summary>Retire the call-to-anybody record, whoever asked.</summary>
+    private void Retire()
     {
-        if (!_stations.TryGetValue(CallToAnyone, out var cq))
-        {
-            return;
-        }
-
-        foreach (var message in cq.Sent)
-        {
-            record.AddSent(message);
-        }
-
         _stations.Remove(CallToAnyone);
         _order.Remove(CallToAnyone);
     }

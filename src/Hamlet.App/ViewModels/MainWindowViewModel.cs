@@ -3175,12 +3175,35 @@ public partial class MainWindowViewModel : ObservableObject
         // exactly the card he is most likely to tidy away. The first press states
         // what is about to be lost; the second press clears it, because this warns
         // and never refuses.
+        // **A RECEIPT DISMISSES ON ONE PRESS** (R2, R3). The warning below exists
+        // for a finished contact he has not logged - something he could still write
+        // down and is about to lose. **A call to anybody is a placeholder**: there is
+        // no contact behind it to lose, and asking him twice to put down a note about
+        // his own transmission is the application being precious about nothing.
         if (card is not null
+            && !card.IsCallToAnyone
             && !card.WarnsBeforeClearing
             && card.Facts.State == Ft8ContactState.Complete
             && !ThisContactIsLogged(card.Facts))
         {
             card.WarnsBeforeClearing = true;
+            return;
+        }
+
+        // **DISMISSING A RECEIPT RETIRES IT FROM THE LEDGER** (R3, R5). Every other
+        // card is cleared by remembering the slot it was cleared at, so a station
+        // that transmits again brings it back - which is right for a station and
+        // wrong for a placeholder. **The receipt has no decoded row behind it**, so
+        // there is no slot to compare against and the remembered-slot route leaves it
+        // on the panel for ever. He dismissed his own call; it goes.
+        if (string.Equals(
+                who, Ft8ContactLedger.CallToAnyone, StringComparison.OrdinalIgnoreCase))
+        {
+            _contacts?.RetireTheCall();
+
+            RebuildCards();
+            RaiseDigitalDecodeChanges();
+
             return;
         }
 
