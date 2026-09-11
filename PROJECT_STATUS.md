@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 5 of 5
 WORK_INSTRUCTION: 323 - say it: PSK31 goes out
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T18:53:54-04:00
-NOTE: Task 4 pushed. Task 5 is the stand-up: thirteen lines of record captured from one press, the three-click contact captured, and the four-signal fixture's EI4GNB CQ row read. Writing output.md.
+UPDATED: 2026-09-11T18:58:13-04:00
+NOTE: Unit 323 complete at task 5 of 5, nothing dropped. PSK31 goes out: one press, one call on a chosen spot, a whole contact on three clicks. output.md written; the validator could not be run here and its rules are checked by hand in item 53.
 
 ---
 
