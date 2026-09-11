@@ -1,0 +1,369 @@
+{
+ "operator": "KC3QIS",
+ "kinds": [
+  "cq",
+  "answer",
+  "report",
+  "ack",
+  "chat",
+  "closing",
+  "end",
+  "garbage",
+  "unknown"
+ ],
+ "rules": [
+  "a line's speaker is the callsign after the last 'de'",
+  "a line's addressee is the callsign before that 'de', or ANY for a CQ, or DX for CQ DX",
+  "turnover words: K, KN, BTU, OVER; closers: 73, SK, CL",
+  "RST is 3 digits, with N standing for 9",
+  "name and QTH are never parsed into state",
+  "certain=false means the parser must expose the state as a guess or as unknown, never as fact"
+ ],
+ "transcripts": [
+  {
+   "name": "01-textbook",
+   "description": "the standard exchange, nothing extra",
+   "lines": [
+    "CQ CQ CQ de W1AW W1AW W1AW pse K",
+    "W1AW de KC3QIS KC3QIS K",
+    "KC3QIS de W1AW GA TNX FER CALL UR RST 599 599 NAME BOB BOB QTH NEWINGTON CT GRID FN31 FN31 HW? KC3QIS de W1AW K",
+    "W1AW de KC3QIS R R TNX BOB UR RST 599 599 NAME TIM TIM QTH TRAFFORD PA GRID FN00 FN00 BTU W1AW de KC3QIS K",
+    "KC3QIS de W1AW R R TNX TIM 73 73 KC3QIS de W1AW SK"
+   ],
+   "expected": [
+    {
+     "frm": "W1AW",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "W1AW",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "W1AW",
+     "to": "KC3QIS",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599",
+     "grid": "FN31"
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "W1AW",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599",
+     "grid": "FN00"
+    },
+    {
+     "frm": "W1AW",
+     "to": "KC3QIS",
+     "kind": "end",
+     "turnover": true,
+     "certain": true
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  },
+  {
+   "name": "02-chatty",
+   "description": "a ragchew with the report buried in prose and a turnover word that is not K",
+   "lines": [
+    "CQ CQ CQ DE G4XYZ G4XYZ CQ CQ CQ DE G4XYZ G4XYZ PSE K",
+    "G4XYZ DE KC3QIS KC3QIS KC3QIS KN",
+    "KC3QIS DE G4XYZ good evening Tim and thanks for the call. You are 589 589 here in Reading, Berkshire. Name is Dave and the rig is an FT-891 into a doublet at 30 feet. The weather has been dreadful all week. Anyway back to you Tim. KC3QIS DE G4XYZ KN",
+    "G4XYZ DE KC3QIS Hi Dave, solid copy 599 599 here. Trafford PA, IC-7300, 40 watts. First PSK31 contact for me. Over to you. G4XYZ DE KC3QIS KN",
+    "KC3QIS DE G4XYZ congratulations on the first one Tim, many more to come. 73 and good DX. KC3QIS DE G4XYZ SK SK"
+   ],
+   "expected": [
+    {
+     "frm": "G4XYZ",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "G4XYZ",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "G4XYZ",
+     "to": "KC3QIS",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "589"
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "G4XYZ",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599"
+    },
+    {
+     "frm": "G4XYZ",
+     "to": "KC3QIS",
+     "kind": "end",
+     "turnover": true,
+     "certain": true
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  },
+  {
+   "name": "03-no-report",
+   "description": "an exchange that skips the report entirely and still ends on 73",
+   "lines": [
+    "CQ CQ de VE3XN VE3XN K",
+    "VE3XN de KC3QIS K",
+    "KC3QIS de VE3XN hi there, running low power tonight and about to lose the band, sorry to be brief. 73 KC3QIS de VE3XN SK",
+    "VE3XN de KC3QIS understood, 73 VE3XN de KC3QIS SK"
+   ],
+   "expected": [
+    {
+     "frm": "VE3XN",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "VE3XN",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "VE3XN",
+     "to": "KC3QIS",
+     "kind": "end",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "VE3XN",
+     "kind": "end",
+     "turnover": true,
+     "certain": true
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  },
+  {
+   "name": "04-not-for-me",
+   "description": "a full exchange between two other stations; nothing is addressed to the operator",
+   "lines": [
+    "CQ CQ CQ DE F4DIA F4DIA F4DIA K",
+    "F4DIA DE EI4GNB EI4GNB K",
+    "EI4GNB DE F4DIA UR 579 579 NAME MARC QTH LYON EI4GNB DE F4DIA K",
+    "F4DIA DE EI4GNB R 599 599 NAME SEAN QTH DUBLIN 73 F4DIA DE EI4GNB SK"
+   ],
+   "expected": [
+    {
+     "frm": "F4DIA",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "EI4GNB",
+     "to": "F4DIA",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "F4DIA",
+     "to": "EI4GNB",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "579"
+    },
+    {
+     "frm": "EI4GNB",
+     "to": "F4DIA",
+     "kind": "end",
+     "turnover": true,
+     "certain": true
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  },
+  {
+   "name": "05-garbled",
+   "description": "noise burst mid-line, a partial callsign, and a line with no callsign at all",
+   "lines": [
+    "CQ CQ CQ de K3ABC K3ABC pse K",
+    "K3ABC de KC3QIS K",
+    "KC3Q&S de K3A~C ur rst 5#9 599 name Ann QTH Erie PA hw? KC3QIS de K3ABC K",
+    "yes copy all fine here, nice signal into PA tonight",
+    "K3ABC de KC3QIS R 599 name Tim Trafford PA BTU K3ABC de KC3QIS K"
+   ],
+   "expected": [
+    {
+     "frm": "K3ABC",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "K3ABC",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "K3ABC",
+     "to": "KC3QIS",
+     "kind": "report",
+     "turnover": true,
+     "certain": false,
+     "note": "callsigns garbled mid-line but the closing 'KC3QIS de K3ABC K' is clean; the report digits are damaged and RST must be unknown, not 599"
+    },
+    {
+     "frm": "UNKNOWN",
+     "to": "UNKNOWN",
+     "kind": "chat",
+     "turnover": false,
+     "certain": false,
+     "note": "no callsign, no turnover word: unknown speaker, no turn change"
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "K3ABC",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599"
+    }
+   ],
+   "unknown_rate_expected": 0.2
+  },
+  {
+   "name": "06-cq-dx",
+   "description": "a CQ DX with a directed call; the operator is in the US, so it is not for him unless he is DX to the caller",
+   "lines": [
+    "CQ DX CQ DX de JA1XYZ JA1XYZ K",
+    "CQ DX CQ DX de JA1XYZ JA1XYZ K"
+   ],
+   "expected": [
+    {
+     "frm": "JA1XYZ",
+     "to": "DX",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true,
+     "note": "a CQ with a qualifier; the parser reports the qualifier and does not decide whether the operator counts as DX"
+    },
+    {
+     "frm": "JA1XYZ",
+     "to": "DX",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  },
+  {
+   "name": "07-odd-ending",
+   "description": "an exchange that ends without 73 or SK - the other station just goes quiet after BTU",
+   "lines": [
+    "CQ CQ de N4ZEK N4ZEK K",
+    "N4ZEK de KC3QIS K",
+    "KC3QIS de N4ZEK 599 599 Mike in Atlanta BTU KC3QIS de N4ZEK K",
+    "N4ZEK de KC3QIS R 599 Tim Trafford PA BTU N4ZEK de KC3QIS K"
+   ],
+   "expected": [
+    {
+     "frm": "N4ZEK",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "N4ZEK",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "N4ZEK",
+     "to": "KC3QIS",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599"
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "N4ZEK",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599",
+     "note": "the exchange is never closed; the last state stays 'his turn' and nothing may invent a 73"
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  },
+  {
+   "name": "08-lowercase-and-slashes",
+   "description": "a portable callsign, lowercase text, and 5nn for 599",
+   "lines": [
+    "cq cq cq de kd8wyt/p kd8wyt/p k",
+    "kd8wyt/p de kc3qis k",
+    "kc3qis de kd8wyt/p tnx ur 5nn 5nn name chris qth on a hilltop in ohio en91 btu kc3qis de kd8wyt/p k"
+   ],
+   "expected": [
+    {
+     "frm": "KD8WYT/P",
+     "to": "ANY",
+     "kind": "cq",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KC3QIS",
+     "to": "KD8WYT/P",
+     "kind": "answer",
+     "turnover": true,
+     "certain": true
+    },
+    {
+     "frm": "KD8WYT/P",
+     "to": "KC3QIS",
+     "kind": "report",
+     "turnover": true,
+     "certain": true,
+     "rst": "599",
+     "grid": "EN91",
+     "note": "5nn is 599; the callsign keeps its /P"
+    }
+   ],
+   "unknown_rate_expected": 0.0
+  }
+ ]
+}

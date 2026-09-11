@@ -1,0 +1,32 @@
+[
+ {
+  "file": "psk31-four-signals.wav",
+  "sha256": "777ad1ce8cd000d55dcb876e324b9aff543e74d6a992973161628c6919cd39a3",
+  "note": "four signals: 700 Hz (KC3QIS CQ, strong), 1100 Hz (W1AW/KC3QIS exchange), 1600 Hz (EI4GNB CQ, drifting +8 Hz), 2200 Hz (F4DIA, weak); SNR +8 dB in 2500 Hz. Reference CER is measured on the decode truncated to the reference length, because the reference decoder has no squelch and keeps emitting garbage after a signal stops - the unsquelched full-length CERs were A 0.125, B 0.386, C 0.183, D 0.000, which is the retire-a-dead-carrier requirement in numbers.",
+  "reference_cer_per_channel": {
+   "A": 0.0,
+   "B": 0.0,
+   "C": 0.0,
+   "D": 0.0
+  },
+  "texts": {
+   "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
+   "B": "KC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA BTU W1AW de KC3QIS K\r\n",
+   "C": "CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\n",
+   "D": "VE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW? VE3XN de F4DIA K\r\nVE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW? VE3XN de F4DIA K\r\n"
+  }
+ },
+ {
+  "file": "psk31-two-signals-100hz-apart.wav",
+  "sha256": "188af2215ec9b43f4e6db380e73008b22117f35ad88bc2a5425d0fdab0acce99",
+  "note": "two signals 100 Hz apart at 1000 and 1100 Hz, equal level, SNR +10 dB",
+  "reference_cer_per_channel": {
+   "1000": 0.0,
+   "1100": 0.0083
+  },
+  "texts": {
+   "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nCQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
+   "C": "CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\nCQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K\r\n"
+  }
+ }
+]
