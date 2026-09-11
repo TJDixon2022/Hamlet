@@ -401,7 +401,6 @@ public partial class MainWindowViewModel : ObservableObject
         ScheduleModeFollow();
     }
 
-
     /// <summary>What the operator has composed to send.</summary>
     /// <remarks>
     /// <para>**IT COMPOSES AND IT DOES NOT KEY.** Nothing in this view model
@@ -1539,7 +1538,6 @@ public partial class MainWindowViewModel : ObservableObject
             : "Nothing addressed to you yet. Anything a station sends to your "
               + "callsign lands here, and it stays out of the list on the left so "
               + "it can never be buried.";
-
 
     /// <summary>What the cards side says when there are no cards.</summary>
     /// <remarks>
@@ -2737,7 +2735,6 @@ public partial class MainWindowViewModel : ObservableObject
     private bool WasCleared(string callsign, DateTime newestSlotUtc)
         => _cardsCleared.TryGetValue(callsign, out var when) && newestSlotUtc <= when;
 
-
     /// <summary>Corrected UTC for the cards, or a fixed moment under test.</summary>
     /// <remarks>
     /// **THE SEAM IS HERE AND NOT INSIDE THE CARD** (§0.1, and this tree's own
@@ -2932,7 +2929,6 @@ public partial class MainWindowViewModel : ObservableObject
             ? (Ft8CardActionKind.None, "", "")
             : (Ft8CardActionKind.Send, PlainSendLabel(expected.Shape), expected.Text);
     }
-
 
     /// <summary>The numbers the `i` hover holds, off that station's newest row.</summary>
     /// <remarks>
@@ -5445,7 +5441,6 @@ public partial class MainWindowViewModel : ObservableObject
 
         RebuildMenus();
 
-
         // A stored lens is the operator's own last answer rather than a guess,
         // so it is restored and inference never runs against it (HM-DEC-057).
         if (Enum.TryParse<SpotLens>(settings.SpotLens, out var storedLens))
@@ -5574,7 +5569,6 @@ public partial class MainWindowViewModel : ObservableObject
         // create it. Never overwritten afterwards: what he wrote is his.
         ScanSegments.WriteDefaultIfMissing(SettingsStore.ScanSegmentsPath);
 
-
         // **THE FIRST SPOT LOAD WAITS FOR THE RADIO** (HM-DEC-118). It used to
         // run from here, before anything was connected, so RBN was filtered and
         // the skimmer watch scoped to whatever band was last remembered
@@ -5610,7 +5604,6 @@ public partial class MainWindowViewModel : ObservableObject
         // window closes, and a shutdown path is a poor place to discover a
         // rename.
     }
-
 
 
     /// <summary>The scanner, and the stop control §0.2.1 requires.</summary>
@@ -7584,7 +7577,6 @@ public partial class MainWindowViewModel : ObservableObject
         // `AssertAt` are untouched and still reachable by tests, so the
         // measurement that unit produced is not lost. What has gone is the panel
         // using it behind his back.
-
 
         // **ASK THE RADIO WHERE IT IS BEFORE WRITING DOWN WHERE IT WAS**
         // (HM-DEC-107 phase 6 of the UI order). The frequency is never polled,
@@ -10510,7 +10502,6 @@ public partial class MainWindowViewModel : ObservableObject
         return row;
     }
 
-
     /// <summary>Book one transmission into the ledger, for a test.</summary>
     /// <param name="message">The text that went out.</param>
     /// <param name="slotStartUtc">The slot it occupied.</param>
@@ -11056,7 +11047,6 @@ public partial class MainWindowViewModel : ObservableObject
         => "After a transmission this line says where that contact stands: the "
             + "station, the state, the slot count and the slot it was read at.";
 
-
     /// <summary>
     /// **Where the contact stands after the operator's own last transmission**,
     /// with the moment it was read at.
@@ -11288,6 +11278,56 @@ public partial class MainWindowViewModel : ObservableObject
     {
         row.Nudge = mark.Kind;
         row.NudgeTip = NudgeWords.For(mark.Kind, mark.Entity);
+    }
+
+    /// <summary>The next slot boundary on the grid the tab is running.</summary>
+    /// <remarks>
+    /// **READ BEFORE THE ARMING RATHER THAN INSIDE IT** (work instruction 309 task
+    /// 4). The starter card is booked at the press, which is before the send path
+    /// knows whether there is a radio to arm against, so the slot it names cannot
+    /// come from the arming block below.
+    /// </remarks>
+    private DateTime TheNextBoundary()
+    {
+        var grid = DigitalGrid;
+        var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
+
+        return grid.SlotStart(trueUtc).AddSeconds(grid.SlotSeconds);
+    }
+
+    /// <summary>Book a transmission the operator asked for, and show its card.</summary>
+    /// <param name="text">What was composed, exactly as it would go out.</param>
+    /// <param name="slotStartUtc">The slot it is armed for.</param>
+    /// <remarks>
+    /// <para>**BOOKED IMPLIES PRESENT.** This is the one place a press reaches the
+    /// ledger, and it rebuilds the cards in the same breath, so the panel and the
+    /// ledger cannot come apart. A booking with no card is the regression this unit
+    /// was written for.</para>
+    /// <para>**THE LEDGER IS THE ONE THE CARDS ARE BUILT FROM.** Where the operator
+    /// callsign has changed, `ContactTextFor` opens a new ledger under the new call;
+    /// this reads the same field and the same rule so a CQ cannot land in a ledger
+    /// nothing is reading.</para>
+    /// </remarks>
+    private void BookTheSend(string text, DateTime slotStartUtc)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+
+        if (mine.Length == 0)
+        {
+            return;
+        }
+
+        if (_contacts is null
+            || !string.Equals(_contactsFor, mine, StringComparison.OrdinalIgnoreCase))
+        {
+            _contacts = new Ft8ContactLedger(mine);
+            _contactsFor = mine;
+        }
+
+        _contacts.RecordSent(text, slotStartUtc);
+
+        RebuildCards();
+        RaiseDigitalDecodeChanges();
     }
 
     /// <summary>Re-read the log after it changed.</summary>
@@ -12077,6 +12117,24 @@ public partial class MainWindowViewModel : ObservableObject
         // on FT4 that is a boundary up to 7.5 s away from the one every other
         // station on the band starts at. The arithmetic is `SlotGrid`'s, in ticks,
         // which is what makes a 7.5 s boundary expressible at all (unit 290).
+        // **THE STARTER CARD APPEARS WHEN HE PRESSES** (work instruction 309 task 4;
+        // Tim: *"When I do a CQ, I no longer get a starter card."*).
+        //
+        // **WHY IT WAS NOT THERE.** The one production call to `RecordSent` is in the
+        // slot-boundary path, after a transmission has gone out, so the card only
+        // ever appeared once something had actually been on the air. A *starter* card
+        // is the one that appears at the press - that is the whole of the word - and
+        // on any evening where the send does not complete there was nothing at all.
+        //
+        // **WHAT THE CARD CLAIMS, AND WHAT IT DOES NOT.** It says what was composed
+        // and when, which is a fact about what he asked for. **It makes no claim that
+        // anything reached the air** (§0.0): the transmission record is a separate
+        // fact and stays exactly where it is.
+        //
+        // **THIS KEYS NOTHING** (§0.2). It books into a ledger. The keying path above
+        // and below it is untouched, and one click is still one transmission.
+        BookTheSend(wanted, TheNextBoundary());
+
         var grid = DigitalGrid;
         var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
         var next = grid.SlotStart(trueUtc).AddSeconds(grid.SlotSeconds);
@@ -12101,6 +12159,7 @@ public partial class MainWindowViewModel : ObservableObject
         SendStage.Entered(
             _telemetry, SendStage.Armed,
             next.ToString("HHmmss", CultureInfo.InvariantCulture) + " UTC");
+
 
         _armedSend.Arm(new OperatorSend(
             composed.Transmission!,
@@ -12202,7 +12261,6 @@ public partial class MainWindowViewModel : ObservableObject
         {
             return;
         }
-
 
         _lastBoundaryDriven = boundary;
 
@@ -12596,7 +12654,6 @@ public partial class MainWindowViewModel : ObservableObject
         // press* and *he pressed and nothing happened* were the same file.
         AppEvents.OperatorAction(
             _telemetry, "cq_pressed", OperatingMode, _digitalMode.ToString());
-
 
         SendMessage(CallToAnyoneText);
     }
