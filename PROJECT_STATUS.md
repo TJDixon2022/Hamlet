@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 5
-WORK_INSTRUCTION: 316 - read the conversation
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 2 of 4
+WORK_INSTRUCTION: 318 - say it, the engine half: the modulator, the send with no slot, and whose turn it is
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T12:56:55-04:00
-NOTE: Unit 316 complete, task 5 dropped. Step 3 met: 32 of 32 corpus lines, 0 wrongly certain, CQ filter exact, FT8 readers unchanged. One order-dependent FT8 hover red raised.
+UPDATED: 2026-09-11T13:46:25-04:00
+NOTE: Task 1 in - entry green, 11 engine and 13 app chain reds named before any change; now writing the modulator test to watch it fail on a stub.
 
 ---
 

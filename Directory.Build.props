@@ -595,8 +595,15 @@
     both at CER 0.0000 - and the carry-forward list green before anything changes, app 115 of 115
     and engine 71 of 71. No production code moves in this task.
   -->
+  <!--
+    1.13.4 -> 1.13.5, UNIT 318 TASK 1, UNDER HM-DEC-150. A PATCH, AND ONLY THE TRACE. Step 4's
+    entry run rather than read - the exchange parser and the message split both green - and the
+    before-counts taken on the unchanged chain: carry-forward app 123 of 123 and engine 82 of 82;
+    chain-guarding engine 82 of 93 and app 50 of 63, every red named in output.md. No production
+    code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.4</Version>
+    <Version>1.13.5</Version>
   </PropertyGroup>
 
   <!--
