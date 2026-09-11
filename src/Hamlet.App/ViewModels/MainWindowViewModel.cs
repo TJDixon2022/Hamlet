@@ -2006,11 +2006,28 @@ public partial class MainWindowViewModel : ObservableObject
     /// <see cref="DigitalModeFor"/> answers `Ft8`, so the composer composed FT8
     /// tones and the send path put them on 14.070 - which is the fault the operator
     /// found by using it (2026-09-11).</para>
+    /// <para>**PSK31 IS NOW THE THIRD, AND IT IS THE SAME PREDICATE** (work instruction
+    /// 323 task 1c, `PHASE_PLAN.md` §R11). What made the answer false was never that
+    /// PSK31 had no voice - <see cref="Psk31Modulator"/> has existed since unit 318 and
+    /// its four macros read back identical - but that nothing downstream of this line
+    /// composed in it. **That is fixed in the same change**: <see cref="SendPsk31"/> is
+    /// the PSK31 arm of <see cref="SendMessage"/> and it composes PSK31 audio, so the
+    /// fault above cannot come back by opening this door.</para>
+    /// <para>**WHAT THE BOLT WAS.** Units 320 and 321 both decided the door would open
+    /// only behind a predicate for §R4's drive and power that nothing in `src/` made
+    /// true, because the operator had not ruled on what to ask him to set at the radio.
+    /// **Neither unit ever wrote it** - there is no such predicate in the tree, and the
+    /// bolt was this method answering false. §R11 rules the question it was waiting on:
+    /// the drive is what FT8 already composes at, RF power is **offered** at half
+    /// (HM-DEC-084), and **nothing is required of the operator** for this to answer
+    /// true. So the bolt does not move; it is gone, and the door is the mode gate it
+    /// always was.</para>
     /// </remarks>
     private static bool CanTransmitIn(string? chosen)
         => chosen is null
             || string.Equals(chosen, "FT8", StringComparison.Ordinal)
-            || string.Equals(chosen, "FT4", StringComparison.Ordinal);
+            || string.Equals(chosen, "FT4", StringComparison.Ordinal)
+            || string.Equals(chosen, "PSK31", StringComparison.Ordinal);
 
     /// <summary>True while the operator has PSK31 pressed.</summary>
     private bool IsPsk31Chosen
@@ -13052,6 +13069,20 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **PSK31 LEAVES BY ITS OWN ARM, BEHIND THE SAME DOOR** (work instruction 323
+        // task 1c, `PHASE_PLAN.md` §R10). Everything above this line is the one entry
+        // point every send goes through - the record of the press, the empty check and
+        // the mode gate - and everything below it is FT8's and FT4's slot arithmetic,
+        // which a mode with no slots has no use for. **There is no second entry point
+        // and no second keying site**: `SendPsk31` composes, arms the same
+        // `Ft8ArmedSend` and fires the same sequence, with no slot (§R10).
+        if (IsPsk31Chosen)
+        {
+            SendPsk31(wanted);
+
+            return;
+        }
+
         // **AT THE RATE THE ENDPOINT DECLARED, NOT AT THE DECODER'S.**
         // `_transmitSampleRate` was read off the sink when the radio connected.
         // Composing at `Ft8Waveform.DefaultSampleRate` here is what made every
@@ -13226,6 +13257,259 @@ public partial class MainWindowViewModel : ObservableObject
                 _transmitSampleRate,
                 Ft8Composer.DefaultBaseFrequencyHz,
                 _settings.TransmitDrivePeak);
+
+    /// <summary>Which macro of §R2 the next press is, for the record only.</summary>
+    /// <remarks>
+    /// <para>**A TOKEN FOR THE FILE, AND NOTHING READS IT TO ACT** (§2.1, §R13).
+    /// `psk31_send_composed` carries which of the four macros was composed, because the
+    /// text itself never reaches the record; the text is what goes on the air and the
+    /// kind is what a reader diagnoses from. **Nothing branches on this value** - the
+    /// composing, the arming and the keying are identical for all four.</para>
+    /// <para>**IT IS SET BESIDE THE CALL AND CLEARED BY IT.** <see cref="SendMessage"/>
+    /// is the one entry point and takes the text alone, which is what keeps it the one
+    /// entry point; a second parameter would be a second signature for the same door.
+    /// Each caller writes this immediately before calling, and
+    /// <see cref="SendPsk31"/> takes it and puts it back to `cq` - so a press that
+    /// arrives by any route that did not set it is recorded as the call to anyone,
+    /// which is what the CQ button sends.</para>
+    /// </remarks>
+    private Psk31Macro _psk31Macro = Psk31Macro.Cq;
+
+    /// <summary>
+    /// **The PSK31 arm of the one send path: compose, arm with no slot, fire now.**
+    /// </summary>
+    /// <param name="wanted">The macro text, exactly as it goes on the air.</param>
+    /// <remarks>
+    /// <para>**IT IS REACHED ONLY FROM <see cref="SendMessage"/>** (§0.2), after the
+    /// press has been recorded and the mode gate has answered. So everything asserted
+    /// of one click on the FT8 path holds here without being asserted twice: one click,
+    /// one call, one composition, one arming.</para>
+    /// <para>**AND IT KEYS NOTHING ITSELF.** It hands an <see cref="OperatorSend"/> with
+    /// no slot to the same <see cref="Ft8ArmedSend"/> the slotted path arms, and
+    /// <see cref="Ft8ArmedSend.NowAsync"/> runs the same
+    /// <see cref="Ft8TransmitSequence"/> - the one `PttOn` site in the repository, and
+    /// the one `finally` that lets go (§R10).</para>
+    /// <para>**WHERE IT STOPS, IT SAYS SO IN THE OPERATOR'S WORDS AND IN THE RECORD.**
+    /// Every return below writes both a sentence on the panel and a
+    /// `psk31_send_refused` with a stable reason, because a press that produced silence
+    /// is the case somebody has to diagnose (§8.1).</para>
+    /// </remarks>
+    private void SendPsk31(string wanted)
+    {
+        var macro = Psk31MacroToken.For(_psk31Macro);
+
+        _psk31Macro = Psk31Macro.Cq;
+
+        // **THE OFFSET IS THE MIDDLE OF THE PASSBAND UNTIL TASK 2 GIVES IT §R6's RULE.**
+        // A CQ goes out on a clear spot Hamlet finds, and finding one is the next task in
+        // this unit; this line is the placeholder it replaces, and it is stated rather
+        // than hidden so a reader of this commit knows the spot was not chosen yet.
+        var offsetHz = Psk31CarrierSearch.ReferenceBandwidthHz / 2;
+
+        var composed = Psk31Modulator.Compose(
+            wanted, _transmitSampleRate, offsetHz, _settings.TransmitDrivePeak);
+
+        // **WHAT WAS COMPOSED, BEFORE ANYTHING CAN REFUSE IT** (§R13). The length and the
+        // seconds, never the text (§2.1).
+        Psk31Events.SendComposed(
+            _telemetry,
+            macro,
+            wanted.Length,
+            composed.Seconds,
+            OperatorSend.LongestUnslottedSeconds,
+            offsetHz);
+
+        SendStage.Entered(
+            _telemetry,
+            SendStage.Composed,
+            UnslottedMode.Psk31.ToString(),
+            slotted: false);
+
+        if (_armedSend is null)
+        {
+            Psk31Events.SendRefused(_telemetry, "no_transmit_path", macro, "arm");
+
+            DigitalSendLine =
+                "Hamlet composed the PSK31 call and sent nothing: "
+                + (_transmitRefusal.Length == 0
+                    ? "no radio is connected and no transmit audio device is named "
+                      + "in Settings."
+                    : _transmitRefusal + ".");
+
+            return;
+        }
+
+        var send = OperatorSend.Now(
+            composed, FrequencyHz, LicenseClass, _settings.RestrictTransmitToPrivileges);
+
+        // **THE CAP IS THE SEQUENCE'S AND IT REFUSES BEFORE THE FIELD IS WRITTEN** (§R10).
+        // `Arm` returns the refusal already recorded, with nothing armed and nothing keyed.
+        if (_armedSend.Arm(send) is { } refused)
+        {
+            Psk31Events.SendRefused(_telemetry, "cap", macro, "arm");
+
+            DigitalSendLine = "Hamlet did not send the PSK31 call: " + refused.Reason;
+
+            return;
+        }
+
+        SendStage.Entered(_telemetry, SendStage.Armed, "now", slotted: false);
+
+        _armedText = wanted;
+        DigitalSendLine = "Sending \"" + wanted + "\" now, at "
+            + Psk31Events.Say(offsetHz) + " Hz in the passband.";
+
+        RaiseStopControl();
+
+        // **THE CLICK IS THE MOMENT** (§R10). A send with no slot has no boundary to wait
+        // for, so the action that armed it fires it; nothing reads a clock to decide.
+        _ = FirePsk31Async(wanted, macro, composed.Seconds);
+    }
+
+    /// <summary>Runs the armed no-slot send and writes what the radio did about it.</summary>
+    /// <param name="wanted">What was composed, for the panel's sentence.</param>
+    /// <param name="macro">Which macro, for the record.</param>
+    /// <param name="plannedSeconds">How long the composed audio is.</param>
+    /// <returns>What now did, or null where nothing was armed.</returns>
+    /// <remarks>
+    /// <para>**THE KEYING EVENTS ARE WRITTEN FROM WHAT THE RUN MEASURED, NOT FROM AN
+    /// INTENTION** (§0.0). `psk31_send_keyed` says the keying frame was taken by the
+    /// port, and only <see cref="TransmitRun.Keyed"/> knows that; a line written before
+    /// the await would be a claim that the radio keyed, on an evening when the port was
+    /// dead. **So they follow the run rather than bracket it**, and the engine's own
+    /// `ft8_transmission` record lands between the stages and this pair.</para>
+    /// <para>**AND THE LAST LINE IS WHAT THE RADIO SAID** (ask 1, unit 322's
+    /// `psk31_radio_after_send`). `Played` says what the audio path did; this says what
+    /// the radio did, read from the poll Hamlet already runs. **With no radio every
+    /// field is absent and `answered` is false**, which is the finding written down
+    /// rather than a silence to infer.</para>
+    /// </remarks>
+    private async Task<Ft8BoundaryResult?> FirePsk31Async(
+        string wanted, string macro, double plannedSeconds)
+    {
+        if (_armedSend is null)
+        {
+            return null;
+        }
+
+        var result = await _armedSend.NowAsync().ConfigureAwait(false);
+        var run = result.Run;
+
+        if (run is not null)
+        {
+            if (run.Keyed)
+            {
+                Psk31Events.SendKeying(
+                    _telemetry,
+                    keyed: true,
+                    run.SecondsOffered,
+                    plannedSeconds,
+                    aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
+
+                Psk31Events.SendKeying(
+                    _telemetry,
+                    keyed: false,
+                    run.SecondsOffered,
+                    plannedSeconds,
+                    aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
+            }
+
+            WhatTheRadioSaidAfterASend();
+        }
+
+        var line = Psk31WentLine(wanted, macro, result);
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            DigitalSendLine = line;
+            RaiseStopControl();
+        });
+
+        return result;
+    }
+
+    /// <summary>What the radio said about itself after a PSK31 send, from the poll.</summary>
+    /// <remarks>
+    /// **IT ASKS THE RADIO NOTHING AND POLLS NOTHING** (§0.2). It reads the two fields the
+    /// rig poll already holds, with their ages (HM-DEC-111), and writes them. On a machine
+    /// with no radio there is no rig at all and every field is absent.
+    /// </remarks>
+    private void WhatTheRadioSaidAfterASend()
+    {
+        var state = _rigMonitor?.State;
+
+        if (state is null)
+        {
+            Psk31Events.RadioAfterSend(_telemetry, null, null, null, null);
+
+            return;
+        }
+
+        var transmitting = state[RigField.TransmitStatus];
+        var power = state[RigField.RfPower];
+        var now = DateTime.UtcNow;
+
+        Psk31Events.RadioAfterSend(
+            _telemetry,
+            transmitting.IsKnown ? transmitting.Number > 0 : null,
+            AgeMs(transmitting, now),
+            power.IsKnown ? power.Number : null,
+            AgeMs(power, now));
+    }
+
+    /// <summary>How old a rig reading is, in milliseconds, or null where it was never read.</summary>
+    /// <param name="value">The reading.</param>
+    /// <param name="now">The moment to measure against.</param>
+    /// <returns>The age, or null.</returns>
+    /// <remarks>
+    /// **A READING TRAVELS WITH ITS AGE** (HM-DEC-111). A value with no timestamp is a
+    /// value nobody read, and its age is absent rather than zero (§0.0).
+    /// </remarks>
+    private static double? AgeMs(RigValue value, DateTime now)
+        => value is { IsKnown: true, AtUtc: { } at }
+            ? Math.Max(0, (now - at).TotalMilliseconds)
+            : null;
+
+    /// <summary>What the Send area says once a no-slot send has run.</summary>
+    /// <param name="wanted">What was composed.</param>
+    /// <param name="macro">Which macro it was.</param>
+    /// <param name="result">What now did.</param>
+    /// <returns>One line, in the register the rest of this area uses.</returns>
+    private static string Psk31WentLine(string wanted, string macro, Ft8BoundaryResult result)
+    {
+        var run = result.Run;
+
+        if (run is null)
+        {
+            return "Hamlet composed the PSK31 " + macro
+                + " and nothing went out: it was no longer armed when the send ran.";
+        }
+
+        if (run.Outcome == Ft8TransmitOutcome.Cancelled)
+        {
+            return "Stopped: \"" + wanted + "\" went out for "
+                + Psk31Events.Say(Math.Round(run.SecondsOffered, 1))
+                + " s and the rest of it did not. "
+                + (run.CameOutOfTransmit == UnkeyRoute.NothingReachedTheRadio
+                    ? "Nothing Hamlet sent to stop the radio got out - if it is still "
+                      + "transmitting, stop it at the radio."
+                    : "The radio was told to stop transmitting.");
+        }
+
+        if (run.Outcome == Ft8TransmitOutcome.RefusedByLicence)
+        {
+            return "Hamlet did not send \"" + wanted + "\": " + run.Reason
+                + " (" + run.Citation + ")";
+        }
+
+        if (!run.AudioWentOut)
+        {
+            return "Hamlet did not send \"" + wanted + "\": " + run.Reason;
+        }
+
+        return "Sent \"" + wanted + "\" - "
+            + Psk31Events.Say(Math.Round(run.SecondsOffered, 1)) + " s of PSK31.";
+    }
 
     /// <summary>Hands the armed send its boundary, at most once per boundary.</summary>
     /// <remarks>
@@ -13617,13 +13901,43 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The call to anyone, from the operator's own settings.</summary>
     /// <remarks>
-    /// **NO TYPING** (criterion 1). Callsign and grid straight out of
+    /// <para>**NO TYPING** (criterion 1). Callsign and grid straight out of
     /// <see cref="OperatorProfile"/>; with no grid set it is `CQ KC3QIS`, which is
-    /// a legal FT8 message, and **no locator is invented** (§0.0).
+    /// a legal FT8 message, and **no locator is invented** (§0.0).</para>
+    /// <para>**UNDER PSK31 IT IS §R2's CQ AND NOT FT8's** (work instruction 323 task 1c).
+    /// The two are different languages, not two spellings: FT8 packs `CQ KC3QIS FN00`
+    /// into 77 bits against a dictionary, and PSK31 sends the characters a person reads
+    /// on a screen, which is why §R2 writes the call out in full with `pse K` on the end.
+    /// **Sending the FT8 form on PSK31 would put a telegram on a frequency where people
+    /// are having conversations**, and nobody would answer it.</para>
     /// </remarks>
     public string CallToAnyoneText
-        => Ft8SendOptions.CallToAnyone(
-            _settings.Operator.Callsign?.Trim() ?? "", _settings.Operator.GridSquare);
+        => IsPsk31Chosen
+            ? Psk31CallToAnyone
+            : Ft8SendOptions.CallToAnyone(
+                _settings.Operator.Callsign?.Trim() ?? "", _settings.Operator.GridSquare);
+
+    /// <summary>§R2's call to anyone, or "" where Settings has no callsign to put in it.</summary>
+    /// <remarks>
+    /// **A BLANK IS A REFUSAL, NOT A GAP** (§0.0). `Psk31Macros` refuses to build a macro
+    /// with an empty field rather than sending `CQ CQ CQ de` with nothing after it; an
+    /// empty string here reaches <see cref="SendMessage"/>'s own *there was nothing to
+    /// send*, which is the sentence that already exists for this.
+    /// </remarks>
+    private string Psk31CallToAnyone
+    {
+        get
+        {
+            try
+            {
+                return Psk31Macros.Cq(_settings.Operator.Callsign?.Trim() ?? "");
+            }
+            catch (ArgumentException)
+            {
+                return "";
+            }
+        }
+    }
 
     /// <summary>What is missing from Settings, said out loud, or "".</summary>
     public string DigitalSendUnset

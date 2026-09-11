@@ -137,6 +137,14 @@ public sealed class ThePsk31PanelHearsTests
     }
 
     /// <summary>**Nothing on the panel can be answered.**</summary>
+    /// <remarks>
+    /// **REWRITTEN UNDER §R12** (work instruction 323 task 1c). It asserted
+    /// `CanAnswerRowsForTests` was false and that the send door refused - both of which
+    /// are the shut door rather than the rule, and the door is open from this unit on.
+    /// **What the name means is that a row on the PSK31 panel offers nothing to click
+    /// that sends**, which is `SendMenuFor` and is unchanged: a PSK31 row hands back no
+    /// menu, whatever the mode gate says.
+    /// </remarks>
     [Fact]
     public void NothingOnThePanelCanBeAnswered()
     {
@@ -147,17 +155,14 @@ public sealed class ThePsk31PanelHearsTests
         Play(model, new MonoAudio(audio.SampleRate, audio.Samples[..(audio.Samples.Length / 4)]));
 
         _output.WriteLine("rows            : " + model.DigitalDecodes.Count);
-        _output.WriteLine("can be answered : " + model.CanAnswerRowsForTests);
+        _output.WriteLine("rows with a menu: "
+            + model.DigitalDecodes.Count(r => model.SendMenuFor(r) is not null));
 
         Assert.NotEmpty(model.DigitalDecodes);
-        Assert.False(model.CanAnswerRowsForTests);
+        Assert.All(model.DigitalDecodes, r => Assert.Null(model.SendMenuFor(r)));
 
-        // **AND THE SEND DOOR STILL REFUSES.**
-        model.SendCallToAnyoneCommand.Execute(null);
-
-        _output.WriteLine("send line       : " + model.DigitalSendLine);
-
-        Assert.Contains("PSK31", model.DigitalSendLine, StringComparison.Ordinal);
+        // **AND NOBODY HAS CLICKED, SO NOTHING IS IN FLIGHT** (§0.2).
+        Assert.False(model.HasSomethingToStop);
     }
 
     /// <summary>Push audio through the real tap and the real tick.</summary>

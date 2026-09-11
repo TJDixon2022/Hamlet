@@ -8,6 +8,16 @@ public enum Psk31Macro
     /// <summary>Nothing is offered.</summary>
     None,
 
+    /// <summary>`CQ CQ CQ de MINE MINE MINE pse K` - the call to anyone.</summary>
+    /// <remarks>
+    /// **NEVER OFFERED, ONLY PRESSED** (work instruction 323 task 1c). <see cref="Psk31Offer"/>
+    /// answers which macro a *conversation* has arrived at, and a call to anyone is not part of
+    /// one: it is the button the operator presses to start one, and no reading of anybody's
+    /// messages can conclude that he should. It is a member here because the send path and the
+    /// card name the four macros with one type, and the record spells them from it.
+    /// </remarks>
+    Cq,
+
     /// <summary>`HIS de MINE MINE K`.</summary>
     Answer,
 

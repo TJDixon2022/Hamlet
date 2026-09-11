@@ -511,7 +511,12 @@ public sealed class ThePsk31HearsEveryoneTests
 
         if (rows.Count > 0)
         {
-            heard.EverAnswerable |= model.CanAnswerRowsForTests;
+            // **WHETHER A ROW OFFERS A SEND, NOT WHETHER THE MODE CAN SEND** (§R12, work
+            // instruction 323 task 1c). This read `CanAnswerRowsForTests`, which is
+            // `CanTransmitIn` - the shut door - and the door is open from this unit on.
+            // What the assertion is named for is that **no click on a row here reaches a
+            // send path**, and that is what `SendMenuFor` answers.
+            heard.EverAnswerable |= rows.Any(r => model.SendMenuFor(r) is not null);
             heard.EverParsed |= rows.Any(r => r.HasFields);
             heard.EverForHim |= model.DigitalMineDecodes.Count > 0;
             heard.EverForHimWithoutBeingAddressed |=

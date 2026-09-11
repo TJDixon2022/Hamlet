@@ -418,7 +418,11 @@ public sealed class ThePsk31ReadsTheConversationTests
         _output.WriteLine("PSK31 rows right-clicked: " + looked + ", cards on the panel: " + model.DigitalCards.Count
             + ", can answer: " + model.CanAnswerRowsForTests + ", send line [" + model.DigitalSendLine + "]");
 
-        Assert.False(model.CanAnswerRowsForTests);
+        // **NOBODY CLICKED, SO NOTHING IS IN FLIGHT AND NOTHING IS BEING SENT** (§0.2).
+        // **This read `CanAnswerRowsForTests` too** - `CanTransmitIn`, the shut door - and
+        // that assertion is rewritten out under §R12 by the unit that opens the door: the
+        // mode being able to send is not the same claim as a row offering a send, and the
+        // loop above has just proved the second over every row on the panel.
         Assert.False(model.HasSomethingToStop);
         Assert.DoesNotContain("Sending", model.DigitalSendLine, StringComparison.Ordinal);
     }

@@ -52,22 +52,40 @@ public static class SendStage
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="stage">Which stage, as one of the tokens above.</param>
     /// <param name="detail">A stable token or a count, or null.</param>
+    /// <param name="slotted">
+    /// True where this stage belongs to a send in a slot, false where it belongs to a
+    /// send with no slot, and **null where the caller did not measure it** - which is
+    /// every caller that existed before `PHASE_PLAN.md` §R10 made a second kind of send
+    /// possible.
+    /// </param>
     /// <remarks>
-    /// **IT IS AN ENTRY AND NEVER AN OUTCOME**, which is why there is no result
+    /// <para>**IT IS AN ENTRY AND NEVER AN OUTCOME**, which is why there is no result
     /// here to record. What became of the stage is the next line in the file, or
-    /// its absence.
+    /// its absence.</para>
+    /// <para>**A FIELD NOBODY MEASURED IS ABSENT, NOT FALSE** (§0.0, work instruction 323
+    /// task 1c). `slotted` answers *which of the two send paths was this*, and the stages
+    /// written from inside <see cref="Transmit.Ft8TransmitSequence"/> serve both, so
+    /// writing `false` there would claim a no-slot send on every FT8 transmission. The
+    /// key is written only where the caller knows, and its absence reads as *this line
+    /// predates the question*.</para>
     /// </remarks>
     public static void Entered(
-        ITelemetry? telemetry, string stage, string? detail = null)
-        => telemetry?.Write(
-            TelemetryCategory.Transmit,
-            EventName,
-            new Dictionary<string, object?>
-            {
-                ["stage"] = stage,
-                ["entered"] = true,
-                ["detail"] = string.IsNullOrWhiteSpace(detail)
-                    ? StartupSnapshot.Unknown
-                    : detail,
-            });
+        ITelemetry? telemetry, string stage, string? detail = null, bool? slotted = null)
+    {
+        var bag = new Dictionary<string, object?>
+        {
+            ["stage"] = stage,
+            ["entered"] = true,
+            ["detail"] = string.IsNullOrWhiteSpace(detail)
+                ? StartupSnapshot.Unknown
+                : detail,
+        };
+
+        if (slotted is { } known)
+        {
+            bag["slotted"] = known;
+        }
+
+        telemetry?.Write(TelemetryCategory.Transmit, EventName, bag);
+    }
 }

@@ -24,13 +24,13 @@ namespace Hamlet.App.Tests.Telemetry;
 /// <para>**READ-ONLY ON BEHAVIOUR** (§0.2, and §6 of the plan). Nothing here or in the
 /// events it exercises keys, arms, composes or plays anything the application would not
 /// have done anyway.</para>
-/// <para>**AND FOUR OF THE SIX EVENTS HAVE NO PRODUCTION CALL SITE YET, WHICH IS THE
-/// FINDING** rather than an omission. The step-4 press half is `blocked` on two rulings
-/// the owner has not given: `CanTransmitIn` still answers false for PSK31, and nothing in
-/// `src/Hamlet.App` reaches `UnslottedTransmission` at all. **So composing, keying,
-/// unkeying and the record are proved at the bench against the real composer**, ready for
-/// the unit that builds the press, and **the one that does have a call site - the
-/// refusal - is asserted through the running application.**</para>
+/// <para>**THE EVENTS HAVE PRODUCTION CALL SITES NOW** (work instruction 323 task 1c).
+/// Unit 322 proved composing, keying, unkeying and the record at the bench because
+/// `CanTransmitIn` answered false for PSK31 and nothing in `src/Hamlet.App` reached
+/// <see cref="UnslottedTransmission"/> at all. §R11 removed the question that door was
+/// waiting on, so **the composing and the stage are now asserted through the running
+/// application**; the keying pair stays at the bench because keying needs a radio and
+/// there is none on this machine (FACT-006).</para>
 /// <para>**COMPUTED, NOT SEEN**, and no radio was involved: assertion 4 is that absence
 /// written down (FACT-006).</para>
 /// </remarks>
@@ -196,19 +196,25 @@ public sealed class ThePsk31TransmitTelemetryTests : IDisposable
         Assert.Empty(Events(lines, "psk31_send_keyed"));
     }
 
-    /// <summary>**A PSK31 press is refused, and nothing reaches the transmitter.**</summary>
+    /// <summary>**A PSK31 press composes PSK31, and with no radio nothing keys.**</summary>
     /// <remarks>
-    /// **THIS IS THE ONE WITH A PRODUCTION CALL SITE**, so it is driven through the
-    /// running application rather than at the bench. `CanTransmitIn` answers false for
-    /// PSK31 - the step-4 press half is blocked on the owner's rulings - and the refusal
-    /// sits at the one door that composes a signal in the whole of `src/`.
+    /// <para>**REWRITTEN UNDER §R12** (work instruction 323 task 1c). It read *a PSK31
+    /// press is refused, and nothing reaches the transmitter*, and it asserted the reason
+    /// was `mode` - which is the shut door, not the rule. **The door is what this unit was
+    /// told to open**, so the assertion that it stays shut is this session's to rewrite,
+    /// in the same change that opens it, without asking the owner.</para>
+    /// <para>**WHAT IT GUARDS NOW.** One press writes one `psk31_send_composed`, and it is
+    /// the CQ macro of §R2 rather than FT8 packed into 77 bits; the stage that follows says
+    /// the send has no slot; and **on a machine with no radio nothing keys and no
+    /// transmission is recorded** - the press reaches the arming and stops there, saying so
+    /// in the record and on the panel (§0.0, §8.1).</para>
     /// </remarks>
     [Fact]
-    public void APsk31PressIsRefusedAndNothingReachesTheTransmitter()
+    public void APsk31PressComposesPsk31AndWithNoRadioNothingKeys()
     {
         List<string> lines;
 
-        using (var telemetry = new JsonlTelemetry(_folder, "322", _ => true))
+        using (var telemetry = new JsonlTelemetry(_folder, "323", _ => true))
         {
             var model = Panel(telemetry);
 
@@ -221,19 +227,37 @@ public sealed class ThePsk31TransmitTelemetryTests : IDisposable
 
         lines = Read();
 
-        var refused = Events(lines, "psk31_send_refused");
+        var composed = Events(lines, "psk31_send_composed");
 
-        foreach (var one in refused)
+        foreach (var one in composed)
         {
-            _output.WriteLine("refused: " + one.GetProperty("data").GetRawText());
+            _output.WriteLine("composed: " + one.GetProperty("data").GetRawText());
         }
 
-        var it = Assert.Single(refused);
+        // **ONE CLICK, ONE COMPOSITION, AND IT IS §R2's CALL TO ANYONE.**
+        var it = Assert.Single(composed);
 
-        Assert.Equal("mode", Text(it, "reason"));
+        Assert.Equal("cq", Text(it, "macro"));
 
-        // **NOTHING STAGED, NOTHING KEYED, NO RECORD.**
-        Assert.Empty(Events(lines, "send_stage"));
+        // **AND THE DOOR DID NOT REFUSE IT FOR BEING PSK31.**
+        Assert.DoesNotContain(
+            Events(lines, "psk31_send_refused"), e => Text(e, "reason") == "mode");
+
+        // **THE STAGE SAYS WHICH OF THE TWO SEND PATHS THIS WAS** (§R10).
+        var stages = Events(lines, "send_stage");
+
+        foreach (var one in stages)
+        {
+            _output.WriteLine("stage: " + one.GetProperty("data").GetRawText());
+        }
+
+        Assert.Contains(
+            stages,
+            e => e.GetProperty("data").TryGetProperty("slotted", out var slotted)
+                && !slotted.GetBoolean());
+
+        // **NOTHING KEYED AND NO TRANSMISSION RECORDED**, because there is no radio on
+        // this machine and the arming is where the press stops.
         Assert.Empty(Events(lines, "psk31_send_keyed"));
         Assert.Empty(Events(lines, "ft8_transmission"));
     }
