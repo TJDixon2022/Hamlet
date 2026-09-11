@@ -55,6 +55,7 @@ TheVaricodeTests
 ThePsk31DemodulatorTests
 ThePsk31CarrierSearchTests
 ThePsk31ExchangeParserTests
+ThePsk31MessageSplitTests
 TheAzimuthalAssetTests
 AzimuthalMapTests
 

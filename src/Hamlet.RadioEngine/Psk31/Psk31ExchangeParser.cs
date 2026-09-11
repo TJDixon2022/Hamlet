@@ -225,6 +225,20 @@ public static class Psk31ExchangeParser
         return new Psk31Exchange(speaker, addressee, kind, handsOver, certain, rst, grid, forOperator);
     }
 
+    /// <summary>A raw word as the parser reads it: punctuation trimmed off both ends, upper case.</summary>
+    /// <param name="raw">The characters between two whitespaces.</param>
+    /// <returns>The word.</returns>
+    /// <remarks>
+    /// **ONE COPY, FOR THE SPLITTER TOO** (<see cref="Psk31MessageSplitter"/>), so the two
+    /// cannot come to read the same characters as two different words.
+    /// </remarks>
+    internal static string Normalise(string raw) => raw.Trim(Edges).ToUpperInvariant();
+
+    /// <summary>True where a word, as <see cref="Normalise"/> gives it, is a clean callsign.</summary>
+    /// <param name="word">The word.</param>
+    /// <returns>True for a callsign with nothing welded into it.</returns>
+    internal static bool IsCleanCallsign(string word) => CallsignShape.IsMatch(word);
+
     /// <summary>One word of a message, upper case, and whether a symbol is welded into it.</summary>
     private readonly record struct Word(string Text, bool Damaged);
 
@@ -239,7 +253,7 @@ public static class Psk31ExchangeParser
 
         foreach (var raw in message.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries))
         {
-            var text = raw.Trim(Edges).ToUpperInvariant();
+            var text = Normalise(raw);
 
             if (text.Length == 0)
             {

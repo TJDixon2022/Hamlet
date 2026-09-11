@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 316 - read the conversation
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T12:28:49-04:00
-NOTE: Parser green, 8 of 8: 32 of 32 lines match, 0 wrongly certain, 05-garbled 0.40 uncertain against 0.20 expected. Committing task 2.
+UPDATED: 2026-09-11T12:33:36-04:00
+NOTE: Splitter green, 3 of 3 with the parser still 8 of 8; seven transcripts back in order, 05-garbled lines 4 and 5 merge and stay uncertain. Committing task 3.
 
 ---
 
