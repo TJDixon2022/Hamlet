@@ -1,157 +1,175 @@
-# Work instruction 313 - the popup stops blurring, and the panel scrolls
+# Work instruction 314 - hear one: the PSK31 tab stops pretending, then reads a signal
 
 **READ IN THIS ORDER.**
 
 A. **The phase goal - Hamlet works PSK31 the way it works FT8.** A third digital mode
    with the same two cards, the same one-click exchange, the same log and the same
-   achievements, on a modem Hamlet builds itself.
+   achievements, on a modem this project writes itself.
 
-B. **The PSK31 phase's step 1 is next and this unit does not touch it.** Step 1 is a BPSK
-   demodulator and varicode decoder proved against fixtures. **This unit advances no step
-   of the phase**: it is carried repair of two FT8 and FT4 faults, on the two surfaces
-   PSK31 will inherit, and the drift count rises by one honestly.
+B. **Step 1 and its exit criteria** - a recorded fixture decodes to its known text with
+   the character error rate stated; the varicode table is cited; the reference commit is
+   recorded and the clone is outside the tree; the squelch rule is stated and a
+   noise-only fixture produces no text. Nice: a carrier drifting 20 Hz in a minute holds
+   lock. **All four must-pass are met and so is the nice-to-pass. Step 1 is `done`** -
+   and every fixture is synthetic and nothing was measured at a radio.
 
-C. **The report last, and section 4 raises 5 items** on top of a carried queue of eleven,
-   three of them from unit 312.
+C. **The report last, and section 4 raises 5 items** on top of a carried queue of
+   sixteen.
 
 ```
-UNIT:       313 - complete at task 4 of 4, none dropped - 2026-09-11 09:41
+UNIT:       314 - complete at task 5 of 5, none dropped - 2026-09-11 15:42
 PHASE GOAL: Hamlet works PSK31 the way it works FT8 - the same cards, the same one
             click, the same log, on a modem this project writes itself.
-UNIT GOAL:  Two things on the shared digital screen are the wrong size. A picture
-            enlarged past what it contains, and a panel that cuts cards off instead
-            of letting him reach them.
-ADVANCED:   no - carried repair. It advances no step of the PSK31 phase and says so.
-NUMBER:     popup magnification 3.98x -> 2.00x; the For You viewport 0 px of scroll
-            -> 224 px of viewport over a 1,748 px extent, every card reachable;
-            version 1.13.0 -> 1.13.1
-DRIFT:      1 consecutive unit without advance  (this one; the phase's count was 0)
+UNIT GOAL:  Stop the tab decoding and transmitting FT8 on a PSK31 frequency, then
+            build a demodulator that actually reads the mode and put its text on
+            the panel.
+ADVANCED:   yes - step 1, wholly. Task 1 is a step-0 defect repaired in passing and
+            is not scored as the advance.
+NUMBER:     PSK31 characters read 0 -> 255 of 255 at CER 0.0000 on six fixtures;
+            slot looks under PSK31 30 -> 0; version 1.13.1 -> 1.13.2
+DRIFT:      0 consecutive units without advance  (was 1)
 ```
 
-**Every appearance claim in this report is computed, not seen - with two exceptions, and
-they are worth having.** Nothing in this repository can look at a picture, so the layout
-numbers below come from standing the real window up headless and reading back what the
-layout did. **But this session could look at two actual images**: Tim's own screenshot,
-which is how the green glyphs were identified and their colour sampled; and the map
-bitmap cropped to the rectangle the new code computes, which is how the popup's contents
-were checked. **Section 3 says which is which.** Nothing here was seen rendered by the
-application, and nothing here is evidence about the radio - this machine has none.
+**Every appearance claim in this report is computed, not seen.** Nothing in this
+repository can look at a picture. And **nothing here is evidence about the radio**: this
+machine has none, every fixture is synthetic and made by the author's own modem, so all
+of it is an indication rather than a finding (FACT-004, FACT-006).
 
 ## 1. What Claude did
 
-**The gate passed on all four checks.** `SHACK_FACTS.md` present,
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no
-`MURC.sln`, root at `C:\Source\HamLet`. Branch **`main`**, five commits, each pushed
-before the next task started. Version **1.13.0 → 1.13.1**.
+**The gate passed on all four checks.** Branch **`main`**, seven commits, each pushed
+before the next task started. Version **1.13.1 → 1.13.2**.
 
-**The three questions, one line each.**
+### The fixtures, measured
 
-- **The popup's magnification before the cap was 3.98x.** `F4DIA` was framed at 180.7 by
-  95.3 source pixels and drawn at 720 by 379.5, and unit 310's zoom floor permitted
-  **4.13x** at its worst, which a same-state contact hit exactly. The author measured 3.9x
-  from a 185 by 99 crop; the code's own numbers are 3.98 and 180.7 by 95.3.
-- **The horizontal truncation was neither the same cause nor a different one: it is not
-  the app.** The card measured **301 px wide inside a 331 px panel**, so nothing was
-  clipped sideways. The screenshot is 1,207 px and cuts the rig display at the top right
-  as well, which is not in that panel at all. **It is the screenshot's own edge.**
-- **The green circled glyphs are unit 309's achievement quills, and they work.** A green
-  ring with the quill vane inside, on `LZ1KU KN32` and `J38DX FK92`, both unworked
-  countries. **Decode green `#3B6D11` exactly** - 21 pixels of it, sampled straight out of
-  Tim's screenshot. He was told that list was a total failure. It is not: the marks are on
-  it and they are the ruled colour.
+**Every fixture's SHA-256 is checked against `manifest.json` before a sample is read.**
 
-### Task 1 - the trace
+| fixture | reference CER | Hamlet's CER | ceiling | characters | seconds |
+| --- | --- | --- | --- | --- | --- |
+| clean | 0.0000 | **0.0000** | 0.01 | 255 of 255 | 0.02 |
+| +10 dB | 0.0000 | **0.0000** | 0.02 | 255 of 255 | 0.02 |
+| +3 dB | 0.0000 | **0.0000** | 0.05 | 255 of 255 | 0.02 |
+| -3 dB | 0.0000 | **0.0000** | 0.10 | 255 of 255 | 0.02 |
+| drift, 20 Hz in a minute | 0.0000 | **0.0000** | 0.05 | 255 of 255 | 0.02 |
+| two signals, channel at 1000 Hz | 0.0000 | **0.0000** | 0.05 | 255, no `EI4GNB` | 0.02 |
+| noise only, 30 s | not stated | **zero characters** | must be none | 0 | 0.01 |
+| **-10 dB, made by task 5** | not run | **0.1502** | **none asserted** | 221 of 255 | 0.02 |
 
-`UNIT 313` is appended to `PHASE_OUTCOME.md`, which is the PSK31 phase's file, as carried
-repair advancing no step. **The hole ask 7 names is real and was not back-filled**: this
-phase's record starts at unit 312, and 306, 307, 309 and 310 are in the FT4 phase's file,
-which is in git history rather than at the root.
+**The squelch rule, in one sentence:** the mean of `|Re(d)|` over the mean of `|d|` across
+a rolling window of 32 symbols, where `d` is each symbol times the conjugate of the one
+before - **the number is 0.90**, on a scale whose ends are 0.637 for uniform noise phase
+and 1.0 for clean keying. It measures **shape rather than loudness**, because loudness
+cannot tell a station from a burst of noise at the same level.
 
-**Sixteen named types ran filtered and foregrounded before anything changed, all green.**
+### Task 1 - the tab stops pretending
 
-**The popup frame, with file and line.** `Ft8GlobePlot.Opened()` builds the box over every
-sampled point and both markers, adds a 6 % margin, then `Fitted` applies
-`ZoomFloorShare = 0.25` and clamps into the bitmap. **The floor was the wrong instrument**:
-a quarter of a 698 px file is 174.5 px, and 174.5 px enlarged into a 720 px popup is 4.13
-times. Set tight enough to stay sharp it would be a floor of the whole file, which is no
-zoom at all.
+**What happened to Tim, and why.** He pressed PSK31, saw a CQ, answered it and got
+nothing back. There is no PSK31 decoder in this tree, so what he saw was **FT8's decoder
+still running under the PSK31 tab**, and what he sent was **an FT8 message on 14.070**.
 
-**The resampling was already smooth.** No `RenderOptions` is set anywhere in `src/`, so
-`DrawImage` took Avalonia's default filter, and the blur on the screenshot is a smooth one
-rather than blocks. **It is now asked for explicitly** rather than left to a default that
-can change under the project.
+Two places, with file and line:
 
-**The For You panel.** No `ScrollViewer` anywhere above the cards - the decoded list to its
-left and the conversation rows beneath it both had one, and the cards were the one region
-that did not. The cards control sat in an `Auto` row, so it asked for its whole content
-height and got it: **1,748 px inside a panel 264 px tall, with five of six cards starting
-below the bottom edge.** The sixth card is drawn and unreachable rather than not drawn.
+- **`MainWindowViewModel.cs:10228`, `OnSlotTick`.** It gates on `IsDigitalMode`, which is
+  the *tab* and not the sub-mode, so the slot watch went on cutting FT8 slots and the FT8
+  decoder went on reading them whatever chip was pressed.
+- **`MainWindowViewModel.cs:12138`, `SendMessage`.** It composes through `DigitalModeFor`,
+  which answers `Ft8` for anything that is not FT4. That is the right default for a slot
+  grid and it was being read as an answer to *what can this send*.
 
-### Task 2 - the zoom is capped
+**Unit 312 fixed the sentence and left the machinery connected**, and that was this
+author's doing: the instruction said what not to build and did not say to disconnect what
+was already there.
 
-The frame is unit 310's box, unchanged and untouched, then **grown about its own centre
-until neither dimension would magnify past the cap**, then slid back inside the picture.
-Growing can only ever add, so it cannot put a sampled point outside the frame - and that
-is asserted anyway, over eight paths, and after the slide as well.
+**Two gates at the two doors.** The tick returns before the watch is asked - *not
+running*, not hidden. The send door refuses in words, and being the only call site in
+`src/` that composes a signal, it covers the CQ button, the right-click answer and
+anything a later unit adds. **`CanDecode` and `CanTransmitIn` are written separately on
+purpose**: this very unit gives PSK31 a decoder, and one predicate would have re-opened
+the transmitter with it.
 
-| case | before | after |
-| --- | --- | --- |
-| `F4DIA` France | 3.98x | **2.00x** |
-| `PY2ABC` Brazil | 2.36x | **2.00x** |
-| `ZS1ABC` South Africa | 2.03x | **2.00x** |
-| `W2ABC` a hundred miles away | 4.13x | **2.00x** |
-| `JA1ABC` Tokyo, date line | 1.03x | 1.03x, whole world |
-| `ZL1ABC` Auckland, date line | 1.03x | 1.03x, whole world |
+Measured: thirty ticks under PSK31 give **0 slot looks and 0 rows**; the same thirty under
+FT8 and FT4 give **30 looks each**, and FT8 still reaches the send door.
 
-**The cap needs the popup's size and does not hold one.** `OpenFrameFor` takes the box it
-will be drawn in; the control passes what it was offered and remembers it, so the measure,
-the render and the marker hovers ask one question and get one answer. The number itself is
-`Ft8GlobePlot.ZoomCap` and lives in exactly one place.
+**And the receipt loses Log** (Tim, 2026-09-11: *"CQ should not have log option, that is
+self-gratification."*). This supersedes unit 305's *Log from first appearance* and unit
+310's R2, both the author's reasoning rather than his ruling. **Taking the button off made
+the quiet link appear in its place** - its rule read *Log is not already the action here*,
+which became true the moment the action became None. Both are shut.
 
-### Task 3 - the panel scrolls
+### Task 2 - the varicode
 
-The cards now sit in the same kind of container the two lists either side of them already
-had. **Two things were wrong, and the second only appeared once the first was fixed:**
-giving the cards the star row cured the `Auto`-row overflow and left the viewport at
-**110 px**, because the conversation region below is a star row too and a star row takes
-its share whether or not its child is drawn. Its height is now zero while the messages are
-shut, and the viewport went **110 → 224 px**.
+`data/psk31/varicode.csv` with `varicode-SOURCE.md` beside it, embedded and read at load,
+the way unit 252 carried the DXCC list. All 256 round-trip, all 256 distinct, none
+contains `00`, every one starts and ends with `1`, shortest 1 bit and longest 12. The QSO
+text is 255 characters and 2,000 bits - **7.8 bits a character** - and survives 40 idle
+bits either side.
 
-**The scroll does not jump.** Parked half way down, a seventh station answering leaves the
-offset exactly where it was - not thrown to the top, not thrown to the bottom.
+### Task 3 - the demodulator
 
-**What it does not do, and why that is reported rather than fixed.** The cards below the
-new one slide down by one card's height, because a new station is put at the top of this
-panel. **Holding the card he was reading still is not achievable from where this task
-sits**: the panel calls `DigitalCards.Clear()` and rebuilds every card on every slot, so
-after a rebuild there is no *same card* for a scroll anchor to hold on to - a new object
-with the same callsign is not the object the viewport was pointing at. The instruction
-allows exactly this answer, and it is raised as ask 10 rather than solved by inventing an
-ordering rule.
+Mix down at the offset; average over one bit, which is the matched filter for the
+transmitter's raised-cosine pulse; find the symbol instant from where the envelope is
+strongest; one sample a bit; multiply by the conjugate of the last; the sign of the real
+part is the bit; split on `00`; look it up.
 
-### Task 4 - what the two fixes look like
+**One real bug, found by measuring rather than reasoning.** The first draft decayed the
+timing profile by 0.995 a sample - a time constant shorter than a single bit - so the
+clock chased whichever symbol had just gone past. It cost **CER 0.1976 at +10 dB where
+clean was 0.0237**, and the symbol instant moving by a whole bin could sample a period
+twice or not at all, which loses a bit and destroys a whole character rather than
+damaging one. The cadence is fixed now and nudged one sample at a time, and the profile
+remembers about eight symbols. **That one change took every QSO fixture to 0.0000.**
 
-Taken rather than dropped. It is section 3.
+**The AFC only tracks while the squelch is open.** On noise the squared phase is uniform,
+so a loop running all the time would take a random walk away from the frequency the
+operator tuned to and be pointing at nothing when a station did start.
 
-### Four mismatches with the instruction, reported and not repaired
+### Task 4 - the panel hears
 
-1. **The worked example's four edges do not match; its centre matches exactly.** The
-   instruction gives the 2.0x crop as x 78.5 to 439.5, y 22.1 to 214.6. The code gives
-   x 79.0 to 439.0, y 18.4 to 218.4. **Both centre on 259.0, 118.3.** The difference is
-   the popup: the example is worked for about 722 by 385, which gives a crop of 361 by
-   192.5, and `MainWindow.axaml` offers the map 720 by 400, which gives 360 by 200. Same
-   centre, same cap, a different box - so the test asserts the centre and the cap rather
-   than four numbers that bake a ceiling in.
-2. **The magnification is 3.98x and the crop 180.7 by 95.3**, not 3.9x from 185 by 99.
-   Close, and not the same numbers; the code's are in the report because they are the
-   ones that were changed.
-3. **The horizontal truncation is the screenshot's own crop**, not a fault of either kind
-   the instruction offered. Measured: the card is narrower than the panel.
-4. **One card does not fit the panel.** A conversation card with its map is 293 px and the
-   panel gives 220 px of card room at a 1400 by 900 window, so a scroll bar appears with a
-   single conversation. Not a fault and not something the instruction anticipated; the
-   test that assumed one card needs no scroll was asserting something untrue and was
-   rewritten to assert the empty case and the policy instead.
+The demodulator sits behind the tab, fed from **the same audio tap the FT8 decoder is fed
+from**, at one spot **1000 Hz above the dial** (`Psk31Listening.OffsetHz`, one place).
+Text lands as characters complete rather than a message at a time.
+
+Measured through the real tap and the real tick in quarter-second lumps: **255 of 255
+characters at CER 0.0000 on one row**, 126 of them half way through, and what was there
+half way is still the start of what is there at the end.
+
+**Nothing is parsed.** No callsign is read out of the text, no state inferred, no row
+answerable, and the send door still refuses.
+
+### Task 5 - a weak-signal fixture
+
+`psk31-snr-10db-1000hz.wav`, made by `assets/make-weak-fixture.py`, which **imports the
+author's `reference-modem.py` rather than reimplementing the convention** - a second
+implementation would be a second convention that could drift. Seed fixed at 314, recorded
+in `manifest.json` with its SHA-256. **CER 0.1502, and no ceiling asserted**, because a
+number invented here would have no evidence behind it.
+
+### Two superseded assertions rewritten, and one test of my own narrowed
+
+1. **`ThePressingOfCqTests.TheCqCardCarriesTheLogOptionBeforeAnybodyAnswers`** asserted
+   the withdrawn behaviour. Rewritten as
+   `TheCqCardCarriesNoWayToLogAndTheStationCardDoes`, which also asserts the half worth
+   keeping: **the moment somebody answers, the Log is on their card.**
+2. **`ThePsk31SeamTests.ThePanelNamesTheModeAndSaysNothingDecodes`** asserted the panel
+   says Hamlet cannot read PSK31, which stopped being true in task 4. Rewritten to assert
+   the line is about PSK31 and says nothing about slots, which is what it was protecting.
+3. **`ThePsk31ReferenceIsPinnedTests.NoSourceFileHoldsAPathIntoTheClone` was my own test
+   and it was wrong.** Unit 313 wrote it as a search for the word `fldigi` anywhere under
+   `src/`, which is broader than its own summary and broader than §R5: the rule is *read,
+   never ported wholesale*, and **a citation naming where a published table came from is
+   what that rule requires**. Task 2 did exactly as instructed and this test failed it.
+   Narrowed to a path into the clone, **and proved to still catch one**: a probe comment
+   holding the real path made it fail, and removing the probe made it pass.
+
+### Two mismatches with the instruction, reported and not repaired
+
+1. **The instruction's `reference_cer` is `null` for the noise-only fixture**, not a
+   number, so a reader that assumes a double throws. Handled as *not stated* rather than
+   invented.
+2. **`assets/reference-modem.py` has no entry point** - it is the functions only - so
+   task 5 imports it rather than running it. Nothing in the instruction says otherwise;
+   noting it because "using the convention in the README" reads as though the file could
+   be run.
 
 ### Tests, all filtered by exact name, foregrounded, 480 s timeout
 
@@ -160,17 +178,14 @@ polled** (HM-DEC-155).
 
 | Test type | Result |
 | --- | --- |
-| `ThePopupZoomIsCappedTests` (new, task 2) | **6 of 6**, watched failing first |
-| `ThePanelScrollsTests` (new, task 3) | **5 of 5**, watched failing first at five of five |
-| `Unit313TraceTests`, `Unit313PanelTraceTests` (new, task 1) | 3 of 3, 1 of 1 |
-| `TheMapOpensTests` | 9 of 9, before and after |
-| `ThePanelHoldsThemAllTests`, `TheCqReceiptTests` | 6 of 6, 6 of 6 |
-| `TheMapRowFitsTests`, `TheGlobeOnTheCardFaceTests` | 5 of 5, 4 of 4 |
-| `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` | 1 of 1, re-run after every markup change |
-| `ThePressingOfCqTests`, `TheGlobeLineTests`, `TheCqListNudgeTests` | 5 of 5, 3 of 3, 9 of 9 |
-| `TheNudgeHoverTests`, `TheConnectionLineReadsTests`, `ThePsk31SeamTests` | 6 of 6, 5 of 5, 7 of 7 |
-| `VoiceTests` | 3 of 3 |
-| `TheFlatWorldAssetTests`, `TheGreatCirclePathTests`, `ThePsk31ReferenceIsPinnedTests` (engine) | 5 of 5, 7 of 7, 2 of 2 |
+| `ThePsk31TabIsInertTests` (new, task 1) | **5 of 5**, watched failing first |
+| `TheVaricodeTests` (new, engine, task 2) | **5 of 5**, watched failing first |
+| `ThePsk31DemodulatorTests` (new, engine, tasks 3 and 5) | **9 of 9**, watched failing first |
+| `ThePsk31PanelHearsTests` (new, task 4) | **4 of 4**, watched failing first |
+| The carry-forward list, 24 types, before anything changed | **146 of 146** |
+| Everything above plus the list, after | **170 green, nothing red** |
+| `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` | 1 of 1, re-run after each change |
+| `VoiceTests` | 3 of 3, run because this unit adds copy |
 
 **Nothing new is red.** The inherited reds in section 10 were not run and were not chased.
 
@@ -178,163 +193,141 @@ polled** (HM-DEC-155).
 
 **The build is clean** - zero warnings, zero errors, `TreatWarningsAsErrors` on.
 
-**Open a map and it will be half as close as it was.** Where it used to fill the popup
-from a crop 181 px across, it now uses 360, which is about half the map's width. Short
-contacts no longer fill the frame at all, and that is correct: two stations a couple of
-hundred miles apart really are close together.
+**Press PSK31 and the radio goes to the cited watering hole, and then Hamlet listens.**
+Text appears in the decoded panel as it arrives, letter by letter, the way a typed
+conversation actually arrives. On the fixtures it reads a full four-line QSO with no
+errors at all.
 
-**The For You panel scrolls.** Every card is reachable, including the last, and nothing is
-cut off sideways. With one conversation on screen you will still see a scroll bar, because
-a card with its map on it is taller than the room the panel has.
+**What you must not expect, and this matters:**
 
-**What will look wrong and is not.** A card you are reading slides down when a new station
-answers, because new ones go on top. The scroll itself stays where you left it; what moves
-is the content under it. That is ask 10 and it is yours to rule on.
+- **One signal at one spot.** Hamlet listens 1,000 Hz above the dial and nowhere else.
+  There will be other stations across the passband and it is not looking at them. The
+  panel line says so in words, because otherwise an empty list reads as an empty band.
+- **No clicking.** No row can be answered, no card appears, and there is nothing to
+  right-click.
+- **No sending.** The CQ button under PSK31 refuses and says why. **This is the fix for
+  what happened to you**: the tab was composing FT8 and putting it on 14.070, which is
+  why nobody came back. Answering in PSK31 is the *say it* step.
+- **Nothing is understood.** The text is text. No callsign is read out of it and no state
+  is inferred; that is the *read the conversation* step.
 
-**Nothing was restyled.** The line, the markers, the map row, the card and the dismiss X
-are exactly as they were.
+**And the CQ receipt no longer offers a Log**, as you ruled.
 
-**Pushed to `main`**, five commits, nothing uncommitted:
-`1590cc6`, `6558fad`, `03a527c` and this report.
+### One thing I need from you, and it is the only thing that can move this further
+
+**A few minutes of real off-air audio on 14.070.** Everything above is measured against
+fixtures the author generated on a machine with no radio, so it proves the arithmetic and
+proves nothing about the air. Real PSK31 has drifting carriers, fading, several stations
+in the passband at once, and noise that is not Gaussian.
+
+**What to do:** tune to 14.070 in USB-D when the band is open, and record the receive
+audio for **two or three minutes** - any recorder that takes the USB codec's input, at any
+sample rate, saved as WAV. Somewhere with a few signals on it is far more useful than a
+clean one. Drop it in `assets/fixtures/captured/` and say roughly what you could see on
+the waterfall. **That one file turns every number in this report from an indication into
+something worth arguing with.**
+
+**Pushed to `main`**, seven commits, nothing uncommitted.
 
 ## 3. What you should see
 
-**Two of these I confirmed by looking at real pixels. The rest is computed. Here is
-which.**
-
-**The popup's crop - confirmed by looking.** I cropped `assets/world-flat-relief.png` to
-the rectangle the new code computes and looked at the result. This is the source bitmap
-seen through the computed window, **not the rendered control**, so it confirms what is in
-the crop and not how Avalonia paints it.
+**The panel line, word for word**, with PSK31 pressed and the dial where it is:
 
 ```
-before   x 169 to 350, y 71 to 166      181 x 95 source px at 4x
-after    x  79 to 439, y  18 to 218     360 x 200 source px at 2x
+listening for PSK31 at one spot, 1000 hertz above the dial, which puts it at
+14.071000 MHz just now. Anything further along the band is out there and Hamlet
+is not looking at it yet, so a quiet list here does not mean a quiet band.
 ```
 
-**What is in the capped crop**: the whole of North America from the Gulf up to Baffin
-Island, Greenland entire, the North Atlantic with the path arcing across it, Britain and
-Ireland, Europe to about the Baltic, and north-west Africa down to the Sahara. The relief
-reads as terrain - mountains and coast - rather than as blocks. The old crop held the same
-arc across an ocean with only the edges of two continents in the corners, and visibly
-softer.
-
-**The panel with six cards - confirmed by standing the window up headless**, which lays
-out and does not paint. At a 1400 by 900 window:
+**The send refusal, word for word**, if you press CQ there:
 
 ```
-the panel        331 x 264
-the card region  301 wide, 224 of viewport
-the content      301 x 1748          <- was 1748 in a 264 panel with no way down
-
-  VK2ABC   top    0   height 283
-  JA1ABC   top  283   height 293
-  G0ABC    top  576   height 293
-  VE3XN    top  869   height 293
-  W1ABC    top 1162   height 293
-  K9XP     top 1455   height 293
-
-scrolled to the bottom: offset 1524, showing to 1748 of 1748
+Hamlet cannot send PSK31 yet, so nothing went out. It can hear this mode before
+it can answer in it, and sending anything else here would put the wrong kind of
+signal on a frequency people are using for PSK31.
 ```
 
-**So the last card is reachable**, and the content is exactly as wide as the viewport, so
-no card is cut off. **What I cannot tell you** is whether the scroll bar is visible, what
-it looks like, or whether 2x reads as sharp on your monitor. Those want eyes on a screen.
+**What the decoded panel reads from the clean fixture** - one row, growing:
+
+```
+CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K
+KC3QIS de W1AW W1AW K
+W1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K
+KC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK
+```
+
+255 characters of 255, no errors, and **nothing at all from the noise-only fixture.**
+
+**The CQ receipt, with the Log gone:**
+
+```
+CQ
+Calling
+02:03:45 UTC · just now
+
+Your call went out to anyone listening.
+
+Sent CQ KC3QIS FN00 · At 02:03:45 UTC
+```
+
+No button, no link, no hover. Dismiss is still there.
+
+**What I cannot tell you.** Whether any of it looks right on your screen, and anything at
+all about how it behaves on a real signal. Both want a radio.
 
 ## 4. What's blocking us
 
-Nothing blocks step 1 of the PSK31 phase. Five items want your ruling.
+Nothing blocks the *hear everyone* step. Five items want your ruling or your radio.
 
-1. **The cap is the author's number and not yours. Reproduced in full so one word changes
-   it:**
+1. **Real off-air audio on 14.070, two or three minutes.** Section 2 says how. **This is
+   the one item that changes what the next step can honestly claim**, and only you can
+   do it.
 
-   > **Author's proposal, not Tim's ruling.** Tim ruled *"cap zoom"* and did not name a
-   > number. Measured against this bitmap, a popup about 722 px wide gives:
-   >
-   > | cap | crop from the source | how much of the map width |
-   > | --- | --- | --- |
-   > | 1.5x | 481 x 257 px | 69% |
-   > | 2.0x | 361 x 192 px | 52% |
-   > | 2.5x | 289 x 154 px | 41% |
-   >
-   > **2.0x is proposed.** It still halves the world rather than showing all of it, so the
-   > popup is meaningfully closer than the card; and two-to-one on a smooth enlargement is
-   > about the limit at which a relief bitmap still reads as terrain rather than as blocks.
-   > 1.5x is safer and barely zoomed; 2.5x is visibly soft again. Overruling this means
-   > changing one number.
+2. **The squelch number is the author's, 0.90.** Chosen from the arithmetic - 0.637 for
+   noise, 1.0 for clean keying - and confirmed against the fixtures rather than tuned
+   until they passed. On real audio it may prove tight or slack, and that is what the
+   recording would settle. It is `Psk31Demodulator.SquelchQuality`, in one place.
 
-   It is `Ft8GlobePlot.ZoomCap`, in one place.
+3. **The listening spot is 1,000 Hz above the dial, and that is a starting place rather
+   than a measurement.** PSK31 activity spreads a few kilohertz above the calling
+   frequency; one channel at one offset is what step 1 built. `Psk31Listening.OffsetHz`.
 
-2. **Card ordering under scroll** (inbound ask 10, raised and deliberately not ruled). New
-   stations go to the top of the For You panel, so the card you are reading slides down
-   when one answers. The scroll no longer jumps, but the content moves under it.
-   **Holding a card still needs the panel to stop rebuilding every card every slot**,
-   which is a change to how cards are made rather than to how they are shown.
+4. **`CanDecode` and `CanTransmitIn` are two predicates that agree today.** They are
+   written separately because hearing a mode comes before answering in it. When the *say
+   it* step gives PSK31 a modulator, only the second one moves.
 
-3. **The cards are rebuilt from scratch on every slot, and one thing already depends on
-   them not being.** `DigitalCards.Clear()` then new `Ft8ContactCard` objects means every
-   piece of per-card state is lost each rebuild - including `MapIsOpen`, unit 310's open
-   popup. **Not measured on a running app and not fixed here**; named because it is the
-   same root as item 2.
-
-4. **A larger source bitmap would let the popup do what it was asked to do** (inbound ask
-   14, yours to take or leave). 698 by 381 is 1.86 pixels per degree. If a larger version
-   of the same artwork has an identical crop, the four projection constants multiply by
-   the width ratio with no refit. The cap is what you ruled and the cap is what is built;
-   this is the option that would make the cap unnecessary.
-
-5. **One conversation card is taller than the panel.** 293 px of card in 220 px of room at
-   a 1400 by 900 window, so a scroll bar shows with a single contact. Nothing is broken by
-   it. If you would rather the card were shorter, the map row is the part that could give.
+5. **The card-rebuild root is still open** (ask 10). It is not this unit's, and it now has
+   a second consequence worth knowing: the PSK31 text row is replaced in place rather than
+   the list rebuilt, for exactly the reason unit 313 measured on the card panel.
 
 ### Asks still outstanding
 
 Carried per HM-DEC-139, verbatim where unresolved.
 
 1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
-   still Tim's: `Played` stays a statement about what the audio path did; a second,
-   separate fact says what the radio did, read from `1C 00` and `15 11`, which Hamlet
-   already polls four times a second; **unknown** where the radio does not answer. Touches
-   what the display asserts, so Tim's without exception (§12.1).
-2. **Nothing in this repository can look at a picture.** Eleven units have reported every
-   appearance claim as computed rather than seen. **Both faults in this unit are
-   appearance faults that no test in the tree could have caught** - a container that clips
-   instead of scrolling, and a bitmap magnified until it is mush. Real pixels want
-   `Avalonia.Headless.Skia`, and **a package is Tim's, not a session's** (§0.4).
-3. **Three inherited reds, never chased.** Two in `TheAchievementsScreenTests` -
-   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` - and
-   one in `TheFitGuardAsksAboutTheGridTheSendIsOnTests`, **in the engine test project**.
-4. **Where the explanatory hover wording lives, if anywhere.** `Ft8ContactCard.Closing`
-   is uncalled and left standing.
-5. **`Ft8GlobePlot`'s unused framing constants** - `MapWidth`, `MapHeight`, `Margin`,
-   `SmallestFrame`. Report; leave standing.
-6. **The licence of `assets/world-flat-relief.png` is unknown.** In the tree by Tim's
-   ruling, no watermark, no recorded origin, and Hamlet is GPL-3.0. See
-   `assets/PROVENANCE.md`. **Raise; do not resolve; write no licence claim anywhere.**
-7. **`PHASE_OUTCOME.md` has a hole** - no `UNIT 306`, no `UNIT 307`, and possibly no 309
-   or 310. **Append this unit; report the hole; do not back-fill.** Appended. The hole is
-   confirmed: this file is the PSK31 phase's and starts at unit 312, and the FT4 phase's
-   record, which held 309 and 310 and was missing 306 and 307, is in git history.
-8. **The door sentence is a placeholder.** `new area · would open something you have not
-   seen yet`. Wording is the product (§3.5) and Tim has given no ruling. Carry it.
-9. **Acknowledgement indicators.** Tim named these as one of four things wrong with the
-   screen and the author has not established which of two things he meant. **Not in this
-   unit. Build nothing for it and do not guess at it.** Carried; nothing was built.
-10. **Card ordering under scroll.** Tim's when he wants it: with conversation cards
-    unlimited and a vertical scroll, a card he is mid-exchange with can scroll out of
-    view, and arriving cards can move what is under his pointer. **Raised as item 2 above,
-    now with a measurement behind it.**
-11. **The outline width on the neighbourhood map is 2 px, a number unit 312 chose.** Tim
-    is the only one who can see whether it reads. Carry.
-12. **Version numbering for the phase.** Unit 312 landed on 1.13.0; a strict reading of
-    HM-DEC-150 would have made it 1.13.1. **This unit takes a patch bump from whatever the
-    tree says** and carries the question. Taken: 1.13.0 → 1.13.1.
-13. **`PHASE_PLAN.md` §R6 says 14.0700-14.0725; the cited band row says 14.070-14.074. The
-    row wins.** The author concedes it; §R6 is prose to correct when the plan is next
-    touched. Carry.
-14. **The source bitmap is small for anything larger than the card.** 698 x 381 for the
-    whole world is **1.86 pixels per degree**. Tim has ruled the zoom capped rather than
-    the image replaced, which settles this unit - but **a larger version of the same
-    artwork would let the popup do what it was asked to do**, and if the crop is identical
-    the four projection constants simply multiply by the width ratio with no refit.
-    **Raise it as Tim's to take or leave.** Raised as item 4 above.
+   still Tim's. PSK31 sharpens it: a continuous carrier that did not key is a long
+   silence, not a missed slot.
+2. **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
+   Tim's to add (§0.4).
+3. **Three inherited reds, never chased.** Two in `TheAchievementsScreenTests`, one in
+   `TheFitGuardAsksAboutTheGridTheSendIsOnTests` (engine).
+4. **Where the explanatory hover wording lives.** `Ft8ContactCard.Closing` is uncalled.
+5. **`Ft8GlobePlot`'s unused framing constants.** Report; leave standing.
+6. **The licence of `assets/world-flat-relief.png` is unknown.** Raise; do not resolve.
+7. **`PHASE_OUTCOME.md`** - this phase's record starts at unit 312; 306, 307, 309 and 310
+   are in the FT4 phase's file in git history. Not to be back-filled.
+8. **The door sentence is a placeholder.** Carry.
+9. **Acknowledgement indicators.** Named by Tim, not yet defined. The *say it* unit builds
+   a turn indicator that may be what he meant. Do not assume it is.
+10. **Card ordering under scroll.** Raised three times, unruled. **Unit 313 found the
+    root**: `DigitalCards.Clear()` then new `Ft8ContactCard` objects every slot, so all
+    per-card state is lost four times a minute, including `MapIsOpen`. Not fixed. Not this
+    unit's. Carry.
+11. **The outline width on the neighbourhood map is 2 px**, a number unit 312 chose.
+12. **Version numbering** - 1.13.0 versus a strict HM-DEC-150 reading. Patch bump here:
+    1.13.1 → 1.13.2.
+13. **`PHASE_PLAN.md` §R6 says 14.0700-14.0725; the cited row says 14.070-14.074. The row
+    wins.** Prose to correct when the plan is next touched.
+14. **A larger source bitmap** would make the popup's zoom cap unnecessary. Tim's.
+15. **One conversation card is taller than the panel** (293 px in 220 px). Not broken.
+16. **The popup zoom cap of 2.0x is the author's number.** `Ft8GlobePlot.ZoomCap`.

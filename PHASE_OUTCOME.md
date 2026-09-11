@@ -2,7 +2,7 @@ PHASE: Hamlet works PSK31 the way it works FT8
 PHASE_SET: 2026-09-11
 DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
 STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
-STEP: 1 | partial | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
+STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
 STEP: 2 | not started | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
 STEP: 3 | not started | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
 STEP: 4 | not started | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
@@ -69,3 +69,20 @@ ACCOMPLISHED: The PSK31 tab can no longer decode as another mode or transmit as 
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: STEP 1 IS CARRIED AT partial. Task 1 is a step-0 defect repaired in passing and is not an advance; the demodulator that would close step 1 is tasks 2 to 4. NOTHING WAS MEASURED AT A RADIO.
+
+### ALSO RECORDED FOR UNIT 314 - STEP 1
+
+A second append for the same unit and the same step, called as UNIT 314.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: Built the decoder against the shipped fixtures after disconnecting the machinery that was pretending to be one.
+HIT: IT READS EVERY QSO FIXTURE AT CER 0.0000, WHICH IS WHAT THE OFFLINE REFERENCE SCORED. Clean, +10 dB, +3 dB, -3 dB, a carrier drifting 20 Hz in a minute, and a second station 500 Hz away: 255 of 255 characters each, none of the other station text, every one in 0.02 seconds. The noise-only fixture emits nothing where the unsquelched reference emitted 112 garbage characters. ONE REAL BUG, FOUND BY MEASURING RATHER THAN REASONING: the timing profile decayed faster than a single bit, so the clock chased whichever symbol had just gone past. It cost CER 0.1976 at +10 dB where clean was 0.0237. The cadence is fixed and nudged one sample at a time now.
+MOVE: One channel, one offset, fed from the same audio tap the FT8 decoder uses, with characters on the panel as they complete.
+WHY: PSK31 has no slots, so there is nothing to wait for the end of, and a panel that filled only when the audio ran out would show nothing at all on a live band.
+DECIDED: The squelch measures shape rather than loudness, because loudness cannot tell a station from a burst of noise at the same level. Its number is 0.90 on a scale whose two ends are 0.637 for uniform noise phase and 1.0 for clean keying.
+LICENCE: Work instruction 314 tasks 1 to 5, PHASE_PLAN.md sections 1, 3, R1, R3 and R5, and Tim rulings of 2026-09-11.
+COST: one session, no test suite run, 24 named types at 146 of 146 green before anything changed and 170 green after
+ACCOMPLISHED: Pressing PSK31 tunes to the cited watering hole, listens at one spot and shows text as it arrives, and can neither decode as another mode nor transmit as one.
+STATE_AFTER: done
+STATE_WHY: STEP 1 IS done. Every must-pass is met: a recorded fixture decodes to its known text with the error rate stated, the varicode table is cited, the reference commit is recorded with the clone outside the tree, the squelch rule is stated and the noise-only fixture produces nothing. The nice-to-pass is met too - the drifting carrier holds lock. NOTHING WAS MEASURED AT A RADIO and every fixture is synthetic, so all of it is an indication rather than a finding.
