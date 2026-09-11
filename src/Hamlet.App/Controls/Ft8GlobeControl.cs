@@ -70,6 +70,134 @@ public sealed class Ft8GlobeControl : Control
     private static readonly IBrush Mine = new SolidColorBrush(Color.Parse("#C8842A"));
     private static readonly IBrush Theirs = new SolidColorBrush(Color.Parse("#2F7D4F"));
 
+    /// <summary>What every stroke on the picture is cased with.</summary>
+    /// <remarks>
+    /// <para>**THE FAULT WAS CONTRAST, NOT SIZE** (work instruction 309 task 1,
+    /// measured). The path and both markers were drawn the whole time; what was
+    /// wrong is that a muted grey dash vanishes over dark blue ocean and an amber
+    /// ring vanishes over bright orange land. **One colour reads over one ground or
+    /// the other and not both**, which is what a shipped photograph puts underneath.
+    /// </para>
+    /// <para>**SO EVERY STROKE IS DRAWN TWICE**: this underneath, wider, and the
+    /// ink over it. The pair reads over land and over sea, and **neither of the two
+    /// markers depends on hue to be told apart** - one is a ring and one is filled
+    /// (§0.6).</para>
+    /// <para>**IT IS PAPER, WHICH THE APPLICATION ALREADY USES.** `#DDE6EC` is this
+    /// control own ground colour; no new colour is introduced (§0.5).</para>
+    /// </remarks>
+    private static readonly IBrush Casing = new SolidColorBrush(Color.Parse("#DDE6EC"));
+
+    /// <summary>How wide the path is drawn, in the control own units.</summary>
+    /// <remarks>
+    /// **IN CONTROL UNITS AND NEVER IN BITMAP ONES.** Placement scales with the
+    /// picture; size does not. The card draws this map at about a third of the
+    /// bitmap, and anything sized in bitmap coordinates would arrive at a third of
+    /// its stated width. **Nothing here reads the card own size**, so the same card
+    /// at half the width still shows the line.
+    /// </remarks>
+    public const double PathStrokeWidth = 2.0;
+
+    /// <summary>How wide the casing under the path is.</summary>
+    public const double PathCasingWidth = 4.0;
+
+    /// <summary>How big a station marker is drawn, in the control own units.</summary>
+    public const double MarkerRadius = 4.5;
+
+    /// <summary>How wide a marker own outline is.</summary>
+    public const double MarkerStrokeWidth = 2.0;
+
+    /// <summary>The dashes the path is drawn with, in stroke widths.</summary>
+    /// <remarks>
+    /// **THE PATTERN IS IN CONTROL SPACE TOO**, for the same reason the width is: a
+    /// dash measured in bitmap pixels collapses into a solid line at this scale and
+    /// stops reading as a path rather than a border.
+    /// </remarks>
+    private static readonly double[] Dashes = { 3, 2 };
+
+    /// <summary>What a render would put on the surface, without a surface.</summary>
+    /// <param name="Plot">What is being drawn.</param>
+    /// <param name="PathRuns">How many runs of the path reach the surface.</param>
+    /// <param name="PathSegments">How many line segments those runs hold.</param>
+    /// <param name="PathStrokes">How many strokes are drawn, casing included.</param>
+    /// <param name="HasOperatorMarker">Whether the operator marker is drawn.</param>
+    /// <param name="HasStationMarker">Whether the station marker is drawn.</param>
+    /// <param name="OperatorAt">Where the operator marker lands on the control.</param>
+    /// <param name="StationAt">Where the station marker lands on the control.</param>
+    /// <param name="StrokeWidth">The path width that reaches the screen.</param>
+    /// <param name="CasingWidth">The casing width that reaches the screen.</param>
+    /// <param name="MarkerRadius">The marker radius that reaches the screen.</param>
+    /// <remarks>
+    /// **NOTHING IN THIS REPOSITORY CAN LOOK AT A PICTURE**, and two faults reached
+    /// the operator screen through exactly that gap. This is the nearest thing
+    /// available: **what the render decides, separated from the drawing of it**, so a
+    /// test can assert the decisions rather than assert that a control exists and
+    /// hope. **It still says nothing about whether the result is legible.**
+    /// </remarks>
+    public sealed record Drawn(
+        Ft8GlobePlot? Plot,
+        int PathRuns,
+        int PathSegments,
+        int PathStrokes,
+        bool HasOperatorMarker,
+        bool HasStationMarker,
+        Point OperatorAt,
+        Point StationAt,
+        double StrokeWidth,
+        double CasingWidth,
+        double MarkerRadius);
+
+    /// <summary>What a render at this size would draw.</summary>
+    /// <param name="plot">What is being drawn.</param>
+    /// <param name="width">The control own width.</param>
+    /// <param name="height">The control own height.</param>
+    /// <returns>The decisions a render would make.</returns>
+    public static Drawn WhatWouldBeDrawn(
+        Ft8GlobePlot? plot, double width, double height)
+    {
+        if (plot is null || width <= 0 || height <= 0)
+        {
+            return new Drawn(
+                plot, 0, 0, 0, false, false, default, default,
+                PathStrokeWidth, PathCasingWidth, MarkerRadius);
+        }
+
+        var (left, top, mapWidth, mapHeight) = plot.Frame;
+        var scale = Math.Min(width / mapWidth, height / mapHeight);
+
+        Point At(double x, double y)
+            => new((x - left) * scale, (y - top) * scale);
+
+        var runs = 0;
+        var segments = 0;
+
+        foreach (var run in plot.Path)
+        {
+            if (run.Count < 2)
+            {
+                continue;
+            }
+
+            runs++;
+            segments += run.Count - 1;
+        }
+
+        return new Drawn(
+            plot,
+            runs,
+            segments,
+
+            // **CASED MEANS DRAWN TWICE**, which is what makes it read over both
+            // grounds rather than one.
+            segments * 2,
+            plot.HasOperator,
+            plot.HasStation,
+            plot.HasOperator ? At(plot.OperatorX, plot.OperatorY) : default,
+            plot.HasStation ? At(plot.StationX, plot.StationY) : default,
+            PathStrokeWidth,
+            PathCasingWidth,
+            MarkerRadius);
+    }
+
     static Ft8GlobeControl() => AffectsRender<Ft8GlobeControl>(PlotProperty);
 
     /// <summary>How near the pointer has to be to a marker, in map pixels.</summary>
@@ -210,16 +338,26 @@ public sealed class Ft8GlobeControl : Control
         // (work instruction 308 task 3). Each run is one side of the date line; two
         // runs are never joined, because joining them would draw a horizontal stripe
         // across the picture describing a route nobody took.
-        var pen = new Pen(Ink, 1.4, new DashStyle(new double[] { 3, 2 }, 0));
+        // **AND IT IS CASED** (work instruction 309 task 2). The casing goes down
+        // first, whole, so the ink over it is unbroken by the joins - drawing the
+        // two together segment by segment leaves a pale notch at every vertex, and
+        // there are up to a hundred and eighty of them.
+        var casing = new Pen(Casing, PathCasingWidth, lineCap: PenLineCap.Round);
 
-        foreach (var run in plot.Path)
+        var ink = new Pen(
+            Ink, PathStrokeWidth, new DashStyle(Dashes, 0), PenLineCap.Round);
+
+        foreach (var pen in new[] { casing, ink })
         {
-            for (var i = 1; i < run.Count; i++)
+            foreach (var run in plot.Path)
             {
-                context.DrawLine(
-                    pen,
-                    At(run[i - 1].X, run[i - 1].Y),
-                    At(run[i].X, run[i].Y));
+                for (var i = 1; i < run.Count; i++)
+                {
+                    context.DrawLine(
+                        pen,
+                        At(run[i - 1].X, run[i - 1].Y),
+                        At(run[i].X, run[i].Y));
+                }
             }
         }
 
@@ -276,7 +414,25 @@ public sealed class Ft8GlobeControl : Control
     {
         var filled = ReferenceEquals(ink, Theirs);
 
+        // **CASED, FOR THE REASON THE PATH IS** (work instruction 309 task 2). The
+        // operator marker is an amber ring and eastern North America is bright
+        // orange on this photograph, so it was drawn and invisible. A pale ring just
+        // outside it separates the marker from whatever it lands on.
         context.DrawEllipse(
-            filled ? ink : null, new Pen(ink, 2), at, 4, 4);
+            null,
+            new Pen(Casing, MarkerStrokeWidth + 2.0),
+            at,
+            MarkerRadius,
+            MarkerRadius);
+
+        // **ONE IS A RING AND ONE IS FILLED, WHICH IS THE NON-COLOUR CARRIER**
+        // (§0.6). A reader who cannot tell amber from green still knows which is
+        // which, and so does a greyscale print.
+        context.DrawEllipse(
+            filled ? ink : null,
+            new Pen(ink, MarkerStrokeWidth),
+            at,
+            MarkerRadius,
+            MarkerRadius);
     }
 }

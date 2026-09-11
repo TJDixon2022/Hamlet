@@ -91,20 +91,29 @@ public sealed class Ft8GlobePlot
         var mine = here is { } a ? Map.Place(a.Latitude, a.Longitude) : null;
         var his = there is { } b ? Map.Place(b.Latitude, b.Longitude) : null;
 
+
+        HasOperator = mine is not null;
+        HasStation = his is not null;
+
         // **THE PATH IS SAMPLED, NOT DRAWN STRAIGHT** (work instruction 308 task 3).
         // A flat map only lies about direction if a straight line is drawn on it;
         // one hundred and eighty segments of the great circle, each projected, is
         // the true path on any projection. From FN00DJ to Tokyo that goes over
         // northern Alaska and the straight line goes across Spain.
-        Path = here is { } pathFrom && there is { } pathTo
+        // **BOTH ENDS PLACED, NOT MERELY RESOLVED** (work instruction 309 task 2,
+        // found by its own test). A station in Antarctica resolves perfectly well and
+        // has nowhere on this picture, and the path was being built from his
+        // coordinates anyway - so a line ran from the operator toward the bottom
+        // edge and stopped where the samples fell off the file, pointing at a marker
+        // that is deliberately not drawn. **A line to a place the picture says it
+        // cannot show is the same claim as a dot there** (§0.0).
+        Path = HasOperator && HasStation
+            && here is { } pathFrom && there is { } pathTo
             ? GreatCirclePath.On(
                 Map,
                 pathFrom.Latitude, pathFrom.Longitude,
                 pathTo.Latitude, pathTo.Longitude)
             : Array.Empty<IReadOnlyList<(double X, double Y)>>();
-
-        HasOperator = mine is not null;
-        HasStation = his is not null;
 
         // **A GRID THAT RESOLVED AND A PLACE ON THIS MAP ARE DIFFERENT FACTS**, and
         // the caption needs both: a station south of the equator did put a grid on
