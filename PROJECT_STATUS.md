@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 318 - say it, the engine half: the modulator, the send with no
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T13:46:25-04:00
-NOTE: Task 1 in - entry green, 11 engine and 13 app chain reds named before any change; now writing the modulator test to watch it fail on a stub.
+UPDATED: 2026-09-11T13:56:47-04:00
+NOTE: Modulator green - 4 of 4 macros read back identical, 57.1 Hz at -30 dB; idle set to 32 before and 16 after from the measured 23 and 0, rerunning to confirm.
 
 ---
 
