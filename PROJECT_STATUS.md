@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 322 - the PSK31 path becomes visible in the record
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 323 - say it: PSK31 goes out
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T17:01:09-04:00
-NOTE: Unit 322 complete at task 5 of 5, none dropped. Report written and validated.
+UPDATED: 2026-09-11T17:43:00-04:00
+NOTE: Gate checked and passed; reading the tree for CanTransmitIn, the bolt and the card test before the carry-forward baseline run.
 
 ---
 

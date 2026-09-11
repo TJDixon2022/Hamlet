@@ -618,8 +618,14 @@
     same 13 reds. The chain-guarding list is written into docs/chain-guarding-tests.txt. No
     production code moves in this task.
   -->
+  <!--
+    1.13.8 -> 1.13.9, UNIT 323 TASK 1, UNDER HM-DEC-150. A PATCH, AND ONLY THE TRACE. Step 4's
+    press half, on the two rulings that unblocked it - the carry-forward list run filtered and
+    foregrounded before anything changed, app 145 of 145 and engine 120 of 120, 265 of 265 green,
+    no red. No production code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.8</Version>
+    <Version>1.13.9</Version>
   </PropertyGroup>
 
   <!--

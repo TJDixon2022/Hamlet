@@ -197,3 +197,18 @@ ACCOMPLISHED: The path is mapped and the one event that used to fire is explaine
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: STEP 4 IS CARRIED AT blocked and this unit does not touch it. It is carried repair on the owner ruling that telemetry is the prime focus. NOTHING WAS MEASURED AT A RADIO.
+
+## UNIT 323 - STEP 4
+
+STEP: 4
+APPROACH: Checked the four gate facts, read PHASE_PLAN.md R11 to R14 against the tree, and ran the carry-forward list filtered and foregrounded before changing a line.
+HIT: STEP 4 IS BLOCKED BY TWO THINGS THIS TREE ALREADY HOLDS THE ANSWER TO. CanTransmitIn answers true for null, FT8 and FT4 and for nothing else, and a test pins its source text character for character - so the door is shut and a test says it must stay shut. Everything behind the door was built and proved by units 318 to 322: the modulator, the four macros, the unslotted send with its 30 s cap, the certainty gate, the turn indicator, the conversation card, and six transmit events with no production call site.
+MOVE: Open the door on R11, rewrite the guard on R12 so it guards the click rule instead of the shut door, and give the six events their call sites.
+WHY: The owner has said what the measure of the unit is - he wants to see PSK31 transmitting - and nothing but the guard and the predicate stands between the press and the air.
+DECIDED: Nothing yet. Task 1 changes no production file except the version.
+LICENCE: Work instruction 323 tasks 1 to 5 under PHASE_PLAN.md R1, R2, R6, R8, R10, R11, R12, R13 and R14, CLAUDE.md 0.2, HM-DEC-084 and HM-DEC-155.
+COST: one session, no test suite run, the carry-forward list of 44 named types at 265 of 265 green before anything changed - app 145 and engine 120
+ACCOMPLISHED: The starting position is measured rather than assumed, and the two rulings that unblock step 4 are confirmed present in the plan.
+FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: STEP 4 IS CARRIED AT blocked UNTIL THE DOOR IS OPEN. Task 1 only measured; the tasks that advance it are 1b onward.
