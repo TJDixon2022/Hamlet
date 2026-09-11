@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-161
+date: 2026-09-11
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-160, docs/phase-ft4-run/, work instruction 315 task 1
+---
+
+**The phase is "Hamlet works PSK31 the way it works FT8", set 2026-09-11, seven
+steps numbered 0 to 6.** Tim, 2026-09-11: *"let's finish implementing PSK31"*.
+**It supersedes HM-DEC-160's phase, "FT4 works exactly the way FT8 does"**, which
+closed at his word the same day: *"FT8 and FT4 seem pretty solid"*.
+
+`PROJECT_CARD.md` changes only by ruling (13.3), and this is the ruling that
+changes it. `PHASE` and `PHASE_SET` move; nothing else on the card does.
+
+**Recorded by work instruction 315, the seed unit of the phase, under 12.1 as a
+ruling the owner gave, not one a session made.** The reasoning is his and is not
+restated here beyond his words. `PHASE_PLAN.md` carries the plan written from his
+instruction *"I want it to work. Figure it out."*, and its §R rulings are the
+author's, each overrulable with one word, and none of them is this entry.
+
+**What was rejected is not recorded**, because he gave no alternative to rule
+against. The FT4 phase's plan, status and outcome are kept in
+`docs/phase-ft4-run/`, recovered from git history because the phase was installed
+without `install-phase.bat` moving them aside.
+
+---
 id: HM-DEC-160
 date: 2026-09-08
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, CLAUDE.md 13.3

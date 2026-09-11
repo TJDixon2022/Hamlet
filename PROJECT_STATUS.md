@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 314 - hear one: the PSK31 tab stops pretending, then reads a signal
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T09:42:33-04:00
-NOTE: Unit 314 complete, none dropped. Step 1 done - PSK31 reads every fixture at CER 0.0000.
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 315 - hear everyone
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-161 (2026-09-11)
+UPDATED: 2026-09-11T11:27:32-04:00
+NOTE: Task 1 done: card moved, HM-DEC-161, FT4 plan and status recovered; outcome file refused by the shell. Committing.
 
 ---
 

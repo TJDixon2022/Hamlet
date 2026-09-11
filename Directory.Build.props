@@ -583,8 +583,14 @@
     line is set and nothing else. The validator exits 0, VALID, all seven rules, after failing rule 6
     once on an ordering block that carried no READ IN THIS ORDER line and spelled its count in words.
   -->
+  <!--
+    1.13.2 -> 1.13.3, UNIT 315 TASK 1, UNDER HM-DEC-150. A PATCH, AND THE PHASE OPENS PROPERLY.
+    The seed unit of the PSK31 phase: PROJECT_CARD.md's PHASE and PHASE_SET move to the PSK31
+    phase under HM-DEC-161, which records Tim's ruling of 2026-09-11, and the FT4 phase's three run
+    files are recovered from eb28430 into docs/phase-ft4-run/. No production code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.2</Version>
+    <Version>1.13.3</Version>
   </PropertyGroup>
 
   <!--
