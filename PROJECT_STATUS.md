@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 306 - the map renders, both stations are placed on it, and the i becomes bullets
+TASK: 6 of 6
+WORK_INSTRUCTION: 308 - the whole world on one map, true paths across it, and the CQ list starts nudging
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T19:03:49-04:00
-NOTE: Complete - five tasks of five, none dropped. The map renders, both stations are placed on it within 0.902 px on fourteen city dots, and the i is five bulleted rows.
+UPDATED: 2026-09-10T20:27:10-04:00
+NOTE: Complete - six tasks of six, none dropped. Coverage 40.4 to 93.7 per cent, paths are sampled great circles, the map is on the card face, and the CQ list marks at most two callers who would open something.
 
 ---
 
