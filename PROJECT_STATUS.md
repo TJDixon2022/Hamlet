@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 316 - read the conversation
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T12:15:36-04:00
-NOTE: Entry green, two rows at CER 0.0000; carry-forward app 115 of 115, engine 71 of 71; version to 1.13.4, committing before the parser.
+UPDATED: 2026-09-11T12:28:49-04:00
+NOTE: Parser green, 8 of 8: 32 of 32 lines match, 0 wrongly certain, 05-garbled 0.40 uncertain against 0.20 expected. Committing task 2.
 
 ---
 
