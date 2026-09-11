@@ -73,6 +73,7 @@ ThePsk31TransmitTelemetryTests
 ThePsk31PanelSpeaksPsk31Tests
 ThePsk31CqGoesOutTests
 ThePsk31ExchangeTests
+ThePowerIsOfferedTests
 
 -- known reds, NEVER on the list above ---------------------------------------
 

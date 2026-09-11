@@ -419,6 +419,40 @@ public static class Psk31Events
                 ["powerAgeMs"] = powerAgeMs is { } b ? Math.Round(b) : null,
             });
 
+    /// <summary>What the ALC read during a send, and whether it was past the zone.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="reading">The meter's own number, or null where it was not read.</param>
+    /// <param name="ageMs">How old that reading is, or null.</param>
+    /// <param name="pastTheZone">True where it is past where it should sit.</param>
+    /// <param name="zone">The top of the zone, so the record carries what it was compared to.</param>
+    /// <remarks>
+    /// <para>**§R11's HALF THAT IS A MEASUREMENT.** The panel gets a sentence a person with
+    /// no shack years can act on; the file gets the number, its age (HM-DEC-111) and the
+    /// figure it was judged against, so somebody reading it afterwards can check the
+    /// judgement rather than take it.</para>
+    /// <para>**A READING NOBODY TOOK IS ABSENT, NOT ZERO** (§0.0). With no radio, or with no
+    /// documented read for this field, `reading` is null and `pastTheZone` is false - which
+    /// says *not measured*, not *it was fine*.</para>
+    /// </remarks>
+    public static void AlcRead(
+        ITelemetry? telemetry,
+        double? reading,
+        double? ageMs,
+        bool pastTheZone,
+        double zone)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_send_alc",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["measured"] = reading is not null,
+                ["alc"] = reading,
+                ["ageMs"] = ageMs is { } age ? Math.Round(age) : null,
+                ["pastTheZone"] = pastTheZone,
+                ["zone"] = zone,
+            },
+            pastTheZone ? TelemetryLevel.Warn : TelemetryLevel.Info);
+
     /// <summary>A number as the record spells it.</summary>
     internal static string Say(double value)
         => value.ToString("0.###", CultureInfo.InvariantCulture);

@@ -408,6 +408,11 @@ public partial class MainWindowViewModel : ObservableObject
         // and nothing else - see the remarks on `DigitalMode` for why `IsLit` may not
         // drive it.
         FollowTheChosenMode(DigitalModeFor(value));
+
+        // **THE POWER OFFER BELONGS TO THIS MODE AND TO NO OTHER** (§R11). It is offered on
+        // the PSK31 panel because PSK31 is the continuous carrier; pressing FT8 takes it off
+        // the screen, and pressing PSK31 again brings it back unless he has answered it.
+        OnPropertyChanged(nameof(HasPsk31PowerOffer));
     }
 
     /// <summary>Which mode the licence card should answer for.</summary>
@@ -13908,6 +13913,11 @@ public partial class MainWindowViewModel : ObservableObject
                     aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
             }
 
+            // **THE ALC IS READ WHILE THE SEND IS STILL THE LAST THING THAT HAPPENED**
+            // (§R11). The meter only means anything about a transmission, and this is the
+            // first moment after one where the poll's reading is about that transmission.
+            ReadTheAlc();
+
             WhatTheRadioSaidAfterASend();
         }
 
@@ -13920,6 +13930,152 @@ public partial class MainWindowViewModel : ObservableObject
         });
 
         return result;
+    }
+
+    /// <summary>**Half the radio's range, which is what §R11 offers for PSK31.**</summary>
+    /// <remarks>
+    /// **THE OPERATOR SETS NOTHING AT THE RADIO** (§R11, Tim 2026-09-11). The drive is what
+    /// FT8 already composes at and the power is offered at half - not because half is
+    /// measured to be right, but because it is the middle of the range and a starting point
+    /// somebody with no shack years can move from. **It is offered and never written
+    /// silently** (HM-DEC-084).
+    /// </remarks>
+    public const int Psk31PowerPercent = 50;
+
+    /// <summary>**Where the ALC should sit, as a fraction of the meter's range.**</summary>
+    /// <remarks>
+    /// **THIS IS THE FIGURE THE SENTENCE IS JUDGED AGAINST AND IT IS THIS UNIT'S, NOT A
+    /// MEASUREMENT** (§0.0). The IC-7300's ALC scale is marked with a zone the needle should
+    /// stay inside; `SHACK_FACTS.md` records no number for where it ends, and nothing here
+    /// read one off the radio. Half the meter's 0-255 range is a conservative reading of
+    /// *inside the zone*, it is written down where a reader can find it, and the record
+    /// carries it beside every reading so the judgement can be checked rather than taken.
+    /// **If the owner rules a figure, it replaces this one.**
+    /// </remarks>
+    public const double Psk31AlcZone = 128;
+
+    /// <summary>True while the power offer is on the panel.</summary>
+    public bool HasPsk31PowerOffer => IsPsk31Chosen && !_psk31PowerSettled;
+
+    /// <summary>What the power offer says.</summary>
+    /// <remarks>
+    /// **IT SAYS WHAT WOULD CHANGE AND WHAT WOULD NOT** (HM-DEC-084, §0.0). An offer that
+    /// says only *set power to 50%* leaves the reader working out whether anything else on
+    /// his radio is about to move.
+    /// </remarks>
+    public string Psk31PowerOffer
+        => "PSK31 sends a steady carrier, so it runs warmer than voice. Hamlet can set "
+        + "your radio's transmit power to " + Psk31PowerPercent
+        + "% for you. Nothing else on the radio changes, and nothing is set unless you "
+        + "press this.";
+
+    /// <summary>What the accept button reads.</summary>
+    public string Psk31PowerAccept => "Set my power to " + Psk31PowerPercent + "%";
+
+    /// <summary>True where the operator has answered the offer either way.</summary>
+    private bool _psk31PowerSettled;
+
+    /// <summary>**Accept the power offer: one write, at his click** (HM-DEC-084).</summary>
+    /// <returns>Nothing; the write's own outcome is announced by `OnSettingChanged`.</returns>
+    /// <remarks>
+    /// **IT WRITES ONE SETTING AND NOTHING ELSE** (§0.2). `CivWrites.RfPower` is tier
+    /// `Transmitted` - it changes what the operator sounds like and it keys nothing. With no
+    /// radio connected the write reaches <see cref="WriteSettingAsync"/> and stops there,
+    /// which is this machine's state and is reported as such.
+    /// </remarks>
+    [RelayCommand]
+    private async Task AcceptPsk31PowerAsync()
+    {
+        _psk31PowerSettled = true;
+
+        OnPropertyChanged(nameof(HasPsk31PowerOffer));
+
+        AppEvents.OperatorAction(
+            _telemetry, "psk31_power_accepted", OperatingMode,
+            Psk31PowerPercent + "%");
+
+        // **THE RADIO'S OWN SCALE, FROM THE WRITE'S OWN RANGE.** `CivWrites.RfPower` says
+        // `0000 to 0255`; the percentage is what the operator is shown and this is what the
+        // radio is told, converted in one place.
+        var value = (int)Math.Round(Psk31PowerPercent / 100.0 * 255);
+
+        await WriteSettingAsync(CivWrites.RfPower, value).ConfigureAwait(true);
+    }
+
+    /// <summary>**Decline the power offer: nothing is written.**</summary>
+    [RelayCommand]
+    private void DeclinePsk31Power()
+    {
+        _psk31PowerSettled = true;
+
+        OnPropertyChanged(nameof(HasPsk31PowerOffer));
+
+        AppEvents.OperatorAction(
+            _telemetry, "psk31_power_declined", OperatingMode, "no write");
+    }
+
+    /// <summary>What the ALC said during the last PSK31 send, in a sentence, or "".</summary>
+    /// <remarks>
+    /// <para>**A SENTENCE FOR SOMEBODY WHO HAS NEVER SEEN AN ALC METER** (§R11: *not a
+    /// meter, a sentence a person with no shack years can act on*). It says what happened
+    /// and the one thing to do about it, and it names no jargon the reader would have to go
+    /// and look up.</para>
+    /// <para>**AND IT IS EMPTY UNLESS SOMETHING WAS MEASURED** (§0.0). No reading is not the
+    /// same as a good reading, and neither of them is a sentence.</para>
+    /// </remarks>
+    public string Psk31AlcLine { get; private set; } = "";
+
+    /// <summary>True where there is an ALC sentence to show.</summary>
+    public bool HasPsk31AlcLine => Psk31AlcLine.Length > 0;
+
+    /// <summary>An ALC reading to judge, for a test with no radio.</summary>
+    /// <remarks>
+    /// **THE POLL DOES NOT READ THIS FIELD TODAY.** There is no `CivRead` for
+    /// <see cref="RigField.Alc"/> anywhere in the tree, so `RigStateMonitor` never fills it
+    /// and the sentence can only be proved from a reading handed in. **A command byte is not
+    /// invented to close that** (§0, §4): a plausible one nobody can check against the manual
+    /// is how a radio ends up being sent something its maker never described. Reported.
+    /// </remarks>
+    internal RigValue? Psk31AlcForTests { get; set; }
+
+    /// <summary>Read the ALC now, for a test that has a reading and no radio.</summary>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="RefreshTurnForTests"/>**, and the same weak seam: it
+    /// runs the method the send path runs and nothing else, so what is measured is the
+    /// shipped judgement rather than a copy of it.
+    /// </remarks>
+    internal void ReadTheAlcForTests() => ReadTheAlc();
+
+    /// <summary>Read the ALC after a send, say what it means, and write it down.</summary>
+    /// <remarks>
+    /// **IT READS AND IT NEVER WRITES TO THE RADIO** (§0.2). It takes what the poll already
+    /// holds - or what a test handed it - and turns it into one sentence and one line in the
+    /// record. It changes no setting; §R11 says the operator is asked to turn the drive down
+    /// a step, and **Hamlet does not do it for him**, because a level he did not choose is a
+    /// level he cannot reason about.
+    /// </remarks>
+    private void ReadTheAlc()
+    {
+        var value = Psk31AlcForTests ?? _rigMonitor?.State[RigField.Alc];
+        var reading = value is { IsKnown: true } ? value.Number : null;
+        var past = reading > Psk31AlcZone;
+
+        Psk31Events.AlcRead(
+            _telemetry,
+            reading,
+            value is null ? null : AgeMs(value, DateTime.UtcNow),
+            past,
+            Psk31AlcZone);
+
+        Psk31AlcLine = past
+            ? "Your radio is being driven harder than it wants to be: its own level "
+                + "control is working to hold the signal back, and that is what makes a "
+                + "PSK31 signal spread out and splatter over the people either side of you. "
+                + "Turn the transmit drive above down one step and send again."
+            : "";
+
+        OnPropertyChanged(nameof(Psk31AlcLine));
+        OnPropertyChanged(nameof(HasPsk31AlcLine));
     }
 
     /// <summary>What the radio said about itself after a PSK31 send, from the poll.</summary>

@@ -3538,6 +3538,74 @@
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
                                     </Grid>
 
+                                    <!-- **THE POWER OFFER, BESIDE THE DRIVE**
+                                         (`PHASE_PLAN.md` §R11, Tim 2026-09-11:
+                                         *the operator sets nothing at the
+                                         radio*). PSK31 is a continuous carrier
+                                         at full duty and runs the radio warmer
+                                         than voice does, so Hamlet offers half
+                                         power for it.
+
+                                         **OFFERED, NEVER MIRRORED, NEVER
+                                         WRITTEN SILENTLY** (HM-DEC-084). This
+                                         is not a slider showing what the
+                                         radio's power is set to - that would be
+                                         a control claiming to know a value
+                                         nothing here read. It is a sentence and
+                                         two buttons, and pressing nothing
+                                         changes nothing.
+
+                                         **AND THERE IS NO USB MOD LEVEL
+                                         ANYWHERE ON THIS SCREEN.** §R11 rules
+                                         that the operator is never asked to set
+                                         a level, read a meter, or know what ALC
+                                         is; the drive above is Hamlet's own
+                                         composing level and is not a radio
+                                         menu. -->
+                                    <Border IsVisible="{Binding HasPsk31PowerOffer}"
+                                            Margin="0,8,0,0"
+                                            Padding="10,8"
+                                            CornerRadius="4"
+                                            Background="{StaticResource HmSlateTintBrush}"
+                                            BorderThickness="1"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}">
+                                        <StackPanel Spacing="6">
+                                            <TextBlock x:Name="DigitalPsk31PowerOffer"
+                                                       Text="{Binding Psk31PowerOffer}"
+                                                       TextWrapping="Wrap"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Button x:Name="DigitalPsk31PowerAccept"
+                                                        Classes="hm-cardaction"
+                                                        Content="{Binding Psk31PowerAccept}"
+                                                        Command="{Binding AcceptPsk31PowerCommand}" />
+                                                <Button x:Name="DigitalPsk31PowerDecline"
+                                                        Classes="hm-cardlink"
+                                                        Content="I will set it myself"
+                                                        Command="{Binding DeclinePsk31PowerCommand}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- **WHAT THE ALC DID, IN A SENTENCE**
+                                         (§R11). Not a meter: a meter asserts a
+                                         reading and leaves the reader to know
+                                         what it means, and the whole point of
+                                         this application is that he does not.
+                                         **It is absent unless something was
+                                         measured and that measurement was past
+                                         the zone** (§0.0) - no reading and a
+                                         good reading are both silence here, and
+                                         the record says which. -->
+                                    <TextBlock x:Name="DigitalPsk31AlcLine"
+                                               Text="{Binding Psk31AlcLine}"
+                                               IsVisible="{Binding HasPsk31AlcLine}"
+                                               TextWrapping="Wrap"
+                                               Margin="0,8,0,0"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
                                     <!-- **THE dBFS, BEFORE ANYTHING IS SENT.**
                                          The only level Hamlet showed anywhere
                                          was inside `DigitalSendLine`, and that

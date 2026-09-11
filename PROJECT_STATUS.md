@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 323 - say it: PSK31 goes out
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T18:46:07-04:00
-NOTE: A whole scripted contact now runs on three clicks and three transmissions, ending Finished with the Log. Carry-forward green app 149 of 149, engine 120 of 120; committing task 3.
+UPDATED: 2026-09-11T18:50:43-04:00
+NOTE: Task 3 pushed. The power offer renders at half and its one write reaches CivWrites.RfPower and stops; ThePowerIsOfferedTests 3 of 3. Re-running the carry-forward list before committing task 4.
 
 ---
 
