@@ -2039,6 +2039,15 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The next sample the listener wants from the tap.</summary>
     private long _psk31At;
 
+    /// <summary>What the last search pass measured, for the clear-spot search.</summary>
+    /// <remarks>
+    /// **CANDIDATES AND NOT CARRIERS** (§R6, work instruction 323 task 2). A candidate that
+    /// never crossed is still somebody Hamlet should not call on top of - it is a place in
+    /// the passband with BPSK-shaped energy in it, and the difference between that and a
+    /// held carrier is whether *Hamlet* could read it, not whether anybody is there (§0.0).
+    /// </remarks>
+    private IReadOnlyList<Psk31Candidate> _psk31Candidates = [];
+
     /// <summary>Which row on the panel is which channel's, by the carrier's id.</summary>
     private readonly Dictionary<int, DigitalDecodeRow> _psk31Rows = new();
 
@@ -2308,6 +2317,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var pass in _psk31.Watch.DrainPasses())
         {
+            // **THE LATEST PASS IS KEPT, WHETHER OR NOT IT IS WRITTEN DOWN** (work
+            // instruction 323 task 2). The clear-spot search needs what the last pass
+            // measured, and the sampling rule below decides what goes in the *file* - two
+            // different questions. Before this line a pass that was not due was drained
+            // and dropped, so on a quiet band the chooser would have had nothing to avoid.
+            _psk31Candidates = pass.Candidates;
+
             var due = now - _psk31PassWritten >= Psk31Events.PassInterval;
 
             if (!pass.SetChanged && !due)
@@ -2388,6 +2404,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     internal void ShowPsk31ChannelsForTests(IReadOnlyList<Psk31Channel> channels)
         => ShowPsk31Channels(channels);
+
+    /// <summary>Hand the clear-spot search a band, for a test that has no audio.</summary>
+    /// <param name="candidates">What a search pass would have measured.</param>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="ShowPsk31ChannelsForTests"/>**, and the same reason:
+    /// synthesising two kilohertz of audio busy enough to leave no gap anywhere would spend
+    /// minutes of demodulation on a question about arithmetic. **It feeds the one field the
+    /// tick would have filled** and changes nothing else; the rule it is measured against
+    /// is <see cref="Psk31ClearSpot"/>'s, unchanged.
+    /// </remarks>
+    internal void UsePsk31CandidatesForTests(IReadOnlyList<Psk31Candidate> candidates)
+        => _psk31Candidates = candidates;
 
     private void ShowPsk31Channels(IReadOnlyList<Psk31Channel> channels)
     {
@@ -2517,6 +2545,33 @@ public partial class MainWindowViewModel : ObservableObject
             .Select(e => e.Speaker!)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
+
+        // **A CERTAIN ANSWER RETIRES THE RECEIPT, AND A GUESS RETIRES NOTHING** (work
+        // instruction 323 task 2; Tim, 2026-09-11, R3 and R5 on cards). `callers` is
+        // already §R1's strict side - certain, addressed to him, and not him - so the one
+        // test the receipt needs has been made two lines above. **It goes; it is handed to
+        // nobody**: the call went to everybody, so giving it to whichever station came back
+        // first would be a claim about who it was for, and two answers make that visibly
+        // wrong. The cards below are what replaces it, one each.
+        if (callers.Count > 0 && _contacts is not null)
+        {
+            _contacts.RetireTheCall();
+
+            // **AND IT COMES OFF THE PANEL NOW, NOT AT THE NEXT REBUILD.** The cards are
+            // rebuilt from the ledger only when the ledger is written to, and a station
+            // answering writes nothing to it - so without this the receipt would sit beside
+            // his card until the operator happened to press something.
+            for (var at = DigitalCards.Count - 1; at >= 0; at--)
+            {
+                if (string.Equals(
+                        DigitalCards[at].Callsign,
+                        Ft8ContactLedger.CallToAnyone,
+                        StringComparison.Ordinal))
+                {
+                    DigitalCards.RemoveAt(at);
+                }
+            }
+        }
 
         foreach (var station in callers)
         {
@@ -3659,6 +3714,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// panel's idle line already says what is wrong in that case, and a card built
     /// against the machine's own clock would be a state derived from a reading
     /// nobody took.</para>
+    /// <para>**AND PSK31 HAS NO SLOTS, SO IT IS NOT HELD BY THAT** (work instruction 323
+    /// task 2, §R10). The corrected clock exists to put a transmission in the same
+    /// fifteen-second box as every other station on the band; PSK31 has no boxes, nothing
+    /// on a PSK31 card is counted in slots, and **the moment a PSK31 card carries is the
+    /// moment the operator pressed** - which is the machine's own clock, correctly. Without
+    /// this, pressing CQ on a machine whose offset has never been measured would put a
+    /// signal on the air and leave the panel empty, which is the fault unit 309 was called
+    /// for. The FT8 side is untouched and still builds nothing without a measured offset.</para>
     /// </remarks>
 
     /// <summary>Move every card's relative time on, once a second.</summary>
@@ -3701,7 +3764,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (_contacts is not null
             && mine.Length > 0
-            && CardsNow is { } nowUtc)
+            && (CardsNow ?? (IsPsk31Chosen ? DateTime.UtcNow : null)) is { } nowUtc)
         {
             foreach (var who in CardStations())
             {
@@ -13300,11 +13363,20 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31Macro = Psk31Macro.Cq;
 
-        // **THE OFFSET IS THE MIDDLE OF THE PASSBAND UNTIL TASK 2 GIVES IT §R6's RULE.**
-        // A CQ goes out on a clear spot Hamlet finds, and finding one is the next task in
-        // this unit; this line is the placeholder it replaces, and it is stated rather
-        // than hidden so a reader of this commit knows the spot was not chosen yet.
-        var offsetHz = Psk31CarrierSearch.ReferenceBandwidthHz / 2;
+        // **A CLEAR SPOT HAMLET FINDS, NOT A FIXED OFFSET** (§R6). The rule is
+        // `Psk31ClearSpot.Rule` and it is stated in one place; this reads it.
+        if (ClearSpotForTheCall() is not { } offsetHz)
+        {
+            Psk31Events.SendRefused(_telemetry, "no_clear_spot", macro, "spot");
+
+            DigitalSendLine =
+                "Hamlet did not call: the band is too crowded here to call without "
+                + "landing on someone. It looks for a spot " + Psk31ClearSpot.Rule
+                + ", and there is not one right now. Move the dial a little, or wait "
+                + "for somebody to finish.";
+
+            return;
+        }
 
         var composed = Psk31Modulator.Compose(
             wanted, _transmitSampleRate, offsetHz, _settings.TransmitDrivePeak);
@@ -13355,6 +13427,16 @@ public partial class MainWindowViewModel : ObservableObject
 
         SendStage.Entered(_telemetry, SendStage.Armed, "now", slotted: false);
 
+        // **THE RECEIPT APPEARS AT THE PRESS**, which is the whole of the word: a card
+        // that waited for the transmission to finish would leave the panel empty on every
+        // evening where it did not. **It books into a ledger and keys nothing** (§0.2), and
+        // it is booked here - once the send is armed - for `RecordSent`'s own reason: a
+        // press refused by the cap or the licence is not a call anybody made.
+        if (macro == Psk31MacroToken.For(Psk31Macro.Cq))
+        {
+            BookThePsk31Call(wanted);
+        }
+
         _armedText = wanted;
         DigitalSendLine = "Sending \"" + wanted + "\" now, at "
             + Psk31Events.Say(offsetHz) + " Hz in the passband.";
@@ -13364,6 +13446,61 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE CLICK IS THE MOMENT** (§R10). A send with no slot has no boundary to wait
         // for, so the action that armed it fires it; nothing reads a clock to decide.
         _ = FirePsk31Async(wanted, macro, composed.Seconds);
+    }
+
+    /// <summary>Puts the PSK31 call in the ledger, so the receipt is on the panel.</summary>
+    /// <param name="text">The call, exactly as it went on the air.</param>
+    /// <remarks>
+    /// <para>**THE SAME SHAPE AS <see cref="BookTheSend"/>**, and the same ledger: the
+    /// operator's callsign opens one, a changed callsign opens a new one, and the cards are
+    /// rebuilt from it. It differs in one line, because the PSK31 call is characters and
+    /// not 77 bits - see <see cref="Ft8ContactLedger.RecordCallToAnyone"/>.</para>
+    /// <para>**THE MOMENT IS NOW AND NOT A SLOT** (§R10). There are no slots here; the
+    /// receipt says when he pressed, which is a fact about the press.</para>
+    /// </remarks>
+    private void BookThePsk31Call(string text)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+
+        if (mine.Length == 0)
+        {
+            return;
+        }
+
+        if (_contacts is null
+            || !string.Equals(_contactsFor, mine, StringComparison.OrdinalIgnoreCase))
+        {
+            _contacts = new Ft8ContactLedger(mine);
+            _contactsFor = mine;
+        }
+
+        _contacts.RecordCallToAnyone(text, CardsNow ?? DateTime.UtcNow);
+
+        RebuildCards();
+        RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>Where this call should go out, or null where the band is too crowded.</summary>
+    /// <returns>The offset in the passband, or null.</returns>
+    /// <remarks>
+    /// <para>**THE RULE IS <see cref="Psk31ClearSpot"/>'s AND THE NUMBERS ARE THE
+    /// LISTENER'S** (§0.1). This hands over what is being heard and what the last search
+    /// pass measured, and takes back one number; it decides nothing about how far is far
+    /// enough.</para>
+    /// <para>**WITH THE TAB NOT YET LISTENING THERE IS NOTHING TO AVOID**, and the whole
+    /// passband is the gap. That is not an assumption that the band is empty - it is the
+    /// honest state of a search that has not run (§0.0), and the passband it searches is
+    /// the listener's own where there is one.</para>
+    /// </remarks>
+    private double? ClearSpotForTheCall()
+    {
+        var listener = _psk31;
+
+        return Psk31ClearSpot.Choose(
+            listener?.States.Select(s => s.OffsetHz) ?? [],
+            _psk31Candidates,
+            listener?.LowestHz ?? Psk31ClearSpot.LowestCallHz,
+            listener?.HighestHz ?? Psk31ClearSpot.HighestCallHz);
     }
 
     /// <summary>Runs the armed no-slot send and writes what the radio did about it.</summary>

@@ -134,6 +134,22 @@ public sealed class Ft8StationRecord
     }
 
     internal void AddSent(Ft8LedgerMessage message) => _sent.Add(message);
+
+    /// <summary>The one message this record has sent, replacing anything before it.</summary>
+    /// <param name="message">The call.</param>
+    /// <remarks>
+    /// **THE ONE EXCEPTION TO *NOTHING HERE OVERWRITES*, AND IT IS A RULING** (Tim,
+    /// 2026-09-11: one receipt, refreshed on repeat press, **last call only, no count**).
+    /// It is reached only by <see cref="Ft8ContactLedger.RecordCallToAnyone"/>, which books
+    /// only under the call-to-anybody key - so no station's history can be overwritten by
+    /// it. A contact's history is still append-only, which is what the remark on
+    /// <see cref="AddHeard"/> exists to protect.
+    /// </remarks>
+    internal void ReplaceSent(Ft8LedgerMessage message)
+    {
+        _sent.Clear();
+        _sent.Add(message);
+    }
 }
 
 /// <summary>
@@ -288,6 +304,40 @@ public sealed class Ft8ContactLedger
 
         Book(who).AddSent(
             new Ft8LedgerMessage(message!.Trim(), fields, slotStartUtc));
+    }
+
+    /// <summary>
+    /// **Books a call to anybody that the splitter cannot read: the PSK31 CQ.**
+    /// </summary>
+    /// <param name="message">The text, exactly as it went on the air.</param>
+    /// <param name="atUtc">When it went out.</param>
+    /// <remarks>
+    /// <para>**ONE RECEIPT TYPE, NOT TWO** (work instruction 323 task 2; unit 321's
+    /// decision, carried). The receipt a PSK31 call leaves is the same
+    /// <see cref="CallToAnyone"/> record an FT8 call leaves, so it retires the same way,
+    /// renders the same way and carries the same *no Log, no station facts* (§R8) - rather
+    /// than a second kind of card that would have to be taught all of that again.</para>
+    /// <para>**AND THE FT8 SPLIT RULE IS NOT TOUCHED.** `CQ CQ CQ de KC3QIS KC3QIS KC3QIS
+    /// pse K` is not an FT8 message and <see cref="Ft8MessageSplit"/> is right to refuse
+    /// it; <see cref="RecordSent(string?, DateTime)"/> would therefore book nothing. This
+    /// is the door for a call whose text is characters rather than 77 bits, and it books
+    /// **only** under the call-to-anybody key: it cannot name a station, so it cannot
+    /// book one.</para>
+    /// <para>**IT REPLACES; IT NEVER STACKS** (Tim, 2026-09-11, R2 and R4 on cards: *one
+    /// receipt, refreshed on repeat press, last call only, no count*). Pressing CQ four
+    /// times is one receipt showing the fourth call, not a record with four messages in
+    /// it that something downstream could count.</para>
+    /// </remarks>
+    public void RecordCallToAnyone(string? message, DateTime atUtc)
+    {
+        var text = (message ?? "").Trim();
+
+        if (text.Length == 0)
+        {
+            return;
+        }
+
+        Book(CallToAnyone).ReplaceSent(new Ft8LedgerMessage(text, null, atUtc));
     }
 
     /// <summary>Retire the call-to-anybody record once anybody has answered.</summary>

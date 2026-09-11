@@ -71,6 +71,7 @@ AzimuthalMapTests
 ThePsk31TelemetryTests
 ThePsk31TransmitTelemetryTests
 ThePsk31PanelSpeaksPsk31Tests
+ThePsk31CqGoesOutTests
 
 -- known reds, NEVER on the list above ---------------------------------------
 

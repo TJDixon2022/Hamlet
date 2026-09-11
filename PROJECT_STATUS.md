@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 323 - say it: PSK31 goes out
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T18:19:05-04:00
-NOTE: Task 1c built: the door is open, the press composes PSK31, and the rewritten card guard is green 20 of 20. Running the carry-forward list before committing.
+UPDATED: 2026-09-11T18:31:33-04:00
+NOTE: The press works end to end: one click puts 11.46 s of PSK31 on a chosen 1300 Hz spot, keys once and writes six lines. ThePsk31CqGoesOutTests 4 of 4; re-running the whole carry-forward list.
 
 ---
 
