@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 323 - say it: PSK31 goes out
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T18:50:43-04:00
-NOTE: Task 3 pushed. The power offer renders at half and its one write reaches CivWrites.RfPower and stops; ThePowerIsOfferedTests 3 of 3. Re-running the carry-forward list before committing task 4.
+UPDATED: 2026-09-11T18:53:54-04:00
+NOTE: Task 4 pushed. Task 5 is the stand-up: thirteen lines of record captured from one press, the three-click contact captured, and the four-signal fixture's EI4GNB CQ row read. Writing output.md.
 
 ---
 

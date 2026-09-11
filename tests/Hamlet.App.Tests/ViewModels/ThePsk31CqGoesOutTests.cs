@@ -354,6 +354,7 @@ public sealed class ThePsk31CqGoesOutTests : IDisposable
             || Names(line, "psk31_send_refused")
             || Names(line, "psk31_send_keyed")
             || Names(line, "psk31_send_unkeyed")
+            || Names(line, "psk31_send_alc")
             || Names(line, "psk31_radio_after_send")
             || Names(line, SendStage.EventName)
             || Names(line, TransmitRecord.EventName);
