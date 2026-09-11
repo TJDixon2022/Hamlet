@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 5
+TASK: 3 of 5
 WORK_INSTRUCTION: 322 - the PSK31 path becomes visible in the record
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T16:41:36-04:00
-NOTE: Task 2 green - the receive path writes its record, and the privacy walk is live again.
+UPDATED: 2026-09-11T16:44:58-04:00
+NOTE: Task 3 green - the transmit events exist, one has a call site and four wait on step 4.
 
 ---
 

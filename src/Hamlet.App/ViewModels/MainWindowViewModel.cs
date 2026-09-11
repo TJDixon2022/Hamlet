@@ -13001,6 +13001,16 @@ public partial class MainWindowViewModel : ObservableObject
                 _telemetry, "send_refused", OperatingMode,
                 ChosenDigitalMode ?? StartupSnapshot.Unknown);
 
+            // **AND IN THE MODE'S OWN CATEGORY, WITH A STABLE REASON** (work instruction
+            // 322 task 3). The line above says an operator action was refused; this says
+            // *which gate refused it*, which is what a reader diagnosing a silent tab
+            // needs. **It writes and refuses nothing itself** - the refusal is the line
+            // above it and this only describes it (§0.2).
+            if (IsPsk31Chosen)
+            {
+                Psk31Events.SendRefused(_telemetry, "mode", kind: null, "gate");
+            }
+
             DigitalSendLine =
                 "Hamlet cannot send " + ChosenDigitalMode + " yet, so nothing went "
                 + "out. It can hear this mode before it can answer in it, and "
