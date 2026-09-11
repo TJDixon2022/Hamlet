@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 312 - PSK31 exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T01:39:07-04:00
-NOTE: Task 2 green - ThePsk31SeamTests 6 of 6, the panel names the mode and says it cannot read it.
+UPDATED: 2026-09-11T01:47:06-04:00
+NOTE: Task 3 green - fldigi pinned at 61b97f4, GPL-3, nothing read from it. Task 4 next.
 
 ---
 
