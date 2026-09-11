@@ -11204,27 +11204,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Dictionary<string, AdifContact>? _workedBefore;
 
-    /// <summary>How many stations may carry the mark at once.</summary>
-    /// <remarks>
-    /// **TWO, COUNTED OVER STATIONS AND NOT OVER SLOT REBUILDS** (Tim, 2026-09-10).
-    /// *If everything is marked, nothing is* (§3.7). At the cap a stronger arrival
-    /// displaces the weakest mark currently held - it does not queue and it does not
-    /// add a third.
-    /// </remarks>
-    internal const int MostMarkedStations = 2;
-
     /// <summary>What is still in play, read once from the log.</summary>
     private NudgeSet? _nudges;
-
-    /// <summary>Which stations hold a mark, and what kind.</summary>
-    /// <remarks>
-    /// **STICKY PER STATION** (Tim, 2026-09-10). Once a station is marked he stays
-    /// marked while he is on the list. **Re-ranking every slot was rejected**: the
-    /// mark then flickers on a station who has not changed and vanishes as he reaches
-    /// for it.
-    /// </remarks>
-    private readonly Dictionary<string, (NudgeKind Kind, string Entity)> _marked
-        = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>How many times the nudge set has been built, for a test.</summary>
     /// <remarks>
@@ -11260,12 +11241,25 @@ public partial class MainWindowViewModel : ObservableObject
         return _nudges;
     }
 
-    /// <summary>Decide the mark for one row that has just arrived.</summary>
+    /// <summary>Mark a row where working that station would open something.</summary>
     /// <remarks>
-    /// <para>**ORDERING COMES FROM THE ACHIEVEMENT SET, NOT FROM A SCORE** (Tim,
-    /// 2026-09-10). A door outranks a visible card; within a kind, **arrival order
-    /// breaks the tie** and the earlier caller keeps the mark. **No difficulty number
-    /// is computed, stored or persisted anywhere.**</para>
+    /// <para>**THERE ARE NO RANKINGS** (Tim, 2026-09-11, no `HM-DEC-` id assigned):
+    /// *"There are no rankings. No rankings. Zero rankings. You just highlight areas
+    /// that haven't been achieved. There are no rankings."* **So there is no cap, no
+    /// ordering, no score, no tie-break and no stickiness mechanism in this method,
+    /// and nothing anywhere compares two candidate stations.**</para>
+    /// <para>**WHAT WENT, AND WHY IT WAS THERE.** Unit 308 carried a cap of two, a
+    /// door-outranks-visible ordering, an arrival-order tie-break and a sticky
+    /// dictionary. The cap came from an instruction phrase - *mark the strongest one
+    /// or two per slot* - which was the author's reading of §3.7 and not a ruling;
+    /// the ordering existed only to implement the cap, and the stickiness existed
+    /// only to stop the ordering churning. **With nothing ranked nothing churns**, so
+    /// a station's mark never changes while he is on the list because the answer
+    /// about him never changes.</para>
+    /// <para>**§3.7 IS SERVED BY WHAT IS NOT MARKED.** A worked entity is not
+    /// highlighted, and on the operator's own screenshot eight of fourteen rows are
+    /// Canada and the United States, which he has worked. That is the restraint and
+    /// it is the only one. **An unmarked station is not a lesser station.**</para>
     /// <para>**A MARK IS A NUDGE, NEVER AN ARMING** (§0.2). Nothing here touches,
     /// shortens or pre-arms any path that keys the transmitter.</para>
     /// </remarks>
@@ -11278,13 +11272,6 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        // **STICKY: A STATION ALREADY MARKED KEEPS WHAT HE HAS.**
-        if (_marked.TryGetValue(who, out var held))
-        {
-            Apply(row, held);
-            return;
-        }
-
         var (kind, entity) = Nudges().WouldOpen(who);
 
         if (kind == NudgeKind.None)
@@ -11292,32 +11279,6 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        if (_marked.Count >= MostMarkedStations)
-        {
-            // **THE WEAKEST MARK CURRENTLY HELD**, which is a visible card where one
-            // is held and nothing otherwise. A door never displaces a door, because
-            // they are equal and the earlier caller keeps it.
-            var weakest = _marked
-                .Where(m => m.Value.Kind < kind)
-                .OrderBy(m => m.Value.Kind)
-                .Select(m => (string?)m.Key)
-                .FirstOrDefault();
-
-            if (weakest is null)
-            {
-                return;
-            }
-
-            _marked.Remove(weakest);
-
-            foreach (var other in DigitalDecodes.Where(
-                r => string.Equals(r.Sender, weakest, StringComparison.OrdinalIgnoreCase)))
-            {
-                Apply(other, (NudgeKind.None, ""));
-            }
-        }
-
-        _marked[who] = (kind, entity);
         Apply(row, (kind, entity));
     }
 
@@ -11341,11 +11302,18 @@ public partial class MainWindowViewModel : ObservableObject
         // **AND WHAT IS STILL IN PLAY CHANGED WITH IT** (work instruction 308 task
         // 5). He logs a contact in a country he had not worked and that country
         // stops being something to chase; without this the mark for it would stand
-        // for the rest of the evening. **The marks already held are cleared too**,
-        // because stickiness is about a station not changing and this is the one
-        // moment the answer really did change.
+        // for the rest of the evening.
         _nudges = null;
-        _marked.Clear();
+
+        // **THE ROWS ALREADY ON SCREEN ARE ASKED AGAIN**, for the same reason the
+        // worked mark above re-reads them: the answer about those stations really
+        // did change, and this is the one moment it does.
+        foreach (var shown in DigitalDecodes)
+        {
+            var (kind, entity) = Nudges().WouldOpen(shown.Sender);
+
+            Apply(shown, (kind, entity));
+        }
 
         // **ROWS ALREADY ON SCREEN PICK THE MARK UP.** He logs a contact and the
         // station's other rows from the same evening say *worked* at once, rather

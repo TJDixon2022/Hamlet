@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
@@ -79,101 +80,148 @@ public sealed class TheCqListNudgeTests
         Assert.Empty(entity);
     }
 
-    /// <summary>**The cap holds at two when six callers are candidates.**</summary>
+    /// <summary>**His own fourteen rows, with an empty log.**</summary>
+    /// <remarks>
+    /// **AN EMPTY LOG IS THE NORMAL CASE FOR THIS APPLICATION, NOT AN EDGE CASE.**
+    /// The person it is for has never made a contact, and on that evening a great
+    /// many rows are highlighted because everything genuinely is new. **No limit is
+    /// added to make the number smaller.**
+    /// </remarks>
     [Fact]
-    public void TheCapHoldsAtTwoWhenSixCallersAreCandidates()
+    public void HisOwnFourteenRowsWithAnEmptyLog()
     {
-        var model = Panel();
+        var model = Panel(Log());
 
-        foreach (var call in new[]
-        {
-            "XE1ABC", "CO2ABC", "HI3ABC", "HH2ABC", "J68ABC", "V31ABC",
-        })
+        foreach (var call in HisFourteen)
         {
             Heard(model, "02:11:15", "CQ " + call + " EK99");
         }
 
         Print(model);
 
-        Assert.Equal(
-            MainWindowViewModel.MostMarkedStations,
-            model.DigitalDecodes.Count(r => r.Nudge != NudgeKind.None));
+        var marked = Marked(model);
+
+        _output.WriteLine("highlighted: " + marked.Count + " of " + HisFourteen.Length);
+
+        // **THE THREE THE INSTRUCTION NAMES**, less the one the table declines.
+        Assert.Contains(marked, r => r.Sender == "TI2AIM");
+        Assert.Contains(marked, r => r.Sender == "J38DX");
+
+        // **RD6OB CANNOT BE HIGHLIGHTED BY ANY VERSION OF THIS FEATURE.**
+        // `DxccPrefixes.EntityOf` declines the `RD6` prefix, so Hamlet does not know
+        // where he is, and unit 252 rules it silent where the table declines. This
+        // is a finding about the cited table, not about the mark.
+        Assert.DoesNotContain(marked, r => r.Sender == "RD6OB");
+
+        // **AND THERE IS NO CAP.** Unit 308 capped this at two; that cap was the
+        // author's reading of §3.7 and was withdrawn in full on 2026-09-11. Thirteen
+        // of his fourteen resolve and none has been worked, so far more than two
+        // light up.
+        Assert.True(
+            marked.Count > 2,
+            "only " + marked.Count + " rows were marked, which is a cap");
     }
 
-    /// <summary>**A marked station stays marked across three rebuilds.**</summary>
-    /// <remarks>
-    /// **STICKY PER STATION** (Tim, 2026-09-10). A mark that flickers on a station
-    /// who has not changed, and vanishes as he reaches for it, is worse than no mark.
-    /// </remarks>
+    /// <summary>**With North America worked, only the unworked light up.**</summary>
     [Fact]
-    public void AMarkedStationStaysMarkedAcrossThreeRebuilds()
+    public void WithNorthAmericaWorkedOnlyTheUnworkedLightUp()
     {
-        var model = Panel();
+        var model = Panel(Log("W9ZZZ", "VE3ZZZ"));
 
-        Heard(model, "02:11:15", "CQ XE1ABC EK99");
-
-        var first = model.DigitalDecodes.Single(r => r.Sender == "XE1ABC").Nudge;
-
-        Assert.NotEqual(NudgeKind.None, first);
-
-        for (var slot = 0; slot < 3; slot++)
+        foreach (var call in HisFourteen)
         {
-            Heard(model, "02:1" + (2 + slot) + ":15", "CQ W1ABC FN20");
+            Heard(model, "02:11:15", "CQ " + call + " EK99");
+        }
 
-            var still = model.DigitalDecodes
-                .First(r => r.Sender == "XE1ABC")
-                .Nudge;
+        Print(model);
 
-            _output.WriteLine("after rebuild " + (slot + 1) + ": XE1ABC is " + still);
+        var marked = Marked(model);
 
-            Assert.Equal(first, still);
+        // **THE TWO THAT RESOLVE AND ARE UNWORKED**, named.
+        Assert.Contains(
+            marked,
+            r => r.Sender == "TI2AIM"
+                 && r.NudgeTip.Contains("Costa Rica", StringComparison.Ordinal));
+
+        Assert.Contains(marked, r => r.Sender == "J38DX");
+
+        // **AND THE EIGHT NORTH AMERICAN ROWS GET NOTHING.**
+        foreach (var worked in new[]
+        {
+            "VE3XN", "KJ3LLY", "W4JNC", "KD5USA", "KF9UG", "KS1WK", "N4ZEK",
+            "KD8WYT",
+        })
+        {
+            Assert.DoesNotContain(marked, r => r.Sender == worked);
         }
     }
 
-    /// <summary>**At the cap, a door displaces the weakest visible mark.**</summary>
+    /// <summary>**The highlight is on the row template the CQ filter uses.**</summary>
+    /// <remarks>
+    /// **THIS IS THE ASSERTION THE EXISTING NINE WERE MISSING**, and its absence is
+    /// how nine green tests coexisted with a screen carrying no marks. The `CQ`
+    /// filter binds `DigitalVisibleDecodes`; a mark applied only to rows on the whole
+    /// table would be invisible on the list he is actually reading.
+    /// </remarks>
     [Fact]
-    public void ADoorDisplacesTheWeakestVisibleMarkAndTheCountStaysTwo()
+    public void TheHighlightIsOnTheListTheCqFilterShows()
     {
-        var model = Panel();
+        var model = Panel(Log("W9ZZZ"));
 
-        Heard(model, "02:11:15", "CQ XE1ABC EK99");
-        Heard(model, "02:11:15", "CQ CO2ABC EL82");
+        model.ShowsCqOnly = true;
 
-        Assert.Equal(2, Marked(model).Count);
+        Heard(model, "02:11:15", "CQ TI2AIM EK99");
+        Heard(model, "02:11:15", "CQ W4JNC FM05");
 
-        // **A DOOR ARRIVES.** A continent he has never worked outranks a country on
-        // one he has, so it takes a mark - and the count does not become three.
-        Heard(model, "02:11:30", "CQ PY2ABC GG66");
+        foreach (var row in model.DigitalVisibleDecodes)
+        {
+            _output.WriteLine(
+                row.Sender.PadRight(8) + row.Nudge + "  [" + row.NudgeTip + "]");
+        }
 
-        Print(model);
+        // **THE ROW IS ON THE FILTERED LIST AT ALL**, which is the first half.
+        Assert.Contains(model.DigitalVisibleDecodes, r => r.Sender == "TI2AIM");
 
-        var marked = Marked(model);
+        // **AND IT CARRIES THE MARK THERE.**
+        Assert.Contains(
+            model.DigitalVisibleDecodes,
+            r => r.Sender == "TI2AIM" && r.IsNudged);
 
-        Assert.Equal(2, marked.Count);
-        Assert.Contains(marked, r => r.Sender == "PY2ABC");
-        Assert.Contains(marked, r => r.Nudge == NudgeKind.Door);
+        Assert.DoesNotContain(
+            model.DigitalVisibleDecodes,
+            r => r.Sender == "W4JNC" && r.IsNudged);
     }
 
-    /// <summary>**Two candidates of the same kind: the earlier caller keeps it.**</summary>
+    /// <summary>**Nothing in the path ranks, scores or compares two candidates.**</summary>
+    /// <remarks>
+    /// **ASSERTED STRUCTURALLY, BY READING THE SOURCE** (Tim, 2026-09-11: *"If a line
+    /// of code compares two candidate stations, it is wrong."*). It is a coarse
+    /// check - it reads the one method that decides a mark and requires it to hold
+    /// no comparison, no ordering and no cap.
+    /// </remarks>
     [Fact]
-    public void ArrivalOrderBreaksTheTieBetweenTwoOfAKind()
+    public void NothingInThePathRanksOrCompares()
     {
-        var model = Panel();
+        var source = SourceOf("MainWindowViewModel.cs");
 
-        Heard(model, "02:11:15", "CQ XE1ABC EK99");
-        Heard(model, "02:11:30", "CQ CO2ABC EL82");
-        Heard(model, "02:11:45", "CQ HI3ABC FK58");
+        var at = source.IndexOf(
+            "private void MarkIfItOpensSomething", StringComparison.Ordinal);
 
-        Print(model);
+        Assert.True(at > 0, "the marking method was not found");
 
-        var marked = Marked(model);
+        var body = source[at..source.IndexOf(
+            "private static void Apply", at, StringComparison.Ordinal)];
 
-        Assert.Equal(2, marked.Count);
+        _output.WriteLine(body);
 
-        // **THE FIRST TWO KEEP THEM**, because nothing about the third is stronger.
-        Assert.Contains(marked, r => r.Sender == "XE1ABC");
-        Assert.Contains(marked, r => r.Sender == "CO2ABC");
-        Assert.DoesNotContain(marked, r => r.Sender == "HI3ABC");
+        foreach (var banned in new[]
+        {
+            "OrderBy", "OrderByDescending", "Max(", "Min(", "CompareTo",
+            "weakest", "strongest", "MostMarked", "Count >=", "Rank",
+        })
+        {
+            Assert.DoesNotContain(banned, body, StringComparison.Ordinal);
+        }
     }
 
     /// <summary>**The log is read once across fourteen decodes in four slots.**</summary>
@@ -184,7 +232,7 @@ public sealed class TheCqListNudgeTests
     [Fact]
     public void TheLogIsReadOnceAcrossFourteenDecodesInFourSlots()
     {
-        var model = Panel();
+        var model = Panel(Log("W9ZZZ"));
 
         for (var slot = 0; slot < 4; slot++)
         {
@@ -212,7 +260,7 @@ public sealed class TheCqListNudgeTests
     [Fact]
     public void NoUnmarkedRowIsDimmedOrAnnotated()
     {
-        var model = Panel();
+        var model = Panel(Log("W9ZZZ"));
 
         Heard(model, "02:11:15", "CQ XE1ABC EK99");
         Heard(model, "02:11:15", "CQ W1ABC FN20");
@@ -239,7 +287,7 @@ public sealed class TheCqListNudgeTests
     [Fact]
     public void NothingInAMarkedRowReachesASendPath()
     {
-        var model = Panel();
+        var model = Panel(Log("W9ZZZ"));
 
         Heard(model, "02:11:15", "CQ XE1ABC EK99");
 
@@ -298,8 +346,34 @@ public sealed class TheCqListNudgeTests
             entities, entities.Select(DxccContinents.Of));
     }
 
-    /// <summary>A panel whose log holds the United States and nothing else.</summary>
-    private static MainWindowViewModel Panel()
+    /// <summary>The fourteen callsigns on his own screenshot.</summary>
+    private static readonly string[] HisFourteen =
+    {
+        "TI2AIM", "J38DX", "RD6OB", "VE3XN", "KJ3LLY", "W4JNC", "KD5USA",
+        "KF9UG", "KS1WK", "N4ZEK", "KD8WYT", "K1ABC", "W9ZZZ", "VE7AA",
+    };
+
+    /// <summary>One file of this repository own source, for a structural check.</summary>
+    private static string SourceOf(string name)
+    {
+        var here = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+
+        while (here is not null
+               && !System.IO.File.Exists(
+                   System.IO.Path.Combine(here.FullName, "Hamlet.sln")))
+        {
+            here = here.Parent;
+        }
+
+        Assert.NotNull(here);
+
+        return System.IO.File.ReadAllText(
+            System.IO.Directory.GetFiles(here!.FullName, name, SearchOption.AllDirectories)
+                .First(f => f.Contains("src", StringComparison.Ordinal)));
+    }
+
+    /// <summary>A panel holding a given position.</summary>
+    private static MainWindowViewModel Panel(NudgeSet set)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -312,7 +386,7 @@ public sealed class TheCqListNudgeTests
         };
 
         model.UseWorkedBeforeForTests(new Dictionary<string, AdifContact>());
-        model.UseNudgeSetForTests(Log("W9ZZZ"));
+        model.UseNudgeSetForTests(set);
 
         return model;
     }
