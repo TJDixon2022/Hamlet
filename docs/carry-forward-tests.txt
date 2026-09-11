@@ -5,7 +5,8 @@ Unit 307 was to create this file and never ran; unit 309 created it from the
 fallback list in its own instruction, section 1f. Unit 310 added its own five,
 plus VoiceTests, which sweeps every string the operator can read and which any
 unit adding copy should run. Unit 312, the first of the PSK31 phase, added its
-own two.
+own two, and unit 313 added its two plus TheConnectionLineReadsTests, which its
+own instruction named and which was not on here.
 
 WHAT THIS IS. The test names a unit runs, filtered by exact name and
 foregrounded, BEFORE it changes anything - so that a red found afterwards can be
@@ -36,6 +37,9 @@ TheMapRowFitsTests
 TheMapOpensTests
 VoiceTests
 ThePsk31SeamTests
+ThePopupZoomIsCappedTests
+ThePanelScrollsTests
+TheConnectionLineReadsTests
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj

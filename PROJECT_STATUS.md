@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 3 of 4
+STATE: COMPLETED
+TASK: 4 of 4
 WORK_INSTRUCTION: 313 - the popup stops blurring, and the panel scrolls
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T08:27:48-04:00
-NOTE: Task 3 green - the panel scrolls, every card reachable. Task 4, saying what it looks like, next.
+UPDATED: 2026-09-11T08:30:24-04:00
+NOTE: Unit 313 complete, none dropped. Popup capped at 2x, the For You panel scrolls.
 
 ---
 
