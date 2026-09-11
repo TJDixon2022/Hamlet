@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 4
+TASK: 3 of 4
 WORK_INSTRUCTION: 313 - the popup stops blurring, and the panel scrolls
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T08:20:56-04:00
-NOTE: Task 2 green - the popup is capped at 2.0x, was 3.98x. Task 3, the scroll, next.
+UPDATED: 2026-09-11T08:27:48-04:00
+NOTE: Task 3 green - the panel scrolls, every card reachable. Task 4, saying what it looks like, next.
 
 ---
 

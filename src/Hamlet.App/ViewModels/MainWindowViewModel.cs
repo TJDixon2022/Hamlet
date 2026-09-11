@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Hamlet.App.Licensing;
 using Hamlet.App.Settings;
@@ -2689,6 +2690,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True while the raw messages are open under the cards.</summary>
     public bool ShowsConversation => _messagesOpenFor.Length > 0;
 
+    /// <summary>How much of the For You panel the raw messages take.</summary>
+    /// <remarks>
+    /// <para>**A HIDDEN REGION MUST NOT KEEP ITS SHARE** (work instruction 313 task 3).
+    /// The panel is one grid: the cards in the first row and the raw messages in the
+    /// third, each scrolling inside its own share. A star row hands out its share
+    /// whether or not its child is drawn, so with the messages shut the cards were
+    /// measured getting **110 px of a 264 px panel** and the other half stood empty -
+    /// which is the fault this task exists to fix wearing different clothes.</para>
+    /// <para>**IT IS A LAYOUT VALUE ON A VIEW MODEL AND THAT IS DELIBERATE.** The
+    /// alternative is a number in the markup capping the messages, and this panel has no
+    /// right size: it is whatever the window gives it. §0.1 keeps the *engine* free of
+    /// the screen; this is the shell, and the shell is where the screen lives.</para>
+    /// </remarks>
+    public GridLength ConversationRowHeight
+        => ShowsConversation
+            ? new GridLength(1, GridUnitType.Star)
+            : new GridLength(0);
+
     /// <summary>Whose messages are open, for the heading over them.</summary>
     public string ConversationHeading
         => _messagesOpenFor.Length == 0
@@ -2724,6 +2743,7 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         OnPropertyChanged(nameof(ShowsConversation));
+        OnPropertyChanged(nameof(ConversationRowHeight));
         OnPropertyChanged(nameof(ConversationHeading));
     }
 
@@ -2734,6 +2754,7 @@ public partial class MainWindowViewModel : ObservableObject
         _messagesOpenFor = "";
 
         OnPropertyChanged(nameof(ShowsConversation));
+        OnPropertyChanged(nameof(ConversationRowHeight));
         OnPropertyChanged(nameof(ConversationHeading));
     }
 

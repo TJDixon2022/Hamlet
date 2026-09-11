@@ -4294,7 +4294,33 @@
                                                       Summary="{Binding DigitalMineSummary}"
                                                       IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
 
-                                    <Grid RowDefinitions="Auto,Auto,*,Auto">
+                                    <!-- **THE CARDS TAKE THE STAR** (work instruction 313
+                                         task 3, R10 and the unbuilt half of unit 310's
+                                         R6). Row 0 was `Auto`, so the cards control asked
+                                         for every pixel its content wanted and got it:
+                                         measured at six conversations, 1,748 px of cards
+                                         inside a panel 264 px tall, with five of the six
+                                         starting below the bottom edge and no way to
+                                         reach them. **A card that cannot be reached is a
+                                         contact that cannot be logged.**
+
+                                         **THE CONVERSATION ROWS KEEP THEIRS.** Row 2 is
+                                         still a star, so when he presses *show the N
+                                         messages* the two regions share what there is and
+                                         each scrolls inside its own share. -->
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+
+                                            <!-- **ZERO WHILE THE MESSAGES ARE SHUT.** A
+                                                 star row hands out its share whether or
+                                                 not its child is drawn, and measured
+                                                 that left the cards 110 px of a 264 px
+                                                 panel with the other half empty. -->
+                                            <RowDefinition Height="{Binding ConversationRowHeight}" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
 
                                         <!-- **THE BEAT** (Tim's ruling, 2026-09-08:
                                              *I need visual context of what to answer
@@ -4351,10 +4377,25 @@
                                              seconds read as *how long to press this*
                                              rather than as a clock to relate to something.
                                              -->
-                                        <ItemsControl Grid.Row="0"
-                                                      x:Name="DigitalContactCards"
-                                                      ItemsSource="{Binding DigitalCards}"
+                                        <!-- **THE SAME CONTAINER THE TWO LISTS EITHER SIDE
+                                             OF IT ALREADY HAD.** The decoded rows on the
+                                             left and the conversation rows below both sit
+                                             in one of these; the cards were the one that
+                                             did not, and that is the whole of R10.
+
+                                             **`Disabled` HORIZONTALLY AND NOT `Auto`**
+                                             (assertion 2). A scroll viewer that scrolls
+                                             both ways hands its content unlimited width,
+                                             and a card wider than the panel is a card
+                                             with its Log button off the side. Disabled
+                                             holds the content to the viewport, so a card
+                                             wraps instead. -->
+                                        <ScrollViewer Grid.Row="0"
+                                                      VerticalScrollBarVisibility="Auto"
+                                                      HorizontalScrollBarVisibility="Disabled"
                                                       IsVisible="{Binding HasDigitalCards}">
+                                        <ItemsControl x:Name="DigitalContactCards"
+                                                      ItemsSource="{Binding DigitalCards}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:Ft8ContactCard">
                                                     <!-- **DIMMED, NEVER REMOVED** (Tim's
@@ -4819,6 +4860,7 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
+                                        </ScrollViewer>
 
                                         <!-- **THE COLUMN HEADER CAME OUT ON 2026-09-08**
                                              (Tim: show, do not tell). This side stopped
