@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -68,9 +68,17 @@ public sealed class ThePsk31ReferenceIsPinnedTests
 
     /// <summary>**No file under `src/` holds a path into the clone.**</summary>
     /// <remarks>
-    /// **A BUILD THAT ONLY WORKS ON ONE MACHINE IS NOT A BUILD** (§0). The clone lives
-    /// outside the tree deliberately, and the moment a source file names it, the
-    /// separation is decorative.
+    /// <para>**A BUILD THAT ONLY WORKS ON ONE MACHINE IS NOT A BUILD** (§0). The clone
+    /// lives outside the tree deliberately, and a source file that names its location
+    /// makes the separation decorative.</para>
+    /// <para>**NARROWED 2026-09-11, AND THE FIRST VERSION WAS WRONG RATHER THAN
+    /// INCONVENIENT.** Unit 313 wrote this as a search for the word `fldigi` anywhere
+    /// under `src/`, which is broader than what its own summary says and broader than
+    /// what §R5 asks for: the rule is *read, never ported wholesale*, and **a citation
+    /// naming where a published table came from is exactly what that rule requires**.
+    /// Work instruction 314 task 2 carried the varicode into the tree with its
+    /// citation, as instructed, and this test failed it. What must not appear is a
+    /// **path into the clone**, and that is what it looks for now.</para>
     /// </remarks>
     [Fact]
     public void NoSourceFileHoldsAPathIntoTheClone()
@@ -86,8 +94,7 @@ public sealed class ThePsk31ReferenceIsPinnedTests
                 + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
             .Where(f => !f.Contains(Path.DirectorySeparatorChar + "bin"
                 + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-            .Where(f => File.ReadAllText(f)
-                .Contains("fldigi", StringComparison.OrdinalIgnoreCase))
+            .Where(f => NamesTheClone(File.ReadAllText(f)))
             .ToList();
 
         foreach (var f in offenders)
@@ -97,6 +104,17 @@ public sealed class ThePsk31ReferenceIsPinnedTests
 
         Assert.Empty(offenders);
     }
+
+    /// <summary>Whether some source text points at the clone on disk.</summary>
+    /// <param name="text">The file's content.</param>
+    /// <returns>True where it holds a path into the reference clone.</returns>
+    /// <remarks>
+    /// **BOTH SLASHES, BECAUSE A C# STRING AND A COMMENT SPELL A PATH DIFFERENTLY**,
+    /// and either one compiled into `src/` would be a build that works on one machine.
+    /// </remarks>
+    private static bool NamesTheClone(string text)
+        => text.Contains(@"Source\fldigi", StringComparison.OrdinalIgnoreCase)
+            || text.Contains("Source/fldigi", StringComparison.OrdinalIgnoreCase);
 
     private static string Root()
     {
