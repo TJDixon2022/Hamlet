@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 322 - the PSK31 path becomes visible in the record
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T16:44:58-04:00
-NOTE: Task 3 green - the transmit events exist, one has a call site and four wait on step 4.
+UPDATED: 2026-09-11T16:48:29-04:00
+NOTE: Task 4 green - the panel stops saying slot under PSK31. Task 5, the diagnosis, next.
 
 ---
 

@@ -336,6 +336,9 @@ public partial class MainWindowViewModel : ObservableObject
     // the sentence on the panel is about the label.
     [NotifyPropertyChangedFor(nameof(DigitalModeStripLine))]
     [NotifyPropertyChangedFor(nameof(ShowsSlotClock))]
+    // **AND THE TWO CAPTIONS THAT NOW READ IT** (work instruction 322 task 4).
+    [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
+    [NotifyPropertyChangedFor(nameof(DigitalDecodedIdle))]
     private string? _chosenDigitalMode;
 
     /// <summary>True where the slot clock is drawn.</summary>
@@ -1077,10 +1080,19 @@ public partial class MainWindowViewModel : ObservableObject
             // grid that is a caption under a picture asserting a boundary spacing the
             // waterfall is not drawing, which HM-DEC-092 binds as hard as a sentence.
             // On FT8 it still renders exactly `15 s slots`.
-            var grid = ClockOffset.IsKnown
-                ? DigitalGrid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture)
-                  + " s slots"
-                : "no slot grid until the clock is checked";
+            // **A MODE WITH NO SLOTS SAYS ITS NAME INSTEAD** (work instruction 322
+            // task 4). This caption sat under the waterfall reading `15 s slots` while
+            // the tab was on PSK31 - a sentence asserting a boundary spacing the
+            // picture is not drawing and the mode does not have, and HM-DEC-092 binds a
+            // caption as hard as the picture over it. The clock does not come into it
+            // either: PSK31 needs no slot grid, so *waiting for the clock* would be a
+            // second thing that is not true.
+            var grid = IsPsk31Chosen
+                ? ChosenDigitalMode + ", one continuous carrier a station"
+                : ClockOffset.IsKnown
+                    ? DigitalGrid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture)
+                      + " s slots"
+                    : "no slot grid until the clock is checked";
 
             return DigitalSpectrum.IsSimulated
                 ? $"{band} · {grid} · simulated"
@@ -4356,7 +4368,8 @@ public partial class MainWindowViewModel : ObservableObject
         => _digitalNewestFirst ? "newest first" : "oldest first";
 
     /// <summary>What the decoded panel says before anything has decoded.</summary>
-    public string DigitalDecodedIdle => DigitalIdleText.Decoded;
+    public string DigitalDecodedIdle
+        => IsPsk31Chosen ? DigitalIdleText.DecodedUnslotted : DigitalIdleText.Decoded;
 
     /// <summary>What the plain-English panel says, which is its idle line.</summary>
     /// <remarks>

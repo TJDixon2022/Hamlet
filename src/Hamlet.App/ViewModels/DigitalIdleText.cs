@@ -97,4 +97,20 @@ public static class DigitalIdleText
     public const string Decoded =
         "nothing decoded yet. Every message that comes out of a slot lands here "
         + "exactly as it was sent, before Hamlet makes anything of it.";
+
+    /// <summary>The decoded text table under a mode with no slots.</summary>
+    /// <remarks>
+    /// <para>**PSK31 HAS NO SLOTS TO COME OUT OF** (`PHASE_PLAN.md` §3, work instruction
+    /// 322 task 4). <see cref="Decoded"/> promises a message per slot, which is the
+    /// right sentence for FT8 and tells a PSK31 operator to wait for a boundary that
+    /// never comes. The operator read it on his own screen on 2026-09-11.</para>
+    /// <para>**AND IT SAYS WHY A LINE MIGHT NOT BE THERE.** The squelch is the whole
+    /// difference between a quiet band and a band Hamlet will not take, and that is the
+    /// question he asked after five minutes of an empty list (§0.0).</para>
+    /// </remarks>
+    public const string DecodedUnslotted =
+        "nothing decoded yet. Every station Hamlet is sure is sending PSK31 gets a "
+        + "line here, filling in a character at a time as it arrives. A signal it is "
+        + "not sure of gets no line at all rather than a guess, so an empty panel can "
+        + "mean a quiet band or a signal too rough to read.";
 }
