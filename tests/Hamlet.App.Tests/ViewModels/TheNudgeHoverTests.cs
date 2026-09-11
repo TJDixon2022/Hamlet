@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Contacts;
 using Xunit;
@@ -109,6 +109,63 @@ public sealed class TheNudgeHoverTests
                 Assert.DoesNotContain(
                     forbidden, words, StringComparison.OrdinalIgnoreCase);
             }
+        }
+    }
+
+    /// <summary>**The candidate door sentences, checked but not chosen.**</summary>
+    /// <remarks>
+    /// <para>**WORDING IS THE PRODUCT (§3.5) AND NO RULING HAS BEEN GIVEN.** This
+    /// does not replace the placeholder on its own judgment; it checks that every
+    /// candidate put to Tim in the report obeys §4 - **worked, never confirmed** -
+    /// names no area, shames nobody and promises nothing.</para>
+    /// <para>**THE THREE ARE IN `output.md` SECTION 4 WITH THEIR COSTS.** If one is
+    /// ruled in, it replaces `NudgeWords.Door` and this test already covers it.</para>
+    /// </remarks>
+    [Fact]
+    public void EveryCandidateDoorSentenceObeysTheRules()
+    {
+        foreach (var candidate in new[]
+        {
+            NudgeWords.Door,
+            "new area · somewhere you have not worked yet",
+            "new area · this one opens a part of the map",
+        })
+        {
+            _output.WriteLine(
+                candidate.Length.ToString().PadLeft(3) + "  " + candidate);
+
+            // **IT NAMES NO AREA.**
+            foreach (var area in new[]
+            {
+                "Europe", "Africa", "Asia", "America", "Oceania", "Antarctica",
+                "Eastern", "Western", "Pacific", "Atlantic",
+            })
+            {
+                Assert.DoesNotContain(
+                    area, candidate, StringComparison.OrdinalIgnoreCase);
+            }
+
+            // **AND IT SAYS WORKED, NEVER CONFIRMED, AND NOTHING SHAMES** (§4).
+            foreach (var forbidden in new[]
+            {
+                "confirm", "missing", "behind", "still need", "failed", "should",
+                "only", "never worked",
+            })
+            {
+                Assert.DoesNotContain(
+                    forbidden, candidate, StringComparison.OrdinalIgnoreCase);
+            }
+
+            // **AND NOTHING PROMISES THE CONTACT WILL SUCCEED.**
+            foreach (var promise in new[] { "will open", "guarantee", "you will" })
+            {
+                Assert.DoesNotContain(
+                    promise, candidate, StringComparison.OrdinalIgnoreCase);
+            }
+
+            Assert.True(
+                candidate.Length <= LongestRow,
+                "the candidate is " + candidate.Length + " characters");
         }
     }
 
