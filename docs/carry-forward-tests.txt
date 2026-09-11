@@ -1,0 +1,50 @@
+Carry-forward tests
+===================
+
+Unit 307 was to create this file and never ran; unit 309 created it from the
+fallback list in its own instruction, section 1f.
+
+WHAT THIS IS. The test names a unit runs, filtered by exact name and
+foregrounded, BEFORE it changes anything - so that a red found afterwards can be
+told from a red that was already there. HM-DEC-155 forbids running a suite, and
+this list is what a unit runs instead.
+
+WHAT IS NEVER ON IT. A known red. The point of the list is that everything on it
+should be green before a unit starts; a name that is expected to fail teaches the
+next session to ignore a failure.
+
+HOW TO RUN ONE
+    timeout 480 dotnet test <project> --filter "FullyQualifiedName~TypeName"
+
+-- app project: tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj ---------------
+
+TheGlobeOnTheCardFaceTests
+TheGlobeLineTests
+TheGlobePlacesStationsTests
+Unit299GlobeTests
+TheCqListNudgeTests
+TheNudgeHoverTests
+ThePressingOfCqTests
+TheReadinessHoverTests
+TheSlotClockTests
+BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
+
+-- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
+
+TheFlatWorldAssetTests
+TheGreatCirclePathTests
+TheAzimuthalAssetTests
+AzimuthalMapTests
+
+-- known reds, NEVER on the list above ---------------------------------------
+
+These are inherited, were proved red before the units that found them, and are
+not chased:
+
+    CwAdjudicationTests.ASpeedChangeInRealisticAudio
+    the 51 CW cases in docs/unit239-failing-set.txt
+    the Ft8Sharp.Deep.Tests whole-type-list tripwire
+    HM-OPEN-088's ten
+    TheAchievementsScreenTests.WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo
+    TheAchievementsScreenTests.TheWindowDrawsEverySixRows
+    TheFitGuardAsksAboutTheGridTheSendIsOnTests  (ENGINE project, not app)
