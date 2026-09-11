@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 314 - hear one: the PSK31 tab stops pretending, then reads a signal
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T09:35:36-04:00
-NOTE: Task 4 green - pressing PSK31 shows text arriving, CER 0.0000 through the real tick.
+UPDATED: 2026-09-11T09:36:57-04:00
+NOTE: Task 5 done - the weak fixture reads CER 0.1502, no ceiling asserted. Writing the report.
 
 ---
 

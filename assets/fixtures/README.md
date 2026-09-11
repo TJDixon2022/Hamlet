@@ -22,3 +22,19 @@ emitted **112 garbage characters** from the noise-only file, which is the reason
 squelch rule is required and must be stated.
 
 `qso-text.txt` is the exact text in the QSO fixtures, with CR LF line ends as sent.
+
+## Added by work instruction 314 task 5
+
+`psk31-snr-10db-1000hz.wav` - one rung below the weakest of the originals: **-10 dB
+referenced to 2500 Hz**, which is about **+9 dB** inside PSK31's own 31 Hz. Made by
+`assets/make-weak-fixture.py`, which imports `reference-modem.py` rather than
+reimplementing the convention, with the seed fixed at 314 so the file can be made again
+byte for byte.
+
+**It is a measurement and not a gate.** `manifest.json` carries no `reference_cer` for
+it, because the offline reference was not re-run over it, and no character error rate is
+asserted against it anywhere. Hamlet's own decoder read it at **CER 0.1502**, 221
+characters of 255, on 2026-09-11.
+
+**It is still not weak-signal work.** That wants real off-air audio.
+

@@ -161,6 +161,44 @@ public sealed class ThePsk31DemodulatorTests
         Assert.DoesNotContain("EI4GNB", text, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>**The weak-signal fixture, measured and not gated.**</summary>
+    /// <remarks>
+    /// <para>**TASK 5, AND IT ASSERTS NO ERROR RATE ON PURPOSE.** One rung below the
+    /// weakest fixture that already existed: -10 dB in 2500 Hz, which is about +9 dB
+    /// inside PSK31's own 31 Hz. **It is a measurement rather than a gate**, because a
+    /// ceiling invented here would be a number nobody has any evidence for, and the
+    /// honest thing to do with a new reading is report it.</para>
+    /// <para>**IT IS STILL NOT WEAK-SIGNAL WORK.** That wants real off-air audio, which
+    /// only the operator can record, and it is asked for in the report.</para>
+    /// </remarks>
+    [Fact]
+    public void TheWeakSignalFixtureIsMeasuredAndNotGated()
+    {
+        const string file = "psk31-snr-10db-1000hz.wav";
+
+        var entry = Manifest().SingleOrDefault(e => e.File == file);
+
+        Assert.NotNull(entry);
+
+        using (var stream = File.OpenRead(Fixture(file)))
+        {
+            var hash = Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
+
+            Assert.Equal(entry!.Sha256, hash);
+        }
+
+        var (text, seconds) = Run(file, Offset);
+
+        var cer = ErrorRate(text, Reference());
+
+        _output.WriteLine(file);
+        _output.WriteLine("  CER     : " + cer.ToString("0.0000", CultureInfo.InvariantCulture)
+            + "   NO CEILING - this is a measurement, not a gate");
+        _output.WriteLine("  length  : " + text.Length + " of " + Reference().Length);
+        _output.WriteLine("  seconds : " + seconds.ToString("0.00", CultureInfo.InvariantCulture));
+        _output.WriteLine("  text    : " + Shown(text));
+    }
+
     /// <summary>Decode one fixture and hold it to a ceiling.</summary>
     private void Decodes(string file, double ceiling)
     {
