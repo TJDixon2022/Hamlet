@@ -5,7 +5,7 @@ STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.
 STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
 STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
 STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-STEP: 4 | blocked | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+STEP: 4 | in progress | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
 STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
 STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
@@ -212,3 +212,20 @@ ACCOMPLISHED: The starting position is measured rather than assumed, and the two
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: STEP 4 IS CARRIED AT blocked UNTIL THE DOOR IS OPEN. Task 1 only measured; the tasks that advance it are 1b onward.
+
+### ALSO RECORDED FOR UNIT 323 - STEP 4
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: rewrite the shut-door guard to guard the click rule, open CanTransmitIn for PSK31 through the same bolt as FT8, send the CQ macro once on a clear spot through the unslotted sequence, answer and offer the remaining macros on certainty, and offer power at half with the ALC read into a sentence
+HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+MOVE: continue
+WHY: the two rulings that blocked step 4 are in the plan as R11 and R12; everything else step 4 needs was built by units 318 to 322 and is green; only the press half remains, and the owner has said what the measure of the unit is
+DECIDED: the clear-spot rule (150 Hz from any held carrier or candidate over 0.4, widest gap preferred) is the unit's number to state; ThePsk31TabIsInertTests is retired and its surviving assertions rehomed, because its premise ends when the door opens
+LICENCE: PHASE_PLAN.md R10, R11, R12, R13, R14, R1, R2, R6, R8; Tim 2026-09-11 on cards R1-R6; CLAUDE.md 0.2; HM-DEC-084
+COST: 13.636098000000002
+ACCOMPLISHED: Tim presses CQ under PSK31 and a PSK31 signal leaves the radio, once, on a clear spot, with a receipt that says so and nothing asked of him at the radio
+STATE_AFTER: in progress
+STATE_WHY: no output.md, so there is no report to judge the step against

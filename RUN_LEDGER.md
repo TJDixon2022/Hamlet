@@ -116,3 +116,5 @@ the owner reads instead of watching.
 | 1 | 2026-09-11T13:30 | 2026-09-11T14:28 | complete | 22.346655000000002 | ran unattended, 219 turns, 13 denied call(s) worked around, report valid |
 | 2 | 2026-09-11T14:36 | 2026-09-11T15:13 | complete | 14.774045999999997 | ran unattended, 162 turns, 6 denied call(s) worked around, report valid |
 | phase | 2026-09-11T16:08 | 2026-09-11T16:08 | halted | 50.7568 | the run could not take the session lock |
+| 1 | 2026-09-11T17:42 | 2026-09-11T17:55 | killed | unknown | killed by the watchdog: no status write within 12 min of the launch clock |
+| phase | 2026-09-11T17:55 | 2026-09-11T17:55 | halted | 0 | the run could not take the session lock |
