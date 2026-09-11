@@ -240,3 +240,18 @@ HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC read sourc
 COST: 54.71674749999996
 STATE_AFTER: partial
 STATE_WHY: Most must-pass criteria have named green tests behind them, but the occupied bandwidth is never stated or measured in the report as the criterion requires, and the R11 ALC criterion is only proved from a fed reading since the report itself admits there is no CI-V read for the ALC, so the sentence can never fire on a real radio and the zone figure of 128 is the unit's own invention awaiting a ruling.
+
+## UNIT 324 - STEP 4
+
+STEP: 4
+APPROACH: Checked the four gate facts, read the PSK31 receive path end to end against the instruction before changing a line, then cut the carry-forward list from a suite back to a list and ran it as one invocation per project.
+HIT: THE LIST WAS 46 NAMES, NOT 41, AND SIX OF THEM WERE FILED UNDER THE WRONG PROJECT. ThePsk31TelemetryTests, ThePsk31TransmitTelemetryTests, ThePsk31PanelSpeaksPsk31Tests, ThePsk31CqGoesOutTests, ThePsk31ExchangeTests and ThePowerIsOfferedTests are app types and were listed under the engine heading, where a filter for them matches nothing - so a unit that ran the list one name at a time ran six builds that tested nothing and said so to nobody. CallsignPrivacyTests, which the instruction names as a keep, was not on the list at all.
+MOVE: Prune to 23, every dropped name written down with the unit that added it, and the two exact invocations written at the top of the file so no future session runs it forty-one times.
+WHY: Unit 323 was killed by the watchdog for twelve minutes of silence during a 41-invocation carry-forward run. The list is the thing that killed it, and it is repaired before anything else moves.
+DECIDED: The instruction caps the list at twenty and its own keep-rules name twenty-three. The keep-rules win and the count is reported, because dropping a named guard to satisfy an arithmetic is a coverage decision the owner did not make; the cap exists for the wall clock, and the wall clock is 35 s.
+LICENCE: Work instruction 324 task 1 under PHASE_PLAN.md R13 and R14, HM-DEC-155 and HM-DEC-150.
+COST: one session, no test suite run, the carry-forward list of 23 named types run as two invocations - two builds - at 138 of 138 green before anything changed, app 66 and engine 72, 35 s wall clock against unit 323's 41 builds
+ACCOMPLISHED: The list that killed the last unit stops being a suite, and the starting position is measured rather than assumed.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: STEP 4 IS CARRIED AT partial UNTIL ITS TWO MEASUREMENTS LAND. Task 1 only measured and pruned; the occupied bandwidth and the ALC read are task 4.

@@ -1,79 +1,74 @@
 Carry-forward tests
 ===================
 
-Unit 307 was to create this file and never ran; unit 309 created it from the
-fallback list in its own instruction, section 1f. Unit 310 added its own five,
-plus VoiceTests, which sweeps every string the operator can read and which any
-unit adding copy should run. Unit 312, the first of the PSK31 phase, added its
-own two, and unit 313 added its two plus TheConnectionLineReadsTests, which its
-own instruction named and which was not on here. Unit 314 added its four. Unit 315
-added its two, one each side. Unit 316 added its three, two engine and one app.
-Unit 318 added its engine types as each went green. Unit 319 added its own the same
-way. Unit 320 added its one app class, for item 41.
+RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
+--------------------------------------------------------------
 
-WHAT THIS IS. The test names a unit runs, filtered by exact name and
-foregrounded, BEFORE it changes anything - so that a red found afterwards can be
-told from a red that was already there. HM-DEC-155 forbids running a suite, and
-this list is what a unit runs instead.
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint"
+
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests"
+
+WHY IT IS WRITTEN OUT HERE RATHER THAN LEFT TO THE READER. Unit 323 read this
+file as a list of names and ran one `dotnet test` per name - forty-one builds.
+It wrote one status line at 17:43, started the run, and the watchdog killed it
+at 17:55 for twelve minutes of silence. It had done nothing wrong except obey
+the shape of this file. **Two invocations. One build each. Status written
+immediately before each one** (HM-DEC-155, and work instruction 324 section 1).
+
+A short type name is enough inside one project, because a filter is scoped to
+the assembly it is run against: `ThePsk31OfferTests` exists in both projects and
+each line above matches only its own. Where a single method is wanted rather
+than a whole type, the type-and-method form is used, as `BindingHealthTests`
+does.
+
+WHAT THIS IS. The test names a unit runs, filtered and foregrounded, BEFORE it
+changes anything - so that a red found afterwards can be told from a red that
+was already there. HM-DEC-155 forbids running a suite, and this list is what a
+unit runs instead.
 
 WHAT IS NEVER ON IT. A known red. The point of the list is that everything on it
 should be green before a unit starts; a name that is expected to fail teaches the
 next session to ignore a failure.
 
-HOW TO RUN ONE
-    timeout 480 dotnet test <project> --filter "FullyQualifiedName~TypeName"
+WHAT IS NOT ON IT ANY MORE. Twenty-four names, dropped by unit 324 under work
+instruction 324 task 1b and **written down, with the unit that added each one,
+in `docs/carry-forward-dropped.txt`**. Nothing is lost; it is only not re-run.
+A list that only ever grows becomes a suite, and a suite is what HM-DEC-155
+forbids and what the watchdog kills.
+
+WHERE EACH NAME LIVES IS NOW CHECKED. Until unit 324 this file listed six app
+types - the three telemetry ones and unit 323's three - under the engine
+project heading, where a filter for them matches nothing at all. They are under
+the app heading below.
 
 -- app project: tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj ---------------
 
-TheGlobeOnTheCardFaceTests
-TheGlobeLineTests
-TheGlobePlacesStationsTests
-Unit299GlobeTests
-TheCqListNudgeTests
-TheNudgeHoverTests
-ThePressingOfCqTests
-TheReadinessHoverTests
-TheSlotClockTests
-TheCqReceiptTests
-ThePanelHoldsThemAllTests
-TheMapRowFitsTests
-TheMapOpensTests
-VoiceTests
-ThePsk31SeamTests
-ThePopupZoomIsCappedTests
-ThePanelScrollsTests
-TheConnectionLineReadsTests
-ThePsk31PanelHearsTests
-ThePsk31HearsEveryoneTests
-ThePsk31ReadsTheConversationTests
-ThePsk31ConversationCardTests
-Hamlet.App.Tests.ViewModels.ThePsk31OfferTests
-ThePsk31CardIsHandedHisGridTests
+ThePressingOfCqTests                                    transmit chain
+TheCqReceiptTests                                       transmit chain
+ThePsk31ConversationCardTests                           transmit chain, unit 319
+CallsignPrivacyTests                                    the privacy scan
+ThePsk31PanelHearsTests                                 unit 314
+ThePsk31HearsEveryoneTests                              unit 315
+ThePsk31ReadsTheConversationTests                       unit 316
+ThePsk31OfferTests                                      unit 319
+ThePsk31CardIsHandedHisGridTests                        unit 320
+ThePsk31TelemetryTests                                  unit 322
+ThePsk31TransmitTelemetryTests                          unit 322
+ThePsk31PanelSpeaksPsk31Tests                           unit 322
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
 
-TheFlatWorldAssetTests
-TheGreatCirclePathTests
-ThePsk31ReferenceIsPinnedTests
-TheVaricodeTests
-ThePsk31DemodulatorTests
-ThePsk31CarrierSearchTests
-ThePsk31ExchangeParserTests
-ThePsk31MessageSplitTests
-ThePsk31ModulatorTests
-TheFt8AndFt4SendsAreByteIdenticalTests
-TheUnslottedSendTests
-ThePsk31TurnTests
-Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests
-TheAzimuthalAssetTests
-AzimuthalMapTests
-ThePsk31TelemetryTests
-ThePsk31TransmitTelemetryTests
-ThePsk31PanelSpeaksPsk31Tests
-ThePsk31CqGoesOutTests
-ThePsk31ExchangeTests
-ThePowerIsOfferedTests
+TheUnslottedSendTests                                   transmit chain
+TheFt8AndFt4SendsAreByteIdenticalTests                  transmit chain
+TheVaricodeTests                                        unit 314
+ThePsk31DemodulatorTests                                unit 314
+ThePsk31CarrierSearchTests                              unit 315
+ThePsk31ExchangeParserTests                             unit 316
+ThePsk31MessageSplitTests                               unit 316
+ThePsk31ModulatorTests                                  unit 318
+ThePsk31TurnTests                                       unit 319
+ThePsk31OfferTests                                      unit 319
 
 -- known reds, NEVER on the list above ---------------------------------------
 
@@ -87,3 +82,4 @@ not chased:
     TheAchievementsScreenTests.WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo
     TheAchievementsScreenTests.TheWindowDrawsEverySixRows
     TheFitGuardAsksAboutTheGridTheSendIsOnTests  (ENGINE project, not app)
+    unit 320's item 46

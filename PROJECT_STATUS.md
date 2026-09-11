@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 323 - say it: PSK31 goes out
-BALL: tim
+STATE: WORKING
+TASK: 2 of 4
+WORK_INSTRUCTION: 324 - PSK31 hears real air
+BALL: claude
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T18:58:13-04:00
-NOTE: Unit 323 complete at task 5 of 5, nothing dropped. PSK31 goes out: one press, one call on a chosen spot, a whole contact on three clicks. output.md written; the validator could not be run here and its rules are checked by hand in item 53.
+UPDATED: 2026-09-11T19:43:00-04:00
+NOTE: Task 1 committed. The list ran green as two invocations, 138 of 138 in 35 s. Task 2 starting: a streaming resampler at the audio boundary so the PSK31 path is fed 8 kHz whatever the device gives, and the passband read from the mode rather than the rate.
 
 ---
 

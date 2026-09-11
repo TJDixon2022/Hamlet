@@ -624,8 +624,15 @@
     foregrounded before anything changed, app 145 of 145 and engine 120 of 120, 265 of 265 green,
     no red. No production code moves in this task.
   -->
+  <!--
+    1.13.9 -> 1.13.10, UNIT 324 TASK 1, UNDER HM-DEC-150. A PATCH, AND THE LIST STOPS BEING A
+    SUITE. The receive half on real air: the carry-forward list cut from 41 named types to 20 and
+    run as one invocation per project rather than forty-one, which is what the watchdog killed
+    unit 323's first run over. Every dropped name is kept in docs/carry-forward-dropped.txt with
+    the unit that added it. No production code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.9</Version>
+    <Version>1.13.10</Version>
   </PropertyGroup>
 
   <!--

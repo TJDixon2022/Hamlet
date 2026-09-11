@@ -1,0 +1,79 @@
+Carry-forward tests that were dropped
+=====================================
+
+WHAT THIS FILE IS FOR. `docs/carry-forward-tests.txt` is the list a unit runs
+before it changes anything. It only ever grew: unit 309 created it with
+fourteen names and by unit 323 it held forty-six, run as forty-one separate
+`dotnet test` invocations, and that run is what the watchdog killed unit 323
+over. Work instruction 324 task 1b cut it back.
+
+**NOTHING HERE IS DELETED, RETIRED OR KNOWN RED.** Every name below is a test
+that was green when it came off the list. It is simply not re-run at the start
+of every unit. A unit that touches the subject matter beside a name here runs
+that name itself, and may put it back.
+
+**A KNOWN RED IS NEVER ON EITHER LIST.** The known reds stay where they have
+always been, at the foot of `carry-forward-tests.txt`.
+
+    dropped by unit 324, 2026-09-11
+
+-- the globe and the map: added by unit 309 ----------------------------------
+
+    TheGlobeOnTheCardFaceTests              app     unit 309
+    TheGlobeLineTests                       app     unit 309
+    TheGlobePlacesStationsTests             app     unit 309
+    Unit299GlobeTests                       app     unit 309
+    TheFlatWorldAssetTests                  engine  unit 309
+    TheGreatCirclePathTests                 engine  unit 309
+    TheAzimuthalAssetTests                  engine  unit 309
+    AzimuthalMapTests                       engine  unit 309
+
+-- the CQ list, the nudge and the slot clock: added by unit 309 --------------
+
+    TheCqListNudgeTests                     app     unit 309
+    TheNudgeHoverTests                      app     unit 309
+    TheReadinessHoverTests                  app     unit 309
+    TheSlotClockTests                       app     unit 309
+
+-- the panel and the map window: added by unit 310 ---------------------------
+
+    ThePanelHoldsThemAllTests               app     unit 310
+    TheMapRowFitsTests                      app     unit 310
+    TheMapOpensTests                        app     unit 310
+    VoiceTests                              app     unit 310
+
+    VoiceTests sweeps every string the operator can read. **A unit that adds
+    or changes operator-facing copy runs it**, whatever this list says; unit
+    326's American-spelling sweep is the next one that must.
+
+-- the PSK31 seam and the pinned reference: added by unit 312 ----------------
+
+    ThePsk31SeamTests                       app     unit 312
+    ThePsk31ReferenceIsPinnedTests          engine  unit 312
+
+-- the popup, the scroll and the connection line: added by unit 313 ----------
+
+    ThePopupZoomIsCappedTests               app     unit 313
+    ThePanelScrollsTests                    app     unit 313
+    TheConnectionLineReadsTests             app     unit 313
+
+-- the press half of step 4: added by unit 323 -------------------------------
+
+    ThePsk31CqGoesOutTests                  app     unit 323
+    ThePsk31ExchangeTests                   app     unit 323
+    ThePowerIsOfferedTests                  app     unit 323
+
+    These three guard the press, which is step 4's own subject. They come off
+    only because work instruction 324 names the five types that guard the
+    transmit chain and every PSK31 type from units 314 to 322, and these are
+    from 323. **A unit that touches the press runs them.**
+
+-- the arithmetic, so the next reader can check it ---------------------------
+
+    on the list before unit 324    46
+    dropped here                   24
+    kept                           22
+    added by unit 324               1   CallsignPrivacyTests, which work
+                                        instruction 324 names as a keep and
+                                        which was not on the list at all
+    on the list now                23
