@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 314 - hear one: the PSK31 tab stops pretending, then reads a signal
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T09:21:18-04:00
-NOTE: Task 1 green - the PSK31 tab is inert and the receipt has no Log. Task 2, the varicode, next.
+UPDATED: 2026-09-11T09:25:09-04:00
+NOTE: Task 2 green - the varicode is in the tree as cited data. Task 3, the demodulator, next.
 
 ---
 

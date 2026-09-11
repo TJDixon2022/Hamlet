@@ -69,6 +69,17 @@
        tools/dxcc/expand-prefixes.py rather than written by hand, so the
        derivation is reproducible and the source is named on the face of the
        file (work instruction 252 task 3). -->
+
+  <!-- The PSK31 varicode, 256 rows, extracted mechanically from the pinned
+       fldigi commit 61b97f41 with data/psk31/varicode-SOURCE.md as its
+       citation (work instruction 314 task 2). The code is Peter Martinez
+       G3PLX's published standard; fldigi is the citation for the exact bit
+       strings, and a published table carried with its citation is data rather
+       than a port (PHASE_PLAN.md R5). -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\psk31\varicode.csv" LogicalName="Hamlet.RadioEngine.Data.Psk31.varicode.csv" />
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\callsigns\dxcc-prefixes.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-prefixes.json" />
     <EmbeddedResource Include="..\..\data\callsigns\entity-extents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.entity-extents.json" />
