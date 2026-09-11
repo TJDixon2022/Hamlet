@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -205,6 +206,179 @@ public sealed class ThePsk31HearsEveryoneTests
         Assert.False(heard.EverParsed);
         Assert.False(heard.EverForHim);
     }
+
+    /// <summary>**Task 4: the search and every demodulator keep up with the audio.**</summary>
+    /// <remarks>
+    /// <para>**THE FOUR-SIGNAL FIXTURE, END TO END, AS A STREAM**, through the real tap and
+    /// the real tick in quarter-second lumps, exactly as the panel runs it - search, four
+    /// demodulators, the rows and the list. The ratio is the time that took over the
+    /// audio's own length; under 1.0 is keeping up.</para>
+    /// <para>**THE NUMBER IS ELAPSED TIME ON ONE THREAD**, which is never less than that
+    /// thread's CPU time, so a ratio under one here is a CPU ratio under one. The
+    /// process's CPU is printed beside it and is larger, because xUnit runs other test
+    /// classes at the same time.</para>
+    /// <para>**WHAT DOMINATES IS MEASURED, NOT GUESSED**: the listener alone, the search
+    /// alone, and four demodulators alone over the same audio. **And the same listener at
+    /// 48 kHz**, which is what a sound card commonly delivers and what the tap is fed at
+    /// in the application, over the fixture raised to that rate with a windowed-sinc
+    /// interpolator - printed, not asserted, because no fixture was made at that rate.</para>
+    /// <para>**AN INDICATION ON THIS MACHINE, NEVER A FINDING** (FACT-004). This test was
+    /// not watched failing: the code it times was built and committed in task 3, and a
+    /// timing that fails only against a slower build is not something that can honestly
+    /// be staged.</para>
+    /// </remarks>
+    [Fact]
+    public void TheSearchAndEveryDemodulatorKeepUpWithTheAudio()
+    {
+        const string file = "psk31-four-signals.wav";
+
+        HashMatches(file, "manifest-step2.json");
+
+        var audio = WavAudio.Read(Fixture(file));
+        var audioSeconds = audio.Duration.TotalSeconds;
+        var chunk = audio.SampleRate / 4;
+        var model = Listening();
+
+        var process = Process.GetCurrentProcess();
+        var cpuBefore = process.TotalProcessorTime;
+        var watch = Stopwatch.StartNew();
+
+        for (var at = 0; at < audio.Samples.Length; at += chunk)
+        {
+            var count = Math.Min(chunk, audio.Samples.Length - at);
+
+            model.TapForTests!.Take(audio.Samples.AsSpan(at, count), audio.SampleRate);
+            model.LookForASlotForTests();
+        }
+
+        watch.Stop();
+        process.Refresh();
+
+        var panelSeconds = watch.Elapsed.TotalSeconds;
+        var processCpu = (process.TotalProcessorTime - cpuBefore).TotalSeconds;
+        var ratio = panelSeconds / audioSeconds;
+
+        var listenerSeconds = Time(() =>
+        {
+            var listener = new Psk31Listener(audio.SampleRate);
+            Feed(audio.Samples, chunk, s => listener.Add(s));
+        });
+
+        var searchSeconds = Time(() =>
+        {
+            var search = new Psk31CarrierSearch(audio.SampleRate);
+            Feed(audio.Samples, chunk, s => search.Add(s));
+        });
+
+        var demodulatorSeconds = Time(() =>
+        {
+            foreach (var hz in new[] { 700.0, 1100.0, 1600.0, 2200.0 })
+            {
+                var demodulator = new Psk31Demodulator(audio.SampleRate, hz);
+                Feed(audio.Samples, chunk, s => demodulator.Add(s));
+            }
+        });
+
+        const int Rise = 6;
+        var raised = Raise(audio.Samples, Rise);
+        var raisedRate = audio.SampleRate * Rise;
+        var carriersAt48 = 0;
+        var channelsAt48 = new Dictionary<int, (double Hz, int Looks, string Text)>();
+
+        var at48Seconds = Time(() =>
+        {
+            var listener = new Psk31Listener(raisedRate);
+            Feed(raised, raisedRate / 4, s =>
+            {
+                listener.Add(s);
+                carriersAt48 = Math.Max(carriersAt48, listener.Channels.Count);
+
+                foreach (var channel in listener.Channels)
+                {
+                    var looks = channelsAt48.TryGetValue(channel.Id, out var seen) ? seen.Looks : 0;
+                    channelsAt48[channel.Id] = (channel.OffsetHz, looks + 1, channel.Text);
+                }
+            });
+        });
+
+        foreach (var (id, seen) in channelsAt48.OrderBy(pair => pair.Value.Hz))
+        {
+            _output.WriteLine("  at 48 kHz, id " + id + " at " + seen.Hz.ToString("0.0", CultureInfo.InvariantCulture)
+                + " Hz, listed for " + Seconds(seen.Looks / 4.0) + ", read " + seen.Text.Length + ": " + Shown(seen.Text));
+        }
+
+        _output.WriteLine("audio                      : " + Seconds(audioSeconds) + " at " + audio.SampleRate + " Hz");
+        _output.WriteLine("the panel, end to end      : " + Seconds(panelSeconds) + ", ratio " + Ratio(ratio));
+        _output.WriteLine("process CPU over that span : " + Seconds(processCpu) + " (every thread in the test host)");
+        _output.WriteLine("the listener alone         : " + Seconds(listenerSeconds) + ", ratio " + Ratio(listenerSeconds / audioSeconds));
+        _output.WriteLine("  the search alone         : " + Seconds(searchSeconds) + ", ratio " + Ratio(searchSeconds / audioSeconds));
+        _output.WriteLine("  four demodulators alone  : " + Seconds(demodulatorSeconds) + ", ratio " + Ratio(demodulatorSeconds / audioSeconds));
+        _output.WriteLine("the listener at " + raisedRate + " Hz : " + Seconds(at48Seconds) + ", ratio "
+            + Ratio(at48Seconds / audioSeconds) + ", most channels at once " + carriersAt48 + " (printed, not asserted)");
+
+        Assert.True(ratio < 1.0, "the panel took " + Seconds(panelSeconds) + " for " + Seconds(audioSeconds) + " of audio");
+    }
+
+    private static double Time(Action work)
+    {
+        var watch = Stopwatch.StartNew();
+        work();
+        return watch.Elapsed.TotalSeconds;
+    }
+
+    private delegate void SpanAction(ReadOnlySpan<float> samples);
+
+    private static void Feed(float[] samples, int chunk, SpanAction add)
+    {
+        for (var at = 0; at < samples.Length; at += chunk)
+        {
+            add(samples.AsSpan(at, Math.Min(chunk, samples.Length - at)));
+        }
+    }
+
+    /// <summary>Raise audio to a whole multiple of its rate, with a windowed-sinc interpolator.</summary>
+    /// <remarks>
+    /// **EIGHT ZERO CROSSINGS A SIDE, HANN-WINDOWED.** The kernel is one at its centre and
+    /// zero at every other original sample, so every original sample comes through
+    /// unchanged, and the images a cruder interpolator leaves above the old Nyquist - each
+    /// a keyed copy of a PSK31 signal - are pushed down into the noise rather than left
+    /// for the search to find.
+    /// </remarks>
+    private static float[] Raise(float[] samples, int factor)
+    {
+        var half = 8 * factor;
+        var kernel = new double[(2 * half) + 1];
+
+        for (var j = -half; j <= half; j++)
+        {
+            var x = Math.PI * j / factor;
+            var sinc = j == 0 ? 1.0 : Math.Sin(x) / x;
+            var window = 0.5 + (0.5 * Math.Cos(Math.PI * j / half));
+
+            kernel[j + half] = sinc * window;
+        }
+
+        var raised = new float[samples.Length * factor];
+
+        for (var k = 0; k < samples.Length; k++)
+        {
+            var sample = samples[k];
+
+            for (var j = -half; j <= half; j++)
+            {
+                var n = (k * factor) + j;
+
+                if (n >= 0 && n < raised.Length)
+                {
+                    raised[n] += (float)(sample * kernel[j + half]);
+                }
+            }
+        }
+
+        return raised;
+    }
+
+    private static string Ratio(double ratio) => ratio.ToString("0.000", CultureInfo.InvariantCulture);
 
     /// <summary>One carrier's row over a whole file.</summary>
     private sealed class Track

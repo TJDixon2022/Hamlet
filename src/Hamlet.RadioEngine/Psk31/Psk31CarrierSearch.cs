@@ -58,8 +58,9 @@ public sealed class Psk31CarrierSearch
         + "at its power centroid takes the differential product of each symbol with the one "
         + "before as a unit phasor, squares it, and averages over " + nameof(MeasureSymbols)
         + " symbols; the probe is listed as a carrier when that average's magnitude is at "
-        + "least " + nameof(CoherenceToAppear) + " and the keying is no more one-way than "
-        + nameof(MostlyOneWay) + ", stays listed while it is at least "
+        + "least " + nameof(CoherenceToAppear) + ", the keying is no more one-way than "
+        + nameof(MostlyOneWay) + " and at least " + nameof(NarrowEnough) + " of the power "
+        + "over the floor within three half-widths is inside one, stays listed while it is at least "
         + nameof(CoherenceToStay) + ", and is retired after " + nameof(RetireAfterSeconds)
         + " without a pass. Its offset is the probe's frequency plus the error the squared "
         + "phasor's angle measures.";
@@ -153,6 +154,23 @@ public sealed class Psk31CarrierSearch
     /// </remarks>
     public const double MostlyOneWay = 0.8;
 
+    /// <summary>**How narrow a place must be to be listed as a PSK31 carrier.**</summary>
+    /// <remarks>
+    /// <para>**0.6 OF THE POWER OVER THE FLOOR WITHIN THREE HALF-WIDTHS MUST BE INSIDE
+    /// ONE.** Keying shape tells PSK31 from noise; it does not tell it from everything
+    /// wide. **Measured, not supposed**: fed the four-signal fixture raised to 48 kHz,
+    /// the search without this listed a fifth carrier at 3999.9 Hz for 27 s and its
+    /// channel read 78 characters of nothing - the old Nyquist edge, where folded noise
+    /// has only two phases and so squares as cleanly as BPSK.</para>
+    /// <para>**WHY THAT NUMBER.** Something flat across the window puts a third inside and
+    /// is rejected. A carrier at these fixtures' levels puts over nine tenths inside even
+    /// where the floor sits under the noise and the noise is counted with it, and one ten
+    /// decibels under the noise in 2500 Hz still about seven tenths - so 0.6 sits between
+    /// them. **It is asked only of a place not yet listed**; a listed carrier is not
+    /// dropped because something wide starts beside it.</para>
+    /// </remarks>
+    public const double NarrowEnough = 0.6;
+
     /// <summary>How long a probe may try before it is given up, in seconds.</summary>
     public const double TrialSeconds = 2.0;
 
@@ -203,6 +221,7 @@ public sealed class Psk31CarrierSearch
     private readonly int _highBin;
     private bool _spectrumStarted;
     private double _floor;
+    private double _nominationFloor;
 
     private readonly float[] _history;
     private int _historyWrite;
@@ -402,6 +421,16 @@ public sealed class Psk31CarrierSearch
 
             _sums[bin] = sum;
         }
+
+        var strongest = 0.0;
+
+        for (var bin = _lowBin; bin <= _highBin; bin++)
+        {
+            strongest = Math.Max(strongest, _sums[bin]);
+        }
+
+        _nominationFloor = Math.Max(
+            _floor, strongest / ((2 * _halfBins) + 1) * Math.Pow(10, -DynamicRangeDb / 10));
     }
 
     /// <summary>Every probe's verdict: listed, kept, moved, given up or retired.</summary>
@@ -421,7 +450,8 @@ public sealed class Psk31CarrierSearch
             {
                 if (shaped
                     && reading.Symbols >= MeasureSymbols
-                    && reading.Coherence >= CoherenceToAppear)
+                    && reading.Coherence >= CoherenceToAppear
+                    && WidthFraction(probe.Hz + reading.ErrorHz) >= NarrowEnough)
                 {
                     probe.Listed = true;
                     probe.Id = _nextId++;
@@ -467,16 +497,7 @@ public sealed class Psk31CarrierSearch
         var lowHz = _lowBin * _binHz;
         var highHz = _highBin * _binHz;
 
-        var strongest = 0.0;
-
-        for (var bin = _lowBin; bin <= _highBin; bin++)
-        {
-            strongest = Math.Max(strongest, _sums[bin]);
-        }
-
-        var width = (2 * _halfBins) + 1;
-        var floor = Math.Max(_floor, strongest / width * Math.Pow(10, -DynamicRangeDb / 10));
-        var wanted = CandidateRatio * floor * width;
+        var wanted = CandidateRatio * _nominationFloor * ((2 * _halfBins) + 1);
 
         for (var bin = _lowBin; bin <= _highBin; bin++)
         {
@@ -578,6 +599,36 @@ public sealed class Psk31CarrierSearch
         var noise = _floor * ReferenceBandwidthHz / _binHz;
 
         return excess > 0 && noise > 0 ? 10 * Math.Log10(excess / noise) : double.NaN;
+    }
+
+    /// <summary>How much of what stands over the floor near a place is inside one signal's width.</summary>
+    /// <remarks>
+    /// **THE POWER OVER THE NOMINATION FLOOR WITHIN ONE HALF-WIDTH, OVER THE SAME WITHIN
+    /// THREE.** A PSK31 carrier puts nearly all of it in the inner third; something as wide
+    /// as the whole window spreads it evenly, a third in each.
+    /// </remarks>
+    private double WidthFraction(double hz)
+    {
+        var centre = (int)Math.Round(hz / _binHz);
+
+        double Excess(int half)
+        {
+            var sum = 0.0;
+
+            for (var i = centre - half; i <= centre + half; i++)
+            {
+                if (i >= 0 && i < _power.Length)
+                {
+                    sum += Math.Max(0, _power[i] - _nominationFloor);
+                }
+            }
+
+            return sum;
+        }
+
+        var wide = Excess(3 * _halfBins);
+
+        return wide > 0 ? Excess(_halfBins) / wide : 0;
     }
 
     /// <summary>Two probes on one carrier are one probe.</summary>
