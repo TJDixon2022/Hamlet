@@ -190,6 +190,44 @@ slots (one click, several keyings).
 the transmitter. It does now, in the one way ruled above and no other. §6's `MOVE: stop`
 on the transmit chain stays in force for anything beyond it.
 
+**§R11 - Tim, 2026-09-11: drive and power. The operator sets nothing at the radio.** Ruled
+on the arbiter's item 43, option A, read the way this application exists to be read: *"I
+don't know anything about the radio… I'm writing this app for people who are the same way."*
+FT8 already transmits cleanly through this radio on the same USB path and the same input
+level; PSK31 uses that path unchanged and asks the operator for nothing. Hamlet's own drive
+level is composed at the value that works for FT8. RF power for PSK31 defaults to **half**
+and is **offered** as a percentage beside the drive, never written silently (HM-DEC-084,
+HM-DEC-074). During a PSK31 send Hamlet reads the ALC and, if it deflects past the zone,
+says so **in plain words** on the panel - not a meter, a sentence a person with no shack
+years can act on - and the record carries the reading with its age. The manual pages for
+anyone who wants them are 12-10 and 4-31, recorded in `docs/psk31-reference.md`. **No unit
+asks the operator to set a level, read a meter, or know what ALC is.** §R4 is superseded.
+
+**§R12 - Tim, 2026-09-11: a session fixes its own tests and never asks the owner to approve
+it.** The one rule that is the owner's, and it is already ruled: **Hamlet never transmits
+without the operator's click** (§0.2). Every test that exists to guard that rule is worded
+to guard that rule and nothing more. A test a session wrote while a door was shut, that
+later blocks the unit told to open the door, is **the session's to rewrite in its own
+commit** so it guards the rule and not the shut door - and that is not a ruling, not an
+ask, and not a stop. `ThePsk31ConversationCardTests.NothingOnTheCardTransmits` is the first
+such test and is rewritten by the next unit. **The arbiter never puts the wording of a
+test to the owner.** Item 45 is closed by this ruling.
+
+**§R13 - Tim, 2026-09-11: telemetry is a must-pass on every remaining step.** Every stage a
+step adds writes an event in the `psk31` category that lets a person diagnose that stage
+from the file alone, proved by assertion against a fixture, with nothing personal in it
+(HM-DEC-018, §2.1). Unit 322 built the receive and transmit events; a step that gives an
+event its first production call site proves the event fires there. Step 5 adds the log
+and achievement events. Step 4's `psk31_send_*` events gain their call sites when the door
+opens.
+
+**§R14 - Tim, 2026-09-11: eyes on the prize.** *"We don't focus too much on pointless
+testing. We remember what the phase goal is."* A test exists to prove an exit criterion.
+A unit writes the tests its criteria need and no others; it does not add guards for doors
+it is not building, pins against changes it is not making, or tests of a test. **The
+measure of a unit is whether Tim can see PSK31 coming in and going out**, not the count of
+green.
+
 ## §4 The steps
 
 Each step verifies its own ground: entry criteria are checked by the step, not
@@ -331,6 +369,13 @@ under §R4.
 entries, checked by running that test first. The chain `cq_pressed → … → Played` is as
 `2026-09-10.jsonl` proved it, and §R10 is the only licence to change it.
 
+**Progress at 2026-09-11 (units 318-322):** the modulator, loopback, bandwidth, the
+unslotted send under R10, the certainty gate, the turn indicator and the conversation card
+are built and green. **What remains is the press half**: the CQ that sends once on a clear
+spot, the receipt, its retirement by a certain answer, the answer and report and confirm
+macros offered on certainty, and the power offer under §R11. The test that stood in the
+way is the next unit's to rewrite under §R12.
+
 **Exit:**
 - **Loopback:** each of the four macros is modulated by Hamlet, decoded by Hamlet's own
   demodulator, and comes back identical. *must-pass*
@@ -343,8 +388,9 @@ entries, checked by running that test first. The chain `cq_pressed → … → P
   (§R1 strict side). *must-pass*
 - The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
   does not know, and the `SlotClock` is not shown for this mode. *must-pass*
-- Drive level and RF power for PSK31 are shown on the panel; the defaults are the ALC
-  at no deflection and half rated power, both changeable by Tim (§R4). *must-pass*
+- Under §R11: the power offer is on the panel beside the drive, defaulting to half;
+  nothing is asked of the operator at the radio; during a send an ALC reading past the
+  zone becomes a plain sentence on the panel and an event in the record. *must-pass*
 - Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
   §R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
   guarding tests, and a no-slot send capped at a stated length. *must-pass*
@@ -461,3 +507,8 @@ Open asks this phase touches or must not lose. Every unit carries them in its se
   the arbiter's stop of unit 317 with option A. §2's premise corrected, step 4's entry and
   exit amended, §6's transmit-chain stop narrowed to what §R10 does not cover. The step
   list is unchanged.
+- **2026-09-11, third revision.** §R11 (drive and power: the operator sets nothing), §R12
+  (a session fixes its own tests), §R13 (telemetry must-pass on every remaining step), §R14
+  (eyes on the prize) added on Tim's rulings of the same evening. Step 4's drive-and-power
+  exit rewritten under §R11 and its entry annotated with what units 318-322 delivered. §R4
+  superseded. The step list is unchanged.
