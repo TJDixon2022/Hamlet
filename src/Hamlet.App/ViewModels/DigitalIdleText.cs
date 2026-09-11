@@ -42,6 +42,30 @@ public static class DigitalIdleText
             + " seconds, so give it a slot or two before deciding the band "
             + "is empty.";
 
+    /// <summary>The mode strip, for a mode Hamlet cannot yet read.</summary>
+    /// <param name="mode">The mode the operator pressed, e.g. "PSK31".</param>
+    /// <returns>One sentence naming the mode and what it cannot do yet.</returns>
+    /// <remarks>
+    /// <para>**A MODE WITH NO DECODER SAYS SO** (work instruction 312, step 0 of the
+    /// PSK31 phase). Pressing PSK31 tunes the radio to the cited watering hole and
+    /// then reads nothing, and until this sentence existed the panel underneath said
+    /// *slots here run 15 seconds, so give it a slot or two before deciding the band
+    /// is empty* - a sentence about FT8, on a mode that has no slots, telling the
+    /// operator to wait for something that is never coming (0.0, HM-DEC-092).</para>
+    /// <para>**IT NAMES THE MODE, WHICH <see cref="ModeStripFor"/> DELIBERATELY DOES
+    /// NOT.** That line names the slot length because the length is what was
+    /// measured and the name would have been a claim. Here the name is the whole
+    /// point: what is being said is that *this* mode is the one nothing can read
+    /// yet, while the two beside it can.</para>
+    /// <para>**AND IT SAYS WHERE THE RADIO IS**, because the tune did happen and the
+    /// operator can hear the band even though Hamlet cannot read it. An empty panel
+    /// that did not say that would read as a tune that failed.</para>
+    /// </remarks>
+    public static string NotYetReadable(string mode)
+        => "the radio is on the " + mode + " calling frequency and Hamlet cannot "
+            + "read " + mode + " yet, so nothing will appear below. You can still "
+            + "hear it, and it sounds like a warble you could almost hum.";
+
     /// <summary>The waterfall, before any spectrum has arrived.</summary>
     /// <remarks>
     /// **THE CONTROL DRAWS ITS OWN EMPTY STATE ALREADY**, saying no spectrum has

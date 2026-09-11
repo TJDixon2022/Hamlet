@@ -325,12 +325,39 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
+
+    // **AND THE STRIP LINE, WHICH NOW READS THIS** (work instruction 312 task 2).
+    // `FollowTheChosenMode` raises it too and is not enough on its own: it returns
+    // early where the underlying `DigitalMode` did not move, and pressing PSK31
+    // from FT8 is exactly that case - the label changed, the decoder did not, and
+    // the sentence on the panel is about the label.
+    [NotifyPropertyChangedFor(nameof(DigitalModeStripLine))]
     private string? _chosenDigitalMode;
 
     partial void OnChosenDigitalModeChanged(string? value)
     {
         _settings.LastDigitalSubMode = value;
         SettingsStore.Save(_settings);
+
+        // **THE RECORD SAYS WHICH MODE HE WENT TO, BY NAME** (work instruction 312
+        // task 2). The mode field on every other event is `DigitalMode`, which has
+        // two members and answers `Ft8` for the two labels it does not carry - so
+        // a file recording an evening on PSK31 said FT8 throughout and there was no
+        // way to tell it from an evening on FT8. **The label is what he pressed**
+        // and is the only thing here that knows the difference.
+        // **NOTHING PERSONAL** (2.1): a mode name, and no callsign, grid or
+        // location anywhere near it.
+        AppEvents.StateChanged(
+            _telemetry,
+            "digital_sub_mode",
+            _lastReportedSubMode ?? StartupSnapshot.Unknown,
+            value ?? StartupSnapshot.Unknown,
+            CanDecode(value)
+                ? "the operator pressed a mode Hamlet can read"
+                : "the operator pressed a mode Hamlet cannot read yet",
+            mode: value ?? StartupSnapshot.Unknown);
+
+        _lastReportedSubMode = value;
 
         // **THIS IS THE ROUTE UNIT 290 CUT AND LEFT UNPRESSED** (work instruction 292
         // task 2). The grid, the watch and the two sentences follow the chip he pressed
@@ -1862,6 +1889,33 @@ public partial class MainWindowViewModel : ObservableObject
         => string.Equals(chosen, "FT4", StringComparison.Ordinal)
             ? DigitalMode.Ft4
             : DigitalMode.Ft8;
+
+    /// <summary>The last sub-mode written to the record, for the transition.</summary>
+    private string? _lastReportedSubMode;
+
+    /// <summary>Whether Hamlet can read the mode the operator pressed.</summary>
+    /// <param name="chosen">The canonical label, or null where he has pressed none.</param>
+    /// <returns>True where a decoder exists for it.</returns>
+    /// <remarks>
+    /// <para>**THE TWO WITH A DECODER, NAMED, RATHER THAN THE TWO WITHOUT** (work
+    /// instruction 312 task 2). <see cref="DigitalModeFor"/> answers `Ft8` for
+    /// anything that is not FT4, which is the right default for a grid and a cutter
+    /// and is **not** an answer to *can this be read* - and the tab was using it as
+    /// one, so pressing PSK31 ran FT8's decoder on a PSK31 frequency under a line
+    /// about fifteen-second slots.</para>
+    /// <para>**NOTHING CHOSEN IS FT8'S CASE**, which is the status quo: a fresh
+    /// profile has no sub-mode and the tab has always behaved as FT8 until he
+    /// presses something.</para>
+    /// <para>**IT IS THE SHELL THAT KNOWS THIS AND NOT THE ENGINE** (0.1).
+    /// `DigitalMode` carries the two modes that have a path and its own remarks say
+    /// why a third member would assert a capability the application does not have;
+    /// this is the shell mapping its four labels on to that, which is the job those
+    /// remarks hand it.</para>
+    /// </remarks>
+    private static bool CanDecode(string? chosen)
+        => chosen is null
+            || string.Equals(chosen, "FT8", StringComparison.Ordinal)
+            || string.Equals(chosen, "FT4", StringComparison.Ordinal);
 
     /// <summary>**Whose slot this is and how much of it is left**, in one sentence.</summary>
     /// <remarks>
@@ -3522,11 +3576,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// the strip's own idle line, written in August.
     /// </remarks>
     public string DigitalModeStripLine
-        => _digitalRefusal.Length > 0
-            ? _digitalRefusal
-            : _digitalDecodeNote.Length > 0
-                ? _digitalDecodeNote
-                : DigitalIdleText.ModeStripFor(DigitalGrid);
+        => !CanDecode(ChosenDigitalMode)
+            ? DigitalIdleText.NotYetReadable(ChosenDigitalMode!)
+            : _digitalRefusal.Length > 0
+                ? _digitalRefusal
+                : _digitalDecodeNote.Length > 0
+                    ? _digitalDecodeNote
+                    : DigitalIdleText.ModeStripFor(DigitalGrid);
 
     /// <summary>The decoded panel's collapsed summary.</summary>
     /// <remarks>

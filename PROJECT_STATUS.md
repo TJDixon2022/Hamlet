@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 4
+TASK: 2 of 4
 WORK_INSTRUCTION: 312 - PSK31 exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T01:15:41-04:00
-NOTE: Task 1 done - carry-forward 106 of 106 green, version 1.12.274 to 1.13.0, phase record open.
+UPDATED: 2026-09-11T01:39:07-04:00
+NOTE: Task 2 green - ThePsk31SeamTests 6 of 6, the panel names the mode and says it cannot read it.
 
 ---
 
