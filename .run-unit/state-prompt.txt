@@ -42,6 +42,13 @@ under Â§R4.
 entries, checked by running that test first. The chain `cq_pressed â†’ â€¦ â†’ Played` is as
 `2026-09-10.jsonl` proved it, and Â§R10 is the only licence to change it.
 
+**Progress at 2026-09-11 (units 318-322):** the modulator, loopback, bandwidth, the
+unslotted send under R10, the certainty gate, the turn indicator and the conversation card
+are built and green. **What remains is the press half**: the CQ that sends once on a clear
+spot, the receipt, its retirement by a certain answer, the answer and report and confirm
+macros offered on certainty, and the power offer under Â§R11. The test that stood in the
+way is the next unit's to rewrite under Â§R12.
+
 **Exit:**
 - **Loopback:** each of the four macros is modulated by Hamlet, decoded by Hamlet's own
   demodulator, and comes back identical. *must-pass*
@@ -54,8 +61,9 @@ entries, checked by running that test first. The chain `cq_pressed â†’ â�
   (Â§R1 strict side). *must-pass*
 - The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
   does not know, and the `SlotClock` is not shown for this mode. *must-pass*
-- Drive level and RF power for PSK31 are shown on the panel; the defaults are the ALC
-  at no deflection and half rated power, both changeable by Tim (Â§R4). *must-pass*
+- Under Â§R11: the power offer is on the panel beside the drive, defaulting to half;
+  nothing is asked of the operator at the radio; during a send an ALC reading past the
+  zone becomes a plain sentence on the panel and an event in the record. *must-pass*
 - Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
   Â§R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
   guarding tests, and a no-slot send capped at a stated length. *must-pass*
@@ -73,724 +81,495 @@ entries, checked by running that test first. The chain `cq_pressed â†’ â�
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet works PSK31 the way it works FT8. Steps 0 to 3 done,
-   4 partial (six of its eight must-pass met, unchanged by this unit), 5 and 6 not started.
-B. Step 4 and its eight must-pass, each met or not met, with its number:
-   - loopback, bandwidth, the chain as R10 allows, over the cap refused: met by unit
-     318; ThePsk31ModulatorTests, TheUnslottedSendTests and
-     TheFt8AndFt4SendsAreByteIdenticalTests still green and unedited (engine
-     carry-forward 120 of 120 before and after); nothing under Transmit changed;
-   - the certainty gate and the turn indicator: met by unit 319; both
-     ThePsk31OfferTests, ThePsk31TurnTests and ThePsk31ConversationCardTests still green;
-   - receipt and cards, the receipt half: NOT BUILT. One press one transmission and one
-     receipt with no station facts and no Log - no; a second press refreshes it - no; a
-     certain answer retires it and opens a card - no; a guessed answer retires nothing -
-     no; two answers two cards and nobody inherits - no. So not met. Task 2 stopped:
-     a carry-forward test pins the door shut by its text (section 1, item 45);
-   - drive and power on the panel: not aimed at; asks 32, 33 and 43 not answered;
-   - in the running application, pressing CQ under PSK31 still refuses in words: yes,
-     with the sentence it had before (ThePsk31TabIsInertTests 5 of 5, unedited).
-   The carry-forward list: app 135 of 135, engine 120 of 120 (one intermittent red
-   seen once, item 46); item 39's red gone, with the assertions after the narrowed line
-   running and green - yes.
-   Beyond the must-pass: task 4 not started, because it stands on task 2's press (not
-   dropped); the clear spot not built. Task 3's item 41 alone: W1AW's card now holds
-   FN31 from his certain report, and a guessed grid is not handed.
-C. The report last. Section 4 raises 3 items, new, on top of a carried queue of
-   forty-four. Item 45 is in the way of criterion 3's receipt half: a ruling on two
-   structural pins in ThePsk31ConversationCardTests.NothingOnTheCardTransmits. Besides
-   drive and power, and asks 32, 33 and 43, item 45 is what now stands between step 4
-   and done.
+   4 done on this session's evidence, 5 and 6 not started.
+B. Step 4 and its must-pass - each met or not met, with the number.
+C. The report last, and section 4 raises 7 items on top of the carried queue.
 ```
 
 ```
-UNIT:       320 - stopped at task 3 of 4, none dropped (task 2 stopped on a carry-forward pin; task 3 built its assertion 5 only; task 4 not started) - 2026-09-11 15:49
-PHASE GOAL: PSK31 becomes Hamlet's third digital mode, on a modem Hamlet wrote, with FT8's two
-            cards, its one-click exchange, its log and its achievements.
-UNIT GOAL:  Build the press at the bench: a PSK31 CQ that sends once on a clear spot and leaves one
-            receipt with no Log, retired by a certain answer, behind a door only drive and power
-            can open - with the running application still refusing, and the carry-forward list
-            green again.
-ADVANCED:   no - no must-pass moved; the unit removed a blocker (item 39's carry-forward red) and
-            corrected a false map sentence (item 41); the press was stopped on item 45
-NUMBER:     PSK31 CQ presses that send once and make a receipt, at the bench 0 -> 0;
-            receipts retired by a certain answer 0 -> 0; carry-forward reds 1 -> 0;
-            offers or retirements on anything but a certain message 0; version
-            1.13.6 -> 1.13.7
-DRIFT:      1 consecutive units without advance  (was 0)
+UNIT:       323 - complete at task 5 of 5, none dropped - 2026-09-11 18:55
+PHASE GOAL: Tim can work PSK31 the same way he works FT8 - see who is on the
+            band, see what they are saying, answer one of them with a click,
+            and have the contact end up in the log with a record behind it.
+UNIT GOAL:  The press half of step 4. Pressing CQ under PSK31 puts one PSK31
+            signal on the air, on a spot Hamlet chose so it lands on nobody,
+            once, with a receipt that says so. Clicking a station calling CQ
+            answers him. The rest of the exchange is offered one button at a
+            time, only when the parser is certain it is his turn. Power is
+            offered at half and nothing is asked of him at the radio.
+ADVANCED:   yes - step 4. The door was the only thing left; it is open, the
+            press works end to end, and every must-pass below has a green
+            named test behind it.
+NUMBER:     macros that can go on the air 0 -> 4 of 4
+DRIFT:      0 consecutive units without advance  (was 2)
 ```
 
 ## 1. What Claude did
 
-**Stopped at task 3 of 4. Nothing was dropped.**
-- **Task 1** is complete.
-- **Task 2** is stopped. It cannot be built without turning a carry-forward test red that this
-  instruction forbids editing.
-- **Task 3** built its assertion 5 only (item 41). Its assertions 1 to 4 need the press.
-- **Task 4** was not started, because it stands on task 2.
-- **The drop candidate (task 4) was not taken.** It was not reached, for the reason above, and
-  that is a stop and not a drop.
+**Complete, at task 5 of 5, nothing dropped.** QUIVERFULL, `C:\Source\HamLet`,
+project gate checked against the tree and passed, branch `main`, seven commits
+pushed.
 
-Machine QUIVERFULL, project Hamlet. The gate's four checks held: `SHACK_FACTS.md` and
-`CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and `MURC.sln` do not, root `C:\Source\HamLet`.
-Branch `main`.
+This was a **relaunch**. The previous attempt at unit 323 was killed by the
+watchdog at 17:55 with tasks 1a and 1b already committed; this session picked up
+at task 1c and finished the unit.
 
-Commits, each pushed and level with `origin/main`:
-- `1573b85` task 1;
-- `e82d36c` item 39;
-- `4dbffda` item 41;
-- the report commit after this file.
+**Every appearance claim in this report is computed, not seen.** The window is
+built headless and its visual tree walked, which says a control exists and is
+visible and says nothing about what it looks like. No radio was connected, no
+serial port was opened and no RF existed at any point (`SHACK_FACTS.md` FACT-004,
+FACT-006).
 
-**The line of `PHASE_STATUS.md` this session wrote:** `WORK_INSTRUCTION: 320 - say it, the press
-half: a PSK31 CQ that makes a receipt at the bench, behind a door only drive and power can open`.
-Nothing else in that file was written. Task 1's commit carried the file as it stood, which included
-the launcher's `HEARTBEAT:` line, as units 316 to 319 did.
+### Task 1 - the guard says what it is for, and the door has a handle
 
-### Why task 2 stopped
+**1a and 1b were the killed session's** and are unchanged: the carry-forward list
+measured green before anything moved (app 145 of 145, engine 120 of 120),
+`PHASE_OUTCOME.md` gained `UNIT 323`, the version went 1.13.8 -> 1.13.9, and
+`NothingOnTheCardTransmits` was rewritten under §R12 in its own commit.
 
-**`ThePsk31ConversationCardTests.NothingOnTheCardTransmits`** is on the carry-forward list, and
-section 7 names its class as never to be edited. It carries two structural pins that the press
-must break:
-- `:325-337`: `Assert.Empty(nows)`, **no line of code under `src\Hamlet.App` contains `NowAsync`**;
-- `:341-347`: `Assert.Contains(door, shell)`, **`CanTransmitIn`'s four lines, character for
-  character**: `null`, `FT8`, `FT4` and nothing else.
+**1c, this session.** `CanTransmitIn` answers true for PSK31, through the same
+predicate FT8 and FT4 go through.
 
-Task 2 needs both to change:
-- **`NowAsync` in the app.** Ask 37's first edge, confirmed below: a no-slot send left armed makes
-  the next slot tick throw, so the click must arm and fire `NowAsync` in one handler. Nothing else
-  runs a no-slot send. `AtBoundaryAsync` answers `HasNoSlot` (`Ft8ArmedSend.cs:470-473`).
-- **`CanTransmitIn` answering true for PSK31 behind a predicate.** That is task 2's first bullet,
-  in those words.
+**What the bolt was, and what it became.** Units 320 and 321 both decided the door
+would open only behind a predicate for §R4's drive and power *that nothing in
+`src/` made true*, with a test-only seam. **Neither unit ever wrote it.** There is
+no such predicate anywhere in the tree - the bolt was `CanTransmitIn` answering
+false, and nothing else. §R11 rules the question it was waiting on, so the bolt
+does not move: it is gone, and the door is the mode gate it always was.
 
-So the press would make a carry-forward test red that cannot be edited. Task 3 assertion 6 also
-requires that test green and unedited, and `PHASE_PLAN.md` §4 makes the list green part of every
-step's exit.
+Opening it alone would have composed FT8 tones on 14.070, which is the exact fault
+the gate was added for, so the same change gave PSK31 its own arm. `SendMessage`
+keeps the one entry point - the press recorded, the empty text refused, the mode
+gate asked - and then branches to `SendPsk31`, which composes with
+`Psk31Modulator` at the operator's own drive peak, arms the same `Ft8ArmedSend`
+with `OperatorSend.Now`, and fires the same `Ft8TransmitSequence`. One `PttOn`
+site, one unkey path, no slot (§R10).
 
-**Rejected:**
-- *Building it and carrying the red*, which unit 319 did with item 39. This unit's goal is the
-  list green again.
-- *Getting past the text scan*: firing `NowAsync` through a helper with another name, or putting
-  the bolt beside `CanTransmitIn` rather than in it. Either passes the pins while doing exactly
-  what they exist to forbid. That is gaming the test.
-- *Editing the test*: section 7.
+`ThePsk31TabIsInertTests` was retired by task 1b and its two surviving assertions
+moved into `ThePsk31PanelSpeaksPsk31Tests`, where they are green.
 
-It is item 39's shape again: a pin from unit 319's shut door, against this unit's press. It is
-raised as item 45 with the narrowing that would let the next unit build task 2 as written.
+### Task 2 - the press
+
+**The clear-spot rule, stated in one place.** `Psk31ClearSpot.Rule`: *at least
+150 Hz from every carrier being read and from every candidate over quality 0.4, in
+the middle of the widest such gap between 400 and 2200 Hz.* The 0.4 is read from
+`Psk31CarrierSearch.CoherenceToStay` rather than typed, so the two cannot drift.
+
+**The gap is searched between 400 and 2200 Hz and not across the receive
+passband**, and that is a correction worth naming. The search looks to half the
+sample rate - nearly 24 kHz at 48 000 - and the widest gap up there is always above
+the SSB filter, so the first draft would have put a carrier somewhere the sound
+card would accept and the radio would never transmit. The two numbers are this
+unit's choice and are said in the code to be: `SHACK_FACTS.md` records no filter
+width and nothing here read one.
+
+Where there is no such spot the press refuses in plain words, writes
+`psk31_send_refused` with reason `no_clear_spot`, and nothing is composed, staged
+or keyed.
+
+**The receipt** is the existing call-to-anybody record, not a second type, so it
+retires the same way and carries no Log and no station facts (§R8). It replaces
+rather than appends - last call only, no count - and the FT8 split rule is
+untouched, because the PSK31 CQ is characters and not 77 bits. A certain answer
+retires it and opens that station's card; two certain answers make two cards and
+nobody inherits the call; a guessed answer retires nothing.
+
+**One finding fixed in passing.** `RebuildCards` withheld every card until the
+clock offset had been measured, which is right for FT8 - its card state is counted
+in slots - and wrong for PSK31, which has none. Before this, pressing CQ on a
+machine whose offset was never measured put a signal on the air and left the panel
+empty. The FT8 side is unchanged.
+
+### Task 3 - answering, and the rest of the exchange
+
+A PSK31 row whose reading is a **certain** CQ from somebody other than the operator
+offers one thing on a right-click - *Answer W1AW* - and it reaches
+`AnswerPsk31Command`, which sends §R2's Answer **at his own offset** rather than on
+a spot Hamlet chose, and puts his card up at *his turn*. The FT8 send menu still
+answers null for every PSK31 row.
+
+**Hamlet's own half of the conversation is now kept.** Whose turn it is, which
+macro comes next and whether the contact is finished are all questions about both
+halves, and the listener only ever sees what arrives. Each macro Hamlet sends is
+kept beside the station it was addressed to, **parsed by the same
+`Psk31ExchangeParser` his lines go through**, and merged back into the conversation
+at the point it went out. `Psk31Turn` and `Psk31Offer` already read the operator's
+own messages out of such a list; neither engine type changed.
+
+The card draws the offered macro on the button the FT8 card already has, with the
+exact text on the hover and no countdown ring - PSK31 has no slot to catch. Where
+the parser is not certain, there is no button and the card says *"Waiting to be
+sure it is your turn before offering anything to send"*, so *Hamlet is not sure*
+and *there is nothing to send* no longer look identical. Finished is both halves
+and both certain on his side, and only then does the Log appear - on his card,
+never on the receipt.
+
+### Task 4 - power offered at half, and the ALC in plain words
+
+Beside the transmit drive: a sentence and two buttons. Accepting makes **exactly
+one** write, `CivWrites.RfPower` at 128 of the `0000 to 0255` range the write
+itself declares. Declining writes nothing. Nothing on the whole realised window is
+the USB MOD Level, asserted over every visible piece of text.
+
+After a send that keyed, Hamlet reads the ALC and writes `psk31_send_alc` with the
+number, its age (HM-DEC-111), whether it was past the zone, and the figure it was
+judged against. Past the zone the panel gets one sentence; inside it, none; no
+reading at all, none - and the record says which of the three.
+
+### Task 5 - stood up and pressed
+
+Reported in section 3.
 
 ### Decisions this session made for itself
 
-1. **Stopping task 2 rather than building it**, for the reasons above. Everything after it that
-   stands on it stopped too: task 3 assertions 1 to 4, and task 4.
-2. **Building task 3's assertion 5 (item 41) alone, in its own commit.**
-   - *Why:* it does not touch the door, the arbiter had already decided it, and it corrects a
-     false sentence on the panel today.
-   - *The test class* is named for what it asserts, `ThePsk31CardIsHandedHisGridTests`, not
-     `ThePsk31ReceiptRetiresTests`, so it does not promise receipt tests it does not hold.
-3. **Building neither the bolt nor the clear-spot rule as code with no caller.** Both are task 2's,
-   and code nothing reaches proves nothing at the bench.
-4. **The grid rule, as built:** the grid of the latest message the parse is certain of, spoken by
-   that station. The operator's own grid, in his own report, is excluded because he is not the
-   speaker. A card is replaced in place when its grid moves, as for its turn and offer.
-5. **`ThePressingOfCqTests.AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard` is treated as
-   intermittent.**
-   - It failed once in the first full after-run and passed alone.
-   - It passed in a second run of the same full list.
-   - It reads the FT8 ledger only, and this unit changed only the PSK31 card path.
-   - It is raised as item 46 and was not chased.
-6. **The two engine classes added since `a36ce1e`** (`TheFt8AndFt4SendsAreByteIdenticalTests`,
-   `TheUnslottedSendTests`) are on `docs\chain-guarding-tests.txt` under their own heading. They
-   are on the carry-forward list too. The 15-class engine count is kept separate so it compares
-   with unit 319's.
+1. **The clear spot is bounded by what the radio will transmit (400-2200 Hz), not
+   by what Hamlet can hear.** Stated as this unit's choice, not a measurement.
+2. **The ALC zone is 128 of the meter's 0-255.** This unit's figure, not a
+   measurement, carried in every event beside the reading so the judgement can be
+   checked. If the owner rules a figure it replaces this one.
+3. **No CI-V read command was invented for the ALC.** There is none in the tree;
+   see item 47.
+4. **Six more tests were rewritten under §R12 and the owner was not asked.** See
+   the list in section 3.
+5. **`Psk31Macro` gained a `Cq` member** so the card's offered macro and the send
+   path's recorded macro are one value rather than two spellings. It is never
+   offered - a call to anyone is not part of a conversation - and the enum says so.
+6. **The six events are written in a slightly different order from the one the
+   instruction lists.** See item 48.
+7. **The report validator could not be executed and was applied by hand**, rule by
+   rule, against the script's own printed list. See item 53.
 
-### Task 1a - entry, run by name
+### The numbers
 
-- **App:** `ThePsk31ConversationCardTests` and the app `ThePsk31OfferTests`, 10 of 10.
-- **Engine:** `ThePsk31TurnTests`, the engine `ThePsk31OfferTests`, `ThePsk31ModulatorTests`,
-  `TheUnslottedSendTests` and `TheFt8AndFt4SendsAreByteIdenticalTests`, 38 of 38.
-
-The card, the turn, the modulator and the unslotted send were all green, so there was ground.
-
-### Task 1b - the trace, file and line at `9e55e32`
-
-**How an FT8 CQ press becomes a receipt:**
-- **The command.** `SendCallToAnyone` (`MainWindowViewModel.cs:13343-13353`) writes `cq_pressed`
-  and calls `SendMessage(CallToAnyoneText)` (`:13320-13322`, `Ft8SendOptions.CallToAnyone`).
-- **`SendMessage`** (`:12709-12879`), in order:
-  - `send_requested` (`:12719`);
-  - the mode gate (`:12736-12749`);
-  - `SendStage.Composed` (`:12771`);
-  - the compose, `ComposeForTheChosenMode` (`:12773`, body `:12913-12924`), which is
-    `Ft4Composer.ComposeSignal` or `Ft8Composer.ComposeSignal` at `_transmitSampleRate` and
-    `_settings.TransmitDrivePeak`;
-  - the read-back, `Ft8ReadBack.Check` (`:12801-12807`).
-- **The receipt is booked here, at the press, before anything is armed:**
-  `BookTheSend(wanted, TheNextBoundary())` (`:12830`, body `:11979-11999`). It calls
-  `_contacts.RecordSent(text, slot)` and then `RebuildCards()`.
-- **The arm.** With no armed send, a refusal (`:12836-12849`). Otherwise `_armedText`,
-  `SendStage.Armed`, and **`_armedSend.Arm(new OperatorSend(...){ Grid = grid })`**
-  (`:12858-12872`). Its return value is discarded.
-- **`DriveTheArmedSend`** (`:12944-12969`) is called from the slot tick at `:10735`. It reads
-  `(_armedSend.Armed?.Grid ?? DigitalGrid)` (`:12952`) and hands the boundary to
-  `AtSlotBoundaryAsync` (`:12981`). That calls `RecordSent` again only when `run.AudioWentOut`
-  (`:13030-13041`) and keeps the sent row (`:13073`).
-- **Where the receipt lives, and under what name** (mismatch 2). There is no `Receipt` type.
-  - It is the FT8 ledger's record under the key **`Ft8ContactLedger.CallToAnyone = "CQ"`**
-    (`Ft8ContactLedger.cs:207`), booked by `RecordSent` (`:269-291`; the call-to-anyone key at
-    `:283-287`).
-  - `CardStations()` adds it from `_contacts.For(CallToAnyone).LastSent`
-    (`MainWindowViewModel.cs:3283-3291`).
-  - `RebuildCards()` (`:3386-3443`) makes it an `Ft8ContactCard`, and **`IsCallToAnyone`**
-    (`Ft8ContactCard.cs:702-704`) turns that card into the receipt: word *Calling* (`:691`),
-    sentence *"Your call went out to anyone listening."* (`:699`), no place (`:254`), no Log link
-    (`:414-415`), no globe (`:457`), the call rows for detail (`:624-627`).
-  - `ActionFor` offers it nothing (`MainWindowViewModel.cs:3480-3486`, R8).
-  - It holds the ledger record's sent messages, each with its text and slot.
-- **R3, refreshed on a repeat press.** The same key `CQ` finds the same record (`Book`,
-  `Ft8ContactLedger.cs:316-329`), and the card is built once per key.
-- **R4, the last call only.** `CardStations` reads `LastSent` (`MainWindowViewModel.cs:3288-3290`).
-  The receipt's rows are `CallRows()`; its remarks at `Ft8ContactCard.cs:717-719` say no count.
-  Its body was not read further.
-- **R5, what retires it.** `Ft8ContactLedger.RecordHeard` (`:228-259`): a heard message addressed
-  to the operator calls `Retire()` (`:252-255`), which removes `CQ` (`:307-311`). The public door
-  is `RetireTheCall()` (`:304`). A decoded FT8 row reaches it through `PlaceRow`.
-- **What tells the receipt a send went out: the press itself.** `BookTheSend` books before arming,
-  and its remarks say the card *"makes no claim that anything reached the air"*
-  (`MainWindowViewModel.cs:12823-12826`). `Played` is not what makes it.
-- **Not traced, for the next unit:** whether `Ft8ContactLedger.RecordSent`'s FT8 splitter books
-  §R2's PSK31 CQ (`CQ CQ CQ de ... pse K`) as a call to anyone. A PSK31 receipt cannot be assumed
-  to ride the FT8 ledger.
-
-**What unit 318 built for a no-slot send, and ask 37's three edges, each confirmed:**
-- `OperatorSend.Now(UnslottedTransmission, frequency, class, guard)` is at
-  `Ft8TransmitSequence.cs:194-200`, with `HasSlot` false.
-  - `Transmission`, `SlotStartUtc`, `StartSecondsIntoSlot` and `Grid` throw
-    `InvalidOperationException` (`:207`, `:223`, `:227-228`, `:263-267`).
-  - The cap is `LongestUnslottedSeconds = 30` (`:133`).
-- **Edge 1, `DriveTheArmedSend` reading `Armed?.Grid`.** Confirmed at `MainWindowViewModel.cs:12952`.
-  A no-slot send left armed makes the next tick throw at the `Grid` getter.
-- **Edge 2, `Arm`'s refusal.** Confirmed. `Arm` returns `TransmitRun?` (`Ft8ArmedSend.cs:279-294`),
-  the refusal comes from `RefusedBeforeArming` (`Ft8TransmitSequence.cs:760-770`), and the one
-  caller at `MainWindowViewModel.cs:12858` discards it.
-- **Edge 3, the *"Psk31"* spelling.** Confirmed. The cap refusal reads
-  `"... s of {audio.Mode} audio ..."` (`Ft8TransmitSequence.cs:792-795`), and
-  `UnslottedMode.Psk31` (`UnslottedTransmission.cs:12`) prints `Psk31`.
-
-**How the single-arm pins count, so a PSK31 send can go through the one `.Arm(`:**
-- **`ArmHasExactlyOneCallerInSrc`**
-  (`TheWholeFt4ChainRunsFromOneRightClickTests.cs:759-794`): every line of every `src\*.cs`,
-  outside `bin` and `obj`, that contains `.Arm(` (comments included). Exactly one, and it is in
-  `MainWindowViewModel.cs`.
-- **Also found, not in the instruction:**
-  `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission` (`Views\...:495-536`) requires
-  one `_armedSend.Arm(`, one `new Ft8ArmedSend` and one `new Ft8TransmitSequence` under `src`, and
-  the arm **inside `SendMessage(`'s body**.
-- **So a PSK31 arm has to live inside `SendMessage`.**
-
-**What composes a PSK31 macro:**
-- `Psk31Modulator.Compose(text, sampleRate, offsetHz, peak)` (`Psk31Modulator.cs:83-89`) returns
-  an `UnslottedTransmission(Psk31, samples, rate, length)`.
-  - It refuses a rate of zero or less, an offset outside the band from zero to Nyquist, and a peak
-    outside the range above zero and at most one (`:103-121`).
-  - The idle is 32 bits before (`:47`) and 16 after (`:59`).
-- The texts are `Psk31Macros.Cq`, `Answer`, `Report` and `Confirm` (`Psk31Macros.cs:31-92`).
-- **The operator's `TransmitDrivePeak` can reach it at the one compose site.**
-  `ComposeForTheChosenMode` already hands `_transmitSampleRate` and `_settings.TransmitDrivePeak`.
-- **But that method returns an FT8 result.** `SendMessage` then reads it back with
-  `Ft8ReadBack`, books it on an FT8 boundary and arms a slotted send. So a PSK31 branch has to part
-  from FT8 after the gate, inside `SendMessage`.
-- **`BuildTheArmedSend` checks the endpoint's rate against FT8 or FT4 only**
-  (`MainWindowViewModel.cs:11415-11437`).
-
-**What the carrier search hands out that a clear spot could be read from:**
-- `Psk31CarrierSearch.Carriers` gives `Psk31Carrier(Id, OffsetHz, StrengthDb, KeyedUntilSample)`
-  (`Psk31CarrierSearch.cs:19`, `:286`), lowest offset first.
-- It searches from 64 Hz to 64 Hz under Nyquist (`:275-279`). A signal's half-width is
-  `SignalHalfWidthHz = 32` (`:90`).
-- The panel holds the listener as `_psk31` (`MainWindowViewModel.cs:1970`), whose `Channels` give
-  `Psk31Channel(Id, OffsetHz, StrengthDb, Text)` (`Psk31Listener.cs:10`, `:100`).
-
-**For criterion 6. Read only; nothing changed.**
-- **RF power.**
-  - Read by `CivReads.RfPower` (`14 0A`, p. 19-3, `CivReads.cs:186-187`), decoded at
-    `CivDecode.cs:135`, labelled *Transmit power* at `RigReadout.cs:139`.
-  - Shown only in CW: `AutoCallViewModel.PowerLine` (`AutoCallViewModel.cs:193-196`) and
-    `TransmitNotes.PowerNote` (`Cw\TransmitNotes.cs:81-97`).
-  - Its write, `CivWrites.RfPower` (`CivWrites.cs:271-273`, in `All` at `:356`), has **no use in
-    `src`. No screen offers it.**
-- **ALC** (mismatch 3). `RigField.Alc` (`RigField.cs:206-207`) is referenced nowhere else in
-  `src`. There is no read and no display. The one *Alc* in the app is a comment,
-  `TransmitDrive.cs:32`.
-- **Drive.** The Digital panel's *Transmit drive* box, bound two-way to `TransmitDrivePercent`,
-  reads *% of full scale* (`MainWindow.axaml:3521-3539`). It is also in Settings
-  (`SettingsWindow.axaml:299`), from `TransmitDrive.PercentFor(TransmitDrivePeak)`
-  (`MainWindowViewModel.cs:5925`, `:7074`). It is Hamlet's composed peak, not a radio setting.
-- **An input-level page: none in the tree.**
-  - `docs\unit254-level-and-timing.md:106-110` says so.
-  - `docs\unit268-what-step-d-asks-tim.md:181` names *the IC-7300's USB MOD level menu setting*
-    with no page.
-  - Nothing outside `C:\Source\HamLet` was looked for (ask 33).
-
-**`ThePsk31TabIsInertTests` at `:165`:**
-- **What it asserts.** The send line contains `PSK31` and is longer than 20 characters. No
-  telemetry line contains `composed`, `ft8_transmission`, `Played` or `keyed` (`:199-203`).
-- **A bolt shut by default keeps it green and unedited**, as long as it refuses at the gate at
-  `:12736`, before `SendStage.Composed` writes `composed` (`:12771`).
-
-**How tests build the view model:** `internal` members named `...ForTests` on
-`MainWindowViewModel`:
-- `UseArmedSendForTests(Ft8ArmedSend?)` (`:13541`) and `UseRigPortForTests` (`:13530`);
-- `CardsNowForTests` (`:3319`), `RebuildCardsForTests` (`:3326`) and `LedgerForTests` (`:3335`);
-- `ShowPsk31ChannelsForTests` (`:2139`), `AddDecodeRowForTests` (`:11146`) and
-  `RecordSentForTests` (`:11188`);
-- `CanAnswerRowsForTests` (`:2407`).
-
-`TransmitSinkFactory` (`:11314`) is the sink seam.
-
-### The bolt, the clear spot, the receipt's retire rule, task 4's walk
-
-- **The bolt's predicate: not built** (task 2 stopped).
-  - *Proposed for the unit that builds it, not a ruling:* an instance predicate beside
-    `CanTransmitIn`. **PSK31 may be sent only while §R4's drive level and RF power are in force
-    for it, and nothing in `src` makes that true.**
-  - It would be opened in tests by a `...ForTests` seam on the view model.
-  - It would refuse with *"Hamlet will not send PSK31 until its drive level and power are set"*.
-- **The clear-spot rule: not built.** It is not dropped; the task stopped before it. The instruction
-  requires the bolt to also require a clear spot if the clear spot is dropped, and nothing here
-  opens a door, so that clause had nothing to apply to.
-- **The receipt's retire rule for PSK31: not built.** The FT8 rule it would mirror is traced above.
-- **Task 4's walk: not run.**
-
-### Item 39, line 414 - before and after
-
-Before:
-```
-            Assert.DoesNotContain(model.DigitalCards, c => string.Equals(c.Callsign, "W1AW", StringComparison.OrdinalIgnoreCase));
-```
-After:
-```
-            Assert.DoesNotContain(model.DigitalCards, c => string.Equals(c.Callsign, "W1AW", StringComparison.OrdinalIgnoreCase)
-                && (c.HasAction || c.ActionMessage.Length > 0 || c.ShowsLogLink));
-```
-
-**The members it names:**
-- **The action kind:** `HasAction`, `ActionKind != None` (`Ft8ContactCard.cs:350`). It is what
-  makes the send button visible and binds it to `CardActionCommand`
-  (`MainWindow.axaml:4692-4695`).
-- **The action message:** `ActionMessage`, what that command would send.
-- **The Log link:** `ShowsLogLink`, bound to `LogStationCommand` (`MainWindow.axaml:4723-4729`).
-
-Nothing else in the file changed (`git diff`: one line out, two in). It is its own commit,
-`e82d36c`, naming item 39.
-
-**The assertions after it, reachable again:**
-- the loop right-clicked 40 PSK31 rows, with 5 cards on the panel;
-- `CanAnswerRowsForTests` false (`:420`) - green;
-- `HasSomethingToStop` false (`:421`) - green;
-- send line *"nothing sent yet"*, no *Sending* (`:422`) - green;
-- the class is 8 of 8.
-
-### Task 3, assertion 5 only - item 41
-
-`ShowPsk31Cards` hands `Ft8ContactCard.ForPsk31` a new optional `grid`, which goes into the facts'
-`Grid`.
-
-**`ThePsk31CardIsHandedHisGridTests`, 2 of 2.**
-1. **`AfterHisCertainReportCarryingFn31TheCardKnowsWhereHeIs`.** Watched failing first: after
-   `01-textbook` line 3 the grid was null, and the map row read *"Hamlet does not know where W1AW
-   is. He has not put a grid square on the air..."*. Now, on lines 3, 4 and 5:
-   - grid `FN31` (line 4 is the operator's own report, carrying `FN00`, which is not handed);
-   - place *United States · 360 miles*;
-   - map row *"W1AW is in United States, grid FN31. That is 360 miles from you."*
-2. **`AGridFromAGuessedMessageIsNotHanded`.** It passed before and after, as a "never" assertion
-   does. It is not vacuous, because its second message parses
-   `IsCertain = False, Grid = FN31`. The card stays W1AW's, with grid null, the no-grid map row,
-   and *Your turn, a guess*.
-
-With it, 38 of 38: `ThePsk31ConversationCardTests`, `TheMapRowFitsTests`, `TheMapOpensTests`,
-`VoiceTests`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`, the app
-`ThePsk31OfferTests` and `ThePsk31ReadsTheConversationTests`, all unedited. FT8 and FT4 cards do not
-pass through `ForPsk31`. The class is on `docs\carry-forward-tests.txt`.
-
-### Before and after counts, filtered and foregrounded
-
-| List | Before | After |
-|---|---|---|
-| carry-forward, engine | 120 of 120 | 120 of 120 |
-| carry-forward, app | 132 of 133 (red: item 39) | 135 of 135 on the second run; 134 of 135 on the first (red: item 46) |
-| chain-guarding, engine (the 15 transcribed) | 82 of 93 | 82 of 93, the same 11 |
-| chain-guarding, app (all 11 classes) | 50 of 63 | 50 of 63, the same 13 |
-
-**Every chain-guarding red, identical by name before and after:**
-- **Engine (11):**
-  - `TheFitGuardAsksAboutTheGridTheSendIsOnTests.BothFt8RefusalSentencesAreWhereTheyWereBeforeThisUnit`
-  - `TheTelemetryLineSaysWhatActuallyWentOutTests.` `TheLengthCountsWhatWentOutAndNotWhatWasAskedFor`,
-    `TheNewFieldCarriesNoWords`, `TheTwoBagsDifferInTheFieldThatWouldHaveShouted`,
-    `AnOrdinaryTransmissionsLineIsUnchanged`, `WhatTheLineSaidOnTheSeventhOfSeptemberAndWhatItSaysNow`
-  - `WhereTheTransmissionStartsAndWhatTheRecordSaysTests.` `AnAbortedTransmissionIsRecordedAsAWarningWithHowItCameOut`,
-    `TheTransmittedSlotIsRecordedWithItsShapeAndItsMoment`, `ATransmitRecordCannotCarryTheMessageOrTheCallsignInIt`
-  - `TheSinkPlaysToANamedEndpointTests.ACancelledPlayGoesOutShortAndTheSequenceCallsItAudioFailed`
-    (its only red: no worse)
-  - `TheLoopbackProvesTheWholeChainTests.AMessageHamletComposedLeavesThisMachineAndComesBackFromItsOwnDecoder`
-- **App (13), with all eleven classes run.** The other eight classes are green, so the 13 are the
-  same 13 unit 319 found in three.
-  - `TheMenuIsUnderTheMouseTests.` `ARowThatNamesNoStationPutsNothingUnderTheMouse`,
-    `OutOfPrivilegesTheMenuSaysSoAndForbidsNothing`, `BothListsCarryTheMenuAndLogIsOnTheRightOne`,
-    `EveryStationsPredictedMenuAppearsUnderTheMouse`, `TheRepeatCountBelongsToTheClickAndNotToTheRow`,
-    `AThirdPartyExchangeHasAMenuAndNoLog`, `WithNoGridTheReasonIsANoteAndTheRestStayClickable`,
-    `ChoosingOneGoesThroughTheOneCommandThatArms`
-  - `TheWholeFt4ChainRunsFromOneRightClickTests.` `TheWholeExchangeOnTheReportShapeRunsFromTwoRightClicks`,
-    `OneRightClickOnAnFt4RowDrivesTheWholeChainAndTheAudioDecodesBack`,
-    `TheSameChainThroughTheFakeSinkDecodesTheSamplesItWasHanded`
-  - `TheWholeChainRunsFromOneRightClickTests.` `OneRightClickDrivesTheWholeChainAndTheAudioDecodesBackAsTheClickedText`,
-    `TheOperatorsStopButtonTakesARealTransmissionOffTheCardMidSlot`
-
-**Other results:**
-- `TheReadinessHoverTests` was green in all three app carry-forward runs.
-- The two engine classes added since `a36ce1e` are inside the engine carry-forward count, green.
-- **Version** 1.13.6 -> 1.13.7.
-
-### Mismatches between the instruction and the tree
-
-- **Held, at `9e55e32`:**
-  - **The view model:** `CanDecode` `:1940-1943`, `CanTransmitIn` `:1960-1963` with exactly the two
-    callers `:2407` and `:12736`, the refusal `:12742-12746` and `send_refused` `:12738-12740`,
-    `IsPsk31Chosen` `:1966-1967`, `_psk31` `:1970`, `ShowPsk31Cards` `:2259`, the one `.Arm(`
-    `:12858`, `ComposeSignal` `:12915` and `:12920` with `TransmitDrivePeak` `:12919` and `:12924`,
-    `DriveTheArmedSend` `:12944` called at `:10735`, `PercentFor` `:5925` and `:7074`.
-  - **The tests:** `ArmHasExactlyOneCallerInSrc` `:759`; `ThePsk31TabIsInertTests` methods at
-    `:73`, `:107`, `:135`, `:165` and `:208`; `NoClickOnAPsk31RowReachesASendPath` `:384-423`, with
-    remarks `:378-382`, the assertion `:414` and `:420-422`.
-  - **The version and the list:** version `:613`; carry-forward app 25 lines and engine 15.
-  - **The engine:** `CivWrites.RfPower` `:271-273`, `CivReads.RfPower` `:186-187`, `RigField.Alc`
-    `:206-207`, `CivWrites.All` `:348-358` with no input-level write.
-  - **`CLAUDE.md`:** HM-DEC-084 `:435`, HM-DEC-082 `:437`, HM-DEC-074 `:445` and HM-DEC-049 `:470`.
-  - **Unit 319's claims:** `Psk31Turn` and `Psk31Offer` exist; `ForPsk31` exists; `ShowsSlotClock`
-    is at `:347`; `NowAsync` is at `Ft8ArmedSend.cs:555` and `Arm` at `:279`; `PttOn` is used once,
-    at `Ft8TransmitSequence.cs:513`; the same 11 engine and 13 app reds.
-- **(1)** `CLAUDE.md:360` holds `HM-DEC-161`, and there is no `CPS-DEC` in `CLAUDE.md`. The reload
-  was not run, and `tools\` was not touched.
-- **(2)** The receipt is the ledger's `CQ` record, as traced above.
-- **(3)** There is no ALC read anywhere in `src`, and nothing shows one.
-- **(4)** `PHASE_PLAN.md:57` still says *"a cap of two"*. `:61-62` still say *"Nothing in this
-  phase changes what keys the transmitter"*, wrapped across two lines. The plan was not edited.
-- **(5)** The arbiter's shell. Not this unit's to check.
-- **Not in the instruction:**
-  - **The item 45 pins** in `ThePsk31ConversationCardTests.NothingOnTheCardTransmits`. They are why
-    task 2 stopped. Task 1b listed the tests to trace and did not name this one.
-  - `TheOperatorCanStopItTests` requires the one arm inside `SendMessage`.
-  - Unit 319's "3 of 16" app chain-guarding figure is those three classes' tests. The full list is
-    50 of 63, as unit 318 measured.
-
-**Left uncommitted, and whose:** `.run-unit\*`, `PHASE_OUTCOME.md`, `RUN_LEDGER.md`,
-`WORK_INSTRUCTIONS.md` and `SESSION.lock`, which are the launcher's. Nothing of this session's.
-
-### Validation
-
-**This report was not validated by the script.** `tools/arbiter/validate-output.bat output.md`,
-run once from the shell after this file was written, was refused with *"This command requires
-approval"*, as for units 315, 316, 318 and 319. It was not retried in another form (item 47).
-
-**The script was read instead** (reading, not running; `tools\` was not touched), and its seven
-rules were checked by hand against its own patterns:
-- **Rule 1:** `UNIT:` is on line 35, inside the first 60.
-- **Rules 2 to 4:** exactly four `## ` headings, with the exact names and in order, the first on
-  line 51.
-- **Rule 5:** section 3 has content.
-- **Rule 6:** inside the first 60 lines, `READ IN THIS ORDER` is on line 2, `A.` on 4, `B.` on 6,
-  and `C.` on 27.
-  - **The hand check caught a failure here.** The first draft read *"raises 3 new items"*, which
-    the script's `raises \d+ item` does not match. It now reads *"raises 3 items, new,"*.
-- **Rule 7:** none of the script's tokens (`_PENDING`, `PENDING_`, `TBD`, `TODO`, `FIXME`, `XXX`,
-  `<FILL`, `FILL IN>`, `PLACEHOLDER`) is before line 51.
-
-A hand check is not the exit 0 the prompt asks for.
+| | |
+|---|---|
+| Carry-forward, before anything moved (task 1a) | app 145 of 145, engine 120 of 120 |
+| Carry-forward, at the end | **app 152 of 152, engine 120 of 120** |
+| New tests | `ThePsk31CqGoesOutTests` 4, `ThePsk31ExchangeTests` 3, `ThePowerIsOfferedTests` 3 |
+| Tests rewritten under §R12 | 7 (one in task 1b, six this session) |
+| Macros that can go on the air | 0 -> 4 of 4 |
+| Lines the record writes for one press | 13 |
+| `PttOn` sites in the repository | 1, unchanged |
 
 ## 2. What the owner should expect
 
-**Now true:**
-- **The carry-forward list is green.** Item 39's red is gone. The narrowed line still forbids any
-  W1AW card that could send or log.
-- **A PSK31 card's map row knows where the station is**, when a message he certainly sent carried a
-  grid. His place line gains the distance.
-- **The chain-guarding list is in `docs\chain-guarding-tests.txt`**, so no unit needs git history
-  for it.
-- **The version is 1.13.7.**
+### What happens when you press CQ under PSK31 tonight
 
-**What will look wrong but is not:**
-- **Step 4 is no further on, and drift is 1.** The press was not built. A test from unit 319 pins the
-  door shut by its text, and this instruction forbids editing it (item 45). It wants a one-word
-  ruling, as item 39 did.
-- **W1AW's PSK31 card now reads *United States · 360 miles***, where it read *United States*. The
-  distance is from the grid he sent, FN31, to Settings' FN00DJ, by the same rule an FT8 card uses.
-- **A garbled PSK31 message carrying a grid still leaves the map row saying he has not put one on
-  the air.** A guess is not handed (§R1).
-- **`ThePressingOfCqTests.AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard` may show red in a
-  combined run.** It did once, passed alone, and passed on a re-run (item 46).
-- **The chain-guarding reds are the same 24 as before** (ask 35).
+You press the PSK31 chip. The panel tunes to 14.070 and starts listening across the
+whole passband, as it has since unit 316.
+
+You press **Call CQ**. In the moment between the press and the carrier:
+
+- Hamlet **looks at the band and picks a spot to call on**. It takes every station
+  it is reading and every place in the passband that looked like a signal, and it
+  finds the widest stretch that is at least 150 Hz clear of all of them, and calls
+  in the middle of it. On an empty band that is 1300 Hz. **You do not choose a
+  frequency and you cannot land on top of somebody by accident.**
+- It writes out the call in full - `CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K` - keys
+  the radio, sends for about eleven and a half seconds, and unkeys.
+- A card appears on the panel saying **Calling**, with the time. That is your
+  receipt. It has no Log button and no station on it, because a call to everybody
+  is not a contact with anybody.
+
+**If the band is too crowded**, it does not call. It says so in a sentence - *the
+band is too crowded here to call without landing on someone* - and tells you to
+move the dial a little or wait. Nothing goes out.
+
+**Press CQ again** and the receipt refreshes to the new time and the call goes out
+again. You never get two receipts.
+
+**When somebody comes back to you**, the receipt disappears and his card takes its
+place. If two people come back, you get two cards and the receipt still goes - the
+call was to everybody, so neither of them inherits it.
+
+### Answering somebody else
+
+Right-click a row that is somebody calling CQ and you get one item: **Answer
+EI4GNB**. One click sends the answer **on his frequency**, and his card goes up
+saying it is his turn.
+
+From there his card shows you one button at a time: *Tell him how he is coming
+through* after his answer, *Confirm, and sign off* after his report. One click,
+one transmission. When both of you have said goodbye the card says **Finished** and
+the Log appears on it.
+
+**When Hamlet is not sure it is your turn, there is no button** and the card says
+*"Waiting to be sure it is your turn before offering anything to send."* That is
+deliberate: a button that appeared on a guess would be Hamlet transmitting in your
+name on a reading it did not trust.
+
+### The power offer, and touching nothing at the radio
+
+Beside the transmit drive you will see a short paragraph:
+
+> PSK31 sends a steady carrier, so it runs warmer than voice. Hamlet can set your
+> radio's transmit power to 50% for you. Nothing else on the radio changes, and
+> nothing is set unless you press this.
+
+Two buttons: **Set my power to 50%** and **I will set it myself**. Press the first
+and Hamlet sends one command to the radio and tells you it did. Press the second
+and it sends nothing. Press neither and it sends nothing.
+
+**There is nothing else to set.** The transmit drive above it is Hamlet's own
+composing level, the same one FT8 already works at, and it has a sensible value
+already. **Nothing asks you about the USB MOD Level, and nothing asks you to look
+at a meter.**
+
+### If the ALC sentence ever appears
+
+It will read, roughly:
+
+> Your radio is being driven harder than it wants to be: its own level control is
+> working to hold the signal back, and that is what makes a PSK31 signal spread out
+> and splatter over the people either side of you. Turn the transmit drive above
+> down one step and send again.
+
+That is the whole of it. **Turn the drive box down by one and send again**, and if
+it goes away you are done. You do not need to know what ALC stands for, and Hamlet
+will not turn it down for you, because a level you did not choose is a level you
+cannot reason about later.
+
+### What will look wrong but is not
+
+- **The ALC sentence will never appear on a real radio yet.** Hamlet's rig poll has
+  no command for reading the ALC meter - there is none anywhere in the code - so
+  the reading is always absent and the sentence never fires. The record says
+  `"measured":false`, which is the honest answer rather than a silence. Item 47.
+- **The receipt has no Log button.** That is your ruling of 2026-09-11, kept.
+- **The card has no countdown ring.** FT8 cards have one because there is a slot
+  boundary to catch. PSK31 has none: the press is the moment.
+- **Pressing CQ with no radio connected still composes the call and says so**, then
+  says nothing went out because no radio is connected. That is this machine, and it
+  is written down rather than left as silence.
 
 ## 3. What you should see
 
-**Nothing Tim can press sends anything tonight.**
+### The answer this unit was commissioned for
 
-**Pressing CQ under PSK31 still refuses, in words**, with the sentence it has had since unit 314:
-*"Hamlet cannot send PSK31 yet, so nothing went out..."*. It does **not** yet say that drive and
-power are what it waits on. The bolt that would say so was not built (item 45), and drive and power
-wait on Tim (ask 43).
+**Press CQ under PSK31 and a PSK31 signal leaves the radio, once, on a spot Hamlet
+chose.** That is now true. Here is one press, driven through the real view model,
+the real `Ft8ArmedSend` and the real `Ft8TransmitSequence`, with a port that keeps
+its frames and a sink that counts standing in for the radio. **On screen** the send
+line read:
 
-**Now true at the bench, computed and not seen:** a station certainly calling Tim on PSK31, whose
-own certain message carried a grid, gets a card whose map row says where he is. W1AW's reads
-*"W1AW is in United States, grid FN31. That is 360 miles from you."* Before tonight it said he
-had not put a grid square on the air.
+> Sent "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K" - 11.5 s of PSK31.
 
-**Not proved tonight, because none of it was built:**
-- a press sending the CQ once on a clear spot;
-- the receipt it leaves;
-- a certain answer retiring that receipt;
-- a click on the offered macro.
+**In the record**, thirteen lines, in this order:
 
-Every number here is from the bench and synthetic. Nothing keyed a radio. Every appearance claim is
-computed, not seen.
+| # | what it says, in plain words |
+|---|---|
+| 1 | `psk31_send_composed` - the CQ macro, 38 characters, 11.46 s of audio, cap 30 s, within it, **at 1300 Hz** |
+| 2 | `send_stage composed` - **`slotted: false`**, mode `Psk31` |
+| 3 | `send_stage armed` - armed for *now*, `slotted: false` |
+| 4 | `send_stage gate_asked` - the licence gate asked about 14 070 000 Hz |
+| 5 | `send_stage keyed` - the keying frame written |
+| 6 | `send_stage handed_to_the_sound_card` - 137 472 samples |
+| 7 | `send_stage unkeyed` - the ordinary unkey taken |
+| 8 | `ft8_transmission` - **mode `Psk31`, outcome `Played`**, 11.456 s, `keyed: true`, `cameOutOfTransmit: OrdinaryUnkey`, `fit: Fits`, cap 30 s |
+| 9 | `psk31_send_keyed` - 11.46 s planned, 11.46 s sent, not aborted |
+| 10 | `psk31_send_unkeyed` - the same, the carrier is off |
+| 11 | `psk31_send_alc` - **`measured: false`** - no radio, so no meter reading; the zone it would have been judged against, 128, is carried anyway |
+| 12 | `psk31_radio_after_send` - **`answered: false`**, every field absent: *the radio did not answer* |
+| 13 | the offset chosen, 1300 Hz, printed beside the rule it came from |
+
+**One keying frame, one call to the sink, one composition.** The count of keyings
+was the count of clicks.
+
+### The answer half, click by click
+
+The same path, driven with one station's half of a textbook contact arriving a line
+at a time and Hamlet's half coming only from clicks:
+
+```
+row: 1234 Hz  CQ CQ CQ de W1AW W1AW W1AW pse K
+  [click: Answer W1AW]
+send line: Sent "W1AW de KC3QIS KC3QIS K" - 7.8 s of PSK31.
+cards    : 1 card(s) W1AW [His turn]
+  [his report arrives]
+after his report : [Your turn] Report -> "Tell him how he is coming through"
+  [click]
+after our report : [His turn] "You handed over to W1AW, and it is his turn."
+  [his 73 arrives]
+after his 73     : [Your turn] Confirm
+  [click]
+at the end: [Finished] "The exchange with W1AW is finished: you confirmed and he said goodbye."
+clicks 3, transmissions 3
+```
+
+**Three clicks, three transmissions, over a whole contact.** That is the one rule
+that is yours, measured rather than argued.
+
+### The four-signal fixture
+
+Played through the real search and the real demodulators, it puts four rows on the
+panel and one of them is a station calling CQ that Hamlet could answer:
+
+```
+ 700 Hz: CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K  (your own call, coming back)
+1100 Hz: KC3QIS de W1AW W1AW K
+1600 Hz: CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K
+2200 Hz: VE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW? ...
+```
+
+**EI4GNB at 1600 Hz is the row that would carry *Answer EI4GNB*.** I did not drive
+the click on that fixture - see item 50 - so that last step is stated as what the
+same code does on typed text at 1234 Hz, not as something measured on this audio.
+
+### How it was stood up, and what that does and does not prove
+
+**The application was driven headless, not shown on a screen.** A session cannot
+press a button on a desktop window on this machine and cannot report what a picture
+looked like. What ran is the real `MainWindow` built headless, the real view model,
+the real composer, the real armed send and the real transmit sequence, with a fake
+port and a fake sink at the two ends. **That proves the path and the record. It
+does not prove the layout**, and nothing in this report claims it does.
+
+### The tests behind each of step 4's must-pass criteria
+
+| Step 4 criterion | Met | Evidence |
+|---|---|---|
+| Loopback: each of the four macros modulated and decoded back identical | yes | `ThePsk31ModulatorTests`, unit 318, green |
+| BPSK at 31.25 baud, occupied bandwidth under 100 Hz at -30 dB | yes | `ThePsk31ModulatorTests`, unit 318, green |
+| CQ makes a receipt with no station facts and no Log; an answer retires it and opens a card; two answers make two cards | **yes, new** | `ThePsk31CqGoesOutTests` 2 and 3 |
+| A macro is offered for one click only on a certain *your turn* | **yes, new** | `ThePsk31ExchangeTests` 2, `ThePsk31OfferTests` |
+| The turn indicator exists, says *unknown*, and no `SlotClock` for this mode | yes | `ThePsk31ConversationCardTests`, `ThePsk31PanelSpeaksPsk31Tests` |
+| §R11: power offered at half, nothing asked at the radio, ALC past the zone becomes a sentence and an event | **yes, new** | `ThePowerIsOfferedTests` 1, 2 and 3 |
+| Nothing keys at the bench; one `PttOn` site, one unkey path, FT8 and FT4 byte-identical, no-slot send capped | yes | `TheFt8AndFt4SendsAreByteIdenticalTests` and `TheUnslottedSendTests`, **unedited** and green |
+| A no-slot send over the cap is refused before it arms, and the refusal is a record | yes | `TheUnslottedSendTests`, `ThePsk31TransmitTelemetryTests` |
+| *nice-to-pass*: the turn indicator changes within one character of the turnover word | not measured | not aimed at this unit |
+
+### The seven tests rewritten under §R12
+
+Not asked about, per the ruling. Each guarded a shut door; each now guards the rule.
+
+| Test | Guarded | Guards now |
+|---|---|---|
+| `ThePsk31ConversationCardTests.NothingOnTheCardTransmits` (task 1b) | two source-text pins | a whole conversation with no click writes not one line of the transmit path |
+| `ThePsk31TransmitTelemetryTests` PSK31 press | the press is refused for being PSK31 | one press composes one CQ, the stage says no slot, nothing keys with no radio |
+| `ThePsk31PanelHearsTests.NothingOnThePanelCanBeAnswered` | `CanTransmitIn` is false | no row hands back a send menu |
+| `ThePsk31HearsEveryoneTests` | `CanTransmitIn` is false | no row hands back a send menu, over the whole fixture |
+| `ThePsk31ReadsTheConversationTests.NoClickOnAPsk31RowReachesASendPath` | every row's flyout is null | a row that is not a certain CQ offers nothing; a certain CQ offers exactly one Answer |
+| `ThePsk31OfferTests` offer drawing | nothing clickable is drawn | exactly one button, the macro the engine named, through the one send command |
+| `ThePsk31ConversationCardTests` drawn assertion | no send control on a PSK31 card | nothing to press while it is not his turn |
 
 ## 4. What's blocking us
 
-**Carried, verbatim where unresolved.**
+**Nothing blocks the next unit.** Six items are raised on top of the queue unit 322
+carried, and the closures are recorded.
 
-1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
-   still Tim's. PSK31's continuous carrier makes it sharper.
-2. **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
-   Tim's to add (§0.4).
-3. **Three inherited reds, never chased** - two in `TheAchievementsScreenTests`, one in
-   `TheFitGuardAsksAboutTheGridTheSendIsOnTests` (engine).
-4. **`Ft8ContactCard.Closing`** is uncalled and left standing.
-5. **`Ft8GlobePlot`'s unused framing constants.** Report; leave standing.
-6. **The licence of `assets/world-flat-relief.png` is unknown.** Raise; do not resolve.
-7. **The FT4 phase's run files.** Unit 315 recovered the plan and status into
-   `docs\phase-ft4-run\`. The outcome file waits on item 19.
-8. **The door sentence is a placeholder.** Carry.
-9. **Acknowledgement indicators.** Named by Tim, not yet defined. Step 4's turn indicator
-   may be what he meant; do not assume it is.
-10. **Card ordering under scroll, and its root** - `DigitalCards.Clear()` then new cards
-    every slot, per-card state lost. Not this phase's. Carry.
-11. **The 2 px map outline** and **the 2.0x popup zoom cap** are sessions' numbers.
-12. **Version numbering** - x.y.0 or x.y.1 for a phase's first unit under HM-DEC-150.
-13. **The squelch threshold 0.90** is unit 314's number, `Psk31Demodulator.SquelchQuality`.
-14. **Real off-air PSK31 audio** - only Tim can record it. Two or three minutes on 14.070
-    with a few signals on it, any recorder, any rate, WAV, into
-    `assets\fixtures\captured\`. Every number in this phase is synthetic until then.
-15. **One conversation card is taller than the panel** (293 px in 220 px). Not broken.
-16. *(Unit 315 closed the fixed 1000 Hz listening offset by its instruction's own
-    condition. Kept here as a closed number so the list does not renumber.)*
-17. **Hand wanted: run `tools\arbiter\validate-output.bat output.md`** - unit 315's
-    shell refused it.
-18. **Ruling wanted: record the 1500 Hz station's text in `manifest.json`, or accept unit
-    315's derived reference.**
-19. **Hand wanted:** `git show eb28430:PHASE_OUTCOME.md > docs\phase-ft4-run\PHASE_OUTCOME.md`,
-    expected 168242 bytes, md5 `b60010069f7feea96e9d4be4e7e8c0f1`, then commit. *(Per its stat,
-    `a36ce1e` committed a six-line file at that path. The arbiter did not check its content, and
-    the 168242-byte file is not what landed.)*
-20. **Hand wanted: `git rm src\Hamlet.RadioEngine\Psk31\Psk31Listening.cs`** - comment-only,
-    builds.
-21. **Ruling wanted: the carrier search's floor should be local to the signals before
-    step 6** - at 48 kHz the median bin is below the radio's passband.
-22. **Ruling wanted: is HM-DEC-161 the right id** for the phase-setting ruling?
-23. **Ruling wanted: accept about a second of delay on PSK31 text, or reopen the step-1
-    squelch.**
-24. **Ruling wanted: the `snr` column's hover names FT8 and FT4 precision and not PSK31's.**
-25. **Hand wanted (unit 316): say whether `TheReadinessHoverTests.NoRowCarriesABearingInDegrees`
-    predates unit 316.** Run it alone at `eb67036`:
-    `timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheReadinessHoverTests.NoRowCarriesABearingInDegrees"`.
-26. **Ruling wanted (unit 316): accept the replaced assertion in `ThePsk31HearsEveryoneTests`.**
-    *"No row is ever on his side"* became *"a row is on his side only while its latest message is
-    addressed to him"*.
-27. **Ruling wanted (unit 316): the words `guess` and `unknown`** on a PSK31 row are the
-    session's wording, not a ruling.
-28. **Ruling wanted (unit 316): should §R3 recognise a roger (`R`, `RR`, `QSL`) before step 4?**
-    Without one the corpus's `ack` kind is never produced.
-29. **Ruling wanted (unit 316): accept the split rule's three edges.** A bare `73` does not end a
-    message. A damaged sign does not split. A final `K` counts when the next character arrives.
-30. **Ruling wanted, low (unit 316): the callsign shape is held in four places.** Consolidate them
-    later, or leave them.
-31. **Hand wanted (the arbiter, authoring 318):** `tools\arbiter\outcome-read.bat --approach`
-    breaks when the approach contains an apostrophe. PowerShell reports *"Unexpected token"*, and
-    the script still prints `Read complete.` and exits 0. **So a loop test on such a line reads as
-    run and was not.** Not a unit's to touch.
-32. **Hand wanted, for step 4's drive-and-power must-pass: put an IC-7300 manual where a session
-    can read it, and name its path.** §R4 requires the unit to *"cite the page of the IC-7300
-    manual it read"*, and the arbiter's search of the tracked tree found none. Task 1b reports
-    whether one exists anywhere on this machine. *(Unit 318: none tracked; outside the
-    repository could not be searched - item 33.)* *(Unit 320: none in the tree; nothing outside it
-    was looked for.)*
-33. **Hand wanted: this session could read nothing outside `C:\Source\HamLet`.** The file tools
-    refused `C:\Source\fldigi\src\psk\psk.cxx` (*"--restricted confines the file tools to the
-    working directory"*) and `find` over the user profile was blocked, so §R5's pinned reference
-    was not read and no IC-7300 manual outside the tree could be looked for. The modulator's
-    convention came from `Psk31Demodulator` and `assets/reference-modem.py` instead. The shell
-    also asked for approval on `pwd -W`, a `sed` stage and a `grep -v` stage in pipelines; each
-    was dropped, not retried in another form. **And `tools\arbiter\validate-output.bat
-    output.md` was refused** (`cmd //c`, *"This command requires approval"*), as for units 315
-    and 316, so **this report was not validated by the script** and item 17 stands. It was not
-    retried in another form. The seven rules were checked by hand against the script's own
-    patterns - four `## ` headings in order and no fifth, a `UNIT:` line, the ordering block's
-    `READ IN THIS ORDER`, `A.`, `B.`, `C.` and `raises 5 item` inside the first 60 lines, and no
-    placeholder token before section 1 - and that hand check is not the exit 0 the prompt asks
-    for. *Reasoning:* §R5 names fldigi as what the shaping
-    is read from, and §R4 needs a page citation. *Rejected:* copying either into the tree, which
-    §R5 forbids. **Wanted:** the launcher grants read access to `C:\Source\fldigi` and to a named
-    manual path, or Tim rules that the demodulator and the reference modem suffice for the shape.
-34. **Ruling wanted: the record's event name and FT8/FT4's missing mode.** A PSK31 transmission is
-    written under `ft8_transmission` with `mode: Psk31`; FT8 and FT4 records still do not say
-    which of the two went out, and cannot gain a key without breaking tonight's pin. *Options:*
-    keep the name and add `mode` to FT8 and FT4 under a re-pinned test; rename to a neutral event
-    with a migration note; or accept as is. *Industry answer:* one event with a mode field on
-    every record, re-pinned in its own commit.
-35. **Ruling wanted: 23 reds on the chain-guarding list that are not on the known-red list.** The
-    8 record and telemetry reds (unit 305's `send_stage` events defeat their `Assert.Single`),
-    2 real-endpoint engine reds and 13 app reds, named in section 1 - including
-    `ATransmitRecordCannotCarryTheMessageOrTheCallsignInIt`, one of the five tests the instruction
-    relies on to show the chain changed only as R10 allows. *Options:* put them on the known-red
-    list by name, or give a unit to repairing them. *Rejected by this unit:* chasing them now,
-    which the instruction forbids.
-36. **Ruling wanted: accept the idle, 32 bits before and 16 after.** 32 is measured against
-    Hamlet's own ear (shortest 23); 16 after is this unit's margin over a measured 0, for
-    receivers nobody here has measured. A real receiver's needs want item 33's fldigi access or
-    item 14's off-air audio.
-37. **For the door unit, low: three edges the send path will meet.** `DriveTheArmedSend` reads
-    `Armed?.Grid`, which throws for a no-slot send, so the PSK31 click must arm and call
-    `NowAsync` in one handler; `Arm` returns the refusal, which the click must show; and the
-    refusal sentence says "Psk31" where the operator reads "PSK31". *(Unit 320: all three
-    confirmed at file and line, section 1. The first is why item 45 exists.)*
-38. **Hand wanted (the arbiter, authoring 319): the arbiter's shell refused `git log` and
-    `git grep`** with *"This command requires approval"*. Only the loop test and file reads by
-    exact path ran. So this instruction's tree claims come from named files read and from unit
-    318's report, and not from a search. Not a unit's to touch. *(The arbiter authoring 320 ran
-    `git log` and `git show`; see item 44.)*
-39. *(Closed by unit 320, as the arbiter decided: line 414 of
-    `ThePsk31ReadsTheConversationTests` is narrowed to no W1AW card that carries an action, an
-    action message or a Log link, in its own commit `e82d36c`. The assertions after it run and are
-    green. Tim can still overrule it with one word. Kept as a closed number so the list does not
-    renumber.)*
-40. **Hand wanted: this session's shell refused, each reported once.**
-    - `git show HEAD:WORK_INSTRUCTIONS.md`, and then `git diff WORK_INSTRUCTIONS.md` - a second
-      form of the first, said so here - both with *"This command requires approval"*. So work
-      instruction 318's app chain-guarding list (63 tests) could not be read, and the app side was
-      counted on the three classes unit 318's report names (16 tests). The engine side was counted
-      on unit 318's own recorded 15 types.
-    - A shell `for` loop over the gate's four paths (*"Contains simple_expansion"*).
-    - A `grep` pattern with a `$` anchor.
-    - **`tools\arbiter\validate-output.bat output.md`**, run as `tools/arbiter/validate-output.bat
-      output.md`, with *"This command requires approval"*. So item 17 stands, and this report was
-      checked by hand only (section 1, Validation).
+### Closed by ruling tonight
 
-    None of the last three was retried in that form. *Wanted:* work instruction 318's section 2
-    list written into `docs\`, or the chain-guarding list put in `docs\carry-forward-tests.txt`'s
-    shape, so a unit can run it without git history.
-    *(The list is transcribed into work instruction 320 section 2, and task 1c writes it into
-    `docs\chain-guarding-tests.txt`. The refusals stand.)* *(Unit 320: written, `1573b85`, and
-    run whole: app 50 of 63 across all eleven classes.)*
-41. *(Closed by unit 320, as the arbiter decided: the PSK31 card is handed the grid from a certain
-    message and never from a guess, `4dbffda`, `ThePsk31CardIsHandedHisGridTests` 2 of 2. Tim can
-    still overrule it with one word. Kept as a closed number so the list does not renumber.)*
-42. **Ruling wanted: this unit's words and table are a session's, not rulings.**
-    - The card's *Your turn*, *His turn*, *He is still sending*, *Unknown* and *Your turn, a
-      guess*, and one sentence per state.
-    - The macro-follows-message table in section 1 (his bare calls -> Report; a Report or Chat ->
-      Report, or Confirm once a report has gone; a Closing or End -> Confirm; nothing once the
-      operator has signed off).
-    - *He is still sending* is certain because it is the demodulator's fact.
-    - A PSK31 card's X clears it until that conversation gains a message.
+- **Item 43 - drive and power.** Closed by §R11.
+- **Item 45 - the `NothingOnTheCardTransmits` pins.** Closed by §R12; the rewrite
+  landed in task 1b.
+- **Items 32 and 33 - the manual pages.** Closed; recorded in
+  `docs/psk31-reference.md`.
+- **Ask 1 - does the record say what the radio did.** **Closed by this unit.**
+  `psk31_radio_after_send` has a production call site and fires on every PSK31
+  send; on this machine it says `answered: false`, which is the finding.
+- **Unit 322 item 1 - `psk31_lock` is a proxy.** **Not done.** The instruction asked
+  for it to be renamed to `psk31_reading` in passing; it was not, and that is a
+  miss rather than a decision. It carries forward unchanged: the event is still
+  called `psk31_lock` and still measures a quality window rather than a bit-clock
+  lock. A real lock stays parked.
 
-    *Options:* accept as built, or rule different wording or order.
-43. **Ruling wanted (the arbiter, authoring 320): §R4 against HM-DEC-084, and an ALC default
-    that only a keyed radio can read.** Step 4's drive-and-power must-pass cannot close on the tree
-    as it stands, for three reasons, and only the first is items 32 and 33.
-    - **No page.** The repository cites no command and no page for the USB modulation input level
-      (`docs\unit254-level-and-timing.md:106-110`), and the manual is never committed (HM-DEC-049).
-    - **Two rulings disagree.** §R4 makes both *"settings Tim can change"*, *"shown on the mode's
-      panel"*. HM-DEC-084 says *"no screen may carry a control corresponding one-to-one with a radio
-      setting"*, and RF power is a tier-two write, *"offered, never simply done"*
-      (`CivWrites.cs:23-27`, `:271-273`). §R4 is the plan author's; HM-DEC-084 is Tim's.
-    - **A reading no bench can take.** *"The ALC meter shows no deflection"* is read off a
-      transmitting radio (`RigField.Alc`, *"meaningful only while transmitting"*), and the dummy
-      load is withdrawn.
+### Still open, unchanged
 
-    *Options:*
-    - (a) The PSK31 power default is an HM-DEC-084 offer: half of the radio's range, said as a
-      percentage (HM-DEC-074, HM-DEC-082), shown on the panel beside the drive level Hamlet
-      composes at. The radio's input level stays Tim's to set at the radio. Hamlet shows the ALC
-      while a PSK31 send is on the air, so the no-deflection default is set at step 6.
-    - (b) As (a), and Hamlet also writes the input level once items 32 and 33 give a unit a page to
-      cite.
-    - (c) Rule §R4 differently.
+- **Unit 322's item 3** - the record does not say what was on screen. Not this
+  unit's, not touched.
+- **Off-air audio** - there is still none. Everything above is fixtures and typed
+  corpus. Raised, not stopped for.
+- **The card-rebuild root, card ordering, a real bit-clock lock, any second `PttOn`
+  site, any package** - parked, untouched.
 
-    *The arbiter's reading, not a citation:* (a) closes the criterion without a page and without a
-    knob on the screen. **If this is still open when drive and power are all step 4 has left, the
-    next arbiter stops on it.** *(Unit 320's reads for it, section 1: no RF power write is used
-    anywhere in `src`; no ALC is read or shown anywhere; the drive box is on the Digital panel.)*
-44. **Noted (the arbiter, authoring 320): the arbiter's shell ran `git log` and `git show`**, and
-    refused a compound command with `;` between its parts, whole. Item 38's `git log` refusal did
-    not recur; `git grep` was not tried. Not a unit's to touch.
+### New, raised by this unit
 
-**New from unit 320, most blocking first.**
+**47. There is no CI-V read command for the ALC anywhere in the tree, so §R11's
+sentence cannot fire on a real radio.**
 
-45. **Ruling wanted: two structural pins in
-    `ThePsk31ConversationCardTests.NothingOnTheCardTransmits` against step 4's press.** They are
-    what stopped task 2.
-    - **What the test pins.** It is unit 319's, on the carry-forward list, and section 7 of work
-      instruction 320 names its class as never to be edited. It asserts:
-      - no code line under `src\Hamlet.App` contains `NowAsync` (`:325-337`);
-      - `CanTransmitIn`'s four lines stay exactly `null`, `FT8`, `FT4` (`:341-347`).
-    - **What the press needs.** `NowAsync` fired from `SendMessage`: ask 37's first edge, a no-slot
-      send left armed makes the next slot tick throw at `MainWindowViewModel.cs:12952`. And a PSK31
-      answer from the door, behind the bolt. So the press cannot be built without making the test
-      red.
-    - **The same shape as item 39:** a guard written while the door was shut, against the unit told
-      to build the door. Its remarks call it *"nothing on the card transmits"*.
+*Ruling wanted:* where the read comes from.
+*Reasoning:* §R11 says *during a PSK31 send Hamlet reads the ALC and, if it
+deflects past the zone, says so in plain words.* `RigField.Alc` exists; there is no
+`CivRead` for it, so `RigStateMonitor` never fills it and the reading is always
+absent. The judgement, the sentence and the event are built and proved from a fed
+reading; only the source is missing.
+*What was rejected and why:* inventing the command byte. §0 and §4 forbid a
+plausible command nobody can check against the manual, and `RigValue.Undocumented`
+exists for exactly this case. The manual page that documents the ALC meter read
+would close it in one line.
 
-    *Options:*
-    - (a) Narrow the two pins, in their own commit, to the property the test names. In the default
-      composition:
-      - nothing on a PSK31 card transmits, and a PSK31 press composes nothing;
-      - `NowAsync` in the app only inside `SendMessage`, behind the bolt;
-      - `CanTransmitIn` true for PSK31 only through the bolt's predicate, which nothing in `src`
-        makes true.
+**48. The six events of a press are written in a different order from the one the
+instruction lists, and the reason is a §0.0 one.**
 
-      Then a unit builds task 2 as written.
-    - (b) Keep the pins and rule a different shape for the press. There is none this session could
-      find that does not either break them or evade them.
-    - (c) Put the method on the known-red list while the press is built.
+*Ruling wanted:* none, unless the order matters to a reader downstream.
+*Reasoning:* the instruction lists composed, stage, keyed, unkeyed, record,
+radio-after-send. What is written is composed, stages, **record**, keyed, unkeyed,
+alc, radio-after-send. `psk31_send_keyed` claims the port took the keying frame,
+and only the finished run knows whether it did - a line written before the await
+would claim a radio keyed on an evening when the port was dead. So the pair follows
+the run, and the engine's own `ft8_transmission` lands between the stages and them.
+*What was rejected and why:* bracketing the await, which would have matched the
+listed order and lied on the failure case.
 
-    *Industry answer:* assert the behaviour (nothing transmits by default), not the source text.
+**49. `psk31_send_refused` has a new reason token, `no_transmit_path`.**
 
-    *Rejected by this unit:* evading the text scan with a renamed helper or a bolt placed beside
-    `CanTransmitIn`, which is gaming; editing the test, which section 7 forbids; building the press
-    and leaving the list red.
-46. **Noted, low: an intermittent red on the carry-forward list, not chased.**
-    `ThePressingOfCqTests.AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard`:
-    - failed once in the first full app carry-forward run after item 41, with 134 of 135;
-    - passed alone, 1 of 1, one K9XP card and the receipt retired;
-    - passed in a second run of the same full list, 135 of 135.
+*Ruling wanted:* none; recorded so the set of tokens stays known.
+*Reasoning:* the documented set was `bolt`, `cap`, `uncertain`, `mode`. `bolt` is
+now dead - there is no bolt. `no_clear_spot` is the instruction's own. A press with
+no radio connected needed a token of its own, because it is a different evening
+from a press that was refused for its mode.
 
-    The failure message was not captured: the first run's filter kept names only. It reads the FT8
-    ledger alone, and this unit changed only the PSK31 card path. It is not in `docs\`,
-    `OPEN_ISSUES.md`, `PHASE_OUTCOME.md` or `RUN_LEDGER.md`.
+**50. The four-signal audio fixture was not driven into a press.**
 
-    *Options:* run it in the full list a few times at `e82d36c` and at `4dbffda` to settle whether
-    it predates item 41; or accept it beside ask 25 as an order effect. *Rejected by this unit:*
-    chasing it, which HM-DEC-155's shape of a unit does not allow.
-47. **Hand wanted: this session's shell refused, each reported once and none retried in that form.**
-    - `grep ... ; grep ...` - two commands joined by `;` (*"requires approval"*). A form already on
-      the measured list, and this session's slip.
-    - A `grep` alternation containing a `$` anchor (*"This command requires approval"*). Already
-      on the list.
-    - **`git fetch -q origin main && git status -sb`** (*"requires approval"*). `&&` compounds of
-      `git add` and `git commit` ran, so the refusal is `git fetch`. The push was checked with
-      `git status -sb` alone instead.
-    - A pipeline with a `grep -vE` stage whose pattern held `^\s*$`. Both forms are already on the
-      list; a positive `grep` was used instead.
+*Ruling wanted:* none.
+*Reasoning:* task 5 asks for the fixture to be fed and the CQ row clicked. The
+fixture was fed and its rows read - EI4GNB's CQ at 1600 Hz is there - but the click
+on that row was not driven, because doing it would have meant adding a test beyond
+what a criterion needs (§R14) and this session cannot delete a file it creates. The
+same click is proved on typed text at 1234 Hz.
 
-    - **`tools/arbiter/validate-output.bat output.md`** (*"This command requires approval"*), as for
-      units 315, 316, 318 and 319. So item 17 stands. The script was read and its seven rules
-      checked by hand (section 1, Validation). That hand check caught a rule 6 wording failure
-      before the report was committed, and it is still not the exit 0 the prompt asks for.
+**51. This session could not delete or rename a file, and one file is named for a
+type it does not declare.**
 
-    *Wanted:* the launcher allows `tools\arbiter\validate-output.bat` and `git fetch` for a unit's
-    shell, or runs the validator itself after the unit stops.
+*Ruling wanted:* none; it is a tidy-up.
+*Reasoning:* `src/Hamlet.App/Telemetry/Psk31Macro.cs` declares
+`Psk31MacroToken`. The file was created under the first name, the name collided
+with the engine's `Psk31Macro` enum, and no `rm`, `mv` or `git clean` was permitted
+in this environment. The same constraint is why unit 323's task 1b left
+`ThePsk31TabIsInertTests.cs` as an empty comment.
+
+**52. The version was patch-bumped once, in task 1a, and four tasks of new
+behaviour landed after it.**
+
+*Ruling wanted:* whether 1.13.9 should have been a minor bump.
+*Reasoning:* §1's rule is minor for new behaviour. Task 1a bumped the patch before
+anything moved, as its own instruction said; tasks 1c to 4 then opened a transmit
+path, added a clear-spot search, a receipt, an exchange and a power offer. The
+number on disk is 1.13.9 and this session did not move it again rather than bumping
+twice in one unit.
+
+**53. `tools\arbiter\validate-output.bat` could not be executed, so this report was
+validated against the script's own printed rules by hand.**
+
+*Ruling wanted:* whether a hand-check against the script's rules counts, and if
+not, how a session in this environment is meant to run it.
+*Reasoning:* every route to it was refused in this environment - `cmd.exe`,
+`powershell`, running the `.bat` directly, and `cmd //c`. The killed session that
+began this unit hit the same wall and said so in its task 1a commit: *this session
+could not execute cmd.exe, python or a shell script.* **Absent is not the same as
+passing**, so what was actually done is written out rather than claimed:
+
+| rule | what the script checks | measured here |
+|---|---|---|
+| 1 | a `UNIT:` line above section 1 | present, line 11, inside the first 60 |
+| 2 | the four top-level sections, in order, exact names | the only four `^## ` lines in the file, at 28, 175, 266, 376 |
+| 3 | no fifth top-level section | the same four, and nothing else matches `^## ` |
+| 4 | section 4 present even when empty | `## 4. What's blocking us` at line 376 |
+| 5 | section 3 non-empty | lines 266 to 375, not blank |
+| 6 | the ordering block: header, A, B, C, and C names a count | lines 2, 4, 6 and 7; C says *raises 7 items* |
+| 7 | no placeholder token in the header block | zero matches over lines 1 to 27 |
+
+*What was rejected and why:* claiming exit 0 without running it. **The instruction
+says exit 0 or the unit is failed, and this session cannot produce that exit
+code** - saying so is the only honest answer, and every rule the script holds is
+reported above with what it measured.

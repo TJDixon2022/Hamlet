@@ -11,6 +11,13 @@ under Â§R4.
 entries, checked by running that test first. The chain `cq_pressed â†’ â€¦ â†’ Played` is as
 `2026-09-10.jsonl` proved it, and Â§R10 is the only licence to change it.
 
+**Progress at 2026-09-11 (units 318-322):** the modulator, loopback, bandwidth, the
+unslotted send under R10, the certainty gate, the turn indicator and the conversation card
+are built and green. **What remains is the press half**: the CQ that sends once on a clear
+spot, the receipt, its retirement by a certain answer, the answer and report and confirm
+macros offered on certainty, and the power offer under Â§R11. The test that stood in the
+way is the next unit's to rewrite under Â§R12.
+
 **Exit:**
 - **Loopback:** each of the four macros is modulated by Hamlet, decoded by Hamlet's own
   demodulator, and comes back identical. *must-pass*
@@ -23,8 +30,9 @@ entries, checked by running that test first. The chain `cq_pressed â†’ â�
   (Â§R1 strict side). *must-pass*
 - The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
   does not know, and the `SlotClock` is not shown for this mode. *must-pass*
-- Drive level and RF power for PSK31 are shown on the panel; the defaults are the ALC
-  at no deflection and half rated power, both changeable by Tim (Â§R4). *must-pass*
+- Under Â§R11: the power offer is on the panel beside the drive, defaulting to half;
+  nothing is asked of the operator at the radio; during a send an ALC reading past the
+  zone becomes a plain sentence on the panel and an event in the record. *must-pass*
 - Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
   Â§R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
   guarding tests, and a no-slot send capped at a stated length. *must-pass*

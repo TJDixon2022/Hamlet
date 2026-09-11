@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-11T17:42:19-04:00  root C:\Source\HamLet
+measured 2026-09-11T18:08:55-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -18,7 +18,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : abe7267
+  HEAD   : a2f1730
   uncommitted at the root : 0
 
 ==============================================================
@@ -550,22 +550,22 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     superseded. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  12 lines, 1778 bytes
+  12 lines, 1691 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
   CURRENT_STEP: 4
-  WORK_INSTRUCTION: 320 - say it, the press half: a PSK31 CQ that makes a receipt at the bench, behind a door only drive and power can open
+  WORK_INSTRUCTION: 323 - say it: PSK31 goes out
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | blocked | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+  STEP: 4 | in progress | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  199 lines, 29227 bytes
+  231 lines, 32562 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -573,7 +573,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | blocked | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+  STEP: 4 | in progress | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
   
@@ -765,6 +765,38 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: blocked
   STATE_WHY: STEP 4 IS CARRIED AT blocked and this unit does not touch it. It is carried repair on the owner ruling that telemetry is the prime focus. NOTHING WAS MEASURED AT A RADIO.
+  
+  ## UNIT 323 - STEP 4
+  
+  STEP: 4
+  APPROACH: Checked the four gate facts, read PHASE_PLAN.md R11 to R14 against the tree, and ran the carry-forward list filtered and foregrounded before changing a line.
+  HIT: STEP 4 IS BLOCKED BY TWO THINGS THIS TREE ALREADY HOLDS THE ANSWER TO. CanTransmitIn answers true for null, FT8 and FT4 and for nothing else, and a test pins its source text character for character - so the door is shut and a test says it must stay shut. Everything behind the door was built and proved by units 318 to 322: the modulator, the four macros, the unslotted send with its 30 s cap, the certainty gate, the turn indicator, the conversation card, and six transmit events with no production call site.
+  MOVE: Open the door on R11, rewrite the guard on R12 so it guards the click rule instead of the shut door, and give the six events their call sites.
+  WHY: The owner has said what the measure of the unit is - he wants to see PSK31 transmitting - and nothing but the guard and the predicate stands between the press and the air.
+  DECIDED: Nothing yet. Task 1 changes no production file except the version.
+  LICENCE: Work instruction 323 tasks 1 to 5 under PHASE_PLAN.md R1, R2, R6, R8, R10, R11, R12, R13 and R14, CLAUDE.md 0.2, HM-DEC-084 and HM-DEC-155.
+  COST: one session, no test suite run, the carry-forward list of 44 named types at 265 of 265 green before anything changed - app 145 and engine 120
+  ACCOMPLISHED: The starting position is measured rather than assumed, and the two rulings that unblock step 4 are confirmed present in the plan.
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: STEP 4 IS CARRIED AT blocked UNTIL THE DOOR IS OPEN. Task 1 only measured; the tasks that advance it are 1b onward.
+  
+  ### ALSO RECORDED FOR UNIT 323 - STEP 4
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: rewrite the shut-door guard to guard the click rule, open CanTransmitIn for PSK31 through the same bolt as FT8, send the CQ macro once on a clear spot through the unslotted sequence, answer and offer the remaining macros on certainty, and offer power at half with the ALC read into a sentence
+  HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+  MOVE: continue
+  WHY: the two rulings that blocked step 4 are in the plan as R11 and R12; everything else step 4 needs was built by units 318 to 322 and is green; only the press half remains, and the owner has said what the measure of the unit is
+  DECIDED: the clear-spot rule (150 Hz from any held carrier or candidate over 0.4, widest gap preferred) is the unit's number to state; ThePsk31TabIsInertTests is retired and its surviving assertions rehomed, because its premise ends when the door opens
+  LICENCE: PHASE_PLAN.md R10, R11, R12, R13, R14, R1, R2, R6, R8; Tim 2026-09-11 on cards R1-R6; CLAUDE.md 0.2; HM-DEC-084
+  COST: 13.636098000000002
+  ACCOMPLISHED: Tim presses CQ under PSK31 and a PSK31 signal leaves the radio, once, on a clear spot, with a receipt that says so and nothing asked of him at the radio
+  STATE_AFTER: in progress
+  STATE_WHY: no output.md, so there is no report to judge the step against
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -787,17 +819,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 683 bytes
+  19 lines, 692 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: 5 of 5
-  WORK_INSTRUCTION: 322 - the PSK31 path becomes visible in the record
-  BALL: tim
-  NEXT_PASTE: output.md -> Claude Web
+  STATE: EXECUTING
+  TASK: 1 of 5
+  WORK_INSTRUCTION: 323 - say it: PSK31 goes out
+  BALL: code
+  NEXT_PASTE: none
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-11T17:01:09-04:00
-  NOTE: Unit 322 complete at task 5 of 5, none dropped. Report written and validated.
+  UPDATED: 2026-09-11T17:43:00-04:00
+  NOTE: Gate checked and passed; reading the tree for CanTransmitIn, the bolt and the card test before the carry-forward baseline run.
   
   ---
   

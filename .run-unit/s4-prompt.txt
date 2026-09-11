@@ -50,245 +50,122 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-**Carried, verbatim where unresolved.**
+**Nothing blocks the next unit.** Six items are raised on top of the queue unit 322
+carried, and the closures are recorded.
 
-1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
-   still Tim's. PSK31's continuous carrier makes it sharper.
-2. **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
-   Tim's to add (Â§0.4).
-3. **Three inherited reds, never chased** - two in `TheAchievementsScreenTests`, one in
-   `TheFitGuardAsksAboutTheGridTheSendIsOnTests` (engine).
-4. **`Ft8ContactCard.Closing`** is uncalled and left standing.
-5. **`Ft8GlobePlot`'s unused framing constants.** Report; leave standing.
-6. **The licence of `assets/world-flat-relief.png` is unknown.** Raise; do not resolve.
-7. **The FT4 phase's run files.** Unit 315 recovered the plan and status into
-   `docs\phase-ft4-run\`. The outcome file waits on item 19.
-8. **The door sentence is a placeholder.** Carry.
-9. **Acknowledgement indicators.** Named by Tim, not yet defined. Step 4's turn indicator
-   may be what he meant; do not assume it is.
-10. **Card ordering under scroll, and its root** - `DigitalCards.Clear()` then new cards
-    every slot, per-card state lost. Not this phase's. Carry.
-11. **The 2 px map outline** and **the 2.0x popup zoom cap** are sessions' numbers.
-12. **Version numbering** - x.y.0 or x.y.1 for a phase's first unit under HM-DEC-150.
-13. **The squelch threshold 0.90** is unit 314's number, `Psk31Demodulator.SquelchQuality`.
-14. **Real off-air PSK31 audio** - only Tim can record it. Two or three minutes on 14.070
-    with a few signals on it, any recorder, any rate, WAV, into
-    `assets\fixtures\captured\`. Every number in this phase is synthetic until then.
-15. **One conversation card is taller than the panel** (293 px in 220 px). Not broken.
-16. *(Unit 315 closed the fixed 1000 Hz listening offset by its instruction's own
-    condition. Kept here as a closed number so the list does not renumber.)*
-17. **Hand wanted: run `tools\arbiter\validate-output.bat output.md`** - unit 315's
-    shell refused it.
-18. **Ruling wanted: record the 1500 Hz station's text in `manifest.json`, or accept unit
-    315's derived reference.**
-19. **Hand wanted:** `git show eb28430:PHASE_OUTCOME.md > docs\phase-ft4-run\PHASE_OUTCOME.md`,
-    expected 168242 bytes, md5 `b60010069f7feea96e9d4be4e7e8c0f1`, then commit. *(Per its stat,
-    `a36ce1e` committed a six-line file at that path. The arbiter did not check its content, and
-    the 168242-byte file is not what landed.)*
-20. **Hand wanted: `git rm src\Hamlet.RadioEngine\Psk31\Psk31Listening.cs`** - comment-only,
-    builds.
-21. **Ruling wanted: the carrier search's floor should be local to the signals before
-    step 6** - at 48 kHz the median bin is below the radio's passband.
-22. **Ruling wanted: is HM-DEC-161 the right id** for the phase-setting ruling?
-23. **Ruling wanted: accept about a second of delay on PSK31 text, or reopen the step-1
-    squelch.**
-24. **Ruling wanted: the `snr` column's hover names FT8 and FT4 precision and not PSK31's.**
-25. **Hand wanted (unit 316): say whether `TheReadinessHoverTests.NoRowCarriesABearingInDegrees`
-    predates unit 316.** Run it alone at `eb67036`:
-    `timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheReadinessHoverTests.NoRowCarriesABearingInDegrees"`.
-26. **Ruling wanted (unit 316): accept the replaced assertion in `ThePsk31HearsEveryoneTests`.**
-    *"No row is ever on his side"* became *"a row is on his side only while its latest message is
-    addressed to him"*.
-27. **Ruling wanted (unit 316): the words `guess` and `unknown`** on a PSK31 row are the
-    session's wording, not a ruling.
-28. **Ruling wanted (unit 316): should Â§R3 recognise a roger (`R`, `RR`, `QSL`) before step 4?**
-    Without one the corpus's `ack` kind is never produced.
-29. **Ruling wanted (unit 316): accept the split rule's three edges.** A bare `73` does not end a
-    message. A damaged sign does not split. A final `K` counts when the next character arrives.
-30. **Ruling wanted, low (unit 316): the callsign shape is held in four places.** Consolidate them
-    later, or leave them.
-31. **Hand wanted (the arbiter, authoring 318):** `tools\arbiter\outcome-read.bat --approach`
-    breaks when the approach contains an apostrophe. PowerShell reports *"Unexpected token"*, and
-    the script still prints `Read complete.` and exits 0. **So a loop test on such a line reads as
-    run and was not.** Not a unit's to touch.
-32. **Hand wanted, for step 4's drive-and-power must-pass: put an IC-7300 manual where a session
-    can read it, and name its path.** Â§R4 requires the unit to *"cite the page of the IC-7300
-    manual it read"*, and the arbiter's search of the tracked tree found none. Task 1b reports
-    whether one exists anywhere on this machine. *(Unit 318: none tracked; outside the
-    repository could not be searched - item 33.)* *(Unit 320: none in the tree; nothing outside it
-    was looked for.)*
-33. **Hand wanted: this session could read nothing outside `C:\Source\HamLet`.** The file tools
-    refused `C:\Source\fldigi\src\psk\psk.cxx` (*"--restricted confines the file tools to the
-    working directory"*) and `find` over the user profile was blocked, so Â§R5's pinned reference
-    was not read and no IC-7300 manual outside the tree could be looked for. The modulator's
-    convention came from `Psk31Demodulator` and `assets/reference-modem.py` instead. The shell
-    also asked for approval on `pwd -W`, a `sed` stage and a `grep -v` stage in pipelines; each
-    was dropped, not retried in another form. **And `tools\arbiter\validate-output.bat
-    output.md` was refused** (`cmd //c`, *"This command requires approval"*), as for units 315
-    and 316, so **this report was not validated by the script** and item 17 stands. It was not
-    retried in another form. The seven rules were checked by hand against the script's own
-    patterns - four `## ` headings in order and no fifth, a `UNIT:` line, the ordering block's
-    `READ IN THIS ORDER`, `A.`, `B.`, `C.` and `raises 5 item` inside the first 60 lines, and no
-    placeholder token before section 1 - and that hand check is not the exit 0 the prompt asks
-    for. *Reasoning:* Â§R5 names fldigi as what the shaping
-    is read from, and Â§R4 needs a page citation. *Rejected:* copying either into the tree, which
-    Â§R5 forbids. **Wanted:** the launcher grants read access to `C:\Source\fldigi` and to a named
-    manual path, or Tim rules that the demodulator and the reference modem suffice for the shape.
-34. **Ruling wanted: the record's event name and FT8/FT4's missing mode.** A PSK31 transmission is
-    written under `ft8_transmission` with `mode: Psk31`; FT8 and FT4 records still do not say
-    which of the two went out, and cannot gain a key without breaking tonight's pin. *Options:*
-    keep the name and add `mode` to FT8 and FT4 under a re-pinned test; rename to a neutral event
-    with a migration note; or accept as is. *Industry answer:* one event with a mode field on
-    every record, re-pinned in its own commit.
-35. **Ruling wanted: 23 reds on the chain-guarding list that are not on the known-red list.** The
-    8 record and telemetry reds (unit 305's `send_stage` events defeat their `Assert.Single`),
-    2 real-endpoint engine reds and 13 app reds, named in section 1 - including
-    `ATransmitRecordCannotCarryTheMessageOrTheCallsignInIt`, one of the five tests the instruction
-    relies on to show the chain changed only as R10 allows. *Options:* put them on the known-red
-    list by name, or give a unit to repairing them. *Rejected by this unit:* chasing them now,
-    which the instruction forbids.
-36. **Ruling wanted: accept the idle, 32 bits before and 16 after.** 32 is measured against
-    Hamlet's own ear (shortest 23); 16 after is this unit's margin over a measured 0, for
-    receivers nobody here has measured. A real receiver's needs want item 33's fldigi access or
-    item 14's off-air audio.
-37. **For the door unit, low: three edges the send path will meet.** `DriveTheArmedSend` reads
-    `Armed?.Grid`, which throws for a no-slot send, so the PSK31 click must arm and call
-    `NowAsync` in one handler; `Arm` returns the refusal, which the click must show; and the
-    refusal sentence says "Psk31" where the operator reads "PSK31". *(Unit 320: all three
-    confirmed at file and line, section 1. The first is why item 45 exists.)*
-38. **Hand wanted (the arbiter, authoring 319): the arbiter's shell refused `git log` and
-    `git grep`** with *"This command requires approval"*. Only the loop test and file reads by
-    exact path ran. So this instruction's tree claims come from named files read and from unit
-    318's report, and not from a search. Not a unit's to touch. *(The arbiter authoring 320 ran
-    `git log` and `git show`; see item 44.)*
-39. *(Closed by unit 320, as the arbiter decided: line 414 of
-    `ThePsk31ReadsTheConversationTests` is narrowed to no W1AW card that carries an action, an
-    action message or a Log link, in its own commit `e82d36c`. The assertions after it run and are
-    green. Tim can still overrule it with one word. Kept as a closed number so the list does not
-    renumber.)*
-40. **Hand wanted: this session's shell refused, each reported once.**
-    - `git show HEAD:WORK_INSTRUCTIONS.md`, and then `git diff WORK_INSTRUCTIONS.md` - a second
-      form of the first, said so here - both with *"This command requires approval"*. So work
-      instruction 318's app chain-guarding list (63 tests) could not be read, and the app side was
-      counted on the three classes unit 318's report names (16 tests). The engine side was counted
-      on unit 318's own recorded 15 types.
-    - A shell `for` loop over the gate's four paths (*"Contains simple_expansion"*).
-    - A `grep` pattern with a `$` anchor.
-    - **`tools\arbiter\validate-output.bat output.md`**, run as `tools/arbiter/validate-output.bat
-      output.md`, with *"This command requires approval"*. So item 17 stands, and this report was
-      checked by hand only (section 1, Validation).
+### Closed by ruling tonight
 
-    None of the last three was retried in that form. *Wanted:* work instruction 318's section 2
-    list written into `docs\`, or the chain-guarding list put in `docs\carry-forward-tests.txt`'s
-    shape, so a unit can run it without git history.
-    *(The list is transcribed into work instruction 320 section 2, and task 1c writes it into
-    `docs\chain-guarding-tests.txt`. The refusals stand.)* *(Unit 320: written, `1573b85`, and
-    run whole: app 50 of 63 across all eleven classes.)*
-41. *(Closed by unit 320, as the arbiter decided: the PSK31 card is handed the grid from a certain
-    message and never from a guess, `4dbffda`, `ThePsk31CardIsHandedHisGridTests` 2 of 2. Tim can
-    still overrule it with one word. Kept as a closed number so the list does not renumber.)*
-42. **Ruling wanted: this unit's words and table are a session's, not rulings.**
-    - The card's *Your turn*, *His turn*, *He is still sending*, *Unknown* and *Your turn, a
-      guess*, and one sentence per state.
-    - The macro-follows-message table in section 1 (his bare calls -> Report; a Report or Chat ->
-      Report, or Confirm once a report has gone; a Closing or End -> Confirm; nothing once the
-      operator has signed off).
-    - *He is still sending* is certain because it is the demodulator's fact.
-    - A PSK31 card's X clears it until that conversation gains a message.
+- **Item 43 - drive and power.** Closed by Â§R11.
+- **Item 45 - the `NothingOnTheCardTransmits` pins.** Closed by Â§R12; the rewrite
+  landed in task 1b.
+- **Items 32 and 33 - the manual pages.** Closed; recorded in
+  `docs/psk31-reference.md`.
+- **Ask 1 - does the record say what the radio did.** **Closed by this unit.**
+  `psk31_radio_after_send` has a production call site and fires on every PSK31
+  send; on this machine it says `answered: false`, which is the finding.
+- **Unit 322 item 1 - `psk31_lock` is a proxy.** **Not done.** The instruction asked
+  for it to be renamed to `psk31_reading` in passing; it was not, and that is a
+  miss rather than a decision. It carries forward unchanged: the event is still
+  called `psk31_lock` and still measures a quality window rather than a bit-clock
+  lock. A real lock stays parked.
 
-    *Options:* accept as built, or rule different wording or order.
-43. **Ruling wanted (the arbiter, authoring 320): Â§R4 against HM-DEC-084, and an ALC default
-    that only a keyed radio can read.** Step 4's drive-and-power must-pass cannot close on the tree
-    as it stands, for three reasons, and only the first is items 32 and 33.
-    - **No page.** The repository cites no command and no page for the USB modulation input level
-      (`docs\unit254-level-and-timing.md:106-110`), and the manual is never committed (HM-DEC-049).
-    - **Two rulings disagree.** Â§R4 makes both *"settings Tim can change"*, *"shown on the mode's
-      panel"*. HM-DEC-084 says *"no screen may carry a control corresponding one-to-one with a radio
-      setting"*, and RF power is a tier-two write, *"offered, never simply done"*
-      (`CivWrites.cs:23-27`, `:271-273`). Â§R4 is the plan author's; HM-DEC-084 is Tim's.
-    - **A reading no bench can take.** *"The ALC meter shows no deflection"* is read off a
-      transmitting radio (`RigField.Alc`, *"meaningful only while transmitting"*), and the dummy
-      load is withdrawn.
+### Still open, unchanged
 
-    *Options:*
-    - (a) The PSK31 power default is an HM-DEC-084 offer: half of the radio's range, said as a
-      percentage (HM-DEC-074, HM-DEC-082), shown on the panel beside the drive level Hamlet
-      composes at. The radio's input level stays Tim's to set at the radio. Hamlet shows the ALC
-      while a PSK31 send is on the air, so the no-deflection default is set at step 6.
-    - (b) As (a), and Hamlet also writes the input level once items 32 and 33 give a unit a page to
-      cite.
-    - (c) Rule Â§R4 differently.
+- **Unit 322's item 3** - the record does not say what was on screen. Not this
+  unit's, not touched.
+- **Off-air audio** - there is still none. Everything above is fixtures and typed
+  corpus. Raised, not stopped for.
+- **The card-rebuild root, card ordering, a real bit-clock lock, any second `PttOn`
+  site, any package** - parked, untouched.
 
-    *The arbiter's reading, not a citation:* (a) closes the criterion without a page and without a
-    knob on the screen. **If this is still open when drive and power are all step 4 has left, the
-    next arbiter stops on it.** *(Unit 320's reads for it, section 1: no RF power write is used
-    anywhere in `src`; no ALC is read or shown anywhere; the drive box is on the Digital panel.)*
-44. **Noted (the arbiter, authoring 320): the arbiter's shell ran `git log` and `git show`**, and
-    refused a compound command with `;` between its parts, whole. Item 38's `git log` refusal did
-    not recur; `git grep` was not tried. Not a unit's to touch.
+### New, raised by this unit
 
-**New from unit 320, most blocking first.**
+**47. There is no CI-V read command for the ALC anywhere in the tree, so Â§R11's
+sentence cannot fire on a real radio.**
 
-45. **Ruling wanted: two structural pins in
-    `ThePsk31ConversationCardTests.NothingOnTheCardTransmits` against step 4's press.** They are
-    what stopped task 2.
-    - **What the test pins.** It is unit 319's, on the carry-forward list, and section 7 of work
-      instruction 320 names its class as never to be edited. It asserts:
-      - no code line under `src\Hamlet.App` contains `NowAsync` (`:325-337`);
-      - `CanTransmitIn`'s four lines stay exactly `null`, `FT8`, `FT4` (`:341-347`).
-    - **What the press needs.** `NowAsync` fired from `SendMessage`: ask 37's first edge, a no-slot
-      send left armed makes the next slot tick throw at `MainWindowViewModel.cs:12952`. And a PSK31
-      answer from the door, behind the bolt. So the press cannot be built without making the test
-      red.
-    - **The same shape as item 39:** a guard written while the door was shut, against the unit told
-      to build the door. Its remarks call it *"nothing on the card transmits"*.
+*Ruling wanted:* where the read comes from.
+*Reasoning:* Â§R11 says *during a PSK31 send Hamlet reads the ALC and, if it
+deflects past the zone, says so in plain words.* `RigField.Alc` exists; there is no
+`CivRead` for it, so `RigStateMonitor` never fills it and the reading is always
+absent. The judgement, the sentence and the event are built and proved from a fed
+reading; only the source is missing.
+*What was rejected and why:* inventing the command byte. Â§0 and Â§4 forbid a
+plausible command nobody can check against the manual, and `RigValue.Undocumented`
+exists for exactly this case. The manual page that documents the ALC meter read
+would close it in one line.
 
-    *Options:*
-    - (a) Narrow the two pins, in their own commit, to the property the test names. In the default
-      composition:
-      - nothing on a PSK31 card transmits, and a PSK31 press composes nothing;
-      - `NowAsync` in the app only inside `SendMessage`, behind the bolt;
-      - `CanTransmitIn` true for PSK31 only through the bolt's predicate, which nothing in `src`
-        makes true.
+**48. The six events of a press are written in a different order from the one the
+instruction lists, and the reason is a Â§0.0 one.**
 
-      Then a unit builds task 2 as written.
-    - (b) Keep the pins and rule a different shape for the press. There is none this session could
-      find that does not either break them or evade them.
-    - (c) Put the method on the known-red list while the press is built.
+*Ruling wanted:* none, unless the order matters to a reader downstream.
+*Reasoning:* the instruction lists composed, stage, keyed, unkeyed, record,
+radio-after-send. What is written is composed, stages, **record**, keyed, unkeyed,
+alc, radio-after-send. `psk31_send_keyed` claims the port took the keying frame,
+and only the finished run knows whether it did - a line written before the await
+would claim a radio keyed on an evening when the port was dead. So the pair follows
+the run, and the engine's own `ft8_transmission` lands between the stages and them.
+*What was rejected and why:* bracketing the await, which would have matched the
+listed order and lied on the failure case.
 
-    *Industry answer:* assert the behaviour (nothing transmits by default), not the source text.
+**49. `psk31_send_refused` has a new reason token, `no_transmit_path`.**
 
-    *Rejected by this unit:* evading the text scan with a renamed helper or a bolt placed beside
-    `CanTransmitIn`, which is gaming; editing the test, which section 7 forbids; building the press
-    and leaving the list red.
-46. **Noted, low: an intermittent red on the carry-forward list, not chased.**
-    `ThePressingOfCqTests.AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard`:
-    - failed once in the first full app carry-forward run after item 41, with 134 of 135;
-    - passed alone, 1 of 1, one K9XP card and the receipt retired;
-    - passed in a second run of the same full list, 135 of 135.
+*Ruling wanted:* none; recorded so the set of tokens stays known.
+*Reasoning:* the documented set was `bolt`, `cap`, `uncertain`, `mode`. `bolt` is
+now dead - there is no bolt. `no_clear_spot` is the instruction's own. A press with
+no radio connected needed a token of its own, because it is a different evening
+from a press that was refused for its mode.
 
-    The failure message was not captured: the first run's filter kept names only. It reads the FT8
-    ledger alone, and this unit changed only the PSK31 card path. It is not in `docs\`,
-    `OPEN_ISSUES.md`, `PHASE_OUTCOME.md` or `RUN_LEDGER.md`.
+**50. The four-signal audio fixture was not driven into a press.**
 
-    *Options:* run it in the full list a few times at `e82d36c` and at `4dbffda` to settle whether
-    it predates item 41; or accept it beside ask 25 as an order effect. *Rejected by this unit:*
-    chasing it, which HM-DEC-155's shape of a unit does not allow.
-47. **Hand wanted: this session's shell refused, each reported once and none retried in that form.**
-    - `grep ... ; grep ...` - two commands joined by `;` (*"requires approval"*). A form already on
-      the measured list, and this session's slip.
-    - A `grep` alternation containing a `$` anchor (*"This command requires approval"*). Already
-      on the list.
-    - **`git fetch -q origin main && git status -sb`** (*"requires approval"*). `&&` compounds of
-      `git add` and `git commit` ran, so the refusal is `git fetch`. The push was checked with
-      `git status -sb` alone instead.
-    - A pipeline with a `grep -vE` stage whose pattern held `^\s*$`. Both forms are already on the
-      list; a positive `grep` was used instead.
+*Ruling wanted:* none.
+*Reasoning:* task 5 asks for the fixture to be fed and the CQ row clicked. The
+fixture was fed and its rows read - EI4GNB's CQ at 1600 Hz is there - but the click
+on that row was not driven, because doing it would have meant adding a test beyond
+what a criterion needs (Â§R14) and this session cannot delete a file it creates. The
+same click is proved on typed text at 1234 Hz.
 
-    - **`tools/arbiter/validate-output.bat output.md`** (*"This command requires approval"*), as for
-      units 315, 316, 318 and 319. So item 17 stands. The script was read and its seven rules
-      checked by hand (section 1, Validation). That hand check caught a rule 6 wording failure
-      before the report was committed, and it is still not the exit 0 the prompt asks for.
+**51. This session could not delete or rename a file, and one file is named for a
+type it does not declare.**
 
-    *Wanted:* the launcher allows `tools\arbiter\validate-output.bat` and `git fetch` for a unit's
-    shell, or runs the validator itself after the unit stops.
+*Ruling wanted:* none; it is a tidy-up.
+*Reasoning:* `src/Hamlet.App/Telemetry/Psk31Macro.cs` declares
+`Psk31MacroToken`. The file was created under the first name, the name collided
+with the engine's `Psk31Macro` enum, and no `rm`, `mv` or `git clean` was permitted
+in this environment. The same constraint is why unit 323's task 1b left
+`ThePsk31TabIsInertTests.cs` as an empty comment.
+
+**52. The version was patch-bumped once, in task 1a, and four tasks of new
+behaviour landed after it.**
+
+*Ruling wanted:* whether 1.13.9 should have been a minor bump.
+*Reasoning:* Â§1's rule is minor for new behaviour. Task 1a bumped the patch before
+anything moved, as its own instruction said; tasks 1c to 4 then opened a transmit
+path, added a clear-spot search, a receipt, an exchange and a power offer. The
+number on disk is 1.13.9 and this session did not move it again rather than bumping
+twice in one unit.
+
+**53. `tools\arbiter\validate-output.bat` could not be executed, so this report was
+validated against the script's own printed rules by hand.**
+
+*Ruling wanted:* whether a hand-check against the script's rules counts, and if
+not, how a session in this environment is meant to run it.
+*Reasoning:* every route to it was refused in this environment - `cmd.exe`,
+`powershell`, running the `.bat` directly, and `cmd //c`. The killed session that
+began this unit hit the same wall and said so in its task 1a commit: *this session
+could not execute cmd.exe, python or a shell script.* **Absent is not the same as
+passing**, so what was actually done is written out rather than claimed:
+
+| rule | what the script checks | measured here |
+|---|---|---|
+| 1 | a `UNIT:` line above section 1 | present, line 11, inside the first 60 |
+| 2 | the four top-level sections, in order, exact names | the only four `^## ` lines in the file, at 28, 175, 266, 376 |
+| 3 | no fifth top-level section | the same four, and nothing else matches `^## ` |
+| 4 | section 4 present even when empty | `## 4. What's blocking us` at line 376 |
+| 5 | section 3 non-empty | lines 266 to 375, not blank |
+| 6 | the ordering block: header, A, B, C, and C names a count | lines 2, 4, 6 and 7; C says *raises 7 items* |
+| 7 | no placeholder token in the header block | zero matches over lines 1 to 27 |
+
+*What was rejected and why:* claiming exit 0 without running it. **The instruction
+says exit 0 or the unit is failed, and this session cannot produce that exit
+code** - saying so is the only honest answer, and every rule the script holds is
+reported above with what it measured.

@@ -5,7 +5,7 @@ STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.
 STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
 STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
 STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-STEP: 4 | in progress | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+STEP: 4 | partial | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
 STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
 STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
@@ -229,3 +229,14 @@ COST: 13.636098000000002
 ACCOMPLISHED: Tim presses CQ under PSK31 and a PSK31 signal leaves the radio, once, on a clear spot, with a receipt that says so and nothing asked of him at the radio
 STATE_AFTER: in progress
 STATE_WHY: no output.md, so there is no report to judge the step against
+
+### ALSO RECORDED FOR UNIT 323 - STEP 4
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC read source, the version bump and the hand validation, but none forecloses step 4 work, since the ALC judgement, sentence, event and power offer are already built and proved from a fed reading and the remaining step 4 work such as the four signal fixture click, the turnover timing nice to pass and the outstanding telemetry items can all proceed at the bench without an answer.
+COST: 54.71674749999996
+STATE_AFTER: partial
+STATE_WHY: Most must-pass criteria have named green tests behind them, but the occupied bandwidth is never stated or measured in the report as the criterion requires, and the R11 ALC criterion is only proved from a fed reading since the report itself admits there is no CI-V read for the ALC, so the sentence can never fire on a real radio and the zone figure of 128 is the unit's own invention awaiting a ruling.

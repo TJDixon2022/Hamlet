@@ -1,5 +1,25 @@
-﻿   Bash  {"command":"grep -n \"void BookTheSend\\|BookTheSend(\\|RecordSent(\\|CardStations()\\|IsReceipt\\|IsCallingAnyone\\|TheNextBoundary()\\|private void RebuildCards\\|ActionFor(\\|_ledger\\b\\|private readonly Ft8ContactLedger\\|HasSomethingT ...(truncated)
-   Bash  {"command":"grep -n \"void BookTheSend\\|BookTheSend(\\|CardStations()\\|IsCallToAnyone\\|DateTime TheNextBoundary\\|private void RebuildCards\\|Ft8CardAction ActionFor\\|ActionFor(\\|HasSomethingToStop\\b\\|void StopNow\\|void SendCallToAn ...(truncated)
-   Bash  {"command":"git fetch -q origin main \u0026\u0026 git status -sb | head -1 \u0026\u0026 git rev-parse --short origin/main","description":"Confirm push reached origin/main"}
-   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --no-build --filter \"FullyQualifiedName~ThePressingOfCqTests.AnAnswerRetiresTheReceiptAndOpensTheStationOwnCard\" --logger \"console;verbosity=detailed\" 2\ ...(truncated)
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Validate the report with the arbiter script"}
+﻿   Bash  {"command":"date -Iseconds","description":"Read the clock"}
+   Bash  {"command":"grep -n \"^    [A-Z][A-Za-z]*,$\" src/Hamlet.RadioEngine/Rig/RigField.cs","description":"List RigField members"}
+   Bash  {"command":"grep -nE \"^    [A-Za-z]+,$\" src/Hamlet.RadioEngine/Rig/RigField.cs","description":"List RigField members"}
+   Bash  {"command":"grep -n \",\" src/Hamlet.RadioEngine/Rig/RigField.cs | grep -v \"///\" | head -40","description":"List RigField members"}
+   Bash  {"command":"rm src/Hamlet.App/Telemetry/Psk31Macro.cs","description":"Remove the duplicate type"}
+   Bash  {"command":"git -C C:/Source/HamLet rm -f --ignore-unmatch src/Hamlet.App/Telemetry/Psk31Macro.cs 2\u003e\u00261; ls src/Hamlet.App/Telemetry/","description":"Remove untracked duplicate type file"}
+   Bash  {"command":"rm -f \"C:/Source/HamLet/src/Hamlet.App/Telemetry/Psk31Macro.cs\" \u0026\u0026 ls src/Hamlet.App/Telemetry/","description":"Delete the duplicate type file"}
+   Bash  {"command":"mv src/Hamlet.App/Telemetry/Psk31Macro.cs src/Hamlet.App/Telemetry/Psk31MacroTokens.cs \u0026\u0026 ls src/Hamlet.App/Telemetry/","description":"Rename the file"}
+   Bash  {"command":"git clean -f src/Hamlet.App/Telemetry/ 2\u003e\u00261; ls src/Hamlet.App/Telemetry/","description":"Clean untracked files in Telemetry folder"}
+   Bash  {"command":"git clean -f src/Hamlet.App/Telemetry/","description":"Remove untracked file in Telemetry folder"}
+   Bash  {"command":"sh tools/run-carry-forward.sh app 2\u003e\u00261 | tail -30","timeout":600000,"description":"Run app carry-forward tests"}
+   Bash  {"command":"sh tools/run-carry-forward.sh app | tail -30","timeout":600000,"description":"Run app carry-forward tests"}
+   Bash  {"command":"sh tools/run-carry-forward.sh app","timeout":600000,"description":"Run app carry-forward tests"}
+   Bash  {"command":"git reset -q SESSION.lock .run-unit \u0026\u0026 git status --short","description":"Unstage launcher files"}
+   Bash  {"command":"git reset -q SESSION.lock .run-unit","description":"Unstage launcher files"}
+   Bash  {"command":"python -c \"\nimport json\nd=json.load(open(\u0027assets/fixtures/psk31-transcripts/corpus.json\u0027))\nprint(d.get(\u0027operator\u0027))\nfor t in d[\u0027transcripts\u0027]:\n    print(\u0027---\u0027,t[\u0027name\u0027])\n  ...(truncated)
+   Bash  {"command":"perl -0pi -e \u0027s/            radio = GiveItARadio\\(model\\);/            radio = GiveItARadio(model, telemetry);/g\u0027 tests/Hamlet.App.Tests/ViewModels/ThePsk31CqGoesOutTests.cs \u0026\u0026 grep -n \"GiveItARadio(\" tes ...(truncated)
+   Bash  {"command":"python3 - \u003c\u003c\u0027PY\u0027\nimport re,io\np=\u0027src/Hamlet.App/ViewModels/MainWindowViewModel.cs\u0027\ns=open(p,encoding=\u0027utf-8-sig\u0027).read()\nold=\"Ft8ContactCard.ForPsk31(station, turn, _settings.Operator ...(truncated)
+   Bash  {"command":"cmd.exe /c \"tools\\\\arbiter\\\\validate-output.bat output.md\" 2\u003e\u00261 | tail -25","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\validate-output.bat output.md\"","timeout":180000,"description":"Validate the report"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Run the output validator"}
+   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Run the output validator"}
+   Bash  {"command":"powershell -NoProfile -Command \"Write-Output \u0027ok\u0027\"","timeout":120000,"description":"Check PowerShell availability"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat\" output.md","timeout":180000,"description":"Run the validator via cmd"}
+   Bash  {"command":"head -27 output.md | grep -nE \"_PENDING|PENDING_|TBD|TODO|FIXME|XXX|\u003cFILL|FILL IN\u003e|PLACEHOLDER\"; echo \"exit $? (1 = no match = clean)\"","description":"Rule 7 over the whole header block"}
