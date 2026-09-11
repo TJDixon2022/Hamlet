@@ -49,6 +49,15 @@ public sealed class Ft8GlobeControl : Control
     public static readonly StyledProperty<Ft8GlobePlot?> PlotProperty =
         AvaloniaProperty.Register<Ft8GlobeControl, Ft8GlobePlot?>(nameof(Plot));
 
+    /// <summary>True where this is the enlarged map rather than the card's own.</summary>
+    /// <remarks>
+    /// **R8** (Tim, 2026-09-11), *"zoomed into path"*. The same control draws both, so
+    /// there is one set of arithmetic placing the markers and one set of constants
+    /// describing the picture. What changes is which window of the file it frames.
+    /// </remarks>
+    public static readonly StyledProperty<bool> OpenedProperty =
+        AvaloniaProperty.Register<Ft8GlobeControl, bool>(nameof(Opened));
+
     /// <summary>
     /// **The map itself, loaded once and only where its bytes are recognised.**
     /// </summary>
@@ -150,9 +159,10 @@ public sealed class Ft8GlobeControl : Control
     /// <param name="plot">What is being drawn.</param>
     /// <param name="width">The control own width.</param>
     /// <param name="height">The control own height.</param>
+    /// <param name="opened">True for the enlarged map, which frames the path.</param>
     /// <returns>The decisions a render would make.</returns>
     public static Drawn WhatWouldBeDrawn(
-        Ft8GlobePlot? plot, double width, double height)
+        Ft8GlobePlot? plot, double width, double height, bool opened = false)
     {
         if (plot is null || width <= 0 || height <= 0)
         {
@@ -161,7 +171,7 @@ public sealed class Ft8GlobeControl : Control
                 PathStrokeWidth, PathCasingWidth, MarkerRadius);
         }
 
-        var (left, top, mapWidth, mapHeight) = plot.Frame;
+        var (left, top, mapWidth, mapHeight) = FrameOf(plot, opened);
         var scale = Math.Min(width / mapWidth, height / mapHeight);
 
         Point At(double x, double y)
@@ -198,7 +208,14 @@ public sealed class Ft8GlobeControl : Control
             MarkerRadius);
     }
 
-    static Ft8GlobeControl() => AffectsRender<Ft8GlobeControl>(PlotProperty);
+    static Ft8GlobeControl()
+    {
+        AffectsRender<Ft8GlobeControl>(PlotProperty, OpenedProperty);
+
+        // **BOTH CHANGE THE SHAPE THE CONTROL ASKS FOR**, because the frame decides
+        // it: a zoomed window is not the file's proportions and the row has to follow.
+        AffectsMeasure<Ft8GlobeControl>(PlotProperty, OpenedProperty);
+    }
 
     /// <summary>How near the pointer has to be to a marker, in map pixels.</summary>
     /// <remarks>
@@ -260,7 +277,7 @@ public sealed class Ft8GlobeControl : Control
             return;
         }
 
-        var (left, top, width, height) = plot.Frame;
+        var (left, top, width, height) = FrameOf(plot, Opened);
 
         if (width <= 0 || height <= 0)
         {
@@ -289,6 +306,27 @@ public sealed class Ft8GlobeControl : Control
         get => GetValue(PlotProperty);
         set => SetValue(PlotProperty, value);
     }
+
+    /// <summary>True where this is the enlarged map.</summary>
+    public bool Opened
+    {
+        get => GetValue(OpenedProperty);
+        set => SetValue(OpenedProperty, value);
+    }
+
+    /// <summary>Which window of the file a control in this state frames.</summary>
+    /// <param name="plot">What is being plotted.</param>
+    /// <param name="opened">True for the enlarged map.</param>
+    /// <returns>Left, top, width and height in the file's own pixels.</returns>
+    /// <remarks>
+    /// **ONE PLACE DECIDES IT**, so the size the control asks for, the picture it
+    /// draws and what a test reads back cannot come to disagree (0).
+    /// </remarks>
+    public static (double Left, double Top, double Width, double Height) FrameOf(
+        Ft8GlobePlot? plot, bool opened)
+        => plot is null
+            ? (0, 0, FlatWorldMap.Relief.WidthPixels, FlatWorldMap.Relief.HeightPixels)
+            : opened ? plot.OpenFrame : plot.Frame;
 
     /// <summary>How tall the map is at a given width.</summary>
     /// <param name="width">A width in the control own units.</param>
@@ -329,41 +367,41 @@ public sealed class Ft8GlobeControl : Control
     /// </remarks>
     protected override Size MeasureOverride(Size availableSize)
     {
+        // **THE FRAME DECIDES THE SHAPE, NOT THE FILE.** The card's own map frames
+        // the whole picture, so this is the bitmap's proportions there; the enlarged
+        // one frames a window on to it and is whatever shape that window is.
+        var (_, _, frameWidth, frameHeight) = FrameOf(Plot, Opened);
+
         var width = availableSize.Width;
         var height = availableSize.Height;
 
-        // **OFFERED NOTHING, IT ASKS FOR THE FILE OWN SIZE.** A control with no
+        // **OFFERED NOTHING, IT ASKS FOR THE FRAME OWN SIZE.** A control with no
         // constraint at all is still the right shape.
         if (double.IsInfinity(width) && double.IsInfinity(height))
         {
-            return new Size(
-                FlatWorldMap.Relief.WidthPixels, FlatWorldMap.Relief.HeightPixels);
+            return new Size(frameWidth, frameHeight);
         }
 
         if (double.IsInfinity(width))
         {
-            width = WidthFor(height);
+            width = height * frameWidth / frameHeight;
         }
 
         if (double.IsInfinity(height))
         {
-            height = HeightFor(width);
+            height = width * frameHeight / frameWidth;
         }
 
-        if (width <= 0 || height <= 0)
+        if (width <= 0 || height <= 0 || frameWidth <= 0 || frameHeight <= 0)
         {
             return default;
         }
 
         // **THE SAME FIT THE RENDER MAKES**, written once in each place because the
         // render needs it against `Bounds` and this needs it against an offer.
-        var scale = Math.Min(
-            width / FlatWorldMap.Relief.WidthPixels,
-            height / FlatWorldMap.Relief.HeightPixels);
+        var scale = Math.Min(width / frameWidth, height / frameHeight);
 
-        return new Size(
-            FlatWorldMap.Relief.WidthPixels * scale,
-            FlatWorldMap.Relief.HeightPixels * scale);
+        return new Size(frameWidth * scale, frameHeight * scale);
     }
 
     /// <inheritdoc/>
@@ -384,7 +422,7 @@ public sealed class Ft8GlobeControl : Control
             return;
         }
 
-        var (left, top, width, height) = plot.Frame;
+        var (left, top, width, height) = FrameOf(plot, Opened);
 
         if (width <= 0 || height <= 0)
         {

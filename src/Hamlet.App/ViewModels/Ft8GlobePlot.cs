@@ -145,6 +145,7 @@ public sealed class Ft8GlobePlot
         Place = place;
 
         Frame = Framed();
+        OpenFrame = Opened();
     }
 
     /// <summary>The station.</summary>
@@ -197,6 +198,28 @@ public sealed class Ft8GlobePlot
     /// height.
     /// </summary>
     public (double Left, double Top, double Width, double Height) Frame { get; }
+
+    /// <summary>What the opened map is framed to, in the same units.</summary>
+    /// <remarks>
+    /// **R8** (Tim, 2026-09-11): *"When I click on a map it gets enlarged"*, *"zoomed
+    /// into path"*. See <see cref="Opened"/> for how the box is chosen and for the two
+    /// cases that show the whole world instead.
+    /// </remarks>
+    public (double Left, double Top, double Width, double Height) OpenFrame { get; }
+
+    /// <summary>True where there is a path, so there is something to open.</summary>
+    /// <remarks>
+    /// <para>**A CARD WITH NO PATH HAS NOTHING TO ZOOM TO**, so it does not open. That
+    /// is a station the picture cannot place - Antarctica below 63.79S and the strip
+    /// west of 175.52W are the whole list - and a receipt, which has no other station
+    /// at all.</para>
+    /// <para>**THE INSTRUCTION SAYS SUCH A CARD HAS NO MAP ROW AND IT DOES HAVE ONE**
+    /// (reported as a mismatch). <see cref="HasMap"/> is an *or*: the operator is
+    /// placed even when the station is not, so the row appears with his own marker on
+    /// it and the caption says where the picture stops. What is gated here is the
+    /// opening, which is the thing R8 is about.</para>
+    /// </remarks>
+    public bool Opens => Path.Count > 0;
 
     /// <summary>What the map says under it.</summary>
     /// <remarks>
@@ -330,10 +353,162 @@ public sealed class Ft8GlobePlot
         return (0, 0, Map.WidthPixels, Map.HeightPixels);
     }
 
+    /// <summary>The share of the file the opened frame may never go below.</summary>
+    /// <remarks>
+    /// <para>**THE ZOOM FLOOR, AND THE NUMBER IS A QUARTER** (R8 asks for a floor and
+    /// for the reason). There is no more detail in a 698 by 381 photograph than it
+    /// holds, and two stations a few hundred miles apart would otherwise fill the
+    /// popup from a crop sixty pixels across.</para>
+    /// <para>**WHY A QUARTER.** The popup is about the width of the file itself, so a
+    /// frame of a quarter of it is magnified about four times, and at four times one
+    /// pixel of the photograph has become a block four pixels across. That is where a
+    /// relief map stops carrying coastline and starts carrying squares. **It is an
+    /// arithmetic argument and not a seen one**: nothing in this repository can look
+    /// at the result.</para>
+    /// <para>**SO A SHORT CONTACT DOES NOT FILL THE FRAME, WHICH IS CORRECT.** Two
+    /// stations in the same state really are close together, and a picture that hid
+    /// that by zooming until they were far apart would be asserting something the
+    /// distance denies (0.0).</para>
+    /// </remarks>
+    public const double ZoomFloorShare = 0.25;
+
+    /// <summary>How much room is left round the path, as a share of its own size.</summary>
+    /// <remarks>
+    /// **NOTHING SITS ON AN EDGE** (R8). Six per cent of the longer side of the box
+    /// the path needs, which at the tightest zoom the floor allows is about ten pixels
+    /// of the file and forty in the popup - comfortably clear of a marker, which is
+    /// drawn at four and a half pixels of radius in the control's own units.
+    /// </remarks>
+    public const double MarginShare = 0.06;
+
+    /// <summary>The window the opened map draws, fitted to the path.</summary>
+    /// <remarks>
+    /// <para>**THE PATH DEFINES THE FRAME AND NOT THE TWO ENDPOINTS** (R8). The arc
+    /// bulges well north of both stations - FN00DJ to Tokyo peaks near 67N - so a box
+    /// drawn from the endpoints alone crops the top off the thing being looked at.
+    /// Every sampled point goes in, and both markers with them.</para>
+    /// <para>**TWO CASES SHOW THE WHOLE WORLD.** A path that crosses the date line has
+    /// two runs against opposite edges, so the box that holds both is the file anyway
+    /// and pretending otherwise would need a re-centred map this unit is not building.
+    /// And a card with no path has nothing to frame.</para>
+    /// <para>**IT NEVER LEAVES THE FILE.** A frame is clamped into the picture rather
+    /// than filled with ground, because the edge of the photograph is where Hamlet's
+    /// knowledge stops and drawing past it would say otherwise.</para>
+    /// </remarks>
+    private (double, double, double, double) Opened()
+    {
+        var whole = (0.0, 0.0, (double)Map.WidthPixels, (double)Map.HeightPixels);
+
+        // **NO PATH, NOTHING TO ZOOM TO**; and two runs is the date line.
+        if (Path.Count != 1)
+        {
+            return whole;
+        }
+
+        var left = double.MaxValue;
+        var top = double.MaxValue;
+        var right = double.MinValue;
+        var bottom = double.MinValue;
+
+        void Hold(double x, double y)
+        {
+            left = Math.Min(left, x);
+            right = Math.Max(right, x);
+            top = Math.Min(top, y);
+            bottom = Math.Max(bottom, y);
+        }
+
+        foreach (var run in Path)
+        {
+            foreach (var (x, y) in run)
+            {
+                Hold(x, y);
+            }
+        }
+
+        // **THE MARKERS TOO**, which matters where a sample falls a little short of
+        // an endpoint: the path is a hundred and eighty segments and the last vertex
+        // is the station, but the arithmetic should not depend on that.
+        if (HasOperator)
+        {
+            Hold(OperatorX, OperatorY);
+        }
+
+        if (HasStation)
+        {
+            Hold(StationX, StationY);
+        }
+
+        if (right <= left && bottom <= top)
+        {
+            return whole;
+        }
+
+        var margin = MarginShare * Math.Max(right - left, bottom - top);
+
+        return Fitted(
+            left - margin, top - margin,
+            (right - left) + (2 * margin), (bottom - top) + (2 * margin));
+    }
+
+    /// <summary>A box grown to the floor and pushed back inside the picture.</summary>
+    /// <param name="left">The box's left edge.</param>
+    /// <param name="top">The box's top edge.</param>
+    /// <param name="width">The box's width.</param>
+    /// <param name="height">The box's height.</param>
+    /// <returns>The frame the opened map uses.</returns>
+    private static (double, double, double, double) Fitted(
+        double left, double top, double width, double height)
+    {
+        var floorWidth = Map.WidthPixels * ZoomFloorShare;
+        var floorHeight = Map.HeightPixels * ZoomFloorShare;
+
+        // **GROWN ABOUT ITS OWN CENTRE**, so the floor moves the edges outward and
+        // never moves the path off the middle of what the reader is looking at.
+        if (width < floorWidth)
+        {
+            left -= (floorWidth - width) / 2;
+            width = floorWidth;
+        }
+
+        if (height < floorHeight)
+        {
+            top -= (floorHeight - height) / 2;
+            height = floorHeight;
+        }
+
+        if (width >= Map.WidthPixels)
+        {
+            (left, width) = (0, Map.WidthPixels);
+        }
+        else
+        {
+            left = Math.Clamp(left, 0, Map.WidthPixels - width);
+        }
+
+        if (height >= Map.HeightPixels)
+        {
+            (top, height) = (0, Map.HeightPixels);
+        }
+        else
+        {
+            top = Math.Clamp(top, 0, Map.HeightPixels - height);
+        }
+
+        return (left, top, width, height);
+    }
+
     /// <summary>The frame, as a reader sees it, for a test and for the record.</summary>
     public string FrameLine
         => string.Format(
             CultureInfo.InvariantCulture,
             "left {0:0.#}, top {1:0.#}, {2:0.#} by {3:0.#}",
             Frame.Left, Frame.Top, Frame.Width, Frame.Height);
+
+    /// <summary>The opened frame, in the same words.</summary>
+    public string OpenFrameLine
+        => string.Format(
+            CultureInfo.InvariantCulture,
+            "left {0:0.#}, top {1:0.#}, {2:0.#} by {3:0.#}",
+            OpenFrame.Left, OpenFrame.Top, OpenFrame.Width, OpenFrame.Height);
 }

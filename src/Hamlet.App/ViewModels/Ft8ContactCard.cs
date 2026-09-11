@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Licensing;
@@ -340,14 +341,6 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
     private Ft8GlobePlot? _globe;
 
-    /// <summary>True where the globe has anything at all to draw.</summary>
-    /// <remarks>
-    /// **A STATION WITH NO GRID STILL GETS THE MARK**, because the answer *Hamlet
-    /// does not know where he is* is worth a hover: it tells him the station never
-    /// sent one, which is a fact about the contact rather than a gap in the screen.
-    /// The mark goes only where neither end is known at all, which is a station with
-    /// no grid on a machine with no grid in Settings, and there is nothing to say.
-    /// </remarks>
     /// <summary>True where the card has a map worth drawing.</summary>
     /// <remarks>
     /// **A RECEIPT HAS NO MAP** (R2). There is no other station, so there is nothing
@@ -355,6 +348,52 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// explained the whereabouts of something that does not exist.
     /// </remarks>
     public bool ShowsGlobe => !IsCallToAnyone && Globe.HasMap;
+
+    /// <summary>True where there is a map to press and something to zoom to.</summary>
+    /// <remarks>
+    /// <para>**R8** (Tim, 2026-09-11): *"When I click on a map it gets enlarged."*
+    /// **Conversation cards only.** A receipt has no other station, so it has no map;
+    /// and a card whose station the picture cannot place has a map with his own marker
+    /// on it and no path, so there is nothing to zoom to.</para>
+    /// <para>**IT GOVERNS THE BUTTON AND THE COMMAND BOTH** (0.5.1, HM-DEC-087). A
+    /// control that is not drawn and a command that would have worked if it were are
+    /// different things, and only the second survives somebody reaching the card by
+    /// keyboard.</para>
+    /// </remarks>
+    public bool MapOpens => ShowsGlobe && Globe.Opens;
+
+    /// <summary>True while the enlarged map is up.</summary>
+    /// <remarks>
+    /// **IT LIVES ON THE CARD AND NOT ON THE WINDOW** (R6). The panel holds as many
+    /// conversations as he likes, each with its own map, so one shared *the map is
+    /// open* would open the wrong one the moment there are two.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _mapIsOpen;
+
+    /// <summary>Open the enlarged map.</summary>
+    /// <remarks>
+    /// **IT TRANSMITS NOTHING** (0.2). It is a picture the operator is looking at more
+    /// closely, and nothing on this path touches the radio.
+    /// </remarks>
+    [RelayCommand]
+    private void OpenTheMap()
+    {
+        if (!MapOpens)
+        {
+            return;
+        }
+
+        MapIsOpen = true;
+    }
+
+    /// <summary>Put the enlarged map away.</summary>
+    /// <remarks>
+    /// **THE DISMISS X** (R8). Nothing is lost by closing it: the small map is still
+    /// on the card and the caption under it still says where he is.
+    /// </remarks>
+    [RelayCommand]
+    private void CloseTheMap() => MapIsOpen = false;
 
     /// <summary>True where the card is drawn back, so the live ones lead.</summary>
     /// <remarks>

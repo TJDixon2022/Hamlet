@@ -4692,16 +4692,121 @@
                                                                         IsVisible="{Binding ShowsGlobe}"
                                                                         Margin="0,8,0,0"
                                                                         Spacing="4">
+                                                                <!-- **THE MAP OPENS** (R8,
+                                                                     Tim 2026-09-11: *when I
+                                                                     click on a map it gets
+                                                                     enlarged*). It is a
+                                                                     button rather than a
+                                                                     pointer handler so it
+                                                                     answers the keyboard as
+                                                                     well as the mouse, and
+                                                                     it is not offered at all
+                                                                     where there is no path
+                                                                     to zoom to. -->
+                                                                <Button Command="{Binding OpenTheMapCommand}"
+                                                                        IsVisible="{Binding MapOpens}"
+                                                                        Background="Transparent"
+                                                                        BorderThickness="0"
+                                                                        Padding="0"
+                                                                        Cursor="Hand"
+                                                                        HorizontalAlignment="Left"
+                                                                        ToolTip.Tip="Open it up.">
+                                                                    <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                            BorderThickness="1"
+                                                                            CornerRadius="4"
+                                                                            ClipToBounds="True">
+                                                                        <ctl:Ft8GlobeControl x:Name="CardGlobe"
+                                                                                             Height="120"
+                                                                                             Plot="{Binding Globe}" />
+                                                                    </Border>
+                                                                </Button>
+
+                                                                <!-- **AND WHERE IT DOES NOT
+                                                                     OPEN, THE ROW IS STILL
+                                                                     THERE.** A station the
+                                                                     picture cannot place
+                                                                     still puts the operator's
+                                                                     own marker on it, and the
+                                                                     caption underneath says
+                                                                     where the picture stops.
+                                                                     Nothing is pressable,
+                                                                     because there is no path
+                                                                     to look at more
+                                                                     closely. -->
                                                                 <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                                                         BorderThickness="1"
                                                                         CornerRadius="4"
                                                                         ClipToBounds="True"
-                                                                        HorizontalAlignment="Left">
-                                                                    <ctl:Ft8GlobeControl x:Name="CardGlobe"
-                                                                                         Height="120"
+                                                                        HorizontalAlignment="Left"
+                                                                        IsVisible="{Binding !MapOpens}">
+                                                                    <ctl:Ft8GlobeControl Height="120"
                                                                                          Plot="{Binding Globe}" />
                                                                 </Border>
-                                                            
+
+                                                                <!-- **THE ENLARGED MAP** (R8).
+                                                                     The same control, framed
+                                                                     to the path instead of to
+                                                                     the whole file, with a
+                                                                     dismiss X. Its size is a
+                                                                     ceiling rather than a
+                                                                     shape: the control fits
+                                                                     the frame inside whatever
+                                                                     it is given, and a zoomed
+                                                                     window is not the
+                                                                     picture's own
+                                                                     proportions. -->
+                                                                <Popup IsOpen="{Binding MapIsOpen, Mode=TwoWay}"
+                                                                       Placement="Center"
+                                                                       PlacementTarget="{Binding $parent[Window]}"
+                                                                       IsLightDismissEnabled="True">
+                                                                    <Border Background="{StaticResource HmPanelBrush}"
+                                                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                            BorderThickness="1"
+                                                                            CornerRadius="6"
+                                                                            Padding="12">
+                                                                        <Grid RowDefinitions="Auto,Auto,Auto">
+                                                                            <TextBlock Grid.Row="0"
+                                                                                       Text="{Binding Callsign}"
+                                                                                       FontWeight="SemiBold"
+                                                                                       VerticalAlignment="Center" />
+
+                                                                            <Button Grid.Row="0"
+                                                                                    Content="&#x2715;"
+                                                                                    Command="{Binding CloseTheMapCommand}"
+                                                                                    HorizontalAlignment="Right"
+                                                                                    Background="Transparent"
+                                                                                    BorderThickness="0"
+                                                                                    Padding="6,0"
+                                                                                    Cursor="Hand"
+                                                                                    ToolTip.Tip="Put it away." />
+
+                                                                            <Border Grid.Row="1"
+                                                                                    Margin="0,8,0,0"
+                                                                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                                    BorderThickness="1"
+                                                                                    CornerRadius="4"
+                                                                                    ClipToBounds="True"
+                                                                                    HorizontalAlignment="Left">
+                                                                                <ctl:Ft8GlobeControl x:Name="OpenedGlobe"
+                                                                                                     Opened="True"
+                                                                                                     MaxWidth="720"
+                                                                                                     MaxHeight="400"
+                                                                                                     Plot="{Binding Globe}" />
+                                                                            </Border>
+
+                                                                            <TextBlock Grid.Row="2"
+                                                                                       Margin="0,8,0,0"
+                                                                                       MaxWidth="720"
+                                                                                       Text="{Binding Globe.Caption}"
+                                                                                       TextWrapping="Wrap"
+                                                                                       FontSize="11"
+                                                                                       LineSpacing="1.3"
+                                                                                       HorizontalAlignment="Left"
+                                                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </Popup>
+
                                                                 <TextBlock Text="{Binding Globe.Caption}"
                                                                            TextWrapping="Wrap"
                                                                            FontSize="11"
