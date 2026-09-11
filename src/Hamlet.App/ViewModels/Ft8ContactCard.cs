@@ -91,6 +91,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <param name="callsign">The station, as the parse read it.</param>
     /// <param name="turn">Whose turn it is on his channel (`Psk31Turn`).</param>
     /// <param name="operatorGrid">The operator's own locator, or null.</param>
+    /// <param name="offered">Which macro the card would offer (`Psk31Offer`); held, never drawn.</param>
     /// <returns>The card.</returns>
     /// <remarks>
     /// <para>**THE SAME CARD TYPE, NOT A THIRD** (work instruction 319 task 3, §2). Where FT8's
@@ -102,7 +103,8 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <para>**NOTHING ON IT TRANSMITS AND NOTHING ON IT LOGS** (§0.2, §6 of the instruction): no
     /// action, no Log link. The send door stays shut, and the Log is step 5's.</para>
     /// </remarks>
-    public static Ft8ContactCard ForPsk31(string callsign, Psk31TurnReading turn, string? operatorGrid)
+    public static Ft8ContactCard ForPsk31(
+        string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
@@ -110,15 +112,33 @@ public sealed partial class Ft8ContactCard : ObservableObject
             callsign, Ft8ContactState.WaitingOnHim, 0, null, null, false, false, 0, 0, 0,
             null, null, false, false, false, false, null, null, null);
 
-        return new Ft8ContactCard(facts, operatorGrid, turn);
+        return new Ft8ContactCard(facts, operatorGrid, turn, offered);
     }
 
-    private Ft8ContactCard(Ft8CardFacts facts, string? operatorGrid, Psk31TurnReading turn)
+    private Ft8ContactCard(Ft8CardFacts facts, string? operatorGrid, Psk31TurnReading turn, Psk31Macro offered)
         : this(facts, operatorGrid, Ft8CardActionKind.None, "", "", null)
-        => _turn = turn;
+    {
+        _turn = turn;
+        _offered = offered;
+    }
+
+    private readonly Psk31Macro _offered;
 
     /// <summary>True where this is a PSK31 conversation card.</summary>
     public bool IsPsk31 => _turn is not null;
+
+    /// <summary>Which macro this card would offer for one click, or <see cref="Psk31Macro.None"/>.</summary>
+    public Psk31Macro Offered => _offered;
+
+    /// <summary>**The offered macro by name, or "".**</summary>
+    /// <remarks>
+    /// <para>**THE ENGINE'S ANSWER** (`Psk31Offer`, §R1's strict side): named only on a certain *your
+    /// turn*.</para>
+    /// <para>**NOT DRAWN WHILE THE DOOR IS SHUT** (work instruction 319, the arbiter's decision).
+    /// Nothing in `MainWindow.axaml` binds it: a button that always refuses would assert a capability
+    /// Hamlet does not have, and a picture binds as hard as a sentence (HM-DEC-092).</para>
+    /// </remarks>
+    public string OfferedMacro => _offered == Psk31Macro.None ? "" : _offered.ToString();
 
     /// <summary>Whose turn it is, on a PSK31 card, or null on an FT8 card.</summary>
     public Psk31TurnReading? Turn => _turn;

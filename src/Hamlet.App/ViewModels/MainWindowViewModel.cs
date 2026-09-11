@@ -2277,9 +2277,13 @@ public partial class MainWindowViewModel : ObservableObject
 
             var turn = Psk31Turn.Read(talk, sending, mine);
 
+            // **WHICH MACRO IT WOULD OFFER IS THE ENGINE'S ANSWER, AND ONLY ON A CERTAIN YOUR TURN**
+            // (§R1, `Psk31Offer`). The card holds it; nothing draws it while the door is shut.
+            var offered = Psk31Offer.For(talk, turn, mine);
+
             if (!_psk31Cards.TryGetValue(station, out var state))
             {
-                state = new Psk31CardState(Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare), channelId)
+                state = new Psk31CardState(Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -2302,17 +2306,17 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 state.ClearedAtMessages = null;
-                state.Card = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare);
+                state.Card = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered);
                 DigitalCards.Add(state.Card);
                 continue;
             }
 
-            if (state.Card.Turn == turn)
+            if (state.Card.Turn == turn && state.Card.Offered == offered)
             {
                 continue;
             }
 
-            var fresh = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare);
+            var fresh = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered);
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;

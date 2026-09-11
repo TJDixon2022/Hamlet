@@ -48,6 +48,7 @@ ThePsk31PanelHearsTests
 ThePsk31HearsEveryoneTests
 ThePsk31ReadsTheConversationTests
 ThePsk31ConversationCardTests
+Hamlet.App.Tests.ViewModels.ThePsk31OfferTests
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
@@ -64,6 +65,7 @@ ThePsk31ModulatorTests
 TheFt8AndFt4SendsAreByteIdenticalTests
 TheUnslottedSendTests
 ThePsk31TurnTests
+Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests
 TheAzimuthalAssetTests
 AzimuthalMapTests
 

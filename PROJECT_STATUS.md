@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 319 - say it, the card half: whose turn it is, on a PSK31 conv
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T14:58:38-04:00
-NOTE: Task 3 in: card tests 8/8, app carry-forward 130/131 - the one red is unit 316's no-W1AW-card assertion (line 414), which the card now contradicts; not edited, ruling wanted. Starting the offer gate.
+UPDATED: 2026-09-11T15:06:01-04:00
+NOTE: Task 4 in: 7 offers on a certain your turn, 0 on anything else, none drawn. After-counts engine 120/120 and guarding 82/93; app 132/133, the one red task 3's line-414 conflict. Committing, then the report.
 
 ---
 
