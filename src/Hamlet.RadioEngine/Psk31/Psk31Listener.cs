@@ -138,6 +138,15 @@ public sealed class Psk31Listener
     /// <summary>How many samples the listener has been fed.</summary>
     public long SamplesSeen { get; private set; }
 
+    /// <summary>The audio rate this listener was opened at.</summary>
+    /// <remarks>
+    /// **SO A CALLER CAN TURN SAMPLES INTO SECONDS WITHOUT A SECOND OPINION** (work
+    /// instruction 322 task 5). Everything this listener counts is counted in samples,
+    /// and a reader turning them into seconds with a rate from somewhere else is how two
+    /// clocks get into one record.
+    /// </remarks>
+    public int SampleRate => _sampleRate;
+
     /// <summary>Characters a channel read that the search never vouched for, dropped.</summary>
     public long DroppedCharacters { get; private set; }
 

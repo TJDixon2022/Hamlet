@@ -2082,7 +2082,7 @@ public partial class MainWindowViewModel : ObservableObject
                 if (_psk31Tally.TryGetValue(channel.Id, out var tally))
                 {
                     _psk31Tally[channel.Id] =
-                        (tally.Characters, tally.Lines + 1, DateTime.UtcNow);
+                        (tally.Characters, tally.Lines + 1, AudioSecondsHeard());
                 }
             }
         }
@@ -2225,8 +2225,25 @@ public partial class MainWindowViewModel : ObservableObject
     private readonly Dictionary<int, Psk31ChannelState> _psk31Was = new();
 
     /// <summary>What each carrier had emitted when it was last seen.</summary>
-    private readonly Dictionary<int, (int Characters, int Lines, DateTime LastCharacter)>
+    /// <summary>What each carrier had emitted, and the audio second it last spoke.</summary>
+    /// <remarks>
+    /// **THE MARK IS IN AUDIO SECONDS, NOT ON THE WALL CLOCK** (work instruction 322
+    /// task 5). Everything else in this record counts samples; a *seconds since it last
+    /// said anything* taken from `DateTime.UtcNow` reads as nought through any replay
+    /// and disagrees with the lifetime beside it on a live run that stalls.
+    /// </remarks>
+    private readonly Dictionary<int, (int Characters, int Lines, double LastCharacterAt)>
         _psk31Tally = new();
+
+    /// <summary>How much audio the listener has taken, in seconds.</summary>
+    /// <remarks>
+    /// **ONE CLOCK FOR THE WHOLE RECORD** (work instruction 322 task 5). The search
+    /// counts samples, so every duration written beside it counts samples too.
+    /// </remarks>
+    private double AudioSecondsHeard()
+        => _psk31 is null || _psk31.SampleRate <= 0
+            ? 0
+            : _psk31.SamplesSeen / (double)_psk31.SampleRate;
 
     /// <summary>Write down what the listener just did.</summary>
     /// <param name="tap">The audio it is reading.</param>
@@ -2252,7 +2269,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (change.Appeared)
             {
                 _psk31CarriersSeen++;
-                _psk31Tally[change.Id] = (0, 0, now);
+                _psk31Tally[change.Id] = (0, 0, AudioSecondsHeard());
 
                 Psk31Events.CarrierAppeared(_telemetry, change);
 
@@ -2266,9 +2283,7 @@ public partial class MainWindowViewModel : ObservableObject
                 change,
                 tally.Characters,
                 tally.Lines,
-                tally.Characters > 0
-                    ? (now - tally.LastCharacter).TotalSeconds
-                    : null);
+                tally.Characters > 0 ? AudioSecondsHeard() - tally.LastCharacterAt : null);
 
             _psk31Tally.Remove(change.Id);
             _psk31Was.Remove(change.Id);
@@ -2315,8 +2330,7 @@ public partial class MainWindowViewModel : ObservableObject
             if (_psk31Tally.TryGetValue(state.Id, out var tally)
                 && state.Characters != tally.Characters)
             {
-                _psk31Tally[state.Id] =
-                    (state.Characters, tally.Lines, now);
+                _psk31Tally[state.Id] = (state.Characters, tally.Lines, AudioSecondsHeard());
             }
 
             _psk31Was[state.Id] = state;
@@ -2589,6 +2603,14 @@ public partial class MainWindowViewModel : ObservableObject
             // **A CARRIER STILL BEING HEARD IS ACCOUNTED FOR, NOT DROPPED** (§0.0). The
             // search only retires what stops being keyed, so a station still sending
             // when he leaves the tab would appear in the file and never be closed.
+            // **AUDIO SECONDS, NOT WALL-CLOCK ONES** (work instruction 322 task 5,
+            // found by reading the file it produced). A carrier's lifetime comes from
+            // the search's own sample count, and the first draft of the two lines below
+            // took the wall clock - so a replay of thirty-five seconds of audio in a
+            // fifth of a second wrote *listened 0.2 s* beside *a carrier lived 34.7 s*.
+            // **The whole file is about audio**, and two clocks in one record is a
+            // record nobody can reason from.
+            var heard = _psk31.SamplesSeen / (double)_psk31.SampleRate;
             var now = DateTime.UtcNow;
 
             foreach (var state in _psk31.States)
@@ -2604,19 +2626,16 @@ public partial class MainWindowViewModel : ObservableObject
                         StrengthDb: 0,
                         Coherence: state.Quality,
                         Passes: 0,
-                        LifetimeSeconds: Math.Round(
-                            (now - _psk31StartedUtc).TotalSeconds, 1),
+                        LifetimeSeconds: Math.Round(heard, 1),
                         Why: Psk31Retirement.ListeningStopped),
                     state.Characters,
                     tally.Lines,
-                    tally.Characters > 0
-                        ? (now - tally.LastCharacter).TotalSeconds
-                        : null);
+                    tally.Characters > 0 ? heard - tally.LastCharacterAt : null);
             }
 
             Psk31Events.ListeningStopped(
                 _telemetry,
-                (DateTime.UtcNow - _psk31StartedUtc).TotalSeconds,
+                heard,
                 _psk31CarriersSeen,
                 _psk31.Channels.Sum(c => c.Text.Length),
                 _psk31LinesParsed);
