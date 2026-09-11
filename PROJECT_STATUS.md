@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 315 - hear everyone
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T11:27:32-04:00
-NOTE: Task 1 done: card moved, HM-DEC-161, FT4 plan and status recovered; outcome file refused by the shell. Committing.
+UPDATED: 2026-09-11T11:38:40-04:00
+NOTE: Task 2 green 7 of 7: four carriers found on the four-signal file, none on noise, strength within 0.2 dB. Committing.
 
 ---
 
