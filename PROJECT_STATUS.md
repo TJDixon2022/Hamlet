@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 310 - two kinds of card, a panel that holds all of them, and a map you can open
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 4
+WORK_INSTRUCTION: 312 - PSK31 exists as a mode
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T22:05:18-04:00
-NOTE: Unit 310 complete, none dropped. Two card types, the panel holds all, the map fits and opens.
+UPDATED: 2026-09-11T01:15:41-04:00
+NOTE: Task 1 done - carry-forward 106 of 106 green, version 1.12.274 to 1.13.0, phase record open.
 
 ---
 

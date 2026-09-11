@@ -1,294 +1,234 @@
-# PHASE_PLAN.md
-
-**Governed by `PHASE_CONTROL.md`. Approved by Tim, 2026-09-08.**
-
----
-
-## The phase
-
-**FT4 works exactly the way FT8 does.**
-
-## The description
-
-Hamlet decodes FT8 off the air, answers a station, logs the contact and counts it
-toward a rank. **FT4 is a button on the Digital tab that does nothing.**
-
-**Most of the work is already done and this phase exists to prove that rather than
-assume it.** FT4 shares FT8's 77-bit payload, its LDPC(174,91) code and its CRC-14 -
-Franke and Taylor published both in the same QEX paper the port already cites. What
-differs is the modulation and the clock: **7.5-second slots against 15, four tones
-against eight, 4.48 seconds of transmission against 12.64**, and a different sync
-pattern. It buys twice the rate for roughly 3.5 dB less sensitivity.
-
-**Everything above the decoder is already mode-neutral or nearly so**: the panel, the
-conversation, the turn ring, the filters, the tooltips, the contact ledger, the
-right-click menu, the log, the achievements, and the whole transmit chain built in the
-send phase.
-
-**One thing is not, and it was found by unit 287 rather than assumed here.** FT4 is an
-ADIF **submode** - `MODE=MFSK, SUBMODE=FT4` - and `AdifContact` has no `SUBMODE` field.
-**`MODE=FT4` is invalid ADIF.** Until the log carries a submode, an FT4 contact either
-does not log or logs as something it is not, and a log record is the one artefact in
-this project that outlives everything else.
-
-**A session reading this cold should understand:** the operator's ruling is *exactly
-the way FT8 does*, so anything FT8 does that FT4 does not is a gap rather than a
-choice; the port's byte-fidelity to upstream is the instrument every sensitivity
-measurement leaned on and is not to be spent casually; and **the closing step is a
-contact Tim makes on FT4, which no unit can perform for him.**
+PHASE: Hamlet works PSK31 the way it works FT8
+PHASE_SET: 2026-09-11
+DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
+STEP: 0 | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
+STEP: 1 | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
+STEP: 2 | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
+STEP: 3 | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
+STEP: 4 | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+STEP: 5 | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
+STEP: 6 | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
 ---
 
-## The two rules this phase runs under
-
-**1. A bench step's criteria are all satisfiable on a machine with no radio.** A bench
-step never defers a criterion to Tim. If one turns out to need the radio, **it moves
-to a shack step and the move is recorded.**
-
-**2. A step has at most four criteria.** Few enough that one unit can close it.
-
-**Both were learned the expensive way.** Under the first send plan, four steps sat
-`partial` for eight units because each carried a criterion no bench machine could
-satisfy.
-
----
-
-## This phase runs unattended to the bench steps' end
-
-**Steps 0 to 4 need no radio and nothing from Tim.** Steps 5 and 6 are Tim at his own
-radio, they are last, and nothing before them is blocked by them.
-
-### The steps are a hypothesis, not a contract
-
-The arbiter may, without asking, recording the evidence in `PHASE_OUTCOME.md`:
-**reorder** steps that depend only on their stated entry; **replace** a step with a
-better approach; **retire** one measurement shows cannot pay for itself, closing it
-*unachievable* with the number; **add** a step the phase needs; **move a target**
-found to have been measured wrong; and **move a criterion to a shack step** when only
-the radio can answer it.
-
-### Named alternatives to stopping, ruled in advance
-
-| If | Do not stop. Instead |
-|---|---|
-| a criterion needs the radio | move it to step 5 or 6, record the move, close the bench step on the rest |
-| a target is not reached | close the step with the figure reached and what was tried |
-| an approach fails | abandon it, record its cost, take another |
-| the tree disagrees with this plan | the tree wins. Report the mismatch and continue |
-| a licence, naming or scope question arises | **already ruled below.** Do not raise it |
-| the shell refuses a call | use the file-editing tools |
-
----
-
-## The three things the arbiter may not reason past
-
-1. **The abort.** Every path that keys the transmitter has a same-thread, no-await
-   abort - CI-V `0x17` with `0xFF`, PTT off as the fallback. Built and proven by units
-   257 and 263. **FT4 transmits through it or it does not transmit.**
-2. **One click, one transmission.** Hamlet transmits because the operator clicked.
-   **Never on a timer, never on a decode, never to continue a contact.** FT4's slots
-   are half as long and the temptation is twice as strong.
-3. **What Hamlet asserts to the operator.** §0.0 and §12.1. **A log record naming a
-   mode the contact was not made in is wrong for as long as the log exists.**
-
----
-
-## Rulings in force
-
-**Not to be re-argued by any unit.**
-
-**FT4 works exactly the way FT8 does.** Tim, 2026-09-08. **Anything FT8 does that FT4
-does not is a gap to be named**, not a scope decision a unit may make.
-
-**Where FT4's decoder lives is decided by what upstream does, and step 0 finds out.**
-If `ft8_lib` carries FT4, **the port carries FT4** and the fidelity tests extend to
-cover it. If it does not, **FT4 is new work and belongs in `Ft8Sharp.Deep` or a
-sibling**, because the port's value is that it cannot drift from upstream. **This is a
-reading of the tree, not a preference**, and no unit may decide it from memory.
-
-**`Ft8Sharp` remains a faithful MIT port.** `Ft8Sharp.Deep` is GPL-3.0.
-
-**No algorithm comes from WSJT-X's source.** Published description only - the QEX
-paper the port already cites - noted at the point of use.
-
-**A wrong decode is counted separately from a missed one, everywhere.**
-
-**The dummy load is withdrawn.** Tim operates a licensed station on an antenna.
-
----
-
-## What a unit runs
-
-**A unit runs no test suite.** **Only the unit tests it constructs or rewrites in that
-work instruction**, filtered by exact name, foregrounded, with a stated timeout.
-**An unfiltered `dotnet test` on any project is forbidden.**
-
-**Never background a command and poll for it.** The watchdog fires after twelve
-minutes with no status write.
-
-`dotnet build` is allowed, foregrounded, with a timeout.
-
-**A unit may not add a test without naming the breakage it would have caught.**
-
-Known reds, inherited, **never chased**:
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
-`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
-`HM-OPEN-088`'s ten.
-
----
-
-## Step 0 - where FT4 lives, decided by reading
-
-**Delivers:** the answer to where the decoder goes, from the tree rather than from
-memory.
-
-**Entry:** none.
-
-**Exit:**
-- **What `ft8_lib` actually carries**, read in `C:\Source\ft8_lib` or wherever the
-  vendored copy is - FT4's constants, its sync, its symbol timing. **Report what is
-  there, with file and line.** *must-pass*
-- **What `Ft8Sharp` already shares with FT4**: the message layer, the LDPC code, the
-  CRC-14, and anything else. **A list, so nothing is written twice.** *must-pass*
-- **The decision, with its reason**: port or sibling, following the rule above.
-  *must-pass*
-- **What the 51 fidelity tests would have to become** if FT4 enters the port.
-  *must-pass*
-
-**Nothing is built in this step.**
-
-**Depends on:** nothing.
-
----
-
-## Step 1 - FT4 decodes a signal Hamlet made
-
-**Delivers:** an FT4 decoder, proved against Hamlet's own encoder.
-
-**Entry:** step 0.
-
-**Exit:**
-- **A message becomes FT4 symbols becomes audio and decodes back to the same
-  message**, over at least a hundred messages including compound callsigns, grids,
-  reports and `RR73`. *must-pass*
-- **The timing is FT4's**: 7.5-second slots, 4.48 seconds of transmission, four tones.
-  **Measured, not asserted.** *must-pass*
-- **Zero wrong decodes** across the run. *must-pass*
-- A sensitivity ladder at stated SNRs, with its trial count and its wrong count.
-  *nice-to-pass*
-
-**The receive path is its own oracle**, as it was for FT8: if Hamlet cannot read its
-own FT4 transmission, nothing after this is worth building.
-
-**Depends on:** step 0.
-
----
-
-## Step 2 - the slot machinery is FT4's
-
-**Delivers:** capture, cutting and the turn clock on a 7.5-second grid.
-
-**Entry:** step 1.
-
-**Exit:**
-- **Slots are cut on 7.5-second boundaries** from corrected UTC, and a capture's
-  sidecar says which grid it used. *must-pass*
-- **The turn ring counts down 7.5 seconds**, and whose turn it is derives from what
-  the other station sent on that grid. *must-pass*
-- **A slot the operator transmitted in says so** and reports no search result, as
-  unit 282 built for FT8. *must-pass*
-- **Nothing assumes fifteen seconds anywhere**, and the report names what it found
-  that did. *must-pass*
-
-**The half-length slot is where FT8's assumptions will be hiding.**
-
-**Depends on:** step 1.
-
----
-
-## Step 3 - the log can say FT4
-
-**Delivers:** `SUBMODE`, and an FT4 contact that logs correctly.
-
-**Entry:** none. Independent of steps 1 and 2.
-
-**Exit:**
-- **`AdifContact` carries `SUBMODE`**, written and read, round-tripping like every
-  other field. *must-pass*
-- **An FT4 contact logs as `MODE=MFSK, SUBMODE=FT4`**, cited against the ADIF
-  specification the log already cites. *must-pass*
-- **A record with no submode still round-trips**, absent rather than empty. *must-pass*
-- **The achievements screen's FT4 row can light**, and unit 287's four states still
-  read correctly. *must-pass*
-
-**Unit 287 found this and it is a prerequisite rather than a nicety.** `MODE=FT4` is
-invalid ADIF and a contact logged that way is wrong for as long as the log exists.
-
-**Depends on:** nothing.
-
----
-
-## Step 4 - the FT4 button works
-
-**Delivers:** the Digital tab's FT4 button doing what the FT8 button does.
-
-**Entry:** steps 1, 2 and 3.
-
-**Exit:**
-- **Pressing FT4 tunes to the band's FT4 frequency** and decodes, through the same
-  path the FT8 button uses. *must-pass*
-- **The panel, the conversation, the ring, the filters, the tooltips, the ledger and
-  the right-click menu all work unchanged**, and the report names anything that did
-  not. *must-pass*
-- **One click, one transmission**, through the same abort. *must-pass*
-- **A whole exchange runs from one right click at the bench**, with the transmit
-  endpoint on a loopback, as unit 256 proved for FT8. *must-pass*
-
-**Anything FT8 does that FT4 does not is a gap.** Tim's ruling.
-
-**Depends on:** steps 1, 2 and 3.
-
----
-
-## Step 5 - Tim hears FT4
-
-**Delivers:** FT4 decoded off the air.
-
-**Entry:** step 4. **Tim's, at the shack.**
-
-**Exit:**
-- He tunes to an FT4 frequency and **reads decoded text**. *must-pass*
-- **What the sidecar says** about arrival, the slot grid and the decoder. *must-pass*
-
-**Depends on:** step 4.
-
----
-
-## Step 6 - Tim works a station on FT4
-
-**Delivers:** a contact.
-
-**Entry:** step 5.
-
-**Exit:**
-- **He answers a CQ on FT4 and completes an exchange.** *must-pass*
-- **It logs as `MODE=MFSK, SUBMODE=FT4`** and lights the achievements row. *must-pass*
-- **What he saw, and anything that surprised him**, recorded. *must-pass*
-
-**The half-length slot means half the time to decide**, and whether that is workable
-with a right-click is a thing only he can say.
-
-**Depends on:** step 5.
-
----
-
-## What is not in this phase
-
-- **PSK31, WSPR and Voice.** PSK31 shares nothing with FT8 and wants a different
-  panel; WSPR is a beacon with no contacts; Voice has no path at all.
-- **A WSPR achievement measured from spots.** On the asks queue and Tim's.
-- **Automatic sequencing.** Still out, and FT4's shorter slots are the argument for
-  it, which is why it stays a ruling rather than a temptation.
-- **The whole asks queue** carried since unit 271.
-- **`Ft8Sharp`'s sensitivity.** The 1.2 dB and everything in `Ft8Sharp.Deep` belong to
-  the closed sensitivity phase.
+# PSK31 phase plan - the reasoning under the step list
+
+**Set 2026-09-11 by the web thread, from Tim's instruction: "I want it to work. Figure it
+out."** Where a ruling was needed and Tim had not given one, this plan makes it, marks
+it as the author's, and records it under §R below so he can overrule any of them with
+one word. The step list above is the machine-readable plan. Everything under the rule
+is why.
+
+## §1 The one fact the whole phase is built on
+
+**FT8's contact is a protocol. PSK31's is a conversation.**
+
+FT8 gives Hamlet fifteen-second slots and thirteen-character messages with a fixed
+grammar - CQ, grid, report, R-report, RR73, 73 - so *Waiting on him* and *He last sent
+RR73* are read straight off the wire.
+
+PSK31 is BPSK at 31.25 baud carrying free text, keyboard to keyboard. No slots, no
+grammar, no acknowledgement primitive. A QSO is a convention that people mostly follow:
+`CQ CQ CQ de KC3QIS KC3QIS K`, an answer, RST-name-QTH, `73`, `SK`. Everyone types it
+differently and many type more.
+
+So "exactly like FT8" is achievable at the **product** layer - the same two card types,
+the same one-click exchange, the same log, the same achievements - and is achieved by
+Hamlet **sending a fixed macro exchange and parsing what comes back** to infer the
+state. Some of the time it cannot tell. The honest display for that is a state called
+**unknown** (§0.0 / HM-DEC-092: never present a guess as a decode; a picture binds as
+hard as a sentence).
+
+## §2 What is the same, by ruling
+
+Everything Tim has ruled for FT8 and FT4 applies unchanged unless §3 says otherwise:
+
+- **Two card types** (R1, 2026-09-11): a CQ receipt and a conversation card. The receipt
+  carries what was sent and when, Log, dismiss, **and no station facts** (R2). One
+  receipt, refreshed on repeat press, never a second (R3). **Last call only, no count**
+  (R4). The receipt retires when anyone answers; two answers make two conversation cards
+  and nobody inherits the call (R5). Conversation cards unlimited with a vertical scroll
+  (R6).
+- **The map** on the conversation card face, row fitted to the map (R7), opening in a
+  popup zoomed to the great-circle path (R8) with the zoom capped (R9).
+- **The decoded-text list** with the worked-fade at 0.55 opacity (unit 279), entity
+  resolution through `DxccPrefixes.EntityOf` with the `CQ` guard (unit 310), and **the
+  achievement nudge** under the four rulings of 2026-09-10: lift plus the quill vane in
+  decode green `#3B6D11`; sticky per station with a cap of two; the achievement set is
+  the source and no rarity ordering is invented; a door is marked and never named.
+- **One click, one transmission** (§0.2). A mark is a nudge, never an arming.
+- **The transmit chain** `cq_pressed -> ... -> ft8_transmission Played`, proved from
+  `2026-09-10.jsonl`, is the chain PSK31 transmits through. Nothing in this phase
+  changes what keys the transmitter; step 4 adds a second audio generator behind the
+  same proved path.
+- **The dummy load is withdrawn in full** (Tim, 2026-09-06). No compensating control.
+- **Achievements** under `ACHIEVEMENTS_PHILOSOPHY.md`: §3.1 absent, not dimmed - no PSK31
+  card exists until the first PSK31 contact; §3.2 that contact reveals the mode's
+  records; §4 counts say worked, never confirmed; §3.7 restraint.
+- **Family colour** for Digital (`CLAUDE.md` mode palette, HM-DEC-032): PSK31 is already
+  in the Digital family table. Text colour only, never a fill (§0.5).
+- **The band map** already carries PSK31 at 14.070 as cited data under `data/bands/`
+  (HM-DEC-054). Step 0 reads it; it does not add a row.
+- **Rules that killed sessions** (HM-DEC-155): a unit runs only its own tests filtered by
+  exact name; nothing is backgrounded and polled.
+
+## §3 What is different, and cannot be made the same
+
+1. **There is no slot clock.** The `SlotClock` control (unit 305) has no meaning in a
+   mode with no slots. On a PSK31 conversation card its place is taken by **whose turn it
+   is**: *your turn*, *his turn*, *he is still sending* (carrier present), *unknown*.
+   Carrier-present is a fact from the demodulator; the rest is from the parser and marked
+   as §R1 says.
+2. **The report is RST, not dB.** FT8 exchanges signal-to-noise in dB; PSK31 exchanges
+   `599`-style RST, conventionally `599` for a clean copy. The log gains an RST field for
+   this mode, and the FT8 dB field is not reused to hold it.
+3. **It is a continuous carrier at full duty.** FT8 keys for 12.6 seconds in 15; PSK31
+   keys for as long as the text takes, at 100% duty. **On a 100 W IC-7300 this is a
+   heat and linearity question**, and the drive level is the difference between a clean
+   31 Hz signal and splatter across the whole watering hole. §R4.
+4. **Text arrives one character at a time**, not a message per slot. The list and the
+   conversation append as characters decode. A "message" for the parser is what arrived
+   between two turnovers, not what arrived in a slot.
+5. **There is no fixed message length**, so there is nothing like the thirteen-character
+   check that FT8 uses to reject garbage. Garbage from noise looks like text. Step 1
+   must state its squelch rule and step 3 must never parse a state out of a line the
+   squelch did not pass.
+
+## §R Rulings this plan makes on the author's behalf
+
+Each of these is the author's, made because Tim said *figure it out*, and each can be
+overruled with one word. None carries an `HM-DEC-` id and none may be given one by a
+session.
+
+**§R1 - How much Hamlet asserts about an exchange it can only partly read.** **Strict on
+anything that drives a transmission; permissive on what the card displays; every guessed
+state marked as a guess.** A macro is offered for one click only when the parser is
+*certain* whose turn it is. The card may show a state inferred from turnover words,
+elapsed silence and whose callsign appeared last, and when it does the state word is
+visibly a guess (§0.6: not by colour alone). Rejected: strict everywhere, because the
+card would say *unknown* through most real QSOs and read as broken; permissive
+everywhere, because a wrong guess that sends a macro into another operator's turn is a
+transmission Tim did not choose.
+
+**§R2 - The macro exchange Hamlet sends.** The standard minimum, and nothing chatty:
+
+```
+CQ:      CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K
+Answer:  <HIS> de KC3QIS KC3QIS K
+Report:  <HIS> de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU <HIS> de KC3QIS K
+Confirm: <HIS> de KC3QIS  R R  TNX for the QSO  73 73  <HIS> de KC3QIS SK
+```
+
+Name, QTH and grid come from Settings; nothing is typed at the moment of sending. Free
+typing is **not** in this phase - one click, one transmission, and the macros are the
+whole vocabulary. Rejected: a keyboard, because it makes the exchange something other
+than FT8's and reopens every question about what a card asserts.
+
+**§R3 - What the parser recognises, and what it will not.** Callsigns (the same rule the
+decoded list uses today), `de`, `CQ`, RST in `5NN` or `599` form, a grid square, the
+turnover words `K`, `KN`, `BTU`, `OVER`, and the closers `73`, `SK`, `CL`. It also
+recognises **its own callsign**, which is how it knows a line is addressed to Tim.
+Anything else is text and is shown as text. Rejected: parsing name and QTH, because they
+are for reading, not for state, and a wrong parse of them changes nothing Hamlet does.
+
+**§R4 - Drive and power.** The step-4 unit sets the IC-7300's data-mode input level so
+that **the ALC meter shows no deflection** on the macro tone, and defaults the RF power
+for this mode to **half the radio's rated output** because the carrier is continuous.
+Both are settings Tim can change; both are shown on the mode's panel so he can see what
+Hamlet chose; neither is silent. The unit cites the page of the IC-7300 manual it read
+for the input-level setting rather than naming it here from memory. Rejected: full
+power, because splatter into 14.070 is what a beginner is most afraid of doing and this
+application exists to stop that.
+
+**§R5 - The reference implementation.** `fldigi`, which is GPL-3 - the same licence as
+Hamlet. Cloned outside the tree at `C:\Source\fldigi`, **pinned to one commit that the
+step-1 unit records in its report**, never committed, never ported wholesale - the same
+rule the FT8 phase set for `ft8_lib`. What is read from it: the varicode table (which is
+a published standard and may be transcribed with its source cited), the raised-cosine
+shaping and the demodulator structure. What is written for Hamlet is Hamlet's.
+
+**§R6 - Where the activity is.** 14.070 dial, with the ribbon of signals from about
+14.0700 to 14.0725. The list shows every signal in the passband; the CQ filter shows the
+ones whose text parses as a CQ. The default click target when Tim presses CQ is a clear
+spot Hamlet finds in the passband, not a fixed offset - transmitting on top of a
+decoded signal is the second thing a beginner is afraid of.
+
+**§R7 - Units and versions.** Units continue from where the tree is. The FT4 phase
+closing at Tim's word (*"FT8 and FT4 seem pretty solid"*, 2026-09-11) takes the minor
+version bump per `CLAUDE_PHASE_CONTROL.md` §7; the first PSK31 unit lands on the new
+minor.
+
+## §4 Exit criteria per step
+
+Must-pass, then nice-to-pass. A step with only its must-pass met is `done`; a step
+missing any must-pass is `partial`.
+
+**Step 0 - the seam.**
+Must: pressing PSK31 tunes to 14.070 USB-D; the panel names the mode; the log offers
+the mode; `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` green; the mode is
+in the Digital family and draws with text colour only.
+Nice: the neighbourhood map's PSK31 ribbon lights when the tab is selected.
+
+**Step 1 - hear one.**
+Must: a recorded fixture decodes to its known text with the character error rate
+stated; the varicode table is cited; the reference commit is recorded and the clone is
+outside the tree; the squelch rule is stated and a noise-only fixture produces no text.
+Nice: a fixture with a carrier drifting 20 Hz over a minute holds lock.
+
+**Step 2 - hear everyone.**
+Must: a synthetic fixture of four simultaneous signals at different offsets decodes all
+four; the list shows each with its offset and text; nothing is decoded per character
+that should be decoded per signal.
+Nice: a signal that stops sending is retired from the list rather than left as a ghost.
+
+**Step 3 - read the conversation.**
+Must: a corpus of real PSK31 QSO transcripts yields a state sequence with the unknown
+rate stated; no state is asserted that the text does not support; the guessed states are
+distinguishable from the certain ones in what the view model exposes; the CQ filter
+selects exactly the rows whose text parses as a CQ; the nudge, the worked-fade and entity
+resolution run on PSK31 rows with no change to their code.
+Nice: a non-standard exchange that skips the report still lands on 73 correctly.
+
+**Step 4 - say it.**
+Must: loopback proves the macro text round-trips through Hamlet's own decoder; the chain
+to `Played` is unchanged and nothing keys the transmitter at the bench; pressing CQ makes
+a receipt with no station facts; an answer retires the receipt and opens a conversation
+card; the turn indicator exists and shows *unknown* when it does not know; the drive and
+power settings are visible on the panel.
+Nice: the turn indicator changes within one character of the other station's turnover
+word.
+
+**Step 5 - log and achievements.**
+Must: a PSK31 contact logs with RST and exports as ADIF mode `PSK` submode `PSK31`; the
+first logged PSK31 contact reveals the mode's records and nothing is visible before it;
+the two inherited reds in `TheAchievementsScreenTests` are not made worse.
+Nice: the ADIF export imports cleanly into one common logger.
+
+**Step 6 - Tim at the radio.**
+Must: he tunes 14.070, sees text, works a station, logs it, and says it passed. No
+script can evaluate this.
+
+## §5 Dependency deviation
+
+`PHASE_CONTROL.md` §2 wants at least one step depending on nothing. **This phase is one
+pipeline and has none**, as the FT4 phase was. Manufacturing an independent step would
+be contrivance. **When a step blocks, there is nowhere to route - work it or halt.**
+
+## §6 Carried into the phase from the FT4 phase
+
+Asks that are open today and that this phase either touches or must not lose:
+
+- **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal.
+  **PSK31 makes it sharper**: a continuous carrier that did not key is a long silence,
+  not a missed slot.
+- **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
+  Tim's to add.
+- **Three inherited reds**, never chased.
+- **The licence of `assets/world-flat-relief.png`** is unknown.
+- **The door sentence** is a placeholder.
+- **Acknowledgement indicators** - named by Tim, not yet defined. **§3.1 of this plan
+  builds a turn indicator, which may be what he meant. It is not assumed to be.**
+- **Card ordering under scroll** - raised twice, unruled.
+- **`PHASE_OUTCOME.md` has no `UNIT 306` and no `UNIT 307`** in the FT4 phase's record.
+  That file is in git history; this phase starts a fresh one.
+- **The popup's size** is a number a session chose.
