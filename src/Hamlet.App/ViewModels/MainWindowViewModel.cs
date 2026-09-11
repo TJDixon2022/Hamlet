@@ -10407,6 +10407,12 @@ public partial class MainWindowViewModel : ObservableObject
         // until work instruction 281 task 6.
         row = WithOperatorGrid(row);
 
+        // **WHAT WORKING HIM WOULD OPEN** (work instruction 308 task 5). Here rather
+        // than in `AddDecodeRow`, because this is the one funnel every row on the
+        // table goes through. The set behind it is built once from the log and asked
+        // about a callsign thereafter.
+        MarkIfItOpensSomething(row);
+
         // **WHAT WAS MEASURED ABOUT THIS STATION, KEPT PAST THE TABLE** (work
         // instruction 299 task 2). The row can age off or be cleared by a band
         // change; the card behind it is rebuilt from the ledger and survives, and
@@ -11198,6 +11204,131 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Dictionary<string, AdifContact>? _workedBefore;
 
+    /// <summary>How many stations may carry the mark at once.</summary>
+    /// <remarks>
+    /// **TWO, COUNTED OVER STATIONS AND NOT OVER SLOT REBUILDS** (Tim, 2026-09-10).
+    /// *If everything is marked, nothing is* (§3.7). At the cap a stronger arrival
+    /// displaces the weakest mark currently held - it does not queue and it does not
+    /// add a third.
+    /// </remarks>
+    internal const int MostMarkedStations = 2;
+
+    /// <summary>What is still in play, read once from the log.</summary>
+    private NudgeSet? _nudges;
+
+    /// <summary>Which stations hold a mark, and what kind.</summary>
+    /// <remarks>
+    /// **STICKY PER STATION** (Tim, 2026-09-10). Once a station is marked he stays
+    /// marked while he is on the list. **Re-ranking every slot was rejected**: the
+    /// mark then flickers on a station who has not changed and vanishes as he reaches
+    /// for it.
+    /// </remarks>
+    private readonly Dictionary<string, (NudgeKind Kind, string Entity)> _marked
+        = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>How many times the nudge set has been built, for a test.</summary>
+    /// <remarks>
+    /// **THE PERFORMANCE SHAPE IS A HARD CONSTRAINT** - fourteen messages a slot,
+    /// four slots a minute - so the assertion is a read count rather than an elapsed
+    /// time, which would measure the machine rather than the code.
+    /// </remarks>
+    internal int NudgeSetBuilds { get; private set; }
+
+    /// <summary>Hand the panel a position, for a test.</summary>
+    internal void UseNudgeSetForTests(NudgeSet set)
+    {
+        _nudges = set;
+        NudgeSetBuilds = 1;
+    }
+
+    /// <summary>What is still in play, built once.</summary>
+    private NudgeSet Nudges()
+    {
+        if (_nudges is not null)
+        {
+            return _nudges;
+        }
+
+        NudgeSetBuilds++;
+
+        // **UNIT 278 SHAPE, AND ITS SOURCE.** The log is read once and cached; the
+        // same read that feeds the worked mark feeds this.
+        _nudges = NudgeSet.From(
+            new AchievementLog(
+                ContactLogStore.ReadRecords(), _settings.Operator.GridSquare));
+
+        return _nudges;
+    }
+
+    /// <summary>Decide the mark for one row that has just arrived.</summary>
+    /// <remarks>
+    /// <para>**ORDERING COMES FROM THE ACHIEVEMENT SET, NOT FROM A SCORE** (Tim,
+    /// 2026-09-10). A door outranks a visible card; within a kind, **arrival order
+    /// breaks the tie** and the earlier caller keeps the mark. **No difficulty number
+    /// is computed, stored or persisted anywhere.**</para>
+    /// <para>**A MARK IS A NUDGE, NEVER AN ARMING** (§0.2). Nothing here touches,
+    /// shortens or pre-arms any path that keys the transmitter.</para>
+    /// </remarks>
+    private void MarkIfItOpensSomething(DigitalDecodeRow row)
+    {
+        var who = row.Sender;
+
+        if (who.Length == 0)
+        {
+            return;
+        }
+
+        // **STICKY: A STATION ALREADY MARKED KEEPS WHAT HE HAS.**
+        if (_marked.TryGetValue(who, out var held))
+        {
+            Apply(row, held);
+            return;
+        }
+
+        var (kind, entity) = Nudges().WouldOpen(who);
+
+        if (kind == NudgeKind.None)
+        {
+            return;
+        }
+
+        if (_marked.Count >= MostMarkedStations)
+        {
+            // **THE WEAKEST MARK CURRENTLY HELD**, which is a visible card where one
+            // is held and nothing otherwise. A door never displaces a door, because
+            // they are equal and the earlier caller keeps it.
+            var weakest = _marked
+                .Where(m => m.Value.Kind < kind)
+                .OrderBy(m => m.Value.Kind)
+                .Select(m => (string?)m.Key)
+                .FirstOrDefault();
+
+            if (weakest is null)
+            {
+                return;
+            }
+
+            _marked.Remove(weakest);
+
+            foreach (var other in DigitalDecodes.Where(
+                r => string.Equals(r.Sender, weakest, StringComparison.OrdinalIgnoreCase)))
+            {
+                Apply(other, (NudgeKind.None, ""));
+            }
+        }
+
+        _marked[who] = (kind, entity);
+        Apply(row, (kind, entity));
+    }
+
+    /// <summary>Put a decision onto a row.</summary>
+    private static void Apply(
+        DigitalDecodeRow row, (NudgeKind Kind, string Entity) mark)
+    {
+        row.Nudge = mark.Kind;
+        row.NudgeTip = NudgeWords.For(mark.Kind, mark.Entity);
+    }
+
     /// <summary>Re-read the log after it changed.</summary>
     /// <remarks>
     /// **THE LAST ENTRY FOR A CALLSIGN WINS**, so the mark says when he last worked
@@ -11206,6 +11337,15 @@ public partial class MainWindowViewModel : ObservableObject
     private void RefreshWorkedBefore()
     {
         _workedBefore = ReadWorkedBefore();
+
+        // **AND WHAT IS STILL IN PLAY CHANGED WITH IT** (work instruction 308 task
+        // 5). He logs a contact in a country he had not worked and that country
+        // stops being something to chase; without this the mark for it would stand
+        // for the rest of the evening. **The marks already held are cleared too**,
+        // because stickiness is about a station not changing and this is the one
+        // moment the answer really did change.
+        _nudges = null;
+        _marked.Clear();
 
         // **ROWS ALREADY ON SCREEN PICK THE MARK UP.** He logs a contact and the
         // station's other rows from the same evening say *worked* at once, rather

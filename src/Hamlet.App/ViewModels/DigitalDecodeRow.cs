@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Hamlet.RadioEngine.Contacts;
+using System.ComponentModel;
 using System.Globalization;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
@@ -347,6 +348,66 @@ public sealed record DigitalDecodeRow(
     /// than a label he has to ignore.</para>
     /// </remarks>
     public double RowOpacity => HasWorkedBefore ? 0.55 : 1.0;
+
+    /// <summary>What working this station would open, if anything.</summary>
+    /// <remarks>
+    /// <para>**THE OTHER END OF UNIT 279 AXIS.** A worked station dims to 0.55; a
+    /// marked one lifts. **Nothing between them moves** - an unmarked station is not
+    /// a lesser station (§3.7), and the person he most wants to work may be an
+    /// ordinary domestic contact.</para>
+    /// <para>**SET BY THE PANEL, NOT DERIVED HERE.** The mark is sticky per station
+    /// and capped, which is bookkeeping across the whole list rather than a fact
+    /// about one row.</para>
+    /// </remarks>
+    public NudgeKind Nudge
+    {
+        get => _nudge;
+        set
+        {
+            if (_nudge == value)
+            {
+                return;
+            }
+
+            _nudge = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Nudge)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsNudged)));
+            PropertyChanged?.Invoke(
+                this, new PropertyChangedEventArgs(nameof(NudgeIsDoor)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowLift)));
+        }
+    }
+
+    private NudgeKind _nudge;
+
+    /// <summary>True where this row carries the quill.</summary>
+    public bool IsNudged => _nudge != NudgeKind.None;
+
+    /// <summary>True where what would open is an area he has never opened.</summary>
+    /// <remarks>
+    /// **THE ORBIT RING SAYS IT AND NO WORD DOES** (Tim, 2026-09-10). §3.1 is
+    /// *absent, not dimmed*: the CQ list must not be what tells him an area exists.
+    /// </remarks>
+    public bool NudgeIsDoor => _nudge == NudgeKind.Door;
+
+    /// <summary>How far a marked row lifts above the rest.</summary>
+    /// <remarks>
+    /// **A LIFT PLUS THE QUILL, NEVER A LIFT ALONE** (Tim, 2026-09-10). On a night
+    /// when the whole slot is new a relative lift marks nothing, and *it is a tiny
+    /// dot lost in the sea of the tray* is the failure this avoids. The quill is
+    /// absolute, already means *achievement* in this application, and reads with the
+    /// colour taken away (§0.6).
+    /// </remarks>
+    public double RowLift => IsNudged ? 1.0 : 0.0;
+
+    /// <summary>What the mark says on a deliberate look, or "".</summary>
+    /// <remarks>
+    /// **A VISIBLE CARD MAY BE NAMED AND A DOOR MAY NOT** (Tim, 2026-09-10, and
+    /// §3.1). **Nothing here says *confirmed*** - Hamlet has contacts and no
+    /// confirmations (§4) - and nothing promises the contact will succeed.
+    /// </remarks>
+    public string NudgeTip { get; set; } = "";
 
     /// <summary>The hover text, or null where there is none.</summary>
     /// <remarks>

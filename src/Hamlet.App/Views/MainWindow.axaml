@@ -4107,14 +4107,38 @@
                                                      **THE HOVER TEXT IS UNIT 274'S,
                                                      MOVED HERE** from the marker that
                                                      no longer exists. -->
-                                                <Grid ColumnDefinitions="76,48,*"
+                                                <Grid ColumnDefinitions="20,76,48,*"
                                                       Background="Transparent"
                                                       Opacity="{Binding RowOpacity}"
                                                       ToolTip.Tip="{Binding WorkedTip}"
                                                       ContextRequested="OnDecodedRowContextRequested">
-                                                    <TextBlock Grid.Column="0" Text="{Binding Utc}"
+                                                    <!-- **THE NUDGE: A LIFT PLUS THE QUILL** (Tim, 2026-09-10, no
+                                                         HM-DEC id assigned). **Not a lift alone** - on a night when the
+                                                         whole slot is new a relative lift marks nothing, and a subtle
+                                                         mark is one he has twice said he cannot see. The quill is
+                                                         absolute, already means achievement here, and reads with the
+                                                         colour taken away (§0.6).
+                                                    
+                                                         **THE ORBIT RING SAYS A DOOR AND NO WORD DOES** (§3.1, absent
+                                                         not dimmed): the CQ list must not be what tells him an area
+                                                         exists. What would open is on the hover, and for a door it
+                                                         names nothing.
+                                                    
+                                                         **AN UNMARKED ROW IS NOT A LESSER ROW** (§3.7). There is no
+                                                         dimming here and no count of what he is missing; the mark is
+                                                         simply absent. -->
+                                                    <ctl:AchievementMarkControl Grid.Column="0"
+                                                                                x:Name="NudgeMark"
+                                                                                IsVisible="{Binding IsNudged}"
+                                                                                IsOrbiting="{Binding NudgeIsDoor}"
+                                                                                IsNew="{Binding IsNudged}"
+                                                                                Width="16" Height="16"
+                                                                                VerticalAlignment="Center"
+                                                                                Margin="0,0,4,0"
+                                                                                ToolTip.Tip="{Binding NudgeTip}" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Utc}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
-                                                    <TextBlock Grid.Column="1" Text="{Binding Snr}"
+                                                    <TextBlock Grid.Column="2" Text="{Binding Snr}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                     <!-- **THE MESSAGE READS AS THREE
                                                          THINGS AT A GLANCE** (unit 241
@@ -4138,7 +4162,7 @@
                                                          exactly as it arrived rather
                                                          than being split at a boundary
                                                          nobody found. -->
-                                                    <StackPanel Grid.Column="2"
+                                                    <StackPanel Grid.Column="3"
                                                                 Orientation="Horizontal"
                                                                 Spacing="0"
                                                                 IsVisible="{Binding HasFields}">
@@ -4166,7 +4190,7 @@
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                     </StackPanel>
 
-                                                    <TextBlock Grid.Column="2" Text="{Binding Unsplit}"
+                                                    <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
                                                                IsVisible="{Binding !HasFields}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
 
