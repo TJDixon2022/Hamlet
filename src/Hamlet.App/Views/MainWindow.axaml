@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -431,6 +431,7 @@
                         BandLowHz="{Binding MapLowHz}"
                         BandHighHz="{Binding MapHighHz}"
                         Neighborhoods="{Binding Neighborhoods}"
+                        ChosenShortName="{Binding ChosenDigitalMode}"
                         ActivityDots="{Binding ActivityDots}"
                         PrivilegeSpans="{Binding PrivilegeSpans}"
                         TuneCommand="{Binding TuneToDotCommand}"

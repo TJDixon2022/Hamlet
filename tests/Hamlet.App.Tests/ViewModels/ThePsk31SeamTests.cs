@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Hamlet.App.Controls;
 using Hamlet.App.Settings;
 using Hamlet.App.Telemetry;
 using Hamlet.App.ViewModels;
@@ -351,6 +352,72 @@ public sealed class ThePsk31SeamTests : IDisposable
             Assert.All(lines, l => Assert.DoesNotContain(
                 keying, l, StringComparison.OrdinalIgnoreCase));
         }
+    }
+
+    /// <summary>**The ribbon for the mode he pressed is the one picked out.**</summary>
+    /// <remarks>
+    /// <para>**TASK 4, AND IT IS THE STEP'S NICE-TO-PASS.** When PSK31 is the chosen
+    /// mode, the 14.070 block on the neighbourhood map is picked out and no other block
+    /// is.</para>
+    /// <para>**THE INSTRUCTION SAYS *THE WAY THE FT8 RIBBON LIGHTS AT 14.074* AND NO
+    /// RIBBON LIT BEFORE THIS** (measured, reported as a mismatch). The map filled every
+    /// block from its family and picked out none of them, for any mode. So this is the
+    /// mechanism being built rather than copied, and it serves FT8 and FT4 in the same
+    /// change.</para>
+    /// <para>**IT IS NOT PICKED OUT BY COLOUR** (§0.6). Every block is already filled
+    /// from its family, so a hue here would be a second language over the top of the
+    /// first. It is an outline and a heavier label: a shape and a weight, both of which
+    /// survive greyscale.</para>
+    /// <para>**COMPUTED, NOT SEEN.** What is asserted is the rule the render asks,
+    /// separated from the drawing of it. Nothing here looks at a pixel.</para>
+    /// </remarks>
+    [Fact]
+    public void TheRibbonForTheChosenModeIsTheOnePickedOut()
+    {
+        var model = Panel(null);
+
+        var twenty = model.Bands.FirstOrDefault(b => b.Band.Name == Band);
+
+        Assert.NotNull(twenty);
+
+        model.SelectedBand = twenty!;
+        model.ChooseDigitalModeCommand.Execute(Mode);
+
+        var hoods = model.Neighborhoods;
+
+        Assert.NotEmpty(hoods);
+
+        var lit = hoods
+            .Where(h => NeighborhoodMapControl.IsChosen(h, model.ChosenDigitalMode))
+            .ToList();
+
+        foreach (var h in hoods)
+        {
+            _output.WriteLine(
+                (NeighborhoodMapControl.IsChosen(h, model.ChosenDigitalMode) ? "* " : "  ")
+                + h.ShortName.PadRight(8) + h.LowHz + " to " + h.HighHz);
+        }
+
+        // **EXACTLY ONE**, and it is the PSK31 block at 14.070.
+        var one = Assert.Single(lit);
+
+        Assert.Equal(Mode, one.ShortName);
+        Assert.Equal(14_070_000, one.JumpHz);
+
+        // **AND THE SAME MECHANISM SERVES FT8**, which is what makes it a mechanism
+        // rather than a special case for this mode.
+        model.ChooseDigitalModeCommand.Execute("FT8");
+
+        var ft8 = hoods
+            .Where(h => NeighborhoodMapControl.IsChosen(h, model.ChosenDigitalMode))
+            .ToList();
+
+        _output.WriteLine("FT8 picks out : " + string.Join(", ", ft8.Select(h => h.ShortName)));
+
+        Assert.All(ft8, h => Assert.Equal("FT8", h.ShortName));
+
+        // **AND NOTHING CHOSEN PICKS OUT NOTHING**, which is a fresh profile's case.
+        Assert.DoesNotContain(hoods, h => NeighborhoodMapControl.IsChosen(h, null));
     }
 
     private MainWindowViewModel Panel(

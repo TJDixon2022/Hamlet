@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Input;
 using Avalonia;
@@ -64,6 +64,18 @@ public sealed class NeighborhoodMapControl : Control
     private static readonly Pen HoverPen = new(new SolidColorBrush(Color.Parse("#FFFFFF")), 1.5);
     private static readonly Typeface Sans = new("Segoe UI,Inter,sans-serif");
 
+    /// <summary>The same face, for the one block the operator asked for.</summary>
+    private static readonly Typeface SansHeavy = new(
+        "Segoe UI,Inter,sans-serif", FontStyle.Normal, FontWeight.SemiBold);
+
+    /// <summary>How thick the outline round the chosen block is drawn.</summary>
+    /// <remarks>
+    /// **TWO PIXELS, IN THE CONTROL OWN UNITS.** The map is forty-four pixels tall and
+    /// a hairline disappears against a filled block; anything heavier starts reading as
+    /// a boundary of its own rather than as an emphasis.
+    /// </remarks>
+    private const double ChosenEdgeWidth = 2.0;
+
     /// <summary>The hatch stroke. Thin and pale on purpose.</summary>
     private static readonly Pen VeilPen = new(VeilBrush, 2.5);
 
@@ -99,6 +111,26 @@ public sealed class NeighborhoodMapControl : Control
     public static readonly StyledProperty<ICommand?> TuneCommandProperty =
         AvaloniaProperty.Register<NeighborhoodMapControl, ICommand?>(nameof(TuneCommand));
 
+    /// <summary>The mode the operator pressed, whose ribbon is picked out.</summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 312 TASK 4.** The mode strip already draws the chip he
+    /// pressed differently from the three beside it; this is the same fact on the map,
+    /// so the answer to *where am I going* and the answer to *where is that* are in
+    /// front of him at once.</para>
+    /// <para>**IT IS A PREFERENCE AND NOT A READING** (`DigitalModeChip.cs`, unit 251).
+    /// The marker already says where the dial is and that is a measurement; this says
+    /// which block he asked for, and the two disagree often - on a band with no row
+    /// for that mode, before a tune lands, or when the tune did not take. Drawing them
+    /// the same way would turn a remembered press into a claim about the radio (0.0,
+    /// HM-DEC-092).</para>
+    /// <para>**EMPTY IS THE COMMON CASE AND NOTHING IS PICKED OUT.** A fresh profile
+    /// has no chosen mode, and a band whose map has no row for the chosen one lights
+    /// nothing rather than lighting the nearest thing.</para>
+    /// </remarks>
+    public static readonly StyledProperty<string?> ChosenShortNameProperty =
+        AvaloniaProperty.Register<NeighborhoodMapControl, string?>(
+            nameof(ChosenShortName));
+
     /// <summary>
     /// Where this license class may and may not transmit, from the engine.
     /// </summary>
@@ -127,8 +159,37 @@ public sealed class NeighborhoodMapControl : Control
     {
         AffectsRender<NeighborhoodMapControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
-            NeighborhoodsProperty, ActivityDotsProperty, PrivilegeSpansProperty);
+            NeighborhoodsProperty, ActivityDotsProperty, PrivilegeSpansProperty,
+            ChosenShortNameProperty);
     }
+
+    /// <summary>The mode the operator pressed, or null.</summary>
+    public string? ChosenShortName
+    {
+        get => GetValue(ChosenShortNameProperty);
+        set => SetValue(ChosenShortNameProperty, value);
+    }
+
+    /// <summary>Whether this block is the one the operator asked for.</summary>
+    /// <param name="hood">A block on the map.</param>
+    /// <param name="chosen">The mode he pressed, or null.</param>
+    /// <returns>True where the block is that mode.</returns>
+    /// <remarks>
+    /// <para>**THE BLOCK OWN SHORT NAME IS WHAT ANSWERS**, which is the same string
+    /// `DigitalModeChip` lights a chip from and the same string
+    /// `DigitalCallingFrequencies` tunes by. One name, three surfaces, so the chip,
+    /// the map and the dial cannot come to disagree about what lives where
+    /// (HM-DEC-054).</para>
+    /// <para>**IT IS PUBLIC AND STATIC SO A TEST CAN ASK IT.** Nothing in this
+    /// repository can look at a picture, and a rule about which ribbon is picked out
+    /// is exactly the kind of thing that is asserted green and is not on the screen.
+    /// This is the decision, separated from the drawing of it.</para>
+    /// </remarks>
+    public static bool IsChosen(Neighborhood hood, string? chosen)
+        => !string.IsNullOrWhiteSpace(chosen)
+            && string.Equals(
+                hood.ShortName.Trim(), chosen.Trim(),
+                StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Creates the map.</summary>
     public NeighborhoodMapControl()
@@ -246,6 +307,29 @@ public sealed class NeighborhoodMapControl : Control
                 context.FillRectangle(colors.FillBrush, rect);
                 context.DrawLine(SeamPen, new Point(right, 0), new Point(right, h));
 
+                // **THE BLOCK HE ASKED FOR IS PICKED OUT** (work instruction 312
+                // task 4). **Not by colour**: every block on this map is already
+                // filled from its family, so a hue here would be a second language
+                // over the top of the one HM-DEC-032 defines, and a reader who
+                // cannot separate two fills would be told nothing at all (0.6).
+                // **It is an outline and a heavier label** - a shape and a weight,
+                // both of which survive greyscale.
+                var chosen = IsChosen(hood, ChosenShortName);
+
+                if (chosen)
+                {
+                    // Inset by the pen width so the outline lands inside the
+                    // block rather than straddling its seam with the next one.
+                    context.DrawRectangle(
+                        null,
+                        new Pen(colors.InkBrush, ChosenEdgeWidth),
+                        new Rect(
+                            rect.X + (ChosenEdgeWidth / 2),
+                            rect.Y + (ChosenEdgeWidth / 2),
+                            Math.Max(0, rect.Width - ChosenEdgeWidth),
+                            Math.Max(0, rect.Height - ChosenEdgeWidth)));
+                }
+
                 if (hood.ShortName.Length > 0)
                 {
                     // The family's own ink, so the label stays legible on its
@@ -253,7 +337,7 @@ public sealed class NeighborhoodMapControl : Control
                     // never the only carrier (HM-DEC-032).
                     var label = new FormattedText(hood.ShortName,
                         CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
-                        Sans, 11, colors.InkBrush);
+                        chosen ? SansHeavy : Sans, 11, colors.InkBrush);
                     if (label.Width < rect.Width - 6)
                     {
                         context.DrawText(label,
