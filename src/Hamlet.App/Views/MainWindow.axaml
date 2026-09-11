@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Hamlet.App.ViewModels"
         xmlns:ctl="using:Hamlet.App.Controls"
@@ -4341,7 +4341,7 @@
                                                          quiet* still reads. -->
                                                     <Border Classes="hm-card"
                                                             Opacity="{Binding CardOpacity}">
-                                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                                                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
 
                                                             <!-- THE HEADER: who, where, and
                                                                  what state it is in. -->
@@ -4446,34 +4446,10 @@
                                                                      HAS ONE TARGET** for
                                                                      the glyph and the
                                                                      tooltip together. -->
-                                                                <Border Grid.Column="3"
-                                                                        IsVisible="{Binding ShowsGlobe}"
-                                                                        Background="Transparent"
-                                                                        VerticalAlignment="Center"
-                                                                        Margin="0,0,6,0"
-                                                                        Width="16" Height="16">
-                                                                    <ToolTip.Tip>
-                                                                        <StackPanel Width="300" Spacing="6">
-                                                                            <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                                                    BorderThickness="1"
-                                                                                    CornerRadius="4">
-                                                                                <ctl:Ft8GlobeControl Height="150"
-                                                                                                     Plot="{Binding Globe}" />
-                                                                            </Border>
-
-                                                                            <TextBlock Text="{Binding Globe.Caption}"
-                                                                                       TextWrapping="Wrap"
-                                                                                       FontSize="11"
-                                                                                       LineSpacing="1.3" />
-                                                                        </StackPanel>
-                                                                    </ToolTip.Tip>
-
-                                                                    <TextBlock Text="&#x1F310;"
-                                                                               FontSize="12"
-                                                                               HorizontalAlignment="Center"
-                                                                               VerticalAlignment="Center"
-                                                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                                                </Border>
+                                                                <!-- **THE MAP LEFT THIS TOOLTIP IN UNIT 308.** It was behind a
+                                                                     globe glyph here, and its two markers could carry no words
+                                                                     of their own, because a tooltip inside a tooltip is not a
+                                                                     thing. It is a row on the card face now. -->
 
                                                                 <ctl:HintMarkControl Grid.Column="4"
                                                                                      Kind="Detail"
@@ -4674,6 +4650,39 @@
                                                                         Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowMessagesCommand}"
                                                                         CommandParameter="{Binding Callsign}" />
                                                             </Grid>
+
+                                                            <!-- **THE MAP, ON THE FACE** (work instruction 308 task 4, the
+                                                                 authors proposal and not a ruling - see output.md). It was
+                                                                 behind a globe glyph in the header until this unit, where a
+                                                                 picture he had to hover for was a picture he would not see,
+                                                                 and where its two markers could carry no words of their own.
+                                                            
+                                                                 **IT DRAWS NOTHING OF ITS OWN ON THE PICTURE.** No coastline,
+                                                                 no graticule, no tick and no degree label - the pale curves on
+                                                                 the ocean are artwork and nothing reads or aligns to them.
+                                                                 Two markers and the path the signal takes.
+                                                            
+                                                                 **ABSENT WHERE THERE IS NOTHING TO DRAW**, which is a station
+                                                                 with no grid on a machine with no grid in Settings. -->
+                                                            <StackPanel Grid.Row="5"
+                                                                        IsVisible="{Binding ShowsGlobe}"
+                                                                        Margin="0,8,0,0"
+                                                                        Spacing="4">
+                                                                <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                        BorderThickness="1"
+                                                                        CornerRadius="4"
+                                                                        ClipToBounds="True">
+                                                                    <ctl:Ft8GlobeControl x:Name="CardGlobe"
+                                                                                         Height="120"
+                                                                                         Plot="{Binding Globe}" />
+                                                                </Border>
+                                                            
+                                                                <TextBlock Text="{Binding Globe.Caption}"
+                                                                           TextWrapping="Wrap"
+                                                                           FontSize="11"
+                                                                           LineSpacing="1.3"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                            </StackPanel>
                                                         </Grid>
                                                     </Border>
                                                 </DataTemplate>

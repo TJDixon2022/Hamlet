@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -70,6 +71,89 @@ public sealed class Ft8GlobeControl : Control
     private static readonly IBrush Theirs = new SolidColorBrush(Color.Parse("#2F7D4F"));
 
     static Ft8GlobeControl() => AffectsRender<Ft8GlobeControl>(PlotProperty);
+
+    /// <summary>How near the pointer has to be to a marker, in map pixels.</summary>
+    /// <remarks>
+    /// **TWELVE, AND THE MARKER IS DRAWN AT FOUR.** A hit target the size of the ink
+    /// is a target nobody can hit; three times the radius is about a fingertip at the
+    /// size this picture is drawn and is the same reasoning unit 301 used when the
+    /// hint mark got a transparent rectangle rather than an outline.
+    /// </remarks>
+    public const double MarkerReachPixels = 12.0;
+
+    /// <summary>Which marker is at a point on the map, in words, or null.</summary>
+    /// <param name="x">A position in the picture own pixels.</param>
+    /// <param name="y">A position in the picture own pixels.</param>
+    /// <param name="width">How wide the picture is, for the reach.</param>
+    /// <returns>The words for that marker, or null where there is no marker.</returns>
+    /// <remarks>
+    /// <para>**THE STATION IS ASKED FIRST.** Where the two markers overlap - an
+    /// operator working somebody a few hundred miles away - the one he is reading
+    /// about is the other station, and his own position is the one he already
+    /// knows.</para>
+    /// <para>**INTERNAL SO A TEST CAN ASK IT WITHOUT A POINTER.** Driving a real
+    /// pointer through a headless window to assert a tooltip is a test about
+    /// Avalonia; what this unit owns is which marker a position belongs to.</para>
+    /// </remarks>
+    public string? WordsAt(double x, double y, double width)
+    {
+        if (Plot is not { } plot || width <= 0)
+        {
+            return null;
+        }
+
+        bool Near(double markerX, double markerY)
+            => Math.Sqrt(
+                ((x - markerX) * (x - markerX))
+                + ((y - markerY) * (y - markerY))) <= MarkerReachPixels;
+
+        if (plot.HasStation && Near(plot.StationX, plot.StationY))
+        {
+            return plot.StationTip;
+        }
+
+        return plot.HasOperator && Near(plot.OperatorX, plot.OperatorY)
+            ? plot.OperatorTip
+            : null;
+    }
+
+    /// <inheritdoc/>
+    /// <remarks>
+    /// **THE MAP OWNS ITS OWN HIT TARGETS NOW** (work instruction 308 task 4). It sits
+    /// on the card face rather than inside a tooltip, so each marker can answer for
+    /// itself - which is what unit 306 built the words for and could not attach.
+    /// </remarks>
+    protected override void OnPointerMoved(PointerEventArgs e)
+    {
+        base.OnPointerMoved(e);
+
+        if (Plot is not { } plot || Bounds.Width <= 0)
+        {
+            return;
+        }
+
+        var (left, top, width, height) = plot.Frame;
+
+        if (width <= 0 || height <= 0)
+        {
+            return;
+        }
+
+        var scale = Math.Min(Bounds.Width / width, Bounds.Height / height);
+
+        if (scale <= 0)
+        {
+            return;
+        }
+
+        var at = e.GetPosition(this);
+        var words = WordsAt((at.X / scale) + left, (at.Y / scale) + top, width);
+
+        // **NULL AND NOT THE EMPTY STRING**, because Avalonia draws an empty tooltip
+        // for "" and a blank box following the pointer across an ocean is worse than
+        // no tooltip at all - the same finding unit 274 recorded about a row.
+        ToolTip.SetTip(this, string.IsNullOrEmpty(words) ? null : words);
+    }
 
     /// <summary>What is being plotted.</summary>
     public Ft8GlobePlot? Plot
