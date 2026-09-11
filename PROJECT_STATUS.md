@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 5
 WORK_INSTRUCTION: 316 - read the conversation
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T12:50:57-04:00
-NOTE: Task 4 green: app list 23 classes, one order-dependent red in TheReadinessHoverTests (passes as a class); engine 82 of 82. Committing; task 5 dropped.
+UPDATED: 2026-09-11T12:56:55-04:00
+NOTE: Unit 316 complete, task 5 dropped. Step 3 met: 32 of 32 corpus lines, 0 wrongly certain, CQ filter exact, FT8 readers unchanged. One order-dependent FT8 hover red raised.
 
 ---
 
