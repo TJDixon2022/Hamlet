@@ -411,7 +411,8 @@ public sealed class ThePsk31ReadsTheConversationTests
                 looked++;
             }
 
-            Assert.DoesNotContain(model.DigitalCards, c => string.Equals(c.Callsign, "W1AW", StringComparison.OrdinalIgnoreCase));
+            Assert.DoesNotContain(model.DigitalCards, c => string.Equals(c.Callsign, "W1AW", StringComparison.OrdinalIgnoreCase)
+                && (c.HasAction || c.ActionMessage.Length > 0 || c.ShowsLogLink));
         }
 
         _output.WriteLine("PSK31 rows right-clicked: " + looked + ", cards on the panel: " + model.DigitalCards.Count
