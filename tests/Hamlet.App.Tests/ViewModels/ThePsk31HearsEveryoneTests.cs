@@ -207,6 +207,41 @@ public sealed class ThePsk31HearsEveryoneTests
         Assert.False(heard.EverForHim);
     }
 
+    /// <summary>**Task 5: two carriers a hundred hertz apart, both read.**</summary>
+    /// <remarks>
+    /// <para>**THE NICE-TO-PASS.** Equal level at 1000 and 1100 Hz; the author's reference
+    /// read them at 0.0000 and 0.0083. `manifest-step2.json` gives the file two texts, `A`
+    /// and `C`, and keys its error rates by 1000 and 1100 without saying which text is on
+    /// which; `A` at 1000 and `C` at 1100 is the order they are listed in and the order
+    /// the four-signal file puts them in, and it is printed as the pairing used.</para>
+    /// <para>**NOT WATCHED FAILING**: the listener it runs was built and committed in task
+    /// 3 before this case was written.</para>
+    /// </remarks>
+    [Fact]
+    public void TwoCarriersAHundredHertzApartAreBothRead()
+    {
+        var heard = Listen("psk31-two-signals-100hz-apart.wav", "manifest-step2.json", 1000, 1100);
+
+        var low = heard.Tracks[1000];
+        var high = heard.Tracks[1100];
+
+        Assert.Empty(heard.Strays);
+        Assert.Equal(1, low.Appearances);
+        Assert.Equal(1, high.Appearances);
+
+        var lowCer = ErrorRate(low.Text, Step2Text("A"));
+        var highCer = ErrorRate(high.Text, Step2Text("C"));
+
+        _output.WriteLine("1000 Hz CER " + Rate(lowCer) + " against A, reference 0.0000");
+        _output.WriteLine("1100 Hz CER " + Rate(highCer) + " against C, reference 0.0083");
+
+        Assert.True(lowCer <= 0.05, "1000 Hz CER " + Rate(lowCer));
+        Assert.True(highCer <= 0.05, "1100 Hz CER " + Rate(highCer));
+
+        Assert.DoesNotContain("EI4GNB", low.Text, StringComparison.Ordinal);
+        Assert.DoesNotContain("KC3QIS", high.Text, StringComparison.Ordinal);
+    }
+
     /// <summary>**Task 4: the search and every demodulator keep up with the audio.**</summary>
     /// <remarks>
     /// <para>**THE FOUR-SIGNAL FIXTURE, END TO END, AS A STREAM**, through the real tap and

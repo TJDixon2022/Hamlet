@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 5
+TASK: 5 of 5
 WORK_INSTRUCTION: 315 - hear everyone
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T11:56:41-04:00
-NOTE: Task 4 green: 0.17 s for 38.6 s of audio, ratio 0.004, search two thirds of it; no ghost at 48 kHz with the width rule. Committing.
+UPDATED: 2026-09-11T11:58:18-04:00
+NOTE: Task 5 green: 1000 and 1100 Hz both found and read at 0.0000. Running the whole carry-forward list, filtered, before committing.
 
 ---
 

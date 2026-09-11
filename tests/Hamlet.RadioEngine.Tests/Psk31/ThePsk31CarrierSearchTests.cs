@@ -130,6 +130,21 @@ public sealed class ThePsk31CarrierSearchTests
         Assert.True(s1100 > s2200, "1100 is not stronger than 2200");
     }
 
+    /// <summary>**Task 5: two carriers a hundred hertz apart are both found.**</summary>
+    /// <remarks>
+    /// **THE NICE-TO-PASS.** Equal level, 1000 and 1100 Hz - which is how close the ribbon
+    /// on 14.070 stacks up. Each must be one carrier, every reading inside 5 Hz of its own
+    /// place, and there must be no third one between them. This was not watched failing:
+    /// the search it runs was built and committed in task 2 before this case was written.
+    /// </remarks>
+    [Fact]
+    public void TwoCarriersAHundredHertzApartAreBothFound()
+    {
+        var heard = Listen("psk31-two-signals-100hz-apart.wav", "manifest-step2.json");
+
+        AssertCarriers(heard, (1000, 0), (1100, 0));
+    }
+
     /// <summary>**The strength number against the three fixtures whose SNR is stated.**</summary>
     /// <remarks>
     /// <para>**A MEASUREMENT AND NOT A GATE.** The strength goes in the column FT8's
