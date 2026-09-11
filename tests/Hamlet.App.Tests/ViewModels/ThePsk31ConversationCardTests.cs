@@ -11,6 +11,7 @@ using Hamlet.App.Views;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Psk31;
+using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Tests.Psk31;
 using Xunit;
 using Xunit.Abstractions;
@@ -289,62 +290,176 @@ public sealed class ThePsk31ConversationCardTests
         }
     }
 
-    /// <summary>**Assertion 8: nothing on the card transmits.**</summary>
+    /// <summary>**Assertion 8, rewritten by work instruction 323 task 1b under `PHASE_PLAN.md` §R12: nothing on the card or the panel transmits without the operator's click.**</summary>
+    /// <remarks>
+    /// <para>**WHAT THIS GUARDED BEFORE, AND WHY IT COULD NOT STAY.** Unit 319 wrote it while
+    /// the PSK31 send door was shut, and it guarded *the shut door*: it scanned `src/` for the
+    /// string `NowAsync`, and it pinned the four source lines of `CanTransmitIn` character for
+    /// character. Both pins fail the moment the door is opened **even though the rule they
+    /// exist for is untouched**, and §R12 says a test a session wrote while a door was shut is
+    /// that session's successor's to rewrite, in its own commit, so that it guards the rule
+    /// and not the door.</para>
+    /// <para>**THE RULE IS THE ONE THAT IS THE OWNER'S** (§0.2): *Hamlet never transmits
+    /// without the operator's click.* Nothing else about the shape of the code is this test's
+    /// business, and it no longer reads a line of source.</para>
+    /// <para>**THREE THINGS, ALL MEASURED THROUGH THE RUNNING APPLICATION AND ITS OWN RECORD.**
+    /// (a) A whole conversation arrives, a card goes up, it becomes the operator's turn - and
+    /// with nobody clicking anything, not one line of the transmit path is written. (b) The
+    /// door PSK31 goes through is the same one FT8 goes through and it is still a door: a
+    /// label with no modulator is refused by it. (c) A press composes, once, and nothing on
+    /// the card keys anything - the count of composed sends equals the count of clicks.</para>
+    /// <para>**COMPUTED, NOT SEEN**, and no radio was involved (FACT-006).</para>
+    /// </remarks>
     [Fact]
     public void NothingOnTheCardTransmits()
     {
         var corpus = Psk31Corpus.Load();
-        var model = Panel();
+        var folder = Path.Combine(
+            Path.GetTempPath(), "hamlet-psk31-card-" + Guid.NewGuid().ToString("N"));
 
-        model.ShowPsk31ChannelsForTests(new[] { Channel(1, 1000, Transcript(corpus, "01-textbook"), 5) });
+        Directory.CreateDirectory(folder);
 
-        var card = Assert.Single(model.DigitalCards);
-
-        Assert.Equal(Ft8CardActionKind.None, card.ActionKind);
-        Assert.False(card.HasAction);
-        Assert.False(card.ShowsLogLink);
-        Assert.False(card.ShowsRing);
-        Assert.Equal("", card.ActionMessage);
-
-        var src = Path.Combine(Psk31Corpus.Root(), "src");
-        var arms = new List<string>();
-        var nows = new List<string>();
-
-        foreach (var file in Directory.EnumerateFiles(src, "*.cs", SearchOption.AllDirectories))
+        try
         {
-            var lines = CodeOnly(File.ReadAllText(file)).Split('\n');
-            var relative = Path.GetRelativePath(src, file).Replace('\\', '/');
-
-            for (var i = 0; i < lines.Length; i++)
+            // (a) **A WHOLE CONVERSATION, AND NOT ONE CLICK.**
+            using (var telemetry = new JsonlTelemetry(folder, "no-click", _ => true))
             {
-                if (lines[i].Contains(".Arm(", StringComparison.Ordinal))
+                var model = Panel(telemetry);
+                var textbook = Transcript(corpus, "01-textbook");
+
+                for (var through = 1; through <= textbook.Lines.Count; through++)
                 {
-                    arms.Add(relative + ": " + lines[i].Trim());
+                    model.ShowPsk31ChannelsForTests(new[] { Channel(1, 1000, textbook, through) });
                 }
 
-                if (relative.StartsWith("Hamlet.App/", StringComparison.Ordinal)
-                    && lines[i].Contains("NowAsync", StringComparison.Ordinal))
-                {
-                    nows.Add(relative + ": " + lines[i].Trim());
-                }
+                // **NOT VACUOUS.** The card is up and it is his turn, which is the one
+                // moment a card with a mind of its own would answer for him.
+                var card = Assert.Single(model.DigitalCards);
+
+                _output.WriteLine("no click: card " + card.Callsign + " [" + card.StateWord + "]");
+
+                Assert.True(card.IsPsk31);
+                Assert.Equal("W1AW", card.Callsign);
+                Assert.Equal("Your turn", card.StateWord);
             }
+
+            var quiet = Read(folder);
+
+            foreach (var line in quiet.Where(Transmitting))
+            {
+                _output.WriteLine("WROTE WITHOUT A CLICK: " + line);
+            }
+
+            _output.WriteLine("lines written with no click: " + quiet.Count
+                + ", of them on the transmit path: " + quiet.Count(Transmitting));
+
+            // **THE WHOLE PATH, NOT ONE STAGE OF IT.** A request, a stage, a composed
+            // macro, a keying, an unkeying and a transmission record: none of the six.
+            Assert.DoesNotContain(quiet, Transmitting);
+
+            // **AND THE FILE IS NOT EMPTY**, so the assertion above is about silence on
+            // one path rather than about a sink that was never written to.
+            Assert.NotEmpty(quiet);
+        }
+        finally
+        {
+            Remove(folder);
         }
 
-        _output.WriteLine(".Arm( in src: " + arms.Count + " - " + string.Join(" | ", arms));
-        _output.WriteLine("NowAsync in src/Hamlet.App: " + nows.Count);
+        // (b) **THE ONE DOOR, AND IT IS STILL A DOOR.**
+        foreach (var (mode, refusedForItsMode) in
+            new[] { ("FT8", false), ("PSK31", false), ("WSPR", true) })
+        {
+            var model = Panel();
 
-        Assert.Single(arms);
-        Assert.Empty(nows);
+            model.ChooseDigitalModeCommand.Execute(mode);
+            model.SendCallToAnyoneCommand.Execute(null);
 
-        var shell = File.ReadAllText(Path.Combine(src, "Hamlet.App", "ViewModels", "MainWindowViewModel.cs")).Replace("\r", "");
+            _output.WriteLine(mode.PadRight(6) + ": " + model.DigitalSendLine);
 
-        const string door =
-            "    private static bool CanTransmitIn(string? chosen)\n"
-            + "        => chosen is null\n"
-            + "            || string.Equals(chosen, \"FT8\", StringComparison.Ordinal)\n"
-            + "            || string.Equals(chosen, \"FT4\", StringComparison.Ordinal);\n";
+            // **REFUSED FOR BEING THIS MODE, WHICH IS NOT THE SAME AS REFUSED.** With no
+            // radio on this machine every press stops somewhere; what is measured is
+            // whether the mode gate is what stopped it.
+            Assert.Equal(
+                refusedForItsMode,
+                model.DigitalSendLine.Contains("cannot send " + mode, StringComparison.Ordinal));
+        }
 
-        Assert.Contains(door, shell, StringComparison.Ordinal);
+        // (c) **ONE CLICK, ONE COMPOSED SEND, AND NOTHING ON THE CARD KEYS.**
+        var pressed = Path.Combine(
+            Path.GetTempPath(), "hamlet-psk31-press-" + Guid.NewGuid().ToString("N"));
+
+        Directory.CreateDirectory(pressed);
+
+        try
+        {
+            using (var telemetry = new JsonlTelemetry(pressed, "one-click", _ => true))
+            {
+                var model = Panel(telemetry);
+
+                model.ShowPsk31ChannelsForTests(
+                    new[] { Channel(1, 1000, Transcript(corpus, "01-textbook"), 5) });
+
+                model.SendCallToAnyoneCommand.Execute(null);
+            }
+
+            var after = Read(pressed);
+            var composed = after.Where(l => Names(l, "psk31_send_composed")).ToList();
+            var keyed = after.Where(l => Names(l, "psk31_send_keyed")).ToList();
+
+            foreach (var line in after.Where(Transmitting))
+            {
+                _output.WriteLine("one click: " + line);
+            }
+
+            // **THE COUNT OF SENDS IS THE COUNT OF CLICKS.**
+            Assert.Single(composed);
+
+            // **AND IT IS THE CQ MACRO OF §R2 THAT WAS COMPOSED**, not FT8 tones on a
+            // PSK31 frequency, which is the fault the shut door was standing in for.
+            Assert.All(composed, l => Assert.Contains("\"macro\":\"cq\"", l, StringComparison.Ordinal));
+
+            // **NOTHING KEYED.** No radio is connected on this machine, so the press
+            // reaches the composer and stops; a keying here would be one nobody asked for.
+            Assert.Empty(keyed);
+        }
+        finally
+        {
+            Remove(pressed);
+        }
+    }
+
+    /// <summary>True where this line is any stage of the transmit path.</summary>
+    /// <param name="line">One JSONL line.</param>
+    /// <returns>True where a send was requested, staged, composed, keyed, unkeyed or recorded.</returns>
+    private static bool Transmitting(string line)
+        => Names(line, SendStage.EventName)
+            || Names(line, TransmitRecord.EventName)
+            || Names(line, "psk31_send_composed")
+            || Names(line, "psk31_send_keyed")
+            || Names(line, "psk31_send_unkeyed")
+            || (Names(line, "operator_action")
+                && line.Contains("\"send_requested\"", StringComparison.Ordinal));
+
+    /// <summary>True where the line's event is this one.</summary>
+    private static bool Names(string line, string eventName)
+        => line.Contains("\"event\":\"" + eventName + "\"", StringComparison.Ordinal);
+
+    /// <summary>Every line the sink wrote.</summary>
+    private static List<string> Read(string folder)
+        => Directory.GetFiles(folder, "*.jsonl").SelectMany(File.ReadAllLines).ToList();
+
+    /// <summary>Takes the telemetry folder away; a left-over one is not a failure.</summary>
+    private static void Remove(string folder)
+    {
+        try
+        {
+            Directory.Delete(folder, true);
+        }
+        catch (IOException)
+        {
+            // A left-over temp folder is not a test failure.
+        }
     }
 
     /// <summary>**Assertion 8, drawn: no control on a PSK31 card that would transmit or log is visible.**</summary>
@@ -386,9 +501,6 @@ public sealed class ThePsk31ConversationCardTests
         => model.DigitalCards.Count + " card(s)"
             + string.Concat(model.DigitalCards.Select(c => " " + c.Callsign + " [" + c.StateWord + "]"));
 
-    private static string CodeOnly(string source)
-        => string.Join('\n', source.Split('\n').Where(line => !line.TrimStart().StartsWith("//", StringComparison.Ordinal)));
-
     private static (MainWindow Window, MainWindowViewModel Model) Window()
     {
         var model = Panel();
@@ -403,14 +515,14 @@ public sealed class ThePsk31ConversationCardTests
         return (window, model);
     }
 
-    private static MainWindowViewModel Panel()
+    private static MainWindowViewModel Panel(JsonlTelemetry? telemetry = null)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
         settings.Operator.Callsign = Psk31Corpus.Load().Operator;
         settings.Operator.GridSquare = "FN00DJ";
 
-        var model = new MainWindowViewModel(settings, null)
+        var model = new MainWindowViewModel(settings, telemetry)
         {
             OperatingMode = "Digital",
             DigitalNewestFirst = false,

@@ -43,7 +43,6 @@ ThePsk31SeamTests
 ThePopupZoomIsCappedTests
 ThePanelScrollsTests
 TheConnectionLineReadsTests
-ThePsk31TabIsInertTests
 ThePsk31PanelHearsTests
 ThePsk31HearsEveryoneTests
 ThePsk31ReadsTheConversationTests

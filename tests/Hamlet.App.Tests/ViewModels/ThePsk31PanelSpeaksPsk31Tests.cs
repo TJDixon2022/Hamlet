@@ -111,6 +111,81 @@ public sealed class ThePsk31PanelSpeaksPsk31Tests
         Assert.Contains("sure", idle, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>**No FT8 decoder runs and no slot grid is cut under PSK31.**</summary>
+    /// <remarks>
+    /// <para>**REHOMED FROM `ThePsk31TabIsInertTests` BY WORK INSTRUCTION 323 TASK 1**, which
+    /// retires that class. Its premise - *the PSK31 tab does nothing* - ends the moment the
+    /// send door opens, and a class named for a premise that has expired teaches the next
+    /// reader something untrue. **These two assertions did not expire**: PSK31 is not FT8, so
+    /// FT8's decoder must not run on it and FT8's fifteen-second grid must not be cut for it,
+    /// whether or not Hamlet can now answer in it.</para>
+    /// <para>**NOT HIDDEN - NOT RUNNING.** The slot watch is what cuts audio into FT8 slots
+    /// and hands them to the decoder; under PSK31 it must not be asked for a slot at all.</para>
+    /// </remarks>
+    [Fact]
+    public void NoDecoderRunsAndNoSlotGridIsCutUnderPsk31()
+    {
+        var model = Panel("PSK31", Heard());
+
+        Assert.Equal("PSK31", model.ChosenDigitalMode);
+
+        // **THIRTY LOOKS, WHICH IS SEVEN AND A HALF SECONDS OF TICKS.**
+        for (var i = 0; i < 30; i++)
+        {
+            model.LookForASlotForTests();
+        }
+
+        _output.WriteLine("rows on the list : " + model.DigitalDecodes.Count);
+        _output.WriteLine("slot looks       : " + model.SlotLooksForTests);
+        _output.WriteLine("slots read       : " + model.SlotsReadForTests);
+
+        Assert.Empty(model.DigitalDecodes);
+        Assert.Empty(model.DigitalVisibleDecodes);
+
+        // **THE WATCH WAS NEVER ASKED**, which is *not running* rather than running and
+        // finding nothing.
+        Assert.Equal(0, model.SlotLooksForTests);
+        Assert.Equal(0, model.SlotsReadForTests);
+    }
+
+    /// <summary>**And FT8 and FT4 still reach the watch on the same audio.**</summary>
+    /// <remarks>
+    /// **THE HALF A CHANGE LIKE THIS MOST EASILY BREAKS.** Silencing a mode by silencing
+    /// the tick would silence all four, and the two that work would go with it.
+    /// </remarks>
+    [Fact]
+    public void Ft8AndFt4AreUntouched()
+    {
+        foreach (var mode in new[] { "FT8", "FT4" })
+        {
+            var model = Panel(mode, Heard());
+
+            for (var i = 0; i < 30; i++)
+            {
+                model.LookForASlotForTests();
+            }
+
+            _output.WriteLine(mode + ": slot looks " + model.SlotLooksForTests
+                + ", slots read " + model.SlotsReadForTests);
+
+            // **THE WATCH IS ASKED ON EVERY TICK.** Thirty ticks inside a millisecond
+            // close no slot on any mode - the boundary is fifteen seconds away - so what
+            // is asserted is that the tick reaches the watch at all, which is the thing
+            // PSK31 must not do and these two must.
+            Assert.Equal(30, model.SlotLooksForTests);
+        }
+    }
+
+    /// <summary>A tap with real audio in it, because the slot look needs one.</summary>
+    private static AudioTap Heard()
+    {
+        var tap = new AudioTap();
+
+        tap.Take(new float[12_000], 12_000);
+
+        return tap;
+    }
+
     /// <summary>**The outline for the chosen mode is the one lit.**</summary>
     [Fact]
     public void TheOutlineForTheChosenModeIsTheOneLit()
@@ -141,7 +216,7 @@ public sealed class ThePsk31PanelSpeaksPsk31Tests
         Assert.Equal(14_070_000, one.JumpHz);
     }
 
-    private MainWindowViewModel Panel(string mode)
+    private MainWindowViewModel Panel(string mode, AudioTap? tap = null)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -151,7 +226,7 @@ public sealed class ThePsk31PanelSpeaksPsk31Tests
         var model = new MainWindowViewModel(settings, null)
         {
             OperatingMode = "Digital",
-            TapForTests = new AudioTap(),
+            TapForTests = tap ?? new AudioTap(),
             ClockOffset = new ClockOffset(0.033, DateTime.UtcNow),
         };
 
