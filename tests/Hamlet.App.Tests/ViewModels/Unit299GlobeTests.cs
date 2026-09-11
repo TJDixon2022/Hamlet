@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Explore;
@@ -17,6 +17,10 @@ namespace Hamlet.App.Tests.ViewModels;
 /// projection, that projection belongs to the map being drawn, a station with no
 /// grid gets no dot, and a caption says in words what the picture cannot. **What
 /// moved is which map.**</para>
+/// <para>**AND THE MAP MOVED AGAIN IN UNIT 308**, from the north-polar photograph to
+/// the flat relief one (Tim, 2026-09-10: *"use this one, make it work"*). What this
+/// type guards is still what it guarded: one projection, belonging to the picture
+/// being drawn, and both dots placed by it.</para>
 /// <para>**THE COASTLINE ORACLE IS GONE BECAUSE THE COASTLINE IS GONE.** Unit 299
 /// read the projection out of `world-coastline.svg`'s own `desc` element, which was
 /// exactly right while that file was what got drawn. Unit 306 draws a photograph,
@@ -46,8 +50,8 @@ public sealed class Unit299GlobeTests
         var here = OperatorLocation.FromGrid(HisGrid)!.Value;
         var there = OperatorLocation.FromGrid("IO63")!.Value;
 
-        var mine = AzimuthalMap.NorthPolar.Place(here.Latitude, here.Longitude)!.Value;
-        var his = AzimuthalMap.NorthPolar.Place(there.Latitude, there.Longitude)!.Value;
+        var mine = FlatWorldMap.Relief.Place(here.Latitude, here.Longitude)!.Value;
+        var his = FlatWorldMap.Relief.Place(there.Latitude, there.Longitude)!.Value;
 
         _output.WriteLine("operator " + HisGrid + " -> " + Where(plot.OperatorX, plot.OperatorY));
         _output.WriteLine("station  IO63   -> " + Where(plot.StationX, plot.StationY));
@@ -65,10 +69,10 @@ public sealed class Unit299GlobeTests
 
         // **AND THEY ARE ON THE PICTURE**, which is a separate question from being
         // inside the projection: this disc is cropped by its own frame.
-        Assert.InRange(plot.OperatorX, 0, AzimuthalMap.NorthPolar.WidthPixels);
-        Assert.InRange(plot.StationX, 0, AzimuthalMap.NorthPolar.WidthPixels);
-        Assert.InRange(plot.OperatorY, 0, AzimuthalMap.NorthPolar.HeightPixels);
-        Assert.InRange(plot.StationY, 0, AzimuthalMap.NorthPolar.HeightPixels);
+        Assert.InRange(plot.OperatorX, 0, FlatWorldMap.Relief.WidthPixels);
+        Assert.InRange(plot.StationX, 0, FlatWorldMap.Relief.WidthPixels);
+        Assert.InRange(plot.OperatorY, 0, FlatWorldMap.Relief.HeightPixels);
+        Assert.InRange(plot.StationY, 0, FlatWorldMap.Relief.HeightPixels);
     }
 
     /// <summary>**The frame is the whole picture.**</summary>
@@ -88,8 +92,8 @@ public sealed class Unit299GlobeTests
 
             Assert.Equal(0, plot.Frame.Left);
             Assert.Equal(0, plot.Frame.Top);
-            Assert.Equal(AzimuthalMap.NorthPolar.WidthPixels, plot.Frame.Width);
-            Assert.Equal(AzimuthalMap.NorthPolar.HeightPixels, plot.Frame.Height);
+            Assert.Equal(FlatWorldMap.Relief.WidthPixels, plot.Frame.Width);
+            Assert.Equal(FlatWorldMap.Relief.HeightPixels, plot.Frame.Height);
         }
     }
 

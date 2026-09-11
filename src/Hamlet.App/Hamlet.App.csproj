@@ -63,6 +63,13 @@
          hash does not recognise. -->
     <AvaloniaResource Include="..\..\assets\azimuthal-north-polar.png" Link="Assets\azimuthal-north-polar.png" />
 
+    <!-- The flat relief map, ruled in by Tim on 2026-09-10: use this one,
+         make it work. Its projection and SHA-256 live together in
+         FlatWorldMap.Relief, and placing refuses against a file the hash
+         does not recognise. Its licence is unknown and is raised in the
+         asks queue - see assets/PROVENANCE.md. -->
+    <AvaloniaResource Include="..\..\assets\world-flat-relief.png" Link="Assets\world-flat-relief.png" />
+
     <!-- The world coastline ships at the repository root because it is a
          PROJECT asset rather than an application one: it was drawn for this
          project, it is not survey data, and the note beside it says so.

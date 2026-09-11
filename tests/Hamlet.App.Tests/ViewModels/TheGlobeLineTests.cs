@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using Hamlet.App.ViewModels;
 using Xunit;
@@ -40,7 +40,10 @@ public sealed class TheGlobeLineTests
             ("FN00DJ", "IO63", true, "both on the picture"),
             ("FN00DJ", null, false, "he put no grid on the air"),
             (null, "IO63", false, "no grid in Settings"),
-            ("FN00DJ", "QF56", false, "he is south of this picture's rim"),
+            // **SYDNEY IS ON THE PICTURE SINCE UNIT 308.** What has nowhere now is
+            // Antarctica and a strip of ocean west of Hawaii.
+            ("FN00DJ", "QF56", true, "he is on the flat map now"),
+            ("FN00DJ", "RB32", false, "he is in Antarctica, below the file"),
         })
         {
             var plot = new Ft8GlobePlot(mine, theirs, "TEST", "");

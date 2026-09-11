@@ -65,8 +65,8 @@ public sealed class Ft8GlobePlot
     /// something untrue about a picture that is now right (§0.0).
     /// </remarks>
     public const string OffTheMap =
-        "This map reaches from the North Pole to the equator, so there is nowhere on "
-        + "it to draw him.";
+        "This map reaches almost everywhere, and he is in one of the two places it "
+        + "does not - so there is nowhere on it to draw him.";
 
     /// <summary>Plot the two stations.</summary>
     /// <param name="operatorGrid">The operator's own locator, or null.</param>
@@ -90,6 +90,18 @@ public sealed class Ft8GlobePlot
         // edge. A dot is a claim (§0.0).
         var mine = here is { } a ? Map.Place(a.Latitude, a.Longitude) : null;
         var his = there is { } b ? Map.Place(b.Latitude, b.Longitude) : null;
+
+        // **THE PATH IS SAMPLED, NOT DRAWN STRAIGHT** (work instruction 308 task 3).
+        // A flat map only lies about direction if a straight line is drawn on it;
+        // one hundred and eighty segments of the great circle, each projected, is
+        // the true path on any projection. From FN00DJ to Tokyo that goes over
+        // northern Alaska and the straight line goes across Spain.
+        Path = here is { } pathFrom && there is { } pathTo
+            ? GreatCirclePath.On(
+                Map,
+                pathFrom.Latitude, pathFrom.Longitude,
+                pathTo.Latitude, pathTo.Longitude)
+            : Array.Empty<IReadOnlyList<(double X, double Y)>>();
 
         HasOperator = mine is not null;
         HasStation = his is not null;
@@ -143,6 +155,15 @@ public sealed class Ft8GlobePlot
 
     /// <summary>True where the map has anything to draw at all.</summary>
     public bool HasMap => HasOperator || HasStation;
+
+    /// <summary>The drawn path, in one run per side of the date line.</summary>
+    /// <remarks>
+    /// **EMPTY WHERE EITHER END IS UNKNOWN**, and split wherever the arc crosses the
+    /// antimeridian or leaves the picture. Nothing here is labelled as a route or a
+    /// bearing; it is where the signal goes.
+    /// </remarks>
+    public IReadOnlyList<IReadOnlyList<(double X, double Y)>> Path { get; }
+        = Array.Empty<IReadOnlyList<(double X, double Y)>>();
 
     /// <summary>True where a line between the two can be drawn.</summary>
     public bool HasPath => HasOperator && HasStation;
@@ -212,7 +233,18 @@ public sealed class Ft8GlobePlot
     }
 
     /// <summary>The picture everything here is placed on.</summary>
-    public static AzimuthalImage Map => AzimuthalMap.NorthPolar;
+    /// <remarks>
+    /// <para>**THE FLAT RELIEF MAP SINCE UNIT 308** (Tim, 2026-09-10: *"use this one,
+    /// make it work"*). The polar picture reached 40.4% of the globe and had no place
+    /// at all for Nairobi, Buenos Aires, Sydney, Cape Town, Sao Paulo, Lima, Auckland
+    /// or Honolulu. **This one reaches 93.7%**, and for an application whose whole
+    /// purpose is to give a new operator somewhere new to chase, a map that cannot
+    /// show South America was the wrong map.</para>
+    /// <para>**THE POLAR RECORD STAYS IN THE TREE, GREEN AND UNTOUCHED.**
+    /// <see cref="AzimuthalMap.NorthPolar"/> and its seventeen tests are not deleted;
+    /// nothing here reads them.</para>
+    /// </remarks>
+    public static FlatWorldImage Map => FlatWorldMap.Relief;
 
     /// <summary>Whether the station put a grid on the air at all.</summary>
     /// <remarks>

@@ -122,12 +122,21 @@ public sealed class Ft8GlobeControl : Control
         Point At(double x, double y)
             => new((x - left) * scale, (y - top) * scale);
 
-        if (plot.HasPath)
+        // **THE PATH IS A POLYLINE ALONG THE GREAT CIRCLE, NOT A STRAIGHT LINE**
+        // (work instruction 308 task 3). Each run is one side of the date line; two
+        // runs are never joined, because joining them would draw a horizontal stripe
+        // across the picture describing a route nobody took.
+        var pen = new Pen(Ink, 1.4, new DashStyle(new double[] { 3, 2 }, 0));
+
+        foreach (var run in plot.Path)
         {
-            context.DrawLine(
-                new Pen(Ink, 1.4, new DashStyle(new double[] { 3, 2 }, 0)),
-                At(plot.OperatorX, plot.OperatorY),
-                At(plot.StationX, plot.StationY));
+            for (var i = 1; i < run.Count; i++)
+            {
+                context.DrawLine(
+                    pen,
+                    At(run[i - 1].X, run[i - 1].Y),
+                    At(run[i].X, run[i].Y));
+            }
         }
 
         if (plot.HasOperator)
@@ -146,7 +155,7 @@ public sealed class Ft8GlobeControl : Control
     {
         try
         {
-            var uri = new Uri(AzimuthalMap.NorthPolar.Resource);
+            var uri = new Uri(FlatWorldMap.Relief.Resource);
 
             using var stream = AssetLoader.Open(uri);
             using var memory = new MemoryStream();
@@ -155,7 +164,7 @@ public sealed class Ft8GlobeControl : Control
 
             var bytes = memory.ToArray();
 
-            if (!AzimuthalMap.NorthPolar.Describes(bytes))
+            if (!FlatWorldMap.Relief.Describes(bytes))
             {
                 return null;
             }

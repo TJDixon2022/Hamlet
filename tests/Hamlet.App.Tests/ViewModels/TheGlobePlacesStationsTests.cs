@@ -40,7 +40,7 @@ public sealed class TheGlobePlacesStationsTests
         var plot = new Ft8GlobePlot("FN00DJ", "IO63", "EI4GNB", "Ireland");
 
         var here = OperatorLocation.FromGrid("FN00DJ")!.Value;
-        var expected = AzimuthalMap.NorthPolar.Place(here.Latitude, here.Longitude)!.Value;
+        var expected = FlatWorldMap.Relief.Place(here.Latitude, here.Longitude)!.Value;
 
         _output.WriteLine(
             "FN00DJ resolves to "
@@ -104,32 +104,55 @@ public sealed class TheGlobePlacesStationsTests
         Assert.Null(plot.Miles);
     }
 
-    /// <summary>**A station south of the equator is not placed, and nothing is claimed.**</summary>
+    /// <summary>**A station south of the equator is placed now.**</summary>
     /// <remarks>
-    /// **THIS IS THE ASSET'S COVERAGE LIMIT, NOT A DEFECT.** The rim of this picture
-    /// is the equator. A station in the southern hemisphere is perfectly well known -
-    /// he put a grid on the air and the distance to him is measured - and there is
-    /// simply nowhere on this map to draw him.
+    /// <para>**THIS IS THE WHOLE POINT OF UNIT 308.** On the polar picture the rim
+    /// was the equator and Sydney had nowhere to be drawn; the flat relief map
+    /// reaches 63.79 degrees south and **everyone unit 306 named as having no place
+    /// now has one** - Nairobi, Buenos Aires, Sydney, Cape Town, Sao Paulo, Lima,
+    /// Auckland and Honolulu.</para>
+    /// <para>**THE REFUSAL IS NOT REMOVED, IT IS RARER.** Antarctica and a narrow
+    /// strip of ocean west of Hawaii are the whole of what is left, and the next test
+    /// holds that behaviour.</para>
     /// </remarks>
     [Fact]
-    public void AStationSouthOfTheEquatorIsNotPlacedAndNothingIsClaimed()
+    public void AStationSouthOfTheEquatorIsPlacedNow()
     {
         var plot = new Ft8GlobePlot("FN00DJ", "QF56", "VK2ABC", "New South Wales");
+
+        _output.WriteLine("caption: " + plot.Caption);
+        _output.WriteLine("placed at: " + At(plot.StationX, plot.StationY));
+
+        Assert.True(plot.HasStation);
+        Assert.True(plot.StationGridResolved);
+        Assert.NotNull(plot.Miles);
+
+        // **AND THE PATH IS DRAWN**, because both ends are on the picture.
+        Assert.True(plot.HasPath);
+
+        Assert.DoesNotContain(
+            "does not know where", plot.Caption, StringComparison.Ordinal);
+    }
+
+    /// <summary>**Antarctica is still not placed, and nothing is claimed.**</summary>
+    /// <remarks>
+    /// **THE COVERAGE LIMIT THAT IS LEFT.** McMurdo at 77.84 degrees south is below
+    /// the bottom edge of the file. He put a grid on the air and the distance to him
+    /// is measured; there is simply nowhere on this picture to draw him, and a dot on
+    /// the border would say he is there (§0.0).
+    /// </remarks>
+    [Fact]
+    public void AStationInAntarcticaIsNotPlacedAndNothingIsClaimed()
+    {
+        var plot = new Ft8GlobePlot("FN00DJ", "RB32", "KC4AAA", "Antarctica");
 
         _output.WriteLine("caption: " + plot.Caption);
 
         Assert.False(plot.HasStation);
         Assert.False(plot.HasPath);
-
-        // **THE GRID RESOLVED**, which is a different fact from being placeable.
         Assert.True(plot.StationGridResolved);
-
-        // **AND THE DISTANCE IS STILL A MEASUREMENT**, because it is a fact about
-        // two grids rather than about this picture.
         Assert.NotNull(plot.Miles);
 
-        // **THE CAPTION SAYS NOTHING ABOUT A POSITION IT CANNOT DRAW**, and it does
-        // not claim Hamlet is ignorant of him either.
         Assert.DoesNotContain(
             "does not know where", plot.Caption, StringComparison.Ordinal);
     }
@@ -176,7 +199,7 @@ public sealed class TheGlobePlacesStationsTests
                 var (u, v) = AzimuthalMap.Place(settings, lat, lon);
                 var r = Math.Sqrt((u * u) + (v * v));
 
-                if (r > rim || AzimuthalMap.NorthPolar.Place(lat, lon) is not null)
+                if (r > rim || FlatWorldMap.Relief.Place(lat, lon) is not null)
                 {
                     continue;
                 }
