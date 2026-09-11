@@ -346,10 +346,45 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public bool ShowsSlotClock => !IsPsk31Chosen;
 
+    /// <summary>Write down which sub-mode the tab is running.</summary>
+    /// <param name="value">The canonical label, or null.</param>
+    /// <param name="why">What caused it to be established.</param>
+    /// <remarks>
+    /// **IT IS CALLED FROM BOTH DOORS** (work instruction 322 task 1b): the generated
+    /// change handler, and the press itself. The handler alone was not enough, because a
+    /// press that does not change the value never reaches it - which is exactly what a
+    /// remembered sub-mode produces, and exactly the evening the operator asked about.
+    /// **`from` and `to` being equal is a real reading**, not a fault: it says he pressed
+    /// the mode he was already on.
+    /// </remarks>
+    private void NoteTheSubMode(string? value, string why)
+    {
+        AppEvents.StateChanged(
+            _telemetry,
+            "digital_sub_mode",
+            _lastReportedSubMode ?? StartupSnapshot.Unknown,
+            value ?? StartupSnapshot.Unknown,
+            why,
+            mode: value ?? StartupSnapshot.Unknown);
+
+        _lastReportedSubMode = value;
+    }
+
     partial void OnChosenDigitalModeChanged(string? value)
     {
         _settings.LastDigitalSubMode = value;
         SettingsStore.Save(_settings);
+
+        // **LEAVING PSK31 IS A CHANGE OF LABEL, NOT A CHANGE OF DECODER** (work
+        // instruction 322 task 2, found by its own test). `FollowTheChosenMode` clears
+        // the PSK31 state and returns early when the mapped `DigitalMode` has not moved
+        // - and PSK31 and FT8 both map to `Ft8`, so **pressing FT8 from PSK31 cleared
+        // nothing at all**: the rows, the cards and the listener all survived under the
+        // other tab. It is the label that decides whether this mode is running.
+        if (!string.Equals(value, "PSK31", StringComparison.Ordinal))
+        {
+            ForgetPsk31();
+        }
 
         // **THE RECORD SAYS WHICH MODE HE WENT TO, BY NAME** (work instruction 312
         // task 2). The mode field on every other event is `DigitalMode`, which has
@@ -359,17 +394,11 @@ public partial class MainWindowViewModel : ObservableObject
         // and is the only thing here that knows the difference.
         // **NOTHING PERSONAL** (2.1): a mode name, and no callsign, grid or
         // location anywhere near it.
-        AppEvents.StateChanged(
-            _telemetry,
-            "digital_sub_mode",
-            _lastReportedSubMode ?? StartupSnapshot.Unknown,
-            value ?? StartupSnapshot.Unknown,
-            CanDecode(value)
-                ? "the operator pressed a mode Hamlet can read"
-                : "the operator pressed a mode Hamlet cannot read yet",
-            mode: value ?? StartupSnapshot.Unknown);
-
-        _lastReportedSubMode = value;
+        // **THE PRESS WRITES THE RECORD, NOT THIS HANDLER** (work instruction 322 task
+        // 1b). `ChosenDigitalMode` is assigned in exactly one place - the chip press -
+        // so writing here as well would put two lines in the file for one press, and
+        // writing *only* here loses the press that changed nothing, which is the fault
+        // being fixed.
 
         // **THIS IS THE ROUTE UNIT 290 CUT AND LEFT UNPRESSED** (work instruction 292
         // task 2). The grid, the watch and the two sentences follow the chip he pressed
@@ -1159,6 +1188,15 @@ public partial class MainWindowViewModel : ObservableObject
         // the chip as chosen-with-the-dial-elsewhere rather than forgetting he
         // pressed it.
         ChosenDigitalMode = picked;
+
+        // **AND THE RECORD SAYS SO EVEN WHEN NOTHING CHANGED** (work instruction 322,
+        // task 1b). The line above is a generated setter and it short-circuits on an
+        // equal value; the constructor restores the remembered sub-mode by assigning the
+        // backing field, so **once PSK31 was the remembered mode, pressing PSK31 wrote
+        // nothing at all.** That is why the 1.13.4 session has five minutes on the tab
+        // and not one line saying which mode it was. **A press is a fact whether or not
+        // it moved anything**, and this writes the press.
+        NoteTheSubMode(picked, "the operator pressed the mode chip");
 
         await TuneToDigitalModeAsync(picked).ConfigureAwait(true);
     }
@@ -2013,6 +2051,27 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 reading.Latest = message.Exchange;
                 reading.Messages.Add(message);
+
+                // **THE VERDICT AND NOT THE LINE** (HM-DEC-018, §2.1, work instruction
+                // 322 task 2). A kind, two flags and a count. The text itself and the
+                // callsign the parser read out of it never leave the screen, which is
+                // why *addressed to the operator* is a flag rather than a name.
+                _psk31LinesParsed++;
+
+                Psk31Events.LineParsed(
+                    _telemetry,
+                    channel.OffsetHz,
+                    message.Exchange.Kind.ToString(),
+                    message.Exchange.IsCertain,
+                    message.Exchange.HandsOver,
+                    message.Exchange.IsForOperator,
+                    message.Text.Length);
+
+                if (_psk31Tally.TryGetValue(channel.Id, out var tally))
+                {
+                    _psk31Tally[channel.Id] =
+                        (tally.Characters, tally.Lines + 1, DateTime.UtcNow);
+                }
             }
         }
 
@@ -2077,7 +2136,26 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void HearPsk31(AudioTap tap)
     {
-        _psk31 ??= new Psk31Listener(tap.SampleRate);
+        if (_psk31 is null)
+        {
+            _psk31 = new Psk31Listener(tap.SampleRate);
+            _psk31StartedUtc = DateTime.UtcNow;
+            _psk31CarriersSeen = 0;
+            _psk31LinesParsed = 0;
+
+            // **THE THRESHOLDS GO IN THE FILE, NOT ONLY THE FACT OF STARTING** (work
+            // instruction 322 task 2). Every number in this path was chosen against
+            // synthetic fixtures, and the first question about an evening that heard
+            // nothing is what the thresholds were that evening.
+            Psk31Events.ListeningStarted(
+                _telemetry,
+                FrequencyHz,
+                _psk31.LowestHz,
+                _psk31.HighestHz,
+                tap.SampleRate,
+                Psk31Demodulator.SquelchQuality,
+                Psk31CarrierSearch.RetireAfterSeconds);
+        }
 
         if (_psk31At <= 0)
         {
@@ -2112,6 +2190,135 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31.Add(_psk31Buffer.AsSpan(0, wanted));
 
         ShowPsk31Channels();
+
+        NotePsk31(tap);
+    }
+
+    /// <summary>When the listener started, for the stopped event's duration.</summary>
+    private DateTime _psk31StartedUtc;
+
+    /// <summary>How many carriers have appeared since it started.</summary>
+    private int _psk31CarriersSeen;
+
+    /// <summary>How many lines the parser has returned a verdict for.</summary>
+    private int _psk31LinesParsed;
+
+    /// <summary>When a pass was last written down.</summary>
+    private DateTime _psk31PassWritten = DateTime.MinValue;
+
+    /// <summary>When the audio level was last written down.</summary>
+    private DateTime _psk31LevelWritten = DateTime.MinValue;
+
+    /// <summary>What each channel was doing last time this looked.</summary>
+    private readonly Dictionary<int, Psk31ChannelState> _psk31Was = new();
+
+    /// <summary>What each carrier had emitted when it was last seen.</summary>
+    private readonly Dictionary<int, (int Characters, int Lines, DateTime LastCharacter)>
+        _psk31Tally = new();
+
+    /// <summary>Write down what the listener just did.</summary>
+    /// <param name="tap">The audio it is reading.</param>
+    /// <remarks>
+    /// <para>**IT READS AND WRITES AND CHANGES NOTHING** (§0.2, and §6 of the plan). Every
+    /// value here was already worked out by the path; removing this method would change
+    /// no behaviour of the search, the demodulators or the parser.</para>
+    /// <para>**THE SAMPLE RULE IS <see cref="Psk31Events.PassInterval"/> AND IT IS
+    /// STATED ONCE.** A pass where the carrier set changed is always written, whatever
+    /// the clock says, because that is the pass somebody goes looking for.</para>
+    /// </remarks>
+    private void NotePsk31(AudioTap tap)
+    {
+        if (_psk31 is null)
+        {
+            return;
+        }
+
+        var now = DateTime.UtcNow;
+
+        foreach (var change in _psk31.Watch.DrainChanges())
+        {
+            if (change.Appeared)
+            {
+                _psk31CarriersSeen++;
+                _psk31Tally[change.Id] = (0, 0, now);
+
+                Psk31Events.CarrierAppeared(_telemetry, change);
+
+                continue;
+            }
+
+            var tally = _psk31Tally.GetValueOrDefault(change.Id);
+
+            Psk31Events.CarrierRetired(
+                _telemetry,
+                change,
+                tally.Characters,
+                tally.Lines,
+                tally.Characters > 0
+                    ? (now - tally.LastCharacter).TotalSeconds
+                    : null);
+
+            _psk31Tally.Remove(change.Id);
+            _psk31Was.Remove(change.Id);
+        }
+
+        foreach (var pass in _psk31.Watch.DrainPasses())
+        {
+            var due = now - _psk31PassWritten >= Psk31Events.PassInterval;
+
+            if (!pass.SetChanged && !due)
+            {
+                continue;
+            }
+
+            _psk31PassWritten = now;
+
+            Psk31Events.SearchPass(
+                _telemetry, pass, pass.SetChanged ? "changed" : "sampled");
+        }
+
+        foreach (var state in _psk31.States)
+        {
+            var was = _psk31Was.GetValueOrDefault(state.Id);
+
+            if (!_psk31Was.ContainsKey(state.Id) || was.Open != state.Open)
+            {
+                Psk31Events.Squelch(
+                    _telemetry, state.OffsetHz, state.Open, state.Quality);
+            }
+
+            // **A LOCK EVENT IS A CHANGE, NOT A HEARTBEAT.** Gained, lost, or the AFC
+            // walking more than two hertz from where it last said so - anything less
+            // would be four lines a second per carrier saying nothing moved.
+            var movedAfc = Math.Abs(state.AfcHz - was.AfcHz) >= 2.0;
+            var lockChanged = _psk31Was.ContainsKey(state.Id)
+                && (state.Characters > 0) != (was.Characters > 0);
+
+            if (!_psk31Was.ContainsKey(state.Id) || lockChanged || movedAfc)
+            {
+                Psk31Events.Lock(
+                    _telemetry, state.OffsetHz, state.Characters > 0, state.AfcHz);
+            }
+
+            if (_psk31Tally.TryGetValue(state.Id, out var tally)
+                && state.Characters != tally.Characters)
+            {
+                _psk31Tally[state.Id] =
+                    (state.Characters, tally.Lines, now);
+            }
+
+            _psk31Was[state.Id] = state;
+        }
+
+        // **THE SAME SAMPLE RULE `decode_quality` USES**, one path over. A path that
+        // hears nothing because the audio device is silent and one that hears nothing
+        // because the band is quiet are different faults.
+        if (now - _psk31LevelWritten >= Psk31Events.PassInterval)
+        {
+            _psk31LevelWritten = now;
+
+            Psk31Events.AudioHeard(_telemetry, tap.Level, "sampled");
+        }
     }
 
     /// <summary>Put every channel on the panel, and take down the ones that went.</summary>
@@ -2362,6 +2569,52 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Forget what the listener heard, and take its rows down, when the mode changes.</summary>
     private void ForgetPsk31()
     {
+        // **LEAVING IS AS MUCH A FACT AS ARRIVING** (work instruction 322 task 2). A
+        // session that listened for five minutes and one that pressed the tab and
+        // pressed away again look the same in a file with no stopped event in it.
+        if (_psk31 is not null)
+        {
+            // **A CARRIER STILL BEING HEARD IS ACCOUNTED FOR, NOT DROPPED** (§0.0). The
+            // search only retires what stops being keyed, so a station still sending
+            // when he leaves the tab would appear in the file and never be closed.
+            var now = DateTime.UtcNow;
+
+            foreach (var state in _psk31.States)
+            {
+                var tally = _psk31Tally.GetValueOrDefault(state.Id);
+
+                Psk31Events.CarrierRetired(
+                    _telemetry,
+                    new Psk31CarrierChange(
+                        state.Id,
+                        Appeared: false,
+                        state.OffsetHz,
+                        StrengthDb: 0,
+                        Coherence: state.Quality,
+                        Passes: 0,
+                        LifetimeSeconds: Math.Round(
+                            (now - _psk31StartedUtc).TotalSeconds, 1),
+                        Why: Psk31Retirement.ListeningStopped),
+                    state.Characters,
+                    tally.Lines,
+                    tally.Characters > 0
+                        ? (now - tally.LastCharacter).TotalSeconds
+                        : null);
+            }
+
+            Psk31Events.ListeningStopped(
+                _telemetry,
+                (DateTime.UtcNow - _psk31StartedUtc).TotalSeconds,
+                _psk31CarriersSeen,
+                _psk31.Channels.Sum(c => c.Text.Length),
+                _psk31LinesParsed);
+        }
+
+        _psk31Was.Clear();
+        _psk31Tally.Clear();
+        _psk31PassWritten = DateTime.MinValue;
+        _psk31LevelWritten = DateTime.MinValue;
+
         var had = _psk31Rows.Count > 0;
 
         foreach (var row in _psk31Rows.Values)

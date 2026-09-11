@@ -39,6 +39,30 @@ public enum TelemetryCategory
 
     /// <summary>Frame rates, render timings, spectrum throughput.</summary>
     Performance,
+
+    /// <summary>
+    /// The PSK31 path: what the search saw, which carriers appeared and why they went,
+    /// what the squelch did, and what the transmit side composed and refused.
+    /// </summary>
+    /// <remarks>
+    /// <para>**ADDED DELIBERATELY** (work instruction 322, task 2), which this enum's own
+    /// comment requires of any addition. **HM-DEC-018 named six categories and this is an
+    /// eighth**; the ruling's substance is *what may be in the file and who may switch it
+    /// off*, not the count, and both of those are unchanged. It is on by default and
+    /// switchable exactly as the others are, because an absent key means enabled.</para>
+    /// <para>**WHY NOT `Decode`.** The measured reason: across ten sessions and 12,587
+    /// events on 2026-09-11, the FT8 path wrote 3,448 `ft8_slot` and 2,317
+    /// `decode_quality`, and **the PSK31 path wrote nothing at all**. Folding a
+    /// continuously searching mode into the same category as a slotted one would put the
+    /// new events under a switch somebody turns off to quieten FT8, and the whole point
+    /// of them is that they are the only way to answer *was the band empty or was the
+    /// squelch shut* without a screenshot.</para>
+    /// <para>**WHAT MAY BE IN IT IS NARROWER THAN THE RULING REQUIRES.** An offset, a
+    /// score, a kind, a count, a reason. **Never a callsign, never decoded text, never a
+    /// grid** - §2.1 and HM-DEC-018 - and the test that pins this scans the serialised
+    /// JSON rather than trusting each call site to remember.</para>
+    /// </remarks>
+    Psk31,
 }
 
 /// <summary>Severity of a telemetry event.</summary>

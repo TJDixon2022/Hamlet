@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 
 namespace Hamlet.RadioEngine.Psk31;
 
@@ -98,6 +98,42 @@ public sealed class Psk31Listener
 
     /// <summary>Every channel now, lowest offset first.</summary>
     public IReadOnlyList<Psk31Channel> Channels => _snapshot;
+
+    /// <summary>What the search saw, for something outside to write down.</summary>
+    /// <remarks>
+    /// **THE SEARCH OWNS IT AND THIS HANDS IT ON** (§0.1, work instruction 322 task 2).
+    /// The shell has the listener and not the search inside it, and a second watch here
+    /// would be a second copy of the same facts.
+    /// </remarks>
+    public Psk31Watch Watch => _search.Watch;
+
+    /// <summary>The bottom of the passband being searched, in hertz.</summary>
+    public double LowestHz => _search.LowestHz;
+
+    /// <summary>The top of it, in hertz.</summary>
+    public double HighestHz => _search.HighestHz;
+
+    /// <summary>What each held channel's demodulator is doing right now.</summary>
+    /// <remarks>
+    /// <para>**READINGS, NOT EVENTS.** The squelch opening and the AFC moving are states,
+    /// and the thing that wants to write them down is the thing that knows when it last
+    /// looked. Handing it the state and letting it notice the change keeps the engine
+    /// free of any notion of *since when*.</para>
+    /// <para>**AND A CHANNEL WITH NOTHING TO SAY IS STILL IN THE LIST**, because a
+    /// squelch that has shut is exactly the fact somebody reading the record is looking
+    /// for.</para>
+    /// </remarks>
+    public IReadOnlyList<Psk31ChannelState> States
+        => _channels
+            .Select(pair => new Psk31ChannelState(
+                pair.Key,
+                Math.Round(pair.Value.OffsetHz, 1),
+                pair.Value.Open,
+                Math.Round(pair.Value.Quality, 3),
+                Math.Round(pair.Value.AfcHz, 1),
+                pair.Value.Text.Length))
+            .OrderBy(state => state.OffsetHz)
+            .ToList();
 
     /// <summary>How many samples the listener has been fed.</summary>
     public long SamplesSeen { get; private set; }
@@ -219,6 +255,15 @@ public sealed class Psk31Listener
         public double OffsetHz { get; set; }
 
         public double StrengthDb { get; set; } = double.NaN;
+
+        /// <summary>True while this channel's squelch is letting characters through.</summary>
+        public bool Open => _demodulator.IsOpen;
+
+        /// <summary>How BPSK-shaped its last few symbols were.</summary>
+        public double Quality => _demodulator.Quality;
+
+        /// <summary>How far its AFC has pulled from where it started listening.</summary>
+        public double AfcHz => _demodulator.TrackedHz - OffsetHz;
 
         public string Text => _text.ToString();
 

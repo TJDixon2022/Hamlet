@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Hamlet.App.Settings;
 using Hamlet.App.Telemetry;
 using Hamlet.App.ViewModels;
@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 65;
+    private const int ExpectedEventMethodCount = 71;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -389,6 +389,35 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.TuneWritten(telemetry, 7_030_000, "proceeded", 0.031);
         AppEvents.FrequencyWentBackwards(
             telemetry, 7_030_000, 7_061_000, "CI-V 03", 0.4);
+
+        // **SIX THAT HAD ESCAPED THE WALK, AND THE COUNT ABOVE IS WHY THAT MATTERED**
+        // (work instruction 322 task 2, found while adding a seventh category). This
+        // test was failing at 71 methods against a pin of 65 **before this unit changed
+        // anything**: six events were added by units 315 to 320 without a line here, so
+        // for six events the privacy scan was not running at all. **None of them carries
+        // anything personal** - a server, a device, a mode, some counts and two stable
+        // tokens - which is what a hand reading of each payload found, and what the
+        // restored walk now proves on every run rather than on somebody remembering.
+        AppEvents.ClockQueryStarted(telemetry, "pool.ntp.org");
+
+        AppEvents.ClockQueryFinished(
+            telemetry,
+            new Hamlet.RadioEngine.Audio.ClockAnswer(
+                "pool.ntp.org",
+                new Hamlet.RadioEngine.Audio.ClockOffset(0.033, now),
+                "measured",
+                "",
+                TimeSpan.FromMilliseconds(42)));
+
+        AppEvents.DecodesReachedTheScreen(telemetry, 4, 4, 12, 1, 2);
+
+        AppEvents.DigitalDecoderStarted(telemetry, "Ft8", 15.0, 48_000, "USB Audio CODEC");
+
+        AppEvents.OperatorAction(telemetry, "cq_pressed", "Digital", "14 characters");
+
+        AppEvents.StateChanged(
+            telemetry, "digital_sub_mode", "FT8", "PSK31",
+            "the operator pressed the mode chip", mode: "PSK31");
     }
 
     private string[] ReadAllLines()

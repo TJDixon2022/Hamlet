@@ -1,4 +1,4 @@
-using System.Numerics;
+﻿using System.Numerics;
 using Hamlet.RadioEngine.Audio;
 
 namespace Hamlet.RadioEngine.Psk31;
@@ -232,6 +232,17 @@ public sealed class Psk31CarrierSearch
     private int _nextId = 1;
     private int _toHop;
 
+    /// <summary>What happened on each pass, for something outside to write down.</summary>
+    /// <remarks>
+    /// **THE SEARCH KNOWS NOTHING ABOUT A RECORD** (§0.1, work instruction 322 task 2).
+    /// It fills a list of facts and the shell drains it; nothing here mentions
+    /// telemetry, a file or a category.
+    /// </remarks>
+    public Psk31Watch Watch { get; } = new();
+
+    /// <summary>Passes measured since this candidate was made, by probe.</summary>
+    private readonly Dictionary<Probe, int> _passesSeen = new();
+
     /// <summary>Opens a search over whatever passband the samples carry.</summary>
     /// <param name="sampleRate">Samples a second.</param>
     /// <exception cref="ArgumentOutOfRangeException">The rate is unusable.</exception>
@@ -287,6 +298,17 @@ public sealed class Psk31CarrierSearch
 
     /// <summary>How many samples the search has been fed.</summary>
     public long SamplesSeen { get; private set; }
+
+    /// <summary>The bottom of the passband this search looks at, in hertz.</summary>
+    /// <remarks>
+    /// **DERIVED FROM THE RATE AND THE SIGNAL WIDTH, NOT TYPED** (work instruction 322
+    /// task 2). A record that named a passband the search was not actually looking at
+    /// would be worse than naming none, so this reads back the bins it really uses.
+    /// </remarks>
+    public double LowestHz => _lowBin * _binHz;
+
+    /// <summary>The top of it, in hertz.</summary>
+    public double HighestHz => _highBin * _binHz;
 
     /// <summary>How many probes are running, listed or on trial.</summary>
     public int ProbeCount => _probes.Count;
@@ -358,6 +380,9 @@ public sealed class Psk31CarrierSearch
             return;
         }
 
+        var began = System.Diagnostics.Stopwatch.GetTimestamp();
+        var before = _carriers.Count;
+
         Spectrum();
 
         Judge();
@@ -371,6 +396,49 @@ public sealed class Psk31CarrierSearch
             .Select(p => new Psk31Carrier(p.Id, p.OffsetHz, StrengthAt(p.OffsetHz), p.LastPassAt))
             .OrderBy(c => c.OffsetHz)
             .ToList();
+
+        Note(began, before);
+    }
+
+    /// <summary>Write down what this pass measured.</summary>
+    /// <param name="began">The timestamp the pass started at.</param>
+    /// <param name="before">How many carriers were held when it started.</param>
+    /// <remarks>
+    /// <para>**EVERY PROBE, CROSSED OR NOT, AND THAT IS THE POINT** (§0.0). A pass with no
+    /// candidates says the band was quiet; a pass with candidates that all failed to
+    /// cross says there was something there and Hamlet would not take it. **On a screen
+    /// those two are the same empty list**, and the operator asked which of them he was
+    /// looking at.</para>
+    /// <para>**IT MEASURES NOTHING OF ITS OWN.** Every number here was already worked out
+    /// by the pass; this reads them back rather than running the arithmetic a second
+    /// time, so the record cannot come to disagree with the decision it describes.</para>
+    /// </remarks>
+    private void Note(long began, int before)
+    {
+        var candidates = new List<Psk31Candidate>(_probes.Count);
+
+        foreach (var probe in _probes)
+        {
+            var reading = probe.LastReading;
+
+            candidates.Add(new Psk31Candidate(
+                Math.Round(probe.OffsetHz, 1),
+                Math.Round(StrengthAt(probe.OffsetHz), 1),
+                reading.Measured ? Math.Round(reading.Coherence, 3) : 0,
+                probe.Listed));
+        }
+
+        candidates.Sort((a, b) => b.StrengthDb.CompareTo(a.StrengthDb));
+
+        var milliseconds =
+            (System.Diagnostics.Stopwatch.GetTimestamp() - began) * 1000.0
+            / System.Diagnostics.Stopwatch.Frequency;
+
+        Watch.Add(new Psk31Pass(
+            Math.Round(milliseconds, 2),
+            candidates,
+            _carriers.Count,
+            _carriers.Count != before));
     }
 
     /// <summary>Take one windowed spectrum into the running average, and its floor.</summary>
@@ -444,10 +512,14 @@ public sealed class Psk31CarrierSearch
             var probe = _probes[i];
             var reading = probe.Measure();
 
+            probe.LastReading = reading;
+
             var shaped = reading.Measured && reading.OneWay <= MostlyOneWay;
 
             if (!probe.Listed)
             {
+                _passesSeen[probe] = _passesSeen.GetValueOrDefault(probe) + 1;
+
                 if (shaped
                     && reading.Symbols >= MeasureSymbols
                     && reading.Coherence >= CoherenceToAppear
@@ -456,9 +528,26 @@ public sealed class Psk31CarrierSearch
                     probe.Listed = true;
                     probe.Id = _nextId++;
                     probe.LastPassAt = SamplesSeen;
+                    probe.ListedAt = SamplesSeen;
+
+                    Watch.Add(new Psk31CarrierChange(
+                        probe.Id,
+                        Appeared: true,
+                        Math.Round(probe.Hz + reading.ErrorHz, 1),
+                        Math.Round(StrengthAt(probe.Hz + reading.ErrorHz), 1),
+                        Math.Round(reading.Coherence, 3),
+                        _passesSeen.GetValueOrDefault(probe),
+                        LifetimeSeconds: 0,
+                        Why: null));
                 }
                 else if (SamplesSeen - probe.MadeAt >= trial)
                 {
+                    // **A CANDIDATE THAT NEVER CROSSED IS NOT WRITTEN DOWN ONE BY
+                    // ONE.** On a noisy band the search makes and drops a great many of
+                    // them, and an event each would bury the ones that matter. They are
+                    // in every pass's candidate list with `crossed: false`, which is
+                    // where a reader looks for them.
+                    _passesSeen.Remove(probe);
                     _probes.RemoveAt(i);
                     continue;
                 }
@@ -466,9 +555,33 @@ public sealed class Psk31CarrierSearch
             else if (shaped && reading.Coherence >= CoherenceToStay)
             {
                 probe.LastPassAt = SamplesSeen;
+                probe.LastGoodReading = reading;
             }
             else if (SamplesSeen - probe.LastPassAt >= retire)
             {
+                // **WHY IT WENT, NOT JUST THAT IT WENT.** One test with three ways to
+                // fail: nothing measurable there any more, still measurable but no
+                // longer keyed like BPSK, or keyed one way only. A record that said
+                // only *retired* would collapse a station that finished, a station that
+                // faded, and a decoder that lost the thread.
+                var why = !reading.Measured
+                    ? Psk31Retirement.Silence
+                    : reading.OneWay > MostlyOneWay
+                        ? Psk31Retirement.OneWay
+                        : Psk31Retirement.LostLock;
+
+                Watch.Add(new Psk31CarrierChange(
+                    probe.Id,
+                    Appeared: false,
+                    Math.Round(probe.OffsetHz, 1),
+                    Math.Round(StrengthAt(probe.OffsetHz), 1),
+                    reading.Measured ? Math.Round(reading.Coherence, 3) : 0,
+                    _passesSeen.GetValueOrDefault(probe),
+                    Math.Round(
+                        (double)(SamplesSeen - probe.ListedAt) / _sampleRate, 1),
+                    why));
+
+                _passesSeen.Remove(probe);
                 _probes.RemoveAt(i);
                 continue;
             }
@@ -713,6 +826,20 @@ public sealed class Psk31CarrierSearch
         public int Id { get; set; }
 
         public long LastPassAt { get; set; }
+
+        /// <summary>When this probe became a carrier, in samples.</summary>
+        public long ListedAt { get; set; }
+
+        /// <summary>What the last measurement said, for the record to read back.</summary>
+        /// <remarks>
+        /// **THE PASS ALREADY MEASURED THIS AND MEASURING AGAIN WOULD COST A SECOND
+        /// ANSWER** (§0). `Measure` walks thirty-two symbols; the record wants the same
+        /// numbers the decision used, not a fresh reading that could differ.
+        /// </remarks>
+        public Reading LastReading { get; set; }
+
+        /// <summary>The last reading good enough to keep it listed.</summary>
+        public Reading LastGoodReading { get; set; }
 
         public void Add(ReadOnlySpan<float> samples)
         {
