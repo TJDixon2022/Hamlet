@@ -462,17 +462,29 @@ public sealed class ThePsk31ConversationCardTests
         }
     }
 
-    /// <summary>**Assertion 8, drawn: no control on a PSK31 card that would transmit or log is visible.**</summary>
+    /// <summary>**Assertion 8, drawn: a PSK31 card offers nothing until the parser is certain.**</summary>
+    /// <remarks>
+    /// **REWRITTEN UNDER §R12** (work instruction 323 task 3). It asserted no send control was
+    /// drawn on a PSK31 card at all, which is the shut door; from unit 323 a card offers the
+    /// next macro for one click when - and only when - the parser is certain it is the
+    /// operator's turn (§R1). **What it guards now is that side of it**: on a conversation
+    /// where it is not his turn there is nothing to press, and no Log, because the Log arrives
+    /// only when both sides have closed the exchange.
+    /// </remarks>
     [AvaloniaFact]
-    public void NothingClickableThatWouldTransmitIsDrawnOnAPsk31Card()
+    public void APsk31CardOffersNothingWhileItIsNotHisTurn()
     {
         var corpus = Psk31Corpus.Load();
         var (window, model) = Window();
 
         model.ChooseDigitalModeCommand.Execute("PSK31");
-        model.ShowPsk31ChannelsForTests(new[] { Channel(1, 1000, Transcript(corpus, "01-textbook"), 5) });
+
+        // **THROUGH HIS REPORT AND THE OPERATOR'S OWN ANSWER TO IT**, which is a conversation
+        // standing at *his turn* - nobody is waiting on a click.
+        model.ShowPsk31ChannelsForTests(new[] { Channel(1, 1000, Transcript(corpus, "01-textbook"), 4) });
         Avalonia.Threading.Dispatcher.UIThread.RunJobs();
 
+        var card = Assert.Single(model.DigitalCards);
         var cards = window.FindControl<ItemsControl>("DigitalContactCards");
 
         Assert.NotNull(cards);
@@ -480,11 +492,13 @@ public sealed class ThePsk31ConversationCardTests
         var drawn = cards!.GetVisualDescendants().OfType<TextBlock>().Where(t => t.IsEffectivelyVisible).Select(t => t.Text ?? "").ToList();
         var buttons = cards.GetVisualDescendants().OfType<Button>().Where(b => b.IsEffectivelyVisible).ToList();
 
+        _output.WriteLine("the card is [" + card.StateWord + "] and offers [" + card.OfferedMacro + "]");
         _output.WriteLine("drawn on the card: " + string.Join(" | ", drawn.Where(t => t.Length > 0)));
         _output.WriteLine("visible buttons: " + string.Join(" | ", buttons.Select(b => (b.Content?.ToString() ?? "") + " -> " + (b.Command?.GetType().Name ?? "no command"))));
 
-        // **NOT VACUOUS**: the card is in the tree.
+        // **NOT VACUOUS**: the card is in the tree, and it is not his turn.
         Assert.Contains("W1AW", drawn);
+        Assert.Equal("His turn", card.StateWord);
 
         Assert.DoesNotContain(buttons, b => ReferenceEquals(b.Command, model.CardActionCommand));
         Assert.DoesNotContain(buttons, b => ReferenceEquals(b.Command, model.LogStationCommand));

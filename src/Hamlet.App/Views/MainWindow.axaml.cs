@@ -193,6 +193,24 @@ public partial class MainWindow : Window
     /// </remarks>
     internal static MenuFlyout? SendFlyoutFor(MainWindowViewModel vm, DigitalDecodeRow? row)
     {
+        // **A PSK31 CQ ROW OFFERS ONE THING: ANSWER HIM** (work instruction 323 task 3).
+        // It is a one-item menu and not the FT8 menu: the FT8 options are message shapes
+        // packed into 77 bits and none of them is a thing to send on PSK31, which is why
+        // `SendMenuFor` answers null for these rows and still does.
+        if (vm?.Psk31AnswerLabelFor(row) is { } answer)
+        {
+            var one = new MenuFlyout();
+
+            one.Items.Add(new MenuItem
+            {
+                Header = answer,
+                Command = vm.AnswerPsk31Command,
+                CommandParameter = row,
+            });
+
+            return one;
+        }
+
         var menu = vm?.SendMenuFor(row);
 
         if (menu is null)

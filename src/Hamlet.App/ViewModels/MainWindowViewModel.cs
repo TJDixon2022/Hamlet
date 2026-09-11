@@ -2156,6 +2156,23 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Every PSK31 conversation card, by the calling station.</summary>
     private readonly Dictionary<string, Psk31CardState> _psk31Cards = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>One macro Hamlet sent, and how much of the channel had arrived first.</summary>
+    /// <param name="AfterHeard">How many messages the channel held when it went out.</param>
+    /// <param name="Message">The macro, parsed the same way his messages are.</param>
+    private sealed record Psk31Mine(int AfterHeard, Psk31Message Message);
+
+    /// <summary>What Hamlet has sent each station, oldest first.</summary>
+    /// <remarks>
+    /// **THE OTHER HALF OF THE CONVERSATION** (work instruction 323 task 3). The listener
+    /// only ever sees what arrives; whose turn it is, which macro is offered next and
+    /// whether the contact is finished are all questions about **both** halves, and
+    /// `Psk31Turn` and `Psk31Offer` already take one list holding both (they read the
+    /// operator's own messages out of it by callsign). This is where Hamlet's half lives
+    /// between one tick and the next.
+    /// </remarks>
+    private readonly Dictionary<string, List<Psk31Mine>> _psk31Mine =
+        new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>A buffer the tap copies into, so the tick allocates nothing.</summary>
     private float[] _psk31Buffer = Array.Empty<float>();
 
@@ -2538,11 +2555,27 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var mine = _settings.Operator.Callsign;
 
-        var callers = reading.Messages
+        var answered = reading.Messages
             .Select(m => m.Exchange)
             .Where(e => e is { IsCertain: true, IsForOperator: true, Speaker: not null }
                 && !Ft8MessageSplit.IsSameStation(e.Speaker, mine))
             .Select(e => e.Speaker!)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        // **AND A STATION HAMLET HAS ANSWERED HAS A CARD FROM THE MOMENT IT ANSWERED HIM**
+        // (work instruction 323 task 3). A station calling CQ is addressed to anyone, so it
+        // never satisfies the test above; the operator clicking his CQ row is what opens the
+        // conversation, and the card has to be there for the click to have visibly done
+        // anything. **It is still his click and not a guess** - the only way into
+        // `_psk31Mine` is a macro that went out because he pressed something.
+        // **IT IS NOT IN `answered`**, because retiring the receipt is a claim that somebody
+        // came back to *his call*, and Hamlet answering a third station's CQ is not that.
+        var callers = answered
+            .Concat(reading.Messages
+                .Select(m => m.Exchange.Speaker)
+                .Where(s => s is not null && _psk31Mine.ContainsKey(s))
+                .Select(s => s!))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
@@ -2553,7 +2586,7 @@ public partial class MainWindowViewModel : ObservableObject
         // nobody**: the call went to everybody, so giving it to whichever station came back
         // first would be a claim about who it was for, and two answers make that visibly
         // wrong. The cards below are what replaces it, one each.
-        if (callers.Count > 0 && _contacts is not null)
+        if (answered.Count > 0 && _contacts is not null)
         {
             _contacts.RetireTheCall();
 
@@ -2575,16 +2608,25 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var station in callers)
         {
-            var talk = reading.Messages
-                .Where(m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station)
-                    || Ft8MessageSplit.IsSameStation(m.Exchange.Addressee, station))
-                .ToList();
+            var talk = Conversation(reading, station);
 
             var turn = Psk31Turn.Read(talk, sending, mine);
 
             // **WHICH MACRO IT WOULD OFFER IS THE ENGINE'S ANSWER, AND ONLY ON A CERTAIN YOUR TURN**
-            // (§R1, `Psk31Offer`). The card holds it; nothing draws it while the door is shut.
+            // (§R1, `Psk31Offer`). The card carries it as a button, and the text it would send.
             var offered = Psk31Offer.For(talk, turn, mine);
+            var next = MacroTextFor(offered, station);
+
+            // **FINISHED IS BOTH HALVES, AND BOTH ARE CERTAIN ON HIS SIDE** (work instruction
+            // 323 task 3). Hamlet has signed off - its confirmation ends `SK`, which the same
+            // parser reads as an `End` - and he has certainly said `73`, `SK` or `CL`. Either
+            // one alone is half a goodbye, and a card that said *finished* on it would be
+            // claiming a contact that is still waiting for the other side (§0.0).
+            var complete = talk.Any(m => m.Exchange.Kind == Psk31LineKind.End
+                    && Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, mine))
+                && talk.Any(m => m.Exchange is { IsCertain: true }
+                    and ({ Kind: Psk31LineKind.End } or { Kind: Psk31LineKind.Closing })
+                    && Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station));
 
             // **HIS GRID, FROM A MESSAGE HE CERTAINLY SENT** (work instruction 320, item 41). The latest one
             // wins, the way FT8's card takes the last grid he put on the air. A grid read from a guess, and
@@ -2597,7 +2639,8 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (!_psk31Cards.TryGetValue(station, out var state))
             {
-                state = new Psk31CardState(Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered, grid), channelId)
+                state = new Psk31CardState(Ft8ContactCard.ForPsk31(
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -2620,17 +2663,22 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 state.ClearedAtMessages = null;
-                state.Card = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered, grid);
+                state.Card = Ft8ContactCard.ForPsk31(
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete);
                 DigitalCards.Add(state.Card);
                 continue;
             }
 
-            if (state.Card.Turn == turn && state.Card.Offered == offered && state.Card.Facts.Grid == grid)
+            if (state.Card.Turn == turn
+                && state.Card.Offered == offered
+                && state.Card.Facts.Grid == grid
+                && state.Card.ShowsLogLink == complete)
             {
                 continue;
             }
 
-            var fresh = Ft8ContactCard.ForPsk31(station, turn, _settings.Operator.GridSquare, offered, grid);
+            var fresh = Ft8ContactCard.ForPsk31(
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete);
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;
@@ -2643,6 +2691,90 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 DigitalCards.Add(fresh);
             }
+        }
+    }
+
+    /// <summary>One station's whole conversation - his half and Hamlet's - oldest first.</summary>
+    /// <param name="reading">The channel he is on.</param>
+    /// <param name="station">Whose conversation.</param>
+    /// <returns>The messages, in the order they happened.</returns>
+    /// <remarks>
+    /// <para>**BOTH HALVES, BECAUSE EVERY QUESTION ABOUT A CONVERSATION IS ABOUT BOTH**
+    /// (work instruction 323 task 3). `Psk31Turn` reads the last message's speaker,
+    /// `Psk31Offer` reads what the operator has already sent, and the finished test reads
+    /// both goodbyes. A list holding only what arrived answers all three wrongly the moment
+    /// Hamlet transmits.</para>
+    /// <para>**THE ORDER IS MEASURED AND NOT ASSUMED.** Each macro Hamlet sent was recorded
+    /// with how many messages the channel had delivered at that moment, so it lands after
+    /// those and before whatever arrived next - rather than being appended to the end, which
+    /// would put Hamlet's answer after a message that came back while it was going out.</para>
+    /// </remarks>
+    private List<Psk31Message> Conversation(Psk31ChannelReading reading, string station)
+    {
+        var his = reading.Messages
+            .Select((m, index) => (Index: index, Message: m))
+            .Where(x => Ft8MessageSplit.IsSameStation(x.Message.Exchange.Speaker, station)
+                || Ft8MessageSplit.IsSameStation(x.Message.Exchange.Addressee, station))
+            .ToList();
+
+        var mine = _psk31Mine.GetValueOrDefault(station) ?? [];
+        var talk = new List<Psk31Message>(his.Count + mine.Count);
+        var at = 0;
+
+        foreach (var (index, message) in his)
+        {
+            while (at < mine.Count && mine[at].AfterHeard <= index)
+            {
+                talk.Add(mine[at].Message);
+                at++;
+            }
+
+            talk.Add(message);
+        }
+
+        while (at < mine.Count)
+        {
+            talk.Add(mine[at].Message);
+            at++;
+        }
+
+        return talk;
+    }
+
+    /// <summary>The text of the macro this card would send, or "" where it offers none.</summary>
+    /// <param name="macro">Which macro <see cref="Psk31Offer"/> named.</param>
+    /// <param name="station">The other station.</param>
+    /// <returns>The text, exactly as it would go on the air, or "".</returns>
+    /// <remarks>
+    /// <para>**THE ENGINE COMPOSES AND THE SHELL READS SETTINGS** (§0.1). `Psk31Macros` is
+    /// handed strings and never told Settings exist; this is the line that reads them.</para>
+    /// <para>**A BLANK FIELD OFFERS NOTHING RATHER THAN SENDING A GAP** (§0.0). With no name
+    /// or location in Settings the report cannot be built, and `Psk31Macros` refuses it by
+    /// name; the button is then simply not there, which is the honest state - and it is not
+    /// a button drawn grey (§0.5.1).</para>
+    /// </remarks>
+    private string MacroTextFor(Psk31Macro macro, string station)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+
+        try
+        {
+            return macro switch
+            {
+                Psk31Macro.Answer => Psk31Macros.Answer(station, mine),
+                Psk31Macro.Report => Psk31Macros.Report(
+                    station,
+                    mine,
+                    _settings.Operator.OperatorName,
+                    _settings.Operator.Location,
+                    _settings.Operator.GridSquare ?? ""),
+                Psk31Macro.Confirm => Psk31Macros.Confirm(station, mine),
+                _ => "",
+            };
+        }
+        catch (ArgumentException)
+        {
+            return "";
         }
     }
 
@@ -4027,6 +4159,26 @@ public partial class MainWindowViewModel : ObservableObject
         switch (card.ActionKind)
         {
             case Ft8CardActionKind.Send:
+
+                // **THE SAME ONE DOOR, TOLD WHICH MACRO AND WHERE** (work instruction 323
+                // task 3). A PSK31 reply goes out on the frequency the other station is on
+                // rather than on a spot Hamlet chose, and the record names which of §R2's
+                // four it was. Both travel beside the call, and `SendPsk31` takes them; the
+                // send itself is `SendMessage`, unchanged, with every guard it carries.
+                if (card.IsPsk31)
+                {
+                    _psk31Macro = card.Offered;
+                    _psk31SendAtHz = Psk31OffsetOf(card.Callsign);
+
+                    SendMessage(card.ActionMessage);
+
+                    // **THE CARD ANSWERS THE PRESS AT ONCE.** Hamlet has just handed over,
+                    // so it is his turn and there is nothing more to offer; waiting for the
+                    // next tick would leave the button he just pressed still on the card.
+                    RefreshPsk31Card(card.Callsign);
+                    break;
+                }
+
                 SendMessage(card.ActionMessage);
                 break;
 
@@ -13338,6 +13490,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Psk31Macro _psk31Macro = Psk31Macro.Cq;
 
+    /// <summary>Where the next PSK31 send goes out, or null to find a clear spot.</summary>
+    /// <remarks>
+    /// **A REPLY GOES OUT WHERE HE IS** (work instruction 323 task 3). §R6's clear spot is
+    /// for a call to anyone, which has nowhere it has to be; an answer has to land where the
+    /// station being answered is listening, and that is the offset his carrier is on. Set
+    /// beside the call for the same reason <see cref="_psk31Macro"/> is, and cleared by
+    /// <see cref="SendPsk31"/> - so a press that arrives by any other route calls on a spot
+    /// Hamlet found rather than on the last station's frequency.
+    /// </remarks>
+    private double? _psk31SendAtHz;
+
     /// <summary>
     /// **The PSK31 arm of the one send path: compose, arm with no slot, fire now.**
     /// </summary>
@@ -13359,13 +13522,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void SendPsk31(string wanted)
     {
-        var macro = Psk31MacroToken.For(_psk31Macro);
+        var kind = _psk31Macro;
+        var macro = Psk31MacroToken.For(kind);
+        var at = _psk31SendAtHz;
 
         _psk31Macro = Psk31Macro.Cq;
+        _psk31SendAtHz = null;
 
         // **A CLEAR SPOT HAMLET FINDS, NOT A FIXED OFFSET** (§R6). The rule is
-        // `Psk31ClearSpot.Rule` and it is stated in one place; this reads it.
-        if (ClearSpotForTheCall() is not { } offsetHz)
+        // `Psk31ClearSpot.Rule` and it is stated in one place; this reads it. **A reply
+        // skips it and goes out where the station being replied to is** - see
+        // `_psk31SendAtHz`.
+        if ((at ?? ClearSpotForTheCall()) is not { } offsetHz)
         {
             Psk31Events.SendRefused(_telemetry, "no_clear_spot", macro, "spot");
 
@@ -13432,9 +13600,19 @@ public partial class MainWindowViewModel : ObservableObject
         // evening where it did not. **It books into a ledger and keys nothing** (§0.2), and
         // it is booked here - once the send is armed - for `RecordSent`'s own reason: a
         // press refused by the cap or the licence is not a call anybody made.
-        if (macro == Psk31MacroToken.For(Psk31Macro.Cq))
+        if (kind == Psk31Macro.Cq)
         {
             BookThePsk31Call(wanted);
+        }
+        else
+        {
+            // **WHAT HE SENT IS PART OF THE CONVERSATION** (work instruction 323 task 3).
+            // Whose turn it is, which macro comes next and whether the exchange is finished
+            // are all read off one list of messages, and a list holding only the other
+            // station's half would say it was still his turn the moment after Hamlet
+            // answered him. **It is parsed, not asserted**: the text goes through the same
+            // `Psk31ExchangeParser` his does, so his half and Hamlet's are read by one rule.
+            RememberWhatWeSent(wanted);
         }
 
         _armedText = wanted;
@@ -13446,6 +13624,185 @@ public partial class MainWindowViewModel : ObservableObject
         // **THE CLICK IS THE MOMENT** (§R10). A send with no slot has no boundary to wait
         // for, so the action that armed it fires it; nothing reads a clock to decide.
         _ = FirePsk31Async(wanted, macro, composed.Seconds);
+    }
+
+    /// <summary>
+    /// **Answer a station calling CQ: one click, one Answer, on his frequency.**
+    /// </summary>
+    /// <param name="row">The row the operator clicked.</param>
+    /// <remarks>
+    /// <para>**IT IS REACHED BY A CLICK AND BY NOTHING ELSE** (§0.2). No decode, no tick and
+    /// no parse calls it; the CQ list is built from what arrived and this is what the
+    /// operator does about one of its rows.</para>
+    /// <para>**AND IT IS NOT A SECOND SEND PATH.** It composes nothing and arms nothing: it
+    /// says which macro and which frequency, and calls <see cref="SendMessage"/>, so the
+    /// mode gate, the cap, the licence gate and the one keying site all apply unchanged.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void AnswerPsk31(DigitalDecodeRow? row)
+    {
+        if (Psk31CqOn(row) is not { } station)
+        {
+            return;
+        }
+
+        var text = MacroTextFor(Psk31Macro.Answer, station);
+
+        if (text.Length == 0)
+        {
+            DigitalSendLine =
+                "Hamlet did not answer him: your callsign is not set in Settings, and a "
+                + "macro is not sent with a blank in it.";
+
+            return;
+        }
+
+        AppEvents.OperatorAction(
+            _telemetry, "psk31_answer_pressed", OperatingMode, _digitalMode.ToString());
+
+        _psk31Macro = Psk31Macro.Answer;
+        _psk31SendAtHz = OffsetOn(row!);
+
+        SendMessage(text);
+
+        // **HIS CARD IS UP BEFORE THE CARRIER HAS FINISHED.** The click opened a
+        // conversation and the panel says so at once, rather than at whatever moment the
+        // next tick happens to run.
+        RefreshPsk31Card(station);
+    }
+
+    /// <summary>Reads one station's card again, now that Hamlet's half has moved.</summary>
+    /// <param name="station">Whose card.</param>
+    /// <remarks>
+    /// **IT READS AND DOES NOT SEND** (§0.2). Everything on a PSK31 card - whose turn it is,
+    /// which macro is offered, whether the exchange is finished - is derived from the
+    /// conversation, and a transmission changes the conversation. Nothing here composes,
+    /// arms or keys; it is the same `ShowPsk31Cards` the tick calls.
+    /// </remarks>
+    private void RefreshPsk31Card(string station)
+    {
+        foreach (var (id, reading) in _psk31Readings)
+        {
+            if (!reading.Messages.Any(
+                    m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station)))
+            {
+                continue;
+            }
+
+            ShowPsk31Cards(id, reading, sending: false);
+
+            OnPropertyChanged(nameof(HasDigitalCards));
+
+            return;
+        }
+    }
+
+    /// <summary>Which channel a PSK31 row is the face of, or null.</summary>
+    /// <remarks>**BY IDENTITY AND NOT BY VALUE**, for `IndexOfPsk31Row`'s own reason: a row is
+    /// a record, so two rows with the same cells compare equal.</remarks>
+    private int? Psk31ChannelOf(DigitalDecodeRow row)
+    {
+        foreach (var (id, shown) in _psk31Rows)
+        {
+            if (ReferenceEquals(shown, row))
+            {
+                return id;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Where in the passband a row's carrier sits, or null where the cell is not a number.</summary>
+    /// <remarks>
+    /// **THE CELL IS THE MEASUREMENT.** The row's `Hz` is what the search measured for that
+    /// carrier, written for the screen; reading it back is one place rather than a second
+    /// copy of the offset carried beside it. **A cell that does not parse yields null**, and
+    /// the reply then falls back to a clear spot rather than to a number nobody measured.
+    /// </remarks>
+    private static double? OffsetOn(DigitalDecodeRow row)
+        => double.TryParse(
+            row.Hz, NumberStyles.Float, CultureInfo.InvariantCulture, out var hz) && hz > 0
+            ? hz
+            : null;
+
+    /// <summary>The station certainly calling CQ on this row, or null.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>His callsign, or null where this row is not a certain CQ from somebody else.</returns>
+    /// <remarks>
+    /// **CERTAIN, AND NOT THE OPERATOR HIMSELF** (§R1). A guessed CQ offers nothing to
+    /// click: answering a station whose callsign did not read cleanly would put his
+    /// neighbour's callsign on the air in a message addressed to him.
+    /// </remarks>
+    internal string? Psk31CqOn(DigitalDecodeRow? row)
+        => row is { IsTextOnly: true, Reading: { Kind: Psk31LineKind.Cq, IsCertain: true, Speaker: { Length: > 0 } speaker } }
+            && !Ft8MessageSplit.IsSameStation(speaker, _settings.Operator.Callsign)
+            ? speaker
+            : null;
+
+    /// <summary>What one click on a PSK31 CQ row would read, or null where there is nothing to click.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>The label, or null.</returns>
+    internal string? Psk31AnswerLabelFor(DigitalDecodeRow? row)
+        => Psk31CqOn(row) is { } station && IsPsk31Chosen ? "Answer " + station : null;
+
+    /// <summary>Which offset a station's carrier is on, or null where he is not being heard.</summary>
+    private double? Psk31OffsetOf(string callsign)
+    {
+        foreach (var (id, reading) in _psk31Readings)
+        {
+            var his = reading.Messages.Any(
+                m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, callsign));
+
+            if (his && _psk31Rows.TryGetValue(id, out var row))
+            {
+                return OffsetOn(row);
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Keeps a macro Hamlet sent as part of that station's conversation.</summary>
+    /// <param name="text">The macro, exactly as it went on the air.</param>
+    /// <remarks>
+    /// **THE ADDRESSEE IS READ OUT OF THE TEXT, NOT PASSED IN.** `Psk31ExchangeParser` is
+    /// the one thing in the tree that says who a PSK31 message is to, and asking it of
+    /// Hamlet's own macro is what keeps the two halves of a conversation read by one rule
+    /// (§0). A macro whose addressee it cannot read belongs to no conversation and is
+    /// kept nowhere.
+    /// </remarks>
+    private void RememberWhatWeSent(string text)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+        var exchange = Psk31ExchangeParser.Read(text, mine);
+
+        if (exchange.Addressee is not { Length: > 0 } station)
+        {
+            return;
+        }
+
+        // **HOW MUCH OF HIS SIDE HAD ARRIVED WHEN THIS WENT OUT**, so the merge in
+        // `Conversation` can put it in the right place rather than on the end.
+        var heard = 0;
+
+        foreach (var (_, reading) in _psk31Readings)
+        {
+            if (reading.Messages.Any(
+                    m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station)))
+            {
+                heard = reading.Messages.Count;
+                break;
+            }
+        }
+
+        if (!_psk31Mine.TryGetValue(station, out var sent))
+        {
+            sent = [];
+            _psk31Mine[station] = sent;
+        }
+
+        sent.Add(new Psk31Mine(heard, new Psk31Message(text, exchange)));
     }
 
     /// <summary>Puts the PSK31 call in the ledger, so the receipt is on the panel.</summary>

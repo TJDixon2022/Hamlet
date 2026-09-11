@@ -69,9 +69,18 @@ public sealed class ThePsk31OfferTests
         }
     }
 
-    /// <summary>**Assertion 4: nothing clickable is drawn for the offer while the door is shut.**</summary>
+    /// <summary>**Assertion 4: the offer is one button, and it is the one the engine named.**</summary>
+    /// <remarks>
+    /// **REWRITTEN UNDER §R12** (work instruction 323 task 3). It read *nothing clickable is
+    /// drawn for the offer while the door is shut* and asserted there was no button at all,
+    /// which is the shut door rather than the rule; the door is open from unit 323 on and the
+    /// offer is what the operator clicks. **What is guarded now is that there is exactly one
+    /// of them, that it is the macro `Psk31Offer` named, and that it goes through the one
+    /// send command** - so a card can still never do anything the engine did not offer, and
+    /// it can never do it twice.
+    /// </remarks>
     [AvaloniaFact]
-    public void NothingClickableIsDrawnForTheOfferWhileTheDoorIsShut()
+    public void TheOfferIsOneButtonAndItIsTheOneTheEngineNamed()
     {
         var corpus = Psk31Corpus.Load();
         var model = Panel();
@@ -99,13 +108,20 @@ public sealed class ThePsk31OfferTests
         Assert.Equal("Confirm", card.OfferedMacro);
         Assert.Contains("W1AW", drawn);
 
-        foreach (var macro in new[] { "Answer", "Report", "Confirm" })
-        {
-            Assert.DoesNotContain(drawn, t => t.Contains(macro, StringComparison.Ordinal));
-            Assert.DoesNotContain(buttons, b => (b.Content?.ToString() ?? "").Contains(macro, StringComparison.Ordinal));
-        }
+        // **ONE BUTTON, AND IT IS THE ONE SEND COMMAND.**
+        var offer = Assert.Single(
+            buttons, b => ReferenceEquals(b.Command, model.CardActionCommand));
 
-        Assert.DoesNotContain(buttons, b => ReferenceEquals(b.Command, model.CardActionCommand));
+        Assert.Same(card, offer.CommandParameter);
+
+        // **IT SAYS WHAT IT DOES, NOT WHAT THE FIELD SHAPE IS CALLED** (§0.5.1, and the
+        // FT8 side's own rule): the text that would go on the air is on the hover.
+        Assert.Equal(card.ActionLabel, offer.Content?.ToString());
+
+        // **AND THE BARE MACRO NAME IS NOT ON THE CARD ANYWHERE** (§0.5.1). `Confirm` is
+        // this application's word for a step in an exchange and means nothing to somebody
+        // reading a card for the first time; the button says what pressing it does.
+        Assert.DoesNotContain(drawn, t => t.Trim() == card.OfferedMacro);
     }
 
     private static Psk31Channel Channel(Psk31CorpusTranscript transcript, int lines)

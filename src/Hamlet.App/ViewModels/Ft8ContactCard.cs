@@ -91,8 +91,18 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <param name="callsign">The station, as the parse read it.</param>
     /// <param name="turn">Whose turn it is on his channel (`Psk31Turn`).</param>
     /// <param name="operatorGrid">The operator's own locator, or null.</param>
-    /// <param name="offered">Which macro the card would offer (`Psk31Offer`); held, never drawn.</param>
+    /// <param name="offered">Which macro the card offers for one click (`Psk31Offer`).</param>
     /// <param name="grid">His grid, from a message he certainly sent, or null.</param>
+    /// <param name="offeredText">
+    /// That macro's text, exactly as it would go on the air, or "" where there is none. **The
+    /// card is handed it and never composes it** (§0.1): `Psk31Macros` is the engine's and it
+    /// is never told Settings exist.
+    /// </param>
+    /// <param name="complete">
+    /// True where both sides have closed the exchange - Hamlet has confirmed and he has
+    /// certainly said goodbye. It is what puts the Log on his card, and the Log lives only
+    /// here (§R8).
+    /// </param>
     /// <returns>The card.</returns>
     /// <remarks>
     /// <para>**THE SAME CARD TYPE, NOT A THIRD** (work instruction 319 task 3, §2). Where FT8's
@@ -109,25 +119,57 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     public static Ft8ContactCard ForPsk31(
         string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None,
-        string? grid = null)
+        string? grid = null, string offeredText = "", bool complete = false)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
         var facts = new Ft8CardFacts(
-            callsign, Ft8ContactState.WaitingOnHim, 0, null, null, false, false, 0, 0, 0,
+            callsign, complete ? Ft8ContactState.Complete : Ft8ContactState.WaitingOnHim,
+            0, null, null, false, false, 0, 0, 0,
             null, null, false, false, false, false, grid, null, null);
 
-        return new Ft8ContactCard(facts, operatorGrid, turn, offered);
+        return new Ft8ContactCard(facts, operatorGrid, turn, offered, offeredText ?? "", complete);
     }
 
-    private Ft8ContactCard(Ft8CardFacts facts, string? operatorGrid, Psk31TurnReading turn, Psk31Macro offered)
-        : this(facts, operatorGrid, Ft8CardActionKind.None, "", "", null)
+    private Ft8ContactCard(
+        Ft8CardFacts facts, string? operatorGrid, Psk31TurnReading turn, Psk31Macro offered,
+        string offeredText, bool complete)
+        : this(
+            facts,
+            operatorGrid,
+            offered == Psk31Macro.None || offeredText.Length == 0
+                ? Ft8CardActionKind.None
+                : Ft8CardActionKind.Send,
+            offeredText.Length == 0 ? "" : Psk31ActionLabel(offered),
+            offeredText,
+            null)
     {
         _turn = turn;
         _offered = offered;
+        _psk31Complete = complete;
     }
 
     private readonly Psk31Macro _offered;
+
+    /// <summary>True where a PSK31 exchange has been closed by both sides.</summary>
+    private readonly bool _psk31Complete;
+
+    /// <summary>What the one button on a PSK31 card reads.</summary>
+    /// <param name="offered">Which macro the engine named.</param>
+    /// <returns>Plain words, with no radio jargon in them.</returns>
+    /// <remarks>
+    /// **THE ACT, NOT THE FIELD SHAPE**, the same rule `MainWindowViewModel.PlainSendLabel`
+    /// follows on the FT8 side: the message itself is on the hover, where a deliberate look
+    /// finds it.
+    /// **The words are a session's and not a ruling.**
+    /// </remarks>
+    private static string Psk31ActionLabel(Psk31Macro offered) => offered switch
+    {
+        Psk31Macro.Answer => "Answer him",
+        Psk31Macro.Report => "Tell him how he is coming through",
+        Psk31Macro.Confirm => "Confirm, and sign off",
+        _ => "",
+    };
 
     /// <summary>True where this is a PSK31 conversation card.</summary>
     public bool IsPsk31 => _turn is not null;
@@ -168,8 +210,27 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>True where the turn word is a guess or an unknown.</summary>
     public bool TurnIsGuess => _turn is { IsCertain: false };
 
+    /// <summary>What a PSK31 card says: whose turn, and why nothing is offered where nothing is.</summary>
+    /// <remarks>
+    /// **A BUTTON THAT IS NOT THERE HAS TO SAY WHY** (work instruction 323 task 3, §0.0).
+    /// Hamlet offers a macro only where the parser is certain it is the operator's turn
+    /// (§R1); on anything less the card would otherwise simply have no button, and *Hamlet
+    /// is not sure* and *there is nothing to send* would look identical. **It is one added
+    /// clause and not a second sentence**, so the card does not grow a paragraph.
+    /// </remarks>
+    private string TurnSentence()
+        => _psk31Complete
+            ? $"The exchange with {Callsign} is finished: you confirmed and he said goodbye."
+            : TurnState() + (WaitingToBeSure ? " Waiting to be sure it is your turn before "
+                + "offering anything to send." : "");
+
+    /// <summary>True where nothing is offered because Hamlet is not certain enough to offer it.</summary>
+    private bool WaitingToBeSure
+        => _turn is not null && _offered == Psk31Macro.None
+            && _turn.State != Psk31TurnState.HisTurn;
+
     /// <summary>What a PSK31 card says, one sentence per turn state.</summary>
-    private string TurnSentence() => _turn!.State switch
+    private string TurnState() => _turn!.State switch
     {
         Psk31TurnState.YourTurn when _turn.IsCertain => $"{Callsign} handed over to you, and it is your turn.",
         Psk31TurnState.YourTurn => $"{Callsign} seems to have handed over to you, but part of it did not read cleanly, so that is a guess.",
@@ -269,7 +330,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// beside it already says how stale this is. The count is on the hover.
     /// </remarks>
     public string StateWord => IsPsk31
-        ? TurnWord
+        ? _psk31Complete ? "Finished" : TurnWord
         : IsCallToAnyone
         ? ReceiptWord
         : _facts.State switch
@@ -367,6 +428,12 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     public string ActionTip => ActionKind switch
     {
+        // **PSK31 HAS NO SLOT AND NO DEADLINE** (§R10). The FT8 wording below counts the
+        // seconds to a boundary; here the press *is* the moment, so saying otherwise would
+        // invent an urgency that does not exist.
+        Ft8CardActionKind.Send when IsPsk31 =>
+            $"Sends “{ActionMessage}” to {Callsign}, once, straight away. "
+            + "One press is one transmission and nothing here sends on a timer.",
         Ft8CardActionKind.Send =>
             $"Sends “{ActionMessage}” to {Callsign}, once, in the next "
             + "slot. The ring beside this button is the seconds left to press it. "
@@ -395,7 +462,8 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// **IT COUNTS DOWN AND DOES NOTHING ELSE** (§0.2). Nothing reads it, nothing
     /// arms on it, and its last second transmits nothing.
     /// </remarks>
-    public bool ShowsRing => ActionKind == Ft8CardActionKind.Send;
+    /// <remarks>**AND NEVER ON A PSK31 CARD** (§R10): there is no slot to catch.</remarks>
+    public bool ShowsRing => !IsPsk31 && ActionKind == Ft8CardActionKind.Send;
 
 
     /// <summary>True where the card shows Log as a second control beside the action.</summary>
@@ -416,8 +484,14 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// appeared in its place**, because the rule above reads *Log is not already the
     /// action here* and that became true the moment the action became None. A CQ is
     /// not a contact by either route.</para>
+    /// <para>**ON A PSK31 CARD IT APPEARS WHEN THE EXCHANGE IS FINISHED** (work instruction 323
+    /// task 3): Hamlet has sent the confirmation and he has certainly said goodbye. **Before
+    /// that it is not there**, because step 5 is what teaches the log what a PSK31 contact is,
+    /// and the one place a PSK31 Log ever appears is his card - never the receipt (§R8).</para>
     public bool ShowsLogLink
-        => !IsPsk31 && !IsCallToAnyone && ActionKind != Ft8CardActionKind.Log;
+        => IsPsk31
+            ? _psk31Complete
+            : !IsCallToAnyone && ActionKind != Ft8CardActionKind.Log;
 
     /// <summary>What the always-available Log control reads.</summary>
     public string LogLabel => "Log this contact";

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using Avalonia.Controls;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
@@ -405,18 +406,57 @@ public sealed class ThePsk31ReadsTheConversationTests
 
             foreach (var row in model.DigitalDecodes.Where(r => r.IsTextOnly).ToList())
             {
+                // **NO FT8 MENU AND NO LOG ON ANY PSK31 ROW**, which is what this assertion
+                // has always been for: the FT8 options are 77-bit message shapes and none of
+                // them is a thing to send on PSK31.
                 Assert.Null(model.SendMenuFor(row));
                 Assert.False(model.CanLogRow(row));
-                Assert.Null(MainWindow.SendFlyoutFor(model, row));
+
+                // **AND THE ONLY THING A ROW EVER OFFERS IS ONE ANSWER, ON A CERTAIN CQ**
+                // (§R12, work instruction 323 task 3). This asserted the flyout was always
+                // null, which is the shut door; the door is open from unit 323 and answering
+                // a station calling CQ is step 4's criterion. A row that is not a certain CQ
+                // still offers nothing at all.
+                var flyout = MainWindow.SendFlyoutFor(model, row);
+
+                if (model.Psk31CqOn(row) is null)
+                {
+                    Assert.Null(flyout);
+                }
+                else
+                {
+                    var item = Assert.Single(flyout!.Items.OfType<MenuItem>());
+
+                    Assert.Same(model.AnswerPsk31Command, item.Command);
+                    Assert.Same(row, item.CommandParameter);
+                }
+
                 looked++;
             }
 
-            Assert.DoesNotContain(model.DigitalCards, c => string.Equals(c.Callsign, "W1AW", StringComparison.OrdinalIgnoreCase)
-                && (c.HasAction || c.ActionMessage.Length > 0 || c.ShowsLogLink));
+            // **A W1AW CARD OFFERS ONLY WHAT THE ENGINE OFFERED, AND NEVER AN FT8 MESSAGE**
+            // (§R12, work instruction 323 task 3; narrowed once already as unit 320's item
+            // 39). It read *no action at all*, which was the shut door. What matters is that
+            // the FT8 ledger already knows W1AW, so a card that reached the FT8 send options
+            // would offer to arm an FT8 transmission on a PSK31 frequency - and that is what
+            // cannot happen: every action on a PSK31 card is `Psk31Offer`'s macro. **When the
+            // Log appears is not asserted here** - this panel is fed both halves of each
+            // transcript as though every line had been heard, so several of these exchanges
+            // are finished; `ThePsk31ExchangeTests` drives the Log from clicks (§R14).
+            foreach (var card in model.DigitalCards.Where(c => c.IsPsk31))
+            {
+                // **THE OTHER WAY ROUND IS NOT ASSERTED**, and that is a finding rather than
+                // a gap: with no name or location in Settings the report cannot be built at
+                // all, so a card can offer `Report` and still carry no message - which is
+                // exactly this panel, whose operator profile has neither.
+                Assert.True(
+                    card.ActionMessage.Length == 0 || card.Offered != Psk31Macro.None,
+                    card.Callsign + " carries a message it was never offered");
+            }
         }
 
         _output.WriteLine("PSK31 rows right-clicked: " + looked + ", cards on the panel: " + model.DigitalCards.Count
-            + ", can answer: " + model.CanAnswerRowsForTests + ", send line [" + model.DigitalSendLine + "]");
+            + ", send line [" + model.DigitalSendLine + "]");
 
         // **NOBODY CLICKED, SO NOTHING IS IN FLIGHT AND NOTHING IS BEING SENT** (§0.2).
         // **This read `CanAnswerRowsForTests` too** - `CanTransmitIn`, the shut door - and
