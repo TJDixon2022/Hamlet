@@ -498,6 +498,68 @@ public sealed class Ft8GlobePlot
         return (left, top, width, height);
     }
 
+    /// <summary>How much the opened map may enlarge the picture.</summary>
+    /// <remarks>
+    /// <para>**R9, Tim 2026-09-11: *"cap zoom"*.** Offered a larger source image or a
+    /// cap on magnification, he ruled the cap. The image is not replaced.</para>
+    /// <para>**THE FLOOR WAS THE WRONG INSTRUMENT AND THIS REPLACES IT IN PRACTICE.**
+    /// <see cref="ZoomFloorShare"/> put a floor under the frame, which is a cap on the
+    /// magnification only by accident and a loose one: a quarter of a 698 px file is
+    /// 174.5 px, and 174.5 px enlarged into a 720 px popup is **4.13 times**. Measured,
+    /// the France case was drawn at **3.98x** and a same-state contact hit the full
+    /// 4.13. A floor tight enough to stay sharp would be a floor of the whole file,
+    /// which is no zoom at all.</para>
+    /// <para>**TWO IS THE AUTHOR'S NUMBER AND NOT TIM'S.** He ruled that there be a cap
+    /// and did not name one. At two the crop is about half the map width, so the popup
+    /// is meaningfully closer than the card, and two-to-one on a smooth enlargement is
+    /// about where a relief bitmap still reads as terrain rather than as blocks. **It is
+    /// an arithmetic argument and not a seen one.** One word changes it, and it is
+    /// written once.</para>
+    /// </remarks>
+    public const double ZoomCap = 2.0;
+
+    /// <summary>What the opened map frames, given the box it will be drawn in.</summary>
+    /// <param name="popupWidth">The width the popup offers the map.</param>
+    /// <param name="popupHeight">The height the popup offers the map.</param>
+    /// <returns>Left, top, width and height in the file's own pixels.</returns>
+    /// <remarks>
+    /// <para>**IT TAKES THE BOX RATHER THAN HOLDING ONE** (the instruction: do not
+    /// hard-code the popup's size, read it and derive the crop). The same plot in a
+    /// larger popup gets a larger crop, and nothing here knows what the markup says.
+    /// </para>
+    /// <para>**IT STARTS FROM <see cref="OpenFrame"/> AND ONLY EVER GROWS.** The box
+    /// holding every sampled point and both markers is what R8 asks for and is not
+    /// touched; growing it can never put a point outside it, which is why the cap
+    /// cannot break the thing the frame exists to do.</para>
+    /// <para>**AND IT GROWS BOTH SIDES OF THE CAP.** The drawn scale is the smaller of
+    /// the two fits, so a frame wide enough and short enough would still be magnified
+    /// past the cap by its height. Both dimensions are held to `popup / cap`.</para>
+    /// <para>**THEN IT IS PUSHED BACK INSIDE THE PICTURE.** The file covers x 0 to 697
+    /// and y 0 to 380; a path near an edge pushes the grown frame out, and drawing past
+    /// the edge would be drawing ground Hamlet has no picture of (§0.0).</para>
+    /// </remarks>
+    public (double Left, double Top, double Width, double Height) OpenFrameFor(
+        double popupWidth, double popupHeight)
+    {
+        var (left, top, width, height) = OpenFrame;
+
+        if (popupWidth <= 0 || popupHeight <= 0 || width <= 0 || height <= 0)
+        {
+            return OpenFrame;
+        }
+
+        var wide = Math.Max(width, popupWidth / ZoomCap);
+        var tall = Math.Max(height, popupHeight / ZoomCap);
+
+        // **GROWN ABOUT ITS OWN CENTRE**, so the path stays in the middle of what the
+        // reader is looking at rather than drifting to a corner.
+        return Fitted(
+            left - ((wide - width) / 2),
+            top - ((tall - height) / 2),
+            wide,
+            tall);
+    }
+
     /// <summary>The frame, as a reader sees it, for a test and for the record.</summary>
     public string FrameLine
         => string.Format(

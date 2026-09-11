@@ -121,6 +121,21 @@ public sealed class Ft8GlobeControl : Control
     /// dash measured in bitmap pixels collapses into a solid line at this scale and
     /// stops reading as a path rather than a border.
     /// </remarks>
+    /// <summary>The box the opened frame was last worked out against.</summary>
+    /// <remarks>
+    /// <para>**ONE ANSWER, USED BY ALL THREE** (work instruction 313 task 2). The
+    /// measure, the render and the hover must agree about which window of the file is
+    /// on screen, or a marker lands somewhere it does not belong - which is the fault
+    /// §0.0 binds hardest on, because nobody checks a dot.</para>
+    /// <para>**AND IT IS THE OFFER RATHER THAN <c>Bounds</c>.** They are usually the
+    /// same and they are not always: the control fits the frame's own shape inside
+    /// what it is given, so a frame that is not the popup's shape leaves the control
+    /// a little smaller than the offer, and working the frame out again from that
+    /// smaller box would give a different frame. **The offer is the stable one**, and
+    /// it is what the popup's own ceiling says.</para>
+    /// </remarks>
+    private Size _openedAgainst;
+
     private static readonly double[] Dashes = { 3, 2 };
 
     /// <summary>What a render would put on the surface, without a surface.</summary>
@@ -171,7 +186,7 @@ public sealed class Ft8GlobeControl : Control
                 PathStrokeWidth, PathCasingWidth, MarkerRadius);
         }
 
-        var (left, top, mapWidth, mapHeight) = FrameOf(plot, opened);
+        var (left, top, mapWidth, mapHeight) = FrameOf(plot, opened, width, height);
         var scale = Math.Min(width / mapWidth, height / mapHeight);
 
         Point At(double x, double y)
@@ -277,7 +292,8 @@ public sealed class Ft8GlobeControl : Control
             return;
         }
 
-        var (left, top, width, height) = FrameOf(plot, Opened);
+        var (left, top, width, height) = FrameOf(
+            plot, Opened, _openedAgainst.Width, _openedAgainst.Height);
 
         if (width <= 0 || height <= 0)
         {
@@ -324,9 +340,42 @@ public sealed class Ft8GlobeControl : Control
     /// </remarks>
     public static (double Left, double Top, double Width, double Height) FrameOf(
         Ft8GlobePlot? plot, bool opened)
-        => plot is null
-            ? (0, 0, FlatWorldMap.Relief.WidthPixels, FlatWorldMap.Relief.HeightPixels)
-            : opened ? plot.OpenFrame : plot.Frame;
+        => FrameOf(plot, opened, 0, 0);
+
+    /// <summary>Which window of the file a control of this size frames.</summary>
+    /// <param name="plot">What is being plotted.</param>
+    /// <param name="opened">True for the enlarged map.</param>
+    /// <param name="boxWidth">The width the map is being drawn in, or 0.</param>
+    /// <param name="boxHeight">The height the map is being drawn in, or 0.</param>
+    /// <returns>Left, top, width and height in the file's own pixels.</returns>
+    /// <remarks>
+    /// <para>**THE OPENED MAP NEEDS THE BOX AND THE CARD'S DOES NOT** (work instruction
+    /// 313 task 2, R9). The card's map frames the whole picture whatever size it is
+    /// given; the opened one frames the path, and **how much that magnifies the bitmap
+    /// depends on how big the popup is** - so the cap cannot be applied without
+    /// knowing it. Passing zero asks for the uncapped frame, which is what a caller
+    /// with no box of its own gets.</para>
+    /// <para>**THE CAP ITSELF IS <see cref="Ft8GlobePlot.ZoomCap"/> AND IS NOT COPIED
+    /// HERE.** One number, one place.</para>
+    /// </remarks>
+    public static (double Left, double Top, double Width, double Height) FrameOf(
+        Ft8GlobePlot? plot, bool opened, double boxWidth, double boxHeight)
+    {
+        if (plot is null)
+        {
+            return (0, 0,
+                FlatWorldMap.Relief.WidthPixels, FlatWorldMap.Relief.HeightPixels);
+        }
+
+        if (!opened)
+        {
+            return plot.Frame;
+        }
+
+        return boxWidth > 0 && boxHeight > 0
+            ? plot.OpenFrameFor(boxWidth, boxHeight)
+            : plot.OpenFrame;
+    }
 
     /// <summary>How tall the map is at a given width.</summary>
     /// <param name="width">A width in the control own units.</param>
@@ -370,7 +419,14 @@ public sealed class Ft8GlobeControl : Control
         // **THE FRAME DECIDES THE SHAPE, NOT THE FILE.** The card's own map frames
         // the whole picture, so this is the bitmap's proportions there; the enlarged
         // one frames a window on to it and is whatever shape that window is.
-        var (_, _, frameWidth, frameHeight) = FrameOf(Plot, Opened);
+        // **THE OFFER IS WHAT THE CAP IS WORKED OUT AGAINST**, and it is remembered
+        // so the render and the hover ask the same question and get the same answer.
+        _openedAgainst = new Size(
+            double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width,
+            double.IsInfinity(availableSize.Height) ? 0 : availableSize.Height);
+
+        var (_, _, frameWidth, frameHeight) = FrameOf(
+            Plot, Opened, _openedAgainst.Width, _openedAgainst.Height);
 
         var width = availableSize.Width;
         var height = availableSize.Height;
@@ -422,7 +478,8 @@ public sealed class Ft8GlobeControl : Control
             return;
         }
 
-        var (left, top, width, height) = FrameOf(plot, Opened);
+        var (left, top, width, height) = FrameOf(
+            plot, Opened, _openedAgainst.Width, _openedAgainst.Height);
 
         if (width <= 0 || height <= 0)
         {
@@ -438,10 +495,20 @@ public sealed class Ft8GlobeControl : Control
 
         var scale = Math.Min(Bounds.Width / width, Bounds.Height / height);
 
-        context.DrawImage(
-            map,
-            new Rect(left, top, width, height),
-            new Rect(0, 0, width * scale, height * scale));
+        // **SMOOTHLY, AND SAID RATHER THAN LEFT TO A DEFAULT** (work instruction 313
+        // task 2). Avalonia already filters this and the blur on the operator's own
+        // screenshot is a smooth one rather than blocks - but a default is a thing
+        // that can change under a project, and at the cap the difference between a
+        // filtered enlargement and a nearest-neighbour one is the difference between
+        // soft terrain and coloured squares.
+        using (context.PushRenderOptions(
+            new RenderOptions { BitmapInterpolationMode = BitmapInterpolationMode.HighQuality }))
+        {
+            context.DrawImage(
+                map,
+                new Rect(left, top, width, height),
+                new Rect(0, 0, width * scale, height * scale));
+        }
 
         // **THE DOTS ARE DRAWN AT SCREEN SCALE**, so a small hover does not turn one
         // into a smear or a hairline.
