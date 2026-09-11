@@ -1,0 +1,47 @@
+docs(unit296): task 8 - the bookkeeping, and the validator exits 0
+
+PHASE_OUTCOME.md gains unit 296's entry, appended with the file-editing tools in
+the format outcome-entry.py produces and saying on its own face that it was
+written by hand and why. tools/arbiter/outcome-append.bat was not run and was not
+attempted: five executing sessions have now been refused and the instruction says
+plainly that the authoring environment and the executing one differ and the
+executing one is the refused one. This session met the same class of refusal four
+times on ordinary work - sed -i on Directory.Build.props, a heredoc redirected to
+/tmp, a python rewrite of PROJECT_STATUS.md, and git stash push - and worked
+around each with the file-editing tools. That is a fourth session refused rather
+than a fourth measurement of these scripts.
+
+The arguments the script would have been given are committed at
+tools/arbiter/unit296-append.bat so the entry can be replayed rather than
+reconstructed. Units 288 to 295's entries were not touched, including the two
+STATE_AFTER verdicts each carries. The header block at the top of the file was
+not touched either - it is a cursor over the entries and this unit's reading of
+step 1 belongs in the entry.
+
+STATE_AFTER is done. All four of step 1's exit criteria are met and criteria 1
+and 3 are met at a placement Hamlet did not choose, which is what they had never
+been. Criterion 2 is unit 289's and is carried, not restated as this unit's.
+Criterion 4 was the named drop candidate and was not dropped.
+
+PHASE_STATUS.md's WORK_INSTRUCTION line is set and nothing else. CURRENT_STEP and
+the STEP lines are the launcher's and were not written.
+
+output.md is written per CLAUDE_CODE.md section 8. The validator:
+
+  dotnet build tools/arbiter/validate-output.proj
+  validate-output exit 0 - VALID, all seven rules passed
+
+  1  a UNIT: line above section 1, parseable            ok
+  2  the four top-level sections, in order, exact names ok
+  3  no fifth top-level section                         ok
+  4  section 4 present even when empty                  ok
+  5  section 3 non-empty - 122 non-blank lines          ok
+  6  the ordering block above the UNIT: line, with an
+     A, a B, a C, and a COUNT of section 4's items      ok
+  7  no placeholder token in the header block           ok
+
+It failed once first, on rule 6: the ordering block carried no READ IN THIS ORDER
+line and spelled its section 4 count in words where the rule wants a digit. The
+block was rewritten and re-run, and the report says so.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

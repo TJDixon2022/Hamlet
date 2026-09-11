@@ -101,3 +101,12 @@ the owner reads instead of watching.
 | 1 | 2026-09-07T13:20 | 2026-09-07T13:45 | complete | 16.066289 | ran unattended, 163 turns, 5 denied call(s) worked around, report valid |
 | 2 | 2026-09-07T13:53 | 2026-09-07T14:15 | complete | 14.203481999999997 | ran unattended, 151 turns, 4 denied call(s) worked around, report valid |
 | phase | 2026-09-07T14:19 | 2026-09-07T14:19 | halted | 30.2698 | stop 4: the arbiter declared a decision the owner's |
+| 1 | 2026-09-09T08:34 | 2026-09-09T09:12 | complete | 33.30902650000002 | ran unattended, 219 turns, 25 denied call(s) worked around, report valid |
+| 2 | 2026-09-09T09:20 | 2026-09-09T10:00 | complete | 34.79690249999999 | ran unattended, 303 turns, 24 denied call(s) worked around, report valid |
+| 3 | 2026-09-09T10:07 | 2026-09-09T10:32 | complete | 17.942532499999995 | ran unattended, 201 turns, 13 denied call(s) worked around, report valid |
+| 4 | 2026-09-09T10:40 | 2026-09-09T11:16 | complete | 34.540593 | ran unattended, 271 turns, 15 denied call(s) worked around, report valid |
+| 5 | 2026-09-09T11:25 | 2026-09-09T12:10 | complete | 41.09455549999999 | ran unattended, 255 turns, 10 denied call(s) worked around, report valid |
+| 6 | 2026-09-09T12:21 | 2026-09-09T13:14 | complete | 38.9557145 | ran unattended, 286 turns, 10 denied call(s) worked around, report valid |
+| 7 | 2026-09-09T13:20 | 2026-09-09T13:53 | complete | 18.452825499999992 | ran unattended, 173 turns, 13 denied call(s) worked around, report valid |
+| 8 | 2026-09-09T14:07 | 2026-09-09T15:26 | complete | 26.83501999999999 | ran unattended, 225 turns, 5 denied call(s) worked around, report valid |
+| phase | 2026-09-09T15:28 | 2026-09-09T15:28 | halted | 245.9271 | stop 10: no progress in four consecutive units |

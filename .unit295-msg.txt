@@ -1,0 +1,59 @@
+docs(unit295): task 6 - the bookkeeping, and the validator exits 0
+
+Six of six tasks, nothing dropped including the named drop candidate. Step 4 goes
+partial to done: criterion 4 comes off carry-forward and onto a capture, and
+criterion 2's last untouched surface of seven is closed.
+
+  the number         the snr cell showed -8, the menu carried
+                     "W1ABC KC3QIS -08", and a REAL WASAPI loopback gave back
+                     "W1ABC KC3QIS -08". One equality on a tuple, not three prints
+  the exchange       two legs, two clicks, four CI-V frames, OrdinaryUnkey both
+                     times, NothingArmed at the boundary nobody clicked, and
+                     .Arm( counted at exactly one caller in src/
+  the log            MODE=MFSK, SUBMODE=FT4, RST_SENT=-08
+  the tooltips       all three rewritten to name both modes - 0.26/0.62 over 510
+                     for FT8 and 0.58/1.41 over 970 for FT4, with FT4's 1.2 dB
+                     strong-signal bias disclosed - every figure read out of the
+                     file that recorded it rather than copied into the test
+  the census         unit 290 found 15 on the operator's path; 4 stand, 3 of them
+                     true, and the 1 that is false is named at Ft8Reception.cs:405
+  the FT8 control    1 of 3 green, and the red proved inherited by reverting this
+                     unit's only src change and re-running to the same failure
+
+PHASE_OUTCOME.md: unit 295's entry appended with the file-editing tools in the
+format outcome-entry.py produces, saying so on its own face, with the arguments
+committed at tools/arbiter/unit295-append.bat so it can be replayed rather than
+reconstructed. No .bat under tools/arbiter was attempted: six units settled it.
+This session met the same refusal independently on sh tools/unit295-census15.sh,
+recorded in that file rather than spent as a second measurement. Units 288's to
+294's entries untouched, both STATE_AFTER verdicts each carries included.
+
+PHASE_STATUS.md: WORK_INSTRUCTION set and nothing else. CURRENT_STEP still reads 1
+while the phase is on step 4 - reported for the sixth time, not repaired, and it is
+the launcher's. RULES_AT not re-measured for a seventh time; it is the reload's own.
+
+THE VALIDATOR. dotnet build tools/arbiter/validate-output.proj. Its FIRST run
+against the report exited 1 and named two failures - rule 1, no UNIT: line above
+section 1, and rule 6, no ordering block above the UNIT: line - because the block
+had been written with "A -", "B -", "C -" headings and the UNIT: block placed after
+it in a fenced code block, past the sixty-line window both rules read. The report
+was rewritten to the shape the script requires and re-run. The seven rules: 1 a
+UNIT: line above section 1, parseable; 2 the four top-level sections, in order,
+exact names; 3 no fifth top-level section; 4 section 4 present even when empty;
+5 section 3 non-empty; 6 the ordering block above the UNIT: line, with an A., a B.,
+a C., and C naming how many items section 4 raises; 7 no placeholder token in the
+header block. FINAL: validate-output exit 0, all seven ok.
+
+VERSION. Root read 1.12.245 at the start - read, not assumed, and the instruction's
+figure was right. Bumped once per commit to 1.12.251. Ft8Sharp.Deep did not move:
+no public type changed, this unit consumed unit 294's estimator and built no DSP.
+Ft8Sharp did not move at all and no decode-path file under it was touched.
+
+Section 4 raises four items and none is in the way of a step 4 criterion. Two want
+a ruling: whether the FT8 whole-chain test's OfType<Grid>() row finder may be fixed
+and whether its two reds are among the four already with Tim, and whether
+Ft8Reader.NoWholeSlot may stop telling an FT4 operator about a fifteen-second slot.
+Two are for the record: five untracked files a seventh session could not remove,
+and the launcher's CURRENT_STEP and RULES_AT.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

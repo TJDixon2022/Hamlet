@@ -1,14 +1,21 @@
-﻿## Step E - Tim works a station
+﻿## Step 1 - FT4 decodes a signal Hamlet made
 
-**Delivers:** a contact.
+**Delivers:** an FT4 decoder, proved against Hamlet's own encoder.
 
-**Entry:** step D.
+**Entry:** step 0.
 
 **Exit:**
-- **He answers a CQ on 14.074 or 7.074 and completes an exchange.** *must-pass*
-- The transmitted slots appear in telemetry and the row reads complete.
-  *must-pass*
-- **What he saw, and anything that surprised him**, recorded. *must-pass*
+- **A message becomes FT4 symbols becomes audio and decodes back to the same
+  message**, over at least a hundred messages including compound callsigns, grids,
+  reports and `RR73`. *must-pass*
+- **The timing is FT4's**: 7.5-second slots, 4.48 seconds of transmission, four tones.
+  **Measured, not asserted.** *must-pass*
+- **Zero wrong decodes** across the run. *must-pass*
+- A sensitivity ladder at stated SNRs, with its trial count and its wrong count.
+  *nice-to-pass*
 
-**Depends on:** step D.
+**The receive path is its own oracle**, as it was for FT8: if Hamlet cannot read its
+own FT4 transmission, nothing after this is worth building.
+
+**Depends on:** step 0.
 

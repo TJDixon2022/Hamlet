@@ -1,68 +1,51 @@
 ﻿
-**Five items. None asks for a ruling, and none is in the way of a criterion in
-B.**
+**Four items. One asks for a ruling. None is in the way of an exit criterion in B.**
 
-### 1. The instruction predicted the wrong class, and the tree wins
+### 1. A ruling is wanted: `Ft4CandidateTimeBiasSeconds` is stale by one sub-block, and the estimator absorbs it at exactly its own limit
 
-The instruction says *the compound and portable callsigns of the DX stations he
-is most likely to answer are the obvious candidates*. Measured, **portable
-suffixes are not in the class at all**: `K1ABC/P`, `KC3QIS/P` and every message
-built on them packs `Standard` and reads back as itself. The fifteen are all
-compound *prefixes*. Reported, not repaired. It does not change what was built â€”
-the guard is written on what the encoder did, not on the shape of a callsign, so
-it catches the real class whatever it turns out to be.
+**Ruling asked for:** may a unit change `src/Ft8Sharp.Deep/Ft4DeepSignalToNoise.cs` to derive the
+candidate time bias from the geometry rather than pin it at minus one FT4 symbol period?
 
-### 2. The arbiter's brackets branch is unreachable against this tree
+**The reasoning.** The constant is `-0.048` s and unit 294 measured exactly that on every on-grid
+trial at two analyses per symbol. At the four this unit adopted the measured bias is **`-0.060` s**,
+one further sub-block, because a sub-block at 4 is 144 samples rather than 288. The estimator's
+window therefore opens **12 ms late**, and `TimeSearchSeconds` is **Â±12 ms**, so the alignment
+search recovers it **at its own limit with no margin left**. It works - the measured agreement is
+0.56 dB over 1048 messages, better than the 0.58 it read before - and it works for a reason nobody
+chose. `Ft4Unit296CandidateTimeBiasTests` measures it at both grids, prints the margin (12.0 ms
+spare at 2x2, 0.0 at 4x2) and is green at zero margin and red the moment anything worsens.
 
-The ruling is *a hashed callsign is not the words the operator clicked, **unless
-he clicked brackets***. Measured, `Ft8Composer` refuses a bracketed string
-outright, before the guard is ever asked:
+**What was rejected and why.** Fixing it: forbidden - *the permitted `src/` change tonight is
+`Ft4WaterfallGeometry.cs` and task 2a's one sentence, and that is all of it*. Weakening unit 294's
+assertion to green: that would hide a shipped constant that no longer matches the decoder it
+describes, which is the fault this project keeps a card against. So
+**`Ft4Unit294SnrAgreementTests` is left RED. The red is this unit's and is not inherited.**
 
-> Hamlet did not send "<VP2M/K1ABC> KC3QIS FN00": "<VP2M/K1ABC> KC3QIS FN00" is
-> not a message this library can put on the air. What was tried â€¦ standard, in
-> full, "<VP2M/K1ABC>" / "KC3QIS" / "FN00" would not pack: FirstCallInvalid â€¦
+**Not in the way of anything in B.** The estimator is report-only; it changes no ratio, no gate, no
+count and no decision, and step 1's four criteria are decode-rate and wrong-count criteria measured
+with no estimator in the loop.
 
-I expected that string to compose and arm, and the tree said otherwise; the test
-records the measured truth rather than my expectation. The second half of the
-rule is kept anyway, because it costs nothing and a guard written on the flag
-alone would refuse such a message for the wrong reason if the composer ever
-accepted one. **Nothing is asked here** â€” it is a note for whoever picks up the
-parked question of offering him a way to send a nonstandard callsign.
+### 2. Recorded, not a ruling request: two mismatches between the work instruction and the tree
 
-### 3. Step D's criterion 1 has a clause the instruction did not quote
+Both are reported per `PHASE_PLAN.md`'s named-alternatives table and neither was repaired. First,
+the bare-port cell-centre figure of 6 of 306 is not in `Ft8Unit256CrossingIntervalTests`'s table; it
+is a remark in unit 257's doc comment. Second, task 6 asks that only `Ft4WaterfallGeometry.cs` move
+under `src/Ft8Sharp/`, while task 8 requires bumping a version that lives at
+`src/Ft8Sharp/Directory.Build.props`. Two files moved there and both are named.
 
-`PHASE_PLAN.md:246` reads *Tim sets the Transmit drive control and reads the dBFS
-**and clip count** under the waterfall*. The instruction quoted it without the
-clip count, and **no clip count is recorded anywhere** â€” `grep -rn clip
-SHACK_FACTS.md` returns nothing. I moved the cursor to `done` on the arbiter's
-decision, which named FACT-005 as answering all three criteria and is not this
-unit's to re-argue, and I am naming the gap so it can be reversed by a reader who
-judges otherwise. My own reading: a peak of 0.25 cannot clip, so that reading is
-arithmetically forced and its absence from the record is a bookkeeping gap rather
-than an unanswered question. The two must-pass criteria that genuinely blocked
-step D â€” his ALC in his words, and the number written down â€” are answered without
-qualification.
+### 3. Recorded, not a ruling request: 4x8 was not run
 
-### 4. Step E's line in the tree says `blocked`, not `in progress`
+The instruction lists it as conditional on the clock. It carries frequency oversampling 8, the axis
+two grids had already shown destructive for a reason read out of `Ft8Monitor`'s source, and it cost
+ten minutes to confirm a third collapse. **A sizing decision this session made, reported as one.**
 
-`PHASE_OUTCOME.md`'s header reads `STEP: E | blocked | Tim works a station`,
-while the instruction and the `ARBITER-DECISION` block both say `in progress`.
-The instruction says not to touch step E's line, so it was not touched. The
-arbiter's own append is what resolves it. Reported, not repaired.
+### 4. Recorded, not a ruling request: five untracked files are still carried
 
-### 5. The click-driven test was built and not run â€” a conflict inside the instruction
+`.unit290-commit.txt`, `.unit295-msg.txt`, `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`,
+`tools/census15.sh`, `tools/unit294-thread-grid.py`. **Five, unchanged. No attempt was made to
+remove them** - six sessions have measured the harness refusing it. This session added a sixth,
+`.unit296-msg.txt`, used to carry commit messages past a shell that will not hold a heredoc
+containing an apostrophe; it is the same kind of file as `.unit295-msg.txt` and is left with them.
 
-Task 2 requires the test to be *driven from the operator's click rather than from
-a constructed transmitter*. The click lands on
-`MainWindowViewModel.SendMessageCommand`, which lives in `Hamlet.App`;
-`Hamlet.RadioEngine.Tests` references only the engine and cannot reach it, and
-the instruction forbids running `Hamlet.App.Tests`. Resolved by doing both:
-`tests/Hamlet.App.Tests/ViewModels/TheSendPathRefusesWhatNobodyCanReadTests.cs`
-drives `SendMessageCommand.Execute` and reads `DigitalSendLine`, and is **built
-and not run**; the runnable measurement is
-`HamletDoesNotKeyWhatNobodyCanReadTests`, which makes the send path's own three
-calls with its own arguments against the **real** `Ft8ArmedSend`,
-`Ft8TransmitSequence`, fake port and fake sink. **What I cannot claim on a run
-tonight is that the guard is reached from the click itself** â€” only that the
-guard is correct and that the view model calls it. Said plainly rather than
-glossed.
+**Nothing else is blocking.** Step 1's four exit criteria are met, the two closing steps are Tim's,
+and the one number that decides whether his night at the radio works is measured and moved.

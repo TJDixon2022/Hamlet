@@ -273,6 +273,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
             $"Sends “{ActionMessage}” to {Callsign}, once, in the next "
             + "slot. The ring beside this button is the seconds left to press it. "
             + "One press is one transmission and nothing here sends on a timer.",
+        // **A RECEIPT IS NOT AN EXCHANGE WITH ANYBODY** (R1, R2). The wording below
+        // names the other station, and on a call to anybody there is not one - it read
+        // *what passed between you and CQ*, which is the same fault as the country
+        // line, one hover further down.
+        Ft8CardActionKind.Log when IsCallToAnyone =>
+            "Opens the log window with your own call already filled in, so you can "
+            + "look at it before anything is written down. It transmits nothing.",
         Ft8CardActionKind.Log =>
             $"Opens the log window with what passed between you and {Callsign} "
             + "already filled in, so you can look at it before anything is written "

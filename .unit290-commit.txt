@@ -1,0 +1,12 @@
+docs(unit290): the report names its third leftover file
+
+.unit290-commit.txt is untracked litter of the same kind as
+tools/census15.sh - written to carry task 6's commit message once
+.commit-msg.txt had been restored to its committed content, and the sandbox
+refuses to delete it. The report said two leftovers and there are three.
+
+Nothing else moved. All seven validator rules still pass by hand: the
+ordering block at line 1, the UNIT: line at 33, the four sections at 48,
+205, 261 and 544 with no fifth.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

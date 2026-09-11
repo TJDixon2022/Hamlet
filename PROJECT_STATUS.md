@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 5
+STATE: COMPLETED
+TASK: 5 of 5
 WORK_INSTRUCTION: 310 - two kinds of card, a panel that holds all of them, and a map you can open
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-10T21:50:44-04:00
-NOTE: Task 4 green - the map row is 220 x 120 whatever the card width. Task 5 next.
+UPDATED: 2026-09-10T22:05:18-04:00
+NOTE: Unit 310 complete, none dropped. Two card types, the panel holds all, the map fits and opens.
 
 ---
 

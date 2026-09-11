@@ -2,7 +2,9 @@ Carry-forward tests
 ===================
 
 Unit 307 was to create this file and never ran; unit 309 created it from the
-fallback list in its own instruction, section 1f.
+fallback list in its own instruction, section 1f. Unit 310 added its own five,
+plus VoiceTests, which sweeps every string the operator can read and which any
+unit adding copy should run.
 
 WHAT THIS IS. The test names a unit runs, filtered by exact name and
 foregrounded, BEFORE it changes anything - so that a red found afterwards can be
@@ -27,6 +29,11 @@ TheNudgeHoverTests
 ThePressingOfCqTests
 TheReadinessHoverTests
 TheSlotClockTests
+TheCqReceiptTests
+ThePanelHoldsThemAllTests
+TheMapRowFitsTests
+TheMapOpensTests
+VoiceTests
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj

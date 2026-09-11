@@ -109,6 +109,33 @@ public sealed class TheCqReceiptTests
         Assert.Equal("Portugal", DxccPrefixes.EntityOf("CQ7ABC"));
     }
 
+    /// <summary>**The log hover does not name a station either.**</summary>
+    /// <remarks>
+    /// **THE SAME FAULT AS THE COUNTRY LINE, ONE HOVER FURTHER DOWN** (R1, R2). It read
+    /// *what passed between you and CQ*, which is the card's conversation wording with
+    /// the literal string dropped into it. Found while quoting the receipt word for word
+    /// into the report, which is the value of quoting it.
+    /// </remarks>
+    [Fact]
+    public void TheLogHoverDoesNotNameAStationEither()
+    {
+        var model = Panel();
+
+        model.SendCallToAnyoneCommand.Execute(null);
+
+        var receipt = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine("tip: " + receipt.ActionTip);
+
+        Assert.DoesNotContain("CQ", receipt.ActionTip, StringComparison.Ordinal);
+
+        Assert.DoesNotContain(
+            "between you and", receipt.ActionTip, StringComparison.Ordinal);
+
+        // **AND IT STILL SAYS THE THING THAT MATTERS** (§0.2).
+        Assert.Contains("transmits nothing", receipt.ActionTip, StringComparison.Ordinal);
+    }
+
     /// <summary>**Nothing on the receipt says *he*, or *not answered*.**</summary>
     [Fact]
     public void NothingOnTheReceiptSaysHeOrNotAnswered()

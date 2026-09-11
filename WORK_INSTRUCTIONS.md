@@ -1,658 +1,602 @@
-# Work instruction 292 - pressing FT4 tunes and decodes FT4
+# Work instruction 310 - two kinds of card, a panel that holds all of them, and a map you can open
+
+---
+
+## 0. The project gate
+
+**This instruction is for Hamlet and nothing else.** Confirm the tree:
+
+| check | expected |
+| --- | --- |
+| `SHACK_FACTS.md` | exists at the root |
+| `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` | exists |
+| `CoreHMI.sln` | **must not exist** |
+| `MURC.sln` | **must not exist** |
+| root | `C:\Source\HamLet` |
+
+The extraction gate beside the zip already ran these four. **If any is wrong now, stop
+and say so in `output.md` section 4. Write nothing else.**
+
+---
+
+## 1. The two rules that killed sessions
+
+Both HM-DEC-155, Tim, 2026-09-05.
+
+**1. A unit runs no test suite.** Not `dotnet test`, not a whole project, not a whole
+type unless the unit wrote the whole type. **Only this unit's own test names, filtered by
+exact name, foregrounded, with a stated timeout:**
 
 ```
-STOP. Verify the project before reading any further.
-
-PROJECT: Hamlet
-
-Check the repository root:
-  MUST EXIST:      SHACK_FACTS.md
-  MUST EXIST:      src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs
-  MUST NOT EXIST:  CoreHMI.sln
-  MUST NOT EXIST:  MURC.sln
-
-If all four are not as stated, you are in the wrong repository.
-REFUSE. Do not read the rest of this file, do not summarise it, do not
-adapt it to whatever project you are actually in, and change nothing.
-Reply with only: the path you are in, which checks failed, and
-"wrong project - nothing done."
-
-If all four hold, say "Hamlet confirmed" and continue.
+timeout 480 dotnet test <project> --filter "FullyQualifiedName~TypeName.MethodName"
 ```
 
-*The four checks were run against this tree while authoring: `SHACK_FACTS.md` present,
-`src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs` present, `CoreHMI.sln` absent,
-`MURC.sln` absent. They are the project's four and not the arbiter's to change.*
+Known reds you did not cause are in section 10. **An unfiltered run finds them, spends
+twenty minutes, and tells you nothing about your work.**
+
+**2. Never background a command and poll it.** No `&`, no `start`, no `nohup`, no loop
+that sleeps and checks. **The watchdog fires at twelve minutes with no status write.** If
+something genuinely needs longer than 480 seconds, that is a finding for section 4.
 
 ---
 
-## THE TWO RULES THAT KILLED SESSIONS
+## 2. The tool fact
 
-**Tim's rulings of 2026-09-05, HM-DEC-155.**
-
-**1. A unit runs no test suite.** **Only the unit tests it constructs or rewrites in
-this work instruction**, filtered by exact name, foregrounded, with a stated timeout.
-**An unfiltered `dotnet test` on any project is forbidden.**
-
-**2. Never background a command and poll for it.** The watchdog fires after twelve
-minutes with no status write.
-
-`dotnet build` is allowed, foregrounded, with a timeout.
-
-**Tool fact, eighteen units old:** this shell will not carry a quoted heredoc
-containing an apostrophe, and it collapses a doubled backslash inside one. Use script
-files. **Keep apostrophes out of arguments to the arbiter scripts.**
-
-**Tool fact, and it is now measured three times running.** Units 289, 290 and 291 all
-reported that their shells refused every `.bat` in every invocation form tried. Unit 291
-was told the authoring session had run `./tools/arbiter/outcome-read.bat` successfully
-and was told not to assume the refusal; **it tried exactly that form and was refused
-anyway.** **The authoring session for this instruction ran `outcome-read.bat` again, and
-again it worked here.** So the two environments demonstrably differ, and **you are the
-one that has been refused three times.** Try the one form once, and **the moment it is
-refused, go to the file-editing tools and do not spend another call on it.** Task 5 says
-what to write instead.
+**The shell here breaks on an apostrophe inside a quoted heredoc, and it collapses a
+doubled backslash.** Write *do not* rather than `don't` inside a quoted heredoc. Write
+single backslashes in paths, or forward slashes. **Check what landed on disk rather than
+what you typed.**
 
 ---
 
-## Why this unit exists
+## 3. The asks queue
 
-**This is the fifth unit of the phase and the fourth that builds anything.**
+Carried per HM-DEC-139. **All of these come back in `output.md` section 4, verbatim where
+unresolved.** Do not answer them yourself; do not delete one because it looks stale.
 
-**The count today.** Step 0 `done` in one unit. Step 1 `partial` after one unit. Step 2
-`partial` after one unit. Step 3 `done` in one unit. **Steps 4, 5 and 6 are `not started`
-and no unit has been spent on any of them.** Drift is 0 units without advance.
-`outcome-read.bat` was run while authoring and confirms every one of those counts.
+1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
+   still Tim's: `Played` stays a statement about what the audio path did; a second,
+   separate fact says what the radio did, read from `1C 00` and `15 11`, which Hamlet
+   already polls four times a second; **unknown** where the radio does not answer.
+   Touches what the display asserts, so Tim's without exception (§12.1).
+2. **Nothing in this repository can look at a picture.** Ten units have reported every
+   appearance claim as computed rather than seen, and **three faults in the last two
+   units were things asserted green that were not on the screen.** Real pixels want
+   `Avalonia.Headless.Skia`, and **a package is Tim's, not a session's** (§0.4).
+3. **Three inherited reds, never chased.** Two in `TheAchievementsScreenTests` -
+   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` -
+   and one in `TheFitGuardAsksAboutTheGridTheSendIsOnTests`, **in the engine test
+   project**.
+4. **The two-answer CQ rule. RULED and superseded** - see section 6. The unit 305
+   proposal (first answer adopts the CQ card) is **withdrawn**. Report it closed.
+5. **Where the explanatory hover wording lives, if anywhere.** `Ft8ContactCard.Closing`
+   is uncalled and left standing.
+6. **Where the globe lives. Closed.** The map is a row on the card face and Tim has
+   accepted it: *"I like the map, and how it is placed in the card."*
+7. **The full-disc polar image. Superseded** by Tim's ruling of 2026-09-10.
+8. **`Ft8GlobePlot`'s unused framing constants** - `MapWidth`, `MapHeight`, `Margin`,
+   `SmallestFrame`. Report; leave standing.
+9. **The licence of `assets/world-flat-relief.png` is unknown.** In the tree by Tim's
+   ruling, no watermark, no recorded origin, and Hamlet is GPL-3.0. See
+   `assets/PROVENANCE.md`. **Raise; do not resolve; write no licence claim anywhere.**
+10. **`PHASE_OUTCOME.md` has a hole** - no `UNIT 306`, no `UNIT 307`, and possibly no
+    `UNIT 309`. **Append this unit; report the hole; do not back-fill.**
+11. **The door sentence is a placeholder.** `new area · would open something you have not
+    seen yet`. Wording is the product (§3.5) and Tim has given no ruling. Carry it.
+12. **Acknowledgement indicators.** Tim named these as one of four things wrong with the
+    screen and the author has not established which of two things he meant. **Not in this
+    unit. Build nothing for it and do not guess at it.** Carry the item.
+13. **Card ordering under scroll.** New this unit, and Tim's when he wants it: with
+    conversation cards unlimited and a vertical scroll, a card he is mid-exchange with can
+    scroll out of view, and arriving cards can move what is under his pointer. **Task 3
+    must not invent an ordering rule beyond what section 6 states. Raise it.**
 
-**Steps 5 and 6 are Tim's, at his radio. So step 4 is the last bench step in the phase,
-and everything still unattended is inside it.**
+---
 
-**Step 4's entry is steps 1, 2 and 3, and all three are answered.** Step 1's remainder is
-the **4.48 against 5.04** transmission figure, which is with Tim and which no unit may
-settle - the decoder, the round trip and the zero wrong decodes are all met. Step 2's
-remainder was **booked to step 4 by unit 291's arbiter on the record**: the five
-on-screen sentences still naming fifteen seconds, the transmit guard, and the two
-training-path copies all need a mode threaded to them, and **this is the unit that
-threads it.** Step 3 is `done` on all four criteria.
-
-**Step 4 is being taken in two units, and this is the first of them.** Its four criteria
-split on a seam the tree put there rather than one the arbiter drew:
-
-| | Criterion | This unit |
-|---|---|---|
-| 1 | pressing FT4 tunes to the band's FT4 frequency **and decodes**, through the same path the FT8 button uses | **yes** |
-| 2 | the panel, conversation, ring, filters, tooltips, ledger and right-click menu all work unchanged, and the report names anything that did not | **yes** |
-| 3 | one click, one transmission, through the same abort | **no - unit 293** |
-| 4 | a whole exchange from one right click at the bench, transmit endpoint on a loopback | **no - unit 293** |
-
-**Why the split, measured while authoring rather than assumed.** The receive half has its
-seams already cut and unpressed. The transmit half **has no FT4 in it at all**: `grep FT4`
-over `src/Hamlet.RadioEngine/Transmit/` and `.../Contacts/` returns nothing, `Ft8Composer`
-composes FT8 alone, and `Ft8TransmitSequence`'s guard at `:497-530` measures against the
-literals `Ft8Slots.SlotSeconds` and `Ft8Slots.TransmissionSeconds`. **Composing an FT4
-waveform for the air and re-proving the abort through it is a unit's work on its own**,
-and criterion 3 is one of the three things `PHASE_PLAN.md` says the arbiter may not reason
-past. **A keying path done in the last hour of a long unit is exactly the thing that
-ruling exists to prevent.** So the transmit half gets its own unit with room to do it
-properly, and this one does not go near it.
-
-**Expect step 4 to be read `partial` after tonight. That is the plan and not a
-shortfall.** Two of four criteria met, with the other two named and booked, is what this
-unit is for.
+## 4. Why this unit exists
 
 ```
-PHASE GOAL:   FT4 works exactly the way FT8 does.
-UNIT GOAL:    Pressing FT4 on the Digital tab tunes to the band's FT4 frequency and
-              decodes FT4 off the air, on a 7.5 s grid, through the same path the FT8
-              button uses - and everything around it either still works or is named.
-ADVANCES:     step 4, exit criteria 1 and 2. It also discharges step 2's remainder,
-              which unit 291's arbiter booked here.
+PHASE GOAL: FT4 does everything FT8 does.
+UNIT GOAL:  Make the card panel model what is actually true - a call to nobody is
+            not a conversation, and a conversation is not the only one there is.
+            Then make the map fit its row and open when clicked.
+ADVANCES:   Step 4, criterion 2 - the panel and the conversation working. Shared
+            FT8/FT4 surface, so it lands on both modes at once.
+DRIFT:      carried. Read PHASE_OUTCOME.md in task 1 and carry the number forward.
 ```
 
-**Why the trace comes first, and it is sharper this time than a stale sentence.** The
-Digital tab already keeps **two different facts about the mode apart on purpose**:
-`DigitalModeChip.IsLit` is *the dial is inside this mode's block, and the map is what
-answers*, and `IsChosen` is *this is the chip he pressed*. `DigitalModeChip.cs:70-78`
-records that they disagree often and that **merging them would make a remembered press
-look like a reading of the radio.** There is a third appearance for exactly that case,
-`IsChosenElsewhere` at `:40`.
+**One fault underneath most of this.** The panel has a single card type and a single
+card slot. Everything below is what that costs.
 
-**So there is a wrong answer available to this unit that would look right.** Decoding a
-slot as FT4, cutting it on a 7.5 s grid, or logging a contact as FT4 **because a chip is
-lit** would be Hamlet asserting a measurement from a preference - and if it reaches the
-log it is §0.0 in the one place `PHASE_PLAN.md` says outlives everything else. **Task 1
-settles which fact drives the grid and the decoder before task 2 threads anything.**
+### Fault 1 - a call to nobody is being drawn as a conversation
 
----
+`assets/screenshot-cq-card-wrong.png` is Tim's screen after pressing CQ. On it:
 
-## Verify this instruction against the tree
+- the header reads **`CQ  Portugal`**. **`CQ` is a real Portuguese prefix** - CT, CR and
+  CQ all belong to Portugal - so the DXCC lookup ran on the string `CQ` and matched.
+  **Hamlet has labelled the operator's own general call as a station in Portugal.**
+- the body reads **`You called CQ and he has not answered yet.`** **There is no him.**
+  He called everyone. *Has not answered yet* frames ordinary silence twenty-three
+  seconds into a slot as a station failing to come back.
+- the button reads **`Waiting on him`**. Same fault.
+- the caption reads **`Hamlet does not know where CQ is. He has not put a grid square on
+  the air, and a callsign only names a country, which is not a point on a map.`** That
+  sentence was built by unit 306 for a real station who sent no grid. **Applied to a CQ
+  it explains the whereabouts of something that does not exist.**
+- there is a **map row with an empty map** on it.
 
-**Nothing here describes the tree.** Check every claim and report mismatches. **Report
-them; do not repair the instruction.** Unit 289 found four mismatches in its own
-instruction, unit 290 found one understatement, and unit 291 found none in the
-instruction but two elsewhere - **reporting them was worth more than a silent correction
-would have been every time.**
+**None of these is a separate bug.** They are all conversation-card behaviour running on a
+card that has no conversation, with the other station set to the literal string `CQ`.
+Unit 305 already booked CQ under `Ft8ContactLedger.CallToAnyone`, so the **ledger** knows
+the difference. **The card does not.**
 
-**Every line below was read from the tree while authoring, at HEAD `9449d02`.**
+**And it may be poisoning the nudge.** If the entity for a row or card is read the same
+way anywhere else, **the operator's own CQ resolves as Portugal**, which is a worked or
+unworked country that he never called.
 
-- **Root version is `1.12.229`** (`Directory.Build.props:393`) and **`Ft8Sharp` is at
-  `0.11.0`** (`src/Ft8Sharp/Directory.Build.props:438`). **Read them, do not assume** -
-  the previous instruction said `1.12.223` and unit 291's six commits moved it.
-- **`_digitalGrid` is `SlotGrid.Ft8` and nothing in the application changes it**
-  (`MainWindowViewModel.cs:1661`). `DigitalGrid` at `:1675` is the reader;
-  **`UseGridForTests` at `:1684` is the only writer and its own remark says *nothing in
-  the application calls this*.** **This is the seam unit 290 cut and left unpressed, and
-  its remark names step 4 by number.**
-- **`SlotGrid` is a record struct at `src/Hamlet.RadioEngine/Audio/Ft8Slots.cs:137`**,
-  with `SlotGrid.Ft8` at `:140` and **`SlotGrid.Ft4` at `:153` reading both its numbers
-  from `Ft8Sharp.Ft4Timing`.** `Ft8SlotWatch.Grid` at `Ft8SlotWatch.cs:98` is an
-  `init` property defaulting to `SlotGrid.Ft8`.
-- **The chip press already tunes, and this is the part that is not new work.**
-  `ChooseDigitalModeAsync` at `MainWindowViewModel.cs:1039` canonicalises the label,
-  records the choice at `:1052` **whether or not the tune takes**, and calls
-  `TuneToDigitalModeAsync` at `:1059`, which reads `DigitalCallingFrequencies.Find` at
-  `:1062` and says why nothing moved where there is no row (`:1064-1081`).
-- **The band data has five `FT4 sprint` rows** - `data/bands/us-neighborhoods.json` at
-  `:155`, `:291`, `:578`, `:865` and `:1004`. **Count them yourself and say which bands
-  they are**, because criterion 1 is *the band's FT4 frequency* and a band with no row is
-  a legitimate refusal rather than a failure. `MainWindowViewModel.cs:1067` already
-  records that the cited data has **no FT4 on 30 m or 17 m**.
-- **The decode path is FT8-only by construction.** `OnSlotTick` at `:8928` arms nothing
-  and returns early off the tab; `DecodeTheSlotAsync` at `:8979` calls **`Ft8Reader.Read`
-  at `:8986`**, and `ShowDecodes` at `:8896` calls the same reader at `:8899`.
-  **`Ft8Reader.Read` at `Ft8Reception.cs:421` takes an `Ft8DeepSlotDecoder?` and defaults
-  it to Deep with both stages on at `:460`.**
-- **The FT4 decoder exists and is the port's, not Deep's.**
-  `src/Ft8Sharp/Dsp/Ft4SlotDecoder.cs:41`, with `Ft4WaterfallGeometry`,
-  `Ft4SyncSearch` and `Ft4SoftSymbols` beside it, all built by unit 289.
-  **There is no `Ft8Sharp.Deep` FT4 decoder of any kind.** `Ft4SlotDecoder.Decode` takes
-  a span of samples at `:112` or a waterfall at `:117`, and exposes `CandidateLimit`,
-  `MinimumScore`, `FirstBlockOffset` and `LastBlockOffset` at `:96-105`.
-- **The sidecar records which decoder read a slot.** `Ft8DecoderIdentity` at
-  `Ft8Reception.cs:292`, with `Port` = `"Ft8Sharp"` at `:301` and `Unrecorded` at `:298`,
-  and its own remark at `:274-291` says a sheet that did not know **carries `Unrecorded`
-  rather than naming a decoder it is guessing at.**
-- **The one write path into the log hands in `ContactModes.Named("FT8")`** at
-  `MainWindowViewModel.cs:10285-10299`, and the comment unit 291 left there says in its
-  own words that **what makes that line say anything else is the Digital tab's mode
-  wiring, which is step 4's.** `Ft8StationConditions.Mode` is a `ContactMode`, not a
-  string, so **the mode threads as one object and `MODE`/`SUBMODE` cannot be set to
-  disagree.**
-- **The transmit guard is FT8's, in literals.** `Ft8TransmitSequence.cs:497-530` tests
-  `send.StartSecondsIntoSlot >= Ft8Slots.SlotSeconds` and computes
-  `left = Ft8Slots.SlotSeconds - send.StartSecondsIntoSlot`. **Read it, name it in the
-  report, and change nothing in it. It is unit 293's.**
-- **`DigitalModeChip.Labels` at `:60` carries the owner's four**, `Canonical` at `:111`
-  drops a fifth, and `IsChosenElsewhere` at `:40` is the appearance for *pressed here,
-  dial elsewhere*. `ChosenDigitalMode` is at `MainWindowViewModel.cs:322` and is read
-  back out of settings at `:4335`.
-- **`TheWholeChainRunsFromOneRightClickTests` is unit 268's and needs a real render
-  endpoint**, and its own remark at `:45-48` says **a machine with no endpoint says so
-  and stops, and that is a fact about the machine and not a failure.** **Do not run it;
-  it is criterion 4 and it belongs to unit 293.** It is described here only so you know
-  what is already built and do not rebuild it.
+### Fault 2 - the panel holds one card
 
-**Expected failures and expected awkwardness. None of these is a defect to chase.**
+Tim: *"seems like I'm limited to one contact card at a time. When I start a 2nd
+conversation it replaces any existing card I have."*
 
-- **An FT4 decode cannot be compared with the port**, because `compareWithThePort`
-  compares Deep against the port and **there is no Deep FT4.** If the settings flag is on
-  and the mode is FT4, the honest answer is that no comparison ran. **Say so; do not
-  invent one and do not silently drop the flag.**
-- **A test that asserts the Digital tab is on a fifteen-second grid may go red for the
-  right reason.** If one does, say which, say why, and **fix the test rather than the
-  behaviour** - but if fixing it means changing what the screen *asserts to the operator*,
-  stop and report it instead.
-- **Four inherited red tests were found by unit 290** and are named in its section 4: two
-  in `TheSheetSaysWhichAudioPathItRanOnTests`, `TheDecodedTableIsRealTests.
-  NoInventedDecodeIsLeftInTheMarkup`, and `TheTabHearsEverySlotTests.
-  AFullTableStillSaysNothingAboutWhatAMessageMeans`. **They are not on the known-reds list
-  and the ruling on them is with Tim. Do not chase them and do not add to them.**
-- **Three untracked leftovers are still in the tree** and neither unit 290 nor 291 could
-  delete them - `.unit290-commit.txt`, `tools/census15.sh` and
-  `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`. Task 5 says what to do.
+**That makes his own ruling impossible.** Two stations answering one CQ must produce two
+conversation cards; if the second replaces the first, the second answer wipes a station he
+is mid-exchange with off the screen.
 
-Known reds, inherited, **never chased**:
-`CwAdjudicationTests.ASpeedChangeInRealisticAudio`; the 51 CW cases in
-`docs/unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests` whole-type-list tripwire;
-`HM-OPEN-088`'s ten.
+**Establish whether the first card is destroyed or merely hidden.** If the ledger still
+holds the first exchange and only the panel dropped it, this is a display fault and the
+history survives. **If the first conversation is discarded, he can lose a contact he was
+part-way through logging**, and that is a different severity behind an identical screen.
+
+### Fault 3 - the map row does not fit the map
+
+`assets/screenshot-conversation-card-grey.png` is Tim's screen, and **the line and both
+markers are working on it** - a ring at `FN00DJ`, a filled marker at `KL94`, and the arc
+bending north over Europe to Saudi Arabia, which is the right path. Tim: *"BETTER, BUT
+WHY THE WASTED SPACE ON THE RIGHT."*
+
+**The bitmap is 698 x 381, an aspect of 1.8320.** The row is being given the card's full
+width and the image is fitting to the row's height, so the remainder of the row is empty
+grey. **Tim has ruled which way it is fixed** - section 6.
+
+### Not a fault - what Tim wants added
+
+**Click the map and it opens in a popup with a dismiss X, zoomed to the path.** Task 5.
 
 ---
 
-## Rulings in force
+## 5. Verify this instruction against the tree
 
-**Transcribed in full. Not to be re-argued by any unit, including this one.**
+**The author does not know whether unit 309 ran.** Its zip was delivered; no report has
+been seen. `assets/screenshot-conversation-card-grey.png` shows the line and both markers
+working, which is what unit 309's task 2 was written for, so **something changed** - but
+that is inference, not a finding.
 
-**Tim's, 2026-09-08:**
+**Task 1 establishes it.** If unit 309 did not run:
 
-- **FT4 works exactly the way FT8 does.** **Anything FT8 does that FT4 does not is a gap
-  to be named**, not a scope decision a unit may make. **This unit is where that ruling
-  bites hardest**, because criterion 2 is a list of seven things FT8 does.
-- **Where FT4's decoder lives is decided by what upstream does.** **Unit 288 read it and
-  the condition is satisfied: `ft8_lib` carries FT4, so the port carries FT4 and the
-  fidelity tests extend to cover it.** This question is closed. Do not reopen it.
-- **The first contact in each mode is an achievement, and the six are CW, FT8, FT4,
-  PSK31, WSPR and Voice.** Unit 287 built the card, unit 291 made the FT4 row light.
-  **Do not re-argue the six.**
+- **do not fold its tasks into this one.** Report it and **keep this unit's scope
+  exactly as written.** Its nudge work and its starter-card work stay its own and will be
+  re-issued.
+- **say so in one clear line in section 4**, because it changes what the owner does next.
 
-**Standing:**
+Named so the checking is concrete. **Report every mismatch; do not repair this
+instruction; do not stop over a mismatch** unless a task is impossible, in which case say
+which and why.
 
-- **`Ft8Sharp` remains a faithful MIT port.** `Ft8Sharp.Deep` is GPL-3.0. **Unit 289
-  already put the FT4 decoder in the port. This unit calls it and does not change it.**
-- **No algorithm comes from WSJT-X's source.** Published description only.
-- **A wrong decode is counted separately from a missed one, everywhere.**
-- **One click, one transmission.** Hamlet transmits because the operator clicked, **never
-  on a timer, never on a decode, never to continue a contact.** **`PHASE_PLAN.md` warns
-  that FT4's slots are half as long and the temptation is twice as strong.** Nothing in
-  this unit transmits and nothing in this unit touches a keying path.
-- **The abort.** Every path that keys the transmitter has a same-thread, no-await abort -
-  CI-V `0x17` with `0xFF`, PTT off as the fallback. **Not this unit's; it is unit 293's,
-  and it is why the transmit half was given its own unit.**
-- **§0.0 and §12.1: what Hamlet asserts to the operator.** A picture that makes a claim
-  nobody measured is the fault. **A remembered press is not a reading of the radio**
-  (`DigitalModeChip.cs:70-78`, HM-DEC-092).
-- **§0.2.1: no frequency written from memory.** The FT4 frequencies come from the cited
-  band data, and a band with no row moves nothing and says so.
-- **Every field is nullable and null means not observed.** A sheet that does not know
-  which decoder ran says `Unrecorded` rather than naming one.
-- **A unit may not add a test without naming the breakage it would have caught.**
+- `Ft8ContactCard`, and what builds it - unit 306 reported `Ft8ContactCard.cs:326` for
+  the plot and `_operatorGrid` at `:81`. `Ft8ContactCard.Closing`, uncalled.
+- `Ft8ContactLedger.RecordSent`, `Ft8ContactLedger.CallToAnyone`, `IsCallToAnyone`, and
+  whatever unit 305 built for `Adopt`.
+- `Ft8GlobeControl`, `Ft8GlobeControl.WordsAt`, `Ft8GlobePlot`, `Ft8GlobePlot.OffTheMap`.
+- `FlatWorldImage`, `FlatWorldMap.Relief`, `GreatCirclePath`.
+- `DxccPrefixes.EntityOf` - **and whether anything guards it against the string `CQ`**.
+- Whatever unit 309 added, if it ran: `TheConnectionLineReadsTests`, the control-space
+  stroke and marker sizing, `docs\carry-forward-tests.txt`.
+- Tests: `ThePressingOfCqTests` (5, app), `TheGlobeOnTheCardFaceTests` (4, app),
+  `TheGlobeLineTests`, `TheGlobePlacesStationsTests`, `Unit299GlobeTests` (14 between
+  them, app), `TheCqListNudgeTests` (9, app), `TheNudgeHoverTests` (5, app),
+  `TheFlatWorldAssetTests` (5, engine), `TheGreatCirclePathTests` (7, engine),
+  `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`.
 
 ---
 
-## The questions that are with Tim, and how this unit stays clear of all four
+## 6. Rulings in force
 
-**Do not settle any of them, and not from memory.**
+**Tim, 2026-09-11. These are the rulings this unit carries out. Transcribed. No
+`HM-DEC-` id has been assigned to any of them; do not invent one.**
 
-1. **FT4's transmission: 4.48 seconds or 5.04?** Raised by 288, carried by 289, 290 and
-   291. **`SlotGrid.Ft4` already reads both numbers from `Ft8Sharp.Ft4Timing` and the
-   constant lives in one file**, so a ruling costs one edit. **Thread the grid; do not
-   type either figure into a new place**, and **do not put a transmission length on the
-   screen** where a slot length will do.
-2. **The version scheme.** HM-DEC-150 against what `Directory.Build.props` has been
-   doing. **With Tim since 288.** Bump as instructed below and do not resolve it.
-3. **Unit 289's widened FT4 candidate sweep, -10 to 51 blocks.** With Tim for
-   confirmation. **You will be calling the decoder that has it. Call it; do not retune
-   it**, and if a decode misses, report the miss rather than widening anything.
-4. **The four inherited reds unit 290 found.** **Do not chase them.**
+**R1 - there are two card types.**
 
----
+> *"There are two card type: my CQ and a conversation"*
 
-## Status cadence
+A **CQ receipt** has no other station. A **conversation card** has one. They are not one
+type with a station field that sometimes holds the string `CQ`.
 
-After each task, before starting the next, update `PROJECT_STATUS.md` per `CLAUDE.md` -
-`STATE`, `TASK: n of m`, `BALL`, `UPDATED` **read from the clock, not composed**, and
-`NOTE` saying what is moving inside the task. The same every ten minutes while a task is
-running. **Use the file-editing tools if the shell refuses.**
+**R2 - the CQ receipt is short.**
 
-*Unit 289 reported its intermediate `UPDATED:` stamps were composed rather than read and
-ran an hour and a quarter fast. Read the clock.*
+> *"the CQ Card is short - just a note that I transmitted it. Placeholder until it is
+> answered"*
 
----
+So the receipt carries: **what was sent, when it was sent, a Log option, and a dismiss
+X.** It carries **no callsign, no entity or country, no grid, no distance, no bearing, no
+pronoun, no map row, and no caption**, because none of those is true yet. **It is a
+placeholder and should read as one** - quieter than a conversation card, not the same
+frame with empty slots in it. **Empty slots are what produced Portugal.**
 
-## Tasks
+**R3 - one receipt, refreshed, never a second.**
 
-### Task 1 - the trace: which fact drives the mode, and where FT8 is welded in
+> *"It just sits there until I dismiss it. If I do another CQ it is not a new card, just a
+> refresh of the time slot"*
 
-**Reading and one test. Thread nothing in this task.**
+**The panel holds at most one receipt.** Pressing CQ again updates the existing one to the
+new slot. **If a second receipt ever appears, something is wrong.**
 
-**It runs first because the threading is mechanical and the choice underneath it is
-not.** Criterion 2 is *the report names anything that did not work unchanged*, and a unit
-that starts editing call sites produces a list of its own edits wearing a survey's
-clothes - which is the fault unit 290 avoided by running its census first.
+**R4 - the last call only, and no count.**
 
-- **Answer the question task 1 exists for, in the report, before task 2:** **which fact
-  drives the grid and the decoder - `IsChosen` or `IsLit`?** Read `DigitalModeChip.cs:30-94`
-  and `:40` first. **State the answer, and state what happens in the `IsChosenElsewhere`
-  case** - he pressed FT4 and the dial is in the FT8 block, or nowhere the map knows.
-  **Whichever you choose, say what the tab does with the disagreement**, because both
-  answers are defensible and only one of them can be on the screen.
-- **Walk the press path with file and line**: `ChooseDigitalModeAsync` (`:1039`) →
-  `ChosenDigitalMode` (`:1052`) → `TuneToDigitalModeAsync` (`:1059`) →
-  `DigitalCallingFrequencies.Find` (`:1062`) → the read-back. **Say which bands have an
-  FT4 row** and what the tab says on a band that does not.
-- **Walk the decode path with file and line**: `OnSlotTick` (`:8928`) → `_slotWatch.Look`
-  → `DecodeTheSlotAsync` (`:8979`) → `Ft8Reader.Read` (`Ft8Reception.cs:421`). **Name
-  every place between the press and a decoded row that is FT8 by construction rather than
-  by configuration**, and say for each whether it is a constant, a type or a default.
-- **Count the fifteen-second assumptions still standing on the Digital tab**, against unit
-  290's census. Unit 290 named five on-screen sentences, the transmit guard at
-  `Ft8TransmitSequence.cs:497-530`, the field-guide row and two training-path copies.
-  **The field-guide row was filled by unit 291, so that one is gone.** **Say what is left,
-  with file and line, and say which of them this unit's threading reaches and which it
-  does not.** This is the census half of criterion 2 and step 2's booked remainder in one
-  reading.
-- **Say what a slot decoded as FT4 must say about which decoder read it.** There is no
-  Deep FT4 (`Ft8DecoderIdentity`, `Ft8Reception.cs:292-305`). **A sheet claiming
-  `Ft8Sharp.Deep` read an FT4 slot would be naming a decoder that does not exist.**
+> *"just the last I don't want reminders of failures"*
 
-**The test to construct:** one test asserting, against today's code, **the starting
-position** - that with FT4 chosen the tab still cuts on a 15 s grid and still hands the
-slot to the FT8 reader. **Rewritten in tasks 2 and 3 to assert the right answers.**
-**The breakage it would have caught:** the FT4 button tuning the radio correctly and then
-decoding nothing for the rest of the evening, with no sentence anywhere saying why - which
-is what the tab does tonight.
+**No tally of how many times he has called.** Unit 305 built a *how many times sent*
+count into the CQ card; **it comes off.** The time alone says what is useful - that it is
+live and went out seconds ago - without scoring the silence.
 
-**Report this walk in section 3 whatever else this unit achieves.**
+**This extends to the wording.** *Has not answered yet* is a failure sentence even with
+the pronoun removed. **The receipt says what happened, not what has not happened.**
+`ACHIEVEMENTS_PHILOSOPHY.md` §2 is the same instinct applied to a different screen: a wall
+of blanks reeks of failure, and so does a rising number on an unanswered call.
 
-### Task 2 - the grid follows the chosen mode
+**R5 - the receipt retires; it is never adopted.**
 
-**Half of criterion 1, and all of step 2's booked remainder that this unit can reach.**
+> *"No, the placeholder goes away and two conversation card appear."*
 
-- **Give `_digitalGrid` a real route.** `UseGridForTests` (`:1684`) is the seam and its
-  remark says the real route does not exist yet. **Build it from the fact task 1 named**,
-  and **rewrite that remark to say what happened rather than leaving it predicting.**
-- **The grid must reach the watch and the cutter, not just the two sentences.**
-  `Ft8SlotWatch.Grid` (`Ft8SlotWatch.cs:98`) is an `init` property, and its own remark at
-  `:86-98` says why changing grid mid-flight is the hazard - **read it before you change
-  the grid at runtime**, and say in the report what happens to a slot in flight when the
-  operator presses a different chip.
-- **The two on-screen sentences must follow.** `DigitalModeStripLine` and
-  `DigitalWaterfallSummary` already read `DigitalGrid` (`:943`, `:2672`). **Assert they
-  say 7.5 with FT4 chosen and 15 with FT8 chosen**, and **assert neither states a
-  transmission length**, because the 4.48 against 5.04 question is Tim's.
-- **FT8 must be untouched.** **Assert that with FT8 chosen every boundary, every
-  countdown and every sentence is what it was before this unit** - unit 290 pinned FT8 at
-  3,888 tick-identical moments and that pin is your control. **If a tick moves, stop and
-  report it.**
-- **Tests run filtered by exact name, foregrounded, with a stated timeout. Report the
-  counts.**
+Anyone answers, **the receipt goes** and a conversation card appears for that station. **A
+second station answering gets a second conversation card.** Neither inherits the receipt.
+**The unit 305 adopt proposal - first answer adopts the CQ card - is withdrawn by this
+ruling.** The receipt otherwise leaves only when Tim dismisses it.
 
-**The breakage this catches:** the ring counting down 7.5 s while the cutter still cuts on
-15 s - two halves of the tab on different clocks, each of them internally consistent, and
-nothing on screen able to say which is right.
+**R6 - conversation cards are unlimited.**
 
-### Task 3 - the decode runs FT4's decoder, and the sheet says so
+> *"THE NUMBER OF CONVERSATION IS UNLIMITED WE HAVE VERTICAL SCROLL"*
 
-**The other half of criterion 1.**
+**Nothing replaces anything.** The panel holds N conversation cards plus at most one
+receipt, each card keyed to its station, with a vertical scroll.
 
-- **Route an FT4 slot to `Ft4SlotDecoder`.** `Ft8Reader.Read` (`Ft8Reception.cs:421`)
-  takes an `Ft8DeepSlotDecoder?` and defaults to Deep; `Ft4SlotDecoder`
-  (`src/Ft8Sharp/Dsp/Ft4SlotDecoder.cs:41`) is a different type in a different assembly
-  with the same `Decode` shape. **The shape of the seam is yours** - a second reader
-  method, a mode parameter, an interface, whatever the tree takes best. **Say in the
-  report why you chose it**, and **prove FT8's route is unchanged rather than describing
-  it as unchanged.**
-- **Do not change `Ft8Sharp`.** Unit 289 built the FT4 decoder and nailed it to upstream
-  symbol for symbol and sample for sample. **If you find you must change the port, that is
-  a mismatch worth reporting before it is a version bump.**
-- **The bench proof is Hamlet's own signal, and it is already available.** Unit 289 proved
-  the round trip through `Ft8Sharp`. **What is unproved is the application path**: audio in
-  at the tap, cut on a 7.5 s grid by the watch, read by the reader, arriving as a row.
-  **Drive that path with an FT4 recording this unit makes, and assert the decoded text
-  equals the text that went in.** **A test that calls `Ft4SlotDecoder` directly proves
-  unit 289's work again and this unit's not at all.**
-- **The sheet names the decoder honestly.** An FT4 slot was read by `Ft8Sharp`, **never by
-  `Ft8Sharp.Deep`, which has no FT4 decoder.** `Ft8DecoderIdentity.Port` at `:301` is the
-  value. **Assert it**, and **say what the sheet does with `compareWithThePort` turned on
-  in FT4** - there is nothing to compare against and `Unrecorded` exists for exactly the
-  case where nobody knows.
-- **Zero wrong decodes, counted separately from missed ones.** Tim's standing ruling, and
-  `PHASE_PLAN.md` repeats it. **Report both numbers even when one is zero.**
-- **Tests run filtered by exact name, foregrounded, with a stated timeout. Report the
-  counts.**
+**R7 - the map row shrinks to the map.**
 
-**The breakage this catches:** an FT4 slot handed to the FT8 decoder, which reads nothing
-from it, and a tab that draws an empty table on a live band - indistinguishable on screen
-from a quiet band or a wrong clock, which `MainWindowViewModel.cs:8884-8888` records as the
-commonest newcomer failure in this mode.
+> Of three options put to him - fill the row and crop, shrink the row to the map, or
+> stretch the map - **Tim selected the second.**
 
-### Task 4 - criterion 2: the seven things, each one measured
+**No grey filler, nothing cropped, the whole world stays whole, and the card gets
+shorter.** The map never gets wider than it is now. **Do not stretch the bitmap to fill a
+row**: it breaks the projection and every marker lands in the wrong place, which is the
+fault the measured constants exist to prevent.
 
-**Criterion 2 entire, and it is closed by naming rather than by fixing.**
+**R8 - the map opens.**
 
-`PHASE_PLAN.md`: *the panel, the conversation, the ring, the filters, the tooltips, the
-ledger and the right-click menu all work unchanged, **and the report names anything that
-did not***. **The criterion's own wording makes the report the deliverable.**
+> *"When I click on a map it gets enlarged"* … *"it is a popup with a dismiss X"* …
+> *"zoomed into path"*
 
-- **Take the seven in order and say for each: worked unchanged, worked with a change this
-  unit made, or did not work - with file and line for anything in the last two
-  categories.** Seven rows, no gaps. **A row you could not reach is `not reached` and says
-  why**; it is not `worked`.
-- **Under Tim's ruling, anything FT8 does that FT4 does not is a gap to be named, not a
-  scope decision.** **So name every gap you find and fix none of them that is not already
-  in tasks 2 and 3.** A gap named in this report is what unit 293 and step 6 are built
-  from.
-- **Two are already known to be gaps and are inherited from unit 291's walk**, which found
-  them and deliberately left them: `ContactLogRow` (`ContactLogViewModel.cs:32`) maps a
-  fixed column list with **no submode column**, and `LogContactViewModel.Fields` (`:72`,
-  the `Mode` row at `:95`) is written out by hand with **no submode row**. **Both are in
-  the ledger row of your seven.** They are the drop candidate in task 6 - **name them here
-  whether or not task 6 runs.**
-- **The right-click menu must be named against what it does today**, not against what it
-  will do when FT4 can transmit. **A menu entry that composes a reply Hamlet cannot send
-  is a gap, and it is unit 293's.** Say so; do not build it.
-- **No new test is required by this task.** If you add one, **name the breakage it would
-  have caught** - that rule has no exception.
+Task 5.
 
-**The breakage this catches:** step 4 being called done on a button that tunes and decodes
-while the ledger silently drops the mode, the conversation cannot follow a 7.5 s exchange,
-or the filters hide every FT4 row - each of them invisible from the decode table, and each
-of them something Tim would find at the radio in step 5 with no note anywhere saying it was
-known.
+**Rulings already in force and unchanged.**
 
-### Task 5 - bookkeeping
+**HM-DEC-155 (Tim, 2026-09-05)** - section 1. **Tim, 2026-09-10** - the map image, *"use
+this one, make it work."* **Tim, 2026-09-11** - *"We need a better line… I want to clearly
+see the connection line."*
 
-**File edits and two scripts. Do this even if task 6 is dropped, and do it before task 6.**
+**Tim, 2026-09-10 - four rulings on the CQ-list nudge**, carried but **not built in this
+unit**: the mark is a lift plus the quill vane in decode green `#3B6D11`; sticky per
+station with a cap of two counted over stations; **the achievement set is the source and
+no rarity ordering is to be invented**; a door is marked and never named.
 
-- **Append this unit's entry to `PHASE_OUTCOME.md`** through
-  `tools/arbiter/outcome-append.bat`. **Try `./tools/arbiter/outcome-append.bat` once** -
-  forward slashes, leading `./`, no `cd`, no apostrophes in the arguments. **The moment it
-  is refused, stop trying.** Three units have now measured that refusal and a fourth
-  measurement is worth nothing. Append with the file-editing tools in the format
-  `outcome-entry.py` produces, **say so on the entry's own face** as 289, 290 and 291 did,
-  and **commit the arguments the script would have been given** at
-  `tools/arbiter/unit292-append.bat` so the entry can be replayed rather than
-  reconstructed.
-- **`PHASE_OUTCOME.md` carries two `STATE_AFTER` verdicts for each of units 289, 290 and
-  291. Do not edit any of them.** The file's own rule is that the entries win. The
-  arbiter's reading of where they disagree is in this instruction's opening and in the
-  decision block, and it is the arbiter's to hold.
-- **`PHASE_STATUS.md`'s `STEP:` lines, `CURRENT_STEP:` and `HEARTBEAT:`: do not write
-  them.** They are the launcher's. Unit 291 reported them stale - `CURRENT_STEP:` reads
-  `1` - and **reporting it again is correct; repairing it is not.** Set
-  `WORK_INSTRUCTION:` only.
-- **`RULES_AT`:** units 289, 290 and 291 all reported that `CPS-DEC-` appears nowhere in
-  `CLAUDE.md`, `DECISIONS.md` or `PROJECT_STATUS.md`, that `HM-DEC-160` is this project's
-  spelling, and that the three files already agree. **There is nothing to repair.** The
-  reload still disagrees; **say it is the launcher's file and move on.**
-- **`tools/arbiter/validate-output.bat`:** try it once, same form. If refused, **the route
-  unit 243 built for exactly this deadlock is `dotnet build
-  tools/arbiter/validate-output.proj`**, which runs the real validator unmodified - unit
-  291 used it and got exit `0`. **Use that before you fall back to a hand check**, and if
-  you do fall back, **say plainly that a hand check is not the same thing as the script
-  exiting `0`.**
-- **The three untracked leftovers.** `.unit290-commit.txt`, `tools/census15.sh` and
-  `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`. **The third is a `.cs` file in a test
-  project and a fresh clone does not have it**, so the tree you test is not the tree a
-  clone builds - **three units old now and it is in section 4 as a standing item.**
-  **Remove all three if your shell allows it. If it refuses, say so and leave them - do
-  not commit them to make the warning go away.**
+**`ACHIEVEMENTS_PHILOSOPHY.md`, repository root, 2026-09-09.** §2 a wall of empty cards
+reads as failure - **R4 is this rule on the card panel**; §3.1 absent, not dimmed; §3.5
+the teaching is the product; §4 counts say **worked**, never **confirmed**, and nothing
+shames; **§0.0 / HM-DEC-092 never present a guess as a decode, and a picture binds as hard
+as a sentence - `CQ  Portugal` is exactly this fault**; §0.6 colour is never the only
+carrier; §0.5 / HM-DEC-012 family colour is text colour only; §0.5.1 / HM-DEC-087 grey is
+reserved for a control that cannot be used; **§0.2 one click, one transmission**; §0.1 the
+engine is never told tabs exist; §2.1 nothing personal in telemetry.
 
-### Task 6 - the ledger shows the submode
+**Unit 252** - the DXCC table, from the ARRL list, cited, silent where it declines.
 
-**NAMED DROP CANDIDATE.**
+**FACT-004** - a dev-machine result is an indication, never a finding. **FACT-006** - this
+machine has no radio and has never logged a contact.
 
-Unit 291 found both of these, named them, and deliberately left them because no step 3
-criterion touched them and a submode column would have shown an empty field on every FT8
-contact. **After tasks 2 and 3 a contact can be decoded in a mode that needs one**, so the
-argument has changed and this is where they land.
+**Tim, 2026-09-06 - the dummy load is withdrawn in full**, superseding HM-DEC-008 and
+HM-DEC-098. **No compensating control in its place.**
 
-- **`ContactLogRow` (`ContactLogViewModel.cs:32`, columns at `:41` and `:64`)** maps a
-  fixed list with a `Mode` column and no submode. An FT4 contact shows as `MFSK`.
-- **`LogContactViewModel.Fields` (`:72`)** is written by hand, `new("Mode", observed.Mode
-  ?? "", "MODE")` at `:95`, with no submode row. **The dialog shows the ADIF tag beside
-  every value**, so the submode row must carry `SUBMODE` the way the mode row carries
-  `MODE`.
-- **Absent is absent, on screen as in the file.** An FT8 contact has no submode and
-  **must not show an empty `SUBMODE` field or an empty column cell that reads as an
-  observation**. `AdifLog.cs:8-13`: null means not observed. **Assert the FT8 case, not
-  just the FT4 one.**
-
-**If this unit is running long, drop this task whole and say it was dropped.** **No step 4
-criterion depends on it** - criterion 1 is the tune and the decode, criterion 2 is the
-naming, and **task 4 names both of these gaps whether or not this task fills them.**
-**Do not drop it partly**: a log window with a submode column and a dialog without one is
-worse than neither, because the operator learns to trust one screen and not the other.
-
-**Criteria 1 and 2 closed with both gaps named is a good night. A submode column and a
-decode path half-threaded is not.**
+**HM-DEC-139** - the asks queue is carried inbound and outbound.
 
 ---
 
-## Parked - do not touch, do not raise
+## 7. Status cadence
 
-- **Everything that keys the transmitter.** `Ft8TransmitSequence`, `Ft8ArmedSend`,
-  `Ft8Composer`, `ITransmitAudioSink`, the abort, the PTT, the CI-V `0x17`. **Criteria 3
-  and 4, unit 293.** Read the guard at `Ft8TransmitSequence.cs:497-530` and **name it in
-  task 1's census; change nothing in it.**
-- **`TheWholeChainRunsFromOneRightClickTests` and `TheLoopbackThroughTheApplicationsSendPathTests`.**
-  **Do not run them and do not extend them.** They need a real render endpoint and they
-  are criterion 4's, which is unit 293's.
-- **Composing FT4 audio for the air.** There is no `Ft4Composer` and this unit does not
-  write one. **The FT4 waveform for a decode test is a test fixture, not a transmission** -
-  if you find yourself near `ComposeSignal` or a sink, you have wandered.
-- **The 4.48 against 5.04 figure**, **the version scheme**, **the -10 to 51 candidate
-  sweep**, and **the four inherited reds unit 290 found.** All four with Tim.
-- **`Ft8Sharp` and `Ft8Sharp.Deep` source.** Unit 289 built the FT4 decoder. **Call it.**
-- **The two field-guide frequencies unit 291 found disagreeing with the convention data** -
-  RTTY at 7.062 against 7.040, PSK31 at 7.065 against 7.070. **Needs a citation and a
-  ruling, and it is in section 4 already. Do not adjudicate it from memory.**
-- **The frequency table's missing 30 m and 17 m FT4 rows.** Needs a citation. **A band
-  with no row moves nothing and says so, and that is the correct behaviour.**
-- **PSK31 and WSPR as modes.** Their chips are on the strip and neither has a path.
-  **Nothing in this unit gives either one.**
-- **The achievements card.** Unit 291 finished it. The FT4 row still reads *waiting on
-  Hamlet* and **that stays true until unit 293** - Hamlet still cannot work a station on
-  FT4. **Do not light it early.**
-- **Automatic sequencing.** Still out, and FT4's shorter slots are the argument for it,
-  which is why it stays a ruling rather than a temptation.
-- **The whole asks queue** carried since unit 271.
+`PROJECT_STATUS.md` per `CLAUDE.md` §13: **after every task, and at least every ten
+minutes.** The watchdog fires at twelve minutes of silence. Write the status **before**
+starting a long test run, saying what you are about to run.
 
 ---
 
-## What not to do
+## 8. The tasks
 
-- **Do not transmit, arm a transmission, or touch a keying path.** Unit 293's, and one of
-  the three things `PHASE_PLAN.md` says the arbiter may not reason past.
-- **Do not let a countdown, a decode or a slot boundary cause anything to be sent.** One
-  click, one transmission. **FT4's slots are half as long and the temptation is twice as
-  strong** - `PHASE_PLAN.md` says so in those words.
-- **Do not drive the grid or the decoder from `IsLit` without saying you did and why.**
-  A remembered press is not a reading of the radio, and the reverse is a trap too.
-- **Do not write a frequency from memory.** §0.2.1. The band data is cited and five rows
-  carry FT4.
-- **Do not name `Ft8Sharp.Deep` as the decoder of an FT4 slot.** It has none.
-- **Do not put a transmission length on the screen.** 4.48 against 5.04 is Tim's, and a
-  sentence stating either would answer it.
-- **Do not change `Ft8Sharp`.** If you must, report it before you bump it.
-- **Do not change what an FT8 press does.** Not a boundary, not a tick, not a byte of a
-  record. If one moves, **stop and report it.**
-- **Do not fix the gaps task 4 names.** Naming is the criterion. Fixing the wrong one
-  spends the night.
-- **Do not settle any of the four questions with Tim.**
-- **Do not write `PHASE_STATUS.md`'s `STEP:` lines, `CURRENT_STEP:` or `HEARTBEAT:`.**
-- **Do not edit units 289's, 290's or 291's `PHASE_OUTCOME.md` entries.**
-- **Do not commit the three untracked leftovers** to make a warning go away.
-- **Do not run a test suite.** Filtered by exact name only.
-- **Do not background a command and poll for it.**
-- **Do not spend more than one call on a refused `.bat`.**
-- **Do not ship a placeholder token in a reported number.**
+Five. Each names the test to watch failing first and one drop candidate. **Drop from the
+back.**
+
+### Task 1 - trace. No production file changes.
+
+**This task writes nothing into `src/`.**
+
+**1a.** Append this unit to `PHASE_OUTCOME.md` and report what it carries. **Did unit 309
+run?** Check the git log, `docs\carry-forward-tests.txt`, and whether
+`TheConnectionLineReadsTests` exists. **Say yes or no in one line.** If no, **do not fold
+unit 309's work into this unit.**
+
+**1b. Stand the app up.** Press CQ and get the receipt card. Click a station and get a
+conversation card. Then **click a second station.** Do not touch anything that keys the
+transmitter.
+
+**1c. The CQ card.** Answer with file and line:
+
+- What builds the card after a CQ press, and **how does it differ from the path that
+  builds a conversation card**? If it does not differ, say so plainly - that is the whole
+  finding.
+- **Where does `CQ` reach `DxccPrefixes.EntityOf`?** Is there any guard at all against
+  the string `CQ`, or against a `CallToAnyone` booking being given an entity?
+- **Is `CQ` treated as the other station anywhere else** - the nudge, the ledger, the
+  worked-before cache, telemetry, the decoded list? **List every place.** This is the
+  important half of 1c.
+
+**1d. The single slot.** Click a second station with a first card open. **Is the first
+card destroyed or hidden?** Does the ledger still hold the first exchange afterwards?
+**Answer both, from a run rather than from reading.**
+
+**1e. The map row.** What sizes the map row, and what sizes the image inside it? Report
+the row's measured width and height and the image's, and **the aspect of each.** The
+bitmap is 1.8320.
+
+**1f.** Run, filtered and foregrounded, before changing anything: `ThePressingOfCqTests`,
+`TheGlobeOnTheCardFaceTests`, `TheGlobeLineTests`,
+`BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`, and
+`TheConnectionLineReadsTests` if it exists. Report each green or red. **A red here is
+inherited, not yours.** If `docs\carry-forward-tests.txt` does not exist, create it from
+that list, **with known reds never on it.**
+
+**Test watched failing first:** none.
+**Drop candidate:** none. **Not droppable.** Every task below depends on it.
 
 ---
 
-## Committing and pushing
+### Task 2 - the CQ receipt becomes its own thing
 
-Commit and push each task before starting the next. **Bump the root version's patch by
-one** if anything was committed - the scheme question is with Tim and is not yours.
+**R1 and R2.** A receipt is not a conversation card with blanks in it.
 
-**`Ft8Sharp` does not move this time.** Unit 289 built the FT4 decoder and this unit calls
-it. **If you find you must change it, that is a mismatch worth reporting** before it is a
-version bump.
+**What it carries:** what was sent, when it was sent, Log, and a dismiss X. **That is
+all.**
+
+**What it must not carry, and each of these is on Tim's screenshot today:** a callsign in
+the header, an entity or country, a grid, a distance, a bearing, a pronoun, a map row, a
+caption about where anything is.
+
+**The wording, per R4.** No count of calls. No sentence that frames silence as a failure
+- *has not answered yet* comes off, and so does *Waiting on him*. **Say what happened:**
+he called, and here is when. Seconds-ago is enough to show it is live.
+
+**The guard that makes `CQ  Portugal` impossible rather than merely fixed.** A booking
+under `CallToAnyone` **has no other station, and asking it for one is an error rather than
+a lookup.** Put the guard where the question is asked, not only where the header is
+drawn - task 1c listed every place that asks.
+
+**Test watched failing first:** `TheCqReceiptTests`, app project. Watch it fail, then
+green. It asserts, at minimum:
+
+1. a CQ press produces a receipt, **and the receipt exposes no station, no entity, no
+   grid, no distance and no map**
+2. **`CQ` never reaches the entity lookup**, and a `CallToAnyone` booking asked for an
+   entity raises rather than returning Portugal
+3. no text on the receipt contains a third-person pronoun or the phrase *not answered*
+4. **no count of calls appears anywhere on it**, however many times CQ has been pressed
+5. a conversation card, by contrast, still carries all of those station facts unchanged
+
+**Drop candidate:** assertion 3's pronoun sweep. Keep the wording change; drop the
+automated sweep for it.
 
 ---
 
-## Reporting
+### Task 3 - one receipt, and as many conversations as he likes
 
-`output.md` at the repository root, overwritten, four sections per `CLAUDE_CODE.md` §8.
+**R3, R5, R6.**
 
-**The ordering block comes first, before the header.** `validate-output.bat` refuses a
-report without it.
+**One receipt.** Pressing CQ again **refreshes the existing receipt to the new slot** and
+does not add a second. **Assert that the panel can never hold two.**
+
+**The receipt retires.** Anyone answers, **the receipt goes** and a conversation card
+appears for that station. **Two stations answering produce two conversation cards and no
+receipt.** The receipt is never converted, claimed or adopted into a conversation.
+**Whatever unit 305 built for `Adopt` on the CQ card is withdrawn by R5** - report what
+was there and what became of it.
+
+**The panel holds a set.** N conversation cards plus at most one receipt, **each keyed to
+its station**, vertical scroll, **nothing replacing anything**. Fix whatever task 1d
+found. **If task 1d found the first conversation was destroyed rather than hidden, say so
+in section 2 in plain words** - that is a fact about losing a contact, not a layout note.
+
+**Ordering.** **Do not invent an ordering rule.** Keep whatever order the panel uses
+today and **raise the question in section 4** (inbound ask 13): with eight cards and a
+scroll, what stays put and what moves matters, and Tim has not ruled it.
+
+**Test watched failing first:** `ThePanelHoldsThemAllTests`, app project. Watch it fail,
+then green:
+
+1. **two stations answering one CQ produce two conversation cards and no receipt**
+2. a second conversation **does not replace the first**, and the first card and its ledger
+   history both survive
+3. six conversations produce six cards
+4. **pressing CQ five times produces one receipt**, showing the fifth slot
+5. dismissing the receipt removes it and touches no conversation card
+6. the panel **never holds two receipts**
+
+Re-run `ThePressingOfCqTests` filtered. If R4 or R5 makes one of its five assertions
+false, **rewrite that assertion and say in `output.md` which one and why** - a test that
+asserts a withdrawn behaviour is worse than no test.
+
+**Drop candidate:** assertion 3, the six-card case. Keep assertion 2.
+
+---
+
+### Task 4 - the map row fits the map
+
+**R7.** The row shrinks to the map. **No grey filler, nothing cropped, no stretch.**
+
+The bitmap is **698 x 381, aspect 1.8320**. The map keeps that aspect exactly. The row
+takes the map's height and the map's width; the card gets shorter; **the map never becomes
+wider than it is now.**
+
+**Do not hard-code a width, a height or a scale factor.** Unit 309 established that the
+card draws this map at about 240 x 131, a scale of 0.344, and that anything sized in
+bitmap coordinates disappears. **The same rule holds here:** the stroke widths and marker
+radii stay sized in the control's own units, and only placement scales.
+
+**Test watched failing first:** `TheMapRowFitsTests`, app project. Watch it fail, then
+green:
+
+1. the rendered map's aspect is **1.8320 within a tolerance you state**
+2. **no part of the row is empty** beside the map
+3. **no edge of the bitmap is cropped** - the north and south edges of the file are both
+   inside the rendered area
+4. changing the card's width changes the map's height in proportion, and the aspect holds
+
+Re-run `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` filtered. Changing a
+row's sizing in `MainWindow.axaml` is what it exists to catch.
+
+**Drop candidate:** assertion 4.
+
+---
+
+### Task 5 - click the map and it opens
+
+**R8.** A popup with a dismiss X, zoomed to the path. **Conversation cards only - the
+receipt has no map, so it has nothing to click.**
+
+**How the frame is chosen.** Take the **sampled great-circle points the small map already
+computes** - `GreatCirclePath`, 181 of them - plus both markers. Find the box that holds
+all of them. Add a margin so nothing sits on an edge. Scale to fit the popup.
+
+**The path defines the frame, not the two endpoints.** The arc bulges well north of both
+stations: `FN00DJ` to Tokyo peaks at **66.8°N**, and a box drawn from the endpoints alone
+crops the top off the thing being looked at.
+
+**Three cases that need a rule, and here are the rules:**
+
+- **A zoom floor.** There is no more detail in a 698 x 381 file than it holds. A short
+  contact could otherwise fill the popup from a sixty-pixel crop and become coloured
+  mush. **Set a floor, state the number you chose and why**; short contacts then do not
+  fill the frame, which is correct.
+- **A path that crosses the date line has two runs on opposite edges**, so the box that
+  holds both is the whole map. **Those cases show the whole world.** Do not build a
+  shifting or re-centred map in this unit.
+- **A station with no place on the file has no path to frame.** Antarctica below 63.79°S
+  and the strip west of 175.52°W are the whole list. **No map row, so no click, so no
+  popup.**
+
+**The marker hovers should work inside the popup.** Unit 306 built them and unit 308
+attached them to dots a few pixels wide; the popup is the first place they are comfortable
+to use.
+
+**Test watched failing first:** `TheMapOpensTests`, app project. Watch it fail, then
+green:
+
+1. clicking the map on a conversation card opens the popup; the dismiss X closes it
+2. **the frame contains every sampled path point and both markers**, with margin
+3. **a Tokyo path is framed to include 66.8°N** - the endpoints-only box would not
+4. a date-line path shows the whole world
+5. the zoom floor holds for a short contact
+6. a receipt has no map and nothing to click
+
+**Drop candidate:** the marker hovers inside the popup. Ship the popup without them and
+say so.
+
+---
+
+## 9. Parked
+
+Not in this unit. Do not start any of it.
+
+- **Acknowledgement indicators** (inbound ask 12). **Not defined. Build nothing.**
+- **The CQ-list achievement marks.** Unit 309's task 3. **Not this unit**, even if task 1
+  finds unit 309 did not run. Report; do not build.
+- **The CQ starter-card regression.** Unit 309's task 4. Same.
+- **Card ordering under scroll** (inbound ask 13). Raise it; do not rule it.
+- **The door sentence.** Still Tim's.
+- **The polar map** - `AzimuthalMap.NorthPolar`, `AzimuthalImage`,
+  `TheAzimuthalAssetTests`. Green and untouched.
+- **Deleting `assets\world-coastline.svg`, `CoastlineUri`, `Ft8GlobePlot`'s unused
+  framing constants, or `Ft8ContactCard.Closing`.** Report; leave standing.
+- **The achievements screen itself.**
+- **Pan, or zoom the operator can drive.** The popup frames the path and that is all.
+- **Back-filling `PHASE_OUTCOME.md`.**
+- **`Avalonia.Headless.Skia` or any other package** (§0.4).
+
+---
+
+## 10. What not to do
+
+- **No unfiltered `dotnet test`.** No whole project, no whole solution.
+- **Never background a command and poll it.**
+- **Do not touch anything that keys the transmitter.** The proved chain
+  `cq_pressed → … → ft8_transmission Played` stays as it is - clock `measured`, offset
+  0.033 s from `2026-09-10.jsonl`.
+- **The dummy load is withdrawn in full** (Tim, 2026-09-06, superseding HM-DEC-008 and
+  HM-DEC-098). **No compensating control in its place.**
+- **Do not let `CQ` be looked up as a callsign anywhere.**
+- **Do not stretch the map bitmap to fill a row.** The projection depends on its aspect.
+- **Do not hard-code the card's render size, a map width, or a scale factor.**
+- **Do not draw a map.** No coastline is generated, traced or synthesised.
+- **Do not read, align to or label the pale curves on the ocean.** They are artwork, not
+  a graticule.
+- **Do not add or vendor a package.**
+- **Do not claim an appearance from computation and call it seen.** Say *computed*.
+  **Three faults in the last two units are what that habit costs.**
+- **Do not invent a ruling id.** R1 to R8 carry no `HM-DEC-` number; cite them by date and
+  quote.
+- **Do not invent an ordering rule for the card panel.**
+- **Do not chase these known reds:** `CwAdjudicationTests.ASpeedChangeInRealisticAudio`;
+  the 51 CW cases in `docs\unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests`
+  whole-type-list tripwire; `HM-OPEN-088`'s ten; the two in
+  `TheAchievementsScreenTests`; the one in
+  `TheFitGuardAsksAboutTheGridTheSendIsOnTests` in the engine project.
+- **Do not repair this instruction.** Report mismatches; keep working.
+- **Do not write to `DECISIONS.md`.** §12.1.
+
+---
+
+## 11. Reporting
+
+`output.md` at the repository root. **The canonical headings, which
+`tools\arbiter\validate-output.bat` requires: `## 1. What Claude did`, `## 2. What the
+owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.**
+
+Open with the A/B/C ordering block, then the header:
 
 ```
-A. The phase goal - FT4 works exactly the way FT8 does - and where every step stands:
-   step 0 done; step 1 partial, its remainder the 4.48 against 5.04 question with Tim;
-   step 2 partial, its remainder booked here; step 3 done; step 4 <state after this
-   unit>; steps 5 and 6 not started and Tim's. Say whether this unit discharged step
-   2's remainder or only part of it, and name what is left of it.
-
-B. Step 4 and its four exit criteria, each named with met, not met, or booked to unit
-   293:
-   1. pressing FT4 tunes to the band's FT4 frequency and decodes, through the same
-      path the FT8 button uses                                          must-pass
-   2. the panel, conversation, ring, filters, tooltips, ledger and right-click menu
-      all work unchanged, and the report names anything that did not    must-pass
-   3. one click, one transmission, through the same abort               must-pass
-   4. a whole exchange runs from one right click at the bench, with the transmit
-      endpoint on a loopback                                            must-pass
-   Criteria 3 and 4 were booked to unit 293 by the arbiter before this unit ran.
-   Say so plainly rather than reporting them as failures, and say whether anything
-   this unit found makes either of them harder or easier than the arbiter assumed.
-
-C. This report's own findings, weighed against A and B. Say how many items section 4
-   raises, and for each, whether it is in the way of a criterion in B or merely beside
-   it. Say how many gaps task 4 named, and whether any of them is in the way of
-   criterion 1 or of unit 293. If task 6 was dropped, say so here and say that no
-   criterion in B depended on it, with both ledger gaps named and left standing.
+A. The phase goal - ...
+B. Step 4 and its exit criteria - ...
+C. The report last, and section 4 raises N items on top of a carried queue of thirteen.
 ```
 
-Then the six-line header:
-
 ```
-UNIT:       292 - <complete at task n of 6 | what was dropped> - <date time>
-PHASE GOAL: FT4 works exactly the way FT8 does.
-UNIT GOAL:  <one or two lines>
-ADVANCED:   <yes or no, and which of step 4's criteria moved>
-NUMBER:     how many places between the press and a decoded row were FT8 by
-            construction, and how many gaps task 4 named. Two numbers, and the
-            second stated even when it is zero.
-DRIFT:      <n> consecutive units without advance
+UNIT:       310 - <complete|stopped> at task N of 5, <which dropped> - <date time>
+PHASE GOAL: <restated in your own words>
+UNIT GOAL:  <restated in your own words>
+ADVANCED:   <yes|no, and which step>
+NUMBER:     <what moved, before -> after>
+DRIFT:      <n> consecutive units without advance  (carried from PHASE_OUTCOME.md)
 ```
 
-**Section 3 leads with four things, in this order:**
+**Section 1 must answer three things in one line each, near the top:** whether unit 309
+ran; whether a replaced conversation card was destroyed or hidden; and every place `CQ`
+was being treated as a station.
 
-1. **The trace** - which fact drives the mode and what happens when the chip and the dial
-   disagree; the press path and the decode path with file and line; **every place that was
-   FT8 by construction, each marked constant, type or default**; and what is left of unit
-   290's fifteen-second census. **This leads because the choice underneath the threading is
-   the only part of this unit that could be wrong in a way the tests would not show.**
-2. **An FT4 slot decoded through the application**, not through `Ft4SlotDecoder` directly -
-   the text in, the grid it was cut on, the text out, **the decoder the sheet names**, and
-   the wrong count beside the missed count.
-3. **The seven things of criterion 2**, one row each: worked unchanged, worked with a
-   change named here, did not work, or not reached and why. **No gaps in the table.**
-4. **What FT8 did before and after**, showing that a press of FT8 moves the same
-   boundaries, ticks the same countdown and decodes through the same reader it did at HEAD
-   `9449d02`.
+**Section 3 must say what the CQ receipt now reads as, word for word.** Tim has seen the
+wrong version; show him the right one rather than describing it.
 
-**Section 2 says what this means for the phase**: whether Tim pressing FT4 at his radio
-would now see decoded text - **which is step 5's first criterion, so say plainly whether
-step 5 is reachable after tonight or still waiting on unit 293** - and **what unit 293
-inherits**, in particular anything task 1 or task 4 found about the transmit half that the
-arbiter did not know when it split the step.
-
-Write `output.md`, then stop.
-
----
-
-```
-ARBITER-DECISION
-STEP: 4
-APPROACH: thread the chosen digital mode through DigitalGrid and the slot decoder so pressing FT4 tunes and decodes FT4 through the same path the FT8 button uses, taking criteria 1 and 2 and booking the transmit half to the next unit
-MOVE: continue
-WHY: Step 4 is the last bench step and its entry - steps 1, 2 and 3 - is answered, with step 2's remainder already booked here by unit 291's arbiter. The loop test was run and found no resembling approach in any entry; step 4 has zero units spent, so this cannot be a loop. I scoped it to the receive half because the transmit half has no FT4 in it at all - grep over src/Hamlet.RadioEngine/Transmit and Contacts returns nothing, Ft8Composer is FT8-only and the guard at Ft8TransmitSequence.cs:497-530 measures against Ft8Slots literals - and criterion 3 is a keying path, which PHASE_PLAN.md names as one of the three things the arbiter may not reason past.
-STATE: not started
-DECIDED: Two things on my own authority, both about scope rather than about any of the four questions with Tim. First, I split step 4 across two units on a seam the tree already carries: criteria 1 and 2 are the receive half and their seams are cut and unpressed - _digitalGrid at MainWindowViewModel.cs:1661 with UseGridForTests as its only writer, and Ft4SlotDecoder built and proved by unit 289 - while criteria 3 and 4 need an FT4 composer that does not exist and a re-proof of the abort. I did NOT cut criteria 3 and 4 down or declare them unachievable; they are booked to unit 293 with their reason recorded, and I expect step 4 to read partial after tonight. Second, I ruled that criterion 2 is closed by naming rather than by fixing, which is what its own wording says - the report names anything that did not work unchanged - and that makes the ledger submode work a droppable task rather than a criterion. I did NOT settle the 4.48 against 5.04 figure, the version scheme, the widened candidate sweep or the four inherited reds; this unit is designed so none of the four can block it, and the grid it threads reads both timing numbers from Ft8Sharp.Ft4Timing so a ruling still costs one edit.
-LICENCE: PHASE_PLAN.md step 4, whose entry is steps 1, 2 and 3 and all three are answered, together with its steps-are-a-hypothesis clause permitting the arbiter to take a step in the order and the portions the evidence supports, and its named-alternatives table - the tree disagrees with this plan, the tree wins, report the mismatch and continue. The step 1 and step 2 readings are ARBITER.md section 8, which makes STATE_AFTER evidence rather than verdict and leaves the arbiter to judge where two readings disagree.
-ACCOMPLISHED: The FT4 button on the Digital tab stops being a button that does nothing. Pressing it takes the radio to the band's cited FT4 frequency, cuts the band into 7.5 second slots, and reads FT4 off the air onto the table - the same three things pressing FT8 does - and everything around it that does not yet follow is named with file and line rather than left for Tim to find at the radio.
-ADVANCES: step 4, exit criteria 1 and 2 - the tune and the decode through the same path in tasks 2 and 3, and the seven-part census that closes criterion 2 in task 4. It also discharges step 2's remainder, which unit 291's arbiter booked to step 4 on the record, and it clears the last bench blocker in front of step 5, which is Tim's.
-END-ARBITER-DECISION
-```
+**Every appearance claim in this report is computed, not seen. Say so once, plainly.**
