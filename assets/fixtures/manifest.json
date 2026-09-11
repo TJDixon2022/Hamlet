@@ -1,0 +1,72 @@
+[
+ {
+  "file": "psk31-clean-1000hz.wav",
+  "sha256": "732b0479fba651b717f09ba8484e64440e6717df51b8a8117b59b1f6f328d3e3",
+  "seconds": 66.56,
+  "carrier_hz": 1000.0,
+  "note": "clean, no noise",
+  "text": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nKC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\r\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\r\n",
+  "reference_cer": 0.0,
+  "reference_decode_len": 255
+ },
+ {
+  "file": "psk31-snr+10db-1000hz.wav",
+  "sha256": "667a6d0176ebd6178ce446b636a6c295ac5fd5d3b1caff9321bf6cd2fd6b42e1",
+  "seconds": 66.56,
+  "carrier_hz": 1000.0,
+  "note": "AWGN, SNR +10 dB referenced to 2500 Hz",
+  "text": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nKC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\r\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\r\n",
+  "reference_cer": 0.0,
+  "reference_decode_len": 255
+ },
+ {
+  "file": "psk31-snr+3db-1000hz.wav",
+  "sha256": "adf810215220eee67dff334dc4f11232b5e8fa600ea9b503b112097e32129862",
+  "seconds": 66.56,
+  "carrier_hz": 1000.0,
+  "note": "AWGN, SNR +3 dB referenced to 2500 Hz",
+  "text": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nKC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\r\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\r\n",
+  "reference_cer": 0.0,
+  "reference_decode_len": 255
+ },
+ {
+  "file": "psk31-snr-3db-1000hz.wav",
+  "sha256": "b876e8312eca294d5349a8231d3c600c36eccccad6f0598f1eda3ad99fda9bd3",
+  "seconds": 66.56,
+  "carrier_hz": 1000.0,
+  "note": "AWGN, SNR -3 dB referenced to 2500 Hz",
+  "text": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nKC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\r\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\r\n",
+  "reference_cer": 0.0,
+  "reference_decode_len": 255
+ },
+ {
+  "file": "psk31-drift-1000-to-1020hz.wav",
+  "sha256": "b2adf0206de874bd8401e5970b0e26116401ef5edad4b0fab0314fad0804503c",
+  "seconds": 66.56,
+  "carrier_hz": 1000.0,
+  "note": "carrier drifts linearly from 1000 to 1020 Hz over the file, SNR +10 dB; needs AFC",
+  "text": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nKC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\r\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\r\n",
+  "reference_cer": 0.0,
+  "reference_decode_len": 255
+ },
+ {
+  "file": "psk31-noise-only-30s.wav",
+  "sha256": "da2663966db612d896c60d7ef9151eb918d2ddc8b9a8e3628e7803b15819ae75",
+  "seconds": 30.0,
+  "carrier_hz": 1000.0,
+  "note": "30 s of Gaussian noise, no signal; must produce no text - the unsquelched reference decoder emitted 112 garbage characters from it, which is why a squelch rule is required",
+  "text": "",
+  "reference_cer": null,
+  "reference_decode_len": 112
+ },
+ {
+  "file": "psk31-two-signals-1000-1500hz.wav",
+  "sha256": "a5e150b50f43bfba3b4df5f257fe6d26bd309094b5a1bca5aede09346a418057",
+  "seconds": 66.56,
+  "carrier_hz": 1000.0,
+  "note": "two signals: the QSO at 1000 Hz and EI4GNB calling CQ at 1500 Hz, 3 dB weaker; reference CER is for the 1000 Hz signal",
+  "text": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\nKC3QIS de W1AW W1AW K\r\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\r\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\r\n",
+  "reference_cer": 0.0,
+  "reference_decode_len": 255
+ }
+]

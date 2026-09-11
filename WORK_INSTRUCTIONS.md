@@ -1,9 +1,6 @@
-# Work instruction 313 - the popup stops blurring, and the panel scrolls
+# Work instruction 314 - hear one: the PSK31 tab stops pretending, then reads a signal
 
-**This is unit 311 re-issued.** Unit 311 was delivered on 2026-09-11 and never ran; unit
-312 confirmed that. Nothing in its scope has changed. What has changed is the tree around
-it: the PSK31 phase's files are now at the root and the version is 1.13.x. This unit
-advances no step of the PSK31 phase and says so.
+**PSK31 phase, step 1.** Step 0 is `done` (unit 312). Unit 313 was carried repair.
 
 ---
 
@@ -40,8 +37,10 @@ Known reds you did not cause are in section 10. **An unfiltered run finds them, 
 twenty minutes, and tells you nothing about your work.**
 
 **2. Never background a command and poll it.** No `&`, no `start`, no `nohup`, no loop
-that sleeps and checks. **The watchdog fires at twelve minutes with no status write.** If
-something genuinely needs longer than 480 seconds, that is a finding for section 4.
+that sleeps and checks. **The watchdog fires at twelve minutes with no status write.**
+**A demodulator test over a 66-second fixture at 8 kHz is not a long test** - it is half
+a million samples and should run in well under a second. If one takes longer than a few
+seconds, that is a finding about the code, not a reason for a longer timeout.
 
 ---
 
@@ -54,57 +53,37 @@ what you typed.**
 
 ---
 
-## 3. The asks queue
+## 3. Asks still outstanding
 
 Carried per HM-DEC-139. **All of these come back in `output.md` section 4, verbatim where
 unresolved.** Do not answer them yourself; do not delete one because it looks stale.
 
 1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
-   still Tim's: `Played` stays a statement about what the audio path did; a second,
-   separate fact says what the radio did, read from `1C 00` and `15 11`, which Hamlet
-   already polls four times a second; **unknown** where the radio does not answer.
-   Touches what the display asserts, so Tim's without exception (§12.1).
-2. **Nothing in this repository can look at a picture.** Eleven units have reported every
-   appearance claim as computed rather than seen. **Both faults in this unit are
-   appearance faults that no test in the tree could have caught** - a container that
-   clips instead of scrolling, and a bitmap magnified until it is mush. Real pixels want
-   `Avalonia.Headless.Skia`, and **a package is Tim's, not a session's** (§0.4).
-3. **Three inherited reds, never chased.** Two in `TheAchievementsScreenTests` -
-   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` -
-   and one in `TheFitGuardAsksAboutTheGridTheSendIsOnTests`, **in the engine test
-   project**.
-4. **Where the explanatory hover wording lives, if anywhere.** `Ft8ContactCard.Closing`
-   is uncalled and left standing.
-5. **`Ft8GlobePlot`'s unused framing constants** - `MapWidth`, `MapHeight`, `Margin`,
-   `SmallestFrame`. Report; leave standing.
-6. **The licence of `assets/world-flat-relief.png` is unknown.** In the tree by Tim's
-   ruling, no watermark, no recorded origin, and Hamlet is GPL-3.0. See
-   `assets/PROVENANCE.md`. **Raise; do not resolve; write no licence claim anywhere.**
-7. **`PHASE_OUTCOME.md` has a hole** - no `UNIT 306`, no `UNIT 307`, and possibly no 309
-   or 310. **Append this unit; report the hole; do not back-fill.**
-8. **The door sentence is a placeholder.** `new area · would open something you have not
-   seen yet`. Wording is the product (§3.5) and Tim has given no ruling. Carry it.
-9. **Acknowledgement indicators.** Tim named these as one of four things wrong with the
-   screen and the author has not established which of two things he meant. **Not in this
-   unit. Build nothing for it and do not guess at it.** Carry the item.
-10. **Card ordering under scroll.** Tim's when he wants it: with conversation cards
-    unlimited and a vertical scroll, a card he is mid-exchange with can scroll out of
-    view, and arriving cards can move what is under his pointer. **Task 3 gives the panel
-    a scroll and must not invent an ordering rule. Raise it.**
-11. **The outline width on the neighbourhood map is 2 px, a number unit 312 chose.** Tim
-    is the only one who can see whether it reads. Carry.
-12. **Version numbering for the phase.** Unit 312 landed on 1.13.0; a strict reading of
-    HM-DEC-150 would have made it 1.13.1. **This unit takes a patch bump from whatever
-    the tree says** and carries the question.
-13. **`PHASE_PLAN.md` §R6 says 14.0700-14.0725; the cited band row says 14.070-14.074.
-    The row wins.** The author concedes it; §R6 is prose to correct when the plan is next
-    touched. Carry.
-14. **The source bitmap is small for anything larger than the card.** 698 x 381 for the
-    whole world is **1.86 pixels per degree**. Tim has ruled the zoom capped rather than
-    the image replaced, which settles this unit - but **a larger version of the same
-    artwork would let the popup do what it was asked to do**, and if the crop is
-    identical the four projection constants simply multiply by the width ratio with no
-    refit. **Raise it as Tim's to take or leave.**
+   still Tim's. PSK31 sharpens it: a continuous carrier that did not key is a long
+   silence, not a missed slot.
+2. **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
+   Tim's to add (§0.4).
+3. **Three inherited reds, never chased.** Two in `TheAchievementsScreenTests`, one in
+   `TheFitGuardAsksAboutTheGridTheSendIsOnTests` (engine).
+4. **Where the explanatory hover wording lives.** `Ft8ContactCard.Closing` is uncalled.
+5. **`Ft8GlobePlot`'s unused framing constants.** Report; leave standing.
+6. **The licence of `assets/world-flat-relief.png` is unknown.** Raise; do not resolve.
+7. **`PHASE_OUTCOME.md`** - this phase's record starts at unit 312; 306, 307, 309 and
+   310 are in the FT4 phase's file in git history. Not to be back-filled.
+8. **The door sentence is a placeholder.** Carry.
+9. **Acknowledgement indicators.** Named by Tim, not yet defined. The *say it* unit
+   builds a turn indicator that may be what he meant. Do not assume it is.
+10. **Card ordering under scroll.** Raised three times, unruled. **Unit 313 found the
+    root**: `DigitalCards.Clear()` then new `Ft8ContactCard` objects every slot, so all
+    per-card state is lost four times a minute, including `MapIsOpen`. Not fixed. Not
+    this unit's. Carry.
+11. **The outline width on the neighbourhood map is 2 px**, a number unit 312 chose.
+12. **Version numbering** - 1.13.0 versus a strict HM-DEC-150 reading. Patch bump here.
+13. **`PHASE_PLAN.md` §R6 says 14.0700-14.0725; the cited row says 14.070-14.074. The
+    row wins.** Prose to correct when the plan is next touched.
+14. **A larger source bitmap** would make the popup's zoom cap unnecessary. Tim's.
+15. **One conversation card is taller than the panel** (293 px in 220 px). Not broken.
+16. **The popup zoom cap of 2.0x is the author's number.** `Ft8GlobePlot.ZoomCap`.
 
 ---
 
@@ -112,296 +91,299 @@ unresolved.** Do not answer them yourself; do not delete one because it looks st
 
 ```
 PHASE GOAL: Hamlet works PSK31 the way it works FT8.
-UNIT GOAL:  Two things on the shared digital screen are the wrong size - a panel
-            that clips what it should scroll, and a picture enlarged past what
-            it contains. Both are FT8/FT4 faults Tim reported before the phase
-            turned, and both surfaces are the ones PSK31 will inherit.
-ADVANCES:   No step of the PSK31 phase. This is carried repair work and the
-            phase's drift count rises by one, honestly.
-DRIFT:      1 expected. Read PHASE_OUTCOME.md in task 1 and report the number.
+UNIT GOAL:  Step 1 - hear one. A single-channel BPSK demodulator and varicode
+            decoder, proved against shipped fixtures with a stated character
+            error rate, and wired so that pressing PSK31 shows text arriving.
+            First, the PSK31 tab is made inert, because today it transmits FT8.
+ADVANCES:   Step 1, wholly if tasks 2-4 land; task 1 is a step-0 defect repaired
+            in passing and is not scored as an advance.
+DRIFT:      1 carried from unit 313. Expect 0 if step 1 moves to done.
 ```
 
-`assets/screenshot-popup-fuzzy-and-no-scroll.png` is Tim's screen.
+### What Tim did, and what happened
 
-**What is working on it, and should not be disturbed.** The map row has no grey filler
-beside it. The popup opens with a dismiss X and a caption. The path arcs north across the
-Atlantic to France with a ring at `FN00DJ` and a filled marker at `JN36`. Both markers
-and the line read clearly. **Do not restyle any of that.**
+Tim, 2026-09-11: *"I clicked PSK31, saw the radio move. Saw one CQ (in 10 minutes), did a
+respond, got nothing back."*
 
-### Fault 1 - the popup is fuzzy, and it is not a coding fault
+There is no PSK31 decoder in the tree. So the CQ he saw was **FT8's decoder, still
+running under the PSK31 tab**, hearing either a real FT8 signal that wandered into the
+passband or a false decode out of noise. And his response **sent an FT8 message on
+14.070**, into the PSK31 watering hole, where nobody was listening for it. **Unit 312
+fixed the sentence on the panel and left the machinery connected.** That is the
+instruction's fault: it said what not to build and did not say to disconnect what was
+already there. Task 1 disconnects it. **It comes before the demodulator because a tab
+that can transmit the wrong mode into the wrong segment is worse than a tab that does
+nothing.**
 
-Tim: *"this is fuzzy."*
+Also from Tim, on the CQ receipt (2026-09-11): *"CQ should not have log option, that is
+self-gratification."* **Ruling: the receipt carries no Log.** Unit 305's *Log from first
+appearance* and R2's Log were the author's proposals; both are withdrawn. A CQ is not a
+contact; there is nothing to log until someone answers, and then the Log belongs on his
+conversation card. Task 1 takes it off.
 
-**Measured.** `F4DIA` is in `JN36`, which places at **339.7, 118.6**; `FN00DJ` places at
-**178.3, 133.1**. The sampled path between them occupies a box **161.4 px across and
-29.4 px tall** on the bitmap. Framed to the popup's shape with a margin, that is a crop
-of roughly **185 x 99 source pixels enlarged to about 722 x 385** - a **3.9x
-magnification**. Every source pixel becomes a four-pixel block.
+### What step 1 is
 
-**There is no more detail in the file.** The zoom floor unit 310 asked for was the wrong
-instrument: a floor tight enough to stay sharp is a floor of 1x, which is no zoom at all.
-Tim was offered a larger source image or a cap, and **ruled the cap** - section 6, R9.
+**PSK31 on the wire.** Binary phase-shift keying at **31.25 baud** - 256 samples per bit
+at 8 kHz - carrying text in **varicode**, a self-delimiting variable-length code where
+common letters are short: space is `1`, `e` is `11`, `t` is `101`. Every code starts and
+ends with `1` and none contains `00`, so **`00` is the character separator** and a
+decoder needs no framing beyond splitting on it. The keying is **differential**: a `0`
+bit is a phase reversal, a `1` bit is no change, so the receiver compares each bit to
+the one before and never needs absolute phase. Idle is a run of `0`s - continuous
+reversals - which is what a station sends between characters and before it starts
+typing. The envelope is **raised-cosine shaped** so it passes through zero at every
+reversal, which keeps the signal 31 Hz wide instead of splattering.
 
-### Fault 2 - the For You panel clips instead of scrolling
+**So a single-channel demodulator is:** mix the audio down at the chosen offset to a
+complex baseband; low-pass or matched-filter it to about the bit rate; recover the bit
+clock - the envelope dips to zero at reversals, and the symbol centres are the points of
+maximum energy; sample once per bit; multiply each sample by the conjugate of the last
+to get the differential phase; the sign of the real part is the bit; split the bit
+stream on `00`; look each code up in the table. Plus two things a real signal needs:
+**AFC**, because a real carrier drifts and the operator did not tune to the exact hertz,
+and **a squelch**, because the same machinery run on noise produces characters -
+`assets/fixtures/README.md` records that the author's unsquelched reference decoder
+**emitted 112 garbage characters from thirty seconds of Gaussian noise.**
 
-Tim: *"For you is not scrolling."*
+### The fixtures, and where they came from
 
-Unit 310's R6 ruled conversation cards unlimited with a vertical scroll. **What is there
-is a fixed container that cuts off.** On the screenshot the panel is truncated at the
-right edge as well as the bottom, so **check whether that is the same missing container
-rather than a second fault** - it probably is, and reporting two fixes for one cause
-would be wrong.
+`assets/fixtures/` - seven WAV files at 8 kHz mono, a `manifest.json` with SHA-256,
+duration, carrier, the exact text, and the **author's reference decoder's character
+error rate for each**, and `qso-text.txt`. **Generated by `assets/reference-modem.py`
+on a machine with no radio, FACT-004.** The QSO text is a four-line standard exchange
+between `KC3QIS` and `W1AW` - 255 characters, 66.6 seconds at 31.25 baud.
 
-**This is the fault that matters more of the two.** A card scrolled out of reach is a
-contact he cannot log.
+| file | what it proves |
+| --- | --- |
+| `psk31-clean-1000hz.wav` | the decoder works at all |
+| `psk31-snr+10db-1000hz.wav`, `+3db`, `-3db` | it works with noise on it |
+| `psk31-drift-1000-to-1020hz.wav` | AFC holds a carrier that drifts 20 Hz in a minute |
+| `psk31-noise-only-30s.wav` | **the squelch produces nothing from nothing** |
+| `psk31-two-signals-1000-1500hz.wav` | a single channel at 1000 Hz ignores a signal at 1500 Hz |
+
+**SNR is referenced to 2500 Hz**, the way an FT8 report is. **These are not weak-signal
+fixtures** - `-3 dB` in 2500 Hz is about `+16 dB` inside PSK31's own 31 Hz. Weak-signal
+work wants real off-air audio, which only Tim can record, and is raised in section 4.
+
+**The varicode table** is `assets/varicode.csv`, 256 rows, extracted mechanically from
+fldigi's `src/psk/pskvaricode.cxx` with the citation in `assets/varicode-SOURCE.md`. It is
+the published G3PLX table; fldigi is the citation for the exact bits. **Transcribing it
+into the tree with that citation is data, not a port.**
+
+**`assets/reference-modem.py` is the author's, not fldigi's.** It shows the modulation
+convention the fixtures were made with. Read it for the convention; **do not port it** -
+it has no squelch, a crude matched filter, and a squaring AFC that only works offline.
+The convention it documents is the thing to match.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-**Units 309, 310 and 312 have run; 311 did not.** Unit 310's report confirmed the popup
-with its quarter-of-file floor and the map row fitted; unit 312 confirmed 311 never ran
-and left the root with the PSK31 phase's three files and version 1.13.0. **Do not fold
-unit 312's work or anything of the PSK31 run into this unit.**
+**Everything below about existing code comes from units 312 and 313's reports.** Check
+and **report every mismatch; do not repair this instruction; do not stop over a
+mismatch** unless a task is impossible.
 
-Named so the checking is concrete. **Report every mismatch; do not repair this
-instruction; do not stop over a mismatch** unless a task is impossible, in which case say
-which and why.
-
-- Whatever unit 310 built for the popup and its frame - the zoom floor, the bounding box
-  over the sampled path, the date-line fallback. `TheMapOpensTests`.
-- Whatever unit 310 built for the panel - `ThePanelHoldsThemAllTests`, `TheCqReceiptTests`,
-  `TheMapRowFitsTests`.
-- `Ft8GlobeControl`, `Ft8GlobeControl.WordsAt`, `Ft8GlobePlot`, `FlatWorldImage`,
-  `FlatWorldMap.Relief`, `GreatCirclePath`.
-- The For You panel itself, in `MainWindow.axaml`, and what sets its height and width.
-- **The green circled glyphs on some decoded rows** in
-  `assets/screenshot-popup-fuzzy-and-no-scroll.png` - on `LZ1KU KN32` and `J38DX FK92`,
-  both of which are unworked countries. **Establish what they are.** If they are the
-  achievement quills from unit 309 then that unit ran and the marks work, which is worth
-  knowing plainly. Report it either way; **change nothing about them.**
-- Tests: `ThePressingOfCqTests`, `TheGlobeOnTheCardFaceTests`, `TheGlobeLineTests`,
-  `TheCqListNudgeTests`, `TheNudgeHoverTests`, `TheConnectionLineReadsTests`,
-  `TheFlatWorldAssetTests`, `TheGreatCirclePathTests`,
-  `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`.
+- `DigitalModeChip.cs:61` `Labels`; `MainWindowViewModel.cs:1109` `ChooseDigitalModeAsync`;
+  `DigitalCallingFrequencies.Find(band, label)`; `ModeFollowPlan.cs:219`;
+  `ContactModes.cs:147` (`MODE=PSK`, `SUBMODE=PSK31`); the engine's `DigitalMode` with two
+  members and `DigitalModeFor`, which **maps PSK31 onto `Ft8`** - that mapping is the
+  fault task 1 removes; `DigitalIdleText.ModeStripFor(grid)`; `_digitalMode.ToString()`.
+- The FT8 audio source and where the FT8 decoder is fed from it - task 4 feeds the PSK31
+  demodulator from the same source.
+- `Ft8ContactLedger.CallToAnyone`; the CQ receipt as unit 310 built it, with its Log.
+- `docs/psk31-reference.md` - the fldigi pin at `61b97f41`, sparse clone at
+  `C:\Source\fldigi`.
+- Tests: `ThePsk31SeamTests` (7), `ThePsk31ReferenceIsPinnedTests` (2), `TheCqReceiptTests`,
+  `ThePanelHoldsThemAllTests`, `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`,
+  `docs\carry-forward-tests.txt`.
 
 ---
 
 ## 6. Rulings in force
 
-**R9 - Tim, 2026-09-11. The popup zoom is capped.** Offered a larger source image or a
-cap on magnification, he ruled: *"cap zoom"*. **The image is not being replaced in this
-unit.** Inbound ask 11 carries the larger-image option for him to take later.
+**Tim, 2026-09-11 - the receipt carries no Log.** *"CQ should not have log option, that is
+self-gratification."* Supersedes unit 305's *Log from first appearance* and R2's Log.
 
-**R10 - Tim, 2026-09-11.** *"fix for you scrolling"*.
+**`PHASE_PLAN.md`** at the root. §1: PSK31's contact is a conversation, not a protocol.
+§3: no slot clock, RST not dB, continuous carrier, characters not messages, no fixed
+length. **§R1**: strict on anything that drives a transmission, permissive on display,
+guessed states marked - **nothing in this unit displays a state; it displays text.**
+**§R3**: the parser is a later step; this unit parses nothing. **§R5**: fldigi is read,
+never ported wholesale. **§R6 as corrected by ask 13**: the row says 14.070-14.074.
 
-**Unit 310's rulings, unchanged and not to be disturbed.** R1 two card types - a CQ
-receipt and a conversation card. R2 the receipt is short: what was sent, when, Log,
-dismiss, and **no station facts at all**. R3 one receipt, refreshed on repeat press, never
-a second. R4 **the last call only and no count** - *"just the last I don't want reminders
-of failures"*. R5 the receipt retires and is never adopted; two answers make two
-conversation cards and no receipt. **R6 conversation cards unlimited with a vertical
-scroll - task 3 is the half of this that was not delivered.** R7 the map row shrinks to
-the map, nothing cropped, no stretch. R8 the map opens in a popup with a dismiss X, zoomed
-to the path.
+**§0.0 / HM-DEC-092 - never present a guess as a decode.** For a text mode this is the
+squelch: **a character that the demodulator was not sure of is not shown.** No partial
+credit, no dimmed maybe-characters, no `?` in place of a doubtful one. Silence.
 
-**Tim, 2026-09-10** - the map image, *"use this one, make it work."* **Tim, 2026-09-11** -
-*"We need a better line… I want to clearly see the connection line."*
+**§0.2 - one click, one transmission.** Task 1 makes the PSK31 tab unable to transmit
+anything. Nothing in tasks 2-4 adds a click that transmits.
 
-**Tim, 2026-09-10 - four rulings on the CQ-list nudge**, carried, **not built in this
-unit**: the mark is a lift plus the quill vane in decode green `#3B6D11`; sticky per
-station with a cap of two counted over stations; **the achievement set is the source and
-no rarity ordering is to be invented**; a door is marked and never named.
+**§0.1** - the engine is never told that tabs exist. The demodulator takes audio and an
+offset; it does not know it is behind a tab.
 
-**`ACHIEVEMENTS_PHILOSOPHY.md`, repository root, 2026-09-09.** §2 a wall of empty cards
-reads as failure; §3.1 absent, not dimmed; §3.5 the teaching is the product; §4 counts say
-**worked**, never **confirmed**; **§0.0 / HM-DEC-092 never present a guess as a decode,
-and a picture binds as hard as a sentence**; §0.6 colour is never the only carrier; §0.5 /
-HM-DEC-012 family colour is text colour only; §0.5.1 / HM-DEC-087 grey is reserved for a
-control that cannot be used; **§0.2 one click, one transmission**; §0.1 the engine is
-never told tabs exist; §2.1 nothing personal in telemetry.
+**Tim, 2026-09-06 - the dummy load is withdrawn in full.** No compensating control.
 
-**FACT-004** - a dev-machine result is an indication, never a finding. **FACT-006** - this
-machine has no radio and has never logged a contact. **Every number in section 4 was
-measured by the author on a machine with no radio.**
+**HM-DEC-054** - the band row is cited data. **HM-DEC-155** - section 1.
+**HM-DEC-139** - the asks queue.
 
-**Tim, 2026-09-06 - the dummy load is withdrawn in full**, superseding HM-DEC-008 and
-HM-DEC-098. **No compensating control in its place.**
-
-**HM-DEC-139** - the asks queue is carried inbound and outbound. **HM-DEC-155** - section 1.
+**FACT-004** - a dev-machine result is an indication, never a finding. **FACT-006** -
+this machine has no radio. **Every fixture and every reference number in this
+instruction is an indication.**
 
 ---
 
 ## 7. Status cadence
 
 `PROJECT_STATUS.md` per `CLAUDE.md` §13: **after every task, and at least every ten
-minutes.** The watchdog fires at twelve minutes of silence. Write the status **before**
-starting a long test run, saying what you are about to run.
+minutes.** Write the status **before** starting a test run.
 
 ---
 
 ## 8. The tasks
 
-Four. Each names the test to watch failing first and one drop candidate. **Drop from the
-back.**
+Five. Each names the test to watch failing first and one drop candidate. **Drop from the
+back - but task 1 is never dropped.**
 
-### Task 1 - trace. No production file changes.
+### Task 1 - the PSK31 tab is inert, and the receipt loses Log
 
-**This task writes nothing into `src/`.**
+**This task comes first and cannot be dropped**, because until it lands the PSK31 tab can
+transmit FT8 into the PSK31 segment.
 
-**1a.** Append this unit to `PHASE_OUTCOME.md` - **which is now the PSK31 phase's** - as
-carried repair advancing no step. Report the version before and after; it is 1.13.x now
-and takes a patch bump.
+**Trace first.** Append `UNIT 314` to `PHASE_OUTCOME.md` under step 1. Patch-bump the
+version. Run `docs\carry-forward-tests.txt` filtered before changing anything. Then with
+file and line: **where does the FT8 decoder get attached when PSK31 is chosen** - the
+`DigitalModeFor` mapping onto `Ft8` and whatever consumes it - and **where does a click
+on a decoded row reach the send path** under that tab?
 
-**1b. Stand the app up.** Get a conversation card, click the map, open the popup. Then get
-enough cards on the For You panel to overflow it. **Do not touch anything that keys the
-transmitter.**
+**Then disconnect.** With PSK31 chosen:
 
-**1c. The popup frame.** Answer with file and line:
+- **no FT8 decoder runs.** Not hidden - not running. The slot grid is not started.
+- **the decoded list is empty** and the CQ filter shows nothing, until task 4 gives it
+  PSK31 text.
+- **no row is clickable and no path from that tab reaches anything that keys the
+  transmitter.** The CQ button under PSK31 does nothing and says why, in the voice the
+  readiness hover uses.
+- FT8 and FT4 are unchanged. Assert it.
 
-- What chooses the crop today, and **what is the zoom floor unit 310 was asked to set** -
-  the number it chose and where it lives?
-- **What magnification does the `F4DIA` case actually get?** The author measures 3.9x from
-  a 185 x 99 crop; report what the code does.
-- What resampling does the enlarged bitmap use? **A nearest-neighbour enlargement at 2x
-  looks worse than a smooth one and the difference is free**, so say which it is.
+**And the receipt.** Remove the Log option from the CQ receipt. What remains is what Tim
+ruled: `Calling`, the sentence, the time, the dismiss X, and *show the messages* if it is
+already there. **Nothing else comes off and nothing goes on.**
 
-**1d. The For You panel.** Answer:
+**Test watched failing first:** `ThePsk31TabIsInertTests`, app project. Watch it fail,
+then green: no decoder attached under PSK31; no slot grid started; the list empty; no row
+command enabled; the CQ press under PSK31 reaches no send path; FT8 and FT4 unchanged.
+Extend `TheCqReceiptTests` by one: the receipt exposes no Log command. Re-run
+`ThePsk31SeamTests` and `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`
+filtered.
 
-- What sets its height, and is there a scroll container anywhere in it?
-- **Is the horizontal truncation the same cause or a different one?** State which.
-- With six conversation cards, **what happens to the sixth** - is it drawn and clipped, or
-  not drawn at all?
-
-**1e. The green circled glyphs** on the decoded rows. What are they? **If they are unit
-309's achievement quills, say so plainly** - Tim last saw that list with nothing on it and
-told the author it was a total failure.
-
-**1f.** Run, filtered and foregrounded, before changing anything: `TheMapOpensTests`,
-`ThePanelHoldsThemAllTests`, `TheCqReceiptTests`, `TheMapRowFitsTests`, and
-`BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`, skipping any that do not
-exist. Report each green or red. **A red here is inherited, not yours.** Update
-`docs\carry-forward-tests.txt`, **with known reds never on it.**
-
-**Test watched failing first:** none.
 **Drop candidate:** none. **Not droppable.**
 
 ---
 
-### Task 2 - the zoom is capped
+### Task 2 - the varicode table, cited, and a codec over it
 
-**R9.** The frame still centres on the path. It is no longer allowed to enlarge past the
-cap.
+`assets/varicode.csv` into the engine as data with `assets/varicode-SOURCE.md` as its
+citation - the way unit 252 carried the DXCC table. A `Varicode` type that encodes a
+character to its bits and decodes a bit stream to characters by splitting on `00`.
 
-**The rule.** Compute the frame as unit 310 does - the box holding every sampled
-great-circle point and both markers, plus margin, corrected to the popup's aspect. **Then,
-if that frame would magnify the bitmap past the cap, enlarge the frame until the
-magnification equals the cap**, keeping it centred on the same point.
-
-**The cap. The author proposes 2.0x and this is marked as the author's choice, not Tim's
-ruling. Reproduce this block in section 4 for him to overrule.**
-
-> **Author's proposal, not Tim's ruling.** Tim ruled *"cap zoom"* and did not name a
-> number. Measured against this bitmap, a popup about 722 px wide gives:
->
-> | cap | crop from the source | how much of the map width |
-> | --- | --- | --- |
-> | 1.5x | 481 x 257 px | 69% |
-> | 2.0x | 361 x 192 px | 52% |
-> | 2.5x | 289 x 154 px | 41% |
->
-> **2.0x is proposed.** It still halves the world rather than showing all of it, so the
-> popup is meaningfully closer than the card; and two-to-one on a smooth enlargement is
-> about the limit at which a relief bitmap still reads as terrain rather than as blocks.
-> 1.5x is safer and barely zoomed; 2.5x is visibly soft again. Overruling this means
-> changing one number.
-
-**Clamping, and this one is not optional.** Once the frame is enlarged to the cap it can
-run off the edge of the bitmap - the map only covers **x 0 to 697 and y 0 to 380**, and a
-path near an edge will push the frame out. **Slide the frame back inside rather than
-letting it hang off**, and if the frame is larger than the bitmap in a dimension, show the
-whole of that dimension. **The path must stay inside the frame after the slide.**
-
-**Worked example to test against.** The `F4DIA` path box centres on **259.0, 118.3**. At a
-2.0x cap the crop is **x 78.5 to 439.5, y 22.1 to 214.6** - North America to eastern
-Europe, wholly inside the bitmap, with the path in it.
-
-**The two cases unit 310 already ruled stay as they are.** A date-line path shows the
-whole world. A station with no place on the file has no map row, so no click and no popup.
-
-**Use a smooth enlargement, not nearest-neighbour.** At 2x the difference is visible and
-costs nothing.
-
-**Test watched failing first:** `ThePopupZoomIsCappedTests`, app project. Watch it fail,
-then green:
-
-1. the `F4DIA` case is framed at the cap, not at 3.9x, and the crop matches the worked
-   example within a tolerance you state
-2. **the magnification never exceeds the cap** for any of: São Paulo, Cape Town, Tokyo,
-   Auckland, a same-state contact a hundred miles away
-3. **every sampled path point is still inside the frame** after capping and clamping
-4. a frame that would run off an edge is **slid inside**, and the path is still in it
-5. a date-line path still shows the whole world
-6. the cap lives in **one named constant**, not in two places
-
-**Drop candidate:** the same-state case in assertion 2. Keep the four long paths.
-
----
-
-### Task 3 - the For You panel scrolls
-
-**R10, and the unbuilt half of R6.** **This is the more important of the two faults: a
-card that cannot be reached is a contact that cannot be logged.**
-
-The panel holds N conversation cards plus at most one receipt. It needs a vertical scroll
-around them. **Fix whatever task 1d found, and if the horizontal truncation has the same
-cause, fix it in the same change and say so** rather than reporting two fixes for one
-cause.
-
-**Do not invent an ordering rule.** Keep whatever order the panel uses today and **raise
-inbound ask 10 in section 4**: with eight cards and a scroll, what stays put when new
-cards arrive is a decision Tim has not made, and a card moving under his pointer while he
-reaches for Log is the thing that will bite.
-
-**One thing to get right while in there.** A scroll that jumps to the top, or to the
-bottom, every time a card is added or a slot lands would be worse than clipping. **Whatever
-the scroll position is when a card arrives, it should still be pointing at the same card
-afterwards.** If that is not achievable without an ordering rule, say so and leave the
-position alone.
-
-**Test watched failing first:** `ThePanelScrollsTests`, app project. Watch it fail, then
+**Test watched failing first:** `TheVaricodeTests`, engine project. Watch it fail, then
 green:
 
-1. with more cards than fit, **every card is reachable** - the last one included
-2. **no card is clipped horizontally**
-3. a card arriving **does not move the scroll position off the card it was on**
-4. with one card, or none, the panel does not show a scroll it does not need
-5. the receipt and the conversation cards are in the same scrolling region, so dismissing
-   the receipt does not leave a gap at the top
+1. all 256 codes round-trip
+2. no code contains `00`; every code starts and ends with `1`; all 256 are distinct
+3. space is `1`, `e` is `11`, `t` is `101`, `o` is `111`, `a` is `1011`
+4. the QSO text in `qso-text.txt` encodes to a bit string and decodes back identical,
+   with `00` between every character
+5. a stream with a run of idle `0`s before and after the text decodes to the text alone
 
-Re-run `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` and
-`ThePanelHoldsThemAllTests` filtered. **Wrapping a panel in a new container in
-`MainWindow.axaml` is exactly what the binding test exists to catch.**
-
-**Drop candidate:** assertion 4, the no-scroll-when-not-needed case.
+**Drop candidate:** assertion 5.
 
 ---
 
-### Task 4 - say what the two fixes actually look like
+### Task 3 - the demodulator, proved against the fixtures
 
-**Drop candidate: this whole task.** It writes no production code.
+`Psk31Demodulator`, engine, **§0.1 - it takes samples at 8 kHz and an offset in hertz
+and yields characters; it knows nothing about tabs, radios or panels.** One channel.
+Fed a stream, it emits characters as they complete.
 
-Tim has twice been shown a report claiming something was built and then found it was not
-on his screen. **Nothing in this repository can look at a picture**, and both faults in
-this unit are of exactly that kind.
+**What it must do, per section 4:** mix down at the offset; low-pass or matched-filter
+to the bit rate; recover the bit clock from the envelope; sample once per bit;
+differential detect; split on `00`; look up. **AFC**: track the carrier so a drift of
+20 Hz in a minute is held. **Squelch: state the rule you chose** - signal quality,
+envelope depth at reversals, differential phase confidence, whatever it is - **and the
+number**, and why. The rule must make the noise-only fixture produce **nothing**.
 
-So: **stand the app up again after tasks 2 and 3, and describe what is there.** The
-popup's crop in source pixels and what is visible in it. The panel with six cards, and
-what happens when you scroll to the last one. **Say which of those you confirmed by
-running the app and which only by arithmetic**, and put the distinction in section 3
-rather than burying it.
+**Character error rate** is edit distance between the decoded text and `qso-text.txt`,
+divided by the length of the reference, after trimming leading and trailing idle. The
+reference decoder scored **0.0000 on every QSO fixture**; the ceilings below are
+deliberately looser than that because a squelched, streaming decoder with a real AFC
+loop is a harder thing than an offline reference, and **a demodulator that hits these
+numbers has met step 1**.
 
-**Test watched failing first:** none; this task asserts nothing.
+**Test watched failing first:** `ThePsk31DemodulatorTests`, engine project. Watch it
+fail, then green:
+
+| fixture | must |
+| --- | --- |
+| clean | CER ≤ 0.01 |
+| +10 dB | CER ≤ 0.02 |
+| +3 dB | CER ≤ 0.05 |
+| -3 dB | CER ≤ 0.10 |
+| noise-only | **zero characters emitted** |
+| two signals, channel at 1000 Hz | CER ≤ 0.05 against the QSO text, and **none of `EI4GNB`'s text appears** |
+| drift | CER ≤ 0.05 with AFC |
+
+Plus: every fixture's SHA-256 matches `manifest.json` before it is used; the squelch rule
+and its number are asserted to exist in one named place; and **each fixture decodes in
+under five seconds** on this machine, reported as a number.
+
+**Report the CER you got on every fixture as a number, beside the reference's.** If a
+ceiling is missed, **say so and ship the decoder anyway** - a decoder at CER 0.12 on the
+-3 dB fixture is a finding about the -3 dB fixture, not a reason to withhold the mode.
+
+**Drop candidate:** the drift row and the AFC. Ship without AFC and say so; a real
+station will then need to be tuned within a few hertz, which is the *hear everyone* unit's
+problem to remove.
+
+---
+
+### Task 4 - pressing PSK31 shows text arriving
+
+Wire the demodulator behind the PSK31 tab, **fed from the same audio source the FT8
+decoder uses**, at a fixed offset of **1000 Hz above the dial** - so 14.071.000 with the
+dial on the cited 14.070.000. One channel. Text appears in the decoded-text panel **as
+characters arrive**, one line per signal, the way the *hear everyone* unit will need it,
+even though there is only one signal for now.
+
+**The panel line changes** from *Hamlet cannot read PSK31 yet* to a line in the same
+voice saying it is listening at one spot and what that spot is. **`VoiceTests` runs**
+because this adds copy.
+
+**What is not built:** no rows to click, no parser, no CQ filter behaviour beyond
+empty, no cards, no transmit. **The tab stays inert for sending.** Task 1's assertion
+that no path reaches the send path is re-run after this task.
+
+**Test watched failing first:** `ThePsk31PanelHearsTests`, app project. Watch it fail,
+then green: with the clean fixture played through the audio source, the panel's text
+accumulates the QSO text within CER 0.01; the line names the listening spot; no row is
+clickable; `ThePsk31TabIsInertTests` still green.
+
+**Drop candidate:** the panel line change. Keep the wiring; leave the old line and say so.
+
+---
+
+### Task 5 - a synthetic weak-signal fixture
+
+**Drop candidate: this whole task.**
+
+Using the convention in `assets/fixtures/README.md`, make one more fixture at **-10 dB in
+2500 Hz** (about +9 dB in 31 Hz) and report the decoder's CER on it as a number, **with no
+ceiling asserted**. This is a measurement, not a gate. Record it in `manifest.json` with
+its SHA-256.
+
+**Test watched failing first:** extend `ThePsk31DemodulatorTests` by one: the fixture
+exists and its hash matches. No CER assertion.
+
 **Drop candidate:** the whole task.
 
 ---
@@ -410,21 +392,16 @@ rather than burying it.
 
 Not in this unit. Do not start any of it.
 
-- **Replacing the map bitmap with a larger one** (inbound ask 11). Tim ruled the cap.
-  **Raise the option; do not act on it.**
-- **Acknowledgement indicators** (inbound ask 9). **Not defined. Build nothing.**
-- **Card ordering under scroll** (inbound ask 10). Raise it; do not rule it.
-- **The CQ-list achievement marks and the CQ starter card.** Units 309's work. Report what
-  task 1 finds; **build nothing.**
-- **The door sentence.** Still Tim's.
-- **Pan, or zoom the operator can drive.** The popup frames the path and that is all.
-- **The polar map** - `AzimuthalMap.NorthPolar`, `AzimuthalImage`,
-  `TheAzimuthalAssetTests`. Green and untouched.
-- **Deleting `assets\world-coastline.svg`, `CoastlineUri`, `Ft8GlobePlot`'s unused
-  framing constants, or `Ft8ContactCard.Closing`.** Report; leave standing.
-- **The achievements screen itself.**
-- **Restyling the line, the markers, the map row or the card.** They are right. Leave them.
-- **Back-filling `PHASE_OUTCOME.md`.**
+- **Hear everyone** - finding signals across the passband. The demodulator is one
+  channel at one offset.
+- **Read the conversation** - the parser, callsigns, turnover words, states.
+- **Say it** - the modulator, the macros, the turn indicator, the `SlotClock` replacement.
+  **The transmit chain is not touched.**
+- **Log and achievements** - RST, the mode's records.
+- **Real off-air audio.** Only Tim can record it. Raised, not done.
+- **The card-rebuild root** (ask 10). Not this unit's.
+- **Acknowledgement indicators** (ask 9). Build nothing.
+- **Reading anything from fldigi other than the varicode table already extracted.**
 - **`Avalonia.Headless.Skia` or any other package** (§0.4).
 
 ---
@@ -434,27 +411,23 @@ Not in this unit. Do not start any of it.
 - **No unfiltered `dotnet test`.** No whole project, no whole solution.
 - **Never background a command and poll it.**
 - **Do not touch anything that keys the transmitter.** The proved chain
-  `cq_pressed → … → ft8_transmission Played` stays as it is - clock `measured`, offset
-  0.033 s from `2026-09-10.jsonl`.
-- **The dummy load is withdrawn in full** (Tim, 2026-09-06, superseding HM-DEC-008 and
-  HM-DEC-098). **No compensating control in its place.**
-- **Do not replace or re-scale the map bitmap.**
-- **Do not stretch it to fill anything.** The projection depends on its aspect.
-- **Do not let the frame leave the bitmap.** x 0 to 697, y 0 to 380.
-- **Do not hard-code the popup's size.** Read it and derive the crop.
-- **Do not invent an ordering rule for the card panel.**
-- **Do not let `CQ` be looked up as a callsign anywhere.**
-- **Do not draw a map**, and **do not read, align to or label the pale curves on the
-  ocean** - they are artwork, not a graticule.
-- **Do not add or vendor a package.**
+  `cq_pressed → … → ft8_transmission Played` stays as it is. **Task 1 makes the PSK31
+  tab unable to reach it; nothing later in this unit reconnects it.**
+- **The dummy load is withdrawn in full** (Tim, 2026-09-06). **No compensating control.**
+- **Do not show a character the demodulator was not sure of.** No `?`, no dim maybe.
+- **Do not port `reference-modem.py` or anything from fldigi.** Match the convention;
+  write Hamlet's own.
+- **Do not hard-code 14.070.** The offset is 1000 Hz above whatever the cited row says.
+- **Do not add a row to `data/bands/`.**
+- **Do not add or vendor a package.** No FFT library, no DSP package - the engine already
+  has what FT8 and CW use.
 - **Do not claim an appearance from computation and call it seen.** Say *computed*.
-- **Do not invent a ruling id.** R1 to R10 carry no `HM-DEC-` number; cite them by date
-  and quote.
+- **Do not invent a ruling id.**
 - **Do not chase these known reds:** `CwAdjudicationTests.ASpeedChangeInRealisticAudio`;
   the 51 CW cases in `docs\unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests`
   whole-type-list tripwire; `HM-OPEN-088`'s ten; the two in
   `TheAchievementsScreenTests`; the one in
-  `TheFitGuardAsksAboutTheGridTheSendIsOnTests` in the engine project.
+  `TheFitGuardAsksAboutTheGridTheSendIsOnTests`.
 - **Do not repair this instruction.** Report mismatches; keep working.
 - **Do not write to `DECISIONS.md`.** §12.1.
 
@@ -462,34 +435,32 @@ Not in this unit. Do not start any of it.
 
 ## 11. Reporting
 
-`output.md` at the repository root. **The canonical headings, which
-`tools\arbiter\validate-output.bat` requires: `## 1. What Claude did`, `## 2. What the
-owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.**
+`output.md` at the repository root. **Canonical headings:** `## 1. What Claude did`,
+`## 2. What the owner should expect`, `## 3. What you should see`,
+`## 4. What's blocking us`.
 
 Open with the A/B/C ordering block, then the header:
 
 ```
 A. The phase goal - ...
-B. The PSK31 phase's step 1 is next and this unit does not touch it - say so.
-C. The report last, and section 4 raises N items on top of a carried queue of eleven, three of them from unit 312.
+B. Step 1 and its exit criteria - ...
+C. The report last, and section 4 raises N items on top of a carried queue of sixteen.
 ```
 
 ```
-UNIT:       313 - <complete|stopped> at task N of 4, <which dropped> - <date time>
+UNIT:       314 - <complete|stopped> at task N of 5, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
 ADVANCED:   <yes|no, and which step>
 NUMBER:     <what moved, before -> after>
-DRIFT:      <n> consecutive units without advance  (carried from PHASE_OUTCOME.md)
+DRIFT:      <n> consecutive units without advance  (was 1)
 ```
 
-**Section 1 must answer three things in one line each, near the top:** what the popup's
-magnification was before the cap; whether the horizontal
-truncation was the same cause as the vertical; and **what the green circled glyphs on the
-decoded rows are.**
+**Section 1 must carry a table: every fixture, the reference CER, your CER, and the
+decode time in seconds.** And the squelch rule with its number in one sentence.
 
-**Section 4 must reproduce the task 2 author's-proposal block in full** so Tim can change
-the cap with one word.
+**Section 2 must tell Tim what he will see when he presses PSK31 now, and what he must
+not expect** - one signal at one spot, no clicking, no sending - and **ask him for an
+off-air recording**: a few minutes of audio on 14.070, in words that say what to do.
 
-**Every appearance claim in this report is computed, not seen. Say so once, plainly - and
-say which of this unit's two fixes you confirmed by standing the app up.**
+**Every appearance claim in this report is computed, not seen. Say so once, plainly.**

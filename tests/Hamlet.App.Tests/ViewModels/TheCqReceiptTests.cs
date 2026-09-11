@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -109,6 +109,56 @@ public sealed class TheCqReceiptTests
         Assert.Equal("Portugal", DxccPrefixes.EntityOf("CQ7ABC"));
     }
 
+    /// <summary>**The receipt offers no Log.**</summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-11**: *"CQ should not have log option, that is
+    /// self-gratification."* **This supersedes unit 305's *Log from first appearance*
+    /// and unit 310's R2**, both of which were the author's reasoning rather than his
+    /// ruling.</para>
+    /// <para>**A CQ IS NOT A CONTACT.** Nothing passed between two stations, so there is
+    /// nothing to write down. The moment somebody answers, the Log is on their
+    /// conversation card, where there is a contact to log - which
+    /// <see cref="AConversationCardStillCarriesEveryStationFact"/> keeps true.</para>
+    /// </remarks>
+    [Fact]
+    public void TheReceiptOffersNoLog()
+    {
+        var model = Panel();
+
+        model.SendCallToAnyoneCommand.Execute(null);
+
+        var receipt = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine("kind        : " + receipt.ActionKind);
+        _output.WriteLine("has action  : " + receipt.HasAction);
+        _output.WriteLine("label       : [" + receipt.ActionLabel + "]");
+        _output.WriteLine("shows link  : " + receipt.ShowsLogLink);
+
+        Assert.True(receipt.IsCallToAnyone);
+
+        // **NOTHING IS OFFERED AT ALL.** Not a Log, and not a Send either - a call to
+        // everybody has no addressee for a reply.
+        Assert.Equal(Ft8CardActionKind.None, receipt.ActionKind);
+        Assert.False(receipt.HasAction);
+        Assert.Equal("", receipt.ActionLabel);
+
+        // **AND NOT BY THE BACK DOOR.** The card carries a second route to the log
+        // window as a quiet link; it must not reappear there.
+        Assert.False(
+            receipt.ShowsLogLink,
+            "the receipt still offers a log, by the link rather than the button");
+
+        // **THE BUTTON'S OWN WORDS ARE GONE.**
+        Assert.DoesNotContain(
+            "Log this call", Everything(receipt), StringComparison.OrdinalIgnoreCase);
+
+        // **AND `LogLabel` IS NOT SWEPT FOR**, deliberately. It is a constant on every
+        // card and the markup draws it only where `ShowsLogLink` is true
+        // (`MainWindow.axaml:4702`), so a sweep of every property finds a string the
+        // receipt never puts on screen. **What is asserted is the flag the markup
+        // reads**, which is the thing that decides whether he sees it.
+    }
+
     /// <summary>**The log hover does not name a station either.**</summary>
     /// <remarks>
     /// **THE SAME FAULT AS THE COUNTRY LINE, ONE HOVER FURTHER DOWN** (R1, R2). It read
@@ -125,15 +175,18 @@ public sealed class TheCqReceiptTests
 
         var receipt = Assert.Single(model.DigitalCards);
 
-        _output.WriteLine("tip: " + receipt.ActionTip);
+        _output.WriteLine("tip: [" + receipt.ActionTip + "]");
 
         Assert.DoesNotContain("CQ", receipt.ActionTip, StringComparison.Ordinal);
 
         Assert.DoesNotContain(
             "between you and", receipt.ActionTip, StringComparison.Ordinal);
 
-        // **AND IT STILL SAYS THE THING THAT MATTERS** (§0.2).
-        Assert.Contains("transmits nothing", receipt.ActionTip, StringComparison.Ordinal);
+        // **AND SINCE 2026-09-11 THERE IS NO HOVER AT ALL**, because there is no
+        // control to hover. The wording this test was written for - *what passed
+        // between you and CQ* - went with the Log button it belonged to, and what is
+        // asserted now is that nothing took its place.
+        Assert.Equal("", receipt.ActionTip);
     }
 
     /// <summary>**Nothing on the receipt says *he*, or *not answered*.**</summary>

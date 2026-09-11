@@ -312,7 +312,14 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// ACTION THERE**, so the option is present on every card in every state and is
     /// never drawn twice on one.</para>
     /// </remarks>
-    public bool ShowsLogLink => ActionKind != Ft8CardActionKind.Log;
+    /// <para>**AND IT IS FALSE ON A RECEIPT, WHICH IS A DIFFERENT REASON** (Tim,
+    /// 2026-09-11: *"CQ should not have log option, that is self-gratification."*).
+    /// The button came off the receipt in work instruction 314 and **this link
+    /// appeared in its place**, because the rule above reads *Log is not already the
+    /// action here* and that became true the moment the action became None. A CQ is
+    /// not a contact by either route.</para>
+    public bool ShowsLogLink
+        => !IsCallToAnyone && ActionKind != Ft8CardActionKind.Log;
 
     /// <summary>What the always-available Log control reads.</summary>
     public string LogLabel => "Log this contact";

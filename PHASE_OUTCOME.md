@@ -2,7 +2,7 @@ PHASE: Hamlet works PSK31 the way it works FT8
 PHASE_SET: 2026-09-11
 DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
 STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
-STEP: 1 | not started | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
+STEP: 1 | partial | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
 STEP: 2 | not started | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
 STEP: 3 | not started | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
 STEP: 4 | not started | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
@@ -54,3 +54,18 @@ ACCOMPLISHED: The two faults are measured rather than described, and the third t
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: THIS UNIT ADVANCES NO STEP OF THE PSK31 PHASE and is recorded against step 0 because that is the step the phase has reached. It is carried repair of two FT8 and FT4 faults on surfaces PSK31 will inherit. NOTHING WAS MEASURED AT A RADIO.
+
+## UNIT 314 - STEP 1
+
+STEP: 1
+APPROACH: Disconnected the FT8 machinery from the PSK31 tab before building anything.
+HIT: THE TAB WAS DECODING AND TRANSMITTING FT8 ON 14.070 AND THE OPERATOR FOUND IT BY USING IT. Unit 312 wrote the sentence onto the panel and left the slot tick running: OnSlotTick gates on IsDigitalMode, which is the tab rather than the sub-mode, so the watch went on cutting FT8 slots and the FT8 decoder went on reading them. SendMessage composes through DigitalModeFor, which answers Ft8 for everything that is not FT4, so his answer put FT8 tones on the PSK31 calling frequency. Measured after the gates: thirty ticks under PSK31 give 0 slot looks and 0 rows; the same thirty under FT8 and FT4 give 30 looks each.
+MOVE: Two gates at the two doors: the tick returns before the watch is asked, and the one send door refuses in words.
+WHY: A tab that transmits the wrong mode into the wrong segment is worse than a tab that does nothing.
+DECIDED: One predicate for hearing and a separate one for sending, because the next step gives PSK31 a decoder and must not thereby re-open the transmitter.
+LICENCE: Work instruction 314 task 1 under Tim rulings of 2026-09-11 on the tab and on the receipt.
+COST: one session, no suite, 24 named types at 146 of 146 green before anything changed
+ACCOMPLISHED: The PSK31 tab can no longer decode as another mode or transmit as one, and the CQ receipt offers nothing to log.
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: STEP 1 IS CARRIED AT partial. Task 1 is a step-0 defect repaired in passing and is not an advance; the demodulator that would close step 1 is tasks 2 to 4. NOTHING WAS MEASURED AT A RADIO.

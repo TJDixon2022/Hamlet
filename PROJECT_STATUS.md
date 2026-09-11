@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 4 of 4
-WORK_INSTRUCTION: 313 - the popup stops blurring, and the panel scrolls
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 314 - hear one: the PSK31 tab stops pretending, then reads a signal
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-160 (2026-09-08)
-UPDATED: 2026-09-11T08:30:24-04:00
-NOTE: Unit 313 complete, none dropped. Popup capped at 2x, the For You panel scrolls.
+UPDATED: 2026-09-11T09:21:18-04:00
+NOTE: Task 1 green - the PSK31 tab is inert and the receipt has no Log. Task 2, the varicode, next.
 
 ---
 

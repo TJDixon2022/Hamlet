@@ -152,13 +152,21 @@ public sealed class ThePressingOfCqTests
         Assert.Null(model.LedgerForTests!.For(Ft8ContactLedger.CallToAnyone));
     }
 
-    /// <summary>**The CQ card carries the Log option before anybody answers.**</summary>
+    /// <summary>**The CQ card carries no way to log, and the station's card does.**</summary>
     /// <remarks>
-    /// Tim's ruling: *"It should be up to me what I want to log."* The Log option is
-    /// on every card in every state, and a CQ card is a card.
+    /// <para>**REWRITTEN 2026-09-11 BECAUSE TIM WITHDREW WHAT IT ASSERTED.** It read
+    /// *the CQ card carries the Log option before anybody answers*, on unit 305's
+    /// reading of *"It should be up to me what I want to log"* - that the option is on
+    /// every card in every state and a CQ card is a card. His ruling of 2026-09-11 is
+    /// the opposite: *"CQ should not have log option, that is
+    /// self-gratification."*</para>
+    /// <para>**A CQ IS NOT A CONTACT**, so there is nothing to write down. What the
+    /// earlier reading was protecting is kept, and this test now asserts it from the
+    /// other side: **the moment somebody answers, the Log is on their card**, where
+    /// there is a contact to log.</para>
     /// </remarks>
     [Fact]
-    public void TheCqCardCarriesTheLogOptionBeforeAnybodyAnswers()
+    public void TheCqCardCarriesNoWayToLogAndTheStationCardDoes()
     {
         var model = Panel();
 
@@ -170,11 +178,26 @@ public sealed class ThePressingOfCqTests
         _output.WriteLine("action       : " + card.ActionKind);
         _output.WriteLine("log link     : " + card.ShowsLogLink);
 
-        // **THE SAME TEST UNIT 299 APPLIES TO EVERY OTHER CARD** - the button or
-        // the link, and a card with neither fails.
+        Assert.True(card.IsCallToAnyone);
+
+        // **NEITHER THE BUTTON NOR THE LINK.**
+        Assert.Equal(Ft8CardActionKind.None, card.ActionKind);
+        Assert.False(card.ShowsLogLink);
+
+        // **AND WHEN SOMEBODY ANSWERS, THEIR CARD HAS IT.** The receipt retires, a
+        // conversation card opens, and that is where a contact can be logged.
+        Heard(model, "02:11:15", HisCall + " K9XP EN52");
+
+        var answered = At(model, "02:11:30").DigitalCards
+            .Single(c => c.Callsign == "K9XP");
+
+        _output.WriteLine("answered     : " + answered.Callsign
+            + ", action " + answered.ActionKind
+            + ", log link " + answered.ShowsLogLink);
+
         Assert.True(
-            card.ActionKind == Ft8CardActionKind.Log || card.ShowsLogLink,
-            "the CQ card offers no way to log at all");
+            answered.ActionKind == Ft8CardActionKind.Log || answered.ShowsLogLink,
+            "the station's own card offers no way to log at all");
     }
 
     private void Print(MainWindowViewModel model)

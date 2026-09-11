@@ -1918,6 +1918,45 @@ public partial class MainWindowViewModel : ObservableObject
             || string.Equals(chosen, "FT8", StringComparison.Ordinal)
             || string.Equals(chosen, "FT4", StringComparison.Ordinal);
 
+    /// <summary>Whether Hamlet can put this mode on the air.</summary>
+    /// <param name="chosen">The canonical label, or null where he has pressed none.</param>
+    /// <returns>True where a modulator exists for it.</returns>
+    /// <remarks>
+    /// <para>**A SEPARATE QUESTION FROM <see cref="CanDecode"/> AND IT IS WRITTEN
+    /// SEPARATELY** (work instruction 314 task 1). They answer the same today and
+    /// they are not the same question: **hearing a mode comes before answering in
+    /// it**, and the step after this one gives PSK31 a decoder while leaving it with
+    /// no modulator at all. Folding them into one predicate would make that step
+    /// silently re-open the send path.</para>
+    /// <para>**THIS IS THE GUARD THAT WAS MISSING.** With PSK31 chosen,
+    /// <see cref="DigitalModeFor"/> answers `Ft8`, so the composer composed FT8
+    /// tones and the send path put them on 14.070 - which is the fault the operator
+    /// found by using it (2026-09-11).</para>
+    /// </remarks>
+    private static bool CanTransmitIn(string? chosen)
+        => chosen is null
+            || string.Equals(chosen, "FT8", StringComparison.Ordinal)
+            || string.Equals(chosen, "FT4", StringComparison.Ordinal);
+
+    /// <summary>How many slots the tick has read, for a test.</summary>
+    /// <remarks>
+    /// **THE ONE READING THAT SAYS WHETHER A DECODER IS RUNNING.** A list with no
+    /// rows on it is consistent with a quiet band; a slot count of nought is not.
+    /// </remarks>
+    internal int SlotsReadForTests { get; private set; }
+
+    /// <summary>How many ticks got as far as asking the slot watch, for a test.</summary>
+    internal int SlotLooksForTests { get; private set; }
+
+    /// <summary>Whether a decoded row may be answered from this tab, for a test.</summary>
+    /// <remarks>
+    /// **IT IS THE SAME PREDICATE THE SEND DOOR USES**, so a test cannot pass while
+    /// the door would open. Nothing in `src/` reads this; it exists because the
+    /// alternative is asserting that a context menu was not built, which is a test
+    /// about a menu rather than about a transmission.
+    /// </remarks>
+    internal bool CanAnswerRowsForTests => CanTransmitIn(ChosenDigitalMode);
+
     /// <summary>**Whose slot this is and how much of it is left**, in one sentence.</summary>
     /// <remarks>
     /// **IT SAYS AND IT DOES NOT ACT** (§0.2). Nothing reads this to decide
@@ -2963,17 +3002,22 @@ public partial class MainWindowViewModel : ObservableObject
     private (Ft8CardActionKind Kind, string Label, string Message) ActionFor(
         Ft8CardFacts facts, Ft8StationRecord record, string mine)
     {
-        // **THE CALL-TO-ANYBODY CARD OFFERS A LOG AND NEVER A SEND** (work
-        // instruction 305 task 2). There is nobody to answer yet, so a send button
-        // would have no addressee; the log is there from the moment the card
-        // appears, because *it should be up to me what I want to log* (Tim,
-        // 2026-09-08) and this card is a card.
+        // **THE CALL-TO-ANYBODY CARD OFFERS NOTHING AT ALL** (Tim, 2026-09-11:
+        // *"CQ should not have log option, that is self-gratification."*).
+        // **This supersedes unit 305 task 2 and unit 310's R2**, both of which put a
+        // Log here on the author's reasoning that the card appears from the first
+        // moment and a card is a card. **A CQ is not a contact.** There is nobody on
+        // the other end of it, nothing passed between two stations, and nothing to
+        // write down; the moment somebody answers, the Log belongs on their
+        // conversation card, where there is a contact to log.
+        // **AND NO SEND EITHER**, which was already true: a call to everybody has no
+        // addressee for a reply.
         if (string.Equals(
                 facts.Callsign,
                 Ft8ContactLedger.CallToAnyone,
                 StringComparison.Ordinal))
         {
-            return (Ft8CardActionKind.Log, "Log this call", "");
+            return (Ft8CardActionKind.None, "", "");
         }
 
         if (facts.State == Ft8ContactState.Complete)
@@ -10231,6 +10275,21 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **A MODE WITH NO DECODER IS NOT DECODED BY SOMEBODY ELSE'S** (work
+        // instruction 314 task 1). Unit 312 made the panel say *Hamlet cannot read
+        // PSK31* and left this tick running, so the slot watch went on cutting
+        // FT8 slots and the FT8 decoder went on reading them **on a PSK31
+        // frequency** - and the operator saw a CQ, answered it, and put an FT8
+        // message into the PSK31 watering hole where nobody was listening for it
+        // (Tim, 2026-09-11).
+        // **NOT HIDDEN - NOT RUNNING.** The watch re-arms rather than being looked
+        // at, so no slot is claimed, nothing is cut and no decoder is fed.
+        if (!CanDecode(ChosenDigitalMode))
+        {
+            _slotWatch.Rearm();
+            return;
+        }
+
         // **THE DIGITAL DECODER SAYS IT EXISTS** (work instruction 305 task 4).
         // The CW decoder has announced itself since unit 088; this one never did,
         // so a Digital tab that decoded nothing and a Digital tab that was never
@@ -10239,6 +10298,14 @@ public partial class MainWindowViewModel : ObservableObject
         AnnounceTheDigitalDecoder(tap);
 
         var offset = ClockOffset;
+
+        // **THE WATCH WAS ASKED**, which is a different fact from a slot having
+        // closed. A tick that reaches here is a tick that is decoding this mode;
+        // under a mode Hamlet cannot read, the tick returns above and this never
+        // moves. Thirty ticks in a millisecond cut no slot on any mode, so the
+        // count of slots alone cannot tell a silenced decoder from a fast test.
+        SlotLooksForTests++;
+
         var look = _slotWatch.Look(tap, DateTime.UtcNow, offset);
 
         if (look.Refusal != _digitalRefusal)
@@ -10261,6 +10328,8 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (look.Ready is { } ready && !_slotDecodeRunning)
         {
+            SlotsReadForTests++;
+
             _ = DecodeTheSlotAsync(ready, offset);
         }
     }
@@ -12151,6 +12220,28 @@ public partial class MainWindowViewModel : ObservableObject
         if (wanted.Length == 0)
         {
             DigitalSendLine = "There was nothing to send.";
+            return;
+        }
+
+        // **THE MODE GATE, AT THE ONE DOOR** (work instruction 314 task 1, 0.2).
+        // This is the only call site in `src/` that composes a signal, so a
+        // refusal here covers the CQ button, the right-click answer, and anything
+        // a later unit adds - there is no second route to guard and none to
+        // forget. **What it prevents is exactly what happened**: composing FT8
+        // tones because `DigitalModeFor` answers `Ft8` for everything that is not
+        // FT4, and putting them out on the PSK31 calling frequency.
+        if (!CanTransmitIn(ChosenDigitalMode))
+        {
+            AppEvents.OperatorAction(
+                _telemetry, "send_refused", OperatingMode,
+                ChosenDigitalMode ?? StartupSnapshot.Unknown);
+
+            DigitalSendLine =
+                "Hamlet cannot send " + ChosenDigitalMode + " yet, so nothing went "
+                + "out. It can hear this mode before it can answer in it, and "
+                + "sending anything else here would put the wrong kind of signal "
+                + "on a frequency people are using for " + ChosenDigitalMode + ".";
+
             return;
         }
 
