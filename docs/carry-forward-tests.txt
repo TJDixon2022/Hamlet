@@ -69,6 +69,9 @@ ThePsk31TurnTests
 Hamlet.RadioEngine.Tests.Psk31.ThePsk31OfferTests
 TheAzimuthalAssetTests
 AzimuthalMapTests
+ThePsk31TelemetryTests
+ThePsk31TransmitTelemetryTests
+ThePsk31PanelSpeaksPsk31Tests
 
 -- known reds, NEVER on the list above ---------------------------------------
 
