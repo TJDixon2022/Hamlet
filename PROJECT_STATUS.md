@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 4
+STATE: COMPLETED
+TASK: 3 of 4
 WORK_INSTRUCTION: 318 - say it, the engine half: the modulator, the send with no slot, and whose turn it is
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T14:21:34-04:00
-NOTE: Task 3 done - no-slot send carried, capped at 30 s and refused before arming; every guarding count unchanged. Task 4, the named drop candidate, dropped whole; writing the report.
+UPDATED: 2026-09-11T14:27:30-04:00
+NOTE: Unit 318 complete, task 4 dropped; step 4 advanced (4 of 4 loopback, 57.1 Hz, 30 s cap). The shell refused validate-output.bat, so the report is hand-checked only - run it.
 
 ---
 
