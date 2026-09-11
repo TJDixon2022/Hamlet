@@ -1,21 +1,37 @@
-﻿## Step 1 - FT4 decodes a signal Hamlet made
+﻿STEP: 3 | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
+## Step 3 - Read the conversation
 
-**Delivers:** an FT4 decoder, proved against Hamlet's own encoder.
+**Delivers:** the parser that turns each row's free text into exchange state - callsigns,
+`de`, `CQ`, RST, grid, the turnover words, 73 and the closers - with an explicit
+**unknown** where the text does not support a state. The CQ filter becomes the rows
+whose text parses as a CQ. Rows become stations: worked-fade, entity resolution and the
+achievement nudge run on PSK31 rows unchanged.
 
-**Entry:** step 0.
+**Entry:** step 2 done - the two-signal fixture yields two rows of text, checked by
+running that test first.
 
 **Exit:**
-- **A message becomes FT4 symbols becomes audio and decodes back to the same
-  message**, over at least a hundred messages including compound callsigns, grids,
-  reports and `RR73`. *must-pass*
-- **The timing is FT4's**: 7.5-second slots, 4.48 seconds of transmission, four tones.
-  **Measured, not asserted.** *must-pass*
-- **Zero wrong decodes** across the run. *must-pass*
-- A sensitivity ladder at stated SNRs, with its trial count and its wrong count.
+- `assets/fixtures/psk31-transcripts/corpus.json` - eight transcripts, 32 lines, each
+  line carrying what a correct parser must conclude - yields, per line, the speaker,
+  the addressee, the kind and the turnover as the corpus states them, and **no state is
+  asserted that the corpus marks uncertain**. *must-pass*
+- The unknown rate per transcript is stated as a number beside the corpus's expected
+  rate; on the garbled transcript it is **not lower** than the corpus expects.
+  *must-pass*
+- A row addressed to the operator's own callsign is recognised as such. *must-pass*
+- The CQ filter selects exactly the rows whose text parses as a CQ, and nothing else.
+  *must-pass*
+- Worked-fade, `DxccPrefixes.EntityOf` with its `CQ` guard, and the nudge run on PSK31
+  rows **with no change to their code**; a Costa Rican station calling CQ gets the same
+  quill it would on FT8. *must-pass*
+- Guessed states are distinguishable from certain ones in what the view model exposes
+  (Â§R1), not by colour alone. *must-pass*
+- Name and QTH are shown as text and never parsed into state (Â§R3). *must-pass*
+- A non-standard exchange that skips the report still lands on 73 correctly.
   *nice-to-pass*
 
-**The receive path is its own oracle**, as it was for FT8: if Hamlet cannot read its
-own FT4 transmission, nothing after this is worth building.
+**Nothing in this step transmits or offers a click that transmits.** Rows become
+clickable stations only in the sense FT8 rows are; the action behind the click is step 4.
 
-**Depends on:** step 0.
+**Depends on:** step 2.
 

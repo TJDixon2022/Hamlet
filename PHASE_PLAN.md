@@ -172,6 +172,24 @@ the demodulator was not sure of is not shown - no `?`, no dimmed maybe. Silence.
 the number is the author's and is `Psk31Demodulator.SquelchQuality`.
 
 
+**§R10 - Tim, 2026-09-11: the transmit chain may carry a send that has no slot.** Ruled
+on the arbiter's question of unit 317, option A. `OperatorSend` carries either a slot, as
+today, or *now*. A send with no slot is not held to a slot fit; it is held to **a stated
+maximum length** so a continuous carrier cannot run on - the unit states the number and
+why, and it is not more than thirty seconds, which is the Report macro with idle either
+side. The operator's click fires a no-slot send at once rather than at a boundary. **The
+gate, the single `PttOn` use site, the `finally` that unkeys or aborts, and `StopNow` stay
+one code path shared by all three modes.** FT8 and FT4 must stay byte-identical, proved
+by the tests that guard them today, run filtered. The transmission record says which mode
+went out and carries no slot where there was none. Rejected: a second sequence (a second
+`PttOn` site), an invented PSK31 slot (a slot that does not exist in the record that is
+evidence), shortened macros (§R2 overruled from underneath), and splitting a macro across
+slots (one click, several keyings).
+
+**This ruling amends §2 of this plan**, which said nothing in the phase changes what keys
+the transmitter. It does now, in the one way ruled above and no other. §6's `MOVE: stop`
+on the transmit chain stays in force for anything beyond it.
+
 ## §4 The steps
 
 Each step verifies its own ground: entry criteria are checked by the step, not
@@ -310,8 +328,8 @@ panel under R1-R6 and R8; the slot clock replaced by whose turn it is - *your tu
 under §R4.
 
 **Entry:** step 3 done - the parser is certain whose turn it is on the clean corpus
-entries, checked by running that test first. The chain `cq_pressed → … → Played` is
-unchanged from `2026-09-10.jsonl`.
+entries, checked by running that test first. The chain `cq_pressed → … → Played` is as
+`2026-09-10.jsonl` proved it, and §R10 is the only licence to change it.
 
 **Exit:**
 - **Loopback:** each of the four macros is modulated by Hamlet, decoded by Hamlet's own
@@ -327,8 +345,11 @@ unchanged from `2026-09-10.jsonl`.
   does not know, and the `SlotClock` is not shown for this mode. *must-pass*
 - Drive level and RF power for PSK31 are shown on the panel; the defaults are the ALC
   at no deflection and half rated power, both changeable by Tim (§R4). *must-pass*
-- Nothing keys the transmitter at the bench; the chain to `Played` is unchanged.
-  *must-pass*
+- Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
+  §R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
+  guarding tests, and a no-slot send capped at a stated length. *must-pass*
+- A no-slot send longer than the cap is refused before it arms, and the refusal is a
+  record, not a silence. *must-pass*
 - The turn indicator changes within one character of the other station's turnover word.
   *nice-to-pass*
 
@@ -386,8 +407,9 @@ morning. Everything else is the arbiter's judgment, reported.
   number to report, not a reason to guess. **Never loosen §R1's strict side** - a macro
   is offered only on certainty. If the unknown rate makes step 4 unusable, that is
   `MOVE: stop` with the number, because it changes what the product can promise.
-- **Anything would touch the transmit chain, the keying path, or `Played`.** `MOVE: stop`.
-  Risk posture is the owner's.
+- **Anything would touch the transmit chain, the keying path, or `Played` beyond what
+  §R10 allows.** `MOVE: stop`. Risk posture is the owner's. What §R10 allows is ruled and
+  is not a stop.
 - **A package would be needed** - an FFT library, a DSP package, `Avalonia.Headless.Skia`.
   `MOVE: stop`. §0.4.
 - **Reading fldigi tempts a port.** Read the structure; write Hamlet's own. If a unit
@@ -435,3 +457,7 @@ Open asks this phase touches or must not lose. Every unit carries them in its se
   so the outcome and status files stay consistent with it. Steps 0 and 1 are recorded as
   done by units 312 and 314 in `PHASE_OUTCOME.md`, which is the authority on state; this
   plan carries no state.
+- **2026-09-11, second revision.** §R10 added on Tim's ruling of the same day, answering
+  the arbiter's stop of unit 317 with option A. §2's premise corrected, step 4's entry and
+  exit amended, §6's transmit-chain stop narrowed to what §R10 does not cover. The step
+  list is unchanged.

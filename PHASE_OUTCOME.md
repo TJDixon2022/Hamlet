@@ -3,8 +3,8 @@ PHASE_SET: 2026-09-11
 DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
 STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
 STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
-STEP: 2 | not started | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
-STEP: 3 | not started | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
+STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
+STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
 STEP: 4 | not started | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
 STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
 STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
@@ -86,3 +86,35 @@ COST: one session, no test suite run, 24 named types at 146 of 146 green before 
 ACCOMPLISHED: Pressing PSK31 tunes to the cited watering hole, listens at one spot and shows text as it arrives, and can neither decode as another mode nor transmit as one.
 STATE_AFTER: done
 STATE_WHY: STEP 1 IS done. Every must-pass is met: a recorded fixture decodes to its known text with the error rate stated, the varicode table is cited, the reference commit is recorded with the clone outside the tree, the squelch rule is stated and the noise-only fixture produces nothing. The nice-to-pass is met too - the drifting carrier holds lock. NOTHING WAS MEASURED AT A RADIO and every fixture is synthetic, so all of it is an indication rather than a finding.
+
+## UNIT 315 - STEP 2
+
+UNIT_AS_CALLED: 1
+STEP: 2
+APPROACH: find every PSK31 carrier across the passband by measurement and run one demodulator per carrier into the FT8 decoded-text list
+HIT: section 4 wants a ruling: banked - Several rulings are asked for, on the 1500 Hz reference text, the search floor, the ruling id, the squelch delay and the hover wording, but at most they touch how firmly one must-pass is shown, and the other step 2 criteria and later work do not wait on them.
+MOVE: continue
+WHY: Steps 0 and 1 are done and proved; step 2 is the next in the pipeline and its ground is the single-channel demodulator unit 314 built. Nothing blocks it.
+DECIDED: the search rule and the retire rule are the unit's to choose and state, within the plan's requirement that both be measurements with a stated number; and the seed unit records the phase-setting ruling in DECISIONS.md and recovers the FT4 run files, because the phase was installed without install-phase.bat
+LICENCE: PHASE_PLAN.md step 2 entry and exit criteria, A6 branching, HM-DEC-155; install-phase.bat's stated seed-unit duties; CLAUDE.md A12.1 for recording a ruling the owner gave
+COST: 24.949754000000002
+ACCOMPLISHED: pressing PSK31 shows every station on the band as its own row of text, not one spot
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: All six must pass criteria are backed by measurements, with two and four signal rows at CER 0.0000, zero rows on noise, a stated 2.5 s retire rule measured at 1.75 to 2.50 s, a described search with no offset list and a real time ratio of 0.004, and the weakest point is that the 1500 Hz reference was derived rather than recorded.
+
+## UNIT 316 - STEP 3
+
+UNIT_AS_CALLED: 2
+STEP: 3
+APPROACH: parse each PSK31 message into speaker, addressee, kind, turnover and certainty against the transcript corpus, split the growing row at turnover words, and feed the parse to the unchanged FT8 row readers
+HIT: section 4 wants a ruling: banked - Rulings are wanted on the replaced assertion, the guess and unknown wording, roger recognition, the split rule edges and the callsign copies, but they only confirm choices the unit has already made or affect step 4 planning, so step 3 is not blocked and its remaining work can go on without an answer.
+MOVE: continue
+WHY: Steps 0 to 2 are done, step 2 by the separate reading of unit 315's report, and step 3 is next in the plan's one pipeline with nothing blocking it; the loop test finds no approach tried on step 3. Unit 315's eight section 4 items are logged as asks 17 to 24, not chased - none bears on a step 3 criterion.
+DECIDED: three on the arbiter's authority. The corpus lines are joined into one stream to make A3.4's 'a message is what arrived between two turnovers' measurable. The corpus's self-contradiction on 05-garbled (expected 0.2, two of five lines uncertain) is reported under both readings and not resolved. Task 5, end to end from the four-signal audio, is the drop candidate because it moves no must-pass.
+LICENCE: PHASE_PLAN.md step 3 entry and exit criteria, A1, A3.4, A3.5, AR1, AR3, AR9 and A6 branching; ARBITER.md A6, which makes the tasks, the tiering and the drop candidate the arbiter's
+COST: 19.498643
+ACCOMPLISHED: with PSK31 pressed, the CQ filter shows the stations calling CQ, a station calling Tim lands on his side, and every row says who is speaking and whether Hamlet is sure - with the same fade, country and quill an FT8 row gets, and nothing that transmits
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: The report backs every criterion with a measurement, 32 of 32 corpus lines matched with none wrongly certain, garbled uncertainty at 0.40 against 0.20 expected, own callsign recognised on 8 lines, the CQ filter taking 12 of 12 CQ rows and 0 of 28 others, an empty diff on the reused code with the same Costa Rica quill, IsGuess plus a visible word, no name or QTH members, and 03 no report ending on 73.

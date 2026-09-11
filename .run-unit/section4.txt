@@ -1,51 +1,86 @@
 ﻿
-**Four items. One asks for a ruling. None is in the way of an exit criterion in B.**
+### This unit's items, most-blocking first
 
-### 1. A ruling is wanted: `Ft4CandidateTimeBiasSeconds` is stale by one sub-block, and the estimator absorbs it at exactly its own limit
+1. **Hand wanted: say whether `TheReadinessHoverTests.NoRowCarriesABearingInDegrees` predates unit
+   316.** It failed three times with two cards where it expects one: alone by exact name twice, and
+   once in a list run. It passed in its class run and in the final list run. Run it alone at
+   `eb67036`, the commit before task 4:
+   `timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheReadinessHoverTests.NoRowCarriesABearingInDegrees"`.
+   The session's `git worktree add` to do it was refused by the shell. *Reasoning:* the test builds
+   an FT8-only exchange, and every change here is gated on text-only rows. *Rejected:* adding it to
+   the known reds unmeasured, because a known red is one proved red before the unit that found it.
 
-**Ruling asked for:** may a unit change `src/Ft8Sharp.Deep/Ft4DeepSignalToNoise.cs` to derive the
-candidate time bias from the geometry rather than pin it at minus one FT4 symbol period?
+2. **Ruling wanted: accept the replaced assertion in `ThePsk31HearsEveryoneTests`.** "No row is ever
+   on his side" became "a row is on his side only while its latest message is addressed to him".
+   *Reasoning:* the old line was step 2's placeholder, and step 3's exit criterion requires the
+   opposite for a row addressed to him. *Rejected:* keeping it, which would fail step 3's own
+   criterion; deleting it, which would leave nothing guarding a wrong row on his side.
 
-**The reasoning.** The constant is `-0.048` s and unit 294 measured exactly that on every on-grid
-trial at two analyses per symbol. At the four this unit adopted the measured bias is **`-0.060` s**,
-one further sub-block, because a sub-block at 4 is 144 samples rather than 288. The estimator's
-window therefore opens **12 ms late**, and `TimeSearchSeconds` is **Â±12 ms**, so the alignment
-search recovers it **at its own limit with no margin left**. It works - the measured agreement is
-0.56 dB over 1048 messages, better than the 0.58 it read before - and it works for a reason nobody
-chose. `Ft4Unit296CandidateTimeBiasTests` measures it at both grids, prints the margin (12.0 ms
-spare at 2x2, 0.0 at 4x2) and is green at zero margin and red the moment anything worsens.
+3. **Ruling wanted: the words `guess` and `unknown`** on a PSK31 row. They are the session's wording,
+   not a ruling. *Reasoning:* Â§R1 needs the state visibly a guess, not by colour alone. *Rejected:*
+   a word on certain rows too (`sure`), which puts noise on every clean row.
 
-**What was rejected and why.** Fixing it: forbidden - *the permitted `src/` change tonight is
-`Ft4WaterfallGeometry.cs` and task 2a's one sentence, and that is all of it*. Weakening unit 294's
-assertion to green: that would hide a shipped constant that no longer matches the decoder it
-describes, which is the fault this project keeps a card against. So
-**`Ft4Unit294SnrAgreementTests` is left RED. The red is this unit's and is not inherited.**
+4. **Ruling wanted: should Â§R3 recognise a roger (`R`, `RR`, `QSL`) before step 4?** Without one the
+   corpus's `ack` kind can never be produced, and an ack reads as chat. *Reasoning:* Â§R3 lists its
+   vocabulary and says anything else is text, and the instruction held the parser to it. Step 4's
+   turn indicator may want acks. *Rejected:* adding it here, which would widen a ruling the unit
+   was told not to.
 
-**Not in the way of anything in B.** The estimator is report-only; it changes no ratio, no gate, no
-count and no decision, and step 1's four criteria are decode-rate and wrong-count criteria measured
-with no estimator in the loop.
+5. **Ruling wanted: accept the split rule's three edges for step 4's turn indicator.**
+   - A bare `73` does not end a message; `SK` or `CL` does.
+   - A sign whose callsign is damaged does not split, so that message merges with the next and
+     stays uncertain.
+   - A final `K` counts when the next character arrives.
 
-### 2. Recorded, not a ruling request: two mismatches between the work instruction and the tree
+   *Reasoning:* each keeps a split from cutting an over in two, or from inventing a message the
+   text does not support. *Rejected:* splitting on `73`, which cuts 03-no-report line 4 in two;
+   splitting on a damaged sign, which would name a speaker the text did not give.
 
-Both are reported per `PHASE_PLAN.md`'s named-alternatives table and neither was repaired. First,
-the bare-port cell-centre figure of 6 of 306 is not in `Ft8Unit256CrossingIntervalTests`'s table; it
-is a remark in unit 257's doc comment. Second, task 6 asks that only `Ft4WaterfallGeometry.cs` move
-under `src/Ft8Sharp/`, while task 8 requires bumping a version that lives at
-`src/Ft8Sharp/Directory.Build.props`. Two files moved there and both are named.
+6. **Ruling wanted (low): the callsign shape is now held in four places** - three private copies
+   plus `Psk31ExchangeParser.CallsignPattern`, bound by a test. Consolidate into one engine type
+   in a later unit, or leave them. *Rejected:* consolidating here, which changes CW and scanner
+   code this unit had no business in.
 
-### 3. Recorded, not a ruling request: 4x8 was not run
+### Asks still outstanding
 
-The instruction lists it as conditional on the clock. It carries frequency oversampling 8, the axis
-two grids had already shown destructive for a reason read out of `Ft8Monitor`'s source, and it cost
-ten minutes to confirm a third collapse. **A sizing decision this session made, reported as one.**
+Carried per HM-DEC-139, verbatim where unresolved.
 
-### 4. Recorded, not a ruling request: five untracked files are still carried
-
-`.unit290-commit.txt`, `.unit295-msg.txt`, `tests/Ft8Sharp.Tests/Unit289SourceProbe.cs`,
-`tools/census15.sh`, `tools/unit294-thread-grid.py`. **Five, unchanged. No attempt was made to
-remove them** - six sessions have measured the harness refusing it. This session added a sixth,
-`.unit296-msg.txt`, used to carry commit messages past a shell that will not hold a heredoc
-containing an apostrophe; it is the same kind of file as `.unit295-msg.txt` and is left with them.
-
-**Nothing else is blocking.** Step 1's four exit criteria are met, the two closing steps are Tim's,
-and the one number that decides whether his night at the radio works is measured and moved.
+1. **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal,
+   still Tim's. PSK31's continuous carrier makes it sharper.
+2. **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
+   Tim's to add (Â§0.4).
+3. **Three inherited reds, never chased** - two in `TheAchievementsScreenTests`, one in
+   `TheFitGuardAsksAboutTheGridTheSendIsOnTests` (engine).
+4. **`Ft8ContactCard.Closing`** is uncalled and left standing.
+5. **`Ft8GlobePlot`'s unused framing constants.** Report; leave standing.
+6. **The licence of `assets/world-flat-relief.png` is unknown.** Raise; do not resolve.
+7. **The FT4 phase's run files.** Plan and status recovered into `docs\phase-ft4-run\` by
+   unit 315; the outcome file is an uncommitted placeholder waiting on item 19.
+8. **The door sentence is a placeholder.** Carry.
+9. **Acknowledgement indicators.** Named by Tim, not yet defined. Step 4's turn indicator
+   may be what he meant; do not assume it is.
+10. **Card ordering under scroll, and its root** - `DigitalCards.Clear()` then new cards
+    every slot, per-card state lost. Not this phase's. Carry.
+11. **The 2 px map outline** and **the 2.0x popup zoom cap** are sessions' numbers.
+12. **Version numbering** - x.y.0 or x.y.1 for a phase's first unit under HM-DEC-150.
+13. **The squelch threshold 0.90** is unit 314's number, `Psk31Demodulator.SquelchQuality`.
+14. **Real off-air PSK31 audio** - only Tim can record it. Two or three minutes on 14.070
+    with a few signals on it, any recorder, any rate, WAV, into
+    `assets\fixtures\captured\`. Every number in this phase is synthetic until then.
+15. **One conversation card is taller than the panel** (293 px in 220 px). Not broken.
+16. *(Unit 315 closed the fixed 1000 Hz listening offset by its instruction's own
+    condition. Kept here as a closed number so the list does not renumber.)*
+17. **Hand wanted: run `tools\arbiter\validate-output.bat output.md`** - unit 315's
+    shell refused it.
+18. **Ruling wanted: record the 1500 Hz station's text in `manifest.json`, or accept unit
+    315's derived reference.**
+19. **Hand wanted:** `git show eb28430:PHASE_OUTCOME.md > docs\phase-ft4-run\PHASE_OUTCOME.md`,
+    expected 168242 bytes, md5 `b60010069f7feea96e9d4be4e7e8c0f1`, then commit.
+20. **Hand wanted: `git rm src\Hamlet.RadioEngine\Psk31\Psk31Listening.cs`** - comment-only,
+    builds.
+21. **Ruling wanted: the carrier search's floor should be local to the signals before
+    step 6** - at 48 kHz the median bin is below the radio's passband.
+22. **Ruling wanted: is HM-DEC-161 the right id** for the phase-setting ruling?
+23. **Ruling wanted: accept about a second of delay on PSK31 text, or reopen the step-1
+    squelch.**
+24. **Ruling wanted: the `snr` column's hover names FT8 and FT4 precision and not PSK31's.**

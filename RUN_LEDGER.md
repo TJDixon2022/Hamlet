@@ -110,3 +110,6 @@ the owner reads instead of watching.
 | 7 | 2026-09-09T13:20 | 2026-09-09T13:53 | complete | 18.452825499999992 | ran unattended, 173 turns, 13 denied call(s) worked around, report valid |
 | 8 | 2026-09-09T14:07 | 2026-09-09T15:26 | complete | 26.83501999999999 | ran unattended, 225 turns, 5 denied call(s) worked around, report valid |
 | phase | 2026-09-09T15:28 | 2026-09-09T15:28 | halted | 245.9271 | stop 10: no progress in four consecutive units |
+| 1 | 2026-09-11T11:10 | 2026-09-11T12:05 | complete | 24.949754000000002 | ran unattended, 263 turns, 17 denied call(s) worked around, report valid |
+| 2 | 2026-09-11T12:11 | 2026-09-11T12:58 | complete | 19.498643 | ran unattended, 171 turns, 9 denied call(s) worked around, report valid |
+| phase | 2026-09-11T13:07 | 2026-09-11T13:07 | halted | 44.4484 | stop 4: the arbiter declared a decision the owner's |
