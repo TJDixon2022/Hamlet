@@ -7,7 +7,7 @@ plus VoiceTests, which sweeps every string the operator can read and which any
 unit adding copy should run. Unit 312, the first of the PSK31 phase, added its
 own two, and unit 313 added its two plus TheConnectionLineReadsTests, which its
 own instruction named and which was not on here. Unit 314 added its four. Unit 315
-added its two, one each side.
+added its two, one each side. Unit 316 added its three, two engine and one app.
 
 WHAT THIS IS. The test names a unit runs, filtered by exact name and
 foregrounded, BEFORE it changes anything - so that a red found afterwards can be
@@ -44,6 +44,7 @@ TheConnectionLineReadsTests
 ThePsk31TabIsInertTests
 ThePsk31PanelHearsTests
 ThePsk31HearsEveryoneTests
+ThePsk31ReadsTheConversationTests
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj

@@ -34,4 +34,11 @@
     <Compile Include="..\Shared\OffAirRecordings.cs" Link="Shared\OffAirRecordings.cs" />
   </ItemGroup>
 
+  <!-- ONE READER FOR THE PSK31 TRANSCRIPT CORPUS, NOT TWO (unit 316). The engine's parser
+       test and the panel's conversation test hold the same corpus, and a second reader is
+       a second way of reading one file. -->
+  <ItemGroup>
+    <Compile Include="..\Hamlet.RadioEngine.Tests\Psk31\Psk31Corpus.cs" Link="Shared\Psk31Corpus.cs" />
+  </ItemGroup>
+
 </Project>

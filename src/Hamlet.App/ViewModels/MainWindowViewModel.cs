@@ -1646,10 +1646,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// here (§0). Two copies of *is this for him* would disagree on the screen: a
     /// row on this side with a blank contact column, or a contact state beside a
     /// row he cannot find.
+    /// <para>**A PSK31 ROW IS ASKED OF ITS READING INSTEAD** (work instruction 316 task 4). Its
+    /// text is a conversation, and `Ft8MessageSplit.IsAddressedTo` would read any three words of
+    /// it as an FT8 message (unit 315). The parser was handed the operator's callsign and
+    /// answered the same question - *is the addressee his own station* - of the latest complete
+    /// message, and a message with no speaker it can name is on nobody's side.</para>
     /// </remarks>
     private bool IsForHim(DigitalDecodeRow row)
-        => !row.IsTextOnly
-            && Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
+        => row.IsTextOnly
+            ? row.Reading is { IsForOperator: true, Speaker: not null }
+            : Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
 
     /// <summary>Whether a row belongs on the left-hand list.</summary>
     /// <param name="row">The row.</param>
@@ -1963,6 +1969,60 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>When each channel's row first went up, as its time cell.</summary>
     private readonly Dictionary<int, string> _psk31FirstHeard = new();
 
+    /// <summary>Each channel's splitter, how far into its text it has read, and its latest message.</summary>
+    private readonly Dictionary<int, Psk31ChannelReading> _psk31Readings = new();
+
+    /// <summary>The latest complete message on a channel, fed only what arrived since last time.</summary>
+    /// <param name="channel">The channel as the listener lists it now.</param>
+    /// <returns>The parse of its latest complete message, or null where none has finished.</returns>
+    /// <remarks>
+    /// <para>**§3.4: WHAT ARRIVED BETWEEN TWO TURNOVERS**, cut by `Psk31MessageSplitter` and read
+    /// by `Psk31ExchangeParser`. **No PSK31 text reaches `Ft8MessageSplit.Split` or
+    /// `Ft8Vocabulary.Split`** (unit 315): they read any three words as an FT8 message.</para>
+    /// <para>**FED THE NEW CHARACTERS ONLY.** A channel's text only ever grows
+    /// (`Psk31Listener`), so what the splitter has seen is a prefix of it. Where the text is
+    /// shorter than what was fed - an id reused - the channel starts again rather than being fed
+    /// a splice.</para>
+    /// <para>**THE LATEST MESSAGE, NOT THE FIRST AND NOT A VOTE.** A row carrying both sides of a
+    /// QSO on one frequency is whoever spoke last, which is what its text says now.</para>
+    /// <para>**THE OPERATOR'S CALLSIGN IS READ WHEN THE CHANNEL IS FIRST HEARD**, from the one
+    /// place it lives, and handed to the engine, which never learns that settings exist
+    /// (§0.1).</para>
+    /// </remarks>
+    private Psk31Exchange? ReadPsk31(Psk31Channel channel)
+    {
+        if (!_psk31Readings.TryGetValue(channel.Id, out var reading)
+            || channel.Text.Length < reading.Fed)
+        {
+            reading = new Psk31ChannelReading(new Psk31MessageSplitter(_settings.Operator.Callsign));
+            _psk31Readings[channel.Id] = reading;
+        }
+
+        for (var at = reading.Fed; at < channel.Text.Length; at++)
+        {
+            if (reading.Splitter.Add(channel.Text[at]) is { } message)
+            {
+                reading.Latest = message.Exchange;
+            }
+        }
+
+        reading.Fed = channel.Text.Length;
+
+        return reading.Latest;
+    }
+
+    /// <summary>One channel's splitter, how far it has read, and what the latest message said.</summary>
+    private sealed class Psk31ChannelReading
+    {
+        public Psk31ChannelReading(Psk31MessageSplitter splitter) => Splitter = splitter;
+
+        public Psk31MessageSplitter Splitter { get; }
+
+        public int Fed { get; set; }
+
+        public Psk31Exchange? Latest { get; set; }
+    }
+
     /// <summary>A buffer the tap copies into, so the tick allocates nothing.</summary>
     private float[] _psk31Buffer = Array.Empty<float>();
 
@@ -2031,12 +2091,24 @@ public partial class MainWindowViewModel : ObservableObject
     /// the same terms as FT8's: decibels over the noise in 2500 Hz, whole, with the sign.
     /// The time is when the row first went up, since there is no slot to name.</para>
     /// </remarks>
-    private void ShowPsk31Channels()
+    private void ShowPsk31Channels() => ShowPsk31Channels(_psk31!.Channels);
+
+    /// <summary>Put these channels on the panel, for a test that has text and no audio.</summary>
+    /// <param name="channels">What a listener would have listed on this tick.</param>
+    /// <remarks>
+    /// **THE SAME PATH THE TICK TAKES**, from a channel's text onwards. Synthesising audio for
+    /// thirty-two lines of typed corpus would spend a minute of demodulation on a question about
+    /// what happens to text (§5), and the audio route is proved end to end elsewhere.
+    /// </remarks>
+    internal void ShowPsk31ChannelsForTests(IReadOnlyList<Psk31Channel> channels)
+        => ShowPsk31Channels(channels);
+
+    private void ShowPsk31Channels(IReadOnlyList<Psk31Channel> channels)
     {
         var changed = false;
         var live = new HashSet<int>();
 
-        foreach (var channel in _psk31!.Channels)
+        foreach (var channel in channels)
         {
             live.Add(channel.Id);
 
@@ -2064,7 +2136,19 @@ public partial class MainWindowViewModel : ObservableObject
                 channel.Text,
                 ObserverGrid: _settings.Operator.GridSquare ?? "",
                 HeardOnHz: FrequencyHz,
-                IsTextOnly: true);
+                IsTextOnly: true,
+                Reading: ReadPsk31(channel));
+
+            // **THE SAME TWO QUESTIONS `PlaceRow` ASKS OF AN FT8 ROW, OF THE SAME METHODS**
+            // (work instruction 316 task 4). A PSK31 row does not go through `PlaceRow` - it
+            // has no slot and must not book the FT8 ledger - so what working the sender would
+            // open, and whether the log already holds him, are asked here instead. Neither
+            // method changes; each reads `Sender`, which the row now supplies from its reading.
+            MarkIfItOpensSomething(row);
+
+            _workedBefore ??= ReadWorkedBefore();
+
+            row.WorkedBefore = WorkedBeforeNote(row.Sender);
 
             var index = shown is null ? -1 : IndexOfPsk31Row(shown);
 
@@ -2092,6 +2176,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             _psk31Rows.Remove(id);
             _psk31FirstHeard.Remove(id);
+            _psk31Readings.Remove(id);
             changed = true;
         }
 
@@ -3016,6 +3101,15 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var row in _mineAll.Concat(_digitalSent))
         {
+            // **A PSK31 ROW MAKES NO CARD** (work instruction 316 task 4, §0.2). Every card here
+            // is an FT8 card, built from the FT8 ledger, and its button sends FT8. A PSK31 row
+            // on his side from a station that ledger already knew would put that button under a
+            // PSK31 conversation. PSK31's own cards are step 4's.
+            if (row.IsTextOnly)
+            {
+                continue;
+            }
+
             var who = StationOf(row);
 
             if (who.Length == 0)
@@ -11556,6 +11650,15 @@ public partial class MainWindowViewModel : ObservableObject
             return null;
         }
 
+        // **A PSK31 ROW OFFERS NOTHING TO SEND** (work instruction 316 task 4, §0.2). Since this
+        // unit it names a sender, and where the FT8 ledger already knows that callsign this would
+        // hand back an FT8 menu whose every item arms an FT8 transmission. PSK31 cannot send yet
+        // and a click on its row must reach no send path; the answer is step 4's.
+        if (row is not null && row.IsTextOnly)
+        {
+            return null;
+        }
+
         if (row is null || _contacts is null)
         {
             return null;
@@ -12214,9 +12317,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// **THE SAME QUESTION THE MINE SIDE AND THE CONTACT COLUMN ASK**, and asked
     /// of the one place that answers it (§0). A Log item on a CQ would offer to
     /// write down a contact that has not happened.
+    /// <para>**NOT ON A PSK31 ROW** (work instruction 316 task 4). Its text would reach
+    /// `Ft8MessageSplit.IsAddressedTo`, which reads any three words as an FT8 message (unit 315),
+    /// and a PSK31 contact with an RST in the log is step 5's.</para>
     /// </remarks>
     public bool CanLogRow(DigitalDecodeRow? row)
         => row is not null
+           && !row.IsTextOnly
            && Ft8MessageSplit.IsAddressedTo(row.Message, _settings.Operator.Callsign);
 
     /// <summary>Open the Log dialog for one row, and write it if he saves.</summary>

@@ -4191,9 +4191,29 @@
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                     </StackPanel>
 
-                                                    <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
-                                                               IsVisible="{Binding !HasFields}"
-                                                               FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                    <!-- **A PSK31 ROW'S STATION, THEN ITS TEXT** (work
+                                                         instruction 316 task 4). The sender the parser
+                                                         read is picked out in the same green as an FT8
+                                                         sender, with the same hover naming the country
+                                                         where the table is certain, and a guessed station
+                                                         says guess or unknown in a word beside it (§R1,
+                                                         §0.6 - not by colour alone). An FT8 row with no
+                                                         fields has no reading, so both are hidden and it
+                                                         is drawn exactly as before. -->
+                                                    <Grid Grid.Column="3" ColumnDefinitions="Auto,Auto,*"
+                                                          IsVisible="{Binding !HasFields}">
+                                                        <TextBlock Grid.Column="0" Text="{Binding Sender}"
+                                                                   IsVisible="{Binding ShowsReadSender}"
+                                                                   ToolTip.Tip="{Binding SenderHelp}"
+                                                                   Foreground="{StaticResource HmGreenBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
+                                                        <TextBlock Grid.Column="1" Text="{Binding ReadingWord}"
+                                                                   IsVisible="{Binding HasReadingWord}"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
+                                                        <TextBlock Grid.Column="2" Text="{Binding Unsplit}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+                                                    </Grid>
 
                                                     <!-- **THE STATE IS TEXT AND THE
                                                          TEXT IS FORMATTED IN THE

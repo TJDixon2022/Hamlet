@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 316 - read the conversation
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T12:33:36-04:00
-NOTE: Splitter green, 3 of 3 with the parser still 8 of 8; seven transcripts back in order, 05-garbled lines 4 and 5 merge and stay uncertain. Committing task 3.
+UPDATED: 2026-09-11T12:50:57-04:00
+NOTE: Task 4 green: app list 23 classes, one order-dependent red in TheReadinessHoverTests (passes as a class); engine 82 of 82. Committing; task 5 dropped.
 
 ---
 

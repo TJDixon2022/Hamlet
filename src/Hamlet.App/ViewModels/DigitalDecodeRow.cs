@@ -130,12 +130,19 @@ namespace Hamlet.App.ViewModels;
 /// a table of decodes.</para>
 /// </param>
 /// <param name="IsTextOnly">
-/// **True where this row is free text and nothing may be read out of it** (work
+/// **True where this row is free text and no FT8 field may be read out of it** (work
 /// instruction 315 task 3). A PSK31 row is a conversation arriving a character at a time,
-/// not an FT8 message: at the moment it reads `CQ CQ CQ` it is three words, and without
-/// this <see cref="Fields"/> would call the first one an addressee and the CQ filter, the
-/// operator's own side and the sender's tooltip would all act on it. **No field, no
-/// addressee, no sender**, until the step that parses PSK31 says otherwise.
+/// not an FT8 message: at the moment it reads `CQ CQ CQ` it is three words, and handed to
+/// `Ft8Vocabulary.Split` the first would be called an addressee. <see cref="Fields"/> stays
+/// null for it, and so do the payload and its hover.
+/// <para>**SINCE WORK INSTRUCTION 316 ITS STATION COMES FROM <paramref name="Reading"/>
+/// INSTEAD** - the PSK31 parser's reading of the row's latest complete message - so the
+/// sender, the addressee, the CQ filter, the operator's own side, the fade, the country and
+/// the quill work on it through the same members an FT8 row supplies from its fields.</para>
+/// </param>
+/// <param name="Reading">
+/// **What the latest complete message on this row says**, or null where no message on it has
+/// finished yet (`Psk31MessageSplitter`). Only a text-only row carries one.
 /// </param>
 public sealed record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message,
@@ -144,9 +151,29 @@ public sealed record DigitalDecodeRow(
     string Contact = "",
     long HeardOnHz = 0,
     bool IsSent = false,
-    bool IsTextOnly = false)
+    bool IsTextOnly = false,
+    Hamlet.RadioEngine.Psk31.Psk31Exchange? Reading = null)
     : INotifyPropertyChanged
 {
+    /// <summary>The word that says how sure Hamlet is of this row's station, or "".</summary>
+    /// <remarks>
+    /// <para>**A WORD AND NOT A COLOUR** (§R1, §0.6). *guess* where the parse is not certain but
+    /// names a speaker; *unknown* where it names none; nothing where it is certain, nothing on a
+    /// row with no finished message, and nothing on an FT8 row.</para>
+    /// <para>**THE WORDING IS A SESSION'S** (work instruction 316 task 4), not a ruling.</para>
+    /// </remarks>
+    public string ReadingWord
+        => Reading is null ? ""
+            : Reading.Speaker is null ? "unknown"
+            : Reading.IsCertain ? ""
+            : "guess";
+
+    /// <summary>True where <see cref="ReadingWord"/> has something to say.</summary>
+    public bool HasReadingWord => ReadingWord.Length > 0;
+
+    /// <summary>True where this row's station is a guess or unknown rather than read for certain.</summary>
+    public bool IsGuess => Reading is { IsCertain: false };
+
     /// <summary>What a sent row puts in a cell nothing measured.</summary>
     /// <remarks>
     /// **EMPTY, AND NOT <see cref="NoMeasurement"/>.** The dash means *this was
@@ -253,7 +280,10 @@ public sealed record DigitalDecodeRow(
     {
         get
         {
-            var when = Utc;
+            // **A GUESSED STATION SAYS SO UNDER ITS MESSAGE TOO** (work instruction 316 task 4,
+            // §R1). His side draws a row as a bubble and this caption rather than as the
+            // table's cells, so the word is here as well as beside the sender there.
+            var when = HasReadingWord ? Utc + " · " + ReadingWord : Utc;
 
             // **THE FOLD MOVED UNDER THE MESSAGE ON 2026-09-08** (Tim: show, do
             // not tell). `x2` sat inside the message text, where it read as part
@@ -489,10 +519,47 @@ public sealed record DigitalDecodeRow(
     /// same name does not compile. The pair is renamed together so they stay
     /// symmetrical.
     /// </remarks>
-    public string Addressee => Fields?.To ?? "";
+    /// <remarks>
+    /// **ON A PSK31 ROW IT IS THE LATEST MESSAGE'S ADDRESSEE** (work instruction 316 task 4),
+    /// spelled the way an FT8 to-field spells a call to anyone - see <see cref="ReadAddressee"/> -
+    /// so the CQ filter and <see cref="AddresseeHelp"/> answer it without changing.
+    /// </remarks>
+    public string Addressee
+        => IsTextOnly ? ReadAddressee : Fields?.To ?? "";
 
     /// <summary>Who sent it, or "".</summary>
-    public string Sender => Fields?.From ?? "";
+    /// <remarks>
+    /// **ON A PSK31 ROW IT IS THE SPEAKER OF THE LATEST COMPLETE MESSAGE**, or nothing where no
+    /// message has finished or the parser could not name one. The fade, the country in
+    /// <see cref="SenderHelp"/> and the quill all ask this member, which is how they run on a
+    /// PSK31 row with no change to their own code.
+    /// </remarks>
+    public string Sender
+        => IsTextOnly ? Reading?.Speaker ?? "" : Fields?.From ?? "";
+
+    /// <summary>True where a PSK31 row has a sender to pick out beside its text.</summary>
+    public bool ShowsReadSender => IsTextOnly && Sender.Length > 0;
+
+    /// <summary>A PSK31 row's addressee, spelled the way the CQ filter already reads one.</summary>
+    /// <remarks>
+    /// <para>**`ANY` IS HANDED OVER AS `CQ` AND `DX` AS `CQ DX`**, which is how an FT8 row's
+    /// to-field spells a call to anyone, so `Ft8MessageSplit.IsCallToAnyone` - asked by the CQ
+    /// filter - and <see cref="AddresseeHelp"/> both answer it as they always have.</para>
+    /// <para>**NOTHING WHERE THERE IS NO SPEAKER.** An addressee nobody is saying is not a
+    /// station calling anybody, and a CQ from nobody the text names is not a CQ the filter may
+    /// show (§0.0).</para>
+    /// </remarks>
+    private string ReadAddressee
+        => Reading is not { Speaker: not null } reading
+            ? ""
+            : reading.Addressee switch
+            {
+                Hamlet.RadioEngine.Psk31.Psk31ExchangeParser.Anyone => DxccPrefixes.Ft8CallToAnyone,
+                Hamlet.RadioEngine.Psk31.Psk31ExchangeParser.Dx =>
+                    DxccPrefixes.Ft8CallToAnyone + " " + Hamlet.RadioEngine.Psk31.Psk31ExchangeParser.Dx,
+                null => "",
+                var call => call,
+            };
 
     /// <summary>The payload, or "".</summary>
     public string Payload => Fields?.Payload ?? "";

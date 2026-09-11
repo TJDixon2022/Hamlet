@@ -12,8 +12,9 @@ namespace Hamlet.RadioEngine.Tests.Psk31;
 /// `assets/fixtures/psk31-transcripts/corpus.json`, read exactly as written.
 /// </summary>
 /// <remarks>
-/// <para>**ONE READER FOR THE TWO TEST CLASSES THAT USE IT**, so the parser's test and the
-/// splitter's test cannot come to read the same file two ways.</para>
+/// <para>**ONE READER FOR EVERY TEST CLASS THAT USES IT, IN BOTH TEST PROJECTS** - the
+/// parser's, the splitter's, and the panel's, which links this file rather than copying it -
+/// so no two of them can come to read the same file two ways.</para>
 /// <para>**NOTHING IS CORRECTED ON THE WAY IN.** The corpus disagrees with itself on
 /// `05-garbled` - `unknown_rate_expected` 0.2 against two of five lines at `certain: false` -
 /// and both numbers are exposed as they stand for the test to print side by side.</para>

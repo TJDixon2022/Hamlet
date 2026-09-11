@@ -185,26 +185,34 @@ public sealed class ThePsk31HearsEveryoneTests
 
     /// <summary>**Assertion 6: no row can be answered, and nothing is parsed out of one.**</summary>
     /// <remarks>
-    /// **THE TAB STAYS INERT** - `ThePsk31TabIsInertTests` is re-run after this - and a
-    /// row whose text happens to be three words is still not a message with an addressee,
-    /// a sender and a payload. Without that a row reading `CQ CQ CQ` for a moment would be
-    /// picked out by the CQ filter and a row reading `KC3QIS de W1AW` would be put on the
-    /// operator's own side.
+    /// <para>**THE TAB STAYS INERT** - `ThePsk31TabIsInertTests` is re-run after this - and a
+    /// row whose text happens to be three words is still not an FT8 message with an addressee,
+    /// a sender and a payload: no row ever has FT8 fields.</para>
+    /// <para>**ONE ASSERTION HERE WAS STEP 2'S PLACEHOLDER, AND WORK INSTRUCTION 316 REPLACED
+    /// IT WITH STEP 3'S RULE.** Unit 315 asserted that no row was ever put on the operator's
+    /// side, because nothing read PSK31 yet and a row reading `KC3QIS de W1AW` would otherwise
+    /// have been put there on the strength of three FT8 fields; `IsTextOnly`'s own remark said
+    /// *until the step that parses PSK31 says otherwise*. Step 3's exit criterion is that a row
+    /// addressed to his callsign **is** on his side, and this fixture's 1100 Hz row carries
+    /// exactly that line. **What is asserted now is the rule, not its absence**: a row is on his
+    /// side only while its latest message, as the PSK31 parser read it, is addressed to him. The
+    /// count of rows put there is printed.</para>
     /// </remarks>
     [Fact]
     public void NoRowCanBeAnsweredAndNothingIsParsedOutOfOne()
     {
         var heard = Listen("psk31-four-signals.wav", "manifest-step2.json", 700, 1100, 1600, 2200);
 
-        _output.WriteLine("rows at most at once : " + heard.MostRowsAtOnce);
-        _output.WriteLine("could be answered    : " + heard.EverAnswerable);
-        _output.WriteLine("parsed into fields   : " + heard.EverParsed);
-        _output.WriteLine("put on his side      : " + heard.EverForHim);
+        _output.WriteLine("rows at most at once          : " + heard.MostRowsAtOnce);
+        _output.WriteLine("could be answered             : " + heard.EverAnswerable);
+        _output.WriteLine("parsed into FT8 fields        : " + heard.EverParsed);
+        _output.WriteLine("put on his side               : " + heard.EverForHim);
+        _output.WriteLine("on his side, not addressed him: " + heard.EverForHimWithoutBeingAddressed);
 
         Assert.True(heard.MostRowsAtOnce >= 2, "never more than " + heard.MostRowsAtOnce + " row at once");
         Assert.False(heard.EverAnswerable);
         Assert.False(heard.EverParsed);
-        Assert.False(heard.EverForHim);
+        Assert.False(heard.EverForHimWithoutBeingAddressed);
     }
 
     /// <summary>**Task 5: two carriers a hundred hertz apart, both read.**</summary>
@@ -447,6 +455,9 @@ public sealed class ThePsk31HearsEveryoneTests
         public bool EverParsed { get; set; }
 
         public bool EverForHim { get; set; }
+
+        /// <summary>A row on his side whose latest message was not addressed to him.</summary>
+        public bool EverForHimWithoutBeingAddressed { get; set; }
     }
 
     /// <summary>Play a fixture through the real tap and tick and watch the list.</summary>
@@ -503,6 +514,8 @@ public sealed class ThePsk31HearsEveryoneTests
             heard.EverAnswerable |= model.CanAnswerRowsForTests;
             heard.EverParsed |= rows.Any(r => r.HasFields);
             heard.EverForHim |= model.DigitalMineDecodes.Count > 0;
+            heard.EverForHimWithoutBeingAddressed |=
+                model.DigitalMineDecodes.Any(r => r.Reading is not { IsForOperator: true });
         }
 
         var seen = new HashSet<double>();
