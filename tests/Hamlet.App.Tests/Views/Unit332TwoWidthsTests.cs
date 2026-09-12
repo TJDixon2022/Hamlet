@@ -216,7 +216,12 @@ public sealed class Unit332TwoWidthsTests
                     + F(one.Bounds.Width) + " x " + F(one.Bounds.Height));
             }
 
-            Assert.True(last <= window.Bounds.Height, "the seven continents run past the window");
+            // **SINCE WORK INSTRUCTION 335 THE SEVEN ARE TRADING CARDS AND SCROLL INSIDE THE
+            // CATEGORY**, as every kind's cards do; the page itself still never scrolls
+            // (rewritten under R12 - it asserted the seven badges fit the window's height).
+            Assert.True(
+                seven.All(b => b.GetVisualAncestors().OfType<ScrollViewer>().Any()),
+                "the seven continents are not inside the category's scroller");
         }
         finally
         {

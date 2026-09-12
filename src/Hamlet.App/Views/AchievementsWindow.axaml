@@ -305,38 +305,43 @@
                 </Grid>
             </Border>
 
-            <!-- **TOTAL MILES: THE RUNNING SUM AND A BAR TO THE NEXT TIER**, with both
-                 figures in words beside it so the bar is never a bare fraction. -->
-            <StackPanel Grid.Row="2"
-                        IsVisible="{Binding HasBar}"
-                        Spacing="4"
-                        Margin="0,0,0,10">
-                <TextBlock x:Name="AchievementsCategoryBarLine"
-                           Text="{Binding BarLine}"
-                           FontSize="12"
-                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+            <!-- **TOTAL MILES' OWN BAR ROW IS GONE** (work instruction 335 task 4): each tier
+                 card carries its bar, and the band carries the level bar. -->
 
-                <ctl:BadgeProgressControl Fraction="{Binding BarFraction}"
-                                          HorizontalAlignment="Stretch" />
-            </StackPanel>
-
-            <!-- **CONTINENTS: SEVEN BADGES IN THE SAME SHAPE**, each clicking in to its
-                 countries. -->
-            <!-- **PINNED TO THE TOP**: left to stretch, the uniform grid split the whole
-                 remaining height between its two rows and the second row sat about 160 px
-                 below the first (work instruction 332 task 5, measured). -->
-            <ItemsControl x:Name="AchievementsSubBadges"
-                          Grid.Row="3"
-                          VerticalAlignment="Top"
+            <!-- **CONTINENTS: SEVEN TRADING CARDS, EACH PRESSABLE INTO ITS COUNTRIES** (work
+                 instruction 335 task 4, R22). Each is the same card every kind draws - the
+                 first contact that opened it, or the continent and who is calling from it -
+                 inside a button that opens its countries. **They scroll inside the category**,
+                 as every kind's cards do; the page itself still never scrolls. -->
+            <ScrollViewer Grid.Row="3"
                           IsVisible="{Binding HasSubBadges}"
-                          ItemsSource="{Binding SubBadges}"
-                          ItemTemplate="{StaticResource HmBadgeTemplate}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="AchievementsSubBadges"
+                              ItemsSource="{Binding SubBadges}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AchievementBadge">
+                            <Button Classes="hm-badge"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenCategoryCommand}"
+                                    CommandParameter="{Binding Kind}"
+                                    ToolTip.Tip="{Binding ScoreTip}">
+                                <ContentControl Content="{Binding Card}"
+                                                ContentTemplate="{Binding #AchievementsCategoryCards.ItemTemplate}" />
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
 
             <!-- **THE CARDS: EARNED, THEN THE NEAREST UNEARNED ONE, NOTHING BEYOND IT**
                  (§3.1). A kind can hold a hundred countries, so the cards scroll inside
@@ -365,7 +370,8 @@
                          `next` in words (§0.6). -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:AchievementCategoryCard">
-                            <Border Margin="0,0,12,12"
+                            <Border Classes="trading-card"
+                                    Margin="0,0,12,12"
                                     Background="White"
                                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                     BorderThickness="1"
@@ -409,6 +415,12 @@
                                                    FontSize="12"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
+                                        <TextBlock Classes="card-count"
+                                                   Text="{Binding CountLine}"
+                                                   IsVisible="{Binding HasCountLine}"
+                                                   FontSize="12" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+
                                         <Border CornerRadius="6"
                                                 ClipToBounds="True"
                                                 HorizontalAlignment="Left"
@@ -418,7 +430,8 @@
                                                                  Plot="{Binding Globe}" />
                                         </Border>
 
-                                        <Border IsVisible="{Binding HasNoMap}"
+                                        <Border Classes="card-list"
+                                                IsVisible="{Binding HasNoMap}"
                                                 Height="170"
                                                 Background="{StaticResource HmBackgroundBrush}"
                                                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
@@ -444,6 +457,25 @@
                                             </StackPanel>
                                         </Border>
 
+                                        <!-- **A TIER'S BAR** (work instruction 335 task 4): Total
+                                             Miles' tiers and a distance first, filling toward
+                                             the line, with both figures in words above it so
+                                             the bar is never a bare fraction. -->
+                                        <StackPanel IsVisible="{Binding HasTierBar}"
+                                                    Spacing="4"
+                                                    Margin="0,2,0,2">
+                                            <TextBlock Classes="card-tier"
+                                                       Text="{Binding TierLine}"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                            <ctl:BadgeProgressControl Fraction="{Binding TierFraction}"
+                                                                      Length="300"
+                                                                      Thickness="10"
+                                                                      HorizontalAlignment="Left"
+                                                                      Foreground="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
+                                        </StackPanel>
+
                                         <!-- **THE NEXT CARD: WHAT IT WANTS, AND WHO ON THE CQ
                                              LIST WOULD EARN IT** (work instruction 335 task 3).
                                              The heading carries the time the list was read;
@@ -457,7 +489,8 @@
                                                    FontSize="12"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                        <Border IsVisible="{Binding HasCallersPanel}"
+                                        <Border Classes="card-list"
+                                                IsVisible="{Binding HasCallersPanel}"
                                                 MinHeight="120"
                                                 Background="{StaticResource HmBackgroundBrush}"
                                                 BorderBrush="{StaticResource HmSlateEdgeBrush}"

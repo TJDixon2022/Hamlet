@@ -257,17 +257,18 @@ public sealed class TheAchievementsPageClicksInTests
 
         screen.BackCommand.Execute(null);
 
-        // **TOTAL MILES: no tier reached, the first tier next, and a bar toward it.**
+        // **TOTAL MILES: no tier reached, the first tier next, and a bar toward it** - on the
+        // tier's own card since work instruction 335 task 4 (rewritten under R12).
         screen.OpenCategoryCommand.Execute(AchievementKinds.TotalMiles);
 
-        var miles = screen.Category!;
+        var tier = screen.Category!.Cards.Single();
 
-        _output.WriteLine("bar: " + miles.BarLine + " = " + F(miles.BarFraction));
+        _output.WriteLine("bar: " + tier.TierLine + " = " + F(tier.TierFraction));
 
-        Assert.True(miles.HasBar);
-        Assert.EndsWith("of 50,000 miles", miles.BarLine, StringComparison.Ordinal);
-        Assert.InRange(miles.BarFraction, 0.01, 0.99);
-        Assert.Equal("50,000 miles", miles.Cards.Single().Title);
+        Assert.True(tier.HasTierBar);
+        Assert.EndsWith("of 50,000 mi", tier.TierLine, StringComparison.Ordinal);
+        Assert.InRange(tier.TierFraction, 0.01, 0.99);
+        Assert.Equal("50,000 miles", tier.Title);
     }
 
     /// <summary>**Continents opens to seven, and each to its countries.**</summary>

@@ -7,7 +7,11 @@ namespace Hamlet.App.ViewModels;
 /// <param name="Callsign">Who is calling.</param>
 /// <param name="Grid">The grid his CQ carried, or "" where it carried none.</param>
 /// <param name="HeardUtc">When the slot opened, as the list's `hhmmss`.</param>
-public sealed record CqCall(string Callsign, string Grid, string HeardUtc);
+/// <param name="Mode">
+/// `PSK31` where the row is a PSK31 text row, and "" otherwise: **an FT8-shaped row does not say
+/// whether it was FT8 or FT4**, so no mode is claimed for it.
+/// </param>
+public sealed record CqCall(string Callsign, string Grid, string HeardUtc, string Mode = "");
 
 /// <summary>
 /// **The CQ list as the decoded list held it, and the moment it was read** (work instruction 335
@@ -63,13 +67,33 @@ public sealed class CqSnapshot
             .Select(r => new CqCall(
                 r.Sender.Trim().ToUpperInvariant(),
                 Ft8MessageSplit.IsGrid(r.Payload) ? r.Payload : "",
-                r.Utc))
+                r.Utc,
+                r.IsTextOnly ? "PSK31" : ""))
             .GroupBy(c => c.Callsign, StringComparer.OrdinalIgnoreCase)
             .Select(g => g.FirstOrDefault(c => c.Grid.Length > 0) ?? g.First())
             .ToList();
 
         return new CqSnapshot(calls, readUtc);
     }
+}
+
+/// <summary>
+/// **The green zone's best bet, as it stood when the window opened** (work instruction 335 task
+/// 4).
+/// </summary>
+/// <param name="Band">The band the ranking put first, as `HfBands.Names` spells it, or "".</param>
+/// <param name="Label">
+/// The badge's own words - `best bet now` from an observation, `likely, going on the hour` from
+/// the clock - so a guess is never repeated in an observation's words (§0.0).
+/// </param>
+/// <remarks>
+/// **NOT A SECOND OPINION.** It is copied off the band button the ranking already badged, the
+/// same answer the green zone reads.
+/// </remarks>
+public sealed record BandBet(string Band, string Label)
+{
+    /// <summary>No best bet was handed in.</summary>
+    public static BandBet None { get; } = new("", "");
 }
 
 /// <summary>One caller on a next card: where he is, and who and how far.</summary>

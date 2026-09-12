@@ -87,6 +87,12 @@ public sealed record AchievementBadge(
     /// <summary>Where the points line is said rather than scored - a continent badge.</summary>
     public string? PointsSaid { get; init; }
 
+    /// <summary>
+    /// **The trading card a continent badge is drawn as inside Continents** (work instruction 335
+    /// task 4), or null on the page's eight.
+    /// </summary>
+    public AchievementCategoryCard? Card { get; init; }
+
     /// <summary>Where the gap line is said rather than scored - a continent badge.</summary>
     public string? GapSaid { get; init; }
 

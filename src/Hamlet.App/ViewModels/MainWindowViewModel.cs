@@ -6164,6 +6164,13 @@ public partial class MainWindowViewModel : ObservableObject
             // was decoded is touched, and the dialog is modal, so the time is what keeps the
             // list from claiming a freshness it lacks (HM-DEC-111).
             Calling = CqSnapshot.From(DigitalDecodes, DateTime.UtcNow),
+
+            // **THE GREEN ZONE'S OWN BEST BET, IN ITS OWN WORDS** (work instruction 335 task 4):
+            // copied off the band button the ranking badged, which is the answer the green zone
+            // reads, so the Bands next card forms no second opinion.
+            BestBet = Bands.FirstOrDefault(b => b.IsBestBet) is { } best
+                ? new BandBet(best.Band.Name, best.BestBetLabel)
+                : BandBet.None,
         };
 
         AppEvents.AchievementsOpened(_telemetry, screen.Page?.Badges.Count ?? 0);

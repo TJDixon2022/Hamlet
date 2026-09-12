@@ -118,6 +118,21 @@ public sealed record AchievementCategoryCard(
 
     /// <summary>True where more would earn it than are listed.</summary>
     public bool HasMoreCallers => MoreCallersLine.Length > 0;
+
+    /// <summary>A count the card carries: `3 countries worked there`, or "".</summary>
+    public string CountLine { get; init; } = "";
+
+    /// <summary>True where there is a count line.</summary>
+    public bool HasCountLine => CountLine.Length > 0;
+
+    /// <summary>How far toward the line this card is, 0 to 1, where it is a bar.</summary>
+    public double TierFraction { get; init; }
+
+    /// <summary>What the card's bar is of: `36,120 of 50,000 mi`, or "" where it has no bar.</summary>
+    public string TierLine { get; init; } = "";
+
+    /// <summary>True where the card draws a bar.</summary>
+    public bool HasTierBar => TierLine.Length > 0;
 }
 
 /// <summary>
@@ -326,26 +341,22 @@ public sealed class AchievementCategory
     /// <summary>True where there are badges to draw rather than cards.</summary>
     public bool HasSubBadges => SubBadges.Count > 0;
 
-    /// <summary>How far to the next tier, 0 to 1, for Total Miles.</summary>
-    public double BarFraction { get; private init; }
-
-    /// <summary>What the bar is of: `42,041 of 50,000 miles`.</summary>
-    public string BarLine { get; private init; } = "";
-
-    /// <summary>True where there is a bar to draw.</summary>
-    public bool HasBar => BarLine.Length > 0;
+    // **TOTAL MILES' CATEGORY-WIDE BAR IS GONE** (work instruction 335 task 4): each tier card
+    // carries its own bar now, and the band carries the level bar.
 
     /// <summary>Open a category over a page.</summary>
     /// <param name="kind">A kind from the page, or `continent-XX`.</param>
     /// <param name="page">The page it opens from.</param>
     /// <returns>The category, or null where the kind is not one Hamlet draws.</returns>
     /// <param name="calling">The CQ list as it was read, for the next cards, or null.</param>
+    /// <param name="bet">The green zone's best bet as it was read, for the Bands next card, or null.</param>
     public static AchievementCategory? For(
-        string kind, AchievementBadgePage page, CqSnapshot? calling = null)
+        string kind, AchievementBadgePage page, CqSnapshot? calling = null, BandBet? bet = null)
     {
         ArgumentNullException.ThrowIfNull(page);
 
         var heard = calling ?? CqSnapshot.None;
+        var best = bet ?? BandBet.None;
 
         if (kind.StartsWith(ContinentPrefix, StringComparison.Ordinal))
         {
@@ -366,7 +377,7 @@ public sealed class AchievementCategory
         {
             return new AchievementCategory(
                 badge, null, null, Array.Empty<AchievementCategoryCard>(),
-                ContinentBadges(page));
+                ContinentBadges(page, heard));
         }
 
         if (kind == AchievementKinds.TotalMiles)
@@ -376,7 +387,7 @@ public sealed class AchievementCategory
 
         var cards = kind switch
         {
-            AchievementKinds.HallOfFame => HallOfFame(log, points),
+            AchievementKinds.HallOfFame => HallOfFame(log, points, page.OperatorGrid, heard, best),
             AchievementKinds.Countries => Earned(
                 kind,
                 log.Entities.OrderBy(EntitySpoken.Of, StringComparer.OrdinalIgnoreCase)
@@ -413,20 +424,8 @@ public sealed class AchievementCategory
                 placeUnderCall: true,
                 heard,
                 c => UnworkedGrid(log, c)),
-            AchievementKinds.Bands => Counted(
-                kind,
-                log.Bands
-                    .Select(b => (AdifLog.BandDisplayNameFor(b), log.OnBand(b).Count))
-                    .ToList(),
-                Hamlet.RadioEngine.Bands.HfBands.Bands.Count,
-                points,
-                log.Bands),
-            _ => Counted(
-                kind,
-                log.Modes.Select(m => (m, log.InMode(m).Count)).ToList(),
-                AchievementScores.WorkableModes,
-                points,
-                log.Modes),
+            AchievementKinds.Bands => BandsFor(log, points, page.OperatorGrid, heard, best),
+            _ => ModesFor(log, points, page.OperatorGrid, heard, best),
         };
 
         return new AchievementCategory(
@@ -448,72 +447,272 @@ public sealed class AchievementCategory
     private static bool Same(string? a, string? b)
         => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>The firsts he holds, in the order an evening reaches them, and the next.</summary>
+    /// <summary>
+    /// **The firsts he holds, each the contact that earned it, in the order an evening reaches
+    /// them, and the next** (work instruction 335 task 4, R22).
+    /// </summary>
     private static List<AchievementCategoryCard> HallOfFame(
-        AchievementLog log, AchievementPoints points)
+        AchievementLog log, AchievementPoints points, string operatorGrid, CqSnapshot calling, BandBet bet)
     {
         var earned = AchievementScores.FirstsEarned(log);
         var cards = new List<AchievementCategoryCard>();
 
         foreach (var (key, said) in AchievementBadgePage.Firsts)
         {
-            if (earned.Contains(key, StringComparer.OrdinalIgnoreCase))
+            if (!earned.Contains(key, StringComparer.OrdinalIgnoreCase))
             {
-                cards.Add(new AchievementCategoryCard(
-                    said, "", Pts(points.Special(AchievementKinds.HallOfFame, key)), true));
+                continue;
             }
+
+            var worth = Pts(points.Special(AchievementKinds.HallOfFame, key));
+
+            cards.Add(EarnerOf(log, key) is { } contact
+                ? EarnedBy(said, new[] { contact }, worth, operatorGrid, placeUnderCall: true)
+                : new AchievementCategoryCard(said, "", worth, true));
         }
 
-        // **THE SAME NEXT CARD THE BADGE SHOWS**, chosen in one place so the page and the
-        // category cannot come to disagree about what §3.1 keeps absent.
+        // **THE SAME NEXT FIRST THE BADGE SHOWS**, chosen in one place so the page and the
+        // category cannot come to disagree about what §3.1 keeps absent - **left exactly as unit
+        // 333 chose it, collision and all.** What this unit adds is what it measures toward.
         if (AchievementBadgePage.NextFirstOf(earned) is { } next)
         {
-            cards.Add(new AchievementCategoryCard(
-                next.Said,
-                AchievementCategoryCard.NextWord,
-                Pts(points.Special(AchievementKinds.HallOfFame, next.Key)),
-                false));
+            cards.Add(NextFirst(
+                log, next, Pts(points.Special(AchievementKinds.HallOfFame, next.Key)),
+                operatorGrid, calling, bet));
         }
 
         return cards;
     }
 
-    /// <summary>One card per thing he has, then the next one while there is one.</summary>
-    /// <param name="kind">The kind.</param>
-    /// <param name="held">What he has, as shown, with how many contacts.</param>
-    /// <param name="howManyThereAre">The set's size, or long.MaxValue where it is open.</param>
-    /// <param name="points">The owner's file.</param>
-    /// <param name="keys">The names the file's specials are keyed by, where they differ.</param>
-    private static List<AchievementCategoryCard> Counted(
-        string kind,
-        IReadOnlyList<(string Shown, int Contacts)> held,
-        long howManyThereAre,
-        AchievementPoints points,
-        IReadOnlyList<string>? keys = null)
+    /// <summary>
+    /// **The contact that earned a first, by the rule `AchievementScores.FirstsEarned` decides
+    /// it with**: the earliest that meets it.
+    /// </summary>
+    /// <remarks>
+    /// **`first_dx` TAKES HIS OWN ENTITY AS `FirstsEarned` DOES** - the first entity in the file -
+    /// so the card and the score cannot disagree about which contact was the DX one.
+    /// </remarks>
+    private static AchievementContact? EarnerOf(AchievementLog log, string key)
     {
-        var per = points.Per(kind);
-        var cards = new List<AchievementCategoryCard>();
+        var mine = log.Contacts.Select(c => c.Entity).FirstOrDefault(e => e is not null);
 
-        for (var i = 0; i < held.Count; i++)
+        IEnumerable<AchievementContact> among = key switch
         {
-            // **A SPECIAL REPLACES THE PER** (`AchievementScores.Named`), so 160 m says 15.
-            var worth = keys is not null ? points.Special(kind, keys[i]) ?? per : per;
+            "first_contact" => log.Contacts,
+            "first_dx" => log.Contacts.Where(c => c.Entity is not null && mine is not null && !Same(c.Entity, mine)),
+            "first_psk31" => log.InMode("PSK31"),
+            "first_cw_qso" => log.InMode("CW"),
+            "first_over_5000_miles" => log.Contacts.Where(c => c.Miles >= 5000),
+            "first_over_10000_miles" => log.Contacts.Where(c => c.Miles >= 10000),
+            _ => Array.Empty<AchievementContact>(),
+        };
 
-            cards.Add(new AchievementCategoryCard(
-                held[i].Shown, Contacts(held[i].Contacts), Pts(worth), true));
+        return among.OrderBy(c => c.StartedUtc ?? DateTime.MaxValue).FirstOrDefault();
+    }
+
+    /// <summary>What the Morse first says, because the CQ list is the digital decoded list.</summary>
+    public const string NoMorseOnTheList = "the CQ list carries no Morse";
+
+    /// <summary>
+    /// **The next first, with what it measures toward**: a bar for a distance first, the callers
+    /// for a first a caller could earn, or the words where the list cannot carry one.
+    /// </summary>
+    private static AchievementCategoryCard NextFirst(
+        AchievementLog log,
+        (string Key, string Said) next,
+        string pointsLine,
+        string operatorGrid,
+        CqSnapshot calling,
+        BandBet bet)
+    {
+        var mine = log.Contacts.Select(c => c.Entity).FirstOrDefault(e => e is not null);
+
+        switch (next.Key)
+        {
+            case "first_over_5000_miles":
+            case "first_over_10000_miles":
+            {
+                // **A BAR OF THE FURTHEST CONTACT TOWARD THE LINE**, with both figures in words.
+                var line = next.Key == "first_over_5000_miles" ? 5000L : 10000L;
+                var furthest = log.Contacts.Where(c => c.Miles is not null)
+                    .Select(c => c.Miles!.Value)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                return new AchievementCategoryCard(next.Said, AchievementCategoryCard.NextWord, pointsLine, false)
+                {
+                    WantsLine = "A contact over " + Number(line) + " miles away",
+                    TierFraction = Math.Min(1.0, furthest / line),
+                    TierLine = "furthest " + Number((long)Math.Round(furthest)) + " of " + Number(line) + " mi",
+                };
+            }
+
+            case "first_psk31":
+                return NextCard(
+                    next.Said, pointsLine,
+                    LivesAt("PSK31", bet.Band) is { Length: > 0 } at ? "PSK31 lives at " + at : "Any PSK31 contact",
+                    calling,
+                    CallersFrom(calling, operatorGrid, c => c.Mode == "PSK31" ? Earns(PlaceOf(c)) : null),
+                    NoOneCalling);
+
+            // **THE CQ LIST IS THE DIGITAL DECODED LIST AND CARRIES NO MORSE**, so saying no one is
+            // calling in Morse would be a claim about a list that could never show one (§0.0).
+            case "first_cw_qso":
+                return new AchievementCategoryCard(next.Said, AchievementCategoryCard.NextWord, pointsLine, false)
+                {
+                    WantsLine = "A contact in Morse",
+                    NoCallerLine = NoMorseOnTheList,
+                };
+
+            case "first_dx":
+                return NextCard(
+                    next.Said, pointsLine, "A station outside your own country", calling,
+                    CallersFrom(
+                        calling, operatorGrid,
+                        c => mine is not null && DxccPrefixes.EntityOf(c.Callsign) is { } e && !Same(e, mine)
+                            ? Earns(EntitySpoken.Short(e))
+                            : null),
+                    NoOneCalling);
+
+            default:
+                return NextCard(
+                    next.Said, pointsLine, "Any station at all", calling,
+                    CallersFrom(calling, operatorGrid, c => Earns(PlaceOf(c))),
+                    NoOneCalling);
         }
+    }
 
-        if (held.Count < howManyThereAre)
+    /// <summary>
+    /// **Bands: the first contact on each, and the green zone's best bet first among the bands
+    /// not yet worked** (work instruction 335 task 4, R22).
+    /// </summary>
+    /// <remarks>
+    /// **THE BEST BET IS THE GREEN ZONE'S AND NOT A SECOND OPINION**: copied off the band button
+    /// the ranking badged, in the badge's own words, so a clock guess is never repeated as an
+    /// observation. The rest keep the band row's order; nothing is ranked here.
+    /// </remarks>
+    private static List<AchievementCategoryCard> BandsFor(
+        AchievementLog log, AchievementPoints points, string operatorGrid, CqSnapshot calling, BandBet bet)
+    {
+        var kind = AchievementKinds.Bands;
+        var per = points.Per(kind);
+
+        // **A SPECIAL REPLACES THE PER** (`AchievementScores.Named`), so 160 m says 15.
+        var cards = log.Bands
+            .Select(b => EarnedBy(
+                AdifLog.BandDisplayNameFor(b) is { Length: > 0 } name ? name : b,
+                log.OnBand(b),
+                Pts(points.Special(kind, b) ?? per),
+                operatorGrid,
+                placeUnderCall: true))
+            .ToList();
+
+        var worked = log.Bands
+            .Select(AdifLog.BandDisplayNameFor)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var unworked = Hamlet.RadioEngine.Bands.HfBands.Names
+            .Where(n => !worked.Contains(n))
+            .OrderBy(n => string.Equals(n, bet.Band, StringComparison.Ordinal) ? 0 : 1)
+            .Select(n => new NextCaller(n, string.Equals(n, bet.Band, StringComparison.Ordinal) ? bet.Label : ""))
+            .ToList();
+
+        if (unworked.Count > 0)
         {
-            cards.Add(new AchievementCategoryCard(
-                AchievementBadgePage.NextWords(kind, held.Count),
-                AchievementCategoryCard.NextWord,
-                Pts(per),
-                false));
+            cards.Add(NextCard(
+                    AchievementBadgePage.NextWords(kind, log.Bands.Count), Pts(per),
+                    "A band you have not worked", calling, unworked, "")
+                with
+                {
+                    CallersHeading = "bands you have not worked",
+                    MoreCallersLine = unworked.Count > ListedCallers
+                        ? "and " + (unworked.Count - ListedCallers).ToString(CultureInfo.InvariantCulture) + " more"
+                        : "",
+                    CountLine = bet.Band.Length > 0 && worked.Contains(bet.Band)
+                        ? bet.Label + ": " + bet.Band + ", worked"
+                        : "",
+                });
         }
 
         return cards;
     }
+
+    /// <summary>
+    /// **Modes: the first contact in each, and where each unworked mode lives and who is there**
+    /// (work instruction 335 task 4, R22).
+    /// </summary>
+    /// <remarks>
+    /// <para>**WHERE IT LIVES IS THE CITED DIGITAL TABLE** (`DigitalCallingFrequencies`), on the
+    /// green zone's best-bet band where that band has a row and the lowest band that does
+    /// otherwise. Morse and Voice have no digital row, so their line is the mode alone.</para>
+    /// <para>**WHO IS THERE IS COUNTED ONLY WHERE A ROW SAYS ITS MODE**: a PSK31 row is text
+    /// only, and an FT8 or FT4 row does not say which of the two it is.</para>
+    /// <para>**`ModeFirstRow.Why` IS NOT DRAWN** - it says false things (parked).</para>
+    /// </remarks>
+    private static List<AchievementCategoryCard> ModesFor(
+        AchievementLog log, AchievementPoints points, string operatorGrid, CqSnapshot calling, BandBet bet)
+    {
+        var kind = AchievementKinds.Modes;
+        var per = points.Per(kind);
+
+        var cards = log.Modes
+            .Select(m => EarnedBy(m, log.InMode(m), Pts(points.Special(kind, m) ?? per), operatorGrid, placeUnderCall: true))
+            .ToList();
+
+        var unworked = ContactModes.Six
+            .Where(m => m.IsContactMode && !log.Modes.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
+            .Select(m => new NextCaller(m.Name, Joined(LivesAt(m.Name, bet.Band), CallingIn(calling, m.Name))))
+            .ToList();
+
+        if (unworked.Count > 0)
+        {
+            cards.Add(NextCard(
+                    AchievementBadgePage.NextWords(kind, log.Modes.Count), Pts(per),
+                    "A mode you have not worked", calling, unworked, "")
+                with
+                {
+                    CallersHeading = "where each one lives",
+                    MoreCallersLine = unworked.Count > ListedCallers
+                        ? "and " + (unworked.Count - ListedCallers).ToString(CultureInfo.InvariantCulture) + " more"
+                        : "",
+                });
+        }
+
+        return cards;
+    }
+
+    /// <summary>`14.070 on 20 m` from the cited digital table, or "" where the mode has no row.</summary>
+    private static string LivesAt(string mode, string betBand)
+    {
+        var bands = Hamlet.RadioEngine.Bands.DigitalCallingFrequencies.BandsWith(mode);
+
+        if (bands.Count == 0)
+        {
+            return "";
+        }
+
+        var on = bands.Contains(betBand, StringComparer.Ordinal) ? betBand : bands[0];
+
+        return Hamlet.RadioEngine.Bands.DigitalCallingFrequencies.Find(on, mode) is { } block
+            ? (block.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + on
+            : "";
+    }
+
+    /// <summary>`2 calling CQ` where the list's rows say their mode, or "".</summary>
+    private static string CallingIn(CqSnapshot calling, string mode)
+    {
+        var count = calling.Calls.Count(c => string.Equals(c.Mode, mode, StringComparison.OrdinalIgnoreCase));
+
+        return count == 0 ? "" : count.ToString(CultureInfo.InvariantCulture) + " calling CQ";
+    }
+
+    /// <summary>The caller's country, short, or "" where the table declines.</summary>
+    private static string PlaceOf(CqCall call)
+        => DxccPrefixes.EntityOf(call.Callsign) is { } entity ? EntitySpoken.Short(entity) : "";
+
+    private static (string Place, bool OpensContinent)? Earns(string place) => (place, false);
+
+    /// <summary>`50,000`.</summary>
+    private static string Number(long value) => value.ToString("#,0", CultureInfo.InvariantCulture);
 
     /// <summary>What a card with no grid says where its map would be.</summary>
     public const string NoGridWord = "no grid, so no map";
@@ -719,7 +918,9 @@ public sealed class AchievementCategory
     {
         var inOrder = contacts.OrderBy(c => c.StartedUtc ?? DateTime.MaxValue).ToList();
         var first = inOrder[0];
-        var place = first.Entity is null ? "" : EntitySpoken.Of(first.Entity);
+        // **THE SHORT NAME** (`EntitySpoken.Short`), the tree's own name for a place on a line
+        // with a callsign beside it: `W3YNI · United States`, not `W3YNI · the United States`.
+        var place = first.Entity is null ? "" : EntitySpoken.Short(first.Entity);
         var grid = first.Grid ?? "";
         var plot = grid.Length > 0 ? new Ft8GlobePlot(operatorGrid, grid, first.Callsign, place) : null;
         var globe = plot is { HasPath: true } ? plot : null;
@@ -755,41 +956,55 @@ public sealed class AchievementCategory
     private static string Joined(params string[] parts)
         => string.Join(" · ", parts.Where(p => p.Length > 0));
 
-    /// <summary>Total Miles: the tiers reached, the next, and the bar to it.</summary>
+    /// <summary>
+    /// **Total Miles: each tier is a bar toward its line, and a reached tier is the contact that
+    /// crossed it** (work instruction 335 task 4, R22).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE CROSSING IS FOUND BY ADDING THE LOG'S OWN MILES IN DATE ORDER** until the sum
+    /// reaches the line - the same miles `AchievementScores.TotalMiles` adds, and a stable sort,
+    /// so undated contacts keep file order after the dated ones.</para>
+    /// <para>**A BAR OF MILES AND NOTHING ELSE**, with the two figures in words beside it (work
+    /// instruction 300 task 4's rule: say what the fraction is of).</para>
+    /// </remarks>
     private static AchievementCategory MilesFor(AchievementBadge badge, AchievementBadgePage page)
     {
         var reached = (long)Math.Round(page.Scores.TotalMiles);
         var cards = new List<AchievementCategoryCard>();
-        long? nextAt = null;
+        var inOrder = page.Log.Contacts
+            .Where(c => c.Miles is not null)
+            .OrderBy(c => c.StartedUtc ?? DateTime.MaxValue)
+            .ToList();
 
         foreach (var (at, worth) in page.Scores.Points.Milestones(AchievementKinds.TotalMiles))
         {
-            var said = at.ToString("#,0", CultureInfo.InvariantCulture) + " miles";
+            var said = Number(at) + " miles";
 
             if (reached >= at)
             {
-                cards.Add(new AchievementCategoryCard(said, "reached", Pts(worth), true));
+                var sum = 0.0;
+                var crossing = inOrder.FirstOrDefault(c => (sum += c.Miles!.Value) >= at);
+                var card = crossing is null
+                    ? new AchievementCategoryCard(said, "reached", Pts(worth), true)
+                    : EarnedBy(said, new[] { crossing }, Pts(worth), page.OperatorGrid, placeUnderCall: true);
+
+                cards.Add(card with { TierFraction = 1.0, TierLine = "reached " + Number(at) + " mi" });
             }
             else
             {
-                cards.Add(new AchievementCategoryCard(
-                    said, AchievementCategoryCard.NextWord, Pts(worth), false));
-                nextAt = at;
+                cards.Add(new AchievementCategoryCard(said, AchievementCategoryCard.NextWord, Pts(worth), false)
+                {
+                    WantsLine = "Every contact adds its miles",
+                    TierFraction = at > 0 ? Math.Min(1.0, (double)reached / at) : 0,
+                    TierLine = Number(reached) + " of " + Number(at) + " mi",
+                });
+
                 break;
             }
         }
 
         return new AchievementCategory(
-            badge, null, null, cards, Array.Empty<AchievementBadge>())
-        {
-            // **A BAR OF MILES AND NOTHING ELSE**, with the two figures in words beside
-            // it (work instruction 300 task 4's rule: say what the fraction is of).
-            BarFraction = nextAt is { } of && of > 0 ? Math.Min(1.0, (double)reached / of) : 0,
-            BarLine = nextAt is { } to
-                ? reached.ToString("#,0", CultureInfo.InvariantCulture) + " of "
-                    + to.ToString("#,0", CultureInfo.InvariantCulture) + " miles"
-                : "",
-        };
+            badge, null, null, cards, Array.Empty<AchievementBadge>());
     }
 
     /// <summary>
@@ -803,15 +1018,48 @@ public sealed class AchievementCategory
     /// That is §3.1 bent one step further than the page bends it, and it is raised in the
     /// report rather than decided silently.</para>
     /// </remarks>
-    private static IReadOnlyList<AchievementBadge> ContinentBadges(AchievementBadgePage page)
+    private static IReadOnlyList<AchievementBadge> ContinentBadges(
+        AchievementBadgePage page, CqSnapshot calling)
     {
         var log = page.Log;
         var points = page.Scores.Points;
 
         return DxccContinents.Codes
             .OrderBy(c => c.Value, StringComparer.Ordinal)
-            .Select(c => ContinentBadge(c.Key, log, points))
+            .Select(c => ContinentBadge(c.Key, log, points) with
+            {
+                Card = ContinentCard(c.Key, log, points, page.OperatorGrid, calling),
+            })
             .ToList();
+    }
+
+    /// <summary>
+    /// **A continent as a trading card** (work instruction 335 task 4, R22): the first contact
+    /// that opened it with the count of countries worked there, or the continent named with who
+    /// is calling from it.
+    /// </summary>
+    private static AchievementCategoryCard ContinentCard(
+        string code, AchievementLog log, AchievementPoints points, string operatorGrid, CqSnapshot calling)
+    {
+        var name = DxccContinents.NameOf(code);
+        var worth = Pts(points.PerContinent(code));
+        var here = log.OnContinent(code);
+
+        if (here.Count > 0)
+        {
+            var worked = log.EntitiesOn(code);
+
+            return EarnedBy(name, here, worth, operatorGrid, placeUnderCall: true) with
+            {
+                CountLine = worked.ToString(CultureInfo.InvariantCulture)
+                    + (worked == 1 ? " country" : " countries") + " worked there",
+            };
+        }
+
+        return NextCard(
+            name, worth, "A first contact here", calling,
+            CallersFrom(calling, operatorGrid, c => UnworkedCountry(log, c, code)),
+            NoOneCalling);
     }
 
     private static AchievementBadge ContinentBadge(

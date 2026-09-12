@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
 using Hamlet.App.Controls;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
+using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
 using Xunit;
@@ -205,7 +207,7 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
         var square = screen.Category!.Cards.Single(c => c.Earned && c.Title == "JO28");
 
-        Assert.Equal("LA1ZZZ · " + Place("LA1ZZZ"), square.CallGridLine);
+        Assert.Equal("LA1ZZZ · " + EntitySpoken.Short(DxccPrefixes.EntityOf("LA1ZZZ")), square.CallGridLine);
         Assert.True(square.HasMap);
         Assert.Equal(norway.DistanceLine, square.DistanceLine);
 
@@ -397,6 +399,332 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         }
     }
 
+    /// <summary>**Task 4: the other five kinds, each its own way** (R22).</summary>
+    [AvaloniaFact]
+    public void TheOtherFiveKindsEachDrawTheirOwnCards()
+    {
+        var records = TheAchievementsPageTests.TwelveContacts();
+        var log = new AchievementLog(records, MyGrid);
+        var bet = new BandBet("17 m", "best bet now");
+        var screen = Screen(records, Calling(), bet);
+
+        static AchievementContact EarliestOf(IEnumerable<AchievementContact> among)
+            => among.OrderBy(c => c.StartedUtc ?? DateTime.MaxValue).First();
+
+        void Print(string kind, AchievementCategoryCard card)
+            => _output.WriteLine(
+                "  " + kind.PadRight(13) + (card.Earned ? "earned " : "next   ") + card.Title.PadRight(20)
+                + card.CallGridLine.PadRight(22) + card.DateLine.PadRight(14) + card.CountLine
+                + (card.HasTierBar ? " bar[" + card.TierLine + " = " + F(card.TierFraction) + "]" : "")
+                + (card.HasMap ? " map" : "")
+                + (card.Callers.Count > 0 ? " callers[" + string.Join(" / ", card.Callers.Select(c => c.Place + " " + c.CallLine)) + "]" : "")
+                + (card.NoCallerLine.Length > 0 ? " [" + card.NoCallerLine + "]" : ""));
+
+        // **CONTINENTS: SEVEN CARDS, EACH THE FIRST CONTACT THAT OPENED IT WITH THE COUNTRIES
+        // WORKED THERE, OR THE CONTINENT AND WHO IS CALLING FROM IT.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+
+        var seven = screen.Category!.SubBadges;
+
+        Assert.Equal(7, seven.Count);
+
+        foreach (var badge in seven)
+        {
+            var code = badge.Kind[AchievementCategory.ContinentPrefix.Length..];
+            var card = badge.Card;
+
+            Assert.True(card is not null, badge.Name + " has no card");
+            Print("continents", card!);
+            Assert.Equal(badge.Name, card.Title);
+
+            if (log.Continents.Contains(code, StringComparer.OrdinalIgnoreCase))
+            {
+                var worked = log.EntitiesOn(code);
+
+                Assert.True(card.Earned, badge.Name + " is opened and its card is not earned");
+                Assert.Equal(EarliestOf(log.OnContinent(code)).Callsign, card.Callsign);
+                Assert.Equal(
+                    worked + (worked == 1 ? " country" : " countries") + " worked there",
+                    card.CountLine);
+            }
+            else
+            {
+                Assert.False(card.Earned);
+                Assert.True(card.HasCallersPanel, badge.Name + " says nothing about who is calling");
+            }
+        }
+
+        var zealand = DxccContinents.NameOf(DxccContinents.Of(DxccPrefixes.EntityOf("ZL1ABC")));
+
+        Assert.Contains(
+            seven.Single(b => b.Name == zealand).Card!.Callers,
+            c => c.CallLine.StartsWith("ZL1ABC", StringComparison.Ordinal));
+
+        screen.BackCommand.Execute(null);
+
+        // **TOTAL MILES: A TIER IS A BAR TOWARD ITS LINE.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.TotalMiles);
+
+        var tier = screen.Category!.Cards.Single();
+        var reached = (long)Math.Round(AchievementScores.MilesIn(log));
+
+        Print("total_miles", tier);
+
+        Assert.False(tier.Earned);
+        Assert.True(tier.HasTierBar);
+        Assert.Equal(reached / 50000.0, tier.TierFraction, 3);
+        Assert.Equal(reached.ToString("#,0", CultureInfo.InvariantCulture) + " of 50,000 mi", tier.TierLine);
+
+        screen.BackCommand.Execute(null);
+
+        // **AND A REACHED TIER IS THE CONTACT THAT CROSSED ITS LINE**: nine contacts to Tokyo,
+        // one a day.
+        var nine = Enumerable.Range(1, 9)
+            .Select(d => Record("JA1XYZ", "FT8", null, "20m", "PM95", new DateTime(2026, 8, d, 12, 0, 0, DateTimeKind.Utc)))
+            .ToList();
+        var far = Screen(nine, CqSnapshot.None, BandBet.None);
+
+        far.OpenCategoryCommand.Execute(AchievementKinds.TotalMiles);
+
+        var sum = 0.0;
+        var crossing = new AchievementLog(nine, MyGrid).Contacts
+            .OrderBy(c => c.StartedUtc)
+            .First(c => (sum += c.Miles!.Value) >= 50000);
+        var crossed = far.Category!.Cards[0];
+
+        Print("total_miles", crossed);
+
+        Assert.True(crossed.Earned);
+        Assert.Equal("50,000 miles", crossed.Title);
+        Assert.Equal(crossing.StartedUtc!.Value.ToString("MMM d, yyyy", CultureInfo.InvariantCulture), crossed.DateLine);
+        Assert.True(crossed.HasMap);
+        Assert.True(crossed.HasTierBar);
+        Assert.Equal(1.0, crossed.TierFraction, 3);
+
+        // **BANDS: THE FIRST CONTACT ON EACH, AND THE GREEN ZONE'S BEST BET FIRST AMONG THE REST.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Bands);
+
+        var bands = screen.Category!.Cards;
+
+        foreach (var card in bands)
+        {
+            Print("bands", card);
+        }
+
+        var twenty = bands.Single(c => c.Earned && c.Title == AdifLog.BandDisplayNameFor("20m"));
+
+        Assert.Equal(EarliestOf(log.OnBand("20m")).Callsign, twenty.Callsign);
+        Assert.True(twenty.HasMap);
+        Assert.False(bands[^1].Earned);
+        Assert.Equal(new NextCaller("17 m", "best bet now"), bands[^1].Callers[0]);
+        Assert.DoesNotContain(bands[^1].Callers, c => c.Place == twenty.Title);
+
+        screen.BackCommand.Execute(null);
+
+        // **MODES: THE FIRST CONTACT IN EACH, AND WHERE AN UNWORKED MODE LIVES.** The five-contact
+        // log has worked FT8 and Voice only.
+        var few = Screen(FiveContacts(), Calling(), bet);
+
+        few.OpenCategoryCommand.Execute(AchievementKinds.Modes);
+
+        var modes = few.Category!.Cards;
+
+        foreach (var card in modes)
+        {
+            Print("modes", card);
+        }
+
+        Assert.Equal("LA1ZZZ", modes.Single(c => c.Earned && c.Title == "FT8").Callsign);
+        Assert.False(modes[^1].Earned);
+        Assert.Equal(
+            new[] { "CW", "FT4", "PSK31" },
+            modes[^1].Callers.Select(c => c.Place).OrderBy(p => p, StringComparer.Ordinal));
+
+        var home = DigitalCallingFrequencies.BandsWith("PSK31");
+
+        Assert.NotEmpty(home);
+
+        var on = DigitalCallingFrequencies.Find("17 m", "PSK31") is not null ? "17 m" : home[0];
+        var block = DigitalCallingFrequencies.Find(on, "PSK31")!;
+
+        Assert.StartsWith(
+            (block.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + on,
+            modes[^1].Callers.Single(c => c.Place == "PSK31").CallLine,
+            StringComparison.Ordinal);
+
+        // **`ModeFirstRow.Why` IS NEVER ON A CARD**: it says false things (parked).
+        foreach (var card in modes)
+        {
+            foreach (var said in new[] { card.Title, card.WantsLine, card.NoCallerLine }
+                .Concat(card.Callers.Select(c => c.CallLine)))
+            {
+                Assert.DoesNotContain("cannot work", said, StringComparison.Ordinal);
+            }
+        }
+
+        // **HALL OF FAME: THE CONTACT THAT EARNED EACH FIRST; THE NEXT ONE AS UNIT 333 LEFT IT.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.HallOfFame);
+
+        var firsts = screen.Category!.Cards;
+
+        foreach (var card in firsts)
+        {
+            Print("hall_of_fame", card);
+        }
+
+        var mine = log.Contacts.Select(c => c.Entity).First(e => e is not null);
+
+        Assert.Equal(EarliestOf(log.Contacts).Callsign, firsts.Single(c => c.Title == "Your first contact").Callsign);
+        Assert.Equal(
+            EarliestOf(log.Contacts.Where(c => c.Entity is not null && c.Entity != mine)).Callsign,
+            firsts.Single(c => c.Title == "A DX contact").Callsign);
+        Assert.Equal("DL1ABC", firsts.Single(c => c.Title == "A PSK31 contact").Callsign);
+        Assert.Equal("VA3VRR", firsts.Single(c => c.Title == "A Morse contact").Callsign);
+        Assert.Equal(
+            EarliestOf(log.Contacts.Where(c => c.Miles >= 5000)).Callsign,
+            firsts.Single(c => c.Title == "Over 5,000 miles").Callsign);
+        Assert.All(firsts.Where(c => c.Earned), c => Assert.True(c.HasMap, c.Title + " has no map"));
+
+        var nextFirst = firsts[^1];
+        var furthest = log.Contacts.Where(c => c.Miles is not null).Max(c => c.Miles!.Value);
+
+        Assert.Equal("Over 10,000 miles", nextFirst.Title);
+        Assert.True(nextFirst.HasTierBar);
+        Assert.Equal(Math.Min(1.0, furthest / 10000), nextFirst.TierFraction, 3);
+    }
+
+    /// <summary>
+    /// **Task 4, page-wide: at a window 1400 and 1920 wide, no string in any slot clips or wraps a
+    /// word, and no card is a white rectangle - every card has a map, a bar or a list.**
+    /// </summary>
+    [AvaloniaFact]
+    public void NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var window = Realized(TheAchievementsPageTests.TwelveContacts(), width, Calling(), bet);
+            var screen = (AchievementsViewModel)window.DataContext!;
+
+            try
+            {
+                _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height));
+
+                foreach (var kind in AchievementKinds.All.Concat(new[] { "continent-EU", "continent-OC" }))
+                {
+                    if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+                    {
+                        screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+                    }
+
+                    screen.OpenCategoryCommand.Execute(kind);
+                    Settle(window);
+
+                    var state = F(width) + " " + kind;
+                    var runs = Fits(window, state);
+                    var cards = window.GetVisualDescendants().OfType<Border>()
+                        .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+                        .ToList();
+
+                    Assert.True(cards.Count > 0, state + ": no trading card is drawn");
+
+                    var white = 0;
+
+                    foreach (var card in cards)
+                    {
+                        var inside = card.GetVisualDescendants().Where(v => v is Control { IsEffectivelyVisible: true }).ToList();
+                        var map = inside.OfType<Ft8GlobeControl>().Any(m => m.Plot is not null && m.Bounds.Width > 0);
+                        var bar = inside.OfType<BadgeProgressControl>().Any(b => b.Bounds.Width > 0);
+                        var list = inside.OfType<Border>().Any(b => b.Classes.Contains("card-list")
+                            && VisibleText(b).Any());
+
+                        if (!(map || bar || list))
+                        {
+                            white++;
+                            _output.WriteLine("  white card: " + string.Join(" | ", VisibleText(card)));
+                        }
+                    }
+
+                    _output.WriteLine("  " + kind.PadRight(14) + runs + " runs fit, " + cards.Count + " cards, " + white + " white");
+
+                    Assert.True(white == 0, state + ": " + white + " card(s) with no map, bar or list");
+
+                    while (screen.Category is not null)
+                    {
+                        screen.BackCommand.Execute(null);
+                    }
+
+                    Settle(window);
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>
+    /// **Every visible run fits its own slot and every box above it, and none may wrap** - the
+    /// same measurement `TheAchievementsPageClicksInTests` makes at the window's own size.
+    /// </summary>
+    private int Fits(Window window, string state)
+    {
+        var count = 0;
+
+        foreach (var text in window.GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0))
+        {
+            var needs = new Avalonia.Media.TextFormatting.TextLayout(
+                text.Text ?? "",
+                new Avalonia.Media.Typeface(text.FontFamily, text.FontStyle, text.FontWeight),
+                text.FontSize,
+                null).Width;
+
+            Assert.True(
+                text.TextWrapping == Avalonia.Media.TextWrapping.NoWrap,
+                state + ": [" + text.Text + "] is allowed to wrap");
+            Assert.True(
+                needs <= text.Bounds.Width + 0.5,
+                state + ": [" + text.Text + "] needs " + F(needs) + " px and its slot is " + F(text.Bounds.Width));
+
+            foreach (var box in text.GetVisualAncestors().OfType<Control>())
+            {
+                var left = text.TranslatePoint(new Avalonia.Point(0, 0), box)?.X ?? 0;
+
+                Assert.True(
+                    left >= -0.5 && left + needs <= box.Bounds.Width + 0.5,
+                    state + ": [" + text.Text + "] runs from " + F(left) + " to " + F(left + needs)
+                    + " inside a " + box.GetType().Name + " " + F(box.Bounds.Width) + " wide");
+            }
+
+            count++;
+        }
+
+        return count;
+    }
+
+    private static AchievementsViewModel Screen(
+        IReadOnlyList<AdifLogRecord> records, CqSnapshot calling, BandBet bet)
+        => new(records, MyGrid, AchievementPoints.Parse(AchievementPoints.Shipped()))
+        {
+            Calling = calling,
+            BestBet = bet,
+        };
+
+    /// <summary>Four callers: Austria, Grenada, a new square in the US, and New Zealand.</summary>
+    private static CqSnapshot Calling()
+        => CqSnapshot.From(
+            new[]
+            {
+                Heard("CQ OE8DDX JN76"),
+                Heard("CQ DX J38DX FK92"),
+                Heard("CQ K1ABC FN42"),
+                Heard("CQ ZL1ABC RF72"),
+            },
+            new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc));
+
     /// <summary>A decoded row, as the list holds one.</summary>
     private static DigitalDecodeRow Heard(string message)
         => new("214100", "-10", "0.2", "1200", message);
@@ -437,15 +765,11 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
     /// <summary>The window at a stated width, over the shipped points file.</summary>
     private static Window Realized(
-        IReadOnlyList<AdifLogRecord> records, double width, CqSnapshot? calling = null)
+        IReadOnlyList<AdifLogRecord> records, double width, CqSnapshot? calling = null, BandBet? bet = null)
     {
         var window = new AchievementsWindow
         {
-            DataContext = new AchievementsViewModel(
-                records, MyGrid, AchievementPoints.Parse(AchievementPoints.Shipped()))
-            {
-                Calling = calling ?? CqSnapshot.None,
-            },
+            DataContext = Screen(records, calling ?? CqSnapshot.None, bet ?? BandBet.None),
             Width = width,
         };
 

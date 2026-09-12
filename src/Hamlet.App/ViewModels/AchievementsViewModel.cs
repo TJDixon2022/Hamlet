@@ -207,6 +207,12 @@ public sealed partial class AchievementsViewModel : ObservableObject
     /// </summary>
     public CqSnapshot Calling { get; init; } = CqSnapshot.None;
 
+    /// <summary>
+    /// **The green zone's best bet as it was when the window opened**, for the Bands next card
+    /// (work instruction 335 task 4), or <see cref="BandBet.None"/>.
+    /// </summary>
+    public BandBet BestBet { get; init; } = BandBet.None;
+
     /// <summary>True while the eight badges are the window.</summary>
     public bool ShowsPage => HasPage && Category is null;
 
@@ -223,7 +229,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
             return;
         }
 
-        if (AchievementCategory.For(kind, Page, Calling) is not { } opened)
+        if (AchievementCategory.For(kind, Page, Calling, BestBet) is not { } opened)
         {
             return;
         }
@@ -250,7 +256,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
         AppEvents.AchievementCategoryClosed(Telemetry, here.Kind);
 
         Category = here.ParentKind is { } parent && Page is not null
-            ? AchievementCategory.For(parent, Page, Calling)
+            ? AchievementCategory.For(parent, Page, Calling, BestBet)
             : null;
     }
 
