@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Avalonia;
+using Avalonia.Headless.XUnit;
 using Avalonia.Media;
 using Hamlet.App.Controls;
 using Hamlet.App.Settings;
@@ -18,24 +20,28 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// Work instruction 327 task 3: **the mark is a thing you can see, and clicking it tells
-/// you why.**
+/// Work instruction 328 task 2, rewritten from unit 327's under §R12: **the mark is the
+/// quill again - thin, in the gutter - and clicking it still tells you why.**
 /// </summary>
 /// <remarks>
-/// <para>**TIM, 2026-09-12, LOOKING AT WHAT UNIT 325 SHIPPED**: *"ugly and useless"*, and
-/// *"no achievement possibility click response"*. Two nights earlier he had ruled that a
-/// subtle mark is invisible to him - *"It's a tiny dot lost in the sea of the tray"* - and
-/// 325's row mark is that mark: **a 16 px box with the quill drawn at `side * 0.62`, which
-/// is 9.9 px of hairline strokes**, and nothing at all happens when it is pressed.</para>
-/// <para>**SO THIS UNIT SHIPS A DISC.** The work instruction allows it in as many words -
-/// *if the quill shape does not survive at row height, a filled disc does, and the shape
-/// difference for a door is the ring* - and a disc filled green or orange is a mark rather
-/// than a bar (§0.5, HM-DEC-012). Row height is
-/// <see cref="AchievementMarkControl.RowSide"/>, 18 px, and 18 px of solid ink against 9.9
-/// px of outline is about thirty times the area.</para>
-/// <para>**EVERY APPEARANCE CLAIM HERE IS COMPUTED, NOT SEEN.** These are properties read
-/// off a control and a view model, not pixels sampled from a screenshot, and nobody looked
-/// at the application while this was written.</para>
+/// <para>**TIM, 2026-09-12, ON UNIT 327'S DISC**: *"so so so so so ugly."* Unit 327 had
+/// answered his *"ugly and useless"* about unit 325's 9.9 px of hairline quill by going the
+/// other way entirely - **an 18 px disc filled solid** - and a filled blob the height of the
+/// row is a bullet rather than a mark. He was drawn three treatments and chose **A: a thin
+/// quill in the gutter**, the tray's own vane at row scale, hairline and not filled, with a
+/// ring for a door.</para>
+/// <para>**SO THE SHAPE IS WHAT THIS CLASS NOW ASSERTS**, and it asserts it off the
+/// drawing the control's own `Render` emits rather than off a name: a **stroked path with no
+/// fill**, about <see cref="AchievementMarkControl.RowVane"/> px tall, at
+/// <see cref="AchievementMarkControl.RowHairline"/> px of pen. **The box is unchanged** at
+/// <see cref="AchievementMarkControl.RowSide"/> px - it is the hit target and the room the
+/// door's ring needs - so what changed is the ink in it and not the space it takes.</para>
+/// <para>**THE POPUP ASSERTIONS ARE UNIT 327'S, UNTOUCHED** (the work instruction says so):
+/// the press, the words, the unmarked row's refusal and the telemetry payload are the same
+/// four tests that were green before this unit and are green after it.</para>
+/// <para>**EVERY APPEARANCE CLAIM HERE IS COMPUTED, NOT SEEN.** These are geometries
+/// recorded out of `Render` and properties read off a control, not pixels sampled from a
+/// screenshot, and nobody looked at the application while this was written.</para>
 /// </remarks>
 public sealed class TheMarkIsSeenAndClickedTests : IDisposable
 {
@@ -79,41 +85,98 @@ public sealed class TheMarkIsSeenAndClickedTests : IDisposable
     }
 
     /// <summary>
-    /// **Assertion 1: a qualifying row's mark is row-height, and it is a disc.**
+    /// **Assertion 1: the mark is a stroked vane, about 12 px tall, and nothing on it is a
+    /// filled disc.**
     /// </summary>
     /// <remarks>
-    /// **THE SIZE IS THE SMALLER HALF OF THE CHANGE AND THE SHAPE IS THE LARGER.** A 16 px
-    /// box holding 9.9 px of hairline quill and an 18 px box holding an 18 px filled disc
-    /// differ by two pixels of box and by everything of substance.
+    /// <para>**THIS IS READ OUT OF `Render` AND NOT OFF A PROPERTY NAME.** A control can be
+    /// renamed from disc to vane without a pixel changing, so the geometries the mark emits
+    /// are recorded and each one is asked what it is, how big it is and whether it is
+    /// filled - which is the only form of this assertion that would have failed against unit
+    /// 327's mark.</para>
+    /// <para>**THE BOX DOES NOT CHANGE AND IS ASSERTED ANYWAY.** 18 px is the hit target and
+    /// the room the door's ring needs; the change Tim asked for is the ink inside it.</para>
     /// </remarks>
-    [Fact]
-    public void AQualifyingRowsMarkIsRowHeightAndIsADisc()
+    [AvaloniaFact]
+    public void TheMarkIsAHairlineVaneAboutTwelvePixelsTallAndNotAFilledDisc()
     {
         var mark = new AchievementMarkControl { Form = AchievementMarkForm.Counter };
 
-        _output.WriteLine(
-            "325 shipped 16 px of box with the quill at side*0.62 = "
-            + (16 * 0.62).ToString("0.0", CultureInfo.InvariantCulture)
-            + " px of stroke; 327 ships "
-            + AchievementMarkControl.RowSide.ToString("0", CultureInfo.InvariantCulture)
-            + " px of box filled solid");
-
-        mark.Measure(new Avalonia.Size(100, 100));
+        mark.Measure(new Size(100, 100));
 
         Assert.Equal(AchievementMarkControl.RowSide, mark.DesiredSize.Width);
         Assert.Equal(AchievementMarkControl.RowSide, mark.DesiredSize.Height);
 
-        Assert.True(mark.IsDisc, "a counter is not drawn as a disc");
+        Assert.True(mark.IsRowVane, "a counter is not drawn as the vane");
 
-        mark.Form = AchievementMarkForm.Door;
+        var drawn = Drawn(AchievementMarkForm.Counter, lit: true);
 
-        Assert.True(mark.IsDisc, "a door is not drawn as a disc");
+        foreach (var line in Describe(drawn))
+        {
+            _output.WriteLine(line);
+        }
+
+        // **ONE OBJECT, AND IT IS THE VANE.** A counter draws no ring and no bead, so
+        // whatever is here is the mark itself.
+        var vane = Assert.Single(drawn);
+
+        // **A ROUND THING IS ASKED ABOUT BY ITS BOUNDS AND NOT BY ITS TYPE**, which this
+        // unit measured rather than assumed: the recorder hands every shape back as
+        // `PlatformGeometry`, so `IsNotType<EllipseGeometry>` passes on a disc and proves
+        // nothing at all. A circle's bounds are square; the vane is taller than it is wide.
+        Assert.False(IsRound(vane), "the mark's bounds are square, which a disc's are");
+
+        // **NOT FILLED** - the whole of Tim's complaint about the disc.
+        Assert.Null(vane.Brush);
+
+        Assert.NotNull(vane.Pen);
+        Assert.Equal(AchievementMarkControl.RowHairline, vane.Pen!.Thickness);
+
+        // **ABOUT TWELVE PIXELS TALL**, measured off the geometry the control drew rather
+        // than off the constant it was scaled by.
+        Assert.Equal(AchievementMarkControl.RowVane, vane.Geometry!.Bounds.Height, 1);
+
+        _output.WriteLine(
+            "327: a disc "
+            + AchievementMarkControl.RowSide.ToString("0", CultureInfo.InvariantCulture)
+            + " px filled solid -> 328: a vane "
+            + vane.Geometry.Bounds.Height.ToString("0.0", CultureInfo.InvariantCulture)
+            + " px tall and "
+            + vane.Geometry.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+            + " px wide at "
+            + AchievementMarkControl.RowHairline.ToString(
+                "0.0", CultureInfo.InvariantCulture)
+            + " px of pen, not filled");
+
+        // **AND NOTHING ON EITHER FORM IS A DISC.** The door's bead is a filled circle and
+        // is meant to be - it is the turn, kept as unit 327 built it - so the assertion is
+        // that no filled round thing is anywhere near the size of a mark.
+        foreach (var form in new[] { AchievementMarkForm.Counter, AchievementMarkForm.Door })
+        {
+            foreach (var drawing in Drawn(form, lit: true))
+            {
+                if (!IsRound(drawing) || drawing.Brush is null)
+                {
+                    continue;
+                }
+
+                var across = drawing.Geometry!.Bounds.Width;
+
+                _output.WriteLine(
+                    form + " filled round thing: "
+                    + across.ToString("0.0", CultureInfo.InvariantCulture) + " px across");
+
+                Assert.True(
+                    across < AchievementMarkControl.RowVane / 2,
+                    form + " draws a filled disc " + across + " px across");
+            }
+        }
 
         // **AND THE TRAY IS UNTOUCHED**, because that mark's behaviour is ruled and the
         // complaint this unit answers is about a different surface.
         mark.Form = AchievementMarkForm.Tray;
 
-        Assert.False(mark.IsDisc, "the tray mark stopped being the quill");
+        Assert.False(mark.IsRowVane, "the tray mark stopped being the tray's own quill");
     }
 
     /// <summary>
@@ -124,7 +187,7 @@ public sealed class TheMarkIsSeenAndClickedTests : IDisposable
     /// greyscale print and a color vision deficiency both, so the two kinds are two
     /// different objects before anybody has to tell green from orange.
     /// </remarks>
-    [Fact]
+    [AvaloniaFact]
     public void ACounterIsGreenAndStillAndADoorIsOrangeAndRingedAndTurning()
     {
         var counter = new AchievementMarkControl
@@ -167,6 +230,30 @@ public sealed class TheMarkIsSeenAndClickedTests : IDisposable
 
         Assert.True(door.HasRing, "a door drew no ring");
         Assert.True(door.IsOrbiting, "a door is not turning");
+
+        // **AND THE RING IS A DRAWN RING AND NOT A FLAG**, recorded out of `Render` the same
+        // way the vane is: a round thing, no fill, hairline, wide enough to hold the vane.
+        var rings = Drawn(AchievementMarkForm.Door, lit: true)
+            .Where(d => IsRound(d) && d.Brush is null)
+            .ToList();
+
+        foreach (var line in Describe(Drawn(AchievementMarkForm.Door, lit: true)))
+        {
+            _output.WriteLine(line);
+        }
+
+        var ring = Assert.Single(rings);
+
+        Assert.NotNull(ring.Pen);
+        Assert.Equal(AchievementMarkControl.RowHairline, ring.Pen!.Thickness);
+
+        Assert.True(
+            ring.Geometry!.Bounds.Width > AchievementMarkControl.RowVane,
+            "the door's ring is narrower than the vane inside it: "
+            + ring.Geometry.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture));
+
+        // **AND A COUNTER DRAWS NO ROUND THING AT ALL**, which is the §0.6 difference.
+        Assert.DoesNotContain(Drawn(AchievementMarkForm.Counter, lit: true), IsRound);
     }
 
     /// <summary>
@@ -363,6 +450,95 @@ public sealed class TheMarkIsSeenAndClickedTests : IDisposable
                 l => l.Contains(word, StringComparison.OrdinalIgnoreCase));
         }
     }
+
+    /// <summary>Whether one recorded drawing is a circle - a ring, a bead or a disc.</summary>
+    /// <remarks>
+    /// **MEASURED, BECAUSE THE TYPE NAME IS NOT AVAILABLE.** The recorder returns every
+    /// shape as `PlatformGeometry`, whatever it was drawn as, so a test asking whether the
+    /// mark is an ellipse by its type passes on unit 327's filled disc. Square bounds are
+    /// what a circle actually has and what this quill's vane never has.
+    /// </remarks>
+    private static bool IsRound(GeometryDrawing drawing)
+    {
+        var bounds = drawing.Geometry?.Bounds ?? default;
+
+        return bounds.Width > 0
+            && Math.Abs(bounds.Width - bounds.Height) < 0.01;
+    }
+
+    /// <summary>**What the control's own `Render` emitted**, recorded rather than recomputed.</summary>
+    /// <param name="form">Which of the three jobs the mark is doing.</param>
+    /// <param name="lit">Whether something unseen has been earned.</param>
+    /// <returns>Every geometry the recorder holds, however deeply it nested it.</returns>
+    /// <remarks>
+    /// **THE VANE IS DRAWN INSIDE A TRANSFORM AND THE RECORDER NESTS IT**, which unit 300's
+    /// own sizes test found the hard way - reading only the top level reports the mark drawing
+    /// nothing at all. The transform the row mark pushes is a translation, so the sizes read
+    /// off these geometries are the sizes on the screen.
+    /// </remarks>
+    private static IReadOnlyList<GeometryDrawing> Drawn(AchievementMarkForm form, bool lit)
+    {
+        var side = AchievementMarkControl.RowSide;
+
+        var mark = new AchievementMarkControl
+        {
+            Width = side,
+            Height = side,
+            Form = form,
+            IsNew = lit,
+        };
+
+        mark.Measure(new Size(side, side));
+        mark.Arrange(new Rect(0, 0, side, side));
+
+        var group = new DrawingGroup();
+
+        using (var context = group.Open())
+        {
+            mark.Render(context);
+        }
+
+        var flat = new List<GeometryDrawing>();
+
+        Flatten(group, flat);
+
+        return flat;
+    }
+
+    private static void Flatten(DrawingGroup group, List<GeometryDrawing> into)
+    {
+        foreach (var child in group.Children)
+        {
+            switch (child)
+            {
+                case GeometryDrawing drawing:
+                    into.Add(drawing);
+                    break;
+
+                case DrawingGroup nested:
+                    Flatten(nested, into);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /// <summary>One line per drawing: what it is, how big, and how it is inked.</summary>
+    private static IEnumerable<string> Describe(IReadOnlyList<GeometryDrawing> drawings)
+        => drawings.Select(d =>
+        {
+            var bounds = d.Geometry?.Bounds ?? default;
+
+            return (d.Geometry?.GetType().Name ?? "(none)").PadRight(18)
+                + bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+                + " x " + bounds.Height.ToString("0.0", CultureInfo.InvariantCulture)
+                + "   fill " + (d.Brush is null ? "(none)" : Hex(d.Brush))
+                + "   pen " + (d.Pen is null
+                    ? "(none)"
+                    : d.Pen.Thickness.ToString("0.0", CultureInfo.InvariantCulture));
+        });
 
     private static string Hex(IBrush brush)
         => (brush is ISolidColorBrush solid ? solid.Color.ToString() : brush.ToString() ?? "")

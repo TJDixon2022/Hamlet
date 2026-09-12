@@ -39,16 +39,17 @@ public enum AchievementMarkForm
 
     /// <summary>
     /// A row whose station would earn a counter - a new country, state or grid,
-    /// with nothing opening behind it. **A disc filled decode green, the full
-    /// height of the row, still, and no ring at all.** It was the quill at 9.9 px
-    /// of hairline until unit 327; Tim's word for that was *useless*.
+    /// with nothing opening behind it. **The tray's vane at row scale, drawn in
+    /// decode green as a hairline outline, still, and no ring at all.** It was an
+    /// 18 px filled disc under unit 327; Tim's word for that was *so so so so so
+    /// ugly*, and he chose this from three treatments on 2026-09-12.
     /// </summary>
     Counter = 1,
 
     /// <summary>
-    /// A row whose station would open a whole set. **A disc filled orange with the
-    /// orbit ring around it, turning.** It does not settle: while the station is on
-    /// the list, the door is open.
+    /// A row whose station would open a whole set. **The same vane in orange,
+    /// inside a hairline ring, with a bead going round it.** It does not settle:
+    /// while the station is on the list, the door is open.
     /// </summary>
     Door = 2,
 }
@@ -129,6 +130,49 @@ public sealed class AchievementMarkControl : Control
 
     private static readonly Lazy<IReadOnlyList<GeometryDrawing>> Quill =
         new(() => SvgMark.Shapes(AchievementQuill.Uri));
+
+    /// <summary>The tray's own vane, scaled to <see cref="RowVane"/> px tall.</summary>
+    /// <remarks>
+    /// <para>**IT IS THE SAME PATH THE TRAY DRAWS AND NOTHING TRANSCRIBES IT** (§0, and
+    /// `SvgMark`'s own rule: the file is the mark). The row mark is the tray mark at another
+    /// size, which is the whole of Tim's treatment A - *the quill he already knows* - and a
+    /// second copy of that path in code would be a second drawing to drift.</para>
+    /// <para>**THE SCALE IS COMPUTED FROM THE FILE AND NOT TYPED IN.** The vane spans 28 of
+    /// the file's 44 units, so twelve pixels is 0.4286 - but that arithmetic is done here
+    /// against the geometry's own bounds, so editing the SVG moves the drawing and leaves the
+    /// mark 12 px tall. Typing 0.4286 would have hard-coded a fact about a file.</para>
+    /// <para>**ITS OWN COPY OF THE SHAPES, NOT <see cref="Quill"/>'S.** A `Geometry`'s
+    /// transform is part of the object, so scaling the instance the tray draws would shrink
+    /// the tray's mark from the other side of the application - the exact class of accident
+    /// §R16's *the default is Tray and that is deliberate* was written about.</para>
+    /// </remarks>
+    private static readonly Lazy<Geometry> RowVaneArt = new(() =>
+    {
+        var vane = SvgMark.Shapes(AchievementQuill.Uri)
+            .Select(s => s.Geometry)
+            .OfType<Geometry>()
+
+            // **A LINE HAS NO INTERIOR AND IS NOT THE VANE.** The file's second shape is
+            // the spine, which is drawn in paper white over a filled vane; over an unfilled
+            // one it would be a white scratch, so a row draws the vane alone.
+            .FirstOrDefault(g => g is not LineGeometry)
+            ?? throw new InvalidOperationException(
+                AchievementQuill.Uri + " has no vane path to draw a row's mark from");
+
+        var tall = vane.Bounds.Height;
+
+        if (tall <= 0)
+        {
+            throw new InvalidOperationException(
+                AchievementQuill.Uri + " draws a vane with no height");
+        }
+
+        var scale = RowVane / tall;
+
+        vane.Transform = new MatrixTransform(Matrix.CreateScale(scale, scale));
+
+        return vane;
+    });
 
     private static readonly IBrush Muted = new SolidColorBrush(Color.Parse("#6E6E66"));
     private static readonly IBrush Green = new SolidColorBrush(Color.Parse("#3B6D11"));
@@ -223,35 +267,57 @@ public sealed class AchievementMarkControl : Control
     /// </remarks>
     public IBrush LitBrush => Form == AchievementMarkForm.Door ? DoorInk : Green;
 
-    /// <summary>**How big a row's mark is, in pixels: the full height of the row.**</summary>
+    /// <summary>**How big a row's mark box is, in pixels: the full height of the row.**</summary>
     /// <remarks>
-    /// <para>**EIGHTEEN, AND UNIT 325 SHIPPED SIXTEEN, AND THAT IS NOT THE CHANGE** (work
-    /// instruction 327 task 3). Tim's words for what 325 shipped were *"ugly and useless"*
-    /// and, of the tray's, *"a tiny dot lost in the sea"*. **The size was never the fault.**
-    /// Inside a 16 px box the old mark drew the quill at `side * 0.62` - **9.9 px of thin
-    /// strokes** - and a 7 px ring; what he was looking at was ten pixels of hairline art.
-    /// </para>
-    /// <para>**SO THE ROW'S MARK IS A FILLED DISC, WHICH IS WHAT SURVIVES AT ROW HEIGHT**
-    /// (the work instruction allows exactly this: *if the quill shape does not survive at
-    /// row height, a filled disc does*). Eighteen pixels of solid ink against 9.9 px of
-    /// outline is **about thirty times the area**, and it is the row's own height so it
-    /// reads as part of the line rather than as a speck beside it.</para>
+    /// <para>**EIGHTEEN, AND IT IS THE BOX AND NOT THE DRAWING** (work instruction 328 task
+    /// 2). It is the hit target the press needs - the mark sits in a `Button` with a hand
+    /// cursor - and the room the door's ring needs, and it is the row's own height so the
+    /// gutter is a fixed column down the left of the list rather than a ragged one.</para>
+    /// <para>**WHAT CHANGED IN 328 IS THE INK IN IT AND NOT ITS SIZE.** Unit 327 filled all
+    /// eighteen pixels of it with a solid disc; this draws <see cref="RowVane"/> px of
+    /// hairline vane in the middle of the same box. Nothing on the row moves, so the list
+    /// does not reflow for a change of mark.</para>
     /// <para>**THE TRAY IS UNTOUCHED.** <see cref="AchievementMarkForm.Tray"/> still draws
-    /// the quill at unit 300's size and unit 325's colors, because that mark's behaviour is
-    /// ruled and this is a different surface with a different complaint against it.</para>
+    /// the whole quill - vane, spine and fill - at unit 300's size and unit 325's colors,
+    /// because that mark's behaviour is ruled and this is a different surface with a
+    /// different complaint against it.</para>
     /// </remarks>
     public const double RowSide = 18;
 
-    /// <summary>True where this form draws the row's disc rather than the tray's quill.</summary>
+    /// <summary>**How tall the drawn vane is on a row, in pixels.**</summary>
     /// <remarks>
-    /// **THE SHAPE IS PER SURFACE AND NOT PER STATE.** A row mark is always a disc and a
-    /// tray mark is always a quill; what varies within a row is the color and the ring.
+    /// <para>**TWELVE, AND THE BOX STAYS AT EIGHTEEN** (work instruction 328 task 2, Tim's
+    /// treatment A of 2026-09-12). The box is the hit target and the room the door's ring
+    /// needs; the vane is the ink inside it, and it is **shorter than the row on purpose** so
+    /// it reads as a thin object in the gutter rather than as a bullet the height of the
+    /// line.</para>
+    /// <para>**IT IS THE VANE AND NOT THE BOX THAT THIS NUMBER MEASURES**, which is the
+    /// mistake units 325 and 327 made in opposite directions. 325 said 16 px and drew 9.9 px
+    /// of hairline inside it; 327 said 18 px and filled all of it. This says twelve and draws
+    /// twelve, because the scale is computed from the vane's own height in the file rather
+    /// than from the size of the box it sits in.</para>
     /// </remarks>
-    public bool IsDisc => Form is AchievementMarkForm.Counter or AchievementMarkForm.Door;
+    public const double RowVane = 12;
+
+    /// <summary>**How thick every stroke on a row's mark is, in pixels.**</summary>
+    /// <remarks>
+    /// **ONE HAIRLINE WEIGHT FOR THE VANE AND THE RING BOTH** (the work instruction: *a
+    /// hairline stroke, about 12 px tall, 1.5 px wide, not filled*). Two weights on one mark
+    /// this small is a difference nobody can see and a second number to keep in step.
+    /// </remarks>
+    public const double RowHairline = 1.5;
+
+    /// <summary>True where this form draws the row's vane rather than the tray's whole quill.</summary>
+    /// <remarks>
+    /// **THE SHAPE IS PER SURFACE AND NOT PER STATE.** A row mark is always the vane and a
+    /// tray mark is always the full quill at the tray's own size; what varies within a row is
+    /// the color and the ring.
+    /// </remarks>
+    public bool IsRowVane => Form is AchievementMarkForm.Counter or AchievementMarkForm.Door;
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
-        => IsDisc ? new Size(RowSide, RowSide) : new Size(20, 20);
+        => IsRowVane ? new Size(RowSide, RowSide) : new Size(20, 20);
 
     /// <inheritdoc/>
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -350,65 +416,77 @@ public sealed class AchievementMarkControl : Control
     }
 
     /// <summary>
-    /// **A row's mark: a disc filled the full height of the row, and a ring for a door.**
+    /// **A row's mark: the tray's vane, 12 px tall and hairline, in a ring for a door.**
     /// </summary>
     /// <param name="context">Where it is drawn.</param>
     /// <param name="side">The smaller of the two bounds.</param>
     /// <param name="middle">The center of the box.</param>
     /// <param name="lit">Green for a counter, orange for a door.</param>
     /// <remarks>
-    /// <para>**A DISC FILLED GREEN OR ORANGE IS A MARK, NOT A BAR** (§0.5, HM-DEC-012, and
-    /// the work instruction says so in as many words). The family-color rule that keeps
-    /// panel headers to text only is about **bars** - a column of filled bars reads as
-    /// stripes rather than as structure - and one small filled disc on a row is the object
-    /// that rule exists to allow. **The quill is not family color and this is not either**:
-    /// green `#3B6D11` is decode green and `#C25E00` is the tuning family's own ink, and
-    /// neither is a mode's fill.</para>
+    /// <para>**TIM'S TREATMENT A, 2026-09-12: A THIN QUILL IN THE GUTTER.** He was drawn
+    /// three treatments of the row mark and chose this one. **What it replaces is unit 327's
+    /// 18 px disc filled solid**, which he saw and called *"so so so so so ugly"* - and the
+    /// disc had itself been the answer to unit 325's 9.9 px of hairline art. The thing that
+    /// was wrong both times was the shape, not the size: a mark the height of the line and
+    /// filled is a bullet, and a mark drawn at two thirds of a 16 px box is a smudge.</para>
+    /// <para>**IT IS NOT FILLED, AND THAT IS THE RULING AND NOT A PREFERENCE.** The vane is
+    /// a stroked outline at <see cref="RowHairline"/> px, so the row reads as a line of text
+    /// with a small drawn object in its gutter rather than as a list with a column of dots
+    /// down the left of it (§0.5's *a column of filled bars reads as stripes*, one level
+    /// down).</para>
     /// <para>**COLOR IS NOT THE ONLY CARRIER AND THE RING IS THE OTHER ONE** (§0.6). A
-    /// counter is a bare disc; a door is a disc with a ring around it and a bead going
-    /// round. Printed in grey, or read by somebody who cannot tell green from orange, the
-    /// two are still two different objects.</para>
-    /// <para>**THE DOOR'S DISC IS SMALLER SO THE RING HAS ROOM.** Both marks occupy the same
-    /// box and the same height on the row; the door spends some of it on the ring, which is
-    /// what makes the ring visible rather than a rim on the disc.</para>
+    /// counter is the bare vane; a door is the same vane inside a hairline ring, with a bead
+    /// going round it. Printed in grey, or read by somebody who cannot tell green from
+    /// orange, the two are still two different objects - and the ring is drawn **first**, so
+    /// the vane is the thing on top rather than something the ring crosses.</para>
+    /// <para>**THE VANE IS THE SAME SIZE ON BOTH.** Unit 327's door shrank its disc to 62%
+    /// to make room for the ring; the vane measures 6.0 x 12.0 px, so its furthest corner is
+    /// 6.7 px from the center and the ring's radius is 8 - nothing has to shrink, and the two
+    /// forms carry the same object at the same size.</para>
     /// </remarks>
-    private void RenderDisc(DrawingContext context, double side, Point middle, IBrush lit)
+    private void RenderRowVane(DrawingContext context, double side, Point middle, IBrush lit)
     {
-        var ring = Form == AchievementMarkForm.Door;
         var outer = side / 2 - 1;
 
-        // **THE DISC IS THE MARK AND THE RING IS THE DIFFERENCE.** A counter fills the
-        // whole box; a door keeps a third of the radius back for the ring and the gap.
-        var radius = ring ? outer * 0.62 : outer;
-
-        var edge = Form == AchievementMarkForm.Door ? DoorEdge : Edge;
-
-        context.DrawEllipse(lit, new Pen(edge, 1), middle, radius, radius);
-
-        if (!ring)
+        if (Form == AchievementMarkForm.Door)
         {
-            return;
+            context.DrawEllipse(null, new Pen(lit, RowHairline), middle, outer, outer);
+
+            if (IsOrbiting)
+            {
+                // **ONE BEAD GOING ROUND**, which is motion without a spinner: a spinner
+                // says *wait*, and nothing here is waiting for anything. **The turn is
+                // unit 327's and is kept exactly as it built it** (the work instruction:
+                // *the turn stays as 327 built it*).
+                var angle = (Phase * Math.PI * 2) - (Math.PI / 2);
+
+                context.DrawEllipse(
+                    lit,
+                    null,
+                    new Point(
+                        middle.X + (Math.Cos(angle) * outer),
+                        middle.Y + (Math.Sin(angle) * outer)),
+                    side * 0.11,
+                    side * 0.11);
+            }
         }
 
-        context.DrawEllipse(null, new Pen(lit, 1.6), middle, outer, outer);
+        var art = RowVaneArt.Value;
+        var bounds = art.Bounds;
 
-        if (!IsOrbiting)
+        // **A TRANSLATION AND NOT A SCALE**, because the scale is already in the geometry.
+        // It matters to more than tidiness: a pen inside a scale transform is drawn at
+        // thickness times scale, so a hairline asked for in a 0.43 transform would arrive
+        // at 0.64 px and disappear on the surface it is meant to be visible on.
+        using (context.PushTransform(
+            Matrix.CreateTranslation(
+                middle.X - bounds.Center.X, middle.Y - bounds.Center.Y)))
         {
-            return;
+            context.DrawGeometry(
+                null,
+                new Pen(lit, RowHairline, lineJoin: PenLineJoin.Round),
+                art);
         }
-
-        // **ONE BEAD GOING ROUND**, which is motion without a spinner: a spinner says
-        // *wait*, and nothing here is waiting for anything.
-        var angle = (Phase * Math.PI * 2) - (Math.PI / 2);
-
-        context.DrawEllipse(
-            lit,
-            null,
-            new Point(
-                middle.X + (Math.Cos(angle) * outer),
-                middle.Y + (Math.Sin(angle) * outer)),
-            side * 0.11,
-            side * 0.11);
     }
 
     /// <inheritdoc/>
@@ -427,9 +505,9 @@ public sealed class AchievementMarkControl : Control
         // greyscale print and does not depend on telling green from orange.
         var lit = LitBrush;
 
-        if (IsDisc)
+        if (IsRowVane)
         {
-            RenderDisc(context, side, middle, lit);
+            RenderRowVane(context, side, middle, lit);
 
             return;
         }
