@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 334 - the green zone finishes, and the leftovers go
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T16:21:53-04:00
-NOTE: Task 2 done - the cannot-work sentence is in no src file, VoiceTests 5 of 5 with the new check, committing before the leftover-file list
+UPDATED: 2026-09-12T16:29:18-04:00
+NOTE: Complete - tasks 0 to 3, none dropped, each pushed. Pills off, map 202 to 232 px at 1400, stale line held out, 13 emptied files listed. output.md validated exit 0
 
 ---
 
