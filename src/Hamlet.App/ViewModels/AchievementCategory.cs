@@ -80,7 +80,116 @@ public sealed class AchievementCategory
         BackLabel = "‹ " + (parentName ?? "All achievements");
         Cards = cards;
         SubBadges = subBadges;
+
+        // **THE BAND SAYS FOUR THINGS AND DRAWS ONE** (work instruction 335 task 1, R22): the
+        // count, the score, the level, and a bar to the next level. **Where there is no next
+        // level it says so in words and draws no bar**, because a bar is a fraction and a
+        // fraction of nothing is a claim nobody measured (§0.0).
+        var score = badge.Score;
+        var inContinent = Kind.StartsWith(ContinentPrefix, StringComparison.Ordinal);
+
+        ScoreLine = inContinent ? badge.PointsSaid ?? "" : Pts(score.Points);
+        LevelName = inContinent || score.Points is null ? "" : score.LevelName;
+
+        if (!inContinent && score.Points is not null && score.NextLevelAt is { } next && next > 0)
+        {
+            LevelFraction = Math.Clamp((double)score.Worked / next, 0.0, 1.0);
+            LevelBarLine = Amount(score.Worked, false) + " of " + Amount(next, true) + " to "
+                + score.NextLevelName;
+        }
+        else
+        {
+            // **THIRTY CHARACTERS AT MOST**, which is what the bar's 300 px slot holds on the
+            // test host. The first cut ran to 46 and clipped on continent-EU (§6: shortened).
+            NoNextLevelLine = inContinent ? "no levels per continent"
+                : score.Points is null ? "no levels: file unreadable"
+                : score.Level == 0 ? "no levels in the points file"
+                : score.LevelName + ", the top level";
+        }
+
+        // **THE GAP IS SAID ONCE.** The picture puts `14 to Silver` on this line and `11 of 25
+        // to Silver` over the bar; where there is a bar its words already carry the gap, and
+        // Total Miles' line with both ran past its slot (§6: shorten and say which).
+        BandLine = string.Join(
+            " · ",
+            new[] { Meaning, Standing, ScoreLine, LevelName, HasLevelBar ? "" : GapLine }
+                .Where(s => s.Length > 0));
     }
+
+    /// <summary>What the white ink on a band has to clear against its fill (§0.6).</summary>
+    public const double LeastContrast = 4.5;
+
+    /// <summary>
+    /// **The ink on the band**: white where white clears 4.5:1 against the band's fill, and
+    /// near-black where it does not.
+    /// </summary>
+    /// <remarks>
+    /// **COMPUTED, NOT CHOSEN BY EYE** (§0.6: every ink clears 4.5:1 against its own fill).
+    /// The Hall of Fame gold `#A8811A` holds white at about 3.6:1, so its band is inked dark;
+    /// every other band holds white.
+    /// </remarks>
+    public string BandInk => Contrast("#FFFFFF", Band) >= LeastContrast ? "#FFFFFF" : "#1B1B1B";
+
+    /// <summary>The WCAG contrast ratio between two `#RRGGBB` colors.</summary>
+    /// <param name="first">One color.</param>
+    /// <param name="second">The other.</param>
+    /// <returns>From 1 to 21.</returns>
+    public static double Contrast(string first, string second)
+    {
+        var a = Luminance(first);
+        var b = Luminance(second);
+
+        return (Math.Max(a, b) + 0.05) / (Math.Min(a, b) + 0.05);
+    }
+
+    private static double Luminance(string hex)
+    {
+        var text = hex.TrimStart('#');
+
+        double Channel(int at)
+        {
+            var value = int.Parse(text.Substring(at, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture) / 255.0;
+
+            return value <= 0.03928 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
+        }
+
+        return (0.2126 * Channel(0)) + (0.7152 * Channel(2)) + (0.0722 * Channel(4));
+    }
+
+    /// <summary>
+    /// **The line under the name**: what the kind is, the count, the score, the level and the
+    /// gap - `one per entity · 8 worked · 40 pts · unranked · 2 to Bronze`.
+    /// </summary>
+    public string BandLine { get; }
+
+    /// <summary>The score alone: `40 pts`, or "" where the file could not be read.</summary>
+    public string ScoreLine { get; }
+
+    /// <summary>The level's name: `Bronze`, or "" where there is none to say.</summary>
+    public string LevelName { get; }
+
+    /// <summary>How far toward the next level, 0 to 1.</summary>
+    public double LevelFraction { get; }
+
+    /// <summary>What the level bar is of: `8 of 10 to Bronze`, or "" where there is no bar.</summary>
+    public string LevelBarLine { get; } = "";
+
+    /// <summary>True where there is a next level and so a bar toward it.</summary>
+    public bool HasLevelBar => LevelBarLine.Length > 0;
+
+    /// <summary>Where there is no next level, the words that say so; otherwise "".</summary>
+    public string NoNextLevelLine { get; } = "";
+
+    /// <summary>True where the band says there is no next level.</summary>
+    public bool HasNoNextLevel => NoNextLevelLine.Length > 0;
+
+    /// <summary>How many cards and badges this category draws, for the record (R13).</summary>
+    public int RenderedCount => Cards.Count + SubBadges.Count;
+
+    /// <summary>A count as the band says it: `8`, or `50,000 mi` for Total Miles' target.</summary>
+    private string Amount(long value, bool withUnit)
+        => value.ToString("#,0", CultureInfo.InvariantCulture)
+            + (withUnit && Kind == AchievementKinds.TotalMiles ? " mi" : "");
 
     /// <summary>The kind this is: `countries`, or `continent-EU`.</summary>
     public string Kind { get; }

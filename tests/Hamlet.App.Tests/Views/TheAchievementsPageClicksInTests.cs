@@ -373,10 +373,15 @@ public sealed class TheAchievementsPageClicksInTests
     }
 
     /// <summary>
-    /// **Opening and closing a category writes the kind and nothing else.**
+    /// **Opening a category writes the kind and how many cards it drew, and nothing else;
+    /// closing writes the kind.**
     /// </summary>
+    /// <remarks>
+    /// **THE CARD COUNT CAME IN WITH WORK INSTRUCTION 335 TASK 1** (R13): a count and never
+    /// content, so the record says how full the page was and not where he was heard.
+    /// </remarks>
     [AvaloniaFact]
-    public void OpeningAndClosingACategoryWritesTheKindAndNothingElse()
+    public void OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse()
     {
         var sink = new Recording();
         var screen = new AchievementsViewModel(
@@ -399,8 +404,11 @@ public sealed class TheAchievementsPageClicksInTests
             new[] { "achievements_opened", "achievement_category_opened", "achievement_category_closed" },
             sink.Events.Select(e => e.Name));
 
-        Assert.Equal(new[] { "kind" }, sink.Events[1].Data.Keys);
+        Assert.Equal(new[] { "kind", "cards" }, sink.Events[1].Data.Keys);
         Assert.Equal(AchievementKinds.Countries, sink.Events[1].Data["kind"]);
+
+        // **EIGHT COUNTRIES EARNED AND ONE NEXT CARD ON THE FIXTURE**, so nine drawn.
+        Assert.Equal(9, sink.Events[1].Data["cards"]);
         Assert.Equal(new[] { "kind" }, sink.Events[2].Data.Keys);
 
         var everything = string.Join(" ", sink.Written);

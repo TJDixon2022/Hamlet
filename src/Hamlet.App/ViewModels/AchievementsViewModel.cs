@@ -224,7 +224,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
 
         Category = opened;
 
-        AppEvents.AchievementCategoryOpened(Telemetry, kind);
+        AppEvents.AchievementCategoryOpened(Telemetry, kind, opened.RenderedCount);
     }
 
     /// <summary>The back control: to the parent, or to the page.</summary>

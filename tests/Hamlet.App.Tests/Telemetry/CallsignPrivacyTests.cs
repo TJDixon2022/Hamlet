@@ -288,10 +288,11 @@ public sealed class CallsignPrivacyTests : IDisposable
 
         // **THE ACHIEVEMENTS NAVIGATION** (work instruction 332 task 1): the page opening,
         // and a category opening and closing by its kind only. A continent's kind is its
-        // code, which names a continent and not anybody on it.
+        // code, which names a continent and not anybody on it. **Since work instruction 335
+        // the opening also carries how many cards it drew** - a count, never a card.
         AppEvents.AchievementsOpened(telemetry, 8);
-        AppEvents.AchievementCategoryOpened(telemetry, "countries");
-        AppEvents.AchievementCategoryOpened(telemetry, "continent-EU");
+        AppEvents.AchievementCategoryOpened(telemetry, "countries", 9);
+        AppEvents.AchievementCategoryOpened(telemetry, "continent-EU", 4);
         AppEvents.AchievementCategoryClosed(telemetry, "continent-EU");
 
         // **THE GREEN ZONE** (work instruction 332 task 2): the panel's size and regions,

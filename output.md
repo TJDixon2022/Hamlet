@@ -3,32 +3,36 @@ READ IN THIS ORDER.
 ```
 
 A. The phase goal - the screen says what is true and looks like someone meant it.
-   Step 0 done; step 1 in progress - this unit is at task 0; steps 2 and 3 not started.
+   Step 0 done; step 1 in progress - this unit is at task 1; steps 2 and 3 not started.
 B. Step 1 and its seven must-pass - band with count/score/level/bar; earned card
    from the log entry; next card with the CQ list; all eight kinds per R22;
    no clip at 1400 and 1920; no white card; telemetry with the card count.
-   None is met yet: task 0 traced the tree and built nothing. The entry criterion
-   is met - TheAchievementsPageClicksInTests 6 of 6. The nice-to-pass is not started.
+   Met so far: the band, on 8 of 8 kinds; telemetry with the card count. The other
+   five are not built yet. The entry criterion is met - TheAchievementsPageClicksInTests
+   6 of 6. The nice-to-pass is not started.
 C. The report last. Section 4 raises 0 items so far on top of the carried queue; none
    stands in the way of a criterion in B.
 
 ```
-UNIT:       335 - stopped at task 0 of 5 - 2026-09-12 16:44
+UNIT:       335 - stopped at task 1 of 5 - 2026-09-12 16:53
 PHASE GOAL: Maintenance - make what Hamlet shows true and deliberate-looking, screen only, judged
             finally by Tim at his own window size.
 UNIT GOAL:  Turn all eight achievements category pages from lists of titles into trading cards:
             each earned card the contact that earned it, with its path map, and each next card
             naming who on the CQ list would earn it.
-ADVANCED:   no - task 0 is a trace; no step 1 must-pass is met yet
+ADVANCED:   yes - step 1's band criterion and its telemetry criterion are met, by tests run here
 NUMBER:     kinds drawn as trading cards 0 -> 0 of 8
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Stopped at task 0 of 5 so far - this is the interim report, rewritten after every task.**
+**Stopped at task 1 of 5 so far - this is the interim report, rewritten after every task.**
 Claude Code on Tim's Windows 11 machine, project Hamlet, gate passed on all four checks, branch
-`main`.
+`main`. Task 0 pushed as `5306c2e`.
+
+**Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
+That host draws text at a flat ten pixels a character, wider than the glass.
 
 ### Task 0 - the trace, before a line is built
 
@@ -112,6 +116,76 @@ the main window**, so on the headless host it draws at 1040 x 720 whatever width
 is. **No such path exists, wired or unwired.** A measurement at 1400 and 1920 has to set the
 dialog's own width.
 
+### Task 1 - the band on every kind, and the card count
+
+**Tests first, both watched red:**
+- `TheCategoryPagesAreTradingCardsTests.EveryKindsBandCarriesCountScoreLevelAndABar` is new. It
+  opens all eight kinds in the realized window and checks the band against the scores the
+  shipped points file gives, including a 4.5:1 check on the band's ink. Red: `there is no
+  Border named AchievementsCategoryBand`.
+- `TheAchievementsPageClicksInTests.OpeningAndClosingACategoryWritesTheKindAndNothingElse` was
+  rewritten under R12 as `...WritesTheKindAndTheCardCountAndNothingElse`. It now wants `kind`
+  and `cards`, with 9 cards for Countries. Red: `Expected ["kind", "cards"]`,
+  `Actual ["kind"]`.
+
+**Change.**
+- `AchievementCategory` gains the band's facts:
+  - the line under the name, `BandLine`;
+  - `ScoreLine` and `LevelName`;
+  - a bar fraction and its words, or words saying there is no next level;
+  - `RenderedCount`;
+  - a computed `BandInk`.
+- The band in `AchievementsWindow.axaml` now draws the emblem, the name at 22 px and the band
+  line. On the right sits a 300 x 12 px bar with its words above it, or the no-next-level words
+  and no bar.
+- `BadgeProgressControl` gains `Length`, `Thickness` and `Track`, with defaults that leave the
+  belt's 46 x 4 bar exactly as it was.
+- `achievement_category_opened` writes `cards`, the count of cards and badges drawn.
+- `CallsignPrivacyTests` passes a count in its two calls of that event.
+
+**What each band says on the twelve-contact fixture**, computed from the shipped points file:
+
+| Kind | Level | Bar, or the words instead |
+|---|---|---|
+| Countries | unranked | `8 of 10 to Bronze` |
+| States | unranked | `0 of 10 to Bronze` (an empty track) |
+| Grids | Bronze | `10 of 25 to Silver` |
+| Continents | Silver | `5 of 7 to Gold` |
+| Bands | Bronze | `5 of 6 to Silver` |
+| Modes | Gold | `Gold, the top level` - no bar |
+| Hall of Fame | Bronze | `5 of 6 to Silver` |
+| Total Miles | unranked | the miles so far `of 50,000 mi to Bronze` |
+
+**Green.** The first run was 31 of 33:
+- one fit red at 1040: on `continent-EU`, `one continent has no levels of its own` needs 380 px
+  and the slot is 300;
+- the known red `TheWindowDrawsEverySixRows`.
+
+After shortening, the same seven test types ran **32 of 33**. The one red is the known one. The
+types: the new test, `TheAchievementsPageClicksInTests`, `BindingHealthTests`,
+`CallsignPrivacyTests`, `TheAchievementsPageTests`, `Unit332TwoWidthsTests` and
+`TheAchievementsScreenTests`.
+
+**Strings shortened (§6):**
+- `one continent has no levels of its own` -> `no levels per continent`;
+- `no levels while the points file cannot be read` -> `no levels: file unreadable`;
+- `the points file names no levels here` -> `no levels in the points file`.
+
+#### Decisions this session made for itself, task 1
+
+1. **The gap is said once.** The picture puts `14 to Silver` on the band line and `11 of 25 to
+   Silver` over the bar. Where a bar is drawn, its words carry the gap, so the band line drops
+   it. With both, Total Miles' line ran past its slot. Rejected: a narrower bar, which would
+   have clipped the miles figure instead.
+2. **The Hall of Fame band is inked dark.** White on its gold `#A8811A` computes to about
+   3.6:1, under §0.6's 4.5:1. The ink is chosen by computing the contrast, not by eye, so
+   every other band stays white. Rejected: darkening the gold, which is the approved color.
+3. **The corner lines at the band's right are gone.** Count, points and level are on the band
+   line, and the bar holds the right. Rejected: keeping both, which said everything twice.
+4. **The card count is cards plus badges.** Continents draws seven badges and no cards, and a
+   count of nought there would read as an empty page.
+5. **Total Miles' own tier bar stays, for now.** Task 4 turns each tier into its own bar.
+
 ### Where the instruction and the tree disagreed
 
 Reported, not repaired.
@@ -137,13 +211,23 @@ Reported, not repaired.
 
 ## 2. What the owner should expect
 
-**Nothing on screen has changed yet.** Version 1.13.20. The trace above is what the next tasks
-build on.
+**Every category now opens under a full-width color band with a bar.** Version 1.13.20. The
+cards under it have not changed yet.
+
+**What will look wrong but is not:**
+- **Hall of Fame's band has dark lettering** where the others are white. White on that gold is
+  too faint to meet the contrast rule; the computed figure is about 3.6:1.
+- **Modes has no bar on the fixture log**, just `Gold, the top level`. Five modes is the top
+  of that kind's levels in your points file.
+- **Total Miles shows two bars**: the level bar on the band, and its old tier bar under it.
+  Task 4 replaces the second.
 
 ## 3. What you should see
 
-**No visible change yet. 0 of 8 kinds read as trading cards.** Opening Countries still shows a
-white list of country names with their contact counts and points.
+**0 of 8 kinds read as trading cards so far; all 8 have the new band.** Open Countries and the
+top of the page is a red band. On it are the flags, *Countries*, and a line such as `one per
+entity · 8 worked · 40 pts · unranked`. At the right, `8 of 10 to Bronze` sits over a bar
+eight-tenths full. The cards below are still the white list of names.
 
 ## 4. What's blocking us
 

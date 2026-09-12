@@ -241,17 +241,24 @@
                     Content="{Binding BackLabel}"
                     Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).BackCommand}" />
 
-            <!-- **THE CATEGORY'S EMBLEM, NAME AND BAND ACROSS THE TOP; ITS SCORE, LEVEL
-                 AND GAP BESIDE THEM; ITS MEANING LINE UNDER.** -->
-            <Border Grid.Row="1"
+            <!-- **THE BAND, AS `assets/category-page-countries.png` DRAWS IT** (work
+                 instruction 335 task 1, R22): the emblem and the name; under the name what
+                 the kind is, the count, the score and the level; on the right a bar to the
+                 next level with what it is of in words above it. **Where there is no next
+                 level the words say so and no bar is drawn**, because a bar is a fraction
+                 and a fraction of nothing asserts something nobody measured (§0.0).
+                 **The ink is computed** (`BandInk`): white wherever white clears 4.5:1
+                 against the band, dark where it does not (§0.6). -->
+            <Border x:Name="AchievementsCategoryBand"
+                    Grid.Row="1"
                     Background="{Binding Band}"
-                    CornerRadius="8"
-                    Padding="14,10"
-                    Margin="0,8,0,10">
+                    CornerRadius="10"
+                    Padding="16,12"
+                    Margin="0,8,0,12">
                 <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
                     <ctl:BadgeEmblemControl Grid.RowSpan="2"
                                             Emblem="{Binding Emblem}"
-                                            Ink="White"
+                                            Ink="{Binding BandInk}"
                                             Width="40" Height="40"
                                             Margin="0,0,12,0"
                                             VerticalAlignment="Center" />
@@ -259,33 +266,40 @@
                     <TextBlock x:Name="AchievementsCategoryName"
                                Grid.Column="1"
                                Text="{Binding Name}"
-                               FontSize="20" FontWeight="Bold"
-                               Foreground="White" />
+                               FontSize="22" FontWeight="Bold"
+                               Foreground="{Binding BandInk}" />
 
-                    <TextBlock Grid.Column="1" Grid.Row="1"
-                               Text="{Binding Meaning}"
+                    <TextBlock x:Name="AchievementsCategoryBandLine"
+                               Grid.Column="1" Grid.Row="1"
+                               Text="{Binding BandLine}"
                                FontSize="12"
-                               Foreground="White" />
+                               Foreground="{Binding BandInk}" />
 
                     <StackPanel Grid.Column="2" Grid.RowSpan="2"
+                                Width="300"
+                                Spacing="6"
                                 VerticalAlignment="Center"
-                                Margin="12,0,0,0">
-                        <TextBlock Text="{Binding Standing}"
-                                   TextAlignment="Right"
+                                Margin="16,0,0,0">
+                        <TextBlock x:Name="AchievementsLevelBarLine"
+                                   Text="{Binding LevelBarLine}"
+                                   IsVisible="{Binding HasLevelBar}"
                                    FontSize="12"
-                                   Foreground="White" />
+                                   Foreground="{Binding BandInk}" />
 
-                        <TextBlock Text="{Binding PointsLine}"
-                                   IsVisible="{Binding HasPointsLine}"
-                                   TextAlignment="Right"
-                                   FontSize="14" FontWeight="SemiBold"
-                                   Foreground="White" />
+                        <ctl:BadgeProgressControl x:Name="AchievementsLevelBar"
+                                                  IsVisible="{Binding HasLevelBar}"
+                                                  Fraction="{Binding LevelFraction}"
+                                                  Length="300"
+                                                  Thickness="12"
+                                                  Foreground="{Binding BandInk}"
+                                                  Track="#40000000"
+                                                  HorizontalAlignment="Left" />
 
-                        <TextBlock Text="{Binding GapLine}"
-                                   IsVisible="{Binding HasGapLine}"
-                                   TextAlignment="Right"
+                        <TextBlock x:Name="AchievementsNoNextLevel"
+                                   Text="{Binding NoNextLevelLine}"
+                                   IsVisible="{Binding HasNoNextLevel}"
                                    FontSize="12"
-                                   Foreground="White" />
+                                   Foreground="{Binding BandInk}" />
                     </StackPanel>
                 </Grid>
             </Border>

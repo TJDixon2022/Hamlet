@@ -1102,15 +1102,19 @@ public static class AppEvents
     /// </summary>
     /// <param name="telemetry">The sink, or null.</param>
     /// <param name="kind">The kind, by its points-file key or `continent-XX`.</param>
+    /// <param name="cards">How many cards and badges the category drew.</param>
     /// <remarks>
-    /// **THE KIND ONLY** (the instruction's own words). Nothing about what is inside it:
-    /// the countries he has worked are a record of where he was heard.
+    /// **THE KIND AND A COUNT, AND NOTHING ABOUT WHAT IS INSIDE IT** (work instruction 335
+    /// task 1, R13). The count says how full the page was, so a page that drew nothing can be
+    /// told from one that drew forty; the cards themselves are never written, because the
+    /// countries he has worked are a record of where he was heard.
     /// </remarks>
-    public static void AchievementCategoryOpened(ITelemetry? telemetry, string kind)
+    public static void AchievementCategoryOpened(ITelemetry? telemetry, string kind, int cards)
         => telemetry?.Write(TelemetryCategory.Explore, "achievement_category_opened",
             new Dictionary<string, object?>
             {
                 ["kind"] = kind,
+                ["cards"] = cards,
             });
 
     /// <summary>**The back control left a category** (work instruction 332 task 1, §R13).</summary>
