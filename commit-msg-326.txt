@@ -1,0 +1,1 @@
+Emptied by unit 326. This was a scratch file holding one commit message at a time, because the shell here refuses a heredoc and refuses a redirect into the repository. It could not be deleted - this environment blocks rm - so it is emptied and raised in output.md section 4 item 13, the way units 323 and 324 raised the same thing.
