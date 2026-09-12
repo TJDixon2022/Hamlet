@@ -1,17 +1,9 @@
-﻿   Bash  {"command":"python -c \"\nimport json\nm=json.load(open(\u0027assets/fixtures/manifest-step2.json\u0027))\nprint(json.dumps(m,indent=1)[:4000])\n\"","description":"Inspect fixture manifest"}
-   Bash  {"command":"python - \u003c\u003c\u0027EOF\u0027\nimport re,io,datetime\np=\u0027PROJECT_STATUS.md\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=re.sub(r\u0027UPDATED: .*\u0027, \u0027UPDATED: \u0027+datetime.datetime.now().astimezo ...(truncated)
-   Bash  {"command":"HAMLET_MAKE_FIXTURES=1 timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit327Fixtures\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -i \"psk ...(truncated)
-   Bash  {"command":"export HAMLET_MAKE_FIXTURES=1\ntimeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit327Fixtures\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | tail  ...(truncated)
-   Bash  {"command":"HAMLET_MAKE_FIXTURES=1 timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit327Fixtures\" --logger \"console;verbosity=detailed\" | tail -40","timeout":600000," ...(truncated)
-   Bash  {"command":"sed -i \u0027s/public const int CentroidPasses = 3;/public const int CentroidPasses = 1;/\u0027 src/Hamlet.RadioEngine/Psk31/Psk31CarrierSearch.cs \u0026\u0026 sed -i \u0027s/        =\u003e probe.Vouched$/        =\u003e false  ...(truncated)
-   Bash  {"command":"git reset -q .run-unit SESSION.lock \u0026\u0026 git commit -q -m \"feat(unit327): a station stays on the list while he is idling\" -m \"The retire rule gains its second half: a held PSK31 carrier is kept while its own demodulat ...(truncated)
-   Bash  {"command":"git reset -q .run-unit SESSION.lock","description":"Unstage launcher files"}
-   Bash  {"command":"for f in src/Hamlet.RadioEngine/Contacts/NudgeSet.cs src/Hamlet.App/ViewModels/NudgeWords.cs; do printf \"%s \" \"$f\"; tr -d \u0027\\r\u0027 \u003c \"$f\" | sha256sum | cut -d\u0027 \u0027 -f1; done","description":"Compute new  ...(truncated)
-   Bash  {"command":"python3 -c \"\nimport json\nc=json.load(open(\u0027assets/fixtures/psk31-transcripts/corpus.json\u0027))\nfor t in c[\u0027transcripts\u0027]:\n    if t[\u0027name\u0027] in (\u002702-chatty\u0027,):\n        for l in t[\u0027li ...(truncated)
-   Bash  {"command":"grep -o \u0027\"02-chatty\".\\{0,1400\\}\u0027 assets/fixtures/psk31-transcripts/corpus.json | head -c 1600","description":"Inspect the chatty transcript"}
-   Bash  {"command":"ls tools/arbiter/ | grep -i valid; echo \"--- exit $? ---\"; cat commit-msg-326.txt","description":"Look for the validator"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\" 2\u003e\u00261 | tail -30","timeout":300000,"description":"Run the output validator"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","timeout":300000,"description":"Run the output validator"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","timeout":300000,"description":"Run the output validator directly"}
-   Bash  {"command":"./toolsarbitervalidate-output.bat output.md","timeout":300000,"description":"Try the root shim for the validator"}
-   Bash  {"command":"awk \u0027NR\u003e=1 \u0026\u0026 /^## 1\\./{exit} {print}\u0027 output.md | grep -cE \"_PENDING|PENDING_|TBD|TODO|FIXME|XXX|\u003cFILL|FILL IN\u003e|PLACEHOLDER\"; echo \"--- section 3 non-blank lines ---\"; awk \u0027/^## 3\\. ...(truncated)
+﻿   Bash  {"command":"grep -rn \"Avalonia\" src/Hamlet.App/Hamlet.App.csproj | head; echo \"---\"; ls ~/.nuget/packages/avalonia/ 2\u003e/dev/null","description":"Check Avalonia version"}
+   Bash  {"command":"cat \u003e /tmp/unit328.txt \u003c\u003c\u0027EOF\u0027\n\n## UNIT 328 - STEP 5\n\nSTEP: 5\nAPPROACH: Two things, and neither is new building. First the record: unit 326 built step 5 in full while it was called under step 4, so  ...(truncated)
+   Bash  {"command":"cat .gitattributes 2\u003e/dev/null; git config core.autocrlf","description":"Check line ending config"}
+   Bash  {"command":"git config core.autocrlf","description":"Check autocrlf setting"}
+   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~TheMarkIsSeenAndClickedTests\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -v \"^\\s*$\" | sed -n \u002710,80 ...(truncated)
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run validator through cmd"}
+   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run validator by forward-slash path"}
+   Bash  {"command":"sed -n \u00271,26p\u0027 output.md | grep -in \"_PENDING\\|PENDING_\\|TBD\\|TODO\\|FIXME\\|XXX\\|\u003cFILL\\|FILL IN\u003e\\|PLACEHOLDER\" ; echo \"rule7 exit $?\"; sed -n \u0027203,219p\u0027 output.md | grep -c \"[^[:space:]] ...(truncated)
+   Bash  {"command":"/c/Source/HamLet/tools/arbiter/validate-output.bat /c/Source/HamLet/output.md","description":"Run validator by absolute path"}

@@ -1,95 +1,22 @@
-﻿STEP: 6 | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
-## Step 6 - Tim at the radio
+﻿STEP: 5 | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
+## Step 5 - Log and achievements
 
-**Delivers:** Tim tunes 14.070, sees text, works a station, logs it, and says it passed.
+**Delivers:** a PSK31 contact logs with RST, exports as ADIF `MODE=PSK` `SUBMODE=PSK31`,
+and the mode's achievement records are revealed by the first PSK31 contact and absent
+before it.
 
-**Entry:** step 5 done.
+**Entry:** step 4 done - a loopback exchange reaches 73, checked by running that test
+first.
 
 **Exit:**
-- Tim says it passed. *must-pass* **No script can evaluate this and none should try.**
+- A PSK31 contact logs with an RST field, and the FT8 dB field is not reused for it.
+  *must-pass*
+- The ADIF export carries `MODE=PSK` and `SUBMODE=PSK31` (already in `ContactModes`
+  from unit 287; asserted, not rebuilt). *must-pass*
+- Before the first PSK31 contact no PSK31 card is visible on the achievements screen
+  (Â§3.1, absent not dimmed); after it, the mode's records appear. *must-pass*
+- The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
+- The ADIF export imports cleanly into one common logger, named. *nice-to-pass*
 
-**Depends on:** step 5.
+**Depends on:** step 4.
 
-## Â§5 Dependencies, and the named deviation
-
-`PHASE_CONTROL.md` Â§2 wants at least one step depending on nothing. **Step 0 depended on
-nothing and is done. Everything after it is one pipeline** - each step's entry is the
-previous step's exit - as the FT4 phase was. Manufacturing an independent step would be
-contrivance. **When a step blocks, there is nowhere to route: work it or halt.**
-
-## Â§6 Branching - the judgments the owner has an opinion about
-
-These are the handful of calls the arbiter would otherwise get wrong at three in the
-morning. Everything else is the arbiter's judgment, reported.
-
-- **A must-pass ceiling is missed by a little.** Ship the decoder or parser anyway,
-  report the number, mark the step `partial`, and move on. A decoder at 0.12 on a
-  fixture is a finding about the fixture. **Do not delete the assertion and do not loosen
-  the ceiling.**
-- **The parser cannot tell.** The answer is `unknown`, and a high unknown rate is a
-  number to report, not a reason to guess. **Never loosen Â§R1's strict side** - a macro
-  is offered only on certainty. If the unknown rate makes step 4 unusable, that is
-  `MOVE: stop` with the number, because it changes what the product can promise.
-- **Anything would touch the transmit chain, the keying path, or `Played` beyond what
-  Â§R10 allows.** `MOVE: stop`. Risk posture is the owner's. What Â§R10 allows is ruled and
-  is not a stop.
-- **A package would be needed** - an FFT library, a DSP package, `Avalonia.Headless.Skia`.
-  `MOVE: stop`. Â§0.4.
-- **Reading fldigi tempts a port.** Read the structure; write Hamlet's own. If a unit
-  cannot proceed without copying, `MOVE: stop` and say what it would copy.
-- **Real off-air audio does not exist yet.** Proceed on the synthetic fixtures, say every
-  number is synthetic, and raise the recording again in section 4. **Do not stop for it.**
-- **A step-0 or step-1 defect is found later** - the tab reaching a send path again, a
-  character shown that the squelch should have swallowed. Fix it in passing as the first
-  task of the current unit and say so; do not reopen the earlier step.
-- **The card-rebuild root** (cards remade every slot, per-card state lost) is met.
-  It is not this phase's. Work around it for PSK31's rows the way unit 314 did - replace
-  in place - and log it, not chase it.
-- **A drop candidate has to be taken.** Take it, say which, mark the step `partial`
-  only if a must-pass went with it.
-
-## Â§7 Carried into the phase from the FT4 phase
-
-Open asks this phase touches or must not lose. Every unit carries them in its section 4.
-
-- **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal.
-  Step 4 makes it sharper: a continuous carrier that did not key is a long silence.
-- **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
-  Tim's to add.
-- **Three inherited reds**, never chased.
-- **The licence of `assets/world-flat-relief.png`** is unknown.
-- **The door sentence** is a placeholder.
-- **Acknowledgement indicators** - named by Tim, not yet defined. Step 4's turn indicator
-  may be what he meant; it is not assumed to be.
-- **Card ordering under scroll**, and its root, the per-slot card rebuild.
-- **The popup zoom cap of 2.0x** and **the 2 px map outline** are sessions' numbers.
-- **Version numbering** - x.y.0 or x.y.1 for a phase's first unit.
-- **Real off-air PSK31 audio** - only Tim can record it; two or three minutes on 14.070
-  with a few signals on it.
-
-## Â§8 Revision record
-
-- **2026-09-11, revised by the web thread after reading `PHASE_CONTROL.md` and
-  `ARBITER.md`.** The first version carried its per-step content as bold paragraphs under
-  an exit-criteria heading; the launcher's step extraction reads `## Step N` sections and
-  found none. This version gives every step its own section with Delivers, Entry, Exit
-  tiered and Depends on, in the form the FT4 plan used; adds the branching section Â§1 of
-  `PHASE_CONTROL.md` requires and the first version omitted; names the whole-suite
-  conflict with HM-DEC-155; corrects Â§R6 to the cited row; and records R8 and R9 from
-  rulings made after the plan was set. **The step list and the phase name are unchanged**,
-  so the outcome and status files stay consistent with it. Steps 0 and 1 are recorded as
-  done by units 312 and 314 in `PHASE_OUTCOME.md`, which is the authority on state; this
-  plan carries no state.
-- **2026-09-11, second revision.** Â§R10 added on Tim's ruling of the same day, answering
-  the arbiter's stop of unit 317 with option A. Â§2's premise corrected, step 4's entry and
-  exit amended, Â§6's transmit-chain stop narrowed to what Â§R10 does not cover. The step
-  list is unchanged.
-- **2026-09-11, third revision.** Â§R11 (drive and power: the operator sets nothing), Â§R12
-  (a session fixes its own tests), Â§R13 (telemetry must-pass on every remaining step), Â§R14
-  (eyes on the prize) added on Tim's rulings of the same evening. Step 4's drive-and-power
-  exit rewritten under Â§R11 and its entry annotated with what units 318-322 delivered. Â§R4
-  superseded. The step list is unchanged.
-- **2026-09-11, fourth revision.** Â§R15 (ALC learned from FT8), Â§R16 (two quills, no cap),
-  Â§R17 (collapsed panels and the filter), Â§R18 (the waiting card), Â§R19 (American
-  spelling) added on Tim's rulings of the same evening. Step 4's power exit rewritten
-  under Â§R15. The step list is unchanged.

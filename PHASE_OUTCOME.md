@@ -6,7 +6,7 @@ STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decod
 STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
 STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
 STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
-STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
+STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
 STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
 ## UNIT 312 - STEP 0
@@ -374,3 +374,19 @@ ACCOMPLISHED: The mark on Tim's list is the quill he already knows from the tray
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: STEP 5 IS DONE ON ALL FOUR OF ITS MUST-PASS, each answered by a named test that ran in this session with the value it asserts printed. One: ThePsk31LogsWithRstTests.ALoggedPsk31ContactCarriesBothReportsAndNotInTheDecibelField logs RST sent 599 and RST received 589 with the decibel fields both (none), and AnFt8ContactStillLogsItsDecibelsAndCarriesNoRst holds the other side - 6 of 6 green. Two: ThePsk31AdifTests.APsk31ContactComesOutAsPskWithTheSubmode exports MODE:3 PSK and SUBMODE:5 PSK31, and AnFt8AndAnFt4RecordAreByteIdenticalToWhatTheyWere shows the FT8 and FT4 records unchanged byte for byte - 3 of 3 green. Three: ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed shows three cards and no PSK31 one before the first contact, and TheFirstPsk31ContactRevealsTheModesRecords shows mode-PSK31 with 4 records after it - 0 cards before, 4 records after, 4 of 4 green. Four: TheAchievementsScreenTests is 2 red and 8 green, the same two inherited reds - WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo on a hover word and TheWindowDrawsEverySixRows on a missing AchievementsModeRows element - neither touched and neither made worse. Unit 327's addition holds too: GRIDSQUARE:4 FN31 is exported when a grid was read and the tag is absent altogether when none was. NOTHING WAS MEASURED AT A RADIO - FACT-004 and FACT-006 - and every value above is a test's printed output. STEP 6 IS TIM'S AND NOTHING HERE CAN CLOSE IT.
+
+### ALSO RECORDED FOR UNIT 328 - STEP 5
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: replace the filled disc with the tray quill vane at row scale - green alone for a counter, orange in a ring for a door - and rerun step 5's four must-pass so the record matches the tree
+HIT: section 4 wants a ruling: banked - Rulings are wanted on the comment in the markup, the stale unit 300 test premise, the demodulator quality measure, the eight Views reds and the uninvokable validator, but none of them touches a step 5 exit criterion, and all four of those must pass criteria were rerun green with their values quoted in this same session, so every part of step 5 remains open and workable without an answer.
+WHY: unit 326 built step 5 while called under step 4, so the judge never graded step 5; the work is done and green and the record says not started; nothing else in the phase is between step 5 and Tim's verdict
+DECIDED: the vane's exact size at row scale is the unit's to state from the tray's path; the test is rewritten for the shape under R12
+LICENCE: PHASE_PLAN.md step 5 entry and exit; R12, R14, R16; CLAUDE.md 0.6; Tim 2026-09-12 treatment A; HM-DEC-155
+COST: 9.140988
+ACCOMPLISHED: the mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says step 5 is done, so the only step left is Tim at the radio
+STATE_AFTER: partial
+STATE_WHY: The four must-pass criteria are each met with quoted values from tests run this session, but the stated nice-to-pass criterion that the ADIF export imports cleanly into one named common logger is neither met nor mentioned anywhere in the report.

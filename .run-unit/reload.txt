@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-11T23:12:39-04:00  root C:\Source\HamLet
+measured 2026-09-12T00:13:58-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -18,7 +18,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 0522442
+  HEAD   : 6f824f2
   uncommitted at the root : 0
 
 ==============================================================
@@ -587,12 +587,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under Â§R15. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  12 lines, 1705 bytes
+  12 lines, 1716 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
   CURRENT_STEP: 5
-  WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
+  WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
@@ -602,7 +602,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  333 lines, 52228 bytes
+  362 lines, 56464 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -936,6 +936,35 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   COST: 33.364847
   ACCOMPLISHED: the phase stops guessing where step 4 stands - every one of its criteria answered by a test that ran tonight rather than by a sentence carried forward - and a PSK31 contact becomes something Tim can log with the signal report he exchanged, export in the spelling another logger reads, and see appear on the achievements screen the first time he works one
   STATE_WHY: Every one of the eight must-pass criteria plus the nice-to-pass is answered by a named test run this session with quoted measurements, 55.7 Hz occupied bandwidth at minus 30 dB, 31.2697 baud, exactly one PttOn site, a 30 second cap with a recorded refusal, two answers making two cards and a one character turnover on all four ruling words, and the only open items in section 4 are carried findings or reds outside the step's criteria.
+  
+  ## UNIT 327 - STEP 6
+  
+  STEP: 6
+  FATE: carried repair - no step criterion moves
+  APPROACH: Carried repair on what the owner saw at the radio on 2026-09-11 and 12. Keep a PSK31 carrier by what its own demodulator says, so a station idling between words stays on the list instead of being retired six times in two minutes; measure the first-character latency and state a ceiling; make the achievement mark row-height in two colors with a popup on click; fill the conversation card's right column with what Hamlet knows and drop the caption under the map; carry the read grid into the logged PSK31 contact; and the housekeeping.
+  WHY: The owner's own telemetry from 7.070 shows a station at 2073 Hz with the squelch open at quality 0.99 - as clean as the fixture - appearing and being retired as SignalGone six times in two minutes, zero characters, 206 seconds and 12 carriers for 0 lines. An idling PSK31 signal has no energy at its carrier frequency; it splits into two lines 15.6 Hz either side. The search retired a live station for idling. Step 6 is Tim at the radio and it cannot start until he can read a station.
+  DECIDED: The keep-and-retire numbers, the first-character latency ceiling, the mark's size and the orange hex are this unit's to state. The idle fixture is made from the reference convention in assets/reference-modem.py, one station that types for 10 s, idles 8 s and types again.
+  LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; HM-DEC-111, HM-DEC-139, HM-DEC-155.
+  ACCOMPLISHED: A station who pauses stays on the operator's list until he actually leaves, the achievement mark is something he can see from across the desk and click for the reason, and the card says what Hamlet knows beside the map.
+  ADVANCES: none - carried repair before step 6. Nothing was measured at a radio; FACT-004 and FACT-006 hold and every fixture behind this is synthetic.
+  
+  ### ALSO RECORDED FOR UNIT 327 - STEP 6
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: keep a PSK31 carrier by its demodulator's verdict so an idling station stays on the list, measure first-character latency, make the achievement mark row-height in two colors with a popup on click, fill the card's right column with the contact's facts and drop the caption, log the PSK31 grid, and do the housekeeping
+  HIT: section 4 wants a ruling: banked - Rulings are wanted on the quality measure and retire timing, on who repairs the stale Views test premise, on the unrunnable bat validator and on the two id schemes, but each is either already built and followed in full, a repair owned by another surface, or a record keeping matter, and step 6's only exit is Tim's own verdict at the radio, so the carried repair that lets him read a station, the latency ceiling, the mark and the card work all remain open without an answer.
+  MOVE: continue
+  WHY: the owner's telemetry from two nights on 7.070 shows a clean station retired six times for idling and 206 seconds with zero lines read, and his own eyes found the mark unreadable and unclickable and the card's column empty; step 6 is his and cannot start until he can read a station
+  DECIDED: the keep-and-retire numbers, the latency ceiling, the mark's exact size and the orange hex are the unit's to state; the idle fixture is made from the reference convention
+  LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4
+  COST: 48.38649749999994
+  ACCOMPLISHED: a station who pauses stays on Tim's list until he actually leaves, the achievement mark is something Tim can see and click for the reason, and the card says what Hamlet knows beside the map
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: The step's sole exit criterion is Tim's own verdict at the radio, and the unit performed only carried repair, stating plainly that step 6 is unchanged and his to close, so nothing has been done toward it.
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -958,17 +987,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1312 bytes
+  19 lines, 1633 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 6 of 6
-  WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
+  WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
   BALL: tim
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-11T22:50:54-04:00
-  NOTE: Unit 326 complete at task 6 of 6, nothing dropped. Step 4 was not partial: all eight must-pass and the nice-to-pass are met against tests run tonight, 169 of 169 carry-forward green before and after. Step 5 is done on all four must-pass - the RST is in the log in its own field, a PSK31 contact reaches the log at all for the first time, the export spells MODE=PSK with SUBMODE=PSK31, and the records appear on the first contact. TheAchievementsScreenTests 2 red before and 2 after. output.md written; validate-output.bat was refused by the permission layer for the second unit running and its seven rules were applied by hand and all pass - section 4. Section 4 raises 5 items on top of the carried seven.
+  UPDATED: 2026-09-11T23:59:42-04:00
+  NOTE: Unit 327 complete at task 6 of 6, nothing dropped, six commits pushed. Carry-forward 163 of 163 green before anything moved and 185 of 185 after the list was widened. A held PSK31 carrier is kept while its own demodulator vouches for it, so an idling station stays on the list; first-character latency measures 1.50 s from the row appearing; the row mark is an 18 px filled disc that opens a popup on a press; the card's right column carries six facts and the caption under the map is gone; a PSK31 contact logs GRIDSQUARE when one was read. Two measurements changed the unit's own mind and are reported rather than tidied - the demodulator vouches for a dead carrier for 7.20 s, which moved RetiredWithinSeconds 2.5 to 9.0, and the fixture does not reproduce what Tim saw. validate-output.bat was refused by the permission layer for the third unit running, on four different invocations, and its seven rules were applied by hand and all pass - section 4 item 5. Section 4 raises 6 items on top of the carried queue.
   
   ---
   
