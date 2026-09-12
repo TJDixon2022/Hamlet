@@ -2445,6 +2445,11 @@ public partial class MainWindowViewModel : ObservableObject
             _psk31Was.Remove(change.Id);
         }
 
+        foreach (var activity in _psk31.Watch.DrainActivity())
+        {
+            Psk31Events.CarrierActivity(_telemetry, activity);
+        }
+
         foreach (var pass in _psk31.Watch.DrainPasses())
         {
             // **THE LATEST PASS IS KEPT, WHETHER OR NOT IT IS WRITTEN DOWN** (work

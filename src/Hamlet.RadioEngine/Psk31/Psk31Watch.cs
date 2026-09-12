@@ -93,6 +93,27 @@ public sealed record Psk31CarrierChange(
     double LifetimeSeconds,
     Psk31Retirement? Why);
 
+/// <summary>A held carrier going idle, or starting to type again.</summary>
+/// <param name="Id">The carrier's own id, stable while it is held.</param>
+/// <param name="Idling">True where he has stopped typing, false where characters resumed.</param>
+/// <param name="OffsetHz">Where it sits in the passband.</param>
+/// <param name="Quality">What its demodulator's squelch measure read at that moment.</param>
+/// <param name="Seconds">How long the state it is leaving lasted, in audio seconds.</param>
+/// <remarks>
+/// <para>**AN IDLE GAP HAS TO SHOW UP IN THE FILE AS AN IDLE GAP** (work instruction 327
+/// task 1). Until this existed, a station who stopped typing for eight seconds and started
+/// again left the same trace in the record as a station who went off the air and came back:
+/// characters, then no characters, then characters. **Those are two different evenings and
+/// the operator was reading the record to tell them apart.**</para>
+/// <para>**IT IS A STATE CHANGE AND NOT A HEARTBEAT.** One event when the typing stops and
+/// one when it resumes, so an hour of a quiet station is two lines rather than fourteen
+/// thousand.</para>
+/// <para>**AND NOTHING PERSONAL IS IN IT** (HM-DEC-018, §2.1). An id, a frequency, a
+/// number and a duration. Not one character of what he was typing.</para>
+/// </remarks>
+public sealed record Psk31CarrierActivity(
+    int Id, bool Idling, double OffsetHz, double Quality, double Seconds);
+
 /// <summary>What one held channel's demodulator is doing right now.</summary>
 /// <param name="Id">The carrier's id.</param>
 /// <param name="OffsetHz">Where it is being read.</param>
@@ -137,12 +158,16 @@ public sealed class Psk31Watch
 
     private readonly List<Psk31Pass> _passes = new();
     private readonly List<Psk31CarrierChange> _changes = new();
+    private readonly List<Psk31CarrierActivity> _activity = new();
 
     /// <summary>How many passes were dropped because nobody drained them.</summary>
     public int PassesDropped { get; private set; }
 
     /// <summary>How many carrier changes were dropped for the same reason.</summary>
     public int ChangesDropped { get; private set; }
+
+    /// <summary>How many idling and typing events were dropped for the same reason.</summary>
+    public int ActivityDropped { get; private set; }
 
     /// <summary>Record one pass.</summary>
     /// <param name="pass">What the pass measured.</param>
@@ -168,6 +193,35 @@ public sealed class Psk31Watch
         }
 
         _changes.Add(change);
+    }
+
+    /// <summary>Record one carrier going idle or starting to type again.</summary>
+    /// <param name="activity">What happened.</param>
+    public void Add(Psk31CarrierActivity activity)
+    {
+        if (_activity.Count >= Keep)
+        {
+            _activity.RemoveAt(0);
+            ActivityDropped++;
+        }
+
+        _activity.Add(activity);
+    }
+
+    /// <summary>Take the idling and typing events since the last ask.</summary>
+    /// <returns>What has happened, oldest first.</returns>
+    public IReadOnlyList<Psk31CarrierActivity> DrainActivity()
+    {
+        if (_activity.Count == 0)
+        {
+            return Array.Empty<Psk31CarrierActivity>();
+        }
+
+        var taken = _activity.ToArray();
+
+        _activity.Clear();
+
+        return taken;
     }
 
     /// <summary>Take the passes since the last ask.</summary>

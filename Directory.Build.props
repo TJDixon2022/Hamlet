@@ -641,8 +641,17 @@
     must-pass criteria and the nice-to-pass are met against tests that ran in this session. No
     production code moves in this task.
   -->
+  <!--
+    1.13.12 -> 1.13.13, UNIT 327 TASK 1, UNDER HM-DEC-150 AND R7. A PATCH, AND A STATION WHO
+    STOPS TYPING STAYS ON THE LIST. The carry-forward list run first as its own comment says,
+    two invocations and one build each, app 86 of 86 and engine 77 of 77 - 163 of 163 green
+    before anything moved. Then the retire rule: a held carrier is kept while its own
+    demodulator still rates it readable, and is retired only when the demodulator and the
+    search have both lost it, so the six-times-a-minute death of a clean station at 2073 Hz on
+    the operator's 2026-09-12 cannot happen for idling.
+  -->
   <PropertyGroup>
-    <Version>1.13.12</Version>
+    <Version>1.13.13</Version>
   </PropertyGroup>
 
   <!--

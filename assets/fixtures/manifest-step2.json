@@ -58,5 +58,24 @@
    "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
    "B": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n"
   }
+ },
+ {
+  "file": "psk31-idle-8s-1000hz.wav",
+  "sha256": "18c36704054e70e0e7bbdaafdc271225ffdc8029c61443aab91574499bbb8981",
+  "sample_rate": 8000,
+  "carrier_hz": 1000,
+  "seconds": 41.3,
+  "station_stops_at_seconds": 31.3,
+  "idle_gap_bits": 250,
+  "idle_gap_seconds": 8.0,
+  "quiet_tail_seconds": 10,
+  "snr_db_2500": 10,
+  "seed": 327,
+  "made_by": "tests/Hamlet.RadioEngine.Tests/Psk31/Unit327Fixtures.cs, work instruction 327 task 1",
+  "note": "One station at 1000 Hz that types the CQ line for about ten seconds, idles for 250 bits - 8.0 s of continuous phase reversals, which is keying and not silence - and types it again. It is unit 324's idle-gap fixture with the gap grown from 6.0 s to 8.0 s and the quiet tail grown from 4 s to 10 s, because unit 327 keeps a carrier while its own demodulator still vouches for it and that verdict is a magnitude-weighted mean that takes a couple of seconds to let go of a strong carrier - so the tail has to be longer than Psk31Listener.RetiredWithinSeconds, now 6.0, for the retirement to land inside the file as SignalGone rather than as ListeningStopped when the audio runs out. An idling PSK31 signal has no energy at its carrier frequency; it is two lines 15.6 Hz either side, and this file is what a search that looks for a spectral peak at the center gets wrong. The two halves are laid end to end with the join in the middle of the gap, where the modulator's half-symbol fade to zero and back falls on no character, and the idle before the join is made an odd or even number of bits so the symbol across it is a reversal like every other idle symbol.",
+  "texts": {
+   "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
+   "B": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n"
+  }
  }
 ]

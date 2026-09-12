@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
-BALL: tim
+STATE: RUNNING
+TASK: 1 of 6
+WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
+BALL: claude
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T22:50:54-04:00
-NOTE: Unit 326 complete at task 6 of 6, nothing dropped. Step 4 was not partial: all eight must-pass and the nice-to-pass are met against tests run tonight, 169 of 169 carry-forward green before and after. Step 5 is done on all four must-pass - the RST is in the log in its own field, a PSK31 contact reaches the log at all for the first time, the export spells MODE=PSK with SUBMODE=PSK31, and the records appear on the first contact. TheAchievementsScreenTests 2 red before and 2 after. output.md written; validate-output.bat was refused by the permission layer for the second unit running and its seven rules were applied by hand and all pass - section 4. Section 4 raises 5 items on top of the carried seven.
+UPDATED: 2026-09-12T00:02:11-04:00
+NOTE: The keep rule is built and green, engine 7 and app 4 new assertions. Two measurements changed the unit's own mind: the demodulator vouches for a dead carrier for 7.20 s because its quality is magnitude-weighted, so RetiredWithinSeconds went 2.5 to 9.0 and that is a finding for section 4; and with both mechanisms switched off the 8 s fixture still holds one carrier and still nominates at 1000.0 Hz, so the centroid walk proved nothing and was taken back out under R14. Running the carry-forward list again for the after picture.
 
 ---
 

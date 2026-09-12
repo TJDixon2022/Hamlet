@@ -52,11 +52,16 @@ public sealed class Psk31Listener
     /// retired for it; a station Hamlet can hear and cannot read is held and says so.
     /// </remarks>
     public const string RetireRule =
-        "a channel is retired when its carrier is, and its carrier is retired when the "
-        + "search stops finding the signal: the place it sits fails the candidate test on "
+        "a channel is retired when its carrier is, and its carrier is retired only when the "
+        + "search and the channel's own demodulator have both lost it: the place it sits "
+        + "fails the candidate test on "
         + nameof(Psk31CarrierSearch.RetireAfterPasses) + " passes of the newest spectrum "
-        + "window in a row, so a channel is gone within " + nameof(RetiredWithinSeconds)
-        + " of its carrier stopping. **It is never retired for saying nothing.** Separately, "
+        + "window in a row, AND the demodulator has had neither its squelch open nor its "
+        + "quality at " + nameof(Psk31CarrierSearch.KeepReadableQuality) + " or better "
+        + "within the last " + nameof(Psk31CarrierSearch.KeepReadableSeconds)
+        + ", so a channel is gone within " + nameof(RetiredWithinSeconds)
+        + " of its carrier stopping. **It is never retired for saying nothing** and never "
+        + "for idling, which is what a PSK31 station does between words. Separately, "
         + "any character it read after the keying measure last stood behind the carrier, "
         + "less " + nameof(LetGoSeconds) + ", is held and is dropped rather than shown if "
         + "the carrier goes before that measure catches up.";
@@ -71,18 +76,55 @@ public sealed class Psk31Listener
 
     /// <summary>**How soon after a carrier stops its channel is gone, in seconds.**</summary>
     /// <remarks>
-    /// <para>**2.5, AND HERE IS WHERE IT COMES FROM, RESTATED FOR UNIT 324'S RULE.** The
+    /// <para>**9.0, AND HERE IS WHERE IT COMES FROM, RESTATED FOR UNIT 327'S RULE.** The
     /// spectrum window is 2 048 samples, 0.26 s at 8 kHz, so a window stops holding a
     /// carrier that has stopped within that; the search then wants
     /// <see cref="Psk31CarrierSearch.RetireAfterPasses"/> passes in a row, which is 1.02 s;
     /// the verdict lands on the next pass, 0.13 s; and the shell hands audio over in lumps
-    /// of a quarter of a second. That is about 1.7 s, and 2.5 is kept as the bound with
-    /// margin rather than tightened to flatter it.</para>
+    /// of a quarter of a second. **That was 1.7 s and the bound was 2.5.**</para>
+    /// <para>**WHAT UNIT 327 ADDED, AND WHAT IT COSTS - MEASURED, NOT ESTIMATED.** A carrier
+    /// is now also kept while its demodulator vouches for it, and that verdict is a rolling
+    /// mean over <see cref="Psk31Demodulator.QualityWindow"/> symbols **weighted by
+    /// magnitude**: when a strong carrier stops, its own loud symbols hold the ratio up
+    /// while they decay out of the window, and the louder it was the longer that takes.
+    /// **On `psk31-idle-8s-1000hz.wav` the squelch shut 5.70 s after the carrier stopped and
+    /// the quality fell under <see cref="Psk31CarrierSearch.KeepReadableQuality"/> at 7.20
+    /// s**, and <see cref="Psk31CarrierSearch.KeepReadableSeconds"/> is waited after that -
+    /// 8.22 s, so 9.0 is the bound with margin. It was 2.5.</para>
+    /// <para>**THAT NUMBER IS A FINDING AND IT IS RAISED AS ONE** (§0.0, work instruction
+    /// 327 section 4). Six seconds is a long time for a row to claim a station who has gone,
+    /// and the cause is not this rule but the measure it leans on: `Quality` is documented
+    /// as *0.637 on uniform noise phase*, and after a loud carrier stops the input **is**
+    /// uniform noise phase while it goes on reporting 0.99. Normalizing that measure per
+    /// symbol, or capping how long a vouch may outlive the spectrum, would both bring this
+    /// back under three seconds. **Neither is done here**: the first changes what every
+    /// PSK31 decode in the app is squelched on, and the second contradicts the rule this
+    /// unit was told to build, which is that a carrier goes only when both have lost it.</para>
+    /// <para>**AND THE TRADE IS DELIBERATE.** Six extra seconds of a row for a station who
+    /// has left, against a station who pauses to think being retired and reborn under a new
+    /// id - which is what the operator's 2026-09-12 record shows happening six times in two
+    /// minutes to a signal rated 0.99 throughout. **The row says heard, not readable yet
+    /// while it waits** (§0.0), so it is not claiming he is still talking.</para>
     /// <para>**AFTER THE CARRIER STOPS, WHICH IS NOT ALWAYS AFTER THE LAST CHARACTER.** A
     /// PSK31 operator's transmitter idles after the last character until he unkeys - the
     /// fixtures idle 40 bits, 1.28 s - and a station on idle is still a station.</para>
     /// </remarks>
-    public const double RetiredWithinSeconds = 2.5;
+    public const double RetiredWithinSeconds = 9.0;
+
+    /// <summary>**How long without a character is idling, in seconds.**</summary>
+    /// <remarks>
+    /// <para>**TWO, AND IT IS A SENTENCE'S WORTH OF TYPING** (work instruction 327 task 1).
+    /// A PSK31 character is eight to ten bits at 31.25 baud, about a third of a second, and
+    /// a fluent operator's longest pause mid-sentence is well under a second. Two seconds is
+    /// past every gap inside typing and short enough that the eight-second idle in the
+    /// fixture is bracketed with six seconds to spare.</para>
+    /// <para>**IT IS SAID ONLY OF A CARRIER THE DEMODULATOR IS STILL HAPPY WITH.** A
+    /// channel that has gone unreadable is also producing no characters, and calling that
+    /// *idling* would be Hamlet claiming to know he is sitting there thinking (§0.0). Idle
+    /// is asserted where the squelch is open on continuous reversals, which is the thing a
+    /// PSK31 transmitter actually sends between words.</para>
+    /// </remarks>
+    public const double IdleAfterSeconds = 2.0;
 
     /// <summary>How much audio a new channel hears from before it was made, in seconds.</summary>
     /// <remarks>
@@ -95,6 +137,7 @@ public sealed class Psk31Listener
     private readonly int _sampleRate;
     private readonly int _piece;
     private readonly long _letGo;
+    private readonly long _idle;
     private readonly Psk31CarrierSearch _search;
     private readonly float[] _history;
     private int _historyWrite;
@@ -113,6 +156,7 @@ public sealed class Psk31Listener
         // within a thirty-second of a second, whatever lumps the audio arrives in.
         _piece = (int)Math.Round(sampleRate / Psk31Demodulator.Baud);
         _letGo = (long)(LetGoSeconds * sampleRate);
+        _idle = (long)(IdleAfterSeconds * sampleRate);
         _history = new float[(int)(ReplaySeconds * sampleRate)];
     }
 
@@ -195,12 +239,80 @@ public sealed class Psk31Listener
                 channel.Hear(slice, SamplesSeen);
             }
 
+            // **THE CHANNELS SPEAK FIRST, AND THE SEARCH JUDGES AFTER THEM** (work
+            // instruction 327 task 1). The verdict handed over is the one measured on the
+            // audio the search is about to look at, not the one from a symbol ago, so the
+            // two halves of the retire rule are asked about the same moment.
+            foreach (var pair in _channels)
+            {
+                _search.Vouch(pair.Key, pair.Value.Open, pair.Value.Quality);
+            }
+
             _search.Add(slice);
+
+            NoteIdling();
 
             samples = samples[count..];
         }
 
         Reconcile();
+    }
+
+    /// <summary>
+    /// **Notice a held station stopping typing, and starting again.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**SO THE RECORD SHOWS AN IDLE GAP AS AN IDLE GAP** (work instruction 327 task
+    /// 1, §0.0). Characters, then no characters, then characters is what a station who
+    /// paused and a station who went off the air and came back both look like in a file of
+    /// decoded text. They are two different evenings, and until these two events existed
+    /// the operator had no way to tell them apart in his own record.</para>
+    /// <para>**IT IS SAID OF A CARRIER THAT HAS ACTUALLY SPOKEN.** A channel that has never
+    /// emitted a character is *heard, not readable yet* - a state it already has a name for
+    /// - and calling that idling would be a claim about a person Hamlet has not heard from
+    /// (§0.0). And it is said only while the squelch is open, because open on no characters
+    /// is exactly what continuous reversals are.</para>
+    /// </remarks>
+    private void NoteIdling()
+    {
+        foreach (var pair in _channels)
+        {
+            var channel = pair.Value;
+
+            if (channel.LastCharacterAt <= 0)
+            {
+                continue;
+            }
+
+            var quiet = SamplesSeen - channel.LastCharacterAt;
+
+            if (!channel.Idling && channel.Open && quiet >= _idle)
+            {
+                channel.Idling = true;
+
+                Watch.Add(new Psk31CarrierActivity(
+                    pair.Key,
+                    Idling: true,
+                    Math.Round(channel.OffsetHz, 1),
+                    Math.Round(channel.Quality, 3),
+                    Math.Round((double)(SamplesSeen - channel.SinceAt) / _sampleRate, 1)));
+
+                channel.SinceAt = SamplesSeen;
+            }
+            else if (channel.Idling && quiet == 0)
+            {
+                channel.Idling = false;
+
+                Watch.Add(new Psk31CarrierActivity(
+                    pair.Key,
+                    Idling: false,
+                    Math.Round(channel.OffsetHz, 1),
+                    Math.Round(channel.Quality, 3),
+                    Math.Round((double)(SamplesSeen - channel.SinceAt) / _sampleRate, 1)));
+
+                channel.SinceAt = SamplesSeen;
+            }
+        }
     }
 
     /// <summary>Make a channel for every new carrier and drop the ones that went.</summary>
@@ -214,7 +326,7 @@ public sealed class Psk31Listener
 
             if (!_channels.TryGetValue(carrier.Id, out var channel))
             {
-                channel = new Channel(_sampleRate, carrier.OffsetHz);
+                channel = new Channel(_sampleRate, carrier.OffsetHz) { SinceAt = SamplesSeen };
                 Replay(channel);
                 _channels[carrier.Id] = channel;
             }
@@ -310,11 +422,26 @@ public sealed class Psk31Listener
 
         public int Pending => _pending.Count;
 
+        /// <summary>The sample count when this channel last emitted a character.</summary>
+        /// <remarks>
+        /// **ZERO MEANS IT HAS NEVER SAID ANYTHING**, which is a different fact from
+        /// *it said something a long time ago* and is never reported as idling (§0.0).
+        /// </remarks>
+        public long LastCharacterAt { get; private set; }
+
+        /// <summary>True while he is holding the carrier and not typing.</summary>
+        public bool Idling { get; set; }
+
+        /// <summary>The sample count when the state it is in now began.</summary>
+        public long SinceAt { get; set; }
+
         public void Hear(ReadOnlySpan<float> samples, long endsAt)
         {
             foreach (var character in _demodulator.Add(samples))
             {
                 _pending.Enqueue((character, endsAt));
+
+                LastCharacterAt = endsAt;
             }
         }
 

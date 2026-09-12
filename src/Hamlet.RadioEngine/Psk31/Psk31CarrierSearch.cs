@@ -61,11 +61,16 @@ public sealed class Psk31CarrierSearch
         + "least " + nameof(CoherenceToAppear) + ", the keying is no more one-way than "
         + nameof(MostlyOneWay) + " and at least " + nameof(NarrowEnough) + " of the power "
         + "over the floor within three half-widths is inside one, stays listed while it is at least "
-        + nameof(CoherenceToStay) + ", and is retired when the signal itself goes - when "
-        + "the place it sits fails the same candidate test on " + nameof(RetireAfterPasses)
-        + " passes in a row, measured on the newest window rather than the average - and "
-        + "never because it stopped being readable. Its offset is the probe's frequency "
-        + "plus the error the squared phasor's angle measures.";
+        + nameof(CoherenceToStay) + ", and is retired only when the search and the carrier's own "
+        + "demodulator have both lost it - when the place it sits fails the same candidate test on "
+        + nameof(RetireAfterPasses)
+        + " passes in a row, measured on the newest window rather than the average, and the "
+        + "demodulator has had neither its squelch open nor its quality at "
+        + nameof(KeepReadableQuality) + " or better within the last "
+        + nameof(KeepReadableSeconds)
+        + " - and never because it stopped being readable and never because it stopped saying "
+        + "anything. Its offset is the probe's frequency plus the error the squared phasor's "
+        + "angle measures.";
 
     /// <summary>**The bottom of the passband PSK31 is worked in, in hertz.**</summary>
     /// <remarks>
@@ -218,6 +223,37 @@ public sealed class Psk31CarrierSearch
     /// `psk31_reading` in the record says the same. It is not a death.</para>
     /// </remarks>
     public const int RetireAfterPasses = 8;
+
+    /// <summary>**The demodulator quality that keeps a carrier the spectrum has lost.**</summary>
+    /// <remarks>
+    /// <para>**0.80, AND HERE IS WHERE THAT NUMBER COMES FROM.**
+    /// <see cref="Psk31Demodulator.Quality"/> is the mean of |Re(d)| over the mean of |d|,
+    /// which runs from **0.637 on uniform noise phase to 1.0 on clean keying** - the whole
+    /// usable range is 0.363 wide. 0.80 sits 45% of the way up it: far enough above noise
+    /// that a channel reading nothing cannot vouch for a carrier that has gone, and far
+    /// enough below <see cref="Psk31Demodulator.SquelchQuality"/> (0.90) that a station
+    /// whose squelch has just shut on a fade is still plainly BPSK and keeps his row.</para>
+    /// <para>**IT IS A SECOND OPINION AND NOT A SECOND CHANCE.** The spectrum answers *is
+    /// there energy at that frequency*, which an idling PSK31 station answers badly - idle
+    /// is continuous phase reversals, so **the carrier frequency itself is empty** and the
+    /// power sits in two lines 15.6 Hz either side. The demodulator answers *is that
+    /// BPSK*, which an idling station answers with 1.0. On the operator's own 2026-09-12 a
+    /// station at 2073 Hz was rated **0.99 by the demodulator throughout** and retired six
+    /// times in two minutes by the search; this is the number that stops that.</para>
+    /// </remarks>
+    public const double KeepReadableQuality = 0.80;
+
+    /// <summary>**How recently the demodulator must have vouched, in seconds.**</summary>
+    /// <remarks>
+    /// **ONE WHOLE QUALITY WINDOW, 32 SYMBOLS, 1.024 S**, the same measure
+    /// <see cref="Psk31Listener.LetGoSeconds"/> is built on and for the same reason: the
+    /// demodulator's own answer is an average over that many symbols, so asking whether it
+    /// vouched inside one window is asking whether its *current* answer is yes without
+    /// letting a single unlucky symbol flip it. Longer would be a second anti-flicker hold
+    /// stacked on the eight passes the search already waits.
+    /// </remarks>
+    public const double KeepReadableSeconds =
+        MeasureSymbols / Psk31Demodulator.Baud;
 
     /// <summary>How much audio a new probe is given from before it was made, in seconds.</summary>
     /// <remarks>
@@ -383,6 +419,42 @@ public sealed class Psk31CarrierSearch
     /// record and the panel speak.
     /// </remarks>
     public double RetireAfterSeconds => RetireAfterPasses * PassSeconds;
+
+    /// <summary>**What a listed carrier's own demodulator says about it right now.**</summary>
+    /// <param name="id">The carrier's id.</param>
+    /// <param name="open">True where that channel's squelch is letting characters through.</param>
+    /// <param name="quality">How BPSK-shaped its last few symbols were, 0.637 to 1.0.</param>
+    /// <remarks>
+    /// <para>**THE SEARCH STILL KNOWS NOTHING ABOUT A DEMODULATOR** (§0.1). It is handed a
+    /// verdict - two numbers about a carrier it already holds - by whoever runs the
+    /// channels, and it never reaches for one. Nothing here constructs, owns or asks a
+    /// <see cref="Psk31Demodulator"/>, and a caller who never vouches gets exactly the
+    /// behaviour this class had before: retire on <see cref="RetireAfterPasses"/>.</para>
+    /// <para>**IT IS ONLY EVER A REPRIEVE.** A vouch can keep a carrier listed; it can
+    /// never list one, move one, or change what is read out of one. The spectrum and the
+    /// probe still decide everything about appearing (§0.0).</para>
+    /// <para>**AN UNKNOWN ID IS NOT AN ERROR.** The listener vouches for what it holds and
+    /// the search retires on its own cadence, so a verdict for a carrier that went one pass
+    /// ago is normal and is dropped.</para>
+    /// </remarks>
+    public void Vouch(int id, bool open, double quality)
+    {
+        if (!open && !(quality >= KeepReadableQuality))
+        {
+            return;
+        }
+
+        foreach (var probe in _probes)
+        {
+            if (probe.Listed && probe.Id == id)
+            {
+                probe.VouchedAt = SamplesSeen;
+                probe.Vouched = true;
+
+                return;
+            }
+        }
+    }
 
     /// <summary>Feed the search some audio.</summary>
     /// <param name="samples">Samples in [-1, 1].</param>
@@ -653,7 +725,7 @@ public sealed class Psk31CarrierSearch
                 {
                     probe.Missed = 0;
                 }
-                else if (++probe.Missed >= RetireAfterPasses)
+                else if (++probe.Missed >= RetireAfterPasses && !StillReadable(probe))
                 {
                     Watch.Add(new Psk31CarrierChange(
                         probe.Id,
@@ -744,6 +816,20 @@ public sealed class Psk31CarrierSearch
         }
     }
 
+    /// <summary>**Whether this carrier's own demodulator still stands behind it.**</summary>
+    /// <param name="probe">The listed carrier being judged.</param>
+    /// <returns>True where it was vouched for within <see cref="KeepReadableSeconds"/>.</returns>
+    /// <remarks>
+    /// <para>**THE SECOND HALF OF THE RETIRE RULE** (work instruction 327 task 1). The
+    /// spectrum test and this one must **both** fail before a carrier goes, because they
+    /// fail on different things and an idling station fails only the first. A carrier
+    /// nobody ever vouched for - there is no listener, or its channel never opened - is
+    /// retired on the spectrum alone, exactly as before.</para>
+    /// </remarks>
+    private bool StillReadable(Probe probe)
+        => probe.Vouched
+            && SamplesSeen - probe.VouchedAt <= (long)(KeepReadableSeconds * _sampleRate);
+
     /// <summary>Whether the newest window still finds a signal at a place.</summary>
     /// <param name="hz">Where the carrier was last measured to be.</param>
     /// <returns>True where it still stands over the candidate bar there.</returns>
@@ -793,9 +879,21 @@ public sealed class Psk31CarrierSearch
 
     /// <summary>Where the power above the floor balances, around a bin.</summary>
     /// <remarks>
-    /// **A BPSK SPECTRUM IS SYMMETRIC ABOUT ITS CARRIER WHATEVER IS BEING SENT.** Idle is
-    /// two lines 15.6 Hz either side with nothing in the middle and text is a hump, and
-    /// the balance point of both is the carrier, where the tallest bin is not.
+    /// <para>**A BPSK SPECTRUM IS SYMMETRIC ABOUT ITS CARRIER WHATEVER IS BEING SENT.** Idle
+    /// is two lines 15.6 Hz either side with nothing in the middle and text is a hump, and
+    /// the balance point of both is the carrier, where the tallest bin is not.</para>
+    /// <para>**THAT IS WHY AN IDLING STATION IS FOUND AND NOT ONLY KEPT** (work instruction
+    /// 327 task 1). The summed power <see cref="IsPeak"/> nominates on already covers both
+    /// sidebands - <see cref="SignalHalfWidthHz"/> is 32 and they sit at 15.6 - so a station
+    /// who has stopped typing still raises a candidate; and because this weighs the two
+    /// lines against each other rather than taking the tallest bin, that candidate lands on
+    /// the carrier and not on a sideband. **Measured** on five seconds of pure idle out of
+    /// the middle of `psk31-idle-8s-1000hz.wav`: one carrier, at 1000.0 Hz, which is
+    /// `ThePsk31StationIdlesTests.AnIdlingStationIsNominatedAtTheBalancePointOfItsTwoSidebands`.</para>
+    /// <para>**UNIT 327 CONSIDERED WALKING THIS AND DID NOT** (§R14). Re-taking the centroid
+    /// about its own answer would be more robust where the peak bin lands off-center, but
+    /// measured against the fixture it moved nothing - one pass already gives 1000.0 Hz -
+    /// so there was no criterion for it to prove and it is not here.</para>
     /// </remarks>
     private double Centroid(int bin)
     {
@@ -960,6 +1058,17 @@ public sealed class Psk31CarrierSearch
 
         /// <summary>How many passes in a row the signal has been missing from.</summary>
         public int Missed { get; set; }
+
+        /// <summary>True once a demodulator has ever vouched for this carrier.</summary>
+        /// <remarks>
+        /// **NEVER VOUCHED AND VOUCHED LONG AGO ARE DIFFERENT** (§0.0). Without this flag a
+        /// carrier nobody had ever spoken for would read as vouched at sample zero, which
+        /// on the first second of a file is inside the window and would keep it.
+        /// </remarks>
+        public bool Vouched { get; set; }
+
+        /// <summary>The sample count when a demodulator last stood behind this carrier.</summary>
+        public long VouchedAt { get; set; }
 
         /// <summary>What the last measurement said, for the record to read back.</summary>
         /// <remarks>

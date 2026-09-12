@@ -227,6 +227,38 @@ public static class Psk31Events
             });
     }
 
+    /// <summary>A held carrier stopped typing, or started again.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="activity">What the listener recorded.</param>
+    /// <remarks>
+    /// <para>**SO THE IDLE GAP SHOWS UP IN THE FILE AS AN IDLE GAP** (work instruction 327
+    /// task 1). On 2026-09-12 the operator's own record ran 206 seconds with 12 carriers and
+    /// 0 lines, and there was no way to read out of it that the station at 2073 Hz was
+    /// sitting there with the squelch open at 0.99 waiting for an answer. **These two
+    /// events are that sentence.**</para>
+    /// <para>**AND NOTHING PERSONAL IS IN EITHER** (HM-DEC-018, §2.1). A frequency, a
+    /// quality, and how long the state that just ended lasted.</para>
+    /// </remarks>
+    public static void CarrierActivity(ITelemetry? telemetry, Psk31CarrierActivity activity)
+    {
+        ArgumentNullException.ThrowIfNull(activity);
+
+        telemetry?.Write(
+            TelemetryCategory.Psk31,
+            activity.Idling ? "psk31_carrier_idling" : "psk31_carrier_typing",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["carrierId"] = activity.Id,
+                ["offsetHz"] = activity.OffsetHz,
+                ["quality"] = activity.Quality,
+
+                // **HOW LONG THE STATE THAT JUST ENDED LASTED**, which on a typing event is
+                // the length of the idle gap the operator is trying to read out of the file.
+                ["afterSeconds"] = activity.Seconds,
+                ["idleAfterSeconds"] = Psk31Listener.IdleAfterSeconds,
+            });
+    }
+
     /// <summary>A held carrier's squelch opened or closed.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="offsetHz">Where the carrier sits.</param>

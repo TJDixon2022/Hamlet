@@ -331,3 +331,14 @@ LICENCE: PHASE_PLAN.md step 4 exit criteria and step 5 entry and exit criteria, 
 COST: 33.364847
 ACCOMPLISHED: the phase stops guessing where step 4 stands - every one of its criteria answered by a test that ran tonight rather than by a sentence carried forward - and a PSK31 contact becomes something Tim can log with the signal report he exchanged, export in the spelling another logger reads, and see appear on the achievements screen the first time he works one
 STATE_WHY: Every one of the eight must-pass criteria plus the nice-to-pass is answered by a named test run this session with quoted measurements, 55.7 Hz occupied bandwidth at minus 30 dB, 31.2697 baud, exactly one PttOn site, a 30 second cap with a recorded refusal, two answers making two cards and a one character turnover on all four ruling words, and the only open items in section 4 are carried findings or reds outside the step's criteria.
+
+## UNIT 327 - STEP 6
+
+STEP: 6
+FATE: carried repair - no step criterion moves
+APPROACH: Carried repair on what the owner saw at the radio on 2026-09-11 and 12. Keep a PSK31 carrier by what its own demodulator says, so a station idling between words stays on the list instead of being retired six times in two minutes; measure the first-character latency and state a ceiling; make the achievement mark row-height in two colors with a popup on click; fill the conversation card's right column with what Hamlet knows and drop the caption under the map; carry the read grid into the logged PSK31 contact; and the housekeeping.
+WHY: The owner's own telemetry from 7.070 shows a station at 2073 Hz with the squelch open at quality 0.99 - as clean as the fixture - appearing and being retired as SignalGone six times in two minutes, zero characters, 206 seconds and 12 carriers for 0 lines. An idling PSK31 signal has no energy at its carrier frequency; it splits into two lines 15.6 Hz either side. The search retired a live station for idling. Step 6 is Tim at the radio and it cannot start until he can read a station.
+DECIDED: The keep-and-retire numbers, the first-character latency ceiling, the mark's size and the orange hex are this unit's to state. The idle fixture is made from the reference convention in assets/reference-modem.py, one station that types for 10 s, idles 8 s and types again.
+LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; HM-DEC-111, HM-DEC-139, HM-DEC-155.
+ACCOMPLISHED: A station who pauses stays on the operator's list until he actually leaves, the achievement mark is something he can see from across the desk and click for the reason, and the card says what Hamlet knows beside the map.
+ADVANCES: none - carried repair before step 6. Nothing was measured at a radio; FACT-004 and FACT-006 hold and every fixture behind this is synthetic.

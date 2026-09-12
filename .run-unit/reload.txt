@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-11T22:09:55-04:00  root C:\Source\HamLet
+measured 2026-09-11T23:12:39-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,10 +7,6 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0161.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
-  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
-  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
-  UNCOMMITTED      SESSION.lock is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -22,12 +18,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : cc98833
-  uncommitted at the root : 4
-      M PHASE_OUTCOME.md
-      M PHASE_STATUS.md
-      M RUN_LEDGER.md
-     AD SESSION.lock
+  HEAD   : 0522442
+  uncommitted at the root : 0
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -595,23 +587,22 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under Â§R15. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  13 lines, 1724 bytes
+  12 lines, 1705 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
-  CURRENT_STEP: 4
-  WORK_INSTRUCTION: 325 - the screen says what is true
-  HEARTBEAT: 2026-09-11 22:09:54
+  CURRENT_STEP: 5
+  WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | partial | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+  STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  303 lines, 44791 bytes
+  333 lines, 52228 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -619,7 +610,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | partial | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
+  STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
   
@@ -915,6 +906,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   COST: 48.23846000000003
   ACCOMPLISHED: the screen stops lying about what it holds, a card Tim just called waits for the answer, every achievement worth chasing is marked and the two kinds look different, and the ALC judges itself from FT8 with nothing asked of him
   STATE_WHY: The report shows evidence for two must-pass criteria, the measured 55.7 Hz bandwidth and the R11/R15 power clause in full with quoted values, but it states plainly that the macro loopback, the CQ receipt and its retirement, the certainty-gated one-click offer, the turn indicator proof and the no-slot cap refusal are all unmet, so some exit criteria are met and not all.
+  
+  ## UNIT 326 - STEP 4
+  
+  STEP: 4
+  APPROACH: Checked the four gate facts, then spent task 1 measuring step 4 rather than building on it - the carry-forward list run as its own comment says, two invocations and one build each with status written first, plus the three press types unit 324 dropped and which docs/carry-forward-dropped.txt says a unit touching the press runs. Every step 4 exit criterion answered by a test that ran in this session, with its printed number, before anything moved. Then step 5 - RST in the log, the ADIF spelling asserted, and the records the first PSK31 contact reveals.
+  HIT: Step 4 was not partial. All eight must-pass criteria and the nice-to-pass are met by tests that ran green in this session, including the press half that units 324 and 325 each recited as unmet without running the three tests that guard it. Task 2 is therefore empty by measurement, and that is its correct outcome rather than a shortfall.
+  MOVE: continue
+  WHY: Two consecutive units carried a sentence forward instead of running a test, and the three tests that would have contradicted it had just been taken off the list those units run. One task of measurement was cheaper than a ninth unit of building.
+  DECIDED: A criterion is marked met only against a test that ran in this session and is named with its type and method. The three press types are run by this unit under the dropped list's own rule, without deciding whether they return to the carry-forward list permanently - that is left as a finding for the next arbiter.
+  LICENCE: PHASE_PLAN.md step 4 exit criteria and step 5 entry and exit criteria, R2, R3, R7, R9, R10, R11, R12, R13, R14, R15, R19; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.2, 3.7, 4; CLAUDE.md 0.0, 0.2, 0.6; HM-DEC-018, HM-DEC-084, HM-DEC-139, HM-DEC-155; docs/carry-forward-dropped.txt.
+  COST: one session, six tasks of six, none dropped. Carry-forward green before and after, app 96 of 96 with the three press types included and engine 73 of 73, two invocations and one build each. Four new test types: ThePsk31LogsWithRstTests, ThePsk31RecordsAppearTests, ThePsk31AdifTests and four turnover cases added to ThePsk31TurnTests. TheAchievementsScreenTests two red before and the same two after.
+  ACCOMPLISHED: The phase stops guessing where step 4 stands - every one of its nine criteria answered by a test that ran in this session with its own number - and a PSK31 contact becomes something Tim can log with the report he exchanged, export in the spelling another logger reads, and see appear on the achievements screen the first time he works one.
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: STEP 4 IS DONE AND STEP 5 IS DONE ON ALL FOUR OF ITS MUST-PASS. All eight step 4 must-pass criteria and the nice-to-pass are met against tests run in this session and named with their methods: the four macros come back identical through Hamlet's own demodulator at three rate and offset pairs; the occupied bandwidth is 55.7 Hz at -30 dB at 8 kHz and 57.1 Hz at 48 kHz, both under the 100 Hz ceiling, at 31.2697 baud; the press, the certainty gate, the turn indicator, the R11/R15 power and ALC clause, the one PttOn site with FT8 and FT4 byte-identical, and the 30-second cap refusal all hold; and the turn indicator moves within one character of every turnover word R3 names. Step 5 gains the RST field that is not the decibel field, the asserted MODE=PSK with SUBMODE=PSK31 export, the records revealed by the first contact, and the two inherited achievements reds unchanged at two. Two things had to be built before an RST could reach the log and both were found by measurement rather than assumed: no PSK31 contact reached the log at all, because the FT8 split rule refuses a macro and the station was never booked, and the record said MODE=FT8 because DigitalMode has two members and PSK31 is not one. Step 6 is Tim at the radio and nothing here can close it. Nothing was measured at a radio - FACT-006.
+  
+  ### ALSO RECORDED FOR UNIT 326 - STEP 4
+  
+  A second append for the same unit and the same step, called as UNIT 2.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: measure every step 4 must-pass criterion against the tree and close only the ones with no green test behind them, then take step 5 - RST in the log, the ADIF spelling asserted, and the records revealed by the first PSK31 contact
+  HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC margin, the two id schemes and the uninvokable validator, but each is carried, already built under R15, or a record-keeping matter, and step 4's eight must-pass criteria are all answered by tests run this session, so no step 4 work waits on an answer.
+  WHY: units 324 and 325 both recited the press half of step 4 as unmet without running the three tests that guard it, which unit 324 had just dropped from the carry-forward list while writing that they were green, so the cheapest thing between here and step 5 is one task of measurement rather than a ninth unit of building. The loop test returns NOT FOUND, and this is not a loop: 320, 321 and 323 all proposed building the press, and 323 opened the door and built it - proposing to build it again would be the loop, proposing to find out whether it is built is not.
+  DECIDED: four on the arbiter authority. Task 1 may only mark a criterion met against a test run in this session, because a report citing a report is what produced the stale picture. The three press types unit 324 dropped are run by this unit under that file's own rule that a unit touching the press runs them, without deciding whether they go back on the list. Task 6, the turnover nice-to-pass, is the drop candidate because it moves no must-pass, and task 5 is second because dropping it costs one step 5 must-pass and not the log the owner can see. Unit 325's section 4 items 1 and 2 are logged and not chased - the ALC margin is already licensed by R15 as the unit's to state, and the 8.13 s turnaround needs a design question no step 5 criterion asks.
+  LICENCE: PHASE_PLAN.md step 4 exit criteria and step 5 entry and exit criteria, R2, R3, R7, R9, R10, R11, R12, R13, R14, R15, R19 and the section 6 branching; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.2, 3.7 and 4; CLAUDE.md 0.0, 0.2, 0.6; HM-DEC-018, HM-DEC-084, HM-DEC-139, HM-DEC-155; docs/carry-forward-dropped.txt, which instructs that a unit touching the press runs the three names it dropped; ARBITER.md section 6, which makes the step, the approach, the tasks, the tiering and the drop candidate the arbiter decision
+  COST: 33.364847
+  ACCOMPLISHED: the phase stops guessing where step 4 stands - every one of its criteria answered by a test that ran tonight rather than by a sentence carried forward - and a PSK31 contact becomes something Tim can log with the signal report he exchanged, export in the spelling another logger reads, and see appear on the achievements screen the first time he works one
+  STATE_WHY: Every one of the eight must-pass criteria plus the nice-to-pass is answered by a named test run this session with quoted measurements, 55.7 Hz occupied bandwidth at minus 30 dB, 31.2697 baud, exactly one PttOn site, a 30 second cap with a recorded refusal, two answers making two cards and a one character turnover on all four ruling words, and the only open items in section 4 are carried findings or reds outside the step's criteria.
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -937,17 +958,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1259 bytes
+  19 lines, 1312 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: 6 of 6
-  WORK_INSTRUCTION: 325 - the screen says what is true
+  WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
   BALL: tim
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-11T23:52:00-04:00
-  NOTE: Unit 325 complete at task 6 of 6, nothing dropped. Folded panels say what they hold, the filter is there before the first slot, cards are keyed by station and a called one waits a full slot, every qualifying station is marked as a green counter or an amber turning door, eleven strings are American, and the ALC learns its reference from FT8 with a margin of 15 of 120. Step 4 gains its R11/R15 power criterion in full and stays partial on the press half. Carry-forward 159 of 159 before and after. output.md written; the validator could not be invoked in this session and its seven rules were applied by hand and all pass - section 4 item 7. Section 4 raises 7 items.
+  UPDATED: 2026-09-11T22:50:54-04:00
+  NOTE: Unit 326 complete at task 6 of 6, nothing dropped. Step 4 was not partial: all eight must-pass and the nice-to-pass are met against tests run tonight, 169 of 169 carry-forward green before and after. Step 5 is done on all four must-pass - the RST is in the log in its own field, a PSK31 contact reaches the log at all for the first time, the export spells MODE=PSK with SUBMODE=PSK31, and the records appear on the first contact. TheAchievementsScreenTests 2 red before and 2 after. output.md written; validate-output.bat was refused by the permission layer for the second unit running and its seven rules were applied by hand and all pass - section 4. Section 4 raises 5 items on top of the carried seven.
   
   ---
   

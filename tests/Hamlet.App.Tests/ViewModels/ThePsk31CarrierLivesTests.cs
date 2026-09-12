@@ -45,8 +45,18 @@ public sealed class ThePsk31CarrierLivesTests : IDisposable
 {
     private const string OwnCall = "KC3QIS";
 
-    /// <summary>The fixture unit 324 made: a station, six seconds of idle, the station again.</summary>
-    private const string IdleGap = "psk31-idle-gap-1000hz.wav";
+    /// <summary>The fixture this question is asked of: a station, idle, the station again.</summary>
+    /// <remarks>
+    /// **UNIT 327 MOVED IT FROM THE SIX-SECOND FIXTURE TO THE EIGHT-SECOND ONE**, and not
+    /// because six was too short a gap. A carrier is now kept while its demodulator vouches
+    /// for it, and that verdict outlives a loud carrier by 7.2 s, so
+    /// <see cref="Psk31Listener.RetiredWithinSeconds"/> grew from 2.5 to 9.0 - **longer than
+    /// unit 324's fixture's four-second tail**. On that file the station would now still be
+    /// listed when the audio ran out, and the retirement would read `ListeningStopped`,
+    /// which would leave the thing this test exists to prove - **retired once, at the end,
+    /// because the signal went** - unprovable. The new file's tail is ten seconds.
+    /// </remarks>
+    private const string IdleGap = "psk31-idle-8s-1000hz.wav";
 
     /// <summary>How close a row must be to a fixture's carrier to be that carrier's row.</summary>
     private const double MatchHz = 20;
@@ -80,16 +90,16 @@ public sealed class ThePsk31CarrierLivesTests : IDisposable
     }
 
     /// <summary>
-    /// **Assertion 1: six seconds of idle in the middle of a signal is one carrier.**
+    /// **Assertion 1: eight seconds of idle in the middle of a signal is one carrier.**
     /// </summary>
     /// <remarks>
-    /// **IDLE IS KEYING, NOT SILENCE.** The gap is 188 bits of continuous phase reversals -
+    /// **IDLE IS KEYING, NOT SILENCE.** The gap is 250 bits of continuous phase reversals -
     /// exactly what a PSK31 operator's transmitter does between words - and no character
     /// comes out of any of it. One carrier, one id, retired once, at the end, because the
     /// signal went and not because the text stopped.
     /// </remarks>
     [Fact]
-    public void SixSecondsOfIdleInTheMiddleOfASignalKeepsOneCarrier()
+    public void EightSecondsOfIdleInTheMiddleOfASignalKeepsOneCarrier()
     {
         var lines = Play(IdleGap);
 
@@ -114,8 +124,9 @@ public sealed class ThePsk31CarrierLivesTests : IDisposable
         Assert.Single(retired);
         Assert.Equal(nameof(Psk31Retirement.SignalGone), Text(retired[0], "reason"));
 
-        // **AND IT WAS THERE FOR THE WHOLE SIGNAL**, gap included. The file runs 29.3 s
-        // and the carrier is keyed from the first idle bit to the last.
+        // **AND IT WAS THERE FOR THE WHOLE SIGNAL**, gap included. The file runs 41.3 s,
+        // the station keys for 31.3 of them, and the carrier is keyed from the first idle
+        // bit to the last.
         Assert.True(
             Number(retired[0], "lifetimeSeconds") > 20,
             "lifetime only " + Number(retired[0], "lifetimeSeconds") + " s");
@@ -307,6 +318,14 @@ public sealed class ThePsk31CarrierLivesTests : IDisposable
         var seconds = new Psk31CarrierSearch(Psk31Resampler.TargetSampleRate).RetireAfterSeconds;
 
         Assert.InRange(seconds, 0.5, 2.0);
+
+        // **AND SINCE UNIT 327 THE SPECTRUM IS ONLY HALF OF IT.** The demodulator's verdict
+        // is the other half, and the rule has to name it or the number above reads as the
+        // whole answer when it is one of two that must both fail.
+        Assert.Contains(
+            nameof(Psk31CarrierSearch.KeepReadableQuality),
+            Psk31Listener.RetireRule,
+            StringComparison.Ordinal);
 
         // **AND THE RULE IS NOT A RULE ABOUT CHARACTERS.**
         Assert.DoesNotContain("LostLock", Psk31Listener.RetireRule, StringComparison.Ordinal);
