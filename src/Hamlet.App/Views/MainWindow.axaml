@@ -4967,9 +4967,27 @@
                                                             
                                                                  **ABSENT WHERE THERE IS NOTHING TO DRAW**, which is a station
                                                                  with no grid on a machine with no grid in Settings. -->
-                                                            <StackPanel Grid.Row="5"
-                                                                        IsVisible="{Binding ShowsGlobe}"
-                                                                        Margin="0,8,0,0"
+                                                            <!-- **AND THE SPACE BESIDE IT IS
+                                                                 NOT EMPTY ANY MORE** (unit
+                                                                 327 task 4). Tim,
+                                                                 2026-09-12: *"the real
+                                                                 estate to the right of the
+                                                                 map is valuable"*, and
+                                                                 *"remove the info from
+                                                                 below the map, I really
+                                                                 never noticed it."* The map
+                                                                 keeps the left column and
+                                                                 the facts take the right;
+                                                                 the caption that used to
+                                                                 run under the picture is
+                                                                 gone, and everything it
+                                                                 said is in the first line
+                                                                 of the column. -->
+                                                            <Grid Grid.Row="5"
+                                                                  IsVisible="{Binding ShowsGlobe}"
+                                                                  Margin="0,8,0,0"
+                                                                  ColumnDefinitions="Auto,*">
+                                                            <StackPanel Grid.Column="0"
                                                                         Spacing="4">
                                                                 <!-- **THE MAP OPENS** (R8,
                                                                      Tim 2026-09-11: *when I
@@ -5086,12 +5104,148 @@
                                                                     </Border>
                                                                 </Popup>
 
-                                                                <TextBlock Text="{Binding Globe.Caption}"
+                                                                <!-- **THE CAPTION UNDER THE
+                                                                     MAP CAME OUT IN UNIT
+                                                                     327** (Tim, 2026-09-12:
+                                                                     *"remove the info from
+                                                                     below the map, I really
+                                                                     never noticed it"*).
+                                                                     Nothing is lost: the
+                                                                     distance and the
+                                                                     compass word it carried
+                                                                     are the first line of
+                                                                     the column beside the
+                                                                     picture, and the
+                                                                     enlarged map still
+                                                                     carries its own caption
+                                                                     where there is room for
+                                                                     it. The card is shorter
+                                                                     by that line. -->
+                                                            </StackPanel>
+
+                                                            <!-- **WHAT HAMLET KNOWS ABOUT HIM,
+                                                                 BESIDE THE PICTURE** (unit 327
+                                                                 task 4). Top to bottom, and
+                                                                 **every line absent rather than
+                                                                 dashed** where the fact is not
+                                                                 known (§0.0): a station who has
+                                                                 never sent a grid is not a
+                                                                 station whose grid failed to
+                                                                 read. -->
+                                                            <StackPanel Grid.Column="1"
+                                                                        x:Name="CardRightColumn"
+                                                                        IsVisible="{Binding HasRightColumn}"
+                                                                        Margin="12,0,0,0"
+                                                                        Spacing="3">
+                                                                <TextBlock x:Name="CardDistanceLine"
+                                                                           Text="{Binding DistanceLine}"
+                                                                           IsVisible="{Binding HasDistanceLine}"
                                                                            TextWrapping="Wrap"
                                                                            FontSize="11"
-                                                                           LineSpacing="1.3"
-                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                           LineSpacing="1.3" />
+
+                                                                <TextBlock x:Name="CardGridLine"
+                                                                           Text="{Binding GridLine}"
+                                                                           IsVisible="{Binding HasGridLine}"
+                                                                           TextWrapping="Wrap"
+                                                                           FontSize="11"
+                                                                           LineSpacing="1.3" />
+
+                                                                <!-- **SOLAR TIME, AND THE LABEL
+                                                                     IS THE POINT** (§0.0).
+                                                                     Fifteen degrees of longitude
+                                                                     is an hour; Hamlet does not
+                                                                     know his time zone, his
+                                                                     summer time or where his
+                                                                     borders run, so it says *by
+                                                                     the sun* and claims exactly
+                                                                     what it measured. -->
+                                                                <TextBlock x:Name="CardSolarTimeLine"
+                                                                           Text="{Binding SolarTimeLine}"
+                                                                           IsVisible="{Binding HasSolarTimeLine}"
+                                                                           TextWrapping="Wrap"
+                                                                           FontSize="11"
+                                                                           LineSpacing="1.3" />
+
+                                                                <TextBlock x:Name="CardLastHeardLine"
+                                                                           Text="{Binding LastHeardLine}"
+                                                                           IsVisible="{Binding HasLastHeardLine}"
+                                                                           TextWrapping="Wrap"
+                                                                           FontSize="11"
+                                                                           LineSpacing="1.3" />
+
+                                                                <StackPanel Orientation="Horizontal"
+                                                                            Spacing="8"
+                                                                            IsVisible="{Binding HasMessages}">
+                                                                    <TextBlock x:Name="CardMessageCountLine"
+                                                                               Text="{Binding MessageCountLine}"
+                                                                               VerticalAlignment="Center"
+                                                                               FontSize="11"
+                                                                               LineSpacing="1.3" />
+
+                                                                    <Button Classes="hm-cardlink"
+                                                                            VerticalAlignment="Center"
+                                                                            Content="show the messages"
+                                                                            Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowMessagesCommand}"
+                                                                            CommandParameter="{Binding Callsign}" />
+                                                                </StackPanel>
+
+                                                                <!-- **THE MARK'S REASON, AND THE
+                                                                     SAME POPUP OPENS FROM IT**
+                                                                     (unit 327 tasks 3 and 4).
+                                                                     One answer about one
+                                                                     station, said in two places
+                                                                     from one `NudgeSet`. -->
+                                                                <Button x:Name="CardNudgeLine"
+                                                                        Classes="hm-cardlink"
+                                                                        HorizontalAlignment="Left"
+                                                                        IsVisible="{Binding HasNudgeLine}"
+                                                                        Content="{Binding NudgeLine}"
+                                                                        Command="{Binding OpenTheNudgeCommand}" />
+
+                                                                <Popup IsOpen="{Binding NudgeIsOpen, Mode=TwoWay}"
+                                                                       Placement="Center"
+                                                                       PlacementTarget="{Binding $parent[Window]}"
+                                                                       IsLightDismissEnabled="True">
+                                                                    <Border Background="{StaticResource HmPanelBrush}"
+                                                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                            BorderThickness="1"
+                                                                            CornerRadius="6"
+                                                                            Padding="12">
+                                                                        <Grid RowDefinitions="Auto,Auto,Auto" MaxWidth="420">
+                                                                            <TextBlock Grid.Row="0"
+                                                                                       Text="{Binding Callsign}"
+                                                                                       FontWeight="SemiBold"
+                                                                                       VerticalAlignment="Center" />
+
+                                                                            <Button Grid.Row="0"
+                                                                                    Content="&#x2715;"
+                                                                                    Command="{Binding CloseTheNudgeCommand}"
+                                                                                    HorizontalAlignment="Right"
+                                                                                    Background="Transparent"
+                                                                                    BorderThickness="0"
+                                                                                    Padding="6,0"
+                                                                                    Cursor="Hand"
+                                                                                    ToolTip.Tip="Put it away." />
+
+                                                                            <TextBlock Grid.Row="1"
+                                                                                       Margin="0,8,0,0"
+                                                                                       Text="{Binding NudgeReasonLine}"
+                                                                                       TextWrapping="Wrap"
+                                                                                       LineSpacing="1.3" />
+
+                                                                            <TextBlock Grid.Row="2"
+                                                                                       Margin="0,6,0,0"
+                                                                                       Text="{Binding NudgeEarnsLine}"
+                                                                                       TextWrapping="Wrap"
+                                                                                       FontSize="11"
+                                                                                       LineSpacing="1.3"
+                                                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </Popup>
                                                             </StackPanel>
+                                                            </Grid>
                                                         </Grid>
                                                     </Border>
                                                 </DataTemplate>

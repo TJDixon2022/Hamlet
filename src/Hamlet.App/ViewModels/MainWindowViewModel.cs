@@ -2773,8 +2773,8 @@ public partial class MainWindowViewModel : ObservableObject
 
             if (!_psk31Cards.TryGetValue(station, out var state))
             {
-                state = new Psk31CardState(Ft8ContactCard.ForPsk31(
-                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete), channelId)
+                state = new Psk31CardState(Nudged(Ft8ContactCard.ForPsk31(
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete)), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -2797,8 +2797,8 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 state.ClearedAtMessages = null;
-                state.Card = Ft8ContactCard.ForPsk31(
-                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete);
+                state.Card = Nudged(Ft8ContactCard.ForPsk31(
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete));
                 DigitalCards.Add(state.Card);
                 continue;
             }
@@ -2811,8 +2811,8 @@ public partial class MainWindowViewModel : ObservableObject
                 continue;
             }
 
-            var fresh = Ft8ContactCard.ForPsk31(
-                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete);
+            var fresh = Nudged(Ft8ContactCard.ForPsk31(
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete));
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;
@@ -4079,11 +4079,11 @@ public partial class MainWindowViewModel : ObservableObject
                         DecodeFloorDb,
                         _stations?.Known(facts.Callsign));
 
-                    wanted.Add(standing);
+                    wanted.Add(Nudged(standing));
                 }
                 else
                 {
-                    wanted.Add(new Ft8ContactCard(
+                    wanted.Add(Nudged(new Ft8ContactCard(
                         facts,
                         _settings.Operator.GridSquare,
                         action.Kind,
@@ -4092,7 +4092,7 @@ public partial class MainWindowViewModel : ObservableObject
                         nowUtc,
                         TechnicalFor(who),
                         DecodeFloorDb,
-                        _stations?.Known(facts.Callsign)));
+                        _stations?.Known(facts.Callsign))));
                 }
 
                 // **ASKED ONCE PER CALLSIGN AND NEVER PER DECODE** (work instruction
@@ -12743,6 +12743,26 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         Apply(row, reason);
+    }
+
+    /// <summary>Tell a card what the mark says about its station, and hand it back.</summary>
+    /// <param name="card">The card being put on the panel.</param>
+    /// <returns>The same card.</returns>
+    /// <remarks>
+    /// <para>**THE CARD'S REASON AND THE ROW'S MARK COME FROM ONE `NudgeSet`** (work
+    /// instruction 327 task 4). It is the cached one unit 278's shape builds once a session,
+    /// so a card asking costs nothing and cannot give a different answer from the disc on
+    /// the list beside it.</para>
+    /// <para>**AND NOT FOR THE CALL-TO-ANYBODY CARD.** `CQ` is not a callsign and belongs to
+    /// nobody; the set declines it the way it declines any prefix the table cannot resolve,
+    /// so no guard is needed here and none is written.</para>
+    /// </remarks>
+    private Ft8ContactCard Nudged(Ft8ContactCard card)
+    {
+        card.UseNudge(Nudges().Explain(card.Callsign));
+        card.NudgeOpened = kind => AppEvents.NudgeOpened(_telemetry, kind);
+
+        return card;
     }
 
     /// <summary>Put a decision onto a row.</summary>

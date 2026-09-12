@@ -862,6 +862,216 @@ public sealed partial class Ft8ContactCard : ObservableObject
         return string.Join(Between, said);
     }
 
+    /// <summary>
+    /// **The card's right column: what Hamlet knows about him, beside the map.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-12**: *"the real estate to the right of the map is valuable"* -
+    /// and it was empty - and *"remove the info from below the map, I really never noticed
+    /// it."* So the caption moved up into the space beside the picture and grew the rest of
+    /// what the card already knew and was not saying.</para>
+    /// <para>**ONLY WHAT HAMLET KNOWS FOR CERTAIN, AND ABSENT IS NOT DASHED** (§0.0,
+    /// §0.5.1's cousin). Every line here has its own `Has` and is simply not drawn where
+    /// the fact is missing. **A dash would be a measurement that was attempted and failed**;
+    /// a station who has never sent a grid is not a station whose grid failed to read.</para>
+    /// <para>**AND EVERY ONE OF THEM IS ALREADY A FACT ON THIS CARD.** Nothing here goes
+    /// looking anywhere new: the distance and the bearing are the caption's own, the grid is
+    /// `Ft8CardFacts.Grid`, the last message is `HisLastPayload` with `LastAtUtc` beside it,
+    /// the count is `Messages`, and the reason is the mark's. **Nothing is invented for the
+    /// column** (§0.0).</para>
+    /// </remarks>
+    public bool HasRightColumn
+        => HasDistanceLine || HasGridLine || HasSolarTimeLine || HasLastHeardLine
+            || HasMessages || HasNudgeLine;
+
+    /// <summary>**How far away he is and which way, in one line.**</summary>
+    /// <remarks>
+    /// **MOVED UP FROM THE CAPTION, NOT COMPUTED AGAIN** (work instruction 327 task 4). It
+    /// is `GridPath.DescribeMiles` over `GridPath.MilesBetween` and
+    /// <see cref="OperatorLocation.DescribeCompass"/>, the same pair
+    /// <see cref="WhereOnEarth"/> has used since unit 306, so the column and the hover
+    /// cannot come to disagree about one station. **The degrees stay gone** (HM-DEC-038): a
+    /// bearing is one of sixteen points and never a number.
+    /// </remarks>
+    public string DistanceLine
+    {
+        get
+        {
+            var here = OperatorLocation.FromGrid(_operatorGrid);
+            var there = OperatorLocation.FromGrid(_facts.Grid);
+
+            if (here is not { } from || there is not { } to)
+            {
+                return "";
+            }
+
+            return GridPath.DescribeMiles(GridPath.MilesBetween(from, to))
+                + " · "
+                + OperatorLocation.DescribeCompass(GridPath.BearingDegrees(from, to));
+        }
+    }
+
+    /// <summary>True where both grids are known and a distance could be measured.</summary>
+    public bool HasDistanceLine => DistanceLine.Length > 0;
+
+    /// <summary>**His grid.**</summary>
+    /// <remarks>
+    /// **THE COUNTRY IS NOT REPEATED HERE BECAUSE THE HEADER CARRIES IT.** The work
+    /// instruction asks for the country *if the header does not carry it*; `Place` is bound
+    /// on the card's head and holds it, so putting it here as well would be the same fact
+    /// twice on one card.
+    /// </remarks>
+    public string GridLine
+        => _facts.Grid is { Length: > 0 } grid ? "Grid " + grid : "";
+
+    /// <summary>True where he has sent a grid.</summary>
+    public bool HasGridLine => GridLine.Length > 0;
+
+    /// <summary>**What time it is where he is, by the sun.**</summary>
+    /// <remarks>
+    /// <para>**LOCAL SOLAR TIME FROM HIS LONGITUDE, AND IT SAYS SO** (work instruction 327
+    /// task 4). Fifteen degrees of longitude is an hour, so a grid gives a time directly and
+    /// with no lookup at all: *his time, by the sun*.</para>
+    /// <para>**IT IS NOT A TIME ZONE AND THE LABEL IS THE WHOLE OF §0.0 HERE.** Hamlet does
+    /// not know his zone, his country's summer time or where his borders run, and a clock
+    /// reading presented as *his local time* would be exactly the confident answer the prime
+    /// directive forbids. **Solar time is a fact about the sun and his longitude** and it is
+    /// stated as one. A grid is a square, so it is good to within a few minutes and the
+    /// reading is given in whole minutes rather than seconds.</para>
+    /// <para>**AND IT NEEDS THE CORRECTED CLOCK** (§0.0). Without a measured now there is no
+    /// UTC to offset, so there is no line - not a dash and not the machine's own clock.</para>
+    /// </remarks>
+    public string SolarTimeLine
+    {
+        get
+        {
+            if (_nowUtc is not { } now
+                || OperatorLocation.FromGrid(_facts.Grid) is not { } there)
+            {
+                return "";
+            }
+
+            return "His time: "
+                + now.AddHours(there.Longitude / 15.0)
+                    .ToString("HH:mm", CultureInfo.InvariantCulture)
+                + " by the sun";
+        }
+    }
+
+    /// <summary>True where his grid and a corrected clock are both known.</summary>
+    public bool HasSolarTimeLine => SolarTimeLine.Length > 0;
+
+    /// <summary>**What he last sent, and how long ago.**</summary>
+    /// <remarks>
+    /// **A READING CARRIES ITS AGE** (HM-DEC-111). *73* on its own is a message that may
+    /// have arrived ten seconds or forty minutes ago, and on a card that stays up while a
+    /// band closes those are different facts. The age half is absent without a corrected
+    /// clock, for the reason <see cref="TimeLine"/>'s is.
+    /// </remarks>
+    public string LastHeardLine
+    {
+        get
+        {
+            if (_facts.HisLastPayload is not { Length: > 0 } said)
+            {
+                return "";
+            }
+
+            var line = "Last heard: " + said.Trim();
+
+            return _facts.LastAtUtc is { } at && _nowUtc is { } now
+                ? line + " · " + Ago(at, now)
+                : line;
+        }
+    }
+
+    /// <summary>True where he has said something this card can quote.</summary>
+    public bool HasLastHeardLine => LastHeardLine.Length > 0;
+
+    /// <summary>**How many messages this conversation holds.**</summary>
+    /// <remarks>
+    /// **THE COUNT AND THE WAY DOWN TO THEM ARE NOW TOGETHER** (work instruction 327 task
+    /// 4). The count is this line and *show the N messages* is beside it, where the card's
+    /// action row used to carry the whole thing on its own. It counts **this conversation**
+    /// and never everything heard from him, which is <see cref="MessagesLabel"/>'s rule and
+    /// is unchanged.
+    /// </remarks>
+    public string MessageCountLine
+        => _facts.Messages == 1
+            ? "1 message"
+            : _facts.Messages.ToString(CultureInfo.InvariantCulture) + " messages";
+
+    /// <summary>**Why this station is worth working, in the mark's own words.**</summary>
+    /// <remarks>
+    /// <para>**THE SAME ANSWER THE ROW'S MARK GIVES** (work instruction 327 task 4). It is
+    /// handed in by <see cref="UseNudge"/> from the one `NudgeSet` the panel builds, so the
+    /// disc on the list and the line on the card cannot say different things about one
+    /// station.</para>
+    /// <para>**AND A DOOR NAMES NOTHING HERE EITHER** (§3.1). *Would open a new area* is
+    /// the category; the area is not in this object.</para>
+    /// </remarks>
+    public string NudgeLine => _nudge.Kind switch
+    {
+        NudgeKind.Visible => "New country",
+        NudgeKind.Door => "Would open a new area",
+        _ => "",
+    };
+
+    /// <summary>True where working him would open something.</summary>
+    public bool HasNudgeLine => NudgeLine.Length > 0;
+
+    /// <summary>Why, in full, for the popup the line opens.</summary>
+    public string NudgeReasonLine => NudgeWords.Reason(_nudge);
+
+    /// <summary>What working him earns, for the same popup.</summary>
+    public string NudgeEarnsLine => NudgeWords.Earns;
+
+    /// <summary>True while the reason is on screen.</summary>
+    [ObservableProperty]
+    private bool _nudgeIsOpen;
+
+    private NudgeReason _nudge;
+
+    /// <summary>Tell the card what the mark says about this station.</summary>
+    /// <param name="reason">What the panel's one nudge set knows.</param>
+    /// <remarks>
+    /// **HANDED IN RATHER THAN LOOKED UP** (§0.1, and unit 278's read-once shape). The card
+    /// holds no log, builds no nudge set and reads no file; the panel that already has one
+    /// tells it the answer.
+    /// </remarks>
+    public void UseNudge(NudgeReason reason)
+    {
+        _nudge = reason;
+
+        OnPropertyChanged(nameof(NudgeLine));
+        OnPropertyChanged(nameof(HasNudgeLine));
+        OnPropertyChanged(nameof(NudgeReasonLine));
+        OnPropertyChanged(nameof(HasRightColumn));
+    }
+
+    /// <summary>Open the reason for this card's mark.</summary>
+    /// <remarks>**IT TRANSMITS NOTHING** (§0.2), the same as the row's.</remarks>
+    [RelayCommand]
+    private void OpenTheNudge()
+    {
+        if (!HasNudgeLine)
+        {
+            return;
+        }
+
+        NudgeIsOpen = true;
+
+        NudgeOpened?.Invoke(_nudge.Kind);
+    }
+
+    /// <summary>Put the reason away.</summary>
+    [RelayCommand]
+    private void CloseTheNudge() => NudgeIsOpen = false;
+
+    /// <summary>Called when the card's mark is pressed, so the shell can write it down.</summary>
+    /// <remarks>**THE KIND AND NOTHING ELSE** (HM-DEC-018, §2.1).</remarks>
+    public Action<NudgeKind>? NudgeOpened { get; set; }
+
     /// <summary>His grid, the distance and the bearing.</summary>
     /// <remarks>
     /// **THE BEARING LIVES HERE** (Tim's ruling, 2026-09-08). It came off the face
