@@ -92,16 +92,26 @@ public sealed class TheDriveIsSetWhereHeIsLookingTests
             box.Value!.Value,
             2);
 
-        // **IT IS UNDER THE WATERFALL AND NOT SOMEWHERE ELSE ON THE WINDOW.**
-        // The criterion names a place, so the place is asserted: inside the
-        // reserved Send area, which is Grid.Row 1 directly beneath
-        // `DigitalWaterfallPanel` in `DigitalLeftColumn`.
+        // **IT IS UNDER THE RIG'S S-METER SINCE WORK INSTRUCTION 337, AND NOT
+        // SOMEWHERE ELSE ON THE WINDOW.** R26 (Tim, 2026-09-12, on the mockup): the
+        // rig display carries the transmit drive and the RF power offer under the
+        // S-meter. **Rewritten under R12**: this asserted the send area under the
+        // waterfall, which the ruling moved the control out of. The criterion still
+        // names a place, so the place is still asserted.
         var reserved = Named<Border>(window, "DigitalSendReserved");
+        var rigPanel = window.GetVisualDescendants()
+            .OfType<Hamlet.App.Controls.RigDisplayControl>().First()
+            .GetVisualAncestors().OfType<Border>()
+            .First(b => b.BorderThickness.Left > 0);
 
         Assert.True(
+            box.GetVisualAncestors().Contains(rigPanel),
+            "the drive control is on the window but not in the rig panel, "
+            + "under the S-meter.");
+
+        Assert.False(
             box.GetVisualAncestors().Contains(reserved),
-            "the drive control is on the window but not inside DigitalSendReserved, "
-            + "which is the area under the waterfall.");
+            "the drive control is still in the send area.");
 
         // **AND THE STOP BUTTON IS STILL THERE AND STILL ON THE VISIBLE AREA.**
         // A new control in the Send area that pushes the always-pressable Stop

@@ -51,21 +51,15 @@ public sealed class TheGreenZoneTests
     private const string HisGrid = "FN00";
 
     /// <summary>
-    /// **The map's width on this window at 1400 before the pills came off**, measured by work
-    /// instruction 334 on the headless host: 202 x 110.
-    /// </summary>
-    private const double MapWidthBefore = 202;
-
-    /// <summary>
-    /// **What the map grew by on the same window when the pills came off: 202 to 232.**
+    /// **The world clock's height since work instruction 337: the mockup's 134 px.**
     /// </summary>
     /// <remarks>
-    /// **MEASURED, NOT CHOSEN** (work instruction 334's ARBITER block). At 1400 the right block's
-    /// width is set by the count and its sparkline, not by the pills, which had wrapped to three
-    /// rows inside it; so the width they gave back is small, and the map's growth in height -
-    /// 110 to 127 - is where most of their room went.
+    /// **REWRITTEN UNDER R12.** Unit 334 asserted the map's width at 1400 after the pills came
+    /// off - 202 to 232 px - because the map then filled the green zone's height. R26 moves the
+    /// clock to the neighborhood card's right end at the mockup's 246 x 134, so what is asserted
+    /// is that height; the width follows the picture's own proportions.
     /// </remarks>
-    private const double MapWidthGrew = 30;
+    private const double ClockHeight = 134;
 
     /// <summary>2 pm EDT on the day Tim chose the darkness: 18:00 UTC.</summary>
     private static readonly DateTime TwoPmEdt = new(2026, 9, 12, 18, 0, 0, DateTimeKind.Utc);
@@ -420,7 +414,7 @@ public sealed class TheGreenZoneTests
                 "chips " + controls.Count(c => c.Classes.Contains("hm-chip"))
                 + ", pips " + controls.OfType<ActivityPipsControl>().Count()
                 + ", map " + F(map.Bounds.Width) + " x " + F(map.Bounds.Height)
-                + " (was " + F(MapWidthBefore) + " x 110.00)");
+                + " (the card's right end since unit 337)");
 
             Assert.DoesNotContain(controls, c => c.Name == "GreenZonePills");
             Assert.DoesNotContain(controls, c => c.Classes.Contains("hm-chip"));
@@ -429,8 +423,10 @@ public sealed class TheGreenZoneTests
                 VisibleText(panel),
                 t => (t.Text ?? "").Contains("you are on it", StringComparison.OrdinalIgnoreCase));
 
-            Assert.InRange(
-                map.Bounds.Width, MapWidthBefore + MapWidthGrew - 0.5, MapWidthBefore + MapWidthGrew + 0.5);
+            // **REWRITTEN UNDER R12 IN WORK INSTRUCTION 337.** The map filled the green zone's
+            // height and took the pills' width; R26 moves it to the card's right end at the
+            // mockup's height, so that height is what is asserted.
+            Assert.InRange(map.Bounds.Height, ClockHeight - 0.5, ClockHeight + 0.5);
 
             foreach (var name in new[]
             {
@@ -441,17 +437,22 @@ public sealed class TheGreenZoneTests
                 Assert.True(Named<TextBlock>(window, name).IsEffectivelyVisible, name + " is not drawn");
             }
 
-            // **THE COUNT IS ON THE RIGHT OF THE MAP AND THE RULE OF THUMB UNDER IT.**
-            var mapAt = map.TranslatePoint(new Point(0, 0), panel)!.Value;
+            // **THE COUNT IS ON THE RIGHT OF THE LEFT BLOCK AND THE RULE OF THUMB UNDER THE
+            // LICENSE LINE** - rewritten under R12 in work instruction 337, where the map left
+            // this panel for the card's right end and the rule of thumb came into the left block.
+            var left = Named<Control>(window, "GreenZoneLeft");
+            var leftAt = left.TranslatePoint(new Point(0, 0), panel)!.Value;
             var heard = Named<TextBlock>(window, "GreenZoneHeard");
             var rule = Named<TextBlock>(window, "GreenZoneRuleOfThumb");
+            var license = Named<TextBlock>(window, "GreenZoneLicenseLine");
 
             Assert.True(
-                heard.TranslatePoint(new Point(0, 0), panel)!.Value.X >= mapAt.X + map.Bounds.Width,
-                "the heard count is not right of the map");
+                heard.TranslatePoint(new Point(0, 0), panel)!.Value.X >= leftAt.X + left.Bounds.Width,
+                "the heard count is not right of the left block");
             Assert.True(
-                rule.TranslatePoint(new Point(0, 0), panel)!.Value.Y >= mapAt.Y + map.Bounds.Height,
-                "the rule of thumb is not under the map");
+                rule.TranslatePoint(new Point(0, 0), panel)!.Value.Y
+                    >= license.TranslatePoint(new Point(0, 0), panel)!.Value.Y + license.Bounds.Height - 0.5,
+                "the rule of thumb is not under the license line");
         }
         finally
         {

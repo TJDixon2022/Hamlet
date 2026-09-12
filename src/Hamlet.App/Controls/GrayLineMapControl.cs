@@ -194,18 +194,24 @@ public sealed class GrayLineMapControl : Control
             return;
         }
 
-        // **THE PANEL'S SIZE AND WHICH REGIONS DREW, ONCE.** The panel is the bordered box
-        // around this map; the regions are found by name inside it.
-        var panel = this.GetVisualAncestors().OfType<Border>()
-            .FirstOrDefault(b => b.BorderThickness.Left > 0);
+        // **THE GREEN BLOCK'S SIZE AND WHICH REGIONS DREW, ONCE.** Since work instruction 337
+        // this map sits at the neighborhood card's right end, beside the green block rather
+        // than inside it, so the block is found by name from the nearest ancestor that holds
+        // it, and the regions are found by name inside that same ancestor.
+        var card = this.GetVisualAncestors().OfType<Control>()
+            .FirstOrDefault(a => a.GetVisualDescendants().OfType<Border>()
+                .Any(b => b.Name == "GreenZoneBlock"));
 
-        if (panel is null)
+        var panel = card?.GetVisualDescendants().OfType<Border>()
+            .FirstOrDefault(b => b.Name == "GreenZoneBlock");
+
+        if (card is null || panel is null)
         {
             return;
         }
 
         var regions = new[] { ("GreenZoneLeft", "left"), ("GreenZoneMap", "map"), ("GreenZoneRight", "right") }
-            .Where(r => panel.GetVisualDescendants().OfType<Control>()
+            .Where(r => card.GetVisualDescendants().OfType<Control>()
                 .Any(c => c.Name == r.Item1 && c.IsVisible))
             .Select(r => r.Item2);
 
