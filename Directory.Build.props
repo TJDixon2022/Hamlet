@@ -632,7 +632,7 @@
     the unit that added it. No production code moves in this task.
   -->
   <PropertyGroup>
-    <Version>1.13.10</Version>
+    <Version>1.13.11</Version>
   </PropertyGroup>
 
   <!--

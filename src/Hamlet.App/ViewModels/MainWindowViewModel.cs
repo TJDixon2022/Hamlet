@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Hamlet.App.Controls;
 using Hamlet.App.Licensing;
 using Hamlet.App.Settings;
 using Hamlet.App.Startup;
@@ -1684,12 +1685,74 @@ public partial class MainWindowViewModel : ObservableObject
     /// is. The others are on the waiting strip with their own count; this number
     /// is the total, which is what a summary is for.
     /// </remarks>
+    /// <remarks>
+    /// **FOLDED, IT NAMES STATIONS RATHER THAN MESSAGES** (§R17). *3 for you*
+    /// on a shut panel is ambiguous between three people and one person saying
+    /// three things, and the decision it feeds - whether to open the panel at
+    /// all - turns on which. Opened, the count stays messages, because that is
+    /// what the rows are. Neither number is composed: both are counted off
+    /// `_mineAll`.
+    /// </remarks>
     public string DigitalMineSummary
-        => _mineAll.Count == 0
-            ? "nothing for you yet"
-            : _mineAll.Count == 1
-                ? "1 for you"
-                : $"{_mineAll.Count} for you";
+    {
+        get
+        {
+            if (!DigitalDecodedExpanded && DigitalMineStationCount > 0)
+            {
+                var noun = DigitalMineStationCount == 1 ? "station" : "stations";
+
+                return $"{DigitalMineStationCount} {noun} calling you · click to show";
+            }
+
+            return _mineAll.Count == 0
+                ? "nothing for you yet"
+                : _mineAll.Count == 1
+                    ? "1 for you"
+                    : $"{_mineAll.Count} for you";
+        }
+    }
+
+    /// <summary>How many different stations have called the operator.</summary>
+    /// <remarks>
+    /// **HIS OWN TRANSMISSIONS ARE NOT STATIONS CALLING HIM.** A sent row lives
+    /// on this side because the conversation does, and counting it would have
+    /// the folded header claim a caller the moment he answered somebody.
+    /// </remarks>
+    public int DigitalMineStationCount
+        => _mineAll
+            .Where(r => !r.IsSent && r.Sender.Length > 0)
+            .Select(r => r.Sender.ToUpperInvariant())
+            .Distinct()
+            .Count();
+
+    /// <summary>Whether a folded digital panel is holding something.</summary>
+    /// <remarks>
+    /// **THE COLOR IS THE SECOND CARRIER AND NEVER THE FIRST** (§0.6). The
+    /// sentence and the count say everything this says; the ink only makes a
+    /// shut panel with traffic in it catch the eye across the window. Somebody
+    /// who cannot see the difference between green and grey loses nothing.
+    /// </remarks>
+    public bool DigitalIsFoldedWithContent
+        => !DigitalDecodedExpanded
+           && (DigitalShownCount > 0 || DigitalMineStationCount > 0);
+
+    /// <summary>Ink for the folded digital headers' summary line.</summary>
+    /// <remarks>
+    /// **IT IS THE DECODE FAMILY'S OWN TITLE INK** (HM-DEC-032, HM-DEC-012),
+    /// taken from `PanelPalette` rather than typed here, and it is text color
+    /// only - nothing is filled. The muted grey is `CollapsiblePanel`'s own
+    /// default and is repeated here because a binding replaces the default
+    /// rather than falling back to it.
+    /// </remarks>
+    public Avalonia.Media.IBrush DigitalFoldedInk
+        => DigitalIsFoldedWithContent
+            ? PanelPalette.Green.TitleBrush
+            : MutedSummaryInk;
+
+    /// <summary>`CollapsiblePanel`'s resting summary grey.</summary>
+    private static readonly Avalonia.Media.IBrush MutedSummaryInk =
+        new Avalonia.Media.SolidColorBrush(
+            Avalonia.Media.Color.Parse("#6E6E66"));
 
     /// <summary>How many rows the toggles are holding off the list.</summary>
     /// <remarks>
@@ -4659,6 +4722,13 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(DigitalHiddenCount));
         OnPropertyChanged(nameof(HasDigitalMineDecodes));
         OnPropertyChanged(nameof(DigitalMineSummary));
+
+        // **THE FOLDED HEADER TICKS AS SLOTS LAND** (§R17). The count in it is
+        // the live one, so every recount carries it and the ink that goes with
+        // it, whether or not the panel happens to be open.
+        OnPropertyChanged(nameof(DigitalMineStationCount));
+        OnPropertyChanged(nameof(DigitalIsFoldedWithContent));
+        OnPropertyChanged(nameof(DigitalFoldedInk));
     }
 
     /// <summary>What the order button says it will do.</summary>
@@ -4721,6 +4791,27 @@ public partial class MainWindowViewModel : ObservableObject
             if (_digitalRefusal.Length > 0)
             {
                 return _digitalRefusal;
+            }
+
+            // **A FOLDED PANEL SAYS WHAT IS IN IT AND THAT A CLICK OPENS IT**
+            // (§R17, work instruction 325 task 1). Tim collapsed this panel and
+            // then decided FT8 "no longer worked", because 31 rows were arriving
+            // into a header whose summary read like a status line rather than
+            // like a door. A picture binds as hard as a sentence (§0.0), and a
+            // folded panel that looks empty is a false claim about the band.
+            // **THE HIDDEN COUNT SURVIVES THE REWORDING**, because a collapsed
+            // panel is exactly where a filter could make a busy band look quiet,
+            // and that is the fault the count exists to prevent.
+            if (!DigitalDecodedExpanded && DigitalShownCount > 0)
+            {
+                var held = DigitalHiddenCount > 0
+                    ? $" · {DigitalHiddenCount} hidden by {FilterLabel()}"
+                    : "";
+
+                var noun = DigitalShownCount == 1 ? "station" : "stations";
+
+                return $"{DigitalShownCount} {noun} decoded · click to show them"
+                    + held;
             }
 
             if (DigitalDecodes.Count > 0)
@@ -6566,7 +6657,16 @@ public partial class MainWindowViewModel : ObservableObject
         _tapeExpanded = settings.IsPanelExpanded(PanelKeys.Tape);
         _waterfallExpanded = settings.IsPanelExpanded(PanelKeys.Waterfall);
         _digitalWaterfallExpanded = settings.IsPanelExpanded(PanelKeys.DigitalWaterfall);
-        _digitalDecodedExpanded = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
+        // **THE TWO DIGITAL PANELS NEVER OPEN COLLAPSED** (§R17), whatever the
+        // settings file remembers. Every other panel here restores what it was
+        // left as, which is HM-DEC-021 and stays. These two are the surface the
+        // whole mode is read on: a session that starts with them shut starts
+        // with the app apparently deaf, and the operator who shut them three
+        // evenings ago is not the one who has to work that out. The remembered
+        // value is read and deliberately discarded rather than not read, so the
+        // next toggle still persists normally.
+        _ = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
+        _digitalDecodedExpanded = true;
         _digitalNewestFirst = settings.DecodedNewestFirst;
 
         // **TWO FLAGS SINCE UNIT 252, AND A MISSING ONE IS OFF**, which is
@@ -7586,7 +7686,18 @@ public partial class MainWindowViewModel : ObservableObject
         => PersistPanel(PanelKeys.DigitalWaterfall, value);
 
     partial void OnDigitalDecodedExpandedChanged(bool value)
-        => PersistPanel(PanelKeys.DigitalDecoded, value);
+    {
+        PersistPanel(PanelKeys.DigitalDecoded, value);
+
+        // **THE HEADERS CHANGE WORDS WHEN THE PANEL FOLDS** (§R17), so the two
+        // summaries and their ink are recomputed here. Without this the folded
+        // sentence would only appear at the next decode, which is the one
+        // moment it is needed least.
+        OnPropertyChanged(nameof(DigitalDecodedSummary));
+        OnPropertyChanged(nameof(DigitalMineSummary));
+        OnPropertyChanged(nameof(DigitalIsFoldedWithContent));
+        OnPropertyChanged(nameof(DigitalFoldedInk));
+    }
 
     partial void OnScanExpandedChanged(bool value) => PersistPanel(PanelKeys.Scan, value);
 

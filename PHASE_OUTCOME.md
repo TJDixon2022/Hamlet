@@ -271,3 +271,18 @@ LICENCE: PHASE_PLAN.md R9, R13, R14; Tim 2026-09-11 nothing on the radio; CLAUDE
 COST: 47.65027650000001
 ACCOMPLISHED: the station Tim heard at 893 Hz on 14.070 becomes a row with its text and stays while it is sending; and step 4 gets its two missing numbers
 STATE_WHY: Only two of the exit criteria are supported by measurement, the bandwidth at 55.7 Hz at minus 30 dB and the ALC read on its 0 to 120 scale, while the macro loopback, the CQ receipt and its retirement, the one click offer on certainty, the turn indicator, the no slot cap refusal and the judging half of the R11 power criterion are all still unmet, the last of these awaiting a zone ruling.
+
+## UNIT 325 - STEP 4
+
+STEP: 4
+APPROACH: Checked the four gate facts and PHASE_PLAN R15-R19 before reading a line of code, ran the carry-forward list as its own comment says - two invocations, one build each, status written first - then took the six rulings from Tim's evening at the radio in the order the instruction set them, watching each named test fail before making it green.
+HIT: The two digital panels share one expanded flag, so Decoded text and For you fold and open together. The folded sentence and the never-opens-collapsed rule are therefore one behaviour and not two, and the test says so rather than pretending to prove two independent panels.
+MOVE: continue
+WHY: Six things the owner saw on 2026-09-11 are all on the screen PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned from an FT8 send rather than read off a meter by hand.
+DECIDED: The folded For you header names stations rather than messages, because the decision it feeds - open the panel or not - turns on how many people are calling and not on how much they said. The hidden-by-the-filter count survives the rewording, because a shut panel is exactly where a filter can make a busy band look like a quiet one.
+LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; HM-DEC-012, HM-DEC-021, HM-DEC-032, HM-DEC-111, HM-DEC-155.
+COST: one session; the carry-forward list green at 159 of 159 before anything moved, app 86 and engine 73, in two builds.
+ACCOMPLISHED: The screen stops lying about what it holds.
+FATE: executed
+STATE_AFTER: see the unit report for this unit
+STATE_WHY: see the unit report for this unit

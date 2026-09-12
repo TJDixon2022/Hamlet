@@ -3837,6 +3837,7 @@
                                                       Family="Green"
                                                       Title="Decoded text"
                                                       Summary="{Binding DigitalDecodedSummary}"
+                                                      SummaryBrush="{Binding DigitalFoldedInk}"
                                                       IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
 
                                     <!-- **THE TWO CONTROLS GO IN THE HEADER, WHERE
@@ -4381,6 +4382,7 @@
                                                       Family="Green"
                                                       Title="For you"
                                                       Summary="{Binding DigitalMineSummary}"
+                                                      SummaryBrush="{Binding DigitalFoldedInk}"
                                                       IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
 
                                     <!-- **THE CARDS TAKE THE STAR** (work instruction 313
