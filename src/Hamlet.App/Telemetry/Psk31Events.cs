@@ -580,6 +580,29 @@ public static class Psk31Events
             },
             TelemetryLevel.Info);
 
+    /// <summary>**The mode's records appeared for the first time** (§R13, step 5).</summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="records">How many records the mode's scope revealed.</param>
+    /// <remarks>
+    /// <para>**§3.1 IS AN ABSENCE, AND AN ABSENCE LEAVES NO TRACE.** Before the first
+    /// PSK31 contact there is no PSK31 anything on the achievements screen, so the one
+    /// moment that can be diagnosed afterwards is the moment it appears - and without
+    /// this line, a screen that failed to grow and a screen that grew while he was
+    /// looking elsewhere are the same silence.</para>
+    /// <para>**A COUNT AND NOTHING ELSE** (HM-DEC-018, §2.1). Not which records, not
+    /// the station that earned them, not the grid: how many things he can now see.
+    /// </para>
+    /// </remarks>
+    public static void RecordsRevealed(ITelemetry? telemetry, int records)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_records_revealed",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["records"] = records,
+            },
+            TelemetryLevel.Info);
+
     /// <summary>A number as the record spells it.</summary>
     internal static string Say(double value)
         => value.ToString("0.###", CultureInfo.InvariantCulture);

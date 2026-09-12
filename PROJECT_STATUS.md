@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 6
+TASK: 5 of 6
 WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T22:36:39-04:00
-NOTE: Task 3 committed and pushed. Task 4 running ThePsk31AdifTests for the first time: the PSK SUBMODE=PSK31 spelling through the write path, the RST tags present and absent, and a byte-for-byte pin on the FT8 and FT4 records.
+UPDATED: 2026-09-11T22:41:34-04:00
+NOTE: Task 5 green at four of four. The first PSK31 contact reveals four records and none of them exists before it; TheAchievementsScreenTests is two red before and the same two after. Committing, then task 6.
 
 ---
 

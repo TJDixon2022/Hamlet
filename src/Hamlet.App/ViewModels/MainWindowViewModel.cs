@@ -13198,6 +13198,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var opening in fresh)
         {
+            // **THE MODE'S RECORDS APPEARING IS A STAGE, SO IT WRITES ITS EVENT**
+            // (§R13, step 5). §3.1 makes the before-state an absence, and an absence
+            // leaves nothing in the file: without this line, a screen that failed to
+            // grow after the first PSK31 contact and a screen that grew perfectly
+            // while he was looking at the waterfall are the same silence. **The count
+            // and nothing else** (§2.1) - not which records and not who earned them.
+            if (string.Equals(opening.Key, Psk31ScopeKey, StringComparison.OrdinalIgnoreCase))
+            {
+                Psk31Events.RecordsRevealed(_telemetry, opening.Cards);
+            }
+
             // **THE NOTICE SAYS WHAT WAS EARNED AND THE MARK SAYS SOMETHING IS
             // UNSEEN** (work instruction 300). The notice leaves after eight
             // seconds; the mark waits until he opens the screen.
@@ -13211,6 +13222,15 @@ public partial class MainWindowViewModel : ObservableObject
                 });
         }
     }
+
+    /// <summary>The achievements screen's key for the scope PSK31's records live in.</summary>
+    /// <remarks>
+    /// **THE SCREEN'S OWN SHAPE, NAMED ONCE.** `AchievementScreen` keys a mode's scope
+    /// `mode-` and the mode's name, and the name is `ContactModes`'. Spelling it out at
+    /// the one place that has to recognize it keeps the two from drifting apart
+    /// silently - a mistyped key here would simply never fire and never fail.
+    /// </remarks>
+    internal const string Psk31ScopeKey = "mode-PSK31";
 
     /// <summary>Announce openings against a log, for a test.</summary>
     /// <remarks>
