@@ -3718,8 +3718,26 @@
                          the pixels per hertz and changes no transform. That is
                          the choice, and it is the one that leaves the measurement
                          alone. -->
+                    <!-- **THREE PANELS, ONE TOP AND ONE BOTTOM, FULL TO THE STATUS BAR**
+                         (Tim, 2026-09-12, on `assets/main-screen-mockup.png`; R26, work
+                         instruction 337 task 2). This supersedes the `*,*` split above for
+                         this tab: the waterfall, the decoded list and For You are three
+                         columns of one grid and the second row gives all three the same
+                         height, so no panel can end short of the others.
+
+                         **THE UNIT'S MECHANISM, MARKED AS ITS OWN AND OVERRULABLE.** The
+                         middle column is the decoded list's own arithmetic, 383 px, which is
+                         what its longest line needs (`TheWorkingPanelsTests` measures it).
+                         The waterfall and For You share what is left equally, so For You is
+                         wide enough at 1920 that the card's facts sit beside its map.
+
+                         **THE TOP ROW HOLDS WHAT SITS ABOVE THE PANELS**: the send area over
+                         the waterfall, and the bar with the slot clock, the filter and the
+                         row controls over the two lists. Both are outside every collapsible
+                         panel, so collapsing one never hides Stop (§0.2). -->
                     <Grid Grid.Row="3" x:Name="DigitalPanes"
-                          ColumnDefinitions="*,*">
+                          ColumnDefinitions="*,383,*"
+                          RowDefinitions="Auto,*">
 
                         <!-- **THE LEFT COLUMN IS THE WATERFALL AND THE SPACE
                              UNDER IT.** Both rows are `Auto`: the waterfall keeps
@@ -3736,12 +3754,12 @@
                              saying so, which is a display asserting the band is
                              narrower than it is. The right column does not need
                              one: the decoded table already scrolls itself. -->
-                        <ScrollViewer Grid.Column="0"
-                                      Margin="0,0,5,0"
-                                      VerticalScrollBarVisibility="Auto"
-                                      HorizontalScrollBarVisibility="Disabled">
-                        <Grid x:Name="DigitalLeftColumn"
-                              RowDefinitions="Auto,Auto">
+                        <!-- **SUPERSEDED IN WORK INSTRUCTION 337** (R26): the
+                             waterfall is no longer a fixed height in a scroller with
+                             the send area under it. It fills the second row like the
+                             two lists beside it, and the send area sits above it in
+                             the first row. `DigitalLeftColumn` and its scroller are
+                             gone; the waterfall keeps its 180 px floor. -->
 
                             <!-- **THE WATERFALL, WITH THE CAPTURE PRESS ON ITS
                                  HEADER** (Tim, 2026-08-28). The press is where a
@@ -3754,7 +3772,8 @@
                                  is that the same audio is now cut on the UTC
                                  quarter minute and read, and whatever comes out
                                  of it lands on the decoded panel below. -->
-                            <ctl:CollapsiblePanel Grid.Row="0"
+                            <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="0"
+                                                  Margin="0,0,5,0"
                                                   x:Name="DigitalWaterfallPanel"
                                                   Family="Lavender"
                                                   Title="Waterfall"
@@ -3811,21 +3830,30 @@
                                  by `OneClickArmsExactlyOneMessageTests` without
                                  a window being opened. Nothing here does
                                  arithmetic. -->
-                            <Border Grid.Row="1" x:Name="DigitalSendReserved"
-                                    Margin="0,10,0,0"
-                                    MinHeight="72"
-                                    Padding="14,12"
+                            <!-- **ABOVE THE WATERFALL SINCE WORK INSTRUCTION 337**
+                                 (R26): the three panels share one top and one bottom,
+                                 so the send area cannot sit under one of them. It is
+                                 the first row of the waterfall's column, outside every
+                                 collapsible panel, and **its buttons are a column of
+                                 their own** - nothing in the lines beside them can move
+                                 CQ or Stop, which is the guarantee the stack's order
+                                 used to give. -->
+                            <Border Grid.Row="0" Grid.Column="0" x:Name="DigitalSendReserved"
+                                    Margin="0,0,5,6"
+                                    Padding="12,8"
                                     CornerRadius="8"
                                     Background="Transparent"
                                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                     BorderThickness="1">
-                                <StackPanel Orientation="Vertical" Spacing="6">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
                                     <!-- **NO TYPING** (step 5, criterion 1).
                                          The callsign and grid are the
                                          operator's own, out of Settings, and
                                          the button goes through the same
                                          command a right-click does. -->
-                                    <StackPanel Orientation="Horizontal" Spacing="8"
+                                    <StackPanel Grid.Column="0"
+                                                Orientation="Horizontal" Spacing="8"
+                                                VerticalAlignment="Top"
                                                 HorizontalAlignment="Left">
                                         <Button x:Name="DigitalSendCqButton"
                                                 Content="CQ"
@@ -3897,6 +3925,14 @@
                                                 Command="{Binding StopSendingCommand}"
                                                 ToolTip.Tip="{Binding StopTip}" />
                                     </StackPanel>
+
+                                    <!-- **WHAT WENT OUT, BESIDE THE BUTTONS** (work
+                                         instruction 337): the lines about the send
+                                         take the width beside CQ and Stop rather than
+                                         a row under them each, so the area stays short
+                                         and the panels below keep the height. -->
+                                    <StackPanel Grid.Column="1" Spacing="2"
+                                                VerticalAlignment="Center">
 
                                     <TextBlock x:Name="DigitalSendReservedLine"
                                                Text="{Binding DigitalSendLine}"
@@ -4047,10 +4083,9 @@
                                                TextWrapping="Wrap"
                                                FontSize="11"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
-                                </StackPanel>
+                                    </StackPanel>
+                                </Grid>
                             </Border>
-                        </Grid>
-                        </ScrollViewer>
 
                             <!-- **DECODED TEXT IS THE RIGHT-HAND HALF** (Tim's
                                  ruling, carried into markup at last). It was
@@ -4130,9 +4165,11 @@
                                  **AND THE SECOND COLUMN IS EVERYTHING LEFT**, which is
                                  *For You widens to what is left* in the instruction's
                                  words. -->
-                            <Grid Grid.Column="1" x:Name="DigitalDecodedPanes"
-                                  RowDefinitions="Auto,*"
-                                  ColumnDefinitions="383,*">
+                            <!-- **`DigitalDecodedPanes` IS GONE IN WORK INSTRUCTION 337.**
+                                 Its `383,*` is now the middle and right columns of
+                                 `DigitalPanes`, and its bar row is that grid's first
+                                 row, so the two lists and the waterfall are cells of one
+                                 grid and share one top and one bottom (R26). -->
 
                                 <!-- **THE SLOT CLOCK, ABOVE THE PANELS AND OUTSIDE
                                      THEM** (work instruction 305 task 3, on
@@ -4185,7 +4222,8 @@
                                      on an empty band, `clear` and the order toggle are
                                      reports about rows and stay behind
                                      `HasDigitalDecodes`. -->
-                                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                                      VerticalAlignment="Bottom"
                                       x:Name="DigitalListControlsBar"
                                       ColumnDefinitions="Auto,*"
                                       Margin="5,0,0,6">
@@ -4332,7 +4370,7 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="0"
+                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="1"
                                                       Margin="5,0,0,0"
                                                       x:Name="DigitalDecodedPanel"
                                                       Family="Green"
@@ -4912,7 +4950,7 @@
                                      filled (HM-DEC-012, 0.5); `CollapsiblePanel` applies the
                                      family to the title and the edge and nothing here changes
                                      that. -->
-                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="1"
+                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="2"
                                                       Margin="5,0,0,0"
                                                       x:Name="DigitalMinePanel"
                                                       Family="Green"
@@ -5933,8 +5971,6 @@
                                                                  Foreground="{StaticResource HmTextMutedBrush}" />
                                     </Grid>
                                 </ctl:CollapsiblePanel>
-
-                            </Grid>
 
                             <!-- **"WHAT PEOPLE ARE SAYING" IS GONE** (Tim's
                                  ruling, 2026-09-04: the decoded text is what

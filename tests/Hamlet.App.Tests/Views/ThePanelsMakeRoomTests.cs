@@ -86,7 +86,7 @@ public sealed class ThePanelsMakeRoomTests
 
         var decoded = window.FindControl<Control>("DigitalDecodedPanel")!;
         var mine = window.FindControl<Control>("DigitalMinePanel")!;
-        var panes = window.FindControl<Control>("DigitalDecodedPanes")!;
+        var panes = window.FindControl<Control>("DigitalPanes")!;
 
         _output.WriteLine("bar    : " + Box(bar!));
         _output.WriteLine("decoded: " + Box(decoded));
@@ -223,7 +223,7 @@ public sealed class ThePanelsMakeRoomTests
 
             var mine = window.FindControl<Control>("DigitalMinePanel")!;
             var decoded = window.FindControl<Control>("DigitalDecodedPanel")!;
-            var panes = window.FindControl<Control>("DigitalDecodedPanes")!;
+            var panes = window.FindControl<Control>("DigitalPanes")!;
             var cards = window.FindControl<ItemsControl>("DigitalContactCards")!;
 
             // **`CardBeside` IS A `WrapPanel` SINCE 331 TASK 2**, so it is looked up as a
@@ -282,9 +282,12 @@ public sealed class ThePanelsMakeRoomTests
 
         var decoded = window.FindControl<Control>("DigitalDecodedPanel")!;
         var mine = window.FindControl<Control>("DigitalMinePanel")!;
-        var panes = window.FindControl<Control>("DigitalDecodedPanes")!;
 
-        var half = panes.Bounds.Width / 2;
+        // **REWRITTEN UNDER R12 IN WORK INSTRUCTION 337.** The two lists were the right-hand
+        // grid `DigitalDecodedPanes`, and half of that grid was the `*,*` before. The tab is
+        // one grid of three columns now (R26), so the pair is measured as the two panels and
+        // the 10 px of margin they carry.
+        var half = (decoded.Bounds.Width + mine.Bounds.Width + 10) / 2;
 
         _output.WriteLine(
             "before, at *,*     : decoded " + Px(half) + " | For you " + Px(half));
@@ -318,7 +321,7 @@ public sealed class ThePanelsMakeRoomTests
             var window = Realized(width);
 
             var tab = window.FindControl<Control>("DigitalPanes");
-            var panes = window.FindControl<Control>("DigitalDecodedPanes")!;
+            var panes = window.FindControl<Control>("DigitalPanes")!;
             var decoded = window.FindControl<Control>("DigitalDecodedPanel")!;
             var mine = window.FindControl<Control>("DigitalMinePanel")!;
             var cards = window.FindControl<ItemsControl>("DigitalContactCards")!;
