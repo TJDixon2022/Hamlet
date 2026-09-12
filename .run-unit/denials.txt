@@ -1,13 +1,15 @@
-﻿   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c \u0027EOF\u0027\n\n## UNIT 331 - STEP 6\n\nSTEP: 6\nAPPROACH: Recover what unit 330 committed before the watchdog killed it, then draw the tray vane at its ruled size rather than 62 ...(truncated)
-   Bash  {"command":"python -c \"\nimport io\np=\u0027src/Hamlet.App/Views/MainWindow.axaml\u0027\nlines=open(p,encoding=\u0027utf-8-sig\u0027,newline=\u0027\u0027).readlines()\n# remove lines 4144..4282 (1-based) inclusive\nassert \u0027THE TWO CON ...(truncated)
-   Bash  {"command":"python tools/cut-header-action.py \u0026\u0026 grep -n \"CollapsiblePanel.HeaderAction\\|DigitalHeaderStrip\\|DigitalRowControls\" src/Hamlet.App/Views/MainWindow.axaml","description":"Run the cut script"}
-   Bash  {"command":"python tools/cut-header-action.py","description":"Run the cut script"}
-   Bash  {"command":"python - \u003c\u003c \u0027PYEOF\u0027\nimport re\np=\u0027tests/Hamlet.App.Tests/Views/ThePanelsMakeRoomTests.cs\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027var window = Realized();\u0027,\u0027var wi ...(truncated)
-   Bash  {"command":"git stash push -- src/Hamlet.App/Views/MainWindow.axaml tests/Hamlet.App.Tests/Views/WhatTheSplitCostsTests.cs 2\u003e\u00261 | tail -2","description":"Stash markup to test HEAD baseline"}
-   Bash  {"command":"git stash push -- src/Hamlet.App/Views/MainWindow.axaml tests/Hamlet.App.Tests/Views/WhatTheSplitCostsTests.cs","description":"Stash markup to test HEAD baseline"}
-   Bash  {"command":"grep -n \"DecodedPanelMarkup\" tests/Hamlet.App.Tests/ViewModels/TheDecodedTableIsRealTests.cs; echo \"---\"; sed -n \"$(grep -n \u0027private static string DecodedPanelMarkup\u0027 tests/Hamlet.App.Tests/ViewModels/TheDecodedTa ...(truncated)
-   Bash  {"command":"git reset tools/cut-header-action.py","description":"Unstage the throwaway script"}
-   Bash  {"command":"rm tools/cut-header-action.py","description":"Delete the throwaway script"}
-   Bash  {"command":"sed -i \u0027s/HmAmberInkBrush/HmAmberDeepBrush/g\u0027 src/Hamlet.App/Views/MainWindow.axaml","description":"Use the existing deep amber brush"}
-   Bash  {"command":"mkdir -p data/achievements \u0026\u0026 cp assets/data/achievement-points.json data/achievements/achievement-points.json \u0026\u0026 ls -la data/achievements/","description":"Copy the points file into the tree"}
-   Bash  {"command":"grep -n \"^    [A-Z][a-zA-Z]*,$\" src/Hamlet.RadioEngine/Telemetry/ITelemetry.cs | head -20","description":"List all category names"}
+﻿   Bash  {"command":"cd /c/Source/HamLet; pwd -W; for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln; do [ -e \"$f\" ] \u0026\u0026 echo \"EXISTS $f\" || echo \"ABSENT $f\"; done; git remote -v; git bran ...(truncated)
+   Bash  {"command":"pwd -W \u0026\u0026 ls -la SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs; ls CoreHMI.sln MURC.sln; git remote -v; git branch -vv","description":"Project gate check and remote"}
+   Bash  {"command":"date -Iseconds","description":"Read the clock"}
+   Bash  {"command":"ls \"/c/Program Files\" \"/c/Program Files (x86)\" 2\u003e\u00261 | grep -i -E \"log4om|n1mm|dxlab|dxkeeper|n3fjp|affirmatia|logger32|ham radio deluxe|hrd|cqrlog|gridtracker|fldigi|wsjt|jtdx|log\"; ls \"/c/Users/TimDi/AppData/Ro ...(truncated)
+   Bash  {"command":"ls \"/c/Program Files\"","description":"List Program Files for loggers"}
+   Bash  {"command":"ls \"/c/Program Files (x86)\"","description":"List Program Files x86 for loggers"}
+   Bash  {"command":"ls /c/Users/TimDi/AppData/Roaming","description":"List roaming AppData for logger data"}
+   Bash  {"command":"ls /c/Users/TimDi/AppData/Local","description":"List local AppData for loggers"}
+   Bash  {"command":"ls /c/Source/fldigi","description":"List fldigi source reference"}
+   Bash  {"command":"reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\" /s /f \"Log\" /d","description":"Query registry uninstall keys for loggers"}
+   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~ThePsk31LogsWithRstTests|FullyQualifiedName~ThePsk31RecordsAppearTests|FullyQualifiedName~TheAchievementsScreenTests|FullyQuali ...(truncated)
+   Bash  {"command":"rm tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs \u0026\u0026 git status --short tests","description":"Delete the scratch probe test"}
+   Bash  {"command":"ls artifacts | head; git check-ignore -v artifacts/unit333-psk31-fixture.adi; echo \"ignore-check-exit-done\"","description":"Check artifacts folder and git ignore status"}
+   Bash  {"command":"git check-ignore -v artifacts/unit333-psk31-fixture.adi","description":"Check whether a scratch adi would be ignored"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the validator .bat through cmd"}

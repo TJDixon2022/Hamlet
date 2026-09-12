@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-12T12:44:17-04:00  root C:\Source\HamLet
+measured 2026-09-12T15:17:23-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,6 +7,9 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0161.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -18,8 +21,11 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 57217d5
-  uncommitted at the root : 0
+  HEAD   : 0b2e0d5
+  uncommitted at the root : 3
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -587,22 +593,23 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under Â§R15. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  12 lines, 1706 bytes
+  13 lines, 1785 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
   CURRENT_STEP: 5
-  WORK_INSTRUCTION: 330 - maintenance round one, and the achievements page
+  WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
+  HEARTBEAT: 2026-09-12 15:17:22
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
   STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | in progress | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  STEP: 6 | blocked | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  422 lines, 66081 bytes
+  466 lines, 71364 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -612,7 +619,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
   STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | in progress | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  STEP: 6 | blocked | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
   
   ## UNIT 312 - STEP 0
   
@@ -1025,6 +1032,50 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ACCOMPLISHED: the tray mark can be seen, the card reads as a table, the popup shows the card he would earn, the green zone tells him what band he is on and whether it is the best bet, Hamlet stops claiming the band was empty in a slot it did not listen to, and the achievements page is eight badges with scores and a running total he can edit from a file
   STATE_AFTER: in progress
   STATE_WHY: no output.md, so there is no report to judge the step against
+  
+  ## UNIT 331 - STEP 6
+  
+  STEP: 6
+  APPROACH: Recover what unit 330 committed before the watchdog killed it, then draw the tray vane at its ruled size rather than 62 per cent of it, move the decoded list's controls to a bar above both panels and widen For You so the card's table fits beside the map, make the card's right column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit readiness line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles.
+  MOVE: continue
+  WHY: Unit 330 was killed at task 2 with two measurements that changed the shape of the work - the vane's scaling and the card's width - and the owner ruled on the second. The remaining tasks stand, none of them touching a step criterion, and every task commits on its own and drops from the back.
+  DECIDED: The green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner. The points are the owner's file, data/achievements/achievement-points.json, and no point value is hard-coded. The two tray size tests are reconciled under R12 so both assert what the glass shows.
+  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark; Tim 2026-09-12 with screenshots and the panel-split ruling.
+  COST: one session, eight tasks, each committing on its own so that what lands, lands.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0 - a state claimed before the measurement is the fault this phase has already hit twice.
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.
+  
+  ## UNIT 332 - STEP 6
+  
+  STEP: 6
+  APPROACH: Make the achievements page eight badges with no scroller and a click-in category view with a back control and text that fits; make the green zone the world map with its computed night side and the operator's dot, the band big on the left and the pills and heard count on the right; draw the tray mark as a feather.
+  MOVE: continue
+  WHY: Three rulings from the owner on unit 331's screen, none touching a step criterion; step 6 is his.
+  DECIDED: The category page layout, the twilight fade width, the rule-of-thumb wording and the feather path are the author's shapes marked for the owner; the terminator arithmetic is the unit's and is asserted against a hand-computed value.
+  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; Tim 2026-09-12 as quoted in work instruction 332; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1, 4.
+  COST: one session, six tasks, each committing on its own and dropping from the back.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio; this unit is carried repair on the screen he will judge it from and cannot close it.
+  
+  ### ALSO RECORDED FOR UNIT 332 - STEP 6
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: make the achievements page eight badges with no scroller and a click-in category view with a back control and text that fits; make the green zone the world map with its computed night side and the operator's dot, the band big on the left and the pills and heard count on the right; draw the tray mark as a feather
+  HIT: section 4 wants a ruling: banked - Rulings are wanted on the hover wording, the two unopened continent badges, the window width, the license line at 1400, whether step 5 is partial or done, and several carried items, but step 6 has one exit, which is Tim at the radio, so he can still work a station and repairs to the screen he will judge it from can continue without an answer.
+  WHY: three rulings from the owner on unit 331's screen, none touching a step criterion; step 6 is his
+  DECIDED: the category page layout, the twilight fade width, the rule-of-thumb wording and the feather path are the author's shapes marked for the owner; the terminator arithmetic is the unit's and is asserted against a hand-computed value
+  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; Tim 2026-09-12 as quoted; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1, 4
+  COST: 32.58145499999999
+  ACCOMPLISHED: the achievements window is a page of badges Tim can click into and back out of, the green zone shows him where the sun is and where he is, and the tray mark is a feather rather than an almond
+  STATE_AFTER: blocked
+  STATE_WHY: The only exit criterion is Tim saying it passed, the report shows no such statement, its entry needs step 5 done while PHASE_STATUS.md still marks step 5 partial, and no further unit work can close it without Tim at the radio.
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -1047,17 +1098,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1748 bytes
+  19 lines, 977 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: EXECUTING
-  TASK: 2 of 7
-  WORK_INSTRUCTION: 330 - maintenance round one, and the achievements page
-  BALL: code
+  STATE: COMPLETED
+  TASK: 6 of 6
+  WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
+  BALL: tim
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-12T11:29:12-04:00
-  NOTE: Task 2 green at 140 of 140 and about to commit. The card table is six rows of 17.0 px each, labels right and muted, values left and neither wrapped nor trimmed, one show-them link on the whole card. A measurement changed the shape: the For you panel is a quarter of the tab so the card is 275 px wide inside, the map is 222 of them, and beside-the-map left 53 px for a row wanting 190 - so the table sits under the picture and that goes to section 4 for a ruling. Three inherited reds found outside the carry-forward list, none of them this unit's: two in Unit297CardSentenceTests on phrases that are not in src at HEAD, and one in Unit297CardBindingTests on a ring unit 305 moved off the card, which is rewritten under R12 because it stopped the run before the binding sweep the new template needs. Version bumped 1.13.14 to 1.13.15 and the UNIT 330 entry appended to PHASE_OUTCOME.md under step 6 before anything else moved. Measured first: the tray quill's box is the ruled 27 px but the renderer scales the 44-unit file to 62 per cent of the box, so the drawn vane is about 10.6 x 5.3 px and the ruled number was never on the glass.
+  UPDATED: 2026-09-12T15:15:49-04:00
+  NOTE: Complete - all six tasks, none dropped, each committed and pushed; carry-forward at the end app 100 of 100 and engine 85 of 85 after closing one red of this unit's own (five new events missing from the privacy walk). output.md validated: exit 0, all seven rules. Every UPDATED in this unit was read from the clock.
   
   ---
   

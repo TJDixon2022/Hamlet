@@ -1,6 +1,131 @@
 ﻿
 ### Raised by this unit
 
+**1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and Â§3.1 say opposite
+things about one slot.**
+
+*Ruling wanted.* The slot is the Hall of Fame badge's next card, and Hall of Fame's unearned
+card inside the category. The exact string is `A PSK31 contact`.
+
+It arises on a log holding *Your first contact*, *A DX contact*, *A Morse contact*, *Over 5,000
+miles* and *Over 10,000 miles* but no PSK31 contact, for instance an imported CW log with long
+contacts.
+- Ruling C, Tim, 2026-09-12: *every kind shown, the nearest unearned card in each, nothing
+  beyond it.*
+- `ACHIEVEMENTS_PHILOSOPHY.md` Â§3.1: *absent, not dimmed. No PSK31 card exists until the first
+  PSK31 contact.*
+
+*Reasoning.* On every other log the two agree: the badge shows the nearest first Â§3.1 allows.
+In this one case, showing the card breaks Â§3.1 and showing nothing breaks Ruling C. The
+instruction says not to choose, so **the screen is left as it was and still shows
+`A PSK31 contact` there.**
+
+*What was rejected and why.* Showing no next card, which is choosing Â§3.1. Moving `first_psk31`
+last in the list, which only moves the collision to a later log and reorders the owner's
+firsts.
+
+**2. The nice-to-pass wants a logger, and this session could not look for one.**
+
+*Something you can do in a minute, not a stop.* Import `docs/unit333-psk31-fixture-export.adi`
+into a new, empty log in any logger you already have, with the five steps in section 2. Name
+the logger and its version, and say whether it took both records with PSK/PSK31, both RSTs
+and the grid. That closes the criterion.
+
+*Reasoning.* The instruction forbids installing one, and the permission layer refused every
+listing outside `C:\Source\HamLet` and the registry query.
+
+*What was rejected and why.* Downloading or building a logger, which is your decision about
+your machine. Guessing from memory which loggers are installed, which would be a claim nobody
+measured.
+
+**3. This environment refuses deletes inside the repository and listings outside it, so two
+scratch files remain.**
+
+*No ruling wanted; housekeeping.*
+- `tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs` is untracked and one comment line.
+- `artifacts/unit333/psk31-fixture-export.adi` is gitignored.
+
+Both are safe to delete by hand, beside the five carried in item 19 below. The validator was
+run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
+243 documented as mangled by Git Bash.
+
+### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
+
+**1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
+
+*Ruling wanted on whether to rewrite them.* `AchievementsViewModel.Why` has *Hamlet can tune
+you to the PSK31 watering holes and cannot work them* and the FT4 and CW equivalents. That is
+the same falsity as the sentence task 0 removed.
+
+*Reasoning.* The instruction named the one line and Â§12.6 says not to repair unrelated things
+on the way past. Those hovers are not on the new page, but `ModeFirstRow.Why` is still in the
+tree, and a later surface could draw it.
+
+*What was rejected and why.* Rewriting them here. The words about what Hamlet can now work are
+a claim about PSK31 and CW, and they want the step 5 and 6 facts behind them, not this unit's
+guess.
+
+**2. The continent level names two continents he has not opened.**
+
+*Ruling wanted.* Antarctica and Oceania each get a badge on the fixture, with `A first here`,
+`0 pts` and `500 for a first` or `50 for a first`.
+
+*Reasoning.* The instruction says *seven continent badges*, and seven named badges are what the
+Continents level is. Its next cards do not name the continent again. But Â§3.1 says nothing
+shows inside a category until something adjacent is earned, and this bends it one step further
+than ruling C bends the page.
+
+*What was rejected and why.* Drawing only the opened continents. The instruction asked for
+seven, and a five-badge level would read as five continents.
+
+**3. The fit is measured on a host that draws text about half again wider than the glass.**
+
+*Ruling wanted on the window size.* To pass a measured no-clip test there, the achievements
+window went from 820 to 1040 wide and nine strings were shortened.
+
+*Reasoning.* The host advances ten pixels a character at every size. A string that fits there
+fits on the glass, so the test cannot pass a clip the owner would see. The price is a window
+wider than the glass needs.
+
+*What was rejected and why.* Estimating widths for a proportional face instead of measuring.
+The instruction says *asserted by measuring*, and an estimate is the thing that let 331's text
+clip.
+
+**4. The green zone's license phrase is not on one line at 1400.**
+
+*Ruling wanted.* The instruction says *the license phrase and citation on one line*. At a 1400
+window the left region is 253 px, and the phrase lays out to three lines on the test host; I
+estimate one or two on the glass.
+
+*Reasoning.* The mockup fits it by rewording it to *General covers digital modes here*.
+`PrivilegeStatus.Detail` is the regulation's sentence, and 331 kept it in its own words. One
+line at 1400 therefore needs either a shorter sentence or less room for the map and the
+buttons.
+
+*What was rejected and why.* Keeping it one line and letting it run past the panel's edge,
+which is what the first cut did, at 142%.
+
+**5. `tools/status.sh` cannot run here, and neither could the validator's `.bat`.**
+
+*No ruling wanted; a finding.* `sh tools/status.sh` and `bash tools/status.sh` both came back
+*requires approval*. So every status write was `date` and a paste, and none was composed: the
+helper exists and the permission layer does not allow it.
+
+The validator was attempted as instructed, `tools\arbiter\validate-output.bat output.md`, and
+Git Bash turned the path into `toolsarbitervalidate-output.bat`. It was then run through the
+route unit 243 built, `dotnet build tools/arbiter/validate-output.proj -p:Report=output.md`,
+and its verdict is the last thing in this session's transcript. It is not reproduced here,
+because a report cannot quote a run of itself.
+
+*What was rejected and why.* Composing timestamps as units 327, 328 and 331 did.
+
+**6. Step 5 is `partial` in `PHASE_STATUS.md` and *done* in the instruction.** **ANSWERED by
+this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pass is unmet, and
+unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
+launcher's and were not written.
+
+### Carried from unit 331's queue, as unit 332 carried it - verbatim
+
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
 reports of it before doing it.**
@@ -101,8 +226,6 @@ exactly the independence the rule wanted; now that an independent run is availab
 the hand-check is worth nothing beside it. **The line for the next unit to carry is
 the command above, not the fault.**
 
-### Carried from unit 328's queue, per HM-DEC-139 - verbatim
-
 **7.** *(was item 1)* **`MainWindow.axaml`'s comment on the mark now says the
 opposite of what the code does.** **CLOSED by unit 330 task 1** and re-checked here:
 both remaining *filled disc* strings read correctly in context, one of them 330's own
@@ -180,37 +303,14 @@ session's own `tools\cut-header-action.py`.
 
 **All other items stand as unit 328 carried them.**
 
-### The validator - run, not hand-checked, and this is its own output
+### Where the carried items stand after this unit
 
-The `.bat` was attempted once, as instructed, and failed the way it has failed for
-five units:
-
-```
-tools\arbiter\validate-output.bat output.md
-    -> /usr/bin/bash: toolsarbitervalidate-output.bat: command not found
-```
-
-Then the route unit 243 built for this deadlock was used, and the validator itself
-printed:
-
-```
-  ok      rule 1  UNIT: line present
-                  UNIT:       331 - complete at task 8 of 8, one named drop candidate taken - 2026-09-12 13:48
-  ok      rule 2  four top-level sections, in order, exact names
-  ok      rule 3  no fifth top-level section
-  ok      rule 4  section 4 present
-  ok      rule 5  section 3 has 184 non-blank lines
-  ok      rule 6  ordering block present, A B C, and C names a count
-  ok      rule 7  no placeholder token in the header block
-
-  VALID - all seven rules passed.
-
-validate-output exit 0
-```
-
-**Exit 0, from the script, on this file.** The command, for the next unit to use
-rather than rediscover:
-
-```
-dotnet build tools/arbiter/validate-output.proj -p:Report=output.md
-```
+- **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
+  Every hover on every visible control was read in task 1 and none names PSK31, so it stays
+  parked.
+- **Unit 332 item 6, step 5 partial or done:** answered above.
+- **Carried item 1 and 10, composed timestamps:** not repeated. Every `UPDATED` in this unit is
+  a `date` reading, pasted.
+- **Every other item stands as carried.** Nothing in this unit touched the 1400 split, States,
+  `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
+  the two id schemes, the five files or step 6.
