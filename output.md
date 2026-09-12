@@ -1,382 +1,316 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet works PSK31 the way it works FT8. Steps 0 to 4 done, step 5
-   marked partial in PHASE_STATUS.md (the instruction calls it done - section 4 item 6),
-   6 waits on Tim - unchanged by this unit.
-B. No step criterion moves; carried repair on the screen step 6 is judged from.
-C. The report last, and section 4 raises 6 items on top of the carried queue - one of
-   them a fault of this session's own that it found and closed before stopping.
+A. The phase goal - Hamlet works PSK31 the way it works FT8. Steps 0 to 4 done.
+   Step 5 was partial when this unit started; it now meets all four must-pass on the
+   window Tim has, plus the R13 events. The nice-to-pass is still unmet, which section 6 of
+   the plan says does not make the step partial. Step 6 is Tim at the radio, and its
+   entry is step 5 done.
+B. Step 5 - log and achievements. Must-pass: RST in the log and not the dB field
+   met; MODE=PSK SUBMODE=PSK31 met; no PSK31 card before the first contact and the
+   records after, on the click-in page met (it did not hold when the unit started and was
+   fixed here), with ruling wanted on the one slot where it is the only Hall of Fame first
+   left; TheAchievementsScreenTests not worse, 1 red. R13 log and records events met.
+   Nice-to-pass, a named logger imports the export: unmet, because no logger could be
+   searched for from this session and none was installed.
+C. The report last. Section 4 raises 3 items of its own on top of the carried queue; one
+   stands in the way of a criterion in B - the Ruling C against section 3.1 slot, and only
+   for a log whose one unearned Hall of Fame first is the PSK31 one.
 ```
 
 ```
-UNIT:       332 - complete at task 6 of 6, tasks 0 to 5, none dropped - 2026-09-12 15:11
-PHASE GOAL: PSK31 gets everything FT8 already has - the same two cards, the same one-click
-            exchange, the same log and the same achievements - on a modem Hamlet builds
-            itself; the last step is Tim at the radio and only he closes it.
-UNIT GOAL:  Three of Tim's rulings on unit 331's screen: an achievements window that is
-            eight badges you click into and back out of with no scrolling and no clipped
-            text; a green zone that is the world with its night side and his own dot;
-            and a tray mark that is a feather.
-ADVANCED:   no - every task is repair on the screen step 6 is judged from; no step criterion was touched and none could be
-NUMBER:     achievements page scroll height not measured before (331's page scrolled as
-            one and its extent was never read) -> 0, no scroller on the page;
-            green zone width used 90% or more before on the test host (331's license line
-            wrapped the full width; the old layout passed the floor and the figure was not
-            printed) -> 100.0% at 1400 and at 1920 with nothing past the edge (the first
-            cut of the new panel ran to 142%); longest clipped string not measured before
-            -> none, every visible run measured against its slot at 1040 x 720
-DRIFT:      3 consecutive units without advance  (was 2)
+UNIT:       333 - complete at task 4 of 4, none dropped, task 4 ran its no-logger branch - 2026-09-12 15:38
+PHASE GOAL: PSK31 gets everything FT8 already has - the two cards, the one-click exchange, the
+            log and the achievements - on a modem Hamlet builds itself, ending with Tim
+            working a station at the radio.
+UNIT GOAL:  Close step 5 on the tree as it stands: re-prove its four must-pass on the
+            click-in achievements window units 330 to 332 built, make the log and the
+            reveal write psk31 events a person can diagnose from, and put the ADIF export
+            in front of a real logger.
+ADVANCED:   yes - criterion 3 now holds on the window Tim has (it did not), and both R13 step 5 events carry what the stage is diagnosed from
+NUMBER:     PSK31 strings visible before the first contact 2 -> 0 (Hall of Fame badge's
+            next card and Hall of Fame's unearned card, on a log with a DX contact);
+            step 5 psk31 events 2 -> 2 (logged event gains gridCarried, reveal counts the
+            2 cards the window draws instead of 4 it does not); loggers that read the
+            export 0 -> 0
+DRIFT:      0 consecutive units without advance  (was 3)
 ```
 
 ## 1. What Claude did
 
-**Complete: all six tasks, 0 to 5, none dropped.** Task 4 is done as the decision its own
-text allows - *if it costs anything, leave the card alone* - with no code change.
-Machine QUIVERFULL (from `SESSION.lock`), project Hamlet, branch `main`. The gate passed on
-all four facts: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
-`MURC.sln` absent, root `C:\Source\HamLet`.
+**Complete: tasks 0 to 4, none dropped.** Task 4 ran as its own no-logger branch: the scratch
+export was written, nothing was imported, and the nice-to-pass stays unmet. Machine QUIVERFULL
+(from `SESSION.lock`), project Hamlet, branch `main`. Hamlet confirmed at the gate:
+`SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and `MURC.sln` absent,
+root `C:/Source/HamLet`.
 
-Commits, each pushed as it landed: `ece5788` task 0, `3ea16ec` task 1, `c4372c7` task 2,
-`99db7f0` task 3, `2421dd1` task 4, `083d13f` task 5, `234256d` the privacy walk fix, and
-the commit carrying this report.
+Commits, each pushed as it landed, with `main` level with `origin/main` after each:
+`bdef14f` task 0, `7b7c84d` task 1, `c7c15cd` task 2, `5cb87be` task 3, `62892c8` task 4, and
+the report's own commit after this file validated.
 
 ### Task 0 - housekeeping
 
-- `1.13.16` to `1.13.17`; `UNIT 332` appended to `PHASE_OUTCOME.md` under step 6.
-- **The carry-forward list ran after task 0's edits rather than before them.** None of those
-  edits touches a type on the list, and both invocations were green: app 100 of 100, engine
-  85 of 85.
-- **The five undeletable files.** `commit-msg-326.txt` was already one comment line from
-  unit 326; the other four each became one comment line. Listed in section 2.
-- **The sentence *Hamlet cannot work CW, PSK31 and Voice yet* is gone.** It lived in
-  `AchievementsViewModel.Honesty` and one `TextBlock` on the achievements window; both are
-  removed. `TheAchievementsScreenTests.WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo`, a
-  known red, read the word *beacon* out of that sentence; it now reads it out of the WSPR
-  row's own hover and **passes**. Reported rather than quietly turned green.
+- `UNIT 333 - STEP 5` appended to `PHASE_OUTCOME.md`, and `STATE_AFTER`/`STATE_WHY` added at
+  the end, against this session's tests, not at task 0.
+- Version 1.13.17 -> **1.13.18** in `Directory.Build.props`; task 1's reading agreed.
+- `PHASE_STATUS.md` `WORK_INSTRUCTION:` set to 333. Nothing else in that file was touched.
+- Carry-forward list, two invocations, status written before each: **app 100 of 100 in 13 s,
+  engine 85 of 85 in 4 s**, the same as unit 332 ended.
 
-### Task 1 - the achievements page is eight badges, and a badge clicks in
+### Task 1 - trace: step 5 measured on the tree as it stands
 
-- The page is the title, the running total, eight badges in a uniform grid of four columns,
-  and the legend. **No scroller, nothing below the legend.** The belt, *What he has opened*,
-  *Your best*, the places, *Go and try*, the scope tabs and the file path are off the window.
-- **A badge is a button.** Pressing it replaces the page with its category in the same frame.
-  The view has a back control top left, then the band with emblem, name, meaning, standing,
-  points, level and gap. Under that come the earned cards and then at most one unearned
-  card, each showing its points from the owner's file. **Continents** opens to seven
-  continent badges in the same template, each with its own emblem, and each opens to its
-  countries. **Total Miles** opens to its tiers with a bar and `N of 50,000 miles`.
-- **Text fits, measured.** Every visible run is `NoWrap`, and the test lays each one out on
-  its own and checks it against its slot and every box above it. It does this at the
-  window's own size, on the page and inside all eight categories and a continent. It also
-  checks the longest string each slot can ever carry, not just the fixture's.
-- Telemetry: `achievements_opened`, `achievement_category_opened` and
-  `achievement_category_closed`, the kind only.
-- `TheAchievementsPageClicksInTests` watched red 6 of 6, then green. `Unit298ScreenDrawsTests`
-  asserted the removed tabs, challenges and places, and is reconciled under R12 to the new
-  shape; its binding-health half stands.
+The four types, run filtered and foregrounded before anything changed:
 
-### Task 2 - the green zone is the world's clock
+| Type | Result | Printed |
+|---|---|---|
+| `ThePsk31LogsWithRstTests` | 6 of 6 | `RST sent : 599`, `RST received : 589`; the FT8 case `RST received : (none)` |
+| `ThePsk31AdifTests` (engine) | 3 of 3 | `<MODE:3>PSK`, `<SUBMODE:5>PSK31`, `<RST_SENT:3>599`, `<RST_RCVD:3>589` |
+| `ThePsk31RecordsAppearTests` | 4 of 4 | `mode-FT8  FT8  6 records` before, `mode-PSK31  PSK31  4 records` after |
+| `TheAchievementsScreenTests` | 9 green, 1 red | the red is `TheWindowDrawsEverySixRows` |
 
-- **Left:** the band at 26 pt bold in family ink, the frequency at 16 beside it, the mode and
-  verdict under it, and the license phrase and citation small under that.
-- **Center:** `FlatWorldMap.Relief`, 202 x 110, through the card's own hash-gated bitmap. The
-  night side is darkened from `SolarTerminator`, new in `Hamlet.RadioEngine.Solar`: NOAA's
-  general solar position series, a six-degree fade from horizon to full dark, darkest 60%,
-  3 px cells. **One marker**, at the operator's grid, drawn as the card draws his. Under the
-  map, one rule-of-thumb line.
-- **Right:** `best bet now:`, then the band strip's own buttons in a wrap panel with the dial's
-  band picked and `✓ you are on it` under it, then `heard just now` with a sparkline of
-  twelve five-second bins and the count beside it.
-- **The 20 m band strip is dropped:** at the panel's height there is no room for it under the
-  pills and the sparkline.
-- Telemetry: `green_zone_rendered` once a session (width, height, regions);
-  `terminator_computed` once a minute (subsolar longitude, declination).
-- `TheGreenZoneTests` rewritten. Assertions 1 to 6 are 331's and still hold; 7 to 14 are new.
-  Watched red 7 of 15.
-- **The first green run showed the panel's ink at 142% of its width.** The three regions
-  spilled past the right edge, and the 90% floor passed it. The regions now share the width
-  (`*,Auto,*`), the left lines and the pills wrap, and **the width test also fails on any
-  overflow**. It reads 100.0%.
+**Criterion 3 against the window as drawn.** `AchievementsWindow.axaml` binds `Page.*` and
+`Category` only, and `ThePsk31RecordsAppearTests` read `AchievementScreen`, which the window
+no longer draws. So it was green on a screen Tim cannot see. A scratch probe stood the real
+window up headless over `TheAchievementsPageTests.TwelveContacts()`, opened the page and all
+eight kinds, and read every visible run and hover:
 
-### Task 3 - the tray mark is a feather
+- **No PSK31 contact (the fixture without DL1ABC):** the page draws `A PSK31 contact` once, as
+  Hall of Fame's next card, and Hall of Fame draws it once as its unearned card. Continents,
+  Countries, States, Grids, Total Miles, Bands and Modes name PSK 0 times. The cause is in
+  `AchievementBadgePage.Firsts`: `first_psk31` is third, after `first_contact` and `first_dx`,
+  so any log with a DX contact reaches it next.
+- **One PSK31 contact:** the page names PSK 0 times, Hall of Fame draws `A PSK31 contact`
+  earned, and Modes draws a `PSK31` card.
+- **The test** read a view model the window no longer shows.
+- **The mode rows' `Why` hover** is not drawn on the rebuilt page: no hover on any visible
+  control named PSK31. So parked item 1's exception does not apply and it stays parked.
 
-`AchievementMarkControl`'s tray branch no longer draws the file's vane. It draws
-`TrayFeatherPath`, three subpaths - a curved shaft from a pointed nib to the tip, and barbs
-either side with a notch in each - on the diagonal, filled `#3B6D11` with a thin darker edge
-and the shaft over it in the darker green. **It is 21.3 x 27.0 px of ink on the glass, scaled
-off its own bounds.** The ring, the bead and the count badge are unchanged; the 6 x 12 row
-vane is not touched. `Unit300SizesTests.TheTrayMarkIsAFeatherAndNotTheRowVaneScaled` watched
-red (0 subpaths), then green.
+**R13 for step 5.** The two events are not in `AppEvents` but in `Psk31Events`, both in the
+`psk31` category:
+- `Psk31Events.ContactLogged` writes `psk31_contact_logged` with `rstSent`, `rstReceived`,
+  `mode`, `submode`. It fires from `MainWindowViewModel.WriteLoggedContact` after a
+  successful write, and `ThePsk31LogsWithRstTests.TheLoggedEventFiresOnceWithBothReportsAndNothingPersonal`
+  asserts it. It had no grid-carried field.
+- `Psk31Events.RecordsRevealed` writes `psk31_records_revealed` with `records`. It fires from
+  `AnnounceOpenings`, and `ThePsk31RecordsAppearTests.TheRevealWritesItsEventOnceWithTheCountAndNothingPersonal`
+  asserts it. Its count was the `mode-PSK31` scope's 4 records on the undrawn `AchievementScreen`.
 
-### Task 4 - the card's map is left alone
+**The logger: loggers found = not measured, and the reason is the permission layer.** Every
+look outside the repository was refused: `ls` on `C:\Program Files`, `C:\Program Files (x86)`,
+`AppData\Roaming` and `AppData\Local` returned *may only list files in the allowed working
+directories for this session: 'C:\Source\HamLet'*. `ls C:\Source\fldigi` got the same answer,
+so whether a built fldigi is there is unknown too. A `reg query` of the uninstall keys came
+back *requires approval*. None of Log4OM, N1MM Logger+, DXKeeper, N3FJP ACLog, Logger32, HRD
+Logbook, CQRLOG, GridTracker or fldigi could be confirmed present or absent.
 
-The terminator could not go under the card's path at no cost. The card frames a zoomed
-window of the bitmap whose offset and scale depend on the path and the popup, and its plot
-carries no clock, so the night layer would need both carried into it. **Both markers and the
-path are unchanged**, and `TheGlobeOnTheCardFaceTests` was green in task 2's run.
+### Task 2 - criterion 3 holds on the rebuilt screen
 
-### Task 5 - two widths, computed
+- **`ThePsk31RecordsAppearTests` rewritten under R12** onto the window as drawn. It stands up
+  `AchievementsWindow` headless, opens the page and every kind, and reads every visible run
+  and hover. The fixture is an FT8 evening with one DX contact (LA8ENA, JO59), so
+  `first_psk31` is next in the list's order. Test 3's *worked, never confirmed* sweep is read
+  off the same window; the old screen's disclaimer sentence is not drawn there, so it is no
+  longer asserted.
+- **Watched red:** `page draws [A PSK31 contact] before any PSK31 contact`.
+- **The fix:** `AchievementBadgePage.NextFirstOf` is now the one place the next first is
+  chosen, used by the badge and by `AchievementCategory.HallOfFame`. It skips `first_psk31`
+  while any other first is unearned. **Where it is the only one left, the screen is left as
+  it was**, per the instruction's exception; see section 4 item 1.
+- **Green:** PSK named 0 times in all 9 places before the first contact. After it,
+  `hall_of_fame  A PSK31 contact |  | 15 pts | earned True | opacity 1` and
+  `modes  PSK31 | 1 contact | 5 pts | earned True | opacity 1`.
 
-`Unit332TwoWidthsTests` stands the main window up at 1400 and 1920 and the achievements window
-at its own size, and reads the layouts back; section 3 has the figures. **It found one real
-fault:** the seven continent badges' second row sat 160 px below the first, because the
-uniform grid stretched its rows over the remaining height. The grid is pinned to the top and
-the seven end at 389 of 720.
+### Task 3 - the log and the records write themselves down (R13)
 
-### A fault of this session's own, found and closed
+- **`psk31_contact_logged` gains `gridCarried`**, a flag and never the grid.
+- **`psk31_records_revealed` now counts what the window draws**: the earned cards naming PSK31
+  across every kind on an `AchievementBadgePage`, which is 2. The once-only trigger is unchanged.
+- **Tests, watched red first:** `ThePsk31LogsWithRstTests` failed with
+  `psk31_contact_logged does not say whether a grid was carried`, and
+  `ThePsk31RecordsAppearTests` with `Expected: 2 Actual: 4`. 14 run, 12 passed, 2 failed.
+- **Green**, in one invocation with the task 2 companions: `ThePsk31LogsWithRstTests`,
+  `ThePsk31RecordsAppearTests`, `CallsignPrivacyTests`, `TheAchievementsScreenTests`,
+  `TheAchievementsPageClicksInTests`, `TheAchievementsPageTests`, `BindingHealthTests` and
+  `VoiceTests`. **43 run, 42 passed, 1 failed**, and the failure is `TheWindowDrawsEverySixRows`.
+- **No new event method**, so `AppEvents` stays at 79 and the privacy walk needs no new line.
+  Both events are asserted free of the fixture callsigns and grids in their own tests.
 
-**The carry-forward list at the end read app 99 of 100 where it had been 100.**
-`CallsignPrivacyTests.EveryAppEvent_IsCoveredByThePrivacyWalk` counts every public
-`AppEvents` method. The five events this unit added were never put in the walk, and no task
-run included that test. They are walked now, the count goes from 74 to 79, and the list is
-100 of 100 again.
+### Task 4 - a real logger reads the export (nice-to-pass)
 
-### The runs
-
-| what | result |
-| --- | --- |
-| carry-forward, after task 0's edits | app 100 of 100 in 12 s, engine 85 of 85 in 4 s |
-| task 1, red | TheAchievementsPageClicksInTests 0 of 6 |
-| task 1, green | 30 of 31 with its neighbors - the one red TheWindowDrawsEverySixRows, known |
-| task 2, red | TheGreenZoneTests 8 of 15 |
-| task 2, green | 24 of 24 with BindingHealthTests, VoiceTests, TheGlobeOnTheCardFaceTests |
-| task 3, red | the feather test 0 of 1 |
-| task 3, green | 43 of 43 across the tray, row mark and binding tests |
-| task 5 | 3 of 3; 33 of 34 with the achievements, voice and binding tests - the same known red |
-| carry-forward, at the end | app 99 of 100, then **100 of 100** after the privacy walk fix; engine **85 of 85** |
+No logger could be found, so the no-logger branch ran. Nothing was downloaded, installed, built
+or imported, and no log of the operator's was opened. The scratch export is
+`docs/unit333-psk31-fixture-export.adi`. It holds two fixture records exactly as
+`AdifLog.Record` printed them in `ThePsk31LogsWithRstTests` this session, under a header typed
+in `AdifLog.Header`'s shape. **The nice-to-pass is unmet.**
 
 ### Decisions this session made for itself, reproduced in full
 
-1. **`tools/status.sh` was changed** to read `WORK_INSTRUCTION` from `PHASE_STATUS.md`; it
-   carried `330` in the file. **Then the permission layer refused to run it** - `sh` and
-   `bash` both came back *requires approval* - so **every status write in this unit was
-   `date` read and its output pasted into `PROJECT_STATUS.md`**, from the first at
-   `14:15:16` to the last. No timestamp in this unit was composed.
-2. **The achievements window is 1040 x 720, not 820 x 720.** The test host advances a flat ten
-   pixels a character at every size. A badge a quarter of 820 cannot hold an eighteen-character
-   next card on it, and the next-card slot is now 186 px.
-3. **Strings shortened to fit, and which.**
-   - *Your first contact outside your own country* is now *A DX contact*; *Your first PSK31
-     contact* is *A PSK31 contact*; *Your first Morse contact* is *A Morse contact*.
-   - *A contact over 5,000 / 10,000 miles* is now *Over 5,000 / 10,000 miles*.
-   - *A first outside North America* is now *One more continent*, and *Your first contact
-     anywhere* is *A first continent*.
-   - *Your first grid square* and *One more grid square* are now *Your first grid* and *One
-     more grid*.
-   - The meanings are *once-only firsts*, *each of the 7*, *one per entity*, *4-character
-     grids*, *every mile, added*, *first on each band* and *five modes to work*.
-   - *0 pts · unranked · 10 to Bronze* is two lines, `0 pts · unranked` over `10 to Bronze`.
-   - The legend is *Click a badge to open it. Orange ring: a door that opens a set. Green
-     quill: a counter.*
-4. **The back control names where it goes.** It reads `‹ All achievements` from a category and
-   `‹ Continents` from inside a continent, because a control reading *All achievements* that
-   returned to the seven would say a false thing.
-5. **A category's cards scroll inside the category.** Countries can hold three hundred; the
-   page itself never scrolls.
-6. **The file path is not moved to Settings.** The instruction says *if it is wanted anywhere*,
-   and the contact log window already shows it. `AchievementsViewModel.LogPath` is removed.
-7. **The green zone's left lines are allowed to wrap**, and the license phrase keeps
-   `PrivilegeStatus`'s own words rather than the mockup's shorter *General covers digital modes
-   here*. The alternative was running past the panel's edge at 1400 or rewording the
-   regulation's sentence. See section 4 item 4.
-8. **The shapes marked for the owner:** the rule-of-thumb wording, the six-degree fade, the 60%
-   darkness, the 3 px cells, the category layout, the seven continent silhouettes and the
-   feather path.
-9. **Telemetry cadence:** `terminator_computed` once a minute, when the age tick moves the
-   night side on.
+1. **A scratch probe test measured task 1 and was never committed.** It stood the real window
+   up because *build nothing* was read as nothing in the product. `rm` was refused inside the
+   repository, so the file is emptied to one comment line and left untracked:
+   `tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs`.
+2. **"No PSK31 card" was read as no drawn string naming PSK31**, including Hall of Fame's
+   `A PSK31 contact`. That card exists only to be earned by the first PSK31 contact, so showing
+   it unearned is a PSK31 card before one.
+3. **The skip applies only while another first is unearned.** The instruction names *a kind
+   with nothing left to show but the PSK31 card* as the case not to choose, so that slot is
+   unchanged and raised.
+4. **The reveal's count changed meaning**, from the old screen's scope records (4) to the
+   earned PSK31 cards the click-in window draws (2). *The count of records that appeared*
+   should be what a person can see.
+5. **RST presence is read from the existing value fields** (`rstSent: "599"` or `null`), not
+   from two new booleans. The value is not personal and already says whether it was present.
+6. **The scratch export lives in `docs/`, not `artifacts/`,** because `artifacts/` is
+   gitignored and the file is for a machine other than this one. The copy written there first
+   is ignored and left.
+7. **`STATE_AFTER: done` was written into unit 333's own `PHASE_OUTCOME.md` entry**, with the
+   ruling-wanted slot and the unmet nice-to-pass named in `STATE_WHY`. The header's `STEP: 5`
+   line and `PHASE_STATUS.md`'s step lines were not touched.
 
 ### Where the instruction and the tree disagreed
 
-- `PHASE_STATUS.md` has step 5 as `partial`; the instruction's block A says steps 0 to 5 are
-  done. Raised as section 4 item 6.
-- `tools/status.sh` carried work instruction 330's title (decision 1).
-- The instruction said to *empty and comment* five files; one of them was already a comment.
-- The instruction's validator command, `tools\arbiter\validate-output.bat output.md`, does not
-  survive Git Bash. Its outcome and the route used are in section 4 item 5.
-- Everything else named in section 5 of the instruction was where it said: the 820 x 720 window
-  with one scroller, the two-line green zone, the 27 px tray vane from the SVG, the 6 x 12 row
-  mark, `FlatWorldMap.Relief`, `OperatorLocation.FromGrid`, `Ft8GlobeControl`, and the five
-  named test classes. **One named test class, `TheAchievementsPageTests`, still passes
-  unchanged.**
+- **"`AchievementsViewModel` picks the next card for each kind."** It does not.
+  `AchievementBadgePage` picks the badge's next card and `AchievementCategory` picks the
+  category's; the view model holds both.
+- **"`AppEvents`, the `psk31` category."** The step 5 events are in `Psk31Events`, not
+  `AppEvents`. `CallsignPrivacyTests.EveryAppEvent_IsCoveredByThePrivacyWalk` counts only
+  `AppEvents` methods (79, as stated) and does not reach `Psk31Events`.
+- **The expected reds.** `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` is green as
+  predicted, and `TheWindowDrawsEverySixRows` is red. Its failure text was not read, so *a
+  missing `AchievementsModeRows` element* is not confirmed. The eight `TheMenuIsUnderTheMouseTests`
+  reds and the layout and ledger reds were not run: none is a step 5 type.
+- **Validation route.** The prompt names `tools\arbiter\validate-output.bat output.md`; the
+  instruction names `dotnet build tools/arbiter/validate-output.proj -p:Report=output.md`
+  because the `.bat` does not survive Git Bash. The `.proj` route was used; see section 4
+  item 3.
+- **Everything else in section 2 held:** the test file locations, 1040 x 720,
+  `TheAchievementsPageClicksInTests` covering the window, `A PSK31 contact` at 15 pts,
+  *five modes to work*, *earned cards, then at most one unearned*, the ADIF writer's spelling,
+  the two-invocation carry-forward list, and 1.13.17 at the start.
 
 ## 2. What the owner should expect
 
-**The achievements window opens to eight badges and stops there.** Click one and it becomes
-that kind; the arrow top left brings the eight back.
+**What is now true.**
+- On a log with a DX contact and no PSK31, Hall of Fame no longer offers *A PSK31 contact* as
+  next. It offers the next first §3.1 allows. With `first_contact` and `first_dx` held and no
+  Morse contact, that is *A Morse contact*; this is computed from the code's order, not printed.
+- The first PSK31 contact puts *A PSK31 contact* (15 pts) into Hall of Fame and a *PSK31* card
+  (1 contact, 5 pts) into Modes, both earned and at full ink.
+- The telemetry file says whether a logged PSK31 contact carried a grid, and the reveal line
+  says 2, which is what the window shows.
 
-**The green zone under the neighborhood map is now three things across.**
-- **Left:** the band in big type.
-- **Center:** a small world map with the night side dark and your dot.
-- **Right:** the band buttons and a little line of what was heard.
+**What will look wrong but is not.**
+- **Hall of Fame's next card jumps over PSK31.** A Morse or 5,000-mile first can show as *next*
+  while PSK31 is still unearned. That is §3.1 holding, not a sorting fault.
+- **`records: 2` where earlier telemetry said 4.** The count now matches the window, not the
+  retired card screen.
+- **`appVersion: "326"` in the test's event lines** is the test's own label for its telemetry
+  file. A real file carries the build's version.
+- **One untracked file, `tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs`, one comment
+  line**, and one ignored copy at `artifacts/unit333/psk31-fixture-export.adi`. This
+  environment would not delete either; both are safe to delete by hand.
 
-**The tray quill is a feather.**
-
-**What will look wrong and is not, most likely first:**
-
-- **The achievements window is wider, 1040 by 720, and the page stops about halfway down.**
-  The eight badges and the legend end at 377 px; there is no scroller by your ruling, so the
-  rest is empty.
-- **Some next-card words are shorter than before** - *A DX contact*, *Over 5,000 miles*, *One
-  more continent*. Decision 3 in section 1 lists every one.
-- **Inside Countries, and any category with many cards, the cards scroll.** The page does not.
-- **Inside a continent the back arrow reads `‹ Continents`**, not *All achievements*, because
-  that is where it goes.
-- **Antarctica and Oceania have badges on your fixture even though neither is worked.** They say
-  `0 pts`, and `500 for a first` or `50 for a first`. The instruction asked for seven; section
-  4 item 2 asks whether that is the right bend of §3.1.
-- **At a 1400 window the green zone's band buttons can take two or three rows** and the license
-  line wraps. At 1920 the buttons are one row. This is measured on a host that draws text wider
-  than your screen, so on the glass expect fewer rows and lines.
-- **The night side moves once a minute**, not continuously.
-- **With no grid in Settings there is no dot**, and the map still draws the night.
-- **The sparkline and the count are absent until the spot feed has answered at all** - a flat
-  line would be a measurement of an empty band.
-- **The 20 m band strip from the earlier mockup is not on the green zone** - no room at the
-  panel's height.
-- **The log's file path is not on the achievements window any more.** *My contacts…* still
-  shows it.
-
-**The five files this environment cannot delete, for you to remove by hand.** Each now holds
-one comment line saying so:
-
-```
-commit-msg-326.txt
-toolsarbitervalidate-output.bat
-tools\arbiter\unit323-append.bat
-tools\arbiter\unit323-append.py
-tools\cut-header-action.py
-```
+**The nice-to-pass, if you want to close it in a minute.** The file is
+`docs/unit333-psk31-fixture-export.adi` in the pushed tree: two fixture contacts, W1AW and
+G4XYZ, both 20m PSK/PSK31. Please do not import it into your real log.
+1. In any logger that imports ADIF, create a new, empty log (not yours).
+2. Import `docs/unit333-psk31-fixture-export.adi`.
+3. Look at both records: MODE PSK, SUBMODE PSK31, RST 599/599 and 599/589, GRIDSQUARE FN31 on W1AW only, date 2026-09-12, band 20m, freq 14.070000.
+4. Note any warning or rejection and the logger's name and version.
+5. Delete the scratch log.
 
 ## 3. What you should see
 
-**Yes on all three rulings, computed rather than seen.** The page does not scroll and clicks
-in. The green zone is the world with the night side and one dot. The tray mark is a feather.
-The windows were stood up on the headless host and read back; nobody in this repository can
-look at a pixel.
+**Is step 5 done? Yes on all four must-pass and on R13, each from a test that ran in this
+session. The nice-to-pass is unmet. One slot wants a ruling.**
 
-### The achievements page
+| Criterion | Type and method | Printed |
+|---|---|---|
+| A PSK31 contact logs with an RST, not the dB field - **met** | `ThePsk31LogsWithRstTests.ALoggedPsk31ContactCarriesBothReportsAndNotInTheDecibelField` (6 of 6 in the type) | `RST sent : 599`, `RST received : 589`, `<RST_SENT:3>599`, `<RST_RCVD:3>589` |
+| ADIF `MODE=PSK`, `SUBMODE=PSK31` - **met** | `ThePsk31AdifTests.APsk31ContactComesOutAsPskWithTheSubmode` (3 of 3, engine) | `<MODE:3>PSK`, `<SUBMODE:5>PSK31` |
+| No PSK31 card before the first contact, records after, on the click-in page - **met, one slot ruling wanted** | `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed` and `.TheFirstPsk31ContactRevealsTheModesRecords` | before: `page: 68 runs, naming PSK 0`, `hall_of_fame: 13 runs, naming PSK 0`, and 0 in the other seven kinds; after: `hall_of_fame  A PSK31 contact \|  \| 15 pts \| earned True \| opacity 1`, `modes  PSK31 \| 1 contact \| 5 pts \| earned True \| opacity 1` |
+| `TheAchievementsScreenTests` not worse - **met** | the whole type | 9 green, 1 red: `TheWindowDrawsEverySixRows` |
+| R13, the log and the records write events - **met** | `ThePsk31LogsWithRstTests.TheLoggedEventFiresOnceWithBothReportsAndNothingPersonal`, `ThePsk31RecordsAppearTests.TheRevealWritesItsEventOnceWithTheCountAndNothingPersonal` | the two lines below |
+| Nice-to-pass, a named logger imports the export - **unmet** | none ran; no logger could be searched for | - |
 
-`Achievements`, then `8 kinds. In each, the next one you could earn.`, then the total in green
-(`Total 465 pts · Rank 4 · 35 to Rank 5` on the twelve-contact fixture). Under it are two rows of
-four badges, each 242 x 133 px, and the legend below.
+**On the achievements page, computed on the test host, not on the glass.** The log is six US
+FT8 contacts plus one to Norway.
+- **Before any PSK31 contact:** the Hall of Fame badge's next card reads *A Morse contact*, not
+  *A PSK31 contact*. Inside Hall of Fame, *Your first contact* and *A DX contact* are earned and
+  the one unearned card is *A Morse contact · next*. The Modes category shows *FT8* and
+  *One more mode · next*. No word PSK appears on the page, in any of the eight kinds, or in any
+  hover.
+- **After his first PSK31 contact:** Hall of Fame adds *A PSK31 contact · 15 pts* earned, and
+  Modes adds *PSK31 · 1 contact · 5 pts* earned, both at full ink. Nothing was dimmed before
+  and nothing is dimmed after.
 
-Each badge has:
-- a colored band with a white emblem and the name
-- the meaning line in gray
-- a small card with the ring or quill, `next` and the next-card words
-- three right-aligned corner lines: `8 worked`, `40 pts · unranked`, `2 to Bronze`
-
-The whole page ends at 377 px of the 720. Slot widths:
-- name 196 px
-- meaning 224 px
-- next card 186 px
-- corner 224 px
-
-### One category - Countries, then Continents and Europe
-
-**Countries:**
-- **Header:** `‹ All achievements` top left, then a red band across the window with the
-  pennants, `Countries` at 20 pt, `one per entity` under it, and `8 worked` /
-  `40 pts · unranked` / `2 to Bronze` at its right end.
-- **Cards:** two columns of cards, each 410 px wide for the name. That is wide enough for the
-  longest entity the table holds, *Sovereign Military Order of Malta*, measured.
-- **What the fixture shows:** eight earned cards, each the country, its contact count and
-  `5 pts`. Then one card drawn a little quieter: `One more country`, `next`, `5 pts`.
-
-**Continents:** seven badges in two rows of four, Africa, Antarctica, Asia, Europe over North
-America, Oceania, South America:
+**The two events, as they appear in the file**, printed by this session's tests:
 
 ```
-Africa         One more country    1 worked  75 pts
-Antarctica     A first here        0 worked  0 pts   500 for a first
-Asia           One more country    1 worked  50 pts
-Europe         One more country    3 worked  15 pts
-North America  One more country    2 worked  5 pts
-Oceania        A first here        0 worked  0 pts   50 for a first
-South America  One more country    1 worked  25 pts
+{"ts":"2026-09-12T19:34:54.914Z","sessionId":"1588bf17","level":"info","appVersion":"326","category":"psk31","event":"psk31_contact_logged","data":{"rstSent":"599","rstReceived":"589","mode":"PSK","submode":"PSK31","gridCarried":false}}
+{"ts":"2026-09-12T19:34:54.098Z","sessionId":"110d221c","level":"info","appVersion":"326","category":"psk31","event":"psk31_records_revealed","data":{"records":2}}
 ```
 
-**Europe:** click it and the back arrow reads `‹ Continents`, with Europe's three countries and
-`One more country` after them.
+No callsign, grid value or name is in either line.
 
-**Hall of Fame:** five earned cards, then `Over 10,000 miles`, `next`, `100 pts`:
-- `Your first contact` 10
-- `A DX contact` 25
-- `A PSK31 contact` 15
-- `A Morse contact` 50
-- `Over 5,000 miles` 25
+**The logger:** no logger read the export, so there is no import result to show.
 
-**Total Miles:** a bar and `N of 50,000 miles` over one card, `50,000 miles`, `next`, `5 pts`.
-The fixture is unit 331's 42,041 miles.
-
-### The green zone at 2 pm EDT
-
-Band `20 m` at 26 pt in the digital family's ink, `14.074 MHz` beside it, then
-`Digital · FT8 · yours to use`, then `Your General license covers digital modes here ·
-97.305(c)(3)(ix)` small.
-
-In the middle is the relief map with the sun overhead at 4.4° N, 90.9° W - the Gulf of Mexico.
-The right-hand half of the map is dark: Europe, Africa, Asia and Australia, **938 cells of full
-night and a gray edge of 135 cells** running down through western Europe and Africa. Your ring
-sits on western Pennsylvania in daylight. Under the map:
-
-*Rule of thumb: 20 m and up want daylight along the path; 40 m and down want dark; the gray
-edge is where both happen.*
-
-The sun's height over named places, computed:
-
-```
-2 pm EDT            10 pm EDT
-FN00      52.3 day   -27.3 night
-LA        51.0 day     0.2 day
-London     3.0 day   -28.3 night
-Moscow   -16.6 night  -8.3 night
-Jo'burg  -27.8 night -29.6 night
-Tokyo    -28.0 night  57.4 day
-Sydney   -25.5 night  51.8 day
-```
-
-**So at 2 pm Moscow is dark on the map**, which is your eastern-Europe example as the sun and
-nothing else. **At 10 pm EDT** the sun is over 149.1° E: the map flips, your ring is in the
-dark, and the lit half is the Pacific, Japan and Australia. The panel never says a band is
-open, and the test fails if any line on it contains *open*, *likely*, *chance* or *reach*.
-
-On the right: `best bet now:` when the ranking has one, then the band buttons with `20 m`
-picked - bordered, semibold - and `✓ you are on it` under it. Under those, `heard just now`
-over the sparkline, with the count in bold and `last minute` under it.
-
-### The two widths
-
-| | 1400 window | 1920 window |
-| --- | --- | --- |
-| green zone panel | 778 x 193 px | 1298 x 151 px |
-| left region | 253 px | 513 px |
-| map | 202 x 110 px | 202 x 110 px |
-| right region | 262 px | 478 px |
-| mode line | 2 lines | 1 line |
-| license phrase | 3 lines | 2 lines |
-| rule of thumb | 3 lines | 2 lines |
-| band buttons | 7 in 3 rows | 7 in 1 row |
-| ink across the panel | 100.0%, nothing past the edge | 100.0%, nothing past the edge |
-
-**Where the 1400 split lands:** the map takes a fixed 202 px and the two sides share the rest,
-253 and 262. **Nothing clips at either width.** The line counts are the test host's, which
-draws about half again wider than Segoe UI, so on your glass expect the mode line on one line
-at both widths and the license phrase on one or two. That is an inference, not a measurement.
-The achievements window does not follow the main window and is 1040 x 720 at both.
-
-### The tray
-
-The quill beside the count is a feather, **21.3 px wide and 27.0 px tall of ink**: a dark green
-shaft with a pointed nib at the bottom left, running up to the tip at the top right, with green
-barbs either side and a notch cut into each side. When something is new the ring and the bead
-go round it as before. The quill marks on the decoded rows are the thin 12 px vane, as they
-were.
+**Nothing was measured at a radio** (FACT-004, FACT-006). Every value above is a test's printed
+output on this machine.
 
 ## 4. What's blocking us
 
 ### Raised by this unit
+
+**1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and §3.1 say opposite
+things about one slot.**
+
+*Ruling wanted.* The slot is the Hall of Fame badge's next card, and Hall of Fame's unearned
+card inside the category. The exact string is `A PSK31 contact`.
+
+It arises on a log holding *Your first contact*, *A DX contact*, *A Morse contact*, *Over 5,000
+miles* and *Over 10,000 miles* but no PSK31 contact, for instance an imported CW log with long
+contacts.
+- Ruling C, Tim, 2026-09-12: *every kind shown, the nearest unearned card in each, nothing
+  beyond it.*
+- `ACHIEVEMENTS_PHILOSOPHY.md` §3.1: *absent, not dimmed. No PSK31 card exists until the first
+  PSK31 contact.*
+
+*Reasoning.* On every other log the two agree: the badge shows the nearest first §3.1 allows.
+In this one case, showing the card breaks §3.1 and showing nothing breaks Ruling C. The
+instruction says not to choose, so **the screen is left as it was and still shows
+`A PSK31 contact` there.**
+
+*What was rejected and why.* Showing no next card, which is choosing §3.1. Moving `first_psk31`
+last in the list, which only moves the collision to a later log and reorders the owner's
+firsts.
+
+**2. The nice-to-pass wants a logger, and this session could not look for one.**
+
+*Something you can do in a minute, not a stop.* Import `docs/unit333-psk31-fixture-export.adi`
+into a new, empty log in any logger you already have, with the five steps in section 2. Name
+the logger and its version, and say whether it took both records with PSK/PSK31, both RSTs
+and the grid. That closes the criterion.
+
+*Reasoning.* The instruction forbids installing one, and the permission layer refused every
+listing outside `C:\Source\HamLet` and the registry query.
+
+*What was rejected and why.* Downloading or building a logger, which is your decision about
+your machine. Guessing from memory which loggers are installed, which would be a claim nobody
+measured.
+
+**3. This environment refuses deletes inside the repository and listings outside it, so two
+scratch files remain.**
+
+*No ruling wanted; housekeeping.*
+- `tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs` is untracked and one comment line.
+- `artifacts/unit333/psk31-fixture-export.adi` is gitignored.
+
+Both are safe to delete by hand, beside the five carried in item 19 below. The validator was
+run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
+243 documented as mangled by Git Bash.
+
+### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
 **1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
 
@@ -446,18 +380,12 @@ because a report cannot quote a run of itself.
 
 *What was rejected and why.* Composing timestamps as units 327, 328 and 331 did.
 
-**6. Step 5 is `partial` in `PHASE_STATUS.md` and *done* in the instruction.**
+**6. Step 5 is `partial` in `PHASE_STATUS.md` and *done* in the instruction.** **ANSWERED by
+this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pass is unmet, and
+unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
+launcher's and were not written.
 
-*Ruling wanted on which is true.* The instruction's block A reads *Steps 0 to 5 done, 6 waits on
-Tim*. `PHASE_STATUS.md`'s `STEP: 5` line reads `partial`. That line belongs to the launcher, and
-this unit does not write it.
-
-*Reasoning.* One of them is stale. The report's own block A says what the file says, and flags
-it.
-
-*What was rejected and why.* Choosing one. The step lines are not this session's to write.
-
-### Carried from unit 331's queue, per HM-DEC-139 - verbatim
+### Carried from unit 331's queue, as unit 332 carried it - verbatim
 
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
@@ -638,15 +566,12 @@ session's own `tools\cut-header-action.py`.
 
 ### Where the carried items stand after this unit
 
-- **Item 1 and item 10, composed timestamps:** not repeated. Every `UPDATED` in this unit is a
-  `date` reading, pasted; see raised item 5.
-- **Item 5, `Digital` against `Data`:** the instruction records that Tim has not overruled, so
-  `Digital` stands and the green zone still says it.
-- **Item 9, the recorder erasing shape types:** worked around as it advises. The feather test
-  asserts bounds and the path's own subpaths, not a type.
-- **Item 13, `AchievementMarkControl.cs` off the SHA pin:** changed again here, under an
-  instruction that names it.
-- **Item 19, the five files:** each is now one comment line, and the list is in section 2.
-- **Item 2, the 1400 split:** the instruction asked for the page at 1400 and 1920; the green
-  zone figures are in section 3's table. The card split itself was not touched.
-- **Every other item stands as carried.**
+- **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
+  Every hover on every visible control was read in task 1 and none names PSK31, so it stays
+  parked.
+- **Unit 332 item 6, step 5 partial or done:** answered above.
+- **Carried item 1 and 10, composed timestamps:** not repeated. Every `UPDATED` in this unit is
+  a `date` reading, pasted.
+- **Every other item stands as carried.** Nothing in this unit touched the 1400 split, States,
+  `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
+  the two id schemes, the five files or step 6.
