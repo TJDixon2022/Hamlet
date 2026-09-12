@@ -126,7 +126,7 @@ public sealed class Ft8Monitor
         {
             throw new ArgumentException(
                 $"A block is exactly {Geometry.BlockSize} samples at {Geometry.SampleRate} Hz and "
-                + $"{block.Length} were given. Refused rather than analysed over what arrived: the "
+                + $"{block.Length} were given. Refused rather than analyzed over what arrived: the "
                 + "analysis frame slides, so a short block would mix stale history into the "
                 + "waterfall and store it as though it were signal. The frame has not been touched.",
                 nameof(block));

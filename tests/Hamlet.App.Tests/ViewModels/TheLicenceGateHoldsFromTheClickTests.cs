@@ -337,7 +337,11 @@ public sealed class TheLicenceGateHoldsFromTheClickTests
         // from assertion 2's, which is what proves the panel passed the operator's
         // own setting rather than a constant.
         Assert.Contains(
-            "the licence guard is switched off in Settings",
+            // **`licence` BECAME `license` UNDER §R19** (work instruction 325
+            // task 5). In American English the noun is `license`, and this
+            // sentence is about the operator's license to transmit. The type
+            // name is a code identifier and is outside the rule.
+            "the license guard is switched off in Settings",
             panel.DigitalSendLine,
             StringComparison.Ordinal);
         // AND IT STILL CARRIES WHAT THE GUARD SAID WHEN IT WAS LAST ASKED, so

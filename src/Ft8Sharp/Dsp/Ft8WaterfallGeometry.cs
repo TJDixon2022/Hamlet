@@ -212,7 +212,7 @@ public class Ft8WaterfallGeometry
                 $"A block of {BlockSize} samples does not divide into {timeOversampling} analyses. "
                 + $"The analysis would consume {BlockSize / timeOversampling * timeOversampling} "
                 + $"samples of every block and the remaining {BlockSize % timeOversampling} would "
-                + "never be looked at — audio dropped silently rather than analysed. Refused.",
+                + "never be looked at — audio dropped silently rather than analyzed. Refused.",
                 nameof(timeOversampling));
         }
 

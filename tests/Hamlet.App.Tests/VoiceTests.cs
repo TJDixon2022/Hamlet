@@ -81,6 +81,73 @@ public sealed class VoiceTests
         Assert.Empty(offenders);
     }
 
+    /// <summary>
+    /// The British spellings that may not appear in anything the operator
+    /// reads (`PHASE_PLAN.md` §R19, Tim 2026-09-11).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE LIST IS STATED HERE RATHER THAN LEFT TO A DICTIONARY**, so
+    /// that what the rule covers is a thing a reader can see and argue with. It
+    /// is the set the work instruction names plus the ones this codebase actually
+    /// uses; it is not a general -ise/-ize sweep, because that would catch
+    /// `size`, `advertise` and every other word where both languages agree.</para>
+    /// <para>**AND IT IS ABOUT COPY, NOT ABOUT CODE.** `CopyIn` yields string
+    /// literals and XAML text attributes only, so `Colour` in an identifier, a
+    /// comment, or a ruling quoted from Tim is outside it - which is the
+    /// instruction's own boundary.</para>
+    /// <para>**`Licence` IS THE ONE THAT IS NOT A SPELLING QUESTION.** In American
+    /// English the noun is `license`; in British English the noun is `licence` and
+    /// the verb is `license`. Hamlet talks about the operator's license to
+    /// transmit, which is the noun, so it is `license` throughout.</para>
+    /// </remarks>
+    private static readonly string[] BritishSpellings =
+    {
+        "colour", "neighbour", "grey", "centre", "recognise", "catalogue",
+        "behaviour", "licence", "favourite", "apologise", "organise",
+        "realise", "defence", "practise", "traveller", "cancelled",
+        "modelling", "signalling",
+
+        // **`analyse` IS NOT ON THE LIST AND `analysed` IS**, because `analyses`
+        // is the correct American plural of `analysis` and a substring match on
+        // `analyse` would fail two exception messages that are already right.
+        // The verb forms are what differ.
+        "analysed", "analysing",
+    };
+
+    /// <remarks>
+    /// **§R19, TIM 2026-09-11: AMERICAN SPELLING** in every operator-facing
+    /// string. Every instruction to date was written British and the copy
+    /// followed it; the operator is American and the application is his.
+    /// </remarks>
+    [Fact]
+    public void NoOperatorFacingStringUsesABritishSpelling()
+    {
+        var offenders = new List<string>();
+
+        foreach (var file in CopyFiles())
+        {
+            foreach (var passage in CopyIn(file))
+            {
+                foreach (var british in BritishSpellings)
+                {
+                    if (passage.Text.Contains(british, StringComparison.OrdinalIgnoreCase))
+                    {
+                        offenders.Add(
+                            $"{Path.GetFileName(file)}:{passage.Line} [{british}]");
+                    }
+                }
+            }
+        }
+
+        // **IT NAMES EVERY ONE** (work instruction 279 task 5: a test says what it
+        // was looking for). `Assert.Empty` on a long list prints the first five and
+        // an ellipsis, which is the shape that makes a sweep tedious to clear.
+        Assert.True(
+            offenders.Count == 0,
+            offenders.Count + " operator-facing strings carry a British spelling:"
+            + Environment.NewLine + string.Join(Environment.NewLine, offenders));
+    }
+
     /// <remarks>
     /// <para>Proves the sweep actually reads something. A file filter that
     /// silently matched nothing would pass every assertion above it forever,

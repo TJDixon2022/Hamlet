@@ -236,7 +236,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
         }
         catch (OperationCanceledException)
         {
-            return new[] { RigValue.Unknown(field, read.Label + " was cancelled") };
+            return new[] { RigValue.Unknown(field, read.Label + " was canceled") };
         }
     }
 
@@ -395,7 +395,7 @@ public sealed class Ic7300Rig : IRig, IDisposable
         }
         catch (OperationCanceledException)
         {
-            ReportModeUnknown($"{write.Label} was cancelled");
+            ReportModeUnknown($"{write.Label} was canceled");
             return RigWriteResult.NoAnswer(write.Label);
         }
     }

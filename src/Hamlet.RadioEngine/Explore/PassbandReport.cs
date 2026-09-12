@@ -97,7 +97,7 @@ public readonly record struct PassbandReport
         {
             return new PassbandReport(
                 true, unread,
-                "One of the passband controls has been moved off centre, which "
+                "One of the passband controls has been moved off center, which "
                 + "narrows what you can hear whatever the mode says, and Hamlet "
                 + "has no way to put it back. Hold TWIN PBT CLR for about a "
                 + "second, until the little dot beside the filter width goes "

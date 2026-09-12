@@ -299,7 +299,7 @@ public static class CivReads
     /// </remarks>
     public static CivRead TwinPbtOuter { get; } = new(
         RigField.TwinPbtOuter, 0x14, new byte[] { 0x08 }, "19-3",
-        "00 00 to 02 55, centred at 01 28");
+        "00 00 to 02 55, centered at 01 28");
 
     /// <summary>Read the CW pitch.</summary>
     /// <remarks>

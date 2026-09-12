@@ -312,10 +312,16 @@ public static class AchievementChallenges
         return new AchievementCard(
             key: "challenge-grey-line",
             kind: AchievementKind.Challenge,
-            title: "A contact on the grey line",
+            // **THE KEY STAYS `challenge-grey-line` AND THE COPY BECOMES
+            // AMERICAN** (§R19, work instruction 325 task 5). The key is an
+            // identifier written into the operator's own stored achievements;
+            // renaming it would silently un-earn a card he has already earned,
+            // which is a far worse thing than a British spelling in a name nobody
+            // reads.
+            title: "A contact on the gray line",
             figure: "",
             station: "",
-            detail: "**Grey line is the hour or so around sunrise and sunset, when "
+            detail: "**Gray line is the hour or so around sunrise and sunset, when "
                 + "the layer that absorbs low frequencies in daylight has faded but "
                 + "the layer that reflects them is still there.** For that window a "
                 + "path along the line between day and night can carry a low-band "

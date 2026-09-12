@@ -553,7 +553,7 @@ public sealed class Ft8TransmitSequence
         catch (OperationCanceledException)
         {
             outcome = Ft8TransmitOutcome.Cancelled;
-            reason = "the transmission was cancelled while it was going out.";
+            reason = "the transmission was canceled while it was going out.";
         }
         catch (Exception ex)
         {
@@ -719,7 +719,7 @@ public sealed class Ft8TransmitSequence
         if (decision.WasOverridden)
         {
             refusal =
-                "the licence guard is switched off in Settings, so Hamlet has no answer it can "
+                "the license guard is switched off in Settings, so Hamlet has no answer it can "
                 + "stand behind about whether this frequency is inside your privileges. It will "
                 + $"not key on that. What the guard said when it was last asked: {decision.Reason}";
             return false;
@@ -731,7 +731,7 @@ public sealed class Ft8TransmitSequence
             // Saying it again in slightly different words would read as two
             // refusals for one reason.
             refusal = string.IsNullOrEmpty(decision.Reason)
-                ? "nothing checked this transmission against your licence privileges, and Hamlet "
+                ? "nothing checked this transmission against your license privileges, and Hamlet "
                   + "will not key one it could not check."
                 : $"{decision.Reason} Hamlet will not key a transmission nothing checked.";
             return false;
