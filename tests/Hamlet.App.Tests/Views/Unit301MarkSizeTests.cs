@@ -106,15 +106,25 @@ public sealed class Unit301MarkSizeTests
             // nothing. What is asserted instead is the figure both of them were
             // given: they read one resource, so they cannot drift apart at all.
             _output.WriteLine("mark, asked for     : " + mark.Height);
+            _output.WriteLine("quill it draws      : "
+                + mark.DrawnQuillHeight.ToString("0.0"));
             _output.WriteLine("belt, asked for     : " + belt.Height);
             _output.WriteLine("belt, drawn         : "
                 + belt.Bounds.Height.ToString("0.0")
                 + (belt.IsVisible ? "" : "  (collapsed: no contacts logged)"));
 
+            // **THE PAIR IS THE INK AND THE PILL, NOT THE TWO BOXES** (work
+            // instruction 330 task 1, under §R12). This compared `mark.Height` with
+            // `belt.Height` and passed for two units while the quill drawn inside
+            // that box was 10.6 px against the pill's 27 - the two boxes read one
+            // resource and could not drift, and the thing on the glass had drifted
+            // before the resource was written. What is asserted now is the figure a
+            // ruler would give.
             Assert.True(
-                Math.Abs(mark.Height - belt.Height) < 0.001,
-                "the mark asks for " + mark.Height + " and the belt ring asks for "
-                + belt.Height + ", so one reads as noticeably smaller");
+                Math.Abs(mark.DrawnQuillHeight - belt.Height) < 0.51,
+                "the quill draws at " + mark.DrawnQuillHeight.ToString("0.0")
+                + " and the belt ring is " + belt.Height
+                + ", so one reads as noticeably smaller");
 
             Assert.True(
                 Math.Abs(mark.Bounds.Height - mark.Height) < 0.001,

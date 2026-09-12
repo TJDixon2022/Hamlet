@@ -4271,13 +4271,25 @@
                                                          Tim, 2026-09-12, on what 325 shipped:
                                                          *"ugly and useless"* and *"no
                                                          achievement possibility click
-                                                         response"*. The mark is now a filled
-                                                         disc the full height of the row -
-                                                         `AchievementMarkControl.RowSide`,
-                                                         which says why that number - and it
-                                                         sits inside a `Button` so it is a hit
-                                                         target with a hand cursor rather than
-                                                         a bare control with a tooltip.
+                                                         response"*. The mark sits inside a
+                                                         `Button` so it is a hit target with a
+                                                         hand cursor rather than a bare control
+                                                         with a tooltip.
+
+                                                         **AND IT IS NOT A DISC** (work
+                                                         instruction 328 task 2, corrected here
+                                                         by 330 task 1). This comment said
+                                                         *a filled disc the full height of the
+                                                         row* for one unit after that disc was
+                                                         removed. Tim saw the disc and called it
+                                                         *"so so so so so ugly"*; what is drawn
+                                                         now is the tray's own vane at row
+                                                         scale, `AchievementMarkControl.RowVane`
+                                                         px of hairline outline in a
+                                                         `.RowSide` box, both of which say why
+                                                         that number. The box is the hit target
+                                                         and the room the door's ring needs; the
+                                                         vane is the ink inside it.
 
                                                          **THE HOVER IS UNCHANGED** - one line,
                                                          `NudgeTip` - and lives on the button so
@@ -5473,9 +5485,12 @@
                      logo, the app icon and the tray rather than a new metaphor.
 
                      **THE TWO STATES DIFFER BY SHAPE AND NOT ONLY BY COLOUR**
-                     (0.6): outlined with no ring at rest, filled with a ring when
+                     (0.6): no ring at rest, and the ring with its bead when
                      something is unseen. Printed in greyscale the two are still
-                     two.
+                     two. **The vane is filled in both** since Tim's option B of
+                     2026-09-10, so the ring is the only carrier and it is a shape;
+                     this comment said *outlined at rest* for two units after that
+                     stopped being true.
 
                      **A BUTTON AND NOT A BARE CONTROL**, which is unit 299 finding
                      applied: a control that draws an outline is not a hit target in
@@ -5493,16 +5508,20 @@
                         ToolTip.Tip="{Binding AchievementsMarkTip}">
                     <!-- **AN OBJECT THAT FILLS THE BAR, NOT A GLYPH IN IT** (Tim,
                          2026-09-09: *it is a tiny dot lost in the sea of the
-                         tray*). Measured before the change: the bar's inside is 26
-                         pixels and the quill was 20 of them.
+                         tray*; and again 2026-09-12: *the icon in the tray is tiny
+                         and hard to notice*).
 
-                         **THE SIZE IS A RESOURCE AND NOT A NUMBER TYPED TWICE.**
-                         The belt ring beside it reads the same one, so the two
-                         cannot drift into one looking noticeably smaller than the
-                         other. -->
+                         **THE BOX IS NOT THE MARK, AND THAT IS WHY HE SAID IT
+                         TWICE** (work instruction 330 task 1). This read
+                         `HmStatusMarkSize` - the ruled 27 - and the renderer drew
+                         the vane at 62 per cent of the file's viewBox inside it,
+                         which is 10.6 px of quill in a 27 px box. The box now reads
+                         `HmStatusQuillBox` and the ink is the ruled 27, which is
+                         the belt ring's height beside it, so the two are a pair on
+                         the glass rather than on paper. -->
                     <ctl:AchievementMarkControl x:Name="AchievementMark"
-                                                Width="{StaticResource HmStatusMarkSize}"
-                                                Height="{StaticResource HmStatusMarkSize}"
+                                                Width="{StaticResource HmStatusQuillBox}"
+                                                Height="{StaticResource HmStatusQuillBox}"
                                                 IsNew="{Binding AchievementsUnseen}" />
                 </Button>
 

@@ -390,3 +390,17 @@ COST: 9.140988
 ACCOMPLISHED: the mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says step 5 is done, so the only step left is Tim at the radio
 STATE_AFTER: partial
 STATE_WHY: The four must-pass criteria are each met with quoted values from tests run this session, but the stated nice-to-pass criterion that the ADIF export imports cleanly into one named common logger is neither met nor mentioned anywhere in the report.
+
+## UNIT 330 - STEP 6
+
+STEP: 6
+APPROACH: Carried repair, six things the owner saw on 2026-09-12 with screenshots and ruled on. Size the tray mark as units 300 to 303 ruled; make the conversation card's right column a two-column table with one show-the-messages link on the whole card; turn the quill popup into a preview of the card he would earn; compress the green zone under the neighborhood map to a license line plus a live band-first line with the best-bet check; stop the readiness line claiming the band was empty in a slot Hamlet transmitted in; and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and a new Total Miles kind.
+MOVE: continue
+WHY: Step 6's only exit is the owner's own verdict at the radio, and every item here is something he looked at and objected to on the screen he will be sitting in front of when he gives it. None of it touches a step criterion.
+DECIDED: The green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner. The points are the owner's file - assets/data/achievement-points.json - and no point value is hard-coded. The two size tests that contradict each other about the resting tray mark are reconciled under R12 on the later of the two rulings, option B of 2026-09-10.
+LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark; Tim 2026-09-12 with screenshots.
+COST: one session, seven tasks, each committing on its own so that what lands, lands.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 1 - a state claimed before the measurement is the fault this phase has already hit twice.
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.

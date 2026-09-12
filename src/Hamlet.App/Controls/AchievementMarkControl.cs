@@ -131,6 +131,22 @@ public sealed class AchievementMarkControl : Control
     private static readonly Lazy<IReadOnlyList<GeometryDrawing>> Quill =
         new(() => SvgMark.Shapes(AchievementQuill.Uri));
 
+    /// <summary>**The vane's own bounds in the file's 44-unit space.**</summary>
+    /// <remarks>
+    /// **THE DRAWN QUILL IS MEASURED FROM THE FILE AND NOT FROM THE VIEWBOX** (work
+    /// instruction 330 task 1). The vane spans 28 of the file's 44 units and sits in the
+    /// middle of them, so scaling the viewBox to a fraction of the box - which is what
+    /// units 300 to 303 did - draws a quill 64 per cent of the size the number in the
+    /// markup says. Scaling the vane's own height is the only way the figure on the glass
+    /// is the figure that was ruled, and it stays true if somebody edits the SVG.
+    /// </remarks>
+    private static readonly Lazy<Rect> VaneBounds = new(() => Quill.Value
+        .Select(s => s.Geometry)
+        .OfType<Geometry>()
+        .FirstOrDefault(g => g is not LineGeometry)
+        ?.Bounds
+        ?? new Rect(0, 0, AchievementQuill.Side, AchievementQuill.Side));
+
     /// <summary>The tray's own vane, scaled to <see cref="RowVane"/> px tall.</summary>
     /// <remarks>
     /// <para>**IT IS THE SAME PATH THE TRAY DRAWS AND NOTHING TRANSCRIBES IT** (§0, and
@@ -258,6 +274,17 @@ public sealed class AchievementMarkControl : Control
         _ => IsNew,
     };
 
+    /// <summary>**How tall the quill this mark draws is, on the glass, right now.**</summary>
+    /// <remarks>
+    /// **A TEST ASSERTS THE INK AND NOT THE BOX** (work instruction 330 task 1). The two
+    /// have been different since unit 300 and nothing measured the difference: three tests
+    /// checked the box was 27 and the drawing was 10.6 the whole time. This is what a
+    /// reader would put a ruler against, computed from the bounds the layout gave.
+    /// </remarks>
+    public double DrawnQuillHeight => IsRowVane
+        ? RowVane
+        : Math.Min(Bounds.Width, Bounds.Height) * TrayFraction;
+
     /// <summary>The brush the quill and the ring are drawn in.</summary>
     /// <remarks>
     /// **EXPOSED SO THAT A TEST ASSERTS THE VALUE RATHER THAN A SCREENSHOT.** The
@@ -266,6 +293,44 @@ public sealed class AchievementMarkControl : Control
     /// without rendering a bitmap and sampling it.
     /// </remarks>
     public IBrush LitBrush => Form == AchievementMarkForm.Door ? DoorInk : Green;
+
+    /// <summary>**How tall the tray's drawn quill is, in pixels: the ruled 27.**</summary>
+    /// <remarks>
+    /// <para>**TWENTY-SEVEN IS UNITS 300 TO 303'S OWN NUMBER AND IT WAS NEVER ON THE
+    /// GLASS** (work instruction 330 task 1). Tim was shown three treatments on
+    /// 2026-09-10 and chose option B - *about 27 px, filled green* - and 27 went into
+    /// `HmStatusMarkSize`, which is the size of the **box**. Inside that box the renderer
+    /// scaled the file's whole 44-unit viewBox to 62 per cent of the box, and the vane is
+    /// 28 of those 44 units, so what actually rendered was 27 x 0.62 x 28 / 44 = **10.6 px
+    /// of quill, 5.3 px wide**. His word for it on 2026-09-12 was *tiny and hard to
+    /// notice*, which is the same complaint he made on 2026-09-09 about the 20 px box, and
+    /// it is the same complaint because neither answer moved the drawing.</para>
+    /// <para>**THIS NUMBER MEASURES THE DRAWING** (unit 328 made the same correction one
+    /// surface down for <see cref="RowVane"/>). It is the height of the vane on the glass,
+    /// and it matches the count badge beside it - `HmStatusMarkSize`, still 27 - so the
+    /// quill and the number read as two objects of one size rather than as an icon parked
+    /// next to a pill.</para>
+    /// </remarks>
+    public const double TrayQuill = 27;
+
+    /// <summary>**How big the tray's mark box is, in pixels: 32, to hold the ring.**</summary>
+    /// <remarks>
+    /// <para>**THE BOX IS BIGGER THAN THE DRAWING BECAUSE THE RING GOES ROUND IT** (§0.6:
+    /// the ring is the shape that carries *something unseen*, and it has to be a ring and
+    /// not a line through the quill). The orbit is drawn at `side / 2 - 1`, so a 32 px box
+    /// gives it a radius of 15 against a vane whose tip is 13.5 px from the middle - a
+    /// pixel and a half of air, and the bead at `side * 0.11` runs round the outside of the
+    /// drawing rather than across it.</para>
+    /// <para>**IT IS A SECOND NUMBER AND THAT IS THE POINT.** Units 300 to 303 had one, and
+    /// one number cannot be both the size of the ink and the room the ring needs; that is
+    /// how the ruled 27 became 10.6. The two are named separately and the fraction between
+    /// them is computed, so the drawing scales with the box at any size the control is
+    /// given.</para>
+    /// </remarks>
+    public const double TraySide = 32;
+
+    /// <summary>How much of the tray's box the drawn quill takes, top to bottom.</summary>
+    private const double TrayFraction = TrayQuill / TraySide;
 
     /// <summary>**How big a row's mark box is, in pixels: the full height of the row.**</summary>
     /// <remarks>
@@ -317,7 +382,7 @@ public sealed class AchievementMarkControl : Control
 
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize)
-        => IsRowVane ? new Size(RowSide, RowSide) : new Size(20, 20);
+        => IsRowVane ? new Size(RowSide, RowSide) : new Size(TraySide, TraySide);
 
     /// <inheritdoc/>
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -541,15 +606,19 @@ public sealed class AchievementMarkControl : Control
             }
         }
 
-        // **THE QUILL, SCALED INTO WHATEVER ROOM THERE IS.** The vane fills when
-        // something is unseen and is an outline when nothing is, which is the second
-        // carrier: body or no body.
-        var art = side * 0.62;
-        var scale = art / AchievementQuill.Side;
+        // **THE QUILL, SCALED SO THAT THE VANE IS THE RULED HEIGHT** (work instruction
+        // 330 task 1). What this replaced scaled the file's whole 44-unit viewBox to 62
+        // per cent of the box, and the vane is 28 of those 44 units, so a 27 px box drew
+        // 10.6 px of quill and the ruled number was never on the glass. The scale is
+        // taken off the vane's own bounds in the file, so editing the SVG moves the
+        // drawing and leaves the mark <see cref="TrayQuill"/> px tall.
+        var vane = VaneBounds.Value;
+        var scale = side * TrayFraction / vane.Height;
 
         using (context.PushTransform(
-            Matrix.CreateScale(scale, scale)
-            * Matrix.CreateTranslation(middle.X - art / 2, middle.Y - art / 2)))
+            Matrix.CreateTranslation(-vane.Center.X, -vane.Center.Y)
+            * Matrix.CreateScale(scale, scale)
+            * Matrix.CreateTranslation(middle.X, middle.Y)))
         {
             // **FILLED GREEN AT REST, NOT OUTLINED** (Tim's ruling of 2026-09-10,
             // option B of three he was shown). At rest it was a grey sliver and his

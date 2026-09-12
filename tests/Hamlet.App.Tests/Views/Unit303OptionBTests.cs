@@ -90,7 +90,21 @@ public sealed class Unit303OptionBTests
             + "difference survives greyscale");
     }
 
-    /// <summary>**About 27 px, and it fills the bar.**</summary>
+    /// <summary>**The drawn quill is about 27 px, and the box fills the bar.**</summary>
+    /// <remarks>
+    /// <para>**RECONCILED WITH `Unit300SizesTests` UNDER §R12, WORK INSTRUCTION 330 TASK
+    /// 1.** This asserted `mark.Bounds.Height == 27` and passed for two units while the
+    /// quill inside those 27 pixels was 10.6 px tall, because the renderer scaled the
+    /// file's whole 44-unit viewBox to 62 per cent of the box and the vane is 28 of those
+    /// 44 units. **Tim's ruling was about the mark and the test was about the box**, and
+    /// the two were not the same number; that is why he said *a tiny dot lost in the sea
+    /// of the tray* on 2026-09-09 and *the icon in the tray is tiny and hard to notice*
+    /// on 2026-09-12 about two different sizes of the same thing.</para>
+    /// <para>**SO IT NOW ASSERTS THE INK AND THE BOX SEPARATELY**: the drawn quill is
+    /// the ruled 27 and matches the count badge beside it, and the box is
+    /// <see cref="AchievementMarkControl.TraySide"/>, which is bigger because the orbit
+    /// ring has to go round the drawing rather than through it.</para>
+    /// </remarks>
     [AvaloniaFact]
     public void TheMarkIsAboutTwentySevenAndFillsTheBar()
     {
@@ -117,19 +131,25 @@ public sealed class Unit303OptionBTests
 
             _output.WriteLine("status bar, outside : " + bar.Bounds.Height);
             _output.WriteLine("status bar, inside  : " + inside);
-            _output.WriteLine("the mark            : " + mark!.Bounds.Height);
+            _output.WriteLine("the mark's box      : " + mark!.Bounds.Height);
+            _output.WriteLine("the quill it draws  : " + mark.DrawnQuillHeight);
             _output.WriteLine("the belt asks for   : " + belt!.Height);
 
-            Assert.Equal(27, mark.Bounds.Height, 1);
+            // **THE RULED 27 IS THE DRAWING** (work instruction 330 task 1).
+            Assert.Equal(27, mark.DrawnQuillHeight, 1);
 
-            // **IT STILL FITS**, with a little headroom, and the bar did not grow.
+            Assert.Equal(AchievementMarkControl.TraySide, mark.Bounds.Height, 1);
+
+            // **IT STILL FITS**, with a little headroom.
             Assert.True(
                 mark.Bounds.Height <= inside,
                 "the mark is taller than the inside of the bar");
 
-            // **THE BELT PILL BESIDE IT IS UNCHANGED**, which the instruction says
-            // outright - so the two still read as a pair off one resource.
-            Assert.Equal(mark.Height, belt.Height);
+            // **THE QUILL AND THE COUNT BADGE ARE ONE SIZE**, which is what *it reads
+            // as a pair* has to mean: the ink beside the pill, not the box round the
+            // ink beside the pill. It was the boxes that matched before, and the box
+            // was two and a half times the drawing.
+            Assert.Equal(belt.Height, mark.DrawnQuillHeight, 1);
         }
         finally
         {

@@ -660,8 +660,18 @@
     18 px filled disc with the tray quill's vane at row scale. No production code moves in
     this task.
   -->
+  <!--
+    1.13.14 -> 1.13.15, UNIT 330 TASK 1, UNDER HM-DEC-150 AND R7. A PATCH, AND THE TRAY MARK
+    IS THE SIZE THAT WAS RULED. Units 300 to 303 ruled the tray quill at about 27 px and the
+    27 was put on the box rather than on the drawing: the renderer scales the 44-unit file to
+    62 per cent of the box, so a 27 px box drew 10.6 px of quill and Tim's word for it on
+    2026-09-12 was "tiny and hard to notice". The drawn quill is now the ruled height and the
+    box is sized to hold it and its ring. The two size tests that contradicted each other
+    about whether the resting mark is filled are reconciled under R12 on the later ruling,
+    option B of 2026-09-10.
+  -->
   <PropertyGroup>
-    <Version>1.13.14</Version>
+    <Version>1.13.15</Version>
   </PropertyGroup>
 
   <!--

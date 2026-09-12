@@ -116,6 +116,24 @@
              room came out of padding that was there before. -->
         <x:Double x:Key="HmStatusMarkSize">27</x:Double>
 
+        <!-- **THE QUILL'S BOX, WHICH IS NOT THE QUILL** (work instruction 330
+             task 1). `HmStatusMarkSize` above is the ruled 27 and it was put on
+             the mark's box, inside which the renderer drew the vane at 62 per
+             cent of the file's viewBox - 10.6 px of quill. Tim, 2026-09-12: *the
+             icon in the tray is tiny and hard to notice.*
+
+             **SO THE INK IS 27 AND THE BOX IS 32**, because the orbit ring has to
+             go round the drawing rather than through it: at 32 the ring's radius
+             is 15 and the vane's tip is 13.5 from the middle.
+             `AchievementMarkControl.TraySide` and `.TrayQuill` carry both numbers
+             and the reasoning; this key exists so the markup reads one of them
+             rather than typing 32.
+
+             **THE BELT RING BESIDE IT STILL READS 27**, which is the number the
+             quill's ink now matches, so the two read as a pair on the glass
+             instead of on paper. -->
+        <x:Double x:Key="HmStatusQuillBox">32</x:Double>
+
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,
              green = decode. -->
