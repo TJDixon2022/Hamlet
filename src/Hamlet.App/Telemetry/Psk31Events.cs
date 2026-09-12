@@ -453,7 +453,8 @@ public static class Psk31Events
     /// <param name="reading">The meter's own number, or null where it was not read.</param>
     /// <param name="ageMs">How old that reading is, or null.</param>
     /// <param name="pastTheZone">True where it is past where it should sit.</param>
-    /// <param name="zone">The top of the zone, so the record carries what it was compared to.</param>
+    /// <param name="zone">The top of the zone, or null where nobody has ruled one.</param>
+    /// <param name="scaleTop">The top of the meter's own scale, from the manual.</param>
     /// <remarks>
     /// <para>**§R11's HALF THAT IS A MEASUREMENT.** The panel gets a sentence a person with
     /// no shack years can act on; the file gets the number, its age (HM-DEC-111) and the
@@ -468,7 +469,8 @@ public static class Psk31Events
         double? reading,
         double? ageMs,
         bool pastTheZone,
-        double zone)
+        double? zone,
+        double scaleTop)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_alc",
@@ -476,9 +478,16 @@ public static class Psk31Events
             {
                 ["measured"] = reading is not null,
                 ["alc"] = reading,
+                ["scaleTop"] = scaleTop,
                 ["ageMs"] = ageMs is { } age ? Math.Round(age) : null,
-                ["pastTheZone"] = pastTheZone,
+
+                // **A ZONE NOBODY RULED IS ABSENT, NOT A NUMBER** (§0.0, work
+                // instruction 324 task 4b). Unit 323 wrote 128 here, which it had
+                // invented; the manual gives the scale and not the line on it, so
+                // `zone` is null and `judged` says plainly that nothing was compared.
+                ["judged"] = zone is not null,
                 ["zone"] = zone,
+                ["pastTheZone"] = pastTheZone,
             },
             pastTheZone ? TelemetryLevel.Warn : TelemetryLevel.Info);
 

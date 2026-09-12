@@ -119,3 +119,37 @@ reading of the manual held in another surface's project knowledge, and that surf
 not state which publication it read. **So they are marked as cited-at-one-remove**: good
 enough to write down, not good enough to put a number on a screen from. A unit that needs
 to act on either one re-reads it against `A7292-4EX-6` first.
+
+## The ALC meter read, item 47 (work instruction 324 task 4b)
+
+| what | where | value |
+| --- | --- | --- |
+| Read ALC meter level | CI-V command table, **section 19**, beside `15 11` and `15 12` | `15 13`, **`00 00` = minimum to `01 20` = maximum**, BCD, so the scale is **0 to 120** |
+
+**It is in `CivReads.Alc`, decoded by `CivDecode` through `CivValues.Level`, and asked
+for only while a send is running** - `RigStateMonitor.WantsAlc`, set by the PSK31 send
+path around the one transmission it keys and cleared in its `finally`. ALC is the radio
+holding back a signal it is being given too much of; a resting transmitter is holding
+nothing back, and a reading left sitting there off transmit would read as *the level was
+fine* when it means *nobody was transmitting*, so it is marked unknown the moment the
+transmitter stops - the same discipline `15 12` and `15 11` are held to (HM-DEC-081,
+HM-DEC-082).
+
+**WHERE THE ZONE ENDS IS NOT IN THE MANUAL, AND UNIT 324 DID NOT INVENT IT.** The row
+above gives the scale and nothing else. For data modes the manual says only *adjust the
+device's output level within the ALC zone* (page 4-31, the row in the table above), and
+gives no number for where that zone ends on the 0-120 scale. Unit 323 judged the meter
+against **128**, which it got by halving the **0-255** range the transmit power *setting*
+uses; that is a different control's range and the figure was the unit's own. **It is
+gone. No second number replaces it.**
+
+So Hamlet reads the meter, writes the number and its age into `psk31_send_alc` with
+`judged: false` and `zone: null`, and tells the operator what was read and to compare it
+with the zone marked on his own radio. **The threshold is an open ask on the owner**, and
+the day a figure is ruled it goes into `MainWindowViewModel.Psk31AlcZone` and the
+judgement fires without anything else moving.
+
+**On this machine there is no radio** (FACT-006), so the read is proved as far as the
+poll and stops there: `TheAlcIsReadTests` asserts that the command is the manual's, that
+nothing asks for it at rest, that a reply decodes on the 0-120 scale, and that with no
+radio the record says `measured: false`.

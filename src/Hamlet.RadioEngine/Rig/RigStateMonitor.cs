@@ -114,6 +114,19 @@ public sealed class RigStateMonitor : IDisposable
     /// </remarks>
     public long ReadCount { get; private set; }
 
+    /// <summary>**Whether anything wants the ALC meter read.**</summary>
+    /// <remarks>
+    /// <para>**SET AROUND A KEYED TRANSMISSION AND AT NO OTHER TIME** (work instruction
+    /// 324 task 4b). The ALC meter measures the radio holding back a signal it is being
+    /// given too much of, so off transmit its answer means nothing, and this is the
+    /// difference between a command on the bus four times a second and a command on the
+    /// bus for the few seconds of a send.</para>
+    /// <para>**AND IT ASKS FOR NOTHING ITSELF.** Setting it does not issue a read; it
+    /// only lets the live pass that was going to run anyway include one field more. It
+    /// keys nothing and writes nothing to the radio (§0.2).</para>
+    /// </remarks>
+    public bool WantsAlc { get; set; }
+
     /// <summary>
     /// Whether anybody is looking. Polling stops entirely when nothing is.
     /// </summary>
@@ -227,6 +240,14 @@ public sealed class RigStateMonitor : IDisposable
                 return;
             }
 
+            // **THE ALC IS NOT SWEPT EITHER** (work instruction 324 task 4b). *Only
+            // while a send is keyed* has to mean the connect sweep too, or the first
+            // thing Hamlet ever asks a radio about is a meter that cannot answer.
+            if (field == RigField.Alc && !WantsAlc)
+            {
+                continue;
+            }
+
             await ReadIntoStateAsync(field, cancellationToken).ConfigureAwait(false);
         }
     }
@@ -301,6 +322,15 @@ public sealed class RigStateMonitor : IDisposable
                     // bus. Where it does not, the read happens and the screen
                     // follows the dial rather than the sweep (HM-DEC-050).
                     if (RigPollPlan.SkipLiveRead(field, State[field], DateTime.UtcNow))
+                    {
+                        continue;
+                    }
+
+                    // **THE ALC IS ASKED FOR ONLY WHILE SOMETHING IS SENDING**
+                    // (work instruction 324 task 4b). It is the one live field
+                    // that means nothing at all off transmit, and the send path
+                    // is the only thing that knows a transmission is running.
+                    if (field == RigField.Alc && !WantsAlc)
                     {
                         continue;
                     }
@@ -388,6 +418,17 @@ public sealed class RigStateMonitor : IDisposable
             {
                 _state = _state.With(RigValue.Unknown(
                     RigField.PowerOut, "only measurable while transmitting"));
+            }
+
+            // **AND THE SAME FOR THE ALC METER** (work instruction 324 task 4b).
+            // ALC is the radio holding back a signal it is being given too much
+            // of; a resting transmitter is holding nothing back, so a figure
+            // left sitting there would read as "the level was fine" when what it
+            // means is "nobody was transmitting".
+            if (!_state.IsTransmitting && _state[RigField.Alc].IsKnown)
+            {
+                _state = _state.With(RigValue.Unknown(
+                    RigField.Alc, "only measurable while transmitting"));
             }
 
             next = _state;

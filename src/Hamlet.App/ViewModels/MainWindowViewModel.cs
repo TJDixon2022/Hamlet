@@ -13938,7 +13938,28 @@ public partial class MainWindowViewModel : ObservableObject
             return null;
         }
 
-        var result = await _armedSend.NowAsync().ConfigureAwait(false);
+        // **THE ALC IS ASKED FOR WHILE THE SEND IS RUNNING AND NOT ONE POLL LONGER**
+        // (work instruction 324 task 4b). `15 13` is the one live read that means
+        // nothing off transmit, so the poll is told to include it here and told to stop
+        // the moment the send is over, whatever the send did. **It asks the radio for
+        // nothing itself and it keys nothing** (§0.2): the poll was running anyway.
+        WantTheAlcRead(true);
+
+        Ft8BoundaryResult result;
+
+        try
+        {
+            result = await _armedSend.NowAsync().ConfigureAwait(false);
+        }
+        finally
+        {
+            // **READ THE METER, THEN STOP ASKING.** `ReadTheAlc` below takes what the
+            // poll has already put in the state, so the flag is cleared after the read
+            // rather than before it.
+            ReadTheAlc();
+            WantTheAlcRead(false);
+        }
+
         var run = result.Run;
 
         if (run is not null)
@@ -13959,11 +13980,6 @@ public partial class MainWindowViewModel : ObservableObject
                     plannedSeconds,
                     aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
             }
-
-            // **THE ALC IS READ WHILE THE SEND IS STILL THE LAST THING THAT HAPPENED**
-            // (§R11). The meter only means anything about a transmission, and this is the
-            // first moment after one where the poll's reading is about that transmission.
-            ReadTheAlc();
 
             WhatTheRadioSaidAfterASend();
         }
@@ -13989,17 +14005,34 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public const int Psk31PowerPercent = 50;
 
-    /// <summary>**Where the ALC should sit, as a fraction of the meter's range.**</summary>
+    /// <summary>**The top of the ALC meter's scale, from the manual.**</summary>
     /// <remarks>
-    /// **THIS IS THE FIGURE THE SENTENCE IS JUDGED AGAINST AND IT IS THIS UNIT'S, NOT A
-    /// MEASUREMENT** (§0.0). The IC-7300's ALC scale is marked with a zone the needle should
-    /// stay inside; `SHACK_FACTS.md` records no number for where it ends, and nothing here
-    /// read one off the radio. Half the meter's 0-255 range is a conservative reading of
-    /// *inside the zone*, it is written down where a reader can find it, and the record
-    /// carries it beside every reading so the judgement can be checked rather than taken.
-    /// **If the owner rules a figure, it replaces this one.**
+    /// **120, AND IT IS A CITATION** (work instruction 324 task 4b). `15 13`, *Read ALC
+    /// meter level*, answers `00 00` = minimum to `01 20` = maximum, in BCD, so the whole
+    /// scale is 0 to 120. It lives in <see cref="CivAlc.FullScale"/> with the command
+    /// beside it and is read from there rather than typed again.
     /// </remarks>
-    public const double Psk31AlcZone = 128;
+    public const double Psk31AlcScaleTop = CivAlc.FullScale;
+
+    /// <summary>**Where the ALC zone ends on that scale - and nobody knows.**</summary>
+    /// <remarks>
+    /// <para>**IT IS NULL, AND THAT IS THE HONEST ANSWER** (§0.0, §4). Unit 323 judged the
+    /// meter against 128, which it arrived at by halving the 0-255 range the transmit
+    /// power *setting* uses; that is not this meter's range, and the figure was this
+    /// unit's own invention rather than a reading of anything.</para>
+    /// <para>**AND THE MANUAL DOES NOT REPLACE IT.** For data modes it says *adjust the
+    /// device's output level within the ALC zone* (p. 4-31, cited in
+    /// `docs/psk31-reference.md`) and gives no number for where that zone ends. The
+    /// operator's own reading in `SHACK_FACTS.md` FACT-005 is off the meter's face -
+    /// *-2.0 to -1.5, inside the red zone* - which is a different scale again, and
+    /// converting between them would be inventing the same number twice.</para>
+    /// <para>**SO HAMLET REPORTS THE READING AND DOES NOT JUDGE IT.** The sentence says
+    /// what the radio's own meter read and asks the operator to compare it with the zone
+    /// his radio draws, which is a thing he can do and Hamlet cannot. **This is an ask on
+    /// the owner**, carried in `output.md`, and the day a figure is ruled it goes here and
+    /// the judgement fires.</para>
+    /// </remarks>
+    public static double? Psk31AlcZone => null;
 
     /// <summary>True while the power offer is on the panel.</summary>
     public bool HasPsk31PowerOffer => IsPsk31Chosen && !_psk31PowerSettled;
@@ -14105,25 +14138,60 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var value = Psk31AlcForTests ?? _rigMonitor?.State[RigField.Alc];
         var reading = value is { IsKnown: true } ? value.Number : null;
-        var past = reading > Psk31AlcZone;
+
+        // **NO RULED ZONE MEANS NO VERDICT** (§0.0). `reading > null` is false in C# and
+        // that is the behaviour wanted here, but it is written out so that nobody reads
+        // it as an oversight: until a figure is ruled, nothing is past anything.
+        var past = Psk31AlcZone is { } zone && reading > zone;
 
         Psk31Events.AlcRead(
             _telemetry,
             reading,
             value is null ? null : AgeMs(value, DateTime.UtcNow),
             past,
-            Psk31AlcZone);
+            Psk31AlcZone,
+            Psk31AlcScaleTop);
 
-        Psk31AlcLine = past
-            ? "Your radio is being driven harder than it wants to be: its own level "
-                + "control is working to hold the signal back, and that is what makes a "
-                + "PSK31 signal spread out and splatter over the people either side of you. "
-                + "Turn the transmit drive above down one step and send again."
-            : "";
+        Psk31AlcLine = reading is not { } level
+            ? ""
+            : past
+                ? "Your radio is being driven harder than it wants to be: its own level "
+                    + "control is working to hold the signal back, and that is what makes a "
+                    + "PSK31 signal spread out and splatter over the people either side of you. "
+                    + "Turn the transmit drive above down one step and send again."
+
+                // **WHAT IT READ, AND THE ONE THING HE CAN DO THAT HAMLET CANNOT** (§R11:
+                // a sentence a person with no shack years can act on). Hamlet has the
+                // number off the radio and nobody has told it where the line is on that
+                // scale, so it says so rather than passing a judgement it cannot support.
+                : "Your radio's own level control read "
+                    + level.ToString("0", CultureInfo.InvariantCulture) + " out of "
+                    + Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture)
+                    + " while that went out. Hamlet has not been told where the ALC zone "
+                    + "ends on that scale, so it is not judging it for you: look at the ALC "
+                    + "bar on the radio, and if it goes past the marked zone, turn the "
+                    + "transmit drive above down one step and send again.";
 
         OnPropertyChanged(nameof(Psk31AlcLine));
         OnPropertyChanged(nameof(HasPsk31AlcLine));
     }
+
+    /// <summary>Tell the poll whether to ask the radio for the ALC meter.</summary>
+    /// <param name="wanted">True while a send is running.</param>
+    /// <remarks>
+    /// **IT SETS A FLAG AND TOUCHES NOTHING ELSE** (§0.2). With no radio there is no
+    /// monitor and this does nothing at all, which is this machine's state.
+    /// </remarks>
+    private void WantTheAlcRead(bool wanted)
+    {
+        if (_rigMonitor is not null)
+        {
+            _rigMonitor.WantsAlc = wanted;
+        }
+    }
+
+    /// <summary>Whether the poll is being asked for the ALC, for a test.</summary>
+    internal bool WantsAlcForTests => _rigMonitor?.WantsAlc ?? false;
 
     /// <summary>What the radio said about itself after a PSK31 send, from the poll.</summary>
     /// <remarks>

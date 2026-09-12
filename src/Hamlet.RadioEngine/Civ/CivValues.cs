@@ -452,3 +452,41 @@ public static class CivPowerOut
     /// <returns>True at zero.</returns>
     public static bool IsSilent(int reading) => Percent(reading) is <= 0;
 }
+
+/// <summary>
+/// **The ALC meter, on the one scale the manual gives for it.**
+/// </summary>
+/// <remarks>
+/// <para>**`15 13`, *Read ALC meter level*, `00 00` = minimum to `01 20` = maximum**,
+/// section 19 of the IC-7300 full manual, beside `15 11` and `15 12`. BCD, so the whole
+/// scale is **0 to 120** (work instruction 324 task 4b). Unit 323 judged the ALC against
+/// a figure of 128, which came from assuming the 0-255 range the power *setting* uses;
+/// that range is not this meter's.</para>
+/// <para>**AND WHERE THE ZONE ENDS IS NOT HERE, BECAUSE THE MANUAL DOES NOT SAY** (§0.0,
+/// §4). For data modes it says only *adjust the device's output level within the ALC
+/// zone* (p. 4-31, cited in `docs/psk31-reference.md`), and the command table gives no
+/// number for where that zone ends on the 0-120 scale. **Nothing here invents one.** The
+/// operator's own reading in `SHACK_FACTS.md` FACT-005 is off the meter's face - *-2.0 to
+/// -1.5, inside the red zone* - which is a different scale again and cannot be converted
+/// without a conversion nobody has.</para>
+/// </remarks>
+public static class CivAlc
+{
+    /// <summary>The top of the scale, from `01 20` in the command table.</summary>
+    public const int FullScale = 120;
+
+    /// <summary>How to write a reading for the operator.</summary>
+    /// <param name="reading">The raw reading, 0 to 120.</param>
+    /// <returns>Where it sits on the scale, and never a verdict about it.</returns>
+    /// <remarks>
+    /// **IT SAYS WHERE ON THE SCALE AND NOT WHETHER THAT IS TOO MUCH.** A description
+    /// that said *high* or *too far* would be the judgement the manual does not support,
+    /// wearing the clothes of a measurement.
+    /// </remarks>
+    public static string Describe(int reading)
+        => reading <= 0
+            ? "no level control action at all"
+            : reading.ToString(System.Globalization.CultureInfo.InvariantCulture)
+              + " of " + FullScale.ToString(System.Globalization.CultureInfo.InvariantCulture)
+              + " on the radio's own ALC scale";
+}

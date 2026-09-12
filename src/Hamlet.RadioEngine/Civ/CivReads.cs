@@ -167,6 +167,27 @@ public static class CivReads
         RigField.PowerOut, 0x15, new byte[] { 0x11 }, "19-3",
         "0000=0%, 0143=50%, 0213=100%");
 
+    /// <summary>
+    /// Read the ALC meter level (work instruction 324 task 4b, unit 323's item 47).
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS IN THE COMMAND TABLE BESIDE THE TWO METERS HAMLET ALREADY
+    /// READS**, section 19 of the IC-7300 full manual: <c>15 11</c> is the power
+    /// meter, <c>15 12</c> the SWR meter, and <c>15 13</c> is *Read ALC meter
+    /// level*, `00 00` minimum to `01 20` maximum. BCD, so the scale is 0 to 120
+    /// and <see cref="CivValues.Level"/> already decodes it.</para>
+    /// <para>**ONLY MEANS ANYTHING WHILE TRANSMITTING**, for the same reason SWR
+    /// does: ALC is the radio holding back a signal it is being given too much
+    /// of, and a resting transmitter is not holding anything back. It is asked
+    /// for only while a send is keyed and is unknown the rest of the time.</para>
+    /// <para>**WHAT THE MANUAL DOES NOT SAY IS WHERE THE ZONE ENDS.** The scale
+    /// is cited here; the figure a reading would have to pass to be *outside the
+    /// ALC zone* is not in the command table, and nothing here invents one.</para>
+    /// </remarks>
+    public static CivRead Alc { get; } = new(
+        RigField.Alc, 0x15, new byte[] { 0x13 }, "19-3",
+        "00 00=minimum to 01 20=maximum");
+
     /// <summary>Read the S-meter.</summary>
     public static CivRead SMeter { get; } = new(
         RigField.SMeter, 0x15, new byte[] { 0x02 }, "19-3",
@@ -377,7 +398,7 @@ public static class CivReads
     public static IReadOnlyList<CivRead> All { get; } = new[]
     {
         Frequency, ModeAndFilter, ModeDataAndFilter, FilterWidth, SMeter,
-        TransmitStatus, Overflow, Swr, PowerOut, TwinPbtOuter,
+        TransmitStatus, Overflow, Swr, PowerOut, Alc, TwinPbtOuter,
         RfPower, RfGain, Squelch, SquelchStatus, Agc, Preamp, Attenuator,
         NoiseBlanker, NoiseBlankerLevel, NoiseReduction, NoiseReductionLevel,
         AutoNotch, ManualNotch, BreakIn, KeyerSpeed, CwPitch,

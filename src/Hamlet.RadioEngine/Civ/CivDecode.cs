@@ -73,6 +73,9 @@ public static class CivDecode
             case RigField.PowerOut:
                 return One(DecodePowerOut(payload, atUtc, source));
 
+            case RigField.Alc:
+                return One(DecodeAlc(payload, atUtc, source));
+
             case RigField.TransmitStatus:
                 return One(DecodeChoice(
                     field, payload, atUtc, source, "receiving", "transmitting"));
@@ -289,6 +292,30 @@ public static class CivDecode
 
         return RigValue.Known(
             RigField.PowerOut, level, CivPowerOut.Describe(level), atUtc, source);
+    }
+
+    /// <summary>
+    /// The ALC meter, which only means anything while transmitting (work
+    /// instruction 324 task 4b).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE NUMBER AND NOT A VERDICT** (§0.0). `15 13` answers `00 00` to
+    /// `01 20` in BCD, which is 0 to 120, and that is all the manual says about
+    /// it. **Where the ALC zone ends on that scale is not in the command table**,
+    /// so this decodes the reading and describes it as a position on the scale,
+    /// and says nothing about whether it is too much. The judgement is the
+    /// caller's and is waiting on a ruling.</para>
+    /// </remarks>
+    private static RigValue DecodeAlc(
+        ReadOnlySpan<byte> payload, DateTime atUtc, string source)
+    {
+        if (payload.Length < 2 || CivValues.Level(payload[0], payload[1]) is not { } level)
+        {
+            return RigValue.Unknown(RigField.Alc, $"{source} gave an unreadable reply");
+        }
+
+        return RigValue.Known(
+            RigField.Alc, level, CivAlc.Describe(level), atUtc, source);
     }
 
     private static RigValue DecodeFilterBandwidth(

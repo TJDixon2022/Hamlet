@@ -130,6 +130,17 @@ public static class RigPollPlan
         // transmitter stops rather than being left to look current.
         RigField.Swr => RigPollRate.Live,
         RigField.PowerOut => RigPollRate.Live,
+
+        // **AND THE ALC IS NARROWER STILL: ONLY WHILE SOMETHING IS SENDING**
+        // (work instruction 324 task 4b). SWR and power are asked for on every
+        // live pass and marked unknown while receiving; the ALC is not asked for
+        // at all unless `RigStateMonitor.WantsAlc` is set, which the PSK31 send
+        // path sets around the one transmission it keys. ALC is the radio
+        // holding back a signal it is being given too much of, so a resting
+        // transmitter has nothing to hold back, and a question on the bus four
+        // times a second that can only be answered *nothing* is a question worth
+        // not asking (HM-DEC-050).
+        RigField.Alc => RigPollRate.Live,
         RigField.SquelchStatus => RigPollRate.Live,
         RigField.Overflow => RigPollRate.Live,
 

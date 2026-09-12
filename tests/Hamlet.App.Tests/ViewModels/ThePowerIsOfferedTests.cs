@@ -140,11 +140,24 @@ public sealed class ThePowerIsOfferedTests : IDisposable
         Assert.False(declined.HasPsk31PowerOffer);
     }
 
-    /// <summary>**An ALC past the zone becomes a sentence and a line; one inside becomes neither.**</summary>
+    /// <summary>**A measured ALC becomes a sentence and a line; an unmeasured one becomes neither.**</summary>
+    /// <remarks>
+    /// <para>**THIS CASE USED TO ASSERT A ZONE OF 128 AND UNIT 324 TOOK THE NUMBER AWAY**
+    /// (work instruction 324 task 4b, under §R12). Unit 323 got 128 by halving the 0-255
+    /// range the transmit power **setting** uses; the ALC meter's own range, from the
+    /// command table at `15 13`, is **0 to 120**, and the manual gives no figure at all for
+    /// where the ALC zone ends on it. **A threshold nobody can cite is a guess presented as
+    /// a decode** (§0.0), so there is no threshold, `judged` is false, `zone` is absent and
+    /// nothing is ever *past* anything.</para>
+    /// <para>**WHAT §R11 ASKED FOR IS STILL HERE**: a sentence a person with no shack years
+    /// can act on. It now says what the radio's own meter read, on the radio's own scale,
+    /// and asks him to compare it with the zone his radio draws - which is a thing he can
+    /// do and Hamlet cannot. The judging sentence is built and waiting on a ruling.</para>
+    /// </remarks>
     [Fact]
-    public void AnAlcPastTheZoneBecomesASentenceAndOneInsideItDoesNot()
+    public void AMeasuredAlcBecomesASentenceAndALineAndNothingIsJudged()
     {
-        foreach (var (reading, past) in new[] { (200.0, true), (60.0, false) })
+        foreach (var (reading, past) in new[] { (96.0, false), (12.0, false) })
         {
             List<string> lines;
             string sentence;
@@ -180,18 +193,35 @@ public sealed class ThePowerIsOfferedTests : IDisposable
                 latest,
                 StringComparison.Ordinal);
             Assert.Contains("\"ageMs\":", latest, StringComparison.Ordinal);
-            Assert.Contains("\"zone\":128", latest, StringComparison.Ordinal);
 
-            if (past)
-            {
-                // **A SENTENCE, AND THE ONE THING TO DO ABOUT IT** - no jargon, no meter.
-                Assert.Contains("Turn the transmit drive", sentence, StringComparison.Ordinal);
-                Assert.DoesNotContain("ALC", sentence, StringComparison.Ordinal);
-            }
-            else
-            {
-                Assert.Equal("", sentence);
-            }
+            // **THE SCALE IS CITED AND THE ZONE IS ABSENT**, which is what *nobody has
+            // ruled a threshold* looks like in a file (§0.0).
+            Assert.Contains("\"scaleTop\":120", latest, StringComparison.Ordinal);
+            Assert.Contains("\"judged\":false", latest, StringComparison.Ordinal);
+            Assert.Contains("\"zone\":null", latest, StringComparison.Ordinal);
+            Assert.False(past);
+
+            // **A SENTENCE, AND THE ONE THING HE CAN DO THAT HAMLET CANNOT.** It carries
+            // the number on the meter's own scale and passes no judgement on it.
+            Assert.Contains("turn the transmit drive", sentence, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(
+                reading.ToString("0", System.Globalization.CultureInfo.InvariantCulture),
+                sentence,
+                StringComparison.Ordinal);
+            Assert.Contains("120", sentence, StringComparison.Ordinal);
+            Assert.DoesNotContain("driven harder", sentence, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // **AND NOTHING MEASURED IS NO SENTENCE AT ALL** (§0.0). An absent reading is not
+        // a good one, and neither of them is a sentence.
+        using (var telemetry = new JsonlTelemetry(_folder, "324", _ => true))
+        {
+            var model = Panel(telemetry);
+
+            model.ReadTheAlcForTests();
+
+            Assert.Equal("", model.Psk31AlcLine);
+            Assert.False(model.HasPsk31AlcLine);
         }
     }
 
