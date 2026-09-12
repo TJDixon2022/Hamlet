@@ -34,22 +34,32 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
 
     private readonly ITestOutputHelper _output;
     private readonly string _folder;
+    private readonly string _wasFolder;
 
-    /// <summary>Creates the tests.</summary>
+    /// <summary>Creates the tests and redirects the data folder.</summary>
     /// <param name="output">Where the screen is printed.</param>
+    /// <remarks>
+    /// **THE OPERATOR'S FOLDER IS NOT OURS.** Announcing an opening writes down what
+    /// it announced, through `SettingsStore.Save`, so a test that drives the reveal
+    /// without redirecting the folder writes into his own settings file.
+    /// </remarks>
     public ThePsk31RecordsAppearTests(ITestOutputHelper output)
     {
         _output = output;
 
+        _wasFolder = SettingsStore.DataFolder;
         _folder = Path.Combine(
             Path.GetTempPath(), "hamlet-unit326-reveal-" + Guid.NewGuid().ToString("N"));
 
         Directory.CreateDirectory(_folder);
+        SettingsStore.DataFolder = _folder;
     }
 
     /// <summary>Takes the scratch folder away again.</summary>
     public void Dispose()
     {
+        SettingsStore.DataFolder = _wasFolder;
+
         try
         {
             Directory.Delete(_folder, recursive: true);
