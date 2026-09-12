@@ -307,8 +307,12 @@
 
             <!-- **CONTINENTS: SEVEN BADGES IN THE SAME SHAPE**, each clicking in to its
                  countries. -->
+            <!-- **PINNED TO THE TOP**: left to stretch, the uniform grid split the whole
+                 remaining height between its two rows and the second row sat about 160 px
+                 below the first (work instruction 332 task 5, measured). -->
             <ItemsControl x:Name="AchievementsSubBadges"
                           Grid.Row="3"
+                          VerticalAlignment="Top"
                           IsVisible="{Binding HasSubBadges}"
                           ItemsSource="{Binding SubBadges}"
                           ItemTemplate="{StaticResource HmBadgeTemplate}">
