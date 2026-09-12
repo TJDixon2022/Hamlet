@@ -35,6 +35,32 @@ public static class Psk31Macros
         return $"CQ CQ CQ de {me} {me} {me} pse K";
     }
 
+    /// <summary>
+    /// **PSK31's stated equivalent of one FT8 slot: how long the answer Hamlet
+    /// would send back takes on the air.**
+    /// </summary>
+    /// <param name="his">The other station's callsign.</param>
+    /// <param name="mine">The operator's callsign.</param>
+    /// <returns>Seconds.</returns>
+    /// <exception cref="ArgumentException">A callsign is blank or cannot be sent.</exception>
+    /// <remarks>
+    /// <para>**§R18 ASKS FOR A STATED EQUIVALENT AND THIS IS IT** (work
+    /// instruction 325 task 3). PSK31 has no slots, so *one full slot in which he
+    /// could have answered* has to be given some length, and the honest length is
+    /// **the one Hamlet itself would take to say the same thing** - the `Answer`
+    /// macro, encoded through <see cref="Psk31Modulator.SecondsFor"/>. It is
+    /// measured off the bits that would go on the air rather than guessed from a
+    /// character count, which varicode makes meaningless.</para>
+    /// <para>**IT DEPENDS ON THE TWO CALLSIGNS, AND THAT IS CORRECT.** The macro
+    /// carries both, so a pair of long calls genuinely takes longer to send than a
+    /// pair of short ones, and a fixed figure would be wrong for one of them.</para>
+    /// <para>**THE AUTHOR'S SUGGESTION, AND TIM'S TO OVERRULE.** Nothing in this
+    /// repository states a PSK31 turnaround; the work instruction says the unit
+    /// states it and names this shape, and the report carries the number.</para>
+    /// </remarks>
+    public static double AnswerSeconds(string his, string mine)
+        => Psk31Modulator.SecondsFor(Answer(his, mine));
+
     /// <summary>The answer to a station calling.</summary>
     /// <param name="his">The other station's callsign.</param>
     /// <param name="mine">The operator's callsign.</param>

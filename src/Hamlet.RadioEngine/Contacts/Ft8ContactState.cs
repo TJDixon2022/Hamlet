@@ -99,6 +99,29 @@ public static class Ft8ContactStates
     /// </remarks>
     public const int GoneQuietAfterSlots = 4;
 
+    /// <summary>
+    /// How many slots must pass after the operator transmits before the station
+    /// he called can be said to have had his turn and not used it.
+    /// </summary>
+    /// <remarks>
+    /// <para>**§R18, TIM 2026-09-11.** He answered a station at 21:56:15 and
+    /// twenty-three seconds later the card said *Gone quiet* and dimmed, because
+    /// the clock above was counting from **the station's** last transmission and
+    /// the station had been quiet for a minute before he ever called it. The
+    /// card was reporting a silence that predated the question.</para>
+    /// <para>**WHY TWO AND NOT ONE.** A station transmits in the slot after the
+    /// one you transmitted in. If the operator sends in slot N, the station's
+    /// opportunity is slot N+1, and that opportunity is not spent until N+1 has
+    /// ended - which is when the count reaches two. At a count of one the
+    /// operator is inside the very slot the station is answering in, and calling
+    /// that silence would dim a card while the reply was on the air.</para>
+    /// <para>**IT IS A FLOOR AND NEVER A CEILING.** Both this and
+    /// <see cref="GoneQuietAfterSlots"/> have to be satisfied, so calling a
+    /// station changes nothing about a station who was already long gone: the
+    /// count from his own silence still has to reach four.</para>
+    /// </remarks>
+    public const int HisTurnAfterOurSendSlots = 2;
+
     /// <summary>How many seconds of silence that is, on the grid the tab is running.</summary>
     /// <param name="grid">The grid the tab is running.</param>
     /// <returns>Sixty seconds on FT8, thirty on FT4.</returns>
@@ -164,7 +187,12 @@ public static class Ft8ContactStates
         // this used to trip after eight slots because it was counting FT8's.
         var sinceHeard = record.SlotsSinceHeard(nowUtc, grid);
 
-        if (sinceHeard >= GoneQuietAfterSlots)
+        // **AND THE CLOCK STARTS AT THE OPERATOR'S TRANSMISSION WHERE HE SPOKE
+        // LAST** (§R18). *Gone quiet* is about a station who had his turn and did
+        // not use it. A station the operator has just called has not had his turn
+        // yet, however long he was silent beforehand, so the count from his own
+        // silence is not the whole question once we have spoken after him.
+        if (sinceHeard >= GoneQuietAfterSlots && HeHasHadHisTurn(record, nowUtc, grid))
         {
             return new Ft8ContactRead(
                 record.Callsign, Ft8ContactState.GoneQuiet, sinceHeard.Value);
@@ -304,6 +332,40 @@ public static class Ft8ContactStates
 
         return his.Any(IsGridOrReport) && his.Any(IsAcknowledgement)
             && ours.Any(IsGridOrReport) && ours.Any(IsAcknowledgement);
+    }
+
+    /// <summary>Whether the station has had a turn since the operator called him.</summary>
+    /// <param name="record">What passed with the station.</param>
+    /// <param name="nowUtc">The moment the row is being read at.</param>
+    /// <param name="grid">The grid the tab is running.</param>
+    /// <returns>
+    /// True where the operator did not speak last, or where he did and at least
+    /// <see cref="HisTurnAfterOurSendSlots"/> slots have passed since.
+    /// </returns>
+    /// <remarks>
+    /// <para>**THE COMPARISON IS AGAINST EVERYTHING HE SENT, NOT AGAINST WHAT HE
+    /// SENT US**, which is the same rule the gone-quiet count itself follows. A
+    /// station who transmitted to somebody else after the operator called him has
+    /// been on the air since, and the operator's send is no longer the last thing
+    /// that happened.</para>
+    /// <para>**NO SEND AT ALL MEANS NOTHING IS DEFERRED.** A station the operator
+    /// has never called reads exactly as it did before this rule existed.</para>
+    /// </remarks>
+    private static bool HeHasHadHisTurn(
+        Ft8StationRecord record, DateTime nowUtc, SlotGrid grid)
+    {
+        if (record.LastSent is not { } ours)
+        {
+            return true;
+        }
+
+        if (record.LastHeard is { } his && his.SlotStartUtc > ours.SlotStartUtc)
+        {
+            return true;
+        }
+
+        return Ft8StationRecord.SlotsAgo(ours.SlotStartUtc, nowUtc, grid)
+            >= HisTurnAfterOurSendSlots;
     }
 
     private static DateTime? Later(DateTime? left, DateTime? right)

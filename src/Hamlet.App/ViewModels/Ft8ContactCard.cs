@@ -77,12 +77,19 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     private const int JustNowSeconds = 5;
 
-    private readonly Ft8CardFacts _facts;
-    private readonly string _place;
-    private readonly string _country;
-    private readonly string? _operatorGrid;
-    private readonly Ft8CardTechnical? _technical;
-    private readonly int? _floorDb;
+    // **THESE STOPPED BEING READONLY IN UNIT 325 AND THE REASON IS THE ROOT OF
+    // THREE SEPARATE FAULTS** (§R18, work instruction 325 task 3). Unit 313 found
+    // that the panel threw every card away and built new ones each slot, which is
+    // why nothing a card knew about itself - the map being open, the warning
+    // before clearing, and the *when did I last call him* the waiting state needs
+    // - could survive a slot. A card is now one object per station for as long as
+    // the station is on the panel, and the ledger is applied to it in place.
+    private Ft8CardFacts _facts;
+    private string _place;
+    private string _country;
+    private string? _operatorGrid;
+    private Ft8CardTechnical? _technical;
+    private int? _floorDb;
     private readonly Psk31TurnReading? _turn;
 
     private DateTime? _nowUtc;
@@ -404,13 +411,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
     }
 
     /// <summary>Which of the three the button is.</summary>
-    public Ft8CardActionKind ActionKind { get; }
+    public Ft8CardActionKind ActionKind { get; private set; }
 
     /// <summary>What the button reads.</summary>
-    public string ActionLabel { get; }
+    public string ActionLabel { get; private set; }
 
     /// <summary>The message a Send button would transmit, exactly as it goes out.</summary>
-    public string ActionMessage { get; }
+    public string ActionMessage { get; private set; }
 
     /// <summary>True where there is a button at all.</summary>
     public bool HasAction => ActionKind != Ft8CardActionKind.None;
@@ -993,6 +1000,81 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>A report with its sign always shown, the way the air carries it.</summary>
     private static string Signed(int decibels)
         => decibels.ToString("+0;-0;0", CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// **Bring this card level with the ledger without replacing it.**
+    /// </summary>
+    /// <param name="facts">What the ledger now says about the station.</param>
+    /// <param name="operatorGrid">The operator's own locator, or null.</param>
+    /// <param name="action">Which of the three the button is now.</param>
+    /// <param name="actionLabel">What the button now reads.</param>
+    /// <param name="actionMessage">What a Send button would now transmit.</param>
+    /// <param name="nowUtc">Corrected UTC, or null where no offset is measured.</param>
+    /// <param name="technical">The numbers behind the `i` hover, or null.</param>
+    /// <param name="decodeFloorDb">The mode's cited decode floor, or null.</param>
+    /// <param name="who">Who he is and what town, where callook knows.</param>
+    /// <exception cref="ArgumentNullException">There are no facts.</exception>
+    /// <exception cref="ArgumentException">The facts are about another station.</exception>
+    /// <remarks>
+    /// <para>**THIS IS UNIT 313'S ROOT, FIXED** (§R18, work instruction 325 task
+    /// 3). The panel used to call `DigitalCards.Clear()` and rebuild every card
+    /// from scratch every slot. Three separate symptoms came out of that one
+    /// line: the enlarged map closed itself every fifteen seconds, the card
+    /// jumped out from under the pointer as the collection was replaced, and
+    /// nothing a card learned about itself could outlive a slot. Unit 314 fixed
+    /// the same shape for the PSK31 row by replacing in place; this is the same
+    /// move for the card.</para>
+    /// <para>**WHAT IS DELIBERATELY NOT TOUCHED.** <see cref="MapIsOpen"/> and
+    /// <see cref="WarnsBeforeClearing"/> are the operator's state and not the
+    /// ledger's, so they survive: he opened that map and he is the one who closes
+    /// it. The PSK31 fields are not touched either - a PSK31 card is built by
+    /// <see cref="ForPsk31"/> and updated by the PSK31 path.</para>
+    /// <para>**IT REFUSES ANOTHER STATION'S FACTS.** Writing W1ABC's ledger onto
+    /// D2IM's card would leave the panel showing one station's callsign over
+    /// another's exchange, which is §0.0's fault in the most direct form
+    /// available. Identity is the whole point of keying by station, so it is
+    /// checked rather than trusted.</para>
+    /// <para>**ONE EMPTY-NAME NOTIFICATION, NOT FORTY.** Almost everything on the
+    /// face is derived from the facts record, so naming each property would be a
+    /// list that silently goes stale the next time one is added. An empty name
+    /// tells the binding layer every property may have changed, which is exactly
+    /// what has happened.</para>
+    /// </remarks>
+    public void Refresh(
+        Ft8CardFacts facts,
+        string? operatorGrid,
+        Ft8CardActionKind action,
+        string actionLabel,
+        string actionMessage,
+        DateTime? nowUtc,
+        Ft8CardTechnical? technical = null,
+        int? decodeFloorDb = null,
+        StationName? who = null)
+    {
+        ArgumentNullException.ThrowIfNull(facts);
+
+        if (!string.Equals(facts.Callsign, _facts.Callsign, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException(
+                $"this card is {_facts.Callsign} and the facts handed to it are "
+                + $"{facts.Callsign}. A card is keyed by station and never re-pointed.",
+                nameof(facts));
+        }
+
+        _facts = facts;
+        _nowUtc = nowUtc;
+        _place = WhereHeIs(facts, operatorGrid, who);
+        _country = CountryOf(facts);
+        _operatorGrid = operatorGrid;
+        _technical = technical;
+        _floorDb = decodeFloorDb;
+
+        ActionKind = action;
+        ActionLabel = actionLabel;
+        ActionMessage = actionMessage;
+
+        OnPropertyChanged(string.Empty);
+    }
 
     /// <summary>Move the relative time on, without rebuilding the card.</summary>
     /// <param name="nowUtc">Corrected UTC, or null where no offset is measured.</param>

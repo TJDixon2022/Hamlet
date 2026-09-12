@@ -63,6 +63,30 @@ public static class Psk31Modulator
     /// <returns>A run of `0` and `1`, one symbol each after the reference symbol.</returns>
     public static string BitsFor(string text) => BitsFor(text, IdleBitsBefore, IdleBitsAfter);
 
+    /// <summary>**How long this text takes on the air, idle and reference symbol included.**</summary>
+    /// <param name="text">What would be sent.</param>
+    /// <returns>Seconds of carrier.</returns>
+    /// <exception cref="ArgumentNullException">There is no text.</exception>
+    /// <remarks>
+    /// <para>**COUNTED OFF THE BITS THAT WOULD ACTUALLY GO OUT** (§0.0). It encodes
+    /// the text through <see cref="BitsFor(string)"/> and divides by the baud rate,
+    /// so it is the same number the modulator would produce and cannot drift from
+    /// it. Varicode is a variable-length code - `e` is two bits and `Q` is eleven -
+    /// so a character count would not answer this question at all.</para>
+    /// <para>**PLUS ONE SYMBOL FOR THE REFERENCE.** A differential mode needs
+    /// something to differ from, so the wave carries one more symbol than there
+    /// are bits, exactly as <see cref="Modulate(string, int, double, float)"/>
+    /// builds it.</para>
+    /// <para>**IT KEYS NOTHING AND COMPOSES NOTHING** (§0.2). It is arithmetic over
+    /// a string.</para>
+    /// </remarks>
+    public static double SecondsFor(string text)
+    {
+        ArgumentNullException.ThrowIfNull(text);
+
+        return (BitsFor(text).Length + 1) / Psk31Demodulator.Baud;
+    }
+
     /// <summary>The audio for this text.</summary>
     /// <param name="text">What to send. A character with no varicode is skipped by the code.</param>
     /// <param name="sampleRate">Samples a second.</param>

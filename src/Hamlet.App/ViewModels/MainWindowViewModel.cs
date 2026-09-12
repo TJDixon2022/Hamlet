@@ -4003,9 +4003,30 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// **Bring the card list level with the ledger, keeping every card that is
+    /// still wanted as the same object it was.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT NO LONGER STARTS WITH `DigitalCards.Clear()`, AND THAT LINE WAS
+    /// UNIT 313'S ROOT** (§R18, work instruction 325 task 3). Clearing and
+    /// rebuilding every slot meant a card had no identity that outlived fifteen
+    /// seconds, so nothing it knew about itself could either. Three symptoms
+    /// traced to it: the enlarged map shut itself every slot, a card moved out
+    /// from under the pointer as the collection was replaced mid-click, and the
+    /// *when did I last call him* the waiting state needs was gone before it
+    /// could be read.</para>
+    /// <para>**CARDS ARE KEYED BY STATION.** One appears when its station first
+    /// appears, is updated in place while the station is on the panel, and is
+    /// removed when the conversation ends or is dismissed. Unit 314's
+    /// replace-in-place for the PSK31 row is the shape this follows.</para>
+    /// <para>**THE ORDER IS STILL THE LEDGER'S, AND IT IS MOVED RATHER THAN
+    /// REMADE.** `ObservableCollection.Move` keeps the item, so a card that
+    /// changes position keeps its identity, its open map and its scroll.</para>
+    /// </remarks>
     private void RebuildCards()
     {
-        DigitalCards.Clear();
+        var wanted = new List<Ft8ContactCard>();
 
         var mine = _settings.Operator.Callsign?.Trim() ?? "";
 
@@ -4023,16 +4044,36 @@ public partial class MainWindowViewModel : ObservableObject
                 var facts = Ft8CardFacts.For(record, nowUtc, DigitalGrid);
                 var action = ActionFor(facts, record, mine);
 
-                DigitalCards.Add(new Ft8ContactCard(
-                    facts,
-                    _settings.Operator.GridSquare,
-                    action.Kind,
-                    action.Label,
-                    action.Message,
-                    nowUtc,
-                    TechnicalFor(who),
-                    DecodeFloorDb,
-                    _stations?.Known(facts.Callsign)));
+                var standing = CardForStation(facts.Callsign);
+
+                if (standing is not null)
+                {
+                    standing.Refresh(
+                        facts,
+                        _settings.Operator.GridSquare,
+                        action.Kind,
+                        action.Label,
+                        action.Message,
+                        nowUtc,
+                        TechnicalFor(who),
+                        DecodeFloorDb,
+                        _stations?.Known(facts.Callsign));
+
+                    wanted.Add(standing);
+                }
+                else
+                {
+                    wanted.Add(new Ft8ContactCard(
+                        facts,
+                        _settings.Operator.GridSquare,
+                        action.Kind,
+                        action.Label,
+                        action.Message,
+                        nowUtc,
+                        TechnicalFor(who),
+                        DecodeFloorDb,
+                        _stations?.Known(facts.Callsign)));
+                }
 
                 // **ASKED ONCE PER CALLSIGN AND NEVER PER DECODE** (work instruction
                 // 302 task 4). This returns immediately whether or not it has been
@@ -4052,14 +4093,69 @@ public partial class MainWindowViewModel : ObservableObject
             }
         }
 
-        // **PSK31'S CARDS ARE NOT IN THE FT8 LEDGER**, so the clear above would lose them. They are
-        // put back as they stood, the same instances, rather than remade (§6).
+        // **PSK31'S CARDS ARE NOT IN THE FT8 LEDGER**, so they are named here or
+        // they would fall out of the list as unwanted. They were always the same
+        // instances (§6); now every card is.
         foreach (var state in _psk31Cards.Values.Where(s => s.ClearedAtMessages is null))
         {
-            DigitalCards.Add(state.Card);
+            wanted.Add(state.Card);
         }
 
+        Reconcile(DigitalCards, wanted);
+
         OnPropertyChanged(nameof(HasDigitalCards));
+    }
+
+    /// <summary>The card standing for a station, or null where there is none.</summary>
+    /// <param name="callsign">The station.</param>
+    /// <returns>Its card, or null.</returns>
+    /// <remarks>
+    /// **NOT A PSK31 CARD.** Those are keyed in `_psk31Cards` and built by their
+    /// own path; handing one an FT8 ledger would put a slot count and a state word
+    /// on a card that has neither.
+    /// </remarks>
+    private Ft8ContactCard? CardForStation(string callsign)
+        => DigitalCards.FirstOrDefault(
+            c => !c.IsPsk31
+                 && string.Equals(c.Callsign, callsign, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// **Make a live collection match a wanted list, moving what is already in it
+    /// rather than replacing it.**
+    /// </summary>
+    /// <param name="live">The collection the panel is bound to.</param>
+    /// <param name="wanted">What it should hold, in order.</param>
+    /// <remarks>
+    /// **EVERY OPERATION HERE IS A REMOVE, AN INSERT OR A MOVE, AND NEVER A
+    /// CLEAR.** A clear is what took the cards' identity away in the first place,
+    /// and a wholesale replace would take it away again while looking like an
+    /// update. A card that is wanted and already present is never touched by this
+    /// method at all.
+    /// </remarks>
+    private static void Reconcile(
+        ObservableCollection<Ft8ContactCard> live, List<Ft8ContactCard> wanted)
+    {
+        for (var at = live.Count - 1; at >= 0; at--)
+        {
+            if (!wanted.Contains(live[at]))
+            {
+                live.RemoveAt(at);
+            }
+        }
+
+        for (var at = 0; at < wanted.Count; at++)
+        {
+            var standing = live.IndexOf(wanted[at]);
+
+            if (standing < 0)
+            {
+                live.Insert(at, wanted[at]);
+            }
+            else if (standing != at)
+            {
+                live.Move(standing, at);
+            }
+        }
     }
 
     /// <summary>The one thing a card offers to do.</summary>

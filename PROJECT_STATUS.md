@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 325 - the screen says what is true
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T21:31:00-04:00
-NOTE: The filter chips are out from behind the has-rows gate and clear and the order toggle keep it. Watched red on the empty list, fix back in, now running the new test with BindingHealthTests and the decoded-panel neighbours.
+UPDATED: 2026-09-11T22:07:00-04:00
+NOTE: Watched the old behaviour print Gone quiet at t+23s, the exact reading off his screen, then green at 7 of 7 and the app carry-forward list back at 86 of 86. Committing task 3, then task 4, the two quills.
 
 ---
 
