@@ -7,7 +7,7 @@ A. The phase goal - Hamlet works PSK31 the way it works FT8. Steps 0 to 3 done;
 B. Step 4's eight must-pass and step 5's four - each met or not met, with the
    test that proves it and the number where there is one. Step 4's entry for
    step 5 - a loopback exchange reaching 73 - checked.
-C. The report last. Section 4 raises 5 items on top of the carried seven, and
+C. The report last. Section 4 raises 6 items on top of the carried seven, and
    says for each whether it stands in the way of a criterion named in B.
 
 UNIT:       326 - complete at task 6 of 6, none dropped - 2026-09-11 22:45
@@ -309,7 +309,7 @@ job no criterion asks for.
    means no unit has had an independent check on the shape of its report for two units
    running.
 
-### Raised by this unit - five items
+### Raised by this unit - six items
 
 8. **A logged PSK31 contact carries no grid square, and the parser certainly read one.**
    `Ft8ContactLogEntry` reads a grid out of FT8's message fields, and a PSK31 message has
@@ -345,6 +345,13 @@ job no criterion asks for.
     dispatcher - and disables parallelism for that reason. Reported because a red that is
     seen once and not written down is how a baseline rots. **Does not block a criterion in
     B.**
+
+13. **One more file that could not be deleted**, joining unit 323's item 51 and unit 324's
+    item 5. `commit-msg-326.txt` at the repository root held one commit message at a time,
+    because this shell refuses a heredoc and refuses a redirect into the repository, so a
+    multi-line commit message has to be written to a file first. **`rm` is blocked here**,
+    so it is emptied with a one-line comment saying what it was, as the instruction's tool
+    fact requires. **Does not block a criterion in B.**
 
 ### `validate-output.bat`, and exactly what happened
 
