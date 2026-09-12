@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Hamlet.App.Telemetry;
 using Hamlet.RadioEngine.Contacts;
+using Hamlet.RadioEngine.Telemetry;
 
 namespace Hamlet.App.ViewModels;
 
@@ -179,8 +183,71 @@ public sealed class ModeFirstRow
 /// callsigns). One reading, one number, and the three surfaces cannot come to
 /// disagree.</para>
 /// </remarks>
-public sealed class AchievementsViewModel
+public sealed partial class AchievementsViewModel : ObservableObject
 {
+    /// <summary>
+    /// **The category that has replaced the page, or null while the page is showing.**
+    /// </summary>
+    /// <remarks>
+    /// **TIM, 2026-09-12**: *"It should open like this, but not scroll. When you click on a
+    /// category, that category replaces it. It's a click-into system."* Two states of one
+    /// window and one frame.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowsPage))]
+    [NotifyPropertyChangedFor(nameof(ShowsCategory))]
+    private AchievementCategory? _category;
+
+    /// <summary>Where the three navigation events go, or null.</summary>
+    public ITelemetry? Telemetry { get; init; }
+
+    /// <summary>True while the eight badges are the window.</summary>
+    public bool ShowsPage => HasPage && Category is null;
+
+    /// <summary>True while a category is the window.</summary>
+    public bool ShowsCategory => Category is not null;
+
+    /// <summary>Press a badge: its category replaces the page.</summary>
+    /// <param name="kind">The badge's kind.</param>
+    [RelayCommand]
+    private void OpenCategory(string? kind)
+    {
+        if (Page is null || string.IsNullOrEmpty(kind))
+        {
+            return;
+        }
+
+        if (AchievementCategory.For(kind, Page) is not { } opened)
+        {
+            return;
+        }
+
+        Category = opened;
+
+        AppEvents.AchievementCategoryOpened(Telemetry, kind);
+    }
+
+    /// <summary>The back control: to the parent, or to the page.</summary>
+    /// <remarks>
+    /// **A CONTINENT GOES BACK TO THE SEVEN AND THE SEVEN GO BACK TO THE EIGHT.** Closing
+    /// is written for the category that closed; the parent it lands on was never closed, so
+    /// it is not opened again in the record.
+    /// </remarks>
+    [RelayCommand]
+    private void Back()
+    {
+        if (Category is not { } here)
+        {
+            return;
+        }
+
+        AppEvents.AchievementCategoryClosed(Telemetry, here.Kind);
+
+        Category = here.ParentKind is { } parent && Page is not null
+            ? AchievementCategory.For(parent, Page)
+            : null;
+    }
+
     /// <summary>Build the screen from the log.</summary>
     /// <param name="records">Every record in the file, faults and all.</param>
     /// <exception cref="ArgumentNullException">The records are null.</exception>
@@ -312,9 +379,6 @@ public sealed class AchievementsViewModel
     // **THE "HAMLET CANNOT WORK ... YET" SENTENCE IS GONE** (work instruction 332
     // task 0). It named CW, PSK31 and Voice, and Hamlet works two of the three, so
     // the window said a false thing unasked - the §0.0 fault it was written to avoid.
-
-    /// <summary>Where the file is, so he can go and look.</summary>
-    public string LogPath { get; init; } = "";
 
     /// <summary>One row, from the mode and the whole log.</summary>
     /// <remarks>

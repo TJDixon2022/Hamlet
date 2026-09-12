@@ -22,10 +22,14 @@ namespace Hamlet.App.ViewModels;
 /// nought (§0.0).</para>
 /// <para>**AND NOTHING HERE SAYS *confirmed*** (`ACHIEVEMENTS_PHILOSOPHY.md` §4). Every
 /// count is of contacts in his own log.</para>
+/// <para>**A BADGE IS PRESSED TO OPEN ITS KIND** (Tim, 2026-09-12: *"When you click on a
+/// category, that category replaces it. It's a click-into system."*). The same record draws
+/// the seven continent badges inside Continents, where <see cref="Kind"/> is
+/// `continent-EU` and the two corner lines are said rather than scored.</para>
 /// </remarks>
-/// <param name="Kind">One of <see cref="AchievementKinds.All"/>.</param>
+/// <param name="Kind">One of <see cref="AchievementKinds.All"/>, or `continent-XX`.</param>
 /// <param name="Name">What the band reads: `Hall of Fame`, `Total Miles`.</param>
-/// <param name="Meaning">The one line under the name: `firsts that happen once`.</param>
+/// <param name="Meaning">The one line under the band: `once-only firsts`.</param>
 /// <param name="Emblem">Which emblem the control draws. See `BadgeEmblemControl`.</param>
 /// <param name="Band">The color band's fill, as a hex string from the page's own set.</param>
 /// <param name="NextCard">The one card he could earn next, in his own words.</param>
@@ -65,25 +69,12 @@ public sealed record AchievementBadge(
     {
         get
         {
-            if (Score.Points is not { } points)
+            if (PointsLine.Length == 0)
             {
                 return "";
             }
 
-            var said = new List<string>
-            {
-                points.ToString(CultureInfo.InvariantCulture) + " pts",
-                Score.LevelName,
-            };
-
-            if (Score.ToNextLevel is { } gap && Score.NextLevelName.Length > 0)
-            {
-                said.Add(
-                    gap.ToString("#,0", CultureInfo.InvariantCulture)
-                    + " to " + Score.NextLevelName);
-            }
-
-            return string.Join(" · ", said);
+            return GapLine.Length > 0 ? PointsLine + " · " + GapLine : PointsLine;
         }
     }
 
@@ -92,6 +83,44 @@ public sealed record AchievementBadge(
 
     /// <summary>The whole phrase, for a hover.</summary>
     public string ScoreTip => HasScore ? Name + " · " + ScoreLine : "";
+
+    /// <summary>Where the points line is said rather than scored - a continent badge.</summary>
+    public string? PointsSaid { get; init; }
+
+    /// <summary>Where the gap line is said rather than scored - a continent badge.</summary>
+    public string? GapSaid { get; init; }
+
+    /// <summary>
+    /// **The corner's first score line**: `35 pts · Bronze`, or "" where absent.
+    /// </summary>
+    /// <remarks>
+    /// **THE SCORE IS TWO LINES AND NOT ONE** (work instruction 332 task 1: *text fits,
+    /// everywhere*). `0 pts · unranked · 10 to Bronze` is thirty-one characters and a
+    /// badge four across does not hold it without clipping or wrapping a word, so the gap
+    /// is its own line under the points.
+    /// </remarks>
+    public string PointsLine
+        => PointsSaid
+            ?? (Score.Points is { } points
+                ? points.ToString("#,0", CultureInfo.InvariantCulture) + " pts · "
+                    + Score.LevelName
+                : "");
+
+    /// <summary>True where there is a points line to draw.</summary>
+    public bool HasPointsLine => PointsLine.Length > 0;
+
+    /// <summary>The corner's second score line: `10 to Bronze`, or "".</summary>
+    public string GapLine
+        => GapSaid
+            ?? (Score.Points is not null
+                && Score.ToNextLevel is { } gap
+                && Score.NextLevelName.Length > 0
+                ? gap.ToString("#,0", CultureInfo.InvariantCulture) + " to "
+                    + Score.NextLevelName
+                : "");
+
+    /// <summary>True where there is a gap line to draw.</summary>
+    public bool HasGapLine => GapLine.Length > 0;
 }
 
 /// <summary>
@@ -107,11 +136,34 @@ public sealed record AchievementBadge(
 /// <para>**THE RUNNING TOTAL IS ALWAYS ON THE PAGE** - `Total 145 pts · Rank 3 · 105 to
 /// Rank 4` - and it is the sum of the eight, computed once. Where the points file could
 /// not be read it is absent and <see cref="Problem"/> says why.</para>
+/// <para>**EVERY STRING A SLOT CAN CARRY IS SHORT ENOUGH FOR THE SLOT** (work instruction
+/// 332 task 1). The next-card words are at most eighteen characters and the meaning lines
+/// at most eighteen, which is what a badge a quarter of the window wide holds on the test
+/// host's flat ten pixels a character - wider than any face on the glass.</para>
 /// </remarks>
 public sealed class AchievementBadgePage
 {
     /// <summary>The one line under the title, when there is a total to say.</summary>
     private const string TotalWord = "Total ";
+
+    /// <summary>The Continents band, which the seven continent badges wear too.</summary>
+    public const string ContinentsBand = "#2A7A94";
+
+    private const string FirstContinent = "A first continent";
+    private const string MoreContinents = "One more continent";
+    private const string FirstCountry = "Your first country";
+    private const string MoreCountries = "One more country";
+    private const string FirstState = "Your first state";
+    private const string MoreStates = "One more state";
+    private const string FirstGrid = "Your first grid";
+    private const string MoreGrids = "One more grid";
+    private const string FirstBand = "Your first band";
+    private const string MoreBands = "One more band";
+    private const string FirstMode = "Your first mode";
+    private const string MoreModes = "One more mode";
+
+    /// <summary>What an unworked continent's badge says is next.</summary>
+    public const string FirstHere = "A first here";
 
     /// <summary>Build the page.</summary>
     /// <param name="log">The contacts.</param>
@@ -122,10 +174,14 @@ public sealed class AchievementBadgePage
         ArgumentNullException.ThrowIfNull(log);
         ArgumentNullException.ThrowIfNull(points);
 
+        Log = log;
         Scores = new AchievementScores(log, points);
 
         Badges = AchievementKinds.All.Select(kind => Build(kind, log, Scores)).ToList();
     }
+
+    /// <summary>The contacts the page was built from, for a category to open over.</summary>
+    public AchievementLog Log { get; }
 
     /// <summary>The eight badges, in the page's order.</summary>
     public IReadOnlyList<AchievementBadge> Badges { get; }
@@ -174,6 +230,41 @@ public sealed class AchievementBadgePage
         => Badges.Count.ToString(CultureInfo.InvariantCulture)
             + " kinds. In each, the next one you could earn.";
 
+    /// <summary>
+    /// **Every string a badge's next-card slot can carry**, so a test can measure the
+    /// longest against the slot rather than trusting the fixture to reach it.
+    /// </summary>
+    public static IReadOnlyList<string> EveryNextCard
+        => Firsts.Select(f => f.Said)
+            .Concat(new[]
+            {
+                FirstContinent, MoreContinents, FirstCountry, MoreCountries, FirstState,
+                MoreStates, FirstGrid, MoreGrids, FirstBand, MoreBands, FirstMode,
+                MoreModes, FirstHere,
+            })
+            .ToList();
+
+    /// <summary>The named firsts, in the order a first evening reaches them.</summary>
+    /// <remarks>
+    /// <para>**THE KEYS ARE THE POINTS FILE'S AND THE WORDS ARE THE SCREEN'S.** A key the
+    /// file carries and this list does not is simply never shown as a *next*, which is the
+    /// safe direction: the owner can add a key and Hamlet will score it without claiming to
+    /// know what to call it.</para>
+    /// <para>**SHORTENED IN WORK INSTRUCTION 332** so each fits a badge's next-card slot
+    /// without clipping: *Your first contact outside your own country* is now *A DX
+    /// contact*, *Your first PSK31 contact* is *A PSK31 contact*, *Your first Morse
+    /// contact* is *A Morse contact*, and the two distances lost *A contact*.</para>
+    /// </remarks>
+    public static IReadOnlyList<(string Key, string Said)> Firsts { get; } = new[]
+    {
+        ("first_contact", "Your first contact"),
+        ("first_dx", "A DX contact"),
+        ("first_psk31", "A PSK31 contact"),
+        ("first_cw_qso", "A Morse contact"),
+        ("first_over_5000_miles", "Over 5,000 miles"),
+        ("first_over_10000_miles", "Over 10,000 miles"),
+    };
+
     private static AchievementBadge Build(
         string kind, AchievementLog log, AchievementScores scores)
     {
@@ -182,11 +273,11 @@ public sealed class AchievementBadgePage
         return kind switch
         {
             AchievementKinds.HallOfFame => new AchievementBadge(
-                kind, "Hall of Fame", "firsts that happen once", "trophy", "#A8811A",
+                kind, "Hall of Fame", "once-only firsts", "trophy", "#A8811A",
                 NextFirst(log), NextIsDoor: true, Worked(score.Worked), score),
 
             AchievementKinds.Continents => new AchievementBadge(
-                kind, "Continents", "a first in each of 7", "americas", "#2A7A94",
+                kind, "Continents", "each of the 7", "americas", ContinentsBand,
                 NextContinent(log), NextIsDoor: true,
                 score.Worked.ToString(CultureInfo.InvariantCulture) + " of "
                     + Hamlet.RadioEngine.Explore.DxccContinents.Codes.Count
@@ -194,30 +285,30 @@ public sealed class AchievementBadgePage
                 score),
 
             AchievementKinds.Countries => new AchievementBadge(
-                kind, "Countries", "one card per entity", "flags", "#A33333",
-                score.Worked == 0 ? "Your first country" : "One more country",
+                kind, "Countries", "one per entity", "flags", "#A33333",
+                score.Worked == 0 ? FirstCountry : MoreCountries,
                 NextIsDoor: false, Worked(score.Worked), score),
 
             AchievementKinds.States => new AchievementBadge(
                 kind, "States", "the 50, plus DC", "star", "#2C4C9B",
-                score.Worked == 0 ? "Your first state" : "One more state",
+                score.Worked == 0 ? FirstState : MoreStates,
                 NextIsDoor: false, Worked(score.Worked), score),
 
             AchievementKinds.Grids => new AchievementBadge(
-                kind, "Grids", "4-character squares", "grid", "#2F6B3A",
-                score.Worked == 0 ? "Your first grid square" : "One more grid square",
+                kind, "Grids", "4-character grids", "grid", "#2F6B3A",
+                score.Worked == 0 ? FirstGrid : MoreGrids,
                 NextIsDoor: false, Worked(score.Worked), score),
 
             AchievementKinds.TotalMiles => new AchievementBadge(
-                kind, "Total Miles", "grid to grid, added up", "globe", "#6B4C9A",
+                kind, "Total Miles", "every mile, added", "globe", "#6B4C9A",
                 NextTier(scores), NextIsDoor: false,
                 scores.TotalMiles.ToString("#,0", CultureInfo.InvariantCulture)
                     + " mi so far",
                 score),
 
             AchievementKinds.Bands => new AchievementBadge(
-                kind, "Bands", "a first on each", "waves", "#8A5A1E",
-                score.Worked == 0 ? "Your first band" : "One more band",
+                kind, "Bands", "first on each band", "waves", "#8A5A1E",
+                score.Worked == 0 ? FirstBand : MoreBands,
                 NextIsDoor: false,
                 score.Worked.ToString(CultureInfo.InvariantCulture) + " of "
                     + Hamlet.RadioEngine.Bands.HfBands.Bands.Count
@@ -225,7 +316,7 @@ public sealed class AchievementBadgePage
                 score),
 
             _ => new AchievementBadge(
-                kind, "Modes", "FT8 · FT4 · PSK31 · CW · SSB", "modes", "#3E4650",
+                kind, "Modes", "five modes to work", "modes", "#3E4650",
                 NextMode(log), NextIsDoor: false,
                 score.Worked.ToString(CultureInfo.InvariantCulture) + " of "
                     + AchievementScores.WorkableModes.ToString(CultureInfo.InvariantCulture),
@@ -258,50 +349,25 @@ public sealed class AchievementBadgePage
         return "";
     }
 
-    /// <summary>The named firsts, in the order a first evening reaches them.</summary>
-    /// <remarks>
-    /// **THE KEYS ARE THE POINTS FILE'S AND THE WORDS ARE THE SCREEN'S.** A key the file
-    /// carries and this list does not is simply never shown as a *next*, which is the safe
-    /// direction: the owner can add a key and Hamlet will score it without claiming to
-    /// know what to call it.
-    /// </remarks>
-    private static IReadOnlyList<(string Key, string Said)> Firsts { get; } = new[]
-    {
-        ("first_contact", "Your first contact"),
-        ("first_dx", "Your first contact outside your own country"),
-        ("first_psk31", "Your first PSK31 contact"),
-        ("first_cw_qso", "Your first Morse contact"),
-        ("first_over_5000_miles", "A contact over 5,000 miles"),
-        ("first_over_10000_miles", "A contact over 10,000 miles"),
-    };
-
     /// <summary>
     /// The next continent card, **naming no continent he has not opened** (§3.1).
     /// </summary>
     /// <remarks>
-    /// **THIS IS THE ONE PLACE THE DOOR RULE BITES ON THIS PAGE.** *First outside
-    /// N. America* names the one he is standing in, which he already knows, and not the one
-    /// behind the door. With nothing worked at all there is no continent to be outside of,
-    /// so the card is the category.
+    /// **IT NAMES NONE AT ALL SINCE WORK INSTRUCTION 332.** *A first outside North
+    /// America* named the one he is standing in and ran to twenty-nine characters, which no
+    /// badge a quarter of the window wide holds; *One more continent* says the same target
+    /// in eighteen.
     /// </remarks>
     private static string NextContinent(AchievementLog log)
     {
         if (log.Continents.Count == 0)
         {
-            return "Your first contact anywhere";
+            return FirstContinent;
         }
 
-        if (log.Continents.Count >= Hamlet.RadioEngine.Explore.DxccContinents.Codes.Count)
-        {
-            return "";
-        }
-
-        var here = log.Continents[0];
-
-        return Hamlet.RadioEngine.Explore.DxccContinents.Codes
-                .TryGetValue(here, out var name)
-            ? "A first outside " + name
-            : "A first on a new continent";
+        return log.Continents.Count >= Hamlet.RadioEngine.Explore.DxccContinents.Codes.Count
+            ? ""
+            : MoreContinents;
     }
 
     /// <summary>The lowest Total Miles tier he has not reached.</summary>
@@ -320,7 +386,28 @@ public sealed class AchievementBadgePage
         return "";
     }
 
-    /// <summary>The next mode card - the first one, or one more.</summary>
+    /// <summary>The next mode card - the first one, or one more, or none at all five.</summary>
     private static string NextMode(AchievementLog log)
-        => log.Modes.Count == 0 ? "Your first mode" : "One more mode";
+    {
+        if (log.Modes.Count == 0)
+        {
+            return FirstMode;
+        }
+
+        return log.Modes.Count >= AchievementScores.WorkableModes ? "" : MoreModes;
+    }
+
+    /// <summary>What a category says is next in a kind, for the unearned card.</summary>
+    /// <param name="kind">One of the counted kinds.</param>
+    /// <param name="worked">How many he has.</param>
+    /// <returns>The words, which are the badge's own.</returns>
+    public static string NextWords(string kind, long worked) => kind switch
+    {
+        AchievementKinds.Countries => worked == 0 ? FirstCountry : MoreCountries,
+        AchievementKinds.States => worked == 0 ? FirstState : MoreStates,
+        AchievementKinds.Grids => worked == 0 ? FirstGrid : MoreGrids,
+        AchievementKinds.Bands => worked == 0 ? FirstBand : MoreBands,
+        AchievementKinds.Modes => worked == 0 ? FirstMode : MoreModes,
+        _ => "",
+    };
 }

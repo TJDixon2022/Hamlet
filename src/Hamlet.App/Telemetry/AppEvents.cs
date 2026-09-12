@@ -1086,6 +1086,43 @@ public static class AppEvents
             },
             kinds > 0 ? TelemetryLevel.Info : TelemetryLevel.Warn);
 
+    /// <summary>**The achievements window opened** (work instruction 332 task 1, §R13).</summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="kinds">How many badges the page drew.</param>
+    public static void AchievementsOpened(ITelemetry? telemetry, int kinds)
+        => telemetry?.Write(TelemetryCategory.Explore, "achievements_opened",
+            new Dictionary<string, object?>
+            {
+                ["kinds"] = kinds,
+            });
+
+    /// <summary>
+    /// **A badge was pressed and its category replaced the page** (work instruction 332 task
+    /// 1, §R13).
+    /// </summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="kind">The kind, by its points-file key or `continent-XX`.</param>
+    /// <remarks>
+    /// **THE KIND ONLY** (the instruction's own words). Nothing about what is inside it:
+    /// the countries he has worked are a record of where he was heard.
+    /// </remarks>
+    public static void AchievementCategoryOpened(ITelemetry? telemetry, string kind)
+        => telemetry?.Write(TelemetryCategory.Explore, "achievement_category_opened",
+            new Dictionary<string, object?>
+            {
+                ["kind"] = kind,
+            });
+
+    /// <summary>**The back control left a category** (work instruction 332 task 1, §R13).</summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="kind">The kind that closed.</param>
+    public static void AchievementCategoryClosed(ITelemetry? telemetry, string kind)
+        => telemetry?.Write(TelemetryCategory.Explore, "achievement_category_closed",
+            new Dictionary<string, object?>
+            {
+                ["kind"] = kind,
+            });
+
     /// <summary>
     /// **One kind's score moved** (work instruction 331 task 6, §R13).
     /// </summary>

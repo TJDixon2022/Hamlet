@@ -6092,16 +6092,19 @@ public partial class MainWindowViewModel : ObservableObject
 
         AppEvents.AchievementPointsLoaded(_telemetry, points.Kinds, points.Hash);
 
-        new Views.AchievementsWindow
+        // **THE FILE PATH IS NOT ON THIS PAGE SINCE WORK INSTRUCTION 332** - the page is
+        // the badges and nothing else, and the log window already says where the file is.
+        var screen = new AchievementsViewModel(
+            ContactLogStore.ReadRecords(),
+            _settings.Operator.GridSquare,
+            points)
         {
-            DataContext = new AchievementsViewModel(
-                ContactLogStore.ReadRecords(),
-                _settings.Operator.GridSquare,
-                points)
-            {
-                LogPath = ContactLogStore.LogPath,
-            },
-        }.ShowDialog(owner);
+            Telemetry = _telemetry,
+        };
+
+        AppEvents.AchievementsOpened(_telemetry, screen.Page?.Badges.Count ?? 0);
+
+        new Views.AchievementsWindow { DataContext = screen }.ShowDialog(owner);
     }
 
     /// <summary>Open the record of what Hamlet decided.</summary>

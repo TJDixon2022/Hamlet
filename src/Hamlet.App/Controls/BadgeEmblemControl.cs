@@ -109,10 +109,90 @@ public sealed class BadgeEmblemControl : Control
                 Modes(context, box, ink, pen);
                 break;
             default:
-                // **NOTHING, ON PURPOSE.** An emblem nobody chose would be a picture
-                // asserting a kind that does not exist.
+                if (Continents.TryGetValue(Emblem, out var outline))
+                {
+                    Silhouette(context, box, ink, outline);
+                }
+
+                // **OTHERWISE NOTHING, ON PURPOSE.** An emblem nobody chose would be a
+                // picture asserting a kind that does not exist.
                 break;
         }
+    }
+
+    /// <summary>
+    /// **The seven continent emblems, as silhouettes Hamlet drew** (work instruction 332
+    /// task 1: *seven continent badges, each with its own emblem*).
+    /// </summary>
+    /// <remarks>
+    /// **SHAPES AND NOT MAPS** (§0.0 binds pictures), for the reason <see cref="Americas"/>
+    /// gives: nothing aligns to them and no coastline is claimed. Each is a polygon or two in
+    /// a unit box, distinct enough that seven side by side are seven drawings; the name is
+    /// beside each in words. Oceania is two figures, a mass and an island.
+    /// </remarks>
+    private static readonly Dictionary<string, double[][]> Continents = new()
+    {
+        ["continent-AF"] = new[]
+        {
+            new[] { 0.30, 0.15, 0.62, 0.12, 0.80, 0.35, 0.72, 0.52, 0.62, 0.88, 0.48, 0.88, 0.40, 0.55, 0.18, 0.45, 0.16, 0.28 },
+        },
+        ["continent-AN"] = new[]
+        {
+            new[] { 0.10, 0.55, 0.30, 0.40, 0.55, 0.42, 0.70, 0.35, 0.90, 0.52, 0.80, 0.72, 0.50, 0.78, 0.22, 0.72 },
+        },
+        ["continent-AS"] = new[]
+        {
+            new[] { 0.08, 0.30, 0.40, 0.12, 0.80, 0.16, 0.94, 0.34, 0.82, 0.52, 0.66, 0.50, 0.60, 0.72, 0.46, 0.60, 0.30, 0.66, 0.16, 0.50 },
+        },
+        ["continent-EU"] = new[]
+        {
+            new[] { 0.20, 0.40, 0.34, 0.18, 0.52, 0.14, 0.60, 0.30, 0.82, 0.28, 0.78, 0.54, 0.56, 0.62, 0.50, 0.82, 0.40, 0.62, 0.24, 0.64 },
+        },
+        ["continent-NA"] = new[]
+        {
+            new[] { 0.10, 0.18, 0.60, 0.10, 0.90, 0.24, 0.70, 0.44, 0.56, 0.62, 0.46, 0.86, 0.36, 0.62, 0.14, 0.44 },
+        },
+        ["continent-OC"] = new[]
+        {
+            new[] { 0.18, 0.42, 0.46, 0.30, 0.70, 0.40, 0.76, 0.66, 0.50, 0.76, 0.24, 0.68 },
+            new[] { 0.80, 0.14, 0.92, 0.22, 0.84, 0.32 },
+        },
+        ["continent-SA"] = new[]
+        {
+            new[] { 0.30, 0.12, 0.66, 0.18, 0.84, 0.38, 0.60, 0.60, 0.48, 0.90, 0.40, 0.66, 0.28, 0.36 },
+        },
+    };
+
+    /// <summary>Fill each figure of an outline, scaled into the box.</summary>
+    private static void Silhouette(
+        DrawingContext context, Rect box, IBrush ink, double[][] figures)
+    {
+        var shape = new StreamGeometry();
+
+        using (var draw = shape.Open())
+        {
+            foreach (var figure in figures)
+            {
+                for (var i = 0; i < figure.Length; i += 2)
+                {
+                    var point = new Point(
+                        box.X + (box.Width * figure[i]), box.Y + (box.Height * figure[i + 1]));
+
+                    if (i == 0)
+                    {
+                        draw.BeginFigure(point, true);
+                    }
+                    else
+                    {
+                        draw.LineTo(point);
+                    }
+                }
+
+                draw.EndFigure(true);
+            }
+        }
+
+        context.DrawGeometry(ink, null, shape);
     }
 
     /// <summary>A trophy: a bowl, two handles, a stem and a base.</summary>

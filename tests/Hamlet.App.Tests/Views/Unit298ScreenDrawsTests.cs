@@ -61,15 +61,26 @@ public sealed class Unit298ScreenDrawsTests
                 Avalonia.Threading.Dispatcher.UIThread.RunJobs();
             }
 
-            var scopes = window.FindControl<TabControl>("AchievementsScopes");
-            var challenges = window.FindControl<ItemsControl>("AchievementsChallenges");
-            var places = window.FindControl<ItemsControl>("AchievementsPlaces");
+            // **RECONCILED UNDER R12 IN WORK INSTRUCTION 332.** The tabs, the challenges
+            // and the places this asserted were taken off the window by the owner's
+            // ruling of 2026-09-12 - the page is eight badges that click in. What this
+            // test is for stands: the window, opened over a real log, draws what the
+            // view model holds, and every binding inside a template resolves.
+            var badges = window.FindControl<ItemsControl>("AchievementsBadges");
 
-            Assert.True(scopes is not null, "the window has no scope tabs");
-            Assert.True(challenges is not null, "the window has no challenges list");
-            Assert.True(places is not null, "the window has no places list");
+            Assert.True(badges is not null, "the window has no badges");
+            Assert.Equal(8, badges!.ItemCount);
+
+            ((AchievementsViewModel)window.DataContext!).OpenCategoryCommand
+                .Execute(AchievementKinds.Countries);
+
+            for (var i = 0; i < 5; i++)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            }
 
             var drawn = window.GetVisualDescendants().OfType<TextBlock>()
+                .Where(t => t.IsEffectivelyVisible)
                 .Select(t => t.Text ?? "")
                 .Where(t => t.Trim().Length > 0)
                 .ToList();
@@ -79,15 +90,9 @@ public sealed class Unit298ScreenDrawsTests
                 _output.WriteLine("  | " + line);
             }
 
-            // **THE THINGS THIS UNIT BUILT ARE ON THE SCREEN**, not merely in a
-            // view model somewhere behind it.
-            //
-            // **THE HEADING IS `Go and try` FROM WORK INSTRUCTION 300**, which named
-            // the three sections of the screen it re-presented. The section is the
-            // same section and it holds the same cards; only its title is shorter.
-            Assert.Contains(drawn, t => t == "Go and try");
-            Assert.Contains(drawn, t => t.StartsWith("Furthest", StringComparison.Ordinal));
-            Assert.Contains(drawn, t => t.Contains("views open", StringComparison.Ordinal));
+            // **THE CATEGORY IS ON THE SCREEN**, not merely in a view model behind it.
+            Assert.Contains(drawn, t => t == "Countries");
+            Assert.Contains(drawn, t => t == "Ireland");
 
             // **AND THE ONE THE INSTRUCTION SAYS MUST NOT SURVIVE IS NOT.**
             Assert.DoesNotContain(drawn, t => t.Contains("of 6.", StringComparison.Ordinal));
@@ -141,16 +146,15 @@ public sealed class Unit298ScreenDrawsTests
             _output.WriteLine("  | " + line);
         }
 
-        Assert.Contains(drawn, t => t.Contains("first contact you log", StringComparison.Ordinal));
+        // **RECONCILED UNDER R12 IN WORK INSTRUCTION 332**: the invitation is the
+        // badges' own next cards now, not a sentence and a challenges list.
+        Assert.Contains(drawn, t => t == "Your first contact");
 
         // **NO RECORD CARD ANYWHERE**, because he has opened nothing.
         foreach (var claim in new[] { "Furthest", "Faintest", "Busiest" })
         {
             Assert.DoesNotContain(drawn, t => t.StartsWith(claim, StringComparison.Ordinal));
         }
-
-        // **BUT THE TARGETS ARE HERE** (§3.4), which is the whole point of them.
-        Assert.Contains(drawn, t => t == "Go and try");
 
         window.Close();
     }
