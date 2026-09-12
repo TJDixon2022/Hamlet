@@ -178,11 +178,13 @@ public sealed class ThePsk31LogsWithRstTests : IDisposable
     [Fact]
     public void TheLoggedEventFiresOnceWithBothReportsAndNothingPersonal()
     {
+        AdifContact? entry = null;
+
         var lines = WithTelemetry(model =>
         {
             Work(model);
 
-            var entry = model.ContactLogEntryForStation("G4XYZ", On20m);
+            entry = model.ContactLogEntryForStation("G4XYZ", On20m);
 
             Assert.NotNull(entry);
 
@@ -199,6 +201,14 @@ public sealed class ThePsk31LogsWithRstTests : IDisposable
         Assert.Equal("589", data.GetProperty("rstReceived").GetString());
         Assert.Equal("PSK", data.GetProperty("mode").GetString());
         Assert.Equal("PSK31", data.GetProperty("submode").GetString());
+
+        // **WHETHER A GRID WENT INTO THE RECORD, AND NEVER WHICH** (work instruction 333
+        // task 3). A PSK31 grid arrives in prose, so a record without one is the first
+        // thing somebody diagnosing a thin log asks about.
+        Assert.True(
+            data.TryGetProperty("gridCarried", out var carried),
+            "psk31_contact_logged does not say whether a grid was carried");
+        Assert.Equal(!string.IsNullOrWhiteSpace(entry!.GridSquare), carried.GetBoolean());
 
         // **NOTHING PERSONAL, ANYWHERE IN THE LINE.**
         var text = logged.ToString();

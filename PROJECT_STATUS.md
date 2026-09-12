@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 5
+TASK: 4 of 5
 WORK_INSTRUCTION: 333 - step 5 is proved on the screen Tim now has, the log and the records write themselves down, and a real logger reads the export
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T15:31:59-04:00
-NOTE: Task 2 - watched red ("page draws [A PSK31 contact] before any PSK31 contact"); next-first choice now skips first_psk31 on the badge and in Hall of Fame; running the records test with the click-in, binding, voice and achievements types
+UPDATED: 2026-09-12T15:34:06-04:00
+NOTE: Task 3 - watched red twice (records 4 where the window draws 2; no gridCarried on psk31_contact_logged); events changed, running the two step 5 types with CallsignPrivacyTests for green
 
 ---
 

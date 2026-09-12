@@ -13533,7 +13533,7 @@ public partial class MainWindowViewModel : ObservableObject
             // and nothing else** (§2.1) - not which records and not who earned them.
             if (string.Equals(opening.Key, Psk31ScopeKey, StringComparison.OrdinalIgnoreCase))
             {
-                Psk31Events.RecordsRevealed(_telemetry, opening.Cards);
+                Psk31Events.RecordsRevealed(_telemetry, Psk31CardsDrawn(records));
             }
 
             // **THE NOTICE SAYS WHAT WAS EARNED AND THE MARK SAYS SOMETHING IS
@@ -13558,6 +13558,27 @@ public partial class MainWindowViewModel : ObservableObject
     /// silently - a mistyped key here would simply never fire and never fail.
     /// </remarks>
     internal const string Psk31ScopeKey = "mode-PSK31";
+
+    /// <summary>How many PSK31 cards the click-in achievements window draws over a log.</summary>
+    /// <param name="records">The log.</param>
+    /// <returns>The earned cards naming PSK31, across every kind.</returns>
+    /// <remarks>
+    /// **THE REVEAL COUNTS WHAT HE CAN SEE** (work instruction 333 task 3). The count used
+    /// to be the scope's records on `AchievementScreen`, which the window stopped drawing in
+    /// unit 331, so the file said four things appeared where the glass showed two. The points
+    /// file is not read for this: a card exists whether or not its worth could be.
+    /// </remarks>
+    private int Psk31CardsDrawn(IReadOnlyList<AdifLogRecord> records)
+    {
+        var page = new AchievementBadgePage(
+            new AchievementLog(records, _settings.Operator.GridSquare),
+            AchievementPoints.Absent(""));
+
+        return AchievementKinds.All
+            .Select(kind => AchievementCategory.For(kind, page))
+            .Sum(category => category?.Cards.Count(
+                card => card.Earned && card.Title.Contains("PSK31", StringComparison.Ordinal)) ?? 0);
+    }
 
     /// <summary>Announce openings against a log, for a test.</summary>
     /// <remarks>
@@ -13753,7 +13774,8 @@ public partial class MainWindowViewModel : ObservableObject
             && psk31.Matches(entry.Mode, entry.Submode))
         {
             Psk31Events.ContactLogged(
-                _telemetry, entry.RstSent, entry.RstReceived, entry.Mode, entry.Submode);
+                _telemetry, entry.RstSent, entry.RstReceived, entry.Mode, entry.Submode,
+                !string.IsNullOrWhiteSpace(entry.GridSquare));
         }
 
         return written;

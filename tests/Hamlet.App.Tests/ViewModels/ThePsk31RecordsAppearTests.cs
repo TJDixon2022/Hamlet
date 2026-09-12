@@ -180,7 +180,10 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
 
         _output.WriteLine(revealed.ToString());
 
-        Assert.True(revealed.GetProperty("data").GetProperty("records").GetInt32() > 0);
+        // **THE COUNT IS WHAT THE WINDOW DRAWS** (work instruction 333 task 3): Hall of
+        // Fame's *A PSK31 contact* and the Modes card *PSK31*, as test 2 reads them off the
+        // glass. Until 333 it was the four records of a screen the window no longer shows.
+        Assert.Equal(2, revealed.GetProperty("data").GetProperty("records").GetInt32());
 
         var text = revealed.ToString();
 

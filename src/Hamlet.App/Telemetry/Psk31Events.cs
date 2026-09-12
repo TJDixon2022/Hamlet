@@ -581,7 +581,12 @@ public static class Psk31Events
     /// <param name="rstReceived">The RST that was read, or null where none was.</param>
     /// <param name="mode">How the record spells the mode: `PSK`.</param>
     /// <param name="submode">How it spells the submode: `PSK31`.</param>
+    /// <param name="gridCarried">Whether the record carries the other station's grid.</param>
     /// <remarks>
+    /// <para>**WHETHER A GRID WENT IN, AND NEVER WHICH** (work instruction 333 task 3). A
+    /// PSK31 grid arrives in prose and is read or not, so a record without one is the first
+    /// thing a thin log is diagnosed on - and the grid itself is personal, so it is a flag.
+    /// </para>
     /// <para>**THE STAGE STEP 5 ADDS, SO IT WRITES ITS EVENT** (§R13). A contact that
     /// reached the log and a contact that was composed and never saved look identical
     /// from outside, and the difference is the whole subject of the step.</para>
@@ -599,7 +604,8 @@ public static class Psk31Events
         string? rstSent,
         string? rstReceived,
         string? mode,
-        string? submode)
+        string? submode,
+        bool gridCarried)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_contact_logged",
@@ -609,6 +615,7 @@ public static class Psk31Events
                 ["rstReceived"] = string.IsNullOrWhiteSpace(rstReceived) ? null : rstReceived,
                 ["mode"] = mode,
                 ["submode"] = submode,
+                ["gridCarried"] = gridCarried,
             },
             TelemetryLevel.Info);
 
