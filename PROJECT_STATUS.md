@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: RUNNING
+STATE: COMPLETED
 TASK: 6 of 6
 WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T02:09:41-04:00
-NOTE: Task 5 committed and pushed at 60464f2. Housekeeping: the For you panel has its own DigitalMineExpanded and its own settings key, and TheFoldedPanelSaysWhatItHoldsTests now proves the split rather than passing on the coincidence - 9 of 9. The Views reds are eight, not two, and the collapse flag was NOT the cause: DigitalMineRows lives behind ShowsConversation, so the right-hand list is only realized after show the N messages, and the test's premise that both lists are always in the window went stale when cards replaced that row list. Left and named, per the instruction. Running the widened carry-forward list for the after timing.
+UPDATED: 2026-09-11T23:59:42-04:00
+NOTE: Unit 327 complete at task 6 of 6, nothing dropped, six commits pushed. Carry-forward 163 of 163 green before anything moved and 185 of 185 after the list was widened. A held PSK31 carrier is kept while its own demodulator vouches for it, so an idling station stays on the list; first-character latency measures 1.50 s from the row appearing; the row mark is an 18 px filled disc that opens a popup on a press; the card's right column carries six facts and the caption under the map is gone; a PSK31 contact logs GRIDSQUARE when one was read. Two measurements changed the unit's own mind and are reported rather than tidied - the demodulator vouches for a dead carrier for 7.20 s, which moved RetiredWithinSeconds 2.5 to 9.0, and the fixture does not reproduce what Tim saw. validate-output.bat was refused by the permission layer for the third unit running, on four different invocations, and its seven rules were applied by hand and all pass - section 4 item 5. Section 4 raises 6 items on top of the carried queue.
 
 ---
 
