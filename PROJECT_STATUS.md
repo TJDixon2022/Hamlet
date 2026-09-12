@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 5 of 6
 WORK_INSTRUCTION: 335 - every category page is trading cards
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T17:27:54-04:00
-NOTE: Task 4 - carry-forward after the change 100 of 100 app, 85 of 85 engine; validating the final report, then the task 4 commit and push
+UPDATED: 2026-09-12T17:28:33-04:00
+NOTE: Complete at task 4 - tasks 0 to 4 pushed (bcaf39d), task 5 the popup dropped as named. 8 of 8 kinds are trading cards; 1400 and 1920 fit, 0 white cards; output.md validated exit 0
 
 ---
 

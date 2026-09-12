@@ -47,8 +47,9 @@ next unit inherits it if Tim wants it:
 - what is missing is the press and the popup.
 
 Claude Code on Tim's Windows 11 machine, project Hamlet. The gate passed on all four checks.
-Branch `main`. Pushed: task 0 as `5306c2e`, task 1 as `8f06bea`, task 2 as `14bb53f`, task 3 as
-`9cfe26d`. Task 4 is the last commit, and its push is reported at the end of this section.
+Branch `main`. Every push succeeded: task 0 as `5306c2e`, task 1 as `8f06bea`, task 2 as
+`14bb53f`, task 3 as `9cfe26d`, task 4 as `bcaf39d`. The only change after that is this line and
+the closing status, in one more commit.
 
 **Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
 That host draws text at a flat ten pixels a character, wider than the glass.
