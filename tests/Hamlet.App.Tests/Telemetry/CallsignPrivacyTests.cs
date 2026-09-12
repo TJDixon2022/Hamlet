@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 74;
+    private const int ExpectedEventMethodCount = 79;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -285,6 +285,20 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.AchievementPointsLoaded(telemetry, kinds: 0, hash: "");
         AppEvents.AchievementScoreChanged(telemetry, "countries", 5, 470);
         AppEvents.AchievementScoreChanged(telemetry, "total_miles", 5, 475);
+
+        // **THE ACHIEVEMENTS NAVIGATION** (work instruction 332 task 1): the page opening,
+        // and a category opening and closing by its kind only. A continent's kind is its
+        // code, which names a continent and not anybody on it.
+        AppEvents.AchievementsOpened(telemetry, 8);
+        AppEvents.AchievementCategoryOpened(telemetry, "countries");
+        AppEvents.AchievementCategoryOpened(telemetry, "continent-EU");
+        AppEvents.AchievementCategoryClosed(telemetry, "continent-EU");
+
+        // **THE GREEN ZONE** (work instruction 332 task 2): the panel's size and regions,
+        // and the sun. **The operator's grid is not a parameter of either**, though the map
+        // draws a marker at it.
+        AppEvents.GreenZoneRendered(telemetry, 778, 193, "left,map,right");
+        AppEvents.TerminatorComputed(telemetry, -90.9, 4.39);
 
         // The scope path and the link carrying it (HM-DEC-092).
         AppEvents.ScopeOutputRequested(telemetry, "Confirmed", 115_200, 0);
