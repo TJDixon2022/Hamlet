@@ -14221,25 +14221,76 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     public const double Psk31AlcScaleTop = CivAlc.FullScale;
 
-    /// <summary>**Where the ALC zone ends on that scale - and nobody knows.**</summary>
+    /// <summary>
+    /// **How far above the learned reference a PSK31 send may read before Hamlet
+    /// says anything: 15, one eighth of the scale.**
+    /// </summary>
     /// <remarks>
-    /// <para>**IT IS NULL, AND THAT IS THE HONEST ANSWER** (§0.0, §4). Unit 323 judged the
-    /// meter against 128, which it arrived at by halving the 0-255 range the transmit
-    /// power *setting* uses; that is not this meter's range, and the figure was this
-    /// unit's own invention rather than a reading of anything.</para>
-    /// <para>**AND THE MANUAL DOES NOT REPLACE IT.** For data modes it says *adjust the
-    /// device's output level within the ALC zone* (p. 4-31, cited in
-    /// `docs/psk31-reference.md`) and gives no number for where that zone ends. The
-    /// operator's own reading in `SHACK_FACTS.md` FACT-005 is off the meter's face -
-    /// *-2.0 to -1.5, inside the red zone* - which is a different scale again, and
-    /// converting between them would be inventing the same number twice.</para>
-    /// <para>**SO HAMLET REPORTS THE READING AND DOES NOT JUDGE IT.** The sentence says
-    /// what the radio's own meter read and asks the operator to compare it with the zone
-    /// his radio draws, which is a thing he can do and Hamlet cannot. **This is an ask on
-    /// the owner**, carried in `output.md`, and the day a figure is ruled it goes here and
-    /// the judgement fires.</para>
+    /// <para>**THE NUMBER IS THIS UNIT'S TO STATE AND TIM'S TO OVERRULE** (§R15,
+    /// work instruction 325 task 6), so here is the argument for it rather than
+    /// the number on its own.</para>
+    /// <para>**IT IS A MARGIN ON A NOISY INSTRUMENT, NOT A THRESHOLD ON A QUIET
+    /// ONE.** The reference is one poll's reading taken during one FT8 send, and
+    /// the ALC meter moves within a transmission: it is answering *how hard is the
+    /// level control working right now*, and *right now* is a moving target across
+    /// a 12.64-second burst. Two clean sends will not read the same number. A
+    /// margin of zero would therefore fire on the second clean send of the
+    /// evening, and a sentence that cries wolf is a sentence he stops reading -
+    /// which costs more than never having judged at all.</para>
+    /// <para>**ONE EIGHTH IS THE SMALLEST FRACTION OF THE SCALE THAT IS CLEARLY
+    /// MORE THAN THAT WOBBLE, AND IT IS A FRACTION RATHER THAN A COUNT.** Written
+    /// as <c>FullScale / 8</c> it stays one eighth if the scale is ever read from
+    /// somewhere else, where a typed 15 would quietly become a different fraction
+    /// of a different range - which is precisely how unit 323's 128 happened.</para>
+    /// <para>**AND IT IS NOT A SAFETY LIMIT.** Nothing here protects the radio;
+    /// the radio's own level control does that, and what this margin governs is
+    /// whether Hamlet says a sentence. §0.2 is untouched: no path here keys,
+    /// arms or changes a setting.</para>
     /// </remarks>
-    public static double? Psk31AlcZone => null;
+    public const double Psk31AlcMargin = CivAlc.FullScale / 8;
+
+    /// <summary>
+    /// **What a good send reads on this radio, learned from FT8 rather than
+    /// asked of the operator - or null until one has been observed.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THIS REPLACES `Psk31AlcZone`, WHICH WAS ALWAYS NULL** (§R15). The
+    /// manual gives this meter's scale, 0 to 120, and does not say where its zone
+    /// ends on it; unit 323 invented 128 by halving a different meter's range and
+    /// unit 324 removed the invention and left the reading unjudged. Tim's ruling
+    /// of 2026-09-11 closes it from the other side: **FT8 already transmits
+    /// cleanly through this radio**, so the highest reading seen during an FT8 or
+    /// FT4 send is a measurement of what *good* reads like on this station.</para>
+    /// <para>**NOTHING IS ASKED OF THE OPERATOR AND NOTHING IS INVENTED.** With no
+    /// reference the reading is reported and no verdict is passed, exactly as
+    /// unit 324 left it. The judging half switches itself on the first time he
+    /// transmits on FT8, and he does not have to do anything for that to happen.
+    /// </para>
+    /// <para>**THE HIGHEST, NOT THE LATEST.** A reference that fell to the
+    /// quietest send of the evening would call every ordinary one hot. The
+    /// question being asked is *what does this radio read when it is happy*, and
+    /// the top of the observed range answers it; a lower one would be a stricter
+    /// claim than the measurement supports.</para>
+    /// </remarks>
+    public LearnedAlcReference? Psk31AlcReference { get; private set; }
+
+    /// <summary>True where a reference has been learned.</summary>
+    public bool HasPsk31AlcReference => Psk31AlcReference is not null;
+
+    /// <summary>What the reference says, beside the power offer, or "".</summary>
+    /// <remarks>
+    /// **IT SITS WITH THE POWER OFFER BECAUSE THEY ARE ONE SUBJECT** (§R11, §R15):
+    /// how hard this radio is being driven on PSK31. **Before there is a reference
+    /// it says so and says what would produce one**, because *no line* and *a line
+    /// saying nothing is wrong* are the same picture and only one of them is true
+    /// (§0.0).
+    /// </remarks>
+    public string Psk31AlcReferenceLine
+        => Psk31AlcReference is { } reference
+            ? reference.Line(DateTime.UtcNow)
+            : "Hamlet has no reference for your radio's level control yet. It takes "
+              + "one from your next FT8 or FT4 transmission on its own, and until "
+              + "then it reports what the meter read and judges nothing.";
 
     /// <summary>True while the power offer is on the panel.</summary>
     public bool HasPsk31PowerOffer => IsPsk31Chosen && !_psk31PowerSettled;
@@ -14346,18 +14397,26 @@ public partial class MainWindowViewModel : ObservableObject
         var value = Psk31AlcForTests ?? _rigMonitor?.State[RigField.Alc];
         var reading = value is { IsKnown: true } ? value.Number : null;
 
-        // **NO RULED ZONE MEANS NO VERDICT** (§0.0). `reading > null` is false in C# and
-        // that is the behaviour wanted here, but it is written out so that nobody reads
-        // it as an oversight: until a figure is ruled, nothing is past anything.
-        var past = Psk31AlcZone is { } zone && reading > zone;
+        // **NO LEARNED REFERENCE MEANS NO VERDICT** (§0.0, §R15). `reading > null` is
+        // false in C# and that is the behaviour wanted here, but it is written out so
+        // that nobody reads it as an oversight: until an FT8 send has been observed,
+        // nothing is past anything and Hamlet never invents a reference.
+        var zone = Psk31AlcReference is { } reference
+            ? reference.Reading + Psk31AlcMargin
+            : (double?)null;
+
+        var past = zone is { } limit && reading > limit;
 
         Psk31Events.AlcRead(
             _telemetry,
             reading,
             value is null ? null : AgeMs(value, DateTime.UtcNow),
             past,
-            Psk31AlcZone,
-            Psk31AlcScaleTop);
+            zone,
+            Psk31AlcScaleTop,
+            Psk31AlcReference?.Reading,
+            Psk31AlcMargin,
+            Psk31AlcReference?.Mode);
 
         Psk31AlcLine = reading is not { } level
             ? ""
@@ -14365,23 +14424,109 @@ public partial class MainWindowViewModel : ObservableObject
                 ? "Your radio is being driven harder than it wants to be: its own level "
                     + "control is working to hold the signal back, and that is what makes a "
                     + "PSK31 signal spread out and splatter over the people either side of you. "
+                    + "It read " + level.ToString("0", CultureInfo.InvariantCulture)
+                    + ", against the "
+                    + Psk31AlcReference!.Reading.ToString("0", CultureInfo.InvariantCulture)
+                    + " Hamlet measured on a clean "
+                    + Psk31AlcReference.Mode + " transmission. "
                     + "Turn the transmit drive above down one step and send again."
 
-                // **WHAT IT READ, AND THE ONE THING HE CAN DO THAT HAMLET CANNOT** (§R11:
-                // a sentence a person with no shack years can act on). Hamlet has the
-                // number off the radio and nobody has told it where the line is on that
-                // scale, so it says so rather than passing a judgement it cannot support.
-                : "Your radio's own level control read "
-                    + level.ToString("0", CultureInfo.InvariantCulture) + " out of "
-                    + Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture)
-                    + " while that went out. Hamlet has not been told where the ALC zone "
-                    + "ends on that scale, so it is not judging it for you: look at the ALC "
-                    + "bar on the radio, and if it goes past the marked zone, turn the "
-                    + "transmit drive above down one step and send again.";
+                : Psk31AlcReference is { } known
+
+                    // **INSIDE WHAT A GOOD SEND ON THIS RADIO READS** (§R15). It says
+                    // the two numbers rather than *fine*, because a verdict with no
+                    // measurement behind it is the thing this whole path exists to
+                    // avoid, and because the comparison is what makes the answer
+                    // checkable by the man reading it.
+                    ? "Your radio's own level control read "
+                        + level.ToString("0", CultureInfo.InvariantCulture) + " out of "
+                        + Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture)
+                        + " while that went out, against the "
+                        + known.Reading.ToString("0", CultureInfo.InvariantCulture)
+                        + " Hamlet measured on a clean " + known.Mode
+                        + " transmission. That is within the "
+                        + Psk31AlcMargin.ToString("0", CultureInfo.InvariantCulture)
+                        + " it allows either way, so there is nothing to do."
+
+                    // **WHAT IT READ, AND THE ONE THING HE CAN DO THAT HAMLET CANNOT**
+                    // (§R11: a sentence a person with no shack years can act on). No
+                    // FT8 send has been observed yet, so there is nothing to compare
+                    // this with and Hamlet says so rather than passing a judgement it
+                    // cannot support - and says what will make the judgement appear.
+                    : "Your radio's own level control read "
+                        + level.ToString("0", CultureInfo.InvariantCulture) + " out of "
+                        + Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture)
+                        + " while that went out. Hamlet has not yet seen an FT8 or FT4 "
+                        + "transmission on this radio to compare it with, so it is not "
+                        + "judging it for you: look at the ALC bar on the radio, and if "
+                        + "it goes past the marked zone, turn the transmit drive above "
+                        + "down one step and send again. The next time you transmit on "
+                        + "FT8, Hamlet takes its own reference and starts doing this for "
+                        + "you.";
 
         OnPropertyChanged(nameof(Psk31AlcLine));
         OnPropertyChanged(nameof(HasPsk31AlcLine));
     }
+
+    /// <summary>
+    /// **Take the ALC from a send Hamlet has no reason to doubt, and keep it if it
+    /// is the highest seen** (§R15).
+    /// </summary>
+    /// <param name="value">What the poll held when the send ended, or null.</param>
+    /// <param name="mode">The mode that was sending.</param>
+    /// <remarks>
+    /// <para>**A SEND THAT DID NOT GO OUT TEACHES NOTHING.** The only call site is
+    /// after the run reports that its audio went out and the radio unkeyed, which
+    /// is the same gate `RecordSent` uses. A refused, cancelled or missed slot
+    /// leaves the reference exactly as it was.</para>
+    /// <para>**AND AN UNKNOWN READING TEACHES NOTHING EITHER** (§0.0). On a machine
+    /// with no radio the poll holds nothing, so nothing is learned and nothing is
+    /// written down as though something had been.</para>
+    /// <para>**IT READS AND NEVER WRITES** (§0.2). It takes what the poll already
+    /// has; it asks the radio for nothing and it keys nothing.</para>
+    /// </remarks>
+    private void LearnTheAlcFrom(RigValue? value, string mode)
+    {
+        if (value is not { IsKnown: true } || value.Number is not { } reading)
+        {
+            return;
+        }
+
+        if (Psk31AlcReference is { } had && reading <= had.Reading)
+        {
+            return;
+        }
+
+        // **THE TIME IS THE READING'S OWN AND NOT THIS MOMENT** (HM-DEC-111). A
+        // poll's answer is a fact about when the poll took it, and stamping it with
+        // *now* would make an old reading look fresh on the panel.
+        Psk31AlcReference = new LearnedAlcReference(
+            reading, value.AtUtc ?? DateTime.UtcNow, mode);
+
+        Psk31Events.AlcReferenceLearned(
+            _telemetry,
+            reading,
+            Psk31AlcReference.TakenUtc,
+            mode,
+            Psk31AlcScaleTop,
+            Psk31AlcMargin);
+
+        OnPropertyChanged(nameof(Psk31AlcReference));
+        OnPropertyChanged(nameof(HasPsk31AlcReference));
+        OnPropertyChanged(nameof(Psk31AlcReferenceLine));
+    }
+
+    /// <summary>Learn from a handed-in reading, for a test with no radio.</summary>
+    /// <param name="value">The reading the poll would have held.</param>
+    /// <param name="mode">The mode that was sending.</param>
+    /// <remarks>
+    /// **THE SAME SEAM AS <see cref="ReadTheAlcForTests"/>** and for the same
+    /// reason: there is no `CivRead` for <see cref="RigField.Alc"/> in this tree,
+    /// so the poll never fills it and the path can only be proved from a reading
+    /// handed in. It runs the shipped method and nothing else.
+    /// </remarks>
+    internal void LearnTheAlcForTests(RigValue? value, string mode)
+        => LearnTheAlcFrom(value, mode);
 
     /// <summary>Tell the poll whether to ask the radio for the ALC meter.</summary>
     /// <param name="wanted">True while a send is running.</param>
@@ -14556,7 +14701,30 @@ public partial class MainWindowViewModel : ObservableObject
         _sendingSlotUtc = boundaryUtc;
         _sendWasStopped = false;
 
-        var result = await _armedSend.AtBoundaryAsync(boundaryUtc).ConfigureAwait(false);
+        // **THE ALC IS ASKED FOR DURING FT8 AND FT4 SENDS TOO** (§R15, work
+        // instruction 325 task 6). Unit 324 gated `15 13` to PSK31 sends alone,
+        // which is the mode Hamlet cannot judge; this is the mode it can, because
+        // FT8 already transmits cleanly through this radio. The flag is set for
+        // exactly the length of the run and cleared whatever the run did, which is
+        // the shape `FirePsk31Async` already uses. **It keys nothing and writes
+        // nothing to the radio** (§0.2): the poll was running anyway.
+        WantTheAlcRead(true);
+
+        Ft8BoundaryResult result;
+        RigValue? alcDuringTheSend;
+
+        try
+        {
+            result = await _armedSend.AtBoundaryAsync(boundaryUtc).ConfigureAwait(false);
+        }
+        finally
+        {
+            // **TAKEN BEFORE THE FLAG IS CLEARED**, so what is read is the poll's
+            // answer from during the transmission rather than the next idle one.
+            alcDuringTheSend = Psk31AlcForTests ?? _rigMonitor?.State[RigField.Alc];
+
+            WantTheAlcRead(false);
+        }
 
         if (result.Outcome != Ft8ArmOutcome.Ran)
         {
@@ -14589,6 +14757,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (run.AudioWentOut)
         {
+            // **A KNOWN-GOOD SEND IS WHAT TEACHES THE REFERENCE** (§R15). The gate
+            // is the same one `RecordSent` uses one line below - the whole
+            // transmission went out and the radio unkeyed - because a cancelled or
+            // refused send is not a measurement of how this radio behaves when it
+            // is working properly.
+            LearnTheAlcFrom(alcDuringTheSend, DigitalGrid.Name);
+
             // **THE ONE CALL SITE OF `RecordSent` IN THE TREE**, which is the line
             // unit 258 left it unreachable for.
             _contacts?.RecordSent(text, result.Send!.SlotStartUtc);

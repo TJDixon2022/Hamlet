@@ -453,8 +453,11 @@ public static class Psk31Events
     /// <param name="reading">The meter's own number, or null where it was not read.</param>
     /// <param name="ageMs">How old that reading is, or null.</param>
     /// <param name="pastTheZone">True where it is past where it should sit.</param>
-    /// <param name="zone">The top of the zone, or null where nobody has ruled one.</param>
+    /// <param name="zone">The top of the zone, or null where none has been learned.</param>
     /// <param name="scaleTop">The top of the meter's own scale, from the manual.</param>
+    /// <param name="reference">What a clean send read, or null where none has been seen.</param>
+    /// <param name="margin">How far above the reference is allowed, or null.</param>
+    /// <param name="referenceMode">Which mode the reference came from, or null.</param>
     /// <remarks>
     /// <para>**§R11's HALF THAT IS A MEASUREMENT.** The panel gets a sentence a person with
     /// no shack years can act on; the file gets the number, its age (HM-DEC-111) and the
@@ -470,7 +473,10 @@ public static class Psk31Events
         double? ageMs,
         bool pastTheZone,
         double? zone,
-        double scaleTop)
+        double scaleTop,
+        double? reference = null,
+        double? margin = null,
+        string? referenceMode = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_alc",
@@ -485,11 +491,57 @@ public static class Psk31Events
                 // instruction 324 task 4b). Unit 323 wrote 128 here, which it had
                 // invented; the manual gives the scale and not the line on it, so
                 // `zone` is null and `judged` says plainly that nothing was compared.
+                // **SINCE §R15 THE ZONE IS LEARNED RATHER THAN RULED** - it is the
+                // reference plus the margin, both written beside it - and it is still
+                // absent until an FT8 send has been observed.
                 ["judged"] = zone is not null,
                 ["zone"] = zone,
                 ["pastTheZone"] = pastTheZone,
+
+                // **THE VERDICT'S WORKING, NOT JUST ITS ANSWER** (§R13, §0.0.1). A
+                // record that carried only *hot* could not be argued with afterwards;
+                // with the reading, the reference, the margin and the mode it came
+                // from, the arithmetic can be redone from the file.
+                ["reference"] = reference,
+                ["margin"] = margin,
+                ["referenceMode"] = referenceMode,
             },
             pastTheZone ? TelemetryLevel.Warn : TelemetryLevel.Info);
+
+    /// <summary>**A reference for the ALC was taken from a clean send** (§R15).</summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="reading">What the meter read, on its own scale.</param>
+    /// <param name="takenUtc">When the poll took it.</param>
+    /// <param name="mode">Which mode was sending: `FT8` or `FT4`.</param>
+    /// <param name="scaleTop">The top of that scale, from the manual.</param>
+    /// <param name="margin">How far above it a PSK31 send may read.</param>
+    /// <remarks>
+    /// <para>**EVERY NEW STAGE WRITES ITS EVENT** (§R13). Learning a reference is the
+    /// moment Hamlet's behaviour changes from reporting to judging, and a change in
+    /// behaviour that leaves no line in the file cannot be told afterwards from a
+    /// change in the radio.</para>
+    /// <para>**NOTHING PERSONAL** (HM-DEC-018, §2.1): a meter reading, a clock time,
+    /// a mode name and two numbers. No callsign, no grid, no text.</para>
+    /// </remarks>
+    public static void AlcReferenceLearned(
+        ITelemetry? telemetry,
+        double reading,
+        DateTime takenUtc,
+        string mode,
+        double scaleTop,
+        double margin)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_alc_reference",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["alc"] = reading,
+                ["scaleTop"] = scaleTop,
+                ["takenUtc"] = takenUtc.ToString("O", CultureInfo.InvariantCulture),
+                ["mode"] = mode,
+                ["margin"] = margin,
+            },
+            TelemetryLevel.Info);
 
     /// <summary>A number as the record spells it.</summary>
     internal static string Say(double value)

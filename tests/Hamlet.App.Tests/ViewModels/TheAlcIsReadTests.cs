@@ -207,11 +207,19 @@ public sealed class TheAlcIsReadTests : IDisposable
     [Fact]
     public void TheZoneIsNotInventedAndTheSentenceSaysWhatWasReadRatherThanJudgingIt()
     {
-        Assert.Null(MainWindowViewModel.Psk31AlcZone);
         Assert.Equal(CivAlc.FullScale, MainWindowViewModel.Psk31AlcScaleTop);
 
         var lines = Read(model =>
         {
+            // **`Psk31AlcZone` BECAME `Psk31AlcReference` UNDER §R15** (Tim,
+            // 2026-09-11, work instruction 325 task 6). The static property was
+            // always null and this assertion said *nothing is invented*; the
+            // replacement is an instance property that is null until an FT8 send
+            // has been observed, and this asserts the same fact in the new shape.
+            // **Nothing about this test's subject has changed**: with no reference,
+            // the reading is reported and no verdict is passed.
+            Assert.Null(model.Psk31AlcReference);
+
             model.Psk31AlcForTests = RigValue.Known(
                 RigField.Alc, 96, CivAlc.Describe(96), DateTime.UtcNow, "15 13");
 

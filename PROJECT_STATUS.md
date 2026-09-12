@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 4 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 325 - the screen says what is true
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T22:24:00-04:00
-NOTE: The quill has two forms now - a counter is the still green quill with no ring, a door is HmAmber C25E00 with the orbit ring and it does not settle. The cap of two was already withdrawn; what was left was both kinds drawing the same lit ring. Running the rewritten nudge tests.
+UPDATED: 2026-09-11T23:06:00-04:00
+NOTE: The step-4 number landed. Reference learned at the highest reading on a known-good FT8 or FT4 send, margin 15 of 120, nothing judged until one exists. Watched the judging fail with the reference disconnected. Committing, then the American spelling sweep.
 
 ---
 

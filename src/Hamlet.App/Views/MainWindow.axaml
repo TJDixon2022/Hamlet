@@ -3585,6 +3585,26 @@
                                                         Content="I will set it myself"
                                                         Command="{Binding DeclinePsk31PowerCommand}" />
                                             </StackPanel>
+
+                                            <!-- **THE LEARNED REFERENCE SITS WITH
+                                                 THE POWER OFFER** (§R15, work
+                                                 instruction 325 task 6), because
+                                                 they are one subject: how hard this
+                                                 radio is being driven on PSK31.
+
+                                                 **IT IS NEVER BLANK.** Before there
+                                                 is a reference it says there is none
+                                                 and what will produce one, because a
+                                                 missing line and a line saying all is
+                                                 well are the same picture and only
+                                                 one of them is true (§0.0). The
+                                                 reading carries its age (HM-DEC-111)
+                                                 and where it came from. -->
+                                            <TextBlock x:Name="DigitalPsk31AlcReference"
+                                                       Text="{Binding Psk31AlcReferenceLine}"
+                                                       TextWrapping="Wrap"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
                                         </StackPanel>
                                     </Border>
 
