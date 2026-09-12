@@ -349,7 +349,14 @@ public sealed class ThePsk31ReadsTheConversationTests
             ("src/Hamlet.RadioEngine/Explore/DxccPrefixes.cs", "f5ebf765a62defe87c0e25bc88c4a005ac3614d02dd8b51bb9a5d6a432351ef2"),
             ("src/Hamlet.RadioEngine/Contacts/NudgeSet.cs", "a70dca061116989295c9ac248e1a606650831bb2fc3a3a1c1df73548c14d903b"),
             ("src/Hamlet.App/ViewModels/NudgeWords.cs", "1767bd4ebceec60a7e240515e61bac2e51ec2ca0575d40f14eb7e110eaf84fa4"),
-            ("src/Hamlet.App/Controls/AchievementMarkControl.cs", "85417b572f693ccdc4fc877e5a7b973f0d63176ea978b0212011fa0c62d5b912"),
+            // **MOVED BY §R16, NOT DROPPED** (work instruction 325 task 4). Tim
+            // ruled on 2026-09-11 that the quill has two forms and no cap, so this
+            // file gained `AchievementMarkForm`, the door's amber, and a ring that
+            // a counter does not draw. The pin exists to catch an *incidental*
+            // change to a control these rows reuse; a change made under a ruling
+            // is the one case where re-pinning is the right answer, and the reason
+            // is written here so the next reader can tell the two apart.
+            ("src/Hamlet.App/Controls/AchievementMarkControl.cs", "944ce75f4b572e0e4a6318ab0068ec86ef43a60326e2b18ff6ea15e419def0d1"),
         })
         {
             var bytes = File.ReadAllBytes(Path.Combine(root, file)).Where(b => b != (byte)'\r').ToArray();

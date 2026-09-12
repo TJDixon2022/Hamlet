@@ -1,6 +1,7 @@
 ﻿using Hamlet.RadioEngine.Contacts;
 using System.ComponentModel;
 using System.Globalization;
+using Hamlet.App.Controls;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
 
@@ -434,6 +435,8 @@ public sealed record DigitalDecodeRow(
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsNudged)));
             PropertyChanged?.Invoke(
                 this, new PropertyChangedEventArgs(nameof(NudgeIsDoor)));
+            PropertyChanged?.Invoke(
+                this, new PropertyChangedEventArgs(nameof(NudgeForm)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowLift)));
         }
     }
@@ -449,6 +452,26 @@ public sealed record DigitalDecodeRow(
     /// *absent, not dimmed*: the CQ list must not be what tells him an area exists.
     /// </remarks>
     public bool NudgeIsDoor => _nudge == NudgeKind.Door;
+
+    /// <summary>Which of the two quills this row carries (§R16).</summary>
+    /// <remarks>
+    /// <para>**TWO KINDS, TOLD APART BY SHAPE AND BY COLOR** (Tim, 2026-09-11). A
+    /// counter - a new country, state or grid with nothing opening behind it - is
+    /// the still quill in decode green. A door - a first contact that opens a
+    /// whole set - is the quill with the orbit ring, turning, in the palette's
+    /// amber. Before this both drew the same lit ring and *a new country* and *a
+    /// whole set opens* were one picture.</para>
+    /// <para>**AN UNMARKED ROW ANSWERS `Tray` AND NOTHING DRAWS IT**, because the
+    /// control is not visible at all where <see cref="IsNudged"/> is false. The
+    /// value is never read in that state; the switch is total because a partial
+    /// one would have to invent a fourth case.</para>
+    /// </remarks>
+    public AchievementMarkForm NudgeForm => _nudge switch
+    {
+        NudgeKind.Door => AchievementMarkForm.Door,
+        NudgeKind.Visible => AchievementMarkForm.Counter,
+        _ => AchievementMarkForm.Tray,
+    };
 
     /// <summary>How far a marked row lifts above the rest.</summary>
     /// <remarks>

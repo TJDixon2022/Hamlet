@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Avalonia.Headless.XUnit;
+using Hamlet.App.Controls;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Contacts;
@@ -310,6 +312,234 @@ public sealed class TheCqListNudgeTests
         Assert.DoesNotContain(
             "armed", model.DigitalSendLine, StringComparison.OrdinalIgnoreCase);
     }
+
+    /// <summary>**Fourteen qualifying rows carry fourteen marks.**</summary>
+    /// <remarks>
+    /// **§R16, TIM 2026-09-11: NO CAP, AND HE SAID SO IN WORDS** - *"I do not mind
+    /// lots of achievement markers."* Nine of fourteen carried a quill on his own
+    /// screen, and the five that did not were stations the cited prefix table
+    /// declines or entities he has worked. The fourteen below are chosen so that
+    /// every one of them resolves and none has been worked, which is the only way
+    /// to ask this question without the table answering it first.
+    /// </remarks>
+    [Fact]
+    public void FourteenQualifyingRowsCarryFourteenMarks()
+    {
+        // **NORTH AMERICA WORKED, SO BOTH KINDS ARE ON THE LIST AT ONCE.** Three
+        // of the fourteen are counters and eleven are doors, which is the shape
+        // the ruling is actually about: not fourteen of one thing, but every
+        // station that would earn anything, marked as what it would earn.
+        var model = Panel(Log("W9ZZZ"));
+
+        foreach (var call in FourteenThatAllQualify)
+        {
+            Heard(model, "02:11:15", "CQ " + call + " EK99");
+        }
+
+        Print(model);
+
+        var marked = Marked(model);
+
+        _output.WriteLine(
+            "qualifying " + FourteenThatAllQualify.Length
+            + ", marked " + marked.Count);
+
+        Assert.Equal(FourteenThatAllQualify.Length, model.DigitalDecodes.Count);
+        Assert.Equal(FourteenThatAllQualify.Length, marked.Count);
+
+        // **AND BOTH KINDS ARE PRESENT AND TOLD APART.**
+        var doors = marked.Count(r => r.NudgeForm == AchievementMarkForm.Door);
+        var counters = marked.Count(r => r.NudgeForm == AchievementMarkForm.Counter);
+
+        _output.WriteLine("doors " + doors + ", counters " + counters);
+
+        Assert.True(doors > 0, "no door was marked");
+        Assert.True(counters > 0, "no counter was marked");
+        Assert.Equal(marked.Count, doors + counters);
+    }
+
+    /// <summary>**A door row carries the ring, the orange, and it turns.**</summary>
+    /// <remarks>
+    /// **THIS IS COMPUTED AND NOT SEEN.** The control is built headless and its
+    /// own `HasRing`, `LitBrush` and `IsOrbiting` are read; nothing here looks at
+    /// a pixel.
+    /// </remarks>
+    [AvaloniaFact]
+    public void ADoorRowCarriesTheRingAndTheOrangeAndSpins()
+    {
+        var model = Panel(Log("W9ZZZ"));
+
+        Heard(model, "02:11:15", "CQ PY2ABC GG66");
+
+        var row = model.DigitalDecodes.Single(r => r.Sender == "PY2ABC");
+
+        Assert.Equal(NudgeKind.Door, row.Nudge);
+        Assert.Equal(AchievementMarkForm.Door, row.NudgeForm);
+
+        var mark = new AchievementMarkControl
+        {
+            Form = row.NudgeForm,
+            IsNew = row.IsNudged,
+        };
+
+        _output.WriteLine(
+            "door : ring=" + mark.HasRing
+            + "  ink=" + Hex(mark.LitBrush)
+            + "  orbiting=" + mark.IsOrbiting);
+
+        Assert.True(mark.HasRing);
+        Assert.True(mark.IsOrbiting);
+        Assert.Equal("#FFC25E00", Hex(mark.LitBrush));
+
+        // **AND IT DOES NOT SETTLE.** The tray's thirty seconds are unit 300's and
+        // stay; a door is on the list he is reading and turns while it is there.
+        mark.SettleForTests();
+
+        _output.WriteLine("door, wound past the tray's settle : " + mark.IsOrbiting);
+
+        Assert.True(mark.IsOrbiting);
+    }
+
+    /// <summary>**A counter row carries the still green quill and no ring.**</summary>
+    [AvaloniaFact]
+    public void ACounterRowCarriesTheStillGreenQuill()
+    {
+        var model = Panel(Log("W9ZZZ"));
+
+        Heard(model, "02:11:15", "CQ XE1ABC EK99");
+
+        var row = model.DigitalDecodes.Single(r => r.Sender == "XE1ABC");
+
+        Assert.Equal(NudgeKind.Visible, row.Nudge);
+        Assert.Equal(AchievementMarkForm.Counter, row.NudgeForm);
+
+        var mark = new AchievementMarkControl
+        {
+            Form = row.NudgeForm,
+            IsNew = row.IsNudged,
+        };
+
+        _output.WriteLine(
+            "counter : ring=" + mark.HasRing
+            + "  ink=" + Hex(mark.LitBrush)
+            + "  orbiting=" + mark.IsOrbiting);
+
+        Assert.False(mark.HasRing);
+        Assert.False(mark.IsOrbiting);
+        Assert.Equal("#FF3B6D11", Hex(mark.LitBrush));
+    }
+
+    /// <summary>**The two forms differ in shape, not only in color.**</summary>
+    /// <remarks>
+    /// **§0.6 IS THE WHOLE REASON THE RING IS THE CARRIER.** Roughly one man in
+    /// twelve cannot separate this green from this orange, and this hobby's
+    /// demographics make that a real slice of the people who will use it. A ring
+    /// or no ring is a difference that survives a greyscale print.
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheTwoFormsDifferInShapeAndNotOnlyInColor()
+    {
+        var door = new AchievementMarkControl
+        {
+            Form = AchievementMarkForm.Door, IsNew = true,
+        };
+
+        var counter = new AchievementMarkControl
+        {
+            Form = AchievementMarkForm.Counter, IsNew = true,
+        };
+
+        _output.WriteLine(
+            "door ring=" + door.HasRing + "  counter ring=" + counter.HasRing);
+
+        Assert.NotEqual(door.HasRing, counter.HasRing);
+        Assert.NotEqual(Hex(door.LitBrush), Hex(counter.LitBrush));
+
+        // **AND THE ORANGE IS NOT THE MUSTARD RULED OUT FOR THE TRAY.**
+        Assert.NotEqual("#FFEDC375", Hex(door.LitBrush));
+
+        // The tray's own mark is untouched by either.
+        var tray = new AchievementMarkControl { IsNew = true };
+
+        Assert.Equal(AchievementMarkForm.Tray, tray.Form);
+        Assert.True(tray.HasRing);
+        Assert.Equal(Hex(counter.LitBrush), Hex(tray.LitBrush));
+    }
+
+    /// <summary>**A worked station carries neither quill.**</summary>
+    [Fact]
+    public void AWorkedStationCarriesNeitherQuill()
+    {
+        var model = Panel(Log("W9ZZZ"));
+
+        Heard(model, "02:11:15", "CQ W1ABC FN20");
+
+        var row = model.DigitalDecodes.Single(r => r.Sender == "W1ABC");
+
+        _output.WriteLine(
+            "worked : nudge=" + row.Nudge + "  nudged=" + row.IsNudged
+            + "  tip=[" + row.NudgeTip + "]");
+
+        Assert.Equal(NudgeKind.None, row.Nudge);
+        Assert.False(row.IsNudged);
+        Assert.False(row.NudgeIsDoor);
+        Assert.Empty(row.NudgeTip);
+    }
+
+    /// <summary>**No area is named on a door, on the row or anywhere near it.**</summary>
+    /// <remarks>
+    /// **§3.1 IS ABSENT, NOT DIMMED** and this is the row-level half of it. The
+    /// set already refuses to hand the entity out; this asserts that nothing on
+    /// the way to the screen puts it back.
+    /// </remarks>
+    [Fact]
+    public void NoAreaIsNamedOnADoorRow()
+    {
+        var model = Panel(Log("W9ZZZ"));
+
+        Heard(model, "02:11:15", "CQ PY2ABC GG66");
+
+        var row = model.DigitalDecodes.Single(r => r.Sender == "PY2ABC");
+
+        _output.WriteLine("door row tip : [" + row.NudgeTip + "]");
+
+        Assert.Equal(NudgeKind.Door, row.Nudge);
+
+        foreach (var area in new[]
+        {
+            "Brazil", "South America", "Africa", "Asia", "Europe", "Oceania",
+        })
+        {
+            Assert.DoesNotContain(area, row.NudgeTip, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // It still says something, because a mark nobody can ask about is a mark
+        // that teaches nothing.
+        Assert.NotEmpty(row.NudgeTip);
+    }
+
+    /// <summary>A brush's color as `#AARRGGBB`, for an exact assertion.</summary>
+    private static string Hex(Avalonia.Media.IBrush brush)
+        => (brush is Avalonia.Media.ISolidColorBrush solid
+            ? solid.Color.ToString()
+            : brush.ToString() ?? "").ToUpperInvariant();
+
+    /// <summary>
+    /// Fourteen callsigns that every one resolve through the cited table and none
+    /// of which has been worked against an empty log.
+    /// </summary>
+    /// <remarks>
+    /// **HIS OWN FOURTEEN CANNOT ANSWER THE NO-CAP QUESTION** and that is a
+    /// finding rather than a convenience: `RD6OB`'s prefix is declined by
+    /// `DxccPrefixes`, so it can never be marked by any version of this feature,
+    /// and eight of the rest are entities he has worked. These fourteen are chosen
+    /// to isolate the cap from the table.
+    /// </remarks>
+    private static readonly string[] FourteenThatAllQualify =
+    {
+        "TI2AIM", "J38DX", "XE1ABC", "PY2ABC", "ZS6ABC", "JA1ABC", "EA3QQ",
+        "G0XYZ", "LU1ABC", "9M2ABC", "HK3ABC", "CE3ABC", "5B4ABC", "OH2ABC",
+    };
 
     private static List<DigitalDecodeRow> Marked(MainWindowViewModel model)
         => model.DigitalDecodes.Where(r => r.Nudge != NudgeKind.None).ToList();

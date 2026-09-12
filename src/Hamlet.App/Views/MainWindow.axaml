@@ -4229,10 +4229,23 @@
                                                          **AN UNMARKED ROW IS NOT A LESSER ROW** (§3.7). There is no
                                                          dimming here and no count of what he is missing; the mark is
                                                          simply absent. -->
+                                                    <!-- **TWO FORMS AND NO CAP** (§R16,
+                                                         Tim 2026-09-11, work instruction
+                                                         325 task 4). `Form` carries the
+                                                         whole difference: a counter is the
+                                                         still green quill with no ring, a
+                                                         door is the amber quill with the
+                                                         orbit ring turning. `IsOrbiting` is
+                                                         the control's own timer's to set
+                                                         and is no longer bound from here -
+                                                         binding it and then having the
+                                                         control assign it was two owners
+                                                         for one value, and the control won
+                                                         every time. -->
                                                     <ctl:AchievementMarkControl Grid.Column="0"
                                                                                 x:Name="NudgeMark"
                                                                                 IsVisible="{Binding IsNudged}"
-                                                                                IsOrbiting="{Binding NudgeIsDoor}"
+                                                                                Form="{Binding NudgeForm}"
                                                                                 IsNew="{Binding IsNudged}"
                                                                                 Width="16" Height="16"
                                                                                 VerticalAlignment="Center"

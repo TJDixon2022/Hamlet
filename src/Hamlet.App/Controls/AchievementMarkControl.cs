@@ -18,6 +18,40 @@ public static class AchievementQuill
     public const double Side = 44;
 }
 
+/// <summary>Which of the three jobs a quill is doing.</summary>
+/// <remarks>
+/// <para>**§R16, TIM 2026-09-11: THE QUILL HAS TWO FORMS AND NO CAP.** Every
+/// station on the list that would earn anything is marked, and the two kinds of
+/// earning look different. Before this, every marked row drew the same lit ring
+/// and the orbit ran on all of them, so *a new country* and *a whole set opens*
+/// were the same picture and he could not tell which row was which.</para>
+/// <para>**THE DEFAULT IS <see cref="Tray"/> AND THAT IS DELIBERATE.** The status
+/// bar's mark is unit 300's and its behaviour is ruled; a new default would have
+/// changed it silently from the other side of the application.</para>
+/// </remarks>
+public enum AchievementMarkForm
+{
+    /// <summary>
+    /// The status bar mark: a ring while something is unseen, settling after
+    /// <see cref="AchievementMarkControl.OrbitsFor"/>.
+    /// </summary>
+    Tray = 0,
+
+    /// <summary>
+    /// A row whose station would earn a counter - a new country, state or grid,
+    /// with nothing opening behind it. **The still quill, in decode green, and no
+    /// ring at all.**
+    /// </summary>
+    Counter = 1,
+
+    /// <summary>
+    /// A row whose station would open a whole set. **The quill with the orbit
+    /// ring, turning, in the palette's amber.** It does not settle: while the
+    /// station is on the list, the door is open.
+    /// </summary>
+    Door = 2,
+}
+
 /// <summary>
 /// **The quill in the status bar: outlined at rest, green and orbited when
 /// something is unseen.**
@@ -87,6 +121,11 @@ public sealed class AchievementMarkControl : Control
     public static readonly StyledProperty<bool> IsOrbitingProperty =
         AvaloniaProperty.Register<AchievementMarkControl, bool>(nameof(IsOrbiting));
 
+    /// <summary>Which of the three jobs this quill is doing (§R16).</summary>
+    public static readonly StyledProperty<AchievementMarkForm> FormProperty =
+        AvaloniaProperty.Register<AchievementMarkControl, AchievementMarkForm>(
+            nameof(Form));
+
     private static readonly Lazy<IReadOnlyList<GeometryDrawing>> Quill =
         new(() => SvgMark.Shapes(AchievementQuill.Uri));
 
@@ -95,13 +134,33 @@ public sealed class AchievementMarkControl : Control
     private static readonly IBrush Edge = new SolidColorBrush(Color.Parse("#27490B"));
     private static readonly IBrush Spine = new SolidColorBrush(Color.Parse("#F3EEE1"));
 
+    /// <summary>The door's orange: `HmAmber`, the tuning family's title ink.</summary>
+    /// <remarks>
+    /// <para>**IT IS THE PALETTE'S OWN ORANGE AND IT IS NAMED** (§R16, §0.6,
+    /// HM-DEC-032). `#C25E00` is `App.axaml`'s `HmAmber` and
+    /// <see cref="PanelPalette.Amber"/>'s `TitleBrush` - the colour the tuning
+    /// family already writes its headings in - so a door quill is a hue the
+    /// application already uses rather than a new one invented for one mark.</para>
+    /// <para>**IT IS NOT THE MUSTARD** (work instruction 325 task 4). `#EDC375`
+    /// is `ModePalette.Morse`'s fill, and it is the shade Tim ruled out for the
+    /// tray: at 16 px on warm paper it is a pale smear. `#C25E00` is dark enough
+    /// to read as a drawn object at that size.</para>
+    /// <para>**AND THE COLOUR IS NEVER THE ONLY CARRIER** (§0.6). A door has the
+    /// ring and a counter has none, which is a difference in shape that survives
+    /// a greyscale print and a colour vision deficiency both.</para>
+    /// </remarks>
+    private static readonly IBrush DoorInk = new SolidColorBrush(Color.Parse("#C25E00"));
+
+    /// <summary>The darker amber the door's outline is drawn in: `HmAmberDeep`.</summary>
+    private static readonly IBrush DoorEdge = new SolidColorBrush(Color.Parse("#9A4A00"));
+
     private readonly DispatcherTimer _timer;
 
     private DateTime _lit = DateTime.MinValue;
 
     static AchievementMarkControl()
         => AffectsRender<AchievementMarkControl>(
-            IsNewProperty, PhaseProperty, IsOrbitingProperty);
+            IsNewProperty, PhaseProperty, IsOrbitingProperty, FormProperty);
 
     /// <summary>Creates the mark.</summary>
     public AchievementMarkControl()
@@ -133,6 +192,36 @@ public sealed class AchievementMarkControl : Control
         set => SetValue(IsOrbitingProperty, value);
     }
 
+    /// <summary>Which of the three jobs this quill is doing.</summary>
+    public AchievementMarkForm Form
+    {
+        get => GetValue(FormProperty);
+        set => SetValue(FormProperty, value);
+    }
+
+    /// <summary>True where this mark draws a ring at all.</summary>
+    /// <remarks>
+    /// **THE RING IS THE SHAPE THAT SEPARATES THE TWO KINDS** (§R16, §0.6). A
+    /// counter never draws one; a door always does, whatever the orbit is up to;
+    /// the tray draws one exactly while something is unseen, which is unit 300's
+    /// ruling and is untouched.
+    /// </remarks>
+    public bool HasRing => Form switch
+    {
+        AchievementMarkForm.Counter => false,
+        AchievementMarkForm.Door => true,
+        _ => IsNew,
+    };
+
+    /// <summary>The brush the quill and the ring are drawn in.</summary>
+    /// <remarks>
+    /// **EXPOSED SO THAT A TEST ASSERTS THE VALUE RATHER THAN A SCREENSHOT.** The
+    /// two forms have to be a different hue as well as a different shape (§R16),
+    /// and reading the brush off the control is the only way to say which hue
+    /// without rendering a bitmap and sampling it.
+    /// </remarks>
+    public IBrush LitBrush => Form == AchievementMarkForm.Door ? DoorInk : Green;
+
     /// <inheritdoc/>
     protected override Size MeasureOverride(Size availableSize) => new(20, 20);
 
@@ -141,8 +230,19 @@ public sealed class AchievementMarkControl : Control
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property != IsNewProperty)
+        if (change.Property != IsNewProperty && change.Property != FormProperty)
         {
+            return;
+        }
+
+        // **A COUNTER NEVER STARTS A TIMER** (§R16). It is the still quill, and on
+        // a busy slot there are fourteen of these on the list; fourteen background
+        // timers ticking twenty-five times a second to animate nothing is a cost
+        // the old *every marked row is new* binding was quietly paying.
+        if (Form == AchievementMarkForm.Counter)
+        {
+            Stop();
+
             return;
         }
 
@@ -168,6 +268,19 @@ public sealed class AchievementMarkControl : Control
         if (!IsNew)
         {
             Stop();
+            return;
+        }
+
+        // **A DOOR DOES NOT SETTLE** (§R16: *the quill with the orbit ring,
+        // spinning*). The tray's thirty seconds exist because that mark sits in
+        // the corner of the eye all evening; a door mark lives on a row that is
+        // replaced every slot and is on the surface he is reading, and the ruling
+        // asks for motion while the station is there.
+        if (Form == AchievementMarkForm.Door)
+        {
+            Phase = (DateTime.UtcNow - _lit).TotalSeconds % Turn.TotalSeconds
+                / Turn.TotalSeconds;
+
             return;
         }
 
@@ -219,13 +332,18 @@ public sealed class AchievementMarkControl : Control
         var side = Math.Min(Bounds.Width, Bounds.Height);
         var middle = new Point(Bounds.Width / 2, Bounds.Height / 2);
 
+        // **THE TWO FORMS DIFFER IN SHAPE AS WELL AS IN COLOR** (§R16, §0.6). The
+        // door has the ring and the counter has none, so the difference survives a
+        // greyscale print and does not depend on telling green from orange.
+        var lit = LitBrush;
+
         // **THE RING IS PART OF WHAT SAYS *NEW*, AND IT IS A SHAPE** (§0.6). At rest
         // there is no circle at all, which is a difference a greyscale printer keeps.
-        if (IsNew)
+        if (HasRing)
         {
             var radius = side / 2 - 1;
 
-            context.DrawEllipse(null, new Pen(Green, 1.6), middle, radius, radius);
+            context.DrawEllipse(null, new Pen(lit, 1.6), middle, radius, radius);
 
             if (IsOrbiting)
             {
@@ -234,7 +352,7 @@ public sealed class AchievementMarkControl : Control
                 var angle = Phase * Math.PI * 2 - Math.PI / 2;
 
                 context.DrawEllipse(
-                    Green,
+                    lit,
                     null,
                     new Point(
                         middle.X + Math.Cos(angle) * radius,
@@ -262,7 +380,7 @@ public sealed class AchievementMarkControl : Control
             // option B of three he was shown). At rest it was a grey sliver and his
             // word for it was *not noticeable*. The quill is now the same green
             // object whether or not something is new.
-            var ink = Edge;
+            var ink = Form == AchievementMarkForm.Door ? DoorEdge : Edge;
 
             foreach (var shape in Quill.Value)
             {
@@ -278,7 +396,7 @@ public sealed class AchievementMarkControl : Control
                 // **THE VANE IS ALWAYS FILLED NOW**, which is what option B is. A
                 // line still has no interior: SVG's default black fill on one would
                 // paint nothing here and something on another backend.
-                var fill = line ? null : Green;
+                var fill = line ? null : lit;
 
                 var pen = shape.Pen is null
                     ? null
