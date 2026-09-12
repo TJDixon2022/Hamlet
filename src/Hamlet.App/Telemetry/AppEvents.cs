@@ -1067,15 +1067,17 @@ public static class AppEvents
     /// <param name="telemetry">The sink, or null.</param>
     /// <param name="kinds">How many of the eight kinds the file named.</param>
     /// <param name="hash">Eight hex characters of SHA-256 over the bytes read, or "".</param>
+    /// <param name="rankNames">How many ranks the file names (work instruction 336 task 2).</param>
     /// <remarks>
-    /// **THE HASH AND THE COUNT, AND NOTHING ELSE** (§R13, and the instruction's own list).
-    /// No callsign, no entity name and **no point value**: the numbers are the owner's
-    /// private judgement of his own station and a record of them is a record of something
-    /// he did not ask anybody to keep. The hash is enough to tell two runs of one file from
-    /// a run of two files.
+    /// **THE HASH AND THE COUNTS, AND NOTHING ELSE** (§R13, and the instruction's own list).
+    /// No callsign, no entity name, **no point value and no rank name**: the numbers and the
+    /// names are the owner's private judgement of his own station and a record of them is a
+    /// record of something he did not ask anybody to keep. The hash is enough to tell two runs
+    /// of one file from a run of two files, and the count of rank names says whether his names
+    /// were read without saying what they are.
     /// </remarks>
     public static void AchievementPointsLoaded(
-        ITelemetry? telemetry, int kinds, string hash)
+        ITelemetry? telemetry, int kinds, string hash, int rankNames)
         => telemetry?.Write(TelemetryCategory.Explore, "achievement_points_loaded",
             new Dictionary<string, object?>
             {
@@ -1083,6 +1085,7 @@ public static class AppEvents
                 ["reason"] = kinds > 0 ? "read" : "unreadable",
                 ["kinds"] = kinds,
                 ["fileHash"] = hash,
+                ["rankNames"] = rankNames,
             },
             kinds > 0 ? TelemetryLevel.Info : TelemetryLevel.Warn);
 

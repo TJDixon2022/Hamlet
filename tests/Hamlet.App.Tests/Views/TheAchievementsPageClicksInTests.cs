@@ -451,6 +451,40 @@ public sealed class TheAchievementsPageClicksInTests
         }
     }
 
+    /// <summary>
+    /// **Reading the points file writes how many rank names it read, and never a name** (work
+    /// instruction 336 task 2, R13).
+    /// </summary>
+    [Fact]
+    public void ReadingThePointsFileWritesHowManyRankNamesItReadAndNoName()
+    {
+        var sink = new Recording();
+        var named = AchievementPoints.Parse(AchievementPoints.Shipped().Replace(
+            "\"ranks\": [",
+            "\"rank_names\": [\"Listener\", \"Novice\", \"Operator\"],\n \"ranks\": [",
+            StringComparison.Ordinal));
+        var shipped = AchievementPoints.Parse(AchievementPoints.Shipped());
+
+        AppEvents.AchievementPointsLoaded(sink, named.Kinds, named.Hash, named.RankNamesRead);
+        AppEvents.AchievementPointsLoaded(sink, shipped.Kinds, shipped.Hash, shipped.RankNamesRead);
+
+        foreach (var line in sink.Written)
+        {
+            _output.WriteLine(line);
+        }
+
+        Assert.Equal(new[] { "outcome", "reason", "kinds", "fileHash", "rankNames" }, sink.Events[0].Data.Keys);
+        Assert.Equal(3, sink.Events[0].Data["rankNames"]);
+        Assert.Equal(0, sink.Events[1].Data["rankNames"]);
+
+        var everything = string.Join(" ", sink.Written);
+
+        foreach (var name in new[] { "Listener", "Novice", "Operator" })
+        {
+            Assert.DoesNotContain(name, everything, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
     // ------------------------------------------------------------------------------------
 
     private static AchievementsViewModel Screen(IReadOnlyList<AdifLogRecord> records)

@@ -238,6 +238,111 @@ public sealed class TheAchievementsPageTests
     }
 
     /// <summary>
+    /// **Work instruction 336 task 2: the ranks carry the names in the points file** (R23) - by
+    /// position, `Rank n` where the file names none, and a `rank_names` that is not a list of
+    /// strings skipped whole, as a section of the wrong shape is.
+    /// </summary>
+    /// <remarks>
+    /// **THE ONE PLACE A RANK IS SPOKEN IS THE TOTAL LINE**, and it says the rank and the gap to
+    /// the next, so both are asserted by name. The twelve-contact log totals 465, which is Rank 4
+    /// and 35 short of Rank 5 on the shipped thresholds.
+    /// </remarks>
+    [Fact]
+    public void TheRanksCarryTheNamesInThePointsFile()
+    {
+        var log = new AchievementLog(TwelveContacts(), MyGrid);
+
+        string Line(string? rankNames)
+        {
+            var json = AchievementPoints.Shipped();
+
+            if (rankNames is not null)
+            {
+                json = json.Replace(
+                    "\"ranks\": [", "\"rank_names\": " + rankNames + ",\n \"ranks\": [", StringComparison.Ordinal);
+            }
+
+            var page = new AchievementBadgePage(log, AchievementPoints.Parse(json));
+
+            _output.WriteLine((rankNames ?? "absent").PadRight(100) + " -> " + page.TotalLine);
+
+            Assert.True(page.Scores.Points.Loaded, "the points did not load: " + page.Problem);
+
+            return page.TotalLine;
+        }
+
+        // **ABSENT: THE DEFAULTS SHOW.**
+        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line(null));
+
+        // **PRESENT: EACH RANK BY ITS POSITION, AND THE GAP NAMES THE NEXT.**
+        Assert.Equal(
+            "Total 465 pts · Ranger · 35 to Voyager",
+            Line("[\"Listener\", \"Novice\", \"Operator\", \"Ranger\", \"Voyager\", \"Navigator\", \"Pathfinder\", \"Legend\"]"));
+
+        // **SHORTER THAN THE RANKS: THE FIRST ONES NAMED, `Rank n` PAST ITS END.**
+        Assert.Equal(
+            "Total 465 pts · Ranger · 35 to Rank 5",
+            Line("[\"Listener\", \"Novice\", \"Operator\", \"Ranger\"]"));
+
+        // **NOT A LIST OF STRINGS: SKIPPED WHOLE, SO NO NAME LANDS ON THE WRONG RANK.**
+        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line("[\"Listener\", 2, \"Operator\", \"Ranger\"]"));
+        Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line("\"Ranger\""));
+    }
+
+    /// <summary>
+    /// **Work instruction 336 task 2: the shipped points file explains itself** - a comment block at
+    /// its top names every key, the reader skips it, and `rank_names` is documented there and not
+    /// added, so the defaults show on the shipped file.
+    /// </summary>
+    [Fact]
+    public void TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop()
+    {
+        var shipped = AchievementPoints.Shipped().Replace("\r\n", "\n", StringComparison.Ordinal);
+        var block = string.Join(
+            "\n",
+            shipped.Split('\n').TakeWhile(l => l.TrimStart().StartsWith("//", StringComparison.Ordinal)));
+
+        _output.WriteLine(block);
+
+        Assert.True(block.Length > 0, "the shipped points file has no comment block at its top");
+
+        // **THE READER SKIPS IT.**
+        var points = AchievementPoints.Parse(shipped);
+
+        Assert.True(points.Loaded, points.Problem);
+        Assert.Equal(8, points.Kinds);
+
+        // **EVERY TOP-LEVEL KEY, AND EVERY KEY INSIDE A SECTION, IS NAMED IN QUOTES IN THE BLOCK.**
+        using var document = System.Text.Json.JsonDocument.Parse(
+            shipped,
+            new System.Text.Json.JsonDocumentOptions { CommentHandling = System.Text.Json.JsonCommentHandling.Skip });
+
+        var keys = new System.Collections.Generic.List<string>();
+
+        foreach (var top in document.RootElement.EnumerateObject())
+        {
+            keys.Add(top.Name);
+
+            if (top.Value.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                keys.AddRange(top.Value.EnumerateObject().Select(k => k.Name));
+            }
+        }
+
+        var named = keys.Distinct(StringComparer.Ordinal).ToList();
+        var missing = named.Where(k => !block.Contains("\"" + k + "\"", StringComparison.Ordinal)).ToList();
+
+        _output.WriteLine(named.Count + " keys: " + string.Join(", ", named));
+        _output.WriteLine("missing from the block: " + string.Join(", ", missing));
+
+        Assert.Empty(missing);
+
+        // **`rank_names` IS DOCUMENTED AND IS NOT A KEY**, so the shipped file shows the defaults.
+        Assert.Contains("\"rank_names\"", block, StringComparison.Ordinal);
+        Assert.False(document.RootElement.TryGetProperty("rank_names", out _));
+    }
+
+    /// <summary>
     /// **Assertion 3: a missing points file yields absent scores and the sentence.**
     /// </summary>
     /// <remarks>

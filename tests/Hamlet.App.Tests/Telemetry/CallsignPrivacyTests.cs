@@ -281,8 +281,8 @@ public sealed class CallsignPrivacyTests : IDisposable
         // score event carries the kind, the delta and the total after, and **never the
         // entity, the band or the callsign that earned it**. Neither method has a
         // parameter one could be put in.
-        AppEvents.AchievementPointsLoaded(telemetry, kinds: 8, hash: "1a2b3c4d");
-        AppEvents.AchievementPointsLoaded(telemetry, kinds: 0, hash: "");
+        AppEvents.AchievementPointsLoaded(telemetry, kinds: 8, hash: "1a2b3c4d", rankNames: 8);
+        AppEvents.AchievementPointsLoaded(telemetry, kinds: 0, hash: "", rankNames: 0);
         AppEvents.AchievementScoreChanged(telemetry, "countries", 5, 470);
         AppEvents.AchievementScoreChanged(telemetry, "total_miles", 5, 475);
 

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 336 - the record is honest, and the layout settled
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T17:53:14-04:00
-NOTE: Task 1 done - States 2 scored for 12 pts on the fixture, engine 52 of 52, app achievements 40 of 42 (two older reds); committing and pushing
+UPDATED: 2026-09-12T17:59:41-04:00
+NOTE: Task 2 done - ranks named by position with Rank n defaults, 23 of 23 keys documented, app set 46 of 49 (reds older), engine 41 of 41; committing and pushing
 
 ---
 

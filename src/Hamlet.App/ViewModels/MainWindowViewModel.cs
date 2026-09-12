@@ -6148,7 +6148,7 @@ public partial class MainWindowViewModel : ObservableObject
         // rather than falling back to numbers Hamlet chose.
         var points = AchievementPoints.ReadOrSeed(SettingsStore.AchievementPointsPath);
 
-        AppEvents.AchievementPointsLoaded(_telemetry, points.Kinds, points.Hash);
+        AppEvents.AchievementPointsLoaded(_telemetry, points.Kinds, points.Hash, points.RankNamesRead);
 
         // **THE FILE PATH IS NOT ON THIS PAGE SINCE WORK INSTRUCTION 332** - the page is
         // the badges and nothing else, and the log window already says where the file is.

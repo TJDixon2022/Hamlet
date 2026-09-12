@@ -106,11 +106,18 @@ public sealed class AchievementScores
     /// **Which rank the total reaches.** 1 before the first threshold is passed.
     /// </summary>
     /// <remarks>
-    /// **RANKS ARE NUMBERED AND THE NAMES ARE THE OWNER'S LATER** (the instruction parks
-    /// them). Numbering from 1 rather than 0 is deliberate: night one is rank 1 and not
-    /// rank nought, because nought reads as a judgement and this screen makes none (§3.7).
+    /// **RANKS ARE NUMBERED HERE AND NAMED BY THE OWNER'S FILE** (work instruction 336 task 2,
+    /// R23): see <see cref="RankName"/>. Numbering from 1 rather than 0 is deliberate: night one
+    /// is rank 1 and not rank nought, because nought reads as a judgement and this screen makes
+    /// none (§3.7).
     /// </remarks>
     public int Rank { get; }
+
+    /// <summary>What the rank is called: the name in `rank_names`, or `Rank n`.</summary>
+    public string RankName => Points.RankName(Rank);
+
+    /// <summary>What the next rank is called, or "" at the top.</summary>
+    public string NextRankName => NextRankAt is null ? "" : Points.RankName(Rank + 1);
 
     /// <summary>The total the next rank starts at, or null at the top.</summary>
     public long? NextRankAt { get; }

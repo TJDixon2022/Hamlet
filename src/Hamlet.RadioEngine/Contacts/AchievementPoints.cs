@@ -114,6 +114,43 @@ public sealed class AchievementPoints
     /// <summary>The rank thresholds, ascending, or empty.</summary>
     public IReadOnlyList<long> Ranks { get; private init; } = Array.Empty<long>();
 
+    /// <summary>
+    /// **The owner's names for his ranks, Rank 1 first**, from `rank_names`, or empty where the
+    /// file names none (work instruction 336 task 2, R23).
+    /// </summary>
+    /// <remarks>
+    /// **BY POSITION, AND SKIPPED WHOLE WHEN IT IS NOT A LIST OF STRINGS** - the way a section of
+    /// the wrong shape is skipped - because dropping one bad entry would move every name after it
+    /// onto the wrong rank. A blank entry names nothing, and that rank keeps `Rank n`.
+    /// </remarks>
+    public IReadOnlyList<string> RankNames { get; private init; } = Array.Empty<string>();
+
+    /// <summary>How many ranks the file names, for the telemetry record. Never the names.</summary>
+    public int RankNamesRead => RankNames.Count(n => n.Length > 0);
+
+    /// <summary>What a rank is called: the owner's name for it, or `Rank n`.</summary>
+    /// <param name="rank">The rank, 1 first.</param>
+    /// <returns>The name.</returns>
+    /// <remarks>
+    /// **`Rank n` PAST THE END OF THE LIST**, as a level falls back to `Level n`, so a list
+    /// shorter than the ranks names the first ones and Rank 9 is `Rank 9` (the arbiter's decision
+    /// 4).
+    /// </remarks>
+    public string RankName(int rank)
+        => rank >= 1 && rank <= RankNames.Count && RankNames[rank - 1].Length > 0
+            ? RankNames[rank - 1]
+            : "Rank " + rank.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// **Comments are skipped, and nothing else is relaxed** (work instruction 336 task 2): the
+    /// shipped file explains every key in a `//` block at its top, and a trailing comma or a
+    /// missing brace is still a file that could not be read.
+    /// </summary>
+    private static readonly JsonDocumentOptions ReadOptions = new()
+    {
+        CommentHandling = JsonCommentHandling.Skip,
+    };
+
     /// <summary>How many kinds the file carried a section for.</summary>
     public int Kinds { get; private set; }
 
@@ -231,7 +268,7 @@ public sealed class AchievementPoints
     {
         try
         {
-            using var document = JsonDocument.Parse(json);
+            using var document = JsonDocument.Parse(json, ReadOptions);
             var root = document.RootElement;
 
             if (root.ValueKind != JsonValueKind.Object)
@@ -247,6 +284,7 @@ public sealed class AchievementPoints
                 About = Text(root, "_about"),
                 Hash = Fingerprint(json),
                 Ranks = Numbers(root, "ranks"),
+                RankNames = Names(root, "rank_names"),
             };
 
             var kinds = 0;
@@ -450,6 +488,29 @@ public sealed class AchievementPoints
             && value.ValueKind == JsonValueKind.String
             ? value.GetString() ?? ""
             : "";
+
+    /// <summary>A list of names, or empty where it is absent or is not a list of strings.</summary>
+    private static IReadOnlyList<string> Names(JsonElement root, string name)
+    {
+        if (!root.TryGetProperty(name, out var value) || value.ValueKind != JsonValueKind.Array)
+        {
+            return Array.Empty<string>();
+        }
+
+        var read = new List<string>();
+
+        foreach (var one in value.EnumerateArray())
+        {
+            if (one.ValueKind != JsonValueKind.String)
+            {
+                return Array.Empty<string>();
+            }
+
+            read.Add((one.GetString() ?? "").Trim());
+        }
+
+        return read;
+    }
 
     private static IReadOnlyList<long> Numbers(JsonElement root, string name)
         => root.TryGetProperty(name, out var value)

@@ -220,14 +220,15 @@ public sealed class AchievementBadgePage
             var said = new List<string>
             {
                 TotalWord + total.ToString("#,0", CultureInfo.InvariantCulture) + " pts",
-                "Rank " + Scores.Rank.ToString(CultureInfo.InvariantCulture),
+                // **THE RANK BY THE NAME IN HIS FILE** (work instruction 336 task 2, R23), and
+                // `Rank n` where the file names none - so the gap names the next rank the same way.
+                Scores.RankName,
             };
 
             if (Scores.ToNextRank is { } gap)
             {
                 said.Add(
-                    gap.ToString("#,0", CultureInfo.InvariantCulture)
-                    + " to Rank " + (Scores.Rank + 1).ToString(CultureInfo.InvariantCulture));
+                    gap.ToString("#,0", CultureInfo.InvariantCulture) + " to " + Scores.NextRankName);
             }
 
             return string.Join(" · ", said);
