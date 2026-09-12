@@ -3,7 +3,7 @@ ONE_LINE: A C# MVVM desktop application controlling an Icom IC-7300 over one USB
 REPO_PATH: C:\Source\HamLet
 REMOTE: https://github.com/TJDixon2022/Hamlet.git
 TRUNK: main
-PHASE: The screen says what is true and looks like someone meant it
+PHASE: The screen, done right
 PHASE_SET: 2026-09-12
 TEST_CMD: dotnet test
 

@@ -711,8 +711,14 @@
     file documented, and the 1400 px split between the decoded list and For You settled
     (R23, R24). Screen only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.21 -> 1.13.22, UNIT 337 TASK 0, UNDER HM-DEC-163. A PATCH, AND THE SCREEN PHASE OPENS:
+    the main window laid out as the approved mockup - one short top row about where you are,
+    the working panels given the height, at 1920 and at 1400 (R26). Screen only; nothing on
+    the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.21</Version>
+    <Version>1.13.22</Version>
   </PropertyGroup>
 
   <!--

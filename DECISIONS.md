@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-163
+date: 2026-09-12
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-162, docs/phase-maintenance-run/, assets/main-screen-mockup.png, work instruction 337 task 0
+---
+
+**The phase is "The screen, done right", set 2026-09-12, four steps numbered 0 to 3,
+on the approved mockup `assets/main-screen-mockup.png`.** Tim, 2026-09-12, on unit
+334's window, where the green zone had grown to two thirds of the window and the
+working panels were squeezed into the bottom third: *"Mock up what Hamlet main screen
+will look like if you do this right."* **The mockup is the ruling**, and R26 in
+`PHASE_PLAN.md` states its outcomes without prescribing a mechanism.
+
+**It supersedes HM-DEC-162's maintenance phase, "The screen says what is true and
+looks like someone meant it"**, which is archived in `docs/phase-maintenance-run/`
+with steps 0 and 1 done and step 2 partial. What that step left is this phase's
+step 2 (R27).
+
+`PROJECT_CARD.md` changes only by ruling (13.3), and this is the ruling that
+changes it. `PHASE` and `PHASE_SET` move; nothing else on the card does.
+
+**Recorded by work instruction 337, the seed unit of the phase, under 12.1 as a
+ruling the owner gave, not one a session made.** What was rejected is not recorded,
+because he gave no alternative to rule against.
+
+---
 id: HM-DEC-162
 date: 2026-09-12
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-161, docs/phase-psk31-run/, work instruction 334 task 0

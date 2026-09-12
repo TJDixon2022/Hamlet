@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 2 of 3
-WORK_INSTRUCTION: 336 - the record is honest, and the layout settled
-BALL: tim
-NEXT_PASTE: output.md -> the arbiter
+STATE: EXECUTING
+TASK: 0 of 5
+WORK_INSTRUCTION: 337 - the main window is the mockup
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T18:07:16-04:00
-NOTE: Stopped at task 2 - tasks 0 to 2 pushed (38a1f0c), task 3 dropped as named: no one fraction holds 1400 and 1920. Step 2 partial, 2 of 4 met; output.md validated exit 0
+UPDATED: 2026-09-12T19:26:04-04:00
+NOTE: Task 0 - carry-forward app invocation 100 of 100 green; engine invocation next
 
 ---
 
