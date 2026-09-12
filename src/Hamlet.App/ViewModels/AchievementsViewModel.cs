@@ -202,13 +202,51 @@ public sealed class AchievementsViewModel
     /// <exception cref="ArgumentNullException">The records are null.</exception>
     public AchievementsViewModel(
         IReadOnlyList<AdifLogRecord> records, string? operatorGrid)
+        : this(records, operatorGrid, AchievementPoints.Absent(""))
+    {
+    }
+
+    /// <summary>Build the screen from the log, the grid and the owner's points file.</summary>
+    /// <param name="records">Every record in the file, faults and all.</param>
+    /// <param name="operatorGrid">His locator, for distances and for the grey line.</param>
+    /// <param name="points">The owner's points file, loaded or absent.</param>
+    /// <exception cref="ArgumentNullException">The records or the points are null.</exception>
+    /// <remarks>
+    /// **THE POINTS ARE HANDED IN AND NOT READ HERE**, for `AchievementScreen`'s own
+    /// reason: reading a file is an I/O act with a failure mode, and a view model that
+    /// performs one cannot be constructed in a test without a folder. The caller reads the
+    /// file; this composes the page from whatever came back, including *nothing came
+    /// back*.
+    /// </remarks>
+    public AchievementsViewModel(
+        IReadOnlyList<AdifLogRecord> records,
+        string? operatorGrid,
+        AchievementPoints points)
         : this(records)
     {
+        ArgumentNullException.ThrowIfNull(points);
+
         var log = new AchievementLog(records, operatorGrid);
 
         Screen = new AchievementScreen(
             log, AchievementChallenges.For(log, operatorGrid));
+
+        Page = new AchievementBadgePage(log, points);
     }
+
+    /// <summary>
+    /// **The opening page: eight badges with scores** (work instruction 331 task 6).
+    /// </summary>
+    /// <remarks>
+    /// **TIM, 2026-09-12**: *"The opening dialog page should be a list of badges
+    /// indicating type of achievements. Nice badges, real nice."* Null where the view model
+    /// was built without a grid, which is the diagnostic constructor's state and not one
+    /// the application reaches.
+    /// </remarks>
+    public AchievementBadgePage? Page { get; }
+
+    /// <summary>True where the badge page has been built.</summary>
+    public bool HasPage => Page is not null;
 
     /// <summary>
     /// **What he has opened, and the standing targets.**

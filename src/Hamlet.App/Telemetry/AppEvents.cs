@@ -1062,6 +1062,55 @@ public static class AppEvents
             decodes > 0 && rowsAdded == 0 ? TelemetryLevel.Warn : TelemetryLevel.Info);
 
     /// <summary>
+    /// **The owner's points file was read, or was not** (work instruction 331 task 6, §R13).
+    /// </summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="kinds">How many of the eight kinds the file named.</param>
+    /// <param name="hash">Eight hex characters of SHA-256 over the bytes read, or "".</param>
+    /// <remarks>
+    /// **THE HASH AND THE COUNT, AND NOTHING ELSE** (§R13, and the instruction's own list).
+    /// No callsign, no entity name and **no point value**: the numbers are the owner's
+    /// private judgement of his own station and a record of them is a record of something
+    /// he did not ask anybody to keep. The hash is enough to tell two runs of one file from
+    /// a run of two files.
+    /// </remarks>
+    public static void AchievementPointsLoaded(
+        ITelemetry? telemetry, int kinds, string hash)
+        => telemetry?.Write(TelemetryCategory.Explore, "achievement_points_loaded",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = kinds > 0 ? "proceeded" : "degraded",
+                ["reason"] = kinds > 0 ? "read" : "unreadable",
+                ["kinds"] = kinds,
+                ["fileHash"] = hash,
+            },
+            kinds > 0 ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
+    /// <summary>
+    /// **One kind's score moved** (work instruction 331 task 6, §R13).
+    /// </summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="kind">Which kind, by its points-file key.</param>
+    /// <param name="delta">How much it moved by.</param>
+    /// <param name="totalAfter">The running total after the move.</param>
+    /// <remarks>
+    /// **THE KIND AND THE ARITHMETIC, AND NEVER WHAT EARNED IT** (§R13). *Countries went
+    /// up by 5* is a fact about a score; *Norway* is a fact about where he was heard, and
+    /// this record does not carry one.
+    /// </remarks>
+    public static void AchievementScoreChanged(
+        ITelemetry? telemetry, string kind, int delta, int totalAfter)
+        => telemetry?.Write(TelemetryCategory.Explore, "achievement_score_changed",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = "proceeded",
+                ["reason"] = "scored",
+                ["kind"] = kind,
+                ["delta"] = delta,
+                ["totalAfter"] = totalAfter,
+            });
+
+    /// <summary>
     /// What every FT8 slot the tab decoded gave up, one line each (unit 233).
     /// </summary>
     /// <param name="telemetry">Sink, or null.</param>

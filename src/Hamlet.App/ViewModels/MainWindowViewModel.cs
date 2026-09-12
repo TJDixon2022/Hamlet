@@ -6084,10 +6084,20 @@ public partial class MainWindowViewModel : ObservableObject
         // way up would otherwise leave the mark lit for something he had seen.
         AchievementsUnseen = false;
 
+        // **THE POINTS ARE READ HERE, WHERE THE I/O BELONGS** (work instruction 331 task
+        // 6). The file is the operator's own and is seeded once from the shipping copy;
+        // where it cannot be read the page shows the scores as absent with the reason,
+        // rather than falling back to numbers Hamlet chose.
+        var points = AchievementPoints.ReadOrSeed(SettingsStore.AchievementPointsPath);
+
+        AppEvents.AchievementPointsLoaded(_telemetry, points.Kinds, points.Hash);
+
         new Views.AchievementsWindow
         {
             DataContext = new AchievementsViewModel(
-                ContactLogStore.ReadRecords(), _settings.Operator.GridSquare)
+                ContactLogStore.ReadRecords(),
+                _settings.Operator.GridSquare,
+                points)
             {
                 LogPath = ContactLogStore.LogPath,
             },

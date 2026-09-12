@@ -287,8 +287,8 @@ public sealed class AppSettings
     /// <para>**AN EMPTY LIST MEANS HAMLET HAS LOOKED AND HE HAD NONE**, which is a
     /// different fact and the one a new operator is in.</para>
     /// </remarks>
-    public List<string>? ContactModeFirstsAnnounced { get; set; }
-
+    public List<string>? ContactModeFirstsAnnounced { get; set; }
+
     /// <summary>
     /// Which groups of the achievements screen have already been announced, or
     /// null before the first look.
@@ -742,6 +742,28 @@ public static class SettingsStore
     /// are saved on a clean exit, which is the one exit this has to survive.
     /// </remarks>
     public static string ScanHomePath => Path.Combine(DataFolder, "scan-home");
+
+    /// <summary>
+    /// %AppData%\Hamlet\achievements\achievement-points.json — **what each achievement
+    /// is worth, and it is the owner's file.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE POINTS ARE HIS AND THEY ARE ARBITRARY BY HIS OWN RULING** (Tim,
+    /// 2026-09-12: *"we're moving away from the achievements all count the same… the
+    /// points don't matter"*). So they are not code's to hold: **no point value is
+    /// hard-coded anywhere in Hamlet** (work instruction 331 task 6, section 10).</para>
+    /// <para>**A FILE RATHER THAN A SETTING, FOR `ScanSegmentsPath`'S OWN REASON.** It is
+    /// meant to be opened in an editor, and a table of difficulty buried in a settings
+    /// blob is a table nobody will edit. Hamlet seeds it once from the copy that ships in
+    /// `data/achievements/` and never touches it again.</para>
+    /// <para>**AND A MISSING OR MALFORMED FILE IS A REPORTED STATE, NOT A DEFAULT.** The
+    /// page shows the scores as absent with a line saying the file could not be read,
+    /// because a score Hamlet made up is a guess shown as a measurement (§0.0), and a
+    /// malformed file is never overwritten - his edit is his, even when it is broken.
+    /// </para>
+    /// </remarks>
+    public static string AchievementPointsPath
+        => Path.Combine(DataFolder, "achievements", "achievement-points.json");
 
     /// <summary>Load settings, or defaults if the file is missing, corrupt or
     /// unreadable. Never throws.</summary>

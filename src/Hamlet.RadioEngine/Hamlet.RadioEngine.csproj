@@ -80,6 +80,17 @@
     <EmbeddedResource Include="..\..\data\psk31\varicode.csv" LogicalName="Hamlet.RadioEngine.Data.Psk31.varicode.csv" />
   </ItemGroup>
 
+  <!-- The achievement points. THIS ONE IS THE SHIPPING COPY AND NOT THE ONE
+       HAMLET READS (work instruction 331 task 6): the file the scores come from
+       is the operator's own, in %AppData%\Hamlet\achievements, and it is seeded
+       from this resource the first time there is nowhere to read one. Every
+       value in it is his judgement of difficulty from his own station and is
+       arbitrary by his own ruling of 2026-09-12, which is precisely why no point
+       value is hard-coded in code. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\data\achievements\achievement-points.json" LogicalName="Hamlet.RadioEngine.Data.Achievements.achievement-points.json" />
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\callsigns\dxcc-prefixes.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.dxcc-prefixes.json" />
     <EmbeddedResource Include="..\..\data\callsigns\entity-extents.json" LogicalName="Hamlet.RadioEngine.Data.Callsigns.entity-extents.json" />

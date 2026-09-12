@@ -5,7 +5,7 @@
         x:Class="Hamlet.App.Views.AchievementsWindow"
         x:DataType="vm:AchievementsViewModel"
         Title="Achievements"
-        Width="620" Height="560"
+        Width="820" Height="720"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource HmBackgroundBrush}">
 
@@ -25,12 +25,221 @@
          looks earnable and never can be, which is why five of the six say what
          stands in the way. -->
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="16">
+    <!-- **ONE SCROLLER OVER THE WHOLE SCREEN SINCE 331 TASK 6.** The opening page
+         is eight badges four across, which is wider and taller than the window's
+         old 620 by 560; with the badges above a nested scroller the page would have
+         had to fit in whatever was left, and what does not fit gets clipped. So the
+         whole screen scrolls as one and every region is `Auto` inside it - the file
+         path stays outside, because where his log is should not be something he has
+         to scroll to find. -->
+    <Grid RowDefinitions="*,Auto" Margin="16">
+
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="12">
+
+        <!-- ============ THE OPENING PAGE: EIGHT BADGES WITH SCORES ============ -->
+        <!-- **TIM, 2026-09-12**: *"I want to rework the achievements dialog. The
+             opening dialog page should be a list of badges indicating type of
+             achievements. Nice badges, real nice."* Shown
+             `assets/achievements-opening-mockup.png` he said *"much better"*, and
+             this is that shape drawn properly (work instruction 331 task 6).
+
+             **NO IMAGE ASSET IS REFERENCED HERE OR ANYWHERE IN `src/`.** The
+             mockup PNG is for reading; every emblem is geometry in
+             `BadgeEmblemControl`, drawn at whatever size the badge is given.
+
+             **THE RUNNING TOTAL IS UNDER THE TITLE AND IS ALWAYS THERE** -
+             `Total 145 pts · Rank 3 · 105 to Rank 4` - and the scores behind it
+             come from the owner's own file. **Where that file could not be read
+             every score is ABSENT and a line says so**, which is a different
+             thing from every kind scoring nought (§0.0).
+
+             **EACH BADGE SHOWS AT MOST ONE THING HE HAS NOT DONE** (§3.1 bent by
+             ruling C of 2026-09-12, and no further): the nearest unearned card in
+             that kind, with the orange ring for a door and the green quill for a
+             counter. The old screen - what he has opened, and the standing
+             targets - is below this page and unchanged.
+
+             **THE INSIDE-A-BADGE VIEW IS THE TASK'S NAMED DROP AND IT IS
+             DROPPED** (work instruction 331 task 6's own drop candidate). The
+             badges are not pressable: this window has no handler of its own by
+             design, so a press would need one, and what a press would have shown
+             is the screen already below. Reported in output.md. -->
+        <Border Background="White" CornerRadius="8"
+                BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1"
+                Padding="14,12"
+                IsVisible="{Binding HasPage}">
+            <StackPanel Spacing="10">
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="AchievementsPageTitle"
+                               Text="Achievements"
+                               FontSize="20" FontWeight="Bold"
+                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                    <TextBlock x:Name="AchievementsPageSubtitle"
+                               Text="{Binding Page.Subtitle}"
+                               FontSize="12"
+                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                    <!-- **THE RUNNING TOTAL, ON THE PAGE, ALWAYS.** -->
+                    <TextBlock x:Name="AchievementsTotalLine"
+                               Text="{Binding Page.TotalLine}"
+                               IsVisible="{Binding Page.HasTotal}"
+                               Margin="0,4,0,0"
+                               FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource HmGreenBrush}" />
+
+                    <!-- **AND WHERE THE FILE COULD NOT BE READ, THE SENTENCE.**
+                         Amber rather than red: a points file he has not written
+                         yet, or has broken while editing, is not an error in
+                         Hamlet (HM-DEC-029's tone rule). -->
+                    <TextBlock x:Name="AchievementsPointsProblem"
+                               Text="{Binding Page.Problem}"
+                               IsVisible="{Binding Page.HasProblem}"
+                               Margin="0,4,0,0"
+                               FontSize="12" TextWrapping="Wrap"
+                               Foreground="{StaticResource HmAmberBrush}" />
+                </StackPanel>
+
+                <ItemsControl x:Name="AchievementsBadges"
+                              ItemsSource="{Binding Page.Badges}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <!-- **A WRAP PANEL AND NOT A FOUR-BY-TWO GRID.** The
+                                 mockup is four across; a window the operator has
+                                 narrowed is three or two, and a fixed grid would
+                                 clip the fourth column rather than reflowing. No
+                                 badge is ever drawn narrower than its own text
+                                 needs. -->
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AchievementBadge">
+                            <Border Width="176"
+                                    Margin="0,0,10,10"
+                                    Background="White"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    ClipToBounds="True"
+                                    ToolTip.Tip="{Binding ScoreTip}">
+                                <StackPanel>
+                                    <!-- **THE COLOR BAND, WITH THE EMBLEM AND THE
+                                         NAME ON IT.** The hue is the badge's own
+                                         and claims no mode family, so §0.5's
+                                         *family color is text only* is not in
+                                         play here; the name is on it in words, so
+                                         the hue carries nothing by itself
+                                         (§0.6). -->
+                                    <Border Background="{Binding Band}"
+                                            Padding="10,8">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <ctl:BadgeEmblemControl
+                                                Emblem="{Binding Emblem}"
+                                                Ink="White"
+                                                Width="26" Height="26"
+                                                VerticalAlignment="Center" />
+
+                                            <StackPanel VerticalAlignment="Center"
+                                                        Spacing="0">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontSize="13"
+                                                           FontWeight="Bold"
+                                                           TextWrapping="NoWrap"
+                                                           Foreground="White" />
+
+                                                <TextBlock Text="{Binding Meaning}"
+                                                           FontSize="10"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="White" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <StackPanel Margin="10,10,10,8" Spacing="6">
+                                        <!-- **THE ONE CARD HE COULD EARN NEXT**,
+                                             with the two forms of the mark: the
+                                             ringed amber quill for a door and the
+                                             still green one for a counter (§R16,
+                                             §0.6). **Absent rather than blank**
+                                             where there is nothing left to earn
+                                             in the kind. -->
+                                        <Border BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                Background="{StaticResource HmBackgroundBrush}"
+                                                Padding="8,6"
+                                                IsVisible="{Binding HasNextCard}">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <ctl:AchievementMarkControl
+                                                    Form="Door"
+                                                    IsNew="True"
+                                                    IsVisible="{Binding NextIsDoor}"
+                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    VerticalAlignment="Center" />
+
+                                                <ctl:AchievementMarkControl
+                                                    Form="Counter"
+                                                    IsNew="True"
+                                                    IsVisible="{Binding !NextIsDoor}"
+                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    VerticalAlignment="Center" />
+
+                                                <StackPanel VerticalAlignment="Center"
+                                                            Spacing="0">
+                                                    <TextBlock Text="next"
+                                                               FontSize="10"
+                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                    <TextBlock Text="{Binding NextCard}"
+                                                               FontSize="12"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <!-- **THE CORNER: WHAT HE HAS, AND WHAT
+                                             THE KIND IS WORTH.** The standing
+                                             line never counts what he has not
+                                             done (§3.7) - `0 worked`, not
+                                             `0 of 340` - and the score line is
+                                             absent rather than nought where the
+                                             points file could not be read. -->
+                                        <TextBlock Text="{Binding Standing}"
+                                                   HorizontalAlignment="Right"
+                                                   FontSize="11"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <TextBlock Text="{Binding ScoreLine}"
+                                                   IsVisible="{Binding HasScore}"
+                                                   HorizontalAlignment="Right"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="{StaticResource HmGreenBrush}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Text="Only the nearest card in each kind shows. Orange ring: a door that opens a set. Green quill: a counter."
+                           FontSize="11" TextWrapping="Wrap"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+            </StackPanel>
+        </Border>
 
         <!-- ============ THE BELT ============ -->
-        <Border Grid.Row="0" Background="White" CornerRadius="8"
+        <Border Background="White" CornerRadius="8"
                 BorderBrush="{StaticResource HmSlateEdgeBrush}" BorderThickness="1"
-                Padding="14,12" Margin="0,0,0,10">
+                Padding="14,12">
             <StackPanel Spacing="6">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <!-- **A BORDER AND NEVER A FILL** (HM-DEC-012), and the same
@@ -85,23 +294,21 @@
              is the shape the instruction says must not survive. The half he can
              earn is now a mode tab that appears when he works it; the half Hamlet
              cannot do at all is one quiet line, below. -->
-        <TextBlock Grid.Row="1" x:Name="AchievementsOpenedLine"
+        <TextBlock x:Name="AchievementsOpenedLine"
                    Text="{Binding Screen.OpenedLine}"
                    IsVisible="{Binding HasScreen}"
-                   FontSize="13" TextWrapping="Wrap" Margin="2,0,0,4"
+                   FontSize="13" TextWrapping="Wrap" Margin="2,0,0,0"
                    Foreground="{StaticResource HmTextMutedBrush}" />
 
         <!-- **A FAULT SPEAKS UNASKED** (Tim, 2026-09-08), and this is one: what
              Hamlet cannot yet work is a thing the application owes him rather
              than a thing he has not got round to. It is a sentence now and not
              four unearnable rows. -->
-        <TextBlock Grid.Row="2" x:Name="AchievementsHonesty"
+        <TextBlock x:Name="AchievementsHonesty"
                    Text="{Binding Honesty}"
-                   FontSize="12" TextWrapping="Wrap" Margin="2,0,0,8"
+                   FontSize="12" TextWrapping="Wrap" Margin="2,0,0,0"
                    Foreground="{StaticResource HmAmberBrush}" />
 
-        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="12">
 
                 <!-- ============ YOUR BEST ============ -->
                 <!-- **A COLLECTION AND NOT A LIST** (work instruction 300 task 3).
@@ -429,7 +636,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <TextBlock Grid.Row="4" Text="{Binding LogPath}" Margin="0,10,0,0"
+        <TextBlock Grid.Row="1" Text="{Binding LogPath}" Margin="0,10,0,0"
                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource HmTextMutedBrush}" />

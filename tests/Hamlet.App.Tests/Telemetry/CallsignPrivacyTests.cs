@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 72;
+    private const int ExpectedEventMethodCount = 74;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -274,6 +274,17 @@ public sealed class CallsignPrivacyTests : IDisposable
         {
             AppEvents.NudgeOpened(telemetry, kind);
         }
+
+        // **THE ACHIEVEMENT SCORES** (work instruction 331 task 6, §R13). The points file
+        // is the operator's own private judgement of his own station, so the load event
+        // carries a count of kinds and a hash of the bytes and no value out of it; the
+        // score event carries the kind, the delta and the total after, and **never the
+        // entity, the band or the callsign that earned it**. Neither method has a
+        // parameter one could be put in.
+        AppEvents.AchievementPointsLoaded(telemetry, kinds: 8, hash: "1a2b3c4d");
+        AppEvents.AchievementPointsLoaded(telemetry, kinds: 0, hash: "");
+        AppEvents.AchievementScoreChanged(telemetry, "countries", 5, 470);
+        AppEvents.AchievementScoreChanged(telemetry, "total_miles", 5, 475);
 
         // The scope path and the link carrying it (HM-DEC-092).
         AppEvents.ScopeOutputRequested(telemetry, "Confirmed", 115_200, 0);
