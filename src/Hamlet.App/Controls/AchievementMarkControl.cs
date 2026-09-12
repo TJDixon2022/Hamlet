@@ -329,6 +329,48 @@ public sealed class AchievementMarkControl : Control
     /// </remarks>
     public const double TraySide = 32;
 
+    /// <summary>The feather's shaft: a pointed nib at the bottom left, curving to the tip.</summary>
+    private const string FeatherShaft =
+        "M 10.53 39.38 L 13.72 33.08 C 19.71 25.06 27.16 15.63 34.29 7.19 "
+        + "C 28.06 16.26 21.26 26.15 15.36 34.22 Z";
+
+    /// <summary>The barbs on the lower side, with one notch.</summary>
+    private const string FeatherLeftVane =
+        "M 15.12 32.83 C 11.35 27.75 11.10 20.25 15.37 15.91 L 19.09 16.69 L 17.95 13.45 "
+        + "C 22.33 8.58 28.47 6.78 34.29 7.19 Z";
+
+    /// <summary>The barbs on the upper side, with one notch.</summary>
+    private const string FeatherRightVane =
+        "M 17.66 30.95 C 22.90 32.18 28.47 31.19 30.77 27.92 L 28.18 25.50 L 32.36 24.76 "
+        + "C 36.26 18.33 36.26 12.23 34.29 7.19 Z";
+
+    /// <summary>
+    /// **The tray's feather, as path data in a 44-unit box: the shaft, then the two sides of
+    /// barbs** (work instruction 332 task 3).
+    /// </summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-12**, on the row vane enlarged to 27 px: *"the eye of Sauron with
+    /// an infection."* *"Just make it look attractive."* The almond with a slit was the row's
+    /// 6 by 12 vane scaled up, and at the tray's size it is not a thing anybody would name.
+    /// So the tray has a drawing of its own: **a curved shaft from a pointed nib to the tip,
+    /// barbs either side with a notch in each, laid on the diagonal** the way a quill is
+    /// drawn.</para>
+    /// <para>**THE PATH IS THE AUTHOR'S SHAPE, MARKED FOR THE OWNER** (work instruction 332's
+    /// ARBITER block). It was drawn upright and turned 35 degrees about the box's middle, and
+    /// the turned coordinates are what is written here, so the recorder and a ruler both see
+    /// the drawing and not a transform of it.</para>
+    /// <para>**VECTOR, NO IMAGE**, and **the row mark is not touched**: it still draws the
+    /// file's vane at 12 px, hairline.</para>
+    /// </remarks>
+    public const string TrayFeatherPath =
+        FeatherShaft + " " + FeatherLeftVane + " " + FeatherRightVane;
+
+    /// <summary>The whole feather, parsed once.</summary>
+    private static readonly Lazy<Geometry> Feather = new(() => Geometry.Parse(TrayFeatherPath));
+
+    /// <summary>The shaft alone, drawn over the barbs in the darker green so it reads as a shaft.</summary>
+    private static readonly Lazy<Geometry> Shaft = new(() => Geometry.Parse(FeatherShaft));
+
     /// <summary>How much of the tray's box the drawn quill takes, top to bottom.</summary>
     private const double TrayFraction = TrayQuill / TraySide;
 
@@ -606,52 +648,31 @@ public sealed class AchievementMarkControl : Control
             }
         }
 
-        // **THE QUILL, SCALED SO THAT THE VANE IS THE RULED HEIGHT** (work instruction
-        // 330 task 1). What this replaced scaled the file's whole 44-unit viewBox to 62
-        // per cent of the box, and the vane is 28 of those 44 units, so a 27 px box drew
-        // 10.6 px of quill and the ruled number was never on the glass. The scale is
-        // taken off the vane's own bounds in the file, so editing the SVG moves the
-        // drawing and leaves the mark <see cref="TrayQuill"/> px tall.
-        var vane = VaneBounds.Value;
-        var scale = side * TrayFraction / vane.Height;
+        // **THE FEATHER, SCALED SO ITS DRAWN HEIGHT IS THE RULED 27** (work instruction
+        // 332 task 3; the height is unit 330's). What this replaced was the file's vane,
+        // the row's 6 by 12 almond enlarged, and Tim's word for it at this size was *the
+        // eye of Sauron with an infection*. The scale is taken off the feather's own
+        // bounds, so the drawing is <see cref="TrayQuill"/> px tall whatever its path.
+        var feather = Feather.Value;
+        var bounds = feather.Bounds;
+        var scale = side * TrayFraction / bounds.Height;
 
         using (context.PushTransform(
-            Matrix.CreateTranslation(-vane.Center.X, -vane.Center.Y)
+            Matrix.CreateTranslation(-bounds.Center.X, -bounds.Center.Y)
             * Matrix.CreateScale(scale, scale)
             * Matrix.CreateTranslation(middle.X, middle.Y)))
         {
-            // **FILLED GREEN AT REST, NOT OUTLINED** (Tim's ruling of 2026-09-10,
-            // option B of three he was shown). At rest it was a grey sliver and his
-            // word for it was *not noticeable*. The quill is now the same green
-            // object whether or not something is new.
+            // **FILLED GREEN AT REST, NOT OUTLINED** (Tim's ruling of 2026-09-10, option B
+            // of three he was shown), with a thin darker edge so the notches read against
+            // the bar. **The pen is asked for in pixels and divided by the scale**, because a
+            // pen inside a scale transform arrives at thickness times scale.
             var ink = Form == AchievementMarkForm.Door ? DoorEdge : Edge;
 
-            foreach (var shape in Quill.Value)
-            {
-                if (shape.Geometry is null)
-                {
-                    continue;
-                }
+            context.DrawGeometry(lit, new Pen(ink, 0.8 / scale, lineJoin: PenLineJoin.Round), feather);
 
-                // **A LINE HAS NO INTERIOR**, and SVG's default black fill on one
-                // would paint nothing here and something on another backend.
-                var line = shape.Geometry is LineGeometry;
-
-                // **THE VANE IS ALWAYS FILLED NOW**, which is what option B is. A
-                // line still has no interior: SVG's default black fill on one would
-                // paint nothing here and something on another backend.
-                var fill = line ? null : lit;
-
-                var pen = shape.Pen is null
-                    ? null
-                    : new Pen(
-                        line ? Spine : ink,
-                        shape.Pen.Thickness,
-                        lineCap: shape.Pen.LineCap,
-                        lineJoin: shape.Pen.LineJoin);
-
-                context.DrawGeometry(fill, pen, shape.Geometry);
-            }
+            // **THE SHAFT OVER THE BARBS, IN THE DARKER GREEN**, so it reads as a shaft
+            // running the length of the feather and ends in a nib below them.
+            context.DrawGeometry(ink, null, Shaft.Value);
         }
     }
 }

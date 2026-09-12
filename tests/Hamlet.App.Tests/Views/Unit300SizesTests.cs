@@ -288,6 +288,132 @@ public sealed class Unit300SizesTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 332 task 3: the 27 px mark is a feather, and not the row vane
+    /// scaled.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-12, ON THE ROW VANE ENLARGED TO THE TRAY**: *"the eye of Sauron
+    /// with an infection."* *"Just make it look attractive."* At 27 px the almond with a slit
+    /// is not a feather anyone would name.</para>
+    /// <para>**MEASURED FROM WHAT `Render` EMITTED**, with the transforms the recorder nests
+    /// it under applied, so the height is the figure a ruler would give. **The recorder
+    /// erases geometry types** (carried item: every shape comes back as a platform geometry),
+    /// so the shape is asserted by its bounds and by the path data's own subpaths rather than
+    /// by a type check that would pass against anything.</para>
+    /// <para>**THE ROW MARK IS NOT TOUCHED**: 12 px of hairline vane, as unit 328 drew it.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheTrayMarkIsAFeatherAndNotTheRowVaneScaled()
+    {
+        var subpaths = AchievementMarkControl.TrayFeatherPath
+            .Count(c => c is 'M' or 'm');
+
+        _output.WriteLine("feather path: " + subpaths + " subpaths");
+        _output.WriteLine("  " + AchievementMarkControl.TrayFeatherPath);
+
+        Assert.True(subpaths > 1, "the tray mark's path has " + subpaths + " subpaths");
+
+        foreach (var lit in new[] { false, true })
+        {
+            var drawn = DrawnPlaced(AchievementMarkControl.TraySide, lit);
+
+            // **THE FEATHER IS THE LARGEST FILLED SHAPE** - the bead is filled too while the
+            // orbit turns, and it is a few pixels across.
+            var feather = drawn
+                .Where(d => d.Drawing.Brush is not null && d.Drawing.Geometry is not null)
+                .Select(d => (d.Drawing, Placed: d.Drawing.Geometry!.Bounds.TransformToAABB(d.Transform)))
+                .OrderByDescending(d => d.Placed.Width * d.Placed.Height)
+                .First();
+
+            var local = feather.Drawing.Geometry!.Bounds;
+            var aspect = feather.Placed.Width / feather.Placed.Height;
+
+            _output.WriteLine(
+                (lit ? "something new" : "at rest      ") + " : "
+                + drawn.Count + " drawings; feather "
+                + feather.Placed.Width.ToString("0.0", CultureInfo.InvariantCulture) + " x "
+                + feather.Placed.Height.ToString("0.0", CultureInfo.InvariantCulture)
+                + " px on the glass, " + aspect.ToString("0.00", CultureInfo.InvariantCulture)
+                + " wide per tall; in its own units "
+                + local.Width.ToString("0.0", CultureInfo.InvariantCulture) + " x "
+                + local.Height.ToString("0.0", CultureInfo.InvariantCulture));
+
+            // **DRAWN HEIGHT 27.**
+            Assert.InRange(
+                feather.Placed.Height,
+                AchievementMarkControl.TrayQuill - 0.5,
+                AchievementMarkControl.TrayQuill + 0.5);
+
+            // **NOT THE ROW VANE SCALED.** The vane is 14 by 28 in the file's units, half as
+            // wide as it is tall; a feather drawn on the diagonal is not.
+            Assert.False(
+                Math.Abs(local.Width - 14) < 0.5 && Math.Abs(local.Height - 28) < 0.5,
+                "the tray is still drawing the file's 14 x 28 vane");
+            Assert.True(
+                aspect > 0.65,
+                "the tray mark is " + aspect.ToString("0.00", CultureInfo.InvariantCulture)
+                + " wide per tall, the row vane's almond");
+
+            // **AND IT STAYS INSIDE ITS BOX**, so the ring still goes round it.
+            Assert.True(
+                feather.Placed.Left >= -0.5
+                && feather.Placed.Right <= AchievementMarkControl.TraySide + 0.5,
+                "the feather runs outside its box");
+        }
+
+        // **THE ROW MARK IS UNTOUCHED.**
+        var row = new AchievementMarkControl { Form = AchievementMarkForm.Counter };
+
+        row.Measure(new Size(AchievementMarkControl.RowSide, AchievementMarkControl.RowSide));
+        row.Arrange(new Rect(0, 0, AchievementMarkControl.RowSide, AchievementMarkControl.RowSide));
+
+        Assert.Equal(12, AchievementMarkControl.RowVane);
+        Assert.Equal(12, row.DrawnQuillHeight);
+    }
+
+    /// <summary>Every drawing `Render` emitted, with the transform it was placed under.</summary>
+    private static List<(GeometryDrawing Drawing, Matrix Transform)> DrawnPlaced(
+        double side, bool lit)
+    {
+        var mark = Arranged(side, lit);
+        var group = new DrawingGroup();
+
+        using (var context = group.Open())
+        {
+            mark.Render(context);
+        }
+
+        var placed = new List<(GeometryDrawing, Matrix)>();
+
+        Place(group, Matrix.Identity, placed);
+
+        return placed;
+    }
+
+    private static void Place(
+        DrawingGroup group, Matrix outer, List<(GeometryDrawing, Matrix)> into)
+    {
+        var here = (group.Transform?.Value ?? Matrix.Identity) * outer;
+
+        foreach (var child in group.Children)
+        {
+            switch (child)
+            {
+                case GeometryDrawing drawing:
+                    into.Add((drawing, here));
+                    break;
+
+                case DrawingGroup nested:
+                    Place(nested, here, into);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
     private static IntPtr Marshal(byte[] buffer)
         => System.Runtime.InteropServices.GCHandle
             .Alloc(buffer, System.Runtime.InteropServices.GCHandleType.Pinned)

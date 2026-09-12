@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T14:57:31-04:00
-NOTE: Task 2 - found both: the you-are-on-it words overhung the panel edge by 45 px through negative margins (removed), and the map test pinned six stations while the window's own refresh counted 25 (now asserts the model's count). Rerunning the green zone set with its neighbors.
+UPDATED: 2026-09-12T15:01:56-04:00
+NOTE: Task 3 - watched red (the tray path had 0 subpaths). The feather is drawn: a curved shaft with a pointed nib, barbs either side with a notch each, on the diagonal, three subpaths, scaled to 27 px of ink; the row vane untouched. Running the tray size tests for green.
 
 ---
 
