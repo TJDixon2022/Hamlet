@@ -240,26 +240,25 @@ public sealed class AchievementCategory
     {
         var earned = AchievementScores.FirstsEarned(log);
         var cards = new List<AchievementCategoryCard>();
-        AchievementCategoryCard? next = null;
 
         foreach (var (key, said) in AchievementBadgePage.Firsts)
         {
-            var worth = Pts(points.Special(AchievementKinds.HallOfFame, key));
-
             if (earned.Contains(key, StringComparer.OrdinalIgnoreCase))
             {
-                cards.Add(new AchievementCategoryCard(said, "", worth, true));
-            }
-            else
-            {
-                next ??= new AchievementCategoryCard(
-                    said, AchievementCategoryCard.NextWord, worth, false);
+                cards.Add(new AchievementCategoryCard(
+                    said, "", Pts(points.Special(AchievementKinds.HallOfFame, key)), true));
             }
         }
 
-        if (next is not null)
+        // **THE SAME NEXT CARD THE BADGE SHOWS**, chosen in one place so the page and the
+        // category cannot come to disagree about what §3.1 keeps absent.
+        if (AchievementBadgePage.NextFirstOf(earned) is { } next)
         {
-            cards.Add(next);
+            cards.Add(new AchievementCategoryCard(
+                next.Said,
+                AchievementCategoryCard.NextWord,
+                Pts(points.Special(AchievementKinds.HallOfFame, next.Key)),
+                false));
         }
 
         return cards;

@@ -4,8 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Avalonia.Controls;
+using Avalonia.Headless.XUnit;
+using Avalonia.VisualTree;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
+using Hamlet.App.Views;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Telemetry;
 using Xunit;
@@ -14,19 +18,22 @@ using Xunit.Abstractions;
 namespace Hamlet.App.Tests.ViewModels;
 
 /// <summary>
-/// Work instruction 326 task 5: **the PSK31 records are not on the achievements screen
-/// until he works one, and they are there the moment he does.**
+/// Work instruction 326 task 5, rewritten by 333 task 2: **the PSK31 records are not on the
+/// achievements window until he works one, and they are there the moment he does.**
 /// </summary>
 /// <remarks>
 /// <para>**§3.1: ABSENT, NOT DIMMED.** A mode's records do not exist until he has worked
-/// that mode - no ghost cards, no grayed placeholder, nothing to read at all. A dimmed
-/// card is a list of things he has not done, and *he has had enough of those* (§4).</para>
-/// <para>**§3.2: THE UNLOCK REVEALS MORE THAN IT FILLS.** One contact in, a scope of
-/// records out.</para>
-/// <para>**§4: COUNTS SAY WORKED AND NEVER CONFIRMED.** A confirmation is somebody
-/// else's word and Hamlet has not got one.</para>
-/// <para>**COMPUTED, NOT SEEN.** The screen is built as a view model and read; no window
-/// is opened here.</para>
+/// that mode - no ghost cards, no grayed placeholder, nothing to read at all.</para>
+/// <para>**§3.2: THE UNLOCK REVEALS MORE THAN IT FILLS.** One contact in, the mode's
+/// cards out.</para>
+/// <para>**§4: COUNTS SAY WORKED AND NEVER CONFIRMED.**</para>
+/// <para>**REWRITTEN UNDER §R12 ONTO THE WINDOW AS DRAWN** (work instruction 333 task 2).
+/// Until 333 these tests read <see cref="AchievementScreen"/>, which units 330 to 332
+/// replaced on the glass with eight badges that click in. The old screen still said
+/// *no PSK31* while the window drew **A PSK31 contact** as Hall of Fame's next card, on
+/// the page and inside the category, on any log that had earned a DX contact. So the
+/// window is stood up headless here, the page and every kind are opened in turn, and
+/// every visible run and hover is read.</para>
 /// </remarks>
 public sealed class ThePsk31RecordsAppearTests : IDisposable
 {
@@ -37,7 +44,7 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
     private readonly string _wasFolder;
 
     /// <summary>Creates the tests and redirects the data folder.</summary>
-    /// <param name="output">Where the screen is printed.</param>
+    /// <param name="output">Where the window is printed.</param>
     /// <remarks>
     /// **THE OPERATOR'S FOLDER IS NOT OURS.** Announcing an opening writes down what
     /// it announced, through `SettingsStore.Save`, so a test that drives the reveal
@@ -69,99 +76,87 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
         }
     }
 
-    /// <summary>**1: with no PSK31 contact, nothing PSK31 is on the screen at all.**</summary>
-    [Fact]
+    /// <summary>**1: with no PSK31 contact, nothing PSK31 is on the window at all.**</summary>
+    /// <remarks>
+    /// **THE EVENING HAS A DX CONTACT IN IT ON PURPOSE.** With `first_contact` and
+    /// `first_dx` earned, the nearest unearned Hall of Fame first in the list's order is
+    /// `first_psk31`, which is the slot that drew *A PSK31 contact* before this unit.
+    /// </remarks>
+    [AvaloniaFact]
     public void WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed()
     {
-        var screen = Screen(Ft8Evening());
+        var drawn = Walk(EveningWithDx(), null);
 
-        foreach (var scope in screen.Scopes)
+        foreach (var (where, words) in drawn)
         {
-            _output.WriteLine(scope.Key + "  " + scope.Title + "  " + scope.Summary);
+            _output.WriteLine(where + ": " + words.Count + " runs, naming PSK "
+                + words.Count(w => w.Contains("PSK", StringComparison.OrdinalIgnoreCase)));
         }
 
-        Assert.DoesNotContain(
-            screen.Scopes, s => s.Key.Contains("PSK", StringComparison.OrdinalIgnoreCase));
+        // **EVERY WORD, NOT AN `Earned` FLAG.** A dimmed card is a visible card.
+        foreach (var (where, words) in drawn)
+        {
+            var named = words.FirstOrDefault(
+                w => w.Contains("PSK", StringComparison.OrdinalIgnoreCase));
 
-        // **AND NOT ANYWHERE ELSE ON IT EITHER, IN ANY STATE.** A dimmed card is a
-        // visible card, so the assertion is over every word the screen holds rather
-        // than over an `Earned` flag somewhere.
-        Assert.DoesNotContain("PSK", Everything(screen), StringComparison.OrdinalIgnoreCase);
+            Assert.True(named is null, where + " draws [" + named + "] before any PSK31 contact");
+        }
     }
 
-    /// <summary>**2: the first PSK31 contact reveals the mode's records.**</summary>
-    [Fact]
+    /// <summary>**2: the first PSK31 contact reveals the mode's cards, drawn at full ink.**</summary>
+    [AvaloniaFact]
     public void TheFirstPsk31ContactRevealsTheModesRecords()
     {
-        var screen = Screen(Ft8Evening().Append(Psk31Contact()).ToList());
+        var cards = new Dictionary<string, IReadOnlyList<AchievementCategoryCard>>(StringComparer.Ordinal);
 
-        var psk31 = screen.Scopes.SingleOrDefault(
-            s => string.Equals(s.Key, "mode-PSK31", StringComparison.Ordinal));
+        var drawn = Walk(
+            EveningWithDx().Append(Psk31Contact()).ToList(),
+            (kind, model) => cards[kind] = model.Category!.Cards);
 
-        Assert.True(psk31 is not null, "the first PSK31 contact revealed no records");
+        var revealed = cards
+            .SelectMany(k => k.Value.Select(c => (Kind: k.Key, Card: c)))
+            .Where(x => x.Card.Title.Contains("PSK31", StringComparison.Ordinal))
+            .ToList();
 
-        _output.WriteLine(psk31!.Key + "  " + psk31.Title + "  " + psk31.Summary);
-
-        foreach (var group in psk31.Groups)
+        foreach (var (kind, card) in revealed)
         {
-            _output.WriteLine("  " + group.Title);
-
-            foreach (var card in group.Cards)
-            {
-                _output.WriteLine("    " + card.Title + " - " + card.Detail);
-            }
+            _output.WriteLine(kind + "  " + card.Title + " | " + card.Figure + " | "
+                + card.PointsLine + " | earned " + card.Earned + " | opacity " + card.CardOpacity);
         }
 
-        Assert.Equal("PSK31", psk31.Title);
-        Assert.True(psk31.Count > 0, "the scope opened with no records in it");
+        var first = Assert.Single(revealed, x => x.Kind == AchievementKinds.HallOfFame);
+        var mode = Assert.Single(revealed, x => x.Kind == AchievementKinds.Modes);
 
-        // **AND THE FT8 SCOPE IS STILL THERE**, unchanged by any of this.
-        Assert.Contains(
-            screen.Scopes, s => string.Equals(s.Key, "mode-FT8", StringComparison.Ordinal));
+        Assert.Equal("A PSK31 contact", first.Card.Title);
+        Assert.Equal("PSK31", mode.Card.Title);
+
+        // **ABSENT OR THERE, NEVER DIMMED**: both are held and drawn at full ink.
+        Assert.All(revealed, x => Assert.True(x.Card.Earned, x.Card.Title + " is not earned"));
+        Assert.All(revealed, x => Assert.Equal(1.0, x.Card.CardOpacity));
+
+        // And they are on the glass, not only in the model.
+        Assert.Contains("A PSK31 contact", drawn[AchievementKinds.HallOfFame]);
+        Assert.Contains("PSK31", drawn[AchievementKinds.Modes]);
+
+        // **AND FT8 IS STILL THERE**, unchanged by any of this.
+        Assert.Contains("FT8", drawn[AchievementKinds.Modes]);
     }
 
-    /// <summary>**3: the revealed records say worked, and never confirmed.**</summary>
+    /// <summary>**3: the window says worked, and never confirmed.**</summary>
     /// <remarks>
-    /// <para>**§4 OF `ACHIEVEMENTS_PHILOSOPHY.md`.** DXCC and Worked All States are
-    /// counted by confirmations, and Hamlet knows only what passed on the air.</para>
-    /// <para>**THE WHOLE-SCREEN SWEEP IS NOT `DoesNotContain("confirm")`**, and that
-    /// is the finding rather than a softening: the entity cards already carry *the
-    /// count says worked rather than confirmed*, which is §4 being obeyed out loud.
-    /// So the assertion is that the word appears **only** inside that disclaimer, and
-    /// nowhere at all among the mode's own records.</para>
+    /// **§4 OF `ACHIEVEMENTS_PHILOSOPHY.md`.** The old screen carried one disclaimer
+    /// sentence with the word in it; the click-in window carries none, so the word does
+    /// not appear anywhere it draws.
     /// </remarks>
-    [Fact]
+    [AvaloniaFact]
     public void TheWordingSaysWorkedAndNeverConfirmed()
     {
-        var screen = Screen(Ft8Evening().Append(Psk31Contact()).ToList());
+        var drawn = Walk(EveningWithDx().Append(Psk31Contact()).ToList(), null);
 
-        var psk31 = string.Join(
-            " | ",
-            screen.Scopes
-                .Where(s => string.Equals(s.Key, "mode-PSK31", StringComparison.Ordinal))
-                .SelectMany(s => s.Groups.SelectMany(g => g.Cards.SelectMany(Words))));
+        var everything = string.Join(" | ", drawn.SelectMany(d => d.Value));
 
-        _output.WriteLine(psk31);
-
-        Assert.DoesNotContain("confirm", psk31, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("worked", psk31, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("PSK31", psk31, StringComparison.Ordinal);
-
-        // **AND NOWHERE ON THE SCREEN DOES THE WORD STAND ALONE.** Take the one
-        // sentence that refuses the claim out, and the word is gone from the screen.
-        const string Disclaimer =
-            "The count says worked rather than confirmed: the DXCC award is counted "
-            + "from confirmations, on paper or electronic, and Hamlet only knows what "
-            + "passed on the air from your own log.";
-
-        var everything = Everything(screen);
-
-        Assert.Contains(Disclaimer, everything, StringComparison.Ordinal);
-
-        Assert.DoesNotContain(
-            "confirm",
-            everything.Replace(Disclaimer, " ", StringComparison.Ordinal),
-            StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("confirm", everything, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("worked", everything, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>**4: the reveal writes its event once, with the count and nothing else.**</summary>
@@ -172,13 +167,13 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
         {
             // **THE QUIET FIRST LOOK**, which writes down what was already open and
             // announces nothing - a man who imports a log gets no notices.
-            model.AnnounceOpeningsForTests(Ft8Evening());
+            model.AnnounceOpeningsForTests(EveningWithDx());
 
             // Then he works one.
-            model.AnnounceOpeningsForTests(Ft8Evening().Append(Psk31Contact()).ToList());
+            model.AnnounceOpeningsForTests(EveningWithDx().Append(Psk31Contact()).ToList());
 
             // **AND READING THE SAME LOG AGAIN SAYS NOTHING MORE.**
-            model.AnnounceOpeningsForTests(Ft8Evening().Append(Psk31Contact()).ToList());
+            model.AnnounceOpeningsForTests(EveningWithDx().Append(Psk31Contact()).ToList());
         });
 
         var revealed = Assert.Single(Events(lines, "psk31_records_revealed"));
@@ -189,34 +184,82 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
 
         var text = revealed.ToString();
 
-        foreach (var personal in new[] { "G4XYZ", "KC3QIS", "FN00", "IO91" })
+        foreach (var personal in new[] { "G4XYZ", "LA8ENA", "KC3QIS", "FN00", "IO91", "JO59" })
         {
             Assert.DoesNotContain(personal, text, StringComparison.OrdinalIgnoreCase);
         }
     }
 
-    /// <summary>Every word the screen would show, for an absence assertion.</summary>
-    private static string Everything(AchievementScreen screen)
-        => string.Join(
-            " | ",
-            screen.Scopes.SelectMany(
-                s => new[] { s.Key, s.Title, s.Kind, s.Summary }
-                    .Concat(s.Groups.Select(g => g.Title))
-                    .Concat(s.Groups.SelectMany(g => g.Cards.SelectMany(Words))))
-            .Concat(screen.Places.SelectMany(
-                p => new[] { p.Title }.Concat(p.Cards.SelectMany(Words))))
-            .Concat(screen.Challenges.SelectMany(Words)));
+    /// <summary>
+    /// **The window over a log: the page, then every kind opened and closed in turn.**
+    /// </summary>
+    /// <param name="records">The log.</param>
+    /// <param name="inside">Called with each kind while it is open, or null.</param>
+    /// <returns>Every visible run and hover, by `page` or by kind.</returns>
+    private static Dictionary<string, List<string>> Walk(
+        IReadOnlyList<AdifLogRecord> records, Action<string, AchievementsViewModel>? inside)
+    {
+        var model = new AchievementsViewModel(
+            records, HisGrid, AchievementPoints.Parse(AchievementPoints.Shipped()));
 
-    /// <summary>Every word one card would put on the screen.</summary>
-    private static IEnumerable<string> Words(AchievementCard card)
-        => new[]
+        var window = new AchievementsWindow { DataContext = model };
+        var drawn = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+
+        window.Show();
+        Settle(window);
+
+        try
         {
-            card.Key, card.Title, card.Figure, card.Station, card.Detail,
-            card.Progress, card.Target, card.Under, card.RingMeans,
-        };
+            Assert.True(model.ShowsPage, "the window did not open on the page");
 
-    private static AchievementScreen Screen(IReadOnlyList<AdifLogRecord> records)
-        => new(new AchievementLog(records, HisGrid));
+            drawn["page"] = Words(window);
+
+            foreach (var kind in AchievementKinds.All)
+            {
+                model.OpenCategoryCommand.Execute(kind);
+                Settle(window);
+
+                Assert.True(model.ShowsCategory, kind + " did not open");
+
+                drawn[kind] = Words(window);
+                inside?.Invoke(kind, model);
+
+                model.BackCommand.Execute(null);
+                Settle(window);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+
+        return drawn;
+    }
+
+    /// <summary>Every visible run of text and every hover the window holds.</summary>
+    private static List<string> Words(Window window)
+    {
+        var runs = window.GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0)
+            .Select(t => t.Text!);
+
+        var tips = window.GetVisualDescendants().OfType<Control>()
+            .Where(c => c.IsEffectivelyVisible)
+            .Select(c => ToolTip.GetTip(c) as string)
+            .Where(s => !string.IsNullOrEmpty(s))
+            .Select(s => s!);
+
+        return runs.Concat(tips).ToList();
+    }
+
+    private static void Settle(Window window)
+    {
+        for (var i = 0; i < 6; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
+    }
 
     private List<string> WithTelemetry(Action<MainWindowViewModel> what)
     {
@@ -240,20 +283,23 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
             .Where(e => e.GetProperty("event").GetString() == name)
             .ToList();
 
-    /// <summary>An evening of FT8, with no PSK31 in it anywhere.</summary>
-    private static List<AdifLogRecord> Ft8Evening()
+    /// <summary>
+    /// An evening of FT8 with one DX contact in it, and no PSK31 anywhere.
+    /// </summary>
+    private static List<AdifLogRecord> EveningWithDx()
         => Enumerable.Range(0, 6)
             .Select(i => Record(
                 "W" + (i + 1) + "ABC", "20m", "FT8", null, "FN42",
                 "+00", "-12",
                 "2026-09-10 02:" + i.ToString("00", CultureInfo.InvariantCulture) + ":00"))
+            .Append(Record(
+                "LA8ENA", "20m", "FT8", null, "JO59", "-05", "-10", "2026-09-10 02:10:00"))
             .ToList();
 
     /// <summary>One PSK31 contact, spelled the way the export spells it.</summary>
     /// <remarks>
-    /// **THE REPORT IS AN RST AND SITS IN THE RST FIELDS** (task 3, §3.2). The decibel
-    /// fields are empty, which is why no *how faint* record appears for this mode - a
-    /// `599` is not a ratio and must never be sorted as one.
+    /// **THE REPORT IS AN RST AND SITS IN THE RST FIELDS** (§3.2). The decibel fields are
+    /// empty - a `599` is not a ratio and must never be sorted as one.
     /// </remarks>
     private static AdifLogRecord Psk31Contact()
         => Record(

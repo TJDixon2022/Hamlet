@@ -335,19 +335,51 @@ public sealed class AchievementBadgePage
 
     /// <summary>The nearest Hall of Fame first he has not earned, in his own words.</summary>
     private static string NextFirst(AchievementLog log)
-    {
-        var earned = AchievementScores.FirstsEarned(log);
+        => NextFirstOf(AchievementScores.FirstsEarned(log))?.Said ?? "";
 
-        foreach (var (key, said) in Firsts)
+    /// <summary>
+    /// **The nearest unearned first the window may name**, for the badge and for the category.
+    /// </summary>
+    /// <param name="earned">The keys the log has earned.</param>
+    /// <returns>The key and its words, or null where every first is held.</returns>
+    /// <remarks>
+    /// <para>**A PSK31 FIRST IS NEVER THE NEXT CARD WHILE ANOTHER IS LEFT** (work instruction
+    /// 333 task 2, step 5 criterion 3). §3.1 keeps every PSK31 card absent until the first
+    /// PSK31 contact, and `first_psk31` unearned means exactly that there has been none. On
+    /// any log with a DX contact it stood next in the list's order, so the page and the
+    /// category both drew *A PSK31 contact* before he had worked one. It now shows the
+    /// nearest first §3.1 allows.</para>
+    /// <para>**WHERE IT IS THE ONLY FIRST LEFT, IT IS STILL SHOWN**, and that is not a
+    /// choice made here. Ruling C says the nearest unearned card in each kind and §3.1 says
+    /// no PSK31 card; with nothing else left they cannot both hold, so the screen is left as
+    /// it was and the collision is raised in the report for the owner.</para>
+    /// </remarks>
+    public static (string Key, string Said)? NextFirstOf(IReadOnlyList<string> earned)
+    {
+        ArgumentNullException.ThrowIfNull(earned);
+
+        var unearned = Firsts
+            .Where(f => !earned.Contains(f.Key, StringComparer.OrdinalIgnoreCase))
+            .ToList();
+
+        if (unearned.Count == 0)
         {
-            if (!earned.Contains(key, StringComparer.OrdinalIgnoreCase))
+            return null;
+        }
+
+        foreach (var first in unearned)
+        {
+            if (!string.Equals(first.Key, AbsentUntilWorked, StringComparison.Ordinal))
             {
-                return said;
+                return first;
             }
         }
 
-        return "";
+        return unearned[0];
     }
+
+    /// <summary>The one first §3.1 keeps off the window until it is earned.</summary>
+    private const string AbsentUntilWorked = "first_psk31";
 
     /// <summary>
     /// The next continent card, **naming no continent he has not opened** (§3.1).
