@@ -1191,7 +1191,66 @@ public partial class MainWindowViewModel : ObservableObject
             ChosenDigitalMode,
             SegmentForTheChosenSubMode,
             Bands.FirstOrDefault(b => b.IsBestBet)?.Band.Name ?? "",
-            HeardInTheLastMinute);
+            HeardInTheLastMinute,
+            Bands,
+            _settings.Operator.GridSquare);
+
+    /// <summary>
+    /// **The last minute of heard stations in five-second bins, for the green zone's
+    /// sparkline** (work instruction 332 task 2).
+    /// </summary>
+    /// <remarks>
+    /// Taken where <see cref="HeardInTheLastMinute"/> is taken, off the same ranked spots
+    /// and the same clock reading, so the bins add up to the count.
+    /// </remarks>
+    [ObservableProperty]
+    private IReadOnlyList<int> _heardSparkline = new int[GreenZone.SparklineBins];
+
+    /// <summary>
+    /// **The instant the green zone's night side is drawn for**, advanced once a minute by
+    /// the age tick.
+    /// </summary>
+    [ObservableProperty]
+    private DateTime _grayLineUtc = DateTime.UtcNow;
+
+    /// <summary>How often the night side is redrawn: the terminator moves a quarter degree a minute.</summary>
+    private static readonly TimeSpan GrayLineStep = TimeSpan.FromMinutes(1);
+
+    private bool _terminatorComputedOnce;
+
+    private bool _greenZoneReported;
+
+    /// <summary>Move the night side on, at most once a minute, and say where the sun is.</summary>
+    /// <param name="now">The age tick's clock reading.</param>
+    internal void AdvanceGrayLine(DateTime now)
+    {
+        if (_terminatorComputedOnce && now - GrayLineUtc < GrayLineStep)
+        {
+            return;
+        }
+
+        _terminatorComputedOnce = true;
+        GrayLineUtc = now;
+
+        var sun = Hamlet.RadioEngine.Solar.SolarTerminator.At(now);
+
+        AppEvents.TerminatorComputed(_telemetry, sun.Longitude, sun.Latitude);
+    }
+
+    /// <summary>The green zone had a size for the first time: said once a session.</summary>
+    /// <param name="layout">The panel's size and which regions drew.</param>
+    [RelayCommand]
+    private void GreenZoneRendered(GreenZoneLayout? layout)
+    {
+        if (layout is null || _greenZoneReported)
+        {
+            return;
+        }
+
+        _greenZoneReported = true;
+
+        AppEvents.GreenZoneRendered(_telemetry, layout.Width, layout.Height, layout.Regions);
+    }
 
     /// <summary>What *heard just now* means, in one place: the last minute.</summary>
     /// <remarks>
@@ -11388,6 +11447,7 @@ public partial class MainWindowViewModel : ObservableObject
         NoteDwell(now);
         RefreshHeard(now);
         Heartbeat(now);
+        AdvanceGrayLine(now);
 
         RetimeCards();
 
@@ -16654,6 +16714,10 @@ public partial class MainWindowViewModel : ObservableObject
         // the map cannot come to disagree about one minute of the band.
         HeardInTheLastMinute = ranked
             .Count(entry => now - entry.Spot.HeardAtUtc <= JustNow);
+
+        // **AND THE SPARKLINE IS THE SAME MINUTE, BINNED** (work instruction 332 task 2), so
+        // its bins add up to the count beside it.
+        HeardSparkline = GreenZone.Sparkline(ranked.Select(entry => entry.Spot.HeardAtUtc), now);
 
         // ONE RANKING, READ BY BOTH (HM-DEC-046). The badge and the lead card
         // used to answer "which band is best" separately, and the badge

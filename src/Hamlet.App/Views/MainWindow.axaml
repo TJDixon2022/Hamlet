@@ -588,135 +588,217 @@
                                 Converter={x:Static ctl:PrivilegeToneConverter.Border}}"
                             BorderThickness="1">
                         <StackPanel Spacing="3">
-                            <!-- **THE THREE LINES ARE ONE LINE NOW** (Tim, 2026-09-12:
-                                 *"The green zone is wasting a lot of real estate"*; work
-                                 instruction 331 task 4).
+                            <!-- **THREE REGIONS ACROSS THE WHOLE WIDTH** (Tim, 2026-09-12:
+                                 *"I said this was wasted real estate on the right so you
+                                 just put more on the left"*; work instruction 332 task 2,
+                                 drawn to `assets/green-zone-mockup.png`). Where you are on
+                                 the left, the world with its night side in the middle, and
+                                 what is worth doing now on the right.
 
-                                 **THE HEADLINE, THE DETAIL AND THE CITATION WERE THREE
-                                 LINES SAYING THE SAME THING EVERY TIME** - all three are
-                                 facts about the regulation, and the regulation does not
-                                 change while he operates. `GreenZone.License` joins them
-                                 **in their own words**, with nothing rewritten and only a
-                                 trailing period dropped off the detail, so the panel keeps
-                                 every word and gives back two lines.
+                                 **EVERY VALUE IS ONE THE SCREEN ALREADY PUBLISHES**, read off
+                                 one `GreenZone` so the panel cannot disagree with the map
+                                 above it, the chips on the tab or the pills in the strip (§0).
 
-                                 **THE TONE'S INK STAYS ON IT** (HM-DEC-029): green where
-                                 the frequency is his, amber where it is listen-only, plain
-                                 where the class is unknown. -->
-                            <TextBlock x:Name="GreenZoneLicenseLine"
-                                       Text="{Binding GreenZone.License}"
-                                       FontSize="12" FontWeight="SemiBold"
-                                       TextWrapping="Wrap"
-                                       IsVisible="{Binding GreenZone.HasLicense}"
-                                       Foreground="{Binding PrivilegeStatus.Tone,
-                                           Converter={x:Static ctl:PrivilegeToneConverter.Text}}" />
+                                 **THE 20 M BAND STRIP FROM THE EARLIER MOCKUP IS NOT HERE.**
+                                 At the panel's height there is no room for it under the pills
+                                 and the sparkline, and the task says to drop it and say so. -->
+                            <!-- **THE SIDES SHARE WHAT THE MAP LEAVES, AND NOTHING RUNS PAST
+                                 THE EDGE.** Measured at a 1400 window the panel is 756 px
+                                 inside; three regions sized to their content asked for more
+                                 than that and spilled out of the right side. So the map keeps
+                                 its own width, the two sides split the rest, the left lines
+                                 wrap and the pills take a second row before anything
+                                 overflows. -->
+                            <Grid x:Name="GreenZoneRegions"
+                                  ColumnDefinitions="*,Auto,*"
+                                  RowDefinitions="Auto,Auto">
 
-                            <!-- **AND THE LINE THEY MADE ROOM FOR IS LIVE, AND THE BAND
-                                 COMES FIRST.** Tim, 2026-09-12: *"I really didn't know
-                                 14.070 was 20 meters until recently."* A frequency and its
-                                 band name joined in one place is the thing he did not
-                                 have, and the band is the word he was missing, so it is
-                                 the word the line opens with.
+                                <!-- ============ LEFT: WHERE YOU ARE ============ -->
+                                <!-- **THE BAND IS THE LARGEST TEXT ON THE PANEL, IN FAMILY
+                                     INK** (§0.5: family color is text only, and never a
+                                     fill). Tim, 2026-09-12: *"I really didn't know 14.070
+                                     was 20 meters until recently."* -->
+                                <StackPanel x:Name="GreenZoneLeft"
+                                            Grid.Column="0"
+                                            Margin="0,0,16,0"
+                                            Spacing="2"
+                                            VerticalAlignment="Top">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock x:Name="GreenZoneBand"
+                                                   Text="{Binding GreenZone.Band}"
+                                                   IsVisible="{Binding GreenZone.HasBand}"
+                                                   FontSize="26" FontWeight="Bold"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{Binding GreenZone.FamilyOf,
+                                                       Converter={x:Static ctl:PrivilegeToneConverter.FamilyInk}}" />
 
-                                 **EVERY RUN HERE IS A VALUE THAT IS ALREADY ON THE SCREEN
-                                 SOMEWHERE ELSE**, read off one `GreenZone` so the line
-                                 cannot disagree with the map above it, the chips on the
-                                 tab or the pills in the strip (§0).
+                                        <TextBlock x:Name="GreenZoneFrequency"
+                                                   Text="{Binding GreenZone.Frequency}"
+                                                   FontSize="16" FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    </StackPanel>
 
-                                 **THE FAMILY WORD IS THE PALETTE'S OWN AND THE INK IS
-                                 SECOND** (§0.5, §0.6, HM-DEC-012). `Digital` is what the
-                                 map legend teaches him, so the two surfaces name one
-                                 family one thing; the hue is the family's ink as text and
-                                 never a fill, and the word carries the meaning on its own
-                                 in grayscale.
+                                    <!-- **THE MODE AND THE VERDICT, IN THE TONE'S INK**
+                                         (HM-DEC-029): green where the frequency is his,
+                                         amber where it is listen-only. -->
+                                    <TextBlock x:Name="GreenZoneModeLine"
+                                               Text="{Binding GreenZone.ModeLine}"
+                                               IsVisible="{Binding GreenZone.HasModeLine}"
+                                               FontSize="13"
+                                               TextWrapping="Wrap"
+                                               Foreground="{Binding PrivilegeStatus.Tone,
+                                                   Converter={x:Static ctl:PrivilegeToneConverter.Text}}" />
 
-                                 **RUNS AND NOT A SENTENCE**, because two of them are not
-                                 text: the mode word takes the family ink and the best bet
-                                 is pressable. -->
-                            <StackPanel x:Name="GreenZoneLiveLine"
-                                        Orientation="Horizontal"
-                                        VerticalAlignment="Center">
-                                <TextBlock Text="{Binding GreenZone.Band}"
-                                           x:Name="GreenZoneBand"
-                                           FontSize="12" FontWeight="SemiBold"
-                                           IsVisible="{Binding GreenZone.HasBand}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    <!-- **THE LICENSE PHRASE AND THE CITATION, SMALL, IN
+                                         THEIR OWN WORDS.** One line where the side has the
+                                         room; it wraps rather than running past the edge
+                                         where it does not. -->
+                                    <TextBlock x:Name="GreenZoneLicenseLine"
+                                               Text="{Binding GreenZone.LicensePhrase}"
+                                               IsVisible="{Binding GreenZone.HasLicensePhrase}"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
 
-                                <TextBlock Text=" · " FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasBand}"
-                                           VerticalAlignment="Center"
+                                <!-- ============ CENTER: THE WORLD'S CLOCK ============ -->
+                                <!-- **THE NIGHT SIDE IS THE SUN AND THE CLOCK, AND THE ONE
+                                     MARKER IS HIS GRID.** No station dots and no paths
+                                     (Tim: *"without the orphan dots, maybe just a dot at my
+                                     grid"*). -->
+                                <StackPanel x:Name="GreenZoneMap"
+                                            Grid.Column="1"
+                                            Margin="0,0,16,0">
+                                    <ctl:GrayLineMapControl x:Name="GreenZoneGrayLine"
+                                                            Height="110"
+                                                            HorizontalAlignment="Left"
+                                                            Utc="{Binding GrayLineUtc}"
+                                                            OperatorGrid="{Binding GreenZone.OperatorGrid}"
+                                                            RenderedCommand="{Binding GreenZoneRenderedCommand}" />
+                                </StackPanel>
+
+                                <!-- ============ RIGHT: WHAT IS WORTH DOING NOW ============ -->
+                                <StackPanel x:Name="GreenZoneRight"
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Right"
+                                            Spacing="6">
+                                    <!-- **PRESSABLE, AND IT IS THE PILL'S OWN PRESS**
+                                         (§0.5.1). The check is drawn INTO the word by
+                                         `GreenZone.OnIt` (§0.6). -->
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="best bet now: " FontSize="11"
+                                                   IsVisible="{Binding GreenZone.HasBestBet}"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <Button x:Name="GreenZoneBestBet"
+                                                Content="{Binding GreenZone.BestBet}"
+                                                IsVisible="{Binding GreenZone.HasBestBet}"
+                                                Command="{Binding TuneToBestBetCommand}"
+                                                FontSize="11"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                VerticalAlignment="Center"
+                                                ToolTip.Tip="The band with the most going on right now, from the same ranking the badge in the band strip wears. Pressing it tunes there."
+                                                Foreground="{StaticResource HmAmberDeepBrush}" />
+                                    </StackPanel>
+
+                                    <!-- **THE BAND STRIP'S OWN BUTTONS**, so the pips and the
+                                         press are the strip's. The one the dial is in is
+                                         picked - a border and semibold as well as a tint -
+                                         and says so in words under it (§0.6). -->
+                                    <ItemsControl x:Name="GreenZonePills"
+                                                  ItemsSource="{Binding GreenZone.Pills}"
+                                                  HorizontalAlignment="Right">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <!-- **A SECOND ROW BEFORE AN OVERFLOW.** -->
+                                                <WrapPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:GreenZonePill">
+                                                <StackPanel Spacing="2" Margin="0,0,4,2">
+                                                    <Button Classes="hm-chip"
+                                                            Classes.hm-picked="{Binding IsHere}"
+                                                            Padding="5,3"
+                                                            HorizontalAlignment="Center"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
+                                                            CommandParameter="{Binding Button}">
+                                                        <StackPanel Spacing="2">
+                                                            <TextBlock Text="{Binding Name}"
+                                                                       FontSize="12"
+                                                                       HorizontalAlignment="Center" />
+
+                                                            <ctl:ActivityPipsControl
+                                                                HorizontalAlignment="Center"
+                                                                Filled="{Binding Button.ActivityPips}"
+                                                                IsUnknown="{Binding Button.ActivityUnknown}" />
+                                                        </StackPanel>
+                                                    </Button>
+
+                                                    <!-- **UNDER THE PILL, AND ITS COLUMN IS AS
+                                                         WIDE AS THE WORDS.** Negative margins
+                                                         let the words overhang instead, and
+                                                         measured, the overhang ran 45 px past
+                                                         the panel's edge when the band landed
+                                                         last in its row; the wrap panel takes
+                                                         the wider column without overflowing. -->
+                                                    <TextBlock Text="{x:Static vm:GreenZone.YouAreOnIt}"
+                                                               IsVisible="{Binding IsHere}"
+                                                               FontSize="10"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{StaticResource HmGreenBrush}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- **STATIONS HEARD HERE OVER THE LAST MINUTE**: the
+                                         line, then the count in words, which is the carrier.
+                                         **ABSENT BEFORE THE FEED HAS ANSWERED** - a flat line
+                                         would be a measurement of an empty band (§0.0). -->
+                                    <Grid ColumnDefinitions="Auto,Auto"
+                                          HorizontalAlignment="Right"
+                                          IsVisible="{Binding GreenZone.HasHeard}">
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                            <TextBlock Text="heard just now"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                            <ctl:SparklineControl x:Name="GreenZoneSparkline"
+                                                                  Values="{Binding HeardSparkline}"
+                                                                  Width="110" Height="26" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+                                            <TextBlock x:Name="GreenZoneHeard"
+                                                       Text="{Binding GreenZone.Heard}"
+                                                       FontSize="15" FontWeight="Bold"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                            <TextBlock Text="last minute"
+                                                       FontSize="10"
+                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- **ONE LINE OF RULE OF THUMB, STATED AS SUCH, UNDER THE
+                                     MAP** - and nothing about whether a band is open,
+                                     because Hamlet does not know (§0.0). -->
+                                <TextBlock x:Name="GreenZoneRuleOfThumb"
+                                           Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                           Margin="0,4,0,0"
+                                           Text="{x:Static vm:GreenZone.RuleOfThumb}"
+                                           FontSize="11"
+                                           TextWrapping="Wrap"
                                            Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <TextBlock Text="{Binding GreenZone.Frequency}"
-                                           x:Name="GreenZoneFrequency"
-                                           FontSize="12"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                <TextBlock Text=" · " FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasFamily}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <TextBlock Text="{Binding GreenZone.Family}"
-                                           x:Name="GreenZoneFamily"
-                                           FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasFamily}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{Binding GreenZone.FamilyOf,
-                                               Converter={x:Static ctl:PrivilegeToneConverter.FamilyInk}}" />
-
-                                <TextBlock Text=" · " FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasSubMode}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <TextBlock Text="{Binding GreenZone.SubMode}"
-                                           x:Name="GreenZoneSubMode"
-                                           FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasSubMode}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{Binding GreenZone.FamilyOf,
-                                               Converter={x:Static ctl:PrivilegeToneConverter.FamilyInk}}" />
-
-                                <TextBlock Text=" · best bet now: " FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasBestBet}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <!-- **PRESSABLE, AND IT IS THE PILL'S OWN PRESS**
-                                     (§0.5.1). `TuneToBestBetCommand` calls the same
-                                     `SelectBand` the pill calls, so there is no second
-                                     tuning path. The check is drawn INTO the word by
-                                     `GreenZone.OnIt`, so *you are on it* and *it is
-                                     elsewhere* differ by a mark and not only by a
-                                     hue (§0.6). -->
-                                <Button x:Name="GreenZoneBestBet"
-                                        Content="{Binding GreenZone.BestBet}"
-                                        IsVisible="{Binding GreenZone.HasBestBet}"
-                                        Command="{Binding TuneToBestBetCommand}"
-                                        FontSize="12"
-                                        Padding="0"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Cursor="Hand"
-                                        VerticalAlignment="Center"
-                                        ToolTip.Tip="The band with the most going on right now, from the same ranking the badge in the band strip wears. Pressing it tunes there."
-                                        Foreground="{StaticResource HmAmberDeepBrush}" />
-
-                                <TextBlock Text=" · heard just now: " FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasHeard}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                <TextBlock Text="{Binding GreenZone.Heard}"
-                                           x:Name="GreenZoneHeard"
-                                           FontSize="12"
-                                           IsVisible="{Binding GreenZone.HasHeard}"
-                                           VerticalAlignment="Center"
-                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
-                            </StackPanel>
+                            </Grid>
 
                             <!-- **A THIRD LINE ONLY WHEN IT IS TRUE**, so the panel is
                                  shorter by a line whenever nothing has strayed. Both

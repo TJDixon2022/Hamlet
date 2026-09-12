@@ -74,6 +74,17 @@ public sealed class Ft8GlobeControl : Control
     /// </remarks>
     private static readonly Lazy<Bitmap?> Map = new(LoadTheMap);
 
+    /// <summary>
+    /// **The same map, for the green zone's night side** (work instruction 332 task 2), so
+    /// the hash gate and the one bitmap are shared rather than loaded twice.
+    /// </summary>
+    internal static Bitmap? ReliefBitmap => Map.Value;
+
+    /// <summary>The operator's marker, drawn the way this map draws it, at a point.</summary>
+    /// <param name="context">Where to draw.</param>
+    /// <param name="at">The point on the control.</param>
+    internal static void OperatorMarker(DrawingContext context, Point at) => Dot(context, at, Mine);
+
     private static readonly IBrush Paper = new SolidColorBrush(Color.Parse("#DDE6EC"));
     private static readonly IBrush Ink = new SolidColorBrush(Color.Parse("#5F5C53"));
     private static readonly IBrush Mine = new SolidColorBrush(Color.Parse("#C8842A"));

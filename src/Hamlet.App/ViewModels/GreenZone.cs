@@ -4,31 +4,44 @@ using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.ViewModels;
 
+/// <summary>One band pill on the green zone, and whether the dial is in it.</summary>
+/// <param name="Button">The band strip's own button, so the pips and the press are its.</param>
+/// <param name="IsHere">True on the band the dial is in.</param>
+public sealed record GreenZonePill(BandButtonViewModel Button, bool IsHere)
+{
+    /// <summary>The band's name.</summary>
+    public string Name => Button.Band.Name;
+}
+
+/// <summary>What the green zone reports once a session, when it first has a size.</summary>
+/// <param name="Width">The panel's width.</param>
+/// <param name="Height">The panel's height.</param>
+/// <param name="Regions">Which regions drew, comma-joined: `left,map,right`.</param>
+public sealed record GreenZoneLayout(double Width, double Height, string Regions);
+
 /// <summary>
-/// **The panel under the neighborhood map: one line of license, and then what is true
-/// right now.**
+/// **The panel under the neighborhood map: where you are, the world's clock, and what is
+/// worth doing now.**
 /// </summary>
 /// <remarks>
-/// <para>**TIM, 2026-09-12**: *"The green zone is wasting a lot of real estate."* What he
-/// was looking at was three lines and a full-width panel saying
-/// `14.074 MHz · yours to use` / `Your General license covers digital modes here.` /
-/// `97.305(c)(3)(ix)` - and **saying the same thing every time**, because all three are
-/// facts about the regulation and the regulation does not change while he operates.</para>
-/// <para>**SO THE THREE BECOME ONE, AND THE LINE THEY MAKE ROOM FOR IS LIVE** (work
-/// instruction 331 task 4). The band comes first on it, which is Tim's own reason: *"I
-/// really didn't know 14.070 was 20 meters until recently."* A frequency and its band name
-/// joined in one place is the thing he did not have.</para>
+/// <para>**TIM, 2026-09-12**: *"The green zone is wasting a lot of real estate."* Unit 331
+/// compressed it to two lines, and he answered: *"I said this was wasted real estate on the
+/// right so you just put more on the left."* So the panel is three regions across its whole
+/// width (work instruction 332 task 2): the band large on the left, the world with its night
+/// side in the middle, and the pills and what has been heard on the right.</para>
+/// <para>**THE BAND COMES FIRST AND LARGEST**, which is Tim's own reason: *"I really didn't
+/// know 14.070 was 20 meters until recently."*</para>
 /// <para>**NOTHING HERE IS INVENTED AND NOTHING HERE IS COMPUTED TWICE** (§0.0, §0 on
 /// generated-from-a-source-of-truth). Every value already exists on the screen: the license
 /// words are `PrivilegeStatusLine`'s, the band is the band the dial is in from
 /// <see cref="HfBands.Bands"/>, the family and sub-mode are the neighborhood's and the
-/// tab's, the best bet is the ranking the band pills already wear, and the count is the
-/// map's own dots. This record joins them and measures nothing of its own.</para>
-/// <para>**A THIRD LINE ONLY WHEN IT IS TRUE.** Where the sub-mode he has picked lives in a
-/// segment the dial is not in, the panel says so and says both numbers; where it does not,
-/// the panel is a line shorter.</para>
-/// <para>Pure: frequencies, a neighborhood, a ranking and a count in, strings out. No
-/// clock and no state (§5).</para>
+/// tab's, the best bet is the ranking the band pills already wear, the pills are the strip's
+/// own buttons, and the count and the sparkline are the map's own dots.</para>
+/// <para>**BAND OPENNESS IS NEVER DRAWN OR SAID** (§0.0). The night side is the sun and the
+/// clock, which is fact; whether a path is open is a forecast Hamlet has no source for. The
+/// one sentence about propagation is <see cref="RuleOfThumb"/>, and it says it is one.</para>
+/// <para>Pure: frequencies, a neighborhood, a ranking, a count and the bands in, strings out.
+/// No clock and no state (§5).</para>
 /// </remarks>
 public sealed record GreenZone
 {
@@ -43,13 +56,30 @@ public sealed record GreenZone
     /// </remarks>
     public const string OnIt = " ✓";
 
+    /// <summary>What the pill the dial is in says under it.</summary>
+    public const string YouAreOnIt = "✓ you are on it";
+
+    /// <summary>
+    /// **The one line about propagation, stated as a rule of thumb** (§0.0).
+    /// </summary>
+    /// <remarks>
+    /// **THE AUTHOR'S WORDING, MARKED FOR THE OWNER** (work instruction 332's ARBITER block).
+    /// It says what the sun tends to do to the bands and nothing about whether any band is
+    /// open now, because Hamlet does not know.
+    /// </remarks>
+    public const string RuleOfThumb =
+        "Rule of thumb: 20 m and up want daylight along the path; 40 m and down want dark; "
+        + "the gray edge is where both happen.";
+
+    /// <summary>How many bins the minute is cut into for the sparkline: five seconds each.</summary>
+    public const int SparklineBins = 12;
+
     /// <summary>Nothing known. The panel draws its license line and nothing else.</summary>
     public static GreenZone Empty { get; } = new();
 
-    /// <summary>**Line one: the regulation, in the words it already used.**</summary>
+    /// <summary>**The regulation, in the words it already used.**</summary>
     /// <remarks>
     /// The headline, the detail and the citation, joined. **The words are not rewritten** -
-    /// the instruction says *the existing three lines on one line, in the same words* - and
     /// the only edit is a trailing period dropped off the detail, because a sentence stop in
     /// the middle of a joined line reads as a mistake.
     /// </remarks>
@@ -58,13 +88,23 @@ public sealed record GreenZone
     /// <summary>True where there is a license line at all.</summary>
     public bool HasLicense => License.Length > 0;
 
+    /// <summary>
+    /// **The small line on the left: the license phrase and the citation**, without the
+    /// frequency the region already shows beside the band.
+    /// </summary>
+    public string LicensePhrase { get; private init; } = "";
+
+    /// <summary>True where there is a license phrase.</summary>
+    public bool HasLicensePhrase => LicensePhrase.Length > 0;
+
+    /// <summary>The verdict half of the headline - `yours to use` - or "".</summary>
+    public string Verdict { get; private init; } = "";
+
     /// <summary>**The band the dial is in, and it comes first** - `20 m`.</summary>
     /// <remarks>
-    /// **FROM THE CITED ROWS AND NOT FROM THE BAND HE PRESSED** (§0.0). The pill he last
-    /// pressed is a preference; the band containing the dial frequency is a measurement, and
-    /// they differ every time a tune lands outside the band he came from. Empty where the
-    /// dial is not in an amateur band at all, which is not the same as a band Hamlet failed
-    /// to name.
+    /// **FROM THE CITED ROWS AND NOT FROM THE BAND HE PRESSED** (§0.0). Empty where the dial
+    /// is not in an amateur band at all, which is not the same as a band Hamlet failed to
+    /// name.
     /// </remarks>
     public string Band { get; private init; } = "";
 
@@ -76,10 +116,8 @@ public sealed record GreenZone
 
     /// <summary>The family word, from the palette the legend uses - `Digital`.</summary>
     /// <remarks>
-    /// **THE PALETTE'S OWN LABEL AND NOT A NEW WORD.** The map legend teaches him four
-    /// family names and this line uses one of them, so the two surfaces cannot come to call
-    /// one family two things. The word is the primary carrier and the family ink is the
-    /// second (§0.6, §0.5 - family color is text only).
+    /// **THE PALETTE'S OWN LABEL AND NOT A NEW WORD.** The word is the primary carrier and the
+    /// family ink is the second (§0.6, §0.5 - family color is text only).
     /// </remarks>
     public string Family { get; private init; } = "";
 
@@ -91,13 +129,20 @@ public sealed record GreenZone
 
     /// <summary>The sub-mode under the tab - `FT8`, `PSK31`, `SSB` - or "".</summary>
     /// <remarks>
-    /// **ABSENT RATHER THAN GUESSED** (§0.0). Morse has no sub-mode and the line says `CW`
-    /// alone; a digital block whose mode the tab has not picked says the family and stops.
+    /// **ABSENT RATHER THAN GUESSED** (§0.0). Morse has no sub-mode; a digital block whose
+    /// mode the tab has not picked says the family and stops.
     /// </remarks>
     public string SubMode { get; private init; } = "";
 
     /// <summary>True where there is a sub-mode to name.</summary>
     public bool HasSubMode => SubMode.Length > 0;
+
+    /// <summary>**Under the band: the mode and the verdict** - `Digital · FT8 · yours to use`.</summary>
+    public string ModeLine
+        => string.Join(Between, new[] { Family, SubMode, Verdict }.Where(s => s.Length > 0));
+
+    /// <summary>True where there is a mode line.</summary>
+    public bool HasModeLine => ModeLine.Length > 0;
 
     /// <summary>The band the pills call the best bet, plus its check where it is here.</summary>
     public string BestBet { get; private init; } = "";
@@ -106,11 +151,6 @@ public sealed record GreenZone
     public bool HasBestBet => BestBet.Length > 0;
 
     /// <summary>True where the best bet is the band the dial is in.</summary>
-    /// <remarks>
-    /// **THE NUDGE IS THE OTHER CASE AND IT IS PRESSABLE** - clicking it tunes there the way
-    /// the pill does, because a line that names a better band and cannot take him to it
-    /// makes him find the pill (§0.5.1).
-    /// </remarks>
     public bool BestBetIsHere { get; private init; }
 
     /// <summary>How many stations the map's own dots heard in the last minute.</summary>
@@ -120,15 +160,19 @@ public sealed record GreenZone
     public bool HasHeard => Heard.Length > 0;
 
     /// <summary>**The strayed-segment nudge, and only where it is true.**</summary>
-    /// <remarks>
-    /// `PSK31 lives at 14.070; you are at 14.074`. **Both numbers come off the cited band
-    /// rows** - the sub-mode's own neighborhood and the dial - so neither is a frequency
-    /// written in this file (§0.2.1).
-    /// </remarks>
     public string Strayed { get; private init; } = "";
 
     /// <summary>True where the sub-mode's segment does not contain the dial.</summary>
     public bool HasStrayed => Strayed.Length > 0;
+
+    /// <summary>
+    /// **The band strip's own buttons, the one the dial is in marked** - so the pips and the
+    /// press are the strip's and not a second copy of them.
+    /// </summary>
+    public IReadOnlyList<GreenZonePill> Pills { get; private init; } = Array.Empty<GreenZonePill>();
+
+    /// <summary>The operator's grid for the map's one marker, or "".</summary>
+    public string OperatorGrid { get; private init; } = "";
 
     /// <summary>Build the panel's lines.</summary>
     /// <param name="status">The license verdict, already built.</param>
@@ -144,6 +188,8 @@ public sealed record GreenZone
     /// How many of the map's dots were heard inside the last minute, or null where the feed
     /// has never answered - which is absent rather than nought (§0.0).
     /// </param>
+    /// <param name="bands">The band strip's buttons, or null.</param>
+    /// <param name="operatorGrid">The operator's grid from Settings, or null.</param>
     /// <returns>The lines, ready to bind.</returns>
     public static GreenZone For(
         PrivilegeStatus status,
@@ -152,7 +198,9 @@ public sealed record GreenZone
         string? subMode,
         Neighborhood? segment,
         string bestBetBand,
-        int? heardInTheLastMinute)
+        int? heardInTheLastMinute,
+        IEnumerable<BandButtonViewModel>? bands = null,
+        string? operatorGrid = null)
     {
         var band = HfBands.Bands.FirstOrDefault(
             b => frequencyHz >= b.LowHz && frequencyHz <= b.HighHz);
@@ -171,6 +219,8 @@ public sealed record GreenZone
         return new GreenZone
         {
             License = JoinLicense(status),
+            LicensePhrase = JoinPhrase(status),
+            Verdict = VerdictOf(status.Headline),
             Band = band?.Name ?? "",
             Frequency = Megahertz(frequencyHz) + " MHz",
             Family = family?.Label ?? "",
@@ -181,7 +231,45 @@ public sealed record GreenZone
                 && string.Equals(bestBetBand, band?.Name, StringComparison.Ordinal),
             Heard = Stations(heardInTheLastMinute),
             Strayed = Stray(picked, segment, frequencyHz),
+            Pills = (bands ?? Array.Empty<BandButtonViewModel>())
+                .Select(b => new GreenZonePill(
+                    b, string.Equals(b.Band.Name, band?.Name, StringComparison.Ordinal)))
+                .ToList(),
+            OperatorGrid = OperatorLocation.Normalize(operatorGrid),
         };
+    }
+
+    /// <summary>
+    /// **The last minute of heard stations, in five-second bins, oldest first.**
+    /// </summary>
+    /// <param name="heardAtUtc">When each of the map's dots was heard.</param>
+    /// <param name="nowUtc">The clock reading the count was taken at.</param>
+    /// <returns><see cref="SparklineBins"/> counts that add up to the heard count.</returns>
+    /// <remarks>
+    /// **THE SAME WINDOW AS THE COUNT**: a spot is in if it was heard no more than a minute
+    /// before the reading, including one stamped a moment after it, which the count also
+    /// includes. So the bins always add up to *heard just now*.
+    /// </remarks>
+    public static IReadOnlyList<int> Sparkline(IEnumerable<DateTime> heardAtUtc, DateTime nowUtc)
+    {
+        var bins = new int[SparklineBins];
+        var width = 60.0 / SparklineBins;
+
+        foreach (var at in heardAtUtc)
+        {
+            var age = (nowUtc - at).TotalSeconds;
+
+            if (age > 60)
+            {
+                continue;
+            }
+
+            var back = Math.Min(SparklineBins - 1, (int)(Math.Max(0, age) / width));
+
+            bins[SparklineBins - 1 - back]++;
+        }
+
+        return bins;
     }
 
     private static string JoinLicense(PrivilegeStatus status)
@@ -204,6 +292,19 @@ public sealed record GreenZone
         }
 
         return string.Join(Between, said);
+    }
+
+    private static string JoinPhrase(PrivilegeStatus status)
+        => string.Join(
+            Between,
+            new[] { status.Detail.TrimEnd('.'), status.Citation }.Where(s => s.Length > 0));
+
+    /// <summary>`14.074 MHz · yours to use` gives `yours to use`; a bare frequency gives "".</summary>
+    private static string VerdictOf(string headline)
+    {
+        var at = headline.IndexOf(Between, StringComparison.Ordinal);
+
+        return at < 0 ? "" : headline[(at + Between.Length)..];
     }
 
     private static string BestBetWords(string bestBet, string bandHere)

@@ -1124,6 +1124,42 @@ public static class AppEvents
             });
 
     /// <summary>
+    /// **The green zone drew, once a session** (work instruction 332 task 2, §R13).
+    /// </summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="width">The panel's width.</param>
+    /// <param name="height">The panel's height.</param>
+    /// <param name="regions">Which regions drew: `left,map,right`.</param>
+    public static void GreenZoneRendered(
+        ITelemetry? telemetry, double width, double height, string regions)
+        => telemetry?.Write(TelemetryCategory.Explore, "green_zone_rendered",
+            new Dictionary<string, object?>
+            {
+                ["width"] = Math.Round(width, 1),
+                ["height"] = Math.Round(height, 1),
+                ["regions"] = regions,
+            });
+
+    /// <summary>
+    /// **The night side was worked out from the clock** (work instruction 332 task 2, §R13).
+    /// </summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="subsolarLongitude">Where the sun is overhead, degrees east.</param>
+    /// <param name="declination">The sun's declination, degrees north.</param>
+    /// <remarks>
+    /// **THE SUN AND NOTHING ELSE** (the instruction's own words). Not the operator's grid:
+    /// where he lives is not something this record needs to say the sun was computed.
+    /// </remarks>
+    public static void TerminatorComputed(
+        ITelemetry? telemetry, double subsolarLongitude, double declination)
+        => telemetry?.Write(TelemetryCategory.Explore, "terminator_computed",
+            new Dictionary<string, object?>
+            {
+                ["subsolarLongitude"] = Math.Round(subsolarLongitude, 2),
+                ["declination"] = Math.Round(declination, 2),
+            });
+
+    /// <summary>
     /// **One kind's score moved** (work instruction 331 task 6, §R13).
     /// </summary>
     /// <param name="telemetry">The sink, or null.</param>

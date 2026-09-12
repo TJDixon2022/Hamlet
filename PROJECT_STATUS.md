@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T14:37:00-04:00
-NOTE: Task 1 - the rerun stopped at a XAML tag mismatch from wrapping the category in a template; closing tags fixed, rerunning the achievements tests with VoiceTests and BindingHealthTests.
+UPDATED: 2026-09-12T14:57:31-04:00
+NOTE: Task 2 - found both: the you-are-on-it words overhung the panel edge by 45 px through negative margins (removed), and the map test pinned six stations while the window's own refresh counted 25 (now asserts the model's count). Rerunning the green zone set with its neighbors.
 
 ---
 
