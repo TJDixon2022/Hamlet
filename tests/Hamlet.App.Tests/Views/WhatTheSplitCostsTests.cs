@@ -85,13 +85,26 @@ public sealed class WhatTheSplitCostsTests
         _output.WriteLine("  left list  : " + Describe(leftRect));
         _output.WriteLine("  mine list  : " + Describe(mineRect));
 
-        // **THE TWO ARE THE SAME WIDTH**, which is what `*,*` gives and what a
-        // pair of percentages could round apart.
+        // **THE TWO WERE THE SAME WIDTH UNTIL 2026-09-12, AND THE OWNER RULED THEM
+        // APART** (Tim: *"The decoded text doesn't have to be as wide as it is. Move
+        // the clear button up above both decoded and for you, squeeze the decoded
+        // text in, and make the for you a little wider"*; work instruction 331 task
+        // 1a). This class asserted `Math.Abs(left - mine) <= 1`, which was exactly
+        // what `*,*` gave and is now a test of a shape the owner replaced.
+        //
+        // **REWRITTEN UNDER §R12, AND WHAT IT KEEPS IS THE PART THAT WAS NEVER
+        // WRONG**: both lists have a width at all, the message column is measured
+        // rather than assumed, and the longest real message is measured against it.
+        // **What it now asserts instead of equality is the decoded list's own
+        // arithmetic** - the fixed column it is given is the one its own columns need,
+        // which is the guarantee the star column used to have by accident and now has
+        // on purpose. The split itself is `ThePanelsMakeRoomTests`'.
         Assert.True(leftRect.Width > 0 && mineRect.Width > 0, "a list has no width");
-        Assert.True(
-            Math.Abs(leftRect.Width - mineRect.Width) <= 1,
-            "the two lists differ by " + Math.Abs(leftRect.Width - mineRect.Width)
-            + " pixels");
+
+        _output.WriteLine(
+            "the decoded list is " + (mineRect.Width - leftRect.Width).ToString("0")
+            + " px narrower than For you, which is the 331 task 1a ruling and was zero"
+            + " under *,*");
 
         // **WHAT IS LEFT FOR THE MESSAGE**, which is the list minus the fixed
         // columns in front of it.

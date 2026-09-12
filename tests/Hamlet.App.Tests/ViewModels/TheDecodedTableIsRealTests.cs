@@ -183,7 +183,16 @@ public sealed class TheDecodedTableIsRealTests
             Assert.DoesNotContain(literal, markup, StringComparison.Ordinal);
         }
 
-        Assert.Contains("{Binding DigitalDecodes}", markup, StringComparison.Ordinal);
+        // **THE COLLECTION THE TABLE BINDS IS `DigitalVisibleDecodes` AND HAS BEEN
+        // SINCE THE FILTER WAS BUILT.** This line asked for `{Binding DigitalDecodes}`,
+        // which unit 252's `everything` / `CQ` chips replaced with the filtered view, so
+        // it has been failing on a name rather than on a fault - a table bound to the
+        // filtered collection is still a table bound to real decodes, which is all this
+        // assertion was ever for. Corrected in work instruction 331 task 1a, which is
+        // the unit that read the failure. **What it guards is unchanged**: the rows come
+        // from a collection and not from the four literals above.
+        Assert.Contains(
+            "ItemsSource=\"{Binding DigitalVisibleDecodes}\"", markup, StringComparison.Ordinal);
     }
 
     /// <summary>

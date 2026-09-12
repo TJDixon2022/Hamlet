@@ -104,8 +104,13 @@ public sealed class TheDecodedColumnsLineUpTests
             + "header was not realized. Grids on the window: "
             + window.GetVisualDescendants().OfType<Grid>().Count());
 
+        // **THE DATA ROWS, BY NAME** (331 task 1a). A visual walk of this list finds
+        // every grid under it - the mark's popup, the PSK31 station cell - and a popup's
+        // columns have nothing to do with this header's. The row grid carries
+        // `DecodedRowGrid` so the comparison is between the header and the rows.
         var rowGrids = rows.GetVisualDescendants()
             .OfType<Grid>()
+            .Where(g => g.Name == "DecodedRowGrid")
             .ToList();
 
         _output.WriteLine("rows in the model after Show : "
@@ -120,21 +125,46 @@ public sealed class TheDecodedColumnsLineUpTests
             "fewer than two rows were realized, so nothing could be compared "
             + "against anything");
 
-        var headerOrigins = Origins(header);
+        // **BY COLUMN INDEX AND NOT BY POSITION IN A LIST** (work instruction 331 task
+        // 1a). The header names three columns - `utc`, `snr`, `message` - and the row
+        // has four, because unit 327 gave the achievement mark a gutter of its own and a
+        // gutter gets no heading: a heading over a column that is blank on most rows
+        // would be a claim about nothing. Comparing two lists by position therefore
+        // compared `utc`'s heading with the gutter and failed on the count before it
+        // compared anything, which is how this class came to be red on a real fault it
+        // could not describe. **The fault was real**: the row declared `24,76,48,*` and
+        // the header `76,48,*`, so every heading sat 24 px to the left of the column it
+        // named. The header declares the gutter now, and what is asserted here is that
+        // the columns the header DOES name start where the row's do.
+        var headerOrigins = OriginsByColumn(header);
 
         _output.WriteLine("header column origins : "
-            + string.Join(", ", headerOrigins.Select(o => o.ToString("0.##"))));
+            + string.Join(", ", headerOrigins.Select(
+                p => p.Key + "@" + p.Value.ToString("0.##"))));
+
+        Assert.True(
+            headerOrigins.Count >= 3,
+            "the header names " + headerOrigins.Count
+            + " columns, and it names utc, snr and message");
 
         for (var i = 0; i < rowGrids.Count; i++)
         {
-            var origins = Origins(rowGrids[i]);
+            var origins = OriginsByColumn(rowGrids[i]);
 
             _output.WriteLine("row " + i + " column origins  : "
-                + string.Join(", ", origins.Select(o => o.ToString("0.##"))));
+                + string.Join(", ", origins.Select(
+                    p => p.Key + "@" + p.Value.ToString("0.##"))));
 
-            Assert.Equal(headerOrigins.Count, origins.Count);
+            // **A ROW GRID THE HEADER SHARES NO COLUMN WITH IS NOT A DATA ROW** - the
+            // mark's own popup carries grids too - and is not what this compares.
+            var shared = headerOrigins.Keys.Where(origins.ContainsKey).ToList();
 
-            for (var column = 0; column < headerOrigins.Count; column++)
+            if (shared.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var column in shared)
             {
                 Assert.True(
                     Math.Abs(headerOrigins[column] - origins[column]) < 0.5,
@@ -247,7 +277,7 @@ public sealed class TheDecodedColumnsLineUpTests
     {
     }
 
-    private static List<double> Origins(Grid grid)
+    private static Dictionary<int, double> OriginsByColumn(Grid grid)
         => grid.Children
             .OfType<Control>()
 
@@ -259,8 +289,7 @@ public sealed class TheDecodedColumnsLineUpTests
             .Where(c => c.IsVisible)
             .GroupBy(Grid.GetColumn)
             .OrderBy(g => g.Key)
-            .Select(g => g.First().Bounds.X)
-            .ToList();
+            .ToDictionary(g => g.Key, g => g.First().Bounds.X);
 
     /// <summary>Put two real decodes on the table, at two tone widths.</summary>
     /// <remarks>

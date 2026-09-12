@@ -3930,9 +3930,55 @@
                                  **A MESSAGE IS ON EXACTLY ONE SIDE.** The two collections behind
                                  these are filled by one decision with two arms rather than by two
                                  tests, so nothing can land on both. -->
+                            <!-- **THE TWO PANELS ARE NO LONGER THE SAME WIDTH, AND THAT
+                                 IS A RULING** (Tim, 2026-09-12: *"The decoded text
+                                 doesn't have to be as wide as it is... squeeze the
+                                 decoded text in, and make the for you a little
+                                 wider"*; work instruction 331 task 1a). `*,*` was
+                                 right while both lists carried the same kind of thing;
+                                 the *For you* side now carries a conversation card
+                                 with a map and a table of facts on it, and the decoded
+                                 side carries three columns of fixed width plus a
+                                 message.
+
+                                 **THE FIRST COLUMN IS THE DECODED LIST'S OWN
+                                 ARITHMETIC AND NOT A FRACTION.** 24 px of quill
+                                 gutter, 76 for `utc`, 48 for `snr` - each of those
+                                 declared on the row grid below and sized there - and
+                                 **200 px for the message**, plus the 35 px the panel's
+                                 own margin, border, padding and scroller take:
+                                 24 + 76 + 48 + 200 + 35 = **383**.
+
+                                 **THE 200 IS THE LONGEST FT8 LINE AND IT IS MEASURED**
+                                 (`ThePanelsMakeRoomTests`). `VP2MAA/P KC3QIS R-09` is
+                                 twenty characters - two callsigns with a suffix, a
+                                 signed report with a roger, and the spaces - and the
+                                 headless test shaper draws it at 10.0 px a character,
+                                 so 200. On Windows with real Consolas at 12 the same
+                                 twenty characters take about 144 px, so the column has
+                                 headroom on the glass and is sized to the wider of the
+                                 two measurements rather than the flattering one.
+
+                                 A fraction
+                                 would hand the message column whatever was left over
+                                 on the day, and this side CLIPS rather than wrapping
+                                 (unit 273), so *whatever was left over* is a callsign
+                                 cut off partway, which is a station misidentified
+                                 (§0.0).
+
+                                 **`ColumnDefinitions` DOES NOT CONVERT FROM A
+                                 `StaticResource`**, which is the same fact the row
+                                 grid's own comment records, so the number is a literal
+                                 here and `ThePanelsMakeRoomTests` is what stops it
+                                 drifting from the arithmetic: it asserts the message
+                                 cell is never narrower than the longest fixture line.
+
+                                 **AND THE SECOND COLUMN IS EVERYTHING LEFT**, which is
+                                 *For You widens to what is left* in the instruction's
+                                 words. -->
                             <Grid Grid.Column="1" x:Name="DigitalDecodedPanes"
                                   RowDefinitions="Auto,*"
-                                  ColumnDefinitions="*,*">
+                                  ColumnDefinitions="383,*">
 
                                 <!-- **THE SLOT CLOCK, ABOVE THE PANELS AND OUTSIDE
                                      THEM** (work instruction 305 task 3, on
@@ -3959,11 +4005,41 @@
                                      **NO LABEL, AND THE NUMBER IS THE CARRIER**
                                      (§0.6). The remaining seconds read as a number
                                      whatever the colour is doing. -->
-                                <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                <!-- **ONE BAR ABOVE BOTH PANELS** (Tim, 2026-09-12:
+                                     *"Move the clear button up above both decoded
+                                     and for you, squeeze the decoded text in, and
+                                     make the for you a little wider"*; work
+                                     instruction 331 task 1a).
+
+                                     **WHY THEY LEFT THE PANEL HEADER.** §0.5 puts a
+                                     panel's own controls in its own header bar, and
+                                     that is where these were - which was right while
+                                     the two panels were the same width. The decoded
+                                     list is now the narrow half, and four controls in
+                                     a 373 px header is a header that wraps or clips.
+                                     Above the pair they have the whole width of both.
+
+                                     **AND THE SLOT CLOCK IS ALREADY HERE**, so this is
+                                     one strip rather than a new row of chrome: the
+                                     clock keeps the left end it has had since unit 305
+                                     and the controls take the room beside it.
+
+                                     **THE FILTER IS STILL ALWAYS THERE AND THE ROW
+                                     CONTROLS STILL WAIT** (§R17, HM-DEC-087). Moving
+                                     them changes where they are and nothing about when:
+                                     `everything` and `CQ` are a choice and are offered
+                                     on an empty band, `clear` and the order toggle are
+                                     reports about rows and stay behind
+                                     `HasDigitalDecodes`. -->
+                                <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                                      x:Name="DigitalListControlsBar"
+                                      ColumnDefinitions="Auto,*"
+                                      Margin="5,0,0,6">
+
+                                <Panel Grid.Column="0"
                                        x:Name="SlotClock"
                                        IsVisible="{Binding ShowsSlotClock}"
                                        Width="34" Height="34"
-                                       Margin="0,0,0,6"
                                        HorizontalAlignment="Left"
                                        Background="Transparent"
                                        ToolTip.Tip="{Binding TurnRingTip}">
@@ -3986,120 +4062,87 @@
                                                FontWeight="SemiBold" />
                                 </Panel>
 
-                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="0"
-                                                      Margin="5,0,0,0"
-                                                      x:Name="DigitalDecodedPanel"
-                                                      Family="Green"
-                                                      Title="Decoded text"
-                                                      Summary="{Binding DigitalDecodedSummary}"
-                                                      SummaryBrush="{Binding DigitalFoldedInk}"
-                                                      IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+                                    <!-- **THE FILTER IS ALWAYS THERE** (§R17,
+                                         work instruction 325 task 2). This whole
+                                         strip used to be hidden until something
+                                         decoded, which put `CQ` and `everything`
+                                         behind the same gate as `clear` and the
+                                         order toggle. Those two are reports about
+                                         rows and correctly wait for rows; the
+                                         filter is a **choice about what to see**,
+                                         and a choice that cannot be made until
+                                         after the thing it governs has happened
+                                         is not a choice. Tim could not set it
+                                         before the first slot landed.
 
-                                    <!-- **THE TWO CONTROLS GO IN THE HEADER, WHERE
-                                         THIS PANEL FAMILY ALREADY PUTS THEM** (§0.5).
-                                         The waterfall panel above carries its
-                                         "keep the last 30 seconds" button in exactly
-                                         this slot, so neither of these is a new
-                                         affordance to learn.
+                                         So the chips are out here, always, and
+                                         the row-dependent controls keep their own
+                                         gate below. -->
+                                    <StackPanel Grid.Column="1"
+                                                x:Name="DigitalHeaderStrip"
+                                                Orientation="Horizontal" Spacing="6"
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center">
 
-                                         **BOTH ARE HIDDEN WHILE THE TABLE IS
-                                         EMPTY.** There is nothing to clear and
-                                         nothing to order, and a live control that
-                                         does nothing teaches the operator that
-                                         controls here do nothing (HM-DEC-087). -->
-                                    <ctl:CollapsiblePanel.HeaderAction>
-                                        <!-- **THE FILTER IS ALWAYS THERE** (§R17,
-                                             work instruction 325 task 2). This whole
-                                             strip used to be hidden until something
-                                             decoded, which put `CQ` and `everything`
-                                             behind the same gate as `clear` and the
-                                             order toggle. Those two are reports about
-                                             rows and correctly wait for rows; the
-                                             filter is a **choice about what to see**,
-                                             and a choice that cannot be made until
-                                             after the thing it governs has happened
-                                             is not a choice. Tim could not set it
-                                             before the first slot landed.
+                                        <!-- **TWO TOGGLES AND A WAY BACK, SINCE
+                                             UNIT 252** (Tim's ruling,
+                                             2026-09-06). Unit 251 built these as
+                                             three exclusive choices, which could
+                                             not express the state he wants most
+                                             evenings: the calls he could answer
+                                             AND his own traffic, both at once.
 
-                                             So the chips are out here, always, and
-                                             the row-dependent controls keep their own
-                                             gate below. -->
-                                        <StackPanel x:Name="DigitalHeaderStrip"
-                                                    Orientation="Horizontal" Spacing="6">
+                                             **`everything` IS NOT A THIRD
+                                             CHOICE.** It is what neither toggle
+                                             being on already is, so it cannot
+                                             disagree with them - it lights when
+                                             both are off and pressing it clears
+                                             both. That is why it binds a
+                                             different command from the other
+                                             two.
 
-                                            <!-- **TWO TOGGLES AND A WAY BACK, SINCE
-                                                 UNIT 252** (Tim's ruling,
-                                                 2026-09-06). Unit 251 built these as
-                                                 three exclusive choices, which could
-                                                 not express the state he wants most
-                                                 evenings: the calls he could answer
-                                                 AND his own traffic, both at once.
+                                             **THE PICKED ONE DIFFERS BY MORE
+                                             THAN COLOUR** (§0.6): it carries a
+                                             border and semibold weight, so the
+                                             strip survives a greyscale print.
 
-                                                 **`everything` IS NOT A THIRD
-                                                 CHOICE.** It is what neither toggle
-                                                 being on already is, so it cannot
-                                                 disagree with them - it lights when
-                                                 both are off and pressing it clears
-                                                 both. That is why it binds a
-                                                 different command from the other
-                                                 two.
+                                             **`mine` IS OFFERED EVEN WITH NO
+                                             CALLSIGN ON FILE**, and never greyed
+                                             (§0.5.1, HM-DEC-087). Grey is
+                                             reserved for what cannot be used;
+                                             this can be used and answers by
+                                             saying what it has to match on and
+                                             where to fix it, which is more use
+                                             than a dead control. -->
+                                        <Button x:Name="DigitalFilterEverything"
+                                                Classes="hm-chip"
+                                                Classes.hm-picked="{Binding ShowsEverything}"
+                                                Content="everything"
+                                                ToolTip.Tip="Every message that decoded, with nothing held back."
+                                                FontSize="11"
+                                                Command="{Binding ShowEveryDecodeCommand}" />
 
-                                                 **THE PICKED ONE DIFFERS BY MORE
-                                                 THAN COLOUR** (§0.6): it carries a
-                                                 border and semibold weight, so the
-                                                 strip survives a greyscale print.
+                                        <Button x:Name="DigitalFilterCq"
+                                                Classes="hm-chip"
+                                                Classes.hm-picked="{Binding ShowsCqOnly}"
+                                                Content="CQ"
+                                                ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
+                                                FontSize="11"
+                                                Command="{Binding ToggleDecodedCqCommand}" />
 
-                                                 **`mine` IS OFFERED EVEN WITH NO
-                                                 CALLSIGN ON FILE**, and never greyed
-                                                 (§0.5.1, HM-DEC-087). Grey is
-                                                 reserved for what cannot be used;
-                                                 this can be used and answers by
-                                                 saying what it has to match on and
-                                                 where to fix it, which is more use
-                                                 than a dead control. -->
-                                            <Button x:Name="DigitalFilterEverything"
-                                                    Classes="hm-chip"
-                                                    Classes.hm-picked="{Binding ShowsEverything}"
-                                                    Content="everything"
-                                                    ToolTip.Tip="Every message that decoded, with nothing held back."
-                                                    FontSize="11"
-                                                    Command="{Binding ShowEveryDecodeCommand}" />
-
-                                            <Button x:Name="DigitalFilterCq"
-                                                    Classes="hm-chip"
-                                                    Classes.hm-picked="{Binding ShowsCqOnly}"
-                                                    Content="CQ"
-                                                    ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
-                                                    FontSize="11"
-                                                    Command="{Binding ToggleDecodedCqCommand}" />
-
-                                            <!-- **`mine` LEFT THIS ROW ON 2026-09-07
-                                                 AND BECAME A SIDE OF THE PANEL.**
-                                                 It and `CQ` competed for one list,
-                                                 so choosing either lost sight of
-                                                 the other, and on a busy band a
-                                                 message addressed to him landed
-                                                 among fifty that were not. It is
-                                                 the right-hand list now, always on,
-                                                 with no control that could hide it
-                                                 - because a control that can hide
-                                                 what is addressed to him is a
-                                                 control that can bury the one thing
-                                                 he is waiting for. -->
-
-                                            <!-- **WHAT IS A REPORT ABOUT ROWS STILL
-                                                 WAITS FOR ROWS.** There is nothing to
-                                                 clear and nothing to order on an
-                                                 empty table, and a live control that
-                                                 does nothing teaches the operator
-                                                 that controls here do nothing
-                                                 (HM-DEC-087). The separator goes with
-                                                 them, or an empty panel carries a
-                                                 divider with nothing on its far
-                                                 side. -->
-                                            <StackPanel x:Name="DigitalRowControls"
-                                                        Orientation="Horizontal" Spacing="6"
-                                                        IsVisible="{Binding HasDigitalDecodes}">
+                                        <!-- **WHAT IS A REPORT ABOUT ROWS STILL
+                                             WAITS FOR ROWS.** There is nothing to
+                                             clear and nothing to order on an
+                                             empty table, and a live control that
+                                             does nothing teaches the operator
+                                             that controls here do nothing
+                                             (HM-DEC-087). The separator goes with
+                                             them, or an empty bar carries a
+                                             divider with nothing on its far
+                                             side. -->
+                                        <StackPanel x:Name="DigitalRowControls"
+                                                    Orientation="Horizontal" Spacing="6"
+                                                    IsVisible="{Binding HasDigitalDecodes}">
 
                                             <Border Width="1" Margin="4,2"
                                                     Background="{StaticResource HmSlateEdgeBrush}" />
@@ -4112,7 +4155,7 @@
                                                  somebody who has never seen FT8. -->
                                             <Button x:Name="DigitalOrderToggle"
                                                     Content="{Binding DigitalOrderLabel}"
-                                                    ToolTip.Tip="Which end the newest slot is at, on this list. The For you conversation always reads forwards, oldest at the top. Messages decoded from the same slot keep the order they were found in either way."
+                                                    ToolTip.Tip="Which end the newest slot is at, on the decoded list. The For you conversation always reads forwards, oldest at the top. Messages decoded from the same slot keep the order they were found in either way."
                                                     FontSize="11"
                                                     Padding="10,3"
                                                     Command="{Binding ToggleDigitalOrderCommand}"
@@ -4131,9 +4174,30 @@
                                                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                                     BorderThickness="1"
                                                     Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                            </StackPanel>
                                         </StackPanel>
-                                    </ctl:CollapsiblePanel.HeaderAction>
+                                    </StackPanel>
+                                </Grid>
+
+                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="0"
+                                                      Margin="5,0,0,0"
+                                                      x:Name="DigitalDecodedPanel"
+                                                      Family="Green"
+                                                      Title="Decoded text"
+                                                      Summary="{Binding DigitalDecodedSummary}"
+                                                      SummaryBrush="{Binding DigitalFoldedInk}"
+                                                      IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+
+                                    <!-- **THE CONTROLS LEFT THIS HEADER IN 331 TASK 1a**
+                                         and are on the bar above both panels now -
+                                         `DigitalListControlsBar`, which says why. §0.5
+                                         puts a panel's controls in its own header and
+                                         that held while the two panels were the same
+                                         width; this one is the narrow half now and four
+                                         controls do not fit in its header without
+                                         wrapping. **Nothing about WHEN they appear
+                                         changed**: the filter is still offered on an
+                                         empty band and the row controls still wait for
+                                         rows. -->
 
                                   <!-- **A GRID AND NOT A STACK SINCE UNIT 251.** The
                                        panel now owns a whole column's height, and a
@@ -4217,17 +4281,34 @@
                                          already in the log fades instead, so there
                                          is nothing for the column to hold and the
                                          width goes back to the message. -->
+                                    <!-- **AND THE HEADER CARRIES THE QUILL GUTTER TOO**
+                                         (work instruction 331 task 1a). The rows have
+                                         declared `24,76,48,*` since unit 327 gave the
+                                         mark its own column and this header still
+                                         declared `76,48,*`, so `utc` sat at x=0 over
+                                         values starting at x=24 and every heading was
+                                         24 px left of the column it names.
+                                         `TheDecodedColumnsLineUpTests` is the test that
+                                         says so - it compares the header's column
+                                         origins with every row's, which is a stronger
+                                         guard than one declaration because it checks
+                                         the result rather than the intent - and it has
+                                         been failing on the count of columns. **The
+                                         gutter column is empty in the header on
+                                         purpose**: the mark is a per-row thing and a
+                                         heading for it would be a heading over a column
+                                         that is blank on most rows. -->
                                     <Grid Grid.Row="1"
-                                          ColumnDefinitions="76,48,*"
+                                          ColumnDefinitions="24,76,48,*"
                                           RowDefinitions="Auto"
                                           IsVisible="{Binding HasDigitalDecodes}">
 
-                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="utc"
+                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="utc"
                                                    ToolTip.Tip="{StaticResource HmDecodeUtcHelp}"
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
-                                        <TextBlock Grid.Row="0" Grid.Column="1" Text="snr"
+                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="snr"
                                                    ToolTip.Tip="{StaticResource HmDecodeSnrHelp}"
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
@@ -4249,7 +4330,7 @@
                                              never a shortage of width. The two
                                              lists carry different columns now, on
                                              purpose. -->
-                                        <TextBlock Grid.Row="0" Grid.Column="2" Text="message"
+                                        <TextBlock Grid.Row="0" Grid.Column="3" Text="message"
                                                    ToolTip.Tip="{StaticResource HmDecodeMessageHelp}"
                                                    FontFamily="Consolas,Menlo,monospace" FontSize="11"
                                                    Margin="0,0,14,4"
@@ -4368,7 +4449,16 @@
                                                      327**, because the mark went from 16 px
                                                      to the row's own 18 and still wants its
                                                      4 px of air before the time. -->
-                                                <Grid ColumnDefinitions="24,76,48,*"
+                                                <!-- **NAMED SO THE COLUMN TEST CAN FIND
+                                                     IT** (331 task 1a). Everything under
+                                                     `DigitalDecodedRows` is a `Grid` to a
+                                                     visual walk - the mark's popup and the
+                                                     PSK31 station cell among them - and
+                                                     comparing a popup's columns with the
+                                                     header's is comparing two unrelated
+                                                     grids. -->
+                                                <Grid x:Name="DecodedRowGrid"
+                                                      ColumnDefinitions="24,76,48,*"
                                                       Background="Transparent"
                                                       Opacity="{Binding RowOpacity}"
                                                       ToolTip.Tip="{Binding WorkedTip}"
@@ -4525,6 +4615,7 @@
                                                          than being split at a boundary
                                                          nobody found. -->
                                                     <StackPanel Grid.Column="3"
+                                                                x:Name="DecodedMessageCell"
                                                                 Orientation="Horizontal"
                                                                 Spacing="0"
                                                                 IsVisible="{Binding HasFields}">
@@ -5173,6 +5264,7 @@
                                                                  than for this markup to decide
                                                                  twice. -->
                                                             <Grid Grid.Row="5"
+                                                                  x:Name="CardBeside"
                                                                   IsVisible="{Binding ShowsGlobe}"
                                                                   Margin="0,8,0,0"
                                                                   RowDefinitions="Auto,Auto">

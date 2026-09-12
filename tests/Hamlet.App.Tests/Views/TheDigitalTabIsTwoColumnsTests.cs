@@ -93,6 +93,20 @@ public sealed class TheDigitalTabIsTwoColumnsTests
         var waterfall = Named<CollapsiblePanel>(window, "DigitalWaterfallPanel");
         var decoded = Named<CollapsiblePanel>(window, "DigitalDecodedPanel");
 
+        // **THE RIGHT-HAND HALF IS THE PAIR OF LISTS AND NOT ONE OF THEM** (work
+        // instruction 331 task 1a). Until 2026-09-12 the decoded panel and the
+        // waterfall were the two halves of the tab, because the decoded panel was
+        // half of the right-hand column and the *For you* panel was the other
+        // half. Tim ruled those two apart - *"squeeze the decoded text in, and
+        // make the for you a little wider"* - so the decoded panel is now 383 px
+        // of the right-hand half and For you takes the rest.
+        //
+        // **REWRITTEN UNDER §R12 ON WHAT THE RULING DID NOT TOUCH**: the tab is
+        // still two equal columns, the waterfall is still the left one, and the
+        // right one still fills the same vertical run. What changed is which
+        // control is the right-hand half, and it is `DigitalDecodedPanes`.
+        var panes = Named<Grid>(window, "DigitalDecodedPanes");
+
         // **BY NAME, BECAUSE THE NAME IS THE CONTRACT.** The transmit phase is
         // told to drop into `DigitalSendReserved`, so a region that exists under
         // some other name is not the thing that was reserved.
@@ -100,9 +114,11 @@ public sealed class TheDigitalTabIsTwoColumnsTests
 
         var waterfallRect = RectIn(window, waterfall);
         var decodedRect = RectIn(window, decoded);
+        var panesRect = RectIn(window, panes);
         var reservedRect = RectIn(window, reserved);
 
         _output.WriteLine("waterfall : " + Describe(waterfallRect));
+        _output.WriteLine("right half: " + Describe(panesRect));
         _output.WriteLine("decoded   : " + Describe(decodedRect));
         _output.WriteLine("reserved  : " + Describe(reservedRect));
 
@@ -112,15 +128,27 @@ public sealed class TheDigitalTabIsTwoColumnsTests
             + "compared: " + Describe(waterfallRect) + " and "
             + Describe(decodedRect));
 
-        // **EQUAL WIDTH, WHICH IS THE RULING.** Half the available width each.
-        // Half a pixel of tolerance, the same as the decoded-columns test uses,
-        // because an odd number of available pixels has to go somewhere.
+        // **EQUAL COLUMNS, WHICH IS THE RULING, MEASURED ON THE TWO COLUMNS.**
+        // The waterfall gives up five pixels to the gutter between the halves and
+        // the right-hand half gives up nothing, so the tolerance is the gutter
+        // rather than half a pixel - and it is stated rather than widened until
+        // the test passes.
         Assert.True(
-            Math.Abs(waterfallRect.Width - decodedRect.Width) < 0.5,
+            Math.Abs(waterfallRect.Width - panesRect.Width) <= 5.5,
             "the waterfall is " + waterfallRect.Width.ToString("0.##")
-            + " wide and the decoded panel is "
-            + decodedRect.Width.ToString("0.##")
+            + " wide and the right-hand half is "
+            + panesRect.Width.ToString("0.##")
             + " - they are not the two halves of the tab");
+
+        // **AND THE DECODED PANEL IS THE NARROW ONE INSIDE THAT HALF**, which is
+        // the ruling itself. The split's own numbers are
+        // `ThePanelsMakeRoomTests`'.
+        Assert.True(
+            decodedRect.Width < panesRect.Width,
+            "the decoded panel is " + decodedRect.Width.ToString("0.##")
+            + " wide against a right-hand half of "
+            + panesRect.Width.ToString("0.##")
+            + " - it has not been squeezed in at all");
 
         // **SIDE BY SIDE, AND THE WATERFALL IS THE LEFT ONE.** Ruled: waterfall
         // left, decoded text right. Stacked panels would satisfy an equal-width
@@ -132,20 +160,23 @@ public sealed class TheDigitalTabIsTwoColumnsTests
             + waterfallRect.Right.ToString("0.##")
             + " - they overlap or the decoded panel is the left-hand one");
 
-        // **THE SAME VERTICAL RUN.** Both columns start level; the decoded panel
-        // fills the run the waterfall and the reserved region share.
+        // **THE SAME VERTICAL RUN, AND MEASURED ON THE COLUMN RATHER THAN ON THE
+        // PANEL** (331 task 1a). The right-hand column now opens with the bar that
+        // carries the filter and the row controls, so the decoded panel itself
+        // starts a bar's height down; the column it is in still starts level with
+        // the waterfall, which is what *the same vertical run* was about.
         Assert.True(
-            Math.Abs(decodedRect.Y - waterfallRect.Y) < 0.5,
+            Math.Abs(panesRect.Y - waterfallRect.Y) < 0.5,
             "the two columns start at y=" + waterfallRect.Y.ToString("0.##")
-            + " and y=" + decodedRect.Y.ToString("0.##")
+            + " and y=" + panesRect.Y.ToString("0.##")
             + " - they are not the same vertical run");
 
         Assert.True(
-            decodedRect.Bottom >= reservedRect.Bottom - 0.5,
-            "the decoded panel ends at y=" + decodedRect.Bottom.ToString("0.##")
+            panesRect.Bottom >= reservedRect.Bottom - 0.5,
+            "the right-hand half ends at y=" + panesRect.Bottom.ToString("0.##")
             + " and the left column ends at y="
             + reservedRect.Bottom.ToString("0.##")
-            + " - the decoded panel does not fill the same vertical run");
+            + " - the right-hand half does not fill the same vertical run");
 
         // **BENEATH THE WATERFALL, AND IN THE WATERFALL'S OWN COLUMN.** Below it
         // vertically and lined up with it horizontally: a region below the
@@ -182,10 +213,20 @@ public sealed class TheDigitalTabIsTwoColumnsTests
             "the reserved region says nothing, so it reads as a broken panel "
             + "rather than as space being kept");
 
-        // **NO CONTROL IN IT, LIVE OR GREYED** (§0.5.1, HM-DEC-087). A greyed
-        // button claims a feature exists and is unavailable; transmit does not
-        // exist at all, and this region must not imply otherwise.
-        Assert.Empty(reserved.GetVisualDescendants().OfType<Button>());
+        // **THE REGION HELD NO CONTROL AT ALL UNTIL TRANSMIT WAS BUILT, AND IT
+        // HOLDS THE SEND CONTROLS NOW.** This line asserted `Assert.Empty` on the
+        // buttons under it, which was right while there was nothing to transmit
+        // with: a greyed button would have claimed a feature that did not exist.
+        // Step 4 of this phase built the send path and the controls landed in the
+        // region reserved for them, which is the reservation being honored rather
+        // than broken - so the emptiness check has been asserting the absence of
+        // the thing the phase delivered. **Rewritten under §R12 in work
+        // instruction 331 task 1a**, which is the unit whose own failure unmasked
+        // it: what matters now is that the send control is the named one, so the
+        // region is still the place the transmit phase was told to drop into.
+        Assert.Contains(
+            reserved.GetVisualDescendants().OfType<Button>(),
+            b => b.Name == "DigitalSendCqButton");
 
         window.Close();
     }
