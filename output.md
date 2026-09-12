@@ -3,534 +3,499 @@ READ IN THIS ORDER.
 ```
 
 A. The phase goal - the screen says what is true and looks like someone meant it.
-   Step 0 done; step 1 done by this unit, every must-pass met; steps 2 and 3 not started.
-B. Step 1 and its seven must-pass - band with count/score/level/bar; earned card
-   from the log entry; next card with the CQ list; all eight kinds per R22;
-   no clip at 1400 and 1920; no white card; telemetry with the card count.
-   1. The band with count, score, level and a bar, or words where there is no next
-      level: met, on 8 of 8 kinds.
-   2. The earned card from the log entry that earned it: met, on every kind that has
-      earned cards.
-   3. The next card with the CQ list, or no one is calling from there now: met.
-   4. All eight kinds per R22, and Continents to seven and each to its countries: met.
-   5. No clip or wrap at 1400 and 1920: met - every visible run fits on 10 pages at
-      each width.
-   6. No white card: met - 0 of 51 cards at each width.
-   7. Telemetry with the card count: met.
-   The nice-to-pass, the map opening in the popup, is dropped whole: it was task 5,
-   the named drop candidate.
-C. The report last. Section 4 raises 3 items on top of the carried queue; none stands in
-   the way of a criterion in B.
+   Steps 0 and 1 done; step 2 partial after this unit, two of four must-pass met; step 3, Tim
+   looking, not started.
+B. Step 2 and its four must-pass - States scored from STATE and the badge count matching
+   the log; rank_names naming the ranks with defaults and the file's keys documented;
+   the 1400 split by R24 with no callsign cut and the table placed by the rule, beside
+   at 1920; the split stated at both widths.
+   1. States from `STATE`, and the badge count matching the log: met. On the five-record
+      fixture, 2 of 5 records score (PA and AK), for 12 points from the shipped file, and the
+      badge reads `2 worked`. It was 0 before.
+   2. `rank_names` names the ranks, the defaults show when it is absent, and every key is
+      documented: met. The comment block names 23 of 23 keys.
+   3. The 1400 split by R24, with no callsign cut and the table beside the map at 1920: not
+      met. Task 3 was dropped whole, and the split is still `383,*`. Measured: no single
+      fraction can meet this at a 338 px table (section 4, item 1).
+   4. The split stated at both widths: not met as a statement of a built split. The split as it
+      stands is measured and stated in section 3.
+C. The report last. Section 4 raises 3 items on top of the carried queue. Item 1 stands in the
+   way of must-pass 3 and 4; items 2 and 3 do not stand in the way of any criterion in B.
 
 ```
-UNIT:       335 - complete at task 4 of 5 - 2026-09-12 17:23
-PHASE GOAL: Maintenance - make what Hamlet shows true and deliberate-looking, screen only, judged
-            finally by Tim at his own window size.
-UNIT GOAL:  Turn all eight achievements category pages from lists of titles into trading cards:
-            each earned card the contact that earned it, with its path map, and each next card
-            naming who on the CQ list would earn it.
-ADVANCED:   yes - all seven of step 1's must-pass are met, by tests run in this session
-NUMBER:     kinds drawn as trading cards 0 -> 8 of 8
+UNIT:       336 - stopped at task 2 of 3 - 2026-09-12 18:01
+PHASE GOAL: Maintenance, screen only - make what Hamlet shows true and deliberate-looking,
+            finally judged by Tim at his own window size.
+UNIT GOAL:  Score States from the log's own STATE field, name the ranks from the points file,
+            make that file explain itself, and settle how the decoded list and For You share
+            the tab at 1400.
+ADVANCED:   yes - step 2 must-pass 1 (States from STATE) and 2 (rank_names and the documented file) met by tests watched red first
+NUMBER:     step 2 must-pass 0 -> 2 of 4; decoded split at 1400 383 px -> unchanged, 383 px (task 3 dropped)
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete at task 4 of 5.** Tasks 0 to 4 are done and each is pushed.
-
-**Task 5, the map opening in the popup, was dropped whole.** It is the drop candidate the
-instruction named, and a nice-to-pass, so no must-pass was lost with it. It was dropped at
-about 47 minutes into the session, inside `CLAUDE_CODE.md` §2's 45-to-60-minute window. The
-next unit inherits it if Tim wants it:
-- the card's map is already the conversation card's `Ft8GlobeControl`, drawn in the popup's
-  path-fitted frame;
-- what is missing is the press and the popup.
+**Stopped at task 2 of 3.** Tasks 0, 1 and 2 are done, and each is pushed. **Task 3, the 1400
+layout, was not built.** It is the drop candidate the instruction named, and it was dropped
+whole. It was not dropped for time: the unit was about 25 minutes in. It was dropped because
+task 0's measurement shows its must-pass cannot be met by a fraction alone (see *Decisions,
+task 3* below, and section 4 item 1). **The next unit inherits task 3** and the measurements
+below.
 
 Claude Code on Tim's Windows 11 machine, project Hamlet. The gate passed on all four checks.
-Branch `main`. Every push succeeded: task 0 as `5306c2e`, task 1 as `8f06bea`, task 2 as
-`14bb53f`, task 3 as `9cfe26d`, task 4 as `bcaf39d`. The only change after that is this line and
-the closing status, in one more commit.
+Branch `main`. Every push succeeded: task 0 as `2b18f88`, task 1 as `38bc3a8`, task 2 as
+`38a1f0c`. This report, the closing status and the outcome entry go in one more commit.
 
 **Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
 That host draws text at a flat ten pixels a character, wider than the glass.
 
 ### Task 0 - the trace, before a line is built
 
-- Carry-forward list, before any edit, the two invocations its comment orders: app **100 of
-  100** in 9 s, engine **85 of 85** in 4 s.
-- **Entry criterion met.** `TheAchievementsPageClicksInTests` **6 of 6**.
-- `PHASE_OUTCOME.md`: `UNIT 335 - STEP 1` appended. Version 1.13.19 -> **1.13.20**.
+- **Carry-forward list, before any edit**, as the two invocations its comment orders: app
+  **100 of 100** in 12 s, engine **85 of 85** in 4 s.
+- **Entry criterion met.** `TheCategoryPagesAreTradingCardsTests` and
+  `TheAchievementsPageClicksInTests` together: **11 of 11**.
+- `PHASE_OUTCOME.md`: `UNIT 336 - STEP 2` appended. Version 1.13.20 -> **1.13.21**.
+- **The before-number is 0 of 4, confirmed.**
 
-#### What each kind draws today - 0 of 8 are trading cards (confirmed)
+#### The record: `STATE`
 
-Every card is `AchievementCategoryCard`: a title, one grey figure line, a points line, and
-whether it is earned. It sits in a white box, two columns wide.
+- **No path in `src` writes `STATE`.**
+  - `AdifLog.Record` writes the fourteen fields the instruction lists, and no `STATE`.
+  - `ContactLogStore.Append` is the only caller of `AdifLog.Record`.
+  - No import path exists in `src`, and no state lookup exists either.
+  - So a record carries `STATE` only if another logger wrote it into the file.
+- **Hamlet never rewrites a record it did not create.** `ContactLogStore.Append` uses
+  `File.AppendAllText`, and nothing re-serializes the log. So an imported record's `STATE` is
+  never dropped.
+- **The reader read no `STATE`** (`AdifLog.From`).
+- **`AchievementScores` returned `States => 0`** in both places named.
+- **`AchievementContact` carries `Entity`**, and the DXCC table tells the three entities apart:
+  - `United States of America`: prefixes `K`, `W`, `N`, `AA`;
+  - `Alaska`: `KL`, `AL`, `NL`, `WL`;
+  - `Hawaii`: `KH6`, `KH7`.
+  - Their continents are NA, NA and OC.
+- **Before-number:** States counted on a fixture log that carries `STATE` is **0**. The badge
+  read `0 worked`.
 
-| Kind | What a card draws today |
-|---|---|
-| Countries | entity name, `2 contacts`, `5 pts`; next card `One more country` |
-| States | one card, `Your first state`, and no earned cards |
-| Grids | the square, `N contacts`, points |
-| Bands | `20 m`, `N contacts`, points |
-| Modes | `FT8`, `N contacts`, points |
-| Hall of Fame | the first in words and its points; no figure line |
-| Total Miles | tier cards reading `reached` or `next`, under the page's only bar |
-| Continents | seven badges in the page's badge template; each opens to Countries-style cards |
+#### The ranks
 
-#### Whether the contact that earned each card can be recovered from `AchievementLog`
+- **A rank is spoken in one place: `AchievementBadgePage.TotalLine`.** It is bound to
+  `AchievementsTotalLine` in `AchievementsWindow.axaml`, and it says both the rank and the gap.
+  - On the twelve-contact fixture it read `Total 465 pts · Rank 4 · 35 to Rank 5`.
+  - The shipped file has 8 thresholds and `RankOf` is `1 + count`, so ranks run from Rank 1 to
+    Rank 9, as the instruction says.
+- **No other rank is spoken.** `ContactBelt`'s ranks are belt colors on the contact count
+  (`white` to `gold`), not the points rank. `CwDecodeReport.Rank` is a decoder's.
 
-- **Countries, Grids, Bands, Modes: yes.** The earliest `StartedUtc` among the contacts with that
-  entity, four-character square, band or mode.
-- **Continents: yes.** The earliest contact with that continent code. *Countries since* is
-  `EntitiesOn(code)`.
-- **Hall of Fame: yes, for all six firsts Hamlet awards.**
-  - `first_contact`: the earliest contact.
-  - `first_psk31` and `first_cw_qso`: the earliest in that mode.
-  - The two distance firsts: the earliest contact at or over the line. `FirstsEarned` tests
-    only the furthest.
-  - `first_dx`: only under `FirstsEarned`'s own rule. That rule takes his own entity to be the
-    first entity **in file order**, not his callsign's, so the earning contact is the earliest
-    one with a different entity.
-- **Total Miles: yes, by adding `Miles` in date order** until the sum crosses the tier.
-- **States: no.** The log does not read `STATE`, so there is no contact to find (step 2's).
-- **A record with no date.** `AchievementLog.First` skips records with no `StartedUtc`. So a
-  place worked only by an undated record has no first by date and falls back to file order.
+#### The points file
 
-#### Whether `Ft8GlobePlot` can be built for an `AchievementContact` as it stands
+- **Readers in `src`:** one, `AchievementPoints.Parse`, reached through `Read` and `ReadOrSeed`.
+  `MainWindowViewModel.OpenAchievements` calls `ReadOrSeed` each time the window opens.
+- **Readers in `tests`:**
+  - `Parse(Shipped())` in `ThePsk31RecordsAppearTests`, both `TheTotalMilesTests`,
+    `TheAchievementsPageClicksInTests`, `TheAchievementsPageTests`,
+    `TheCategoryPagesAreTradingCardsTests` and `Unit332TwoWidthsTests`;
+  - `Read` and `ReadOrSeed` in `TheAchievementsPageTests`;
+  - `TheShippedFileIsTheOneInTheTreeAndSaysItIsHisToEdit`, which compares the file on disk with
+    the embedded copy as text.
+- **Every one went through `JsonDocument.Parse` with its default options**, so every one would
+  have come back absent on a comment. None parses the file by any other route, and nothing in
+  `tools` reads it.
+- **`assets\data\achievement-points.json`: nothing in `src`, `tests` or `tools` reads it.**
+  - Before this unit it differed from the shipped file only in its last newline.
+  - It now also lacks the comment block.
+  - Left as it is, as instructed.
 
-**Four arguments are enough, with one catch.**
-- `AchievementContact.Miles` is measured from the grid in **Settings**, which is handed to
-  `AchievementLog`. It is not measured from the record's own `MyGrid`, although `MyGrid`'s doc
-  comment implies the record's grid is the one used.
-- So for the map and the printed distance to be one measurement, the map's operator end has to
-  be that same Settings grid. `AchievementLog` keeps it private, so it has to be carried to the
-  category.
+#### Telemetry
 
-#### The CQ source
+- **The points file:** `achievement_points_loaded` (`kinds`, `fileHash`) reports it being read.
+- **The log:** no event reports the log being read. `achievements_opened` (`kinds`) is written
+  once the log has been read and scored, so that is where the count of states went.
 
-- **The collection** is `MainWindowViewModel.DigitalDecodes`, an
-  `ObservableCollection<DigitalDecodeRow>`.
-- **What the list treats as current: whatever is on the table.**
-  - FT8 rows have no age limit. They leave at the 500-row cap (oldest arrival first), on a large
-    retune or band change, or on Clear.
-  - PSK31 rows leave when their carrier retires or listening stops.
-- **What a row carries.**
-  - `Sender`: the FT8 from-field, or the PSK31 parser's speaker.
-  - `Addressee`.
-  - **No grid property.** On an FT8 CQ the grid is the payload where
-    `Ft8MessageSplit.IsGrid(Payload)`. A PSK31 row has no fields, so it has no grid.
-  - **No entity property.** `DxccPrefixes.EntityOf(Sender)` resolves it, as `SenderHelp` and
-    `NudgeSet` do.
-- **How a row counts as a CQ.** `Ft8MessageSplit.IsCallToAnyone(Addressee)`: `CQ`, or `CQ`
-  followed by a word. That is the same test the decoded list's CQ toggle uses.
-- **Whether a caller would earn a country or open a continent.** `NudgeSet` already answers this
-  from the log, and it is what puts the quill on a row.
-- **How the window could be handed it.** `OpenAchievements` builds the view model at
-  `MainWindowViewModel.cs:6155` and shows it as a modal dialog. Passing the rows is the whole wire,
-  and **nothing passes them today**.
+#### The layout, measured at a window 1400 and 1920 wide
 
-#### The width at 1400 and 1920
+`DigitalDecodedPanes` is `383,*`. The widths below are in pixels.
 
-`AchievementsWindow` declares 1040 x 720 and opens centered on its owner. **Nothing sizes it from
-the main window**, so on the headless host it draws at 1040 x 720 whatever width the main window
-is. **No such path exists, wired or unwired.** A measurement at 1400 and 1920 has to set the
-dialog's own width.
+| | 1400 | 1920 |
+|---|---|---|
+| The tab (`DigitalPanes`) | 1342 | 1862 |
+| The right column (`DigitalDecodedPanes`) | 671 | 931 |
+| The decoded panel | 378 | 378 |
+| For You | 283 | 543 |
+| The card, inside | 227 | 487 |
+| The card's map | 215 x 120 | 220 x 120 |
+| The card's table | 227 x 102 | 338 x 102 |
+| Table beside or under the map | **under** | **under** |
 
-### Task 1 - the band on every kind, and the card count
+- **The table is under the map at 1920 as well.** It wants 338 px.
+  - The label column is `Last heard`, at 100 px.
+  - The widest value is `4,500 miles · northeast`, at 230 px.
+  - Beside the map, the pair needs 220 + 10 + 338 = **568 px** inside the card.
+- **The widest message cell each width needs is the same: 200 px.**
+  - `VP2MAA/P KC3QIS R-09` needs 200 and gets 200.
+  - `CQ DX K9XP JN88` needs 150.
+  - The senders alone: `KC3QIS` 60, `K9XP` 40.
+- **What a PSK31 row can abbreviate to, without new parsing.** A PSK31 row has no fields
+  (`HasFields` is false). It already draws:
+  - the speaker the exchange parser read (`Sender`, when `ShowsReadSender`);
+  - its reading word (`guess` or `unknown`);
+  - the text.
 
-**Tests first, both watched red:**
-- `TheCategoryPagesAreTradingCardsTests.EveryKindsBandCarriesCountScoreLevelAndABar` is new. It
-  opens all eight kinds in the realized window and checks the band against the scores the
-  shipped points file gives, including a 4.5:1 check on the band's ink. Red: `there is no
-  Border named AchievementsCategoryBand`.
-- `TheAchievementsPageClicksInTests.OpeningAndClosingACategoryWritesTheKindAndNothingElse` was
-  rewritten under R12 as `...WritesTheKindAndTheCardCountAndNothingElse`. It now wants `kind`
-  and `cards`, with 9 cards for Countries. Red: `Expected ["kind", "cards"]`,
-  `Actual ["kind"]`.
+  **So at 1400 it could show the read speaker and that word, and never a grid.** Where the parser
+  named no speaker there is no callsign to show at all, only text.
+
+### Task 1 - States counts what the log says
+
+**Test first, watched red.** `TheCategoryPagesAreTradingCardsTests.StatesCountWhatTheLogsStateFieldSays`
+is new. It reads one fixture log written as ADI text, so the reader is what is tested:
+- `K3PA`, United States, with `STATE=PA`;
+- `W1AW`, United States, with no `STATE`;
+- `KL7XYZ`, Alaska, with `STATE=AK`;
+- `VE3PQR`, Canada, with `STATE=ON`;
+- `N3DC`, United States, with `STATE=DC`.
+
+Red: `Expected: 2`, `Actual: 0`.
 
 **Change.**
-- `AchievementCategory` gains the band's facts:
-  - the line under the name, `BandLine`;
-  - `ScoreLine` and `LevelName`;
-  - a bar fraction and its words, or words saying there is no next level;
-  - `RenderedCount`;
-  - a computed `BandInk`.
-- The band in `AchievementsWindow.axaml` now draws the emblem, the name at 22 px and the band
-  line. On the right sits a 300 x 12 px bar with its words above it, or the no-next-level words
-  and no bar.
-- `BadgeProgressControl` gains `Length`, `Thickness` and `Track`, with defaults that leave the
-  belt's 46 x 4 bar exactly as it was.
-- `achievement_category_opened` writes `cards`, the count of cards and badges drawn.
-- `CallsignPrivacyTests` passes a count in its two calls of that event.
+- `AdifContact.State` is read from ADIF `STATE`. `AdifLog.Record` still writes none.
+- `AchievementContact` carries `State`.
+- `AchievementLog.StateOf` scores a contact only when two things hold: its entity is the United
+  States, Alaska or Hawaii, and its `STATE` is one of the fifty codes. `AchievementLog.States`
+  and `InState` are built on it.
+- `AchievementScores` counts States from `log.States` and scores them with `per`, `special` and
+  `all`. A special replaces `per`, as it does for a band, and `all` is for the fifty.
+- **The States page draws each state as the contact that earned it**, through the builder unit
+  335 built for Countries (`EarnedBy`). Each card is worth its `special` or its `per`.
+  **The next card's want line and its sentence, `Hamlet cannot tell a caller's state`, are
+  unchanged.**
+- **Telemetry:** `achievements_opened` gains `states`, the count scored. It is a count and never
+  a code.
 
-**What each band says on the twelve-contact fixture**, computed from the shipped points file:
+**On the fixture, computed:**
+- **Scored:** PA and AK. **Not scored:** the blank, ON and DC, which is 3 of 5.
+- **Points:** `2 + 10 = 12`, read from the shipped file.
+- **The badge:** `2 worked`.
+- **The page draws two earned cards:**
+  - `AK`: `KL7XYZ · BP51`, `10 pts`, with a map;
+  - `PA`: `K3PA · FN10`, `2 pts`, with a map.
+- **The next card is `One more state`**, still `Any state you have not worked` and
+  `Hamlet cannot tell a caller's state`.
+- **At windows 1400 and 1920 the States page draws 3 trading cards.** 21 runs fit, none wraps,
+  and 0 cards are white.
 
-| Kind | Level | Bar, or the words instead |
-|---|---|---|
-| Countries | unranked | `8 of 10 to Bronze` |
-| States | unranked | `0 of 10 to Bronze` (an empty track) |
-| Grids | Bronze | `10 of 25 to Silver` |
-| Continents | Silver | `5 of 7 to Gold` |
-| Bands | Bronze | `5 of 6 to Silver` |
-| Modes | Gold | `Gold, the top level` - no bar |
-| Hall of Fame | Bronze | `5 of 6 to Silver` |
-| Total Miles | unranked | the miles so far `of 50,000 mi to Bronze` |
-
-**Green.** The first run was 31 of 33:
-- one fit red at 1040: on `continent-EU`, `one continent has no levels of its own` needs 380 px
-  and the slot is 300;
-- the known red `TheWindowDrawsEverySixRows`.
-
-After shortening, the same seven test types ran **32 of 33**. The one red is the known one. The
-types: the new test, `TheAchievementsPageClicksInTests`, `BindingHealthTests`,
-`CallsignPrivacyTests`, `TheAchievementsPageTests`, `Unit332TwoWidthsTests` and
-`TheAchievementsScreenTests`.
-
-**Strings shortened (§6):**
-- `one continent has no levels of its own` -> `no levels per continent`;
-- `no levels while the points file cannot be read` -> `no levels: file unreadable`;
-- `the points file names no levels here` -> `no levels in the points file`.
+**Green.**
+- The new test.
+- `OpeningTheWindowWritesHowManyStatesScoredAndNoCode`, which is new. It writes `states` = 2,
+  and no code, callsign or entity.
+- Engine log and scoring tests: **52 of 52**, after the property pin below.
+- The achievements, binding and privacy set: **40 of 42**. Both reds are older than this unit;
+  see *Reds older than this unit* below.
+- **Unit 335's fit and no-white-card test at 1400 and 1920 passed**, as part of that set.
 
 #### Decisions this session made for itself, task 1
 
-1. **The gap is said once.** The picture puts `14 to Silver` on the band line and `11 of 25 to
-   Silver` over the bar. Where a bar is drawn, its words carry the gap, so the band line drops
-   it. With both, Total Miles' line ran past its slot. Rejected: a narrower bar, which would
-   have clipped the miles figure instead.
-2. **The Hall of Fame band is inked dark.** White on its gold `#A8811A` computes to about
-   3.6:1, under §0.6's 4.5:1. The ink is chosen by computing the contrast, not by eye, so
-   every other band stays white. Rejected: darkening the gold, which is the approved color.
-3. **The corner lines at the band's right are gone.** Count, points and level are on the band
-   line, and the bar holds the right. Rejected: keeping both, which said everything twice.
-4. **The card count is cards plus badges.** Continents draws seven badges and no cards, and a
-   count of nought there would read as an empty page.
-5. **Total Miles' own tier bar stays, for now.** Task 4 turns each tier into its own bar.
+1. **A States card's title is the two-letter code**, the way a Grids card's title is the square.
+   The tree has no table of state names. Rejected: adding one, which is new data this unit was
+   not asked for.
+2. **The count of states scored went on `achievements_opened`.** It is the event written after
+   the log is read and scored. Rejected: `achievement_points_loaded`, which is written before the
+   log is read.
+3. **The States badge's meaning line went from `the 50, plus DC` to `the 50 states`**, and
+   `AchievementKinds.States`'s summary from *The fifty, plus DC* to *The fifty, from the log's own
+   `STATE` field*. Decision 1 makes DC score nothing, so both lines would have been false.
+4. **`AdifLog.Record` still writes no `STATE`** (decision 2, parked).
+   - Consequence: an `AdifContact` with `State` set loses it on a write.
+   - Why that is safe today: nothing Hamlet creates sets it, and the log only appends.
+   - `AdifContact.State`'s doc comment says so.
+5. **`TheLogCanSayFt4Tests.AdifContactCarriesOneSubmodeProperty` pins the property count.** It
+   went from 15 to 16 under R12, with the reason written beside it. Its one-submode assertion is
+   untouched.
+6. **The next card's title follows the count** (`Your first state`, then `One more state`), as
+   every other kind's does. Its want line and sentence are unchanged.
 
-### Task 2 - the earned card is the contact that earned it
+### Task 2 - rank names from the file, and a file that explains itself
 
-**Test first, watched red.** `TheCategoryPagesAreTradingCardsTests.EveryEarnedCardIsTheContactThatEarnedIt`
-is new, over a five-contact log:
-- Norway is worked twice, and the earlier contact is later in the file;
-- `VE3PQR` has no grid;
-- `G0MNO` has no date.
-
-Red: Norway's card `Expected "LA1ZZZ"`, `Actual ""`.
+**Tests first, both watched red:**
+- `TheAchievementsPageTests.TheRanksCarryTheNamesInThePointsFile` is new. Red: `Expected "Total
+  465 pts · Ranger · 35 to Voyager"`, `Actual "Total 465 pts · Rank 4 · 35 to Rank 5"`.
+- `TheAchievementsPageTests.TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop` is new.
+  Red: `the shipped points file has no comment block at its top`.
 
 **Change.**
-- **Which contact.** Each earned card on Countries, on Grids and inside a continent is built
-  from the earliest contact in that place. The sort is stable, so undated records keep file
-  order after every dated one.
-- **What the card carries:**
-  - the place large, with its points;
-  - `callsign · grid`, or on Grids `callsign · country`;
-  - the conversation card's own `Ft8GlobePlot`, drawn by `Ft8GlobeControl` 170 px tall;
-  - `AchievementContact.Miles` in large type, rounded by `GridPath.DescribeMiles` and written as
-    `mi`;
-  - `band · mode`;
-  - the date, as `Aug 12, 2026`.
-- **Where the map's operator end comes from.** `AchievementBadgePage` now carries the Settings
-  grid, the one the miles were measured from, so the path and the printed distance are one
-  measurement.
-- **What fills a card with no map.** A word saying why, and a list of up to three of the
-  contacts in that place (`callsign · band · date`), in a grey panel the map's height. The word
-  is one of three: `no grid, so no map`, `set your grid for a map`, or `off the edge of this
-  map`.
+- **`AchievementPoints` skips comments, and relaxes nothing else.** A trailing comma is still a
+  file that could not be read.
+- **`rank_names` is read by position** into `RankNames`.
+  - `RankName(n)` gives the name, or `Rank n` past the end of the list or for a blank entry.
+  - A `rank_names` that is not a list of strings is skipped whole. That is the way the reader
+    already skips a section of the wrong shape (a kind that is not an object is passed over), so
+    no name lands on the wrong rank.
+- **`TotalLine` says `Scores.RankName`, and the gap names `Scores.NextRankName`.**
+- **The shipped `data\achievements\achievement-points.json` gains a `//` block at its top.**
+  - It names every top-level key and every key inside a section, in quotes, with what each does.
+  - `rank_names` is documented there and **not added as a key**.
+  - `_about` stays.
+- **Telemetry:** `achievement_points_loaded` gains `rankNames`, the count read. It is a count and
+  never a name.
 
-**On the fixture, computed:**
-- **Norway** is `LA1ZZZ · JO28`, `40 m · FT8`, `Aug 12, 2026`, `5 pts`, with a path. The
-  distance on the card equals the log's to the mile, and so does the plot's.
-- **Canada** is `VE3PQR`, with no distance, `no grid, so no map`, and its contact listed.
-- **England** has no date line, and a map.
-- **No dash appears** on any card.
-- In the realized window, **one map is drawn per card that has one**, and the no-map word
-  appears once.
+**On the twelve-contact fixture, computed:**
 
-**Green.** The same seven test types plus the new one: **33 of 34**. The one red is the known
-`TheWindowDrawsEverySixRows`.
+| `rank_names` | The total line |
+|---|---|
+| absent | `Total 465 pts · Rank 4 · 35 to Rank 5` |
+| eight names | `Total 465 pts · Ranger · 35 to Voyager` |
+| four names | `Total 465 pts · Ranger · 35 to Rank 5` |
+| `["Listener", 2, "Operator", "Ranger"]` | `Total 465 pts · Rank 4 · 35 to Rank 5` |
+| `"Ranger"` (not a list) | `Total 465 pts · Rank 4 · 35 to Rank 5` |
+
+**What else the tests confirmed:**
+- **The block:** **23 of 23** keys are named in it. The shipped file parses with 8 kinds, and
+  `rank_names` is in the block and not in the file.
+- **Telemetry:** `ReadingThePointsFileWritesHowManyRankNamesItReadAndNoName` is new. It writes
+  `rankNames=3` for three names and `rankNames=0` for the shipped file, and no name.
+
+**Green.**
+- The achievements, binding, privacy and PSK31-records set: **46 of 49**. The three reds are older
+  than this unit, below.
+- Engine tests over the shipped file: **41 of 41**.
+
+**Carry-forward list, after all changes**, as its two invocations: app **100 of 100** in 12 s,
+engine **85 of 85** in 4 s.
 
 #### Decisions this session made for itself, task 2
 
-1. **The card's map uses the popup's path-fitted frame**, which is the conversation card's
-   enlarged map (`Opened="True"`).
-   - R22 asks for *a map of the path cropped to the two stations as the conversation card draws
-     it*, and the picture shows it cropped.
-   - The conversation card's own face has drawn the whole world since unit 306. The frame
-     cropped to the path is the popup's, capped at 2x.
-   - That frame is the existing arithmetic, so no second map exists.
-   - Rejected: the whole-world frame, which would not be cropped to the two stations.
-2. **The map's operator end is the Settings grid, not the record's `MyGrid`**, because that is
-   the grid the log's miles were measured from.
-3. **A card with no map lists up to three contacts**, not all of them, so the panel keeps the
-   map's height and the cards stay one size.
-4. **The old `2 contacts` figure line is hidden on a card that is a contact.** The picture does
-   not carry it, and it still shows on the kinds not yet rebuilt.
+1. **A blank entry in `rank_names` names nothing**, so that rank keeps `Rank n`. The count of
+   rank names read counts only non-blank entries.
+2. **Only comments are relaxed.** `AMalformedPointsFileIsReportedAndLeftAlone` still passes: its
+   broken edit, with a trailing comma, is still unreadable. Rejected: allowing trailing commas
+   too, which would read an edit you had not finished.
+3. **The block says the file is read when the achievements window opens**, because that is what
+   the code does. `_about` still says *at startup* and was left as it is (decision 3 keeps it).
 
-### Task 3 - the next card knows who is calling
-
-**Test first, watched red.** `TheCategoryPagesAreTradingCardsTests.TheNextCardKnowsWhoIsCalling`
-is new. It feeds the twelve-contact log a fixture CQ list of six rows: five CQs, and one reply
-that is not a CQ. It checks Countries, Grids, Europe, States, and a list where nobody would earn
-the card. Red: `Expected "Any country you have not worked"`, `Actual ""`. The snapshot had
-already read the five CQs and left out the reply.
-
-**The choice: the list carries the time it was read. It is not kept live.**
-- The decoded list has no recency rule of its own. An FT8 row stays until the 500-row cap, a
-  large retune or Clear, so *on the list* is all *current* means.
-- The window is modal.
-- A list that went on saying *right now* behind it would claim a freshness it lacks
-  (HM-DEC-111). **No recency number is invented.**
-
-**Change.**
-- **`CqSnapshot`** reads `DigitalDecodes` when the window opens:
-  - it takes every row not sent by this station, with a sender, whose addressee
-    `Ft8MessageSplit.IsCallToAnyone` accepts (the decoded list's own CQ test);
-  - the grid is the payload where `IsGrid` says it is one;
-  - each callsign appears once, preferring a call that carried a grid.
-- **The wire.** `OpenAchievements` passes `CqSnapshot.From(DigitalDecodes, DateTime.UtcNow)` as
-  the view model's `Calling`, and a category receives it on open and on back. Nothing about how
-  a row is decoded changed.
-- **What a next card now carries:**
-  - what it wants, in words;
-  - the heading `calling CQ at 21:41 UTC, unworked`;
-  - up to three callers as `place | CALL · N mi`, each with the quill his decoded-list row
-    wears - the ringed door where he would open a continent, else the still counter;
-  - `and N more on the CQ list` where there are more.
-- **Otherwise it says** `no one is calling from there now`. Where no list was handed in it says
-  `the CQ list was not read`.
-
-**Per kind:**
-- **Countries:** callers whose entity `DxccPrefixes` resolves and the log lacks, named by
-  `EntitySpoken.Short`.
-- **Grids:** callers whose CQ carried a four-character square the log lacks.
-- **Inside a continent:** the same, on that continent only. The wants line is `Any unworked
-  country in Europe`.
-- **States:** `Hamlet cannot tell a caller's state`, and no callers. That is the arbiter's
-  proposal; see section 4.
-
-**On the fixture, computed:**
-- Countries lists Austria (`OE8DDX` with its distance) and Grenada (`J38DX`). Norway and the
-  United States are in the log.
-- Grids lists JN76, FK92 and FN42, but not FN31 or JO59.
-- Europe lists Austria alone.
-- The list with only worked callers says `no one is calling from there now`.
-- In the realized window, the heading and every caller's place and line are drawn on the
-  Countries next card.
-
-**Green.** The first run was 33 of 35:
-- one fit red: `Hamlet cannot tell a caller's state from the air` needs 480 px in a 426 px
-  slot at 1040;
-- the known red `TheWindowDrawsEverySixRows`.
-
-Shortened to `Hamlet cannot tell a caller's state`, then **34 of 35**. The one red is the known
-one.
+### Task 3 - not built
 
 #### Decisions this session made for itself, task 3
 
-1. **Read once with its time**, as above. Rejected: a live list. It would add a subscription to
-   a modal dialog and still could not say how fresh a row is, because the decoded list does not
-   know either.
-2. **Callers from a continent he has never opened are named.** R22, Tim's of 2026-09-12, asks
-   for who is calling from a place that would earn the card. It also asks the unearned
-   continents to name who is calling from them. That is later than the 2026-09-10 rule that the
-   CQ list must not name an area he has never opened. §6: the later ruling wins. The ringed door
-   is kept beside such a caller, so the card and his row agree on what he would open. Raised in
-   section 4.
-3. **No order is imposed on the callers**; they come in the list's order. Tim, 2026-09-11:
-   *"There are no rankings."* Rejected: nearest first.
-4. **Three callers, then a count of the rest**, so the card keeps its size and nobody is
-   hidden without a word.
-5. **Where no list was handed in, the card says it was not read**, not that no one is calling:
-   nobody looked.
-
-### Task 4 - the other five kinds, and the page-wide measurements
-
-**Tests first, both watched red:**
-- `TheOtherFiveKindsEachDrawTheirOwnCards` is new. Red: `Africa has no card`.
-- `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` is new. Red: `1400.00
-  hall_of_fame: no trading card is drawn`.
-- The first attempt at the red run stopped at a compile error in the new test, a missing
-  `using Avalonia`. It was fixed and run again before any build code was written.
-
-**Change, kind by kind.** What the five-contact and twelve-contact logs show is computed.
-
-| Kind | What a card now is | On the fixture |
-|---|---|---|
-| Continents | Seven cards in the category scroller, each a button onto its countries. Opened: the first contact on it, with map, and `N countries worked there`. Unopened: the continent named, with its callers or `no one is calling from there now` | Europe is `LA8ENA · Norway`, `3 countries worked there`; Oceania lists `New Zealand`, `ZL1ABC · 8,600 mi`; Antarctica says no one is calling |
-| Total Miles | Each tier is a card with a bar. A reached tier is also the contact whose miles, added in date order, crossed the line | `42,041 of 50,000 mi`, at 0.84. Nine contacts to Tokyo cross 50,000 on the eighth, `Aug 8, 2026` |
-| Bands | The first contact on each band. The next card lists the bands not worked, the green zone's best bet first in its own words | `20 m` is `W3YNI`; next is `17 m best bet now`, then `30 m` |
-| Modes | The first contact in each mode. The next card lists each unworked mode and where it lives, from `DigitalCallingFrequencies` | On the five-contact log: `CW`; `FT4 3.575 on 80 m`; `PSK31 3.580 on 80 m` |
-| Hall of Fame | Each first is the contact that earned it, by `FirstsEarned`'s own rule. The next first keeps unit 333's choice and gains a bar, its callers, or words | `A DX contact` is `VA3VRR`; `Over 5,000 miles` is `JA1XYZ`; next is `Over 10,000 miles` with `furthest 9,673 of 10,000 mi` |
-
-**Wiring.**
-- **The best bet.** `OpenAchievements` now hands in the green zone's best bet as the band button
-  wears it, `BestBet`, beside `Calling`.
-- **Total Miles' bar.** Its category-wide bar is gone; each tier card carries its own.
-- **The card count.** Countries on the fixture draws 9 cards, and Continents draws 7.
-
-**Measured at a window 1400 x 720 and 1920 x 720**, over the twelve-contact log with four CQ
-callers and a best bet:
-
-| Page | Runs that fit | Cards | Cards with no map, bar or list |
-|---|---|---|---|
-| Hall of Fame | 39 | 6 | 0 |
-| Continents | 52 | 7 | 0 |
-| Countries | 63 | 9 | 0 |
-| States | 9 | 1 | 0 |
-| Grids | 76 | 11 | 0 |
-| Total Miles | 9 | 1 | 0 |
-| Bands | 43 | 6 | 0 |
-| Modes | 34 | 5 | 0 |
-| Europe | 29 | 4 | 0 |
-| Oceania | 11 | 1 | 0 |
-
-- The figures are the same at both widths.
-- **Every run is checked as `NoWrap`.** Each is laid out on its own and fits its slot and every
-  box above it.
-- The window's own 1040 is checked by `TheAchievementsPageClicksInTests`, which still passes.
-
-**Green.**
-- The achievements, binding and privacy test types together: **36 of 37**. The one red is the
-  known `TheWindowDrawsEverySixRows`.
-- That was re-run after decision 7 below: **36 of 37** again.
-- The carry-forward list after the change, run as its two invocations: app **100 of 100** in
-  11 s, engine **85 of 85** in 4 s.
-
-#### Decisions this session made for itself, task 4
-
-1. **The seven continents are the same trading card, in the category's scroller, each inside a
-   button onto its countries.** Rejected: packing seven maps into four narrow columns.
-   `no one is calling from there now` does not fit there at 1040 without wrapping.
-   `Unit332TwoWidthsTests` asserted that the seven badges end within the window's height. It
-   was rewritten under R12 to assert that they sit inside the category's scroller, as every
-   kind's cards do. The page still has no scroller.
-2. **Total Miles' category-wide bar was removed, and each tier card carries its own.**
-   `TheAchievementsPageClicksInTests` asserted that bar. It was rewritten under R12 to assert
-   the same fraction and words on the tier card.
-3. **Where a mode lives is shown on the best-bet band if that band has a row for it, and on
-   the lowest band that does otherwise.** Tonight's best bet in the fixture is 17 m, which has
-   no FT4 or PSK31 row, so both say 80 m. Rejected: every band, which would not fit; and the
-   band the dial is on, which the window is not handed.
-4. **Who is there is counted only for PSK31.** A PSK31 row is text only, so it says its mode.
-   An FT8-shaped row does not say FT8 or FT4, so no count is claimed for either (§0.0). Morse and
-   Voice have no digital row, so their line is the mode's name alone.
-5. **The Hall of Fame next card is unit 333's choice, with something to measure added.**
-   - Distance firsts: a bar of the furthest contact toward the line.
-   - `A DX contact` and `Your first contact`: callers who would earn them.
-   - `A PSK31 contact`: where PSK31 lives, and its callers.
-   - `A Morse contact`: `the CQ list carries no Morse`. The decoded list is digital, and saying
-     no one is calling in Morse would be a claim about a list that can never show one.
-
-   Which first is next, and the collision unit 333 raised, are untouched.
-6. **The Bands next card lists the unworked bands in the band row's order, with the best bet
-   moved first.** That is the green zone's answer, not a ranking this unit formed. Where the
-   best bet is a band already worked, the card says so in a line.
-7. **The callsign line uses `EntitySpoken.Short`.** The first measurement run printed
-   `W3YNI · the United States`. `Short` is the tree's own name for a place beside a callsign,
-   and the caller lines already used it. Card titles are unchanged.
+1. **Task 3 was dropped whole.** Nothing in the layout was moved.
+   - **Why.** Task 0 shows that no single star fraction for `DigitalDecodedPanes` meets
+     must-pass 3 on the headless host:
+     - **Beside at 1920** needs For You at 568 + 56 = 624 px or more, so the decoded column can
+       be at most 931 - 5 - 624 = **302 px**. That is a fraction of **0.324** of the right
+       column, and it leaves a message column of 119 px, too narrow for the 200 px FT8 line even
+       at 1920.
+     - **At 1400 the same fraction** gives a decoded column of 217 px and a message column of
+       **34 px**. A six-character callsign needs 60 px, so a callsign is cut.
+   - Holding both halves needs something R24 does not say: a minimum width on a star column,
+     abbreviating at 1920 too, or shortening the conversation card's table.
+   - That is a ruling. A half-moved layout is the failure the instruction names.
+   - **Rejected:** building a fraction anyway and reporting the miss (§6 allows that for a
+     *little* miss, and this is not little); and picking one of the bends above for Tim.
+2. **The printing probe `ThePanelsMakeRoomTests.Unit336TraceMeasuresTheSplitAtBothWidths` was
+   kept.** It asserts nothing and prints every width above, so the next unit starts from a
+   measurement rather than this report. Rejected: removing it, which would make task 3's author
+   rebuild it.
 
 ### Where the instruction and the tree disagreed
 
 Reported, not repaired.
 
-- **R20 is nowhere.** `docs/phase-psk31-run/PHASE_PLAN.md` holds §R1 to §R19 and no R20. The
-  only mentions are the citation in `PHASE_PLAN.md` §2 and its copy in
-  `docs/phase-maintenance/PHASE_PLAN.md`.
-- **`MyGrid` is carried and `Miles` does not use it**, as above.
-- **`AchievementContact.Grid` is documented as four characters**, but `AchievementLog.Read` keeps
-  the whole `GRIDSQUARE`, upper-cased. A six-character square stays six.
-- **`BindingHealthTests` covers only the main window.** The achievements window's binding check
-  is in `TheAchievementsPageClicksInTests`.
-- **`AchievementsWindow.axaml`'s header comment says 1000 wide**; the window is 1040.
-- **R22 says the card map is cropped *as the conversation card draws it*.** The conversation
-  card's face draws the whole world; only its popup crops to the path. The card uses the
-  popup's frame. See task 2, decision 1.
-- **`HfBands` holds seven bands.** `TheAchievementsPageTests`' comment on the Bands score says
-  *five of nine*; the badge draws `5 of 7`. Found in the task 1 printout, and not repaired.
-- **Section 7's ordering-block template reads `complete|stopped at task N of 5`.** The
-  instruction numbers its tasks 0 to 5, which is six. This report counts the last task done,
-  task 4, out of 5.
-- **Everything else matched:**
-  - `AchievementContact`'s seven fields;
-  - `Ft8GlobePlot`, `Ft8ContactCard.Globe`, `Ft8GlobeControl`, and the popup opening it with
-    `Opened` and `OpenFrameFor`;
-  - `AchievementCategory.For` building every kind;
-  - 1040 x 720, and line 6155;
-  - `DigitalDecodes` and its type;
-  - only Total Miles has a bar;
-  - the event carries `kind` only.
+- **R23 says the log *already writes* `STATE` for a US contact.** Nothing in `src` writes it.
+- **The seeding rule is cited as `AppSettings.cs:747-766`.** Those lines hold only the path and
+  its doc comment. The rule that seeds once and never overwrites is in
+  `AchievementPoints.ReadOrSeed`, at `AchievementPoints.cs:166-198` before this unit.
+- **The writer's fields are cited as `AdifLog.cs:291-366`.** Lines 291-294 write the header
+  (`ADIF_VER`, `PROGRAMID`, `PROGRAMVERSION`), and the record's fields are at 315-366.
+- **R12 says `TheDigitalTabIsTwoColumnsTests` guards `383`.** It does not assert 383. It asserts
+  the decoded panel is narrower than the right half, and 383 appears only in a comment.
+  `ThePanelsMakeRoomTests` is the one that guards it. `WhatTheSplitCostsTests` names
+  `DigitalDecodedPanes` too, without asserting 383.
+- **`MainWindow.axaml`'s comment above `CardBeside` says the card has 487 px inside at 1920,
+  *where they sit side by side*.** Measured: 487 inside, and the table **under** the map, because
+  the table wants 338 px, not the *about 190* the comment assumes.
+- **The shipped file's `_about` says *Hamlet reads this file at startup*.** It is read each time
+  the achievements window opens.
+- **The badge's own line said `the 50, plus DC`**, and decision 1 scores no DC. Changed in task
+  1, decision 3.
+- **Everything else in section 4 matched:**
+  - `States => 0` at both lines;
+  - `"Rank " + Scores.Rank` at `AchievementBadges.cs:223`;
+  - 8 thresholds;
+  - `JsonDocument.Parse(json)` at `AchievementPoints.cs:234`;
+  - `_about` as the only prose;
+  - the embedded resource at `Hamlet.RadioEngine.csproj:91`;
+  - the `assets` copy differing by its last newline;
+  - `383,*` at `MainWindow.axaml:4139-4141` with its §0.0 reason;
+  - the `*,*` ruling's comment at `MainWindow.axaml:3542`.
+
+### Reds older than this unit
+
+Neither of the first two is on the known-reds list. Both were found in this unit's runs and left
+as they are.
+
+- **`TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`** (app).
+  - It expects the Total Miles badge line `grid to grid, added up`, and the badge says
+    `every mile, added`.
+  - Unit 332's `3ea16ec` changed the line in `src` and not in this test.
+- **`ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`.**
+  - It fails with `modes draws [PSK31] before any PSK31 contact`.
+  - Unit 335's `bcaf39d` made the Modes next card name where each unworked mode lives, including
+    PSK31. See section 4, item 2.
+- **`TheAchievementsScreenTests.TheWindowDrawsEverySixRows`**, the known one.
 
 ## 2. What the owner should expect
 
-**Every category page is now trading cards.** Version 1.13.20. Every category opens under a
-full-width color band with a bar toward the next level. Under it:
-- **every earned card is the contact that earned it**, with its path map. That holds on
-  Countries, Grids, Bands, Modes, Hall of Fame, each continent, and each Total Miles tier
-  reached;
-- **every next card says what it wants**, and lists who on the CQ list would earn it - or the
-  bands not yet worked with the green zone's best bet first, or where each unworked mode lives;
-- **Total Miles' tiers are bars**;
-- **Continents is seven cards**, each opening to its countries.
+**States now counts what your log says.** Version 1.13.21.
+- **What counts.** A contact counts toward States only when both of these hold:
+  - its record carries a `STATE` field;
+  - its callsign resolves to the United States, Alaska or Hawaii.
+- **What does not count:** DC, a Canadian province, a blank and a misspelled code.
+- **What the page shows.** Each state you hold is a card showing the contact that earned it, with
+  its map. The next card is as it was.
 
-- **The callers and the best bet are as of the moment the window opened**, and the heading
-  gives that time in UTC. Close and reopen the window to read them again.
-- **Pressing a card's map does not open it yet.** That was task 5, dropped whole.
+**Your ranks can be named.**
+- **What to add.** Put a `rank_names` list in your own points file, at
+  `%AppData%\Hamlet\achievements\achievement-points.json`. For example: `"rank_names":
+  ["Listener", "Novice", "Operator"],`.
+- **What shows.** The line under the achievements title uses those names for your rank and the
+  next one. Past the end of your list it says `Rank n`.
+- **Where the notes are.** Your own copy has no notes at the top, and Hamlet will never add them:
+  it does not overwrite your file. The documented copy is `data\achievements\achievement-points.json`
+  in the repository. You can paste its `//` block into your own file, because Hamlet now skips
+  lines that start with `//`.
+
+**Nothing on the digital tab moved.** Task 3 was not built, so the decoded list and For You split
+exactly as before.
 
 **What will look wrong but is not:**
-- **Continents scrolls now**, as every category's cards do, because each continent is a full
-  card with its map. The opening page with the eight badges still does not scroll.
-- **Where an unworked mode lives may be named on a band other than the best bet.** On the
-  fixture, FT4 and PSK31 both say 80 m, because the best bet that night, 17 m, has no row for
-  either in the band table.
-- **FT8 and FT4 never show a count of who is calling.** The decoded list does not say which of
-  the two a row was. PSK31 does.
-- **`A Morse contact` says `the CQ list carries no Morse`.** The CQ list is the digital decoded
-  list.
-- **The earned card is your first contact there, not your most recent.** Norway on the
-  fixture shows `LA1ZZZ` from 12 August, not `LA8ENA` five days later.
-- **The distance is rounded**: to the nearest 100 miles over 1,000, and to the nearest 10 below
-  that. It is the same rounding the conversation card's words use.
-- **The map on a card is zoomed toward the path**, at most twice the picture's size, as the
-  enlarged map in a conversation card is. Two nearby stations stay small in the middle, because
-  they really are close.
-- **A card for a contact logged without a grid has no map.** It shows a grey panel saying `no
-  grid, so no map`, with that station's contacts listed.
-- **Hall of Fame's band has dark lettering** where the others are white. White on that gold is
-  too faint to meet the contrast rule; the computed figure is about 3.6:1.
-- **Modes has no bar on the fixture log**, just `Gold, the top level`. Five modes is the top
-  of that kind's levels in your points file.
-- **Total Miles' first tier shows two bars on the fixture**: the level bar on the band, and the
-  tier card's bar. They agree - `42,041 of 50,000 mi` - because the shipped file sets the Bronze
-  level and the first tier both at 50,000.
+- **Your own FT8 and PSK31 contacts score no state.** Hamlet does not know where a caller lives,
+  so the contacts it logs carry no `STATE`. Only records another logger wrote with `STATE` count.
+- **A state card's title is its two-letter code**, `PA` and not `Pennsylvania`. The tree has no
+  table of state names.
+- **The States badge's small line now reads `the 50 states`**, not `the 50, plus DC`. DC does not
+  count.
+- **A contact in DC, or a `STATE` on a Canadian record, adds nothing.** That is the rule, not a
+  missed read.
+- **A very long rank name has not been measured on the window.** The defaults fit. A name much
+  longer than `Rank 4` may not fit the line under the title, and nothing checks that for names you
+  choose.
+- **The shipped file's first line of prose still says it is read *at startup*.** It is read each
+  time you open the achievements window, so an edit shows the next time you open it.
 
 ## 3. What you should see
 
-**8 of 8 kinds read as trading cards, and none do not.**
-- Countries, States, Grids, Continents, Total Miles, Bands, Modes and Hall of Fame each open to
-  the color band with its bar, then cards with a map, a bar or a list.
-- States has no earned cards until step 2 scores `STATE`, so its page is the band and its next
-  card.
-- All of this is computed on the test host at windows 1400 and 1920 wide, not seen.
+**The fixture log scores 2 states, PA and AK, for 12 points, and your own contacts score none.**
+Hamlet writes no `STATE` on the contacts it logs, so only records another logger wrote with
+`STATE` count.
 
-Open Countries:
-- **The band.** The top of the page is a red band with the flags and *Countries* on it. The
-  line under the name reads like `one per entity · 8 worked · 40 pts · unranked`. At the
-  right, `8 of 10 to Bronze` sits over a bar eight-tenths full.
-- **The cards.** Below the band, two cards to a row. Each has:
-  - a red edge;
-  - the country in large type, its points at the right;
-  - `callsign · grid`;
-  - a map cropped to your grid and his, with the path drawn;
-  - the distance in large type, and `band · mode` and the date beside it.
-- **The last card** has a grey edge, `One more country` and `next`, and `Any country you have
-  not worked`. Under that is a grey panel:
-  - `calling CQ at` the time you opened the window, `, unworked`;
-  - then up to three lines, each a small quill, the country, and the callsign with its
-    distance;
-  - or `no one is calling from there now`.
+**Your ranks are called `Rank 1` to `Rank 9`**, because your points file names none. The file
+that explains every key is `data\achievements\achievement-points.json` in the repository. Your
+copy in `%AppData%\Hamlet\achievements\` has no notes.
+
+**The split is unchanged at both widths, `383,*`:**
+- **At 1400:** decoded panel 378 px, For You 283 px, card table 227 px, under the map.
+- **At 1920:** decoded panel 378 px, For You 543 px, card table 338 px, **also under the map**.
+
+All of this is computed on the test host at windows 1400 and 1920 wide, not seen.
+
+**At 1400 on the digital tab you will see what you saw yesterday.** The decoded list keeps its
+width, and the conversation card's table sits under its map.
+
+**In the achievements window:**
+- The line under the title reads as before, `Total N pts · Rank n · N to Rank n+1`, until you add
+  `rank_names`.
+- The States badge's corner says how many states your log scores.
+- Opening States shows one card per scored state before the `One more state` card: the code large,
+  the callsign and grid, the map of the path, the distance, band, mode and date, and its points.
 
 ## 4. What's blocking us
 
 ### Raised by this unit
+
+**1. Task 3 cannot meet its must-pass with a fraction alone, measured. Which bend do you want?**
+
+*Ruling wanted: how the decoded list and For You share the tab, given the numbers.* On the test
+host, with the conversation card's table as it is:
+- **For the table to sit beside the map at 1920**, For You needs 624 px or more. That leaves the
+  decoded column at most 302 px of the 931, which is a fraction of 0.324.
+- **At 1400 that same fraction** leaves the message 34 px, and a six-character callsign needs 60.
+  So one fraction cuts a callsign at 1400 or puts the table under the map at 1920.
+
+The options, each measured against those numbers:
+- **(a) A star split with a minimum width on the decoded column.** At 1400 the table goes under
+  the map and the message shows callsign and grid. At 1920 the table is beside the map, and the
+  message is abbreviated there too, because 119 px does not hold a full 200 px FT8 line.
+- **(b) Keep the table under the map at 1920 as well.** This answers R24's *beside at 1920* with
+  no.
+- **(c) Shorten the table's two widest rows.** They are `Last heard` and `4,500 miles ·
+  northeast`, and they set its 338 px. That is the conversation card, not this step.
+
+*Reasoning.* R24 says the split is a fraction and the table goes under only when abbreviation is
+not enough. Measured, abbreviation is not enough at 1400 at any fraction that also gives the table
+its room at 1920. The recommendation is (a). It is the smallest bend, and it keeps R24's order: For
+You gets what the table needs first, and the decoded list abbreviates rather than cutting.
+
+*What was rejected and why.*
+- Building a fraction and reporting the miss: §6 allows that only for a little miss, and this is
+  not one.
+- Taking width from the waterfall: `DigitalPanes` `*,*` is your ruling, and it stays yours (unit
+  331 queue item 2).
+- A half-built layout, which the instruction names as a failure.
+
+**2. The Modes next card names PSK31 on a log with no PSK31 contact, and a test says §3.1 forbids
+that.**
+
+*Ruling wanted: which rule holds on that card.*
+- `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed` is red,
+  with `modes draws [PSK31] before any PSK31 contact`. It is unit 333's test of *absent, not
+  dimmed*.
+- The line it catches is unit 335's `bcaf39d`, which does what R22 asks: the Modes next card says
+  *where the unearned mode lives and who is there*, as `PSK31 3.580 on 80 m`.
+
+*Reasoning.* R22, 2026-09-12, is later than §3.1, and §6 says the later ruling wins. But the test
+was not rewritten when the card changed, so the tree now asserts both. This is the same collision
+unit 333 raised for Hall of Fame's `A PSK31 contact`, on a second card. Nothing in this unit
+touched Modes.
+
+*What was rejected and why.* Rewriting the test or the card here: §12.6, and neither is this
+step's.
+
+**3. `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext` has been red
+since unit 332.**
+
+*No ruling wanted; a finding.* It expects the Total Miles badge line `grid to grid, added up`, and
+unit 332 (`3ea16ec`) changed that line to `every mile, added` in `src` only. It is not on the
+known-reds list, and the unit that next touches Total Miles owns it under R12.
+
+### Where the carried items stand after unit 336
+
+- **Unit 335 item 1, the States next card's wording:** unchanged. The card still says `Any state
+  you have not worked` and `Hamlet cannot tell a caller's state`. Scoring `STATE` changed only the
+  earned cards in front of it.
+- **Unit 331 queue item 3, States scoring nought: ANSWERED by unit 336.**
+  - **What counts now.** `STATE` is read, and scores on a United States, Alaska or Hawaii record as
+    one of the fifty codes.
+  - **The fixture's numbers.** Of five records, 2 score, for 12 points, and the badge reads `2
+    worked`.
+  - **The item's worry, confirmed.** Hamlet's own entries carry no `STATE`, so they score none.
+  - The item stays in the queue as carried.
+- **Unit 331 queue item 2, the 1400 width arithmetic:** stands, and the outer `*,*` option stays
+  rejected. This unit's measurement updates its numbers:
+  - the card has 227 px inside at 1400 and 487 at 1920;
+  - the table now wants 338 px, so it sits under the map at both widths.
+  - See item 1 above.
+- **Unit 333 item 1, the Hall of Fame next-card collision:** untouched, and now joined by item 2
+  above on Modes.
+- **The status helper:** not tried. Every `UPDATED` in this unit is a `date` reading pasted whole,
+  and none was composed.
+- **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
+  the FT8 or PSK31 message split, or the transmit chain.
+
+### Carried from unit 335's section 4, per HM-DEC-139 - verbatim
+
+Headings under it are moved down one level so they sit inside this one; the words are unchanged.
+
+#### Raised by this unit
 
 **1. The States next card says `Hamlet cannot tell a caller's state`. That wording is the
 arbiter's proposal, marked for you, and shortened here to fit.**
@@ -574,7 +539,7 @@ one caller who earns two cards at once, and Continents could not do what R22 ask
 *Reasoning.* §12.6: do not repair unrelated things on the way past. The fix is one binding, and
 it belongs to a unit that is told to change the page.
 
-### Where the carried items stand after unit 335
+#### Where the carried items stand after unit 335
 
 - **Unit 333 item 1, the Hall of Fame next-card collision:** untouched. The next first is still
   chosen by `NextFirstOf`, and `A PSK31 contact` still shows where it is the only first left.
@@ -593,11 +558,11 @@ it belongs to a unit that is told to change the page.
 - **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
   a parser or the transmit chain.
 
-### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
+#### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-#### Raised by this unit
+##### Raised by this unit
 
 **1. At 1920 the green zone is 310 px tall, because the map keeps its shape as it takes the
 pills' width.**
@@ -635,11 +600,11 @@ back *requires approval*. Every `UPDATED` in this unit is a `date` reading paste
 was composed. The validator was run by the `.proj` route; its verdict is in the session
 transcript, not quoted here.
 
-#### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
+##### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-##### Raised by this unit
+###### Raised by this unit
 
 **1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and §3.1 say opposite
 things about one slot.**
@@ -689,7 +654,7 @@ Both are safe to delete by hand, beside the five carried in item 19 below. The v
 run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
 243 documented as mangled by Git Bash.
 
-##### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
+###### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
 **1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
 
@@ -764,7 +729,7 @@ this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pas
 unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
 launcher's and were not written.
 
-##### Carried from unit 331's queue, as unit 332 carried it - verbatim
+###### Carried from unit 331's queue, as unit 332 carried it - verbatim
 
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
@@ -943,7 +908,7 @@ session's own `tools\cut-header-action.py`.
 
 **All other items stand as unit 328 carried them.**
 
-##### Where the carried items stand after this unit
+###### Where the carried items stand after this unit
 
 - **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
   Every hover on every visible control was read in task 1 and none names PSK31, so it stays
@@ -955,7 +920,7 @@ session's own `tools\cut-header-action.py`.
   `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
   the two id schemes, the five files or step 6.
 
-#### Where the carried items stand after unit 334
+##### Where the carried items stand after unit 334
 
 - **Unit 333 item 3 and unit 331-queue item 19, the undeletable files:** now **thirteen**, and
   listed once in section 2. `Unit333ProbeTests.cs` is tracked, not untracked. None was left

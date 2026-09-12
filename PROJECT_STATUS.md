@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 2 of 3
 WORK_INSTRUCTION: 336 - the record is honest, and the layout settled
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T17:59:41-04:00
-NOTE: Task 2 done - ranks named by position with Rank n defaults, 23 of 23 keys documented, app set 46 of 49 (reds older), engine 41 of 41; committing and pushing
+UPDATED: 2026-09-12T18:07:16-04:00
+NOTE: Stopped at task 2 - tasks 0 to 2 pushed (38a1f0c), task 3 dropped as named: no one fraction holds 1400 and 1920. Step 2 partial, 2 of 4 met; output.md validated exit 0
 
 ---
 
