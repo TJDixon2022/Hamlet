@@ -687,8 +687,14 @@
     the tray mark is a feather drawn for its size. The sentence "Hamlet cannot work CW, PSK31
     and Voice yet" comes off the achievements window; it was false on two of the three.
   -->
+  <!--
+    1.13.17 -> 1.13.18, UNIT 333 TASK 0, UNDER HM-DEC-150 AND R7. A PATCH, AND STEP 5 AIMED AT
+    AGAIN: its four must-pass re-proved on the click-in achievements screen, the log and the
+    PSK31 records writing psk31 events (R13), and the ADIF export read back by a logger if one
+    is already on this machine.
+  -->
   <PropertyGroup>
-    <Version>1.13.17</Version>
+    <Version>1.13.18</Version>
   </PropertyGroup>
 
   <!--

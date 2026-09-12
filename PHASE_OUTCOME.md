@@ -7,7 +7,7 @@ STEP: 2 | done | Hear everyone - signals found across the passband, each with it
 STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
 STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
 STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-STEP: 6 | in progress | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+STEP: 6 | blocked | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
 ## UNIT 312 - STEP 0
 
@@ -448,3 +448,31 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio; this unit is carried repair on the screen he will judge it from and cannot close it.
+
+### ALSO RECORDED FOR UNIT 332 - STEP 6
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: make the achievements page eight badges with no scroller and a click-in category view with a back control and text that fits; make the green zone the world map with its computed night side and the operator's dot, the band big on the left and the pills and heard count on the right; draw the tray mark as a feather
+HIT: section 4 wants a ruling: banked - Rulings are wanted on the hover wording, the two unopened continent badges, the window width, the license line at 1400, whether step 5 is partial or done, and several carried items, but step 6 has one exit, which is Tim at the radio, so he can still work a station and repairs to the screen he will judge it from can continue without an answer.
+WHY: three rulings from the owner on unit 331's screen, none touching a step criterion; step 6 is his
+DECIDED: the category page layout, the twilight fade width, the rule-of-thumb wording and the feather path are the author's shapes marked for the owner; the terminator arithmetic is the unit's and is asserted against a hand-computed value
+LICENCE: PHASE_PLAN.md R12, R14, R16, R19; Tim 2026-09-12 as quoted; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1, 4
+COST: 32.58145499999999
+ACCOMPLISHED: the achievements window is a page of badges Tim can click into and back out of, the green zone shows him where the sun is and where he is, and the tray mark is a feather rather than an almond
+STATE_AFTER: blocked
+STATE_WHY: The only exit criterion is Tim saying it passed, the report shows no such statement, its entry needs step 5 done while PHASE_STATUS.md still marks step 5 partial, and no further unit work can close it without Tim at the radio.
+
+## UNIT 333 - STEP 5
+
+STEP: 5
+APPROACH: Re-prove step 5's four must-pass on the click-in achievements screen units 330 to 332 rebuilt, since none of them ran ThePsk31RecordsAppearTests; add the psk31 telemetry events for a logged PSK31 contact and for the records revealed (R13); and import the PSK31 ADIF export into a logger already on this machine, in a new empty log, for the nice-to-pass.
+MOVE: continue
+WHY: Step 6's entry is step 5 done. Three units of screen repair left criterion 3 unmeasured on the screen as it stands, R13's step 5 events unverified, and the nice-to-pass never attempted.
+DECIDED: A step 5 criterion found not holding on the rebuilt screen is fixed in passing under PHASE_PLAN.md section 6. A collision between Ruling C and ACHIEVEMENTS_PHILOSOPHY.md 3.1 is reported, not resolved. No logger is downloaded, installed or built. Task 4 is the drop candidate.
+LICENCE: PHASE_PLAN.md step 5 entry and exit, section 6, R12, R13, R14, R19; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.2, 4; Tim 2026-09-12 Ruling C; HM-DEC-018, HM-DEC-139, HM-DEC-155.
+COST: one session, five tasks, each committing on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+FATE: executed

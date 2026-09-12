@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 6 of 6
-WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
-BALL: tim
-NEXT_PASTE: output.md -> the arbiter
+STATE: EXECUTING
+TASK: 1 of 5
+WORK_INSTRUCTION: 333 - step 5 is proved on the screen Tim now has, the log and the records write themselves down, and a real logger reads the export
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T15:15:49-04:00
-NOTE: Complete - all six tasks, none dropped, each committed and pushed; carry-forward at the end app 100 of 100 and engine 85 of 85 after closing one red of this unit's own (five new events missing from the privacy walk). output.md validated: exit 0, all seven rules. Every UPDATED in this unit was read from the clock.
+UPDATED: 2026-09-12T15:24:36-04:00
+NOTE: Task 0 - carry-forward app came back 100 of 100 in 13 s; invocation 2 of 2 (engine project, 11 types) building and running now
 
 ---
 
