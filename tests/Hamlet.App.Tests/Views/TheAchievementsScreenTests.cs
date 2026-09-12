@@ -95,9 +95,6 @@ public sealed class TheAchievementsScreenTests
                 + (row.HasEvidence ? row.Evidence : "(nothing to show)"));
         }
 
-        _output.WriteLine("");
-        _output.WriteLine("unasked: " + screen.Honesty);
-
         // **THE COUNT IS THE RECORD COUNT AND NOT THE STATION COUNT** (Tim's
         // ruling). `W3YNI` is in there twice on purpose: a screen counting
         // stations would read 4.
@@ -219,9 +216,10 @@ public sealed class TheAchievementsScreenTests
         Assert.Equal(ModeFirstState.NotAContact, wspr.State);
         Assert.Equal("not a contact mode", wspr.Standing);
 
-        // **AND THE CARD SAYS IT UNASKED**, because a row he cannot fill in is a
-        // fault rather than a tip.
-        Assert.Contains("beacon", withOne.Honesty, StringComparison.Ordinal);
+        // **AND THE HOVER SAYS WHY.** The unasked sentence this asserted against
+        // came off the window in work instruction 332 task 0, because it named
+        // modes Hamlet now works; the reason a beacon is not a first is the row's own.
+        Assert.Contains("beacon", wspr.Why, StringComparison.Ordinal);
     }
 
     /// <summary>

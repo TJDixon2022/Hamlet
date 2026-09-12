@@ -309,45 +309,9 @@ public sealed class AchievementsViewModel
         => Firsts.Count(
             f => f.State is ModeFirstState.Earned or ModeFirstState.YoursToGo);
 
-    /// <summary>What the card says about the rows that cannot light.</summary>
-    /// <remarks>
-    /// <para>**IT SPEAKS UNASKED, BECAUSE IT IS A FAULT AND NOT A TIP** (Tim's
-    /// ruling: text only where he hovers, and a fault speaks unasked). A card with
-    /// five rows he cannot fill in reads as five things he has not got round to,
-    /// and that is not what it is.</para>
-    /// <para>**THIS IS §0.0 ON A CARD.** The exposure of an achievements screen is
-    /// an achievement claimed that was not earned, and its quieter twin is a row
-    /// that looks earnable and never can be. Both are the application being more
-    /// confident than its input allows.</para>
-    /// </remarks>
-    public string Honesty
-    {
-        get
-        {
-            var waiting = Firsts
-                .Where(f => f.State is ModeFirstState.WaitingOnHamlet)
-                .Select(f => f.Name)
-                .ToList();
-
-            if (waiting.Count == 0)
-            {
-                return "";
-            }
-
-            // **ONE LINE, AND THE SIX ROWS IT USED TO CAPTION ARE GONE** (work
-            // instruction 298 task 2). A card of six with one filled in is the wall
-            // §2 forbids; **the fact underneath it is not** - what Hamlet cannot yet
-            // do is a thing the application owes him, and it is said in a sentence
-            // rather than in four unearnable rows.
-            var named = waiting.Count == 1
-                ? waiting[0]
-                : string.Join(", ", waiting.Take(waiting.Count - 1))
-                  + " and " + waiting[^1];
-
-            return "Hamlet cannot work " + named + " yet, so nothing here is "
-                + "waiting on you for those.";
-        }
-    }
+    // **THE "HAMLET CANNOT WORK ... YET" SENTENCE IS GONE** (work instruction 332
+    // task 0). It named CW, PSK31 and Voice, and Hamlet works two of the three, so
+    // the window said a false thing unasked - the §0.0 fault it was written to avoid.
 
     /// <summary>Where the file is, so he can go and look.</summary>
     public string LogPath { get; init; } = "";

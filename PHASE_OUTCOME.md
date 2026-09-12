@@ -434,3 +434,17 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.
+
+## UNIT 332 - STEP 6
+
+STEP: 6
+APPROACH: Make the achievements page eight badges with no scroller and a click-in category view with a back control and text that fits; make the green zone the world map with its computed night side and the operator's dot, the band big on the left and the pills and heard count on the right; draw the tray mark as a feather.
+MOVE: continue
+WHY: Three rulings from the owner on unit 331's screen, none touching a step criterion; step 6 is his.
+DECIDED: The category page layout, the twilight fade width, the rule-of-thumb wording and the feather path are the author's shapes marked for the owner; the terminator arithmetic is the unit's and is asserted against a hand-computed value.
+LICENCE: PHASE_PLAN.md R12, R14, R16, R19; Tim 2026-09-12 as quoted in work instruction 332; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1, 4.
+COST: one session, six tasks, each committing on its own and dropping from the back.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio; this unit is carried repair on the screen he will judge it from and cannot close it.

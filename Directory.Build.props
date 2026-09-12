@@ -680,8 +680,15 @@
     ruled box, and the card's table did not fit beside the map at the panel width of the day,
     which the owner ruled on - the panels make room instead.
   -->
+  <!--
+    1.13.16 -> 1.13.17, UNIT 332 TASK 0, UNDER HM-DEC-150 AND R7. A PATCH, AND THREE OF THE
+    OWNER'S RULINGS ON UNIT 331'S SCREEN: the achievements page is eight badges that click in
+    rather than one scroller, the green zone is the world with its night side and his grid, and
+    the tray mark is a feather drawn for its size. The sentence "Hamlet cannot work CW, PSK31
+    and Voice yet" comes off the achievements window; it was false on two of the three.
+  -->
   <PropertyGroup>
-    <Version>1.13.16</Version>
+    <Version>1.13.17</Version>
   </PropertyGroup>
 
   <!--

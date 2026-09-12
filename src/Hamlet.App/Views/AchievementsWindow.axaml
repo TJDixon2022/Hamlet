@@ -300,15 +300,6 @@
                    FontSize="13" TextWrapping="Wrap" Margin="2,0,0,0"
                    Foreground="{StaticResource HmTextMutedBrush}" />
 
-        <!-- **A FAULT SPEAKS UNASKED** (Tim, 2026-09-08), and this is one: what
-             Hamlet cannot yet work is a thing the application owes him rather
-             than a thing he has not got round to. It is a sentence now and not
-             four unearnable rows. -->
-        <TextBlock x:Name="AchievementsHonesty"
-                   Text="{Binding Honesty}"
-                   FontSize="12" TextWrapping="Wrap" Margin="2,0,0,0"
-                   Foreground="{StaticResource HmAmberBrush}" />
-
 
                 <!-- ============ YOUR BEST ============ -->
                 <!-- **A COLLECTION AND NOT A LIST** (work instruction 300 task 3).

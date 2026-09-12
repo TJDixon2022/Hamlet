@@ -7,7 +7,7 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: $1
 TASK: $2
-WORK_INSTRUCTION: 330 - maintenance round one, and the achievements page
+WORK_INSTRUCTION: $(sed -n "s/^WORK_INSTRUCTION: //p" PHASE_STATUS.md)
 BALL: $3
 NEXT_PASTE: $4
 RULES_AT: HM-DEC-161 (2026-09-11)
