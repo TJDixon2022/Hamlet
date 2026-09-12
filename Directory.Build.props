@@ -650,8 +650,18 @@
     search have both lost it, so the six-times-a-minute death of a clean station at 2073 Hz on
     the operator's 2026-09-12 cannot happen for idling.
   -->
+  <!--
+    1.13.13 -> 1.13.14, UNIT 328 TASK 1, UNDER HM-DEC-150 AND R7. A PATCH, AND THE RECORD
+    CATCHES UP WITH THE TREE. Unit 326 built step 5 in full while it was called under step 4,
+    so the judge never graded step 5 and PHASE_STATUS.md still reads STEP: 5 | not started.
+    The carry-forward list run first as its own comment says, two invocations and one build
+    each, app 100 of 100 and engine 85 of 85 - 185 of 185 green before anything moved. This
+    unit reruns step 5's four must-pass and appends under step 5, and replaces the row mark's
+    18 px filled disc with the tray quill's vane at row scale. No production code moves in
+    this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.13</Version>
+    <Version>1.13.14</Version>
   </PropertyGroup>
 
   <!--

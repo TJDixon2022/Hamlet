@@ -360,3 +360,15 @@ ACCOMPLISHED: a station who pauses stays on Tim's list until he actually leaves,
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: The step's sole exit criterion is Tim's own verdict at the radio, and the unit performed only carried repair, stating plainly that step 6 is unchanged and his to close, so nothing has been done toward it.
+
+## UNIT 328 - STEP 5
+
+STEP: 5
+APPROACH: Two things, and neither is new building. First the record: unit 326 built step 5 in full while it was called under step 4, so the judge graded step 4 twice and never graded step 5, and PHASE_STATUS.md still reads STEP: 5 | not started while the tests that prove all four of its must-pass sit green in the tree. This unit reruns those four, filtered and foregrounded, quotes the value each one asserts, and appends the result under step 5. Second the mark: unit 327 answered "ugly and useless" with an 18 px filled disc, and Tim looked at it and said "so so so so so ugly". He was drawn three treatments and chose A - a thin quill in the gutter, the tray's vane at row scale, hairline and not filled, with a ring for a door.
+MOVE: continue
+WHY: The work behind step 5 is done and green and the record says not started, which is the same fault in the other direction from units 324 and 325 reciting step 4 as unmet without running the tests that guard it. Nothing in the phase stands between step 5 and Tim at the radio except a record that does not match the tree.
+DECIDED: The vane's size at row scale is this unit's to state from the tray's path in assets/achievement-quill.svg - the vane spans 28 units of the 44-unit box, so 12 px of drawn height is a scale of 0.4286, and the box stays at RowSide 18 so the hit target and the door's ring are unchanged. The test is rewritten for the new shape under R12. The STATE_AFTER and STATE_WHY lines below are written at task 3, against tests that ran in this session, and not at task 1 when this entry was appended - a state claimed before the measurement is the fault this phase has now hit twice.
+LICENCE: PHASE_PLAN.md step 5 entry and exit criteria, R1 to R19 with R12, R14 and R16 named; CLAUDE.md 0.5, 0.5.1, 0.6; Tim 2026-09-12 treatment A - thin quill in the gutter, ring for a door; HM-DEC-139, HM-DEC-150, HM-DEC-155, FACT-004, FACT-006.
+COST: one session, four tasks. The carry-forward list run first as its own comment says, two invocations and one build each, app 100 of 100 and engine 85 of 85 - 185 of 185 green before anything moved.
+ACCOMPLISHED: The mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says what the tree says, so the only step left in the phase is Tim at the radio.
+FATE: executed
