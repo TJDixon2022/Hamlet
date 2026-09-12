@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T22:41:34-04:00
-NOTE: Task 5 green at four of four. The first PSK31 contact reveals four records and none of them exists before it; TheAchievementsScreenTests is two red before and the same two after. Committing, then task 6.
+UPDATED: 2026-09-11T22:42:37-04:00
+NOTE: Task 5 committed and pushed. Task 6 running: the corpus only ever ends on K, KN and SK, so the turnover timing is being asserted on BTU and OVER as well, which R3 names and no transcript uses.
 
 ---
 

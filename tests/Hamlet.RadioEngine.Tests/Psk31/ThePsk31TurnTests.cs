@@ -276,6 +276,68 @@ public sealed class ThePsk31TurnTests
         Assert.True(worst <= 1, "the state changed " + worst + " characters after the turnover word");
     }
 
+    /// <summary>
+    /// **The nice-to-pass, on every turnover word the ruling names and not only the
+    /// ones the corpus happens to use.**
+    /// </summary>
+    /// <param name="word">The turnover word the other station ends on.</param>
+    /// <remarks>
+    /// <para>**WHAT THE CORPUS COVERS, MEASURED** (work instruction 326 task 1). The
+    /// assertion above walks the eight transcripts and its own printout names the words
+    /// it actually met: `K`, `KN`, `SK` and a lowercase `k`. **`BTU` and `OVER` are in
+    /// §R3 and are in no transcript's final position**, so the nice-to-pass was proved
+    /// on half the ruling's list. This is the other half, and the two it already
+    /// covered are here too rather than being assumed to stay covered.</para>
+    /// <para>**ONE SYNTHETIC OVER, NOT A NEW CORPUS** (§R14). The subject is the timing
+    /// of the indicator against one word, and a written transcript would prove nothing
+    /// that this does not - the corpus exists for the parse, which this does not
+    /// re-test.</para>
+    /// <para>**THE MESSAGE IS A CERTAIN ONE ADDRESSED TO THE OPERATOR**, because an
+    /// uncertain one must never read *your turn* at all (§R1) and would make this pass
+    /// for the wrong reason.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData("K")]
+    [InlineData("KN")]
+    [InlineData("BTU")]
+    [InlineData("OVER")]
+    public void EveryTurnoverWordTheRulingNamesMovesTheIndicatorWithinOneCharacter(string word)
+    {
+        const string Mine = "KC3QIS";
+
+        Assert.Contains(word, Psk31ExchangeParser.TurnoverWords);
+
+        var over = "KC3QIS de W1AW UR RST 599 599 KC3QIS de W1AW " + word;
+
+        // **ONE CHARACTER AFTER IT AND NOTHING MORE**, so what is measured is the
+        // indicator catching up rather than the next message arriving.
+        var steps = Walk(Mine, over + " ");
+
+        var lastOfTheTurnover = over.Length - 1;
+
+        var changed = steps
+            .Skip(lastOfTheTurnover)
+            .FirstOrDefault(s => s.Turn.State == Psk31TurnState.YourTurn);
+
+        Assert.True(
+            changed is not null,
+            "[" + word + "] never moved the indicator to your turn at all");
+
+        var after = changed!.At - lastOfTheTurnover;
+
+        _output.WriteLine(
+            "[" + word + "] your turn " + after + " character(s) after its last letter, "
+            + Describe(changed.Turn));
+
+        Assert.True(
+            after <= 1,
+            "[" + word + "] moved the indicator " + after + " characters after the word");
+
+        // **AND IT IS CERTAIN**, because a guessed your turn offers nothing and would
+        // make the timing meaningless (§R1, §0.0).
+        Assert.Equal(CertainYourTurn, changed.Turn);
+    }
+
     /// <summary>One character fed, and what was read after it.</summary>
     internal sealed record Step(
         int At, char Character, Psk31Message? Completed, IReadOnlyList<Psk31Message> Messages, bool Sending, Psk31TurnReading Turn);
