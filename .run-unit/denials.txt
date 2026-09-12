@@ -1,25 +1,17 @@
-﻿   Bash  {"command":"date -Iseconds","description":"Read the clock"}
-   Bash  {"command":"grep -n \"^    [A-Z][A-Za-z]*,$\" src/Hamlet.RadioEngine/Rig/RigField.cs","description":"List RigField members"}
-   Bash  {"command":"grep -nE \"^    [A-Za-z]+,$\" src/Hamlet.RadioEngine/Rig/RigField.cs","description":"List RigField members"}
-   Bash  {"command":"grep -n \",\" src/Hamlet.RadioEngine/Rig/RigField.cs | grep -v \"///\" | head -40","description":"List RigField members"}
-   Bash  {"command":"rm src/Hamlet.App/Telemetry/Psk31Macro.cs","description":"Remove the duplicate type"}
-   Bash  {"command":"git -C C:/Source/HamLet rm -f --ignore-unmatch src/Hamlet.App/Telemetry/Psk31Macro.cs 2\u003e\u00261; ls src/Hamlet.App/Telemetry/","description":"Remove untracked duplicate type file"}
-   Bash  {"command":"rm -f \"C:/Source/HamLet/src/Hamlet.App/Telemetry/Psk31Macro.cs\" \u0026\u0026 ls src/Hamlet.App/Telemetry/","description":"Delete the duplicate type file"}
-   Bash  {"command":"mv src/Hamlet.App/Telemetry/Psk31Macro.cs src/Hamlet.App/Telemetry/Psk31MacroTokens.cs \u0026\u0026 ls src/Hamlet.App/Telemetry/","description":"Rename the file"}
-   Bash  {"command":"git clean -f src/Hamlet.App/Telemetry/ 2\u003e\u00261; ls src/Hamlet.App/Telemetry/","description":"Clean untracked files in Telemetry folder"}
-   Bash  {"command":"git clean -f src/Hamlet.App/Telemetry/","description":"Remove untracked file in Telemetry folder"}
-   Bash  {"command":"sh tools/run-carry-forward.sh app 2\u003e\u00261 | tail -30","timeout":600000,"description":"Run app carry-forward tests"}
-   Bash  {"command":"sh tools/run-carry-forward.sh app | tail -30","timeout":600000,"description":"Run app carry-forward tests"}
-   Bash  {"command":"sh tools/run-carry-forward.sh app","timeout":600000,"description":"Run app carry-forward tests"}
-   Bash  {"command":"git reset -q SESSION.lock .run-unit \u0026\u0026 git status --short","description":"Unstage launcher files"}
-   Bash  {"command":"git reset -q SESSION.lock .run-unit","description":"Unstage launcher files"}
-   Bash  {"command":"python -c \"\nimport json\nd=json.load(open(\u0027assets/fixtures/psk31-transcripts/corpus.json\u0027))\nprint(d.get(\u0027operator\u0027))\nfor t in d[\u0027transcripts\u0027]:\n    print(\u0027---\u0027,t[\u0027name\u0027])\n  ...(truncated)
-   Bash  {"command":"perl -0pi -e \u0027s/            radio = GiveItARadio\\(model\\);/            radio = GiveItARadio(model, telemetry);/g\u0027 tests/Hamlet.App.Tests/ViewModels/ThePsk31CqGoesOutTests.cs \u0026\u0026 grep -n \"GiveItARadio(\" tes ...(truncated)
-   Bash  {"command":"python3 - \u003c\u003c\u0027PY\u0027\nimport re,io\np=\u0027src/Hamlet.App/ViewModels/MainWindowViewModel.cs\u0027\ns=open(p,encoding=\u0027utf-8-sig\u0027).read()\nold=\"Ft8ContactCard.ForPsk31(station, turn, _settings.Operator ...(truncated)
-   Bash  {"command":"cmd.exe /c \"tools\\\\arbiter\\\\validate-output.bat output.md\" 2\u003e\u00261 | tail -25","timeout":180000,"description":"Validate the report"}
-   Bash  {"command":"cmd.exe /c \"tools\\arbiter\\validate-output.bat output.md\"","timeout":180000,"description":"Validate the report"}
-   Bash  {"command":"tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Run the output validator"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","timeout":180000,"description":"Run the output validator"}
-   Bash  {"command":"powershell -NoProfile -Command \"Write-Output \u0027ok\u0027\"","timeout":120000,"description":"Check PowerShell availability"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat\" output.md","timeout":180000,"description":"Run the validator via cmd"}
-   Bash  {"command":"head -27 output.md | grep -nE \"_PENDING|PENDING_|TBD|TODO|FIXME|XXX|\u003cFILL|FILL IN\u003e|PLACEHOLDER\"; echo \"exit $? (1 = no match = clean)\"","description":"Rule 7 over the whole header block"}
+﻿   Bash  {"command":"grep -n \"^#\\{1,3\\} \" CLAUDE_CODE.md | head -40","description":"List CLAUDE_CODE.md headings"}
+   Bash  {"command":"git log --format=\"%h|%s\" --follow -- docs/carry-forward-tests.txt | while IFS=\u0027|\u0027 read h s; do echo \"=== $h $s\"; git show $h -- docs/carry-forward-tests.txt | grep \"^+[A-Za-z]\" ; done 2\u003e\u00261 | head -80"," ...(truncated)
+   Bash  {"command":"for h in 98d9e21 524bb20 e386407 0f3310e 4239e29 4dbffda 06325e9 3449057 900885f e247547 30d5c78 132995f eb67036 4895907 2428e22; do echo \"=== $h\"; git show $h -- docs/carry-forward-tests.txt | grep \"^+[A-Za-z]\"; done","desc ...(truncated)
+   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c \u0027EOF\u0027\n\n## UNIT 324 - STEP 4\n\nSTEP: 4\nAPPROACH: Checked the four gate facts, read the PSK31 receive path end to end against the instruction before changing a line, the ...(truncated)
+   Bash  {"command":"git reset -q .run-unit SESSION.lock \u0026\u0026 git commit -q -m \"$(cat \u003c\u003c\u0027EOF\u0027\nchore(unit324): task 1 - the carry-forward list stops being a suite\n\n46 named types cut to 23, run as two invocations - one ...(truncated)
+   Bash  {"command":"git reset -q .run-unit SESSION.lock","description":"Unstage launcher files"}
+   Bash  {"command":"grep -rln \"psk31-four-signals\\|assets/fixtures\\|assets\\\\\\\\fixtures\" --include=*.cs --include=*.py --include=*.md tests src tools docs 2\u003e/dev/null | head -20","description":"Find fixture makers"}
+   Bash  {"command":"python --version 2\u003e\u00261; python -c \"import numpy; print(numpy.__version__)\" 2\u003e\u00261","description":"Check Python and numpy"}
+   Bash  {"command":"python -c \"import numpy, sys; print(sys.version); print(numpy.__version__)\"","description":"Check Python and numpy versions"}
+   Bash  {"command":"python -c \"import numpy; print(numpy.__version__)\"","description":"Check numpy availability"}
+   Bash  {"command":"printf \u0027import numpy\\nprint(numpy.__version__)\\n\u0027 \u003e /tmp/checknp.py \u0026\u0026 python /tmp/checknp.py","description":"Check numpy via script file"}
+   Bash  {"command":"python checknp.py","description":"Run numpy check script"}
+   Bash  {"command":"HAMLET_MAKE_FIXTURES=1 timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit324Fixtures\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -i \"err ...(truncated)
+   Bash  {"command":"env HAMLET_MAKE_FIXTURES=1 timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit324Fixtures\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -i \ ...(truncated)
+   Bash  {"command":"rm checknp.py","description":"Remove the scratch python check"}
+   Bash  {"command":"git clean -f checknp.py","description":"Remove untracked scratch file"}
+   Bash  {"command":"rm -f /c/Source/HamLet/checknp.py","description":"Remove scratch file via posix path"}

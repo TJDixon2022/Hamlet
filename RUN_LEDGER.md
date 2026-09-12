@@ -120,3 +120,5 @@ the owner reads instead of watching.
 | phase | 2026-09-11T17:55 | 2026-09-11T17:55 | halted | 0 | the run could not take the session lock |
 | 1 | 2026-09-11T18:09 | 2026-09-11T18:58 | complete | 54.71674749999996 | ran unattended, 379 turns, 25 denied call(s) worked around, report valid |
 | phase | 2026-09-11T19:00 | 2026-09-11T19:00 | halted | 54.7167 | backstop: 1 iterations, no stop condition fired |
+| 1 | 2026-09-11T19:26 | 2026-09-11T20:15 | complete | 47.65027650000001 | ran unattended, 344 turns, 17 denied call(s) worked around, report valid |
+| phase | 2026-09-11T20:15 | 2026-09-11T20:15 | halted | 47.6503 | backstop: 1 iterations, no stop condition fired |

@@ -255,3 +255,19 @@ ACCOMPLISHED: The list that killed the last unit stops being a suite. The PSK31 
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: STEP 4 HAS ITS TWO MEASUREMENTS AND ONE OF THEM ENDS IN AN ASK. The bandwidth is measured and stated at 55.7 Hz, under the criterion's 100. The ALC read is built, cited and proved as far as the poll - it is asked for only while a send is keyed and nothing asks for it at rest - but the manual gives no figure for where the ALC zone ends on the meter's 0-120 scale, so unit 323's invented 128 is gone and no number replaces it. Hamlet reports the reading and does not judge it. The judging sentence is built and fires the day the owner rules a threshold. And nothing on this machine has a radio, so the read is proved to the poll and stops there.
+
+### ALSO RECORDED FOR UNIT 324 - STEP 4
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: resample the PSK31 path to 8 kHz at the audio boundary, retire carriers on signal loss rather than silence, show heard-not-readable carriers dimmed, cut the carry-forward list to one invocation of at most twenty types, and measure the bandwidth and add the manual's ALC read
+HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC zone figure, the heard-not-readable row and the carry-forward cap, but only the ALC number stalls a single step 4 exit criterion whose judging sentence is already built and waiting on one value, while the rest of step 4 stays open at the bench, including the turnover timing nice-to-pass, the remaining telemetry call sites and the row choice the unit says nothing depends on.
+MOVE: continue
+WHY: the record from the owner's evening shows a real carrier found every time and killed after 1.9 s with no characters, because the path runs at 48 kHz against an 8 kHz demodulator and retires on silence; and unit 323 died in a 41-type carry-forward run - both are repaired here before the door opens in 325
+DECIDED: the passband is 200-3000 Hz from the mode, not the rate; the retire-on-signal-gone pass count is the unit's to state; the heard-not-readable dimmed row is the author's choice marked for the owner
+LICENCE: PHASE_PLAN.md R9, R13, R14; Tim 2026-09-11 nothing on the radio; CLAUDE.md 0.0, 0.1; HM-DEC-155 and the watchdog
+COST: 47.65027650000001
+ACCOMPLISHED: the station Tim heard at 893 Hz on 14.070 becomes a row with its text and stays while it is sending; and step 4 gets its two missing numbers
+STATE_WHY: Only two of the exit criteria are supported by measurement, the bandwidth at 55.7 Hz at minus 30 dB and the ALC read on its 0 to 120 scale, while the macro loopback, the CQ receipt and its retirement, the one click offer on certainty, the turn indicator, the no slot cap refusal and the judging half of the R11 power criterion are all still unmet, the last of these awaiting a zone ruling.

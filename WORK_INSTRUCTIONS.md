@@ -1,10 +1,8 @@
-# Work instruction 324 - PSK31 hears real air
+# Work instruction 325 - the screen says what is true
 
-**Seed for the relaunch under `--seed`.** Unit 323's first run was killed by the watchdog
-at task 1 inside a 41-type carry-forward run; its second run completed - **the door is
-open, all four macros go on the air, step 4 is `partial`** on two missing measurements.
-This unit is small on purpose: the receive path on real air, the carry-forward list, and
-the two measurements that make step 4 `done`. **Four tasks.**
+**Seed under `--seed`.** Six things Tim saw at the radio on 2026-09-11, now ruled, all on
+the digital screen PSK31 shares with FT8 - plus the one number that makes step 4 `done`.
+**Six tasks, each small. Write status before every `dotnet` command.**
 
 ---
 
@@ -23,60 +21,38 @@ else.** The refusal text: *This is not Hamlet. Nothing was changed.*
 
 ---
 
-## 1. The rules that killed sessions - one of them killed the last one
+## 1. The rules that killed sessions
 
-**HM-DEC-155, Tim, 2026-09-05.** A unit runs no test suite; only its own names and the
-carry-forward list, filtered, foregrounded, with a timeout. Never background and poll.
-
-**The watchdog kills a session after twelve minutes with no write to `PROJECT_STATUS.md`.
-It measures silence, not progress.** Unit 323 wrote one status at 17:43, then started 41
-separate `dotnet test` runs - 41 builds - and was killed at 17:55 having done nothing
-wrong except obey its instruction. So, in this unit and every one after:
-
-- **Write `PROJECT_STATUS.md` immediately before every `dotnet test` and every `dotnet
-  build`**, saying which. Not before the first one - before each one.
-- **The carry-forward list runs as one invocation per test project**, with the names
-  joined into a single `--filter`:
-  `--filter "FullyQualifiedName~TypeA|FullyQualifiedName~TypeB|..."`. One build, not
-  forty. Timeout 480 s.
-- **If any single command could exceed eight minutes, split it or skip it and say so.**
+**HM-DEC-155.** No suite; only this unit's names and `docs\carry-forward-tests.txt` -
+**26 types, two builds, run exactly as the comment at the top of that file says.** Never
+background and poll. **The watchdog kills at twelve minutes of silence: write
+`PROJECT_STATUS.md` immediately before every `dotnet test` and `dotnet build`.**
 
 ---
 
 ## 2. The tool fact
 
 **The shell breaks on an apostrophe inside a quoted heredoc and collapses a doubled
-backslash.** Write *do not*; write single backslashes; check what landed on disk.
-**Compound commands joined by `;` are refused; run them one at a time.**
+backslash.** Write *do not*; single backslashes; check what landed. **Commands joined by
+`;` are refused.** This environment **cannot delete or rename files** - if a file must
+go, empty it, leave a one-line comment, and raise it.
 
 ---
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139 from unit 322's queue. **Every item comes back in section 4,
+Carried per HM-DEC-139 from unit 324's queue. **Every item comes back in section 4,
 verbatim where unresolved.** Closed by ruling tonight, report as closed:
 
-- **Item 43** drive and power - **closed by §R11.** **Item 45** the pins - **closed by
-  §R12.** **Items 32, 33** the manual pages - **closed**, in `docs\psk31-reference.md`.
-- **The quill cap of two** - **withdrawn by Tim, 2026-09-11**: *"I do not mind lots of
-  achievement markers. It gives me an idea there is a lot to do."* Every qualifying
-  station is marked. Not this unit's to build; carry to 326.
+- **Unit 324 item 1**, the ALC zone - **closed by §R15**, task 6 builds it.
+- **Unit 324 item 2**, the *heard, not readable yet* row - **accepted by Tim**; stays.
+- **The quill cap**, **collapsed panels**, **the filter**, **the waiting card**, **spelling**
+  - ruled §R16-§R19; this unit builds them.
 
-New from Tim's evening at the radio, 2026-09-11, banked for units 324-326:
-
-1. **PSK31 runs at 48 kHz and was proved at 8 kHz.** **This unit, task 2.**
-2. **A collapsed panel with content is unmistakable.** Unit 326.
-3. **The CQ / Everything filter is always visible**, on an empty list too. Unit 326.
-4. **Retire a PSK31 carrier when the signal goes, not when the text pauses.** **This
-   unit, task 3.**
-5. **A carrier heard but not readable shows dimmed** - author's choice. **Task 3.**
-6. **After you transmit to a station, the card waits on him from your transmission**, one
-   full slot at least, undimmed. Unit 326.
-7. **Two forms of the quill**: counters still in green; doors spinning in **orange**. Unit 326.
-8. **American spelling** in every operator-facing string. Unit 326 sweeps; **this unit
-   writes American.**
-
-All others as unit 322 carried them.
+Still open: unit 324 item 3 (the carry-forward cap of twenty versus 23 keep-rules -
+**the list is 26, leave it**); item 4 (why a 62 dB carrier failed the keying-shape test -
+**only a recording answers it**); item 5 and unit 323's item 51 (files that could not be
+deleted); unit 323's items 48, 49, 52; everything from unit 322's queue.
 
 ---
 
@@ -84,242 +60,233 @@ All others as unit 322 carried them.
 
 ```
 PHASE GOAL: Hamlet works PSK31 the way it works FT8.
-UNIT GOAL:  A real PSK31 station on 14.070 becomes a row with text. Tonight it
-            appears for two seconds with no text and vanishes. Then the
-            carry-forward list stops being a suite, so the next unit lives.
-ADVANCES:   Step 2's exit on real air; step 4 from partial to done if task 4
-            lands its two measurements.
-DRIFT:      0 carried from unit 323.
+UNIT GOAL:  The digital screen tells the truth about what it holds - a folded
+            panel says what is in it, the filter is always there, a card you
+            just called waits instead of giving up, every achievement worth
+            chasing is marked and the two kinds look different - and step 4
+            gets its last number without Tim reading a meter.
+ADVANCES:   Step 4 to done if task 6 lands. The screen items are carried
+            repair on the shared FT8/PSK31 surface.
+DRIFT:      0 carried from unit 324.
 ```
 
-**Read from `%AppData%\Hamlet\telemetry\2026-09-11.jsonl`, sessions at 21:32 and 21:50,
-version 1.13.8.** Tim on 14.070 with the app up:
+**What Tim saw, 2026-09-11, with the file to prove it:**
 
-- `psk31_listening_started`: **`sampleRate: 48000`, `passbandLowHz: 64`, `passbandHighHz:
-  23936`.** The PSK31 path is taking the audio device's native rate. `Psk31Demodulator`
-  and `Psk31CarrierSearch` were built and proved at **8000** - 256 samples per bit. At
-  48 kHz every bit is 1,536 samples and nothing lines up.
-- A real, strong carrier at **893 Hz**, 62-66 dB over the floor, appeared three times in
-  a minute. **Each time: retired after 1.9 s, reason `LostLock`, 0 characters, 0 lines.**
-  Fourteen minutes earlier: **17 carriers appeared, 0 characters emitted.**
-- Why 1.9 s: `retireSeconds: 1`. The retire rule is *one second since the last
-  character*. No character can arrive at the wrong rate, so every carrier is born and
-  killed a second later. Tim: *"PSK is showing something in decoded but for only 2ish
-  seconds then it all disappears."*
-
-**Both faults are Hamlet's. Nothing about the radio, the level, or the band.** The search
-found the station every time. That is what unit 322's telemetry was for, and it worked on
-its first real evening.
+- FT8 and FT4 "no longer worked." They were decoding - 31 rows on the table - into a
+  panel he had collapsed two seconds earlier, and nothing on the screen said so.
+- The CQ / Everything choice was not on the screen until something decoded, so he could
+  not set it before the first slot.
+- He answered D2IM at 21:56:15; 23 seconds later the card said *Gone quiet*, dimmed,
+  because it was counting from D2IM's last message and not from Tim's call.
+- Nine of fourteen rows carried the quill, two of them spinning - the cap of two showing
+  as *two held, the rest passive*. He wants them all, and he wants the two kinds told
+  apart.
+- Every instruction to date was written British and the copy may be too.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-**Names from units 314-322's reports.** Check; **report every mismatch; do not repair this
+**Names from units 305-324's reports.** Check; **report every mismatch; do not repair this
 instruction; do not stop over a mismatch** unless a task is impossible.
 
-- `PHASE_PLAN.md` at the root carries §R11-§R14. If not, **stop and say so.**
-- `PHASE_OUTCOME.md` carries two `UNIT 323 - STEP 4` entries - the killed run and the
-  completed one. **Leave both; append 324 after them.**
-- Unit 323's items 47-53: no CI-V read for the ALC; the press events' order; the
-  `no_transmit_path` token; `Psk31Macro.cs` misnamed; the version at 1.13.9; the
-  validator not runnable. **Task 4 closes 47; the rest are carried.**
-- Where the PSK31 path takes its audio: the source the FT8 decoder is fed from, its
-  rate, and where `Psk31CarrierSearch` and each `Psk31Demodulator` receive samples.
-  Whether the FT8 path resamples for `Ft8Sharp` and how.
-- `Psk31Demodulator` - its samples-per-bit, its filters, its AFC, `SquelchQuality`.
-  `Psk31CarrierSearch` - its window, `SignalHalfWidthHz`, `CandidateRatio`,
-  `DynamicRangeDb`, and how the passband bounds are derived (today: from the rate).
-- The retire rule and `retireSeconds`; `psk31_carrier_retired` and its reasons;
-  `psk31_lock` (a proxy for *producing characters*).
-- The PSK31 row type and how a row is shown, dimmed, retired.
-- `docs\carry-forward-tests.txt` as it stands - **41 types**.
-- Fixtures: `assets\fixtures\psk31-four-signals.wav` (8 kHz), `psk31-noise-only-30s.wav`,
-  `manifest-step2.json`.
-- Tests: `ThePsk31DemodulatorTests`, `ThePsk31CarrierSearchTests`,
-  `ThePsk31HearsEveryoneTests`, `ThePsk31TelemetryTests`, `ThePsk31PanelSpeaksPsk31Tests`,
+- `PHASE_PLAN.md` carries §R15-§R19. **If not, stop and say so.**
+- The two digital panels - *Decoded text*, *For you* - their collapse state, what
+  persists it, `panel_toggled`; the filter chips (`everything`, `CQ`) and what hides them.
+- `DigitalCards.Clear()` and the per-slot card rebuild (unit 313's root); unit 314's
+  replace-in-place for the PSK31 row; the FT8 conversation card's *Waiting on him* /
+  *Gone quiet* states and what clock they read; `RowOpacity` 0.55.
+- The nudge: `NudgeSet`, `IsNudged`, `NudgeIsDoor`, `RowLift`, the quill and the orbit
+  ring (unit 300), the cap of two and where it is counted.
+- `RigField.Alc`, the `15 13` read unit 324 added and its PSK31-send-only gate,
+  `MainWindowViewModel.Psk31AlcZone` (empty), the FT8 send path where the same read can
+  be taken.
+- `VoiceTests`; every operator-facing string.
+- Tests: `TheCqListNudgeTests`, `TheNudgeHoverTests`, `ThePressingOfCqTests`,
+  `TheCqReceiptTests`, `ThePanelHoldsThemAllTests`, `ThePanelScrollsTests`,
+  `TheAlcIsReadTests`, `ThePowerIsOfferedTests`,
   `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`.
 
 ---
 
 ## 6. Rulings in force
 
-**`PHASE_PLAN.md`** §R1-§R14, unchanged. In particular **§R9**: a character the
-demodulator is not sure of is not shown. **§R13**: every stage writes its event. **§R14**:
-tests prove criteria and nothing beyond.
+**`PHASE_PLAN.md` §R15-§R19**, tonight. **§R11-§R14** unchanged. **§R12**: a session
+rewrites its own tests; never asks. **§R14**: tests prove criteria and nothing beyond.
+**§R13**: every new stage writes its event.
 
-**Tim, 2026-09-11:** *"Nothing on the radio."* The operator adjusts nothing; Hamlet
-adapts to the rate it is given.
-
-**§0.0 / HM-DEC-092** - a row that appears is a row Hamlet is sure is a carrier; a row
-Hamlet can hear but not read says so in words, not by looking like a readable one.
-**§0.1** - the engine takes samples and a rate; it does not know about devices or tabs.
-**§0.2** - nothing in this unit touches transmit. **HM-DEC-018, §2.1** - nothing personal
-in an event. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**, **the dummy load
-withdrawn in full.**
+**§0.6** - color is never the only carrier. **§0.5 / HM-DEC-012** - family color is text,
+never a fill. **§0.0** - a picture binds as hard as a sentence: a folded panel that
+looks empty is a false claim. **§0.2** - nothing here touches what keys. **HM-DEC-111** -
+a reading carries its age. **HM-DEC-018, §2.1** - nothing personal in an event.
+**`ACHIEVEMENTS_PHILOSOPHY.md`** §3.6 the nudge, §3.1 absent not dimmed - a door is
+marked and never named. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**, **the
+dummy load withdrawn in full.**
 
 ---
 
 ## 7. Status cadence
 
 `PROJECT_STATUS.md`: **after every task, at least every ten minutes, and immediately
-before every `dotnet test` and `dotnet build`.** The watchdog fires at twelve minutes of
-silence. **This is the rule that killed unit 323.**
+before every `dotnet test` and `dotnet build`.**
 
 ---
 
 ## 8. The tasks
 
-Four. Each names the test to watch failing first and one drop candidate.
+Six. Each names the test to watch failing first and one drop candidate. **Drop from the
+back, but task 6 is the step-4 number - if time is short, drop 4 and 5 before 6.**
 
-### Task 1 - the carry-forward list stops being a suite
+### Task 1 - a folded panel says what it holds
 
-**1a.** Append `UNIT 324` to `PHASE_OUTCOME.md` under step 4. Patch-bump the version.
+**§R17.** Append `UNIT 325` to `PHASE_OUTCOME.md`; patch-bump; run the carry-forward list
+as its comment says, status first.
 
-**1b. Prune `docs\carry-forward-tests.txt` to no more than twenty types.** Keep: every type
-that guards the transmit chain (`TheUnslottedSendTests`,
-`TheFt8AndFt4SendsAreByteIdenticalTests`, `ThePsk31ConversationCardTests`,
-`ThePressingOfCqTests`, `TheCqReceiptTests`); every PSK31 type from units 314-322;
-`BindingHealthTests.TheMainWindowBindsWithoutOneComplaint`; `CallsignPrivacyTests`. Drop
-the rest and **record every dropped name in `docs\carry-forward-dropped.txt` with the
-unit that added it**, so nothing is lost, only not re-run. Known reds never on either.
+Then: a collapsed *Decoded text* header reads **`31 stations decoded · click to show
+them`**, the count live, ticking as slots land. A collapsed *For you* header reads the
+same shape - **`1 station calling you · click to show`**. While rows arrive into a
+collapsed panel, the header text takes the family color until it is opened. **Neither
+panel opens collapsed at startup**, whatever was remembered. In the voice the panels
+already use; `VoiceTests` runs.
 
-**1c. Write the one-invocation form** at the top of `carry-forward-tests.txt` as a comment:
-the exact `dotnet test` line per project with the combined filter, so no future session
-runs it forty times.
+**Test watched failing first:** `TheFoldedPanelSaysWhatItHoldsTests`, app. Watch it fail,
+then green: the count in the header matches the rows; it changes when a slot lands; the
+header carries the family color only while collapsed with content; both panels open at
+startup regardless of the remembered state; `BindingHealthTests` green.
 
-**1d. Run it that way, once, before anything changes.** Status write first. Report the
-count and the wall-clock seconds. **If it exceeds six minutes, prune harder and say so.**
-
-**Test watched failing first:** none.
-**Drop candidate:** none. **Not droppable** - it is why 323 died.
+**Drop candidate:** the family-color-while-arriving. Keep the count and the sentence.
 
 ---
 
-### Task 2 - the PSK31 path runs at the rate it was proved at
+### Task 2 - the filter is always there
 
-**The rule.** The PSK31 path receives samples at **8,000 Hz**, whatever the device gives.
-Resample once, at the boundary where the device's audio enters the PSK31 path - the same
-place the FT8 path adapts for `Ft8Sharp`, if it does; report how FT8 does it and copy the
-shape. `Psk31CarrierSearch` and `Psk31Demodulator` are **not changed** to take 48 kHz;
-they are proved at 8 and stay at 8. The passband bounds come from the mode - **200 to
-3,000 Hz** - not from the rate.
+**§R17.** The `everything` / `CQ` chips render on an empty list and are usable before
+the first decode. The choice is remembered across a mode change.
 
-**Telemetry (§R13).** `psk31_listening_started` gains `deviceSampleRate` beside
-`sampleRate`, and the resampler's ratio. `passbandLowHz`/`HighHz` read 200 and 3000.
+**Test watched failing first:** `TheFilterIsAlwaysThereTests`, app. Watch it fail, then
+green: chips present with zero rows; choosing CQ before any decode filters the first
+slot's rows; switching PSK31 to FT8 keeps the choice.
 
-**Test watched failing first:** `ThePsk31PathRunsAtItsRateTests`, app. Watch it fail, then
-green:
-
-1. the four-signal fixture, **resampled to 48 kHz on the way in** (the unit makes that
-   file from the 8 kHz one and records its hash in `manifest-step2.json`), yields the same
-   four carriers within 5 Hz and each decodes its text at or under 0.10 on its span
-2. the noise-only fixture at 48 kHz yields zero carriers
-3. `psk31_listening_started` reports `deviceSampleRate: 48000`, `sampleRate: 8000`,
-   passband 200-3000
-4. `ThePsk31DemodulatorTests` and `ThePsk31CarrierSearchTests` still green, **unedited**
-
-**Drop candidate:** none. **Not droppable.**
+**Drop candidate:** the remembered-across-modes assertion.
 
 ---
 
-### Task 3 - a carrier lives while the signal does
+### Task 3 - a card you just called waits on him
 
-**The retire rule.** A carrier is retired when **the search no longer finds it** - the
-candidate at its offset is gone or under the candidate bar for a stated number of
-consecutive passes - **not when characters stop.** A PSK31 station idling between words
-is a steady carrier with no characters for seconds at a time. **State the number of
-passes and why.** Reasons: `SignalGone`, `ListeningStopped`. `LostLock` as a retire
-reason goes away; *not producing characters* is a state of a live carrier, not its death.
+**§R18.** After the operator transmits to a station, his card is **Waiting on him**,
+undimmed, and the clock that decides *Gone quiet* starts at the operator's transmission.
+*Gone quiet* fires only after **at least one full slot** in which he could have answered
+and did not - FT8 15 s, FT4 7.5 s, PSK31 a stated equivalent since it has no slots (the
+unit states it; the author suggests the length of the macro he would send back).
 
-**The row.** A held carrier whose squelch is closed - Hamlet can hear it, cannot yet read
-it - **shows as a row, dimmed to unit 279's 0.55, with the words *heard, not readable
-yet* in place of text**, and no offset-strength beyond what a readable row shows. When
-the squelch opens and characters arrive, the row lifts and fills. **Author's choice,
-marked as such; Tim may overrule.** It exists so an empty list and a band full of signals
-Hamlet cannot read look different.
+**The root.** Unit 313 found the cards are rebuilt from scratch every slot
+(`DigitalCards.Clear()`), which is why per-card state such as *when did I last call him*
+does not survive. **Fix the root here: cards are keyed by station and updated in place;
+a card is created when its station first appears and removed when the conversation ends
+or is dismissed.** Unit 314's replace-in-place for the PSK31 row is the shape. Report
+what else this fixes - the popup closing itself every slot, the card jumping under the
+pointer.
 
-**Rename `psk31_lock` to `psk31_reading`**, since that is what it measures.
+**Test watched failing first:** `TheCardWaitsOnHimTests`, app. Watch it fail, then green:
 
-**Test watched failing first:** `ThePsk31CarrierLivesTests`, app. Watch it fail, then
-green:
+1. call a station whose last message is 90 s old; the card reads *Waiting on him*,
+   undimmed, for the full slot after the send
+2. one full slot with nothing from him: *Gone quiet*, dimmed
+3. his reply inside that slot: the card advances and never showed *Gone quiet*
+4. a card object survives three slot rebuilds unchanged in identity; its `MapIsOpen`
+   survives with it
+5. `ThePanelHoldsThemAllTests` and `ThePanelScrollsTests` still green
 
-1. a fixture with a 6-second idle gap in the middle of a signal (the unit makes it from
-   the reference convention and records its hash) keeps **one** carrier across the gap,
-   retired once at the end with `SignalGone`
-2. the four-signal fixture retires four carriers, each with `SignalGone`, none with a
-   lifetime shorter than its signal
-3. a held carrier with the squelch closed shows a dimmed row with the *heard* words and no
-   text; when the squelch opens, the row lifts and text arrives
-4. `psk31_reading` exists and `psk31_lock` does not; the privacy scan still green
-
-**Drop candidate:** assertion 3, the dimmed row. Keep the retire rule.
+**Drop candidate:** assertion 4's `MapIsOpen`. Keep identity.
 
 ---
 
-### Task 4 - the two measurements that make step 4 done
+### Task 4 - every quill, two kinds
 
-**The state judge marked step 4 `partial` for two things, both measurements.**
+**§R16.** The cap of two comes off: **every station on the list that would earn anything
+is marked.** Two forms:
 
-**4a. Occupied bandwidth, stated and measured.** Step 4's exit says *occupied bandwidth
-stated, under 100 Hz at -30 dB*. Modulate the CQ macro at 8 kHz, take its spectrum, and
-report the width at -30 dB below the peak as a number in the report and in the test.
-`ThePsk31ModulatorTests` gains one assertion.
+- **counter** - new country, state, grid; nothing opens: the still quill, decode green
+  `#3B6D11`, as now
+- **door** - a first contact that opens a set: the quill with unit 300's orbit ring,
+  **spinning, orange** - the orange from the palette the app has; name which, and it is
+  not the mustard ruled out for the tray
 
-**4b. The ALC has a read.** Unit 323's item 47: `RigField.Alc` exists and nothing fills
-it. **The command is in the manual: CI-V command `15`, sub-command `13`, *Read ALC meter
-level*, `00 00` = minimum to `01 20` = maximum - BCD, so the scale is 0 to 120.** Section
-19 of the IC-7300 full manual, the CI-V command table, beside `15 11` (PO meter) and
-`15 12` (SWR) which the tree already reads. Add the read to the poll **during a PSK31
-send only**, cite it in `docs\psk31-reference.md`, and replace unit 323's zone figure of
-128 - which was invented - with the manual's scale. **The zone itself**: the manual does
-not give a number for data modes beyond *within the ALC zone*; **use the meter's marked
-zone as the IC-7300 draws it, and if that cannot be sourced from the manual, say so and
-leave the threshold as an ask rather than inventing a second number.** With the read in
-place the sentence and the event unit 323 built can fire on a real radio. On this machine
-there is no radio; prove the read reaches the poll and stops there.
+Shape differs as well as color (§0.6). The hover already says *new country* or *would
+open something new*; unchanged. The sticky-per-station rule stays; only the cap goes.
 
-**Test watched failing first:** the modulator assertion, and `TheAlcIsReadTests`, app:
-the poll issues `15 13` only while a PSK31 send is keyed, never otherwise; the reading
-is decoded from BCD on the 0-120 scale; with no radio the reading is absent and the
-record says `measured: false`.
+**Test watched failing first:** `TheCqListNudgeTests`, rewritten under §R12 for the
+withdrawn cap. Watch it fail, then green: fourteen qualifying rows, fourteen marks; a door
+row carries the ring and the orange and spins; a counter row carries the still green
+quill; a worked station carries neither; no area is named on a door.
 
-**Drop candidate:** 4b. Keep the bandwidth measurement; carry item 47.
+**Drop candidate:** the spin. Keep ring plus orange.
+
+---
+
+### Task 5 - American spelling
+
+**§R19.** Every operator-facing string, every `VoiceTests` fixture, every hover, every
+panel line: `color`, `neighborhood`, `gray`, `center`, `recognize`, `catalog`, and the
+rest. **Not code identifiers, not rulings quoted from Tim, not the plan's own text.**
+Report the count changed and the files.
+
+**Test watched failing first:** extend `VoiceTests` by one: no operator-facing string
+contains a listed British spelling. State the list in the test.
+
+**Drop candidate:** the whole task. Report the count found if dropped.
+
+---
+
+### Task 6 - the ALC learns from FT8
+
+**§R15.** The `15 13` read unit 324 gated to PSK31 sends now also runs during **FT8 and
+FT4 sends**. The highest reading observed during a known-good FT8/FT4 send is stored as
+**the reference**, with the time it was taken and its provenance (`learned from FT8 send
+at <time>`), shown beside the PSK31 power offer. A PSK31 send whose reading exceeds the
+reference by **more than a stated margin** gets §R11's sentence and event. **The margin
+is the unit's to state and Tim's to overrule** - the author suggests one eighth of the
+scale, 15 on 0-120, and says why in the report. **With no reference yet, the reading is
+reported and nothing is judged; Hamlet never invents one.** `MainWindowViewModel.Psk31AlcZone`
+is replaced by the learned reference.
+
+**Telemetry (§R13):** the reference learned, with its value, time and the mode it came
+from; every judged send with reading, reference, margin and verdict.
+
+**Test watched failing first:** `TheAlcLearnsFromFt8Tests`, app. Watch it fail, then
+green: a fed FT8 send at 70 sets the reference to 70 with provenance; a PSK31 send fed at
+80 with margin 15 is not judged hot; at 90 it is, and the sentence and event fire; with no
+FT8 send observed, a PSK31 send at 120 is reported and not judged; the reference carries
+its age; `TheAlcIsReadTests` still green.
+
+**Drop candidate:** none. **This is the step-4 number.**
 
 ---
 
 ## 9. Parked
 
-- **Unit 326**: collapsed panels, the always-visible filter, the waiting card, the two
-  quills, the spelling sweep.
-- **Step 5.** The arbiter authors it after 326.
-- **Real off-air audio.** Tim has a station at 893 Hz on 14.070 tonight; **a two-minute
-  WAV of it is the fixture this phase wants.** Raised, not stopped for.
-- **Any change to transmit. Any package.**
+- **Step 5** - RST in the log, ADIF, the achievements. The arbiter authors it next.
+- **Real off-air audio.** Still the one thing that answers unit 324's item 4.
+- **Files that cannot be deleted** in this environment.
+- **Any change to what keys. Any package.**
 
 ---
 
 ## 10. What not to do
 
-- **No unfiltered `dotnet test`. No forty-invocation carry-forward. Never background and
-  poll. Status before every `dotnet` command.**
-- **Do not change `Psk31Demodulator` or `Psk31CarrierSearch` to run at 48 kHz.** Resample
-  in.
-- **Do not derive the passband from the sample rate.**
-- **Do not retire a carrier for silence.**
-- **Do not show a row Hamlet is not sure is a carrier**; show a *heard* row only for a held
-  carrier.
+- **No unfiltered `dotnet test`. Never background and poll. Status before every `dotnet`
+  command.**
 - **Do not touch anything that keys, arms, composes or plays.**
-- **Do not put a callsign, a grid or text in any event.**
-- **Do not edit `PHASE_PLAN.md`, `PHASE_STATUS.md` or `PHASE_OUTCOME.md`** beyond the
-  outcome append.
+- **Do not invent an ALC number.** Learn it or report the reading unjudged.
+- **Do not name a door's area anywhere.**
+- **Do not use color as the only difference between the two quills.**
+- **Do not let a panel open collapsed.**
+- **Do not put a callsign, grid or text in any event.**
+- **Do not edit the phase files** beyond the outcome append.
 - **Do not add a package.**
-- **Do not chase these known reds:** `CwAdjudicationTests.ASpeedChangeInRealisticAudio`;
-  the 51 CW cases in `docs\unit239-failing-set.txt`; the `Ft8Sharp.Deep.Tests`
-  whole-type-list tripwire; `HM-OPEN-088`'s ten; the two in `TheAchievementsScreenTests`;
-  the one in `TheFitGuardAsksAboutTheGridTheSendIsOnTests`; unit 320's item 46.
+- **Do not chase the known reds** (section 10 of unit 324, unchanged).
 - **Do not repair this instruction.** Report mismatches; keep working.
-- **Write American.** Color, not colour.
+- **Write American.**
 
 ---
 
@@ -331,34 +298,32 @@ Commit per task, push at the end. Nothing left uncommitted.
 
 ## 12. Reporting
 
-`output.md` at the repository root. **Canonical headings:** `## 1. What Claude did`,
-`## 2. What the owner should expect`, `## 3. What you should see`,
-`## 4. What's blocking us`.
+`output.md` at the root. **Canonical headings:** `## 1. What Claude did`, `## 2. What the
+owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 
 ```
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet works PSK31 the way it works FT8. Steps 0 to 3 done,
-   4 in progress, 5 and 6 not started - unchanged by this unit.
-B. Step 4 and its must-pass - unchanged; this unit repairs step 2 on real air and
-   the ground under step 4.
+   4 <state after this unit>, 5 and 6 not started.
+B. Step 4 and its must-pass - each met or not met, with the number.
 C. The report last, and section 4 raises N items on top of the carried queue.
 ```
 
 ```
-UNIT:       324 - <complete|stopped> at task N of 4, <which dropped> - <date time>
+UNIT:       325 - <complete|stopped> at task N of 6, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   <step 4 to done if task 4 landed; else no>
-NUMBER:     carry-forward types 41 -> <n>, run seconds <before> -> <after>;
-            characters from the 48 kHz four-signal fixture 0 -> <n>;
-            occupied bandwidth at -30 dB <n> Hz
-DRIFT:      <n> consecutive units without advance  (carried)
+ADVANCED:   <step 4 to done if task 6 landed; else no>
+NUMBER:     strings corrected <n>; cards surviving a slot rebuild 0 -> all;
+            ALC reference <learned|none> with margin <n>
+DRIFT:      <n> consecutive units without advance  (was 0)
 ```
 
-**Section 2 must tell Tim, in plain words, what he will see on 14.070 now: the station at
-893 Hz as a row with text; a station Hamlet can hear but not read as a dimmed row that
-says so; and that he still touches nothing at the radio.**
+**Section 2 must tell Tim, in plain words, what looks different on the screen tonight**
+- the folded header with a count, the filter on an empty list, the card that waits, the
+green and orange quills - **and that the ALC will start judging itself after his first
+FT8 transmission with nothing for him to do.**
 
 **Every appearance claim is computed, not seen. Say so once.**
 
@@ -367,13 +332,13 @@ says so; and that he still touches nothing at the radio.**
 ```
 ARBITER-DECISION
 STEP: 4
-APPROACH: resample the PSK31 path to 8 kHz at the audio boundary, retire carriers on signal loss rather than silence, show heard-not-readable carriers dimmed, cut the carry-forward list to one invocation of at most twenty types, and measure the bandwidth and add the manual's ALC read
+APPROACH: make the folded panels say what they hold, keep the filter visible, key cards by station so they survive the slot rebuild and wait on a called station from the operator's send, mark every qualifying station with a green counter quill or an orange spinning door quill, sweep the copy to American, and learn the ALC reference from FT8 sends
 MOVE: continue
-WHY: the record from the owner's evening shows a real carrier found every time and killed after 1.9 s with no characters, because the path runs at 48 kHz against an 8 kHz demodulator and retires on silence; and unit 323 died in a 41-type carry-forward run - both are repaired here before the door opens in 325
+WHY: six rulings from the owner's evening at the radio, all on the surface PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned rather than read
 STATE: partial
-DECIDED: the passband is 200-3000 Hz from the mode, not the rate; the retire-on-signal-gone pass count is the unit's to state; the heard-not-readable dimmed row is the author's choice marked for the owner
-LICENCE: PHASE_PLAN.md R9, R13, R14; Tim 2026-09-11 nothing on the radio; CLAUDE.md 0.0, 0.1; HM-DEC-155 and the watchdog
-ACCOMPLISHED: the station Tim heard at 893 Hz on 14.070 becomes a row with its text and stays while it is sending; and step 4 gets its two missing numbers
-ADVANCES: step 2 on real air; step 4's two unmeasured criteria - bandwidth and the ALC read
+DECIDED: the PSK31 equivalent of one slot for the waiting card, the ALC margin, and the orange from the existing palette are the unit's numbers to state; the per-slot card rebuild is fixed at the root rather than worked around a third time
+LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.6, 0.2; HM-DEC-111
+ACCOMPLISHED: the screen stops lying about what it holds, a card Tim just called waits for the answer, every achievement worth chasing is marked and the two kinds look different, and the ALC judges itself from FT8 with nothing asked of him
+ADVANCES: step 4 - the R11/R15 power criterion
 END-ARBITER-DECISION
 ```

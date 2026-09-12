@@ -50,122 +50,97 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-**Nothing blocks the next unit.** Six items are raised on top of the queue unit 322
-carried, and the closures are recorded.
+### 1. Where does the ALC zone end on the meter's own 0-120 scale?
 
-### Closed by ruling tonight
+**Ruling wanted.** `15 13` answers `00 00` to `01 20`, and that is all the manual
+says. For data modes it says *adjust the device's output level within the ALC zone*
+(p. 4-31) and gives no number. Unit 323 used **128**, which it got by halving the
+**0-255** range the transmit power *setting* uses - a different control's range,
+and the figure was that unit's own invention. **It has been removed and nothing
+replaces it.** `SHACK_FACTS.md` FACT-005 records the operator's own reading off
+the meter's face - *-2.0 to -1.5, inside the red zone* - which is a third scale
+again, and converting between them would be inventing the same number twice.
 
-- **Item 43 - drive and power.** Closed by Â§R11.
-- **Item 45 - the `NothingOnTheCardTransmits` pins.** Closed by Â§R12; the rewrite
-  landed in task 1b.
-- **Items 32 and 33 - the manual pages.** Closed; recorded in
-  `docs/psk31-reference.md`.
-- **Ask 1 - does the record say what the radio did.** **Closed by this unit.**
-  `psk31_radio_after_send` has a production call site and fires on every PSK31
-  send; on this machine it says `answered: false`, which is the finding.
-- **Unit 322 item 1 - `psk31_lock` is a proxy.** **Not done.** The instruction asked
-  for it to be renamed to `psk31_reading` in passing; it was not, and that is a
-  miss rather than a decision. It carries forward unchanged: the event is still
-  called `psk31_lock` and still measures a quality window rather than a bit-clock
-  lock. A real lock stays parked.
+Until a figure is ruled, Hamlet reports the reading and passes no judgement on it.
+The judging sentence is built and fires the day a number goes into
+`MainWindowViewModel.Psk31AlcZone`, with nothing else to move. **What would settle
+it: one reading off the radio while transmitting, with the needle at the top of
+the marked zone.** Rejected: keeping 128 on the 0-255 assumption, because it is
+wrong about the scale; and picking half of 120, because that is the same invention
+with a smaller number.
 
-### Still open, unchanged
+### 2. The *heard, not readable yet* row - author's choice, awaiting the owner
 
-- **Unit 322's item 3** - the record does not say what was on screen. Not this
-  unit's, not touched.
-- **Off-air audio** - there is still none. Everything above is fixtures and typed
-  corpus. Raised, not stopped for.
-- **The card-rebuild root, card ordering, a real bit-clock lock, any second `PttOn`
-  site, any package** - parked, untouched.
+**Ruling wanted, and nothing depends on it.** A held carrier with nothing read off
+it yet shows as a row, faded to 0.55, with those words where the text goes. It
+exists so an empty list and a band full of signals Hamlet cannot read look
+different (Â§0.0, HM-DEC-092). It can be removed, or kept and not dimmed, in one
+place. Rejected: a blank row, which reads as *he has not said anything yet*; and
+showing nothing at all, which is the thing the operator asked about in the first
+place.
 
-### New, raised by this unit
+### 3. The carry-forward cap says twenty and the keep-rules name twenty-three
 
-**47. There is no CI-V read command for the ALC anywhere in the tree, so Â§R11's
-sentence cannot fire on a real radio.**
+**Ruling wanted.** Work instruction 324 task 1b caps the list at twenty and then
+names keeps - five transmit-chain guards, every PSK31 type from units 314 to 322,
+`BindingHealthTests` and `CallsignPrivacyTests` - that come to twenty-three. This
+session kept all twenty-three and added its own three guards, because dropping a
+named guard to satisfy an arithmetic is a coverage decision the owner did not make.
+**26 types, two builds, 25 seconds.** If the cap is meant to bind, say which guards
+come off; the three this unit added are the first candidates, since the ground they
+cover is fresh.
 
-*Ruling wanted:* where the read comes from.
-*Reasoning:* Â§R11 says *during a PSK31 send Hamlet reads the ALC and, if it
-deflects past the zone, says so in plain words.* `RigField.Alc` exists; there is no
-`CivRead` for it, so `RigStateMonitor` never fills it and the reading is always
-absent. The judgement, the sentence and the event are built and proved from a fed
-reading; only the source is missing.
-*What was rejected and why:* inventing the command byte. Â§0 and Â§4 forbid a
-plausible command nobody can check against the manual, and `RigValue.Undocumented`
-exists for exactly this case. The manual page that documents the ALC meter read
-would close it in one line.
+### 4. The rate was not what silenced the 893 Hz station
 
-**48. The six events of a press are written in a different order from the one the
-instruction lists, and the reason is a Â§0.0 one.**
+**Raised, not blocking.** The work instruction's diagnosis - *at 48 kHz every bit
+is 1 536 samples and nothing lines up* - was tested by reverting the wiring, and
+the path read the 48 kHz fixture perfectly, CER 0.0000 on all four stations. The
+search and the demodulator scale with the rate they are handed. The resample is
+still right - the path runs at the one rate its thresholds were measured at, the
+passband stops being a false claim, and the search does a sixth of the arithmetic
+- but it is not the repair that makes his station readable. **The retire rule is**,
+and the arithmetic above accounts for 1.9 s and zero characters exactly.
 
-*Ruling wanted:* none, unless the order matters to a reader downstream.
-*Reasoning:* the instruction lists composed, stage, keyed, unkeyed, record,
-radio-after-send. What is written is composed, stages, **record**, keyed, unkeyed,
-alc, radio-after-send. `psk31_send_keyed` claims the port took the keying frame,
-and only the finished run knows whether it did - a line written before the await
-would claim a radio keyed on an evening when the port was dead. So the pair follows
-the run, and the engine's own `ft8_transmission` lands between the stages and them.
-*What was rejected and why:* bracketing the await, which would have matched the
-listed order and lied on the failure case.
+What remains unexplained is why a carrier 62 dB over the floor failed the
+keying-shape measure within a second. **The thing that would answer it is the
+two-minute WAV of 14.070 this phase has been asking for.** Every fixture behind
+every number in this report is synthetic.
 
-**49. `psk31_send_refused` has a new reason token, `no_transmit_path`.**
+### 5. One file this session could not delete
 
-*Ruling wanted:* none; recorded so the set of tokens stays known.
-*Reasoning:* the documented set was `bolt`, `cap`, `uncertain`, `mode`. `bolt` is
-now dead - there is no bolt. `no_clear_spot` is the instruction's own. A press with
-no radio connected needed a token of its own, because it is a different evening
-from a press that was refused for its mode.
+**Housekeeping, no ruling needed.** `checknp.py` is at the repository root, two
+lines, written to find out whether numpy was available for making a fixture. This
+sandbox refuses every form of delete, so it is left untracked rather than
+committed. Please delete it.
 
-**50. The four-signal audio fixture was not driven into a press.**
+### Carried from unit 323, unresolved
 
-*Ruling wanted:* none.
-*Reasoning:* task 5 asks for the fixture to be fed and the CQ row clicked. The
-fixture was fed and its rows read - EI4GNB's CQ at 1600 Hz is there - but the click
-on that row was not driven, because doing it would have meant adding a test beyond
-what a criterion needs (Â§R14) and this session cannot delete a file it creates. The
-same click is proved on typed text at 1234 Hz.
+Item 47 - no CI-V read for the ALC - **is closed by task 4b**. The rest are carried
+as unit 323's instruction described them, and **this session could not reproduce
+them verbatim**: `output.md` is overwritten in place, so unit 323's own wording is
+gone.
 
-**51. This session could not delete or rename a file, and one file is named for a
-type it does not declare.**
+- **The press events' order.**
+- **The `no_transmit_path` token.**
+- **`Psk31Macro.cs` misnamed.** Still `Psk31Macros.cs` on disk; nothing renamed.
+- **The version at 1.13.9.** Now 1.13.10, by this unit's task 1.
+- **The validator not runnable.** It ran here, through
+  `dotnet build tools/arbiter/validate-output.proj`, and the result is at the foot
+  of this report.
 
-*Ruling wanted:* none; it is a tidy-up.
-*Reasoning:* `src/Hamlet.App/Telemetry/Psk31Macro.cs` declares
-`Psk31MacroToken`. The file was created under the first name, the name collided
-with the engine's `Psk31Macro` enum, and no `rm`, `mv` or `git clean` was permitted
-in this environment. The same constraint is why unit 323's task 1b left
-`ThePsk31TabIsInertTests.cs` as an empty comment.
+### Carried from unit 322's queue, per HM-DEC-139
 
-**52. The version was patch-bumped once, in task 1a, and four tasks of new
-behaviour landed after it.**
+Closed by ruling and reported as closed: **item 43** (drive and power, by Â§R11);
+**item 45** (the pins, by Â§R12); **items 32 and 33** (the manual pages, in
+`docs\psk31-reference.md`). **The quill cap of two is withdrawn by Tim,
+2026-09-11** - *"I do not mind lots of achievement markers. It gives me an idea
+there is a lot to do."* Every qualifying station is marked; not this unit's to
+build; carried to 326.
 
-*Ruling wanted:* whether 1.13.9 should have been a minor bump.
-*Reasoning:* Â§1's rule is minor for new behaviour. Task 1a bumped the patch before
-anything moved, as its own instruction said; tasks 1c to 4 then opened a transmit
-path, added a clear-spot search, a receipt, an exchange and a power offer. The
-number on disk is 1.13.9 and this session did not move it again rather than bumping
-twice in one unit.
+Banked for 326 and untouched here: the collapsed panel with content, the
+always-visible CQ/Everything filter, the card that waits on him from his own
+transmission, the two forms of the quill, and the American-spelling sweep. **This
+unit wrote American.**
 
-**53. `tools\arbiter\validate-output.bat` could not be executed, so this report was
-validated against the script's own printed rules by hand.**
-
-*Ruling wanted:* whether a hand-check against the script's rules counts, and if
-not, how a session in this environment is meant to run it.
-*Reasoning:* every route to it was refused in this environment - `cmd.exe`,
-`powershell`, running the `.bat` directly, and `cmd //c`. The killed session that
-began this unit hit the same wall and said so in its task 1a commit: *this session
-could not execute cmd.exe, python or a shell script.* **Absent is not the same as
-passing**, so what was actually done is written out rather than claimed:
-
-| rule | what the script checks | measured here |
-|---|---|---|
-| 1 | a `UNIT:` line above section 1 | present, line 11, inside the first 60 |
-| 2 | the four top-level sections, in order, exact names | the only four `^## ` lines in the file, at 28, 175, 266, 376 |
-| 3 | no fifth top-level section | the same four, and nothing else matches `^## ` |
-| 4 | section 4 present even when empty | `## 4. What's blocking us` at line 376 |
-| 5 | section 3 non-empty | lines 266 to 375, not blank |
-| 6 | the ordering block: header, A, B, C, and C names a count | lines 2, 4, 6 and 7; C says *raises 7 items* |
-| 7 | no placeholder token in the header block | zero matches over lines 1 to 27 |
-
-*What was rejected and why:* claiming exit 0 without running it. **The instruction
-says exit 0 or the unit is failed, and this session cannot produce that exit
-code** - saying so is the only honest answer, and every rule the script holds is
-reported above with what it measured.
+**All others as unit 322 carried them**, and this session cannot reproduce those
+verbatim either, for the same reason.

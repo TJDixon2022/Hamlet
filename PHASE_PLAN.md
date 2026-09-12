@@ -228,6 +228,37 @@ it is not building, pins against changes it is not making, or tests of a test. *
 measure of a unit is whether Tim can see PSK31 coming in and going out**, not the count of
 green.
 
+**§R15 - Tim, 2026-09-11: the ALC zone is learned from FT8, not read by the operator.**
+Ruled on unit 324's item 1, option A. FT8 already transmits cleanly through this radio.
+Hamlet reads `15 13` during FT8 sends as well as PSK31 sends and records the meter on a
+known-good mode; **the highest reading observed during FT8 sends becomes the reference**,
+stored and shown with its provenance and age (HM-DEC-111). A PSK31 send that reads above
+the reference by more than a stated margin gets §R11's sentence. The margin is the unit's
+to state and Tim's to overrule. **Until an FT8 send has been observed, there is no
+reference and Hamlet reports the reading and judges nothing** - it never invents one.
+Nothing is asked of the operator.
+
+**§R16 - Tim, 2026-09-11: the achievement quill has two forms and no cap.** Every station
+on the list that would earn anything is marked; the cap of two is withdrawn (*"I do not
+mind lots of achievement markers"*). A **counter** - new country, state, grid, nothing
+opens - is the still quill in decode green. A **door** - a first contact that opens a
+whole set - is the quill with the orbit ring, spinning, in **orange**. Both forms differ
+in shape as well as color (§0.6); the hover says which in words.
+
+**§R17 - Tim, 2026-09-11: a collapsed panel with content is unmistakable, and the filter
+is always there.** A collapsed *Decoded text* or *For you* header carries a live count
+and a sentence saying what is in it and that a click shows it; while rows arrive into a
+collapsed panel the header takes the family color as text. Neither panel opens collapsed
+at startup. The CQ / Everything filter is visible on an empty list, because it is a
+choice about what to see, not a report of what is there.
+
+**§R18 - Tim, 2026-09-11: after you transmit to a station, his card waits on him.** The
+clock starts at your transmission, not his last message; the card is *Waiting on him*,
+undimmed, for at least one full slot after your send; *Gone quiet* is for a station who
+had his slot and did not use it. This is the FT8 card, which PSK31's card inherits.
+
+**§R19 - American spelling** in every operator-facing string and every instruction.
+
 ## §4 The steps
 
 Each step verifies its own ground: entry criteria are checked by the step, not
@@ -388,9 +419,11 @@ way is the next unit's to rewrite under §R12.
   (§R1 strict side). *must-pass*
 - The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
   does not know, and the `SlotClock` is not shown for this mode. *must-pass*
-- Under §R11: the power offer is on the panel beside the drive, defaulting to half;
-  nothing is asked of the operator at the radio; during a send an ALC reading past the
-  zone becomes a plain sentence on the panel and an event in the record. *must-pass*
+- Under §R11 and §R15: the power offer is on the panel beside the drive, defaulting to
+  half; nothing is asked of the operator at the radio; the ALC reference is learned
+  from FT8 sends, and a PSK31 send reading above it by the stated margin becomes a plain
+  sentence on the panel and an event in the record; with no reference yet, the reading
+  is reported and nothing is judged. *must-pass*
 - Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
   §R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
   guarding tests, and a no-slot send capped at a stated length. *must-pass*
@@ -512,3 +545,7 @@ Open asks this phase touches or must not lose. Every unit carries them in its se
   (eyes on the prize) added on Tim's rulings of the same evening. Step 4's drive-and-power
   exit rewritten under §R11 and its entry annotated with what units 318-322 delivered. §R4
   superseded. The step list is unchanged.
+- **2026-09-11, fourth revision.** §R15 (ALC learned from FT8), §R16 (two quills, no cap),
+  §R17 (collapsed panels and the filter), §R18 (the waiting card), §R19 (American
+  spelling) added on Tim's rulings of the same evening. Step 4's power exit rewritten
+  under §R15. The step list is unchanged.
