@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 5 of 6
+STATE: COMPLETED
+TASK: 6 of 6
 WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T15:06:57-04:00
-NOTE: Task 5 - the seven continents are two rows of four; the four-row reading was the measurement counting by tops (two badges carry an extra line and sit 7 px higher). The measurement did show the second row stretched 160 px below the first, so the grid is pinned to the top; rerunning the achievements tests with the two-widths test.
+UPDATED: 2026-09-12T15:15:49-04:00
+NOTE: Complete - all six tasks, none dropped, each committed and pushed; carry-forward at the end app 100 of 100 and engine 85 of 85 after closing one red of this unit's own (five new events missing from the privacy walk). output.md validated: exit 0, all seven rules. Every UPDATED in this unit was read from the clock.
 
 ---
 
