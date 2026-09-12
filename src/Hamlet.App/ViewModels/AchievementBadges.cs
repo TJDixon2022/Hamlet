@@ -183,6 +183,18 @@ public sealed class AchievementBadgePage
     /// <summary>The contacts the page was built from, for a category to open over.</summary>
     public AchievementLog Log { get; }
 
+    /// <summary>
+    /// **The operator's grid from Settings, the one every contact's miles were measured from**,
+    /// or "".
+    /// </summary>
+    /// <remarks>
+    /// **THE MAP ON A CARD AND THE DISTANCE UNDER IT ARE ONE MEASUREMENT** (work instruction 335
+    /// task 2). `AchievementContact.Miles` is measured from this grid and not from the record's
+    /// own `MyGrid`, so the path is drawn from here too; a map from one grid over a distance from
+    /// another would be two claims that can disagree (§0.0).
+    /// </remarks>
+    public string OperatorGrid { get; init; } = "";
+
     /// <summary>The eight badges, in the page's order.</summary>
     public IReadOnlyList<AchievementBadge> Badges { get; }
 

@@ -36,6 +36,57 @@ public sealed record AchievementCategoryCard(
     /// (§0.6: opacity is a second carrier and never the only one).
     /// </summary>
     public double CardOpacity => Earned ? 1.0 : 0.78;
+
+    /// <summary>The station that earned it, or "".</summary>
+    public string Callsign { get; init; } = "";
+
+    /// <summary>His grid as the log carries it, or "".</summary>
+    public string Grid { get; init; } = "";
+
+    /// <summary>The line under the title: `LA1ZZZ · JO28`, or the callsign alone.</summary>
+    public string CallGridLine { get; init; } = "";
+
+    /// <summary>The path map, or null where there is no grid to draw it from.</summary>
+    public Ft8GlobePlot? Globe { get; init; }
+
+    /// <summary>True where the card draws a map.</summary>
+    public bool HasMap => Globe is not null;
+
+    /// <summary>What the card says where it has no map, or "".</summary>
+    public string NoMapWord { get; init; } = "";
+
+    /// <summary>The contacts listed where the map would be, or empty.</summary>
+    public IReadOnlyList<string> ContactLines { get; init; } = Array.Empty<string>();
+
+    /// <summary>The distance in large type: `6,700 mi`, or "".</summary>
+    public string DistanceLine { get; init; } = "";
+
+    /// <summary>`20 m · FT8`, or what of it the log has.</summary>
+    public string BandModeLine { get; init; } = "";
+
+    /// <summary>`Sep 11, 2026`, or "" where the log has no date.</summary>
+    public string DateLine { get; init; } = "";
+
+    /// <summary>True where there is a callsign line.</summary>
+    public bool HasCallGridLine => CallGridLine.Length > 0;
+
+    /// <summary>True where the card has no map and says why in its place.</summary>
+    public bool HasNoMap => !HasMap && NoMapWord.Length > 0;
+
+    /// <summary>True where there is a distance.</summary>
+    public bool HasDistance => DistanceLine.Length > 0;
+
+    /// <summary>True where there is a band or a mode.</summary>
+    public bool HasBandMode => BandModeLine.Length > 0;
+
+    /// <summary>True where there is a date.</summary>
+    public bool HasDate => DateLine.Length > 0;
+
+    /// <summary>
+    /// True where the old figure line still carries the card: `next`, `reached`, `2 contacts` on a
+    /// card that is not yet a contact.
+    /// </summary>
+    public bool ShowsFigure => HasFigure && Callsign.Length == 0;
 }
 
 /// <summary>
@@ -291,23 +342,26 @@ public sealed class AchievementCategory
         var cards = kind switch
         {
             AchievementKinds.HallOfFame => HallOfFame(log, points),
-            AchievementKinds.Countries => Counted(
+            AchievementKinds.Countries => Earned(
                 kind,
                 log.Entities.OrderBy(EntitySpoken.Of, StringComparer.OrdinalIgnoreCase)
-                    .Select(e => (EntitySpoken.Of(e), log.Contacts.Count(c => Same(c.Entity, e))))
+                    .Select(e => (EntitySpoken.Of(e), Where(log, c => Same(c.Entity, e))))
                     .ToList(),
                 long.MaxValue,
-                points),
+                points,
+                page.OperatorGrid,
+                placeUnderCall: false),
             AchievementKinds.States => Counted(
                 kind, new List<(string, int)>(), long.MaxValue, points),
-            AchievementKinds.Grids => Counted(
+            AchievementKinds.Grids => Earned(
                 kind,
                 log.Grids.OrderBy(g => g, StringComparer.Ordinal)
-                    .Select(g => (g, log.Contacts.Count(
-                        c => c.Grid is { Length: >= 4 } at && Same(at[..4], g))))
+                    .Select(g => (g, Where(log, c => c.Grid is { Length: >= 4 } at && Same(at[..4], g))))
                     .ToList(),
                 long.MaxValue,
-                points),
+                points,
+                page.OperatorGrid,
+                placeUnderCall: true),
             AchievementKinds.Bands => Counted(
                 kind,
                 log.Bands
@@ -410,6 +464,119 @@ public sealed class AchievementCategory
         return cards;
     }
 
+    /// <summary>What a card with no grid says where its map would be.</summary>
+    public const string NoGridWord = "no grid, so no map";
+
+    /// <summary>What a card says where the operator's own grid is not set.</summary>
+    public const string NoOwnGridWord = "set your grid for a map";
+
+    /// <summary>What a card says where the station is somewhere this picture does not reach.</summary>
+    public const string OffTheMapWord = "off the edge of this map";
+
+    /// <summary>How many contacts a card with no map lists where the map would be.</summary>
+    private const int ListedContacts = 3;
+
+    private static IReadOnlyList<AchievementContact> Where(
+        AchievementLog log, Func<AchievementContact, bool> wanted)
+        => log.Contacts.Where(wanted).ToList();
+
+    /// <summary>One card per place he has, each the contact that earned it, then the next.</summary>
+    /// <param name="kind">Countries or Grids.</param>
+    /// <param name="held">Each place as shown, with every contact in it.</param>
+    /// <param name="howManyThereAre">The set's size, or long.MaxValue where it is open.</param>
+    /// <param name="points">The owner's file.</param>
+    /// <param name="operatorGrid">The grid the miles were measured from.</param>
+    /// <param name="placeUnderCall">True where the callsign line names the country, not the grid.</param>
+    private static List<AchievementCategoryCard> Earned(
+        string kind,
+        IReadOnlyList<(string Shown, IReadOnlyList<AchievementContact> Contacts)> held,
+        long howManyThereAre,
+        AchievementPoints points,
+        string operatorGrid,
+        bool placeUnderCall)
+    {
+        var per = points.Per(kind);
+        var cards = held
+            .Select(h => EarnedBy(h.Shown, h.Contacts, Pts(per), operatorGrid, placeUnderCall))
+            .ToList();
+
+        if (held.Count < howManyThereAre)
+        {
+            cards.Add(new AchievementCategoryCard(
+                AchievementBadgePage.NextWords(kind, held.Count),
+                AchievementCategoryCard.NextWord,
+                Pts(per),
+                false));
+        }
+
+        return cards;
+    }
+
+    /// <summary>
+    /// **The card for one place, built from the contact that earned it** (work instruction 335
+    /// task 2, R22).
+    /// </summary>
+    /// <param name="title">What the card is: the country, or the square.</param>
+    /// <param name="contacts">Every contact in that place.</param>
+    /// <param name="pointsLine">What it is worth.</param>
+    /// <param name="operatorGrid">The grid the miles were measured from.</param>
+    /// <param name="placeUnderCall">True where the callsign line names the country.</param>
+    /// <remarks>
+    /// <para>**THE EARLIEST CONTACT EARNED IT**, by `StartedUtc`. The sort is stable, so a record
+    /// with no date keeps its place in the file and comes after every dated one: a first by
+    /// date where there is a date, and the file's own order where there is not.</para>
+    /// <para>**EVERY FACT IS THE LOG'S AND NOTHING IS RECOMPUTED.** The distance is
+    /// `AchievementContact.Miles`; the map is the conversation card's `Ft8GlobePlot` over the same
+    /// two grids, so the drawn path and the printed distance are one measurement.</para>
+    /// <para>**A MISSING FACT IS ABSENT, NEVER A DASH** (§6). **A MAP WITH NO GRID IS NO MAP**,
+    /// and the card says so in a word and lists the contacts where the map would be, so it is
+    /// never a white rectangle.</para>
+    /// </remarks>
+    internal static AchievementCategoryCard EarnedBy(
+        string title,
+        IReadOnlyList<AchievementContact> contacts,
+        string pointsLine,
+        string operatorGrid,
+        bool placeUnderCall)
+    {
+        var inOrder = contacts.OrderBy(c => c.StartedUtc ?? DateTime.MaxValue).ToList();
+        var first = inOrder[0];
+        var place = first.Entity is null ? "" : EntitySpoken.Of(first.Entity);
+        var grid = first.Grid ?? "";
+        var plot = grid.Length > 0 ? new Ft8GlobePlot(operatorGrid, grid, first.Callsign, place) : null;
+        var globe = plot is { HasPath: true } ? plot : null;
+
+        return new AchievementCategoryCard(title, Contacts(contacts.Count), pointsLine, true)
+        {
+            Callsign = first.Callsign,
+            Grid = grid,
+            CallGridLine = Joined(first.Callsign, placeUnderCall ? place : grid),
+            Globe = globe,
+            NoMapWord = globe is not null ? ""
+                : grid.Length == 0 ? NoGridWord
+                : plot is { OperatorGridResolved: false } ? NoOwnGridWord
+                : OffTheMapWord,
+            ContactLines = globe is not null
+                ? Array.Empty<string>()
+                : inOrder.Take(ListedContacts)
+                    .Select(c => Joined(c.Callsign, AdifLog.BandDisplayNameFor(c.Band), DateOf(c)))
+                    .ToList(),
+            DistanceLine = first.Miles is { } miles
+                ? GridPath.DescribeMiles(miles).Replace(" miles", " mi", StringComparison.Ordinal)
+                : "",
+            BandModeLine = Joined(AdifLog.BandDisplayNameFor(first.Band), first.Mode?.Name ?? ""),
+            DateLine = DateOf(first),
+        };
+    }
+
+    /// <summary>`Aug 12, 2026`, or "" where the record has no date.</summary>
+    private static string DateOf(AchievementContact contact)
+        => contact.StartedUtc?.ToString("MMM d, yyyy", CultureInfo.InvariantCulture) ?? "";
+
+    /// <summary>The parts that exist, joined by a middle dot; nothing for the ones that do not.</summary>
+    private static string Joined(params string[] parts)
+        => string.Join(" · ", parts.Where(p => p.Length > 0));
+
     /// <summary>Total Miles: the tiers reached, the next, and the bar to it.</summary>
     private static AchievementCategory MilesFor(AchievementBadge badge, AchievementBadgePage page)
     {
@@ -510,13 +677,15 @@ public sealed class AchievementCategory
         var held = log.OnContinent(code)
             .Where(c => c.Entity is not null)
             .GroupBy(c => c.Entity!, StringComparer.OrdinalIgnoreCase)
-            .Select(g => (EntitySpoken.Of(g.Key), g.Count()))
+            .Select(g => (EntitySpoken.Of(g.Key), (IReadOnlyList<AchievementContact>)g.ToList()))
             .OrderBy(x => x.Item1, StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        var cards = Counted(
+        // **THE SAME CARDS COUNTRIES DRAWS** (work instruction 335 task 2): a continent opened to
+        // its countries is each of them, the contact that earned it.
+        var cards = Earned(
             AchievementKinds.Countries, held, DxccContinents.EntitiesOn(code),
-            page.Scores.Points);
+            page.Scores.Points, page.OperatorGrid, placeUnderCall: false);
 
         return new AchievementCategory(
             badge,

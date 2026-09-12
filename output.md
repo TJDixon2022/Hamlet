@@ -3,33 +3,34 @@ READ IN THIS ORDER.
 ```
 
 A. The phase goal - the screen says what is true and looks like someone meant it.
-   Step 0 done; step 1 in progress - this unit is at task 1; steps 2 and 3 not started.
+   Step 0 done; step 1 in progress - this unit is at task 2; steps 2 and 3 not started.
 B. Step 1 and its seven must-pass - band with count/score/level/bar; earned card
    from the log entry; next card with the CQ list; all eight kinds per R22;
    no clip at 1400 and 1920; no white card; telemetry with the card count.
-   Met so far: the band, on 8 of 8 kinds; telemetry with the card count. The other
-   five are not built yet. The entry criterion is met - TheAchievementsPageClicksInTests
-   6 of 6. The nice-to-pass is not started.
+   Met so far: the band, on 8 of 8 kinds; the earned card from the log entry, on
+   Countries, Grids and a continent's countries; telemetry with the card count. The
+   other four are not built yet. The entry criterion is met -
+   TheAchievementsPageClicksInTests 6 of 6. The nice-to-pass is not started.
 C. The report last. Section 4 raises 0 items so far on top of the carried queue; none
    stands in the way of a criterion in B.
 
 ```
-UNIT:       335 - stopped at task 1 of 5 - 2026-09-12 16:53
+UNIT:       335 - stopped at task 2 of 5 - 2026-09-12 17:00
 PHASE GOAL: Maintenance - make what Hamlet shows true and deliberate-looking, screen only, judged
             finally by Tim at his own window size.
 UNIT GOAL:  Turn all eight achievements category pages from lists of titles into trading cards:
             each earned card the contact that earned it, with its path map, and each next card
             naming who on the CQ list would earn it.
-ADVANCED:   yes - step 1's band criterion and its telemetry criterion are met, by tests run here
-NUMBER:     kinds drawn as trading cards 0 -> 0 of 8
+ADVANCED:   yes - step 1's band, earned-card and telemetry criteria are met, by tests run here
+NUMBER:     kinds drawn as trading cards 0 -> 2 of 8 (Countries, Grids; their next cards are task 3)
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Stopped at task 1 of 5 so far - this is the interim report, rewritten after every task.**
+**Stopped at task 2 of 5 so far - this is the interim report, rewritten after every task.**
 Claude Code on Tim's Windows 11 machine, project Hamlet, gate passed on all four checks, branch
-`main`. Task 0 pushed as `5306c2e`.
+`main`. Pushed: task 0 as `5306c2e`, task 1 as `8f06bea`.
 
 **Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
 That host draws text at a flat ten pixels a character, wider than the glass.
@@ -186,6 +187,65 @@ types: the new test, `TheAchievementsPageClicksInTests`, `BindingHealthTests`,
    count of nought there would read as an empty page.
 5. **Total Miles' own tier bar stays, for now.** Task 4 turns each tier into its own bar.
 
+### Task 2 - the earned card is the contact that earned it
+
+**Test first, watched red.** `TheCategoryPagesAreTradingCardsTests.EveryEarnedCardIsTheContactThatEarnedIt`
+is new, over a five-contact log:
+- Norway is worked twice, and the earlier contact is later in the file;
+- `VE3PQR` has no grid;
+- `G0MNO` has no date.
+
+Red: Norway's card `Expected "LA1ZZZ"`, `Actual ""`.
+
+**Change.**
+- **Which contact.** Each earned card on Countries, on Grids and inside a continent is built
+  from the earliest contact in that place. The sort is stable, so undated records keep file
+  order after every dated one.
+- **What the card carries:**
+  - the place large, with its points;
+  - `callsign · grid`, or on Grids `callsign · country`;
+  - the conversation card's own `Ft8GlobePlot`, drawn by `Ft8GlobeControl` 170 px tall;
+  - `AchievementContact.Miles` in large type, rounded by `GridPath.DescribeMiles` and written as
+    `mi`;
+  - `band · mode`;
+  - the date, as `Aug 12, 2026`.
+- **Where the map's operator end comes from.** `AchievementBadgePage` now carries the Settings
+  grid, the one the miles were measured from, so the path and the printed distance are one
+  measurement.
+- **What fills a card with no map.** A word saying why, and a list of up to three of the
+  contacts in that place (`callsign · band · date`), in a grey panel the map's height. The word
+  is one of three: `no grid, so no map`, `set your grid for a map`, or `off the edge of this
+  map`.
+
+**On the fixture, computed:**
+- **Norway** is `LA1ZZZ · JO28`, `40 m · FT8`, `Aug 12, 2026`, `5 pts`, with a path. The
+  distance on the card equals the log's to the mile, and so does the plot's.
+- **Canada** is `VE3PQR`, with no distance, `no grid, so no map`, and its contact listed.
+- **England** has no date line, and a map.
+- **No dash appears** on any card.
+- In the realized window, **one map is drawn per card that has one**, and the no-map word
+  appears once.
+
+**Green.** The same seven test types plus the new one: **33 of 34**. The one red is the known
+`TheWindowDrawsEverySixRows`.
+
+#### Decisions this session made for itself, task 2
+
+1. **The card's map uses the popup's path-fitted frame**, which is the conversation card's
+   enlarged map (`Opened="True"`).
+   - R22 asks for *a map of the path cropped to the two stations as the conversation card draws
+     it*, and the picture shows it cropped.
+   - The conversation card's own face has drawn the whole world since unit 306. The frame
+     cropped to the path is the popup's, capped at 2x.
+   - That frame is the existing arithmetic, so no second map exists.
+   - Rejected: the whole-world frame, which would not be cropped to the two stations.
+2. **The map's operator end is the Settings grid, not the record's `MyGrid`**, because that is
+   the grid the log's miles were measured from.
+3. **A card with no map lists up to three contacts**, not all of them, so the panel keeps the
+   map's height and the cards stay one size.
+4. **The old `2 contacts` figure line is hidden on a card that is a contact.** The picture does
+   not carry it, and it still shows on the kinds not yet rebuilt.
+
 ### Where the instruction and the tree disagreed
 
 Reported, not repaired.
@@ -199,6 +259,9 @@ Reported, not repaired.
 - **`BindingHealthTests` covers only the main window.** The achievements window's binding check
   is in `TheAchievementsPageClicksInTests`.
 - **`AchievementsWindow.axaml`'s header comment says 1000 wide**; the window is 1040.
+- **R22 says the card map is cropped *as the conversation card draws it*.** The conversation
+  card's face draws the whole world; only its popup crops to the path. The card uses the
+  popup's frame. See task 2, decision 1.
 - **Everything else matched:**
   - `AchievementContact`'s seven fields;
   - `Ft8GlobePlot`, `Ft8ContactCard.Globe`, `Ft8GlobeControl`, and the popup opening it with
@@ -211,10 +274,20 @@ Reported, not repaired.
 
 ## 2. What the owner should expect
 
-**Every category now opens under a full-width color band with a bar.** Version 1.13.20. The
-cards under it have not changed yet.
+**Every category now opens under a full-width color band with a bar.** Version 1.13.20. On
+Countries, Grids and inside each continent, **every earned card is the contact that earned
+it**, with its path map. The next cards and the other five kinds are not rebuilt yet.
 
 **What will look wrong but is not:**
+- **The earned card is your first contact there, not your most recent.** Norway on the
+  fixture shows `LA1ZZZ` from 12 August, not `LA8ENA` five days later.
+- **The distance is rounded**: to the nearest 100 miles over 1,000, and to the nearest 10 below
+  that. It is the same rounding the conversation card's words use.
+- **The map on a card is zoomed toward the path**, at most twice the picture's size, as the
+  enlarged map in a conversation card is. Two nearby stations stay small in the middle, because
+  they really are close.
+- **A card for a contact logged without a grid has no map.** It shows a grey panel saying `no
+  grid, so no map`, with that station's contacts listed.
 - **Hall of Fame's band has dark lettering** where the others are white. White on that gold is
   too faint to meet the contrast rule; the computed figure is about 3.6:1.
 - **Modes has no bar on the fixture log**, just `Gold, the top level`. Five modes is the top
@@ -224,10 +297,20 @@ cards under it have not changed yet.
 
 ## 3. What you should see
 
-**0 of 8 kinds read as trading cards so far; all 8 have the new band.** Open Countries and the
-top of the page is a red band. On it are the flags, *Countries*, and a line such as `one per
-entity · 8 worked · 40 pts · unranked`. At the right, `8 of 10 to Bronze` sits over a bar
-eight-tenths full. The cards below are still the white list of names.
+**2 of 8 kinds read as trading cards so far, Countries and Grids; all 8 have the new band.**
+Their next cards are still plain.
+
+Open Countries:
+- **The band.** The top of the page is a red band with the flags and *Countries* on it. The
+  line under the name reads like `one per entity · 8 worked · 40 pts · unranked`. At the
+  right, `8 of 10 to Bronze` sits over a bar eight-tenths full.
+- **The cards.** Below the band, two cards to a row. Each has:
+  - a red edge;
+  - the country in large type, its points at the right;
+  - `callsign · grid`;
+  - a map cropped to your grid and his, with the path drawn;
+  - the distance in large type, and `band · mode` and the date beside it.
+- **The last card** is still the plain `One more country`.
 
 ## 4. What's blocking us
 

@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ctl="using:Hamlet.App.Controls"
         xmlns:vm="using:Hamlet.App.ViewModels"
+        xmlns:sys="using:System"
         x:Class="Hamlet.App.Views.AchievementsWindow"
         x:DataType="vm:AchievementsViewModel"
         Title="Achievements"
@@ -351,34 +352,122 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
+                    <!-- **THE TRADING CARD, AS `assets/category-page-countries.png` DRAWS IT**
+                         (work instruction 335 task 2, R22). An earned card is the contact that
+                         earned it: the place large with its points, the callsign and grid, the
+                         path map, and the distance large beside band, mode and date. **The map
+                         is the conversation card's own `Ft8GlobeControl` over the same plot,
+                         framed to the path** - the popup's path-fitted frame, which is what
+                         crops it to the two stations - so no second map exists to disagree.
+                         **Where there is no map the card says why in a word and lists the
+                         contacts in its place**, so nothing is a white rectangle. The edge takes
+                         the category's color; the unearned card's edge is grey and it says
+                         `next` in words (§0.6). -->
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:AchievementCategoryCard">
-                            <Border Margin="0,0,10,10"
+                            <Border Margin="0,0,12,12"
                                     Background="White"
                                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                     BorderThickness="1"
-                                    CornerRadius="6"
-                                    Padding="10,8"
+                                    CornerRadius="10"
+                                    ClipToBounds="True"
                                     Opacity="{Binding CardOpacity}">
-                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                                    <TextBlock Classes="card-title"
-                                               Text="{Binding Title}"
-                                               FontSize="13" FontWeight="SemiBold"
-                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                <Grid ColumnDefinitions="6,*">
+                                    <Border Grid.Column="0"
+                                            IsVisible="{Binding Earned}"
+                                            Background="{Binding $parent[ItemsControl].((vm:AchievementCategory)DataContext).Band}" />
 
-                                    <TextBlock Grid.Row="1"
-                                               Text="{Binding Figure}"
-                                               IsVisible="{Binding HasFigure}"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                    <Border Grid.Column="0"
+                                            IsVisible="{Binding !Earned}"
+                                            Background="#C9C5BA" />
 
-                                    <TextBlock Grid.Column="1" Grid.RowSpan="2"
-                                               Text="{Binding PointsLine}"
-                                               IsVisible="{Binding HasPoints}"
-                                               VerticalAlignment="Center"
-                                               Margin="12,0,0,0"
-                                               FontSize="13" FontWeight="SemiBold"
-                                               Foreground="{StaticResource HmGreenBrush}" />
+                                    <StackPanel Grid.Column="1" Margin="16,12,16,14" Spacing="6">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="card-title"
+                                                       Text="{Binding Title}"
+                                                       FontSize="18" FontWeight="Bold"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                            <TextBlock Grid.Column="1"
+                                                       Classes="card-points"
+                                                       Text="{Binding PointsLine}"
+                                                       IsVisible="{Binding HasPoints}"
+                                                       Margin="12,0,0,0"
+                                                       FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="{StaticResource HmGreenBrush}" />
+                                        </Grid>
+
+                                        <TextBlock Classes="card-figure"
+                                                   Text="{Binding Figure}"
+                                                   IsVisible="{Binding ShowsFigure}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <TextBlock Classes="card-callgrid"
+                                                   Text="{Binding CallGridLine}"
+                                                   IsVisible="{Binding HasCallGridLine}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <Border CornerRadius="6"
+                                                ClipToBounds="True"
+                                                HorizontalAlignment="Left"
+                                                IsVisible="{Binding HasMap}">
+                                            <ctl:Ft8GlobeControl Opened="True"
+                                                                 Height="170"
+                                                                 Plot="{Binding Globe}" />
+                                        </Border>
+
+                                        <Border IsVisible="{Binding HasNoMap}"
+                                                Height="170"
+                                                Background="{StaticResource HmBackgroundBrush}"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                Padding="12,10">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Classes="card-nomap"
+                                                           Text="{Binding NoMapWord}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                <ItemsControl ItemsSource="{Binding ContactLines}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="sys:String">
+                                                            <TextBlock Classes="card-listed"
+                                                                       Text="{Binding}"
+                                                                       FontSize="13"
+                                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding Earned}">
+                                            <TextBlock Classes="card-distance"
+                                                       Text="{Binding DistanceLine}"
+                                                       IsVisible="{Binding HasDistance}"
+                                                       Margin="0,0,24,0"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="28" FontWeight="Bold"
+                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Classes="card-facts"
+                                                           Text="{Binding BandModeLine}"
+                                                           IsVisible="{Binding HasBandMode}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                <TextBlock Classes="card-facts"
+                                                           Text="{Binding DateLine}"
+                                                           IsVisible="{Binding HasDate}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </DataTemplate>

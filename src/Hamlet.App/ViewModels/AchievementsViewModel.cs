@@ -298,7 +298,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
         Screen = new AchievementScreen(
             log, AchievementChallenges.For(log, operatorGrid));
 
-        Page = new AchievementBadgePage(log, points);
+        Page = new AchievementBadgePage(log, points) { OperatorGrid = operatorGrid ?? "" };
     }
 
     /// <summary>
