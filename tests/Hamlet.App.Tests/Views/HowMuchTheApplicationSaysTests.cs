@@ -190,11 +190,40 @@ public sealed class HowMuchTheApplicationSaysTests
             // With the offset stated rather than raced, the strip carries the
             // unmeasured line instead of a measured one, so the surfaces genuinely
             // say less than the figures they were set from a unit ago.
-            ("MainWindow — Digital tab", 1194, 1300),
+            // **RE-MEASURED AND RE-SET BY WORK INSTRUCTION 331 TASK 4**, which put a live
+            // line under the neighborhood map. Measured this session: CW 426 to 455, Voice
+            // 468 to 497, Digital 1194 to 1333 and working 1193 to 1332.
+            //
+            // **THE CW AND VOICE TABS ARE THE CLEAN READING OF WHAT THE GREEN ZONE
+            // COSTS**, because the map panel is the only thing this unit changed on either
+            // of them: **29 characters**, which is `20 m · 14.074 MHz · Morse` plus the two
+            // separators the joined license line gained. Both stay comfortably under
+            // ceilings that are not moved.
+            //
+            // **THE DIGITAL PAIR GREW BY 139 AND THE GREEN ZONE ACCOUNTS FOR ABOUT 39 OF
+            // IT** - the same runs plus `Digital · FT8`. The rest is the same line's own
+            // `best bet now:` and `heard just now:` runs, which are absent until their
+            // sources answer and are therefore invisible on a tab with no spot feed and
+            // visible on one with traffic. **That is stated as a reading and not as a
+            // measurement**: this class measures a surface and not a control, so nothing
+            // here took the remainder apart run by run (§0.0).
+            //
+            // **WHY THE CEILING MOVES RATHER THAN THE LINE.** What it exists to catch is a
+            // paragraph - the tune-in narration runs 448 to 884 characters on the rows the
+            // conditions file ships - and it still catches one at the new figure:
+            // 1333 + 448 is 1781 against 1450. What grew is not narration; it is a row of
+            // values with separators between them, about half of it the values themselves,
+            // and it is the thing the owner asked for on 2026-09-12 in place of three
+            // lines of unchanging law. **The margin rule is unchanged**: 100 characters
+            // over the measured figure, rounded up to the next 50.
+            ("MainWindow — Digital tab", 1333, 1450),
             // **THE WORKING TAB SAYS LESS THAN THE IDLE ONE**, which is the whole
             // shape of this phase: the empty-state explanations go away once there
             // is traffic, and everything composed at run time is now on a hover.
-            ("MainWindow — Digital tab, working", 1193, 1300),
+            ("MainWindow — Digital tab, working", 1332, 1450),
+            // **NOT MOVED, AND MEASURED AT 497 AND 455 THIS SESSION.** Both gained the
+            // green zone's 29 characters and neither is near its ceiling, which is the
+            // margin rule working rather than being worked around.
             ("MainWindow — Voice tab", 468, 600),
             ("SettingsWindow", 1628, 1750),
             ("RigDiagnosticsWindow", 1346, 1450),

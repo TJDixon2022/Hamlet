@@ -3427,6 +3427,29 @@ public partial class MainWindowViewModel : ObservableObject
     internal void RememberTransmittedSlotForTests(DateTime slotStartUtc)
         => _transmittedSlots.Add(slotStartUtc);
 
+    /// <summary>
+    /// **Put the unslotted form of *the send was ours* on the panel** (331 task 5).
+    /// </summary>
+    /// <param name="fromUtc">When the keying started, measured at the send.</param>
+    /// <param name="seconds">How long the audio ran, as the run measured it.</param>
+    /// <remarks>
+    /// <para>**PSK31 HAS NO SLOT, SO IT HAS NO CENSUS EITHER** - there is no boundary to
+    /// count candidates in and nothing for a slot line to be about. What it does have is
+    /// the same fault: a panel that goes quiet after a send while the listener was
+    /// suspended reads as a quiet band, and the operator acting on that goes looking for a
+    /// fault in his antenna.</para>
+    /// <para>**IT IS WRITTEN ON THE LINE FT8's SLOT SENTENCE ALREADY USES**, so the tab
+    /// has one place that says *Hamlet was not listening then* whichever mode is
+    /// running.</para>
+    /// </remarks>
+    internal void SayTheSendWasOurs(DateTime fromUtc, double seconds)
+    {
+        _digitalCensusLine = SlotWasYours.Unslotted(fromUtc, seconds);
+
+        Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(DigitalCensusLine)));
+        Dispatcher.UIThread.Post(() => OnPropertyChanged(nameof(HasDigitalCensus)));
+    }
+
     /// <summary>What the census would say about one slot, for a test.</summary>
     /// <param name="slotStartUtc">The slot.</param>
     /// <param name="candidates">Places that looked like the start of a signal.</param>
@@ -3452,6 +3475,45 @@ public partial class MainWindowViewModel : ObservableObject
         };
 
         return DescribeCensus(reception);
+    }
+
+    /// <summary>
+    /// **What the readiness line would say about one reading, for a test** (331 task 5).
+    /// </summary>
+    /// <param name="slotsDecoded">How many slots the reader cut and ran.</param>
+    /// <param name="candidatesFound">Places that looked like the start of a signal.</param>
+    /// <param name="decodes">How many messages came out.</param>
+    /// <param name="slots">The boundaries of the slots in the reading, oldest first.</param>
+    /// <returns>The line, exactly as the strip would show it.</returns>
+    /// <remarks>
+    /// **THE SAME METHOD THE STRIP USES**, handed a reading rather than audio, for the same
+    /// reason `CensusForTests` exists: synthesising a slot's worth of FT8 to reach one
+    /// sentence would spend a minute of decode on a question about a string, and a second
+    /// copy of the wording rule in a test is a copy that can disagree with the screen.
+    /// </remarks>
+    internal string DecodeNoteForTests(
+        int slotsDecoded, int candidatesFound, int decodes, params DateTime[] slots)
+    {
+        var read = new List<Ft8Decode>();
+
+        for (var i = 0; i < decodes; i++)
+        {
+            read.Add(new Ft8Decode(
+                slots.Length > 0 ? slots[^1] : DateTime.UtcNow,
+                0.2,
+                1240,
+                12,
+                "CQ K9XP JN88"));
+        }
+
+        var reception = new Ft8Reception(read, slotsDecoded, candidatesFound, "")
+        {
+            Slots = slots
+                .Select(at => new Ft8SlotCensus(at, 0, 0, 0, 0, 0, [], 48_000))
+                .ToList(),
+        };
+
+        return DescribeDecodes(reception);
     }
 
     /// <summary>Hold one turn state, for a test that has no clock to drive.</summary>
@@ -14543,6 +14605,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         Ft8BoundaryResult result;
 
+        // **WHEN THE KEYING STARTED, MEASURED HERE AND NOWHERE ELSE** (work instruction
+        // 331 task 5). PSK31 is unslotted, so there is no boundary to name afterwards and
+        // the only honest stamp is the one taken as the send begins. It is read once, on
+        // this thread, immediately before the await - not composed from a duration
+        // afterwards, which would be a time nobody looked at a clock for (§0.0).
+        var keyingFromUtc = DateTime.UtcNow;
+
         try
         {
             result = await _armedSend.NowAsync().ConfigureAwait(false);
@@ -14578,6 +14647,16 @@ public partial class MainWindowViewModel : ObservableObject
             }
 
             WhatTheRadioSaidAfterASend();
+
+            // **AND THE STRETCH IS REMEMBERED AS ONE HE USED** (work instruction 331 task
+            // 5), for the same reason and on the same gate FT8's slot is: the keying frame
+            // was taken by the port, so the radio really was transmitting and the listener
+            // really was not listening. The panel says so rather than reading that silence
+            // as a quiet band.
+            if (run.Keyed)
+            {
+                SayTheSendWasOurs(keyingFromUtc, run.SecondsOffered);
+            }
         }
 
         var line = Psk31WentLine(wanted, macro, result);
@@ -15984,10 +16063,13 @@ public partial class MainWindowViewModel : ObservableObject
         // drawn from a measurement nobody took (§0.0), and it is what this line
         // said on 2026-09-08 about a slot at 15:16:45 while its neighbours
         // decoded two stations.
+        //
+        // **THE SENTENCE MOVED TO `SlotWasYours` IN 331 TASK 5** and is not written here
+        // any more: the readiness line needs the same words for the same reason, and two
+        // copies of one sentence is how the two lines came to disagree about one slot.
         if (_transmittedSlots.Contains(worst.SlotStartUtc))
         {
-            return $"{at} UTC was yours - Hamlet was transmitting and did not "
-                + "listen";
+            return SlotWasYours.Slot(worst.SlotStartUtc);
         }
 
         // **THE DECODER AND ITS STAGE LIST CAME OFF THE LINE ON 2026-09-08**
@@ -16030,14 +16112,42 @@ public partial class MainWindowViewModel : ObservableObject
     /// gain, a filter or a clock question, where nothing found at all is a band or
     /// an antenna question.
     /// </remarks>
-    private static string DescribeDecodes(Ft8Reception heard)
+    /// <remarks>
+    /// **AND A SLOT HE TRANSMITTED IN IS NOT ONE OF THE SLOTS THIS LINE IS ABOUT** (work
+    /// instruction 331 task 5; Tim, 2026-09-12: *"The message we put up about slots after a
+    /// transmit is wrong. We transmitted that slot so nothing could be heard."*).
+    /// <list type="bullet">
+    /// <item>**The count excludes it.** *One slot decoded* about a reading that held one
+    /// slot Hamlet spent transmitting is a count of slots searched, and it searched
+    /// none.</item>
+    /// <item>**And where every slot in the reading was his, the line says so** rather than
+    /// saying the band was empty. Hamlet suspends decoding while the radio keys
+    /// (HM-DEC-147), so that silence is by design and reading it as a measurement of the
+    /// band is §0.0 broken - the sentence is `SlotWasYours`', the same one the census line
+    /// below the table uses.</item>
+    /// </list>
+    /// **THIS IS WHY IT STOPPED BEING STATIC.** The booking of a slot as the operator's
+    /// lives on the instance, and a static method could only have been told about it by
+    /// being handed a copy of the set - which is the sort of second source of truth §0
+    /// exists to prevent.
+    /// </remarks>
+    private string DescribeDecodes(Ft8Reception heard)
     {
         if (heard.Refusal.Length > 0)
         {
             return heard.Refusal;
         }
 
-        var slots = heard.SlotsDecoded == 1 ? "one slot" : $"{heard.SlotsDecoded} slots";
+        // **THE SLOTS OF THIS READING THAT WERE HIS.** Counted off the reading's own slot
+        // list rather than off the clock, so a send from a previous reading cannot take a
+        // slot off this one's count.
+        var mine = heard.Slots
+            .Where(slot => _transmittedSlots.Contains(slot.SlotStartUtc))
+            .ToList();
+
+        var listened = Math.Max(0, heard.SlotsDecoded - mine.Count);
+
+        var slots = listened == 1 ? "one slot" : $"{listened} slots";
 
         if (heard.Decodes.Count > 0)
         {
@@ -16046,6 +16156,13 @@ public partial class MainWindowViewModel : ObservableObject
                 : $"{heard.Decodes.Count} messages";
 
             return $"{messages} out of {slots}";
+        }
+
+        // **NOTHING WAS LISTENED TO, SO NOTHING IS CLAIMED ABOUT THE BAND** (§0.0). One
+        // line and one truth: the slot was his.
+        if (listened == 0 && mine.Count > 0)
+        {
+            return SlotWasYours.Slot(mine[0].SlotStartUtc);
         }
 
         return heard.CandidatesFound > 0
