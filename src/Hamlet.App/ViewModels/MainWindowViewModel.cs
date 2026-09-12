@@ -1192,7 +1192,6 @@ public partial class MainWindowViewModel : ObservableObject
             SegmentForTheChosenSubMode,
             Bands.FirstOrDefault(b => b.IsBestBet)?.Band.Name ?? "",
             HeardInTheLastMinute,
-            Bands,
             _settings.Operator.GridSquare);
 
     /// <summary>

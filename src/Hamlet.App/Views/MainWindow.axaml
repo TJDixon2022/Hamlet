@@ -600,17 +600,18 @@
                                  above it, the chips on the tab or the pills in the strip (§0).
 
                                  **THE 20 M BAND STRIP FROM THE EARLIER MOCKUP IS NOT HERE.**
-                                 At the panel's height there is no room for it under the pills
-                                 and the sparkline, and the task says to drop it and say so. -->
-                            <!-- **THE SIDES SHARE WHAT THE MAP LEAVES, AND NOTHING RUNS PAST
-                                 THE EDGE.** Measured at a 1400 window the panel is 756 px
-                                 inside; three regions sized to their content asked for more
-                                 than that and spilled out of the right side. So the map keeps
-                                 its own width, the two sides split the rest, the left lines
-                                 wrap and the pills take a second row before anything
-                                 overflows. -->
+                                 At the panel's height there is no room for it under the
+                                 sparkline, and the task says to drop it and say so. -->
+                            <!-- **NO BAND PILLS, AND THE MAP HAS THEIR ROOM** (Tim, 2026-09-12:
+                                 *"Too redundant. We don't need the repeat of the band list on
+                                 the green. Maybe make the map bigger."*; work instruction 334
+                                 task 1, R21). The pills are the band strip above this panel.
+                                 The right is only as wide as the best bet and the count; the
+                                 left block and the map share the rest, and the map draws at its
+                                 own proportions, so it grows taller as it grows wider and
+                                 nothing runs past the edge. -->
                             <Grid x:Name="GreenZoneRegions"
-                                  ColumnDefinitions="*,Auto,*"
+                                  ColumnDefinitions="*,*,Auto"
                                   RowDefinitions="Auto,Auto">
 
                                 <!-- ============ LEFT: WHERE YOU ARE ============ -->
@@ -671,7 +672,6 @@
                                             Grid.Column="1"
                                             Margin="0,0,16,0">
                                     <ctl:GrayLineMapControl x:Name="GreenZoneGrayLine"
-                                                            Height="110"
                                                             HorizontalAlignment="Left"
                                                             Utc="{Binding GrayLineUtc}"
                                                             OperatorGrid="{Binding GreenZone.OperatorGrid}"
@@ -705,58 +705,6 @@
                                                 ToolTip.Tip="The band with the most going on right now, from the same ranking the badge in the band strip wears. Pressing it tunes there."
                                                 Foreground="{StaticResource HmAmberDeepBrush}" />
                                     </StackPanel>
-
-                                    <!-- **THE BAND STRIP'S OWN BUTTONS**, so the pips and the
-                                         press are the strip's. The one the dial is in is
-                                         picked - a border and semibold as well as a tint -
-                                         and says so in words under it (§0.6). -->
-                                    <ItemsControl x:Name="GreenZonePills"
-                                                  ItemsSource="{Binding GreenZone.Pills}"
-                                                  HorizontalAlignment="Right">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <!-- **A SECOND ROW BEFORE AN OVERFLOW.** -->
-                                                <WrapPanel Orientation="Horizontal" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:GreenZonePill">
-                                                <StackPanel Spacing="2" Margin="0,0,4,2">
-                                                    <Button Classes="hm-chip"
-                                                            Classes.hm-picked="{Binding IsHere}"
-                                                            Padding="5,3"
-                                                            HorizontalAlignment="Center"
-                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).SelectBandCommand}"
-                                                            CommandParameter="{Binding Button}">
-                                                        <StackPanel Spacing="2">
-                                                            <TextBlock Text="{Binding Name}"
-                                                                       FontSize="12"
-                                                                       HorizontalAlignment="Center" />
-
-                                                            <ctl:ActivityPipsControl
-                                                                HorizontalAlignment="Center"
-                                                                Filled="{Binding Button.ActivityPips}"
-                                                                IsUnknown="{Binding Button.ActivityUnknown}" />
-                                                        </StackPanel>
-                                                    </Button>
-
-                                                    <!-- **UNDER THE PILL, AND ITS COLUMN IS AS
-                                                         WIDE AS THE WORDS.** Negative margins
-                                                         let the words overhang instead, and
-                                                         measured, the overhang ran 45 px past
-                                                         the panel's edge when the band landed
-                                                         last in its row; the wrap panel takes
-                                                         the wider column without overflowing. -->
-                                                    <TextBlock Text="{x:Static vm:GreenZone.YouAreOnIt}"
-                                                               IsVisible="{Binding IsHere}"
-                                                               FontSize="10"
-                                                               HorizontalAlignment="Center"
-                                                               Foreground="{StaticResource HmGreenBrush}" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
 
                                     <!-- **STATIONS HEARD HERE OVER THE LAST MINUTE**: the
                                          line, then the count in words, which is the carrier.

@@ -34,6 +34,10 @@ namespace Hamlet.App.Tests.ViewModels;
 /// <para>**REWRITTEN IN WORK INSTRUCTION 332.** Assertions 1 to 6 are 331's and still hold -
 /// the record still carries every one of those facts. Assertions 7 and 8 measured a two-line
 /// panel that is gone; what replaces them measures the three regions.</para>
+/// <para>**REWRITTEN AGAIN IN WORK INSTRUCTION 334 UNDER R12.** Tim, 2026-09-12: *"Too
+/// redundant. We don't need the repeat of the band list on the green. Maybe make the map
+/// bigger."* Assertion 10 measured the pills and now asserts they are gone and the map took
+/// their width; assertion 12 no longer looks for the line under the pill he is on.</para>
 /// <para>**THE SUN IS FACT AND PROPAGATION IS NOT** (§0.0). The night side is asserted
 /// against arithmetic done by hand in this file; nothing here asserts or permits a claim that
 /// a band is open.</para>
@@ -45,6 +49,23 @@ public sealed class TheGreenZoneTests
     private const long Psk31On20 = 14_070_000;
 
     private const string HisGrid = "FN00";
+
+    /// <summary>
+    /// **The map's width on this window at 1400 before the pills came off**, measured by work
+    /// instruction 334 on the headless host: 202 x 110.
+    /// </summary>
+    private const double MapWidthBefore = 202;
+
+    /// <summary>
+    /// **What the map grew by on the same window when the pills came off: 202 to 232.**
+    /// </summary>
+    /// <remarks>
+    /// **MEASURED, NOT CHOSEN** (work instruction 334's ARBITER block). At 1400 the right block's
+    /// width is set by the count and its sparkline, not by the pills, which had wrapped to three
+    /// rows inside it; so the width they gave back is small, and the map's growth in height -
+    /// 110 to 127 - is where most of their room went.
+    /// </remarks>
+    private const double MapWidthGrew = 30;
 
     /// <summary>2 pm EDT on the day Tim chose the darkness: 18:00 UTC.</summary>
     private static readonly DateTime TwoPmEdt = new(2026, 9, 12, 18, 0, 0, DateTimeKind.Utc);
@@ -372,18 +393,70 @@ public sealed class TheGreenZoneTests
         Assert.Equal(2, bins[^2]);
     }
 
-    /// <summary>**Assertion 10: the pills mark the band the dial is in, and only it.**</summary>
-    [Fact]
-    public void ThePillsMarkTheBandTheDialIsIn()
+    /// <summary>
+    /// **Assertion 10: no band pill is on the green zone, and the map is wider by the space they
+    /// held.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-12** (R21): *"Too redundant. We don't need the repeat of the band
+    /// list on the green. Maybe make the map bigger."* The pills are the row above the panel.
+    /// **REWRITTEN IN WORK INSTRUCTION 334 UNDER R12**; this assertion measured the pills unit
+    /// 332 put there.</para>
+    /// <para>**THE LEFT BLOCK, THE COUNT AND THE RULE OF THUMB STAY**, so they are asserted here
+    /// beside what went.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth()
     {
-        var model = OnTwentyMeters(Ft8On20);
+        var window = Realized(Ft8On20, "FT8");
 
-        var pills = model.GreenZone.Pills;
+        try
+        {
+            var panel = Panel(window);
+            var controls = panel.GetVisualDescendants().OfType<Control>().ToList();
+            var map = Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
 
-        _output.WriteLine(string.Join("  ", pills.Select(p => p.Name + (p.IsHere ? "*" : ""))));
+            _output.WriteLine(
+                "chips " + controls.Count(c => c.Classes.Contains("hm-chip"))
+                + ", pips " + controls.OfType<ActivityPipsControl>().Count()
+                + ", map " + F(map.Bounds.Width) + " x " + F(map.Bounds.Height)
+                + " (was " + F(MapWidthBefore) + " x 110.00)");
 
-        Assert.Equal(model.Bands.Count, pills.Count);
-        Assert.Equal("20 m", pills.Single(p => p.IsHere).Name);
+            Assert.DoesNotContain(controls, c => c.Name == "GreenZonePills");
+            Assert.DoesNotContain(controls, c => c.Classes.Contains("hm-chip"));
+            Assert.Empty(controls.OfType<ActivityPipsControl>());
+            Assert.DoesNotContain(
+                VisibleText(panel),
+                t => (t.Text ?? "").Contains("you are on it", StringComparison.OrdinalIgnoreCase));
+
+            Assert.InRange(
+                map.Bounds.Width, MapWidthBefore + MapWidthGrew - 0.5, MapWidthBefore + MapWidthGrew + 0.5);
+
+            foreach (var name in new[]
+            {
+                "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine", "GreenZoneLicenseLine",
+                "GreenZoneHeard", "GreenZoneRuleOfThumb",
+            })
+            {
+                Assert.True(Named<TextBlock>(window, name).IsEffectivelyVisible, name + " is not drawn");
+            }
+
+            // **THE COUNT IS ON THE RIGHT OF THE MAP AND THE RULE OF THUMB UNDER IT.**
+            var mapAt = map.TranslatePoint(new Point(0, 0), panel)!.Value;
+            var heard = Named<TextBlock>(window, "GreenZoneHeard");
+            var rule = Named<TextBlock>(window, "GreenZoneRuleOfThumb");
+
+            Assert.True(
+                heard.TranslatePoint(new Point(0, 0), panel)!.Value.X >= mapAt.X + map.Bounds.Width,
+                "the heard count is not right of the map");
+            Assert.True(
+                rule.TranslatePoint(new Point(0, 0), panel)!.Value.Y >= mapAt.Y + map.Bounds.Height,
+                "the rule of thumb is not under the map");
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     /// <summary>
@@ -427,7 +500,7 @@ public sealed class TheGreenZoneTests
 
     /// <summary>
     /// **Assertion 12: the map region renders, with its rule of thumb and no claim of
-    /// openness; the pills mark the band; the sparkline and count agree.**
+    /// openness; the sparkline and count agree.**
     /// </summary>
     [AvaloniaFact]
     public void TheMapRegionRendersWithItsRuleOfThumbAndNoClaimOfOpenness()
@@ -461,10 +534,6 @@ public sealed class TheGreenZoneTests
                     Assert.DoesNotContain(claim, text, StringComparison.OrdinalIgnoreCase);
                 }
             }
-
-            var onIt = VisibleText(Panel(window)).Where(t => t.Text == GreenZone.YouAreOnIt).ToList();
-
-            Assert.Single(onIt);
 
             var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
             var model = (MainWindowViewModel)window.DataContext!;

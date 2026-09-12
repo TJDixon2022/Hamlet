@@ -4,15 +4,6 @@ using Hamlet.RadioEngine.Explore;
 
 namespace Hamlet.App.ViewModels;
 
-/// <summary>One band pill on the green zone, and whether the dial is in it.</summary>
-/// <param name="Button">The band strip's own button, so the pips and the press are its.</param>
-/// <param name="IsHere">True on the band the dial is in.</param>
-public sealed record GreenZonePill(BandButtonViewModel Button, bool IsHere)
-{
-    /// <summary>The band's name.</summary>
-    public string Name => Button.Band.Name;
-}
-
 /// <summary>What the green zone reports once a session, when it first has a size.</summary>
 /// <param name="Width">The panel's width.</param>
 /// <param name="Height">The panel's height.</param>
@@ -28,15 +19,18 @@ public sealed record GreenZoneLayout(double Width, double Height, string Regions
 /// compressed it to two lines, and he answered: *"I said this was wasted real estate on the
 /// right so you just put more on the left."* So the panel is three regions across its whole
 /// width (work instruction 332 task 2): the band large on the left, the world with its night
-/// side in the middle, and the pills and what has been heard on the right.</para>
+/// side in the middle, and the best bet and what has been heard on the right.</para>
+/// <para>**NO BAND PILLS** (Tim, 2026-09-12: *"Too redundant. We don't need the repeat of the
+/// band list on the green. Maybe make the map bigger."*; work instruction 334 task 1). The
+/// band strip above the panel is the pills, and the map has the room they held.</para>
 /// <para>**THE BAND COMES FIRST AND LARGEST**, which is Tim's own reason: *"I really didn't
 /// know 14.070 was 20 meters until recently."*</para>
 /// <para>**NOTHING HERE IS INVENTED AND NOTHING HERE IS COMPUTED TWICE** (§0.0, §0 on
 /// generated-from-a-source-of-truth). Every value already exists on the screen: the license
 /// words are `PrivilegeStatusLine`'s, the band is the band the dial is in from
 /// <see cref="HfBands.Bands"/>, the family and sub-mode are the neighborhood's and the
-/// tab's, the best bet is the ranking the band pills already wear, the pills are the strip's
-/// own buttons, and the count and the sparkline are the map's own dots.</para>
+/// tab's, the best bet is the ranking the band strip's pills already wear, and the count and
+/// the sparkline are the map's own dots.</para>
 /// <para>**BAND OPENNESS IS NEVER DRAWN OR SAID** (§0.0). The night side is the sun and the
 /// clock, which is fact; whether a path is open is a forecast Hamlet has no source for. The
 /// one sentence about propagation is <see cref="RuleOfThumb"/>, and it says it is one.</para>
@@ -55,9 +49,6 @@ public sealed record GreenZone
     /// survives a grayscale print and a color vision deficiency both.
     /// </remarks>
     public const string OnIt = " ✓";
-
-    /// <summary>What the pill the dial is in says under it.</summary>
-    public const string YouAreOnIt = "✓ you are on it";
 
     /// <summary>
     /// **The one line about propagation, stated as a rule of thumb** (§0.0).
@@ -165,12 +156,6 @@ public sealed record GreenZone
     /// <summary>True where the sub-mode's segment does not contain the dial.</summary>
     public bool HasStrayed => Strayed.Length > 0;
 
-    /// <summary>
-    /// **The band strip's own buttons, the one the dial is in marked** - so the pips and the
-    /// press are the strip's and not a second copy of them.
-    /// </summary>
-    public IReadOnlyList<GreenZonePill> Pills { get; private init; } = Array.Empty<GreenZonePill>();
-
     /// <summary>The operator's grid for the map's one marker, or "".</summary>
     public string OperatorGrid { get; private init; } = "";
 
@@ -188,7 +173,6 @@ public sealed record GreenZone
     /// How many of the map's dots were heard inside the last minute, or null where the feed
     /// has never answered - which is absent rather than nought (§0.0).
     /// </param>
-    /// <param name="bands">The band strip's buttons, or null.</param>
     /// <param name="operatorGrid">The operator's grid from Settings, or null.</param>
     /// <returns>The lines, ready to bind.</returns>
     public static GreenZone For(
@@ -199,7 +183,6 @@ public sealed record GreenZone
         Neighborhood? segment,
         string bestBetBand,
         int? heardInTheLastMinute,
-        IEnumerable<BandButtonViewModel>? bands = null,
         string? operatorGrid = null)
     {
         var band = HfBands.Bands.FirstOrDefault(
@@ -231,10 +214,6 @@ public sealed record GreenZone
                 && string.Equals(bestBetBand, band?.Name, StringComparison.Ordinal),
             Heard = Stations(heardInTheLastMinute),
             Strayed = Stray(picked, segment, frequencyHz),
-            Pills = (bands ?? Array.Empty<BandButtonViewModel>())
-                .Select(b => new GreenZonePill(
-                    b, string.Equals(b.Band.Name, band?.Name, StringComparison.Ordinal)))
-                .ToList(),
             OperatorGrid = OperatorLocation.Normalize(operatorGrid),
         };
     }

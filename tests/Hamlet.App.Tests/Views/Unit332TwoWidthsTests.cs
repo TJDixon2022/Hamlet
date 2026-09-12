@@ -79,13 +79,10 @@ public sealed class Unit332TwoWidthsTests
                     _output.WriteLine("  " + name.PadRight(22) + " " + Lines(text) + " line(s): " + text.Text);
                 }
 
-                var pills = Named<ItemsControl>(window, "GreenZonePills")
-                    .GetVisualDescendants().OfType<Button>().ToList();
-                var rows = pills.Select(p => Math.Round(p.TranslatePoint(new Point(0, 0), panel)?.Y ?? 0))
-                    .Distinct()
-                    .Count();
-
-                _output.WriteLine("  pills: " + pills.Count + " in " + rows + " row(s)");
+                // **THE PILLS CAME OFF IN WORK INSTRUCTION 334** (R21); what is left to count is
+                // whether any chip is still on the panel.
+                _output.WriteLine("  chips on the panel: " + panel.GetVisualDescendants().OfType<Control>()
+                    .Count(c => c.Classes.Contains("hm-chip")));
 
                 var map = Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
 
