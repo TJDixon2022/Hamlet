@@ -705,8 +705,14 @@
     the contact that earned each card with its path map, and a next card that knows who is
     calling. Screen only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.20 -> 1.13.21, UNIT 336 TASK 0. A PATCH, AND STEP 2 OF THE MAINTENANCE PHASE OPENS:
+    States scored from the ADIF STATE field, rank names read from the points file, the points
+    file documented, and the 1400 px split between the decoded list and For You settled
+    (R23, R24). Screen only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.20</Version>
+    <Version>1.13.21</Version>
   </PropertyGroup>
 
   <!--

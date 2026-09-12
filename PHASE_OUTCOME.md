@@ -2,7 +2,7 @@ PHASE: The screen says what is true and looks like someone meant it
 PHASE_SET: 2026-09-12
 DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
 STEP: 0 | done | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
-STEP: 1 | not started | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
+STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
 STEP: 2 | not started | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
 STEP: 3 | not started | Tim looks at it - every page at his window size, and says it passed.
 
@@ -46,3 +46,31 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 FATE: executed
 STATE_AFTER: done
 STATE_WHY: Written at task 4, against tests that ran in this session; every appearance claim is computed on the headless host, not seen. Tasks 0 to 4 done and pushed; task 5, the popup, dropped whole as the named drop candidate, so the nice-to-pass is unmet and no must-pass is lost. One: every kind's band carries count, score, level and a bar, or words where there is no next level - 8 of 8, watched red on no named band. Two: every earned card is the earliest contact in its place, with the conversation card's globe plot, the log's miles, band, mode, date and points; no dash where a fact is missing, and a card with no grid says so and lists its contacts. Three: the next card lists who on the CQ list, read with its time, would earn it, with distance, or says no one is calling from there now; States says Hamlet cannot tell a caller's state. Four: all eight kinds per R22, Continents to seven cards each opening to its countries. Five and six: at windows 1400 x 720 and 1920 x 720, every visible run fits and does not wrap on 10 pages, and 0 of 51 cards at each width lack a map, a bar or a list. Seven: achievement_category_opened carries the kind and the card count. 36 of 37 across the achievements, binding and privacy tests, the one red the known TheWindowDrawsEverySixRows; carry-forward after the change 100 of 100 app and 85 of 85 engine.
+
+### ALSO RECORDED FOR UNIT 335 - STEP 1
+
+A second append for the same unit and the same step, called as UNIT 2.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: rebuild the achievements category pages as trading cards - earned card from the log contact with the conversation card's globe plot, next card fed the decoded CQ list, all eight kinds, measured at 1400 and 1920
+HIT: section 4 wants a ruling: banked - The rulings asked for only touch the wording of the States next card and whether door callers get named, step 1 is recorded done with every must-pass met, and the dropped map popup can still be built without either answer.
+WHY: Step 0 is done by the outcome file's independent reader, and step 1 is the next in the pipeline with its entry criterion checkable by one named test; the loop test finds no prior attempt at it.
+DECIDED: A States next card says Hamlet cannot tell a caller's state from the air rather than that no one is calling, marked for Tim as a proposal; the nice-to-pass popup is the drop candidate and task 4 sheds whole kinds if the unit runs long; the category bands are read as the achievements' own colors per the approved picture, not mode-family fills under 0.5.
+LICENCE: PHASE_PLAN.md R22, section 4 step 1, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R13, R14; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1 with Ruling C, 3.5, 4; HM-DEC-092, HM-DEC-111, HM-DEC-139, HM-DEC-155; ARBITER.md 6 and 7
+COST: 28.656047000000004
+ACCOMPLISHED: every achievements category Tim opens shows the contacts that earned it - the map of the path, how far, when, on what - and a next card that tells him who on the air right now would earn the next one
+STATE_WHY: The report backs all seven must-pass criteria with tests that failed first and then passed, and with measured fixture output, including the band on 8 of 8 kinds, earned cards from the earliest log contact, next cards built from the CQ list read when the window opened, no clip or wrap at 1400 and 1920 and 0 of 51 white cards, while the dropped map popup was only nice-to-pass and the States wording awaits an owner ruling.
+
+## UNIT 336 - STEP 2
+
+STEP: 2
+APPROACH: read the ADIF STATE field and score States only on US, Alaska and Hawaii records by the fifty codes; read rank_names from the points file with Rank n defaults, skip comments in the reader and document every key in a comment block at the top of the shipped file; turn the 383 px decoded column into a star fraction with the message abbreviated to callsign and grid at 1400
+MOVE: continue
+WHY: step 1 is done (unit 335, STATE_AFTER: done) and step 2 is next in the pipeline; its entry is checked by running TheCategoryPagesAreTradingCardsTests and TheAchievementsPageClicksInTests first
+DECIDED: nothing beyond the instruction at task 0. Task 3, the 1400 layout, is the drop candidate, whole. Writing STATE into Hamlet's own entries stays parked, so his own contacts score no state.
+LICENCE: PHASE_PLAN.md R23, R24, section 4 step 2, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R13, R14; CLAUDE.md 0.0, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 4; HM-DEC-018, HM-DEC-092, HM-DEC-139, HM-DEC-155; AppSettings.cs 747
+COST: one session, four tasks (0 to 3), each committing and pushing on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+FATE: executed
+STATE_AFTER: not yet written; written at the unit's last task

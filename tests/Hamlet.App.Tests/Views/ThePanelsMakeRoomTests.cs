@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
@@ -303,6 +304,71 @@ public sealed class ThePanelsMakeRoomTests
             mine.Bounds.Width > half,
             "For you is " + Px(mine.Bounds.Width)
             + " px, which is not wider than the " + Px(half) + " that *,* gave it");
+    }
+
+    /// <summary>
+    /// **Work instruction 336 task 0: the split measured at both widths, before anything is
+    /// built.** Printed, not asserted - the trace the fraction is chosen from.
+    /// </summary>
+    [AvaloniaFact]
+    public void Unit336TraceMeasuresTheSplitAtBothWidths()
+    {
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var window = Realized(width);
+
+            var tab = window.FindControl<Control>("DigitalPanes");
+            var panes = window.FindControl<Control>("DigitalDecodedPanes")!;
+            var decoded = window.FindControl<Control>("DigitalDecodedPanel")!;
+            var mine = window.FindControl<Control>("DigitalMinePanel")!;
+            var cards = window.FindControl<ItemsControl>("DigitalContactCards")!;
+            var beside = cards.GetVisualDescendants().OfType<Control>()
+                .FirstOrDefault(c => c.Name == "CardBeside");
+            var globe = cards.GetVisualDescendants().OfType<Hamlet.App.Controls.Ft8GlobeControl>()
+                .FirstOrDefault(g => g.IsEffectivelyVisible && g.Bounds.Width > 0);
+            var table = cards.GetVisualDescendants().OfType<Control>()
+                .FirstOrDefault(c => c.Name == "CardRightColumn");
+
+            _output.WriteLine("WINDOW " + Px(width));
+            _output.WriteLine("  tab (DigitalPanes)   : " + (tab is null ? "not found" : Px(tab.Bounds.Width)));
+            _output.WriteLine("  right column (panes) : " + Px(panes.Bounds.Width));
+            _output.WriteLine("  decoded panel        : " + Px(decoded.Bounds.Width));
+            _output.WriteLine("  For You panel        : " + Px(mine.Bounds.Width));
+            _output.WriteLine("  card inside          : " + (beside is null ? "none" : Px(beside.Bounds.Width)));
+            _output.WriteLine("  card map             : " + (globe is null ? "none" : Box(globe)));
+            _output.WriteLine("  card table           : " + (table is null ? "none" : Box(table)));
+
+            if (beside is not null && globe is not null && table is not null)
+            {
+                var mapAt = globe.TranslatePoint(new Avalonia.Point(0, 0), beside)!.Value;
+                var tableAt = table.TranslatePoint(new Avalonia.Point(0, 0), beside)!.Value;
+
+                _output.WriteLine(
+                    "  table is " + (tableAt.Y >= mapAt.Y + globe.Bounds.Height - 0.5 ? "UNDER" : "BESIDE")
+                    + " the map (map at " + Px(mapAt.X) + "," + Px(mapAt.Y) + ", table at "
+                    + Px(tableAt.X) + "," + Px(tableAt.Y) + ")");
+
+                foreach (var run in table.GetVisualDescendants().OfType<TextBlock>()
+                    .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Length > 0))
+                {
+                    _output.WriteLine("    table run " + Px(run.Bounds.Width) + " px [" + run.Text + "]");
+                }
+            }
+
+            foreach (var cell in window.FindControl<ItemsControl>("DigitalDecodedRows")!
+                .GetVisualDescendants().OfType<StackPanel>()
+                .Where(p => p.Name == "DecodedMessageCell" && p.IsVisible))
+            {
+                var text = string.Concat(cell.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text));
+                var call = cell.GetVisualDescendants().OfType<TextBlock>().Skip(2).FirstOrDefault()?.Text ?? "";
+
+                _output.WriteLine(
+                    "  message cell " + Px(cell.Bounds.Width) + " px; [" + text + "] needs "
+                    + Px(Measure(text)) + "; sender [" + call + "] needs " + Px(Measure(call)));
+            }
+
+            _output.WriteLine("");
+        }
     }
 
     /// <summary>How wide a line is drawn in the decoded row's own typeface.</summary>
