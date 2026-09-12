@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 5 of 6
+STATE: COMPLETED
+TASK: 6 of 6
 WORK_INSTRUCTION: 325 - the screen says what is true
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T23:26:00-04:00
-NOTE: Eleven operator-facing strings corrected across six files, and VoiceTests gained a sweep that states the list it enforces. Running the carry-forward list in both projects as the closing gate.
+UPDATED: 2026-09-11T23:52:00-04:00
+NOTE: Unit 325 complete at task 6 of 6, nothing dropped. Folded panels say what they hold, the filter is there before the first slot, cards are keyed by station and a called one waits a full slot, every qualifying station is marked as a green counter or an amber turning door, eleven strings are American, and the ALC learns its reference from FT8 with a margin of 15 of 120. Step 4 gains its R11/R15 power criterion in full and stays partial on the press half. Carry-forward 159 of 159 before and after. output.md written; the validator could not be invoked in this session and its seven rules were applied by hand and all pass - section 4 item 7. Section 4 raises 7 items.
 
 ---
 
