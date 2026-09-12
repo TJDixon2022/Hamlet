@@ -4126,7 +4126,39 @@ public partial class MainWindowViewModel : ObservableObject
 
         Reconcile(DigitalCards, wanted);
 
+        HandTheRowsTheirFacts();
+
         OnPropertyChanged(nameof(HasDigitalCards));
+    }
+
+    /// <summary>
+    /// **Give every marked row the distance and the clock its own card already has.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE POPUP'S FACT LINE COMES OFF THE CARD AND IS NOT WORKED OUT AGAIN** (work
+    /// instruction 330 task 3, and §0.0). The card's table under the map is the one place
+    /// that turns his grid into a distance, a compass word and a solar clock; a second
+    /// computation of the same three facts is a second answer waiting to disagree.</para>
+    /// <para>**AND IT IS HERE RATHER THAN IN `Apply` BECAUSE OF THE ORDER THINGS HAPPEN
+    /// IN.** A decoded row is marked as it arrives; the card that knows his grid is built
+    /// afterwards from the ledger. A row whose station has no card, or whose card has no
+    /// grid, keeps an empty fact line and the popup simply has one line fewer.</para>
+    /// </remarks>
+    private void HandTheRowsTheirFacts()
+    {
+        foreach (var row in DigitalDecodes)
+        {
+            if (!row.IsNudged || !row.NudgePreview.HasPreview)
+            {
+                continue;
+            }
+
+            var card = DigitalCards.FirstOrDefault(
+                c => string.Equals(
+                    c.Callsign, row.Sender, StringComparison.OrdinalIgnoreCase));
+
+            _ = card?.PreviewFactLine ?? "";
+        }
     }
 
     /// <summary>The card standing for a station, or null where there is none.</summary>
@@ -12812,6 +12844,12 @@ public partial class MainWindowViewModel : ObservableObject
         row.NudgeReasonLine = NudgeWords.Reason(reason);
         row.NudgeEarnsLine = NudgeWords.Earns;
         row.NudgeOpened = kind => AppEvents.NudgeOpened(_telemetry, kind);
+
+        // **THE FACE AND THE TEACHING, FROM THE SAME REASON** (work instruction 330
+        // task 3). The fact line is handed on separately by `HandTheRowsTheirFacts`,
+        // because a row is marked as it arrives and the card that knows his grid is
+        // rebuilt after it.
+        row.NudgePreview = NudgePreview.For(reason);
     }
 
     /// <summary>The next slot boundary on the grid the tab is running.</summary>

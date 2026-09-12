@@ -7,7 +7,7 @@ STEP: 2 | done | Hear everyone - signals found across the passband, each with it
 STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
 STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
 STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+STEP: 6 | in progress | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
 ## UNIT 312 - STEP 0
 
@@ -404,3 +404,19 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 FATE: executed
 STATE_AFTER: not started
 STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.
+
+### ALSO RECORDED FOR UNIT 330 - STEP 6
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: size the tray mark as ruled, make the card's column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles
+HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+WHY: six things the owner saw and ruled on with the phase at his verdict, none touching a step criterion; he is away for two hours and asked for one unit that runs unattended, so every task commits on its own and drops from the back
+DECIDED: the green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner; the points are the owner's file; the size tests are reconciled under R12
+LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark
+COST: 9.140988
+ACCOMPLISHED: the tray mark can be seen, the card reads as a table, the popup shows the card he would earn, the green zone tells him what band he is on and whether it is the best bet, Hamlet stops claiming the band was empty in a slot it did not listen to, and the achievements page is eight badges with scores and a running total he can edit from a file
+STATE_AFTER: in progress
+STATE_WHY: no output.md, so there is no report to judge the step against

@@ -511,6 +511,32 @@ public sealed partial record DigitalDecodeRow(
     /// </remarks>
     public string NudgeEarnsLine { get; set; } = "";
 
+    /// <summary>**The card he would earn, for the popup the mark opens.**</summary>
+    /// <remarks>
+    /// <para>**WHAT THE POPUP DRAWS SINCE WORK INSTRUCTION 330 TASK 3.** Tim pressed unit
+    /// 327's and got three lines of gray text; his word for it was *not pretty or
+    /// interesting*. <see cref="NudgeReasonLine"/> and <see cref="NudgeEarnsLine"/> are kept
+    /// and still say what they said - they are the hover's paragraph and the report quotes
+    /// them - and this is what is on the glass.</para>
+    /// <para>**THE ROW LEARNS ITS FACT LINE LATER THAN ITS MARK.** A decode is marked as it
+    /// arrives and the conversation cards are rebuilt after it, so the distance and the
+    /// clock are pushed onto <see cref="ViewModels.NudgePreview.FactLine"/> when the card
+    /// that holds them exists. Until then the popup has a face, a teaching line and a
+    /// closing line, and no fact - which is absent rather than dashed (§0.0).</para>
+    /// </remarks>
+    public NudgePreview NudgePreview
+    {
+        get => _preview;
+        set
+        {
+            _preview = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NudgePreview)));
+        }
+    }
+
+    private NudgePreview _preview = NudgePreview.None;
+
     /// <summary>Called when the mark is pressed, so the shell can write it down.</summary>
     /// <remarks>
     /// <para>**THE ROW DOES NOT KNOW WHAT TELEMETRY IS** (§0.1's shape, one level in). It

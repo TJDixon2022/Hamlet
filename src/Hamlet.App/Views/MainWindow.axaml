@@ -17,7 +17,102 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
+    <Window.Resources>
+        <!-- **THE QUILL'S POPUP: THE CARD HE WOULD EARN** (work instruction 330
+             task 3). Tim, 2026-09-12, on unit 327's: *"The achievement indicator
+             popup is not pretty or interesting."*
+
+             **ONE TEMPLATE, TWO SURFACES.** The row's mark and the card's `Achieves`
+             row open the same preview off the same `NudgePreview`, so one station
+             cannot be told two things about one card.
+
+             **TOP TO BOTTOM: THE CARD, THE TEACHING, THE FACT, WHAT IT EARNS.** The
+             face is drawn the way the achievements screen draws an earned one - the
+             same background, edge, radius and type sizes - and **not dimmed**,
+             because the point of a preview is what it will look like when it is his.
+
+             **NO IMAGE ASSETS AND NO NEW COLORS.** The quill is the vector control
+             the tray and the rows already use; the greens and ambers are
+             `App.axaml`'s. -->
+        <DataTemplate x:Key="HmNudgePreview" x:DataType="vm:NudgePreview">
+            <StackPanel Spacing="9" IsVisible="{Binding HasPreview}">
+                <!-- **THE CARD FACE.** -->
+                <Border Background="{StaticResource HmBackgroundBrush}"
+                        BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="10,8"
+                        HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ctl:AchievementMarkControl VerticalAlignment="Center"
+                                                    Form="{Binding FaceForm}"
+                                                    IsNew="True"
+                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}" />
+
+                        <StackPanel VerticalAlignment="Center" Spacing="1">
+                            <!-- **TWO BLOCKS AND NOT ONE WITH A CONVERTER**, so the
+                                 family ink is a literal in the markup the way every
+                                 other ink on this screen is (§0.5, HM-DEC-012). -->
+                            <TextBlock Text="{Binding FaceHeadline}"
+                                       IsVisible="{Binding IsCounter}"
+                                       FontSize="17" FontWeight="Bold"
+                                       Foreground="{StaticResource HmGreenBrush}" />
+
+                            <TextBlock Text="{Binding FaceHeadline}"
+                                       IsVisible="{Binding IsDoor}"
+                                       FontSize="17" FontWeight="Bold"
+                                       Foreground="{StaticResource HmAmberBrush}" />
+
+                            <TextBlock Text="{Binding FaceUnder}"
+                                       IsVisible="{Binding HasFaceUnder}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- **THE TEACHING** (ACHIEVEMENTS_PHILOSOPHY 3.5: the teaching is
+                     the product, and the popup is where it lives). -->
+                <TextBlock x:Name="NudgeTeachingLine"
+                           Text="{Binding TeachingLine}"
+                           IsVisible="{Binding HasTeachingLine}"
+                           TextWrapping="Wrap"
+                           LineSpacing="1.3" />
+
+                <!-- **ONE LINE OF FACT, OFF THE CARD'S OWN TABLE**, and absent
+                     rather than dashed where Hamlet has no grid for him (0.0). -->
+                <TextBlock x:Name="NudgeFactLine"
+                           Text="{Binding FactLine}"
+                           IsVisible="{Binding HasFactLine}"
+                           TextWrapping="Wrap"
+                           FontSize="11"
+                           LineSpacing="1.3"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                <TextBlock x:Name="NudgeClosingLine"
+                           Text="{Binding ClosingLine}"
+                           TextWrapping="Wrap"
+                           FontSize="11"
+                           LineSpacing="1.3"
+                           Foreground="{StaticResource HmTextMutedBrush}" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
     <Window.Styles>
+        <!-- **THE POPUP'S OWN FRAME, WRITTEN ONCE** (work instruction 330 task 3).
+             It is unit 310's enlarged-map container - the panel fill, the slate
+             edge, the same radius and padding - and the two quill popups read it
+             rather than each carrying four setters that can drift apart. -->
+        <Style Selector="Border.hm-nudgepopup">
+            <Setter Property="Background" Value="{StaticResource HmPanelBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource HmSlateEdgeBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="12" />
+        </Style>
+
         <!-- **A MESSAGE HE SENT, IN THE CONVERSATION WITH THE ONES HE HEARD**
              (Tim's ruling, 2026-09-08). The second carrier of a distinction the
              word `sent` under the time already makes, so the two kinds of row
@@ -4352,27 +4447,33 @@
                                                                                     Height="{x:Static ctl:AchievementMarkControl.RowSide}" />
                                                     </Button>
 
-                                                    <!-- **AND PRESSING IT SAYS WHY** (unit 327
+                                                    <!-- **AND PRESSING IT SHOWS THE CARD HE
+                                                         WOULD EARN** (work instruction 330
                                                          task 3), in the shape of unit 310's
                                                          enlarged map: centred on the window,
                                                          light-dismissable, with the same
                                                          dismiss X.
 
-                                                         **IT NAMES THE ENTITY FOR A COUNTER
-                                                         AND NAMES NOTHING FOR A DOOR** (§3.1).
-                                                         The words are built in `NudgeWords` and
-                                                         handed to the row; there is no wording
-                                                         in this file to drift from them. -->
+                                                         **IT WAS THREE LINES OF GRAY TEXT AND
+                                                         TIM'S WORD FOR IT WAS *not pretty or
+                                                         interesting*** (2026-09-12). What is
+                                                         in it now is the card face the
+                                                         achievements screen draws, the teaching
+                                                         line (§3.5), one line of fact off the
+                                                         card's own table, and what the QSO
+                                                         earns.
+
+                                                         **THE CONTENT IS `NudgePreview`'S AND
+                                                         NOT THIS FILE'S** (§3.1): a counter's
+                                                         face names the entity, a door's names
+                                                         nothing, and there is no wording here
+                                                         to drift from that. -->
                                                     <Popup IsOpen="{Binding NudgeIsOpen, Mode=TwoWay}"
                                                            Placement="Center"
                                                            PlacementTarget="{Binding $parent[Window]}"
                                                            IsLightDismissEnabled="True">
-                                                        <Border Background="{StaticResource HmPanelBrush}"
-                                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                                BorderThickness="1"
-                                                                CornerRadius="6"
-                                                                Padding="12">
-                                                            <Grid RowDefinitions="Auto,Auto,Auto" MaxWidth="420">
+                                                        <Border Classes="hm-nudgepopup">
+                                                            <Grid RowDefinitions="Auto,Auto" MaxWidth="420">
                                                                 <TextBlock Grid.Row="0"
                                                                            Text="{Binding Sender}"
                                                                            FontWeight="SemiBold"
@@ -4389,19 +4490,11 @@
                                                                         Cursor="Hand"
                                                                         ToolTip.Tip="Put it away." />
 
-                                                                <TextBlock Grid.Row="1"
-                                                                           Margin="0,8,0,0"
-                                                                           Text="{Binding NudgeReasonLine}"
-                                                                           TextWrapping="Wrap"
-                                                                           LineSpacing="1.3" />
-
-                                                                <TextBlock Grid.Row="2"
-                                                                           Margin="0,6,0,0"
-                                                                           Text="{Binding NudgeEarnsLine}"
-                                                                           TextWrapping="Wrap"
-                                                                           FontSize="11"
-                                                                           LineSpacing="1.3"
-                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                <ContentControl Grid.Row="1"
+                                                                                x:Name="RowNudgePreview"
+                                                                                Margin="0,10,0,0"
+                                                                                Content="{Binding NudgePreview}"
+                                                                                ContentTemplate="{StaticResource HmNudgePreview}" />
                                                             </Grid>
                                                         </Border>
                                                     </Popup>
@@ -5401,16 +5494,17 @@
                                                                         Content="{Binding NudgeLine}"
                                                                         Command="{Binding OpenTheNudgeCommand}" />
 
+                                                                <!-- **THE SAME PREVIEW THE ROW'S
+                                                                     MARK OPENS**, off the same
+                                                                     `NudgePreview` and the same
+                                                                     template - one answer about
+                                                                     one station, drawn once. -->
                                                                 <Popup IsOpen="{Binding NudgeIsOpen, Mode=TwoWay}"
                                                                        Placement="Center"
                                                                        PlacementTarget="{Binding $parent[Window]}"
                                                                        IsLightDismissEnabled="True">
-                                                                    <Border Background="{StaticResource HmPanelBrush}"
-                                                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                                            BorderThickness="1"
-                                                                            CornerRadius="6"
-                                                                            Padding="12">
-                                                                        <Grid RowDefinitions="Auto,Auto,Auto" MaxWidth="420">
+                                                                    <Border Classes="hm-nudgepopup">
+                                                                        <Grid RowDefinitions="Auto,Auto" MaxWidth="420">
                                                                             <TextBlock Grid.Row="0"
                                                                                        Text="{Binding Callsign}"
                                                                                        FontWeight="SemiBold"
@@ -5426,19 +5520,11 @@
                                                                                     Cursor="Hand"
                                                                                     ToolTip.Tip="Put it away." />
 
-                                                                            <TextBlock Grid.Row="1"
-                                                                                       Margin="0,8,0,0"
-                                                                                       Text="{Binding NudgeReasonLine}"
-                                                                                       TextWrapping="Wrap"
-                                                                                       LineSpacing="1.3" />
-
-                                                                            <TextBlock Grid.Row="2"
-                                                                                       Margin="0,6,0,0"
-                                                                                       Text="{Binding NudgeEarnsLine}"
-                                                                                       TextWrapping="Wrap"
-                                                                                       FontSize="11"
-                                                                                       LineSpacing="1.3"
-                                                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                            <ContentControl Grid.Row="1"
+                                                                                            x:Name="CardNudgePreview"
+                                                                                            Margin="0,10,0,0"
+                                                                                            Content="{Binding NudgePreview}"
+                                                                                            ContentTemplate="{StaticResource HmNudgePreview}" />
                                                                         </Grid>
                                                                     </Border>
                                                                 </Popup>

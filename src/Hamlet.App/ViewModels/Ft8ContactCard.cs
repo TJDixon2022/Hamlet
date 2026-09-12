@@ -1108,11 +1108,48 @@ public sealed partial class Ft8ContactCard : ObservableObject
     public void UseNudge(NudgeReason reason)
     {
         _nudge = reason;
+        NudgePreview = NudgePreview.For(reason, PreviewFactLine);
 
         OnPropertyChanged(nameof(NudgeLine));
         OnPropertyChanged(nameof(HasNudgeLine));
         OnPropertyChanged(nameof(NudgeReasonLine));
         OnPropertyChanged(nameof(HasRightColumn));
+        OnPropertyChanged(nameof(NudgePreview));
+    }
+
+    /// <summary>**The card he would earn, for the popup the mark opens.**</summary>
+    /// <remarks>
+    /// **BUILT WHERE THE REASON ARRIVES** (work instruction 330 task 3), so the face, the
+    /// teaching and the fact come off one `NudgeReason` and one card at one moment. It is
+    /// <see cref="ViewModels.NudgePreview.None"/> until a reason is handed in.
+    /// </remarks>
+    public NudgePreview NudgePreview { get; private set; } = NudgePreview.None;
+
+    /// <summary>**The popup's one line of fact: the table's distance and clock.**</summary>
+    /// <remarks>
+    /// **IT IS THE TABLE'S OWN TWO ROWS JOINED** (§0.0, and the instruction: *from the
+    /// card's column*). Neither value is recomputed here, so the popup cannot say a
+    /// different distance from the row three lines above it, and a station Hamlet has no
+    /// grid for gets no line at all rather than a dash.
+    /// </remarks>
+    public string PreviewFactLine
+    {
+        get
+        {
+            var said = new List<string>();
+
+            if (HasDistanceLine)
+            {
+                said.Add(DistanceValue);
+            }
+
+            if (HasSolarTimeLine)
+            {
+                said.Add("his time " + SolarTimeValue);
+            }
+
+            return string.Join(Between, said);
+        }
     }
 
     /// <summary>Open the reason for this card's mark.</summary>

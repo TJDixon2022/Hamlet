@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-12T00:13:58-04:00  root C:\Source\HamLet
+measured 2026-09-12T10:58:10-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -18,7 +18,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 6f824f2
+  HEAD   : 4c05460
   uncommitted at the root : 0
 
 ==============================================================
@@ -587,22 +587,22 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under Â§R15. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  12 lines, 1716 bytes
+  12 lines, 1717 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
   CURRENT_STEP: 5
-  WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
+  WORK_INSTRUCTION: 328 - the mark is a quill again, and step 5 is done on the record
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
   STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
-  STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
+  STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  362 lines, 56464 bytes
+  392 lines, 62155 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -611,7 +611,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
   STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
-  STEP: 5 | not started | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
+  STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
   
   ## UNIT 312 - STEP 0
@@ -965,6 +965,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: not started
   STATE_WHY: The step's sole exit criterion is Tim's own verdict at the radio, and the unit performed only carried repair, stating plainly that step 6 is unchanged and his to close, so nothing has been done toward it.
+  
+  ## UNIT 328 - STEP 5
+  
+  STEP: 5
+  APPROACH: Two things, and neither is new building. First the record: unit 326 built step 5 in full while it was called under step 4, so the judge graded step 4 twice and never graded step 5, and PHASE_STATUS.md still reads STEP: 5 | not started while the tests that prove all four of its must-pass sit green in the tree. This unit reruns those four, filtered and foregrounded, quotes the value each one asserts, and appends the result under step 5. Second the mark: unit 327 answered "ugly and useless" with an 18 px filled disc, and Tim looked at it and said "so so so so so ugly". He was drawn three treatments and chose A - a thin quill in the gutter, the tray's vane at row scale, hairline and not filled, with a ring for a door.
+  MOVE: continue
+  WHY: The work behind step 5 is done and green and the record says not started, which is the same fault in the other direction from units 324 and 325 reciting step 4 as unmet without running the tests that guard it. Nothing in the phase stands between step 5 and Tim at the radio except a record that does not match the tree.
+  DECIDED: The vane's size at row scale is this unit's to state from the tray's path in assets/achievement-quill.svg - the vane spans 28 units of the 44-unit box, so 12 px of drawn height is a scale of 0.4286, and the box stays at RowSide 18 so the hit target and the door's ring are unchanged. The test is rewritten for the new shape under R12. The STATE_AFTER and STATE_WHY lines below are written at task 3, against tests that ran in this session, and not at task 1 when this entry was appended - a state claimed before the measurement is the fault this phase has now hit twice.
+  LICENCE: PHASE_PLAN.md step 5 entry and exit criteria, R1 to R19 with R12, R14 and R16 named; CLAUDE.md 0.5, 0.5.1, 0.6; Tim 2026-09-12 treatment A - thin quill in the gutter, ring for a door; HM-DEC-139, HM-DEC-150, HM-DEC-155, FACT-004, FACT-006.
+  COST: one session, four tasks. The carry-forward list run first as its own comment says, two invocations and one build each, app 100 of 100 and engine 85 of 85 - 185 of 185 green before anything moved.
+  ACCOMPLISHED: The mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says what the tree says, so the only step left in the phase is Tim at the radio.
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: STEP 5 IS DONE ON ALL FOUR OF ITS MUST-PASS, each answered by a named test that ran in this session with the value it asserts printed. One: ThePsk31LogsWithRstTests.ALoggedPsk31ContactCarriesBothReportsAndNotInTheDecibelField logs RST sent 599 and RST received 589 with the decibel fields both (none), and AnFt8ContactStillLogsItsDecibelsAndCarriesNoRst holds the other side - 6 of 6 green. Two: ThePsk31AdifTests.APsk31ContactComesOutAsPskWithTheSubmode exports MODE:3 PSK and SUBMODE:5 PSK31, and AnFt8AndAnFt4RecordAreByteIdenticalToWhatTheyWere shows the FT8 and FT4 records unchanged byte for byte - 3 of 3 green. Three: ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed shows three cards and no PSK31 one before the first contact, and TheFirstPsk31ContactRevealsTheModesRecords shows mode-PSK31 with 4 records after it - 0 cards before, 4 records after, 4 of 4 green. Four: TheAchievementsScreenTests is 2 red and 8 green, the same two inherited reds - WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo on a hover word and TheWindowDrawsEverySixRows on a missing AchievementsModeRows element - neither touched and neither made worse. Unit 327's addition holds too: GRIDSQUARE:4 FN31 is exported when a grid was read and the tag is absent altogether when none was. NOTHING WAS MEASURED AT A RADIO - FACT-004 and FACT-006 - and every value above is a test's printed output. STEP 6 IS TIM'S AND NOTHING HERE CAN CLOSE IT.
+  
+  ### ALSO RECORDED FOR UNIT 328 - STEP 5
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: replace the filled disc with the tray quill vane at row scale - green alone for a counter, orange in a ring for a door - and rerun step 5's four must-pass so the record matches the tree
+  HIT: section 4 wants a ruling: banked - Rulings are wanted on the comment in the markup, the stale unit 300 test premise, the demodulator quality measure, the eight Views reds and the uninvokable validator, but none of them touches a step 5 exit criterion, and all four of those must pass criteria were rerun green with their values quoted in this same session, so every part of step 5 remains open and workable without an answer.
+  WHY: unit 326 built step 5 while called under step 4, so the judge never graded step 5; the work is done and green and the record says not started; nothing else in the phase is between step 5 and Tim's verdict
+  DECIDED: the vane's exact size at row scale is the unit's to state from the tray's path; the test is rewritten for the shape under R12
+  LICENCE: PHASE_PLAN.md step 5 entry and exit; R12, R14, R16; CLAUDE.md 0.6; Tim 2026-09-12 treatment A; HM-DEC-155
+  COST: 9.140988
+  ACCOMPLISHED: the mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says step 5 is done, so the only step left is Tim at the radio
+  STATE_AFTER: partial
+  STATE_WHY: The four must-pass criteria are each met with quoted values from tests run this session, but the stated nice-to-pass criterion that the ADIF export imports cleanly into one named common logger is neither met nor mentioned anywhere in the report.
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -987,17 +1017,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1633 bytes
+  19 lines, 1889 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: 6 of 6
-  WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
+  TASK: 4 of 4
+  WORK_INSTRUCTION: 328 - the mark is a quill again, and step 5 is done on the record
   BALL: tim
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-11T23:59:42-04:00
-  NOTE: Unit 327 complete at task 6 of 6, nothing dropped, six commits pushed. Carry-forward 163 of 163 green before anything moved and 185 of 185 after the list was widened. A held PSK31 carrier is kept while its own demodulator vouches for it, so an idling station stays on the list; first-character latency measures 1.50 s from the row appearing; the row mark is an 18 px filled disc that opens a popup on a press; the card's right column carries six facts and the caption under the map is gone; a PSK31 contact logs GRIDSQUARE when one was read. Two measurements changed the unit's own mind and are reported rather than tidied - the demodulator vouches for a dead carrier for 7.20 s, which moved RetiredWithinSeconds 2.5 to 9.0, and the fixture does not reproduce what Tim saw. validate-output.bat was refused by the permission layer for the third unit running, on four different invocations, and its seven rules were applied by hand and all pass - section 4 item 5. Section 4 raises 6 items on top of the carried queue.
+  UPDATED: 2026-09-12T00:31:31-04:00
+  NOTE: Unit 328 complete at task 4 of 4, nothing dropped, four commits pushed. Carry-forward 185 of 185 green before anything moved and the app invocation 100 of 100 again after. Step 5's four must-pass all answered by tests that ran tonight with their values printed - RST 599 sent and 589 received with the decibel fields empty, MODE PSK with SUBMODE PSK31, no PSK31 card before the first contact and mode-PSK31 with 4 records after, TheAchievementsScreenTests 2 red and 8 green as inherited - plus GRIDSQUARE FN31 when read and no tag when not. The row mark is the tray vane at 6.0 x 12.0 px, hairline 1.5, not filled, green alone for a counter and orange in a 16.0 px ring with the bead for a door; the 18 px filled disc is gone and the box is unchanged so nothing on the row moved. Two things found and not repaired under section 10 - MainWindow.axaml's comment still calls the mark a filled disc, and Unit300SizesTests contradicts Unit303OptionBTests about the tray at rest. validate-output.bat was refused for the fourth unit running and its seven rules were applied by hand, all pass. Four of this session's own UPDATED times were composed rather than read from the clock and that is reported rather than tidied. Section 4 raises 4 items on top of the carried queue.
   
   ---
   

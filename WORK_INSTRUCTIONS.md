@@ -1,10 +1,13 @@
-# Work instruction 330 - maintenance round one, and the achievements page
+# Work instruction 331 - maintenance round one, continued
 
-**Seed under `--seed`, one iteration. Tim is away for two hours; this runs unattended.**
-Six things he saw on 2026-09-12, discussed and ruled, all screen. **Seven tasks. Drop
-from the back. Every task commits on its own, so what lands, lands.** The watchdog kills
-at twelve minutes of silence: **write `PROJECT_STATUS.md` before every `dotnet` command
-and after every task, without exception.**
+**Seed under `--seed`, one iteration.** Unit 330 was killed by the watchdog at task 2 -
+its last status said *green and about to commit*, then twelve minutes of silence. **Tasks
+1 and 2 of 330 may or may not be committed; task 0 here finds out.** Two things it
+measured before it died change this instruction: the tray vane was drawn at 62% of its
+ruled box, and the card's table did not fit beside the map. Tim ruled on the second.
+**Eight tasks. Drop from the back. Every task commits on its own. Status before every
+`dotnet` command, after every commit, and after every task - the last unit went quiet
+between a green run and its commit.**
 
 ---
 
@@ -125,7 +128,9 @@ teaching lives; **§4** worked, never confirmed, nothing shames.
 
 ## 7. Status cadence
 
-Before every `dotnet` command, and after every task.
+**Before every `dotnet` command, after every `git commit`, and after every task.** Unit
+330 went silent between a green run and its commit; a status line there would have saved
+it.
 
 ---
 
@@ -134,21 +139,53 @@ Before every `dotnet` command, and after every task.
 Five. Each names the test to watch failing first and one drop candidate. **Drop from the
 back.**
 
-### Task 1 - the tray mark is the size that was ruled
+### Task 0 - what unit 330 left
 
-Append `UNIT 330` to `PHASE_OUTCOME.md` under step 6 as carried repair; patch-bump; run
-the carry-forward list.
+Append `UNIT 331` to `PHASE_OUTCOME.md` under step 6; patch-bump. **`git log --oneline
+-8` and `git status --short`**: report which of unit 330's task 1 and task 2 commits
+exist and whether the tree has uncommitted work from it. **If there is uncommitted work
+that builds and its tests are green, commit it as `unit 330 task 2, recovered by 331`;
+if it does not build, stash it and say so.** Then run the carry-forward list, status
+first.
 
-The tray quill renders at the height units 300-303 ruled - **about 27 px, matching the
-count badge's height**, green `#3B6D11`, not a sliver. Measure what it is today and
-report before and after. **Resolve the `Unit300SizesTests` / `Unit303OptionBTests`
-contradiction under §R12** by making both say what Tim ruled and what the screen shows.
-Correct the `MainWindow.axaml` comment that still says *filled disc*.
+**Drop candidate:** none.
 
-**Test watched failing first:** the two size tests, reconciled, watched red then green;
+### Task 1 - the tray mark is drawn at the size that was ruled
+
+Unit 330 measured: the box is 27 px as ruled, **the renderer scales the 44-unit vane to
+62% of the box, so the drawn mark is about 10.6 × 5.3 px.** The ruling was followed and
+the glass never showed it. Fix the scaling so the vane fills the box - **the drawn vane is
+about 27 px tall**, green `#3B6D11` - and assert the drawn size, not the box. **Resolve
+the `Unit300SizesTests` / `Unit303OptionBTests` contradiction under §R12** so both say
+what the glass shows. Correct the `MainWindow.axaml` comment that still says *filled
+disc*. If 330 already committed this, verify and move on.
+
+**Test watched failing first:** the two size tests, reconciled, asserting drawn height;
 `BindingHealthTests`.
 
 **Drop candidate:** none.
+
+### Task 1a - the panels make room
+
+**Tim, 2026-09-12:** *"The decoded text doesn't have to be as wide as it is. Move the
+clear button up above both decoded and for you, squeeze the decoded text in, and make
+the for you a little wider."*
+
+- The `newest first` and `clear` controls, and the `everything` / `CQ` filter, move to
+  **one bar above both panels**, spanning them.
+- The decoded list narrows: it needs the time, the SNR and the message, and the message
+  column is as wide as the longest FT8 line plus the quill gutter - measure it and state
+  the width.
+- **For You widens to what is left**, and it must be wide enough that the map keeps its
+  current width (222 px) with a **190 px** table beside it plus margins - so about 460 px
+  inside the card. State the split as a fraction of the tab and report before and after.
+
+**Test watched failing first:** `ThePanelsMakeRoomTests`, app: the bar above both panels
+carries the three controls; the decoded list's message column fits the longest fixture
+line; the For You card is at least 460 px inside; `ThePanelScrollsTests`,
+`TheFilterIsAlwaysThereTests`, `BindingHealthTests` green.
+
+**Drop candidate:** none - task 2 depends on it.
 
 ### Task 2 - the card's right column is a table
 
@@ -167,7 +204,8 @@ Achieves   New country
 *Show the messages* appears **once**, here. The link on the card's top row is removed.
 The `Achieves` row carries the mark's kind and opens the task 3 popup; **absent when he
 earns nothing**, not blank. A fact Hamlet does not have is an absent row, not a dash.
-Width: the column takes what the map leaves and never pushes the map narrower.
+Width: **beside the map**, in the room task 1a made; the map keeps 222 px. If 330's
+commit put the table under the map, move it beside.
 
 **Test watched failing first:** `TheCardsRightColumnTests`, rewritten under §R12: five
 rows at equal height; no text clipped at the card's width; one *show* link on the whole
@@ -365,7 +403,7 @@ C. The report last, and section 4 raises N items on top of the carried queue.
 ```
 
 ```
-UNIT:       330 - <complete|stopped> at task N of 7, <which dropped> - <date time>
+UNIT:       331 - <complete|stopped> at task N of 8, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
 ADVANCED:   no
@@ -374,7 +412,7 @@ NUMBER:     tray mark <before> -> <after> px; green zone height <before> -> <aft
 DRIFT:      <n> consecutive units without advance
 ```
 
-**Section 3 must describe each of the seven as it now renders, computed, in enough words
+**Section 3 must describe each task's result as it now renders, computed, in enough words
 that Tim knows what to look for - and print the fixture log's scores kind by kind so he
 can check the arithmetic against his file.** **Section 2 repeats the four files to delete by hand.**
 
@@ -383,9 +421,9 @@ can check the arithmetic against his file.** **Section 2 repeats the four files 
 ```
 ARBITER-DECISION
 STEP: 6
-APPROACH: size the tray mark as ruled, make the card's column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles
+APPROACH: recover what unit 330 committed, draw the tray vane at its ruled size rather than 62% of it, move the list controls to a bar above both panels and widen For You so the card table fits beside the map, then make the card's column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles
 MOVE: continue
-WHY: six things the owner saw and ruled on with the phase at his verdict, none touching a step criterion; he is away for two hours and asked for one unit that runs unattended, so every task commits on its own and drops from the back
+WHY: unit 330 was killed at task 2 with two measurements that changed the shape - the vane scaling and the card width - and the owner ruled the panel split; the remaining six things stand, none touching a step criterion; every task commits on its own and drops from the back
 STATE: not started
 DECIDED: the green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner; the points are the owner's file; the size tests are reconciled under R12
 LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark
