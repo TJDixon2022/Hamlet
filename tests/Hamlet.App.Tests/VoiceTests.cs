@@ -189,6 +189,35 @@ public sealed class VoiceTests
         Assert.Contains("real copy", passages[0].Text, StringComparison.Ordinal);
     }
 
+    /// <summary>The sentence unit 332 took off the achievements window.</summary>
+    private const string StaleCannotWork = "Hamlet cannot work CW, PSK31 and Voice yet";
+
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 334 TASK 2.** The sentence was false on two of its three modes
+    /// the day it came off, and a screen telling the operator Hamlet cannot do what it does is
+    /// the §0.0 fault. **IT IS HELD OUT OF EVERY FILE UNDER `src`**, comments included, so it
+    /// cannot come back as copy or as a comment somebody lifts into copy.</para>
+    /// <para>**THIS COULD NOT BE WATCHED RED ON THE TREE**, because unit 332 had already
+    /// removed the sentence. The sample below is what proves the check would see it.</para>
+    /// </remarks>
+    [Fact]
+    public void TheStaleCannotWorkSentenceIsNowhereInTheSource()
+    {
+        var sample = "var why = \"" + StaleCannotWork + ". The log is ready.\";";
+
+        Assert.Contains(PassagesFromCSharp(sample), p => p.Text.Contains(StaleCannotWork, StringComparison.Ordinal));
+
+        var root = Path.Combine(RepositoryRoot(), "src");
+        var offenders = CopyFiles()
+            .Where(file => File.ReadAllText(file).Contains(StaleCannotWork, StringComparison.OrdinalIgnoreCase))
+            .Select(file => Path.GetRelativePath(root, file))
+            .ToList();
+
+        Assert.True(
+            offenders.Count == 0,
+            "the stale sentence is in: " + string.Join(", ", offenders));
+    }
+
     /// <summary>One run of user-facing text, and where it came from.</summary>
     private readonly record struct Passage(int Line, string Text);
 
