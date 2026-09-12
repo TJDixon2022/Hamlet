@@ -58,10 +58,19 @@ public sealed class TheLogCanSayFt4Tests
             names,
             n => n.Contains("Submode", System.StringComparison.OrdinalIgnoreCase));
 
-        // Thirteen init properties, counted rather than recalled — twelve at
-        // task 1 and the submode makes thirteen. (`EqualityContract` is
-        // protected and so is not in this list.)
-        Assert.Equal(13, names.Count);
+        // Fifteen init properties, counted rather than recalled — twelve at unit
+        // 291 task 1, the submode made thirteen, and work instruction 326 task 3
+        // adds `RstSent` and `RstReceived` for PSK31's report, which is an RST and
+        // not a ratio in decibels (`PHASE_PLAN.md` §3.2: *the FT8 dB field is not
+        // reused to hold it*). (`EqualityContract` is protected and so is not in
+        // this list.)
+        //
+        // **THE COUNT IS RAISED AND THE ASSERTION ABOVE IS NOT TOUCHED** (§R12,
+        // and §0 on a pin that only ever grows). What this test exists to catch is
+        // a *second* submode-shaped property, and that is the `Assert.Single`; the
+        // count is the tripwire for a field added without a reason being written
+        // down, and the reason is written down here.
+        Assert.Equal(15, names.Count);
     }
 
     /// <summary>An FT4 contact comes out spelled the way ADIF spells it.</summary>
