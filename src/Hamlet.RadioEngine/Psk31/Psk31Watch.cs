@@ -32,22 +32,35 @@ public sealed record Psk31Pass(
 
 /// <summary>Why a carrier stopped being listed.</summary>
 /// <remarks>
-/// **THE SEARCH HAS ONE RETIRE TEST AND THREE WAYS TO FAIL IT**, and which one it was is
-/// the difference between a station that finished, a station that faded, and a decoder
-/// that lost the thread. A record that said only *retired* would collapse all three.
+/// <para>**THERE ARE TWO WAYS OUT OF THE LIST AND NEITHER OF THEM IS SILENCE** (work
+/// instruction 324 task 3). The signal went, or the operator left. **A carrier that is
+/// still on the air and saying nothing is a live carrier**, not a dead one: a PSK31
+/// station idling between words keys continuous reversals for seconds at a time, and
+/// retiring him for it is what made the operator's evening of 2026-09-11 a list of rows
+/// that appeared for two seconds and vanished.</para>
+/// <para>**WHAT WENT WITH UNIT 324.** `Silence`, `LostLock` and `OneWay` were three ways
+/// to fail one test, and that test asked whether the carrier was *readable* rather than
+/// whether it was *there*. Not being readable is now a state of a held carrier - the
+/// panel says so in words and the record says so in `psk31_reading` - and not a cause of
+/// death.</para>
 /// </remarks>
 public enum Psk31Retirement
 {
-    /// <summary>Nothing could be measured there any more: the signal stopped.</summary>
-    Silence,
-
-    /// <summary>Still measurable, but no longer keyed like BPSK: lock was lost.</summary>
-    LostLock,
-
-    /// <summary>Measurable and keyed, but the keying went one way only.</summary>
-    OneWay,
+    /// <summary>**The search stopped finding the signal at its offset.**</summary>
+    /// <remarks>
+    /// **THE ENERGY WENT, NOT THE CHARACTERS.** The place the carrier sits stopped
+    /// standing <see cref="Psk31CarrierSearch.CandidateRatio"/> over the floor, on
+    /// <see cref="Psk31CarrierSearch.RetireAfterPasses"/> passes in a row.
+    /// </remarks>
+    SignalGone,
 
     /// <summary>It never crossed at all and its trial ran out.</summary>
+    /// <remarks>
+    /// **NOT WRITTEN ONE BY ONE.** On a noisy band the search makes and drops a great
+    /// many candidates, and an event each would bury the ones that matter; they are in
+    /// every pass's candidate list with `crossed: false`. The value is here so that a
+    /// reader of the record knows what that list is.
+    /// </remarks>
     NeverCrossed,
 
     /// <summary>It was still being heard when the operator left the tab.</summary>

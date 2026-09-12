@@ -54,7 +54,11 @@ public sealed class ThePsk31CarrierSearchTests
         // is a gate that never opens or one that never shuts.
         Assert.InRange(Psk31CarrierSearch.CoherenceToStay, 0.0, Psk31CarrierSearch.CoherenceToAppear);
         Assert.InRange(Psk31CarrierSearch.CoherenceToAppear, Psk31CarrierSearch.CoherenceToStay, 1.0);
-        Assert.True(Psk31CarrierSearch.RetireAfterSeconds > 0);
+        // **THE RETIRE RULE IS COUNTED IN PASSES SINCE UNIT 324**, because the pass is
+        // what applies the test and a pass is a different length at a different rate.
+        // The same rule in seconds is on the search itself, and is 1.02 s at 8 kHz.
+        Assert.True(Psk31CarrierSearch.RetireAfterPasses > 0);
+        Assert.True(new Psk31CarrierSearch(8_000).RetireAfterSeconds > 0);
     }
 
     /// <summary>**Assertion 1: two signals, two carriers, no others.**</summary>

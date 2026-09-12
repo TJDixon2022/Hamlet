@@ -44,15 +44,16 @@
  },
  {
   "file": "psk31-idle-gap-1000hz.wav",
-  "sha256": "d0045825854665029bd6b205472d06a5072225b561a6a4724aae7df2cb40c57b",
+  "sha256": "da712dcffb55512a25f344381db9b8e9f732a8196f76972bb37e59f4fc336c7f",
   "sample_rate": 8000,
   "carrier_hz": 1000,
   "idle_gap_bits": 188,
   "idle_gap_seconds": 6.016,
+  "quiet_tail_seconds": 4,
   "snr_db_2500": 10,
   "seed": 324,
   "made_by": "tests/Hamlet.RadioEngine.Tests/Psk31/Unit324Fixtures.cs, work instruction 324 task 3",
-  "note": "One station at 1000 Hz that says the CQ, idles for 188 bits - 6.016 s of continuous phase reversals, which is keying and not silence - and says it again. A search that retires a carrier when the signal goes holds one carrier across the gap; a search that retires it when the characters stop cannot. The two halves are laid end to end with the join in the middle of the gap, where the modulator's half-symbol fade to zero and back falls on no character, and the idle before the join is made an odd or even number of bits so the symbol across it is a reversal like every other idle symbol.",
+  "note": "One station at 1000 Hz that says the CQ, idles for 188 bits - 6.016 s of continuous phase reversals, which is keying and not silence - and says it again. A search that retires a carrier when the signal goes holds one carrier across the gap; a search that retires it when the characters stop cannot. The two halves are laid end to end with the join in the middle of the gap, where the modulator's half-symbol fade to zero and back falls on no character, and the idle before the join is made an odd or even number of bits so the symbol across it is a reversal like every other idle symbol. The file runs on for four seconds of band noise after the station stops, so the carrier is retired inside the file with SignalGone rather than by the audio running out with ListeningStopped.",
   "texts": {
    "A": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n",
    "B": "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\r\n"

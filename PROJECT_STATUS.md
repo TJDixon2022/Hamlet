@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 324 - PSK31 hears real air
 BALL: claude
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T19:48:00-04:00
-NOTE: Task 2 committed - 8 kHz at the boundary, the mode passband, both rates in the record, app 72 of 72 and engine 80 of 80. Task 3 starting: retire a carrier when the search loses the signal rather than when the characters stop, and the dimmed heard-not-readable row.
+UPDATED: 2026-09-11T20:10:00-04:00
+NOTE: ThePsk31CarrierLivesTests green 6 of 6 - one carrier across the six-second idle gap, retired once with SignalGone at 29.3 s, 80 characters from both halves. About to run dotnet test on both carry-forward filters, now 25 types, before committing task 3.
 
 ---
 

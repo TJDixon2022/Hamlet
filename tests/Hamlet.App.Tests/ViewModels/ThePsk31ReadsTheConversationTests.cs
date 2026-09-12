@@ -362,10 +362,16 @@ public sealed class ThePsk31ReadsTheConversationTests
 
         var rowSource = File.ReadAllText(Path.Combine(root, "src", "Hamlet.App", "ViewModels", "DigitalDecodeRow.cs"));
 
+        // **THE OPACITY LINE GAINED A SECOND REASON TO FADE IN UNIT 324**, and the pin is
+        // moved rather than dropped. What unit 279 fixed is the number and the mechanism -
+        // recede at 0.55, never grey - and both are still here; what is new is that a
+        // carrier Hamlet can hear and cannot read fades the same way, which assertion 6
+        // above and `ThePsk31CarrierLivesTests` both check by behaviour rather than by
+        // source text. A worked-before row is still 0.55 and that is asserted, not pinned.
         foreach (var body in new[]
         {
             "public bool HasWorkedBefore => _workedBefore.Length > 0;",
-            "public double RowOpacity => HasWorkedBefore ? 0.55 : 1.0;",
+            "public double RowOpacity => HasWorkedBefore || HeardNotReadable ? 0.55 : 1.0;",
         })
         {
             var count = rowSource.Split(body).Length - 1;

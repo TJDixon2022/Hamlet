@@ -58,7 +58,8 @@ public static class Psk31Events
     /// <param name="deviceSampleRate">The rate the audio device is handing over.</param>
     /// <param name="resampleRatio">Input samples per output sample, 1 where it passes through.</param>
     /// <param name="squelch">The squelch threshold the demodulators use.</param>
-    /// <param name="retireSeconds">How long a carrier may go unheard before retiring.</param>
+    /// <param name="retirePasses">How many passes in a row a carrier may be missing from.</param>
+    /// <param name="retireSeconds">What that comes to in seconds at this rate.</param>
     /// <remarks>
     /// <para>**IT WRITES THE THRESHOLDS, NOT ONLY THE FACT OF STARTING.** Every number in
     /// this path was chosen against synthetic fixtures, and the first question about a
@@ -77,6 +78,7 @@ public static class Psk31Events
         int deviceSampleRate,
         double resampleRatio,
         double squelch,
+        int retirePasses,
         double retireSeconds)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
@@ -92,7 +94,13 @@ public static class Psk31Events
                 ["deviceSampleRate"] = deviceSampleRate,
                 ["resampleRatio"] = Math.Round(resampleRatio, 4),
                 ["squelchQuality"] = squelch,
-                ["retireSeconds"] = retireSeconds,
+
+                // **THE RETIRE RULE IS COUNTED IN PASSES SINCE UNIT 324**, and a pass is
+                // a different length at a different rate, so both go in: the rule, and
+                // what it comes to on this evening's audio.
+                ["retirePasses"] = retirePasses,
+                ["retireSeconds"] = Math.Round(retireSeconds, 3),
+                ["retireRule"] = Psk31Listener.RetireRule,
                 ["searchRule"] = Psk31CarrierSearch.SearchRule,
 
                 // **THE BUILD IS NOT REPEATED HERE.** Schema B stamps `appVersion` on
@@ -206,7 +214,7 @@ public static class Psk31Events
             {
                 ["carrierId"] = change.Id,
                 ["offsetHz"] = change.OffsetHz,
-                ["reason"] = (change.Why ?? Psk31Retirement.Silence).ToString(),
+                ["reason"] = (change.Why ?? Psk31Retirement.SignalGone).ToString(),
                 ["lifetimeSeconds"] = change.LifetimeSeconds,
                 ["charactersEmitted"] = characters,
                 ["linesParsed"] = lines,
@@ -237,20 +245,31 @@ public static class Psk31Events
                 ["threshold"] = Psk31Demodulator.SquelchQuality,
             });
 
-    /// <summary>A demodulator's AFC moved, or it gained or lost lock.</summary>
+    /// <summary>A held carrier started or stopped being readable, or its AFC moved.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="offsetHz">Where the carrier sits.</param>
-    /// <param name="locked">True where it is reading.</param>
+    /// <param name="reading">True where characters are coming out of it.</param>
     /// <param name="afcHz">How far the AFC has pulled from the first estimate.</param>
-    public static void Lock(
-        ITelemetry? telemetry, double offsetHz, bool locked, double afcHz)
+    /// <remarks>
+    /// <para>**IT WAS CALLED `psk31_lock` AND IT NEVER MEASURED LOCK** (work instruction
+    /// 324 task 3). What it reads is the demodulator's squelch: whether this carrier is
+    /// **producing characters**. A reader of the file took `locked: false` for a decoder
+    /// that had lost the thread, when it says only that Hamlet is hearing a carrier it
+    /// cannot yet read - which is a state a station can sit in for as long as it likes,
+    /// and which the panel now says in words.</para>
+    /// <para>**AND IT IS NOT A RETIREMENT.** Since unit 324 a carrier is retired when the
+    /// signal goes, never because it stopped being readable, so this event and
+    /// `psk31_carrier_retired` no longer describe the same moment.</para>
+    /// </remarks>
+    public static void Reading(
+        ITelemetry? telemetry, double offsetHz, bool reading, double afcHz)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
-            "psk31_lock",
+            "psk31_reading",
             new Dictionary<string, object?>(StringComparer.Ordinal)
             {
                 ["offsetHz"] = Math.Round(offsetHz, 1),
-                ["locked"] = locked,
+                ["reading"] = reading,
                 ["afcHz"] = Math.Round(afcHz, 1),
             });
 

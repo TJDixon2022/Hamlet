@@ -61,9 +61,11 @@ public sealed class Psk31CarrierSearch
         + "least " + nameof(CoherenceToAppear) + ", the keying is no more one-way than "
         + nameof(MostlyOneWay) + " and at least " + nameof(NarrowEnough) + " of the power "
         + "over the floor within three half-widths is inside one, stays listed while it is at least "
-        + nameof(CoherenceToStay) + ", and is retired after " + nameof(RetireAfterSeconds)
-        + " without a pass. Its offset is the probe's frequency plus the error the squared "
-        + "phasor's angle measures.";
+        + nameof(CoherenceToStay) + ", and is retired when the signal itself goes - when "
+        + "the place it sits fails the same candidate test on " + nameof(RetireAfterPasses)
+        + " passes in a row, measured on the newest window rather than the average - and "
+        + "never because it stopped being readable. Its offset is the probe's frequency "
+        + "plus the error the squared phasor's angle measures.";
 
     /// <summary>**The bottom of the passband PSK31 is worked in, in hertz.**</summary>
     /// <remarks>
@@ -191,17 +193,31 @@ public sealed class Psk31CarrierSearch
     /// <summary>How long a probe may try before it is given up, in seconds.</summary>
     public const double TrialSeconds = 2.0;
 
-    /// <summary>**How long a listed carrier may fail before it is retired, in seconds.**</summary>
+    /// <summary>**How many passes in a row a listed carrier may be missing before it is retired.**</summary>
     /// <remarks>
-    /// <para>**ONE SECOND WITHOUT A PASS, AFTER A MEASURE THAT ITSELF TAKES ABOUT A SECOND
-    /// TO LET GO.** When keying stops, the 32-symbol average loses the signal as it fills
-    /// with noise, and it crosses <see cref="CoherenceToStay"/> about 29 symbols - 0.93 s -
-    /// later. The second on top is the anti-flicker hold: a station fading for a moment
-    /// is not retired and reborn under a new id.</para>
-    /// <para>**A STATION SITTING ON IDLE IS NOT RETIRED.** Idle is continuous reversals,
-    /// which is keying, and it passes.</para>
+    /// <para>**EIGHT, AND HERE IS WHERE THAT NUMBER COMES FROM.** A pass runs every half
+    /// spectrum window - 1 024 samples, 0.128 s at 8 kHz - so eight consecutive passes is
+    /// **1.02 s**, which is one whole <see cref="SpectrumSeconds"/>. The test each pass
+    /// applies is the candidate test itself, on the newest window: a run of failures that
+    /// long cannot be one unlucky window, and it is the same order as the anti-flicker
+    /// hold it replaces, so a station fading for a moment is still not retired and reborn
+    /// under a new id.</para>
+    /// <para>**AND THE TEST ASKS WHETHER THE SIGNAL IS THERE, NOT WHETHER IT IS
+    /// READABLE** (work instruction 324 task 3). Until unit 324 a carrier was retired one
+    /// second after its **keying-shape** measure last passed. **A PSK31 operator idling
+    /// between words is a steady carrier** - idle is continuous reversals, so that measure
+    /// does pass through an idle - but a station whose audio is clipped, whose timing the
+    /// probe has lost, or which is simply hard to read is measured as not keyed, and it
+    /// was killed a second later. On the operator's own evening of 2026-09-11 a real
+    /// carrier at 893 Hz, 62 to 66 dB over the floor, was retired three separate times
+    /// after **1.9 s**, reason `LostLock`, with **no characters at all** - and the path
+    /// needs about two seconds before it may show a first character, so no carrier that
+    /// short can ever say anything.</para>
+    /// <para>**A CARRIER THAT IS THERE AND NOT READABLE IS A STATE, AND IT IS SHOWN AS
+    /// ONE** (§0.0, §R9): the row stays, dimmed, saying *heard, not readable yet*, and
+    /// `psk31_reading` in the record says the same. It is not a death.</para>
     /// </remarks>
-    public const double RetireAfterSeconds = 1.0;
+    public const int RetireAfterPasses = 8;
 
     /// <summary>How much audio a new probe is given from before it was made, in seconds.</summary>
     /// <remarks>
@@ -233,6 +249,23 @@ public sealed class Psk31CarrierSearch
     private readonly double[] _power;
     private readonly double[] _sums;
     private readonly double[] _sorted;
+
+    /// <summary>This window's power, unsmoothed, and its summed and floor forms.</summary>
+    /// <remarks>
+    /// **THE RETIRE TEST CANNOT USE THE AVERAGE AND HERE IS WHY** (work instruction 324
+    /// task 3). <see cref="_power"/> is a running average with a one-second time constant,
+    /// which is right for nominating - one noisy window must not make a candidate - and
+    /// wrong for noticing that a signal has gone: it falls about 0.6 dB a pass, so a
+    /// carrier 62 dB over the floor, which is what the operator's own station measured,
+    /// would take **thirteen seconds** to decay under the candidate bar and the row would
+    /// sit there for all of them claiming a station that had stopped (§0.0). The newest
+    /// window answers in 0.26 s, and eight passes in a row is what stops one unlucky
+    /// window from retiring anybody.
+    /// </remarks>
+    private readonly double[] _latest;
+    private readonly double[] _latestSums;
+    private readonly double[] _latestSorted;
+    private double _latestFloor;
     private readonly int _halfBins;
     private readonly int _lowBin;
     private readonly int _highBin;
@@ -297,6 +330,9 @@ public sealed class Psk31CarrierSearch
         _power = new double[_fft.BinCount];
         _sums = new double[_fft.BinCount];
         _sorted = new double[_fft.BinCount];
+        _latest = new double[_fft.BinCount];
+        _latestSums = new double[_fft.BinCount];
+        _latestSorted = new double[_fft.BinCount];
 
         _halfBins = Math.Max(1, (int)Math.Round(SignalHalfWidthHz / _binHz));
 
@@ -332,6 +368,21 @@ public sealed class Psk31CarrierSearch
 
     /// <summary>How many probes are running, listed or on trial.</summary>
     public int ProbeCount => _probes.Count;
+
+    /// <summary>How much audio one pass moves on by, in seconds.</summary>
+    /// <remarks>
+    /// **HALF A SPECTRUM WINDOW, WHICH DEPENDS ON THE RATE**, so it is read off the hop
+    /// this search really uses rather than worked out a second time by a caller.
+    /// </remarks>
+    public double PassSeconds => _hop / (double)_sampleRate;
+
+    /// <summary>How long a carrier may be missing before it is retired, in seconds.</summary>
+    /// <remarks>
+    /// **<see cref="RetireAfterPasses"/> TURNED INTO SECONDS FOR A READER**, which is 1.02
+    /// s at 8 kHz. The rule is counted in passes; this is the same rule in the unit the
+    /// record and the panel speak.
+    /// </remarks>
+    public double RetireAfterSeconds => RetireAfterPasses * PassSeconds;
 
     /// <summary>Feed the search some audio.</summary>
     /// <param name="samples">Samples in [-1, 1].</param>
@@ -479,6 +530,8 @@ public sealed class Psk31CarrierSearch
         {
             var power = _magnitudes[bin] * _magnitudes[bin];
 
+            _latest[bin] = power;
+
             _power[bin] = _spectrumStarted
                 ? _power[bin] + ((power - _power[bin]) * alpha)
                 : power;
@@ -495,17 +548,26 @@ public sealed class Psk31CarrierSearch
 
         _floor = _sorted[count / 2];
 
+        Array.Copy(_latest, _lowBin, _latestSorted, 0, count);
+        Array.Sort(_latestSorted, 0, count);
+
+        _latestFloor = _latestSorted[count / 2];
+
         for (var bin = 0; bin < _sums.Length; bin++)
         {
             var sum = 0.0;
+            var latest = 0.0;
 
             for (var i = bin - _halfBins; i <= bin + _halfBins; i++)
             {
                 if (i >= 0 && i < _power.Length)
                 {
                     sum += _power[i];
+                    latest += _latest[i];
                 }
             }
+
+            _latestSums[bin] = latest;
 
             _sums[bin] = sum;
         }
@@ -525,7 +587,6 @@ public sealed class Psk31CarrierSearch
     private void Judge()
     {
         var trial = (long)(TrialSeconds * _sampleRate);
-        var retire = (long)(RetireAfterSeconds * _sampleRate);
 
         for (var i = _probes.Count - 1; i >= 0; i--)
         {
@@ -572,41 +633,60 @@ public sealed class Psk31CarrierSearch
                     continue;
                 }
             }
-            else if (shaped && reading.Coherence >= CoherenceToStay)
+            else
             {
-                probe.LastPassAt = SamplesSeen;
-                probe.LastGoodReading = reading;
+                // **STILL READABLE IS WHAT VOUCHES FOR CHARACTERS, AND NOT WHAT KEEPS THE
+                // CARRIER ALIVE** (work instruction 324 task 3). `LastPassAt` is the last
+                // moment the keying measure stood behind this carrier, and
+                // `Psk31Listener` shows no character read after it. A carrier that is
+                // there and not readable stops vouching and stays listed.
+                if (shaped && reading.Coherence >= CoherenceToStay)
+                {
+                    probe.LastPassAt = SamplesSeen;
+                    probe.LastGoodReading = reading;
+                }
+
+                // **THE RETIRE TEST IS WHETHER THE SIGNAL IS THERE.** The same candidate
+                // test the spectrum nominates on, applied to the newest window at the
+                // place this carrier sits.
+                if (StillThere(probe.OffsetHz))
+                {
+                    probe.Missed = 0;
+                }
+                else if (++probe.Missed >= RetireAfterPasses)
+                {
+                    Watch.Add(new Psk31CarrierChange(
+                        probe.Id,
+                        Appeared: false,
+                        Math.Round(probe.OffsetHz, 1),
+                        Math.Round(StrengthAt(probe.OffsetHz), 1),
+                        reading.Measured ? Math.Round(reading.Coherence, 3) : 0,
+                        _passesSeen.GetValueOrDefault(probe),
+                        Math.Round(
+                            (double)(SamplesSeen - probe.ListedAt) / _sampleRate, 1),
+                        Psk31Retirement.SignalGone));
+
+                    _passesSeen.Remove(probe);
+                    _probes.RemoveAt(i);
+                    continue;
+                }
             }
-            else if (SamplesSeen - probe.LastPassAt >= retire)
+
+            // **A LISTED CARRIER'S OFFSET IS THE LAST ONE THAT WAS MEASURED** (§0.0, work
+            // instruction 324 task 3). A carrier is now held while the signal is there
+            // rather than while it is readable, so there are passes where the keying
+            // measure has nothing and its error is the angle of noise; writing that into
+            // the offset would walk the number the panel prints away from where the
+            // station is. **Measured on the four-signal fixture**: without this the
+            // 700 Hz carrier, held to the end of its own energy, read out to 705.3 Hz.
+            if (shaped && reading.Coherence >= CoherenceToStay)
             {
-                // **WHY IT WENT, NOT JUST THAT IT WENT.** One test with three ways to
-                // fail: nothing measurable there any more, still measurable but no
-                // longer keyed like BPSK, or keyed one way only. A record that said
-                // only *retired* would collapse a station that finished, a station that
-                // faded, and a decoder that lost the thread.
-                var why = !reading.Measured
-                    ? Psk31Retirement.Silence
-                    : reading.OneWay > MostlyOneWay
-                        ? Psk31Retirement.OneWay
-                        : Psk31Retirement.LostLock;
-
-                Watch.Add(new Psk31CarrierChange(
-                    probe.Id,
-                    Appeared: false,
-                    Math.Round(probe.OffsetHz, 1),
-                    Math.Round(StrengthAt(probe.OffsetHz), 1),
-                    reading.Measured ? Math.Round(reading.Coherence, 3) : 0,
-                    _passesSeen.GetValueOrDefault(probe),
-                    Math.Round(
-                        (double)(SamplesSeen - probe.ListedAt) / _sampleRate, 1),
-                    why));
-
-                _passesSeen.Remove(probe);
-                _probes.RemoveAt(i);
-                continue;
+                probe.OffsetHz = probe.Hz + reading.ErrorHz;
             }
-
-            probe.OffsetHz = reading.Measured ? probe.Hz + reading.ErrorHz : probe.Hz;
+            else if (!probe.Listed)
+            {
+                probe.OffsetHz = reading.Measured ? probe.Hz + reading.ErrorHz : probe.Hz;
+            }
 
             // **IT ONLY MOVES ON WHAT IT CAN HEAR**, for the reason unit 314's AFC does:
             // on noise the angle is uniform, and a probe that followed it would wander.
@@ -662,6 +742,34 @@ public sealed class Psk31CarrierSearch
 
             _probes.Add(probe);
         }
+    }
+
+    /// <summary>Whether the newest window still finds a signal at a place.</summary>
+    /// <param name="hz">Where the carrier was last measured to be.</param>
+    /// <returns>True where it still stands over the candidate bar there.</returns>
+    /// <remarks>
+    /// **THE SAME TEST <see cref="Nominate"/> APPLIES, ON THE NEWEST WINDOW INSTEAD OF THE
+    /// AVERAGE, AND WITHOUT THE PEAK TEST.** A held carrier does not have to be the tallest
+    /// place within a signal's width to still be there - a stronger station starting beside
+    /// it must not retire it - but it does have to stand
+    /// <see cref="CandidateRatio"/> over the floor in its own width, which is what *the
+    /// search still finds it* means.
+    /// </remarks>
+    private bool StillThere(double hz)
+    {
+        if (!_spectrumStarted || _latestFloor <= 0)
+        {
+            return true;
+        }
+
+        var centre = (int)Math.Round(hz / _binHz);
+
+        if (centre < 0 || centre >= _latestSums.Length)
+        {
+            return false;
+        }
+
+        return _latestSums[centre] >= CandidateRatio * _latestFloor * ((2 * _halfBins) + 1);
     }
 
     /// <summary>Whether a bin's summed power is the most within one signal's width.</summary>
@@ -849,6 +957,9 @@ public sealed class Psk31CarrierSearch
 
         /// <summary>When this probe became a carrier, in samples.</summary>
         public long ListedAt { get; set; }
+
+        /// <summary>How many passes in a row the signal has been missing from.</summary>
+        public int Missed { get; set; }
 
         /// <summary>What the last measurement said, for the record to read back.</summary>
         /// <remarks>

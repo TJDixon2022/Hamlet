@@ -52,6 +52,15 @@ public sealed class Unit324Fixtures
     /// <summary>The seed the idle-gap fixture's noise is drawn with.</summary>
     public const int Seed = 324;
 
+    /// <summary>How long the idle-gap fixture runs on after the station stops, in seconds.</summary>
+    /// <remarks>
+    /// **FOUR, SO THE CARRIER IS RETIRED INSIDE THE FILE AND NOT BY THE FILE ENDING.**
+    /// <see cref="Psk31Listener.RetiredWithinSeconds"/> is 2.5, and a fixture that stops
+    /// the moment the station does can only ever produce `ListeningStopped` - which would
+    /// leave the whole point of the file, that it retires once and says why, untestable.
+    /// </remarks>
+    public const double QuietTailSeconds = 4;
+
     private readonly ITestOutputHelper _output;
 
     /// <summary>Creates the tool.</summary>
@@ -134,12 +143,16 @@ public sealed class Unit324Fixtures
         var second = Psk31Modulator.Modulate(
             Text, Rate, IdleGapCarrierHz, 0.5f, idleBefore: IdleGapBits - half, idleAfter: 40);
 
-        var joined = new float[first.Length + second.Length];
+        var tail = (int)(QuietTailSeconds * Rate);
+        var joined = new float[first.Length + second.Length + tail];
 
         first.CopyTo(joined, 0);
         second.CopyTo(joined, first.Length);
 
-        return new MonoAudio(Rate, Noisy(joined, IdleGapSnrDb, Rate));
+        // **THE NOISE IS DRAWN OVER THE TAIL TOO**, so the file ends in band noise rather
+        // than in digital silence, which is what a receiver hands over when nobody is
+        // transmitting and is what the search has to decide about.
+        return new MonoAudio(Rate, Noisy(joined, IdleGapSnrDb, Rate, first.Length + second.Length));
     }
 
     /// <summary>Whether a run of bits leaves the differential symbol at -1.</summary>
@@ -166,16 +179,16 @@ public sealed class Unit324Fixtures
     /// quotes it, so +10 dB here means the same thing it means in `manifest.json`. The
     /// draw is Box-Muller off a seeded generator, so the file is made again byte for byte.
     /// </remarks>
-    private static float[] Noisy(float[] signal, double snrDb, int rate)
+    private static float[] Noisy(float[] signal, double snrDb, int rate, int signalLength)
     {
         double power = 0;
 
-        foreach (var sample in signal)
+        for (var i = 0; i < signalLength; i++)
         {
-            power += (double)sample * sample;
+            power += (double)signal[i] * signal[i];
         }
 
-        power /= signal.Length;
+        power /= signalLength;
 
         var inReference = power / Math.Pow(10, snrDb / 10);
         var sigma = Math.Sqrt(inReference * (rate / 2.0) / Psk31CarrierSearch.ReferenceBandwidthHz);

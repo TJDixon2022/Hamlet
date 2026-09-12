@@ -2039,6 +2039,17 @@ public partial class MainWindowViewModel : ObservableObject
         => string.Equals(ChosenDigitalMode, "PSK31", StringComparison.Ordinal);
 
     /// <summary>Every PSK31 signal in the passband, or null until PSK31 is pressed.</summary>
+    /// <summary>**What a row says where Hamlet hears a carrier and cannot read it.**</summary>
+    /// <remarks>
+    /// <para>**IT IS A SENTENCE ABOUT HAMLET, NOT A DECODE** (§0.0). The row is there
+    /// because the search is sure of the carrier; the words are there because the
+    /// demodulator has nothing to print yet, and a blank message would say the station
+    /// has not spoken. It is replaced by the text the moment there is any.</para>
+    /// <para>**PLAIN, LOWER CASE, AND AMERICAN.** It sits in the column decoded text sits
+    /// in, so it must not look like a callsign or like a message somebody sent.</para>
+    /// </remarks>
+    internal const string HeardNotReadableYet = "heard, not readable yet";
+
     private Psk31Listener? _psk31;
 
     /// <summary>What puts the device's audio on the PSK31 path's own rate.</summary>
@@ -2228,7 +2239,8 @@ public partial class MainWindowViewModel : ObservableObject
                 _psk31Resampler.DeviceSampleRate,
                 _psk31Resampler.Ratio,
                 Psk31Demodulator.SquelchQuality,
-                Psk31CarrierSearch.RetireAfterSeconds);
+                Psk31CarrierSearch.RetireAfterPasses,
+                _psk31.RetireAfterSeconds);
         }
 
         if (_psk31At <= 0)
@@ -2387,16 +2399,16 @@ public partial class MainWindowViewModel : ObservableObject
                     _telemetry, state.OffsetHz, state.Open, state.Quality);
             }
 
-            // **A LOCK EVENT IS A CHANGE, NOT A HEARTBEAT.** Gained, lost, or the AFC
-            // walking more than two hertz from where it last said so - anything less
+            // **A READING EVENT IS A CHANGE, NOT A HEARTBEAT.** Started, stopped, or the
+            // AFC walking more than two hertz from where it last said so - anything less
             // would be four lines a second per carrier saying nothing moved.
             var movedAfc = Math.Abs(state.AfcHz - was.AfcHz) >= 2.0;
-            var lockChanged = _psk31Was.ContainsKey(state.Id)
+            var readingChanged = _psk31Was.ContainsKey(state.Id)
                 && (state.Characters > 0) != (was.Characters > 0);
 
-            if (!_psk31Was.ContainsKey(state.Id) || lockChanged || movedAfc)
+            if (!_psk31Was.ContainsKey(state.Id) || readingChanged || movedAfc)
             {
-                Psk31Events.Lock(
+                Psk31Events.Reading(
                     _telemetry, state.OffsetHz, state.Characters > 0, state.AfcHz);
             }
 
@@ -2476,8 +2488,17 @@ public partial class MainWindowViewModel : ObservableObject
                 double.IsNaN(channel.StrengthDb) ? null : channel.StrengthDb);
             var hz = channel.OffsetHz.ToString("0", CultureInfo.InvariantCulture);
 
+            // **HEARD IS NOT READ, AND THE LIST SAYS WHICH** (§0.0, work instruction 324
+            // task 3). A held carrier with nothing read off it yet is a station on the
+            // air that Hamlet cannot make out, and a blank row would say *he has not said
+            // anything*. Once a character arrives the row is an ordinary row and stays
+            // one: what was read is never taken back off the screen because the squelch
+            // shut again afterwards.
+            var heardOnly = channel.Text.Length == 0 && !channel.Readable;
+            var message = heardOnly ? HeardNotReadableYet : channel.Text;
+
             if (_psk31Rows.TryGetValue(channel.Id, out var shown)
-                && shown.Snr == snr && shown.Hz == hz && shown.Message == channel.Text)
+                && shown.Snr == snr && shown.Hz == hz && shown.Message == message)
             {
                 continue;
             }
@@ -2487,11 +2508,18 @@ public partial class MainWindowViewModel : ObservableObject
                 snr,
                 DigitalDecodeRow.NotMeasured,
                 hz,
-                channel.Text,
+                message,
                 ObserverGrid: _settings.Operator.GridSquare ?? "",
                 HeardOnHz: FrequencyHz,
                 IsTextOnly: true,
-                Reading: ReadPsk31(channel));
+
+                // **NOTHING IS PARSED OUT OF THE WORDS.** The reading is taken from what
+                // the channel actually read, which is nothing, so no callsign, no grid
+                // and no turn can come out of a sentence Hamlet wrote itself.
+                Reading: ReadPsk31(channel))
+            {
+                HeardNotReadable = heardOnly,
+            };
 
             // **THE SAME TWO QUESTIONS `PlaceRow` ASKS OF AN FT8 ROW, OF THE SAME METHODS**
             // (work instruction 316 task 4). A PSK31 row does not go through `PlaceRow` - it

@@ -7,7 +7,19 @@ namespace Hamlet.RadioEngine.Psk31;
 /// <param name="OffsetHz">Where the carrier sits in the passband now, in hertz.</param>
 /// <param name="StrengthDb">Its strength, or NaN where not measured.</param>
 /// <param name="Text">Every character the channel is sure of, in order.</param>
-public sealed record Psk31Channel(int Id, double OffsetHz, double StrengthDb, string Text);
+/// <param name="Readable">
+/// True while this channel's squelch is open - while it is reading, rather than only
+/// hearing.
+/// </param>
+/// <remarks>
+/// **HEARD AND READ ARE DIFFERENT FACTS AND UNIT 324 MADE THE LISTENER SAY BOTH** (§0.0,
+/// HM-DEC-092). A carrier is held because the search is sure it is a carrier; whether
+/// anything can be made of it is the demodulator's separate answer, and until unit 324 the
+/// only way out was an empty <see cref="Text"/>, which reads the same as *a station that
+/// has not said anything yet*.
+/// </remarks>
+public sealed record Psk31Channel(
+    int Id, double OffsetHz, double StrengthDb, string Text, bool Readable = false);
 
 /// <summary>
 /// **Every PSK31 signal in the passband, each with its own demodulator.**
@@ -34,13 +46,20 @@ public sealed record Psk31Channel(int Id, double OffsetHz, double StrengthDb, st
 public sealed class Psk31Listener
 {
     /// <summary>**The retire rule, in one place.**</summary>
+    /// <remarks>
+    /// **IT IS THE SIGNAL GOING AND NOT THE TEXT STOPPING, SINCE UNIT 324.** A station
+    /// idling between words keys a steady carrier for seconds at a time and is not
+    /// retired for it; a station Hamlet can hear and cannot read is held and says so.
+    /// </remarks>
     public const string RetireRule =
-        "a channel is retired when its carrier is: the search retires a carrier "
-        + nameof(Psk31CarrierSearch.RetireAfterSeconds) + " after its keying measure last "
-        + "passed, and that measure lets go about " + nameof(LetGoSeconds) + " after keying "
-        + "stops, so a channel is gone within " + nameof(RetiredWithinSeconds) + " of its "
-        + "carrier stopping; any character it read after the carrier was last measured keyed, "
-        + "less " + nameof(LetGoSeconds) + ", is dropped with it rather than shown.";
+        "a channel is retired when its carrier is, and its carrier is retired when the "
+        + "search stops finding the signal: the place it sits fails the candidate test on "
+        + nameof(Psk31CarrierSearch.RetireAfterPasses) + " passes of the newest spectrum "
+        + "window in a row, so a channel is gone within " + nameof(RetiredWithinSeconds)
+        + " of its carrier stopping. **It is never retired for saying nothing.** Separately, "
+        + "any character it read after the keying measure last stood behind the carrier, "
+        + "less " + nameof(LetGoSeconds) + ", is held and is dropped rather than shown if "
+        + "the carrier goes before that measure catches up.";
 
     /// <summary>How long the keying measure takes to let go, in seconds.</summary>
     /// <remarks>
@@ -52,12 +71,13 @@ public sealed class Psk31Listener
 
     /// <summary>**How soon after a carrier stops its channel is gone, in seconds.**</summary>
     /// <remarks>
-    /// <para>**2.5, AND HERE IS WHERE IT COMES FROM.** The keying measure lets go about
-    /// 0.93 s after keying stops; the search then holds for
-    /// <see cref="Psk31CarrierSearch.RetireAfterSeconds"/>, 1 s, so a fading station is
-    /// not retired and reborn; the verdict lands on the next spectrum window, 0.13 s at
-    /// 8 kHz and 0.17 s at 48 kHz; and the shell hands audio over in lumps of a quarter of
-    /// a second. That is 2.35 s, and 2.5 is it rounded up.</para>
+    /// <para>**2.5, AND HERE IS WHERE IT COMES FROM, RESTATED FOR UNIT 324'S RULE.** The
+    /// spectrum window is 2 048 samples, 0.26 s at 8 kHz, so a window stops holding a
+    /// carrier that has stopped within that; the search then wants
+    /// <see cref="Psk31CarrierSearch.RetireAfterPasses"/> passes in a row, which is 1.02 s;
+    /// the verdict lands on the next pass, 0.13 s; and the shell hands audio over in lumps
+    /// of a quarter of a second. That is about 1.7 s, and 2.5 is kept as the bound with
+    /// margin rather than tightened to flatter it.</para>
     /// <para>**AFTER THE CARRIER STOPS, WHICH IS NOT ALWAYS AFTER THE LAST CHARACTER.** A
     /// PSK31 operator's transmitter idles after the last character until he unkeys - the
     /// fixtures idle 40 bits, 1.28 s - and a station on idle is still a station.</para>
@@ -112,6 +132,14 @@ public sealed class Psk31Listener
 
     /// <summary>The top of it, in hertz.</summary>
     public double HighestHz => _search.HighestHz;
+
+    /// <summary>How long a carrier may be missing before it is retired, in seconds.</summary>
+    /// <remarks>
+    /// **THE SEARCH OWNS THE RULE AND THIS HANDS IT ON**, the same way
+    /// <see cref="Watch"/> does: the shell holds the listener and not the search, and a
+    /// second copy of the number here would be a second place for it to disagree.
+    /// </remarks>
+    public double RetireAfterSeconds => _search.RetireAfterSeconds;
 
     /// <summary>What each held channel's demodulator is doing right now.</summary>
     /// <remarks>
@@ -206,7 +234,11 @@ public sealed class Psk31Listener
 
         _snapshot = _channels
             .Select(pair => new Psk31Channel(
-                pair.Key, pair.Value.OffsetHz, pair.Value.StrengthDb, pair.Value.Text))
+                pair.Key,
+                pair.Value.OffsetHz,
+                pair.Value.StrengthDb,
+                pair.Value.Text,
+                pair.Value.Open))
             .OrderBy(c => c.OffsetHz)
             .ToList();
     }

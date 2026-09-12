@@ -386,7 +386,27 @@ public sealed record DigitalDecodeRow(
     /// list he reads callsigns off, and a callsign he has to lean in for is worse
     /// than a label he has to ignore.</para>
     /// </remarks>
-    public double RowOpacity => HasWorkedBefore ? 0.55 : 1.0;
+    public double RowOpacity => HasWorkedBefore || HeardNotReadable ? 0.55 : 1.0;
+
+    /// <summary>**True where Hamlet can hear this carrier and cannot yet read it.**</summary>
+    /// <remarks>
+    /// <para>**AN EMPTY LIST AND A BAND FULL OF SIGNALS HAMLET CANNOT READ MUST NOT LOOK
+    /// THE SAME** (§0.0, HM-DEC-092, work instruction 324 task 3). The search is sure this
+    /// is a PSK31 carrier - that is why it is on the list at all - and the demodulator's
+    /// squelch has not opened on it, so there is nothing to print. Before unit 324 that
+    /// was a row with a blank message, which reads as *a station that has not said
+    /// anything yet*, and on the operator's own evening it was a row that appeared and
+    /// vanished two seconds later.</para>
+    /// <para>**IT BORROWS UNIT 279'S 0.55 RATHER THAN INVENTING A SECOND FADE**, and for
+    /// the same reason: recede, do not grey. Grey is reserved for what cannot be used
+    /// (§0.5.1), and there is nothing wrong with this row - it is the truth about a signal
+    /// on the air. **And it says so in words as well as by fading**, because color and
+    /// weight may never be the only carriers of meaning (§0.6).</para>
+    /// <para>**IT IS THE AUTHOR'S CHOICE AND IT IS MARKED AS ONE.** The owner may rule the
+    /// row out entirely, or rule that it should not be dimmed; nothing else depends on
+    /// it.</para>
+    /// </remarks>
+    public bool HeardNotReadable { get; init; }
 
     /// <summary>What working this station would open, if anything.</summary>
     /// <remarks>

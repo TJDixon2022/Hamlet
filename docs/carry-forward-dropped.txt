@@ -73,12 +73,13 @@ always been, at the foot of `carry-forward-tests.txt`.
     on the list before unit 324    46
     dropped here                   24
     kept                           22
-    added by unit 324               2   CallsignPrivacyTests, which work
+    added by unit 324               3   CallsignPrivacyTests, which work
                                         instruction 324 names as a keep and
                                         which was not on the list at all, and
-                                        ThePsk31PathRunsAtItsRateTests, which
-                                        is unit 324 task 2's own guard
-    on the list now                24
+                                        unit 324's own two guards,
+                                        ThePsk31PathRunsAtItsRateTests and
+                                        ThePsk31CarrierLivesTests
+    on the list now                25
 
     **THE INSTRUCTION SAID TWENTY AND ITS OWN KEEP-RULES NAME TWENTY-THREE.**
     The keep-rules win: dropping a guard the instruction named, to satisfy an
