@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
 BALL: claude
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T00:19:44-04:00
-NOTE: Task 1 committed and pushed at fab080c. Task 2 measured: first character lands 1.50 s after the carrier is listed and 2.75 s after the file starts, the same on the clean fixture and the idle one, and the squelch's own 32-symbol window is 1.024 s of it - two thirds. Under three, so nothing is built to bring it down. The listener now reports the latency itself in Psk31ChannelState rather than leaving a reader to subtract two events. Engine 85 of 85.
+UPDATED: 2026-09-12T00:52:30-04:00
+NOTE: The mark is built and TheMarkIsSeenAndClickedTests is green, 6 of 6, with TheCqListNudgeTests and BindingHealthTests beside it - 22 of 22. A row mark is now a filled disc at the row's own 18 px where 325 drew 9.9 px of hairline quill inside a 16 px box; a door keeps the ring and the bead. The press opens a popup in the enlarged map's shape and writes nudge_opened with the kind and nothing else. The door hex measures hue 29.1 degrees, which is orange, so task 6's colour item is already satisfied. Running the whole app carry-forward before the commit.
 
 ---
 

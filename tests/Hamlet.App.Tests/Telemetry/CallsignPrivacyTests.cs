@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 71;
+    private const int ExpectedEventMethodCount = 72;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -265,6 +265,14 @@ public sealed class CallsignPrivacyTests : IDisposable
         foreach (var reason in Enum.GetValues<DigitalCaptureRefusal>())
         {
             AppEvents.DigitalCaptureRefused(telemetry, reason);
+        }
+
+        // A press on a row's achievement mark, both kinds (unit 327 task 3). The
+        // station behind that press is always a callsign, an entity and a continent,
+        // and none of the three is a parameter of this method.
+        foreach (var kind in Enum.GetValues<Hamlet.RadioEngine.Contacts.NudgeKind>())
+        {
+            AppEvents.NudgeOpened(telemetry, kind);
         }
 
         // The scope path and the link carrying it (HM-DEC-092).

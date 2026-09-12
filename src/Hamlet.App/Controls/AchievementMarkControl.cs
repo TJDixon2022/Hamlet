@@ -39,15 +39,16 @@ public enum AchievementMarkForm
 
     /// <summary>
     /// A row whose station would earn a counter - a new country, state or grid,
-    /// with nothing opening behind it. **The still quill, in decode green, and no
-    /// ring at all.**
+    /// with nothing opening behind it. **A disc filled decode green, the full
+    /// height of the row, still, and no ring at all.** It was the quill at 9.9 px
+    /// of hairline until unit 327; Tim's word for that was *useless*.
     /// </summary>
     Counter = 1,
 
     /// <summary>
-    /// A row whose station would open a whole set. **The quill with the orbit
-    /// ring, turning, in the palette's amber.** It does not settle: while the
-    /// station is on the list, the door is open.
+    /// A row whose station would open a whole set. **A disc filled orange with the
+    /// orbit ring around it, turning.** It does not settle: while the station is on
+    /// the list, the door is open.
     /// </summary>
     Door = 2,
 }
@@ -222,8 +223,35 @@ public sealed class AchievementMarkControl : Control
     /// </remarks>
     public IBrush LitBrush => Form == AchievementMarkForm.Door ? DoorInk : Green;
 
+    /// <summary>**How big a row's mark is, in pixels: the full height of the row.**</summary>
+    /// <remarks>
+    /// <para>**EIGHTEEN, AND UNIT 325 SHIPPED SIXTEEN, AND THAT IS NOT THE CHANGE** (work
+    /// instruction 327 task 3). Tim's words for what 325 shipped were *"ugly and useless"*
+    /// and, of the tray's, *"a tiny dot lost in the sea"*. **The size was never the fault.**
+    /// Inside a 16 px box the old mark drew the quill at `side * 0.62` - **9.9 px of thin
+    /// strokes** - and a 7 px ring; what he was looking at was ten pixels of hairline art.
+    /// </para>
+    /// <para>**SO THE ROW'S MARK IS A FILLED DISC, WHICH IS WHAT SURVIVES AT ROW HEIGHT**
+    /// (the work instruction allows exactly this: *if the quill shape does not survive at
+    /// row height, a filled disc does*). Eighteen pixels of solid ink against 9.9 px of
+    /// outline is **about thirty times the area**, and it is the row's own height so it
+    /// reads as part of the line rather than as a speck beside it.</para>
+    /// <para>**THE TRAY IS UNTOUCHED.** <see cref="AchievementMarkForm.Tray"/> still draws
+    /// the quill at unit 300's size and unit 325's colors, because that mark's behaviour is
+    /// ruled and this is a different surface with a different complaint against it.</para>
+    /// </remarks>
+    public const double RowSide = 18;
+
+    /// <summary>True where this form draws the row's disc rather than the tray's quill.</summary>
+    /// <remarks>
+    /// **THE SHAPE IS PER SURFACE AND NOT PER STATE.** A row mark is always a disc and a
+    /// tray mark is always a quill; what varies within a row is the color and the ring.
+    /// </remarks>
+    public bool IsDisc => Form is AchievementMarkForm.Counter or AchievementMarkForm.Door;
+
     /// <inheritdoc/>
-    protected override Size MeasureOverride(Size availableSize) => new(20, 20);
+    protected override Size MeasureOverride(Size availableSize)
+        => IsDisc ? new Size(RowSide, RowSide) : new Size(20, 20);
 
     /// <inheritdoc/>
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -321,6 +349,68 @@ public sealed class AchievementMarkControl : Control
         Phase = 0;
     }
 
+    /// <summary>
+    /// **A row's mark: a disc filled the full height of the row, and a ring for a door.**
+    /// </summary>
+    /// <param name="context">Where it is drawn.</param>
+    /// <param name="side">The smaller of the two bounds.</param>
+    /// <param name="middle">The center of the box.</param>
+    /// <param name="lit">Green for a counter, orange for a door.</param>
+    /// <remarks>
+    /// <para>**A DISC FILLED GREEN OR ORANGE IS A MARK, NOT A BAR** (§0.5, HM-DEC-012, and
+    /// the work instruction says so in as many words). The family-color rule that keeps
+    /// panel headers to text only is about **bars** - a column of filled bars reads as
+    /// stripes rather than as structure - and one small filled disc on a row is the object
+    /// that rule exists to allow. **The quill is not family color and this is not either**:
+    /// green `#3B6D11` is decode green and `#C25E00` is the tuning family's own ink, and
+    /// neither is a mode's fill.</para>
+    /// <para>**COLOR IS NOT THE ONLY CARRIER AND THE RING IS THE OTHER ONE** (§0.6). A
+    /// counter is a bare disc; a door is a disc with a ring around it and a bead going
+    /// round. Printed in grey, or read by somebody who cannot tell green from orange, the
+    /// two are still two different objects.</para>
+    /// <para>**THE DOOR'S DISC IS SMALLER SO THE RING HAS ROOM.** Both marks occupy the same
+    /// box and the same height on the row; the door spends some of it on the ring, which is
+    /// what makes the ring visible rather than a rim on the disc.</para>
+    /// </remarks>
+    private void RenderDisc(DrawingContext context, double side, Point middle, IBrush lit)
+    {
+        var ring = Form == AchievementMarkForm.Door;
+        var outer = side / 2 - 1;
+
+        // **THE DISC IS THE MARK AND THE RING IS THE DIFFERENCE.** A counter fills the
+        // whole box; a door keeps a third of the radius back for the ring and the gap.
+        var radius = ring ? outer * 0.62 : outer;
+
+        var edge = Form == AchievementMarkForm.Door ? DoorEdge : Edge;
+
+        context.DrawEllipse(lit, new Pen(edge, 1), middle, radius, radius);
+
+        if (!ring)
+        {
+            return;
+        }
+
+        context.DrawEllipse(null, new Pen(lit, 1.6), middle, outer, outer);
+
+        if (!IsOrbiting)
+        {
+            return;
+        }
+
+        // **ONE BEAD GOING ROUND**, which is motion without a spinner: a spinner says
+        // *wait*, and nothing here is waiting for anything.
+        var angle = (Phase * Math.PI * 2) - (Math.PI / 2);
+
+        context.DrawEllipse(
+            lit,
+            null,
+            new Point(
+                middle.X + (Math.Cos(angle) * outer),
+                middle.Y + (Math.Sin(angle) * outer)),
+            side * 0.11,
+            side * 0.11);
+    }
+
     /// <inheritdoc/>
     public override void Render(DrawingContext context)
     {
@@ -336,6 +426,13 @@ public sealed class AchievementMarkControl : Control
         // door has the ring and the counter has none, so the difference survives a
         // greyscale print and does not depend on telling green from orange.
         var lit = LitBrush;
+
+        if (IsDisc)
+        {
+            RenderDisc(context, side, middle, lit);
+
+            return;
+        }
 
         // **THE RING IS PART OF WHAT SAYS *NEW*, AND IT IS A SHAPE** (§0.6). At rest
         // there is no circle at all, which is a difference a greyscale printer keeps.

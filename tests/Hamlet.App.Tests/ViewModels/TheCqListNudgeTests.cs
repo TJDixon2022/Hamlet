@@ -211,8 +211,11 @@ public sealed class TheCqListNudgeTests
 
         Assert.True(at > 0, "the marking method was not found");
 
+        // **`Apply` STOPPED BEING STATIC IN UNIT 327**, when it grew the telemetry hook
+        // the popup's press is written down through. The marker this scan ends at is the
+        // method's name, which is what it was always really looking for.
         var body = source[at..source.IndexOf(
-            "private static void Apply", at, StringComparison.Ordinal)];
+            "private void Apply", at, StringComparison.Ordinal)];
 
         _output.WriteLine(body);
 

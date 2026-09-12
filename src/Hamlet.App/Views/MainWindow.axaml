@@ -4229,7 +4229,11 @@
                                                      **THE HOVER TEXT IS UNIT 274'S,
                                                      MOVED HERE** from the marker that
                                                      no longer exists. -->
-                                                <Grid ColumnDefinitions="20,76,48,*"
+                                                <!-- **THE MARK'S COLUMN WENT 20 TO 24 IN UNIT
+                                                     327**, because the mark went from 16 px
+                                                     to the row's own 18 and still wants its
+                                                     4 px of air before the time. -->
+                                                <Grid ColumnDefinitions="24,76,48,*"
                                                       Background="Transparent"
                                                       Opacity="{Binding RowOpacity}"
                                                       ToolTip.Tip="{Binding WorkedTip}"
@@ -4262,15 +4266,93 @@
                                                          control assign it was two owners
                                                          for one value, and the control won
                                                          every time. -->
-                                                    <ctl:AchievementMarkControl Grid.Column="0"
-                                                                                x:Name="NudgeMark"
-                                                                                IsVisible="{Binding IsNudged}"
-                                                                                Form="{Binding NudgeForm}"
-                                                                                IsNew="{Binding IsNudged}"
-                                                                                Width="16" Height="16"
-                                                                                VerticalAlignment="Center"
-                                                                                Margin="0,0,4,0"
-                                                                                ToolTip.Tip="{Binding NudgeTip}" />
+                                                    <!-- **UNIT 327 TASK 3: A THING HE CAN SEE
+                                                         FROM ACROSS THE DESK, AND CLICK.**
+                                                         Tim, 2026-09-12, on what 325 shipped:
+                                                         *"ugly and useless"* and *"no
+                                                         achievement possibility click
+                                                         response"*. The mark is now a filled
+                                                         disc the full height of the row -
+                                                         `AchievementMarkControl.RowSide`,
+                                                         which says why that number - and it
+                                                         sits inside a `Button` so it is a hit
+                                                         target with a hand cursor rather than
+                                                         a bare control with a tooltip.
+
+                                                         **THE HOVER IS UNCHANGED** - one line,
+                                                         `NudgeTip` - and lives on the button so
+                                                         the whole target carries it. -->
+                                                    <Button Grid.Column="0"
+                                                            x:Name="NudgeMarkButton"
+                                                            Command="{Binding OpenTheNudgeCommand}"
+                                                            IsVisible="{Binding IsNudged}"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Padding="0"
+                                                            Cursor="Hand"
+                                                            VerticalAlignment="Center"
+                                                            Margin="0,0,4,0"
+                                                            ToolTip.Tip="{Binding NudgeTip}">
+                                                        <ctl:AchievementMarkControl x:Name="NudgeMark"
+                                                                                    Form="{Binding NudgeForm}"
+                                                                                    IsNew="{Binding IsNudged}"
+                                                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}" />
+                                                    </Button>
+
+                                                    <!-- **AND PRESSING IT SAYS WHY** (unit 327
+                                                         task 3), in the shape of unit 310's
+                                                         enlarged map: centred on the window,
+                                                         light-dismissable, with the same
+                                                         dismiss X.
+
+                                                         **IT NAMES THE ENTITY FOR A COUNTER
+                                                         AND NAMES NOTHING FOR A DOOR** (§3.1).
+                                                         The words are built in `NudgeWords` and
+                                                         handed to the row; there is no wording
+                                                         in this file to drift from them. -->
+                                                    <Popup IsOpen="{Binding NudgeIsOpen, Mode=TwoWay}"
+                                                           Placement="Center"
+                                                           PlacementTarget="{Binding $parent[Window]}"
+                                                           IsLightDismissEnabled="True">
+                                                        <Border Background="{StaticResource HmPanelBrush}"
+                                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                                BorderThickness="1"
+                                                                CornerRadius="6"
+                                                                Padding="12">
+                                                            <Grid RowDefinitions="Auto,Auto,Auto" MaxWidth="420">
+                                                                <TextBlock Grid.Row="0"
+                                                                           Text="{Binding Sender}"
+                                                                           FontWeight="SemiBold"
+                                                                           VerticalAlignment="Center" />
+
+                                                                <Button Grid.Row="0"
+                                                                        x:Name="NudgeDismiss"
+                                                                        Content="&#x2715;"
+                                                                        Command="{Binding CloseTheNudgeCommand}"
+                                                                        HorizontalAlignment="Right"
+                                                                        Background="Transparent"
+                                                                        BorderThickness="0"
+                                                                        Padding="6,0"
+                                                                        Cursor="Hand"
+                                                                        ToolTip.Tip="Put it away." />
+
+                                                                <TextBlock Grid.Row="1"
+                                                                           Margin="0,8,0,0"
+                                                                           Text="{Binding NudgeReasonLine}"
+                                                                           TextWrapping="Wrap"
+                                                                           LineSpacing="1.3" />
+
+                                                                <TextBlock Grid.Row="2"
+                                                                           Margin="0,6,0,0"
+                                                                           Text="{Binding NudgeEarnsLine}"
+                                                                           TextWrapping="Wrap"
+                                                                           FontSize="11"
+                                                                           LineSpacing="1.3"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                            </Grid>
+                                                        </Border>
+                                                    </Popup>
                                                     <TextBlock Grid.Column="1" Text="{Binding Utc}"
                                                                FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,14,1" />
                                                     <TextBlock Grid.Column="2" Text="{Binding Snr}"

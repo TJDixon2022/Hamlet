@@ -29,6 +29,25 @@ public enum NudgeKind
     Door = 2,
 }
 
+/// <summary>**Why a marked station is worth working, in facts rather than words.**</summary>
+/// <param name="Kind">What working him would open.</param>
+/// <param name="Entity">The country, where it may be named, or "".</param>
+/// <param name="Continent">The continent, where it may be named, or "".</param>
+/// <param name="WorkedInContinent">How many entities on that continent are in the log.</param>
+/// <remarks>
+/// <para>**FACTS, NOT A SENTENCE** (§0.1, and work instruction 327 task 3). The engine says
+/// what is true; `NudgeWords` in the shell turns it into the line the operator reads. A
+/// sentence built here would be radio knowledge and English style in one place.</para>
+/// <para>**A DOOR CARRIES NEITHER NAME AND THAT IS THE WHOLE POINT** (§3.1, Tim
+/// 2026-09-10). For <see cref="NudgeKind.Door"/> the entity and the continent are both
+/// empty and the count is nought: **the CQ list must not be the thing that tells him an
+/// area exists.** It is not that the names are hidden from the view - they never leave
+/// this file.</para>
+/// <para>**AND THE COUNT IS *WORKED*, NEVER *CONFIRMED*** (§4).</para>
+/// </remarks>
+public readonly record struct NudgeReason(
+    NudgeKind Kind, string Entity, string Continent, int WorkedInContinent);
+
 /// <summary>
 /// **What is still in play, read once from the log.**
 /// </summary>
@@ -136,4 +155,48 @@ public sealed class NudgeSet
             ? (NudgeKind.Visible, entity)
             : (NudgeKind.Door, "");
     }
+
+    /// <summary>Why working this station is worth something, in facts.</summary>
+    /// <param name="callsign">Whoever is calling.</param>
+    /// <returns>The kind, and the names and the count where they may be given.</returns>
+    /// <remarks>
+    /// <para>**IT IS <see cref="WouldOpen"/> WITH THE REASON ATTACHED** (work instruction
+    /// 327 task 3). The mark answers *is he worth working*; a press on the mark asks *why*,
+    /// and the answer needs the continent and how much of it is already in the log. The kind
+    /// and the entity are the same two values `WouldOpen` gives, from the same call, so the
+    /// mark and the popup can never say different things about one station.</para>
+    /// <para>**A DOOR STILL NAMES NOTHING** (§3.1). Where the continent has never been
+    /// worked, neither name leaves this method and the count is nought - which is also the
+    /// true count, and is not why it is nought.</para>
+    /// </remarks>
+    public NudgeReason Explain(string? callsign)
+    {
+        var (kind, entity) = WouldOpen(callsign);
+
+        if (kind != NudgeKind.Visible)
+        {
+            return new NudgeReason(kind, "", "", 0);
+        }
+
+        var continent = DxccContinents.Of(entity) ?? "";
+
+        // **THE NAME AND NOT THE CODE** (§R19, and the words are the product). `NA` is
+        // what the cited table stores and *North America* is what the operator reads;
+        // the count is taken against the code, which is what the table is keyed on.
+        return new NudgeReason(
+            kind, entity, DxccContinents.NameOf(continent), WorkedIn(continent));
+    }
+
+    /// <summary>How many entities in the log sit on one continent.</summary>
+    /// <remarks>
+    /// **COUNTED FROM THE LOG'S OWN ENTITIES THROUGH THE CITED TABLE**, not stored. A second
+    /// tally kept beside the set would be a second thing to keep in step with the first, and
+    /// the log is read once per session anyway.
+    /// </remarks>
+    private int WorkedIn(string continent)
+        => continent.Length == 0
+            ? 0
+            : _workedEntities.Count(
+                e => string.Equals(
+                    DxccContinents.Of(e), continent, StringComparison.OrdinalIgnoreCase));
 }

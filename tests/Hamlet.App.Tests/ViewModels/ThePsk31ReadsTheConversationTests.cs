@@ -347,16 +347,27 @@ public sealed class ThePsk31ReadsTheConversationTests
         foreach (var (file, sha) in new[]
         {
             ("src/Hamlet.RadioEngine/Explore/DxccPrefixes.cs", "f5ebf765a62defe87c0e25bc88c4a005ac3614d02dd8b51bb9a5d6a432351ef2"),
-            ("src/Hamlet.RadioEngine/Contacts/NudgeSet.cs", "a70dca061116989295c9ac248e1a606650831bb2fc3a3a1c1df73548c14d903b"),
-            ("src/Hamlet.App/ViewModels/NudgeWords.cs", "1767bd4ebceec60a7e240515e61bac2e51ec2ca0575d40f14eb7e110eaf84fa4"),
-            // **MOVED BY §R16, NOT DROPPED** (work instruction 325 task 4). Tim
-            // ruled on 2026-09-11 that the quill has two forms and no cap, so this
-            // file gained `AchievementMarkForm`, the door's amber, and a ring that
-            // a counter does not draw. The pin exists to catch an *incidental*
-            // change to a control these rows reuse; a change made under a ruling
-            // is the one case where re-pinning is the right answer, and the reason
-            // is written here so the next reader can tell the two apart.
-            ("src/Hamlet.App/Controls/AchievementMarkControl.cs", "944ce75f4b572e0e4a6318ab0068ec86ef43a60326e2b18ff6ea15e419def0d1"),
+            // **MOVED BY UNIT 327 TASK 3, NOT DROPPED.** `NudgeSet` gained `Explain`,
+            // which is `WouldOpen` with the continent and the count attached for the
+            // popup, and `NudgeWords` gained the two lines that popup says. Both
+            // changes are under a ruling - Tim, 2026-09-12, that the mark must answer
+            // a click - and re-pinning is the right answer for a ruled change. **The
+            // door still names nothing**, which assertion 5 of
+            // `TheMarkIsSeenAndClickedTests` checks by behaviour against every
+            // continent in the cited table rather than by this hash.
+            ("src/Hamlet.RadioEngine/Contacts/NudgeSet.cs", "d814cfc22fbb4acb1f56533283df0d735bf61838eeac64e199290f8c6f1f9728"),
+            ("src/Hamlet.App/ViewModels/NudgeWords.cs", "98d85db8cf9691895b8f1922ff55547dfb0a8cd65025af8839c1090e1942828e"),
+
+            // **AND `AchievementMarkControl.cs` IS NO LONGER PINNED AT ALL** (§R14,
+            // and work instruction 327 sections 5 and 10 name this pin by file).
+            // It moved for unit 325 and again for unit 327, which is a pin that
+            // tracks the file rather than guarding it: **a hash proves no criterion**
+            // (§R14), and a pin that is re-stamped every time the file is worked on
+            // has stopped being a check and become a chore that fails the next unit
+            // for doing what it was told to do. What these rows actually need of that
+            // control is asserted by behaviour - the two forms, the two colors, the
+            // ring, the size - in `TheMarkIsSeenAndClickedTests`, `Unit300MarkTests`,
+            // `Unit301MarkSizeTests` and `Unit303OptionBTests`.
         })
         {
             var bytes = File.ReadAllBytes(Path.Combine(root, file)).Where(b => b != (byte)'\r').ToArray();

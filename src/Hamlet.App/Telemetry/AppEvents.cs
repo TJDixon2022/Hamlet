@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Hamlet.RadioEngine.Audio;
+using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Cw;
 using Hamlet.RadioEngine.Rig;
 using Hamlet.RadioEngine.Telemetry;
@@ -1800,6 +1801,32 @@ public static class AppEvents
                 ["reason"] = reason.ToString(),
             },
             TelemetryLevel.Warn);
+
+    /// <summary>The operator pressed a row's achievement mark and read the reason.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="kind">Which of the two marks it was.</param>
+    /// <remarks>
+    /// <para>**THE KIND AND NOTHING ELSE** (work instruction 327 task 3, HM-DEC-018, §2.1).
+    /// Not the callsign, not the entity, not the continent, not the frequency. *He pressed a
+    /// door* and *he pressed a counter* are the two facts, and the second one is the whole
+    /// question the philosophy asks about this feature: **is the teaching being read**
+    /// (§3.5).</para>
+    /// <para>**`Explore` IS THE CATEGORY IT BELONGS TO** - neighborhood clicks, field-guide
+    /// opens, spot tunes - and a press on a mark to find out why a station is interesting is
+    /// the same kind of act. No category is added for it; this enum's own comment asks that
+    /// one be added deliberately or not at all.</para>
+    /// <para>**IT IS A LOG LINE AND NOT A SCREEN CLAIM** (`CLAUDE.md` §12.1). Nothing in the
+    /// application reads this back, counts it, or shows him a number about his own
+    /// curiosity.</para>
+    /// </remarks>
+    public static void NudgeOpened(ITelemetry? telemetry, NudgeKind kind)
+        => telemetry?.Write(
+            TelemetryCategory.Explore,
+            "nudge_opened",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["kind"] = kind == NudgeKind.Door ? "door" : "counter",
+            });
 
     private static IReadOnlyDictionary<string, object?> Merge(
         IReadOnlyDictionary<string, object?> a, IReadOnlyDictionary<string, object?> b)

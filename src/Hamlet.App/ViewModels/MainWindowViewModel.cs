@@ -12735,22 +12735,32 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var (kind, entity) = Nudges().WouldOpen(who);
+        var reason = Nudges().Explain(who);
 
-        if (kind == NudgeKind.None)
+        if (reason.Kind == NudgeKind.None)
         {
             return;
         }
 
-        Apply(row, (kind, entity));
+        Apply(row, reason);
     }
 
     /// <summary>Put a decision onto a row.</summary>
-    private static void Apply(
-        DigitalDecodeRow row, (NudgeKind Kind, string Entity) mark)
+    /// <remarks>
+    /// <para>**ONE CALL ANSWERS THE MARK AND THE PRESS** (work instruction 327 task 3).
+    /// The hover's line and the popup's come from the same `NudgeReason`, so the disc
+    /// and the words behind it cannot come to disagree about one station.</para>
+    /// <para>**AND THE PRESS IS WRITTEN DOWN WITH ITS KIND AND NOTHING ELSE**
+    /// (HM-DEC-018, §2.1). The row is handed something to call; it is not handed the
+    /// record, a category or a session.</para>
+    /// </remarks>
+    private void Apply(DigitalDecodeRow row, NudgeReason reason)
     {
-        row.Nudge = mark.Kind;
-        row.NudgeTip = NudgeWords.For(mark.Kind, mark.Entity);
+        row.Nudge = reason.Kind;
+        row.NudgeTip = NudgeWords.For(reason.Kind, reason.Entity);
+        row.NudgeReasonLine = NudgeWords.Reason(reason);
+        row.NudgeEarnsLine = NudgeWords.Earns;
+        row.NudgeOpened = kind => AppEvents.NudgeOpened(_telemetry, kind);
     }
 
     /// <summary>The next slot boundary on the grid the tab is running.</summary>
@@ -12823,9 +12833,7 @@ public partial class MainWindowViewModel : ObservableObject
         // did change, and this is the one moment it does.
         foreach (var shown in DigitalDecodes)
         {
-            var (kind, entity) = Nudges().WouldOpen(shown.Sender);
-
-            Apply(shown, (kind, entity));
+            Apply(shown, Nudges().Explain(shown.Sender));
         }
 
         // **ROWS ALREADY ON SCREEN PICK THE MARK UP.** He logs a contact and the

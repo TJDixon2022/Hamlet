@@ -1,6 +1,9 @@
 ﻿using Hamlet.RadioEngine.Contacts;
+using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Hamlet.App.Controls;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Explore;
@@ -145,7 +148,7 @@ namespace Hamlet.App.ViewModels;
 /// **What the latest complete message on this row says**, or null where no message on it has
 /// finished yet (`Psk31MessageSplitter`). Only a text-only row carries one.
 /// </param>
-public sealed record DigitalDecodeRow(
+public sealed partial record DigitalDecodeRow(
     string Utc, string Snr, string Dt, string Hz, string Message,
     string ObserverGrid = "",
     DateTime SlotStartUtc = default,
@@ -490,6 +493,95 @@ public sealed record DigitalDecodeRow(
     /// confirmations (§4) - and nothing promises the contact will succeed.
     /// </remarks>
     public string NudgeTip { get; set; } = "";
+
+    /// <summary>**Why this station is interesting, for the press on the mark.**</summary>
+    /// <remarks>
+    /// **THE HOVER IS THE HEADLINE AND THIS IS THE PARAGRAPH** (work instruction 327 task
+    /// 3). <see cref="NudgeTip"/> is unchanged and still one line; this is what a deliberate
+    /// press gets. **It names the entity for a counter and names nothing for a door**
+    /// (§3.1), and the word *confirmed* is not in it (§4).
+    /// </remarks>
+    public string NudgeReasonLine { get; set; } = "";
+
+    /// <summary>What working him would earn, for the press on the mark.</summary>
+    /// <remarks>
+    /// **THE SAME LINE FOR BOTH KINDS** (<see cref="NudgeWords.Earns"/>). The QSO is the
+    /// achievement and the card is what comes with it; nothing here promises the contact
+    /// will succeed.
+    /// </remarks>
+    public string NudgeEarnsLine { get; set; } = "";
+
+    /// <summary>Called when the mark is pressed, so the shell can write it down.</summary>
+    /// <remarks>
+    /// <para>**THE ROW DOES NOT KNOW WHAT TELEMETRY IS** (§0.1's shape, one level in). It
+    /// is handed something to call; whether that writes a line, counts a press or does
+    /// nothing is the panel's business, and a row built by a test has no sink and needs
+    /// none.</para>
+    /// <para>**IT CARRIES THE KIND AND NOTHING ELSE** (HM-DEC-018, §2.1). Not the callsign,
+    /// not the entity, not the continent - `counter` or `door`.</para>
+    /// </remarks>
+    public Action<NudgeKind>? NudgeOpened { get; set; }
+
+    /// <summary>True while the reason for this row's mark is on screen.</summary>
+    /// <remarks>
+    /// **IT LIVES ON THE ROW AND NOT ON THE WINDOW**, for the reason the conversation
+    /// card's own map does: the list holds as many marked rows as the band offers, and one
+    /// shared *a reason is open* would open the wrong one the moment there are two.
+    /// </remarks>
+    public bool NudgeIsOpen
+    {
+        get => _nudgeIsOpen;
+        set
+        {
+            if (_nudgeIsOpen == value)
+            {
+                return;
+            }
+
+            _nudgeIsOpen = value;
+
+            PropertyChanged?.Invoke(
+                this, new PropertyChangedEventArgs(nameof(NudgeIsOpen)));
+        }
+    }
+
+    private bool _nudgeIsOpen;
+
+    /// <summary>Open the reason for this row's mark.</summary>
+    /// <remarks>
+    /// <para>**IT TRANSMITS NOTHING** (§0.2). The mark was already a nudge and never an
+    /// arming; pressing it is the operator reading, and nothing on this path touches,
+    /// shortens or pre-arms any route to the transmitter.</para>
+    /// <para>**AND IT DOES NOTHING ON AN UNMARKED ROW.** The control is not drawn there, but
+    /// a command that would have worked if it were is a different thing from one that
+    /// refuses (§0.5.1, HM-DEC-087), and only the second survives somebody arriving by
+    /// keyboard.</para>
+    /// </remarks>
+    public ICommand OpenTheNudgeCommand => _openTheNudge ??= new RelayCommand(OpenTheNudge);
+
+    private ICommand? _openTheNudge;
+
+    private void OpenTheNudge()
+    {
+        if (!IsNudged)
+        {
+            return;
+        }
+
+        NudgeIsOpen = true;
+
+        NudgeOpened?.Invoke(_nudge);
+    }
+
+    /// <summary>Put the reason away.</summary>
+    /// <remarks>
+    /// **THE DISMISS X**, the same one the enlarged map carries. Nothing is lost by closing
+    /// it: the mark is still on the row and the hover still says its one line.
+    /// </remarks>
+    public ICommand CloseTheNudgeCommand
+        => _closeTheNudge ??= new RelayCommand(() => NudgeIsOpen = false);
+
+    private ICommand? _closeTheNudge;
 
     /// <summary>The hover text, or null where there is none.</summary>
     /// <remarks>
