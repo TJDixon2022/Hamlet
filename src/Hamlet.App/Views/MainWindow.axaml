@@ -4529,7 +4529,7 @@
                                                       Title="For you"
                                                       Summary="{Binding DigitalMineSummary}"
                                                       SummaryBrush="{Binding DigitalFoldedInk}"
-                                                      IsExpanded="{Binding DigitalDecodedExpanded, Mode=TwoWay}">
+                                                      IsExpanded="{Binding DigitalMineExpanded, Mode=TwoWay}">
 
                                     <!-- **THE CARDS TAKE THE STAR** (work instruction 313
                                          task 3, R10 and the unbuilt half of unit 310's

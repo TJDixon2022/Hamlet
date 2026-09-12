@@ -1697,7 +1697,10 @@ public partial class MainWindowViewModel : ObservableObject
     {
         get
         {
-            if (!DigitalDecodedExpanded && DigitalMineStationCount > 0)
+            // **ITS OWN FLAG SINCE UNIT 327.** This read `DigitalDecodedExpanded`, so
+            // folding the panel next door made *For you* announce callers it was still
+            // showing - a summary about the wrong panel's state (§0.5).
+            if (!DigitalMineExpanded && DigitalMineStationCount > 0)
             {
                 var noun = DigitalMineStationCount == 1 ? "station" : "stations";
 
@@ -1733,8 +1736,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// who cannot see the difference between green and grey loses nothing.
     /// </remarks>
     public bool DigitalIsFoldedWithContent
-        => !DigitalDecodedExpanded
-           && (DigitalShownCount > 0 || DigitalMineStationCount > 0);
+        => (!DigitalDecodedExpanded && DigitalShownCount > 0)
+           || (!DigitalMineExpanded && DigitalMineStationCount > 0);
 
     /// <summary>Ink for the folded digital headers' summary line.</summary>
     /// <remarks>
@@ -5188,6 +5191,20 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _digitalDecodedExpanded = true;
 
+    /// <summary>Whether the **For you** panel is open (§0.5).</summary>
+    /// <remarks>
+    /// <para>**IT WAS `DigitalDecodedExpanded` UNTIL UNIT 327** (unit 325 item 6, unit 326
+    /// item 10). Two panels side by side bound one flag, so collapsing *Decoded text*
+    /// collapsed *For you* from under the operator and there was no way to have one of
+    /// them open - which is exactly the fault `PanelKeys.DigitalWaterfall`'s own comment
+    /// describes for a shared key, one tab over.</para>
+    /// <para>**AND §R17 STILL APPLIES TO IT.** Like its neighbour it opens expanded
+    /// whatever the settings file remembers, because it is half the surface the mode is
+    /// read on.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private bool _digitalMineExpanded = true;
+
     [ObservableProperty]
     private bool _scanExpanded = true;
 
@@ -6783,6 +6800,8 @@ public partial class MainWindowViewModel : ObservableObject
         // next toggle still persists normally.
         _ = settings.IsPanelExpanded(PanelKeys.DigitalDecoded);
         _digitalDecodedExpanded = true;
+        _ = settings.IsPanelExpanded(PanelKeys.DigitalMine);
+        _digitalMineExpanded = true;
         _digitalNewestFirst = settings.DecodedNewestFirst;
 
         // **TWO FLAGS SINCE UNIT 252, AND A MISSING ONE IS OFF**, which is
@@ -7810,6 +7829,18 @@ public partial class MainWindowViewModel : ObservableObject
         // sentence would only appear at the next decode, which is the one
         // moment it is needed least.
         OnPropertyChanged(nameof(DigitalDecodedSummary));
+        OnPropertyChanged(nameof(DigitalMineSummary));
+        OnPropertyChanged(nameof(DigitalIsFoldedWithContent));
+        OnPropertyChanged(nameof(DigitalFoldedInk));
+    }
+
+    /// <summary>**For you** was folded or opened, on its own flag since unit 327.</summary>
+    partial void OnDigitalMineExpandedChanged(bool value)
+    {
+        PersistPanel(PanelKeys.DigitalMine, value);
+
+        // **THE SAME RECOMPUTE ITS NEIGHBOUR DOES**, and only the two values that are
+        // about this panel: its own summary, and the folded ink both headers share.
         OnPropertyChanged(nameof(DigitalMineSummary));
         OnPropertyChanged(nameof(DigitalIsFoldedWithContent));
         OnPropertyChanged(nameof(DigitalFoldedInk));
@@ -17270,7 +17301,15 @@ public static class PanelKeys
     /// <summary>The Digital tab's decoded text.</summary>
     public const string DigitalDecoded = "digital.decoded";
 
-    /// <summary>The Digital tab's plain-English messages.</summary>
+    /// <summary>The Digital tab's **For you** panel.</summary>
+    /// <remarks>
+    /// **A KEY OF ITS OWN SINCE UNIT 327**, for the reason
+    /// <see cref="DigitalWaterfall"/>'s comment gives: two panels sharing a key make each
+    /// one toggle the other from under the operator, and these two are side by side on one
+    /// tab where that is most obvious (HM-DEC-021, unit 325 item 6).
+    /// </remarks>
+    public const string DigitalMine = "digital.mine";
+
 
     /// <summary>The Explorer's story card.</summary>
     public const string Story = "story";

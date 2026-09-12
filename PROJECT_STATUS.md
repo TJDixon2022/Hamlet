@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: 5 of 6
+TASK: 6 of 6
 WORK_INSTRUCTION: 327 - hear him through the silence, and mark him so it shows
 BALL: claude
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T01:47:18-04:00
-NOTE: Task 4 committed and pushed at 7f002c3. Unit 326 item 8 is closed: Psk31GridFor reads the grid off the same certain messages the card prints, and the log entry takes it the way the RST was taken. A contact that said GRID FN31 in prose now exports GRIDSQUARE FN31; one that never sent a grid exports no tag at all, checked against the angle bracket so MY_GRIDSQUARE cannot answer for it. ThePsk31LogsWithRstTests 6 of 6, with the ADIF and records types beside it, 10 of 10. Committing, then task 6.
+UPDATED: 2026-09-12T02:09:41-04:00
+NOTE: Task 5 committed and pushed at 60464f2. Housekeeping: the For you panel has its own DigitalMineExpanded and its own settings key, and TheFoldedPanelSaysWhatItHoldsTests now proves the split rather than passing on the coincidence - 9 of 9. The Views reds are eight, not two, and the collapse flag was NOT the cause: DigitalMineRows lives behind ShowsConversation, so the right-hand list is only realized after show the N messages, and the test's premise that both lists are always in the window went stale when cards replaced that row list. Left and named, per the instruction. Running the widened carry-forward list for the after timing.
 
 ---
 

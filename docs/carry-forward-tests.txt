@@ -4,9 +4,9 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint"
 
-    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests"
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests"
 
 WHY IT IS WRITTEN OUT HERE RATHER THAN LEFT TO THE READER. Unit 323 read this
 file as a list of names and ran one `dotnet test` per name - forty-one builds.
@@ -30,6 +30,24 @@ WHAT IS NEVER ON IT. A known red. The point of the list is that everything on it
 should be green before a unit starts; a name that is expected to fail teaches the
 next session to ignore a failure.
 
+WHAT CAME BACK, AND WHAT UNIT 327 ADDED. The three press types unit 324 dropped -
+ThePsk31CqGoesOutTests, ThePsk31ExchangeTests, ThePowerIsOfferedTests - are back on
+the app invocation. They were taken off as part of cutting forty-one names to
+twenty, and `carry-forward-dropped.txt` then told every unit that touches the press
+to run them anyway, which is a list plus a footnote saying to ignore the list. Unit
+326 ran them by hand and found step 4 had been reported unmet for two units on a
+sentence nobody had tested. **They belong on the list itself.** Unit 327 also put
+ThePsk31StationIdlesTests on both invocations, its own: it guards the retire rule,
+which is the thing two units in a row got wrong on the operator's own evenings.
+
+**THE COST, MEASURED BEFORE AND AFTER, ON THE SAME MACHINE IN ONE SESSION.** App 86
+tests in 10 s before and 100 in 10 s after; engine 77 in 4 s before and 85 in 4 s
+after. **163 green before, 185 green after, and the wall time did not move** - the
+run is dominated by the build and by the two headless window tests, not by the
+count. Fourteen seconds for both invocations, against a watchdog that kills at
+twelve minutes. **The danger was never the seconds** - it is that a list which only
+grows becomes a suite, which is what the next paragraph is about.
+
 WHAT IS NOT ON IT ANY MORE. Twenty-four names, dropped by unit 324 under work
 instruction 324 task 1b and **written down, with the unit that added each one,
 in `docs/carry-forward-dropped.txt`**. Nothing is lost; it is only not re-run.
@@ -45,6 +63,9 @@ the app heading below.
 
 ThePressingOfCqTests                                    transmit chain
 TheCqReceiptTests                                       transmit chain
+ThePsk31CqGoesOutTests                                  the press, unit 323
+ThePsk31ExchangeTests                                   the press, unit 323
+ThePowerIsOfferedTests                                  the press, unit 323
 ThePsk31ConversationCardTests                           transmit chain, unit 319
 CallsignPrivacyTests                                    the privacy scan
 ThePsk31PanelHearsTests                                 unit 314
@@ -57,6 +78,7 @@ ThePsk31TransmitTelemetryTests                          unit 322
 ThePsk31PanelSpeaksPsk31Tests                           unit 322
 ThePsk31PathRunsAtItsRateTests                          unit 324
 ThePsk31CarrierLivesTests                               unit 324
+ThePsk31StationIdlesTests                               unit 327
 TheAlcIsReadTests                                       unit 324
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 
@@ -67,6 +89,7 @@ TheFt8AndFt4SendsAreByteIdenticalTests                  transmit chain
 TheVaricodeTests                                        unit 314
 ThePsk31DemodulatorTests                                unit 314
 ThePsk31CarrierSearchTests                              unit 315
+ThePsk31StationIdlesTests                               unit 327
 ThePsk31ExchangeParserTests                             unit 316
 ThePsk31MessageSplitTests                               unit 316
 ThePsk31ModulatorTests                                  unit 318

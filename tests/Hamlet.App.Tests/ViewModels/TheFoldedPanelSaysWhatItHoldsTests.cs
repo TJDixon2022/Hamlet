@@ -84,9 +84,17 @@ public sealed class TheFoldedPanelSaysWhatItHoldsTests
 
         model.AddDecodeRowForTests("214150", "-09", "0.2", "1240", "KD9ABC W4WTM -07");
 
-        model.DigitalDecodedExpanded = false;
+        // **THE PANEL BEING ASKED ABOUT IS THE ONE THAT FOLDS, SINCE UNIT 327.** The
+        // two panels shared `DigitalDecodedExpanded` until then, so this folded
+        // *Decoded text* and read the header of *For you* - which is the fault unit
+        // 325 item 6 raised, standing in this test as a coincidence that passed.
+        model.DigitalMineExpanded = false;
 
         _output.WriteLine("for you : " + model.DigitalMineSummary);
+
+        // **AND ITS NEIGHBOUR IS UNTOUCHED**, which is the whole point of the split.
+        Assert.True(model.DigitalDecodedExpanded);
+        Assert.DoesNotContain("click to show", model.DigitalDecodedSummary);
 
         Assert.Equal(1, model.DigitalMineStationCount);
         Assert.Contains("1 station calling you", model.DigitalMineSummary);
