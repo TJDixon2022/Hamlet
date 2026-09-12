@@ -274,6 +274,59 @@ public sealed class Ft8ContactLedger
             new Ft8LedgerMessage(message!.Trim(), fields, slotStartUtc), toUs);
     }
 
+    /// <summary>**Books one PSK31 message under the station it passed with.**</summary>
+    /// <param name="station">The other station, read by the PSK31 parser.</param>
+    /// <param name="message">The text, exactly as it was sent or decoded.</param>
+    /// <param name="fromTheOperator">True where Hamlet sent it, false where it arrived.</param>
+    /// <param name="atUtc">When it passed. There are no slots in this mode (§R10).</param>
+    /// <remarks>
+    /// <para>**THE DOOR PSK31 NEEDS, FOR THE SAME REASON <see cref="RecordCallToAnyone"/>
+    /// EXISTS.** A PSK31 message is characters and not 77 bits, so
+    /// <see cref="Ft8MessageSplit.Split(string?)"/> refuses it and
+    /// <see cref="RecordHeard"/> and <see cref="RecordSent"/> book nothing - which is
+    /// right, because the FT8 split rule is not stretched to cover prose. **The station
+    /// is handed in** because `Psk31ExchangeParser` is the one thing in the tree that
+    /// says who a PSK31 message was between, and the ledger never learns a second
+    /// parser (§0.1).</para>
+    /// <para>**THE FIELDS ARE NULL AND THAT IS HONEST.** There are no three FT8 fields
+    /// in this text, so nothing downstream reads a grid or a decibel report out of it
+    /// (§0.0); a PSK31 contact's grid and RST are read by the mode's own parser.</para>
+    /// <para>**THE CALLER SAYS WHICH WAY IT WENT** rather than the ledger inferring it
+    /// from the text, and a message that arrived is booked as heard **by** him and
+    /// **to** the operator - the caller books only messages the parser was certain were
+    /// addressed to the operator, because a report inside somebody else's contact is
+    /// somebody else's (§R1).</para>
+    /// </remarks>
+    public void RecordPsk31(
+        string? station, string? message, bool fromTheOperator, DateTime atUtc)
+    {
+        var who = (station ?? "").Trim();
+        var text = (message ?? "").Trim();
+
+        if (who.Length == 0
+            || text.Length == 0
+            || IsOperator(who)
+            || Ft8MessageSplit.IsCallToAnyone(who))
+        {
+            return;
+        }
+
+        var held = new Ft8LedgerMessage(text, null, atUtc);
+
+        if (fromTheOperator)
+        {
+            Book(who).AddSent(held);
+            return;
+        }
+
+        // **AND THE RECEIPT RETIRES**, for the reason `RecordHeard` gives above: an
+        // answer to a call to everybody is a contact with one station, and the
+        // placeholder goes rather than being handed to whoever answered first.
+        Retire();
+
+        Book(who).AddHeard(held, toUs: true);
+    }
+
     /// <summary>Books a message the operator sent.</summary>
     /// <param name="message">The text exactly as it was sent.</param>
     /// <param name="slotStartUtc">The boundary of the slot it went out in.</param>

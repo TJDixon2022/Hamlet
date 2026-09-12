@@ -543,6 +543,43 @@ public static class Psk31Events
             },
             TelemetryLevel.Info);
 
+    /// <summary>**A PSK31 contact was written to the log** (§R13, step 5).</summary>
+    /// <param name="telemetry">The sink, or null.</param>
+    /// <param name="rstSent">The RST that went out, or null where none did.</param>
+    /// <param name="rstReceived">The RST that was read, or null where none was.</param>
+    /// <param name="mode">How the record spells the mode: `PSK`.</param>
+    /// <param name="submode">How it spells the submode: `PSK31`.</param>
+    /// <remarks>
+    /// <para>**THE STAGE STEP 5 ADDS, SO IT WRITES ITS EVENT** (§R13). A contact that
+    /// reached the log and a contact that was composed and never saved look identical
+    /// from outside, and the difference is the whole subject of the step.</para>
+    /// <para>**THE REPORTS ARE NOT PERSONAL AND THE STATION IS** (HM-DEC-018, §2.1).
+    /// `599` says how well two radios heard each other; it names nobody, and it is the
+    /// field a wrong log entry is diagnosed from. **No callsign, no grid and no text go
+    /// in** - the operator has all three on his own screen, and a telemetry file is the
+    /// one place they must never accumulate.</para>
+    /// <para>**AN UNREAD REPORT IS ABSENT HERE TOO** (§0.0), so a file showing
+    /// `rstReceived: null` is a contact whose report Hamlet never read rather than one
+    /// it forgot to write down.</para>
+    /// </remarks>
+    public static void ContactLogged(
+        ITelemetry? telemetry,
+        string? rstSent,
+        string? rstReceived,
+        string? mode,
+        string? submode)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_contact_logged",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["rstSent"] = string.IsNullOrWhiteSpace(rstSent) ? null : rstSent,
+                ["rstReceived"] = string.IsNullOrWhiteSpace(rstReceived) ? null : rstReceived,
+                ["mode"] = mode,
+                ["submode"] = submode,
+            },
+            TelemetryLevel.Info);
+
     /// <summary>A number as the record spells it.</summary>
     internal static string Say(double value)
         => value.ToString("0.###", CultureInfo.InvariantCulture);

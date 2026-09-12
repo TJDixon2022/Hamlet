@@ -40,8 +40,13 @@ public sealed class ContactLogRow
         Band = Or(c.Band);
         Submode = (c.Submode ?? "").Trim();
         Mode = WithSubmode(Or(c.Mode), Submode);
-        ReportSent = Or(c.ReportSent);
-        ReportReceived = Or(c.ReportReceived);
+        // **THE REPORT, WHICHEVER KIND THE MODE EXCHANGED** (§3.2, work instruction
+        // 326 task 3). A PSK31 record's report is an RST and an FT8 record's is a
+        // ratio in decibels; `AdifLog` keeps the two apart on the way in and out, and
+        // exactly one of them is set on any one record - so the cell shows what
+        // passed, and an FT8 or FT4 row is byte-identical to what it was.
+        ReportSent = Or(c.RstSent ?? c.ReportSent);
+        ReportReceived = Or(c.RstReceived ?? c.ReportReceived);
         TheirGridSquare = Or(c.GridSquare);
         MyGridSquare = Or(c.MyGridSquare);
         Comment = Or(c.Comment);

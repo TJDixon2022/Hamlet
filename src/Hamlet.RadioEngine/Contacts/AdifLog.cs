@@ -53,11 +53,37 @@ public sealed record AdifContact
     /// </remarks>
     public string? Submode { get; init; }
 
-    /// <summary>The report the operator sent. ADIF `RST_SENT`.</summary>
+    /// <summary>The decibel report the operator sent. ADIF `RST_SENT`.</summary>
+    /// <remarks>
+    /// **DECIBELS, AND ONLY DECIBELS.** FT8 and FT4 exchange a signal-to-noise ratio
+    /// and this is where it goes, in the `+00` / `-00` form the mode uses. A mode that
+    /// exchanges an RST instead uses <see cref="RstSent"/>.
+    /// </remarks>
     public string? ReportSent { get; init; }
 
-    /// <summary>The report the other station sent. ADIF `RST_RCVD`.</summary>
+    /// <summary>The decibel report the other station sent. ADIF `RST_RCVD`.</summary>
     public string? ReportReceived { get; init; }
+
+    /// <summary>The RST the operator sent, `599`-style, or null. ADIF `RST_SENT`.</summary>
+    /// <remarks>
+    /// <para>**THE REPORT IS RST, NOT dB, AND THE dB FIELD IS NOT REUSED TO HOLD IT**
+    /// (`PHASE_PLAN.md` §3.2). PSK31 exchanges readability, strength and tone; FT8
+    /// exchanges a ratio. They are different measurements of different things, and one
+    /// field holding both would record `599` as a ratio for as long as the log exists
+    /// — which is longer than anything else in this project.</para>
+    /// <para>**BOTH PROJECT ONTO THE SAME ADIF TAG, BECAUSE ADIF HAS ONE.**
+    /// `RST_SENT` is the signal report whatever the mode measured, and every other
+    /// logger reads it that way. **They cannot both be set on one contact**: each is
+    /// filled by the parser of the mode the contact was made in, and a contact is made
+    /// in one mode.</para>
+    /// <para>**EMPTY IS AN ANSWER** (§0.0). `599` is the conventional report for a
+    /// clean copy, which is exactly why an unread one must not be filled in with it.
+    /// </para>
+    /// </remarks>
+    public string? RstSent { get; init; }
+
+    /// <summary>The RST the other station sent, `599`-style, or null. ADIF `RST_RCVD`.</summary>
+    public string? RstReceived { get; init; }
 
     /// <summary>The other station's locator. ADIF `GRIDSQUARE`.</summary>
     public string? GridSquare { get; init; }
@@ -327,8 +353,14 @@ public static class AdifLog
             Field(text, "FREQ", mhz.ToString("0.000000", CultureInfo.InvariantCulture));
         }
 
-        Field(text, "RST_SENT", contact.ReportSent);
-        Field(text, "RST_RCVD", contact.ReportReceived);
+        // **ONE TAG, WHICHEVER MODE MEASURED IT** (work instruction 326 task 4).
+        // ADIF has one signal-report field and every other logger reads it as the
+        // report, so a PSK31 `599` and an FT8 `-12` both go here — they are kept
+        // apart in <see cref="AdifContact"/>, where a reader can still tell a
+        // readability from a ratio, and they cannot both be set on one contact.
+        // **A value that was never read writes no tag**, not an empty one (§0.0).
+        Field(text, "RST_SENT", contact.RstSent ?? contact.ReportSent);
+        Field(text, "RST_RCVD", contact.RstReceived ?? contact.ReportReceived);
         Field(text, "GRIDSQUARE", contact.GridSquare);
         Field(text, "MY_GRIDSQUARE", contact.MyGridSquare);
         Field(text, "COMMENT", contact.Comment);
@@ -523,8 +555,15 @@ public static class AdifLog
                     f, NumberStyles.Float, CultureInfo.InvariantCulture, out var mhz)
                 ? mhz
                 : null,
-            ReportSent = Get(fields, "RST_SENT"),
-            ReportReceived = Get(fields, "RST_RCVD"),
+            // **THE MODE SAYS WHICH KIND OF REPORT THE TAG HOLDS** (work instruction
+            // 326 task 3). One ADIF tag carries both, so what comes back out of it
+            // is a readability where the record says PSK31 and a ratio otherwise -
+            // read off the record's own `MODE` and `SUBMODE` rather than guessed
+            // from the shape of the value, because `599` is a shape and not a proof.
+            ReportSent = IsRstMode(fields) ? null : Get(fields, "RST_SENT"),
+            ReportReceived = IsRstMode(fields) ? null : Get(fields, "RST_RCVD"),
+            RstSent = IsRstMode(fields) ? Get(fields, "RST_SENT") : null,
+            RstReceived = IsRstMode(fields) ? Get(fields, "RST_RCVD") : null,
             GridSquare = Get(fields, "GRIDSQUARE"),
             MyGridSquare = Get(fields, "MY_GRIDSQUARE"),
             Comment = Get(fields, "COMMENT"),
@@ -533,6 +572,16 @@ public static class AdifLog
 
     private static string? Get(IReadOnlyDictionary<string, string> fields, string name)
         => fields.TryGetValue(name, out var value) ? value : null;
+
+    /// <summary>Whether this record's mode exchanges an RST rather than decibels.</summary>
+    /// <remarks>
+    /// **THE PAIR, THROUGH THE TABLE THAT OWNS IT.** `MODE=PSK` alone is some kind of
+    /// phase-shift keying and names no mode at all, so the question is asked of
+    /// <see cref="ContactModes"/> the way every other question about a mode is.
+    /// </remarks>
+    private static bool IsRstMode(IReadOnlyDictionary<string, string> fields)
+        => ContactModes.Named("PSK31") is { } psk31
+           && psk31.Matches(Get(fields, "MODE"), Get(fields, "SUBMODE"));
 
     /// <summary>A date and a time back into a moment, or null.</summary>
     private static DateTime? Moment(string? date, string? time)

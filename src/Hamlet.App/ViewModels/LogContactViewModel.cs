@@ -79,8 +79,14 @@ public sealed partial class LogContactViewModel : ObservableObject
         {
             new("Station", observed.Call ?? "", "CALL"),
             new("Their grid", observed.GridSquare ?? "", "GRIDSQUARE"),
-            new("Report you sent", observed.ReportSent ?? "", "RST_SENT"),
-            new("Report they sent", observed.ReportReceived ?? "", "RST_RCVD"),
+            // **THE REPORT THE MODE ACTUALLY EXCHANGED** (§3.2, work instruction 326
+            // task 3). PSK31 exchanges an RST and FT8 a ratio in decibels, and the
+            // two are kept apart in the record; exactly one is set on any one
+            // contact. **Showing the wrong one would be worse than a blank box**:
+            // `Summary` counts an empty field as something Hamlet did not hear, so a
+            // report it read and is about to write would be reported as missed.
+            new("Report you sent", observed.RstSent ?? observed.ReportSent ?? "", "RST_SENT"),
+            new("Report they sent", observed.RstReceived ?? observed.ReportReceived ?? "", "RST_RCVD"),
             new("Started", Moment(observed.StartedUtc), "QSO_DATE, TIME_ON"),
             new("Ended", Moment(observed.EndedUtc), "TIME_OFF"),
             new("Band", observed.Band ?? "", "BAND"),

@@ -2196,6 +2196,21 @@ public partial class MainWindowViewModel : ObservableObject
                     _psk31Tally[channel.Id] =
                         (tally.Characters, tally.Lines + 1, AudioSecondsHeard());
                 }
+
+                // **A MESSAGE HE CERTAINLY ADDRESSED TO THE OPERATOR IS A CONTACT AND
+                // GOES IN THE LEDGER** (work instruction 326 task 3), which is what
+                // the log is built from for every mode. **Only a certain one, and
+                // only one addressed to him** (§R1, §0.0): a guess about who was
+                // speaking is a guess about whose contact it was, and a message to
+                // somebody else is somebody else's. The FT8 ledger does not learn a
+                // second parser - the station is handed over already read.
+                if (message.Exchange is { IsCertain: true, IsForOperator: true }
+                    && message.Exchange.Speaker is { Length: > 0 } him)
+                {
+                    LedgerForTheOperator()?.RecordPsk31(
+                        him, message.Text, fromTheOperator: false,
+                        CardsNow ?? DateTime.UtcNow);
+                }
             }
         }
 
@@ -13353,7 +13368,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
-        var written = ContactLogStore.Append(model.Entry, AboutViewModel.AppVersion);
+        var written = WriteLoggedContact(model.Entry);
 
         // **A FAILED WRITE IS SAID OUT LOUD.** A log entry that silently did not
         // land is worse than one that never existed: he would believe the contact
@@ -13370,6 +13385,43 @@ public partial class MainWindowViewModel : ObservableObject
 
         RaiseDigitalDecodeChanges();
     }
+
+    /// <summary>**Write one contact to the log, and record that it went in.**</summary>
+    /// <param name="entry">The record, as the dialog left it.</param>
+    /// <returns>True where the file took it.</returns>
+    /// <remarks>
+    /// <para>**THE ONE PLACE A CONTACT REACHES THE FILE**, lifted out of
+    /// <see cref="OpenLogWindowAsync"/> so that what the record says can be asserted
+    /// without opening a window. It is still reached only from behind the dialog's
+    /// Save.</para>
+    /// <para>**THE EVENT IS WRITTEN AFTER THE WRITE AND ONLY WHERE IT SUCCEEDED**
+    /// (§R13, §0.0.1). A line saying a contact was logged, beside a file that never
+    /// took it, is a record of something that did not happen.</para>
+    /// </remarks>
+    private bool WriteLoggedContact(AdifContact entry)
+    {
+        var written = ContactLogStore.Append(entry, AboutViewModel.AppVersion);
+
+        if (written && ContactModes.Named("PSK31") is { } psk31
+            && psk31.Matches(entry.Mode, entry.Submode))
+        {
+            Psk31Events.ContactLogged(
+                _telemetry, entry.RstSent, entry.RstReceived, entry.Mode, entry.Submode);
+        }
+
+        return written;
+    }
+
+    /// <summary>Writes one contact the way the Save button does.</summary>
+    /// <param name="entry">The record.</param>
+    /// <returns>True where the file took it.</returns>
+    /// <remarks>
+    /// **THE SAME IDIOM AS <see cref="ContactRecordForTests"/>**: the write sits behind
+    /// a modal window, so there is no way to assert what reaches the file and what
+    /// reaches the record without one door that does not open a window.
+    /// </remarks>
+    internal bool WriteLoggedContactForTests(AdifContact entry)
+        => WriteLoggedContact(entry);
 
     /// <summary>
     /// **The log record one row would produce, before any window is opened.**
@@ -13435,7 +13487,7 @@ public partial class MainWindowViewModel : ObservableObject
         var hz = heardOnHz;
         var band = hz > 0 ? HfBands.BandFor(hz) : null;
 
-        return Ft8ContactLogEntry.For(
+        var entry = Ft8ContactLogEntry.For(
             record,
             _settings.Operator.Callsign,
             new Ft8StationConditions(
@@ -13458,8 +13510,68 @@ public partial class MainWindowViewModel : ObservableObject
                 // not re-derived here. The mode travels as one object rather than
                 // as a bare string, so `MODE` and `SUBMODE` cannot be set to
                 // disagree.
-                _digitalMode.Contact(),
+                //
+                // **AND PSK31 IS READ OFF THE CONTACT RATHER THAN OFF THE TAB**
+                // (work instruction 326 task 3). `DigitalMode` has two members and
+                // PSK31 is not one of them - it has no slot grid and no slotted
+                // decoder, which is the whole reason that enum exists - so a PSK31
+                // contact was being logged as `MODE=FT8`. **The question is asked of
+                // the conversation and not of what the tab is running now**: a
+                // station worked on PSK31 is a PSK31 contact whatever the operator
+                // has since pressed, and that is a measurement rather than a
+                // reading of the current screen (§0.0).
+                Psk31ContactWith(who) ?? _digitalMode.Contact(),
                 _settings.Operator.GridSquare));
+
+        // **THE REPORT IS RST AND NOT dB, AND IT COMES FROM THE MODE'S OWN PARSER**
+        // (§3.2, work instruction 326 task 3). The ledger holds FT8-shaped messages
+        // and `Ft8ContactLogEntry` reads decibels out of them; a PSK31 contact's
+        // report was read by `Psk31ExchangeParser` out of the conversation, which is
+        // where this goes and gets it. **Both stay null for a mode that exchanged
+        // neither**, and the decibel fields are untouched either way.
+        var (sent, read) = Psk31ReportsFor(who);
+
+        return sent is null && read is null
+            ? entry
+            : entry with { RstSent = sent, RstReceived = read };
+    }
+
+    /// <summary>PSK31's log entry where this contact was a PSK31 one, or null.</summary>
+    /// <param name="station">The other station.</param>
+    /// <returns>The mode, or null where nothing was worked in PSK31 with him.</returns>
+    /// <remarks>
+    /// **A CONVERSATION CARD IS THE EVIDENCE.** One is opened only where the parser was
+    /// certain a station addressed the operator on the PSK31 tab, so its existence is a
+    /// measurement that this contact happened in this mode - and the spelling of the
+    /// pair is <see cref="ContactModes"/>'s, never re-derived here.
+    /// </remarks>
+    private ContactMode? Psk31ContactWith(string station)
+        => _psk31Cards.ContainsKey(station) ? ContactModes.Named("PSK31") : null;
+
+    /// <summary>The RST each way in one PSK31 conversation, or nulls where none passed.</summary>
+    /// <param name="station">The other station.</param>
+    /// <returns>What Hamlet sent, and what he sent.</returns>
+    /// <remarks>
+    /// <para>**THE CONVERSATION AND NOT THE LEDGER.** Both halves are already assembled
+    /// for the card - his messages as they were heard, Hamlet's as they went out - and
+    /// that is the same list the turn indicator and the offer are read from, so the log
+    /// cannot disagree with what the card showed.</para>
+    /// <para>**NOTHING IS READ FOR A STATION WITH NO PSK31 CONVERSATION**, so an FT8
+    /// contact is untouched by this and its decibel fields stand alone.</para>
+    /// </remarks>
+    private (string? Sent, string? Read) Psk31ReportsFor(string station)
+    {
+        if (!_psk31Cards.TryGetValue(station, out var state)
+            || !_psk31Readings.TryGetValue(state.ChannelId, out var reading))
+        {
+            return (null, null);
+        }
+
+        var talk = Conversation(reading, station);
+
+        return (
+            Psk31ContactReport.From(talk, _settings.Operator.Callsign),
+            Psk31ContactReport.From(talk, station));
     }
 
     /// <summary>The row's own ratio, in whole decibels, or null where none.</summary>
@@ -14062,6 +14174,14 @@ public partial class MainWindowViewModel : ObservableObject
         }
 
         sent.Add(new Psk31Mine(heard, new Psk31Message(text, exchange)));
+
+        // **AND THE LEDGER LEARNS THAT SOMETHING PASSED WITH HIM** (work instruction
+        // 326 task 3). The log is built out of the ledger, for every mode, and until
+        // this line a finished PSK31 contact had a Log link on its card that opened
+        // nothing at all: the FT8 split rule refuses a macro, so `RecordSent` booked
+        // nothing and the station was not in the ledger to be logged.
+        LedgerForTheOperator()?.RecordPsk31(
+            station, text, fromTheOperator: true, CardsNow ?? DateTime.UtcNow);
     }
 
     /// <summary>Puts the PSK31 call in the ledger, so the receipt is on the panel.</summary>
@@ -14076,11 +14196,32 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private void BookThePsk31Call(string text)
     {
+        if (LedgerForTheOperator() is not { } contacts)
+        {
+            return;
+        }
+
+        contacts.RecordCallToAnyone(text, CardsNow ?? DateTime.UtcNow);
+
+        RebuildCards();
+        RaiseDigitalDecodeChanges();
+    }
+
+    /// <summary>The ledger for the operator's own callsign, opening one where needed.</summary>
+    /// <returns>The ledger, or null where he has not said who he is.</returns>
+    /// <remarks>
+    /// **A CHANGED CALLSIGN OPENS A NEW LEDGER RATHER THAN REWRITING THE OLD ONE**, the
+    /// rule <see cref="ContactTextFor"/> states in full: what passed with a station was
+    /// addressed to whoever the operator was at the time, and carrying it over would put
+    /// somebody else's exchange under his call.
+    /// </remarks>
+    private Ft8ContactLedger? LedgerForTheOperator()
+    {
         var mine = _settings.Operator.Callsign?.Trim() ?? "";
 
         if (mine.Length == 0)
         {
-            return;
+            return null;
         }
 
         if (_contacts is null
@@ -14090,10 +14231,7 @@ public partial class MainWindowViewModel : ObservableObject
             _contactsFor = mine;
         }
 
-        _contacts.RecordCallToAnyone(text, CardsNow ?? DateTime.UtcNow);
-
-        RebuildCards();
-        RaiseDigitalDecodeChanges();
+        return _contacts;
     }
 
     /// <summary>Where this call should go out, or null where the band is too crowded.</summary>

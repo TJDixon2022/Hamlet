@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 2 of 6
+TASK: 3 of 6
 WORK_INSTRUCTION: 326 - what step 4 already holds, and then the log
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T22:20:37-04:00
-NOTE: Task 1 done and committed: all eight step 4 must-pass and the nice-to-pass met against tests run tonight, 169 of 169 green. Task 2 has nothing to build and is being written up as empty by measurement before task 3 starts on the RST field.
+UPDATED: 2026-09-11T22:34:00-04:00
+NOTE: Task 3 green at four of four. Engine contacts clean but for the one documented red. One property-count pin raised under R12 for the two new RST fields. App log and ADIF neighbours running now.
 
 ---
 
