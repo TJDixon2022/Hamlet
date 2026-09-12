@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: WORKING
+STATE: COMPLETED
 TASK: 4 of 4
 WORK_INSTRUCTION: 324 - PSK31 hears real air
-BALL: claude
+BALL: tim
 NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T20:52:00-04:00
-NOTE: Task 4 green - app 99 of 99, engine 87 of 87. Unit 323's ALC sentence test rewritten under R12 since the zone figure it pinned was the invented one. About to run the pruned carry-forward list one last time, both invocations, for the wall-clock number, then commit and write output.md.
+UPDATED: 2026-09-11T20:15:00-04:00
+NOTE: Unit 324 complete at task 4 of 4, nothing dropped. The PSK31 path runs at 8 kHz whatever the sound card gives, a carrier lives while its signal does and says so when it is heard but not readable, the carry-forward list is 26 types in two builds, and step 4 has its two numbers - 55.7 Hz at -30 dB and the manual ALC read at 15 13. output.md written and the validator ran clean, exit 0, all seven rules. Section 4 raises 5 items, the first being the ALC zone threshold.
 
 ---
 
