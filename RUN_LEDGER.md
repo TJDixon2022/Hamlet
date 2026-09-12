@@ -122,3 +122,6 @@ the owner reads instead of watching.
 | phase | 2026-09-11T19:00 | 2026-09-11T19:00 | halted | 54.7167 | backstop: 1 iterations, no stop condition fired |
 | 1 | 2026-09-11T19:26 | 2026-09-11T20:15 | complete | 47.65027650000001 | ran unattended, 344 turns, 17 denied call(s) worked around, report valid |
 | phase | 2026-09-11T20:15 | 2026-09-11T20:15 | halted | 47.6503 | backstop: 1 iterations, no stop condition fired |
+| 1 | 2026-09-11T20:56 | 2026-09-11T22:09 | complete | 48.23846000000003 | ran unattended, 385 turns, 24 denied call(s) worked around, report valid |
+| 2 | 2026-09-11T22:15 | 2026-09-11T22:52 | complete | 33.364847 | ran unattended, 296 turns, 16 denied call(s) worked around, report valid |
+| phase | 2026-09-11T22:53 | 2026-09-11T22:53 | halted | 81.6033 | backstop: 2 iterations, no stop condition fired |

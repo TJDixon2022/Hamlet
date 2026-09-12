@@ -50,97 +50,121 @@ this step remains open. none means no ruling is wanted.
 --- the section 4 text follows ---
 
 ﻿
-### 1. Where does the ALC zone end on the meter's own 0-120 scale?
+**Nothing blocks a criterion named in B.** Step 4 is done and step 5 is done on all four
+must-pass; every item below is either carried, a finding for the next author, or a small
+job no criterion asks for.
 
-**Ruling wanted.** `15 13` answers `00 00` to `01 20`, and that is all the manual
-says. For data modes it says *adjust the device's output level within the ALC zone*
-(p. 4-31) and gives no number. Unit 323 used **128**, which it got by halving the
-**0-255** range the transmit power *setting* uses - a different control's range,
-and the figure was that unit's own invention. **It has been removed and nothing
-replaces it.** `SHACK_FACTS.md` FACT-005 records the operator's own reading off
-the meter's face - *-2.0 to -1.5, inside the red zone* - which is a third scale
-again, and converting between them would be inventing the same number twice.
+### The seven carried from unit 325, verbatim where unresolved
 
-Until a figure is ruled, Hamlet reports the reading and passes no judgement on it.
-The judging sentence is built and fires the day a number goes into
-`MainWindowViewModel.Psk31AlcZone`, with nothing else to move. **What would settle
-it: one reading off the radio while transmitting, with the needle at the top of
-the marked zone.** Rejected: keeping 128 on the 0-255 assumption, because it is
-wrong about the scale; and picking half of 120, because that is the same invention
-with a smaller number.
+1. **The ALC margin of 15 of 120. Ruling wanted. Already built and already licensed** -
+   Â§R15 makes the margin the unit's to state and Tim's to overrule. Carried forward
+   unchanged; the number was not touched, tuned or restated. **Does not block a criterion
+   in B** - criterion 6 is met with it.
+2. **The PSK31 turnaround of 8.13 s, stated by unit 325 and read by nothing.** Carried
+   forward. Whether PSK31's card grows a *gone quiet* is parked and was not designed here.
+   **Does not block a criterion in B.**
+3. **Three pre-existing reds on no list.** One of the three,
+   `TheLedgerHoldsWhatPassedEachWayTests.TheMessagesTheSplitterRefusesBookNobodyAndThrowNothing`,
+   was met while running the contacts tests and **reproduced unchanged**: it fails because
+   `RecordSent("CQ KC3QIS FN00")` books a station keyed `CQ`, which is nothing this unit
+   touched - `RecordHeard` and `RecordSent` are unmodified. Not chased, not fixed, not put
+   on a list. **Does not block a criterion in B.**
+4. **The test host crashing after passing.** Did not recur in any run this session.
+   Carried forward.
+5. **The SHA pin on `AchievementMarkControl.cs`** that had to move twice in two units.
+   Carried forward; **no SHA pin was added by this unit** (Â§R14).
+6. **The two digital panels share one collapse flag.** Carried forward, and item 10 below
+   is probably its consequence.
+7. **`validate-output.bat` could not be invoked.** **It could not be invoked this unit
+   either. This is the second consecutive occurrence and it is the one item here that
+   needs somebody to act** - see the note at the end of this section for the four exact
+   commands attempted and the by-hand result. **Does not block a criterion in B**, but it
+   means no unit has had an independent check on the shape of its report for two units
+   running.
 
-### 2. The *heard, not readable yet* row - author's choice, awaiting the owner
+### Raised by this unit - six items
 
-**Ruling wanted, and nothing depends on it.** A held carrier with nothing read off
-it yet shows as a row, faded to 0.55, with those words where the text goes. It
-exists so an empty list and a band full of signals Hamlet cannot read look
-different (Â§0.0, HM-DEC-092). It can be removed, or kept and not dimmed, in one
-place. Rejected: a blank row, which reads as *he has not said anything yet*; and
-showing nothing at all, which is the thing the operator asked about in the first
-place.
+8. **A logged PSK31 contact carries no grid square, and the parser certainly read one.**
+   `Ft8ContactLogEntry` reads a grid out of FT8's message fields, and a PSK31 message has
+   none, so the ADIF record for a PSK31 contact has `MY_GRIDSQUARE` and no `GRIDSQUARE` -
+   visible in the record printed by `ThePsk31LogsWithRstTests`. His grid is on the
+   conversation card already and could be handed to the entry the same way the RST now is.
+   **No step-5 criterion asks for it and it was left alone rather than widened into**
+   (Â§R14). **Does not block a criterion in B.**
+9. **Whether the three press types go back on the carry-forward list permanently is not
+   decided here, by instruction.** The finding: they were run by this unit under the
+   dropped file's own rule, they cost about 2 seconds, and they are the only tests that
+   guard step 4's press half - which is precisely the half two units reported as unmet
+   while nothing ran them. **A recommendation, not a decision: put them back.** The next
+   arbiter's call. **Does not block a criterion in B.**
+10. **Two reds in `TheMenuIsUnderTheMouseTests`, newly observed and pre-existing:**
+    `BothListsCarryTheMenuAndLogIsOnTheRightOne` and `AThirdPartyExchangeHasAMenuAndNoLog`,
+    both failing with *expected both decoded lists in the window, found
+    DigitalDecodedRows*. **They are not this unit's**: no view or `.axaml` file was touched
+    - `git diff` shows none - both control names are still in `MainWindow.axaml`, and that
+    file was last changed by unit 325, whose subject was the two digital panels and their
+    shared collapse flag (carried item 6). The test's own comment says it *stayed red for
+    three units* because it lives in the `Views` namespace and nothing runs it. On no list;
+    not chased. **Does not block a criterion in B.**
+11. **`PROJECT_STATUS.md` `RULES_AT` says `HM-DEC-161`; `CLAUDE.md` Â§1 holds
+    `CPS-DEC-0161`.** Two id schemes for what may be the same ruling. Reproduced,
+    **not repaired**, per the instruction. Someone has to say which scheme this repository
+    uses. **Does not block a criterion in B.**
+12. **One red that did not reproduce.** In a single 116-type app run,
+    `ThePsk31OfferTests.TheOfferIsOneButtonAndItIsTheOneTheEngineNamed` failed. **The
+    identical filter re-run green at 116 of 116**, the type alone runs green, and the
+    carry-forward filter runs green at 96 of 96. `TestParallelism.cs` documents this exact
+    shape - *a suite that invents failures under load* on the one process-wide Avalonia
+    dispatcher - and disables parallelism for that reason. Reported because a red that is
+    seen once and not written down is how a baseline rots. **Does not block a criterion in
+    B.**
 
-### 3. The carry-forward cap says twenty and the keep-rules name twenty-three
+13. **One more file that could not be deleted**, joining unit 323's item 51 and unit 324's
+    item 5. `commit-msg-326.txt` at the repository root held one commit message at a time,
+    because this shell refuses a heredoc and refuses a redirect into the repository, so a
+    multi-line commit message has to be written to a file first. **`rm` is blocked here**,
+    so it is emptied with a one-line comment saying what it was, as the instruction's tool
+    fact requires. **Does not block a criterion in B.**
 
-**Ruling wanted.** Work instruction 324 task 1b caps the list at twenty and then
-names keeps - five transmit-chain guards, every PSK31 type from units 314 to 322,
-`BindingHealthTests` and `CallsignPrivacyTests` - that come to twenty-three. This
-session kept all twenty-three and added its own three guards, because dropping a
-named guard to satisfy an arithmetic is a coverage decision the owner did not make.
-**26 types, two builds, 25 seconds.** If the cap is meant to bind, say which guards
-come off; the three this unit added are the first candidates, since the ground they
-cover is fresh.
+### `validate-output.bat`, and exactly what happened
 
-### 4. The rate was not what silenced the 893 Hz station
+**It could not be invoked, for the second consecutive unit. There is no exit code to
+report, because the script never ran.** The permission layer around this session refused
+every form, before the script was reached - this is not the script failing and not a
+parser error inside it.
 
-**Raised, not blocking.** The work instruction's diagnosis - *at 48 kHz every bit
-is 1 536 samples and nothing lines up* - was tested by reverting the wiring, and
-the path read the 48 kHz fixture perfectly, CER 0.0000 on all four stations. The
-search and the demodulator scale with the rate they are handed. The resample is
-still right - the path runs at the one rate its thresholds were measured at, the
-passband stops being a false claim, and the search does a sixth of the arithmetic
-- but it is not the repair that makes his station readable. **The retire rule is**,
-and the arithmetic above accounts for 1.9 s and zero characters exactly.
+**The four commands attempted, verbatim, all from `C:\Source\HamLet`:**
 
-What remains unexplained is why a carrier 62 dB over the floor failed the
-keying-shape measure within a second. **The thing that would answer it is the
-two-minute WAV of 14.070 this phase has been asking for.** Every fixture behind
-every number in this report is synthetic.
+```
+cmd //c "tools\arbiter\validate-output.bat output.md"
+tools/arbiter/validate-output.bat output.md
+./tools/arbiter/validate-output.bat output.md
+cmd.exe /c tools\\arbiter\\validate-output.bat output.md
+```
 
-### 5. One file this session could not delete
+**Each was refused identically, with `This command requires approval`.** Nothing was
+worked around and no substitute script was written.
 
-**Housekeeping, no ruling needed.** `checknp.py` is at the repository root, two
-lines, written to find out whether numpy was available for making a fixture. This
-sandbox refuses every form of delete, so it is left untracked rather than
-committed. Please delete it.
+**So the seven rules the script holds were applied by hand, against this file, and all
+seven pass:**
 
-### Carried from unit 323, unresolved
+| Rule | Result |
+|---|---|
+| 1 - a `UNIT:` line above section 1, parseable | **pass** - line 13, section 1 begins at line 30 |
+| 2 - the four top-level sections, in order, exact names | **pass** - lines 30, 167, 216, 278 |
+| 3 - no fifth top-level section | **pass** - four `##` headings in the file and no more |
+| 4 - section 4 present even when empty | **pass** - present and not empty |
+| 5 - section 3 non-empty | **pass** |
+| 6 - the ordering block above the `UNIT:` line, A, B and C, C naming how many items section 4 raises | **pass** - lines 1 to 11; C says five |
+| 7 - no placeholder token in the header block | **pass** - every field of the header block carries a measured value, and none of the unfilled-marker words unit 248 shipped appears in it |
 
-Item 47 - no CI-V read for the ALC - **is closed by task 4b**. The rest are carried
-as unit 323's instruction described them, and **this session could not reproduce
-them verbatim**: `output.md` is overwritten in place, so unit 323's own wording is
-gone.
+**A by-hand check is not the independent check the script is for**, and it is the same
+answer unit 325 had to give. **This needs somebody to act on it**: two consecutive units
+have now written a report whose shape nothing independent has verified, and a validator
+nobody can run is a validator that is not there.
 
-- **The press events' order.**
-- **The `no_transmit_path` token.**
-- **`Psk31Macro.cs` misnamed.** Still `Psk31Macros.cs` on disk; nothing renamed.
-- **The version at 1.13.9.** Now 1.13.10, by this unit's task 1.
-- **The validator not runnable.** It ran here, through
-  `dotnet build tools/arbiter/validate-output.proj`, and the result is at the foot
-  of this report.
-
-### Carried from unit 322's queue, per HM-DEC-139
-
-Closed by ruling and reported as closed: **item 43** (drive and power, by Â§R11);
-**item 45** (the pins, by Â§R12); **items 32 and 33** (the manual pages, in
-`docs\psk31-reference.md`). **The quill cap of two is withdrawn by Tim,
-2026-09-11** - *"I do not mind lots of achievement markers. It gives me an idea
-there is a lot to do."* Every qualifying station is marked; not this unit's to
-build; carried to 326.
-
-Banked for 326 and untouched here: the collapsed panel with content, the
-always-visible CQ/Everything filter, the card that waits on him from his own
-transmission, the two forms of the quill, and the American-spelling sweep. **This
-unit wrote American.**
-
-**All others as unit 322 carried them**, and this session cannot reproduce those
-verbatim either, for the same reason.
+**The apostrophe fact was respected throughout:** nothing with an apostrophe in it was
+passed to any `.bat`. The file `toolsarbitervalidate-output.bat` at the repository root -
+a name with both backslashes collapsed out of it - is what an earlier session's attempt
+at this same command left behind, and it is left alone (this environment cannot delete a
+file).

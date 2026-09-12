@@ -1,17 +1,16 @@
-﻿   Bash  {"command":"grep -n \"^#\\{1,3\\} \" CLAUDE_CODE.md | head -40","description":"List CLAUDE_CODE.md headings"}
-   Bash  {"command":"git log --format=\"%h|%s\" --follow -- docs/carry-forward-tests.txt | while IFS=\u0027|\u0027 read h s; do echo \"=== $h $s\"; git show $h -- docs/carry-forward-tests.txt | grep \"^+[A-Za-z]\" ; done 2\u003e\u00261 | head -80"," ...(truncated)
-   Bash  {"command":"for h in 98d9e21 524bb20 e386407 0f3310e 4239e29 4dbffda 06325e9 3449057 900885f e247547 30d5c78 132995f eb67036 4895907 2428e22; do echo \"=== $h\"; git show $h -- docs/carry-forward-tests.txt | grep \"^+[A-Za-z]\"; done","desc ...(truncated)
-   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c \u0027EOF\u0027\n\n## UNIT 324 - STEP 4\n\nSTEP: 4\nAPPROACH: Checked the four gate facts, read the PSK31 receive path end to end against the instruction before changing a line, the ...(truncated)
-   Bash  {"command":"git reset -q .run-unit SESSION.lock \u0026\u0026 git commit -q -m \"$(cat \u003c\u003c\u0027EOF\u0027\nchore(unit324): task 1 - the carry-forward list stops being a suite\n\n46 named types cut to 23, run as two invocations - one ...(truncated)
-   Bash  {"command":"git reset -q .run-unit SESSION.lock","description":"Unstage launcher files"}
-   Bash  {"command":"grep -rln \"psk31-four-signals\\|assets/fixtures\\|assets\\\\\\\\fixtures\" --include=*.cs --include=*.py --include=*.md tests src tools docs 2\u003e/dev/null | head -20","description":"Find fixture makers"}
-   Bash  {"command":"python --version 2\u003e\u00261; python -c \"import numpy; print(numpy.__version__)\" 2\u003e\u00261","description":"Check Python and numpy"}
-   Bash  {"command":"python -c \"import numpy, sys; print(sys.version); print(numpy.__version__)\"","description":"Check Python and numpy versions"}
-   Bash  {"command":"python -c \"import numpy; print(numpy.__version__)\"","description":"Check numpy availability"}
-   Bash  {"command":"printf \u0027import numpy\\nprint(numpy.__version__)\\n\u0027 \u003e /tmp/checknp.py \u0026\u0026 python /tmp/checknp.py","description":"Check numpy via script file"}
-   Bash  {"command":"python checknp.py","description":"Run numpy check script"}
-   Bash  {"command":"HAMLET_MAKE_FIXTURES=1 timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit324Fixtures\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -i \"err ...(truncated)
-   Bash  {"command":"env HAMLET_MAKE_FIXTURES=1 timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter \"FullyQualifiedName~Unit324Fixtures\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -i \ ...(truncated)
-   Bash  {"command":"rm checknp.py","description":"Remove the scratch python check"}
-   Bash  {"command":"git clean -f checknp.py","description":"Remove untracked scratch file"}
-   Bash  {"command":"rm -f /c/Source/HamLet/checknp.py","description":"Remove scratch file via posix path"}
+﻿   Bash  {"command":"for f in tests/Hamlet.App.Tests/ViewModels/ThePsk31CqGoesOutTests.cs tests/Hamlet.App.Tests/ViewModels/ThePsk31ExchangeTests.cs tests/Hamlet.App.Tests/ViewModels/ThePowerIsOfferedTests.cs tests/Hamlet.App.Tests/ViewModels/TheAlc ...(truncated)
+   Bash  {"command":"for f in tests/Hamlet.RadioEngine.Tests/Transmit/TheUnslottedSendTests.cs tests/Hamlet.RadioEngine.Tests/Transmit/TheFt8AndFt4SendsAreByteIdenticalTests.cs tests/Hamlet.RadioEngine.Tests/Psk31/ThePsk31TurnTests.cs tests/Hamlet.R ...(truncated)
+   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c\u0027OUTCOME\u0027\n\n## UNIT 326 - STEP 4\n\nSTEP: 4\nAPPROACH: Checked the four gate facts, then spent task 1 measuring step 4 rather than building on it - the carry-forward list  ...(truncated)
+   Bash  {"command":"git add PHASE_OUTCOME.md Directory.Build.props PROJECT_STATUS.md PHASE_STATUS.md \u0026\u0026 git commit -q -F - \u003c\u003c\u0027MSG\u0027 \u0026\u0026 git log --oneline -1\ndocs(unit326): task 1 - step 4 measured, not recited ...(truncated)
+   Write  {"file_path":"C:\\Source\\HamLet\\.git\\COMMIT_326_1.txt","content":"docs(unit326): task 1 - step 4 measured, not recited\n\nThe carry-forward list run as its own comment says, two invocations and\none build each, with ThePsk31CqGoesOutTest ...(truncated)
+   Bash  {"command":"python -c \"\nimport json\nd=json.load(open(\u0027assets/fixtures/psk31-transcripts/corpus.json\u0027))\nprint(d.get(\u0027operator\u0027))\nfor t in d[\u0027transcripts\u0027][:2]:\n    print(\u0027---\u0027,t[\u0027name\u0027] ...(truncated)
+   Bash  {"command":"git stash push -u -m \"unit326-task3-check\" 2\u003e\u00261 | tail -2 \u0026\u0026 git status --short | head -10","description":"Stash working changes"}
+   Bash  {"command":"git stash push -u -m \"unit326-task3-check\"","description":"Stash working changes"}
+   Bash  {"command":"python - \u003c\u003c\u0027PY\u0027\nimport re,io\np=\u0027tests/Hamlet.App.Tests/ViewModels/ThePsk31RecordsAppearTests.cs\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027c.Title + \" - \" + card.Says\u0027 ...(truncated)
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\" 2\u003e\u00261 | tail -40; echo \"EXITCODE=$?\"","description":"Run the output validator"}
+   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the output validator"}
+   Bash  {"command":"tools/arbiter/validate-output.bat output.md","description":"Run the output validator"}
+   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run validator with relative path"}
+   Bash  {"command":"cmd.exe /c tools\\\\arbiter\\\\validate-output.bat output.md","description":"Run validator through cmd.exe"}
+   Bash  {"command":"rm -f commit-msg-326.txt \u0026\u0026 git status --short | grep \"commit-msg\" | head -2; echo \"gone-if-empty-above\"","description":"Remove my scratch commit-message file"}
+   Bash  {"command":"rm -f commit-msg-326.txt","description":"Remove my scratch commit-message file"}

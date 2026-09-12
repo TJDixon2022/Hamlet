@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-11T20:56:37-04:00  root C:\Source\HamLet
+measured 2026-09-11T22:09:55-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,6 +7,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0161.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      SESSION.lock is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -18,8 +22,12 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 3e51d4d
-  uncommitted at the root : 0
+  HEAD   : cc98833
+  uncommitted at the root : 4
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
+     AD SESSION.lock
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -587,12 +595,13 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under Â§R15. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  12 lines, 1685 bytes
+  13 lines, 1724 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
   CURRENT_STEP: 4
-  WORK_INSTRUCTION: 324 - PSK31 hears real air
+  WORK_INSTRUCTION: 325 - the screen says what is true
+  HEARTBEAT: 2026-09-11 22:09:54
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
@@ -602,7 +611,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  273 lines, 39129 bytes
+  303 lines, 44791 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -876,6 +885,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   COST: 47.65027650000001
   ACCOMPLISHED: the station Tim heard at 893 Hz on 14.070 becomes a row with its text and stays while it is sending; and step 4 gets its two missing numbers
   STATE_WHY: Only two of the exit criteria are supported by measurement, the bandwidth at 55.7 Hz at minus 30 dB and the ALC read on its 0 to 120 scale, while the macro loopback, the CQ receipt and its retirement, the one click offer on certainty, the turn indicator, the no slot cap refusal and the judging half of the R11 power criterion are all still unmet, the last of these awaiting a zone ruling.
+  
+  ## UNIT 325 - STEP 4
+  
+  STEP: 4
+  APPROACH: Checked the four gate facts and PHASE_PLAN R15-R19 before reading a line of code, ran the carry-forward list as its own comment says - two invocations, one build each, status written first - then took the six rulings from Tim's evening at the radio in the order the instruction set them, watching each named test fail before making it green.
+  HIT: The two digital panels share one expanded flag, so Decoded text and For you fold and open together. The folded sentence and the never-opens-collapsed rule are therefore one behaviour and not two, and the test says so rather than pretending to prove two independent panels.
+  MOVE: continue
+  WHY: Six things the owner saw on 2026-09-11 are all on the screen PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned from an FT8 send rather than read off a meter by hand.
+  DECIDED: The folded For you header names stations rather than messages, because the decision it feeds - open the panel or not - turns on how many people are calling and not on how much they said. The hidden-by-the-filter count survives the rewording, because a shut panel is exactly where a filter can make a busy band look like a quiet one.
+  LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; HM-DEC-012, HM-DEC-021, HM-DEC-032, HM-DEC-111, HM-DEC-155.
+  COST: one session, six tasks of six, none dropped. The carry-forward list green at 159 of 159 before anything moved and 159 of 159 after, app 86 and engine 73, two invocations and one build each. Eleven operator-facing strings corrected across seven files. Two pre-existing layout reds and one pre-existing ledger red found while running neighbours, all three reproduced with this unit's changes reverted, none chased.
+  ACCOMPLISHED: The screen stops lying about what it holds. A folded panel says how many stations are in it and that a click shows them; the filter is on the screen before the first slot lands; a card the operator just called waits on that station for a full slot instead of reporting a silence that predated his call, and cards survive the slot rebuild as the same objects because DigitalCards.Clear() is gone; every station that would earn anything is marked, with a still green quill for a counter and an amber ringed turning one for a door; and the ALC judges itself from a reference it learns off an FT8 send, with nothing asked of the operator.
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: STEP 4 GAINS ITS R11/R15 POWER CRITERION IN FULL AND IS NOT DONE. That must-pass is now met on every clause: the power offer is on the panel beside the drive at half, nothing is asked of the operator at the radio, the reference is learned from FT8 and FT4 sends with its mode and its age, a PSK31 send above it by the stated margin of 15 on 0-120 gets the sentence and the event, and with no reference the reading is reported and nothing is judged. What keeps step 4 partial is unchanged from unit 324 and is the press half: the CQ that sends once on a clear spot, the receipt and its retirement by a certain answer, the macros offered on certainty, and the no-slot cap refusal. Nothing on this machine has a radio, so the ALC path is proved to the poll and stops there, exactly as unit 324 left the read itself.
+  
+  ### ALSO RECORDED FOR UNIT 325 - STEP 4
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: make the folded panels say what they hold, keep the filter visible, key cards by station so they survive the slot rebuild and wait on a called station from the operator's send, mark every qualifying station with a green counter quill or an orange spinning door quill, sweep the copy to American, and learn the ALC reference from FT8 sends
+  HIT: section 4 wants a ruling: banked - Two items ask for a ruling, the ALC margin of 15 which is already built and stated under R15 as the unit's to state and Tim's to overrule, and whether PSK31's card should grow a gone quiet which no step 4 exit criterion requires, while the press half that keeps step 4 partial, the CQ on a clear spot, the receipt and its retirement by a certain answer, the macros offered on certainty, the loopback and the no slot cap refusal, can all be built at the bench under rulings already in the plan.
+  WHY: six rulings from the owner's evening at the radio, all on the surface PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned rather than read
+  DECIDED: the PSK31 equivalent of one slot for the waiting card, the ALC margin, and the orange from the existing palette are the unit's numbers to state; the per-slot card rebuild is fixed at the root rather than worked around a third time
+  LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.6, 0.2; HM-DEC-111
+  COST: 48.23846000000003
+  ACCOMPLISHED: the screen stops lying about what it holds, a card Tim just called waits for the answer, every achievement worth chasing is marked and the two kinds look different, and the ALC judges itself from FT8 with nothing asked of him
+  STATE_WHY: The report shows evidence for two must-pass criteria, the measured 55.7 Hz bandwidth and the R11/R15 power clause in full with quoted values, but it states plainly that the macro loopback, the CQ receipt and its retirement, the certainty-gated one-click offer, the turn indicator proof and the no-slot cap refusal are all unmet, so some exit criteria are met and not all.
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -898,17 +937,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1051 bytes
+  19 lines, 1259 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: 4 of 4
-  WORK_INSTRUCTION: 324 - PSK31 hears real air
+  TASK: 6 of 6
+  WORK_INSTRUCTION: 325 - the screen says what is true
   BALL: tim
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-11T20:15:00-04:00
-  NOTE: Unit 324 complete at task 4 of 4, nothing dropped. The PSK31 path runs at 8 kHz whatever the sound card gives, a carrier lives while its signal does and says so when it is heard but not readable, the carry-forward list is 26 types in two builds, and step 4 has its two numbers - 55.7 Hz at -30 dB and the manual ALC read at 15 13. output.md written and the validator ran clean, exit 0, all seven rules. Section 4 raises 5 items, the first being the ALC zone threshold.
+  UPDATED: 2026-09-11T23:52:00-04:00
+  NOTE: Unit 325 complete at task 6 of 6, nothing dropped. Folded panels say what they hold, the filter is there before the first slot, cards are keyed by station and a called one waits a full slot, every qualifying station is marked as a green counter or an amber turning door, eleven strings are American, and the ALC learns its reference from FT8 with a margin of 15 of 120. Step 4 gains its R11/R15 power criterion in full and stays partial on the press half. Carry-forward 159 of 159 before and after. output.md written; the validator could not be invoked in this session and its seven rules were applied by hand and all pass - section 4 item 7. Section 4 raises 7 items.
   
   ---
   

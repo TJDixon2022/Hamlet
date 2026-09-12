@@ -30,9 +30,11 @@ way is the next unit's to rewrite under Â§R12.
   (Â§R1 strict side). *must-pass*
 - The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
   does not know, and the `SlotClock` is not shown for this mode. *must-pass*
-- Under Â§R11: the power offer is on the panel beside the drive, defaulting to half;
-  nothing is asked of the operator at the radio; during a send an ALC reading past the
-  zone becomes a plain sentence on the panel and an event in the record. *must-pass*
+- Under Â§R11 and Â§R15: the power offer is on the panel beside the drive, defaulting to
+  half; nothing is asked of the operator at the radio; the ALC reference is learned
+  from FT8 sends, and a PSK31 send reading above it by the stated margin becomes a plain
+  sentence on the panel and an event in the record; with no reference yet, the reading
+  is reported and nothing is judged. *must-pass*
 - Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
   Â§R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
   guarding tests, and a no-slot send capped at a stated length. *must-pass*
