@@ -670,8 +670,18 @@
     about whether the resting mark is filled are reconciled under R12 on the later ruling,
     option B of 2026-09-10.
   -->
+  <!--
+    1.13.15 -> 1.13.16, UNIT 331 TASK 0, UNDER HM-DEC-150 AND R7. A PATCH, AND THE UNIT THAT
+    PICKS UP WHERE THE WATCHDOG STOPPED 330. Unit 330 was killed at task 2 after saying it was
+    green and about to commit; task 0 here reads the tree rather than the claim and finds both
+    of its commits landed - 79dbc50 the tray quill, 303da1c the card table - with no source
+    work left uncommitted, so nothing is recovered and nothing is stashed. What 330 measured
+    before it died changes the shape of two tasks: the vane was drawn at 62 per cent of its
+    ruled box, and the card's table did not fit beside the map at the panel width of the day,
+    which the owner ruled on - the panels make room instead.
+  -->
   <PropertyGroup>
-    <Version>1.13.15</Version>
+    <Version>1.13.16</Version>
   </PropertyGroup>
 
   <!--

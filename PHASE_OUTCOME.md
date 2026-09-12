@@ -420,3 +420,17 @@ COST: 9.140988
 ACCOMPLISHED: the tray mark can be seen, the card reads as a table, the popup shows the card he would earn, the green zone tells him what band he is on and whether it is the best bet, Hamlet stops claiming the band was empty in a slot it did not listen to, and the achievements page is eight badges with scores and a running total he can edit from a file
 STATE_AFTER: in progress
 STATE_WHY: no output.md, so there is no report to judge the step against
+
+## UNIT 331 - STEP 6
+
+STEP: 6
+APPROACH: Recover what unit 330 committed before the watchdog killed it, then draw the tray vane at its ruled size rather than 62 per cent of it, move the decoded list's controls to a bar above both panels and widen For You so the card's table fits beside the map, make the card's right column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit readiness line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles.
+MOVE: continue
+WHY: Unit 330 was killed at task 2 with two measurements that changed the shape of the work - the vane's scaling and the card's width - and the owner ruled on the second. The remaining tasks stand, none of them touching a step criterion, and every task commits on its own and drops from the back.
+DECIDED: The green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner. The points are the owner's file, data/achievements/achievement-points.json, and no point value is hard-coded. The two tray size tests are reconciled under R12 so both assert what the glass shows.
+LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark; Tim 2026-09-12 with screenshots and the panel-split ruling.
+COST: one session, eight tasks, each committing on its own so that what lands, lands.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0 - a state claimed before the measurement is the fault this phase has already hit twice.
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.

@@ -2,7 +2,8 @@ PHASE: Hamlet works PSK31 the way it works FT8
 PHASE_SET: 2026-09-11
 DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
 CURRENT_STEP: 5
-WORK_INSTRUCTION: 330 - maintenance round one, and the achievements page
+WORK_INSTRUCTION: 331 - maintenance round one, continued
+HEARTBEAT: 2026-09-12 12:44:19
 STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
 STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
 STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
