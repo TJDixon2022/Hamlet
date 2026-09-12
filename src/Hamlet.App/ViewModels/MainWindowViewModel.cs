@@ -13584,9 +13584,48 @@ public partial class MainWindowViewModel : ObservableObject
         // neither**, and the decibel fields are untouched either way.
         var (sent, read) = Psk31ReportsFor(who);
 
-        return sent is null && read is null
-            ? entry
-            : entry with { RstSent = sent, RstReceived = read };
+        if (sent is not null || read is not null)
+        {
+            entry = entry with { RstSent = sent, RstReceived = read };
+        }
+
+        // **AND HIS GRID COMES THE SAME WAY THE REPORT DID** (unit 326 item 8, work
+        // instruction 327 task 5). `Ft8ContactLogEntry.LastGrid` reads grids out of
+        // **FT8 fields**, and a PSK31 conversation has none - so a grid the parser
+        // read for certain, and the card has been printing since unit 320, was
+        // dropped on the way to the log. **Only where it was read**: where the
+        // parser has nothing, this leaves whatever the FT8 path found, which for a
+        // PSK31 contact is null, and `GRIDSQUARE` is then absent from the record
+        // rather than invented (§0.0).
+        var grid = Psk31GridFor(who);
+
+        return grid is null ? entry : entry with { GridSquare = grid };
+    }
+
+    /// <summary>The grid this PSK31 station sent for certain, or null.</summary>
+    /// <param name="station">The other station.</param>
+    /// <returns>His locator, or null where the parser never read one.</returns>
+    /// <remarks>
+    /// <para>**THE SAME READING THE CARD PRINTS**, from the same conversation and the same
+    /// rule: the latest grid on a message the parser was **certain** he sent, which is what
+    /// `Psk31Listening` hands the card. A grid off a guessed speaker never reaches here
+    /// (§R1), and the operator's own grid inside his own report is not his.</para>
+    /// <para>**AND IT IS ASKED OF THE CONVERSATION, NOT OF THE TAB.** A station worked on
+    /// PSK31 has a grid in that conversation whatever the operator has since pressed.</para>
+    /// </remarks>
+    private string? Psk31GridFor(string station)
+    {
+        if (!_psk31Cards.TryGetValue(station, out var state)
+            || !_psk31Readings.TryGetValue(state.ChannelId, out var reading))
+        {
+            return null;
+        }
+
+        return Conversation(reading, station)
+            .Where(m => m.Exchange is { IsCertain: true, Grid: { Length: > 0 } }
+                && Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station))
+            .Select(m => m.Exchange!.Grid!.ToUpperInvariant())
+            .LastOrDefault();
     }
 
     /// <summary>PSK31's log entry where this contact was a PSK31 one, or null.</summary>

@@ -209,29 +209,147 @@ public sealed class ThePsk31LogsWithRstTests : IDisposable
         }
     }
 
+    /// <summary>
+    /// **5: a PSK31 contact whose grid was read exports `GRIDSQUARE`, and one whose was
+    /// not exports none** (work instruction 327 task 5, unit 326 item 8).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE PARSER READ IT AND THE CARD HAS BEEN SHOWING IT SINCE UNIT 320**, and
+    /// `Ft8ContactLogEntry` dropped it on the way to the log: that method reads grids out
+    /// of **FT8 fields**, and a PSK31 conversation has none. So a contact that said `GRID
+    /// FN31` in plain prose logged without one.</para>
+    /// <para>**AND IT IS NEVER INVENTED** (§0.0). `02-chatty` is a whole worked contact in
+    /// which nobody sends a grid, and its record carries no `GRIDSQUARE` tag at all rather
+    /// than an empty one or a guess from his prefix.</para>
+    /// </remarks>
+    [Fact]
+    public void AContactWithAReadGridExportsItAndOneWithoutExportsNone()
+    {
+        var (withGrid, _) = Panel();
+
+        Work(withGrid, "01-textbook", "W1AW", 3);
+
+        var read = withGrid.ContactLogEntryForStation("W1AW", On20m);
+
+        Assert.NotNull(read);
+
+        _output.WriteLine("grid   : " + (read!.GridSquare ?? "(none)"));
+        _output.WriteLine(AdifLog.Record(read));
+
+        Assert.Equal("FN31", read.GridSquare);
+        Assert.Contains("<GRIDSQUARE:4>FN31", AdifLog.Record(read), StringComparison.Ordinal);
+
+        // **AND THE ONE WHO NEVER SENT ONE CARRIES NO TAG.**
+        var (withNone, _) = Panel();
+
+        Work(withNone);
+
+        var silent = withNone.ContactLogEntryForStation("G4XYZ", On20m);
+
+        Assert.NotNull(silent);
+
+        _output.WriteLine("grid   : " + (silent!.GridSquare ?? "(none)"));
+        _output.WriteLine(AdifLog.Record(silent));
+
+        Assert.Null(silent.GridSquare);
+
+        // **`<GRIDSQUARE:` AND NOT `GRIDSQUARE`**, because `MY_GRIDSQUARE` ends in the
+        // same nine letters and a plain substring scan would find the operator's own.
+        Assert.DoesNotContain(
+            "<GRIDSQUARE:", AdifLog.Record(silent), StringComparison.Ordinal);
+
+        // **AND THE OPERATOR'S OWN IS NOT HIS.** `MY_GRIDSQUARE` is a different tag and
+        // reading one into the other is exactly the fault this test exists for.
+        Assert.Contains("MY_GRIDSQUARE", AdifLog.Record(silent), StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// **6: an FT8 record is byte-identical to what it was before this unit.**
+    /// </summary>
+    /// <remarks>
+    /// **THE GRID PATH FT8 USES IS UNTOUCHED** (work instruction 327 task 5). The PSK31
+    /// grid is applied only where the PSK31 parser read one, so an FT8 contact takes
+    /// exactly the route `Ft8ContactLogEntry.LastGrid` always gave it - and the whole
+    /// record, not only the grid, is compared.
+    /// </remarks>
+    [Fact]
+    public void AnFt8RecordIsByteIdenticalToWhatItWas()
+    {
+        var model = Ft8Panel();
+
+        var slot = new DateTime(2026, 9, 11, 21, 41, 30, DateTimeKind.Utc);
+
+        model.AddDecodeRowForTests(
+            "214130", "-12", "0.2", "1240", "CQ IK4LZH JN54", slot, 14_074_000);
+
+        model.AddDecodeRowForTests(
+            "214145", "-12", "0.2", "1240", "KC3QIS IK4LZH -12", slot.AddSeconds(15),
+            14_074_000);
+
+        var entry = model.ContactLogEntryForStation("IK4LZH", 14_074_000);
+
+        Assert.NotNull(entry);
+
+        var record = AdifLog.Record(entry!);
+
+        _output.WriteLine(record);
+
+        // **THE GRID HE PUT ON THE AIR IN AN FT8 FIELD, READ THE WAY IT ALWAYS WAS.**
+        Assert.Equal("JN54", entry!.GridSquare);
+        Assert.Contains("<GRIDSQUARE:4>JN54", record, StringComparison.Ordinal);
+
+        // **AND THE REPORT IS THE DECIBEL ONE, IN THE FIELD FT8 HAS ALWAYS WRITTEN IT
+        // TO.** ADIF has one report tag and FT8's own convention puts the ratio in it,
+        // so `RST_RCVD` reading `-12` is what an FT8 record has always looked like -
+        // what makes this an FT8 record rather than a PSK31 one is that the entry's
+        // **`RstReceived` is null** and the value came off `ReportReceived`.
+        Assert.Equal("-12", entry.ReportReceived);
+        Assert.Null(entry.RstSent);
+        Assert.Null(entry.RstReceived);
+        Assert.Contains("<RST_RCVD:3>-12", record, StringComparison.Ordinal);
+    }
+
     /// <summary>Works the whole contact on `02-chatty`: answer, report, confirm.</summary>
     private static void Work(MainWindowViewModel model)
+        => Work(model, "02-chatty", "G4XYZ", 3);
+
+    /// <summary>Works a contact on any transcript, a press at a time.</summary>
+    /// <param name="model">The panel.</param>
+    /// <param name="transcript">Which transcript in the corpus.</param>
+    /// <param name="station">Whose half is fed in.</param>
+    /// <param name="overs">How many of his lines to hear.</param>
+    private static void Work(
+        MainWindowViewModel model, string transcript, string station, int overs)
     {
-        Hear(model, 1);
-        model.AnswerPsk31Command.Execute(model.DigitalDecodes[0]);
-        Settle(model);
+        for (var over = 1; over <= overs; over++)
+        {
+            Hear(model, over, transcript);
 
-        Hear(model, 2);
-        model.CardActionCommand.Execute(model.DigitalCards[0]);
-        Settle(model);
+            if (over == 1)
+            {
+                model.AnswerPsk31Command.Execute(
+                    model.DigitalDecodes.First(r => r.Sender == station));
+            }
+            else
+            {
+                model.CardActionCommand.Execute(model.DigitalCards[0]);
+            }
 
-        Hear(model, 3);
-        model.CardActionCommand.Execute(model.DigitalCards[0]);
-        Settle(model);
+            Settle(model);
+        }
     }
 
     /// <summary>Hands the panel the other station's half, a line at a time.</summary>
     private static void Hear(MainWindowViewModel model, int lines)
+        => Hear(model, lines, "02-chatty");
+
+    /// <summary>The same, from any transcript in the corpus.</summary>
+    private static void Hear(MainWindowViewModel model, int lines, string transcript)
     {
         var corpus = Psk31Corpus.Load();
 
         var his = corpus.Transcripts
-            .Single(t => t.Name == "02-chatty")
+            .Single(t => t.Name == transcript)
             .Lines
             .Where(l => !string.Equals(l.Frm, corpus.Operator, StringComparison.OrdinalIgnoreCase))
             .Take(lines)
