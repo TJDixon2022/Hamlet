@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 6
+TASK: 2 of 6
 WORK_INSTRUCTION: 325 - the screen says what is true
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-11T21:18:00-04:00
-NOTE: Task 1 green - the folded header was watched failing at 5 of 9, then passes at 62 of 62 with VoiceTests and BindingHealthTests alongside it. Committing, then task 2, the filter on an empty list.
+UPDATED: 2026-09-11T21:31:00-04:00
+NOTE: The filter chips are out from behind the has-rows gate and clear and the order toggle keep it. Watched red on the empty list, fix back in, now running the new test with BindingHealthTests and the decoded-panel neighbours.
 
 ---
 

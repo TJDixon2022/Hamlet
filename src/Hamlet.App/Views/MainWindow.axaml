@@ -3853,8 +3853,24 @@
                                          does nothing teaches the operator that
                                          controls here do nothing (HM-DEC-087). -->
                                     <ctl:CollapsiblePanel.HeaderAction>
-                                        <StackPanel Orientation="Horizontal" Spacing="6"
-                                                    IsVisible="{Binding HasDigitalDecodes}">
+                                        <!-- **THE FILTER IS ALWAYS THERE** (§R17,
+                                             work instruction 325 task 2). This whole
+                                             strip used to be hidden until something
+                                             decoded, which put `CQ` and `everything`
+                                             behind the same gate as `clear` and the
+                                             order toggle. Those two are reports about
+                                             rows and correctly wait for rows; the
+                                             filter is a **choice about what to see**,
+                                             and a choice that cannot be made until
+                                             after the thing it governs has happened
+                                             is not a choice. Tim could not set it
+                                             before the first slot landed.
+
+                                             So the chips are out here, always, and
+                                             the row-dependent controls keep their own
+                                             gate below. -->
+                                        <StackPanel x:Name="DigitalHeaderStrip"
+                                                    Orientation="Horizontal" Spacing="6">
 
                                             <!-- **TWO TOGGLES AND A WAY BACK, SINCE
                                                  UNIT 252** (Tim's ruling,
@@ -3916,6 +3932,20 @@
                                                  control that can bury the one thing
                                                  he is waiting for. -->
 
+                                            <!-- **WHAT IS A REPORT ABOUT ROWS STILL
+                                                 WAITS FOR ROWS.** There is nothing to
+                                                 clear and nothing to order on an
+                                                 empty table, and a live control that
+                                                 does nothing teaches the operator
+                                                 that controls here do nothing
+                                                 (HM-DEC-087). The separator goes with
+                                                 them, or an empty panel carries a
+                                                 divider with nothing on its far
+                                                 side. -->
+                                            <StackPanel x:Name="DigitalRowControls"
+                                                        Orientation="Horizontal" Spacing="6"
+                                                        IsVisible="{Binding HasDigitalDecodes}">
+
                                             <Border Width="1" Margin="4,2"
                                                     Background="{StaticResource HmSlateEdgeBrush}" />
 
@@ -3946,6 +3976,7 @@
                                                     BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                                     BorderThickness="1"
                                                     Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                            </StackPanel>
                                         </StackPanel>
                                     </ctl:CollapsiblePanel.HeaderAction>
 
