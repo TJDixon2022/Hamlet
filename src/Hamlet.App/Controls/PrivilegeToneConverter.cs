@@ -27,6 +27,7 @@ public sealed class PrivilegeToneConverter : IValueConverter
         Text,
         NotEmpty,
         NotNull,
+        FamilyInk,
     }
 
     private static readonly IBrush YoursFill = new SolidColorBrush(Color.Parse("#E9F6EC"));
@@ -60,6 +61,16 @@ public sealed class PrivilegeToneConverter : IValueConverter
     /// <summary>True when a value is present.</summary>
     public static PrivilegeToneConverter NotNull { get; } = new(Role.NotNull);
 
+    /// <summary>**The mode family's own ink, for a family word drawn as text.**</summary>
+    /// <remarks>
+    /// **IT READS `ModePalette` AND CARRIES NO COLOR OF ITS OWN** (HM-DEC-032, §0.6). The
+    /// green zone's live line names the family the dial is in - `Digital`, `Morse`,
+    /// `Voice` - and the word is the carrier with the hue second, so the line survives a
+    /// grayscale print. **Ink and never a fill** (HM-DEC-012, §0.5): this returns the
+    /// family's text color and there is no matching background role, on purpose.
+    /// </remarks>
+    public static PrivilegeToneConverter FamilyInk { get; } = new(Role.FamilyInk);
+
     /// <inheritdoc/>
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -71,6 +82,13 @@ public sealed class PrivilegeToneConverter : IValueConverter
         if (_role == Role.NotNull)
         {
             return value is not null;
+        }
+
+        if (_role == Role.FamilyInk)
+        {
+            return ModePalette.For(
+                value as Hamlet.RadioEngine.Explore.ModeFamily?
+                    ?? Hamlet.RadioEngine.Explore.ModeFamily.Open).InkBrush;
         }
 
         var tone = value as PrivilegeTone? ?? PrivilegeTone.Unknown;

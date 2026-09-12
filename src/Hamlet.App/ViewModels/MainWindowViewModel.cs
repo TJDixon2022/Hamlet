@@ -340,6 +340,9 @@ public partial class MainWindowViewModel : ObservableObject
     // **AND THE TWO CAPTIONS THAT NOW READ IT** (work instruction 322 task 4).
     [NotifyPropertyChangedFor(nameof(DigitalWaterfallSummary))]
     [NotifyPropertyChangedFor(nameof(DigitalDecodedIdle))]
+    // **AND THE GREEN ZONE'S LIVE LINE, WHICH NAMES THE SUB-MODE AND CARRIES THE STRAY
+    // NUDGE** (work instruction 331 task 4).
+    [NotifyPropertyChangedFor(nameof(GreenZone))]
     private string? _chosenDigitalMode;
 
     /// <summary>True where the slot clock is drawn.</summary>
@@ -561,6 +564,7 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
     [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
+    [NotifyPropertyChangedFor(nameof(GreenZone))]
     private long _frequencyHz;
 
     [ObservableProperty]
@@ -696,6 +700,7 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(DigitalReadinessLine))]
     [NotifyPropertyChangedFor(nameof(HasDigitalReadiness))]
     [NotifyPropertyChangedFor(nameof(DigitalModeChips))]
+    [NotifyPropertyChangedFor(nameof(GreenZone))]
     private IReadOnlyList<Neighborhood> _neighborhoods = Array.Empty<Neighborhood>();
 
     /// <summary>
@@ -715,8 +720,26 @@ public partial class MainWindowViewModel : ObservableObject
     public long MapHighHz => SelectedBand.Band.HighHz + NeighborhoodPlan.MarginHz(SelectedBand.Band);
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GreenZone))]
     private IReadOnlyList<Controls.ActivityDot> _activityDots =
         Array.Empty<Controls.ActivityDot>();
+
+    /// <summary>
+    /// **How many stations the map's dots heard inside the last minute, or null.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT IS THE DOTS' OWN NUMBER** (work instruction 331 task 4). The green zone's
+    /// live line says *heard just now: 31 stations*, and the *heard just now* dots on the
+    /// map are what know it - the count is taken where the dots are built, off the same
+    /// ranked spots and the same clock reading, so the line and the picture cannot come to
+    /// disagree about one minute of the band.</para>
+    /// <para>**NULL IS NOT NOUGHT** (§0.0). Before the feed has ever answered there is no
+    /// count, and *0 stations* would be a measurement of an empty band rather than the
+    /// absence of a measurement. The line is absent until there is one.</para>
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GreenZone))]
+    private int? _heardInTheLastMinute;
 
     /// <summary>
     /// The mode the radio is actually in, or empty when it has not been read.
@@ -1141,6 +1164,60 @@ public partial class MainWindowViewModel : ObservableObject
         => DigitalModeChip.For(
             Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
             ChosenDigitalMode);
+
+    /// <summary>
+    /// **The panel under the neighborhood map: the license on one line, and then what is
+    /// true right now** (work instruction 331 task 4).
+    /// </summary>
+    /// <remarks>
+    /// <para>**COMPOSED HERE AND MEASURED NOWHERE.** Every value handed to
+    /// <see cref="ViewModels.GreenZone.For"/> is one this view model already publishes to
+    /// another surface: the license verdict the panel drew as three lines, the dial, the
+    /// neighborhood the map is drawing, the sub-mode the tab's chips are drawing, the band
+    /// the pills are wearing the best-bet badge on, and the count of the map's own dots.
+    /// **Nothing in the green zone can disagree with the screen around it**, because
+    /// nothing in it is worked out twice (§0).</para>
+    /// <para>**THE SEGMENT FOR THE STRAY NUDGE IS THE MAP'S OWN BLOCK FOR THAT SUB-MODE**,
+    /// found by its short name on the band he is on - so `PSK31 lives at 14.070` is the
+    /// cited row and not a number in a source file (§0.2.1). A band with no block for the
+    /// sub-mode yields no segment and therefore no nudge: there is nothing to have strayed
+    /// from.</para>
+    /// </remarks>
+    public GreenZone GreenZone
+        => GreenZone.For(
+            PrivilegeStatus,
+            FrequencyHz,
+            Neighborhoods.FirstOrDefault(n => n.Contains(FrequencyHz)),
+            ChosenDigitalMode,
+            SegmentForTheChosenSubMode,
+            Bands.FirstOrDefault(b => b.IsBestBet)?.Band.Name ?? "",
+            HeardInTheLastMinute);
+
+    /// <summary>What *heard just now* means, in one place: the last minute.</summary>
+    /// <remarks>
+    /// **ONE NUMBER, NOT TWO.** The count on the green zone's line and any later reading
+    /// of the same window read this, so *just now* cannot mean one minute in a line and
+    /// two in a legend.
+    /// </remarks>
+    private static readonly TimeSpan JustNow = TimeSpan.FromMinutes(1);
+
+    /// <summary>The map's block for the sub-mode under the tab, on this band, or null.</summary>
+    private Neighborhood? SegmentForTheChosenSubMode
+    {
+        get
+        {
+            var picked = ChosenDigitalMode?.Trim();
+
+            if (string.IsNullOrEmpty(picked))
+            {
+                return null;
+            }
+
+            return Neighborhoods.FirstOrDefault(
+                n => string.Equals(
+                    n.ShortName.Trim(), picked, StringComparison.OrdinalIgnoreCase));
+        }
+    }
 
     /// <summary>What the last sub-mode press did, or "" when there is nothing to say.</summary>
     /// <remarks>
@@ -3960,6 +4037,18 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Rebuild the cards without waiting for a decode, for a test.</summary>
     internal void RebuildCardsForTests() => RebuildCards();
 
+    /// <summary>
+    /// Raise the green zone after a test has moved the best-bet badge by hand.
+    /// </summary>
+    /// <remarks>
+    /// **THE BADGE IS A PROPERTY OF A BAND BUTTON AND NOT OF THIS OBJECT**, so setting it
+    /// raises nothing here - which is exactly why `ApplyBestBet` raises it itself. A test
+    /// that sets the badge without going through a spot feed needs the same raise, and
+    /// calling this rather than reaching for the ranking keeps the test about the line
+    /// rather than about the ranking.
+    /// </remarks>
+    internal void NotifyGreenZoneForTests() => OnPropertyChanged(nameof(GreenZone));
+
     /// <summary>The ledger the cards are built from, for a test to read back.</summary>
     /// <remarks>
     /// **READ ONLY, AND NOTHING IN `src/` TOUCHES IT.** A test asserting that the
@@ -5165,6 +5254,7 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The line under the band map (HM-DEC-029).</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(GreenZone))]
     private PrivilegeStatus _privilegeStatus = new(
         PrivilegeTone.Unknown, "", "", "", "", "");
 
@@ -16271,6 +16361,29 @@ public partial class MainWindowViewModel : ObservableObject
                 button.BestBetTooltip = ranking.BadgeTooltip;
             }
         }
+
+        // **AND THE GREEN ZONE READS THE SAME ANSWER** (work instruction 331 task 4). The
+        // badge is a property of a band button, so nothing on the view model changed when
+        // it moved and the line under the map would have gone on naming yesterday's band.
+        OnPropertyChanged(nameof(GreenZone));
+    }
+
+    /// <summary>**Tune to the band the ranking calls the best bet.**</summary>
+    /// <remarks>
+    /// **THE SAME PRESS THE PILL ALREADY IS, AND NOT A SECOND ONE**
+    /// (work instruction 331 task 4). The green zone's best-bet word is a nudge, and a
+    /// nudge that names a better band and cannot take him to it makes him go and find the
+    /// pill (§0.5.1). It calls `SelectBand` with the button the badge is on, so the dial
+    /// lands exactly where pressing the pill lands it - there is no second tuning path
+    /// here and nothing about §0.2.1's rules on moving the dial changes.
+    /// </remarks>
+    [RelayCommand]
+    private void TuneToBestBet()
+    {
+        if (Bands.FirstOrDefault(b => b.IsBestBet) is { } best)
+        {
+            SelectBand(best);
+        }
     }
 
     /// <summary>
@@ -16404,6 +16517,13 @@ public partial class MainWindowViewModel : ObservableObject
 
         UpdateBandActivity(now);
         ActivityDots = BuildDots(ranked, now);
+
+        // **THE GREEN ZONE'S COUNT IS THE DOTS' OWN** (work instruction 331 task 4),
+        // taken off the same ranked spots and the same clock reading the dots were just
+        // built from, so *heard just now: 31 stations* and the *heard just now* dots on
+        // the map cannot come to disagree about one minute of the band.
+        HeardInTheLastMinute = ranked
+            .Count(entry => now - entry.Spot.HeardAtUtc <= JustNow);
 
         // ONE RANKING, READ BY BOTH (HM-DEC-046). The badge and the lead card
         // used to answer "which band is best" separately, and the badge
