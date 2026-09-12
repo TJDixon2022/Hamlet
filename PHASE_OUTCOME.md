@@ -342,3 +342,21 @@ DECIDED: The keep-and-retire numbers, the first-character latency ceiling, the m
 LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; HM-DEC-111, HM-DEC-139, HM-DEC-155.
 ACCOMPLISHED: A station who pauses stays on the operator's list until he actually leaves, the achievement mark is something he can see from across the desk and click for the reason, and the card says what Hamlet knows beside the map.
 ADVANCES: none - carried repair before step 6. Nothing was measured at a radio; FACT-004 and FACT-006 hold and every fixture behind this is synthetic.
+
+### ALSO RECORDED FOR UNIT 327 - STEP 6
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: keep a PSK31 carrier by its demodulator's verdict so an idling station stays on the list, measure first-character latency, make the achievement mark row-height in two colors with a popup on click, fill the card's right column with the contact's facts and drop the caption, log the PSK31 grid, and do the housekeeping
+HIT: section 4 wants a ruling: banked - Rulings are wanted on the quality measure and retire timing, on who repairs the stale Views test premise, on the unrunnable bat validator and on the two id schemes, but each is either already built and followed in full, a repair owned by another surface, or a record keeping matter, and step 6's only exit is Tim's own verdict at the radio, so the carried repair that lets him read a station, the latency ceiling, the mark and the card work all remain open without an answer.
+MOVE: continue
+WHY: the owner's telemetry from two nights on 7.070 shows a clean station retired six times for idling and 206 seconds with zero lines read, and his own eyes found the mark unreadable and unclickable and the card's column empty; step 6 is his and cannot start until he can read a station
+DECIDED: the keep-and-retire numbers, the latency ceiling, the mark's exact size and the orange hex are the unit's to state; the idle fixture is made from the reference convention
+LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4
+COST: 48.38649749999994
+ACCOMPLISHED: a station who pauses stays on Tim's list until he actually leaves, the achievement mark is something Tim can see and click for the reason, and the card says what Hamlet knows beside the map
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: The step's sole exit criterion is Tim's own verdict at the radio, and the unit performed only carried repair, stating plainly that step 6 is unchanged and his to close, so nothing has been done toward it.
