@@ -225,8 +225,12 @@ public sealed class ThePanelsMakeRoomTests
             var panes = window.FindControl<Control>("DigitalDecodedPanes")!;
             var cards = window.FindControl<ItemsControl>("DigitalContactCards")!;
 
-            var card = cards.GetVisualDescendants().OfType<Grid>()
-                .FirstOrDefault(g => g.Name == "CardBeside");
+            // **`CardBeside` IS A `WrapPanel` SINCE 331 TASK 2**, so it is looked up as a
+            // `Control` rather than as a `Grid`: the map and the table sit side by side
+            // when the card is wide enough and the table takes its own line when it is
+            // not, which is what stops a narrow card truncating it.
+            var card = cards.GetVisualDescendants().OfType<Control>()
+                .FirstOrDefault(c => c.Name == "CardBeside");
 
             _output.WriteLine("window " + Px(width) + " x 1200");
             _output.WriteLine("  panes      : " + Px(panes.Bounds.Width));

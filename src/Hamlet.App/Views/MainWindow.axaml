@@ -5227,49 +5227,54 @@
                                                                  gone, and everything it
                                                                  said is in the first line
                                                                  of the column. -->
-                                                            <!-- **THE TABLE IS UNDER THE MAP AND
-                                                                 NOT BESIDE IT, AND THAT IS A
-                                                                 MEASUREMENT** (work instruction 330
-                                                                 task 2 asks for beside; see
-                                                                 output.md section 4).
+                                                            <!-- **THE TABLE IS BESIDE THE MAP, IN
+                                                                 THE ROOM TASK 1a MADE** (work
+                                                                 instruction 331 task 2; unit 330
+                                                                 put it under the picture and asked,
+                                                                 and the owner ruled the panels
+                                                                 apart instead).
 
-                                                                 **THE ARITHMETIC, ON A 1400 px
-                                                                 WINDOW.** The *For you* panel is a
-                                                                 quarter of the tab, so the card is
-                                                                 **275 px wide inside**. The map's
+                                                                 **THE ARITHMETIC.** The map's
                                                                  natural width at 120 px tall is
-                                                                 **222**. The table's longest row is
-                                                                 `Distance` against `4,400 miles ·
-                                                                 northeast` and it wants about
-                                                                 **190**. 222 + 190 is 412 against
-                                                                 275, so *beside* leaves the facts
-                                                                 53 px - which is exactly the
-                                                                 jumbled, wrapped, cut-off column in
-                                                                 Tim's screenshot. **No arrangement
-                                                                 of two columns inside 275 px fixes
-                                                                 it**; shrinking the map far enough
-                                                                 to make room leaves a 73 px stamp.
+                                                                 **222** and the table's longest row
+                                                                 - `Distance` against `4,400 miles ·
+                                                                 northeast` - wants about **190**, so
+                                                                 the pair wants about 412 plus the
+                                                                 air between them. Task 1a gives the
+                                                                 card **487 px inside on a 1920 px
+                                                                 window**, where they sit side by
+                                                                 side with room to spare, and **227
+                                                                 on a 1400 px one**, where they do
+                                                                 not.
 
-                                                                 **SO THE TABLE TAKES THE CARD'S
-                                                                 FULL WIDTH, UNDER THE PICTURE.**
-                                                                 Every row is one height, nothing
-                                                                 wraps and nothing is trimmed, which
-                                                                 is what he asked for; the map is
-                                                                 untouched at the size it has drawn
-                                                                 at since unit 308. **What this
-                                                                 costs is the space to the right of
-                                                                 the map, which is his own phrase
-                                                                 and stays empty** - and that is the
-                                                                 thing for him to rule on rather
-                                                                 than for this markup to decide
-                                                                 twice. -->
-                                                            <Grid Grid.Row="5"
-                                                                  x:Name="CardBeside"
-                                                                  IsVisible="{Binding ShowsGlobe}"
-                                                                  Margin="0,8,0,0"
-                                                                  RowDefinitions="Auto,Auto">
-                                                            <StackPanel Grid.Row="0"
-                                                                        Spacing="4">
+                                                                 **SO IT IS A `WrapPanel` AND NOT A
+                                                                 TWO-COLUMN GRID, AND THAT IS §0.0
+                                                                 AND NOT A PREFERENCE.** A grid with
+                                                                 `Auto,*` would hand the table five
+                                                                 pixels on a narrow card and clip
+                                                                 `3,000 miles · sou` against the
+                                                                 card's edge, which is the jumble in
+                                                                 Tim's screenshot coming back by
+                                                                 another route. A wrap panel gives
+                                                                 each child the width it asks for and
+                                                                 puts the table on its own line when
+                                                                 the two will not fit on one - **the
+                                                                 table is never squeezed and never
+                                                                 truncated at any card width**, and
+                                                                 at the width he has it is beside the
+                                                                 picture.
+
+                                                                 **THE MAP IS UNTOUCHED** at the size
+                                                                 it has drawn at since unit 308, and
+                                                                 it never grows into room the table
+                                                                 gave back. -->
+                                                            <WrapPanel Grid.Row="5"
+                                                                       x:Name="CardBeside"
+                                                                       IsVisible="{Binding ShowsGlobe}"
+                                                                       Margin="0,8,0,0"
+                                                                       Orientation="Horizontal">
+                                                            <StackPanel Spacing="4"
+                                                                        Margin="0,0,10,0">
                                                                 <!-- **THE MAP OPENS** (R8,
                                                                      Tim 2026-09-11: *when I
                                                                      click on a map it gets
@@ -5467,11 +5472,29 @@
                                                                  carry the same `Has`, so the row
                                                                  measures zero and the table
                                                                  closes up. -->
-                                                            <Grid Grid.Row="1"
-                                                                  x:Name="CardRightColumn"
+                                                            <!-- **BESIDE THE MAP SINCE 331 TASK 2**,
+                                                                 so the margin is 10 px of air to the
+                                                                 LEFT of the table rather than 8 px
+                                                                 above it, and both columns are
+                                                                 `Auto` - inside a `WrapPanel` a star
+                                                                 column has no share to take, and
+                                                                 naming them both `Auto` says that
+                                                                 the table is as wide as its widest
+                                                                 row and no wider.
+
+                                                                 **AND THE AIR BETWEEN THE TWO IS ON
+                                                                 THE MAP'S SIDE AND NOT ON THE
+                                                                 TABLE'S**, which is worth ten pixels
+                                                                 on a narrow card: a left margin here
+                                                                 is part of what the table asks for,
+                                                                 so it would be charged for the gap
+                                                                 even on the line where the table is
+                                                                 alone and there is no gap to
+                                                                 leave. -->
+                                                            <Grid x:Name="CardRightColumn"
                                                                   IsVisible="{Binding HasRightColumn}"
-                                                                  Margin="0,8,0,0"
-                                                                  ColumnDefinitions="Auto,*"
+                                                                  VerticalAlignment="Top"
+                                                                  ColumnDefinitions="Auto,Auto"
                                                                   RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
                                                                 <TextBlock Grid.Row="0" Grid.Column="0"
                                                                            Classes="hm-cardfactlabel"
@@ -5621,7 +5644,7 @@
                                                                     </Border>
                                                                 </Popup>
                                                             </Grid>
-                                                            </Grid>
+                                                            </WrapPanel>
                                                         </Grid>
                                                     </Border>
                                                 </DataTemplate>

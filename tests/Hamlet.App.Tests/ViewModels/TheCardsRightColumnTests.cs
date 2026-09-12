@@ -407,30 +407,142 @@ public sealed class TheCardsRightColumnTests
     }
 
     /// <summary>
-    /// **Assertion 6: the map and the table share the card, and the table is not squeezed.**
+    /// **Assertion 6: the table sits beside the map where there is room for it, and is
+    /// never squeezed where there is not.**
     /// </summary>
     /// <remarks>
-    /// <para>**THE INSTRUCTION'S WIDTH RULE DOES NOT FIT AND THIS IS THE MEASUREMENT THAT
-    /// SAYS SO.** It asks for *the column takes what the map leaves and never pushes the
-    /// map narrower*. On a 1400 px window the *For you* panel is a quarter of the tab, so
-    /// the card is 275 px wide inside and the map's natural width is 222 - which leaves 53
-    /// px for a table whose longest value is `4,400 miles · northeast`. **The two halves of
-    /// task 2 cannot both hold at that width**, and *nothing truncated, nothing wrapped* is
-    /// the half Tim complained about.</para>
-    /// <para>**SO WHAT IS ASSERTED IS THE ONE THAT MATTERS**: the table gets the width it
-    /// asks for, and the map is never drawn wider than its own natural size. Reported in
-    /// output.md section 4 as a thing the owner may want ruled the other way.</para>
+    /// <para>**UNIT 330 MEASURED THAT IT DID NOT FIT AND THE OWNER RULED THE PANELS APART**
+    /// (work instruction 331 task 1a). On a 1400 px window the *For you* panel was a
+    /// quarter of the tab, the card was 275 px wide inside, the map wants 222 and the
+    /// table's longest value - `4,400 miles · northeast` - wants about 190, so *beside*
+    /// left the facts 53 px, which is the jumble in Tim's screenshot. Task 1a gives the
+    /// card 487 px inside on a 1920 px window.</para>
+    /// <para>**SO IT IS A `WrapPanel`, AND BOTH HALVES OF TASK 2 HOLD AT EVERY WIDTH.**
+    /// Where the card is wide enough for the picture and the facts on one line, they are
+    /// on one line; where it is not, the facts take a line of their own at the card's full
+    /// width. **Neither case ever squeezes the table**, and a squeezed table is the
+    /// truncation Tim photographed arriving by another route.</para>
+    /// <para>**THE WIDTH AT WHICH *BESIDE* APPEARS IS HIGHER HERE THAN ON THE GLASS, AND
+    /// THAT IS THE SHAPER AND NOT THE LAYOUT.** The headless host advances a flat 10.0 px
+    /// per character for the card's proportional face at `FontSize` 11 - `Grid` measures
+    /// 40.0 and `His time` 80.0 - where a real face at that size averages a little over
+    /// half of it. So the table's widest row measures 338 px here against the roughly 190
+    /// the instruction states for the glass, and this test needs about 2560 px of window
+    /// to see *beside* where the application needs about 1800. **Nobody in this repository
+    /// can look at a pixel** (§0.0), so what is asserted is what was measured and the
+    /// inference about the glass is labelled as one.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void TheMapAndTheTableShareTheCardAndTheTableIsNotSqueezed()
+    public void TheTableSitsBesideTheMapWhereThereIsRoomAndIsNeverSqueezed()
     {
+        var need = 0.0;
+
+        foreach (var width in new[] { 1400.0, 1920.0, 2560.0 })
+        {
+            var shown = Realized(nudged: true, width: width);
+
+            try
+            {
+                var drawn = Table(shown);
+                var holder = (Control)drawn.Parent!;
+
+                var picture = holder.GetVisualChildren().OfType<Control>()
+                    .First(c => !ReferenceEquals(c, drawn));
+
+                // **THE TABLE'S OWN NEED, MEASURED ONCE FROM THE TEXT AND NOT FROM A
+                // CONSTRAINED `DesiredSize`.** A grid measured inside 227 px reports that
+                // it desires 227, so comparing `Bounds` with `DesiredSize` is a test that
+                // passes whatever the layout does. The need is the widest label plus the
+                // widest value plus the eight pixels of air the label carries.
+                need = Math.Max(need, Needed(drawn));
+
+                _output.WriteLine(
+                    "window " + width.ToString("0", CultureInfo.InvariantCulture)
+                    + ": card inside "
+                    + holder.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+                    + "; map " + holder.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " -> x " + picture.Bounds.X.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " to " + picture.Bounds.Right.ToString("0.0", CultureInfo.InvariantCulture)
+                    + "; table x " + drawn.Bounds.X.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " to " + drawn.Bounds.Right.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " at y " + drawn.Bounds.Y.ToString("0.0", CultureInfo.InvariantCulture)
+                    + "; the table needs "
+                    + Needed(drawn).ToString("0.0", CultureInfo.InvariantCulture)
+                    + "; " + (drawn.Bounds.X >= picture.Bounds.Right - 0.51
+                        ? "BESIDE" : "on its own line"));
+
+                // **NEVER SQUEEZED, AT ANY WIDTH.** The table is given either everything
+                // it needs or, on a card too narrow for its own facts, everything the card
+                // has - and on that second line it is never competing with the picture.
+                Assert.True(
+                    drawn.Bounds.Width + 0.51 >= Math.Min(need, holder.Bounds.Width),
+                    "at " + width.ToString("0", CultureInfo.InvariantCulture)
+                    + " the table is "
+                    + drawn.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " px against a need of "
+                    + need.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " and a card of "
+                    + holder.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+                    + " px, so the map has squeezed it");
+
+                // **AND WHERE THE CARD HOLDS BOTH, THEY ARE SIDE BY SIDE.** Beside means
+                // starting after the picture ends AND sharing its vertical run; a table
+                // under the picture satisfies the first on its own.
+                if (holder.Bounds.Width >= picture.Bounds.Width + need)
+                {
+                    Assert.True(
+                        drawn.Bounds.X >= picture.Bounds.Right - 0.51,
+                        "the card is "
+                        + holder.Bounds.Width.ToString("0.0", CultureInfo.InvariantCulture)
+                        + " px wide, which holds the picture and the facts on one line, and"
+                        + " the table starts at x="
+                        + drawn.Bounds.X.ToString("0.0", CultureInfo.InvariantCulture)
+                        + " against a picture ending at x="
+                        + picture.Bounds.Right.ToString("0.0", CultureInfo.InvariantCulture));
+
+                    Assert.True(
+                        drawn.Bounds.Y < picture.Bounds.Bottom,
+                        "the table starts at y="
+                        + drawn.Bounds.Y.ToString("0.0", CultureInfo.InvariantCulture)
+                        + " and the picture ends at y="
+                        + picture.Bounds.Bottom.ToString("0.0", CultureInfo.InvariantCulture)
+                        + ", so it is under the picture rather than beside it");
+                }
+            }
+            finally
+            {
+                shown.Close();
+            }
+        }
+
+        // **THE WIDEST WINDOW HAS TO HAVE SHOWN *BESIDE***, or this test would pass on an
+        // application that had stopped putting them side by side at any width at all.
+        var widest = Realized(nudged: true, width: 2560);
+
+        try
+        {
+            var t = Table(widest);
+            var h = (Control)t.Parent!;
+            var p = h.GetVisualChildren().OfType<Control>()
+                .First(c => !ReferenceEquals(c, t));
+
+            Assert.True(
+                t.Bounds.X >= p.Bounds.Right - 0.51 && t.Bounds.Y < p.Bounds.Bottom,
+                "on a 2560 px window the facts are still not beside the picture: table at "
+                + t.Bounds.ToString() + ", picture at " + p.Bounds.ToString());
+        }
+        finally
+        {
+            widest.Close();
+        }
+
         var window = Realized(nudged: true);
 
         var table = Table(window);
-        var beside = (Grid)table.Parent!;
+        var beside = (Control)table.Parent!;
 
-        var map = beside.Children.OfType<Control>()
-            .First(c => Grid.GetRow(c) == 0);
+        var map = beside.GetVisualChildren().OfType<Control>()
+            .First(c => !ReferenceEquals(c, table));
 
         // **BY WALKING AND NOT BY NAME.** The map is inside the card's `DataTemplate`,
         // which is its own name scope, so the window's `FindControl` cannot see it.
@@ -527,6 +639,56 @@ public sealed class TheCardsRightColumnTests
             ?? throw new InvalidOperationException("no Hamlet.sln above the test binary");
     }
 
+    /// <summary>
+    /// **What the table needs, measured off its own text rather than off a constrained
+    /// `DesiredSize`.**
+    /// </summary>
+    /// <remarks>
+    /// The widest label, the widest value and the eight pixels of air between the two
+    /// columns. A grid offered 227 px reports that it desires 227, so `DesiredSize` cannot
+    /// answer *is this squeezed* - it is the answer to a different question.
+    /// </remarks>
+    /// <param name="table">The table on a realized card.</param>
+    private static double Needed(Grid table)
+    {
+        var labels = 0.0;
+        var values = 0.0;
+
+        foreach (var text in table.Children.OfType<Control>().Where(c => c.IsVisible))
+        {
+            var words = text switch
+            {
+                TextBlock t => (t.Text ?? "", t.FontFamily, t.FontSize),
+                Button b => ((b.Content as string) ?? "", b.FontFamily, b.FontSize),
+                _ => ("", null, 0.0),
+            };
+
+            if (words.Item1.Length == 0 || words.Item2 is null)
+            {
+                continue;
+            }
+
+            var wide = new Avalonia.Media.FormattedText(
+                words.Item1,
+                CultureInfo.InvariantCulture,
+                Avalonia.Media.FlowDirection.LeftToRight,
+                new Avalonia.Media.Typeface(words.Item2),
+                words.Item3,
+                null).Width;
+
+            if (Grid.GetColumn(text) == 0)
+            {
+                labels = Math.Max(labels, wide);
+            }
+            else
+            {
+                values = Math.Max(values, wide);
+            }
+        }
+
+        return labels + values + 8;
+    }
+
     /// <summary>The table, off a realized window.</summary>
     private static Grid Table(Window window)
     {
@@ -565,7 +727,7 @@ public sealed class TheCardsRightColumnTests
     /// realized has no heights to measure and a visual walk of an unrealized workspace
     /// finds nothing at all.
     /// </remarks>
-    private static Window Realized(bool nudged)
+    private static Window Realized(bool nudged, double width = 1400)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -597,7 +759,7 @@ public sealed class TheCardsRightColumnTests
         // enough that the table's star column is squeezed to nothing, and *is this
         // clipped* is a question about the width the card actually has. 1400 by 900 is
         // a laptop with the window maximized, which is where his screenshots come from.
-        var window = new MainWindow { DataContext = model, Width = 1400, Height = 1200 };
+        var window = new MainWindow { DataContext = model, Width = width, Height = 1200 };
 
         window.Show();
 
