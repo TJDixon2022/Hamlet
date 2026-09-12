@@ -3,6 +3,7 @@ PHASE_SET: 2026-09-12
 DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
 CURRENT_STEP: 0
 WORK_INSTRUCTION: 334 - the green zone finishes, and the leftovers go
+HEARTBEAT: 2026-09-12 16:09:36
 STEP: 0 | not started | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
 STEP: 1 | not started | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
 STEP: 2 | not started | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.

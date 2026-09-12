@@ -693,8 +693,14 @@
     PSK31 records writing psk31 events (R13), and the ADIF export read back by a logger if one
     is already on this machine.
   -->
+  <!--
+    1.13.18 -> 1.13.19, UNIT 334 TASK 0, UNDER HM-DEC-162. A PATCH, AND THE MAINTENANCE PHASE
+    OPENS: the band pills come off the green zone and the map takes their width (R21), the
+    stale cannot-work line is checked gone, and the files sessions could not delete are
+    listed once for the owner. Nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.18</Version>
+    <Version>1.13.19</Version>
   </PropertyGroup>
 
   <!--

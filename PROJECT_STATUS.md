@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 5 of 5
-WORK_INSTRUCTION: 333 - step 5 is proved on the screen Tim now has, the log and the records write themselves down, and a real logger reads the export
-BALL: tim
-NEXT_PASTE: output.md -> the arbiter
+STATE: EXECUTING
+TASK: 2 of 4
+WORK_INSTRUCTION: 334 - the green zone finishes, and the leftovers go
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T15:42:53-04:00
-NOTE: Complete - tasks 0 to 4, none dropped, each committed and pushed; step 5 must-pass all met on the click-in window and R13 events met, nice-to-pass unmet (no logger searchable). output.md validated: exit 0, all seven rules. Every UPDATED in this unit was read from the clock.
+UPDATED: 2026-09-12T16:14:03-04:00
+NOTE: Task 0 done - carry-forward 100 app and 85 engine green, 1.13.19, HM-DEC-162 recorded, card moved to the maintenance phase, committing before task 1
 
 ---
 

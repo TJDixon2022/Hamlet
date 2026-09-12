@@ -4,6 +4,31 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-162
+date: 2026-09-12
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-161, docs/phase-psk31-run/, work instruction 334 task 0
+---
+
+**The phase is "The screen says what is true and looks like someone meant it", set
+2026-09-12, a maintenance phase of four steps numbered 0 to 3.** Tim, 2026-09-12:
+*"do the cleanup stuff I've been talking about. We're calling this a maintenance
+phase."* **It supersedes HM-DEC-161's phase, "Hamlet works PSK31 the way it works
+FT8".**
+
+**The PSK31 phase is archived with its step 6 open**, in `docs/phase-psk31-run/`, to
+be closed by Tim at the radio when he closes it. That is not this phase's business,
+and no unit of this phase touches the radio, the transmit chain, a decoder or a
+parser.
+
+`PROJECT_CARD.md` changes only by ruling (13.3), and this is the ruling that
+changes it. `PHASE` and `PHASE_SET` move; nothing else on the card does.
+
+**Recorded by work instruction 334, the seed unit of the phase, under 12.1 as a
+ruling the owner gave, not one a session made.** The steps and the §R rulings are in
+`PHASE_PLAN.md`. **What was rejected is not recorded**, because he gave no
+alternative to rule against.
+
+---
 id: HM-DEC-161
 date: 2026-09-11
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-160, docs/phase-ft4-run/, work instruction 315 task 1
