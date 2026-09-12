@@ -444,6 +444,88 @@
                                             </StackPanel>
                                         </Border>
 
+                                        <!-- **THE NEXT CARD: WHAT IT WANTS, AND WHO ON THE CQ
+                                             LIST WOULD EARN IT** (work instruction 335 task 3).
+                                             The heading carries the time the list was read;
+                                             each caller carries the quill his row on the
+                                             decoded list wears - the ring where he would open
+                                             a continent - and the place is said in words, so
+                                             the mark is never alone (§0.6). -->
+                                        <TextBlock Classes="card-wants"
+                                                   Text="{Binding WantsLine}"
+                                                   IsVisible="{Binding HasWants}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <Border IsVisible="{Binding HasCallersPanel}"
+                                                MinHeight="120"
+                                                Background="{StaticResource HmBackgroundBrush}"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                Padding="12,10">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Classes="card-callers-heading"
+                                                           Text="{Binding CallersHeading}"
+                                                           IsVisible="{Binding HasCallersHeading}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                <ItemsControl ItemsSource="{Binding Callers}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:NextCaller">
+                                                            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,2,0,0">
+                                                                <ctl:AchievementMarkControl
+                                                                    Form="Door"
+                                                                    IsNew="True"
+                                                                    IsVisible="{Binding OpensContinent}"
+                                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                                    Margin="0,0,8,0"
+                                                                    VerticalAlignment="Center" />
+
+                                                                <ctl:AchievementMarkControl
+                                                                    Form="Counter"
+                                                                    IsNew="True"
+                                                                    IsVisible="{Binding IsCounter}"
+                                                                    Width="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                                    Height="{x:Static ctl:AchievementMarkControl.RowSide}"
+                                                                    Margin="0,0,8,0"
+                                                                    VerticalAlignment="Center" />
+
+                                                                <TextBlock Grid.Column="1"
+                                                                           Classes="card-caller-place"
+                                                                           Text="{Binding Place}"
+                                                                           VerticalAlignment="Center"
+                                                                           FontSize="14"
+                                                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                                                <TextBlock Grid.Column="2"
+                                                                           Classes="card-caller-call"
+                                                                           Text="{Binding CallLine}"
+                                                                           Margin="12,0,0,0"
+                                                                           VerticalAlignment="Center"
+                                                                           FontSize="12"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+
+                                                <TextBlock Classes="card-more-callers"
+                                                           Text="{Binding MoreCallersLine}"
+                                                           IsVisible="{Binding HasMoreCallers}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                <TextBlock Classes="card-nocaller"
+                                                           Text="{Binding NoCallerLine}"
+                                                           IsVisible="{Binding HasNoCaller}"
+                                                           FontSize="13"
+                                                           Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                            </StackPanel>
+                                        </Border>
+
                                         <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding Earned}">
                                             <TextBlock Classes="card-distance"
                                                        Text="{Binding DistanceLine}"

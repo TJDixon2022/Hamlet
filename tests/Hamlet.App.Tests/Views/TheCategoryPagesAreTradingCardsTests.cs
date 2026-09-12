@@ -246,6 +246,161 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         }
     }
 
+    /// <summary>
+    /// **Task 3: the next card names what it wants and who on the CQ list would earn it, with
+    /// distance - and says no one is calling from there when nobody listed would.**
+    /// </summary>
+    [AvaloniaFact]
+    public void TheNextCardKnowsWhoIsCalling()
+    {
+        var records = TheAchievementsPageTests.TwelveContacts();
+        var log = new AchievementLog(records, MyGrid);
+        var points = AchievementPoints.Parse(AchievementPoints.Shipped());
+        var read = new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc);
+        var calling = CqSnapshot.From(
+            new[]
+            {
+                Heard("CQ LA8ENA JO59"),
+                Heard("CQ OE8DDX JN76"),
+                Heard("CQ DX J38DX FK92"),
+                Heard("K2ABC W3YNI FN20"),
+                Heard("CQ W1AW FN31"),
+                Heard("CQ K1ABC FN42"),
+            },
+            read);
+
+        // **THE SHORT NAME**, which is the tree's own name for a place on a line with a callsign
+        // and a distance beside it (`EntitySpoken.Short`).
+        string Place(string call) => EntitySpoken.Short(DxccPrefixes.EntityOf(call));
+
+        string Mi(string grid)
+            => OperatorLocation.FromGrid(MyGrid) is { } a && OperatorLocation.FromGrid(grid) is { } b
+                ? GridPath.DescribeMiles(GridPath.MilesBetween(a, b)).Replace(" miles", " mi", StringComparison.Ordinal)
+                : "";
+
+        _output.WriteLine("read at " + calling.ReadAt + ": "
+            + string.Join(", ", calling.Calls.Select(c => c.Callsign + " " + c.Grid)));
+
+        // **FIVE CQS; THE REPLY TO W3YNI IS NOT ONE.**
+        Assert.Equal(5, calling.Calls.Count);
+        Assert.DoesNotContain(calling.Calls, c => c.Callsign == "W3YNI" || c.Callsign == "K2ABC");
+
+        var screen = new AchievementsViewModel(records, MyGrid, points) { Calling = calling };
+
+        void Print(AchievementCategoryCard card)
+            => _output.WriteLine(
+                "  next [" + card.Title + "] wants [" + card.WantsLine + "] " + card.CallersHeading + ": "
+                + string.Join(" / ", card.Callers.Select(c => c.Place + " " + c.CallLine))
+                + (card.NoCallerLine.Length > 0 ? " [" + card.NoCallerLine + "]" : ""));
+
+        // **COUNTRIES: THE UNWORKED COUNTRIES CALLING, WITH DISTANCE.** Norway and the United
+        // States are in the log, so LA8ENA, W1AW and K1ABC are not listed.
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+
+        var country = screen.Category!.Cards[^1];
+
+        Print(country);
+
+        var unworked = calling.Calls
+            .Where(c => DxccPrefixes.EntityOf(c.Callsign) is { } e
+                && !log.Entities.Contains(e, StringComparer.OrdinalIgnoreCase))
+            .Select(c => Place(c.Callsign))
+            .OrderBy(p => p, StringComparer.Ordinal)
+            .ToList();
+
+        Assert.False(country.Earned);
+        Assert.Equal("Any country you have not worked", country.WantsLine);
+        Assert.Equal("calling CQ at 21:41 UTC, unworked", country.CallersHeading);
+        Assert.Contains(Place("OE8DDX"), unworked);
+        Assert.Equal(unworked, country.Callers.Select(c => c.Place).OrderBy(p => p, StringComparer.Ordinal));
+        Assert.Contains(country.Callers, c => c.Place == Place("OE8DDX") && c.CallLine == "OE8DDX · " + Mi("JN76"));
+        Assert.DoesNotContain(country.Callers, c => c.CallLine.StartsWith("LA8ENA", StringComparison.Ordinal));
+        Assert.Equal("", country.NoCallerLine);
+
+        screen.BackCommand.Execute(null);
+
+        // **GRIDS: A NEW SQUARE FROM A COUNTRY ALREADY WORKED STILL COUNTS.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Grids);
+
+        var square = screen.Category!.Cards[^1];
+
+        Print(square);
+
+        Assert.Equal("Any grid you have not worked", square.WantsLine);
+        Assert.Contains(square.Callers, c => c.Place == "FN42" && c.CallLine == "K1ABC · " + Mi("FN42"));
+        Assert.DoesNotContain(square.Callers, c => c.Place == "FN31" || c.Place == "JO59");
+
+        screen.BackCommand.Execute(null);
+
+        // **INSIDE A CONTINENT: ONLY THE CALLERS ON IT.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+        screen.OpenCategoryCommand.Execute("continent-EU");
+
+        var europe = screen.Category!.Cards[^1];
+
+        Print(europe);
+
+        Assert.Equal(new[] { Place("OE8DDX") }, europe.Callers.Select(c => c.Place));
+
+        screen.BackCommand.Execute(null);
+        screen.BackCommand.Execute(null);
+
+        // **STATES: A CQ CARRIES NO STATE, AND THE CARD SAYS SO RATHER THAN THAT NO ONE IS
+        // CALLING** (the arbiter's proposal, marked for Tim).
+        screen.OpenCategoryCommand.Execute(AchievementKinds.States);
+
+        var state = screen.Category!.Cards[^1];
+
+        Print(state);
+
+        Assert.Empty(state.Callers);
+        Assert.Equal("Hamlet cannot tell a caller's state", state.NoCallerLine);
+
+        // **A LIST WITH NOBODY WHO WOULD EARN IT.**
+        var quiet = new AchievementsViewModel(records, MyGrid, points)
+        {
+            Calling = CqSnapshot.From(new[] { Heard("CQ LA8ENA JO59"), Heard("CQ W1AW FN31") }, read),
+        };
+
+        quiet.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+
+        var none = quiet.Category!.Cards[^1];
+
+        Print(none);
+
+        Assert.Empty(none.Callers);
+        Assert.Equal("no one is calling from there now", none.NoCallerLine);
+        Assert.Equal("calling CQ at 21:41 UTC, unworked", none.CallersHeading);
+
+        // **ON THE WINDOW: THE HEADING AND EACH CALLER ARE DRAWN ON THE NEXT CARD.**
+        var window = Realized(records, 1040, calling);
+        var shown = (AchievementsViewModel)window.DataContext!;
+
+        try
+        {
+            shown.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+            Settle(window);
+
+            var said = VisibleText(Named<ItemsControl>(window, "AchievementsCategoryCards")).ToList();
+
+            Assert.Contains("calling CQ at 21:41 UTC, unworked", said);
+
+            foreach (var caller in shown.Category!.Cards[^1].Callers)
+            {
+                Assert.Contains(caller.Place, said);
+                Assert.Contains(caller.CallLine, said);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    /// <summary>A decoded row, as the list holds one.</summary>
+    private static DigitalDecodeRow Heard(string message)
+        => new("214100", "-10", "0.2", "1200", message);
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>
@@ -281,12 +436,16 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             true);
 
     /// <summary>The window at a stated width, over the shipped points file.</summary>
-    private static Window Realized(IReadOnlyList<AdifLogRecord> records, double width)
+    private static Window Realized(
+        IReadOnlyList<AdifLogRecord> records, double width, CqSnapshot? calling = null)
     {
         var window = new AchievementsWindow
         {
             DataContext = new AchievementsViewModel(
-                records, MyGrid, AchievementPoints.Parse(AchievementPoints.Shipped())),
+                records, MyGrid, AchievementPoints.Parse(AchievementPoints.Shipped()))
+            {
+                Calling = calling ?? CqSnapshot.None,
+            },
             Width = width,
         };
 

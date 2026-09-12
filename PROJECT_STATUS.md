@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 6
+TASK: 4 of 6
 WORK_INSTRUCTION: 335 - every category page is trading cards
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T17:01:57-04:00
-NOTE: Task 2 - green, 33 of 34 with only the known six-rows red; earned cards on Countries, Grids and continents are the contact with its map; validating, then commit
+UPDATED: 2026-09-12T17:11:00-04:00
+NOTE: Task 3 - green, 34 of 35 with only the known six-rows red; next cards list CQ callers with distance and read time; validating the report, then commit
 
 ---
 

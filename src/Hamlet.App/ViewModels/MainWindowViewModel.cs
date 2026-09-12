@@ -6158,6 +6158,12 @@ public partial class MainWindowViewModel : ObservableObject
             points)
         {
             Telemetry = _telemetry,
+
+            // **THE CQ LIST, READ ONCE WITH ITS TIME** (work instruction 335 task 3). The next
+            // cards say who on it would earn them and when it was read; nothing about how a row
+            // was decoded is touched, and the dialog is modal, so the time is what keeps the
+            // list from claiming a freshness it lacks (HM-DEC-111).
+            Calling = CqSnapshot.From(DigitalDecodes, DateTime.UtcNow),
         };
 
         AppEvents.AchievementsOpened(_telemetry, screen.Page?.Badges.Count ?? 0);

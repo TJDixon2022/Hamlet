@@ -3,34 +3,35 @@ READ IN THIS ORDER.
 ```
 
 A. The phase goal - the screen says what is true and looks like someone meant it.
-   Step 0 done; step 1 in progress - this unit is at task 2; steps 2 and 3 not started.
+   Step 0 done; step 1 in progress - this unit is at task 3; steps 2 and 3 not started.
 B. Step 1 and its seven must-pass - band with count/score/level/bar; earned card
    from the log entry; next card with the CQ list; all eight kinds per R22;
    no clip at 1400 and 1920; no white card; telemetry with the card count.
-   Met so far: the band, on 8 of 8 kinds; the earned card from the log entry, on
-   Countries, Grids and a continent's countries; telemetry with the card count. The
-   other four are not built yet. The entry criterion is met -
+   Met so far: the band, on 8 of 8 kinds; the earned card from the log entry; the
+   next card with the CQ list, on Countries, Grids, States and a continent's
+   countries; telemetry with the card count. Not yet: the other five kinds, and the
+   two page-wide measurements. The entry criterion is met -
    TheAchievementsPageClicksInTests 6 of 6. The nice-to-pass is not started.
-C. The report last. Section 4 raises 0 items so far on top of the carried queue; none
+C. The report last. Section 4 raises 2 items so far on top of the carried queue; neither
    stands in the way of a criterion in B.
 
 ```
-UNIT:       335 - stopped at task 2 of 5 - 2026-09-12 17:00
+UNIT:       335 - stopped at task 3 of 5 - 2026-09-12 17:09
 PHASE GOAL: Maintenance - make what Hamlet shows true and deliberate-looking, screen only, judged
             finally by Tim at his own window size.
 UNIT GOAL:  Turn all eight achievements category pages from lists of titles into trading cards:
             each earned card the contact that earned it, with its path map, and each next card
             naming who on the CQ list would earn it.
-ADVANCED:   yes - step 1's band, earned-card and telemetry criteria are met, by tests run here
-NUMBER:     kinds drawn as trading cards 0 -> 2 of 8 (Countries, Grids; their next cards are task 3)
+ADVANCED:   yes - step 1's band, earned-card, next-card and telemetry criteria are met, by tests run here
+NUMBER:     kinds drawn as trading cards 0 -> 3 of 8 (Countries, Grids, States)
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Stopped at task 2 of 5 so far - this is the interim report, rewritten after every task.**
+**Stopped at task 3 of 5 so far - this is the interim report, rewritten after every task.**
 Claude Code on Tim's Windows 11 machine, project Hamlet, gate passed on all four checks, branch
-`main`. Pushed: task 0 as `5306c2e`, task 1 as `8f06bea`.
+`main`. Pushed: task 0 as `5306c2e`, task 1 as `8f06bea`, task 2 as `14bb53f`.
 
 **Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
 That host draws text at a flat ten pixels a character, wider than the glass.
@@ -246,6 +247,83 @@ Red: Norway's card `Expected "LA1ZZZ"`, `Actual ""`.
 4. **The old `2 contacts` figure line is hidden on a card that is a contact.** The picture does
    not carry it, and it still shows on the kinds not yet rebuilt.
 
+### Task 3 - the next card knows who is calling
+
+**Test first, watched red.** `TheCategoryPagesAreTradingCardsTests.TheNextCardKnowsWhoIsCalling`
+is new. It feeds the twelve-contact log a fixture CQ list of six rows: five CQs, and one reply
+that is not a CQ. It checks Countries, Grids, Europe, States, and a list where nobody would earn
+the card. Red: `Expected "Any country you have not worked"`, `Actual ""`. The snapshot had
+already read the five CQs and left out the reply.
+
+**The choice: the list carries the time it was read. It is not kept live.**
+- The decoded list has no recency rule of its own. An FT8 row stays until the 500-row cap, a
+  large retune or Clear, so *on the list* is all *current* means.
+- The window is modal.
+- A list that went on saying *right now* behind it would claim a freshness it lacks
+  (HM-DEC-111). **No recency number is invented.**
+
+**Change.**
+- **`CqSnapshot`** reads `DigitalDecodes` when the window opens:
+  - it takes every row not sent by this station, with a sender, whose addressee
+    `Ft8MessageSplit.IsCallToAnyone` accepts (the decoded list's own CQ test);
+  - the grid is the payload where `IsGrid` says it is one;
+  - each callsign appears once, preferring a call that carried a grid.
+- **The wire.** `OpenAchievements` passes `CqSnapshot.From(DigitalDecodes, DateTime.UtcNow)` as
+  the view model's `Calling`, and a category receives it on open and on back. Nothing about how
+  a row is decoded changed.
+- **What a next card now carries:**
+  - what it wants, in words;
+  - the heading `calling CQ at 21:41 UTC, unworked`;
+  - up to three callers as `place | CALL · N mi`, each with the quill his decoded-list row
+    wears - the ringed door where he would open a continent, else the still counter;
+  - `and N more on the CQ list` where there are more.
+- **Otherwise it says** `no one is calling from there now`. Where no list was handed in it says
+  `the CQ list was not read`.
+
+**Per kind:**
+- **Countries:** callers whose entity `DxccPrefixes` resolves and the log lacks, named by
+  `EntitySpoken.Short`.
+- **Grids:** callers whose CQ carried a four-character square the log lacks.
+- **Inside a continent:** the same, on that continent only. The wants line is `Any unworked
+  country in Europe`.
+- **States:** `Hamlet cannot tell a caller's state`, and no callers. That is the arbiter's
+  proposal; see section 4.
+
+**On the fixture, computed:**
+- Countries lists Austria (`OE8DDX` with its distance) and Grenada (`J38DX`). Norway and the
+  United States are in the log.
+- Grids lists JN76, FK92 and FN42, but not FN31 or JO59.
+- Europe lists Austria alone.
+- The list with only worked callers says `no one is calling from there now`.
+- In the realized window, the heading and every caller's place and line are drawn on the
+  Countries next card.
+
+**Green.** The first run was 33 of 35:
+- one fit red: `Hamlet cannot tell a caller's state from the air` needs 480 px in a 426 px
+  slot at 1040;
+- the known red `TheWindowDrawsEverySixRows`.
+
+Shortened to `Hamlet cannot tell a caller's state`, then **34 of 35**. The one red is the known
+one.
+
+#### Decisions this session made for itself, task 3
+
+1. **Read once with its time**, as above. Rejected: a live list. It would add a subscription to
+   a modal dialog and still could not say how fresh a row is, because the decoded list does not
+   know either.
+2. **Callers from a continent he has never opened are named.** R22, Tim's of 2026-09-12, asks
+   for who is calling from a place that would earn the card. It also asks the unearned
+   continents to name who is calling from them. That is later than the 2026-09-10 rule that the
+   CQ list must not name an area he has never opened. §6: the later ruling wins. The ringed door
+   is kept beside such a caller, so the card and his row agree on what he would open. Raised in
+   section 4.
+3. **No order is imposed on the callers**; they come in the list's order. Tim, 2026-09-11:
+   *"There are no rankings."* Rejected: nearest first.
+4. **Three callers, then a count of the rest**, so the card keeps its size and nobody is
+   hidden without a word.
+5. **Where no list was handed in, the card says it was not read**, not that no one is calling:
+   nobody looked.
+
 ### Where the instruction and the tree disagreed
 
 Reported, not repaired.
@@ -274,9 +352,18 @@ Reported, not repaired.
 
 ## 2. What the owner should expect
 
-**Every category now opens under a full-width color band with a bar.** Version 1.13.20. On
-Countries, Grids and inside each continent, **every earned card is the contact that earned
-it**, with its path map. The next cards and the other five kinds are not rebuilt yet.
+**Every category now opens under a full-width color band with a bar.** Version 1.13.20.
+
+On Countries, Grids and inside each continent:
+- **every earned card is the contact that earned it**, with its path map;
+- **the next card lists who on the CQ list would earn it**, as the list stood when you opened
+  the window.
+
+States' next card says Hamlet cannot tell a caller's state. The other five kinds are not rebuilt
+yet.
+
+- **The callers are as of the moment the window opened**, and the heading gives that time in
+  UTC. Close and reopen the window to read the list again.
 
 **What will look wrong but is not:**
 - **The earned card is your first contact there, not your most recent.** Norway on the
@@ -297,8 +384,9 @@ it**, with its path map. The next cards and the other five kinds are not rebuilt
 
 ## 3. What you should see
 
-**2 of 8 kinds read as trading cards so far, Countries and Grids; all 8 have the new band.**
-Their next cards are still plain.
+**3 of 8 kinds read as trading cards so far: Countries, Grids and States. All 8 have the new
+band.** States has no earned cards until step 2 scores `STATE`, so its page is the band and its
+next card.
 
 Open Countries:
 - **The band.** The top of the page is a red band with the flags and *Countries* on it. The
@@ -310,13 +398,47 @@ Open Countries:
   - `callsign · grid`;
   - a map cropped to your grid and his, with the path drawn;
   - the distance in large type, and `band · mode` and the date beside it.
-- **The last card** is still the plain `One more country`.
+- **The last card** has a grey edge, `One more country` and `next`, and `Any country you have
+  not worked`. Under that is a grey panel:
+  - `calling CQ at` the time you opened the window, `, unworked`;
+  - then up to three lines, each a small quill, the country, and the callsign with its
+    distance;
+  - or `no one is calling from there now`.
 
 ## 4. What's blocking us
 
 ### Raised by this unit
 
-None yet.
+**1. The States next card says `Hamlet cannot tell a caller's state`. That wording is the
+arbiter's proposal, marked for you, and shortened here to fit.**
+
+*Ruling wanted: keep it or reword it.*
+- A CQ carries no state, so the card cannot know who is calling from a state you have not
+  worked.
+- The proposal read *Hamlet cannot tell a caller's state from the air*. That needs 480 px, and
+  the slot at the window's 1040 is 426, so *from the air* came off.
+
+*Reasoning.* *No one is calling from there now* would assert something nobody measured (§0.0).
+Guessing a state from a prefix was rejected before: a `W3` can be anywhere.
+
+*What was rejected and why.*
+- A wider slot. That would change every next card's width for one sentence.
+- A second line. The fit rule says no string wraps.
+
+**2. The next cards name callers from continents you have never worked.**
+
+*Ruling wanted, only if the 2026-09-10 rule was meant to hold here.*
+- That rule says the CQ list must not be what tells you an area exists. So a decoded-list row
+  from a never-opened continent wears the ringed door and names nothing.
+- On a Countries or continent next card, the same caller is named by country, beside the same
+  ringed door.
+
+*Reasoning.* R22, 2026-09-12, asks the next card to list who is calling from a place that would
+earn it. It also asks each unearned continent to name *who is calling from it now*, which cannot
+be done without naming the place. §6 says the later ruling wins.
+
+*What was rejected and why.* Leaving door callers off the Countries card. That would hide the
+one caller who earns two cards at once, and Continents could not do what R22 asks of it.
 
 ### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
 

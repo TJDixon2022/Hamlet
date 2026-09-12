@@ -87,6 +87,37 @@ public sealed record AchievementCategoryCard(
     /// card that is not yet a contact.
     /// </summary>
     public bool ShowsFigure => HasFigure && Callsign.Length == 0;
+
+    /// <summary>What a next card wants, in words: `Any country you have not worked`, or "".</summary>
+    public string WantsLine { get; init; } = "";
+
+    /// <summary>The heading over the callers: `calling CQ at 21:41 UTC, unworked`, or "".</summary>
+    public string CallersHeading { get; init; } = "";
+
+    /// <summary>Who on the CQ list would earn this card, at most three.</summary>
+    public IReadOnlyList<NextCaller> Callers { get; init; } = Array.Empty<NextCaller>();
+
+    /// <summary>Where nobody listed would earn it, the words that say so; otherwise "".</summary>
+    public string NoCallerLine { get; init; } = "";
+
+    /// <summary>`and 2 more on the CQ list` where more would earn it than are listed, or "".</summary>
+    public string MoreCallersLine { get; init; } = "";
+
+    /// <summary>True where there is a wants line.</summary>
+    public bool HasWants => WantsLine.Length > 0;
+
+    /// <summary>True where the card draws the CQ panel: a heading, callers, or the words instead.</summary>
+    public bool HasCallersPanel
+        => !Earned && (CallersHeading.Length > 0 || Callers.Count > 0 || NoCallerLine.Length > 0);
+
+    /// <summary>True where there is a heading over the callers.</summary>
+    public bool HasCallersHeading => CallersHeading.Length > 0;
+
+    /// <summary>True where the card says nobody listed would earn it.</summary>
+    public bool HasNoCaller => NoCallerLine.Length > 0;
+
+    /// <summary>True where more would earn it than are listed.</summary>
+    public bool HasMoreCallers => MoreCallersLine.Length > 0;
 }
 
 /// <summary>
@@ -308,13 +339,17 @@ public sealed class AchievementCategory
     /// <param name="kind">A kind from the page, or `continent-XX`.</param>
     /// <param name="page">The page it opens from.</param>
     /// <returns>The category, or null where the kind is not one Hamlet draws.</returns>
-    public static AchievementCategory? For(string kind, AchievementBadgePage page)
+    /// <param name="calling">The CQ list as it was read, for the next cards, or null.</param>
+    public static AchievementCategory? For(
+        string kind, AchievementBadgePage page, CqSnapshot? calling = null)
     {
         ArgumentNullException.ThrowIfNull(page);
 
+        var heard = calling ?? CqSnapshot.None;
+
         if (kind.StartsWith(ContinentPrefix, StringComparison.Ordinal))
         {
-            return ForContinent(kind[ContinentPrefix.Length..], page);
+            return ForContinent(kind[ContinentPrefix.Length..], page, heard);
         }
 
         var badge = page.Badges.FirstOrDefault(b => b.Kind == kind);
@@ -350,9 +385,23 @@ public sealed class AchievementCategory
                 long.MaxValue,
                 points,
                 page.OperatorGrid,
-                placeUnderCall: false),
-            AchievementKinds.States => Counted(
-                kind, new List<(string, int)>(), long.MaxValue, points),
+                placeUnderCall: false,
+                heard,
+                c => UnworkedCountry(log, c, null)),
+
+            // **A CQ CARRIES NO STATE** (the arbiter's proposal, marked for Tim): the card says
+            // what it wants and that Hamlet cannot tell a caller's state from the air, and never
+            // that no one is calling from there, which nobody measured (§0.0). A state guessed
+            // from a prefix is rejected: a W3 can be anywhere.
+            AchievementKinds.States => new List<AchievementCategoryCard>
+            {
+                new(AchievementBadgePage.NextWords(kind, 0), AchievementCategoryCard.NextWord,
+                    Pts(points.Per(kind)), false)
+                {
+                    WantsLine = WantsFor(kind),
+                    NoCallerLine = NoStateFromTheAir,
+                },
+            },
             AchievementKinds.Grids => Earned(
                 kind,
                 log.Grids.OrderBy(g => g, StringComparer.Ordinal)
@@ -361,7 +410,9 @@ public sealed class AchievementCategory
                 long.MaxValue,
                 points,
                 page.OperatorGrid,
-                placeUnderCall: true),
+                placeUnderCall: true,
+                heard,
+                c => UnworkedGrid(log, c)),
             AchievementKinds.Bands => Counted(
                 kind,
                 log.Bands
@@ -487,13 +538,19 @@ public sealed class AchievementCategory
     /// <param name="points">The owner's file.</param>
     /// <param name="operatorGrid">The grid the miles were measured from.</param>
     /// <param name="placeUnderCall">True where the callsign line names the country, not the grid.</param>
+    /// <param name="calling">The CQ list as it was read.</param>
+    /// <param name="earns">What working a caller would earn here, or null.</param>
+    /// <param name="wants">What the next card wants, where it is not the kind's own words.</param>
     private static List<AchievementCategoryCard> Earned(
         string kind,
         IReadOnlyList<(string Shown, IReadOnlyList<AchievementContact> Contacts)> held,
         long howManyThereAre,
         AchievementPoints points,
         string operatorGrid,
-        bool placeUnderCall)
+        bool placeUnderCall,
+        CqSnapshot calling,
+        Func<CqCall, (string Place, bool OpensContinent)?> earns,
+        string? wants = null)
     {
         var per = points.Per(kind);
         var cards = held
@@ -502,15 +559,136 @@ public sealed class AchievementCategory
 
         if (held.Count < howManyThereAre)
         {
-            cards.Add(new AchievementCategoryCard(
+            cards.Add(NextCard(
                 AchievementBadgePage.NextWords(kind, held.Count),
-                AchievementCategoryCard.NextWord,
                 Pts(per),
-                false));
+                wants ?? WantsFor(kind),
+                calling,
+                CallersFrom(calling, operatorGrid, earns),
+                NoOneCalling));
         }
 
         return cards;
     }
+
+    /// <summary>What a next card says where nobody on the CQ list would earn it.</summary>
+    public const string NoOneCalling = "no one is calling from there now";
+
+    /// <summary>What the States next card says instead (the arbiter's proposal, marked for Tim).</summary>
+    /// <remarks>
+    /// **SHORTENED TO FIT** (§6): *Hamlet cannot tell a caller's state from the air* needed 480 px
+    /// in a 426 px slot at the window's 1040. The claim is the same without *from the air*.
+    /// </remarks>
+    public const string NoStateFromTheAir = "Hamlet cannot tell a caller's state";
+
+    /// <summary>What a next card says where no CQ list was handed to the window.</summary>
+    public const string ListNotRead = "the CQ list was not read";
+
+    /// <summary>How many callers a next card lists.</summary>
+    private const int ListedCallers = 3;
+
+    /// <summary>What a next card wants, in words, by kind.</summary>
+    private static string WantsFor(string kind) => kind switch
+    {
+        AchievementKinds.Countries => "Any country you have not worked",
+        AchievementKinds.Grids => "Any grid you have not worked",
+        AchievementKinds.States => "Any state you have not worked",
+        _ => "",
+    };
+
+    /// <summary>
+    /// **The next card: what it wants, and the one thing Hamlet knows that helps** (work
+    /// instruction 335 task 3, R22).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE HEADING CARRIES THE TIME THE LIST WAS READ** rather than *right now*, because
+    /// the window is modal and the list is not kept live (see <see cref="CqSnapshot"/>).</para>
+    /// <para>**WHERE NO LIST WAS HANDED IN IT SAYS SO**, and not that no one is calling: nobody
+    /// looked (§0.0).</para>
+    /// </remarks>
+    private static AchievementCategoryCard NextCard(
+        string title,
+        string pointsLine,
+        string wants,
+        CqSnapshot calling,
+        IReadOnlyList<NextCaller> callers,
+        string noCaller)
+        => new(title, AchievementCategoryCard.NextWord, pointsLine, false)
+        {
+            WantsLine = wants,
+            CallersHeading = calling.ReadUtc is null ? "" : "calling CQ at " + calling.ReadAt + ", unworked",
+            Callers = callers.Take(ListedCallers).ToList(),
+            MoreCallersLine = callers.Count > ListedCallers
+                ? "and " + (callers.Count - ListedCallers).ToString(CultureInfo.InvariantCulture)
+                    + " more on the CQ list"
+                : "",
+            NoCallerLine = callers.Count > 0 ? ""
+                : calling.ReadUtc is null ? ListNotRead
+                : noCaller,
+        };
+
+    /// <summary>Everyone on the CQ list who would earn this card, with how far away he is.</summary>
+    private static IReadOnlyList<NextCaller> CallersFrom(
+        CqSnapshot calling,
+        string operatorGrid,
+        Func<CqCall, (string Place, bool OpensContinent)?> earns)
+        => calling.Calls
+            .Select(c => (Call: c, Earns: earns(c)))
+            .Where(x => x.Earns is not null)
+            .Select(x => new NextCaller(
+                x.Earns!.Value.Place,
+                Joined(x.Call.Callsign, MilesTo(operatorGrid, x.Call.Grid)),
+                x.Earns.Value.OpensContinent))
+            .ToList();
+
+    /// <summary>
+    /// **A caller from a country not in the log**, on one continent where one is named - and
+    /// whether he would open that continent too.
+    /// </summary>
+    /// <remarks>
+    /// **SILENT WHERE THE ENTITY TABLE DECLINES**, as the quill is (`NudgeSet.WouldOpen`): a
+    /// prefix the table will not assign opens nothing as far as Hamlet knows.
+    /// </remarks>
+    private static (string Place, bool OpensContinent)? UnworkedCountry(
+        AchievementLog log, CqCall call, string? onContinent)
+    {
+        var entity = DxccPrefixes.EntityOf(call.Callsign);
+
+        if (entity is null || log.Entities.Contains(entity, StringComparer.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var continent = DxccContinents.Of(entity);
+
+        if (onContinent is not null && !Same(continent, onContinent))
+        {
+            return null;
+        }
+
+        return (EntitySpoken.Short(entity),
+            continent is not null && !log.Continents.Contains(continent, StringComparer.OrdinalIgnoreCase));
+    }
+
+    /// <summary>A caller whose CQ carried a four-character square not in the log.</summary>
+    private static (string Place, bool OpensContinent)? UnworkedGrid(AchievementLog log, CqCall call)
+    {
+        if (call.Grid.Length < 4)
+        {
+            return null;
+        }
+
+        var square = call.Grid[..4].ToUpperInvariant();
+
+        return log.Grids.Contains(square, StringComparer.OrdinalIgnoreCase) ? null : (square, false);
+    }
+
+    /// <summary>`4,500 mi` from the operator's grid to his, or "" where either is missing.</summary>
+    private static string MilesTo(string operatorGrid, string grid)
+        => OperatorLocation.FromGrid(operatorGrid) is { } here && OperatorLocation.FromGrid(grid) is { } there
+            ? GridPath.DescribeMiles(GridPath.MilesBetween(here, there))
+                .Replace(" miles", " mi", StringComparison.Ordinal)
+            : "";
 
     /// <summary>
     /// **The card for one place, built from the contact that earned it** (work instruction 335
@@ -664,7 +842,8 @@ public sealed class AchievementCategory
     }
 
     /// <summary>One continent, opened to its countries.</summary>
-    private static AchievementCategory? ForContinent(string code, AchievementBadgePage page)
+    private static AchievementCategory? ForContinent(
+        string code, AchievementBadgePage page, CqSnapshot calling)
     {
         if (!DxccContinents.Codes.ContainsKey(code))
         {
@@ -685,7 +864,9 @@ public sealed class AchievementCategory
         // its countries is each of them, the contact that earned it.
         var cards = Earned(
             AchievementKinds.Countries, held, DxccContinents.EntitiesOn(code),
-            page.Scores.Points, page.OperatorGrid, placeUnderCall: false);
+            page.Scores.Points, page.OperatorGrid, placeUnderCall: false,
+            calling, c => UnworkedCountry(log, c, code),
+            "Any unworked country in " + DxccContinents.NameOf(code));
 
         return new AchievementCategory(
             badge,

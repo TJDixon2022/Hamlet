@@ -201,6 +201,12 @@ public sealed partial class AchievementsViewModel : ObservableObject
     /// <summary>Where the three navigation events go, or null.</summary>
     public ITelemetry? Telemetry { get; init; }
 
+    /// <summary>
+    /// **The CQ list as it was when the window opened**, for the next cards (work instruction 335
+    /// task 3), or <see cref="CqSnapshot.None"/>.
+    /// </summary>
+    public CqSnapshot Calling { get; init; } = CqSnapshot.None;
+
     /// <summary>True while the eight badges are the window.</summary>
     public bool ShowsPage => HasPage && Category is null;
 
@@ -217,7 +223,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
             return;
         }
 
-        if (AchievementCategory.For(kind, Page) is not { } opened)
+        if (AchievementCategory.For(kind, Page, Calling) is not { } opened)
         {
             return;
         }
@@ -244,7 +250,7 @@ public sealed partial class AchievementsViewModel : ObservableObject
         AppEvents.AchievementCategoryClosed(Telemetry, here.Kind);
 
         Category = here.ParentKind is { } parent && Page is not null
-            ? AchievementCategory.For(parent, Page)
+            ? AchievementCategory.For(parent, Page, Calling)
             : null;
     }
 
