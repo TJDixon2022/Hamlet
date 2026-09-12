@@ -631,8 +631,18 @@
     unit 323's first run over. Every dropped name is kept in docs/carry-forward-dropped.txt with
     the unit that added it. No production code moves in this task.
   -->
+  <!--
+    1.13.11 -> 1.13.12, UNIT 326 TASK 1, UNDER HM-DEC-150 AND R7. A PATCH, AND THE MEASUREMENT
+    NOBODY TOOK. Two units reported step 4's press half unmet by carrying the previous report's
+    sentence forward, while the three tests that guard the press had just come off the list those
+    units run. Run here: the carry-forward list as its own comment says, two invocations and one
+    build each, app 96 of 96 and engine 73 of 73 with ThePsk31CqGoesOutTests, ThePsk31ExchangeTests
+    and ThePowerIsOfferedTests added to the app invocation - 169 of 169 green. All eight step 4
+    must-pass criteria and the nice-to-pass are met against tests that ran in this session. No
+    production code moves in this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.11</Version>
+    <Version>1.13.12</Version>
   </PropertyGroup>
 
   <!--

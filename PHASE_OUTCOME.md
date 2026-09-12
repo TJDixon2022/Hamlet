@@ -286,3 +286,29 @@ ACCOMPLISHED: The screen stops lying about what it holds. A folded panel says ho
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: STEP 4 GAINS ITS R11/R15 POWER CRITERION IN FULL AND IS NOT DONE. That must-pass is now met on every clause: the power offer is on the panel beside the drive at half, nothing is asked of the operator at the radio, the reference is learned from FT8 and FT4 sends with its mode and its age, a PSK31 send above it by the stated margin of 15 on 0-120 gets the sentence and the event, and with no reference the reading is reported and nothing is judged. What keeps step 4 partial is unchanged from unit 324 and is the press half: the CQ that sends once on a clear spot, the receipt and its retirement by a certain answer, the macros offered on certainty, and the no-slot cap refusal. Nothing on this machine has a radio, so the ALC path is proved to the poll and stops there, exactly as unit 324 left the read itself.
+
+### ALSO RECORDED FOR UNIT 325 - STEP 4
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: make the folded panels say what they hold, keep the filter visible, key cards by station so they survive the slot rebuild and wait on a called station from the operator's send, mark every qualifying station with a green counter quill or an orange spinning door quill, sweep the copy to American, and learn the ALC reference from FT8 sends
+HIT: section 4 wants a ruling: banked - Two items ask for a ruling, the ALC margin of 15 which is already built and stated under R15 as the unit's to state and Tim's to overrule, and whether PSK31's card should grow a gone quiet which no step 4 exit criterion requires, while the press half that keeps step 4 partial, the CQ on a clear spot, the receipt and its retirement by a certain answer, the macros offered on certainty, the loopback and the no slot cap refusal, can all be built at the bench under rulings already in the plan.
+WHY: six rulings from the owner's evening at the radio, all on the surface PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned rather than read
+DECIDED: the PSK31 equivalent of one slot for the waiting card, the ALC margin, and the orange from the existing palette are the unit's numbers to state; the per-slot card rebuild is fixed at the root rather than worked around a third time
+LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.6, 0.2; HM-DEC-111
+COST: 48.23846000000003
+ACCOMPLISHED: the screen stops lying about what it holds, a card Tim just called waits for the answer, every achievement worth chasing is marked and the two kinds look different, and the ALC judges itself from FT8 with nothing asked of him
+STATE_WHY: The report shows evidence for two must-pass criteria, the measured 55.7 Hz bandwidth and the R11/R15 power clause in full with quoted values, but it states plainly that the macro loopback, the CQ receipt and its retirement, the certainty-gated one-click offer, the turn indicator proof and the no-slot cap refusal are all unmet, so some exit criteria are met and not all.
+
+## UNIT 326 - STEP 4
+
+STEP: 4
+APPROACH: Checked the four gate facts, then spent task 1 measuring step 4 rather than building on it - the carry-forward list run as its own comment says, two invocations and one build each with status written first, plus the three press types unit 324 dropped and which docs/carry-forward-dropped.txt says a unit touching the press runs. Every step 4 exit criterion answered by a test that ran in this session, with its printed number, before anything moved. Then step 5 - RST in the log, the ADIF spelling asserted, and the records the first PSK31 contact reveals.
+HIT: Step 4 was not partial. All eight must-pass criteria and the nice-to-pass are met by tests that ran green in this session, including the press half that units 324 and 325 each recited as unmet without running the three tests that guard it. Task 2 is therefore empty by measurement, and that is its correct outcome rather than a shortfall.
+MOVE: continue
+WHY: Two consecutive units carried a sentence forward instead of running a test, and the three tests that would have contradicted it had just been taken off the list those units run. One task of measurement was cheaper than a ninth unit of building.
+DECIDED: A criterion is marked met only against a test that ran in this session and is named with its type and method. The three press types are run by this unit under the dropped list's own rule, without deciding whether they return to the carry-forward list permanently - that is left as a finding for the next arbiter.
+LICENCE: PHASE_PLAN.md step 4 exit criteria and step 5 entry and exit criteria, R2, R3, R7, R9, R10, R11, R12, R13, R14, R15, R19; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.2, 3.7, 4; CLAUDE.md 0.0, 0.2, 0.6; HM-DEC-018, HM-DEC-084, HM-DEC-139, HM-DEC-155; docs/carry-forward-dropped.txt.
+FATE: executed
