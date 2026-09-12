@@ -3,225 +3,159 @@ READ IN THIS ORDER.
 ```
 
 A. The phase goal - the screen says what is true and looks like someone meant it.
-   Step 0 done by this unit; steps 1, 2 and 3 not started.
-B. Step 0 and its five must-pass, each met, with the number:
-   1. no band pill on the green zone, and the map is wider - 202 -> 232 px at a 1400
-      window, 202 -> 492 px at 1920. Met.
-   2. band, frequency, mode and license lines on the left; heard count on the right;
-      rule of thumb under the map. Met, and the left lines wrap exactly as before.
-   3. "Hamlet cannot work CW, PSK31 and Voice yet" exists nowhere. Met - unit 332 had
-      already removed it; a VoiceTests check now holds it out.
-   4. BindingHealthTests and VoiceTests green; carry-forward green. Met - 100 of 100 app
-      and 85 of 85 engine after the change.
-   5. the report lists every emptied file once. Met - thirteen, in section 2.
-C. The report last. Section 4 raises 3 items of its own on top of the carried queue; none
+   Step 0 done; step 1 in progress - this unit is at task 0; steps 2 and 3 not started.
+B. Step 1 and its seven must-pass - band with count/score/level/bar; earned card
+   from the log entry; next card with the CQ list; all eight kinds per R22;
+   no clip at 1400 and 1920; no white card; telemetry with the card count.
+   None is met yet: task 0 traced the tree and built nothing. The entry criterion
+   is met - TheAchievementsPageClicksInTests 6 of 6. The nice-to-pass is not started.
+C. The report last. Section 4 raises 0 items so far on top of the carried queue; none
    stands in the way of a criterion in B.
 
 ```
-UNIT:       334 - complete at task 3 of 4, tasks 0 to 3 all done, none dropped - 2026-09-12 16:24
+UNIT:       335 - stopped at task 0 of 5 - 2026-09-12 16:44
 PHASE GOAL: Maintenance - make what Hamlet shows true and deliberate-looking, screen only, judged
             finally by Tim at his own window size.
-UNIT GOAL:  Open the phase, take the repeated band list off the green zone and give the map its
-            room, confirm the stale cannot-work sentence is gone, and hand Tim one list of the
-            files sessions emptied because they could not delete them.
-ADVANCED:   yes - all five of step 0's must-pass are met by tests run in this session
-NUMBER:     green zone map width 202 -> 232 px at a 1400 window (202 -> 492 px at 1920)
+UNIT GOAL:  Turn all eight achievements category pages from lists of titles into trading cards:
+            each earned card the contact that earned it, with its path map, and each next card
+            naming who on the CQ list would earn it.
+ADVANCED:   no - task 0 is a trace; no step 1 must-pass is met yet
+NUMBER:     kinds drawn as trading cards 0 -> 0 of 8
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete - all four tasks, 0 to 3, none dropped, each committed and pushed.** Claude Code on
-Tim's Windows 11 machine, project Hamlet, gate passed on all four checks, branch `main`.
+**Stopped at task 0 of 5 so far - this is the interim report, rewritten after every task.**
+Claude Code on Tim's Windows 11 machine, project Hamlet, gate passed on all four checks, branch
+`main`.
 
-**Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
-That host draws text at a flat ten pixels a character, wider than the glass.
+### Task 0 - the trace, before a line is built
 
-### Task 0 - the phase opens
+- Carry-forward list, before any edit, the two invocations its comment orders: app **100 of
+  100** in 9 s, engine **85 of 85** in 4 s.
+- **Entry criterion met.** `TheAchievementsPageClicksInTests` **6 of 6**.
+- `PHASE_OUTCOME.md`: `UNIT 335 - STEP 1` appended. Version 1.13.19 -> **1.13.20**.
 
-- Carry-forward list, run before any edit, the two invocations its comment orders: app **100 of
-  100** in 10 s, engine **85 of 85** in 4 s.
-- `PHASE_OUTCOME.md`: `UNIT 334 - STEP 0` appended; `STATE_AFTER: done` added at the end.
-- Version 1.13.18 -> **1.13.19**, with its comment in `Directory.Build.props`.
-- `PROJECT_CARD.md`: `PHASE` and `PHASE_SET` now name this phase and 2026-09-12.
-- `DECISIONS.md`: **HM-DEC-162**, Tim's ruling of 2026-09-12 in his words - the maintenance
-  phase set, the PSK31 phase archived with its step 6 open for him to close at the radio. Indexed
-  in `CLAUDE.md` section 1.
-- Commit `chore(unit334): 1.13.19, ...`.
+#### What each kind draws today - 0 of 8 are trading cards (confirmed)
 
-### Task 1 - the band pills come off the green zone
+Every card is `AchievementCategoryCard`: a title, one grey figure line, a points line, and
+whether it is earned. It sits in a white box, two columns wide.
 
-**Before, measured on the window at 1400:** panel 756 px inside; left block 253 px; map 202 x
-110; right block 262 px holding the best bet, **7 pills in 3 rows, each with its pip bar**, the
-*you are on it* line, and the count with its sparkline. At 1920: map 202 x 110, right 478 px.
+| Kind | What a card draws today |
+|---|---|
+| Countries | entity name, `2 contacts`, `5 pts`; next card `One more country` |
+| States | one card, `Your first state`, and no earned cards |
+| Grids | the square, `N contacts`, points |
+| Bands | `20 m`, `N contacts`, points |
+| Modes | `FT8`, `N contacts`, points |
+| Hall of Fame | the first in words and its points; no figure line |
+| Total Miles | tier cards reading `reached` or `next`, under the page's only bar |
+| Continents | seven badges in the page's badge template; each opens to Countries-style cards |
 
-**Test first.** `TheGreenZoneTests` was rewritten under R12:
-- Assertion 10 now asserts no `GreenZonePills`, no `hm-chip`, no pip bar and no *you are on it*
-  text on the panel. It also asserts the map grew by the stated number, the four left lines, the
-  count and the rule of thumb are drawn, the count sits right of the map, and the rule sits under
-  it.
-- Assertion 12 no longer looks for the on-it line.
-- It was **watched red**: `chips 7, pips 7, map 202.00 x 110.00`.
+#### Whether the contact that earned each card can be recovered from `AchievementLog`
 
-**Change.**
-- The pills block is gone from `MainWindow.axaml`; `GreenZonePill`, `GreenZone.Pills`,
-  `GreenZone.YouAreOnIt` and the `bands` parameter are gone from `GreenZone.cs`, and the view
-  model no longer passes `Bands`.
-- The regions grid went from `*,Auto,*` to `*,*,Auto`, and the map lost its fixed `Height="110"`.
-  So the right is only as wide as the best bet and the count, and the map draws at its own
-  proportions across the column it shares with the left.
+- **Countries, Grids, Bands, Modes: yes.** The earliest `StartedUtc` among the contacts with that
+  entity, four-character square, band or mode.
+- **Continents: yes.** The earliest contact with that continent code. *Countries since* is
+  `EntitiesOn(code)`.
+- **Hall of Fame: yes, for all six firsts Hamlet awards.**
+  - `first_contact`: the earliest contact.
+  - `first_psk31` and `first_cw_qso`: the earliest in that mode.
+  - The two distance firsts: the earliest contact at or over the line. `FirstsEarned` tests
+    only the furthest.
+  - `first_dx`: only under `FirstsEarned`'s own rule. That rule takes his own entity to be the
+    first entity **in file order**, not his callsign's, so the earning contact is the earliest
+    one with a different entity.
+- **Total Miles: yes, by adding `Miles` in date order** until the sum crosses the tier.
+- **States: no.** The log does not read `STATE`, so there is no contact to find (step 2's).
+- **A record with no date.** `AchievementLog.First` skips records with no `StartedUtc`. So a
+  place worked only by an undated record has no first by date and falls back to file order.
 
-**After:**
+#### Whether `Ft8GlobePlot` can be built for an `AchievementContact` as it stands
 
-| Window | Map before | Map after | Left block | Right block | Panel height |
-|---|---|---|---|---|---|
-| 1400 | 202 x 110 | **232 x 127** | 253 -> 232 px, lines 1/2/3 as before | 262 -> 260 px | 193 -> 177 px |
-| 1920 | 202 x 110 | **492 x 269** | 513 -> 492 px, lines 1/1/2 as before | 478 -> 260 px | 151 -> 310 px |
+**Four arguments are enough, with one catch.**
+- `AchievementContact.Miles` is measured from the grid in **Settings**, which is handed to
+  `AchievementLog`. It is not measured from the record's own `MyGrid`, although `MyGrid`'s doc
+  comment implies the record's grid is the one used.
+- So for the map and the printed distance to be one measurement, the map's operator end has to
+  be that same Settings grid. `AchievementLog` keeps it private, so it has to be carried to the
+  category.
 
-- Panel ink is **100%** of its width at both.
-- The sparkline stays; it fits.
-- The drop candidate was not used.
+#### The CQ source
 
-**Green:** `TheGreenZoneTests` 15 of 15, plus the green zone width test. Then `BindingHealthTests`,
-`VoiceTests`, `TheGreenZoneTests` and that width test together: **21 of 21**.
+- **The collection** is `MainWindowViewModel.DigitalDecodes`, an
+  `ObservableCollection<DigitalDecodeRow>`.
+- **What the list treats as current: whatever is on the table.**
+  - FT8 rows have no age limit. They leave at the 500-row cap (oldest arrival first), on a large
+    retune or band change, or on Clear.
+  - PSK31 rows leave when their carrier retires or listening stops.
+- **What a row carries.**
+  - `Sender`: the FT8 from-field, or the PSK31 parser's speaker.
+  - `Addressee`.
+  - **No grid property.** On an FT8 CQ the grid is the payload where
+    `Ft8MessageSplit.IsGrid(Payload)`. A PSK31 row has no fields, so it has no grid.
+  - **No entity property.** `DxccPrefixes.EntityOf(Sender)` resolves it, as `SenderHelp` and
+    `NudgeSet` do.
+- **How a row counts as a CQ.** `Ft8MessageSplit.IsCallToAnyone(Addressee)`: `CQ`, or `CQ`
+  followed by a word. That is the same test the decoded list's CQ toggle uses.
+- **Whether a caller would earn a country or open a continent.** `NudgeSet` already answers this
+  from the log, and it is what puts the quill on a row.
+- **How the window could be handed it.** `OpenAchievements` builds the view model at
+  `MainWindowViewModel.cs:6155` and shows it as a modal dialog. Passing the rows is the whole wire,
+  and **nothing passes them today**.
 
-### Task 2 - the stale line
+#### The width at 1400 and 1920
 
-- `git grep` finds *Hamlet cannot work CW, PSK31 and Voice yet* nowhere in `src`, `data` or
-  `assets`. Unit 332 removed it in `ece5788`.
-- `VoiceTests.TheStaleCannotWorkSentenceIsNowhereInTheSource` is added. It checks every `.cs` and
-  `.axaml` file under `src`, comments included, plus a sample proving the sweep sees the sentence.
-- **It could not be watched red on the tree**, because the sentence was already gone. It went
-  green on its first run, and `VoiceTests` is 5 of 5.
-
-### Task 3 - the leftovers, listed once
-
-- Searched the tracked, untracked and ignored files for sessions' *emptied* and *could not
-  delete* notes. Then checked every candidate for declarations.
-- **Thirteen files are emptied**, all comment-only with no code. **None was left unemptied**, so
-  nothing was changed.
-- The list is in section 2. No commit was needed beyond the closing one.
-
-### After the tasks
-
-Carry-forward re-run on the changed app, the two invocations: app **100 of 100** in 9 s, engine
-**85 of 85** in 4 s.
-
-### Decisions this session made for itself, reproduced in full
-
-1. **`*,*,Auto`, so the left block and the map split what the right leaves.**
-   - The left box narrows by 21 px at both widths, but its lines wrap exactly as before.
-   - Rejected: keeping the left box at exactly its old width, which no star grid expresses.
-   - Rejected: stacking the count under its sparkline to narrow the right further, which
-     rearranges the count beyond what the task asked.
-2. **The best-bet button stays on the right.** The task named the pills, their bars and the
-   on-it line, and nothing else.
-3. **The pill model is deleted, not left unbound.** `GreenZonePill`, `Pills`, `YouAreOnIt` and
-   the `bands` parameter had no reader once the markup stopped binding them.
-4. **The width assertion was tightened after measuring.** The red run asserted only *wider than
-   202*. After the change, the map measured 232 and the test now pins 202 + 30 within half a
-   pixel. The ARBITER block says the width is measured, not chosen; nothing was loosened.
-5. **`Unit332TwoWidthsTests` was rewritten under R12.** It looked up `GreenZonePills` by name and
-   would have failed on its absence. It now prints the chip count, which is 0.
-6. **Emptied files with several comment lines were not cut down to one.** The task empties only
-   files *not yet emptied*, and all thirteen already were.
-7. **Each task was pushed on its own.** The prompt says to push each task; section 11 of the
-   instruction says push at the end. The prompt wins.
+`AchievementsWindow` declares 1040 x 720 and opens centered on its owner. **Nothing sizes it from
+the main window**, so on the headless host it draws at 1040 x 720 whatever width the main window
+is. **No such path exists, wired or unwired.** A measurement at 1400 and 1920 has to set the
+dialog's own width.
 
 ### Where the instruction and the tree disagreed
 
 Reported, not repaired.
 
-- **`.py` at the root does not exist.** The instruction lists it as an undeletable file; no file
-  of that name is in the tree.
-- **The instruction's five named files are ten more than it knew of.** It names five, and a
-  sixth, `.py`, that does not exist. The tree holds thirteen emptied files:
-  - unit 333's probe;
-  - unit 323's retired `ThePsk31TabIsInertTests.cs`;
-  - six comment-only probes under `tests/Ft8Sharp.Tests` from units 203 and 214 to 289.
-- **`Unit333ProbeTests.cs` is tracked**, where unit 333 called it untracked. It was committed in
-  `3ea149e`.
-- **The green zone as unit 332 left it matched section 5 exactly**: left block, map with its
-  night side and the operator's dot, right block with pills, the on-it line, sparkline and count,
-  and the rule of thumb under the map.
-- **`PHASE_STATUS.md` line 1 names this phase with four steps**, and `docs/phase-psk31-run/`
-  holds its three files. Both match.
-- **`tools/status.sh` cannot run here.** `sh tools/status.sh`, `bash tools/status.sh` and
-  `./tools/status.sh` all came back *requires approval*. Every status write in this unit was a
-  `date` reading pasted into the file whole, and none was composed.
-- **Task numbering in `PROJECT_STATUS.md` counts from one.** Tasks 0 to 3 are written as
-  `TASK: 1 of 4` to `4 of 4`.
+- **R20 is nowhere.** `docs/phase-psk31-run/PHASE_PLAN.md` holds §R1 to §R19 and no R20. The
+  only mentions are the citation in `PHASE_PLAN.md` §2 and its copy in
+  `docs/phase-maintenance/PHASE_PLAN.md`.
+- **`MyGrid` is carried and `Miles` does not use it**, as above.
+- **`AchievementContact.Grid` is documented as four characters**, but `AchievementLog.Read` keeps
+  the whole `GRIDSQUARE`, upper-cased. A six-character square stays six.
+- **`BindingHealthTests` covers only the main window.** The achievements window's binding check
+  is in `TheAchievementsPageClicksInTests`.
+- **`AchievementsWindow.axaml`'s header comment says 1000 wide**; the window is 1040.
+- **Everything else matched:**
+  - `AchievementContact`'s seven fields;
+  - `Ft8GlobePlot`, `Ft8ContactCard.Globe`, `Ft8GlobeControl`, and the popup opening it with
+    `Opened` and `OpenFrameFor`;
+  - `AchievementCategory.For` building every kind;
+  - 1040 x 720, and line 6155;
+  - `DigitalDecodes` and its type;
+  - only Total Miles has a bar;
+  - the event carries `kind` only.
 
 ## 2. What the owner should expect
 
-**The green zone no longer repeats the band row.** Below the band strip, the panel shows three
-things:
-- on the left, the band large, the frequency, the mode and the license lines, unchanged;
-- in the middle, a larger world map with its night side and your dot;
-- on the right, *best bet now* and *heard just now*, with the sparkline and the count.
-
-**What will look wrong but is not:**
-- **At a 1400 window the map is only a little bigger**: 232 x 127 against 202 x 110, computed.
-  The pills had wrapped to three rows inside a right column whose width was already set by the
-  count and its sparkline. So the room they gave back was mostly height, and the map grew into
-  it. Section 4 item 2 has the choice that would give it more.
-- **At 1920 the panel is about twice as tall**: 310 px against 151, computed. The map widens to
-  492 px and keeps its proportions, so it is 269 px tall. Section 4 item 1 asks whether you want
-  it capped.
-- **The left block's box is 21 px narrower** at both widths, computed. Its lines break in the
-  same places as before.
-- **The achievements window still has *cannot work them* hovers for FT4 and PSK31.** They are
-  in `AchievementsViewModel.cs` lines 501 to 517. Task 2 checked only the one named sentence, and
-  these are carried item 1 from unit 332, below.
-
-**Version 1.13.19.** The card and the decisions file name the maintenance phase. Nothing on the
-radio side changed.
-
-### The one list of files for Tim to delete by hand
-
-Every one is a file a session emptied because this environment refuses deletes. Each holds only
-comments and compiles to nothing. **All thirteen are tracked by git**, so delete them and commit
-the deletion.
-
-1. `C:\Source\HamLet\commit-msg-326.txt`
-2. `C:\Source\HamLet\toolsarbitervalidate-output.bat`
-3. `C:\Source\HamLet\tools\arbiter\unit323-append.bat`
-4. `C:\Source\HamLet\tools\arbiter\unit323-append.py`
-5. `C:\Source\HamLet\tools\cut-header-action.py`
-6. `C:\Source\HamLet\tests\Hamlet.App.Tests\Views\Unit333ProbeTests.cs`
-7. `C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ThePsk31TabIsInertTests.cs`
-8. `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Unit216Probe.cs`
-9. `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Unit217Probe.cs`
-10. `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\UpstreamSyncSearchProbe.cs`
-11. `C:\Source\HamLet\tests\Ft8Sharp.Tests\Ldpc\UpstreamLdpcProbe.cs`
-12. `C:\Source\HamLet\tests\Ft8Sharp.Tests\TempEncoderProbe.cs`
-13. `C:\Source\HamLet\tests\Ft8Sharp.Tests\Unit289SourceProbe.cs`
-
-**Not on the list, because nobody emptied them.** Both are gitignored scratch, also safe to
-remove:
-- `C:\Source\HamLet\.commit-msg.tmp`, unit 261's commit message;
-- `C:\Source\HamLet\artifacts\unit333\psk31-fixture-export.adi`, unit 333's export copy.
+**Nothing on screen has changed yet.** Version 1.13.20. The trace above is what the next tasks
+build on.
 
 ## 3. What you should see
 
-**The map on the green zone is bigger, and the band pills are gone from the panel.** At a 1400
-window the map goes from 202 to 232 px wide. At 1920 it goes from 202 to 492 px wide. Both
-figures are computed on the test host, not seen.
-
-- Open Hamlet on the Digital tab with the neighborhood map open. The panel under the map legend
-  has no row of band buttons and no *you are on it* line. The band strip above is where the bands
-  are.
-- The world map in the middle of that panel is wider and taller than yesterday, with the night
-  side and your dot as before. The rule of thumb is still one line of small text under it.
-- On the right: *best bet now*, then *heard just now* with its little line and the station count.
-- On the left: the band in large type, the frequency, the mode line and the license line, reading
-  exactly as before.
-- Widen the window and the map grows with it. At full width on a 1920 screen the panel is
-  noticeably taller than before.
+**No visible change yet. 0 of 8 kinds read as trading cards.** Opening Countries still shows a
+white list of country names with their contact counts and points.
 
 ## 4. What's blocking us
 
 ### Raised by this unit
+
+None yet.
+
+### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
+
+Headings under it are moved down one level so they sit inside this one; the words are unchanged.
+
+#### Raised by this unit
 
 **1. At 1920 the green zone is 310 px tall, because the map keeps its shape as it takes the
 pills' width.**
@@ -259,11 +193,11 @@ back *requires approval*. Every `UPDATED` in this unit is a `date` reading paste
 was composed. The validator was run by the `.proj` route; its verdict is in the session
 transcript, not quoted here.
 
-### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
+#### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-#### Raised by this unit
+##### Raised by this unit
 
 **1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and §3.1 say opposite
 things about one slot.**
@@ -313,7 +247,7 @@ Both are safe to delete by hand, beside the five carried in item 19 below. The v
 run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
 243 documented as mangled by Git Bash.
 
-#### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
+##### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
 **1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
 
@@ -388,7 +322,7 @@ this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pas
 unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
 launcher's and were not written.
 
-#### Carried from unit 331's queue, as unit 332 carried it - verbatim
+##### Carried from unit 331's queue, as unit 332 carried it - verbatim
 
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
@@ -567,7 +501,7 @@ session's own `tools\cut-header-action.py`.
 
 **All other items stand as unit 328 carried them.**
 
-#### Where the carried items stand after this unit
+##### Where the carried items stand after this unit
 
 - **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
   Every hover on every visible control was read in task 1 and none names PSK31, so it stays
@@ -579,7 +513,7 @@ session's own `tools\cut-header-action.py`.
   `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
   the two id schemes, the five files or step 6.
 
-### Where the carried items stand after unit 334
+#### Where the carried items stand after unit 334
 
 - **Unit 333 item 3 and unit 331-queue item 19, the undeletable files:** now **thirteen**, and
   listed once in section 2. `Unit333ProbeTests.cs` is tracked, not untracked. None was left

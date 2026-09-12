@@ -699,8 +699,14 @@
     stale cannot-work line is checked gone, and the files sessions could not delete are
     listed once for the owner. Nothing on the radio side moves.
   -->
+  <!--
+    1.13.19 -> 1.13.20, UNIT 335 TASK 0, UNDER HM-DEC-162. A PATCH, AND STEP 1 OF THE
+    MAINTENANCE PHASE OPENS: every achievements category page becomes trading cards (R22) -
+    the contact that earned each card with its path map, and a next card that knows who is
+    calling. Screen only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.19</Version>
+    <Version>1.13.20</Version>
   </PropertyGroup>
 
   <!--
