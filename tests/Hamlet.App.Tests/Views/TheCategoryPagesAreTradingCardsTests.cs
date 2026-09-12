@@ -666,6 +666,162 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     }
 
     /// <summary>
+    /// **Work instruction 336 task 1: States counts what the log's `STATE` field says** (R23), and
+    /// only on a United States, Alaska or Hawaii record carrying one of the fifty codes.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FIXTURE IS ADI TEXT, SO THE READER IS WHAT IS TESTED.** Five records: a US
+    /// contact with `STATE=PA`, a US contact with no `STATE`, an Alaska contact with `STATE=AK`, a
+    /// Canadian contact with `STATE=ON` and a US contact with `STATE=DC`. Two score.</para>
+    /// <para>**THE NEXT CARD IS UNCHANGED** - its words and its sentence are unit 335's, marked for
+    /// Tim - and the page is measured at 1400 and 1920 now that States draws earned cards.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void StatesCountWhatTheLogsStateFieldSays()
+    {
+        var records = StateContacts();
+        var points = AchievementPoints.Parse(AchievementPoints.Shipped());
+        var log = new AchievementLog(records, MyGrid);
+        var score = new AchievementScores(log, points).For(AchievementKinds.States);
+        var screen = new AchievementsViewModel(records, MyGrid, points);
+        var badge = screen.Page!.Badges.Single(b => b.Kind == AchievementKinds.States);
+
+        foreach (var contact in log.Contacts)
+        {
+            _output.WriteLine(
+                contact.Callsign.PadRight(8) + (contact.Entity ?? "no entity").PadRight(26)
+                + "STATE " + (contact.State ?? "none").PadRight(5)
+                + (AchievementLog.StateOf(contact) is { } scored ? "scores " + scored : "scores nothing"));
+        }
+
+        _output.WriteLine(
+            "worked " + score.Worked + ", points " + score.Points + ", badge [" + badge.Standing + "]");
+
+        // **THE FIXTURE MEANS WHAT IT SAYS**: the entities are the cited table's, not assumed.
+        Assert.Equal("United States of America", log.Contacts.Single(c => c.Callsign == "K3PA").Entity);
+        Assert.Equal("Alaska", log.Contacts.Single(c => c.Callsign == "KL7XYZ").Entity);
+        Assert.Equal("Canada", log.Contacts.Single(c => c.Callsign == "VE3PQR").Entity);
+
+        // **TWO: PA ON A US RECORD AND AK ON AN ALASKA ONE.** No STATE, ON and DC score nothing.
+        Assert.Equal(2, AchievementScores.WorkedIn(AchievementKinds.States, log));
+        Assert.Equal(2, score.Worked);
+
+        // **THE SCORE IS THE SHIPPED FILE'S**: `per` for PA and AK's `special`, which replaces it.
+        var fromTheFile = points.Per(AchievementKinds.States)!.Value
+            + points.Special(AchievementKinds.States, "AK")!.Value;
+
+        _output.WriteLine("from the file: per " + points.Per(AchievementKinds.States)
+            + " + AK " + points.Special(AchievementKinds.States, "AK") + " = " + fromTheFile);
+
+        Assert.Equal(12, fromTheFile);
+        Assert.Equal(fromTheFile, score.Points);
+
+        // **THE BADGE COUNT MATCHES THE LOG.**
+        Assert.Equal(2, badge.Score.Worked);
+        Assert.StartsWith("2 ", badge.Standing, StringComparison.Ordinal);
+
+        // **THE PAGE DRAWS TWO EARNED CARDS, EACH THE CONTACT THAT EARNED IT.**
+        screen.OpenCategoryCommand.Execute(AchievementKinds.States);
+
+        var earned = screen.Category!.Cards.Where(c => c.Earned).ToList();
+
+        foreach (var card in screen.Category.Cards)
+        {
+            _output.WriteLine(
+                card.Title.PadRight(18) + card.CallGridLine.PadRight(18) + card.PointsLine.PadRight(8)
+                + (card.Earned ? (card.HasMap ? "map" : card.NoMapWord) : card.WantsLine + " / " + card.NoCallerLine));
+        }
+
+        Assert.Equal(new[] { "AK", "PA" }, earned.Select(c => c.Title));
+        Assert.Equal("KL7XYZ", earned[0].Callsign);
+        Assert.Equal("10 pts", earned[0].PointsLine);
+        Assert.Equal("K3PA", earned[1].Callsign);
+        Assert.Equal("2 pts", earned[1].PointsLine);
+        Assert.All(earned, c => Assert.True(c.HasMap, c.Title + " has no map"));
+
+        // **AND THE NEXT CARD AND ITS SENTENCE ARE AS UNIT 335 LEFT THEM.**
+        var next = screen.Category.Cards.Single(c => !c.Earned);
+
+        Assert.Equal("Any state you have not worked", next.WantsLine);
+        Assert.Equal(AchievementCategory.NoStateFromTheAir, next.NoCallerLine);
+
+        // **MEASURED AT 1400 AND 1920 NOW THAT STATES HAS CARDS**: nothing clips or wraps, and no
+        // card is white.
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var window = Realized(records, width);
+            var shown = (AchievementsViewModel)window.DataContext!;
+
+            try
+            {
+                shown.OpenCategoryCommand.Execute(AchievementKinds.States);
+                Settle(window);
+
+                var state = F(width) + " states";
+                var runs = Fits(window, state);
+                var cards = window.GetVisualDescendants().OfType<Border>()
+                    .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+                    .ToList();
+                var white = cards.Count(card =>
+                {
+                    var inside = card.GetVisualDescendants().Where(v => v is Control { IsEffectivelyVisible: true }).ToList();
+
+                    return !(inside.OfType<Ft8GlobeControl>().Any(m => m.Plot is not null && m.Bounds.Width > 0)
+                        || inside.OfType<BadgeProgressControl>().Any(b => b.Bounds.Width > 0)
+                        || inside.OfType<Border>().Any(b => b.Classes.Contains("card-list") && VisibleText(b).Any()));
+                });
+
+                _output.WriteLine(state + ": " + runs + " runs fit, " + cards.Count + " cards, " + white + " white");
+
+                Assert.Equal(3, cards.Count);
+                Assert.Equal(0, white);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>
+    /// **Five records as ADI text, with `STATE` where the record carries one** - PA on a US call,
+    /// none on a US call, AK on an Alaska call, ON on a Canadian call, DC on a US call.
+    /// </summary>
+    internal static IReadOnlyList<AdifLogRecord> StateContacts()
+    {
+        static string One(string call, string grid, string? state, int day)
+        {
+            var started = new DateTime(2026, 8, day, 1, 15, 0, DateTimeKind.Utc);
+            var record = AdifLog.Record(new AdifContact
+            {
+                Call = call,
+                StationCallsign = "KC3QIS",
+                Mode = "FT8",
+                Band = "20m",
+                GridSquare = grid,
+                MyGridSquare = MyGrid,
+                StartedUtc = started,
+                EndedUtc = started.AddMinutes(2),
+            });
+
+            return state is null
+                ? record
+                : record.Replace(
+                    "<EOR>",
+                    "<STATE:" + state.Length.ToString(CultureInfo.InvariantCulture) + ">" + state + "\n<EOR>",
+                    StringComparison.Ordinal);
+        }
+
+        return AdifLog.ReadRecords(
+            AdifLog.Header("test")
+            + One("K3PA", "FN10", "PA", 3)
+            + One("W1AW", "FN31", null, 4)
+            + One("KL7XYZ", "BP51", "AK", 5)
+            + One("VE3PQR", "FN03", "ON", 6)
+            + One("N3DC", "FM18", "DC", 7));
+    }
+
+    /// <summary>
     /// **Every visible run fits its own slot and every box above it, and none may wrap** - the
     /// same measurement `TheAchievementsPageClicksInTests` makes at the window's own size.
     /// </summary>

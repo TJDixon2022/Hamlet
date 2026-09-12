@@ -308,7 +308,7 @@ public sealed class AchievementBadgePage
                 NextIsDoor: false, Worked(score.Worked), score),
 
             AchievementKinds.States => new AchievementBadge(
-                kind, "States", "the 50, plus DC", "star", "#2C4C9B",
+                kind, "States", "the 50 states", "star", "#2C4C9B",
                 score.Worked == 0 ? FirstState : MoreStates,
                 NextIsDoor: false, Worked(score.Worked), score),
 

@@ -392,7 +392,8 @@ public sealed class TheAchievementsPageClicksInTests
             Telemetry = sink,
         };
 
-        AppEvents.AchievementsOpened(sink, screen.Page!.Badges.Count);
+        AppEvents.AchievementsOpened(
+            sink, screen.Page!.Badges.Count, screen.Page.Scores.For(AchievementKinds.States).Worked);
         screen.OpenCategoryCommand.Execute(AchievementKinds.Countries);
         screen.BackCommand.Execute(null);
 
@@ -417,6 +418,36 @@ public sealed class TheAchievementsPageClicksInTests
         foreach (var personal in new[] { "LA8ENA", "Norway", "JO59", "KC3QIS" })
         {
             Assert.DoesNotContain(personal, everything, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    /// <summary>
+    /// **Opening the window writes how many states the log scored, and no state or callsign**
+    /// (work instruction 336 task 1, R13).
+    /// </summary>
+    [AvaloniaFact]
+    public void OpeningTheWindowWritesHowManyStatesScoredAndNoCode()
+    {
+        var sink = new Recording();
+        var screen = Screen(TheCategoryPagesAreTradingCardsTests.StateContacts());
+
+        AppEvents.AchievementsOpened(
+            sink, screen.Page!.Badges.Count, screen.Page.Scores.For(AchievementKinds.States).Worked);
+
+        foreach (var line in sink.Written)
+        {
+            _output.WriteLine(line);
+        }
+
+        Assert.Equal("achievements_opened", sink.Events.Single().Name);
+        Assert.Equal(new[] { "kinds", "states" }, sink.Events[0].Data.Keys);
+        Assert.Equal(2L, sink.Events[0].Data["states"]);
+
+        var everything = string.Join(" ", sink.Written);
+
+        foreach (var personal in new[] { "PA", "AK", "K3PA", "KL7XYZ", "Alaska" })
+        {
+            Assert.DoesNotContain(personal, everything, StringComparison.Ordinal);
         }
     }
 

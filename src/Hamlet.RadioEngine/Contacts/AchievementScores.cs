@@ -158,7 +158,7 @@ public sealed class AchievementScores
             AchievementKinds.Grids => log.Grids.Count,
             AchievementKinds.Bands => log.Bands.Count,
             AchievementKinds.Modes => log.Modes.Count,
-            AchievementKinds.States => 0,
+            AchievementKinds.States => log.States.Count,
             AchievementKinds.TotalMiles => (long)Math.Round(MilesIn(log)),
             AchievementKinds.HallOfFame => FirstsIn(log),
             _ => 0,
@@ -263,12 +263,14 @@ public sealed class AchievementScores
             AchievementKinds.Modes => Named(
                 AchievementKinds.Modes, log.Modes, points, WorkableModes),
 
-            // **STATES ARE NOT IN THE LOG YET AND THE SCORE SAYS NOUGHT RATHER THAN
-            // GUESSING.** An ADIF record carries `STATE`, `AchievementContact` does not
-            // read it, and a state worked out from a callsign prefix would be a claim
-            // about where somebody lives (§0.0). The badge draws, its next card is the
-            // first state, and its score is nought until the log can answer.
-            AchievementKinds.States => 0,
+            // **STATES ARE SCORED FROM THE RECORD'S OWN `STATE`** (work instruction 336
+            // task 1, R23), on a United States, Alaska or Hawaii record and only as one of
+            // the fifty (`AchievementLog.StateOf`). A special replaces the per, as a band's
+            // does, and the *all* bonus is for the fifty. **A state worked out from a
+            // callsign prefix would be a claim about where somebody lives** (§0.0), so a
+            // record with no `STATE` scores nothing.
+            AchievementKinds.States => Named(
+                AchievementKinds.States, log.States, points, AchievementLog.FiftyStates.Count),
 
             AchievementKinds.TotalMiles => Tiers(
                 AchievementKinds.TotalMiles, (long)Math.Round(MilesIn(log)), points),

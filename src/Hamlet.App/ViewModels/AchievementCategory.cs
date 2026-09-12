@@ -400,19 +400,7 @@ public sealed class AchievementCategory
                 heard,
                 c => UnworkedCountry(log, c, null)),
 
-            // **A CQ CARRIES NO STATE** (the arbiter's proposal, marked for Tim): the card says
-            // what it wants and that Hamlet cannot tell a caller's state from the air, and never
-            // that no one is calling from there, which nobody measured (§0.0). A state guessed
-            // from a prefix is rejected: a W3 can be anywhere.
-            AchievementKinds.States => new List<AchievementCategoryCard>
-            {
-                new(AchievementBadgePage.NextWords(kind, 0), AchievementCategoryCard.NextWord,
-                    Pts(points.Per(kind)), false)
-                {
-                    WantsLine = WantsFor(kind),
-                    NoCallerLine = NoStateFromTheAir,
-                },
-            },
+            AchievementKinds.States => StatesFor(log, points, page.OperatorGrid),
             AchievementKinds.Grids => Earned(
                 kind,
                 log.Grids.OrderBy(g => g, StringComparer.Ordinal)
@@ -765,6 +753,45 @@ public sealed class AchievementCategory
                 calling,
                 CallersFrom(calling, operatorGrid, earns),
                 NoOneCalling));
+        }
+
+        return cards;
+    }
+
+    /// <summary>
+    /// **States: each state he holds is the contact that earned it, then the next** (work
+    /// instruction 336 task 1, R23).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE SAME BUILDER COUNTRIES USES**, over the contacts
+    /// <see cref="AchievementLog.StateOf"/> scores, so a state's card is the earliest of them.
+    /// Each card carries what that state is worth in the file: its `special` where it has one,
+    /// else `per`.</para>
+    /// <para>**A CQ CARRIES NO STATE** (the arbiter's proposal of unit 335, marked for Tim): the
+    /// next card says what it wants and that Hamlet cannot tell a caller's state, and never that no
+    /// one is calling from there, which nobody measured (§0.0). A state guessed from a prefix is
+    /// rejected: a W3 can be anywhere. **That card is left exactly as unit 335 drew it.**</para>
+    /// </remarks>
+    private static List<AchievementCategoryCard> StatesFor(
+        AchievementLog log, AchievementPoints points, string operatorGrid)
+    {
+        const string kind = AchievementKinds.States;
+        var per = points.Per(kind);
+        var held = log.States;
+
+        var cards = held.OrderBy(s => s, StringComparer.Ordinal)
+            .Select(s => EarnedBy(
+                s, log.InState(s), Pts(points.Special(kind, s) ?? per), operatorGrid, placeUnderCall: false))
+            .ToList();
+
+        if (held.Count < AchievementLog.FiftyStates.Count)
+        {
+            cards.Add(new AchievementCategoryCard(
+                AchievementBadgePage.NextWords(kind, held.Count), AchievementCategoryCard.NextWord, Pts(per), false)
+            {
+                WantsLine = WantsFor(kind),
+                NoCallerLine = NoStateFromTheAir,
+            });
         }
 
         return cards;

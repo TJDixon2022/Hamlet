@@ -70,7 +70,11 @@ public sealed class TheLogCanSayFt4Tests
         // a *second* submode-shaped property, and that is the `Assert.Single`; the
         // count is the tripwire for a field added without a reason being written
         // down, and the reason is written down here.
-        Assert.Equal(15, names.Count);
+        //
+        // **SIXTEEN SINCE WORK INSTRUCTION 336 TASK 1**: `State`, the ADIF `STATE`
+        // field, read so the States achievement scores what the log says (R23). It
+        // is read and never written by Hamlet, and it is not submode-shaped.
+        Assert.Equal(16, names.Count);
     }
 
     /// <summary>An FT4 contact comes out spelled the way ADIF spells it.</summary>

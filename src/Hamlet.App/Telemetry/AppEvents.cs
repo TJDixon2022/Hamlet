@@ -1089,11 +1089,18 @@ public static class AppEvents
     /// <summary>**The achievements window opened** (work instruction 332 task 1, §R13).</summary>
     /// <param name="telemetry">The sink, or null.</param>
     /// <param name="kinds">How many badges the page drew.</param>
-    public static void AchievementsOpened(ITelemetry? telemetry, int kinds)
+    /// <param name="states">How many states the log scored (work instruction 336 task 1).</param>
+    /// <remarks>
+    /// **THIS IS THE RECORD THAT THE LOG WAS READ AND SCORED**, so the count of states scored is
+    /// here (R13): a count and never a code, because which states he has worked is a record of
+    /// where he was heard (HM-DEC-018).
+    /// </remarks>
+    public static void AchievementsOpened(ITelemetry? telemetry, int kinds, long states)
         => telemetry?.Write(TelemetryCategory.Explore, "achievements_opened",
             new Dictionary<string, object?>
             {
                 ["kinds"] = kinds,
+                ["states"] = states,
             });
 
     /// <summary>

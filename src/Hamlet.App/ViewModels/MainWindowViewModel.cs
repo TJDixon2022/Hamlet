@@ -6173,7 +6173,10 @@ public partial class MainWindowViewModel : ObservableObject
                 : BandBet.None,
         };
 
-        AppEvents.AchievementsOpened(_telemetry, screen.Page?.Badges.Count ?? 0);
+        AppEvents.AchievementsOpened(
+            _telemetry,
+            screen.Page?.Badges.Count ?? 0,
+            screen.Page?.Scores.For(AchievementKinds.States).Worked ?? 0);
 
         new Views.AchievementsWindow { DataContext = screen }.ShowDialog(owner);
     }

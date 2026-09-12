@@ -91,6 +91,16 @@ public sealed record AdifContact
     /// <summary>The operator's own locator. ADIF `MY_GRIDSQUARE`.</summary>
     public string? MyGridSquare { get; init; }
 
+    /// <summary>The other station's state or province, as the record carries it. ADIF `STATE`.</summary>
+    /// <remarks>
+    /// **READ, AND NEVER WRITTEN BY HAMLET** (work instruction 336 task 1, R23). Nothing Hamlet
+    /// measures on the air knows where a caller lives, so <see cref="AdifLog.Record"/> writes no
+    /// `STATE` and Hamlet's own records never carry one; a record another logger wrote with one is
+    /// read as it stands. **It is never worked out from a callsign** - a `W3` can be anywhere
+    /// (§0.0).
+    /// </remarks>
+    public string? State { get; init; }
+
     /// <summary>What the operator typed. ADIF `COMMENT`.</summary>
     public string? Comment { get; init; }
 }
@@ -566,6 +576,7 @@ public static class AdifLog
             RstReceived = IsRstMode(fields) ? Get(fields, "RST_RCVD") : null,
             GridSquare = Get(fields, "GRIDSQUARE"),
             MyGridSquare = Get(fields, "MY_GRIDSQUARE"),
+            State = Get(fields, "STATE"),
             Comment = Get(fields, "COMMENT"),
         };
     }

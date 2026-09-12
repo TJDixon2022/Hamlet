@@ -24,7 +24,7 @@ public static class AchievementKinds
     /// <summary>One card per DXCC entity.</summary>
     public const string Countries = "countries";
 
-    /// <summary>The fifty, plus DC.</summary>
+    /// <summary>The fifty, from the log's own `STATE` field.</summary>
     public const string States = "states";
 
     /// <summary>Four-character squares.</summary>

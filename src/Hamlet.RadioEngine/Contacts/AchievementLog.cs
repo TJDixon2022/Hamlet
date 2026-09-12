@@ -36,6 +36,11 @@ namespace Hamlet.RadioEngine.Contacts;
 /// Great-circle distance from the operator's own grid, or null where either grid is
 /// missing.
 /// </param>
+/// <param name="State">
+/// The record's own `STATE`, trimmed and upper case, or null where it carries none. **As the record
+/// says it**, whatever the entity: whether it scores is <see cref="AchievementLog.StateOf"/>'s
+/// question.
+/// </param>
 public sealed record AchievementContact(
     string Callsign,
     string? Entity,
@@ -48,7 +53,8 @@ public sealed record AchievementContact(
     string? MyGrid,
     int? ReportSent,
     int? ReportReceived,
-    double? Miles);
+    double? Miles,
+    string? State = null);
 
 /// <summary>
 /// **What the contact log holds, in the shapes the achievements screen asks it
@@ -118,6 +124,69 @@ public sealed class AchievementLog
     /// <summary>The four-character grid squares he has worked, each named once.</summary>
     public IReadOnlyList<string> Grids
         => Distinct(c => c.Grid is { Length: >= 4 } g ? g[..4].ToUpperInvariant() : null);
+
+    /// <summary>
+    /// **The fifty two-letter state codes**, the United States Postal Service's abbreviations.
+    /// </summary>
+    /// <remarks>
+    /// **FIFTY, AND NOT DC OR A TERRITORY** (work instruction 336, the arbiter's decision 1): the
+    /// points file's `all` bonus is for the fifty, and `AK` and `HI` are among them.
+    /// </remarks>
+    public static IReadOnlyCollection<string> FiftyStates { get; } = new HashSet<string>(
+        new[]
+        {
+            "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+            "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+            "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+            "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+            "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY",
+        },
+        StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// **The entities a `STATE` scores on**, by the names `data/callsigns/dxcc-prefixes.json` gives
+    /// them.
+    /// </summary>
+    /// <remarks>
+    /// Alaska and Hawaii are DXCC entities of their own and the States kind still counts them, so
+    /// all three are named.
+    /// </remarks>
+    private static readonly HashSet<string> StateEntities = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "United States of America", "Alaska", "Hawaii",
+    };
+
+    /// <summary>The state a contact scores for, or null where it scores none.</summary>
+    /// <param name="contact">The contact.</param>
+    /// <returns>The two-letter code, upper case, or null.</returns>
+    /// <remarks>
+    /// <para>**THE RECORD'S OWN `STATE`, AND NOTHING ELSE** (R23): a contact with no `STATE`
+    /// scores nothing, and **a state is never worked out from a callsign** - a `W3` can be anywhere
+    /// (§0.0).</para>
+    /// <para>**ONLY ON A UNITED STATES, ALASKA OR HAWAII RECORD, AND ONLY AS ONE OF THE FIFTY**
+    /// (work instruction 336, the arbiter's decision 1). A province on a Canadian record, `DC`, a
+    /// blank and a misspelling all score nothing.</para>
+    /// </remarks>
+    public static string? StateOf(AchievementContact contact)
+    {
+        ArgumentNullException.ThrowIfNull(contact);
+
+        return contact.State is { } state
+               && contact.Entity is { } entity
+               && StateEntities.Contains(entity)
+               && FiftyStates.Contains(state)
+            ? state.ToUpperInvariant()
+            : null;
+    }
+
+    /// <summary>The states he has worked that score, each named once, in the order first worked.</summary>
+    public IReadOnlyList<string> States => Distinct(StateOf);
+
+    /// <summary>Every contact that scores for one state.</summary>
+    /// <param name="code">The two-letter code.</param>
+    /// <returns>The contacts, which may be empty.</returns>
+    public IReadOnlyList<AchievementContact> InState(string? code)
+        => _contacts.Where(c => Same(StateOf(c), code)).ToList();
 
     /// <summary>Every contact on one band.</summary>
     /// <param name="band">The band, as ADIF spells it.</param>
@@ -252,7 +321,8 @@ public sealed class AchievementLog
             ReportReceived: Decibels(contact.ReportReceived),
             Miles: here is { } from && there is { } to
                 ? GridPath.MilesBetween(from, to)
-                : null);
+                : null,
+            State: Blank(contact.State)?.ToUpperInvariant());
     }
 
     /// <summary>A report field as a signed number, or null.</summary>
