@@ -131,3 +131,5 @@ the owner reads instead of watching.
 | phase | 2026-09-12T00:33 | 2026-09-12T00:33 | halted | 9.1410 | backstop: 1 iterations, no stop condition fired |
 | 1 | 2026-09-12T10:58 | 2026-09-12T11:41 | killed | unknown | killed by the watchdog: no status write within 12 min of the launch clock |
 | phase | 2026-09-12T11:41 | 2026-09-12T11:41 | halted | 0 | the run could not take the session lock |
+| 1 | 2026-09-12T12:44 | 2026-09-12T13:53 | complete | 70.46303749999996 | ran unattended, 408 turns, 13 denied call(s) worked around, report valid |
+| phase | 2026-09-12T13:54 | 2026-09-12T13:54 | halted | 70.4630 | backstop: 1 iterations, no stop condition fired |

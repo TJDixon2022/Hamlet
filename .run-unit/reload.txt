@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-12T10:58:10-04:00  root C:\Source\HamLet
+measured 2026-09-12T12:44:17-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -18,7 +18,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 4c05460
+  HEAD   : 57217d5
   uncommitted at the root : 0
 
 ==============================================================
@@ -587,22 +587,22 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under Â§R15. The step list is unchanged.
 
   --- PHASE_STATUS.md ---
-  12 lines, 1717 bytes
+  12 lines, 1706 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
   CURRENT_STEP: 5
-  WORK_INSTRUCTION: 328 - the mark is a quill again, and step 5 is done on the record
+  WORK_INSTRUCTION: 330 - maintenance round one, and the achievements page
   STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
   STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
   STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
   STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  STEP: 6 | in progress | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  392 lines, 62155 bytes
+  422 lines, 66081 bytes
   PHASE: Hamlet works PSK31 the way it works FT8
   PHASE_SET: 2026-09-11
   DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
@@ -612,7 +612,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
   STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
   STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | not started | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  STEP: 6 | in progress | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
   
   ## UNIT 312 - STEP 0
   
@@ -995,6 +995,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ACCOMPLISHED: the mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says step 5 is done, so the only step left is Tim at the radio
   STATE_AFTER: partial
   STATE_WHY: The four must-pass criteria are each met with quoted values from tests run this session, but the stated nice-to-pass criterion that the ADIF export imports cleanly into one named common logger is neither met nor mentioned anywhere in the report.
+  
+  ## UNIT 330 - STEP 6
+  
+  STEP: 6
+  APPROACH: Carried repair, six things the owner saw on 2026-09-12 with screenshots and ruled on. Size the tray mark as units 300 to 303 ruled; make the conversation card's right column a two-column table with one show-the-messages link on the whole card; turn the quill popup into a preview of the card he would earn; compress the green zone under the neighborhood map to a license line plus a live band-first line with the best-bet check; stop the readiness line claiming the band was empty in a slot Hamlet transmitted in; and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and a new Total Miles kind.
+  MOVE: continue
+  WHY: Step 6's only exit is the owner's own verdict at the radio, and every item here is something he looked at and objected to on the screen he will be sitting in front of when he gives it. None of it touches a step criterion.
+  DECIDED: The green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner. The points are the owner's file - assets/data/achievement-points.json - and no point value is hard-coded. The two size tests that contradict each other about the resting tray mark are reconciled under R12 on the later of the two rulings, option B of 2026-09-10.
+  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark; Tim 2026-09-12 with screenshots.
+  COST: one session, seven tasks, each committing on its own so that what lands, lands.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 1 - a state claimed before the measurement is the fault this phase has already hit twice.
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.
+  
+  ### ALSO RECORDED FOR UNIT 330 - STEP 6
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: size the tray mark as ruled, make the card's column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles
+  HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+  WHY: six things the owner saw and ruled on with the phase at his verdict, none touching a step criterion; he is away for two hours and asked for one unit that runs unattended, so every task commits on its own and drops from the back
+  DECIDED: the green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner; the points are the owner's file; the size tests are reconciled under R12
+  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark
+  COST: 9.140988
+  ACCOMPLISHED: the tray mark can be seen, the card reads as a table, the popup shows the card he would earn, the green zone tells him what band he is on and whether it is the best bet, Hamlet stops claiming the band was empty in a slot it did not listen to, and the achievements page is eight badges with scores and a running total he can edit from a file
+  STATE_AFTER: in progress
+  STATE_WHY: no output.md, so there is no report to judge the step against
 
   --- CLAUDE.md ---
   1385 lines, 195842 bytes
@@ -1017,17 +1047,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1889 bytes
+  19 lines, 1748 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: 4 of 4
-  WORK_INSTRUCTION: 328 - the mark is a quill again, and step 5 is done on the record
-  BALL: tim
+  STATE: EXECUTING
+  TASK: 2 of 7
+  WORK_INSTRUCTION: 330 - maintenance round one, and the achievements page
+  BALL: code
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-12T00:31:31-04:00
-  NOTE: Unit 328 complete at task 4 of 4, nothing dropped, four commits pushed. Carry-forward 185 of 185 green before anything moved and the app invocation 100 of 100 again after. Step 5's four must-pass all answered by tests that ran tonight with their values printed - RST 599 sent and 589 received with the decibel fields empty, MODE PSK with SUBMODE PSK31, no PSK31 card before the first contact and mode-PSK31 with 4 records after, TheAchievementsScreenTests 2 red and 8 green as inherited - plus GRIDSQUARE FN31 when read and no tag when not. The row mark is the tray vane at 6.0 x 12.0 px, hairline 1.5, not filled, green alone for a counter and orange in a 16.0 px ring with the bead for a door; the 18 px filled disc is gone and the box is unchanged so nothing on the row moved. Two things found and not repaired under section 10 - MainWindow.axaml's comment still calls the mark a filled disc, and Unit300SizesTests contradicts Unit303OptionBTests about the tray at rest. validate-output.bat was refused for the fourth unit running and its seven rules were applied by hand, all pass. Four of this session's own UPDATED times were composed rather than read from the clock and that is reported rather than tidied. Section 4 raises 4 items on top of the carried queue.
+  UPDATED: 2026-09-12T11:29:12-04:00
+  NOTE: Task 2 green at 140 of 140 and about to commit. The card table is six rows of 17.0 px each, labels right and muted, values left and neither wrapped nor trimmed, one show-them link on the whole card. A measurement changed the shape: the For you panel is a quarter of the tab so the card is 275 px wide inside, the map is 222 of them, and beside-the-map left 53 px for a row wanting 190 - so the table sits under the picture and that goes to section 4 for a ruling. Three inherited reds found outside the carry-forward list, none of them this unit's: two in Unit297CardSentenceTests on phrases that are not in src at HEAD, and one in Unit297CardBindingTests on a ring unit 305 moved off the card, which is rewritten under R12 because it stopped the run before the binding sweep the new template needs. Version bumped 1.13.14 to 1.13.15 and the UNIT 330 entry appended to PHASE_OUTCOME.md under step 6 before anything else moved. Measured first: the tray quill's box is the ruled 27 px but the renderer scales the 44-unit file to 62 per cent of the box, so the drawn vane is about 10.6 x 5.3 px and the ruled number was never on the glass.
   
   ---
   

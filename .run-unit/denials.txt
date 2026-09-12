@@ -1,9 +1,13 @@
-﻿   Bash  {"command":"grep -rn \"Avalonia\" src/Hamlet.App/Hamlet.App.csproj | head; echo \"---\"; ls ~/.nuget/packages/avalonia/ 2\u003e/dev/null","description":"Check Avalonia version"}
-   Bash  {"command":"cat \u003e /tmp/unit328.txt \u003c\u003c\u0027EOF\u0027\n\n## UNIT 328 - STEP 5\n\nSTEP: 5\nAPPROACH: Two things, and neither is new building. First the record: unit 326 built step 5 in full while it was called under step 4, so  ...(truncated)
-   Bash  {"command":"cat .gitattributes 2\u003e/dev/null; git config core.autocrlf","description":"Check line ending config"}
-   Bash  {"command":"git config core.autocrlf","description":"Check autocrlf setting"}
-   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~TheMarkIsSeenAndClickedTests\" --logger \"console;verbosity=detailed\" 2\u003e\u00261 | grep -v \"^\\s*$\" | sed -n \u002710,80 ...(truncated)
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run validator through cmd"}
-   Bash  {"command":"./tools/arbiter/validate-output.bat output.md","description":"Run validator by forward-slash path"}
-   Bash  {"command":"sed -n \u00271,26p\u0027 output.md | grep -in \"_PENDING\\|PENDING_\\|TBD\\|TODO\\|FIXME\\|XXX\\|\u003cFILL\\|FILL IN\u003e\\|PLACEHOLDER\" ; echo \"rule7 exit $?\"; sed -n \u0027203,219p\u0027 output.md | grep -c \"[^[:space:]] ...(truncated)
-   Bash  {"command":"/c/Source/HamLet/tools/arbiter/validate-output.bat /c/Source/HamLet/output.md","description":"Run validator by absolute path"}
+﻿   Bash  {"command":"cat \u003e\u003e PHASE_OUTCOME.md \u003c\u003c \u0027EOF\u0027\n\n## UNIT 331 - STEP 6\n\nSTEP: 6\nAPPROACH: Recover what unit 330 committed before the watchdog killed it, then draw the tray vane at its ruled size rather than 62 ...(truncated)
+   Bash  {"command":"python -c \"\nimport io\np=\u0027src/Hamlet.App/Views/MainWindow.axaml\u0027\nlines=open(p,encoding=\u0027utf-8-sig\u0027,newline=\u0027\u0027).readlines()\n# remove lines 4144..4282 (1-based) inclusive\nassert \u0027THE TWO CON ...(truncated)
+   Bash  {"command":"python tools/cut-header-action.py \u0026\u0026 grep -n \"CollapsiblePanel.HeaderAction\\|DigitalHeaderStrip\\|DigitalRowControls\" src/Hamlet.App/Views/MainWindow.axaml","description":"Run the cut script"}
+   Bash  {"command":"python tools/cut-header-action.py","description":"Run the cut script"}
+   Bash  {"command":"python - \u003c\u003c \u0027PYEOF\u0027\nimport re\np=\u0027tests/Hamlet.App.Tests/Views/ThePanelsMakeRoomTests.cs\u0027\ns=open(p,encoding=\u0027utf-8\u0027).read()\ns=s.replace(\u0027var window = Realized();\u0027,\u0027var wi ...(truncated)
+   Bash  {"command":"git stash push -- src/Hamlet.App/Views/MainWindow.axaml tests/Hamlet.App.Tests/Views/WhatTheSplitCostsTests.cs 2\u003e\u00261 | tail -2","description":"Stash markup to test HEAD baseline"}
+   Bash  {"command":"git stash push -- src/Hamlet.App/Views/MainWindow.axaml tests/Hamlet.App.Tests/Views/WhatTheSplitCostsTests.cs","description":"Stash markup to test HEAD baseline"}
+   Bash  {"command":"grep -n \"DecodedPanelMarkup\" tests/Hamlet.App.Tests/ViewModels/TheDecodedTableIsRealTests.cs; echo \"---\"; sed -n \"$(grep -n \u0027private static string DecodedPanelMarkup\u0027 tests/Hamlet.App.Tests/ViewModels/TheDecodedTa ...(truncated)
+   Bash  {"command":"git reset tools/cut-header-action.py","description":"Unstage the throwaway script"}
+   Bash  {"command":"rm tools/cut-header-action.py","description":"Delete the throwaway script"}
+   Bash  {"command":"sed -i \u0027s/HmAmberInkBrush/HmAmberDeepBrush/g\u0027 src/Hamlet.App/Views/MainWindow.axaml","description":"Use the existing deep amber brush"}
+   Bash  {"command":"mkdir -p data/achievements \u0026\u0026 cp assets/data/achievement-points.json data/achievements/achievement-points.json \u0026\u0026 ls -la data/achievements/","description":"Copy the points file into the tree"}
+   Bash  {"command":"grep -n \"^    [A-Z][a-zA-Z]*,$\" src/Hamlet.RadioEngine/Telemetry/ITelemetry.cs | head -20","description":"List all category names"}
