@@ -121,13 +121,25 @@ public sealed record Psk31CarrierActivity(
 /// <param name="Quality">How BPSK-shaped the last few symbols were.</param>
 /// <param name="AfcHz">How far the AFC has pulled from the first estimate.</param>
 /// <param name="Characters">How many characters it has emitted.</param>
+/// <param name="FirstCharacterSeconds">
+/// How long from this carrier being listed to its first character reaching the panel, or
+/// NaN while it has not said anything yet.
+/// </param>
+/// <remarks>
+/// **THE LATENCY IS REPORTED RATHER THAN INFERRED** (work instruction 327 task 2). A
+/// reader who wanted it had to subtract two timestamps in two different events and hope
+/// they were on the same clock. **NaN is not zero**: a channel that has never emitted a
+/// character has no latency, and writing 0 there would read as *it answered instantly*
+/// (§0.0).
+/// </remarks>
 public readonly record struct Psk31ChannelState(
     int Id,
     double OffsetHz,
     bool Open,
     double Quality,
     double AfcHz,
-    int Characters);
+    int Characters,
+    double FirstCharacterSeconds = double.NaN);
 
 /// <summary>
 /// **What happened inside the listener, for something outside it to write down.**

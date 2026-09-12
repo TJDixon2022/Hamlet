@@ -229,6 +229,89 @@ public sealed class ThePsk31DemodulatorTests
             + " is over the ceiling of " + ceiling.ToString("0.00", CultureInfo.InvariantCulture));
     }
 
+    /// <summary>
+    /// **Work instruction 327 task 2: how long from a carrier appearing to its first
+    /// character, measured and reported.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE QUESTION CAME OFF THE AIR.** On 7.070 a station at 1621 Hz gave the
+    /// operator **two characters in nine seconds at quality 0.92**, and nothing in the app
+    /// said whether that was the band, the station, or Hamlet taking its time. This is the
+    /// part Hamlet is answerable for: the gap between a row appearing and the first word in
+    /// it.</para>
+    /// <para>**IT IS REPORTED BY THE LISTENER RATHER THAN WORKED OUT HERE**
+    /// (<see cref="Psk31ChannelState.FirstCharacterSeconds"/>), so the number the test
+    /// prints is the number the record carries and they cannot drift apart.</para>
+    /// <para>**AND IT IS MEASURED FROM TWO DIFFERENT ZEROS, BECAUSE THEY ARE TWO DIFFERENT
+    /// QUESTIONS** (§0.0). From the carrier being **listed**, which is what the operator
+    /// sees appear and is what the ceiling is set against; and from the **start of the
+    /// file**, which includes the second or so the search spends becoming sure and is the
+    /// honest answer to *he started transmitting, when did I see it*.</para>
+    /// </remarks>
+    [Fact]
+    public void TheFirstCharacterLatencyIsReportedAndIsUnderTheStatedCeiling()
+    {
+        foreach (var file in new[] { "psk31-clean-1000hz.wav", "psk31-idle-8s-1000hz.wav" })
+        {
+            var audio = WavAudio.Read(Fixture(file));
+            var listener = new Psk31Listener(audio.SampleRate);
+            var chunk = audio.SampleRate / 4;
+
+            double? fromTheFile = null;
+            double reported = double.NaN;
+
+            for (var at = 0; at < audio.Samples.Length; at += chunk)
+            {
+                listener.Add(
+                    audio.Samples.AsSpan(at, Math.Min(chunk, audio.Samples.Length - at)));
+
+                var state = listener.States.FirstOrDefault();
+
+                if (state.Id != 0 && !double.IsNaN(state.FirstCharacterSeconds))
+                {
+                    reported = state.FirstCharacterSeconds;
+                    fromTheFile ??= (double)(at + chunk) / audio.SampleRate;
+
+                    break;
+                }
+            }
+
+            _output.WriteLine(
+                file
+                + ": first character " + reported.ToString("0.00", CultureInfo.InvariantCulture)
+                + " s after the carrier was listed, "
+                + (fromTheFile ?? double.NaN).ToString("0.00", CultureInfo.InvariantCulture)
+                + " s after the file started");
+
+            // **THE LISTENER REPORTS IT**, which is half of what this test is for: a number
+            // nobody can read out of the app is a number the next evening at the radio
+            // cannot use.
+            Assert.False(
+                double.IsNaN(reported),
+                file + " never reported a first-character latency");
+
+            Assert.True(
+                reported <= Psk31Listener.FirstCharacterCeilingSeconds,
+                file + ": " + reported + " s is over the ceiling of "
+                + Psk31Listener.FirstCharacterCeilingSeconds + " s");
+        }
+
+        // **AND THE CEILING IS UNDER THREE SECONDS**, which the work instruction sets as the
+        // line past which this unit would have to say what would bring it down. It does not
+        // have to: the squelch's own 32-symbol window is 1.024 s and dominates the total.
+        Assert.True(
+            Psk31Listener.FirstCharacterCeilingSeconds <= 3.0,
+            "the ceiling is " + Psk31Listener.FirstCharacterCeilingSeconds + " s");
+
+        _output.WriteLine(
+            "the squelch window alone is "
+            + (Psk31Demodulator.QualityWindow / Psk31Demodulator.Baud).ToString(
+                "0.000", CultureInfo.InvariantCulture)
+            + " s; the varicode separator is "
+            + (2 / Psk31Demodulator.Baud).ToString("0.000", CultureInfo.InvariantCulture)
+            + " s");
+    }
+
     /// <summary>Run the demodulator over a fixture, timed.</summary>
     private static (string Text, double Seconds) Run(string file, double offset)
     {

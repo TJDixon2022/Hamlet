@@ -126,6 +126,38 @@ public sealed class Psk31Listener
     /// </remarks>
     public const double IdleAfterSeconds = 2.0;
 
+    /// <summary>**The ceiling this unit states for first-character latency, in seconds.**</summary>
+    /// <remarks>
+    /// <para>**2.5, AND IT IS TAKEN FROM THE MEASUREMENT AND NOT CHOSEN** (work instruction
+    /// 327 task 2). Measured on `psk31-clean-1000hz.wav` and on `psk31-idle-8s-1000hz.wav`,
+    /// the gap between a carrier being listed and its first character reaching the panel is
+    /// **1.50 s on both**. 2.5 is that with two thirds again on top, so a machine slower than
+    /// this one still passes and a path that grew another whole second of waiting does not.
+    /// </para>
+    /// <para>**AND HERE IS WHAT THE 1.50 s IS MADE OF**, largest first. The demodulator's
+    /// squelch will not pass a character until it has measured
+    /// <see cref="Psk31Demodulator.QualityWindow"/> symbols, which is **1.024 s and is two
+    /// thirds of the whole number**. The bit-clock settle is *inside* that window rather than
+    /// added to it - the timing profile's memory is about eight symbols, 0.26 s, and it runs
+    /// while the squelch is still counting. The varicode separator wait is the smallest term:
+    /// a character is not emitted until its `00` has arrived, which is **two symbols, 0.064
+    /// s**. The rest is <see cref="LetGoSeconds"/> overlapping the replay, and the
+    /// quarter-second lump the audio arrives in.</para>
+    /// <para>**IT IS UNDER THREE SECONDS, SO NOTHING IS BUILT HERE TO BRING IT DOWN** (work
+    /// instruction 327 task 2, and §R14). The one term worth anything would be the squelch
+    /// window, and shortening it is a decode-quality decision the operator has not been asked
+    /// about: a shorter window opens on weaker evidence, which is the prime directive's own
+    /// trade and not a latency tuning.</para>
+    /// <para>**WHAT IS NOT IN THIS NUMBER, SAID OUT LOUD** (§0.0). It is measured from the
+    /// carrier being **listed**, which is what the operator sees appear. The search takes
+    /// about a second more to be sure of a carrier before that, and
+    /// <see cref="ReplaySeconds"/> of history is fed to a new channel precisely so those
+    /// words are not lost - so the time from a station **starting to transmit** to his first
+    /// character on the screen is longer than this, and is the number
+    /// `ThePsk31DemodulatorTests` prints beside it.</para>
+    /// </remarks>
+    public const double FirstCharacterCeilingSeconds = 2.5;
+
     /// <summary>How much audio a new channel hears from before it was made, in seconds.</summary>
     /// <remarks>
     /// **THREE, WHICH COVERS THE SECOND OR SO THE SEARCH TAKES TO BE SURE AND THE SECOND
@@ -203,7 +235,8 @@ public sealed class Psk31Listener
                 pair.Value.Open,
                 Math.Round(pair.Value.Quality, 3),
                 Math.Round(pair.Value.AfcHz, 1),
-                pair.Value.Text.Length))
+                pair.Value.Text.Length,
+                Latency(pair.Value)))
             .OrderBy(state => state.OffsetHz)
             .ToList();
 
@@ -257,6 +290,19 @@ public sealed class Psk31Listener
 
         Reconcile();
     }
+
+    /// <summary>How long this channel took to say its first word, in seconds.</summary>
+    /// <param name="channel">The held channel.</param>
+    /// <returns>The gap from the carrier being listed to the first character, or NaN.</returns>
+    /// <remarks>
+    /// **FROM THE CHANNEL BEING MADE, WHICH IS THE MOMENT THE CARRIER WAS LISTED**, and so
+    /// the moment the row appeared. It is the operator's own question - *the row has been
+    /// there for a while and it is still empty* - and not a decoder's internal one.
+    /// </remarks>
+    private double Latency(Channel channel)
+        => channel.FirstShownAt > 0
+            ? Math.Round((double)(channel.FirstShownAt - channel.SinceMadeAt) / _sampleRate, 3)
+            : double.NaN;
 
     /// <summary>
     /// **Notice a held station stopping typing, and starting again.**
@@ -326,14 +372,18 @@ public sealed class Psk31Listener
 
             if (!_channels.TryGetValue(carrier.Id, out var channel))
             {
-                channel = new Channel(_sampleRate, carrier.OffsetHz) { SinceAt = SamplesSeen };
+                channel = new Channel(_sampleRate, carrier.OffsetHz)
+                {
+                    SinceAt = SamplesSeen,
+                    SinceMadeAt = SamplesSeen,
+                };
                 Replay(channel);
                 _channels[carrier.Id] = channel;
             }
 
             channel.OffsetHz = carrier.OffsetHz;
             channel.StrengthDb = carrier.StrengthDb;
-            channel.Commit(carrier.KeyedUntilSample - _letGo);
+            channel.Commit(carrier.KeyedUntilSample - _letGo, SamplesSeen);
         }
 
         foreach (var id in _channels.Keys.Where(id => !listed.Contains(id)).ToList())
@@ -435,6 +485,18 @@ public sealed class Psk31Listener
         /// <summary>The sample count when the state it is in now began.</summary>
         public long SinceAt { get; set; }
 
+        /// <summary>The sample count when this channel was made, which is when it was listed.</summary>
+        public long SinceMadeAt { get; set; }
+
+        /// <summary>The sample count when its first character reached the panel.</summary>
+        /// <remarks>
+        /// **WHEN IT WAS *SHOWN*, NOT WHEN IT WAS READ.** A character is held until the
+        /// search has vouched for the carrier after it, so the moment the demodulator
+        /// emitted it is not the moment the operator could see it, and the second one is
+        /// the one he is asking about.
+        /// </remarks>
+        public long FirstShownAt { get; private set; }
+
         public void Hear(ReadOnlySpan<float> samples, long endsAt)
         {
             foreach (var character in _demodulator.Add(samples))
@@ -445,11 +507,16 @@ public sealed class Psk31Listener
             }
         }
 
-        public void Commit(long upTo)
+        public void Commit(long upTo, long now)
         {
             while (_pending.Count > 0 && _pending.Peek().At <= upTo)
             {
                 _text.Append(_pending.Dequeue().Character);
+
+                if (FirstShownAt == 0)
+                {
+                    FirstShownAt = now;
+                }
             }
         }
     }
