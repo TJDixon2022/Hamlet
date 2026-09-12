@@ -1,6 +1,200 @@
 ﻿
 ### Raised by this unit
 
+**1. Task 3 cannot meet its must-pass with a fraction alone, measured. Which bend do you want?**
+
+*Ruling wanted: how the decoded list and For You share the tab, given the numbers.* On the test
+host, with the conversation card's table as it is:
+- **For the table to sit beside the map at 1920**, For You needs 624 px or more. That leaves the
+  decoded column at most 302 px of the 931, which is a fraction of 0.324.
+- **At 1400 that same fraction** leaves the message 34 px, and a six-character callsign needs 60.
+  So one fraction cuts a callsign at 1400 or puts the table under the map at 1920.
+
+The options, each measured against those numbers:
+- **(a) A star split with a minimum width on the decoded column.** At 1400 the table goes under
+  the map and the message shows callsign and grid. At 1920 the table is beside the map, and the
+  message is abbreviated there too, because 119 px does not hold a full 200 px FT8 line.
+- **(b) Keep the table under the map at 1920 as well.** This answers R24's *beside at 1920* with
+  no.
+- **(c) Shorten the table's two widest rows.** They are `Last heard` and `4,500 miles Â·
+  northeast`, and they set its 338 px. That is the conversation card, not this step.
+
+*Reasoning.* R24 says the split is a fraction and the table goes under only when abbreviation is
+not enough. Measured, abbreviation is not enough at 1400 at any fraction that also gives the table
+its room at 1920. The recommendation is (a). It is the smallest bend, and it keeps R24's order: For
+You gets what the table needs first, and the decoded list abbreviates rather than cutting.
+
+*What was rejected and why.*
+- Building a fraction and reporting the miss: Â§6 allows that only for a little miss, and this is
+  not one.
+- Taking width from the waterfall: `DigitalPanes` `*,*` is your ruling, and it stays yours (unit
+  331 queue item 2).
+- A half-built layout, which the instruction names as a failure.
+
+**2. The Modes next card names PSK31 on a log with no PSK31 contact, and a test says Â§3.1 forbids
+that.**
+
+*Ruling wanted: which rule holds on that card.*
+- `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed` is red,
+  with `modes draws [PSK31] before any PSK31 contact`. It is unit 333's test of *absent, not
+  dimmed*.
+- The line it catches is unit 335's `bcaf39d`, which does what R22 asks: the Modes next card says
+  *where the unearned mode lives and who is there*, as `PSK31 3.580 on 80 m`.
+
+*Reasoning.* R22, 2026-09-12, is later than Â§3.1, and Â§6 says the later ruling wins. But the test
+was not rewritten when the card changed, so the tree now asserts both. This is the same collision
+unit 333 raised for Hall of Fame's `A PSK31 contact`, on a second card. Nothing in this unit
+touched Modes.
+
+*What was rejected and why.* Rewriting the test or the card here: Â§12.6, and neither is this
+step's.
+
+**3. `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext` has been red
+since unit 332.**
+
+*No ruling wanted; a finding.* It expects the Total Miles badge line `grid to grid, added up`, and
+unit 332 (`3ea16ec`) changed that line to `every mile, added` in `src` only. It is not on the
+known-reds list, and the unit that next touches Total Miles owns it under R12.
+
+### Where the carried items stand after unit 336
+
+- **Unit 335 item 1, the States next card's wording:** unchanged. The card still says `Any state
+  you have not worked` and `Hamlet cannot tell a caller's state`. Scoring `STATE` changed only the
+  earned cards in front of it.
+- **Unit 331 queue item 3, States scoring nought: ANSWERED by unit 336.**
+  - **What counts now.** `STATE` is read, and scores on a United States, Alaska or Hawaii record as
+    one of the fifty codes.
+  - **The fixture's numbers.** Of five records, 2 score, for 12 points, and the badge reads `2
+    worked`.
+  - **The item's worry, confirmed.** Hamlet's own entries carry no `STATE`, so they score none.
+  - The item stays in the queue as carried.
+- **Unit 331 queue item 2, the 1400 width arithmetic:** stands, and the outer `*,*` option stays
+  rejected. This unit's measurement updates its numbers:
+  - the card has 227 px inside at 1400 and 487 at 1920;
+  - the table now wants 338 px, so it sits under the map at both widths.
+  - See item 1 above.
+- **Unit 333 item 1, the Hall of Fame next-card collision:** untouched, and now joined by item 2
+  above on Modes.
+- **The status helper:** not tried. Every `UPDATED` in this unit is a `date` reading pasted whole,
+  and none was composed.
+- **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
+  the FT8 or PSK31 message split, or the transmit chain.
+
+### Carried from unit 335's section 4, per HM-DEC-139 - verbatim
+
+Headings under it are moved down one level so they sit inside this one; the words are unchanged.
+
+#### Raised by this unit
+
+**1. The States next card says `Hamlet cannot tell a caller's state`. That wording is the
+arbiter's proposal, marked for you, and shortened here to fit.**
+
+*Ruling wanted: keep it or reword it.*
+- A CQ carries no state, so the card cannot know who is calling from a state you have not
+  worked.
+- The proposal read *Hamlet cannot tell a caller's state from the air*. That needs 480 px, and
+  the slot at the window's 1040 is 426, so *from the air* came off.
+
+*Reasoning.* *No one is calling from there now* would assert something nobody measured (Â§0.0).
+Guessing a state from a prefix was rejected before: a `W3` can be anywhere.
+
+*What was rejected and why.*
+- A wider slot. That would change every next card's width for one sentence.
+- A second line. The fit rule says no string wraps.
+
+**2. The next cards name callers from continents you have never worked.**
+
+*Ruling wanted, only if the 2026-09-10 rule was meant to hold here.*
+- That rule says the CQ list must not be what tells you an area exists. So a decoded-list row
+  from a never-opened continent wears the ringed door and names nothing.
+- On a Countries or continent next card, the same caller is named by country, beside the same
+  ringed door.
+
+*Reasoning.* R22, 2026-09-12, asks the next card to list who is calling from a place that would
+earn it. It also asks each unearned continent to name *who is calling from it now*, which cannot
+be done without naming the place. Â§6 says the later ruling wins.
+
+*What was rejected and why.* Leaving door callers off the Countries card. That would hide the
+one caller who earns two cards at once, and Continents could not do what R22 asks of it.
+
+**3. The opening page's Hall of Fame badge still has white text on gold, at about 3.6:1.**
+
+*No ruling wanted; a finding.*
+- This unit's category band computes its ink and turns dark on that gold.
+- The eight badges on the opening page, and their shared template, are unit 331's and step 0's.
+  They were not touched, so the badge's name there still reads white on `#A8811A`, under Â§0.6's
+  4.5:1.
+
+*Reasoning.* Â§12.6: do not repair unrelated things on the way past. The fix is one binding, and
+it belongs to a unit that is told to change the page.
+
+#### Where the carried items stand after unit 335
+
+- **Unit 333 item 1, the Hall of Fame next-card collision:** untouched. The next first is still
+  chosen by `NextFirstOf`, and `A PSK31 contact` still shows where it is the only first left.
+  This unit added a line under it (where PSK31 lives, and its callers) and did not change which
+  card it is.
+- **Unit 332 item 1, the `Why` hovers:** unchanged. No card draws `ModeFirstRow.Why`, and a test
+  holds `cannot work` off the Modes cards. The sentences themselves are untouched in
+  `AchievementsViewModel.cs`.
+- **Unit 331 queue item 3, States:** unchanged. States still scores nought, and its next card
+  says Hamlet cannot tell a caller's state. See item 1 above.
+- **Unit 332 item 3, the achievements window width:** it is still 1040 by 720. This unit
+  measured the pages at 1400 and 1920 by setting the dialog's own width, because nothing sizes it
+  from the main window.
+- **The status helper:** not tried again. Every `UPDATED` in this unit is a `date` reading pasted
+  whole.
+- **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
+  a parser or the transmit chain.
+
+#### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
+
+Headings under it are moved down one level so they sit inside this one; the words are unchanged.
+
+##### Raised by this unit
+
+**1. At 1920 the green zone is 310 px tall, because the map keeps its shape as it takes the
+pills' width.**
+
+*Ruling wanted: cap the map's height or not.* Computed: the map is 492 x 269 at a 1920 window,
+and the panel goes from 151 to 310 px. At 1400 it goes from 193 to 177 px, so there it is
+shorter.
+
+*Reasoning.* R21 says the map takes the space the pills held, and at 1920 that is 218 px of
+width. A map drawn at its own proportions cannot take width without height, and stretching it
+would move every place off the pixel the projection puts it on (HM-DEC-092).
+
+*What was rejected and why.* Choosing a cap here. A height limit is a number about how much of
+your screen the panel may take, and it is yours to pick.
+
+**2. At 1400 the map gained only 30 px, because the count and its sparkline set the right
+column's width, not the pills.**
+
+*Ruling wanted, if 30 px is not the bigger map you meant.* The right column is 260 px after,
+against 262 before.
+- The sparkline is 110 px of it plus a 10 px gap.
+- Dropping the sparkline, the task's named drop candidate, would free that width.
+- The left block and the map share freed width equally, so the map would gain about half of it.
+  That is arithmetic on the measured widths, not a measurement.
+
+*Reasoning.* The task says keep the sparkline if it still fits, and it fits, so it stayed.
+
+*What was rejected and why.* Dropping it anyway, which the task does not allow while it fits.
+Stacking the count under the sparkline, which rearranges the count beyond what was asked.
+
+**3. `tools/status.sh` is still refused, in all three spellings.**
+
+*No ruling wanted; a finding, the same as carried item 5 below.* `sh`, `bash` and `./` all came
+back *requires approval*. Every `UPDATED` in this unit is a `date` reading pasted whole, and none
+was composed. The validator was run by the `.proj` route; its verdict is in the session
+transcript, not quoted here.
+
+##### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
+
+Headings under it are moved down one level so they sit inside this one; the words are unchanged.
+
+###### Raised by this unit
+
 **1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and Â§3.1 say opposite
 things about one slot.**
 
@@ -49,7 +243,7 @@ Both are safe to delete by hand, beside the five carried in item 19 below. The v
 run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
 243 documented as mangled by Git Bash.
 
-### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
+###### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
 **1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
 
@@ -124,7 +318,7 @@ this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pas
 unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
 launcher's and were not written.
 
-### Carried from unit 331's queue, as unit 332 carried it - verbatim
+###### Carried from unit 331's queue, as unit 332 carried it - verbatim
 
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
@@ -303,7 +497,7 @@ session's own `tools\cut-header-action.py`.
 
 **All other items stand as unit 328 carried them.**
 
-### Where the carried items stand after this unit
+###### Where the carried items stand after this unit
 
 - **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
   Every hover on every visible control was read in task 1 and none names PSK31, so it stays
@@ -314,3 +508,19 @@ session's own `tools\cut-header-action.py`.
 - **Every other item stands as carried.** Nothing in this unit touched the 1400 split, States,
   `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
   the two id schemes, the five files or step 6.
+
+##### Where the carried items stand after unit 334
+
+- **Unit 333 item 3 and unit 331-queue item 19, the undeletable files:** now **thirteen**, and
+  listed once in section 2. `Unit333ProbeTests.cs` is tracked, not untracked. None was left
+  unemptied.
+- **Unit 332 item 1, the `Why` hovers:** unchanged. The FT4 and PSK31 sentences are still at
+  `AchievementsViewModel.cs` lines 501 to 517, and both are now false. Task 2 named only the one
+  sentence it checked.
+- **Unit 332 item 4, the license phrase at 1400:** still three lines on the test host. The left
+  block is now 232 px, against 253, and the phrase breaks in the same places.
+- **Unit 332 item 5 and unit 333 item 3, the status helper:** still refused, now in three
+  spellings; see item 3 raised above. No timestamp was composed.
+- **Every other item stands as carried.** Nothing in this unit touched the radio side, the
+  achievements rulings, States, the 1400 decoded-list split, the demodulator, the ALC margin, the
+  id schemes or PSK31 step 6.

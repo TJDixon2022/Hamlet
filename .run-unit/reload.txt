@@ -1,15 +1,16 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-12T15:17:23-04:00  root C:\Source\HamLet
+measured 2026-09-12T17:30:26-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0161.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0162.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,17 +22,18 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 0b2e0d5
-  uncommitted at the root : 3
+  HEAD   : 1e4e9e4
+  uncommitted at the root : 4
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
+      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0161
+  highest in CLAUDE.md section 1 : CPS-DEC-0162
   PROJECT_STATUS.md RULES_AT     : HM-DEC-161 (2026-09-11)
 
 ==============================================================
@@ -39,1046 +41,282 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  551 lines, 34237 bytes
-  PHASE: Hamlet works PSK31 the way it works FT8
-  PHASE_SET: 2026-09-11
-  DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
-  STEP: 0 | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
-  STEP: 1 | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
-  STEP: 2 | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
-  STEP: 3 | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
-  STEP: 5 | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  193 lines, 10418 bytes
+  PHASE: The screen says what is true and looks like someone meant it
+  PHASE_SET: 2026-09-12
+  DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
+  STEP: 0 | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
+  STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
+  STEP: 3 | Tim looks at it - every page at his window size, and says it passed.
   
   ---
   
-  # PSK31 phase plan - the reasoning under the step list
+  # The maintenance phase - the reasoning under the step list
   
-  **Set 2026-09-11 by the web thread, from Tim's instruction: "I want it to work. Figure it
-  out."** Where a ruling was needed and Tim had not given one, this plan makes it, marks
-  it as the author's, and records it under Â§R below so he can overrule any of them with
-  one word. The step list above is the machine-readable plan. Everything under the rule
-  is why.
+  **Set 2026-09-12 by the web thread on Tim's instruction:** *"do the cleanup stuff I've
+  been talking about. We're calling this a maintenance phase."* The PSK31 phase is archived
+  at `docs/phase-psk31-run/` with its step 6 open; Tim closes it at the radio when he
+  closes it, and that is not this phase's business.
   
-  ## Â§1 The one fact the whole phase is built on
+  ## Â§1 What this phase is
   
-  **FT8's contact is a protocol. PSK31's is a conversation.**
+  Three steps of screen work and one of Tim looking. Nothing here touches the radio, the
+  transmit chain, a decoder or a parser. Everything here was seen by Tim on his own screen
+  between 2026-09-11 and 2026-09-12 and ruled on in conversation; the rulings are in Â§R
+  and the pictures he approved are under `assets/`.
   
-  FT8 gives Hamlet fifteen-second slots and thirteen-character messages with a fixed
-  grammar - CQ, grid, report, R-report, RR73, 73 - so *Waiting on him* and *He last sent
-  RR73* are read straight off the wire.
+  ## Â§2 What is the same
   
-  PSK31 is BPSK at 31.25 baud carrying free text, keyboard to keyboard. No slots, no
-  grammar, no acknowledgement primitive. A QSO is a convention that people mostly follow:
-  `CQ CQ CQ de KC3QIS KC3QIS K`, an answer, RST-name-QTH, `73`, `SK`. Everyone types it
-  differently and many type more.
+  Every ruling of the PSK31 phase's plan stands - R1 through R20 in
+  `docs/phase-psk31-run/PHASE_PLAN.md` - and is not restated. The ones this phase leans on:
+  **R12** a session rewrites its own tests and never asks the owner; **R13** telemetry on
+  every new stage; **R14** tests prove criteria and nothing beyond; **R16** the two quills;
+  **R19** American; **R20** the achievements pages and the green zone as ruled; **Â§6's
+  later-ruling-wins rule**.
   
-  So "exactly like FT8" is achievable at the **product** layer - the same two card types,
-  the same one-click exchange, the same log, the same achievements - and is achieved by
-  Hamlet **sending a fixed macro exchange and parsing what comes back** to infer the
-  state. Some of the time it cannot tell. The honest display for that is a state called
-  **unknown** (Â§0.0 / HM-DEC-092: never present a guess as a decode; a picture binds as
-  hard as a sentence).
+  `ACHIEVEMENTS_PHILOSOPHY.md` governs the achievements screen: **Â§2** no wall of blanks;
+  **Â§3.1** inside a category nothing shows until something adjacent is earned, bent only by
+  Ruling C (the nearest unearned card in each kind is visible); **Â§3.5** the teaching is
+  the product; **Â§4** worked, never confirmed, nothing shames. `CLAUDE.md` **Â§0.0** a picture
+  binds as hard as a sentence; **Â§0.5** family color is text only; **Â§0.6** color never the
+  only carrier. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**.
   
-  ## Â§2 What is the same, by ruling
+  ## Â§R Rulings, Tim, 2026-09-12
   
-  Everything Tim has ruled for FT8 and FT4 applies unchanged unless Â§3 says otherwise:
+  **R21 - the green zone.** *"Too redundant. We don't need the repeat of the band list on
+  the green. Maybe make the map bigger."* The band pills come off the panel - they are the
+  row above it - and the map takes their space. The band stays large on the left; the
+  heard-just-now count stays as a number on the right; the rule-of-thumb line stays.
   
-  - **Two card types** (R1, 2026-09-11): a CQ receipt and a conversation card. The receipt
-    carries what was sent and when, Log, dismiss, **and no station facts** (R2). One
-    receipt, refreshed on repeat press, never a second (R3). **Last call only, no count**
-    (R4). The receipt retires when anyone answers; two answers make two conversation cards
-    and nobody inherits the call (R5). Conversation cards unlimited with a vertical scroll
-    (R6).
-  - **The map** on the conversation card face, row fitted to the map (R7), opening in a
-    popup zoomed to the great-circle path (R8) with the zoom capped (R9).
-  - **The decoded-text list** with the worked-fade at 0.55 opacity (unit 279), entity
-    resolution through `DxccPrefixes.EntityOf` with the `CQ` guard (unit 310), and **the
-    achievement nudge** under the four rulings of 2026-09-10: lift plus the quill vane in
-    decode green `#3B6D11`; sticky per station with a cap of two; the achievement set is
-    the source and no rarity ordering is invented; a door is marked and never named.
-  - **One click, one transmission** (Â§0.2). A mark is a nudge, never an arming.
-  - **The transmit chain** `cq_pressed -> ... -> ft8_transmission Played`, proved from
-    `2026-09-10.jsonl`, is the chain PSK31 transmits through. Nothing in this phase
-    changes what keys the transmitter; step 4 adds a second audio generator behind the
-    same proved path.
-  - **The dummy load is withdrawn in full** (Tim, 2026-09-06). No compensating control.
-  - **Achievements** under `ACHIEVEMENTS_PHILOSOPHY.md`: Â§3.1 absent, not dimmed - no PSK31
-    card exists until the first PSK31 contact; Â§3.2 that contact reveals the mode's
-    records; Â§4 counts say worked, never confirmed; Â§3.7 restraint.
-  - **Family colour** for Digital (`CLAUDE.md` mode palette, HM-DEC-032): PSK31 is already
-    in the Digital family table. Text colour only, never a fill (Â§0.5).
-  - **The band map** already carries PSK31 at 14.070 as cited data under `data/bands/`
-    (HM-DEC-054). Step 0 reads it; it does not add a row.
-  - **Rules that killed sessions** (HM-DEC-155): a unit runs only its own tests filtered by
-    exact name; nothing is backgrounded and polled.
+  **R22 - the category pages.** *"So boring."* *"Communicate visually and be appealing.
+  Not white bread boring."* *"I like it, just make sure all the other sub pages are as
+  interesting."* The shape is `assets/category-page-countries.png`: the category's color
+  band and emblem across the top with its count, score, level and a bar to the next level;
+  **each earned card is the contact that earned it** - the entity large, the callsign and
+  grid, a map of the path cropped to the two stations as the conversation card draws it,
+  the distance in large type, band, mode and date, the points; **the next card says what it
+  wants and the one thing Hamlet knows that helps** - who is calling CQ right now from a
+  place that would earn it, with distance, from the CQ list. Per kind: **Countries,
+  States, Grids** the contact that earned it; **Continents** seven badges, each the first
+  contact that opened it, the count of countries worked there since, and the unearned ones
+  naming the continent and who is calling from it now; **Total Miles** a tier is a bar
+  filling toward the next line and the contact that crossed it; **Bands** the first contact
+  on that band and which band is the best bet now for the next; **Modes** the first contact
+  in each mode and where the unearned mode lives and who is there; **Hall of Fame** the
+  contact that earned each first, and the nearest first as next. **Nothing white, nothing
+  empty.** No image assets; vector and the map the app already has.
   
-  ## Â§3 What is different, and cannot be made the same
+  **R23 - the record.** States are scored from the ADIF `STATE` field, which the log
+  already writes for a US contact; a contact with no `STATE` scores nothing. Rank names
+  are read from `achievement-points.json` under a `rank_names` key, defaulting to
+  `Rank 1`â€¦`Rank 8` when absent, so Tim can name them without a session. The points file's
+  every key is documented in a comment block at its top.
   
-  1. **There is no slot clock.** The `SlotClock` control (unit 305) has no meaning in a
-     mode with no slots. On a PSK31 conversation card its place is taken by **whose turn it
-     is**: *your turn*, *his turn*, *he is still sending* (carrier present), *unknown*.
-     Carrier-present is a fact from the demodulator; the rest is from the parser and marked
-     as Â§R1 says.
-  2. **The report is RST, not dB.** FT8 exchanges signal-to-noise in dB; PSK31 exchanges
-     `599`-style RST, conventionally `599` for a clean copy. The log gains an RST field for
-     this mode, and the FT8 dB field is not reused to hold it.
-  3. **It is a continuous carrier at full duty.** FT8 keys for 12.6 seconds in 15; PSK31
-     keys for as long as the text takes, at 100% duty. **On a 100 W IC-7300 this is a
-     heat and linearity question**, and the drive level is the difference between a clean
-     31 Hz signal and splatter across the whole watering hole. Â§R4.
-  4. **Text arrives one character at a time**, not a message per slot. The list and the
-     conversation append as characters decode. A "message" for the parser is what arrived
-     between two turnovers, not what arrived in a slot.
-  5. **There is no fixed message length**, so there is nothing like the thirteen-character
-     check that FT8 uses to reject garbage. Garbage from noise looks like text. Step 1
-     must state its squelch rule and step 3 must never parse a state out of a line the
-     squelch did not pass.
+  **R24 - the 1400 px layout.** The author's proposal, marked for Tim: the split between
+  the decoded list and For You is a fraction of the tab, not a pixel count; at 1400 the
+  decoded list may abbreviate the message column to the callsign and grid rather than
+  shrink For You below what the card's table needs; the card's table goes under the map
+  only when even that is not enough. Tim overrules by looking.
   
-  ## Â§R Rulings this plan makes on the author's behalf
+  **R25 - Tim looks.** Step 3 is his verdict at his window, at the size he uses.
   
-  Each of these is the author's, made because Tim said *figure it out*, and each can be
-  overruled with one word. None carries an `HM-DEC-` id and none may be given one by a
-  session.
+  ## Â§3 What is different from a build phase
   
-  **Â§R1 - How much Hamlet asserts about an exchange it can only partly read.** **Strict on
-  anything that drives a transmission; permissive on what the card displays; every guessed
-  state marked as a guess.** A macro is offered for one click only when the parser is
-  *certain* whose turn it is. The card may show a state inferred from turnover words,
-  elapsed silence and whose callsign appeared last, and when it does the state word is
-  visibly a guess (Â§0.6: not by colour alone). Rejected: strict everywhere, because the
-  card would say *unknown* through most real QSOs and read as broken; permissive
-  everywhere, because a wrong guess that sends a macro into another operator's turn is a
-  transmission Tim did not choose.
-  
-  **Â§R2 - The macro exchange Hamlet sends.** The standard minimum, and nothing chatty:
-  
-  ```
-  CQ:      CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K
-  Answer:  <HIS> de KC3QIS KC3QIS K
-  Report:  <HIS> de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00  BTU <HIS> de KC3QIS K
-  Confirm: <HIS> de KC3QIS  R R  TNX for the QSO  73 73  <HIS> de KC3QIS SK
-  ```
-  
-  Name, QTH and grid come from Settings; nothing is typed at the moment of sending. Free
-  typing is **not** in this phase - one click, one transmission, and the macros are the
-  whole vocabulary. Rejected: a keyboard, because it makes the exchange something other
-  than FT8's and reopens every question about what a card asserts.
-  
-  **Â§R3 - What the parser recognises, and what it will not.** Callsigns (the same rule the
-  decoded list uses today), `de`, `CQ`, RST in `5NN` or `599` form, a grid square, the
-  turnover words `K`, `KN`, `BTU`, `OVER`, and the closers `73`, `SK`, `CL`. It also
-  recognises **its own callsign**, which is how it knows a line is addressed to Tim.
-  Anything else is text and is shown as text. Rejected: parsing name and QTH, because they
-  are for reading, not for state, and a wrong parse of them changes nothing Hamlet does.
-  
-  **Â§R4 - Drive and power.** The step-4 unit sets the IC-7300's data-mode input level so
-  that **the ALC meter shows no deflection** on the macro tone, and defaults the RF power
-  for this mode to **half the radio's rated output** because the carrier is continuous.
-  Both are settings Tim can change; both are shown on the mode's panel so he can see what
-  Hamlet chose; neither is silent. The unit cites the page of the IC-7300 manual it read
-  for the input-level setting rather than naming it here from memory. Rejected: full
-  power, because splatter into 14.070 is what a beginner is most afraid of doing and this
-  application exists to stop that.
-  
-  **Â§R5 - The reference implementation.** `fldigi`, which is GPL-3 - the same licence as
-  Hamlet. Cloned outside the tree at `C:\Source\fldigi`, **pinned to one commit that the
-  step-1 unit records in its report**, never committed, never ported wholesale - the same
-  rule the FT8 phase set for `ft8_lib`. What is read from it: the varicode table (which is
-  a published standard and may be transcribed with its source cited), the raised-cosine
-  shaping and the demodulator structure. What is written for Hamlet is Hamlet's.
-  
-  **Â§R6 - Where the activity is.** 14.070 dial, with the ribbon of signals above it
-  across the block the cited band row gives - **14.070 to 14.074** (corrected 2026-09-11
-  from the author's 14.0700-14.0725, which was recalled rather than read; the row wins,
-  HM-DEC-054). The list shows every signal in the passband; the CQ filter shows the
-  ones whose text parses as a CQ. The default click target when Tim presses CQ is a clear
-  spot Hamlet finds in the passband, not a fixed offset - transmitting on top of a
-  decoded signal is the second thing a beginner is afraid of.
-  
-  **Â§R7 - Units and versions.** Units continue from where the tree is. The FT4 phase
-  closing at Tim's word (*"FT8 and FT4 seem pretty solid"*, 2026-09-11) took the minor
-  version bump; unit 312 landed on 1.13.0 and each unit since takes a patch. Whether the
-  first unit of a phase is x.y.0 or x.y.1 under HM-DEC-150 is carried as an open ask and
-  does not change what a unit does.
-  
-  **Â§R8 - The CQ receipt carries no Log** (Tim, 2026-09-11: *"CQ should not have log
-  option, that is self-gratification"*). Supersedes R2's Log. A CQ is not a contact; the
-  Log belongs on the conversation card of whoever answers. Already built by unit 314;
-  recorded here so the *say it* step inherits it.
-  
-  **Â§R9 - Squelch and the honest character** (Â§0.0 applied to a text mode). A character
-  the demodulator was not sure of is not shown - no `?`, no dimmed maybe. Silence. Unit
-  314's squelch measures keying shape, threshold 0.90 on a scale where noise is 0.637;
-  the number is the author's and is `Psk31Demodulator.SquelchQuality`.
-  
-  
-  **Â§R10 - Tim, 2026-09-11: the transmit chain may carry a send that has no slot.** Ruled
-  on the arbiter's question of unit 317, option A. `OperatorSend` carries either a slot, as
-  today, or *now*. A send with no slot is not held to a slot fit; it is held to **a stated
-  maximum length** so a continuous carrier cannot run on - the unit states the number and
-  why, and it is not more than thirty seconds, which is the Report macro with idle either
-  side. The operator's click fires a no-slot send at once rather than at a boundary. **The
-  gate, the single `PttOn` use site, the `finally` that unkeys or aborts, and `StopNow` stay
-  one code path shared by all three modes.** FT8 and FT4 must stay byte-identical, proved
-  by the tests that guard them today, run filtered. The transmission record says which mode
-  went out and carries no slot where there was none. Rejected: a second sequence (a second
-  `PttOn` site), an invented PSK31 slot (a slot that does not exist in the record that is
-  evidence), shortened macros (Â§R2 overruled from underneath), and splitting a macro across
-  slots (one click, several keyings).
-  
-  **This ruling amends Â§2 of this plan**, which said nothing in the phase changes what keys
-  the transmitter. It does now, in the one way ruled above and no other. Â§6's `MOVE: stop`
-  on the transmit chain stays in force for anything beyond it.
-  
-  **Â§R11 - Tim, 2026-09-11: drive and power. The operator sets nothing at the radio.** Ruled
-  on the arbiter's item 43, option A, read the way this application exists to be read: *"I
-  don't know anything about the radioâ€¦ I'm writing this app for people who are the same way."*
-  FT8 already transmits cleanly through this radio on the same USB path and the same input
-  level; PSK31 uses that path unchanged and asks the operator for nothing. Hamlet's own drive
-  level is composed at the value that works for FT8. RF power for PSK31 defaults to **half**
-  and is **offered** as a percentage beside the drive, never written silently (HM-DEC-084,
-  HM-DEC-074). During a PSK31 send Hamlet reads the ALC and, if it deflects past the zone,
-  says so **in plain words** on the panel - not a meter, a sentence a person with no shack
-  years can act on - and the record carries the reading with its age. The manual pages for
-  anyone who wants them are 12-10 and 4-31, recorded in `docs/psk31-reference.md`. **No unit
-  asks the operator to set a level, read a meter, or know what ALC is.** Â§R4 is superseded.
-  
-  **Â§R12 - Tim, 2026-09-11: a session fixes its own tests and never asks the owner to approve
-  it.** The one rule that is the owner's, and it is already ruled: **Hamlet never transmits
-  without the operator's click** (Â§0.2). Every test that exists to guard that rule is worded
-  to guard that rule and nothing more. A test a session wrote while a door was shut, that
-  later blocks the unit told to open the door, is **the session's to rewrite in its own
-  commit** so it guards the rule and not the shut door - and that is not a ruling, not an
-  ask, and not a stop. `ThePsk31ConversationCardTests.NothingOnTheCardTransmits` is the first
-  such test and is rewritten by the next unit. **The arbiter never puts the wording of a
-  test to the owner.** Item 45 is closed by this ruling.
-  
-  **Â§R13 - Tim, 2026-09-11: telemetry is a must-pass on every remaining step.** Every stage a
-  step adds writes an event in the `psk31` category that lets a person diagnose that stage
-  from the file alone, proved by assertion against a fixture, with nothing personal in it
-  (HM-DEC-018, Â§2.1). Unit 322 built the receive and transmit events; a step that gives an
-  event its first production call site proves the event fires there. Step 5 adds the log
-  and achievement events. Step 4's `psk31_send_*` events gain their call sites when the door
-  opens.
-  
-  **Â§R14 - Tim, 2026-09-11: eyes on the prize.** *"We don't focus too much on pointless
-  testing. We remember what the phase goal is."* A test exists to prove an exit criterion.
-  A unit writes the tests its criteria need and no others; it does not add guards for doors
-  it is not building, pins against changes it is not making, or tests of a test. **The
-  measure of a unit is whether Tim can see PSK31 coming in and going out**, not the count of
-  green.
-  
-  **Â§R15 - Tim, 2026-09-11: the ALC zone is learned from FT8, not read by the operator.**
-  Ruled on unit 324's item 1, option A. FT8 already transmits cleanly through this radio.
-  Hamlet reads `15 13` during FT8 sends as well as PSK31 sends and records the meter on a
-  known-good mode; **the highest reading observed during FT8 sends becomes the reference**,
-  stored and shown with its provenance and age (HM-DEC-111). A PSK31 send that reads above
-  the reference by more than a stated margin gets Â§R11's sentence. The margin is the unit's
-  to state and Tim's to overrule. **Until an FT8 send has been observed, there is no
-  reference and Hamlet reports the reading and judges nothing** - it never invents one.
-  Nothing is asked of the operator.
-  
-  **Â§R16 - Tim, 2026-09-11: the achievement quill has two forms and no cap.** Every station
-  on the list that would earn anything is marked; the cap of two is withdrawn (*"I do not
-  mind lots of achievement markers"*). A **counter** - new country, state, grid, nothing
-  opens - is the still quill in decode green. A **door** - a first contact that opens a
-  whole set - is the quill with the orbit ring, spinning, in **orange**. Both forms differ
-  in shape as well as color (Â§0.6); the hover says which in words.
-  
-  **Â§R17 - Tim, 2026-09-11: a collapsed panel with content is unmistakable, and the filter
-  is always there.** A collapsed *Decoded text* or *For you* header carries a live count
-  and a sentence saying what is in it and that a click shows it; while rows arrive into a
-  collapsed panel the header takes the family color as text. Neither panel opens collapsed
-  at startup. The CQ / Everything filter is visible on an empty list, because it is a
-  choice about what to see, not a report of what is there.
-  
-  **Â§R18 - Tim, 2026-09-11: after you transmit to a station, his card waits on him.** The
-  clock starts at your transmission, not his last message; the card is *Waiting on him*,
-  undimmed, for at least one full slot after your send; *Gone quiet* is for a station who
-  had his slot and did not use it. This is the FT8 card, which PSK31's card inherits.
-  
-  **Â§R19 - American spelling** in every operator-facing string and every instruction.
+  Nothing decodes, transmits or logs differently after this phase. A step's exit is what
+  is on the screen, asserted by computation and described in words, and then Tim's eyes.
+  **Every appearance claim is computed, not seen, and says so.**
   
   ## Â§4 The steps
   
-  Each step verifies its own ground: entry criteria are checked by the step, not
-  inherited from the previous report. Exit criteria are tiered. **A step's exit is its own
-  assertions passing plus the carry-forward list green** - `docs/carry-forward-tests.txt`,
-  run filtered and foregrounded - and **not the whole suite**. `PHASE_CONTROL.md` Â§2 says
-  *the whole suite green*; HM-DEC-155 forbids an unfiltered run and `CLAUDE_CODE.md` wins
-  on the shape of a unit (`PHASE_CONTROL.md` Â§0). The conflict is named here so it is
-  carried rather than resolved by a session at three in the morning. Known reds are never
-  on the carry-forward list.
+  Each step verifies its own ground. Exit criteria are tiered. **A step's exit is its own
+  assertions plus the carry-forward list, run as the list's own comment says** - not the
+  whole suite (HM-DEC-155; `CLAUDE_CODE.md` wins on unit shape).
   
-  ## Step 0 - The seam
+  ## Step 0 - The green zone finishes, and the leftovers go
   
-  **Delivers:** PSK31 exists as a mode. Pressing it tunes USB-D to the cited 14.070 and
-  shows a panel that names itself. Nothing decodes.
+  **Delivers:** the green zone without the band pills, the map at the width they held;
+  the stale line gone; the files sessions cannot delete listed once in the report for Tim.
   
-  **Entry:** the tree is Hamlet's; the FT4 phase is closed at Tim's word.
+  **Entry:** the tree is Hamlet's; `PHASE_STATUS.md` names this phase.
   
   **Exit:**
-  - Pressing PSK31 asks the radio for 14.070 USB-D, and the frequency came from the
-    cited band row, not a constant. *must-pass*
-  - The panel names the mode and says plainly nothing can be read yet. *must-pass*
-  - The log offers the mode; the telemetry mode field says PSK31. *must-pass*
-  - `BindingHealthTests.TheMainWindowBindsWithoutOneComplaint` green. *must-pass*
-  - The mode is in the Digital family and draws with text colour only. *must-pass*
-  - The neighbourhood map picks out the PSK31 block when the tab is selected. *nice-to-pass*
-  
-  **Done by unit 312.** Found that most of the seam already existed and that the missing
-  piece was an untruthful panel running FT8's decoder under the PSK31 label.
+  - The band pills are not on the green zone; the map is wider by the space they held,
+    stated in pixels. *must-pass*
+  - The band, frequency, mode and license line stay on the left; the heard count stays on
+    the right; the rule-of-thumb line stays. *must-pass*
+  - The line *Hamlet cannot work CW, PSK31 and Voice yet* exists nowhere. *must-pass*
+  - `BindingHealthTests` and `VoiceTests` green; the carry-forward list green. *must-pass*
+  - The report lists every file the session could not delete, once. *must-pass*
   
   **Depends on:** nothing.
   
-  ## Step 1 - Hear one
+  ## Step 1 - Every category page is trading cards
   
-  **Delivers:** a single-channel BPSK demodulator and varicode decoder, with AFC, bit-clock
-  recovery and a squelch, proved against fixtures with a stated character error rate, and
-  wired so pressing PSK31 shows text arriving from one spot.
+  **Delivers:** R22 on all eight kinds.
   
-  **Entry:** step 0 done; the PSK31 tab runs no FT8 decoder and reaches no send path.
+  **Entry:** step 0 done - the achievements window opens to eight badges with no scroller
+  and a badge clicks in, checked by running `TheAchievementsPageClicksInTests` first.
   
   **Exit:**
-  - The varicode table is in the tree as cited data; all 256 codes round-trip. *must-pass*
-  - The QSO fixtures decode at or under the stated ceilings: clean 0.01, +10 dB 0.02,
-    +3 dB 0.05, -3 dB 0.10, two-signal 0.05 on the 1000 Hz channel with none of the other
-    station's text. *must-pass*
-  - The noise-only fixture produces zero characters, and the squelch rule and its number
-    are stated in one place. *must-pass*
-  - The reference implementation is pinned outside the tree and nothing is ported.
+  - A category page has the color band with count, score, level and a bar to the next
+    level. *must-pass*
+  - An earned card carries the entity, callsign, grid, a path map cropped to the two
+    stations, distance, band, mode, date and points, from the log entry that earned it.
     *must-pass*
-  - Every fixture's hash matches the manifest before use. *must-pass*
-  - The drift fixture decodes at or under 0.05 with AFC. *nice-to-pass*
-  - A weak-signal number is measured and reported with no ceiling. *nice-to-pass*
-  
-  **Done by unit 314**, every QSO fixture at 0.0000, -10 dB measured at 0.1502. **Every
-  fixture is synthetic**; nothing has been measured against the air.
+  - The next card names what it wants and, when anyone on the CQ list would earn it, lists
+    them with distance; otherwise says no one is calling from there now. *must-pass*
+  - All eight kinds render this way, each with its own content per R22; Continents opens
+    to seven badges and each to its countries. *must-pass*
+  - No string in any slot clips or wraps a word, asserted by measuring at 1400 and 1920.
+    *must-pass*
+  - No card is a white rectangle: every card has a map, a bar, or a live list. *must-pass*
+  - Telemetry: `achievement_category_opened` carries the kind and the count of cards
+    rendered. *must-pass*
+  - A card's map opens in the popup on click, as the conversation card's does.
+    *nice-to-pass*
   
   **Depends on:** step 0.
   
-  ## Step 2 - Hear everyone
+  ## Step 2 - The record is honest, and the layout settled
   
-  **Delivers:** every PSK31 signal in the passband found and decoded at once, into the same
-  decoded-text list FT8 uses - one row per signal with its offset, its strength and its
-  text as it arrives - so the panel is a list of stations rather than one channel.
+  **Delivers:** R23 and R24.
   
-  **Entry:** step 1 done - `Psk31Demodulator` decodes the clean fixture at 0.0000 and
-  emits nothing on noise, checked by running those two tests before anything is built.
+  **Entry:** step 1 done.
   
   **Exit:**
-  - The two-signal fixture yields two rows, one per carrier, each decoding its own text at
-    or under 0.05, with nothing of one in the other. *must-pass*
-  - `assets/fixtures/psk31-four-signals.wav` - four signals at 700, 1100, 1600 and
-    2200 Hz at different levels, one drifting - yields four rows, each decoding its own
-    text at or under 0.10 **over the span the carrier was on**. The author's reference
-    reads all four at 0.0000 on that span, and 0.125, 0.386, 0.183 and 0.000 when its
-    unsquelched output after each carrier stops is counted - `manifest-step2.json`.
+  - A US contact with `STATE` in the log scores its state; one without scores nothing; the
+    States badge count matches the log. *must-pass*
+  - `rank_names` in the points file names the ranks; absent, the defaults show; the file's
+    keys are documented at its top. *must-pass*
+  - At 1400 the decoded list and For You share the tab by R24, no callsign is clipped, and
+    the card's table is beside the map or under it by the stated rule; at 1920 beside.
     *must-pass*
-  - The noise-only fixture yields zero rows. *must-pass*
-  - A carrier that stops sending is retired from the list rather than left as a ghost;
-    the rule and its timing are stated. *must-pass*
-  - Signals are found by measurement across the passband - a search the unit describes -
-    not by a fixed list of offsets. *must-pass*
-  - The search and all demodulators together keep up with real time on this machine,
-    measured as a number. *must-pass*
-  - `assets/fixtures/psk31-two-signals-100hz-apart.wav` - both carriers decode, at or
-    under 0.05 each. *nice-to-pass*
-  - Off-air audio, if Tim has recorded it, decodes to something a person can read; the
-    count of rows and a sample of text are reported, no ceiling. *nice-to-pass*
-  
-  **Rows are text only.** No callsign is parsed out, no row is clickable, nothing is a
-  station yet. That is step 3.
+  - The report states the split at both widths. *must-pass*
   
   **Depends on:** step 1.
   
-  ## Step 3 - Read the conversation
+  ## Step 3 - Tim looks
   
-  **Delivers:** the parser that turns each row's free text into exchange state - callsigns,
-  `de`, `CQ`, RST, grid, the turnover words, 73 and the closers - with an explicit
-  **unknown** where the text does not support a state. The CQ filter becomes the rows
-  whose text parses as a CQ. Rows become stations: worked-fade, entity resolution and the
-  achievement nudge run on PSK31 rows unchanged.
+  **Delivers:** Tim opens every page at his window size and says it passed.
   
-  **Entry:** step 2 done - the two-signal fixture yields two rows of text, checked by
-  running that test first.
+  **Entry:** step 2 done.
   
   **Exit:**
-  - `assets/fixtures/psk31-transcripts/corpus.json` - eight transcripts, 32 lines, each
-    line carrying what a correct parser must conclude - yields, per line, the speaker,
-    the addressee, the kind and the turnover as the corpus states them, and **no state is
-    asserted that the corpus marks uncertain**. *must-pass*
-  - The unknown rate per transcript is stated as a number beside the corpus's expected
-    rate; on the garbled transcript it is **not lower** than the corpus expects.
-    *must-pass*
-  - A row addressed to the operator's own callsign is recognised as such. *must-pass*
-  - The CQ filter selects exactly the rows whose text parses as a CQ, and nothing else.
-    *must-pass*
-  - Worked-fade, `DxccPrefixes.EntityOf` with its `CQ` guard, and the nudge run on PSK31
-    rows **with no change to their code**; a Costa Rican station calling CQ gets the same
-    quill it would on FT8. *must-pass*
-  - Guessed states are distinguishable from certain ones in what the view model exposes
-    (Â§R1), not by colour alone. *must-pass*
-  - Name and QTH are shown as text and never parsed into state (Â§R3). *must-pass*
-  - A non-standard exchange that skips the report still lands on 73 correctly.
-    *nice-to-pass*
-  
-  **Nothing in this step transmits or offers a click that transmits.** Rows become
-  clickable stations only in the sense FT8 rows are; the action behind the click is step 4.
+  - Tim says it passed. *must-pass* No script can evaluate this.
   
   **Depends on:** step 2.
   
-  ## Step 4 - Say it
+  ## Â§5 Dependencies
   
-  **Delivers:** the modulator and the four macros of Â§R2 through the proved transmit
-  chain, one click one transmission; the CQ receipt and conversation cards on the PSK31
-  panel under R1-R6 and R8; the slot clock replaced by whose turn it is - *your turn*,
-  *his turn*, *he is still sending*, *unknown*; drive level and power visible on the panel
-  under Â§R4.
+  Step 0 depends on nothing. Steps 1-3 are one pipeline. When a step blocks there is
+  nowhere to route; work it or halt.
   
-  **Entry:** step 3 done - the parser is certain whose turn it is on the clean corpus
-  entries, checked by running that test first. The chain `cq_pressed â†’ â€¦ â†’ Played` is as
-  `2026-09-10.jsonl` proved it, and Â§R10 is the only licence to change it.
+  ## Â§6 Branching
   
-  **Progress at 2026-09-11 (units 318-322):** the modulator, loopback, bandwidth, the
-  unslotted send under R10, the certainty gate, the turn indicator and the conversation card
-  are built and green. **What remains is the press half**: the CQ that sends once on a clear
-  spot, the receipt, its retirement by a certain answer, the answer and report and confirm
-  macros offered on certainty, and the power offer under Â§R11. The test that stood in the
-  way is the next unit's to rewrite under Â§R12.
+  - **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins; the
+    arbiter proceeds, notes it, does not stop.
+  - **A must-pass is missed by a little.** Ship, report the number, mark `partial`, move
+    on. Never loosen a test.
+  - **A string will not fit.** Shorten it and say which, or widen the slot; never clip.
+  - **A fact for a card is missing from the log** - no grid, no date. The card shows what
+    it has and no dash; a map with no grid is no map, and the card says so in a word.
+  - **Anything touches the radio, a decoder, a parser or the transmit chain.** `MOVE: stop`.
+    This phase is screen only.
+  - **A package is needed.** `MOVE: stop`.
+  - **A file must be deleted.** Empty it, comment it, list it; never stop for it.
+  - **The watchdog.** Until the arbiter repository's process-polling watchdog is installed,
+    status before every `dotnet` command, after every commit and after every task, read
+    from the clock with `tools/status.sh`, never composed.
   
-  **Exit:**
-  - **Loopback:** each of the four macros is modulated by Hamlet, decoded by Hamlet's own
-    demodulator, and comes back identical. *must-pass*
-  - The modulated signal is BPSK at 31.25 baud with raised-cosine envelope, measured:
-    occupied bandwidth stated, and under 100 Hz at -30 dB. *must-pass*
-  - Pressing CQ under PSK31 makes a receipt with no station facts and no Log; an answer
-    retires the receipt and opens a conversation card; two answers make two cards.
-    *must-pass*
-  - A macro is offered for one click only when the parser is certain whose turn it is
-    (Â§R1 strict side). *must-pass*
-  - The turn indicator exists on the PSK31 conversation card, shows *unknown* when it
-    does not know, and the `SlotClock` is not shown for this mode. *must-pass*
-  - Under Â§R11 and Â§R15: the power offer is on the panel beside the drive, defaulting to
-    half; nothing is asked of the operator at the radio; the ALC reference is learned
-    from FT8 sends, and a PSK31 send reading above it by the stated margin becomes a plain
-    sentence on the panel and an event in the record; with no reference yet, the reading
-    is reported and nothing is judged. *must-pass*
-  - Nothing keys the transmitter at the bench. The chain to `Played` is changed only as
-    Â§R10 allows: one `PttOn` site, one unkey path, FT8 and FT4 byte-identical under their
-    guarding tests, and a no-slot send capped at a stated length. *must-pass*
-  - A no-slot send longer than the cap is refused before it arms, and the refusal is a
-    record, not a silence. *must-pass*
-  - The turn indicator changes within one character of the other station's turnover word.
-    *nice-to-pass*
+  ## Â§7 Carried
   
-  **Depends on:** step 3.
-  
-  ## Step 5 - Log and achievements
-  
-  **Delivers:** a PSK31 contact logs with RST, exports as ADIF `MODE=PSK` `SUBMODE=PSK31`,
-  and the mode's achievement records are revealed by the first PSK31 contact and absent
-  before it.
-  
-  **Entry:** step 4 done - a loopback exchange reaches 73, checked by running that test
-  first.
-  
-  **Exit:**
-  - A PSK31 contact logs with an RST field, and the FT8 dB field is not reused for it.
-    *must-pass*
-  - The ADIF export carries `MODE=PSK` and `SUBMODE=PSK31` (already in `ContactModes`
-    from unit 287; asserted, not rebuilt). *must-pass*
-  - Before the first PSK31 contact no PSK31 card is visible on the achievements screen
-    (Â§3.1, absent not dimmed); after it, the mode's records appear. *must-pass*
-  - The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
-  - The ADIF export imports cleanly into one common logger, named. *nice-to-pass*
-  
-  **Depends on:** step 4.
-  
-  ## Step 6 - Tim at the radio
-  
-  **Delivers:** Tim tunes 14.070, sees text, works a station, logs it, and says it passed.
-  
-  **Entry:** step 5 done.
-  
-  **Exit:**
-  - Tim says it passed. *must-pass* **No script can evaluate this and none should try.**
-  
-  **Depends on:** step 5.
-  
-  ## Â§5 Dependencies, and the named deviation
-  
-  `PHASE_CONTROL.md` Â§2 wants at least one step depending on nothing. **Step 0 depended on
-  nothing and is done. Everything after it is one pipeline** - each step's entry is the
-  previous step's exit - as the FT4 phase was. Manufacturing an independent step would be
-  contrivance. **When a step blocks, there is nowhere to route: work it or halt.**
-  
-  ## Â§6 Branching - the judgments the owner has an opinion about
-  
-  These are the handful of calls the arbiter would otherwise get wrong at three in the
-  morning. Everything else is the arbiter's judgment, reported.
-  
-  - **A must-pass ceiling is missed by a little.** Ship the decoder or parser anyway,
-    report the number, mark the step `partial`, and move on. A decoder at 0.12 on a
-    fixture is a finding about the fixture. **Do not delete the assertion and do not loosen
-    the ceiling.**
-  - **The parser cannot tell.** The answer is `unknown`, and a high unknown rate is a
-    number to report, not a reason to guess. **Never loosen Â§R1's strict side** - a macro
-    is offered only on certainty. If the unknown rate makes step 4 unusable, that is
-    `MOVE: stop` with the number, because it changes what the product can promise.
-  - **Anything would touch the transmit chain, the keying path, or `Played` beyond what
-    Â§R10 allows.** `MOVE: stop`. Risk posture is the owner's. What Â§R10 allows is ruled and
-    is not a stop.
-  - **A package would be needed** - an FFT library, a DSP package, `Avalonia.Headless.Skia`.
-    `MOVE: stop`. Â§0.4.
-  - **Reading fldigi tempts a port.** Read the structure; write Hamlet's own. If a unit
-    cannot proceed without copying, `MOVE: stop` and say what it would copy.
-  - **Real off-air audio does not exist yet.** Proceed on the synthetic fixtures, say every
-    number is synthetic, and raise the recording again in section 4. **Do not stop for it.**
-  - **A step-0 or step-1 defect is found later** - the tab reaching a send path again, a
-    character shown that the squelch should have swallowed. Fix it in passing as the first
-    task of the current unit and say so; do not reopen the earlier step.
-  - **The card-rebuild root** (cards remade every slot, per-card state lost) is met.
-    It is not this phase's. Work around it for PSK31's rows the way unit 314 did - replace
-    in place - and log it, not chase it.
-  - **A drop candidate has to be taken.** Take it, say which, mark the step `partial`
-    only if a must-pass went with it.
-  
-  ## Â§7 Carried into the phase from the FT4 phase
-  
-  Open asks this phase touches or must not lose. Every unit carries them in its section 4.
-  
-  - **Does the transmission record ask the radio whether it keyed?** Unit 303's proposal.
-    Step 4 makes it sharper: a continuous carrier that did not key is a long silence.
-  - **Nothing in this repository can look at a picture.** `Avalonia.Headless.Skia` is
-    Tim's to add.
-  - **Three inherited reds**, never chased.
-  - **The licence of `assets/world-flat-relief.png`** is unknown.
-  - **The door sentence** is a placeholder.
-  - **Acknowledgement indicators** - named by Tim, not yet defined. Step 4's turn indicator
-    may be what he meant; it is not assumed to be.
-  - **Card ordering under scroll**, and its root, the per-slot card rebuild.
-  - **The popup zoom cap of 2.0x** and **the 2 px map outline** are sessions' numbers.
-  - **Version numbering** - x.y.0 or x.y.1 for a phase's first unit.
-  - **Real off-air PSK31 audio** - only Tim can record it; two or three minutes on 14.070
-    with a few signals on it.
-  
-  ## Â§8 Revision record
-  
-  - **2026-09-11, revised by the web thread after reading `PHASE_CONTROL.md` and
-    `ARBITER.md`.** The first version carried its per-step content as bold paragraphs under
-    an exit-criteria heading; the launcher's step extraction reads `## Step N` sections and
-    found none. This version gives every step its own section with Delivers, Entry, Exit
-    tiered and Depends on, in the form the FT4 plan used; adds the branching section Â§1 of
-    `PHASE_CONTROL.md` requires and the first version omitted; names the whole-suite
-    conflict with HM-DEC-155; corrects Â§R6 to the cited row; and records R8 and R9 from
-    rulings made after the plan was set. **The step list and the phase name are unchanged**,
-    so the outcome and status files stay consistent with it. Steps 0 and 1 are recorded as
-    done by units 312 and 314 in `PHASE_OUTCOME.md`, which is the authority on state; this
-    plan carries no state.
-  - **2026-09-11, second revision.** Â§R10 added on Tim's ruling of the same day, answering
-    the arbiter's stop of unit 317 with option A. Â§2's premise corrected, step 4's entry and
-    exit amended, Â§6's transmit-chain stop narrowed to what Â§R10 does not cover. The step
-    list is unchanged.
-  - **2026-09-11, third revision.** Â§R11 (drive and power: the operator sets nothing), Â§R12
-    (a session fixes its own tests), Â§R13 (telemetry must-pass on every remaining step), Â§R14
-    (eyes on the prize) added on Tim's rulings of the same evening. Step 4's drive-and-power
-    exit rewritten under Â§R11 and its entry annotated with what units 318-322 delivered. Â§R4
-    superseded. The step list is unchanged.
-  - **2026-09-11, fourth revision.** Â§R15 (ALC learned from FT8), Â§R16 (two quills, no cap),
-    Â§R17 (collapsed panels and the filter), Â§R18 (the waiting card), Â§R19 (American
-    spelling) added on Tim's rulings of the same evening. Step 4's power exit rewritten
-    under Â§R15. The step list is unchanged.
+  Every open ask of the PSK31 phase, from unit 333's queue, carried verbatim by every unit.
+  Plus: real flags on earned country cards - undecided, Tim's; the recording of real PSK31
+  audio - still the one thing that answers why a strong signal read badly; the id-scheme
+  split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  13 lines, 1785 bytes
-  PHASE: Hamlet works PSK31 the way it works FT8
-  PHASE_SET: 2026-09-11
-  DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
-  CURRENT_STEP: 5
-  WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
-  HEARTBEAT: 2026-09-12 15:17:22
-  STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
-  STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
-  STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
-  STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
-  STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | blocked | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  10 lines, 1095 bytes
+  PHASE: The screen says what is true and looks like someone meant it
+  PHASE_SET: 2026-09-12
+  DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
+  CURRENT_STEP: 2
+  WORK_INSTRUCTION: 335 - every category page is trading cards
+  HEARTBEAT: 2026-09-12 17:30:25
+  STEP: 0 | done | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
+  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | not started | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
+  STEP: 3 | not started | Tim looks at it - every page at his window size, and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  466 lines, 71364 bytes
-  PHASE: Hamlet works PSK31 the way it works FT8
-  PHASE_SET: 2026-09-11
-  DESCRIPTION: A third digital mode with the same two cards, the same one-click exchange, the same log and the same achievements, on a modem Hamlet builds itself.
-  STEP: 0 | done | The seam - PSK31 exists as a mode. Family colour, the cited 14.070 watering hole, a tab, a log mode and submode, a telemetry mode field. Pressing it tunes USB-D to 14.070 and shows an empty panel that names itself. Nothing decodes.
-  STEP: 1 | done | Hear one - a single-channel BPSK demodulator and varicode decoder with AFC and bit-clock recovery, proved against recorded fixtures with a stated character error rate.
-  STEP: 2 | done | Hear everyone - signals found across the passband, each with its own demodulator, into the same decoded-text list FT8 uses, with frequency, strength and text as it arrives.
-  STEP: 3 | done | Read the conversation - the parser that turns free text into exchange state, with an explicit unknown. The CQ list is the rows whose text parses as a CQ. Worked-fade, entity resolution and the nudge reuse unchanged.
-  STEP: 4 | done | Say it - the modulator and the macro exchange through the proved transmit chain. One click, one transmission. Receipt and conversation cards on the same panel; the slot clock replaced by whose turn it is. Proved by loopback at the bench.
-  STEP: 5 | partial | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-  STEP: 6 | blocked | Tim at the radio - tune 14.070, see text, work a station, log it. Only he can close it.
+  63 lines, 8978 bytes
+  PHASE: The screen says what is true and looks like someone meant it
+  PHASE_SET: 2026-09-12
+  DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
+  STEP: 0 | done | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
+  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | not started | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
+  STEP: 3 | not started | Tim looks at it - every page at his window size, and says it passed.
   
-  ## UNIT 312 - STEP 0
+  ## UNIT 334 - STEP 0
   
   STEP: 0
-  APPROACH: Read the PSK31 phase plan in full, then traced how FT4 was added as a mode and checked every claim the instruction makes against the tree before changing a line.
-  HIT: MUCH OF THE SEAM IS ALREADY THERE AND ONE PIECE OF IT IS DISHONEST. PSK31 is already one of DigitalModeChip.Labels, already carries the cited 14.070 row in us-neighborhoods.json, already writes USB-D through ModeFollowPlan line 219, and is already in ContactModes.Six as MODE=PSK with SUBMODE=PSK31 from unit 287. What is missing is that DigitalModeFor maps PSK31 onto DigitalMode.Ft8, so pressing PSK31 tunes to 14.070 and then runs FT8 slots and the FT8 decoder on it, while the panel says slots here run 15 seconds on a mode that has no slots.
-  MOVE: Name the gap rather than filling it silently, and make the panel say what is true for this mode.
-  WHY: A tab that tunes correctly and then decodes as another mode is worse than one that does nothing, because the screen looks busy and every word on it is about a mode the operator did not press.
-  DECIDED: Nothing yet. Task 1 changes no production file except the version.
-  LICENCE: Work instruction 312 tasks 1 to 4, PHASE_PLAN.md sections 1 to R7 and HM-DEC-155.
-  COST: one session, no test suite run, the carry-forward list of 19 named types run filtered and foregrounded at 106 of 106 green before anything changed
-  ACCOMPLISHED: The phase record is open and the starting position is measured rather than assumed.
+  APPROACH: remove the band pills from the green zone and widen the map by their space, remove the stale cannot-work line, list the undeletable files once, and open the phase in the card and the decisions file
+  MOVE: continue
+  WHY: step 0 depends on nothing; every part of it is a ruling already made on the owner's own screen
+  DECIDED: nothing beyond the plan; the map's new width is measured, not chosen. The sparkline is the drop candidate for task 1; tasks 0, 2 and 3 have none.
+  LICENCE: PHASE_PLAN.md R21, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R14, R19; CLAUDE.md 0.0, 0.5, 0.6; HM-DEC-139, HM-DEC-155
+  COST: one session, four tasks, each committing on its own.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
   FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: STEP 0 IS CARRIED AT partial UNTIL THE SEAM IS BUILT. Task 1 only measured. Its must-pass criteria - the panel naming the mode, the tune, the log mode and the binding test - are tasks 2 and onward.
+  STATE_AFTER: done
+  STATE_WHY: Written at task 3, against tests that ran in this session; every appearance claim is computed on the headless host, not seen. One: no band pill, pip bar or you-are-on-it line is on the green zone, and the map is 202 x 110 before and 232 x 127 after at a 1400 window (30 px wider), 492 x 269 at 1920 - TheGreenZoneTests rewritten under R12, watched red on 7 chips and 7 pip bars, then 15 of 15. Two: band, frequency, mode and license lines stay on the left and wrap as before; the heard count and its sparkline stay on the right; the rule of thumb stays under the map; the panel's ink is 100 percent of its width. Three: Hamlet cannot work CW, PSK31 and Voice yet is in no file under src - unit 332 removed it, and a VoiceTests check now holds it out, green on first run because there was nothing to catch. Four: BindingHealthTests and VoiceTests green; the carry-forward list 100 of 100 app and 85 of 85 engine after the change. Five: output.md section 2 lists the thirteen emptied files once. Nothing touched the radio side.
   
-  ### ALSO RECORDED FOR UNIT 312 - STEP 0
+  ### ALSO RECORDED FOR UNIT 334 - STEP 0
   
-  A second append for the same unit and the same step, called as UNIT 312.
+  A second append for the same unit and the same step, called as UNIT 1.
   One unit is one entry, so what this route recorded is folded in here
   rather than written as a second entry. Only what differs is listed.
   
-  APPROACH: Measured the seam before building it, then built only the part that was missing and made the panel say what is true.
-  HIT: STEP 0 WAS MOSTLY ALREADY THERE AND THE MISSING PIECE WAS AN UNTRUTHFUL PANEL. PSK31 was on the mode strip, had the cited 14.070 row, wrote USB-D through ModeFollowPlan and was in ContactModes.Six as MODE=PSK with SUBMODE=PSK31. DigitalModeFor mapped it onto DigitalMode.Ft8 - the right default for a slot grid, used as an answer to can this be read - so pressing PSK31 tuned correctly and then ran FT8 slots and the FT8 decoder on a PSK31 frequency under a line saying slots here run 15 seconds. AND NO RIBBON ON THE MAP LIT FOR ANY MODE, contrary to the instruction, so task 4 built the mechanism rather than copying it.
-  MOVE: Name what has a decoder, say plainly that this one does not, carry the label into the record, and pick out the block he asked for.
-  DECIDED: Two on the author authority, both reported. The strip line answers for the pressed label rather than the mapped decoder, because the sentence is about the label. And the engine enum keeps its two members: a third for a mode with no decoder would assert a capability the application does not have, which is what that type own remarks already say.
-  LICENCE: Work instruction 312 tasks 1 to 4, PHASE_PLAN.md sections 1 to R7, HM-DEC-032, HM-DEC-054, HM-DEC-092 and HM-DEC-155.
-  COST: one session, no test suite run, every run filtered by exact name and foregrounded with a 480 s timeout
-  ACCOMPLISHED: Pressing PSK31 takes the radio to the cited watering hole in USB-D, the panel says the mode by name and says Hamlet cannot read it yet, the log already spells it the way ADIF does, the record can tell a PSK31 evening from an FT8 one, and the map picks out the block he asked for. Nothing decodes, nothing transmits, and the reference is pinned at one commit with nothing read from it.
-  STATE_AFTER: done
-  STATE_WHY: STEP 0 IS done. Every must-pass met: the press tunes to the cited 14.070 in USB-D, the panel names the mode, the log offers it, BindingHealthTests is green, and the family is the map own answer with this unit adding ink and never a fill. The nice-to-pass is met too. NOTHING WAS MEASURED AT A RADIO - FACT-006, this machine has none - so every appearance claim is computed.
+  HIT: section 4 wants a ruling: banked - The two new rulings, a height cap at 1920 and whether a 30 px gain at 1400 is enough, only adjust a map size that already meets its exit criterion, step 0 is recorded done with every must-pass met, and no remaining work depends on the answers.
+  DECIDED: nothing beyond the plan; the map's new width is measured, not chosen
+  LICENCE: PHASE_PLAN.md R21, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R14, R19; CLAUDE.md 0.0, 0.5, 0.6
+  COST: 9.115458999999998
+  ACCOMPLISHED: the green zone no longer repeats the band row and the map is the size Tim asked for
+  STATE_WHY: The report backs every must-pass with evidence, the pills gone and the map measured at 202 to 232 px at 1400 and 202 to 492 px at 1920, the layout checks and the stale line held out by tests, BindingHealthTests and VoiceTests at 21 of 21 with carry-forward at 100 of 100 and 85 of 85, and one list of thirteen files in section 2, though the widths come from the headless host and not the real screen.
   
-  ## UNIT 313 - STEP 0
-  
-  STEP: 0
-  APPROACH: Read Tim own screenshot directly, sampled the glyph colour out of its pixels, then stood the real window up headless with six cards and read back where the layout put each one.
-  HIT: THE PANEL HAS NO SCROLL CONTAINER AT ALL AND THE POPUP MAGNIFIES FOUR TIMES. Measured on the real window: the cards control lays out 1748 px of cards inside a panel 264 px tall, five of six cards start below the bottom edge, and the nearest ScrollViewer above the cards is NONE. The card is 301 px wide inside a 331 px panel, so nothing is clipped horizontally - the truncation on the screenshot is the screenshot own crop at 1207 px. The F4DIA popup is 3.98x, the zoom floor unit 310 set permits 4.13x, and a same-state contact hits exactly that. AND THE GREEN CIRCLED GLYPHS ARE UNIT 309 ACHIEVEMENT QUILLS, decode green 3B6D11 sampled exactly off 21 pixels of the screenshot.
-  MOVE: Cap the magnification rather than floor the frame, and put the cards in the same kind of scroll container the two lists beside them already use.
-  WHY: A floor on the frame was the wrong instrument: tight enough to stay sharp is a floor of the whole file, which is no zoom at all. And a card that cannot be reached is a contact that cannot be logged.
-  DECIDED: Nothing yet. Task 1 changed no production file except the version.
-  LICENCE: Work instruction 313 tasks 1 to 4 under R9 and R10 of 2026-09-11, with unit 310 R1 to R8 unchanged.
-  COST: one session, no test suite run, sixteen named types run filtered and foregrounded before anything changed
-  ACCOMPLISHED: The two faults are measured rather than described, and the third thing the instruction asked about is settled: the achievement marks Tim called a total failure are on his list and drawn in the ruled colour.
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: THIS UNIT ADVANCES NO STEP OF THE PSK31 PHASE and is recorded against step 0 because that is the step the phase has reached. It is carried repair of two FT8 and FT4 faults on surfaces PSK31 will inherit. NOTHING WAS MEASURED AT A RADIO.
-  
-  ## UNIT 314 - STEP 1
+  ## UNIT 335 - STEP 1
   
   STEP: 1
-  APPROACH: Disconnected the FT8 machinery from the PSK31 tab before building anything.
-  HIT: THE TAB WAS DECODING AND TRANSMITTING FT8 ON 14.070 AND THE OPERATOR FOUND IT BY USING IT. Unit 312 wrote the sentence onto the panel and left the slot tick running: OnSlotTick gates on IsDigitalMode, which is the tab rather than the sub-mode, so the watch went on cutting FT8 slots and the FT8 decoder went on reading them. SendMessage composes through DigitalModeFor, which answers Ft8 for everything that is not FT4, so his answer put FT8 tones on the PSK31 calling frequency. Measured after the gates: thirty ticks under PSK31 give 0 slot looks and 0 rows; the same thirty under FT8 and FT4 give 30 looks each.
-  MOVE: Two gates at the two doors: the tick returns before the watch is asked, and the one send door refuses in words.
-  WHY: A tab that transmits the wrong mode into the wrong segment is worse than a tab that does nothing.
-  DECIDED: One predicate for hearing and a separate one for sending, because the next step gives PSK31 a decoder and must not thereby re-open the transmitter.
-  LICENCE: Work instruction 314 task 1 under Tim rulings of 2026-09-11 on the tab and on the receipt.
-  COST: one session, no suite, 24 named types at 146 of 146 green before anything changed
-  ACCOMPLISHED: The PSK31 tab can no longer decode as another mode or transmit as one, and the CQ receipt offers nothing to log.
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: STEP 1 IS CARRIED AT partial. Task 1 is a step-0 defect repaired in passing and is not an advance; the demodulator that would close step 1 is tasks 2 to 4. NOTHING WAS MEASURED AT A RADIO.
-  
-  ### ALSO RECORDED FOR UNIT 314 - STEP 1
-  
-  A second append for the same unit and the same step, called as UNIT 314.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: Built the decoder against the shipped fixtures after disconnecting the machinery that was pretending to be one.
-  HIT: IT READS EVERY QSO FIXTURE AT CER 0.0000, WHICH IS WHAT THE OFFLINE REFERENCE SCORED. Clean, +10 dB, +3 dB, -3 dB, a carrier drifting 20 Hz in a minute, and a second station 500 Hz away: 255 of 255 characters each, none of the other station text, every one in 0.02 seconds. The noise-only fixture emits nothing where the unsquelched reference emitted 112 garbage characters. ONE REAL BUG, FOUND BY MEASURING RATHER THAN REASONING: the timing profile decayed faster than a single bit, so the clock chased whichever symbol had just gone past. It cost CER 0.1976 at +10 dB where clean was 0.0237. The cadence is fixed and nudged one sample at a time now.
-  MOVE: One channel, one offset, fed from the same audio tap the FT8 decoder uses, with characters on the panel as they complete.
-  WHY: PSK31 has no slots, so there is nothing to wait for the end of, and a panel that filled only when the audio ran out would show nothing at all on a live band.
-  DECIDED: The squelch measures shape rather than loudness, because loudness cannot tell a station from a burst of noise at the same level. Its number is 0.90 on a scale whose two ends are 0.637 for uniform noise phase and 1.0 for clean keying.
-  LICENCE: Work instruction 314 tasks 1 to 5, PHASE_PLAN.md sections 1, 3, R1, R3 and R5, and Tim rulings of 2026-09-11.
-  COST: one session, no test suite run, 24 named types at 146 of 146 green before anything changed and 170 green after
-  ACCOMPLISHED: Pressing PSK31 tunes to the cited watering hole, listens at one spot and shows text as it arrives, and can neither decode as another mode nor transmit as one.
-  STATE_AFTER: done
-  STATE_WHY: STEP 1 IS done. Every must-pass is met: a recorded fixture decodes to its known text with the error rate stated, the varicode table is cited, the reference commit is recorded with the clone outside the tree, the squelch rule is stated and the noise-only fixture produces nothing. The nice-to-pass is met too - the drifting carrier holds lock. NOTHING WAS MEASURED AT A RADIO and every fixture is synthetic, so all of it is an indication rather than a finding.
-  
-  ## UNIT 315 - STEP 2
-  
-  UNIT_AS_CALLED: 1
-  STEP: 2
-  APPROACH: find every PSK31 carrier across the passband by measurement and run one demodulator per carrier into the FT8 decoded-text list
-  HIT: section 4 wants a ruling: banked - Several rulings are asked for, on the 1500 Hz reference text, the search floor, the ruling id, the squelch delay and the hover wording, but at most they touch how firmly one must-pass is shown, and the other step 2 criteria and later work do not wait on them.
+  APPROACH: rebuild the achievements category pages as trading cards - a header band with count, score, level and a bar on every kind; earned cards built from the log contact that earned them with the conversation card's globe plot; next cards handed the decoded CQ list; all eight kinds per R22; measured at 1400 and 1920
   MOVE: continue
-  WHY: Steps 0 and 1 are done and proved; step 2 is the next in the pipeline and its ground is the single-channel demodulator unit 314 built. Nothing blocks it.
-  DECIDED: the search rule and the retire rule are the unit's to choose and state, within the plan's requirement that both be measurements with a stated number; and the seed unit records the phase-setting ruling in DECISIONS.md and recovers the FT4 run files, because the phase was installed without install-phase.bat
-  LICENCE: PHASE_PLAN.md step 2 entry and exit criteria, A6 branching, HM-DEC-155; install-phase.bat's stated seed-unit duties; CLAUDE.md A12.1 for recording a ruling the owner gave
-  COST: 24.949754000000002
-  ACCOMPLISHED: pressing PSK31 shows every station on the band as its own row of text, not one spot
+  WHY: step 0 is done (unit 334, STATE_AFTER: done) and step 1 is next in the pipeline; its entry is checked by running TheAchievementsPageClicksInTests first
+  DECIDED: nothing beyond the instruction at task 0. The popup (task 5) is the drop candidate; task 4 sheds whole kinds only if the unit runs long. A States next card says Hamlet cannot tell a caller's state from the air, the arbiter's proposal marked for Tim.
+  LICENCE: PHASE_PLAN.md R22, section 4 step 1, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R13, R14; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1 with Ruling C, 3.5, 4; HM-DEC-092, HM-DEC-111, HM-DEC-139, HM-DEC-155
+  COST: one session, six tasks (0 to 5), each committing and pushing on its own.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
   FATE: executed
   STATE_AFTER: done
-  STATE_WHY: All six must pass criteria are backed by measurements, with two and four signal rows at CER 0.0000, zero rows on noise, a stated 2.5 s retire rule measured at 1.75 to 2.50 s, a described search with no offset list and a real time ratio of 0.004, and the weakest point is that the 1500 Hz reference was derived rather than recorded.
+  STATE_WHY: Written at task 4, against tests that ran in this session; every appearance claim is computed on the headless host, not seen. Tasks 0 to 4 done and pushed; task 5, the popup, dropped whole as the named drop candidate, so the nice-to-pass is unmet and no must-pass is lost. One: every kind's band carries count, score, level and a bar, or words where there is no next level - 8 of 8, watched red on no named band. Two: every earned card is the earliest contact in its place, with the conversation card's globe plot, the log's miles, band, mode, date and points; no dash where a fact is missing, and a card with no grid says so and lists its contacts. Three: the next card lists who on the CQ list, read with its time, would earn it, with distance, or says no one is calling from there now; States says Hamlet cannot tell a caller's state. Four: all eight kinds per R22, Continents to seven cards each opening to its countries. Five and six: at windows 1400 x 720 and 1920 x 720, every visible run fits and does not wrap on 10 pages, and 0 of 51 cards at each width lack a map, a bar or a list. Seven: achievement_category_opened carries the kind and the card count. 36 of 37 across the achievements, binding and privacy tests, the one red the known TheWindowDrawsEverySixRows; carry-forward after the change 100 of 100 app and 85 of 85 engine.
   
-  ## UNIT 316 - STEP 3
-  
-  UNIT_AS_CALLED: 2
-  STEP: 3
-  APPROACH: parse each PSK31 message into speaker, addressee, kind, turnover and certainty against the transcript corpus, split the growing row at turnover words, and feed the parse to the unchanged FT8 row readers
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the replaced assertion, the guess and unknown wording, roger recognition, the split rule edges and the callsign copies, but they only confirm choices the unit has already made or affect step 4 planning, so step 3 is not blocked and its remaining work can go on without an answer.
-  MOVE: continue
-  WHY: Steps 0 to 2 are done, step 2 by the separate reading of unit 315's report, and step 3 is next in the plan's one pipeline with nothing blocking it; the loop test finds no approach tried on step 3. Unit 315's eight section 4 items are logged as asks 17 to 24, not chased - none bears on a step 3 criterion.
-  DECIDED: three on the arbiter's authority. The corpus lines are joined into one stream to make A3.4's 'a message is what arrived between two turnovers' measurable. The corpus's self-contradiction on 05-garbled (expected 0.2, two of five lines uncertain) is reported under both readings and not resolved. Task 5, end to end from the four-signal audio, is the drop candidate because it moves no must-pass.
-  LICENCE: PHASE_PLAN.md step 3 entry and exit criteria, A1, A3.4, A3.5, AR1, AR3, AR9 and A6 branching; ARBITER.md A6, which makes the tasks, the tiering and the drop candidate the arbiter's
-  COST: 19.498643
-  ACCOMPLISHED: with PSK31 pressed, the CQ filter shows the stations calling CQ, a station calling Tim lands on his side, and every row says who is speaking and whether Hamlet is sure - with the same fade, country and quill an FT8 row gets, and nothing that transmits
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: The report backs every criterion with a measurement, 32 of 32 corpus lines matched with none wrongly certain, garbled uncertainty at 0.40 against 0.20 expected, own callsign recognised on 8 lines, the CQ filter taking 12 of 12 CQ rows and 0 of 28 others, an empty diff on the reused code with the same Costa Rica quill, IsGuess plus a visible word, no name or QTH members, and 03 no report ending on 73.
-  
-  ## UNIT 318 - STEP 4
-  
-  UNIT_AS_CALLED: 1
-  STEP: 4
-  APPROACH: build the PSK31 modulator proved by loopback through the PSK31 demodulator, carry a capped unslotted send through the one transmit sequence under R10, and read whose turn it is in the engine, with the PSK31 send door kept shut
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on file access and the IC7300 manual, the record event name, the 23 unlisted reds and the idle bits, but together they hold back only the drive citation, the shaping reference and the proof that FT8 and FT4 stayed unchanged, while the receipt and conversation cards, the turn indicator, the rule that offers a macro only when the parser is certain, drive and power shown on the panel and the bandwidth measurement can all still be built under rulings already in the plan.
-  MOVE: continue
-  WHY: Tim answered the stop of instruction 317 with R10, so step 4 is open and is next in the one pipeline, and the loop test finds nothing tried on it. The four must-pass that need no press go first; the send door waits for the R4 drive and power defaults, because a PSK31 carrier at the only drive level ever measured (FACT-005, ALC in the red zone) is the splatter the plan names.
-  DECIDED: four on the arbiter authority. The PSK31 send door stays shut this unit and opens in the unit that builds the R4 defaults. The R10 byte-identical requirement is measured by a pin written and run green on the unchanged chain before the chain changes. The R2 grid is four characters, as R2 writes it. Task 4, the turn reading, is the drop candidate because it completes no criterion by itself.
-  LICENCE: PHASE_PLAN.md step 4 entry and exit criteria, R10 (Tim, 2026-09-11), R1, R2, R4, R5, sections 3.1 and 3.3 and the section 6 branching; SHACK_FACTS.md FACT-005; ARBITER.md section 6, which makes the step, the approach, the tasks and the drop candidate the arbiter decision
-  COST: 22.346655000000002
-  ACCOMPLISHED: Hamlet can make a PSK31 signal of its own that its own ear reads back letter for letter inside a measured width; the one transmit path can carry a PSK31 over that has no slot and refuses one that would run on; FT8 and FT4 go out exactly as before; and nothing new can reach the air until drive and power are built
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: The report backs four must-pass criteria with measurements, the four macros looping back identical, 57.1 Hz at minus 30 dB at 31.25 baud, one PttOn site with FT8 and FT4 pinned identical and a 30 s cap, and the over cap refusal written as a record, but the receipt and conversation cards, the certainty gate, the turn indicator and the drive and power display were not attempted, so four must-pass criteria are still unmet.
-  
-  ## UNIT 319 - STEP 4
-  
-  UNIT_AS_CALLED: 2
-  STEP: 4
-  APPROACH: open a PSK31 conversation card on a message certainly addressed to the operator, read whose turn it is from the parse, show the turn indicator in place of the SlotClock, and offer a macro only on a certain your turn, with the send door kept shut
-  HIT: section 4 wants a ruling: banked - The rulings on the red card assertion, the map row, the wording and the file access affect the card and the drive citation, but step 4 still has open work that needs none of them, such as showing drive level and RF power on the panel with the half power default, the CQ receipt and answer handling, and opening the send door under rulings already in the plan.
-  MOVE: continue
-  WHY: Step 4 is partial with four must-pass unmet; the receipt needs the door and drive and power need an IC-7300 page no session can read (asks 32 and 33), so this unit takes the two that need neither - the turn indicator on a card opened on receive, and the certainty gate - plus the card half of the receipt-and-cards criterion. The loop test finds the approach in no entry, and the turn reading unit 318 named was dropped unrun, so it is untried rather than looped.
-  DECIDED: four on the arbiter authority. The send door stays shut, now on FACT-005 and on the uncitable R4 defaults both. A card opens only on a message the parse is certain is addressed to the operator from a callsign, never on a guess. While the door is shut the offered macro lives in the view model and nothing clickable that would transmit is drawn. Task 4, the certainty gate, is the drop candidate because it rests on tasks 2 and 3 and shows Tim nothing he can press.
-  LICENCE: PHASE_PLAN.md step 4 entry and exit criteria, R1, R2, R3, R4, R8, sections 2, 3.1, 3.4 and 3.5 and the section 6 branching; HM-DEC-092; SHACK_FACTS.md FACT-005; PHASE_OUTCOME.md unit 318 STATE_WHY; ARBITER.md section 6, which makes the step, the approach, the tasks and the drop candidate the arbiter decision
-  COST: 14.774045999999997
-  ACCOMPLISHED: when a PSK31 station calls Tim, a conversation card opens for that station and says whose turn it is - or plainly that Hamlet cannot tell - where FT8 shows the slot clock, and Hamlet knows which macro it would offer only when it is sure, while nothing new can reach the air
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: Six of the eight must pass criteria are met with named tests and counts, but the receipt half of the receipt and cards criterion was never built, and drive level and RF power are not on the panel because they wait on an IC 7300 manual no session can read.
-  
-  ## UNIT 320 - STEP 4
-  
-  UNIT_AS_CALLED: 3
-  STEP: 4
-  APPROACH: build the PSK31 CQ press, its receipt and the certain answer that retires it at the bench, behind a send door bolted on the R4 drive and power defaults, and narrow the no W1AW card assertion to the send path it guards
-  HIT: section 4 wants a ruling: banked - Item 43 holds up only drive and power, and item 45 holds up the press only through a test pin that the owner ruling R10 already overrides, the same way the arbiter settled item 39 on its own authority, so the press, the receipt, its retirement, the macro click and the clear spot search can still be built at the bench with the bolt shut.
-  MOVE: work around
-  WHY: Step 4 is partial with the receipt half of criterion 3 and drive and power unmet; units 318 and 319 kept the door shut and built no press, so this unit builds the press behind a bolt that only R4 can draw, which Tim's R10 licenses and which keeps the running application inert. Drive and power are not aimed at: beyond asks 32 and 33, R4 conflicts with HM-DEC-084 and its ALC default can only be read while keyed, raised as ask 43 for Tim, and the next arbiter stops on it if it is all that is left.
-  DECIDED: six on the arbiter authority. The PSK31 door opens only on a predicate for R4 drive and power that nothing in src makes true, with a test-only seam. Item 39: line 414 of ThePsk31ReadsTheConversationTests is narrowed to no W1AW card that sends or logs, in its own commit, because step 4 criterion 3 requires a PSK31 card. Item 41: the PSK31 card is handed the grid from a certain message only. The first press goes out on an R6 clear spot, and if that is dropped the bolt also requires it. A guessed answer retires no receipt. Task 4, the macro click, is the drop candidate because it moves no must-pass.
-  LICENCE: PHASE_PLAN.md step 4 entry and exit criteria, section 4 on the carry-forward list, R1, R2, R3, R4, R6, R8, R10 (Tim, 2026-09-11), section 2 R1 to R5, sections 3.5 and 6 branching; HM-DEC-084, HM-DEC-074, HM-DEC-082, HM-DEC-049, HM-DEC-092; SHACK_FACTS.md FACT-005; PHASE_OUTCOME.md unit 319 STATE_WHY; output.md unit 319 items 39 to 42; ARBITER.md sections 2 and 6, which make the step, the approach, the tasks, the tiering and the drop candidate the arbiter decision
-  COST: 13.636098000000002
-  ACCOMPLISHED: pressing CQ on PSK31 is built and proved at the bench - one CQ sent on a clear spot, one receipt with nothing to log, retired when a station certainly answers and replaced by his card, which now knows his grid - while the running application still refuses in plain words until Tim settles drive and power, and the carry-forward list is green again
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: Six of the eight must pass criteria stand on green tests from earlier units, but the CQ receipt and cards criterion cannot be built without a ruling on the pins in item 45, and the drive and power criterion waits on the ruling in item 43 and the manual access in items 32 and 33, so more effort by a unit will not move the step.
-  
-  ## UNIT 321 - STEP 4
-  
-  UNIT_AS_CALLED: 4
-  STEP: 4
-  APPROACH: narrow the NothingOnTheCardTransmits source pins to behaviour then build the PSK31 CQ press and receipt behind the drive and power bolt, with a certain answer retiring the receipt
-  HIT: section 4 wants a ruling: banked - Item 43 holds only the drive and power criterion, while item 45 is about a test pin written by unit 319 that conflicts with the owner ruling R10, so the arbiter can narrow that pin on its own authority as it did for item 39, and the press, the receipt and its retirement, the macro click and the turnover timing nice to pass can still be built at the bench with the bolt shut.
-  MOVE: work around
-  WHY: Unit 320 stopped the press before writing it, on two source-text pins from unit 319 that forbid exactly what Tim ruled in R10, so the arbiter narrows them to the behaviour the test is named for, as it did item 39, and the press is built behind the same bolt. This is not a loop, because one attempt stopped on one removable obstacle; a further stop on anything not owner-class would be one. Drive and power stay on ask 43, and the next arbiter stops on it if it is all that is left.
-  DECIDED: five on the arbiter authority. Item 45: the NowAsync pin is narrowed to at most one NowAsync line inside the SendMessage body, and the CanTransmitIn pin to FT8 and FT4 unchanged with PSK31 only through a bolt predicate that nothing in src outside a ForTests member makes true, in its own commit before anything is built. The PSK31 receipt is the existing ledger CQ record, booked without changing the FT8 split rule, never a second receipt type. The receipt is booked only when Arm accepts the send. A certain answer retires it through RetireTheCall, and a guess retires nothing. Task 4, the macro click, is the drop candidate, and the clear spot stays nice-to-pass with the bolt requiring it if dropped.
-  LICENCE: PHASE_PLAN.md step 4 entry and exit criteria, section 4 on the carry-forward list, R1, R2, R3, R4, R6, R8, R10 (Tim, 2026-09-11), section 2 R1 to R5, sections 3.5 and 6 branching; HM-DEC-084, HM-DEC-092, HM-DEC-155; SHACK_FACTS.md FACT-005; PHASE_OUTCOME.md unit 320 HIT and STATE_WHY; output.md unit 320 section 1 and items 43, 45 and 46; ARBITER.md sections 2, 4 and 6, which make the step, the approach, the tasks, the tiering and the drop candidate the arbiter decision
-  COST: 13.636098000000002
-  ACCOMPLISHED: pressing CQ on PSK31 is built and proved at the bench - one CQ sent on a clear spot, one receipt with nothing to log, retired when a station certainly answers and replaced by his card, two answers making two cards - while the running application still refuses in plain words until Tim settles drive and power
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: Six of the eight must pass criteria are backed by named green tests, but the receipt and conversation cards cannot be built without breaking the protected test in item 45, and drive and power wait on rulings 43, 32 and 33, so more effort without a decision will not help.
-  
-  ## UNIT 322 - STEP 4
-  
-  STEP: 4
-  APPROACH: Traced the whole PSK31 path for places where something happens and nothing is written down, before adding a single event.
-  HIT: THE PSK31 PATH WRITES NOTHING AT ALL. AppEvents holds zero PSK31 events - grep count zero - across a search, a listener, five demodulator thresholds and a parser. AND THE ONE PSK31 TRACE THAT DID EXIST STOPPED FOR A REASON THAT IS NOT A CODE CHANGE: the block that writes state_changed for digital_sub_mode last moved in unit 312 at version 1.13.0 and nothing touched it between 1.13.2 and 1.13.4. It fires from the generated property setter, which short-circuits when the value is unchanged, and the chosen sub-mode is restored from settings by assigning the backing field. Once PSK31 was the remembered mode, pressing PSK31 was not a change and nothing fired.
-  MOVE: Instrument every stage as events in a psk31 category, changing no behaviour of the path itself.
-  WHY: The owner asked at the radio whether the band was empty or the squelch was shut, and the file cannot answer it.
-  DECIDED: Nothing yet. Task 1 changes no production file except the version.
-  LICENCE: Work instruction 322 tasks 1 to 5 under Tim ruling of 2026-09-11 on telemetry, HM-DEC-018 and section 2.1.
-  COST: one session, no test suite run, the carry-forward list of 41 named types at 255 of 255 green before anything changed
-  ACCOMPLISHED: The path is mapped and the one event that used to fire is explained.
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: STEP 4 IS CARRIED AT blocked and this unit does not touch it. It is carried repair on the owner ruling that telemetry is the prime focus. NOTHING WAS MEASURED AT A RADIO.
-  
-  ## UNIT 323 - STEP 4
-  
-  STEP: 4
-  APPROACH: Checked the four gate facts, read PHASE_PLAN.md R11 to R14 against the tree, and ran the carry-forward list filtered and foregrounded before changing a line.
-  HIT: STEP 4 IS BLOCKED BY TWO THINGS THIS TREE ALREADY HOLDS THE ANSWER TO. CanTransmitIn answers true for null, FT8 and FT4 and for nothing else, and a test pins its source text character for character - so the door is shut and a test says it must stay shut. Everything behind the door was built and proved by units 318 to 322: the modulator, the four macros, the unslotted send with its 30 s cap, the certainty gate, the turn indicator, the conversation card, and six transmit events with no production call site.
-  MOVE: Open the door on R11, rewrite the guard on R12 so it guards the click rule instead of the shut door, and give the six events their call sites.
-  WHY: The owner has said what the measure of the unit is - he wants to see PSK31 transmitting - and nothing but the guard and the predicate stands between the press and the air.
-  DECIDED: Nothing yet. Task 1 changes no production file except the version.
-  LICENCE: Work instruction 323 tasks 1 to 5 under PHASE_PLAN.md R1, R2, R6, R8, R10, R11, R12, R13 and R14, CLAUDE.md 0.2, HM-DEC-084 and HM-DEC-155.
-  COST: one session, no test suite run, the carry-forward list of 44 named types at 265 of 265 green before anything changed - app 145 and engine 120
-  ACCOMPLISHED: The starting position is measured rather than assumed, and the two rulings that unblock step 4 are confirmed present in the plan.
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: STEP 4 IS CARRIED AT blocked UNTIL THE DOOR IS OPEN. Task 1 only measured; the tasks that advance it are 1b onward.
-  
-  ### ALSO RECORDED FOR UNIT 323 - STEP 4
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: rewrite the shut-door guard to guard the click rule, open CanTransmitIn for PSK31 through the same bolt as FT8, send the CQ macro once on a clear spot through the unslotted sequence, answer and offer the remaining macros on certainty, and offer power at half with the ALC read into a sentence
-  HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
-  MOVE: continue
-  WHY: the two rulings that blocked step 4 are in the plan as R11 and R12; everything else step 4 needs was built by units 318 to 322 and is green; only the press half remains, and the owner has said what the measure of the unit is
-  DECIDED: the clear-spot rule (150 Hz from any held carrier or candidate over 0.4, widest gap preferred) is the unit's number to state; ThePsk31TabIsInertTests is retired and its surviving assertions rehomed, because its premise ends when the door opens
-  LICENCE: PHASE_PLAN.md R10, R11, R12, R13, R14, R1, R2, R6, R8; Tim 2026-09-11 on cards R1-R6; CLAUDE.md 0.2; HM-DEC-084
-  COST: 13.636098000000002
-  ACCOMPLISHED: Tim presses CQ under PSK31 and a PSK31 signal leaves the radio, once, on a clear spot, with a receipt that says so and nothing asked of him at the radio
-  STATE_AFTER: in progress
-  STATE_WHY: no output.md, so there is no report to judge the step against
-  
-  ### ALSO RECORDED FOR UNIT 323 - STEP 4
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC read source, the version bump and the hand validation, but none forecloses step 4 work, since the ALC judgement, sentence, event and power offer are already built and proved from a fed reading and the remaining step 4 work such as the four signal fixture click, the turnover timing nice to pass and the outstanding telemetry items can all proceed at the bench without an answer.
-  COST: 54.71674749999996
-  STATE_AFTER: partial
-  STATE_WHY: Most must-pass criteria have named green tests behind them, but the occupied bandwidth is never stated or measured in the report as the criterion requires, and the R11 ALC criterion is only proved from a fed reading since the report itself admits there is no CI-V read for the ALC, so the sentence can never fire on a real radio and the zone figure of 128 is the unit's own invention awaiting a ruling.
-  
-  ## UNIT 324 - STEP 4
-  
-  STEP: 4
-  APPROACH: Checked the four gate facts, read the PSK31 receive path end to end against the instruction before changing a line, then cut the carry-forward list from a suite back to a list and ran it as one invocation per project.
-  HIT: THE LIST WAS 46 NAMES, NOT 41, AND SIX OF THEM WERE FILED UNDER THE WRONG PROJECT. ThePsk31TelemetryTests, ThePsk31TransmitTelemetryTests, ThePsk31PanelSpeaksPsk31Tests, ThePsk31CqGoesOutTests, ThePsk31ExchangeTests and ThePowerIsOfferedTests are app types and were listed under the engine heading, where a filter for them matches nothing - so a unit that ran the list one name at a time ran six builds that tested nothing and said so to nobody. CallsignPrivacyTests, which the instruction names as a keep, was not on the list at all.
-  MOVE: Prune to 23, every dropped name written down with the unit that added it, and the two exact invocations written at the top of the file so no future session runs it forty-one times.
-  WHY: Unit 323 was killed by the watchdog for twelve minutes of silence during a 41-invocation carry-forward run. The list is the thing that killed it, and it is repaired before anything else moves.
-  DECIDED: The instruction caps the list at twenty and its own keep-rules name twenty-three. The keep-rules win and the count is reported, because dropping a named guard to satisfy an arithmetic is a coverage decision the owner did not make; the cap exists for the wall clock, and the wall clock is 35 s.
-  LICENCE: Work instruction 324 task 1 under PHASE_PLAN.md R13 and R14, HM-DEC-155 and HM-DEC-150.
-  COST: one session, no test suite run, four tasks of four, nothing dropped. The carry-forward list of 23 named types run as two invocations - two builds - at 138 of 138 green before anything changed, app 66 and engine 72, 35 s wall clock against unit 323's 41 builds. At the end, 26 types at 159 of 159 green in 25 s.
-  ACCOMPLISHED: The list that killed the last unit stops being a suite. The PSK31 path runs at the 8 kHz it was proved at whatever the sound card gives, and its passband is the mode's 200-3000 rather than a claim to be searching 24 kHz of a receiver that passes three. A carrier lives while its signal does and is never killed for going quiet, and one Hamlet can hear but not read is a dimmed row that says so. Step 4's two missing measurements are taken: the CQ macro is 55.7 Hz wide at -30 dB, and the ALC has the manual's read at 15 13 on its own 0-120 scale.
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: STEP 4 HAS ITS TWO MEASUREMENTS AND ONE OF THEM ENDS IN AN ASK. The bandwidth is measured and stated at 55.7 Hz, under the criterion's 100. The ALC read is built, cited and proved as far as the poll - it is asked for only while a send is keyed and nothing asks for it at rest - but the manual gives no figure for where the ALC zone ends on the meter's 0-120 scale, so unit 323's invented 128 is gone and no number replaces it. Hamlet reports the reading and does not judge it. The judging sentence is built and fires the day the owner rules a threshold. And nothing on this machine has a radio, so the read is proved to the poll and stops there.
-  
-  ### ALSO RECORDED FOR UNIT 324 - STEP 4
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: resample the PSK31 path to 8 kHz at the audio boundary, retire carriers on signal loss rather than silence, show heard-not-readable carriers dimmed, cut the carry-forward list to one invocation of at most twenty types, and measure the bandwidth and add the manual's ALC read
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC zone figure, the heard-not-readable row and the carry-forward cap, but only the ALC number stalls a single step 4 exit criterion whose judging sentence is already built and waiting on one value, while the rest of step 4 stays open at the bench, including the turnover timing nice-to-pass, the remaining telemetry call sites and the row choice the unit says nothing depends on.
-  MOVE: continue
-  WHY: the record from the owner's evening shows a real carrier found every time and killed after 1.9 s with no characters, because the path runs at 48 kHz against an 8 kHz demodulator and retires on silence; and unit 323 died in a 41-type carry-forward run - both are repaired here before the door opens in 325
-  DECIDED: the passband is 200-3000 Hz from the mode, not the rate; the retire-on-signal-gone pass count is the unit's to state; the heard-not-readable dimmed row is the author's choice marked for the owner
-  LICENCE: PHASE_PLAN.md R9, R13, R14; Tim 2026-09-11 nothing on the radio; CLAUDE.md 0.0, 0.1; HM-DEC-155 and the watchdog
-  COST: 47.65027650000001
-  ACCOMPLISHED: the station Tim heard at 893 Hz on 14.070 becomes a row with its text and stays while it is sending; and step 4 gets its two missing numbers
-  STATE_WHY: Only two of the exit criteria are supported by measurement, the bandwidth at 55.7 Hz at minus 30 dB and the ALC read on its 0 to 120 scale, while the macro loopback, the CQ receipt and its retirement, the one click offer on certainty, the turn indicator, the no slot cap refusal and the judging half of the R11 power criterion are all still unmet, the last of these awaiting a zone ruling.
-  
-  ## UNIT 325 - STEP 4
-  
-  STEP: 4
-  APPROACH: Checked the four gate facts and PHASE_PLAN R15-R19 before reading a line of code, ran the carry-forward list as its own comment says - two invocations, one build each, status written first - then took the six rulings from Tim's evening at the radio in the order the instruction set them, watching each named test fail before making it green.
-  HIT: The two digital panels share one expanded flag, so Decoded text and For you fold and open together. The folded sentence and the never-opens-collapsed rule are therefore one behaviour and not two, and the test says so rather than pretending to prove two independent panels.
-  MOVE: continue
-  WHY: Six things the owner saw on 2026-09-11 are all on the screen PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned from an FT8 send rather than read off a meter by hand.
-  DECIDED: The folded For you header names stations rather than messages, because the decision it feeds - open the panel or not - turns on how many people are calling and not on how much they said. The hidden-by-the-filter count survives the rewording, because a shut panel is exactly where a filter can make a busy band look like a quiet one.
-  LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; HM-DEC-012, HM-DEC-021, HM-DEC-032, HM-DEC-111, HM-DEC-155.
-  COST: one session, six tasks of six, none dropped. The carry-forward list green at 159 of 159 before anything moved and 159 of 159 after, app 86 and engine 73, two invocations and one build each. Eleven operator-facing strings corrected across seven files. Two pre-existing layout reds and one pre-existing ledger red found while running neighbours, all three reproduced with this unit's changes reverted, none chased.
-  ACCOMPLISHED: The screen stops lying about what it holds. A folded panel says how many stations are in it and that a click shows them; the filter is on the screen before the first slot lands; a card the operator just called waits on that station for a full slot instead of reporting a silence that predated his call, and cards survive the slot rebuild as the same objects because DigitalCards.Clear() is gone; every station that would earn anything is marked, with a still green quill for a counter and an amber ringed turning one for a door; and the ALC judges itself from a reference it learns off an FT8 send, with nothing asked of the operator.
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: STEP 4 GAINS ITS R11/R15 POWER CRITERION IN FULL AND IS NOT DONE. That must-pass is now met on every clause: the power offer is on the panel beside the drive at half, nothing is asked of the operator at the radio, the reference is learned from FT8 and FT4 sends with its mode and its age, a PSK31 send above it by the stated margin of 15 on 0-120 gets the sentence and the event, and with no reference the reading is reported and nothing is judged. What keeps step 4 partial is unchanged from unit 324 and is the press half: the CQ that sends once on a clear spot, the receipt and its retirement by a certain answer, the macros offered on certainty, and the no-slot cap refusal. Nothing on this machine has a radio, so the ALC path is proved to the poll and stops there, exactly as unit 324 left the read itself.
-  
-  ### ALSO RECORDED FOR UNIT 325 - STEP 4
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: make the folded panels say what they hold, keep the filter visible, key cards by station so they survive the slot rebuild and wait on a called station from the operator's send, mark every qualifying station with a green counter quill or an orange spinning door quill, sweep the copy to American, and learn the ALC reference from FT8 sends
-  HIT: section 4 wants a ruling: banked - Two items ask for a ruling, the ALC margin of 15 which is already built and stated under R15 as the unit's to state and Tim's to overrule, and whether PSK31's card should grow a gone quiet which no step 4 exit criterion requires, while the press half that keeps step 4 partial, the CQ on a clear spot, the receipt and its retirement by a certain answer, the macros offered on certainty, the loopback and the no slot cap refusal, can all be built at the bench under rulings already in the plan.
-  WHY: six rulings from the owner's evening at the radio, all on the surface PSK31 shares with FT8, and the one number that keeps step 4 partial is now ruled to be learned rather than read
-  DECIDED: the PSK31 equivalent of one slot for the waiting card, the ALC margin, and the orange from the existing palette are the unit's numbers to state; the per-slot card rebuild is fixed at the root rather than worked around a third time
-  LICENCE: PHASE_PLAN.md R15, R16, R17, R18, R19, R11, R12, R13, R14; CLAUDE.md 0.0, 0.6, 0.2; HM-DEC-111
-  COST: 48.23846000000003
-  ACCOMPLISHED: the screen stops lying about what it holds, a card Tim just called waits for the answer, every achievement worth chasing is marked and the two kinds look different, and the ALC judges itself from FT8 with nothing asked of him
-  STATE_WHY: The report shows evidence for two must-pass criteria, the measured 55.7 Hz bandwidth and the R11/R15 power clause in full with quoted values, but it states plainly that the macro loopback, the CQ receipt and its retirement, the certainty-gated one-click offer, the turn indicator proof and the no-slot cap refusal are all unmet, so some exit criteria are met and not all.
-  
-  ## UNIT 326 - STEP 4
-  
-  STEP: 4
-  APPROACH: Checked the four gate facts, then spent task 1 measuring step 4 rather than building on it - the carry-forward list run as its own comment says, two invocations and one build each with status written first, plus the three press types unit 324 dropped and which docs/carry-forward-dropped.txt says a unit touching the press runs. Every step 4 exit criterion answered by a test that ran in this session, with its printed number, before anything moved. Then step 5 - RST in the log, the ADIF spelling asserted, and the records the first PSK31 contact reveals.
-  HIT: Step 4 was not partial. All eight must-pass criteria and the nice-to-pass are met by tests that ran green in this session, including the press half that units 324 and 325 each recited as unmet without running the three tests that guard it. Task 2 is therefore empty by measurement, and that is its correct outcome rather than a shortfall.
-  MOVE: continue
-  WHY: Two consecutive units carried a sentence forward instead of running a test, and the three tests that would have contradicted it had just been taken off the list those units run. One task of measurement was cheaper than a ninth unit of building.
-  DECIDED: A criterion is marked met only against a test that ran in this session and is named with its type and method. The three press types are run by this unit under the dropped list's own rule, without deciding whether they return to the carry-forward list permanently - that is left as a finding for the next arbiter.
-  LICENCE: PHASE_PLAN.md step 4 exit criteria and step 5 entry and exit criteria, R2, R3, R7, R9, R10, R11, R12, R13, R14, R15, R19; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.2, 3.7, 4; CLAUDE.md 0.0, 0.2, 0.6; HM-DEC-018, HM-DEC-084, HM-DEC-139, HM-DEC-155; docs/carry-forward-dropped.txt.
-  COST: one session, six tasks of six, none dropped. Carry-forward green before and after, app 96 of 96 with the three press types included and engine 73 of 73, two invocations and one build each. Four new test types: ThePsk31LogsWithRstTests, ThePsk31RecordsAppearTests, ThePsk31AdifTests and four turnover cases added to ThePsk31TurnTests. TheAchievementsScreenTests two red before and the same two after.
-  ACCOMPLISHED: The phase stops guessing where step 4 stands - every one of its nine criteria answered by a test that ran in this session with its own number - and a PSK31 contact becomes something Tim can log with the report he exchanged, export in the spelling another logger reads, and see appear on the achievements screen the first time he works one.
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: STEP 4 IS DONE AND STEP 5 IS DONE ON ALL FOUR OF ITS MUST-PASS. All eight step 4 must-pass criteria and the nice-to-pass are met against tests run in this session and named with their methods: the four macros come back identical through Hamlet's own demodulator at three rate and offset pairs; the occupied bandwidth is 55.7 Hz at -30 dB at 8 kHz and 57.1 Hz at 48 kHz, both under the 100 Hz ceiling, at 31.2697 baud; the press, the certainty gate, the turn indicator, the R11/R15 power and ALC clause, the one PttOn site with FT8 and FT4 byte-identical, and the 30-second cap refusal all hold; and the turn indicator moves within one character of every turnover word R3 names. Step 5 gains the RST field that is not the decibel field, the asserted MODE=PSK with SUBMODE=PSK31 export, the records revealed by the first contact, and the two inherited achievements reds unchanged at two. Two things had to be built before an RST could reach the log and both were found by measurement rather than assumed: no PSK31 contact reached the log at all, because the FT8 split rule refuses a macro and the station was never booked, and the record said MODE=FT8 because DigitalMode has two members and PSK31 is not one. Step 6 is Tim at the radio and nothing here can close it. Nothing was measured at a radio - FACT-006.
-  
-  ### ALSO RECORDED FOR UNIT 326 - STEP 4
+  ### ALSO RECORDED FOR UNIT 335 - STEP 1
   
   A second append for the same unit and the same step, called as UNIT 2.
   One unit is one entry, so what this route recorded is folded in here
   rather than written as a second entry. Only what differs is listed.
   
-  APPROACH: measure every step 4 must-pass criterion against the tree and close only the ones with no green test behind them, then take step 5 - RST in the log, the ADIF spelling asserted, and the records revealed by the first PSK31 contact
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the ALC margin, the two id schemes and the uninvokable validator, but each is carried, already built under R15, or a record-keeping matter, and step 4's eight must-pass criteria are all answered by tests run this session, so no step 4 work waits on an answer.
-  WHY: units 324 and 325 both recited the press half of step 4 as unmet without running the three tests that guard it, which unit 324 had just dropped from the carry-forward list while writing that they were green, so the cheapest thing between here and step 5 is one task of measurement rather than a ninth unit of building. The loop test returns NOT FOUND, and this is not a loop: 320, 321 and 323 all proposed building the press, and 323 opened the door and built it - proposing to build it again would be the loop, proposing to find out whether it is built is not.
-  DECIDED: four on the arbiter authority. Task 1 may only mark a criterion met against a test run in this session, because a report citing a report is what produced the stale picture. The three press types unit 324 dropped are run by this unit under that file's own rule that a unit touching the press runs them, without deciding whether they go back on the list. Task 6, the turnover nice-to-pass, is the drop candidate because it moves no must-pass, and task 5 is second because dropping it costs one step 5 must-pass and not the log the owner can see. Unit 325's section 4 items 1 and 2 are logged and not chased - the ALC margin is already licensed by R15 as the unit's to state, and the 8.13 s turnaround needs a design question no step 5 criterion asks.
-  LICENCE: PHASE_PLAN.md step 4 exit criteria and step 5 entry and exit criteria, R2, R3, R7, R9, R10, R11, R12, R13, R14, R15, R19 and the section 6 branching; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.2, 3.7 and 4; CLAUDE.md 0.0, 0.2, 0.6; HM-DEC-018, HM-DEC-084, HM-DEC-139, HM-DEC-155; docs/carry-forward-dropped.txt, which instructs that a unit touching the press runs the three names it dropped; ARBITER.md section 6, which makes the step, the approach, the tasks, the tiering and the drop candidate the arbiter decision
-  COST: 33.364847
-  ACCOMPLISHED: the phase stops guessing where step 4 stands - every one of its criteria answered by a test that ran tonight rather than by a sentence carried forward - and a PSK31 contact becomes something Tim can log with the signal report he exchanged, export in the spelling another logger reads, and see appear on the achievements screen the first time he works one
-  STATE_WHY: Every one of the eight must-pass criteria plus the nice-to-pass is answered by a named test run this session with quoted measurements, 55.7 Hz occupied bandwidth at minus 30 dB, 31.2697 baud, exactly one PttOn site, a 30 second cap with a recorded refusal, two answers making two cards and a one character turnover on all four ruling words, and the only open items in section 4 are carried findings or reds outside the step's criteria.
-  
-  ## UNIT 327 - STEP 6
-  
-  STEP: 6
-  FATE: carried repair - no step criterion moves
-  APPROACH: Carried repair on what the owner saw at the radio on 2026-09-11 and 12. Keep a PSK31 carrier by what its own demodulator says, so a station idling between words stays on the list instead of being retired six times in two minutes; measure the first-character latency and state a ceiling; make the achievement mark row-height in two colors with a popup on click; fill the conversation card's right column with what Hamlet knows and drop the caption under the map; carry the read grid into the logged PSK31 contact; and the housekeeping.
-  WHY: The owner's own telemetry from 7.070 shows a station at 2073 Hz with the squelch open at quality 0.99 - as clean as the fixture - appearing and being retired as SignalGone six times in two minutes, zero characters, 206 seconds and 12 carriers for 0 lines. An idling PSK31 signal has no energy at its carrier frequency; it splits into two lines 15.6 Hz either side. The search retired a live station for idling. Step 6 is Tim at the radio and it cannot start until he can read a station.
-  DECIDED: The keep-and-retire numbers, the first-character latency ceiling, the mark's size and the orange hex are this unit's to state. The idle fixture is made from the reference convention in assets/reference-modem.py, one station that types for 10 s, idles 8 s and types again.
-  LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; HM-DEC-111, HM-DEC-139, HM-DEC-155.
-  ACCOMPLISHED: A station who pauses stays on the operator's list until he actually leaves, the achievement mark is something he can see from across the desk and click for the reason, and the card says what Hamlet knows beside the map.
-  ADVANCES: none - carried repair before step 6. Nothing was measured at a radio; FACT-004 and FACT-006 hold and every fixture behind this is synthetic.
-  
-  ### ALSO RECORDED FOR UNIT 327 - STEP 6
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: keep a PSK31 carrier by its demodulator's verdict so an idling station stays on the list, measure first-character latency, make the achievement mark row-height in two colors with a popup on click, fill the card's right column with the contact's facts and drop the caption, log the PSK31 grid, and do the housekeeping
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the quality measure and retire timing, on who repairs the stale Views test premise, on the unrunnable bat validator and on the two id schemes, but each is either already built and followed in full, a repair owned by another surface, or a record keeping matter, and step 6's only exit is Tim's own verdict at the radio, so the carried repair that lets him read a station, the latency ceiling, the mark and the card work all remain open without an answer.
-  MOVE: continue
-  WHY: the owner's telemetry from two nights on 7.070 shows a clean station retired six times for idling and 206 seconds with zero lines read, and his own eyes found the mark unreadable and unclickable and the card's column empty; step 6 is his and cannot start until he can read a station
-  DECIDED: the keep-and-retire numbers, the latency ceiling, the mark's exact size and the orange hex are the unit's to state; the idle fixture is made from the reference convention
-  LICENCE: PHASE_PLAN.md R9, R12, R13, R14, R16, R19; Tim 2026-09-11 and 12 on the mark and the card; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4
-  COST: 48.38649749999994
-  ACCOMPLISHED: a station who pauses stays on Tim's list until he actually leaves, the achievement mark is something Tim can see and click for the reason, and the card says what Hamlet knows beside the map
-  FATE: executed
-  STATE_AFTER: not started
-  STATE_WHY: The step's sole exit criterion is Tim's own verdict at the radio, and the unit performed only carried repair, stating plainly that step 6 is unchanged and his to close, so nothing has been done toward it.
-  
-  ## UNIT 328 - STEP 5
-  
-  STEP: 5
-  APPROACH: Two things, and neither is new building. First the record: unit 326 built step 5 in full while it was called under step 4, so the judge graded step 4 twice and never graded step 5, and PHASE_STATUS.md still reads STEP: 5 | not started while the tests that prove all four of its must-pass sit green in the tree. This unit reruns those four, filtered and foregrounded, quotes the value each one asserts, and appends the result under step 5. Second the mark: unit 327 answered "ugly and useless" with an 18 px filled disc, and Tim looked at it and said "so so so so so ugly". He was drawn three treatments and chose A - a thin quill in the gutter, the tray's vane at row scale, hairline and not filled, with a ring for a door.
-  MOVE: continue
-  WHY: The work behind step 5 is done and green and the record says not started, which is the same fault in the other direction from units 324 and 325 reciting step 4 as unmet without running the tests that guard it. Nothing in the phase stands between step 5 and Tim at the radio except a record that does not match the tree.
-  DECIDED: The vane's size at row scale is this unit's to state from the tray's path in assets/achievement-quill.svg - the vane spans 28 units of the 44-unit box, so 12 px of drawn height is a scale of 0.4286, and the box stays at RowSide 18 so the hit target and the door's ring are unchanged. The test is rewritten for the new shape under R12. The STATE_AFTER and STATE_WHY lines below are written at task 3, against tests that ran in this session, and not at task 1 when this entry was appended - a state claimed before the measurement is the fault this phase has now hit twice.
-  LICENCE: PHASE_PLAN.md step 5 entry and exit criteria, R1 to R19 with R12, R14 and R16 named; CLAUDE.md 0.5, 0.5.1, 0.6; Tim 2026-09-12 treatment A - thin quill in the gutter, ring for a door; HM-DEC-139, HM-DEC-150, HM-DEC-155, FACT-004, FACT-006.
-  COST: one session, four tasks. The carry-forward list run first as its own comment says, two invocations and one build each, app 100 of 100 and engine 85 of 85 - 185 of 185 green before anything moved.
-  ACCOMPLISHED: The mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says what the tree says, so the only step left in the phase is Tim at the radio.
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: STEP 5 IS DONE ON ALL FOUR OF ITS MUST-PASS, each answered by a named test that ran in this session with the value it asserts printed. One: ThePsk31LogsWithRstTests.ALoggedPsk31ContactCarriesBothReportsAndNotInTheDecibelField logs RST sent 599 and RST received 589 with the decibel fields both (none), and AnFt8ContactStillLogsItsDecibelsAndCarriesNoRst holds the other side - 6 of 6 green. Two: ThePsk31AdifTests.APsk31ContactComesOutAsPskWithTheSubmode exports MODE:3 PSK and SUBMODE:5 PSK31, and AnFt8AndAnFt4RecordAreByteIdenticalToWhatTheyWere shows the FT8 and FT4 records unchanged byte for byte - 3 of 3 green. Three: ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed shows three cards and no PSK31 one before the first contact, and TheFirstPsk31ContactRevealsTheModesRecords shows mode-PSK31 with 4 records after it - 0 cards before, 4 records after, 4 of 4 green. Four: TheAchievementsScreenTests is 2 red and 8 green, the same two inherited reds - WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo on a hover word and TheWindowDrawsEverySixRows on a missing AchievementsModeRows element - neither touched and neither made worse. Unit 327's addition holds too: GRIDSQUARE:4 FN31 is exported when a grid was read and the tag is absent altogether when none was. NOTHING WAS MEASURED AT A RADIO - FACT-004 and FACT-006 - and every value above is a test's printed output. STEP 6 IS TIM'S AND NOTHING HERE CAN CLOSE IT.
-  
-  ### ALSO RECORDED FOR UNIT 328 - STEP 5
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: replace the filled disc with the tray quill vane at row scale - green alone for a counter, orange in a ring for a door - and rerun step 5's four must-pass so the record matches the tree
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the comment in the markup, the stale unit 300 test premise, the demodulator quality measure, the eight Views reds and the uninvokable validator, but none of them touches a step 5 exit criterion, and all four of those must pass criteria were rerun green with their values quoted in this same session, so every part of step 5 remains open and workable without an answer.
-  WHY: unit 326 built step 5 while called under step 4, so the judge never graded step 5; the work is done and green and the record says not started; nothing else in the phase is between step 5 and Tim's verdict
-  DECIDED: the vane's exact size at row scale is the unit's to state from the tray's path; the test is rewritten for the shape under R12
-  LICENCE: PHASE_PLAN.md step 5 entry and exit; R12, R14, R16; CLAUDE.md 0.6; Tim 2026-09-12 treatment A; HM-DEC-155
-  COST: 9.140988
-  ACCOMPLISHED: the mark on Tim's list is the quill he already knows from the tray, thin and in the gutter, and the phase record says step 5 is done, so the only step left is Tim at the radio
-  STATE_AFTER: partial
-  STATE_WHY: The four must-pass criteria are each met with quoted values from tests run this session, but the stated nice-to-pass criterion that the ADIF export imports cleanly into one named common logger is neither met nor mentioned anywhere in the report.
-  
-  ## UNIT 330 - STEP 6
-  
-  STEP: 6
-  APPROACH: Carried repair, six things the owner saw on 2026-09-12 with screenshots and ruled on. Size the tray mark as units 300 to 303 ruled; make the conversation card's right column a two-column table with one show-the-messages link on the whole card; turn the quill popup into a preview of the card he would earn; compress the green zone under the neighborhood map to a license line plus a live band-first line with the best-bet check; stop the readiness line claiming the band was empty in a slot Hamlet transmitted in; and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and a new Total Miles kind.
-  MOVE: continue
-  WHY: Step 6's only exit is the owner's own verdict at the radio, and every item here is something he looked at and objected to on the screen he will be sitting in front of when he gives it. None of it touches a step criterion.
-  DECIDED: The green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner. The points are the owner's file - assets/data/achievement-points.json - and no point value is hard-coded. The two size tests that contradict each other about the resting tray mark are reconciled under R12 on the later of the two rulings, option B of 2026-09-10.
-  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark; Tim 2026-09-12 with screenshots.
-  COST: one session, seven tasks, each committing on its own so that what lands, lands.
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 1 - a state claimed before the measurement is the fault this phase has already hit twice.
-  FATE: executed
-  STATE_AFTER: not started
-  STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.
-  
-  ### ALSO RECORDED FOR UNIT 330 - STEP 6
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: size the tray mark as ruled, make the card's column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles
-  HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
-  WHY: six things the owner saw and ruled on with the phase at his verdict, none touching a step criterion; he is away for two hours and asked for one unit that runs unattended, so every task commits on its own and drops from the back
-  DECIDED: the green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner; the points are the owner's file; the size tests are reconciled under R12
-  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark
-  COST: 9.140988
-  ACCOMPLISHED: the tray mark can be seen, the card reads as a table, the popup shows the card he would earn, the green zone tells him what band he is on and whether it is the best bet, Hamlet stops claiming the band was empty in a slot it did not listen to, and the achievements page is eight badges with scores and a running total he can edit from a file
-  STATE_AFTER: in progress
-  STATE_WHY: no output.md, so there is no report to judge the step against
-  
-  ## UNIT 331 - STEP 6
-  
-  STEP: 6
-  APPROACH: Recover what unit 330 committed before the watchdog killed it, then draw the tray vane at its ruled size rather than 62 per cent of it, move the decoded list's controls to a bar above both panels and widen For You so the card's table fits beside the map, make the card's right column a table, turn the quill popup into a preview of the card he would earn, compress the green zone to a license line plus a live band-first line with the best-bet check, make the after-transmit readiness line say the slot was the operator's, and rebuild the achievements page as eight iconed badges with scores from a data file, a running total, and Total Miles.
-  MOVE: continue
-  WHY: Unit 330 was killed at task 2 with two measurements that changed the shape of the work - the vane's scaling and the card's width - and the owner ruled on the second. The remaining tasks stand, none of them touching a step criterion, and every task commits on its own and drops from the back.
-  DECIDED: The green zone's second line, the popup's card preview, the badge emblems and colors, and the level thresholds are the author's shapes marked for the owner. The points are the owner's file, data/achievements/achievement-points.json, and no point value is hard-coded. The two tray size tests are reconciled under R12 so both assert what the glass shows.
-  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 3.1, 3.5, 4; units 300-303 on the tray mark; Tim 2026-09-12 with screenshots and the panel-split ruling.
-  COST: one session, eight tasks, each committing on its own so that what lands, lands.
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0 - a state claimed before the measurement is the fault this phase has already hit twice.
-  FATE: executed
-  STATE_AFTER: not started
-  STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio, and this unit performs only carried repair on the screen he will be looking at when he gives it. Nothing here can close it.
-  
-  ## UNIT 332 - STEP 6
-  
-  STEP: 6
-  APPROACH: Make the achievements page eight badges with no scroller and a click-in category view with a back control and text that fits; make the green zone the world map with its computed night side and the operator's dot, the band big on the left and the pills and heard count on the right; draw the tray mark as a feather.
-  MOVE: continue
-  WHY: Three rulings from the owner on unit 331's screen, none touching a step criterion; step 6 is his.
-  DECIDED: The category page layout, the twilight fade width, the rule-of-thumb wording and the feather path are the author's shapes marked for the owner; the terminator arithmetic is the unit's and is asserted against a hand-computed value.
-  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; Tim 2026-09-12 as quoted in work instruction 332; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1, 4.
-  COST: one session, six tasks, each committing on its own and dropping from the back.
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
-  FATE: executed
-  STATE_AFTER: not started
-  STATE_WHY: The step's sole exit criterion is the owner's own verdict at the radio; this unit is carried repair on the screen he will judge it from and cannot close it.
-  
-  ### ALSO RECORDED FOR UNIT 332 - STEP 6
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: make the achievements page eight badges with no scroller and a click-in category view with a back control and text that fits; make the green zone the world map with its computed night side and the operator's dot, the band big on the left and the pills and heard count on the right; draw the tray mark as a feather
-  HIT: section 4 wants a ruling: banked - Rulings are wanted on the hover wording, the two unopened continent badges, the window width, the license line at 1400, whether step 5 is partial or done, and several carried items, but step 6 has one exit, which is Tim at the radio, so he can still work a station and repairs to the screen he will judge it from can continue without an answer.
-  WHY: three rulings from the owner on unit 331's screen, none touching a step criterion; step 6 is his
-  DECIDED: the category page layout, the twilight fade width, the rule-of-thumb wording and the feather path are the author's shapes marked for the owner; the terminator arithmetic is the unit's and is asserted against a hand-computed value
-  LICENCE: PHASE_PLAN.md R12, R14, R16, R19; Tim 2026-09-12 as quoted; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1, 4
-  COST: 32.58145499999999
-  ACCOMPLISHED: the achievements window is a page of badges Tim can click into and back out of, the green zone shows him where the sun is and where he is, and the tray mark is a feather rather than an almond
-  STATE_AFTER: blocked
-  STATE_WHY: The only exit criterion is Tim saying it passed, the report shows no such statement, its entry needs step 5 done while PHASE_STATUS.md still marks step 5 partial, and no further unit work can close it without Tim at the radio.
+  APPROACH: rebuild the achievements category pages as trading cards - earned card from the log contact with the conversation card's globe plot, next card fed the decoded CQ list, all eight kinds, measured at 1400 and 1920
+  HIT: section 4 wants a ruling: banked - The rulings asked for only touch the wording of the States next card and whether door callers get named, step 1 is recorded done with every must-pass met, and the dropped map popup can still be built without either answer.
+  WHY: Step 0 is done by the outcome file's independent reader, and step 1 is the next in the pipeline with its entry criterion checkable by one named test; the loop test finds no prior attempt at it.
+  DECIDED: A States next card says Hamlet cannot tell a caller's state from the air rather than that no one is calling, marked for Tim as a proposal; the nice-to-pass popup is the drop candidate and task 4 sheds whole kinds if the unit runs long; the category bands are read as the achievements' own colors per the approved picture, not mode-family fills under 0.5.
+  LICENCE: PHASE_PLAN.md R22, section 4 step 1, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R13, R14; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1 with Ruling C, 3.5, 4; HM-DEC-092, HM-DEC-111, HM-DEC-139, HM-DEC-155; ARBITER.md 6 and 7
+  COST: 28.656047000000004
+  ACCOMPLISHED: every achievements category Tim opens shows the contacts that earned it - the map of the path, how far, when, on what - and a next card that tells him who on the air right now would earn the next one
+  STATE_WHY: The report backs all seven must-pass criteria with tests that failed first and then passed, and with measured fixture output, including the band on 8 of 8 kinds, earned cards from the earliest log contact, next cards built from the CQ list read when the window opened, no clip or wrap at 1400 and 1920 and 0 of 51 white cards, while the dropped map popup was only nice-to-pass and the States wording awaits an owner ruling.
 
   --- CLAUDE.md ---
-  1385 lines, 195842 bytes
+  1386 lines, 196495 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -1087,28 +325,28 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   (not inlined - it is the standard and it is long)
 
   --- PROJECT_CARD.md ---
-  29 lines, 1372 bytes
+  29 lines, 1393 bytes
   PROJECT: Hamlet
   TRUNK: main
-  PHASE: Hamlet works PSK31 the way it works FT8
-  PHASE_SET: 2026-09-11
+  PHASE: The screen says what is true and looks like someone meant it
+  PHASE_SET: 2026-09-12
   TEST_CMD: dotnet test
   NOTE: BASELINE_RED above is THE CARD S CLAIM about the suite.
   This command does not run the suite - it has to be cheap enough
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 977 bytes
+  19 lines, 778 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
-  TASK: 6 of 6
-  WORK_INSTRUCTION: 332 - the achievements page clicks in, the green zone shows the world's clock, and the tray gets a feather
+  TASK: 5 of 6
+  WORK_INSTRUCTION: 335 - every category page is trading cards
   BALL: tim
   NEXT_PASTE: output.md -> the arbiter
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-12T15:15:49-04:00
-  NOTE: Complete - all six tasks, none dropped, each committed and pushed; carry-forward at the end app 100 of 100 and engine 85 of 85 after closing one red of this unit's own (five new events missing from the privacy walk). output.md validated: exit 0, all seven rules. Every UPDATED in this unit was read from the clock.
+  UPDATED: 2026-09-12T17:28:33-04:00
+  NOTE: Complete at task 4 - tasks 0 to 4 pushed (bcaf39d), task 5 the popup dropped as named. 8 of 8 kinds are trading cards; 1400 and 1920 fit, 0 white cards; output.md validated exit 0
   
   ---
   

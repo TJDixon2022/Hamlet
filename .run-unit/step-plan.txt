@@ -1,22 +1,19 @@
-﻿STEP: 5 | Log and achievements - RST in the log, ADIF PSK with submode PSK31, and the PSK31 records revealed by the first contact and absent until then.
-## Step 5 - Log and achievements
+﻿STEP: 2 | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
+## Step 2 - The record is honest, and the layout settled
 
-**Delivers:** a PSK31 contact logs with RST, exports as ADIF `MODE=PSK` `SUBMODE=PSK31`,
-and the mode's achievement records are revealed by the first PSK31 contact and absent
-before it.
+**Delivers:** R23 and R24.
 
-**Entry:** step 4 done - a loopback exchange reaches 73, checked by running that test
-first.
+**Entry:** step 1 done.
 
 **Exit:**
-- A PSK31 contact logs with an RST field, and the FT8 dB field is not reused for it.
+- A US contact with `STATE` in the log scores its state; one without scores nothing; the
+  States badge count matches the log. *must-pass*
+- `rank_names` in the points file names the ranks; absent, the defaults show; the file's
+  keys are documented at its top. *must-pass*
+- At 1400 the decoded list and For You share the tab by R24, no callsign is clipped, and
+  the card's table is beside the map or under it by the stated rule; at 1920 beside.
   *must-pass*
-- The ADIF export carries `MODE=PSK` and `SUBMODE=PSK31` (already in `ContactModes`
-  from unit 287; asserted, not rebuilt). *must-pass*
-- Before the first PSK31 contact no PSK31 card is visible on the achievements screen
-  (Â§3.1, absent not dimmed); after it, the mode's records appear. *must-pass*
-- The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
-- The ADIF export imports cleanly into one common logger, named. *nice-to-pass*
+- The report states the split at both widths. *must-pass*
 
-**Depends on:** step 4.
+**Depends on:** step 1.
 

@@ -2,7 +2,7 @@
 setlocal EnableExtensions
 
 rem  install-phase.bat
-rem  Generated 2026-09-12 for: Hamlet-phase-maintenance-2026-09-12.zip
+rem  Generated 2026-09-12 for: Hamlet-phase-screen-2026-09-12.zip
 rem
 rem  Installs the new phase layer at the repository root.
 rem  RUN THIS YOURSELF, BEFORE THE LOOP. It is not a work unit's job:
@@ -19,8 +19,8 @@ set "REPO=%~1"
 if "%REPO%"=="" set "REPO=C:\Source\HamLet"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
-set "STAGE=%REPO%\docs\phase-maintenance"
-set "ARCHIVE=%REPO%\docs\phase-psk31-run"
+set "STAGE=%REPO%\docs\phase-screen"
+set "ARCHIVE=%REPO%\docs\phase-maintenance-run"
 
 echo.
 echo   Repo root : %REPO%
@@ -78,15 +78,15 @@ echo.
 echo   ================================================================
 echo    PHASE INSTALLED
 echo   ================================================================
-echo    Archived : docs\phase-psk31-run\  (plan, status, outcome)
+echo    Archived : docs\phase-maintenance-run\  (plan, status, outcome)
 echo    Installed: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md
 echo.
-echo    STILL TO DO, and unit 334 does it with its file tools:
+echo    STILL TO DO, and unit 337 does it with its file tools:
 echo      PROJECT_CARD.md  PHASE and PHASE_SET
 echo      DECISIONS.md     the ruling that set them
 echo.
 echo    Commit this before launching the loop:
-echo      git add -A ^&^& git commit -m "phase: maintenance" ^&^& git push
+echo      git add -A ^&^& git commit -m "phase: screen" ^&^& git push
 echo   ================================================================
 echo.
 goto :end
@@ -124,7 +124,7 @@ goto :end
 
 :already
 echo.
-echo   REFUSED: docs\phase-psk31-run\PHASE_OUTCOME.md already exists,
+echo   REFUSED: docs\phase-maintenance-run\PHASE_OUTCOME.md already exists,
 echo   so this has already run. Nothing was changed.
 goto :end
 
@@ -144,13 +144,13 @@ goto :end
 :archivefailed
 echo.
 echo   REFUSED: the archive copy did not match the original.
-echo   The new phase was NOT installed. Check docs\phase-psk31-run\.
+echo   The new phase was NOT installed. Check docs\phase-maintenance-run\.
 goto :end
 
 :installfailed
 echo.
 echo   FAILED: the archive succeeded but the install did not.
-echo   The old files are in docs\phase-psk31-run\. Copy the three files from
+echo   The old files are in docs\phase-maintenance-run\. Copy the three files from
 echo   %STAGE% to the root by hand.
 goto :end
 

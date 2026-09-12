@@ -1,15 +1,5 @@
-﻿   Bash  {"command":"cd /c/Source/HamLet; pwd -W; for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln; do [ -e \"$f\" ] \u0026\u0026 echo \"EXISTS $f\" || echo \"ABSENT $f\"; done; git remote -v; git bran ...(truncated)
-   Bash  {"command":"pwd -W \u0026\u0026 ls -la SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs; ls CoreHMI.sln MURC.sln; git remote -v; git branch -vv","description":"Project gate check and remote"}
-   Bash  {"command":"date -Iseconds","description":"Read the clock"}
-   Bash  {"command":"ls \"/c/Program Files\" \"/c/Program Files (x86)\" 2\u003e\u00261 | grep -i -E \"log4om|n1mm|dxlab|dxkeeper|n3fjp|affirmatia|logger32|ham radio deluxe|hrd|cqrlog|gridtracker|fldigi|wsjt|jtdx|log\"; ls \"/c/Users/TimDi/AppData/Ro ...(truncated)
-   Bash  {"command":"ls \"/c/Program Files\"","description":"List Program Files for loggers"}
-   Bash  {"command":"ls \"/c/Program Files (x86)\"","description":"List Program Files x86 for loggers"}
-   Bash  {"command":"ls /c/Users/TimDi/AppData/Roaming","description":"List roaming AppData for logger data"}
-   Bash  {"command":"ls /c/Users/TimDi/AppData/Local","description":"List local AppData for loggers"}
-   Bash  {"command":"ls /c/Source/fldigi","description":"List fldigi source reference"}
-   Bash  {"command":"reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\" /s /f \"Log\" /d","description":"Query registry uninstall keys for loggers"}
-   Bash  {"command":"timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter \"FullyQualifiedName~ThePsk31LogsWithRstTests|FullyQualifiedName~ThePsk31RecordsAppearTests|FullyQualifiedName~TheAchievementsScreenTests|FullyQuali ...(truncated)
-   Bash  {"command":"rm tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs \u0026\u0026 git status --short tests","description":"Delete the scratch probe test"}
-   Bash  {"command":"ls artifacts | head; git check-ignore -v artifacts/unit333-psk31-fixture.adi; echo \"ignore-check-exit-done\"","description":"Check artifacts folder and git ignore status"}
-   Bash  {"command":"git check-ignore -v artifacts/unit333-psk31-fixture.adi","description":"Check whether a scratch adi would be ignored"}
-   Bash  {"command":"cmd //c \"tools\\arbiter\\validate-output.bat output.md\"","description":"Run the validator .bat through cmd"}
+﻿   Bash  {"command":"cd /c/Source/HamLet; pwd; for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln; do if [ -e \"$f\" ]; then echo \"EXISTS $f\"; else echo \"MISSING $f\"; fi; done; date; git log --onelin ...(truncated)
+   Bash  {"command":"grep -rn \"United States\\|\\\"Alaska\\|\\\"Hawaii\" src data/callsigns --include=*.cs --include=*.json | head -12; echo ---RANKSPEAK; grep -rn \"Rank\\b\\|TotalLine\\|ToNextRank\\|NextRankAt\\|\\.Rank\\b\" src/Hamlet.App --incl ...(truncated)
+   Bash  {"command":"git fetch -q origin \u0026\u0026 git status -sb | head -1 \u0026\u0026 git log --oneline -1 origin/main","description":"Verify the task 0 push reached origin"}
+   Bash  {"command":"git ls-remote origin refs/heads/main","description":"Check the remote main commit"}
+   Bash  {"command":"timeout 300 dotnet build tools/arbiter/validate-output.proj -p:Report=output.md 2\u003e\u00261 | grep -v \"^\\s*$\" | tail -15","timeout":320000,"description":"Validate output.md via the proj route"}
