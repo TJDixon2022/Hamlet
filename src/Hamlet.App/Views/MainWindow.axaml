@@ -126,6 +126,46 @@
             <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
         </Style>
 
+        <!-- **THE CARD'S FACT TABLE** (work instruction 330 task 2). Tim,
+             2026-09-12: *"the right of globe text is not aligned or even, make it
+             nice. It's a jumbled mess."*
+
+             **ONE HEIGHT FOR EVERY ROW, SET HERE AND NOT PER ROW.** `HmCardFactRow`
+             is the number and both classes read it, so a row cannot end up a pixel
+             taller than its neighbor and the column has a rhythm rather than a
+             ragged edge. The value is 17 - eleven point text at 1.0 line spacing
+             measures a little over 14, so this is that with air above and below and
+             nothing clipped off a descender.
+
+             **NOTHING WRAPS AND NOTHING IS TRIMMED**, which is both halves of what
+             he saw: a wrapped value makes one row taller than the rest, and a
+             trimmed one is the `show the messag` in his screenshot.
+
+             **LABELS RIGHT, VALUES LEFT, AND THE LABEL IS MUTED** (§0.5's ink
+             discipline). The two columns meet at one edge down the middle, so the
+             eye has a line to run down instead of five ragged left margins. -->
+        <Style Selector="TextBlock.hm-cardfactlabel">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Height" Value="{StaticResource HmCardFactRow}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="None" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextMutedBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.hm-cardfactvalue">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Height" Value="{StaticResource HmCardFactRow}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="TextTrimming" Value="None" />
+            <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+        </Style>
+
         <Style Selector="Button.hm-cardx /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
@@ -4957,13 +4997,21 @@
                                                                         Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).LogStationCommand}"
                                                                         CommandParameter="{Binding Callsign}" />
 
-                                                                <Button Grid.Column="3"
-                                                                        Classes="hm-cardlink"
-                                                                        IsVisible="{Binding HasMessages}"
-                                                                        VerticalAlignment="Center"
-                                                                        Content="{Binding MessagesLabel}"
-                                                                        Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowMessagesCommand}"
-                                                                        CommandParameter="{Binding Callsign}" />
+                                                                <!-- **THE TOP ROW'S *show the N
+                                                                     messages* CAME OUT IN 330
+                                                                     TASK 2.** It and the right
+                                                                     column's link were two
+                                                                     buttons doing one thing on
+                                                                     one card, which is what put
+                                                                     `show the messag` against
+                                                                     the card's edge in Tim's
+                                                                     2026-09-12 screenshot.
+                                                                     **Nothing is lost**: the
+                                                                     `Messages` row of the table
+                                                                     beside the map carries the
+                                                                     count and the one way down
+                                                                     to them, together, where the
+                                                                     count already was. -->
                                                             </Grid>
 
                                                             <!-- **THE MAP, ON THE FACE** (work instruction 308 task 4, the
@@ -4995,11 +5043,47 @@
                                                                  gone, and everything it
                                                                  said is in the first line
                                                                  of the column. -->
+                                                            <!-- **THE TABLE IS UNDER THE MAP AND
+                                                                 NOT BESIDE IT, AND THAT IS A
+                                                                 MEASUREMENT** (work instruction 330
+                                                                 task 2 asks for beside; see
+                                                                 output.md section 4).
+
+                                                                 **THE ARITHMETIC, ON A 1400 px
+                                                                 WINDOW.** The *For you* panel is a
+                                                                 quarter of the tab, so the card is
+                                                                 **275 px wide inside**. The map's
+                                                                 natural width at 120 px tall is
+                                                                 **222**. The table's longest row is
+                                                                 `Distance` against `4,400 miles ·
+                                                                 northeast` and it wants about
+                                                                 **190**. 222 + 190 is 412 against
+                                                                 275, so *beside* leaves the facts
+                                                                 53 px - which is exactly the
+                                                                 jumbled, wrapped, cut-off column in
+                                                                 Tim's screenshot. **No arrangement
+                                                                 of two columns inside 275 px fixes
+                                                                 it**; shrinking the map far enough
+                                                                 to make room leaves a 73 px stamp.
+
+                                                                 **SO THE TABLE TAKES THE CARD'S
+                                                                 FULL WIDTH, UNDER THE PICTURE.**
+                                                                 Every row is one height, nothing
+                                                                 wraps and nothing is trimmed, which
+                                                                 is what he asked for; the map is
+                                                                 untouched at the size it has drawn
+                                                                 at since unit 308. **What this
+                                                                 costs is the space to the right of
+                                                                 the map, which is his own phrase
+                                                                 and stays empty** - and that is the
+                                                                 thing for him to rule on rather
+                                                                 than for this markup to decide
+                                                                 twice. -->
                                                             <Grid Grid.Row="5"
                                                                   IsVisible="{Binding ShowsGlobe}"
                                                                   Margin="0,8,0,0"
-                                                                  ColumnDefinitions="Auto,*">
-                                                            <StackPanel Grid.Column="0"
+                                                                  RowDefinitions="Auto,Auto">
+                                                            <StackPanel Grid.Row="0"
                                                                         Spacing="4">
                                                                 <!-- **THE MAP OPENS** (R8,
                                                                      Tim 2026-09-11: *when I
@@ -5024,8 +5108,24 @@
                                                                             BorderThickness="1"
                                                                             CornerRadius="4"
                                                                             ClipToBounds="True">
+                                                                        <!-- **`MaxWidth` IS THE
+                                                                             MAP'S OWN NATURAL
+                                                                             WIDTH AT 120 px
+                                                                             TALL**, so a wide
+                                                                             card draws the
+                                                                             picture at exactly
+                                                                             the size it has
+                                                                             drawn it since unit
+                                                                             308 and a narrow one
+                                                                             shrinks it to fit
+                                                                             rather than cutting
+                                                                             the facts off. The
+                                                                             control keeps the
+                                                                             frame's shape at any
+                                                                             size. -->
                                                                         <ctl:Ft8GlobeControl x:Name="CardGlobe"
                                                                                              Height="120"
+                                                                                             MaxWidth="220"
                                                                                              Plot="{Binding Globe}" />
                                                                     </Border>
                                                                 </Button>
@@ -5144,60 +5244,136 @@
                                                                  never sent a grid is not a
                                                                  station whose grid failed to
                                                                  read. -->
-                                                            <StackPanel Grid.Column="1"
-                                                                        x:Name="CardRightColumn"
-                                                                        IsVisible="{Binding HasRightColumn}"
-                                                                        Margin="12,0,0,0"
-                                                                        Spacing="3">
-                                                                <TextBlock x:Name="CardDistanceLine"
-                                                                           Text="{Binding DistanceLine}"
+                                                            <!-- **A TABLE, NOT A COLUMN OF
+                                                                 SENTENCES** (work instruction
+                                                                 330 task 2). Tim, 2026-09-12,
+                                                                 with a screenshot: *"the right
+                                                                 of globe text is not aligned or
+                                                                 even, make it nice. It's a
+                                                                 jumbled mess."* What he was
+                                                                 looking at was five wrapped
+                                                                 sentences of different lengths,
+                                                                 one of them cut off at the
+                                                                 card's edge - `2 messages  show
+                                                                 the messag` - and *show the
+                                                                 messages* on the card twice.
+
+                                                                 **LABELS IN ONE COLUMN, VALUES
+                                                                 IN THE OTHER, EVERY ROW THE SAME
+                                                                 HEIGHT.** The labels are right
+                                                                 aligned against the values so
+                                                                 the two columns have a shared
+                                                                 edge down the middle, and the
+                                                                 label column is `Auto` so it is
+                                                                 as wide as the longest word and
+                                                                 no wider.
+
+                                                                 **NOTHING WRAPS AND NOTHING IS
+                                                                 TRIMMED.** A wrapped value would
+                                                                 make one row taller than the
+                                                                 rest, which is the ragged look
+                                                                 the grid exists to fix, and a
+                                                                 trimmed one is the truncation
+                                                                 he photographed.
+
+                                                                 **AND AN ABSENT FACT IS AN
+                                                                 ABSENT ROW, NEVER A DASH**
+                                                                 (§0.0). Both cells of a row
+                                                                 carry the same `Has`, so the row
+                                                                 measures zero and the table
+                                                                 closes up. -->
+                                                            <Grid Grid.Row="1"
+                                                                  x:Name="CardRightColumn"
+                                                                  IsVisible="{Binding HasRightColumn}"
+                                                                  Margin="0,8,0,0"
+                                                                  ColumnDefinitions="Auto,*"
+                                                                  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                                                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                                                           Classes="hm-cardfactlabel"
                                                                            IsVisible="{Binding HasDistanceLine}"
-                                                                           TextWrapping="Wrap"
-                                                                           FontSize="11"
-                                                                           LineSpacing="1.3" />
+                                                                           Text="Distance" />
 
-                                                                <TextBlock x:Name="CardGridLine"
-                                                                           Text="{Binding GridLine}"
+                                                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                                                           x:Name="CardDistanceLine"
+                                                                           Classes="hm-cardfactvalue"
+                                                                           IsVisible="{Binding HasDistanceLine}"
+                                                                           Text="{Binding DistanceValue}" />
+
+                                                                <TextBlock Grid.Row="1" Grid.Column="0"
+                                                                           Classes="hm-cardfactlabel"
                                                                            IsVisible="{Binding HasGridLine}"
-                                                                           TextWrapping="Wrap"
-                                                                           FontSize="11"
-                                                                           LineSpacing="1.3" />
+                                                                           Text="Grid" />
 
-                                                                <!-- **SOLAR TIME, AND THE LABEL
-                                                                     IS THE POINT** (§0.0).
-                                                                     Fifteen degrees of longitude
-                                                                     is an hour; Hamlet does not
-                                                                     know his time zone, his
-                                                                     summer time or where his
-                                                                     borders run, so it says *by
-                                                                     the sun* and claims exactly
-                                                                     what it measured. -->
-                                                                <TextBlock x:Name="CardSolarTimeLine"
-                                                                           Text="{Binding SolarTimeLine}"
+                                                                <TextBlock Grid.Row="1" Grid.Column="1"
+                                                                           x:Name="CardGridLine"
+                                                                           Classes="hm-cardfactvalue"
+                                                                           IsVisible="{Binding HasGridLine}"
+                                                                           Text="{Binding GridValue}" />
+
+                                                                <!-- **SOLAR TIME, AND *by the
+                                                                     sun* IS IN THE VALUE**
+                                                                     (§0.0). Fifteen degrees of
+                                                                     longitude is an hour; Hamlet
+                                                                     does not know his time zone,
+                                                                     his summer time or where his
+                                                                     borders run. The label is
+                                                                     *His time* and the four
+                                                                     words after the clock are
+                                                                     what stops the row claiming
+                                                                     a zone nobody read. -->
+                                                                <TextBlock Grid.Row="2" Grid.Column="0"
+                                                                           Classes="hm-cardfactlabel"
                                                                            IsVisible="{Binding HasSolarTimeLine}"
-                                                                           TextWrapping="Wrap"
-                                                                           FontSize="11"
-                                                                           LineSpacing="1.3" />
+                                                                           Text="His time" />
 
-                                                                <TextBlock x:Name="CardLastHeardLine"
-                                                                           Text="{Binding LastHeardLine}"
+                                                                <TextBlock Grid.Row="2" Grid.Column="1"
+                                                                           x:Name="CardSolarTimeLine"
+                                                                           Classes="hm-cardfactvalue"
+                                                                           IsVisible="{Binding HasSolarTimeLine}"
+                                                                           Text="{Binding SolarTimeValue}" />
+
+                                                                <TextBlock Grid.Row="3" Grid.Column="0"
+                                                                           Classes="hm-cardfactlabel"
                                                                            IsVisible="{Binding HasLastHeardLine}"
-                                                                           TextWrapping="Wrap"
-                                                                           FontSize="11"
-                                                                           LineSpacing="1.3" />
+                                                                           Text="Last heard" />
 
-                                                                <StackPanel Orientation="Horizontal"
-                                                                            Spacing="8"
+                                                                <TextBlock Grid.Row="3" Grid.Column="1"
+                                                                           x:Name="CardLastHeardLine"
+                                                                           Classes="hm-cardfactvalue"
+                                                                           IsVisible="{Binding HasLastHeardLine}"
+                                                                           Text="{Binding LastHeardValue}" />
+
+                                                                <TextBlock Grid.Row="4" Grid.Column="0"
+                                                                           Classes="hm-cardfactlabel"
+                                                                           IsVisible="{Binding HasMessages}"
+                                                                           Text="Messages" />
+
+                                                                <!-- **THE ONE WAY DOWN TO THE
+                                                                     CONVERSATION ON THE WHOLE
+                                                                     CARD.** The top row's *show
+                                                                     the N messages* button was
+                                                                     removed with this row: two
+                                                                     links doing one thing on one
+                                                                     card is what put *show the
+                                                                     messag* against the card's
+                                                                     edge in his screenshot. -->
+                                                                <StackPanel Grid.Row="4" Grid.Column="1"
+                                                                            Orientation="Horizontal"
+                                                                            Spacing="5"
+                                                                            Height="{StaticResource HmCardFactRow}"
                                                                             IsVisible="{Binding HasMessages}">
                                                                     <TextBlock x:Name="CardMessageCountLine"
-                                                                               Text="{Binding MessageCountLine}"
-                                                                               VerticalAlignment="Center"
-                                                                               FontSize="11"
-                                                                               LineSpacing="1.3" />
+                                                                               Classes="hm-cardfactvalue"
+                                                                               Text="{Binding MessagesValue}" />
 
-                                                                    <Button Classes="hm-cardlink"
+                                                                    <TextBlock Classes="hm-cardfactvalue"
+                                                                               Text="·"
+                                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                                    <Button x:Name="CardMessagesLink"
+                                                                            Classes="hm-cardlink"
                                                                             VerticalAlignment="Center"
-                                                                            Content="show the messages"
+                                                                            Content="{Binding MessagesLinkLabel}"
                                                                             Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).ShowMessagesCommand}"
                                                                             CommandParameter="{Binding Callsign}" />
                                                                 </StackPanel>
@@ -5207,10 +5383,20 @@
                                                                      (unit 327 tasks 3 and 4).
                                                                      One answer about one
                                                                      station, said in two places
-                                                                     from one `NudgeSet`. -->
-                                                                <Button x:Name="CardNudgeLine"
+                                                                     from one `NudgeSet`. The row
+                                                                     is absent when he earns
+                                                                     nothing - not blank, and not
+                                                                     a dash. -->
+                                                                <TextBlock Grid.Row="5" Grid.Column="0"
+                                                                           Classes="hm-cardfactlabel"
+                                                                           IsVisible="{Binding HasNudgeLine}"
+                                                                           Text="Achieves" />
+
+                                                                <Button Grid.Row="5" Grid.Column="1"
+                                                                        x:Name="CardNudgeLine"
                                                                         Classes="hm-cardlink"
                                                                         HorizontalAlignment="Left"
+                                                                        Height="{StaticResource HmCardFactRow}"
                                                                         IsVisible="{Binding HasNudgeLine}"
                                                                         Content="{Binding NudgeLine}"
                                                                         Command="{Binding OpenTheNudgeCommand}" />
@@ -5256,7 +5442,7 @@
                                                                         </Grid>
                                                                     </Border>
                                                                 </Popup>
-                                                            </StackPanel>
+                                                            </Grid>
                                                             </Grid>
                                                         </Grid>
                                                     </Border>

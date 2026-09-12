@@ -134,6 +134,13 @@
              instead of on paper. -->
         <x:Double x:Key="HmStatusQuillBox">32</x:Double>
 
+        <!-- **ONE HEIGHT FOR EVERY ROW OF THE CONVERSATION CARD'S FACT TABLE**
+             (work instruction 330 task 2). Read by `TextBlock.hm-cardfactlabel`,
+             `TextBlock.hm-cardfactvalue` and the two rows that hold a control
+             rather than a run of text, so the table's rhythm is one number and
+             not six that happen to agree. -->
+        <x:Double x:Key="HmCardFactRow">17</x:Double>
+
         <!-- Hamlet palette (HM-DEC-012): light with COLOR. Each panel
              owns a color family: amber = tuning, blue = spectrum,
              green = decode. -->

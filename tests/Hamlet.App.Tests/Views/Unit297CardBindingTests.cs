@@ -117,9 +117,23 @@ public sealed class Unit297CardBindingTests
             Assert.True(clear is not null, "the card has no X");
             Assert.True(clear!.Command is not null, "the X's command is null");
 
-            // **THE RING IS BESIDE THE BUTTON THAT NEEDS IT**, and this card's
-            // action is a send, so it is drawn.
-            Assert.Contains(cards.GetVisualDescendants().OfType<Arc>(), a => a.IsVisible);
+            // **THE RING LEFT THIS CARD IN UNIT 305 AND THIS LINE DID NOT** (rewritten
+            // under §R12, work instruction 330 task 2). It asserted that a visible `Arc`
+            // was somewhere under the cards list, which was unit 297's *the ring is
+            // beside the button that needs it*; unit 305 moved the slot clock above the
+            // panels, because a countdown inside a container that may not exist is a
+            // countdown that vanishes on the evening nobody answers. **So this has been
+            // red on a stale premise ever since**, and a red here stops the run before
+            // the binding sweep at the bottom - which is the assertion this class exists
+            // for and the one a rebuilt card template needs.
+            //
+            // **WHAT REPLACES IT IS THE SAME QUESTION ASKED WHERE THE ANSWER LIVES**: the
+            // ring is on the window, once, and nothing duplicated it back onto the card.
+            Assert.Empty(cards.GetVisualDescendants().OfType<Arc>());
+            Assert.True(
+                window.FindControl<Control>("SlotClock") is not null,
+                "the slot clock is not on the window, so the ring unit 305 moved there "
+                + "is not anywhere at all");
 
             window.Close();
         }

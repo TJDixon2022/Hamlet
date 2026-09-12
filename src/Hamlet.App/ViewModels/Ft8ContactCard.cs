@@ -610,6 +610,17 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// part of this exchange, and offering to show six when four are somebody else's
     /// is a count the panel cannot honour.
     /// </remarks>
+    /// <remarks>
+    /// **NOTHING BINDS THIS SINCE WORK INSTRUCTION 330 TASK 2.** The card's top row carried
+    /// it as a button while the right column carried the count and its own link, so one
+    /// card had two ways down to one conversation and the second of them was the line Tim
+    /// photographed cut off at the card's edge. The top row's button is gone; the table's
+    /// `Messages` row says `2 · show them`, which is <see cref="MessagesValue"/> and
+    /// <see cref="MessagesLinkLabel"/>. **This is kept and not deleted** because it is the
+    /// wording of the count and `Unit297CardSentenceTests` holds it against §R19 and the
+    /// card's voice; a second surface that wants the whole sentence should read it here
+    /// rather than compose it again.
+    /// </remarks>
     public string MessagesLabel
         => _facts.Messages == 1
             ? "show the 1 message"
@@ -914,6 +925,15 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>True where both grids are known and a distance could be measured.</summary>
     public bool HasDistanceLine => DistanceLine.Length > 0;
 
+    /// <summary>**The distance and the compass word, for the table's `Distance` row.**</summary>
+    /// <remarks>
+    /// **THE SAME STRING** - this line never carried a label of its own, so the table's
+    /// value and the sentence are one property under two names, and the second name is
+    /// here so the markup reads like the other five rows rather than making one row's
+    /// binding look different from its neighbors.
+    /// </remarks>
+    public string DistanceValue => DistanceLine;
+
     /// <summary>**His grid.**</summary>
     /// <remarks>
     /// **THE COUNTRY IS NOT REPEATED HERE BECAUSE THE HEADER CARRIES IT.** The work
@@ -922,10 +942,21 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// twice on one card.
     /// </remarks>
     public string GridLine
-        => _facts.Grid is { Length: > 0 } grid ? "Grid " + grid : "";
+        => GridValue.Length > 0 ? "Grid " + GridValue : "";
 
     /// <summary>True where he has sent a grid.</summary>
     public bool HasGridLine => GridLine.Length > 0;
+
+    /// <summary>**His grid, with no label on it - the table carries the label.**</summary>
+    /// <remarks>
+    /// **THE COLUMN IS A TABLE SINCE WORK INSTRUCTION 330 TASK 2** (Tim, 2026-09-12: *"the
+    /// right of globe text is not aligned or even, make it nice. It's a jumbled mess."*).
+    /// A table has its labels in a column of their own, so the value properties carry no
+    /// label of their own and the `*Line` properties above are the same fact written as a
+    /// sentence. **The two are one source and neither recomputes anything**, so the table
+    /// and anything still reading a line cannot come to disagree about one station.
+    /// </remarks>
+    public string GridValue => _facts.Grid is { Length: > 0 } grid ? grid : "";
 
     /// <summary>**What time it is where he is, by the sun.**</summary>
     /// <remarks>
@@ -942,6 +973,18 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// UTC to offset, so there is no line - not a dash and not the machine's own clock.</para>
     /// </remarks>
     public string SolarTimeLine
+        => SolarTimeValue.Length > 0 ? "His time: " + SolarTimeValue : "";
+
+    /// <summary>True where his grid and a corrected clock are both known.</summary>
+    public bool HasSolarTimeLine => SolarTimeLine.Length > 0;
+
+    /// <summary>**The clock reading and what it is, with no label - `09:21 by the sun`.**</summary>
+    /// <remarks>
+    /// **`by the sun` IS NOT THE LABEL AND STAYS IN THE VALUE** (§0.0). The label says
+    /// *His time*; without the four words after the clock the row would claim a time zone
+    /// Hamlet has never read, which is the whole reason this line is worded the way it is.
+    /// </remarks>
+    public string SolarTimeValue
     {
         get
         {
@@ -951,15 +994,11 @@ public sealed partial class Ft8ContactCard : ObservableObject
                 return "";
             }
 
-            return "His time: "
-                + now.AddHours(there.Longitude / 15.0)
+            return now.AddHours(there.Longitude / 15.0)
                     .ToString("HH:mm", CultureInfo.InvariantCulture)
                 + " by the sun";
         }
     }
-
-    /// <summary>True where his grid and a corrected clock are both known.</summary>
-    public bool HasSolarTimeLine => SolarTimeLine.Length > 0;
 
     /// <summary>**What he last sent, and how long ago.**</summary>
     /// <remarks>
@@ -969,6 +1008,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// clock, for the reason <see cref="TimeLine"/>'s is.
     /// </remarks>
     public string LastHeardLine
+        => LastHeardValue.Length > 0 ? "Last heard: " + LastHeardValue : "";
+
+    /// <summary>True where he has said something this card can quote.</summary>
+    public bool HasLastHeardLine => LastHeardLine.Length > 0;
+
+    /// <summary>**What he last sent and how long ago, with no label on it.**</summary>
+    public string LastHeardValue
     {
         get
         {
@@ -977,16 +1023,13 @@ public sealed partial class Ft8ContactCard : ObservableObject
                 return "";
             }
 
-            var line = "Last heard: " + said.Trim();
+            var value = said.Trim();
 
             return _facts.LastAtUtc is { } at && _nowUtc is { } now
-                ? line + " · " + Ago(at, now)
-                : line;
+                ? value + " · " + Ago(at, now)
+                : value;
         }
     }
-
-    /// <summary>True where he has said something this card can quote.</summary>
-    public bool HasLastHeardLine => LastHeardLine.Length > 0;
 
     /// <summary>**How many messages this conversation holds.**</summary>
     /// <remarks>
@@ -1000,6 +1043,29 @@ public sealed partial class Ft8ContactCard : ObservableObject
         => _facts.Messages == 1
             ? "1 message"
             : _facts.Messages.ToString(CultureInfo.InvariantCulture) + " messages";
+
+    /// <summary>**The count on its own, for the table's `Messages` row.**</summary>
+    /// <remarks>
+    /// **THE WORD *messages* IS THE ROW'S LABEL AND IS NOT SAID TWICE** (work instruction
+    /// 330 task 2). Tim's screenshot read `2 messages  show the messag` in a column
+    /// labelled by nothing at all; the row now reads `Messages   2 · show them`, which is
+    /// the same two facts and one instance of the word.
+    /// </remarks>
+    public string MessagesValue
+        => _facts.Messages.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>**The one way down to the conversation, on the whole card.**</summary>
+    /// <remarks>
+    /// <para>**IT WAS ON THE CARD TWICE** (work instruction 330 task 2). Unit 327 put the
+    /// count and its link in the right column and left <see cref="MessagesLabel"/>'s button
+    /// on the card's top row, so *show the 2 messages* and *show the messages* were both on
+    /// one card, doing one thing, and the second of them was the line Tim's screenshot
+    /// showed cut off at the card's edge.</para>
+    /// <para>**THE SHORT WORDING IS BECAUSE THE ROW ALREADY SAYS WHAT AND HOW MANY.** The
+    /// label is *Messages* and the value is the count, so the link only has to say what
+    /// pressing it does.</para>
+    /// </remarks>
+    public string MessagesLinkLabel => "show them";
 
     /// <summary>**Why this station is worth working, in the mark's own words.**</summary>
     /// <remarks>
