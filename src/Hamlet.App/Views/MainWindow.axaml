@@ -646,18 +646,23 @@
                                      was 20 meters until recently."* -->
                                 <!-- **ONE LINE FOR THE BAND, THE FREQUENCY AND THE VERDICT**
                                      (R26, the mockup's `20 m  14.074 MHz · Digital · FT8 ·
-                                     yours to use`). The band stays the largest text; the
-                                     verdict takes what is left of the line and wraps under
-                                     itself where the line is short, rather than running past
-                                     the edge. -->
+                                     yours to use`). The band stays the largest text.
+
+                                     **WHERE THE LINE IS SHORT THE VERDICT DROPS UNDER AS A
+                                     WHOLE** (work instruction 337 task 3, the unit's rule).
+                                     Measured at 1400 on the headless host, a star column beside
+                                     the band and the frequency left the verdict a sliver and it
+                                     broke into five lines; a wrap panel moves it to its own line
+                                     first and wraps it only past the block's full width. At
+                                     1920 all three fit on one line and nothing moves. -->
                                 <StackPanel x:Name="GreenZoneLeft"
                                             Grid.Column="0"
                                             Margin="0,0,16,0"
                                             Spacing="1"
                                             VerticalAlignment="Top">
-                                    <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="10">
+                                    <WrapPanel Orientation="Horizontal">
                                         <TextBlock x:Name="GreenZoneBand"
-                                                   Grid.Column="0"
+                                                   Margin="0,0,10,0"
                                                    Text="{Binding GreenZone.Band}"
                                                    IsVisible="{Binding GreenZone.HasBand}"
                                                    FontSize="20" FontWeight="Bold"
@@ -666,7 +671,7 @@
                                                        Converter={x:Static ctl:PrivilegeToneConverter.FamilyInk}}" />
 
                                         <TextBlock x:Name="GreenZoneFrequency"
-                                                   Grid.Column="1"
+                                                   Margin="0,0,10,0"
                                                    Text="{Binding GreenZone.Frequency}"
                                                    FontSize="13" FontWeight="SemiBold"
                                                    VerticalAlignment="Center"
@@ -676,7 +681,6 @@
                                              (HM-DEC-029): green where the frequency is his,
                                              amber where it is listen-only. -->
                                         <TextBlock x:Name="GreenZoneModeLine"
-                                                   Grid.Column="2"
                                                    Text="{Binding GreenZone.ModeLine}"
                                                    IsVisible="{Binding GreenZone.HasModeLine}"
                                                    FontSize="13"
@@ -684,7 +688,7 @@
                                                    VerticalAlignment="Center"
                                                    Foreground="{Binding PrivilegeStatus.Tone,
                                                        Converter={x:Static ctl:PrivilegeToneConverter.Text}}" />
-                                    </Grid>
+                                    </WrapPanel>
 
                                     <!-- **THE LICENSE PHRASE AND THE CITATION, SMALL, IN
                                          THEIR OWN WORDS.** One line where the side has the

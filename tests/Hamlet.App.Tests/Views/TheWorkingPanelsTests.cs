@@ -211,10 +211,104 @@ public sealed class TheWorkingPanelsTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 337 task 3: at 1400 the same shape holds** - the working card at least
+    /// half the height below the band pills, no callsign clipped, and the card's facts beside or
+    /// under its map by the unit's stated rule.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE RULE, THE UNIT'S OWN AND OVERRULABLE.** The facts sit beside the map when the
+    /// card is wide enough inside for the map, the 10 px between them, and the table's widest row;
+    /// otherwise they take a line of their own under it. The decoded column never narrows below
+    /// its longest line at any width, so the waterfall and For You give up width first.</para>
+    /// <para>**"THE WORKING PANELS" IS READ AS THE WORKING CARD**, the tab's own region below
+    /// the tabs that holds the three panels, because R26 says *the working panels below the tabs
+    /// take the rest of the window*. That reading is the unit's and is marked as such; the three
+    /// panels' own height is printed beside it so the other reading can be judged from the same
+    /// run. **The height below the pills runs to the window's bottom edge**, the larger of the two
+    /// denominators.</para>
+    /// <para>**THE TOP ROW AT 1400 IS PRINTED AGAINST THE MOCKUP'S PROPORTION AND NOT ASSERTED**
+    /// (R14: the task names no height for it). The mockup's top row is 186 px of the 710 below
+    /// its pills.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void AtFourteenHundredTheSameShapeHolds()
+    {
+        var window = Realized(1400);
+
+        try
+        {
+            var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+            var pillsBottom = TheTopRowTests.RectIn(pills, window).Bottom;
+            var below = window.Bounds.Height - pillsBottom;
+            var measured = TheTopRowTests.Measure(window);
+            var panels = Panels(window);
+
+            _output.WriteLine("WINDOW 1400 x " + Px(TheTopRowTests.WindowHeight));
+            _output.WriteLine("  band pills end at y " + Px(pillsBottom) + "; " + Px(below) + " px below them");
+            _output.WriteLine(
+                "  top row      " + Px(measured.TopRowHeight) + " px = " + Share(measured.TopRowHeight, below)
+                + " (the mockup: 186 of 710 = " + Share(186, 710) + ")");
+            _output.WriteLine(
+                "  working card " + Px(measured.Workspace.Height) + " px = " + Share(measured.Workspace.Height, below));
+            _output.WriteLine(
+                "  the panels   " + Px(panels[0].Rect.Height) + " px = " + Share(panels[0].Rect.Height, below));
+
+            // **WHAT STANDS BETWEEN THE CARD'S TOP AND THE PANELS**, printed so a change in the
+            // panels' height can be put down to a row rather than guessed at. The readiness and
+            // tune strips appear only when they have something to say.
+            foreach (var name in new[]
+            {
+                "DigitalModeStrip", "DigitalReadinessStrip", "DigitalTuneStrip",
+                "DigitalSendReserved", "DigitalListControlsBar",
+            })
+            {
+                var row = TheTopRowTests.Named<Control>(window, name);
+
+                _output.WriteLine(
+                    "    " + name.PadRight(24) + (row.IsEffectivelyVisible
+                        ? Px(row.Bounds.Height) + " px tall"
+                        : "not shown"));
+            }
+
+            Assert.True(
+                measured.Workspace.Height >= below / 2,
+                "at 1400 the working card is " + Px(measured.Workspace.Height) + " px of the " + Px(below)
+                + " below the band pills, which is less than half");
+
+            var clipped = Clipped(window, _output);
+
+            Assert.True(clipped.Count == 0, "clipped at 1400: " + string.Join("; ", clipped));
+
+            var placed = Placement(window);
+            var rule = placed.Inside >= placed.MapWidth + 10 + placed.FactsWidth;
+
+            _output.WriteLine("  " + placed.Said);
+            _output.WriteLine(
+                "  the rule: " + Px(placed.Inside) + " inside against " + Px(placed.MapWidth) + " + 10 + "
+                + Px(placed.FactsWidth) + " = " + Px(placed.MapWidth + 10 + placed.FactsWidth)
+                + " -> " + (rule ? "BESIDE" : "UNDER"));
+
+            Assert.True(placed.Found, placed.Said);
+            Assert.True(
+                rule ? placed.Beside : placed.Under,
+                "the rule says " + (rule ? "beside" : "under") + " and the card has: " + placed.Said);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     // ------------------------------------------------------------------------------------
 
-    /// <summary>Where the card's facts were put against its map, and a sentence saying so.</summary>
-    public sealed record Placed(bool Found, bool Beside, bool Under, string Said);
+    /// <summary>Where the card's facts were put against its map, the widths the rule reads, and a sentence.</summary>
+    public sealed record Placed(
+        bool Found, bool Beside, bool Under, double Inside, double MapWidth, double FactsWidth, string Said);
+
+    private static string Share(double part, double whole)
+        => (part / whole).ToString("0.000", CultureInfo.InvariantCulture);
 
     /// <summary>The three panels, in order, in the window's frame.</summary>
     public static List<(string Name, Rect Rect)> Panels(Window window)
@@ -236,7 +330,7 @@ public sealed class TheWorkingPanelsTests
 
         if (beside is null || globe is null || table is null)
         {
-            return new Placed(false, false, false, "no card, map or table was realized");
+            return new Placed(false, false, false, 0, 0, 0, "no card, map or table was realized");
         }
 
         var map = new Rect(globe.TranslatePoint(new Point(0, 0), beside)!.Value, globe.Bounds.Size);
@@ -246,7 +340,7 @@ public sealed class TheWorkingPanelsTests
         var isUnder = facts.Y >= map.Bottom - 0.5;
 
         return new Placed(
-            true, isBeside, isUnder,
+            true, isBeside, isUnder, beside.Bounds.Width, map.Width, facts.Width,
             "card inside " + Px(beside.Bounds.Width) + " px; map " + Box(map) + "; facts " + Box(facts)
             + " -> " + (isBeside ? "BESIDE" : isUnder ? "UNDER" : "NEITHER"));
     }
