@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Headless.XUnit;
+using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using Hamlet.App.Controls;
 using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Telemetry;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -311,13 +315,26 @@ public sealed class TheTopRowTests
     /// send area and under the rig display, with the rig panel still the card's height. Every FT8
     /// assertion is kept. FT8 is put back on the model before each window closes, and nothing is
     /// pressed (§0.2, HM-DEC-084).</para>
+    /// <para>**WORK INSTRUCTION 341 TASK 1: THE OFFER AS THE MOCKUP'S ONE LINE, AND THE FULL OFFER IN
+    /// ITS POPUP** (the arbiter's ruling 8, rewritten under R12). Under the S-meter on PSK31 is the
+    /// line *RF power 50 % offered*; opening it by its own command writes no `psk31_power_*` event
+    /// and leaves the offer unanswered; the popup then holds the sentence, both buttons and the
+    /// ALC line with the view model's words, and no accept or decline is on the window outside it.
+    /// **The offer's containment in the rig panel is now the line's and the popup's**, in both
+    /// modes, because a closed popup's sentence has no visual parent to be contained by. Accept
+    /// and decline are never executed.</para>
     /// </remarks>
     [AvaloniaFact]
     public void DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop()
     {
         foreach (var (width, mode) in new[] { (1920.0, "FT8"), (1920.0, "PSK31"), (1400.0, "FT8"), (1400.0, "PSK31") })
         {
-            var window = Realized(width);
+            var folder = Path.Combine(Path.GetTempPath(), "hamlet-unit341-offer-" + Guid.NewGuid().ToString("N"));
+
+            Directory.CreateDirectory(folder);
+
+            var telemetry = new JsonlTelemetry(folder, "341", _ => true);
+            var window = Realized(width, telemetry);
             var model = (MainWindowViewModel)window.DataContext!;
 
             try
@@ -332,19 +349,20 @@ public sealed class TheTopRowTests
                 var tabs = Named<Control>(window, "ModeTabs");
                 var workspace = Named<Control>(window, "WorkspaceBoundary");
                 var drive = Named<NumericUpDown>(window, "DigitalTransmitDriveBox");
-                var offer = Named<TextBlock>(window, "DigitalPsk31PowerOffer");
+                var line = Named<Button>(window, "DigitalPsk31PowerLine");
+                var popup = Named<Popup>(window, "DigitalPsk31PowerPopup");
 
                 _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed, " + mode);
                 _output.WriteLine("  rig display : " + Box(RectIn(rig, window)));
                 _output.WriteLine("  rig panel   : " + Box(RectIn(panel, window)));
                 _output.WriteLine("  card        : " + Box(RectIn(card, window)));
                 _output.WriteLine("  drive box   : " + Box(RectIn(drive, window)));
-                _output.WriteLine("  power offer : " + Box(RectIn(offer, window)) + " visible " + offer.IsEffectivelyVisible);
+                _output.WriteLine("  offer line  : " + Box(RectIn(line, window)) + " visible " + line.IsEffectivelyVisible);
                 _output.WriteLine("  tabs        : " + Box(RectIn(tabs, window)));
                 _output.WriteLine("  send area   : " + Box(RectIn(reserved, window)));
                 _output.WriteLine("  working card: " + Box(RectIn(workspace, window)));
 
-                foreach (var (name, control) in new (string, Control)[] { ("drive", drive), ("power offer", offer) })
+                foreach (var (name, control) in new (string, Control)[] { ("drive", drive), ("power offer line", line), ("power offer popup", popup) })
                 {
                     Assert.True(
                         control.GetVisualAncestors().Contains(panel),
@@ -390,28 +408,137 @@ public sealed class TheTopRowTests
                     continue;
                 }
 
-                // **THE OFFER ITSELF, DRAWN** (ruling 6): its border, not only the sentence inside it.
-                var border = OfferBorder(window);
-                var borderAt = RectIn(border, window);
+                // **THE LINE, DRAWN UNDER THE S-METER** (ruling 8): the mockup's words, with the
+                // number read from the constant rather than typed, and every character on the glass.
+                var lineAt = RectIn(line, window);
                 var at = "at " + Px(width) + " on PSK31";
+                var words = "RF power " + MainWindowViewModel.Psk31PowerPercent + " % offered";
 
-                _output.WriteLine("  offer border: " + Box(borderAt) + " visible " + border.IsEffectivelyVisible);
+                _output.WriteLine(
+                    "  offer line wants " + Px(line.DesiredSize.Width) + " x " + Px(line.DesiredSize.Height) + ", says ["
+                    + line.Content + "], top - rig display bottom = " + Px(lineAt.Top - RectIn(rig, window).Bottom));
 
                 Assert.True(
-                    border.IsEffectivelyVisible && borderAt.Width > 0 && borderAt.Height > 0,
-                    at + " the power offer is not drawn: " + Box(borderAt) + " visible " + border.IsEffectivelyVisible);
-                Assert.True(border.GetVisualAncestors().Contains(panel), at + " the power offer is not in the rig panel");
-                Assert.False(border.GetVisualAncestors().Contains(reserved), at + " the power offer is in the send area");
+                    line.IsEffectivelyVisible && lineAt.Width > 0 && lineAt.Height > 0,
+                    at + " the offer line is not drawn: " + Box(lineAt) + " visible " + line.IsEffectivelyVisible);
+                Assert.False(line.GetVisualAncestors().Contains(reserved), at + " the offer line is in the send area");
                 Assert.True(
-                    borderAt.Top >= RectIn(rig, window).Bottom - 0.5,
-                    at + " the power offer starts at y=" + Px(borderAt.Top) + " and the rig display ends at y="
+                    lineAt.Top >= RectIn(rig, window).Bottom - 0.5,
+                    at + " the offer line starts at y=" + Px(lineAt.Top) + " and the rig display ends at y="
                     + Px(RectIn(rig, window).Bottom) + ", so it is not under the S-meter");
+                // `DesiredSize` carries the margin and `Bounds` does not, so the margin comes off the
+                // wanted width; and the words themselves are one line inside their own box.
+                var wants = line.DesiredSize.Width - line.Margin.Left - line.Margin.Right;
+                var face = line.GetVisualDescendants().OfType<TextBlock>().First(t => t.Text == line.Content as string);
+
+                Assert.True(
+                    wants <= lineAt.Width + 0.5 && lineAt.Right <= RectIn(panel, window).Right + 0.5,
+                    at + " the offer line is clipped: it wants " + Px(wants) + " px and has " + Box(lineAt)
+                    + " in a rig panel ending at x=" + Px(RectIn(panel, window).Right));
+                Assert.True(
+                    face.TextLayout.TextLines.Count == 1 && face.TextLayout.WidthIncludingTrailingWhitespace <= face.Bounds.Width + 0.5,
+                    at + " the offer line's words take " + face.TextLayout.TextLines.Count + " lines and "
+                    + Px(face.TextLayout.WidthIncludingTrailingWhitespace) + " px in a " + Px(face.Bounds.Width) + " px box");
+                Assert.Equal(words, line.Content as string);
+                Assert.Contains(MainWindowViewModel.Psk31PowerPercent.ToString(CultureInfo.InvariantCulture), line.Content as string ?? "", StringComparison.Ordinal);
+
+                // **OPENING IT WRITES NOTHING** (§0.2, HM-DEC-084): closed at the start, opened by the
+                // line's own command, and afterwards no event, the offer still unanswered and the
+                // drive where it was.
+                var driveBefore = model.TransmitDrivePercent;
+
+                Assert.False(popup.IsOpen, at + " the full offer is open before anything was clicked");
+
+                line.Command!.Execute(line.CommandParameter);
+                Settle(window);
+
+                Assert.True(popup.IsOpen, at + " the offer line's command did not open the full offer");
+                Assert.True(model.HasPsk31PowerOffer, at + " opening the full offer answered it");
+                Assert.Equal(driveBefore, model.TransmitDrivePercent);
+
+                // **THE FULL OFFER, UNCHANGED, INSIDE THE POPUP** (ruling 8).
+                var host = popup.Host as Visual;
+
+                Assert.True(host is not null, at + " the open popup has no host to read");
+
+                var inside = host!.GetVisualDescendants().ToHashSet();
+
+                foreach (var (name, expected) in new (string, string)[]
+                {
+                    ("DigitalPsk31PowerOffer", model.Psk31PowerOffer),
+                    ("DigitalPsk31PowerAccept", model.Psk31PowerAccept),
+                    ("DigitalPsk31PowerDecline", "I will set it myself"),
+                    ("DigitalPsk31AlcReference", model.Psk31AlcReferenceLine),
+                })
+                {
+                    var control = inside.OfType<Control>().FirstOrDefault(c => c.Name == name);
+
+                    Assert.True(control is not null, at + " " + name + " is not inside the open popup");
+
+                    var said = control switch
+                    {
+                        TextBlock t => t.Text,
+                        Button b => b.Content as string,
+                        _ => null,
+                    };
+
+                    _output.WriteLine(
+                        "  in popup " + name.PadRight(26) + Px(control!.Bounds.Width) + " x " + Px(control.Bounds.Height)
+                        + " visible " + control.IsEffectivelyVisible + " [" + said + "]");
+
+                    Assert.True(
+                        control.IsEffectivelyVisible && control.Bounds.Width > 0 && control.Bounds.Height > 0,
+                        at + " " + name + " is not drawn inside the popup: " + Px(control.Bounds.Width) + " x "
+                        + Px(control.Bounds.Height) + " visible " + control.IsEffectivelyVisible);
+                    Assert.Equal(expected, said);
+                }
+
+                // **ACCEPT AND DECLINE EXIST ONLY INSIDE THE POPUP**, so the whole sentence is on the
+                // glass at every press that writes.
+                var outside = window.GetVisualDescendants().OfType<Button>()
+                    .Where(b => ReferenceEquals(b.Command, model.AcceptPsk31PowerCommand)
+                        || ReferenceEquals(b.Command, model.DeclinePsk31PowerCommand))
+                    .Where(b => !inside.Contains(b))
+                    .Select(b => b.Name ?? "-")
+                    .ToList();
+
+                Assert.True(outside.Count == 0, at + " accept or decline is on the window outside the popup: " + string.Join(", ", outside));
+
+                // **CLOSING WITHOUT AN ANSWER LEAVES IT OFFERED.**
+                popup.IsOpen = false;
+                Settle(window);
+
+                Assert.True(model.HasPsk31PowerOffer, at + " closing the full offer answered it");
             }
             finally
             {
+                if (window.GetVisualDescendants().OfType<Popup>().FirstOrDefault(p => p.Name == "DigitalPsk31PowerPopup") is { } open)
+                {
+                    open.IsOpen = false;
+                }
+
                 model.ChosenDigitalMode = "FT8";
                 window.Close();
+                telemetry.Dispose();
             }
+
+            var recorded = Directory.GetFiles(folder, "*.jsonl")
+                .SelectMany(File.ReadAllLines)
+                .Where(l => l.Contains("\"psk31_power_", StringComparison.Ordinal))
+                .ToList();
+
+            try
+            {
+                Directory.Delete(folder, true);
+            }
+            catch (IOException)
+            {
+                // A left-over temp folder is not a test failure.
+            }
+
+            Assert.True(
+                recorded.Count == 0,
+                "at " + Px(width) + " on " + mode + " a power offer answer was recorded: " + string.Join(" | ", recorded));
         }
     }
 
@@ -616,10 +743,10 @@ public sealed class TheTopRowTests
                     var m = Measure(window);
                     var rig = RectIn(window.GetVisualDescendants().OfType<RigDisplayControl>().First(), window);
                     var drive = Named<NumericUpDown>(window, "DigitalTransmitDriveBox");
-                    var sentence = Named<TextBlock>(window, "DigitalPsk31PowerOffer");
-                    var accept = Named<Button>(window, "DigitalPsk31PowerAccept");
-                    var decline = Named<Button>(window, "DigitalPsk31PowerDecline");
-                    var alc = Named<TextBlock>(window, "DigitalPsk31AlcReference");
+                    var sentence = InOffer<TextBlock>(window, "DigitalPsk31PowerOffer");
+                    var accept = InOffer<Button>(window, "DigitalPsk31PowerAccept");
+                    var decline = InOffer<Button>(window, "DigitalPsk31PowerDecline");
+                    var alc = InOffer<TextBlock>(window, "DigitalPsk31AlcReference");
                     var offer = OfferBorder(window);
                     var offerAt = RectIn(offer, window);
                     var pills = window.GetVisualDescendants().OfType<ItemsControl>()
@@ -855,6 +982,31 @@ public sealed class TheTopRowTests
                         + Px(shownPanels) + " px = " + (shownPanels / below).ToString("0.000", CultureInfo.InvariantCulture)
                         + " strip " + (stripShown ? "showing" : "not showing (nothing to say)"));
 
+                    // **THE BUILT LINE'S INK AGAINST THE RIG PANEL'S FILL** (§0.6), once it exists.
+                    if (window.GetVisualDescendants().OfType<Button>().FirstOrDefault(b => b.Name == "DigitalPsk31PowerLine") is { } built
+                        && built.Foreground is Avalonia.Media.ISolidColorBrush ink
+                        && panel.Background is Avalonia.Media.ISolidColorBrush fill)
+                    {
+                        static double Lum(Avalonia.Media.Color c)
+                        {
+                            static double Channel(byte v)
+                            {
+                                var s = v / 255.0;
+
+                                return s <= 0.03928 ? s / 12.92 : Math.Pow((s + 0.055) / 1.055, 2.4);
+                            }
+
+                            return (0.2126 * Channel(c.R)) + (0.7152 * Channel(c.G)) + (0.0722 * Channel(c.B));
+                        }
+
+                        var (hi, lo) = (Math.Max(Lum(ink.Color), Lum(fill.Color)), Math.Min(Lum(ink.Color), Lum(fill.Color)));
+
+                        _output.WriteLine(
+                            "  built line: " + Box(RectIn(built, window)) + " visible " + built.IsEffectivelyVisible + ", ink "
+                            + ink.Color + " on fill " + fill.Color + " = "
+                            + ((hi + 0.05) / (lo + 0.05)).ToString("0.00", CultureInfo.InvariantCulture) + ":1");
+                    }
+
                     // **THE LINE, SET ON THIS WINDOW ONLY** (ruling 8). The detached width is the words
                     // alone at the drive's 11 px; the placements use a card link, which is how a
                     // pressable line is drawn elsewhere on this window.
@@ -932,8 +1084,36 @@ public sealed class TheTopRowTests
     // ------------------------------------------------------------------------------------
 
     /// <summary>The power offer's border: the box `HasPsk31PowerOffer` shows, around the sentence.</summary>
+    /// <remarks>
+    /// **BY THE LOGICAL TREE SINCE WORK INSTRUCTION 341** (ruling 8): inside a closed popup the
+    /// sentence has no visual parent, and its border is still its logical ancestor.
+    /// </remarks>
     public static Border OfferBorder(Window window)
-        => Named<TextBlock>(window, "DigitalPsk31PowerOffer").GetVisualAncestors().OfType<Border>().First();
+        => InOffer<TextBlock>(window, "DigitalPsk31PowerOffer").GetLogicalAncestors().OfType<Border>().First();
+
+    /// <summary>
+    /// A control of the full power offer, found in a popup's content whether the popup is open or
+    /// not, or on the window where no popup holds it.
+    /// </summary>
+    /// <remarks>
+    /// **RULING 8 MOVED THE OFFER INTO A POPUP** (work instruction 341), and a closed popup's
+    /// content is in the logical tree only, so a visual walk of the window cannot find it.
+    /// </remarks>
+    public static T InOffer<T>(Window window, string name)
+        where T : Control
+    {
+        var found = window.GetVisualDescendants().OfType<Popup>()
+            .Select(p => p.Child)
+            .OfType<Control>()
+            .SelectMany(c => new ILogical[] { c }.Concat(c.GetLogicalDescendants()))
+            .OfType<T>()
+            .FirstOrDefault(c => c.Name == name)
+            ?? window.GetVisualDescendants().OfType<T>().FirstOrDefault(c => c.Name == name);
+
+        Assert.True(found is not null, "there is no " + typeof(T).Name + " named " + name + " in a popup or on the window");
+
+        return found!;
+    }
 
     private static void Settle(Window window)
     {
@@ -1036,7 +1216,12 @@ public sealed class TheTopRowTests
     /// panel of the digital tab open.
     /// </summary>
     /// <param name="width">How wide the window is.</param>
-    public static Window Realized(double width)
+    public static Window Realized(double width) => Realized(width, null);
+
+    /// <summary>The same window, with the model recording to <paramref name="telemetry"/>.</summary>
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="telemetry">Where the model records, or null for nowhere.</param>
+    public static Window Realized(double width, JsonlTelemetry? telemetry)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -1044,7 +1229,7 @@ public sealed class TheTopRowTests
         settings.Operator.Callsign = "KC3QIS";
         settings.Operator.GridSquare = HisGrid;
 
-        var model = new MainWindowViewModel(settings, null)
+        var model = new MainWindowViewModel(settings, telemetry)
         {
             OperatingMode = "Digital",
         };

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 3
+TASK: 2 of 3
 WORK_INSTRUCTION: 341 - step 0, the power offer as one line
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T22:15:44-04:00
-NOTE: Task 0 done - the line fits the note row adding 0 px at both widths; the PSK31 block's 12 px is the strayed-frequency line, and the empty upgrade row's 3 px is the fit found; committing, then task 1's watched reds
+UPDATED: 2026-09-12T22:24:35-04:00
+NOTE: Task 1 done - one-line offer and popup built, PSK31 top row 190 at 1920 and 237 at 1400, four classes 22 of 22, carry-forward 100 and 85; committing, then criteria 2 and 4 on PSK31
 
 ---
 

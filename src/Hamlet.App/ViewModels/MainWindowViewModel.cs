@@ -14930,6 +14930,43 @@ public partial class MainWindowViewModel : ObservableObject
             _telemetry, "psk31_power_declined", OperatingMode, "no write");
     }
 
+    /// <summary>
+    /// **The power offer as the mockup's one line under the S-meter** (work instruction 341, the
+    /// arbiter's ruling 8): *RF power 50 % offered*.
+    /// </summary>
+    /// <remarks>
+    /// **THE NUMBER IS THE CONSTANT, NEVER TYPED**, so the line and the sentence it opens cannot
+    /// name two percentages. It is a view of the offer and writes nothing.
+    /// </remarks>
+    public string Psk31PowerLine => "RF power " + Psk31PowerPercent + " % offered";
+
+    /// <summary>True while the full power offer is open in its popup.</summary>
+    /// <remarks>
+    /// **OPENING IT IS NOT AN ANSWER** (ruling 8, HM-DEC-084): nothing is written and nothing is
+    /// recorded, because `psk31_power_accepted` and `psk31_power_declined` already record the
+    /// answer (ruling 10). **Once the offer is answered it closes**, so an emptied popup is never
+    /// left open to swallow the next click.
+    /// </remarks>
+    [ObservableProperty]
+    private bool _psk31PowerOfferIsOpen;
+
+    /// <summary>**Open the full power offer from its line: a view, and no write.**</summary>
+    [RelayCommand]
+    private void OpenPsk31PowerOffer() => Psk31PowerOfferIsOpen = HasPsk31PowerOffer;
+
+    /// <inheritdoc/>
+    protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        // **ANSWERED, SO THE FULL OFFER CLOSES** (ruling 8). Accept and decline are unchanged and
+        // announce `HasPsk31PowerOffer` as they always have; this is where the popup hears it.
+        if (e.PropertyName == nameof(HasPsk31PowerOffer) && !HasPsk31PowerOffer && Psk31PowerOfferIsOpen)
+        {
+            Psk31PowerOfferIsOpen = false;
+        }
+    }
+
     /// <summary>What the ALC said during the last PSK31 send, in a sentence, or "".</summary>
     /// <remarks>
     /// <para>**A SENTENCE FOR SOMEBODY WHO HAS NEVER SEEN AN ALC METER** (§R11: *not a

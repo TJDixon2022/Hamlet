@@ -822,7 +822,14 @@
                                        IsVisible="{Binding PrivilegeStatus.Reassurance,
                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}" />
 
-                            <StackPanel Orientation="Horizontal" Spacing="8">
+                            <!-- **THE ROW GOES WHEN ITS ONE BUTTON DOES** (work instruction 341
+                                 task 1, under the arbiter's ruling 9; the unit's own choice and
+                                 overrulable). Visible and empty, it still took the block's 3 px of
+                                 spacing, and on PSK31 at 1400 the block was 2 px past 0.262. Same
+                                 condition as the button, so nothing that was drawn is hidden. -->
+                            <StackPanel Orientation="Horizontal" Spacing="8"
+                                        IsVisible="{Binding PrivilegeStatus.UpgradePrompt,
+                                            Converter={x:Static ctl:PrivilegeToneConverter.NotEmpty}}">
                                 <Button Content="{Binding PrivilegeStatus.UpgradePrompt}"
                                         FontSize="11" Padding="9,3"
                                         Command="{Binding ToggleUpgradeLadderCommand}"
@@ -3068,49 +3075,83 @@
                     <ctl:HintMarkControl x:Name="DigitalTransmitDriveTip"
                         Kind="Tip" VerticalAlignment="Center"
                         Text="{Binding TransmitDriveTip}" />
+
+                    <!-- **THE RF POWER OFFER AS THE MOCKUP'S ONE LINE, AND THE FULL OFFER ONE CLICK
+                         AWAY** (work instruction 341 task 1, the arbiter's ruling 8, which withdrew
+                         ruling 7). Unit 340 drew the whole offer here and the top row went to 305 px
+                         against R26's 190: a 112 px block costs the panels that height wherever it
+                         stands in the layout. `assets/main-screen-mockup.png` and §R11 both draw the
+                         offer as a percentage beside the drive, so that is what stands under the
+                         S-meter. Unit 340's padding fit on the offer's border is undone, because
+                         the border no longer stands in the row.
+
+                         **ON THE DRIVE NOTE'S ROW, THE UNIT'S OWN CHOICE AND OVERRULABLE.** Measured
+                         on the test host: the drive row has 91 px left and the line wants 218; the
+                         note row has 400 left, and the line adds no height there at 1920 or at 1400;
+                         a line of its own adds 16 px.
+
+                         **PRESSING THE LINE OPENS THE OFFER AND WRITES NOTHING.** The popup holds the
+                         sentence, both buttons and the ALC line with their words, commands and
+                         bindings unchanged, and accept and decline exist only there, so what would
+                         change and what would not is on the glass at the press that writes
+                         (HM-DEC-084 tier two). It opens on a click, never on a hover, and closing it
+                         without an answer leaves the offer standing. -->
+                    <Button x:Name="DigitalPsk31PowerLine"
+                            Classes="hm-cardlink"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="{Binding Psk31PowerLine}"
+                            Command="{Binding OpenPsk31PowerOfferCommand}"
+                            IsVisible="{Binding HasPsk31PowerOffer}" />
+
+                    <Popup x:Name="DigitalPsk31PowerPopup"
+                           IsOpen="{Binding Psk31PowerOfferIsOpen, Mode=TwoWay}"
+                           PlacementTarget="{Binding #DigitalPsk31PowerLine}"
+                           Placement="BottomEdgeAlignedRight"
+                           IsLightDismissEnabled="True">
+                        <Border Background="{StaticResource HmPanelBrush}"
+                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="6">
+                            <Border IsVisible="{Binding HasPsk31PowerOffer}"
+                                    Margin="0"
+                                    Padding="8,6"
+                                    CornerRadius="4"
+                                    Background="{StaticResource HmSlateTintBrush}"
+                                    BorderThickness="1"
+                                    BorderBrush="{StaticResource HmSlateEdgeBrush}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock x:Name="DigitalPsk31PowerOffer"
+                                               Text="{Binding Psk31PowerOffer}"
+                                               TextWrapping="Wrap"
+                                               MaxWidth="496"
+                                               HorizontalAlignment="Left"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button x:Name="DigitalPsk31PowerAccept"
+                                                Classes="hm-cardaction"
+                                                Content="{Binding Psk31PowerAccept}"
+                                                Command="{Binding AcceptPsk31PowerCommand}" />
+                                        <Button x:Name="DigitalPsk31PowerDecline"
+                                                Classes="hm-cardlink"
+                                                Content="I will set it myself"
+                                                Command="{Binding DeclinePsk31PowerCommand}" />
+                                    </StackPanel>
+
+                                    <TextBlock x:Name="DigitalPsk31AlcReference"
+                                               Text="{Binding Psk31AlcReferenceLine}"
+                                               TextWrapping="Wrap"
+                                               MaxWidth="496"
+                                               HorizontalAlignment="Left"
+                                               FontSize="11"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Border>
+                    </Popup>
                 </StackPanel>
-
-                <!-- **FITTED BY ARRANGEMENT, THE UNIT'S OWN CHOICE AND OVERRULABLE** (work
-                     instruction 340 task 1, the arbiter's ruling 7). Drawn on PSK31 the offer
-                     made the top row 317 px against R26's 190. Inside a rig column 520 px wide
-                     no arrangement of these words holds that, so the margin, padding and
-                     spacing are the part taken back. The words, the ALC line, both commands and
-                     `HasPsk31PowerOffer` are unchanged, and none of them is behind a hover. -->
-                <Border IsVisible="{Binding HasPsk31PowerOffer}"
-                        Margin="0"
-                        Padding="8,3"
-                        CornerRadius="4"
-                        Background="{StaticResource HmSlateTintBrush}"
-                        BorderThickness="1"
-                        BorderBrush="{StaticResource HmSlateEdgeBrush}">
-                    <StackPanel Spacing="2">
-                        <TextBlock x:Name="DigitalPsk31PowerOffer"
-                                   Text="{Binding Psk31PowerOffer}"
-                                   TextWrapping="Wrap"
-                                   MaxWidth="496"
-                                   HorizontalAlignment="Left"
-                                   FontSize="11"
-                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Button x:Name="DigitalPsk31PowerAccept"
-                                    Classes="hm-cardaction"
-                                    Content="{Binding Psk31PowerAccept}"
-                                    Command="{Binding AcceptPsk31PowerCommand}" />
-                            <Button x:Name="DigitalPsk31PowerDecline"
-                                    Classes="hm-cardlink"
-                                    Content="I will set it myself"
-                                    Command="{Binding DeclinePsk31PowerCommand}" />
-                        </StackPanel>
-
-                        <TextBlock x:Name="DigitalPsk31AlcReference"
-                                   Text="{Binding Psk31AlcReferenceLine}"
-                                   TextWrapping="Wrap"
-                                   MaxWidth="496"
-                                   HorizontalAlignment="Left"
-                                   FontSize="11"
-                                   Foreground="{StaticResource HmTextMutedBrush}" />
-                    </StackPanel>
-                </Border>
             </StackPanel>
         </StackPanel>
     </Border>
