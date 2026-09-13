@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 1 of 3
+STATE: COMPLETED
+TASK: 2 of 3
 WORK_INSTRUCTION: 339 - step 0, proved at both widths
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T21:18:15-04:00
-NOTE: Carry-forward app 100 of 100 after the test change; engine invocation running, then the task 1 commit and push
+UPDATED: 2026-09-12T21:30:22-04:00
+NOTE: Complete, tasks 0 to 2 - step 0 criteria with a green named test at both widths 3 -> 6 of 6, step 1 entry 8 of 8; output.md validated exit 0
 
 ---
 
