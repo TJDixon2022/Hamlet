@@ -734,8 +734,14 @@
     shows, and the panels asserted full to the status bar at 1400 (R26, the arbiter's rulings 6
     and 7). Screen only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.25 -> 1.13.26, UNIT 341 TASK 0. A PATCH, STEP 0 AGAIN: the PSK31 power offer under the
+    S-meter as the mockup's one line, opening the full offer unchanged in a popup on a click, the
+    PSK31 green block fitted at 1400, and criteria 2 and 4 realized on PSK31 (R26, the arbiter's
+    rulings 8 to 10). Screen only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.25</Version>
+    <Version>1.13.26</Version>
   </PropertyGroup>
 
   <!--

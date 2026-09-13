@@ -1,10 +1,12 @@
-# Work instruction 340 - step 0, the power offer drawn
+# Work instruction 341 - step 0, the power offer as the mockup's one line
 
-Step 0 of `PHASE_PLAN.md`, **fourth unit on it**. Units 337 and 338 built the layout. Unit 339 put a
-named test behind every criterion, and the state reader still answered `partial` on one clause. The
-power offer was never drawn in any test, so nothing measured it sitting under the S-meter. This unit
-draws it and measures it at both widths. If the top row cannot hold it, the unit fits it. It also
-asserts the one clause unit 339 left printed rather than asserted. **Three tasks, 0 to 2.**
+Step 0 of `PHASE_PLAN.md`, **fifth unit on it**. Units 337 and 338 built the layout. Unit 339 put a
+named test behind every criterion. Unit 340 drew the PSK31 power offer and measured it: the top row
+goes to 305 px while the offer shows. No arrangement inside the rig column brings that back, and the
+unit asked for a ruling. **The ruling that held it was the arbiter's own ruling 7, not Tim's. This
+instruction withdraws it and rules the shape instead.** Following Tim's mockup and §R11, the offer
+under the S-meter is one line. The full offer opens from that line, with its words unchanged.
+**Three tasks, 0 to 2.**
 
 ---
 
@@ -25,48 +27,56 @@ else.** The refusal text: *This is not Hamlet. Nothing was changed.*
 
 ## 1. Why this unit exists
 
-**The number: step 0's six must-pass carry a green named test at both widths, but two sub-clauses
-are held by containment or by a print, not by a measured rectangle.** Unit 339 said so itself
-(section 4, item 4). The state reader that read its report answered `partial`, naming one:
+**The number: with the PSK31 power offer drawn, the top row is 305 px, against 209 at 1920 (96 px
+over) and 238 at 1400 (67 px over). The panels are 388 px against 455.** So criteria 1 and 5 are red on
+PSK31, and the state reader answered `blocked`:
 
-> criterion 3 is not fully shown, because the power offer is not drawn on the FT8 fixture and is
-> checked only as being inside the rig panel, so nothing measures it sitting under the S-meter at
-> either width.
+> With the PSK31 power offer drawn the top row measures 305 px against 209 at 1920 and 0.335 against
+> 0.262 at 1400, so criteria 1 and 5 are red, and the unit shows that no layout change inside the rig
+> column fixes this without changing the offer's words, which ruling 7 forbids, so a ruling on
+> section 4 item 1 is needed first.
 
-**What the tree says, read by the arbiter on 2026-09-12:**
+**What the tree and the plan say, read by the arbiter on 2026-09-12:**
 
-- `MainWindowViewModel.HasPsk31PowerOffer` is `IsPsk31Chosen && !_psk31PowerSettled`. The offer
-  draws when PSK31 is the chosen digital mode and the operator has not answered it. **No transmission
-  and no radio is needed to draw it.**
-- `TheTopRowTests.Realized` sets `ChosenDigitalMode = "FT8"`. So every top-row test to date has
-  measured the rig panel **without the offer in it**.
-- The offer is a `Border` inside `RigDriveAndPower`, holding three things: a wrapped sentence of
-  about 190 characters (`MaxWidth` 496), the accept and decline buttons, and the ALC reference line.
-  **Whether the rig panel, and so the top row, stays at the card's height and about 190 px with that
-  block drawn has never been measured.** The mockup draws the offer as one short line: *Transmit
-  drive 30 % · RF power 50 % offered*. The tree's offer is far taller than that.
-- `TheWorkingPanelsTests.TheThreePanelsShareOneTopAndOneBottom` realizes 1400 and 1920. It skips
-  every assertion below 1900 (`if (width < 1900) continue;`). So *full to the status bar* at 1400 is
-  printed, not asserted. Unit 339 printed y 953 against a floor of y 953.
+- **The height budget does not hold a 112 px offer anywhere on the main window at 1040 px tall.**
+  Below the pills there are 910 px. The top row gets at most 209 and the panels at least 455. On FT8
+  the panels have 48 px to spare (503). A block 112 px tall costs the panels that height wherever it
+  is drawn: in the rig column (option d), beside CQ (option c), or as a strip above the panels. The
+  one arrangement that avoids the cost is one that is not in the layout, which is a popup.
+- **`assets/main-screen-mockup.png`, Tim's approved picture, draws the offer as one line** under the
+  S-meter: *Transmit drive 30 % · RF power 50 % offered*.
+- **§R11 (Tim, 2026-09-11)** says RF power for PSK31 *defaults to half and is offered as a percentage
+  beside the drive, never written silently*.
+- **HM-DEC-084's tier two**: power *is offered rather than simply done*. The code's own comment on
+  `Psk31PowerOffer` says the offer *says what would change and what would not*, and that it says so
+  before the press that writes.
+- **The offer today is one `Border` in `RigDriveAndPower`** (`MainWindow.axaml` near line 3079). It
+  holds `DigitalPsk31PowerOffer` (195 characters, 5 lines on the host), `DigitalPsk31PowerAccept`,
+  `DigitalPsk31PowerDecline` and `DigitalPsk31AlcReference` (4 lines). The border is 520 x 112 after
+  unit 340's fit.
+- **A second, smaller miss that is not the offer:** on PSK31 at 1400 the neighborhood card alone
+  makes the row 240 px (0.264), 2 px over 0.262. The green block is 103 px on PSK31 against 91 on
+  FT8. Which line adds the 12 px was not read (unit 340 item 2).
+- **Criteria 2 and 4 were never realized on PSK31** (unit 340 section 3's table). If the evidence
+  is to close step 0 in both modes the offer draws in, they need to be.
 
-**So the risk is real, not clerical.** In PSK31 the top row may be taller than the mockup, and no test
-would say so. **Every figure above comes from the source and from unit 339's report. The arbiter ran
-none of it.**
+**Every figure above comes from unit 340's report, from the source and from the picture. The arbiter
+ran none of it.**
 
 ```
 PHASE GOAL: The screen, done right - the main window as the approved mockup,
             one short top row and the working panels given the height; then
             the achievements category pages as trading cards; then what the
             last phase left; then Tim at his window says it passed.
-UNIT GOAL:  The power offer drawn in the rig panel and measured under the
-            S-meter at 1920 and 1400, with the top row still the mockup's
-            height while it shows - fitted in markup if it is not - and the
-            panels asserted full to the status bar at 1400.
-ADVANCES:   step 0, must-pass 3 (the power offer under the S-meter, drawn,
-            at both widths) and must-pass 1 and 5 as they hold while the
-            offer shows; must-pass 5's "full to the status bar" at 1400.
-            Task 2 advances no step 0 criterion; it runs step 1's own tests
-            and is the drop candidate.
+UNIT GOAL:  The PSK31 power offer drawn as the mockup's one line under the
+            S-meter, opening the full offer with its words, buttons and ALC
+            line unchanged in a popup, so the top row holds 190 px at 1920
+            and 0.262 at 1400 while it shows; the PSK31 green block's 2 px at
+            1400 found and fitted; criteria 2 and 4 realized on PSK31.
+ADVANCES:   step 0, must-pass 1 and 5 on PSK31 (red today at 305 px) and
+            must-pass 3 with the offer in its new shape, in task 1;
+            must-pass 2 and 4 realized on PSK31, in task 2. Task 2's
+            criterion 4 half is the drop candidate.
 DRIFT:      0
 ```
 
@@ -80,43 +90,37 @@ when the work succeeds anyway.
 
 Check:
 
-- `PHASE_STATUS.md` names *The screen, done right*, with step 0 `partial`.
-- `HasPsk31PowerOffer` reads as §1 says (near line 14874 of `MainWindowViewModel.cs`).
-  `OnChosenDigitalModeChanged` raises it (near line 380).
-- In `MainWindow.axaml`, `RigDriveAndPower` holds `DigitalTransmitDriveBox` and a `Border` bound to
-  `HasPsk31PowerOffer`. That border holds `DigitalPsk31PowerOffer`, `DigitalPsk31PowerAccept`,
-  `DigitalPsk31PowerDecline` and `DigitalPsk31AlcReference`.
-- `TheTopRowTests.Realized` sets FT8 (near line 647).
-  `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` asserts the offer by
-  containment only (near line 328).
-- `TheThreePanelsShareOneTopAndOneBottom` skips its assertions below 1900 (near line 93).
-- `OnChosenDigitalModeChanged` calls `SettingsStore.Save`. **Say where that writes under the test
-  host.** If it is the operator's real settings file, say so as a finding. Also restore FT8 before
-  each PSK31 window closes (task 1). Whatever the older PSK31 tests on the carry-forward list already
-  do there, do not chase it.
-- `TheCategoryPagesAreTradingCardsTests` holds `EveryKindsBandCarriesCountScoreLevelAndABar`,
-  `EveryEarnedCardIsTheContactThatEarnedIt`, `TheNextCardKnowsWhoIsCalling`,
-  `TheOtherFiveKindsEachDrawTheirOwnCards`, `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`
-  and `StatesCountWhatTheLogsStateFieldSays`.
+- `PHASE_STATUS.md` names *The screen, done right*, with step 0 `blocked`.
+- The offer's `Border` in `RigDriveAndPower` reads as §1 says, with unit 340's fit comment above it
+  (near line 3073 of `MainWindow.axaml`).
+- `Psk31PowerOffer`, `Psk31PowerAccept`, `Psk31AlcReferenceLine`, `HasPsk31PowerOffer`,
+  `AcceptPsk31PowerAsync` and `DeclinePsk31Power` are near lines 14866 to 14931 of
+  `MainWindowViewModel.cs`. Accepting sets `_psk31PowerSettled`, writes `psk31_power_accepted` and
+  writes `CivWrites.RfPower` once. Declining writes `psk31_power_declined` and nothing to the radio.
+- `MainWindow.axaml` already uses `<Popup IsOpen="{Binding ...}">` (the nudge near 4795, the map
+  near 5651), so a popup needs no package.
+- `TheTopRowTests` holds `Unit340TraceThePowerOfferOnPsk31`, and
+  `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` realizes FT8 and PSK31.
+  `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
+  `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` are red on PSK31 only.
 - **The reload's disagreements:**
-  - **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`.** Unit 339 counted `CPS-DEC` in
-    `CLAUDE.md` and found it 0 times. The reload's check misreads the file. That is the harness's
-    problem, and the id schemes are parked: report it again in one line and do not resolve it.
+  - **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`.** Units 339 and 340 found this is the
+    reload misreading the file. The id schemes are parked: report it in one line and do not
+    resolve it.
   - `PROJECT_STATUS.md` `RULES_AT: HM-DEC-163` agrees with `DECISIONS.md`. Keep it unless this unit
     records a decision.
   - `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` are uncommitted. They are the
     launcher's writes. Commit them **unchanged** in task 0's commit with `WORK_INSTRUCTIONS.md`, as
-    units 336 to 339 did. Do not commit `.run-unit\`.
+    units 336 to 340 did. Do not commit `.run-unit\`.
 
 **Reds expected, older than this unit. Name them and do not chase them:**
 
+- **`AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
+  `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, on PSK31.** These are the reds this unit
+  exists to turn green. They are already red against the tree, so they count as watched red.
 - `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`: two `_armedSend.Arm(` lines.
-  Not on criterion 6's list.
-- Three `TheOperatorCanStopItTests` went red **only when joined** with the layout classes in unit 339,
-  and passed alone: `AClickBeforeTheBoundaryUnarmsItAndNothingGoesOut`,
-  `TheLineSaysWhatHappenedToTheCarrierAndToTheSound` and
-  `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`. **This unit runs that class in its
-  own filter** (task 0), never joined.
+- `TheOperatorCanStopItTests.AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`: red alone
+  in unit 340, and a timing matter. Parked. **This unit does not run that class.**
 - `TheWholeChainRunsFromOneRightClickTests` (2), `TheMenuIsUnderTheMouseTests` (8),
   `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`,
   `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`. Not run.
@@ -132,8 +136,7 @@ that work instruction, filtered by exact name, in the foreground, with a stated 
 backgrounds a command and polls for it.* Run the carry-forward list as `docs\carry-forward-tests.txt`'s
 top comment says: two invocations, one build each. **The classes this instruction names may each run
 filtered by class name:** `TheTopRowTests`, `TheWorkingPanelsTests`, `BindingHealthTests` and
-`VoiceTests` in one filter; `TheOperatorCanStopItTests` in a filter of its own;
-`TheCategoryPagesAreTradingCardsTests` in a filter of its own.
+`VoiceTests`, in one filter.
 
 **R26, Tim, 2026-09-12 (`PHASE_PLAN.md`), in full:**
 
@@ -157,19 +160,28 @@ filtered by class name:** `TheTopRowTests`, `TheWorkingPanelsTests`, `BindingHea
 >   measures and chooses, marks the choice as its own, and reports the numbers at both
 >   widths.**
 
-**R22, Tim (`docs/phase-maintenance-run/PHASE_PLAN.md`):** the category pages are trading cards, as
-`assets/category-page-countries.png`. Task 2 only runs its tests. It builds nothing.
+**§R11, Tim, 2026-09-11 (`docs/phase-psk31-run/PHASE_PLAN.md`), the sentence that bites:** *RF power
+for PSK31 defaults to **half** and is **offered** as a percentage beside the drive, never written
+silently (HM-DEC-084, HM-DEC-074).*
 
-**`PHASE_PLAN.md` §6, the lines that bite here:**
+**HM-DEC-084, tier two, transcribed:** *Tier two changes what the operator sounds like and is offered
+rather than simply done: power, keyer speed, break-in and its delay.*
 
+**§R15, Tim, 2026-09-11, the sentence that bites:** *Until an FT8 send has been observed, there is no
+reference and Hamlet reports the reading and judges nothing - it never invents one.*
+
+**`PHASE_PLAN.md` §2 and §6, the lines that bite here:**
+
+- *The arbiter stops for three things only: keying, transmit or the radio's safety; money past the
+  budget; a decision that changes what the product promises the operator. On everything else it
+  takes its own recommendation, marks it author's and overrulable, applies it, and continues.*
 - *A must-pass is missed by a little: ship, report, `partial`, move on. Never loosen a test.*
-- *A string will not fit: shorten and say which, or widen; never clip.* **Ruling 7 below narrows
-  this for the offer's own words.**
+- *A string will not fit: shorten and say which, or widen; never clip.*
 - *Anything touches the radio, a decoder, a parser or the transmit chain: `MOVE: stop`.*
 - *A package is needed: `MOVE: stop`.*
 - *A file must be deleted: empty it, comment it, list it.*
 
-**The arbiter's rulings, work instructions 338 and 339, still in force.** They are the author's,
+**The arbiter's rulings from work instructions 338 to 340, still in force.** They are the author's,
 marked for Tim and overrulable.
 
 1. **"The working panels" in R26 means the waterfall, decoded text and For You panels themselves.**
@@ -181,44 +193,73 @@ marked for Tim and overrulable.
    count stays at every width (`MainWindow.FitTheHeardCount`).
 4. **The filter chips stay in the mode strip.**
 5. **CQ and Stop stay right of the tabs.** If Tim wants them elsewhere, that is his call, at step 3.
+6. **Criterion 3's power offer is measured on PSK31, the mode that offers it.** It is not added to
+   FT8.
 
-**The arbiter's rulings for this unit.** They are the author's, marked for Tim and overrulable.
-`PHASE_PLAN.md` §R and §6 let the arbiter decide layout and continue.
+**Ruling 7 of work instruction 340 is withdrawn.** It said the offer was fitted by arrangement only,
+with nothing behind a hover. Unit 340 measured that arrangement cannot hold R26, and the ruling was
+the arbiter's, not Tim's.
 
-6. **Criterion 3's power offer is measured in the mode that offers it: PSK31.**
-   - *Why:* §R11 puts the offer on PSK31 alone, because PSK31 is the continuous carrier.
-     `OnChosenDigitalModeChanged` says so in its comment. On FT8 the drive fills the space under the
-     S-meter, so no empty column stands there.
-   - *Rejected:* offering power on FT8 because the mockup draws *RF power 50 % offered* on an FT8
-     screen. That changes when Hamlet offers to write the radio's power, which is not a screen step.
-     If Tim wants the offer on every mode, that is his call, at step 3.
-7. **If the offer makes the top row taller than the criteria allow, fit it by arrangement, in markup,
-   inside `RigDriveAndPower`.** Examples are the offer's column beside the drive, its `MaxWidth`, or
-   its padding. The unit chooses, marks the choice as its own, and reports the numbers at both widths.
-   - **The offer's words, the ALC reference line's words, both buttons' commands and bindings, and
-     `HasPsk31PowerOffer` are not changed.** None of them goes behind a hover.
-   - *Why:* HM-DEC-084 makes the offer say what would change and what would not, before the press.
-     §R15 keeps the ALC reference never blank. Shortening a sentence about a write to the radio is
-     not a layout choice.
-   - **If arrangement alone cannot hold the criteria, ship what arrangement reaches, report the miss
-     with its numbers, and name the options in section 4.** The arbiter decides next.
+**The arbiter's rulings for this unit.** They are the author's, marked for Tim and overrulable at step
+3.
+
+8. **Under the S-meter, the offer is one line. The full offer opens from it in a popup.**
+   - **The line** shows while `HasPsk31PowerOffer` is true. It uses the mockup's words: *RF power
+     {Psk31PowerPercent} % offered*. The number is bound to `Psk31PowerPercent`, never typed. It
+     sits under the rig display with the drive: on the drive's row, on the drive note's row, or on
+     its own line, whichever the unit measures to hold the row. It looks pressable, and pressing it
+     opens the popup and **writes nothing**.
+   - **The popup** holds the existing offer **unchanged**: `DigitalPsk31PowerOffer` with its words,
+     `DigitalPsk31PowerAccept` and `DigitalPsk31PowerDecline` with their content, commands and
+     bindings, and `DigitalPsk31AlcReference` with its words. **Accept and decline exist only inside
+     the popup**, so the full sentence is on screen at every press that writes. Closing the popup
+     without an answer leaves `HasPsk31PowerOffer` true and writes nothing. The popup opens on a
+     click, never on a hover.
+   - *Why:* this is the only shape measured or reasoned that holds R26's height and still shows
+     every word before the press. §R11 and the mockup both draw the offer as a percentage beside the
+     drive. HM-DEC-084 tier two asks that power be *offered*, and the popup keeps it offered, with
+     what changes and what does not written beside the button. §0.5 holds, because the line carries
+     the information (power, percentage, offered) and the popup carries the detail.
+   - *Not a stop:* nothing in the transmit chain, the write, its tier, `HasPsk31PowerOffer` or the
+     offer's words changes. What the product promises the operator is the same promise: offered,
+     never silent, explained before the press. **What changes is one click more to reach the
+     accept button.** That is marked for Tim at step 3.
+   - *Rejected:*
+     - (a) and (b) from unit 340: they take the sentence or the ALC line off the screen at the
+       press.
+     - (c), the offer beside CQ: it breaks R26's *under the S-meter*, and 112 px beside CQ grows
+       the tab row and costs the panels the same height.
+     - (d), a taller row while unanswered: it misses by 96 px, and the offer returns on every
+       launch.
+     - A hover: HM-DEC-084's words must be on screen at the press, not under a pointer.
+9. **The PSK31 green block's extra 12 px at 1400 is fitted under the rulings already in force.**
+   Task 0 finds the line. If it is the rule of thumb, the heard line or the sparkline, rulings 2 and 3
+   and §6 apply: shorten a string and name it, or hide the sparkline. **If it is the license line, it
+   is not reworded** (it is the regulation's sentence, parked). Then the 2 px ships as a little miss,
+   with its number.
+10. **Telemetry: the popup is not a new stage** (R13). It is a view of an existing offer, and
+    `psk31_power_accepted` and `psk31_power_declined` already record the answer. No event is added.
 
 **Standing, transcribed:**
 
 - **§0.0**: *Never present a guess as a decode… This binds pictures as hard as sentences.* Every
   appearance claim is computed, not seen, and says so once.
-- **§0.2**, *transmit safety, ABSOLUTE*: *One operator action, one transmission.* **This unit presses
-  nothing.** The tests read where the drive, the offer, CQ and Stop are drawn. They never execute
-  `AcceptPsk31PowerCommand`, `DeclinePsk31PowerCommand`, CQ or Stop.
+- **§0.2**, *transmit safety, ABSOLUTE*: *One operator action, one transmission.* **Tests never execute
+  `AcceptPsk31PowerCommand`, `DeclinePsk31PowerCommand`, CQ or Stop.** A test may open the popup by
+  its line, or by the popup's own open state, and must show that doing so wrote no event and changed
+  no setting.
 - **§R11 / HM-DEC-084** (as the markup's own comment states them): the power offer is *offered, never
   mirrored and never written silently*, and *pressing nothing changes nothing*.
 - **§0.5**: *every panel is collapsible, and a collapsed panel still carries its summary. Collapsing
   hides detail, never information.*
-- **§0.6**: every ink clears 4.5:1 against its fill; color is never the only carrier.
-- **R12**: *a session fixes its own tests and never asks the owner to approve it.*
-- **R13**: telemetry on every new stage. This unit adds no stage.
+- **§0.6**: every ink clears 4.5:1 against its fill, including the new line against the rig display's
+  fill; color is never the only carrier.
+- **R12**: *a session fixes its own tests and never asks the owner to approve it.* The PSK31 half of
+  `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` asserts the old border's place.
+  It is this unit's to rewrite for ruling 8.
+- **R13**: telemetry on every new stage. Ruling 10 says the popup is not one.
 - **R14**: *a test exists to prove an exit criterion.* Extend the tests the criteria need and add no
-  others. A trace method that asserts nothing may be added in task 0, as unit 338's was.
+  others.
 - **R19**: American spelling.
 
 ---
@@ -226,114 +267,120 @@ marked for Tim and overrulable.
 ## 4. Status cadence
 
 Write status before every `dotnet` command and after every task. `tools/status.sh` has been refused
-as *requires approval* in five units. Try it once. If it is refused, take a `date` reading and paste
-it whole. **Never compose a time.** The script also hard-codes a stale `RULES_AT`, so do not let it
-overwrite `HM-DEC-163` (unit 339 item 3). The watchdog kills a session only when its process tree has
-used no CPU for ten minutes.
+as *requires approval* in six units. Try it once. If it is refused, take a `date` reading and paste it
+whole. **Never compose a time.** The script hard-codes a stale `RULES_AT`, so do not let it overwrite
+`HM-DEC-163`. The watchdog kills a session only when its process tree has used no CPU for ten minutes.
 
 ---
 
 ## 5. The tasks
 
-### Task 0 - the trace: the offer drawn, measured before anything moves
+### Task 0 - the trace: where the line fits, and which line makes the green block taller
 
 Measure before anything is built. **Say what you find rather than confirming §1.**
 
-1. **Commit the launcher's root files unchanged** (§2) with `WORK_INSTRUCTIONS.md` and a patch
-   bump, as `chore(unit340): step 0, the power offer drawn - the trace before a line is built`. Run
-   the carry-forward list, status first.
-2. **Add `Unit340TraceThePowerOfferOnPsk31` to `TheTopRowTests`.** It asserts nothing. It realizes
-   the licensed fixture with `ChosenDigitalMode = "PSK31"` at 1920 and at 1400, and prints:
-   - the rig display, `DigitalTransmitDriveBox` and the offer's border;
-   - the offer's sentence (its line count), the accept and decline buttons, and the ALC reference
-     line (its line count);
-   - the rig panel, the card, and the top row's height and share of the height below the pills;
-   - the three panels' px and share, with the readiness strip hidden and showing.
-
-   Then print the same at FT8, from the same method, so the two modes sit side by side.
+1. **Commit the launcher's root files unchanged** (§2) with `WORK_INSTRUCTIONS.md` and a patch bump,
+   as `chore(unit341): step 0, the power offer as one line - the trace before a line is built`. Set
+   `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line to `341 - step 0, the power offer as one line`. Run the
+   carry-forward list, status first.
+2. **Add `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` to `TheTopRowTests`.** It asserts nothing
+   and presses nothing. It realizes the licensed fixture on PSK31 and on FT8, at 1920 and 1400, and
+   prints:
+   - **the rig column's rows:** the rig display, the drive row with its three parts and their right
+     edge, and the drive note row with its right edge, all against the 520 px column;
+   - **the room for the line:** the px left on the drive row and on the note row, and the height the
+     rig column has spare under the card at each width. Measure the width the line *RF power 50 %
+     offered* needs on the host, set on the test window only, never in markup.
+   - **the green block, line by line:** each line's text, width, height and line count on PSK31 against
+     FT8, so the 12 px has a name;
+   - the top row and the panels, readiness strip hidden and showing, as unit 340's trace does.
 3. **Answer from the numbers, at each width:**
-   - Is the offer drawn, visible and non-zero?
-   - Is its top at or below the rig display's bottom?
-   - Is the rig panel still the card's height?
-   - Is the top row still about 190 px at 1920, and at or under 0.262 at 1400?
-   - Are the panels still at least 0.5 below the pills?
-
-   **If every answer is yes, task 1 is assertions only.** If any is no, give the miss in px and say
-   which box made it.
-4. **Run `TheOperatorCanStopItTests` in its own filter.** Give it as *n of 9*, naming each red. This
-   says whether unit 339's three extra reds come only from the joint run.
+   - Where does the line fit without adding height: the drive row, the note row, or neither? If
+     neither, how many px does its own line add, and does the row still hold 209 at 1920 and 238 at
+     1400?
+   - Which green block line makes PSK31 12 px taller, and which of ruling 9's paths applies?
 
 Report the numbers in section 1 before task 1 starts.
 
 **Drop candidate:** none.
 
-### Task 1 - criterion 3 with the offer drawn, and criterion 5's floor at 1400, asserted
+### Task 1 - ruling 8 built, ruling 9 fitted, criteria 1, 3 and 5 asserted on PSK31
 
-1. **If task 0 found a miss, fit it first, by ruling 7.** Markup only, inside `RigDriveAndPower`. Say
-   what was arranged and the numbers before and after at both widths. Mark the choice as the unit's
-   own.
-2. **Extend `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`** to realize the
-   licensed fixture on **PSK31 as well as FT8**, at 1920 and 1400. On PSK31, assert:
-   - the offer's border is effectively visible, with non-zero width and height;
-   - it is inside the rig panel and not in the send area;
-   - its top is at or below the rig display's bottom, under the S-meter, as the drive already is;
-   - the rig panel is the card's height, within the tolerance the test already uses;
-   - CQ and Stop are where ruling 5 leaves them.
+1. **Build ruling 8** in `MainWindow.axaml`, and in `MainWindowViewModel.cs` only if the line's words
+   or the popup's open state need a property. **Mark the placement as the unit's own.** Replace unit
+   340's fit comment with one that says what ruling 8 did and why. The offer's words, the ALC line's
+   words, both buttons' content, commands and bindings, and `HasPsk31PowerOffer` are unchanged. Show
+   that with `git diff` in the report.
+2. **Fit ruling 9's line**, by the path task 0 named, or name the 2 px as the miss.
+3. **Rewrite the PSK31 half of `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`**
+   (R12), at 1920 and 1400. On PSK31, assert:
+   - the line is effectively visible, non-zero, inside the rig panel, not in the send area, with its
+     top at or below the rig display's bottom, and not clipped (its desired width fits its bounds);
+   - its text carries `Psk31PowerPercent`;
+   - the popup is closed at start, and opening it writes no `psk31_power_*` event and leaves
+     `HasPsk31PowerOffer` true;
+   - with the popup open, `DigitalPsk31PowerOffer`, `DigitalPsk31PowerAccept`,
+     `DigitalPsk31PowerDecline` and `DigitalPsk31AlcReference` are visible and non-zero **inside the
+     popup**, and their text equals the view model's `Psk31PowerOffer`, `Psk31PowerAccept`, *I will
+     set it myself* and `Psk31AlcReferenceLine`;
+   - no accept or decline control is on the main window outside the popup;
+   - the rig panel is the card's height, within the tolerance the test already uses, and CQ and Stop
+     are where ruling 5 leaves them.
 
-   Keep every FT8 assertion as it is. **Restore FT8 on the model before each PSK31 window closes.**
-   Press nothing.
-3. **Criteria 1 and 5 while the offer shows.** Extend
+   Keep every FT8 assertion as it is. Close the popup and restore FT8 on the model before each
+   PSK31 window closes. **Never execute accept or decline.**
+4. **Criteria 1 and 5 on PSK31 go green with the thresholds they already assert.**
    `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
-   `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` to hold on PSK31 as well, **with the
-   tolerances and thresholds they already assert**. If a threshold would have to move to pass, it
-   does not move: that is a miss, reported with its number (§3, `PHASE_PLAN.md` §6).
-4. **Remove the skip below 1900 in `TheThreePanelsShareOneTopAndOneBottom`**, so one top, one bottom
-   and the floor are asserted at 1400 as well as 1920.
-5. **Watched failing first, where possible.** An extension that passes on its first run says *not
-   watched red*, and says why that is honest. **Do not break the view to watch a test fail.** If a
-   fit was made in step 1, the PSK31 assertions should be watched red against the tree before the
-   fit.
+   `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` do not change a number. If the 1400 PSK31 row
+   still misses by the green block's 2 px, it ships red with that number, as §6 says.
+5. **Watched red.** Both top-row tests are red against the tree now. Say so with their failure lines
+   before the build. Watch the rewritten drive test's popup assertions red against the tree before
+   the build. The old border is not in a popup, so they should fail there. **Do not break the view
+   to watch a test fail.**
 6. Then run `TheTopRowTests`, `TheWorkingPanelsTests`, `BindingHealthTests` and `VoiceTests` in one
    filter, and give each class as *n of n*. Run the carry-forward list again, status first.
-7. **The trace method from task 0 stays**, asserting nothing, as unit 338's did. Say so.
+7. **Both trace methods stay**, asserting nothing. Say so.
 
 **Drop candidate:** none. This is the evidence the step's state is waiting for.
 
-### Task 2 - step 1's own tests, run and not built
+### Task 2 - criteria 2 and 4 realized on PSK31
 
-**Drop candidate: this whole task.** Step 1's entry is *step 0 done*, and that verdict is not this
-unit's to give. This task **changes no file under `src\` or `tests\`**. Unit 339 found most of step 1
-already built by units 335 and 336, but did not run their tests. This task runs them, so step 1's
-first unit is authored from results.
+The offer only draws on PSK31, and criteria 2 and 4 have only been realized on FT8 and on the plain
+fixture. This task closes that.
 
-1. Run `TheCategoryPagesAreTradingCardsTests` in its own filter. Give **every method**:
-   - its name and its result;
-   - the step 1 exit criterion it proves;
-   - the widths it realizes;
-   - the numbers it prints;
-   - for a red, the failure's first line.
-2. **Say whether any step 1 must-pass has no test in that class**, beyond the nice-to-pass unit 339
-   already named (the map opening in a popup on click).
-3. Do not re-measure the Countries page against its mockup. Unit 339's section 3 stands. Do not
-   propose an approach.
+1. **Extend `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` and
+   `TheWorldClockIsAtTheCardsRightEndWithOneMarker`** to realize the licensed fixture on PSK31 as well
+   as FT8, at 1920 and 1400, with the assertions they already make. Restore FT8 before each window
+   closes.
+2. **Extend `TheThreePanelsShareOneTopAndOneBottom` and `AtNineteenTwentyTheCardsFactsSitBesideTheMap`**
+   to hold with PSK31 chosen, at the widths they already realize. **This step is the drop candidate.**
+3. Run the one filter again, then the carry-forward list, status first. Give each class as *n of n*.
+   An extension that passes on its first run says *not watched red*, and why that is honest.
+
+**Drop candidate: step 2 of this task** (criterion 4 on PSK31). The offer is inside the top row and
+the panels are measured by the top-row tests. Criterion 2's half is not droppable, because the
+green block is the part that changes on PSK31.
 
 ---
 
 ## 6. Parked - do not touch, do not raise
 
-- **Every layout mechanism units 337 to 339 chose:** the `*,383,*` split, the facts-under rule at 1400,
-  the send area on the tab row, the filter in the mode strip, the sparkline width rule. Rulings 1 to 5
-  hold them. Change one only if task 1 finds a criterion red because of it, and say so.
-- **The offer's behavior.** When it shows, what it says, what accepting writes, and whether FT8 should
-  offer too (ruling 6).
-- **The live license lookup and the live heard count** (unit 338 items 1 and 4), and **the best bet
-  reading the real clock** (unit 339 item 2). If a task 1 assertion turns flaky on one of them, raise
-  it once, and say it was parked.
-- **The three joint-run stop reds** (unit 339 item 1). Task 0 runs the class alone and reports. It
-  chases nothing, because it is the transmit side.
-- **Steps 1, 2 and 3 as builds.** The States wording, the Modes test, the undeletable files, the points
-  file and the small reds are step 2's.
+- **Every layout mechanism units 337 to 340 chose:** the `*,383,*` split, the facts-under rule at
+  1400, the send area on the tab row, the filter in the mode strip, the sparkline width rule. Rulings 1
+  to 5 hold them. Unit 340's padding fit may be undone if ruling 8 makes it moot; say so.
+- **The offer's behavior beyond ruling 8:** when it shows, what it says, what accepting writes,
+  that `_psk31PowerSettled` is not saved (so the line returns on every launch), and whether FT8
+  should offer too.
+- **Step 1.** Unit 340 ran its six tests, 6 of 6, and named what is held weakly (item 5). Do not run
+  them again, and do not build.
+- **`TheOperatorCanStopItTests`, all of it.** Do not run it. Unit 340 items 3 and 339 item 1 are
+  transmit-side and parked.
+- **The live license lookup, the live heard count and the best bet reading the real clock** (unit
+  338 items 1 and 4, unit 339 item 2). If an assertion turns flaky on one of them, raise it once and
+  say it was parked.
 - **The license line's wording.** It is the regulation's sentence.
+- **Steps 2 and 3.** The States wording, the Modes test, the undeletable files, the points file, the
+  small reds.
 - **The two id schemes, including the reload's `CPS-DEC-0163` misreading.** Also real flags on country
   cards, PSK31 step 6, real PSK31 audio, the ALC margin, the map bitmap's license and the status
   script's stale `RULES_AT`. All are Tim's or the harness's, carried in `PHASE_PLAN.md` §7.
@@ -342,19 +389,23 @@ first unit is authored from results.
 ## 7. What not to do
 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.** (HM-DEC-155.)
-  **Never join `TheOperatorCanStopItTests` with the layout classes.**
-- **Never execute the accept or decline command, CQ or Stop in a test.** Read positions only (§0.2,
-  HM-DEC-084).
-- **Do not change the offer's words, the ALC line's words, a binding or a command to make it fit**
-  (ruling 7). Arrangement only.
+- **Never execute the accept or decline command, CQ or Stop in a test.** Opening the popup is the
+  only interaction allowed, and the test shows it wrote nothing (§0.2, HM-DEC-084).
+- **Do not change the offer's sentence, the ALC line's words, either button's content, a command, a
+  binding, `HasPsk31PowerOffer` or the write.** Ruling 8 moves them and adds one line. It rewrites
+  nothing.
+- **Do not put the offer, or any part of it, behind a hover.** Do not shorten the sentence to make
+  the popup smaller.
 - **Do not loosen a threshold or tolerance to make a test pass, and do not break the view to watch one
   fail.** A small miss ships as `partial` with its number.
-- **Do not build step 1 in task 2.** `CLAUDE.md` §12.6 covers the rest.
-- **No image assets. No package. Report mismatches; repair nothing. Write American.**
-- **The tool facts, from units 332 to 339:**
-  - apostrophes inside quoted heredocs break;
+- `CLAUDE.md` §12.6 covers the rest. **No image assets. No package. Report mismatches; repair
+  nothing. Write American.**
+- **The tool facts, from units 332 to 340:**
+  - apostrophes inside quoted heredocs break, and an apostrophe in an argument breaks the `.bat`
+    tools;
   - doubled backslashes collapse;
-  - `;`, `rm`, `git stash`, `sort` in a pipe, `git check-ignore` and `sed -E` are refused;
+  - `;`, `rm`, `git stash`, `sort` in a pipe, `git check-ignore`, `sed -E`, a shell loop variable,
+    `pwd -W`, `grep -v` in a pipe and a redirect into `testresults\` are refused;
   - Python cannot run;
   - a multi-line commit message needs more than one `-m`;
   - use exact-text edits for markup;
@@ -363,8 +414,8 @@ first unit is authored from results.
 
 ## 8. Committing and pushing
 
-Commit and push each task on its own, on `main`. Task 2 commits only if it leaves a file, such as the
-report. The report names the commits and says whether each push succeeded. **A refused push is
+Commit and push each task on its own, on `main`. The report and status file follow in their own
+commit. The report names the commits and says whether each push succeeded. **A refused push is
 reported as refused, with the reason.**
 
 ---
@@ -383,73 +434,74 @@ READ IN THIS ORDER.
 
 A. The phase goal - the screen, done right. Step 0 <state as the evidence
    stands>: <how many of its six must-pass carry a green named test at
-   both widths WITH THE POWER OFFER DRAWN, and how many sub-clauses are
-   still held by containment or a print>. Step 1 not started; its tests
-   <run in task 2, n of 6 | not run, task 2 dropped>. Steps 2 and 3 not
-   started.
+   both widths ON FT8 AND ON PSK31 with the offer showing as ruling 8
+   draws it, and which do not>. Step 1 not started; its tests 6 of 6 in
+   unit 340, not run here. Steps 2 and 3 not started.
 B. Step 0 and its exit criteria, each with the test that proves it, its
    result and the widths and modes it realized:
    1. top row about 190 px at 1920, panels at least half below the pills -
-      <FT8 px / share; PSK31 px / share; at 1920 AND 1400>
-   2. the card's three things - <test, result; unchanged by this unit or not>
-   3. rig panel the card's height, drive AND THE DRAWN POWER OFFER under
-      the S-meter - <test, result; offer box and rig display bottom, rig
-      panel against card, PSK31 at 1920 AND 1400>
+      <FT8 and PSK31 px / share at 1920; was 305 on PSK31>
+   2. the card's three things - <test, result; PSK31 and FT8 at 1920 AND
+      1400; the green block's PSK31 height before and after ruling 9>
+   3. rig panel the card's height, drive AND THE ONE-LINE OFFER under the
+      S-meter, the full offer unchanged in its popup - <test, result;
+      line box against rig display bottom; popup contents equal to the
+      view model; nothing written on opening; PSK31 at 1920 AND 1400>
    4. three panels equal height to the status bar, facts beside the map
-      at 1920 - <test, result>
-   5. at 1400 the same shape - panels full to the status bar NOW ASSERTED
-      <result, y against floor>; licensed top row <FT8 and PSK31 px /
-      share against 0.262>; no callsign clipped <result>
+      at 1920 - <test, result; plain and PSK31, or PSK31 dropped>
+   5. at 1400 the same shape - panels full to the status bar <result>;
+      licensed top row <FT8 and PSK31 px / share against 0.262; was 305
+      on PSK31>; no callsign clipped <result>
    6. BindingHealthTests <n of n>, VoiceTests <n of n>, carry-forward app
       <n of n> and engine <n of n>
    nice-to-pass: best bet joined to the green block - <test, result>
-   Not on criterion 6's list: TheOperatorCanStopItTests alone <n of 9>.
 C. The report last. Section 4 raises N items on top of the carried queue;
    say which, if any, stands in the way of a criterion in B - in
-   particular whether ruling 7's fit reached the criteria or left a miss.
+   particular whether ruling 8 held the row at both widths and whether
+   ruling 9 closed the 2 px or left it.
 ```
 
 **Every line specific to this unit.** If a criterion was not measured, say *not measured*. Do not
 fill the shape.
 
 ```
-UNIT:       340 - <complete|stopped> at task N of 3 - <date time, read from the clock>
+UNIT:       341 - <complete|stopped> at task N of 3 - <date time, read from the clock>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   <yes|no> - <whether the drawn offer holds criterion 3 at both
-            widths, whether a fit was needed, and whether 1400's floor is
-            now asserted>
-NUMBER:     step 0 sub-clauses held only by containment or a print:
-            <before> -> <after>; top row with the offer drawn at 1920:
-            <px>
+ADVANCED:   <yes|no> - <whether the one-line offer holds criteria 1, 3 and 5
+            on PSK31 at both widths, whether the 2 px closed, and whether
+            criteria 2 and 4 now hold on PSK31>
+NUMBER:     PSK31 top row with the offer showing: 1920 305 -> <px>;
+            1400 305 -> <px> (<share>)
 DRIFT:      0
 ```
 
-**Section 3 leads with the answer:** with the power offer drawn, does every step 0 exit criterion
-hold with a named green test at the widths it names? If not, which one, at which width, in which
-mode, and by how many px? Then give what was fitted, if anything, with before and after. Then the
-step 0 table as it stands after task 1: test, criterion, widths, modes, result, numbers. Then, if task
-2 ran, step 1's tests with their results. **Every appearance claim is computed, not seen. Say so
-once.**
+**Section 3 leads with the answer:** with PSK31 chosen and the offer unanswered, does every step 0 exit
+criterion hold with a named green test at the widths it names? If not, which one, at which width, and
+by how many px? Then say where the line went and why, with the numbers before and after at both widths.
+Then describe the popup in words: what is in it, where it opens, what closes it. Then the step 0 table
+after task 2: test, criterion, widths, modes, result, numbers. **Every appearance claim is computed,
+not seen. Say so once.**
 
-**Section 4:** unit 339's section 4 verbatim, per HM-DEC-139, including the queue it carries. Mark its
-item 4 `TAKEN UP by work instruction 340 task 1`, with one line on what became of each sub-clause.
-Mark its item 1 with task 0's alone-run result. Then anything this unit raises. **A ruling is wanted
-only where Tim must decide; everything else is a finding and says so.** If ruling 7 left a miss, that
-is a ruling request naming the options, each measured.
+**Section 4:** unit 340's section 4 verbatim, per HM-DEC-139, including the queue it carries. Mark its
+item 1 `ANSWERED by the arbiter's ruling 8 in work instruction 341`, with what was built and the
+numbers. Mark its item 2 `TAKEN UP by work instruction 341 ruling 9`, with what became of the 2 px.
+Then anything this unit raises. **A ruling is wanted only where Tim must decide; everything else is a
+finding and says so.** Ruling 8's extra click is already marked for Tim at step 3. Do not raise it
+again unless the build found something that changes it.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 0
-APPROACH: draw the PSK31 power offer in the rig panel on the licensed fixture and assert it under the S-meter at 1920 and 1400 with the top row and rig height holding while it shows, fitting it by arrangement in RigDriveAndPower if it does not; assert the three panels' floor at 1400; then run step 1's TheCategoryPagesAreTradingCardsTests without building
+APPROACH: the PSK31 power offer as the mockup one line (RF power N % offered) under the S-meter, opening the unchanged full offer - sentence, accept, decline, ALC line - in a popup on click; find and fit the PSK31 green block 2 px at 1400; realize criteria 2 and 4 on PSK31
 MOVE: work around
-WHY: The state reader left step 0 partial on one clause: the power offer was only ever checked by containment on an FT8 fixture where it is not drawn, so its place under the S-meter - and whether the 190 px top row survives it - was never measured. This is a different approach from unit 339's (draw the thing on the mode that offers it, and fit it if it breaks the row, rather than extend existing assertions to a second width); the loop test found nothing like it.
-STATE: partial
-DECIDED: the power offer is measured on PSK31, the mode that offers it, and is not added to FT8 because the mockup draws it there (ruling 6); if it breaks the top row it is fitted by arrangement only, with its words, the ALC line, bindings and commands unchanged, and a miss beyond arrangement is reported rather than shortened (ruling 7); TheOperatorCanStopItTests runs alone, never joined; step 1's tests may run before step 0's verdict but nothing is built - all the author's, marked for Tim, overrulable
-LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues; a miss by a little ships partial; never loosen a test); PHASE_OUTCOME.md unit 339 STATE_WHY; unit 339 output.md section 4 items 1 and 4; MainWindowViewModel.HasPsk31PowerOffer and OnChosenDigitalModeChanged (section R11 on PSK31); HM-DEC-084; R15; CLAUDE.md 0.2, 0.5; psk31 R12, R14
-ACCOMPLISHED: the rig display is shown to hold the transmit drive and the power offer under the S-meter, with the offer actually on the screen, at both of Tim's widths, and the top row stays the mockup's height when PSK31 is chosen - so step 0 can close on evidence and step 1 starts from its own test results
-ADVANCES: step 0 - must-pass 3 (the power offer drawn and under the S-meter at 1920 and 1400), must-pass 1 and 5 as they hold with the offer shown, and must-pass 5's full-to-the-status-bar at 1400, all in tasks 0 and 1; task 2 advances no step 0 criterion and is the drop candidate
+WHY: Unit 340 measured that no arrangement of the full offer holds R26's row, and the ruling it asked for was the arbiter's own ruling 7, not one of the three things the plan stops for. The mockup and section R11 both draw the offer as a percentage beside the drive, so a one-line offer with the full words in a popup is a different approach to the same step. The loop test found nothing like it.
+STATE: blocked
+DECIDED: ruling 7 withdrawn; ruling 8 - the offer under the S-meter is the mockup line "RF power N % offered", opening a click popup that holds the unchanged sentence, both buttons and the ALC line, with accept and decline only inside it and nothing written on opening; unit 340 options (a), (b), (c) and (d) rejected with reasons; ruling 9 - the PSK31 green block's 12 px is fitted by rulings 2 and 3 unless it is the license line, which is not reworded and ships as a 2 px miss; ruling 10 - the popup is not a new telemetry stage - all the author's, marked for Tim at step 3, overrulable
+LICENCE: PHASE_PLAN.md section 2 (the arbiter stops for three things only; otherwise decides, marks, applies, continues), R26, sections 4 and 6; assets/main-screen-mockup.png (the one-line offer under the S-meter); docs/phase-psk31-run/PHASE_PLAN.md R11 (offered as a percentage beside the drive), R13, R15; HM-DEC-084 tier two; unit 340 output.md section 4 items 1 and 2 with their measured options; PHASE_OUTCOME.md unit 340 STATE_WHY; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R14
+ACCOMPLISHED: with PSK31 chosen, the top row stays the short band in Tim's picture, with "RF power 50 % offered" under the S-meter as the mockup draws it, and the full offer one click away with every word still in front of the button that writes - so step 0 can close on evidence in both modes
+ADVANCES: step 0 - must-pass 1 and 5 on PSK31 (305 px today against 209 and 238) and must-pass 3 in the offer's new shape, in task 1; must-pass 2 and 4 realized on PSK31, in task 2, whose criterion 4 half is the drop candidate
 END-ARBITER-DECISION
 ```

@@ -1,7 +1,7 @@
 PHASE: The screen, done right
 PHASE_SET: 2026-09-12
 DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-STEP: 0 | partial | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
 STEP: 1 | not started | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
 STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
 STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
@@ -66,3 +66,19 @@ ACCOMPLISHED: every promise the approved mockup makes about the main window is c
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: Five must-pass criteria have measured numbers behind them, but criterion 3 is not fully shown, because the power offer is not drawn on the FT8 fixture and is checked only as being inside the rig panel, so nothing measures it sitting under the S-meter at either width.
+
+## UNIT 340 - STEP 0
+
+UNIT_AS_CALLED: 4
+STEP: 0
+APPROACH: draw the PSK31 power offer in the rig panel on the licensed fixture and assert it under the S-meter at 1920 and 1400 with the top row and rig height holding while it shows, fitting it by arrangement in RigDriveAndPower if it does not; assert the three panels' floor at 1400; then run step 1's TheCategoryPagesAreTradingCardsTests without building
+HIT: section 4 wants a ruling: banked - The one ruling wanted is where the PSK31 power offer sits against the 190 px top row, which bears on criteria 1, 3 and 5 while the offer shows, but the PSK31 green block putting the 1400 row 2 px over without the offer, the transmit reds on the carry forward list and the nice to pass check can all go ahead without it.
+MOVE: work around
+WHY: The state reader left step 0 partial on one clause: the power offer was only ever checked by containment on an FT8 fixture where it is not drawn, so its place under the S-meter - and whether the 190 px top row survives it - was never measured. This is a different approach from unit 339's (draw the thing on the mode that offers it, and fit it if it breaks the row, rather than extend existing assertions to a second width); the loop test found nothing like it.
+DECIDED: the power offer is measured on PSK31, the mode that offers it, and is not added to FT8 because the mockup draws it there (ruling 6); if it breaks the top row it is fitted by arrangement only, with its words, the ALC line, bindings and commands unchanged, and a miss beyond arrangement is reported rather than shortened (ruling 7); TheOperatorCanStopItTests runs alone, never joined; step 1's tests may run before step 0's verdict but nothing is built - all the author's, marked for Tim, overrulable
+LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues; a miss by a little ships partial; never loosen a test); PHASE_OUTCOME.md unit 339 STATE_WHY; unit 339 output.md section 4 items 1 and 4; MainWindowViewModel.HasPsk31PowerOffer and OnChosenDigitalModeChanged (section R11 on PSK31); HM-DEC-084; R15; CLAUDE.md 0.2, 0.5; psk31 R12, R14
+COST: 10.092021
+ACCOMPLISHED: the rig display is shown to hold the transmit drive and the power offer under the S-meter, with the offer actually on the screen, at both of Tim's widths, and the top row stays the mockup's height when PSK31 is chosen - so step 0 can close on evidence and step 1 starts from its own test results
+FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: With the PSK31 power offer drawn the top row measures 305 px against 209 at 1920 and 0.335 against 0.262 at 1400, so criteria 1 and 5 are red, and the unit shows that no layout change inside the rig column fixes this without changing the offer's words, which ruling 7 forbids, so a ruling on section 4 item 1 is needed first.
