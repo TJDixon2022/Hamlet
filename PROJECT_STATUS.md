@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 341 - step 0, the power offer as one line
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T22:24:35-04:00
-NOTE: Task 1 done - one-line offer and popup built, PSK31 top row 190 at 1920 and 237 at 1400, four classes 22 of 22, carry-forward 100 and 85; committing, then criteria 2 and 4 on PSK31
+UPDATED: 2026-09-12T22:28:02-04:00
+NOTE: Task 2 done - criteria 2 and 4 hold on PSK31 at their widths, four classes 22 of 22, carry-forward 100 and 85; committing, then writing and validating output.md
 
 ---
 

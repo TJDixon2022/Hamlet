@@ -136,16 +136,24 @@ public sealed class TheTopRowTests
     /// text column beside it would wrap. So the test asserts what the rule drew, not a width: with
     /// the sparkline drawn, the license line and the rule of thumb each sit on one line beside it;
     /// with it hidden, *heard just now* stands over the count.
+    /// <para>**WORK INSTRUCTION 341 TASK 2: ON PSK31 AS WELL**, where the green block carries the
+    /// strayed-frequency line and the offer line stands under the S-meter, with the assertions it
+    /// already made. FT8 is put back before each window closes.</para>
     /// </remarks>
     [AvaloniaFact]
     public void TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest()
     {
-        foreach (var width in new[] { 1920.0, 1400.0 })
+        foreach (var (width, mode) in new[] { (1920.0, "FT8"), (1400.0, "FT8"), (1920.0, "PSK31"), (1400.0, "PSK31") })
         {
             var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
 
             try
             {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
+                _output.WriteLine("MODE " + mode);
+
                 var card = Card(window);
                 var block = Block(window);
                 var strip = window.GetVisualDescendants().OfType<NeighborhoodMapControl>().First();
@@ -232,6 +240,7 @@ public sealed class TheTopRowTests
             }
             finally
             {
+                model.ChosenDigitalMode = "FT8";
                 window.Close();
             }
         }
@@ -244,16 +253,23 @@ public sealed class TheTopRowTests
     /// <remarks>
     /// **WORK INSTRUCTION 339 TASK 1: BOTH WIDTHS**, with the assertions it made at 1920. R26 says
     /// *at 1400 the same shape*, and the card is 520 px narrower there.
+    /// <para>**WORK INSTRUCTION 341 TASK 2: ON PSK31 AS WELL**, with the assertions it already made.
+    /// FT8 is put back before each window closes.</para>
     /// </remarks>
     [AvaloniaFact]
     public void TheWorldClockIsAtTheCardsRightEndWithOneMarker()
     {
-        foreach (var width in new[] { 1920.0, 1400.0 })
+        foreach (var (width, mode) in new[] { (1920.0, "FT8"), (1400.0, "FT8"), (1920.0, "PSK31"), (1400.0, "PSK31") })
         {
             var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
 
             try
             {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
+                _output.WriteLine("MODE " + mode);
+
                 var card = Card(window);
                 var block = Block(window);
                 var clock = Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
@@ -292,6 +308,7 @@ public sealed class TheTopRowTests
             }
             finally
             {
+                model.ChosenDigitalMode = "FT8";
                 window.Close();
             }
         }

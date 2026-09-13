@@ -66,21 +66,30 @@ public sealed class TheWorkingPanelsTests
     /// **Assertion 1: the three panels share one top and one bottom, and the bottom is the
     /// working card's floor.**
     /// </summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 341 TASK 2: WITH PSK31 CHOSEN AS WELL**, where the offer line shows, at
+    /// the widths it already realized and with the assertions it already made. FT8 is put back
+    /// before each window closes.
+    /// </remarks>
     [AvaloniaFact]
     public void TheThreePanelsShareOneTopAndOneBottom()
     {
-        foreach (var width in new[] { 1400.0, 1920.0 })
+        foreach (var (width, mode) in new[] { (1400.0, "FT8"), (1920.0, "FT8"), (1400.0, "PSK31"), (1920.0, "PSK31") })
         {
             var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
 
             try
             {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
+
                 var workspace = TheTopRowTests.Named<Border>(window, "WorkspaceBoundary");
                 var panels = Panels(window);
                 var floor = TheTopRowTests.RectIn(workspace, window).Bottom
                     - workspace.Padding.Bottom - workspace.BorderThickness.Bottom;
 
-                _output.WriteLine("WINDOW " + Px(width));
+                _output.WriteLine("WINDOW " + Px(width) + ", " + mode);
 
                 foreach (var (name, rect) in panels)
                 {
@@ -113,6 +122,7 @@ public sealed class TheWorkingPanelsTests
             }
             finally
             {
+                model.ChosenDigitalMode = "FT8";
                 window.Close();
             }
         }
@@ -167,22 +177,34 @@ public sealed class TheWorkingPanelsTests
     }
 
     /// <summary>**Assertion 3: at 1920 the conversation card's facts sit beside its map.**</summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 341 TASK 2: WITH PSK31 CHOSEN AS WELL**, with the assertion it already
+    /// made. FT8 is put back before each window closes.
+    /// </remarks>
     [AvaloniaFact]
     public void AtNineteenTwentyTheCardsFactsSitBesideTheMap()
     {
-        var window = Realized(1920);
-
-        try
+        foreach (var mode in new[] { "FT8", "PSK31" })
         {
-            var placed = Placement(window);
+            var window = Realized(1920);
+            var model = (MainWindowViewModel)window.DataContext!;
 
-            _output.WriteLine(placed.Said);
+            try
+            {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
 
-            Assert.True(placed.Beside, "at 1920 the card's facts are not beside its map: " + placed.Said);
-        }
-        finally
-        {
-            window.Close();
+                var placed = Placement(window);
+
+                _output.WriteLine(mode + ": " + placed.Said);
+
+                Assert.True(placed.Beside, "at 1920 on " + mode + " the card's facts are not beside its map: " + placed.Said);
+            }
+            finally
+            {
+                model.ChosenDigitalMode = "FT8";
+                window.Close();
+            }
         }
     }
 
