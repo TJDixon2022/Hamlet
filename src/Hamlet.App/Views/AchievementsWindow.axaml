@@ -232,15 +232,35 @@
                 <DataTemplate x:DataType="vm:AchievementCategory">
         <Grid RowDefinitions="Auto,Auto,Auto,*">
 
-            <!-- **THE BACK CONTROL, TOP LEFT, NAMING WHERE IT GOES.** -->
+            <!-- **THE BACK CONTROL, TOP LEFT, NAMING WHERE IT GOES** - the picture's plain link
+                 since work instruction 342 (ruling 15). The words (`BackLabel`) and the command
+                 are unchanged; only the chip's hover fill and padding go. Muted ink at rest, the
+                 primary ink under the pointer and a hand cursor, so it still reads as pressable
+                 without a box, and the words carry what it does (§0.6). -->
             <Button x:Name="AchievementsBack"
                     Grid.Row="0"
-                    Classes="hm-chip"
+                    Classes="hm-backlink"
                     HorizontalAlignment="Left"
-                    Padding="6,4"
+                    Padding="0,2"
                     FontSize="13"
+                    Cursor="Hand"
+                    Foreground="{StaticResource HmTextMutedBrush}"
                     Content="{Binding BackLabel}"
-                    Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).BackCommand}" />
+                    Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).BackCommand}">
+                <Button.Styles>
+                    <Style Selector="Button.hm-backlink /template/ ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                    <Style Selector="Button.hm-backlink:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="{StaticResource HmTextPrimaryBrush}" />
+                    </Style>
+                    <Style Selector="Button.hm-backlink:pressed /template/ ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </Button.Styles>
+            </Button>
 
             <!-- **THE BAND, AS `assets/category-page-countries.png` DRAWS IT** (work
                  instruction 335 task 1, R22): the emblem and the name; under the name what
@@ -502,6 +522,20 @@
                                         <TextBlock Classes="card-wants"
                                                    Text="{Binding WantsLine}"
                                                    IsVisible="{Binding HasWants}"
+                                                   FontSize="12"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                        <!-- **WHICH MARK THOSE CALLERS CARRY ON THE CQ LIST** (work
+                                             instruction 342, ruling 14): the picture's sentence
+                                             only where the list draws the green quill, the ringed
+                                             or either where it does not, and nothing on a kind the
+                                             list never marks. **On its own line under the wants
+                                             line**, the unit's own choice: joined to the wants line
+                                             it needs 750 px on the test host and the card has 632
+                                             inside at 1400, so one line would clip (§6). -->
+                                        <TextBlock Classes="card-quill"
+                                                   Text="{Binding QuillLine}"
+                                                   IsVisible="{Binding HasQuillLine}"
                                                    FontSize="12"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
 

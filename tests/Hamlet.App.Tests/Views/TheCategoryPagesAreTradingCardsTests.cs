@@ -87,6 +87,13 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                     Assert.Equal(Math.Min(1.0, (double)score.Worked / next), bars[0].Fraction, 3);
                     Assert.Contains(category.LevelBarLine, said);
                     Assert.Contains(score.NextLevelName, category.LevelBarLine, StringComparison.Ordinal);
+
+                    // **WORK INSTRUCTION 342 RULING 13: THE GAP IS ON THE LINE AS WELL**, as the
+                    // picture's `· 14 to Silver` is, beside the words over the bar - and drawn.
+                    Assert.True(category.GapLine.Length > 0, kind + " has a next level and no gap to it");
+                    Assert.Contains(score.NextLevelName, category.GapLine, StringComparison.Ordinal);
+                    Assert.EndsWith(" · " + category.GapLine, category.BandLine, StringComparison.Ordinal);
+                    Assert.Contains(category.BandLine, said);
                 }
                 else
                 {
@@ -95,6 +102,10 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                     Assert.Empty(bars);
                     Assert.True(category.NoNextLevelLine.Length > 0, kind + " says nothing about its level");
                     Assert.Contains(category.NoNextLevelLine, said);
+
+                    // **AND NO GAP CLAUSE**: the line ends at the level (ruling 13).
+                    Assert.Equal("", category.GapLine);
+                    Assert.EndsWith(category.LevelName, category.BandLine, StringComparison.Ordinal);
                 }
 
                 screen.BackCommand.Execute(null);
@@ -108,11 +119,28 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             Assert.Equal("8 of 10 to Bronze", screen.Category!.LevelBarLine);
             Assert.Equal(0.8, screen.Category.LevelFraction, 3);
 
+            // **RULING 13, PINNED**: the picture's shape, `· 2 to Bronze` on the line.
+            Assert.Equal("one per entity · 8 worked · 40 pts · unranked · 2 to Bronze", screen.Category.BandLine);
+
+            // **AND WHERE THE LINE WITH THE GAP WOULD PASS SIXTY CHARACTERS** - the band line's
+            // 608 px slot at the window's own 1040 on the test host - the meaning goes and the
+            // name above it still says what the kind is (§6: shortened, and said which).
+            screen.BackCommand.Execute(null);
+            screen.OpenCategoryCommand.Execute(AchievementKinds.Grids);
+
+            Assert.Equal("10 worked · 20 pts · Bronze · 15 to Silver", screen.Category!.BandLine);
+
+            screen.BackCommand.Execute(null);
+            screen.OpenCategoryCommand.Execute(AchievementKinds.TotalMiles);
+
+            Assert.Equal("42,041 mi so far · 0 pts · unranked · 7,959 to Bronze", screen.Category!.BandLine);
+
             screen.BackCommand.Execute(null);
             screen.OpenCategoryCommand.Execute(AchievementKinds.Modes);
 
             Assert.False(screen.Category!.HasLevelBar);
             Assert.Equal("Gold, the top level", screen.Category.NoNextLevelLine);
+            Assert.Equal("five modes to work · 5 of 5 · 85 pts · Gold", screen.Category.BandLine);
         }
         finally
         {
@@ -527,6 +555,101 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         Assert.Empty(none.Callers);
         Assert.Equal("no one is calling from there now", none.NoCallerLine);
         Assert.Equal("calling CQ at 21:41 UTC, unworked", none.CallersHeading);
+
+        // **WORK INSTRUCTION 342 RULING 14: THE PICTURE'S SENTENCE ONLY WHERE THE LIST DRAWS IT.** A
+        // decoded row is marked by its sender's country (`NudgeSet.WouldOpen`): the still green
+        // quill for an unworked country on a continent the log has reached, the ringed amber one
+        // where the continent is new too, and nothing for a worked country.
+        _output.WriteLine("  quiet countries quill [" + none.QuillLine + "]");
+
+        // **NOBODY LISTED, AND TWO CONTINENTS STILL UNWORKED**, so a caller could carry either.
+        Assert.Equal(5, log.Continents.Count);
+        Assert.Equal("On the CQ list they carry a quill.", none.QuillLine);
+
+        void Quill(string kind, string? inside, string expected)
+        {
+            screen.OpenCategoryCommand.Execute(kind);
+
+            if (inside is not null)
+            {
+                screen.OpenCategoryCommand.Execute(inside);
+            }
+
+            var next = screen.Category!.Cards[^1];
+
+            _output.WriteLine("  " + (inside ?? kind) + " quill [" + next.QuillLine + "]");
+
+            Assert.False(next.Earned);
+            Assert.Equal(expected, next.QuillLine);
+
+            while (screen.Category is not null)
+            {
+                screen.BackCommand.Execute(null);
+            }
+        }
+
+        // **COUNTRIES**: Austria and Grenada, both on continents already reached - green.
+        Assert.All(country.Callers, c => Assert.False(c.OpensContinent, c.Place + " opens a continent"));
+        Quill(AchievementKinds.Countries, null, "On the CQ list they carry the green quill.");
+
+        // **EUROPE, REACHED**: every unworked country there is green.
+        Quill(AchievementKinds.Continents, "continent-EU", "On the CQ list they carry the green quill.");
+
+        // **GRIDS AND STATES: THE LIST MARKS A COUNTRY, NOT A SQUARE OR A STATE**, so no sentence.
+        Quill(AchievementKinds.Grids, null, "");
+        Quill(AchievementKinds.States, null, "");
+
+        // **A LIST WITH A CALLER WHO WOULD OPEN A CONTINENT**: his row is ringed and the others are
+        // green, so the sentence says a quill and each caller's own mark says which.
+        var mixed = new AchievementsViewModel(records, MyGrid, points) { Calling = Calling() };
+
+        mixed.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+
+        var either = mixed.Category!.Cards[^1];
+
+        Print(either);
+
+        Assert.Contains(either.Callers, c => c.OpensContinent);
+        Assert.Contains(either.Callers, c => !c.OpensContinent);
+        Assert.Equal("On the CQ list they carry a quill.", either.QuillLine);
+
+        mixed.BackCommand.Execute(null);
+
+        // **OCEANIA, NEVER REACHED: EVERY CALLER ON IT OPENS IT**, so the ringed quill - on its card
+        // among the seven and on its own page of countries.
+        mixed.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+
+        var oceania = mixed.Category!.SubBadges.Single(b => b.Kind == "continent-OC").Card!;
+
+        Assert.False(oceania.Earned);
+        Assert.Equal("On the CQ list they carry the ringed quill.", oceania.QuillLine);
+
+        mixed.OpenCategoryCommand.Execute("continent-OC");
+
+        Assert.Equal("On the CQ list they carry the ringed quill.", mixed.Category!.Cards[^1].QuillLine);
+
+        // **AND DRAWN ON THE CARD AT 1400, UNDER THE WANTS LINE.**
+        var quillWindow = Realized(records, 1400, calling);
+
+        try
+        {
+            ((AchievementsViewModel)quillWindow.DataContext!).OpenCategoryCommand.Execute(AchievementKinds.Countries);
+            Settle(quillWindow);
+
+            var drawn = Named<ItemsControl>(quillWindow, "AchievementsCategoryCards").GetVisualDescendants().OfType<TextBlock>()
+                .Where(t => t.IsEffectivelyVisible)
+                .ToList();
+            var wants = drawn.Single(t => t.Text == "Any country you have not worked");
+            var quill = drawn.Single(t => t.Text == "On the CQ list they carry the green quill.");
+
+            Assert.True(
+                Top(quill, quillWindow) > Top(wants, quillWindow),
+                "the quill line is at y " + F(Top(quill, quillWindow)) + ", not under the wants line at " + F(Top(wants, quillWindow)));
+        }
+        finally
+        {
+            quillWindow.Close();
+        }
 
         // **ON THE WINDOW: THE HEADING AND EACH CALLER ARE DRAWN ON THE NEXT CARD.**
         var window = Realized(records, 1040, calling);
@@ -1433,6 +1556,9 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
         return found!;
     }
+
+    private static double Top(Visual visual, Visual root)
+        => visual.TranslatePoint(new Point(0, 0), root)?.Y ?? double.NaN;
 
     private static IEnumerable<string> VisibleText(Control root)
         => root.GetVisualDescendants().OfType<TextBlock>()

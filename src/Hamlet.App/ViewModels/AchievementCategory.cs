@@ -106,6 +106,15 @@ public sealed record AchievementCategoryCard(
     /// <summary>True where there is a wants line.</summary>
     public bool HasWants => WantsLine.Length > 0;
 
+    /// <summary>
+    /// What mark the callers who would earn this card carry on the CQ list, in words, or "" where
+    /// the list draws no mark for them (work instruction 342, ruling 14).
+    /// </summary>
+    public string QuillLine { get; init; } = "";
+
+    /// <summary>True where there is a quill line.</summary>
+    public bool HasQuillLine => QuillLine.Length > 0;
+
     /// <summary>True where the card draws the CQ panel: a heading, callers, or the words instead.</summary>
     public bool HasCallersPanel
         => !Earned && (CallersHeading.Length > 0 || Callers.Count > 0 || NoCallerLine.Length > 0);
@@ -204,14 +213,28 @@ public sealed class AchievementCategory
                 : score.LevelName + ", the top level";
         }
 
-        // **THE GAP IS SAID ONCE.** The picture puts `14 to Silver` on this line and `11 of 25
-        // to Silver` over the bar; where there is a bar its words already carry the gap, and
-        // Total Miles' line with both ran past its slot (§6: shorten and say which).
-        BandLine = string.Join(
-            " · ",
-            new[] { Meaning, Standing, ScoreLine, LevelName, HasLevelBar ? "" : GapLine }
-                .Where(s => s.Length > 0));
+        // **THE GAP IS ON THE LINE AS THE PICTURE DRAWS IT** (work instruction 342, ruling 13,
+        // overruling unit 335's choice to say it once): `· 14 to Silver` here and `11 of 25 to
+        // Silver` over the bar. **Where the line would pass BandLineMost characters - the band
+        // line's 608 px slot at the window's own 1040 on the test host - the meaning goes first**,
+        // because the name above it already says what the kind is, **and the gap only if that is
+        // still not enough**, because the words over the bar carry it (§6: shortened, and said
+        // which). On the shipped points file and the twelve-contact fixture that takes the meaning
+        // off Grids and Total Miles, and the gap off nothing.
+        var full = Joined(Meaning, Standing, ScoreLine, LevelName, GapLine);
+        var shorter = Joined(Standing, ScoreLine, LevelName, GapLine);
+
+        BandLine = full.Length <= BandLineMost ? full
+            : shorter.Length <= BandLineMost ? shorter
+            : Joined(Standing, ScoreLine, LevelName, HasLevelBar ? "" : GapLine);
     }
+
+    /// <summary>
+    /// **The most characters the band line carries** (work instruction 342, ruling 13): its slot at
+    /// the window's own 1040 is 608 px, and the test host draws twelve-point text ten pixels a
+    /// character, which is wider than any face on the glass.
+    /// </summary>
+    public const int BandLineMost = 60;
 
     /// <summary>What the white ink on a band has to clear against its fill (§0.6).</summary>
     public const double LeastContrast = 4.5;
@@ -728,6 +751,7 @@ public sealed class AchievementCategory
     /// <param name="calling">The CQ list as it was read.</param>
     /// <param name="earns">What working a caller would earn here, or null.</param>
     /// <param name="wants">What the next card wants, where it is not the kind's own words.</param>
+    /// <param name="quill">The quill sentence, where the caller knows it; Countries works it out otherwise.</param>
     private static List<AchievementCategoryCard> Earned(
         string kind,
         IReadOnlyList<(string Shown, IReadOnlyList<AchievementContact> Contacts)> held,
@@ -737,7 +761,8 @@ public sealed class AchievementCategory
         bool placeUnderCall,
         CqSnapshot calling,
         Func<CqCall, (string Place, bool OpensContinent)?> earns,
-        string? wants = null)
+        string? wants = null,
+        string? quill = null)
     {
         var per = points.Per(kind);
         var cards = held
@@ -746,17 +771,55 @@ public sealed class AchievementCategory
 
         if (held.Count < howManyThereAre)
         {
+            var callers = CallersFrom(calling, operatorGrid, earns);
+
             cards.Add(NextCard(
-                AchievementBadgePage.NextWords(kind, held.Count),
-                Pts(per),
-                wants ?? WantsFor(kind),
-                calling,
-                CallersFrom(calling, operatorGrid, earns),
-                NoOneCalling));
+                    AchievementBadgePage.NextWords(kind, held.Count),
+                    Pts(per),
+                    wants ?? WantsFor(kind),
+                    calling,
+                    callers,
+                    NoOneCalling)
+                with
+                {
+                    // **COUNTRIES SAYS WHICH QUILL FROM THE CALLERS' OWN MARKS; GRIDS SAYS NONE**,
+                    // because the decoded list marks a country and never a square (ruling 14).
+                    QuillLine = quill ?? (kind == AchievementKinds.Countries ? QuillFor(callers) : ""),
+                });
         }
 
         return cards;
     }
+
+    /// <summary>
+    /// **The picture's sentence**, for a next card whose callers carry the still green quill on the
+    /// CQ list (work instruction 342, ruling 14).
+    /// </summary>
+    /// <remarks>
+    /// <para>**ONLY WHERE THE LIST DRAWS IT.** A decoded row is marked by its sender's country
+    /// (`MainWindowViewModel.MarkIfItOpensSomething`, `NudgeSet.WouldOpen`): the still green quill
+    /// for a country not in the log on a continent that is, the ringed amber quill where the
+    /// continent is new too, and nothing for a country already worked. **It never marks a square,
+    /// a state, a band or a mode**, so Grids, States, Bands, Modes, Total Miles and Hall of Fame
+    /// carry no sentence at all.</para>
+    /// <para>**THE SAME LENGTH WHERE IT IS NOT GREEN**: <see cref="RingedQuill"/> where every
+    /// caller who would earn the card opens a continent, and <see cref="AnyQuill"/> where they are
+    /// mixed or nobody is listed - each caller's own mark beside him says which.</para>
+    /// </remarks>
+    public const string GreenQuill = "On the CQ list they carry the green quill.";
+
+    /// <summary>What the sentence says where every caller who would earn the card opens a continent.</summary>
+    public const string RingedQuill = "On the CQ list they carry the ringed quill.";
+
+    /// <summary>What the sentence says where the callers carry either quill, or none is listed.</summary>
+    public const string AnyQuill = "On the CQ list they carry a quill.";
+
+    /// <summary>Which of the three sentences is true of a Countries next card's callers.</summary>
+    private static string QuillFor(IReadOnlyList<NextCaller> callers)
+        => callers.Count == 0 ? AnyQuill
+            : callers.All(c => c.OpensContinent) ? RingedQuill
+            : callers.All(c => !c.OpensContinent) ? GreenQuill
+            : AnyQuill;
 
     /// <summary>
     /// **States: each state he holds is the contact that earned it, then the next** (work
@@ -1083,10 +1146,16 @@ public sealed class AchievementCategory
             };
         }
 
+        // **A CONTINENT NEVER REACHED: EVERY CALLER ON IT WOULD OPEN IT**, so his row carries the
+        // ringed quill (work instruction 342, ruling 14).
         return NextCard(
-            name, worth, "A first contact here", calling,
-            CallersFrom(calling, operatorGrid, c => UnworkedCountry(log, c, code)),
-            NoOneCalling);
+                name, worth, "A first contact here", calling,
+                CallersFrom(calling, operatorGrid, c => UnworkedCountry(log, c, code)),
+                NoOneCalling)
+            with
+            {
+                QuillLine = RingedQuill,
+            };
     }
 
     private static AchievementBadge ContinentBadge(
@@ -1136,12 +1205,14 @@ public sealed class AchievementCategory
             .ToList();
 
         // **THE SAME CARDS COUNTRIES DRAWS** (work instruction 335 task 2): a continent opened to
-        // its countries is each of them, the contact that earned it.
+        // its countries is each of them, the contact that earned it. **Its callers' quill is the
+        // continent's**: green where the log has reached it, ringed where it has not (ruling 14).
         var cards = Earned(
             AchievementKinds.Countries, held, DxccContinents.EntitiesOn(code),
             page.Scores.Points, page.OperatorGrid, placeUnderCall: false,
             calling, c => UnworkedCountry(log, c, code),
-            "Any unworked country in " + DxccContinents.NameOf(code));
+            "Any unworked country in " + DxccContinents.NameOf(code),
+            log.Continents.Contains(code, StringComparer.OrdinalIgnoreCase) ? GreenQuill : RingedQuill);
 
         return new AchievementCategory(
             badge,
