@@ -34,3 +34,19 @@ LICENCE: PHASE_PLAN.md R26, section 6; the PSK31 and maintenance rulings; CLAUDE
 COST: 20.433159000000003
 ACCOMPLISHED: the main window looks like the mockup Tim approved, and the working panels have the window again
 STATE_WHY: At 1920 the top row, rig height, equal panels and facts beside the map are measured and met, but at 1400 the licensed top row is 273 px, which the unit itself calls a miss, and the rig panel matching the card was not measured again at that height.
+
+## UNIT 338 - STEP 0
+
+UNIT_AS_CALLED: 2
+STEP: 0
+APPROACH: fold the strips above the three working panels into one row as the mockup draws (filter into the decoded panel header, Stop never collapsible) so the panels themselves take half the height, and shorten the green block's rule of thumb to the mockup's words so the 1400 licensed top row returns to 0.262
+HIT: section 4 wants a ruling: banked - The open asks are the filter chips and send area placements, which are already built on the recommended option, and older carried rulings on the license phrase, the Modes and States cards and the demodulator, none of which stops the step 0 work still open such as the fourth task and measuring the license phrase at 1400.
+MOVE: work around
+WHY: Unit 337 met step 0 at 1920 by counting the working card as the working panels; measured against the mockup the three panels are 0.40 of the height where the picture gives them 0.54, and the 1400 top row is 0.300 against 0.262 - both are reachable by moving strips and shortening one string, so this is a different approach to the same step, not a loop and not a cut.
+DECIDED: R26's 'working panels' means the three panels themselves, at least half the height below the band pills at 1920 and 1400 with the readiness strip hidden (overrides unit 337's reading 7); the rule of thumb becomes the mockup's sentence '20 m and up want daylight along the path; 40 m and down want dark.'; the sparkline may hide at narrow widths only if that alone does not bring the 1400 top row to 0.262 - all the author's, marked for Tim, overrulable
+LICENCE: PHASE_PLAN.md R26 and section 6 (shorten a string and name it; the arbiter decides layout and continues); assets/main-screen-mockup.png (panels 382 of 710 px below the pills); unit 337 output.md section 4 items 1 and 2; CLAUDE.md 0.2, 0.5; psk31 R12, R14, R17
+COST: 24.163439500000006
+ACCOMPLISHED: the waterfall, the decoded list and For You get more than half of the window below the band pills at both of Tim's widths, as in the picture he approved, and the top band stays short at 1400 too
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: The report measures the 190 px top row, the equal rig height and the panel shares at 1920 and 1400, but for criterion 2 it only says the band strip and world clock are unchanged and shows nothing for the green block's band being its largest text, the clock's single dot or drive and power sitting under the S-meter, and BindingHealthTests and VoiceTests are not named with results while the layout set still has one red.

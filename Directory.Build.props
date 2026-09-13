@@ -723,8 +723,13 @@
     row comes back to the mockup's proportion (R26, the arbiter's rulings 1 to 3). Screen only;
     nothing on the radio side moves.
   -->
+  <!--
+    1.13.23 -> 1.13.24, UNIT 339 TASK 0. A PATCH, STEP 0 PROVED: every step 0 exit criterion
+    named with its test and result, and the green block, the world clock and drive and power
+    asserted at 1400 as well as 1920 (R26). Tests only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.23</Version>
+    <Version>1.13.24</Version>
   </PropertyGroup>
 
   <!--
