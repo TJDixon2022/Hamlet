@@ -44,6 +44,11 @@ public partial class MainWindow : Window
         // Arrow keys = ±10 Hz, the headphone-tuning path (HM-DEC-015).
         AddHandler(KeyDownEvent, OnTuneKey, handledEventsToo: false);
 
+        // **THE SPARKLINE GIVES WAY WHERE THE GREEN BLOCK'S TEXT WOULD WRAP** (work instruction
+        // 338 task 2, the arbiter's ruling 3). How wide the words are drawn is the view's fact,
+        // so the view decides; `FitTheHeardCount` states the rule.
+        LayoutUpdated += (_, _) => FitTheHeardCount();
+
         // The feed pauses when nobody is looking (HM-DEC-020). Visibility is
         // the view's fact, so the view pushes it; the ViewModel owns what to
         // do about it.
@@ -67,6 +72,134 @@ public partial class MainWindow : Window
         };
     }
 
+
+    /// <summary>The gap between the sparkline and the count, as the markup has it.</summary>
+    private const double HeardGap = 10;
+
+    /// <summary>
+    /// **Hide the sparkline where the green block's text column, beside it, would wrap** - the
+    /// arbiter's ruling 3 in work instruction 338, with the width rule the unit's own.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE RULE, MARKED AS THE UNIT'S OWN AND OVERRULABLE.** The text column is what the
+    /// green block's regions leave once the right-hand column takes its wide width - *heard just
+    /// now* or the sparkline, the 10 px gap, and the count or *last minute*, or the best-bet line
+    /// if that is wider - less the text column's own right margin. Where that is narrower than
+    /// the widest line the column holds on one line - the license phrase, the rule of thumb, or
+    /// the band, the frequency and the verdict together - the sparkline hides and *heard just
+    /// now* stands over the count, so the right-hand column is only as wide as its words. **The
+    /// count stays at every width.**</para>
+    /// <para>**MEASURED FROM THE WORDS, NOT FROM A WINDOW WIDTH**, because the test host and the
+    /// glass draw the same words at different widths, and a breakpoint picked on one would be
+    /// wrong on the other. The decision reads the width the right-hand column would have if it
+    /// were wide, never its current width, so hiding the sparkline cannot undo itself on the
+    /// next layout pass.</para>
+    /// </remarks>
+    private void FitTheHeardCount()
+    {
+        if (Named<Grid>("GreenZoneRegions") is not { } regions
+            || Named<StackPanel>("GreenZoneLeft") is not { } left
+            || Named<Control>("GreenZoneSparkline") is not { } sparkline
+            || Named<TextBlock>("GreenZoneHeardLabel") is not { } label
+            || Named<TextBlock>("GreenZoneHeard") is not { } count
+            || Named<TextBlock>("GreenZoneHeardWindow") is not { } lastMinute
+            || regions.Bounds.Width <= 0)
+        {
+            return;
+        }
+
+        var heardWide = System.Math.Max(TextWidth(label), sparkline.Width) + HeardGap
+            + System.Math.Max(TextWidth(count), TextWidth(lastMinute));
+
+        var bestBet = Named<TextBlock>("GreenZoneBestBetPrefix") is { IsVisible: true } prefix
+            && Named<Button>("GreenZoneBestBet") is { IsVisible: true } bet
+                ? TextWidth(prefix) + TextWidth(bet.Content as string, bet)
+                : 0;
+
+        var column = regions.Bounds.Width - System.Math.Max(heardWide, bestBet) - left.Margin.Right;
+
+        var bandLine = 0.0;
+
+        foreach (var name in new[] { "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine" })
+        {
+            if (Named<TextBlock>(name) is { } part)
+            {
+                bandLine += TextWidth(part) + (part.IsVisible ? part.Margin.Right : 0);
+            }
+        }
+
+        var need = System.Math.Max(
+            bandLine,
+            System.Math.Max(
+                Named<TextBlock>("GreenZoneLicenseLine") is { } license ? TextWidth(license) : 0,
+                Named<TextBlock>("GreenZoneRuleOfThumb") is { } rule ? TextWidth(rule) : 0));
+
+        var narrow = column < need;
+
+        if (sparkline.IsVisible != narrow)
+        {
+            return;
+        }
+
+        sparkline.IsVisible = !narrow;
+        Grid.SetColumn(label, narrow ? 1 : 0);
+        label.Margin = narrow ? default : new Avalonia.Thickness(0, 0, HeardGap, 0);
+    }
+
+    /// <summary>The controls the width rule reads, found once and kept.</summary>
+    private readonly System.Collections.Generic.Dictionary<string, Control> _widthRuleControls = new();
+
+    /// <summary>
+    /// A named control in this window, by its name scope and then by a walk of the visual tree,
+    /// kept once found so the walk is not repeated on every layout pass.
+    /// </summary>
+    private T? Named<T>(string name)
+        where T : Control
+    {
+        if (_widthRuleControls.TryGetValue(name, out var known))
+        {
+            return known as T;
+        }
+
+        var found = this.FindControl<T>(name)
+            ?? System.Linq.Enumerable.FirstOrDefault(
+                System.Linq.Enumerable.OfType<T>(Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this)),
+                c => c.Name == name);
+
+        if (found is not null)
+        {
+            _widthRuleControls[name] = found;
+        }
+
+        return found;
+    }
+
+    /// <summary>How wide a text block's own words are drawn on one line, or 0 where it is hidden.</summary>
+    private static double TextWidth(TextBlock block)
+        => block.IsVisible ? TextWidth(block.Text, block) : 0;
+
+    /// <summary>How wide some words are drawn on one line in a control's own face and size.</summary>
+    private static double TextWidth(string? text, Avalonia.Controls.Primitives.TemplatedControl face)
+        => TextWidth(text, face.FontFamily, face.FontStyle, face.FontWeight, face.FontSize);
+
+    private static double TextWidth(string? text, TextBlock face)
+        => TextWidth(text, face.FontFamily, face.FontStyle, face.FontWeight, face.FontSize);
+
+    private static double TextWidth(
+        string? text,
+        Avalonia.Media.FontFamily family,
+        Avalonia.Media.FontStyle style,
+        Avalonia.Media.FontWeight weight,
+        double size)
+        => string.IsNullOrEmpty(text)
+            ? 0
+            : new Avalonia.Media.FormattedText(
+                text,
+                CultureInfo.CurrentUICulture,
+                Avalonia.Media.FlowDirection.LeftToRight,
+                new Avalonia.Media.Typeface(family, style, weight),
+                size,
+                Avalonia.Media.Brushes.Black).Width;
 
     /// <summary>
     /// Kicks off the startup reconnect without waiting for it (HM-DEC-052).

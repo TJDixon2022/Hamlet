@@ -282,6 +282,94 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 338 task 2: at 1400 the licensed operator's top row is back to the
+    /// mockup's proportion, the rig panel is the card's height at both widths, the rule of thumb
+    /// is the mockup's sentence, and the count is on the card at both widths.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE MOCKUP'S TOP ROW IS 186 OF THE 710 PX BELOW ITS PILLS, 0.262.** Unit 337
+    /// measured 273 of 910 here, 0.300, on this fixture: a General license and a heard count, so
+    /// the green block carries every line it can.</para>
+    /// <para>**AND THE SAME SHAPE AT 1400** (R26, the arbiter's ruling 1): the three panels
+    /// themselves take at least half the height below the pills, with the readiness strip hidden.
+    /// This is the licensed half of <see cref="TheWorkingPanelsTests"/>' assertion; it lives here
+    /// because the top row is what makes it reachable.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void AtFourteenHundredTheLicensedTopRowIsTheMockupsShare()
+    {
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            var window = Realized(width);
+
+            try
+            {
+                var m = Measure(window);
+                var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                    .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+                var below = window.Bounds.Height - RectIn(pills, window).Bottom;
+                var rule = Named<TextBlock>(window, "GreenZoneRuleOfThumb");
+                var heard = Named<TextBlock>(window, "GreenZoneHeard");
+                var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
+
+                Named<Border>(window, "DigitalReadinessStrip").IsVisible = false;
+
+                for (var i = 0; i < 4; i++)
+                {
+                    Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                    window.UpdateLayout();
+                }
+
+                var panels = TheWorkingPanelsTests.Panels(window);
+
+                _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed");
+                _output.WriteLine(
+                    "  top row " + Px(m.TopRowHeight) + " px of " + Px(below) + " = "
+                    + (m.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture) + " (mockup 0.262)");
+                _output.WriteLine("  card " + Box(m.Card) + "; rig panel " + Box(m.Rig));
+                _output.WriteLine("  green block " + Box(RectIn(Block(window), window)));
+                _output.WriteLine(
+                    "  panels " + Px(panels[0].Rect.Height) + " px = "
+                    + (panels[0].Rect.Height / below).ToString("0.000", CultureInfo.InvariantCulture)
+                    + " with the readiness strip hidden");
+                _output.WriteLine("  rule [" + rule.Text + "] " + Box(RectIn(rule, window)));
+                _output.WriteLine(
+                    "  count [" + heard.Text + "] visible " + heard.IsEffectivelyVisible + "; sparkline visible "
+                    + sparkline.IsEffectivelyVisible);
+
+                Assert.True(
+                    Math.Abs(m.Rig.Height - m.Card.Height) <= 2,
+                    "at " + Px(width) + " the rig panel is " + Px(m.Rig.Height) + " px and the card " + Px(m.Card.Height));
+
+                Assert.Equal("20 m and up want daylight along the path; 40 m and down want dark.", rule.Text);
+
+                Assert.True(
+                    heard.IsEffectivelyVisible && (heard.Text ?? "").Length > 0,
+                    "at " + Px(width) + " the heard count is not on the card");
+
+                if (width > 1900)
+                {
+                    continue;
+                }
+
+                Assert.True(
+                    m.TopRowHeight <= 0.262 * below,
+                    "at 1400 the licensed top row is " + Px(m.TopRowHeight) + " px of " + Px(below) + " = "
+                    + (m.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture) + ", above the mockup's 0.262");
+
+                Assert.True(
+                    panels[0].Rect.Height >= below / 2,
+                    "at 1400 the licensed operator's three panels are " + Px(panels[0].Rect.Height) + " px of "
+                    + Px(below) + ", less than half");
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>What the layout measured on one window, in the window's own frame.</summary>

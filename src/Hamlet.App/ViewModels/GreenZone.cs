@@ -54,13 +54,20 @@ public sealed record GreenZone
     /// **The one line about propagation, stated as a rule of thumb** (§0.0).
     /// </summary>
     /// <remarks>
-    /// **THE AUTHOR'S WORDING, MARKED FOR THE OWNER** (work instruction 332's ARBITER block).
+    /// <para>**THE AUTHOR'S WORDING, MARKED FOR THE OWNER** (work instruction 332's ARBITER block).
     /// It says what the sun tends to do to the bands and nothing about whether any band is
-    /// open now, because Hamlet does not know.
+    /// open now, because Hamlet does not know.</para>
+    /// <para>**SHORTENED TO THE MOCKUP'S OWN WORDS IN WORK INSTRUCTION 338** (the arbiter's
+    /// ruling 2, overrulable; `assets/main-screen-mockup.png` draws exactly this sentence). The
+    /// `Rule of thumb:` prefix and *the gray edge is where both happen* came off: at 1400 the
+    /// green block's text column is about 220 px on the test host and the long line took six
+    /// lines of it, which held a licensed operator's top row at 0.300 of the height below the
+    /// band pills against the mockup's 0.262. `PHASE_PLAN.md` §6: *a string will not fit -
+    /// shorten and say which.* The license line was not reworded; it is the regulation's
+    /// sentence.</para>
     /// </remarks>
     public const string RuleOfThumb =
-        "Rule of thumb: 20 m and up want daylight along the path; 40 m and down want dark; "
-        + "the gray edge is where both happen.";
+        "20 m and up want daylight along the path; 40 m and down want dark.";
 
     /// <summary>How many bins the minute is cut into for the sparkline: five seconds each.</summary>
     public const int SparklineBins = 12;

@@ -525,7 +525,14 @@ public sealed class TheGreenZoneTests
             _output.WriteLine("rule: " + rule.Text);
 
             Assert.True(rule.IsEffectivelyVisible);
-            Assert.Contains("rule of thumb", rule.Text ?? "", StringComparison.OrdinalIgnoreCase);
+
+            // **REWRITTEN UNDER R12 IN WORK INSTRUCTION 338.** The arbiter's ruling 2 shortened
+            // the line to the mockup's own words, so the `Rule of thumb:` prefix is gone and this
+            // no longer looks for it. What it still asserts is that the line is the one sentence
+            // about what the sun does to the bands, and the claim check below still guards it.
+            Assert.Equal(GreenZone.RuleOfThumb, rule.Text);
+            Assert.Contains("want daylight", rule.Text ?? "", StringComparison.Ordinal);
+            Assert.Contains("want dark", rule.Text ?? "", StringComparison.Ordinal);
 
             // **NOTHING ON THE PANEL SAYS A BAND IS OPEN** (§0.0).
             foreach (var text in VisibleText(Panel(window)).Select(t => t.Text ?? ""))

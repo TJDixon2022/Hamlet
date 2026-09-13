@@ -701,10 +701,14 @@
                                                TextWrapping="Wrap"
                                                Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                    <!-- **ONE LINE OF RULE OF THUMB, STATED AS SUCH** - and
-                                         nothing about whether a band is open, because Hamlet
-                                         does not know (§0.0). Under the license line since
-                                         work instruction 337; it sat under the map before. -->
+                                    <!-- **ONE LINE OF RULE OF THUMB** - and nothing about
+                                         whether a band is open, because Hamlet does not know
+                                         (§0.0). Under the license line since work instruction
+                                         337; it sat under the map before. **The mockup's own
+                                         sentence since work instruction 338** (ruling 2): the
+                                         `Rule of thumb:` prefix and the gray-edge clause came
+                                         off so the 1400 top row comes back to the mockup's
+                                         proportion; `GreenZone.RuleOfThumb` says why. -->
                                     <TextBlock x:Name="GreenZoneRuleOfThumb"
                                                Text="{x:Static vm:GreenZone.RuleOfThumb}"
                                                FontSize="11"
@@ -721,7 +725,8 @@
                                          (§0.5.1). The check is drawn INTO the word by
                                          `GreenZone.OnIt` (§0.6). -->
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <TextBlock Text="best bet now: " FontSize="11"
+                                        <TextBlock x:Name="GreenZoneBestBetPrefix"
+                                                   Text="best bet now: " FontSize="11"
                                                    IsVisible="{Binding GreenZone.HasBestBet}"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource HmTextMutedBrush}" />
@@ -744,29 +749,45 @@
                                          line, then the count in words, which is the carrier.
                                          **ABSENT BEFORE THE FEED HAS ANSWERED** - a flat line
                                          would be a measurement of an empty band (§0.0). -->
-                                    <Grid ColumnDefinitions="Auto,Auto"
+                                    <!-- **ONE GRID, SO THE WORDS CAN MOVE AND NOTHING IS NAMED
+                                         TWICE** (work instruction 338 task 2, the arbiter's
+                                         ruling 3). Wide: *heard just now* over the sparkline,
+                                         the count and *last minute* beside them. **Where the text
+                                         column beside this would wrap**, `MainWindow`'s
+                                         `FitTheHeardCount` hides the sparkline and stands *heard
+                                         just now* over the count, so this column is only as wide
+                                         as its words and the license line and the rule of thumb
+                                         get the width back. **The count stays at every width.** -->
+                                    <Grid x:Name="GreenZoneHeardGrid"
+                                          ColumnDefinitions="Auto,Auto"
+                                          RowDefinitions="Auto,Auto,Auto"
                                           HorizontalAlignment="Right"
                                           IsVisible="{Binding GreenZone.HasHeard}">
-                                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                            <TextBlock Text="heard just now"
-                                                       FontSize="11"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+                                        <TextBlock x:Name="GreenZoneHeardLabel"
+                                                   Grid.Row="0" Grid.Column="0"
+                                                   Margin="0,0,10,0"
+                                                   Text="heard just now"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
 
-                                            <ctl:SparklineControl x:Name="GreenZoneSparkline"
-                                                                  Values="{Binding HeardSparkline}"
-                                                                  Width="110" Height="26" />
-                                        </StackPanel>
+                                        <ctl:SparklineControl x:Name="GreenZoneSparkline"
+                                                              Grid.Row="1" Grid.RowSpan="2" Grid.Column="0"
+                                                              Margin="0,0,10,0"
+                                                              Values="{Binding HeardSparkline}"
+                                                              Width="110" Height="26" />
 
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                                            <TextBlock x:Name="GreenZoneHeard"
-                                                       Text="{Binding GreenZone.Heard}"
-                                                       FontSize="15" FontWeight="Bold"
-                                                       Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                        <TextBlock x:Name="GreenZoneHeard"
+                                                   Grid.Row="1" Grid.Column="1"
+                                                   VerticalAlignment="Bottom"
+                                                   Text="{Binding GreenZone.Heard}"
+                                                   FontSize="15" FontWeight="Bold"
+                                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
 
-                                            <TextBlock Text="last minute"
-                                                       FontSize="10"
-                                                       Foreground="{StaticResource HmTextMutedBrush}" />
-                                        </StackPanel>
+                                        <TextBlock x:Name="GreenZoneHeardWindow"
+                                                   Grid.Row="2" Grid.Column="1"
+                                                   Text="last minute"
+                                                   FontSize="10"
+                                                   Foreground="{StaticResource HmTextMutedBrush}" />
                                     </Grid>
                                 </StackPanel>
 
