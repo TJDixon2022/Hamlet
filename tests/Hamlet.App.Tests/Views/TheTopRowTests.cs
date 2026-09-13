@@ -535,7 +535,109 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 340 task 0: the power offer drawn on PSK31, the mode that offers it,
+    /// beside FT8, at 1920 and 1400.** Printed, not asserted - the trace task 1 is built from.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 6**: the offer is measured where it is offered.
+    /// `HasPsk31PowerOffer` is `IsPsk31Chosen` and not yet answered, so choosing PSK31 draws it
+    /// with no radio and no transmission.</para>
+    /// <para>**NOTHING IS PRESSED** (§0.2, HM-DEC-084). The accept and decline buttons are read
+    /// where they are drawn. FT8 is put back on the model before each window closes.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit340TraceThePowerOfferOnPsk31()
+    {
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "PSK31", "FT8" })
+            {
+                var window = Realized(width);
+                var model = (MainWindowViewModel)window.DataContext!;
+
+                try
+                {
+                    model.ChosenDigitalMode = mode;
+                    Settle(window);
+
+                    var m = Measure(window);
+                    var rig = RectIn(window.GetVisualDescendants().OfType<RigDisplayControl>().First(), window);
+                    var drive = Named<NumericUpDown>(window, "DigitalTransmitDriveBox");
+                    var sentence = Named<TextBlock>(window, "DigitalPsk31PowerOffer");
+                    var accept = Named<Button>(window, "DigitalPsk31PowerAccept");
+                    var decline = Named<Button>(window, "DigitalPsk31PowerDecline");
+                    var alc = Named<TextBlock>(window, "DigitalPsk31AlcReference");
+                    var offer = OfferBorder(window);
+                    var offerAt = RectIn(offer, window);
+                    var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                        .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+                    var below = window.Bounds.Height - RectIn(pills, window).Bottom;
+                    var strip = Named<Border>(window, "DigitalReadinessStrip");
+                    var stripShown = strip.IsEffectivelyVisible;
+                    var shownPanels = TheWorkingPanelsTests.Panels(window);
+
+                    strip.IsVisible = false;
+                    Settle(window);
+
+                    var hiddenPanels = TheWorkingPanelsTests.Panels(window);
+
+                    _output.WriteLine(
+                        "=== " + mode + " " + Px(width) + " x " + Px(WindowHeight) + ", licensed; HasPsk31PowerOffer "
+                        + model.HasPsk31PowerOffer + ", chosen " + model.ChosenDigitalMode);
+                    _output.WriteLine("  rig display : " + Box(rig));
+                    _output.WriteLine("  drive box   : " + Box(RectIn(drive, window)));
+                    _output.WriteLine(
+                        "  offer border: " + Box(offerAt) + " visible " + offer.IsEffectivelyVisible
+                        + "; top - rig display bottom = " + Px(offerAt.Top - rig.Bottom));
+                    _output.WriteLine(
+                        "  sentence    : " + Box(RectIn(sentence, window)) + ", " + sentence.TextLayout.TextLines.Count
+                        + " lines, " + (sentence.Text ?? "").Length + " chars");
+                    _output.WriteLine("  accept      : " + Box(RectIn(accept, window)) + " [" + accept.Content + "]");
+                    _output.WriteLine("  decline     : " + Box(RectIn(decline, window)) + " [" + decline.Content + "]");
+                    _output.WriteLine(
+                        "  ALC line    : " + Box(RectIn(alc, window)) + ", " + alc.TextLayout.TextLines.Count + " lines");
+                    _output.WriteLine("  rig panel   : " + Box(m.Rig) + "; card " + Box(m.Card) + "; rig - card = " + Px(m.Rig.Height - m.Card.Height));
+                    _output.WriteLine(
+                        "  top row     : " + Px(m.TopRowHeight) + " px of " + Px(below) + " below the pills = "
+                        + (m.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture));
+                    _output.WriteLine(
+                        "  panels      : " + Px(hiddenPanels[0].Rect.Height) + " px = "
+                        + (hiddenPanels[0].Rect.Height / below).ToString("0.000", CultureInfo.InvariantCulture)
+                        + " strip hidden; " + Px(shownPanels[0].Rect.Height) + " px = "
+                        + (shownPanels[0].Rect.Height / below).ToString("0.000", CultureInfo.InvariantCulture)
+                        + " strip " + (stripShown ? "showing" : "not showing (nothing to say)"));
+
+                    foreach (var (name, rect) in hiddenPanels)
+                    {
+                        _output.WriteLine("    " + name.PadRight(10) + Box(rect));
+                    }
+
+                    _output.WriteLine("");
+                }
+                finally
+                {
+                    model.ChosenDigitalMode = "FT8";
+                    window.Close();
+                }
+            }
+        }
+    }
+
     // ------------------------------------------------------------------------------------
+
+    /// <summary>The power offer's border: the box `HasPsk31PowerOffer` shows, around the sentence.</summary>
+    public static Border OfferBorder(Window window)
+        => Named<TextBlock>(window, "DigitalPsk31PowerOffer").GetVisualAncestors().OfType<Border>().First();
+
+    private static void Settle(Window window)
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
+    }
 
     /// <summary>What the layout measured on one window, in the window's own frame.</summary>
     public sealed record Measured(

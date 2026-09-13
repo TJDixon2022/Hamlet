@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 340 - step 0, the power offer drawn
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T21:38:13-04:00
-NOTE: Task 0 - gate passed, section 2 claims read; committing the launcher files, then the carry-forward list before the PSK31 trace
+UPDATED: 2026-09-12T21:43:46-04:00
+NOTE: Task 0 done - PSK31 offer drawn 520x122 under the S-meter, but top row 317 px at both widths (108 px over at 1920); stop tests alone 7 of 9
 
 ---
 
