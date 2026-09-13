@@ -711,6 +711,224 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 341 task 0: where the one-line offer fits under the S-meter, and which
+    /// green block line makes PSK31 taller than FT8** - at 1920 and 1400, on PSK31 and FT8.
+    /// Printed, not asserted - the trace task 1 is built from.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 8**: under the S-meter the offer becomes the mockup's line,
+    /// *RF power 50 % offered*. Where it goes is measured by setting the line on this test window
+    /// only - on the drive row, on the drive note's row, and on its own line - with the offer's
+    /// border hidden, as the popup takes it off the row. Nothing goes into the markup.</para>
+    /// <para>**RULING 9**: the green block is printed line by line in both modes, so the PSK31
+    /// height has a name.</para>
+    /// <para>**NOTHING IS PRESSED** (§0.2, HM-DEC-084). FT8 is put back before each window
+    /// closes.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit341TraceTheOneLineOfferAndThePsk31GreenBlock()
+    {
+        var words = "RF power " + MainWindowViewModel.Psk31PowerPercent + " % offered";
+
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "PSK31", "FT8" })
+            {
+                var window = Realized(width);
+                var model = (MainWindowViewModel)window.DataContext!;
+
+                try
+                {
+                    model.ChosenDigitalMode = mode;
+                    Settle(window);
+
+                    var m = Measure(window);
+                    var rig = RectIn(window.GetVisualDescendants().OfType<RigDisplayControl>().First(), window);
+                    var column = Named<StackPanel>(window, "RigDriveAndPower");
+                    var driveRow = (Grid)column.Children[0];
+                    var noteRow = (StackPanel)column.Children[1];
+                    var panel = RigPanel(window);
+                    var offer = OfferBorder(window);
+                    var block = Block(window);
+                    var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                        .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+                    var below = window.Bounds.Height - RectIn(pills, window).Bottom;
+                    var strip = Named<Border>(window, "DigitalReadinessStrip");
+                    var stripShown = strip.IsEffectivelyVisible;
+                    var shownPanels = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+                    double InnerBottom() => RectIn(panel, window).Bottom - panel.BorderThickness.Bottom - panel.Padding.Bottom;
+
+                    void Row(string label, Panel row)
+                    {
+                        var columnAt = RectIn(column, window);
+                        var parts = row.Children.Where(c => c.IsVisible).ToList();
+                        var right = parts.Count == 0 ? columnAt.Left : parts.Max(c => RectIn(c, window).Right);
+
+                        _output.WriteLine(
+                            "  " + label.PadRight(12) + ": " + Box(RectIn(row, window)) + "; right edge " + Px(right)
+                            + ", column right " + Px(columnAt.Right) + ", left over " + Px(columnAt.Right - right));
+
+                        foreach (var part in parts)
+                        {
+                            var said = part switch
+                            {
+                                TextBlock t => "[" + t.Text + "] " + t.TextLayout.TextLines.Count + " lines",
+                                _ => part.GetType().Name,
+                            };
+
+                            _output.WriteLine("      " + (part.Name ?? "-").PadRight(26) + Box(RectIn(part, window)) + " " + said);
+                        }
+                    }
+
+                    _output.WriteLine(
+                        "=== " + mode + " " + Px(width) + " x " + Px(WindowHeight) + ", licensed; HasPsk31PowerOffer "
+                        + model.HasPsk31PowerOffer);
+                    _output.WriteLine("  rig display : " + Box(rig));
+                    _output.WriteLine("  rig column  : " + Box(RectIn(column, window)));
+                    Row("drive row", driveRow);
+                    Row("note row", noteRow);
+                    _output.WriteLine("  offer border: " + Box(RectIn(offer, window)) + " visible " + offer.IsEffectivelyVisible);
+                    _output.WriteLine(
+                        "  rig panel " + Box(m.Rig) + ", inner bottom " + Px(InnerBottom()) + "; column bottom "
+                        + Px(RectIn(column, window).Bottom) + ", spare under it " + Px(InnerBottom() - RectIn(column, window).Bottom)
+                        + "; card " + Box(m.Card));
+
+                    // **THE GREEN BLOCK, LINE BY LINE** (ruling 9).
+                    _output.WriteLine("  green block : " + Box(RectIn(block, window)));
+
+                    foreach (var part in ((Panel)block.Child!).Children.Where(c => c.IsVisible))
+                    {
+                        _output.WriteLine("    row " + (part.Name ?? part.GetType().Name).PadRight(22) + Box(RectIn(part, window)));
+                    }
+
+                    foreach (var text in block.GetVisualDescendants().OfType<TextBlock>().Where(t => t.IsEffectivelyVisible))
+                    {
+                        var owner = text.Name
+                            ?? text.GetVisualAncestors().OfType<Control>().FirstOrDefault(c => !string.IsNullOrEmpty(c.Name))?.Name
+                            ?? "-";
+
+                        _output.WriteLine(
+                            "      " + owner.PadRight(24) + Box(RectIn(text, window)) + ", " + text.TextLayout.TextLines.Count
+                            + " lines [" + text.Text + "]");
+                    }
+
+                    _output.WriteLine(
+                        "      sparkline visible " + Named<SparklineControl>(window, "GreenZoneSparkline").IsEffectivelyVisible
+                        + "; best bet visible " + Named<Button>(window, "GreenZoneBestBet").IsEffectivelyVisible);
+
+                    // **WHAT EACH CANDIDATE COSTS THE BLOCK, SET ON THIS WINDOW ONLY** (ruling 9). A
+                    // row that is visible with nothing in it still takes the stack's spacing.
+                    var rows = ((Panel)block.Child!).Children;
+                    var strayed = Named<TextBlock>(window, "GreenZoneStrayedLine");
+                    var emptyRows = rows.Where(c => c.IsVisible && c.Bounds.Height == 0).ToList();
+
+                    foreach (var (label, hide, show) in new (string, Action, Action)[]
+                    {
+                        ("strayed line hidden", () => strayed.IsVisible = false, () => strayed.ClearValue(Visual.IsVisibleProperty)),
+                        ("empty rows hidden (" + emptyRows.Count + ")", () => emptyRows.ForEach(c => c.IsVisible = false), () => emptyRows.ForEach(c => c.IsVisible = true)),
+                    })
+                    {
+                        var before = RectIn(block, window).Height;
+
+                        hide();
+                        Settle(window);
+                        _output.WriteLine(
+                            "      option " + label + ": block " + Px(before) + " -> " + Px(RectIn(block, window).Height)
+                            + ", card " + Px(RectIn(Card(window), window).Height));
+                        show();
+                        Settle(window);
+                    }
+
+                    strip.IsVisible = false;
+                    Settle(window);
+
+                    var hiddenPanels = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+                    _output.WriteLine(
+                        "  top row     : " + Px(m.TopRowHeight) + " px of " + Px(below) + " = "
+                        + (m.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture));
+                    _output.WriteLine(
+                        "  panels      : " + Px(hiddenPanels) + " px = "
+                        + (hiddenPanels / below).ToString("0.000", CultureInfo.InvariantCulture) + " strip hidden; "
+                        + Px(shownPanels) + " px = " + (shownPanels / below).ToString("0.000", CultureInfo.InvariantCulture)
+                        + " strip " + (stripShown ? "showing" : "not showing (nothing to say)"));
+
+                    // **THE LINE, SET ON THIS WINDOW ONLY** (ruling 8). The detached width is the words
+                    // alone at the drive's 11 px; the placements use a card link, which is how a
+                    // pressable line is drawn elsewhere on this window.
+                    var plain = new TextBlock { Text = words, FontSize = 11 };
+
+                    plain.Measure(Size.Infinity);
+                    _output.WriteLine("  the line [" + words + "] needs " + Px(plain.DesiredSize.Width) + " px as bare 11 px text");
+
+                    offer.IsVisible = false;
+                    Settle(window);
+
+                    var bare = Measure(window);
+
+                    _output.WriteLine(
+                        "  offer border hidden: top row " + Px(bare.TopRowHeight) + " = "
+                        + (bare.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture) + "; panels "
+                        + Px(TheWorkingPanelsTests.Panels(window)[0].Rect.Height) + "; spare under the column "
+                        + Px(InnerBottom() - RectIn(column, window).Bottom));
+
+                    foreach (var (label, place, unplace) in new (string, Action<Button>, Action<Button>)[]
+                    {
+                        ("on the drive row", line =>
+                        {
+                            driveRow.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+                            Grid.SetColumn(line, 3);
+                            driveRow.Children.Add(line);
+                        }, line =>
+                        {
+                            driveRow.Children.Remove(line);
+                            driveRow.ColumnDefinitions.RemoveAt(3);
+                        }),
+                        ("on the note row", line => noteRow.Children.Add(line), line => noteRow.Children.Remove(line)),
+                        ("on its own line", line => column.Children.Insert(2, line), line => column.Children.Remove(line)),
+                    })
+                    {
+                        var line = new Button
+                        {
+                            Content = words,
+                            Classes = { "hm-cardlink" },
+                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                        };
+
+                        place(line);
+                        Settle(window);
+
+                        var at = RectIn(line, window);
+                        var option = Measure(window);
+                        var optionPanels = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+                        _output.WriteLine(
+                            "  line " + label.PadRight(17) + ": " + Box(at) + ", wants " + Px(line.DesiredSize.Width)
+                            + " x " + Px(line.DesiredSize.Height) + ", column right " + Px(RectIn(column, window).Right)
+                            + ", past it " + Px(at.Right - RectIn(column, window).Right) + "; top below the rig display "
+                            + Px(at.Top - rig.Bottom) + "; top row " + Px(option.TopRowHeight) + " = "
+                            + (option.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture) + "; panels "
+                            + Px(optionPanels) + " = " + (optionPanels / below).ToString("0.000", CultureInfo.InvariantCulture)
+                            + "; spare under the column " + Px(InnerBottom() - RectIn(column, window).Bottom));
+
+                        unplace(line);
+                        Settle(window);
+                    }
+
+                    _output.WriteLine("");
+                }
+                finally
+                {
+                    model.ChosenDigitalMode = "FT8";
+                    window.Close();
+                }
+            }
+        }
+    }
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>The power offer's border: the box `HasPsk31PowerOffer` shows, around the sentence.</summary>
