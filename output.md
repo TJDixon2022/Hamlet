@@ -1,478 +1,241 @@
 ```
 READ IN THIS ORDER.
+
+A. The phase goal - the screen says what is true. Steps unchanged by this unit.
+B. No step criterion moves; carried repair on the PSK31 row.
+C. The report last, and section 4 raises 5 items on top of the carried queue.
 ```
 
-A. The phase goal - the screen, done right. Step 0 now meets every threshold it asserts, on FT8
-   and on PSK31, with the offer showing as ruling 8 draws it:
-   - Criteria 2, 3, 4 and 6 carry green named tests at the widths they name, in both modes.
-   - Criterion 1 holds on PSK31 (305 -> 190 px at 1920). Its panels' half there is printed (503 px),
-     not asserted: the test that asserts it realizes FT8 and plain only.
-   - Criterion 5 holds on PSK31 (237 px against 238 at 1400). No callsign clipped is asserted on
-     the plain FT8 fixture only.
-   Step 1 not started; its tests 6 of 6 in unit 340, not run here. Steps 2 and 3 not started.
-B. Step 0 and its exit criteria, each with the test that proves it, its result and the widths and
-   modes it realized. Licensed fixture, 1040 px tall, 910 px below the pills, unless it says plain.
-   1. Top row about 190 px at 1920, panels at least half below the pills.
-      `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` PASS, FT8 and PSK31.
-      - 1920: FT8 190 px (0.209); PSK31 190 px (0.209), was 305. Panels 503 (0.553) in both modes
-        with the readiness strip hidden, 450 (0.495) with it showing.
-      - `TheThreePanelsTakeAtLeastHalfTheHeightBelowTheBandPills` pass, FT8 and plain, as before.
-   2. The card's three things. `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` and
-      `TheWorldClockIsAtTheCardsRightEndWithOneMarker` PASS at 1920 and 1400, FT8 and PSK31.
-      - The PSK31 green block at 1400 before and after ruling 9: 103 -> 100 px with no best bet
-        drawn, and 112 -> 109 with one drawn.
-   3. Rig panel the card's height, drive AND THE ONE-LINE OFFER under the S-meter, the full offer
-      unchanged in its popup. `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`
-      PASS at 1920 and 1400, FT8 and PSK31.
-      - PSK31: the line is 218 x 13 at y 309, 52 px under the rig display's bottom, at both widths.
-      - The popup's four controls are visible inside it with the view model's words; none is on
-        the window outside it; opening it wrote no `psk31_power_*` event and left it unanswered.
-      - Rig panel against card: 190 / 190 at 1920; 216 / 216 FT8 and 228 / 228 PSK31 at 1400.
-   4. Three panels equal height to the status bar, facts beside the map at 1920.
-      `TheThreePanelsShareOneTopAndOneBottom` PASS, plain, FT8 and PSK31, at 1400 and 1920.
-      `AtNineteenTwentyTheCardsFactsSitBesideTheMap` PASS, plain, FT8 and PSK31. Not dropped.
-   5. At 1400 the same shape.
-      - Panels full to the status bar: pass in both modes, y 544 + 409 = 953 against a floor at
-        y 953.
-      - Licensed top row, `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` PASS: FT8 216 px
-        (0.237); PSK31 237 px (0.260) against 0.262 (238.4 px), was 305. Panels on PSK31 456
-        (0.501).
-      - No callsign clipped: pass (`AtFourteenHundredTheSameShapeHolds`, `NoCallsignIsClipped`),
-        plain FT8.
-   6. BindingHealthTests 1 of 1, VoiceTests 5 of 5, carry-forward app 100 of 100 and engine 85 of 85,
-      before the change, after task 1 and after task 2.
-   nice-to-pass: best bet joined to the green block -
-   `TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` pass at 1920.
-C. The report last. Section 4 raises 9 items on top of the carried queue. None stands in the way
-   of a criterion in B.
-   - **Ruling 8 held the row at both widths**: 190 px at 1920 and 237 px at 1400 on PSK31.
-   - **Ruling 9 closed the 2 px**, by a path it did not name, marked as the unit's own: the green
-     block's empty row. Items 1 and 3 bear on it: the 1400 PSK31 row holds by 1.4 px, and the live
-     best bet moves it 9 px.
+```
+UNIT:       337 - complete at task 3 of 3 - 2026-09-13 16:55
+PHASE GOAL: The screen says what is true and looks like someone meant it.
+UNIT GOAL:  A PSK31 row shows the characters its demodulator emits, as they
+            arrive, and every count of them agrees.
+ADVANCED:   no
+NUMBER:     characters shown from the four-signal fixture 339 -> 483 with the CQ
+            toggle on; the break at src\Hamlet.App\ViewModels\MainWindowViewModel.cs:1940
+DRIFT:      carried
+```
 
-```
-UNIT:       341 - complete at task 2 of 3 - 2026-09-12 22:28
-PHASE GOAL: Tim's approved mockup as the main window - a short top row and the working panels
-            given the height - then the achievements pages as trading cards, then what the last
-            phase left, then Tim's own pass at his window.
-UNIT GOAL:  Put the PSK31 power offer under the S-meter as the mockup's one line, with the full
-            offer unchanged one click away in a popup, so the top row holds R26's height on PSK31
-            at both widths; fit the PSK31 green block's 2 px at 1400; and prove criteria 2 and 4
-            on PSK31.
-ADVANCED:   yes - the one-line offer holds criteria 1, 3 and 5 on PSK31 at both widths, the 2 px closed (237 px against 238.4), and criteria 2 and 4 now hold on PSK31
-NUMBER:     PSK31 top row with the offer showing: 1920 305 -> 190 px;
-            1400 305 -> 237 px (0.260)
-DRIFT:      0
-```
+**Every appearance claim is computed, not seen**, and nothing here is evidence about the
+radio: this machine has none and every fixture is this project's own modem (FACT-004,
+FACT-006).
 
 ## 1. What Claude did
 
-**Complete: tasks 0, 1 and 2 of 3.** Pushed to `main`:
-- `8796858`: the launcher's files and the version.
-- `3f5c5e2`: task 0.
-- `ae2d1da`: task 1.
-- `82a7fd2`: task 2.
+Gate passed on all four: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no
+`CoreHMI.sln`, no `MURC.sln`, root `C:\Source\HamLet`. Branch **`main`**, two commits this
+session on top of task 0's, **pushed, nothing left uncommitted but the harness files named in
+section 4.** Version **1.13.28 → 1.13.29**.
 
-This report and the status file follow in their own commit. Every push was accepted.
+### The fault, with file and line
 
-Provenance: Windows 11, `C:\Source\HamLet`, branch `main`, and the prompt claimed Hamlet. The gate
-passed: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` are present,
-`CoreHMI.sln` and `MURC.sln` are absent, and the root is `C:\Source\HamLet`. HEAD was `808e088`
-before the first commit. No decision was recorded in `DECISIONS.md`, so `RULES_AT: HM-DEC-163`
-stands.
+**`MainWindowViewModel.cs:1940`, `WantsRow`.** The CQ toggle was asking a PSK31 row for an
+FT8 to-field. **A PSK31 row has an addressee only once a turnover has been parsed**, so a
+carrier that emitted characters and no turnover was held off the bound list for as long as it
+was held. That is the evening of 2026-09-12 exactly: 262 characters on carrier 19, no
+turnover, no line, and an empty screen.
 
-### Task 0 - the trace
+The characters were never lost. They reached `DigitalDecodes`, they were on a row, and the
+row was filtered out of `DigitalVisibleDecodes` before it was drawn.
 
-- **The launcher's files** (`PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`) went in
-  unchanged in `8796858`. With them went `WORK_INSTRUCTIONS.md` and the patch bump 1.13.25 ->
-  1.13.26. `.run-unit\` and `SESSION.lock` were not committed.
-- **`PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line** was then set to `341 - step 0, the power offer as
-  one line`, in `3f5c5e2`.
-- **Carry-forward before any change:** app 100 of 100, engine 85 of 85.
-- **`TheTopRowTests.Unit341TraceTheOneLineOfferAndThePsk31GreenBlock`** was added. It asserts
-  nothing and presses nothing, and it puts FT8 back before each window closes. The line and every
-  option below were set on the test window only, never in markup.
+### Watched failing first, and what the failure said
 
-#### The rig column's rows, before any build
-
-The rig column is 520 px wide at both widths, from x 1371 to 1891 at 1920 and from x 851 to 1371
-at 1400. The rows are the same in both modes and at both widths:
-
-| Row | Box | Parts | Right edge into the column | Left over |
-|---|---|---|---|---|
-| rig display | 520 x 110 at y 147, bottom y 257 | - | - | - |
-| drive row | 520 x 32 at y 274 | *Transmit drive* 141, the drive box 120, *% of full scale* 151 | 429 | 91 |
-| drive note row | 520 x 14 at y 309 | *-12.0 dBFS* 100, the tip mark 14 | 120 | 400 |
-
-- **Room under the column:** 0 px at 1920 in both modes. At 1400 it is 29 px on FT8, and 50 px on
-  PSK31 with the offer's border hidden.
-- **The line's width on the host:** *RF power 50 % offered* needs 210 px as bare 11 px text, and
-  218 x 13 as a card link.
-
-#### Where the line goes, measured on PSK31 with the offer's border hidden
-
-| Placement | Top row 1920 | Panels 1920 | Top row 1400 | Panels 1400 |
-|---|---|---|---|---|
-| none (border hidden only) | 190 (0.209) | 503 | 240 (0.264) | 453 |
-| on the drive row | 201 (0.221) | 492 | 310 (0.341) | 383 |
-| **on the drive note row** | **190 (0.209)** | **503** | **240 (0.264)** | **453** |
-| on its own line | 206 (0.226) | 487 | 240 (0.264) | 453 |
-
-#### The green block, line by line
-
-Measured in the first trace run. The block's rows are its two regions, then the strayed line, then
-an empty row.
-
-| Line | FT8 1920 | PSK31 1920 | FT8 1400 | PSK31 1400 |
-|---|---|---|---|---|
-| block | 58 | 79 | 91 | 112 |
-| regions (left and right columns) | 41 | 50 | 74 | 83 |
-| mode line | *Digital · FT8 · yours to use*, 1 line | *Digital · PSK31 · yours to use*, 1 line | 1 line | 1 line |
-| license line | 740 x 9, 1 line | same | 340 x 27, 3 lines | 300 x 27, 3 lines |
-| rule of thumb | 740 x 9, 1 line | same | 340 x 18, 2 lines | 300 x 27, **3 lines** |
-| best bet (*best bet now: 40 m*) | not drawn | **drawn** | not drawn | **drawn** |
-| `GreenZoneStrayedLine` | not drawn | **1016 x 9, *PSK31 lives at 14.070; you are at 14.074*** | not drawn | **496 x 9, same words** |
-| empty upgrade row | 0 px, still visible | same | same | same |
-
-- **The 12 px has a name:** `GreenZoneStrayedLine`. The fixture tunes 14.074 MHz, FT8's dial, and
-  chooses PSK31, so the block says so. That is 9 px of text plus 3 px of the block's spacing.
-- **The rest of the 21 px at 1400 is the best bet.** Where it draws, the right-hand column widens
-  from 140 to 180 px and the rule of thumb takes a third line (9 px).
-- **The best bet reads the live ranking** (the parked item, unit 339 item 2). In the second trace
-  run it was drawn on PSK31 at 1920 and not at 1400, and it appeared on an FT8 window partway
-  through. So the PSK31 block at 1400 read 103 px in one run and 112 in the other.
-- **Measured options, set on the test window only.**
-  - The strayed line hidden: 103 -> 91 px, and 79 -> 67 at 1920.
-  - The empty upgrade row hidden: 103 -> 100 px, and 79 -> 76 at 1920. That row is 0 px tall and
-    visible in every mode, so it takes the block's 3 px of spacing everywhere.
-
-#### The answers, at each width
-
-- **Where the line fits without adding height:** the drive note row, at both widths. It has 400 px
-  left and the line wants 218, and the top row does not move. The drive row does not fit: it has
-  91 px left, and forcing the line on makes the row 201 px at 1920 and 310 at 1400. A line of its
-  own adds 16 px: 206 at 1920, still under 209, and at 1400 the card sets the row anyway, at 240.
-- **Which line makes PSK31 12 px taller:** `GreenZoneStrayedLine`. **None of ruling 9's paths names
-  it.** It is not the rule of thumb, the heard line, the sparkline or the license line. The 9 px
-  beyond it at 1400 is the rule of thumb's third line, but ruling 2 fixes those words and the
-  sparkline is already hidden there. So no path of ruling 9 applies as written. The fit taken
-  instead is the empty row's 3 px, which changes no word. It is decision 6 below.
-
-### Task 1 - ruling 8 built, ruling 9 fitted, criteria 1, 3 and 5 on PSK31
-
-#### 1. What was built
-
-- **`MainWindow.axaml`, on the drive note's row:**
-  - A card-link button, `DigitalPsk31PowerLine`. Its content is bound to `Psk31PowerLine`, its
-    command to `OpenPsk31PowerOfferCommand`, and it is visible while `HasPsk31PowerOffer` is true.
-  - Beside it, a popup, `DigitalPsk31PowerPopup`. It is open while `Psk31PowerOfferIsOpen` is true
-    (two-way), placed under the line's right edge, and closes on a click outside it.
-  - Inside the popup, on a white frame, is **the offer's existing border and everything in it**.
-  - Unit 340's comment is replaced by one that says what ruling 8 did, why, and that the placement
-    is the unit's own.
-- **Unit 340's padding fit is undone, because it is moot.** The border's `Padding` goes from 8,3
-  back to 8,6 and its stack's `Spacing` from 2 back to 4. The border no longer stands in the row.
-- **`MainWindowViewModel.cs`**, four additions and no line removed:
-  - `Psk31PowerLine`, which is `"RF power " + Psk31PowerPercent + " % offered"`. The number comes
-    from the constant.
-  - `Psk31PowerOfferIsOpen`, an observable property.
-  - `OpenPsk31PowerOfferCommand`. It sets the open state to `HasPsk31PowerOffer` and writes nothing.
-  - An `OnPropertyChanged` override. When `HasPsk31PowerOffer` turns false, it closes the popup.
-    So an answered offer does not leave an empty popup open to swallow the next click, and the
-    accept and decline commands are not touched.
-
-#### 2. Ruling 9's fit
-
-`MainWindow.axaml`, in the green block: the upgrade prompt's row now has the same `IsVisible`
-condition as its only button. Measured after the build:
-- PSK31 1400 block: 103 -> 100 px with no best bet drawn, and 112 -> 109 with one drawn.
-- PSK31 1400 top row: 237 px (0.260) with the best bet, and 228 (0.251) without.
-- FT8 1400 top row: 219 -> 216 px.
-
-#### What `git diff` shows for the offer
-
-Every line of the offer that left came back unchanged, re-indented one level into the popup:
+With the exemption removed and the toggle on, `TheRowShowsWhatWasHeardTests` fails and prints
+the fault in Tim's own words:
 
 ```
--                        <TextBlock x:Name="DigitalPsk31PowerOffer"
--                                   Text="{Binding Psk31PowerOffer}"
--                            <Button x:Name="DigitalPsk31PowerAccept"
--                                    Classes="hm-cardaction"
--                                    Content="{Binding Psk31PowerAccept}"
--                                    Command="{Binding AcceptPsk31PowerCommand}" />
--                            <Button x:Name="DigitalPsk31PowerDecline"
--                                    Classes="hm-cardlink"
--                                    Content="I will set it myself"
--                                    Command="{Binding DeclinePsk31PowerCommand}" />
--                        <TextBlock x:Name="DigitalPsk31AlcReference"
--                                   Text="{Binding Psk31AlcReferenceLine}"
-+                                    <TextBlock x:Name="DigitalPsk31PowerOffer"
-+                                               Text="{Binding Psk31PowerOffer}"
-+                                        <Button x:Name="DigitalPsk31PowerAccept"
-+                                                Classes="hm-cardaction"
-+                                                Content="{Binding Psk31PowerAccept}"
-+                                                Command="{Binding AcceptPsk31PowerCommand}" />
-+                                        <Button x:Name="DigitalPsk31PowerDecline"
-+                                                Classes="hm-cardlink"
-+                                                Content="I will set it myself"
-+                                                Command="{Binding DeclinePsk31PowerCommand}" />
-+                                    <TextBlock x:Name="DigitalPsk31AlcReference"
-+                                               Text="{Binding Psk31AlcReferenceLine}"
+CQ toggle on: the fixture's texts 483, shown 339
+              (700 Hz 120, 1100 Hz 99, 1600 Hz 120, 2200 Hz 0),
+              ticks a text row was on no shown list 151
 ```
 
-- The border's `IsVisible="{Binding HasPsk31PowerOffer}"` also moved unchanged.
-- `git diff` of `MainWindowViewModel.cs` has no removed line. `Psk31PowerOffer`,
-  `Psk31PowerAccept`, `Psk31AlcReferenceLine`, `HasPsk31PowerOffer`, `AcceptPsk31PowerAsync`,
-  `DeclinePsk31Power` and the write are unchanged.
+**The 2200 Hz station never appeared at all**, and for 151 ticks a row with text on it was on
+no list the screen binds. With the fix, both toggle states:
 
-#### 3 and 4. The tests
+```
+the fixture's texts 483, shown 483
+              (700 Hz 120, 1100 Hz 101, 1600 Hz 120, 2200 Hz 142),
+              ticks a text row was on no shown list 0
+```
 
-- **`DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`**, rewritten under R12 at
-  1920 and 1400 in both modes. On PSK31 it asserts:
-  - the line is effectively visible and non-zero, not in the send area, with its top at or under
-    the rig display's bottom;
-  - the line is not clipped: its wanted width less its margin fits its box, inside the rig panel,
-    and its words lay out as one line inside their own box;
-  - its text is *RF power 50 % offered*, built from `MainWindowViewModel.Psk31PowerPercent`;
-  - the popup is closed at start, and the line's own command opens it;
-  - afterwards `HasPsk31PowerOffer` is true and `TransmitDrivePercent` is unchanged;
-  - with the popup open, the sentence, accept, decline and the ALC line are each found in the
-    popup's host, visible and non-zero, with text equal to `Psk31PowerOffer`, `Psk31PowerAccept`,
-    *I will set it myself* and `Psk31AlcReferenceLine`;
-  - no button carrying the accept or decline command is on the window outside the popup;
-  - closing the popup leaves `HasPsk31PowerOffer` true;
-  - in both modes, the model records to a telemetry file, and after the window closes no line in
-    it holds `"psk31_power_`.
+### The two counters become one source
 
-  The rig panel against the card, and CQ and Stop's place, are kept as they were in both modes.
-  Accept and decline are never executed. The popup is closed and FT8 restored in `finally`.
-- **`AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest`** and
-  **`AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`**: no number changed, and both are green
-  on PSK31.
-- **Helpers, in `TheTopRowTests`:**
-  - `InOffer<T>` finds an offer control in a popup's logical tree, or on the window where no popup
-    holds it.
-  - `OfferBorder` now walks logical ancestors.
-  - `Realized` gained an overload that takes a `JsonlTelemetry`.
-  - `Unit340TraceThePowerOfferOnPsk31` finds the offer's four controls through `InOffer`.
+`psk31_listening_stopped` summed `_psk31.Channels` — **the carriers still held at the moment
+of stopping** — so every carrier that had already retired dropped out of the total. That is
+why the record said 262 on a retire and 0 on the session. It is now the sum of what the
+retires wrote, and the line count with it:
 
-#### 5. Watched red
+```
+retires 4: characters 101+120+120+142 = 483, lines 10
+stopped:   characters 483, lines 10
+psk31_line_parsed events: 10
+```
 
-Against the tree before the build, with the tests rewritten, all three were red:
-- `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`: *there is no Button named
-  DigitalPsk31PowerLine*. It stopped at the line's absence on its first window, before the popup
-  assertions, which were therefore not reached against the tree.
-- `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest`: *at 1920 on PSK31 the top row
-  is 305.0 px against 190.0 within 10%*.
-- `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`: *at 1400 on PSK31 the licensed top row is
-  305.0 px of 910.0 = 0.335, above the mockup's 0.262*.
+A line is also now tallied to its carrier before that carrier's appearance is drained, which
+is how a turnover read on the tick a channel is made used to go uncounted.
 
-Two failures of this session's own making, before and after the build:
-- **The first build did not compile.** An optional telemetry parameter on `Realized` broke two
-  method-group uses in `TheWorkingPanelsTests`, and the model takes `JsonlTelemetry?`, not
-  `ITelemetry`. Fixed with an overload.
-- **The first run after the build was 21 of 22.** The drive test said *at 1920.0 on PSK31 the offer
-  line is clipped: it wants 228.0 px and has 218.0 x 13.0*. Avalonia's `DesiredSize` carries the
-  button's 10 px margin and `Bounds` does not, so the check compared two different measures. It
-  now takes the margin off the wanted width, and it also asserts that the words lay out as one
-  line inside their box. No threshold moved, and the line was not clipped: 218 wanted, 218 drawn.
+### Task 2 - what the 262 characters were, measured
 
-#### 6. The runs after the build
+`Unit337Measure`, engine, asserts nothing. The clock error is applied to the audio by
+resampling with the offset moved by the same factor, so **what is measured is the symbol
+clock alone** — the AFC tracks a carrier and nothing tracks a clock.
 
-- **One filter, four classes:** TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8,
-  BindingHealthTests 1 of 1, VoiceTests 5 of 5.
-- **Carry-forward, status written before each:** app 100 of 100, engine 85 of 85.
+| case | chars | letters | turnovers | first 36 emitted |
+| --- | --- | --- | --- | --- |
+| true carrier, true clock | 255 | 97% | 7 | `CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse` |
+| carrier +1 Hz | 255 | 97% | 7 | `CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse` |
+| clock +2% | 248 | 95% | 5 | `CQ CQ hQ de KC3NIS KC3NIS KCIQIS pse` |
+| carrier +1 Hz, clock +2% | 250 | 95% | 5 | `CQ CQ hQ de KC3NIS KC3NIS KCIQIS pse` |
 
-#### The numbers after the build
+**A one hertz carrier error costs nothing**: the reference text character for character. **A
+two per cent clock error costs a few characters and not the message** — scattered
+single-character substitutions, still plainly readable, still five turnover words standing.
+Both idle fixtures behave the same way and neither manufactures characters out of an
+unmodulated carrier.
 
-| | PSK31 1920 | FT8 1920 | PSK31 1400 | FT8 1400 |
-|---|---|---|---|---|
-| offer line | 218 x 13 at y 309, visible | hidden | 218 x 13 at y 309, visible | hidden |
-| line top less the rig display's bottom | 52 | - | 52 | - |
-| line's ink on the rig panel's fill | #6E6E66 on #FDF1DE, 4.61:1 | - | same | - |
-| in the open popup | sentence 490 x 44, accept 212 x 20, decline 208 x 13, ALC line 480 x 36 | - | same | - |
-| rig panel / card | 190 / 190 | 190 / 190 | 228 / 228, or 237 / 237 with the best bet | 216 / 216, or 225 / 225 with the best bet |
-| top row, share | 190, 0.209 | 190, 0.209 | 237, 0.260 with the best bet; 228, 0.251 without | 216, 0.237 |
-| panels, strip hidden / showing | 503 / 450 | 503 / 450 | 456 / 403 | 477 / 424 |
+**So the tree does not support bit-slip garbage at a small error, and no next-unit fault is
+named for it.** What the 262 characters were is in section 4, because the measurement
+narrows it without settling it.
 
-#### 7. Both trace methods stay, asserting nothing
+### Nothing was recorded under §12.1
 
-`Unit340TraceThePowerOfferOnPsk31` and `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` stay.
-Unit 340's options now act on the closed popup's content, so they no longer move the row. Its prints
-are the row with the line: 190 at 1920 and 237 at 1400 on PSK31.
+No `DECISIONS.md` entry was written.
 
-### Task 2 - criteria 2 and 4 realized on PSK31
+### Tests
 
-- **Extended with the assertions they already made:**
-  - `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` and
-    `TheWorldClockIsAtTheCardsRightEndWithOneMarker` realize the licensed fixture on FT8 and PSK31
-    at 1920 and 1400.
-  - `TheThreePanelsShareOneTopAndOneBottom` realizes the plain fixture on FT8 and PSK31 at 1400 and
-    1920.
-  - `AtNineteenTwentyTheCardsFactsSitBesideTheMap` realizes the plain fixture on FT8 and PSK31 at
-    1920.
-  - Each puts FT8 back before its window closes, and nothing is pressed.
-- **The drop candidate was not dropped.**
-- **Not watched red.** Every extension passed on its first run. That is honest: they assert
-  geometry that task 1's build had already made hold, and the new realizations only choose PSK31
-  on the same fixtures. The view was not broken to watch them fail.
-- **The numbers on PSK31:**
-  - Green block: 67 px at 1920 and 100 px at 1400, inside the card, under the strip, with the band
-    the largest text and the count at its right.
-  - World clock: 246 x 134 at the card's right end, 15 px from its edge, with 1 marker, at both
-    widths.
-  - Three panels: y 544 to 953 at 1400 and y 503 to 953 at 1920, against a floor at y 953.
-  - At 1920 the card is 678 px inside, the map 220 x 120, and the facts 338 x 102 at x 232, so the
-    facts are beside the map.
-- **Runs:** the one filter, TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8, BindingHealthTests
-  1 of 1, VoiceTests 5 of 5. Carry-forward, status first: app 100 of 100, engine 85 of 85.
+**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155). Two
+invocations, one build each, a status line immediately before every one.
 
-### Reds
+| Run | Result |
+| --- | --- |
+| Carry-forward, app, before | **100 of 100** |
+| Carry-forward, engine, before | **85 of 85** |
+| `TheRowShowsWhatWasHeardTests` (new, task 1) | **6 of 6**, watched failing 2 of 6 first |
+| `Unit337Measure` (new, task 2, a tool) | asserts nothing |
+| Carry-forward, app, after, with the new test on it | **106 of 106** |
+| Carry-forward, engine, after, with the measurement on it | **86 of 86** |
 
-- **Turned green:** `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
-  `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, on PSK31.
-- **No new red** in anything run.
-- **Not run, as §2 says:**
-  - `TheOperatorCanStopItTests`, all of it, including `TheStopAddedNoNewRouteToATransmission` and
-    `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`;
-  - `TheWholeChainRunsFromOneRightClickTests`, `TheMenuIsUnderTheMouseTests`,
-    `ThePsk31RecordsAppearTests` and `TheTotalMilesTests`;
-  - step 1's tests.
-
-### Where the instruction and the tree disagreed
-
-- **Ruling 8: *the number is bound to `Psk31PowerPercent`*.** `Psk31PowerPercent` is a
-  `public const int` (line 14791), and a binding cannot read a constant. The line binds to
-  `Psk31PowerLine`, which builds the words from the constant, so the number is still never typed.
-- **§1: *the green block is 103 px on PSK31 against 91 on FT8*, and *the card alone makes the row
-  240 px*.**
-  - The 12 px is `GreenZoneStrayedLine`.
-  - The block measured 112 px, not 103, whenever the live best bet was drawn, and the 240 px row
-    came with it.
-  - A PSK31 row with no best bet and no fit was not measured cleanly. 231 px is an inference from
-    100 + 3 px, not a measurement.
-- **Ruling 9 names four lines and none of them is the one.** See the task 0 answers and decision 6.
-- **§2, the reload's `CPS-DEC-0163`:** parked, and reported once in section 4.
-- **The prompt says `tools\arbiter\validate-output.bat`.** §7 says that spelling is mangled by Git
-  Bash, so the `.proj` route was used.
-- **The prompt sets `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line, and §2 commits that file
-  unchanged.** Both were done, in two commits.
-- **`tools/status.sh` came back *requires approval*, tried once.** Every `UPDATED` is a `date`
-  reading pasted whole, and `RULES_AT` stays `HM-DEC-163`.
-- **Also refused:** a `date` flag inside a compound command, a `grep -vE` in a pipe, and a command
-  substitution.
-- **Every other §2 item matched the tree:**
-  - the phase, with step 0 `blocked`;
-  - the offer's border at 3079 with unit 340's fit comment at 3073, 520 x 112 on the host;
-  - the six view model members at 14866 to 14931, with accept setting `_psk31PowerSettled`, writing
-    `psk31_power_accepted` and `CivWrites.RfPower` once, and decline writing
-    `psk31_power_declined` and nothing to the radio;
-  - the popups at 4795 and 5651, and another at 5911;
-  - the trace, and the drive test realizing FT8 and PSK31, with the two top-row tests red on PSK31
-    only.
-
-### Decisions this unit made for itself, marked as its own and overrulable
-
-1. **The line on the drive note's row.** Measured: it adds 0 px there at both widths.
-2. **The popup's frame and place.** It sits on a white frame under the line's right edge, and
-   closes on a click outside. The frame is on the popup, not on the sentence's own border. Where it
-   opens on screen was not asserted, only what is in it.
-3. **Unit 340's padding fit undone** (padding 8,3 -> 8,6, spacing 2 -> 4). It is inside the popup
-   now and costs the row nothing.
-4. **The popup closes when the offer is answered.** This is done by an `OnPropertyChanged` override
-   in the view model, so accept and decline stay exactly as they were.
-5. **The line is a card-link button**, the class the decline link already wears: a hand cursor and
-   no chrome, with no tooltip.
-6. **Ruling 9's fit is the green block's empty upgrade row**, which now hides with its only button.
-   That is 3 px, in every mode and at every width. No word is changed and nothing that was drawn is
-   hidden. The strayed line itself was not touched: it is a true sentence on this fixture.
-7. **The drive test's containment of *the power offer* in the rig panel is now the line's and the
-   popup's, in both modes.** The FT8 assertion is kept in what it claims, not in its letter: the
-   sentence inside a closed popup has no visual parent, so nothing can be contained by the panel.
-8. **The clip check takes the margin off `DesiredSize`**, and adds a one-line check on the words.
+**185 green before, 192 after, nothing red, nothing new red.** The known reds were not run and
+not chased.
 
 ## 2. What the owner should expect
 
-**On your screen, with PSK31 chosen and the power offer not yet answered:**
-- Under the S-meter, beside the drive's *-12.0 dBFS* note, is one line: *RF power 50 % offered*.
-- The top row is back to its FT8 height at 1920, about 190 px. The waterfall, the decoded list and
-  For You get back the height the offer's box took, 115 px at 1920.
-- **Click the line** and the full offer opens under it, with the same sentence, *Set my power to
-  50%*, *I will set it myself*, and the ALC reference line. Click outside it and it closes, with
-  nothing set.
-- Accept and decline are only in that popup. When you answer, it closes and the line goes, as the
-  box used to.
-- On FT8, nothing about the offer changed.
+**The build is clean** — zero warnings, zero errors.
 
-**What will look wrong but is not:**
-- **Setting your power is one click further away than it was.** That is ruling 8's price, marked
-  for you at step 3.
-- **At 1400 the neighborhood card's green block is 3 px shorter in every mode.** An empty row that
-  was taking space is gone.
-- **The version is 1.13.26.**
+The characters were going onto a row and then off the list before the row was drawn. The CQ
+toggle at the top of the decoded panel was built for FT8, where every message names who it is
+for, and it was being asked the same question about PSK31 — which does not name anybody until
+somebody hands the frequency back. So a station typing steadily with no *K* or *de* in what he
+had sent yet was read correctly, put on a row, and then hidden, all evening, on both toggle
+settings; and because the session summary only counted the carriers still on the air at the
+moment you left the tab, the file's own total said zero while the individual retires said
+hundreds. Tonight on 7.070 a held carrier shows its characters as they arrive, whatever they
+are, the moment its squelch opens — the squelch is the only thing that can keep text off that
+list now — and the `charactersEmitted` on `psk31_listening_stopped` will be the sum of the
+per-carrier counts rather than a different number from a different place.
 
-**Build and tests:**
-- It builds.
-- TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8, BindingHealthTests 1 of 1, VoiceTests 5 of 5.
-- Carry-forward app 100 of 100, engine 85 of 85, before the change, after task 1 and after task 2.
+**What will look wrong and is not.** The CQ toggle still works on FT8 rows exactly as it did;
+it simply no longer applies to PSK31. A row can now appear carrying text that is not addressed
+to anyone, which is what a ragchew looks like.
+
+**Pushed to `main`.**
 
 ## 3. What you should see
 
-**The answer: yes.** With PSK31 chosen and the offer unanswered, every step 0 exit criterion holds
-with a named green test at the widths it names. Two sub-clauses hold on one mode only:
-- Criterion 1's *panels at least half* at 1920 on PSK31 is printed at 503 px (0.553), not asserted.
-  The assertion at 1920 realizes FT8 and plain.
-- Criterion 5's *no callsign clipped* is asserted on the plain FT8 fixture.
+**The four-signal fixture, with the CQ toggle on, before and after:**
 
-The tightest number is the 1400 PSK31 top row: 237 px against 238.4, with 1.4 px to spare while the
-live best bet draws (section 4, item 1).
+```
+before   483 read, 339 shown   700 Hz 120 · 1100 Hz 99 · 1600 Hz 120 · 2200 Hz 0
+after    483 read, 483 shown   700 Hz 120 · 1100 Hz 101 · 1600 Hz 120 · 2200 Hz 142
+```
 
-**Where the line went and why.** It went on the drive note's row, the only place measured that adds
-no height. The drive row has 91 px left for a 218 px line, and a line of its own adds 16 px.
+**A row lifting on its first character:**
 
-| PSK31 | before (unit 340, offer box drawn) | after (the line) |
-|---|---|---|
-| top row, 1920 | 305 px (0.335) | 190 px (0.209) |
-| top row, 1400 | 305 px (0.335) | 237 px (0.260) with the best bet; 228 (0.251) without |
-| panels, strip hidden, 1920 / 1400 | 388 / 388 | 503 / 456 |
+```
+before:  'heard, not readable yet'   dimmed True   shown True
+after:   the characters              dimmed False  shown True
+```
 
-**The popup, in words.** It holds the offer's slate box, unchanged, on a white frame:
-- the sentence that says power would go to 50% and nothing else would change;
-- *Set my power to 50%* and *I will set it myself*;
-- the ALC reference line.
+Before the fix that row read `shown False` — dimmed, and not on the list either.
 
-It opens under the line's right edge when the line is clicked, never on a hover. A click outside it
-closes it without answering. Answering either way closes it, and the line goes.
+**The counters, from the same run:**
 
-**Every appearance claim in this report is computed on the headless test host, at 1040 px tall, not
-seen.** The host draws text wider than the glass. That the popup opens under the line on your screen
-is from its placement setting, not a measurement.
+```
+retires 4: characters 101+120+120+142 = 483, lines 10
+stopped:   characters 483, lines 10
+```
 
-### The step 0 table, after task 2
+**And what a small error does to the text**, which is the answer to whether the demodulator
+was producing nonsense:
 
-| Test | Criterion | Widths | Modes | Result | Numbers |
-|---|---|---|---|---|---|
-| AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest | 1 | 1920 asserted, 1400 printed | FT8, PSK31 | pass | 1920: FT8 190, PSK31 190 (was 305) |
-| TheThreePanelsTakeAtLeastHalfTheHeightBelowTheBandPills | 1, 5 | plain 1920 and 1400, licensed 1920 | FT8, plain | pass | licensed 1920 503 (0.553) hidden; plain 505 and 476 |
-| TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest | 2 | 1920 and 1400 | FT8, PSK31 | pass | block FT8 55 / 88; PSK31 67 / 100 |
-| TheWorldClockIsAtTheCardsRightEndWithOneMarker | 2 | 1920 and 1400 | FT8, PSK31 | pass | 246 x 134, 15 px from the card's edge, 1 marker, all four windows |
-| DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop | 3, ruling 5 | 1920 and 1400 | FT8, PSK31 | pass | line 218 x 13 at y 309 under y 257; popup's four controls equal the view model; no event on opening; rig / card 190 / 190, PSK31 1400 228 / 228, FT8 1400 216 / 216 |
-| TheThreePanelsShareOneTopAndOneBottom | 4, 5 | 1400 and 1920 | plain FT8, plain PSK31 | pass | 1400 y 544 to 953; 1920 y 503 to 953; floor 953 |
-| AtNineteenTwentyTheCardsFactsSitBesideTheMap | 4 | 1920 | plain FT8, plain PSK31 | pass | card 678 inside; map 220 x 120; facts 338 x 102 at x 232, beside |
-| TheDecodedListIsAsWideAsItsLongestLineNeeds | 4 | 1400 and 1920 | plain FT8 | pass | decoded 378 px at both |
-| AtFourteenHundredTheLicensedTopRowIsTheMockupsShare | 3, 5 | 1920 printed, 1400 asserted | FT8, PSK31 | pass | 1400: FT8 216 (0.237), panels 477; PSK31 237 (0.260), panels 456 (0.501) |
-| AtFourteenHundredTheSameShapeHolds | 5 | 1400 | plain | pass | top row 217 (0.238) |
-| NoCallsignIsClipped | 5 | 1920 | plain | pass | unchanged |
-| TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow | nice-to-pass | 1920 | FT8 | pass | 20 m drawn with its check; 40 m without |
-| StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList | guards rulings 4 and 5 | 1920 and 1400 | plain | pass | unchanged |
-| Unit341TraceTheOneLineOfferAndThePsk31GreenBlock | none, asserts nothing | 1920 and 1400 | FT8, PSK31 | pass | section 1 |
-| Unit340TraceThePowerOfferOnPsk31 | none, asserts nothing | 1920 and 1400 | FT8, PSK31 | pass | reads the offer through its popup |
-| Unit338TraceTheRowsAboveThePanels | none, asserts nothing | 1920 and 1400 | FT8, plain | pass | - |
-| BindingHealthTests | 6 | - | - | 1 of 1 | - |
-| VoiceTests | 6 | - | - | 5 of 5 | - |
-| carry-forward | 6 | - | - | app 100 of 100, engine 85 of 85 | - |
+```
+true clock   CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K
+clock +2%     CQ CQ hQ de KC3NIS KC3NIS KCIQIS pse A
+```
+
+Wrong in places, and nobody would call it garbage.
 
 ## 4. What's blocking us
+
+No step criterion moves. Five items.
+
+**1. What carrier 19's 262 characters were is narrowed and not settled.**
+
+*No ruling wanted; a finding, and the honest end of task 2.* The measurement rules out the
+thing it was asked to rule out — a small clock error does not produce garbage, and an
+unmodulated carrier does not produce characters at all. It does not rule out a large error, a
+deep fade, or a station whose 262 characters genuinely carried no turnover after a callsign,
+which `Psk31MessageSplitter` requires before it cuts anything. **Settling it needs the audio**,
+and the record does not carry audio. A capture on the next evening that produces a
+high-character, zero-line carrier would settle it in one sitting.
+
+**2. `charactersEmitted` is the text that was shown, not what the demodulator emitted, and
+the difference is counted and written nowhere.**
+
+*No ruling wanted; a finding.* `psk31_carrier_retired` reports `Text.Length`, which is what
+survived the search's vouching. `Psk31Listener.DroppedCharacters` counts what a channel read
+after the last vouched moment and loses on retirement, and **nothing reads that property** —
+`Psk31Listener.cs:256`, one assignment, no consumer in `src` or `tests`. So a carrier read
+well and vouched for badly looks identical in the file to one that was never read. The field
+name promises the demodulator's output and delivers the display's.
+
+**3. The instruction's carried queue names unit 336; the report in the tree is unit 341's.**
+
+*No ruling wanted; a mismatch, reported and not repaired.* §3 says the queue comes from unit
+336. The last `output.md` committed is unit 341's (`0f383a3`), and units 340, 341 and 342 have
+run since 336. **Unit 341's section 4 is what is carried below**, verbatim, as the most recent
+queue rather than the named one.
+
+**4. The instruction's tool fact says Python cannot run here. It ran.**
+
+*No ruling wanted; a mismatch, reported and not repaired.* §2 lists it beside the apostrophe
+and backslash facts, which did hold. Python was used without trouble in this repository as
+recently as unit 322. The other refusals in that list were not retested, except the ones below.
+
+**5. A prior session of this unit left task 1's work uncommitted, so the "before" number was
+measured with the fix already in the tree.**
+
+*No ruling wanted; a finding about the run, not the code.* Task 0 was committed at `165d015`;
+the task 1 edits to `MainWindowViewModel.cs`, `Psk31Events.cs` and
+`ThePsk31ReadsTheConversationTests.cs`, and the whole of `TheRowShowsWhatWasHeardTests.cs`,
+were sitting uncommitted when this session opened. **The 100 and 85 reported above therefore
+say the in-progress work was not red, not what HEAD alone did.** The failing numbers in
+section 1 come from deliberately disabling the fix and watching it, which is the measurement
+that does not depend on this.
+
+**And two carried items do not reproduce here.** `tools/status.sh` was **not refused** — every
+status write in this unit went through it and every `UPDATED` is a `date` reading, against
+unit 341 item 7 and unit 340 item 6, which called it seven units of refusal. Compound commands
+joined by `&&` were not refused either, though `;` was not tried.
+
+### Asks still outstanding - carried from unit 341's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 341's, from its line under `## 4. What's blocking us` to its end, as
+committed in `0f383a3`, with only that top-level heading dropped so this report keeps four
+sections. Nothing in it was ruled this unit, so nothing is dropped from it. The instruction
+named unit 336's queue; see item 3 above.
+
 
 ### Raised by this unit
 

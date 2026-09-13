@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests"
 
@@ -109,3 +109,15 @@ not chased:
     TheAchievementsScreenTests.TheWindowDrawsEverySixRows
     TheFitGuardAsksAboutTheGridTheSendIsOnTests  (ENGINE project, not app)
     unit 320's item 46
+
+WHAT UNIT 337 ADDED. TheRowShowsWhatWasHeardTests, on the app invocation. It
+guards the thing the operator reported on 2026-09-12: a PSK31 carrier whose
+demodulator emitted 262 characters, with a row and no line on the screen. It
+asserts that every character a demodulator emits is on a shown row on both
+settings of the CQ toggle, that a dimmed row lifts on its first character, that
+the parser reads the text the row shows, and that the stopped event's totals are
+the sum of the retires. App 100 green before and 106 after.
+
+Unit337Measure is deliberately NOT on the list. It asserts nothing - it prints
+what the demodulator emits under a small carrier and clock error - and a name
+that cannot fail teaches nothing by being run.
