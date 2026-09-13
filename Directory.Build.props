@@ -740,8 +740,15 @@
     PSK31 green block fitted at 1400, and criteria 2 and 4 realized on PSK31 (R26, the arbiter's
     rulings 8 to 10). Screen only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.26 -> 1.13.27, UNIT 342 TASK 0. A PATCH, STEP 1 OPENS: the achievements category pages
+    fitted to assets/category-page-countries.png - the earned card's map across the card with the
+    crop to the two stations asserted, the band line's gap and the next card's words where true,
+    the back control as a link, and a card's map opening in a popup (R22, the arbiter's rulings 11
+    to 16). Screen only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.26</Version>
+    <Version>1.13.27</Version>
   </PropertyGroup>
 
   <!--

@@ -1,12 +1,16 @@
-# Work instruction 341 - step 0, the power offer as the mockup's one line
+# Work instruction 342 - step 1, the category pages fitted to their mockup
 
-Step 0 of `PHASE_PLAN.md`, **fifth unit on it**. Units 337 and 338 built the layout. Unit 339 put a
-named test behind every criterion. Unit 340 drew the PSK31 power offer and measured it: the top row
-goes to 305 px while the offer shows. No arrangement inside the rig column brings that back, and the
-unit asked for a ruling. **The ruling that held it was the arbiter's own ruling 7, not Tim's. This
-instruction withdraws it and rules the shape instead.** Following Tim's mockup and §R11, the offer
-under the S-meter is one line. The full offer opens from that line, with its words unchanged.
-**Three tasks, 0 to 2.**
+Step 1 of `PHASE_PLAN.md`, **first unit on it**. Step 0 is done on evidence: the state reader read
+unit 341's report and answered `done`. Every must-pass has a named green test in FT8 and PSK31 at the
+widths it names. **Most of step 1 already exists.** Unit 335 built the trading cards in the last
+phase, and `TheCategoryPagesAreTradingCardsTests` went 6 of 6 in unit 340. Units 339 and 340 measured
+what is still missing against `assets/category-page-countries.png`:
+- the earned card's map is 170 px tall and left-aligned, where the mockup spans the card;
+- *cropped to the two stations* is printed, not asserted;
+- two of the mockup's strings are absent;
+- nothing is behind the nice-to-pass.
+
+**This unit closes those gaps.** It does not rebuild the pages. **Four tasks, 0 to 3.**
 
 ---
 
@@ -27,56 +31,61 @@ else.** The refusal text: *This is not Hamlet. Nothing was changed.*
 
 ## 1. Why this unit exists
 
-**The number: with the PSK31 power offer drawn, the top row is 305 px, against 209 at 1920 (96 px
-over) and 238 at 1400 (67 px over). The panels are 388 px against 455.** So criteria 1 and 5 are red on
-PSK31, and the state reader answered `blocked`:
+**The number: the earned card's map is a fixed 170 px tall and left-aligned.** Its drawn width was
+never measured. In the mockup, the map runs the card's full inner width at about 3 to 1. Unit 340
+printed one card's map frame at 175.1 by 95.3 and asserted nothing about the crop.
 
-> With the PSK31 power offer drawn the top row measures 305 px against 209 at 1920 and 0.335 against
-> 0.262 at 1400, so criteria 1 and 5 are red, and the unit shows that no layout change inside the rig
-> column fixes this without changing the offer's words, which ruling 7 forbids, so a ruling on
-> section 4 item 1 is needed first.
+**What the plan, the tree and the last three reports say, read by the arbiter on 2026-09-12:**
 
-**What the tree and the plan say, read by the arbiter on 2026-09-12:**
+- **Step 0 is done.** The state reader's verdict on unit 341 (`.run-unit\state-verdict.json`):
+  > Every must pass criterion has a named passing test with measured numbers in both modes,
+  > including a 190 px top row at 1920 and 237 px against 238.4 at 1400 on PSK31 ... though the 1400
+  > PSK31 row clears by only 1.4 px and depends on the live best bet.
 
-- **The height budget does not hold a 112 px offer anywhere on the main window at 1040 px tall.**
-  Below the pills there are 910 px. The top row gets at most 209 and the panels at least 455. On FT8
-  the panels have 48 px to spare (503). A block 112 px tall costs the panels that height wherever it
-  is drawn: in the rig column (option d), beside CQ (option c), or as a strip above the panels. The
-  one arrangement that avoids the cost is one that is not in the layout, which is a popup.
-- **`assets/main-screen-mockup.png`, Tim's approved picture, draws the offer as one line** under the
-  S-meter: *Transmit drive 30 % · RF power 50 % offered*.
-- **§R11 (Tim, 2026-09-11)** says RF power for PSK31 *defaults to half and is offered as a percentage
-  beside the drive, never written silently*.
-- **HM-DEC-084's tier two**: power *is offered rather than simply done*. The code's own comment on
-  `Psk31PowerOffer` says the offer *says what would change and what would not*, and that it says so
-  before the press that writes.
-- **The offer today is one `Border` in `RigDriveAndPower`** (`MainWindow.axaml` near line 3079). It
-  holds `DigitalPsk31PowerOffer` (195 characters, 5 lines on the host), `DigitalPsk31PowerAccept`,
-  `DigitalPsk31PowerDecline` and `DigitalPsk31AlcReference` (4 lines). The border is 520 x 112 after
-  unit 340's fit.
-- **A second, smaller miss that is not the offer:** on PSK31 at 1400 the neighborhood card alone
-  makes the row 240 px (0.264), 2 px over 0.262. The green block is 103 px on PSK31 against 91 on
-  FT8. Which line adds the 12 px was not read (unit 340 item 2).
-- **Criteria 2 and 4 were never realized on PSK31** (unit 340 section 3's table). If the evidence
-  is to close step 0 in both modes the offer draws in, they need to be.
+  That meets step 1's entry clause *step 0 done*. The other entry clause,
+  `TheAchievementsPageClicksInTests` green, is checked first, in task 0.
+- **`PHASE_PLAN.md` step 1 delivers R22 *as `assets/category-page-countries.png`*.** R22's content was
+  judged done in the last phase (unit 335). What it has never been held to is the picture.
+- **The card template** (`AchievementsWindow.axaml`, near lines 372 to 588): the map is
+  `<ctl:Ft8GlobeControl Opened="True" Height="170" Plot="{Binding Globe}" />`. It sits inside a
+  `Border` with `HorizontalAlignment="Left"`. The no-map list border is also `Height="170"`. Cards
+  sit in a `UniformGrid Columns="2"`. The window is `Width="1040" Height="720"` in markup.
+- **The picture, read by eye and approximate (not measured with a tool):**
+  - **Earned card:** a map about 596 x 195 inside a card about 668 wide, spanning the card's inner
+    width. Under it, the distance large on the left, with band and mode over the date beside it.
+  - **Band line:** *one card per DXCC entity · 11 worked · 80 pts · Bronze · 14 to Silver*, with
+    *11 of 25 to Silver* over the bar.
+  - **Next card:** the wants line adds *On the CQ list they carry the green quill.* Its panel is
+    headed *calling CQ right now, unworked:*.
+  - **Back:** a plain link, *‹ All achievements*.
+- **Unit 339's gap table** (its section 3, commit `991223a`), in size order:
+  1. the map popup (nice-to-pass), which has nothing behind it;
+  2. the map at the card's width;
+  3. the mockup's strings. *14 to Silver* is dropped where a bar draws, which was unit 335's choice.
+     The quill sentence is absent. The heading says the time the list was read, not *right now*,
+     which was unit 335's choice because the window is modal.
+- **Unit 340's item 5:** *a path map cropped to the two stations* is printed and not asserted.
+  `achievement_category_opened` and each continent opening to its countries are asserted in
+  `TheAchievementsPageClicksInTests`, not in the trading-card class.
 
-**Every figure above comes from unit 340's report, from the source and from the picture. The arbiter
-ran none of it.**
+**Every figure above comes from the reports, the markup and the picture. The arbiter ran none of it.**
 
 ```
-PHASE GOAL: The screen, done right - the main window as the approved mockup,
-            one short top row and the working panels given the height; then
-            the achievements category pages as trading cards; then what the
-            last phase left; then Tim at his window says it passed.
-UNIT GOAL:  The PSK31 power offer drawn as the mockup's one line under the
-            S-meter, opening the full offer with its words, buttons and ALC
-            line unchanged in a popup, so the top row holds 190 px at 1920
-            and 0.262 at 1400 while it shows; the PSK31 green block's 2 px at
-            1400 found and fitted; criteria 2 and 4 realized on PSK31.
-ADVANCES:   step 0, must-pass 1 and 5 on PSK31 (red today at 305 px) and
-            must-pass 3 with the offer in its new shape, in task 1;
-            must-pass 2 and 4 realized on PSK31, in task 2. Task 2's
-            criterion 4 half is the drop candidate.
+PHASE GOAL: The screen, done right - the main window as the approved mockup
+            (step 0, done); every achievements category page as trading cards
+            as the approved Countries picture draws them; then what the last
+            phase left; then Tim at his window says it passed.
+UNIT GOAL:  The earned card's map across the card as the mockup draws it, with
+            the crop to the two stations asserted, not printed; the band line
+            and the next card carrying the mockup's words where they are true;
+            the back control the mockup's link; and, droppable, a card's map
+            opening in a popup on click - every step 1 criterion then run by
+            name at 1400 and 1920.
+ADVANCES:   step 1 - must-pass 2 (path map cropped to the two stations, now
+            asserted; the map as the picture draws it) in task 1; must-pass 1
+            and 3 (the band line's gap, the next card's words) in task 2;
+            must-pass 5 and 6 re-measured on the new card in tasks 1 and 2;
+            the nice-to-pass (map popup) in task 3, the drop candidate.
 DRIFT:      0
 ```
 
@@ -90,40 +99,41 @@ when the work succeeds anyway.
 
 Check:
 
-- `PHASE_STATUS.md` names *The screen, done right*, with step 0 `blocked`.
-- The offer's `Border` in `RigDriveAndPower` reads as §1 says, with unit 340's fit comment above it
-  (near line 3073 of `MainWindow.axaml`).
-- `Psk31PowerOffer`, `Psk31PowerAccept`, `Psk31AlcReferenceLine`, `HasPsk31PowerOffer`,
-  `AcceptPsk31PowerAsync` and `DeclinePsk31Power` are near lines 14866 to 14931 of
-  `MainWindowViewModel.cs`. Accepting sets `_psk31PowerSettled`, writes `psk31_power_accepted` and
-  writes `CivWrites.RfPower` once. Declining writes `psk31_power_declined` and nothing to the radio.
-- `MainWindow.axaml` already uses `<Popup IsOpen="{Binding ...}">` (the nudge near 4795, the map
-  near 5651), so a popup needs no package.
-- `TheTopRowTests` holds `Unit340TraceThePowerOfferOnPsk31`, and
-  `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` realizes FT8 and PSK31.
-  `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
-  `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` are red on PSK31 only.
+- `PHASE_STATUS.md` names *The screen, done right*. **Step 0 may read `blocked` or `done`**, depending
+  on whether the launcher has written unit 341's verdict yet. The evidence is the state reader's
+  `done`. If the file still says `blocked`, report it in one line and proceed. Do not edit the
+  `STEP:` lines, because they are the launcher's.
+- The card template reads as §1 says: the globe `Height="170"` in a left-aligned border, and the
+  no-map border `Height="170"`. The window is `Width="1040" Height="720"`.
+- `TheCategoryPagesAreTradingCardsTests` holds six methods, among them
+  `EveryEarnedCardIsTheContactThatEarnedIt`, `TheNextCardKnowsWhoIsCalling`,
+  `EveryKindsBandCarriesCountScoreLevelAndABar` and
+  `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`.
+- `TheAchievementsPageClicksInTests` holds eight, among them
+  `ContinentsOpensToSevenAndEachToItsCountries` and
+  `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse`.
+- **The conversation card's map popup:** `Ft8ContactCard.MapIsOpen`, bound near `MainWindow.axaml`
+  line 5645. Unit 339 found that `Ft8GlobeControl` takes no pointer input and that the card template
+  has no `Popup`.
 - **The reload's disagreements:**
-  - **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`.** Units 339 and 340 found this is the
-    reload misreading the file. The id schemes are parked: report it in one line and do not
-    resolve it.
+  - **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`.** Units 339 to 341 found this is the
+    reload misreading the file. The id schemes are parked: report it in one line and do not resolve
+    it.
   - `PROJECT_STATUS.md` `RULES_AT: HM-DEC-163` agrees with `DECISIONS.md`. Keep it unless this unit
     records a decision.
-  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` are uncommitted. They are the
-    launcher's writes. Commit them **unchanged** in task 0's commit with `WORK_INSTRUCTIONS.md`, as
-    units 336 to 340 did. Do not commit `.run-unit\`.
+  - `PHASE_STATUS.md` and `RUN_LEDGER.md` are uncommitted, and `PHASE_OUTCOME.md` will be too if the
+    launcher has appended unit 341. They are the launcher's writes. Commit whichever are modified
+    **unchanged** in task 0's commit with `WORK_INSTRUCTIONS.md`, as units 336 to 341 did. Do not
+    commit `.run-unit\` or `SESSION.lock`.
 
 **Reds expected, older than this unit. Name them and do not chase them:**
 
-- **`AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
-  `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, on PSK31.** These are the reds this unit
-  exists to turn green. They are already red against the tree, so they count as watched red.
-- `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`: two `_armedSend.Arm(` lines.
-- `TheOperatorCanStopItTests.AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`: red alone
-  in unit 340, and a timing matter. Parked. **This unit does not run that class.**
+- `TheOperatorCanStopItTests`: `TheStopAddedNoNewRouteToATransmission` and
+  `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`. **Not run.**
 - `TheWholeChainRunsFromOneRightClickTests` (2), `TheMenuIsUnderTheMouseTests` (8),
   `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`,
-  `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`. Not run.
+  `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`. **Not run.** The
+  small `Views` reds are step 2's.
 
 **If a red turns green or a new red appears, in what you ran, say which.**
 
@@ -135,40 +145,27 @@ Check:
 that work instruction, filtered by exact name, in the foreground, with a stated timeout, and it never
 backgrounds a command and polls for it.* Run the carry-forward list as `docs\carry-forward-tests.txt`'s
 top comment says: two invocations, one build each. **The classes this instruction names may each run
-filtered by class name:** `TheTopRowTests`, `TheWorkingPanelsTests`, `BindingHealthTests` and
-`VoiceTests`, in one filter.
+filtered by class name:** `TheCategoryPagesAreTradingCardsTests`, `TheAchievementsPageClicksInTests`,
+`BindingHealthTests` and `VoiceTests`, in one filter.
 
-**R26, Tim, 2026-09-12 (`PHASE_PLAN.md`), in full:**
+**R22, Tim, 2026-09-12 (`docs/phase-maintenance-run/PHASE_PLAN.md`, standing by `PHASE_PLAN.md` §2),
+in full:**
 
-> - **The top row is one band, about 190 px tall at 1920**, and the working panels below the
->   tabs take the rest of the window. At no window size do the working panels get less than
->   half the height below the band pills.
-> - **The neighborhood card carries three things**: the band strip with the legend and the
->   *you · mode* marker; **the green block** - the band in the largest text, the frequency,
->   mode and *yours to use*, the license line small, the rule-of-thumb line small, and
->   heard-just-now with its count and sparkline; and **the world's clock** at its right end,
->   about 246 px wide, with the operator's dot only.
-> - **The rig display is the same height as the neighborhood card**, and carries under the
->   frequency and S-meter the transmit drive and the RF power offer, so no empty column stands
->   under it.
-> - **The band pills stay where they are** and are not repeated anywhere.
-> - **Below the tabs**: waterfall, decoded text, For You, all the same height, full to the
->   status bar. The decoded list is as wide as its longest line needs and no wider; For You
->   takes the rest, wide enough that the card's facts sit beside its map.
-> - **At 1400**: the same shape; where the card's facts cannot sit beside the map they go under
->   it; no callsign is ever clipped in the decoded list. **No mechanism is prescribed; the unit
->   measures and chooses, marks the choice as its own, and reports the numbers at both
->   widths.**
-
-**§R11, Tim, 2026-09-11 (`docs/phase-psk31-run/PHASE_PLAN.md`), the sentence that bites:** *RF power
-for PSK31 defaults to **half** and is **offered** as a percentage beside the drive, never written
-silently (HM-DEC-084, HM-DEC-074).*
-
-**HM-DEC-084, tier two, transcribed:** *Tier two changes what the operator sounds like and is offered
-rather than simply done: power, keyer speed, break-in and its delay.*
-
-**§R15, Tim, 2026-09-11, the sentence that bites:** *Until an FT8 send has been observed, there is no
-reference and Hamlet reports the reading and judges nothing - it never invents one.*
+> *"So boring."* *"Communicate visually and be appealing. Not white bread boring."* *"I like it, just
+> make sure all the other sub pages are as interesting."* The shape is
+> `assets/category-page-countries.png`: the category's color band and emblem across the top with its
+> count, score, level and a bar to the next level; **each earned card is the contact that earned
+> it** - the entity large, the callsign and grid, a map of the path cropped to the two stations as
+> the conversation card draws it, the distance in large type, band, mode and date, the points; **the
+> next card says what it wants and the one thing Hamlet knows that helps** - who is calling CQ right
+> now from a place that would earn it, with distance, from the CQ list. Per kind: **Countries,
+> States, Grids** the contact that earned it; **Continents** seven badges, each the first contact that
+> opened it, the count of countries worked there since, and the unearned ones naming the continent
+> and who is calling from it now; **Total Miles** a tier is a bar filling toward the next line and
+> the contact that crossed it; **Bands** the first contact on that band and which band is the best
+> bet now for the next; **Modes** the first contact in each mode and where the unearned mode lives
+> and who is there; **Hall of Fame** the contact that earned each first, and the nearest first as
+> next. **Nothing white, nothing empty.** No image assets; vector and the map the app already has.
 
 **`PHASE_PLAN.md` §2 and §6, the lines that bite here:**
 
@@ -177,240 +174,244 @@ reference and Hamlet reports the reading and judges nothing - it never invents o
   takes its own recommendation, marks it author's and overrulable, applies it, and continues.*
 - *A must-pass is missed by a little: ship, report, `partial`, move on. Never loosen a test.*
 - *A string will not fit: shorten and say which, or widen; never clip.*
+- *A fact for a card is missing from the log: show what is there; no dash; a map with no grid is no
+  map.*
 - *Anything touches the radio, a decoder, a parser or the transmit chain: `MOVE: stop`.*
 - *A package is needed: `MOVE: stop`.*
 - *A file must be deleted: empty it, comment it, list it.*
 
-**The arbiter's rulings from work instructions 338 to 340, still in force.** They are the author's,
-marked for Tim and overrulable.
-
-1. **"The working panels" in R26 means the waterfall, decoded text and For You panels themselves.**
-   They take at least 0.5 of the height below the band pills, at 1920 and 1400, at 1040 px tall. This
-   is measured with `DigitalReadinessStrip` hidden and also reported with it showing.
-2. **The rule of thumb is the mockup's own words:** *20 m and up want daylight along the path; 40 m
-   and down want dark.*
-3. **The sparkline may hide at widths where the green block's text column would otherwise wrap.** The
-   count stays at every width (`MainWindow.FitTheHeardCount`).
-4. **The filter chips stay in the mode strip.**
-5. **CQ and Stop stay right of the tabs.** If Tim wants them elsewhere, that is his call, at step 3.
-6. **Criterion 3's power offer is measured on PSK31, the mode that offers it.** It is not added to
-   FT8.
-
-**Ruling 7 of work instruction 340 is withdrawn.** It said the offer was fitted by arrangement only,
-with nothing behind a hover. Unit 340 measured that arrangement cannot hold R26, and the ruling was
-the arbiter's, not Tim's.
+**The arbiter's rulings from work instructions 338 to 341 stand as built.** Rulings 1 to 6 and 8 to
+10 hold the main window, the author's, marked for Tim and overrulable at step 3. This unit touches
+none of them. **Unit 341's eight decisions of its own stand too.** Among them are the one-line offer
+on the drive note's row and the hidden empty upgrade row.
 
 **The arbiter's rulings for this unit.** They are the author's, marked for Tim and overrulable at step
 3.
 
-8. **Under the S-meter, the offer is one line. The full offer opens from it in a popup.**
-   - **The line** shows while `HasPsk31PowerOffer` is true. It uses the mockup's words: *RF power
-     {Psk31PowerPercent} % offered*. The number is bound to `Psk31PowerPercent`, never typed. It
-     sits under the rig display with the drive: on the drive's row, on the drive note's row, or on
-     its own line, whichever the unit measures to hold the row. It looks pressable, and pressing it
-     opens the popup and **writes nothing**.
-   - **The popup** holds the existing offer **unchanged**: `DigitalPsk31PowerOffer` with its words,
-     `DigitalPsk31PowerAccept` and `DigitalPsk31PowerDecline` with their content, commands and
-     bindings, and `DigitalPsk31AlcReference` with its words. **Accept and decline exist only inside
-     the popup**, so the full sentence is on screen at every press that writes. Closing the popup
-     without an answer leaves `HasPsk31PowerOffer` true and writes nothing. The popup opens on a
-     click, never on a hover.
-   - *Why:* this is the only shape measured or reasoned that holds R26's height and still shows
-     every word before the press. §R11 and the mockup both draw the offer as a percentage beside the
-     drive. HM-DEC-084 tier two asks that power be *offered*, and the popup keeps it offered, with
-     what changes and what does not written beside the button. §0.5 holds, because the line carries
-     the information (power, percentage, offered) and the popup carries the detail.
-   - *Not a stop:* nothing in the transmit chain, the write, its tier, `HasPsk31PowerOffer` or the
-     offer's words changes. What the product promises the operator is the same promise: offered,
-     never silent, explained before the press. **What changes is one click more to reach the
-     accept button.** That is marked for Tim at step 3.
-   - *Rejected:*
-     - (a) and (b) from unit 340: they take the sentence or the ALC line off the screen at the
-       press.
-     - (c), the offer beside CQ: it breaks R26's *under the S-meter*, and 112 px beside CQ grows
-       the tab row and costs the panels the same height.
-     - (d), a taller row while unanswered: it misses by 96 px, and the offer returns on every
-       launch.
-     - A hover: HM-DEC-084's words must be on screen at the press, not under a pointer.
-9. **The PSK31 green block's extra 12 px at 1400 is fitted under the rulings already in force.**
-   Task 0 finds the line. If it is the rule of thumb, the heard line or the sparkline, rulings 2 and 3
-   and §6 apply: shorten a string and name it, or hide the sparkline. **If it is the license line, it
-   is not reworded** (it is the regulation's sentence, parked). Then the 2 px ships as a little miss,
-   with its number.
-10. **Telemetry: the popup is not a new stage** (R13). It is a view of an existing offer, and
-    `psk31_power_accepted` and `psk31_power_declined` already record the answer. No event is added.
+11. **The earned card's map spans the card's inner width.** Its height is chosen by the unit and
+    marked as its own. Take it near the picture's proportion (about 3 to 1) from what task 0 measures
+    the control draws at that aspect, and state the number. **The no-map list border takes the same
+    height**, so earned cards in a row line up.
+    - The map stays the conversation card's `Ft8GlobeControl` over the same plot. **No second map
+      and no image asset.**
+    - *Why:* the picture draws it that way, and it is the largest visible gap unit 339 measured.
+12. **"Cropped to the two stations" is asserted as a number.** Task 0 reads the rule by which the
+    popup's path-fitted frame is chosen. Then:
+    - on every earned card with a map, both stations lie inside the drawn frame;
+    - the frame is no larger than the path's bounding box widened by the margin that rule uses, and
+      the test states that margin;
+    - if the rule has no fixed margin, the unit states the bound it asserts from the measured cards
+      and marks it as its own.
+
+    **A bound chosen so loose that a whole-world frame would pass it is not an assertion.** The test
+    must fail on a frame opened to the whole globe. Show that once, on the test window only.
+13. **The band line carries the gap to the next level where there is one**, as the picture's
+    *· 14 to Silver* does, as well as the words over the bar. Where there is no next level, the line
+    says so as it does now. Unit 335's choice to drop the clause is overruled by the picture.
+14. **The next card's words:**
+    - **The quill sentence goes on only where it is true.** Task 0 reads whether the decoded list's
+      rows actually carry the green quill for a caller who would earn that kind's next card.
+      - Where they do, the wants line carries the picture's *On the CQ list they carry the green
+        quill.*
+      - Where a different mark or none is drawn, say what is true in words of the same length, or
+        leave the sentence off. Name which, per kind.
+
+      §0.0 binds pictures as hard as sentences, and the card must not promise a mark the list does
+      not draw.
+    - **The panel's heading keeps the time the list was read.** It does not say *right now*. The
+      window is modal and the list is read once when it opens, so *right now* would be a guess
+      presented as a reading (§0.0). Unit 335's choice stands. Marked for Tim at step 3.
+15. **The back control is the picture's plain link.** It keeps `BackLabel`'s words, whatever they are
+    on a sub-page, and it keeps its command. Only the chip style goes.
+16. **The nice-to-pass popup:** a card's map opens on click, never on a hover, as the conversation
+    card's does. Reuse that mechanism rather than inventing a second one.
+    - **Telemetry (R13):**
+      - If the conversation card's map popup writes an event, the category card's popup writes that
+        same event.
+      - If it writes none, opening a map is a view and not a new stage, and no event is added.
+      - Say which.
+    - It never covers the back control. A click outside it closes it.
 
 **Standing, transcribed:**
 
 - **§0.0**: *Never present a guess as a decode… This binds pictures as hard as sentences.* Every
   appearance claim is computed, not seen, and says so once.
-- **§0.2**, *transmit safety, ABSOLUTE*: *One operator action, one transmission.* **Tests never execute
-  `AcceptPsk31PowerCommand`, `DeclinePsk31PowerCommand`, CQ or Stop.** A test may open the popup by
-  its line, or by the popup's own open state, and must show that doing so wrote no event and changed
-  no setting.
-- **§R11 / HM-DEC-084** (as the markup's own comment states them): the power offer is *offered, never
-  mirrored and never written silently*, and *pressing nothing changes nothing*.
+- **§0.2**, *transmit safety, ABSOLUTE*: *One operator action, one transmission.* Nothing here
+  transmits. No test presses CQ, Stop or a transmit command.
 - **§0.5**: *every panel is collapsible, and a collapsed panel still carries its summary. Collapsing
   hides detail, never information.*
-- **§0.6**: every ink clears 4.5:1 against its fill, including the new line against the rig display's
-  fill; color is never the only carrier.
-- **R12**: *a session fixes its own tests and never asks the owner to approve it.* The PSK31 half of
-  `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` asserts the old border's place.
-  It is this unit's to rewrite for ruling 8.
-- **R13**: telemetry on every new stage. Ruling 10 says the popup is not one.
+- **§0.6**: every ink clears 4.5:1 against its fill, and color is never the only carrier. The band
+  line's new clause is on the band's own computed ink.
+- **R12**: *a session fixes its own tests and never asks the owner to approve it.*
+- **R13**: telemetry on every new stage. Ruling 16 says when a map popup is one.
 - **R14**: *a test exists to prove an exit criterion.* Extend the tests the criteria need and add no
   others.
 - **R19**: American spelling.
+- **R23**: States from `STATE`, rank names from the points file. Untouched here.
 
 ---
 
 ## 4. Status cadence
 
 Write status before every `dotnet` command and after every task. `tools/status.sh` has been refused
-as *requires approval* in six units. Try it once. If it is refused, take a `date` reading and paste it
-whole. **Never compose a time.** The script hard-codes a stale `RULES_AT`, so do not let it overwrite
-`HM-DEC-163`. The watchdog kills a session only when its process tree has used no CPU for ten minutes.
+as *requires approval* in seven units. Try it once. If it is refused, take a `date` reading and paste
+it whole. **Never compose a time.** The script hard-codes a stale `RULES_AT`, so do not let it
+overwrite `HM-DEC-163`. The watchdog kills a session only when its process tree has used no CPU for
+ten minutes.
 
 ---
 
 ## 5. The tasks
 
-### Task 0 - the trace: where the line fits, and which line makes the green block taller
+### Task 0 - the trace: the page against its picture, before anything is built
 
 Measure before anything is built. **Say what you find rather than confirming §1.**
 
 1. **Commit the launcher's root files unchanged** (§2) with `WORK_INSTRUCTIONS.md` and a patch bump,
-   as `chore(unit341): step 0, the power offer as one line - the trace before a line is built`. Set
-   `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line to `341 - step 0, the power offer as one line`. Run the
-   carry-forward list, status first.
-2. **Add `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` to `TheTopRowTests`.** It asserts nothing
-   and presses nothing. It realizes the licensed fixture on PSK31 and on FT8, at 1920 and 1400, and
-   prints:
-   - **the rig column's rows:** the rig display, the drive row with its three parts and their right
-     edge, and the drive note row with its right edge, all against the 520 px column;
-   - **the room for the line:** the px left on the drive row and on the note row, and the height the
-     rig column has spare under the card at each width. Measure the width the line *RF power 50 %
-     offered* needs on the host, set on the test window only, never in markup.
-   - **the green block, line by line:** each line's text, width, height and line count on PSK31 against
-     FT8, so the 12 px has a name;
-   - the top row and the panels, readiness strip hidden and showing, as unit 340's trace does.
-3. **Answer from the numbers, at each width:**
-   - Where does the line fit without adding height: the drive row, the note row, or neither? If
-     neither, how many px does its own line add, and does the row still hold 209 at 1920 and 238 at
-     1400?
-   - Which green block line makes PSK31 12 px taller, and which of ruling 9's paths applies?
+   as `chore(unit342): step 1, the category pages fitted to their mockup - the trace before a card is
+   changed`. Set `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line to `342 - step 1, the category pages
+   fitted to their mockup`. Run the carry-forward list, status first.
+2. **Step 1's entry check:** run `TheAchievementsPageClicksInTests` by class, then
+   `TheCategoryPagesAreTradingCardsTests` by class. Give each as *n of n*, with any failure line.
+   **If the entry check is red, report it and stop at task 0.** Step 1's entry is not met.
+3. **Add `Unit342TraceTheCountriesPageAgainstItsMockup` to `TheCategoryPagesAreTradingCardsTests`.** It
+   asserts nothing and presses nothing. It realizes the Countries page, and one no-map card, at
+   1400 and 1920 on the dialog's width as the class already sets it. It prints:
+   - **each earned card:** its outer and inner width; the globe's drawn box and x offset inside the
+     card; the two stations' pixel positions inside the map; the frame the control opened and the
+     path's bounding box, in the control's own units; the distance text's size;
+   - **the aspect:** the globe drawn at the card's inner width with heights of 170, the picture's
+     proportion and one between, set on the test window only and never in markup. Print each
+     card's height and whether the page still fits without clipping;
+   - **the crop rule:** where the path-fitted frame is computed (file and method), and the margin
+     it uses, read from the source;
+   - **the band line** on every kind, and whether the gap clause is on it;
+   - **the next card** on every kind: its wants line, its heading, and, read from the decoded list's
+     code, which mark a caller who would earn that kind's next card carries there;
+   - **the back control:** its words on the top page and on a continent's sub-page;
+   - **the conversation card's map popup:** the property, the control, what opens and closes it, and
+     whether it writes an event.
+4. **Answer from the numbers:**
+   - What height does ruling 11 take, and how tall does the tallest page grow at each width?
+   - What bound does ruling 12 assert, and does a whole-globe frame fail it?
+   - On which kinds is the quill sentence true?
+   - Can ruling 16 reuse the conversation card's popup as it stands?
 
 Report the numbers in section 1 before task 1 starts.
 
 **Drop candidate:** none.
 
-### Task 1 - ruling 8 built, ruling 9 fitted, criteria 1, 3 and 5 asserted on PSK31
+### Task 1 - ruling 11 built, ruling 12 asserted: criterion 2 held to the picture
 
-1. **Build ruling 8** in `MainWindow.axaml`, and in `MainWindowViewModel.cs` only if the line's words
-   or the popup's open state need a property. **Mark the placement as the unit's own.** Replace unit
-   340's fit comment with one that says what ruling 8 did and why. The offer's words, the ALC line's
-   words, both buttons' content, commands and bindings, and `HasPsk31PowerOffer` are unchanged. Show
-   that with `git diff` in the report.
-2. **Fit ruling 9's line**, by the path task 0 named, or name the 2 px as the miss.
-3. **Rewrite the PSK31 half of `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`**
-   (R12), at 1920 and 1400. On PSK31, assert:
-   - the line is effectively visible, non-zero, inside the rig panel, not in the send area, with its
-     top at or below the rig display's bottom, and not clipped (its desired width fits its bounds);
-   - its text carries `Psk31PowerPercent`;
-   - the popup is closed at start, and opening it writes no `psk31_power_*` event and leaves
-     `HasPsk31PowerOffer` true;
-   - with the popup open, `DigitalPsk31PowerOffer`, `DigitalPsk31PowerAccept`,
-     `DigitalPsk31PowerDecline` and `DigitalPsk31AlcReference` are visible and non-zero **inside the
-     popup**, and their text equals the view model's `Psk31PowerOffer`, `Psk31PowerAccept`, *I will
-     set it myself* and `Psk31AlcReferenceLine`;
-   - no accept or decline control is on the main window outside the popup;
-   - the rig panel is the card's height, within the tolerance the test already uses, and CQ and Stop
-     are where ruling 5 leaves them.
+1. **Build ruling 11** in `AchievementsWindow.axaml`: the map across the card's inner width at the
+   height task 0 chose, and the no-map border at the same height. **Mark the height as the unit's
+   own** in the template's comment, with the numbers.
+2. **Extend `EveryEarnedCardIsTheContactThatEarnedIt`** (R12), at 1400 and 1920. On every earned
+   card with a map, assert:
+   - the map's drawn width equals the card's inner width within 1 px;
+   - its height is the stated height;
+   - ruling 12's crop: both stations inside the frame, and the frame within the stated bound.
 
-   Keep every FT8 assertion as it is. Close the popup and restore FT8 on the model before each
-   PSK31 window closes. **Never execute accept or decline.**
-4. **Criteria 1 and 5 on PSK31 go green with the thresholds they already assert.**
-   `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
-   `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` do not change a number. If the 1400 PSK31 row
-   still misses by the green block's 2 px, it ships red with that number, as §6 says.
-5. **Watched red.** Both top-row tests are red against the tree now. Say so with their failure lines
-   before the build. Watch the rewritten drive test's popup assertions red against the tree before
-   the build. The old border is not in a popup, so they should fail there. **Do not break the view
-   to watch a test fail.**
-6. Then run `TheTopRowTests`, `TheWorkingPanelsTests`, `BindingHealthTests` and `VoiceTests` in one
-   filter, and give each class as *n of n*. Run the carry-forward list again, status first.
-7. **Both trace methods stay**, asserting nothing. Say so.
+   Keep every assertion it already makes.
+3. **Watched red.** Against the tree before the build, the width assertion should fail on the 170 px
+   left-aligned map. Give the failure line. **Show the crop assertion failing on a whole-globe frame
+   set on the test window only.** Then build. **Do not break the view to watch a test fail.**
+4. **Run the one filter:** `TheCategoryPagesAreTradingCardsTests`, `TheAchievementsPageClicksInTests`,
+   `BindingHealthTests`, `VoiceTests`. Give each class as *n of n*.
+   `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` must stay green on the taller
+   cards. **If it goes red, fit by the height, never by loosening it.** Run the carry-forward list,
+   status first.
 
-**Drop candidate:** none. This is the evidence the step's state is waiting for.
+**Drop candidate:** none. This is the criterion the picture most visibly misses.
 
-### Task 2 - criteria 2 and 4 realized on PSK31
+### Task 2 - rulings 13, 14 and 15: the picture's words where they are true
 
-The offer only draws on PSK31, and criteria 2 and 4 have only been realized on FT8 and on the plain
-fixture. This task closes that.
+1. **Build ruling 13** (the band line's gap clause), **ruling 14** (the quill sentence per kind as
+   task 0 found it; the heading unchanged) and **ruling 15** (the back control as a link, its words
+   and command unchanged). The strings go in the view model where they are built now. **Name every
+   string added or changed, per kind.**
+2. **Extend `EveryKindsBandCarriesCountScoreLevelAndABar`** so it asserts the clause on every kind
+   with a next level, and its absence where there is none. **Extend `TheNextCardKnowsWhoIsCalling`**
+   so it asserts the wants line per kind as ruling 14 decided. Watch both red before the build. The
+   back link needs no new test: `ClickingABadgeReplacesThePageAndTheBackControlReturns` holds its
+   command. Say whether it stayed green.
+3. **Run the one filter again**, then the carry-forward list, status first. The no-clip test must
+   hold on the longer band line at 1400. If it does not, shorten per §6 and name the words.
 
-1. **Extend `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` and
-   `TheWorldClockIsAtTheCardsRightEndWithOneMarker`** to realize the licensed fixture on PSK31 as well
-   as FT8, at 1920 and 1400, with the assertions they already make. Restore FT8 before each window
-   closes.
-2. **Extend `TheThreePanelsShareOneTopAndOneBottom` and `AtNineteenTwentyTheCardsFactsSitBesideTheMap`**
-   to hold with PSK31 chosen, at the widths they already realize. **This step is the drop candidate.**
-3. Run the one filter again, then the carry-forward list, status first. Give each class as *n of n*.
-   An extension that passes on its first run says *not watched red*, and why that is honest.
+**Drop candidate: ruling 15, the back link.** It is style only, and no criterion names it.
 
-**Drop candidate: step 2 of this task** (criterion 4 on PSK31). The offer is inside the top row and
-the panels are measured by the top-row tests. Criterion 2's half is not droppable, because the
-green block is the part that changes on PSK31.
+### Task 3 - ruling 16: a card's map opens in its popup (nice-to-pass)
+
+1. **Build ruling 16.** Clicking an earned card's map opens the path in a popup, as the conversation
+   card's does, with the mechanism task 0 found reusable. It opens on click, never on a hover. A click
+   outside closes it. Telemetry as ruling 16 says.
+2. **Extend `EveryEarnedCardIsTheContactThatEarnedIt`**, or add one method if the popup has no
+   criterion-bearing home there (R14: this is the nice-to-pass's test, and the report says which).
+   Assert:
+   - the popup is closed at start;
+   - a click on a card's map opens it, holding that card's plot;
+   - a click outside closes it;
+   - it writes only the event ruling 16 allows.
+
+   Watch it red against the tree, where the map takes no click.
+3. **Run the one filter again**, then the carry-forward list, status first.
+
+**Drop candidate: this whole task.** It is the nice-to-pass. If time runs short, drop it and say so.
+Criteria 1 to 7 do not depend on it.
 
 ---
 
 ## 6. Parked - do not touch, do not raise
 
-- **Every layout mechanism units 337 to 340 chose:** the `*,383,*` split, the facts-under rule at
-  1400, the send area on the tab row, the filter in the mode strip, the sparkline width rule. Rulings 1
-  to 5 hold them. Unit 340's padding fit may be undone if ruling 8 makes it moot; say so.
-- **The offer's behavior beyond ruling 8:** when it shows, what it says, what accepting writes,
-  that `_psk31PowerSettled` is not saved (so the line returns on every launch), and whether FT8
-  should offer too.
-- **Step 1.** Unit 340 ran its six tests, 6 of 6, and named what is held weakly (item 5). Do not run
-  them again, and do not build.
-- **`TheOperatorCanStopItTests`, all of it.** Do not run it. Unit 340 items 3 and 339 item 1 are
-  transmit-side and parked.
-- **The live license lookup, the live heard count and the best bet reading the real clock** (unit
-  338 items 1 and 4, unit 339 item 2). If an assertion turns flaky on one of them, raise it once and
-  say it was parked.
-- **The license line's wording.** It is the regulation's sentence.
-- **Steps 2 and 3.** The States wording, the Modes test, the undeletable files, the points file, the
-  small reds.
-- **The two id schemes, including the reload's `CPS-DEC-0163` misreading.** Also real flags on country
-  cards, PSK31 step 6, real PSK31 audio, the ALC margin, the map bitmap's license and the status
-  script's stale `RULES_AT`. All are Tim's or the harness's, carried in `PHASE_PLAN.md` §7.
+- **The main window, all of it.** Step 0 is done:
+  - the top row, the one-line power offer and its popup, the green block and its empty row;
+  - the 1400 PSK31 row's 1.4 px and the live best bet (unit 341 item 1, unit 339 item 2);
+  - the strayed-frequency fixture (unit 341 item 2);
+  - `ThePowerIsOfferedTests` proving less than its name (unit 341 item 4);
+  - the line's 4.61:1 ink (unit 341 item 5), and where the offer's popup lands (unit 341 item 6).
+
+  Do not run `TheTopRowTests` or `TheWorkingPanelsTests`. If the carry-forward list turns one of
+  these red, report it and do not chase it.
+- **Step 2's items:** the States wording, including the States next card's *Hamlet cannot tell a
+  caller's state* (unit 335 item 1, Tim's); the Modes test; the undeletable files; the points file's
+  comment block; the small `Views` reds.
+- **The achievements window's own size** (`1040 x 720`, not sized from the main window; unit 332
+  item 3). 1400 and 1920 are reached as the tests already reach them.
+- **`TheOperatorCanStopItTests`, all of it.** Transmit-side.
+- **The live license lookup and the live heard count** (unit 338 items 1 and 4).
+- **The two id schemes, including the reload's `CPS-DEC-0163` misreading.** Also: real flags on
+  country cards; PSK31 step 6; real PSK31 audio; the ALC margin; the map bitmap's license; the status
+  script's stale `RULES_AT`; the demodulator; the `Why` hovers. All are Tim's or the harness's,
+  carried in `PHASE_PLAN.md` §7.
 - **Anything touching the radio, a decoder, a parser or the transmit chain. Any package.**
 
 ## 7. What not to do
 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.** (HM-DEC-155.)
-- **Never execute the accept or decline command, CQ or Stop in a test.** Opening the popup is the
-  only interaction allowed, and the test shows it wrote nothing (§0.2, HM-DEC-084).
-- **Do not change the offer's sentence, the ALC line's words, either button's content, a command, a
-  binding, `HasPsk31PowerOffer` or the write.** Ruling 8 moves them and adds one line. It rewrites
-  nothing.
-- **Do not put the offer, or any part of it, behind a hover.** Do not shorten the sentence to make
-  the popup smaller.
+- **No image assets, no second map control, no new map bitmap.** The card's map is the conversation
+  card's `Ft8GlobeControl` (R22: *vector and the map the app already has*).
+- **Do not put the quill sentence on a kind whose callers do not carry the quill.** Do not write
+  *right now* over a list read once (§0.0).
 - **Do not loosen a threshold or tolerance to make a test pass, and do not break the view to watch one
-  fail.** A small miss ships as `partial` with its number.
-- `CLAUDE.md` §12.6 covers the rest. **No image assets. No package. Report mismatches; repair
-  nothing. Write American.**
-- **The tool facts, from units 332 to 340:**
+  fail.** A crop bound a whole-globe frame would pass is a loosened test. A small miss ships as
+  `partial` with its number.
+- **Do not change what an earned card is earned by, what scores, or any points.** Those are the log's
+  and the points file's, and step 2's.
+- `CLAUDE.md` §12.6 covers the rest. **No package. Report mismatches; repair nothing. Write
+  American.**
+- **The tool facts, from units 332 to 341:**
   - apostrophes inside quoted heredocs break, and an apostrophe in an argument breaks the `.bat`
     tools;
   - doubled backslashes collapse;
   - `;`, `rm`, `git stash`, `sort` in a pipe, `git check-ignore`, `sed -E`, a shell loop variable,
-    `pwd -W`, `grep -v` in a pipe and a redirect into `testresults\` are refused;
+    `pwd -W`, `grep -v` in a pipe, a redirect into `testresults\`, a redirect or `tee -a` into
+    `output.md`, a `date` flag inside a compound command and a command substitution are refused;
   - Python cannot run;
   - a multi-line commit message needs more than one `-m`;
   - use exact-text edits for markup;
   - the validator runs as `dotnet build tools/arbiter/validate-output.proj -p:Report=output.md`,
-    because the `.bat` spelling is mangled by Git Bash.
+    because the `.bat` spelling is mangled by Git Bash;
+  - a `public const` cannot be bound; bind a property built from it.
 
 ## 8. Committing and pushing
 
@@ -432,76 +433,83 @@ it with `dotnet build tools/arbiter/validate-output.proj -p:Report=output.md`.
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. Step 0 <state as the evidence
-   stands>: <how many of its six must-pass carry a green named test at
-   both widths ON FT8 AND ON PSK31 with the offer showing as ruling 8
-   draws it, and which do not>. Step 1 not started; its tests 6 of 6 in
-   unit 340, not run here. Steps 2 and 3 not started.
-B. Step 0 and its exit criteria, each with the test that proves it, its
-   result and the widths and modes it realized:
-   1. top row about 190 px at 1920, panels at least half below the pills -
-      <FT8 and PSK31 px / share at 1920; was 305 on PSK31>
-   2. the card's three things - <test, result; PSK31 and FT8 at 1920 AND
-      1400; the green block's PSK31 height before and after ruling 9>
-   3. rig panel the card's height, drive AND THE ONE-LINE OFFER under the
-      S-meter, the full offer unchanged in its popup - <test, result;
-      line box against rig display bottom; popup contents equal to the
-      view model; nothing written on opening; PSK31 at 1920 AND 1400>
-   4. three panels equal height to the status bar, facts beside the map
-      at 1920 - <test, result; plain and PSK31, or PSK31 dropped>
-   5. at 1400 the same shape - panels full to the status bar <result>;
-      licensed top row <FT8 and PSK31 px / share against 0.262; was 305
-      on PSK31>; no callsign clipped <result>
-   6. BindingHealthTests <n of n>, VoiceTests <n of n>, carry-forward app
-      <n of n> and engine <n of n>
-   nice-to-pass: best bet joined to the green block - <test, result>
+A. The phase goal - the screen, done right. Step 0 done (state reader on
+   unit 341). Step 1 <state as the evidence stands>: <how many of its seven
+   must-pass carry a green named test at 1400 AND 1920 after this unit,
+   and which do not>; nice-to-pass <built | dropped>. Steps 2 and 3 not
+   started.
+B. Step 1 and its exit criteria, each with the test that proves it, its
+   result and the widths it realized:
+   entry: TheAchievementsPageClicksInTests <n of n>, run first
+   1. color band with count, score, level and a bar - <test, result; the
+      gap clause on <n> kinds, absent on <kinds with no next level>>
+   2. earned card is the contact, with a path map CROPPED TO THE TWO
+      STATIONS - <test, result; map <w x h> against card inner <w> at 1400
+      and 1920, was 170 tall left-aligned; the crop bound asserted, and
+      whether a whole-globe frame failed it>
+   3. next card names its want and its callers with distance, or no one
+      calling - <test, result; the quill sentence on <kinds>, off or
+      reworded on <kinds>, and why>
+   4. all eight kinds per R22, Continents to seven and each to its
+      countries - <tests, results>
+   5. no string clips or wraps a word at 1400 and 1920 - <test, result; the
+      tallest page's height at each width>
+   6. no card is a white rectangle - <test, result; white cards of total>
+   7. achievement_category_opened carries the kind and the card count -
+      <test, result>
+   nice-to-pass: a card's map opens in the popup on click - <test, result,
+      or dropped; the event it writes, or none, and why>
 C. The report last. Section 4 raises N items on top of the carried queue;
    say which, if any, stands in the way of a criterion in B - in
-   particular whether ruling 8 held the row at both widths and whether
-   ruling 9 closed the 2 px or left it.
+   particular whether the taller card kept criterion 5 at 1400, and
+   whether any kind's quill sentence was withheld as untrue.
 ```
 
 **Every line specific to this unit.** If a criterion was not measured, say *not measured*. Do not
 fill the shape.
 
 ```
-UNIT:       341 - <complete|stopped> at task N of 3 - <date time, read from the clock>
+UNIT:       342 - <complete|stopped> at task N of 4 - <date time, read from the clock>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   <yes|no> - <whether the one-line offer holds criteria 1, 3 and 5
-            on PSK31 at both widths, whether the 2 px closed, and whether
-            criteria 2 and 4 now hold on PSK31>
-NUMBER:     PSK31 top row with the offer showing: 1920 305 -> <px>;
-            1400 305 -> <px> (<share>)
+ADVANCED:   <yes|no> - <whether the card's map now spans the card with the
+            crop asserted, whether the band line and next card carry the
+            picture's words where true, and whether the popup was built>
+NUMBER:     earned card map, Countries page: 1400 <was w x 170> -> <w x h>;
+            1920 <was w x 170> -> <w x h>
 DRIFT:      0
 ```
 
-**Section 3 leads with the answer:** with PSK31 chosen and the offer unanswered, does every step 0 exit
-criterion hold with a named green test at the widths it names? If not, which one, at which width, and
-by how many px? Then say where the line went and why, with the numbers before and after at both widths.
-Then describe the popup in words: what is in it, where it opens, what closes it. Then the step 0 table
-after task 2: test, criterion, widths, modes, result, numbers. **Every appearance claim is computed,
-not seen. Say so once.**
+**Section 3 leads with the answer:** does every step 1 exit criterion hold with a named green test at
+1400 and 1920? If not, which one, at which width, and by how much? Then describe one earned card and
+the Countries next card in words, top to bottom, with the numbers before and after at both widths.
+Then the band line on each of the eight kinds, as it reads now. Then the step 1 table: test,
+criterion, widths, kinds, result, numbers. **Every appearance claim is computed, not seen. Say so
+once.**
 
-**Section 4:** unit 340's section 4 verbatim, per HM-DEC-139, including the queue it carries. Mark its
-item 1 `ANSWERED by the arbiter's ruling 8 in work instruction 341`, with what was built and the
-numbers. Mark its item 2 `TAKEN UP by work instruction 341 ruling 9`, with what became of the 2 px.
+**Section 4:** unit 341's section 4 verbatim, per HM-DEC-139, including the queue it carries. In the
+carried text, mark these two items:
+- unit 340's item 5 (step 1 weakly held): `TAKEN UP by work instruction 342 tasks 0 and 1`, with the
+  crop bound asserted;
+- unit 339's item 5 (the nice-to-pass has nothing behind it): `TAKEN UP by work instruction 342 task
+  3`, with what was built or that it was dropped.
+
 Then anything this unit raises. **A ruling is wanted only where Tim must decide; everything else is a
-finding and says so.** Ruling 8's extra click is already marked for Tim at step 3. Do not raise it
-again unless the build found something that changes it.
+finding and says so.** Ruling 14's kept read time and ruling 8's extra click are already marked for
+Tim at step 3. Do not raise them again unless the build found something that changes them.
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 0
-APPROACH: the PSK31 power offer as the mockup one line (RF power N % offered) under the S-meter, opening the unchanged full offer - sentence, accept, decline, ALC line - in a popup on click; find and fit the PSK31 green block 2 px at 1400; realize criteria 2 and 4 on PSK31
-MOVE: work around
-WHY: Unit 340 measured that no arrangement of the full offer holds R26's row, and the ruling it asked for was the arbiter's own ruling 7, not one of the three things the plan stops for. The mockup and section R11 both draw the offer as a percentage beside the drive, so a one-line offer with the full words in a popup is a different approach to the same step. The loop test found nothing like it.
-STATE: blocked
-DECIDED: ruling 7 withdrawn; ruling 8 - the offer under the S-meter is the mockup line "RF power N % offered", opening a click popup that holds the unchanged sentence, both buttons and the ALC line, with accept and decline only inside it and nothing written on opening; unit 340 options (a), (b), (c) and (d) rejected with reasons; ruling 9 - the PSK31 green block's 12 px is fitted by rulings 2 and 3 unless it is the license line, which is not reworded and ships as a 2 px miss; ruling 10 - the popup is not a new telemetry stage - all the author's, marked for Tim at step 3, overrulable
-LICENCE: PHASE_PLAN.md section 2 (the arbiter stops for three things only; otherwise decides, marks, applies, continues), R26, sections 4 and 6; assets/main-screen-mockup.png (the one-line offer under the S-meter); docs/phase-psk31-run/PHASE_PLAN.md R11 (offered as a percentage beside the drive), R13, R15; HM-DEC-084 tier two; unit 340 output.md section 4 items 1 and 2 with their measured options; PHASE_OUTCOME.md unit 340 STATE_WHY; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R14
-ACCOMPLISHED: with PSK31 chosen, the top row stays the short band in Tim's picture, with "RF power 50 % offered" under the S-meter as the mockup draws it, and the full offer one click away with every word still in front of the button that writes - so step 0 can close on evidence in both modes
-ADVANCES: step 0 - must-pass 1 and 5 on PSK31 (305 px today against 209 and 238) and must-pass 3 in the offer's new shape, in task 1; must-pass 2 and 4 realized on PSK31, in task 2, whose criterion 4 half is the drop candidate
+STEP: 1
+APPROACH: fit the built category pages to assets/category-page-countries.png - the earned card map across the card inner width with the crop to the two stations asserted as a bound a whole-globe frame fails; the band line gap clause and the next card quill sentence where true; the back control as a link; a card map opening in a click popup as the drop candidate; measured at 1400 and 1920
+MOVE: continue
+WHY: The state reader found step 0 done on unit 341's evidence, so the plan moves to step 1, whose content unit 335 built in the last phase but which was never held to the approved picture; units 339 and 340 measured the gaps, and the loop test found nothing like this approach (unit 335 built the pages, this fits them to the picture).
+STATE: not started
+DECIDED: rulings 11 to 16 - the card map spans the card inner width at a height the unit chooses near the picture's 3 to 1, with the no-map border matched; the crop asserted as a stated bound that fails on a whole-globe frame; the band line carries the gap to the next level (overrules unit 335's choice); the quill sentence only on kinds whose callers carry the quill; the read time kept over "right now" (keeps unit 335's choice, section 0.0); the back control a plain link with its words and command unchanged; the map popup on click reusing the conversation card's mechanism, with that popup's event or none - all the author's, marked for Tim at step 3, overrulable
+LICENCE: PHASE_PLAN.md sections 2, 4 (step 1 delivers R22 as the picture; entry step 0 done) and 6; docs/phase-maintenance-run/PHASE_PLAN.md R22; assets/category-page-countries.png; .run-unit/state-verdict.json (step 0 done on unit 341); unit 339 output.md section 3 (the Countries page against its mockup, three largest gaps) and section 4 item 5; unit 340 output.md section 4 item 5; CLAUDE.md 0.0, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-155
+ACCOMPLISHED: each achievements category page looks like the Countries picture Tim approved - the map of the contact's path across the card and cropped to the two stations, the level's gap on the band, the next card's words where they are true - with every step 1 criterion proven by a named test at both of Tim's widths, and a card's map one click from its popup if the night allows
+ADVANCES: step 1 - must-pass 2 (map across the card, crop to the two stations asserted) in task 1; must-pass 1 and 3 (the band's gap clause, the next card's words) in task 2; must-pass 5 and 6 re-measured on the changed cards in tasks 1 and 2; the nice-to-pass map popup in task 3, the drop candidate
 END-ARBITER-DECISION
 ```
