@@ -114,171 +114,262 @@ public sealed class TheTopRowTests
 
     /// <summary>
     /// **Assertion 2: the green block is inside the neighborhood card, under the strip and the
-    /// legend, with the band as its largest text and the count at its right.**
+    /// legend, with the band as its largest text and the count at its right** - at 1920 and at
+    /// 1400.
     /// </summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 339 TASK 1: BOTH WIDTHS, AND THE SPARKLINE WHERE RULING 3 KEEPS IT.**
+    /// The width rule is `MainWindow.FitTheHeardCount`, and it hides the sparkline only where the
+    /// text column beside it would wrap. So the test asserts what the rule drew, not a width: with
+    /// the sparkline drawn, the license line and the rule of thumb each sit on one line beside it;
+    /// with it hidden, *heard just now* stands over the count.
+    /// </remarks>
     [AvaloniaFact]
     public void TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest()
     {
-        var window = Realized(1920);
-
-        try
+        foreach (var width in new[] { 1920.0, 1400.0 })
         {
-            var card = Card(window);
-            var block = Block(window);
-            var strip = window.GetVisualDescendants().OfType<NeighborhoodMapControl>().First();
-            var legend = window.GetVisualDescendants().OfType<MapLegendControl>().First();
-            var band = Named<TextBlock>(window, "GreenZoneBand");
-            var left = Named<Control>(window, "GreenZoneLeft");
-            var heard = Named<TextBlock>(window, "GreenZoneHeard");
-            var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
+            var window = Realized(width);
 
-            _output.WriteLine("card     : " + Box(RectIn(card, window)));
-            _output.WriteLine("strip    : " + Box(RectIn(strip, window)));
-            _output.WriteLine("legend   : " + Box(RectIn(legend, window)));
-            _output.WriteLine("block    : " + Box(RectIn(block, window)));
-            _output.WriteLine("left     : " + Box(RectIn(left, window)));
-            _output.WriteLine("heard    : " + Box(RectIn(heard, window)));
-            _output.WriteLine("sparkline: " + Box(RectIn(sparkline, window)));
-
-            foreach (var text in VisibleText(block))
+            try
             {
-                _output.WriteLine("  " + Px(text.FontSize).PadLeft(5) + "  " + text.Text);
+                var card = Card(window);
+                var block = Block(window);
+                var strip = window.GetVisualDescendants().OfType<NeighborhoodMapControl>().First();
+                var legend = window.GetVisualDescendants().OfType<MapLegendControl>().First();
+                var band = Named<TextBlock>(window, "GreenZoneBand");
+                var left = Named<Control>(window, "GreenZoneLeft");
+                var heard = Named<TextBlock>(window, "GreenZoneHeard");
+                var label = Named<TextBlock>(window, "GreenZoneHeardLabel");
+                var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
+                var wrapped = new[] { "GreenZoneLicenseLine", "GreenZoneRuleOfThumb" }
+                    .Select(name => Named<TextBlock>(window, name))
+                    .Where(t => t.IsEffectivelyVisible && t.TextLayout.TextLines.Count > 1)
+                    .Select(t => t.Name + " (" + t.TextLayout.TextLines.Count + " lines)")
+                    .ToList();
+
+                _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed");
+                _output.WriteLine("  card     : " + Box(RectIn(card, window)));
+                _output.WriteLine("  strip    : " + Box(RectIn(strip, window)));
+                _output.WriteLine("  legend   : " + Box(RectIn(legend, window)));
+                _output.WriteLine("  block    : " + Box(RectIn(block, window)));
+                _output.WriteLine("  left     : " + Box(RectIn(left, window)));
+                _output.WriteLine("  label    : " + Box(RectIn(label, window)) + " visible " + label.IsEffectivelyVisible);
+                _output.WriteLine("  heard    : " + Box(RectIn(heard, window)));
+                _output.WriteLine(
+                    "  sparkline: " + (sparkline.IsEffectivelyVisible ? Box(RectIn(sparkline, window)) : "hidden by the width rule")
+                    + "; lines that wrap [" + string.Join(", ", wrapped) + "]");
+
+                foreach (var text in VisibleText(block))
+                {
+                    _output.WriteLine("    " + Px(text.FontSize).PadLeft(5) + "  " + text.Text);
+                }
+
+                Assert.True(block.GetVisualAncestors().Contains(card), "at " + Px(width) + " the green block is not inside the card");
+                Assert.True(
+                    RectIn(block, window).Top >= RectIn(legend, window).Bottom - 0.5
+                    && RectIn(block, window).Top >= RectIn(strip, window).Bottom - 0.5,
+                    "at " + Px(width) + " the green block is not under the strip and the legend");
+
+                // **THE BAND IS THE LARGEST TEXT IN THE BLOCK AND IN THE CARD.**
+                Assert.True(band.IsEffectivelyVisible, "at " + Px(width) + " the band is not drawn");
+                Assert.All(
+                    VisibleText(card).Where(t => !ReferenceEquals(t, band)),
+                    t => Assert.True(
+                        t.FontSize < band.FontSize,
+                        "at " + Px(width) + " [" + t.Text + "] at " + Px(t.FontSize) + " is as large as the band at "
+                        + Px(band.FontSize)));
+
+                // **THE COUNT, IN THE GREEN BLOCK AT ITS RIGHT, AT EVERY WIDTH.**
+                Assert.True(heard.IsEffectivelyVisible, "at " + Px(width) + " the heard count is not drawn");
+                Assert.True(
+                    block.GetVisualDescendants().Contains(heard),
+                    "at " + Px(width) + " the count is not in the green block");
+                Assert.True(
+                    RectIn(heard, window).Left >= RectIn(left, window).Right - 0.5,
+                    "at " + Px(width) + " the count is not right of the band's block");
+
+                if (sparkline.IsEffectivelyVisible)
+                {
+                    // **RULING 3 KEEPS IT**: the sparkline beside the count, and the text column
+                    // beside them holds its lines without wrapping.
+                    Assert.True(
+                        block.GetVisualDescendants().Contains(sparkline)
+                        && RectIn(sparkline, window).Left >= RectIn(left, window).Right - 0.5,
+                        "at " + Px(width) + " the sparkline is not in the green block right of the band's block");
+                    Assert.True(
+                        wrapped.Count == 0,
+                        "at " + Px(width) + " the sparkline is drawn and the text beside it wraps: " + string.Join(", ", wrapped));
+                }
+                else
+                {
+                    // **RULING 3 HID IT**: *heard just now* stands over the count in its place.
+                    var labelAt = RectIn(label, window);
+                    var heardAt = RectIn(heard, window);
+
+                    Assert.True(label.IsEffectivelyVisible, "at " + Px(width) + " the sparkline is hidden and *heard just now* is not drawn");
+                    Assert.True(
+                        block.GetVisualDescendants().Contains(label) && labelAt.Left >= RectIn(left, window).Right - 0.5,
+                        "at " + Px(width) + " *heard just now* is not in the green block right of the band's block");
+                    Assert.True(
+                        labelAt.Bottom <= heardAt.Top + 0.5 && labelAt.Left < heardAt.Right && heardAt.Left < labelAt.Right,
+                        "at " + Px(width) + " *heard just now* is " + Box(labelAt) + " and the count " + Box(heardAt)
+                        + ", so it does not stand over the count");
+                }
             }
-
-            Assert.True(block.GetVisualAncestors().Contains(card), "the green block is not inside the card");
-            Assert.True(
-                RectIn(block, window).Top >= RectIn(legend, window).Bottom - 0.5
-                && RectIn(block, window).Top >= RectIn(strip, window).Bottom - 0.5,
-                "the green block is not under the strip and the legend");
-
-            // **THE BAND IS THE LARGEST TEXT IN THE BLOCK AND IN THE CARD.**
-            Assert.True(band.IsEffectivelyVisible, "the band is not drawn");
-            Assert.All(
-                VisibleText(card).Where(t => !ReferenceEquals(t, band)),
-                t => Assert.True(
-                    t.FontSize < band.FontSize,
-                    "[" + t.Text + "] at " + Px(t.FontSize) + " is as large as the band at "
-                    + Px(band.FontSize)));
-
-            // **THE COUNT AND ITS SPARKLINE AT THE BLOCK'S RIGHT.**
-            Assert.True(heard.IsEffectivelyVisible, "the heard count is not drawn");
-            Assert.True(
-                RectIn(heard, window).Left >= RectIn(left, window).Right - 0.5
-                && RectIn(sparkline, window).Left >= RectIn(left, window).Right - 0.5,
-                "the count and the sparkline are not right of the band's block");
-            Assert.True(
-                block.GetVisualDescendants().Contains(heard)
-                && block.GetVisualDescendants().Contains(sparkline),
-                "the count and the sparkline are not in the green block");
-        }
-        finally
-        {
-            window.Close();
+            finally
+            {
+                window.Close();
+            }
         }
     }
 
     /// <summary>
     /// **Assertion 3: the world clock is in the card at its right end, at the mockup's size,
-    /// with one marker.**
+    /// with one marker** - at 1920 and at 1400.
     /// </summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 339 TASK 1: BOTH WIDTHS**, with the assertions it made at 1920. R26 says
+    /// *at 1400 the same shape*, and the card is 520 px narrower there.
+    /// </remarks>
     [AvaloniaFact]
     public void TheWorldClockIsAtTheCardsRightEndWithOneMarker()
     {
-        var window = Realized(1920);
-
-        try
+        foreach (var width in new[] { 1920.0, 1400.0 })
         {
-            var card = Card(window);
-            var block = Block(window);
-            var clock = Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
+            var window = Realized(width);
 
-            var cardAt = RectIn(card, window);
-            var blockAt = RectIn(block, window);
-            var clockAt = RectIn(clock, window);
+            try
+            {
+                var card = Card(window);
+                var block = Block(window);
+                var clock = Named<GrayLineMapControl>(window, "GreenZoneGrayLine");
 
-            var drawn = GrayLineMapControl.WhatWouldBeDrawn(
-                clock.Utc, clock.OperatorGrid, clock.Bounds.Width, clock.Bounds.Height);
+                var cardAt = RectIn(card, window);
+                var blockAt = RectIn(block, window);
+                var clockAt = RectIn(clock, window);
 
-            _output.WriteLine("card  : " + Box(cardAt));
-            _output.WriteLine("block : " + Box(blockAt));
-            _output.WriteLine("clock : " + Box(clockAt) + ", markers " + drawn.Markers);
+                var drawn = GrayLineMapControl.WhatWouldBeDrawn(
+                    clock.Utc, clock.OperatorGrid, clock.Bounds.Width, clock.Bounds.Height);
 
-            Assert.True(clock.GetVisualAncestors().Contains(card), "the world clock is not in the card");
-            Assert.False(
-                clock.GetVisualAncestors().Contains(block),
-                "the world clock is inside the green block rather than at the card's right end");
+                _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed");
+                _output.WriteLine("  card  : " + Box(cardAt));
+                _output.WriteLine("  block : " + Box(blockAt));
+                _output.WriteLine(
+                    "  clock : " + Box(clockAt) + ", markers " + drawn.Markers + ", "
+                    + Px(cardAt.Right - clockAt.Right) + " px from the card's right edge");
 
-            Assert.True(
-                clockAt.Left >= blockAt.Right - 0.5,
-                "the clock starts at x=" + Px(clockAt.Left) + " and the green block ends at x="
-                + Px(blockAt.Right) + ", so it is not at the card's right");
-            Assert.True(
-                cardAt.Right - clockAt.Right <= 40,
-                "the clock ends " + Px(cardAt.Right - clockAt.Right) + " px short of the card's right edge");
+                Assert.True(clock.GetVisualAncestors().Contains(card), "at " + Px(width) + " the world clock is not in the card");
+                Assert.False(
+                    clock.GetVisualAncestors().Contains(block),
+                    "at " + Px(width) + " the world clock is inside the green block rather than at the card's right end");
 
-            Assert.InRange(clockAt.Height, ClockHeight * 0.9, ClockHeight * 1.1);
+                Assert.True(
+                    clockAt.Left >= blockAt.Right - 0.5,
+                    "at " + Px(width) + " the clock starts at x=" + Px(clockAt.Left) + " and the green block ends at x="
+                    + Px(blockAt.Right) + ", so it is not at the card's right");
+                Assert.True(
+                    cardAt.Right - clockAt.Right <= 40,
+                    "at " + Px(width) + " the clock ends " + Px(cardAt.Right - clockAt.Right) + " px short of the card's right edge");
 
-            Assert.Equal(HisGrid, clock.OperatorGrid);
-            Assert.Equal(1, drawn.Markers);
-        }
-        finally
-        {
-            window.Close();
+                Assert.InRange(clockAt.Height, ClockHeight * 0.9, ClockHeight * 1.1);
+
+                Assert.Equal(HisGrid, clock.OperatorGrid);
+                Assert.Equal(1, drawn.Markers);
+            }
+            finally
+            {
+                window.Close();
+            }
         }
     }
 
     /// <summary>
     /// **Assertion 4: drive and the power offer are in the rig panel under the S-meter, and not
-    /// in the send area; the send area keeps CQ and Stop; the rig panel is the card's height.**
+    /// in the send area; the send area keeps CQ and Stop; the rig panel is the card's height** -
+    /// at 1920 and at 1400.
     /// </summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 339 TASK 1: BOTH WIDTHS.** The rig panel's height is the card's at
+    /// each width, whatever that height is: 190 px at 1920 and 219 at 1400 on this fixture in unit
+    /// 338.</para>
+    /// <para>**CQ AND STOP WHERE THE ARBITER'S RULING 5 LEAVES THEM**: in the send area, which
+    /// rides the tab row beside `ModeTabs`, above the working card and inside nothing that
+    /// collapses (§0.2). This test reads where they are and presses nothing.</para>
+    /// </remarks>
     [AvaloniaFact]
     public void DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop()
     {
-        var window = Realized(1920);
-
-        try
+        foreach (var width in new[] { 1920.0, 1400.0 })
         {
-            var rig = window.GetVisualDescendants().OfType<RigDisplayControl>().First();
-            var panel = RigPanel(window);
-            var card = Card(window);
-            var reserved = Named<Border>(window, "DigitalSendReserved");
-            var drive = Named<NumericUpDown>(window, "DigitalTransmitDriveBox");
-            var offer = Named<TextBlock>(window, "DigitalPsk31PowerOffer");
+            var window = Realized(width);
 
-            _output.WriteLine("rig display: " + Box(RectIn(rig, window)));
-            _output.WriteLine("rig panel  : " + Box(RectIn(panel, window)));
-            _output.WriteLine("card       : " + Box(RectIn(card, window)));
-            _output.WriteLine("drive box  : " + Box(RectIn(drive, window)));
-
-            foreach (var (name, control) in new (string, Control)[] { ("drive", drive), ("power offer", offer) })
+            try
             {
+                var rig = window.GetVisualDescendants().OfType<RigDisplayControl>().First();
+                var panel = RigPanel(window);
+                var card = Card(window);
+                var reserved = Named<Border>(window, "DigitalSendReserved");
+                var tabs = Named<Control>(window, "ModeTabs");
+                var workspace = Named<Control>(window, "WorkspaceBoundary");
+                var drive = Named<NumericUpDown>(window, "DigitalTransmitDriveBox");
+                var offer = Named<TextBlock>(window, "DigitalPsk31PowerOffer");
+
+                _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed");
+                _output.WriteLine("  rig display : " + Box(RectIn(rig, window)));
+                _output.WriteLine("  rig panel   : " + Box(RectIn(panel, window)));
+                _output.WriteLine("  card        : " + Box(RectIn(card, window)));
+                _output.WriteLine("  drive box   : " + Box(RectIn(drive, window)));
+                _output.WriteLine("  power offer : " + Box(RectIn(offer, window)) + " visible " + offer.IsEffectivelyVisible);
+                _output.WriteLine("  tabs        : " + Box(RectIn(tabs, window)));
+                _output.WriteLine("  send area   : " + Box(RectIn(reserved, window)));
+                _output.WriteLine("  working card: " + Box(RectIn(workspace, window)));
+
+                foreach (var (name, control) in new (string, Control)[] { ("drive", drive), ("power offer", offer) })
+                {
+                    Assert.True(
+                        control.GetVisualAncestors().Contains(panel),
+                        "at " + Px(width) + " the " + name + " is not in the rig panel");
+                    Assert.False(
+                        control.GetVisualAncestors().Contains(reserved),
+                        "at " + Px(width) + " the " + name + " is still in the send area");
+                }
+
                 Assert.True(
-                    control.GetVisualAncestors().Contains(panel),
-                    "the " + name + " is not in the rig panel");
-                Assert.False(
-                    control.GetVisualAncestors().Contains(reserved),
-                    "the " + name + " is still in the send area");
+                    RectIn(drive, window).Top >= RectIn(rig, window).Bottom - 0.5,
+                    "at " + Px(width) + " the drive is not under the rig display's S-meter");
+
+                foreach (var name in new[] { "DigitalSendCqButton", "DigitalStopButton" })
+                {
+                    var button = Named<Button>(window, name);
+
+                    Assert.True(
+                        button.GetVisualAncestors().Contains(reserved),
+                        "at " + Px(width) + " " + name + " has left the send area");
+                    Assert.True(button.IsEffectivelyVisible, "at " + Px(width) + " " + name + " is not visible");
+                    Assert.Empty(button.GetVisualAncestors().OfType<CollapsiblePanel>());
+                }
+
+                // **RULING 5: THE SEND AREA RIDES THE TAB ROW, RIGHT OF THE TABS, ABOVE THE WORKING CARD.**
+                Assert.True(
+                    ReferenceEquals(reserved.GetVisualParent(), tabs.GetVisualParent()),
+                    "at " + Px(width) + " the send area is not in the tab row beside ModeTabs");
+                Assert.True(
+                    RectIn(reserved, window).Left >= RectIn(tabs, window).Right - 0.5,
+                    "at " + Px(width) + " the send area is not right of the tabs");
+                Assert.True(
+                    RectIn(reserved, window).Bottom <= RectIn(workspace, window).Top + 0.5,
+                    "at " + Px(width) + " the send area is not above the working card");
+
+                Assert.True(
+                    Math.Abs(RectIn(panel, window).Height - RectIn(card, window).Height) <= 1,
+                    "at " + Px(width) + " the rig panel is " + Px(RectIn(panel, window).Height) + " px and the card is "
+                    + Px(RectIn(card, window).Height) + " px, so they are not one height");
             }
-
-            Assert.True(
-                RectIn(drive, window).Top >= RectIn(rig, window).Bottom - 0.5,
-                "the drive is not under the rig display's S-meter");
-
-            foreach (var name in new[] { "DigitalSendCqButton", "DigitalStopButton" })
+            finally
             {
-                Assert.True(
-                    Named<Button>(window, name).GetVisualAncestors().Contains(reserved),
-                    name + " has left the send area");
+                window.Close();
             }
-
-            Assert.True(
-                Math.Abs(RectIn(panel, window).Height - RectIn(card, window).Height) <= 1,
-                "the rig panel is " + Px(RectIn(panel, window).Height) + " px and the card is "
-                + Px(RectIn(card, window).Height) + " px, so they are not one height");
-        }
-        finally
-        {
-            window.Close();
         }
     }
 
@@ -313,6 +404,11 @@ public sealed class TheTopRowTests
                 var heard = Named<TextBlock>(window, "GreenZoneHeard");
                 var sparkline = Named<SparklineControl>(window, "GreenZoneSparkline");
 
+                // **THE SHARE WITH THE READINESS STRIP SHOWING, PRINTED** (work instruction 339 task
+                // 0): ruling 1 measures with the strip hidden and reports it showing as well.
+                var shownPanels = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+                var stripShown = Named<Border>(window, "DigitalReadinessStrip").IsEffectivelyVisible;
+
                 Named<Border>(window, "DigitalReadinessStrip").IsVisible = false;
 
                 for (var i = 0; i < 4; i++)
@@ -333,6 +429,10 @@ public sealed class TheTopRowTests
                     "  panels " + Px(panels[0].Rect.Height) + " px = "
                     + (panels[0].Rect.Height / below).ToString("0.000", CultureInfo.InvariantCulture)
                     + " with the readiness strip hidden");
+                _output.WriteLine(
+                    "  panels " + Px(shownPanels) + " px = "
+                    + (shownPanels / below).ToString("0.000", CultureInfo.InvariantCulture)
+                    + " with the readiness strip " + (stripShown ? "showing" : "not showing (nothing to say)"));
                 _output.WriteLine("  rule [" + rule.Text + "] " + Box(RectIn(rule, window)));
                 _output.WriteLine(
                     "  count [" + heard.Text + "] visible " + heard.IsEffectivelyVisible + "; sparkline visible "

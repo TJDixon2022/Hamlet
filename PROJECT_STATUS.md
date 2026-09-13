@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 339 - step 0, proved at both widths
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T21:13:03-04:00
-NOTE: Task 0 traced - step 0 classes 20 of 20, three new stop reds pass alone; task 1 extending the green block, clock and drive tests to 1400
+UPDATED: 2026-09-12T21:18:15-04:00
+NOTE: Carry-forward app 100 of 100 after the test change; engine invocation running, then the task 1 commit and push
 
 ---
 
