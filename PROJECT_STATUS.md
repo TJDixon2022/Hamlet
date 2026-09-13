@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 338 - the three working panels take the height
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T20:49:15-04:00
-NOTE: Task 2 done - licensed 1400 top row 273 -> 219 px (0.241), panels 474 (0.521), layout set 90 of 91 with the known red; committing, then the best bet on the window
+UPDATED: 2026-09-12T20:50:52-04:00
+NOTE: Task 3 done - the badged pill and the green block name one band on the window, check on 20 m and not on 40 m; committing, then carry-forward and the report
 
 ---
 

@@ -370,6 +370,71 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 338 task 3, step 0's nice-to-pass: on the realized window at 1920 the
+    /// band pill wearing *best bet now* and the green block name the same band, and the check is
+    /// drawn where that band is the one he is on.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE JOIN IS BY CONSTRUCTION** - `GreenZone.BestBet` reads the band whose button
+    /// carries the badge - and until now it was asserted on the view model only. Task 0 found no
+    /// band ranked on the test host, so nothing on the window had ever shown it. The badge is set
+    /// here the way the test for the view model sets it, and the green zone is re-announced the way
+    /// the ranking does.</para>
+    /// <para>**BOTH SIDES OF THE CHECK** (§0.6: the check is the non-color carrier): the best bet on
+    /// the band he is on wears it, and a best bet elsewhere does not.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow()
+    {
+        var window = Realized(1920);
+
+        try
+        {
+            var model = (MainWindowViewModel)window.DataContext!;
+            var here = Named<TextBlock>(window, "GreenZoneBand").Text;
+
+            foreach (var bestName in new[] { "20 m", "40 m" })
+            {
+                foreach (var band in model.Bands)
+                {
+                    band.IsBestBet = band.Band.Name == bestName;
+                }
+
+                model.NotifyGreenZoneForTests();
+
+                for (var i = 0; i < 4; i++)
+                {
+                    Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                    window.UpdateLayout();
+                }
+
+                var badged = window.GetVisualDescendants().OfType<TextBlock>()
+                    .Where(t => t.IsEffectivelyVisible && t.Text == "best bet now")
+                    .Select(t => (t.DataContext as BandButtonViewModel)?.Band.Name)
+                    .ToList();
+                var bet = Named<Button>(window, "GreenZoneBestBet");
+                var said = bet.Content as string ?? "";
+                var checkDrawn = said.Contains(GreenZone.OnIt.Trim(), StringComparison.Ordinal);
+
+                _output.WriteLine(
+                    "best bet " + bestName + ": pills wearing the badge [" + string.Join(", ", badged)
+                    + "]; green block band [" + here + "], best bet [" + said + "] visible "
+                    + bet.IsEffectivelyVisible + ", check drawn " + checkDrawn);
+
+                Assert.Single(badged);
+                Assert.True(bet.IsEffectivelyVisible, "the green block's best bet is not drawn");
+                Assert.StartsWith(badged[0] + "", said, StringComparison.Ordinal);
+                Assert.Equal("20 m", here);
+                Assert.Equal(badged[0] == here, checkDrawn);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>What the layout measured on one window, in the window's own frame.</summary>
