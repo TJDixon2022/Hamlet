@@ -421,18 +421,34 @@
                                                    FontSize="12" FontWeight="SemiBold"
                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
 
+                                        <!-- **THE MAP ACROSS THE CARD** (work instruction 342,
+                                             ruling 11), as the picture draws it: the border
+                                             stretches to the card's inner width and the control
+                                             fills it (`FillsBox`), its frame the popup's rule
+                                             grown to the card's shape (`CardFrameFor`).
+                                             **231 PX IS THE UNIT'S OWN NUMBER**, overrulable. The
+                                             picture's map is about 596 by 195, 3.06:1; the card
+                                             is 632 px inside at 1400 (2.74:1 at 231) and 892 at
+                                             1920 (3.86:1). 231 is the least whole height at which
+                                             every fixture card's frame reaches that shape inside
+                                             the file at 1920: South Africa's path needs 180.5 of
+                                             the file's 381 rows, and 180.5 x 3.86 is 697 of its
+                                             698 columns. At 170 and left-aligned it was drawn
+                                             564 x 170 at 1400 and 796 x 170 at 1920 (task 0).
+                                             **The no-map list takes the same height**, so earned
+                                             cards in a row line up. -->
                                         <Border CornerRadius="6"
                                                 ClipToBounds="True"
-                                                HorizontalAlignment="Left"
                                                 IsVisible="{Binding HasMap}">
                                             <ctl:Ft8GlobeControl Opened="True"
-                                                                 Height="170"
+                                                                 FillsBox="True"
+                                                                 Height="231"
                                                                  Plot="{Binding Globe}" />
                                         </Border>
 
                                         <Border Classes="card-list"
                                                 IsVisible="{Binding HasNoMap}"
-                                                Height="170"
+                                                Height="231"
                                                 Background="{StaticResource HmBackgroundBrush}"
                                                 BorderBrush="{StaticResource HmSlateEdgeBrush}"
                                                 BorderThickness="1"

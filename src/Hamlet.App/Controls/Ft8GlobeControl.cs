@@ -236,11 +236,11 @@ public sealed class Ft8GlobeControl : Control
 
     static Ft8GlobeControl()
     {
-        AffectsRender<Ft8GlobeControl>(PlotProperty, OpenedProperty);
+        AffectsRender<Ft8GlobeControl>(PlotProperty, OpenedProperty, FillsBoxProperty);
 
         // **BOTH CHANGE THE SHAPE THE CONTROL ASKS FOR**, because the frame decides
         // it: a zoomed window is not the file's proportions and the row has to follow.
-        AffectsMeasure<Ft8GlobeControl>(PlotProperty, OpenedProperty);
+        AffectsMeasure<Ft8GlobeControl>(PlotProperty, OpenedProperty, FillsBoxProperty);
     }
 
     /// <summary>How near the pointer has to be to a marker, in map pixels.</summary>
@@ -304,7 +304,7 @@ public sealed class Ft8GlobeControl : Control
         }
 
         var (left, top, width, height) = FrameOf(
-            plot, Opened, _openedAgainst.Width, _openedAgainst.Height);
+            plot, Opened, _openedAgainst.Width, _openedAgainst.Height, FillsBox);
 
         if (width <= 0 || height <= 0)
         {
@@ -340,6 +340,17 @@ public sealed class Ft8GlobeControl : Control
         get => GetValue(OpenedProperty);
         set => SetValue(OpenedProperty, value);
     }
+
+    /// <summary>
+    /// **The window of the file this control last drew**, in the file's own pixels, for a test
+    /// and for the record (work instruction 342 task 1).
+    /// </summary>
+    /// <remarks>
+    /// **THE SAME QUESTION THE RENDER ASKS**, against the same remembered offer, so what a test
+    /// reads back is the frame on the screen and not one worked out again from `Bounds`.
+    /// </remarks>
+    public (double Left, double Top, double Width, double Height) DrawnFrame
+        => FrameOf(Plot, Opened, _openedAgainst.Width, _openedAgainst.Height, FillsBox);
 
     /// <summary>Which window of the file a control in this state frames.</summary>
     /// <param name="plot">What is being plotted.</param>
@@ -387,6 +398,36 @@ public sealed class Ft8GlobeControl : Control
             ? plot.OpenFrameFor(boxWidth, boxHeight)
             : plot.OpenFrame;
     }
+
+    /// <summary>True where the opened map fills the box it is given, as a trading card's does.</summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 342, RULING 11.** The popup's map fits its frame inside a ceiling and is
+    /// whatever shape the path makes; a trading card's map runs the card's width at a fixed height,
+    /// so its frame is grown to the box's shape (<see cref="Ft8GlobePlot.CardFrameFor"/>). **False
+    /// by default**, so the conversation card and its popup draw exactly as they did.
+    /// </remarks>
+    public static readonly StyledProperty<bool> FillsBoxProperty =
+        AvaloniaProperty.Register<Ft8GlobeControl, bool>(nameof(FillsBox));
+
+    /// <summary>True where the opened map fills the box it is given.</summary>
+    public bool FillsBox
+    {
+        get => GetValue(FillsBoxProperty);
+        set => SetValue(FillsBoxProperty, value);
+    }
+
+    /// <summary>Which window of the file a control of this size frames, filling the box or not.</summary>
+    /// <param name="plot">What is being plotted.</param>
+    /// <param name="opened">True for the enlarged map.</param>
+    /// <param name="boxWidth">The width the map is being drawn in, or 0.</param>
+    /// <param name="boxHeight">The height the map is being drawn in, or 0.</param>
+    /// <param name="fillsBox">True where an opened map takes the box's shape.</param>
+    /// <returns>Left, top, width and height in the file's own pixels.</returns>
+    public static (double Left, double Top, double Width, double Height) FrameOf(
+        Ft8GlobePlot? plot, bool opened, double boxWidth, double boxHeight, bool fillsBox)
+        => opened && fillsBox && plot is not null && boxWidth > 0 && boxHeight > 0
+            ? plot.CardFrameFor(boxWidth, boxHeight)
+            : FrameOf(plot, opened, boxWidth, boxHeight);
 
     /// <summary>How tall the map is at a given width.</summary>
     /// <param name="width">A width in the control own units.</param>
@@ -437,7 +478,7 @@ public sealed class Ft8GlobeControl : Control
             double.IsInfinity(availableSize.Height) ? 0 : availableSize.Height);
 
         var (_, _, frameWidth, frameHeight) = FrameOf(
-            Plot, Opened, _openedAgainst.Width, _openedAgainst.Height);
+            Plot, Opened, _openedAgainst.Width, _openedAgainst.Height, FillsBox);
 
         var width = availableSize.Width;
         var height = availableSize.Height;
@@ -490,7 +531,7 @@ public sealed class Ft8GlobeControl : Control
         }
 
         var (left, top, width, height) = FrameOf(
-            plot, Opened, _openedAgainst.Width, _openedAgainst.Height);
+            plot, Opened, _openedAgainst.Width, _openedAgainst.Height, FillsBox);
 
         if (width <= 0 || height <= 0)
         {

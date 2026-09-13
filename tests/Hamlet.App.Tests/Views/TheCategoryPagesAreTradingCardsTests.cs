@@ -246,6 +246,160 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         {
             window.Close();
         }
+
+        // **WORK INSTRUCTION 342 TASK 1, RULING 11: AT 1400 AND 1920 THE MAP RUNS THE CARD'S INNER
+        // WIDTH AT THE STATED HEIGHT, AND THE NO-MAP LIST IS THE SAME HEIGHT.** Ruling 12: both
+        // stations lie inside the frame the control drew, and that frame is no larger than the
+        // crop bound - which a whole-globe frame fails, asserted on every card and shown once on
+        // the test window.
+        var wholeGlobeShown = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var fixture in new[] { TheAchievementsPageTests.TwelveContacts(), FiveContacts() })
+            {
+                var wide = Realized(fixture, width);
+                var opened = (AchievementsViewModel)wide.DataContext!;
+
+                try
+                {
+                    opened.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+                    Settle(wide);
+
+                    var drawn = Named<ItemsControl>(wide, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
+                        .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card")
+                            && b.DataContext is AchievementCategoryCard { Earned: true })
+                        .ToList();
+
+                    Assert.NotEmpty(drawn);
+
+                    foreach (var card in drawn)
+                    {
+                        var data = (AchievementCategoryCard)card.DataContext!;
+                        var inner = card.GetVisualDescendants().OfType<StackPanel>().First(s => Grid.GetColumn(s) == 1).Bounds.Width;
+                        var state = F(width) + " " + data.Title;
+
+                        if (!data.HasMap)
+                        {
+                            var list = card.GetVisualDescendants().OfType<Border>()
+                                .Single(b => b.IsEffectivelyVisible && b.Classes.Contains("card-list"));
+
+                            _output.WriteLine(state + ": no map, its list " + F(list.Bounds.Width) + " x " + F(list.Bounds.Height));
+
+                            Assert.True(
+                                Math.Abs(list.Bounds.Height - CardMapHeight) <= 0.5,
+                                state + ": the no-map list is " + F(list.Bounds.Height) + " tall, not the map's " + F(CardMapHeight));
+
+                            continue;
+                        }
+
+                        var globe = card.GetVisualDescendants().OfType<Ft8GlobeControl>().Single(g => g.IsEffectivelyVisible);
+                        var plot = globe.Plot!;
+                        var frame = globe.DrawnFrame;
+                        var scale = Math.Min(globe.Bounds.Width / frame.Width, globe.Bounds.Height / frame.Height);
+                        var drawnWidth = frame.Width * scale;
+                        var drawnHeight = frame.Height * scale;
+
+                        _output.WriteLine(
+                            state + ": inner " + F(inner) + ", map drawn " + F(drawnWidth) + " x " + F(drawnHeight)
+                            + " in a control " + F(globe.Bounds.Width) + " x " + F(globe.Bounds.Height)
+                            + ", frame left " + F(frame.Left) + " top " + F(frame.Top) + " " + F(frame.Width) + " by " + F(frame.Height));
+
+                        // **RULING 11: ACROSS THE CARD, AT THE STATED HEIGHT.**
+                        Assert.True(
+                            Math.Abs(drawnWidth - inner) <= 1,
+                            state + ": the map is drawn " + F(drawnWidth) + " x " + F(drawnHeight) + " in a card " + F(inner) + " wide inside");
+                        Assert.True(
+                            Math.Abs(globe.Bounds.Height - CardMapHeight) <= 0.5 && Math.Abs(drawnHeight - CardMapHeight) <= 1,
+                            state + ": the map is " + F(drawnHeight) + " tall in a control " + F(globe.Bounds.Height) + ", not " + F(CardMapHeight));
+
+                        // **RULING 12: CROPPED TO THE TWO STATIONS, AS A NUMBER.**
+                        var outside = OutsideTheCrop(plot, frame, inner, CardMapHeight);
+
+                        Assert.True(outside is null, state + ": " + outside);
+
+                        // **AND THE BOUND IS NOT LOOSE**: the whole file fails it on this card.
+                        Assert.NotNull(OutsideTheCrop(
+                            plot, (0, 0, Ft8GlobePlot.Map.WidthPixels, Ft8GlobePlot.Map.HeightPixels), inner, CardMapHeight));
+
+                        if (!wholeGlobeShown)
+                        {
+                            // **SHOWN ONCE ON THE TEST WINDOW**: this card's globe opened to the
+                            // whole file, and the same check says what is wrong. Put back after.
+                            globe.Opened = false;
+                            Settle(wide);
+
+                            var wholeGlobe = OutsideTheCrop(plot, globe.DrawnFrame, inner, CardMapHeight);
+
+                            _output.WriteLine(state + ", a whole-globe frame set on the test window: " + wholeGlobe);
+
+                            Assert.NotNull(wholeGlobe);
+
+                            globe.Opened = true;
+                            Settle(wide);
+                            wholeGlobeShown = true;
+                        }
+                    }
+                }
+                finally
+                {
+                    wide.Close();
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// **How tall the earned card's map is**, and the no-map list with it (work instruction 342
+    /// ruling 11, the unit's own number): 231 px, the height at which every fixture card's frame
+    /// takes the card's shape inside the file at 1920 as well as at 1400.
+    /// </summary>
+    private const double CardMapHeight = 231;
+
+    /// <summary>
+    /// **Ruling 12's crop, as a number**: null where both stations lie inside the frame and the frame
+    /// is no larger than the crop bound; otherwise what is wrong.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE BOUND.** The box holding every sampled point of the path and both markers,
+    /// widened each way by the popup rule's margin - `Ft8GlobePlot.MarginShare`, 6 per cent of that
+    /// box's longer side - then each side grown to the popup rule's zoom floor
+    /// (`ZoomFloorShare`, a quarter of the file) and to the card box over `ZoomCap`, neither past
+    /// the file; then the other side grown to the card's own shape, neither past the file.</para>
+    /// <para>**A WHOLE-GLOBE FRAME FAILS IT** on every card the fixtures draw, and the test says
+    /// so card by card.</para>
+    /// </remarks>
+    private static string? OutsideTheCrop(
+        Ft8GlobePlot plot, (double Left, double Top, double Width, double Height) frame, double boxWidth, double boxHeight)
+    {
+        bool Inside(double x, double y)
+            => x >= frame.Left - 0.5 && x <= frame.Left + frame.Width + 0.5
+            && y >= frame.Top - 0.5 && y <= frame.Top + frame.Height + 0.5;
+
+        if (!Inside(plot.OperatorX, plot.OperatorY) || !Inside(plot.StationX, plot.StationY))
+        {
+            return "a station lies outside the frame left " + F(frame.Left) + " top " + F(frame.Top) + " " + F(frame.Width)
+                + " by " + F(frame.Height) + ": you at " + F(plot.OperatorX) + ", " + F(plot.OperatorY)
+                + ", him at " + F(plot.StationX) + ", " + F(plot.StationY);
+        }
+
+        double fileWidth = Ft8GlobePlot.Map.WidthPixels;
+        double fileHeight = Ft8GlobePlot.Map.HeightPixels;
+        var xs = plot.Path.SelectMany(r => r.Select(p => p.X)).Append(plot.OperatorX).Append(plot.StationX).ToList();
+        var ys = plot.Path.SelectMany(r => r.Select(p => p.Y)).Append(plot.OperatorY).Append(plot.StationY).ToList();
+        var pathWidth = xs.Max() - xs.Min();
+        var pathHeight = ys.Max() - ys.Min();
+        var margin = Ft8GlobePlot.MarginShare * Math.Max(pathWidth, pathHeight);
+        var wide = Math.Min(fileWidth, Math.Max(Math.Max(pathWidth + (2 * margin), fileWidth * Ft8GlobePlot.ZoomFloorShare), boxWidth / Ft8GlobePlot.ZoomCap));
+        var tall = Math.Min(fileHeight, Math.Max(Math.Max(pathHeight + (2 * margin), fileHeight * Ft8GlobePlot.ZoomFloorShare), boxHeight / Ft8GlobePlot.ZoomCap));
+        var aspect = boxWidth / boxHeight;
+        var mostWide = Math.Min(fileWidth, Math.Max(wide, tall * aspect));
+        var mostTall = Math.Min(fileHeight, Math.Max(tall, wide / aspect));
+
+        return frame.Width <= mostWide + 0.5 && frame.Height <= mostTall + 0.5
+            ? null
+            : "the frame " + F(frame.Width) + " by " + F(frame.Height) + " is larger than the crop bound " + F(mostWide) + " by "
+                + F(mostTall) + " (the path " + F(pathWidth) + " by " + F(pathHeight) + ", margin " + F(margin) + ")";
     }
 
     /// <summary>
@@ -646,7 +800,12 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                         }
                     }
 
-                    _output.WriteLine("  " + kind.PadRight(14) + runs + " runs fit, " + cards.Count + " cards, " + white + " white");
+                    var page = window.GetVisualDescendants().OfType<ItemsControl>()
+                        .First(i => i.IsEffectivelyVisible && (i.Name == "AchievementsCategoryCards" || i.Name == "AchievementsSubBadges"));
+
+                    _output.WriteLine(
+                        "  " + kind.PadRight(14) + runs + " runs fit, " + cards.Count + " cards, " + white + " white, page "
+                        + F(page.Bounds.Height) + " px tall");
 
                     Assert.True(white == 0, state + ": " + white + " card(s) with no map, bar or list");
 
@@ -1023,7 +1182,7 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         if (card.GetVisualDescendants().OfType<Ft8GlobeControl>().FirstOrDefault(g => g.IsEffectivelyVisible) is { Plot: { } plot } globe)
         {
             var offer = Unit342Offer(globe);
-            var frame = Ft8GlobeControl.FrameOf(plot, globe.Opened, offer.Width, offer.Height);
+            var frame = globe.DrawnFrame;
             var scale = Math.Min(globe.Bounds.Width / frame.Width, globe.Bounds.Height / frame.Height);
             var at = globe.TranslatePoint(new Point(0, 0), card) ?? default;
             var box = Unit342PathBox(plot);
@@ -1056,8 +1215,7 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
     private static (double Width, double Height) Unit342Drawn(Ft8GlobeControl globe)
     {
-        var offer = Unit342Offer(globe);
-        var frame = Ft8GlobeControl.FrameOf(globe.Plot, globe.Opened, offer.Width, offer.Height);
+        var frame = globe.DrawnFrame;
         var scale = Math.Min(globe.Bounds.Width / frame.Width, globe.Bounds.Height / frame.Height);
 
         return (frame.Width * scale, frame.Height * scale);

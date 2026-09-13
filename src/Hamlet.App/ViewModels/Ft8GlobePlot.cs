@@ -560,6 +560,89 @@ public sealed class Ft8GlobePlot
             tall);
     }
 
+    /// <summary>What a trading card's map frames, given the box it fills.</summary>
+    /// <param name="boxWidth">The width the card gives the map.</param>
+    /// <param name="boxHeight">The height the card gives the map.</param>
+    /// <returns>Left, top, width and height in the file's own pixels.</returns>
+    /// <remarks>
+    /// <para>**THE POPUP'S RULE, THEN THE CARD'S SHAPE** (work instruction 342, ruling 11: the map
+    /// runs the card's inner width, as `assets/category-page-countries.png` draws it). The box
+    /// holding every sampled point and both markers, with <see cref="MarginShare"/> round it,
+    /// grown to the <see cref="ZoomFloorShare"/> floor and to the box over <see cref="ZoomCap"/> -
+    /// the rules <see cref="OpenFrameFor"/> uses - and then **the other side grown to the box's own
+    /// shape**, so the picture fills the card rather than drawing narrower beside grey ground. It
+    /// only ever grows, so nothing the path needs is cut.</para>
+    /// <para>**THE DATE LINE IS NOT THE WHOLE FILE HERE.** Two runs against opposite edges already
+    /// need the file's width, and the popup shows everything; the card keeps the file's width and
+    /// crops the height round the path, because a card this wide and this short cannot show the
+    /// whole file without a strip of grey beside it. **The unit's own choice, overrulable.**</para>
+    /// <para>**WHERE THE SHAPE CANNOT BE REACHED INSIDE THE FILE** - a path too tall for a card that
+    /// wide - the frame stops at the file's edge and the picture is drawn narrower, rather than
+    /// past the photograph (§0.0).</para>
+    /// </remarks>
+    public (double Left, double Top, double Width, double Height) CardFrameFor(
+        double boxWidth, double boxHeight)
+    {
+        if (boxWidth <= 0 || boxHeight <= 0 || Path.Count == 0)
+        {
+            return OpenFrameFor(boxWidth, boxHeight);
+        }
+
+        var left = double.MaxValue;
+        var top = double.MaxValue;
+        var right = double.MinValue;
+        var bottom = double.MinValue;
+
+        void Hold(double x, double y)
+        {
+            left = Math.Min(left, x);
+            right = Math.Max(right, x);
+            top = Math.Min(top, y);
+            bottom = Math.Max(bottom, y);
+        }
+
+        foreach (var run in Path)
+        {
+            foreach (var (x, y) in run)
+            {
+                Hold(x, y);
+            }
+        }
+
+        if (HasOperator)
+        {
+            Hold(OperatorX, OperatorY);
+        }
+
+        if (HasStation)
+        {
+            Hold(StationX, StationY);
+        }
+
+        double fileWidth = Map.WidthPixels;
+        double fileHeight = Map.HeightPixels;
+        var margin = MarginShare * Math.Max(right - left, bottom - top);
+
+        // **THE POPUP'S THREE RULES FIRST**: the margin, the floor, the cap - neither past the file.
+        var wide = Math.Min(
+            fileWidth,
+            Math.Max(Math.Max((right - left) + (2 * margin), fileWidth * ZoomFloorShare), boxWidth / ZoomCap));
+        var tall = Math.Min(
+            fileHeight,
+            Math.Max(Math.Max((bottom - top) + (2 * margin), fileHeight * ZoomFloorShare), boxHeight / ZoomCap));
+
+        // **THEN THE CARD'S SHAPE**, by growing whichever side is short of it.
+        var aspect = boxWidth / boxHeight;
+        var width = Math.Min(fileWidth, Math.Max(wide, tall * aspect));
+        var height = Math.Min(fileHeight, Math.Max(tall, wide / aspect));
+
+        return Fitted(
+            ((left + right) / 2) - (width / 2),
+            ((top + bottom) / 2) - (height / 2),
+            width,
+            height);
+    }
+
     /// <summary>The frame, as a reader sees it, for a test and for the record.</summary>
     public string FrameLine
         => string.Format(
