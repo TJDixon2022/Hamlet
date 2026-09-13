@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 3 of 3
-WORK_INSTRUCTION: 337 - the row shows what the ear heard
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-13T16:57:24-04:00
-NOTE: Unit 337 complete - the PSK31 row shows every emitted character, 483 of 483; report validated and pushed.
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 343 - step 1, proved on the window
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-163 (2026-09-12)
+UPDATED: 2026-09-13T18:22:53-04:00
+NOTE: Task 0 - gate passed, WORK_INSTRUCTION set to 343; status.sh refused so written by hand from date; next the patch bump and its commit
 
 ---
 
