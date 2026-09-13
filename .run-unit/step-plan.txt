@@ -1,19 +1,24 @@
-﻿STEP: 2 | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
-## Step 2 - The record is honest, and the layout settled
+﻿STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+## Step 1 - Every category page is trading cards
 
-**Delivers:** R23 and R24.
+**Delivers:** R22, as `assets/category-page-countries.png`, on all eight kinds.
 
-**Entry:** step 1 done.
+**Entry:** step 0 done; `TheAchievementsPageClicksInTests` green, checked first.
 
 **Exit:**
-- A US contact with `STATE` in the log scores its state; one without scores nothing; the
-  States badge count matches the log. *must-pass*
-- `rank_names` in the points file names the ranks; absent, the defaults show; the file's
-  keys are documented at its top. *must-pass*
-- At 1400 the decoded list and For You share the tab by R24, no callsign is clipped, and
-  the card's table is beside the map or under it by the stated rule; at 1920 beside.
+- A category page has the color band with count, score, level and a bar to the next
+  level. *must-pass*
+- An earned card carries the entity, callsign, grid, a path map cropped to the two
+  stations, distance, band, mode, date and points, from the log entry that earned it.
   *must-pass*
-- The report states the split at both widths. *must-pass*
+- The next card names what it wants and, when anyone on the CQ list would earn it, lists
+  them with distance; otherwise says no one is calling from there now. *must-pass*
+- All eight kinds render this way with their own content per R22; Continents opens to
+  seven badges and each to its countries. *must-pass*
+- No string clips or wraps a word, measured at 1400 and 1920. *must-pass*
+- No card is a white rectangle. *must-pass*
+- `achievement_category_opened` carries the kind and the count of cards. *must-pass*
+- A card's map opens in the popup on click. *nice-to-pass*
 
-**Depends on:** step 1.
+**Depends on:** step 0.
 

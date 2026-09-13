@@ -1,16 +1,17 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-12T17:30:26-04:00  root C:\Source\HamLet
+measured 2026-09-13T09:19:50-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0162.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-163 (2026-09-12); CLAUDE.md section 1 holds CPS-DEC-0163.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
   UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
+  UNCOMMITTED      output.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -22,141 +23,139 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 1e4e9e4
-  uncommitted at the root : 4
+  HEAD   : 9214b2a
+  uncommitted at the root : 5
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
       M WORK_INSTRUCTIONS.md
+      D output.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0162
-  PROJECT_STATUS.md RULES_AT     : HM-DEC-161 (2026-09-11)
+  highest in CLAUDE.md section 1 : CPS-DEC-0163
+  PROJECT_STATUS.md RULES_AT     : HM-DEC-163 (2026-09-12)
 
 ==============================================================
  THE EIGHT
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  193 lines, 10418 bytes
-  PHASE: The screen says what is true and looks like someone meant it
+  183 lines, 9626 bytes
+  PHASE: The screen, done right
   PHASE_SET: 2026-09-12
-  DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
-  STEP: 0 | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
-  STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
-  STEP: 3 | Tim looks at it - every page at his window size, and says it passed.
+  DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
+  STEP: 0 | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
+  STEP: 3 | Tim looks at every page at his window size and says it passed.
   
   ---
   
-  # The maintenance phase - the reasoning under the step list
+  # The screen, done right - the reasoning under the step list
   
-  **Set 2026-09-12 by the web thread on Tim's instruction:** *"do the cleanup stuff I've
-  been talking about. We're calling this a maintenance phase."* The PSK31 phase is archived
-  at `docs/phase-psk31-run/` with its step 6 open; Tim closes it at the radio when he
-  closes it, and that is not this phase's business.
+  **Set 2026-09-12 by the web thread on Tim's instruction**, replacing the maintenance
+  phase of the same day, which is archived at `docs/phase-maintenance-run/` with its steps
+  0 and 1 done and step 2 partial. That phase's plan told the arbiter a mechanism for the
+  layout that arithmetic would not allow, and its step 0 grew the green zone until the
+  working panels lost the window. **This plan states outcomes and carries a picture.**
+  
+  `assets/main-screen-mockup.png` is the approved main window. `assets/category-page-countries.png`
+  is the approved category page. `assets/achievements-opening-mockup.png` is the opening
+  page, already built by unit 332 and unchanged.
   
   ## Â§1 What this phase is
   
-  Three steps of screen work and one of Tim looking. Nothing here touches the radio, the
-  transmit chain, a decoder or a parser. Everything here was seen by Tim on his own screen
-  between 2026-09-11 and 2026-09-12 and ruled on in conversation; the rulings are in Â§R
-  and the pictures he approved are under `assets/`.
+  Screen only. Nothing here touches the radio, a decoder, a parser, the transmit chain or
+  the log's content. **A step's exit is what is on the screen, asserted by computation and
+  described in words, then Tim's eyes.** Every appearance claim is computed, not seen, and
+  says so.
   
-  ## Â§2 What is the same
+  ## Â§2 What stands
   
-  Every ruling of the PSK31 phase's plan stands - R1 through R20 in
-  `docs/phase-psk31-run/PHASE_PLAN.md` - and is not restated. The ones this phase leans on:
-  **R12** a session rewrites its own tests and never asks the owner; **R13** telemetry on
-  every new stage; **R14** tests prove criteria and nothing beyond; **R16** the two quills;
-  **R19** American; **R20** the achievements pages and the green zone as ruled; **Â§6's
-  later-ruling-wins rule**.
+  Every ruling of the PSK31 phase (R1-R20, `docs/phase-psk31-run/PHASE_PLAN.md`) and of the
+  maintenance phase (R21-R25, `docs/phase-maintenance-run/PHASE_PLAN.md`) stands. **R12** a
+  session rewrites its own tests and never asks; **R13** telemetry on every new stage;
+  **R14** tests prove criteria and nothing beyond; **R16** the two quills; **R19** American;
+  **R22** the category pages as trading cards; **R23** States from `STATE`, rank names from
+  the points file. `ACHIEVEMENTS_PHILOSOPHY.md` Â§2, Â§3.1 as bent by Ruling C, Â§3.5, Â§4.
+  `CLAUDE.md` Â§0.0, Â§0.5, Â§0.6. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**.
   
-  `ACHIEVEMENTS_PHILOSOPHY.md` governs the achievements screen: **Â§2** no wall of blanks;
-  **Â§3.1** inside a category nothing shows until something adjacent is earned, bent only by
-  Ruling C (the nearest unearned card in each kind is visible); **Â§3.5** the teaching is
-  the product; **Â§4** worked, never confirmed, nothing shames. `CLAUDE.md` **Â§0.0** a picture
-  binds as hard as a sentence; **Â§0.5** family color is text only; **Â§0.6** color never the
-  only carrier. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**.
+  **The arbiter stops for three things only** (Tim, 2026-09-12, now in `ARBITER.md`):
+  keying, transmit or the radio's safety; money past the budget; a decision that changes
+  what the product promises the operator. On everything else it takes its own
+  recommendation, marks it author's and overrulable, applies it, and continues. **A later
+  ruling of Tim's beats an earlier line of this plan; the arbiter proceeds.**
   
   ## Â§R Rulings, Tim, 2026-09-12
   
-  **R21 - the green zone.** *"Too redundant. We don't need the repeat of the band list on
-  the green. Maybe make the map bigger."* The band pills come off the panel - they are the
-  row above it - and the map takes their space. The band stays large on the left; the
-  heard-just-now count stays as a number on the right; the rule-of-thumb line stays.
+  **R26 - the main window.** Tim, on unit 334's screen: the green zone had grown to two
+  thirds of the window and the working panels were squeezed into the bottom third. The
+  mockup answers it, and its outcomes are the rulings:
   
-  **R22 - the category pages.** *"So boring."* *"Communicate visually and be appealing.
-  Not white bread boring."* *"I like it, just make sure all the other sub pages are as
-  interesting."* The shape is `assets/category-page-countries.png`: the category's color
-  band and emblem across the top with its count, score, level and a bar to the next level;
-  **each earned card is the contact that earned it** - the entity large, the callsign and
-  grid, a map of the path cropped to the two stations as the conversation card draws it,
-  the distance in large type, band, mode and date, the points; **the next card says what it
-  wants and the one thing Hamlet knows that helps** - who is calling CQ right now from a
-  place that would earn it, with distance, from the CQ list. Per kind: **Countries,
-  States, Grids** the contact that earned it; **Continents** seven badges, each the first
-  contact that opened it, the count of countries worked there since, and the unearned ones
-  naming the continent and who is calling from it now; **Total Miles** a tier is a bar
-  filling toward the next line and the contact that crossed it; **Bands** the first contact
-  on that band and which band is the best bet now for the next; **Modes** the first contact
-  in each mode and where the unearned mode lives and who is there; **Hall of Fame** the
-  contact that earned each first, and the nearest first as next. **Nothing white, nothing
-  empty.** No image assets; vector and the map the app already has.
+  - **The top row is one band, about 190 px tall at 1920**, and the working panels below
+    the tabs take the rest of the window. At no window size do the working panels get less
+    than half the height below the band pills.
+  - **The neighborhood card carries three things**: the band strip with the legend and the
+    *you Â· mode* marker; **the green block** - the band in the largest text, the frequency,
+    mode and *yours to use*, the license line small, the rule-of-thumb line small, and
+    heard-just-now with its count and sparkline; and **the world's clock** at its right end,
+    about 246 px wide, with the operator's dot only.
+  - **The rig display is the same height as the neighborhood card**, and carries under the
+    frequency and S-meter the transmit drive and the RF power offer, so no empty column
+    stands under it.
+  - **The band pills stay where they are** and are not repeated anywhere.
+  - **Below the tabs**: waterfall, decoded text, For You, all the same height, full to the
+    status bar. The decoded list is as wide as its longest line needs and no wider; For You
+    takes the rest, wide enough that the card's facts sit beside its map.
+  - **At 1400**: the same shape; where the card's facts cannot sit beside the map they go
+    under it; no callsign is ever clipped in the decoded list. **No mechanism is prescribed;
+    the unit measures and chooses, marks the choice as its own, and reports the numbers at
+    both widths.**
   
-  **R23 - the record.** States are scored from the ADIF `STATE` field, which the log
-  already writes for a US contact; a contact with no `STATE` scores nothing. Rank names
-  are read from `achievement-points.json` under a `rank_names` key, defaulting to
-  `Rank 1`â€¦`Rank 8` when absent, so Tim can name them without a session. The points file's
-  every key is documented in a comment block at its top.
-  
-  **R24 - the 1400 px layout.** The author's proposal, marked for Tim: the split between
-  the decoded list and For You is a fraction of the tab, not a pixel count; at 1400 the
-  decoded list may abbreviate the message column to the callsign and grid rather than
-  shrink For You below what the card's table needs; the card's table goes under the map
-  only when even that is not enough. Tim overrules by looking.
-  
-  **R25 - Tim looks.** Step 3 is his verdict at his window, at the size he uses.
-  
-  ## Â§3 What is different from a build phase
-  
-  Nothing decodes, transmits or logs differently after this phase. A step's exit is what
-  is on the screen, asserted by computation and described in words, and then Tim's eyes.
-  **Every appearance claim is computed, not seen, and says so.**
+  **R27 - what the last phase left.** Unit 336's open items: the States wording (*worked*,
+  never *confirmed*, and the count says what it counts); the Modes test; the files sessions
+  cannot delete, listed once for Tim; the two `Views` reds and any other small red in the
+  record; the points file's comment block checked key by key against the file. Small, and
+  one step.
   
   ## Â§4 The steps
   
   Each step verifies its own ground. Exit criteria are tiered. **A step's exit is its own
-  assertions plus the carry-forward list, run as the list's own comment says** - not the
-  whole suite (HM-DEC-155; `CLAUDE_CODE.md` wins on unit shape).
+  assertions plus the carry-forward list, run as its own comment says** - not the whole
+  suite.
   
-  ## Step 0 - The green zone finishes, and the leftovers go
+  ## Step 0 - The main window is the mockup
   
-  **Delivers:** the green zone without the band pills, the map at the width they held;
-  the stale line gone; the files sessions cannot delete listed once in the report for Tim.
+  **Delivers:** R26.
   
   **Entry:** the tree is Hamlet's; `PHASE_STATUS.md` names this phase.
   
   **Exit:**
-  - The band pills are not on the green zone; the map is wider by the space they held,
-    stated in pixels. *must-pass*
-  - The band, frequency, mode and license line stay on the left; the heard count stays on
-    the right; the rule-of-thumb line stays. *must-pass*
-  - The line *Hamlet cannot work CW, PSK31 and Voice yet* exists nowhere. *must-pass*
-  - `BindingHealthTests` and `VoiceTests` green; the carry-forward list green. *must-pass*
-  - The report lists every file the session could not delete, once. *must-pass*
+  - At 1920, the top row (neighborhood card and rig display) is about 190 px tall and the
+    working panels below the tabs take the rest; the numbers reported. *must-pass*
+  - The neighborhood card carries the band strip, the green block and the world clock as
+    R26 says; the green block's band is its largest text; the clock carries one dot.
+    *must-pass*
+  - The rig display is the neighborhood card's height and carries drive and the power
+    offer under the S-meter. *must-pass*
+  - Waterfall, decoded text and For You are equal height, full to the status bar; the
+    card's facts sit beside its map at 1920. *must-pass*
+  - At 1400 the same shape holds, no callsign is clipped, and the facts go beside or under
+    by the unit's stated rule; the numbers reported at both widths. *must-pass*
+  - `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
+  - The band pills' *best bet now* is joined to the green block by the check as before.
+    *nice-to-pass*
   
   **Depends on:** nothing.
   
   ## Step 1 - Every category page is trading cards
   
-  **Delivers:** R22 on all eight kinds.
+  **Delivers:** R22, as `assets/category-page-countries.png`, on all eight kinds.
   
-  **Entry:** step 0 done - the achievements window opens to eight badges with no scroller
-  and a badge clicks in, checked by running `TheAchievementsPageClicksInTests` first.
+  **Entry:** step 0 done; `TheAchievementsPageClicksInTests` green, checked first.
   
   **Exit:**
   - A category page has the color band with count, score, level and a bar to the next
@@ -166,33 +165,28 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     *must-pass*
   - The next card names what it wants and, when anyone on the CQ list would earn it, lists
     them with distance; otherwise says no one is calling from there now. *must-pass*
-  - All eight kinds render this way, each with its own content per R22; Continents opens
-    to seven badges and each to its countries. *must-pass*
-  - No string in any slot clips or wraps a word, asserted by measuring at 1400 and 1920.
-    *must-pass*
-  - No card is a white rectangle: every card has a map, a bar, or a live list. *must-pass*
-  - Telemetry: `achievement_category_opened` carries the kind and the count of cards
-    rendered. *must-pass*
-  - A card's map opens in the popup on click, as the conversation card's does.
-    *nice-to-pass*
+  - All eight kinds render this way with their own content per R22; Continents opens to
+    seven badges and each to its countries. *must-pass*
+  - No string clips or wraps a word, measured at 1400 and 1920. *must-pass*
+  - No card is a white rectangle. *must-pass*
+  - `achievement_category_opened` carries the kind and the count of cards. *must-pass*
+  - A card's map opens in the popup on click. *nice-to-pass*
   
   **Depends on:** step 0.
   
-  ## Step 2 - The record is honest, and the layout settled
+  ## Step 2 - What the last phase left
   
-  **Delivers:** R23 and R24.
+  **Delivers:** R27.
   
   **Entry:** step 1 done.
   
   **Exit:**
-  - A US contact with `STATE` in the log scores its state; one without scores nothing; the
-    States badge count matches the log. *must-pass*
-  - `rank_names` in the points file names the ranks; absent, the defaults show; the file's
-    keys are documented at its top. *must-pass*
-  - At 1400 the decoded list and For You share the tab by R24, no callsign is clipped, and
-    the card's table is beside the map or under it by the stated rule; at 1920 beside.
+  - The States badge and its cards say *worked*; no *confirmed* anywhere. *must-pass*
+  - The Modes test unit 336 named is green or named as a known red with why. *must-pass*
+  - The undeletable files are listed once in the report. *must-pass*
+  - The two `Views` reds are green or named as known reds with why. *must-pass*
+  - The points file's comment block names every key in the file and no key it lacks.
     *must-pass*
-  - The report states the split at both widths. *must-pass*
   
   **Depends on:** step 1.
   
@@ -209,114 +203,148 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   
   ## Â§5 Dependencies
   
-  Step 0 depends on nothing. Steps 1-3 are one pipeline. When a step blocks there is
-  nowhere to route; work it or halt.
+  Step 0 depends on nothing. Steps 1-3 are one pipeline.
   
   ## Â§6 Branching
   
-  - **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins; the
-    arbiter proceeds, notes it, does not stop.
-  - **A must-pass is missed by a little.** Ship, report the number, mark `partial`, move
-    on. Never loosen a test.
-  - **A string will not fit.** Shorten it and say which, or widen the slot; never clip.
-  - **A fact for a card is missing from the log** - no grid, no date. The card shows what
-    it has and no dash; a map with no grid is no map, and the card says so in a word.
+  - **The arbiter stops for three things only**; on everything else it decides, marks,
+    applies, continues.
+  - **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins.
+  - **A must-pass is missed by a little.** Ship, report, `partial`, move on. Never loosen a
+    test.
+  - **A string will not fit.** Shorten and say which, or widen; never clip.
+  - **A fact for a card is missing from the log.** Show what is there; no dash; a map with
+    no grid is no map.
   - **Anything touches the radio, a decoder, a parser or the transmit chain.** `MOVE: stop`.
-    This phase is screen only.
   - **A package is needed.** `MOVE: stop`.
-  - **A file must be deleted.** Empty it, comment it, list it; never stop for it.
-  - **The watchdog.** Until the arbiter repository's process-polling watchdog is installed,
-    status before every `dotnet` command, after every commit and after every task, read
-    from the clock with `tools/status.sh`, never composed.
+  - **A file must be deleted.** Empty it, comment it, list it.
+  - **Status.** `tools/status.sh` reads the clock; never compose a time. The watchdog now
+    polls the process; a session is killed only when its process tree accrues no CPU for
+    ten minutes.
   
   ## Â§7 Carried
   
-  Every open ask of the PSK31 phase, from unit 333's queue, carried verbatim by every unit.
-  Plus: real flags on earned country cards - undecided, Tim's; the recording of real PSK31
-  audio - still the one thing that answers why a strong signal read badly; the id-scheme
-  split; the map bitmap's license.
+  Every open ask from unit 336's queue, verbatim in every unit. Plus: real flags on
+  earned country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the
+  radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  10 lines, 1095 bytes
-  PHASE: The screen says what is true and looks like someone meant it
+  9 lines, 1184 bytes
+  PHASE: The screen, done right
   PHASE_SET: 2026-09-12
-  DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
-  CURRENT_STEP: 2
-  WORK_INSTRUCTION: 335 - every category page is trading cards
-  HEARTBEAT: 2026-09-12 17:30:25
-  STEP: 0 | done | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
-  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | not started | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
-  STEP: 3 | not started | Tim looks at it - every page at his window size, and says it passed.
+  DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
+  CURRENT_STEP: 0
+  WORK_INSTRUCTION: 342 - step 1, the category pages fitted to their mockup
+  STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
+  STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  63 lines, 8978 bytes
-  PHASE: The screen says what is true and looks like someone meant it
+  100 lines, 16570 bytes
+  PHASE: The screen, done right
   PHASE_SET: 2026-09-12
-  DESCRIPTION: A maintenance phase. Everything Tim banked in the PSK31 thread that is screen and not radio - the achievements pages, the green zone, the layout, the record - built and judged from his own window.
-  STEP: 0 | done | The green zone finishes - the band pills come off, the map takes the space, the stale line goes, the files that sessions cannot delete are listed once for Tim.
-  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carries who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | not started | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
-  STEP: 3 | not started | Tim looks at it - every page at his window size, and says it passed.
+  DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
+  STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
+  STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
   
-  ## UNIT 334 - STEP 0
+  ## UNIT 337 - STEP 0
   
   STEP: 0
-  APPROACH: remove the band pills from the green zone and widen the map by their space, remove the stale cannot-work line, list the undeletable files once, and open the phase in the card and the decisions file
+  APPROACH: lay the main window out as assets/main-screen-mockup.png - one top row of about 190 px holding the neighborhood card (band strip and legend, a compact green block under them, the world clock at its right end with one dot) and a rig display of the same height with drive and the power offer under the S-meter; waterfall, decoded text and For You equal height below the tabs, the decoded column as wide as the longest FT8 line needs; measured and chosen at 1920 and 1400
   MOVE: continue
-  WHY: step 0 depends on nothing; every part of it is a ruling already made on the owner's own screen
-  DECIDED: nothing beyond the plan; the map's new width is measured, not chosen. The sparkline is the drop candidate for task 1; tasks 0, 2 and 3 have none.
-  LICENCE: PHASE_PLAN.md R21, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R14, R19; CLAUDE.md 0.0, 0.5, 0.6; HM-DEC-139, HM-DEC-155
-  COST: one session, four tasks, each committing on its own.
+  WHY: step 0 depends on nothing; the owner drew the outcome and ruled it (R26); the plan prescribes no mechanism, so nothing here is a stop
+  DECIDED: nothing beyond the instruction at task 0. Every mechanism - the split, the 1400 rule, the exact heights - is the unit's, marked as its own and overrulable. The sparkline is task 1's drop candidate; task 4 is droppable whole; tasks 0, 2 and 3 have none.
+  LICENCE: PHASE_PLAN.md R26, section 4 step 0, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R14, R19; CLAUDE.md 0.0, 0.5, 0.6; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: one session, five tasks (0 to 4), each committing and pushing on its own.
   ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
   FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: Written at task 3, against tests that ran in this session; every appearance claim is computed on the headless host, not seen. One: no band pill, pip bar or you-are-on-it line is on the green zone, and the map is 202 x 110 before and 232 x 127 after at a 1400 window (30 px wider), 492 x 269 at 1920 - TheGreenZoneTests rewritten under R12, watched red on 7 chips and 7 pip bars, then 15 of 15. Two: band, frequency, mode and license lines stay on the left and wrap as before; the heard count and its sparkline stay on the right; the rule of thumb stays under the map; the panel's ink is 100 percent of its width. Three: Hamlet cannot work CW, PSK31 and Voice yet is in no file under src - unit 332 removed it, and a VoiceTests check now holds it out, green on first run because there was nothing to catch. Four: BindingHealthTests and VoiceTests green; the carry-forward list 100 of 100 app and 85 of 85 engine after the change. Five: output.md section 2 lists the thirteen emptied files once. Nothing touched the radio side.
+  STATE_AFTER: partial
+  STATE_WHY: Written at task 4, against tests that ran in this session; every appearance claim is computed on the headless host at 1040 px tall, not seen. Tasks 0 to 4 done, 0 to 3 pushed as 107268c, a406dc1, 9b07750, d1c2def. One, met: at 1920 the top row went 445 -> 190 px and the working card 318 -> 573 px, to the status bar; TheTopRowTests watched red. Two, met: the green block is inside the neighborhood card under the strip and legend, the band at 20 the largest text, the count and sparkline at its right; the world clock is 246 x 134 at the card's right end with one marker. Three, met: the rig panel is 190 px, the card's height, with the drive and the PSK31 power offer under the display and out of the send area, which keeps CQ and Stop. Four, met: waterfall, decoded text and For You are 363 px each at 1920 with one top and one bottom at the working card's floor, split 735/378/734 of 1862 (0.395/0.203/0.394); the card is 678 px inside and its facts sit beside the map; TheWorkingPanelsTests watched red on 2 of 4. Five, met by its test with one named miss: at 1400 no callsign is clipped, the facts go under the map by the stated rule (419 inside against 568), and the working card is 534 to 555 of the 910 px below the band pills; but the top row on a licensed operator's fixture is 273 px, 0.300 of that height, against the mockup's 0.262, which the instruction says not to exceed. Six, met: BindingHealthTests and VoiceTests in the layout set, 57 of 57; carry-forward app 100 of 100 after tasks 1 and 2, engine 85 of 85 after task 3. Three reds off the list are older than this unit. Nothing touched the radio side, a decoder, a parser or the transmit logic.
   
-  ### ALSO RECORDED FOR UNIT 334 - STEP 0
+  ### ALSO RECORDED FOR UNIT 337 - STEP 0
   
   A second append for the same unit and the same step, called as UNIT 1.
   One unit is one entry, so what this route recorded is folded in here
   rather than written as a second entry. Only what differs is listed.
   
-  HIT: section 4 wants a ruling: banked - The two new rulings, a height cap at 1920 and whether a 30 px gain at 1400 is enough, only adjust a map size that already meets its exit criterion, step 0 is recorded done with every must-pass met, and no remaining work depends on the answers.
-  DECIDED: nothing beyond the plan; the map's new width is measured, not chosen
-  LICENCE: PHASE_PLAN.md R21, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R14, R19; CLAUDE.md 0.0, 0.5, 0.6
-  COST: 9.115458999999998
-  ACCOMPLISHED: the green zone no longer repeats the band row and the map is the size Tim asked for
-  STATE_WHY: The report backs every must-pass with evidence, the pills gone and the map measured at 202 to 232 px at 1400 and 202 to 492 px at 1920, the layout checks and the stale line held out by tests, BindingHealthTests and VoiceTests at 21 of 21 with carry-forward at 100 of 100 and 85 of 85, and one list of thirteen files in section 2, though the widths come from the headless host and not the real screen.
+  APPROACH: lay the main window out as the approved mockup - a short top row holding the neighborhood card with the green block and the world clock and a rig display of the same height with drive and power under it, the working panels full height below the tabs, at 1920 and 1400 - measuring the real controls and choosing the mechanism
+  HIT: section 4 wants a ruling: banked - The only rulings wanted on step 0 are how to shorten the green block at 1400 and what the working panels means, and each touches one exit criterion, the plan already lets the arbiter shorten a string and carry on, and the other step 0 work such as the nice to pass check stays open.
+  WHY: step 0 depends on nothing; the owner drew the outcome and ruled it; the plan prescribes no mechanism, so nothing here is a stop
+  DECIDED: every mechanism - the split, the 1400 rule, the exact heights - is the unit's, marked as its own, overrulable
+  LICENCE: PHASE_PLAN.md R26, section 6; the PSK31 and maintenance rulings; CLAUDE.md 0.0, 0.5, 0.6
+  COST: 20.433159000000003
+  ACCOMPLISHED: the main window looks like the mockup Tim approved, and the working panels have the window again
+  STATE_WHY: At 1920 the top row, rig height, equal panels and facts beside the map are measured and met, but at 1400 the licensed top row is 273 px, which the unit itself calls a miss, and the rig panel matching the card was not measured again at that height.
   
-  ## UNIT 335 - STEP 1
+  ## UNIT 338 - STEP 0
   
-  STEP: 1
-  APPROACH: rebuild the achievements category pages as trading cards - a header band with count, score, level and a bar on every kind; earned cards built from the log contact that earned them with the conversation card's globe plot; next cards handed the decoded CQ list; all eight kinds per R22; measured at 1400 and 1920
-  MOVE: continue
-  WHY: step 0 is done (unit 334, STATE_AFTER: done) and step 1 is next in the pipeline; its entry is checked by running TheAchievementsPageClicksInTests first
-  DECIDED: nothing beyond the instruction at task 0. The popup (task 5) is the drop candidate; task 4 sheds whole kinds only if the unit runs long. A States next card says Hamlet cannot tell a caller's state from the air, the arbiter's proposal marked for Tim.
-  LICENCE: PHASE_PLAN.md R22, section 4 step 1, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R13, R14; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1 with Ruling C, 3.5, 4; HM-DEC-092, HM-DEC-111, HM-DEC-139, HM-DEC-155
-  COST: one session, six tasks (0 to 5), each committing and pushing on its own.
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  UNIT_AS_CALLED: 2
+  STEP: 0
+  APPROACH: fold the strips above the three working panels into one row as the mockup draws (filter into the decoded panel header, Stop never collapsible) so the panels themselves take half the height, and shorten the green block's rule of thumb to the mockup's words so the 1400 licensed top row returns to 0.262
+  HIT: section 4 wants a ruling: banked - The open asks are the filter chips and send area placements, which are already built on the recommended option, and older carried rulings on the license phrase, the Modes and States cards and the demodulator, none of which stops the step 0 work still open such as the fourth task and measuring the license phrase at 1400.
+  MOVE: work around
+  WHY: Unit 337 met step 0 at 1920 by counting the working card as the working panels; measured against the mockup the three panels are 0.40 of the height where the picture gives them 0.54, and the 1400 top row is 0.300 against 0.262 - both are reachable by moving strips and shortening one string, so this is a different approach to the same step, not a loop and not a cut.
+  DECIDED: R26's 'working panels' means the three panels themselves, at least half the height below the band pills at 1920 and 1400 with the readiness strip hidden (overrides unit 337's reading 7); the rule of thumb becomes the mockup's sentence '20 m and up want daylight along the path; 40 m and down want dark.'; the sparkline may hide at narrow widths only if that alone does not bring the 1400 top row to 0.262 - all the author's, marked for Tim, overrulable
+  LICENCE: PHASE_PLAN.md R26 and section 6 (shorten a string and name it; the arbiter decides layout and continues); assets/main-screen-mockup.png (panels 382 of 710 px below the pills); unit 337 output.md section 4 items 1 and 2; CLAUDE.md 0.2, 0.5; psk31 R12, R14, R17
+  COST: 24.163439500000006
+  ACCOMPLISHED: the waterfall, the decoded list and For You get more than half of the window below the band pills at both of Tim's widths, as in the picture he approved, and the top band stays short at 1400 too
   FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: Written at task 4, against tests that ran in this session; every appearance claim is computed on the headless host, not seen. Tasks 0 to 4 done and pushed; task 5, the popup, dropped whole as the named drop candidate, so the nice-to-pass is unmet and no must-pass is lost. One: every kind's band carries count, score, level and a bar, or words where there is no next level - 8 of 8, watched red on no named band. Two: every earned card is the earliest contact in its place, with the conversation card's globe plot, the log's miles, band, mode, date and points; no dash where a fact is missing, and a card with no grid says so and lists its contacts. Three: the next card lists who on the CQ list, read with its time, would earn it, with distance, or says no one is calling from there now; States says Hamlet cannot tell a caller's state. Four: all eight kinds per R22, Continents to seven cards each opening to its countries. Five and six: at windows 1400 x 720 and 1920 x 720, every visible run fits and does not wrap on 10 pages, and 0 of 51 cards at each width lack a map, a bar or a list. Seven: achievement_category_opened carries the kind and the card count. 36 of 37 across the achievements, binding and privacy tests, the one red the known TheWindowDrawsEverySixRows; carry-forward after the change 100 of 100 app and 85 of 85 engine.
+  STATE_AFTER: partial
+  STATE_WHY: The report measures the 190 px top row, the equal rig height and the panel shares at 1920 and 1400, but for criterion 2 it only says the band strip and world clock are unchanged and shows nothing for the green block's band being its largest text, the clock's single dot or drive and power sitting under the S-meter, and BindingHealthTests and VoiceTests are not named with results while the layout set still has one red.
   
-  ### ALSO RECORDED FOR UNIT 335 - STEP 1
+  ## UNIT 339 - STEP 0
   
-  A second append for the same unit and the same step, called as UNIT 2.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
+  UNIT_AS_CALLED: 3
+  STEP: 0
+  APPROACH: prove step 0 criterion by criterion on the realized window - extend the green block, world clock and drive-and-power tests from 1920 to 1400, run and name every step 0 test with its result and BindingHealthTests and VoiceTests as counts - then measure step 1's category page against its mockup without building
+  HIT: section 4 wants a ruling: banked - This unit's own items ask for no ruling, but the carried asks still want rulings on the Modes and States cards, the demodulator, the achievements hovers and the id schemes, and none of them stops step 0 work that is still open, such as task 3, asserting the 1400 panel floor and the reds on the carry forward list.
+  MOVE: work around
+  WHY: Two units built the layout and the state reader still found step 0 partial on evidence, not on the screen: criteria 2 and 3 are asserted only at 1920, and criterion 6's classes were never named with counts. A different approach to the same step - proof instead of more layout - not a loop (the loop test found nothing like it) and not a cut, since nothing measured is missing.
+  DECIDED: the filter chips stay in the mode strip (unit 338 item 2, option a) and CQ and Stop stay right of the tabs (unit 338 item 3); the readiness-strip-hidden measure of ruling 1 stands, with the strip-showing number reported at 1400; step 1 may be measured before step 0's verdict, but not built - all the author's, marked for Tim, overrulable
+  LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues); unit 338 output.md section 4 items 2 and 3 and their stated reasoning; PHASE_OUTCOME.md unit 338 STATE_WHY; CLAUDE.md 0.2, 0.5; R17; psk31 R12, R14
+  COST: 11.540931500000001
+  ACCOMPLISHED: every promise the approved mockup makes about the main window is checked by a named test at both of Tim's widths, so step 0 is closed on evidence and step 1 starts from measured numbers
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Five must-pass criteria have measured numbers behind them, but criterion 3 is not fully shown, because the power offer is not drawn on the FT8 fixture and is checked only as being inside the rig panel, so nothing measures it sitting under the S-meter at either width.
   
-  APPROACH: rebuild the achievements category pages as trading cards - earned card from the log contact with the conversation card's globe plot, next card fed the decoded CQ list, all eight kinds, measured at 1400 and 1920
-  HIT: section 4 wants a ruling: banked - The rulings asked for only touch the wording of the States next card and whether door callers get named, step 1 is recorded done with every must-pass met, and the dropped map popup can still be built without either answer.
-  WHY: Step 0 is done by the outcome file's independent reader, and step 1 is the next in the pipeline with its entry criterion checkable by one named test; the loop test finds no prior attempt at it.
-  DECIDED: A States next card says Hamlet cannot tell a caller's state from the air rather than that no one is calling, marked for Tim as a proposal; the nice-to-pass popup is the drop candidate and task 4 sheds whole kinds if the unit runs long; the category bands are read as the achievements' own colors per the approved picture, not mode-family fills under 0.5.
-  LICENCE: PHASE_PLAN.md R22, section 4 step 1, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R13, R14; CLAUDE.md 0.0, 0.5, 0.6; ACHIEVEMENTS_PHILOSOPHY.md 2, 3.1 with Ruling C, 3.5, 4; HM-DEC-092, HM-DEC-111, HM-DEC-139, HM-DEC-155; ARBITER.md 6 and 7
-  COST: 28.656047000000004
-  ACCOMPLISHED: every achievements category Tim opens shows the contacts that earned it - the map of the path, how far, when, on what - and a next card that tells him who on the air right now would earn the next one
-  STATE_WHY: The report backs all seven must-pass criteria with tests that failed first and then passed, and with measured fixture output, including the band on 8 of 8 kinds, earned cards from the earliest log contact, next cards built from the CQ list read when the window opened, no clip or wrap at 1400 and 1920 and 0 of 51 white cards, while the dropped map popup was only nice-to-pass and the States wording awaits an owner ruling.
+  ## UNIT 340 - STEP 0
+  
+  UNIT_AS_CALLED: 4
+  STEP: 0
+  APPROACH: draw the PSK31 power offer in the rig panel on the licensed fixture and assert it under the S-meter at 1920 and 1400 with the top row and rig height holding while it shows, fitting it by arrangement in RigDriveAndPower if it does not; assert the three panels' floor at 1400; then run step 1's TheCategoryPagesAreTradingCardsTests without building
+  HIT: section 4 wants a ruling: banked - The one ruling wanted is where the PSK31 power offer sits against the 190 px top row, which bears on criteria 1, 3 and 5 while the offer shows, but the PSK31 green block putting the 1400 row 2 px over without the offer, the transmit reds on the carry forward list and the nice to pass check can all go ahead without it.
+  MOVE: work around
+  WHY: The state reader left step 0 partial on one clause: the power offer was only ever checked by containment on an FT8 fixture where it is not drawn, so its place under the S-meter - and whether the 190 px top row survives it - was never measured. This is a different approach from unit 339's (draw the thing on the mode that offers it, and fit it if it breaks the row, rather than extend existing assertions to a second width); the loop test found nothing like it.
+  DECIDED: the power offer is measured on PSK31, the mode that offers it, and is not added to FT8 because the mockup draws it there (ruling 6); if it breaks the top row it is fitted by arrangement only, with its words, the ALC line, bindings and commands unchanged, and a miss beyond arrangement is reported rather than shortened (ruling 7); TheOperatorCanStopItTests runs alone, never joined; step 1's tests may run before step 0's verdict but nothing is built - all the author's, marked for Tim, overrulable
+  LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues; a miss by a little ships partial; never loosen a test); PHASE_OUTCOME.md unit 339 STATE_WHY; unit 339 output.md section 4 items 1 and 4; MainWindowViewModel.HasPsk31PowerOffer and OnChosenDigitalModeChanged (section R11 on PSK31); HM-DEC-084; R15; CLAUDE.md 0.2, 0.5; psk31 R12, R14
+  COST: 10.092021
+  ACCOMPLISHED: the rig display is shown to hold the transmit drive and the power offer under the S-meter, with the offer actually on the screen, at both of Tim's widths, and the top row stays the mockup's height when PSK31 is chosen - so step 0 can close on evidence and step 1 starts from its own test results
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: With the PSK31 power offer drawn the top row measures 305 px against 209 at 1920 and 0.335 against 0.262 at 1400, so criteria 1 and 5 are red, and the unit shows that no layout change inside the rig column fixes this without changing the offer's words, which ruling 7 forbids, so a ruling on section 4 item 1 is needed first.
+  
+  ## UNIT 342 - STEP 1
+  
+  UNIT_AS_CALLED: 6
+  STEP: 1
+  APPROACH: fit the built category pages to assets/category-page-countries.png - the earned card map across the card inner width with the crop to the two stations asserted as a bound a whole-globe frame fails; the band line gap clause and the next card quill sentence where true; the back control as a link; a card map opening in a click popup as the drop candidate; measured at 1400 and 1920
+  HIT: section 4 wants a ruling: banked - This unit's own items ask for no ruling, but the carried asks still want rulings on the Hall of Fame and Modes next cards, callers from unopened continents, the States wording and the demodulator, and none of them stops the step 1 work still open, such as the fit at 1400 and 1920, the eight kinds and the category telemetry.
+  MOVE: continue
+  WHY: The state reader found step 0 done on unit 341's evidence, so the plan moves to step 1, whose content unit 335 built in the last phase but which was never held to the approved picture; units 339 and 340 measured the gaps, and the loop test found nothing like this approach (unit 335 built the pages, this fits them to the picture).
+  DECIDED: rulings 11 to 16 - the card map spans the card inner width at a height the unit chooses near the picture's 3 to 1, with the no-map border matched; the crop asserted as a stated bound that fails on a whole-globe frame; the band line carries the gap to the next level (overrules unit 335's choice); the quill sentence only on kinds whose callers carry the quill; the read time kept over 'right now' (keeps unit 335's choice, section 0.0); the back control a plain link with its words and command unchanged; the map popup on click reusing the conversation card's mechanism, with that popup's event or none - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 2, 4 (step 1 delivers R22 as the picture; entry step 0 done) and 6; docs/phase-maintenance-run/PHASE_PLAN.md R22; assets/category-page-countries.png; .run-unit/state-verdict.json (step 0 done on unit 341); unit 339 output.md section 3 (the Countries page against its mockup, three largest gaps) and section 4 item 5; unit 340 output.md section 4 item 5; CLAUDE.md 0.0, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-155
+  COST: 12.401394500000002
+  ACCOMPLISHED: each achievements category page looks like the Countries picture Tim approved - the map of the contact's path across the card and cropped to the two stations, the level's gap on the band, the next card's words where they are true - with every step 1 criterion proven by a named test at both of Tim's widths, and a card's map one click from its popup if the night allows
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Criteria 2, 5, 6 and 7 have green tests with measured numbers, but criterion 4 is checked only on the view model for five kinds and for Continents, criteria 1 and 3 are not checked at 1400 or 1920, and the detailed sections of the report describe the step 0 power offer work rather than step 1, so nothing there backs the summary.
 
   --- CLAUDE.md ---
-  1386 lines, 196495 bytes
+  1387 lines, 197230 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -325,10 +353,10 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   (not inlined - it is the standard and it is long)
 
   --- PROJECT_CARD.md ---
-  29 lines, 1393 bytes
+  29 lines, 1355 bytes
   PROJECT: Hamlet
   TRUNK: main
-  PHASE: The screen says what is true and looks like someone meant it
+  PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   TEST_CMD: dotnet test
   NOTE: BASELINE_RED above is THE CARD S CLAIM about the suite.
@@ -336,26 +364,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 778 bytes
+  10 lines, 433 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: 5 of 6
-  WORK_INSTRUCTION: 335 - every category page is trading cards
-  BALL: tim
-  NEXT_PASTE: output.md -> the arbiter
-  RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-12T17:28:33-04:00
-  NOTE: Complete at task 4 - tasks 0 to 4 pushed (bcaf39d), task 5 the popup dropped as named. 8 of 8 kinds are trading cards; 1400 and 1920 fit, 0 white cards; output.md validated exit 0
-  
-  ---
-  
-  Written by a Claude Code session per CLAUDE.md 13 and ANNUNCIATOR.md.
-  
-  PROTOCOL names which protocol this header is written against. The long form,
-  STATUS_PROTOCOL.md, lives in the annunciator repository and is not in this
-  one, so nothing here can check conformance to it -- the field says what the
-  file was written to, not that anybody validated it.
+  STATE: EXECUTING
+  TASK: 3 of 4
+  WORK_INSTRUCTION: 342 - step 1, the category pages fitted to their mockup
+  BALL: code
+  NEXT_PASTE: none
+  RULES_AT: HM-DEC-163 (2026-09-12)
+  UPDATED: 2026-09-12T23:28:55-04:00
+  NOTE: Task 3 done and committing - a card's map opens in its popup on a click and closes on a click outside at 1400 and 1920, no event; four classes 23 of 23, carry-forward 100 and 85; writing the report
 
 ==============================================================
  END OF RELOAD

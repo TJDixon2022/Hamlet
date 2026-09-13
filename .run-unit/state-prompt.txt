@@ -29,24 +29,29 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 2 | The record is honest - States scored from the ADIF STATE field, rank names read from the points file, the points file documented, the 1400 px layout settled.
-## Step 2 - The record is honest, and the layout settled
+﻿STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+## Step 1 - Every category page is trading cards
 
-**Delivers:** R23 and R24.
+**Delivers:** R22, as `assets/category-page-countries.png`, on all eight kinds.
 
-**Entry:** step 1 done.
+**Entry:** step 0 done; `TheAchievementsPageClicksInTests` green, checked first.
 
 **Exit:**
-- A US contact with `STATE` in the log scores its state; one without scores nothing; the
-  States badge count matches the log. *must-pass*
-- `rank_names` in the points file names the ranks; absent, the defaults show; the file's
-  keys are documented at its top. *must-pass*
-- At 1400 the decoded list and For You share the tab by R24, no callsign is clipped, and
-  the card's table is beside the map or under it by the stated rule; at 1920 beside.
+- A category page has the color band with count, score, level and a bar to the next
+  level. *must-pass*
+- An earned card carries the entity, callsign, grid, a path map cropped to the two
+  stations, distance, band, mode, date and points, from the log entry that earned it.
   *must-pass*
-- The report states the split at both widths. *must-pass*
+- The next card names what it wants and, when anyone on the CQ list would earn it, lists
+  them with distance; otherwise says no one is calling from there now. *must-pass*
+- All eight kinds render this way with their own content per R22; Continents opens to
+  seven badges and each to its countries. *must-pass*
+- No string clips or wraps a word, measured at 1400 and 1920. *must-pass*
+- No card is a white rectangle. *must-pass*
+- `achievement_category_opened` carries the kind and the count of cards. *must-pass*
+- A card's map opens in the popup on click. *nice-to-pass*
 
-**Depends on:** step 1.
+**Depends on:** step 0.
 
 
 --- the unit's report follows ---
@@ -55,415 +60,972 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 READ IN THIS ORDER.
 ```
 
-A. The phase goal - the screen says what is true and looks like someone meant it.
-   Steps 0 and 1 done; step 2 partial after this unit, two of four must-pass met; step 3, Tim
-   looking, not started.
-B. Step 2 and its four must-pass - States scored from STATE and the badge count matching
-   the log; rank_names naming the ranks with defaults and the file's keys documented;
-   the 1400 split by R24 with no callsign cut and the table placed by the rule, beside
-   at 1920; the split stated at both widths.
-   1. States from `STATE`, and the badge count matching the log: met. On the five-record
-      fixture, 2 of 5 records score (PA and AK), for 12 points from the shipped file, and the
-      badge reads `2 worked`. It was 0 before.
-   2. `rank_names` names the ranks, the defaults show when it is absent, and every key is
-      documented: met. The comment block names 23 of 23 keys.
-   3. The 1400 split by R24, with no callsign cut and the table beside the map at 1920: not
-      met. Task 3 was dropped whole, and the split is still `383,*`. Measured: no single
-      fraction can meet this at a 338 px table (section 4, item 1).
-   4. The split stated at both widths: not met as a statement of a built split. The split as it
-      stands is measured and stated in section 3.
-C. The report last. Section 4 raises 3 items on top of the carried queue. Item 1 stands in the
-   way of must-pass 3 and 4; items 2 and 3 do not stand in the way of any criterion in B.
+A. The phase goal - the screen, done right. Step 0 done (state reader on unit 341). Step 1 in
+   progress, with every criterion's named test green after this unit:
+   - Criteria 2, 5 and 6 carry a green named test that realizes both 1400 and 1920.
+   - Criteria 1, 3 and 4 are asserted on the view model and on a realized window at 1040 (3 also
+     at 1400). At 1400 and 1920 their pages are drawn with every run fitting and no white card,
+     but their content is not asserted at those widths.
+   - Criterion 7 is an event, not a width, and is green.
+   Nice-to-pass built. Steps 2 and 3 not started.
+B. Step 1 and its exit criteria, each with the test that proves it, its result and the widths it
+   realized. Twelve-contact fixture unless it says otherwise.
+   entry: TheAchievementsPageClicksInTests 8 of 8, run first; TheCategoryPagesAreTradingCardsTests
+      6 of 6 after it.
+   1. Color band with count, score, level and a bar -
+      `EveryKindsBandCarriesCountScoreLevelAndABar` PASS, on the model for all eight kinds and a
+      window at 1040. The gap clause is on 7 kinds (Hall of Fame, Continents, Countries, States,
+      Grids, Total Miles, Bands) and absent on Modes, which is Gold, the top level.
+   2. Earned card is the contact, with a path map CROPPED TO THE TWO STATIONS -
+      `EveryEarnedCardIsTheContactThatEarnedIt` PASS at 1040, 1400 and 1920.
+      - On every Countries card the map is 632 x 231 against a card inner 632 at 1400, and
+        892 x 231 against 892 at 1920.
+      - It was 170 tall and left-aligned: 564 x 170 at 1400 and 796 x 170 at 1920 on the short
+        paths, and 298 to 446 px wide on the tall and date-line paths.
+      - The crop bound is asserted on every card. A whole-globe frame failed it on every card, and
+        once more when set on the test window.
+   3. Next card names its want and its callers with distance, or no one calling -
+      `TheNextCardKnowsWhoIsCalling` PASS, on the model and on windows at 1040 and 1400.
+      - The quill sentence is on Countries, on a continent's page of countries, and on an
+        unreached continent's card.
+      - It is off on Grids, States, Total Miles, Bands, Modes and Hall of Fame. The decoded list
+        marks a caller's country, never a square, a state, a band, a mode or a distance.
+   4. All eight kinds per R22, Continents to seven and each to its countries -
+      `TheOtherFiveKindsEachDrawTheirOwnCards` PASS (model),
+      `ContinentsOpensToSevenAndEachToItsCountries` PASS (model),
+      `StatesCountWhatTheLogsStateFieldSays` PASS at 1400 and 1920.
+   5. No string clips or wraps a word at 1400 and 1920 -
+      `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` PASS at both. The tallest
+      page is Grids, 1656 -> 2022 px at both widths, scrolling inside a 589 px viewport.
+      `NoStringInAnySlotIsClippedAtTheWindowsSize` PASS at 1040.
+   6. No card is a white rectangle - the same test PASS: 0 white of 51 cards at each width.
+   7. achievement_category_opened carries the kind and the card count -
+      `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse` PASS: the kind, and cards 9.
+   nice-to-pass: a card's map opens in the popup on click -
+      `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt` PASS at 1400 and 1920. It writes
+      no event, because the conversation card's map popup writes none.
+C. The report last. Section 4 raises 8 items on top of the carried queue. None stands in the way
+   of a criterion in B.
+   - **The taller card kept criterion 5 at 1400**: 64 runs fit on Countries and 76 on Grids, with
+     0 white cards.
+   - **The quill sentence was withheld as untrue on six kinds.** On Countries it says *a quill*
+     rather than *the green quill* whenever a listed caller would open a continent.
+   - Item 3 bears on the step verdict: criteria 1, 3 and 4 are not realized at both widths.
 
 ```
-UNIT:       336 - stopped at task 2 of 3 - 2026-09-12 18:01
-PHASE GOAL: Maintenance, screen only - make what Hamlet shows true and deliberate-looking,
-            finally judged by Tim at his own window size.
-UNIT GOAL:  Score States from the log's own STATE field, name the ranks from the points file,
-            make that file explain itself, and settle how the decoded list and For You share
-            the tab at 1400.
-ADVANCED:   yes - step 2 must-pass 1 (States from STATE) and 2 (rank_names and the documented file) met by tests watched red first
-NUMBER:     step 2 must-pass 0 -> 2 of 4; decoded split at 1400 383 px -> unchanged, 383 px (task 3 dropped)
+UNIT:       342 - complete at task 3 of 4 - 2026-09-12 23:28
+PHASE GOAL: The approved mockup on the screen - the main window first (done), then every
+            achievements category page as trading cards drawn the way the Countries picture draws
+            them, then what the last phase left, then Tim's own pass at his window.
+UNIT GOAL:  Fit the category pages unit 335 built to the Countries picture: the earned card's map
+            across the card with its crop to the two stations asserted as a number, the gap on the
+            band line and the quill sentence on the next card only where they are true, the back
+            control as a plain link, and a card's map opening in its popup on a click.
+ADVANCED:   yes - the map now spans every Countries card at both widths with the crop asserted; the band line and next card carry the picture's words where true; the popup was built
+NUMBER:     earned card map, Countries page: 1400 was 564 x 170 -> 632 x 231;
+            1920 was 796 x 170 -> 892 x 231
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Stopped at task 2 of 3.** Tasks 0, 1 and 2 are done, and each is pushed. **Task 3, the 1400
-layout, was not built.** It is the drop candidate the instruction named, and it was dropped
-whole. It was not dropped for time: the unit was about 25 minutes in. It was dropped because
-task 0's measurement shows its must-pass cannot be met by a fraction alone (see *Decisions,
-task 3* below, and section 4 item 1). **The next unit inherits task 3** and the measurements
-below.
+**Complete: tasks 0, 1 and 2 of 3.** Pushed to `main`:
+- `8796858`: the launcher's files and the version.
+- `3f5c5e2`: task 0.
+- `ae2d1da`: task 1.
+- `82a7fd2`: task 2.
 
-Claude Code on Tim's Windows 11 machine, project Hamlet. The gate passed on all four checks.
-Branch `main`. Every push succeeded: task 0 as `2b18f88`, task 1 as `38bc3a8`, task 2 as
-`38a1f0c`. This report, the closing status and the outcome entry go in one more commit.
+This report and the status file follow in their own commit. Every push was accepted.
 
-**Every appearance claim in this report is computed on the Avalonia headless host, not seen.**
-That host draws text at a flat ten pixels a character, wider than the glass.
+Provenance: Windows 11, `C:\Source\HamLet`, branch `main`, and the prompt claimed Hamlet. The gate
+passed: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` are present,
+`CoreHMI.sln` and `MURC.sln` are absent, and the root is `C:\Source\HamLet`. HEAD was `808e088`
+before the first commit. No decision was recorded in `DECISIONS.md`, so `RULES_AT: HM-DEC-163`
+stands.
 
-### Task 0 - the trace, before a line is built
+### Task 0 - the trace
 
-- **Carry-forward list, before any edit**, as the two invocations its comment orders: app
-  **100 of 100** in 12 s, engine **85 of 85** in 4 s.
-- **Entry criterion met.** `TheCategoryPagesAreTradingCardsTests` and
-  `TheAchievementsPageClicksInTests` together: **11 of 11**.
-- `PHASE_OUTCOME.md`: `UNIT 336 - STEP 2` appended. Version 1.13.20 -> **1.13.21**.
-- **The before-number is 0 of 4, confirmed.**
+- **The launcher's files** (`PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md`) went in
+  unchanged in `8796858`. With them went `WORK_INSTRUCTIONS.md` and the patch bump 1.13.25 ->
+  1.13.26. `.run-unit\` and `SESSION.lock` were not committed.
+- **`PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line** was then set to `341 - step 0, the power offer as
+  one line`, in `3f5c5e2`.
+- **Carry-forward before any change:** app 100 of 100, engine 85 of 85.
+- **`TheTopRowTests.Unit341TraceTheOneLineOfferAndThePsk31GreenBlock`** was added. It asserts
+  nothing and presses nothing, and it puts FT8 back before each window closes. The line and every
+  option below were set on the test window only, never in markup.
 
-#### The record: `STATE`
+#### The rig column's rows, before any build
 
-- **No path in `src` writes `STATE`.**
-  - `AdifLog.Record` writes the fourteen fields the instruction lists, and no `STATE`.
-  - `ContactLogStore.Append` is the only caller of `AdifLog.Record`.
-  - No import path exists in `src`, and no state lookup exists either.
-  - So a record carries `STATE` only if another logger wrote it into the file.
-- **Hamlet never rewrites a record it did not create.** `ContactLogStore.Append` uses
-  `File.AppendAllText`, and nothing re-serializes the log. So an imported record's `STATE` is
-  never dropped.
-- **The reader read no `STATE`** (`AdifLog.From`).
-- **`AchievementScores` returned `States => 0`** in both places named.
-- **`AchievementContact` carries `Entity`**, and the DXCC table tells the three entities apart:
-  - `United States of America`: prefixes `K`, `W`, `N`, `AA`;
-  - `Alaska`: `KL`, `AL`, `NL`, `WL`;
-  - `Hawaii`: `KH6`, `KH7`.
-  - Their continents are NA, NA and OC.
-- **Before-number:** States counted on a fixture log that carries `STATE` is **0**. The badge
-  read `0 worked`.
+The rig column is 520 px wide at both widths, from x 1371 to 1891 at 1920 and from x 851 to 1371
+at 1400. The rows are the same in both modes and at both widths:
 
-#### The ranks
+| Row | Box | Parts | Right edge into the column | Left over |
+|---|---|---|---|---|
+| rig display | 520 x 110 at y 147, bottom y 257 | - | - | - |
+| drive row | 520 x 32 at y 274 | *Transmit drive* 141, the drive box 120, *% of full scale* 151 | 429 | 91 |
+| drive note row | 520 x 14 at y 309 | *-12.0 dBFS* 100, the tip mark 14 | 120 | 400 |
 
-- **A rank is spoken in one place: `AchievementBadgePage.TotalLine`.** It is bound to
-  `AchievementsTotalLine` in `AchievementsWindow.axaml`, and it says both the rank and the gap.
-  - On the twelve-contact fixture it read `Total 465 pts · Rank 4 · 35 to Rank 5`.
-  - The shipped file has 8 thresholds and `RankOf` is `1 + count`, so ranks run from Rank 1 to
-    Rank 9, as the instruction says.
-- **No other rank is spoken.** `ContactBelt`'s ranks are belt colors on the contact count
-  (`white` to `gold`), not the points rank. `CwDecodeReport.Rank` is a decoder's.
+- **Room under the column:** 0 px at 1920 in both modes. At 1400 it is 29 px on FT8, and 50 px on
+  PSK31 with the offer's border hidden.
+- **The line's width on the host:** *RF power 50 % offered* needs 210 px as bare 11 px text, and
+  218 x 13 as a card link.
 
-#### The points file
+#### Where the line goes, measured on PSK31 with the offer's border hidden
 
-- **Readers in `src`:** one, `AchievementPoints.Parse`, reached through `Read` and `ReadOrSeed`.
-  `MainWindowViewModel.OpenAchievements` calls `ReadOrSeed` each time the window opens.
-- **Readers in `tests`:**
-  - `Parse(Shipped())` in `ThePsk31RecordsAppearTests`, both `TheTotalMilesTests`,
-    `TheAchievementsPageClicksInTests`, `TheAchievementsPageTests`,
-    `TheCategoryPagesAreTradingCardsTests` and `Unit332TwoWidthsTests`;
-  - `Read` and `ReadOrSeed` in `TheAchievementsPageTests`;
-  - `TheShippedFileIsTheOneInTheTreeAndSaysItIsHisToEdit`, which compares the file on disk with
-    the embedded copy as text.
-- **Every one went through `JsonDocument.Parse` with its default options**, so every one would
-  have come back absent on a comment. None parses the file by any other route, and nothing in
-  `tools` reads it.
-- **`assets\data\achievement-points.json`: nothing in `src`, `tests` or `tools` reads it.**
-  - Before this unit it differed from the shipped file only in its last newline.
-  - It now also lacks the comment block.
-  - Left as it is, as instructed.
+| Placement | Top row 1920 | Panels 1920 | Top row 1400 | Panels 1400 |
+|---|---|---|---|---|
+| none (border hidden only) | 190 (0.209) | 503 | 240 (0.264) | 453 |
+| on the drive row | 201 (0.221) | 492 | 310 (0.341) | 383 |
+| **on the drive note row** | **190 (0.209)** | **503** | **240 (0.264)** | **453** |
+| on its own line | 206 (0.226) | 487 | 240 (0.264) | 453 |
 
-#### Telemetry
+#### The green block, line by line
 
-- **The points file:** `achievement_points_loaded` (`kinds`, `fileHash`) reports it being read.
-- **The log:** no event reports the log being read. `achievements_opened` (`kinds`) is written
-  once the log has been read and scored, so that is where the count of states went.
+Measured in the first trace run. The block's rows are its two regions, then the strayed line, then
+an empty row.
 
-#### The layout, measured at a window 1400 and 1920 wide
+| Line | FT8 1920 | PSK31 1920 | FT8 1400 | PSK31 1400 |
+|---|---|---|---|---|
+| block | 58 | 79 | 91 | 112 |
+| regions (left and right columns) | 41 | 50 | 74 | 83 |
+| mode line | *Digital · FT8 · yours to use*, 1 line | *Digital · PSK31 · yours to use*, 1 line | 1 line | 1 line |
+| license line | 740 x 9, 1 line | same | 340 x 27, 3 lines | 300 x 27, 3 lines |
+| rule of thumb | 740 x 9, 1 line | same | 340 x 18, 2 lines | 300 x 27, **3 lines** |
+| best bet (*best bet now: 40 m*) | not drawn | **drawn** | not drawn | **drawn** |
+| `GreenZoneStrayedLine` | not drawn | **1016 x 9, *PSK31 lives at 14.070; you are at 14.074*** | not drawn | **496 x 9, same words** |
+| empty upgrade row | 0 px, still visible | same | same | same |
 
-`DigitalDecodedPanes` is `383,*`. The widths below are in pixels.
+- **The 12 px has a name:** `GreenZoneStrayedLine`. The fixture tunes 14.074 MHz, FT8's dial, and
+  chooses PSK31, so the block says so. That is 9 px of text plus 3 px of the block's spacing.
+- **The rest of the 21 px at 1400 is the best bet.** Where it draws, the right-hand column widens
+  from 140 to 180 px and the rule of thumb takes a third line (9 px).
+- **The best bet reads the live ranking** (the parked item, unit 339 item 2). In the second trace
+  run it was drawn on PSK31 at 1920 and not at 1400, and it appeared on an FT8 window partway
+  through. So the PSK31 block at 1400 read 103 px in one run and 112 in the other.
+- **Measured options, set on the test window only.**
+  - The strayed line hidden: 103 -> 91 px, and 79 -> 67 at 1920.
+  - The empty upgrade row hidden: 103 -> 100 px, and 79 -> 76 at 1920. That row is 0 px tall and
+    visible in every mode, so it takes the block's 3 px of spacing everywhere.
 
-| | 1400 | 1920 |
-|---|---|---|
-| The tab (`DigitalPanes`) | 1342 | 1862 |
-| The right column (`DigitalDecodedPanes`) | 671 | 931 |
-| The decoded panel | 378 | 378 |
-| For You | 283 | 543 |
-| The card, inside | 227 | 487 |
-| The card's map | 215 x 120 | 220 x 120 |
-| The card's table | 227 x 102 | 338 x 102 |
-| Table beside or under the map | **under** | **under** |
+#### The answers, at each width
 
-- **The table is under the map at 1920 as well.** It wants 338 px.
-  - The label column is `Last heard`, at 100 px.
-  - The widest value is `4,500 miles · northeast`, at 230 px.
-  - Beside the map, the pair needs 220 + 10 + 338 = **568 px** inside the card.
-- **The widest message cell each width needs is the same: 200 px.**
-  - `VP2MAA/P KC3QIS R-09` needs 200 and gets 200.
-  - `CQ DX K9XP JN88` needs 150.
-  - The senders alone: `KC3QIS` 60, `K9XP` 40.
-- **What a PSK31 row can abbreviate to, without new parsing.** A PSK31 row has no fields
-  (`HasFields` is false). It already draws:
-  - the speaker the exchange parser read (`Sender`, when `ShowsReadSender`);
-  - its reading word (`guess` or `unknown`);
-  - the text.
+- **Where the line fits without adding height:** the drive note row, at both widths. It has 400 px
+  left and the line wants 218, and the top row does not move. The drive row does not fit: it has
+  91 px left, and forcing the line on makes the row 201 px at 1920 and 310 at 1400. A line of its
+  own adds 16 px: 206 at 1920, still under 209, and at 1400 the card sets the row anyway, at 240.
+- **Which line makes PSK31 12 px taller:** `GreenZoneStrayedLine`. **None of ruling 9's paths names
+  it.** It is not the rule of thumb, the heard line, the sparkline or the license line. The 9 px
+  beyond it at 1400 is the rule of thumb's third line, but ruling 2 fixes those words and the
+  sparkline is already hidden there. So no path of ruling 9 applies as written. The fit taken
+  instead is the empty row's 3 px, which changes no word. It is decision 6 below.
 
-  **So at 1400 it could show the read speaker and that word, and never a grid.** Where the parser
-  named no speaker there is no callsign to show at all, only text.
+### Task 1 - ruling 8 built, ruling 9 fitted, criteria 1, 3 and 5 on PSK31
 
-### Task 1 - States counts what the log says
+#### 1. What was built
 
-**Test first, watched red.** `TheCategoryPagesAreTradingCardsTests.StatesCountWhatTheLogsStateFieldSays`
-is new. It reads one fixture log written as ADI text, so the reader is what is tested:
-- `K3PA`, United States, with `STATE=PA`;
-- `W1AW`, United States, with no `STATE`;
-- `KL7XYZ`, Alaska, with `STATE=AK`;
-- `VE3PQR`, Canada, with `STATE=ON`;
-- `N3DC`, United States, with `STATE=DC`.
+- **`MainWindow.axaml`, on the drive note's row:**
+  - A card-link button, `DigitalPsk31PowerLine`. Its content is bound to `Psk31PowerLine`, its
+    command to `OpenPsk31PowerOfferCommand`, and it is visible while `HasPsk31PowerOffer` is true.
+  - Beside it, a popup, `DigitalPsk31PowerPopup`. It is open while `Psk31PowerOfferIsOpen` is true
+    (two-way), placed under the line's right edge, and closes on a click outside it.
+  - Inside the popup, on a white frame, is **the offer's existing border and everything in it**.
+  - Unit 340's comment is replaced by one that says what ruling 8 did, why, and that the placement
+    is the unit's own.
+- **Unit 340's padding fit is undone, because it is moot.** The border's `Padding` goes from 8,3
+  back to 8,6 and its stack's `Spacing` from 2 back to 4. The border no longer stands in the row.
+- **`MainWindowViewModel.cs`**, four additions and no line removed:
+  - `Psk31PowerLine`, which is `"RF power " + Psk31PowerPercent + " % offered"`. The number comes
+    from the constant.
+  - `Psk31PowerOfferIsOpen`, an observable property.
+  - `OpenPsk31PowerOfferCommand`. It sets the open state to `HasPsk31PowerOffer` and writes nothing.
+  - An `OnPropertyChanged` override. When `HasPsk31PowerOffer` turns false, it closes the popup.
+    So an answered offer does not leave an empty popup open to swallow the next click, and the
+    accept and decline commands are not touched.
 
-Red: `Expected: 2`, `Actual: 0`.
+#### 2. Ruling 9's fit
 
-**Change.**
-- `AdifContact.State` is read from ADIF `STATE`. `AdifLog.Record` still writes none.
-- `AchievementContact` carries `State`.
-- `AchievementLog.StateOf` scores a contact only when two things hold: its entity is the United
-  States, Alaska or Hawaii, and its `STATE` is one of the fifty codes. `AchievementLog.States`
-  and `InState` are built on it.
-- `AchievementScores` counts States from `log.States` and scores them with `per`, `special` and
-  `all`. A special replaces `per`, as it does for a band, and `all` is for the fifty.
-- **The States page draws each state as the contact that earned it**, through the builder unit
-  335 built for Countries (`EarnedBy`). Each card is worth its `special` or its `per`.
-  **The next card's want line and its sentence, `Hamlet cannot tell a caller's state`, are
-  unchanged.**
-- **Telemetry:** `achievements_opened` gains `states`, the count scored. It is a count and never
-  a code.
+`MainWindow.axaml`, in the green block: the upgrade prompt's row now has the same `IsVisible`
+condition as its only button. Measured after the build:
+- PSK31 1400 block: 103 -> 100 px with no best bet drawn, and 112 -> 109 with one drawn.
+- PSK31 1400 top row: 237 px (0.260) with the best bet, and 228 (0.251) without.
+- FT8 1400 top row: 219 -> 216 px.
 
-**On the fixture, computed:**
-- **Scored:** PA and AK. **Not scored:** the blank, ON and DC, which is 3 of 5.
-- **Points:** `2 + 10 = 12`, read from the shipped file.
-- **The badge:** `2 worked`.
-- **The page draws two earned cards:**
-  - `AK`: `KL7XYZ · BP51`, `10 pts`, with a map;
-  - `PA`: `K3PA · FN10`, `2 pts`, with a map.
-- **The next card is `One more state`**, still `Any state you have not worked` and
-  `Hamlet cannot tell a caller's state`.
-- **At windows 1400 and 1920 the States page draws 3 trading cards.** 21 runs fit, none wraps,
-  and 0 cards are white.
+#### What `git diff` shows for the offer
 
-**Green.**
-- The new test.
-- `OpeningTheWindowWritesHowManyStatesScoredAndNoCode`, which is new. It writes `states` = 2,
-  and no code, callsign or entity.
-- Engine log and scoring tests: **52 of 52**, after the property pin below.
-- The achievements, binding and privacy set: **40 of 42**. Both reds are older than this unit;
-  see *Reds older than this unit* below.
-- **Unit 335's fit and no-white-card test at 1400 and 1920 passed**, as part of that set.
+Every line of the offer that left came back unchanged, re-indented one level into the popup:
 
-#### Decisions this session made for itself, task 1
+```
+-                        <TextBlock x:Name="DigitalPsk31PowerOffer"
+-                                   Text="{Binding Psk31PowerOffer}"
+-                            <Button x:Name="DigitalPsk31PowerAccept"
+-                                    Classes="hm-cardaction"
+-                                    Content="{Binding Psk31PowerAccept}"
+-                                    Command="{Binding AcceptPsk31PowerCommand}" />
+-                            <Button x:Name="DigitalPsk31PowerDecline"
+-                                    Classes="hm-cardlink"
+-                                    Content="I will set it myself"
+-                                    Command="{Binding DeclinePsk31PowerCommand}" />
+-                        <TextBlock x:Name="DigitalPsk31AlcReference"
+-                                   Text="{Binding Psk31AlcReferenceLine}"
++                                    <TextBlock x:Name="DigitalPsk31PowerOffer"
++                                               Text="{Binding Psk31PowerOffer}"
++                                        <Button x:Name="DigitalPsk31PowerAccept"
++                                                Classes="hm-cardaction"
++                                                Content="{Binding Psk31PowerAccept}"
++                                                Command="{Binding AcceptPsk31PowerCommand}" />
++                                        <Button x:Name="DigitalPsk31PowerDecline"
++                                                Classes="hm-cardlink"
++                                                Content="I will set it myself"
++                                                Command="{Binding DeclinePsk31PowerCommand}" />
++                                    <TextBlock x:Name="DigitalPsk31AlcReference"
++                                               Text="{Binding Psk31AlcReferenceLine}"
+```
 
-1. **A States card's title is the two-letter code**, the way a Grids card's title is the square.
-   The tree has no table of state names. Rejected: adding one, which is new data this unit was
-   not asked for.
-2. **The count of states scored went on `achievements_opened`.** It is the event written after
-   the log is read and scored. Rejected: `achievement_points_loaded`, which is written before the
-   log is read.
-3. **The States badge's meaning line went from `the 50, plus DC` to `the 50 states`**, and
-   `AchievementKinds.States`'s summary from *The fifty, plus DC* to *The fifty, from the log's own
-   `STATE` field*. Decision 1 makes DC score nothing, so both lines would have been false.
-4. **`AdifLog.Record` still writes no `STATE`** (decision 2, parked).
-   - Consequence: an `AdifContact` with `State` set loses it on a write.
-   - Why that is safe today: nothing Hamlet creates sets it, and the log only appends.
-   - `AdifContact.State`'s doc comment says so.
-5. **`TheLogCanSayFt4Tests.AdifContactCarriesOneSubmodeProperty` pins the property count.** It
-   went from 15 to 16 under R12, with the reason written beside it. Its one-submode assertion is
-   untouched.
-6. **The next card's title follows the count** (`Your first state`, then `One more state`), as
-   every other kind's does. Its want line and sentence are unchanged.
+- The border's `IsVisible="{Binding HasPsk31PowerOffer}"` also moved unchanged.
+- `git diff` of `MainWindowViewModel.cs` has no removed line. `Psk31PowerOffer`,
+  `Psk31PowerAccept`, `Psk31AlcReferenceLine`, `HasPsk31PowerOffer`, `AcceptPsk31PowerAsync`,
+  `DeclinePsk31Power` and the write are unchanged.
 
-### Task 2 - rank names from the file, and a file that explains itself
+#### 3 and 4. The tests
 
-**Tests first, both watched red:**
-- `TheAchievementsPageTests.TheRanksCarryTheNamesInThePointsFile` is new. Red: `Expected "Total
-  465 pts · Ranger · 35 to Voyager"`, `Actual "Total 465 pts · Rank 4 · 35 to Rank 5"`.
-- `TheAchievementsPageTests.TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop` is new.
-  Red: `the shipped points file has no comment block at its top`.
+- **`DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`**, rewritten under R12 at
+  1920 and 1400 in both modes. On PSK31 it asserts:
+  - the line is effectively visible and non-zero, not in the send area, with its top at or under
+    the rig display's bottom;
+  - the line is not clipped: its wanted width less its margin fits its box, inside the rig panel,
+    and its words lay out as one line inside their own box;
+  - its text is *RF power 50 % offered*, built from `MainWindowViewModel.Psk31PowerPercent`;
+  - the popup is closed at start, and the line's own command opens it;
+  - afterwards `HasPsk31PowerOffer` is true and `TransmitDrivePercent` is unchanged;
+  - with the popup open, the sentence, accept, decline and the ALC line are each found in the
+    popup's host, visible and non-zero, with text equal to `Psk31PowerOffer`, `Psk31PowerAccept`,
+    *I will set it myself* and `Psk31AlcReferenceLine`;
+  - no button carrying the accept or decline command is on the window outside the popup;
+  - closing the popup leaves `HasPsk31PowerOffer` true;
+  - in both modes, the model records to a telemetry file, and after the window closes no line in
+    it holds `"psk31_power_`.
 
-**Change.**
-- **`AchievementPoints` skips comments, and relaxes nothing else.** A trailing comma is still a
-  file that could not be read.
-- **`rank_names` is read by position** into `RankNames`.
-  - `RankName(n)` gives the name, or `Rank n` past the end of the list or for a blank entry.
-  - A `rank_names` that is not a list of strings is skipped whole. That is the way the reader
-    already skips a section of the wrong shape (a kind that is not an object is passed over), so
-    no name lands on the wrong rank.
-- **`TotalLine` says `Scores.RankName`, and the gap names `Scores.NextRankName`.**
-- **The shipped `data\achievements\achievement-points.json` gains a `//` block at its top.**
-  - It names every top-level key and every key inside a section, in quotes, with what each does.
-  - `rank_names` is documented there and **not added as a key**.
-  - `_about` stays.
-- **Telemetry:** `achievement_points_loaded` gains `rankNames`, the count read. It is a count and
-  never a name.
+  The rig panel against the card, and CQ and Stop's place, are kept as they were in both modes.
+  Accept and decline are never executed. The popup is closed and FT8 restored in `finally`.
+- **`AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest`** and
+  **`AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`**: no number changed, and both are green
+  on PSK31.
+- **Helpers, in `TheTopRowTests`:**
+  - `InOffer<T>` finds an offer control in a popup's logical tree, or on the window where no popup
+    holds it.
+  - `OfferBorder` now walks logical ancestors.
+  - `Realized` gained an overload that takes a `JsonlTelemetry`.
+  - `Unit340TraceThePowerOfferOnPsk31` finds the offer's four controls through `InOffer`.
 
-**On the twelve-contact fixture, computed:**
+#### 5. Watched red
 
-| `rank_names` | The total line |
-|---|---|
-| absent | `Total 465 pts · Rank 4 · 35 to Rank 5` |
-| eight names | `Total 465 pts · Ranger · 35 to Voyager` |
-| four names | `Total 465 pts · Ranger · 35 to Rank 5` |
-| `["Listener", 2, "Operator", "Ranger"]` | `Total 465 pts · Rank 4 · 35 to Rank 5` |
-| `"Ranger"` (not a list) | `Total 465 pts · Rank 4 · 35 to Rank 5` |
+Against the tree before the build, with the tests rewritten, all three were red:
+- `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`: *there is no Button named
+  DigitalPsk31PowerLine*. It stopped at the line's absence on its first window, before the popup
+  assertions, which were therefore not reached against the tree.
+- `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest`: *at 1920 on PSK31 the top row
+  is 305.0 px against 190.0 within 10%*.
+- `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`: *at 1400 on PSK31 the licensed top row is
+  305.0 px of 910.0 = 0.335, above the mockup's 0.262*.
 
-**What else the tests confirmed:**
-- **The block:** **23 of 23** keys are named in it. The shipped file parses with 8 kinds, and
-  `rank_names` is in the block and not in the file.
-- **Telemetry:** `ReadingThePointsFileWritesHowManyRankNamesItReadAndNoName` is new. It writes
-  `rankNames=3` for three names and `rankNames=0` for the shipped file, and no name.
+Two failures of this session's own making, before and after the build:
+- **The first build did not compile.** An optional telemetry parameter on `Realized` broke two
+  method-group uses in `TheWorkingPanelsTests`, and the model takes `JsonlTelemetry?`, not
+  `ITelemetry`. Fixed with an overload.
+- **The first run after the build was 21 of 22.** The drive test said *at 1920.0 on PSK31 the offer
+  line is clipped: it wants 228.0 px and has 218.0 x 13.0*. Avalonia's `DesiredSize` carries the
+  button's 10 px margin and `Bounds` does not, so the check compared two different measures. It
+  now takes the margin off the wanted width, and it also asserts that the words lay out as one
+  line inside their box. No threshold moved, and the line was not clipped: 218 wanted, 218 drawn.
 
-**Green.**
-- The achievements, binding, privacy and PSK31-records set: **46 of 49**. The three reds are older
-  than this unit, below.
-- Engine tests over the shipped file: **41 of 41**.
+#### 6. The runs after the build
 
-**Carry-forward list, after all changes**, as its two invocations: app **100 of 100** in 12 s,
-engine **85 of 85** in 4 s.
+- **One filter, four classes:** TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8,
+  BindingHealthTests 1 of 1, VoiceTests 5 of 5.
+- **Carry-forward, status written before each:** app 100 of 100, engine 85 of 85.
 
-#### Decisions this session made for itself, task 2
+#### The numbers after the build
 
-1. **A blank entry in `rank_names` names nothing**, so that rank keeps `Rank n`. The count of
-   rank names read counts only non-blank entries.
-2. **Only comments are relaxed.** `AMalformedPointsFileIsReportedAndLeftAlone` still passes: its
-   broken edit, with a trailing comma, is still unreadable. Rejected: allowing trailing commas
-   too, which would read an edit you had not finished.
-3. **The block says the file is read when the achievements window opens**, because that is what
-   the code does. `_about` still says *at startup* and was left as it is (decision 3 keeps it).
+| | PSK31 1920 | FT8 1920 | PSK31 1400 | FT8 1400 |
+|---|---|---|---|---|
+| offer line | 218 x 13 at y 309, visible | hidden | 218 x 13 at y 309, visible | hidden |
+| line top less the rig display's bottom | 52 | - | 52 | - |
+| line's ink on the rig panel's fill | #6E6E66 on #FDF1DE, 4.61:1 | - | same | - |
+| in the open popup | sentence 490 x 44, accept 212 x 20, decline 208 x 13, ALC line 480 x 36 | - | same | - |
+| rig panel / card | 190 / 190 | 190 / 190 | 228 / 228, or 237 / 237 with the best bet | 216 / 216, or 225 / 225 with the best bet |
+| top row, share | 190, 0.209 | 190, 0.209 | 237, 0.260 with the best bet; 228, 0.251 without | 216, 0.237 |
+| panels, strip hidden / showing | 503 / 450 | 503 / 450 | 456 / 403 | 477 / 424 |
 
-### Task 3 - not built
+#### 7. Both trace methods stay, asserting nothing
 
-#### Decisions this session made for itself, task 3
+`Unit340TraceThePowerOfferOnPsk31` and `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` stay.
+Unit 340's options now act on the closed popup's content, so they no longer move the row. Its prints
+are the row with the line: 190 at 1920 and 237 at 1400 on PSK31.
 
-1. **Task 3 was dropped whole.** Nothing in the layout was moved.
-   - **Why.** Task 0 shows that no single star fraction for `DigitalDecodedPanes` meets
-     must-pass 3 on the headless host:
-     - **Beside at 1920** needs For You at 568 + 56 = 624 px or more, so the decoded column can
-       be at most 931 - 5 - 624 = **302 px**. That is a fraction of **0.324** of the right
-       column, and it leaves a message column of 119 px, too narrow for the 200 px FT8 line even
-       at 1920.
-     - **At 1400 the same fraction** gives a decoded column of 217 px and a message column of
-       **34 px**. A six-character callsign needs 60 px, so a callsign is cut.
-   - Holding both halves needs something R24 does not say: a minimum width on a star column,
-     abbreviating at 1920 too, or shortening the conversation card's table.
-   - That is a ruling. A half-moved layout is the failure the instruction names.
-   - **Rejected:** building a fraction anyway and reporting the miss (§6 allows that for a
-     *little* miss, and this is not little); and picking one of the bends above for Tim.
-2. **The printing probe `ThePanelsMakeRoomTests.Unit336TraceMeasuresTheSplitAtBothWidths` was
-   kept.** It asserts nothing and prints every width above, so the next unit starts from a
-   measurement rather than this report. Rejected: removing it, which would make task 3's author
-   rebuild it.
+### Task 2 - criteria 2 and 4 realized on PSK31
+
+- **Extended with the assertions they already made:**
+  - `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest` and
+    `TheWorldClockIsAtTheCardsRightEndWithOneMarker` realize the licensed fixture on FT8 and PSK31
+    at 1920 and 1400.
+  - `TheThreePanelsShareOneTopAndOneBottom` realizes the plain fixture on FT8 and PSK31 at 1400 and
+    1920.
+  - `AtNineteenTwentyTheCardsFactsSitBesideTheMap` realizes the plain fixture on FT8 and PSK31 at
+    1920.
+  - Each puts FT8 back before its window closes, and nothing is pressed.
+- **The drop candidate was not dropped.**
+- **Not watched red.** Every extension passed on its first run. That is honest: they assert
+  geometry that task 1's build had already made hold, and the new realizations only choose PSK31
+  on the same fixtures. The view was not broken to watch them fail.
+- **The numbers on PSK31:**
+  - Green block: 67 px at 1920 and 100 px at 1400, inside the card, under the strip, with the band
+    the largest text and the count at its right.
+  - World clock: 246 x 134 at the card's right end, 15 px from its edge, with 1 marker, at both
+    widths.
+  - Three panels: y 544 to 953 at 1400 and y 503 to 953 at 1920, against a floor at y 953.
+  - At 1920 the card is 678 px inside, the map 220 x 120, and the facts 338 x 102 at x 232, so the
+    facts are beside the map.
+- **Runs:** the one filter, TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8, BindingHealthTests
+  1 of 1, VoiceTests 5 of 5. Carry-forward, status first: app 100 of 100, engine 85 of 85.
+
+### Reds
+
+- **Turned green:** `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest` and
+  `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, on PSK31.
+- **No new red** in anything run.
+- **Not run, as §2 says:**
+  - `TheOperatorCanStopItTests`, all of it, including `TheStopAddedNoNewRouteToATransmission` and
+    `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`;
+  - `TheWholeChainRunsFromOneRightClickTests`, `TheMenuIsUnderTheMouseTests`,
+    `ThePsk31RecordsAppearTests` and `TheTotalMilesTests`;
+  - step 1's tests.
 
 ### Where the instruction and the tree disagreed
 
-Reported, not repaired.
+- **Ruling 8: *the number is bound to `Psk31PowerPercent`*.** `Psk31PowerPercent` is a
+  `public const int` (line 14791), and a binding cannot read a constant. The line binds to
+  `Psk31PowerLine`, which builds the words from the constant, so the number is still never typed.
+- **§1: *the green block is 103 px on PSK31 against 91 on FT8*, and *the card alone makes the row
+  240 px*.**
+  - The 12 px is `GreenZoneStrayedLine`.
+  - The block measured 112 px, not 103, whenever the live best bet was drawn, and the 240 px row
+    came with it.
+  - A PSK31 row with no best bet and no fit was not measured cleanly. 231 px is an inference from
+    100 + 3 px, not a measurement.
+- **Ruling 9 names four lines and none of them is the one.** See the task 0 answers and decision 6.
+- **§2, the reload's `CPS-DEC-0163`:** parked, and reported once in section 4.
+- **The prompt says `tools\arbiter\validate-output.bat`.** §7 says that spelling is mangled by Git
+  Bash, so the `.proj` route was used.
+- **The prompt sets `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line, and §2 commits that file
+  unchanged.** Both were done, in two commits.
+- **`tools/status.sh` came back *requires approval*, tried once.** Every `UPDATED` is a `date`
+  reading pasted whole, and `RULES_AT` stays `HM-DEC-163`.
+- **Also refused:** a `date` flag inside a compound command, a `grep -vE` in a pipe, and a command
+  substitution.
+- **Every other §2 item matched the tree:**
+  - the phase, with step 0 `blocked`;
+  - the offer's border at 3079 with unit 340's fit comment at 3073, 520 x 112 on the host;
+  - the six view model members at 14866 to 14931, with accept setting `_psk31PowerSettled`, writing
+    `psk31_power_accepted` and `CivWrites.RfPower` once, and decline writing
+    `psk31_power_declined` and nothing to the radio;
+  - the popups at 4795 and 5651, and another at 5911;
+  - the trace, and the drive test realizing FT8 and PSK31, with the two top-row tests red on PSK31
+    only.
 
-- **R23 says the log *already writes* `STATE` for a US contact.** Nothing in `src` writes it.
-- **The seeding rule is cited as `AppSettings.cs:747-766`.** Those lines hold only the path and
-  its doc comment. The rule that seeds once and never overwrites is in
-  `AchievementPoints.ReadOrSeed`, at `AchievementPoints.cs:166-198` before this unit.
-- **The writer's fields are cited as `AdifLog.cs:291-366`.** Lines 291-294 write the header
-  (`ADIF_VER`, `PROGRAMID`, `PROGRAMVERSION`), and the record's fields are at 315-366.
-- **R12 says `TheDigitalTabIsTwoColumnsTests` guards `383`.** It does not assert 383. It asserts
-  the decoded panel is narrower than the right half, and 383 appears only in a comment.
-  `ThePanelsMakeRoomTests` is the one that guards it. `WhatTheSplitCostsTests` names
-  `DigitalDecodedPanes` too, without asserting 383.
-- **`MainWindow.axaml`'s comment above `CardBeside` says the card has 487 px inside at 1920,
-  *where they sit side by side*.** Measured: 487 inside, and the table **under** the map, because
-  the table wants 338 px, not the *about 190* the comment assumes.
-- **The shipped file's `_about` says *Hamlet reads this file at startup*.** It is read each time
-  the achievements window opens.
-- **The badge's own line said `the 50, plus DC`**, and decision 1 scores no DC. Changed in task
-  1, decision 3.
-- **Everything else in section 4 matched:**
-  - `States => 0` at both lines;
-  - `"Rank " + Scores.Rank` at `AchievementBadges.cs:223`;
-  - 8 thresholds;
-  - `JsonDocument.Parse(json)` at `AchievementPoints.cs:234`;
-  - `_about` as the only prose;
-  - the embedded resource at `Hamlet.RadioEngine.csproj:91`;
-  - the `assets` copy differing by its last newline;
-  - `383,*` at `MainWindow.axaml:4139-4141` with its §0.0 reason;
-  - the `*,*` ruling's comment at `MainWindow.axaml:3542`.
+### Decisions this unit made for itself, marked as its own and overrulable
 
-### Reds older than this unit
-
-Neither of the first two is on the known-reds list. Both were found in this unit's runs and left
-as they are.
-
-- **`TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`** (app).
-  - It expects the Total Miles badge line `grid to grid, added up`, and the badge says
-    `every mile, added`.
-  - Unit 332's `3ea16ec` changed the line in `src` and not in this test.
-- **`ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`.**
-  - It fails with `modes draws [PSK31] before any PSK31 contact`.
-  - Unit 335's `bcaf39d` made the Modes next card name where each unworked mode lives, including
-    PSK31. See section 4, item 2.
-- **`TheAchievementsScreenTests.TheWindowDrawsEverySixRows`**, the known one.
+1. **The line on the drive note's row.** Measured: it adds 0 px there at both widths.
+2. **The popup's frame and place.** It sits on a white frame under the line's right edge, and
+   closes on a click outside. The frame is on the popup, not on the sentence's own border. Where it
+   opens on screen was not asserted, only what is in it.
+3. **Unit 340's padding fit undone** (padding 8,3 -> 8,6, spacing 2 -> 4). It is inside the popup
+   now and costs the row nothing.
+4. **The popup closes when the offer is answered.** This is done by an `OnPropertyChanged` override
+   in the view model, so accept and decline stay exactly as they were.
+5. **The line is a card-link button**, the class the decline link already wears: a hand cursor and
+   no chrome, with no tooltip.
+6. **Ruling 9's fit is the green block's empty upgrade row**, which now hides with its only button.
+   That is 3 px, in every mode and at every width. No word is changed and nothing that was drawn is
+   hidden. The strayed line itself was not touched: it is a true sentence on this fixture.
+7. **The drive test's containment of *the power offer* in the rig panel is now the line's and the
+   popup's, in both modes.** The FT8 assertion is kept in what it claims, not in its letter: the
+   sentence inside a closed popup has no visual parent, so nothing can be contained by the panel.
+8. **The clip check takes the margin off `DesiredSize`**, and adds a one-line check on the words.
 
 ## 2. What the owner should expect
 
-**States now counts what your log says.** Version 1.13.21.
-- **What counts.** A contact counts toward States only when both of these hold:
-  - its record carries a `STATE` field;
-  - its callsign resolves to the United States, Alaska or Hawaii.
-- **What does not count:** DC, a Canadian province, a blank and a misspelled code.
-- **What the page shows.** Each state you hold is a card showing the contact that earned it, with
-  its map. The next card is as it was.
-
-**Your ranks can be named.**
-- **What to add.** Put a `rank_names` list in your own points file, at
-  `%AppData%\Hamlet\achievements\achievement-points.json`. For example: `"rank_names":
-  ["Listener", "Novice", "Operator"],`.
-- **What shows.** The line under the achievements title uses those names for your rank and the
-  next one. Past the end of your list it says `Rank n`.
-- **Where the notes are.** Your own copy has no notes at the top, and Hamlet will never add them:
-  it does not overwrite your file. The documented copy is `data\achievements\achievement-points.json`
-  in the repository. You can paste its `//` block into your own file, because Hamlet now skips
-  lines that start with `//`.
-
-**Nothing on the digital tab moved.** Task 3 was not built, so the decoded list and For You split
-exactly as before.
+**On your screen, with PSK31 chosen and the power offer not yet answered:**
+- Under the S-meter, beside the drive's *-12.0 dBFS* note, is one line: *RF power 50 % offered*.
+- The top row is back to its FT8 height at 1920, about 190 px. The waterfall, the decoded list and
+  For You get back the height the offer's box took, 115 px at 1920.
+- **Click the line** and the full offer opens under it, with the same sentence, *Set my power to
+  50%*, *I will set it myself*, and the ALC reference line. Click outside it and it closes, with
+  nothing set.
+- Accept and decline are only in that popup. When you answer, it closes and the line goes, as the
+  box used to.
+- On FT8, nothing about the offer changed.
 
 **What will look wrong but is not:**
-- **Your own FT8 and PSK31 contacts score no state.** Hamlet does not know where a caller lives,
-  so the contacts it logs carry no `STATE`. Only records another logger wrote with `STATE` count.
-- **A state card's title is its two-letter code**, `PA` and not `Pennsylvania`. The tree has no
-  table of state names.
-- **The States badge's small line now reads `the 50 states`**, not `the 50, plus DC`. DC does not
-  count.
-- **A contact in DC, or a `STATE` on a Canadian record, adds nothing.** That is the rule, not a
-  missed read.
-- **A very long rank name has not been measured on the window.** The defaults fit. A name much
-  longer than `Rank 4` may not fit the line under the title, and nothing checks that for names you
-  choose.
-- **The shipped file's first line of prose still says it is read *at startup*.** It is read each
-  time you open the achievements window, so an edit shows the next time you open it.
+- **Setting your power is one click further away than it was.** That is ruling 8's price, marked
+  for you at step 3.
+- **At 1400 the neighborhood card's green block is 3 px shorter in every mode.** An empty row that
+  was taking space is gone.
+- **The version is 1.13.26.**
+
+**Build and tests:**
+- It builds.
+- TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8, BindingHealthTests 1 of 1, VoiceTests 5 of 5.
+- Carry-forward app 100 of 100, engine 85 of 85, before the change, after task 1 and after task 2.
 
 ## 3. What you should see
 
-**The fixture log scores 2 states, PA and AK, for 12 points, and your own contacts score none.**
-Hamlet writes no `STATE` on the contacts it logs, so only records another logger wrote with
-`STATE` count.
+**The answer: yes.** With PSK31 chosen and the offer unanswered, every step 0 exit criterion holds
+with a named green test at the widths it names. Two sub-clauses hold on one mode only:
+- Criterion 1's *panels at least half* at 1920 on PSK31 is printed at 503 px (0.553), not asserted.
+  The assertion at 1920 realizes FT8 and plain.
+- Criterion 5's *no callsign clipped* is asserted on the plain FT8 fixture.
 
-**Your ranks are called `Rank 1` to `Rank 9`**, because your points file names none. The file
-that explains every key is `data\achievements\achievement-points.json` in the repository. Your
-copy in `%AppData%\Hamlet\achievements\` has no notes.
+The tightest number is the 1400 PSK31 top row: 237 px against 238.4, with 1.4 px to spare while the
+live best bet draws (section 4, item 1).
 
-**The split is unchanged at both widths, `383,*`:**
-- **At 1400:** decoded panel 378 px, For You 283 px, card table 227 px, under the map.
-- **At 1920:** decoded panel 378 px, For You 543 px, card table 338 px, **also under the map**.
+**Where the line went and why.** It went on the drive note's row, the only place measured that adds
+no height. The drive row has 91 px left for a 218 px line, and a line of its own adds 16 px.
 
-All of this is computed on the test host at windows 1400 and 1920 wide, not seen.
+| PSK31 | before (unit 340, offer box drawn) | after (the line) |
+|---|---|---|
+| top row, 1920 | 305 px (0.335) | 190 px (0.209) |
+| top row, 1400 | 305 px (0.335) | 237 px (0.260) with the best bet; 228 (0.251) without |
+| panels, strip hidden, 1920 / 1400 | 388 / 388 | 503 / 456 |
 
-**At 1400 on the digital tab you will see what you saw yesterday.** The decoded list keeps its
-width, and the conversation card's table sits under its map.
+**The popup, in words.** It holds the offer's slate box, unchanged, on a white frame:
+- the sentence that says power would go to 50% and nothing else would change;
+- *Set my power to 50%* and *I will set it myself*;
+- the ALC reference line.
 
-**In the achievements window:**
-- The line under the title reads as before, `Total N pts · Rank n · N to Rank n+1`, until you add
-  `rank_names`.
-- The States badge's corner says how many states your log scores.
-- Opening States shows one card per scored state before the `One more state` card: the code large,
-  the callsign and grid, the map of the path, the distance, band, mode and date, and its points.
+It opens under the line's right edge when the line is clicked, never on a hover. A click outside it
+closes it without answering. Answering either way closes it, and the line goes.
+
+**Every appearance claim in this report is computed on the headless test host, at 1040 px tall, not
+seen.** The host draws text wider than the glass. That the popup opens under the line on your screen
+is from its placement setting, not a measurement.
+
+### The step 0 table, after task 2
+
+| Test | Criterion | Widths | Modes | Result | Numbers |
+|---|---|---|---|---|---|
+| AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest | 1 | 1920 asserted, 1400 printed | FT8, PSK31 | pass | 1920: FT8 190, PSK31 190 (was 305) |
+| TheThreePanelsTakeAtLeastHalfTheHeightBelowTheBandPills | 1, 5 | plain 1920 and 1400, licensed 1920 | FT8, plain | pass | licensed 1920 503 (0.553) hidden; plain 505 and 476 |
+| TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest | 2 | 1920 and 1400 | FT8, PSK31 | pass | block FT8 55 / 88; PSK31 67 / 100 |
+| TheWorldClockIsAtTheCardsRightEndWithOneMarker | 2 | 1920 and 1400 | FT8, PSK31 | pass | 246 x 134, 15 px from the card's edge, 1 marker, all four windows |
+| DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop | 3, ruling 5 | 1920 and 1400 | FT8, PSK31 | pass | line 218 x 13 at y 309 under y 257; popup's four controls equal the view model; no event on opening; rig / card 190 / 190, PSK31 1400 228 / 228, FT8 1400 216 / 216 |
+| TheThreePanelsShareOneTopAndOneBottom | 4, 5 | 1400 and 1920 | plain FT8, plain PSK31 | pass | 1400 y 544 to 953; 1920 y 503 to 953; floor 953 |
+| AtNineteenTwentyTheCardsFactsSitBesideTheMap | 4 | 1920 | plain FT8, plain PSK31 | pass | card 678 inside; map 220 x 120; facts 338 x 102 at x 232, beside |
+| TheDecodedListIsAsWideAsItsLongestLineNeeds | 4 | 1400 and 1920 | plain FT8 | pass | decoded 378 px at both |
+| AtFourteenHundredTheLicensedTopRowIsTheMockupsShare | 3, 5 | 1920 printed, 1400 asserted | FT8, PSK31 | pass | 1400: FT8 216 (0.237), panels 477; PSK31 237 (0.260), panels 456 (0.501) |
+| AtFourteenHundredTheSameShapeHolds | 5 | 1400 | plain | pass | top row 217 (0.238) |
+| NoCallsignIsClipped | 5 | 1920 | plain | pass | unchanged |
+| TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow | nice-to-pass | 1920 | FT8 | pass | 20 m drawn with its check; 40 m without |
+| StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList | guards rulings 4 and 5 | 1920 and 1400 | plain | pass | unchanged |
+| Unit341TraceTheOneLineOfferAndThePsk31GreenBlock | none, asserts nothing | 1920 and 1400 | FT8, PSK31 | pass | section 1 |
+| Unit340TraceThePowerOfferOnPsk31 | none, asserts nothing | 1920 and 1400 | FT8, PSK31 | pass | reads the offer through its popup |
+| Unit338TraceTheRowsAboveThePanels | none, asserts nothing | 1920 and 1400 | FT8, plain | pass | - |
+| BindingHealthTests | 6 | - | - | 1 of 1 | - |
+| VoiceTests | 6 | - | - | 5 of 5 | - |
+| carry-forward | 6 | - | - | app 100 of 100, engine 85 of 85 | - |
 
 ## 4. What's blocking us
 
 ### Raised by this unit
+
+**1. On PSK31 at 1400 the top row holds by 1.4 px, and the live best bet moves it by 9 px.**
+
+*No ruling wanted; a finding, beside parked item 2 of unit 339, raised once.*
+- With the best bet drawn in the green block, the row is 237 px (0.260) against 238.4. Without it,
+  the row is 228 px (0.251).
+- Where the best bet draws, the block's right-hand column widens from 140 to 180 px, and the rule
+  of thumb takes a third line.
+- Whether it draws follows the real clock's ranking. In one trace run it drew on PSK31 windows and
+  not on FT8, and in the next it appeared on an FT8 window partway through.
+- Nothing failed. A best bet word 2 px wider would turn the 1400 test red on PSK31 at some hours.
+
+**2. The strayed-frequency line is on the licensed fixture only because the fixture tunes FT8's
+dial and then chooses PSK31.**
+
+*No ruling wanted; a finding.*
+- `Realized` sets 14.074 MHz and then chooses PSK31. The green block therefore says *PSK31 lives
+  at 14.070; you are at 14.074*, which costs 12 px.
+- On your screen the line shows only when you are off the PSK31 dial. So the 1400 PSK31 criterion
+  is measured on the taller case.
+- Whether choosing PSK31 should also retune was not looked at, and is not this step's.
+
+**3. Ruling 9's fit took a path the ruling does not name.**
+
+*No ruling wanted; a finding, marked as the unit's own and overrulable.*
+- The line that makes PSK31 taller is `GreenZoneStrayedLine`, not one of the four ruling 9 lists.
+  The rule of thumb's third line is fixed by ruling 2, and the sparkline is already hidden.
+- Rather than ship the 2 px as a miss, the green block's empty upgrade row now hides with its only
+  button. That takes 3 px in every mode and changes no word.
+- If you want that row back, the 1400 PSK31 row goes to 240 px (0.264) while the best bet draws.
+
+**4. `ThePowerIsOfferedTests.TheOfferRendersAtHalfAndNothingMirrorsTheUsbModLevel` still passes,
+but no longer proves the sentence is on the screen.**
+
+*No ruling wanted; a finding for whoever next touches the offer's tests.*
+- It finds the sentence and the accept button by name and asserts both are visible.
+- `FindControl` reaches them through the name scope inside the closed popup, and visibility holds
+  for a control with no visual parent. So it is green while the sentence is one click away.
+- What is on the screen is now asserted by the drive test (section 1, task 1).
+- It was not rewritten: R14 extends only the tests the criteria need, and it is on the carry-forward
+  list, not in this instruction.
+
+**5. The line's ink clears 4.5:1 by 0.11.**
+
+*No ruling wanted; a finding.* Computed from the brushes: `HmTextMutedBrush` #6E6E66 on the rig
+panel's `HmAmberTintBrush` #FDF1DE is 4.61:1. It is the same ink and fill as the drive note beside
+it. Not asserted.
+
+**6. Where the popup opens on the screen is not asserted.**
+
+*No ruling wanted; a finding.* The drive test asserts what is inside the open popup and that it is
+drawn, not where it lands. Placement is `BottomEdgeAlignedRight` on the line.
+
+**7. `tools/status.sh` is refused for the seventh unit.**
+
+*No ruling wanted; a finding, the same as unit 340 item 6.* Every `UPDATED` is a `date` reading.
+
+**8. The reload's `CPS-DEC-0163` reading of `CLAUDE.md`.**
+
+*No ruling wanted; reported again in one line and parked with the id schemes.*
+
+**9. Ruling 8's *bound to `Psk31PowerPercent`* cannot be done literally, because it is a constant.**
+
+*No ruling wanted; a finding.* `Psk31PowerLine` builds the words from the constant, and the markup
+binds to that.
+
+### Where the carried items stand after unit 341
+
+- **Unit 340 item 1: ANSWERED by the arbiter's ruling 8 in work instruction 341.**
+  - Built: *RF power 50 % offered* on the drive note's row, opening the unchanged offer in a click
+    popup.
+  - PSK31 top row 305 -> 190 px at 1920, and 305 -> 237 px (0.260) at 1400.
+  - Marked in the carried text.
+- **Unit 340 item 2: TAKEN UP by work instruction 341 ruling 9.**
+  - The 12 px is the strayed-frequency line.
+  - The 2 px closed by hiding the empty upgrade row (item 3 above): the 1400 PSK31 row is 237 px
+    against 238.4.
+  - Marked in the carried text.
+- **Unit 340 item 3, the stop test red alone:** not run. `TheOperatorCanStopItTests` is parked.
+- **Unit 340 items 4 and 5:** unchanged. Step 1's tests were not run.
+- **Unit 340 items 6 and 7:** see items 7 and 8 above.
+- **Every other item stands as carried.** Nothing in this unit touched:
+  - the radio side, a decoder, a parser or the transmit chain (the offer's commands and the write
+    are unchanged);
+  - States or the achievements pages;
+  - the demodulator, the ALC margin, the id schemes or PSK31 step 6.
+
+### Asks still outstanding - carried from unit 340's section 4, per HM-DEC-139, verbatim
+
+The words are unit 340's, from its line under `## 4. What's blocking us` to its end, as committed
+in `808e088`. Items 1 and 2 are marked, as work instruction 341 §9 asks. The headings keep their own
+levels. The shell routes that would have appended the committed text (a redirect and `tee -a`) were
+refused, so it was copied in with the file editor from unit 340's report as it stood at this
+session's start, which was the committed file.
+
+### Raised by this unit
+
+**1. With the PSK31 power offer drawn, the top row is 305 px, and no arrangement inside the rig
+column brings it to 190. Which do you want?**
+
+**ANSWERED by the arbiter's ruling 8 in work instruction 341.** Built: the offer under the S-meter is
+the mockup's one line, *RF power 50 % offered*, on the drive note's row, opening the unchanged
+sentence, both buttons and the ALC line in a click popup, with accept and decline only inside it.
+PSK31 top row 305 -> 190 px (0.209) at 1920 and 305 -> 237 px (0.260) at 1400; panels 503 and 456
+px. Options (a) to (d) were rejected by the ruling.
+
+*Ruling wanted: how the offer shares the top row with R26's height.* Arrangement reached 317 -> 305
+px. Each option below was measured on the licensed test window by setting it on that window only.
+
+| Option | Top row 1920 | Panels 1920 | Top row 1400 | Panels 1400 |
+|---|---|---|---|---|
+| (a) The sentence and the ALC line off the screen, the two buttons kept | 221 (0.243) | 472 (0.519) | 240 (0.264) | 453 (0.498) |
+| (b) The mockup's words, *RF power 50 % offered*, with the ALC line off, the buttons kept | 232 (0.255) | 461 (0.507) | 240 (0.264) | 453 (0.498) |
+| (c) The offer out of the top row altogether, for instance beside CQ in the PSK31 send area | 190 (0.209) | 503 (0.553) | 240 (0.264) | 453 (0.498) |
+| (d) Accept a taller row while the offer is unanswered, as shipped | 305 (0.335) | 388 (0.426) | 305 (0.335) | 388 (0.426) |
+| Criteria | at most 209 | at least 455 | at most 238 | at least 455 |
+
+Where (c) would put the offer was not built or measured. The 1920 figure is the row with the offer
+off it.
+
+*Reasoning.*
+- (a) and (b) change the offer's words or hide them, which ruling 7 forbids this unit.
+  - HM-DEC-084 has the offer say what would change before the press.
+  - §R15 keeps the ALC reference never blank.
+  - (a) also misses 209 by 12 px at 1920.
+- (c) reads R26's *carries under the S-meter the transmit drive and the RF power offer* differently.
+- (d) is what the tree does now.
+  - By reading the code, and not measured: `_psk31PowerSettled` is a field on the view model and is
+    not saved. So the offer, and the taller row, would come back on every launch with PSK31 chosen
+    until it is answered in that session.
+- The recommendation is (c): it is the only option that holds the height at 1920 without touching
+  the offer's words. At 1400, see item 2.
+
+*What was rejected and why.*
+- Shortening or hovering the words here: ruling 7.
+- Widening the rig column: it takes the width from the neighborhood card, and at 1400 the card's
+  green block already sets the row's height. Not built.
+- Moving a threshold: §6, never loosen a test.
+
+**2. On PSK31 at 1400 the neighborhood card alone makes the top row 240 px (0.264), 2 px over
+0.262, with the offer hidden.**
+
+**TAKEN UP by work instruction 341 ruling 9.** The PSK31 line is `GreenZoneStrayedLine` (*PSK31 lives
+at 14.070; you are at 14.074*, 12 px), which none of ruling 9's paths names; the further 9 px was the
+rule of thumb's third line where the live best bet draws. The 2 px closed by hiding the green block's
+empty upgrade row with its only button (3 px, the unit's own): the 1400 PSK31 row is 237 px (0.260)
+against 238.4 with the best bet drawn, and 228 px without.
+
+*No ruling wanted; a finding that bears on criteria 1 and 5.*
+- Every option in item 1 at 1400, including the offer off the row, measured 240 px, with the panels
+  at 453 (0.498), 2 px under half.
+- The green block is taller on PSK31: 103 px against 91 on FT8 at 1400, and 70 against 58 at 1920,
+  from `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`'s print before the fit. Which line
+  adds it was not read.
+- At 1920 the card still fits in 190.
+- The block's height was not measured with the fit in place, but the fit is inside the rig panel
+  and does not touch the card.
+
+**3. `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier` was red alone.**
+
+*No ruling wanted; a finding, the transmit side, parked.* In unit 339 it was red only in the joint
+run.
+- **The run:** `TheOperatorCanStopItTests` alone, 7 of 9.
+- **What it found:** the wire held a second stop pair after the first, and the audio stopped 203 ms
+  after the click, against 98 ms in unit 339's joint run.
+- **So it is timing, not joining.** The other two joint-run reds were green alone.
+- **Not chased.**
+
+**4. The instruction's settings question: the test host does not write the operator's file.**
+
+*No ruling wanted; a finding.* `OnChosenDigitalModeChanged` saves settings. Under the test host
+`TheOperatorsFolderGuard` has already pointed `SettingsStore.DataFolder` at
+`%TEMP%\hamlet-app-tests-<process id>`.
+
+**5. Step 1: one must-pass is tested outside `TheCategoryPagesAreTradingCardsTests`, and two are
+held more weakly than they read.**
+
+*No ruling wanted; a finding for the arbiter authoring step 1.*
+- `achievement_category_opened` is tested in `TheAchievementsPageClicksInTests`.
+- The map crop *to the two stations* is printed and not asserted.
+- Each continent opening to its countries is asserted in `TheAchievementsPageClicksInTests`, and
+  only Europe's is opened here.
+- See section 1, task 2.
+
+**6. `tools/status.sh` is refused for the sixth unit.**
+
+*No ruling wanted; a finding, the same as unit 339 item 3.* Every `UPDATED` is a `date` reading.
+
+**7. The reload's `CPS-DEC-0163` reading of `CLAUDE.md`.**
+
+*No ruling wanted; reported again in one line and parked with the id schemes.*
+
+### Where the carried items stand after unit 340
+
+- **Unit 339 item 1: run alone.** 2 of the 3 passed. `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`
+  was red alone (item 3 above).
+- **Unit 339 item 4: TAKEN UP by work instruction 340 task 1.** Both sub-clauses are now asserted,
+  and marked in the carried text.
+- **Unit 339 items 2, 3 and 5:** unchanged. The best bet clock was not seen to move a number in this
+  unit's runs.
+- **Every other item stands as carried.** Nothing in this unit touched:
+  - the radio side, a decoder, a parser or the transmit chain;
+  - the offer's behavior, States or the achievements pages;
+  - the demodulator, the ALC margin, the id schemes or PSK31 step 6.
+
+### Asks still outstanding - carried from unit 339's section 4, per HM-DEC-139, verbatim
+
+The words are unit 339's, from its line under `## 4. What's blocking us` to its end, as committed in
+`991223a`. Items 1 and 4 are marked, as work instruction 340 §9 asks. The headings keep their own
+levels. The shell routes that would have appended the committed text were refused, so it was
+copied in with the file editor from unit 339's report as it stood at this session's start.
+
+### Raised by this unit
+
+**1. Three `TheOperatorCanStopItTests` go red when run with the layout classes, and pass alone.**
+
+**RUN ALONE BY WORK INSTRUCTION 340 TASK 0: 7 of 9.** `AClickBeforeTheBoundaryUnarmsItAndNothingGoesOut`
+and `TheLineSaysWhatHappenedToTheCarrierAndToTheSound` passed alone. `AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`
+was red alone as well (unit 340 section 4, item 3). `TheStopAddedNoNewRouteToATransmission` was red.
+
+*No ruling wanted; a finding.* In one filter with `TheTopRowTests`, `TheWorkingPanelsTests`,
+`BindingHealthTests` and `VoiceTests`, three tests failed:
+- **`AClickBeforeTheBoundaryUnarmsItAndNothingGoesOut`**: after the click the send line was
+  unchanged, nothing was on the wire, and the slot was still armed. The click did not reach Stop.
+- **`TheLineSaysWhatHappenedToTheCarrierAndToTheSound`**: the line read on the click was already the
+  boundary's final sentence.
+- **`AClickWhileTheToneIsPlayingStopsTheSoundAndNotJustTheCarrier`**: the wire held a second stop
+  pair (`17 FF`, `1C 00 00`) before the test read it. The audio stopped 98 ms after the click, and
+  the run said `Cancelled`.
+
+In the last two, the run finished inside the click's own dispatcher pump, so the run's closing
+line and frames landed before the test read them.
+
+Alone, all three pass, 3 of 3. **Whether they were red before unit 338 moved Stop to the tab row is
+not measured**, because `git stash` is refused. In the same run, Stop was hit where it is drawn and
+`PressingItTwiceSaysWhatTheSecondPressFoundAndStillTellsTheRadio` passed its press before the
+boundary.
+
+They are transmit-side tests, parked by §9, and nothing on the transmit path was touched.
+
+**2. The best bet ranking reads the real clock inside the test fixtures.**
+
+*No ruling wanted; a finding beside parked items 1 and 4 of unit 338, raised once.*
+- `MainWindowViewModel.RankBands` passes `DateTime.Now.Hour` and the current UTC.
+- So on some licensed windows this evening the 40 m badge, and *best bet now: 40 m* in the green
+  block, were drawn.
+- That takes the 1400 top row from 219 to 228 px (0.241 to 0.251), and the panels from 474 to 465
+  px.
+- Nothing failed, and both are inside the criteria. A test that asserts the 1400 share more
+  tightly would move with the time of day.
+
+**3. `tools/status.sh` is refused for the fifth unit, and would write a stale `RULES_AT` if it ran.**
+
+*No ruling wanted; a finding.* The script hard-codes `RULES_AT: HM-DEC-161 (2026-09-11)`, and the
+decision log is at 163. Every `UPDATED` in this unit is a `date` reading pasted whole, and none was
+composed.
+
+**4. Two step 0 sub-clauses are asserted more weakly than the criterion reads.**
+
+**TAKEN UP by work instruction 340 task 1.**
+- *Full to the status bar at 1400*: now asserted in `TheThreePanelsShareOneTopAndOneBottom`, pass,
+  the panels ending at y 953 against the floor at y 953.
+- *The power offer under the S-meter*: now drawn on PSK31 and asserted by its rectangle at 1920 and
+  1400, pass, its border at y 326 under the rig display's bottom at y 257. With it drawn, the top
+  row is 305 px, a miss (unit 340 section 4, item 1).
+
+*No ruling wanted; a finding for whoever writes step 0's verdict.*
+- **Criterion 5's *same shape*, at 1400: the panels running full to the status bar is printed, not
+  asserted.** `TheThreePanelsShareOneTopAndOneBottom` asserts the floor at 1920 only, and at 1400
+  it prints the panels ending at y 953, which is the floor.
+- **Criterion 3's power offer under the S-meter is asserted by containment in the rig panel.** The
+  licensed fixture is FT8, where the PSK31 offer is not drawn (0 x 0), so no rectangle for it
+  exists to compare.
+- Neither was extended, because task 1 named three tests and R14 adds no others.
+
+**5. Step 1's nice-to-pass has nothing in the tree behind it.**
+
+*No ruling wanted; a finding for the arbiter authoring step 1.* See section 3: the globe on a
+trading card takes no click, and the only map popup is the conversation card's.
+
+### Where the carried items stand after unit 339
+
+- **Unit 338 items 2 and 3: ANSWERED by the arbiter's ruling in work instruction 339** (rulings 4
+  and 5). Both are marked in the carried text below. Nothing was built for either, and what unit
+  338 built stands. Item 3's place is now asserted at both widths in
+  `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`.
+- **Unit 338 item 1, the live license lookup:** parked, untouched. The plain fixture read
+  `License class unknown` on every trace window in this unit's run.
+- **Unit 338 item 4, the heard count:** parked, untouched. It read 4 stations on one licensed
+  window against the 6 set. No assertion depends on the number.
+- **Unit 338 item 5, the name scope:** unchanged.
+- **Unit 338 item 6 and unit 337 item 3, the reds:** `TheStopAddedNoNewRouteToATransmission` is
+  still red. The four expected reds were not run. See item 1 above for three more.
+- **The status helper:** still refused. See item 3 above.
+- **Carried item 18, the id schemes, and `CPS-DEC-0163`:** untouched. See section 1.
+- **Every other item stands as carried.** Nothing in this unit touched:
+  - the radio side, a decoder, a parser or the transmit chain;
+  - States, the achievements pages or the points file;
+  - the demodulator, the ALC margin or PSK31 step 6.
+
+### Asks still outstanding - carried from unit 338's section 4, per HM-DEC-139, verbatim
+
+The words are unit 338's, from its line under `## 4. What's blocking us` to its end, except that
+items 2 and 3 are marked answered, as work instruction 339 §3 asks. **The headings keep their own
+levels**, one level too high for this nesting. The shell commands that would have moved them down,
+or appended the committed text, were refused in this environment. So the text was copied in with
+the file editor from unit 338's report as committed in `f7f6eb6`.
+
+### Raised by this unit
+
+**1. The plain test fixture asks callook.info for KC3QIS's license class, and the answer changes
+what it measures.**
+
+*No ruling wanted; a finding.*
+- The view model's constructor looks up a callsign that has no class. General lands inside the
+  layout passes on some windows and not others.
+- That removes the green block's third line and the send area's guard sentence, 67 px at 1400,
+  which is unit 337's run-order spread.
+- Setting the callsign after the constructor did not stop it, so a second path exists and was not
+  found.
+- This unit's criteria hold in both states.
+- A seam that keeps tests off the network would change the view model's start-up, which is not
+  this step's work.
+
+**2. The filter chips are in the mode strip, not in the Decoded text header where the mockup draws
+them.**
+
+**ANSWERED by the arbiter's ruling in work instruction 339** (ruling 4: the filter chips stay in the
+mode strip, option (a)). Nothing was built for it, and what unit 338 built stands.
+
+*Ruling wanted only if the mockup's placement is what you want.* On the host the header is 376 px
+inside. With rows, `everything`, `CQ`, the order toggle and `clear` want about 430 px before the
+title, and the summary a shut panel shows would be cut (§R17). The options:
+- (a) keep them in the mode strip, which does not collapse;
+- (b) put only `everything` and `CQ` in the header, about 188 px, which leaves the title and
+  summary about 50 px, and keep the row controls in the strip;
+- (c) shorten the chips' words.
+
+*Reasoning.* §R17 says the filter is visible on an empty list and a shut header carries its count
+and sentence. Option (a) keeps both at every width, so the recommendation is (a).
+
+*What was rejected and why.* A second row inside the Decoded text panel, above the list. It would
+be inside what collapses, and the filter must stay on screen when the panel is shut.
+
+**3. CQ and Stop sit right of the tabs, in a place the mockup draws empty.**
+
+**ANSWERED by the arbiter's ruling in work instruction 339** (ruling 5: CQ and Stop stay right of the
+tabs). Nothing was built for it, and what unit 338 built stands.
+
+*Ruling wanted only if that is not where you want them.* The mockup draws no send area. Over the
+waterfall it was a row all three panels paid for.
+
+*Reasoning.* Beside the tabs it costs no height, it is outside everything that folds, and it is on
+screen whenever the Digital tab is (§0.2).
+
+*What was rejected and why.*
+- The For you or waterfall panel: both collapse, and Stop may never be inside something that does.
+- The status bar: every tab shares it, and it would grow.
+
+**4. The licensed fixture's heard count read 8 and then 9 stations on two runs at 1920, against
+the 6 the fixture sets.**
+
+*No ruling wanted; a finding.* Something live replaces the fixture's count after it is set. The
+top-row test asserts only that a count is shown, so nothing failed. The green block at 1920 was 62
+px before task 2 and 67 after, and the top row stayed at 190.
+
+**5. The window's name scope does not find the controls inside the neighborhood card.**
+
+*No ruling wanted; a finding for whoever next writes code-behind there.* `FindControl` returned
+nothing for `GreenZoneRegions`, and a walk of the visual tree finds it.
+
+**6. Four expected reds were not run.**
+
+*No ruling wanted; a finding.* `TheWholeChainRunsFromOneRightClickTests`,
+`TheMenuIsUnderTheMouseTests`, `ThePsk31RecordsAppearTests` and `TheTotalMilesTests` are not this
+unit's tests (HM-DEC-155). `TheStopAddedNoNewRouteToATransmission` ran and is still red.
+
+### Where the carried items stand after unit 338
+
+- **Unit 337 items 1 and 2: ANSWERED by the arbiter's ruling in work instruction 338.** Both are
+  marked in the carried text below, with what was built.
+- **Unit 337 item 3, the reds:** `TheStopAddedNoNewRouteToATransmission` is still red. The two
+  `TheWholeChainRunsFromOneRightClickTests` were not run.
+- **Unit 332 item 4, the license phrase at 1400:** its wording is unchanged. Its line count at 1400
+  was not measured after task 2.
+- **The status helper:** still refused.
+- **Carried item 18, the id schemes:** untouched. See section 1 on `CPS-DEC-0163`.
+- **Every other item stands as carried.** Nothing in this unit touched:
+  - the radio side, a decoder, a parser or the transmit logic;
+  - States or the achievements pages;
+  - the demodulator, the ALC margin or PSK31 step 6.
+
+### Asks still outstanding - carried from unit 337's section 4, per HM-DEC-139, verbatim
+
+Headings under it are moved down one level so they sit inside this one. The words are unchanged,
+except that items 1 and 2 are marked answered, as work instruction 338 §3 asks.
+
+#### Raised by this unit
+
+**1. At 1400 a licensed operator's top row is 273 px - 0.300 of the height below the band pills -
+against the mockup's 0.262.**
+
+**ANSWERED by the arbiter's ruling in work instruction 338** (rulings 2 and 3). Built: the rule of
+thumb is option (a), the mockup's sentence, which alone gave 256 px (0.281); then the sparkline
+hides where the text column would wrap and *heard just now* stands over the count, giving 219 px
+(0.241). The count stays at both widths.
+
+*Ruling wanted, or the arbiter's own recommendation taken: how to shorten the green block at 1400.*
+The block wraps because its text column is about 210 px wide there. The clock takes 246 px and the
+count with its sparkline about 270. On the host the license line takes 4 lines and the rule of
+thumb 6. The options, each measured against those numbers:
+- **(a) Shorten the rule of thumb to the mockup's own words**: *Rule of thumb: 20 m and up want
+  daylight along the path; 40 m and down want dark.* That drops *the gray edge is where both
+  happen*.
+- **(b) Take the sparkline off**, task 1's named drop candidate, keeping the count. That widens the
+  text column by about 120 px.
+- **(c) Accept it.** The host draws text about half again wider than the glass, so on your screen
+  the block is probably shorter. That is an inference.
+
+*Reasoning.* §6 says a string that will not fit is shortened and named, or widened, never clipped.
+The recommendation is (a): the mockup is the ruling, and it already draws the shorter sentence.
+
+*What was rejected and why.*
+- Hiding the rule of thumb behind a mark: the mockup shows it on the card.
+- Shrinking the world clock at narrow widths: its size is the mockup's.
+- Rewording the license line: it is `PrivilegeStatus.Detail`, the regulation's own sentence in
+  the engine's words.
+
+**2. "The working panels" is read as the working card. Read as the three panels themselves, they
+are under half the height below the pills at both widths.**
+
+**ANSWERED by the arbiter's ruling in work instruction 338** (ruling 1: the three panels
+themselves). Built: the row above the panels is gone - the send area rides the tab row, the filter
+and row controls the mode strip, the slot clock the For you header - and the panels are 503 px
+(0.553) at 1920 and 474 px (0.521) at 1400 on the licensed fixture, readiness strip hidden.
+
+*Ruling wanted only if the panels themselves were meant.*
+- **At 1920** the working card is 573 of 910 px (0.630). The three panels are 363 (0.399).
+- **At 1400** the card is 534 to 555 (0.587 to 0.610). The panels are 307 to 374 (0.337 to 0.411).
+- **What stands between them**, measured alone at 1400: the mode strip 32 px, the readiness strip
+  43, the send area 54 and the filter bar 34. The readiness strip shows only while there is
+  something standing between you and a decode; on the test host there is no radio.
+
+*Reasoning.* R26 says *the working panels below the tabs take the rest of the window*, and the
+region below the tabs is the working card, so that is what the test asserts. Both numbers are
+printed on every run.
+
+*What was rejected and why.* Folding the send strip or the filter bar into a panel header to win
+back height: collapsing that panel would then hide Stop (§0.2), or the filter (§R17).
+
+**3. Three reds off the carry-forward list are older than this unit.**
+
+*No ruling wanted; a finding.*
+- **`TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`** expects one
+  `_armedSend.Arm(` line in `src`. There are two, at `MainWindowViewModel.cs` 14202 and 14381, in
+  a file this unit did not touch.
+- **`TheWholeChainRunsFromOneRightClickTests`, two tests,** find *mine rows: 1; realized row roots:
+  0*. That is the `DigitalMineRows`-behind-*show the messages* cause of unit 331's item 14. This
+  unit's diff touches none of that path. **Not proved by a run at HEAD**, because `git stash` was
+  refused. Both tests also open a real audio endpoint.
+
+#### Where the carried items stand after unit 337
+
+- **Unit 336 item 1, how the decoded list and For You share the tab: ANSWERED by R26 and this
+  unit.**
+  - The tab is `*,383,*`.
+  - At 1920 the facts sit beside the map, with the card 678 px inside.
+  - At 1400 they go under it, with the card 419 px inside.
+  - No callsign is cut at either width.
+  - The outer `*,*` was superseded by the mockup, Tim's own, not by this unit.
+- **Unit 331 queue item 2, the 1400 width arithmetic:** superseded the same way. Its numbers are
+  replaced by section 3's.
+- **Unit 334 items 1 and 2, the map's height at 1920 and its 30 px at 1400:** superseded by R26.
+  The world clock is 246 x 134 at the card's right end at both widths.
+- **Unit 332 item 4, the license phrase at 1400:** still wraps, now 4 lines on the host at 1400 and
+  1 at 1920. See item 1 above.
+- **The status helper:** still refused. Every `UPDATED` is a `date` reading pasted whole.
+- **Every other item stands as carried.** Nothing in this unit touched:
+  - the radio side, a decoder or a parser;
+  - the transmit logic (CQ, Stop, the drive and the power offer moved in markup only, on the same
+    commands);
+  - States, rank names, the Modes card, the achievements pages;
+  - the demodulator, the ALC margin, the id schemes, or PSK31 step 6.
+
+#### Carried from unit 336's section 4, per HM-DEC-139 - verbatim
+
+Headings under it are moved down one level so they sit inside this one; the words are unchanged.
+
+##### Raised by this unit
 
 **1. Task 3 cannot meet its must-pass with a fraction alone, measured. Which bend do you want?**
 
@@ -520,7 +1082,7 @@ since unit 332.**
 unit 332 (`3ea16ec`) changed that line to `every mile, added` in `src` only. It is not on the
 known-reds list, and the unit that next touches Total Miles owns it under R12.
 
-### Where the carried items stand after unit 336
+##### Where the carried items stand after unit 336
 
 - **Unit 335 item 1, the States next card's wording:** unchanged. The card still says `Any state
   you have not worked` and `Hamlet cannot tell a caller's state`. Scoring `STATE` changed only the
@@ -544,11 +1106,11 @@ known-reds list, and the unit that next touches Total Miles owns it under R12.
 - **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
   the FT8 or PSK31 message split, or the transmit chain.
 
-### Carried from unit 335's section 4, per HM-DEC-139 - verbatim
+##### Carried from unit 335's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-#### Raised by this unit
+###### Raised by this unit
 
 **1. The States next card says `Hamlet cannot tell a caller's state`. That wording is the
 arbiter's proposal, marked for you, and shortened here to fit.**
@@ -592,7 +1154,7 @@ one caller who earns two cards at once, and Continents could not do what R22 ask
 *Reasoning.* §12.6: do not repair unrelated things on the way past. The fix is one binding, and
 it belongs to a unit that is told to change the page.
 
-#### Where the carried items stand after unit 335
+###### Where the carried items stand after unit 335
 
 - **Unit 333 item 1, the Hall of Fame next-card collision:** untouched. The next first is still
   chosen by `NextFirstOf`, and `A PSK31 contact` still shows where it is the only first left.
@@ -611,11 +1173,11 @@ it belongs to a unit that is told to change the page.
 - **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
   a parser or the transmit chain.
 
-#### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
+###### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-##### Raised by this unit
+####### Raised by this unit
 
 **1. At 1920 the green zone is 310 px tall, because the map keeps its shape as it takes the
 pills' width.**
@@ -653,11 +1215,11 @@ back *requires approval*. Every `UPDATED` in this unit is a `date` reading paste
 was composed. The validator was run by the `.proj` route; its verdict is in the session
 transcript, not quoted here.
 
-##### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
+####### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-###### Raised by this unit
+######## Raised by this unit
 
 **1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and §3.1 say opposite
 things about one slot.**
@@ -707,7 +1269,7 @@ Both are safe to delete by hand, beside the five carried in item 19 below. The v
 run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
 243 documented as mangled by Git Bash.
 
-###### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
+######## Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
 **1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
 
@@ -782,7 +1344,7 @@ this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pas
 unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
 launcher's and were not written.
 
-###### Carried from unit 331's queue, as unit 332 carried it - verbatim
+######## Carried from unit 331's queue, as unit 332 carried it - verbatim
 
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
@@ -961,7 +1523,7 @@ session's own `tools\cut-header-action.py`.
 
 **All other items stand as unit 328 carried them.**
 
-###### Where the carried items stand after this unit
+######## Where the carried items stand after this unit
 
 - **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
   Every hover on every visible control was read in task 1 and none names PSK31, so it stays
@@ -973,7 +1535,7 @@ session's own `tools\cut-header-action.py`.
   `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
   the two id schemes, the five files or step 6.
 
-##### Where the carried items stand after unit 334
+####### Where the carried items stand after unit 334
 
 - **Unit 333 item 3 and unit 331-queue item 19, the undeletable files:** now **thirteen**, and
   listed once in section 2. `Unit333ProbeTests.cs` is tracked, not untracked. None was left
@@ -988,3 +1550,4 @@ session's own `tools\cut-header-action.py`.
 - **Every other item stands as carried.** Nothing in this unit touched the radio side, the
   achievements rulings, States, the 1400 decoded-list split, the demodulator, the ALC margin, the
   id schemes or PSK31 step 6.
+

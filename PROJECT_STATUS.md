@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 1 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 337 - the row shows what the ear heard
-BALL: code
-NEXT_PASTE: none
-RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-13T09:32:04-04:00
-NOTE: Task 0 done and committing - the break is the CQ filter at MainWindowViewModel.cs:1940 (483 -> 240, drift and idle-gap rows off every list for 143 and 46 ticks) and the stop total at :3116 (382 of 483); task 1 next
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+RULES_AT: HM-DEC-161 (2026-09-11)
+UPDATED: 2026-09-13T16:57:24-04:00
+NOTE: Unit 337 complete - the PSK31 row shows every emitted character, 483 of 483; report validated and pushed.
 
 ---
 
