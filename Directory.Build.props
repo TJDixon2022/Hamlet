@@ -728,8 +728,14 @@
     named with its test and result, and the green block, the world clock and drive and power
     asserted at 1400 as well as 1920 (R26). Tests only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.24 -> 1.13.25, UNIT 340 TASK 0. A PATCH, STEP 0 AGAIN: the PSK31 power offer drawn in the
+    rig panel and measured under the S-meter at 1920 and 1400, with the top row holding while it
+    shows, and the panels asserted full to the status bar at 1400 (R26, the arbiter's rulings 6
+    and 7). Screen only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.24</Version>
+    <Version>1.13.25</Version>
   </PropertyGroup>
 
   <!--

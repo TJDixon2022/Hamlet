@@ -50,3 +50,19 @@ ACCOMPLISHED: the waterfall, the decoded list and For You get more than half of 
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: The report measures the 190 px top row, the equal rig height and the panel shares at 1920 and 1400, but for criterion 2 it only says the band strip and world clock are unchanged and shows nothing for the green block's band being its largest text, the clock's single dot or drive and power sitting under the S-meter, and BindingHealthTests and VoiceTests are not named with results while the layout set still has one red.
+
+## UNIT 339 - STEP 0
+
+UNIT_AS_CALLED: 3
+STEP: 0
+APPROACH: prove step 0 criterion by criterion on the realized window - extend the green block, world clock and drive-and-power tests from 1920 to 1400, run and name every step 0 test with its result and BindingHealthTests and VoiceTests as counts - then measure step 1's category page against its mockup without building
+HIT: section 4 wants a ruling: banked - This unit's own items ask for no ruling, but the carried asks still want rulings on the Modes and States cards, the demodulator, the achievements hovers and the id schemes, and none of them stops step 0 work that is still open, such as task 3, asserting the 1400 panel floor and the reds on the carry forward list.
+MOVE: work around
+WHY: Two units built the layout and the state reader still found step 0 partial on evidence, not on the screen: criteria 2 and 3 are asserted only at 1920, and criterion 6's classes were never named with counts. A different approach to the same step - proof instead of more layout - not a loop (the loop test found nothing like it) and not a cut, since nothing measured is missing.
+DECIDED: the filter chips stay in the mode strip (unit 338 item 2, option a) and CQ and Stop stay right of the tabs (unit 338 item 3); the readiness-strip-hidden measure of ruling 1 stands, with the strip-showing number reported at 1400; step 1 may be measured before step 0's verdict, but not built - all the author's, marked for Tim, overrulable
+LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues); unit 338 output.md section 4 items 2 and 3 and their stated reasoning; PHASE_OUTCOME.md unit 338 STATE_WHY; CLAUDE.md 0.2, 0.5; R17; psk31 R12, R14
+COST: 11.540931500000001
+ACCOMPLISHED: every promise the approved mockup makes about the main window is checked by a named test at both of Tim's widths, so step 0 is closed on evidence and step 1 starts from measured numbers
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Five must-pass criteria have measured numbers behind them, but criterion 3 is not fully shown, because the power offer is not drawn on the FT8 fixture and is checked only as being inside the rig panel, so nothing measures it sitting under the S-meter at either width.

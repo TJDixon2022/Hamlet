@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 2 of 3
-WORK_INSTRUCTION: 339 - step 0, proved at both widths
-BALL: tim
-NEXT_PASTE: output.md -> the arbiter
+STATE: EXECUTING
+TASK: 0 of 3
+WORK_INSTRUCTION: 340 - step 0, the power offer drawn
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T21:30:22-04:00
-NOTE: Complete, tasks 0 to 2 - step 0 criteria with a green named test at both widths 3 -> 6 of 6, step 1 entry 8 of 8; output.md validated exit 0
+UPDATED: 2026-09-12T21:38:13-04:00
+NOTE: Task 0 - gate passed, section 2 claims read; committing the launcher files, then the carry-forward list before the PSK31 trace
 
 ---
 
