@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 0 of 5
+STATE: COMPLETED
+TASK: 4 of 5
 WORK_INSTRUCTION: 337 - the main window is the mockup
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-12T19:26:04-04:00
-NOTE: Task 0 - carry-forward app invocation 100 of 100 green; engine invocation next
+UPDATED: 2026-09-12T20:05:57-04:00
+NOTE: Complete, tasks 0 to 4 - top row 445 to 190 px and panels 363 px one height at 1920; step 0 partial on the 1400 top row (0.300 against 0.262); output.md validated exit 0
 
 ---
 
