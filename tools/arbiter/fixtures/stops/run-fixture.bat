@@ -32,6 +32,11 @@ set "ARM=%~1"
 set "WANT="
 if /i "%ARM%"=="layout" set "WANT=0"
 if /i "%ARM%"=="keying" set "WANT=1"
+rem  063: the third stop, defined. A card's next line is wording, never a
+rem  promise - the loop MUST CONTINUE. Whether a logged contact may be marked
+rem  confirmed is what is logged as true - it MUST HALT at STOP 3.
+if /i "%ARM%"=="next-wording" set "WANT=0"
+if /i "%ARM%"=="confirmed" set "WANT=1"
 if not defined WANT goto :usage
 for %%I in ("%HERE%..\..") do set "ARB=%%~fI\"
 
@@ -65,7 +70,7 @@ goto :end
 
 :usage
 echo.
-echo   run-fixture.bat ^<layout ^| keying^>
+echo   run-fixture.bat ^<layout ^| keying ^| next-wording ^| confirmed^>
 echo.
 set "RC=2"
 

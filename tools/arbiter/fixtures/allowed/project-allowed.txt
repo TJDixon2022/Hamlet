@@ -1,0 +1,12 @@
+rem  A project's own permission scope, for the allowed-list fixture.
+rem  The keeps arm installs this as .run-unit\allowed.txt and checks the
+rem  launcher leaves it byte-identical - the template must never replace it.
+Read
+Write
+Edit
+Bash(git status:*)
+Bash(git add:*)
+Bash(git commit:*)
+Bash(dotnet:*)
+Bash(timeout:*)
+Bash(sh tools/status.sh:*)

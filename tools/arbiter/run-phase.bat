@@ -115,6 +115,11 @@ rem  here would be a clock the owner never set. --poll went with the old
 rem  rule; the look interval is a constant in run-unit-watched.bat.
 set "MINUTES="
 set "FIXTURE="
+rem  --seed, RESTORED BY 063 task 3. HamLet's run-phase.bat carried it from
+rem  2026-09-04 (commit 8848311); installing this repository's copy over
+rem  HamLet's on 2026-09-13 (commit 230e6c0) dropped it, because this copy
+rem  never had it. It is restored here as HamLet's pre-install copy wrote it.
+set "SEED=0"
 if "%ROOT%"=="" goto :usage
 shift
 
@@ -124,6 +129,7 @@ if /i "%~1"=="--max-iterations" set "MAXITER=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--budget"         set "BUDGET=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--minutes"        set "MINUTES=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--fixture"        set "FIXTURE=%~2" & shift & shift & goto :parse
+if /i "%~1"=="--seed"           set "SEED=1" & shift & goto :parse
 if /i "%~1"=="--poll"           goto :pollgone
 echo ERROR: unexpected argument: %~1
 goto :usage
@@ -257,11 +263,40 @@ if %NOPROGRESS% GEQ 2 (
 )
 
 rem --- 3. the arbiter ------------------------------------------
+rem  A SEEDED FIRST ITERATION SKIPS AUTHORING. --seed says the owner
+rem  has put a WORK_INSTRUCTIONS.md in the tree himself and wants it
+rem  executed as written, so iteration 1 runs it and the arbiter takes
+rem  over from iteration 2. It is a flag and not a detected condition
+rem  on purpose: an extract for any other reason also leaves that file
+rem  newer than output.md, and guessing from timestamps would silently
+rem  skip authoring on a run nobody meant to seed.
+rem
+rem  The decision block is still read out of the seed instruction, so
+rem  a seed carries STEP:, APPROACH:, MOVE: and the rest exactly as an
+rem  authored one does. Without them stage 5 records "not recorded".
+rem
+rem  Restored by 063 task 3 as HamLet's run-phase.bat carried it before
+rem  commit 230e6c0 - the block, its comment and its stop reason verbatim.
+rem  ADVANCES is still required of a seed, because :noadvances below reads
+rem  the same decision block whichever way it was reached.
+if "%ITER%"=="1" if "%SEED%"=="1" (
+  echo.
+  echo   [3] arbiter - SKIPPED, this iteration runs the seed instruction
+  if not exist "%ROOT%\WORK_INSTRUCTIONS.md" (
+    set "STOPWHY=--seed was given and there is no WORK_INSTRUCTIONS.md to run"
+    goto :stopped
+  )
+  call :heartbeat
+  call :readdecision
+  set "ARBRC=0"
+  goto :seeded
+)
 echo.
 echo   [3] arbiter - authoring the next unit, restricted
 call :heartbeat
 call :arbiter
 call :heartbeat
+:seeded
 if not "%ARBRC%"=="0" (
   set "STOPWHY=the arbiter session failed - exit %ARBRC%"
   goto :stopped
@@ -696,6 +731,13 @@ goto :eof
 >>"%JSPROMPT%" echo its own recommendation on it, and a step waiting on such a question is
 >>"%JSPROMPT%" echo in progress or partial by its criteria, not blocked.
 >>"%JSPROMPT%" echo.
+>>"%JSPROMPT%" echo WHAT THE THIRD MEANS - the owner's ruling of 2026-09-13, which defines it
+>>"%JSPROMPT%" echo and does not widen it: A promise is a fact the product states to the
+>>"%JSPROMPT%" echo operator about the radio, a contact, or a send - what was logged, what was
+>>"%JSPROMPT%" echo heard, what went out. THE WORDING OF A HINT, A LABEL, A TARGET, A CARD'S
+>>"%JSPROMPT%" echo NEXT LINE, OR A NAME IS NEVER A PROMISE AND NEVER A STOP, so a step
+>>"%JSPROMPT%" echo waiting only on such wording is not blocked.
+>>"%JSPROMPT%" echo.
 >>"%JSPROMPT%" echo Answer with exactly two lines and nothing else:
 >>"%JSPROMPT%" echo.
 >>"%JSPROMPT%" echo STATE: one of the five words above
@@ -823,6 +865,12 @@ goto :eof
 >>"%S4PROMPT%" echo   2  money past the budget
 >>"%S4PROMPT%" echo   3  a decision that changes what the product promises the operator -
 >>"%S4PROMPT%" echo      what a card asserts, what a click does, what is logged as true
+>>"%S4PROMPT%" echo.
+>>"%S4PROMPT%" echo WHAT THE THIRD MEANS - the owner's ruling of 2026-09-13, which defines it
+>>"%S4PROMPT%" echo and does not widen it: A promise is a fact the product states to the
+>>"%S4PROMPT%" echo operator about the radio, a contact, or a send - what was logged, what was
+>>"%S4PROMPT%" echo heard, what went out. THE WORDING OF A HINT, A LABEL, A TARGET, A CARD'S
+>>"%S4PROMPT%" echo NEXT LINE, OR A NAME IS NEVER A PROMISE AND NEVER A STOP.
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo A QUESTION ABOUT ANYTHING ELSE IS NOT A RULING REQUEST, however it is
 >>"%S4PROMPT%" echo worded - even when it offers options, and even when it says the work
@@ -1413,6 +1461,11 @@ echo                    CONDITION - it saves the night when one of the
 echo                    ten fails to fire.
 echo   --fixture        one piece of the loop alone, against a fixture root,
 echo                    never this repository.
+echo   --seed           iteration 1 executes the WORK_INSTRUCTIONS.md that
+echo                    shipped, as written - the arbiter does not author it
+echo                    and takes over from iteration 2. The seed still needs
+echo                    its ARBITER-DECISION block, ADVANCES included. Without
+echo                    --seed, iteration 1 is authored like every other.
 echo.
 echo   0 the plan is satisfied, 1 a stop condition fired,
 echo   2 usage or bad root, 3 the lock is held

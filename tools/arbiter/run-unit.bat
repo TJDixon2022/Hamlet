@@ -67,9 +67,13 @@ rem     happen. So this script PRINTS BOTH LISTS on every run - the
 rem     --tools it passed and the --allowedTools it read - and the
 rem     two failure shapes stay distinguishable.
 rem
-rem  THE SCOPE IS A DATA FILE. tools\arbiter\run-unit-tools.txt, one
-rem  rule per line. Widening it is an edit to that file, visible in
-rem  a diff on its own, not a change to this logic.
+rem  THE SCOPE IS A DATA FILE, AND IT BELONGS TO THE PROJECT. Since 063 it
+rem  is .run-unit\allowed.txt in the target root, one rule per line.
+rem  Widening it is an edit to that project's file, visible on its own,
+rem  not a change to this logic. tools\arbiter\run-unit-tools.txt is only
+rem  the template a project with no list starts from, so copying this
+rem  folder into another project can no longer replace that project's
+rem  scope - which is what happened to HamLet on 2026-09-13.
 rem
 rem  THE PROMPT IS BUILT FROM A FILE, never composed inline -
 rem  CPS-DEC-021, four silent corruptions in three runs, three of
@@ -98,7 +102,11 @@ set "RC=0"
 set "TOOK="
 set "UNIT=%~1"
 set "ROOT=%~2"
-set "TOOLSFILE=%HERE%run-unit-tools.txt"
+rem  THE SCOPE BELONGS TO THE PROJECT, NOT TO THIS FOLDER. 063 task 1.
+rem  TEMPLATE is only what a project with no list of its own starts from;
+rem  TOOLSFILE is set only by --tools-file. See the scope block below.
+set "TEMPLATE=%HERE%run-unit-tools.txt"
+set "TOOLSFILE="
 set "DRYRUN="
 
 if "%UNIT%"=="" goto :usage
@@ -129,13 +137,14 @@ if not exist "%ROOT%\" (
   set "RC=2"
   goto :end
 )
-if not exist "%TOOLSFILE%" (
-  echo ERROR: no permission scope file: %TOOLSFILE%
-  echo Refusing to launch with no scope. An unscoped unattended run is
-  echo the blast radius the restriction exists for.
-  set "RC=2"
-  goto :end
-)
+if not defined TOOLSFILE goto :toolsfileok
+if exist "%TOOLSFILE%" goto :toolsfileok
+echo ERROR: no permission scope file: %TOOLSFILE%
+echo Refusing to launch with no scope. An unscoped unattended run is
+echo the blast radius the restriction exists for.
+set "RC=2"
+goto :end
+:toolsfileok
 
 where claude >nul 2>&1
 if errorlevel 1 (
@@ -205,32 +214,81 @@ rem  THE BUILT-IN TOOLS THIS SESSION GETS AT ALL. Not the scope -
 rem  see run-unit-tools.txt's header for why the two are different.
 set "TOOLS=Read,Write,Edit,Bash"
 
+rem --- the scope: THE PROJECT'S OWN LIST -----------------------------
+rem  063 task 1. The scope is .run-unit\allowed.txt IN THE TARGET ROOT,
+rem  and it belongs to that project.
+rem
+rem  WHAT THIS REPLACED. Until 063 this block DELETED allowed.txt on every
+rem  run and rewrote it from run-unit-tools.txt in the launcher's own
+rem  folder. So a project's scope was whatever file sat beside the
+rem  launcher, and copying tools\arbiter from one project into another
+rem  silently replaced the second project's scope with the first's. HamLet
+rem  commit 230e6c0 did exactly that on 2026-09-13: it took this
+rem  repository's list - git and node - over HamLet's own, which carried
+rem  dotnet test, dotnet build and validate-output.bat. HamLet's unit 343
+rem  was then refused dotnet test, built nothing, and wrote a report about
+rem  tests it could not run.
+rem
+rem  THE THREE CASES.
+rem    allowed.txt exists     read as it is. NEVER deleted, never rewritten,
+rem                           never merged with the template.
+rem    allowed.txt is absent  CREATED ONCE from the template, then read. It
+rem                           names this repository's tools; the owner edits
+rem                           the project's copy for that project's.
+rem    --tools-file F         F is the scope for this run, and allowed.txt is
+rem                           neither read nor written. Fixtures use this.
+rem
+rem  REM LINES AND BLANK LINES ARE IGNORED WHEREVER THE SCOPE IS READ, because
+rem  a list created from the template carries the template's header.
+set "SCOPE=%ALLOWED%"
+set "SCOPEHOW=this project's own list, read as it is and not written"
+if defined TOOLSFILE goto :scopefromflag
+if exist "%ALLOWED%" goto :scopeready
+if exist "%TEMPLATE%" goto :scopecreate
+echo ERROR: this project has no .run-unit\allowed.txt and there is no template
+echo to create one from: %TEMPLATE%
+echo Refusing to launch with no scope.
+set "RC=2"
+goto :end
+
+:scopecreate
+copy /y "%TEMPLATE%" "%ALLOWED%" >nul
+if exist "%ALLOWED%" goto :scopecreated
+echo ERROR: could not create %ALLOWED%
+set "RC=2"
+goto :end
+:scopecreated
+set "SCOPEHOW=CREATED from the template because this project had no list - edit it for this project's tools"
+goto :scopeready
+
+:scopefromflag
+set "SCOPE=%TOOLSFILE%"
+set "SCOPEHOW=--tools-file given at launch - .run-unit\allowed.txt neither read nor written"
+
+:scopeready
+set "NRULES=0"
+for /f "usebackq delims=" %%N in (`powershell -NoProfile -Command "@(Get-Content -LiteralPath '%SCOPE%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' }).Count"`) do set "NRULES=%%N"
+if not "%NRULES%"=="0" goto :scopehasrules
+echo ERROR: the scope file contained no rules: %SCOPE%
+set "RC=2"
+goto :end
+:scopehasrules
+
 echo.
 echo ============================================================
 echo  run-unit
 echo    unit  : %UNIT%
 echo    root  : %ROOT%
-echo    scope : %TOOLSFILE%
+echo    scope : %SCOPE%
 echo ============================================================
-
-rem --- the scope, read from the data file ------------------------
-set "ALLOWLIST="
-if exist "%ALLOWED%" del /q "%ALLOWED%"
-for /f "usebackq tokens=* delims=" %%R in (`powershell -NoProfile -Command "Get-Content -LiteralPath '%TOOLSFILE%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' } | ForEach-Object { $_.Trim() }"`) do (
-  >>"%ALLOWED%" echo %%R
-)
-if not exist "%ALLOWED%" (
-  echo ERROR: the scope file contained no rules: %TOOLSFILE%
-  set "RC=2"
-  goto :end
-)
 
 echo.
 echo  --tools passed ^(which built-ins exist at all^):
 echo    %TOOLS%
 echo.
 echo  --allowedTools read from the scope file ^(what they may do^):
-for /f "usebackq tokens=* delims=" %%R in ("%ALLOWED%") do echo    %%R
+echo    %SCOPEHOW%
+for /f "usebackq tokens=* delims=" %%R in (`powershell -NoProfile -Command "Get-Content -LiteralPath '%SCOPE%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' } | ForEach-Object { $_.Trim() }"`) do echo    %%R
 echo.
 echo  BOTH lists are printed because an empty permission_denials
 echo  proves nothing on its own: a tool absent from --tools has
@@ -353,7 +411,7 @@ rem  statement either way, and a launcher whose exit code depends on
 rem  what a later cmdlet leaves behind is a launcher nobody can
 rem  reason about.
 rem  ---------------------------------------------------------------
-powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $allow = Get-Content -LiteralPath '%ALLOWED%'; $p = Get-Content -LiteralPath '%PROMPT%' -Raw; $a = @('-p', $p, '--output-format', 'json', '--restricted', '--tools', '%TOOLS%'); foreach($r in $allow){ $a += '--allowedTools'; $a += $r }; Push-Location '%ROOT%'; $ErrorActionPreference='Continue'; & claude @a 2>&1 | Set-Content -LiteralPath '%JSON%' -Encoding utf8; $rc=$LASTEXITCODE; Pop-Location; exit $rc"
+powershell -NoProfile -Command "$ErrorActionPreference='Stop'; $allow = @(Get-Content -LiteralPath '%SCOPE%' | Where-Object { $_.Trim() -ne '' -and $_ -notmatch '^\s*rem\b' } | ForEach-Object { $_.Trim() }); $p = Get-Content -LiteralPath '%PROMPT%' -Raw; $a = @('-p', $p, '--output-format', 'json', '--restricted', '--tools', '%TOOLS%'); foreach($r in $allow){ $a += '--allowedTools'; $a += $r }; Push-Location '%ROOT%'; $ErrorActionPreference='Continue'; & claude @a 2>&1 | Set-Content -LiteralPath '%JSON%' -Encoding utf8; $rc=$LASTEXITCODE; Pop-Location; exit $rc"
 set "CLAUDERC=%ERRORLEVEL%"
 
 set "ENDED="
