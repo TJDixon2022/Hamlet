@@ -3283,7 +3283,11 @@
                 <!-- **THE TABS SIT AT THE WORKSPACE'S OWN LEFT EDGE**, which is
                      now the window's, because the tray that used to occupy a
                      column to their left is gone. -->
-                <ItemsControl Grid.Row="0" x:Name="ModeTabs"
+                <!-- **THE TAB ROW CARRIES THE DIGITAL SEND AREA TO THE RIGHT OF THE
+                     TABS SINCE WORK INSTRUCTION 338**, the unit's choice, marked as its
+                     own and overrulable. See `DigitalSendReserved` below. -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
+                <ItemsControl Grid.Column="0" x:Name="ModeTabs"
                               ItemsSource="{Binding ModeTabs}"
                               Margin="0,0,0,0">
                     <ItemsControl.ItemsPanel>
@@ -3308,6 +3312,315 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <!-- **THE SPACE UNDER THE WATERFALL IS SPOKEN FOR,
+                     AND IT SAYS SO** (Tim's ruling: keep the room
+                     under the waterfall for Send).
+
+                     **A NAMED REGION AND NOT A GAP.** A gap that
+                     happens to be there is a gap the next layout
+                     edit closes, and then the waterfall moves a
+                     second time when transmit arrives. This has a
+                     name in the markup — `DigitalSendReserved` —
+                     so the transmit phase drops into it.
+
+                     **IT SAID TRANSMIT WAS NOT BUILT UNTIL UNIT
+                     259, AND THAT SENTENCE IS NOW FALSE.** It used
+                     to read "Send lives here when it is built.
+                     Hamlet does not transmit yet." The region kept
+                     itself clear for exactly this and the send path
+                     has dropped into it, so what stands here now is
+                     what is going out and to whom.
+
+                     **EVERY WORD IS FORMATTED IN THE VIEW MODEL**
+                     (unit 258's precedent, and `DigitalDecodeRow`'s
+                     before it), so what a reader sees is asserted
+                     by `OneClickArmsExactlyOneMessageTests` without
+                     a window being opened. Nothing here does
+                     arithmetic. -->
+                <!-- **ABOVE THE WATERFALL SINCE WORK INSTRUCTION 337**
+                     (R26): the three panels share one top and one bottom,
+                     so the send area cannot sit under one of them.
+                     **Its buttons are a column of their own** - nothing in
+                     the lines beside them can move CQ or Stop, which is the
+                     guarantee the stack's order used to give.
+
+                     **IN THE TAB ROW SINCE WORK INSTRUCTION 338, THE UNIT'S
+                     CHOICE, MARKED AS ITS OWN.** Over the waterfall it was a
+                     row all three panels paid for, and the arbiter's ruling 1
+                     gives that height to the panels. Right of the tabs it
+                     costs no row: the tabs already make this one. **Stop is
+                     outside every collapsible panel here** and is visible
+                     whenever the Digital tab is (§0.2); CQ and Stop bind the
+                     commands they always bound. The box and its padding went
+                     so the area is no taller than a tab, and the lines run
+                     across rather than down, the ones that are always there
+                     first and the ones that appear only when they have
+                     something to say after them. -->
+                <Border Grid.Column="1" x:Name="DigitalSendReserved"
+                        IsVisible="{Binding IsDigitalMode}"
+                        Margin="24,0,0,0"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                        <!-- **NO TYPING** (step 5, criterion 1).
+                             The callsign and grid are the
+                             operator's own, out of Settings, and
+                             the button goes through the same
+                             command a right-click does. -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal" Spacing="8"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left">
+                            <Button x:Name="DigitalSendCqButton"
+                                    Content="CQ"
+                                    Padding="16,4"
+                                    Command="{Binding SendCallToAnyoneCommand}"
+                                    ToolTip.Tip="{Binding CallToAnyoneText}" />
+
+                            <!-- **ALWAYS THERE AND ALWAYS
+                                 PRESSABLE** (step 1: the abort
+                                 cannot be disabled, deferred or
+                                 made conditional). No IsVisible, no
+                                 CanExecute, nothing that reads a
+                                 state - because a stop that hides
+                                 when the application believes
+                                 nothing is happening is hidden at
+                                 exactly the moment the application
+                                 is wrong. It is here before the slot
+                                 boundary and it is here during the
+                                 12.64 seconds, and it is the same
+                                 button at both. The CW path's own
+                                 "Stop sending" is a different
+                                 button on a different view model
+                                 and never appears on this tab. -->
+                            <!-- **IT SAYS WHAT IT IS** (Tim,
+                                 2026-09-07). The most consequential
+                                 control in the application was an
+                                 unlabelled coloured block and the
+                                 operator had to ask what it was. The
+                                 word is bound rather than fixed
+                                 because it names the state as well
+                                 as the action.
+
+                                 **AND IT IS NOT FILLED WITH THE
+                                 FAMILY COLOUR** (HM-DEC-012, §0.5).
+                                 It was filled `HmAmberDeepBrush`,
+                                 which is amber — this application's
+                                 Morse and transmitter colour — used
+                                 as a fill. Family colour is text
+                                 colour only. The ink is amber in
+                                 both states now and the fill is
+                                 paper at rest and a tint when there
+                                 is something to stop.
+
+                                 **THE STYLES TARGET `/template/
+                                 ContentPresenter`**, which is the
+                                 lesson HM-DEC-080 records at the top
+                                 of this file: a Background set on
+                                 the Button itself is overridden by
+                                 the theme's own ContentPresenter
+                                 setters in the pointerover and
+                                 pressed states, so the button looked
+                                 like one thing at rest and another
+                                 under the mouse.
+
+                                 **NOTHING HERE READS A STATE TO
+                                 DECIDE WHETHER IT WORKS.** No
+                                 IsVisible, no IsEnabled, no
+                                 CanExecute — `hm-live` is a class
+                                 that changes ink weight and a
+                                 border, and the command is the same
+                                 command at every instant. Step 1:
+                                 the abort cannot be disabled,
+                                 deferred or made conditional. -->
+                            <Button x:Name="DigitalStopButton"
+                                    Classes="hm-stop"
+                                    Classes.hm-live="{Binding HasSomethingToStop}"
+                                    Content="{Binding StopLabel}"
+                                    Padding="16,4"
+                                    Command="{Binding StopSendingCommand}"
+                                    ToolTip.Tip="{Binding StopTip}" />
+                        </StackPanel>
+
+                        <!-- **WHAT WENT OUT, BESIDE THE BUTTONS** (work
+                             instruction 337): the lines about the send
+                             take the width beside CQ and Stop rather than
+                             a row under them each, so the area stays short
+                             and the panels below keep the height.
+
+                             **ACROSS, NOT DOWN, SINCE WORK INSTRUCTION 338.**
+                             A wrap panel puts each line after the last and
+                             starts a new line only when the width runs out,
+                             so the three that are always there share one
+                             line at both of Tim's widths and a long one
+                             that has something to say takes the lines it
+                             needs rather than being cut. -->
+                        <WrapPanel Grid.Column="1" Orientation="Horizontal"
+                                   VerticalAlignment="Center">
+
+                        <TextBlock x:Name="DigitalSendReservedLine"
+                                   Text="{Binding DigitalSendLine}"
+                                   ToolTip.Tip="{Binding DigitalSendLineTip}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,14,0"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <!-- **THE TRANSMIT DRIVE AND THE POWER OFFER
+                             LEFT THIS AREA IN WORK INSTRUCTION 337**
+                             (R26, on the mockup): they are under the
+                             rig display's S-meter now, in
+                             `RigDriveAndPower`, which carries their
+                             history. This area keeps CQ and Stop and
+                             the lines about what went out. -->
+
+                        <!-- **THE dBFS SETTING MOVED WITH THE DRIVE
+                             CONTROL IN WORK INSTRUCTION 337**, under the
+                             rig's S-meter (`RigDriveAndPower`). What the
+                             sound card was actually handed stays here,
+                             below, and the two are still worded apart. -->
+                        <!-- **WHAT THE SOUND CARD WAS ACTUALLY
+                             HANDED** (work instruction 269, task 3),
+                             which is step D's first criterion's
+                             other half: the dBFS and the clip count,
+                             under the waterfall.
+
+                             **IT IS A DIFFERENT QUANTITY FROM THE
+                             LINE ABOVE IT AND THE WORDS SAY SO.**
+                             The note above is the level Hamlet will
+                             compose at — the drive setting — and
+                             `DigitalSendReservedLine` reports the
+                             composed peak of the transmission that
+                             went. This one is the sink's own
+                             `PeakWritten` and `ClippedSamples`,
+                             measured on the way out to the endpoint.
+                             At the radio the difference is between a
+                             level he has verified and a number he
+                             typed, and before unit 269 every reader
+                             of those two figures in the whole
+                             repository was a test.
+
+                             **AND WHERE THERE IS NO MEASUREMENT IT
+                             SAYS SO** rather than falling back to
+                             the composed peak in a measurement's
+                             words (§0.0). -->
+                        <!-- **THE FACTS, AND THE REST ON THE MARK** (work
+                             instruction 281 task 3). What the card got and
+                             whether anything had to be clamped are facts and
+                             stay; the clamp sentence and the boundary past
+                             the sound card - Windows own volume and the
+                             radio input gain - are on the mark beside it.
+                             **The author told unit 280 to keep them visible
+                             and that was wrong**: a hover preserves a fact
+                             exactly as well as a paragraph does. -->
+                        <StackPanel Orientation="Horizontal" Spacing="6"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,14,0">
+                            <TextBlock x:Name="DigitalTransmitLevelText"
+                                       Text="{Binding DigitalTransmitLevelLine}"
+                                       ToolTip.Tip="{x:Static vm:MainWindowViewModel.TransmitLevelIdleTip}"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
+                            <ctl:HintMarkControl x:Name="DigitalTransmitLevelTip"
+                                Kind="Boundary" VerticalAlignment="Center"
+                                Text="{x:Static vm:MainWindowViewModel.TransmitLevelTip}" />
+                        </StackPanel>
+
+                        <!-- **WHERE THE CONTACT STANDS AFTER HIS OWN
+                             LAST TRANSMISSION** (work instruction
+                             270, task 3).
+
+                             **THE ENDING NOTHING IN HAMLET COULD
+                             REPORT.** A great many contacts finish on
+                             the operator's own message: he answers a
+                             CQ, the station comes back
+                             `KC3QIS W1ABC R-09` — a report and a
+                             roger in one field — and his own `RRR` is
+                             what satisfies
+                             `Ft8ContactStates.IsComplete`. `PlaceRow`
+                             computes a row's Contact cell once, at
+                             that row's own slot, and `RecordSent`
+                             touches nothing already on the table, so
+                             the newest row on screen is the one
+                             placed BEFORE his last transmission and
+                             it still reads "your move". If the
+                             station has got what it came for and gone
+                             quiet, nothing ever said the contact
+                             finished.
+
+                             **THE PRESENT STATE GOES IN A LINE ABOUT
+                             THE PRESENT, NOT INTO THE PAST.** No row
+                             already on the table is rewritten: a
+                             table of moments that edits its own
+                             moments is a worse instrument than one
+                             that is merely incomplete.
+
+                             **IT WAS THE LAST CHILD OF A STACK, SO NOTHING
+                             COULD MOVE `DigitalStopButton`.** Since work
+                             instruction 337 the buttons are a column of
+                             their own, and nothing in this wrap panel can
+                             move them either.
+
+                             **AND IT SAYS WHEN IT WAS READ.** Every
+                             word is formatted in the view model; the
+                             markup binds and does no arithmetic. -->
+                        <TextBlock x:Name="DigitalContactStandsText"
+                                   Text="{Binding DigitalContactStandsLine}"
+                                   ToolTip.Tip="{x:Static vm:MainWindowViewModel.ContactStandsIdleTip}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,14,0"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <!-- The guard's own reason and citation,
+                             shown rather than restated. -->
+                        <TextBlock x:Name="DigitalSendLicenceText"
+                                   Text="{Binding DigitalSendLicenceLine}"
+                                   IsVisible="{Binding HasDigitalSendLicenceLine}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,14,0"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <TextBlock x:Name="DigitalSendUnsetText"
+                                   Text="{Binding DigitalSendUnset}"
+                                   IsVisible="{Binding HasDigitalSendUnset}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,14,0"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                        <!-- **WHAT THE ALC DID, IN A SENTENCE**
+                             (§R11). Not a meter: a meter asserts a
+                             reading and leaves the reader to know
+                             what it means, and the whole point of
+                             this application is that he does not.
+                             **It is absent unless something was
+                             measured and that measurement was past
+                             the zone** (§0.0) - no reading and a
+                             good reading are both silence here, and
+                             the record says which. -->
+                        <TextBlock x:Name="DigitalPsk31AlcLine"
+                                   Text="{Binding Psk31AlcLine}"
+                                   IsVisible="{Binding HasPsk31AlcLine}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,14,0"
+                                   FontSize="11"
+                                   Foreground="{StaticResource HmTextPrimaryBrush}" />
+                        </WrapPanel>
+                    </Grid>
+                </Border>
+                </Grid>
 
                 <!-- **THE TAB OWNS THE SPACE BELOW IT, AND IT HAS TO LOOK
                      LIKE IT** (Tim's ruling of 2026-08-27: *"Everything below
@@ -3447,7 +3760,7 @@
                             Background="{StaticResource HmPanelBrush}"
                             BorderBrush="{StaticResource HmSlateEdgeBrush}"
                             BorderThickness="1">
-                        <Grid ColumnDefinitions="Auto,Auto,*">
+                        <Grid ColumnDefinitions="Auto,Auto,Auto,*">
 
                             <TextBlock Grid.Column="0"
                                        Text="on this frequency"
@@ -3561,6 +3874,158 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
+                            <!-- **ONE BAR ABOVE BOTH PANELS** (Tim, 2026-09-12:
+                                 *"Move the clear button up above both decoded
+                                 and for you, squeeze the decoded text in, and
+                                 make the for you a little wider"*; work
+                                 instruction 331 task 1a).
+
+                                 **WHY THEY LEFT THE PANEL HEADER.** §0.5 puts a
+                                 panel's own controls in its own header bar, and
+                                 that is where these were - which was right while
+                                 the two panels were the same width. The decoded
+                                 list is now the narrow half, and four controls in
+                                 a 373 px header is a header that wraps or clips.
+                                 Above the pair they have the whole width of both.
+
+                                 **THE FILTER IS STILL ALWAYS THERE AND THE ROW
+                                 CONTROLS STILL WAIT** (§R17, HM-DEC-087). Moving
+                                 them changes where they are and nothing about when:
+                                 `everything` and `CQ` are a choice and are offered
+                                 on an empty band, `clear` and the order toggle are
+                                 reports about rows and stay behind
+                                 `HasDigitalDecodes`.
+
+                                 **IN THE MODE STRIP SINCE WORK INSTRUCTION 338, THE
+                                 UNIT'S CHOICE, MARKED AS ITS OWN.** Their bar was a row
+                                 the three panels paid for, and the arbiter's ruling 1
+                                 gives that height to the panels. The mockup draws them
+                                 in the Decoded text header; measured on the test host,
+                                 that header is 378 px and the title, `everything`, `CQ`
+                                 and the order toggle and `clear` want more than that
+                                 before the summary gets a pixel, and the summary is what
+                                 a shut panel says (§R17). **This strip runs the full
+                                 width and does not collapse**, so the filter is on screen
+                                 with the list empty and with Decoded text shut. The chips
+                                 carry a 2 px vertical padding so they do not make the
+                                 strip taller than its own chips. -->
+                            <!-- **THE FILTER IS ALWAYS THERE** (§R17,
+                                 work instruction 325 task 2). This whole
+                                 strip used to be hidden until something
+                                 decoded, which put `CQ` and `everything`
+                                 behind the same gate as `clear` and the
+                                 order toggle. Those two are reports about
+                                 rows and correctly wait for rows; the
+                                 filter is a **choice about what to see**,
+                                 and a choice that cannot be made until
+                                 after the thing it governs has happened
+                                 is not a choice. Tim could not set it
+                                 before the first slot landed.
+
+                                 So the chips are out here, always, and
+                                 the row-dependent controls keep their own
+                                 gate below. -->
+                            <StackPanel Grid.Column="2"
+                                        x:Name="DigitalHeaderStrip"
+                                        Orientation="Horizontal" Spacing="6"
+                                        Margin="24,0,0,0"
+                                        VerticalAlignment="Center">
+
+                                <!-- **TWO TOGGLES AND A WAY BACK, SINCE
+                                     UNIT 252** (Tim's ruling,
+                                     2026-09-06). Unit 251 built these as
+                                     three exclusive choices, which could
+                                     not express the state he wants most
+                                     evenings: the calls he could answer
+                                     AND his own traffic, both at once.
+
+                                     **`everything` IS NOT A THIRD
+                                     CHOICE.** It is what neither toggle
+                                     being on already is, so it cannot
+                                     disagree with them - it lights when
+                                     both are off and pressing it clears
+                                     both. That is why it binds a
+                                     different command from the other
+                                     two.
+
+                                     **THE PICKED ONE DIFFERS BY MORE
+                                     THAN COLOUR** (§0.6): it carries a
+                                     border and semibold weight, so the
+                                     strip survives a greyscale print.
+
+                                     **`mine` IS OFFERED EVEN WITH NO
+                                     CALLSIGN ON FILE**, and never greyed
+                                     (§0.5.1, HM-DEC-087). Grey is
+                                     reserved for what cannot be used;
+                                     this can be used and answers by
+                                     saying what it has to match on and
+                                     where to fix it, which is more use
+                                     than a dead control. -->
+                                <Button x:Name="DigitalFilterEverything"
+                                        Classes="hm-chip"
+                                        Classes.hm-picked="{Binding ShowsEverything}"
+                                        Content="everything"
+                                        ToolTip.Tip="Every message that decoded, with nothing held back."
+                                        FontSize="11"
+                                        Padding="10,2"
+                                        Command="{Binding ShowEveryDecodeCommand}" />
+
+                                <Button x:Name="DigitalFilterCq"
+                                        Classes="hm-chip"
+                                        Classes.hm-picked="{Binding ShowsCqOnly}"
+                                        Content="CQ"
+                                        ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
+                                        FontSize="11"
+                                        Padding="10,2"
+                                        Command="{Binding ToggleDecodedCqCommand}" />
+
+                                <!-- **WHAT IS A REPORT ABOUT ROWS STILL
+                                     WAITS FOR ROWS.** There is nothing to
+                                     clear and nothing to order on an
+                                     empty table, and a live control that
+                                     does nothing teaches the operator
+                                     that controls here do nothing
+                                     (HM-DEC-087). The separator goes with
+                                     them, or an empty bar carries a
+                                     divider with nothing on its far
+                                     side. -->
+                                <StackPanel x:Name="DigitalRowControls"
+                                            Orientation="Horizontal" Spacing="6"
+                                            IsVisible="{Binding HasDigitalDecodes}">
+
+                                    <Border Width="1" Margin="4,2"
+                                            Background="{StaticResource HmSlateEdgeBrush}" />
+
+                                    <!-- **IT NAMES THE STATE AND NOT THE
+                                         ACTION.** "oldest first" on a button
+                                         is ambiguous about whether that is
+                                         what you have or what you would
+                                         get, and this panel is read by
+                                         somebody who has never seen FT8. -->
+                                    <Button x:Name="DigitalOrderToggle"
+                                            Content="{Binding DigitalOrderLabel}"
+                                            ToolTip.Tip="Which end the newest slot is at, on the decoded list. The For you conversation always reads forwards, oldest at the top. Messages decoded from the same slot keep the order they were found in either way."
+                                            FontSize="11"
+                                            Padding="10,2"
+                                            Command="{Binding ToggleDigitalOrderCommand}"
+                                            Background="{StaticResource HmSlateTintBrush}"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1"
+                                            Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                    <Button x:Name="DigitalClearPress"
+                                            Content="clear"
+                                            ToolTip.Tip="Empties what is on screen. The telemetry record and any capture sidecars are untouched."
+                                            FontSize="11"
+                                            Padding="10,2"
+                                            Command="{Binding ClearDigitalDecodesCommand}"
+                                            Background="{StaticResource HmSlateTintBrush}"
+                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                            BorderThickness="1"
+                                            Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                </StackPanel>
+                            </StackPanel>
+
                             <!-- **THE STATIC STATUS IS GONE** (unit 224). Work
                                  instruction 037 wrote `reading it · 9 messages
                                  this slot` as a placeholder and unit 038 kept it
@@ -3569,7 +4034,7 @@
                                  are two now, and a strip claiming nine messages
                                  beside a table showing what was really decoded
                                  is the mixture this unit exists to end. -->
-                            <StackPanel Grid.Column="2" Orientation="Horizontal"
+                            <StackPanel Grid.Column="3" Orientation="Horizontal"
                                         Spacing="10"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center">
@@ -3735,13 +4200,17 @@
                          The waterfall and For You share what is left equally, so For You is
                          wide enough at 1920 that the card's facts sit beside its map.
 
-                         **THE TOP ROW HOLDS WHAT SITS ABOVE THE PANELS**: the send area over
-                         the waterfall, and the bar with the slot clock, the filter and the
-                         row controls over the two lists. Both are outside every collapsible
-                         panel, so collapsing one never hides Stop (§0.2). -->
+                         **ONE ROW SINCE WORK INSTRUCTION 338** (the arbiter's ruling 1: the
+                         three panels themselves take at least half the height below the band
+                         pills, as the mockup gives them 382 of its 710). The top row that held
+                         the send area and the bar over the lists is gone: **the send area
+                         rides the tab row, right of the tabs; the filter and the row controls
+                         ride the mode strip; the slot clock rides the For you header.** Stop
+                         is outside every collapsible panel wherever it sits (§0.2), and the
+                         filter is in a strip that does not collapse (§R17). The unit's
+                         arrangement, marked as its own and overrulable. -->
                     <Grid Grid.Row="3" x:Name="DigitalPanes"
-                          ColumnDefinitions="*,383,*"
-                          RowDefinitions="Auto,*">
+                          ColumnDefinitions="*,383,*">
 
                         <!-- **THE LEFT COLUMN IS THE WATERFALL AND THE SPACE
                              UNDER IT.** Both rows are `Auto`: the waterfall keeps
@@ -3776,7 +4245,7 @@
                                  is that the same audio is now cut on the UTC
                                  quarter minute and read, and whatever comes out
                                  of it lands on the decoded panel below. -->
-                            <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="0"
+                            <ctl:CollapsiblePanel Grid.Row="0" Grid.Column="0"
                                                   Margin="0,0,5,0"
                                                   x:Name="DigitalWaterfallPanel"
                                                   Family="Lavender"
@@ -3809,287 +4278,14 @@
                                                       BandHighHz="3000" />
                             </ctl:CollapsiblePanel>
 
-                            <!-- **THE SPACE UNDER THE WATERFALL IS SPOKEN FOR,
-                                 AND IT SAYS SO** (Tim's ruling: keep the room
-                                 under the waterfall for Send).
+                            <!-- **THE SEND AREA LEFT THIS GRID IN WORK INSTRUCTION 338**
+                                 (the arbiter's ruling 1). It was the first row of the
+                                 waterfall's column, and a row above one of three panels
+                                 that share a top is a row above all three. It rides the
+                                 tab row now, right of the tabs, as `DigitalSendReserved`,
+                                 with CQ, Stop and every line it carried and their
+                                 history. -->
 
-                                 **A NAMED REGION AND NOT A GAP.** A gap that
-                                 happens to be there is a gap the next layout
-                                 edit closes, and then the waterfall moves a
-                                 second time when transmit arrives. This has a
-                                 name in the markup — `DigitalSendReserved` —
-                                 so the transmit phase drops into it.
-
-                                 **IT SAID TRANSMIT WAS NOT BUILT UNTIL UNIT
-                                 259, AND THAT SENTENCE IS NOW FALSE.** It used
-                                 to read "Send lives here when it is built.
-                                 Hamlet does not transmit yet." The region kept
-                                 itself clear for exactly this and the send path
-                                 has dropped into it, so what stands here now is
-                                 what is going out and to whom.
-
-                                 **EVERY WORD IS FORMATTED IN THE VIEW MODEL**
-                                 (unit 258's precedent, and `DigitalDecodeRow`'s
-                                 before it), so what a reader sees is asserted
-                                 by `OneClickArmsExactlyOneMessageTests` without
-                                 a window being opened. Nothing here does
-                                 arithmetic. -->
-                            <!-- **ABOVE THE WATERFALL SINCE WORK INSTRUCTION 337**
-                                 (R26): the three panels share one top and one bottom,
-                                 so the send area cannot sit under one of them. It is
-                                 the first row of the waterfall's column, outside every
-                                 collapsible panel, and **its buttons are a column of
-                                 their own** - nothing in the lines beside them can move
-                                 CQ or Stop, which is the guarantee the stack's order
-                                 used to give. -->
-                            <Border Grid.Row="0" Grid.Column="0" x:Name="DigitalSendReserved"
-                                    Margin="0,0,5,6"
-                                    Padding="12,8"
-                                    CornerRadius="8"
-                                    Background="Transparent"
-                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                    BorderThickness="1">
-                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
-                                    <!-- **NO TYPING** (step 5, criterion 1).
-                                         The callsign and grid are the
-                                         operator's own, out of Settings, and
-                                         the button goes through the same
-                                         command a right-click does. -->
-                                    <StackPanel Grid.Column="0"
-                                                Orientation="Horizontal" Spacing="8"
-                                                VerticalAlignment="Top"
-                                                HorizontalAlignment="Left">
-                                        <Button x:Name="DigitalSendCqButton"
-                                                Content="CQ"
-                                                Padding="16,4"
-                                                Command="{Binding SendCallToAnyoneCommand}"
-                                                ToolTip.Tip="{Binding CallToAnyoneText}" />
-
-                                        <!-- **ALWAYS THERE AND ALWAYS
-                                             PRESSABLE** (step 1: the abort
-                                             cannot be disabled, deferred or
-                                             made conditional). No IsVisible, no
-                                             CanExecute, nothing that reads a
-                                             state - because a stop that hides
-                                             when the application believes
-                                             nothing is happening is hidden at
-                                             exactly the moment the application
-                                             is wrong. It is here before the slot
-                                             boundary and it is here during the
-                                             12.64 seconds, and it is the same
-                                             button at both. The CW path's own
-                                             "Stop sending" is a different
-                                             button on a different view model
-                                             and never appears on this tab. -->
-                                        <!-- **IT SAYS WHAT IT IS** (Tim,
-                                             2026-09-07). The most consequential
-                                             control in the application was an
-                                             unlabelled coloured block and the
-                                             operator had to ask what it was. The
-                                             word is bound rather than fixed
-                                             because it names the state as well
-                                             as the action.
-
-                                             **AND IT IS NOT FILLED WITH THE
-                                             FAMILY COLOUR** (HM-DEC-012, §0.5).
-                                             It was filled `HmAmberDeepBrush`,
-                                             which is amber — this application's
-                                             Morse and transmitter colour — used
-                                             as a fill. Family colour is text
-                                             colour only. The ink is amber in
-                                             both states now and the fill is
-                                             paper at rest and a tint when there
-                                             is something to stop.
-
-                                             **THE STYLES TARGET `/template/
-                                             ContentPresenter`**, which is the
-                                             lesson HM-DEC-080 records at the top
-                                             of this file: a Background set on
-                                             the Button itself is overridden by
-                                             the theme's own ContentPresenter
-                                             setters in the pointerover and
-                                             pressed states, so the button looked
-                                             like one thing at rest and another
-                                             under the mouse.
-
-                                             **NOTHING HERE READS A STATE TO
-                                             DECIDE WHETHER IT WORKS.** No
-                                             IsVisible, no IsEnabled, no
-                                             CanExecute — `hm-live` is a class
-                                             that changes ink weight and a
-                                             border, and the command is the same
-                                             command at every instant. Step 1:
-                                             the abort cannot be disabled,
-                                             deferred or made conditional. -->
-                                        <Button x:Name="DigitalStopButton"
-                                                Classes="hm-stop"
-                                                Classes.hm-live="{Binding HasSomethingToStop}"
-                                                Content="{Binding StopLabel}"
-                                                Padding="16,4"
-                                                Command="{Binding StopSendingCommand}"
-                                                ToolTip.Tip="{Binding StopTip}" />
-                                    </StackPanel>
-
-                                    <!-- **WHAT WENT OUT, BESIDE THE BUTTONS** (work
-                                         instruction 337): the lines about the send
-                                         take the width beside CQ and Stop rather than
-                                         a row under them each, so the area stays short
-                                         and the panels below keep the height. -->
-                                    <StackPanel Grid.Column="1" Spacing="2"
-                                                VerticalAlignment="Center">
-
-                                    <TextBlock x:Name="DigitalSendReservedLine"
-                                               Text="{Binding DigitalSendLine}"
-                                               ToolTip.Tip="{Binding DigitalSendLineTip}"
-                                               TextWrapping="Wrap"
-                                               VerticalAlignment="Top"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                    <!-- The guard's own reason and citation,
-                                         shown rather than restated. -->
-                                    <TextBlock x:Name="DigitalSendLicenceText"
-                                               Text="{Binding DigitalSendLicenceLine}"
-                                               IsVisible="{Binding HasDigitalSendLicenceLine}"
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                    <TextBlock x:Name="DigitalSendUnsetText"
-                                               Text="{Binding DigitalSendUnset}"
-                                               IsVisible="{Binding HasDigitalSendUnset}"
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                    <!-- **THE TRANSMIT DRIVE AND THE POWER OFFER
-                                         LEFT THIS AREA IN WORK INSTRUCTION 337**
-                                         (R26, on the mockup): they are under the
-                                         rig display's S-meter now, in
-                                         `RigDriveAndPower`, which carries their
-                                         history. This area keeps CQ and Stop and
-                                         the lines about what went out. -->
-
-                                    <!-- **WHAT THE ALC DID, IN A SENTENCE**
-                                         (§R11). Not a meter: a meter asserts a
-                                         reading and leaves the reader to know
-                                         what it means, and the whole point of
-                                         this application is that he does not.
-                                         **It is absent unless something was
-                                         measured and that measurement was past
-                                         the zone** (§0.0) - no reading and a
-                                         good reading are both silence here, and
-                                         the record says which. -->
-                                    <TextBlock x:Name="DigitalPsk31AlcLine"
-                                               Text="{Binding Psk31AlcLine}"
-                                               IsVisible="{Binding HasPsk31AlcLine}"
-                                               TextWrapping="Wrap"
-                                               Margin="0,8,0,0"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                    <!-- **THE dBFS SETTING MOVED WITH THE DRIVE
-                                         CONTROL IN WORK INSTRUCTION 337**, under the
-                                         rig's S-meter (`RigDriveAndPower`). What the
-                                         sound card was actually handed stays here,
-                                         below, and the two are still worded apart. -->
-                                    <!-- **WHAT THE SOUND CARD WAS ACTUALLY
-                                         HANDED** (work instruction 269, task 3),
-                                         which is step D's first criterion's
-                                         other half: the dBFS and the clip count,
-                                         under the waterfall.
-
-                                         **IT IS A DIFFERENT QUANTITY FROM THE
-                                         LINE ABOVE IT AND THE WORDS SAY SO.**
-                                         The note above is the level Hamlet will
-                                         compose at — the drive setting — and
-                                         `DigitalSendReservedLine` reports the
-                                         composed peak of the transmission that
-                                         went. This one is the sink's own
-                                         `PeakWritten` and `ClippedSamples`,
-                                         measured on the way out to the endpoint.
-                                         At the radio the difference is between a
-                                         level he has verified and a number he
-                                         typed, and before unit 269 every reader
-                                         of those two figures in the whole
-                                         repository was a test.
-
-                                         **AND WHERE THERE IS NO MEASUREMENT IT
-                                         SAYS SO** rather than falling back to
-                                         the composed peak in a measurement's
-                                         words (§0.0). -->
-                                    <!-- **THE FACTS, AND THE REST ON THE MARK** (work
-                                         instruction 281 task 3). What the card got and
-                                         whether anything had to be clamped are facts and
-                                         stay; the clamp sentence and the boundary past
-                                         the sound card - Windows own volume and the
-                                         radio input gain - are on the mark beside it.
-                                         **The author told unit 280 to keep them visible
-                                         and that was wrong**: a hover preserves a fact
-                                         exactly as well as a paragraph does. -->
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <TextBlock x:Name="DigitalTransmitLevelText"
-                                                   Text="{Binding DigitalTransmitLevelLine}"
-                                                   ToolTip.Tip="{x:Static vm:MainWindowViewModel.TransmitLevelIdleTip}"
-                                                   TextWrapping="Wrap"
-                                                   VerticalAlignment="Center"
-                                                   FontSize="11"
-                                                   Foreground="{StaticResource HmTextMutedBrush}" />
-
-                                        <ctl:HintMarkControl x:Name="DigitalTransmitLevelTip"
-                                            Kind="Boundary" VerticalAlignment="Center"
-                                            Text="{x:Static vm:MainWindowViewModel.TransmitLevelTip}" />
-                                    </StackPanel>
-
-                                    <!-- **WHERE THE CONTACT STANDS AFTER HIS OWN
-                                         LAST TRANSMISSION** (work instruction
-                                         270, task 3).
-
-                                         **THE ENDING NOTHING IN HAMLET COULD
-                                         REPORT.** A great many contacts finish on
-                                         the operator's own message: he answers a
-                                         CQ, the station comes back
-                                         `KC3QIS W1ABC R-09` — a report and a
-                                         roger in one field — and his own `RRR` is
-                                         what satisfies
-                                         `Ft8ContactStates.IsComplete`. `PlaceRow`
-                                         computes a row's Contact cell once, at
-                                         that row's own slot, and `RecordSent`
-                                         touches nothing already on the table, so
-                                         the newest row on screen is the one
-                                         placed BEFORE his last transmission and
-                                         it still reads "your move". If the
-                                         station has got what it came for and gone
-                                         quiet, nothing ever said the contact
-                                         finished.
-
-                                         **THE PRESENT STATE GOES IN A LINE ABOUT
-                                         THE PRESENT, NOT INTO THE PAST.** No row
-                                         already on the table is rewritten: a
-                                         table of moments that edits its own
-                                         moments is a worse instrument than one
-                                         that is merely incomplete.
-
-                                         **IT IS THE LAST CHILD OF THIS STACK, FOR
-                                         THE SAME REASON THE DRIVE CONTROL IS
-                                         BELOW THE BUTTON ROW.** In a vertical
-                                         StackPanel a child's position depends
-                                         only on the children before it, so
-                                         nothing here can move
-                                         `DigitalStopButton`, which is child one.
-
-                                         **AND IT SAYS WHEN IT WAS READ.** Every
-                                         word is formatted in the view model; the
-                                         markup binds and does no arithmetic. -->
-                                    <TextBlock x:Name="DigitalContactStandsText"
-                                               Text="{Binding DigitalContactStandsLine}"
-                                               ToolTip.Tip="{x:Static vm:MainWindowViewModel.ContactStandsIdleTip}"
-                                               TextWrapping="Wrap"
-                                               FontSize="11"
-                                               Foreground="{StaticResource HmTextMutedBrush}" />
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
 
                             <!-- **DECODED TEXT IS THE RIGHT-HAND HALF** (Tim's
                                  ruling, carried into markup at last). It was
@@ -4175,206 +4371,19 @@
                                  row, so the two lists and the waterfall are cells of one
                                  grid and share one top and one bottom (R26). -->
 
-                                <!-- **THE SLOT CLOCK, ABOVE THE PANELS AND OUTSIDE
-                                     THEM** (work instruction 305 task 3, on
-                                     HM-DEC-086's precedent that some things are
-                                     always on screen).
+                                <!-- **THE BAR ABOVE BOTH LISTS IS GONE IN WORK INSTRUCTION 338**
+                                     (the arbiter's ruling 1: the waterfall, the decoded list
+                                     and For You themselves take at least half the height below
+                                     the band pills). Its row was height all three panels paid
+                                     for. **The filter and the row controls ride in the mode
+                                     strip** (`DigitalHeaderStrip`), which runs the full width and
+                                     does not collapse, so the filter is on screen on an empty
+                                     list and with Decoded text shut (§R17). **The slot clock
+                                     rides on the For you header**, which stays when that panel
+                                     is shut. Their history went with them. -->
 
-                                     **IT USED TO LIVE INSIDE A CARD** and a card is
-                                     built from the ledger, so on the evening the
-                                     operator pressed CQ and nobody answered there
-                                     were no cards, the `ItemsControl` was collapsed
-                                     by `HasDigitalCards`, and the countdown he was
-                                     watching to decide whether anybody had come back
-                                     did not exist at all. **The slot clock is always
-                                     knowable** (unit 286): it derives from the system
-                                     clock and the measured offset, and neither of
-                                     those waits on a decode.
 
-                                     **THE SAME BOUNDARY THE SEND GATE USES.** Every
-                                     figure here is `Ft8Turn.Read`'s, which is the one
-                                     the armed send is compared against - there is no
-                                     second timing source and nothing here can arm,
-                                     fire or extend anything.
-
-                                     **NO LABEL, AND THE NUMBER IS THE CARRIER**
-                                     (§0.6). The remaining seconds read as a number
-                                     whatever the colour is doing. -->
-                                <!-- **ONE BAR ABOVE BOTH PANELS** (Tim, 2026-09-12:
-                                     *"Move the clear button up above both decoded
-                                     and for you, squeeze the decoded text in, and
-                                     make the for you a little wider"*; work
-                                     instruction 331 task 1a).
-
-                                     **WHY THEY LEFT THE PANEL HEADER.** §0.5 puts a
-                                     panel's own controls in its own header bar, and
-                                     that is where these were - which was right while
-                                     the two panels were the same width. The decoded
-                                     list is now the narrow half, and four controls in
-                                     a 373 px header is a header that wraps or clips.
-                                     Above the pair they have the whole width of both.
-
-                                     **AND THE SLOT CLOCK IS ALREADY HERE**, so this is
-                                     one strip rather than a new row of chrome: the
-                                     clock keeps the left end it has had since unit 305
-                                     and the controls take the room beside it.
-
-                                     **THE FILTER IS STILL ALWAYS THERE AND THE ROW
-                                     CONTROLS STILL WAIT** (§R17, HM-DEC-087). Moving
-                                     them changes where they are and nothing about when:
-                                     `everything` and `CQ` are a choice and are offered
-                                     on an empty band, `clear` and the order toggle are
-                                     reports about rows and stay behind
-                                     `HasDigitalDecodes`. -->
-                                <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
-                                      VerticalAlignment="Bottom"
-                                      x:Name="DigitalListControlsBar"
-                                      ColumnDefinitions="Auto,*"
-                                      Margin="5,0,0,6">
-
-                                <Panel Grid.Column="0"
-                                       x:Name="SlotClock"
-                                       IsVisible="{Binding ShowsSlotClock}"
-                                       Width="34" Height="34"
-                                       HorizontalAlignment="Left"
-                                       Background="Transparent"
-                                       ToolTip.Tip="{Binding TurnRingTip}">
-                                    <Ellipse Width="30" Height="30"
-                                             StrokeThickness="3"
-                                             Stroke="{StaticResource HmSlateEdgeBrush}" />
-
-                                    <Arc Width="30" Height="30"
-                                         StartAngle="-90"
-                                         SweepAngle="{Binding TurnRingSweep}"
-                                         Classes.hm-unknown="{Binding TurnRingIsUnknown}"
-                                         Classes.hm-onair="{Binding TurnRingIsOnAir}" />
-
-                                    <TextBlock x:Name="SlotClockCountText"
-                                               Text="{Binding TurnRingCount}"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"
-                                               FontFamily="Consolas,Menlo,monospace"
-                                               FontSize="12"
-                                               FontWeight="SemiBold" />
-                                </Panel>
-
-                                    <!-- **THE FILTER IS ALWAYS THERE** (§R17,
-                                         work instruction 325 task 2). This whole
-                                         strip used to be hidden until something
-                                         decoded, which put `CQ` and `everything`
-                                         behind the same gate as `clear` and the
-                                         order toggle. Those two are reports about
-                                         rows and correctly wait for rows; the
-                                         filter is a **choice about what to see**,
-                                         and a choice that cannot be made until
-                                         after the thing it governs has happened
-                                         is not a choice. Tim could not set it
-                                         before the first slot landed.
-
-                                         So the chips are out here, always, and
-                                         the row-dependent controls keep their own
-                                         gate below. -->
-                                    <StackPanel Grid.Column="1"
-                                                x:Name="DigitalHeaderStrip"
-                                                Orientation="Horizontal" Spacing="6"
-                                                Margin="10,0,0,0"
-                                                VerticalAlignment="Center">
-
-                                        <!-- **TWO TOGGLES AND A WAY BACK, SINCE
-                                             UNIT 252** (Tim's ruling,
-                                             2026-09-06). Unit 251 built these as
-                                             three exclusive choices, which could
-                                             not express the state he wants most
-                                             evenings: the calls he could answer
-                                             AND his own traffic, both at once.
-
-                                             **`everything` IS NOT A THIRD
-                                             CHOICE.** It is what neither toggle
-                                             being on already is, so it cannot
-                                             disagree with them - it lights when
-                                             both are off and pressing it clears
-                                             both. That is why it binds a
-                                             different command from the other
-                                             two.
-
-                                             **THE PICKED ONE DIFFERS BY MORE
-                                             THAN COLOUR** (§0.6): it carries a
-                                             border and semibold weight, so the
-                                             strip survives a greyscale print.
-
-                                             **`mine` IS OFFERED EVEN WITH NO
-                                             CALLSIGN ON FILE**, and never greyed
-                                             (§0.5.1, HM-DEC-087). Grey is
-                                             reserved for what cannot be used;
-                                             this can be used and answers by
-                                             saying what it has to match on and
-                                             where to fix it, which is more use
-                                             than a dead control. -->
-                                        <Button x:Name="DigitalFilterEverything"
-                                                Classes="hm-chip"
-                                                Classes.hm-picked="{Binding ShowsEverything}"
-                                                Content="everything"
-                                                ToolTip.Tip="Every message that decoded, with nothing held back."
-                                                FontSize="11"
-                                                Command="{Binding ShowEveryDecodeCommand}" />
-
-                                        <Button x:Name="DigitalFilterCq"
-                                                Classes="hm-chip"
-                                                Classes.hm-picked="{Binding ShowsCqOnly}"
-                                                Content="CQ"
-                                                ToolTip.Tip="Keeps the calls to anyone on the list and takes the rest off it. The summary always says how many were taken off, so a filtered list can never read as a quiet band."
-                                                FontSize="11"
-                                                Command="{Binding ToggleDecodedCqCommand}" />
-
-                                        <!-- **WHAT IS A REPORT ABOUT ROWS STILL
-                                             WAITS FOR ROWS.** There is nothing to
-                                             clear and nothing to order on an
-                                             empty table, and a live control that
-                                             does nothing teaches the operator
-                                             that controls here do nothing
-                                             (HM-DEC-087). The separator goes with
-                                             them, or an empty bar carries a
-                                             divider with nothing on its far
-                                             side. -->
-                                        <StackPanel x:Name="DigitalRowControls"
-                                                    Orientation="Horizontal" Spacing="6"
-                                                    IsVisible="{Binding HasDigitalDecodes}">
-
-                                            <Border Width="1" Margin="4,2"
-                                                    Background="{StaticResource HmSlateEdgeBrush}" />
-
-                                            <!-- **IT NAMES THE STATE AND NOT THE
-                                                 ACTION.** "oldest first" on a button
-                                                 is ambiguous about whether that is
-                                                 what you have or what you would
-                                                 get, and this panel is read by
-                                                 somebody who has never seen FT8. -->
-                                            <Button x:Name="DigitalOrderToggle"
-                                                    Content="{Binding DigitalOrderLabel}"
-                                                    ToolTip.Tip="Which end the newest slot is at, on the decoded list. The For you conversation always reads forwards, oldest at the top. Messages decoded from the same slot keep the order they were found in either way."
-                                                    FontSize="11"
-                                                    Padding="10,3"
-                                                    Command="{Binding ToggleDigitalOrderCommand}"
-                                                    Background="{StaticResource HmSlateTintBrush}"
-                                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                    BorderThickness="1"
-                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
-
-                                            <Button x:Name="DigitalClearPress"
-                                                    Content="clear"
-                                                    ToolTip.Tip="Empties what is on screen. The telemetry record and any capture sidecars are untouched."
-                                                    FontSize="11"
-                                                    Padding="10,3"
-                                                    Command="{Binding ClearDigitalDecodesCommand}"
-                                                    Background="{StaticResource HmSlateTintBrush}"
-                                                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                                    BorderThickness="1"
-                                                    Foreground="{StaticResource HmTextPrimaryBrush}" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Grid>
-
-                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="1"
+                                <ctl:CollapsiblePanel Grid.Row="0" Grid.Column="1"
                                                       Margin="5,0,0,0"
                                                       x:Name="DigitalDecodedPanel"
                                                       Family="Green"
@@ -4954,7 +4963,7 @@
                                      filled (HM-DEC-012, 0.5); `CollapsiblePanel` applies the
                                      family to the title and the edge and nothing here changes
                                      that. -->
-                                <ctl:CollapsiblePanel Grid.Row="1" Grid.Column="2"
+                                <ctl:CollapsiblePanel Grid.Row="0" Grid.Column="2"
                                                       Margin="5,0,0,0"
                                                       x:Name="DigitalMinePanel"
                                                       Family="Green"
@@ -4962,6 +4971,66 @@
                                                       Summary="{Binding DigitalMineSummary}"
                                                       SummaryBrush="{Binding DigitalFoldedInk}"
                                                       IsExpanded="{Binding DigitalMineExpanded, Mode=TwoWay}">
+
+                                    <!-- **THE SLOT CLOCK, ABOVE THE PANELS AND OUTSIDE
+                                         THEM** (work instruction 305 task 3, on
+                                         HM-DEC-086's precedent that some things are
+                                         always on screen).
+
+                                         **IT USED TO LIVE INSIDE A CARD** and a card is
+                                         built from the ledger, so on the evening the
+                                         operator pressed CQ and nobody answered there
+                                         were no cards, the `ItemsControl` was collapsed
+                                         by `HasDigitalCards`, and the countdown he was
+                                         watching to decide whether anybody had come back
+                                         did not exist at all. **The slot clock is always
+                                         knowable** (unit 286): it derives from the system
+                                         clock and the measured offset, and neither of
+                                         those waits on a decode.
+
+                                         **THE SAME BOUNDARY THE SEND GATE USES.** Every
+                                         figure here is `Ft8Turn.Read`'s, which is the one
+                                         the armed send is compared against - there is no
+                                         second timing source and nothing here can arm,
+                                         fire or extend anything.
+
+                                         **NO LABEL, AND THE NUMBER IS THE CARRIER**
+                                         (§0.6). The remaining seconds read as a number
+                                         whatever the colour is doing.
+
+                                         **ON THE FOR YOU HEADER SINCE WORK INSTRUCTION 338,
+                                         THE UNIT'S CHOICE, MARKED AS ITS OWN.** The bar it
+                                         shared with the filter was a row the three panels
+                                         paid for. A panel header is not part of what
+                                         collapses - only the content under it is - so the
+                                         countdown is still on screen with no cards and with
+                                         For You shut, beside the conversation it times. -->
+                                    <ctl:CollapsiblePanel.HeaderAction>
+                                        <Panel x:Name="SlotClock"
+                                               IsVisible="{Binding ShowsSlotClock}"
+                                               Width="34" Height="34"
+                                               HorizontalAlignment="Left"
+                                               Background="Transparent"
+                                               ToolTip.Tip="{Binding TurnRingTip}">
+                                            <Ellipse Width="30" Height="30"
+                                                     StrokeThickness="3"
+                                                     Stroke="{StaticResource HmSlateEdgeBrush}" />
+
+                                            <Arc Width="30" Height="30"
+                                                 StartAngle="-90"
+                                                 SweepAngle="{Binding TurnRingSweep}"
+                                                 Classes.hm-unknown="{Binding TurnRingIsUnknown}"
+                                                 Classes.hm-onair="{Binding TurnRingIsOnAir}" />
+
+                                            <TextBlock x:Name="SlotClockCountText"
+                                                       Text="{Binding TurnRingCount}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       FontFamily="Consolas,Menlo,monospace"
+                                                       FontSize="12"
+                                                       FontWeight="SemiBold" />
+                                        </Panel>
+                                    </ctl:CollapsiblePanel.HeaderAction>
 
                                     <!-- **THE CARDS TAKE THE STAR** (work instruction 313
                                          task 3, R10 and the unbuilt half of unit 310's

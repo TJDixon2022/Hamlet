@@ -261,7 +261,7 @@ public sealed class TheWorkingPanelsTests
             foreach (var name in new[]
             {
                 "DigitalModeStrip", "DigitalReadinessStrip", "DigitalTuneStrip",
-                "DigitalSendReserved", "DigitalListControlsBar",
+                "DigitalSendReserved", "DigitalHeaderStrip",
             })
             {
                 var row = TheTopRowTests.Named<Control>(window, name);
@@ -299,6 +299,312 @@ public sealed class TheWorkingPanelsTests
         {
             window.Close();
         }
+    }
+
+    /// <summary>
+    /// **Work instruction 338 task 1: the three panels themselves take at least half the height
+    /// below the band pills**, one top and one bottom, at 1920 and 1400.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 1**: *the working panels* in R26 are the waterfall, decoded
+    /// text and For You panels, measured from their shared top to their shared bottom - not the
+    /// working card they sit in. The mockup gives them 382 of the 710 px below its pills.</para>
+    /// <para>**MEASURED WITH THE READINESS STRIP HIDDEN**, which is the connected state the mockup
+    /// draws; the test host has no sound card, so the strip is hidden by setting its visibility
+    /// here. The share with the strip showing is printed beside it.</para>
+    /// <para>**THE PLAIN FIXTURE AT BOTH WIDTHS AND THE LICENSED ONE AT 1920.** The licensed
+    /// operator at 1400 carries the tallest top row, and task 2 is what brings that row back; its
+    /// panels are asserted in <see cref="TheTopRowTests"/> with the row.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheThreePanelsTakeAtLeastHalfTheHeightBelowTheBandPills()
+    {
+        foreach (var (label, make, width) in new (string, Func<double, Window>, double)[]
+        {
+            ("plain", Realized, 1920),
+            ("plain", Realized, 1400),
+            ("licensed", TheTopRowTests.Realized, 1920),
+        })
+        {
+            var window = make(width);
+
+            try
+            {
+                var shown = PanelsShare(window);
+
+                TheTopRowTests.Named<Border>(window, "DigitalReadinessStrip").IsVisible = false;
+                Settle(window);
+
+                var hidden = PanelsShare(window);
+                var panels = Panels(window);
+
+                _output.WriteLine(
+                    label + " " + Px(width) + ": pills end at y " + Px(hidden.PillsBottom) + ", " + Px(hidden.Below)
+                    + " below; the panels " + Px(hidden.Height) + " px = " + Share(hidden.Height, hidden.Below)
+                    + " with the readiness strip hidden, " + Px(shown.Height) + " px = " + Share(shown.Height, shown.Below)
+                    + " with it " + (shown.StripShown ? "showing" : "not showing (nothing to say)"));
+
+                foreach (var (name, rect) in panels)
+                {
+                    Assert.True(
+                        Math.Abs(rect.Top - panels[0].Rect.Top) <= 0.5 && Math.Abs(rect.Bottom - panels[0].Rect.Bottom) <= 0.5,
+                        label + " " + Px(width) + ": " + name + " is " + Box(rect) + " and the waterfall is "
+                        + Box(panels[0].Rect) + ", so they are not one top and one bottom");
+                }
+
+                Assert.True(
+                    hidden.Height >= hidden.Below / 2,
+                    label + " " + Px(width) + ": the three panels are " + Px(hidden.Height) + " px of the "
+                    + Px(hidden.Below) + " below the band pills (" + Share(hidden.Height, hidden.Below)
+                    + "), which is less than half");
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>
+    /// **Work instruction 338 task 1: Stop is never inside anything that collapses, and the CQ /
+    /// everything filter is on screen with the list empty and with *Decoded text* collapsed.**
+    /// </summary>
+    /// <remarks>
+    /// §0.2: what stays absolute is the abort. §R17: *the CQ / Everything filter is visible on an
+    /// empty list, because it is a choice about what to see.* Moving either out of the rows above
+    /// the panels is only allowed if both still hold, at both widths.
+    /// </remarks>
+    [AvaloniaFact]
+    public void StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList()
+    {
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var (label, empty, collapsed) in new[]
+            {
+                ("empty list, Decoded text open", true, false),
+                ("rows, Decoded text collapsed", false, true),
+            })
+            {
+                var window = empty ? EmptyTab(width) : Realized(width);
+
+                try
+                {
+                    var model = (MainWindowViewModel)window.DataContext!;
+
+                    if (collapsed)
+                    {
+                        model.DigitalDecodedExpanded = false;
+                        Settle(window);
+                    }
+
+                    var stop = TheTopRowTests.Named<Button>(window, "DigitalStopButton");
+                    var folding = stop.GetVisualAncestors().OfType<Hamlet.App.Controls.CollapsiblePanel>().Select(p => p.Title).ToList();
+
+                    _output.WriteLine(
+                        Px(width) + ", " + label + ": rows " + model.DigitalDecodes.Count + ", decoded open "
+                        + model.DigitalDecodedExpanded + "; Stop visible " + stop.IsEffectivelyVisible
+                        + " at " + Box(TheTopRowTests.RectIn(stop, window)) + ", collapsible ancestors ["
+                        + string.Join(", ", folding) + "]");
+
+                    Assert.True(stop.IsEffectivelyVisible, Px(width) + ", " + label + ": Stop is not visible");
+                    Assert.True(
+                        folding.Count == 0,
+                        Px(width) + ", " + label + ": Stop is inside the collapsible panel(s) " + string.Join(", ", folding));
+
+                    foreach (var name in new[] { "DigitalFilterEverything", "DigitalFilterCq" })
+                    {
+                        var chip = TheTopRowTests.Named<Button>(window, name);
+                        var at = TheTopRowTests.RectIn(chip, window);
+
+                        _output.WriteLine("  " + name + " visible " + chip.IsEffectivelyVisible + " at " + Box(at));
+
+                        Assert.True(chip.IsEffectivelyVisible, Px(width) + ", " + label + ": " + name + " is not visible");
+                        Assert.True(
+                            at.Width > 0 && at.Bottom <= window.Bounds.Height,
+                            Px(width) + ", " + label + ": " + name + " is not on the window: " + Box(at));
+                    }
+
+                    Assert.Equal(empty, model.DigitalDecodes.Count == 0);
+                    Assert.Equal(!collapsed, model.DigitalDecodedExpanded);
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+        }
+    }
+
+    private sealed record Share3(double PillsBottom, double Below, double Height, bool StripShown);
+
+    private static Share3 PanelsShare(Window window)
+    {
+        var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+            .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+        var pillsBottom = TheTopRowTests.RectIn(pills, window).Bottom;
+        var panels = Panels(window);
+
+        return new Share3(
+            pillsBottom,
+            window.Bounds.Height - pillsBottom,
+            panels[0].Rect.Height,
+            TheTopRowTests.Named<Border>(window, "DigitalReadinessStrip").IsEffectivelyVisible);
+    }
+
+    private static void Settle(Window window)
+    {
+        for (var i = 0; i < 4; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+        }
+    }
+
+    /// <summary>The digital tab with nothing decoded, every panel open.</summary>
+    private static Window EmptyTab(double width)
+    {
+        var settings = new AppSettings { ReconnectOnStartup = false };
+        var model = new MainWindowViewModel(settings, null)
+        {
+            OperatingMode = "Digital",
+            DigitalWaterfallExpanded = true,
+            DigitalDecodedExpanded = true,
+            DigitalMineExpanded = true,
+        };
+
+        var window = new MainWindow { DataContext = model, Width = width, Height = TheTopRowTests.WindowHeight };
+
+        window.Show();
+        Settle(window);
+        Settle(window);
+
+        return window;
+    }
+
+    /// <summary>
+    /// **Work instruction 338 task 0: the rows between the tabs and the panels, the panels'
+    /// share, the run-order spread, the rig against the card, and the best bet.** Printed, not
+    /// asserted - the trace task 1 is built from.
+    /// </summary>
+    [AvaloniaFact]
+    public void Unit338TraceTheRowsAboveThePanels()
+    {
+        // **THE PLAIN FIXTURE AT 1400, FIRST, BEFORE ANY OTHER WINDOW IN THIS METHOD**, so the
+        // same reading can be taken again after the licensed windows and compared row by row.
+        var first = Realized(1400);
+
+        TraceWindow("plain 1400, first window of the method", first);
+        first.Close();
+
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var (label, make) in new (string, Func<double, Window>)[]
+            {
+                ("licensed", TheTopRowTests.Realized),
+                ("plain", Realized),
+            })
+            {
+                var window = make(width);
+
+                try
+                {
+                    TraceWindow(label + " " + Px(width) + ", readiness as bound", window);
+
+                    var strip = TheTopRowTests.Named<Border>(window, "DigitalReadinessStrip");
+
+                    strip.IsVisible = !strip.IsVisible;
+
+                    for (var i = 0; i < 4; i++)
+                    {
+                        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                        window.UpdateLayout();
+                    }
+
+                    TraceWindow(label + " " + Px(width) + ", readiness toggled to " + (strip.IsVisible ? "SHOWN" : "HIDDEN"), window);
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+        }
+
+        var again = Realized(1400);
+
+        TraceWindow("plain 1400, again after the licensed windows", again);
+        again.Close();
+    }
+
+    private void TraceWindow(string label, Window window)
+    {
+        var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+            .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+        var pillsBottom = TheTopRowTests.RectIn(pills, window).Bottom;
+        var below = window.Bounds.Height - pillsBottom;
+        var m = TheTopRowTests.Measure(window);
+        var panels = Panels(window);
+        var model = (MainWindowViewModel)window.DataContext!;
+
+        _output.WriteLine("=== " + label + " (" + Px(window.Bounds.Width) + " x " + Px(window.Bounds.Height) + ")");
+        _output.WriteLine("  band pills end at y " + Px(pillsBottom) + "; " + Px(below) + " below");
+        _output.WriteLine("  top row " + Px(m.TopRowHeight) + " = " + Share(m.TopRowHeight, below)
+            + "; card " + Box(m.Card) + "; rig panel " + Box(m.Rig));
+        _output.WriteLine("  working card " + Box(m.Workspace));
+        _output.WriteLine("  mode tabs " + Box(TheTopRowTests.RectIn(TheTopRowTests.Named<Control>(window, "ModeTabs"), window)));
+
+        foreach (var (name, rect) in panels)
+        {
+            _output.WriteLine("  panel " + name.PadRight(10) + Box(rect) + " = " + Share(rect.Height, below));
+        }
+
+        foreach (var name in new[]
+        {
+            "DigitalModeStrip", "DigitalReadinessStrip", "DigitalTuneStrip",
+            "DigitalSendReserved", "DigitalHeaderStrip",
+        })
+        {
+            var row = TheTopRowTests.Named<Control>(window, name);
+
+            _output.WriteLine(
+                "    " + name.PadRight(24) + (row.IsEffectivelyVisible
+                    ? Box(TheTopRowTests.RectIn(row, window)) + " margin " + row.Margin
+                    : "not shown (margin " + row.Margin + ")"));
+        }
+
+        foreach (var text in TheTopRowTests.Named<Border>(window, "DigitalSendReserved")
+            .GetVisualDescendants().OfType<TextBlock>().Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Length > 0))
+        {
+            _output.WriteLine("      send area " + (text.Name ?? "-").PadRight(26) + Box(TheTopRowTests.RectIn(text, window)) + " [" + text.Text + "]");
+        }
+
+        _output.WriteLine("    readiness line [" + model.DigitalReadinessLine + "]; tune line [" + model.DigitalTuneLine + "]");
+        _output.WriteLine(
+            "    license class " + model.LicenseClass + "; privilege headline [" + model.PrivilegeStatus.Headline
+            + "]; send license line [" + model.DigitalSendLicenceLine + "]");
+
+        foreach (var name in new[] { "GreenZoneBlock", "GreenZoneLeft", "GreenZoneRight", "GreenZoneModeLine", "GreenZoneLicenseLine", "GreenZoneRuleOfThumb", "GreenZoneSparkline", "GreenZoneHeard", "GreenZoneStrayedLine" })
+        {
+            var control = window.GetVisualDescendants().OfType<Control>().FirstOrDefault(c => c.Name == name);
+
+            _output.WriteLine(
+                "    " + name.PadRight(24) + (control is null ? "absent"
+                    : control.IsEffectivelyVisible ? Box(TheTopRowTests.RectIn(control, window)) : "not shown"));
+        }
+
+        foreach (var text in TheTopRowTests.Block(window).GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Length > 0))
+        {
+            _output.WriteLine("      block text " + Box(TheTopRowTests.RectIn(text, window)) + " [" + text.Text + "]");
+        }
+
+        var best = model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name + " (" + b.BestBetLabel + ")");
+        var bet = window.GetVisualDescendants().OfType<Button>().FirstOrDefault(b => b.Name == "GreenZoneBestBet");
+
+        _output.WriteLine(
+            "    best bet: pills [" + string.Join(", ", best) + "]; green zone [" + model.GreenZone.BestBet
+            + "] here=" + model.GreenZone.BestBetIsHere + "; button "
+            + (bet is null ? "absent" : bet.IsEffectivelyVisible ? "shown [" + bet.Content + "]" : "not shown"));
+        _output.WriteLine("");
     }
 
     // ------------------------------------------------------------------------------------

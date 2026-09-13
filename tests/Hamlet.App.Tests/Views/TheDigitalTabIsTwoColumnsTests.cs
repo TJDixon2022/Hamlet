@@ -30,6 +30,11 @@ namespace Hamlet.App.Tests.Views;
 /// are beside it, and the send area is a named region in the waterfall's own
 /// column - is still asserted. The send area is above the waterfall now, so the
 /// waterfall fills the height the lists fill.</para>
+/// <para>**REWRITTEN AGAIN UNDER R12 IN WORK INSTRUCTION 338.** The arbiter's ruling 1
+/// gives the three panels themselves half the height below the band pills, and the
+/// send area's row over the waterfall was height all three paid for. It rides the tab
+/// row now, right of the tabs and above the working card; that, and that it still
+/// holds CQ and says what it is, is what the send-area half of this test asserts.</para>
 /// <para>**IT ASSERTS ARRANGED GEOMETRY AND NOT MARKUP.** A test over the axaml
 /// as text would pass on the column definitions while a stray `Margin`, an
 /// `HorizontalAlignment` or a nested panel moved a panel on screen. What the
@@ -135,20 +140,29 @@ public sealed class TheDigitalTabIsTwoColumnsTests
             + " wide against a waterfall of " + waterfall.Width.ToString("0.##")
             + " and For you of " + mine.Width.ToString("0.##"));
 
-        // **ABOVE THE WATERFALL, AND IN THE WATERFALL'S OWN COLUMN.** A region
-        // above the lists would not be the space kept for Send.
+        // **ABOVE THE WATERFALL, AND BESIDE THE TABS SINCE WORK INSTRUCTION 338**
+        // (rewritten under R12). The column it had over the waterfall was a row the
+        // three panels paid for; the arbiter's ruling 1 gives that height to the
+        // panels, so the send area rides the tab row, right of the tabs and above the
+        // working card, where it costs no row of its own.
         Assert.True(
             reserved.Bottom <= waterfall.Y + 0.5,
             "the send area ends at y=" + reserved.Bottom.ToString("0.##")
             + " and the waterfall starts at y=" + waterfall.Y.ToString("0.##")
             + " - it is not above the waterfall");
 
+        var tabs = RectIn(window, Named<Control>(window, "ModeTabs"));
+        var card = RectIn(window, Named<Control>(window, "WorkspaceBoundary"));
+
+        _output.WriteLine("tabs      : " + Describe(tabs));
+        _output.WriteLine("card      : " + Describe(card));
+
         Assert.True(
-            Math.Abs(reserved.X - waterfall.X) < 0.5
-            && Math.Abs(reserved.Width - waterfall.Width) < 0.5,
-            "the send area is " + Describe(reserved)
-            + " and the waterfall is " + Describe(waterfall)
-            + " - it is not in the waterfall's own column");
+            reserved.X >= tabs.X && reserved.Y < tabs.Bottom && reserved.Bottom > tabs.Y
+            && reserved.Bottom <= card.Y + 0.5,
+            "the send area is " + Describe(reserved) + ", the tabs are " + Describe(tabs)
+            + " and the working card starts at y=" + card.Y.ToString("0.##")
+            + " - it is not in the tab row above the card");
 
         Assert.True(
             reserved.Height > 0,

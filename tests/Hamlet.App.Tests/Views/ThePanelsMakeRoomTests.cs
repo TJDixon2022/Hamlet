@@ -64,36 +64,36 @@ public sealed class ThePanelsMakeRoomTests
     public ThePanelsMakeRoomTests(ITestOutputHelper output) => _output = output;
 
     /// <summary>
-    /// **Assertion 1: one bar above both panels carries the three controls.**
+    /// **Assertion 1: the list controls sit in the mode strip, above both panels and inside
+    /// neither.**
     /// </summary>
     /// <remarks>
     /// <para>The filter - `everything` and `CQ` - and the two row controls - the order
     /// toggle and `clear` - used to live in the *Decoded text* panel's own header, which is
     /// where §0.5 puts a panel's controls. They govern a list that is now the narrow half,
     /// and Tim asked for them above both panels.</para>
-    /// <para>**ABOVE, AND SPANNING.** The bar's bottom edge is at or above the top of each
-    /// panel, and its width covers both of them - so it is one bar over the pair rather
-    /// than a bar over one of them.</para>
+    /// <para>**REWRITTEN UNDER R12 IN WORK INSTRUCTION 338.** Unit 331's bar over the pair was
+    /// a row of its own above the panels, and the arbiter's ruling 1 wants that row's height
+    /// for the panels themselves. The controls now ride in the mode strip, which runs the full
+    /// width and does not collapse (Tim, 2026-08-28). What 331 asked for still holds and is
+    /// what is asserted: above both lists, inside neither.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void OneBarAboveBothPanelsCarriesTheThreeControls()
+    public void TheListControlsSitInTheModeStripAboveBothPanels()
     {
         var window = Realized(1400);
 
-        var bar = window.FindControl<Control>("DigitalListControlsBar");
+        var strip = window.FindControl<Control>("DigitalModeStrip");
 
-        Assert.True(bar is not null, "there is no control named DigitalListControlsBar");
+        Assert.True(strip is not null, "there is no control named DigitalModeStrip");
 
         var decoded = window.FindControl<Control>("DigitalDecodedPanel")!;
         var mine = window.FindControl<Control>("DigitalMinePanel")!;
-        var panes = window.FindControl<Control>("DigitalPanes")!;
 
-        _output.WriteLine("bar    : " + Box(bar!));
+        _output.WriteLine("strip  : " + Box(strip!));
         _output.WriteLine("decoded: " + Box(decoded));
         _output.WriteLine("for you: " + Box(mine));
-        _output.WriteLine("panes  : " + Box(panes));
 
-        // **THE THREE CONTROLS ARE ON THE BAR AND NOWHERE ELSE.**
         foreach (var name in new[]
         {
             "DigitalFilterEverything", "DigitalFilterCq",
@@ -105,8 +105,8 @@ public sealed class ThePanelsMakeRoomTests
             Assert.True(control is not null, name + " is not in the window at all");
 
             Assert.True(
-                bar!.GetVisualDescendants().Contains(control!),
-                name + " is not on the bar above the panels");
+                strip!.GetVisualDescendants().Contains(control!),
+                name + " is not in the mode strip");
 
             Assert.False(
                 decoded.GetVisualDescendants().Contains(control!),
@@ -117,26 +117,18 @@ public sealed class ThePanelsMakeRoomTests
                 name + " is inside the For you panel");
         }
 
-        // **ABOVE BOTH.** A bar drawn over one panel and beside the other is the thing
-        // this replaces.
-        var barBottom = bar!.Bounds.Bottom + Offset(bar, panes);
-        var decodedTop = decoded.Bounds.Top + Offset(decoded, panes);
-        var mineTop = mine.Bounds.Top + Offset(mine, panes);
+        // **ABOVE BOTH**, in the window's own frame.
+        var stripBottom = strip!.TranslatePoint(new Avalonia.Point(0, strip.Bounds.Height), window)!.Value.Y;
+        var decodedTop = decoded.TranslatePoint(new Avalonia.Point(0, 0), window)!.Value.Y;
+        var mineTop = mine.TranslatePoint(new Avalonia.Point(0, 0), window)!.Value.Y;
 
         _output.WriteLine("");
         _output.WriteLine(
-            "bar bottom " + Px(barBottom) + " against decoded top " + Px(decodedTop)
-            + " and for you top " + Px(mineTop) + ", all in the panes' own frame");
+            "strip bottom " + Px(stripBottom) + " against decoded top " + Px(decodedTop)
+            + " and for you top " + Px(mineTop));
 
-        Assert.True(barBottom <= decodedTop + 0.51, "the bar is not above the decoded list");
-        Assert.True(barBottom <= mineTop + 0.51, "the bar is not above the For you panel");
-
-        // **AND SPANNING THEM.** The bar's own row spans both columns, so the room it has
-        // is the pair's width and not one panel's.
-        Assert.True(
-            bar.Bounds.Width + 0.51 >= decoded.Bounds.Width + mine.Bounds.Width - 12,
-            "the bar is " + Px(bar.Bounds.Width) + " wide against "
-            + Px(decoded.Bounds.Width + mine.Bounds.Width) + " of panels, so it does not span them");
+        Assert.True(stripBottom <= decodedTop + 0.51, "the strip is not above the decoded list");
+        Assert.True(stripBottom <= mineTop + 0.51, "the strip is not above the For you panel");
     }
 
     /// <summary>
