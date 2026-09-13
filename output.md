@@ -1,182 +1,297 @@
-```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen says what is true. Steps unchanged by this unit.
-B. No step criterion moves; carried repair on the PSK31 row.
-C. The report last, and section 4 raises 5 items on top of the carried queue.
-```
+A. The phase goal - the screen, done right. Step 0 done (state reader on
+   unit 341). Step 1 partial, unchanged by this unit: 4 of its seven
+   must-pass carry a named green test on the drawn page at 1400 AND 1920
+   after this unit, was 4 (2, 5, 6, 7), taken from the state reader and
+   not re-run here; 1, 3 and 4 do not, because this run's permission
+   scope has no dotnet and nothing could be built or tested (section 4
+   item 1); nice-to-pass not re-run. Steps 2 and 3 not started.
+B. Step 1 and its exit criteria, each with its test, its result, drawn or
+   view model, and the widths realized - every result below is NOT RUN,
+   and what is given is read from the test source:
+   entry: TheAchievementsPageClicksInTests not run - dotnet test refused
+   1. color band - EveryKindsBandCarriesCountScoreLevelAndABar, not run;
+      drawn at 1040 only (line 50); gap clause pinned on Countries, Grids
+      and Total Miles, none on Modes (top level)
+   2. earned card is the contact, map cropped - EveryEarnedCardIsTheContactThatEarnedIt,
+      not run; drawn at 1400 and 1920 for map size and crop only, the
+      contact's words on the view model (section 4 item 2); 632x231 and
+      892x231 not re-measured, 231 read from test and markup
+   3. next card and callers - TheNextCardKnowsWhoIsCalling, not run; view
+      model, drawn only for the Countries quill at 1400 and Countries
+      callers at 1040; NOT DRAWN not measured; ruling 20 not reached
+   4. eight kinds, Continents to seven - TheOtherFiveKindsEachDrawTheirOwnCards
+      and ContinentsOpensToSevenAndEachToItsCountries, not run; view model
+      only; task 2 not started, so the 1920 half was not dropped
+   5. no clip at 1400 and 1920 - NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty,
+      not run; tallest page not measured
+   6. no white card - same test, not run; white cards not measured
+   7. achievement_category_opened - OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse,
+      not run; view model telemetry
+   nice-to-pass: map popup on click - ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt,
+      not run; its source asserts the only event is achievement_category_opened
+C. The report last. Section 4 raises 4 items on top of the carried queue.
+   Item 1 stands in the way of every criterion in B: no test can run.
+   Item 2 bears on criterion 2's count. No fact the view model holds and
+   the page does not draw was measured.
 
-```
-UNIT:       337 - complete at task 3 of 3 - 2026-09-13 16:55
-PHASE GOAL: The screen says what is true and looks like someone meant it.
-UNIT GOAL:  A PSK31 row shows the characters its demodulator emits, as they
-            arrive, and every count of them agrees.
-ADVANCED:   no
-NUMBER:     characters shown from the four-signal fixture 339 -> 483 with the CQ
-            toggle on; the break at src\Hamlet.App\ViewModels\MainWindowViewModel.cs:1940
-DRIFT:      carried
-```
-
-**Every appearance claim is computed, not seen**, and nothing here is evidence about the
-radio: this machine has none and every fixture is this project's own modem (FACT-004,
-FACT-006).
+UNIT:       343 - blocked at task 0 of 3 - 2026-09-13 18:26
+PHASE GOAL: Make the main window match its approved mockup (done), then make every achievements category page the trading cards of the approved Countries picture for all eight kinds, then clear what the last phase left, then Tim passes it at his window.
+UNIT GOAL:  Hold step 1's band, next-card and eight-kinds criteria with named green tests on the drawn category pages at 1400 and 1920, re-measure unit 342's unreported build, and give step 1 its own report.
+ADVANCED:   no - no test could build or run in this session's permission scope, so none of criteria 1, 3 and 4 moved onto the drawn page
+NUMBER:     step 1 must-pass proved on the drawn page at 1400 and 1920: 4 of 7 -> unchanged, 4 of 7 - nothing was run
+DRIFT:      1 consecutive unit without advance  (was 0)
 
 ## 1. What Claude did
 
-Gate passed on all four: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no
-`CoreHMI.sln`, no `MURC.sln`, root `C:\Source\HamLet`. Branch **`main`**, two commits this
-session on top of task 0's, **pushed, nothing left uncommitted but the harness files named in
-section 4.** Version **1.13.28 → 1.13.29**.
+**Blocked at task 0 of 3.** Task 0 got as far as its first commit and push. It stopped at the
+carry-forward run, the first `dotnet` command. **Tasks 1 and 2 were not started.** Neither is the
+drop candidate: both need `dotnet test`, and this run's permission scope refuses it. Host: Windows 11, Hamlet at
+`C:\Source\HamLet`, branch `main`.
 
-### The fault, with file and line
+### The gate
 
-**`MainWindowViewModel.cs:1940`, `WantsRow`.** The CQ toggle was asking a PSK31 row for an
-FT8 to-field. **A PSK31 row has an addressee only once a turnover has been parsed**, so a
-carrier that emitted characters and no turnover was held off the bound list for as long as it
-was held. That is the evening of 2026-09-12 exactly: 262 characters on carrier 19, no
-turnover, no line, and an empty screen.
+- `SHACK_FACTS.md` exists.
+- `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exists.
+- `CoreHMI.sln` and `MURC.sln` do not exist.
+- Root `C:\Source\HamLet`. The gate holds.
 
-The characters were never lost. They reached `DigitalDecodes`, they were on a row, and the
-row was filtered out of `DigitalVisibleDecodes` before it was drawn.
+### Done
 
-### Watched failing first, and what the failure said
+- **`681d45c` `chore(unit343): step 1, proved on the window - the trace before a test is changed`,
+  pushed.**
+  - `PHASE_STATUS.md`: only its `WORK_INSTRUCTION:` line, set to `343 - step 1, proved on the window`.
+    The launcher's `HEARTBEAT:` line was already in the working tree and was committed with it,
+    unedited.
+  - `WORK_INSTRUCTIONS.md`.
+  - `Directory.Build.props`: 1.13.29 -> 1.13.30, with a comment block.
+  - `PROJECT_STATUS.md`.
+  - `.run-unit\`, `SESSION.lock` and `RUN_LEDGER.md` were not committed.
+- **The carry-forward app list: refused twice.** It was tried as the file's line with `timeout 480`,
+  then without the prefix. Both came back *This command requires approval*. The engine list, the
+  entry check and task 0 steps 3 and 4 were not attempted, because each needs `dotnet test`.
 
-With the exemption removed and the toggle on, `TheRowShowsWhatWasHeardTests` fails and prints
-the fault in Tim's own words:
+### Why it stopped there, and why not work around it
 
-```
-CQ toggle on: the fixture's texts 483, shown 339
-              (700 Hz 120, 1100 Hz 99, 1600 Hz 120, 2200 Hz 0),
-              ticks a text row was on no shown list 151
-```
+`.run-unit/allowed.txt` for this run is Read, Write, Edit, eight `git` prefixes, and
+`Bash(node tools/tests/run.js:*)`. **There is no `dotnet`, and `tools/tests/run.js` is not in the tree**
+(`git ls-files tools/tests` is empty).
 
-**The 2200 Hz station never appeared at all**, and for 151 ticks a row with text on it was on
-no list the screen binds. With the fix, both toggle states:
+The cause is `230e6c0` (`layer: take ClaudeProjectStatus tools\arbiter from units 061 and 062`,
+2026-09-13 16:43). It replaced `tools/arbiter/run-unit-tools.txt`. The removed lines were
+`Bash(dotnet test:*)`, `Bash(dotnet build:*)`, `Bash(dotnet restore:*)`, the four
+`validate-output.bat` spellings, `git rm --cached`, `git restore --staged`, `git reset HEAD`,
+`cat PROJECT_STATUS.md`, `cat CLAUDE_CODE.md`, `sed -n`, `head -` and `tail -`. The line added was
+ClaudeProjectStatus's `TEST_CMD`, `node tools/tests/run.js`.
 
-```
-the fixture's texts 483, shown 483
-              (700 Hz 120, 1100 Hz 101, 1600 Hz 120, 2200 Hz 142),
-              ticks a text row was on no shown list 0
-```
+- **Rejected: writing `tools/tests/run.js` to call `dotnet`.** It would route around a permission
+  scope the owner's launcher set.
+- **Rejected: writing the trace and the extended assertions without running them.**
+  - Task 0 is *measure before anything is built*.
+  - Ruling 19 requires each new assertion to be seen failing.
+  - The entry check has to run first and stop the unit if red.
+  - A test never run proves nothing, and committing one would hand the next unit untested code
+    presented as step 1 evidence.
 
-### The two counters become one source
+This is the author's decision, not the instruction's, and it is overrulable.
 
-`psk31_listening_stopped` summed `_psk31.Channels` — **the carriers still held at the moment
-of stopping** — so every carrier that had already retired dropped out of the total. That is
-why the record said 262 on a retire and 0 on the session. It is now the sum of what the
-retires wrote, and the line count with it:
+### §2 verification, against the tree (read, not run)
 
-```
-retires 4: characters 101+120+120+142 = 483, lines 10
-stopped:   characters 483, lines 10
-psk31_line_parsed events: 10
-```
+**§1's table: it holds, row by row, from the source.**
 
-A line is also now tallied to its carrier before that carrier's appearance is drained, which
-is how a turnover read on the tick a channel is made used to go uncounted.
+| Row | What the source shows |
+|---|---|
+| 1 | `Realized(TwelveContacts(), 1040)` at line 50, and no other width in the method |
+| 2 | the 1400 and 1920 loop at line 289 asserts the map's width, height and crop only; the contact's words are asserted on the view model (lines 186-233), and at 1040 the window asserts the map count and the no-map word (259-276) |
+| 3 | view model, with drawn assertions only for the Countries quill at 1400 (line 779) and the Countries callers at 1040 (line 802) |
+| 4, five kinds | `Screen(...)` returns `AchievementsViewModel` (line 1614); no window |
+| 4, Continents | `TheAchievementsPageClicksInTests.Screen` returns the view model; no window. Only `ClickingABadgeReplacesThePageAndTheBackControlReturns` presses into Europe, at the window's own 1040 |
+| 5, 6 | 1400 and 1920 (line 1029), eight kinds plus `continent-EU` and `continent-OC` |
+| 7 | view model with a recording sink |
+| nice-to-pass | `[AvaloniaTheory]` with `InlineData(1400.0)` and `InlineData(1920.0)`, real `MouseMove`, `MouseDown` and `MouseUp` |
 
-### Task 2 - what the 262 characters were, measured
+**Grids' earned cards are not asserted drawn anywhere.** Lines 238-244 assert them on the view model.
+The no-clip test realizes the Grids page for clipping and white cards only. **States is the same**:
+`StatesCountWhatTheLogsStateFieldSays` realizes it at 1400 and 1920 and asserts 3 cards and 0 white,
+not the contact on each card.
 
-`Unit337Measure`, engine, asserts nothing. The clock error is applied to the audio by
-resampling with the offset moved by the same factor, so **what is measured is the symbol
-clock alone** — the AFC tracks a carrier and nothing tracks a clock.
+**Unit 342 ended without a report: confirmed.**
+- `ba5179d`, `6586020`, `40316ea`, `18f5b17` and `9214b2a` all exist and are ancestors of HEAD.
+- `git log --all --grep` finds no `docs(unit342)`.
+- `PROJECT_STATUS.md` at `9214b2a` reads `STATE: EXECUTING`, `TASK: 3 of 4`, and a note ending
+  *four classes 23 of 23, carry-forward 100 and 85; writing the report*. That status has
+  `RULES_AT: HM-DEC-163`.
 
-| case | chars | letters | turnovers | first 36 emitted |
-| --- | --- | --- | --- | --- |
-| true carrier, true clock | 255 | 97% | 7 | `CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse` |
-| carrier +1 Hz | 255 | 97% | 7 | `CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse` |
-| clock +2% | 248 | 95% | 5 | `CQ CQ hQ de KC3NIS KC3NIS KCIQIS pse` |
-| carrier +1 Hz, clock +2% | 250 | 95% | 5 | `CQ CQ hQ de KC3NIS KC3NIS KCIQIS pse` |
+**The launcher's files, one line each:**
+- `PHASE_OUTCOME.md` has entries for units 337, 338, 339, 340 and 342, and none for 341. Its header
+  reads `STEP: 0 | in progress`.
+- `PHASE_STATUS.md` reads `CURRENT_STEP: 0`.
+- Unit 337's carried-repair entry is `## UNIT 337 - CARRIED REPAIR` (line 102), after `## UNIT 342 - STEP 1`,
+  and its fold-in is headed `### ALSO RECORDED FOR UNIT 337 - STEP 0` (line 116). So it is labeled
+  step 0 and filed under step 1's section. A second `ALSO RECORDED FOR UNIT 337 - STEP 0` sits under
+  the real step 0 entry (line 23).
 
-**A one hertz carrier error costs nothing**: the reference text character for character. **A
-two per cent clock error costs a few characters and not the message** — scattered
-single-character substitutions, still plainly readable, still five turnover words standing.
-Both idle fixtures behave the same way and neither manufactures characters out of an
-unmodulated carrier.
+**The other §2 checks:**
+- **`output.md`:** deleted in the working tree and uncommitted at session start. Not restored; this
+  file replaces it.
+- **`RULES_AT`:** HEAD had `HM-DEC-161 (2026-09-11)`. The highest id in `DECISIONS.md` is
+  `HM-DEC-163`. Every status write here says `HM-DEC-163 (2026-09-12)`.
+- **`CPS-DEC-0163`:** the reload says `CLAUDE.md` §1 holds it. `grep CPS-DEC CLAUDE.md` finds nothing,
+  so the reload is misreading the file. Parked with the id schemes.
 
-**So the tree does not support bit-slip garbage at a small error, and no next-unit fault is
-named for it.** What the 262 characters were is in section 4, because the measurement
-narrows it without settling it.
+**The tool facts: which held for me.** See section 4 item 3.
 
-### Nothing was recorded under §12.1
+**One more mismatch.** `Directory.Build.props` was at 1.13.29, and no comment block names
+1.13.28 -> 1.13.29. `git log -S` puts that bump in `2740524` (unit 337's carried repair, task 1). This
+unit's block reads 1.13.29 -> 1.13.30.
 
-No `DECISIONS.md` entry was written.
+### What unit 342 built, commit by commit - its claims beside what this unit could check
 
-### Tests
+**Nothing was re-measured**, so the right-hand column is read from the committed source, not run.
 
-**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155). Two
-invocations, one build each, a status line immediately before every one.
+| Commit | Its message claims | Unit 343 |
+|---|---|---|
+| `ba5179d` | step 1 opened, version 1.13.26 -> 1.13.27 | the bump and comment block are in `Directory.Build.props` |
+| `6586020` | task 0 traced: card map 564x170 in a 632 card at 1400, 796x170 in 892 at 1920; 231 px spans once the frame takes the card's shape; the quill is true on Countries and the continents only | `Unit342TraceTheCountriesPageAgainstItsMockup` is in the file and prints these; **not run**. The markup comment repeats the numbers; a comment is not a measurement |
+| `40316ea` | map across the card at 231 px: 632x231 at 1400, 892x231 at 1920, was 564x170 and 796x170 left-aligned; crop asserted as a bound a whole-globe frame fails | `CardMapHeight = 231` in the test and `Height="231"` on the map and no-map list in markup. The test asserts the map spans the card's inner width within 1 px and is 231 tall within 1 px. **Sizes not re-measured.** Crop bound, from `OutsideTheCrop`: both stations inside the frame, and the frame no larger than the box around every path sample and both markers, widened each way by `MarginShare` of its longer side, grown to `ZoomFloorShare` of the file and to the card box over `ZoomCap`, then to the card's aspect, never past the file. A whole-globe frame is asserted to fail it on every card, and once on the test window with `Opened = false`. Constant values not read |
+| `18f5b17` | gap clause on seven kinds, meaning dropped past 60 characters on Grids and Total Miles; quill green on Countries and reached continents, ringed on unreached, none on Grids and States; back control a plain link | pinned at 1040: Countries `one per entity · 8 worked · 40 pts · unranked · 2 to Bronze`; Grids `10 worked · 20 pts · Bronze · 15 to Silver`; Total Miles `42,041 mi so far · 0 pts · unranked · 7,959 to Bronze`; Modes `five modes to work · 5 of 5 · 85 pts · Gold`, no gap. The other four kinds are covered by the loop's rule and not pinned. Quill expectations: Countries and Europe green, Oceania ringed, Grids and States empty, *a quill* with a door caller among counters. The back link is `Classes="hm-backlink"` with `BackLabel` and `BackCommand` |
+| `9214b2a` | map popup on a click, closed by a click outside, no event; asserted at 1400 and 1920 with real clicks | the test asserts the event list is exactly `achievement_category_opened` (so none for the map), no popup on hover, one popup on click holding the card's plot, the popup's top below the back control, and closed after a click outside. **Not run.** *Four classes 23 of 23* is not verifiable without a run |
 
-| Run | Result |
-| --- | --- |
-| Carry-forward, app, before | **100 of 100** |
-| Carry-forward, engine, before | **85 of 85** |
-| `TheRowShowsWhatWasHeardTests` (new, task 1) | **6 of 6**, watched failing 2 of 6 first |
-| `Unit337Measure` (new, task 2, a tool) | asserts nothing |
-| Carry-forward, app, after, with the new test on it | **106 of 106** |
-| Carry-forward, engine, after, with the measurement on it | **86 of 86** |
+### Decisions this session made for itself
 
-**185 green before, 192 after, nothing red, nothing new red.** The known reds were not run and
-not chased.
+1. **Stop at task 0 rather than write untested tests.** Reproduced above, under *Why it stopped
+   there*.
+2. **Status written by hand.** §4 allows it when the script is refused. Each `UPDATED` comes from a
+   `date` reading taken just before the write.
 
 ## 2. What the owner should expect
 
-**The build is clean** — zero warnings, zero errors.
+**Nothing on the screen changed.** No source file, no markup and no test was touched. The only change
+is the version, 1.13.29 -> 1.13.30, which has no effect on the application.
 
-The characters were going onto a row and then off the list before the row was drawn. The CQ
-toggle at the top of the decoded panel was built for FT8, where every message names who it is
-for, and it was being asked the same question about PSK31 — which does not name anybody until
-somebody hands the frequency back. So a station typing steadily with no *K* or *de* in what he
-had sent yet was read correctly, put on a row, and then hidden, all evening, on both toggle
-settings; and because the session summary only counted the carriers still on the air at the
-moment you left the tab, the file's own total said zero while the individual retires said
-hundreds. Tonight on 7.070 a held carrier shows its characters as they arrive, whatever they
-are, the moment its squelch opens — the squelch is the only thing that can keep text off that
-list now — and the `charactersEmitted` on `psk31_listening_stopped` will be the sum of the
-per-carrier counts rather than a different number from a different place.
+**What will look wrong but is not:**
+- The version moved and no feature came with it. The bump was task 0's first step, taken before the
+  block was found.
+- `PROJECT_STATUS.md` reads `BLOCKED` with `BALL: tim`. The block is the launcher's permission scope,
+  not the code.
+- The `.run-unit/` files show as modified in `git status`. They are the launcher's, and this unit
+  did not commit them.
 
-**What will look wrong and is not.** The CQ toggle still works on FT8 rows exactly as it did;
-it simply no longer applies to PSK31. A row can now appear carrying text that is not addressed
-to anyone, which is what a ragchew looks like.
+**What is needed before unit 343 can run again:** Hamlet's permission scope back in
+`tools/arbiter/run-unit-tools.txt` (section 4 item 1). Until then every unit that needs a build, a
+test or the validator will stop at the same place. That covers every remaining step of this phase.
 
-**Pushed to `main`.**
+**This report was not validated.** `dotnet build tools/arbiter/validate-output.proj` is outside the
+scope too. It was written against the six rules `validate-output.bat` prints, checked by the author
+and not by a run.
 
 ## 3. What you should see
 
-**The four-signal fixture, with the CQ toggle on, before and after:**
+**No: step 1's must-pass are not shown on the drawn page at 1400 and 1920.** Criteria 1, 3 and 4 are
+still unproved there, on every kind and at both widths, by the whole margin: no drawn assertion exists
+for them at those widths. **Nothing was measured this session**, so there is no amount to give. The
+count stands at 4 of 7, the state reader's figure from unit 342's runs, not re-run.
 
-```
-before   483 read, 339 shown   700 Hz 120 · 1100 Hz 99 · 1600 Hz 120 · 2200 Hz 0
-after    483 read, 483 shown   700 Hz 120 · 1100 Hz 101 · 1600 Hz 120 · 2200 Hz 142
-```
+**No visible change.** This unit only moved the version number.
 
-**A row lifting on its first character:**
+The walk-through of both widths - a Countries earned card and next card, each kind's band line, the
+seven continent badges and one continent's page - **cannot be given**. Every appearance claim in it
+has to be computed on the headless host, and nothing could run. What the source says those pages
+carry is in section 1. **It is read, not computed, and not seen.**
 
-```
-before:  'heard, not readable yet'   dimmed True   shown True
-after:   the characters              dimmed False  shown True
-```
+### The step 1 table
 
-Before the fix that row read `shown False` — dimmed, and not on the list either.
+| Test | Criterion | Drawn or view model | Widths | Kinds | Result | Numbers |
+|---|---|---|---|---|---|---|
+| `TheAchievementsPageClicksInTests` (class) | entry check | both | 1040 | all | not run | none |
+| `EveryKindsBandCarriesCountScoreLevelAndABar` | 1 | drawn | 1040 | eight | not run | pins read from source, section 1 |
+| `EveryEarnedCardIsTheContactThatEarnedIt` | 2 | drawn for map and crop; view model for the contact | 1040; 1400 and 1920 for the map | Countries drawn; Grids and Europe view model | not run | 231 px from source |
+| `TheNextCardKnowsWhoIsCalling` | 3 | view model; drawn Countries only | 1400 quill, 1040 callers | Countries, Grids, Europe, States, Oceania | not run | none |
+| `TheOtherFiveKindsEachDrawTheirOwnCards` | 4 | view model | none | Continents, Total Miles, Bands, Modes, Hall of Fame | not run | none |
+| `ContinentsOpensToSevenAndEachToItsCountries` | 4 | view model | none | seven continents | not run | none |
+| `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` | 5, 6 | drawn | 1400, 1920 | eight plus EU, OC | not run | none |
+| `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse` | 7 | view model | n/a | Countries | not run | none |
+| `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt` | nice-to-pass | drawn, real clicks | 1400, 1920 | Countries | not run | none |
+| `Unit343TraceStepOneOnTheWindow` | trace | - | - | - | **not written** | none |
 
-**The counters, from the same run:**
-
-```
-retires 4: characters 101+120+120+142 = 483, lines 10
-stopped:   characters 483, lines 10
-```
-
-**And what a small error does to the text**, which is the answer to whether the demodulator
-was producing nonsense:
-
-```
-true clock   CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K
-clock +2%     CQ CQ hQ de KC3NIS KC3NIS KCIQIS pse A
-```
-
-Wrong in places, and nobody would call it garbage.
+**The reds §2 expected** (`TheOperatorCanStopItTests`, `TheWholeChainRunsFromOneRightClickTests`,
+`TheMenuIsUnderTheMouseTests`, `ThePsk31RecordsAppearTests`, `TheTotalMilesTests`) **were not run.**
+No red was seen to turn green, and no new red was seen, because nothing ran.
 
 ## 4. What's blocking us
+
+### Raised by this unit
+
+**1. This run cannot build, test or validate Hamlet: `230e6c0` replaced its permission scope with
+ClaudeProjectStatus's.**
+
+*Ruling wanted, or a launcher fix, and it blocks every step 1 criterion: which permission scope an
+unattended Hamlet unit runs under.*
+- **The scope now.** `tools/arbiter/run-unit-tools.txt` allows `node tools/tests/run.js`, and
+  `.run-unit/allowed.txt` for this run matches it. That script does not exist here.
+- **What the layer removed:** `dotnet test`, `dotnet build` and `dotnet restore`; the four
+  `validate-output.bat` spellings; the three un-staging commands; the shell reads.
+- **The layer's other changes:**
+  - `validate-output.bat` now defaults to `C:\Source\ClaudeProjectStatus\output.md` and checks six
+    rules.
+  - `.run-unit/prompt.txt` for this run no longer carries the `PHASE_STATUS.md` instruction, or the
+    four-heading and validate-yourself text.
+
+*Reasoning.* The recommendation is to restore Hamlet's lines to `run-unit-tools.txt` from `230e6c0^`:
+`Bash(dotnet test:*)`, `Bash(dotnet build:*)`, `Bash(dotnet restore:*)`, and the lines after them.
+Then re-issue work instruction 343 unchanged. Its task 0 opening is already committed at `681d45c`,
+so a re-run should treat step 1 of task 0 as done and start at the carry-forward run. The layer
+looks like a copy between projects with no per-project `TEST_CMD`. That is inferred from the diff,
+not confirmed.
+
+*What was rejected and why.*
+- **Writing `tools/tests/run.js` to shell out to `dotnet`:** it routes around the scope the owner's
+  launcher set.
+- **Writing the assertions unrun:** ruling 19 and task 0's *measure before anything is built*.
+- **Editing `run-unit-tools.txt` or `allowed.txt` here:** they are the launcher's, and a unit widening
+  its own guard is the thing that file's header warns against.
+
+**2. Criterion 2's "earned card is the contact" is held on the drawn page only for the map.**
+
+*No ruling wanted; a finding that bears on the 4 of 7.* At 1400 and 1920,
+`EveryEarnedCardIsTheContactThatEarnedIt` asserts only the map's width, height and crop on Countries
+cards.
+- The entity, callsign and grid, distance, band, mode, date and points are asserted on the view model.
+- At 1040 the window asserts only the map count and the no-map word.
+- Grids' and States' earned contacts are not asserted drawn at any width.
+
+Work instruction 343 task 2 already names Grids. A re-run should give Countries' and States' contact
+words the same drawn assertion before counting criterion 2 as held on the page.
+
+**3. The tool facts, as they held for this session.**
+
+*No ruling wanted; a finding.* Each was tried once unless it says otherwise.
+
+| Result | Commands |
+|---|---|
+| Refused | `dotnet test` (with and without `timeout`); `sh tools/status.sh`, so every `UPDATED` is a `date` reading; two commands joined by `&&`; a shell `for` loop variable; a variable expansion (`$f`); `sort` in a pipe; `python -c` with a script |
+| Ran | `python --version` (3.13.12), earlier in the same session; `date`; `grep`, `ls`, `cat` and `head` in a pipe without `sort`; a quoted heredoc fed to `git cat-file --batch-check` |
+| Not tried | apostrophes in heredocs, doubled backslashes, `;`, `rm`, `git stash`, `sed -E`, redirects into `output.md`, the validator |
+
+**Unit 337's report disagrees on two points:** `tools/status.sh` and `&&` were both refused here.
+Python ran for `--version` only.
+
+**4. Version 1.13.28 -> 1.13.29 has no comment block.**
+
+*No ruling wanted; a finding.* It was bumped in `2740524`, unit 337's carried repair task 1.
+Not repaired.
+
+### Asks still outstanding - carried from unit 337's section 4, per HM-DEC-139, verbatim
+
+The words are unit 337's, from its line under `## 4. What's blocking us` to its end, as committed in
+`e4c160f`. The top-level heading is dropped so this report keeps four sections. Three items are marked,
+as work instruction 343 §9 asks:
+- unit 337's item 3;
+- unit 340's item 5;
+- unit 339's item 5.
+
+It was copied in with the file editor, because Python and redirects were refused.
 
 No step criterion moves. Five items.
 
@@ -201,6 +316,8 @@ well and vouched for badly looks identical in the file to one that was never rea
 name promises the demodulator's output and delivers the display's.
 
 **3. The instruction's carried queue names unit 336; the report in the tree is unit 341's.**
+
+**NOTED by work instruction 343** - this report carries unit 337's.
 
 *No ruling wanted; a mismatch, reported and not repaired.* §3 says the queue comes from unit
 336. The last `output.md` committed is unit 341's (`0f383a3`), and units 340, 341 and 342 have
@@ -415,6 +532,18 @@ run.
 **5. Step 1: one must-pass is tested outside `TheCategoryPagesAreTradingCardsTests`, and two are
 held more weakly than they read.**
 
+**TAKEN UP by work instructions 342 and 343.** Where each clause is asserted now, read from the source
+at `681d45c`, none of it run by unit 343:
+- `achievement_category_opened`: still in `TheAchievementsPageClicksInTests`, on the view model.
+- The crop: asserted since `40316ea` in `EveryEarnedCardIsTheContactThatEarnedIt` on every Countries
+  card of both fixtures at 1400 and 1920. Both stations lie inside the frame. The frame is no larger
+  than the path box widened by `MarginShare` of its longer side, grown to `ZoomFloorShare` of the file
+  and the card over `ZoomCap`, then to the card's shape, clamped to the file. A whole-globe frame is
+  asserted to fail it.
+- Each continent to its countries: still `ContinentsOpensToSevenAndEachToItsCountries`, on the view
+  model. Work instruction 343 task 2 would press all seven on the window at 1400 and 1920. **Not
+  started; blocked, section 4 item 1 of unit 343.**
+
 *No ruling wanted; a finding for the arbiter authoring step 1.*
 - `achievement_category_opened` is tested in `TheAchievementsPageClicksInTests`.
 - The map crop *to the two stations* is printed and not asserted.
@@ -514,6 +643,10 @@ composed.
 - Neither was extended, because task 1 named three tests and R14 adds no others.
 
 **5. Step 1's nice-to-pass has nothing in the tree behind it.**
+
+**ANSWERED by unit 342 task 3 (`9214b2a`)**: `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt`,
+at 1400 and 1920 with real clicks. It was to be re-run in unit 343 task 0: **not run - blocked, unit 343
+section 4 item 1.**
 
 *No ruling wanted; a finding for the arbiter authoring step 1.* See section 3: the globe on a
 trading card takes no click, and the only map popup is the conversation card's.
@@ -1252,3 +1385,12 @@ session's own `tools\cut-header-action.py`.
   achievements rulings, States, the 1400 decoded-list split, the demodulator, the ALC margin, the
   id schemes or PSK31 step 6.
 
+### Where the carried items stand after unit 343
+
+- **Every carried item stands as carried.** Nothing in this unit touched source, markup or a test.
+- **The three marks this instruction asked for are in the text above:**
+  - unit 337 item 3, *NOTED*;
+  - unit 340 item 5, *TAKEN UP*;
+  - unit 339 item 5, *ANSWERED*, with its re-run not done.
+- **The status helper:** refused again. Every `UPDATED` in this unit is a `date` reading.
+- **`CPS-DEC-0163`:** reported once, in section 1, and parked with the id schemes.
