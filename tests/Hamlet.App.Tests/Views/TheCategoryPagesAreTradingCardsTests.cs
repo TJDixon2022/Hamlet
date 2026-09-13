@@ -784,6 +784,328 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     }
 
     /// <summary>
+    /// **Work instruction 342 task 0: the Countries page against
+    /// `assets/category-page-countries.png`, before a card is changed.** It asserts nothing and
+    /// presses nothing.
+    /// </summary>
+    /// <remarks>
+    /// **EVERY OPTION IS SET ON THE TEST WINDOW ONLY**, never in markup, and every number is
+    /// computed on the headless host, not seen.
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit342TraceTheCountriesPageAgainstItsMockup()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+        var twelve = TheAchievementsPageTests.TwelveContacts();
+        var log = new AchievementLog(twelve, MyGrid);
+        var nudges = NudgeSet.From(log);
+        var calling = Calling();
+
+        _output.WriteLine("THE CROP RULE, READ FROM THE SOURCE");
+        _output.WriteLine("  the card's globe is Opened, so Ft8GlobeControl.FrameOf(plot, true, offer) -> Ft8GlobePlot.OpenFrameFor(offer w, offer h)");
+        _output.WriteLine("  Ft8GlobePlot.Opened(): every path sample and both markers, widened each side by MarginShare "
+            + F(Ft8GlobePlot.MarginShare) + " of the longer side; Fitted: each side grown to ZoomFloorShare "
+            + F(Ft8GlobePlot.ZoomFloorShare) + " of the file about its center, clamped into the file; the whole file where Path.Count != 1");
+        _output.WriteLine("  OpenFrameFor: each side grown to at least offer / ZoomCap " + F(Ft8GlobePlot.ZoomCap)
+            + " about its center, then Fitted again");
+        _output.WriteLine("  file " + Ft8GlobePlot.Map.WidthPixels + " x " + Ft8GlobePlot.Map.HeightPixels
+            + "; MeasureOverride asks for the frame's own shape inside the offer, so the control is only as wide as the frame's aspect allows");
+        _output.WriteLine("THE LOG: continents " + string.Join(", ", log.Continents) + "; entities " + string.Join(", ", log.Entities));
+
+        _output.WriteLine("THE MARK A CALLER CARRIES ON THE DECODED LIST (MainWindowViewModel.MarkIfItOpensSomething: NudgeSet.Explain on the row's sender; DigitalDecodeRow.NudgeForm)");
+
+        foreach (var call in calling.Calls.Concat(new[] { new CqCall("LA8ENA", "JO59", "214100"), new CqCall("W1AW", "FN31", "214100") }))
+        {
+            var (kind, _) = nudges.WouldOpen(call.Callsign);
+
+            _output.WriteLine(
+                "  " + call.Callsign.PadRight(8) + call.Grid.PadRight(6) + (DxccPrefixes.EntityOf(call.Callsign) ?? "no entity").PadRight(28)
+                + kind + " -> " + (kind == NudgeKind.Visible ? "the still green quill (Counter)"
+                    : kind == NudgeKind.Door ? "the ringed amber quill (Door)" : "no mark"));
+        }
+
+        var model = Screen(twelve, calling, bet);
+        var kinds = AchievementKinds.All
+            .Concat(DxccContinents.Codes.Keys.OrderBy(k => k, StringComparer.Ordinal).Select(k => AchievementCategory.ContinentPrefix + k))
+            .ToList();
+
+        _output.WriteLine("THE BAND LINE AND THE NEXT CARD, EVERY KIND");
+
+        foreach (var kind in kinds)
+        {
+            if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+            {
+                model.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+            }
+
+            model.OpenCategoryCommand.Execute(kind);
+
+            var category = model.Category!;
+
+            _output.WriteLine(
+                "  " + kind.PadRight(14) + "band [" + category.BandLine + "] gap [" + category.GapLine + "] bar " + category.HasLevelBar
+                + ", gap clause on the line " + (category.GapLine.Length > 0 && category.BandLine.Contains(category.GapLine, StringComparison.Ordinal))
+                + ", back [" + category.BackLabel + "]");
+
+            var nexts = category.Cards.Where(c => !c.Earned)
+                .Concat(category.SubBadges.Select(b => b.Card).Where(c => c is not null && !c.Earned).Select(c => c!));
+
+            foreach (var next in nexts)
+            {
+                _output.WriteLine(
+                    "      next [" + next.Title + "] wants [" + next.WantsLine + "] heading [" + next.CallersHeading + "] callers "
+                    + string.Join(" / ", next.Callers.Select(c => c.Place + " " + c.CallLine + (c.OpensContinent ? " (door)" : " (counter)")))
+                    + (next.NoCallerLine.Length > 0 ? " [" + next.NoCallerLine + "]" : ""));
+            }
+
+            while (model.Category is not null)
+            {
+                model.BackCommand.Execute(null);
+            }
+        }
+
+        foreach (var width in new[] { 1040.0, 1400.0, 1920.0 })
+        {
+            Unit342TraceWindow(twelve, "twelve contacts", width, calling, bet, kinds);
+            Unit342TraceWindow(FiveContacts(), "five contacts", width, calling, bet, new[] { AchievementKinds.Countries });
+        }
+
+        _output.WriteLine("THE CONVERSATION CARD'S MAP POPUP, READ FROM THE SOURCE");
+        _output.WriteLine("  Ft8ContactCard.MapIsOpen, an observable property; OpenTheMapCommand sets it where MapOpens (ShowsGlobe and Globe.Opens); CloseTheMapCommand clears it");
+        _output.WriteLine("  MainWindow.axaml: a transparent Button around the card's Ft8GlobeControl (CardGlobe, Height 120) runs OpenTheMapCommand - a click, never a hover");
+        _output.WriteLine("  the Popup: IsOpen two-way on MapIsOpen, Placement Center on the window, IsLightDismissEnabled, a dismiss X, the same control Opened with MaxWidth 720 and MaxHeight 400");
+        _output.WriteLine("  telemetry: OpenTheMap and CloseTheMap write nothing, so opening a map is a view and not a stage");
+        _output.WriteLine("  reuse: the mechanism (a Button over the globe, a bool on the card, a light-dismiss Popup) can be copied; the property and commands live on Ft8ContactCard, not on AchievementCategoryCard");
+    }
+
+    /// <summary>Work instruction 342 task 0's window half: one fixture at one width.</summary>
+    private void Unit342TraceWindow(
+        IReadOnlyList<AdifLogRecord> records, string label, double width, CqSnapshot calling, BandBet bet, IReadOnlyList<string> kinds)
+    {
+        const double Picture = 596.0 / 195.0;
+        var window = Realized(records, width, calling, bet);
+        var screen = (AchievementsViewModel)window.DataContext!;
+
+        try
+        {
+            _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height) + ", " + label);
+
+            foreach (var kind in kinds)
+            {
+                if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+                {
+                    screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+                }
+
+                screen.OpenCategoryCommand.Execute(kind);
+                Settle(window);
+
+                var category = screen.Category!;
+                var back = Named<Button>(window, "AchievementsBack");
+                var bandLine = Named<TextBlock>(window, "AchievementsCategoryBandLine");
+                var withGap = category.BandLine + " · " + category.GapLine;
+
+                _output.WriteLine(
+                    "  " + kind + ": back [" + back.Content + "] " + F(back.Bounds.Width) + " x " + F(back.Bounds.Height)
+                    + "; band line slot " + F(bandLine.Bounds.Width) + ", needs " + F(Unit342Needs(bandLine, category.BandLine))
+                    + (category.HasLevelBar && category.GapLine.Length > 0 ? ", with the gap clause needs " + F(Unit342Needs(bandLine, withGap)) : ""));
+
+                foreach (var wants in window.GetVisualDescendants().OfType<TextBlock>()
+                    .Where(t => t.IsEffectivelyVisible && t.Classes.Contains("card-wants")))
+                {
+                    var said = wants.Text ?? "";
+
+                    _output.WriteLine(
+                        "    wants [" + said + "] slot " + F(wants.Bounds.Width) + ", needs " + F(Unit342Needs(wants, said))
+                        + "; + green quill " + F(Unit342Needs(wants, said + ". On the CQ list they carry the green quill."))
+                        + "; + ringed quill " + F(Unit342Needs(wants, said + ". On the CQ list they carry the ringed quill."))
+                        + "; + a quill " + F(Unit342Needs(wants, said + ". On the CQ list they carry a quill.")));
+                }
+
+                var list = window.GetVisualDescendants().OfType<ItemsControl>()
+                    .First(i => i.IsEffectivelyVisible && (i.Name == "AchievementsCategoryCards" || i.Name == "AchievementsSubBadges"));
+                var cards = list.GetVisualDescendants().OfType<Border>()
+                    .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+                    .ToList();
+                var inner = cards.Select(c => Unit342Column(c).Bounds.Width).DefaultIfEmpty(0).Max();
+
+                if (kind == AchievementKinds.Countries)
+                {
+                    foreach (var card in cards)
+                    {
+                        Unit342TraceCard(card);
+                    }
+                }
+
+                foreach (var height in new[] { 170.0, Math.Round((170 + (inner / Picture)) / 2), Math.Round(inner / Picture) })
+                {
+                    foreach (var globe in list.GetVisualDescendants().OfType<Ft8GlobeControl>())
+                    {
+                        globe.Height = height;
+
+                        if (globe.GetVisualParent() is Border frame)
+                        {
+                            frame.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+                        }
+                    }
+
+                    foreach (var noMap in list.GetVisualDescendants().OfType<Border>()
+                        .Where(b => b.Classes.Contains("card-list") && !double.IsNaN(b.Height)))
+                    {
+                        noMap.Height = height;
+                    }
+
+                    Settle(window);
+
+                    string fits;
+
+                    try
+                    {
+                        fits = "fits, " + Fits(window, F(width) + " " + kind) + " runs";
+                    }
+                    catch (Xunit.Sdk.XunitException e)
+                    {
+                        fits = "CLIPS: " + e.Message.Split('\n')[0];
+                    }
+
+                    var drawn = list.GetVisualDescendants().OfType<Ft8GlobeControl>()
+                        .Where(g => g.IsEffectivelyVisible && g.Plot is not null)
+                        .Select(g => Unit342Drawn(g))
+                        .ToList();
+
+                    _output.WriteLine(
+                        "    height " + F(height) + " (inner " + F(inner) + ", " + F(inner / height) + ":1): cards "
+                        + string.Join(", ", cards.Select(c => F(c.Bounds.Height)).Distinct())
+                        + "; page " + F(list.Bounds.Height) + " in a viewport " + F(list.GetVisualParent() is Control v ? v.Bounds.Height : 0)
+                        + "; maps drawn " + string.Join(", ", drawn.Select(d => F(d.Width) + " x " + F(d.Height)).Distinct())
+                        + "; " + fits);
+
+                    if (kind == AchievementKinds.Countries)
+                    {
+                        foreach (var globe in list.GetVisualDescendants().OfType<Ft8GlobeControl>().Where(g => g.IsEffectivelyVisible && g.Plot is not null))
+                        {
+                            var plot = globe.Plot!;
+                            var (boundWidth, boundHeight) = Unit342Bound(plot, inner, height);
+
+                            _output.WriteLine(
+                                "      " + plot.Callsign.PadRight(8) + "a frame filled to " + F(inner) + " x " + F(height)
+                                + " is bounded by " + F(boundWidth) + " x " + F(boundHeight)
+                                + (plot.Path.Count != 1 ? " (the date line: the whole file)" : "")
+                                + ", fills the card " + (Math.Abs((boundWidth / boundHeight) - (inner / height)) < 0.01)
+                                + ", a whole-globe frame fails it "
+                                + (Ft8GlobePlot.Map.WidthPixels > boundWidth + 0.5 || Ft8GlobePlot.Map.HeightPixels > boundHeight + 0.5));
+                        }
+                    }
+                }
+
+                while (screen.Category is not null)
+                {
+                    screen.BackCommand.Execute(null);
+                }
+
+                Settle(window);
+            }
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private void Unit342TraceCard(Border card)
+    {
+        var data = (AchievementCategoryCard)card.DataContext!;
+        var column = Unit342Column(card);
+        var said = "    [" + data.Title + "] card " + F(card.Bounds.Width) + " x " + F(card.Bounds.Height) + ", inner " + F(column.Bounds.Width);
+        var distance = card.GetVisualDescendants().OfType<TextBlock>()
+            .FirstOrDefault(t => t.IsEffectivelyVisible && t.Classes.Contains("card-distance"));
+
+        if (card.GetVisualDescendants().OfType<Ft8GlobeControl>().FirstOrDefault(g => g.IsEffectivelyVisible) is { Plot: { } plot } globe)
+        {
+            var offer = Unit342Offer(globe);
+            var frame = Ft8GlobeControl.FrameOf(plot, globe.Opened, offer.Width, offer.Height);
+            var scale = Math.Min(globe.Bounds.Width / frame.Width, globe.Bounds.Height / frame.Height);
+            var at = globe.TranslatePoint(new Point(0, 0), card) ?? default;
+            var box = Unit342PathBox(plot);
+            var drawn = Unit342Drawn(globe);
+
+            string On(double x, double y)
+                => "(" + F((x - frame.Left) * scale) + ", " + F((y - frame.Top) * scale) + ")";
+
+            said += "; globe " + F(globe.Bounds.Width) + " x " + F(globe.Bounds.Height) + " at x " + F(at.X)
+                + ", offered " + F(offer.Width) + " x " + F(offer.Height)
+                + ", drawn " + F(drawn.Width) + " x " + F(drawn.Height)
+                + "; you at " + On(plot.OperatorX, plot.OperatorY) + ", him at " + On(plot.StationX, plot.StationY)
+                + "; frame " + Unit342Box(frame) + "; path box " + Unit342Box(box) + " (" + plot.Path.Count + " runs)";
+        }
+        else
+        {
+            said += "; no map [" + data.NoMapWord + "]";
+        }
+
+        _output.WriteLine(said + "; distance " + (distance is null ? "none" : F(distance.Bounds.Width) + " x " + F(distance.Bounds.Height) + " at " + F(distance.FontSize)));
+    }
+
+    private static StackPanel Unit342Column(Border card)
+        => card.GetVisualDescendants().OfType<StackPanel>().First(s => Grid.GetColumn(s) == 1);
+
+    private static Size Unit342Offer(Ft8GlobeControl globe)
+        => (Size)typeof(Ft8GlobeControl)
+            .GetField("_openedAgainst", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .GetValue(globe)!;
+
+    private static (double Width, double Height) Unit342Drawn(Ft8GlobeControl globe)
+    {
+        var offer = Unit342Offer(globe);
+        var frame = Ft8GlobeControl.FrameOf(globe.Plot, globe.Opened, offer.Width, offer.Height);
+        var scale = Math.Min(globe.Bounds.Width / frame.Width, globe.Bounds.Height / frame.Height);
+
+        return (frame.Width * scale, frame.Height * scale);
+    }
+
+    private static (double Left, double Top, double Width, double Height) Unit342PathBox(Ft8GlobePlot plot)
+    {
+        var xs = plot.Path.SelectMany(r => r.Select(p => p.X)).Append(plot.OperatorX).Append(plot.StationX).ToList();
+        var ys = plot.Path.SelectMany(r => r.Select(p => p.Y)).Append(plot.OperatorY).Append(plot.StationY).ToList();
+
+        return (xs.Min(), ys.Min(), xs.Max() - xs.Min(), ys.Max() - ys.Min());
+    }
+
+    /// <summary>
+    /// The largest frame the rule could open for a card box, grown to the box's shape: the path
+    /// box with its margin, the floor and the cap, then the other side to the box's aspect,
+    /// neither past the file.
+    /// </summary>
+    private static (double Width, double Height) Unit342Bound(Ft8GlobePlot plot, double boxWidth, double boxHeight)
+    {
+        double fileWidth = Ft8GlobePlot.Map.WidthPixels;
+        double fileHeight = Ft8GlobePlot.Map.HeightPixels;
+
+        if (plot.Path.Count != 1)
+        {
+            return (fileWidth, fileHeight);
+        }
+
+        var box = Unit342PathBox(plot);
+        var margin = Ft8GlobePlot.MarginShare * Math.Max(box.Width, box.Height);
+        var wide = Math.Max(Math.Max(box.Width + (2 * margin), fileWidth * Ft8GlobePlot.ZoomFloorShare), boxWidth / Ft8GlobePlot.ZoomCap);
+        var tall = Math.Max(Math.Max(box.Height + (2 * margin), fileHeight * Ft8GlobePlot.ZoomFloorShare), boxHeight / Ft8GlobePlot.ZoomCap);
+        var aspect = boxWidth / boxHeight;
+
+        return (Math.Min(fileWidth, Math.Max(wide, tall * aspect)), Math.Min(fileHeight, Math.Max(tall, wide / aspect)));
+    }
+
+    private static string Unit342Box((double Left, double Top, double Width, double Height) box)
+        => "left " + F(box.Left) + ", top " + F(box.Top) + ", " + F(box.Width) + " by " + F(box.Height);
+
+    private static double Unit342Needs(TextBlock text, string what)
+        => new Avalonia.Media.TextFormatting.TextLayout(
+            what,
+            new Avalonia.Media.Typeface(text.FontFamily, text.FontStyle, text.FontWeight),
+            text.FontSize,
+            null).Width;
+
+    /// <summary>
     /// **Five records as ADI text, with `STATE` where the record carries one** - PA on a US call,
     /// none on a US call, AK on an Alaska call, ON on a Canadian call, DC on a US call.
     /// </summary>
