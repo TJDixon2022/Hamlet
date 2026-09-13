@@ -67,18 +67,26 @@ public sealed class TheTopRowTests
     /// The top row is measured as the span of its two halves - the neighborhood card and the
     /// rig panel - because that is the band the operator sees, whatever grid holds it. Both
     /// widths are printed; 1920 is asserted here and 1400 is task 3's.
+    /// <para>**WORK INSTRUCTION 340 TASK 1: ON PSK31 AS WELL**, where the power offer is drawn in
+    /// the rig panel (ruling 6), with the same 10% tolerance. FT8 is put back before the window
+    /// closes.</para>
     /// </remarks>
     [AvaloniaFact]
     public void AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest()
     {
-        foreach (var width in new[] { 1400.0, 1920.0 })
+        foreach (var (width, mode) in new[] { (1400.0, "FT8"), (1920.0, "FT8"), (1400.0, "PSK31"), (1920.0, "PSK31") })
         {
             var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
 
             try
             {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
+
                 var m = Measure(window);
 
+                _output.WriteLine("MODE " + mode);
                 Print(width, m);
 
                 if (width < 1900)
@@ -88,7 +96,7 @@ public sealed class TheTopRowTests
 
                 Assert.True(
                     Math.Abs(m.TopRowHeight - TopRowTarget) <= TopRowTarget * 0.10,
-                    "at 1920 the top row is " + Px(m.TopRowHeight) + " px against "
+                    "at 1920 on " + mode + " the top row is " + Px(m.TopRowHeight) + " px against "
                     + Px(TopRowTarget) + " within 10%");
 
                 // **THE REST, TO THE STATUS BAR.** The working card's bottom is the status
@@ -107,6 +115,7 @@ public sealed class TheTopRowTests
             }
             finally
             {
+                model.ChosenDigitalMode = "FT8";
                 window.Close();
             }
         }
@@ -296,16 +305,26 @@ public sealed class TheTopRowTests
     /// <para>**CQ AND STOP WHERE THE ARBITER'S RULING 5 LEAVES THEM**: in the send area, which
     /// rides the tab row beside `ModeTabs`, above the working card and inside nothing that
     /// collapses (§0.2). This test reads where they are and presses nothing.</para>
+    /// <para>**WORK INSTRUCTION 340 TASK 1: THE OFFER DRAWN, ON PSK31** (the arbiter's ruling 6).
+    /// On FT8 the offer is not drawn, so containment was all that could be asserted. On PSK31 its
+    /// border is on the screen, and the test asserts it is visible, in the rig panel, out of the
+    /// send area and under the rig display, with the rig panel still the card's height. Every FT8
+    /// assertion is kept. FT8 is put back on the model before each window closes, and nothing is
+    /// pressed (§0.2, HM-DEC-084).</para>
     /// </remarks>
     [AvaloniaFact]
     public void DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop()
     {
-        foreach (var width in new[] { 1920.0, 1400.0 })
+        foreach (var (width, mode) in new[] { (1920.0, "FT8"), (1920.0, "PSK31"), (1400.0, "FT8"), (1400.0, "PSK31") })
         {
             var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
 
             try
             {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
+
                 var rig = window.GetVisualDescendants().OfType<RigDisplayControl>().First();
                 var panel = RigPanel(window);
                 var card = Card(window);
@@ -315,7 +334,7 @@ public sealed class TheTopRowTests
                 var drive = Named<NumericUpDown>(window, "DigitalTransmitDriveBox");
                 var offer = Named<TextBlock>(window, "DigitalPsk31PowerOffer");
 
-                _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed");
+                _output.WriteLine("WINDOW " + Px(width) + " x " + Px(WindowHeight) + ", licensed, " + mode);
                 _output.WriteLine("  rig display : " + Box(RectIn(rig, window)));
                 _output.WriteLine("  rig panel   : " + Box(RectIn(panel, window)));
                 _output.WriteLine("  card        : " + Box(RectIn(card, window)));
@@ -363,11 +382,34 @@ public sealed class TheTopRowTests
 
                 Assert.True(
                     Math.Abs(RectIn(panel, window).Height - RectIn(card, window).Height) <= 1,
-                    "at " + Px(width) + " the rig panel is " + Px(RectIn(panel, window).Height) + " px and the card is "
+                    "at " + Px(width) + " on " + mode + " the rig panel is " + Px(RectIn(panel, window).Height) + " px and the card is "
                     + Px(RectIn(card, window).Height) + " px, so they are not one height");
+
+                if (mode != "PSK31")
+                {
+                    continue;
+                }
+
+                // **THE OFFER ITSELF, DRAWN** (ruling 6): its border, not only the sentence inside it.
+                var border = OfferBorder(window);
+                var borderAt = RectIn(border, window);
+                var at = "at " + Px(width) + " on PSK31";
+
+                _output.WriteLine("  offer border: " + Box(borderAt) + " visible " + border.IsEffectivelyVisible);
+
+                Assert.True(
+                    border.IsEffectivelyVisible && borderAt.Width > 0 && borderAt.Height > 0,
+                    at + " the power offer is not drawn: " + Box(borderAt) + " visible " + border.IsEffectivelyVisible);
+                Assert.True(border.GetVisualAncestors().Contains(panel), at + " the power offer is not in the rig panel");
+                Assert.False(border.GetVisualAncestors().Contains(reserved), at + " the power offer is in the send area");
+                Assert.True(
+                    borderAt.Top >= RectIn(rig, window).Bottom - 0.5,
+                    at + " the power offer starts at y=" + Px(borderAt.Top) + " and the rig display ends at y="
+                    + Px(RectIn(rig, window).Bottom) + ", so it is not under the S-meter");
             }
             finally
             {
+                model.ChosenDigitalMode = "FT8";
                 window.Close();
             }
         }
@@ -390,12 +432,21 @@ public sealed class TheTopRowTests
     [AvaloniaFact]
     public void AtFourteenHundredTheLicensedTopRowIsTheMockupsShare()
     {
-        foreach (var width in new[] { 1920.0, 1400.0 })
+        // **WORK INSTRUCTION 340 TASK 1: ON PSK31 AS WELL**, where the power offer is drawn in the
+        // rig panel (ruling 6), with the same 0.262 and one half. FT8 is put back before each
+        // window closes.
+        foreach (var (width, mode) in new[] { (1920.0, "FT8"), (1400.0, "FT8"), (1920.0, "PSK31"), (1400.0, "PSK31") })
         {
             var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
 
             try
             {
+                model.ChosenDigitalMode = mode;
+                Settle(window);
+
+                _output.WriteLine("MODE " + mode);
+
                 var m = Measure(window);
                 var pills = window.GetVisualDescendants().OfType<ItemsControl>()
                     .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
@@ -455,16 +506,17 @@ public sealed class TheTopRowTests
 
                 Assert.True(
                     m.TopRowHeight <= 0.262 * below,
-                    "at 1400 the licensed top row is " + Px(m.TopRowHeight) + " px of " + Px(below) + " = "
+                    "at 1400 on " + mode + " the licensed top row is " + Px(m.TopRowHeight) + " px of " + Px(below) + " = "
                     + (m.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture) + ", above the mockup's 0.262");
 
                 Assert.True(
                     panels[0].Rect.Height >= below / 2,
-                    "at 1400 the licensed operator's three panels are " + Px(panels[0].Rect.Height) + " px of "
+                    "at 1400 on " + mode + " the licensed operator's three panels are " + Px(panels[0].Rect.Height) + " px of "
                     + Px(below) + ", less than half");
             }
             finally
             {
+                model.ChosenDigitalMode = "FT8";
                 window.Close();
             }
         }
@@ -611,6 +663,41 @@ public sealed class TheTopRowTests
                     foreach (var (name, rect) in hiddenPanels)
                     {
                         _output.WriteLine("    " + name.PadRight(10) + Box(rect));
+                    }
+
+                    if (mode == "PSK31")
+                    {
+                        // **THE OPTIONS BEYOND ARRANGEMENT, MEASURED FOR THE REPORT** (work instruction
+                        // 340 task 1, ruling 7). Each is set on this test window only, never in the
+                        // markup, and nothing is pressed. Choosing among them is Tim's, not the unit's.
+                        foreach (var (label, apply) in new (string, Action)[]
+                        {
+                            ("sentence and ALC line off, the buttons kept", () =>
+                            {
+                                sentence.IsVisible = false;
+                                alc.IsVisible = false;
+                            }),
+                            ("the mockup's words [RF power 50 % offered], ALC line off, the buttons kept", () =>
+                            {
+                                sentence.IsVisible = true;
+                                sentence.Text = "RF power 50 % offered";
+                            }),
+                            ("the offer out of the top row", () => offer.IsVisible = false),
+                        })
+                        {
+                            apply();
+                            Settle(window);
+
+                            var option = Measure(window);
+                            var optionPanels = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+                            _output.WriteLine(
+                                "  option, " + label + ": offer " + Box(RectIn(offer, window)) + "; top row "
+                                + Px(option.TopRowHeight) + " = "
+                                + (option.TopRowHeight / below).ToString("0.000", CultureInfo.InvariantCulture)
+                                + "; panels " + Px(optionPanels) + " = "
+                                + (optionPanels / below).ToString("0.000", CultureInfo.InvariantCulture));
+                        }
                     }
 
                     _output.WriteLine("");

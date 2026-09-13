@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 340 - step 0, the power offer drawn
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T21:43:46-04:00
-NOTE: Task 0 done - PSK31 offer drawn 520x122 under the S-meter, but top row 317 px at both widths (108 px over at 1920); stop tests alone 7 of 9
+UPDATED: 2026-09-12T21:51:10-04:00
+NOTE: Task 1 done - offer asserted under the S-meter at both widths, 1400 floor asserted (y 953); top row on PSK31 305 px, a miss, both top-row tests red; carry-forward 100/85
 
 ---
 

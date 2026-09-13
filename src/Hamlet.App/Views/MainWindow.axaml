@@ -3070,14 +3070,20 @@
                         Text="{Binding TransmitDriveTip}" />
                 </StackPanel>
 
+                <!-- **FITTED BY ARRANGEMENT, THE UNIT'S OWN CHOICE AND OVERRULABLE** (work
+                     instruction 340 task 1, the arbiter's ruling 7). Drawn on PSK31 the offer
+                     made the top row 317 px against R26's 190. Inside a rig column 520 px wide
+                     no arrangement of these words holds that, so the margin, padding and
+                     spacing are the part taken back. The words, the ALC line, both commands and
+                     `HasPsk31PowerOffer` are unchanged, and none of them is behind a hover. -->
                 <Border IsVisible="{Binding HasPsk31PowerOffer}"
-                        Margin="0,2,0,0"
-                        Padding="8,6"
+                        Margin="0"
+                        Padding="8,3"
                         CornerRadius="4"
                         Background="{StaticResource HmSlateTintBrush}"
                         BorderThickness="1"
                         BorderBrush="{StaticResource HmSlateEdgeBrush}">
-                    <StackPanel Spacing="4">
+                    <StackPanel Spacing="2">
                         <TextBlock x:Name="DigitalPsk31PowerOffer"
                                    Text="{Binding Psk31PowerOffer}"
                                    TextWrapping="Wrap"

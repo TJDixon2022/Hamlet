@@ -90,11 +90,9 @@ public sealed class TheWorkingPanelsTests
                 _output.WriteLine("  working card floor at y " + Px(floor));
                 _output.WriteLine("");
 
-                if (width < 1900)
-                {
-                    continue;
-                }
-
+                // **WORK INSTRUCTION 340 TASK 1: ASSERTED AT 1400 AS WELL.** Until now the 1400
+                // window was printed and skipped, so R26's *full to the status bar* at 1400 rested
+                // on a print (unit 339 section 4, item 4).
                 var top = panels[0].Rect.Top;
                 var bottom = panels[0].Rect.Bottom;
 
