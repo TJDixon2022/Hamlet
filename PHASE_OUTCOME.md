@@ -2,7 +2,7 @@ PHASE: The screen, done right
 PHASE_SET: 2026-09-12
 DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
 STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-STEP: 1 | not started | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
 STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
 STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
 
@@ -82,3 +82,33 @@ ACCOMPLISHED: the rig display is shown to hold the transmit drive and the power 
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: With the PSK31 power offer drawn the top row measures 305 px against 209 at 1920 and 0.335 against 0.262 at 1400, so criteria 1 and 5 are red, and the unit shows that no layout change inside the rig column fixes this without changing the offer's words, which ruling 7 forbids, so a ruling on section 4 item 1 is needed first.
+
+## UNIT 342 - STEP 1
+
+UNIT_AS_CALLED: 6
+STEP: 1
+APPROACH: fit the built category pages to assets/category-page-countries.png - the earned card map across the card inner width with the crop to the two stations asserted as a bound a whole-globe frame fails; the band line gap clause and the next card quill sentence where true; the back control as a link; a card map opening in a click popup as the drop candidate; measured at 1400 and 1920
+HIT: section 4 wants a ruling: banked - This unit's own items ask for no ruling, but the carried asks still want rulings on the Hall of Fame and Modes next cards, callers from unopened continents, the States wording and the demodulator, and none of them stops the step 1 work still open, such as the fit at 1400 and 1920, the eight kinds and the category telemetry.
+MOVE: continue
+WHY: The state reader found step 0 done on unit 341's evidence, so the plan moves to step 1, whose content unit 335 built in the last phase but which was never held to the approved picture; units 339 and 340 measured the gaps, and the loop test found nothing like this approach (unit 335 built the pages, this fits them to the picture).
+DECIDED: rulings 11 to 16 - the card map spans the card inner width at a height the unit chooses near the picture's 3 to 1, with the no-map border matched; the crop asserted as a stated bound that fails on a whole-globe frame; the band line carries the gap to the next level (overrules unit 335's choice); the quill sentence only on kinds whose callers carry the quill; the read time kept over 'right now' (keeps unit 335's choice, section 0.0); the back control a plain link with its words and command unchanged; the map popup on click reusing the conversation card's mechanism, with that popup's event or none - all the author's, marked for Tim at step 3, overrulable
+LICENCE: PHASE_PLAN.md sections 2, 4 (step 1 delivers R22 as the picture; entry step 0 done) and 6; docs/phase-maintenance-run/PHASE_PLAN.md R22; assets/category-page-countries.png; .run-unit/state-verdict.json (step 0 done on unit 341); unit 339 output.md section 3 (the Countries page against its mockup, three largest gaps) and section 4 item 5; unit 340 output.md section 4 item 5; CLAUDE.md 0.0, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-155
+COST: 12.401394500000002
+ACCOMPLISHED: each achievements category page looks like the Countries picture Tim approved - the map of the contact's path across the card and cropped to the two stations, the level's gap on the band, the next card's words where they are true - with every step 1 criterion proven by a named test at both of Tim's widths, and a card's map one click from its popup if the night allows
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 2, 5, 6 and 7 have green tests with measured numbers, but criterion 4 is checked only on the view model for five kinds and for Continents, criteria 1 and 3 are not checked at 1400 or 1920, and the detailed sections of the report describe the step 0 power offer work rather than step 1, so nothing there backs the summary.
+
+## UNIT 337 - CARRIED REPAIR
+
+STEP: none - carried repair from the PSK31 phase, whose step 6 is open on this fault
+APPROACH: find where an emitted PSK31 character stops between the demodulator and the row, make the row show every emitted character as it arrives, make the two character counters one source, and measure whether the 262-character carrier was text or bit-slip
+MOVE: continue
+WHY: the owner's record shows the demodulator emitting hundreds of characters and a certain parsed CQ on real air while the screen showed nothing; the ear works and the display does not
+DECIDED: nothing beyond the instruction at task 0. The number 337 is the work instruction's own heading and collides with the step 0 entry above written under the same number; this entry is kept separate because it is a different unit of work, and the collision is reported in output.md section 4.
+LICENCE: PHASE_PLAN.md section 6; PSK31 plan R9, R12, R13; CLAUDE.md 0.0; HM-DEC-139, HM-DEC-155
+COST: one session, three tasks (0 to 2), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+FATE: executed
+STATE_AFTER: not recorded
+STATE_WHY: not recorded - no step moves; written at task 0.

@@ -747,8 +747,14 @@
     the back control as a link, and a card's map opening in a popup (R22, the arbiter's rulings 11
     to 16). Screen only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.27 -> 1.13.28, UNIT 337 TASK 0. A PATCH, CARRIED REPAIR: the PSK31 row shows the
+    characters its demodulator emits, and psk31_listening_stopped counts the same characters and
+    lines the retires do (PSK31 plan R9, R13; CLAUDE.md 0.0). Receive display and telemetry only;
+    no decoder threshold and nothing on the transmit side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.27</Version>
+    <Version>1.13.28</Version>
   </PropertyGroup>
 
   <!--
