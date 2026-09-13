@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 3
+TASK: 1 of 3
 WORK_INSTRUCTION: 339 - step 0, proved at both widths
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T21:08:11-04:00
-NOTE: Gate passed; status helper refused again; committing the launcher files unchanged with the patch bump, then the carry-forward run
+UPDATED: 2026-09-12T21:13:03-04:00
+NOTE: Task 0 traced - step 0 classes 20 of 20, three new stop reds pass alone; task 1 extending the green block, clock and drive tests to 1400
 
 ---
 
