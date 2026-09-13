@@ -140,3 +140,4 @@ the owner reads instead of watching.
 | 2 | 2026-09-12T16:35 | 2026-09-12T17:29 | complete | 28.656047000000004 | ran unattended, 300 turns, 8 denied call(s) worked around, report valid |
 | 3 | 2026-09-12T17:36 | 2026-09-12T18:07 | complete | 15.901997 | ran unattended, 193 turns, 5 denied call(s) worked around, report valid |
 | phase | 2026-09-12T18:08 | 2026-09-12T18:08 | halted | 37.7715 | stop 3: a ruling is wanted - judged, not counted |
+| 1 | 2026-09-12T19:21 | 2026-09-12T20:06 | complete | 20.433159000000003 | ran unattended, 191 turns, 7 denied call(s) worked around, report valid |

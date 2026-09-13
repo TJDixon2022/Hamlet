@@ -717,8 +717,14 @@
     the working panels given the height, at 1920 and at 1400 (R26). Screen only; nothing on
     the radio side moves.
   -->
+  <!--
+    1.13.22 -> 1.13.23, UNIT 338 TASK 0. A PATCH, STEP 0 AGAIN: the waterfall, the decoded list
+    and For You themselves take at least half the height below the band pills, and the 1400 top
+    row comes back to the mockup's proportion (R26, the arbiter's rulings 1 to 3). Screen only;
+    nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.22</Version>
+    <Version>1.13.23</Version>
   </PropertyGroup>
 
   <!--
