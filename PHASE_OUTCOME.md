@@ -1,7 +1,7 @@
 PHASE: The screen, done right
 PHASE_SET: 2026-09-12
 DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+STEP: 0 | in progress | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
 STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
 STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
 STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
@@ -112,3 +112,19 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 FATE: executed
 STATE_AFTER: not recorded
 STATE_WHY: not recorded - no step moves; written at task 0.
+
+### ALSO RECORDED FOR UNIT 337 - STEP 0
+
+A second append for the same unit and the same step, called as UNIT 1.
+One unit is one entry, so what this route recorded is folded in here
+rather than written as a second entry. Only what differs is listed.
+
+APPROACH: find where an emitted PSK31 character stops between the demodulator and the row, make the row show every emitted character as it arrives, make the two character counters one source, and measure whether the 262-character carrier was text or bit-slip
+HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+WHY: the owner's record shows the demodulator emitting hundreds of characters and a certain parsed CQ on real air while the screen showed nothing; the ear works and the display does not
+DECIDED: the fault is display-first by the record; whether the characters were readable is measured in task 2 and named for the next unit if not
+LICENCE: PHASE_PLAN.md section 6; PSK31 plan R9, R12, R13; CLAUDE.md 0.0
+COST: 12.401394500000002
+ACCOMPLISHED: a PSK31 station Hamlet can hear is a row with his words on it, as the record already said it should have been
+STATE_AFTER: in progress
+STATE_WHY: no output.md, so there is no report to judge the step against

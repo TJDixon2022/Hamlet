@@ -24,8 +24,9 @@ namespace Hamlet.App.Tests.ViewModels;
 /// <para>**EACH TRANSCRIPT IS ONE CHANNEL**, its text growing a line at a time exactly as a
 /// listener would list it, and handed to the panel through the path the tick takes. The row's
 /// station is whatever the latest complete message on it says - cut by the splitter and read by
-/// the parser - and the CQ filter, the operator's side, the fade, the country and the quill are
-/// the FT8 code, asked of it.</para>
+/// the parser - and the operator's side, the fade, the country and the quill are the FT8 code,
+/// asked of it. **The CQ filter is not asked of it since work instruction 337**: the squelch is
+/// the only gate on a PSK31 row.</para>
 /// <para>**THE OPERATOR'S CALLSIGN IS SET IN SETTINGS**, from the corpus's own `operator` field,
 /// and not in anything under test.</para>
 /// <para>**COMPUTED, NOT SEEN, AND WRITTEN, NOT RECORDED.** Nothing here looks at a pixel, and
@@ -39,13 +40,19 @@ public sealed class ThePsk31ReadsTheConversationTests
     /// <param name="output">Where the rows are printed.</param>
     public ThePsk31ReadsTheConversationTests(ITestOutputHelper output) => _output = output;
 
-    /// <summary>**Assertion 1: the CQ filter selects exactly the rows whose latest message is a CQ.**</summary>
+    /// <summary>**Assertion 1: the CQ toggle holds no PSK31 row back, and each row still reads its latest message.**</summary>
     /// <remarks>
-    /// **ALL EIGHT CHANNELS AT ONCE**, stepped a line at a time together, so *exactly* is asked of a
-    /// list holding every kind the corpus has side by side.
+    /// <para>**REWRITTEN BY WORK INSTRUCTION 337 TASK 1, NOT DELETED.** Unit 316 asserted the CQ
+    /// filter selected exactly the rows whose latest message was a CQ - which is the rule that held
+    /// a carrier with 262 characters and no turnover off the screen all evening on 2026-09-12. The
+    /// later ruling is PSK31 plan R9 as that instruction states it: **the squelch is the only gate
+    /// on a PSK31 row**. What is kept is the part that was never about the filter: every row reads
+    /// its latest message as the corpus says, and `CQ DX` is a call to anyone.</para>
+    /// <para>**ALL EIGHT CHANNELS AT ONCE**, stepped a line at a time together, so the list holds
+    /// every kind the corpus has side by side.</para>
     /// </remarks>
     [Fact]
-    public void TheCqFilterSelectsExactlyTheRowsWhoseLatestMessageIsACq()
+    public void TheCqToggleHoldsNoPsk31RowBack()
     {
         var corpus = Psk31Corpus.Load();
         var model = Panel();
@@ -63,16 +70,19 @@ public sealed class ThePsk31ReadsTheConversationTests
             {
                 var row = RowOf(model, carrier);
                 var latest = carrier.LatestMessage(step);
-                var wantCq = latest?.ExpectedKind == Psk31LineKind.Cq;
+                // **A ROW FOR HIM IS HIS SIDE'S QUESTION AND NOT THE TOGGLE'S** - and his side
+                // follows one station, so with eight channels up it is assertion 2 that asks it.
+                var forHim = latest is not null
+                    && string.Equals(latest.Addressee, corpus.Operator, StringComparison.OrdinalIgnoreCase);
                 var shown = model.DigitalVisibleDecodes.Contains(row);
-                var key = (latest?.Kind ?? "no message") + (shown ? " in" : " out");
+                var key = (latest?.Kind ?? "no message") + (forHim ? " for him" : shown ? " in" : " out");
 
                 tally[key] = tally.GetValueOrDefault(key) + 1;
 
                 Assert.True(
-                    wantCq == shown,
+                    forHim || shown,
                     carrier.Transcript.Name + " after line " + step + ": latest " + (latest?.Kind ?? "none")
-                    + ", in the CQ filter " + shown);
+                    + ", held back by the CQ toggle");
 
                 if (latest is not null)
                 {
@@ -227,7 +237,11 @@ public sealed class ThePsk31ReadsTheConversationTests
             Assert.Equal("", row.Addressee);
             Assert.Equal("Who sent it.", row.SenderHelp);
             Assert.Null(DxccPrefixes.EntityOf(row.Sender));
-            Assert.DoesNotContain(row, model.DigitalVisibleDecodes);
+
+            // **ON THE LEFT LIST WITH THE CQ TOGGLE ON** (work instruction 337 task 1): not a CQ,
+            // and still shown, because the squelch is the only gate on a PSK31 row. Unit 316
+            // asserted it was held back.
+            Assert.Contains(row, model.DigitalVisibleDecodes);
             Assert.DoesNotContain(row, model.DigitalMineDecodes);
         }
 
@@ -251,7 +265,7 @@ public sealed class ThePsk31ReadsTheConversationTests
         Assert.Equal("", parsed.Addressee);
         Assert.Equal("unknown", parsed.ReadingWord);
         Assert.Equal("Who sent it.", parsed.SenderHelp);
-        Assert.DoesNotContain(parsed, model.DigitalVisibleDecodes);
+        Assert.Contains(parsed, model.DigitalVisibleDecodes);
     }
 
     /// <summary>**Assertion 5: a Costa Rican station calling CQ gets what it would get on FT8.**</summary>

@@ -113,8 +113,13 @@ public static class Psk31Events
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="seconds">How long it listened.</param>
     /// <param name="carriers">How many carriers appeared in that time.</param>
-    /// <param name="characters">How many characters were emitted.</param>
-    /// <param name="lines">How many lines the parser returned a verdict for.</param>
+    /// <param name="characters">How many characters were emitted - the sum of every retire's count.</param>
+    /// <param name="lines">How many lines the parser returned a verdict for - the sum of every retire's count.</param>
+    /// <remarks>
+    /// **THE SUM OF THE RETIRES AND NOTHING ELSE** (work instruction 337 task 1). Until then it
+    /// summed only the carriers still held at the moment of stopping, and on 2026-09-12 wrote
+    /// 0 beside a retire that said 262.
+    /// </remarks>
     public static void ListeningStopped(
         ITelemetry? telemetry,
         double seconds,

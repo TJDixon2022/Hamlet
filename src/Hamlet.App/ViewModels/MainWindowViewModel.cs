@@ -1937,7 +1937,19 @@ public partial class MainWindowViewModel : ObservableObject
     /// filter.</para>
     /// </remarks>
     private bool WantsRow(DigitalDecodeRow row)
-        => !IsForHim(row) && DecodedFilterRule.Wants(ShowsCqOnly, row.Addressee);
+    {
+        // **A PSK31 ROW IS NOT HELD BACK BY THE CQ TOGGLE** (work instruction 337 task 1, PSK31
+        // plan R9, §0.0). The toggle asks FT8's to-field, and a PSK31 row has an addressee only
+        // once a turnover has been read - so on 2026-09-12 a carrier that emitted 262 characters
+        // and no turnover was held off this list all evening. **The squelch is the only gate on
+        // a PSK31 row**; which side it goes to is still `IsForHim`'s question.
+        if (row.IsTextOnly)
+        {
+            return !IsForHim(row);
+        }
+
+        return !IsForHim(row) && DecodedFilterRule.Wants(ShowsCqOnly, row.Addressee);
+    }
 
     /// <summary>Keep the visible table in step with the whole one.</summary>
     /// <param name="sender">The whole table.</param>
@@ -2318,8 +2330,6 @@ public partial class MainWindowViewModel : ObservableObject
                 // 322 task 2). A kind, two flags and a count. The text itself and the
                 // callsign the parser read out of it never leave the screen, which is
                 // why *addressed to the operator* is a flag rather than a name.
-                _psk31LinesParsed++;
-
                 Psk31Events.LineParsed(
                     _telemetry,
                     channel.OffsetHz,
@@ -2329,11 +2339,13 @@ public partial class MainWindowViewModel : ObservableObject
                     message.Exchange.IsForOperator,
                     message.Text.Length);
 
-                if (_psk31Tally.TryGetValue(channel.Id, out var tally))
-                {
-                    _psk31Tally[channel.Id] =
-                        (tally.Characters, tally.Lines + 1, AudioSecondsHeard());
-                }
+                // **COUNTED TO ITS CARRIER EVEN BEFORE THE CARRIER'S APPEARANCE IS DRAINED**
+                // (work instruction 337 task 1), so the retires' lines and the stopped event's
+                // are one count.
+                _psk31Tally.TryGetValue(channel.Id, out var tally);
+
+                _psk31Tally[channel.Id] =
+                    (tally.Characters, tally.Lines + 1, AudioSecondsHeard());
 
                 // **A MESSAGE HE CERTAINLY ADDRESSED TO THE OPERATOR IS A CONTACT AND
                 // GOES IN THE LEDGER** (work instruction 326 task 3), which is what
@@ -2440,7 +2452,8 @@ public partial class MainWindowViewModel : ObservableObject
             _psk31 = new Psk31Listener(Psk31Resampler.TargetSampleRate);
             _psk31StartedUtc = DateTime.UtcNow;
             _psk31CarriersSeen = 0;
-            _psk31LinesParsed = 0;
+            _psk31RetiredCharacters = 0;
+            _psk31RetiredLines = 0;
 
             // **THE THRESHOLDS GO IN THE FILE, NOT ONLY THE FACT OF STARTING** (work
             // instruction 322 task 2). Every number in this path was chosen against
@@ -2506,8 +2519,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>How many carriers have appeared since it started.</summary>
     private int _psk31CarriersSeen;
 
-    /// <summary>How many lines the parser has returned a verdict for.</summary>
-    private int _psk31LinesParsed;
+    /// <summary>The characters every retire has written, summed, for the stopped event.</summary>
+    /// <remarks>
+    /// **ONE SOURCE FOR THE TWO COUNTERS** (work instruction 337 task 1). The stopped event
+    /// summed the carriers still held when the tab was left, so every carrier that retired
+    /// earlier dropped out of it: on 2026-09-12 carrier 19 retired with 262 and the session
+    /// stopped saying 0. It is now the sum of what the retires said, and cannot disagree.
+    /// </remarks>
+    private int _psk31RetiredCharacters;
+
+    /// <summary>The lines every retire has written, summed, for the stopped event.</summary>
+    private int _psk31RetiredLines;
 
     /// <summary>When a pass was last written down.</summary>
     private DateTime _psk31PassWritten = DateTime.MinValue;
@@ -2563,7 +2585,10 @@ public partial class MainWindowViewModel : ObservableObject
             if (change.Appeared)
             {
                 _psk31CarriersSeen++;
-                _psk31Tally[change.Id] = (0, 0, AudioSecondsHeard());
+
+                // **NOT OVER A LINE ALREADY COUNTED.** A channel can read a turnover on the tick
+                // it is made, before this change is drained, and that line is its own.
+                _psk31Tally.TryAdd(change.Id, (0, 0, AudioSecondsHeard()));
 
                 Psk31Events.CarrierAppeared(_telemetry, change);
 
@@ -2578,6 +2603,9 @@ public partial class MainWindowViewModel : ObservableObject
                 tally.Characters,
                 tally.Lines,
                 tally.Characters > 0 ? AudioSecondsHeard() - tally.LastCharacterAt : null);
+
+            _psk31RetiredCharacters += tally.Characters;
+            _psk31RetiredLines += tally.Lines;
 
             _psk31Tally.Remove(change.Id);
             _psk31Was.Remove(change.Id);
@@ -3107,14 +3135,19 @@ public partial class MainWindowViewModel : ObservableObject
                     state.Characters,
                     tally.Lines,
                     tally.Characters > 0 ? heard - tally.LastCharacterAt : null);
+
+                _psk31RetiredCharacters += state.Characters;
+                _psk31RetiredLines += tally.Lines;
             }
 
+            // **THE SUM OF THE RETIRES, EVERY ONE OF THEM** (work instruction 337 task 1): the
+            // carriers that went during the session and the ones closed just above.
             Psk31Events.ListeningStopped(
                 _telemetry,
                 heard,
                 _psk31CarriersSeen,
-                _psk31.Channels.Sum(c => c.Text.Length),
-                _psk31LinesParsed);
+                _psk31RetiredCharacters,
+                _psk31RetiredLines);
         }
 
         _psk31Was.Clear();
