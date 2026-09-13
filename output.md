@@ -2,316 +2,442 @@
 READ IN THIS ORDER.
 ```
 
-A. The phase goal - the screen, done right. Step 0 partial after this unit: five of its six
-   must-pass met, and the sixth (1400) met by its test with one named miss. Steps 1 to 3 not
-   started.
-B. Step 0 and its six must-pass - each met or not, with the number.
-   1. The top row about 190 px at 1920, and the working panels take the rest: met. The top row
-      went from 445 to 190 px, and the working card from 318 to 573 px, reaching the status bar.
-   2. The neighborhood card carries the strip, the green block and the world clock, with the band
-      as the largest text and one dot on the clock: met. The band is 20 pt, and the clock is
-      246 x 134 at the card's right end with 1 marker.
-   3. The rig display at the card's height, with drive and the power offer under the S-meter: met.
-      The rig panel is 190 px against the card's 190.
-   4. The three panels equal height, full to the status bar, and the facts beside the map at 1920:
-      met. The panels are 363 px each with one top and bottom. The split is 735/378/734 of 1862.
-      The card is 678 px inside, and its facts sit beside the map.
-   5. At 1400 the same shape, no callsign clipped, and the facts placed by the stated rule: met by
-      its test. The card is 419 px inside against 568 needed, so the facts go under the map, and
-      no callsign is clipped. Named miss: on a licensed operator's fixture the top row is 273 px,
-      0.300 of the height below the band pills, against the mockup's 0.262.
-   6. BindingHealthTests, VoiceTests and the carry-forward list green: met. The layout set is 57
-      of 57, app carry-forward 100 of 100, and engine 85 of 85.
-   The nice-to-pass (best bet joined to the green block by the check) is kept in the markup, and
-   its view-model test is green. It was not measured on the window after the change.
-C. The report last. Section 4 raises 3 items on top of the carried queue. Item 1 bears on
-   must-pass 5, and item 2 on how must-pass 1 and 5 are read. Item 3 bears on nothing in B.
+A. The phase goal - the screen, done right. Step 0 after this unit: all six must-pass met as
+   measured on the test host, and the nice-to-pass met. Every number is computed on a headless
+   window 1040 px tall, not seen, and the STEP line is the launcher's to write. Steps 1 to 3
+   not started.
+B. Step 0 and its exit criteria, each met or not, with the number:
+   1. Top row about 190 px at 1920, and the three PANELS take at least half below the band
+      pills: met. The top row is 190 px. The panels are 503 px (0.553) on the licensed fixture
+      and 505 px (0.555) on the plain one with the readiness strip hidden, and 450 and 452 px
+      (0.495, 0.497) with it showing.
+   2. The neighborhood card's three things: two things moved. The rule of thumb is the mockup's
+      sentence (ruling 2). At 1400 the sparkline hides and *heard just now* stands over the
+      count (ruling 3); at 1920 the sparkline shows. The count is on the card at both widths.
+      The band strip and the world clock are unchanged.
+   3. Rig panel at the card's height, at 1920 AND 1400: met. 190 against 190 px at 1920, and
+      219 against 219 px at 1400.
+   4. Three panels equal height to the status bar, facts beside the map at 1920: met. They have
+      one top and one bottom at the working card's floor, and the split is still 734/378/735.
+   5. At 1400 the same shape: met. The panels are 474 px (0.521) licensed and 464 to 494 px
+      (0.510 to 0.543) plain, with the readiness strip hidden. The licensed top row is 219 px
+      (0.241 against 0.262). No callsign is clipped, and the facts sit under the map by the rule.
+   6. BindingHealthTests, VoiceTests, carry-forward: met. The layout set is 90 of 91, and the
+      one red is the known `TheStopAddedNoNewRouteToATransmission`. Carry-forward is app 100 of
+      100 and engine 85 of 85.
+   nice-to-pass: best bet joined to the green block on the window - met, in task 3.
+C. The report last. Section 4 raises 6 items on top of the carried queue. None stands in the
+   way of a criterion in B. Item 1, a live license lookup in the plain fixture, is why unit
+   337's 1400 numbers moved with run order.
 
 ```
-UNIT:       337 - complete at task 4 of 5, tasks 0 to 4 - 2026-09-12 20:00
-PHASE GOAL: Make Hamlet's screens look the way Tim drew them - first the main window, then the
-            achievements pages - judged at last by Tim at his own window.
-UNIT GOAL:  Lay the main window out as the approved mockup: one short top row about where you
-            are and what the radio is doing, and the waterfall, decoded list and For You given
-            the height, at 1920 and at 1400.
-ADVANCED:   yes - step 0 five of six must-pass met, the sixth met by its test with the 1400 top row named as a miss
-NUMBER:     top row 445 -> 190 px, working card 318 -> 573 px at 1920; top row 329 -> 273 px,
-            working card 434 -> 490 px at 1400 (both at 1040 px tall, licensed fixture)
+UNIT:       338 - complete at task 3 of 4 - 2026-09-12 21:00
+PHASE GOAL: Make the main window match the mockup Tim approved - a short top row and the
+            working panels given the height - then the achievements pages as trading cards,
+            what the last phase left, and Tim's own pass at his window.
+UNIT GOAL:  Give the waterfall, the decoded list and For You themselves at least half the
+            height below the band pills at 1920 and 1400, and bring a licensed operator's
+            1400 top row back to the mockup's share.
+ADVANCED:   yes - must-pass 1 and 5 now hold on the three panels themselves, must-pass 3 is measured at 1400, and the nice-to-pass is met
+NUMBER:     three panels 443 -> 503 px (0.553) at 1920 and 360 -> 474 px (0.521) at 1400;
+            licensed top row at 1400 273 -> 219 px (0.241). Licensed fixture, 1040 px tall,
+            readiness strip hidden.
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete: tasks 0 to 4 of 5 are done, and step 0 is recorded `partial`.** Tasks 0 to 3 are
-pushed as `107268c`, `a406dc1`, `9b07750` and `d1c2def`. Task 4 is this report; it is committed
-with it.
+**Complete: tasks 0 to 3 of 4 are done and pushed** as `6ab04aa`, `c846bcb`, `136b6b0` and
+`d393f6f`. This report is committed after them, with one corrected markup comment.
 
-Provenance: Windows 11, `C:\Source\HamLet`, branch `main`. The project gate passed:
-`SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` are present, `CoreHMI.sln` and `MURC.sln` are
-absent, and the root is `C:\Source\HamLet`. `PHASE_STATUS.md` line 1 names *The screen, done
-right*, with four steps.
+Provenance: Windows 11, `C:\Source\HamLet`, branch `main`, and the prompt claimed Hamlet. The
+gate passed: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` are
+present, `CoreHMI.sln` and `MURC.sln` are absent, and the root is `C:\Source\HamLet`. This is
+the development computer, so nothing in this report is evidence about the radio
+(`SHACK_FACTS.md`, HM-DEC-093).
 
-**Every appearance claim in this report is computed on the headless host, not seen.** Nobody here
-can look at a pixel.
+**Every appearance claim in this report is computed on the headless host at 1040 px tall, not
+seen.** No decision was recorded in `DECISIONS.md`.
 
-### Task 0 - the phase opens
+### Task 0 - the trace
 
-- `PHASE_OUTCOME.md` carries `UNIT 337` under step 0.
-- The version is bumped from 1.13.21 to 1.13.22.
-- `PROJECT_CARD.md` has `PHASE: The screen, done right`, with `PHASE_SET: 2026-09-12` unchanged.
-- `DECISIONS.md` and the `CLAUDE.md` §1 index carry **HM-DEC-163**. It records Tim's ruling of
-  2026-09-12: the screen phase is set on the mockup, and the maintenance phase is archived with
-  step 2 partial.
-- Carry-forward, before anything changed: app 100 of 100, engine 85 of 85.
+- **The launcher's files.** `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `RUN_LEDGER.md` were
+  committed unchanged in `6ab04aa`, with `WORK_INSTRUCTIONS.md` and the patch bump from 1.13.22
+  to 1.13.23. `RULES_AT` is now HM-DEC-163.
+- **Carry-forward before any change:** app 100 of 100, engine 85 of 85.
+- **The trace** is `TheWorkingPanelsTests.Unit338TraceTheRowsAboveThePanels`. It prints and
+  asserts nothing.
 
-### Task 1 - the top row
+**The rows between the working card's top and the panels, before.** Heights are headless px.
+The card's own border and padding add 13 px.
 
-What moved:
-- **The how-to mark** moved onto the neighborhood card's header.
-- **The card became two columns.** On the left: the strip, the legend, and the green block under
-  them. On the right: the world clock.
-- **The green block** is now band, frequency and verdict on one line, then the license line, then
-  the rule of thumb. The count and the sparkline sit at its right. The band went from 26 to 20 pt
-  and is still the largest text.
-- **The world clock** left the block. It is 134 px tall at the card's right end, captioned *where
-  the sun is · you*.
-- **Drive, its dBFS note and the PSK31 power offer** (with the ALC reference) moved from the send
-  area to under the rig display. Every name is kept.
-- **The top row's two halves stretch to one height.**
-- **`GrayLineMapControl`** now finds the green block by name (`GreenZoneBlock`) for its
-  `green_zone_rendered` event, since the map is no longer inside it.
+| Row | Height and margin | What it holds | Collapses | Conditional |
+|---|---|---|---|---|
+| 0 `DigitalModeStrip` | 34 px licensed, 32 plain, at both widths; 10 below | *on this frequency*, the four mode chips, the clock glyph or clock-offset line, the status line | no (Tim, 2026-08-28) | no |
+| 1 `DigitalReadinessStrip` | 43 px at both widths; 10 below | the first thing between the operator and a decode; on the host, *nothing is listening yet...* | no | yes, on `HasDigitalReadiness` |
+| 2 `DigitalTuneStrip` (the row §5 does not name) | not shown on either fixture; 10 below | what the last tune press did, `DigitalTuneLine`, confirmed or failed | no | yes, on `HasDigitalTuneLine`, after a tune press |
+| 3, first row of the panes: `DigitalSendReserved` | 54 px licensed at both widths; 83 plain at 1920, 100 plain at 1400; 6 below | CQ, Stop, what went out, the license guard line (class unknown only), the unset line, the ALC line (PSK31), the level with its mark, where the contact stands | no | the area no; several of its lines yes |
+| 3, first row of the panes: `DigitalListControlsBar` | 34 px at both widths; 6 below | the slot clock, `everything`, `CQ`, and with rows the order toggle and `clear` | no | the row controls on `HasDigitalDecodes`, the clock on `ShowsSlotClock` |
 
-Measured at 1920 x 1040:
+From the card's top to the panels' top that is 117 px on the licensed fixture with the readiness
+strip hidden, and 170 with it showing, at both widths. The plain fixture at 1920 gives 144 and
+197, and 197 is the instruction's figure.
 
-| | Before | After |
-|---|---|---|
-| Top row | 445 px | 190 px |
-| Working card | 318 px | 573 px |
-| Green block | 1298 x 310 | 1038 x 62 |
-| World clock | 492 x 269, in the block | 246 x 134, at the card's right end |
-| Rig panel | 136 px | 190 px, the card's height |
+**The panels, before**, as px and as a share of the 910 px below the band pills:
 
-At 1400 the top row went from 329 to 288 px, and then to 273 after task 3.
+| Fixture | 1920, strip shown | 1920, strip hidden | 1400, strip shown | 1400, strip hidden |
+|---|---|---|---|---|
+| licensed | 390 (0.429) | 443 (0.487) | 307 (0.337) | 360 (0.396) |
+| plain, license class unknown | 363 (0.399) | 416 (0.457) | 307 (0.337) | 360 (0.396) |
+| plain, license class read as General | not measured | not measured | 374 (0.411) | not measured |
 
-`TheTopRowTests` was watched red on 3 of 4:
-- the top row at 445 px;
-- the clock inside the green block;
-- the drive not in the rig panel.
+**The run-order spread, found.** Two rows grow, and they are the same two every time:
+- the green block's third line, *Receiving is never restricted. Any license may listen
+  anywhere.*, which is 21 px at 1400;
+- the send area's license guard sentence, which takes the area from 54 to 100 px at 1400.
 
-It is 4 of 4 after the change. **The green-block assertion passed before the change** - the block
-was already inside the card with the band largest - so it was never watched red.
+Both appear only while the operator's license class is unknown. Together they are 67 px, which
+is exactly the gap between unit 337's 374 and 307.
+
+**The plain fixture's class was General on some windows and unknown on others within one run.**
+- The only code that writes a class by itself is the callook.info lookup (`LicenseResolver.Apply`,
+  from `ResolveProfileAsync`). The view model's constructor starts it whenever there is a
+  callsign and no class, and KC3QIS is General there.
+- Setting the callsign after the constructor did not stop it: the first window of the next run
+  still read General. So a second path exists and was not found, and that fixture change was
+  reverted.
+
+**So it is not proved to be state a test leaves behind, and nothing was fixed under R12.** The
+criteria were built so their numbers do not depend on it. The licensed fixture sets its class,
+read General on every window, and carries the 1400 assertion. The plain fixture passes in both
+states. See section 4, item 1.
+
+**The rig panel against the card at 1400**, licensed, before: 273 against 273 px, so they were
+equal.
+
+**The best bet.**
+- **The pill's badge** is drawn in the band pill's template in `MainWindow.axaml`: a border over
+  the card, bound to `IsBestBet`, saying `BestBetLabel`, and taking no clicks.
+- **The green block's `GreenZoneBestBet`** reads `GreenZone.BestBet`. That is built from the band
+  whose button carries the badge, plus ` ✓` when that band is the dial's.
+- **No band is ranked on the test host**, so neither was visible on the realized window at
+  task 0. The join holds by construction.
+
+### Task 1 - the three panels take the height
+
+**What moved. The arrangement is the unit's own, marked as such and overrulable.**
+- **The send area rides the tab row, right of the tabs.** `DigitalSendReserved` keeps its name,
+  CQ, Stop and every line. The box and its padding went, so it is 22 px tall beside a 30 px tab.
+  The lines run across in a wrap panel: the three that are always there come first, then the
+  license guard, the unset line and the ALC line. It shows only on the Digital tab.
+- **The filter and the row controls ride the mode strip**, after the chips, in
+  `DigitalHeaderStrip`. Their vertical padding is 2 px, so the strip stays its own height.
+- **The slot clock rides the For you header**, at its right.
+- **`DigitalPanes` is one row.** `DigitalListControlsBar` is gone.
+
+CQ and Stop moved in markup only and bind the commands they always bound. Stop has no
+collapsible ancestor at either width.
+
+**Test watched failing first:**
+`TheWorkingPanelsTests.TheThreePanelsTakeAtLeastHalfTheHeightBelowTheBandPills`. It was red at
+416 of 910 px (0.457) on the plain fixture at 1920.
+- **`StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList` passed before the change.** Stop
+  and the filter were already outside every collapsible panel, so it was never watched red.
+- **The decoded column within 10 px of its need, and no callsign clipped**, are the existing
+  `TheDecodedListIsAsWideAsItsLongestLineNeeds`, `NoCallsignIsClipped` and
+  `AtFourteenHundredTheSameShapeHolds`. All three ran and are green.
 
 Rewritten under R12:
-- **`TheGreenZoneTests`.** It asserted the map's width at 1400 (202 to 232 px), the count right of
-  the map, and the rule of thumb under the map. It now asserts the clock's 134 px height, the
-  count right of the left block, and the rule under the license line.
-- **`TheDriveIsSetWhereHeIsLookingTests`.** It asserted the drive inside `DigitalSendReserved`. It
-  now asserts the rig panel, and not the send area.
+- **`ThePanelsMakeRoomTests.OneBarAboveBothPanelsCarriesTheThreeControls`** is now
+  `TheListControlsSitInTheModeStripAboveBothPanels`. The four controls are in the mode strip,
+  above both lists and inside neither.
+- **`TheDigitalTabIsTwoColumnsTests.TheThreePanelsAreColumnsWithTheSendAreaAboveTheWaterfall`**
+  now asserts the send area is in the tab row above the working card, not in the waterfall's
+  column.
+- `TheFilterIsAlwaysThereTests`, `ThePanelScrollsTests` and `TheCardsRightColumnTests` passed
+  unchanged and were not rewritten.
 
-### Task 2 - the working panels
+**After task 1**, with the readiness strip hidden:
+- 505 px (0.555) plain at 1920, and 503 px (0.553) licensed at 1920;
+- 464 to 485 px (0.510 to 0.533) plain at 1400;
+- 420 px (0.462) licensed at 1400, which is under half until task 2.
 
-`DigitalPanes` is now one grid of `*,383,*` with a top row.
-- **Top row:** the send area over the waterfall, with CQ and Stop in a column of their own. The
-  filter bar sits over the two lists.
-- **Second row:** the waterfall, the decoded list and For You, one top and one bottom.
-- `DigitalDecodedPanes` and the waterfall's own scroller are gone.
+The layout set was 71 of 72.
 
-**The 383 px is the decoded list's own arithmetic, not a fraction.** It is 24 + 76 + 48 + 35 for
-the fixed columns and chrome, plus 200 px for `VP2MAA/P KC3QIS R-09` at 12 pt monospace on the
-host. `TheWorkingPanelsTests` measures that line and compares the column: 383 against 383.
+### Task 2 - the 1400 top row
 
-Measured at 1920 x 1040, before and after:
+- **Ruling 2 alone** took the licensed top row from 273 to 256 px (0.300 to 0.281). That is still
+  above 0.262, and the panels were 437 px (0.480).
+- **So ruling 3 was applied.** The top row is now 219 px (0.241), the panels 474 px (0.521), and
+  the green block went from 518 x 145 to 518 x 91.
 
-| | Before | After |
-|---|---|---|
-| Waterfall | 926 x 221 | 735 x 363 |
-| Decoded text | 378 x 412 | 378 x 363 |
-| For You | 543 x 412 | 734 x 363 |
-| Card inside | 487, facts under the map | 678, facts beside the map |
+**The width rule, the unit's own.** The sparkline hides when the green block's text column, beside
+a full-width count column, is narrower than the widest line the column holds on one line.
+- **The full-width count column** is *heard just now* or the sparkline, 10 px, and the count or
+  *last minute*, or the best-bet line if that is wider.
+- **The widest line** is the license phrase, the rule of thumb, or the band, frequency and verdict
+  together.
+- **When it hides**, *heard just now* stands over the count, and the column is only as wide as its
+  words.
+- **It is measured from the words, in `MainWindow.FitTheHeardCount`, not from a window width.** The
+  host and the glass draw words at different widths.
+- **It reads the width the count column would have if it were wide**, so hiding cannot undo itself.
+- **On the host** it hides at 1400 and not at 1920.
 
-**The split at 1920:** 735 / 378 / 734 px of 1862, which is 0.395 / 0.203 / 0.394.
+`GreenZone.RuleOfThumb` is now *20 m and up want daylight along the path; 40 m and down want
+dark.* Its remarks name work instruction 338 and the mockup.
 
-`TheWorkingPanelsTests` was watched red on 2 of 4: the waterfall started 40 px above the lists, and
-the facts were under the map at 1920. **The width and no-clip assertions passed before the change**
-- the 383 column already existed - so they were never watched red.
+**Test watched failing first:** `TheTopRowTests.AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`.
+It was red on the old sentence, then on 0.281. It asserts:
+- the licensed top row at 1400;
+- the licensed panels at 1400;
+- rig panel equal to the card within 2 px at both widths;
+- the sentence;
+- the count at both widths.
 
-Rewritten under R12:
-- **`ThePanelsMakeRoomTests`.** Its lookups moved from `DigitalDecodedPanes` to `DigitalPanes`.
-  *Half the pair* is now measured from the two panels and their margin.
-- **`TheDigitalTabIsTwoColumnsTests`.** It asserted two equal halves with the send area under the
-  waterfall. It now asserts three panels in order, one top and one bottom, and the send area above
-  the waterfall in its column, still holding CQ.
+Rewritten under R12: **`TheGreenZoneTests.TheMapRegionRendersWithItsRuleOfThumbAndNoClaimOfOpenness`**.
+It looked for the words *rule of thumb*; it now asserts the constant and its two clauses. The layout
+set is 90 of 91.
 
-### Task 3 - 1400
+**The first build did not engage the rule.** The window's name scope does not find the controls
+inside the neighborhood card. `FitTheHeardCount` now looks them up by a walk of the visual tree and
+keeps them.
 
-**The rule, the unit's own and overrulable:** the card's facts sit beside the map when the card is
-wide enough inside for the map, 10 px, and the table's widest row. Otherwise they go under it. The
-decoded column never narrows below its longest line, so the waterfall and For You give up width
-first. The existing `WrapPanel` in the card already does this. At 1400 the card is 419 px inside
-against 220 + 10 + 338 = 568, so the facts go under.
+### Task 3 - the best bet, on the window
 
-**The band line became a wrap panel.** At 1400 the verdict *Digital · FT8 · yours to use* sat in a
-sliver beside the band and the frequency and broke into 5 lines. It now drops under them as a whole
-and takes 2. On the licensed fixture the top row went from 288 to 273 px. Nothing moved at 1920.
+`TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` runs at 1920 on the
+licensed fixture:
+- with the best bet on 20 m, the pill wearing *best bet now* is 20 m, and the green block says
+  `20 m ✓`;
+- with the best bet on 40 m, the pill is 40 m, and the green block says `40 m` with no check.
 
-`TheWorkingPanelsTests.AtFourteenHundredTheSameShapeHolds` passed on its first run. Tasks 1 and 2
-had already delivered what it asserts, so nothing was watched red. At 1400 x 1040 it measured:
+It passed on its first run, because task 0 found the join already holds; the test is the task. No
+source changed.
 
-| | Run alone | After the rest of the layout set |
-|---|---|---|
-| Top row | 208 px (0.229) | 229 px (0.252) |
-| Working card | 555 px (0.610) | 534 px (0.587) |
-| The three panels | 374 px (0.411) | 307 px (0.337) |
+### The report
 
-Every share is of the 910 px below the band pills. **The spread is run order, not markup**: the
-same markup gives both columns. Alone, the rows above the panels are the mode strip 32 px, the
-readiness strip 43, the send area 54 and the filter bar 34; the tune strip is not shown. Which row
-grows after the set was not measured.
+After task 3 the carry-forward list is app 100 of 100 and engine 85 of 85.
 
-This fixture has no license class and no heard count, so its green block is shorter than a
-licensed operator's. The licensed fixture's 1400 numbers are in section 3.
-
-### Task 4 - stand it up and describe it
-
-The main window was realized by the tests at 1920 and at 1400, and section 3 describes each region
-from those measurements, beside the mockup's numbers. **It was not launched on the desktop**:
-nothing in this session can see a window, so the description is computed.
+One markup comment written in task 1 said the Decoded text header had been *measured* too narrow
+for the filter. It was arithmetic from the chip widths the host measured, and the comment now says
+so. That fix is in the report's commit.
 
 ### Decisions this unit made for itself, marked as its own and overrulable
 
-1. **The window is measured at 1040 px tall at both widths**: a maximized window on a 1080 px
-   screen less a taskbar. The mockup is drawn at 810.
-2. **The world clock is 134 px tall at every width**, the mockup's height. Its width follows the
-   picture's own proportions (246 px), so no place moves off its pixel.
-3. **The top row's two halves stretch to one `Auto` row.** Nothing inside writes a height, so what
-   keeps the row short is the card's own content.
-4. **The waterfall and For You share what the decoded column leaves, equally (`*,383,*`).** R26
-   says For You takes the rest. The mockup's waterfall is wider than its For You, and equal stars
-   were chosen as the smallest rule that puts the facts beside the map at 1920.
-5. **The send area sits above the waterfall, not under it**, because three panels with one bottom
-   leave no room under any of them. CQ and Stop are a column of their own, so no line beside them
-   can move them, and both are outside every collapsible panel. They bind the same commands as
-   before.
-6. **The drive and the power offer show on every tab**, because they are in the top strip, which
-   Tim ruled is the same in every mode. The row does not change height when the tab does.
-7. **"The working panels" is read as the working card** - the tab's region below the tabs that
-   holds the three panels. R26 says *the working panels below the tabs take the rest of the
-   window*. The three panels' own share is printed beside it (section 4, item 2).
-8. **The facts rule** in task 3 above, and **the band line as a wrap panel**.
+1. **Where the rows went** (task 1): the send area to the tab row, the filter and the row controls
+   to the mode strip, and the slot clock to the For you header.
+2. **The filter is not in the Decoded text header**, where the mockup draws it. On the host that
+   header is 376 px inside, and with rows the four controls alone want about 430.
+3. **The send lines were reordered** so the three that are always there share one line, and the
+   conditional ones follow.
+4. **The ruling 3 width rule**, as stated in task 2.
+5. **The readiness strip is hidden in the tests by setting its visibility.** The host has no sound
+   card, so the strip always has something to say there.
+6. **The licensed 1400 panels are asserted in `TheTopRowTests`**, beside the top row that makes
+   them reachable. `TheWorkingPanelsTests` asserts the plain fixture at both widths and the
+   licensed one at 1920.
+7. **The task 0 trace stays** in `TheWorkingPanelsTests`, printed and not asserted, as unit 336's
+   did.
 
 ### Where the instruction and the tree disagreed
 
-- **`tools/status.sh` could not run.** The instruction says to use it for every status write, and
-  `sh tools/status.sh` came back *requires approval*. Every `UPDATED` in this unit is a `date`
-  reading pasted whole; none was composed.
-- **§11 says commit per task and push at the end; the prompt says commit and push each task.**
-  Each task was pushed, per the prompt.
-- **`git stash` also came back *requires approval***, so two reds could not be rerun at HEAD
-  (section 4, item 3).
-- **Every other item §5 names matched the tree.** The green zone as unit 334 left it (map 492 x
-  269 at 1920). The world clock control. The rig panel. Drive and the power offer in the digital
-  send area. The tabs, the working card and the three panels with the bar above them. The split
-  at `383,*`. The card's map row and facts table. The seven named tests. `PROJECT_CARD.md`'s
-  `PHASE`, which was the maintenance phase's until task 0 moved it. `TheGreenZoneTests` and
-  `TheCardsRightColumnTests` live under `tests/.../ViewModels` though they realize the window;
-  that is noted, not moved.
+- **`CLAUDE.md` §1 carries no `CPS-DEC-0163`.** No `CPS-DEC` string is in the file, and its
+  2026-09-12 row carries HM-DEC-163. This is reported, not resolved, because the id schemes are
+  parked.
+- **`WORK_INSTRUCTIONS.md` was uncommitted as well**, which §5 does not name. It went into task 0's
+  commit.
+- **The prompt says to set `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line, and §5 says to commit that
+  file unchanged.** Both were done: it was committed unchanged in `6ab04aa`, then the line was set
+  and committed in `c846bcb`.
+- **`tools/status.sh` came back *requires approval*.** It was tried once. Every `UPDATED` is a
+  `date` reading pasted whole.
+- **A `sed` move of the markup blocks was refused**, so the rows were moved with exact-text edits.
+- **Every other §5 item matched the tree:**
+  - the phase, with step 0 `partial`;
+  - `DigitalWorkspace` rows `Auto,Auto,Auto,*`;
+  - the mode strip in row 0 with its comment, and the readiness strip in row 1;
+  - `DigitalPanes` in row 3 at `*,383,*` over `Auto,*`;
+  - Stop in `DigitalSendReserved`, and the two filter names;
+  - `RuleOfThumb`'s old sentence;
+  - the four test files;
+  - `RULES_AT` at HM-DEC-161.
 
-### Reds older than this unit
+### Reds
 
-- **`TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`.** It expects a single
-  `_armedSend.Arm(` line in `src`. There are two, `MainWindowViewModel.cs` lines 14202 and 14381,
-  in a file this unit did not touch.
-- **`TheWholeChainRunsFromOneRightClickTests`, two tests.** Both fail with *no realized row... mine
-  rows: 1; realized row roots: 0*. The diff touches none of `DigitalMineRows`,
-  `DigitalDecodedRows`, `ShowsConversation` or the row's context handler. This is the cause unit
-  331's item 14 recorded. **Not proved by a run at HEAD**: the stash was refused.
+- **`TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`** is red, as §5 says. It is
+  the only red in every set that ran.
+- **Not run:** `TheWholeChainRunsFromOneRightClickTests`, `TheMenuIsUnderTheMouseTests`,
+  `ThePsk31RecordsAppearTests` and `TheTotalMilesTests`. They are not this unit's tests
+  (HM-DEC-155), so whether they are still red is not measured.
+- No red turned green, and no new red appeared, in what ran.
 
 ## 2. What the owner should expect
 
-**What is now true, at your window:**
-- The top of the window is one short band.
-- **The neighborhood card** holds the strip and its legend, a compact green block under them, and
-  the world clock at its right end.
-- **The rig panel** beside it is exactly as tall. Under the frequency and the S-meter it holds
-  *Transmit drive* with its box, the dBFS note and, on PSK31, the power offer.
-- **Under the tabs, on the Digital tab:**
-  - a short send strip above the waterfall, with CQ and Stop at its left and the lines about what
-    went out beside them;
-  - the slot clock, the filter and `clear` above the two lists;
-  - then the waterfall, the decoded list and For You, the same height, running down to the status
-    bar.
-- **At 1920 the conversation card's facts sit beside its map.**
+**What is now true, on the Digital tab:**
+- **Right of the CW, Digital and Voice tabs** are CQ, Stop, and then *nothing sent yet · no level
+  measured yet · no contact yet* on one line. A long line, such as the license guard, wraps under
+  them.
+- **The mode strip** holds the chips, then `everything` and `CQ` (and with rows, the order toggle
+  and `clear`), then the status at the right.
+- **The panels start right under the mode strip** and run to the status bar, with one top and one
+  bottom.
+- **The slot clock** is at the right of the For you header.
+- **The green block's last line** reads *20 m and up want daylight along the path; 40 m and down
+  want dark.*
+- **On a narrow window** the sparkline goes, and *heard just now* sits over the count.
 
 **What will look wrong but is not:**
-- **The drive and the power offer are on the CW and Voice tabs too**, in the top strip. That is
-  decision 6: the header does not change between tabs.
-- **The waterfall at 1920 is narrower than before (926 to 735 px) and much taller (221 to 363
-  px).** The picture is resampled into its rectangle; nothing about what it measures changed.
-- **At 1400 the facts sit under the map on the card.** That is the rule, and it is what keeps the
-  decoded list from cutting a callsign.
-- **The world clock is half the size unit 334 made it** (492 x 269 to 246 x 134). That is the
-  mockup's size.
-- **The `?` for the neighborhood map's how-to is on the card's header** now, beside the title.
-- **At narrow widths the verdict (*Digital · FT8 · yours to use*) sits on its own line** under
-  the band and the frequency.
-- **The headless host draws text about half again wider than the glass** (unit 332's
-  measurement). So at 1400 the green block probably wraps less on your screen than the numbers
-  below say. That is an inference, not a measurement.
+- **The send area is outside the working card**, on the tab row. CQ and Stop are the same commands,
+  and Stop is never inside anything that folds.
+- **The filter is not in the Decoded text header**, where the mockup draws it. See section 1,
+  decision 2.
+- **There is no sparkline at 1400** on the host. That is ruling 3, and your screen draws words
+  narrower, so the sparkline may stay there.
+- **The rule of thumb lost *Rule of thumb:* and the gray-edge clause.** That is ruling 2.
+- **With the license class unknown at 1400, the tab row is 2 px taller**, because the guard
+  sentence takes two lines.
 
-This unit created no file it could not delete.
+**Build and tests:**
+- It builds. The layout set is 90 of 91, with the one known red.
+- Carry-forward is app 100 of 100 and engine 85 of 85.
+- Four commits are pushed to `main`, and the report commit follows them.
+- This unit created no file it could not delete.
 
 ## 3. What you should see
 
-**The answer: the top row went from 445 to 190 px at 1920, and the working card from 318 to 573
-px.** The three working panels are 363 px each, with one top and one bottom at the working card's
-floor. At 1400 the same shape holds, with the top row at 273 px.
+**The answer: yes.** With the readiness strip hidden, the three panels themselves take 503 px of
+the 910 below the band pills at 1920 (0.553), and 474 px at 1400 (0.521), on the licensed fixture.
+**A licensed operator's top row at 1400 is 219 px, which is 0.241 against the mockup's 0.262.**
 
-Every built number here is computed from the real main window realized headless at 1040 px tall.
-None was seen. The mockup's numbers are the instruction's, drawn at 810 px tall. They are a
-picture, not a specification, so compare shapes and proportions rather than pixels.
+Every built number is computed from the real main window realized headless at 1040 px tall, and
+none was seen. The mockup is drawn at 810 px tall with 710 below its pills, so compare shares
+rather than pixels.
 
 ### At 1920
 
-| Region | Mockup | Built |
-|---|---|---|
-| Header and band pills | to about y 100 | pills end at y 130 |
-| Top row | y 110 to 296, 186 px | y 140 to 330, **190 px** |
-| Neighborhood card | x 14 to 1000 | 1328 x 190 at x 16 |
-| Green block | 28-720 x 210-282, 72 px tall | 1038 x 62 at 31,238 |
-| Band in the green block | 16 pt bold, the largest text | 20 pt bold, the largest text in the card |
-| World clock | 246 x 134 at the card's right end, one dot | 246 x 134 at x 1083, 1 marker, *where the sun is · you* under it |
-| Rig display | x 1012 to 1488, the card's height | 546 x 190 at x 1358, the card's height |
-| Drive and power | a line under the S-meter | the drive box at 1521,274, under the display; the power offer under it on PSK31 |
-| Tabs and working card | tabs y 310; card y 336 to 770, 434 px | card y 393 to 966, **573 px** |
-| Waterfall | x 28 to 640, y 376 to 758 | x 29, 735 wide, y 590 to 953, 363 tall |
-| Decoded text | x 652 to 1068 | x 774, 378 wide, same top and bottom |
-| For You | x 1080 to 1474 | x 1157, 734 wide, same top and bottom |
-| Card's facts | beside the map | beside it: card 678 px inside, table at x 232 |
-| Status bar | unchanged | y 978, 46 px |
-
-As shares of the height below the band pills, the mockup's top row is 186 of 710 (0.262). Built,
-it is 190 of 910 (0.209), and the working card 573 of 910 (0.630).
+| Region | Mockup | Before | After |
+|---|---|---|---|
+| Top row | 186 px, 0.262 | 190 px, 0.209 | 190 px, 0.209 |
+| Rig panel against the card | one height | 190 / 190 | 190 / 190 |
+| Tab row | the tabs | the tabs, 30 px | the tabs, 30 px, with CQ, Stop and the send lines 22 px tall at their right |
+| Card top to panels top | about 40 px: the mode chips and a status | 117 px: card 13, mode strip 34 + 10, send area 54 + 6 beside the bar 34 + 6 | 57 px: card 13, mode strip 34 + 10 |
+| Card top to panels top, readiness strip showing | none drawn | 170 px | 110 px |
+| Three panels | 382 px, 0.538 | 443 px, 0.487 (390, 0.429 with the strip) | 503 px, 0.553 (450, 0.495 with the strip) |
+| Waterfall / decoded / For You, wide | 612 / 416 / 394 | 734 / 378 / 735 | 734 / 378 / 735 |
+| Filter chips | Decoded text header | bar over the lists | mode strip |
+| Slot clock | not drawn | bar over the lists | For you header |
+| Green block | 72 px, with sparkline | 62 px, with sparkline | 67 px, with sparkline |
+| Card's facts | beside the map | beside | beside |
 
 ### At 1400
 
-| Region | Built |
-|---|---|
-| Top row | y 140 to 413, **273 px** (licensed fixture); 0.300 of the 910 below the pills |
-| Neighborhood card | 808 x 273 |
-| Green block | 518 x 145. The verdict takes 2 lines, the license line 4, the rule of thumb 6. |
-| World clock | 246 x 134, 1 marker |
-| Rig panel | 546 wide, stretched to the card's height. The two were measured equal at 288 before the task 3 change and are not re-measured at 273. |
-| Working card | 1368 x 490 at y 476 |
-| Waterfall / decoded / For You | 474 / 378 / 475 px wide, one top and bottom. They are 307 to 374 px tall depending on run order (section 1, task 3). |
-| Card's facts | under the map: 419 px inside against 568 needed |
-| Decoded message column | 200 px. `VP2MAA/P KC3QIS R-09` needs 200, and `CQ DX K9XP JN88` needs 150. No callsign is clipped. |
+| Region | Mockup | Before | After |
+|---|---|---|---|
+| Top row, licensed | 0.262 | 273 px, 0.300 | 219 px, 0.241 |
+| Green block, licensed | not given | 518 x 145, with sparkline | 518 x 91, no sparkline, *heard just now* over the count |
+| Rig panel against the card | one height | 273 / 273 | 219 / 219 |
+| Tab row | the tabs | 30 px | 30 px licensed, 32 px with the class unknown |
+| Card top to panels top | about 40 px | 117 px (170 with the strip) | 57 px |
+| Three panels, licensed | 0.538 | 360 px, 0.396 (307, 0.337 with the strip) | 474 px, 0.521 (with the strip: not measured) |
+| Three panels, plain | not given | 360 px, 0.396, or 374 with the strip when the class read as General | 464 to 494 px, 0.510 to 0.543, across this unit's runs |
+| Waterfall / decoded / For You, wide | not given | 474 / 378 / 475 | 474 / 378 / 475 |
+| Card's facts | not given | under the map, by the rule | under the map, by the rule |
+| Callsigns clipped | none | none | none |
 
 ## 4. What's blocking us
 
 ### Raised by this unit
 
+**1. The plain test fixture asks callook.info for KC3QIS's license class, and the answer changes
+what it measures.**
+
+*No ruling wanted; a finding.*
+- The view model's constructor looks up a callsign that has no class. General lands inside the
+  layout passes on some windows and not others.
+- That removes the green block's third line and the send area's guard sentence, 67 px at 1400,
+  which is unit 337's run-order spread.
+- Setting the callsign after the constructor did not stop it, so a second path exists and was not
+  found.
+- This unit's criteria hold in both states.
+- A seam that keeps tests off the network would change the view model's start-up, which is not
+  this step's work.
+
+**2. The filter chips are in the mode strip, not in the Decoded text header where the mockup draws
+them.**
+
+*Ruling wanted only if the mockup's placement is what you want.* On the host the header is 376 px
+inside. With rows, `everything`, `CQ`, the order toggle and `clear` want about 430 px before the
+title, and the summary a shut panel shows would be cut (§R17). The options:
+- (a) keep them in the mode strip, which does not collapse;
+- (b) put only `everything` and `CQ` in the header, about 188 px, which leaves the title and
+  summary about 50 px, and keep the row controls in the strip;
+- (c) shorten the chips' words.
+
+*Reasoning.* §R17 says the filter is visible on an empty list and a shut header carries its count
+and sentence. Option (a) keeps both at every width, so the recommendation is (a).
+
+*What was rejected and why.* A second row inside the Decoded text panel, above the list. It would
+be inside what collapses, and the filter must stay on screen when the panel is shut.
+
+**3. CQ and Stop sit right of the tabs, in a place the mockup draws empty.**
+
+*Ruling wanted only if that is not where you want them.* The mockup draws no send area. Over the
+waterfall it was a row all three panels paid for.
+
+*Reasoning.* Beside the tabs it costs no height, it is outside everything that folds, and it is on
+screen whenever the Digital tab is (§0.2).
+
+*What was rejected and why.*
+- The For you or waterfall panel: both collapse, and Stop may never be inside something that does.
+- The status bar: every tab shares it, and it would grow.
+
+**4. The licensed fixture's heard count read 8 and then 9 stations on two runs at 1920, against
+the 6 the fixture sets.**
+
+*No ruling wanted; a finding.* Something live replaces the fixture's count after it is set. The
+top-row test asserts only that a count is shown, so nothing failed. The green block at 1920 was 62
+px before task 2 and 67 after, and the top row stayed at 190.
+
+**5. The window's name scope does not find the controls inside the neighborhood card.**
+
+*No ruling wanted; a finding for whoever next writes code-behind there.* `FindControl` returned
+nothing for `GreenZoneRegions`, and a walk of the visual tree finds it.
+
+**6. Four expected reds were not run.**
+
+*No ruling wanted; a finding.* `TheWholeChainRunsFromOneRightClickTests`,
+`TheMenuIsUnderTheMouseTests`, `ThePsk31RecordsAppearTests` and `TheTotalMilesTests` are not this
+unit's tests (HM-DEC-155). `TheStopAddedNoNewRouteToATransmission` ran and is still red.
+
+### Where the carried items stand after unit 338
+
+- **Unit 337 items 1 and 2: ANSWERED by the arbiter's ruling in work instruction 338.** Both are
+  marked in the carried text below, with what was built.
+- **Unit 337 item 3, the reds:** `TheStopAddedNoNewRouteToATransmission` is still red. The two
+  `TheWholeChainRunsFromOneRightClickTests` were not run.
+- **Unit 332 item 4, the license phrase at 1400:** its wording is unchanged. Its line count at 1400
+  was not measured after task 2.
+- **The status helper:** still refused.
+- **Carried item 18, the id schemes:** untouched. See section 1 on `CPS-DEC-0163`.
+- **Every other item stands as carried.** Nothing in this unit touched:
+  - the radio side, a decoder, a parser or the transmit logic;
+  - States or the achievements pages;
+  - the demodulator, the ALC margin or PSK31 step 6.
+
+### Asks still outstanding - carried from unit 337's section 4, per HM-DEC-139, verbatim
+
+Headings under it are moved down one level so they sit inside this one. The words are unchanged,
+except that items 1 and 2 are marked answered, as work instruction 338 §3 asks.
+
+#### Raised by this unit
+
 **1. At 1400 a licensed operator's top row is 273 px - 0.300 of the height below the band pills -
 against the mockup's 0.262.**
+
+**ANSWERED by the arbiter's ruling in work instruction 338** (rulings 2 and 3). Built: the rule of
+thumb is option (a), the mockup's sentence, which alone gave 256 px (0.281); then the sparkline
+hides where the text column would wrap and *heard just now* stands over the count, giving 219 px
+(0.241). The count stays at both widths.
 
 *Ruling wanted, or the arbiter's own recommendation taken: how to shorten the green block at 1400.*
 The block wraps because its text column is about 210 px wide there. The clock takes 246 px and the
@@ -336,6 +462,11 @@ The recommendation is (a): the mockup is the ruling, and it already draws the sh
 
 **2. "The working panels" is read as the working card. Read as the three panels themselves, they
 are under half the height below the pills at both widths.**
+
+**ANSWERED by the arbiter's ruling in work instruction 338** (ruling 1: the three panels
+themselves). Built: the row above the panels is gone - the send area rides the tab row, the filter
+and row controls the mode strip, the slot clock the For you header - and the panels are 503 px
+(0.553) at 1920 and 474 px (0.521) at 1400 on the licensed fixture, readiness strip hidden.
 
 *Ruling wanted only if the panels themselves were meant.*
 - **At 1920** the working card is 573 of 910 px (0.630). The three panels are 363 (0.399).
@@ -362,7 +493,7 @@ back height: collapsing that panel would then hide Stop (§0.2), or the filter (
   unit's diff touches none of that path. **Not proved by a run at HEAD**, because `git stash` was
   refused. Both tests also open a real audio endpoint.
 
-### Where the carried items stand after unit 337
+#### Where the carried items stand after unit 337
 
 - **Unit 336 item 1, how the decoded list and For You share the tab: ANSWERED by R26 and this
   unit.**
@@ -385,11 +516,11 @@ back height: collapsing that panel would then hide Stop (§0.2), or the filter (
   - States, rank names, the Modes card, the achievements pages;
   - the demodulator, the ALC margin, the id schemes, or PSK31 step 6.
 
-### Carried from unit 336's section 4, per HM-DEC-139 - verbatim
+#### Carried from unit 336's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-#### Raised by this unit
+##### Raised by this unit
 
 **1. Task 3 cannot meet its must-pass with a fraction alone, measured. Which bend do you want?**
 
@@ -446,7 +577,7 @@ since unit 332.**
 unit 332 (`3ea16ec`) changed that line to `every mile, added` in `src` only. It is not on the
 known-reds list, and the unit that next touches Total Miles owns it under R12.
 
-#### Where the carried items stand after unit 336
+##### Where the carried items stand after unit 336
 
 - **Unit 335 item 1, the States next card's wording:** unchanged. The card still says `Any state
   you have not worked` and `Hamlet cannot tell a caller's state`. Scoring `STATE` changed only the
@@ -470,11 +601,11 @@ known-reds list, and the unit that next touches Total Miles owns it under R12.
 - **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
   the FT8 or PSK31 message split, or the transmit chain.
 
-#### Carried from unit 335's section 4, per HM-DEC-139 - verbatim
+##### Carried from unit 335's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-##### Raised by this unit
+###### Raised by this unit
 
 **1. The States next card says `Hamlet cannot tell a caller's state`. That wording is the
 arbiter's proposal, marked for you, and shortened here to fit.**
@@ -518,7 +649,7 @@ one caller who earns two cards at once, and Continents could not do what R22 ask
 *Reasoning.* §12.6: do not repair unrelated things on the way past. The fix is one binding, and
 it belongs to a unit that is told to change the page.
 
-##### Where the carried items stand after unit 335
+###### Where the carried items stand after unit 335
 
 - **Unit 333 item 1, the Hall of Fame next-card collision:** untouched. The next first is still
   chosen by `NextFirstOf`, and `A PSK31 contact` still shows where it is the only first left.
@@ -537,11 +668,11 @@ it belongs to a unit that is told to change the page.
 - **Every other item stands as carried.** Nothing in this unit touched the radio side, a decoder,
   a parser or the transmit chain.
 
-##### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
+###### Carried from unit 334's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-###### Raised by this unit
+####### Raised by this unit
 
 **1. At 1920 the green zone is 310 px tall, because the map keeps its shape as it takes the
 pills' width.**
@@ -579,11 +710,11 @@ back *requires approval*. Every `UPDATED` in this unit is a `date` reading paste
 was composed. The validator was run by the `.proj` route; its verdict is in the session
 transcript, not quoted here.
 
-###### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
+####### Carried from unit 333's section 4, per HM-DEC-139 - verbatim
 
 Headings under it are moved down one level so they sit inside this one; the words are unchanged.
 
-####### Raised by this unit
+######## Raised by this unit
 
 **1. Where PSK31 is the only Hall of Fame first left unearned, Ruling C and §3.1 say opposite
 things about one slot.**
@@ -633,7 +764,7 @@ Both are safe to delete by hand, beside the five carried in item 19 below. The v
 run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
 243 documented as mangled by Git Bash.
 
-####### Carried from unit 332's section 4, per HM-DEC-139 - verbatim
+######## Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
 **1. The mode rows' hovers still say Hamlet cannot work PSK31 and FT4 and cannot log CW.**
 
@@ -708,7 +839,7 @@ this unit**: the four must-pass and R13 are proved in section 3, the nice-to-pas
 unit 333's `PHASE_OUTCOME.md` entry records `STATE_AFTER: done`. The `STEP: 5` lines are the
 launcher's and were not written.
 
-####### Carried from unit 331's queue, as unit 332 carried it - verbatim
+######## Carried from unit 331's queue, as unit 332 carried it - verbatim
 
 **1. Fourteen `UPDATED` timestamps in `PROJECT_STATUS.md` were composed rather than
 read from the clock - the third unit running, and this session read both prior
@@ -887,7 +1018,7 @@ session's own `tools\cut-header-action.py`.
 
 **All other items stand as unit 328 carried them.**
 
-####### Where the carried items stand after this unit
+######## Where the carried items stand after this unit
 
 - **Unit 332 item 1, the `Why` hovers:** not drawn on the rebuilt page before a PSK31 contact.
   Every hover on every visible control was read in task 1 and none names PSK31, so it stays
@@ -899,7 +1030,7 @@ session's own `tools\cut-header-action.py`.
   `first_answer_to_own_cq`, `Digital`, the demodulator vouch, the idle fixture, the ALC margin,
   the two id schemes, the five files or step 6.
 
-###### Where the carried items stand after unit 334
+####### Where the carried items stand after unit 334
 
 - **Unit 333 item 3 and unit 331-queue item 19, the undeletable files:** now **thirteen**, and
   listed once in section 2. `Unit333ProbeTests.cs` is tracked, not untracked. None was left

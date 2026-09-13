@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: 3 of 4
 WORK_INSTRUCTION: 338 - the three working panels take the height
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> the arbiter
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T20:50:52-04:00
-NOTE: Task 3 done - the badged pill and the green block name one band on the window, check on 20 m and not on 40 m; committing, then carry-forward and the report
+UPDATED: 2026-09-12T21:01:37-04:00
+NOTE: Complete, tasks 0 to 3 - panels 503 px (0.553) at 1920 and 474 (0.521) at 1400, licensed 1400 top row 219 px (0.241); output.md validated exit 0
 
 ---
 

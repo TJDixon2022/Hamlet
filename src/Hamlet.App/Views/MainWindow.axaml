@@ -3921,11 +3921,13 @@
                                  UNIT'S CHOICE, MARKED AS ITS OWN.** Their bar was a row
                                  the three panels paid for, and the arbiter's ruling 1
                                  gives that height to the panels. The mockup draws them
-                                 in the Decoded text header; measured on the test host,
-                                 that header is 378 px and the title, `everything`, `CQ`
-                                 and the order toggle and `clear` want more than that
-                                 before the summary gets a pixel, and the summary is what
-                                 a shut panel says (§R17). **This strip runs the full
+                                 in the Decoded text header, which is 378 px on the test
+                                 host. **Computed, not laid out**: the host drew
+                                 `everything` 126 px wide and `CQ` 44 px, and at ten
+                                 pixels a character the order toggle and `clear` add about
+                                 230 more, so with rows the controls alone want about 430
+                                 px of a 376 px header before the title - and the summary
+                                 beside the title is what a shut panel says (§R17). **This strip runs the full
                                  width and does not collapse**, so the filter is on screen
                                  with the list empty and with Decoded text shut. The chips
                                  carry a 2 px vertical padding so they do not make the
