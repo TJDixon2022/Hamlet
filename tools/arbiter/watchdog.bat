@@ -1,4 +1,13 @@
 @echo off
+
+rem  %~dp0 IS CAPTURED HERE, BEFORE ANY shift, AND THAT IS NOT STYLE.
+rem  shift MOVES %0 TOO, so after it %~dp0 resolves to the CALLER'S
+rem  directory and every sibling script goes missing. run-unit.bat's
+rem  header already records this trap costing a dry run that reported
+rem  the wrong refusal. 058 walked into it again converting this file
+rem  to readkey.bat, and was caught by RUNNING the four-transport
+rem  matrix rather than by reading the change.
+set "RKHERE=%~dp0"
 rem ============================================================
 rem  watchdog.bat  -  is that session still reporting?
 rem
@@ -95,18 +104,20 @@ rem  Generated 2026-08-28 for: work instructions 038 task 3
 rem  Amended  2026-08-28 for: work instructions 040 task 2 - --since,
 rem           licensed by the owner's ruling of that date and by nothing
 rem           else. All six arms 038 demonstrated were re-run afterwards.
+rem  Amended  2026-09-12 for: work instructions 061 task 2 - NOTHING KILLS
+rem           ON THIS READING ANY MORE. Until 061 run-unit-watched.bat
+rem           called this script every poll and killed a run it called
+rem           stale, so twelve minutes without a status write was a kill.
+rem           On HamLet that killed three productive units in two days.
+rem           The watchdog now watches the run's process tree for CPU
+rem           time and has no clock of its own; neither it nor
+rem           run-phase.bat calls this file. What is below is still true
+rem           as a READING of PROJECT_STATUS.md's freshness that agrees
+rem           with the panel's CFG.staleRunMin - and the NO KILL paragraph
+rem           is now true of the whole launcher, not only of this script.
 rem ============================================================
 
 setlocal
-
-rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
-rem  PHASE_UPLIFT.md section 12: `shift` moves %0 along with the numbered
-rem  arguments, so afterwards `%~dp0` resolves to the CALLER's directory
-rem  and the sibling script goes missing - and this script would then
-rem  report a missing field about a file that has one, which is the exact
-rem  fault readkey.bat was introduced to stop.
-set "HERE=%~dp0"
-
 
 set "RC=0"
 set "MINUTES=12"
@@ -141,7 +152,7 @@ echo ERROR: unexpected argument: %~1
 goto :usage
 
 :parsed
-if "%REPO%"=="" set "REPO=C:\Source\HamLet"
+if "%REPO%"=="" set "REPO=C:\Source\ClaudeProjectStatus"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
 echo %MINUTES%| findstr /r "^[0-9][0-9]*$" >nul
@@ -192,11 +203,11 @@ if not exist "%STATUS%" (
 
 rem --- UPDATED, read from the file ------------------------------
 set "RAW="
-rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
-rem  This reader is the one the section is sharpest about: a watchdog that
-rem  reports UNKNOWN about a file whose UPDATED is present sends somebody
-rem  to fix what is not broken, and CR-only or a BOM is enough to do it.
-call "%HERE%readkey.bat" "%STATUS%" "UPDATED" RAW
+rem  READ THROUGH readkey.bat, NOT findstr - 058. The watchdog decides
+rem  whether to KILL a running session on this value, so a reader that
+rem  reports "no UPDATED line" about a file that has one is the worst
+rem  available failure here: it reads as UNKNOWN, exit 2.
+call "%RKHERE%readkey.bat" "%STATUS%" "UPDATED" RAW
 if not defined RAW (
   echo   UNKNOWN - no UPDATED line in PROJECT_STATUS.md
   echo   The field is required by STATUS_PROTOCOL.md section 3. Its
@@ -284,7 +295,7 @@ rem ============================================================
 echo.
 echo   watchdog.bat [root] [--minutes N] [--since ISO]
 echo.
-echo   root defaults to C:\Source\HamLet
+echo   root defaults to C:\Source\ClaudeProjectStatus
 echo   --minutes defaults to 12, matching the panel's CFG.staleRunMin
 echo.
 echo   0 fresh, 1 stale, 2 unknown ^(absent, unreadable, unparseable^)

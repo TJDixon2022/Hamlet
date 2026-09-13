@@ -1,4 +1,13 @@
 @echo off
+
+rem  %~dp0 IS CAPTURED HERE, BEFORE ANY shift, AND THAT IS NOT STYLE.
+rem  shift MOVES %0 TOO, so after it %~dp0 resolves to the CALLER'S
+rem  directory and every sibling script goes missing. run-unit.bat's
+rem  header already records this trap costing a dry run that reported
+rem  the wrong refusal. 058 walked into it again converting this file
+rem  to readkey.bat, and was caught by RUNNING the four-transport
+rem  matrix rather than by reading the change.
+set "RKHERE=%~dp0"
 rem ============================================================
 rem  outcome-render.bat  -  the morning view
 rem
@@ -69,13 +78,6 @@ rem ============================================================
 
 setlocal
 
-rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
-rem  PHASE_UPLIFT.md section 12: `shift` moves %0 too, so afterwards
-rem  `%~dp0` resolves to the CALLER's directory and the sibling goes
-rem  missing.
-set "HERE=%~dp0"
-
-
 set "RC=0"
 set "FILE="
 set "OUT="
@@ -90,7 +92,7 @@ shift
 goto :parse
 
 :parsed
-if "%FILE%"=="" set "FILE=C:\Source\HamLet\PHASE_OUTCOME.md"
+if "%FILE%"=="" set "FILE=C:\Source\ClaudeProjectStatus\PHASE_OUTCOME.md"
 if "%OUT%"=="" set "OUT=%TEMP%\phase-outcome.html"
 
 echo.
@@ -109,10 +111,10 @@ if not exist "%FILE%" (
   goto :end
 )
 
-rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
-set "PHASEHDR="
-call "%HERE%readkey.bat" "%FILE%" "PHASE" PHASEHDR
-if not defined PHASEHDR (
+rem  READ THROUGH readkey.bat, NOT findstr - 058, and for the reason
+rem  outcome-read.bat carries: this file already has a BOM.
+call "%RKHERE%readkey.bat" "%FILE%" "PHASE" ORPHASE
+if not defined ORPHASE (
   echo   MALFORMED - no PHASE: line. Nothing below it can be trusted.
   set "RC=1"
   goto :end

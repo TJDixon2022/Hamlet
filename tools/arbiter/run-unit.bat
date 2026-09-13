@@ -88,7 +88,7 @@ rem  CAPTURED BEFORE ANY shift. `shift` moves %0 as well as the
 rem  numbered arguments, so after the two shifts below %~dp0 resolves
 rem  to the CALLER's directory and every sibling script this launcher
 rem  calls goes missing. Measured: the first dry run reported
-rem  '"C:\Source\HamLet\lock.bat" is not recognized',
+rem  '"C:\Source\ClaudeProjectStatus\lock.bat" is not recognized',
 rem  the tools\grok\ having fallen off the path, and the launcher then
 rem  read that failure as "the lock is held" and refused. A guard that
 rem  cannot find the guard reports the wrong refusal.
@@ -271,9 +271,20 @@ rem  window that labels itself from its folder name is the specific
 rem  failure this whole repository exists to prevent.
 set "UNIT_PROJECT="
 if exist "%ROOT%\PROJECT_CARD.md" (
-  for /f "usebackq tokens=1,* delims=:" %%A in (`findstr /b /c:"PROJECT:" "%ROOT%\PROJECT_CARD.md"`) do set "UNIT_PROJECT=%%B"
+  rem  READ THROUGH readkey.bat, NOT findstr - 058. PROJECT: is the
+  rem  SECOND line of PROJECT_CARD.md today and the first tomorrow, and
+  rem  findstr fails on whichever of those two a BOM or a CR-only file
+  rem  puts it in. This is the gate line. A gate that cannot read the
+  rem  project name refuses a correct tree.
+  rem  %HERE%, NOT %~dp0 - the trap this file's own header records, walked
+  rem  into again by 058's conversion. After the two shifts above %~dp0 is
+  rem  the CALLER's directory, readkey.bat is not found, the card reads as
+  rem  having no PROJECT field and the launcher refuses at exit 2 having
+  rem  launched nothing. Found by unit 061's watchdog smoke run, where all
+  rem  three arms exited 2 before a single look; repaired because no fixture
+  rem  could reach the stand-in session without it.
+  call "%HERE%readkey.bat" "%ROOT%\PROJECT_CARD.md" "PROJECT" UNIT_PROJECT
 )
-if defined UNIT_PROJECT call :trimproj
 if not defined UNIT_PROJECT (
   echo ERROR: no PROJECT field on %ROOT%\PROJECT_CARD.md
   echo Refusing to build a prompt with no gate line. A unit with no
@@ -580,29 +591,6 @@ rem ============================================================
 >>"%PROMPT%" echo.
 >>"%PROMPT%" echo Commit and push each task before starting the next.
 >>"%PROMPT%" echo.
-rem  PHASE_STATUS.md's WORK_INSTRUCTION IS THE EXECUTOR'S AND NOBODY WAS
-rem  ASKING FOR IT. Measured 2026-09-01: the field read
-rem  `001 - the Ft8Sharp vessel, its licence and its boundary` while the
-rem  project was on 210. PHASE_CONTROL.md section 4 assigns the field to the
-rem  executor, and this prompt - the only thing that ever asks an executor
-rem  for anything - did not mention PHASE_STATUS.md at all. No script wrote
-rem  it either, so it still held the value typed by hand when the file was
-rem  created. Fixing the file by hand would have gone stale again on the
-rem  next instruction; this is the writer.
-rem
-rem  THE SCOPE IS NAMED IN THE PROMPT because the launcher writes the same
-rem  file on the beat and at :phasesteps. Two writers with overlapping
-rem  scopes corrupt a file between them, so the executor is told exactly
-rem  which line is its own.
->>"%PROMPT%" echo Also update PHASE_STATUS.md at the repository root: set its
->>"%PROMPT%" echo WORK_INSTRUCTION: line to the instruction you are executing, taken from
->>"%PROMPT%" echo the `# Work instruction ^<n^> - ^<title^>` heading in WORK_INSTRUCTIONS.md,
->>"%PROMPT%" echo in the form `^<n^> - ^<title^>`.
->>"%PROMPT%" echo.
->>"%PROMPT%" echo That line and PHASE:, PHASE_SET: and DESCRIPTION: are yours. HEARTBEAT:,
->>"%PROMPT%" echo CURRENT_STEP: and the STEP: lines belong to the launcher - do not write
->>"%PROMPT%" echo them, and do not reformat the file. Leave everything below the --- alone.
->>"%PROMPT%" echo.
 rem  THE ORDERING LINE IS IN THE DELIVERY, NOT IN CLAUDE_CODE.md.
 rem  050's ruling and section 7's argument: a standard read at minute
 rem  zero is not what a session an hour into a run is looking at, and
@@ -616,33 +604,6 @@ rem  them, carried where it works rather than edited into their file.
 >>"%PROMPT%" echo all reported the same way and there is no exit that leaves the file
 >>"%PROMPT%" echo unwritten. If you are stopping with tasks remaining, name them and
 >>"%PROMPT%" echo say why in section 1.
->>"%PROMPT%" echo.
-rem  THE FOUR HEADINGS, VERBATIM, IN THE PROMPT. Measured 2026-09-01
-rem  in Hamlet: six consecutive units did their work, wrote valid
-rem  prose and were failed at exit 4 because the report carried
-rem  fifteen top-level sections of its own naming instead of the four.
-rem  The prompt cited section 8 and never quoted it, so a session an
-rem  hour into a run wrote the shape that felt right. And the exit 4
-rem  message blames the denials, which sent the owner chasing
-rem  permissions for six launches while the report was the fault.
->>"%PROMPT%" echo THE REPORT HAS EXACTLY FOUR TOP-LEVEL SECTIONS. These headings,
->>"%PROMPT%" echo spelled and ordered exactly like this, at ## level, and NO OTHERS
->>"%PROMPT%" echo at ## level anywhere in the file:
->>"%PROMPT%" echo.
->>"%PROMPT%" echo   ## 1. What Claude did
->>"%PROMPT%" echo   ## 2. What the owner should expect
->>"%PROMPT%" echo   ## 3. What you should see
->>"%PROMPT%" echo   ## 4. What's blocking us
->>"%PROMPT%" echo.
->>"%PROMPT%" echo Everything you want to say goes UNDER one of those four. Use ###
->>"%PROMPT%" echo and deeper for your own headings - those are ignored by the
->>"%PROMPT%" echo validator. Section 4 is present even when empty. Section 3 is
->>"%PROMPT%" echo never empty.
->>"%PROMPT%" echo.
->>"%PROMPT%" echo THEN VALIDATE IT YOURSELF BEFORE YOU STOP:
->>"%PROMPT%" echo   tools\arbiter\validate-output.bat output.md
->>"%PROMPT%" echo It names the rule that failed. Exit 0 or the unit is failed
->>"%PROMPT%" echo whatever else it achieved. Fix the report and run it again.
 goto :eof
 
 rem ============================================================

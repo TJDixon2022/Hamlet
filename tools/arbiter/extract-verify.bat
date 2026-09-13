@@ -19,7 +19,7 @@ rem      4 = extraction itself failed
 rem      5 = no MANIFEST.txt after extraction
 rem      6 = ONE OR MORE MANIFEST ENTRIES MISSING
 rem
-rem  Root defaults to C:\Source\HamLet. A trailing
+rem  Root defaults to C:\Source\ClaudeProjectStatus. A trailing
 rem  backslash on the argument is accepted, as in
 rem  tools\get-files\get-files.template.bat.
 rem
@@ -73,13 +73,13 @@ set "MUST_EXIST_1=app\PROJECT_ANNUNCIATOR.html"
 set "MUST_EXIST_2=docs\for-each-project\ANNUNCIATOR.md"
 set "MUST_NOT_EXIST_1=WORK_ORDER.md"
 set "MUST_NOT_EXIST_2=SHACK_FACTS.md"
-set "GATE_NAME=Hamlet"
+set "GATE_NAME=ClaudeProjectStatus"
 
 set "ZIP=%~1"
 set "REPO=%~2"
 
 if "%ZIP%"=="" goto :usage
-if "%REPO%"=="" set "REPO=C:\Source\HamLet"
+if "%REPO%"=="" set "REPO=C:\Source\ClaudeProjectStatus"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
 if not exist "%ZIP%" (
@@ -243,7 +243,7 @@ rem ============================================================
 echo.
 echo   extract-verify.bat ^<zip^> [root]
 echo.
-echo   root defaults to C:\Source\HamLet
+echo   root defaults to C:\Source\ClaudeProjectStatus
 echo   0 verified, 1 gate refused, 2 usage, 3 lock held,
 echo   4 extraction failed, 5 no manifest, 6 entries missing
 echo.

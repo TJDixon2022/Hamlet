@@ -51,53 +51,8 @@ Bash(git diff:*)
 Bash(git rev-parse:*)
 
 rem  --- TEST_CMD from PROJECT_CARD.md ----------------------------
-rem  dotnet test
-Bash(dotnet test:*)
-Bash(dotnet build:*)
-Bash(dotnet restore:*)
-
-rem  --- added 2026-09-01 -----------------------------------------
-rem  THE UNIT VALIDATES ITS OWN REPORT. CLAUDE_CODE.md section 8
-rem  requires it and the tools file did not permit it, so unit 206
-rem  was refused this twice, finished six of six tasks with a valid
-rem  report, and was then failed by run-unit exit 4 - permission
-rem  denials - for the refusal it could not work around. The other
-rem  six denials that run were probes it adapted past. A denial is
-rem  only fatal when it blocks something the unit is obliged to do.
-Bash(cmd //c tools\arbiter\validate-output.bat:*)
-Bash(cmd /c tools\arbiter\validate-output.bat:*)
-Bash(tools\arbiter\validate-output.bat:*)
-Bash(cmd.exe /c tools\arbiter\validate-output.bat:*)
-Bash(cmd.exe //c tools\arbiter\validate-output.bat:*)
-
-rem  FOUR SPELLINGS, AND THAT IS THE POINT. Units have reached for
-rem  cmd //c, cmd /c and cmd.exe /c on different runs. Each unseen
-rem  spelling is another exit 4 on a unit that did its work. Add any
-rem  new one that appears in .run-unit\denials.txt rather than
-rem  expecting the model to guess which form is permitted.
-
-rem  --- added 2026-09-01, second pass ----------------------------
-rem  A UNIT MUST BE ABLE TO UNDO ITS OWN STAGING. Unit 208 committed
-rem  a probe file by accident with git add -A, tried twice to un-track
-rem  it, was refused both times, and was then failed by run-unit exit 4
-rem  after eight of eight tasks and a valid report. git rm --cached
-rem  removes nothing from disk - it only un-stages - so it is the
-rem  narrowest repair available and refusing it leaves the tree dirtier
-rem  than allowing it.
-Bash(git rm --cached:*)
-Bash(git restore --staged:*)
-Bash(git reset HEAD:*)
-
-rem  READING THE PROJECT FILES IT IS GOVERNED BY. Unit 208 was also
-rem  refused a plain cat of PROJECT_STATUS.md and a sed range out of
-rem  CLAUDE_CODE.md - the report spec it is required to write against.
-rem  The Read tool covers these, so the refusals were survivable, but a
-rem  unit reaching for a shell read of its own standard is not misuse.
-Bash(cat PROJECT_STATUS.md:*)
-Bash(cat CLAUDE_CODE.md:*)
-Bash(sed -n:*)
-Bash(head -:*)
-Bash(tail -:*)
+rem  node tools/tests/run.js
+Bash(node tools/tests/run.js:*)
 
 rem  --- added 2026-08-29, work instructions 044 task 4 ------------
 rem  TWO READ-ONLY GIT COMMANDS, and the evidence for each is an

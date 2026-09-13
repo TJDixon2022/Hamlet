@@ -5,7 +5,18 @@ rem                         record
 rem
 rem      outcome-append.bat <unit> <step> <state> <approach> <hit>
 rem                         <move> <why> <decided> <licence> <cost>
-rem                         <accomplished> [file]
+rem                         <accomplished> [file] [fate] [state-why]
+rem
+rem  THE FILE IS THE TWELFTH ARGUMENT AND THE FATE THE THIRTEENTH, and
+rem  anything that moves an argument up one place puts the reason where
+rem  the fate goes - which this script then refuses at exit 5. That is
+rem  the refusal reported on HamLet on 2026-09-12, "fate not recognised"
+rem  followed by the state judge's sentence, and unit 061 REPRODUCED IT
+rem  from run-phase.bat: a percent sign in the arbiter's APPROACH and a
+rem  colon later on the call line made call delete the text between them,
+rem  quotes and all. See --from-env below, which is how run-phase.bat now
+rem  passes its values. UNTIL 061 NEITHER THIS LINE NOR THE USAGE TEXT
+rem  NAMED THE LAST TWO ARGUMENTS either.
 rem
 rem      0  appended, and the step's state updated in the header
 rem      2  a required argument is missing
@@ -57,20 +68,6 @@ rem  Both happen in the same call, because a header that lags the
 rem  entries is a position nobody can trust, and a caller that has
 rem  to remember a second command is a caller that will forget.
 rem
-rem  THE UNIT NUMBER COMES FROM THE CALLER AND THE CALLERS DISAGREE.
-rem  run-unit.bat:534 passes %UNIT%, the work-instruction number.
-rem  run-phase.bat:373 passes %ITER%, the loop's iteration counter, set
-rem  at run-phase.bat:127 and incremented at :171. BOTH FIRE IN THE SAME
-rem  RUN, so the send phase recorded thirteen units as twenty-six
-rem  entries - `UNIT 262 - STEP 3` and `UNIT 5 - STEP 3` are one unit.
-rem  Neither caller is wrong about its own number and neither can see
-rem  the other, so the fix is in outcome-entry.py, the one place both
-rem  routes pass through: it resolves the number from
-rem  WORK_INSTRUCTIONS.md's own heading and folds a second append for
-rem  the same unit and step into the first entry as a `###`
-rem  continuation. Fixed 2026-09-07 by 266, tested by
-rem  outcome-entry-tests.py.
-rem
 rem  IT CREATES THE FILE ON FIRST APPEND, header and all, the way
 rem  ledger.bat does. A record that depends on somebody having set
 rem  it up first is a record with a gap at the beginning.
@@ -88,14 +85,8 @@ rem ============================================================
 
 setlocal
 
-rem  THIS SCRIPT'S OWN DIRECTORY, TAKEN BEFORE ANY `shift`.
-rem  `shift` shifts %%0 along with the rest, and there are five of them
-rem  below, so `%%~dp0` further down resolves to the CALLER's directory
-rem  and not to this file's. Measured: it produced
-rem  C:\Source\HamLet\outcome-entry.py, which does not exist.
-set "HERE=%~dp0"
-
 set "RC=0"
+if /i "%~1"=="--from-env" goto :fromenv
 set "UNIT=%~1"
 set "STEP=%~2"
 set "STATE=%~3"
@@ -115,7 +106,34 @@ shift
 set "FATE=%~9"
 shift
 set "STATEWHY=%~9"
+goto :argsread
 
+rem  --from-env: THE FOURTEEN VALUES COME FROM OA_ ENVIRONMENT VARIABLES,
+rem  NOT FROM THE COMMAND LINE. 061 task 3. run-phase.bat passes them this
+rem  way because call expands percent signs a second time, and a percent
+rem  sign in one value followed later on the line by a colon deletes
+rem  everything between the two, closing quotes included. On HamLet that
+rem  fused APPROACH with HIT, moved every later argument up one place, and
+rem  put the state judge's sentence where the fate goes. A set line
+rem  expands once, so a value read here arrives whole whatever is in it.
+rem  The positional form above is unchanged for every caller that uses it.
+:fromenv
+set "UNIT=%OA_UNIT%"
+set "STEP=%OA_STEP%"
+set "STATE=%OA_STATE%"
+set "APPROACH=%OA_APPROACH%"
+set "HIT=%OA_HIT%"
+set "MOVE=%OA_MOVE%"
+set "WHY=%OA_WHY%"
+set "DECIDED=%OA_DECIDED%"
+set "LICENCE=%OA_LICENCE%"
+set "COST=%OA_COST%"
+set "ACCOMPLISHED=%OA_ACCOMPLISHED%"
+set "FILE=%OA_FILE%"
+set "FATE=%OA_FATE%"
+set "STATEWHY=%OA_STATEWHY%"
+
+:argsread
 if "%UNIT%"==""         goto :usage
 if "%STEP%"==""         goto :usage
 if "%STATE%"==""        goto :usage
@@ -127,7 +145,7 @@ if "%DECIDED%"==""      goto :usage
 if "%LICENCE%"==""      goto :usage
 if "%ACCOMPLISHED%"=="" goto :usage
 if "%COST%"=="" set "COST=unknown"
-if "%FILE%"=="" set "FILE=C:\Source\HamLet\PHASE_OUTCOME.md"
+if "%FILE%"=="" set "FILE=C:\Source\ClaudeProjectStatus\PHASE_OUTCOME.md"
 if "%FATE%"=="" set "FATE=not recorded"
 if "%STATEWHY%"=="" set "STATEWHY=not recorded"
 
@@ -185,7 +203,7 @@ echo.
 echo ============================================================
 echo  outcome-append
 echo    file : %FILE%
-echo    unit ^(as called^) : %UNIT%   step : %STEP%   state : %STATE%
+echo    unit : %UNIT%   step : %STEP%   state : %STATE%
 echo ============================================================
 echo.
 
@@ -262,94 +280,31 @@ rem  steps untouched. The plan's form is `STEP: <n> | <what it
 rem  delivers>` and it is the same anchored, colon-bearing form this
 rem  file's header uses - one form across the plan, the outcome and
 rem  PHASE_STATUS.md.
-rem  AND A STEP MAY BE A LETTER. The send phase was re-cut on 2026-09-07
-rem  with steps 0, A, B, C, D and E, and both patterns below used to read
-rem  `[0-9]+`. Against that header a call for step A matched no existing
-rem  line, so `$found` stayed -1 and the else branch APPENDED a second
-rem  `STEP: A` line beside the one already there - a header listing a step
-rem  twice, in two states, with no way for a reader to tell which is the
-rem  position. Measured against the live file by 266 before its own entry
-rem  was appended. `[0-9A-Za-z]+` matches both cuts' steps and nothing
-rem  else; the state comparison was already a string comparison.
-powershell -NoProfile -Command "$f='%FILE%'; $n='%STEP%'; $s='%STATE%'; $t=@(Get-Content -LiteralPath $f); $fen=@(); $inf=$false; for($i=0;$i -lt $t.Count;$i++){ if($t[$i] -match '^\s*(```|~~~)'){ $inf=-not $inf; $fen+=$true } else { $fen+=$inf } }; $hs=-1; for($i=0;$i -lt $t.Count;$i++){ if(-not $fen[$i] -and $t[$i] -match '^PHASE_SET:'){ $hs=$i; break } }; if($hs -lt 0){ exit }; $he=$t.Count; for($i=$hs+1;$i -lt $t.Count;$i++){ if(-not $fen[$i] -and ($t[$i] -match '^-{3,}\s*$' -or $t[$i] -match '^#{1,6}\s')){ $he=$i; break } }; $found=-1; $last=-1; for($i=$hs+1;$i -lt $he;$i++){ if(-not $fen[$i] -and $t[$i] -match '^STEP: *[0-9A-Za-z]+ *\|'){ $last=$i; if($t[$i] -match ('^STEP: *' + [regex]::Escape($n) + ' *\|')){ $found=$i } } }; if($found -ge 0){ $p=$t[$found].Substring(5).Split('|'); $what=if($p.Count -gt 2){ $p[2].Trim() } else { '' }; $t[$found]='STEP: '+$n+' | '+$s+' | '+$what } else { $new=@(); $at=$hs; if($last -ge 0){ $new=@('STEP: '+$n+' | '+$s+' | (described by the plan)'); $at=$last } else { $plan=Join-Path (Split-Path -Parent $f) 'PHASE_PLAN.md'; if(Test-Path -LiteralPath $plan){ foreach($ln in (Get-Content -LiteralPath $plan)){ if($ln -match '^STEP: *([0-9A-Za-z]+) *\| *(.*)$'){ $sn=$Matches[1]; $sw=$Matches[2].Trim(); $st=if($sn -eq $n){ $s } else { 'not started' }; $new+=('STEP: '+$sn+' | '+$st+' | '+$sw) } } }; if($new.Count -eq 0){ $new=@('STEP: '+$n+' | '+$s+' | (described by the plan)') } }; $out=@(); for($i=0;$i -lt $t.Count;$i++){ $out+=$t[$i]; if($i -eq $at){ $out+=$new } }; $t=$out }; [IO.File]::WriteAllText($f, (($t -join [char]13 + [char]10) + [char]13 + [char]10), (New-Object Text.UTF8Encoding $false))"
+powershell -NoProfile -Command "$f='%FILE%'; $n='%STEP%'; $s='%STATE%'; $t=@(Get-Content -LiteralPath $f); $fen=@(); $inf=$false; for($i=0;$i -lt $t.Count;$i++){ if($t[$i] -match '^\s*(```|~~~)'){ $inf=-not $inf; $fen+=$true } else { $fen+=$inf } }; $hs=-1; for($i=0;$i -lt $t.Count;$i++){ if(-not $fen[$i] -and $t[$i] -match '^PHASE_SET:'){ $hs=$i; break } }; if($hs -lt 0){ exit }; $he=$t.Count; for($i=$hs+1;$i -lt $t.Count;$i++){ if(-not $fen[$i] -and ($t[$i] -match '^-{3,}\s*$' -or $t[$i] -match '^#{1,6}\s')){ $he=$i; break } }; $found=-1; $last=-1; for($i=$hs+1;$i -lt $he;$i++){ if(-not $fen[$i] -and $t[$i] -match '^STEP: *[0-9]+ *\|'){ $last=$i; if($t[$i] -match ('^STEP: *' + [regex]::Escape($n) + ' *\|')){ $found=$i } } }; if($found -ge 0){ $p=$t[$found].Substring(5).Split('|'); $what=if($p.Count -gt 2){ $p[2].Trim() } else { '' }; $t[$found]='STEP: '+$n+' | '+$s+' | '+$what } else { $new=@(); $at=$hs; if($last -ge 0){ $new=@('STEP: '+$n+' | '+$s+' | (described by the plan)'); $at=$last } else { $plan=Join-Path (Split-Path -Parent $f) 'PHASE_PLAN.md'; if(Test-Path -LiteralPath $plan){ foreach($ln in (Get-Content -LiteralPath $plan)){ if($ln -match '^STEP: *([0-9]+) *\| *(.*)$'){ $sn=$Matches[1]; $sw=$Matches[2].Trim(); $st=if($sn -eq $n){ $s } else { 'not started' }; $new+=('STEP: '+$sn+' | '+$st+' | '+$sw) } } }; if($new.Count -eq 0){ $new=@('STEP: '+$n+' | '+$s+' | (described by the plan)') } }; $out=@(); for($i=0;$i -lt $t.Count;$i++){ $out+=$t[$i]; if($i -eq $at){ $out+=$new } }; $t=$out }; Set-Content -LiteralPath $f -Value $t -Encoding utf8"
 
 rem --- the entry, appended and never rewritten -------------------
 rem  The `:entry` label that stood here is gone with the `goto :entry`
 rem  that reached it. A freshly created file now falls through the
 rem  header-update block above, which is what initialises its step
 rem  lines from PHASE_PLAN.md.
-rem  The values are handed to PowerShell through the environment and
-rem  never on its command line. A value carrying a quote, a caret, a
-rem  percent or an ampersand is ordinary English in these fields, and
-rem  every one of those is a metacharacter to cmd's parser on the way
-rem  into a command line. The environment is the one channel that
-rem  carries a string across the process boundary untouched.
-set "OA_UNIT=%UNIT%"
-set "OA_STEP=%STEP%"
-set "OA_STATE=%STATE%"
-set "OA_APPROACH=%APPROACH%"
-set "OA_HIT=%HIT%"
-set "OA_MOVE=%MOVE%"
-set "OA_WHY=%WHY%"
-set "OA_DECIDED=%DECIDED%"
-set "OA_LICENCE=%LICENCE%"
-set "OA_COST=%COST%"
-set "OA_ACCOMPLISHED=%ACCOMPLISHED%"
-set "OA_FATE=%FATE%"
-set "OA_STATEWHY=%STATEWHY%"
+>>"%FILE%" echo.
+>>"%FILE%" echo ## UNIT %UNIT% - STEP %STEP%
+>>"%FILE%" echo.
+>>"%FILE%" echo STEP: %STEP%
+>>"%FILE%" echo APPROACH: %APPROACH%
+>>"%FILE%" echo HIT: %HIT%
+>>"%FILE%" echo MOVE: %MOVE%
+>>"%FILE%" echo WHY: %WHY%
+>>"%FILE%" echo DECIDED: %DECIDED%
+>>"%FILE%" echo LICENCE: %LICENCE%
+>>"%FILE%" echo COST: %COST%
+>>"%FILE%" echo ACCOMPLISHED: %ACCOMPLISHED%
+>>"%FILE%" echo FATE: %FATE%
+>>"%FILE%" echo STATE_AFTER: %STATE%
+>>"%FILE%" echo STATE_WHY: %STATEWHY%
 
-rem  WRITTEN THROUGH POWERSHELL AND TRANSLITERATED TO ASCII, AND THE
-rem  REASON IS A MEASUREMENT. The lines below used to be
-rem      >>"%FILE%" echo WHY: %WHY%
-rem  and cmd's `echo` emits bytes in the CONSOLE's active codepage, not
-rem  in the file's. On 2026-08-31 this file held SEVEN copies of the
-rem  byte run 83 3F 27 where an em-dash belonged - `0x83` is `a` with a
-rem  circumflex in CP437/CP850, `3F` is the `?` an unmappable character
-rem  becomes, and `27` is a best-fit apostrophe. That is a UTF-8
-rem  punctuation character decoded as CP1252 and re-encoded through the
-rem  OEM codepage, and it is IRREVERSIBLE: the three surviving bytes do
-rem  not say which character they came from.
-rem
-rem  SO THE FIX IS NOT A BETTER CODEPAGE, IT IS NO NON-ASCII AT ALL.
-rem  A record does not need a typographic dash, and `chcp 65001` would
-rem  only move the mangling to whoever fed the variable - the value has
-rem  already crossed a codepage boundary by the time this script sees
-rem  it. Transliterating here makes the corruption impossible instead
-rem  of less likely, and a run of non-ASCII is replaced by the nearest
-rem  ASCII rather than dropped, so nothing silently disappears.
-rem
-rem  AND IT WRITES NO BOM. `Set-Content -Encoding utf8` on Windows
-rem  PowerShell 5.1 writes UTF-8 WITH a byte-order mark, which put
-rem  EF BB BF in front of `PHASE:` on line 1 - and a header parser
-rem  anchored on `^PHASE:` or on `^[A-Za-z_]` does not match a line
-rem  that starts with a BOM. Both writes in this file now go through
-rem  UTF8Encoding($false).
-rem  THE ENTRY IS WRITTEN BY PYTHON, AND THE REASON IS QUOTING.
-rem  These values are ordinary English and carry quotes, ampersands,
-rem  percent signs and carets, every one of which is a metacharacter on
-rem  the way into a `powershell -Command` line. Two attempts at escaping
-rem  them here failed, and CLAUDE_CODE.md 11 names composing file content
-rem  inside nested shell quoting as a recurring corruption in this repo.
-rem  The values go in the ENVIRONMENT, which carries a string across a
-rem  process boundary untouched, and outcome-entry.py states the encoding
-rem  it writes. See that file for the byte evidence.
-python "%HERE%outcome-entry.py" "%FILE%"
-if errorlevel 1 (
-  echo   ERROR: could not append the entry to %FILE%
-  set "RC=3"
-  goto :end
-)
-
-rem  THE ENTRY'S OWN HEADING IS NOT ECHOED HERE, and that is deliberate.
-rem  This script takes the unit number from its caller and its two callers
-rem  disagree about what a unit number is - run-unit.bat:534 passes the
-rem  work-instruction number and run-phase.bat:373 passes %ITER%, the loop's
-rem  iteration counter - so every unit of the send phase landed twice.
-rem  outcome-entry.py now resolves the number from WORK_INSTRUCTIONS.md and
-rem  folds a second append for the same unit and step into the first entry,
-rem  and it PRINTS the heading it actually wrote, just above this. Echoing
-rem  %UNIT% here would print a number the file may not contain.
-echo   Appended, under the heading printed above:
+echo   Appended:
+echo     ## UNIT %UNIT% - STEP %STEP%
 echo     APPROACH: %APPROACH%
 echo     ACCOMPLISHED: %ACCOMPLISHED%
 echo     COST: %COST%
@@ -365,14 +320,19 @@ rem ============================================================
 echo.
 echo   outcome-append.bat ^<unit^> ^<step^> ^<state^> ^<approach^> ^<hit^>
 echo                      ^<move^> ^<why^> ^<decided^> ^<licence^> ^<cost^>
-echo                      ^<accomplished^> [file]
+echo                      ^<accomplished^> [file] [fate] [state-why]
 echo.
 echo   state: not started ^| in progress ^| partial ^| blocked ^| done
+echo   fate : executed ^| never ran ^| not recorded - what happened to the RUN
 echo   cost : total_cost_usd, or unknown. NEVER 0.
 echo   Quote every argument.
 echo.
+echo   THE FILE COMES BEFORE THE FATE. To give a fate, give the file. Left
+echo   out, the fate lands in the file's place and the reason in the fate's.
+echo   The judge's prose is state-why - never the fate.
+echo.
 echo   0 appended, 2 a required argument missing, 3 write failed,
-echo   4 the state is not one of the five
+echo   4 the state is not one of the five, 5 the fate is not one of the three
 echo.
 set "RC=2"
 goto :end

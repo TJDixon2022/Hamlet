@@ -60,7 +60,7 @@ rem  THIS IS THE FAILURE MODE OF THIS SCRIPT: it goes stale and
 rem  reports green on a project that is behind. It cannot detect
 rem  that on its own - see the limit printed below.
 rem ============================================================
-set "LIST_UPDATED=2026-09-01"
+set "LIST_UPDATED=2026-09-12"
 set "LIST_UNIT=060"
 
 set "RC=0"
@@ -143,6 +143,9 @@ call :cap "status-check wired"       "tools\arbiter\run-phase.bat"   "status-che
 call :cap "status-check script"      "tools\arbiter\status-check.bat" "*"                     "PHASE_UPLIFT.md 11"
 call :cap "readkey script"           "tools\arbiter\readkey.bat"     "*"                      "PHASE_UPLIFT.md 12"
 call :cap "watchdog reads tolerant"  "tools\arbiter\watchdog.bat"    "readkey\.bat"           "PHASE_UPLIFT.md 12"
+call :cap "watchdog watches the tree" "tools\arbiter\run-unit-watched.bat" "set .FLOORMS="    "PHASE_UPLIFT.md 16"
+call :cap "from-env reader"          "tools\arbiter\outcome-append.bat" "^:fromenv"          "PHASE_UPLIFT.md 17"
+call :cap "from-env caller"          "tools\arbiter\run-phase.bat"   "outcome-append\.bat. --from-env" "PHASE_UPLIFT.md 17"
 call :cap "reload present"           "tools\arbiter\reload.bat"      "*"                      "PHASE_UPLIFT.md 3"
 call :cap "CRLF pinned for .bat"     ".gitattributes"                "eol=crlf"               "PHASE_UPLIFT.md 13" req
 call :cap "panel per-field degrade"  "app\PROJECT_ANNUNCIATOR.html"  "function deriveStatus"  "PHASE_UPLIFT.md 14"

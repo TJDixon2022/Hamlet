@@ -146,7 +146,7 @@ shift
 goto :parse
 
 :parsed
-if "%ROOT%"=="" set "ROOT=C:\Source\HamLet"
+if "%ROOT%"=="" set "ROOT=C:\Source\ClaudeProjectStatus"
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 
 if not exist "%ROOT%\" (
@@ -189,6 +189,48 @@ if not exist "%OUT%" (
   goto :end
 )
 
+rem ============================================================
+rem  060 TASK 4 - WHAT THIS PROJECT'S COPY OF THE LAYER CAN DO.
+rem
+rem  THE OWNER'S RULING OF 2026-09-01: a project must be able to
+rem  tell it is behind. This is where it learns it AT THE MOMENT IT
+rem  MATTERS - the arbiter runs the reload before authoring, so a
+rem  missing capability is in front of it while it decides what the
+rem  next unit does, rather than eight units later.
+rem
+rem  A peer ran EIGHT work instructions on a launcher missing the
+rem  step-state writer. Its card read `step 2 of 7` on a phase
+rem  further along - plausible, and stale, and nothing said so.
+rem
+rem  IT REPORTS AND DOES NOT FAIL. RC is untouched: the reload's own
+rem  exit codes mean the reload could not be produced, and a project
+rem  behind on a capability has produced a perfectly good reload.
+rem  The owner decides. Task 4 is explicit about this.
+rem
+rem  IT SURVIVES ITS OWN ABSENCE. A project whose copy of the layer
+rem  predates layer-check.bat has no layer-check.bat, and that must
+rem  not break the reload - it says so and carries on, which is
+rem  itself the most useful possible reading for that project.
+rem ============================================================
+set "LCOUT=%TEMP%\layer-check-%RANDOM%.txt"
+if not exist "%HERE%layer-check.bat" (
+  echo   Layer capabilities: layer-check.bat is not in this copy of the layer.
+  echo     That is itself a gap - this project cannot check what it can do.
+  goto :aftercap
+)
+call "%HERE%layer-check.bat" "%ROOT%" > "%LCOUT%" 2>&1
+set "CAPRC=%ERRORLEVEL%"
+echo   Layer capabilities:
+echo.
+powershell -NoProfile -Command "$t=Get-Content -LiteralPath '%LCOUT%'; $s=($t | Where-Object { $_ -match 'capabilities checked' } | Select-Object -First 1); if($s){ '   ' + $s.Trim() }; $a=@($t | Where-Object { $_ -cmatch ' ABSENT ' -and $_ -cnotmatch 'CAPABILITY' }); foreach($l in $a){ '   ' + $l.Trim() }; if($a.Count -eq 0){ '   nothing absent.' }"
+echo.
+rem  AND IT GOES INTO THE FILE, not only the console. The arbiter reads
+rem  the file; a line only a human saw scroll past is a line the next
+rem  session does not have.
+powershell -NoProfile -Command "$t=Get-Content -LiteralPath '%LCOUT%'; $s=($t | Where-Object { $_ -match 'capabilities checked' } | Select-Object -First 1); $a=@($t | Where-Object { $_ -cmatch ' ABSENT ' -and $_ -cnotmatch 'CAPABILITY' }); $add=@('','==============================================================',' LAYER CAPABILITIES - what this copy of the layer can do','==============================================================',''); if($s){ $add += ('  ' + $s.Trim()) }; if($a.Count -eq 0){ $add += '  Nothing absent.' } else { $add += ''; foreach($l in $a){ $add += ('  ' + $l.Trim()) }; $add += ''; $add += '  Each line names where the fix is written. This does NOT stop the'; $add += '  reload and does not stop the phase - it is reported and yours to act on.' }; Add-Content -LiteralPath '%OUT%' -Value $add -Encoding utf8"
+del "%LCOUT%" >nul 2>&1
+
+:aftercap
 rem  The disagreements are echoed to the console as well as written,
 rem  so a caller that never opens the file still sees them.
 echo   Disagreements found:

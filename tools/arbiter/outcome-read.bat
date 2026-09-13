@@ -60,13 +60,6 @@ rem ============================================================
 
 setlocal
 
-rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
-rem  PHASE_UPLIFT.md section 12: `shift` moves %0 too, so afterwards
-rem  `%~dp0` resolves to the CALLER's directory and the sibling goes
-rem  missing.
-set "HERE=%~dp0"
-
-
 set "RC=0"
 set "FILE=%~1"
 set "WANTED="
@@ -76,7 +69,7 @@ if "%~2"=="" goto :defaults
 if /i "%~2"=="--approach" set "WANTED=%~3"
 
 :defaults
-if "%FILE%"=="" set "FILE=C:\Source\HamLet\PHASE_OUTCOME.md"
+if "%FILE%"=="" set "FILE=C:\Source\ClaudeProjectStatus\PHASE_OUTCOME.md"
 
 echo.
 echo ============================================================
@@ -97,13 +90,13 @@ if not exist "%FILE%" (
 )
 
 rem --- is it a phase outcome file at all? ------------------------
-rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12:
-rem  `PHASE:` is the FIRST line of this file, which is exactly the line a
-rem  byte-order mark hides from findstr - so this guard would call a
-rem  perfectly good outcome file MALFORMED.
-set "PHASEHDR="
-call "%HERE%readkey.bat" "%FILE%" "PHASE" PHASEHDR
-if not defined PHASEHDR (
+rem  READ THROUGH readkey.bat, NOT findstr - 058. PHASE_OUTCOME.md in
+rem  this repository ALREADY carries a BOM, and it survives findstr
+rem  today only because its first line is the # heading rather than
+rem  PHASE:. One edit that moves PHASE: to the top would make this
+rem  guard call a correct file MALFORMED.
+call "%~dp0readkey.bat" "%FILE%" "PHASE" ORPHASE
+if not defined ORPHASE (
   echo   MALFORMED - the file exists but carries no PHASE: line.
   echo   A phase outcome file has a phase header; this one does not,
   echo   so nothing below can be trusted to mean what it looks like.
@@ -112,11 +105,9 @@ if not defined PHASEHDR (
 )
 
 rem --- the phase header -----------------------------------------
-set "PHASESET="
-call "%HERE%readkey.bat" "%FILE%" "PHASE_SET" PHASESET
-echo   PHASE     : %PHASEHDR%
-if defined PHASESET echo   PHASE_SET : %PHASESET%
-if not defined PHASESET echo   PHASE_SET : not recorded
+echo   PHASE     : %ORPHASE%
+call "%~dp0readkey.bat" "%FILE%" "PHASE_SET" ORPHASESET
+if defined ORPHASESET echo   PHASE_SET : %ORPHASESET%
 echo.
 
 rem --- the position, step by step --------------------------------

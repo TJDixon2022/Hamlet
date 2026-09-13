@@ -36,7 +36,7 @@ rem  guard. Flat control flow to a single exit is the fix, and
 rem  it is also why there is no delayed-expansion read of a
 rem  variable set inside a block anywhere below.
 rem
-rem  Repo root defaults to C:\Source\HamLet.
+rem  Repo root defaults to C:\Source\ClaudeProjectStatus.
 rem  A trailing backslash on the argument is accepted, as in
 rem  tools\get-files\get-files.template.bat.
 rem
@@ -124,7 +124,7 @@ echo ERROR: unexpected argument: %~1
 goto :usage
 
 :parsed
-if "%REPO%"=="" set "REPO=C:\Source\HamLet"
+if "%REPO%"=="" set "REPO=C:\Source\ClaudeProjectStatus"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
 if not exist "%REPO%\" (
@@ -363,7 +363,7 @@ echo   lock.bat take    [--force] [--pid N] [root]
 echo   lock.bat release                     [root]
 echo   lock.bat status                      [root]
 echo.
-echo   root defaults to C:\Source\HamLet
+echo   root defaults to C:\Source\ClaudeProjectStatus
 echo   take    : 0 taken, 1 held, 2 usage, 3 write failed, 4 lost a race
 echo   release : 0 removed, 1 not there, 2 usage, 3 remove failed
 echo   status  : 0 free, 1 held, 2 usage, 5 stale

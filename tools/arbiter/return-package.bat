@@ -71,21 +71,12 @@ rem ============================================================
 
 setlocal
 
-rem  THIS SCRIPT'S OWN DIRECTORY, CAPTURED BEFORE ANY shift.
-rem  PHASE_UPLIFT.md section 12: `shift` moves %0 along with the numbered
-rem  arguments, so afterwards `%~dp0` resolves to the CALLER's directory
-rem  and the sibling script goes missing - and this script would then
-rem  report a missing field about a file that has one, which is the exact
-rem  fault readkey.bat was introduced to stop.
-set "HERE=%~dp0"
-
-
 set "RC=0"
 set "SINCE=%~1"
 set "REPO=%~2"
 
 if "%SINCE%"=="" goto :usage
-if "%REPO%"=="" set "REPO=C:\Source\HamLet"
+if "%REPO%"=="" set "REPO=C:\Source\ClaudeProjectStatus"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
 if not exist "%REPO%\" (
@@ -111,8 +102,12 @@ echo ============================================================
 
 rem --- the unit number, read rather than typed -----------------
 set "UNIT=unknown"
-rem  READ THROUGH readkey.bat, NOT findstr. PHASE_UPLIFT.md section 12.
-call "%HERE%readkey.bat" "%REPO%\PROJECT_STATUS.md" "WORK_INSTRUCTION" UNIT
+rem  READ THROUGH readkey.bat, NOT findstr - 058. The unit number names
+rem  the delivered zip, and CPS-DEC-012 makes that name the thing that
+rem  says which root the zip belongs over.
+call "%~dp0readkey.bat" "%REPO%\PROJECT_STATUS.md" "WORK_INSTRUCTION" RPWI
+if defined RPWI for /f "tokens=1 delims= " %%U in ("%RPWI%") do set "UNIT=%%U"
+set "RPWI="
 
 rem --- the date, measured --------------------------------------
 set "TODAY="
@@ -123,7 +118,7 @@ set "RC=2"
 goto :end
 
 :havedate
-set "OUT=%OUTDIR%\Hamlet-return-%UNIT%-%TODAY%.zip"
+set "OUT=%OUTDIR%\ClaudeProjectStatus-return-%UNIT%-%TODAY%.zip"
 
 rem --- required files, checked BEFORE anything is built ---------
 echo.
@@ -156,7 +151,7 @@ rem  a picture, and acting on a picture rather than a measurement
 rem  is the failure this whole unit exists to remove.
 echo.
 echo Running the reload, so the picture is measured now...
-call "%HERE%reload.bat" "%REPO%" --out "%STAGE%\reload.txt" >nul
+call "%~dp0reload.bat" "%REPO%" --out "%STAGE%\reload.txt" >nul
 if not exist "%STAGE%\reload.txt" (
   echo   NOTE: the reload produced nothing. The package still goes, and
   echo   this line says the arbiter will be reading without one.
@@ -230,7 +225,7 @@ rem ============================================================
 echo.
 echo   return-package.bat ^<since-commit^> [root]
 echo.
-echo   root defaults to C:\Source\HamLet
+echo   root defaults to C:\Source\ClaudeProjectStatus
 echo   0 zip written, 2 usage/bad root, 3 required file missing,
 echo   4 bad since-commit, 5 no zip produced
 echo.

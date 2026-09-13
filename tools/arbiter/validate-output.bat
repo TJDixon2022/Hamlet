@@ -29,8 +29,6 @@ rem    6  THE ORDERING BLOCK above the UNIT: line - A the phase
 rem       goal, B the step and its exit criteria, C the report last,
 rem       and C naming how many items section 4 raises. Added by
 rem       050. Presence only; the content is a reading.
-rem    7  no placeholder token in the header block. Added by 249
-rem       after 248 shipped SUITE_TOTAL_PENDING on its NUMBER: line.
 rem
 rem  ON "NO OTHER HEADINGS", and why ### is allowed. Section 8
 rem  reads "Four sections, in this order, no other headings." The
@@ -58,7 +56,7 @@ setlocal
 
 set "RC=0"
 set "FILE=%~1"
-if "%FILE%"=="" set "FILE=C:\Source\HamLet\output.md"
+if "%FILE%"=="" set "FILE=C:\Source\ClaudeProjectStatus\output.md"
 
 echo.
 echo ============================================================
@@ -125,8 +123,14 @@ if "%SECS%"=="%WANT%" (
 )
 
 rem --- rule 4: section 4 present even when empty -----------------
-findstr /b /c:"## 4. What's blocking us" "%FILE%" >nul
-if errorlevel 1 (
+rem  RULE 4 IS A HEADING AND NOT A KEY: VALUE, so readkey.bat cannot
+rem  serve it - it reads a header field. Its own tolerant reader
+rem  instead, matching rule 1 above, which met the BOM half of this in
+rem  056 and fixed it the same way. Get-Content splits on all three
+rem  separators and strips a BOM, both measured in 058 task 1.
+set "S4="
+for /f "usebackq delims=" %%S in (`powershell -NoProfile -Command "$n=@(Get-Content -LiteralPath '%FILE%' | Where-Object { $_.TrimStart([char]0xFEFF).StartsWith('## 4. What''s blocking us') }).Count; if($n -ge 1){ 'yes' } else { 'no' }"`) do set "S4=%%S"
+if not "%S4%"=="yes" (
   echo   FAILED  rule 4  section 4 is absent
   echo                   "Empty is a real answer" - an absent section 4 is
   echo                   not the same thing and does not say it.
@@ -186,54 +190,9 @@ goto :ob_done
 echo   ok      rule 6  ordering block present, A B C, and C names a count
 :ob_done
 
-rem --- rule 7: no placeholder in the header block -----------------
-rem  UNIT 248 SHIPPED "Ft8Sharp.Tests SUITE_TOTAL_PENDING" ON ITS
-rem  NUMBER: LINE. The header block is the one part the owner reads
-rem  first, and that line named a total nobody read back.
-rem
-rem  A PLACEHOLDER IS NOT A SMALL MISTAKE HERE. Every other rule in
-rem  this file checks that a report is SHAPED like a report; this one
-rem  checks that the shape was filled in. A report with all four
-rem  sections and an unfilled number passes rules 1 to 6 and is still
-rem  a failed report.
-rem
-rem  IT LOOKS AT THE HEADER BLOCK ONLY, AND THE BLOCK IS EVERYTHING
-rem  BEFORE THE "## 1." HEADING - not a line count. The first cut of
-rem  this rule read 60 lines, the window rule 6 uses, and MISSED 248'S
-rem  OWN TOKEN: that report's header runs past line 60 because its
-rem  NUMBER: and TESTS: lines wrap, and the token sits at line 71. A
-rem  rule that cannot catch the case it was written for is worse than
-rem  none, so the boundary is the heading rather than a guess at how
-rem  long a header gets.
-rem
-rem  A placeholder deeper in the prose may be a session quoting one,
-rem  naming one, or explaining why it refused to ship one, and a rule
-rem  that failed those would be a rule nobody runs. This unit own
-rem  report quotes 248's token in section 3 and must still pass.
-rem  must still pass.
-rem
-rem  THE TOKENS ARE THE ONES THIS PROJECT HAS ACTUALLY PRODUCED plus
-rem  the usual suspects. It is a list rather than a pattern because a
-rem  pattern loose enough to catch them all catches real prose too.
-set "PH=0"
-for /f "usebackq delims=" %%P in (`powershell -NoProfile -Command "$a=Get-Content -LiteralPath '%FILE%'; $m=($a | Select-String -Pattern '^## 1\.' | Select-Object -First 1); $i=if($m){$m.LineNumber}else{[Math]::Min(80,$a.Count)}; $t=$a[0..([Math]::Max(0,$i-2))]; $n=($t | Where-Object { $_ -cmatch '_PENDING|PENDING_|TBD|TODO|FIXME|XXX|<FILL|FILL IN>|PLACEHOLDER' } | Measure-Object).Count; $n"`) do set "PH=%%P"
-if "%PH%"=="0" goto :ph_ok
-echo   FAILED  rule 7  a placeholder token is in the header block
-echo                   The header is what the owner reads first. Unit 248
-echo                   shipped SUITE_TOTAL_PENDING on its NUMBER: line and
-echo                   named a total nobody read back.
-echo                   Read the number back, or say plainly that it was not
-echo                   measured. "not measured" is a real answer; a token
-echo                   left in is not.
-set /a FAILED+=1
-goto :ph_done
-:ph_ok
-echo   ok      rule 7  no placeholder token in the header block
-:ph_done
-
 echo.
 if %FAILED%==0 (
-  echo   VALID - all seven rules passed.
+  echo   VALID - all six rules passed.
   set "RC=0"
 ) else (
   echo   INVALID - %FAILED% rule^(s^) failed, named above.

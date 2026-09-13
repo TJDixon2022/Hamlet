@@ -84,7 +84,7 @@ if "%STATE%"==""   goto :usage
 if "%ANSWER%"==""  goto :usage
 if "%COST%"=="" set "COST=unknown"
 
-if "%REPO%"=="" set "REPO=C:\Source\HamLet"
+if "%REPO%"=="" set "REPO=C:\Source\ClaudeProjectStatus"
 if "%REPO:~-1%"=="\" set "REPO=%REPO:~0,-1%"
 
 if not exist "%REPO%\" (
@@ -153,7 +153,7 @@ echo.
 echo   ledger.bat ^<unit^> ^<start^> ^<end^> ^<exit-state^> ^<answer^> [cost] [root]
 echo.
 echo   All five are required. Quote the answer.
-echo   root defaults to C:\Source\HamLet
+echo   root defaults to C:\Source\ClaudeProjectStatus
 echo.
 echo   Example:
 echo     ledger.bat 040 2026-08-28T19:16 2026-08-28T19:40 complete "the kill fires" 0.42

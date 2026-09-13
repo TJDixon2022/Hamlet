@@ -3,7 +3,8 @@ rem ============================================================
 rem  run-phase.bat  -  the loop
 rem
 rem      run-phase.bat <root> [--max-iterations N] [--budget USD]
-rem                    [--minutes N] [--poll SECONDS]
+rem                    [--minutes N]
+rem      run-phase.bat <root> --fixture <judge-section4 | record>
 rem
 rem      0  the phase plan is satisfied
 rem      1  a stop condition fired - WHICH ONE is named on screen
@@ -42,10 +43,16 @@ rem
 rem     1  the phase plan is satisfied - every step done or
 rem        declared unachievable
 rem     2  the budget is exhausted
-rem     3  output.md section 4 is non-empty and the arbiter judges
-rem        the ruling blocking
-rem     4  THE ARBITER DECLARES A DECISION THE OWNER'S
-rem     5  the watchdog fired
+rem     3  output.md section 4 asks the owner to decide one of the
+rem        THREE THINGS THE PHASE STOPS FOR, as the section 4 judge
+rem        reads it: keying, transmit or the radio's safety; money
+rem        past the budget; what the product promises the operator.
+rem        A question outside the three is no ruling wanted (061).
+rem     4  THE ARBITER DECLARES A DECISION THE OWNER'S - one of the
+rem        same three, ARBITER.md section 6
+rem     5  the watchdog fired - the run's process tree accrued no CPU
+rem        time for ten minutes, or the owner's --minutes ceiling was
+rem        reached. The watchdog has no clock of its own (061).
 rem     6  A DENIAL THE UNIT COULD NOT WORK AROUND - it was refused
 rem        AND could not complete because of it. Redefined by the
 rem        owner's ruling of 2026-08-29; it was "permission_denials
@@ -58,6 +65,15 @@ rem        position did not move
 rem
 rem  CONDITIONS 3 AND 4 ARE WHAT KEEP THE OWNER THE ARCHITECT. The
 rem  rest is plumbing. Those two are printed loud.
+rem
+rem  AND SINCE 061 THEY FIRE FOR THREE THINGS ONLY. The owner, 2026-09-12:
+rem  "How do we make the arbiter tougher? It just gives up so easily."
+rem  Twice in one evening on HamLet this loop halted at STOP 3 on a
+rem  question the report had already answered with a recommendation - a
+rem  plan line a later ruling contradicted, and a layout split arithmetic
+rem  would not allow. Everything outside the three is taken on the
+rem  author's own recommendation, marked author's, overrulable, applied,
+rem  and the loop goes on. The owner overrules later with one word.
 rem
 rem  THE ITERATION BACKSTOP IS NOT A STOP CONDITION. --max-iterations
 rem  exists to save the night when one of the ten fails to fire, and
@@ -90,8 +106,15 @@ set "TOOK="
 set "ROOT=%~1"
 set "MAXITER=10"
 set "BUDGET=25.00"
-set "MINUTES=12"
-set "POLL=30"
+rem  NO --minutes DEFAULT, AND THAT IS THE RULE RATHER THAN AN OMISSION.
+rem  Until 061 this read 12 and meant twelve minutes without a status
+rem  write - the watchdog's own threshold, passed down on every run. The
+rem  watchdog now has no clock of its own (run-unit-watched.bat) and
+rem  --minutes is the owner's wall-clock ceiling on one run, so a default
+rem  here would be a clock the owner never set. --poll went with the old
+rem  rule; the look interval is a constant in run-unit-watched.bat.
+set "MINUTES="
+set "FIXTURE="
 if "%ROOT%"=="" goto :usage
 shift
 
@@ -100,8 +123,8 @@ if "%~1"=="" goto :parsed
 if /i "%~1"=="--max-iterations" set "MAXITER=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--budget"         set "BUDGET=%~2" & shift & shift & goto :parse
 if /i "%~1"=="--minutes"        set "MINUTES=%~2" & shift & shift & goto :parse
-if /i "%~1"=="--poll"           set "POLL=%~2" & shift & shift & goto :parse
-if /i "%~1"=="--seed"           set "SEED=1" & shift & goto :parse
+if /i "%~1"=="--fixture"        set "FIXTURE=%~2" & shift & shift & goto :parse
+if /i "%~1"=="--poll"           goto :pollgone
 echo ERROR: unexpected argument: %~1
 goto :usage
 
@@ -127,8 +150,9 @@ set "SPENT=0"
 set "ITER=0"
 set "STOPWHY="
 set "LASTPOS="
-if not defined SEED set "SEED=0"
 set "NOPROGRESS=0"
+
+if defined FIXTURE goto :fixture
 
 echo.
 echo ============================================================
@@ -136,7 +160,10 @@ echo  run-phase
 echo    root      : %ROOT%
 echo    budget    : %BUDGET% USD
 echo    backstop  : %MAXITER% iterations ^(NOT a stop condition^)
-echo    threshold : %MINUTES% min   poll every %POLL%s
+if defined MINUTES echo    ceiling   : %MINUTES% min per run - the owner's --minutes
+if not defined MINUTES echo    ceiling   : no clock on a run - no --minutes was given
+echo    watchdog  : kills a run only after ten minutes with no CPU anywhere
+echo                in its process tree. It has no clock of its own.
 echo ============================================================
 
 rem --- the lock is CHECKED, NOT HELD, and that was measured -----
@@ -221,61 +248,20 @@ if "%POSITION%"=="%LASTPOS%" (
   set "NOPROGRESS=0"
 )
 set "LASTPOS=%POSITION%"
-rem  STOP 10 COUNTS STEP STATES, AND A STEP IS BIGGER THAN ITS STATE
-rem  WORD. Measured 2026-09-02 in Hamlet: two units took step 5 from
-rem  nothing to belief propagation proven at 0 wrong in 37952 trials,
-rem  then took its remaining criterion apart and showed 0 recoverable
-rem  decodes were being lost - and the step read partial throughout, so
-rem  the counter called it no progress and ended the night. A step of
-rem  real size absorbs four or five units and looks identical to a
-rem  stuck one at this resolution.
-rem
-rem  The threshold is 4 rather than 2, and the run says which it is on
-rem  so a genuine stall is still visible while it accumulates. Judging
-rem  progress properly means reading the outcome entries rather than
-rem  the header, which is the arbiter's to do and not this file's.
-if %NOPROGRESS% GEQ 2 if %NOPROGRESS% LSS 4 (
-  echo       note: %NOPROGRESS% consecutive units without the position moving.
-  echo       A large step absorbs several. Stopping at 4.
-)
-if %NOPROGRESS% GEQ 4 (
+if %NOPROGRESS% GEQ 2 (
   echo.
-  echo   STOP 10: NO PROGRESS. Four consecutive units and the phase
+  echo   STOP 10: NO PROGRESS. Two consecutive units and the phase
   echo   position did not move.
-  set "STOPWHY=stop 10: no progress in four consecutive units"
+  set "STOPWHY=stop 10: no progress in two consecutive units"
   goto :stopped
 )
 
 rem --- 3. the arbiter ------------------------------------------
-rem  A SEEDED FIRST ITERATION SKIPS AUTHORING. --seed says the owner
-rem  has put a WORK_INSTRUCTIONS.md in the tree himself and wants it
-rem  executed as written, so iteration 1 runs it and the arbiter takes
-rem  over from iteration 2. It is a flag and not a detected condition
-rem  on purpose: an extract for any other reason also leaves that file
-rem  newer than output.md, and guessing from timestamps would silently
-rem  skip authoring on a run nobody meant to seed.
-rem
-rem  The decision block is still read out of the seed instruction, so
-rem  a seed carries STEP:, APPROACH:, MOVE: and the rest exactly as an
-rem  authored one does. Without them stage 5 records "not recorded".
-if "%ITER%"=="1" if "%SEED%"=="1" (
-  echo.
-  echo   [3] arbiter - SKIPPED, this iteration runs the seed instruction
-  if not exist "%ROOT%\WORK_INSTRUCTIONS.md" (
-    set "STOPWHY=--seed was given and there is no WORK_INSTRUCTIONS.md to run"
-    goto :stopped
-  )
-  call :heartbeat
-  call :readdecision
-  set "ARBRC=0"
-  goto :seeded
-)
 echo.
 echo   [3] arbiter - authoring the next unit, restricted
 call :heartbeat
 call :arbiter
 call :heartbeat
-:seeded
 if not "%ARBRC%"=="0" (
   set "STOPWHY=the arbiter session failed - exit %ARBRC%"
   goto :stopped
@@ -318,13 +304,25 @@ echo       approach: %ES%
 
 rem --- 4. the run, watched -------------------------------------
 echo.
-echo   [4] run-unit-watched - launch, watch, kill on stall
+echo   [4] run-unit-watched - launch, watch, kill a run whose process tree is dead
 call :heartbeat
-call "%HERE%run-unit-watched.bat" %ITER% "%ROOT%" --minutes %MINUTES% --poll %POLL%
+rem  --minutes IS PASSED ONLY WHEN THE OWNER GAVE IT. Without it the run
+rem  has no clock at all, which is the ruling (061), not a gap.
+set "MINARG="
+if defined MINUTES set "MINARG=--minutes %MINUTES%"
+call "%HERE%run-unit-watched.bat" %ITER% "%ROOT%" %MINARG%
 set "RUNRC=%ERRORLEVEL%"
 echo       run-unit-watched exit %RUNRC%
 call :heartbeat
 
+rem --- 4a to 5, ONE SUBROUTINE ------------------------------------
+rem  CALLED, NOT FALLEN INTO, so `run-phase.bat <root> --fixture record`
+rem  runs these exact lines and its fixture proves what the loop runs
+rem  rather than a copy of it. 061 task 3.
+call :record
+goto :afterrecord
+
+:record
 rem --- 4a. the run's fate, which is not the step's state --------
 rem  THE OWNER'S RULING OF 2026-08-29: a run that fails ends that
 rem  unit; it does not halt the phase. The fact is recorded and
@@ -348,43 +346,136 @@ rem  BEFORE the record, so the verdict lands in PHASE_OUTCOME.md
 rem  rather than only on screen.
 call :judges4
 
+rem --- 4d. the status file the unit just wrote --------------------
+rem  THE OWNER'S RULING OF 2026-09-01: CATCH IT WHERE IT IS WRITTEN.
+rem  A bad field is checked in the unit that WROTE it, while that
+rem  unit's report is still being judged - not at the panel an hour
+rem  later. The panel stays the LAST line of defence rather than the
+rem  only one.
+rem
+rem  IT RUNS BEFORE outcome-append SO THE VERDICT CAN BE RECORDED
+rem  AGAINST THE UNIT THAT CAUSED IT. A fault that reaches the owner
+rem  detached from its unit is a fault he has to go looking for.
+rem
+rem  A FAILING CHECK DOES NOT HALT THE PHASE. The ruling is explicit.
+rem  The loop is not stopped by a bad timestamp: STATUSRC is recorded
+rem  and named, and the night's work goes on. This is the same shape
+rem  as RUNFATE - a fact handed to the record rather than a stop.
+echo.
+echo   [4d] status-check - the file the unit just wrote
+call "%HERE%status-check.bat" "%ROOT%"
+set "STATUSRC=%ERRORLEVEL%"
+set "STATUSNOTE=status-check clean"
+if "%STATUSRC%"=="1" set "STATUSNOTE=STATUS-CHECK FAILED - a field this unit wrote is wrong, see the run output"
+if "%STATUSRC%"=="2" set "STATUSNOTE=STATUS-CHECK: PROJECT_STATUS.md absent or nothing readable"
+if not "%STATUSRC%"=="0" echo       %STATUSNOTE%
+if not "%STATUSRC%"=="0" echo       THE PHASE IS NOT HALTED. Recorded against this unit and carried on.
+
+rem  THE STATUS VERDICT RIDES IN ON HIT, NEVER ON THE FATE. 061 task 3.
+rem  Until 061 it was appended to the fate - "executed - STATUS-CHECK
+rem  FAILED ..." - and outcome-append.bat refuses any fate that is not one
+rem  of its three, at exit 5, so EVERY unit whose status file failed the
+rem  check lost its whole outcome entry, the phase position did not move,
+rem  and stop 10 was one iteration away. Measured by 061 with the call line
+rem  exactly as it stood. HIT is what the unit hit, and a bad status file
+rem  is something it hit.
+if not "%STATUSRC%"=="0" set "A_HIT=%A_HIT% - %STATUSNOTE%"
+
 rem --- 5. the record, with the arbiter's judgment ---------------
 echo.
 echo   [5] outcome-append - the record
 call :heartbeat
 call :cost
-rem  SANITISE BEFORE THE CALL, AND DO NOT SWALLOW THE ERROR.
-rem  Measured 2026-08-31 in Hamlet: four consecutive appends reported
-rem  success and wrote nothing. Called by hand with the same arguments
-rem  but plain prose, the same script exited 0 and updated the header.
-rem  A double quote inside a forwarded field ends its quoted argument
-rem  early and shifts every argument after it, so FILE stops being the
-rem  outcome path. PHASE_UPLIFT_ADDENDUM section 5: any field forwarded
-rem  from the decision block will eventually carry every shell
-rem  metacharacter. The >nul is why it stayed hidden through four units.
-call :scrub A_APPROACH
-call :scrub A_HIT
-call :scrub A_MOVE
-call :scrub A_WHY
-call :scrub A_DECIDED
-call :scrub A_LICENCE
-call :scrub A_DID
-call :scrub J_WHY
-call "%HERE%outcome-append.bat" "%ITER%" "%A_STEP%" "%J_STATE%" "%A_APPROACH%" "%A_HIT%" "%A_MOVE%" "%A_WHY%" "%A_DECIDED%" "%A_LICENCE%" "%RUNCOST%" "%A_DID%" "%ROOT%\PHASE_OUTCOME.md" "%RUNFATE%" "%J_WHY%"
-if errorlevel 1 (
-  echo.
-  echo   *** outcome-append FAILED, exit %ERRORLEVEL%. The phase position
-  echo   *** did not move. Stop 10 will fire on the next reload and it
-  echo   *** will not be the truth about the work.
-  echo.
-)
-echo       recorded step %A_STEP% as %J_STATE%, fate %RUNFATE%, cost %RUNCOST%
 
-rem  THE CARD FOLLOWS THE OUTCOME FILE, AND ONLY ON A GOOD APPEND.
-rem  PHASE_UPLIFT.md section 5: PHASE_OUTCOME.md is the authority and
-rem  a failed append means the authority did not move, so the card
-rem  must not move either.
-if not errorlevel 1 call :phasesteps
+rem  THE FATE IS ONE OF THREE, AND THE LAUNCHER CHECKS BEFORE IT CALLS.
+rem  The owner's words were "one word"; two of outcome-append.bat's three
+rem  are two words - never ran, not recorded - so the guard is the
+rem  vocabulary rather than a word count, which would refuse a correct
+rem  never ran. The fate comes from the run's exit code at 4a and nowhere
+rem  else. The judge's prose goes to STATE_WHY, the fourteenth argument,
+rem  and never to the fate.
+rem
+rem  A FATE OUTSIDE THE THREE IS A LAUNCHER BUG, SAID SO BEFORE THE CALL.
+rem  It is recorded as not recorded - the vocabulary's own word for "the
+rem  launcher could not say" - with the bug named in HIT, so the entry
+rem  still lands and the position still moves. Refusing the append
+rem  instead is what held HamLet's step 6 still on 2026-09-12.
+set "FATEOK="
+if "%RUNFATE%"=="executed" set "FATEOK=1"
+if "%RUNFATE%"=="never ran" set "FATEOK=1"
+if "%RUNFATE%"=="not recorded" set "FATEOK=1"
+if defined FATEOK goto :recfateok
+echo.
+echo   LAUNCHER BUG: the fate about to be recorded is not one of the three.
+echo   It was: %RUNFATE%
+echo   This is run-phase.bat's fault - not the unit's, not outcome-append's.
+echo   Recording it as "not recorded" with the bug named in HIT.
+set "A_HIT=%A_HIT% - LAUNCHER BUG: the fate was not one of the three and is recorded as not recorded"
+set "RUNFATE=not recorded"
+:recfateok
+
+rem  THE PROSE GOES BY ENVIRONMENT, NOT ON THE call LINE. 061 task 3, and
+rem  this is the fault HamLet hit at 13:54 on 2026-09-12, REPRODUCED.
+rem
+rem  call expands percent signs a SECOND time. In a batch file, a percent
+rem  sign followed by a name and a colon, with that name undefined, is
+rem  REMOVED - from the percent sign up to the colon. Unit 331's APPROACH
+rem  carried one percent sign, in "rather than 62 percent of it", and HIT
+rem  always carries a colon, in "section 4 wants a ruling:". Everything
+rem  between the two vanished, both closing quotes with it, so APPROACH
+rem  and HIT fused into one argument, every later argument moved up one
+rem  place, the file went where the cost goes, the fate where the file
+rem  goes, and the state judge's sentence where the fate goes. outcome-
+rem  append.bat refused that sentence as a fate at exit 5 and the phase
+rem  position did not move. The earlier caller here could never have
+rem  shown it: the call ends in a redirect to nul.
+rem
+rem  061 measured it with unit 331's decision block verbatim and a shim
+rem  that recorded the arguments as cmd split them: thirteen, not
+rem  fourteen, the twelfth reading executed and the thirteenth the
+rem  sentence. A probe with a percent sign and no later colon did NOT
+rem  shift, which is why the first probe missed it.
+rem
+rem  A set line expands ONCE, and a percent sign inside a value it
+rem  expands is inert. So the values are set here and outcome-append
+rem  reads them with --from-env. The call line carries no prose at all.
+set "OA_UNIT=%ITER%"
+set "OA_STEP=%A_STEP%"
+set "OA_STATE=%J_STATE%"
+set "OA_APPROACH=%A_APPROACH%"
+set "OA_HIT=%A_HIT%"
+set "OA_MOVE=%A_MOVE%"
+set "OA_WHY=%A_WHY%"
+set "OA_DECIDED=%A_DECIDED%"
+set "OA_LICENCE=%A_LICENCE%"
+set "OA_COST=%RUNCOST%"
+set "OA_ACCOMPLISHED=%A_DID%"
+set "OA_FILE=%ROOT%\PHASE_OUTCOME.md"
+set "OA_FATE=%RUNFATE%"
+set "OA_STATEWHY=%J_WHY%"
+call "%HERE%outcome-append.bat" --from-env >nul
+set "APPRC=%ERRORLEVEL%"
+if "%APPRC%"=="0" echo       recorded step %A_STEP% as %J_STATE%, fate %RUNFATE%, cost %RUNCOST%
+if not "%APPRC%"=="0" echo       NOT RECORDED - outcome-append exit %APPRC%
+goto :eof
+
+:afterrecord
+
+rem --- 5a. the card catches up with the record ------------------
+rem  THE OWNER'S RULING OF 2026-08-31. Nothing wrote PHASE_STATUS.md's
+rem  step states or CURRENT_STEP by machine: the executor wrote them by
+rem  hand mid-unit, ARBITER.md section 5 forbids the arbiter, and the
+rem  state judge produced the verdict and wrote nowhere. So the card
+rem  was one judgment stale at every step, and at the END of a phase it
+rem  was PERMANENTLY stale, because the last unit's judgment happens
+rem  after that unit has exited and nobody ever copied it in.
+rem
+rem  IT RUNS ONLY ON A SUCCESSFUL APPEND, because the outcome header is
+rem  the authority and a failed append means the authority did not move.
+rem  Copying from it then would put this unit's judgment on the card
+rem  while the record does not carry it.
+if not "%APPRC%"=="0" echo       outcome-append exit %APPRC% - step states NOT copied
+if "%APPRC%"=="0" call :phasesteps
 
 rem --- 6. the stop conditions the run produced -----------------
 rem  EXIT 1 IS AMBIGUOUS AND HAS TO BE DISAMBIGUATED BY EVIDENCE.
@@ -424,20 +515,7 @@ rem  judge the thing, do not count the artifact. The verdict was
 rem  taken at 4a, before the record, and is already in
 rem  PHASE_OUTCOME.md whichever way it went.
 rem  Flat, not a parenthesised block: %S4WHY% is a model's prose.
-rem  STOP 3 IS NO LONGER COUNTED. The judge decides whether the ruling
-rem  forecloses the step, not whether one exists. A banked ruling is
-rem  recorded and the loop keeps working - measured 2026-08-31 in
-rem  Hamlet, where two rulings blocking only the closing criterion
-rem  halted a night with the table converter and the parity
-rem  verification untouched and needing no ruling at all.
 if "%S4WANTS%"=="yes" goto :s4stop
-if "%S4WANTS%"=="banked" (
-  echo.
-  echo   A ruling is wanted and it forecloses nothing on this step.
-  echo   Banked for the owner, and the loop continues.
-  echo       %S4WHY%
-  echo.
-)
 if "%S4WANTS%"=="unknown" goto :s4unknown
 
 rem --- condition 2: the budget ---------------------------------
@@ -493,9 +571,12 @@ echo   STOP 3: THE ARBITER JUDGES THAT A RULING IS WANTED.
 echo   ****************************************************
 echo   why : %S4WHY%
 echo.
-echo   Rulings are the owner's. This is one of the two conditions
-echo   that keep him the architect.
-set "STOPWHY=stop 3: a ruling is wanted - judged, not counted"
+echo   It asks about one of the three things the phase stops for -
+echo   keying, transmit or the radio's safety; money past the budget;
+echo   what the product promises the operator. Those are the owner's,
+echo   and this is one of the two conditions that keep him the architect.
+echo   A question about anything else would not have stopped here: 061.
+set "STOPWHY=stop 3: a ruling is wanted on one of the three - judged, not counted"
 goto :stopped
 
 rem  A JUDGE THAT COULD NOT BE READ IS NOT A NO. 0.0: absent,
@@ -562,7 +643,12 @@ type "%JSPLAN%" >> "%JSPROMPT%"
 type "%ROOT%\output.md" >> "%JSPROMPT%"
 powershell -NoProfile -Command "$a = @('-p', '--output-format', 'json', '--restricted', '--tools', 'Read', '--allowedTools', 'Read'); Push-Location '%ROOT%'; $ErrorActionPreference='Continue'; Get-Content -LiteralPath '%JSPROMPT%' -Raw | & claude @a 2>&1 | Set-Content -LiteralPath '%JSJSON%' -Encoding utf8; Pop-Location"
 if not exist "%JSJSON%" goto :jsdone
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%JSJSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ exit }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ exit }; $r=[string]$j.result; $v=''; $w=''; foreach($ln in ($r -split [char]10)){ $s=$ln.Trim(); if($s -match '^STATE:\s*(.+?)\s*$'){ $v=$Matches[1] }; if($s -match '^WHY:\s*(.+)$'){ $w=$Matches[1] } }; $ok='not started','in progress','partial','blocked','done'; if($ok -contains $v.ToLower()){ 'J_STATE=' + $v.ToLower() }; if($w){ 'J_WHY=' + (((($w -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
+rem  THE WHY RUNS TO ITS END, NOT TO ITS FIRST LINE BREAK. 061 task 3. A
+rem  judge that writes its reason over two lines used to have the second
+rem  dropped, so STATE_WHY kept half a verdict. Lines after WHY: are
+rem  joined onto it until a blank line or the next KEY: line. The judge's
+rem  prose goes to STATE_WHY and nowhere else; the fate is not read here.
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%JSJSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ exit }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ exit }; $r=[string]$j.result; $v=''; $w=''; $inw=$false; foreach($ln in ($r -split [char]10)){ $s=$ln.Trim(); if($s -match '^STATE:\s*(.+?)\s*$'){ $v=$Matches[1]; $inw=$false; continue }; if($s -match '^WHY:\s*(.+)$'){ $w=$Matches[1]; $inw=$true; continue }; if($inw){ if(($s -eq '') -or ($s -match '^[A-Z_]+:')){ $inw=$false } else { $w=$w + ' ' + $s } } }; $ok='not started','in progress','partial','blocked','done'; if($ok -contains $v.ToLower()){ 'J_STATE=' + $v.ToLower() }; if($w){ 'J_WHY=' + (((($w -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
 goto :jsdone
 
 :jsnoreport
@@ -585,8 +671,10 @@ goto :eof
 >>"%JSPROMPT%" echo   not started   nothing has been done toward the step
 >>"%JSPROMPT%" echo   in progress   work is under way and more is needed
 >>"%JSPROMPT%" echo   partial       some of the exit criteria are met and not all
->>"%JSPROMPT%" echo   blocked       it cannot proceed without a decision or an
->>"%JSPROMPT%" echo                 outside change, and more effort will not help
+>>"%JSPROMPT%" echo   blocked       it cannot proceed without an outside change, or
+>>"%JSPROMPT%" echo                 without the owner's decision on one of the three
+>>"%JSPROMPT%" echo                 things the phase stops for, and more effort will
+>>"%JSPROMPT%" echo                 not help
 >>"%JSPROMPT%" echo   done          every exit criterion the step states is met
 >>"%JSPROMPT%" echo.
 >>"%JSPROMPT%" echo JUDGE AGAINST THE STEP'S EXIT CRITERIA, NOT AGAINST WHETHER THE
@@ -598,6 +686,15 @@ goto :eof
 >>"%JSPROMPT%" echo If the report says a criterion was met, look for what it quotes or
 >>"%JSPROMPT%" echo measures in support. If it claims the step is done and shows
 >>"%JSPROMPT%" echo nothing, say partial and say that in your reason.
+>>"%JSPROMPT%" echo.
+>>"%JSPROMPT%" echo THE PHASE STOPS FOR THREE THINGS ONLY: anything that touches keying,
+>>"%JSPROMPT%" echo transmit or the radio's safety; money past the budget; a decision that
+>>"%JSPROMPT%" echo changes what the product promises the operator - what a card asserts,
+>>"%JSPROMPT%" echo what a click does, what is logged as true. A question about anything
+>>"%JSPROMPT%" echo else - layout, wording, a number, a test's shape, a plan line a later
+>>"%JSPROMPT%" echo ruling contradicts - does not make a step blocked. The unit was to take
+>>"%JSPROMPT%" echo its own recommendation on it, and a step waiting on such a question is
+>>"%JSPROMPT%" echo in progress or partial by its criteria, not blocked.
 >>"%JSPROMPT%" echo.
 >>"%JSPROMPT%" echo Answer with exactly two lines and nothing else:
 >>"%JSPROMPT%" echo.
@@ -665,11 +762,16 @@ rem  the payload that the shell reads as structure.
 rem  [char]10 is the newline, [char]96 the backtick, [char]34 the
 rem  double quote. The strip exists because %S4WHY% is echoed and
 rem  put in STOPWHY, where & | < > ^ are live.
-for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%S4JSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ exit }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ exit }; $r=[string]$j.result; $v=''; $w=''; foreach($ln in ($r -split [char]10)){ $s=$ln.Trim(); if($s -match '^VERDICT:\s*(\S+)'){ $v=$Matches[1] }; if($s -match '^WHY:\s*(.+)$'){ $w=$Matches[1] } }; if($v -match '^(?i)blocking'){ 'S4WANTS=yes' } elseif($v -match '^(?i)banked'){ 'S4WANTS=banked' } elseif($v -match '^(?i)none'){ 'S4WANTS=no' }; if($w){ 'S4WHY=' + (((($w -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
+for /f "usebackq tokens=1,* delims==" %%A in (`powershell -NoProfile -Command "try{ $raw=Get-Content -LiteralPath '%S4JSON%' -Raw; $k=$raw.IndexOf([char]123); if($k -lt 0){ exit }; $j=$raw.Substring($k) | ConvertFrom-Json }catch{ exit }; $r=[string]$j.result; $v=''; $w=''; foreach($ln in ($r -split [char]10)){ $s=$ln.Trim(); if($s -match '^VERDICT:\s*(\S+)'){ $v=$Matches[1] }; if($s -match '^WHY:\s*(.+)$'){ $w=$Matches[1] } }; if($v -match '^(?i)ruling'){ 'S4WANTS=yes' } elseif($v -match '^(?i)none'){ 'S4WANTS=no' }; if($w){ 'S4WHY=' + (((($w -replace '[&|<>^%%]','') -replace [char]96,'') -replace [char]34,'') -replace '\s+',' ').Trim() }"`) do set "%%A=%%B"
 :s4done
 echo       section 4 : wants a ruling = %S4WANTS%
 echo                   %S4WHY%
 set "A_HIT=section 4 wants a ruling: %S4WANTS% - %S4WHY%"
+rem  A QUESTION OUTSIDE THE THREE IS MARKED IN THE RECORD, NOT DROPPED. 061
+rem  task 5: the author's recommendation stands, marked author's,
+rem  overrulable, and the loop goes on - so the entry says so, and the
+rem  owner reading PHASE_OUTCOME.md can find what was decided without him.
+if "%S4WANTS%"=="no" if "%S4EMPTY%"=="0" set "A_HIT=section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - %S4WHY%"
 goto :eof
 
 rem ============================================================
@@ -712,47 +814,42 @@ goto :eof
 >>"%S4PROMPT%" echo any question that needs a ruling from the owner - and that an
 >>"%S4PROMPT%" echo empty section 4 is a real answer meaning nothing is blocked.
 >>"%S4PROMPT%" echo.
+>>"%S4PROMPT%" echo THE OWNER IS STOPPED FOR EXACTLY THREE THINGS - his ruling of
+>>"%S4PROMPT%" echo 2026-09-12:
+>>"%S4PROMPT%" echo.
+>>"%S4PROMPT%" echo   1  anything that touches keying, transmit, or the radio's safety -
+>>"%S4PROMPT%" echo      in a project that is not a radio, what the project can make
+>>"%S4PROMPT%" echo      happen outside the machine it runs on
+>>"%S4PROMPT%" echo   2  money past the budget
+>>"%S4PROMPT%" echo   3  a decision that changes what the product promises the operator -
+>>"%S4PROMPT%" echo      what a card asserts, what a click does, what is logged as true
+>>"%S4PROMPT%" echo.
+>>"%S4PROMPT%" echo A QUESTION ABOUT ANYTHING ELSE IS NOT A RULING REQUEST, however it is
+>>"%S4PROMPT%" echo worded - even when it offers options, and even when it says the work
+>>"%S4PROMPT%" echo is waiting on the owner. Layout, wording, a test's shape, a number, a
+>>"%S4PROMPT%" echo mechanism in the plan that arithmetic will not allow, a plan line a
+>>"%S4PROMPT%" echo later ruling contradicts: the unit's own recommendation is taken on
+>>"%S4PROMPT%" echo those, marked author's, overrulable, and the work goes on.
+>>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo Many units write a sentence SAYING nothing is blocking rather
 >>"%S4PROMPT%" echo than leaving it blank. THAT IS NOT A RULING REQUEST. Neither is
 >>"%S4PROMPT%" echo a note, an observation, a thing reported for the record, or a
 >>"%S4PROMPT%" echo recommendation the unit has already acted on.
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo A RULING IS WANTED only where the text asks the owner to decide
->>"%S4PROMPT%" echo something, or says work is stopped until he does.
->>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo WHERE A RULING IS WANTED, JUDGE ONE MORE THING, AND IT IS THE
->>"%S4PROMPT%" echo POINT OF THIS CALL. A ruling that forecloses the whole step is
->>"%S4PROMPT%" echo different from one that stops a single exit criterion while other
->>"%S4PROMPT%" echo work on the same step remains open.
->>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo Read PHASE_PLAN.md for this step exit criteria and
->>"%S4PROMPT%" echo PHASE_OUTCOME.md for what has already been done. Then decide
->>"%S4PROMPT%" echo whether ANY work on this step could still proceed without the
->>"%S4PROMPT%" echo owner answer. The step being worked is step %A_STEP%.
->>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo Halting a night for a question that forecloses nothing is the
->>"%S4PROMPT%" echo failure this judgment exists to prevent. Building on an assumption
->>"%S4PROMPT%" echo the owner would have rejected is the other one. Weigh both and
->>"%S4PROMPT%" echo reason it out. Do not count the rulings - judge what they block.
+>>"%S4PROMPT%" echo something INSIDE ONE OF THE THREE, or says work is stopped until he
+>>"%S4PROMPT%" echo decides something inside one of the three. Where one question is
+>>"%S4PROMPT%" echo inside the three and others are outside, a ruling is wanted.
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo Answer with exactly two lines and nothing else:
 >>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo VERDICT: blocking
->>"%S4PROMPT%" echo WHY: one sentence, plain text, no punctuation beyond commas and full stops
->>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo or
->>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo VERDICT: banked
+>>"%S4PROMPT%" echo VERDICT: ruling
 >>"%S4PROMPT%" echo WHY: one sentence, plain text, no punctuation beyond commas and full stops
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo or
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo VERDICT: none
 >>"%S4PROMPT%" echo WHY: one sentence, plain text, no punctuation beyond commas and full stops
->>"%S4PROMPT%" echo.
->>"%S4PROMPT%" echo blocking means a ruling is wanted and NO work on this step can
->>"%S4PROMPT%" echo proceed without it. banked means a ruling is wanted and work on
->>"%S4PROMPT%" echo this step remains open. none means no ruling is wanted.
 >>"%S4PROMPT%" echo.
 >>"%S4PROMPT%" echo --- the section 4 text follows ---
 >>"%S4PROMPT%" echo.
@@ -770,8 +867,11 @@ echo   ****************************************************
 call :echosafe "%A_WHY%"
 echo   why : %ES%
 echo.
-echo   It stopped rather than resolving. This is one of the two
-echo   conditions that keep the owner the architect.
+echo   It stopped rather than resolving. Since 061 it may do so only for
+echo   one of the three things the phase stops for - keying, transmit or
+echo   the radio's safety; money past the budget; what the product promises
+echo   the operator. This is one of the two conditions that keep the owner
+echo   the architect.
 set "STOPWHY=stop 4: the arbiter declared a decision the owner's"
 goto :stopped
 
@@ -1011,61 +1111,8 @@ rem  NO PHASE_STATUS.md, NO BEAT. PHASE_CONTROL.md section 4 gives
 rem  that file to the arbiter and the launcher does not invent one:
 rem  a file this routine composed would carry a phase, a current step
 rem  and a step list that nobody read off anything.
-rem ============================================================
-rem  The step states, copied from PHASE_OUTCOME.md into the card.
-rem ============================================================
-rem  WHY THIS EXISTS. The executor writes PHASE_STATUS.md by hand
-rem  during a unit, ARBITER.md section 5 forbids the arbiter to write
-rem  it, and the state judge produces the verdict and writes nowhere.
-rem  So nobody wrote the STEP: lines and the card sat one judgment
-rem  stale - measured in Hamlet across eight units reading step 2 of
-rem  7 while the phase was on step 4, and again reading step 4 while
-rem  the outcome file read step 5.
-rem
-rem  WRITE SCOPES, AND THEY DO NOT OVERLAP. The launcher owns
-rem  HEARTBEAT:, the STEP: lines and CURRENT_STEP. The executor owns
-rem  PHASE:, PHASE_SET:, DESCRIPTION: and WORK_INSTRUCTION:. This
-rem  rewrites only the state field, byte for byte, and writes nothing
-rem  at all when there is nothing to do.
-rem
-rem  It follows :heartbeat exactly on bytes, BOM, newline and the
-rem  header boundary, and never appends below the --- terminator.
-rem
-rem  ALL DONE TAKES THE HIGHEST STEP. Measured: 0 and an absent field
-rem  both render "current step not identified" about the one phase
-rem  whose position is not in doubt.
-:phasesteps
-powershell -NoProfile -Command "$o='%ROOT%\PHASE_OUTCOME.md'; $p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $o)){ '      no PHASE_OUTCOME.md - the card is not moved'; exit }; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - the card is not moved'; exit }; $ob=[System.IO.File]::ReadAllBytes($o); $oraw=[System.Text.Encoding]::UTF8.GetString($ob); if($ob.Length -ge 3 -and $ob[0] -eq 239 -and $ob[1] -eq 187 -and $ob[2] -eq 191){ $oraw=$oraw.Substring(1) }; $onl=[string][char]10; if($oraw.IndexOf([char]13) -ge 0){ $onl=[string][char]13+[string][char]10 }; $ol=@($oraw -split $onl); $oend=$ol.Count; for($i=0;$i -lt $ol.Count;$i++){ if($ol[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $oend=$i; break } }; $state=@{}; for($i=0;$i -lt $oend;$i++){ if($ol[$i] -cmatch '^STEP:\s*(\d+)\s*\|\s*([^|]+?)\s*\|'){ $state[[int]$Matches[1]]=$Matches[2] } }; if($state.Count -eq 0){ '      the outcome header carries no STEP: lines - the card is not moved'; exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $nl=[string][char]10; if($raw.IndexOf([char]13) -ge 0){ $nl=[string][char]13+[string][char]10 }; $lines=@($raw -split $nl); $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $seen=@(); $moved=0; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^(STEP:\s*)(\d+)(\s*\|\s*)([^|]+?)(\s*\|.*)$'){ $n=[int]$Matches[2]; $seen+=$n; if($state.ContainsKey($n) -and $state[$n] -ne $Matches[4]){ $lines[$i]=$Matches[1]+$Matches[2]+$Matches[3]+$state[$n]+$Matches[5]; $moved++ } } }; if($seen.Count -eq 0){ '      the card carries no STEP: lines - nothing moved'; exit }; $missing=@($seen | Where-Object { -not $state.ContainsKey($_) }); if($missing.Count){ '      FINDING: the card names step(s) ' + ($missing -join ',') + ' that the outcome header does not - reported, nothing changed'; exit }; $extra=@($state.Keys | Where-Object { $seen -notcontains $_ }); if($extra.Count){ '      FINDING: the outcome header names step(s) ' + ($extra -join ',') + ' that the card does not - reported, nothing changed'; exit }; $open=@($seen | Where-Object { $state[$_] -ne 'done' } | Sort-Object); if($open.Count){ $cur=$open[0] } else { $cur=($seen | Sort-Object)[-1] }; $curmoved=0; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^(CURRENT_STEP:\s*)(.*)$'){ if($Matches[2] -ne [string]$cur){ $lines[$i]='CURRENT_STEP: '+$cur; $curmoved=1 } } }; if($moved -eq 0 -and $curmoved -eq 0){ '      card already matches - nothing written'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      card moved: ' + $moved + ' step state(s), current step ' + $cur"
-goto :eof
-
-rem ============================================================
-rem  One forwarded field, made safe for a command line.
-rem ============================================================
-rem  MUST LIVE HERE, WITH THE OTHER SUBROUTINES, NOT IN THE LOOP
-rem  BODY. Measured 2026-09-02 in Hamlet: this routine was first
-rem  placed inline after stage 5, and cmd does not skip a label -
-rem  execution fell straight into it and its goto :eof ended the
-rem  whole script. Every run after that patch produced exactly one
-rem  unit and returned to the prompt with no halt banner and no
-rem  ledger line, which is what a silent exit looks like.
-:scrub
-setlocal enabledelayedexpansion
-set "V=!%~1!"
-if not defined V ( endlocal & goto :eof )
-set "V=!V:"='!"
-rem  AND CAP IT. cmd.exe refuses a command line over 8191 characters
-rem  with "The input line is too long." Measured 2026-09-01 in Hamlet:
-rem  outcome-append failed with exactly that on unit 211, so the phase
-rem  memory recorded nothing while the unit had succeeded. Eight prose
-rem  fields go into one call and the arbiter writes at length, so any
-rem  one of them left uncapped can sink the whole record. 900 each
-rem  keeps the worst case near 7200 with the paths and the flags.
-set "V=!V:~0,900!"
-endlocal & set "%~1=%V%"
-goto :eof
-
 :heartbeat
-powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - no beat written'; exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $nl=[string][char]10; if($raw.IndexOf([char]13) -ge 0){ $nl=[string][char]13+[string][char]10 }; $lines=@($raw -split $nl); $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $hb=-1; $st=-1; for($i=0;$i -lt $end;$i++){ if($hb -lt 0 -and $lines[$i] -cmatch '^HEARTBEAT:'){ $hb=$i }; if($st -lt 0 -and $lines[$i] -cmatch '^STEP:'){ $st=$i } }; $beat=Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; if($hb -ge 0){ $lines[$hb]='HEARTBEAT: '+$beat } elseif($st -ge 0){ $pre=@(); if($st -gt 0){ $pre=@($lines[0..($st-1)]) }; $lines=$pre + @('HEARTBEAT: '+$beat) + @($lines[$st..($lines.Count-1)]) } else { '      REFUSED: the header carries no HEARTBEAT: and no ^STEP: line, and a beat is never appended'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      beat ' + $beat"
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - no beat written'; exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $CRc=[string][char]13; $LFc=[string][char]10; $nl=$LFc; if($raw.Contains($CRc+$LFc)){ $nl=$CRc+$LFc } elseif($raw.Contains($CRc)){ $nl=$CRc }; $lines=@([regex]::Split($raw, $CRc+$LFc+'|'+$LFc+'|'+$CRc)); if($nl -ne $LFc){ '      normalized: ' + $p + ' is ' + $(if($nl -eq $CRc){'cr'}else{'crlf'}) + $(if($bom){'+bom'}else{''}) + ' - read as line breaks, and written back in its own shape' }; $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $hb=-1; $st=-1; for($i=0;$i -lt $end;$i++){ if($hb -lt 0 -and $lines[$i] -cmatch '^HEARTBEAT:'){ $hb=$i }; if($st -lt 0 -and $lines[$i] -cmatch '^STEP:'){ $st=$i } }; $beat=Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; if($hb -ge 0){ $lines[$hb]='HEARTBEAT: '+$beat } elseif($st -ge 0){ $pre=@(); if($st -gt 0){ $pre=@($lines[0..($st-1)]) }; $lines=$pre + @('HEARTBEAT: '+$beat) + @($lines[$st..($lines.Count-1)]) } else { '      REFUSED: the header carries no HEARTBEAT: and no ^STEP: line, and a beat is never appended'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      beat ' + $beat"
 goto :eof
 
 rem ============================================================
@@ -1073,7 +1120,59 @@ rem  The beat, removed. Called once, on the way out of the loop.
 rem ============================================================
 rem  See the comment at :stopped for why this exists.
 :heartbeatclear
-powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $p)){ exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $nl=[string][char]10; if($raw.IndexOf([char]13) -ge 0){ $nl=[string][char]13+[string][char]10 }; $lines=@($raw -split $nl); $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $keep=@(); $gone=0; for($i=0;$i -lt $lines.Count;$i++){ if($i -lt $end -and $lines[$i] -cmatch '^HEARTBEAT:'){ $gone++ } else { $keep+=$lines[$i] } }; if($gone -eq 0){ '      no beat to clear - the card already reads stopped'; exit }; [System.IO.File]::WriteAllText($p, ($keep -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      beat cleared - the launcher has halted and nothing is turning'"
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; if(-not (Test-Path -LiteralPath $p)){ exit }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $CRc=[string][char]13; $LFc=[string][char]10; $nl=$LFc; if($raw.Contains($CRc+$LFc)){ $nl=$CRc+$LFc } elseif($raw.Contains($CRc)){ $nl=$CRc }; $lines=@([regex]::Split($raw, $CRc+$LFc+'|'+$LFc+'|'+$CRc)); if($nl -ne $LFc){ '      normalized: ' + $p + ' is ' + $(if($nl -eq $CRc){'cr'}else{'crlf'}) + $(if($bom){'+bom'}else{''}) + ' - read as line breaks, and written back in its own shape' }; $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $keep=@(); $gone=0; for($i=0;$i -lt $lines.Count;$i++){ if($i -lt $end -and $lines[$i] -cmatch '^HEARTBEAT:'){ $gone++ } else { $keep+=$lines[$i] } }; if($gone -eq 0){ '      no beat to clear - the card already reads stopped'; exit }; [System.IO.File]::WriteAllText($p, ($keep -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      beat cleared - the launcher has halted and nothing is turning'"
+goto :eof
+
+rem ============================================================
+rem  The step states and CURRENT_STEP, copied from the record.
+rem  The owner's ruling of 2026-08-31.
+rem ============================================================
+rem  PHASE_OUTCOME.md's HEADER IS THE AUTHORITY AND THIS ONLY COPIES.
+rem  It never infers a state, never upgrades one, and never invents a
+rem  step line the outcome does not carry. PHASE_OUTCOME.md says so
+rem  itself - "a state in the header is always derivable from the
+rem  entries below it" - and this is the derivation being carried one
+rem  file further rather than a second opinion about it.
+rem
+rem  THE WRITE SCOPES DO NOT OVERLAP, and that is the point of the
+rem  ruling. The launcher owns HEARTBEAT:, the STEP: lines and
+rem  CURRENT_STEP:. The executor owns PHASE:, PHASE_SET:, DESCRIPTION:
+rem  and WORK_INSTRUCTION:. This routine touches nothing but its own
+rem  three, and only the STATE field of a STEP: line - the number and
+rem  the delivers text are left byte for byte as they were.
+rem
+rem  A DISAGREEMENT ABOUT HOW MANY STEPS EXIST IS A FINDING, NOT
+rem  SOMETHING TO RECONCILE. If the two headers do not name the same
+rem  set of step numbers this writes NOTHING and says so. One of them
+rem  is wrong and a launcher cannot know which; quietly making them
+rem  agree would destroy the evidence of which.
+rem
+rem  CURRENT_STEP IS THE LOWEST STEP THAT IS NOT done. Where every step
+rem  is done there is no such step, and it is set to the HIGHEST step
+rem  number instead - the position a finished phase is actually in.
+rem  Nothing reads as in progress, because the states carry that and
+rem  they are all done. The alternatives were measured against
+rem  phaseView: 0, or the field absent, matches no step, finds no
+rem  `in progress` step to fall back to, and the face reads `current
+rem  step not identified` about the one phase whose position is not in
+rem  any doubt.
+rem
+rem  IT NEVER APPENDS BELOW THE TERMINATOR, for the reason :heartbeat
+rem  carries: parsePhaseStatus collects this format's own keys found
+rem  beneath the rule into strandedNames and returns the whole file
+rem  NOT READABLE, which takes the entire phase region off the card.
+rem  A CURRENT_STEP: that is absent is inserted immediately above the
+rem  first ^STEP: line, exactly as a beat is.
+rem
+rem  NOTHING TO DO MEANS NOTHING WRITTEN. Where the states already
+rem  match and CURRENT_STEP already reads what it should, the file is
+rem  not rewritten at all - no mtime touched, nothing for the panel's
+rem  activity walk to see.
+rem
+rem  BYTES OUTSIDE THE LINES IT OWNS DO NOT MOVE: read as bytes, BOM
+rem  and newline detected and reproduced, as :heartbeat.
+:phasesteps
+powershell -NoProfile -Command "$p='%ROOT%\PHASE_STATUS.md'; $o='%ROOT%\PHASE_OUTCOME.md'; if(-not (Test-Path -LiteralPath $p)){ '      no PHASE_STATUS.md - no step states written'; exit }; if(-not (Test-Path -LiteralPath $o)){ '      no PHASE_OUTCOME.md - nothing to copy from'; exit }; $ok='not started','in progress','partial','blocked','done'; $bar=[char]124; $src=@{}; $sord=@(); foreach($ln in (Get-Content -LiteralPath $o)){ if($ln -cmatch '^STEP: [0-9]+ \|'){ $q=$ln.Substring(6).Split($bar); if($q.Count -ge 2){ $st=$q[1].Trim(); if($ok -contains $st){ $n=[int]$q[0].Trim(); if(-not $src.ContainsKey($n)){ $src[$n]=$st; $sord+=$n } } } } }; $bytes=[System.IO.File]::ReadAllBytes($p); $bom=($bytes.Length -ge 3 -and $bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191); $raw=[System.Text.Encoding]::UTF8.GetString($bytes); if($bom){ $raw=$raw.Substring(1) }; $CRc=[string][char]13; $LFc=[string][char]10; $nl=$LFc; if($raw.Contains($CRc+$LFc)){ $nl=$CRc+$LFc } elseif($raw.Contains($CRc)){ $nl=$CRc }; $lines=@([regex]::Split($raw, $CRc+$LFc+'|'+$LFc+'|'+$CRc)); if($nl -ne $LFc){ '      normalized: ' + $p + ' is ' + $(if($nl -eq $CRc){'cr'}else{'crlf'}) + $(if($bom){'+bom'}else{''}) + ' - read as line breaks, and written back in its own shape' }; $end=$lines.Count; for($i=0;$i -lt $lines.Count;$i++){ if($lines[$i] -notmatch '^[A-Za-z][A-Za-z0-9_]*:'){ $end=$i; break } }; $dst=@{}; $dord=@(); $idx=@{}; $first=-1; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^STEP: [0-9]+ \|'){ if($first -lt 0){ $first=$i }; $q=$lines[$i].Substring(6).Split($bar); if($q.Count -ge 2 -and ($ok -contains $q[1].Trim())){ $n=[int]$q[0].Trim(); if(-not $dst.ContainsKey($n)){ $dst[$n]=$q[1].Trim(); $dord+=$n; $idx[$n]=$i } } } }; $a=(@($sord | Sort-Object) -join ','); $b=(@($dord | Sort-Object) -join ','); if($a -ne $b){ '      FINDING: the two headers do not name the same steps. PHASE_OUTCOME.md has [' + $a + '] and PHASE_STATUS.md has [' + $b + ']. NOTHING WAS WRITTEN - one of them is wrong and this cannot know which.'; exit }; if($sord.Count -eq 0){ '      no step lines in the outcome header - nothing written'; exit }; $changed=0; foreach($n in $dord){ if($src[$n] -ne $dst[$n]){ $i=$idx[$n]; $q=$lines[$i].Substring(6).Split($bar); $q[1]=' ' + $src[$n] + ' '; $lines[$i]='STEP: ' + ($q -join $bar); $changed++ } }; $sorted=@($sord | Sort-Object); $open=@($sorted | Where-Object { $src[$_] -ne 'done' }); if($open.Count -gt 0){ $cs=$open[0] } else { $cs=$sorted[$sorted.Count-1] }; $want='CURRENT_STEP: ' + $cs; $ci=-1; for($i=0;$i -lt $end;$i++){ if($lines[$i] -cmatch '^CURRENT_STEP:'){ $ci=$i; break } }; if($ci -ge 0){ if($lines[$ci] -cne $want){ $lines[$ci]=$want; $changed++ } } elseif($first -ge 0){ $pre=@(); if($first -gt 0){ $pre=@($lines[0..($first-1)]) }; $lines=$pre + @($want) + @($lines[$first..($lines.Count-1)]); $changed++ } else { '      REFUSED: no CURRENT_STEP: and no ^STEP: line in the header - never appended below the rule'; exit }; if($changed -eq 0){ '      step states already match the record - nothing written'; exit }; [System.IO.File]::WriteAllText($p, ($lines -join $nl), (New-Object System.Text.UTF8Encoding($bom))); '      card caught up: ' + $changed + ' line(s) from the outcome header, CURRENT_STEP ' + $cs"
 goto :eof
 
 rem ============================================================
@@ -1114,6 +1213,14 @@ goto :eof
 >>"%ARBPROMPT%" echo   output.md              - the last unit's report, if there is one
 >>"%ARBPROMPT%" echo.
 >>"%ARBPROMPT%" echo Run the loop test before you propose an approach.
+>>"%ARBPROMPT%" echo.
+>>"%ARBPROMPT%" echo You stop the phase - MOVE: stop - for exactly three things, ARBITER.md
+>>"%ARBPROMPT%" echo section 6: anything that touches keying, transmit or the radio's
+>>"%ARBPROMPT%" echo safety; money past the budget; a decision that changes what the
+>>"%ARBPROMPT%" echo product promises the operator. On everything else - including a
+>>"%ARBPROMPT%" echo question the last report left in its section 4 - take your own
+>>"%ARBPROMPT%" echo recommendation, put it in DECIDED marked author's, overrulable, and
+>>"%ARBPROMPT%" echo author the unit on it.
 >>"%ARBPROMPT%" echo.
 >>"%ARBPROMPT%" echo Write WORK_INSTRUCTIONS.md and end it with the ARBITER-DECISION
 >>"%ARBPROMPT%" echo block exactly as ARBITER.md section 7 specifies. Write nothing else.
@@ -1199,7 +1306,15 @@ rem  with no section 4 at all has already been refused by
 rem  validate-output.bat inside run-unit.bat before this runs.
 :section4
 set "S4EMPTY=1"
-for /f "usebackq delims=" %%E in (`powershell -NoProfile -Command "$f='%ROOT%\output.md'; if(-not (Test-Path -LiteralPath $f)){ '1'; exit }; $t=Get-Content -LiteralPath $f; $i=($t | Select-String -Pattern '^## 4\. ' | Select-Object -First 1).LineNumber; if(-not $i){ '1'; exit }; $body=@($t[$i..($t.Count-1)] | Where-Object { $_.Trim() -ne '' }); if($body.Count -eq 0){ '1' } else { '0' }"`) do set "S4EMPTY=%%E"
+rem  A HEADING ON THE LAST LINE IS AN EMPTY SECTION, NOT ITS OWN BODY. 061.
+rem  LineNumber is one-based, so the body starts at index i; where the
+rem  heading is the file's last line i equals the line count, and the range
+rem  from i to count-1 then COUNTS DOWN and hands back the heading itself.
+rem  A blank section 4 at the end of a report read as non-empty, the judge
+rem  was asked about a heading, and where it answered in a shape the parse
+rem  could not read the loop halted at STOP 3 as unknown. Found by 061's
+rem  fate fixture, whose report ends on the heading.
+for /f "usebackq delims=" %%E in (`powershell -NoProfile -Command "$f='%ROOT%\output.md'; if(-not (Test-Path -LiteralPath $f)){ '1'; exit }; $t=Get-Content -LiteralPath $f; $i=($t | Select-String -Pattern '^## 4\. ' | Select-Object -First 1).LineNumber; if(-not $i){ '1'; exit }; if($i -ge $t.Count){ '1'; exit }; $body=@($t[$i..($t.Count-1)] | Where-Object { $_.Trim() -ne '' }); if($body.Count -eq 0){ '1' } else { '0' }"`) do set "S4EMPTY=%%E"
 goto :eof
 
 rem ============================================================
@@ -1213,15 +1328,91 @@ call "%HERE%ledger.bat" "phase" "%NOWSTAMP%" "%NOWSTAMP%" "halted" "%STOPWHY%" "
 goto :eof
 
 rem ============================================================
+rem  --fixture: ONE PIECE OF THE LOOP, RUN ALONE. 061 tasks 3 and 5.
+rem
+rem  Each arm calls the SAME subroutine the loop calls, so a fixture
+rem  proves the lines that run rather than a copy of them:
+rem
+rem    judge-section4  :judges4 on the root's output.md - a real,
+rem                    restricted, read-only claude call. Exit 1 where
+rem                    the loop would halt at STOP 3, 0 where it would
+rem                    continue, 2 where the judge could not be read.
+rem    record          :readdecision, then :record - steps 4a to 5 for a
+rem                    run that exited 0: the state judge, the section 4
+rem                    judge, status-check and outcome-append. The exit
+rem                    is outcome-append's.
+rem
+rem  NOTHING ELSE RUNS. No lock is checked or taken, no reload, no
+rem  arbiter, nothing is launched and no ledger line is written.
+rem
+rem  NOT AGAINST THIS REPOSITORY. The header says fixtures only; here it
+rem  is mechanical, because a record fixture appends to PHASE_OUTCOME.md
+rem  and this repository's own is a phase record.
+:fixture
+for %%I in ("%HERE%..\..") do set "SELFROOT=%%~fI"
+if /i "%ROOT%"=="%SELFROOT%" goto :fixtureself
+if /i "%FIXTURE%"=="judge-section4" goto :fxs4
+if /i "%FIXTURE%"=="record" goto :fxrecord
+echo ERROR: no such fixture: %FIXTURE%
+goto :usage
+
+:fixtureself
+echo.
+echo REFUSED: --fixture against this repository. Fixtures only.
+set "RC=2"
+goto :end
+
+:fxs4
+call :judges4
+echo.
+if "%S4WANTS%"=="yes" goto :fxs4stop
+if "%S4WANTS%"=="unknown" goto :fxs4unknown
+echo   FIXTURE judge-section4: THE LOOP CONTINUES - no ruling wanted.
+set "RC=0"
+goto :end
+:fxs4stop
+echo   FIXTURE judge-section4: THE LOOP WOULD HALT - STOP 3.
+set "RC=1"
+goto :end
+:fxs4unknown
+echo   FIXTURE judge-section4: UNKNOWN - the loop would halt rather than assume.
+set "RC=2"
+goto :end
+
+:fxrecord
+set "ITER=fixture"
+set "RUNRC=0"
+call :readdecision
+call :record
+set "RC=%APPRC%"
+goto :end
+
+rem ============================================================
+:pollgone
+echo ERROR: --poll is gone. The watchdog's look interval is a constant in
+echo run-unit-watched.bat, and the watchdog has no clock a caller sets. 061.
+goto :usage
+
+rem ============================================================
 :usage
 echo.
-echo   run-phase.bat ^<root^> [--max-iterations N] [--budget USD]
-echo                 [--minutes N] [--poll SECONDS]
+echo   run-phase.bat ^<root^> [--max-iterations N] [--budget USD] [--minutes N]
+echo   run-phase.bat ^<root^> --fixture ^<judge-section4 ^| record^>
+echo.
+echo   THE WATCHDOG HAS NO CLOCK OF ITS OWN. A run is killed only after ten
+echo   minutes in which its whole process tree accrued no CPU time. A run
+echo   that is working is left alone however long it takes.
+echo.
+echo   THE ONLY CEILINGS ARE --minutes AND --budget, both the owner's:
+echo   --minutes N      a wall-clock ceiling on each run. NO DEFAULT - without
+echo                    it, no run is ever killed on time.
+echo   --budget USD     the phase's spend. Defaults to 25.00.
 echo.
 echo   --max-iterations defaults to 10. IT IS A BACKSTOP, NOT A STOP
 echo                    CONDITION - it saves the night when one of the
 echo                    ten fails to fire.
-echo   --budget         defaults to 25.00 USD
+echo   --fixture        one piece of the loop alone, against a fixture root,
+echo                    never this repository.
 echo.
 echo   0 the plan is satisfied, 1 a stop condition fired,
 echo   2 usage or bad root, 3 the lock is held
