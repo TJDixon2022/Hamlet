@@ -457,14 +457,31 @@
                                              564 x 170 at 1400 and 796 x 170 at 1920 (task 0).
                                              **The no-map list takes the same height**, so earned
                                              cards in a row line up. -->
-                                        <Border CornerRadius="6"
-                                                ClipToBounds="True"
-                                                IsVisible="{Binding HasMap}">
-                                            <ctl:Ft8GlobeControl Opened="True"
-                                                                 FillsBox="True"
-                                                                 Height="231"
-                                                                 Plot="{Binding Globe}" />
-                                        </Border>
+                                        <!-- **AND IT OPENS ON A CLICK** (work instruction 342,
+                                             ruling 16), as the conversation card's does: a
+                                             button rather than a pointer handler, so it answers
+                                             the keyboard as well, stretched so the map keeps the
+                                             card's width. **Never on a hover**; the tooltip is
+                                             the conversation card's own words. -->
+                                        <Button Classes="card-map"
+                                                IsVisible="{Binding HasMap}"
+                                                Command="{Binding $parent[Window].((vm:AchievementsViewModel)DataContext).OpenTheMapCommand}"
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="0"
+                                                Cursor="Hand"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                ToolTip.Tip="Open it up.">
+                                            <Border CornerRadius="6"
+                                                    ClipToBounds="True">
+                                                <ctl:Ft8GlobeControl Opened="True"
+                                                                     FillsBox="True"
+                                                                     Height="231"
+                                                                     Plot="{Binding Globe}" />
+                                            </Border>
+                                        </Button>
 
                                         <Border Classes="card-list"
                                                 IsVisible="{Binding HasNoMap}"
@@ -643,5 +660,57 @@
                 </DataTemplate>
             </ContentControl.ContentTemplate>
         </ContentControl>
+
+        <!-- ============ A CARD'S MAP, OPENED ============ -->
+        <!-- **THE CONVERSATION CARD'S ENLARGED MAP, AGAIN** (work instruction 342, ruling 16):
+             the same light-dismiss popup centred on the window, the same dismiss X and the same
+             control opened to the path with the same ceiling, so a click outside closes it and
+             nothing here is a second mechanism. **One popup for the window**, holding whichever
+             card's map was clicked (`OpenedMap`). Centred on a 720 px window it starts well below
+             the back control, so it never covers it. **It writes nothing and transmits nothing.** -->
+        <Popup x:Name="AchievementsMapPopup"
+               IsOpen="{Binding MapIsOpen, Mode=TwoWay}"
+               Placement="Center"
+               PlacementTarget="{Binding $parent[Window]}"
+               IsLightDismissEnabled="True">
+            <Border Background="{StaticResource HmPanelBrush}"
+                    BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="12">
+                <Grid RowDefinitions="Auto,Auto">
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding OpenedMapCallsign}"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                    <Button x:Name="AchievementsMapClose"
+                            Grid.Row="0"
+                            Content="&#x2715;"
+                            Command="{Binding CloseTheMapCommand}"
+                            HorizontalAlignment="Right"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="6,0"
+                            Cursor="Hand"
+                            ToolTip.Tip="Put it away." />
+
+                    <Border Grid.Row="1"
+                            Margin="0,8,0,0"
+                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            ClipToBounds="True"
+                            HorizontalAlignment="Left">
+                        <ctl:Ft8GlobeControl x:Name="AchievementsOpenedGlobe"
+                                             Opened="True"
+                                             MaxWidth="720"
+                                             MaxHeight="400"
+                                             Plot="{Binding OpenedMap}" />
+                    </Border>
+                </Grid>
+            </Border>
+        </Popup>
     </Grid>
 </Window>

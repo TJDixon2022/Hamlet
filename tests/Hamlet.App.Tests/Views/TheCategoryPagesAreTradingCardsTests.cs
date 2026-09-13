@@ -4,7 +4,10 @@ using System.Globalization;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
+using Avalonia.Input;
 using Avalonia.VisualTree;
 using Hamlet.App.Controls;
 using Hamlet.App.ViewModels;
@@ -12,6 +15,7 @@ using Hamlet.App.Views;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Explore;
+using Hamlet.RadioEngine.Telemetry;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -375,6 +379,149 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// **Work instruction 342 task 3, the nice-to-pass: a card's map opens in its popup on a click,
+    /// never on a hover, and a click outside closes it** (ruling 16), at 1400 and 1920.
+    /// </summary>
+    /// <remarks>
+    /// <para>**ITS OWN METHOD** (R14): the popup is the nice-to-pass, and no must-pass test is its
+    /// home.</para>
+    /// <para>**NOTHING IS WRITTEN FOR A MAP OPENED OR CLOSED**, because the conversation card's popup
+    /// writes nothing: opening a map is a view and not a stage (R13).</para>
+    /// <para>**REAL CLICKS ON THE WINDOW**, at the map's own place, so a map that could not be
+    /// reached by a mouse fails here rather than passing on a command call.</para>
+    /// </remarks>
+    [AvaloniaTheory]
+    [InlineData(1400.0)]
+    [InlineData(1920.0)]
+    public void ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt(double width)
+    {
+        // **ONE WINDOW PER CASE, AND THE POINTER MOVES BEFORE IT CLICKS OUTSIDE.** With a press sent
+        // straight to the outside point, whichever window came second kept its popup open - 1920
+        // when it ran second and 1400 when it did - in one loop and as two cases alike, and
+        // activating the window changed nothing. Moving the pointer there first, as a mouse does,
+        // closed it in both. Each width stays its own case, as the band tests here already are.
+        {
+            var sink = new Written();
+            var window = new AchievementsWindow
+            {
+                DataContext = new AchievementsViewModel(
+                    TheAchievementsPageTests.TwelveContacts(), MyGrid, AchievementPoints.Parse(AchievementPoints.Shipped()))
+                {
+                    Telemetry = sink,
+                },
+                Width = width,
+            };
+
+            window.Show();
+            Settle(window);
+
+            try
+            {
+                var screen = (AchievementsViewModel)window.DataContext!;
+
+                screen.OpenCategoryCommand.Execute(AchievementKinds.Countries);
+                Settle(window);
+
+                var card = Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
+                    .First(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card")
+                        && b.DataContext is AchievementCategoryCard { HasMap: true });
+                var data = (AchievementCategoryCard)card.DataContext!;
+                var map = card.GetVisualDescendants().OfType<Ft8GlobeControl>().Single(g => g.IsEffectivelyVisible);
+                var state = F(width) + " " + data.Title;
+
+                List<Popup> Open() => window.GetVisualDescendants().OfType<Popup>().Where(p => p.IsOpen).ToList();
+
+                // **CLOSED AT START.**
+                Assert.Empty(Open());
+
+                var centre = map.TranslatePoint(new Point(map.Bounds.Width / 2, map.Bounds.Height / 2), window);
+
+                Assert.True(centre.HasValue, state + ": the map has no place on the window");
+
+                // **A HOVER OPENS NOTHING.**
+                window.MouseMove(centre!.Value);
+                Settle(window);
+
+                Assert.True(Open().Count == 0, state + ": a hover over the map opened a popup");
+
+                // **A CLICK OPENS IT, HOLDING THIS CARD'S PATH.**
+                window.MouseDown(centre.Value, MouseButton.Left);
+                window.MouseUp(centre.Value, MouseButton.Left);
+                Settle(window);
+
+                var open = Open();
+
+                Assert.True(open.Count == 1, state + ": a click on the map opened " + open.Count + " popups");
+
+                var popup = open[0];
+                var opened = popup.Child!.GetVisualDescendants().OfType<Ft8GlobeControl>().Single();
+
+                _output.WriteLine(
+                    state + ": opened " + opened.Plot?.Callsign + ", map " + F(opened.Bounds.Width) + " x " + F(opened.Bounds.Height)
+                    + ", frame " + F(opened.DrawnFrame.Width) + " by " + F(opened.DrawnFrame.Height)
+                    + " (the card's " + F(map.DrawnFrame.Width) + " by " + F(map.DrawnFrame.Height) + ")");
+
+                Assert.Same(data.Globe, opened.Plot);
+                Assert.True(opened.Opened && !opened.FillsBox, state + ": the popup's map is not the conversation card's opened map");
+
+                // **IT NEVER COVERS THE BACK CONTROL.**
+                var back = Named<Button>(window, "AchievementsBack");
+                var backBottom = back.PointToScreen(new Point(0, back.Bounds.Height)).Y;
+                var popupTop = popup.Child!.PointToScreen(new Point(0, 0)).Y;
+
+                _output.WriteLine(state + ": back control's bottom at screen y " + backBottom + ", popup's top at " + popupTop);
+
+                Assert.True(popupTop > backBottom, state + ": the popup's top at " + popupTop + " covers the back control down to " + backBottom);
+
+                // **A CLICK OUTSIDE CLOSES IT**, in the window's empty margin above the band, halfway
+                // across. The first run clicked the top right corner: it closed the popup at 1400
+                // and not at 1920, so what that corner hits is printed.
+                var corner = new Point(window.Bounds.Width - 4, 4);
+                var outside = new Point(window.Bounds.Width / 2, 6);
+
+                _output.WriteLine(
+                    state + ": client " + F(window.ClientSize.Width) + " x " + F(window.ClientSize.Height)
+                    + "; the top right corner hits " + (window.InputHitTest(corner)?.GetType().Name ?? "nothing")
+                    + "; the click outside at " + F(outside.X) + ", " + F(outside.Y) + " hits "
+                    + (window.InputHitTest(outside)?.GetType().Name ?? "nothing")
+                    + "; window active " + window.IsActive + "; popup host " + (popup.Host?.GetType().Name ?? "none"));
+
+                // **THE POINTER MOVES THERE FIRST**, as a mouse does before it clicks.
+                window.MouseMove(outside);
+                window.MouseDown(outside, MouseButton.Left);
+                window.MouseUp(outside, MouseButton.Left);
+                Settle(window);
+
+                Assert.True(Open().Count == 0, state + ": a click outside left the popup open");
+
+                // **AND NOTHING WAS WRITTEN FOR THE MAP**: the category's own opening, and no more.
+                _output.WriteLine(state + ": written " + string.Join(", ", sink.Names));
+
+                Assert.Equal(new[] { "achievement_category_opened" }, sink.Names);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>A sink that keeps the names of the events written.</summary>
+    private sealed class Written : ITelemetry
+    {
+        public List<string> Names { get; } = new();
+
+        public long DroppedEventCount => 0;
+
+        public void Write(
+            TelemetryCategory category,
+            string eventName,
+            IReadOnlyDictionary<string, object?>? data = null,
+            TelemetryLevel level = TelemetryLevel.Info)
+            => Names.Add(eventName);
     }
 
     /// <summary>

@@ -213,6 +213,48 @@ public sealed partial class AchievementsViewModel : ObservableObject
     /// </summary>
     public BandBet BestBet { get; init; } = BandBet.None;
 
+    /// <summary>
+    /// **The path a card's map was opened to, or null** (work instruction 342, ruling 16).
+    /// </summary>
+    /// <remarks>
+    /// **THE CONVERSATION CARD'S MECHANISM, ON THE WINDOW RATHER THAN THE CARD.** There a bool lives
+    /// on each `Ft8ContactCard`; a trading card is a record drawn once, so the window keeps which
+    /// map is open and one popup draws it - a button over the map, a bool, a light-dismiss popup
+    /// and the same control opened to the path.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(OpenedMapCallsign))]
+    private Ft8GlobePlot? _openedMap;
+
+    /// <summary>True while a card's map is open in its popup.</summary>
+    [ObservableProperty]
+    private bool _mapIsOpen;
+
+    /// <summary>The station the open map is of, for the popup's title, or "".</summary>
+    public string OpenedMapCallsign => OpenedMap?.Callsign ?? "";
+
+    /// <summary>A click on a card's map: its path opens in the popup.</summary>
+    /// <param name="card">The card whose map was clicked.</param>
+    /// <remarks>
+    /// **IT WRITES NOTHING**, as the conversation card's `OpenTheMap` writes nothing: a map looked at
+    /// more closely is a view and not a stage (R13). **And it transmits nothing** (§0.2).
+    /// </remarks>
+    [RelayCommand]
+    private void OpenTheMap(AchievementCategoryCard? card)
+    {
+        if (card?.Globe is not { Opens: true } globe)
+        {
+            return;
+        }
+
+        OpenedMap = globe;
+        MapIsOpen = true;
+    }
+
+    /// <summary>The dismiss X: the popup closes, and nothing else changes.</summary>
+    [RelayCommand]
+    private void CloseTheMap() => MapIsOpen = false;
+
     /// <summary>True while the eight badges are the window.</summary>
     public bool ShowsPage => HasPage && Category is null;
 

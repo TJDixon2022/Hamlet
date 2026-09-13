@@ -6,5 +6,5 @@ WORK_INSTRUCTION: 342 - step 1, the category pages fitted to their mockup
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-12T23:14:34-04:00
-NOTE: Task 2 done and committing - gap clause on seven kinds, quill line where true, back as a link; four classes 21 of 21, carry-forward 100 and 85; the map popup is next
+UPDATED: 2026-09-12T23:28:55-04:00
+NOTE: Task 3 done and committing - a card's map opens in its popup on a click and closes on a click outside at 1400 and 1920, no event; four classes 23 of 23, carry-forward 100 and 85; writing the report

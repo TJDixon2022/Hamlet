@@ -160,8 +160,11 @@ public sealed class TheAchievementsPageClicksInTests
                     .GetVisualDescendants().OfType<Button>()
                     .Single(b => (b.CommandParameter as string) == AchievementKinds.Continents));
 
+                // **THE BADGE BUTTONS, BY THEIR CLASS**: since work instruction 342 each continent
+                // card's map is a button of its own inside its badge (ruling 16), so a bare
+                // `Button` count would count the maps too.
                 var seven = Named<ItemsControl>(window, "AchievementsSubBadges")
-                    .GetVisualDescendants().OfType<Button>().ToList();
+                    .GetVisualDescendants().OfType<Button>().Where(b => b.Classes.Contains("hm-badge")).ToList();
 
                 Assert.Equal(7, seven.Count);
 
