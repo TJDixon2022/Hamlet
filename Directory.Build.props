@@ -830,8 +830,17 @@
     the sheet only; no file under src and no markup changes, so the screen Tim is reviewing does not
     move.
   -->
+  <!--
+    1.13.40 -> 1.13.41, UNIT 354 TASK 0. A PATCH, STEP 3, THE WINDOW SIZES TIM CAN ACTUALLY OPEN,
+    MEASURED BEFORE HE LOOKS: the main window is traced at the product's opening size 1100 x 780, its
+    minimum 900 x 620 and common screens, with 1400 and 1920 at 1040 tall as anchors that must print
+    the pinned numbers, and the achievements window at its own sizes; every miss against R26 and step
+    1's no-clip and no-white-card clauses goes on the sheet unfixed (the arbiter's rulings 72 to 78).
+    Tests and the sheet only; no file under src and no markup changes, so the screen Tim is reviewing
+    does not move.
+  -->
   <PropertyGroup>
-    <Version>1.13.40</Version>
+    <Version>1.13.41</Version>
   </PropertyGroup>
 
   <!--

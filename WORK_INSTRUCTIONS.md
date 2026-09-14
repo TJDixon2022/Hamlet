@@ -1,40 +1,41 @@
-# Work instruction 353 - the test window draws what its fixture declares, whatever the hour, and the sheet's green block words are cited to a window that draws them
+# Work instruction 354 - the window sizes Tim can actually open, measured before he looks
 
-Step 3 of `PHASE_PLAN.md`, under ruling 46's one exception. **Nothing on the screen moves.** The unit
-makes step 0's facts that pin nothing measure the window their fixture declares, not the hour's best bet
-and a reload's count. It then brings the sheet's green block words back to a test that draws them.
+Step 3 of `PHASE_PLAN.md`. **Nothing on the screen moves.** The unit measures the main window, and then
+the achievements window, at the sizes the product itself opens at and allows. Those are the product's
+opening size, its minimum and a small set of common screens. The sheet then tells Tim what those sizes
+draw.
 
 Where each step stands:
 
-- **Step 0 is `done`** on the state reader's verdict on unit 351, unchanged by unit 352.
+- **Step 0 is `done`** on the state reader's verdict on unit 351.
 - **Steps 1 and 2 are `done`** on the state reader's verdicts on units 347 and 348.
-- **Step 3 is `blocked`** on the state reader's verdict on unit 352 (`.run-unit\state-verdict.json`):
-  *The only exit criterion is Tim saying the pages passed at his window size, no session can see the
-  screen or give that verdict, the report shows the sheet ready and the verdict still open, so more unit
-  effort cannot move the step until Tim looks.*
-  - No commit up to `8fa20cb1` carries Tim's verdict.
+- **Step 3 is `blocked`** on the state reader's verdict on unit 353 (`.run-unit\state-verdict.json`):
+  *The only exit criterion is Tim saying the pages passed at his own window size, the report shows he has
+  not given that verdict, and no unit can meet it for him since no session can see the screen, so it waits
+  on Tim and more work will not help.*
+  - No commit up to `0d69123a` carries Tim's verdict.
   - `DECISIONS.md` still tops at HM-DEC-163 (`:7`).
 
-**Why a unit at all, when the phase waits on Tim.** Ruling 46 says no further unit is authored into
-step 3 *unless the sheet is shown wrong*. Unit 352's own item 1 shows it wrong in one place and leaves a
-new dependence behind it:
-1. **The sheet's §2.1 says *6 stations at 15* (`:55`) and *heard just now stands over 6 stations*
-   (`:57`).** Its source note (`:71`-`81`) cites `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`
-   at `386690a2`. At that commit, that fact draws *0 stations* and *best bet now: 80 m* (unit 352
-   §1 task 1, decision 4, item 1). The words on the sheet are cited to a window that no longer draws
-   them.
-2. **Every step 0 fact that pins nothing now measures the hour of the run.** Before `386690a2` those
-   facts raced a POTA reply. Now both spot reloads, `band_changed` and `startup`, land inside
-   `Realized`'s settle loop every time. So they overwrite the fixture's `HeardInTheLastMinute = 6` and
-   its sparkline (`TheTopRowTests.cs:2081`-`2083`, set before `window.Show()` at `:2090`), and run the
-   best bet on the hour's table. Unit 352 item 1: *from 9 am to 5 pm the table puts 20 m first, which is
-   the band the fixture is on, so the check would be drawn.* So the sheet's 1920 FT8 block cell (`:47`)
-   and the unpinned facts' printed numbers are true at night and not measured by day.
+**Why a unit at all, when the phase waits on Tim.** Unit 353 ended clean. Its item 5 and ruling 71 say
+nothing is left that ruling 46's exception licenses, and this arbiter agrees: **no more work on the test
+window's spot reloads.** But step 3's criterion is Tim's verdict *at his window size*, and the record
+has measured two sizes that he may never open:
+1. **Everything was measured at 1400 and 1920 px wide, with the main window 1040 px tall**
+   (`TheTopRowTests.cs:48`, `:2227`; `TheWorkingPanelsTests.cs:510`, `:778`). The sheet says so
+   honestly (`docs\unit349-what-tim-looks-at.md:11`-`12`) and asks Tim for his size.
+2. **The product opens the main window at 1100 x 780 and lets it shrink to 900 x 620**
+   (`src\Hamlet.App\Views\MainWindow.axaml:12`-`13`). After the first run it reopens at the saved size
+   (`src\Hamlet.App\App.axaml.cs:93`-`96`, saved at `:137`-`138`). **The size Tim sees on a fresh launch,
+   and the smallest he can drag to, have never been measured.**
+3. **R26 says *at no window size do the working panels get less than half the height below the band
+   pills*.** Step 0's criteria check that at two sizes.
+4. **The achievements window opens at 1040 x 720** (`AchievementsWindow.axaml:9`). Its pages were
+   measured by setting the width to 1400 and 1920 with the height left as declared
+   (`TheAchievementsPageClicksInTests.cs:630`, `TheCategoryPagesAreTradingCardsTests.cs:533`).
 
-This arbiter read, and did not run, where the fix sits. `Realized` sets the declared state, then
-settles six passes (`:2092`-`2096`). The reloads land during those passes. Setting the declared state
-again after the passes is a change to the tests' fixture only. **The trace settles whether anything
-writes after that. Do not build on this reading.**
+So Tim may give the phase's last verdict on a window nothing measured. A miss found there costs him a
+review. This unit finds out, with numbers, and changes nothing. **What to do about a miss belongs to the
+next arbiter, not to this unit.**
 
 The unit has four tasks, 0 to 3. **Task 3 is the drop candidate.**
 
@@ -53,43 +54,37 @@ root                                                    C:\Source\HamLet
 **If any of the four is wrong, stop and say so in `output.md` section 4. Write nothing
 else.** The refusal text: *This is not Hamlet. Nothing was changed.*
 
-These four are copied from work instruction 352. Unit 352 checked them and they held. Check them
-again.
+These four are copied from work instruction 353. Unit 353 checked them and they held. Check them again.
 
-**Also:** `.run-unit\allowed.txt` must permit `dotnet`. For this arbiter it carried `Bash(dotnet:*)`
-at line 14.
-- If `dotnet test` is refused, stop at task 0, write the report, and say so in section 4, quoting
-  the refused command.
-- **Do not route around it:** no `tools/tests/run.js`, no assertions written but never run, and no
-  edit to `allowed.txt` or `run-unit-tools.txt`. Unit 343 item 1 rejected all three, and those
-  rejections stand.
+**Also:** `.run-unit\allowed.txt` must permit `dotnet`. Unit 353 found `Bash(dotnet:*)` at line 14.
+- If `dotnet test` is refused, stop at task 0, write the report, and say so in section 4, quoting the
+  refused command.
+- **Do not route around it:** no `tools/tests/run.js`, no assertions written but never run, and no edit
+  to `allowed.txt` or `run-unit-tools.txt`. Unit 343 item 1 rejected all three, and those rejections
+  stand.
 
 ---
 
 ## 1. Why this unit exists
 
-**The numbers today** (unit 352, `75e101e2` to `8fa20cb1`; none re-run by this arbiter):
-- **Step 0's filter:** 27 of 27 in each of three runs on the committed tree. That is 26 facts plus
-  `Unit352TraceTheSpotReloadOnTheTestWindow`: `TheTopRowTests` 13 of 13, `TheWorkingPanelsTests` 8 of
-  8, `BindingHealthTests` 1 of 1 and `VoiceTests` 5 of 5. Pins held 8 of 8 and the 40 m fact 4 of 4 in
-  each run.
-- **The pinned numbers, unchanged by unit 352:**
+**The numbers today** (unit 353, `d66a6ace` to `0d69123a`; none re-run by this arbiter):
+- **Step 0's filter:** 28 of 28 in each of three runs, and once more after task 3:
+  - `TheTopRowTests` 14 of 14, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests`
+    5 of 5;
+  - pins 8 of 8 and the 40 m fact 4 of 4 in each run (59 pin lines).
+- **The pinned numbers, all at 1040 tall:**
   - 1920: 190 px, panels 503;
   - 1400 FT8: 216 px, panels 477;
   - 1400 PSK31: 228 px, panels 465.
-- **The unpinned numbers that moved at `386690a2`** (unit 352 §1 task 1):
-  - the 1920 green block went 55 -> 64 px on FT8 and 67 -> 76 on PSK31;
-  - *heard just now* went y 251 -> 260 at 1920 and 268 -> 286 at 1400;
-  - the count went y 263 -> 272 and 277 -> 295;
-  - the no-license window's three panels at 1920 with the strip showing went 450 -> 441, top y 503 ->
-    512;
-  - `Unit338TraceTheRowsAboveThePanels`' no-license left column went 480 -> 340 at 1400 and 1000 -> 740
-    at 1920;
-  - `Unit350TraceStepZeroBothWays`' *before pinning the hour's best bet was visible* went False -> True
-    in 12 of 12.
-- **`Unit332TwoWidthsTests` 3 of 3 and `TheGreenZoneTests` 15 of 15**, with identical pixel lines
-  before and after `386690a2`.
-- **Carry-forward:** 111 of 111 app, 86 of 86 engine.
+  - The limits: at 1920 within 10% of 190; at 1400 `<= 0.262 * below`; panels `>= below / 2`; rig within
+    2 px of the card.
+- **The licensed test window draws its fixture's window whatever the hour:** 6 stations, its sparkline
+  and no best bet unless a fact pins one. The guard held on every run (`2077432a`).
+- **`Unit332TwoWidthsTests` 3 of 3 and `TheGreenZoneTests` 15 of 15.**
+- **Carry-forward:** app 111 of 111, except one run at 02:16:36 that read 110 of 111 with the red unnamed
+  (unit 353 item 2); engine 86 of 86.
+- **Sizes measured: 2 of the 4 the product defines or starts from.** 1400 x 1040 and 1920 x 1040 have
+  been measured. The opening 1100 x 780 and the minimum 900 x 620 have not.
 - **Step 3:** 0 of 1. It stays 0 of 1 until Tim answers.
 
 ```
@@ -98,15 +93,16 @@ PHASE GOAL: The screen, done right - the main window as the approved mockup
             trading cards (step 1, done on unit 347); what the last phase left
             (step 2, done on unit 348); then Tim at his window says it passed
             (step 3, 0 of 1, blocked on Tim's verdict).
-UNIT GOAL:  Make every step 0 fact on the test window measure the window its
-            fixture declares - 6 stations, its sparkline, no best bet unless a
-            fact pins one - whatever the hour of the run, with no screen change,
-            and bring the sheet's green block words and cells back to a test
-            that draws them.
-ADVANCES:   none - no criterion moves. This unit clears the one place unit 352
-            left the sheet shown wrong: its "6 stations" words cited to a fact
-            that now draws 0, and step 0's unpinned numbers depending on the
-            hour of the run.
+UNIT GOAL:  Measure what the main window and the achievements window draw at
+            the sizes Tim can actually open - the product's opening size, its
+            minimum and common screens - against R26's outcomes and step 1's
+            no-clip and no-white-card clauses, with no screen change, and put
+            the numbers and any miss on the sheet Tim reads.
+ADVANCES:   none - no criterion moves. This unit clears what stands between
+            Tim and a verdict at his own window size: the record measures only
+            1400 and 1920 at 1040 tall, while the product opens at 1100 x 780
+            and allows 900 x 620, and R26 promises the panels' half at every
+            size.
 DRIFT:      0
 ```
 
@@ -115,36 +111,39 @@ DRIFT:      0
 ## 2. Verify this instruction against the tree
 
 **Nothing here describes the tree.** Check every claim against the files and report any mismatch.
-**Report the mismatch; do not repair the instruction.** Mismatches go in the report even when the
-work succeeds anyway.
+**Report the mismatch; do not repair the instruction.** Mismatches go in the report even when the work
+succeeds anyway.
 
 Check:
 - **Every file, line and item the header and §1 cite.**
-- **`HEAD` and `origin/main` read `8fa20cb1`** for this arbiter, and `output.md` in the tree is unit
-  352's.
-- **The version is 1.13.39** in `Directory.Build.props` (line 825 for this arbiter).
-- **`DECISIONS.md` tops at HM-DEC-163.** If a higher id exists, or any commit after `8fa20cb1`
-  carries a verdict from Tim on step 3, **stop at task 0.** Quote it in section 4 and write nothing
-  else: a verdict changes what the next unit is.
+- **`HEAD` and `origin/main` read `0d69123a`** for this arbiter, and `output.md` in the tree is unit
+  353's.
+- **The version is 1.13.40** (`Directory.Build.props:834` for this arbiter).
+- **`DECISIONS.md` tops at HM-DEC-163.** If a higher id exists, or any commit after `0d69123a` carries a
+  verdict from Tim on step 3 or his window size, **stop at task 0.** Quote it in section 4 and write
+  nothing else: a verdict or a size changes what the next unit is.
 - **The launcher's files, one line each; edit none:**
   - `PHASE_OUTCOME.md` and `PHASE_STATUS.md` read steps 0, 1 and 2 `done` and step 3 `blocked`.
-  - `PHASE_STATUS.md` reads `WORK_INSTRUCTION: 352`.
-  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and files under `.run-unit\` are modified
-    and uncommitted by the launcher.
-- **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`** (`.run-unit\reload.txt:9`, `:34`). Unit 352
-  found no `CPS-DEC` match there. It is parked with the id schemes. One line.
+  - `PHASE_STATUS.md` reads `WORK_INSTRUCTION: 353`.
+  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and files under `.run-unit\` are modified and
+    uncommitted by the launcher.
+- **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`** (`.run-unit\reload.txt:9`, `:34`). Unit 353
+  found no `CPS-DEC` in `CLAUDE.md`. It is parked with the id schemes. One line.
 - **`tools\arbiter.bak-20260913\` is untracked at the root**, and `SESSION.lock` may be. **Never
   `git add -A` or `git add .`**; stage files by name.
-- **Where each fixture sets what it declares**, as this arbiter read it:
-  - `TheTopRowTests.Realized(width, telemetry)` at `:2067`-`2099` sets the count and sparkline at
-    `:2081`-`2083` and settles at `:2092`-`2096`;
-  - `FixtureSettings` at `:2130`-`2144`;
-  - `TheWorkingPanelsTests.Realized` at `:718`, with sources off at `:725`-`728`;
-  - `TheWorkingPanelsTests.EmptyTab` at `:484`-`486`, sources at their defaults;
-  - `BindingHealthTests.cs:108`, `new MainWindowViewModel(new AppSettings(), null)`.
-- **Which of step 0's facts call which fixture.** This arbiter did not read `Unit332TwoWidthsTests`'
-  window. Say whether it builds its own or calls a `Realized`.
-- **The tool facts in §7** are unit 352's. Say which held for you.
+- **The sizes, as this arbiter read them:**
+  - `MainWindow.axaml:12`-`13`: `Width="1100" Height="780"`, `MinWidth="900" MinHeight="620"`;
+  - `App.axaml.cs:93`-`96`: a saved size is applied when it is over 400 x 300;
+  - `AchievementsWindow.axaml:9`: `Width="1040" Height="720"`, and no minimum was found.
+  - Say whether anything else sizes, maximizes or clamps either window: `WindowState`, a screen-bounds
+    clamp, or a `SizeToContent`.
+- **The test windows:**
+  - `TheTopRowTests.WindowHeight = 1040` at `:48`;
+  - `Realized` builds `new MainWindow { … Width = width, Height = WindowHeight }` at `:2227`;
+  - `TheWorkingPanelsTests` does the same at `:510` and `:778`;
+  - the achievements tests set the width only (`TheAchievementsPageClicksInTests.cs:630`,
+    `TheCategoryPagesAreTradingCardsTests.cs:533`).
+- **The tool facts in §7** are unit 353's. Say which held for you.
 
 **Reds expected, older than this unit. This unit runs none of them:**
 - `TheMenuIsUnderTheMouseTests` (8);
@@ -153,28 +152,25 @@ Check:
 
 **Expected at the start:**
 - **the carry-forward list:** 111 of 111 app and 86 of 86 engine;
-- **step 0's filter: 27 of 27**, with pins 8 of 8 and the 40 m fact 4 of 4;
-- **`Unit332TwoWidthsTests` 3 of 3 and `TheGreenZoneTests` 15 of 15.**
+- **step 0's filter: 28 of 28**, with pins 8 of 8 and the 40 m fact 4 of 4.
 
 **Expected at the end:**
-- **step 0's filter all green on each of three runs.** It reads 28 if this unit adds its trace fact.
-- **Every printed pixel line is identical across the three runs.**
-- **The carry-forward list and the two readers are unchanged.**
-- **If a red turns green, a green turns red, or a count moves, say which.**
+- **step 0's filter 29 of 29**, counting task 1's trace fact, with every pinned number unmoved;
+- **the carry-forward list unchanged**;
+- **if a red turns green, a green turns red, or a count moves, say which.**
 
 ---
 
 ## 3. Rulings in force - do not re-argue
 
-**HM-DEC-155**, transcribed: *A unit runs no test suite. It may run only the test it constructs in
-that work instruction, filtered by exact name, in the foreground, with a stated timeout, and it never
+**HM-DEC-155**, transcribed: *A unit runs no test suite. It may run only the test it constructs in that
+work instruction, filtered by exact name, in the foreground, with a stated timeout, and it never
 backgrounds a command and polls for it.*
 - Run the carry-forward list as the top comment of `docs\carry-forward-tests.txt` says: two
   invocations, one build each, with status written immediately before each.
 - **Step 0's four classes may run together, filtered by class name**, in one filter:
   `TheTopRowTests`, `TheWorkingPanelsTests`, `BindingHealthTests` and `VoiceTests`.
-- **`Unit332TwoWidthsTests` and `TheGreenZoneTests` may run together, filtered by class name**, in one
-  filter, once, after task 1's change.
+- **Each trace fact this unit adds is run filtered by its exact name.**
 
 **Step 3, `PHASE_PLAN.md` §4, in full:**
 
@@ -183,160 +179,158 @@ backgrounds a command and polls for it.*
 > **Exit:**
 > - Tim says it passed. *must-pass* No script can evaluate this.
 
-**Step 0's exit, `PHASE_PLAN.md` §4, the criteria this unit re-reads and does not re-open:**
+**R26, Tim, 2026-09-12 (`PHASE_PLAN.md` §R), in full - every outcome this unit measures:**
 
-> - At 1920, the top row (neighborhood card and rig display) is about 190 px tall and the working
->   panels below the tabs take the rest; the numbers reported. *must-pass*
-> - The neighborhood card carries the band strip, the green block and the world clock as R26 says; the
->   green block's band is its largest text; the clock carries one dot. *must-pass*
-> - At 1400 the same shape holds, no callsign is clipped, and the facts go beside or under by the
->   unit's stated rule; the numbers reported at both widths. *must-pass*
-> - `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
-
-**R26, Tim, 2026-09-12 (`PHASE_PLAN.md` §R), the lines that bite here:**
-
+> - **The top row is one band, about 190 px tall at 1920**, and the working panels below the tabs take
+>   the rest of the window. At no window size do the working panels get less than half the height below
+>   the band pills.
 > - **The neighborhood card carries three things**: the band strip with the legend and the *you · mode*
 >   marker; **the green block** - the band in the largest text, the frequency, mode and *yours to use*,
 >   the license line small, the rule-of-thumb line small, and heard-just-now with its count and
 >   sparkline; and **the world's clock** at its right end, about 246 px wide, with the operator's dot
 >   only.
+> - **The rig display is the same height as the neighborhood card**, and carries under the frequency and
+>   S-meter the transmit drive and the RF power offer, so no empty column stands under it.
+> - **The band pills stay where they are** and are not repeated anywhere.
+> - **Below the tabs**: waterfall, decoded text, For You, all the same height, full to the status bar. The
+>   decoded list is as wide as its longest line needs and no wider; For You takes the rest, wide enough
+>   that the card's facts sit beside its map.
 > - **At 1400**: the same shape; where the card's facts cannot sit beside the map they go under it; no
 >   callsign is ever clipped in the decoded list. **No mechanism is prescribed; the unit measures and
 >   chooses, marks the choice as its own, and reports the numbers at both widths.**
 
+**Step 1's exit, the two clauses task 3 reads:** *No string clips or wraps a word, measured at 1400 and
+1920. must-pass* and *No card is a white rectangle. must-pass*
+
 **`PHASE_PLAN.md` §1, §6 and §7, the lines that bite here:**
 - *Screen only. Nothing here touches the radio, a decoder, a parser, the transmit chain or the log's
-  content. A step's exit is what is on the screen, asserted by computation and described in words,
-  then Tim's eyes. Every appearance claim is computed, not seen, and says so.*
+  content. A step's exit is what is on the screen, asserted by computation and described in words, then
+  Tim's eyes. Every appearance claim is computed, not seen, and says so.*
 - *A must-pass is missed by a little: ship, report, `partial`, move on. Never loosen a test.*
+- *A string will not fit: shorten and say which, or widen; never clip.*
 - *Anything touches the radio, a decoder, a parser or the transmit chain: `MOVE: stop`.*
 - *A package is needed: `MOVE: stop`.*
 - *Carried: every open ask from unit 336's queue, verbatim in every unit. Plus: real flags on earned
-  country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the radio; the recording of
-  real PSK31 audio; the id-scheme split; the map bitmap's license.*
+  country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the radio; the recording of real
+  PSK31 audio; the id-scheme split; the map bitmap's license.*
 
-**The arbiter's rulings 1 to 64 stand as units 337 to 352 built them.** Rulings 1 to 58 are gathered on
+**The arbiter's rulings 1 to 71 stand as units 337 to 353 built them.** Rulings 1 to 58 are gathered on
 the sheet, marked for Tim at step 3, and overrulable. **This unit re-opens, re-words or re-builds none of
 them.** These bite here:
 - **1.** *The working panels* means the three panels themselves, at least half the height below the
   band pills at 1920 and 1400, with the readiness strip hidden.
 - **19. Watching red.** Show a new assertion fail once, against a deliberately wrong expectation set on
-  the test window only, and give the failure line. **Never break markup or a view to watch a test
-  fail.**
+  the test window only, and give the failure line. **Never break markup or a view to watch a test fail.**
+  This unit adds no assertion, so nothing needs to be watched red.
+- **42.** No pictures: no package, no running app, no drawn mockup.
+- **43.** The sheet asks Tim for his window size, because the record has none.
 - **46.** No further unit is authored into step 3 until Tim answers, unless the sheet is shown wrong.
+  **Amended by ruling 72 below.**
 - **47**: **no `src` or markup change**, so the sheet Tim holds stays the screen.
-- **49 and 56**: `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays` pins `IsBestBet` on the
-  test window. It asserts:
-  - the 1920 row within 10% of 190;
-  - the 1400 row `<= 0.262 * below`;
-  - the three panels `>= below / 2`;
-  - the rig panel within 2 px of the card;
-  - the pin read back.
-  **Its limits are not loosened, and its body is not edited.** The same holds for the 40 m fact.
-- **61**, as built at `386690a2`: POTA, SOTA and RBN are switched off by `SourceName` in
-  `TheTopRowTests.FixtureSettings` and `TheWorkingPanelsTests.Realized`. **It stands. This unit does not
-  switch them back on, and adds no clock seam, retry or longer settle.**
-- **63**: the sheet changes only where measured wrong.
+- **49 and 56**: `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays` and the 40 m fact. **Their
+  limits are not loosened, and their bodies are not edited.**
+- **61 and 67**: the network sources off in the fixtures, and the declared window restored and guarded
+  after `Realized`'s settle. **Both stand, and every window this unit builds goes through them.**
+- **63**: the sheet changes only where measured wrong. **Amended by ruling 76 below.**
 - **U11**, unit 351's arrangement (sheet `:426`), stands as built.
 
 **The arbiter's rulings for this unit.** They are the author's, marked for Tim at step 3, and
 overrulable:
 
-65. **Ruling 46's exception is invoked for one point, in two parts.**
-    - The sheet's *6 stations* words (`:55`, `:57`) are cited to a fact that draws 0 at `386690a2`.
-    - Every step 0 fact that pins nothing measures a window that depends on the hour of the run
-      (unit 352 item 1).
-    - This unit authors nothing into Tim's verdict. It moves no word, no markup and no view model, and
-      it changes nothing under `src\` (ruling 47).
-    - *Why:* the sheet tells Tim what the test window draws. If a cited fact draws something else, or
-      draws one thing at night and another by day, Tim is judging against a number nobody can
-      reproduce.
-66. **The trace comes before the fix.** It runs on both licensed fixtures,
-    `TheTopRowTests.Realized(width, telemetry)` and `TheWorkingPanelsTests.Realized`, on FT8 and PSK31,
-    at 1400 and 1920.
-    - **It prints, for each window:**
-      - what `HeardInTheLastMinute`, the sparkline's point count and every band's `IsBestBet` hold at
-        each of `Realized`'s six settle passes;
-      - which reload landed in which pass, by telemetry where the fixture takes a telemetry file, and
-        otherwise by the model's public members;
-      - what they hold after one more settle pass, the same shape as the six, run by the trace itself
-        after `Realized` returns.
-    - **It names, by reading `src\` and changing nothing, every writer of those three**, by file and
-      line. That includes any timer, clock tick or refresh that can write after the reloads have
-      landed.
-    - It asserts nothing and presses nothing.
-67. **The fix goes in the tests' fixtures only.**
-    - **In `TheTopRowTests.Realized`, after the six settle passes:** set the declared count (6), the
-      declared sparkline and no best bet again, then run the same six passes once more.
-    - **Then a guard in `Realized`:** it fails, with a message that names the property and what it
-      held, if the count, the sparkline's point count or any band's `IsBestBet` is not the declared
-      one.
-    - **In `TheWorkingPanelsTests.Realized`:** clear the best bet the same way, with the same guard.
-      It declares no count, so its count is left as the reload gives it, and the trace's printed value
-      is reported.
-    - **Not allowed:**
-      - a clock seam, a retry, a wait-until loop or more than one further set of six passes;
-      - any change to `FixtureSettings`' sources, the callsign, grid, license or dial;
-      - an edit to either pinned fact's body.
-    - **If the trace names a writer that can land after the restore**, such as a timer, name it and
-      ship the restore only if the guard held on every run. Otherwise commit the trace only, and say
-      so.
-    - The fix is the unit's own and overrulable. Name the words that overrule it.
-68. **The proof is three clean runs, and the same lines in all three.**
-    - **Step 0's filter runs three times after the change.** Each run must be all green, with pins 8 of
-      8 and the 40 m fact 4 of 4.
-    - **Every printed pixel line is identical across the three runs.** Diff them as unit 352 did.
-    - **Every unpinned number is named against unit 352's `u352-t0-step0` run (before `386690a2`) and
-      its `u352-t1-final-run1` run (after).** The expected return is the fixture's window: 1920 block 55
-      and 67, *heard just now* y 251 and 268, the no-license 1920 panels 450 with the strip showing, and
-      `Unit350TraceStepZeroBothWays`' False. **Report what was measured, not what was expected.**
-    - **Then run `Unit332TwoWidthsTests` and `TheGreenZoneTests` once, then the carry-forward list.**
-    - **The pinned facts' numbers must not move.** If one does, report it and do not ship the restore.
-69. **The sheet, `docs\unit349-what-tim-looks-at.md`, changes only where this unit measured it
-    wrong:**
-    - `:47`, the 1920 FT8 green block cell, cited to this unit's commit. Keep *64 with one drawn* only if
-      a run in this unit prints it.
-    - `:54`-`57`, the text sizes and the 1400 wrap, re-cited to this unit's commit, or corrected where a
-      run printed them differently.
-    - `:71`-`73` and `:118`, the source notes, only where their test counts are wrong at this tree.
-    - `:20`-`21`, *17 m as the best bet*. Name the fixture that line describes. Correct it only if that
-      fixture draws something else.
-    - `:438`-`439`, section 4 item 1, only if a number in it moved.
-    - Section 5: one line, only if a red stays.
-    - **No other line.** Not the verdict form, not section 3, and no U row, because a test fixture is
-      not a screen choice.
-70. **The other two windows that still reach POTA are the drop candidate (task 3).** They are
-    `BindingHealthTests.cs:108` and `TheWorkingPanelsTests.EmptyTab`.
-    - **Read first:** can a POTA reply land while either measures, and does anything either prints
-      differ across this unit's three runs?
-    - **`EmptyTab`'s network sources are switched off by the same list only if its printed numbers
-      differed across the three runs.**
-    - **`BindingHealthTests` is never changed.** Its window is the product's default settings, and a
-      default window binding without a complaint is what it guards. Report it only.
-71. **Section 4 raises no new ask of its own unless the measurements put one there.**
-    - Unit 349 item 1 is carried as Tim's open ask. Everything else this unit finds is a finding, and
-      says so.
-    - **The arbiter's recommendation to the next arbiter**, marked author's: if this unit ends with the
-      guard holding, three identical runs and the sheet re-cited, no unit remains that ruling 46
-      licenses. The next decision block should say that plainly rather than author a unit for the
-      loop's sake.
-    - **Logged, not chased, for the owner:** `ARBITER.md` §3 and §6 give no move for *waiting on the
-      owner's eyes*. So the loop authors a unit into step 3 on each call. Units 349 to 352 cost about
-      $10 to $14 each (`RUN_LEDGER.md`).
+72. **Ruling 46 is amended.** A unit may also be authored into step 3 where Tim's verdict would be given
+    on a window size nothing measured. The product's opening size and its minimum are such sizes.
+    - Ruling 71's reading is upheld: no further unit on the test window's reloads or network sources.
+    - *Why:* step 3's criterion is Tim's verdict *at his window size*. The record covers two sizes that
+      the product neither opens at nor defaults to. A miss at 1100 x 780 would cost Tim a review, and
+      finding it costs one unit.
+    - *Overrule with:* "step 3 waits on my verdict; author nothing into it."
+73. **The sizes, fixed by this instruction and not chosen by the unit.** For the main window:
+
+    | Size | Why |
+    |---|---|
+    | 900 x 620 | the product's minimum (`MainWindow.axaml:13`) |
+    | 1100 x 780 | the product's opening size (`:12`) |
+    | 1280 x 720 | a small laptop screen |
+    | 1366 x 728 | a common laptop screen, maximized under a 40 px taskbar |
+    | 1536 x 824 | a 1080p screen at 125% scaling, maximized |
+    | 1400 x 1040 | the anchor: must reproduce the pinned 216/477 (FT8) and 228/465 (PSK31) |
+    | 1920 x 1040 | the anchor: must reproduce the pinned 190/503 |
+    | 1920 x 1017 | a 1080p screen at 100%, maximized |
+    | 2560 x 1400 | a 1440p screen, maximized |
+
+    For the achievements window (task 3): 900 x 620, its own opening size 1040 x 720 (`AchievementsWindow.axaml:9`),
+    1280 x 720, and 1400 x 720 and 1920 x 720 as the anchors.
+    - If a size cannot be realized on the headless host, say so and say what it realized instead.
+    - Tim's verdict will name his size. **If he names one not listed, the next unit measures it; this unit
+      does not guess it.**
+74. **Measured through the existing fixtures, with a height added and nothing else changed.**
+    - The unit may add an `internal` overload of `TheTopRowTests.Realized` and
+      `TheWorkingPanelsTests.Realized` that takes a height. The existing signatures delegate to it with
+      `WindowHeight`, as unit 353's hook overload did.
+    - The overload keeps ruling 61's sources and ruling 67's restore and guard.
+    - **The two anchors must print the pinned numbers exactly.** If they do not, the overload is wrong:
+      report that, and ship nothing that depends on it.
+    - No pinned fact's body is edited. `WindowHeight` stays 1040.
+75. **What is read at each main window size.** Read it on the licensed fixture, on FT8 and PSK31, with
+    the best bet pinned absent and pinned drawn on his own band (the worst case unit 350 measured). Print
+    one line per window with:
+    - the height below the band pills, the top row and its share, and the rig panel against the card;
+    - the three panels' heights, their share of the height below the pills, and whether they are equal
+      and reach the status bar;
+    - whether the green block's band is its largest text, the clock's width and dot count, and the
+      heard count;
+    - the decoded list's width against its longest line, and whether any callsign is clipped;
+    - For You's card: facts beside or under the map, by the rule unit 337 stated;
+    - **every drawn `TextBlock` in the top row and the three panels whose text is trimmed, clipped by its
+      parent, or wraps a word.** Name each one;
+    - **any control drawn outside the window or at zero size that is drawn at 1920.**
+    
+    Also read the plain (no-license) fixture at 900 x 620 and 1100 x 780 only.
+    **The trace asserts nothing and presses nothing.** Against each R26 outcome it says *holds*, *misses
+    by n px* or *not measurable here, because…*. Words are computed, not seen.
+76. **The sheet gains the other sizes, and nothing else changes.** Ruling 63 is amended for this unit
+    only.
+    - **`:11`-`12`**: the sentence is brought to what was measured, still asking Tim for his size.
+    - **One new table**, placed after the main window's 1400/1920 table in section 2: the sizes as rows,
+      and top row, panels (share), the three panels equal, any clipped callsign and any trimmed text as
+      columns. It is cited to this unit's commit.
+    - **For each miss, one item in the sheet's section 4** (known imperfections), with the size, the R26
+      outcome, the numbers and the elements named. It carries no fix proposal and no word that softens it.
+    - If task 3 runs: the same table for the achievements window in section 3, and its misses in section 4.
+    - **No other line.** Not the verdict form, no U row, and no ruling line.
+77. **A miss is reported, never fixed, in this unit.** Ruling 47 holds, because Tim may be reviewing the
+    screen now.
+    - No markup, view, view model, minimum size or opening size changes.
+    - No test is written to go red on a miss. A trace prints; R14 adds a test only for an exit criterion,
+      and step 0's criteria name 1400 and 1920.
+    - **The next arbiter weighs a fix against Tim's verdict with these numbers.** Section 4 names each
+      miss as a finding, and asks only if a miss touches keying, transmit or the radio's safety. For
+      example, Stop drawn outside the window or at zero size at the minimum is such a miss: `CLAUDE.md`
+      §0.2.
+78. **The carry-forward list names its own reds.** The app invocation carries
+    `--logger "trx;LogFileName=u354-carry-app.trx"`, and the engine invocation carries its own trx logger
+    in the same way.
+    - One invocation each, as the file says, with no re-run to name a red. This overrules unit 353
+      decision 3 for this unit.
+    - If a red shows, name it from the trx, and say whether any class on the list builds a window this
+      unit's overload touches.
+    - *Logged, not chased:* unit 353 item 3, where `Unit332TwoWidthsTests` builds its own window with the
+      sources at their defaults. **A third unit on test-window network isolation would be a loop with
+      units 352 and 353.** It is reported only.
 
 **Standing, transcribed:**
 - **§0.0**: *Never present a guess as a decode… This binds pictures as hard as sentences.* Every
   appearance claim is computed, not seen, and says so once.
-- **§0.2**, *transmit safety, ABSOLUTE*: *One operator action, one transmission.* Nothing here
-  transmits or tunes. No test this unit writes presses CQ, Stop, Capture, a band button, the best bet,
-  a send or a transmit command.
-- **§0.5**: *every panel is collapsible, and a collapsed panel still carries its summary. Collapsing
-  hides detail, never information.*
+- **§0.2**, *transmit safety, ABSOLUTE*: *One operator action, one transmission.* Nothing here transmits
+  or tunes. No test this unit writes presses CQ, Stop, Capture, a band button, the best bet, a send or a
+  transmit command.
+- **§0.5**: *every panel is collapsible, and a collapsed panel still carries its summary. Collapsing hides
+  detail, never information.* At a small size, a panel that loses its summary is a miss to name.
 - **§0.6**: every ink clears 4.5:1 against its fill, and color is never the only carrier.
 - **R12**: *a session fixes its own tests and never asks the owner to approve it.*
 - **R13**: telemetry on every new stage. This unit adds no stage.
-- **R14**: *a test exists to prove an exit criterion.* This unit adds only task 0's trace fact. The
-  restore and the guard are edits to existing fixtures.
+- **R14**: *a test exists to prove an exit criterion.* This unit adds only trace facts that assert
+  nothing, and one fixture overload.
 - **R19**: American spelling.
 - **HM-DEC-139**: open asks are carried verbatim until answered.
 
@@ -345,88 +339,91 @@ overrulable:
 ## 4. Status cadence
 
 Write status **before every `dotnet` command, after every commit and after every task**, with
-`sh tools/status.sh`. It ran for every write in unit 352. If it is refused, take a `date` reading and
+`sh tools/status.sh`. It ran for every write in unit 353. If it is refused, take a `date` reading and
 paste it whole. **Never compose a time.**
 
-The script hard-codes `RULES_AT: HM-DEC-161 (2026-09-11)`. **After every write**, set that line back
-to `HM-DEC-163 (2026-09-12)`, or to the highest id §2 finds, with the file editor. Unit 352 missed this
-where two writes came in one batch; do not batch two status writes.
+The script hard-codes `RULES_AT: HM-DEC-161 (2026-09-11)`. **After every write**, set that line back to
+`HM-DEC-163 (2026-09-12)`, or to the highest id §2 finds, with the file editor. Never batch two status
+writes.
 
-The watchdog kills a session only when its process tree has used no CPU for ten minutes. **Write
-status between sections of the report**, so a quiet stretch of editing is never ten minutes of nothing.
+The watchdog kills a session only when its process tree has used no CPU for ten minutes. **Write status
+between sections of the report and between sheet edits**, so a quiet stretch of editing is never ten
+minutes of nothing.
 
 ---
 
 ## 5. The tasks
 
-### Task 0 - the trace: what the test window holds after its reloads, and who writes it
+### Task 0 - the gate, the baseline, and whether the sizes can be realized
 
 Measure before anything changes. **Say what you find rather than confirming the header or §1.**
 
-1. **Commit `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` and a patch bump (1.13.39 -> 1.13.40, with its
+1. **Commit `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` and a patch bump (1.13.40 -> 1.13.41, with its
    comment block).**
-   - In `PHASE_STATUS.md`, change only the `WORK_INSTRUCTION:` line, to `353 - the test window draws
-     what its fixture declares, whatever the hour`. Do not touch its `STEP:` lines, `CURRENT_STEP` or
-     `HEARTBEAT`.
+   - In `PHASE_STATUS.md`, change only the `WORK_INSTRUCTION:` line, to `354 - the window sizes Tim can
+     actually open, measured before he looks`. Do not touch its `STEP:` lines, `CURRENT_STEP` or
+     `HEARTBEAT`. If the launcher's uncommitted changes to that file are in the way, commit the file
+     whole and say so, as unit 353 did.
    - Do not commit `.run-unit\`, `PHASE_OUTCOME.md`, `RUN_LEDGER.md`, `SESSION.lock` or
      `tools\arbiter.bak-20260913\`.
-   - The message is `chore(unit353): the test window draws what its fixture declares - the trace
-     first`.
-   - Run the carry-forward list, status first, and give both invocations as *n of n*.
-2. **Step 0's filter, once**, status first, with a stated timeout. Give each class as *n of n*, the pin
-   lines, and every unpinned number §1 lists as this run printed it. **Read the clock with `date`
-   before and after**, and say which hour's table the ranking used.
-3. **Add `Unit353TraceTheDeclaredWindowAfterTheReloads` to `TheTopRowTests`.** It prints what ruling 66
-   lists, for both licensed fixtures, FT8 and PSK31, 1400 and 1920. It asserts nothing and presses
-   nothing.
-4. **Read `src\` for every writer** of `HeardInTheLastMinute`, `HeardSparkline` and `IsBestBet`. Give
-   file and line for each, and say what starts it: a reload, a timer, the clock or a command.
-5. **Answer from the numbers, in section 1, before task 1 starts:**
-   - Which settle pass does each reload land in, and what does the window hold after the sixth?
-   - Can any writer land after `Realized` returns? Which one, and how would a test see it?
-   - Which fixture change will task 1 make, and why is it on the test window only?
+   - The message is `chore(unit354): the window sizes Tim can open - the gate and the baseline`.
+   - Run the carry-forward list with ruling 78's loggers, status first, and give both invocations as
+     *n of n*. Name any red.
+2. **Step 0's filter, once**, status first, with a stated timeout. Give each class as *n of n* and the
+   pinned numbers as printed.
+3. **Read, and change nothing:**
+   - what sizes, clamps or maximizes each window (§2);
+   - whether a headless `MainWindow` takes `Height` below 1040 and down to `MinHeight`, and what
+     `Bounds` it reports at 900 x 620;
+   - what the top row, the tabs and the status bar are made of, so task 1's "trimmed" and "clipped"
+     name real elements.
+4. **Answer in section 1, before task 1 starts:**
+   - Can every size in ruling 73 be realized on the headless host? If not, which, and what did it
+     realize?
+   - Which elements will task 1 read for clipping and trimming, by name?
 
 **Drop candidate:** none. Task 1 is built on it.
 
-### Task 1 - the declared window set again after the reloads, and the proof three times (rulings 67 and 68)
+### Task 1 - the main window at every size (rulings 73 to 75)
 
-1. **Make ruling 67's change** in the two fixtures only. Keep the existing remarks' voice: say what
-   changed, why, and the trace's numbers. Correct the *WHAT THAT MOVES, MEASURED* paragraph
-   (`TheTopRowTests.cs:2124`-`2128`) to what this unit measured.
-2. **Watch the guard go red once by ruling 19.** Set a deliberately wrong declared value on the test
-   window only, give the failure line, then put it back.
-3. **Add a line to the trace** that prints the same windows with the change in place.
-4. **Run step 0's filter three times**, status first each time. Report every run's counts and pin
-   lines, the diff of the printed pixel lines across the three, and every unpinned number against unit
-   352's before and after runs.
-5. **Run `Unit332TwoWidthsTests` and `TheGreenZoneTests` once, then the carry-forward list**, status
-   first.
-6. **Commit and push:** `test(app): task 1 - the test window draws what its fixture declares after its
-   reloads - <what is set again, in which fixtures>; step 0's filter <n of n> three times, pins 8 of
-   8, <n> diff lines; Unit332TwoWidthsTests <n of n>, TheGreenZoneTests <n of n>; <moved numbers,
-   old and new>`.
+1. **Add the height overload** to both `Realized`s (ruling 74). Run step 0's filter once, status first:
+   it must read 28 of 28 with the pinned numbers unmoved. If not, stop the task and report.
+2. **Add `Unit354TraceTheMainWindowAtTheSizesTimCanOpen` to `TheTopRowTests`.** It prints ruling 75's
+   lines for every size in ruling 73 and asserts nothing. Run it by exact name, status first, with a
+   stated timeout.
+3. **Check the anchors.** 1400 x 1040 and 1920 x 1040 must print the pinned numbers. Quote both lines.
+4. **Run step 0's filter once more** (29 of 29 expected), status first.
+5. **Answer in section 1:** at which sizes does each R26 outcome hold, and by how much does each miss
+   miss? Put the smallest size at which every outcome holds on its own line.
+6. **Commit and push:** `test(app): task 1 - the main window traced at <n> sizes - <holds at which>;
+   misses <size: outcome, numbers | none>; anchors reproduce 190/503, 216/477, 228/465; step 0's filter
+   <n of n>`.
 
-**If the trace shows a writer the restore cannot hold against**, commit only the trace under
-`test(app)`, and say so.
+**Drop candidate:** the 2560 x 1400 row, if the time runs short.
 
-**Drop candidate:** none. It is the unit.
+### Task 2 - the sheet (ruling 76)
 
-### Task 2 - the sheet, only where measured wrong (ruling 69)
+1. **Edit only the lines ruling 76 lists**, with numbers from task 1's run and this unit's commit.
+2. **Commit and push:** `docs(unit354): the sheet at the sizes Tim can open - <table added at :n>;
+   <n> misses in section 4 | no miss>`.
 
-1. **Edit only the lines ruling 69 lists**, with numbers from task 1's runs and this unit's commit.
-2. **Commit and push:** `docs(unit353): the sheet's green block cited to a window that draws it - <what
-   changed>`.
+**Drop candidate:** none. Without it Tim reads a sheet that still covers only 1400 and 1920.
 
-**Drop candidate:** none. Without it the sheet stays shown wrong at `:55` and `:57` (ruling 65).
+### Task 3 - the achievements window at its own sizes (the drop candidate)
 
-### Task 3 - the two windows still on POTA (the drop candidate, ruling 70)
+1. **Add `Unit354TraceTheAchievementsWindowAtTheSizesTimCanOpen`** to the achievements tests. At each
+   size in ruling 73's achievements list, it opens:
+   - the opening page;
+   - Countries and Modes;
+   - one continent page.
 
-1. **Read, and do not change yet**, whether a POTA reply can land while `EmptyTab` or
-   `BindingHealthTests`' window measures. Compare what each printed across task 1's three runs.
-2. **Switch `EmptyTab`'s network sources off by `TheTopRowTests.NetworkSources` only if its printed
-   numbers differed.** If you do, run step 0's filter once more, commit and push under `test(app)`.
-3. **`BindingHealthTests` is reported, never changed.**
-4. **Report it in section 4 as a finding.**
+   It prints every string that clips or wraps a word and every card that is a white rectangle, by the
+   measure the existing no-clip and no-white-card fact uses. It asserts nothing and presses only what
+   opens a page, as the existing facts do.
+2. **Run it by exact name**, status first. Check that the 1400 and 1920 anchors print what the existing
+   facts print.
+3. **Add its table and misses to the sheet** (ruling 76), then commit and push under `test(app)` and
+   `docs(unit354)`.
 
 **Drop candidate: this task, whole.** If time runs short, skip it, and the report says so.
 
@@ -434,24 +431,21 @@ Measure before anything changes. **Say what you find rather than confirming the 
 
 ## 6. Parked - do not touch, do not raise
 
-- **Step 3 and the verdict.** Tim's (ruling 46).
-- **Everything under `src\`, every word on the screen and all markup** (rulings 47 and 65). That
-  includes U11, which stands as built.
-- **The best bet ranking, the spot reload, the sources, the heard count and the clock**, in `src\`:
-  `RankBands`, `ApplyBestBet`, `ReloadSpotsAsync`, `BuildSources`, `DefaultSourceEnabled`, every source
-  class and every clock source. Read them for the trace; change none.
-- **Ruling 61's source switch** in `FixtureSettings` and `TheWorkingPanelsTests.Realized`, and the
-  fixture's callsign, grid, license and dial.
+- **Step 3 and the verdict.** They are Tim's (ruling 46, as amended by ruling 72).
+- **Everything under `src\`, every word on the screen, all markup, and both windows' opening and minimum
+  sizes** (rulings 47 and 77). That includes U11, which stands as built.
+- **Fixing a miss this unit finds.** It belongs to the next arbiter (ruling 77).
+- **The test window's reloads, restore, guard and network sources**, including `Unit332TwoWidthsTests`'
+  window and `BindingHealthTests` (rulings 61, 67, 70 and 78).
+- **The best bet ranking, the spot reload, the sources, the heard count and the clock**, in `src\`.
 - **The strayed-frequency line on the licensed fixture** (unit 341 item 2).
 - **Every red in the record**, and every test except those tasks 0 to 3 name.
-- **Steps 1 and 2.** Done. Their classes are not run in this unit.
+- **Steps 1 and 2.** Done. Their classes are not run in this unit; task 3 adds a trace only.
 - **Pictures**: no package, no running app, no drawn mockup (ruling 42).
 - **PSK31 decoding, all of it** (ruling 23).
 - **Transmit, all of it:** `TheOperatorCanStopItTests`, `TheWholeChainRunsFromOneRightClickTests`, and
   `TheMenuIsUnderTheMouseTests`.
 - **The fifteen emptied files.** They are on unit 348's list.
-- **Whether an RBN reader already started is stopped when its switch is later turned off** (unit 352
-  item 2, *not examined*).
 - **Carried in `PHASE_PLAN.md` §7 and belonging to Tim or the harness:**
   - the live license lookup and the live heard count;
   - the two id schemes, including `CPS-DEC-0163`;
@@ -465,57 +459,48 @@ Measure before anything changes. **Say what you find rather than confirming the 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.** HM-DEC-155.
 - **Never run `TheOperatorCanStopItTests`, `TheWholeChainRunsFromOneRightClickTests` or
   `TheMenuIsUnderTheMouseTests`.**
-- **Change nothing under `src\`** (rulings 47 and 65). A red that wants the screen changed is reported,
+- **Change nothing under `src\`** (rulings 47 and 77). A miss that wants the screen changed is reported,
   not answered.
-- **Do not loosen 0.262, one half, the 10% at 1920 or the 2 px rig tolerance. Do not edit either pinned
-  fact's body. Do not add a clock seam, a retry, a wait-until loop or more than one further set of six
-  settle passes** (rulings 49, 56, 61 and 67).
-- **Do not switch a network source back on**, and do not change `BindingHealthTests` (rulings 61 and
-  70).
+- **Do not change `WindowHeight`, the pinned facts' bodies, or 0.262, one half, the 10% at 1920 or the
+  2 px rig tolerance.** Do not write an assertion that goes red on a miss (ruling 77).
+- **Do not choose other sizes than ruling 73's, and do not guess Tim's.**
 - **Do not press, click or invoke the best bet, a band button, CQ, Stop or any send** (§0.2).
-- **Do not break the view to watch a test fail** (ruling 19).
-- **Do not edit the sheet beyond ruling 69's lines.**
+- **Do not edit the sheet beyond ruling 76's lines.**
 - **Do not delete a file.** Empty it, comment it, list it (§6).
 - **Do not edit `PHASE_OUTCOME.md`, `RUN_LEDGER.md`, the `STEP:` lines, `CURRENT_STEP`,
   `.run-unit\allowed.txt` or anything under `tools\arbiter\`.** They are the launcher's.
 - **Never `git add -A` or `git add .`** (§2).
 - `CLAUDE.md` §12.6 covers the rest. **No package. Report mismatches. Write American.**
-- **The tool facts, as unit 352 found them.** Say which held for you:
+- **The tool facts, as unit 353 found them.** Say which held for you:
   - **ran:**
-    - `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test … | tail`;
-    - `git add && git commit -m -m && git push && git log`;
-    - `grep -n`, `grep -o -e` on trx files, `ls`, `wc -l`, `git diff --stat`, `git rev-parse`,
-      `git log -p`;
+    - `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test … | grep`;
+    - `git add && git commit -m -m && git push && git log | cut`;
+    - `grep -n`, `grep -n -A`, `grep -o -e` and `grep -c` on trx files, joined by `&&` with `wc -l`;
     - `sh` on scripts written with the file editor into `testresults\`;
-  - **asked for approval, not run:**
-    - a `;`-joined line of `ls`, `pwd -W`, `git rev-parse`, `head` and `grep`;
-    - a `grep` line with a `;` and `head`;
-    - `git log | cut && git show`;
-    - for unit 351: `grep -v -e "^\s*$"` in a pipe, and a variable assignment with `;`-joined greps;
-  - **refused:**
-    - a `for` loop over `$f` (*Contains simple_expansion*);
-    - `sed -n` on a trx file under `testresults\` (*may only edit files in the allowed working
-      directories*). Read trx files with the file reader;
-  - **so:** write the report with the file editor.
+  - **asked for approval, not run:** a line with `pwd -W`; `sed -e` with a grouped expression in a pipe;
+    `awk -F:` in a pipe; `tasklist`; a `grep -o` with `\{0,90\}` counts;
+  - **refused:** a `grep` with `$(...)` (*Contains command_substitution*); for unit 352, a `for` loop over
+    `$f` and `sed -n` on a trx file under `testresults\`;
+  - **so:** read trx files with the file reader, and write the report with the file editor.
 
 ## 8. Committing and pushing
 
-Commit and push each task on its own, on `main`, staging files by name. The report and the status file
-go in their own commit. The report names every commit and whether each push succeeded. **A refused
-push is reported as refused, with the reason.**
+Commit and push each task on its own, on `main`, staging files by name. The report and the status file go
+in their own commit. The report names every commit and whether each push succeeded. **A refused push is
+reported as refused, with the reason.**
 
 ---
 
 ## 9. Reporting
 
-Write `output.md` at the root, then stop. Do not start the next unit. **Every exit writes it**:
-finished, blocked, failed or stopped early. **Write the report before task 3 if time is short.**
+Write `output.md` at the root, then stop. Do not start the next unit. **Every exit writes it**: finished,
+blocked, failed or stopped early. **Write the report before task 3 if time is short.**
 
 Canonical headings: `## 1. What Claude did`, `## 2. What the owner should expect`,
 `## 3. What you should see`, `## 4. What's blocking us`. Validate it with
 `dotnet build tools/arbiter/validate-output.proj -p:Report=output.md`, or with
-`tools/arbiter/validate-output.bat output.md`. **Always name the report.** **The `UNIT:` line must
-fall inside the first 60 lines.**
+`tools/arbiter/validate-output.bat output.md`. **Always name the report.** **The `UNIT:` line must fall
+inside the first 60 lines.**
 
 **The ordering block comes first.** `validate-output` refuses a report without it.
 
@@ -526,76 +511,77 @@ A. The phase goal - the screen, done right. At <hash>: step 0 done (unit
    351), step 1 done (unit 347), step 2 done (unit 348). Step 3 0 of 1,
    blocked on Tim's verdict on docs/unit349-what-tim-looks-at.md, which
    this unit <did not change | changed at these lines>.
-B. Step 3 and its exit criterion: Tim says it passed - not met, and no
-   session can meet it. What this unit cleared under ruling 46's exception:
-   1. what the test window held after its reloads, before the change -
-      count <n>, best bet <band or none> at <hour read from the clock>;
-      writers after Realized returns: <none | file:line>
-   2. after the change - the guard <held on every run | failed: where>;
-      count 6, best bet none, on every window of step 0's filter
-   3. step 0's filter, three runs - <n of n each>; pins <8 of 8 each>;
-      diff lines across the three <n>
-   4. the unpinned numbers - <which returned to the fixture's window, old
-      and new>; the pinned numbers <unmoved | which moved>
-   5. the sheet's "6 stations" (:55, :57) - <cited to a fact that draws it
-      at <hash> | corrected to: what>
-   6. Unit332TwoWidthsTests <n of n>, TheGreenZoneTests <n of n>;
-      carry-forward <n of n>, <n of n>
+B. Step 3 and its exit criterion: Tim says it passed at his window size -
+   not met, and no session can meet it. What this unit measured for it:
+   1. sizes realized - <n of 9> main window, <n of 5 | not reached>
+      achievements; anchors reproduce the pinned numbers <yes | no: which>
+   2. the product's opening size, 1100 x 780 - top row <n> px (<share>),
+      panels <n> (<share> of below), three equal <yes | no>; R26 <holds |
+      misses: which, by how much>
+   3. the product's minimum, 900 x 620 - the same numbers; clipped callsigns
+      <none | which>; trimmed text <none | which>; anything off the window
+      or at zero size <none | which>
+   4. the smallest size where every R26 outcome holds - <size | none listed>
+   5. the achievements window at 1040 x 720 and 900 x 620 - clipped or
+      wrapped words <none | which>; white cards <none | which> | not reached
+   6. carry-forward <n of n>, <n of n>; a red named <none | which>; step 0's
+      filter <n of n> with the pinned numbers <unmoved | which moved>
 C. The report last. Section 4 raises N items on top of the carried queue.
-   Say whether any shows the sheet wrong, and whether anything is left that
-   a unit can do before Tim answers.
+   Say whether any miss touches Stop, keying or transmit, and whether
+   anything is left that a unit can do before Tim answers.
 ```
 
-**Every line specific to this unit.** If something was not measured, say *not measured*. Do not fill
-the shape.
+**Every line specific to this unit.** If something was not measured, say *not measured*. Do not fill the
+shape.
 
 ```
-UNIT:       353 - <complete|stopped> at task N of 3 - <date time, read from the clock>
+UNIT:       354 - <complete|stopped> at task N of 3 - <date time, read from the clock>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   no - step 3 waits on Tim; the test window <draws its fixture's window whatever the hour | still depends on: what>; the sheet <re-cited | corrected> at <lines>
-NUMBER:     step 0's filter after the change: <n of n>, <n of n>, <n of n>; unpinned facts reading the fixture's count <0 of k> -> <k of k>
+ADVANCED:   no - step 3 waits on Tim; R26 <holds at every size measured | misses at: sizes>; the sheet <gained the sizes at lines | unchanged: why>
+NUMBER:     main window sizes measured <n of 9>, R26 holding at <n of 9>; achievements sizes <n of 5 | not reached>
 DRIFT:      0
 ```
 
-**Section 2 says, first**, that nothing on the screen moved, and whether the sheet changed (with the
-lines). Then it says, in words Tim can read, what the test window now draws whatever time the tests
-run.
+**Section 2 says, first**, that nothing on the screen moved, and which sheet lines changed. Then it says,
+in words Tim can read, what the main window looks like when it first opens and at its smallest, and
+which sizes, if any, fall short of the mockup's promise.
 
-**Section 3 leads with the answer:** does every step 0 fact on the test window now measure the window
-its fixture declares, whatever the hour? Then:
-- a table of the trace: fixture, width, mode, what landed in which settle pass, what the window held
-  after, before and after the change;
-- the writers, file and line;
-- step 0's three runs, with every number that moved, old and new.
+**Section 3 leads with the answer:** at the size Hamlet opens at, and at the smallest size it allows,
+do the working panels keep half the height, with nothing clipped? Then:
+- the table of every size: top row, panels and share, three equal, rig against card, facts beside or
+  under, clipped callsigns, trimmed text;
+- the anchors against the pinned numbers;
+- each miss with the elements named.
 
 **Every appearance claim is computed, not seen. Say so once.**
 
-**Section 4:** unit 352's section 4 verbatim per HM-DEC-139, from its line under
-`## 4. What's blocking us` to its end, as committed in `8fa20cb1`, including the queues it carries.
-Keep it in place with the file editor. In the carried text, mark:
-- unit 349 item 1 (Tim's step 3 verdict): `STILL OPEN - Tim's; work instruction 353 authors nothing
-  into the verdict`;
-- unit 352 item 1 (the unpinned facts measure the hour's best bet and 0 stations): `TAKEN UP by work
-  instruction 353 rulings 66 to 69`, with the result;
-- unit 352 item 2's last two bullets (`BindingHealthTests` and `EmptyTab` still reach POTA): `TAKEN UP
-  by work instruction 353 ruling 70`, with the result, or `NOT REACHED - task 3 dropped`.
+**Section 4:** unit 353's section 4 verbatim per HM-DEC-139, from its line under
+`## 4. What's blocking us` to its end, as committed in `0d69123a`, including the queues it carries. Keep
+it in place with the file editor. In the carried text, mark:
+- unit 349 item 1 (Tim's step 3 verdict): `STILL OPEN - Tim's; work instruction 354 authors nothing into
+  the verdict and measures the sizes he can open`;
+- unit 353 item 2 (the unnamed carry-forward red): `TAKEN UP by work instruction 354 ruling 78`, with the
+  result;
+- unit 353 item 3's `Unit332TwoWidthsTests` bullet: `LOGGED, NOT CHASED - work instruction 354 ruling 78`;
+- unit 353 item 5 (the recommendation): `UPHELD for the reloads by work instruction 354 ruling 72; ruling
+  46 amended for window sizes`.
 
-Then this unit's items, under *Raised by unit 353*. **Each says whether it is a finding or an ask**
-(ruling 71).
+Then this unit's items, under *Raised by unit 354*. **Each says whether it is a finding or an ask.** A miss
+is a finding. It is an ask only where ruling 77 says so.
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 3
-APPROACH: restore the test window declared heard count, sparkline and cleared best bet after Realized's settle, so step 0's unpinned facts measure the fixture's window whatever the hour of the run, guarded in the fixture - no screen change; trace every writer first; the sheet's "6 stations" words and 1920 green block cell re-cited to a fact that draws them; the two windows still reaching POTA (BindingHealthTests, EmptyTab) read as the drop candidate
-MOVE: continue
-WHY: Steps 0 to 2 are done and step 3 is Tim's word, so under ruling 46 a unit may act only where the sheet is shown wrong - and unit 352's own item 1 shows it: the sheet's "6 stations" is cited to a fact that now draws 0 and the hour's best bet, and every unpinned step 0 number now depends on the hour of the run. The loop test found nothing like this; it follows unit 352's successful change rather than repeating a failed one, and none of it touches keying, money or what the product promises.
+APPROACH: measure the main window and the achievements window at the sizes Tim can actually open - the product's opening size 1100 x 780, its minimum 900 x 620 and common laptop and desktop screens - against R26's outcomes and step 1's no-clip and no-white-card clauses, through a height overload of the existing Realized fixtures with the 1400 and 1920 anchors reproducing the pinned numbers, no screen change and every miss put on Tim's sheet unfixed; the achievements window as the drop candidate; the carry-forward list run with trx loggers so a red names itself
+MOVE: work around
+WHY: Step 3 is blocked on Tim's verdict at his window size, and unit 353 left nothing on the test window's reloads (ruling 71, upheld). But every measurement in the phase is at 1400 or 1920 wide and 1040 tall, while Hamlet opens at 1100 x 780 and allows 900 x 620, so Tim may judge a window nothing measured. Measuring the sizes he can open is a different approach from re-checking the sheet against the test window, the loop test found nothing like it, and waiting on the owner's eyes is not one of the three stops.
 STATE: blocked
-DECIDED: ruling 65 - ruling 46's exception invoked for one point in two parts (the sheet's 6 stations cited to a fact drawing 0; unpinned facts depending on the hour), ruling 47 in force, nothing under src; ruling 66 - trace both licensed fixtures at 1400 and 1920 on FT8 and PSK31, pass by pass, and name every writer of the heard count, sparkline and IsBestBet by file and line; ruling 67 - after Realized's six settle passes set the declared count, sparkline and no best bet again, six passes more, a guard that names what failed, TheWorkingPanelsTests.Realized clears the best bet only, no clock seam, retry, wait-until loop or source change, a writer after the restore reported and the restore shipped only if the guard held every run; ruling 68 - step 0's filter green three times with pins 8 of 8, identical printed lines, every unpinned number named against unit 352's before and after runs, pinned numbers unmoved; ruling 69 - the sheet changes only at :47, :54-57, :71-73, :118, :20-21, :438-439 and section 5 where measured wrong; ruling 70 - EmptyTab's sources switched off only if its numbers differed across runs, BindingHealthTests never changed, the drop candidate; ruling 71 - no new ask unless measured, unit 349 item 1 carried as Tim's, the recommendation that if this ends clean no unit remains that ruling 46 licenses, and logged for the owner that ARBITER.md has no move for waiting on the owner's eyes so the loop spends a unit per call - all the author's, marked for Tim at step 3, overrulable
-LICENCE: PHASE_PLAN.md sections 1, 4 (step 3 exit; step 0 exit criteria 1, 2, 5 and 6), 6 (the arbiter decides and continues; never loosen a test; transmit or a package stops) and 7; R26; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 3 blocked on unit 352); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 352 (UNIT 8 - STEP 3) STATE_WHY; unit 352 output.md at 8fa20cb1 section 1 task 1 and decisions 3 and 4, section 4 items 1 and 2; ruling 46 (work instruction 349), ruling 47 (work instruction 350), rulings 61 to 64 (work instruction 352); tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 2067-2099, 2081-2083, 2092-2096, 2101-2144; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs 484-486, 718-737; tests/Hamlet.App.Tests/Views/BindingHealthTests.cs 108; docs/unit349-what-tim-looks-at.md 20-21, 47, 54-57, 71-81, 118, 438-439, 499-514; docs/carry-forward-tests.txt; Directory.Build.props 825; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; RUN_LEDGER.md (units 349 to 352 cost); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-ACCOMPLISHED: the numbers and words on the sheet Tim reads for the phase's last verdict come from a test window that draws the same thing whatever time the tests run - six stations, its sparkline and no best bet unless a test sets one - so every green block line on the sheet can be reproduced, and nothing on the screen moved under Tim's review
-ADVANCES: none - this unit clears the one place unit 352 left the sheet shown wrong under Tim's step 3 review: its "6 stations" words cited to a fact that now draws 0, and step 0's unpinned facts measuring the hour's best bet instead of the fixture's declared window
+DECIDED: ruling 72 - ruling 46 amended so a unit may be authored into step 3 where Tim's verdict would fall on an unmeasured window size, ruling 71's no-more-reload-work upheld; ruling 73 - the sizes fixed by the instruction (main window 900x620, 1100x780, 1280x720, 1366x728, 1536x824, 1400x1040 and 1920x1040 as anchors, 1920x1017, 2560x1400; achievements 900x620, 1040x720, 1280x720, 1400x720, 1920x720), Tim's own size measured only once he names it; ruling 74 - an internal height overload of both Realized fixtures keeping ruling 61's sources and ruling 67's guard, the anchors reproducing 190/503, 216/477 and 228/465 or nothing ships; ruling 75 - R26's outcomes read per size on FT8 and PSK31 with the best bet pinned absent and on his band, trimmed or clipped text and off-window controls named, asserting nothing; ruling 76 - ruling 63 amended for this unit: the sheet's :11-12, one sizes table and one section 4 item per miss, nothing else; ruling 77 - a miss is reported and never fixed here (ruling 47 holds), no red-going test, the next arbiter weighs a fix, and only a miss touching Stop, keying or transmit is an ask; ruling 78 - the carry-forward list run once with trx loggers so a red names itself (overrules unit 353 decision 3), and Unit332TwoWidthsTests' network reach logged, not chased, as a third reload unit would loop with 352 and 353 - all the author's, marked for Tim at step 3, overrulable
+LICENCE: PHASE_PLAN.md R26 (at no window size less than half), sections 1 (computed, described, then Tim's eyes), 4 (step 3 exit at his window size; step 0 and step 1 exit clauses), 6 (the arbiter decides and continues; never loosen a test; never clip; transmit or a package stops) and 7; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 3 blocked on unit 353); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 353 (UNIT 9 - STEP 3) STATE_WHY; unit 353 output.md at 0d69123a section 1 and section 4 items 2, 3 and 5; rulings 43 and 46 (work instruction 349), 47 (350), 61 (352), 67, 70 and 71 (353); src/Hamlet.App/Views/MainWindow.axaml 12-13; src/Hamlet.App/App.axaml.cs 93-96, 137-138; src/Hamlet.App/Views/AchievementsWindow.axaml 9; tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 48, 2227; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs 510, 778; tests/Hamlet.App.Tests/Views/TheAchievementsPageClicksInTests.cs 630; tests/Hamlet.App.Tests/Views/TheCategoryPagesAreTradingCardsTests.cs 533; docs/unit349-what-tim-looks-at.md 11-18; docs/carry-forward-tests.txt; Directory.Build.props 834; DECISIONS.md 7 (HM-DEC-163); RUN_LEDGER.md (units 349 to 353, about $8 to $14 each); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+ACCOMPLISHED: when Tim opens Hamlet to give the phase's last verdict - at the size it first opens, at the smallest he can drag it to, or on a common laptop or desktop screen - the sheet already says what the main window and the achievements pages draw there against the mockup's promises, with every shortfall named in pixels, so his verdict is not given on a window nobody measured, and nothing on the screen moved under his review
+ADVANCES: none - this unit clears what stands between Tim and a verdict at his own window size: every measurement in the phase is at 1400 or 1920 wide and 1040 tall, while Hamlet opens at 1100 x 780 and allows 900 x 620, and R26 promises the panels' half at every size
 END-ARBITER-DECISION
 ```
