@@ -1622,6 +1622,197 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 352 task 0: what lands on the pinned best bet** - the 1920 PSK31 cases
+    /// unit 351's pin reds fell on, pinned on 20 m and absent, five times each.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 61. A TRACE, AND IT ASSERTS NOTHING.** Each window is built with
+    /// `Realized(width, telemetry)` and taken through the pinned fact's own steps: PSK31, settle, the
+    /// pin, settle, the readiness strip hidden, settle, the pin read back. It prints, in time order,
+    /// every spot reload the telemetry file recorded with its trigger and spot count, every source the
+    /// model reported unhealthy, every move of `IsBestBet` and of the sources summary, each marked
+    /// before or after the pin; then the spots on the list by source, where the best bet ended and
+    /// whether the pin held.</para>
+    /// <para>It reads public members and the telemetry file only. **Nothing is pressed** (§0.2).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit352TraceTheSpotReloadOnTheTestWindow()
+    {
+        var defaults = new AppSettings();
+
+        _output.WriteLine("=== the sources BuildSources makes for this window (MainWindowViewModel.cs:7602-7638)");
+
+        foreach (var name in new[]
+        {
+            Hamlet.RadioEngine.Explore.PotaActivitySource.SourceName,
+            Hamlet.RadioEngine.Explore.SotaActivitySource.SourceName,
+            Hamlet.RadioEngine.Explore.RbnActivitySource.SourceName,
+            Hamlet.RadioEngine.Explore.FakeActivitySource.SourceName,
+        })
+        {
+            _output.WriteLine(
+                "  " + name.PadRight(7) + (name == Hamlet.RadioEngine.Explore.RbnActivitySource.SourceName ? "built, because the callsign is set" : "built")
+                + "; enabled " + defaults.IsSourceEnabled(name) + " (Realized sets no source switch)");
+        }
+
+        var held = 0;
+
+        foreach (var pinned in new[] { "20 m", null })
+        {
+            for (var run = 1; run <= 5; run++)
+            {
+                held += TraceTheSpotReload(pinned, run, "as built") ? 1 : 0;
+            }
+        }
+
+        _output.WriteLine("=== as built: the pin held in " + held + " of 10");
+    }
+
+    /// <summary>
+    /// One pinned 1920 PSK31 window for <see cref="Unit352TraceTheSpotReloadOnTheTestWindow"/>, with its
+    /// telemetry read back after the window closes.
+    /// </summary>
+    /// <returns>Whether the pin held.</returns>
+    private bool TraceTheSpotReload(string? pinned, int run, string arrangement)
+    {
+        var folder = Path.Combine(Path.GetTempPath(), "hamlet-unit352-reload-" + Guid.NewGuid().ToString("N"));
+
+        Directory.CreateDirectory(folder);
+
+        var telemetry = new JsonlTelemetry(folder, "352", _ => true);
+        var moves = new List<(DateTime At, string What)>();
+        var start = DateTime.UtcNow;
+        var pinnedAt = DateTime.MaxValue;
+        var readAt = DateTime.MaxValue;
+        var held = false;
+        var window = Realized(1920, telemetry);
+        var model = (MainWindowViewModel)window.DataContext!;
+
+        string Ms(DateTime t) => "+" + (t - start).TotalMilliseconds.ToString("0", CultureInfo.InvariantCulture) + " ms";
+
+        string When(DateTime t) => t < pinnedAt ? "before the pin" : t <= readAt ? "AFTER THE PIN" : "after the read-back";
+
+        string Badged() => string.Join(", ", model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name));
+
+        void OnBand(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(BandButtonViewModel.IsBestBet) && sender is BandButtonViewModel b)
+            {
+                moves.Add((DateTime.UtcNow, "IsBestBet " + b.IsBestBet + " on " + b.Band.Name));
+            }
+        }
+
+        void OnModel(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindowViewModel.SourcesSummary))
+            {
+                moves.Add((DateTime.UtcNow, "sources summary [" + model.SourcesSummary + "]"));
+            }
+        }
+
+        _output.WriteLine("=== 1920 PSK31, best bet pinned " + (pinned ?? "absent") + ", run " + run + "; " + arrangement);
+        _output.WriteLine(
+            "  realized " + Ms(DateTime.UtcNow) + ": best bet on [" + Badged() + "], sources summary [" + model.SourcesSummary
+            + "], spots on the list " + model.Spots.Count);
+
+        foreach (var band in model.Bands)
+        {
+            band.PropertyChanged += OnBand;
+        }
+
+        model.PropertyChanged += OnModel;
+
+        try
+        {
+            model.ChosenDigitalMode = "PSK31";
+            Settle(window);
+
+            pinnedAt = DateTime.UtcNow;
+
+            foreach (var band in model.Bands)
+            {
+                band.IsBestBet = band.Band.Name == pinned;
+            }
+
+            model.NotifyGreenZoneForTests();
+            moves.Add((DateTime.UtcNow, "the pin set"));
+            Settle(window);
+
+            Named<Border>(window, "DigitalReadinessStrip").IsVisible = false;
+            Settle(window);
+
+            readAt = DateTime.UtcNow;
+
+            var badged = model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name).ToList();
+            var bet = Named<Button>(window, "GreenZoneBestBet");
+            var bySource = model.Spots
+                .Select(s => s.Provenance.Split(" · ") is { Length: >= 2 } parts ? parts[1] : "?")
+                .GroupBy(s => s)
+                .Select(g => g.Count() + " " + g.Key);
+
+            held = badged.SequenceEqual(pinned is null ? Array.Empty<string>() : new[] { pinned })
+                && bet.IsEffectivelyVisible == (pinned is not null);
+
+            _output.WriteLine(
+                "  read back " + Ms(readAt) + ": best bet on [" + string.Join(", ", badged) + "], green block says ["
+                + (bet.IsEffectivelyVisible ? bet.Content as string : "") + "]; pin held " + held);
+            _output.WriteLine(
+                "  sources summary [" + model.SourcesSummary + "]; spots on the list " + model.Spots.Count + " ("
+                + string.Join(", ", bySource) + "); heard in the last minute " + model.HeardInTheLastMinute);
+        }
+        finally
+        {
+            foreach (var band in model.Bands)
+            {
+                band.PropertyChanged -= OnBand;
+            }
+
+            model.PropertyChanged -= OnModel;
+            model.ChosenDigitalMode = "FT8";
+            window.Close();
+            telemetry.Dispose();
+        }
+
+        var events = new List<(DateTime At, string What)>();
+
+        foreach (var file in Directory.GetFiles(folder, "*.jsonl"))
+        {
+            foreach (var line in File.ReadAllLines(file))
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(line);
+                var root = doc.RootElement;
+                var name = root.GetProperty("event").GetString() ?? "";
+
+                if (!(name.Contains("spot", StringComparison.Ordinal) || name.Contains("source", StringComparison.Ordinal)
+                    || name.Contains("rbn", StringComparison.Ordinal) || name.Contains("pota", StringComparison.Ordinal)
+                    || name.Contains("lead", StringComparison.Ordinal) || name == "band_changed"))
+                {
+                    continue;
+                }
+
+                var at = DateTime.Parse(
+                    root.GetProperty("ts").GetString()!, CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+
+                events.Add((at, "telemetry " + name + " " + root.GetProperty("data").GetRawText()));
+            }
+        }
+
+        foreach (var (at, what) in events.Concat(moves).OrderBy(e => e.At))
+        {
+            _output.WriteLine("    " + Ms(at).PadLeft(10) + " " + When(at).PadRight(20) + what);
+        }
+
+        var reloads = events.Where(e => e.What.StartsWith("telemetry spots_refreshed", StringComparison.Ordinal)).ToList();
+
+        _output.WriteLine(
+            "  spot reloads " + reloads.Count + ", after the pin and before the read-back "
+            + reloads.Count(e => e.At >= pinnedAt && e.At <= readAt));
+
+        return held;
+    }
+
     /// <summary>What one window measured with the best bet set by hand, and whether it stayed set.</summary>
     public sealed record BestBetCase(
         double TopRow,
