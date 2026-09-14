@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 3 of 3
-WORK_INSTRUCTION: 349 - step 3, what Tim looks at
+WORK_INSTRUCTION: 350 - step 0, on the record and not on the clock
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-14T00:11:14-04:00
-NOTE: Unit 349 complete at task 3 of 3 - the sheet docs/unit349-what-tim-looks-at.md is ready for Tim's step 3 verdict: phase classes green at this tree, 590 runs a width nothing clipped, 21+19 rulings and 10 unit choices with overrule words, 28 known items, 184 claims checked; 1,234 no-STATE line measured whole
+UPDATED: 2026-09-14T00:38:59-04:00
+NOTE: Unit 350 complete at task 3 of 3 - step 0 on the record at this tree: 5 of 6 must-pass hold with the best bet pinned both ways; criterion 5 red at 1400 PSK31 with the best bet on his band (247 of 238.4 px, panels 446 of 455), not fixed under ruling 47; floor 25 px named; nice-to-pass at 1920 and 1400; step 3 still Tim's
 
 ---
 
