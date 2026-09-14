@@ -311,7 +311,7 @@ public sealed class AchievementBadgePage
             AchievementKinds.States => new AchievementBadge(
                 kind, "States", "the 50 states", "star", "#2C4C9B",
                 score.Worked == 0 ? FirstState : MoreStates,
-                NextIsDoor: false, Worked(score.Worked), score),
+                NextIsDoor: false, Worked(score.Worked) + FromStateField, score),
 
             AchievementKinds.Grids => new AchievementBadge(
                 kind, "Grids", "4-character grids", "grid", "#2F6B3A",
@@ -351,6 +351,22 @@ public sealed class AchievementBadgePage
     /// </remarks>
     private static string Worked(long count)
         => count.ToString("#,0", CultureInfo.InvariantCulture) + " worked";
+
+    /// <summary>
+    /// **What the States count counts, said after it**: `2 worked, from STATE` (work instruction 348
+    /// ruling 35).
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE COUNT IS THE LOG'S `STATE` FIELD AND NOTHING ELSE** (R23), so on a log whose US
+    /// records mostly carry none - Hamlet's own entries carry none - a bare `2 worked` beside hundreds
+    /// of US contacts reads as a fault. The badge and the band say the same words, so the same
+    /// number.</para>
+    /// <para>**SHORTENED TO FIT** (§6): *2 states worked, read from the log's STATE field* is 48
+    /// characters, and the badge's corner holds about 22 on the test host's ten pixels a character.
+    /// The kind's name is on the badge already, so *states* goes, and *STATE* in capitals names the
+    /// field.</para>
+    /// </remarks>
+    private const string FromStateField = ", from STATE";
 
     /// <summary>The nearest Hall of Fame first he has not earned, in his own words.</summary>
     private static string NextFirst(AchievementLog log)

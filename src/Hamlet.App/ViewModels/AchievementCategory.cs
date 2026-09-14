@@ -912,10 +912,35 @@ public sealed class AchievementCategory
             {
                 WantsLine = WantsFor(kind),
                 NoCallerLine = NoStateFromTheAir,
+                CountLine = NoStateLine(log),
             });
         }
 
         return cards;
+    }
+
+    /// <summary>
+    /// **How many United States, Alaska and Hawaii records carry no `STATE`**, in words - `3 US contacts
+    /// carry no STATE` - or "" where none do (work instruction 348 ruling 35).
+    /// </summary>
+    /// <remarks>
+    /// <para>**A COUNT HAMLET CAN READ FROM THE LOG, AND NOTHING ABOUT WHERE THOSE STATIONS ARE**
+    /// (§0.0): it is why the States count can sit far below the US contacts, and it names no state and
+    /// guesses none from a callsign.</para>
+    /// <para>**A US RECORD IS ONE A `STATE` WOULD SCORE ON**: the contact with `PA` put in its place
+    /// scores under <see cref="AchievementLog.StateOf"/>, which keeps the three entities in one place. A
+    /// record that carries a `STATE` scoring nothing, such as `DC`, carries one and is not counted.</para>
+    /// </remarks>
+    private static string NoStateLine(AchievementLog log)
+    {
+        var none = log.Contacts.Count(c => c.State is null && AchievementLog.StateOf(c with { State = "PA" }) is not null);
+
+        return none switch
+        {
+            0 => "",
+            1 => "1 US contact carries no STATE",
+            _ => none.ToString("#,0", CultureInfo.InvariantCulture) + " US contacts carry no STATE",
+        };
     }
 
     /// <summary>What a next card says where nobody on the CQ list would earn it.</summary>

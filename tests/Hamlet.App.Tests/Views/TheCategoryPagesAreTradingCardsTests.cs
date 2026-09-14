@@ -1688,6 +1688,11 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     /// Canadian contact with `STATE=ON` and a US contact with `STATE=DC`. Two score.</para>
     /// <para>**THE NEXT CARD IS UNCHANGED** - its words and its sentence are unit 335's, marked for
     /// Tim - and the page is measured at 1400 and 1920 now that States draws earned cards.</para>
+    /// <para>**EXTENDED BY WORK INSTRUCTION 348 TASK 1** (rulings 34 and 35): the badge and the band say
+    /// `2 worked, from STATE`, drawn at both widths; the next card counts the US records carrying no
+    /// `STATE`; and no run or hover on the page, the eight kinds or the seven continent pages, and no
+    /// string outside a comment in an achievements view model, contains *confirm*. Watched red on the
+    /// tree as it was: `Expected: "2 worked, from STATE"` against `2 worked`.</para>
     /// </remarks>
     [AvaloniaFact]
     public void StatesCountWhatTheLogsStateFieldSays()
@@ -1733,8 +1738,19 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         Assert.Equal(2, badge.Score.Worked);
         Assert.StartsWith("2 ", badge.Standing, StringComparison.Ordinal);
 
+        // **WORK INSTRUCTION 348 RULING 35: THE COUNT SAYS WHAT IT COUNTS** - states worked, read from the
+        // log's `STATE` field - in the fewest words that fit.
+        const string counted = "2 worked, from STATE";
+        const string noStateLine = "1 US contact carries no STATE";
+
+        Assert.Equal(counted, badge.Standing);
+
         // **THE PAGE DRAWS TWO EARNED CARDS, EACH THE CONTACT THAT EARNED IT.**
         screen.OpenCategoryCommand.Execute(AchievementKinds.States);
+
+        // **THE BAND SAYS THE SAME WORDS, SO THE SAME NUMBER** (ruling 35).
+        Assert.Equal(badge.Standing, screen.Category!.Standing);
+        Assert.Contains(counted, screen.Category.BandLine.Split(" · "));
 
         var earned = screen.Category!.Cards.Where(c => c.Earned).ToList();
 
@@ -1758,6 +1774,10 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         Assert.Equal("Any state you have not worked", next.WantsLine);
         Assert.Equal(AchievementCategory.NoStateFromTheAir, next.NoCallerLine);
 
+        // **RULING 35: HOW MANY US RECORDS CARRY NO `STATE`** - W1AW here - which says nothing about
+        // where that station is. N3DC's `DC` is a STATE that scores nothing, so it is not counted.
+        Assert.Equal(noStateLine, next.CountLine);
+
         // **MEASURED AT 1400 AND 1920 NOW THAT STATES HAS CARDS**: nothing clips or wraps, and no
         // card is white.
         foreach (var width in new[] { 1400.0, 1920.0 })
@@ -1767,8 +1787,20 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
             try
             {
+                // **AS DRAWN** (ruling 35): the badge's corner, the band's line and the next card.
+                var drawnBadge = Named<ItemsControl>(window, "AchievementsBadges").GetVisualDescendants().OfType<Button>()
+                    .First(b => b.DataContext is AchievementBadge { Kind: AchievementKinds.States });
+
+                Assert.Contains(counted, VisibleText(drawnBadge));
+
                 shown.OpenCategoryCommand.Execute(AchievementKinds.States);
                 Settle(window);
+
+                Assert.Contains(counted, Named<TextBlock>(window, "AchievementsCategoryBandLine").Text!.Split(" · "));
+
+                var drawnNext = TradingCards(window).Single(c => c.DataContext is AchievementCategoryCard { Earned: false });
+
+                Assert.Null(CardMiss(drawnNext, "Any state you have not worked", AchievementCategory.NoStateFromTheAir, noStateLine));
 
                 var state = F(width) + " states";
                 var runs = Fits(window, state);
@@ -1794,6 +1826,54 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                 window.Close();
             }
         }
+
+        // **RULING 34: NO `confirm` IN ANY RUN OR HOVER THE ACHIEVEMENTS WINDOW DRAWS** - the page, the
+        // eight kinds and the seven continent pages, at 1400 and 1920, on this log and the twelve contacts.
+        foreach (var (fixture, label) in new (IReadOnlyList<AdifLogRecord> Records, string Label)[]
+        {
+            (records, "state contacts"),
+            (TheAchievementsPageTests.TwelveContacts(), "twelve contacts"),
+        })
+        {
+            foreach (var width in new[] { 1400.0, 1920.0 })
+            {
+                var window = Realized(fixture, width);
+                var shown = (AchievementsViewModel)window.DataContext!;
+                var found = new List<string>();
+
+                try
+                {
+                    found.AddRange(Unit348Said(window).Where(s => s.Contains("confirm", StringComparison.OrdinalIgnoreCase)).Select(s => "page [" + s + "]"));
+
+                    foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+                    {
+                        OpenOnWindow(window, shown, kind);
+                        found.AddRange(Unit348Said(window).Where(s => s.Contains("confirm", StringComparison.OrdinalIgnoreCase)).Select(s => kind + " [" + s + "]"));
+                        ToThePage(window, shown);
+                    }
+                }
+                finally
+                {
+                    window.Close();
+                }
+
+                _output.WriteLine("confirm drawn at " + F(width) + ", " + label + ": " + found.Count);
+
+                Assert.True(found.Count == 0, F(width) + " " + label + " draws " + string.Join("; ", found));
+            }
+        }
+
+        // **AND NONE IN A STRING AN ACHIEVEMENTS VIEW MODEL HOLDS** (ruling 34): every line of
+        // `src/Hamlet.App/ViewModels/Achievement*.cs` that is not a comment.
+        var held = System.IO.Directory.GetFiles(
+                System.IO.Path.Combine(Unit348Root(), "src", "Hamlet.App", "ViewModels"), "Achievement*.cs")
+            .SelectMany(file => System.IO.File.ReadAllLines(file).Select((line, i) => (File: System.IO.Path.GetFileName(file), Line: i + 1, Text: line)))
+            .Where(l => !l.Text.TrimStart().StartsWith("//", StringComparison.Ordinal)
+                && l.Text.Contains("confirm", StringComparison.OrdinalIgnoreCase))
+            .Select(l => l.File + ":" + l.Line + " " + l.Text.Trim())
+            .ToList();
+
+        Assert.True(held.Count == 0, "confirm held in a string: " + string.Join(" | ", held));
     }
 
     /// <summary>

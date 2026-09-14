@@ -541,9 +541,9 @@ public sealed class AchievementScreen
             figure: many,
             station: AchievementCard.StationLine(first),
             detail: $"You first worked {EntitySpoken.Of(entity)} on {when}, and it "
-                + $"counts toward {continent}. The count says worked rather than "
-                + "confirmed: the DXCC award is counted from confirmations, on paper "
-                + "or electronic, and Hamlet only knows what passed on the air from "
+                + $"counts toward {continent}. The count says worked: the DXCC award "
+                + "counts only contacts both stations have verified, by QSL card or "
+                + "electronically, and Hamlet only knows what passed on the air from "
                 + "your own log.",
             earned: true);
     }
