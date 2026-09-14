@@ -428,6 +428,75 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                 }
             }
         }
+
+        // **WORK INSTRUCTION 345 TASK 2, RULING 21: AT 1400 AND 1920 EVERY EARNED CARD ON COUNTRIES,
+        // STATES AND GRIDS DRAWS THE CONTACT THAT EARNED IT** - entity, callsign, grid, distance, band,
+        // mode, date and points, each from the log entry rather than from the card - and where the log
+        // lacks a fact, what is there, no dash and no map without a grid (§6). The map and crop above
+        // stay. `StatesCountWhatTheLogsStateFieldSays` measures States at both widths for fit and white
+        // cards only, so States' facts are asserted here and not duplicated.
+        var shipped = AchievementPoints.Parse(AchievementPoints.Shipped());
+        var watchedFacts = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var (fixture, label, kind) in new[]
+            {
+                (TheAchievementsPageTests.TwelveContacts(), "twelve contacts", AchievementKinds.Countries),
+                (FiveContacts(), "five contacts", AchievementKinds.Countries),
+                (TheAchievementsPageTests.TwelveContacts(), "twelve contacts", AchievementKinds.Grids),
+                (FiveContacts(), "five contacts", AchievementKinds.Grids),
+                (StateContacts(), "state contacts", AchievementKinds.States),
+            })
+            {
+                var contacts = new AchievementLog(fixture, MyGrid).Contacts;
+                var wide = Realized(fixture, width);
+                var opened = (AchievementsViewModel)wide.DataContext!;
+                var where = F(width) + " " + label + " " + kind;
+
+                try
+                {
+                    OpenOnWindow(wide, opened, kind);
+
+                    var drawn = TradingCards(wide).Where(b => b.DataContext is AchievementCategoryCard { Earned: true }).ToList();
+                    var keys = contacts.Select(c => EarnedBy(kind, c)).OfType<string>().Distinct(StringComparer.Ordinal).ToList();
+
+                    Assert.True(drawn.Count == keys.Count, where + ": " + drawn.Count + " earned cards drawn for " + keys.Count + " earned in the log");
+
+                    foreach (var card in drawn)
+                    {
+                        var title = card.GetVisualDescendants().OfType<TextBlock>()
+                            .Single(t => t.IsEffectivelyVisible && t.Classes.Contains("card-title")).Text ?? "";
+                        var entry = contacts.Where(c => EarnedBy(kind, c) == title).OrderBy(c => c.StartedUtc ?? DateTime.MaxValue).FirstOrDefault();
+
+                        Assert.True(entry is not null, where + ": the drawn title [" + title + "] is nothing the log earned");
+
+                        var miss = EarnedCardMiss(card, kind, entry!, shipped);
+
+                        _output.WriteLine(where + " [" + title + "] " + entry!.Callsign + ": " + (miss ?? "all eight drawn, or what the entry has"));
+
+                        Assert.True(miss is null, where + " [" + title + "]: " + miss);
+
+                        if (!watchedFacts
+                            && contacts.FirstOrDefault(c => EarnedBy(kind, c) == title && c.Callsign != entry.Callsign) is { } later)
+                        {
+                            // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: this drawn card held
+                            // against the other contact the log has for the same place.
+                            var wrong = EarnedCardMiss(card, kind, later, shipped);
+
+                            _output.WriteLine(where + " [" + title + "] held against " + later.Callsign + "'s entry, watched red: " + wrong);
+
+                            Assert.NotNull(wrong);
+                            watchedFacts = true;
+                        }
+                    }
+                }
+                finally
+                {
+                    wide.Close();
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -1184,6 +1253,184 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         Assert.Equal("Over 10,000 miles", nextFirst.Title);
         Assert.True(nextFirst.HasTierBar);
         Assert.Equal(Math.Min(1.0, furthest / 10000), nextFirst.TierFraction, 3);
+
+        // **WORK INSTRUCTION 345 TASK 2, RULING 17: THE SAME FIVE KINDS AS DRAWN AT 1400 AND 1920**, on
+        // the same fixtures. The view-model half above stays; this is what criterion 4 is counted on.
+        var watched = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var where = F(width) + " ";
+
+            void Holds(string what, string? miss)
+            {
+                _output.WriteLine(where + what + ": " + (miss ?? "drawn"));
+
+                Assert.True(miss is null, where + what + ": " + miss);
+            }
+
+            var window = Realized(records, width, Calling(), bet);
+            var shown = (AchievementsViewModel)window.DataContext!;
+
+            try
+            {
+                // **CONTINENTS: SEVEN DRAWN; AN OPENED ONE ITS FIRST CONTACT AND ITS COUNTRIES, AN
+                // UNOPENED ONE ITS NAME AND WHO IS CALLING FROM IT.**
+                OpenOnWindow(window, shown, AchievementKinds.Continents);
+
+                var badges = Named<ItemsControl>(window, "AchievementsSubBadges").GetVisualDescendants().OfType<Button>()
+                    .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge"))
+                    .ToList();
+
+                Assert.True(badges.Count == 7, where + "Continents draws " + badges.Count + " badges");
+
+                foreach (var badge in badges)
+                {
+                    var code = ((string)badge.CommandParameter!)[AchievementCategory.ContinentPrefix.Length..];
+                    var card = badge.GetVisualDescendants().OfType<Border>().Single(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"));
+
+                    if (log.Continents.Contains(code, StringComparer.OrdinalIgnoreCase))
+                    {
+                        var worked = log.EntitiesOn(code);
+
+                        Holds(
+                            "continents " + code,
+                            CardMiss(card, DxccContinents.NameOf(code), EarliestOf(log.OnContinent(code)).Callsign, worked + (worked == 1 ? " country" : " countries") + " worked there"));
+                    }
+                    else
+                    {
+                        Holds(
+                            "continents " + code,
+                            CardMiss(card, DxccContinents.NameOf(code), "calling CQ at 21:41 UTC, unworked"));
+                    }
+                }
+
+                var oceania = badges
+                    .Select(b => b.GetVisualDescendants().OfType<Border>().Single(c => c.IsEffectivelyVisible && c.Classes.Contains("trading-card")))
+                    .Single(c => VisibleText(c).Contains(zealand));
+
+                Assert.Contains(CallerRows(oceania), r => r.CallLine.StartsWith("ZL1ABC", StringComparison.Ordinal));
+
+                ToThePage(window, shown);
+
+                // **TOTAL MILES: THE TIER BAR, DRAWN WITH WIDTH, AND ITS LINE.**
+                OpenOnWindow(window, shown, AchievementKinds.TotalMiles);
+
+                var tierCard = TradingCards(window).Single();
+
+                Holds(
+                    "total_miles tier",
+                    CardMiss(tierCard, reached.ToString("#,0", CultureInfo.InvariantCulture) + " of 50,000 mi") ?? (HasBar(tierCard) ? null : "no tier bar with width"));
+
+                ToThePage(window, shown);
+
+                // **BANDS: 20 M'S FIRST CONTACT WITH A MAP, AND THE BEST BET FIRST ON THE NEXT CARD.**
+                OpenOnWindow(window, shown, AchievementKinds.Bands);
+
+                var bandCards = TradingCards(window);
+                var twentyCard = bandCards.Single(b => b.DataContext is AchievementCategoryCard { Earned: true } c && c.Title == AdifLog.BandDisplayNameFor("20m"));
+
+                Holds(
+                    "bands 20 m",
+                    CardMiss(twentyCard, AdifLog.BandDisplayNameFor("20m"), EarliestOf(log.OnBand("20m")).Callsign) ?? (HasMap(twentyCard) ? null : "no map with width"));
+
+                Assert.Equal(
+                    new NextCaller("17 m", "best bet now"),
+                    CallerRows(bandCards.Single(b => b.DataContext is AchievementCategoryCard { Earned: false }))[0]);
+
+                ToThePage(window, shown);
+
+                // **HALL OF FAME: EACH EARNED FIRST WITH ITS CALLSIGN AND A MAP; OVER 10,000 MILES
+                // WITH ITS BAR.**
+                OpenOnWindow(window, shown, AchievementKinds.HallOfFame);
+
+                var firstCallsigns = new Dictionary<string, string>
+                {
+                    ["Your first contact"] = EarliestOf(log.Contacts).Callsign,
+                    ["A DX contact"] = EarliestOf(log.Contacts.Where(c => c.Entity is not null && c.Entity != mine)).Callsign,
+                    ["A PSK31 contact"] = "DL1ABC",
+                    ["A Morse contact"] = "VA3VRR",
+                    ["Over 5,000 miles"] = EarliestOf(log.Contacts.Where(c => c.Miles >= 5000)).Callsign,
+                };
+                var firstCards = TradingCards(window);
+                var earnedFirsts = firstCards.Where(b => b.DataContext is AchievementCategoryCard { Earned: true }).ToList();
+
+                Assert.Equal(
+                    firstCallsigns.Keys.OrderBy(k => k, StringComparer.Ordinal),
+                    earnedFirsts.Select(b => ((AchievementCategoryCard)b.DataContext!).Title).OrderBy(k => k, StringComparer.Ordinal));
+
+                foreach (var card in earnedFirsts)
+                {
+                    var title = ((AchievementCategoryCard)card.DataContext!).Title;
+
+                    Holds("hall_of_fame " + title, CardMiss(card, title, firstCallsigns[title]) ?? (HasMap(card) ? null : "no map with width"));
+
+                    if (!watched)
+                    {
+                        // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: this first held against
+                        // the callsign of a first it is not.
+                        var other = firstCallsigns.First(f => f.Key != title && f.Value != firstCallsigns[title]);
+                        var wrong = CardMiss(card, title, other.Value);
+
+                        _output.WriteLine(where + "hall_of_fame " + title + " held against " + other.Key + "'s " + other.Value + ", watched red: " + wrong);
+
+                        Assert.NotNull(wrong);
+                        watched = true;
+                    }
+                }
+
+                var tenThousand = firstCards.Single(b => b.DataContext is AchievementCategoryCard { Earned: false });
+
+                Holds("hall_of_fame next", CardMiss(tenThousand, "Over 10,000 miles") ?? (HasBar(tenThousand) ? null : "no bar with width"));
+            }
+            finally
+            {
+                window.Close();
+            }
+
+            // **TOTAL MILES, REACHED: THE CROSSING CARD WITH ITS DATE AND A MAP.**
+            var farWindow = Realized(nine, width);
+
+            try
+            {
+                OpenOnWindow(farWindow, (AchievementsViewModel)farWindow.DataContext!, AchievementKinds.TotalMiles);
+
+                var crossingCard = TradingCards(farWindow).First(b => b.DataContext is AchievementCategoryCard { Earned: true });
+
+                Holds(
+                    "total_miles crossed",
+                    CardMiss(crossingCard, "50,000 miles", crossing.StartedUtc!.Value.ToString("MMM d, yyyy", CultureInfo.InvariantCulture))
+                        ?? (HasMap(crossingCard) ? null : "no map with width"));
+            }
+            finally
+            {
+                farWindow.Close();
+            }
+
+            // **MODES: FT8 WITH LA1ZZZ, AND WHERE CW, FT4 AND PSK31 LIVE.**
+            var fewWindow = Realized(FiveContacts(), width, Calling(), bet);
+
+            try
+            {
+                OpenOnWindow(fewWindow, (AchievementsViewModel)fewWindow.DataContext!, AchievementKinds.Modes);
+
+                var modeCards = TradingCards(fewWindow);
+                var ft8 = modeCards.Single(b => b.DataContext is AchievementCategoryCard { Earned: true } c && c.Title == "FT8");
+                var rows = CallerRows(modeCards.Single(b => b.DataContext is AchievementCategoryCard { Earned: false }));
+
+                Holds("modes FT8", CardMiss(ft8, "FT8", "LA1ZZZ"));
+
+                Assert.Equal(new[] { "CW", "FT4", "PSK31" }, rows.Select(r => r.Place).OrderBy(p => p, StringComparer.Ordinal));
+                Assert.StartsWith(
+                    (block.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + on,
+                    rows.Single(r => r.Place == "PSK31").CallLine,
+                    StringComparison.Ordinal);
+            }
+            finally
+            {
+                fewWindow.Close();
+            }
+        }
     }
 
     /// <summary>
@@ -2115,6 +2362,137 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         }
 
         return null;
+    }
+
+    /// <summary>The trading cards the open category draws in its card list, top to bottom.</summary>
+    private static List<Border> TradingCards(Window window)
+        => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
+            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+            .OrderBy(b => Math.Round(Top(b, window)))
+            .ThenBy(b => b.TranslatePoint(new Point(0, 0), window)?.X ?? 0)
+            .ToList();
+
+    /// <summary>True where the card draws a map with a plot and width.</summary>
+    private static bool HasMap(Border card)
+        => card.GetVisualDescendants().OfType<Ft8GlobeControl>().Any(g => g.IsEffectivelyVisible && g.Plot is not null && g.Bounds.Width > 0);
+
+    /// <summary>True where the card draws a bar with width.</summary>
+    private static bool HasBar(Border card)
+        => card.GetVisualDescendants().OfType<BadgeProgressControl>().Any(b => b.IsEffectivelyVisible && b.Bounds.Width > 0);
+
+    /// <summary>
+    /// **Work instruction 345 task 2**: null where every wanted string is drawn on the card, as a whole
+    /// line or as one whole part of a line split at ` · `; otherwise which are not.
+    /// </summary>
+    private static string? CardMiss(Border card, params string[] wanted)
+    {
+        var said = VisibleText(card).ToList();
+        var absent = wanted.Where(w => !said.Any(s => s == w || s.Split(" · ").Contains(w))).ToList();
+
+        return absent.Count == 0
+            ? null
+            : "[" + string.Join("] [", absent) + "] not drawn on the card (drawn: " + string.Join(" | ", said) + ")";
+    }
+
+    /// <summary>
+    /// What a contact earns on a kind whose cards are the contact that earned them - the entity's
+    /// spoken name on Countries, the square on Grids, the scored state on States - or null.
+    /// </summary>
+    private static string? EarnedBy(string kind, AchievementContact contact)
+        => kind == AchievementKinds.Countries ? (contact.Entity is null ? null : EntitySpoken.Of(contact.Entity))
+            : kind == AchievementKinds.Grids ? contact.Grid
+            : kind == AchievementKinds.States ? AchievementLog.StateOf(contact)
+            : null;
+
+    /// <summary>
+    /// **Work instruction 345 task 2, ruling 21**: null where the drawn earned card is `entry` - the
+    /// entity, callsign, grid, distance, band, mode, date and points each drawn as the log entry has
+    /// them, the points from the shipped file - and where the entry lacks a fact, nothing in its place,
+    /// no dash, and no map without a grid; otherwise what is wrong.
+    /// </summary>
+    private static string? EarnedCardMiss(Border card, string kind, AchievementContact entry, AchievementPoints points)
+    {
+        var said = VisibleText(card).ToList();
+        var parts = said.SelectMany(s => s.Split(" · ")).ToList();
+        var shown = " (drawn: " + string.Join(" | ", said) + ")";
+        var key = EarnedBy(kind, entry)!;
+        var wanted = new List<(string What, string Value, bool Whole)>
+        {
+            (kind == AchievementKinds.Grids ? "the grid" : "the entity", key, true),
+            ("the callsign", entry.Callsign, false),
+            ("the points", AchievementCategory.Pts(points.Special(kind, key) ?? points.Per(kind)), true),
+        };
+
+        if (kind == AchievementKinds.Grids && entry.Entity is not null)
+        {
+            wanted.Add(("the entity", EntitySpoken.Short(entry.Entity), false));
+        }
+        else if (kind != AchievementKinds.Grids && entry.Grid is not null)
+        {
+            wanted.Add(("the grid", entry.Grid, false));
+        }
+
+        if (entry.Miles is { } miles)
+        {
+            wanted.Add(("the distance", GridPath.DescribeMiles(miles).Replace(" miles", " mi", StringComparison.Ordinal), true));
+        }
+
+        if (entry.Band is not null)
+        {
+            wanted.Add(("the band", AdifLog.BandDisplayNameFor(entry.Band), false));
+        }
+
+        if (entry.Mode is not null)
+        {
+            wanted.Add(("the mode", entry.Mode.Name, false));
+        }
+
+        if (entry.StartedUtc is { } at)
+        {
+            wanted.Add(("the date", at.ToString("MMM d, yyyy", CultureInfo.InvariantCulture), true));
+        }
+
+        foreach (var (what, value, whole) in wanted)
+        {
+            if (!(whole ? said.Contains(value) : parts.Contains(value)))
+            {
+                return what + " [" + value + "] from " + entry.Callsign + "'s log entry is not drawn" + shown;
+            }
+        }
+
+        if (said.Any(s => s.Trim() == "-" || s.Contains('—', StringComparison.Ordinal)))
+        {
+            return "a dash is drawn" + shown;
+        }
+
+        var slots = card.GetVisualDescendants().OfType<TextBlock>().Where(t => t.IsEffectivelyVisible).ToList();
+
+        if (entry.Grid is null || entry.Miles is null)
+        {
+            if (HasMap(card))
+            {
+                return "a map is drawn for an entry with no grid" + shown;
+            }
+
+            if (!said.Contains("no grid, so no map"))
+            {
+                return "no map and no word saying why" + shown;
+            }
+
+            if (slots.Any(t => t.Classes.Contains("card-distance")))
+            {
+                return "a distance slot is drawn for an entry with no distance" + shown;
+            }
+        }
+        else if (!HasMap(card))
+        {
+            return "an entry with a grid and no map with width" + shown;
+        }
+
+        var facts = slots.Count(t => t.Classes.Contains("card-facts"));
+        var held = (entry.Band is not null || entry.Mode is not null ? 1 : 0) + (entry.StartedUtc is not null ? 1 : 0);
+
+        return facts == held ? null : facts + " band, mode and date lines drawn where the entry has " + held + shown;
     }
 
     /// <summary>

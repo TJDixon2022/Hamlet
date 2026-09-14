@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 2
+TASK: TASK 2 of 2
 WORK_INSTRUCTION: 345 - step 1, proved on the window
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-13T21:16:40-04:00
-NOTE: Task 1 - carry-forward app 111 of 111 after the change; running the engine invocation, then the task 1 commit.
+UPDATED: 2026-09-13T21:24:27-04:00
+NOTE: Task 2 - carry-forward app 111 of 111 after the change; running the engine invocation, then the task 2 commit and the report.
 
 ---
 

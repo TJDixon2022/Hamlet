@@ -13,6 +13,7 @@ using Hamlet.App.Telemetry;
 using Hamlet.App.ViewModels;
 using Hamlet.App.Views;
 using Hamlet.RadioEngine.Contacts;
+using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 using Xunit;
 using Xunit.Abstractions;
@@ -327,6 +328,120 @@ public sealed class TheAchievementsPageClicksInTests
         screen.BackCommand.Execute(null);
 
         Assert.Null(screen.Category);
+
+        // **WORK INSTRUCTION 345 TASK 2, RULING 17: ON THE REALIZED WINDOW AT 1400 AND 1920**, each of
+        // the seven drawn badges pressed as `ClickingABadgeReplacesThePageAndTheBackControlReturns`
+        // presses one: the page it opens draws the continent's name, the `‹ Continents` link, one
+        // earned card per entity the log worked there and at most one next card, and the link brings
+        // the seven back.
+        var watched = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var window = Realized(TheAchievementsPageTests.TwelveContacts(), width);
+            var shown = (AchievementsViewModel)window.DataContext!;
+            var log = shown.Page!.Log;
+
+            try
+            {
+                Press(window, Named<ItemsControl>(window, "AchievementsBadges").GetVisualDescendants().OfType<Button>()
+                    .Single(b => (b.CommandParameter as string) == AchievementKinds.Continents));
+
+                var codes = SevenDrawn(window).Select(b => (string)b.CommandParameter!).ToList();
+
+                Assert.Equal(7, codes.Count);
+
+                foreach (var code in codes)
+                {
+                    Press(window, SevenDrawn(window).Single(b => (b.CommandParameter as string) == code));
+
+                    var miss = ContinentPageMiss(window, log, code);
+
+                    _output.WriteLine(
+                        F(width) + " " + code + ": " + (miss ?? "drawn [" + Named<TextBlock>(window, "AchievementsCategoryName").Text + "] ["
+                            + Named<Button>(window, "AchievementsBack").Content + "] " + string.Join(" / ", DrawnCards(window).Select(c => c.Title))));
+
+                    Assert.True(miss is null, F(width) + " " + code + ": " + miss);
+
+                    if (!watched)
+                    {
+                        // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: this drawn page held
+                        // against a continent it is not.
+                        var other = codes[(codes.IndexOf(code) + 1) % codes.Count];
+                        var wrong = ContinentPageMiss(window, log, other);
+
+                        _output.WriteLine(F(width) + " " + code + " held against " + other + ", watched red: " + wrong);
+
+                        Assert.NotNull(wrong);
+                        watched = true;
+                    }
+
+                    Press(window, Named<Button>(window, "AchievementsBack"));
+
+                    Assert.Equal("Continents", Named<TextBlock>(window, "AchievementsCategoryName").Text);
+                    Assert.Equal(7, SevenDrawn(window).Count);
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>The seven badge buttons drawn inside Continents.</summary>
+    private static List<Button> SevenDrawn(Window window)
+        => Named<ItemsControl>(window, "AchievementsSubBadges").GetVisualDescendants().OfType<Button>()
+            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge"))
+            .ToList();
+
+    /// <summary>The trading cards the open category draws, by their view model.</summary>
+    private static List<AchievementCategoryCard> DrawnCards(Window window)
+        => Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
+            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card") && b.DataContext is AchievementCategoryCard)
+            .Select(b => (AchievementCategoryCard)b.DataContext!)
+            .ToList();
+
+    /// <summary>
+    /// **Work instruction 345 task 2**: null where the open page is `code`'s continent as drawn - its
+    /// name, the `‹ Continents` link, one earned card per entity the log worked on it with that
+    /// entity's name drawn as its title, and at most one next card; otherwise what is wrong.
+    /// </summary>
+    private static string? ContinentPageMiss(Window window, AchievementLog log, string code)
+    {
+        var continent = code[AchievementCategory.ContinentPrefix.Length..];
+        var name = Named<TextBlock>(window, "AchievementsCategoryName");
+        var back = Named<Button>(window, "AchievementsBack");
+        var cards = DrawnCards(window);
+        var titles = Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && t.Classes.Contains("card-title"))
+            .Select(t => t.Text ?? "")
+            .ToList();
+        var worked = log.OnContinent(continent).Select(c => c.Entity).OfType<string>().Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(EntitySpoken.Of)
+            .OrderBy(t => t, StringComparer.Ordinal)
+            .ToList();
+        var earned = cards.Where(c => c.Earned).Select(c => c.Title).OrderBy(t => t, StringComparer.Ordinal).ToList();
+
+        if (!name.IsEffectivelyVisible || name.Text != DxccContinents.NameOf(continent))
+        {
+            return "the page's name is [" + name.Text + "], not [" + DxccContinents.NameOf(continent) + "]";
+        }
+
+        if (!back.IsEffectivelyVisible || back.Content as string != "‹ Continents")
+        {
+            return "the back link is [" + back.Content + "], not [‹ Continents]";
+        }
+
+        if (!earned.SequenceEqual(worked) || earned.Any(t => !titles.Contains(t)))
+        {
+            return "the earned cards drawn are [" + string.Join(" / ", earned) + "], not one per entity worked there ["
+                + string.Join(" / ", worked) + "]";
+        }
+
+        var nexts = cards.Count(c => !c.Earned);
+
+        return nexts <= 1 ? null : nexts + " next cards are drawn";
     }
 
     /// <summary>
@@ -497,6 +612,17 @@ public sealed class TheAchievementsPageClicksInTests
     private static Window Realized(IReadOnlyList<AdifLogRecord> records)
     {
         var window = new AchievementsWindow { DataContext = Screen(records) };
+
+        window.Show();
+        Settle(window);
+
+        return window;
+    }
+
+    /// <summary>The window at a stated width (work instruction 345), over the shipped points file.</summary>
+    private static Window Realized(IReadOnlyList<AdifLogRecord> records, double width)
+    {
+        var window = new AchievementsWindow { DataContext = Screen(records), Width = width };
 
         window.Show();
         Settle(window);
