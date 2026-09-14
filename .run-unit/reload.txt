@@ -1,12 +1,16 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-14T08:25:26-04:00  root C:\Source\HamLet
+measured 2026-09-14T11:08:46-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-163 (2026-09-12); CLAUDE.md section 1 holds CPS-DEC-0163.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0163.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
+  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -18,22 +22,26 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 4ac119ef
-  uncommitted at the root : 0
+  HEAD   : 4e187e79
+  uncommitted at the root : 4
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
+      M WORK_INSTRUCTIONS.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
   highest in CLAUDE.md section 1 : CPS-DEC-0163
-  PROJECT_STATUS.md RULES_AT     : HM-DEC-163 (2026-09-12)
+  PROJECT_STATUS.md RULES_AT     : HM-DEC-161 (2026-09-11)
 
 ==============================================================
  THE EIGHT
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  183 lines, 9626 bytes
+  210 lines, 11596 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
@@ -104,6 +112,33 @@ Every line below was read from the tree at that moment. Nothing is remembered.
     under it; no callsign is ever clipped in the decoded list. **No mechanism is prescribed;
     the unit measures and chooses, marks the choice as its own, and reports the numbers at
     both widths.**
+  
+  **R29 - typed text goes on the air, framed by Hamlet.** Tim, 2026-09-14, after reading a
+  real QSO between KE0JBT and N7WE off 14.070 and having nothing to send back but another CQ:
+  *"I want to add the ability to send text I type. That is the thing PSK31 offers over
+  FT8/4."* And the shape: *"I right click on a message in the Everything list and it creates a
+  card. On that card I can do a standard answer but there is also a text block where I can
+  enter text to transmit."*
+  
+  **This withdraws the no-keyboard line of PSK31 plan R2** and nothing else of it: the four
+  macros stand, their words stand, and Name, QTH and grid still come from Settings. What is
+  withdrawn is *free typing is not in this phase* and the rejection of a keyboard under it.
+  
+  **What it does not touch, and what a later unit may not quietly take back.** One click, one
+  transmission (0.2). One keying sequence and one PttOn site (R10). The certainty gate on
+  Report and Confirm (R1). **Hamlet frames what he types** with the callsigns and the
+  hand-back, because those are the two things a beginner forgets on a keyboard mode, and they
+  are not his to remember. **And the text he typed never enters the record** (HM-DEC-018,
+  2.1); its length does.
+  
+  Recorded by unit 357 task 0 from his own words.
+  
+  **R28 - Stop is always pressable and never grey.** Tim, 2026-09-14, asked which of two
+  ways Stop should behave and answering *"A, the way it has been"*: the control stays live at
+  every instant, including when nothing is keyed, rather than being disabled until there is
+  something to stop. A press with nothing running costs nothing; a grey Stop on the evening it
+  is needed costs the transmission. Recorded by unit 356 task 0 from his own words, and
+  building nothing: the behavior is already this.
   
   **R27 - what the last phase left.** Unit 336's open items: the States wording (*worked*,
   never *confirmed*, and the count says what it counts); the Modes test; the files sessions
@@ -219,23 +254,24 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  9 lines, 1182 bytes
+  10 lines, 1216 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  CURRENT_STEP: 3
+  CURRENT_STEP: 0
   WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-  STEP: 0 | done | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  HEARTBEAT: 2026-09-14 11:08:44
+  STEP: 0 | partial | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
   STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
   STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
   STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  295 lines, 65033 bytes
+  369 lines, 72404 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  STEP: 0 | done | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 0 | partial | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
   STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
   STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
   STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
@@ -527,6 +563,80 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: blocked
   STATE_WHY: The only exit criterion is Tim saying the step passed, which the report shows has not happened and no session can do, and the unit also raised a decision for the owner about Stop being drawn below the window at the opening size of 1100 x 780, which touches transmit safety.
+  
+  ## UNIT 355 - STEP 3
+  
+  STEP: 3
+  APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
+  MOVE: continue
+  WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
+  DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
+  LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
+  COST: one session, five tasks, each committed on its own.
+  ACCOMPLISHED: Tim can stop a transmission from the status bar at every window size measured, 9 of 9 where it was off the window at the size Hamlet opens at; a PSK31 station's words stay on the list, marked ended, after his carrier goes, and an ended CQ row can still be answered; no test view model can reach callook.info; the sheet he reads says so with this unit's numbers
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: Step 3's only exit criterion is Tim's verdict at his window size, which no session can give. The unit completed its five tasks, and it raises one transmit-side ask: task 1 said Stop should be disabled with nothing keyed, and it was built pressable at every instant instead, because the send plan's step 1 says the abort cannot be disabled and a guarding test holds that.
+  
+  ## UNIT 1 - STEP 3
+  
+  STEP: 3
+  APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
+  HIT: section 4 wants a ruling: yes - Item 1 asks the owner to decide whether the Stop abort stays pressable at every instant or is disabled when nothing is keyed, which touches transmit and the radio's safety, and the unit's own build contradicts the work instruction's words.
+  MOVE: continue
+  WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
+  DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
+  LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
+  COST: 27.369619999999998
+  ACCOMPLISHED: Tim can always stop a transmission from any window size, and what a PSK31 station said stays on his screen after the station stops
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: The only exit criterion is Tim saying it passed and the report shows no such verdict, so no unit can meet it, and the open ask on whether Stop may be disabled touches the transmit abort, which is one of the three things the phase stops for.
+  
+  ## UNIT 356 - STEP 3
+  
+  STEP: 3
+  APPROACH: keep the send area inside the window at every size by giving up panel height first and the top row second, compose the post-send ALC sentence after the reference is stored and never send the operator to the radio, and put the spot sources' HTTP clients behind the seam so no test constructs one
+  HIT: recorded at task 0, before anything was built. Tim ruling of 2026-09-14 on Stop is written into PHASE_PLAN.md as R28 and builds nothing, because the behavior is already what he chose.
+  MOVE: continue
+  WHY: Hamlet opens at 1100x780 and CQ sits below the window's bottom edge, so a new operator cannot see the button that calls CQ; and the sentence on Tim own screen after an FT8 send contradicts R15 by not counting the send it describes and R11 by sending him to a meter on the radio
+  DECIDED: the height-giving order - panels first, then the top row, never the send area - is the unit own stated rule; the three sentence forms are the author words for the operator
+  LICENCE: screen phase R26 and section 6; PSK31 plan R11, R15, R12, R14, R19; Tim 2026-09-14 on Stop; CLAUDE.md 0.0
+  COST: one session, five tasks, each committed on its own
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at its start
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: not recorded - no step moves; written at task 0.
+  
+  ## UNIT 357 - STEP 3
+  
+  STEP: 3
+  APPROACH: right-click any PSK31 row to open that station card, add a text block that sends one framed line through the existing unslotted sequence on one click, lift the cap to sixty seconds for typed text, and show a row whole message on hover and on click
+  HIT: recorded at task 0, before anything was built. Tim ruling of 2026-09-14 is written into PHASE_PLAN.md as R29 and withdraws the no-keyboard line of PSK31 plan R2 and nothing else of it.
+  MOVE: continue
+  WHY: he read a real QSO off 14.070 with nothing to send back but another CQ, and typing is the thing PSK31 offers over FT8 and FT4; the framing keeps the callsigns and the hand-back out of his hands while one click one transmission and the single keying path stay exactly as proved
+  DECIDED: the frame exact words are the author own; the sixty-second cap is the author number; the word that says the turn is doubtful is the author own
+  LICENCE: Tim 2026-09-14 overruling PSK31 plan R2; CLAUDE.md 0.2; PSK31 plan R1, R10, R11, R13; HM-DEC-018 and 2.1
+  COST: one session, five tasks, each committed on its own
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at its start
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: not recorded - no step moves; this unit clears a blocker rather than advancing a criterion, and step 3 exit is Tim verdict. Written at task 0.
+  
+  ## UNIT 1 - STEP 0
+  
+  STEP: 0
+  APPROACH: wire Olivia everywhere PSK31 is wired, read the cited calling table and the RSID codes from data files, put the Capture button on the panel, and keep the tab inert for decoding and sending
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - This unit's items are an install step for Tim, findings and mismatches, and the only carried ask inside the three, about Stop and the abort, is recorded as ruled by Tim on 2026-09-14.
+  MOVE: continue
+  WHY: step 0 depends on nothing; the shape is the PSK31 seam's, proved twice; every value comes from a cited file
+  DECIDED: nothing beyond the plan; the timing table's first row is marked an estimate
+  LICENCE: PHASE_PLAN.md R27, R29, R30, section 6; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.1, 0.2, 0.5, 2.1; HM-DEC-054
+  COST: 1.7553294999999998
+  ACCOMPLISHED: Olivia is a tab that tunes to the right place and says what it cannot do yet, with its data cited and its fixtures hashed
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: This unit touched nothing in src and measured none of this step, but the carried unit 354 findings show the rig matches the card height and the top row and panels hold at 1400 and 1920, while the green block text, the clock dot and callsign clipping at 1400 are not measured and the carry forward list is unstable run to run.
 
   --- CLAUDE.md ---
   1387 lines, 197230 bytes
@@ -549,17 +659,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 1001 bytes
+  19 lines, 784 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: COMPLETED
-  TASK: TASK 3 of 3
+  STATE: BLOCKED
+  TASK: TASK 0 of 6
   WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
-  RULES_AT: HM-DEC-163 (2026-09-12)
-  UPDATED: 2026-09-14T03:06:51-04:00
-  NOTE: Unit 354 complete at task 3 of 3 - main window measured at 9 sizes: R26 holds at 1400x1040, 1920x1040, 1920x1017, 2560x1400 and misses at every size under 1040 tall; at 1100x780 panels 0 px and Stop below the window (ask, section 4 item 1); achievements clean at 1040x720 and wider, 8 runs clip at 900x620; sheet gained both tables and items 28 to 35; step 3 still Tim's
+  RULES_AT: HM-DEC-161 (2026-09-11)
+  UPDATED: 2026-09-14T11:04:25-04:00
+  NOTE: Unit 358 stopped before task 0 - install-phase.bat has not run, root PHASE_STATUS.md is still the screen phase, nothing built, fixtures hashed 9 of 9 match
   
   ---
   

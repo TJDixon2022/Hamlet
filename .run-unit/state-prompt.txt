@@ -47,236 +47,333 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 --- the step from the phase plan follows ---
 
-﻿STEP: 3 | Tim looks at every page at his window size and says it passed.
-## Step 3 - Tim looks
+﻿STEP: 0 | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+## Step 0 - The main window is the mockup
 
-**Delivers:** Tim opens every page at his window size and says it passed.
+**Delivers:** R26.
 
-**Entry:** step 2 done.
+**Entry:** the tree is Hamlet's; `PHASE_STATUS.md` names this phase.
 
 **Exit:**
-- Tim says it passed. *must-pass* No script can evaluate this.
+- At 1920, the top row (neighborhood card and rig display) is about 190 px tall and the
+  working panels below the tabs take the rest; the numbers reported. *must-pass*
+- The neighborhood card carries the band strip, the green block and the world clock as
+  R26 says; the green block's band is its largest text; the clock carries one dot.
+  *must-pass*
+- The rig display is the neighborhood card's height and carries drive and the power
+  offer under the S-meter. *must-pass*
+- Waterfall, decoded text and For You are equal height, full to the status bar; the
+  card's facts sit beside its map at 1920. *must-pass*
+- At 1400 the same shape holds, no callsign is clipped, and the facts go beside or under
+  by the unit's stated rule; the numbers reported at both widths. *must-pass*
+- `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
+- The band pills' *best bet now* is joined to the green block by the check as before.
+  *nice-to-pass*
 
-**Depends on:** step 2.
+**Depends on:** nothing.
 
-## Â§5 Dependencies
-
-Step 0 depends on nothing. Steps 1-3 are one pipeline.
-
-## Â§6 Branching
-
-- **The arbiter stops for three things only**; on everything else it decides, marks,
-  applies, continues.
-- **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins.
-- **A must-pass is missed by a little.** Ship, report, `partial`, move on. Never loosen a
-  test.
-- **A string will not fit.** Shorten and say which, or widen; never clip.
-- **A fact for a card is missing from the log.** Show what is there; no dash; a map with
-  no grid is no map.
-- **Anything touches the radio, a decoder, a parser or the transmit chain.** `MOVE: stop`.
-- **A package is needed.** `MOVE: stop`.
-- **A file must be deleted.** Empty it, comment it, list it.
-- **Status.** `tools/status.sh` reads the clock; never compose a time. The watchdog now
-  polls the process; a session is killed only when its process tree accrues no CPU for
-  ten minutes.
-
-## Â§7 Carried
-
-Every open ask from unit 336's queue, verbatim in every unit. Plus: real flags on
-earned country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the
-radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
 
 --- the unit's report follows ---
 
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. Steps 0 to 2 done (units 351,
-   347, 348). Step 3 waits on Tim's verdict at his window size, on
-   docs/unit349-what-tim-looks-at.md, which this unit brought up to date
-   (72901b0f).
-B. Step 3's ground - the sheet - and step 0's safety at small sizes; no
-   criterion changes state. What this unit did for it:
-   1. Stop on the window at the nine sizes: 8 of 9 -> 9 of 9, in the
-      status bar; at 1100 x 780 Stop's box is 997,723 74 x 36 on a 780 px
-      window (was y 800, below it). Its path to StopNow untouched.
-   2. PSK31 rows kept after the carrier ends: 0 -> every row that read a
-      character; four of four on the four-signal recording, 483 characters.
-   3. Test view models that can reach callook.info: every one -> none.
-   4. The sheet: Stop, the nine sizes and PSK31 rows re-stated from this
-      session's runs.
-C. The report last. Section 4 raises 9 items on top of the carried queue.
-   Item 1 is a transmit-side ask: task 1 said Stop should be disabled with
-   nothing keyed, and it was built pressable at every instant instead.
+A. The phase goal - Hamlet works Olivia the way it works PSK31. Step 0 not started,
+   1-6 not started. The phase is not installed at the root, so the loop cannot
+   run it yet.
+B. Step 0's criteria 0.1 to 0.6 - none met, none attempted: 0 of 6. The
+   instruction's own section 5 check stopped the unit before task 0.
+C. The report last. Section 4 raises 3 items on top of the carried queue. Item 1
+   bears on A and B directly: install-phase.bat has not run, and every step waits
+   on it.
 ```
 
 ```
-UNIT:       355 - complete at task 5 of 5, none dropped - 2026-09-14 09:22
-PHASE GOAL: The main window laid out as Tim's approved mockup and every achievements category page as trading cards, proven by tests in steps 0 to 2, and then Tim at his own window saying it passed, which is the one step left.
-UNIT GOAL:  Keep the transmit abort on the window at every size by moving Stop into the status bar without touching its path; stop a PSK31 station's words vanishing when his carrier ends; take the license lookup off the network in tests; bring the sheet Tim reads up to date with all of it.
-ADVANCED:   no - step 3 still waits on Tim's verdict; no exit criterion changed state
-NUMBER:     window sizes with Stop on the window 8 of 9 -> 9 of 9; PSK31 rows kept after the carrier ends 0 -> all that read a character (4 of 4 on the four-signal recording)
-DRIFT:      1 consecutive unit without advance (was 0 in unit 354's report; the instruction's block says carried and gives no number)
+UNIT:       358 - stopped at task 0 of 6, no task started, none dropped - 2026-09-14 11:05
+PHASE GOAL: Olivia becomes a fourth keyboard mode that Hamlet hears, reads, answers and
+            logs the same way it does PSK31, with the variant set by the signal's own
+            RSID and never picked by the operator.
+UNIT GOAL:  Tell every shared surface that Olivia exists - the tab, the calling spot from
+            the cited file, the panel, the Capture button, the data files - with nothing
+            decoding and nothing able to send.
+ADVANCED:   no - section 5's stop fired: PHASE_STATUS.md at the root is still the screen phase
+NUMBER:     fixtures hashed 0 -> 9, and 9 of 9 match the manifest; calling rows read 0 -> 0,
+            because task 1 was not started
+DRIFT:      1 consecutive unit without advance (was 0)
 ```
+
+**Every appearance claim is computed, not seen.** This unit makes none: nothing in `src`
+was touched.
 
 ## 1. What Claude did
 
-**Complete at task 5 of 5, nothing dropped.** Machine QUIVERFULL; project Hamlet, gate passed
-(`SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and `MURC.sln`
-absent, root `C:\Source\HamLet`); branch `main`, each task committed and pushed. Every appearance claim is
-computed on the headless host, not seen.
+**Stopped at task 0 of 6, blocked on the phase install.** Host QUIVERFULL, project Hamlet,
+branch `main`, HEAD `32f67637` when the tree was read.
 
-**Before anything changed:** carry-forward app 111 of 111, engine 86 of 86. Patch bump 1.13.41 -> 1.13.42;
-`UNIT 355` appended to `PHASE_OUTCOME.md` under step 3.
+### The gate held
 
-### Task 1 - Stop lives in the status bar (`151a108d`)
+| Check | Found |
+| --- | --- |
+| `SHACK_FACTS.md` must exist | exists |
+| `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` must exist | exists |
+| `CoreHMI.sln` must not exist | absent |
+| `MURC.sln` must not exist | absent |
+| root `C:\Source\HamLet` | the session's working directory and `SESSION.lock`'s `ROOT` |
 
-- `DigitalStopButton` moved from the send area in the tab row to the status bar's last column
-  (`MainWindow.axaml`, status bar grid now five columns). Same command, `StopSendingCommand`, same path to
-  `Ft8ArmedSend.StopNow`; nothing under `ViewModels` changed for it. Same `hm-stop` styles, words, tip.
-- `TheStopIsAlwaysOnScreenTests` watched red 4 of 4 (at 1100 x 780 Stop's centre was y 791 on a 780 px window, and
-  a click there landed on nothing), then green:
-  - in the status bar and whole on the window at unit 354's nine sizes on FT8 and PSK31, and on the plain window at
-    900 x 620 and 1100 x 780 on the Digital, CW and Voice tabs;
-  - 36 px tall (the bar's inside), right of the bar's centre, in no collapsible panel, the only button bound to the
-    stop command, the bar 46 px with it and without it;
-  - at rest at 1100 x 780: *Stop*, not live, enabled, command can execute, a hit test at its centre lands on it;
-  - armed at 1100 x 780: *Stop transmitting*, 206 x 36 at 865,723; a real click un-arms, the wire takes
-    `17 FF` then `1C 00 00`, the slot boundary finds nothing armed, the sink is never touched;
-  - keyed at 1100 x 780: enabled, a real click puts both abort frames on the wire while the tones run, and the
-    sound stops by its token.
-- `TheUnslottedSendTests` and `TheFt8AndFt4SendsAreByteIdenticalTests` 11 of 11, unedited. `BindingHealthTests`
-  green. `TheTopRowTests.DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` now asserts CQ in the send
-  area and Stop in the status bar.
-- `TheOperatorCanStopItTests` (not on the carry-forward list, the sheet's *never run*) ran: 6 of 7 in the guard group.
-  `TheStopAddedNoNewRouteToATransmission` is red and older than this unit (section 4 item 5).
+### Section 5 stopped it
 
-### Task 2 - a PSK31 station's words stay (`66bb7b0b`)
+The instruction's first check: *`PHASE_STATUS.md` line 1 names Hamlet works Olivia the way
+it works PSK31 with seven steps. **If it is the screen phase, stop and say so** -
+`install-phase.bat` did not run.*
 
-- A retired PSK31 row that read any words is kept: `DigitalDecodeRow.Ended` set in place, *ended* drawn beside the
-  station (`DecodedRowEndedWord`), `RowOpacity` 0.55. It joins the arrival order with the FT8 rows, so the order
-  button keeps it and `TrimDigitalDecodes` (the cap loop that was inline in `AddDecodeRow`, line for line for a list
-  with no PSK31 row) drops it at 500. Clear and the retune clear remove it. Leaving the tab ends rows too.
-- A carrier back within 16 Hz and 15 s of audio resumes the same row, earlier words first, reading carried on.
-- Telemetry: `psk31_row_ended` (offsetHz, characters, lines, lifetimeSeconds) and `psk31_row_cleared`
-  (offsetHz, characters, reason `clear`, `retune` or `cap`). Counts and a frequency, never words.
-- `ThePsk31RowStaysTests` watched red 4 of 4, then green: the four-signal recording leaves four ended rows holding
-  all their text, 120 + 101 + 120 + 142 = 483 characters, with four `psk31_row_ended` events (lifetimes 32 to 57.3 s);
-  Clear removes two ended rows with two `clear` events; a return at 1093 Hz resumes the 1085 Hz row and a station at
-  1600 Hz is a new row; the order button keeps an ended row and 500 FT8 rows drop it with one `cap` event and
-  *oldest 1 dropped*.
-- `TheRowShowsWhatWasHeardTests`, `ThePsk31StationIdlesTests` (app and engine) and `ThePsk31CarrierLivesTests`
-  green, unedited.
+- **Root `PHASE_STATUS.md` line 1 reads `PHASE: The screen, done right`**, with
+  `CURRENT_STEP: 3` and `WORK_INSTRUCTION: 354`. Its only uncommitted change is a launcher
+  line, `HEARTBEAT: 2026-09-14 11:03:00`.
+- **`docs\phase-screen-run\` does not exist.** The installer creates it first.
+- **`docs\phase-olivia\` holds the Olivia layer, untracked and not installed**:
+  `PHASE_PLAN.md` (17,175 bytes), `PHASE_STATUS.md` (1,855), `PHASE_OUTCOME.md` (1,781).
+  Its status file is the one the instruction expects: seven steps, `CURRENT_STEP: 0`,
+  `WORK_INSTRUCTION: 358`.
+- **Root `PHASE_PLAN.md` is still the screen plan.** Its R27 is *what the last phase left*,
+  not RSID, and it has no §1 about Olivia.
 
-### Task 3 - an ended row is still a station (`1a0d5c99`)
+### What was checked anyway, because it changes nothing
 
-- The ended row keeps its reading; `RefreshPsk31Card` falls back to it under a key below nought (no channel id is),
-  and `RememberWhatWeSent` counts his side from it. No send path changed: `AnswerPsk31` goes through `SendMessage`.
-- `ThePsk31ExchangeTests.ClickingAnEndedCqRowStillAnswersHimAndOpensHisCard` watched red (the Answer went, no card
-  opened), then red again with the card at *Unknown* (the Answer had merged before his CQ), then green: station,
-  country and fade kept; one transmission; the Answer macro; `psk31_send_composed` at 1234 Hz; one W1AW card at
-  *His turn*. The class 4 of 4.
+The fixture hashes, as section 5 asks. `sha256sum` against `manifest.json`:
 
-### Task 4 - the tests stay off the network (`b5be0db9`)
+| Fixture | Manifest | Measured |
+| --- | --- | --- |
+| `olivia-8-250-cq-rsid.wav` | `bfdbff07…a18dc` | match |
+| `olivia-16-500-qso-rsid.wav` | `0b2b554e…f5c76` | match |
+| `olivia-32-1000-qso-rsid.wav` | `9cb7f62e…1e59b` | match |
+| `olivia-8-250-qso-norsid.wav` | `d2ad6150…86615` | match |
+| `olivia-16-500-qso-snr-10db.wav` | `1a58f793…6fc28` | match |
+| `olivia-16-500-qso-snr-16db.wav` | `2c26c0d7…c60fa` | match |
+| `olivia-two-signals-rsid.wav` | `fd89d10b…089de` | match |
+| `olivia-noise-only-30s.wav` | `16b16db7…c34a7` | match |
+| `psk31-cq-rsid.wav` | `de6b20fe…e1b6f` | match |
 
-- The seam is the existing `ICallsignLookup`. `MainWindowViewModel` gained a three-argument constructor; the
-  two-argument one the app calls takes `DefaultLicenseLookup`, the live client (`LiveCallookLookup`, one polite
-  `CallookCallsignLookup` per request, as `ResolveProfileAsync` built inline). The test assembly's module
-  initializer sets the default to `NetworkDeniedLookup` (a transport failure, nothing sent);
-  `TheWorkingPanelsTests.Realized` and `TheTopRowTests.Realized` hand in `FixedLicenseLookup`, General for KC3QIS.
-- `TheTestsStayOffTheNetworkTests` watched red 4 of 4 on each test's first line (the default was
-  `LiveCallookLookup`; no view model built), then green: a two-argument view model under test has the network
-  denied; a handed-in denied lookup is asked once and the class stays Unknown; the plain fixture asks the fixed
-  answer once and draws General (*7.028 MHz · yours to use*); the licensed fixture takes it too; plain 900 x 620 and
-  1100 x 780 and licensed 1400 x 1040 read the same boxes twice running (1400: top row 216, panels 424 each).
-- Not asserted: *no HTTP client is created under test* does not hold (section 4 item 2).
+**9 of 9 match**, every one compared across all 64 characters. That is eight Olivia files
+and one PSK31 file. Also present: `assets\data\rsid-codes.json`,
+`assets\data\olivia-calling.json`, `assets\reference\SOURCE.md`,
+`assets\reference\olivia-fixture-generator.cpp` and `assets\reference\jalocha\`.
 
-### Task 5 - the sheet matches the tree (`72901b0f`)
+### Not done, and why
 
-`docs/unit349-what-tim-looks-at.md`: the opening says what unit 355 changed; section 1 a bullet; 2.1 CQ and Stop
-split, a table of Stop at the nine sizes; the sizes table's 900 x 620 and 1100 x 780 rows; 2.2 PSK31 rows stay;
-3.1 ruling 5; section 4 item 28 now about CQ only. Numbers from this session: `TheStopIsAlwaysOnScreenTests` and
-`Unit354TraceTheMainWindowAtTheSizesTimCanOpen` at `b5be0db9`, `ThePsk31RowStaysTests` at `66bb7b0b`,
-`ThePsk31ExchangeTests` at `1a0d5c99`. The sheet has no check of its own; nothing in `tests` or `tools` reads it.
+**All six tasks (0 to 5)**, none of them the named drop candidate (tasks 4 and 5).
+Section 5 says to stop, and the tree supports that, not just the wording:
 
-### After
+- Task 0 appends `UNIT 358` to `PHASE_OUTCOME.md` under step 0. **The root file is the screen
+  phase's outcome.** An entry written there now would be moved into
+  `docs\phase-screen-run\` when the installer runs, filed under the wrong phase.
+- Tasks 1 to 5 build against a plan that is not at the root. The loop's next arbiter would
+  read the screen plan.
+- Section 5's code trace (the PSK31 seam, the Capture button, `PROJECT_CARD.md`, the named
+  tests) was not run, and neither was the carry-forward list. Both belong to task 0 of an
+  installed phase.
 
-App: the carry-forward list with this unit's four new or extended classes, `TheWorkingPanelsTests`,
-`TheTopRowTests`, `LicenseResolverTests`, `Unit302CardNameTests`, `HowFastTheDecodedTableGrowsTests` and
-`TheDecodedOrderAndClearTests`, 170 of 170 at `b5be0db9`. Engine: no file under `src\Hamlet.RadioEngine` or its
-tests changed since the seed (`git diff --stat 4ac119ef`, empty), so its 86 of 86 was not re-run.
+**One decision made here: `install-phase.bat` was not run by this session.** Its own header
+says *RUN THIS YOURSELF, BEFORE THE LOOP. It is not a work unit's job*. It moves three files
+out of the root. The instruction says *report every mismatch; repair nothing*. Copying the
+three files by hand would be the same repair by another route.
 
-### Existing tests this unit edited
-
-- `TheTopRowTests`: the send-area assertion now puts Stop in the status bar; `Realized` hands in the fixed answer.
-- `TheWorkingPanelsTests.Realized`: hands in the fixed answer.
-- `ThePsk31HearsEveryoneTests.Watch`: skips ended rows, so a carrier is gone when its row ends. The bound is unchanged.
-- `ThePsk31ReadsTheConversationTests.TheCodeTheseRowsReuseIsUnchanged`: the `RowOpacity` pin moved to the new line,
-  as unit 324 moved it.
-- `ThePsk31ExchangeTests`: one test added; `Panel` takes an optional telemetry.
-
-### Decisions made for this unit
-
-1. **Stop is pressable at every instant, not disabled with nothing keyed.** Task 1's clause was not built:
-   `docs/phase-send/PHASE_PLAN.md` step 1, *it cannot be disabled, deferred, or made conditional* (must-pass),
-   `TheOperatorCanStopItTests.TheStopIsOnScreenAndPressableBeforeAnythingHappens` guards it, and a press before the
-   slot boundary, when nothing is keyed, is how an armed send is taken off. Section 4 item 1.
-2. **Stop is the status bar's last column**, so it never moves when the contact count appears or goes.
-3. **Stop shows on every tab**, since the bar is the window's.
-4. **A PSK31 row that never read a character still goes with its carrier.** *heard, not readable yet* is Hamlet's
-   sentence; `ThePsk31CarrierLivesTests.AHeardRowGoesWhenItsCarrierGoes` stays green unedited.
-5. **Leaving the PSK31 tab ends rows rather than removing them**; only a clear, a retune or the cap removes them.
-6. **The resume window is 16 Hz and 15 s of audio** (`Psk31ResumeWithinHz`, `Psk31ResumeWithinSeconds`).
-7. **Every PSK31 row now joins the arrival order**, so the order button keeps live rows too, where it used to drop
-   them; the cap passes over a row with a carrier still under it.
-8. **`psk31_row_cleared` carries a reason**, `clear`, `retune` or `cap`.
-9. **Both layout fixtures get the fixed answer**, though the instruction named the plain one: the licensed fixture's
-   resolve also asked callook.info.
-10. **"The network denied" is a refusing lookup set by a module initializer**, not an operating-system block.
-11. **The two-run assertion realizes the windows twice in one test**, not two test runs.
-12. **The four-signal test leaves the tab after 20 s of faint noise**: one carrier is still held (section 4 item 7).
-13. **Unit 354's section 4 is carried in part verbatim and in part by reference.** The seed deleted `output.md`;
-    `git restore --source` needed approval and `git show … > output.md` was blocked, so the file could not be
-    kept in place. Unit 354's own opening and its *Raised by unit 354* are below verbatim; the queue it carried
-    from units 337 to 353 is at `4c55deac:output.md`, lines 280 to 2341, not retyped.
-
-### Commits
-
-`151a108d` task 1 · `66bb7b0b` task 2 · `1a0d5c99` task 3 · `b5be0db9` task 4 · `72901b0f` task 5 · this report
-with `PHASE_OUTCOME.md` and `PROJECT_STATUS.md`.
+**Committed:** `output.md` and `PROJECT_STATUS.md` only. Every other working-tree change was
+left exactly as found. Pushed to `main`.
 
 ## 2. What the owner should expect
 
-- **Stop is at the bottom right of the window, in the status bar**, on every tab and at every size. It says
-  *Stop* with nothing going and *Stop transmitting* while a send waits for its slot or is on the air, and it is
-  never grey. Pressing it does exactly what the old Stop did. Escape still stops the calling cycle and the scan, as
-  before, and not this Stop.
-- **CQ has not moved.** At 1100 x 780, the size Hamlet opens at, CQ and the mode tabs are still below the window's
-  bottom edge.
-- **A PSK31 station's words stay after he stops**, faded, with *ended* beside him, until you press Clear, retune far
-  enough to clear the list, or 500 newer rows push them off. A row that only ever said *heard, not readable yet*
-  still disappears with its carrier.
+**Nothing in Hamlet changed.** No Olivia tab, no data files moved, no version bump, no
+`DECISIONS.md` entry, no `PROJECT_CARD.md` change.
 
-**What will look wrong but is not:**
-- A faded PSK31 row is not a worked station; the word *ended* says which.
-- Choosing FT8 no longer empties the PSK31 rows off the list.
-- A station who drops his carrier for a moment and comes back near the same frequency continues his row rather
-  than starting a new one.
-- An ended CQ row still offers *Answer*, and pressing it transmits. He may be listening; he may have gone.
-- Tests: nothing to see. They no longer ask callook.info anything.
+**What will look wrong and is not:**
+
+- `PROJECT_STATUS.md` says `WORK_INSTRUCTION: 354`. `tools/status.sh` copies that line from
+  root `PHASE_STATUS.md`, which is still the screen phase's. Once the phase is installed it
+  will read 358.
+- The working tree is still dirty: `WORK_INSTRUCTIONS.md`, the `PHASE_STATUS.md` heartbeat,
+  the `.run-unit\` files, `SESSION.lock` and the untracked Olivia assets and
+  `docs\phase-olivia\`. This unit left them alone on purpose.
+
+**To get going:** run `install-phase.bat` from `C:\Source\HamLet`, commit, then launch
+unit 358 again unchanged. Its tasks don't depend on anything from this run.
 
 ## 3. What you should see
 
-**Stop is on the window at 9 of 9 sizes, where it was off at the size Hamlet opens at, and a PSK31 station's words
-stay on the list after he stops - four of four rows with all 483 characters on the test recording.** Computed on the
-host, not seen.
+**No visible change.** The question this unit was sent to answer, whether Olivia exists as
+a mode, is **no: 0 of step 0's 6 criteria**, because the phase it belongs to is not
+installed.
 
-- Open Hamlet at its first size: Stop sits at the right end of the grey bar along the bottom, 74 x 36.
-- Press CQ on PSK31 or FT8 and watch it read *Stop transmitting*, wider and with a heavier edge.
-- Listen to PSK31 until a station stops: his line stays, softer, with *ended*. Press Clear and it goes.
-- No visible change from task 4.
+The one thing it did measure holds: **the nine fixtures are byte-identical to the
+manifest**. So step 0's second entry condition (*`manifest.json` hashes match its nine
+files*) is already met, and the first (*`PHASE_STATUS.md` names this phase*) is the only one
+missing.
 
 ## 4. What's blocking us
+
+No criterion changes state. Three items.
+
+**1. Action for Tim, most blocking: run `install-phase.bat`.**
+
+*Not a ruling; only you can do it.* Without it, root `PHASE_STATUS.md`, `PHASE_PLAN.md` and
+`PHASE_OUTCOME.md` stay the screen phase's, and every Olivia unit hits the same stop at
+section 5. The installer checks the gate, archives the screen phase to
+`docs\phase-screen-run\`, confirms the archived outcome's size, then installs the three
+staged files. *Rejected:* the session copying them itself. The installer says this is not a
+work unit's job, and the instruction says to repair nothing.
+
+**2. The installer's closing advice, `git add -A`, would commit things that should not go in.**
+
+*No ruling wanted; a finding.* The tree holds `SESSION.lock`, changed `.run-unit\` files
+(two of them deleted) and the uncommitted `WORK_INSTRUCTIONS.md` alongside the phase files.
+HEAD `32f67637` exists only to untrack a phase seed that an earlier sweeping commit took in.
+Adding the phase files by name avoids a repeat.
+
+**3. Mismatches with work instruction 358, reported and not repaired.**
+
+- **§3** says unit 357's queue is *verbatim in section 4*. The instruction's §4 is *Why this
+  unit exists* and holds no queue. It is carried below from unit 357's `output.md` instead.
+- **§4** says *read `PHASE_PLAN.md` at the root; §1 says what Olivia is, §R27-§R31 are the
+  rulings*. The root plan is the screen plan. The Olivia plan is at
+  `docs\phase-olivia\PHASE_PLAN.md`, a result of item 1.
+- **Task 1's destinations disagree with the staged plan.** The instruction says
+  `data\rsid\rsid-codes.json` and `data\bands\olivia-calling.json`. The plan's R27, R29 and
+  criterion 0.4 say `data/rsid-codes.json` and `data/olivia-calling.json`. The next unit
+  will meet this. It is a path, so under plan §6 the arbiter's to settle.
+- **Status fields.** The prompt and `tools/status.sh` use `TASK`, but `CLAUDE.md` §13.1's
+  table names the field `PHASE`. `tools/status.sh` still writes
+  `RULES_AT: HM-DEC-161 (2026-09-11)`, left as the tool writes it.
+- **§2's tool facts.** Refused: a `for` loop over `$f` (*Contains simple_expansion*), and
+  `sed -i` on `output.md` inside the root (*blocked*). Needed approval and not run:
+  `pwd -W`. Ran: `sh tools/status.sh`, `sha256sum`, `git diff`, `ls`. Python and `rm` were
+  not tried.
+
+### Asks still outstanding - carried from unit 357's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 357's, from its line under `## 4. What's blocking us` to its end,
+as committed at `32f67637`, with only that top-level heading dropped so this report keeps
+four sections. None of its items is answered or re-measured by this unit.
+
+
+No criterion changes state. Five items.
+
+**1. The app carry-forward list is not stable run to run, and it got worse this unit.**
+
+*No ruling wanted; a finding, and it firms up unit 355 item 6.* Three runs of the same filter
+before anything was changed: the first failed `TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning`, the second failed **four different tests**
+(`ThePsk31CqGoesOutTests.ASecondPressRefreshesTheReceiptAndSendsAgain` and three in
+`TheStopIsAlwaysOnScreenTests`), and the third was 127 of 127. **Every one of them passed when
+run alone.** Parallelism is already off — `TestParallelism.cs` disables it assembly-wide — so
+this is state or timing leaking between headless-window tests in one sequential run, not two
+threads fighting. **It makes a green baseline a thing you have to run three times to believe**,
+and it is the reason this report's "before" number names which run it came from.
+
+**2. The box's head names the station only where the parser named one, and on ordinary
+conversational text it often does not.**
+
+*No ruling wanted; a finding.* `WholeMessage` puts `Sender` above the text, and `Sender` is
+the speaker of the latest **complete** message. Writing task 4's test, three different
+plausible transcripts of a real ragchew line produced an empty `Sender`, so the box showed the
+time and the words with nobody's name on them. **The box does not go looking for a callsign in
+the text itself** (§0.0) — a station Hamlet has not named is not named there either — so what
+is missing is upstream, in when the splitter decides a message has finished. Worth a look
+before somebody reads a box a week later and cannot tell whose words those were.
+
+**3. `ADVANCED: blocker` has nowhere to go in `PHASE_OUTCOME.md`.**
+
+*No ruling wanted; a mismatch, reported and not repaired.* Task 0 asks for the entry to carry
+`ADVANCED: blocker`. `outcome-entry.py`'s `FIELDS` is twelve names and `ADVANCED` is not one
+of them, and no entry in the file has ever carried it. It is in this report's header block,
+where §12 defines it, and the entry says *clears a blocker* in its prose as every earlier unit
+has.
+
+**4. The typed line is not in the conversation the card reads.**
+
+*No ruling wanted; a finding about what the card will say next.* A macro goes through
+`RememberWhatWeSent`, which parses it and files it, so the turn indicator moves when Hamlet
+answers. **A typed line does not**: it is not a macro, `Psk31ExchangeParser` would read its
+frame as an ordinary over, and whether a free sentence should move the turn is a question
+nobody has ruled. The card is refreshed after a typed send, so the screen is consistent; what
+it is not is *aware* that he just spoke. Left deliberately.
+
+**5. §2's tool facts, checked again.**
+
+*No ruling wanted; a mismatch report.* **Apostrophes in a quoted heredoc broke again**, exactly
+as §2 says, on the first attempt at task 2's engine change; that work moved into script files.
+**Python ran**, against §2, as it has for four units. `rm` was not needed. `tools/status.sh`
+was not refused. **One new tool fact worth writing down**: a `sed` insertion that lands between
+an XML doc comment and the member it documents produces `CS1572`/`CS1573` and fails the build,
+because warnings are errors here. It happened four times this unit. Anchor on the doc comment's
+first line, not the signature.
+
+### Asks still outstanding - carried from unit 356's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 356's, from its line under `## 4. What's blocking us` to its end, as
+committed in `9db74913`, with only that top-level heading dropped so this report keeps four
+sections. **Its item 2** — `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow`
+red — is neither answered nor re-measured here; it is not on the carry-forward list, and this
+unit did not run it.
+
+
+No criterion changes state. Five items.
+
+**1. The cap is not a cure: the card still asks for 623 px at 1100×780 and is scrolling.**
+
+*No ruling wanted; a finding, and the honest limit of task 1.* The send area is on the window
+at all nine sizes, which is what was asked and what is measured. What did **not** happen is
+the card getting smaller: its own box is unchanged at 623 px (653 on PSK31), it scrolls inside
+a 300 px cap, and unit 354's trace still prints 623 because that is the truth about the
+control. The three panels reach 0.217 of the height below the pills against R26's half.
+**Making the card fit at that width is a wrapping and typography question** — the license line
+takes 17 lines and the rule of thumb 17, each breaking words — and §10 kept this unit to its
+own repair.
+
+**2. `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` is red, and it
+is not this unit's.**
+
+*No ruling wanted; a finding that firms up unit 355 item 4.* That unit called it red *at some
+runs*. **It is red deterministically here**, and it was proved red before anything in this
+unit changed, by stashing the layout change and running it alone. It fails on
+`Assert.Single()` over the pills wearing the best-bet badge, with the collection empty while
+the green block and the best bet both read *20 m*. It is not on the carry-forward list, which
+is why the 112-green baseline did not catch it.
+
+**3. A test was holding a sentence R15 forbids in place.**
+
+*No ruling wanted; a finding worth one line.* `ThePowerIsOfferedTests` asserted that a reading
+**with no reference behind it** produced a sentence containing *turn the transmit drive*. A
+test that requires a judgement Hamlet is not entitled to make will keep that judgement alive
+through every session that respects the suite. It has been corrected here, and the pattern is
+the one §12.5 warns about one level up: the fixture was not wrong about the code, the test was
+wrong about the rule.
+
+**4. The ALC is still never read by the poll, so all four sentences are proved only from
+handed-in readings.**
+
+*No ruling wanted; carried and re-stated because this unit rewrote the sentences.* There is no
+`CivRead` for `RigField.Alc` anywhere in the tree, so `RigStateMonitor` never fills it, and
+`Psk31AlcForTests` is the only way any of this path has ever been exercised. **A command byte
+is not invented to close that** (§0, §4). On a radio, the sentences will appear only once that
+read exists.
+
+**5. §2's tool facts, checked again.**
+
+*No ruling wanted; a mismatch report, and this time in the instruction's favor.* **Apostrophes
+in a quoted heredoc did break**, exactly as §2 says, on the first attempt at the ALC rewrite;
+the work was moved into a script file. **Python ran**, against §2, as it has for three units
+now. `rm` was not needed and not tested this unit. `tools/status.sh` was not refused.
+
+### Asks still outstanding - carried from unit 355's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 355's, from its line under `## 4. What's blocking us` to its end, as
+committed in `9d5322c5`, with only that top-level heading dropped so this report keeps four
+sections.
+
+**Three of its items are answered by this unit and are left in place rather than deleted**, so
+the drop belongs to the report that records each ruling: **item 1** was ruled by Tim on
+2026-09-14 (*"A, the way it has been"*) and is written into `PHASE_PLAN.md` as R28; **item 2**
+and **item 3** were built here, in tasks 3 and 1. **Item 4** is re-measured in this report's
+item 2 above and is **not** answered.
+
 
 **One ask, most blocking first: whether Stop should be disabled with nothing keyed (item 1).** Tim's step 3 verdict
 stays open. This unit's nine items come first; unit 354's section 4 follows, carried as section 1 decision 13 says.

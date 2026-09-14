@@ -1,8 +1,8 @@
-# Work instruction 357 - say what you want to say
+# Work instruction 358 - the seam: Olivia exists as a mode
 
-**Single session.** Tim's ruling of 2026-09-14 changes R2 of the PSK31 plan: **typed
-text goes on the air.** This is the first unit since step 4 that touches what is sent;
-it touches nothing about how it is keyed. **Five tasks.**
+**Seed of the Olivia phase, under `--seed`.** Step 0 of `PHASE_PLAN.md`. The arbiter
+authors steps 1 through 5 after it; step 6 is Tim's, and he is away five days. **Six
+tasks, small.**
 
 **Status.** `tools/status.sh`, real clock, after every commit and every task.
 
@@ -35,66 +35,55 @@ is refused; Python cannot run here; `-m` more than once for a multi-line commit.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139 from unit 356's queue, **verbatim in section 4**.
+Carried per HM-DEC-139 from unit 357's queue, **verbatim in section 4**.
 
 ---
 
 ## 4. Why this unit exists
 
 ```
-PHASE GOAL: The screen, done right.  (PSK31 carried work under it.)
-UNIT GOAL:  Right-click any station's row and get his card; type a line on it
-            and one click sends it, framed with the callsigns and the hand-back
-            so a beginner never forgets them; read a whole message on hover.
-ADVANCES:   none - clears a blocker: R2's no-keyboard rule, overruled by Tim
-            2026-09-14, was the thing standing between PSK31 and a conversation.
-DRIFT:      carried.
+PHASE GOAL: Hamlet works Olivia the way it works PSK31.
+UNIT GOAL:  Olivia exists as a mode - the tab, the cited calling spot, the panel,
+            the Capture button, the RSID and calling data in the tree. Nothing
+            decodes.
+ADVANCES:   step 0 criterion 1, 2, 3, 4, 5
+DRIFT:      0. A new phase starts the count.
 ```
 
-**Tim, 2026-09-14, on seeing a real QSO read off 14.070:** *"I want to add the ability
-to send text I type. That is the thing PSK31 offers over FT8/4."* And the shape: *"I
-right click on a message in the Everything list and it creates a card. On that card I
-can do a standard answer but there is also a text block where I can enter text to
-transmit."* And: *"I should be able to hover and see a whole message, not just cut off."*
+**Read `PHASE_PLAN.md` at the root in full.** §1 says what Olivia is. §R27-§R31 are the
+rulings from the interview. §6 is how the loop decides.
 
-**What this overrules.** PSK31 plan **R2** - *free typing is not in this phase; the
-macros are the whole vocabulary*. Tim's later ruling wins (§6). **What it keeps:** **§0.2**
-one click, one transmission; **R10** the one sequence, one `PttOn` site, the abort;
-**R1** Report and Confirm are offered only on certainty. Typed text is Tim's call, and
-Hamlet frames it so the two things a beginner gets wrong on a keyboard mode - the
-callsigns and the hand-back - are never his to remember.
-
-**The record behind it.** `2026-09-14.jsonl`, 14:00-14:02 UTC, 14.070: `KE0JBT` and
-`N7WE` in a ragchew, read off the air with *guess* and *ended* marked - the screenshot
-Tim sent. Three of Tim's own CQs went out that morning, keyed and confirmed; nobody
-answered, and the only thing he could have sent was another CQ.
+**Why the seam first.** The FT4 and PSK31 phases both found that every shared surface
+had to be told a mode existed before any of them could be asked to do anything for it.
+This unit does only the telling, so steps 1 to 5 land on a mode already wired everywhere.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-- The decoded row's right-click: what it offers today on an FT8 row, on a PSK31 CQ row,
-  on a PSK31 non-CQ row; `ThePsk31ExchangeTests`; how a conversation card is created for
-  a station and what `Answer` sends.
-- The PSK31 conversation card: the turn indicator, the certainty gate, the Report and
-  Confirm buttons, the receipt (R2-R5 of the card rulings).
-- The macros of §R2 and their composer; `UnslottedTransmission`; the 30-second cap and
-  where it is checked; `psk31_send_composed`, `psk31_send_refused` (reason `cap`).
-- The row's text binding and its column width; the map popup (unit 310) as the model
-  for a text popup.
-- Tests: `TheUnslottedSendTests`, `TheFt8AndFt4SendsAreByteIdenticalTests`,
-  `ThePsk31CqGoesOutTests`, `ThePsk31ExchangeTests`, `ThePsk31RowStaysTests`,
-  `TheStopIsAlwaysOnScreenTests`, `TheRowShowsWhatWasHeardTests`.
+- `PHASE_STATUS.md` line 1 names *Hamlet works Olivia the way it works PSK31* with seven
+  steps. **If it is the screen phase, stop and say so** - `install-phase.bat` did not
+  run.
+- `docs\phase-screen-run\` holds the screen phase's three files.
+- `assets\fixtures\olivia\` - nine WAVs and `manifest.json`; `assets\data\rsid-codes.json`;
+  `assets\data\olivia-calling.json`; `assets\reference\SOURCE.md` and the generator source.
+  **Hash every fixture against the manifest and report.**
+- How PSK31 was added as a mode (units 312-314): the mode strip, `DigitalModeFor`,
+  `DigitalCallingFrequencies.Find`, `ContactModes`, the telemetry mode field, the readiness
+  line, the family palette. **This unit copies that shape exactly.**
+- The Capture button (unit 344) on the PSK31 panel.
+- `PROJECT_CARD.md`'s `PHASE` and `PHASE_SET`.
+- Tests: `ThePsk31SeamTests`, `ThePsk31TabIsInertTests` or its successor,
+  `TheCaptureButtonTests`, `BindingHealthTests`, `VoiceTests`.
 
-**Report every mismatch; repair nothing but this unit's.**
+**Report every mismatch; repair nothing.**
 
 ## 6. Rulings in force
 
-**Tim, 2026-09-14** as quoted, overruling PSK31 plan **R2**'s no-keyboard line and
-nothing else of it. **§0.2**, **R10** - one click, one transmission, one keying path,
-the abort. **R1** strict side unchanged for Report and Confirm. **R11** nothing at the
-radio. **R13** telemetry. **R12**, **R14**, **R19**. **HM-DEC-018, §2.1** - typed text
-never enters an event; its length does. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**,
+**`PHASE_PLAN.md` §R27-§R31 and §6.** The PSK31 plan's R1-R20 stand. **§0.5** family
+color as text; **§0.1** the engine never learns tabs exist; **§0.2** nothing here can
+transmit; **§2.1** nothing personal in telemetry; **HM-DEC-054** the calling table is
+cited data and labeled a convention. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**,
 **FACT-006**, **the dummy load withdrawn.**
 
 ## 7. Status cadence
@@ -105,102 +94,92 @@ As the header says.
 
 ## 8. The tasks
 
-### Task 0 - the record
+### Task 0 - the phase opens
 
-Append `UNIT 357` to `PHASE_OUTCOME.md` under step 3, `ADVANCED: blocker`. Patch-bump.
-Add to `PHASE_PLAN.md`'s §R block, as Tim's ruling of 2026-09-14: **typed text goes on
-the air from a station's card, framed by Hamlet, one click one transmission; R2's
-no-keyboard line is withdrawn.** Run the carry-forward list.
-
-**Drop candidate:** none.
-
-### Task 1 - right-click any row makes his card
-
-On the PSK31 list, **right-click on any row** - CQ or not, live or ended - makes a
-conversation card for that station, the same card a certain answer makes, at *his
-turn* or *unknown* as the parser has it. If a card for him exists, the right-click
-focuses it. The row's text stays where it is. FT8 rows keep their existing menu.
-
-**Test watched failing first:** extend `ThePsk31ExchangeTests`: right-click on a non-CQ
-PSK31 row makes his card; on a CQ row the same card with Answer offered; a second
-right-click focuses, never duplicates; `ThePanelHoldsThemAllTests` green.
+Append `UNIT 358` to `PHASE_OUTCOME.md` under step 0. Patch-bump. Set `PROJECT_CARD.md`'s
+`PHASE` and `PHASE_SET`. Record in `DECISIONS.md`, as Tim's ruling of 2026-09-14: the
+Olivia phase set after an interview, PSK31 tabled after unit 357, the screen phase
+archived with step 3 open. Hash the nine fixtures against the manifest. Run the
+carry-forward list.
 
 **Drop candidate:** none.
 
-### Task 2 - the text block, and one click sends it framed
+### Task 1 - the data is in the tree and read
 
-On his card, under the turn indicator: **a text block and a Send button.** Send composes
-one transmission:
+`assets\data\rsid-codes.json` to `data\rsid\rsid-codes.json`; `assets\data\olivia-calling.json`
+to `data\bands\olivia-calling.json` beside the cited band rows. Both read at startup; a
+missing or malformed file is reported in a sentence on the panel and nothing is guessed.
+The calling row for the current band is what the Olivia tab tunes to.
 
-```
-<HIS> de KC3QIS  <what Tim typed>  BTU <HIS> de KC3QIS K
-```
+**Test watched failing first:** `TheOliviaDataTests`, engine: both files parse; the
+8/250 code is 69 and BPSK31 is 1; 20 m's calling center is 14,073,000; a malformed copy
+yields the sentence and no value.
 
-through the same composer and the same unslotted sequence the macros use - **no new
-path, no new `PttOn` site** - and the block clears when it has gone out. The block is
-offered whenever it is **not certainly his turn**; when the parser is not sure, the card
-says so in a word beside the button - *not sure it is your turn* - and **sends anyway on
-the click**, because typed text is Tim's call. Report and Confirm keep their certainty
-gate as they are. `Stop` aborts a typed send like any other.
+**Drop candidate:** none.
 
-**Framing rules:** Tim's text is sent as typed, trimmed; Hamlet adds only the two frames;
-a line that is only whitespace does not send; characters outside the varicode table are
-dropped and the card says how many.
+### Task 2 - Olivia is a mode everywhere PSK31 is a mode
 
-**Telemetry (§R13):** `psk31_send_composed` gains `macro: "typed"` with the character
-count and seconds; **the text itself never enters the record.**
+Wherever PSK31 is enumerated, named, colored, logged, reported in telemetry, offered in
+a tab or asked about in a hover, **Olivia is too**, in the Digital family, text color
+only. Pressing the tab tunes to the band's calling center from task 1's row, USB-D. The
+panel: the same decoded-text panel, empty, with a line in the readiness voice naming the
+mode and saying it cannot be read yet. **The log offers `OLIVIA`**; the submode is step
+5's. Telemetry's mode field says Olivia.
 
-**Test watched failing first:** `TheTypedLineGoesOutTests`, app: a typed line composes the
-framed text exactly; one click, one keying, one `Played`; the block clears; a whitespace
-line sends nothing; a line with a character outside the table drops it and says so; the
-send goes through `UnslottedTransmission` and `TheUnslottedSendTests`,
-`TheFt8AndFt4SendsAreByteIdenticalTests` and `TheStopIsAlwaysOnScreenTests` are green
-and unedited; the event carries a count and no text.
+**Under Olivia no other decoder runs and no path reaches the send chain.** The seam is
+inert for sending until step 4.
 
-**Drop candidate:** the dropped-character sentence. Keep the drop.
+**Test watched failing first:** `TheOliviaSeamTests`, app: the mode is enumerated in the
+Digital family; selecting it asks the radio for the calling center from the cited row;
+the panel names the mode; the log offers it; the telemetry field says Olivia with nothing
+personal; no decoder is attached and no path reaches anything that keys.
+`BindingHealthTests`, `VoiceTests`.
 
-### Task 3 - the cap fits a conversation
+**Drop candidate:** none.
 
-The 30-second cap was the author's number for the macros. A typed line plus its frame is
-allowed **up to sixty seconds** at 31.25 baud - about 200 characters of text; the card
-shows the seconds as you type; **past sixty it refuses with the count and the seconds,
-and nothing is sent.** The macros keep their existing lengths.
+### Task 3 - the Capture button
 
-**Test watched failing first:** extend `TheTypedLineGoesOutTests`: a 190-character line
-sends; a 260-character line is refused with `psk31_send_refused reason cap` and the
-card's words; the seconds shown match the composed length.
+The button from unit 344 is on the Olivia panel and does what it does on PSK31: 48 kHz,
+before the resampler, two minutes, the events, the path in words.
 
-**Drop candidate:** the live seconds count while typing. Keep the refusal.
+**Test watched failing first:** extend `TheCaptureButtonTests`: pressing under Olivia
+writes the WAV and the events with `mode: olivia`.
 
-### Task 4 - the whole message, on hover and on click
+**Drop candidate:** none.
 
-Hovering a PSK31 row shows its full text, wrapped, in the hover. Clicking the text opens
-it in a box like the map popup, with the station, the time and every line he sent while
-the row lived, and a dismiss X. Ended rows too.
+### Task 4 - the neighborhood map
 
-**Test watched failing first:** `TheWholeMessageTests`, app: a row whose text exceeds the
-column carries the full text in its hover; clicking opens the box with the full text and
-the station; the X closes it; `BindingHealthTests`, `VoiceTests`.
+The map picks out the Olivia spot when the tab is selected, as it does for PSK31.
 
-**Drop candidate:** the click box. Keep the hover.
+**Test watched failing first:** extend `TheOliviaSeamTests` by one.
+
+**Drop candidate:** the whole task - it is the nice-to-pass.
+
+### Task 5 - the timing table's first row
+
+Step 2 needs seconds-per-character per variant. From the manifest alone - seconds and
+characters for each fixture, minus the RSID burst's 2.32 s where present - compute a
+first estimate for 8/250, 16/500 and 32/1000 and write it to `data\olivia\timing.json`
+marked *estimated from the fixtures' lengths; step 2 measures it*. Nothing reads it yet.
+
+**Test watched failing first:** none; a data file with a stated method.
+
+**Drop candidate:** the whole task.
 
 ---
 
 ## 9. Parked
 
-- **Live keyboard-to-keyboard** (keys go out as pressed). Not ruled; not built.
-- **The demodulator on real air.** After a capture exists.
-- **Any second transmit path. Any package.**
+- **Anything that decodes, detects RSID, modulates, parses, or transmits.** Steps 1-5.
+- **Reading `pj_mfsk.h`** beyond confirming the clone is pinned.
+- **Any package.**
 
 ## 10. What not to do
 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Do not add a second keying path.** The typed line goes through the one sequence.
-- **Do not send anything Tim did not click.**
-- **Do not put typed text in any event.**
-- **Do not gate the typed line on certainty.** Say the doubt in a word; send on the click.
-- **Do not touch the demodulator. No package. Report mismatches; repair nothing but this
-  unit's. Write American.**
+- **Do not hard-code a calling frequency or an RSID code.** The files.
+- **Do not attach a decoder or reach the send chain.**
+- **No package. Report mismatches; repair nothing. Write American.**
 
 ## 11. Committing and pushing
 
@@ -216,36 +195,35 @@ owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. Steps 0 to 2 done, 3 waits on Tim.
-B. No criterion changes state; this unit clears the blocker under R2, overruled.
+A. The phase goal - Hamlet works Olivia the way it works PSK31. Step 0
+   <state after this unit>, 1-6 not started.
+B. Step 0's criteria 0.1 to 0.6 - each met or not, with the number.
 C. The report last, and section 4 raises N items on top of the carried queue.
 ```
 
 ```
-UNIT:       357 - <complete|stopped> at task N of 5, <which dropped> - <date time>
+UNIT:       358 - <complete|stopped> at task N of 6, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   blocker
-NUMBER:     things Tim can send on PSK31 4 -> 5 (a typed line); cap 30 s -> 60 s for typed
-DRIFT:      carried
+ADVANCED:   <yes|no>
+NUMBER:     fixtures hashed 0 -> 9; calling rows read 0 -> 8
+DRIFT:      0
 ```
 
-**Section 2 tells Tim, in plain words: right-click a station, type, click Send, what goes
-out around his words, and that Stop still stops it. Section 3 prints one framed line
-exactly as it would be sent. Every appearance claim is computed, not seen.**
+**Every appearance claim is computed, not seen.**
 
 ---
 
 ```
 ARBITER-DECISION
-STEP: 3
-APPROACH: make a right-click on any PSK31 row open the station's card, add a text block that sends one framed line through the existing unslotted sequence on one click, lift the cap to sixty seconds for typed text, and show a row's whole message on hover and click
+STEP: 0
+APPROACH: wire Olivia everywhere PSK31 is wired, read the cited calling table and the RSID codes from data files, put the Capture button on the panel, and keep the tab inert for decoding and sending
 MOVE: continue
-WHY: Tim overruled R2's no-keyboard line after reading a real QSO off the air - typing is what PSK31 is for - and the framing keeps the beginner's two mistakes out of his hands while one click one transmission and the single keying path stay exactly as proved
-STATE: blocked
-DECIDED: the frame's exact words are the author's; the sixty-second cap is the author's number; the doubt word is the author's
-LICENCE: Tim 2026-09-14 overruling PSK31 plan R2; CLAUDE.md 0.2; PSK31 plan R1, R10, R11, R13; HM-DEC-018
-ACCOMPLISHED: Tim can hold a PSK31 conversation - answer, report, say something in his own words, confirm - without ever typing a callsign or a hand-back
-ADVANCES: none - clears a blocker: R2, overruled
+WHY: step 0 depends on nothing; the shape is the PSK31 seam's, proved twice; every value comes from a cited file
+STATE: not started
+DECIDED: nothing beyond the plan; the timing table's first row is marked an estimate
+LICENCE: PHASE_PLAN.md R27, R29, R30, section 6; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.1, 0.2, 0.5, 2.1; HM-DEC-054
+ACCOMPLISHED: Olivia is a tab that tunes to the right place and says what it cannot do yet, with its data cited and its fixtures hashed
+ADVANCES: step 0 criterion 1, 2, 3, 4, 5
 END-ARBITER-DECISION
 ```

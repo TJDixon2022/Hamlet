@@ -1,4 +1,169 @@
 ﻿
+No criterion changes state. Three items.
+
+**1. Action for Tim, most blocking: run `install-phase.bat`.**
+
+*Not a ruling; only you can do it.* Without it, root `PHASE_STATUS.md`, `PHASE_PLAN.md` and
+`PHASE_OUTCOME.md` stay the screen phase's, and every Olivia unit hits the same stop at
+section 5. The installer checks the gate, archives the screen phase to
+`docs\phase-screen-run\`, confirms the archived outcome's size, then installs the three
+staged files. *Rejected:* the session copying them itself. The installer says this is not a
+work unit's job, and the instruction says to repair nothing.
+
+**2. The installer's closing advice, `git add -A`, would commit things that should not go in.**
+
+*No ruling wanted; a finding.* The tree holds `SESSION.lock`, changed `.run-unit\` files
+(two of them deleted) and the uncommitted `WORK_INSTRUCTIONS.md` alongside the phase files.
+HEAD `32f67637` exists only to untrack a phase seed that an earlier sweeping commit took in.
+Adding the phase files by name avoids a repeat.
+
+**3. Mismatches with work instruction 358, reported and not repaired.**
+
+- **Â§3** says unit 357's queue is *verbatim in section 4*. The instruction's Â§4 is *Why this
+  unit exists* and holds no queue. It is carried below from unit 357's `output.md` instead.
+- **Â§4** says *read `PHASE_PLAN.md` at the root; Â§1 says what Olivia is, Â§R27-Â§R31 are the
+  rulings*. The root plan is the screen plan. The Olivia plan is at
+  `docs\phase-olivia\PHASE_PLAN.md`, a result of item 1.
+- **Task 1's destinations disagree with the staged plan.** The instruction says
+  `data\rsid\rsid-codes.json` and `data\bands\olivia-calling.json`. The plan's R27, R29 and
+  criterion 0.4 say `data/rsid-codes.json` and `data/olivia-calling.json`. The next unit
+  will meet this. It is a path, so under plan Â§6 the arbiter's to settle.
+- **Status fields.** The prompt and `tools/status.sh` use `TASK`, but `CLAUDE.md` Â§13.1's
+  table names the field `PHASE`. `tools/status.sh` still writes
+  `RULES_AT: HM-DEC-161 (2026-09-11)`, left as the tool writes it.
+- **Â§2's tool facts.** Refused: a `for` loop over `$f` (*Contains simple_expansion*), and
+  `sed -i` on `output.md` inside the root (*blocked*). Needed approval and not run:
+  `pwd -W`. Ran: `sh tools/status.sh`, `sha256sum`, `git diff`, `ls`. Python and `rm` were
+  not tried.
+
+### Asks still outstanding - carried from unit 357's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 357's, from its line under `## 4. What's blocking us` to its end,
+as committed at `32f67637`, with only that top-level heading dropped so this report keeps
+four sections. None of its items is answered or re-measured by this unit.
+
+
+No criterion changes state. Five items.
+
+**1. The app carry-forward list is not stable run to run, and it got worse this unit.**
+
+*No ruling wanted; a finding, and it firms up unit 355 item 6.* Three runs of the same filter
+before anything was changed: the first failed `TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning`, the second failed **four different tests**
+(`ThePsk31CqGoesOutTests.ASecondPressRefreshesTheReceiptAndSendsAgain` and three in
+`TheStopIsAlwaysOnScreenTests`), and the third was 127 of 127. **Every one of them passed when
+run alone.** Parallelism is already off â€” `TestParallelism.cs` disables it assembly-wide â€” so
+this is state or timing leaking between headless-window tests in one sequential run, not two
+threads fighting. **It makes a green baseline a thing you have to run three times to believe**,
+and it is the reason this report's "before" number names which run it came from.
+
+**2. The box's head names the station only where the parser named one, and on ordinary
+conversational text it often does not.**
+
+*No ruling wanted; a finding.* `WholeMessage` puts `Sender` above the text, and `Sender` is
+the speaker of the latest **complete** message. Writing task 4's test, three different
+plausible transcripts of a real ragchew line produced an empty `Sender`, so the box showed the
+time and the words with nobody's name on them. **The box does not go looking for a callsign in
+the text itself** (Â§0.0) â€” a station Hamlet has not named is not named there either â€” so what
+is missing is upstream, in when the splitter decides a message has finished. Worth a look
+before somebody reads a box a week later and cannot tell whose words those were.
+
+**3. `ADVANCED: blocker` has nowhere to go in `PHASE_OUTCOME.md`.**
+
+*No ruling wanted; a mismatch, reported and not repaired.* Task 0 asks for the entry to carry
+`ADVANCED: blocker`. `outcome-entry.py`'s `FIELDS` is twelve names and `ADVANCED` is not one
+of them, and no entry in the file has ever carried it. It is in this report's header block,
+where Â§12 defines it, and the entry says *clears a blocker* in its prose as every earlier unit
+has.
+
+**4. The typed line is not in the conversation the card reads.**
+
+*No ruling wanted; a finding about what the card will say next.* A macro goes through
+`RememberWhatWeSent`, which parses it and files it, so the turn indicator moves when Hamlet
+answers. **A typed line does not**: it is not a macro, `Psk31ExchangeParser` would read its
+frame as an ordinary over, and whether a free sentence should move the turn is a question
+nobody has ruled. The card is refreshed after a typed send, so the screen is consistent; what
+it is not is *aware* that he just spoke. Left deliberately.
+
+**5. Â§2's tool facts, checked again.**
+
+*No ruling wanted; a mismatch report.* **Apostrophes in a quoted heredoc broke again**, exactly
+as Â§2 says, on the first attempt at task 2's engine change; that work moved into script files.
+**Python ran**, against Â§2, as it has for four units. `rm` was not needed. `tools/status.sh`
+was not refused. **One new tool fact worth writing down**: a `sed` insertion that lands between
+an XML doc comment and the member it documents produces `CS1572`/`CS1573` and fails the build,
+because warnings are errors here. It happened four times this unit. Anchor on the doc comment's
+first line, not the signature.
+
+### Asks still outstanding - carried from unit 356's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 356's, from its line under `## 4. What's blocking us` to its end, as
+committed in `9db74913`, with only that top-level heading dropped so this report keeps four
+sections. **Its item 2** â€” `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow`
+red â€” is neither answered nor re-measured here; it is not on the carry-forward list, and this
+unit did not run it.
+
+
+No criterion changes state. Five items.
+
+**1. The cap is not a cure: the card still asks for 623 px at 1100Ã—780 and is scrolling.**
+
+*No ruling wanted; a finding, and the honest limit of task 1.* The send area is on the window
+at all nine sizes, which is what was asked and what is measured. What did **not** happen is
+the card getting smaller: its own box is unchanged at 623 px (653 on PSK31), it scrolls inside
+a 300 px cap, and unit 354's trace still prints 623 because that is the truth about the
+control. The three panels reach 0.217 of the height below the pills against R26's half.
+**Making the card fit at that width is a wrapping and typography question** â€” the license line
+takes 17 lines and the rule of thumb 17, each breaking words â€” and Â§10 kept this unit to its
+own repair.
+
+**2. `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` is red, and it
+is not this unit's.**
+
+*No ruling wanted; a finding that firms up unit 355 item 4.* That unit called it red *at some
+runs*. **It is red deterministically here**, and it was proved red before anything in this
+unit changed, by stashing the layout change and running it alone. It fails on
+`Assert.Single()` over the pills wearing the best-bet badge, with the collection empty while
+the green block and the best bet both read *20 m*. It is not on the carry-forward list, which
+is why the 112-green baseline did not catch it.
+
+**3. A test was holding a sentence R15 forbids in place.**
+
+*No ruling wanted; a finding worth one line.* `ThePowerIsOfferedTests` asserted that a reading
+**with no reference behind it** produced a sentence containing *turn the transmit drive*. A
+test that requires a judgement Hamlet is not entitled to make will keep that judgement alive
+through every session that respects the suite. It has been corrected here, and the pattern is
+the one Â§12.5 warns about one level up: the fixture was not wrong about the code, the test was
+wrong about the rule.
+
+**4. The ALC is still never read by the poll, so all four sentences are proved only from
+handed-in readings.**
+
+*No ruling wanted; carried and re-stated because this unit rewrote the sentences.* There is no
+`CivRead` for `RigField.Alc` anywhere in the tree, so `RigStateMonitor` never fills it, and
+`Psk31AlcForTests` is the only way any of this path has ever been exercised. **A command byte
+is not invented to close that** (Â§0, Â§4). On a radio, the sentences will appear only once that
+read exists.
+
+**5. Â§2's tool facts, checked again.**
+
+*No ruling wanted; a mismatch report, and this time in the instruction's favor.* **Apostrophes
+in a quoted heredoc did break**, exactly as Â§2 says, on the first attempt at the ALC rewrite;
+the work was moved into a script file. **Python ran**, against Â§2, as it has for three units
+now. `rm` was not needed and not tested this unit. `tools/status.sh` was not refused.
+
+### Asks still outstanding - carried from unit 355's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 355's, from its line under `## 4. What's blocking us` to its end, as
+committed in `9d5322c5`, with only that top-level heading dropped so this report keeps four
+sections.
+
+**Three of its items are answered by this unit and are left in place rather than deleted**, so
+the drop belongs to the report that records each ruling: **item 1** was ruled by Tim on
+2026-09-14 (*"A, the way it has been"*) and is written into `PHASE_PLAN.md` as R28; **item 2**
+and **item 3** were built here, in tasks 3 and 1. **Item 4** is re-measured in this report's
+item 2 above and is **not** answered.
+
+
 **One ask, most blocking first: whether Stop should be disabled with nothing keyed (item 1).** Tim's step 3 verdict
 stays open. This unit's nine items come first; unit 354's section 4 follows, carried as section 1 decision 13 says.
 
