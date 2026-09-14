@@ -5,37 +5,36 @@ Below is section 4 of a work unit's report. Its heading is
 any question that needs a ruling from the owner - and that an
 empty section 4 is a real answer meaning nothing is blocked.
 
+THE OWNER IS STOPPED FOR EXACTLY THREE THINGS - his ruling of
+2026-09-12:
+
+  1  anything that touches keying, transmit, or the radio's safety -
+     in a project that is not a radio, what the project can make
+     happen outside the machine it runs on
+  2  money past the budget
+  3  a decision that changes what the product promises the operator -
+     what a card asserts, what a click does, what is logged as true
+
+A QUESTION ABOUT ANYTHING ELSE IS NOT A RULING REQUEST, however it is
+worded - even when it offers options, and even when it says the work
+is waiting on the owner. Layout, wording, a test's shape, a number, a
+mechanism in the plan that arithmetic will not allow, a plan line a
+later ruling contradicts: the unit's own recommendation is taken on
+those, marked author's, overrulable, and the work goes on.
+
 Many units write a sentence SAYING nothing is blocking rather
 than leaving it blank. THAT IS NOT A RULING REQUEST. Neither is
 a note, an observation, a thing reported for the record, or a
 recommendation the unit has already acted on.
 
 A RULING IS WANTED only where the text asks the owner to decide
-something, or says work is stopped until he does.
-
-WHERE A RULING IS WANTED, JUDGE ONE MORE THING, AND IT IS THE
-POINT OF THIS CALL. A ruling that forecloses the whole step is
-different from one that stops a single exit criterion while other
-work on the same step remains open.
-
-Read PHASE_PLAN.md for this step exit criteria and
-PHASE_OUTCOME.md for what has already been done. Then decide
-whether ANY work on this step could still proceed without the
-owner answer. The step being worked is step 1.
-
-Halting a night for a question that forecloses nothing is the
-failure this judgment exists to prevent. Building on an assumption
-the owner would have rejected is the other one. Weigh both and
-reason it out. Do not count the rulings - judge what they block.
+something INSIDE ONE OF THE THREE, or says work is stopped until he
+decides something inside one of the three. Where one question is
+inside the three and others are outside, a ruling is wanted.
 
 Answer with exactly two lines and nothing else:
 
-VERDICT: blocking
-WHY: one sentence, plain text, no punctuation beyond commas and full stops
-
-or
-
-VERDICT: banked
+VERDICT: ruling
 WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
 or
@@ -43,13 +42,142 @@ or
 VERDICT: none
 WHY: one sentence, plain text, no punctuation beyond commas and full stops
 
-blocking means a ruling is wanted and NO work on this step can
-proceed without it. banked means a ruling is wanted and work on
-this step remains open. none means no ruling is wanted.
-
 --- the section 4 text follows ---
 
 ﻿
+### Raised by this unit
+
+**1. This run cannot build, test or validate Hamlet: `230e6c0` replaced its permission scope with
+ClaudeProjectStatus's.**
+
+*Ruling wanted, or a launcher fix, and it blocks every step 1 criterion: which permission scope an
+unattended Hamlet unit runs under.*
+- **The scope now.** `tools/arbiter/run-unit-tools.txt` allows `node tools/tests/run.js`, and
+  `.run-unit/allowed.txt` for this run matches it. That script does not exist here.
+- **What the layer removed:** `dotnet test`, `dotnet build` and `dotnet restore`; the four
+  `validate-output.bat` spellings; the three un-staging commands; the shell reads.
+- **The layer's other changes:**
+  - `validate-output.bat` now defaults to `C:\Source\ClaudeProjectStatus\output.md` and checks six
+    rules.
+  - `.run-unit/prompt.txt` for this run no longer carries the `PHASE_STATUS.md` instruction, or the
+    four-heading and validate-yourself text.
+
+*Reasoning.* The recommendation is to restore Hamlet's lines to `run-unit-tools.txt` from `230e6c0^`:
+`Bash(dotnet test:*)`, `Bash(dotnet build:*)`, `Bash(dotnet restore:*)`, and the lines after them.
+Then re-issue work instruction 343 unchanged. Its task 0 opening is already committed at `681d45c`,
+so a re-run should treat step 1 of task 0 as done and start at the carry-forward run. The layer
+looks like a copy between projects with no per-project `TEST_CMD`. That is inferred from the diff,
+not confirmed.
+
+*What was rejected and why.*
+- **Writing `tools/tests/run.js` to shell out to `dotnet`:** it routes around the scope the owner's
+  launcher set.
+- **Writing the assertions unrun:** ruling 19 and task 0's *measure before anything is built*.
+- **Editing `run-unit-tools.txt` or `allowed.txt` here:** they are the launcher's, and a unit widening
+  its own guard is the thing that file's header warns against.
+
+**2. Criterion 2's "earned card is the contact" is held on the drawn page only for the map.**
+
+*No ruling wanted; a finding that bears on the 4 of 7.* At 1400 and 1920,
+`EveryEarnedCardIsTheContactThatEarnedIt` asserts only the map's width, height and crop on Countries
+cards.
+- The entity, callsign and grid, distance, band, mode, date and points are asserted on the view model.
+- At 1040 the window asserts only the map count and the no-map word.
+- Grids' and States' earned contacts are not asserted drawn at any width.
+
+Work instruction 343 task 2 already names Grids. A re-run should give Countries' and States' contact
+words the same drawn assertion before counting criterion 2 as held on the page.
+
+**3. The tool facts, as they held for this session.**
+
+*No ruling wanted; a finding.* Each was tried once unless it says otherwise.
+
+| Result | Commands |
+|---|---|
+| Refused | `dotnet test` (with and without `timeout`); `sh tools/status.sh`, so every `UPDATED` is a `date` reading; two commands joined by `&&`; a shell `for` loop variable; a variable expansion (`$f`); `sort` in a pipe; `python -c` with a script |
+| Ran | `python --version` (3.13.12), earlier in the same session; `date`; `grep`, `ls`, `cat` and `head` in a pipe without `sort`; a quoted heredoc fed to `git cat-file --batch-check` |
+| Not tried | apostrophes in heredocs, doubled backslashes, `;`, `rm`, `git stash`, `sed -E`, redirects into `output.md`, the validator |
+
+**Unit 337's report disagrees on two points:** `tools/status.sh` and `&&` were both refused here.
+Python ran for `--version` only.
+
+**4. Version 1.13.28 -> 1.13.29 has no comment block.**
+
+*No ruling wanted; a finding.* It was bumped in `2740524`, unit 337's carried repair task 1.
+Not repaired.
+
+### Asks still outstanding - carried from unit 337's section 4, per HM-DEC-139, verbatim
+
+The words are unit 337's, from its line under `## 4. What's blocking us` to its end, as committed in
+`e4c160f`. The top-level heading is dropped so this report keeps four sections. Three items are marked,
+as work instruction 343 Â§9 asks:
+- unit 337's item 3;
+- unit 340's item 5;
+- unit 339's item 5.
+
+It was copied in with the file editor, because Python and redirects were refused.
+
+No step criterion moves. Five items.
+
+**1. What carrier 19's 262 characters were is narrowed and not settled.**
+
+*No ruling wanted; a finding, and the honest end of task 2.* The measurement rules out the
+thing it was asked to rule out â€” a small clock error does not produce garbage, and an
+unmodulated carrier does not produce characters at all. It does not rule out a large error, a
+deep fade, or a station whose 262 characters genuinely carried no turnover after a callsign,
+which `Psk31MessageSplitter` requires before it cuts anything. **Settling it needs the audio**,
+and the record does not carry audio. A capture on the next evening that produces a
+high-character, zero-line carrier would settle it in one sitting.
+
+**2. `charactersEmitted` is the text that was shown, not what the demodulator emitted, and
+the difference is counted and written nowhere.**
+
+*No ruling wanted; a finding.* `psk31_carrier_retired` reports `Text.Length`, which is what
+survived the search's vouching. `Psk31Listener.DroppedCharacters` counts what a channel read
+after the last vouched moment and loses on retirement, and **nothing reads that property** â€”
+`Psk31Listener.cs:256`, one assignment, no consumer in `src` or `tests`. So a carrier read
+well and vouched for badly looks identical in the file to one that was never read. The field
+name promises the demodulator's output and delivers the display's.
+
+**3. The instruction's carried queue names unit 336; the report in the tree is unit 341's.**
+
+**NOTED by work instruction 343** - this report carries unit 337's.
+
+*No ruling wanted; a mismatch, reported and not repaired.* Â§3 says the queue comes from unit
+336. The last `output.md` committed is unit 341's (`0f383a3`), and units 340, 341 and 342 have
+run since 336. **Unit 341's section 4 is what is carried below**, verbatim, as the most recent
+queue rather than the named one.
+
+**4. The instruction's tool fact says Python cannot run here. It ran.**
+
+*No ruling wanted; a mismatch, reported and not repaired.* Â§2 lists it beside the apostrophe
+and backslash facts, which did hold. Python was used without trouble in this repository as
+recently as unit 322. The other refusals in that list were not retested, except the ones below.
+
+**5. A prior session of this unit left task 1's work uncommitted, so the "before" number was
+measured with the fix already in the tree.**
+
+*No ruling wanted; a finding about the run, not the code.* Task 0 was committed at `165d015`;
+the task 1 edits to `MainWindowViewModel.cs`, `Psk31Events.cs` and
+`ThePsk31ReadsTheConversationTests.cs`, and the whole of `TheRowShowsWhatWasHeardTests.cs`,
+were sitting uncommitted when this session opened. **The 100 and 85 reported above therefore
+say the in-progress work was not red, not what HEAD alone did.** The failing numbers in
+section 1 come from deliberately disabling the fix and watching it, which is the measurement
+that does not depend on this.
+
+**And two carried items do not reproduce here.** `tools/status.sh` was **not refused** â€” every
+status write in this unit went through it and every `UPDATED` is a `date` reading, against
+unit 341 item 7 and unit 340 item 6, which called it seven units of refusal. Compound commands
+joined by `&&` were not refused either, though `;` was not tried.
+
+### Asks still outstanding - carried from unit 341's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 341's, from its line under `## 4. What's blocking us` to its end, as
+committed in `0f383a3`, with only that top-level heading dropped so this report keeps four
+sections. Nothing in it was ruled this unit, so nothing is dropped from it. The instruction
+named unit 336's queue; see item 3 above.
+
+
 ### Raised by this unit
 
 **1. On PSK31 at 1400 the top row holds by 1.4 px, and the live best bet moves it by 9 px.**
@@ -228,6 +356,18 @@ run.
 **5. Step 1: one must-pass is tested outside `TheCategoryPagesAreTradingCardsTests`, and two are
 held more weakly than they read.**
 
+**TAKEN UP by work instructions 342 and 343.** Where each clause is asserted now, read from the source
+at `681d45c`, none of it run by unit 343:
+- `achievement_category_opened`: still in `TheAchievementsPageClicksInTests`, on the view model.
+- The crop: asserted since `40316ea` in `EveryEarnedCardIsTheContactThatEarnedIt` on every Countries
+  card of both fixtures at 1400 and 1920. Both stations lie inside the frame. The frame is no larger
+  than the path box widened by `MarginShare` of its longer side, grown to `ZoomFloorShare` of the file
+  and the card over `ZoomCap`, then to the card's shape, clamped to the file. A whole-globe frame is
+  asserted to fail it.
+- Each continent to its countries: still `ContinentsOpensToSevenAndEachToItsCountries`, on the view
+  model. Work instruction 343 task 2 would press all seven on the window at 1400 and 1920. **Not
+  started; blocked, section 4 item 1 of unit 343.**
+
 *No ruling wanted; a finding for the arbiter authoring step 1.*
 - `achievement_category_opened` is tested in `TheAchievementsPageClicksInTests`.
 - The map crop *to the two stations* is printed and not asserted.
@@ -327,6 +467,10 @@ composed.
 - Neither was extended, because task 1 named three tests and R14 adds no others.
 
 **5. Step 1's nice-to-pass has nothing in the tree behind it.**
+
+**ANSWERED by unit 342 task 3 (`9214b2a`)**: `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt`,
+at 1400 and 1920 with real clicks. It was to be re-run in unit 343 task 0: **not run - blocked, unit 343
+section 4 item 1.**
 
 *No ruling wanted; a finding for the arbiter authoring step 1.* See section 3: the globe on a
 trading card takes no click, and the only map popup is the conversation card's.
@@ -1065,3 +1209,12 @@ session's own `tools\cut-header-action.py`.
   achievements rulings, States, the 1400 decoded-list split, the demodulator, the ALC margin, the
   id schemes or PSK31 step 6.
 
+### Where the carried items stand after unit 343
+
+- **Every carried item stands as carried.** Nothing in this unit touched source, markup or a test.
+- **The three marks this instruction asked for are in the text above:**
+  - unit 337 item 3, *NOTED*;
+  - unit 340 item 5, *TAKEN UP*;
+  - unit 339 item 5, *ANSWERED*, with its re-run not done.
+- **The status helper:** refused again. Every `UPDATED` in this unit is a `date` reading.
+- **`CPS-DEC-0163`:** reported once, in section 1, and parked with the id schemes.

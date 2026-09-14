@@ -1,17 +1,15 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-13T09:19:50-04:00  root C:\Source\HamLet
+measured 2026-09-13T18:14:16-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-163 (2026-09-12); CLAUDE.md section 1 holds CPS-DEC-0163.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
-  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
-  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
-  UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0163.
   UNCOMMITTED      output.md is modified and uncommitted.
+  PHASE_OUTCOME    header says step 1 is partial; the last entry for it says in progress. The entries win.
+  PHASE_OUTCOME    header says step 0 is in progress; the last entry for it says blocked. The entries win.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -23,12 +21,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 9214b2a
-  uncommitted at the root : 5
-      M PHASE_OUTCOME.md
-      M PHASE_STATUS.md
-      M RUN_LEDGER.md
-      M WORK_INSTRUCTIONS.md
+  HEAD   : d367f40
+  uncommitted at the root : 1
       D output.md
 
 ==============================================================
@@ -36,7 +30,7 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   highest in CLAUDE.md section 1 : CPS-DEC-0163
-  PROJECT_STATUS.md RULES_AT     : HM-DEC-163 (2026-09-12)
+  PROJECT_STATUS.md RULES_AT     : HM-DEC-161 (2026-09-11)
 
 ==============================================================
  THE EIGHT
@@ -229,23 +223,23 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  9 lines, 1184 bytes
+  9 lines, 1171 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
   CURRENT_STEP: 0
-  WORK_INSTRUCTION: 342 - step 1, the category pages fitted to their mockup
-  STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  WORK_INSTRUCTION: 337 - the row shows what the ear heard
+  STEP: 0 | in progress | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
   STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
   STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
   STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  100 lines, 16570 bytes
+  130 lines, 19110 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  STEP: 0 | blocked | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 0 | in progress | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
   STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
   STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
   STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
@@ -342,6 +336,36 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: partial
   STATE_WHY: Criteria 2, 5, 6 and 7 have green tests with measured numbers, but criterion 4 is checked only on the view model for five kinds and for Continents, criteria 1 and 3 are not checked at 1400 or 1920, and the detailed sections of the report describe the step 0 power offer work rather than step 1, so nothing there backs the summary.
+  
+  ## UNIT 337 - CARRIED REPAIR
+  
+  STEP: none - carried repair from the PSK31 phase, whose step 6 is open on this fault
+  APPROACH: find where an emitted PSK31 character stops between the demodulator and the row, make the row show every emitted character as it arrives, make the two character counters one source, and measure whether the 262-character carrier was text or bit-slip
+  MOVE: continue
+  WHY: the owner's record shows the demodulator emitting hundreds of characters and a certain parsed CQ on real air while the screen showed nothing; the ear works and the display does not
+  DECIDED: nothing beyond the instruction at task 0. The number 337 is the work instruction's own heading and collides with the step 0 entry above written under the same number; this entry is kept separate because it is a different unit of work, and the collision is reported in output.md section 4.
+  LICENCE: PHASE_PLAN.md section 6; PSK31 plan R9, R12, R13; CLAUDE.md 0.0; HM-DEC-139, HM-DEC-155
+  COST: one session, three tasks (0 to 2), each committed on its own.
+  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+  FATE: executed
+  STATE_AFTER: not recorded
+  STATE_WHY: not recorded - no step moves; written at task 0.
+  
+  ### ALSO RECORDED FOR UNIT 337 - STEP 0
+  
+  A second append for the same unit and the same step, called as UNIT 1.
+  One unit is one entry, so what this route recorded is folded in here
+  rather than written as a second entry. Only what differs is listed.
+  
+  APPROACH: find where an emitted PSK31 character stops between the demodulator and the row, make the row show every emitted character as it arrives, make the two character counters one source, and measure whether the 262-character carrier was text or bit-slip
+  HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
+  WHY: the owner's record shows the demodulator emitting hundreds of characters and a certain parsed CQ on real air while the screen showed nothing; the ear works and the display does not
+  DECIDED: the fault is display-first by the record; whether the characters were readable is measured in task 2 and named for the next unit if not
+  LICENCE: PHASE_PLAN.md section 6; PSK31 plan R9, R12, R13; CLAUDE.md 0.0
+  COST: 12.401394500000002
+  ACCOMPLISHED: a PSK31 station Hamlet can hear is a row with his words on it, as the record already said it should have been
+  STATE_AFTER: in progress
+  STATE_WHY: no output.md, so there is no report to judge the step against
 
   --- CLAUDE.md ---
   1387 lines, 197230 bytes
@@ -364,18 +388,34 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  10 lines, 433 bytes
+  19 lines, 704 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: EXECUTING
-  TASK: 3 of 4
-  WORK_INSTRUCTION: 342 - step 1, the category pages fitted to their mockup
-  BALL: code
-  NEXT_PASTE: none
-  RULES_AT: HM-DEC-163 (2026-09-12)
-  UPDATED: 2026-09-12T23:28:55-04:00
-  NOTE: Task 3 done and committing - a card's map opens in its popup on a click and closes on a click outside at 1400 and 1920, no event; four classes 23 of 23, carry-forward 100 and 85; writing the report
+  STATE: COMPLETED
+  TASK: TASK 3 of 3
+  WORK_INSTRUCTION: 337 - the row shows what the ear heard
+  BALL: tim
+  NEXT_PASTE: output.md -> Claude Web
+  RULES_AT: HM-DEC-161 (2026-09-11)
+  UPDATED: 2026-09-13T16:57:24-04:00
+  NOTE: Unit 337 complete - the PSK31 row shows every emitted character, 483 of 483; report validated and pushed.
+  
+  ---
+  
+  Written by a Claude Code session per CLAUDE.md 13 and ANNUNCIATOR.md.
+  
+  PROTOCOL names which protocol this header is written against. The long form,
+  STATUS_PROTOCOL.md, lives in the annunciator repository and is not in this
+  one, so nothing here can check conformance to it -- the field says what the
+  file was written to, not that anybody validated it.
 
 ==============================================================
  END OF RELOAD
 ==============================================================
+
+==============================================================
+ LAYER CAPABILITIES - what this copy of the layer can do
+==============================================================
+
+  23 capabilities checked: 18 present, 0 absent, 5 uncheckable.
+  Nothing absent.

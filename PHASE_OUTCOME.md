@@ -1,8 +1,8 @@
-PHASE: The screen, done right
+﻿PHASE: The screen, done right
 PHASE_SET: 2026-09-12
 DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
 STEP: 0 | in progress | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+STEP: 1 | blocked | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
 STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
 STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
 
@@ -128,3 +128,18 @@ COST: 12.401394500000002
 ACCOMPLISHED: a PSK31 station Hamlet can hear is a row with his words on it, as the record already said it should have been
 STATE_AFTER: in progress
 STATE_WHY: no output.md, so there is no report to judge the step against
+
+## UNIT 1 - STEP 1
+
+STEP: 1
+APPROACH: prove step 1 on the drawn category pages at 1400 and 1920 instead of the view model - the band (criterion 1), the next card and its callers per kind (criterion 3), all eight kinds with Continents to seven and each to its countries by click (criterion 4) - fixing only a fact the view model holds and the page does not draw, and re-measuring and reporting unit 342's unreported build
+HIT: section 4 wants a ruling: yes - The carried asks still open include rulings on what a card asserts, such as the Modes and Hall of Fame next cards naming PSK31 against section 3.1 and the States next card wording, which fall inside the third of the three, though the new permission scope question alone does not.
+MOVE: work around
+WHY: Unit 342 built its rulings and ended at 'writing the report', so the state reader judged step 1 against unit 341's step 0 report and found criteria 1, 3 and 4 unproved on the screen (view model or 1040 only, per the test source). Proving on the drawn page is a different approach from fitting the pages to the picture. The loop test found nothing like it for step 1, and it is the method that closed step 0 (unit 339), not a repeat of it.
+DECIDED: rulings 17 to 20 - criteria 1, 3 and 4 count only on the realized page at 1400 and 1920, not at 1040 and not on the view model; unit 342's build stands and is re-measured, not redone; a watched red for an already-true assertion is a wrong expectation on the test window only, never broken markup; a fact the view model holds and the page does not draw is fixed as step 1 work, never changing scoring, earning or rulings 11-16's words; plus the Hall of Fame and Modes PSK31 next-card collision left to step 2 as drawn, and unit 337's PSK31 findings logged, not chased - all the author's, marked for Tim at step 3, overrulable
+LICENCE: PHASE_PLAN.md sections 1 (a step's exit is what is on the screen, asserted by computation), 2, 4 (step 1 exit criteria), 6 (the arbiter decides and continues; ship partial on a small miss; never loosen a test) and 7; .run-unit/state-verdict.json (step 1 partial on unit 342: criteria 1, 3, 4); PHASE_OUTCOME.md unit 342 STATE_WHY; PROJECT_STATUS.md at 9214b2a (EXECUTING, writing the report) and git log (no docs(unit342) commit); tests TheCategoryPagesAreTradingCardsTests lines 50, 289, 779, 802, 1029, 1614 and TheAchievementsPageClicksInTests line 281; docs/phase-maintenance-run/PHASE_PLAN.md R22; unit 337 output.md section 4 (e4c160f); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155
+COST: 5.3819905000000015
+ACCOMPLISHED: every achievements category page is shown, on the page as drawn at both of Tim's widths, to carry its band, its earned contacts and a next card naming who is calling, for all eight kinds and every continent - and the step has a report of its own saying what unit 342 built and what it measures
+FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: The run was not allowed to use dotnet at all because commit 230e6c0 replaced the permission list, so no test could be built or run, and criteria 1, 3 and 4 still have no test on the drawn page at 1400 and 1920 that anyone has seen pass, and only a launcher fix will change that, not more work by the unit.

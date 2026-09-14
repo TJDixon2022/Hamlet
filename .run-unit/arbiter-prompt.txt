@@ -10,5 +10,13 @@ Read first, in this order:
 
 Run the loop test before you propose an approach.
 
+You stop the phase - MOVE: stop - for exactly three things, ARBITER.md
+section 6: anything that touches keying, transmit or the radio's
+safety; money past the budget; a decision that changes what the
+product promises the operator. On everything else - including a
+question the last report left in its section 4 - take your own
+recommendation, put it in DECIDED marked author's, overrulable, and
+author the unit on it.
+
 Write WORK_INSTRUCTIONS.md and end it with the ARBITER-DECISION
 block exactly as ARBITER.md section 7 specifies. Write nothing else.

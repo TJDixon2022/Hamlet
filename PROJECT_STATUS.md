@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
-TASK: 0 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 343 - step 1, proved on the window
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-13T18:26-04:00
-NOTE: Task 0 stopped before its first test run - the run's permission scope allows node tools/tests/run.js (ClaudeProjectStatus's, layered in at 230e6c0) and no dotnet, so nothing can build or test; writing output.md
+RULES_AT: HM-DEC-161 (2026-09-11)
+UPDATED: 2026-09-13T20:19:57-04:00
+NOTE: Unit 344 complete - the capture press ships; neither garble hypothesis reproduces, low SNR does.
 
 ---
 
