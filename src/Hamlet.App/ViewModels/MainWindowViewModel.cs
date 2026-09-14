@@ -15205,7 +15205,8 @@ public partial class MainWindowViewModel : ObservableObject
             wanted.Length,
             composed.Seconds,
             composed.Cap,
-            offsetHz);
+            offsetHz,
+            composed.AnnouncedCode);
 
         SendStage.Entered(
             _telemetry,
@@ -15271,7 +15272,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         // **THE CLICK IS THE MOMENT** (§R10). A send with no slot has no boundary to wait
         // for, so the action that armed it fires it; nothing reads a clock to decide.
-        _ = FirePsk31Async(wanted, macro, composed.Seconds);
+        _ = FirePsk31Async(wanted, macro, composed.Seconds, composed.AnnouncedCode, offsetHz);
     }
 
     /// <summary>
@@ -15460,8 +15461,9 @@ public partial class MainWindowViewModel : ObservableObject
             //
             // **THE CARD SAYS IT IN CHARACTERS, WHICH IS WHAT HE CAN SHORTEN** (work
             // instruction 357 task 3). The send line is about seconds of audio, and nobody
-            // types seconds.
-            var seconds = Psk31Modulator.SecondsFor(framed);
+            // types seconds. **The announcement in front is counted** (work instruction 359
+            // task 4), because it is part of what the cap measured.
+            var seconds = Psk31Modulator.SentSecondsFor(framed);
 
             if (seconds > LongestTypedSeconds)
             {
@@ -15745,6 +15747,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="wanted">What was composed, for the panel's sentence.</param>
     /// <param name="macro">Which macro, for the record.</param>
     /// <param name="plannedSeconds">How long the composed audio is.</param>
+    /// <param name="announcedCode">The RSID code the audio begins with, or null where it begins with none.</param>
+    /// <param name="offsetHz">Where the send is in the passband, which is where its burst is centered.</param>
     /// <returns>What now did, or null where nothing was armed.</returns>
     /// <remarks>
     /// <para>**THE KEYING EVENTS ARE WRITTEN FROM WHAT THE RUN MEASURED, NOT FROM AN
@@ -15760,7 +15764,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// rather than a silence to infer.</para>
     /// </remarks>
     private async Task<Ft8BoundaryResult?> FirePsk31Async(
-        string wanted, string macro, double plannedSeconds)
+        string wanted, string macro, double plannedSeconds, int? announcedCode, double offsetHz)
     {
         if (_armedSend is null)
         {
@@ -15815,6 +15819,15 @@ public partial class MainWindowViewModel : ObservableObject
                     run.SecondsOffered,
                     plannedSeconds,
                     aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
+
+                // **THE ANNOUNCEMENT IS WRITTEN AS SENT ONCE THE KEYING WAS TAKEN** (work
+                // instruction 359 task 4, §R13), for `psk31_send_keyed`'s reason: a line written
+                // at the press would claim a burst went out on an evening the port was dead. The
+                // code, the mode, the variant and the center - no callsign and no text.
+                if (announcedCode is { } code)
+                {
+                    RsidEvents.Sent(_telemetry, code, offsetHz);
+                }
             }
 
             WhatTheRadioSaidAfterASend();

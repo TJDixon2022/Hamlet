@@ -67,6 +67,20 @@ public sealed class RsidCodes
     /// <summary>The tone sequence of each burst the file carries, by the same names.</summary>
     public IReadOnlyDictionary<string, IReadOnlyList<int>> ToneSequences { get; }
 
+    /// <summary>The mode part of fldigi's name: what comes before the first underscore.</summary>
+    /// <param name="name">fldigi's name for the mode, e.g. "OLIVIA_8_250".</param>
+    /// <returns>The mode, e.g. "OLIVIA"; empty for an empty name.</returns>
+    /// <remarks>
+    /// **ONE RULE FOR READING A NAME**, used by the detector for what it heard and by the
+    /// events for what was sent, so the two say the same words for the same burst.
+    /// </remarks>
+    public static string ModeOf(string name) => (name ?? "").Split('_')[0];
+
+    /// <summary>The variant part of fldigi's name: the rest after the mode, joined with a slash.</summary>
+    /// <param name="name">fldigi's name for the mode, e.g. "OLIVIA_8_250".</param>
+    /// <returns>The variant, e.g. "8/250"; empty where the name has none, as "BPSK31" has none.</returns>
+    public static string VariantOf(string name) => string.Join("/", (name ?? "").Split('_').Skip(1));
+
     /// <summary>The code for a mode, or null where the file has none.</summary>
     /// <param name="name">fldigi's name for the mode, e.g. "OLIVIA_8_250".</param>
     /// <returns>The code, or null.</returns>

@@ -421,9 +421,12 @@ public static class Psk31Events
     /// <param name="seconds">How long it takes at 31.25 baud.</param>
     /// <param name="capSeconds">The longest a single send may run.</param>
     /// <param name="offsetHz">Where it would go out, or null where unknown.</param>
+    /// <param name="rsidCode">The RSID code the audio begins with, or null where it begins with none.</param>
     /// <remarks>
-    /// **THE LENGTH AND NOT THE TEXT** (§2.1). A macro carries the operator's callsign
-    /// twice over, and a count says everything a diagnosis needs.
+    /// <para>**THE LENGTH AND NOT THE TEXT** (§2.1). A macro carries the operator's callsign
+    /// twice over, and a count says everything a diagnosis needs.</para>
+    /// <para>**AND WHETHER IT WAS ANNOUNCED** (work instruction 359 task 4). The seconds include
+    /// the burst, so the record says the burst is there and which code it names.</para>
     /// </remarks>
     public static void SendComposed(
         ITelemetry? telemetry,
@@ -431,7 +434,8 @@ public static class Psk31Events
         int characters,
         double seconds,
         double capSeconds,
-        double? offsetHz)
+        double? offsetHz,
+        int? rsidCode = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_composed",
@@ -443,6 +447,8 @@ public static class Psk31Events
                 ["capSeconds"] = capSeconds,
                 ["withinCap"] = seconds <= capSeconds,
                 ["offsetHz"] = offsetHz is { } hz ? Math.Round(hz, 1) : null,
+                ["announced"] = rsidCode is not null,
+                ["rsidCode"] = rsidCode,
             });
 
     /// <summary>A send was refused before anything went out.</summary>

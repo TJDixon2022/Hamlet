@@ -1,3 +1,5 @@
+using Hamlet.RadioEngine.Rsid;
+
 namespace Hamlet.RadioEngine.Psk31;
 
 /// <summary>
@@ -87,6 +89,28 @@ public static class Psk31Modulator
         return (BitsFor(text).Length + 1) / Psk31Demodulator.Baud;
     }
 
+    /// <summary>The name a PSK31 send is announced under, as `rsid-codes.json` carries it.</summary>
+    /// <remarks>
+    /// **A NAME TO LOOK THE CODE UP BY, NOT A CODE** (R27). The number and the tones are the
+    /// file's; this is the key they are filed under.
+    /// </remarks>
+    public const string AnnouncedAs = "BPSK31";
+
+    /// <summary>**How long this text takes on the air as a send goes out: the announcement, then the text.**</summary>
+    /// <param name="text">What would be sent.</param>
+    /// <returns>Seconds.</returns>
+    /// <exception cref="ArgumentNullException">There is no text.</exception>
+    /// <remarks>
+    /// <para>**THE BURST COUNTS INSIDE THE CAP** (work instruction 359, the arbiter's decision A).
+    /// A typed line's *too long to send* is measured with this, so the card says what the
+    /// sequence will do.</para>
+    /// <para>**<see cref="SecondsFor"/> STAYS THE TEXT'S OWN LENGTH**, because the turn timing
+    /// that reads it is about how long the other station's words take, and nothing in this unit
+    /// is licensed to move it.</para>
+    /// </remarks>
+    public static double SentSecondsFor(string text)
+        => SecondsFor(text) + (Announcement() is { } codes ? RsidBurst.Seconds(codes) : 0);
+
     /// <summary>The audio for this text.</summary>
     /// <param name="text">What to send. A character with no varicode is skipped by the code.</param>
     /// <param name="sampleRate">Samples a second.</param>
@@ -98,25 +122,62 @@ public static class Psk31Modulator
     public static float[] Modulate(string text, int sampleRate, double offsetHz, float peak)
         => Modulate(text, sampleRate, offsetHz, peak, IdleBitsBefore, IdleBitsAfter);
 
-    /// <summary>The audio for this text, as a send with no slot carries it.</summary>
+    /// <summary>The audio for this text, as a send with no slot carries it: its announcement, then the text.</summary>
     /// <param name="text">What to send.</param>
     /// <param name="sampleRate">Samples a second - the transmit endpoint's.</param>
     /// <param name="offsetHz">Where the carrier sits in the passband.</param>
     /// <param name="peak">The drive level the operator set.</param>
-    /// <returns>The samples, the rate, the mode and the text's length - and not the text.</returns>
+    /// <returns>The samples, the rate, the mode, the text's length and the code announced - and not the text.</returns>
     /// <param name="longestSeconds">The most this send may be, thirty unless the caller says otherwise.</param>
+    /// <remarks>
+    /// <para>**EVERY PSK31 SEND BEGINS WITH ITS RSID BURST** (`PHASE_PLAN.md` R27, Tim
+    /// 2026-09-14; work instruction 359 task 4). The BPSK31 burst from <see cref="RsidBurst"/>,
+    /// centered on this send's own offset at the same drive level, goes in front of the text's
+    /// samples, **which are exactly what they were before** - the burst is added ahead of them
+    /// and nothing in them moves.</para>
+    /// <para>**COMPOSED HERE, WHICH IS THE ONE PLACE THE SEND PATH COMPOSES PSK31.** The four
+    /// macros and the typed line all reach this through `SendMessage`, so they are all announced,
+    /// and the burst rides the same <see cref="Transmit.UnslottedTransmission"/> through the same
+    /// arming and the same sequence - no second keying, no second path, no change to the
+    /// sequence, the gate, `Stop` or the cap (§6, §R10). **The burst counts inside the cap**
+    /// (the arbiter's decision A).</para>
+    /// <para>**WHERE THE CODES COULD NOT BE READ, THE SEND GOES UNANNOUNCED AND SAYS SO.**
+    /// <see cref="Transmit.UnslottedTransmission.AnnouncedCode"/> is null and the composition
+    /// record carries it; no code is guessed (§0.0). This session's choice, overrulable.</para>
+    /// </remarks>
     public static Transmit.UnslottedTransmission Compose(
         string text,
         int sampleRate,
         double offsetHz,
         float peak,
         double longestSeconds = Transmit.OperatorSend.LongestUnslottedSeconds)
-        => new(
-            Transmit.UnslottedMode.Psk31,
-            Modulate(text, sampleRate, offsetHz, peak),
-            sampleRate,
-            text.Length,
-            longestSeconds);
+    {
+        var said = Modulate(text, sampleRate, offsetHz, peak);
+
+        if (Announcement() is not { } codes || codes.CodeOf(AnnouncedAs) is not { } code)
+        {
+            return new(Transmit.UnslottedMode.Psk31, said, sampleRate, text.Length, longestSeconds);
+        }
+
+        var burst = RsidBurst.Samples(codes, code, offsetHz, sampleRate, peak);
+        var samples = new float[burst.Length + said.Length];
+
+        burst.CopyTo(samples, 0);
+        said.CopyTo(samples, burst.Length);
+
+        return new(Transmit.UnslottedMode.Psk31, samples, sampleRate, text.Length, longestSeconds)
+        {
+            AnnouncedCode = code,
+        };
+    }
+
+    /// <summary>The codes, where they were read and carry a sequence for PSK31; otherwise null.</summary>
+    private static Rsid.RsidCodes? Announcement()
+        => Olivia.OliviaData.Current.Rsid is { } codes
+           && codes.CodeOf(AnnouncedAs) is { } code
+           && RsidBurst.TonesFor(codes, code) is not null
+            ? codes
+            : null;
 
     /// <summary>The audio for this text, with the idle stated.</summary>
     /// <param name="text">What to send.</param>

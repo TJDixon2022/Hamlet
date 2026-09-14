@@ -446,11 +446,7 @@ public sealed class RsidDetector
         /// `OLIVIA_8_250` is Olivia 8/250, and `BPSK31` has no variant.
         /// </summary>
         public static Burst Named(string name, int code, IReadOnlyList<int> tones)
-        {
-            var parts = name.Split('_');
-
-            return new Burst(name, code, parts[0], string.Join("/", parts.Skip(1)), tones.ToArray());
-        }
+            => new(name, code, RsidCodes.ModeOf(name), RsidCodes.VariantOf(name), tones.ToArray());
     }
 
     private sealed record Candidate(

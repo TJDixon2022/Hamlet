@@ -142,13 +142,17 @@ public static class Psk31Macros
         return $"{other} de {me}  {said}  BTU {other} de {me} K";
     }
 
-    /// <summary>How long a typed line would take on the air, framed.</summary>
+    /// <summary>How long a typed line would take on the air, framed and announced.</summary>
     /// <param name="his">The other station's callsign.</param>
     /// <param name="mine">The operator's callsign.</param>
     /// <param name="text">What he typed.</param>
-    /// <returns>Seconds, including the idle either side.</returns>
+    /// <returns>Seconds, including the idle either side and the RSID burst in front.</returns>
+    /// <remarks>
+    /// **THE BURST GOES OUT TOO, SO IT IS COUNTED** (work instruction 359 task 4, the arbiter's
+    /// decision A): the card's *too long to send* and the sequence's cap agree.
+    /// </remarks>
     public static double TypedSeconds(string his, string mine, string text)
-        => Psk31Modulator.SecondsFor(Typed(his, mine, text));
+        => Psk31Modulator.SentSecondsFor(Typed(his, mine, text));
 
     /// <summary>What of a typed line PSK31 can send as itself, and how much was dropped.</summary>
     /// <param name="text">What the operator typed.</param>

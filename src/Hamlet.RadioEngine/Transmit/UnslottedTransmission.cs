@@ -58,6 +58,9 @@ public sealed record UnslottedTransmission(
     /// <summary>How long the audio is, from the array and the rate.</summary>
     public double Seconds => SampleRate > 0 ? Samples.Length / (double)SampleRate : 0;
 
+    /// <summary>The RSID code the audio begins with, or null where it begins with none.</summary>
+    public int? AnnouncedCode { get; init; }
+
     /// <summary>The cap this send is held to, never below nothing.</summary>
     /// <remarks>
     /// <para>**THE CAP IS THE SEND'S, NOT A CONSTANT EVERY SEND SHARES** (work instruction
