@@ -3007,6 +3007,31 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>The buffer an Olivia capture copies the tap through.</summary>
     private float[] _oliviaCaptureBuffer = [];
 
+    /// <summary>What listens for RSID under Olivia, or null where nothing is listening.</summary>
+    private Hamlet.RadioEngine.Rsid.RsidDetector? _rsidDetector;
+
+    /// <summary>Brings the device stream to the rate the RSID detector is run at.</summary>
+    private Psk31Resampler? _rsidResampler;
+
+    /// <summary>Where in the tap the RSID detector has read to, or -1 before its first tick.</summary>
+    private long _rsidAt = -1;
+
+    /// <summary>The buffer the RSID detector copies the tap through.</summary>
+    private float[] _rsidBuffer = [];
+
+    /// <summary>Stop listening for RSID and forget what was half heard.</summary>
+    /// <remarks>
+    /// **A NEW LISTEN STARTS CLEAN**, for `ForgetPsk31`'s reason: audio heard before the tab
+    /// changed, or before a gap the tap could not supply, is not continuous with what comes
+    /// after, and a burst spliced across the two would be a burst nobody sent.
+    /// </remarks>
+    private void ForgetRsid()
+    {
+        _rsidDetector = null;
+        _rsidResampler = null;
+        _rsidAt = -1;
+    }
+
     /// <summary>Hand a running capture the device stream under Olivia, and do nothing else.</summary>
     /// <param name="tap">The receive audio.</param>
     /// <remarks>
@@ -3051,6 +3076,68 @@ public partial class MainWindowViewModel : ObservableObject
         _oliviaCaptureAt += wanted;
 
         FeedPsk31Capture(_oliviaCaptureBuffer.AsSpan(0, wanted), tap.SampleRate);
+    }
+
+    /// <summary>Hand the RSID detector the device stream under Olivia, and write down what it hears.</summary>
+    /// <param name="tap">The receive audio.</param>
+    /// <remarks>
+    /// <para>**THE SAME READ `HearPsk31` MAKES, AT THE SAME RATE** (work instruction 359 task 5).
+    /// The device's samples go through a <see cref="Psk31Resampler"/> to its 8 kHz, which is the
+    /// rate every PSK31 and RSID path here was proved at, and the detector searches the passband
+    /// the PSK31 search does.</para>
+    /// <para>**IT WRITES `rsid_heard` AND DOES NOTHING ELSE** (the arbiter's decision B, §0.2). No
+    /// mode, variant, tab or dial moves, no row appears and nothing is sent: setting the mode
+    /// from a burst is step 3's.</para>
+    /// <para>**THE CODES ARE THE ONES THE TAB WAS GIVEN.** Where they could not be read there is
+    /// nothing to listen for, and the panel already says why.</para>
+    /// </remarks>
+    private void HearRsid(AudioTap tap)
+    {
+        if (_olivia?.Rsid is not { } codes || tap.SampleRate <= 0)
+        {
+            return;
+        }
+
+        if (_rsidDetector is null || _rsidResampler is null || _rsidResampler.DeviceSampleRate != tap.SampleRate)
+        {
+            _rsidResampler = new Psk31Resampler(tap.SampleRate);
+            _rsidDetector = new Hamlet.RadioEngine.Rsid.RsidDetector(
+                codes, Psk31Resampler.TargetSampleRate, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz);
+            _rsidAt = -1;
+        }
+
+        if (_rsidAt < 0)
+        {
+            // **START FROM WHAT HAS ALREADY ARRIVED**, as the PSK31 listener does.
+            _rsidAt = Math.Max(0, tap.SamplesSeen - tap.SamplesHeld);
+        }
+
+        var wanted = (int)Math.Min(tap.SamplesSeen - _rsidAt, tap.SamplesHeld);
+
+        if (wanted <= 0)
+        {
+            return;
+        }
+
+        if (_rsidBuffer.Length < wanted)
+        {
+            _rsidBuffer = new float[wanted];
+        }
+
+        if (!tap.Window(_rsidAt, wanted, _rsidBuffer, out _))
+        {
+            // **THE AUDIO WENT PAST BEFORE IT WAS READ.** Start over rather than hear a burst
+            // across the gap.
+            ForgetRsid();
+            return;
+        }
+
+        _rsidAt += wanted;
+
+        foreach (var heard in _rsidDetector.Feed(_rsidResampler.Take(_rsidBuffer.AsSpan(0, wanted))))
+        {
+            RsidEvents.Heard(_telemetry, heard);
+        }
     }
 
     /// <summary>Where a PSK31 capture is written.</summary>
@@ -12698,6 +12785,14 @@ public partial class MainWindowViewModel : ObservableObject
             _decoder.DigitalMode = IsDigitalMode;
         }
 
+        // **RSID IS LISTENED FOR UNDER OLIVIA AND NOWHERE ELSE IN THIS STEP** (work instruction
+        // 359 task 5; Hamlet-wide listening is step 3's). Any tick that is not an Olivia tick
+        // puts the listener down, so the next Olivia tick starts clean.
+        if (!IsDigitalMode || tap is null || !IsOliviaChosen)
+        {
+            ForgetRsid();
+        }
+
         if (!IsDigitalMode || tap is null)
         {
             _slotWatch.Rearm();
@@ -12729,10 +12824,12 @@ public partial class MainWindowViewModel : ObservableObject
             }
             else if (IsOliviaChosen)
             {
-                // **OLIVIA HAS NO LISTENING YET, ONLY THE CAPTURE** (work instruction 358
-                // task 3). The tap's audio goes to a running capture and nowhere else; no
-                // demodulator, resampler or search is made.
+                // **OLIVIA HAS NO DEMODULATOR YET: THE CAPTURE, AND NOW THE RSID LISTENER**
+                // (work instruction 358 task 3; 359 task 5). The tap's audio goes to a running
+                // capture and to the RSID detector, which writes what it hears and changes
+                // nothing else - no mode, variant, tab or dial (the arbiter's decision B).
                 KeepOliviaCapture(tap);
+                HearRsid(tap);
             }
 
             return;

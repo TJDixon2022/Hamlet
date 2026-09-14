@@ -444,6 +444,189 @@ public sealed class TheOliviaSeamTests : IDisposable
         Assert.False(NeighborhoodMapControl.IsSpotOnMap(model.MapChosenSpotHz, model.MapLowHz, model.MapHighHz));
     }
 
+    /// <summary>**Under Olivia, an RSID burst through the tap writes `rsid_heard`, and nothing else moves.**</summary>
+    /// <param name="deviceRate">The rate the tap hands over: the fixture's own, and a sound card's.</param>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 359 TASK 5, CRITERION 1.6.** The mode author's 8/250 CQ, with
+    /// fldigi's own burst in front, is handed to the real tick through the tap the way the sound
+    /// card hands it over. The line says the code, the mode, the variant, the center and the
+    /// quality, and nothing personal.</para>
+    /// <para>**A DETECTION CHANGES NOTHING ELSE** (the arbiter's decision B, §0.2). The radio is
+    /// asked for nothing more, the dial, the mode and the tab stay where they were, no row or card
+    /// appears, and nothing is composed or sent. Setting the mode from a burst is step 3's.</para>
+    /// </remarks>
+    [Theory]
+    [InlineData(8_000)]
+    [InlineData(48_000)]
+    public async Task UnderOliviaABurstThroughTheTapWritesRsidHeardAndMovesNothing(int deviceRate)
+    {
+        var folder = Path.Combine(_folder, "heard-" + deviceRate);
+
+        Directory.CreateDirectory(folder);
+
+        const string call = "KC3QIS";
+        const string grid = "FN00DJ";
+        const string who = "Quillfeather";
+        const string where = "Trafford PA";
+
+        using (var telemetry = new JsonlTelemetry(folder, "rsid", _ => true))
+        {
+            var settings = new AppSettings { ReconnectOnStartup = false };
+
+            settings.Operator.Callsign = call;
+            settings.Operator.GridSquare = grid;
+            settings.Operator.OperatorName = who;
+            settings.Operator.Location = where;
+
+            var model = Panel(telemetry, settings);
+
+            model.SelectedBand = model.Bands.First(b => b.Band.Name == "20 m");
+            model.FrequencyHz = model.SelectedBand.Band.JumpHz;
+
+            var rig = new ModeFakeRig { ConfirmWhateverItIsGiven = true };
+
+            model.UseRigForTests(rig);
+
+            await model.ChooseDigitalModeCommand.ExecuteAsync(Mode);
+
+            var dial = rig.LastSet;
+            var sets = rig.Sets;
+            var modeSets = rig.ModeSets;
+            var frequency = model.FrequencyHz;
+
+            var tap = new AudioTap();
+
+            model.TapForTests = tap;
+
+            Feed(model, tap, Fixture("olivia-8-250-cq-rsid.wav"), deviceRate);
+
+            _output.WriteLine(
+                $"at {deviceRate} Hz: radio asked {rig.Sets} time(s), mode {rig.ModeSets}, dial {rig.LastSet}, "
+                + $"frequency {model.FrequencyHz}, tab {model.ChosenDigitalMode}, rows {model.DigitalDecodes.Count}, cards {model.DigitalCards.Count}");
+
+            Assert.Equal(sets, rig.Sets);
+            Assert.Equal(modeSets, rig.ModeSets);
+            Assert.Equal(dial, rig.LastSet);
+            Assert.Equal(frequency, model.FrequencyHz);
+            Assert.Equal(Mode, model.ChosenDigitalMode);
+            Assert.Equal("Digital", model.OperatingMode);
+            Assert.Empty(model.DigitalDecodes);
+            Assert.Empty(model.DigitalCards);
+        }
+
+        var lines = Lines(folder);
+
+        foreach (var line in lines.Where(l => l.Contains("rsid", StringComparison.OrdinalIgnoreCase)))
+        {
+            _output.WriteLine(line);
+        }
+
+        var heard = Assert.Single(lines, l => l.Contains("\"event\":\"rsid_heard\"", StringComparison.Ordinal));
+        var data = System.Text.Json.JsonDocument.Parse(heard).RootElement.GetProperty("data");
+        var codes = OliviaData.Current.Rsid!;
+
+        Assert.Equal(codes.CodeOf("OLIVIA_8_250"), data.GetProperty("code").GetInt32());
+        Assert.Equal("OLIVIA", data.GetProperty("mode").GetString());
+        Assert.Equal("8/250", data.GetProperty("variant").GetString());
+        Assert.InRange(data.GetProperty("centerHz").GetDouble(), 995, 1005);
+        Assert.True(data.GetProperty("quality").GetDouble() > 0);
+
+        Assert.Subset(
+            new HashSet<string> { "code", "mode", "variant", "centerHz", "quality", "tonesRight" },
+            data.EnumerateObject().Select(p => p.Name).ToHashSet());
+
+        foreach (var personal in new[] { call, grid, who, where })
+        {
+            Assert.DoesNotContain(personal, heard, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // **AND NOTHING WAS COMPOSED OR SENT.**
+        foreach (var name in new[] { "rsid_sent", "psk31_send_composed", "send_stage", "ft8_transmission" })
+        {
+            Assert.DoesNotContain(lines, l => l.Contains("\"event\":\"" + name + "\"", StringComparison.Ordinal));
+        }
+    }
+
+    /// <summary>**Under FT8 the same audio writes no RSID event**: listening for RSID is Olivia's in this step.</summary>
+    [Fact]
+    public void UnderFt8TheSameAudioWritesNoRsidEvent()
+    {
+        var folder = Path.Combine(_folder, "ft8");
+
+        Directory.CreateDirectory(folder);
+
+        using (var telemetry = new JsonlTelemetry(folder, "rsid", _ => true))
+        {
+            var model = Panel(telemetry);
+
+            model.ChooseDigitalModeCommand.Execute("FT8");
+
+            var tap = new AudioTap();
+
+            model.TapForTests = tap;
+
+            Feed(model, tap, Fixture("olivia-8-250-cq-rsid.wav"), 8_000);
+
+            _output.WriteLine("tab: " + model.ChosenDigitalMode);
+        }
+
+        var lines = Lines(folder);
+
+        _output.WriteLine("lines written: " + lines.Count);
+
+        Assert.DoesNotContain(lines, l => l.Contains("\"event\":\"rsid_", StringComparison.Ordinal));
+    }
+
+    /// <summary>Hand a recording to the tick in quarter-second pieces, as a sound card would.</summary>
+    /// <remarks>
+    /// At a device rate above the recording's, each sample is held for the whole ratio, which puts
+    /// the audio at the device's rate for the resampler to bring back down.
+    /// </remarks>
+    private static void Feed(MainWindowViewModel model, AudioTap tap, MonoAudio audio, int deviceRate)
+    {
+        var hold = deviceRate / audio.SampleRate;
+        var piece = new float[deviceRate / 4];
+        var filled = 0;
+
+        foreach (var sample in audio.Samples)
+        {
+            for (var i = 0; i < hold; i++)
+            {
+                piece[filled++] = sample;
+
+                if (filled == piece.Length)
+                {
+                    tap.Take(piece, deviceRate);
+                    model.LookForASlotForTests();
+                    filled = 0;
+                }
+            }
+        }
+
+        if (filled > 0)
+        {
+            tap.Take(piece.AsSpan(0, filled), deviceRate);
+            model.LookForASlotForTests();
+        }
+    }
+
+    /// <summary>A fixture from the mode author's set, after its hash has been checked against the manifest.</summary>
+    private static MonoAudio Fixture(string file)
+    {
+        var folder = Path.Combine(RepoRoot(), "assets", "fixtures", "olivia");
+
+        using var manifest = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(folder, "manifest.json")));
+
+        var entry = manifest.RootElement.EnumerateArray().Single(e => e.GetProperty("file").GetString() == file);
+        var path = Path.Combine(folder, file);
+
+        Assert.Equal(
+            entry.GetProperty("sha256").GetString(),
+            Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant());
+
+        return WavAudio.Read(path);
+    }
+
     private static AudioTap Heard()
     {
         var tap = new AudioTap();
