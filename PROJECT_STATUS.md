@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 3 of 3
-WORK_INSTRUCTION: 350 - step 0, on the record and not on the clock
+WORK_INSTRUCTION: 351 - step 0's last red: the check fitted at 1400
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-14T00:38:59-04:00
-NOTE: Unit 350 complete at task 3 of 3 - step 0 on the record at this tree: 5 of 6 must-pass hold with the best bet pinned both ways; criterion 5 red at 1400 PSK31 with the best bet on his band (247 of 238.4 px, panels 446 of 455), not fixed under ruling 47; floor 25 px named; nice-to-pass at 1920 and 1400; step 3 still Tim's
+UPDATED: 2026-09-14T01:11:57-04:00
+NOTE: Unit 351 complete at task 3 of 3 - the 1400 green block's best bet stands over its band where the sparkline hides: PSK31 on his band 228 of 238.4 px (was 247), panels 465 of 455 (was 446), every pinned case within limits; sheet updated; step 0 filter 25 of 26, the red a 1920 pin message; step 3 still Tim's
 
 ---
 
