@@ -1,0 +1,84 @@
+{
+ "_about": "Seconds per character for each Olivia variant - the first row of the mode's timing table, which every later timing rule derives from (PHASE_PLAN.md section 3.2, step 2 criterion 2.6). Estimated from the fixtures' lengths; step 2 measures it. Nothing reads this file yet.",
+ "source": "estimated",
+ "confirm": "step 2 of the Olivia phase, criterion 2.6, from the demodulated fixtures",
+ "written_by": "work instruction 358 task 5",
+ "method": "From assets/fixtures/olivia/manifest.json alone: each fixture's seconds, less 2.32 s where rsid is true, divided by the number of characters in its text, each newline counted as one. 2.32 s is the work instruction's figure for the RSID burst, and it agrees with data/rsid/rsid-codes.json: 15 tones plus 5 silent symbols either side, at a symbol rate of 10.7666015625 Hz, is 25 / 10.7666015625 = 2.322 s. Characters counted by machine: the CQ text is 38, the four-line QSO text 251.",
+ "why_an_upper_bound": "A fixture's length includes whatever the transmitter sends before the first character and after the last - preamble, tail and the padding that completes the final block - so a length divided by a character count overstates the per-character time, and a short text overstates it most. The two 8/250 fixtures show it: the 38-character CQ gives 0.702 and the 251-character QSO 0.686. A straight line through both gives 0.683 s per character plus 0.72 s fixed; no other variant has two lengths to do the same.",
+ "excluded": [
+  {
+   "file": "olivia-16-500-qso-snr-10db.wav",
+   "why": "the clean 16/500 QSO with noise added; the same length, so no independent reading"
+  },
+  {
+   "file": "olivia-16-500-qso-snr-16db.wav",
+   "why": "the clean 16/500 QSO with noise added; the same length, so no independent reading"
+  },
+  {
+   "file": "olivia-two-signals-rsid.wav",
+   "why": "two variants in one length, which cannot be divided between them"
+  },
+  {
+   "file": "olivia-noise-only-30s.wav",
+   "why": "no text"
+  },
+  {
+   "file": "psk31-cq-rsid.wav",
+   "why": "not Olivia"
+  }
+ ],
+ "variants": [
+  {
+   "variant": "8/250",
+   "seconds_per_character": 0.683,
+   "fixed_seconds": 0.72,
+   "how": "the straight line through both 8/250 fixtures",
+   "readings": [
+    {
+     "file": "olivia-8-250-cq-rsid.wav",
+     "seconds": 28.98,
+     "rsid_seconds": 2.32,
+     "characters": 38,
+     "seconds_per_character": 0.702
+    },
+    {
+     "file": "olivia-8-250-qso-norsid.wav",
+     "seconds": 172.06,
+     "rsid_seconds": 0,
+     "characters": 251,
+     "seconds_per_character": 0.686
+    }
+   ]
+  },
+  {
+   "variant": "16/500",
+   "seconds_per_character": 0.514,
+   "fixed_seconds": null,
+   "how": "one fixture, so the fixed time is inside the figure",
+   "readings": [
+    {
+     "file": "olivia-16-500-qso-rsid.wav",
+     "seconds": 131.38,
+     "rsid_seconds": 2.32,
+     "characters": 251,
+     "seconds_per_character": 0.514
+    }
+   ]
+  },
+  {
+   "variant": "32/1000",
+   "seconds_per_character": 0.416,
+   "fixed_seconds": null,
+   "how": "one fixture, so the fixed time is inside the figure",
+   "readings": [
+    {
+     "file": "olivia-32-1000-qso-rsid.wav",
+     "seconds": 106.8,
+     "rsid_seconds": 2.32,
+     "characters": 251,
+     "seconds_per_character": 0.416
+    }
+   ]
+  }
+ ]
+}
