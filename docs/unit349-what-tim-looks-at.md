@@ -3,6 +3,10 @@
 Unit 349. Every number here comes from a test that ran green in this unit at `85437c2`, with the
 trace added at `40c297d`, or from a named report's commit and item. **Nothing here was seen by anyone.**
 
+**Brought up to date by unit 355** (work instruction 355 task 5) for two changes to the screen: Stop is
+in the status bar, and a PSK31 station's words stay on the list after he stops. Those numbers come from
+tests run in that unit, at the commits named beside them.
+
 ## 1. How to look
 
 **Every appearance claim here is computed on a test host, not seen. Your window is the first eyes on
@@ -11,6 +15,9 @@ it.**
 - **Your window size is not in the record.** The main window was measured at **1400 and 1920 px wide,
   1040 tall**, and by work instruction 354 at nine sizes, among them the **1100 × 780 Hamlet opens at** and
   the **900 × 620 it lets you shrink to** (the table under 2.1). **Please put your window size in your verdict.**
+- **Two things moved since units 349 to 354 measured this screen** (work instruction 355). **Stop is in
+  the status bar**, at its right end, at every window size and on every tab (2.1). **A PSK31 station's
+  words stay** on the decoded list after his carrier goes, marked *ended* (2.2).
 - **The achievements window opens at its own size, 1040 by 720** (`AchievementsWindow.axaml:9`).
   Nothing sizes it from the main window. Its pages were measured by setting it 1400 and 1920 wide,
   720 tall, so widen it to compare.
@@ -60,8 +67,15 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
   under the band.
 - **The decoded list** is 378 px wide at both widths. Its longest line, *VP2MAA/P KC3QIS R-09*,
   measures 200 px in a 200 px cell.
-- **CQ and Stop** are right of the tabs. Stop is 74 × 22 and inside nothing that folds. *everything*
-  and *CQ* stay on screen with the list empty and with Decoded text folded.
+- **CQ** is right of the tabs. *everything* and *CQ* stay on screen with the list empty and with
+  Decoded text folded.
+- **Stop is in the status bar, at its right end**, since work instruction 355 (your ruling A of
+  2026-09-14: *Stop lives in the status bar, always*). It is the bar's height, 36 px, and inside nothing
+  that folds. It reads *Stop*, 74 px wide, with nothing to stop, and *Stop transmitting*, 206 px wide
+  with a heavier edge, while a send is armed or keyed. **It is never greyed and can be pressed at every
+  instant**, because the send plan's step 1 says the abort cannot be disabled; pressing it does what the
+  old Stop did, frame for frame. The Stop that sat right of the tabs is gone. *`TheStopIsAlwaysOnScreenTests`
+  4 of 4 in unit 355 at `b5be0db9`.*
 - **With no license class** (plain), at 1400: the top row is 217 px (0.238), and the panels are 476
   hidden and 423 showing.
 
@@ -85,8 +99,8 @@ filter: `StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList`.*
 
 | Size | Top row (share of below the pills) | The three panels (share) | The three one top and bottom, to the status bar | Clipped callsign | Trimmed, clipped or cut text; anything off the window |
 |---|---|---|---|---|---|
-| 900 × 620, the smallest Hamlet allows | 285 px, 0.582 of 490 (297, 0.606) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the green block's left column 0 px wide: *20 m*, *14.074 MHz*, the mode, license and rule-of-thumb lines not drawn; *CW main street · 14.000–14.150* trimmed to 50 of 300 px; *nothing for you yet* 40 of 190; CQ and Stop on the window at y 462 (474) |
-| 1100 × 780, the size Hamlet opens at | 623 px, 0.958 of 650 (653, 1.005) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the license line on 17 lines, the rule of thumb on 17 and *Digital · FT8 · yours to use* on 8, each breaking words; *14.074 MHz* needs 100 px in 40; **the tabs drawn from y 796 (826), and CQ and Stop at y 800 to 822 (830 to 852), below the window's bottom edge at 780** |
+| 900 × 620, the smallest Hamlet allows | 285 px, 0.582 of 490 (297, 0.606) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the green block's left column 0 px wide: *20 m*, *14.074 MHz*, the mode, license and rule-of-thumb lines not drawn; *CW main street · 14.000–14.150* trimmed to 50 of 300 px; *nothing for you yet* 40 of 190; CQ on the window at y 462 (474); Stop in the status bar at 797, 563 (unit 355) |
+| 1100 × 780, the size Hamlet opens at | 623 px, 0.958 of 650 (653, 1.005) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the license line on 17 lines, the rule of thumb on 17 and *Digital · FT8 · yours to use* on 8, each breaking words; *14.074 MHz* needs 100 px in 40; **the tabs drawn from y 796 (826), and CQ at y 800 to 822 (830 to 852), below the window's bottom edge at 780**; Stop in the status bar at 997, 723, on the window (unit 355) |
 | 1280 × 720 | 270 px, 0.458 of 590 (291, 0.493) | 103 px, 0.175 (82, 0.139) | yes | not measured | the license line 4 lines, the rule of thumb 4, the mode line 2, between words |
 | 1366 × 728 | 242 px, 0.405 of 598 (254, 0.425) | 139 px, 0.232 (127, 0.212) | yes | not measured | *not listening yet* trimmed to 20 of 170 px |
 | 1536 × 824 | 196 px, 0.282 of 694 (208, 0.300) | 281 px, 0.405 (269, 0.388) | yes | not measured | *not listening yet* 110 of 170 |
@@ -98,6 +112,28 @@ filter: `StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList`.*
 At every size, *nothing decoded yet* in the Decoded text header is trimmed to 180 of the 190 px it needs. **Every size under 1040 tall misses R26; the smallest listed size where every outcome holds is 1400 × 1040** (section 4, items 28 to 34).
 
 *Source: `TheTopRowTests.Unit354TraceTheMainWindowAtTheSizesTimCanOpen` at `00454639`, printed in `testresults\u354-t1-trace.trx` (work instruction 354); every size realized as asked. The plain window, at 900 × 620 and 1100 × 780 only: top row 309 px (0.631) and 620 (0.954), panels 0, and the card's facts under its map by the rule (169 px inside against 336; 269 against 499). The licensed window draws no decoded row and no card, so its callsigns are not measured.*
+
+**Where Stop is at the sizes you can open** (work instruction 355): in the status bar at every size,
+whole on the window, 36 px tall, with the bar 46 px tall whether Stop is there or not, on FT8 and PSK31
+alike.
+
+| Size | Stop at rest: left, top of its 74 × 36 | The window's bottom edge |
+|---|---|---|
+| 900 × 620 | 797, 563 (799 on PSK31) | 620 |
+| 1100 × 780 | 997, 723 | 780 |
+| 1280 × 720 | 1177, 663 | 720 |
+| 1366 × 728 | 1263, 671 | 728 |
+| 1536 × 824 | 1433, 767 | 824 |
+| 1400 × 1040 | 1297, 983 | 1040 |
+| 1920 × 1040 | 1817, 983 | 1040 |
+| 1920 × 1017 | 1817, 960 | 1017 |
+| 2560 × 1400 | 2457, 1343 | 1400 |
+
+Armed or keyed at 1100 × 780 it reads *Stop transmitting*, 206 × 36 at 865, 723, and a real click there
+takes a waiting send off before its slot or stops a keyed one while it is still going. The plain window at
+900 × 620 and 1100 × 780, and the CW and Voice tabs at 1100 × 780, draw it in the same place.
+
+*Source: `TheStopIsAlwaysOnScreenTests` 4 of 4, run in unit 355 at `b5be0db9`; first green at `151a108d`.*
 
 ### 2.2 The main window, on PSK31, with the power offer not yet answered
 
@@ -126,6 +162,16 @@ and the RF power offer, so no empty column stands under it*, and the top row kee
 - **When the best bet draws** at 1400, *best bet now:* stands over the band, *20 m ✓* or *40 m*, and
   the top row stays 228 px (0.251) against a limit of 238.4, the same as with no best bet. It was 247
   px on your band and 237 on another before work instruction 351 (`1faf33a6`, U11).
+- **When a station stops sending, his row stays** (work instruction 355; you, 2026-09-14: *In the past,
+  they disappear. There's no record of them.*). The row keeps his words, his station, his country and
+  his quill, fades to 0.55 as a worked station's does, and says *ended* beside the station. It stays
+  until you press Clear, retune far enough to clear the list, or 500 newer rows push it off, which are
+  the rules an FT8 row lives by. A row that never read a character still goes with its carrier. A
+  station who comes back within 16 Hz and 15 seconds takes his row up again, his earlier words first.
+  Clicking an ended CQ row still sends one Answer at his offset and opens his card at *His turn*. On the
+  four-signal test recording, four ended rows keep all 483 characters (120, 101, 120 and 142). Check
+  whether an evening's ended rows read as a record or as clutter. *`ThePsk31RowStaysTests` 4 of 4
+  (`66bb7b0b`) and `ThePsk31ExchangeTests` 4 of 4 with the ended CQ row (`1a0d5c99`), unit 355.*
 
 **Look for with your eyes:** whether you notice the line as something to press, and whether one
 click more to reach *Set my power to 50%* is acceptable. Check where the popup opens, and whether the
@@ -400,7 +446,7 @@ All 40 rulings were found in git, in work instructions 338 to 348 (`6ab04aa`, `3
 | 2 | The rule of thumb is the mockup's words: *20 m and up want daylight along the path; 40 m and down want dark.* *Rule of thumb:* and *the gray edge is where both happen* came off. | Green block, last line | Rewording the license line; hiding the rule behind a mark; shrinking the clock | "put the gray-edge clause back" |
 | 3 | The sparkline may hide where the green block's words would wrap; the count stays. | Green block, right side; hidden at 1400 on the host | Taking the sparkline off at every width | "keep the sparkline at every width" |
 | 4 | The filter chips stay in the mode strip. | Digital tab, the strip above the panels | Two chips in the Decoded text header, as the mockup draws; shorter chip words | "put everything and CQ in the Decoded text header" |
-| 5 | CQ and Stop sit right of the tabs. | Tab row | Inside For You or the waterfall (both fold); the status bar | "move CQ and Stop to" the place you want |
+| 5 | CQ sits right of the tabs. **Stop moved to the status bar in work instruction 355, on your ruling A of 2026-09-14**, at the bar's right end, and can be pressed with nothing keyed rather than being disabled. | Tab row; status bar | For Stop: disabled with nothing keyed, as the instruction worded it, which the send plan's step 1 forbids and which unit 355's report puts to you | "move CQ to" the place you want; "grey Stop out when nothing is keyed" |
 | 6 | The power offer is on PSK31 only, though the mockup draws it on FT8. | Under the S-meter, PSK31 | Offering power on FT8 too | "offer power on every mode" |
 | 8 | Under the S-meter the offer is one line, *RF power 50 % offered*. The full offer opens in a popup on a click, and accept and decline are only inside it. | Rig panel, PSK31 | The sentence or ALC line off the screen; the offer beside CQ; a taller top row while unanswered; a hover | "show the whole offer under the S-meter again, taller row and all" |
 | 9 | PSK31's extra green-block height at 1400 is fitted without rewording the license line. It was fitted by hiding the empty upgrade row (choice U2). | Green block, PSK31 at 1400 | Rewording the license line | see U2 |
@@ -526,10 +572,12 @@ One line each, with the report that found it.
     carried, and still an ask.*
 27. **The host draws text wider than your screen**, so wraps at 1400 are probably fewer for you. That
     is an inference. *Unit 337 section 2.*
-28. **At 1100 × 780, the size Hamlet opens at, CQ and Stop are drawn below the window.** The window's
-    bottom edge is at 780; Stop is 74 × 22 at y 800 on FT8 and 830 on PSK31, CQ beside it, the mode tabs
-    at y 796, and on the plain window Stop is at y 798. At 900 × 620 and at every other size measured they
-    are on the window. *Work instruction 354, `00454639`.*
+28. **At 1100 × 780, the size Hamlet opens at, CQ is drawn below the window.** The window's bottom edge
+    is at 780; CQ is 54 × 22 at y 800 on FT8, 830 on PSK31 and 816 on the plain window, under mode tabs
+    that start at y 796. **Stop is no longer there**: since work instruction 355 it is in the status bar at
+    997, 723, on the window at this size and at all nine (2.1). At 900 × 620 CQ is on the window, at y 462
+    (474 on PSK31). *Work instruction 354, `00454639`; CQ and Stop re-read by its trace in unit 355 at
+    `b5be0db9`.*
 29. **At 1100 × 780 the top row is 623 px, 0.958 of the 650 below the pills**, 452.7 px over 0.262; 653 px
     (1.005) on PSK31. **The three panels are 0 px**, 325 px short of half. The green block is 218 px wide:
     the license line takes 17 lines, the rule of thumb 17 and *Digital · FT8 · yours to use* 8, each

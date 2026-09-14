@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before 
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T09:17:45-04:00
-NOTE: Task 4 done - license lookup behind ICallsignLookup, the network denied for every test view model, both layout fixtures hand in General for KC3QIS; carry-forward, layout and license tests 170 of 170; committing, then the sheet
+UPDATED: 2026-09-14T09:21:21-04:00
+NOTE: Task 5 - the sheet updated from this session's runs: Stop in the status bar at 9 of 9 sizes with a table, CQ still below the window at 1100x780 (y 800), PSK31 rows stay with 483 characters kept, ruling 5 and item 28 rewritten; checking for stale lines before committing
 
 ---
 
