@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before 
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T10:04:25-04:00
-NOTE: Unit 356 complete - CQ on the window at 9 of 9, the ALC sentence true, no client under test.
+UPDATED: 2026-09-14T10:58:57-04:00
+NOTE: Unit 357 complete - a right-click makes a card, and a typed line goes out framed on one click.
 
 ---
 

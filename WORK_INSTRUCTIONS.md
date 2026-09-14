@@ -1,7 +1,8 @@
-# Work instruction 356 - the window opens whole, and the ALC sentence tells the truth
+# Work instruction 357 - say what you want to say
 
-**Single session.** Four small things from the last three reports and Tim's screen.
-Nothing touches a decoder or what keys.
+**Single session.** Tim's ruling of 2026-09-14 changes R2 of the PSK31 plan: **typed
+text goes on the air.** This is the first unit since step 4 that touches what is sent;
+it touches nothing about how it is keyed. **Five tasks.**
 
 **Status.** `tools/status.sh`, real clock, after every commit and every task.
 
@@ -34,75 +35,67 @@ is refused; Python cannot run here; `-m` more than once for a multi-line commit.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139 from unit 355's queue, **verbatim in section 4**. Answered here:
-**355 item 1** - Stop always pressable - **ruled A by Tim, 2026-09-14**: *"A, the way it
-has been"*; nothing to build, task 0 records it. **355 item 3** and **354 item 2** - CQ
-and the tabs below the window at 1100×780 - task 1. **355 item 2** - idle HTTP clients
-under test - task 3.
+Carried per HM-DEC-139 from unit 356's queue, **verbatim in section 4**.
 
 ---
 
 ## 4. Why this unit exists
 
 ```
-PHASE GOAL: The screen, done right.
-UNIT GOAL:  Hamlet opens with every control on the window; the ALC sentence
-            after a send says what it measured and never sends Tim to a meter;
-            no test constructs a network client.
-ADVANCES:   none - clears a blocker: unit 354 item 2 and unit 355 item 3, CQ
-            and the mode tabs below the window at the size Hamlet opens at.
+PHASE GOAL: The screen, done right.  (PSK31 carried work under it.)
+UNIT GOAL:  Right-click any station's row and get his card; type a line on it
+            and one click sends it, framed with the callsigns and the hand-back
+            so a beginner never forgets them; read a whole message on hover.
+ADVANCES:   none - clears a blocker: R2's no-keyboard rule, overruled by Tim
+            2026-09-14, was the thing standing between PSK31 and a conversation.
 DRIFT:      carried.
 ```
 
-**The window.** Hamlet opens at 1100×780. At that size, after unit 355, Stop is on the
-status bar but **CQ and the mode tabs are at y 800-830 - below the window's bottom
-edge** (355 item 3, traced). A new operator opens the app and cannot see the button that
-calls CQ. Unit 354 measured the layout as holding only at 1040 tall and above.
+**Tim, 2026-09-14, on seeing a real QSO read off 14.070:** *"I want to add the ability
+to send text I type. That is the thing PSK31 offers over FT8/4."* And the shape: *"I
+right click on a message in the Everything list and it creates a card. On that card I
+can do a standard answer but there is also a text block where I can enter text to
+transmit."* And: *"I should be able to hover and see a whole message, not just cut off."*
 
-**The ALC sentence.** Tim's screen, 2026-09-14, after an FT8 send to HA1BF:
+**What this overrules.** PSK31 plan **R2** - *free typing is not in this phase; the
+macros are the whole vocabulary*. Tim's later ruling wins (§6). **What it keeps:** **§0.2**
+one click, one transmission; **R10** the one sequence, one `PttOn` site, the abort;
+**R1** Report and Confirm are offered only on certainty. Typed text is Tim's call, and
+Hamlet frames it so the two things a beginner gets wrong on a keyboard mode - the
+callsigns and the hand-back - are never his to remember.
 
-> *Your radio's own level control read 62 out of 120 while that went out. Hamlet has
-> not yet seen an FT8 or FT4 transmission on this radio to compare it with, so it is not
-> judging it for you: look at the ALC bar on the radio, and if it goes past the marked
-> zone, turn the transmit drive above down one step and send again.*
-
-Two faults in one sentence. **It was an FT8 transmission** - the sentence is about it -
-so under R15 the 62 it just read *is* the reference, and the sentence is computed before
-the reference is stored. And **it tells Tim to read a meter and turn a knob**, which R11
-forbids outright: *the operator sets nothing at the radio*. The whole message is four
-lines where one fact belongs. Tim: *"this message is incorrect."*
-
-**The tests.** 355 found `MainWindowViewModel.BuildSources` constructs the POTA and SOTA
-spot sources with their own `HttpClient` at construction, on or off. The fixtures switch
-them off so nothing is sent, but *no client is created under test* was the criterion
-and it does not hold.
+**The record behind it.** `2026-09-14.jsonl`, 14:00-14:02 UTC, 14.070: `KE0JBT` and
+`N7WE` in a ragchew, read off the air with *guess* and *ended* marked - the screenshot
+Tim sent. Three of Tim's own CQs went out that morning, keyed and confirmed; nobody
+answered, and the only thing he could have sent was another CQ.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-- The send area: CQ, the mode tabs, the drive note, where they sit in the layout and
-  what gives the top row and panels their heights at 1100×780 (unit 354's nine-size
-  fixture, `Realized` height overload).
-- The ALC path: `15 13` read during a send (unit 324), the reference learned from FT8
-  (unit 325, R15), where the reference is stored and when, and where the post-send
-  sentence is composed - the text above is the current one.
-- `MainWindowViewModel.BuildSources` `:7869`, `:7873`; `PotaActivitySource`,
-  `SotaActivitySource`; the seam unit 355 added for the license lookup.
-- `docs/` for the sheet Tim reads (unit 349's, updated by 355).
-- Tests: `TheStopIsAlwaysOnScreenTests`, 354's nine-size test, `TheAlcLearnsFromFt8Tests`,
-  `TheTestsStayOffTheNetworkTests`, `VoiceTests`, `BindingHealthTests`.
+- The decoded row's right-click: what it offers today on an FT8 row, on a PSK31 CQ row,
+  on a PSK31 non-CQ row; `ThePsk31ExchangeTests`; how a conversation card is created for
+  a station and what `Answer` sends.
+- The PSK31 conversation card: the turn indicator, the certainty gate, the Report and
+  Confirm buttons, the receipt (R2-R5 of the card rulings).
+- The macros of §R2 and their composer; `UnslottedTransmission`; the 30-second cap and
+  where it is checked; `psk31_send_composed`, `psk31_send_refused` (reason `cap`).
+- The row's text binding and its column width; the map popup (unit 310) as the model
+  for a text popup.
+- Tests: `TheUnslottedSendTests`, `TheFt8AndFt4SendsAreByteIdenticalTests`,
+  `ThePsk31CqGoesOutTests`, `ThePsk31ExchangeTests`, `ThePsk31RowStaysTests`,
+  `TheStopIsAlwaysOnScreenTests`, `TheRowShowsWhatWasHeardTests`.
 
 **Report every mismatch; repair nothing but this unit's.**
 
 ## 6. Rulings in force
 
-**Screen phase R26; §6 three stops only.** **PSK31 plan R11** - the operator sets nothing
-at the radio, reads no meter; **R15** - the ALC reference is learned from FT8 sends, the
-highest reading observed; a PSK31 send above it by the margin gets a sentence; **with no
-reference, report and judge nothing**. **Tim, 2026-09-14** - Stop always pressable, A.
-**§0.0** a sentence on the screen is a claim. **R12**, **R14**, **R19**. **HM-DEC-155**,
-**HM-DEC-139**, **FACT-004**, **FACT-006**.
+**Tim, 2026-09-14** as quoted, overruling PSK31 plan **R2**'s no-keyboard line and
+nothing else of it. **§0.2**, **R10** - one click, one transmission, one keying path,
+the abort. **R1** strict side unchanged for Report and Confirm. **R11** nothing at the
+radio. **R13** telemetry. **R12**, **R14**, **R19**. **HM-DEC-018, §2.1** - typed text
+never enters an event; its length does. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**,
+**FACT-006**, **the dummy load withdrawn.**
 
 ## 7. Status cadence
 
@@ -114,84 +107,100 @@ As the header says.
 
 ### Task 0 - the record
 
-Append `UNIT 356` to `PHASE_OUTCOME.md` under step 3, `ADVANCED: no`. Patch-bump. Add
-one line to `PHASE_PLAN.md`'s §R block, as Tim's ruling of 2026-09-14: **Stop is always
-pressable and never grey.** Run the carry-forward list.
+Append `UNIT 357` to `PHASE_OUTCOME.md` under step 3, `ADVANCED: blocker`. Patch-bump.
+Add to `PHASE_PLAN.md`'s §R block, as Tim's ruling of 2026-09-14: **typed text goes on
+the air from a station's card, framed by Hamlet, one click one transmission; R2's
+no-keyboard line is withdrawn.** Run the carry-forward list.
 
 **Drop candidate:** none.
 
-### Task 1 - Hamlet opens with every control on the window
+### Task 1 - right-click any row makes his card
 
-At 1100×780 - and at every size 354 measured - **CQ, the mode tabs and the send area are
-inside the window.** The rule R26 states holds where it can; where the window is too
-short for the top row's 190 px plus the panels plus the send area, **the panels give up
-height first, then the top row, and the send area is never the thing that leaves.** If
-the window is shorter than the sum of the minimums, the working panels scroll inside
-themselves and the send area stays put. State the minimums.
+On the PSK31 list, **right-click on any row** - CQ or not, live or ended - makes a
+conversation card for that station, the same card a certain answer makes, at *his
+turn* or *unknown* as the parser has it. If a card for him exists, the right-click
+focuses it. The row's text stays where it is. FT8 rows keep their existing menu.
 
-**Test watched failing first:** extend 354's nine-size test: at every size, CQ, the mode
-tabs, Stop and the drive note are inside the window; the send area's height is
-constant across sizes; `BindingHealthTests`.
+**Test watched failing first:** extend `ThePsk31ExchangeTests`: right-click on a non-CQ
+PSK31 row makes his card; on a CQ row the same card with Answer offered; a second
+right-click focuses, never duplicates; `ThePanelHoldsThemAllTests` green.
 
 **Drop candidate:** none.
 
-### Task 2 - the ALC sentence
+### Task 2 - the text block, and one click sends it framed
 
-The post-send sentence is composed **after** the reference is updated, and reads, on
-the send that sets or raises the reference:
+On his card, under the turn indicator: **a text block and a Send button.** Send composes
+one transmission:
 
-> *Your radio's level control read 62 of 120 during this send. That is Hamlet's
-> reference from now on; a PSK31 send that reads well above it will get a sentence here.
-> Nothing for you to do.*
+```
+<HIS> de KC3QIS  <what Tim typed>  BTU <HIS> de KC3QIS K
+```
 
-On a later send within the reference: *Level 58 of 120, inside the reference. Nothing for
-you to do.* On a PSK31 send above the reference by the margin: R11's sentence - what
-happened and the one thing to do, **at the drive control on the screen, never at the
-radio**. **No sentence anywhere tells the operator to look at a meter or touch the
-radio.** One line each; `VoiceTests` runs.
+through the same composer and the same unslotted sequence the macros use - **no new
+path, no new `PttOn` site** - and the block clears when it has gone out. The block is
+offered whenever it is **not certainly his turn**; when the parser is not sure, the card
+says so in a word beside the button - *not sure it is your turn* - and **sends anyway on
+the click**, because typed text is Tim's call. Report and Confirm keep their certainty
+gate as they are. `Stop` aborts a typed send like any other.
 
-**Test watched failing first:** `TheAlcSentenceTests`, app: the first FT8 send at 62 sets
-the reference and the sentence names it and says nothing to do; a later send inside it
-gets the inside sentence; a PSK31 send above it gets the drive sentence; the words
-*ALC bar*, *marked zone*, *on the radio* appear in no operator-facing string; `TheAlcLearnsFromFt8Tests`
-green.
+**Framing rules:** Tim's text is sent as typed, trimmed; Hamlet adds only the two frames;
+a line that is only whitespace does not send; characters outside the varicode table are
+dropped and the card says how many.
 
-**Drop candidate:** none.
+**Telemetry (§R13):** `psk31_send_composed` gains `macro: "typed"` with the character
+count and seconds; **the text itself never enters the record.**
 
-### Task 3 - no client under test
+**Test watched failing first:** `TheTypedLineGoesOutTests`, app: a typed line composes the
+framed text exactly; one click, one keying, one `Played`; the block clears; a whitespace
+line sends nothing; a line with a character outside the table drops it and says so; the
+send goes through `UnslottedTransmission` and `TheUnslottedSendTests`,
+`TheFt8AndFt4SendsAreByteIdenticalTests` and `TheStopIsAlwaysOnScreenTests` are green
+and unedited; the event carries a count and no text.
 
-`PotaActivitySource` and `SotaActivitySource` take their `HttpClient` through the same
-seam the license lookup uses (unit 355), created on first fetch and never in a
-constructor. Under test, the seam supplies nothing and no client exists.
+**Drop candidate:** the dropped-character sentence. Keep the drop.
 
-**Test watched failing first:** extend `TheTestsStayOffTheNetworkTests`: no `HttpClient`
-is constructed anywhere when the plain fixture builds the view model; the spot sources
-still fetch in the app when switched on.
+### Task 3 - the cap fits a conversation
 
-**Drop candidate:** the whole task.
+The 30-second cap was the author's number for the macros. A typed line plus its frame is
+allowed **up to sixty seconds** at 31.25 baud - about 200 characters of text; the card
+shows the seconds as you type; **past sixty it refuses with the count and the seconds,
+and nothing is sent.** The macros keep their existing lengths.
 
-### Task 4 - the sheet
+**Test watched failing first:** extend `TheTypedLineGoesOutTests`: a 190-character line
+sends; a 260-character line is refused with `psk31_send_refused reason cap` and the
+card's words; the seconds shown match the composed length.
 
-Update Tim's sheet for tasks 1 and 2: the opening size now shows every control; the ALC
-sentence's three forms, word for word.
+**Drop candidate:** the live seconds count while typing. Keep the refusal.
 
-**Drop candidate:** the whole task.
+### Task 4 - the whole message, on hover and on click
+
+Hovering a PSK31 row shows its full text, wrapped, in the hover. Clicking the text opens
+it in a box like the map popup, with the station, the time and every line he sent while
+the row lived, and a dismiss X. Ended rows too.
+
+**Test watched failing first:** `TheWholeMessageTests`, app: a row whose text exceeds the
+column carries the full text in its hover; clicking opens the box with the full text and
+the station; the X closes it; `BindingHealthTests`, `VoiceTests`.
+
+**Drop candidate:** the click box. Keep the hover.
 
 ---
 
 ## 9. Parked
 
-- **The demodulator on real air** - the unit after a capture exists in
-  `assets\fixtures\captured\`.
-- **Anything touching a decoder or the transmit chain's behavior. Any package.**
+- **Live keyboard-to-keyboard** (keys go out as pressed). Not ruled; not built.
+- **The demodulator on real air.** After a capture exists.
+- **Any second transmit path. Any package.**
 
 ## 10. What not to do
 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Do not let the send area leave the window at any size.**
-- **Do not write a sentence that sends the operator to the radio.**
-- **Do not touch the demodulator or what keys. No package. Report mismatches; repair
-  nothing but this unit's. Write American.**
+- **Do not add a second keying path.** The typed line goes through the one sequence.
+- **Do not send anything Tim did not click.**
+- **Do not put typed text in any event.**
+- **Do not gate the typed line on certainty.** Say the doubt in a word; send on the click.
+- **Do not touch the demodulator. No package. Report mismatches; repair nothing but this
+  unit's. Write American.**
 
 ## 11. Committing and pushing
 
@@ -208,35 +217,35 @@ owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 READ IN THIS ORDER.
 
 A. The phase goal - the screen, done right. Steps 0 to 2 done, 3 waits on Tim.
-B. No criterion changes state; this unit clears the blocker under 354 item 2.
+B. No criterion changes state; this unit clears the blocker under R2, overruled.
 C. The report last, and section 4 raises N items on top of the carried queue.
 ```
 
 ```
-UNIT:       356 - <complete|stopped> at task N of 5, <which dropped> - <date time>
+UNIT:       357 - <complete|stopped> at task N of 5, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   no
-NUMBER:     sizes with CQ on the window <n> of 9 -> 9 of 9; operator-facing strings
-            naming a meter <n> -> 0
+ADVANCED:   blocker
+NUMBER:     things Tim can send on PSK31 4 -> 5 (a typed line); cap 30 s -> 60 s for typed
 DRIFT:      carried
 ```
 
-**Section 3 prints the three ALC sentences word for word. Every appearance claim is
-computed, not seen.**
+**Section 2 tells Tim, in plain words: right-click a station, type, click Send, what goes
+out around his words, and that Stop still stops it. Section 3 prints one framed line
+exactly as it would be sent. Every appearance claim is computed, not seen.**
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 3
-APPROACH: keep the send area inside the window at every size by giving up panel and top-row height first, compose the post-send ALC sentence after the reference is stored and never send the operator to the radio, and put the spot sources' clients behind the seam so no test constructs one
+APPROACH: make a right-click on any PSK31 row open the station's card, add a text block that sends one framed line through the existing unslotted sequence on one click, lift the cap to sixty seconds for typed text, and show a row's whole message on hover and click
 MOVE: continue
-WHY: Hamlet opens at a size where CQ is below the window, and the ALC sentence on Tim's screen contradicts both R11 and R15; both are on the screen step 3 is judged from
+WHY: Tim overruled R2's no-keyboard line after reading a real QSO off the air - typing is what PSK31 is for - and the framing keeps the beginner's two mistakes out of his hands while one click one transmission and the single keying path stay exactly as proved
 STATE: blocked
-DECIDED: the height-giving order (panels, then top row, never the send area) is the unit's stated rule; the three sentence forms are the author's words for the operator
-LICENCE: screen phase R26 and section 6; PSK31 plan R11, R15, R12, R14, R19; Tim 2026-09-14 on Stop; CLAUDE.md 0.0
-ACCOMPLISHED: a new operator opens Hamlet and sees the button that calls CQ, and after a send is told one true thing and nothing to do
-ADVANCES: none - clears a blocker: unit 354 item 2, CQ below the window at the opening size
+DECIDED: the frame's exact words are the author's; the sixty-second cap is the author's number; the doubt word is the author's
+LICENCE: Tim 2026-09-14 overruling PSK31 plan R2; CLAUDE.md 0.2; PSK31 plan R1, R10, R11, R13; HM-DEC-018
+ACCOMPLISHED: Tim can hold a PSK31 conversation - answer, report, say something in his own words, confirm - without ever typing a callsign or a hand-back
+ADVANCES: none - clears a blocker: R2, overruled
 END-ARBITER-DECISION
 ```
