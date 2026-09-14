@@ -90,10 +90,10 @@ and the RF power offer, so no empty column stands under it*, and the top row kee
 
 | | 1400 | 1920 |
 |---|---|---|
-| Top row | 247 px (0.271) with the best bet drawn on the band you are on, against 238.4; 228 px (0.251) with no best bet; pinned both ways on the test window (`b49eb3ab`) | 190 px (0.209) both ways |
+| Top row | 228 px (0.251) against 238.4 with the best bet drawn on the band you are on, on another band (40 m) and absent; pinned three ways on the test window (`1faf33a6`) | 190 px (0.209) all three ways |
 | Rig panel / neighborhood card | 546 × 228 / 808 × 228 | 546 × 190 / 1328 × 190 |
-| Green block | 518 × 100 | 1038 × 67 |
-| The three panels, strip hidden / showing | 465 px (0.511) / 412 px (0.453) | 503 px (0.553) / 450 px (0.495) |
+| Green block | 518 × 100 all three ways | 1038 × 76 with the best bet drawn, on your band or 40 m; 1038 × 67 absent |
+| The three panels, strip hidden / showing | 465 px (0.511) / 412 px (0.453) all three ways | 503 px (0.553) / 450 px (0.495) all three ways |
 | The offer line | *RF power 50 % offered*, 218 × 13, on the drive note's row, 52 px under the rig display | the same |
 
 - **Click the line** and the popup holds the offer unchanged: *PSK31 sends a steady carrier, so it
@@ -103,8 +103,9 @@ and the RF power offer, so no empty column stands under it*, and the top row kee
 - **The line's ink** is 4.61:1 on the rig panel's fill.
 - **The green block adds** *PSK31 lives at 14.070; you are at 14.074*, because the test tunes FT8's
   dial and then chooses PSK31 (unit 341 item 2).
-- **When the best bet draws**, the 1400 top row is 237 px (0.260) against a limit of 238.4 (unit 341
-  item 1, `0f383a3`).
+- **When the best bet draws** at 1400, *best bet now:* stands over the band, *20 m ✓* or *40 m*, and
+  the top row stays 228 px (0.251) against a limit of 238.4, the same as with no best bet. It was 247
+  px on your band and 237 on another before work instruction 351 (`1faf33a6`, U11).
 
 **Look for with your eyes:** whether you notice the line as something to press, and whether one
 click more to reach *Set my power to 50%* is acceptable. Check where the popup opens, and whether the
@@ -113,7 +114,8 @@ muted ink is readable on the amber panel.
 *Source: `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` (line, ink, block),
 `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` (the line's place and the popup's
 words) and `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` (top row, panels), all in
-`TheTopRowTests` 8 of 8 at `85437c2`. The best-bet number is unit 341 item 1.*
+`TheTopRowTests` 8 of 8 at `85437c2`. The best-bet numbers are `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`
+and `TheTopRowAndThePanelShareHoldWithTheBestBetOnAnotherBand` at `1faf33a6` (work instruction 351).*
 
 ### 2.3 The achievements opening page
 
@@ -420,6 +422,7 @@ About tests, runs or the record. None changes what you see:
 | U8 | 348 | *2 worked, from STATE*, shortened from *2 states worked, read from the log's STATE field*. | States badge and band | *2 from STATE*, which drops *worked* | your words for the count |
 | U9 | 348 | The States band loses *the 50 states* on a state log. That follows U3's 60-character rule; the badge keeps it. | States band | A shorter count | "keep the 50 states on the band" |
 | U10 | 348 | The no-STATE line: *n US contacts carry no STATE* in the next card's count slot, blank at 0. It counts only records where a `STATE` would score; `DC` is not counted. | States next card | Not recorded | "count DC too" or "take the line off" |
+| U11 | 351 | Where the sparkline hides, the best bet row is held to the width of *heard just now* and the count, so *best bet now:* stands over the band and the right column stays 140 px whatever the best bet says. The check had widened it to 200 px and wrapped the verdict. 1400 PSK31 with the best bet on your band: 228 px (was 247), panels 465 (was 446); `1faf33a6`. | Green block, 1400 | The best bet row in the left column (238.0 px, panels 455); in the band line (237, 456); under the regions (240, 453); the check's line height held (247, 446) | "keep the best bet on one line at 1400". The 1400 PSK31 top row then goes back to 247 px (0.271) with the best bet on your band |
 
 *Sources: rulings from `git show <hash>:WORK_INSTRUCTIONS.md` at the hashes above. U1 is `f7f6eb6`
 decision 4; U2 is `0f383a3` decision 6 and item 3; U3 and U4 are commit `18f5b17` (unit 342 wrote no
@@ -431,67 +434,65 @@ report); U5 and U6 are `0b506ed` decisions 1 and 4; U7 is `066ad04` decision 2; 
 One line each, with the report that found it.
 
 **The main window:**
-1. **On PSK31 at 1400 the top row is 8.6 px over when the best bet draws on the band you are on**:
-   247 px against 238.4, and the panels 446 px against 455. With no best bet it is 228 px. *Unit 341
-   item 1; measured with the best bet pinned both ways, `b49eb3ab`.*
-2. **The best bet follows the real clock**, so the 1400 top row can move by 19 px with the hour on
-   PSK31 (228 to 247) and 9 px on FT8 (216 to 225). *Unit 339 item 2; `b49eb3ab`.*
-3. **The *RF power 50 % offered* line's ink is 4.61:1**, clearing 4.5:1 by 0.11. It was printed
+1. **The best bet follows the real clock**, so what the green block says changes with the hour; the
+   1400 top row now moves by 0 px with it, 228 px on PSK31 and 216 on FT8 with the best bet on your
+   band, on another band or absent. *Unit 339 item 2; `1faf33a6`.*
+2. **The *RF power 50 % offered* line's ink is 4.61:1**, clearing 4.5:1 by 0.11. It was printed
    again at this tree. *Unit 341 item 5.*
-4. **Where the power popup opens on the screen is not asserted**, only what is in it. *Unit 341 item
+3. **Where the power popup opens on the screen is not asserted**, only what is in it. *Unit 341 item
    6.*
-5. **Setting your power is one click further away** than before ruling 8. *Unit 341 section 2.*
-6. **The test's green block says *PSK31 lives at 14.070; you are at 14.074*** because the fixture
+4. **Setting your power is one click further away** than before ruling 8. *Unit 341 section 2.*
+5. **The test's green block says *PSK31 lives at 14.070; you are at 14.074*** because the fixture
    tunes FT8's dial. On your radio it shows only when you are off the PSK31 dial. *Unit 341 item 2.*
-7. **The drive and the power offer are on the CW and Voice tabs too**, in the top strip, which is the
+6. **The drive and the power offer are on the CW and Voice tabs too**, in the top strip, which is the
    same on every tab. *Unit 337 section 2, decision 6.*
-8. **The waterfall at 1920 is narrower than before the phase**, 926 to 735 px, and taller. It is
+7. **The waterfall at 1920 is narrower than before the phase**, 926 to 735 px, and taller. It is
    734-735 px at this tree. *Unit 337 section 2.*
-9. **The world clock is half the size unit 334 made it**, 492 × 269 to 246 × 134, the mockup's size.
+8. **The world clock is half the size unit 334 made it**, 492 × 269 to 246 × 134, the mockup's size.
    *Unit 337 section 2.*
-10. **At 1400 *Digital · FT8 · yours to use* sits on its own line** under the band and frequency.
-    *Unit 337 section 2.*
-11. **At 1400 on the host, the license line takes 3 lines and the rule of thumb 2.** The license line
+9. **At 1400 *Digital · FT8 · yours to use* sits on its own line** under the band and frequency.
+   *Unit 337 section 2.*
+10. **At 1400 on the host, the license line takes 3 lines and the rule of thumb 2.** The license line
     is the regulation's own sentence and is not reworded. *Unit 332 item 4, carried; this tree.*
-12. **With the license class unknown at 1400, the tab row is 2 px taller**, because the guard sentence
+11. **With the license class unknown at 1400, the tab row is 2 px taller**, because the guard sentence
     takes two lines. *Unit 338 section 2.*
 
 **The achievements pages:**
 
-13. **The achievements window opens at 1040 × 720**, not your main window's size. Nothing sizes it from
+12. **The achievements window opens at 1040 × 720**, not your main window's size. Nothing sizes it from
     the main window. *Unit 335, on unit 332 item 3, carried; `AchievementsWindow.axaml:9`.*
-14. **VK2DEF's map picture stops at 633.18 of 892 px at 1920** on Grids and Bands, because the card
+13. **VK2DEF's map picture stops at 633.18 of 892 px at 1920** on Grids and Bands, because the card
     frame stops at the map's edge rather than drawing past it. At this tree the map's box is 892 ×
     231; the picture inside it was not re-measured. *Unit 346 item 4.*
-15. **The no-STATE line was measured only at one digit** by unit 348. **Now measured at four:**
+14. **The no-STATE line was measured only at one digit** by unit 348. **Now measured at four:**
     *1,234 US contacts carry no STATE* is drawn whole at 1400 and 1920, needing 320 px of 632 and 892.
     Five digits and more are still unmeasured. *Unit 348 item 3; this unit's task 3,
     `StatesCountWhatTheLogsStateFieldSays`.*
-16. **The States band loses *the 50 states* on a state log**, and Grids and Total Miles lose their
+15. **The States band loses *the 50 states* on a state log**, and Grids and Total Miles lose their
     meaning line too. The badges keep them. *Unit 348 item 4.*
-17. **The States next card has three lines of words and no callers.** A CQ carries no state. *Unit 348
+16. **The States next card has three lines of words and no callers.** A CQ carries no state. *Unit 348
     section 2.*
-18. **Hall of Fame's name on the opening page is white on gold, about 3.6:1**, under 4.5:1. It was not
+17. **Hall of Fame's name on the opening page is white on gold, about 3.6:1**, under 4.5:1. It was not
     re-measured here. *Unit 335 item 3, carried.*
-19. **Next cards name callers from continents you have never worked**, beside the ringed quill, though
+18. **Next cards name callers from continents you have never worked**, beside the ringed quill, though
     the decoded list keeps those areas behind a door. *Unit 335 item 2, carried, and still an ask.*
-20. **Antarctica and Oceania have badges** on Continents before you open them. *Unit 332 item 2,
+19. **Antarctica and Oceania have badges** on Continents before you open them. *Unit 332 item 2,
     carried.*
-21. **The CW row names 17 m while the digital rows name 80 m.** CW has a landing on every band; FT4 and
+20. **The CW row names 17 m while the digital rows name 80 m.** CW has a landing on every band; FT4 and
     PSK31 fall to the lowest band with a calling row. *Unit 346 section 2.*
-22. **A PSK31 caller with a grid in his text can still show no distance**, where his reading is
+21. **A PSK31 caller with a grid in his text can still show no distance**, where his reading is
     uncertain. *Unit 347 section 2.*
-23. **The time on a next card is when the window opened**, not now. The list is read once. *Unit 347
+22. **The time on a next card is when the window opened**, not now. The list is read once. *Unit 347
     section 2.*
-24. **Grids' *and n more* goes up by one** when a PSK31 caller sent an unworked square. *Unit 347
+23. **Grids' *and n more* goes up by one** when a PSK31 caller sent an unworked square. *Unit 347
     section 2 and item 3.*
-25. **A PSK31 row keeps only its latest message**, so a grid is lost if the same station sends another
+24. **A PSK31 row keeps only its latest message**, so a grid is lost if the same station sends another
     message after his CQ. *Unit 347 item 2.*
-26. **Hall of Fame's PSK31 first with a caller's distance is built but drawn by no test.** *Unit 347
+25. **Hall of Fame's PSK31 first with a caller's distance is built but drawn by no test.** *Unit 347
     item 3.*
-27. **The family word is *Digital*** where an earlier example said *Data*. *Unit 331 queue item 5,
+26. **The family word is *Digital*** where an earlier example said *Data*. *Unit 331 queue item 5,
     carried, and still an ask.*
-28. **The host draws text wider than your screen**, so wraps at 1400 are probably fewer for you. That
+27. **The host draws text wider than your screen**, so wraps at 1400 are probably fewer for you. That
     is an inference. *Unit 337 section 2.*
 
 ## 5. Known reds
