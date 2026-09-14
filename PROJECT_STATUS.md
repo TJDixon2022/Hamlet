@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
-TASK: TASK 0 of 6
-WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-BALL: tim
+STATE: COMPLETED
+TASK: TASK 6 of 6
+WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
+BALL: web
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T11:04:25-04:00
-NOTE: Unit 358 stopped before task 0 - install-phase.bat has not run, root PHASE_STATUS.md is still the screen phase, nothing built, fixtures hashed 9 of 9 match
+UPDATED: 2026-09-14T11:48:17-04:00
+NOTE: Unit 358 complete, tasks 0 to 5 pushed - Olivia is a mode (tab, cited spot, panel, Capture, map spot), step 0 criteria 6 of 6 met by tests; carry-forward app 144, engine 90; one overrulable dial reading in section 4
 
 ---
 

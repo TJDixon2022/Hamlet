@@ -4,6 +4,31 @@ Questions with owner and severity. `owner` is who must act next. Format in
 `CLAUDE.md` §3.
 
 ---
+id: HM-OPEN-090
+status: open
+owner: claude
+raised: 2026-09-14
+severity: slows
+blocks: nothing the operator can see. It blocks reading a session's record by mode: a CQ press on the Olivia or PSK31 tab is written down as a press on FT8
+refs: src/Hamlet.App/ViewModels/MainWindowViewModel.cs (SendMessage, the cq_pressed operator action), tests/Hamlet.App.Tests/ViewModels/TheOliviaSeamTests.cs (NoDecoderIsAttachedAndNoPathReachesAnythingThatKeys), work instruction 358 task 2
+---
+
+The CQ press's record names the decoder enum, not the tab.
+
+**Measured on 2026-09-14 by `TheOliviaSeamTests`**, pressing CQ with Olivia chosen:
+`{"category":"transmit","event":"operator_action","data":{"action":"cq_pressed","mode":"Digital","detail":"Ft8"}}`.
+The `send_refused` line after it says `"detail":"Olivia"` correctly. `detail` on the press is
+`DigitalMode`, which has two members and answers `Ft8` for every label that is not FT4, so the
+same line reads `Ft8` under PSK31 too and did before work instruction 358.
+
+**Nothing is keyed and nothing is wrong on the screen**; the fault is that a file recording an
+evening on Olivia or PSK31 says FT8 at every press, which is the fault `NoteTheSubMode` was
+written to end for the chip press (work instruction 312 task 2).
+
+Left alone under `CLAUDE.md` §12.6. Work instruction 358 is the Olivia seam and does not own
+the CQ record.
+
+---
 id: HM-OPEN-089
 status: closed
 owner: claude
