@@ -111,6 +111,47 @@ public sealed class TheRsidDetectorTests
                  && Math.Abs(d.CenterHz - entry.Centers[0]) <= WithinHz);
     }
 
+    /// <summary>**1.7, nice-to-pass: the detector keeps up with real time on a busy passband.**</summary>
+    /// <remarks>
+    /// <para>**THE RATIO IS CPU OVER AUDIO**, from the process's own processor time, so it is
+    /// honest only when this runs filtered and alone; the wall clock is printed beside it. The
+    /// PSK31 recording is `assets/fixtures/psk31-four-signals.wav`, the 8000 Hz one of the pair,
+    /// four carriers and no burst; the Olivia recording is the two-signal fixture.</para>
+    /// <para>**THE FOUR-SIGNAL FILE IS NOT IN THE OLIVIA MANIFEST**, so it is not hashed here;
+    /// its bursts heard are printed and not asserted, because no criterion names them.</para>
+    /// </remarks>
+    [Fact]
+    public void TheDetectorKeepsUpWithRealTime()
+    {
+        var files = new[]
+        {
+            System.IO.Path.Combine(Root(), "assets", "fixtures", "psk31-four-signals.wav"),
+            Fixture("olivia-two-signals-rsid.wav").Path,
+        };
+
+        foreach (var path in files)
+        {
+            var audio = WavAudio.Read(path);
+            var cpu = Process.GetCurrentProcess().TotalProcessorTime;
+            var clock = Stopwatch.StartNew();
+
+            var heard = RsidDetector.Detect(
+                Codes, audio, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz);
+
+            clock.Stop();
+
+            var ratio = (Process.GetCurrentProcess().TotalProcessorTime - cpu).TotalSeconds / audio.Duration.TotalSeconds;
+
+            _output.WriteLine(
+                $"{System.IO.Path.GetFileName(path)}: {audio.SampleRate} Hz, {audio.Duration.TotalSeconds:0.00} s of audio, "
+                + $"wall {clock.Elapsed.TotalSeconds:0.000} s ({clock.Elapsed.TotalSeconds / audio.Duration.TotalSeconds:0.000} of real time), "
+                + $"cpu/audio {ratio:0.000}, bursts heard {heard.Count}"
+                + string.Concat(heard.Select(h => $"; {h.Name} at {h.CenterHz:0.00} Hz")));
+
+            Assert.True(ratio < 1.0, $"{System.IO.Path.GetFileName(path)}: cpu/audio {ratio:0.000}");
+        }
+    }
+
     private static RsidCodes Codes
         => OliviaData.Current.Rsid ?? throw new InvalidOperationException(OliviaData.Current.Problem);
 
