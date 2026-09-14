@@ -2957,6 +2957,157 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         _output.WriteLine("POINTS IN THE BLOCK, NOT THE FILE: [" + string.Join(", ", documented.Except(names, StringComparer.Ordinal)) + "]");
     }
 
+    /// <summary>
+    /// **Work instruction 349 task 0: what Tim looks at, page by page**, at 1400 and 1920 - the opening
+    /// page's badges, each of the eight kinds' band and cards, States on its own log, and Continents with
+    /// each continent page's first and next card, in the words and numbers the review sheet quotes, with
+    /// every drawn run put through the page's own clip measure. It asserts nothing and presses nothing
+    /// that transmits or tunes.
+    /// </summary>
+    /// <remarks>
+    /// **EVERY NUMBER IS COMPUTED ON THE HEADLESS HOST, NOT SEEN.** The fixture is
+    /// `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`'s: twelve contacts, four callers
+    /// and the best bet. States is traced on `StateContacts()` as well, because the twelve carry no `STATE`.
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit349TraceWhatTimLooksAt()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var runs = 0;
+            var clipped = new List<string>();
+
+            void Clips(Window window, string where)
+            {
+                var (fit, clips) = Unit346Fit(window);
+
+                runs += fit + clips.Count;
+                clipped.AddRange(clips.Select(c => where + " " + c));
+            }
+
+            void Card(Border card)
+            {
+                var model = (AchievementCategoryCard)card.DataContext!;
+                var map = card.GetVisualDescendants().OfType<Ft8GlobeControl>()
+                    .FirstOrDefault(g => g.IsEffectivelyVisible && g.Plot is not null && g.Bounds.Width > 0);
+
+                _output.WriteLine(
+                    "    " + (model.Earned ? "earned" : "next") + " [" + model.Title + "]: " + string.Join(" | ", VisibleText(card))
+                    + (map is null ? "; no map" : "; map " + F(map.Bounds.Width) + " x " + F(map.Bounds.Height) + " in a card " + F(card.Bounds.Width) + " wide"));
+            }
+
+            // Continents draws its seven as badges, with no card list, so a page without one has no cards here.
+            List<Border> Cards(Window window)
+                => window.GetVisualDescendants().OfType<ItemsControl>().Any(i => i.Name == "AchievementsCategoryCards")
+                    ? TradingCards(window)
+                    : new List<Border>();
+
+            void Band(Window window, string where)
+                => _output.WriteLine(
+                    "  " + where + " " + F(width) + " band: " + string.Join(" | ", VisibleText(Named<Border>(window, "AchievementsCategoryBand"))));
+
+            // **THE OPENING PAGE, THE EIGHT KINDS AND CONTINENTS**, on the twelve contacts.
+            {
+                var window = Realized(TheAchievementsPageTests.TwelveContacts(), width, Calling(), bet);
+                var screen = (AchievementsViewModel)window.DataContext!;
+
+                try
+                {
+                    _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height) + ", twelve contacts, four callers, best bet 17 m");
+
+                    foreach (var badge in Named<ItemsControl>(window, "AchievementsBadges").GetVisualDescendants().OfType<Button>()
+                        .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge") && b.DataContext is AchievementBadge))
+                    {
+                        var model = (AchievementBadge)badge.DataContext!;
+
+                        _output.WriteLine(
+                            "  PAGE " + F(width) + " badge [" + model.Name + "] standing [" + model.Standing + "] next [" + model.NextCard
+                            + "] drawn: " + string.Join(" | ", VisibleText(badge)));
+                    }
+
+                    Clips(window, "page");
+
+                    foreach (var kind in AchievementKinds.All)
+                    {
+                        OpenOnWindow(window, screen, kind);
+                        Band(window, kind);
+
+                        foreach (var card in Cards(window))
+                        {
+                            Card(card);
+                        }
+
+                        Clips(window, kind);
+                        ToThePage(window, screen);
+                    }
+
+                    screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+                    Settle(window);
+
+                    foreach (var seven in Named<ItemsControl>(window, "AchievementsSubBadges").GetVisualDescendants().OfType<Button>()
+                        .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge")))
+                    {
+                        _output.WriteLine("  CONTINENTS " + F(width) + " badge " + seven.CommandParameter + ": " + string.Join(" | ", VisibleText(seven)));
+                    }
+
+                    Clips(window, AchievementKinds.Continents);
+                    ToThePage(window, screen);
+
+                    foreach (var code in ContinentKinds())
+                    {
+                        OpenOnWindow(window, screen, code);
+                        Band(window, code);
+
+                        var cards = Cards(window);
+
+                        _output.WriteLine("    " + cards.Count + " cards drawn; the first and the next:");
+
+                        foreach (var card in cards.Take(1).Concat(cards.Skip(1).Where(c => c.DataContext is AchievementCategoryCard { Earned: false })))
+                        {
+                            Card(card);
+                        }
+
+                        Clips(window, code);
+                        ToThePage(window, screen);
+                    }
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+
+            // **STATES ON ITS OWN LOG**, with the same callers and best bet.
+            {
+                var window = Realized(StateContacts(), width, Calling(), bet);
+                var screen = (AchievementsViewModel)window.DataContext!;
+
+                try
+                {
+                    OpenOnWindow(window, screen, AchievementKinds.States);
+                    Band(window, "states on state contacts");
+
+                    foreach (var card in Cards(window))
+                    {
+                        Card(card);
+                    }
+
+                    Clips(window, "states on state contacts");
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+
+            _output.WriteLine(
+                "RUNS " + F(width) + ": " + runs + " drawn runs read by the clip measure; "
+                + (clipped.Count == 0 ? "NOTHING CLIPPED" : "CLIPPED OR WRAPPED: " + string.Join("; ", clipped)));
+        }
+    }
+
     /// <summary>Work instruction 348 task 0: every visible run and every visible hover the window holds.</summary>
     private static List<string> Unit348Said(Window window)
         => window.GetVisualDescendants().OfType<TextBlock>()
