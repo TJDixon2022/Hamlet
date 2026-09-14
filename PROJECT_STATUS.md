@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 3 of 7
+TASK: 4 of 7
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T12:35:34-04:00
-NOTE: Task 3 burst: RsidBurst built from the file; running TheRsidBurstTests - file tones, loopback at 500/1500/2500 Hz, fldigi's shipped bursts, length
+UPDATED: 2026-09-14T12:46:23-04:00
+NOTE: Task 4 announce: feature committed, engine guards 45 of 45; rerunning ThePsk31TransmitTelemetryTests after its R12 rewrite
 
 ---
 

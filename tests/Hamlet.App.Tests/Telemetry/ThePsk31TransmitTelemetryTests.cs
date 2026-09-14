@@ -132,8 +132,15 @@ public sealed class ThePsk31TransmitTelemetryTests : IDisposable
         var idle = (Psk31Modulator.IdleBitsBefore + Psk31Modulator.IdleBitsAfter)
             / Psk31Demodulator.Baud;
 
+        // **REWRITTEN UNDER §R12** (work instruction 359 task 4). Since R27 every PSK31 send
+        // begins with its RSID burst, so the keyed length is the burst, the idle and the text.
+        // The rule this guards is unchanged - **the text alone matches the table, and the event
+        // reports the whole keyed length** - so the burst is taken off beside the idle.
+        var burst = Hamlet.RadioEngine.Rsid.RsidBurst.Seconds(Hamlet.RadioEngine.Olivia.OliviaData.Current.Rsid!);
+
         _output.WriteLine("idle either side: "
-            + idle.ToString("0.000", CultureInfo.InvariantCulture) + " s");
+            + idle.ToString("0.000", CultureInfo.InvariantCulture) + " s, RSID burst in front: "
+            + burst.ToString("0.000", CultureInfo.InvariantCulture) + " s");
 
         foreach (var (kind, textSeconds) in new (string, double)[]
         {
@@ -146,8 +153,8 @@ public sealed class ThePsk31TransmitTelemetryTests : IDisposable
 
             // **THE TEXT ALONE MATCHES THE TABLE.**
             Assert.True(
-                Math.Abs(got - idle - textSeconds) <= 0.5,
-                kind + " carries " + (got - idle).ToString(
+                Math.Abs(got - idle - burst - textSeconds) <= 0.5,
+                kind + " carries " + (got - idle - burst).ToString(
                     "0.00", CultureInfo.InvariantCulture)
                 + " s of text where the table says " + textSeconds);
 
