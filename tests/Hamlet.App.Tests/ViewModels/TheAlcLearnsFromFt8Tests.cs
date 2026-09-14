@@ -147,13 +147,19 @@ public sealed class TheAlcLearnsFromFt8Tests : IDisposable
 
             _output.WriteLine("90 vs 70+15 : " + model.Psk31AlcLine);
 
+            // **THE WORDS CHANGED IN WORK INSTRUCTION 356 TASK 2 AND THE CLAIM DID NOT.**
+            // This assertion pinned *driven harder*; the sentence now opens *Your radio is
+            // holding this signal back*, which says the same thing about the same reading.
+            // What it guards is that the hot case produces the hot sentence, and that is
+            // unchanged.
             Assert.Contains(
-                "driven harder", model.Psk31AlcLine, StringComparison.Ordinal);
+                "holding this signal back", model.Psk31AlcLine, StringComparison.Ordinal);
 
             // **§R11's OWN ACTION, AND ONLY THAT ONE.** Hamlet asks him to turn the
-            // drive down; it does not do it for him.
+            // drive down; it does not do it for him. **And 356 names where the control
+            // is**: on this screen, never at the radio.
             Assert.Contains(
-                "turn the transmit drive above down one step",
+                "turn the transmit drive on this screen down one step",
                 model.Psk31AlcLine,
                 StringComparison.OrdinalIgnoreCase);
         });

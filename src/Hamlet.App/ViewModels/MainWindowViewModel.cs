@@ -15533,6 +15533,11 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     internal void ReadTheAlcForTests() => ReadTheAlc();
 
+    /// <summary>Read the ALC now, saying whether this send set the reference, for a test.</summary>
+    /// <param name="becameTheReference">True where the send just stored or raised it.</param>
+    internal void ReadTheAlcForTests(bool becameTheReference)
+        => ReadTheAlc(becameTheReference);
+
     /// <summary>Read the ALC after a send, say what it means, and write it down.</summary>
     /// <remarks>
     /// **IT READS AND IT NEVER WRITES TO THE RADIO** (§0.2). It takes what the poll already
@@ -15541,7 +15546,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// a step, and **Hamlet does not do it for him**, because a level he did not choose is a
     /// level he cannot reason about.
     /// </remarks>
-    private void ReadTheAlc()
+    /// <param name="becameTheReference">
+    /// True where the send being described is the one that just stored or raised the
+    /// reference. **The sentence is composed after the reference is updated and not
+    /// before** (work instruction 356 task 2): on Tim's screen on 2026-09-14 an FT8 send
+    /// read 62 and was told Hamlet had never seen an FT8 transmission to compare it with,
+    /// because the sentence was written before the send it was about had been counted.
+    /// </param>
+    private void ReadTheAlc(bool becameTheReference = false)
     {
         var value = Psk31AlcForTests ?? _rigMonitor?.State[RigField.Alc];
         var reading = value is { IsKnown: true } ? value.Number : null;
@@ -15567,51 +15579,59 @@ public partial class MainWindowViewModel : ObservableObject
             Psk31AlcMargin,
             Psk31AlcReference?.Mode);
 
+        // **NOTHING HERE SENDS HIM TO THE RADIO** (§R11, and the fault Tim reported on
+        // 2026-09-14). The sentence that used to stand here told him to look at the ALC
+        // bar on the radio and turn a knob, which is the one thing this whole path exists
+        // so that he never has to do. Where there is something to do it is on this
+        // screen; where there is nothing, the sentence says so and stops.
+        var top = Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture);
+
         Psk31AlcLine = reading is not { } level
             ? ""
             : past
-                ? "Your radio is being driven harder than it wants to be: its own level "
-                    + "control is working to hold the signal back, and that is what makes a "
-                    + "PSK31 signal spread out and splatter over the people either side of you. "
-                    + "It read " + level.ToString("0", CultureInfo.InvariantCulture)
-                    + ", against the "
+                // **PAST THE REFERENCE BY THE MARGIN**, which only a PSK31 send can be,
+                // because an FT8 send at a new high becomes the reference instead. What
+                // happened, why it matters to the people either side of him, and the one
+                // control that fixes it, which is on this screen.
+                ? "Your radio is holding this signal back: its level control read "
+                    + level.ToString("0", CultureInfo.InvariantCulture) + " of " + top
+                    + " against the "
                     + Psk31AlcReference!.Reading.ToString("0", CultureInfo.InvariantCulture)
-                    + " Hamlet measured on a clean "
-                    + Psk31AlcReference.Mode + " transmission. "
-                    + "Turn the transmit drive above down one step and send again."
+                    + " Hamlet measured on a clean " + Psk31AlcReference.Mode
+                    + " send, and that is what makes PSK31 spread into the people either "
+                    + "side of you. Turn the transmit drive on this screen down one step "
+                    + "and send again."
 
-                : Psk31AlcReference is { } known
+                : becameTheReference
 
-                    // **INSIDE WHAT A GOOD SEND ON THIS RADIO READS** (§R15). It says
-                    // the two numbers rather than *fine*, because a verdict with no
-                    // measurement behind it is the thing this whole path exists to
-                    // avoid, and because the comparison is what makes the answer
-                    // checkable by the man reading it.
-                    ? "Your radio's own level control read "
-                        + level.ToString("0", CultureInfo.InvariantCulture) + " out of "
-                        + Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture)
-                        + " while that went out, against the "
-                        + known.Reading.ToString("0", CultureInfo.InvariantCulture)
-                        + " Hamlet measured on a clean " + known.Mode
-                        + " transmission. That is within the "
-                        + Psk31AlcMargin.ToString("0", CultureInfo.InvariantCulture)
-                        + " it allows either way, so there is nothing to do."
+                    // **THE SEND THAT SET OR RAISED IT, COUNTED BEFORE IT IS DESCRIBED.**
+                    // This is the form that was impossible before: the reference is
+                    // stored, so the sentence can say what it now is.
+                    ? "Your radio's level control read "
+                        + level.ToString("0", CultureInfo.InvariantCulture) + " of " + top
+                        + " during this send. That is Hamlet's reference "
+                        + "from now on, and a PSK31 send that reads well above it will get "
+                        + "a sentence here. Nothing for you to do."
 
-                    // **WHAT IT READ, AND THE ONE THING HE CAN DO THAT HAMLET CANNOT**
-                    // (§R11: a sentence a person with no shack years can act on). No
-                    // FT8 send has been observed yet, so there is nothing to compare
-                    // this with and Hamlet says so rather than passing a judgement it
-                    // cannot support - and says what will make the judgement appear.
-                    : "Your radio's own level control read "
-                        + level.ToString("0", CultureInfo.InvariantCulture) + " out of "
-                        + Psk31AlcScaleTop.ToString("0", CultureInfo.InvariantCulture)
-                        + " while that went out. Hamlet has not yet seen an FT8 or FT4 "
-                        + "transmission on this radio to compare it with, so it is not "
-                        + "judging it for you: look at the ALC bar on the radio, and if "
-                        + "it goes past the marked zone, turn the transmit drive above "
-                        + "down one step and send again. The next time you transmit on "
-                        + "FT8, Hamlet takes its own reference and starts doing this for "
-                        + "you.";
+                    : Psk31AlcReference is { } known
+
+                        // **INSIDE THE REFERENCE.** One line, the two numbers, and the
+                        // fact that there is nothing to do.
+                        ? "Level " + level.ToString("0", CultureInfo.InvariantCulture)
+                            + " of " + top + ", inside the "
+                            + known.Reading.ToString("0", CultureInfo.InvariantCulture)
+                            + " Hamlet measured on a clean " + known.Mode
+                            + " send. Nothing for you to do."
+
+                        // **NO REFERENCE, SO REPORT AND JUDGE NOTHING** (§R15, §0.0). It
+                        // says the reading, says plainly that it is not judging it, and
+                        // says what would give it something to judge against. It does not
+                        // hand the judgement back to the operator and a meter.
+                        : "Your radio's level control read "
+                            + level.ToString("0", CultureInfo.InvariantCulture) + " of "
+                            + top + " during this send. Hamlet has no reference to compare "
+                            + "that with yet and is not judging it, and it takes one from "
+                            + "your next FT8 or FT4 send. Nothing for you to do.";
 
         OnPropertyChanged(nameof(Psk31AlcLine));
         OnPropertyChanged(nameof(HasPsk31AlcLine));
@@ -15634,16 +15654,17 @@ public partial class MainWindowViewModel : ObservableObject
     /// <para>**IT READS AND NEVER WRITES** (§0.2). It takes what the poll already
     /// has; it asks the radio for nothing and it keys nothing.</para>
     /// </remarks>
-    private void LearnTheAlcFrom(RigValue? value, string mode)
+    /// <returns>True where this send stored or raised the reference.</returns>
+    private bool LearnTheAlcFrom(RigValue? value, string mode)
     {
         if (value is not { IsKnown: true } || value.Number is not { } reading)
         {
-            return;
+            return false;
         }
 
         if (Psk31AlcReference is { } had && reading <= had.Reading)
         {
-            return;
+            return false;
         }
 
         // **THE TIME IS THE READING'S OWN AND NOT THIS MOMENT** (HM-DEC-111). A
@@ -15663,18 +15684,20 @@ public partial class MainWindowViewModel : ObservableObject
         OnPropertyChanged(nameof(Psk31AlcReference));
         OnPropertyChanged(nameof(HasPsk31AlcReference));
         OnPropertyChanged(nameof(Psk31AlcReferenceLine));
+
+        return true;
     }
 
     /// <summary>Learn from a handed-in reading, for a test with no radio.</summary>
     /// <param name="value">The reading the poll would have held.</param>
     /// <param name="mode">The mode that was sending.</param>
     /// <remarks>
-    /// **THE SAME SEAM AS <see cref="ReadTheAlcForTests"/>** and for the same
+    /// **THE SAME SEAM AS <see cref="ReadTheAlcForTests()"/>** and for the same
     /// reason: there is no `CivRead` for <see cref="RigField.Alc"/> in this tree,
     /// so the poll never fills it and the path can only be proved from a reading
     /// handed in. It runs the shipped method and nothing else.
     /// </remarks>
-    internal void LearnTheAlcForTests(RigValue? value, string mode)
+    internal bool LearnTheAlcForTests(RigValue? value, string mode)
         => LearnTheAlcFrom(value, mode);
 
     /// <summary>Tell the poll whether to ask the radio for the ALC meter.</summary>
@@ -15911,7 +15934,13 @@ public partial class MainWindowViewModel : ObservableObject
             // transmission went out and the radio unkeyed - because a cancelled or
             // refused send is not a measurement of how this radio behaves when it
             // is working properly.
-            LearnTheAlcFrom(alcDuringTheSend, DigitalGrid.Name);
+            // **LEARN, THEN SAY** (work instruction 356 task 2). Until this line the FT8
+            // path stored the reference and composed no sentence at all, and the only
+            // composition site was the PSK31 send, which is how a reading of 62 on an
+            // FT8 send came to be described by a sentence saying Hamlet had never seen
+            // an FT8 send. The order is the whole fix: the send is counted, and then it
+            // is described.
+            ReadTheAlc(LearnTheAlcFrom(alcDuringTheSend, DigitalGrid.Name));
 
             // **THE ONE CALL SITE OF `RecordSent` IN THE TREE**, which is the line
             // unit 258 left it unreachable for.
