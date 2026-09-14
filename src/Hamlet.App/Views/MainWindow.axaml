@@ -2933,20 +2933,44 @@
                  halves stretch to it, so the rig panel is exactly as tall as the
                  neighborhood card and no empty column stands under it. What keeps the
                  row short is what is inside the card, not a height written here. -->
+            <!-- **AND IT IS CAPPED, BECAUSE NOTHING WAS CAPPING IT** (work instruction
+                 356 task 1). The row is `Auto` in a grid whose panels take the star, so
+                 the card could ask for any height it liked and the star row simply went
+                 to nothing. At 1100 x 780 - the size Hamlet opens at - the card's body
+                 measured 583 px, the row 631, and **CQ was drawn at y 800 and the mode
+                 tabs at y 847, below a window 780 tall**: a new operator could not see
+                 the button that calls CQ. Eight of the nine sizes unit 354 measured were
+                 unaffected; this one was not.
+
+                 **THE RULE, AND IT IS THIS UNIT'S OWN**: the working panels give up
+                 height first, then the top row, and **the send area is never the thing
+                 that leaves.** `MaxHeight` here is how the top row gives its share up.
+
+                 **300 px, and the number is measured rather than chosen.** Across unit
+                 354's nine sizes this row draws 198, 204, 224, 250, 278 and 293 px
+                 everywhere the layout is sound, so a 300 px ceiling is inert at every
+                 size that was already right and binds only where the card runs away.
+                 **Nothing is lost to it**: the card body scrolls inside the cap, per
+                 0.5 - hiding detail is allowed and hiding information is not. -->
             <Grid Grid.Row="1" x:Name="TopRow"
                   ColumnDefinitions="*,Auto"
+                  MaxHeight="300"
                   RowDefinitions="Auto,Auto" Margin="0,0,0,10">
 
                 <!-- THE NEIGHBORHOOD, RELOCATED WHOLE (Tim, 2026-08-27: "It
                      looks exactly like it does now. We do not need to change the
                      neighborhood."). The template is the one the canvas used, so
                      there is one definition of this panel and not two. -->
-                <ContentControl Grid.Row="0" Grid.Column="0"
-                                Margin="0,0,14,0"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                Content="{Binding}"
-                                ContentTemplate="{StaticResource widget.map}" />
+                <ScrollViewer Grid.Row="0" Grid.Column="0"
+                              x:Name="TopRowCardScroller"
+                              Margin="0,0,14,0"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <ContentControl VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    Content="{Binding}"
+                                    ContentTemplate="{StaticResource widget.map}" />
+                </ScrollViewer>
 
 
     <!-- Frequency face: the rig's own LCD on the console. Deliberately

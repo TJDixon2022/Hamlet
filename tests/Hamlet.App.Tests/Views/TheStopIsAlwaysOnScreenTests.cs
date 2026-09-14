@@ -243,6 +243,113 @@ public sealed class TheStopIsAlwaysOnScreenTests
         }
     }
 
+    /// <summary>
+    /// **At each of the nine sizes, the whole send area is on the window**: CQ, the mode tabs, Stop
+    /// and the drive note, each drawn and each inside the window's own bounds.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 356 TASK 1, AND WHAT IT IS FOR.** Hamlet opens at 1100 x 780. After
+    /// unit 355 Stop is on the status bar and visible there, and **CQ and the mode tabs are drawn at
+    /// y 800 to 830, below the window's bottom edge** (unit 355 item 3). A new operator opens the
+    /// application and cannot see the button that calls CQ.</para>
+    /// <para>**THE RULE THIS ASSERTS, WHICH IS THE UNIT'S OWN** (the instruction states it and marks
+    /// it as such): where the window is too short for the top row, the working panels and the send
+    /// area together, **the panels give up height first, then the top row, and the send area is
+    /// never the thing that leaves.** The send area's drawn height is therefore the same at every
+    /// size, which is asserted below rather than described.</para>
+    /// <para>**COMPUTED, NOT SEEN.** These are `Bounds` read off a realized headless window; nothing
+    /// here looks at a pixel.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void AtEachOfTheNineSizesTheSendAreaIsWholeOnTheWindow()
+    {
+        var misses = new List<string>();
+        var heights = new List<(string Where, double Height)>();
+
+        foreach (var (width, height) in Sizes)
+        {
+            var window = TheTopRowTests.Realized(width, height, null, null);
+
+            try
+            {
+                Pump(window);
+
+                var bounds = window.Bounds;
+                var label = Size(width, height);
+
+                foreach (var name in new[]
+                {
+                    "DigitalSendCqButton", "DigitalModeChipStrip",
+                    "DigitalStopButton", "DigitalTransmitDriveNote",
+                })
+                {
+                    var control = TheTopRowTests.Named<Control>(window, name);
+                    var at = TheTopRowTests.RectIn(control, window);
+
+                    var whole = at.Width > 0 && at.Height > 0
+                        && at.Left >= -0.5 && at.Top >= -0.5
+                        && at.Right <= bounds.Width + 0.5
+                        && at.Bottom <= bounds.Height + 0.5;
+
+                    _output.WriteLine(
+                        label + "  " + name.PadRight(26) + Box(at)
+                        + "  visible " + control.IsEffectivelyVisible + "  whole " + whole);
+
+                    if (!control.IsEffectivelyVisible)
+                    {
+                        misses.Add(label + ": " + name + " is not visible");
+                    }
+
+                    if (!whole)
+                    {
+                        misses.Add(
+                            label + ": " + name + " " + Box(at) + " is not whole on the "
+                            + Box(bounds) + " window");
+                    }
+                }
+
+                heights.Add((
+                    label,
+                    TheTopRowTests.RectIn(
+                        TheTopRowTests.Named<Control>(window, "DigitalSendReserved"), window).Height));
+
+                // **AND THE ROW THAT WAS EATING THE WINDOW**, printed beside them so the
+                // cap can be read rather than taken on trust.
+                _output.WriteLine(
+                    "   " + label + "  " + "TopRow".PadRight(26)
+                    + Box(TheTopRowTests.RectIn(
+                        TheTopRowTests.Named<Control>(window, "TopRow"), window)));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        _output.WriteLine("");
+
+        foreach (var (where, tall) in heights)
+        {
+            _output.WriteLine("the send area is " + Px(tall) + " tall at " + where);
+        }
+
+        // **THE SEND AREA IS THE SAME HEIGHT EVERYWHERE**, which is what *never the thing that
+        // leaves* means in a number: if it were giving up height it would shrink somewhere.
+        var first = heights[0].Height;
+
+        foreach (var (where, tall) in heights)
+        {
+            if (Math.Abs(tall - first) > 1)
+            {
+                misses.Add(
+                    "the send area is " + Px(tall) + " tall at " + where + " and "
+                    + Px(first) + " at " + heights[0].Where);
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
     /// <summary>Reads one window and returns what does not hold, printing every number.</summary>
     private List<string> Read(Window window, string label)
     {
