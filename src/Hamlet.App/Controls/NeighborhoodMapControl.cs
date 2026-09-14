@@ -131,6 +131,17 @@ public sealed class NeighborhoodMapControl : Control
         AvaloniaProperty.Register<NeighborhoodMapControl, string?>(
             nameof(ChosenShortName));
 
+    /// <summary>The calling spot the operator asked for, where it has no block of its own.</summary>
+    /// <remarks>
+    /// **A SPOT, NOT A BLOCK** (work instruction 358 task 4). Olivia's calling spots come from
+    /// their own cited table and have no block on this map, so the view model hands the spot
+    /// here and the map picks it out with a line and the chosen mode's name. Null draws
+    /// nothing.
+    /// </remarks>
+    public static readonly StyledProperty<long?> ChosenSpotHzProperty =
+        AvaloniaProperty.Register<NeighborhoodMapControl, long?>(
+            nameof(ChosenSpotHz));
+
     /// <summary>
     /// Where this license class may and may not transmit, from the engine.
     /// </summary>
@@ -160,7 +171,7 @@ public sealed class NeighborhoodMapControl : Control
         AffectsRender<NeighborhoodMapControl>(
             FrequencyHzProperty, BandLowHzProperty, BandHighHzProperty,
             NeighborhoodsProperty, ActivityDotsProperty, PrivilegeSpansProperty,
-            ChosenShortNameProperty);
+            ChosenShortNameProperty, ChosenSpotHzProperty);
     }
 
     /// <summary>The mode the operator pressed, or null.</summary>
@@ -169,6 +180,27 @@ public sealed class NeighborhoodMapControl : Control
         get => GetValue(ChosenShortNameProperty);
         set => SetValue(ChosenShortNameProperty, value);
     }
+
+    /// <summary>The calling spot to pick out, in hertz, or null.</summary>
+    public long? ChosenSpotHz
+    {
+        get => GetValue(ChosenSpotHzProperty);
+        set => SetValue(ChosenSpotHzProperty, value);
+    }
+
+    /// <summary>Whether a chosen spot is drawn on a map with these edges.</summary>
+    /// <param name="spotHz">The spot, or null.</param>
+    /// <param name="lowHz">The map's lowest frequency.</param>
+    /// <param name="highHz">The map's highest frequency.</param>
+    /// <returns>True where there is a spot and it falls on the map.</returns>
+    /// <remarks>
+    /// **PUBLIC AND STATIC SO A TEST CAN ASK IT**, for <see cref="IsChosen"/>'s reason: the
+    /// decision is separated from the drawing, because nothing here can look at a picture. A
+    /// spot off the edge of the map is not drawn at the edge, which would place it somewhere
+    /// it is not.
+    /// </remarks>
+    public static bool IsSpotOnMap(long? spotHz, long lowHz, long highHz)
+        => spotHz is { } hz && highHz > lowHz && hz >= lowHz && hz <= highHz;
 
     /// <summary>Whether this block is the one the operator asked for.</summary>
     /// <param name="hood">A block on the map.</param>
@@ -351,6 +383,35 @@ public sealed class NeighborhoodMapControl : Control
         // Nothing is drawn when the class is unknown: an empty span list is
         // how "do not guess" is expressed structurally (HM-DEC-029).
         DrawListenOnlyVeil(context, axis, h);
+
+        // **THE SPOT HE ASKED FOR, WHERE NO BLOCK IS ITS OWN** (work instruction 358 task 4).
+        // Olivia's calling spot sits inside another mode's block or between blocks, so it is
+        // picked out as a dashed line in the digital family's ink with the chosen mode's name
+        // beside it. **Not by a new colour** (0.6): a line and a word, both of which survive
+        // greyscale, and the name says what the line is.
+        if (IsSpotOnMap(ChosenSpotHz, BandLowHz, BandHighHz))
+        {
+            var spotX = axis.XOf(ChosenSpotHz!.Value);
+            var ink = ModePalette.Digital.InkBrush;
+
+            context.DrawLine(
+                new Pen(ink, ChosenEdgeWidth, DashStyle.Dash),
+                new Point(spotX, 0),
+                new Point(spotX, h));
+
+            if (!string.IsNullOrWhiteSpace(ChosenShortName))
+            {
+                var name = new FormattedText(ChosenShortName.Trim(),
+                    CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+                    SansHeavy, 11, ink);
+
+                context.DrawText(
+                    name,
+                    new Point(
+                        Math.Max(2, Math.Min(spotX + 3, w - name.Width - 2)),
+                        Math.Max(0, h - name.Height - 2)));
+            }
+        }
 
         // Activity dots from the cached layout. Dots outside privileges are
         // dimmed rather than removed — the operator still needs to see where

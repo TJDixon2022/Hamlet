@@ -584,6 +584,7 @@
                         BandHighHz="{Binding MapHighHz}"
                         Neighborhoods="{Binding Neighborhoods}"
                         ChosenShortName="{Binding ChosenDigitalMode}"
+                        ChosenSpotHz="{Binding MapChosenSpotHz}"
                         ActivityDots="{Binding ActivityDots}"
                         PrivilegeSpans="{Binding PrivilegeSpans}"
                         TuneCommand="{Binding TuneToDotCommand}"

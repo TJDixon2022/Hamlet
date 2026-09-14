@@ -355,6 +355,8 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(GreenZone))]
     // **AND THE CAPTURE PRESS, WHICH IS PSK31'S ALONE** (work instruction 344 task 1).
     [NotifyPropertyChangedFor(nameof(HasPsk31Capture))]
+    // **AND THE MAP'S OLIVIA SPOT** (work instruction 358 task 4).
+    [NotifyPropertyChangedFor(nameof(MapChosenSpotHz))]
     private string? _chosenDigitalMode;
 
     /// <summary>True where the slot clock is drawn.</summary>
@@ -706,6 +708,7 @@ public partial class MainWindowViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(MapSummary))]
     [NotifyPropertyChangedFor(nameof(MapLowHz))]
     [NotifyPropertyChangedFor(nameof(MapHighHz))]
+    [NotifyPropertyChangedFor(nameof(MapChosenSpotHz))]
     private BandButtonViewModel _selectedBand;
 
     [ObservableProperty]
@@ -730,6 +733,21 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>The highest frequency the neighborhood map draws.</summary>
     public long MapHighHz => SelectedBand.Band.HighHz + NeighborhoodPlan.MarginHz(SelectedBand.Band);
+
+    /// <summary>The calling spot the map picks out, or null where nothing is picked out that way.</summary>
+    /// <remarks>
+    /// <para>**OLIVIA HAS A SPOT AND NO BLOCK** (work instruction 358 task 4). The map picks out
+    /// PSK31 by outlining the block the cited band data gives it; Olivia's calling spots come
+    /// from their own table and sit inside other modes' blocks or between them, so the map is
+    /// handed the spot itself - the cited center for this band.</para>
+    /// <para>**NULL UNDER EVERY OTHER MODE, AND WHERE THE TABLE COULD NOT BE READ OR HAS NO
+    /// ROW HERE.** A preference drawn where nothing is cited would be a picture asserting a
+    /// place nobody published (HM-DEC-092).</para>
+    /// </remarks>
+    public long? MapChosenSpotHz
+        => IsOliviaChosen
+            ? _olivia.Calling?.CallingRowFor(SelectedBand.Band.Name)?.CenterHz
+            : null;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(GreenZone))]
@@ -2448,6 +2466,7 @@ public partial class MainWindowViewModel : ObservableObject
         _olivia = data;
 
         OnPropertyChanged(nameof(DigitalModeStripLine));
+        OnPropertyChanged(nameof(MapChosenSpotHz));
     }
 
     /// <summary>Every PSK31 signal in the passband, or null until PSK31 is pressed.</summary>

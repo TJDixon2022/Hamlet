@@ -378,6 +378,72 @@ public sealed class TheOliviaSeamTests : IDisposable
         }
     }
 
+    /// <summary>**The map picks out the Olivia spot when the tab is selected.**</summary>
+    /// <remarks>
+    /// <para>**TASK 4, AND IT IS THE STEP'S NICE-TO-PASS.** PSK31 is picked out by outlining
+    /// its block, because the cited band data has a PSK31 block. **There is no Olivia block**:
+    /// its calling spots sit inside other modes' blocks, or between them, so the same outline
+    /// would pick out nothing. What is picked out is the spot itself, at the cited center.</para>
+    /// <para>**COMPUTED, NOT SEEN.** What is asserted is the value the map is handed and the
+    /// rule it draws by. Nothing here looks at a pixel.</para>
+    /// </remarks>
+    [Fact]
+    public void TheMapPicksOutTheOliviaSpotWhenTheTabIsSelected()
+    {
+        var calling = OliviaData.Current.Calling;
+
+        Assert.NotNull(calling);
+
+        var model = Panel(null);
+        var twenty = model.Bands.First(b => b.Band.Name == "20 m");
+
+        model.SelectedBand = twenty;
+
+        // **NOTHING CHOSEN PICKS OUT NOTHING.**
+        Assert.Null(model.MapChosenSpotHz);
+
+        model.ChooseDigitalModeCommand.Execute(Mode);
+
+        var row = calling!.CallingRowFor("20 m")!;
+
+        _output.WriteLine(
+            "20 m spot     : " + model.MapChosenSpotHz + " on a map of " + model.MapLowHz
+            + " to " + model.MapHighHz);
+
+        Assert.Equal(row.CenterHz, model.MapChosenSpotHz);
+        Assert.True(NeighborhoodMapControl.IsSpotOnMap(model.MapChosenSpotHz, model.MapLowHz, model.MapHighHz));
+
+        // **NO BLOCK IS OUTLINED**, because none is Olivia's, so the spot is the only thing
+        // picked out and nothing else is claimed.
+        Assert.DoesNotContain(
+            model.Neighborhoods, h => NeighborhoodMapControl.IsChosen(h, model.ChosenDigitalMode));
+
+        // **EVERY BAND WITH A ROW, FROM ITS OWN ROW.**
+        foreach (var band in HfBands.Names.Where(b => calling.CallingRowFor(b) is not null))
+        {
+            model.SelectedBand = model.Bands.First(b => b.Band.Name == band);
+
+            _output.WriteLine("  " + band.PadRight(6) + model.MapChosenSpotHz);
+
+            Assert.Equal(calling.CallingRowFor(band)!.CenterHz, model.MapChosenSpotHz);
+            Assert.True(NeighborhoodMapControl.IsSpotOnMap(model.MapChosenSpotHz, model.MapLowHz, model.MapHighHz));
+        }
+
+        // **PSK31 PICKS OUT ITS BLOCK AND NO SPOT**, so the two mechanisms never draw at once.
+        model.SelectedBand = twenty;
+        model.ChooseDigitalModeCommand.Execute("PSK31");
+
+        Assert.Null(model.MapChosenSpotHz);
+        Assert.Single(model.Neighborhoods, h => NeighborhoodMapControl.IsChosen(h, model.ChosenDigitalMode));
+
+        // **A TABLE THAT COULD NOT BE READ PICKS OUT NOTHING**, rather than a remembered spot.
+        model.ChooseDigitalModeCommand.Execute(Mode);
+        model.UseOliviaDataForTests(OliviaData.Read(null, null));
+
+        Assert.Null(model.MapChosenSpotHz);
+        Assert.False(NeighborhoodMapControl.IsSpotOnMap(model.MapChosenSpotHz, model.MapLowHz, model.MapHighHz));
+    }
+
     private static AudioTap Heard()
     {
         var tap = new AudioTap();
