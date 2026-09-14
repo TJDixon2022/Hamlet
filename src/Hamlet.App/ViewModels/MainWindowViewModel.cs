@@ -2326,6 +2326,36 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private readonly List<Psk31EndedRow> _psk31Ended = new();
 
+    /// <summary>
+    /// **The reading each ended PSK31 row still on the list kept**, by the row's identity (work
+    /// instruction 355 task 3).
+    /// </summary>
+    /// <remarks>
+    /// **AN ENDED ROW IS STILL A STATION.** His carrier went and the channel's reading went with it,
+    /// but a station who called CQ and dropped his carrier to listen can still be answered, and the
+    /// card that opens then is read from what was heard of him. Let go when the row leaves the list.
+    /// </remarks>
+    private readonly Dictionary<DigitalDecodeRow, Psk31ChannelReading> _psk31EndedReadings =
+        new(ReferenceEqualityComparer.Instance);
+
+    /// <summary>The next key an ended row's reading is filed under when his card opens: below nought, where no channel's id is.</summary>
+    private int _psk31EndedKey = -1;
+
+    /// <summary>Let go of an ended row's reading, and any card key it was filed under, once the row has left the list.</summary>
+    /// <param name="row">The row that left.</param>
+    private void ForgetEndedPsk31Reading(DigitalDecodeRow row)
+    {
+        if (!_psk31EndedReadings.Remove(row, out var reading))
+        {
+            return;
+        }
+
+        foreach (var key in _psk31Readings.Where(p => p.Key < 0 && ReferenceEquals(p.Value, reading)).Select(p => p.Key).ToList())
+        {
+            _psk31Readings.Remove(key);
+        }
+    }
+
     /// <summary>An ended row, where its carrier was, when it ended, and its reading, for a resume.</summary>
     private sealed record Psk31EndedRow(
         DigitalDecodeRow Row, double OffsetHz, double EndedAt, double BornAt, string FirstHeard, Psk31ChannelReading? Reading);
@@ -2369,6 +2399,11 @@ public partial class MainWindowViewModel : ObservableObject
         var offset = OffsetOn(row) ?? 0;
 
         row.Ended = true;
+
+        if (reading is not null)
+        {
+            _psk31EndedReadings[row] = reading;
+        }
 
         _psk31Ended.Add(new Psk31EndedRow(
             row, offset, now, bornAt, _psk31FirstHeard.GetValueOrDefault(id, row.Utc), reading));
@@ -2442,6 +2477,7 @@ public partial class MainWindowViewModel : ObservableObject
                 }
 
                 _psk31Ended.RemoveAll(e => ReferenceEquals(e.Row, oldest));
+                ForgetEndedPsk31Reading(oldest);
                 Psk31Events.RowCleared(_telemetry, OffsetOn(oldest) ?? 0, oldest.Message.Length, "cap");
             }
             else
@@ -2462,6 +2498,7 @@ public partial class MainWindowViewModel : ObservableObject
         foreach (var row in DigitalDecodes.Where(r => r.IsTextOnly && r.Ended))
         {
             Psk31Events.RowCleared(_telemetry, OffsetOn(row) ?? 0, row.Message.Length, reason);
+            ForgetEndedPsk31Reading(row);
         }
 
         _psk31Ended.Clear();
@@ -3116,6 +3153,7 @@ public partial class MainWindowViewModel : ObservableObject
                 _psk31FirstHeard[channel.Id] = back.FirstHeard;
                 _psk31RowBornAt[channel.Id] = back.BornAt;
                 _psk31Before[channel.Id] = back.Row.Message;
+                _psk31EndedReadings.Remove(back.Row);
 
                 if (back.Reading is not null)
                 {
@@ -14932,6 +14970,28 @@ public partial class MainWindowViewModel : ObservableObject
 
             return;
         }
+
+        // **AN ENDED ROW IS STILL A STATION** (work instruction 355 task 3). His carrier went and the
+        // channel's reading with it, so his card is read from the reading his ended row kept, filed
+        // under a key no channel can have - the search's ids start at 1 - so the card's grid and
+        // reports are read from it as a live card's are, and the loop above finds it next time.
+        foreach (var reading in _psk31EndedReadings.Values)
+        {
+            if (!reading.Messages.Any(
+                    m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station)))
+            {
+                continue;
+            }
+
+            var key = _psk31EndedKey--;
+
+            _psk31Readings[key] = reading;
+            ShowPsk31Cards(key, reading, sending: false);
+
+            OnPropertyChanged(nameof(HasDigitalCards));
+
+            return;
+        }
     }
 
     /// <summary>Which channel a PSK31 row is the face of, or null.</summary>
@@ -15023,7 +15083,10 @@ public partial class MainWindowViewModel : ObservableObject
         // `Conversation` can put it in the right place rather than on the end.
         var heard = 0;
 
-        foreach (var (_, reading) in _psk31Readings)
+        // **AND AN ENDED ROW'S READING TOO** (work instruction 355 task 3). Answering a station whose
+        // carrier has gone found none of his side here, counted nought, and put the Answer before his
+        // CQ - so his card read *Unknown* where a live row's reads *His turn*.
+        foreach (var reading in _psk31Readings.Values.Concat(_psk31EndedReadings.Values))
         {
             if (reading.Messages.Any(
                     m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, station)))

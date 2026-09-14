@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 5
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T08:57:01-04:00
-NOTE: Task 2 done - a retired PSK31 row that read words stays, marked ended at 0.55, until clear, retune or the 500 cap; app carry-forward and neighbours 167 of 167; committing and pushing, then reading how an ended CQ row opens his card
+UPDATED: 2026-09-14T09:05:54-04:00
+NOTE: Task 3 done - an ended CQ row keeps his station, country and fade and one click sends one Answer at his offset and opens his card at His turn; carry-forward and neighbours 174 of 174; committing, then reading the callook lookup for the seam
 
 ---
 

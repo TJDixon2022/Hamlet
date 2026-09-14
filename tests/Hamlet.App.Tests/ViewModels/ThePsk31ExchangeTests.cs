@@ -187,6 +187,73 @@ public sealed class ThePsk31ExchangeTests
         Assert.Equal(clicks, sink.TimesCalled);
     }
 
+    /// <summary>**6: his carrier has gone and his CQ row stays; clicking it sends one Answer at his offset and opens his card.**</summary>
+    /// <remarks>
+    /// **HE MAY BE LISTENING** (work instruction 355 task 3). A station who called CQ and dropped his
+    /// carrier to listen is the station most likely to hear an answer, so an ended row is still a
+    /// station: it keeps what it read of him and the fade, and the click is the same one click.
+    /// </remarks>
+    [Fact]
+    public void ClickingAnEndedCqRowStillAnswersHimAndOpensHisCard()
+    {
+        var folder = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "hamlet-u355-ended-cq-" + Guid.NewGuid().ToString("N"));
+
+        System.IO.Directory.CreateDirectory(folder);
+
+        var telemetry = new Hamlet.RadioEngine.Telemetry.JsonlTelemetry(folder, "355", _ => true);
+        var (model, sink) = Panel(telemetry);
+
+        Hear(model, 1);
+
+        var live = Assert.Single(model.DigitalDecodes);
+        var sender = live.Sender;
+        var country = live.SenderHelp;
+
+        // **HIS CARRIER GOES.**
+        model.ShowPsk31ChannelsForTests(Array.Empty<Psk31Channel>());
+
+        var row = Assert.Single(model.DigitalDecodes);
+
+        _output.WriteLine("ended row: " + row.Hz + " Hz [" + row.EndedWord + "] " + row.Sender + " (" + row.SenderHelp + ") opacity "
+            + row.RowOpacity + "  " + row.Message.Trim());
+
+        Assert.True(row.Ended);
+        Assert.Equal(sender, row.Sender);
+        Assert.Equal(country, row.SenderHelp);
+        Assert.Equal(0.55, row.RowOpacity);
+        Assert.Equal("Answer W1AW", model.Psk31AnswerLabelFor(row));
+
+        model.AnswerPsk31Command.Execute(row);
+        Settle(model);
+
+        _output.WriteLine("send line: " + model.DigitalSendLine);
+        _output.WriteLine("cards    : " + Describe(model));
+
+        Assert.Equal(1, sink.TimesCalled);
+        Assert.Contains(Psk31Macros.Answer("W1AW", "KC3QIS"), model.DigitalSendLine, StringComparison.Ordinal);
+        // **AT HIS OFFSET**, as the send path recorded it when it composed the Answer. The send line
+        // names the offset only while the send is going out, and it has finished by now.
+        telemetry.Dispose();
+
+        var composed = System.IO.Directory.GetFiles(folder, "*.jsonl")
+            .SelectMany(System.IO.File.ReadAllLines)
+            .Select(l => System.Text.Json.JsonDocument.Parse(l).RootElement)
+            .Where(e => e.GetProperty("event").GetString() == "psk31_send_composed")
+            .ToList();
+
+        var offset = Assert.Single(composed).GetProperty("data").GetProperty("offsetHz").GetDouble();
+
+        _output.WriteLine("composed at: " + offset + " Hz");
+
+        Assert.Equal(HisHz, offset);
+
+        var card = Assert.Single(model.DigitalCards);
+
+        Assert.Equal("W1AW", card.Callsign);
+        Assert.True(card.IsPsk31);
+        Assert.Equal("His turn", card.StateWord);
+    }
+
     /// <summary>Hands the panel the other station's half, a line at a time.</summary>
     /// <param name="model">The panel.</param>
     /// <param name="lines">How many of his lines have arrived.</param>
@@ -228,7 +295,8 @@ public sealed class ThePsk31ExchangeTests
             + string.Concat(model.DigitalCards.Select(
                 c => " " + c.Callsign + " [" + c.StateWord + "]"));
 
-    private static (MainWindowViewModel Model, FakeSink Sink) Panel()
+    private static (MainWindowViewModel Model, FakeSink Sink) Panel(
+        Hamlet.RadioEngine.Telemetry.JsonlTelemetry? telemetry = null)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -238,7 +306,7 @@ public sealed class ThePsk31ExchangeTests
         settings.Operator.Location = "Trafford PA";
         settings.Operator.LicenseClass = LicenseClass.General;
 
-        var model = new MainWindowViewModel(settings, null)
+        var model = new MainWindowViewModel(settings, telemetry)
         {
             OperatingMode = "Digital",
             DigitalNewestFirst = false,
