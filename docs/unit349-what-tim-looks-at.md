@@ -48,8 +48,8 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
 | World clock | 246 × 134, one dot, 15 px from the card's right edge | the same |
 | The three panels, readiness strip hidden / showing | 477 px (0.524) / 424 px (0.466) | 503 px (0.553) / 450 px (0.495) |
 | Waterfall · decoded text · For You, wide | 474 · 378 · 475 | 734 · 378 · 735 |
-| Where the panels end | y 953, the status bar's top | y 953 |
-| The conversation card's facts | under the map: 419 px inside, and beside would need 568 | beside the map: 678 px inside, the facts at x 232 |
+| Where the panels end | y 953, the working card's floor | y 953 |
+| The conversation card's facts (no license class) | under the map: 419 px inside, and beside would need 568 | beside the map: 678 px inside, the facts at x 232 |
 
 - **The green block's text, the same at both widths:** *20 m* at 20 px is the largest. Then *14.074
   MHz* and *Digital · FT8 · yours to use* at 13; *6 stations* at 15; the license line, the rule of
@@ -102,7 +102,7 @@ and the RF power offer, so no empty column stands under it*, and the top row kee
   *I will set it myself*, and the ALC reference line.
 - **The line's ink** is 4.61:1 on the rig panel's fill.
 - **The green block adds** *PSK31 lives at 14.070; you are at 14.074*, because the test tunes FT8's
-  dial and then chooses PSK31.
+  dial and then chooses PSK31 (unit 341 item 2).
 - **When the best bet draws**, the 1400 top row is 237 px (0.260) against a limit of 238.4 (unit 341
   item 1, `0f383a3`).
 
@@ -111,8 +111,8 @@ click more to reach *Set my power to 50%* is acceptable. Check where the popup o
 muted ink is readable on the amber panel.
 
 *Source: `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` (line, ink, block),
-`Unit340TraceThePowerOfferOnPsk31` (the popup's words), `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`
-(top row, panels) and `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop`, all in
+`DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` (the line's place and the popup's
+words) and `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` (top row, panels), all in
 `TheTopRowTests` 8 of 8 at `85437c2`. The best-bet number is unit 341 item 1.*
 
 ### 2.3 The achievements opening page
@@ -160,8 +160,8 @@ a place that would earn it, with distance, from the CQ list.* And: *Nothing whit
 - **Every earned card with a grid draws its map across the card.** The map is 632 × 231 in a card
   672 wide at 1400, and 892 × 231 in a card 932 wide at 1920.
 - **Clicking a map opens the path in a popup**, and a click outside closes it.
-- **The next card's heading carries the time the list was read**, *calling CQ at 21:41 UTC,
-  unworked*, not *right now*.
+- **Where a next card lists callers, its heading carries the time the list was read**, *calling CQ
+  at 21:41 UTC, unworked*, not *right now*.
 - **The clip measure read 590 drawn runs at each width** across the opening page, the eight kinds,
   Continents, the seven continent pages and States on its own log. **Nothing clipped or wrapped.**
 
@@ -291,7 +291,7 @@ whether the band misses *the 50 states* (section 4).
 - **Band:** *42,041 mi so far · 0 pts · unranked · 7,959 to Bronze*; *42,041 of 50,000 mi to Bronze*.
   There is no *every mile, added* on the band.
 - **Cards:** no earned tier on this log. The next card is *50,000 miles*, 5 pts, *42,041 of 50,000
-  mi*, *Every contact adds its miles*, with a bar.
+  mi*, *Every contact adds its miles*.
 
 **Look for:** whether a page with one card and a bar is interesting enough.
 
@@ -375,7 +375,7 @@ All 40 rulings were found in git, in work instructions 338 to 348 (`6ab04aa`, `3
 | 25 | Where a mode lives comes only from a table Hamlet cites. CW takes the place a band button lands, *18.080 on 17 m* on the best-bet band. | Modes next card | The field guide's 40 m numbers; a typed *7.030* | "name the CW place from" the source you want |
 | 26 | Each mode row says only what the CQ list can know: the nearest caller with distance, *no one is calling*, *carries no Morse*, *cannot tell FT4 from FT8*. | Modes next card | One no-caller line for the whole card; a press that would tune there | "one line for the whole card" |
 | 29 | A PSK31 caller's grid is used only where his reading is certain, and it reaches every kind's next card. | Modes, Europe and Grids next cards | Distance from the caller's country; a grid from an uncertain reading; a Modes-only rule | "show distance from an uncertain PSK31 reading too" |
-| 30 | A PSK31 caller who sent no grid, or was read uncertain, is his callsign alone, with no dash. | Modes next card | A mark or placeholder for the missing distance | "mark a caller who sent no grid" |
+| 30 | A PSK31 caller who sent no grid, or was read uncertain, is his callsign alone, with no dash. | Modes next card | A dash in place of the distance (`PHASE_PLAN.md` §6: *show what is there; no dash*) | "mark a caller who sent no grid" |
 | 31 | The PSK31 row's no-caller words carry the list's read time: *no one calling at 21:41 UTC*. | Modes next card | The read time in the card's heading, which would also cover CW and FT4 | "say now" |
 | 35 | States says *2 worked, from STATE*, and the next card counts US contacts with no `STATE`. *Any state you have not worked* and *Hamlet cannot tell a caller's state* stay. | States badge, band and next card | A state guessed from a callsign; writing `STATE` into Hamlet's own log | "call the count" your words, or "take the no-STATE line off" |
 | 36 | With no PSK31 contact, PSK31 appears only as a next card: the Modes caller row and Hall of Fame's *A PSK31 contact*. | Modes and Hall of Fame next cards | Taking PSK31 off both next cards | "no PSK31 anywhere until my first PSK31 contact" |
@@ -406,11 +406,11 @@ About tests, runs or the record. None changes what you see:
 
 | # | Unit | What was decided | Where you see it | Rejected | To overrule, say |
 |---|---|---|---|---|---|
-| U1 | 338 | The sparkline's width rule: it hides exactly where the green block's words would otherwise wrap. | Green block at 1400 | Not recorded | "hide the sparkline only below" the width you name |
+| U1 | 338 | The width at which ruling 3's sparkline hides is unit 338's own rule. On the host it is hidden at 1400 and shown at 1920. | Green block | Not recorded | "keep the sparkline at 1400" |
 | U2 | 341 | The green block's empty upgrade row now hides with its only button, 3 px in every mode. | Green block | Shipping PSK31 at 1400 2 px over | "put the upgrade row back". The 1400 PSK31 top row then goes to 240 px (0.264) with the best bet drawn |
-| U3 | 342 | The band line drops the kind's meaning past 60 characters. | Grids and Total Miles bands; States on a state log | A second line on the band | "keep the meaning on the band" |
-| U4 | 342 | Which quill the next card names: *a quill* on Countries, *the green quill* on reached continents, *the ringed quill* on unreached ones, none on Grids and States. | Next cards | One sentence everywhere | "the same quill sentence on every next card" or "no quill sentence" |
-| U5 | 346 | The Modes row words: *the CQ list carries no Morse*, *cannot tell FT4 from FT8* and its FT8 twin, *carries no voice*, and *and n more*. | Modes next card | Not recorded | your words for the row |
+| U3 | 342 | The band line drops the kind's meaning past 60 characters. | Grids and Total Miles bands; States on a state log | Not recorded | "keep the meaning on the band" |
+| U4 | 342 | Which quill the next card names: *a quill* on Countries, *the green quill* on reached continents, *the ringed quill* on unreached ones, none on Grids and States. | Next cards | The picture's *green quill* sentence on every kind (ruling 14) | "the same quill sentence on every next card" or "no quill sentence" |
+| U5 | 346 | The Modes row words *the CQ list cannot tell FT4 from FT8* and its FT8 twin, *the CQ list carries no voice*, and *and n more*. | Modes next card | Not recorded | your words for the row |
 | U6 | 346 | PSK31 with no list handed in says *the CQ list was not read*, never *no one*. | Modes next card | *no one is calling* | your words |
 | U7 | 347 | *no one calling at 21:41 UTC*, shortened from *no one calling CQ in it at 21:41 UTC* because the longer form squeezed *PSK31* at 1400. | Modes next card | *on the CQ list* | "use the longer words" |
 | U8 | 348 | *2 worked, from STATE*, shortened from *2 states worked, read from the log's STATE field*. | States badge and band | *2 from STATE*, which drops *worked* | your words for the count |
@@ -438,8 +438,8 @@ One line each, with the report that found it.
 5. **Setting your power is one click further away** than before ruling 8. *Unit 341 section 2.*
 6. **The test's green block says *PSK31 lives at 14.070; you are at 14.074*** because the fixture
    tunes FT8's dial. On your radio it shows only when you are off the PSK31 dial. *Unit 341 item 2.*
-7. **Drive and the power offer's place are in the top strip on the CW and Voice tabs too.** The strip
-   is the same on every tab. *Unit 337 section 2, decision 6.*
+7. **The drive and the power offer are on the CW and Voice tabs too**, in the top strip, which is the
+   same on every tab. *Unit 337 section 2, decision 6.*
 8. **The waterfall at 1920 is narrower than before the phase**, 926 to 735 px, and taller. It is
    734-735 px at this tree. *Unit 337 section 2.*
 9. **The world clock is half the size unit 334 made it**, 492 × 269 to 246 × 134, the mockup's size.
@@ -454,12 +454,12 @@ One line each, with the report that found it.
 **The achievements pages:**
 
 13. **The achievements window opens at 1040 × 720**, not your main window's size. Nothing sizes it from
-    the main window. *Unit 332 item 3, carried; `AchievementsWindow.axaml:9`.*
+    the main window. *Unit 335, on unit 332 item 3, carried; `AchievementsWindow.axaml:9`.*
 14. **VK2DEF's map picture stops at 633.18 of 892 px at 1920** on Grids and Bands, because the card
     frame stops at the map's edge rather than drawing past it. At this tree the map's box is 892 ×
     231; the picture inside it was not re-measured. *Unit 346 item 4.*
 15. **The no-STATE line is measured only at one digit**: *1 US contact* and *3 US contacts*. *1,234 US
-    contacts carry no STATE* fitting is arithmetic. *Unit 348 item 3.* See section 7's note on task 3.
+    contacts carry no STATE* fitting is arithmetic. *Unit 348 item 3.*
 16. **The States band loses *the 50 states* on a state log**, and Grids and Total Miles lose their
     meaning line too. The badges keep them. *Unit 348 item 4.*
 17. **The States next card has three lines of words and no callers.** A CQ carries no state. *Unit 348
@@ -531,5 +531,5 @@ OVERRULE: <ruling number or U number, and your words>   (optional)
 ```
 
 **Every decision in section 3 stands unless you name it.** A *not passed* that names a page is new
-work for the step that page belongs to: the main window is step 0, and the category pages are step 1.
-It does not re-open the phase.
+work for that page's step. The main window is step 0's, the category pages are step 1's, and the next
+arbiter places anything else. It does not re-open the phase.
