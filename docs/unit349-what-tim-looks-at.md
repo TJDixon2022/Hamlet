@@ -196,6 +196,18 @@ whether a next card with no callers looks thin.
 8, `ThePsk31RecordsAppearTests` 4 of 4 and `TheAchievementsPageTests` 10 of 10. The popup:
 `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt`, green at 1400 and 1920.*
 
+**The achievements window at the sizes you can open**, on the opening page, Countries, Modes and Europe (twelve contacts, four callers, best bet 17 m), by step 1's clip and white-card measure:
+
+| Size | Runs clipped or wrapped | White cards | Cards past the window's bottom edge |
+|---|---|---|---|
+| 900 × 620, the main window's minimum; the achievements window declares none | **8**: on the opening page *Over 10,000 miles* 170 px in 151, *One more continent* 180 in 151, *One more country* 160 in 151, *Your first state* 160 in 151, *0 worked, from STATE* 200 in 189 and the legend sentence 870 in 868; Countries' band line 590 in 468; Europe's *On the CQ list they carry the green quill.* 420 in 382 | 0 | Countries 7 of 9, Modes 3 of 5, Europe 2 of 4, inside the category page's scroller (`AchievementsWindow.axaml:369`, read from the markup); no badge on the opening page |
+| 1040 × 720, the size it opens at | 0 | 0 | the same |
+| 1280 × 720 | 0 | 0 | the same |
+| 1400 × 720, as above | 0; 64, 34 and 30 runs fit and 9, 5 and 4 cards on Countries, Modes and Europe, as step 1's test printed | 0 | the same |
+| 1920 × 720, as above | 0; the same counts | 0 | the same |
+
+*Source: `TheCategoryPagesAreTradingCardsTests.Unit354TraceTheAchievementsWindowAtTheSizesTimCanOpen` at `87a13c80`, printed in `testresults\u354-t3-trace.trx` (work instruction 354); every size realized as asked. Step 1's own counts: `testresults\u349\u349-steps12-after.trx`. The miss is section 4 item 35.*
+
 ### 2.5 Hall of Fame
 
 **R22:** *the contact that earned each first, and the nearest first as next.*
@@ -540,6 +552,13 @@ One line each, with the report that found it.
     Decoded text header, 180 of 190 px; on the plain window *021130 UTC · 2 shown · oldest first*, 180 of
     350; *not listening yet* in the waterfall header at 1366 (20 of 170 px), 1400 (40) and 1536 (110);
     *nothing for you yet* at 900 × 620 (40 of 190). *Work instruction 354, `00454639`.*
+35. **At 900 × 620 the achievements window clips 8 runs.** On the opening page: *Over 10,000 miles* (170
+    px in a 151 px slot), *One more continent* (180 in 151), *One more country* (160 in 151), *Your first
+    state* (160 in 151), *0 worked, from STATE* (200 in 189) and *Click a badge to open it. Orange ring: a
+    door that opens a set. Green quill: a counter.* (870 in 868). On Countries, the band line *one per
+    entity · 8 worked · 40 pts · unranked · 2 to Bronze* (590 in 468). On Europe, *On the CQ list they
+    carry the green quill.* (420 in 382). The window declares no minimum size, so it can be dragged this
+    small. At 1040 × 720 and wider nothing clips. *Work instruction 354, `87a13c80`.*
 
 ## 5. Known reds
 
