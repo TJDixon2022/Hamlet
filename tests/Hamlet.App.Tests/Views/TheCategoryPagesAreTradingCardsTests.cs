@@ -3220,6 +3220,103 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     }
 
     /// <summary>
+    /// **Work instruction 354 task 3: the achievements window at the sizes Tim can open** - 900 x 620, its
+    /// own opening size 1040 x 720, 1280 x 720, and 1400 x 720 and 1920 x 720 as the anchors - on the
+    /// opening page, Countries, Modes and one continent page, Europe.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 73. A TRACE, AND IT ASSERTS NOTHING.** The fixture is
+    /// `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`'s twelve contacts, four callers
+    /// and best bet, and the window is built as `Realized` builds it with the height set as well. Every
+    /// drawn run goes through `Unit346Fit`, that fact's clip and wrap measure without its asserts, and every
+    /// trading card through `Unit346Filled`, its white-card measure. **Added here, and not that fact's**:
+    /// how many cards or badges reach below the window's bottom edge, since the page does not scroll.</para>
+    /// <para>**EVERY NUMBER IS COMPUTED ON THE HEADLESS HOST, NOT SEEN.** Only the commands that open a page
+    /// and go back are executed; nothing transmits or tunes.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit354TraceTheAchievementsWindowAtTheSizesTimCanOpen()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+
+        _output.WriteLine("Every number below is computed on the headless host, not seen.");
+
+        foreach (var (width, height, why) in new[]
+        {
+            (900.0, 620.0, "the main window's minimum; the achievements window declares none"),
+            (1040.0, 720.0, "its own opening size, AchievementsWindow.axaml:9"),
+            (1280.0, 720.0, "a small laptop screen"),
+            (1400.0, 720.0, "the anchor"),
+            (1920.0, 720.0, "the anchor"),
+        })
+        {
+            var window = new AchievementsWindow
+            {
+                DataContext = Screen(TheAchievementsPageTests.TwelveContacts(), Calling(), bet),
+                Width = width,
+                Height = height,
+            };
+
+            window.Show();
+            Settle(window);
+
+            var screen = (AchievementsViewModel)window.DataContext!;
+            var size = F(width) + " x " + F(height);
+
+            try
+            {
+                _output.WriteLine("");
+                _output.WriteLine(
+                    "=== " + size + " (" + why + "): realized " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height)
+                    + ", twelve contacts, four callers, best bet 17 m");
+
+                Unit354Page(window, size, "opening page");
+
+                foreach (var kind in new[] { AchievementKinds.Countries, AchievementKinds.Modes, AchievementCategory.ContinentPrefix + "EU" })
+                {
+                    OpenOnWindow(window, screen, kind);
+                    Unit354Page(window, size, kind);
+                    ToThePage(window, screen);
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>One page for the unit 354 trace: its runs through the clip measure, its cards through the white-card measure, and what reaches below the window.</summary>
+    private void Unit354Page(Window window, string size, string where)
+    {
+        var (fit, clips) = Unit346Fit(window);
+        var onCategory = window.GetVisualDescendants().OfType<ItemsControl>().Any(i => i.Name == "AchievementsCategoryCards" && i.IsEffectivelyVisible);
+        var cards = onCategory ? TradingCards(window) : new List<Border>();
+        var white = cards.Where(c => !Unit346Filled(c)).ToList();
+        var items = onCategory ? cards.Cast<Control>().ToList()
+            : window.GetVisualDescendants().OfType<Button>().Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge")).Cast<Control>().ToList();
+        var bottom = window.Bounds.Height;
+        var below = items.Where(c => Top(c, window) + c.Bounds.Height > bottom + 0.5)
+            .Select(c => F(Top(c, window)) + " to " + F(Top(c, window) + c.Bounds.Height))
+            .ToList();
+
+        _output.WriteLine(
+            "  " + size + " " + where + ": " + fit + " runs fit, " + clips.Count + " clip or wrap; " + cards.Count + " cards, "
+            + white.Count + " white; " + items.Count + " " + (onCategory ? "cards" : "badges") + " drawn, " + below.Count
+            + " reaching below the window's bottom edge at " + F(bottom) + (below.Count > 0 ? " [" + string.Join(", ", below) + "]" : ""));
+
+        foreach (var clip in clips)
+        {
+            _output.WriteLine("    CLIPS " + clip);
+        }
+
+        foreach (var card in white)
+        {
+            _output.WriteLine("    WHITE CARD " + string.Join(" | ", VisibleText(card)));
+        }
+    }
+
+    /// <summary>
     /// Work instruction 346 task 0: `Fits`' measurement without its asserts - how many visible runs fit,
     /// and each one that would clip or wrap, in `Fits`' own words.
     /// </summary>
