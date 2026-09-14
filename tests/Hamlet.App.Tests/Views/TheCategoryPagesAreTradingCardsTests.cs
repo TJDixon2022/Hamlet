@@ -949,13 +949,16 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
         foreach (var width in new[] { 1400.0, 1920.0 })
         {
-            foreach (var (fixture, kinds) in new[]
+            // **WORK INSTRUCTION 346 TASK 1: MODES WITH A PSK31 CALLER AS WELL**, so a Modes row's who is
+            // there is drawn where the list's rows say the mode and someone is calling in it.
+            foreach (var (fixture, kinds, list) in new[]
             {
-                (records, AchievementKinds.All.Concat(ContinentKinds()).ToList()),
-                (FiveContacts(), new List<string> { AchievementKinds.Modes }),
+                (records, AchievementKinds.All.Concat(ContinentKinds()).ToList(), Calling()),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, Calling()),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWithPsk31()),
             })
             {
-                var wide = Realized(fixture, width, Calling(), bet);
+                var wide = Realized(fixture, width, list, bet);
                 var opened = (AchievementsViewModel)wide.DataContext!;
 
                 try
@@ -1038,6 +1041,24 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                             if (kind == AchievementKinds.Modes)
                             {
                                 Assert.Equal(new[] { "CW", "FT4", "PSK31" }, rows.Select(r => r.Place).OrderBy(p => p, StringComparer.Ordinal));
+
+                                // **WORK INSTRUCTION 346 TASK 1, RULINGS 25 AND 26: EVERY ROW SAYS WHERE ITS MODE
+                                // LIVES AND WHO IS THERE, AND NONE IS EMPTY.**
+                                var modesMiss = ModesRowMiss(rows, list, bet);
+
+                                _output.WriteLine(
+                                    where + " with " + list.Calls.Count + " on the CQ list, modes rows: "
+                                    + (modesMiss ?? string.Join(" / ", rows.Select(r => r.Place + " [" + r.CallLine + "]"))));
+
+                                Assert.True(modesMiss is null, where + " with " + list.Calls.Count + " on the CQ list: " + modesMiss);
+
+                                // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the same rows held against a
+                                // best bet on another band.
+                                var wrongBet = ModesRowMiss(rows, list, bet with { Band = "40 m" });
+
+                                _output.WriteLine(where + " modes rows held against a 40 m best bet, watched red: " + wrongBet);
+
+                                Assert.NotNull(wrongBet);
                             }
 
                             // **HALL OF FAME: THE NEXT FIRST, WITH ITS BAR DRAWN.**
@@ -1213,6 +1234,18 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             (block.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + on,
             modes[^1].Callers.Single(c => c.Place == "PSK31").CallLine,
             StringComparison.Ordinal);
+
+        // **WORK INSTRUCTION 346 TASK 1, RULINGS 25 AND 26: CW LIVES WHERE A BAND BUTTON LANDS**
+        // (HM-DEC-110), on the best-bet band, in `LivesAt`'s form, and the CQ list carries no Morse.
+        var landing = HfBands.Bands.FirstOrDefault(b => b.Name == bet.Band) ?? HfBands.Bands[0];
+        var cwLine = (landing.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + landing.Name
+            + " · " + AchievementCategory.NoMorseOnTheList;
+
+        _output.WriteLine("  modes CW row [" + modes[^1].Callers.Single(c => c.Place == "CW").CallLine + "], wanted [" + cwLine + "]");
+
+        Assert.Equal(cwLine, modes[^1].Callers.Single(c => c.Place == "CW").CallLine);
+        Assert.StartsWith("3.575 on 80 m", modes[^1].Callers.Single(c => c.Place == "FT4").CallLine, StringComparison.Ordinal);
+        Assert.StartsWith("3.580 on 80 m", modes[^1].Callers.Single(c => c.Place == "PSK31").CallLine, StringComparison.Ordinal);
 
         // **`ModeFirstRow.Why` IS NEVER ON A CARD**: it says false things (parked).
         foreach (var card in modes)
@@ -1425,6 +1458,8 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                     (block.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + on,
                     rows.Single(r => r.Place == "PSK31").CallLine,
                     StringComparison.Ordinal);
+                Assert.Equal(cwLine, rows.Single(r => r.Place == "CW").CallLine);
+                Assert.StartsWith("3.575 on 80 m", rows.Single(r => r.Place == "FT4").CallLine, StringComparison.Ordinal);
             }
             finally
             {
@@ -2558,6 +2593,67 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         if (next.HasTierBar && !card.GetVisualDescendants().OfType<BadgeProgressControl>().Any(b => b.IsEffectivelyVisible && b.Bounds.Width > 0))
         {
             return "a tier line and no bar with width" + shown;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// **Work instruction 346 task 1, rulings 25 and 26**: null where every Modes row drawn has a place and
+    /// a line, and the line is where that mode lives then who is there - CW at the place a band button
+    /// lands on the best-bet band or the lowest band, a digital mode at its calling row on the same rule;
+    /// then the no-Morse words for CW, the words that the list cannot tell FT4 from FT8 for FT4, and for a
+    /// mode the list's rows do say the nearest caller in it with his distance where the list holds his
+    /// grid and how many more, or that no one is calling in it now. Otherwise what is wrong.
+    /// </summary>
+    private static string? ModesRowMiss(IReadOnlyList<NextCaller> rows, CqSnapshot calling, BandBet bet)
+    {
+        static string Mhz(long hz) => (hz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture);
+
+        static double? Miles(string grid)
+            => OperatorLocation.FromGrid(MyGrid) is { } a && OperatorLocation.FromGrid(grid) is { } b ? GridPath.MilesBetween(a, b) : null;
+
+        var shown = " (rows drawn: " + string.Join(" / ", rows.Select(r => r.Place + " [" + r.CallLine + "]")) + ")";
+
+        foreach (var row in rows)
+        {
+            if (row.Place.Trim().Length == 0 || row.CallLine.Trim().Length == 0)
+            {
+                return "the " + (row.Place.Trim().Length == 0 ? "row with no place" : row.Place + " row") + " draws an EMPTY line" + shown;
+            }
+
+            string lives;
+
+            if (row.Place == "CW")
+            {
+                var band = HfBands.Bands.FirstOrDefault(b => b.Name == bet.Band) ?? HfBands.Bands[0];
+
+                lives = Mhz(band.JumpHz) + " on " + band.Name;
+            }
+            else
+            {
+                var home = DigitalCallingFrequencies.BandsWith(row.Place);
+                var on = home.Contains(bet.Band, StringComparer.Ordinal) ? bet.Band : home[0];
+
+                lives = Mhz(DigitalCallingFrequencies.Find(on, row.Place)!.JumpHz) + " on " + on;
+            }
+
+            var callers = calling.Calls.Where(c => c.Mode == row.Place).OrderBy(c => Miles(c.Grid) ?? double.MaxValue).ToList();
+            var who = row.Place switch
+            {
+                "CW" => AchievementCategory.NoMorseOnTheList,
+                "FT4" => "the CQ list cannot tell FT4 from FT8",
+                _ when callers.Count == 0 => "no one is calling in it now",
+                _ => callers[0].Callsign
+                    + (Miles(callers[0].Grid) is { } mi ? " · " + GridPath.DescribeMiles(mi).Replace(" miles", " mi", StringComparison.Ordinal) : "")
+                    + (callers.Count > 1 ? " and " + (callers.Count - 1).ToString(CultureInfo.InvariantCulture) + " more" : ""),
+            };
+            var wanted = lives + " · " + who;
+
+            if (row.CallLine != wanted)
+            {
+                return "the " + row.Place + " row draws [" + row.CallLine + "], not [" + wanted + "]" + shown;
+            }
         }
 
         return null;

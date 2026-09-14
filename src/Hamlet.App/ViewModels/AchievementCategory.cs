@@ -652,11 +652,15 @@ public sealed class AchievementCategory
     /// (work instruction 335 task 4, R22).
     /// </summary>
     /// <remarks>
-    /// <para>**WHERE IT LIVES IS THE CITED DIGITAL TABLE** (`DigitalCallingFrequencies`), on the
-    /// green zone's best-bet band where that band has a row and the lowest band that does
-    /// otherwise. Morse and Voice have no digital row, so their line is the mode alone.</para>
-    /// <para>**WHO IS THERE IS COUNTED ONLY WHERE A ROW SAYS ITS MODE**: a PSK31 row is text
-    /// only, and an FT8 or FT4 row does not say which of the two it is.</para>
+    /// <para>**WHERE IT LIVES IS A TABLE HAMLET ALREADY CITES**, on the green zone's best-bet band
+    /// where that band has a place and the lowest band that does otherwise: a digital mode's row in
+    /// `DigitalCallingFrequencies`, and **CW where a band button lands** (`CwBand.JumpHz`,
+    /// HM-DEC-110; work instruction 346 ruling 25). It is read, and nothing that tunes is touched.
+    /// Voice has no cited place, so its row says who is there alone.</para>
+    /// <para>**WHO IS THERE SAYS ONLY WHAT THE CQ LIST CAN KNOW, AND NEVER NOTHING** (§0.0; ruling
+    /// 26). The list is the digital decoded list, so it carries no Morse and no voice; an FT8-shaped
+    /// row does not say whether it was FT8 or FT4 (`CqCall.Mode`); and a PSK31 row does say its mode,
+    /// so PSK31 names its nearest caller or says no one is calling in it now.</para>
     /// <para>**`ModeFirstRow.Why` IS NOT DRAWN** - it says false things (parked).</para>
     /// </remarks>
     private static List<AchievementCategoryCard> ModesFor(
@@ -671,7 +675,7 @@ public sealed class AchievementCategory
 
         var unworked = ContactModes.Six
             .Where(m => m.IsContactMode && !log.Modes.Contains(m.Name, StringComparer.OrdinalIgnoreCase))
-            .Select(m => new NextCaller(m.Name, Joined(LivesAt(m.Name, bet.Band), CallingIn(calling, m.Name))))
+            .Select(m => new NextCaller(m.Name, Joined(LivesAt(m.Name, bet.Band), WhoIsThere(calling, operatorGrid, m.Name))))
             .ToList();
 
         if (unworked.Count > 0)
@@ -691,9 +695,22 @@ public sealed class AchievementCategory
         return cards;
     }
 
-    /// <summary>`14.070 on 20 m` from the cited digital table, or "" where the mode has no row.</summary>
+    /// <summary>
+    /// `14.070 on 20 m` from the cited digital table, `18.080 on 17 m` for CW where a band button lands,
+    /// or "" where the mode has neither.
+    /// </summary>
     private static string LivesAt(string mode, string betBand)
     {
+        // **CW IS WHERE THE BAND BUTTON LANDS** (HM-DEC-110, work instruction 346 ruling 25): the same
+        // `CwBand.JumpHz` a press on the band uses, read here and never written.
+        if (string.Equals(mode, "CW", StringComparison.OrdinalIgnoreCase))
+        {
+            var cw = Hamlet.RadioEngine.Bands.HfBands.Bands;
+            var band = cw.FirstOrDefault(b => string.Equals(b.Name, betBand, StringComparison.Ordinal)) ?? cw.FirstOrDefault();
+
+            return band is null ? "" : OnBand(band.JumpHz, band.Name);
+        }
+
         var bands = Hamlet.RadioEngine.Bands.DigitalCallingFrequencies.BandsWith(mode);
 
         if (bands.Count == 0)
@@ -704,16 +721,55 @@ public sealed class AchievementCategory
         var on = bands.Contains(betBand, StringComparer.Ordinal) ? betBand : bands[0];
 
         return Hamlet.RadioEngine.Bands.DigitalCallingFrequencies.Find(on, mode) is { } block
-            ? (block.JumpHz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + on
+            ? OnBand(block.JumpHz, on)
             : "";
     }
 
-    /// <summary>`2 calling CQ` where the list's rows say their mode, or "".</summary>
-    private static string CallingIn(CqSnapshot calling, string mode)
-    {
-        var count = calling.Calls.Count(c => string.Equals(c.Mode, mode, StringComparison.OrdinalIgnoreCase));
+    /// <summary>`3.580 on 80 m`.</summary>
+    private static string OnBand(long hz, string band)
+        => (hz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture) + " on " + band;
 
-        return count == 0 ? "" : count.ToString(CultureInfo.InvariantCulture) + " calling CQ";
+    /// <summary>
+    /// **Who is there in a mode, as far as the CQ list can know, and never ""** (work instruction 346
+    /// ruling 26).
+    /// </summary>
+    /// <remarks>
+    /// <para>**ONLY A PSK31 ROW SAYS ITS MODE** (`CqSnapshot.From`), so only PSK31 names a caller or
+    /// says no one is calling: the nearest by the miles his CQ's grid gives, with how many more. A
+    /// PSK31 row carries no grid, so today its caller is his callsign alone.</para>
+    /// <para>**NEVER *NO ONE* WHERE THE LIST COULD NOT SHOW ONE.** FT8 and FT4 rows cannot be told
+    /// apart, and Morse and voice are never on it.</para>
+    /// </remarks>
+    private static string WhoIsThere(CqSnapshot calling, string operatorGrid, string mode)
+    {
+        switch (mode)
+        {
+            case "CW":
+                return NoMorseOnTheList;
+            case "FT4":
+                return ListCannotTellFt4;
+            case "FT8":
+                return ListCannotTellFt8;
+            case "PSK31":
+                break;
+            default:
+                return NoVoiceOnTheList;
+        }
+
+        if (calling.ReadUtc is null)
+        {
+            return ListNotRead;
+        }
+
+        var inIt = calling.Calls
+            .Where(c => string.Equals(c.Mode, mode, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(c => MilesBetween(operatorGrid, c.Grid) ?? double.MaxValue)
+            .ToList();
+
+        return inIt.Count == 0
+            ? NoOneCallingInIt
+            : Joined(inIt[0].Callsign, MilesTo(operatorGrid, inIt[0].Grid))
+                + (inIt.Count > 1 ? " and " + (inIt.Count - 1).ToString(CultureInfo.InvariantCulture) + " more" : "");
     }
 
     /// <summary>The caller's country, short, or "" where the table declines.</summary>
@@ -873,6 +929,18 @@ public sealed class AchievementCategory
     /// <summary>What a next card says where no CQ list was handed to the window.</summary>
     public const string ListNotRead = "the CQ list was not read";
 
+    /// <summary>What a Modes row says where the list's rows say that mode and nobody is calling in it.</summary>
+    public const string NoOneCallingInIt = "no one is calling in it now";
+
+    /// <summary>What the FT4 row says: an FT8-shaped row does not say which of the two it was.</summary>
+    public const string ListCannotTellFt4 = "the CQ list cannot tell FT4 from FT8";
+
+    /// <summary>What the FT8 row says, for the same reason.</summary>
+    public const string ListCannotTellFt8 = "the CQ list cannot tell FT8 from FT4";
+
+    /// <summary>What the Voice row says: the CQ list is the digital decoded list.</summary>
+    public const string NoVoiceOnTheList = "the CQ list carries no voice";
+
     /// <summary>How many callers a next card lists.</summary>
     private const int ListedCallers = 3;
 
@@ -974,10 +1042,15 @@ public sealed class AchievementCategory
 
     /// <summary>`4,500 mi` from the operator's grid to his, or "" where either is missing.</summary>
     private static string MilesTo(string operatorGrid, string grid)
-        => OperatorLocation.FromGrid(operatorGrid) is { } here && OperatorLocation.FromGrid(grid) is { } there
-            ? GridPath.DescribeMiles(GridPath.MilesBetween(here, there))
-                .Replace(" miles", " mi", StringComparison.Ordinal)
+        => MilesBetween(operatorGrid, grid) is { } miles
+            ? GridPath.DescribeMiles(miles).Replace(" miles", " mi", StringComparison.Ordinal)
             : "";
+
+    /// <summary>The miles from the operator's grid to his, or null where either is missing.</summary>
+    private static double? MilesBetween(string operatorGrid, string grid)
+        => OperatorLocation.FromGrid(operatorGrid) is { } here && OperatorLocation.FromGrid(grid) is { } there
+            ? GridPath.MilesBetween(here, there)
+            : null;
 
     /// <summary>
     /// **The card for one place, built from the contact that earned it** (work instruction 335
