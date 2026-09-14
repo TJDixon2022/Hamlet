@@ -760,8 +760,15 @@
     arbiter's rulings 17 to 20). Tests and a drawn fact the view model already holds; nothing on the
     radio side moves.
   -->
+  <!--
+    1.13.31 -> 1.13.32, UNIT 345 TASK 0. A PATCH, STEP 1 PROVED ON THE WINDOW (WORK INSTRUCTION 343
+    RE-ISSUED, ITS DOTNET BLOCKER CLEARED): the band, the earned contact's eight facts, the next card
+    and its callers, and all eight kinds with Continents to seven and each to its countries, asserted
+    on the drawn category pages at 1400 and 1920 (the arbiter's rulings 17 to 23). Tests and a drawn
+    fact the view model already holds; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.31</Version>
+    <Version>1.13.32</Version>
   </PropertyGroup>
 
   <!--
