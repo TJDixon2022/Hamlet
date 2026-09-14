@@ -2433,6 +2433,127 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     }
 
     /// <summary>
+    /// **Work instruction 347 task 0, the trace**: what a PSK31 reading holds, what the CQ list keeps of
+    /// it, and what every next card draws from it at 1400 and 1920. It asserts nothing and presses
+    /// nothing that transmits or tunes.
+    /// </summary>
+    [AvaloniaFact]
+    public void Unit347TraceThePsk31CallersGridAndDistance()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+        var psk31Calls = new[] { "EA3ABC", "EA3XYZ" };
+
+        // **WHAT THE PARSER READS, AND WHAT THE SNAPSHOT KEEPS.**
+        foreach (var (label, text) in new[]
+        {
+            (Label: "certain with a grid", Text: CertainPsk31WithGrid),
+            (Label: "CallingWithPsk31()'s own, no grid", Text: Psk31WithNoGrid),
+            (Label: "uncertain with a grid", Text: UncertainPsk31WithGrid),
+        })
+        {
+            var reading = Hamlet.RadioEngine.Psk31.Psk31ExchangeParser.Read(text, "KC3QIS");
+            var call = CallingWith(text).Calls.FirstOrDefault(c => c.Mode == "PSK31");
+
+            _output.WriteLine(
+                "PARSE " + label + " [" + text + "]: Speaker [" + reading.Speaker + "] Grid [" + (reading.Grid ?? "null") + "] IsCertain "
+                + reading.IsCertain + " Kind " + reading.Kind + "; snapshot "
+                + (call is null ? "NO PSK31 CALL" : "call [" + call.Callsign + "] Grid [" + call.Grid + "] Mode [" + call.Mode + "]"));
+        }
+
+        // **THE LIVE ROUTE**, as the tree reads: the main window's PSK31 row is built with
+        // `Reading: ReadPsk31(channel)`, the channel splitter's latest message as `Psk31ExchangeParser.Read`
+        // gives it, and the achievements window is handed `CqSnapshot.From(DigitalDecodes, ...)`.
+        _output.WriteLine(
+            "LIVE ROUTE: MainWindowViewModel PSK31 row Reading = ReadPsk31(channel) (Psk31MessageSplitter message.Exchange); "
+            + "AchievementsViewModel.Calling = CqSnapshot.From(DigitalDecodes, DateTime.UtcNow)");
+
+        var lists = new[]
+        {
+            (Label: "Calling() and a certain PSK31 CQ with a grid", List: CallingWith(CertainPsk31WithGrid)),
+            (Label: "CallingWithPsk31(), no grid", List: CallingWithPsk31()),
+            (Label: "Calling() and an uncertain PSK31 CQ with a grid", List: CallingWith(UncertainPsk31WithGrid)),
+        };
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var (label, list) in lists)
+            {
+                foreach (var (records, logLabel) in new[]
+                {
+                    (FiveContacts(), "five contacts"),
+                    (TheAchievementsPageTests.TwelveContacts(), "twelve contacts"),
+                })
+                {
+                    var window = Realized(records, width, list, bet);
+                    var screen = (AchievementsViewModel)window.DataContext!;
+
+                    try
+                    {
+                        foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+                        {
+                            OpenOnWindow(window, screen, kind);
+
+                            var category = screen.Category!;
+                            var held = category.Cards.Concat(category.SubBadges.Select(b => b.Card!)).Where(c => !c.Earned).ToList();
+                            var drawn = window.GetVisualDescendants().OfType<Border>()
+                                .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card")
+                                    && b.DataContext is AchievementCategoryCard { Earned: false })
+                                .ToList();
+                            var where = F(width) + " " + logLabel + ", " + label + ", " + kind;
+
+                            foreach (var next in held)
+                            {
+                                var card = drawn.FirstOrDefault(b => ReferenceEquals(b.DataContext, next));
+                                var rows = card is null ? new List<NextCaller>() : CallerRows(card);
+
+                                // **MODES ON THE FIVE CONTACTS: ROW BY ROW, MODEL BESIDE DRAWN.**
+                                if (kind == AchievementKinds.Modes)
+                                {
+                                    _output.WriteLine("MODES NEXT " + where + ": no-caller [" + next.NoCallerLine + "], more [" + next.MoreCallersLine + "]");
+
+                                    foreach (var model in next.Callers)
+                                    {
+                                        var row = rows.FirstOrDefault(r => r.Place == model.Place);
+
+                                        _output.WriteLine(
+                                            "  row " + model.Place.PadRight(6) + " model [" + model.CallLine + "] drawn ["
+                                            + (row is null ? "NOT DRAWN" : row.CallLine) + "]");
+                                    }
+
+                                    continue;
+                                }
+
+                                // **EVERY OTHER KIND: ONLY THE LINES THAT NAME A PSK31 CALLER.**
+                                var withPsk31 = next.Callers.Where(c => psk31Calls.Any(p => c.CallLine.StartsWith(p, StringComparison.Ordinal))).ToList();
+
+                                if (withPsk31.Count == 0)
+                                {
+                                    continue;
+                                }
+
+                                foreach (var model in withPsk31)
+                                {
+                                    var row = rows.FirstOrDefault(r => r.Place == model.Place && r.CallLine == model.CallLine);
+
+                                    _output.WriteLine(
+                                        "PSK31 CALLER " + where + " [" + next.Title + "]: " + model.Place + " model [" + model.CallLine + "] "
+                                        + (card is null ? "CARD NOT DRAWN" : row is null ? "NOT DRAWN" : "drawn"));
+                                }
+                            }
+
+                            ToThePage(window, screen);
+                        }
+                    }
+                    finally
+                    {
+                        window.Close();
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
     /// Work instruction 346 task 0: `Fits`' measurement without its asserts - how many visible runs fit,
     /// and each one that would clip or wrap, in `Fits`' own words.
     /// </summary>
@@ -2964,6 +3085,29 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             },
             new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc));
     }
+
+    /// <summary>A certain PSK31 CQ that carries a grid: Barcelona's square (work instruction 347).</summary>
+    private const string CertainPsk31WithGrid = "CQ CQ CQ de EA3ABC EA3ABC JN11 K";
+
+    /// <summary>The same CQ with its turnover gone, so the parser reads the grid and is not certain.</summary>
+    private const string UncertainPsk31WithGrid = "CQ CQ CQ de EA3ABC EA3ABC JN11";
+
+    /// <summary>`CallingWithPsk31()`'s own text, with no grid.</summary>
+    private const string Psk31WithNoGrid = "CQ CQ CQ de EA3XYZ EA3XYZ K";
+
+    /// <summary>`Calling()`'s four, and a PSK31 row for each text, read by the PSK31 parser as the list builds one.</summary>
+    private static CqSnapshot CallingWith(params string[] psk31Texts)
+        => CqSnapshot.From(
+            new[]
+            {
+                Heard("CQ OE8DDX JN76"),
+                Heard("CQ DX J38DX FK92"),
+                Heard("CQ K1ABC FN42"),
+                Heard("CQ ZL1ABC RF72"),
+            }.Concat(psk31Texts.Select(text => new DigitalDecodeRow(
+                "214100", "+10", DigitalDecodeRow.NotMeasured, "1000", text,
+                IsTextOnly: true, Reading: Hamlet.RadioEngine.Psk31.Psk31ExchangeParser.Read(text, "KC3QIS")))),
+            new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc));
 
     /// <summary>A decoded row, as the list holds one.</summary>
     private static DigitalDecodeRow Heard(string message)
