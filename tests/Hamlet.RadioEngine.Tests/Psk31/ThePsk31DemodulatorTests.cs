@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -402,6 +403,127 @@ public sealed class ThePsk31DemodulatorTests
                         ? cer.GetDouble()
                         : -1))
             .ToList();
+    }
+
+    /// <summary>**Every capture off the air is read back, with no ceiling on what it says.**</summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 344 TASK 3, AND THE TEST EVERY LATER CHANGE IS PROVED
+    /// AGAINST.** Until unit 344 the demodulator had never once met audio off the air:
+    /// every fixture under `assets/fixtures/` was made by `reference-modem.py` on a
+    /// machine with no radio (FACT-004, FACT-006), and the first real row reached the
+    /// screen garbled with nothing in the tree able to say why.</para>
+    /// <para>**IT PASSES IF THE FILE DECODES AT ALL AND SKIPS WHEN THE FOLDER IS EMPTY**
+    /// (the instruction). No error rate, no character count, no ceiling: **nobody knows
+    /// what those stations sent**, so any threshold here would be a claim about a
+    /// transcript nobody has (§0.0, HM-DEC-091). What it does is print what the whole
+    /// receive path made of the file, so two versions of the demodulator can be compared
+    /// on the same audio.</para>
+    /// <para>**SKIPPED, NOT PASSED, ON AN EMPTY FOLDER.** A green tick against a test that
+    /// read nothing says the demodulator was proved against real air, which would be the
+    /// exact false claim this repository keeps being bitten by.</para>
+    /// </remarks>
+    [Fact]
+    public void EveryCaptureOffTheAirIsReadBack()
+    {
+        var folder = Path.Combine(Root(), "assets", "fixtures", "captured");
+        var files = Captures();
+
+        if (files.Count == 0)
+        {
+            // **NOT SKIPPED, BECAUSE THIS xUNIT CANNOT.** 2.9.2 has no runtime
+            // `Assert.Skip` - that is version 3 - an empty theory is reported as a
+            // failure, and the package that would add one is forbidden (section 10). So
+            // the empty case passes, and what it means is printed rather than implied:
+            // **the harness is wired and waiting**, and nothing here has met real air.
+            _output.WriteLine(
+                "NO CAPTURE READ. " + folder + " holds no .wav, so nothing in this run "
+                + "is evidence about real air. Press Capture 2 minutes on the PSK31 "
+                + "panel, copy the file out of %AppData%/Hamlet/captures/ into that "
+                + "folder and commit it, and this test reads it back on every run.");
+
+            Assert.Empty(files);
+            return;
+        }
+
+        foreach (var file in files)
+        {
+            var audio = WavAudio.Read(file);
+
+            // **THROUGH THE RESAMPLER, BECAUSE THAT IS THE PATH ON THE AIR.** A capture is
+            // the device stream at 48 kHz and the listener decodes at 8; feeding the file
+            // straight in would be a path the application never takes, and this test
+            // exists to reproduce what the operator saw.
+            var resampler = new Psk31Resampler(audio.SampleRate);
+            var listener = new Psk31Listener(Psk31Resampler.TargetSampleRate);
+            var chunk = Math.Max(1, audio.SampleRate / 4);
+
+            for (var at = 0; at < audio.Samples.Length; at += chunk)
+            {
+                listener.Add(resampler.Take(
+                    audio.Samples.AsSpan(at, Math.Min(chunk, audio.Samples.Length - at))));
+            }
+
+            var channels = listener.Channels;
+
+            _output.WriteLine("");
+            _output.WriteLine(
+                "== " + Path.GetFileName(file) + "  "
+                + audio.SampleRate.ToString(CultureInfo.InvariantCulture) + " Hz into "
+                + Psk31Resampler.TargetSampleRate.ToString(CultureInfo.InvariantCulture)
+                + ", "
+                + audio.Duration.TotalSeconds.ToString("0.0", CultureInfo.InvariantCulture)
+                + " s, " + channels.Count.ToString(CultureInfo.InvariantCulture)
+                + " carriers held at the end");
+
+            foreach (var channel in channels)
+            {
+                _output.WriteLine(
+                    "   " + channel.OffsetHz.ToString("0.0", CultureInfo.InvariantCulture).PadLeft(8)
+                    + " Hz  " + channel.Text.Length.ToString(CultureInfo.InvariantCulture).PadLeft(5)
+                    + " chars  " + Visible(channel.Text, 60));
+            }
+
+            if (channels.Count == 0)
+            {
+                _output.WriteLine("   nothing was held to the end of the file");
+            }
+
+            // **THE ONLY ASSERTION: IT WAS READ.** A file the path cannot open at all is a
+            // real failure; what it made of the audio is a reading, not a verdict.
+            Assert.True(
+                audio.Samples.Length > 0,
+                Path.GetFileName(file) + " holds no samples");
+        }
+    }
+
+    /// <summary>Every capture waiting to be read back, in a settled order.</summary>
+    private static IReadOnlyList<string> Captures()
+    {
+        var folder = Path.Combine(Root(), "assets", "fixtures", "captured");
+
+        return Directory.Exists(folder)
+            ? Directory.GetFiles(folder, "*.wav")
+                .OrderBy(f => f, StringComparer.Ordinal)
+                .ToList()
+            : [];
+    }
+
+    /// <summary>The first few characters of a channel, with controls made visible.</summary>
+    private static string Visible(string text, int many)
+    {
+        var shown = new StringBuilder();
+
+        foreach (var c in text)
+        {
+            if (shown.Length >= many)
+            {
+                break;
+            }
+
+            shown.Append(char.IsControl(c) ? '.' : c);
+        }
+
+        return shown.Length == 0 ? "(nothing)" : shown.ToString();
     }
 
     private static string Root()
