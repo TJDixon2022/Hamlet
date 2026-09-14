@@ -1,0 +1,48 @@
+{
+ "_about": "Olivia calling frequencies. A community convention, not a band plan - cited from the Olivia mode community page on groups.io as read 2026-09-14. 'center' is the center of the signal; 'dial' is the USB dial for a 1500 Hz audio center. The 8/250 spots are where calls start; QSOs move up and widen (see PHASE_PLAN.md R29).",
+ "source": "https://groups.io/g/Olivia - Olivia calling frequencies page, read 2026-09-14",
+ "rows": [
+  {
+   "band": "80m",
+   "center_hz": 3583000,
+   "variant": "8/250"
+  },
+  {
+   "band": "40m",
+   "center_hz": 7073000,
+   "variant": "8/250"
+  },
+  {
+   "band": "30m",
+   "center_hz": 10143000,
+   "variant": "8/250"
+  },
+  {
+   "band": "20m",
+   "center_hz": 14073000,
+   "dial_hz": 14071500,
+   "variant": "8/250"
+  },
+  {
+   "band": "20m",
+   "center_hz": 14107500,
+   "variant": "16/1000 and 32/1000"
+  },
+  {
+   "band": "17m",
+   "center_hz": 18103000,
+   "variant": "8/250"
+  },
+  {
+   "band": "15m",
+   "center_hz": 21073000,
+   "variant": "8/250"
+  },
+  {
+   "band": "10m",
+   "center_hz": 28123000,
+   "variant": "8/250"
+  }
+ ],
+ "convention": "call on 8/250 at the calling center; after contact, move up or down to a clear frequency away from the calling spot and change to a standard configuration such as 16/500 so the conversation goes faster"
+}
