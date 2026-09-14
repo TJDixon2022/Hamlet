@@ -1,289 +1,283 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. At bc4aee85: step 0 done (unit
+A. The phase goal - the screen, done right. At 4cddd4ef: step 0 done (unit
    351), step 1 done (unit 347), step 2 done (unit 348). Step 3 0 of 1,
    blocked on Tim's verdict on docs/unit349-what-tim-looks-at.md, which
-   this unit changed at these lines: :47, :54 and :57 (re-cited to
-   2077432a, same numbers), :71-72 and :118 (13 of 13 corrected to 14 of 14).
-B. Step 3 and its exit criterion: Tim says it passed - not met, and no
-   session can meet it. What this unit cleared under ruling 46's exception:
-   1. what the test window held after its reloads, before the change -
-      count 0, best bet 80 m at 02:08 local (the 2 am table);
-      writers after Realized returns: none
-   2. after the change - the guard held on every run; count 6, best bet
-      none, on every licensed window of step 0's filter (the plain window
-      declares no count: best bet none, count 0, and 1 in one run)
-   3. step 0's filter, three runs - 28 of 28 each; pins 8 of 8 each;
-      diff lines across the three 12, 39 and 27 (run1-run2, run1-run3,
-      run2-run3), none in a window the restore covers
-   4. the unpinned numbers - back to the fixture's window: 1920 block
-      64 -> 55 (FT8) and 76 -> 67 (PSK31), heard just now y 260 -> 251 and
-      286 -> 268, the no-license 1920 panels 441 -> 450, Unit350 True ->
-      False 12 of 12; not back: Unit338's no-license left column 340 and
-      740; the pinned numbers unmoved
-   5. the sheet's "6 stations" (:55, :57) - cited to a fact that draws it
-      at 2077432a
-   6. Unit332TwoWidthsTests 3 of 3, TheGreenZoneTests 15 of 15;
-      carry-forward 111 of 111 (110 of 111 once, red unnamed), 86 of 86
-C. The report last. Section 4 raises 5 items on top of the carried queue,
-   all findings. None shows the sheet wrong. Nothing is left that a unit
-   can do for the sheet before Tim answers (item 5).
+   this unit changed at these lines: :11-13 (the sizes measured), :84-100
+   (the main window at nine sizes), the achievements table after 2.4
+   (:199-209), and section 4 items 28 to 35 (:529-561).
+B. Step 3 and its exit criterion: Tim says it passed at his window size -
+   not met, and no session can meet it. What this unit measured for it:
+   1. sizes realized - 9 of 9 main window, 5 of 5 achievements; anchors
+      reproduce the pinned numbers yes (190/503, 216/477, 228/465)
+   2. the product's opening size, 1100 x 780 - top row 623 px (0.958 of
+      650), panels 0 (0.000 of below), three equal yes, all 0 px tall;
+      R26 misses: the top row by 452.7 px over 0.262, the panels by
+      325 px short of half; 653 px and 0 on PSK31. CQ and Stop are drawn
+      at y 800 to 822 (830 to 852 on PSK31), below the window
+   3. the product's minimum, 900 x 620 - top row 285 px (0.582 of 490),
+      panels 0 (0.000), three equal yes, all 0 px tall; clipped callsigns
+      none (plain window, both rows under a 0 px panel); trimmed text
+      CW main street 50 of 300 px, nothing decoded yet 180 of 190,
+      nothing for you yet 40 of 190, and the green block's band,
+      frequency, mode, license and rule lines 0 px wide; off the window or
+      at zero size: the three panels and their tab at 0 px tall, both
+      idle lines and the clock-offset line off the window; CQ and Stop
+      on the window
+   4. the smallest size where every R26 outcome holds - 1400 x 1040
+   5. the achievements window at 1040 x 720 and 900 x 620 - clipped or
+      wrapped words none at 1040 x 720; 8 at 900 x 620 (6 on the opening
+      page, Countries' band line, Europe's quill sentence); white cards
+      none at either
+   6. carry-forward 111 of 111, 86 of 86; a red named none; step 0's
+      filter 29 of 29 with the pinned numbers unmoved
+C. The report last. Section 4 raises 6 items on top of the carried queue.
+   One miss touches Stop: at the size Hamlet opens at, Stop is drawn below
+   the window (item 1, an ask under ruling 77). A fix is the next
+   arbiter's to weigh against Tim's verdict; this unit changed nothing.
 ```
 
 ```
-UNIT:       353 - complete at task 3 of 3 - 2026-09-14 02:22
-PHASE GOAL: The main window laid out like the approved mockup and the achievements pages as trading cards - built and shown by the tests in steps 0 to 2 - and then Tim, at his own window, saying it passed, which is all that is left.
-UNIT GOAL:  Make the test window draw what its fixture says (6 stations, its sparkline, no best bet) at any hour of the run, without moving the screen, and point the sheet's green block words at a test that draws them.
-ADVANCED:   no - step 3 waits on Tim; the test window draws its fixture's window whatever the hour on every licensed window, and the plain window's count still depends on the run's spot history (section 4 item 1); the sheet re-cited at :47, :54, :57 and corrected at :71-72, :118
-NUMBER:     step 0's filter after the change: 28 of 28, 28 of 28, 28 of 28; unpinned facts reading the fixture's count 0 of 12 -> 12 of 12 (printed licensed count lines)
+UNIT:       354 - complete at task 3 of 3 - 2026-09-14 03:02
+PHASE GOAL: The main window as the approved mockup and every achievements category page as trading cards, both done and shown by tests in steps 0 to 2, and then Tim, looking at his own window, saying it passed, which is the one thing left.
+UNIT GOAL:  Measure, without changing the screen, what the main window and the achievements window draw at the sizes Tim can actually open - Hamlet's 1100 x 780 opening size, its 900 x 620 minimum and common screens - against R26 and step 1's no-clip and no-white-card clauses, and put the numbers and every miss on the sheet he reads.
+ADVANCED:   no - step 3 waits on Tim; R26 misses at: 900x620, 1100x780, 1280x720, 1366x728, 1536x824; the sheet gained the sizes at lines :11-13, :84-100, :199-209 and section 4 items 28 to 35 (:529-561)
+NUMBER:     main window sizes measured 2 of 9 -> 9 of 9, R26 holding at 4 of 9; achievements sizes 5 of 5
 DRIFT:      0
 ```
 
 ## 1. What Claude did
 
-**Complete, at task 3 of 3.** Machine QUIVERFULL, `C:\Source\HamLet`, project Hamlet, branch `main`. The gate
-held: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and
-`MURC.sln` do not. Every appearance claim below is computed from a headless test window, not seen.
+**Complete, at task 3 of 3**, task 3 included. Machine QUIVERFULL, `C:\Source\HamLet`, project Hamlet, branch
+`main`. The gate held: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist,
+`CoreHMI.sln` and `MURC.sln` do not; `.run-unit\allowed.txt:14` reads `Bash(dotnet:*)` and `dotnet test` ran.
+**Every appearance claim in this report is computed on a headless test window, not seen.** No file under `src`
+and no markup changed.
 
-### Task 0 - the trace (`d66a6ace`, `b01e033e`)
+### Task 0 - the gate, the baseline, and whether the sizes can be realized (`fe8c3e57`)
 
-- **Committed** `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` (`WORK_INSTRUCTION: 353 - ...`) and 1.13.39 -> 1.13.40
-  with its comment block (`d66a6ace`).
-- **Carry-forward:** 111 of 111 app, 86 of 86 engine.
-- **Step 0's filter once, before any change**, from 02:04:57 to 02:05:21 local (`testresults\u353-t0-step0.trx`):
-  `TheTopRowTests` 13 of 13, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
-  Every pin line read *pin held True* (59 lines). The hour was 2, so `HfBands.BestBets` (`HfBands.cs:113`,
-  `>= 21 or < 6`) put *80 m* first. Every unpinned best bet line read *80 m (likely, going on the hour)*.
-  The unpinned numbers as printed: 1920 green block 64 on FT8 and 76 on PSK31, *heard just now* y 260 and
-  286, the count y 272 and 295, *0 stations* on all 18 count lines. The no-license 1920 panels with the strip
-  showing were 441 at y 512, `Unit338`'s no-license left column 340 and 740, and `Unit350TraceStepZeroBothWays`
-  True 12 of 12. Its pixel lines differ from unit 352's after run (`u352-t1-final-run1`) by 0 lines and from
-  its before run (`u352-t0-step0`) by 362.
-- **`Unit353TraceTheDeclaredWindowAfterTheReloads`** (`b01e033e`), added to `TheTopRowTests`. It covers both
-  fixtures, FT8 and PSK31, at 1920 and 1400, and reads the model as shown (pass 0) and after each settle
-  pass. It reads through a read-only hook overload added to each `Realized` (decision 1). The mode is chosen
-  after the fixture returns, as the pinned facts choose it, then one more pass of the same shape is run.
-  Telemetry places each `spots_refreshed` in its pass. It asserts nothing and presses nothing. What it printed
-  is the table in section 3.
-- **The writers, read in `src` and changed not at all.** All three are written only in `ReloadSpotsAsync`
-  (`MainWindowViewModel.cs:16969`):
-  - `HeardInTheLastMinute` at `:17026`;
-  - `HeardSparkline` at `:17031`;
-  - `IsBestBet` at `:16857`, in `ApplyBestBet`, called from `:17038`.
-  
-  What starts that reload:
-  - `band_changed`: `SelectBand`, `:8098`. This fixture's 20 m select.
-  - `startup`: `ReconnectOnStartupAsync`, `:11066`, from the window's `Opened` handler (`MainWindow.axaml.cs:56`-`59`,
-    `StartReconnect` at `:246`).
-  - `resume`: `:7717`, on the window's visibility.
-  - `manual`: `:8390`, the refresh command.
-  - `settings`: `:8425`, after the settings dialog.
-  - `timer`: `:11691`, `_spotRefreshTimer`, started by `ApplyFeedTimers` at `:7731`, every 5 minutes
-    (`AppSettings.cs:492`).
-  
-  The one-second age tick (`MainWindowViewModel.cs:59`, `OnAgeTick` `:11693`) writes `Heard`, not the count.
-  The clock tick (`:8147`, ten minutes) queries the clock only. `BandButtonViewModel.IsBestBet` has a public
-  setter (`:18071`), which the pinned facts use.
-- **The answers task 0 asked for, from the numbers:**
-  - **Which pass, and what after the sixth.** Both reloads, `band_changed` and `startup`, each with 0 spots,
-    landed in pass 1 in all four licensed windows. In one later run's 1920 FT8 window `band_changed` was
-    placed in pass 0. The plain window changed in pass 1 too (count null -> 0, best bet [] -> [80 m]). After
-    pass 6 every window held count 0, a sparkline summing 0 and best bet *80 m*.
-  - **Can anything write after `Realized` returns?** No. The trace's own pass read *(unchanged)* in 8 of 8
-    windows. The reload's other triggers are a band select, the settings dialog, the refresh command and
-    visibility, and no step 0 fact starts one after `Realized`. The timer is five minutes. A test would see a
-    late writer as a change between `returned` and the trace's own pass, or as the guard's values moving.
-  - **Which change, and why on the test window only.** Ruling 67's restore. The reload drawing the hour's best
-    bet and the real count is the product doing its job for the operator. What was wrong was a fixture that
-    declares a window and then measured a different one.
-
-### Task 1 - the declared window set again (`2077432a`)
-
-- **The change**, in the tests only:
-  - `TheTopRowTests.Realized`: after its six passes, the count (6), the sparkline and no best bet are set again
-    (`NotifyGreenZoneForTests`), the same six passes are run once more, then three `Assert.True` guards run.
-    Each names the property and what it held.
-  - `TheWorkingPanelsTests.Realized`: no best bet set again, the same six passes, one guard. Its count is left
-    as the reload gives it.
-  - Nothing under `src`, no source switch, callsign, grid, license or dial, and neither pinned fact's body
-    changed. The *WHAT THAT MOVES* paragraph (`TheTopRowTests.cs`, `FixtureSettings`' remarks) now carries
-    this unit's measured numbers.
-- **The guard watched red once** (ruling 19). The restore set the count to 5 on the test window only, and the
-  trace fact alone was run (`u353-t1-red.trx`):
-  `the test window's HeardInTheLastMinute held 5 after the restore, where the fixture declares 6`. Then it was
-  put back.
-- **The trace with the change** prints passes 7 to 12 after the restore, with a line saying so. Run 1:
-  - every licensed window's pass 12 and its own pass read count 6, the sparkline summing 6
-    `[1 0 0 1 0 1 0 0 0 1 1 1]`, best bet none;
-  - every plain window read count 0, best bet none;
-  - 16 *CHANGED* marks: passes 1 and 7 of each of 8 windows. Nothing changed after the return.
-- **Step 0's filter three times** (`u353-t1-run1` to `-run3`, 02:11:10, 02:12:07, 02:13:15): 28 of 28 each.
+- **Committed** `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` (`WORK_INSTRUCTION: 354 - the window sizes Tim can
+  actually open, measured before he looks`) and 1.13.40 -> 1.13.41 with its comment block. `PHASE_STATUS.md`
+  went in whole, with the launcher's uncommitted `HEARTBEAT: 2026-09-14 02:39:43`.
+- **Carry-forward, one invocation each with ruling 78's loggers:** app **111 of 111** (02:41:28 to 02:42:00,
+  `testresults\u354-carry-app.trx`); engine **86 of 86** (02:42:15 to 02:42:30, `u354-carry-engine.trx`). No red.
+- **Step 0's filter once, before any change** (02:43:01 to 02:43:29, `u354-t0-step0.trx`): 28 of 28 -
   `TheTopRowTests` 14 of 14, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
-  59 pin lines read *pin held True* in each, so pins 8 of 8 and the 40 m fact 4 of 4. The guard held on every
-  `Realized` call in every run. **The printed pixel lines were not identical:**
-  - run 1 against run 2: 12 lines;
-  - run 1 against run 3: 39;
-  - run 2 against run 3: 27.
-  
-  None is in a window the restore covers (section 4 item 1). The numbers against unit 352's runs are the table
-  in section 3.
-- **`Unit332TwoWidthsTests` 3 of 3 and `TheGreenZoneTests` 15 of 15** in one filter (`u353-t1-readers.trx`), 0 pixel
-  diff lines against unit 352's `u352-t1-greenblock.trx`.
-- **Carry-forward:** app 110 of 111 at 02:16:36, with no trx, then 111 of 111 at 02:17:21 with one
-  (`u353-t1-carry-app.trx`), decision 3. Engine 86 of 86.
+  59 lines read *pin held True* and none *False*. Pinned numbers as printed: 1920 top row 190, panels 503 on
+  FT8 and PSK31; 1400 FT8 216, panels 477; 1400 PSK31 228, panels 465; the 40 m fact the same 4 of 4.
+- **What sizes, clamps or maximizes each window, read and not changed:**
+  - `MainWindow.axaml:12`-`13`: `Width="1100" Height="780"`, `MinWidth="900" MinHeight="620"`.
+  - `App.axaml.cs:93`-`96`: a saved size over 400 x 300 is applied; saved at `:137`-`138` only while the window
+    is `Normal`. **Also:** `:99`-`104` restores the saved position and on `Opened` calls `ClampToVisibleScreen`
+    (`:112`-`128`), which moves the window to the primary screen's working area when it is on no screen and
+    **changes no size**; `:106`-`109` reopens it `WindowState.Maximized` when it was closed maximized.
+  - `MainWindow.axaml.cs:253`-`263` reads `WindowState` only to tell the model whether the window is visible.
+  - `AchievementsWindow.axaml:9`-`10`: `Width="1040" Height="720"`, `WindowStartupLocation="CenterOwner"`; **no
+    minimum**.
+  - No `SizeToContent` on either window (`BadgeWindow.axaml:7` has one; it is another window).
+- **Whether a headless window takes a height below 1040.** Answered by task 1's trace, which added no
+  assertion: every one of the 41 main windows and 5 achievements windows reported `Bounds` equal to the size
+  asked, 900 x 620 included. No size had to be substituted.
+- **The elements task 1 reads, by name:** every visible `TextBlock` under `TopRow` (the neighborhood card with
+  `GreenZoneBlock` and `GreenZoneGrayLine`, and the rig panel with `RigDriveAndPower`), `ModeTabs`,
+  `DigitalSendReserved` (`DigitalSendCqButton`, `DigitalStopButton`), `DigitalModeStrip`, `DigitalHeaderStrip`,
+  `DigitalTuneStrip`, `DigitalWaterfallPanel`, `DigitalDecodedPanel`, `DigitalMinePanel` and `StatusBar`
+  (`StatusBarText`); and every named control drawn whole at 1920 x 1040.
 
-### Task 2 - the sheet (`66fd6111`)
+### Task 1 - the main window at every size (`00454639`)
 
-Only ruling 69's lines were changed:
-- **`:47`**, the 1920 FT8 green block cell: *55 with no best bet; 64 with one drawn*, re-cited to `2077432a`.
-  Both numbers were printed in this unit's runs: 55 by `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`,
-  64 by `Unit350TraceStepZeroBothWays`' drawn window.
-- **`:54` and `:57`**, the text sizes and the 1400 wrap, re-cited to `2077432a` with the words unchanged. Run 1
-  printed 20 (*20 m*), 13, 13, 11, 11, 11 (*heard just now*), 15 (*6 stations*) and 10 (*last minute*). At
-  1400 the license line took 3 lines and the rule of thumb 2. *heard just now* sat at y 268 over *6 stations*
-  at 277.
-- **`:71`-`72` and `:118`**, the source notes: `TheTopRowTests` *13 of 13 at `386690a2`* became *14 of 14 at
-  `2077432a`*, printed in `u353-t1-run1` to `-run3`.
-- **Left alone:**
-  - `:20`-`21`: *17 m as the best bet* is `TheCategoryPagesAreTradingCardsTests`' achievements fixture,
-    `new BandBet("17 m", "best bet now")` (`:161`). Step 1's classes are not run in this unit.
-  - `:438`-`439`: no number in it moved.
-  - section 5: no red stays.
+- **The height overload** (ruling 74): `TheTopRowTests.Realized(width, height, telemetry, afterEachPass)` and
+  `TheWorkingPanelsTests.Realized(width, height, afterEachPass)`, both `internal`. Every older signature
+  delegates with `WindowHeight` (1040, unchanged). The sources (ruling 61) and the restore and guards (ruling 67)
+  are the same code. No pinned fact's body changed. **Step 0's filter with the overload alone** (02:46:45 to
+  02:47:11, `u354-t1-overload.trx`): 28 of 28, 59 pin lines held, every pinned number the same as task 0's.
+- **`Unit354TraceTheMainWindowAtTheSizesTimCanOpen`** (in `TheTopRowTests`, run by exact name, 1 of 1, 02:50:59 to
+  02:51:16, `u354-t1-trace.trx`). The first build was refused, CS0136 for a duplicate local `band`, and fixed. It
+  reads the licensed fixture at all nine sizes on FT8 and PSK31, with the best bet pinned absent and pinned on
+  20 m, and the plain fixture at 900 x 620 and 1100 x 780. That makes 38 windows, plus the plain 1920 reference.
+  It asserts nothing and presses nothing.
+- **The anchors, quoted:**
+  - `ROW licensed FT8 best bet absent 1400.0 x 1040.0 | top row 216.0 (0.237) | panels 477.0 (0.524) | equal True | rig-card 0.0 | ... | misses none`
+  - `ROW licensed PSK31 best bet absent 1400.0 x 1040.0 | top row 228.0 (0.251) | panels 465.0 (0.511) | equal True | rig-card 0.0 | ... | misses none`
+  - `ROW licensed FT8 best bet absent 1920.0 x 1040.0 | top row 190.0 (0.209) | panels 503.0 (0.553) | equal True | rig-card 0.0 | ... | misses none`
+  - The same numbers with the best bet on 20 m, and 190/503 on PSK31.
+- **Step 0's filter once more** (02:53:35 to 02:54:05, `u354-t1-step0.trx`): **29 of 29**, 59 pin lines held,
+  pinned numbers unmoved.
+- **At which sizes each R26 outcome holds** (licensed; PSK31 in brackets where it differs):
 
-### Task 3 - the two windows still on POTA (`bc4aee85`)
+  | Outcome | Holds at | Misses, and by how much |
+  |---|---|---|
+  | Top row: within 10% of 190 at 1920; elsewhere at most 0.262 of below the pills (the trace's reading) | 1400x1040, 1920x1040, 1920x1017, 2560x1400 | 900x620 by 156.6 px (168.6); 1100x780 by 452.7 (482.7); 1280x720 by 115.4 (136.4); 1366x728 by 85.3 (97.3); 1536x824 by 14.2 (26.2) |
+  | The three panels at least half of below, strip hidden | the same four | 900x620 by 245 px (panels 0); 1100x780 by 325 (0); 1280x720 by 192 (213); 1366x728 by 160 (172); 1536x824 by 66 (78) |
+  | Rig panel within 2 px of the card | all nine, 0 px apart | none |
+  | The three panels one top and one bottom, to the status bar | all nine; at 900x620 and 1100x780 only because all three are 0 px tall | none as asserted |
+  | The band the largest text in the card | all nine, as measured; at 900x620 the band is laid out 0 px wide | none as measured |
+  | The clock 246 px wide with one dot | all nine | none |
+  | No callsign clipped; the card's facts beside or under by the rule | plain window at 900x620 and 1100x780: none clipped, facts under as the rule says (169 px inside against 336; 269 against 499). Both decoded rows sit below a 0 px panel | licensed window: not measurable, it draws no row or card |
 
-- **`EmptyTab`'s printed numbers differed across task 1's three runs.** At 1920 with the list empty, Stop was at
-  y 373, 373 and 367, and both filter chips moved up 11 px with it. So its network sources were switched off by
-  `TheTopRowTests.NetworkSources`, with a remark.
-- **Step 0's filter once more** (`u353-t3-run.trx`, 02:21:12): 28 of 28, 59 pin lines held, `EmptyTab`'s Stop
-  back at y 373. Its pixel lines differ by 0 from run 2, by 12 from run 1 and by 27 from run 3.
-- **`BindingHealthTests` was not changed** (section 4 item 3).
+  **The smallest size at which every outcome holds: 1400 x 1040.**
+
+### Task 2 - the sheet (`b902a297`)
+
+Only ruling 76's lines: `:11`-`13`, the sentence brought to the sizes measured and still asking for Tim's size; the
+table at `:84`-`100` after 2.1's source note, cited to `00454639`; and section 4 items 28 to 34 (decision 5).
+
+### Task 3 - the achievements window (`87a13c80`, `4cddd4ef`)
+
+- **`Unit354TraceTheAchievementsWindowAtTheSizesTimCanOpen`** (in `TheCategoryPagesAreTradingCardsTests`, by exact
+  name, 1 of 1, 02:57:52 to 02:58:03, `u354-t3-trace.trx`). The fixture is the step 1 fact's: twelve contacts,
+  four callers, best bet 17 m. It covers the opening page, Countries, Modes and Europe at 900 x 620, 1040 x 720,
+  1280 x 720, 1400 x 720 and 1920 x 720, through `Unit346Fit` and `Unit346Filled`. It executes only the open and
+  back commands.
+- **The anchors print what step 1's fact printed** in `testresults\u349\u349-steps12-after.trx`: Countries 64 runs fit,
+  9 cards, 0 white; Modes 34 and 5; Europe 30 and 4, at 1400 and 1920. Neither of step 1's classes was run.
+- **The table and item 35 on the sheet** (`4cddd4ef`), after 2.4 rather than in section 3 (decision 4).
 
 ### Checked against the tree (§2)
 
 - **Held:**
-  - `HEAD` and `origin/main` were `8fa20cb1`, and `output.md` was unit 352's.
-  - 1.13.39 at `Directory.Build.props:825`; `DECISIONS.md` topped at HM-DEC-163 (`:7`), with no later commit
-    and no verdict from Tim.
-  - `allowed.txt:14` read `Bash(dotnet:*)`.
-  - `PHASE_OUTCOME.md` and `PHASE_STATUS.md` read steps 0 to 2 `done` and step 3 `blocked`, and `PHASE_STATUS.md`
-    read `WORK_INSTRUCTION: 352`.
-  - `tools\arbiter.bak-20260913\` and `SESSION.lock` were untracked.
-  - `TheTopRowTests.Realized` at `:2067`-`2099` (count `:2081`-`2083`, settle `:2092`-`2096`), `FixtureSettings` at
-    `:2130`-`2144`, and *WHAT THAT MOVES* at `:2124`-`2128`.
-  - `TheWorkingPanelsTests.Realized` at `:718` (sources `:725`-`728`) and `EmptyTab` at `:484`-`486`.
-  - `BindingHealthTests.cs:108`.
-- **`Unit332TwoWidthsTests` builds its own window** (`:308`-`333`) and calls no shared `Realized` (section 4 item 3).
-- **Mismatches** are in section 4 item 4.
+  - `HEAD` and `origin/main` were `0d69123a`, and `output.md` was unit 353's.
+  - 1.13.40 at `Directory.Build.props:834`. `DECISIONS.md` tops at HM-DEC-163 (`:7`). No commit after `0d69123a`
+    and no verdict or window size from Tim.
+  - `PHASE_OUTCOME.md:4`-`7` and `PHASE_STATUS.md:7`-`10` read steps 0, 1 and 2 `done` and step 3 `blocked`.
+    `PHASE_STATUS.md:5` read `WORK_INSTRUCTION: 353`. `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and
+    `.run-unit\` were modified and uncommitted.
+  - `.run-unit\reload.txt:9` and `:34` name `CPS-DEC-0163` in `CLAUDE.md` §1; `grep -n "CPS-DEC" CLAUDE.md` finds
+    nothing. Parked.
+  - `tools\arbiter.bak-20260913\` and `SESSION.lock` untracked. Nothing was staged except by name.
+  - The sizes at `MainWindow.axaml:12`-`13`, `App.axaml.cs:93`-`96` and `AchievementsWindow.axaml:9`.
+  - `TheTopRowTests.WindowHeight = 1040` at `:48` and `Realized`'s window at `:2227`.
+  - `TheWorkingPanelsTests.Realized`'s window at `:778`.
+  - `TheAchievementsPageClicksInTests.cs:630` and `TheCategoryPagesAreTradingCardsTests.cs:533` set the width only.
+- **Mismatches** are in section 4 item 6.
 
 ### Decisions made for this unit
 
-1. **A read-only hook in both fixtures, in task 0.** Ruling 66 asks what the model holds at each of `Realized`'s
-   six passes, and nothing outside `Realized` can see a pass. So each `Realized` gained an `internal` overload
-   taking `Action<int, Window>?`, called as shown and after each pass. The public signatures are unchanged and
-   null is passed everywhere else. Overrule with *"trace from outside the fixture"*; the passes are then not
-   visible.
-2. **The restore shipped though ruling 68's identical lines did not hold.** Ruling 67's condition, *ship the
-   restore only if the guard held on every run*, held. The lines that differ are in the plain window's count,
-   `EmptyTab` and one 1400 plain panel, none of which the restore sets, and every restored and pinned number
-   was identical in all three runs. Overrule with *"commit the trace only until three runs are identical"*.
-3. **The carry-forward app invocation was run a second time**, with a trx logger, to name a red. HM-DEC-155
-   allows one invocation. It read 111 of 111 and the red stays unnamed. Overrule with *"report the red and do
-   not re-run"*.
-4. **The trace chooses PSK31 after `Realized` returns**, as the pinned facts do, so a PSK31 window's six passes
-   are FT8's. The reloads do not depend on the mode.
-5. **`PHASE_STATUS.md` was committed whole in `d66a6ace`**, as task 0 asks. The launcher's uncommitted `HEARTBEAT`
-   and step 3 `in progress -> blocked` went in with the `WORK_INSTRUCTION` line.
-6. **The *WHAT THAT MOVES* paragraph was corrected after the three runs.** It is a comment, so the runs measured
-   the same code.
+1. **1920 x 1040 is read first in each case**, not in ruling 73's order, because the named controls drawn
+   there are what every other size is compared against. Overrule with *"read the sizes in the listed order"*.
+2. **The top row at widths other than 1920 is read against 0.262 of below**, the limit step 0 applies at 1400,
+   2560 included. R26 names 190 px only at 1920. Overrule with *"read the top row against"* your limit.
+3. **Overflow is named with whether the box it runs past clips.** Many of the trace's lines at 900 x 620 and
+   1100 x 780 are headers of 0 px panels running past a 0 px grid. The sheet names only text that is
+   trimmed, clipped by its own slot or broken mid-word, and controls off the window or at zero size.
+4. **The achievements table sits after 2.4, not in section 3.** Ruling 76 says section 3, but the sheet's
+   section 3 is *Decided for you* and its achievements pages are 2.3 to 2.12. Overrule with *"move it to
+   section 3"*.
+5. **The sheet's section 4 items are numbered 28 to 35 after item 27**, not inserted among the main-window
+   items 1 to 11, so no existing item is renumbered and no other line changes.
+6. **The achievements trace also counts cards below the window's bottom edge.** That is not the step 1 fact's
+   measure. The category pages sit in a `ScrollViewer` (`AchievementsWindow.axaml:369`), so on the sheet they
+   are *inside the scroller*, not a miss.
+7. **The carry-forward list was not run again at the end.** The overloads are called only from
+   `TheTopRowTests.cs` and `TheWorkingPanelsTests.cs` (`grep -rl`), and `BindingHealthTests`, the one class
+   on both lists, ran 1 of 1 in the final step 0 filter. *Unchanged* at the end is by reading, not by a run.
 
 ### Commits
 
-All pushed to `origin/main`; every push succeeded.
+Every push succeeded, to `origin/main`.
 
 | Commit | What |
 |---|---|
-| `d66a6ace` | chore(unit353): the instruction, `PHASE_STATUS.md`, 1.13.40 |
-| `b01e033e` | test(app): task 0 - the trace and the read-only hooks |
-| `2077432a` | test(app): task 1 - the restore and guards, the corrected remark |
-| `66fd6111` | docs(unit353): task 2 - the sheet at `:47`, `:54`, `:57`, `:71`-`72`, `:118` |
-| `bc4aee85` | test(app): task 3 - `EmptyTab`'s network sources off |
+| `fe8c3e57` | chore(unit354): the instruction, `PHASE_STATUS.md`, 1.13.41 |
+| `00454639` | test(app): task 1 - the height overloads and the main window trace |
+| `b902a297` | docs(unit354): task 2 - the sheet at `:11`-`13`, `:84`-`100`, items 28 to 34 |
+| `87a13c80` | test(app): task 3 - the achievements window trace |
+| `4cddd4ef` | docs(unit354): task 3 - the achievements table and item 35 |
 
 The report and `PROJECT_STATUS.md` follow in their own commit.
 
 ## 2. What the owner should expect
 
-**Nothing on the screen moved.** No file under `src` and no markup changed. The sheet changed at `:47`, `:54`
-and `:57` (the same numbers, cited to this unit's commit) and at `:71`-`72` and `:118` (`TheTopRowTests` is now
-14 facts).
+**Nothing on the screen moved.** No file under `src` and no markup changed. The sheet changed at `:11`-`13`, at
+`:84`-`100` (a new table under 2.1), at `:199`-`209` (a new table after 2.4) and at section 4 items 28 to 35
+(`:529`-`561`).
 
-- **What the test window now draws, whatever time the tests run.** The main window test sets up an operator on
-  20 m hearing 6 stations, with no best bet. The live spot check the app runs when it opens used to wipe that
-  out: the window showed 0 stations and whatever the clock's table said, *80 m* at night and *20 m* by day. The
-  test now puts the 6 stations, the sparkline and *no best bet* back after that check, and stops with a message
-  if anything else is there. So the green block's words and sizes on the sheet are measured on the window the
-  sheet describes, at any hour.
-- **What will look wrong but is not:**
-  - **The window without a license class still says *0 stations*** in some test output, and once *1 station*.
-    That window never declared a count, so it shows what the spot check found in the test run's own history.
-    No sheet line cites it.
-  - **The three runs' printouts were not identical to the pixel.** Every difference is in a window the sheet
-    does not cite, and the one that reached the network is now switched off.
+**What the main window looks like when Hamlet first opens, at 1100 x 780, measured on the test host:** the top
+row takes almost the whole window. The neighborhood card is squeezed to 508 px wide, and its green block's
+words stack down it: the license line on 17 lines and the rule of thumb on 17, both broken mid-word. That
+makes the top row 623 px tall, 653 on PSK31. The waterfall, decoded text and For You get **no height at
+all**. The tabs, CQ and **Stop are laid out below the bottom edge of the window.**
+
+**At its smallest, 900 x 620:** the top row is 285 px and the three panels again get no height. The green
+block's left column gets no width, so the band, frequency, mode, license line and rule of thumb are not
+drawn. CQ and Stop are on the window.
+
+**Which sizes fall short of the mockup's promise:** every listed size under 1040 tall - 900 x 620, 1100 x 780,
+1280 x 720, 1366 x 728 and 1536 x 824. 1400 x 1040, 1920 x 1040, a maximized 1080p screen (1920 x 1017) and a
+maximized 1440p screen (2560 x 1400) keep it. **The achievements window** is clean at its own 1040 x 720 and
+wider; at 900 x 620, 8 labels are cut.
+
+**What will look wrong but is not:**
+- **After the first run Hamlet reopens at the size it was closed at** (`App.axaml.cs:93`-`96`), so a window Tim
+  has already sized will not show the 1100 x 780 numbers.
+- **The host draws text about half again wider than the screen** (the sheet's `:17`-`19`). The wraps may be
+  fewer on the glass. That is an inference; the card's 246 px clock and the 546 px rig panel are fixed widths
+  either way.
+- **Category pages with cards below the edge scroll.** That is not a miss.
 
 ## 3. What you should see
 
-**Yes: every step 0 fact on a licensed test window now measures the window its fixture declares, whatever the
-hour: 6 stations, its sparkline, no best bet unless a fact pins one.** The guard held on every run, and the
-trace's pass 12 read *count 6, sparkline summing 6, best bet none* on all four licensed windows. The plain
-window reads *no best bet*, and its count is whatever the run's history gives (0, 0, 1).
+**No.** At the size Hamlet opens at, 1100 x 780, the working panels get 0 px of the 650 below the band pills
+(half would be 325), and Stop is drawn below the window. At the smallest size it allows, 900 x 620, they get 0
+of 490, and the green block's band, frequency and license lines are not drawn. No callsign clips there, only
+because no row is on screen.
 
-**The trace** (`b01e033e` at 02:08 before the change; `u353-t1-run1` after). Every reload carried 0 spots.
+**Every size, licensed, FT8, with PSK31 in brackets where it differs.** The numbers are the same with the best
+bet absent and on 20 m.
 
-| Fixture | Width, mode | Reloads landed (before / after) | Held after pass 6, before | Held after pass 12 and the trace's own pass, after |
-|---|---|---|---|---|
-| `TheTopRowTests.Realized(width, telemetry)` | 1920 FT8 | `band_changed` +762 ms, `startup` +763, pass 1 / +40 pass 0, +41 pass 1 | count 0, sparkline 0, best bet 80 m | count 6, sparkline 6, none |
-| same | 1920 PSK31 | +63, +63, pass 1 / +12, +12, pass 1 | count 0, sparkline 0, 80 m | count 6, sparkline 6, none |
-| same | 1400 FT8 | +82, +84, pass 1 / +105, +105, pass 1 | count 0, sparkline 0, 80 m | count 6, sparkline 6, none |
-| same | 1400 PSK31 | +68, +68, pass 1 / +12, +12, pass 1 | count 0, sparkline 0, 80 m | count 6, sparkline 6, none |
-| `TheWorkingPanelsTests.Realized` (no telemetry) | 1920 and 1400, FT8 and PSK31 | a change in pass 1: count null -> 0, best bet [] -> [80 m] (both) | count 0, sparkline 0, 80 m | count 0, sparkline 0, none |
+| Size | Top row (share of below) | Panels (share) | Three equal, to the status bar | Rig against card | Facts beside or under | Clipped callsigns | Trimmed text (FT8) |
+|---|---|---|---|---|---|---|---|
+| 900 x 620 | 285 (0.582) [297, 0.606] | 0 (0.000) | yes, all 0 px | 0 px | under, as the rule says (plain) | none (plain; rows under a 0 px panel) | *CW main street* 50/300, *nothing decoded yet* 180/190, *nothing for you yet* 40/190; band, frequency, mode, license and rule lines 0 px wide |
+| 1100 x 780 | 623 (0.958) [653, 1.005] | 0 (0.000) | yes, all 0 px | 0 px | under, as the rule says (plain) | none (plain; rows under a 0 px panel) | license 17 lines, rule 17, mode line 8, breaking words; *14.074 MHz* 40/100; *CW main street* 250/300 |
+| 1280 x 720 | 270 (0.458) [291, 0.493] | 103 (0.175) [82, 0.139] | yes | 0 px | not measured | not measured | *nothing decoded yet* 180/190; the green block's lines wrap between words |
+| 1366 x 728 | 242 (0.405) [254, 0.425] | 139 (0.232) [127, 0.212] | yes | 0 px | not measured | not measured | *not listening yet* 20/170 |
+| 1536 x 824 | 196 (0.282) [208, 0.300] | 281 (0.405) [269, 0.388] | yes | 0 px | not measured | not measured | *not listening yet* 110/170 |
+| 1400 x 1040 | 216 (0.237) [228, 0.251] | 477 (0.524) [465, 0.511] | yes | 0 px | under (step 0's test) | none (step 0's test) | *not listening yet* 40/170 |
+| 1920 x 1040 | 190 (0.209) | 503 (0.553) | yes | 0 px | beside (plain reference, 678 against 568) | none (plain reference) | *nothing decoded yet* 180/190 |
+| 1920 x 1017 | 190 (0.214) | 480 (0.541) | yes | 0 px | not measured | not measured | the same |
+| 2560 x 1400 | 190 (0.150) | 863 (0.680) | yes | 0 px | not measured | not measured | the same |
 
-As shown (pass 0), every licensed window held count 6 and no best bet, and every plain window count null. In
-all 16 traced windows, before and after, the trace's own pass read *(unchanged)*.
+*nothing decoded yet* is trimmed to 180 of 190 px at every licensed size.
 
-**The writers:** `MainWindowViewModel.cs:17026` (count), `:17031` (sparkline), `:16857` via `:17038`
-(`IsBestBet`), all in `ReloadSpotsAsync` (`:16969`). The triggers are `:8098`, `:11066`, `:7717`, `:8390`,
-`:8425` and `:11691`, with the last on a five-minute timer. None writes after `Realized` returns.
+**The anchors against the pinned numbers:** 1920 190/503, 1400 FT8 216/477 and 1400 PSK31 228/465, the same in
+the trace and in step 0's facts.
 
-**Step 0's runs, every unpinned number named against unit 352's runs.** Unit 352's before run is
-`u352-t0-step0`, before `386690a2`; its after run is `u352-t1-final-run1`.
-
-| Printed | u352 before | u352 after | this unit before (`u353-t0-step0`) | this unit runs 1-3 |
-|---|---|---|---|---|
-| 1920 green block, FT8 / PSK31, no pin | 55 / 67 | 64 / 76 | 64 / 76 | **55 / 67** |
-| *heard just now* y, 1920 / 1400 | 251 / 268 | 260 / 286 | 260 / 286 | **251 / 268** |
-| count y, 1920 / 1400 | 263 / 277 | 272 / 295 | 272 / 295 | **263 / 277** |
-| count words on the licensed windows | 6 stations | 0 stations | 0 stations (18 lines) | **6 stations, 12 of 12 lines** |
-| unpinned best bet | none | 80 m | 80 m | **none** (10 lines `pills []`) |
-| no-license 1920 panels, strip showing (`TheThreePanelsShareOneTopAndOneBottom`) | 450 at y 503 | 441 at y 512 | 441 at y 512 | **450 at y 503** |
-| `Unit338` no-license left column, 1400 / 1920 | 480 / 1000 | 340 / 740 | 340 / 740 | 340 / 740, **not back** |
-| `Unit350` *before pinning the hour's best bet was visible* | False | True | True, 12 of 12 | **False, 12 of 12** |
-| `Unit341` 1920 drive-row candidate's top row | 207 | 207 | 207 | **190** |
-| `Unit351` hidden best-bet button, as laid out | 0 x 0 | 40 x 9 | 40 x 9 | 40 x 9, visible False |
-
-- **The pinned numbers did not move:** 1920 190 px, panels 503; 1400 FT8 216, panels 477; 1400 PSK31 228,
-  panels 465. No pinned fact's line is in any diff.
-- **The no-license left column did not come back** because that window now draws a count (0) and so shows its
-  right column. Before `386690a2` its reload landed after the window closed and it drew none.
-- **`Unit351`'s hidden button keeps the size the reload's badge laid it out at**, with visible False.
-- **Across this unit's runs:**
-  - run 1 against run 2, 12 lines: `TheThreePanelsShareOneTopAndOneBottom` 1400 PSK31 plain, 410 at y 543
-    against 409 at 544;
-  - run 3 against runs 1 and 2, 27 more: `EmptyTab` 1920, Stop y 373 -> 367 and the chips 11 px, and the plain
-    count *0 stations* -> *1 station* at both widths;
-  - the run after task 3 equals run 2.
+**Each miss, with the elements named:**
+- **1100 x 780.** `DigitalStopButton` 74 x 22 at y 800 (830), `DigitalSendCqButton` at y 800 (830), `ModeTabs` at y
+  796 (826) and `DigitalSendReserved` are below the 780 px edge. `TopRow` runs to y 763 (801) past the status
+  bar's top at y 718. `WorkspaceBoundary`, `DigitalWorkspace`, `DigitalPanes` and the three panels are 0 px tall.
+  `GreenZoneLicenseLine`, `GreenZoneRuleOfThumb` and `GreenZoneModeLine` break words in a 218 px green block, and
+  `GreenZoneFrequency` needs 100 px in 40.
+- **900 x 620.** `GreenZoneRegions`, `GreenZoneLeft`, `GreenZoneBand`, `GreenZoneFrequency`, `GreenZoneModeLine`,
+  `GreenZoneLicenseLine` and `GreenZoneRuleOfThumb` are 0 px wide. `DigitalPanes` and the three panels are 0 px tall.
+  `DigitalDecodedIdleLine`, `DigitalMineIdleLine` and `ClockOffsetLineText` are off the window. Stop is at y 462 (474),
+  on the window.
+- **1280 x 720, 1366 x 728, 1536 x 824.** The top row over 0.262 and the panels under half, by the numbers
+  above. Every named control drawn at 1920 is on the window, except `GreenZoneSparkline` and `ClockOffsetLineText`,
+  which are hidden.
+- **The achievements window at 900 x 620**: *Over 10,000 miles* 170 px in 151, *One more continent* 180 in 151,
+  *One more country* 160 in 151, *Your first state* 160 in 151, *0 worked, from STATE* 200 in 189, the legend
+  sentence 870 in 868, Countries' band line 590 in 468, Europe's *On the CQ list they carry the green quill.* 420 in
+  382. No white card.
 
 ## 4. What's blocking us
+
+**One ask, most blocking first: Stop is drawn below the window at the size Hamlet opens at (item 1 under
+*Raised by unit 354*).** Tim's step 3 verdict stays open.
+
+Unit 353's section 4 comes first, verbatim per HM-DEC-139, from its line under `## 4. What's blocking us` to its
+end, as committed in `0d69123a`. It was kept in place with the file editor, and the marks work instruction 354
+§9 asks for were added:
+- unit 349 item 1, *STILL OPEN*;
+- unit 353 item 2, *TAKEN UP by work instruction 354 ruling 78*, with the result;
+- unit 353 item 3's `Unit332TwoWidthsTests` bullet, *LOGGED, NOT CHASED*;
+- unit 353 item 5, *UPHELD for the reloads*.
+
+This unit's six items follow at the very end, under *Raised by unit 354*. Item 1 is an ask; the rest are
+findings.
+
+### Asks still outstanding - carried from unit 353's section 4, per HM-DEC-139, verbatim
 
 **Nothing new needs a ruling.** Tim's step 3 verdict stays open.
 
@@ -1943,6 +1937,10 @@ clips or wraps. The watched red is built in, and no string changed.
 **1. Ruling wanted, Tim's, step 3: pass or not, at your window size, reading
 `docs\unit349-what-tim-looks-at.md`.**
 
+`STILL OPEN - Tim's; work instruction 354 authors nothing into the verdict and measures the sizes he can
+open` (the sheet gained the sizes at `:11`-`13`, `:84`-`100`, `:199`-`209` and section 4 items 28 to 35,
+`b902a297` and `4cddd4ef`; nothing on the screen moved).
+
 `STILL OPEN - Tim's; work instruction 353 authors nothing into the verdict` (the sheet re-cited at `:47`,
 `:54` and `:57` and corrected at `:71`-`72` and `:118`, `66fd6111`; nothing on the screen moved).
 
@@ -2258,6 +2256,10 @@ restore does not cover.**
 
 **2. The carry-forward list's app invocation read 110 of 111 once, after task 1's change.**
 
+`TAKEN UP by work instruction 354 ruling 78`: one invocation each with a trx logger, app 111 of 111
+(`u354-carry-app.trx`) and engine 86 of 86 (`u354-carry-engine.trx`), so no red came back to name. No class on
+the list builds a window through the overloads this unit added.
+
 *A finding, not an ask.*
 - At 02:16:36 it read *Failed: 1, Passed: 110*. The invocation had no trx logger, so the red has no name.
 - The same invocation at 02:17:21, with a trx, read 111 of 111 (`testresults\u353-t1-carry-app.trx`).
@@ -2277,7 +2279,7 @@ restore does not cover.**
   - it prints no pixel line, so there was nothing of its own to compare across the runs;
   - it passed in every run of its class and on the carry-forward list;
   - unchanged, as ruling 70 says.
-- **Not in ruling 70, found while checking §2: `Unit332TwoWidthsTests` builds its own window**
+- `LOGGED, NOT CHASED - work instruction 354 ruling 78.` **Not in ruling 70, found while checking §2: `Unit332TwoWidthsTests` builds its own window**
   (`Unit332TwoWidthsTests.cs:308`-`333`):
   - it sets the callsign *KC3QIS*, a General license and 6 stations, with the sources at their defaults, so its
     band select reaches POTA and starts RBN under that call;
@@ -2321,6 +2323,8 @@ restore does not cover.**
 
 **5. The arbiter's recommendation, carried with what this unit measured (ruling 71).**
 
+`UPHELD for the reloads by work instruction 354 ruling 72; ruling 46 amended for window sizes.`
+
 *The author's recommendation to the next arbiter, and a note logged for the owner; findings, not asks.*
 - **The recommendation:** if this unit ends with the guard holding, three identical runs and the sheet re-cited,
   no unit remains that ruling 46 licenses.
@@ -2334,3 +2338,85 @@ restore does not cover.**
 - **Logged, not chased:** `ARBITER.md` §3 and §6 give no move for *waiting on the owner's eyes*, so the loop
   authors a unit into step 3 on each call. Units 349 to 352 cost about $10 to $14 each (`RUN_LEDGER.md`, as work
   instruction 353 quotes it; not re-read here).
+
+### Raised by unit 354
+
+**1. Ruling wanted: at 1100 x 780, the size Hamlet opens at, Stop is drawn below the window.**
+
+*An ask, under ruling 77: it touches the abort (`CLAUDE.md` §0.2).*
+- **Measured** (`00454639`, computed on the host, not seen): the window's bottom edge is at y 780.
+  `DigitalStopButton` is 74 x 22 at y 800 on FT8 and 830 on PSK31, and at 798 on the plain window. `DigitalSendCqButton`
+  and `ModeTabs` are beside and above it. It is on the window at 900 x 620 (y 462) and at every other size measured.
+- **Cause as measured:** the neighborhood card's green block is 218 px wide at that width, its lines stack to a
+  623 px top row (653 on PSK31), and the rows under it are pushed off the window. The same geometry gives
+  item 2's zero-height panels.
+- **Who sees it:** a fresh install, or anyone whose saved size is about this size (`App.axaml.cs:93`-`96`).
+- **The question**, for the next arbiter and Tim:
+
+  | Option | For | Against |
+  |---|---|---|
+  | A. Author a unit that keeps Stop, CQ and the panels on the window at 1100 x 780 and 900 x 620, before Tim's verdict | The abort is reachable at the size Hamlet opens at; Tim reviews a window that meets R26's *at no window size* | A `src` change while Tim may be reviewing, which ruling 47 held off |
+  | B. Raise the opening size and minimum to sizes that measure whole | A small change | 1536 x 824 still misses R26 here, and 1400 x 1040 is taller than a maximized 1366 x 768 laptop, so this hides the fault at a size Tim can still drag to |
+  | C. Leave it to Tim's verdict at his own size | No work now | Tim may give the verdict on a window whose abort is off-screen at first launch |
+
+  **The industry-standard answer is A.** A stop control that can be laid out off the window at the product's
+  own default size is a safety defect, not a styling one. Tim rules.
+
+**2. R26 misses at every listed size under 1040 tall.**
+
+*A finding.* The top row over 0.262 of below the pills and the three panels under half, FT8 [PSK31]:
+- **900 x 620:** top row 285 px, 156.6 over [297, 168.6 over]; panels 0, 245 short. The green block's left column is 0 px wide:
+  the band, frequency, mode, license and rule-of-thumb lines are not drawn, which §0.5's *collapsing hides detail, never
+  information* would call information hidden.
+- **1100 x 780:** top row 623, 452.7 over [653, 482.7]; panels 0, 325 short. The plain window: 620, panels 0.
+- **1280 x 720:** 270, 115.4 over [291, 136.4]; panels 103, 192 short [82, 213].
+- **1366 x 728:** 242, 85.3 over [254, 97.3]; panels 139, 160 short [127, 172].
+- **1536 x 824:** 196, 14.2 over [208, 26.2]; panels 281, 66 short [269, 78].
+- Rig within 0 px of the card everywhere. Holds at 1400 x 1040, 1920 x 1040, 1920 x 1017 and 2560 x 1400. On the sheet
+  as items 29 to 33.
+
+**3. Text is trimmed at the anchors too, which no earlier unit recorded.**
+
+*A finding.* *nothing decoded yet* in the Decoded text header is trimmed to 180 of 190 px at every licensed
+size, 1400 and 1920 included. On the plain window *021130 UTC · 2 shown · oldest first* is trimmed to 180 of
+350. *not listening yet* in the waterfall header is trimmed at 1366, 1400 and 1536. All are measured on the host's
+wide text. On the sheet as item 34.
+
+**4. The achievements window clips 8 runs at 900 x 620 and none at 1040 x 720 or wider.**
+
+*A finding.* The runs are named in section 3 and on the sheet as item 35. No card is white at any size. The window
+declares no minimum, so this size is reachable. Its category pages scroll, so cards past the bottom edge are not a
+miss.
+
+**5. What the traces do not measure.**
+
+*A finding.*
+- The licensed window's callsigns and card: it draws no decoded row or card. They are measured only on the plain
+  window at 900 x 620 and 1100 x 780, where both rows sit below a 0 px panel and so read *none clipped*.
+- Whether the band pills stay put, and §0.5's collapsed summaries at small sizes.
+- Whether an outer box clips text that overruns a non-clipping one. For example, the mode strip's status sentence
+  runs past its `StackPanel` at every size, 1920 included.
+- The screen itself: every number is the host's, whose text is about half again wider than the glass.
+
+**6. Mismatches with work instruction 354, and the tool facts.**
+
+*A finding, reported and not repaired.*
+- **§1 and §2: `TheWorkingPanelsTests.cs:510` builds `EmptyTab`'s window**, not `Realized`'s. `Realized` builds its
+  window at `:778`.
+- **Ruling 76 places the achievements table in the sheet's section 3.** The sheet's section 3 is *Decided for
+  you*, so the table went after 2.4 (section 1, decision 4).
+- **§2's launcher files held.** `PHASE_STATUS.md` was committed whole with the launcher's `HEARTBEAT` line.
+- **This unit's own citation.** `b902a297`'s message says the table is at `:84`-`102`; it is at `:84`-`100`, and the
+  message cannot be amended on a pushed commit. This report cites the lines as they are.
+- **The tool facts, against §7.**
+  - Ran: `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test … | grep`;
+    `git add && git commit -m -m && git push && git log | cut`; `grep -o -e`, `grep -n -o -e`, `grep -rl` and
+    `wc -l` on trx and source files.
+  - Asked for approval and not run: a `grep -n -o` with a `\{0,160\}` count.
+  - Refused: a `for` loop over `$c` (*Contains simple_expansion*); `git show 0d69123a:output.md > testresults\…`
+    (*Output redirection … was blocked*), though the path is inside the root.
+  - Not tried: `pwd -W`, `sed`, `awk`, `tasklist`, `sh` on a script.
+  - Status: the first write at 02:40:20 read `STATE: RUNNING` and `BALL: claude`, neither an allowed word, and every
+    later write used `EXECUTING` and `code`. `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. Every write
+    was set back to `HM-DEC-163 (2026-09-12)` with the file editor, except that the 02:41:28 and 02:42:15 writes
+    ran back to back without the edit between them.

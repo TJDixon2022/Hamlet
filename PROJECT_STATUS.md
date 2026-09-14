@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 3 of 3
-WORK_INSTRUCTION: 353 - the test window draws what its fixture declares, whatever the hour
+WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-14T02:28:15-04:00
-NOTE: Unit 353 complete at task 3 of 3 - the licensed test window draws its fixture's 6 stations and no best bet whatever the hour (guard held, step 0 28 of 28 three times, pins held), EmptyTab off the network, sheet re-cited at :47, :54, :57 and corrected at :71-72, :118; step 3 still Tim's
+UPDATED: 2026-09-14T03:06:51-04:00
+NOTE: Unit 354 complete at task 3 of 3 - main window measured at 9 sizes: R26 holds at 1400x1040, 1920x1040, 1920x1017, 2560x1400 and misses at every size under 1040 tall; at 1100x780 panels 0 px and Stop below the window (ask, section 4 item 1); achievements clean at 1040x720 and wider, 8 runs clip at 900x620; sheet gained both tables and items 28 to 35; step 3 still Tim's
 
 ---
 
