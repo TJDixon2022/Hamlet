@@ -1,24 +1,38 @@
-﻿STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
-## Step 1 - Every category page is trading cards
+﻿STEP: 3 | Tim looks at every page at his window size and says it passed.
+## Step 3 - Tim looks
 
-**Delivers:** R22, as `assets/category-page-countries.png`, on all eight kinds.
+**Delivers:** Tim opens every page at his window size and says it passed.
 
-**Entry:** step 0 done; `TheAchievementsPageClicksInTests` green, checked first.
+**Entry:** step 2 done.
 
 **Exit:**
-- A category page has the color band with count, score, level and a bar to the next
-  level. *must-pass*
-- An earned card carries the entity, callsign, grid, a path map cropped to the two
-  stations, distance, band, mode, date and points, from the log entry that earned it.
-  *must-pass*
-- The next card names what it wants and, when anyone on the CQ list would earn it, lists
-  them with distance; otherwise says no one is calling from there now. *must-pass*
-- All eight kinds render this way with their own content per R22; Continents opens to
-  seven badges and each to its countries. *must-pass*
-- No string clips or wraps a word, measured at 1400 and 1920. *must-pass*
-- No card is a white rectangle. *must-pass*
-- `achievement_category_opened` carries the kind and the count of cards. *must-pass*
-- A card's map opens in the popup on click. *nice-to-pass*
+- Tim says it passed. *must-pass* No script can evaluate this.
 
-**Depends on:** step 0.
+**Depends on:** step 2.
 
+## Â§5 Dependencies
+
+Step 0 depends on nothing. Steps 1-3 are one pipeline.
+
+## Â§6 Branching
+
+- **The arbiter stops for three things only**; on everything else it decides, marks,
+  applies, continues.
+- **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins.
+- **A must-pass is missed by a little.** Ship, report, `partial`, move on. Never loosen a
+  test.
+- **A string will not fit.** Shorten and say which, or widen; never clip.
+- **A fact for a card is missing from the log.** Show what is there; no dash; a map with
+  no grid is no map.
+- **Anything touches the radio, a decoder, a parser or the transmit chain.** `MOVE: stop`.
+- **A package is needed.** `MOVE: stop`.
+- **A file must be deleted.** Empty it, comment it, list it.
+- **Status.** `tools/status.sh` reads the clock; never compose a time. The watchdog now
+  polls the process; a session is killed only when its process tree accrues no CPU for
+  ten minutes.
+
+## Â§7 Carried
+
+Every open ask from unit 336's queue, verbatim in every unit. Plus: real flags on
+earned country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the
+radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.

@@ -1,15 +1,15 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-13T18:14:16-04:00  root C:\Source\HamLet
+measured 2026-09-14T02:30:03-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0163.
-  UNCOMMITTED      output.md is modified and uncommitted.
-  PHASE_OUTCOME    header says step 1 is partial; the last entry for it says in progress. The entries win.
-  PHASE_OUTCOME    header says step 0 is in progress; the last entry for it says blocked. The entries win.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-163 (2026-09-12); CLAUDE.md section 1 holds CPS-DEC-0163.
+  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
+  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
+  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,16 +21,18 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : d367f40
-  uncommitted at the root : 1
-      D output.md
+  HEAD   : 0d69123a
+  uncommitted at the root : 3
+      M PHASE_OUTCOME.md
+      M PHASE_STATUS.md
+      M RUN_LEDGER.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
   highest in CLAUDE.md section 1 : CPS-DEC-0163
-  PROJECT_STATUS.md RULES_AT     : HM-DEC-161 (2026-09-11)
+  PROJECT_STATUS.md RULES_AT     : HM-DEC-163 (2026-09-12)
 
 ==============================================================
  THE EIGHT
@@ -223,26 +225,27 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  9 lines, 1171 bytes
+  10 lines, 1215 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  CURRENT_STEP: 0
-  WORK_INSTRUCTION: 337 - the row shows what the ear heard
-  STEP: 0 | in progress | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-  STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
-  STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
+  CURRENT_STEP: 3
+  WORK_INSTRUCTION: 353 - the test window draws what its fixture declares, whatever the hour
+  HEARTBEAT: 2026-09-14 02:30:01
+  STEP: 0 | done | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
+  STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  130 lines, 19110 bytes
+  280 lines, 60154 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  STEP: 0 | in progress | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-  STEP: 1 | partial | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | not started | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
-  STEP: 3 | not started | Tim looks at every page at his window size and says it passed.
+  STEP: 0 | done | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
+  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
+  STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
+  STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
   
   ## UNIT 337 - STEP 0
   
@@ -366,6 +369,156 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   ACCOMPLISHED: a PSK31 station Hamlet can hear is a row with his words on it, as the record already said it should have been
   STATE_AFTER: in progress
   STATE_WHY: no output.md, so there is no report to judge the step against
+  
+  ## UNIT 1 - STEP 1
+  
+  STEP: 1
+  APPROACH: prove step 1 on the drawn category pages at 1400 and 1920 instead of the view model - the band (criterion 1), the next card and its callers per kind (criterion 3), all eight kinds with Continents to seven and each to its countries by click (criterion 4) - fixing only a fact the view model holds and the page does not draw, and re-measuring and reporting unit 342's unreported build
+  HIT: section 4 wants a ruling: yes - The carried asks still open include rulings on what a card asserts, such as the Modes and Hall of Fame next cards naming PSK31 against section 3.1 and the States next card wording, which fall inside the third of the three, though the new permission scope question alone does not.
+  MOVE: work around
+  WHY: Unit 342 built its rulings and ended at 'writing the report', so the state reader judged step 1 against unit 341's step 0 report and found criteria 1, 3 and 4 unproved on the screen (view model or 1040 only, per the test source). Proving on the drawn page is a different approach from fitting the pages to the picture. The loop test found nothing like it for step 1, and it is the method that closed step 0 (unit 339), not a repeat of it.
+  DECIDED: rulings 17 to 20 - criteria 1, 3 and 4 count only on the realized page at 1400 and 1920, not at 1040 and not on the view model; unit 342's build stands and is re-measured, not redone; a watched red for an already-true assertion is a wrong expectation on the test window only, never broken markup; a fact the view model holds and the page does not draw is fixed as step 1 work, never changing scoring, earning or rulings 11-16's words; plus the Hall of Fame and Modes PSK31 next-card collision left to step 2 as drawn, and unit 337's PSK31 findings logged, not chased - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1 (a step's exit is what is on the screen, asserted by computation), 2, 4 (step 1 exit criteria), 6 (the arbiter decides and continues; ship partial on a small miss; never loosen a test) and 7; .run-unit/state-verdict.json (step 1 partial on unit 342: criteria 1, 3, 4); PHASE_OUTCOME.md unit 342 STATE_WHY; PROJECT_STATUS.md at 9214b2a (EXECUTING, writing the report) and git log (no docs(unit342) commit); tests TheCategoryPagesAreTradingCardsTests lines 50, 289, 779, 802, 1029, 1614 and TheAchievementsPageClicksInTests line 281; docs/phase-maintenance-run/PHASE_PLAN.md R22; unit 337 output.md section 4 (e4c160f); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155
+  COST: 5.3819905000000015
+  ACCOMPLISHED: every achievements category page is shown, on the page as drawn at both of Tim's widths, to carry its band, its earned contacts and a next card naming who is calling, for all eight kinds and every continent - and the step has a report of its own saying what unit 342 built and what it measures
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: The run was not allowed to use dotnet at all because commit 230e6c0 replaced the permission list, so no test could be built or run, and criteria 1, 3 and 4 still have no test on the drawn page at 1400 and 1920 that anyone has seen pass, and only a launcher fix will change that, not more work by the unit.
+  
+  ## UNIT 1 - STEP 1
+  
+  STEP: 1
+  APPROACH: re-issue work instruction 343 now that the unit scope permits dotnet - prove step 1 on the drawn category pages at 1400 and 1920 instead of the view model: the band (criterion 1), the earned contact's eight facts on Countries, States and Grids (criterion 2), the next card and its callers per kind (criterion 3), all eight kinds with Continents to seven and each to its countries by click (criterion 4); re-measure and report unit 342's unreported build
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Every item this unit raised says no ruling is wanted, and the carried asks that remain open are about layout, wording, next cards, hovers, numbers, test ownership or decoder tuning, so none falls inside keying, budget or a promise to the operator.
+  MOVE: continue
+  WHY: Unit 343's approach was blocked by its permission scope and never ran a test - evidence about the harness, not the approach - and the tree now carries Bash(dotnet:*) in .run-unit/allowed.txt, which unit 344 used for every build and test, so the same approach resumes and is not a loop. The phase goal is untouched by unit 344's PSK31 detour, and step 1 is where the plan stands.
+  DECIDED: rulings 17 to 20 re-issued unchanged; ruling 21 - criterion 2 counts only where the earned contact's eight facts are asserted drawn at 1400 and 1920 on Countries, States and Grids, not on the map alone (from unit 343 item 2); ruling 22 - the carried asks on the Hall of Fame and Modes PSK31 next cards and the States next-card wording are not a stop (R22 is later than section 3.1 and PHASE_PLAN.md section 6 lets the later ruling win; States wording is already R27), and stay as drawn for step 2; ruling 23 - unit 344's PSK31 findings logged, not chased; the recorded step 1 state read as partial because the blocked verdict's cause is measured cleared - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1, 2, 4 (step 1 exit criteria), 6 (the arbiter decides and continues; later ruling wins; never loosen a test) and 7; ARBITER.md section 8 (a run blocked by the harness is evidence about the harness, not the approach); PHASE_OUTCOME.md unit 343 (UNIT 1 - STEP 1) STATE_WHY and unit 342 STATE_WHY; .run-unit/allowed.txt (Bash(dotnet:*)) and tools/arbiter/run-unit.bat since 1d9943e (allowed.txt read as it is, never rewritten); unit 344 output.md section 1 (dotnet ran, 111 and 87 green) and its carried unit 343 section 4 items 1 and 2; .run-unit/s4-verdict.json; git diff 681d45c..HEAD (step 1's tests and the achievements window unchanged); docs/phase-maintenance-run/PHASE_PLAN.md R22; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 13.254202499999996
+  ACCOMPLISHED: every achievements category page is shown, on the page as drawn at both of Tim's widths, to carry its band, the contact that earned each card with all its facts, and a next card naming who is calling, for all eight kinds and every continent - and step 1 finally has a report of its own saying what unit 342 built and what it measures
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: The report shows named green drawn tests at 1400 and 1920 for most criteria, but its own finding 3 says the Modes next card draws CW with an empty line and no place or callers, which misses R22 content for criterion 4 and the no one is calling line for criterion 3, and the clip and white card test covers only two of the seven continent pages.
+  
+  ## UNIT 2 - STEP 1
+  
+  STEP: 1
+  APPROACH: close the two gaps the state reader named on unit 345 - fill the empty CW row on the Modes next card with the cited CW place Hamlet already derives for band buttons and a who-is-there line per mode that claims only what the CQ list can know, never empty; extend the clip and white card test from two to all seven continent pages and the Modes page with its next card; the map span on every kind as the drop candidate; measured at 1400 and 1920
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - This unit's five items all say no ruling is wanted, and the older carried asks are about card wording, next card lines, layout, test shape, a squelch mechanism and timing numbers, none of which touches transmit, money or a fact about what was logged, heard or sent.
+  MOVE: work around
+  WHY: Unit 345 proved the existing pages on the window and changed nothing, and the state reader still returned partial on two named gaps - an empty Modes row (criteria 3 and 4) and continent coverage of two of seven (criteria 5 and 6). Filling a content gap and widening coverage is a different approach from proving what is already drawn; the loop test found nothing like it.
+  DECIDED: ruling 22 amended - only the PSK31 collision and the States wording stay for step 2; ruling 24 - the empty Modes row is step 1 work under criteria 3 and 4 (overrules unit 345 item 3); ruling 25 - where a mode lives comes only from a cited table, CW from the HM-DEC-110 band-button landing on the bet band or the lowest that has one, via at most one read-only accessor, never a typed frequency and never a change to landing or tuning; ruling 26 - who is there per row says only what the CQ list can know (nearest caller with distance, no one in that mode, the list carries no Morse, or the list cannot tell FT4 from FT8), never empty; ruling 27 - criteria 5 and 6 count over all seven continent pages and the Modes page with its next card; ruling 28 - ruling 11 span on every kind, VK2DEF fixed, the drop candidate and no bar to step 1 - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1, 2, 4 (step 1 exit criteria 3 to 6), 6 (the arbiter decides and continues; later ruling wins; shorten a string and name it; never loosen a test; anything that tunes or transmits stops) and 7; .run-unit/state-verdict.json (step 1 partial on unit 345: the Modes CW row, two of seven continent pages); unit 345 output.md section 4 items 2 and 3; .run-unit/s4-verdict.json (none); docs/phase-maintenance-run/PHASE_PLAN.md R22 (Modes: where the unearned mode lives and who is there; nothing empty); src/Hamlet.App/ViewModels/AchievementCategory.cs ModesFor, LivesAt, CallingIn, NextCard, first_cw_qso and NoMorseOnTheList at 218d6e0; src/Hamlet.RadioEngine/Bands/HfBands.cs Landing (HM-DEC-110); TheCategoryPagesAreTradingCardsTests lines 1441 and 2585; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 9.6476085
+  ACCOMPLISHED: every row of the Modes next card tells the operator where that mode lives on the air and who is there, in words Hamlet can stand behind, and every achievements category page - all seven continents and the Modes page included - is measured at both of Tim's widths with no clipped word and no blank card, so step 1 stands on evidence with nothing left for the state reader to name
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Six of the seven must-pass criteria have named green tests on the drawn page at 1400 and 1920, but criterion 3 asks for callers listed with distance and the Modes next card draws the PSK31 caller EA3XYZ with no distance, which is a gap to close and not a stop the phase waits for.
+  
+  ## UNIT 3 - STEP 1
+  
+  STEP: 1
+  APPROACH: carry the grid the PSK31 reading already holds onto the CQ list in CqSnapshot.From, only where the reading is certain, so a PSK31 caller who sent a grid is drawn with distance on every next card and one who sent none is his callsign alone by section 6; the PSK31 row's no-caller words tied to the list's read time instead of now; every Modes row measured for fit as the drop candidate; asserted drawn at 1400 and 1920
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The unit's own items are findings, and every carried ruling request that is not already answered is about layout, wording, a card's next line, a hover, a label, a number or a decoder mechanism, none of which touches transmit, money, or a fact stated about what was logged, heard or sent.
+  MOVE: work around
+  WHY: Unit 346 closed both gaps it was aimed at and the state reader left step 1 partial on one remaining clause - criterion 3's distance, missing for a PSK31 caller because CqSnapshot.From discards the grid the row's PSK31 reading already holds. Reading that field is a different approach from filling the Modes rows or proving coverage, and the loop test found nothing like it.
+  DECIDED: ruling 29 - a PSK31 call's grid on the CQ list is Reading.Grid where the reading is certain, read in CqSnapshot.From with no change to the parser, splitter or row construction, and it reaches every kind's next card (overrules work instruction 346's no-other-kind limit for this fact; rejects entity-centroid distance and uncertain grids); ruling 30 - criterion 3's with-distance counts as met where the caller's CQ carried a grid the list holds, the callsign alone otherwise by PHASE_PLAN.md section 6, asserted both ways on the drawn Modes page; ruling 31 - the PSK31 row's no-caller words carry the list's read time or say on the CQ list, never an unqualified now (unit 346 item 2, ruling 14's precedent); ruling 32 - every Modes row measured for fit, the drop candidate and no bar to step 1; ruling 28 closed, VK2DEF's span logged for Tim at step 3 (unit 346 item 4) - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1, 2, 4 (step 1 exit criterion 3 and 5), 6 (the arbiter decides and continues; show what is there, no dash; never loosen a test; a parser change stops) and 7; .run-unit/state-verdict.json (step 1 partial on unit 346: the PSK31 caller EA3XYZ drawn with no distance); .run-unit/s4-verdict.json (none); unit 346 output.md section 4 items 1 to 4; docs/phase-maintenance-run/PHASE_PLAN.md R22 (with distance, from the CQ list); docs/phase-psk31-run/PHASE_PLAN.md R1 (an uncertain parse is shown as a guess); src/Hamlet.App/ViewModels/CqSnapshot.cs From and its remark at 0b506ed; src/Hamlet.RadioEngine/Psk31/Psk31ExchangeParser.cs Psk31Exchange.Grid and IsCertain; src/Hamlet.App/ViewModels/DigitalDecodeRow.cs Reading and Payload; AchievementCategory.cs WhoIsThere, CallersFrom and NextCaller's remark; TheCategoryPagesAreTradingCardsTests CallingWithPsk31 at 2950; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 8.573785499999998
+  ACCOMPLISHED: a station calling CQ in PSK31 who sends his grid shows on the achievements next cards with how far away he is, the same as an FT8 caller does, and a station who sends none shows as his callsign without a made-up number; the PSK31 row no longer says no one is calling now when it only means no one was on the list when the window opened - so every step 1 criterion stands on the drawn page at both of Tim's widths with nothing left for the state reader to name
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: All seven must-pass criteria now have named green tests with quoted measurements at 1400 and 1920, criterion 3 is closed by the PSK31 row drawing EA3ABC 4,100 mi from a certain grid and the callsign alone otherwise, and the nice-to-pass popup test also passes.
+  
+  ## UNIT 4 - STEP 2
+  
+  STEP: 2
+  APPROACH: open step 2 on unit 336's leftovers - the States count saying worked and its STATE-field source with no confirm anywhere the achievements window draws at 1400 and 1920; the Modes PSK31 test corrected so PSK31 before a PSK31 contact is only a next card (R22, Ruling C); the shipped points file carrying exactly the keys its comment block documents, rank_names added as an empty list; TheMenuIsUnderTheMouseTests' Views reds run once and named as known reds with why, not edited; the thirteen emptied files listed once; other small reds as the drop candidate
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Unit 348 says no ruling is needed and all six of its own items are findings, and the open carried asks are about layout, wording, next card lines, numbers or mechanisms, so none asks the owner to decide keying, money or a promise.
+  MOVE: continue
+  WHY: The state reader returned step 1 done on unit 347, so step 2's entry is met and the plan moves to it. No unit has run on step 2, and the loop test found nothing like this approach. None of the five items touches keying, money or what the product promises: the PSK31 next cards are Tim's own later rulings, and the Views reds that sit on the send path are named, not edited.
+  DECIDED: ruling 33 - step 2 entry met on the unit 347 verdict, step 0's two classes read once and nothing changed; ruling 34 - criterion 1 covers every run and hover the achievements window draws at 1400 and 1920 and the achievements view-model strings, AchievementScreen.cs:543-546 reworded without the word, radio and lookup uses of confirmed out of reach; ruling 35 - the States count names states worked from the STATE field, with a line counting US records carrying no STATE as task 1's drop candidate, unit 335 item 1 answered keep; ruling 36 - the Modes test corrected under R12 so PSK31 with no PSK31 contact is drawn only on the Modes next card row and Hall of Fame's next first, screen unchanged, unit 336 item 2 and unit 333 item 1 answered; ruling 37 - rank_names added to the shipped points file as an empty list and the comment-block test made two-way at every level; ruling 38 - TheMenuIsUnderTheMouseTests' reds named as known reds with why and never edited, because their scene drives the FT8 send path; ruling 39 - other small reds are task 4, the drop candidate, with the stop and whole-chain tests never run; ruling 40 - the files listed once in section 2 and their carried mentions replaced by one ANSWERED line; ruling 22 closed - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md R27, sections 1, 2, 4 (step 2 entry and exit), 6 (the arbiter decides and continues; later ruling wins; shorten and name; never loosen; transmit chain stops; empty, comment, list) and 7; .run-unit/state-verdict.json (step 1 done on unit 347); .run-unit/s4-verdict.json (none); unit 347 output.md sections 1 and 4 at 066ad04; unit 336 output.md at cbe5000 (reds older than the unit; section 4 items 2 and 3); unit 334 output.md at d7178b7 section 2 (the thirteen files); docs/phase-maintenance-run/PHASE_PLAN.md R22, R23 and Ruling C as unit 333 quoted it; ACHIEVEMENTS_PHILOSOPHY.md sections 3.1, 3.4 and 4; AchievementScreen.cs 543-546; AchievementBadges.cs 353; AchievementCategory.cs 929 and 964; ThePsk31RecordsAppearTests.cs 86 and 152; TheAchievementsPageTests.cs 298-342; data/achievements/achievement-points.json lines 1-50 and 34; TheMenuIsUnderTheMouseTests.cs 278, 465, 489, 519; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 13.8218565
+  ACCOMPLISHED: the achievements pages say worked and never confirmed, and the States count says it counts states from the log's STATE field; the test that contradicted Tim's next-card rulings now agrees with them; the points file Tim edits documents exactly what is in it; the files he has to delete by hand are one list; and every old red is either fixed or named with why - so the screen goes to Tim at step 3 with nothing left over from the last phase
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: All five must-pass criteria are backed by quoted evidence, namely StatesCountWhatTheLogsStateFieldSays passing with 2 worked, from STATE and no confirm drawn at 1400 and 1920, the renamed Modes test passing with a watched red, the fifteen files in one list in section 2, the eight TheMenuIsUnderTheMouseTests reds and TheWindowDrawsEverySixRows named with why, and the two-way points test passing with 24 keys documented and 24 in the file.
+  
+  ## UNIT 5 - STEP 3
+  
+  STEP: 3
+  APPROACH: prepare step 3 for Tim without changing the screen - re-run step 0, 1 and 2's classes once at this tree and trace every achievements page's drawn words and numbers at 1400 and 1920; write one review sheet, docs/unit349-what-tim-looks-at.md, page by page with what R26 and R22 promise and what the tree draws, every arbiter ruling 1 to 40 and every unit choice that changed a word or hid something gathered from git with its overrule words, the known imperfections and known reds; check the sheet claim by claim against its sources; the four-digit no-STATE line measured at 1400 and 1920 as the drop candidate
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open ask is Tim's pass or not on how the step 3 pages look, which is a layout verdict, and the older carried asks are about layout, wording, tests or decoder tuning, so none touches transmit, money or what the product states as logged, heard or sent.
+  MOVE: continue
+  WHY: The state reader returned step 2 done on unit 348, so step 3's entry is met, and its one criterion is Tim's word, which no session can supply and no picture can be made for without a package. What a unit can do is clear what stands between Tim and that word: forty decisions made for him, a dozen known imperfections and the phase's numbers spread over twelve reports. Nothing here is a stop, and the loop test found nothing like it.
+  DECIDED: ruling 41 - step 3 entered on the unit 348 verdict, step 0 read as done as work instructions 342 to 348 read it, the phase's eight classes run once at this tree as a reading and never fixed; ruling 42 - no pictures, the headless backend rasterizes nothing, and Avalonia.Headless.Skia (a package), running Hamlet.App and a drawn mockup are all rejected; ruling 43 - one sheet at docs/unit349-what-tim-looks-at.md in seven sections, every claim sourced to a test run this unit or a report's commit and item, and Tim asked for his window size since the record has none; ruling 44 - every arbiter ruling 1 to 40 and every unit choice that changed a word or hid something, gathered from git, one line each with where it shows, the rejected alternative and the words that overrule it; ruling 45 - the no-STATE line at four digits asserted drawn at 1400 and 1920, shortened and named only if it clips, the drop candidate; ruling 46 - section 4 carries one real ask, Tim's step 3 verdict, and no further unit is authored into step 3 until he answers unless the sheet is shown wrong - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1 (a step's exit is computed, described in words, then Tim's eyes), 2, 4 (step 3 entry and exit; No script can evaluate this), 6 (the arbiter decides and continues; a package stops; shorten and name; never loosen) and 7; docs/phase-maintenance-run/PHASE_PLAN.md R22 and R25; PHASE_PLAN.md R26 and R27; .run-unit/state-verdict.json (step 2 done on unit 348); .run-unit/s4-verdict.json (none); unit 348 output.md at 26e5879 sections 1, 3 and 4 items 3 and 4; unit 346 item 4 and unit 341 items 1, 3 and 5 as carried there; TheMarksRenderTests.cs 154-161 and Unit300SizesTests.WhetherAnythingHereCanActuallyLook (no raster on the headless backend); work instructions 338 to 348 in git (rulings 1 to 40); ARBITER.md sections 6 and 8; CLAUDE.md 0.0, 0.2, 0.5, 0.6, 8; psk31 R12, R13, R14, R16, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 13.679649000000001
+  ACCOMPLISHED: Tim has one sheet to read at his own window that tells him, page by page, what the main window and every achievements page should show and what this tree measures there at both widths, every choice made for him and how to undo it, and every known thing that will look off - with every number checked against its source - so he can give step 3's verdict in one sitting, and the phase's evidence is re-read on the tree he will be looking at
+  FATE: executed
+  STATE_AFTER: in progress
+  STATE_WHY: The review sheet for Tim is ready at 1400 and 1920 with every page, decision and known item checked, but the only exit criterion is Tim saying it passed, which has not happened, and a verdict on how the screen looks is not one of the three things that make a step blocked.
+  
+  ## UNIT 6 - STEP 0
+  
+  STEP: 0
+  APPROACH: put step 0 on the record at this tree criterion by criterion - no screen change - with the 1400 top row and panel share asserted with the best bet pinned both ways on the test window (drawn and absent, FT8 and PSK31, 1920 and 1400) instead of at the hour of the run, and what stands between the three panels and the status bar named in pixels; the sheet's step 0 numbers brought to this tree; the best bet nice-to-pass extended to 1400 as the drop candidate
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only ask still open is Tim's step 3 pass or not on how the screen looks, which is layout and wording and outside the three, and every other item is a finding, a note or already answered.
+  MOVE: work around
+  WHY: Step 3 waits on Tim and ruling 46 holds, but step 0, which steps 1 to 3 rest on, has no done in the record (last entry unit 340 blocked, the unit 341 verdict overwritten), and its criterion 5 has held only at whatever hour the test ran (237 of 238.4 px with the best bet, 228 without). This differs from unit 339's proof: it pins the clock-driven input unit 339 item 2 and unit 341 item 1 named, and names criterion 4's floor. The loop test found nothing like it.
+  DECIDED: ruling 47 - step 3 held for Tim (ruling 46 upheld), no src or markup change so the sheet Tim holds stays the screen; ruling 48 - step 0 gets its own report at this tree, criterion by criterion, numbers only from this unit's runs or cited by commit; ruling 49 - criteria 1 and 5 asserted with IsBestBet pinned drawn and absent on the test window (the :697-700 precedent), FT8 and PSK31, 1920 and 1400, with 0.262, one half and 2 px unchanged, the best bet never pressed, an overwritten pin or a red worst case reported and not fixed; ruling 50 - criterion 4's gap from the panels' floor (y 953) to the status bar (y 978) measured and every visual in it named, asserted only as measured; ruling 51 - the nice-to-pass extended to 1400, the drop candidate; ruling 52 - no new ask unless the numbers raise one, unit 349 item 1 carried as Tim's and open - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1, 4 (step 0 exit in full), 5 (steps 1-3 one pipeline on step 0), 6 (the arbiter decides and continues; a small miss ships partial; never loosen a test; transmit or a package stops) and 7; PHASE_CONTROL.md sections 2 (a step verifies its own ground), 3 (course correction, revisiting a step) and 7 (a step passing on a foundation that failed); ARBITER.md sections 3, 4, 6 and 8; .run-unit/reload.txt disagreements (PHASE_OUTCOME header in progress, last step 0 entry blocked); PHASE_OUTCOME.md unit 340 STATE_WHY and no unit 341 entry; .run-unit/state-verdict.json (step 3 in progress on unit 349); .run-unit/s4-verdict.json (none); unit 349 output.md at 1456ac5c sections 1 (sheet correction 1: y 953 against y 978) and 4 item 1; docs/unit349-what-tim-looks-at.md sections 2.1, 2.2 and 4 items 1-2; unit 341 output.md at 0f383a3 item 1; unit 339 output.md at 991223a item 2; TheTopRowTests.cs 577, 652, 656, 684, 697-700; MainWindowViewModel.cs 16831, 16836, 17037-17038; Directory.Build.props 801; DECISIONS.md (HM-DEC-163 top); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 7.633490500000001
+  ACCOMPLISHED: the main window's promise - a short top row and the working panels given more than half the height - is shown to hold at both of Tim's widths whatever time of day the best bet appears, and the space above the status bar is named; step 0 has a report of its own on the tree Tim is reviewing, so the phase's first step stands in the record and not in a file that was overwritten, and nothing on the screen moved under Tim's review
+  FATE: executed
+  STATE_AFTER: partial
+  STATE_WHY: Five of the six must-pass criteria are backed by measured numbers at this tree, but criterion 5 fails at 1400 on PSK31 when the best bet is on the operator's own band, where the top row is 247 px against a limit of 238.4 and the panels are 446 px against 455, and this is a layout miss rather than a stop.
+  
+  ## UNIT 7 - STEP 0
+  
+  STEP: 0
+  APPROACH: fit the 1400 green block by arrangement so the best bet with its check on the operator's own band no longer widens the Auto right column or grows the block - every word, the check, the best bet's command and the ranking unchanged, nothing hidden - traced line by line and chosen from arrangements measured on the test window, proven by the unedited pinned fact going green plus the 40 m case, the sheet brought to the new screen; U2's overrule number re-measured as the drop candidate
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open ask is Tim's step 3 verdict on how the achievements pages look, which is a layout review outside the three stops, and every other item is a carried finding or an older ask that is already answered or is about layout, wording or numbers.
+  MOVE: work around
+  WHY: Step 0 is partial on one case - 1400 PSK31 with the best bet on his band, 247 of 238.4 px and panels 446 of 455 - and unit 350 held the screen still and left a fix or Tim's verdict to this arbiter; a fix is the only work open in the phase and Tim should not spend his review on a 9 px miss. Unit 338 shortened a string and unit 341 hid an empty row; this changes no word and hides nothing, and the loop test found nothing like it.
+  DECIDED: ruling 53 - the screen moves for this one case and the sheet with it, overruling ruling 47 for this unit, ruling 46 upheld; ruling 54 - the trace names what the check costs line by line and measures candidate arrangements on the test window before one is built, the choice the unit's; ruling 55 - arrangement only: no word, check, command, tooltip, ranking or clock change, nothing hidden, the band the largest text and 1920 at 190, and a miss beyond arrangement ships partial without shortening; ruling 56 - TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays green with its body unedited is the proof, the 40 m case asserted beside it, a pin-message red run once more and reported; ruling 57 - the sheet's section 2.2 rows, bullet and note, a new U11 row and section 4 items 1 and 2 brought to the new screen, nothing else; ruling 58 - no new ask unless the numbers raise one, unit 349 item 1 carried as Tim's - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md R26 (at no window size less than half; at 1400 the unit measures and chooses), sections 1, 4 (step 0 exit criteria 1 and 5), 6 (the arbiter decides and continues; a small miss ships partial; shorten or widen, never clip; never loosen a test; transmit or a package stops) and 7; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 0 partial on unit 350, criterion 5 at 1400 PSK31 with the best bet on his band); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 350 (UNIT 6 - STEP 0) STATE_WHY, unit 338 and unit 341 approaches; unit 350 output.md at c88d3974 sections 1 and 3 and section 4 items 1 to 3 (b49eb3ab, 437cedd8); unit 341 output.md at 0f383a3 item 1 (the right column 140 to 180 px); src/Hamlet.App/Views/MainWindow.axaml 604, 639-640, 658-717, 720-792, 727-746, 737; src/Hamlet.App/Views/MainWindow.axaml.cs 98-147; src/Hamlet.App/ViewModels/GreenZone.cs 51, 296-301; tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 577, 688, 757, 1195; docs/unit349-what-tim-looks-at.md 93-96, 106-107, 116, 414, 434-438; Directory.Build.props 809; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 9.589631500000003
+  ACCOMPLISHED: on PSK31 at Tim's narrower width, when the best bet is the band he is already on, the short top row stays the mockup's share and the waterfall, decoded text and For You keep at least half the window, with every word and the check still on the screen - so the last measured miss in step 0 is closed or narrowed with numbers, and the sheet Tim is reading describes the screen as it now is
+  FATE: executed
+  STATE_AFTER: done
+  STATE_WHY: Every must-pass criterion is backed by measurements or green tests, including 1400 PSK31 at 228 px of 238.4 with panels at 465 of 455 in all three best bet states, and the one red left is a pin failure at 1920 where the layout still measured 190 and 503, not a missed limit.
+  
+  ## UNIT 8 - STEP 3
+  
+  STEP: 3
+  APPROACH: check the sheet Tim holds against the screen unit 351 changed, with no screen change - run the two unrun classes that read the green block (Unit332TwoWidthsTests, TheGreenZoneTests), trace which spot reload overwrites the pinned best bet, and switch the live spot sources off on the test window only so step 0's pinned proof holds on three runs; the sheet corrected only where a number moved or a red shows it wrong; what the test window reaches over the network read as the drop candidate
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open ask is the owner's step 3 pass or not verdict on how the screen looks, which is layout and outside the three, and every other item is a finding, a note or a carried item already answered or taken up.
+  MOVE: continue
+  WHY: Steps 0 to 2 are done and step 3 is Tim's word, so under ruling 46 a unit may only act where the sheet could be wrong - and unit 351 left two such places, a green block reader never run after its markup change and a step 0 proof red on some runs that the sheet's known reds do not list. The loop test found nothing like this approach, and none of it touches keying, money or what the product promises.
+  DECIDED: ruling 59 - ruling 46's exception invoked for two points only, ruling 47 back in force, nothing under src changes; ruling 60 - Unit332TwoWidthsTests and TheGreenZoneTests run before and after, a stale number U11 changed corrected under R12 in that test with no R26 limit loosened, any other red reported and put on the sheet's section 4 without changing the screen; ruling 61 - the pin failure traced over ten 1920 PSK31 cases through telemetry and public members, then fixed in the tests' Realized fixture only by switching the network sources off with SetSourceEnabled, no clock seam, retry or longer settle; ruling 62 - proof is step 0's filter all green three times with pins 8 of 8 and bodies unedited, every moved number named, a pin still failing reported as a finding and step 0 not re-opened; ruling 63 - the sheet changes only where measured wrong, plus one section 5 line on the pin red, no U row; ruling 64 - no new ask unless measured, unit 349 item 1 carried as Tim's, and the recommendation that if this unit ends clean nothing is left that a unit can do before Tim answers - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1, 4 (step 3 exit; step 0 exit criteria 1, 5 and 6), 6 (the arbiter decides and continues; never loosen a test; transmit or a package stops) and 7; R26; ARBITER.md sections 2, 4, 6 and 8; .run-unit/state-verdict.json (step 0 done on unit 351, the one red a pin failure at 1920); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 351 (UNIT 7 - STEP 0) STATE_WHY; unit 351 output.md at cdead300 sections 1 and 2 and section 4 items 1 and 2, unit 350 item 2; ruling 46 (work instruction 349) and ruling 47 (work instruction 350); tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 688, 709, 754, 1651-1715, 1771-1778, 1877-1902; tests/Hamlet.App.Tests/Views/Unit332TwoWidthsTests.cs 50, 65, 112, 151; tests/Hamlet.App.Tests/ViewModels/TheGreenZoneTests.cs 443; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs (shares Realized); src/Hamlet.App/ViewModels/MainWindowViewModel.cs 7602-7638, 16969-16984, 8098, 11066; src/Hamlet.App/Settings/AppSettings.cs 641-663; docs/unit349-what-tim-looks-at.md 71, 93, 106-108, 113-117, 425, 432-496, 498-509; Directory.Build.props 817; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 12.794684999999996
+  ACCOMPLISHED: the sheet Tim reads to give the phase's last verdict is shown to be the screen after unit 351's change - every test that reads the green block has run on it - and step 0's proof reads the same on every run because the test window no longer takes a live spot reload in the middle of a measurement; whatever does not match is on the sheet, so nothing Tim is told is untested
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: The only exit criterion is Tim saying the pages passed at his window size, no session can see the screen or give that verdict, the report shows the sheet ready and the verdict still open, so more unit effort cannot move the step until Tim looks.
+  
+  ## UNIT 9 - STEP 3
+  
+  STEP: 3
+  APPROACH: restore the test window declared heard count, sparkline and cleared best bet after Realized's settle, so step 0's unpinned facts measure the fixture's window whatever the hour of the run, guarded in the fixture - no screen change; trace every writer first; the sheet's '6 stations' words and 1920 green block cell re-cited to a fact that draws them; the two windows still reaching POTA (BindingHealthTests, EmptyTab) read as the drop candidate
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only ruling still open is the owner's visual pass or not on step 3, which is about layout, and the older asks carried along are about layout, wording, numbers or mechanisms or have already been answered, so none asks for a decision on keying, money past the budget or what the product promises.
+  MOVE: continue
+  WHY: Steps 0 to 2 are done and step 3 is Tim's word, so under ruling 46 a unit may act only where the sheet is shown wrong - and unit 352's own item 1 shows it: the sheet's '6 stations' is cited to a fact that now draws 0 and the hour's best bet, and every unpinned step 0 number now depends on the hour of the run. The loop test found nothing like this; it follows unit 352's successful change rather than repeating a failed one, and none of it touches keying, money or what the product promises.
+  DECIDED: ruling 65 - ruling 46's exception invoked for one point in two parts (the sheet's 6 stations cited to a fact drawing 0; unpinned facts depending on the hour), ruling 47 in force, nothing under src; ruling 66 - trace both licensed fixtures at 1400 and 1920 on FT8 and PSK31, pass by pass, and name every writer of the heard count, sparkline and IsBestBet by file and line; ruling 67 - after Realized's six settle passes set the declared count, sparkline and no best bet again, six passes more, a guard that names what failed, TheWorkingPanelsTests.Realized clears the best bet only, no clock seam, retry, wait-until loop or source change, a writer after the restore reported and the restore shipped only if the guard held every run; ruling 68 - step 0's filter green three times with pins 8 of 8, identical printed lines, every unpinned number named against unit 352's before and after runs, pinned numbers unmoved; ruling 69 - the sheet changes only at :47, :54-57, :71-73, :118, :20-21, :438-439 and section 5 where measured wrong; ruling 70 - EmptyTab's sources switched off only if its numbers differed across runs, BindingHealthTests never changed, the drop candidate; ruling 71 - no new ask unless measured, unit 349 item 1 carried as Tim's, the recommendation that if this ends clean no unit remains that ruling 46 licenses, and logged for the owner that ARBITER.md has no move for waiting on the owner's eyes so the loop spends a unit per call - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md sections 1, 4 (step 3 exit; step 0 exit criteria 1, 2, 5 and 6), 6 (the arbiter decides and continues; never loosen a test; transmit or a package stops) and 7; R26; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 3 blocked on unit 352); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 352 (UNIT 8 - STEP 3) STATE_WHY; unit 352 output.md at 8fa20cb1 section 1 task 1 and decisions 3 and 4, section 4 items 1 and 2; ruling 46 (work instruction 349), ruling 47 (work instruction 350), rulings 61 to 64 (work instruction 352); tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 2067-2099, 2081-2083, 2092-2096, 2101-2144; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs 484-486, 718-737; tests/Hamlet.App.Tests/Views/BindingHealthTests.cs 108; docs/unit349-what-tim-looks-at.md 20-21, 47, 54-57, 71-81, 118, 438-439, 499-514; docs/carry-forward-tests.txt; Directory.Build.props 825; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; RUN_LEDGER.md (units 349 to 352 cost); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 10.5068985
+  ACCOMPLISHED: the numbers and words on the sheet Tim reads for the phase's last verdict come from a test window that draws the same thing whatever time the tests run - six stations, its sparkline and no best bet unless a test sets one - so every green block line on the sheet can be reproduced, and nothing on the screen moved under Tim's review
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: The only exit criterion is Tim saying the pages passed at his own window size, the report shows he has not given that verdict, and no unit can meet it for him since no session can see the screen, so it waits on Tim and more work will not help.
 
   --- CLAUDE.md ---
   1387 lines, 197230 bytes
@@ -388,17 +541,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 704 bytes
+  19 lines, 919 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: TASK 3 of 3
-  WORK_INSTRUCTION: 337 - the row shows what the ear heard
+  WORK_INSTRUCTION: 353 - the test window draws what its fixture declares, whatever the hour
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
-  RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-13T16:57:24-04:00
-  NOTE: Unit 337 complete - the PSK31 row shows every emitted character, 483 of 483; report validated and pushed.
+  RULES_AT: HM-DEC-163 (2026-09-12)
+  UPDATED: 2026-09-14T02:28:15-04:00
+  NOTE: Unit 353 complete at task 3 of 3 - the licensed test window draws its fixture's 6 stations and no best bet whatever the hour (guard held, step 0 28 of 28 three times, pins held), EmptyTab off the network, sheet re-cited at :47, :54, :57 and corrected at :71-72, :118; step 3 still Tim's
   
   ---
   

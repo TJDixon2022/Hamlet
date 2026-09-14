@@ -151,3 +151,14 @@ the owner reads instead of watching.
 | phase | 2026-09-13T09:55 | 2026-09-13T09:55 | halted | 0 | the run could not take the session lock |
 | 1 | 2026-09-13T18:20 | 2026-09-13T18:32 | complete | 5.3819905000000015 | ran unattended, 69 turns, 8 denied call(s) worked around, report valid |
 | phase | 2026-09-13T18:33 | 2026-09-13T18:33 | halted | 0 | stop 3: a ruling is wanted on one of the three - judged, not counted |
+| 1 | 2026-09-13T21:01 | 2026-09-13T21:33 | complete | 13.254202499999996 | ran unattended, 165 turns, 16 denied call(s) worked around, report valid |
+| 2 | 2026-09-13T21:41 | 2026-09-13T22:06 | complete | 9.6476085 | ran unattended, 135 turns, 4 denied call(s) worked around, report valid |
+| 3 | 2026-09-13T22:13 | 2026-09-13T22:40 | complete | 8.573785499999998 | ran unattended, 114 turns, 4 denied call(s) worked around, report valid |
+| 4 | 2026-09-13T22:53 | 2026-09-13T23:31 | complete | 13.8218565 | ran unattended, 196 turns, 10 denied call(s) worked around, report valid |
+| 5 | 2026-09-13T23:40 | 2026-09-14T00:11 | complete | 13.679649000000001 | ran unattended, 218 turns, 13 denied call(s) worked around, report valid |
+| 6 | 2026-09-14T00:19 | 2026-09-14T00:39 | complete | 7.633490500000001 | ran unattended, 119 turns, 6 denied call(s) worked around, report valid |
+| 7 | 2026-09-14T00:45 | 2026-09-14T01:12 | complete | 9.589631500000003 | ran unattended, 122 turns, 2 denied call(s) worked around, report valid |
+| 8 | 2026-09-14T01:21 | 2026-09-14T01:52 | complete | 12.794684999999996 | ran unattended, 203 turns, 5 denied call(s) worked around, report valid |
+| 9 | 2026-09-14T02:00 | 2026-09-14T02:28 | complete | 10.5068985 | ran unattended, 186 turns, 8 denied call(s) worked around, report valid |
+| 10 | 2026-09-14T02:39 | 2026-09-14T03:07 | complete | 11.855571999999999 | ran unattended, 136 turns, 3 denied call(s) worked around, report valid |
+| phase | 2026-09-14T03:08 | 2026-09-14T03:08 | halted | 99.5018 | stop 3: a ruling is wanted on one of the three - judged, not counted |

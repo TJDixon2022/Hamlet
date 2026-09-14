@@ -3,7 +3,6 @@ PHASE_SET: 2026-09-12
 DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
 CURRENT_STEP: 3
 WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-HEARTBEAT: 2026-09-14 02:39:43
 STEP: 0 | done | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
 STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
 STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
