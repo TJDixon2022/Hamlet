@@ -48,7 +48,7 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
 | World clock | 246 × 134, one dot, 15 px from the card's right edge | the same |
 | The three panels, readiness strip hidden / showing | 477 px (0.524) / 424 px (0.466) | 503 px (0.553) / 450 px (0.495) |
 | Waterfall · decoded text · For You, wide | 474 · 378 · 475 | 734 · 378 · 735 |
-| Where the panels end | y 953, the working card's floor | y 953 |
+| Where the panels end | y 953, the working card's floor; then 25 px to the status bar's top at y 978: the card's 12 px padding and 1 px border, then the status bar's 12 px margin, and nothing stands in it (`437cedd8`) | y 953, and the same 25 px |
 | The conversation card's facts (no license class) | under the map: 419 px inside, and beside would need 568 | beside the map: 678 px inside, the facts at x 232 |
 
 - **The green block's text, the same at both widths:** *20 m* at 20 px is the largest. Then *14.074
@@ -90,7 +90,7 @@ and the RF power offer, so no empty column stands under it*, and the top row kee
 
 | | 1400 | 1920 |
 |---|---|---|
-| Top row | 228 px (0.251) with no best bet drawn in this run | 190 px (0.209) |
+| Top row | 247 px (0.271) with the best bet drawn on the band you are on, against 238.4; 228 px (0.251) with no best bet; pinned both ways on the test window (`b49eb3ab`) | 190 px (0.209) both ways |
 | Rig panel / neighborhood card | 546 × 228 / 808 × 228 | 546 × 190 / 1328 × 190 |
 | Green block | 518 × 100 | 1038 × 67 |
 | The three panels, strip hidden / showing | 465 px (0.511) / 412 px (0.453) | 503 px (0.553) / 450 px (0.495) |
@@ -431,10 +431,11 @@ report); U5 and U6 are `0b506ed` decisions 1 and 4; U7 is `066ad04` decision 2; 
 One line each, with the report that found it.
 
 **The main window:**
-1. **On PSK31 at 1400 the top row holds by 1.4 px when the best bet draws**: 237 px against 238.4.
-   It was 228 px in this unit's run, with no best bet drawn. *Unit 341 item 1.*
-2. **The best bet follows the real clock**, so the 1400 top row can move by about 9 px with the hour.
-   *Unit 339 item 2.*
+1. **On PSK31 at 1400 the top row is 8.6 px over when the best bet draws on the band you are on**:
+   247 px against 238.4, and the panels 446 px against 455. With no best bet it is 228 px. *Unit 341
+   item 1; measured with the best bet pinned both ways, `b49eb3ab`.*
+2. **The best bet follows the real clock**, so the 1400 top row can move by 19 px with the hour on
+   PSK31 (228 to 247) and 9 px on FT8 (216 to 225). *Unit 339 item 2; `b49eb3ab`.*
 3. **The *RF power 50 % offered* line's ink is 4.61:1**, clearing 4.5:1 by 0.11. It was printed
    again at this tree. *Unit 341 item 5.*
 4. **Where the power popup opens on the screen is not asserted**, only what is in it. *Unit 341 item
