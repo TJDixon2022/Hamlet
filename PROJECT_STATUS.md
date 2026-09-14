@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 5 of 5
+STATE: BLOCKED
+TASK: TASK 0 of 6
 WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T10:58:57-04:00
-NOTE: Unit 357 complete - a right-click makes a card, and a typed line goes out framed on one click.
+UPDATED: 2026-09-14T11:04:25-04:00
+NOTE: Unit 358 stopped before task 0 - install-phase.bat has not run, root PHASE_STATUS.md is still the screen phase, nothing built, fixtures hashed 9 of 9 match
 
 ---
 

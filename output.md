@@ -1,182 +1,181 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. Steps 0 to 2 done, 3 waits on Tim.
-B. No criterion changes state; this unit clears the blocker under R2, overruled.
-C. The report last, and section 4 raises 5 items on top of the carried queue.
+A. The phase goal - Hamlet works Olivia the way it works PSK31. Step 0 not started,
+   1-6 not started. The phase is not installed at the root, so the loop cannot
+   run it yet.
+B. Step 0's criteria 0.1 to 0.6 - none met, none attempted: 0 of 6. The
+   instruction's own section 5 check stopped the unit before task 0.
+C. The report last. Section 4 raises 3 items on top of the carried queue. Item 1
+   bears on A and B directly: install-phase.bat has not run, and every step waits
+   on it.
 ```
 
 ```
-UNIT:       357 - complete at task 5 of 5, none dropped - 2026-09-14 10:57
-PHASE GOAL: The screen, done right, with PSK31's carried work under it.
-UNIT GOAL:  Right-click any station's row and get his card; type a line on it and
-            one click sends it, framed with the callsigns and the hand-back; read
-            a whole message on hover.
-ADVANCED:   blocker
-NUMBER:     things Tim can send on PSK31 4 -> 5 (a typed line); cap 30 s -> 60 s
-            for typed, and still 30 s for every macro
-DRIFT:      carried
+UNIT:       358 - stopped at task 0 of 6, no task started, none dropped - 2026-09-14 11:05
+PHASE GOAL: Olivia becomes a fourth keyboard mode that Hamlet hears, reads, answers and
+            logs the same way it does PSK31, with the variant set by the signal's own
+            RSID and never picked by the operator.
+UNIT GOAL:  Tell every shared surface that Olivia exists - the tab, the calling spot from
+            the cited file, the panel, the Capture button, the data files - with nothing
+            decoding and nothing able to send.
+ADVANCED:   no - section 5's stop fired: PHASE_STATUS.md at the root is still the screen phase
+NUMBER:     fixtures hashed 0 -> 9, and 9 of 9 match the manifest; calling rows read 0 -> 0,
+            because task 1 was not started
+DRIFT:      1 consecutive unit without advance (was 0)
 ```
 
-**Every appearance claim is computed, not seen**, and nothing here is evidence about the
-radio: a fake port and a fake sink on a machine with none (FACT-004, FACT-006).
+**Every appearance claim is computed, not seen.** This unit makes none: nothing in `src`
+was touched.
 
 ## 1. What Claude did
 
-Gate passed on all five. Branch **`main`**, seven commits, pushed, nothing left uncommitted.
-Version **1.13.43 → 1.13.44**.
+**Stopped at task 0 of 6, blocked on the phase install.** Host QUIVERFULL, project Hamlet,
+branch `main`, HEAD `32f67637` when the tree was read.
 
-### Task 0 — the record
+### The gate held
 
-`PHASE_PLAN.md` gains **R29** from Tim's words of 2026-09-14: **typed text goes on the air
-from a station's card, framed by Hamlet.** It withdraws the no-keyboard line of PSK31 plan
-**R2** and nothing else of it: the four macros stand and their words stand. What the ruling
-writes down so a later unit cannot take it back quietly is what did **not** change — one
-click one transmission, one keying sequence, the certainty gate on Report and Confirm, and
-the rule that typed text never enters the record.
-
-### Task 1 — a right-click on any row makes that station's card
-
-Until now a card appeared only where a station had certainly addressed him, or where Hamlet
-had already sent to one. **Neither is true of two people talking to each other**, which is
-exactly what he was reading off 14.070.
-
-`Psk31StationOn` asks only that the parser named somebody and that somebody is not him.
-**`Psk31CqOn` is untouched and still strict**, because what it gates is a transmission:
-answering a callsign that did not read cleanly would put a neighbour's call on the air.
-Opening a card sends nothing, so it asks less. A second click cannot duplicate the card, and
-brings it to the front.
-
-### Task 2 — the text block, and one click sends it framed
-
-Under the turn indicator: a text block and a Send button. One click composes
-
-```
-<HIS> de KC3QIS  <what he typed>  BTU <HIS> de KC3QIS K
-```
-
-and hands it to `SendMessage` — **the same door the four macros go through**: the same
-composer, the same arming, the same `Ft8TransmitSequence` with the one `PttOn` site, the same
-`Stop`. **No second keying path exists to assert about.**
-
-**It is not gated on certainty.** Where the parser is unsure whose turn it is the card says
-so beside the button and the click sends anyway; the block is withheld only where it is
-*certainly* the other station's turn. A whitespace line sends nothing. A character outside
-the varicode is dropped and counted rather than refusing the whole line.
-
-### Task 3 — the cap fits a conversation
-
-**The cap travels on the send rather than being a constant every send shares.**
-`UnslottedTransmission` carries `LongestSeconds`, defaulting to the old thirty. A typed line
-asks for sixty; **every macro is still held to thirty.**
-
-Raising the constant would have been the smaller diff and the worse change: the cap exists
-so a composing fault cannot leave a continuous carrier on the air, and doubling it for every
-unslotted send would have doubled that exposure to buy something only one send needs.
-
-### Task 4 — the whole message
-
-Hover gives the full text, wrapped, with the station and the time; a click opens the same
-thing in a light-dismiss box with an X. Ended rows too.
-
-### Nothing was recorded under §12.1
-
-R29 is Tim's ruling transcribed into `PHASE_PLAN.md`, as task 0 directed. No `DECISIONS.md`
-entry was written.
-
-### Tests
-
-**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155).
-
-| Run | Result |
+| Check | Found |
 | --- | --- |
-| Carry-forward, app, before | **127 of 127** on the third run — see section 4 item 1 |
-| Carry-forward, engine, before | **86 of 86** |
-| `ThePsk31ExchangeTests` extended (task 1) | **7 of 7**, watched failing 2 first |
-| `TheTypedLineGoesOutTests` (new, tasks 2 and 3) | **9 of 9**, watched failing 3 then 3 first |
-| `TheWholeMessageTests` (new, task 4) | **4 of 4** |
-| Final app run, carry-forward plus every name touched | **148 of 148** |
-| Final engine run | **86 of 86** |
+| `SHACK_FACTS.md` must exist | exists |
+| `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` must exist | exists |
+| `CoreHMI.sln` must not exist | absent |
+| `MURC.sln` must not exist | absent |
+| root `C:\Source\HamLet` | the session's working directory and `SESSION.lock`'s `ROOT` |
 
-**213 green before, 234 after, nothing new red.** `TheUnslottedSendTests`,
-`TheFt8AndFt4SendsAreByteIdenticalTests` and `TheStopIsAlwaysOnScreenTests` are green and
-**unedited**.
+### Section 5 stopped it
+
+The instruction's first check: *`PHASE_STATUS.md` line 1 names Hamlet works Olivia the way
+it works PSK31 with seven steps. **If it is the screen phase, stop and say so** -
+`install-phase.bat` did not run.*
+
+- **Root `PHASE_STATUS.md` line 1 reads `PHASE: The screen, done right`**, with
+  `CURRENT_STEP: 3` and `WORK_INSTRUCTION: 354`. Its only uncommitted change is a launcher
+  line, `HEARTBEAT: 2026-09-14 11:03:00`.
+- **`docs\phase-screen-run\` does not exist.** The installer creates it first.
+- **`docs\phase-olivia\` holds the Olivia layer, untracked and not installed**:
+  `PHASE_PLAN.md` (17,175 bytes), `PHASE_STATUS.md` (1,855), `PHASE_OUTCOME.md` (1,781).
+  Its status file is the one the instruction expects: seven steps, `CURRENT_STEP: 0`,
+  `WORK_INSTRUCTION: 358`.
+- **Root `PHASE_PLAN.md` is still the screen plan.** Its R27 is *what the last phase left*,
+  not RSID, and it has no §1 about Olivia.
+
+### What was checked anyway, because it changes nothing
+
+The fixture hashes, as section 5 asks. `sha256sum` against `manifest.json`:
+
+| Fixture | Manifest | Measured |
+| --- | --- | --- |
+| `olivia-8-250-cq-rsid.wav` | `bfdbff07…a18dc` | match |
+| `olivia-16-500-qso-rsid.wav` | `0b2b554e…f5c76` | match |
+| `olivia-32-1000-qso-rsid.wav` | `9cb7f62e…1e59b` | match |
+| `olivia-8-250-qso-norsid.wav` | `d2ad6150…86615` | match |
+| `olivia-16-500-qso-snr-10db.wav` | `1a58f793…6fc28` | match |
+| `olivia-16-500-qso-snr-16db.wav` | `2c26c0d7…c60fa` | match |
+| `olivia-two-signals-rsid.wav` | `fd89d10b…089de` | match |
+| `olivia-noise-only-30s.wav` | `16b16db7…c34a7` | match |
+| `psk31-cq-rsid.wav` | `de6b20fe…e1b6f` | match |
+
+**9 of 9 match**, every one compared across all 64 characters. That is eight Olivia files
+and one PSK31 file. Also present: `assets\data\rsid-codes.json`,
+`assets\data\olivia-calling.json`, `assets\reference\SOURCE.md`,
+`assets\reference\olivia-fixture-generator.cpp` and `assets\reference\jalocha\`.
+
+### Not done, and why
+
+**All six tasks (0 to 5)**, none of them the named drop candidate (tasks 4 and 5).
+Section 5 says to stop, and the tree supports that, not just the wording:
+
+- Task 0 appends `UNIT 358` to `PHASE_OUTCOME.md` under step 0. **The root file is the screen
+  phase's outcome.** An entry written there now would be moved into
+  `docs\phase-screen-run\` when the installer runs, filed under the wrong phase.
+- Tasks 1 to 5 build against a plan that is not at the root. The loop's next arbiter would
+  read the screen plan.
+- Section 5's code trace (the PSK31 seam, the Capture button, `PROJECT_CARD.md`, the named
+  tests) was not run, and neither was the carry-forward list. Both belong to task 0 of an
+  installed phase.
+
+**One decision made here: `install-phase.bat` was not run by this session.** Its own header
+says *RUN THIS YOURSELF, BEFORE THE LOOP. It is not a work unit's job*. It moves three files
+out of the root. The instruction says *report every mismatch; repair nothing*. Copying the
+three files by hand would be the same repair by another route.
+
+**Committed:** `output.md` and `PROJECT_STATUS.md` only. Every other working-tree change was
+left exactly as found. Pushed to `main`.
 
 ## 2. What the owner should expect
 
-**The build is clean** — zero warnings, zero errors.
+**Nothing in Hamlet changed.** No Olivia tab, no data files moved, no version bump, no
+`DECISIONS.md` entry, no `PROJECT_CARD.md` change.
 
-Right-click any station's row in the decoded list and his card opens, whether or not he was
-calling CQ and whether or not his carrier is still up; right-click it again and the card
-comes to the front rather than a second one appearing. On the card, under the line that says
-whose turn it is, there is now a box you can type into and a Send button. One click sends one
-transmission: Hamlet puts his callsign and yours in front of your words and `BTU <HIS> de
-KC3QIS K` behind them, so the two things that are easy to forget on a keyboard mode are never
-yours to remember, and what is in the box is exactly what goes out between them. The box tells
-you how many seconds your line will take as you type it, refuses past sixty with the character
-count so you know how much to cut, and **Stop stops a typed send exactly as it stops a CQ** —
-it is the same keying path, not a new one. Hovering a row now shows the whole of what a
-station said rather than the first few words, and clicking the text opens it in a box you can
-dismiss.
+**What will look wrong and is not:**
 
-**What will look wrong and is not.** The block is missing on a card when Hamlet is certain
-the other station is still sending. Where it is unsure, the block is there with a word saying
-so, and the click still sends: that is deliberate.
+- `PROJECT_STATUS.md` says `WORK_INSTRUCTION: 354`. `tools/status.sh` copies that line from
+  root `PHASE_STATUS.md`, which is still the screen phase's. Once the phase is installed it
+  will read 358.
+- The working tree is still dirty: `WORK_INSTRUCTIONS.md`, the `PHASE_STATUS.md` heartbeat,
+  the `.run-unit\` files, `SESSION.lock` and the untracked Olivia assets and
+  `docs\phase-olivia\`. This unit left them alone on purpose.
 
-**Pushed to `main`.**
+**To get going:** run `install-phase.bat` from `C:\Source\HamLet`, commit, then launch
+unit 358 again unchanged. Its tasks don't depend on anything from this run.
 
 ## 3. What you should see
 
-**One framed line, exactly as it would go out:**
+**No visible change.** The question this unit was sent to answer, whether Olivia exists as
+a mode, is **no: 0 of step 0's 6 criteria**, because the phase it belongs to is not
+installed.
 
-```
-you type   Nice signal here in Trafford, running 40 watts
-
-goes out   EI4GNB de KC3QIS  Nice signal here in Trafford, running 40 watts  BTU EI4GNB de KC3QIS K
-           21.6 s of PSK31
-```
-
-**The cap, both sides of it:**
-
-```
-190 characters   48.7 s on the air                     sent
-260 characters   87.1 s on the air, too long to send   refused, nothing keyed
-
-the card says: Too long to send: 260 characters comes to 87.1 s on the air, and
-the most a typed line may be is 60 s. Nothing was sent. Shorten it and press
-Send again.
-
-a macro's cap is 30 s and a typed line's is 60 s
-```
-
-**The record, with none of his words in it:**
-
-```
-{"macro":"typed","characters":77,"seconds":18.75,"capSeconds":60,"withinCap":true,"offsetHz":1234}
-{"reason":"cap","macro":"typed","stage":"arm"}
-```
-
-The test types *meet me behind the barn at midnight* and then scans every line of the file for
-*midnight*, *barn*, `EI4GNB` and `KC3QIS`. None of them is there.
-
-**A right-click on two strangers talking, which is what he was reading:**
-
-```
-row    : 1234 Hz  CQ CQ CQ DE F4DIA F4DIA F4DIA K / F4DIA DE EI4GNB EI4GNB K
-reading: Answer, speaker EI4GNB
-cards  : 1 card(s) EI4GNB [Unknown]
-```
-
-**And the text block's offer:**
-
-```
-Unknown                can type True
-His turn               can type False
-His turn, a guess      can type True
-Your turn              can type True
-```
+The one thing it did measure holds: **the nine fixtures are byte-identical to the
+manifest**. So step 0's second entry condition (*`manifest.json` hashes match its nine
+files*) is already met, and the first (*`PHASE_STATUS.md` names this phase*) is the only one
+missing.
 
 ## 4. What's blocking us
+
+No criterion changes state. Three items.
+
+**1. Action for Tim, most blocking: run `install-phase.bat`.**
+
+*Not a ruling; only you can do it.* Without it, root `PHASE_STATUS.md`, `PHASE_PLAN.md` and
+`PHASE_OUTCOME.md` stay the screen phase's, and every Olivia unit hits the same stop at
+section 5. The installer checks the gate, archives the screen phase to
+`docs\phase-screen-run\`, confirms the archived outcome's size, then installs the three
+staged files. *Rejected:* the session copying them itself. The installer says this is not a
+work unit's job, and the instruction says to repair nothing.
+
+**2. The installer's closing advice, `git add -A`, would commit things that should not go in.**
+
+*No ruling wanted; a finding.* The tree holds `SESSION.lock`, changed `.run-unit\` files
+(two of them deleted) and the uncommitted `WORK_INSTRUCTIONS.md` alongside the phase files.
+HEAD `32f67637` exists only to untrack a phase seed that an earlier sweeping commit took in.
+Adding the phase files by name avoids a repeat.
+
+**3. Mismatches with work instruction 358, reported and not repaired.**
+
+- **§3** says unit 357's queue is *verbatim in section 4*. The instruction's §4 is *Why this
+  unit exists* and holds no queue. It is carried below from unit 357's `output.md` instead.
+- **§4** says *read `PHASE_PLAN.md` at the root; §1 says what Olivia is, §R27-§R31 are the
+  rulings*. The root plan is the screen plan. The Olivia plan is at
+  `docs\phase-olivia\PHASE_PLAN.md`, a result of item 1.
+- **Task 1's destinations disagree with the staged plan.** The instruction says
+  `data\rsid\rsid-codes.json` and `data\bands\olivia-calling.json`. The plan's R27, R29 and
+  criterion 0.4 say `data/rsid-codes.json` and `data/olivia-calling.json`. The next unit
+  will meet this. It is a path, so under plan §6 the arbiter's to settle.
+- **Status fields.** The prompt and `tools/status.sh` use `TASK`, but `CLAUDE.md` §13.1's
+  table names the field `PHASE`. `tools/status.sh` still writes
+  `RULES_AT: HM-DEC-161 (2026-09-11)`, left as the tool writes it.
+- **§2's tool facts.** Refused: a `for` loop over `$f` (*Contains simple_expansion*), and
+  `sed -i` on `output.md` inside the root (*blocked*). Needed approval and not run:
+  `pwd -W`. Ran: `sh tools/status.sh`, `sha256sum`, `git diff`, `ls`. Python and `rm` were
+  not tried.
+
+### Asks still outstanding - carried from unit 357's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 357's, from its line under `## 4. What's blocking us` to its end,
+as committed at `32f67637`, with only that top-level heading dropped so this report keeps
+four sections. None of its items is answered or re-measured by this unit.
+
 
 No criterion changes state. Five items.
 
