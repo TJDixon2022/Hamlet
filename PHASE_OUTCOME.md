@@ -303,5 +303,7 @@ WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled 
 DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
 LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
 COST: one session, five tasks, each committed on its own.
-ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 1.
+ACCOMPLISHED: Tim can stop a transmission from the status bar at every window size measured, 9 of 9 where it was off the window at the size Hamlet opens at; a PSK31 station's words stay on the list, marked ended, after his carrier goes, and an ended CQ row can still be answered; no test view model can reach callook.info; the sheet he reads says so with this unit's numbers
 FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: Step 3's only exit criterion is Tim's verdict at his window size, which no session can give. The unit completed its five tasks, and it raises one transmit-side ask: task 1 said Stop should be disabled with nothing keyed, and it was built pressable at every instant instead, because the send plan's step 1 says the abort cannot be disabled and a guarding test holds that.

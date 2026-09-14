@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: TASK 5 of 5
-WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-BALL: code
-NEXT_PASTE: none
-RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T09:21:21-04:00
-NOTE: Task 5 - the sheet updated from this session's runs: Stop in the status bar at 9 of 9 sizes with a table, CQ still below the window at 1100x780 (y 800), PSK31 rows stay with 483 characters kept, ruling 5 and item 28 rewritten; checking for stale lines before committing
+WORK_INSTRUCTION: 355 - Stop is always on screen, and what was heard stays
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
+RULES_AT: HM-DEC-163 (2026-09-12)
+UPDATED: 2026-09-14T09:26:47-04:00
+NOTE: Unit 355 complete at task 5 of 5 - Stop in the status bar, on the window at 9 of 9 sizes, pressable at every instant (ask, section 4 item 1); PSK31 rows stay marked ended, 483 characters kept on the fixture; tests off callook.info; the sheet updated; step 3 still Tim's
 
 ---
 
