@@ -413,7 +413,7 @@ About tests, runs or the record. None changes what you see:
 | # | Unit | What was decided | Where you see it | Rejected | To overrule, say |
 |---|---|---|---|---|---|
 | U1 | 338 | The width at which ruling 3's sparkline hides is unit 338's own rule. On the host it is hidden at 1400 and shown at 1920. | Green block | Not recorded | "keep the sparkline at 1400" |
-| U2 | 341 | The green block's empty upgrade row now hides with its only button, 3 px in every mode. | Green block | Shipping PSK31 at 1400 2 px over | "put the upgrade row back". The 1400 PSK31 top row then goes to 240 px (0.264) with the best bet drawn |
+| U2 | 341 | The green block's empty upgrade row now hides with its only button, 3 px in every mode. | Green block | Shipping PSK31 at 1400 2 px over | "put the upgrade row back". The 1400 PSK31 top row then goes to 231 px (0.254) and the panels to 462, with the best bet on your band, on another band or absent (`eca6d60d`) |
 | U3 | 342 | The band line drops the kind's meaning past 60 characters. | Grids and Total Miles bands; States on a state log | Not recorded | "keep the meaning on the band" |
 | U4 | 342 | Which quill the next card names: *a quill* on Countries, *the green quill* on reached continents, *the ringed quill* on unreached ones, none on Grids and States. | Next cards | The picture's *green quill* sentence on every kind (ruling 14) | "the same quill sentence on every next card" or "no quill sentence" |
 | U5 | 346 | The Modes row words *the CQ list cannot tell FT4 from FT8* and its FT8 twin, *the CQ list carries no voice*, and *and n more*. | Modes next card | Not recorded | your words for the row |
