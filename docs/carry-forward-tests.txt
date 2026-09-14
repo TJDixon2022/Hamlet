@@ -4,9 +4,9 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests"
 
-    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests"
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests"
 
 WHY IT IS WRITTEN OUT HERE RATHER THAN LEFT TO THE READER. Unit 323 read this
 file as a list of names and ran one `dotnet test` per name - forty-one builds.
@@ -81,6 +81,8 @@ ThePsk31CarrierLivesTests                               unit 324
 ThePsk31StationIdlesTests                               unit 327
 TheAlcIsReadTests                                       unit 324
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
+ThePsk31SendIsAnnouncedTests                            unit 359
+TheOliviaSeamTests                                      unit 358, listed by 359
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
 
@@ -95,6 +97,8 @@ ThePsk31MessageSplitTests                               unit 316
 ThePsk31ModulatorTests                                  unit 318
 ThePsk31TurnTests                                       unit 319
 ThePsk31OfferTests                                      unit 319
+TheRsidDetectorTests                                    unit 359
+TheRsidBurstTests                                       unit 359
 
 -- known reds, NEVER on the list above ---------------------------------------
 
@@ -167,3 +171,28 @@ yet" is Hamlet's sentence about the row, not a word anybody sent, and it offers
 no box.
 
 App 127 green before and 148 after; engine 86 both ways.
+
+WHAT UNIT 359 ADDED. Four names: TheRsidDetectorTests and TheRsidBurstTests on the
+engine invocation, ThePsk31SendIsAnnouncedTests and TheOliviaSeamTests on the app
+invocation. TheOliviaSeamTests is unit 358's and had never been put on the list.
+
+TheRsidDetectorTests - the RSID detector over the mode author's own fixtures, each hashed
+against the manifest first: one detection with the right code within 5 Hz on each of the
+six single-burst files, two on the two-signal file, none on the no-RSID and noise-only
+files, and criterion 1.7's ratio on the four-signal PSK31 recording. It guards step 2's
+entry, which is the clean 16/500 burst detected.
+
+TheRsidBurstTests - Hamlet's own burst: the file's tones measured from the samples,
+loopback through the detector at three centers, fldigi's shipped bursts matched symbol for
+symbol, and the length to the sample.
+
+ThePsk31SendIsAnnouncedTests - every PSK31 send begins with its BPSK31 burst: loopback
+through the detector, the text's samples identical to what they were before the burst was
+added, the four macros and the typed line, the records, the typed line's estimate, and one
+PttOn write with two Arm( lines.
+
+App 144 green before and 165 after; engine 86 and 105. **THE COST MOVED THIS TIME.** The
+detector reads about 700 s of 8 kHz audio at 0.075 of real time, so TheRsidDetectorTests
+alone took 1.17 minutes filtered (with TheOliviaDataTests), and the app invocation went
+from 20 s to 38 s. Both are far inside the watchdog's twelve minutes, and both are why the
+next name added here should be weighed against its seconds.
