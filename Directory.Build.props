@@ -774,8 +774,15 @@
     measurement taken over all seven continent pages and the Modes page with its next card (the
     arbiter's rulings 24 to 28). Screen only; nothing on the radio side moves.
   -->
+  <!--
+    1.13.33 -> 1.13.34, UNIT 347 TASK 0. A PATCH, STEP 1 AGAIN: a PSK31 caller whose CQ carried a
+    grid is drawn on the next card with his distance, from the grid his PSK31 reading already holds
+    and only where that reading is certain; the PSK31 row's no-caller words say what the list read
+    knows; every Modes row measured for fit (the arbiter's rulings 29 to 32). Screen only; the
+    parser is read and not changed, and nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.33</Version>
+    <Version>1.13.34</Version>
   </PropertyGroup>
 
   <!--
