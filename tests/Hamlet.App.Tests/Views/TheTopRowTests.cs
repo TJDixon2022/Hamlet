@@ -1639,21 +1639,20 @@ public sealed class TheTopRowTests
     [AvaloniaFact]
     public void Unit352TraceTheSpotReloadOnTheTestWindow()
     {
-        var defaults = new AppSettings();
+        // **TASK 1: THE SAME TEN WINDOWS WITH THE CHANGE IN PLACE** - the network sources switched off
+        // in `FixtureSettings`. The ten as built are task 0's, at `4ad20a25`: the pin held 7 of 10, each
+        // miss the `band_changed` reload waiting on POTA. They are not printed again, because building
+        // them again would reach POTA and RBN under the fixture's callsign on every run of this class.
+        const string arrangement = "the network sources switched off (work instruction 352)";
+        var settings = FixtureSettings();
 
-        _output.WriteLine("=== the sources BuildSources makes for this window (MainWindowViewModel.cs:7602-7638)");
+        _output.WriteLine("=== the sources BuildSources makes for this window (MainWindowViewModel.cs:7602-7638); " + arrangement);
 
-        foreach (var name in new[]
-        {
-            Hamlet.RadioEngine.Explore.PotaActivitySource.SourceName,
-            Hamlet.RadioEngine.Explore.SotaActivitySource.SourceName,
-            Hamlet.RadioEngine.Explore.RbnActivitySource.SourceName,
-            Hamlet.RadioEngine.Explore.FakeActivitySource.SourceName,
-        })
+        foreach (var name in NetworkSources.Append(Hamlet.RadioEngine.Explore.FakeActivitySource.SourceName))
         {
             _output.WriteLine(
                 "  " + name.PadRight(7) + (name == Hamlet.RadioEngine.Explore.RbnActivitySource.SourceName ? "built, because the callsign is set" : "built")
-                + "; enabled " + defaults.IsSourceEnabled(name) + " (Realized sets no source switch)");
+                + "; enabled " + settings.IsSourceEnabled(name));
         }
 
         var held = 0;
@@ -1662,11 +1661,11 @@ public sealed class TheTopRowTests
         {
             for (var run = 1; run <= 5; run++)
             {
-                held += TraceTheSpotReload(pinned, run, "as built") ? 1 : 0;
+                held += TraceTheSpotReload(pinned, run, arrangement) ? 1 : 0;
             }
         }
 
-        _output.WriteLine("=== as built: the pin held in " + held + " of 10");
+        _output.WriteLine("=== " + arrangement + ": the pin held in " + held + " of 10");
     }
 
     /// <summary>
@@ -2067,11 +2066,7 @@ public sealed class TheTopRowTests
     /// <param name="telemetry">Where the model records, or null for nowhere.</param>
     public static Window Realized(double width, JsonlTelemetry? telemetry)
     {
-        var settings = new AppSettings { ReconnectOnStartup = false };
-
-        settings.Operator.LicenseClass = LicenseClass.General;
-        settings.Operator.Callsign = "KC3QIS";
-        settings.Operator.GridSquare = HisGrid;
+        var settings = FixtureSettings();
 
         var model = new MainWindowViewModel(settings, telemetry)
         {
@@ -2101,6 +2096,51 @@ public sealed class TheTopRowTests
         }
 
         return window;
+    }
+
+    /// <summary>The spot sources that reach over the network: POTA, SOTA and RBN.</summary>
+    public static readonly string[] NetworkSources =
+    {
+        Hamlet.RadioEngine.Explore.PotaActivitySource.SourceName,
+        Hamlet.RadioEngine.Explore.SotaActivitySource.SourceName,
+        Hamlet.RadioEngine.Explore.RbnActivitySource.SourceName,
+    };
+
+    /// <summary>The licensed operator the test window is built for, with the network spot sources off.</summary>
+    /// <remarks>
+    /// <para>**THE NETWORK SOURCES ARE SWITCHED OFF SINCE WORK INSTRUCTION 352** (the arbiter's ruling
+    /// 61, the unit's own and overrulable). The callsign made the window a real operator: POTA and RBN
+    /// were on by default (`AppSettings.DefaultSourceEnabled`), and the reload `SelectBand` starts
+    /// waited on POTA's reply. `Unit352TraceTheSpotReloadOnTheTestWindow` as built (`4ad20a25`), at 1920
+    /// on PSK31: the pin held in 7 of 10 windows, and each of the 3 misses was that `band_changed`
+    /// reload with 0 spots, landing 86 to 116 ms in, after the pin, with the sources summary turning to
+    /// *POTA, RBN* as it landed and the badge going to 40 m on the hour's table. Each source is switched
+    /// off by its own `SourceName`, through `SetSourceEnabled`, so nothing is fetched and nothing is
+    /// recorded into the run's spot history. With the change the same ten windows took both reloads,
+    /// `band_changed` and `startup`, 16 to 148 ms in (1246 on the first window of one run), inside
+    /// `Realized`'s own settle and before the pin, and the pin held in 10 of 10 in each of four trace
+    /// runs. **The callsign, grid, license and dial are unchanged**, and the
+    /// sample feed stays at its default, off.</para>
+    /// <para>**WHAT THAT MOVES, MEASURED.** Because both reloads now land inside `Realized`, a test that
+    /// does not pin the best bet measures the one the ranking gives - the hour's table, *80 m* or *40 m*
+    /// at the hour of the run - and the count the reload gives, 0 to 2 stations where the fixture set 6.
+    /// At 1920 its green block is 64 px on FT8 and 76 on PSK31 (was 55 and 67), the pinned fact's drawn
+    /// numbers. The pinned facts' numbers did not move.</para>
+    /// </remarks>
+    public static AppSettings FixtureSettings()
+    {
+        var settings = new AppSettings { ReconnectOnStartup = false };
+
+        settings.Operator.LicenseClass = LicenseClass.General;
+        settings.Operator.Callsign = "KC3QIS";
+        settings.Operator.GridSquare = HisGrid;
+
+        foreach (var name in NetworkSources)
+        {
+            settings.SetSourceEnabled(name, false);
+        }
+
+        return settings;
     }
 
     private static string Px(double value)

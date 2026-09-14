@@ -709,12 +709,23 @@ public sealed class TheWorkingPanelsTests
 
     /// <summary>The digital tab, realized, with the longest line on the left and a card on the right.</summary>
     /// <param name="width">How wide the window is.</param>
+    /// <remarks>
+    /// **THE NETWORK SOURCES ARE SWITCHED OFF SINCE WORK INSTRUCTION 352**, by the same list and for the
+    /// same reason as <see cref="TheTopRowTests.FixtureSettings"/>: the callsign made this window a
+    /// real operator too, with POTA and RBN on by default and a spot reload waiting on POTA's reply
+    /// while the test settles. The callsign, grid and rows are unchanged.
+    /// </remarks>
     public static Window Realized(double width)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
         settings.Operator.Callsign = HisCall;
         settings.Operator.GridSquare = "FN00";
+
+        foreach (var name in TheTopRowTests.NetworkSources)
+        {
+            settings.SetSourceEnabled(name, false);
+        }
 
         var model = new MainWindowViewModel(settings, null)
         {
