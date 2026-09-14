@@ -1,7 +1,7 @@
-# Work instruction 355 - Stop is always on screen, and what was heard stays
+# Work instruction 356 - the window opens whole, and the ALC sentence tells the truth
 
-**Seed under `--seed`, then the loop continues to step 3.** Five tasks. Nothing here
-touches a decoder or the transmit chain's behavior; task 1 moves where a control lives.
+**Single session.** Four small things from the last three reports and Tim's screen.
+Nothing touches a decoder or what keys.
 
 **Status.** `tools/status.sh`, real clock, after every commit and every task.
 
@@ -34,9 +34,11 @@ is refused; Python cannot run here; `-m` more than once for a multi-line commit.
 
 ## 3. Asks still outstanding
 
-Carried per HM-DEC-139 from unit 354's queue, **verbatim in section 4**. Answered here:
-**354's item 1** - the Stop control below the window - **ruled A by Tim, 2026-09-14**,
-task 1. **354's finding on callook.info** - task 4.
+Carried per HM-DEC-139 from unit 355's queue, **verbatim in section 4**. Answered here:
+**355 item 1** - Stop always pressable - **ruled A by Tim, 2026-09-14**: *"A, the way it
+has been"*; nothing to build, task 0 records it. **355 item 3** and **354 item 2** - CQ
+and the tabs below the window at 1100×780 - task 1. **355 item 2** - idle HTTP clients
+under test - task 3.
 
 ---
 
@@ -44,52 +46,63 @@ task 1. **354's finding on callook.info** - task 4.
 
 ```
 PHASE GOAL: The screen, done right.
-UNIT GOAL:  The transmit abort is on screen at every window size; a PSK31
-            station's words stay on the list after he stops; the tests stop
-            depending on the network; the sheet Tim reads matches the tree.
-ADVANCES:   Step 3's ground - the sheet - and step 0's safety at small sizes.
+UNIT GOAL:  Hamlet opens with every control on the window; the ALC sentence
+            after a send says what it measured and never sends Tim to a meter;
+            no test constructs a network client.
+ADVANCES:   none - clears a blocker: unit 354 item 2 and unit 355 item 3, CQ
+            and the mode tabs below the window at the size Hamlet opens at.
 DRIFT:      carried.
 ```
 
-**Tim, 2026-09-14, ruling A on the Stop control:** *"Stop lives in the status bar,
-always"* - the bar at the bottom of the window that never scrolls or collapses; visible
-at every size; enabled only while something is keyed. Unit 354 measured the main window
-at nine sizes and found Stop below the window at 1100×780.
+**The window.** Hamlet opens at 1100×780. At that size, after unit 355, Stop is on the
+status bar but **CQ and the mode tabs are at y 800-830 - below the window's bottom
+edge** (355 item 3, traced). A new operator opens the app and cannot see the button that
+calls CQ. Unit 354 measured the layout as holding only at 1040 tall and above.
 
-**Tim, 2026-09-14, on PSK31 rows:** *"I've seen a few PSK31 phrases. In the past, they
-disappear. There's no record of them."* True: a PSK31 row belongs to its carrier and is
-retired with it, text and all (unit 324's retire rule). An FT8 message stays until
-cleared. **A PSK31 row's text stays too.**
+**The ALC sentence.** Tim's screen, 2026-09-14, after an FT8 send to HA1BF:
 
-**Unit 354's finding:** the plain test fixture's view model asks callook.info for
-KC3QIS's license class at construction, and the answer changes what the layout tests
-measure - General lands or not depending on the network. Tests that depend on a web
-lookup are not tests.
+> *Your radio's own level control read 62 out of 120 while that went out. Hamlet has
+> not yet seen an FT8 or FT4 transmission on this radio to compare it with, so it is not
+> judging it for you: look at the ALC bar on the radio, and if it goes past the marked
+> zone, turn the transmit drive above down one step and send again.*
+
+Two faults in one sentence. **It was an FT8 transmission** - the sentence is about it -
+so under R15 the 62 it just read *is* the reference, and the sentence is computed before
+the reference is stored. And **it tells Tim to read a meter and turn a knob**, which R11
+forbids outright: *the operator sets nothing at the radio*. The whole message is four
+lines where one fact belongs. Tim: *"this message is incorrect."*
+
+**The tests.** 355 found `MainWindowViewModel.BuildSources` constructs the POTA and SOTA
+spot sources with their own `HttpClient` at construction, on or off. The fixtures switch
+them off so nothing is sent, but *no client is created under test* was the criterion
+and it does not hold.
 
 ---
 
 ## 5. Verify this instruction against the tree
 
-- The Stop control: where it lives on the PSK31 and FT8 panels, what enables it, the
-  path from it to `StopNow` - **that path is not changed, only the control's parent.**
-- The status bar at the bottom of the window: the tray mark, the count badge, its
-  height, what else is on it.
-- The PSK31 row: its lifecycle, the retire rule (`SignalGone`, `ListeningStopped`), what
-  removes it from the list, how FT8 rows persist and are cleared.
-- The view model's constructor and the callook.info lookup; the license-class field and
-  what reads it; the test fixture that constructs the view model.
-- `docs/` for the sheet unit 350 wrote (name it); `TheStopIsOnScreenTests` if 354 wrote
-  one; `TheRowShowsWhatWasHeardTests`; `ThePsk31StationIdlesTests`; the nine-size layout
-  test from 354.
+- The send area: CQ, the mode tabs, the drive note, where they sit in the layout and
+  what gives the top row and panels their heights at 1100×780 (unit 354's nine-size
+  fixture, `Realized` height overload).
+- The ALC path: `15 13` read during a send (unit 324), the reference learned from FT8
+  (unit 325, R15), where the reference is stored and when, and where the post-send
+  sentence is composed - the text above is the current one.
+- `MainWindowViewModel.BuildSources` `:7869`, `:7873`; `PotaActivitySource`,
+  `SotaActivitySource`; the seam unit 355 added for the license lookup.
+- `docs/` for the sheet Tim reads (unit 349's, updated by 355).
+- Tests: `TheStopIsAlwaysOnScreenTests`, 354's nine-size test, `TheAlcLearnsFromFt8Tests`,
+  `TheTestsStayOffTheNetworkTests`, `VoiceTests`, `BindingHealthTests`.
 
 **Report every mismatch; repair nothing but this unit's.**
 
 ## 6. Rulings in force
 
-**Screen phase R26 and its rulings; §6 three stops only.** **PSK31 plan §0.2** one click,
-one transmission - **the abort is the other half of that rule and is never off screen.**
-**R9**, **R12**, **R13**, **R14**, **R19**. **§0.0** the sheet says what the tree draws.
-**HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**.
+**Screen phase R26; §6 three stops only.** **PSK31 plan R11** - the operator sets nothing
+at the radio, reads no meter; **R15** - the ALC reference is learned from FT8 sends, the
+highest reading observed; a PSK31 send above it by the margin gets a sentence; **with no
+reference, report and judge nothing**. **Tim, 2026-09-14** - Stop always pressable, A.
+**§0.0** a sentence on the screen is a claim. **R12**, **R14**, **R19**. **HM-DEC-155**,
+**HM-DEC-139**, **FACT-004**, **FACT-006**.
 
 ## 7. Status cadence
 
@@ -99,92 +112,86 @@ As the header says.
 
 ## 8. The tasks
 
-### Task 1 - Stop lives in the status bar
+### Task 0 - the record
 
-Append `UNIT 355` to `PHASE_OUTCOME.md` under step 3; patch-bump; run the carry-forward
-list. Then: the Stop control moves to the status bar, right of center, the height of the
-bar, **enabled only while a send is keyed and disabled otherwise**, its command the same
-`StopNow` path as today - **the path is not touched, proved by the tests that guard it.**
-It is present at every window size 354 measured, including 1100×780. The old Stop on the
-panels goes.
-
-**Test watched failing first:** `TheStopIsAlwaysOnScreenTests`, app: at each of 354's
-nine sizes the Stop control is inside the window; it is disabled with nothing keyed and
-enabled during a fed send; pressing it reaches `StopNow` exactly as before;
-`TheUnslottedSendTests` and `TheFt8AndFt4SendsAreByteIdenticalTests` green and unedited;
-`BindingHealthTests`.
+Append `UNIT 356` to `PHASE_OUTCOME.md` under step 3, `ADVANCED: no`. Patch-bump. Add
+one line to `PHASE_PLAN.md`'s §R block, as Tim's ruling of 2026-09-14: **Stop is always
+pressable and never grey.** Run the carry-forward list.
 
 **Drop candidate:** none.
 
-### Task 2 - a PSK31 station's words stay
+### Task 1 - Hamlet opens with every control on the window
 
-When a carrier is retired, **its row stays in the decoded list** with everything it
-showed, marked *ended* in a word and in the row's state, dimmed to the worked-fade
-opacity, in time order with the FT8 messages, until `clear` or the list's own cap
-removes it - the same rule FT8 rows live by. A carrier that reappears at the same offset
-within the retire window is the same row, resumed, not a new one.
+At 1100×780 - and at every size 354 measured - **CQ, the mode tabs and the send area are
+inside the window.** The rule R26 states holds where it can; where the window is too
+short for the top row's 190 px plus the panels plus the send area, **the panels give up
+height first, then the top row, and the send area is never the thing that leaves.** If
+the window is shorter than the sum of the minimums, the working panels scroll inside
+themselves and the send area stays put. State the minimums.
 
-**Telemetry:** `psk31_row_ended` (offset, characters, lines, lifetime) when the row is
-kept after retire; `psk31_row_cleared` when the list drops it.
+**Test watched failing first:** extend 354's nine-size test: at every size, CQ, the mode
+tabs, Stop and the drive note are inside the window; the send area's height is
+constant across sizes; `BindingHealthTests`.
 
-**Test watched failing first:** `ThePsk31RowStaysTests`, app: the four-signal fixture
-leaves four ended rows on the list with their text after every carrier is gone; `clear`
-removes them; a station returning at his offset within the window resumes his row; the
-list's cap applies to ended rows as to FT8 rows; `TheRowShowsWhatWasHeardTests` and
-`ThePsk31StationIdlesTests` green.
+**Drop candidate:** none.
 
-**Drop candidate:** the resume-at-the-same-offset case.
+### Task 2 - the ALC sentence
 
-### Task 3 - an ended row is still a station
+The post-send sentence is composed **after** the reference is updated, and reads, on
+the send that sets or raises the reference:
 
-An ended PSK31 row keeps its quill, its country and its fade, and **if he was calling CQ,
-clicking his row still sends the Answer on his offset** - he may be listening. The card
-opens at *his turn* as it does for a live row.
+> *Your radio's level control read 62 of 120 during this send. That is Hamlet's
+> reference from now on; a PSK31 send that reads well above it will get a sentence here.
+> Nothing for you to do.*
 
-**Test watched failing first:** extend `ThePsk31ExchangeTests` by one: clicking an ended
-CQ row sends one Answer at his offset and opens his card.
+On a later send within the reference: *Level 58 of 120, inside the reference. Nothing for
+you to do.* On a PSK31 send above the reference by the margin: R11's sentence - what
+happened and the one thing to do, **at the drive control on the screen, never at the
+radio**. **No sentence anywhere tells the operator to look at a meter or touch the
+radio.** One line each; `VoiceTests` runs.
+
+**Test watched failing first:** `TheAlcSentenceTests`, app: the first FT8 send at 62 sets
+the reference and the sentence names it and says nothing to do; a later send inside it
+gets the inside sentence; a PSK31 send above it gets the drive sentence; the words
+*ALC bar*, *marked zone*, *on the radio* appear in no operator-facing string; `TheAlcLearnsFromFt8Tests`
+green.
+
+**Drop candidate:** none.
+
+### Task 3 - no client under test
+
+`PotaActivitySource` and `SotaActivitySource` take their `HttpClient` through the same
+seam the license lookup uses (unit 355), created on first fetch and never in a
+constructor. Under test, the seam supplies nothing and no client exists.
+
+**Test watched failing first:** extend `TheTestsStayOffTheNetworkTests`: no `HttpClient`
+is constructed anywhere when the plain fixture builds the view model; the spot sources
+still fetch in the app when switched on.
 
 **Drop candidate:** the whole task.
 
-### Task 4 - the tests stay off the network
+### Task 4 - the sheet
 
-The view model's constructor takes its license lookup through a seam - an interface with
-the live callook.info client behind it in the app and a fixed answer in tests. The test
-fixture supplies *General* for KC3QIS explicitly. **No test in the tree makes a network
-call**; assert it by running the plain fixture with the network denied.
+Update Tim's sheet for tasks 1 and 2: the opening size now shows every control; the ALC
+sentence's three forms, word for word.
 
-**Test watched failing first:** `TheTestsStayOffTheNetworkTests`: the fixture constructs
-with the seam's fixed answer; the layout tests 354 wrote measure the same numbers on two
-consecutive runs; no HTTP client is created under test.
-
-**Drop candidate:** the two-run stability assertion.
-
-### Task 5 - the sheet matches the tree
-
-Unit 350's sheet - the one Tim reads at his window for step 3 - is updated for tasks 1
-and 2: where Stop is and when it is enabled; that PSK31 rows stay; the nine sizes with
-Stop present at each. Every number on it comes from a test that ran this session.
-
-**Test watched failing first:** none new; the sheet's own check, if 353 gave it one.
-
-**Drop candidate:** the whole task; say so and Tim reads the old sheet with this report.
+**Drop candidate:** the whole task.
 
 ---
 
 ## 9. Parked
 
-- **The demodulator on real air.** The unit after a capture exists in
-  `assets\fixtures\captured\`. Nothing else in it.
-- **Anything touching a decoder's behavior or the transmit chain's. Any package.**
+- **The demodulator on real air** - the unit after a capture exists in
+  `assets\fixtures\captured\`.
+- **Anything touching a decoder or the transmit chain's behavior. Any package.**
 
 ## 10. What not to do
 
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.**
-- **Do not change what `StopNow` does.** Move the control; keep the path.
-- **Do not drop a PSK31 row's text when its carrier ends.**
-- **Do not let a test reach the network.**
-- **Do not touch the demodulator. No package. Report mismatches; repair nothing but this
-  unit's. Write American.**
+- **Do not let the send area leave the window at any size.**
+- **Do not write a sentence that sends the operator to the radio.**
+- **Do not touch the demodulator or what keys. No package. Report mismatches; repair
+  nothing but this unit's. Write American.**
 
 ## 11. Committing and pushing
 
@@ -201,36 +208,35 @@ owner should expect`, `## 3. What you should see`, `## 4. What's blocking us`.
 READ IN THIS ORDER.
 
 A. The phase goal - the screen, done right. Steps 0 to 2 done, 3 waits on Tim.
-B. Step 3's ground - the sheet - and step 0's safety at small sizes; no criterion
-   changes state.
+B. No criterion changes state; this unit clears the blocker under 354 item 2.
 C. The report last, and section 4 raises N items on top of the carried queue.
 ```
 
 ```
-UNIT:       355 - <complete|stopped> at task N of 5, <which dropped> - <date time>
+UNIT:       356 - <complete|stopped> at task N of 5, <which dropped> - <date time>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
 ADVANCED:   no
-NUMBER:     window sizes with Stop on screen 5 of 9 -> 9 of 9; PSK31 rows kept after
-            the carrier ends 0 -> all
+NUMBER:     sizes with CQ on the window <n> of 9 -> 9 of 9; operator-facing strings
+            naming a meter <n> -> 0
 DRIFT:      carried
 ```
 
-**Section 2 tells Tim where Stop is now and that PSK31 text stays. Every appearance
-claim is computed, not seen.**
+**Section 3 prints the three ALC sentences word for word. Every appearance claim is
+computed, not seen.**
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 3
-APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
+APPROACH: keep the send area inside the window at every size by giving up panel and top-row height first, compose the post-send ALC sentence after the reference is stored and never send the operator to the radio, and put the spot sources' clients behind the seam so no test constructs one
 MOVE: continue
-WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
+WHY: Hamlet opens at a size where CQ is below the window, and the ALC sentence on Tim's screen contradicts both R11 and R15; both are on the screen step 3 is judged from
 STATE: blocked
-DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
-LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
-ACCOMPLISHED: Tim can always stop a transmission from any window size, and what a PSK31 station said stays on his screen after the station stops
-ADVANCES: step 3's ground
+DECIDED: the height-giving order (panels, then top row, never the send area) is the unit's stated rule; the three sentence forms are the author's words for the operator
+LICENCE: screen phase R26 and section 6; PSK31 plan R11, R15, R12, R14, R19; Tim 2026-09-14 on Stop; CLAUDE.md 0.0
+ACCOMPLISHED: a new operator opens Hamlet and sees the button that calls CQ, and after a send is told one true thing and nothing to do
+ADVANCES: none - clears a blocker: unit 354 item 2, CQ below the window at the opening size
 END-ARBITER-DECISION
 ```

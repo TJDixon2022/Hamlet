@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 5 of 5
-WORK_INSTRUCTION: 355 - Stop is always on screen, and what was heard stays
+WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-14T09:26:47-04:00
-NOTE: Unit 355 complete at task 5 of 5 - Stop in the status bar, on the window at 9 of 9 sizes, pressable at every instant (ask, section 4 item 1); PSK31 rows stay marked ended, 483 characters kept on the fixture; tests off callook.info; the sheet updated; step 3 still Tim's
+RULES_AT: HM-DEC-161 (2026-09-11)
+UPDATED: 2026-09-14T10:04:25-04:00
+NOTE: Unit 356 complete - CQ on the window at 9 of 9, the ALC sentence true, no client under test.
 
 ---
 
