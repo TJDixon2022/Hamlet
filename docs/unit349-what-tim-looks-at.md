@@ -263,6 +263,10 @@ counts.*
 - **Next:** *One more state*, 2 pts, *1 US contact carries no STATE*, *Any state you have not
   worked*, *Hamlet cannot tell a caller's state*.
 
+**Draws on a state log with 1,234 US records carrying no `STATE`, measured at both widths:**
+*1,234 US contacts carry no STATE*, whole, with its thousands separator. It needs 320 px in a
+632 px slot at 1400 and an 892 px slot at 1920. Nothing on the page clips or wraps.
+
 **Look for:** on your own log, the no-STATE number will be large, because Hamlet's own entries carry
 no `STATE` (unit 348 section 2). Check whether that line reads as information or as blame, and
 whether the band misses *the 50 states* (section 4).
@@ -458,8 +462,10 @@ One line each, with the report that found it.
 14. **VK2DEF's map picture stops at 633.18 of 892 px at 1920** on Grids and Bands, because the card
     frame stops at the map's edge rather than drawing past it. At this tree the map's box is 892 ×
     231; the picture inside it was not re-measured. *Unit 346 item 4.*
-15. **The no-STATE line is measured only at one digit**: *1 US contact* and *3 US contacts*. *1,234 US
-    contacts carry no STATE* fitting is arithmetic. *Unit 348 item 3.*
+15. **The no-STATE line was measured only at one digit** by unit 348. **Now measured at four:**
+    *1,234 US contacts carry no STATE* is drawn whole at 1400 and 1920, needing 320 px of 632 and 892.
+    Five digits and more are still unmeasured. *Unit 348 item 3; this unit's task 3,
+    `StatesCountWhatTheLogsStateFieldSays`.*
 16. **The States band loses *the 50 states* on a state log**, and Grids and Total Miles lose their
     meaning line too. The badges keep them. *Unit 348 item 4.*
 17. **The States next card has three lines of words and no callers.** A CQ carries no state. *Unit 348

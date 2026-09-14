@@ -1693,6 +1693,12 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     /// `STATE`; and no run or hover on the page, the eight kinds or the seven continent pages, and no
     /// string outside a comment in an achievements view model, contains *confirm*. Watched red on the
     /// tree as it was: `Expected: "2 worked, from STATE"` against `2 worked`.</para>
+    /// <para>**EXTENDED BY WORK INSTRUCTION 349 TASK 3** (ruling 45): on a state log whose US records
+    /// with no `STATE` number 1,234, the size a real log draws, the next card draws `1,234 US contacts
+    /// carry no STATE` whole, with its thousands separator, at 1400 and 1920, and nothing on the page
+    /// clips or wraps. Watched red built in, on the test window only: the same drawn line held to half
+    /// the width it needs is caught by the page's own clip measure, and a line without the separator is
+    /// reported not drawn.</para>
     /// </remarks>
     [AvaloniaFact]
     public void StatesCountWhatTheLogsStateFieldSays()
@@ -1820,6 +1826,59 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
                 Assert.Equal(3, cards.Count);
                 Assert.Equal(0, white);
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        // **WORK INSTRUCTION 349 RULING 45: THE NO-STATE LINE AT FOUR DIGITS**, the size Tim's own log will
+        // draw, measured the way step 1's clip test measures rather than left as arithmetic.
+        const string thousandsLine = "1,234 US contacts carry no STATE";
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var window = Realized(StateContactsWithThousandsNoState(), width);
+            var shown = (AchievementsViewModel)window.DataContext!;
+
+            try
+            {
+                shown.OpenCategoryCommand.Execute(AchievementKinds.States);
+                Settle(window);
+
+                var drawnNext = TradingCards(window).Single(c => c.DataContext is AchievementCategoryCard { Earned: false });
+
+                Assert.Null(CardMiss(drawnNext, thousandsLine));
+
+                var state = F(width) + " states, 1,234 US records with no STATE";
+                var runs = Fits(window, state);
+                var line = drawnNext.GetVisualDescendants().OfType<TextBlock>()
+                    .Single(t => t.IsEffectivelyVisible && t.Text == thousandsLine);
+
+                _output.WriteLine(
+                    state + ": [" + thousandsLine + "] drawn " + F(line.Bounds.Width) + " px, needs "
+                    + F(Unit342Needs(line, thousandsLine)) + "; " + runs + " runs fit");
+
+                // **WATCHED RED, BUILT IN (ruling 19), ON THE TEST WINDOW ONLY**: the same line held to half the
+                // width it needs is caught by the page's clip measure, and then let go again.
+                line.MaxWidth = Unit342Needs(line, thousandsLine) / 2;
+                Settle(window);
+
+                var caught = Unit346Fit(window).Clips.Where(c => c.Contains(thousandsLine, StringComparison.Ordinal)).ToList();
+
+                _output.WriteLine("WATCHED RED " + F(width) + ": " + (caught.Count == 0 ? "NOT CAUGHT" : string.Join("; ", caught)));
+                Assert.NotEmpty(caught);
+
+                line.MaxWidth = double.PositiveInfinity;
+                Settle(window);
+                Assert.Empty(Unit346Fit(window).Clips);
+
+                // **AND THE SEPARATOR IS WHAT IS ASSERTED**: the line without it is not drawn.
+                var withoutSeparator = CardMiss(drawnNext, "1234 US contacts carry no STATE");
+
+                _output.WriteLine("WATCHED RED " + F(width) + ": " + (withoutSeparator ?? "NOT CAUGHT"));
+                Assert.NotNull(withoutSeparator);
             }
             finally
             {
@@ -3610,6 +3669,34 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             + One("KL7XYZ", "BP51", "AK", 5)
             + One("VE3PQR", "FN03", "ON", 6)
             + One("N3DC", "FM18", "DC", 7));
+    }
+
+    /// <summary>
+    /// **Work instruction 349 task 3: the state log with 1,234 US records carrying no `STATE`** -
+    /// `StateContacts()`, whose W1AW is one, and 1,233 more US calls, `W1AAA` onward, with none.
+    /// </summary>
+    internal static IReadOnlyList<AdifLogRecord> StateContactsWithThousandsNoState()
+    {
+        var text = new System.Text.StringBuilder(AdifLog.Header("test"));
+
+        for (var i = 0; i < 1233; i++)
+        {
+            var started = new DateTime(2026, 7, 1, 0, 0, 0, DateTimeKind.Utc).AddMinutes(3 * i);
+
+            text.Append(AdifLog.Record(new AdifContact
+            {
+                Call = "W1" + (char)('A' + (i / 676 % 26)) + (char)('A' + (i / 26 % 26)) + (char)('A' + (i % 26)),
+                StationCallsign = "KC3QIS",
+                Mode = "FT8",
+                Band = "20m",
+                GridSquare = "FN31",
+                MyGridSquare = MyGrid,
+                StartedUtc = started,
+                EndedUtc = started.AddMinutes(2),
+            }));
+        }
+
+        return StateContacts().Concat(AdifLog.ReadRecords(text.ToString())).ToList();
     }
 
     /// <summary>
