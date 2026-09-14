@@ -4,6 +4,28 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-164
+date: 2026-09-14
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-163, docs/phase-screen-run/, assets/fixtures/olivia/, work instruction 358 task 0
+---
+
+**The phase is "Hamlet works Olivia the way it works PSK31", set 2026-09-14, seven
+steps numbered 0 to 6.** Tim, 2026-09-14, after an interview with the web thread
+before five days away; the rulings from that interview are R27 to R31 in
+`PHASE_PLAN.md`. **PSK31 is tabled after unit 357**, with the typed line delivered.
+
+**It supersedes HM-DEC-163's screen phase, "The screen, done right"**, which is
+archived in `docs/phase-screen-run/` with its step 3 - Tim's verdict at his window -
+still open.
+
+`PROJECT_CARD.md` changes only by ruling (13.3), and this is the ruling that changes
+it. `PHASE` and `PHASE_SET` move; nothing else on the card does.
+
+**Recorded by work instruction 358, the seed unit of the phase, under 12.1 as a
+ruling the owner gave, not one a session made.** What was rejected is not recorded
+here; the interview's reasoning is in `PHASE_PLAN.md` sections 1 to 3.
+
+---
 id: HM-DEC-163
 date: 2026-09-12
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-162, docs/phase-maintenance-run/, assets/main-screen-mockup.png, work instruction 337 task 0

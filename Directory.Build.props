@@ -845,8 +845,13 @@
     and its path unchanged (Tim, 2026-09-14, ruling A); a PSK31 row keeps its text after its carrier
     ends; the license lookup goes behind a seam so no test reaches callook.info.
   -->
+  <!--
+    1.13.44 -> 1.13.45, UNIT 358 TASK 0. A PATCH, STEP 0 OF THE OLIVIA PHASE, THE PHASE OPENS: the card
+    names the Olivia phase (HM-DEC-164), the outcome carries unit 358 under step 0, and the nine Olivia
+    fixtures hash as their manifest says. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.44</Version>
+    <Version>1.13.45</Version>
   </PropertyGroup>
 
   <!--

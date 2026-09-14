@@ -8,3 +8,15 @@ STEP: 3 | not started | Hear everyone and read - a row per station from every RS
 STEP: 4 | not started | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
 STEP: 5 | not started | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
 STEP: 6 | not started | Tim at the radio - tune to the calling spot, see text, work a station, log it. Only he can close it.
+
+## UNIT 358 - STEP 0
+
+STEP: 0
+APPROACH: wire Olivia everywhere PSK31 is wired, read the cited calling table and the RSID codes from data files, put the Capture button on the panel, and keep the tab inert for decoding and sending
+MOVE: continue
+WHY: step 0 depends on nothing; the shape is the PSK31 seam's, proved twice; every value comes from a cited file
+DECIDED: nothing beyond the plan; the timing table's first row is marked an estimate. Task 4 (the map) and task 5 (the timing row) are the drop candidates; tasks 0 to 3 have none.
+LICENCE: PHASE_PLAN.md R27, R29, R30, section 6; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.1, 0.2, 0.5, 2.1; HM-DEC-054, HM-DEC-164
+COST: one session, six tasks (0 to 5), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md line 1 names this phase; the nine fixtures hash as manifest.json says, 9 of 9. Carry-forward before any change: app 143 of 143, engine 86 of 86.
