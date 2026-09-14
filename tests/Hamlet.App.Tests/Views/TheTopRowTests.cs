@@ -2181,6 +2181,409 @@ public sealed class TheTopRowTests
         _output.WriteLine("");
     }
 
+    /// <summary>
+    /// **Work instruction 354 task 1: the main window at the sizes Tim can open** - the product's
+    /// minimum and opening size, common screens, and 1400 and 1920 at 1040 tall as the anchors.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULINGS 73 TO 75. A TRACE, AND IT ASSERTS NOTHING.** The sizes are the
+    /// instruction's. Each licensed window is read on FT8 and PSK31 with the best bet pinned absent and
+    /// pinned drawn on 20 m, the band he is on, the way `WithTheBestBetPinned` pins it; the plain window
+    /// is read at 900 x 620 and 1100 x 780 only. 1920 x 1040 is read first in each case, because it is
+    /// the window every other size's drawn controls are compared against.</para>
+    /// <para>**WHAT IS READ FOR TEXT**: every visible `TextBlock` under `TopRow`, `ModeTabs`,
+    /// `DigitalSendReserved`, `DigitalModeStrip`, `DigitalHeaderStrip`, `DigitalTuneStrip`, the three
+    /// panels and `StatusBar`. A run is *trimmed* where a line of its layout collapsed, *clipped by its
+    /// slot* where it may not wrap and needs more than its width, *cut* where its layout is taller than
+    /// its bounds, and it *breaks a word* where a wrapped line starts between two letters. The first
+    /// ancestor whose bounds it runs past is named, with whether that ancestor clips, and a scroller's
+    /// view is reported as scrolling rather than clipping. **Controls**: every named control drawn at
+    /// 1920 x 1040 with a size and on the window, and at this size absent, hidden, zero-sized or off
+    /// the window.</para>
+    /// <para>**R26'S TOP ROW, READ BY THE TRACE**: within 10% of 190 at 1920 wide; at every other width
+    /// at most 0.262 of the height below the pills, the limit step 0 applies at 1400. That reading of
+    /// the other widths is the unit's own. `Measure` and `Panels` are the pinned facts' own readers.
+    /// Nothing is pressed (§0.2).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit354TraceTheMainWindowAtTheSizesTimCanOpen()
+    {
+        var sizes = new (double Width, double Height, string Why)[]
+        {
+            (1920, 1040, "the anchor: the pinned 190/503"),
+            (900, 620, "the product's minimum, MainWindow.axaml:13"),
+            (1100, 780, "the product's opening size, MainWindow.axaml:12"),
+            (1280, 720, "a small laptop screen"),
+            (1366, 728, "a common laptop screen, maximized under a 40 px taskbar"),
+            (1536, 824, "a 1080p screen at 125% scaling, maximized"),
+            (1400, 1040, "the anchor: the pinned 216/477 on FT8 and 228/465 on PSK31"),
+            (1920, 1017, "a 1080p screen at 100%, maximized"),
+            (2560, 1400, "a 1440p screen, maximized"),
+        };
+
+        _output.WriteLine("Every number below is computed on the headless host, not seen.");
+        _output.WriteLine("");
+
+        foreach (var mode in new[] { "FT8", "PSK31" })
+        {
+            foreach (var pinned in new string?[] { null, "20 m" })
+            {
+                HashSet<string>? at1920 = null;
+
+                foreach (var (width, height, why) in sizes)
+                {
+                    var drawn = Unit354Read(width, height, why, mode, pinned, false, at1920);
+
+                    at1920 ??= drawn;
+                }
+            }
+        }
+
+        var plainAt1920 = Unit354Read(1920, WindowHeight, "the plain window's reference for drawn controls", "FT8", null, true, null);
+
+        foreach (var (width, height, why) in new[]
+        {
+            (900.0, 620.0, "the product's minimum, MainWindow.axaml:13"),
+            (1100.0, 780.0, "the product's opening size, MainWindow.axaml:12"),
+        })
+        {
+            Unit354Read(width, height, why, "FT8", null, true, plainAt1920);
+        }
+    }
+
+    /// <summary>Realizes one window for the unit 354 trace, prints what it draws, and returns the named controls drawn on it.</summary>
+    private HashSet<string> Unit354Read(
+        double width, double height, string why, string mode, string? pinned, bool plain, HashSet<string>? at1920)
+    {
+        var window = plain ? TheWorkingPanelsTests.Realized(width, height, null) : Realized(width, height, null, null);
+        var model = (MainWindowViewModel)window.DataContext!;
+        var fixture = plain ? "plain" : "licensed";
+        var bet = pinned is null ? "best bet absent" : "best bet drawn on " + pinned;
+
+        try
+        {
+            model.ChosenDigitalMode = mode;
+            Settle(window);
+
+            foreach (var each in model.Bands)
+            {
+                each.IsBestBet = each.Band.Name == pinned;
+            }
+
+            model.NotifyGreenZoneForTests();
+            Settle(window);
+
+            var bounds = window.Bounds;
+            var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+            var pillsBottom = RectIn(pills, window).Bottom;
+            var below = bounds.Height - pillsBottom;
+            var m = Measure(window);
+            var strip = Named<Border>(window, "DigitalReadinessStrip");
+            var stripShown = strip.IsEffectivelyVisible;
+            var shown = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+            strip.IsVisible = false;
+            Settle(window);
+
+            var panels = TheWorkingPanelsTests.Panels(window);
+            var workspace = Named<Border>(window, "WorkspaceBoundary");
+            var floor = RectIn(workspace, window).Bottom - workspace.Padding.Bottom - workspace.BorderThickness.Bottom;
+            var hidden = panels[0].Rect.Height;
+            var equal = panels.All(p => Math.Abs(p.Rect.Top - panels[0].Rect.Top) <= 0.5 && Math.Abs(p.Rect.Bottom - panels[0].Rect.Bottom) <= 0.5);
+            var reach = panels[0].Rect.Bottom >= floor - 0.5;
+            var rigOff = Math.Abs(m.Rig.Height - m.Card.Height);
+
+            var band = Unit354Find<TextBlock>(window, "GreenZoneBand");
+            var asLarge = band is null ? new List<string>()
+                : VisibleText(Card(window)).Where(t => !ReferenceEquals(t, band) && t.FontSize >= band.FontSize).Select(t => "[" + t.Text + "] " + Px(t.FontSize)).ToList();
+            var bandLargest = band is { IsEffectivelyVisible: true } && asLarge.Count == 0;
+            var clock = Unit354Find<GrayLineMapControl>(window, "GreenZoneGrayLine");
+            var markers = clock is null ? -1 : GrayLineMapControl.WhatWouldBeDrawn(clock.Utc, clock.OperatorGrid, clock.Bounds.Width, clock.Bounds.Height).Markers;
+            var clockHolds = clock is { IsEffectivelyVisible: true } && Math.Abs(clock.Bounds.Width - 246) <= 24.6 && markers == 1;
+            var heard = Unit354Find<TextBlock>(window, "GreenZoneHeard");
+            var betButton = Unit354Find<Button>(window, "GreenZoneBestBet");
+
+            _output.WriteLine(
+                "=== " + mode + " " + Px(width) + " x " + Px(height) + " (" + why + "), " + fixture + ", " + bet
+                + ": realized " + Px(bounds.Width) + " x " + Px(bounds.Height));
+            _output.WriteLine(
+                "  band pills end at y " + Px(pillsBottom) + ", " + Px(below) + " below; top row " + Px(m.TopRowHeight) + " = "
+                + Share(m.TopRowHeight, below) + " (0.262 of below is " + Px(0.262 * below) + "); card " + Box(m.Card)
+                + "; rig panel " + Box(m.Rig) + ", " + Px(rigOff) + " px from the card");
+            _output.WriteLine(
+                "  panels " + Px(hidden) + " = " + Share(hidden, below) + " strip hidden; " + Px(shown) + " = " + Share(shown, below)
+                + " strip " + (stripShown ? "showing" : "not showing (nothing to say)") + "; "
+                + string.Join(" | ", panels.Select(p => p.Name + " " + Box(p.Rect))) + "; one top and one bottom " + equal
+                + "; the working card's floor y " + Px(floor) + ", reached " + reach + "; status bar " + Box(m.StatusBar));
+            _output.WriteLine(
+                "  green block " + Box(RectIn(Block(window), window)) + "; band [" + band?.Text + "] at " + Px(band?.FontSize ?? 0)
+                + " largest " + bandLargest + (asLarge.Count > 0 ? " (as large: " + string.Join(", ", asLarge) + ")" : "")
+                + "; clock " + (clock is null ? "absent" : Px(clock.Bounds.Width) + " x " + Px(clock.Bounds.Height) + " visible " + clock.IsEffectivelyVisible)
+                + ", markers " + markers + "; heard [" + heard?.Text + "] visible " + (heard?.IsEffectivelyVisible ?? false)
+                + "; best bet " + (betButton is { IsEffectivelyVisible: true } ? "drawn [" + betButton.Content + "]" : "not drawn"));
+
+            foreach (var name in new[] { "DigitalSendCqButton", "DigitalStopButton" })
+            {
+                var press = Unit354Find<Button>(window, name);
+                var at = press is null ? default : RectIn(press, window);
+
+                _output.WriteLine(
+                    "  " + name + (press is null ? " absent"
+                        : " " + Box(at) + ", visible " + press.IsEffectivelyVisible + ", whole on the window "
+                        + (at.Width > 0 && at.Height > 0 && at.Left >= -0.5 && at.Top >= -0.5 && at.Right <= bounds.Width + 0.5 && at.Bottom <= bounds.Height + 0.5)));
+            }
+
+            // **THE DECODED LIST AND THE CARD**, on the plain window only: the licensed one draws no row and no card.
+            string decodedSaid, callsignsSaid, factsSaid;
+            var clippedCalls = -1;
+            var factsHold = true;
+
+            if (plain)
+            {
+                var decoded = panels.First(p => p.Name == "decoded").Rect;
+                var cells = window.GetVisualDescendants().OfType<StackPanel>()
+                    .Where(p => p.Name == "DecodedMessageCell" && p.IsEffectivelyVisible)
+                    .Select(c => (Cell: c, Text: string.Concat(c.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text)), At: RectIn(c, window)))
+                    .ToList();
+                var clipped = cells.Where(c => c.Cell.Bounds.Width + 0.51 < TheWorkingPanelsTests.Measure(c.Text))
+                    .Select(c => "[" + c.Text + "] needs " + Px(TheWorkingPanelsTests.Measure(c.Text)) + " in " + Px(c.Cell.Bounds.Width)).ToList();
+                var longest = cells.OrderByDescending(c => TheWorkingPanelsTests.Measure(c.Text)).FirstOrDefault();
+                var outOfView = cells.Count(c => c.At.Bottom > decoded.Bottom + 0.5);
+
+                clippedCalls = clipped.Count;
+                decodedSaid = "decoded panel " + Px(decoded.Width) + " wide; " + cells.Count + " rows; longest line "
+                    + (longest.Cell is null ? "none realized" : "[" + longest.Text + "] needs " + Px(TheWorkingPanelsTests.Measure(longest.Text)) + " px in a " + Px(longest.Cell.Bounds.Width) + " px cell")
+                    + "; rows below the panel's bottom " + outOfView;
+                callsignsSaid = clipped.Count == 0 ? "none clipped" : string.Join("; ", clipped);
+
+                var placed = TheWorkingPanelsTests.Placement(window);
+                var rule = placed.Inside >= placed.MapWidth + 10 + placed.FactsWidth;
+
+                factsHold = placed.Found && (rule ? placed.Beside : placed.Under);
+                factsSaid = placed.Said + "; the rule " + Px(placed.Inside) + " against " + Px(placed.MapWidth + 10 + placed.FactsWidth)
+                    + " -> " + (rule ? "BESIDE" : "UNDER") + ", " + (factsHold ? "as the rule says" : "NOT as the rule says");
+            }
+            else
+            {
+                decodedSaid = "not measurable here, because the licensed fixture draws no decoded row";
+                callsignsSaid = "not measurable here, for the same reason";
+                factsSaid = "not measurable here, because the licensed fixture draws no card";
+            }
+
+            _output.WriteLine("  " + decodedSaid + "; callsigns " + callsignsSaid);
+            _output.WriteLine("  For You: " + factsSaid);
+
+            var texts = Unit354Texts(window);
+
+            _output.WriteLine("  text: " + texts.Read + " runs read; " + texts.Findings.Count + " trimmed, clipped, cut, overflowing or wrapped");
+
+            foreach (var finding in texts.Findings)
+            {
+                _output.WriteLine("    " + finding);
+            }
+
+            var drawn = new HashSet<string>();
+            var missing = new List<string>();
+
+            foreach (var control in window.GetVisualDescendants().OfType<Control>().Where(c => !string.IsNullOrEmpty(c.Name)).GroupBy(c => c.Name!).Select(g => g.First()))
+            {
+                var at = RectIn(control, window);
+                var onWindow = at.Left >= -0.5 && at.Top >= -0.5 && at.Right <= bounds.Width + 0.5 && at.Bottom <= bounds.Height + 0.5;
+
+                if (control.IsEffectivelyVisible && at.Width > 0 && at.Height > 0 && onWindow)
+                {
+                    drawn.Add(control.Name!);
+                }
+                else if (at1920 is not null && at1920.Contains(control.Name!))
+                {
+                    var scroller = control.GetVisualAncestors().OfType<Avalonia.Controls.Presenters.ScrollContentPresenter>().Any();
+
+                    missing.Add(
+                        control.Name + " " + (!control.IsEffectivelyVisible ? "not visible" : at.Width <= 0 || at.Height <= 0 ? "at zero size " + Box(at) : "off the window " + Box(at))
+                        + (scroller ? " (inside a scroller)" : ""));
+                }
+            }
+
+            if (at1920 is not null)
+            {
+                missing.AddRange(at1920.Where(n => Unit354Find<Control>(window, n) is null).Select(n => n + " absent"));
+                _output.WriteLine("  controls drawn at 1920 x 1040 and not whole here: " + (missing.Count == 0 ? "none" : string.Join("; ", missing)));
+            }
+            else
+            {
+                _output.WriteLine("  named controls drawn whole on this window: " + drawn.Count + " (the reference for the other sizes)");
+            }
+
+            // **AGAINST EACH R26 OUTCOME**, in words computed from the numbers above.
+            var verdicts = new List<string>();
+            var misses = new List<string>();
+
+            void Outcome(string what, bool holds, string miss)
+            {
+                verdicts.Add(what + " " + (holds ? "holds" : "MISSES " + miss));
+
+                if (!holds)
+                {
+                    misses.Add(what + " " + miss);
+                }
+            }
+
+            if (width > 1900 && width < 1940)
+            {
+                var over = Math.Abs(m.TopRowHeight - TopRowTarget) - TopRowTarget * 0.10;
+
+                Outcome("top row about 190 at 1920 (within 10%)", over <= 0, "by " + Px(over) + " px (" + Px(m.TopRowHeight) + ")");
+            }
+            else
+            {
+                var over = m.TopRowHeight - 0.262 * below;
+
+                Outcome("top row at most 0.262 of below", over <= 0, "by " + Px(over) + " px (" + Px(m.TopRowHeight) + " of " + Px(below) + " = " + Share(m.TopRowHeight, below) + ")");
+            }
+
+            Outcome("panels at least half below", hidden >= below / 2, "by " + Px(below / 2 - hidden) + " px (" + Px(hidden) + " of " + Px(below) + " = " + Share(hidden, below) + ")");
+            Outcome("rig within 2 px of the card", rigOff <= 2, "by " + Px(rigOff - 2) + " px (rig " + Px(m.Rig.Height) + ", card " + Px(m.Card.Height) + ")");
+            Outcome("three panels one top and bottom, to the status bar", equal && reach, "(one top and bottom " + equal + ", floor reached " + reach + ")");
+            Outcome("the band the largest text in the card", bandLargest, "(" + string.Join(", ", asLarge) + ")");
+            Outcome("the clock about 246 wide with one dot", clockHolds, "(" + (clock is null ? "absent" : Px(clock.Bounds.Width) + " wide, visible " + clock.IsEffectivelyVisible) + ", markers " + markers + ")");
+
+            if (plain)
+            {
+                Outcome("no callsign clipped", clippedCalls == 0, "(" + callsignsSaid + ")");
+                Outcome("facts beside or under by the rule", factsHold, "(" + factsSaid + ")");
+            }
+            else
+            {
+                verdicts.Add("the decoded list, callsigns and the card's facts not measurable here, because the licensed fixture draws no row or card");
+            }
+
+            _output.WriteLine("  R26: " + string.Join("; ", verdicts));
+            _output.WriteLine(
+                "  ROW " + fixture + " " + mode + " " + bet + " " + Px(width) + " x " + Px(height) + " | top row " + Px(m.TopRowHeight) + " (" + Share(m.TopRowHeight, below)
+                + ") | panels " + Px(hidden) + " (" + Share(hidden, below) + ") | equal " + (equal && reach) + " | rig-card " + Px(rigOff)
+                + " | callsigns clipped " + (plain ? clippedCalls.ToString(CultureInfo.InvariantCulture) : "not measured") + " | text findings " + texts.Findings.Count
+                + " | not whole " + (at1920 is null ? "reference" : missing.Count.ToString(CultureInfo.InvariantCulture))
+                + " | misses " + (misses.Count == 0 ? "none" : string.Join("; ", misses)));
+            _output.WriteLine("");
+
+            return drawn;
+        }
+        finally
+        {
+            model.ChosenDigitalMode = "FT8";
+            window.Close();
+        }
+    }
+
+    /// <summary>A control by name, or null, for the unit 354 trace, which asserts nothing.</summary>
+    private static T? Unit354Find<T>(Window window, string name)
+        where T : Control
+        => window.GetVisualDescendants().OfType<T>().FirstOrDefault(c => c.Name == name);
+
+    /// <summary>Every visible run under the top row, the tab row, the strips, the three panels and the status bar, and each one that does not fit, in words.</summary>
+    private static (int Read, List<string> Findings) Unit354Texts(Window window)
+    {
+        var roots = new[]
+        {
+            "TopRow", "ModeTabs", "DigitalSendReserved", "DigitalModeStrip", "DigitalHeaderStrip", "DigitalTuneStrip",
+            "DigitalWaterfallPanel", "DigitalDecodedPanel", "DigitalMinePanel", "StatusBar",
+        };
+        var texts = roots
+            .Select(n => Unit354Find<Control>(window, n))
+            .Where(r => r is not null)
+            .SelectMany(r => r!.GetVisualDescendants().OfType<TextBlock>().Select(t => (Root: r!.Name!, Text: t)))
+            .Where(x => x.Text.IsEffectivelyVisible && (x.Text.Text ?? "").Trim().Length > 0)
+            .GroupBy(x => x.Text)
+            .Select(g => g.First())
+            .ToList();
+        var findings = new List<string>();
+
+        foreach (var (root, text) in texts)
+        {
+            var said = text.Text!;
+            var needs = new Avalonia.Media.TextFormatting.TextLayout(
+                said, new Avalonia.Media.Typeface(text.FontFamily, text.FontStyle, text.FontWeight), text.FontSize, null).Width;
+            var lines = text.TextLayout.TextLines;
+            var noWrap = text.TextWrapping == Avalonia.Media.TextWrapping.NoWrap;
+            var noTrim = text.TextTrimming == Avalonia.Media.TextTrimming.None;
+            var what = new List<string>();
+
+            if (lines.Any(l => l.HasCollapsed))
+            {
+                what.Add("TRIMMED: needs " + Px(needs) + " px in " + Px(text.Bounds.Width));
+            }
+
+            if (noWrap && noTrim && needs > text.Bounds.Width + 0.5)
+            {
+                what.Add("CLIPPED BY ITS SLOT: needs " + Px(needs) + " px in " + Px(text.Bounds.Width));
+            }
+
+            if (text.TextLayout.Height > text.Bounds.Height + 0.5)
+            {
+                what.Add("CUT: lays out " + Px(text.TextLayout.Height) + " px tall in " + Px(text.Bounds.Height));
+            }
+
+            if (lines.Count > 1)
+            {
+                var broken = lines.Skip(1)
+                    .Select(l => l.FirstTextSourceIndex)
+                    .Where(i => i > 0 && i < said.Length && char.IsLetterOrDigit(said[i - 1]) && char.IsLetterOrDigit(said[i]))
+                    .Select(i => said.Substring(Math.Max(0, i - 6), Math.Min(12, said.Length - Math.Max(0, i - 6))))
+                    .ToList();
+
+                what.Add("wraps to " + lines.Count + " lines" + (broken.Count > 0 ? ", BREAKING A WORD at [" + string.Join("], [", broken) + "]" : ", between words"));
+            }
+
+            var drawnWidth = noWrap && noTrim ? Math.Max(needs, text.Bounds.Width) : text.Bounds.Width;
+
+            foreach (var box in text.GetVisualAncestors())
+            {
+                var at = text.TranslatePoint(new Point(0, 0), box);
+
+                if (at is null)
+                {
+                    continue;
+                }
+
+                var outside = at.Value.X < -0.5 || at.Value.Y < -0.5
+                    || at.Value.X + drawnWidth > box.Bounds.Width + 0.5 || at.Value.Y + text.Bounds.Height > box.Bounds.Height + 0.5;
+
+                if (box is Avalonia.Controls.Presenters.ScrollContentPresenter)
+                {
+                    if (outside)
+                    {
+                        what.Add("outside its scroller's view, which scrolls");
+                    }
+
+                    break;
+                }
+
+                if (outside)
+                {
+                    what.Add(
+                        (box is Window ? "OFF THE WINDOW" : "runs past " + box.GetType().Name + (box is Control { Name: { } n } ? " " + n : "")
+                            + (box.ClipToBounds ? ", WHICH CLIPS IT" : ", which does not clip"))
+                        + ": x " + Px(at.Value.X) + " to " + Px(at.Value.X + drawnWidth) + ", y " + Px(at.Value.Y) + " to "
+                        + Px(at.Value.Y + text.Bounds.Height) + " in " + Px(box.Bounds.Width) + " x " + Px(box.Bounds.Height));
+                    break;
+                }
+
+                if (box is Window)
+                {
+                    break;
+                }
+            }
+
+            if (what.Count > 0)
+            {
+                findings.Add("[" + said.Replace("\n", " / ", StringComparison.Ordinal) + "] (" + (text.Name ?? "unnamed") + ", in " + root + ", " + Px(text.FontSize) + " px): " + string.Join("; ", what));
+            }
+        }
+
+        return (texts.Count, findings);
+    }
+
     /// <summary>What the model holds of the three things the green block's heard line and badge read.</summary>
     private static string Holds(MainWindowViewModel model)
         => "count " + (model.HeardInTheLastMinute?.ToString(CultureInfo.InvariantCulture) ?? "null")
@@ -2205,6 +2608,20 @@ public sealed class TheTopRowTests
     /// <param name="telemetry">Where the model records, or null for nowhere.</param>
     /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
     internal static Window Realized(double width, JsonlTelemetry? telemetry, Action<int, Window>? afterEachPass)
+        => Realized(width, WindowHeight, telemetry, afterEachPass);
+
+    /// <summary>The same window at <paramref name="height"/> px tall.</summary>
+    /// <remarks>
+    /// **THE HEIGHT OVERLOAD, SINCE WORK INSTRUCTION 354** (the arbiter's ruling 74, overrulable): every
+    /// other signature delegates here with <see cref="WindowHeight"/>, so the pinned facts build the
+    /// window they always built. The sources (ruling 61) and the restore and guard (ruling 67) are the
+    /// same code at every height.
+    /// </remarks>
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="height">How tall the window is.</param>
+    /// <param name="telemetry">Where the model records, or null for nowhere.</param>
+    /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
+    internal static Window Realized(double width, double height, JsonlTelemetry? telemetry, Action<int, Window>? afterEachPass)
     {
         var settings = FixtureSettings();
 
@@ -2224,7 +2641,7 @@ public sealed class TheTopRowTests
         model.DigitalDecodedExpanded = true;
         model.DigitalMineExpanded = true;
 
-        var window = new MainWindow { DataContext = model, Width = width, Height = WindowHeight };
+        var window = new MainWindow { DataContext = model, Width = width, Height = height };
 
         window.Show();
         afterEachPass?.Invoke(0, window);

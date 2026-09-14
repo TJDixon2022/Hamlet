@@ -736,6 +736,18 @@ public sealed class TheWorkingPanelsTests
     /// <param name="width">How wide the window is.</param>
     /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
     internal static Window Realized(double width, Action<int, Window>? afterEachPass)
+        => Realized(width, TheTopRowTests.WindowHeight, afterEachPass);
+
+    /// <summary>The same window at <paramref name="height"/> px tall.</summary>
+    /// <remarks>
+    /// **THE HEIGHT OVERLOAD, SINCE WORK INSTRUCTION 354** (the arbiter's ruling 74, overrulable), for the
+    /// reason <see cref="TheTopRowTests"/>' overload gives: the other signatures delegate here with
+    /// <see cref="TheTopRowTests.WindowHeight"/>, and the sources and the restore are unchanged.
+    /// </remarks>
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="height">How tall the window is.</param>
+    /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
+    internal static Window Realized(double width, double height, Action<int, Window>? afterEachPass)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -775,7 +787,7 @@ public sealed class TheWorkingPanelsTests
         model.CardsNowForTests = Slot("02:12:00");
         model.RebuildCardsForTests();
 
-        var window = new MainWindow { DataContext = model, Width = width, Height = TheTopRowTests.WindowHeight };
+        var window = new MainWindow { DataContext = model, Width = width, Height = height };
 
         window.Show();
         afterEachPass?.Invoke(0, window);
