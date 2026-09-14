@@ -250,6 +250,116 @@ public sealed class TheTypedLineGoesOutTests : IDisposable
         Assert.False(his.Card.CanType);
     }
 
+    /// <summary>**A long line sends, a longer one is refused with the count and the seconds.**</summary>
+    /// <remarks>
+    /// <para>**SIXTY SECONDS IS THIS UNIT'S NUMBER** (task 3). Thirty was measured for §R2's
+    /// four macros, whose longest is the report to a compound callsign at 28.19 s; a sentence
+    /// somebody typed is a different thing. **The macros are still held to thirty**, because
+    /// the cap exists so a composing fault cannot leave a carrier on the air.</para>
+    /// <para>**THE REFUSAL IS THE SEQUENCE'S AND NOTHING KEYS** (§R10). `Arm` returns the
+    /// refusal with nothing armed; this asserts the sink was never called.</para>
+    /// </remarks>
+    [Fact]
+    public void ALongLineSendsAndALongerOneIsRefusedWithTheCount()
+    {
+        var (model, sink) = Panel();
+
+        var card = CardFor(model);
+
+        // **190 CHARACTERS**, which the instruction says must go.
+        card.TypedText = new string('a', 190);
+
+        _output.WriteLine("190 chars: " + card.TypedSecondsWord);
+
+        model.SendTypedPsk31Command.Execute(card);
+        Settle(model);
+
+        _output.WriteLine("send line: " + model.DigitalSendLine);
+
+        Assert.Equal(1, sink.TimesCalled);
+        Assert.Equal("", card.TypedText);
+
+        // **AND 260, WHICH MUST NOT.**
+        card.TypedText = new string('b', 260);
+
+        _output.WriteLine("260 chars: " + card.TypedSecondsWord);
+
+        model.SendTypedPsk31Command.Execute(card);
+        Settle(model);
+
+        _output.WriteLine("note     : " + card.TypedNote);
+
+        // **NOTHING WAS SENT THE SECOND TIME**, so the sink is still on one.
+        Assert.Equal(1, sink.TimesCalled);
+        Assert.False(model.HasSomethingToStop);
+
+        // **THE COUNT AND THE SECONDS, AND HIS WORDS ARE STILL IN THE BOX.**
+        Assert.Contains("260 characters", card.TypedNote, StringComparison.Ordinal);
+        Assert.Contains("the most a typed line may be is 60 s", card.TypedNote, StringComparison.Ordinal);
+        Assert.Equal(new string('b', 260), card.TypedText);
+
+        // **AND THE CARD SAID SO BEFORE HE PRESSED IT.**
+        Assert.Contains("too long to send", card.TypedSecondsWord, StringComparison.Ordinal);
+    }
+
+    /// <summary>**The refusal is `cap`, and the record says the cap this send was held to.**</summary>
+    [Fact]
+    public void TheRefusalIsCapAndTheRecordSaysSixty()
+    {
+        string[] lines;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "357", _ => true))
+        {
+            var (model, sink) = Panel(telemetry);
+
+            var card = CardFor(model);
+
+            card.TypedText = new string('c', 260);
+
+            model.SendTypedPsk31Command.Execute(card);
+            Settle(model);
+
+            Assert.Equal(0, sink.TimesCalled);
+        }
+
+        lines = Directory.GetFiles(_folder, "*.jsonl").SelectMany(File.ReadAllLines).ToArray();
+
+        var composed = Assert.Single(Events(lines, "psk31_send_composed"));
+        var refused = Assert.Single(Events(lines, "psk31_send_refused"));
+
+        _output.WriteLine("composed: " + composed.GetRawText());
+        _output.WriteLine("refused : " + refused.GetRawText());
+
+        // **THE CAP IN THE RECORD IS THE ONE THIS SEND WAS HELD TO**, not the constant.
+        Assert.Equal(60, composed.GetProperty("capSeconds").GetDouble());
+        Assert.False(composed.GetProperty("withinCap").GetBoolean());
+        Assert.Equal("cap", refused.GetProperty("reason").GetString());
+        Assert.Equal("typed", refused.GetProperty("macro").GetString());
+    }
+
+    /// <summary>**A macro is still held to thirty seconds.**</summary>
+    /// <remarks>
+    /// **THE HALF THAT WOULD HAVE BEEN LOST BY RAISING THE CONSTANT.** The cap travels on the
+    /// send, so the typed line got sixty and everything else kept the number §R10 was
+    /// reasoned about.
+    /// </remarks>
+    [Fact]
+    public void AMacroIsStillHeldToThirtySeconds()
+    {
+        var macro = Psk31Modulator.Compose(
+            Psk31Macros.Answer("EI4GNB", "KC3QIS"), 48_000, 1000, 0.5f);
+
+        var typed = Psk31Modulator.Compose(
+            "anything", 48_000, 1000, 0.5f, MainWindowViewModel.LongestTypedSeconds);
+
+        _output.WriteLine(
+            "a macro's cap is " + macro.Cap.ToString("0", CultureInfo.InvariantCulture)
+            + " s and a typed line's is " + typed.Cap.ToString("0", CultureInfo.InvariantCulture) + " s");
+
+        Assert.Equal(OperatorSend.LongestUnslottedSeconds, macro.Cap);
+        Assert.Equal(60, typed.Cap);
+    }
+
     /// <summary>One card built straight from a turn, for the offer question alone.</summary>
     private sealed class Ft8ContactCardProbe
     {

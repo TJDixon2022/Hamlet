@@ -104,13 +104,19 @@ public static class Psk31Modulator
     /// <param name="offsetHz">Where the carrier sits in the passband.</param>
     /// <param name="peak">The drive level the operator set.</param>
     /// <returns>The samples, the rate, the mode and the text's length - and not the text.</returns>
+    /// <param name="longestSeconds">The most this send may be, thirty unless the caller says otherwise.</param>
     public static Transmit.UnslottedTransmission Compose(
-        string text, int sampleRate, double offsetHz, float peak)
+        string text,
+        int sampleRate,
+        double offsetHz,
+        float peak,
+        double longestSeconds = Transmit.OperatorSend.LongestUnslottedSeconds)
         => new(
             Transmit.UnslottedMode.Psk31,
             Modulate(text, sampleRate, offsetHz, peak),
             sampleRate,
-            text.Length);
+            text.Length,
+            longestSeconds);
 
     /// <summary>The audio for this text, with the idle stated.</summary>
     /// <param name="text">What to send.</param>

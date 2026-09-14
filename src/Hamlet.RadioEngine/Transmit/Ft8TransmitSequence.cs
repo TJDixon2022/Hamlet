@@ -789,9 +789,13 @@ public sealed class Ft8TransmitSequence
                 return false;
 
             case UnslottedFit.LongerThanTheCap:
+
+                // **THE SEND'S OWN CAP, NOT THE CONSTANT** (work instruction 357 task 3).
+                // A macro is held to thirty seconds and a typed line to sixty, so a
+                // sentence naming one number would be wrong about the other.
                 why =
-                    $"this is {audio.Seconds:0.##} s of {audio.Mode} audio, and a send with no slot "
-                    + $"may be at most {OperatorSend.LongestUnslottedSeconds:0} s so that a continuous "
+                    $"this is {audio.Seconds:0.##} s of {audio.Mode} audio, and this send "
+                    + $"may be at most {audio.Cap:0} s so that a continuous "
                     + "carrier cannot run on. Nothing keyed.";
                 return false;
 

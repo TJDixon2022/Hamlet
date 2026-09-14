@@ -124,9 +124,10 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <para>**NOTHING ON IT TRANSMITS AND NOTHING ON IT LOGS** (§0.2, §6 of the instruction): no
     /// action, no Log link. The send door stays shut, and the Log is step 5's.</para>
     /// </remarks>
+    /// <param name="operatorCallsign">The operator's own call, so the card can say what a typed line costs.</param>
     public static Ft8ContactCard ForPsk31(
         string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None,
-        string? grid = null, string offeredText = "", bool complete = false)
+        string? grid = null, string offeredText = "", bool complete = false, string? operatorCallsign = null)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
@@ -135,7 +136,10 @@ public sealed partial class Ft8ContactCard : ObservableObject
             0, null, null, false, false, 0, 0, 0,
             null, null, false, false, false, false, grid, null, null);
 
-        return new Ft8ContactCard(facts, operatorGrid, turn, offered, offeredText ?? "", complete);
+        return new Ft8ContactCard(facts, operatorGrid, turn, offered, offeredText ?? "", complete)
+        {
+            OperatorCallsign = operatorCallsign ?? "",
+        };
     }
 
     private Ft8ContactCard(
@@ -205,8 +209,51 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <para>**IT HOLDS WHAT HE TYPED AND NOTHING ELSE.** The callsigns and the hand-back are
     /// added when it is sent and are not in here, so what he sees is what he wrote.</para>
     /// </remarks>
+    /// <summary>The operator's own callsign, so the card can say what his line would cost.</summary>
+    /// <remarks>
+    /// **ONLY SO THE SECONDS CAN BE COMPUTED.** Nothing is composed here and nothing is sent;
+    /// the framed text the seconds are measured from is thrown away the moment it has been
+    /// measured, and the send path composes its own.
+    /// </remarks>
+    public string OperatorCallsign { get; init; } = "";
+
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TypedSecondsWord))]
     private string _typedText = "";
+
+    /// <summary>How long his line would take on the air, framed, or "" where it cannot be said.</summary>
+    /// <remarks>
+    /// <para>**IT COUNTS THE FRAME, BECAUSE THE FRAME GOES OUT TOO** (work instruction 357
+    /// task 3). A number that measured only what he typed would be under by the two
+    /// callsigns and the hand-back, which is about eight seconds at 31.25 baud, and he would
+    /// be refused at a length the card had told him was fine.</para>
+    /// <para>**IT IS SILENT RATHER THAN WRONG** (§0.0). With no callsign in Settings, or a
+    /// line PSK31 cannot carry, there is nothing to measure and it says nothing.</para>
+    /// </remarks>
+    public string TypedSecondsWord
+    {
+        get
+        {
+            var (clean, _) = Psk31Macros.Sendable(TypedText);
+
+            if (clean.Length == 0 || OperatorCallsign.Length == 0 || Callsign.Length == 0)
+            {
+                return "";
+            }
+
+            try
+            {
+                var seconds = Psk31Macros.TypedSeconds(Callsign, OperatorCallsign, clean);
+
+                return seconds.ToString("0.#", CultureInfo.InvariantCulture) + " s on the air"
+                    + (seconds > MainWindowViewModel.LongestTypedSeconds ? ", too long to send" : "");
+            }
+            catch (ArgumentException)
+            {
+                return "";
+            }
+        }
+    }
 
     /// <summary>What the card says beside the Send button, or "" where it says nothing.</summary>
     /// <remarks>

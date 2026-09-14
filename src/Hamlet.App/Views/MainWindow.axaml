@@ -5594,13 +5594,24 @@
                                                                          FontSize="12" />
 
                                                                 <Grid ColumnDefinitions="*,Auto">
-                                                                    <TextBlock x:Name="Psk31TypedNote"
-                                                                               Grid.Column="0"
-                                                                               VerticalAlignment="Center"
-                                                                               FontSize="11"
-                                                                               TextWrapping="Wrap"
-                                                                               Text="{Binding TypedNote}"
-                                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                    <StackPanel Grid.Column="0"
+                                                                                VerticalAlignment="Center">
+                                                                        <!-- **WHAT IT WOULD COST, AS HE
+                                                                             TYPES** (task 3), counting the
+                                                                             frame, because the frame goes
+                                                                             out too. Silent where there is
+                                                                             nothing to measure. -->
+                                                                        <TextBlock x:Name="Psk31TypedSeconds"
+                                                                                   FontSize="11"
+                                                                                   Text="{Binding TypedSecondsWord}"
+                                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                                        <TextBlock x:Name="Psk31TypedNote"
+                                                                                   FontSize="11"
+                                                                                   TextWrapping="Wrap"
+                                                                                   Text="{Binding TypedNote}"
+                                                                                   Foreground="{StaticResource HmTextMutedBrush}" />
+                                                                    </StackPanel>
 
                                                                     <Button x:Name="Psk31TypedSend"
                                                                             Grid.Column="1"

@@ -3430,7 +3430,8 @@ public partial class MainWindowViewModel : ObservableObject
             if (!_psk31Cards.TryGetValue(station, out var state))
             {
                 state = new Psk31CardState(Nudged(Ft8ContactCard.ForPsk31(
-                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete)), channelId)
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
+                    _settings.Operator.Callsign)), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -14861,7 +14862,8 @@ public partial class MainWindowViewModel : ObservableObject
         // **A TYPED LINE IS ITS OWN TOKEN IN THE RECORD** (§R13, work instruction 357 task
         // 2). `none` would say the composer did not know what it was sending; `typed` says
         // what happened. **The text itself is not here and never is** (HM-DEC-018, §2.1).
-        var macro = _psk31Typed ? "typed" : Psk31MacroToken.For(kind);
+        var typed = _psk31Typed;
+        var macro = typed ? "typed" : Psk31MacroToken.For(kind);
         var at = _psk31SendAtHz;
 
         _psk31Macro = Psk31Macro.Cq;
@@ -14885,17 +14887,29 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        // **A TYPED LINE GETS SIXTY SECONDS AND A MACRO GETS THIRTY** (work instruction 357
+        // task 3). Thirty was chosen for R2's four macros, whose longest is the report to a
+        // compound callsign at 28.19 s; it is far too short for a sentence somebody typed.
+        // **The cap travels on the send rather than being a constant everybody shares**, so
+        // raising it for the one thing that needs it does not raise it for the rest.
         var composed = Psk31Modulator.Compose(
-            wanted, _transmitSampleRate, offsetHz, _settings.TransmitDrivePeak);
+            wanted,
+            _transmitSampleRate,
+            offsetHz,
+            _settings.TransmitDrivePeak,
+            typed ? LongestTypedSeconds : OperatorSend.LongestUnslottedSeconds);
 
         // **WHAT WAS COMPOSED, BEFORE ANYTHING CAN REFUSE IT** (§R13). The length and the
         // seconds, never the text (§2.1).
+        // **THE CAP IN THE RECORD IS THE ONE THIS SEND WAS HELD TO** (R13). A line saying
+        // thirty beside a typed send bounded at sixty would be a record of a rule that was
+        // not applied.
         Psk31Events.SendComposed(
             _telemetry,
             macro,
             wanted.Length,
             composed.Seconds,
-            OperatorSend.LongestUnslottedSeconds,
+            composed.Cap,
             offsetHz);
 
         SendStage.Entered(
@@ -15067,6 +15081,20 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private bool _psk31Typed;
 
+    /// <summary>The most a line the operator typed may be, framed, on the air.</summary>
+    /// <remarks>
+    /// <para>**SIXTY SECONDS, AND IT IS THIS UNIT'S NUMBER** (work instruction 357 task 3,
+    /// which says so). Thirty was measured for §R2's four macros and the longest of them is
+    /// the report to a compound callsign at 28.19 s. A sentence somebody typed is a different
+    /// thing: sixty seconds at 31.25 baud is about two hundred characters of text, which is a
+    /// paragraph rather than a telegram.</para>
+    /// <para>**IT IS RAISED FOR THE TYPED LINE ALONE.** Every macro is still held to thirty,
+    /// because the cap exists so a composing fault cannot leave a carrier on the air, and
+    /// doubling it for everything would double that exposure to buy something only one send
+    /// needs.</para>
+    /// </remarks>
+    internal const double LongestTypedSeconds = 60;
+
     /// <summary>Send the line the operator typed on a station's card.</summary>
     /// <param name="card">Whose card the Send was pressed on.</param>
     /// <remarks>
@@ -15134,6 +15162,22 @@ public partial class MainWindowViewModel : ObservableObject
         {
             // **REFUSED, AND HIS WORDS STAY WHERE HE CAN EDIT THEM.** `DigitalSendLine`
             // already carries the reason, in the operator's words.
+            //
+            // **THE CARD SAYS IT IN CHARACTERS, WHICH IS WHAT HE CAN SHORTEN** (work
+            // instruction 357 task 3). The send line is about seconds of audio, and nobody
+            // types seconds.
+            var seconds = Psk31Modulator.SecondsFor(framed);
+
+            if (seconds > LongestTypedSeconds)
+            {
+                card.TypedNote =
+                    "Too long to send: " + clean.Length.ToString(CultureInfo.InvariantCulture)
+                    + " characters comes to " + seconds.ToString("0.#", CultureInfo.InvariantCulture)
+                    + " s on the air, and the most a typed line may be is "
+                    + LongestTypedSeconds.ToString("0", CultureInfo.InvariantCulture)
+                    + " s. Nothing was sent. Shorten it and press Send again.";
+            }
+
             return;
         }
 
