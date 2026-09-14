@@ -767,8 +767,15 @@
     on the drawn category pages at 1400 and 1920 (the arbiter's rulings 17 to 23). Tests and a drawn
     fact the view model already holds; nothing on the radio side moves.
   -->
+  <!--
+    1.13.32 -> 1.13.33, UNIT 346 TASK 0. A PATCH, STEP 1 AGAIN: the Modes next card says where each
+    unworked mode lives - CW at the place a band button already lands (HM-DEC-110) - and who is
+    there as far as the CQ list can know, never an empty row; and the no-clip and no-white-card
+    measurement taken over all seven continent pages and the Modes page with its next card (the
+    arbiter's rulings 24 to 28). Screen only; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.32</Version>
+    <Version>1.13.33</Version>
   </PropertyGroup>
 
   <!--
