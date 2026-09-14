@@ -2,214 +2,241 @@
 READ IN THIS ORDER.
 
 A. The phase goal - the screen, done right. Steps 0 to 2 done, 3 waits on Tim.
-B. No criterion changes state; this unit clears the blocker under 354 item 2.
+B. No criterion changes state; this unit clears the blocker under R2, overruled.
 C. The report last, and section 4 raises 5 items on top of the carried queue.
 ```
 
 ```
-UNIT:       356 - complete at task 5 of 5, none dropped - 2026-09-14 10:02
-PHASE GOAL: The screen, done right.
-UNIT GOAL:  Hamlet opens with every control on the window; the sentence after a
-            send says what it measured and never sends Tim to the radio; no test
-            constructs a network client.
-ADVANCED:   no
-NUMBER:     sizes with CQ on the window 8 of 9 -> 9 of 9; operator-facing strings
-            naming a meter on the radio 1 -> 0
+UNIT:       357 - complete at task 5 of 5, none dropped - 2026-09-14 10:57
+PHASE GOAL: The screen, done right, with PSK31's carried work under it.
+UNIT GOAL:  Right-click any station's row and get his card; type a line on it and
+            one click sends it, framed with the callsigns and the hand-back; read
+            a whole message on hover.
+ADVANCED:   blocker
+NUMBER:     things Tim can send on PSK31 4 -> 5 (a typed line); cap 30 s -> 60 s
+            for typed, and still 30 s for every macro
 DRIFT:      carried
 ```
 
 **Every appearance claim is computed, not seen**, and nothing here is evidence about the
-radio: this machine has none and every ALC reading is handed in (FACT-004, FACT-006).
+radio: a fake port and a fake sink on a machine with none (FACT-004, FACT-006).
 
 ## 1. What Claude did
 
-Gate passed on all five. Branch **`main`**, six commits, pushed, nothing left uncommitted.
-Version **1.13.42 → 1.13.43**.
+Gate passed on all five. Branch **`main`**, seven commits, pushed, nothing left uncommitted.
+Version **1.13.43 → 1.13.44**.
 
 ### Task 0 — the record
 
-`PHASE_PLAN.md` gains **R28** from Tim's own words of 2026-09-14, asked which of two ways
-Stop should behave and answering *"A, the way it has been"*: **Stop is always pressable and
-never grey.** It builds nothing, because unit 355 already built it that way and raised the
-contradiction with its own instruction as an ask. `PHASE_OUTCOME.md` gains the `UNIT 356`
-entry under step 3.
+`PHASE_PLAN.md` gains **R29** from Tim's words of 2026-09-14: **typed text goes on the air
+from a station's card, framed by Hamlet.** It withdraws the no-keyboard line of PSK31 plan
+**R2** and nothing else of it: the four macros stand and their words stand. What the ruling
+writes down so a later unit cannot take it back quietly is what did **not** change — one
+click one transmission, one keying sequence, the certainty gate on Report and Confirm, and
+the rule that typed text never enters the record.
 
-### Task 1 — CQ is on the window at every size
+### Task 1 — a right-click on any row makes that station's card
 
-At 1100×780, the size Hamlet opens at, **CQ was drawn at y 800 and the mode chip strip at
-y 847, below a window 780 tall.** Only that one of the nine sizes was wrong.
+Until now a card appeared only where a station had certainly addressed him, or where Hamlet
+had already sent to one. **Neither is true of two people talking to each other**, which is
+exactly what he was reading off 14.070.
 
-**The cause, measured.** The top row is an `Auto` row in a grid whose working panels take
-the star, so the neighborhood card could ask for any height it liked and the star row simply
-went to nothing. Its body measured **583 px** at that width and the row **631**, against
-198, 204, 224, 250, 278 and 293 px everywhere else.
+`Psk31StationOn` asks only that the parser named somebody and that somebody is not him.
+**`Psk31CqOn` is untouched and still strict**, because what it gates is a transmission:
+answering a callsign that did not read cleanly would put a neighbour's call on the air.
+Opening a card sends nothing, so it asks less. A second click cannot duplicate the card, and
+brings it to the front.
 
-**The rule, stated by the instruction and marked as this unit's own:** the working panels
-give up height first, then the top row, and the send area is never the thing that leaves.
-`MaxHeight` on the top row is how the top row gives its share up, and the card body scrolls
-inside the cap so nothing but detail is hidden (§0.5).
+### Task 2 — the text block, and one click sends it framed
 
-**300 px is measured rather than chosen** — it is above every sound reading, so it is inert
-at the eight sizes that were already right and binds only where the card ran away. **CQ moves
-from y 800 to y 469, the tabs from 847 to 516, and the panels from 0 px to 141.**
+Under the turn indicator: a text block and a Send button. One click composes
 
-### Task 2 — the ALC sentence
+```
+<HIS> de KC3QIS  <what he typed>  BTU <HIS> de KC3QIS K
+```
 
-Tim's screen, after an FT8 send to HA1BF: *"this message is incorrect."* **Two faults were
-named in the instruction and the trace found a third.**
+and hands it to `SendMessage` — **the same door the four macros go through**: the same
+composer, the same arming, the same `Ft8TransmitSequence` with the one `PttOn` site, the same
+`Stop`. **No second keying path exists to assert about.**
 
-1. The sentence was composed in the send's `finally`, **before** `LearnTheAlcFrom` stored the
-   reading it was about, so the send that set the reference could only ever say no reference
-   existed.
-2. It told him to look at the ALC bar on the radio and turn a knob, which **R11 forbids
-   outright**.
-3. **The FT8 path composed no sentence at all.** `ReadTheAlc` had one call site, in
-   `FirePsk31Async`, so an FT8 send taught the reference silently and whatever stood on the
-   panel was left from some earlier PSK31 send.
+**It is not gated on certainty.** Where the parser is unsure whose turn it is the card says
+so beside the button and the click sends anyway; the block is withheld only where it is
+*certainly* the other station's turn. A whitespace line sends nothing. A character outside
+the varicode is dropped and counted rather than refusing the whole line.
 
-**Learn, then say.** `LearnTheAlcFrom` returns whether it stored, and the FT8 path now calls
-`ReadTheAlc` with that answer. Four forms, one line each, printed whole in section 3, and
-**not one names a meter or the radio**.
+### Task 3 — the cap fits a conversation
 
-### Task 3 — no client under test
+**The cap travels on the send rather than being a constant every send shares.**
+`UnslottedTransmission` carries `LongestSeconds`, defaulting to the old thirty. A typed line
+asks for sixty; **every macro is still held to thirty.**
 
-`PotaActivitySource` and `SotaActivitySource` kept the ingredients and **make the client on
-the first fetch**, the seam the license lookup took in unit 355. The handed-in-client
-constructor is unchanged, `Dispose` disposes only what exists, and the lock the fetch already
-holds serves the creation too.
+Raising the constant would have been the smaller diff and the worse change: the cap exists
+so a composing fault cannot leave a continuous carrier on the air, and doubling it for every
+unslotted send would have doubled that exposure to buy something only one send needs.
 
-### Task 4 — the sheet
+### Task 4 — the whole message
 
-`docs/unit349-what-tim-looks-at.md`: the 1100×780 row re-measured, **item 28 recorded as
-fixed**, **item 29 rewritten rather than removed** because a cap is not a cure, and section
-2.2 gains the four ALC sentences word for word.
-
-### Three tests were holding the old behavior in place
-
-Worth its own line, because one of them was holding a **rule-breaking** sentence:
-
-- `TheAlcLearnsFromFt8Tests` pinned two phrases of the superseded wording. Updated to the new
-  words; the claim it guards is unchanged.
-- **`ThePowerIsOfferedTests` required `turn the transmit drive` in the sentence for a reading
-  with no reference behind it.** That is R15 broken twice over: with no reference Hamlet
-  reports and judges nothing, and an instruction to turn something down is a judgement that
-  the reading is too high. Corrected.
-- `TheTestsStayOffTheNetworkTests` carried a paragraph saying the no-client criterion did not
-  hold and was not being made to. Replaced by the assertion.
+Hover gives the full text, wrapped, with the station and the time; a click opens the same
+thing in a light-dismiss box with an X. Ended rows too.
 
 ### Nothing was recorded under §12.1
 
-No `DECISIONS.md` entry was written. R28 is Tim's ruling transcribed into `PHASE_PLAN.md`, as
-task 0 directed, not a session's own.
+R29 is Tim's ruling transcribed into `PHASE_PLAN.md`, as task 0 directed. No `DECISIONS.md`
+entry was written.
 
 ### Tests
 
-**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155). A status
-line before every `dotnet` command.
+**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155).
 
 | Run | Result |
 | --- | --- |
-| Carry-forward, app, before | **112 of 112** |
+| Carry-forward, app, before | **127 of 127** on the third run — see section 4 item 1 |
 | Carry-forward, engine, before | **86 of 86** |
-| `TheStopIsAlwaysOnScreenTests` extended (task 1) | **5 of 5**, watched failing 1 of 5 first |
-| `TheAlcSentenceTests` (new, task 2) | **5 of 5**, watched failing 3 of 5 first |
-| `TheTestsStayOffTheNetworkTests` extended (task 3) | **5 of 5**, watched failing 1 of 5 first |
-| Final app run, carry-forward plus every name touched | **140 of 140** |
-| Final engine run, carry-forward plus the spot sources | **102 of 102** |
+| `ThePsk31ExchangeTests` extended (task 1) | **7 of 7**, watched failing 2 first |
+| `TheTypedLineGoesOutTests` (new, tasks 2 and 3) | **9 of 9**, watched failing 3 then 3 first |
+| `TheWholeMessageTests` (new, task 4) | **4 of 4** |
+| Final app run, carry-forward plus every name touched | **148 of 148** |
+| Final engine run | **86 of 86** |
 
-**198 green before, 242 after, nothing new red.** One inherited red is named in section 4
-and was proved red **before** this unit changed anything.
+**213 green before, 234 after, nothing new red.** `TheUnslottedSendTests`,
+`TheFt8AndFt4SendsAreByteIdenticalTests` and `TheStopIsAlwaysOnScreenTests` are green and
+**unedited**.
 
 ## 2. What the owner should expect
 
 **The build is clean** — zero warnings, zero errors.
 
-Open Hamlet at its usual size and the CQ button is there. It was being drawn twenty pixels
-below the bottom edge of the window, along with the mode tabs, because the neighborhood card
-at that width wanted six hundred pixels of height and nothing was stopping it taking them;
-the top row is now capped, the card scrolls inside the cap if it needs to, and the three
-working panels get back a hundred and forty pixels they never had at that size. After a send,
-the line about your radio's level control now says one true thing and stops: on the send that
-sets the reference it names it, on a later send it says you are inside it, and on a PSK31 send
-that is too hot it points at the transmit drive on the screen. It will never again tell you
-to look at a meter on the radio or turn a knob there, which is the thing it did on your screen
-yesterday.
+Right-click any station's row in the decoded list and his card opens, whether or not he was
+calling CQ and whether or not his carrier is still up; right-click it again and the card
+comes to the front rather than a second one appearing. On the card, under the line that says
+whose turn it is, there is now a box you can type into and a Send button. One click sends one
+transmission: Hamlet puts his callsign and yours in front of your words and `BTU <HIS> de
+KC3QIS K` behind them, so the two things that are easy to forget on a keyboard mode are never
+yours to remember, and what is in the box is exactly what goes out between them. The box tells
+you how many seconds your line will take as you type it, refuses past sixty with the character
+count so you know how much to cut, and **Stop stops a typed send exactly as it stops a CQ** —
+it is the same keying path, not a new one. Hovering a row now shows the whole of what a
+station said rather than the first few words, and clicking the text opens it in a box you can
+dismiss.
 
-**What will look wrong and is not.** At 1100×780 the trace still prints a 623 px top row, and
-it is right to: the card still asks for that much and is scrolling inside a 300 px cap rather
-than having been made smaller. The panels at that size are 0.217 of the height below the pills,
-which is better than the 0.000 they were and still short of R26's half.
+**What will look wrong and is not.** The block is missing on a card when Hamlet is certain
+the other station is still sending. Where it is unsure, the block is there with a word saying
+so, and the click still sends: that is deliberate.
 
 **Pushed to `main`.**
 
 ## 3. What you should see
 
-**The four ALC sentences, word for word:**
+**One framed line, exactly as it would go out:**
 
 ```
-set the reference
-  Your radio's level control read 62 of 120 during this send. That is Hamlet's
-  reference from now on, and a PSK31 send that reads well above it will get a
-  sentence here. Nothing for you to do.
+you type   Nice signal here in Trafford, running 40 watts
 
-inside it
-  Level 58 of 120, inside the 62 Hamlet measured on a clean FT8 send. Nothing
-  for you to do.
-
-past it by the margin, on PSK31
-  Your radio is holding this signal back: its level control read 90 of 120
-  against the 62 Hamlet measured on a clean FT8 send, and that is what makes
-  PSK31 spread into the people either side of you. Turn the transmit drive on
-  this screen down one step and send again.
-
-no reference yet
-  Your radio's level control read 62 of 120 during this send. Hamlet has no
-  reference to compare that with yet and is not judging it, and it takes one
-  from your next FT8 or FT4 send. Nothing for you to do.
+goes out   EI4GNB de KC3QIS  Nice signal here in Trafford, running 40 watts  BTU EI4GNB de KC3QIS K
+           21.6 s of PSK31
 ```
 
-**What it said before, on your screen:**
+**The cap, both sides of it:**
 
 ```
-Your radio's own level control read 62 out of 120 while that went out. Hamlet
-has not yet seen an FT8 or FT4 transmission on this radio to compare it with,
-so it is not judging it for you: look at the ALC bar on the radio, and if it
-goes past the marked zone, turn the transmit drive above down one step and
-send again.
+190 characters   48.7 s on the air                     sent
+260 characters   87.1 s on the air, too long to send   refused, nothing keyed
+
+the card says: Too long to send: 260 characters comes to 87.1 s on the air, and
+the most a typed line may be is 60 s. Nothing was sent. Shorten it and press
+Send again.
+
+a macro's cap is 30 s and a typed line's is 60 s
 ```
 
-**The window at 1100×780, before and after:**
+**The record, with none of his words in it:**
 
 ```
-before   DigitalSendCqButton   290,800  54 x 22   whole False
-         DigitalModeChipStrip  222,847 250 x 18   whole False
-         TopRow                 16,140 1068 x 631
-         panels 0 px
-
-after    DigitalSendCqButton   290,469  54 x 22   whole True
-         DigitalModeChipStrip  222,516 250 x 18   whole True
-         TopRow                 16,140 1068 x 300
-         panels 141 px
+{"macro":"typed","characters":77,"seconds":18.75,"capSeconds":60,"withinCap":true,"offsetHz":1234}
+{"reason":"cap","macro":"typed","stage":"arm"}
 ```
 
-**And the nine sizes, after:**
+The test types *meet me behind the barn at midnight* and then scans every line of the file for
+*midnight*, *barn*, `EI4GNB` and `KC3QIS`. None of them is there.
+
+**A right-click on two strangers talking, which is what he was reading:**
 
 ```
-1920 x 1040  CQ y 367   1100 x 780  CQ y 469   1400 x 1040  CQ y 393
- 900 x 620   CQ y 462   1280 x 720  CQ y 447   1920 x 1017  CQ y 367
-1366 x 728   CQ y 419   1536 x 824  CQ y 373   2560 x 1400  CQ y 367
-
-the send area is 22 px tall at every one of them, 23 at 900 x 620
+row    : 1234 Hz  CQ CQ CQ DE F4DIA F4DIA F4DIA K / F4DIA DE EI4GNB EI4GNB K
+reading: Answer, speaker EI4GNB
+cards  : 1 card(s) EI4GNB [Unknown]
 ```
 
-**No client under test:**
+**And the text block's offer:**
 
 ```
-after construction: POTA client made False, SOTA client made False
-after one fetch:    POTA client made True
+Unknown                can type True
+His turn               can type False
+His turn, a guess      can type True
+Your turn              can type True
 ```
 
 ## 4. What's blocking us
+
+No criterion changes state. Five items.
+
+**1. The app carry-forward list is not stable run to run, and it got worse this unit.**
+
+*No ruling wanted; a finding, and it firms up unit 355 item 6.* Three runs of the same filter
+before anything was changed: the first failed `TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning`, the second failed **four different tests**
+(`ThePsk31CqGoesOutTests.ASecondPressRefreshesTheReceiptAndSendsAgain` and three in
+`TheStopIsAlwaysOnScreenTests`), and the third was 127 of 127. **Every one of them passed when
+run alone.** Parallelism is already off — `TestParallelism.cs` disables it assembly-wide — so
+this is state or timing leaking between headless-window tests in one sequential run, not two
+threads fighting. **It makes a green baseline a thing you have to run three times to believe**,
+and it is the reason this report's "before" number names which run it came from.
+
+**2. The box's head names the station only where the parser named one, and on ordinary
+conversational text it often does not.**
+
+*No ruling wanted; a finding.* `WholeMessage` puts `Sender` above the text, and `Sender` is
+the speaker of the latest **complete** message. Writing task 4's test, three different
+plausible transcripts of a real ragchew line produced an empty `Sender`, so the box showed the
+time and the words with nobody's name on them. **The box does not go looking for a callsign in
+the text itself** (§0.0) — a station Hamlet has not named is not named there either — so what
+is missing is upstream, in when the splitter decides a message has finished. Worth a look
+before somebody reads a box a week later and cannot tell whose words those were.
+
+**3. `ADVANCED: blocker` has nowhere to go in `PHASE_OUTCOME.md`.**
+
+*No ruling wanted; a mismatch, reported and not repaired.* Task 0 asks for the entry to carry
+`ADVANCED: blocker`. `outcome-entry.py`'s `FIELDS` is twelve names and `ADVANCED` is not one
+of them, and no entry in the file has ever carried it. It is in this report's header block,
+where §12 defines it, and the entry says *clears a blocker* in its prose as every earlier unit
+has.
+
+**4. The typed line is not in the conversation the card reads.**
+
+*No ruling wanted; a finding about what the card will say next.* A macro goes through
+`RememberWhatWeSent`, which parses it and files it, so the turn indicator moves when Hamlet
+answers. **A typed line does not**: it is not a macro, `Psk31ExchangeParser` would read its
+frame as an ordinary over, and whether a free sentence should move the turn is a question
+nobody has ruled. The card is refreshed after a typed send, so the screen is consistent; what
+it is not is *aware* that he just spoke. Left deliberately.
+
+**5. §2's tool facts, checked again.**
+
+*No ruling wanted; a mismatch report.* **Apostrophes in a quoted heredoc broke again**, exactly
+as §2 says, on the first attempt at task 2's engine change; that work moved into script files.
+**Python ran**, against §2, as it has for four units. `rm` was not needed. `tools/status.sh`
+was not refused. **One new tool fact worth writing down**: a `sed` insertion that lands between
+an XML doc comment and the member it documents produces `CS1572`/`CS1573` and fails the build,
+because warnings are errors here. It happened four times this unit. Anchor on the doc comment's
+first line, not the signature.
+
+### Asks still outstanding - carried from unit 356's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 356's, from its line under `## 4. What's blocking us` to its end, as
+committed in `9db74913`, with only that top-level heading dropped so this report keeps four
+sections. **Its item 2** — `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow`
+red — is neither answered nor re-measured here; it is not on the carry-forward list, and this
+unit did not run it.
+
 
 No criterion changes state. Five items.
 
