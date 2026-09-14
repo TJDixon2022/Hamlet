@@ -4331,21 +4331,60 @@
                                          starts. A button that said "four slots"
                                          while keeping thirty raw seconds would
                                          be describing work nobody had done. -->
-                                    <Button x:Name="DigitalCapturePress"
-                                            Content="keep the last 30 seconds"
-                                            FontSize="11"
-                                            Padding="10,3"
-                                            Command="{Binding CaptureDigitalCommand}"
-                                            Background="{StaticResource HmSlateTintBrush}"
-                                            BorderBrush="{StaticResource HmSlateEdgeBrush}"
-                                            BorderThickness="1"
-                                            Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <!-- **THE PSK31 CAPTURE, BESIDE THE OLD ONE AND
+                                             NOT INSTEAD OF IT** (work instruction 344
+                                             task 1). The thirty-second ring is the FT8
+                                             diagnostic press and keeps what has already
+                                             gone past; this one records forward for two
+                                             minutes, at the device rate, before Hamlet's
+                                             resampler, because the demodulator has never
+                                             once been proved against audio off the air.
+                                             It shows only on PSK31: it is that mode's
+                                             open question. -->
+                                        <Button x:Name="DigitalPsk31CapturePress"
+                                                Content="{Binding Psk31CaptureLine}"
+                                                FontSize="11"
+                                                Padding="10,3"
+                                                Command="{Binding CapturePsk31Command}"
+                                                IsVisible="{Binding HasPsk31Capture}"
+                                                Background="{StaticResource HmSlateTintBrush}"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
+
+                                        <Button x:Name="DigitalCapturePress"
+                                                Content="keep the last 30 seconds"
+                                                FontSize="11"
+                                                Padding="10,3"
+                                                Command="{Binding CaptureDigitalCommand}"
+                                                Background="{StaticResource HmSlateTintBrush}"
+                                                BorderBrush="{StaticResource HmSlateEdgeBrush}"
+                                                BorderThickness="1"
+                                                Foreground="{StaticResource HmTextPrimaryBrush}" />
+                                    </StackPanel>
                                 </ctl:CollapsiblePanel.HeaderAction>
 
-                                <ctl:WaterfallControl MinHeight="180"
-                                                      Source="{Binding DigitalSpectrum}"
-                                                      BandLowHz="200"
-                                                      BandHighHz="3000" />
+                                <DockPanel LastChildFill="True">
+                                    <!-- **WHERE THE FILE WENT, IN WORDS HE CAN FOLLOW**
+                                         (work instruction 344 task 1). The path is on the
+                                         screen and never in the telemetry: a capture
+                                         folder under `%AppData%` carries the account
+                                         name, which is a person (HM-DEC-018, §2.1). -->
+                                    <TextBlock x:Name="DigitalPsk31CaptureWhere"
+                                               DockPanel.Dock="Bottom"
+                                               Margin="0,6,0,0"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Text="{Binding Psk31CaptureWhere}"
+                                               IsVisible="{Binding HasPsk31CaptureWhere}"
+                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                    <ctl:WaterfallControl MinHeight="180"
+                                                          Source="{Binding DigitalSpectrum}"
+                                                          BandLowHz="200"
+                                                          BandHighHz="3000" />
+                                </DockPanel>
                             </ctl:CollapsiblePanel>
 
                             <!-- **THE SEND AREA LEFT THIS GRID IN WORK INSTRUCTION 338**

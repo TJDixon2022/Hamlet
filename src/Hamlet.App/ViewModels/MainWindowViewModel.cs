@@ -343,6 +343,8 @@ public partial class MainWindowViewModel : ObservableObject
     // **AND THE GREEN ZONE'S LIVE LINE, WHICH NAMES THE SUB-MODE AND CARRIES THE STRAY
     // NUDGE** (work instruction 331 task 4).
     [NotifyPropertyChangedFor(nameof(GreenZone))]
+    // **AND THE CAPTURE PRESS, WHICH IS PSK31'S ALONE** (work instruction 344 task 1).
+    [NotifyPropertyChangedFor(nameof(HasPsk31Capture))]
     private string? _chosenDigitalMode;
 
     /// <summary>True where the slot clock is drawn.</summary>
@@ -2502,6 +2504,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31At += wanted;
 
+        // **THE CAPTURE TAKES THE DEVICE STREAM, AND IT TAKES IT HERE** (work instruction
+        // 344 task 1, §10). One line above the resampler, because a capture taken below it
+        // can only ever prove the resampler right, and the question is what the radio sent.
+        FeedPsk31Capture(_psk31Buffer.AsSpan(0, wanted), tap.SampleRate);
+
         // **THROUGH THE RESAMPLER, WHATEVER THE DEVICE GAVE.** At 8 kHz it hands the
         // samples straight back; at anything else it filters them onto the grid and
         // carries its phase from one lump to the next, so the answer does not depend on
@@ -2512,6 +2519,203 @@ public partial class MainWindowViewModel : ObservableObject
 
         NotePsk31(tap);
     }
+
+    /// <summary>What the capture press reads when nothing is being kept.</summary>
+    internal const string Psk31CaptureIdle = "Capture 2 minutes";
+
+    /// <summary>The recorder, or null where nothing has been pressed yet.</summary>
+    /// <remarks>
+    /// **THE WHOLE REASON THIS UNIT EXISTS** (work instruction 344). Every fixture the
+    /// PSK31 demodulator has ever been proved against was made by `reference-modem.py`
+    /// on a machine with no radio (FACT-004, FACT-006). On 2026-09-13 the first row off
+    /// 7.070 reached the screen garbled and nothing in the tree could say why, because
+    /// no audio off the air had ever been through it.
+    /// </remarks>
+    private Psk31Capture? _psk31CaptureRecorder;
+
+    /// <summary>The carriers held when the capture started, for its finished event.</summary>
+    private IReadOnlyList<Psk31ChannelState> _psk31CaptureHeld = [];
+
+    /// <summary>What the capture press says right now.</summary>
+    [ObservableProperty]
+    private string _psk31CaptureLine = Psk31CaptureIdle;
+
+    /// <summary>Where the last capture went, in words, or "" where none has been made.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasPsk31CaptureWhere))]
+    private string _psk31CaptureWhere = "";
+
+    /// <summary>True where there is a path to show.</summary>
+    public bool HasPsk31CaptureWhere => Psk31CaptureWhere.Length > 0;
+
+    /// <summary>True where the capture press belongs on the screen.</summary>
+    public bool HasPsk31Capture => IsPsk31Chosen;
+
+    /// <summary>Where a PSK31 capture is written.</summary>
+    internal static string Psk31CaptureFolder => CaptureFolder;
+
+    /// <summary>Start a capture, or stop the running one early and keep what it has.</summary>
+    /// <remarks>
+    /// <para>**ONE BUTTON, TWO MEANINGS, AND THE LABEL SAYS WHICH** (§0.5.1). A press
+    /// while nothing is running starts one; a press while one is running keeps what it
+    /// has rather than throwing it away, because the operator pressing a second time has
+    /// heard what he wanted and does not want to wait out the clock.</para>
+    /// <para>**IT RECORDS AND DECODES NOTHING** (§0.2, §10). Nothing here keys, arms,
+    /// composes or tunes; the receive path is untouched and the samples it takes are a
+    /// copy.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void CapturePsk31()
+    {
+        if (_psk31CaptureRecorder is { IsRunning: true })
+        {
+            FinishPsk31Capture(earlyStop: true);
+            return;
+        }
+
+        _psk31CaptureRecorder = new Psk31Capture();
+        _psk31CaptureRecorder.Start();
+
+        // **WHAT WAS BEING HELD WHEN IT STARTED**, so the file and the record can be
+        // matched afterwards. A capture made while four stations were held is evidence
+        // about four stations; one made on an empty band is evidence about the band.
+        _psk31CaptureHeld = _psk31?.States ?? [];
+
+        Psk31CaptureWhere = "";
+        Psk31CaptureLine = SayPsk31Capture(Psk31Capture.Seconds);
+
+        Psk31Events.CaptureStarted(
+            _telemetry,
+            FrequencyHz,
+            // **THE RESAMPLER IS MADE ON THE FIRST TICK, AND A PRESS CAN COME BEFORE
+            // ONE** (work instruction 344 task 1, found by the test). The tap knows the
+            // device rate as soon as a single lump has arrived, so it is asked second;
+            // where neither knows it the field is absent rather than zero (§0.0), and
+            // the finished event carries the rate the file was actually written at.
+            _psk31Resampler?.DeviceSampleRate
+                ?? (TapForTests ?? _decoder?.Tap)?.SampleRate
+                ?? 0,
+            Psk31Capture.Seconds);
+    }
+
+    /// <summary>Hand the recorder a piece of the device stream.</summary>
+    /// <param name="samples">The samples, as the device handed them over.</param>
+    /// <param name="sampleRate">The rate they arrived at.</param>
+    private void FeedPsk31Capture(ReadOnlySpan<float> samples, int sampleRate)
+    {
+        if (_psk31CaptureRecorder is not { IsRunning: true })
+        {
+            return;
+        }
+
+        var running = _psk31CaptureRecorder.Add(samples, sampleRate);
+
+        if (!running)
+        {
+            FinishPsk31Capture(earlyStop: false);
+            return;
+        }
+
+        Psk31CaptureLine = SayPsk31Capture(_psk31CaptureRecorder.SecondsLeft);
+    }
+
+    /// <summary>Write what the recorder has, and say where it went.</summary>
+    /// <param name="earlyStop">True where a second press ended it before its time.</param>
+    private void FinishPsk31Capture(bool earlyStop)
+    {
+        var recorder = _psk31CaptureRecorder;
+
+        if (recorder is null)
+        {
+            return;
+        }
+
+        recorder.Stop();
+
+        var audio = recorder.Audio();
+
+        if (audio is null)
+        {
+            // **NO AUDIO ARRIVED, AND THAT IS SAID RATHER THAN A FILE WRITTEN** (§0.0).
+            // An empty WAV in the folder is worse than none: it looks like evidence.
+            Psk31CaptureLine = Psk31CaptureIdle;
+            Psk31CaptureWhere = "Nothing arrived while it was running, so no file was kept.";
+            _psk31CaptureRecorder = null;
+            return;
+        }
+
+        try
+        {
+            var folder = Psk31CaptureFolder;
+
+            Directory.CreateDirectory(folder);
+
+            // **THE NAME IS A TIMESTAMP AND NOTHING ELSE** (HM-DEC-018, §2.1). No
+            // callsign, no band, no station: a time, which is what matches it to a line
+            // in the record.
+            var path = Path.Combine(
+                folder,
+                "psk31-" + DateTime.UtcNow.ToString(
+                    "yyyy-MM-dd-HHmmss", CultureInfo.InvariantCulture) + ".wav");
+
+            WavAudio.Write(path, audio);
+
+            var bytes = new FileInfo(path).Length;
+
+            Psk31Events.CaptureFinished(
+                _telemetry,
+                audio.Duration.TotalSeconds,
+                bytes,
+                Psk31Capture.Fingerprint(path),
+                audio.SampleRate,
+                earlyStop,
+                _psk31CaptureHeld);
+
+            Psk31CaptureLine =
+                "captured · " + Clocked(audio.Duration.TotalSeconds);
+
+            Psk31CaptureWhere =
+                "Kept " + Clocked(audio.Duration.TotalSeconds) + " of receive audio at "
+                + audio.SampleRate.ToString("0", CultureInfo.InvariantCulture)
+                + " Hz in " + path
+                + ". Copy it into assets\\fixtures\\captured\\ and commit it, and the "
+                + "next change to the demodulator gets proved against real air instead "
+                + "of against audio this program made itself.";
+        }
+        catch (IOException error)
+        {
+            Psk31CaptureLine = Psk31CaptureIdle;
+            Psk31CaptureWhere = "Could not write the capture: " + error.Message;
+        }
+        catch (UnauthorizedAccessException error)
+        {
+            Psk31CaptureLine = Psk31CaptureIdle;
+            Psk31CaptureWhere = "Could not write the capture: " + error.Message;
+        }
+
+        _psk31CaptureRecorder = null;
+    }
+
+    /// <summary>The running label, with what is left on it.</summary>
+    /// <param name="left">Seconds still to record.</param>
+    private static string SayPsk31Capture(double left)
+        => "capturing · " + Clocked(left) + " left";
+
+    /// <summary>Seconds as minutes and seconds.</summary>
+    /// <param name="seconds">The count.</param>
+    private static string Clocked(double seconds)
+    {
+        var whole = (int)Math.Round(Math.Max(0, seconds));
+
+        return (whole / 60).ToString(CultureInfo.InvariantCulture)
+            + ":" + (whole % 60).ToString("00", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>Feed the capture from a test, without a tap.</summary>
+    /// <param name="samples">The samples a device would have handed over.</param>
+    /// <param name="sampleRate">The rate they arrived at.</param>
+    internal void FeedPsk31CaptureForTests(ReadOnlySpan<float> samples, int sampleRate)
+        => FeedPsk31Capture(samples, sampleRate);
 
     /// <summary>When the listener started, for the stopped event's duration.</summary>
     private DateTime _psk31StartedUtc;

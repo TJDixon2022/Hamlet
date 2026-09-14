@@ -647,6 +647,82 @@ public static class Psk31Events
             },
             TelemetryLevel.Info);
 
+    /// <summary>The operator pressed capture and the recorder started.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="dialHz">Where the radio was, or 0 where it is unknown.</param>
+    /// <param name="sampleRate">The device rate the audio is being kept at.</param>
+    /// <param name="seconds">How long it will run for unless it is stopped.</param>
+    /// <remarks>
+    /// **THE DEVICE RATE, BECAUSE THAT IS WHAT THE FILE WILL BE** (work instruction 344
+    /// task 1). The capture is taken before the resampler, so this is not the rate the
+    /// demodulators read at, and a reader matching a file to a session needs the one the
+    /// file carries.
+    /// </remarks>
+    public static void CaptureStarted(
+        ITelemetry? telemetry, long dialHz, int sampleRate, double seconds)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_capture_started",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["dialHz"] = dialHz > 0 ? dialHz : null,
+                ["deviceSampleRate"] = sampleRate > 0 ? sampleRate : null,
+                ["seconds"] = seconds,
+            },
+            TelemetryLevel.Info);
+
+    /// <summary>The recorder stopped and the file was written.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="seconds">How much audio it kept.</param>
+    /// <param name="bytes">How large the file is.</param>
+    /// <param name="sha256">Its fingerprint, lower-case hexadecimal.</param>
+    /// <param name="sampleRate">The rate the file was actually written at.</param>
+    /// <param name="earlyStop">True where a second press ended it before its time.</param>
+    /// <param name="held">The carriers held when it started, with their offsets and qualities.</param>
+    /// <remarks>
+    /// <para>**THE CARRIERS AS THEY WERE AT THE START**, so a file and a session can be
+    /// matched afterwards: a capture made while four stations were held is evidence about
+    /// four stations, and a capture made on an empty band is evidence about the band.
+    /// </para>
+    /// <para>**THE PATH IS NOT IN THE FILE** (HM-DEC-018, §2.1). It is on the screen, in
+    /// words the operator can follow. A capture folder under `%AppData%` carries the
+    /// account name, which is a person, and a fingerprint identifies the file without
+    /// naming anybody.</para>
+    /// </remarks>
+    public static void CaptureFinished(
+        ITelemetry? telemetry,
+        double seconds,
+        long bytes,
+        string sha256,
+        int sampleRate,
+        bool earlyStop,
+        IReadOnlyList<Psk31ChannelState> held)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_capture_finished",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["seconds"] = Math.Round(seconds, 2),
+                ["bytes"] = bytes,
+                ["sha256"] = sha256,
+
+                // **THE RATE THE FILE IS, MEASURED FROM THE FILE.** The started event
+                // asks the resampler, which may not exist yet when the press lands; this
+                // one is written from the audio that was kept and cannot be absent.
+                ["deviceSampleRate"] = sampleRate,
+                ["earlyStop"] = earlyStop,
+                ["carriersHeld"] = held.Count,
+                ["carriers"] = held
+                    .Select(c => new Dictionary<string, object?>(StringComparer.Ordinal)
+                    {
+                        ["offsetHz"] = Math.Round(c.OffsetHz, 1),
+                        ["quality"] = Math.Round(c.Quality, 3),
+                        ["open"] = c.Open,
+                    })
+                    .ToList(),
+            },
+            TelemetryLevel.Info);
+
     /// <summary>A number as the record spells it.</summary>
     internal static string Say(double value)
         => value.ToString("0.###", CultureInfo.InvariantCulture);
