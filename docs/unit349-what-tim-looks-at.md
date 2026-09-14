@@ -100,7 +100,7 @@ filter: `StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList`.*
 | Size | Top row (share of below the pills) | The three panels (share) | The three one top and bottom, to the status bar | Clipped callsign | Trimmed, clipped or cut text; anything off the window |
 |---|---|---|---|---|---|
 | 900 × 620, the smallest Hamlet allows | 285 px, 0.582 of 490 (297, 0.606) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the green block's left column 0 px wide: *20 m*, *14.074 MHz*, the mode, license and rule-of-thumb lines not drawn; *CW main street · 14.000–14.150* trimmed to 50 of 300 px; *nothing for you yet* 40 of 190; CQ on the window at y 462 (474); Stop in the status bar at 797, 563 (unit 355) |
-| 1100 × 780, the size Hamlet opens at | 623 px, 0.958 of 650 (653, 1.005) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the license line on 17 lines, the rule of thumb on 17 and *Digital · FT8 · yours to use* on 8, each breaking words; *14.074 MHz* needs 100 px in 40; **the tabs drawn from y 796 (826), and CQ at y 800 to 822 (830 to 852), below the window's bottom edge at 780**; Stop in the status bar at 997, 723, on the window (unit 355) |
+| 1100 × 780, the size Hamlet opens at | the row is capped at **300 px** by work instruction 356; the card still asks for 623 (653) and scrolls inside it | **141 px** (0.217), was 0 | yes | none of 2 rows on the plain window | the license line on 17 lines, the rule of thumb on 17 and *Digital · FT8 · yours to use* on 8, each breaking words; *14.074 MHz* needs 100 px in 40; **CQ now at y 469 and the mode tabs at y 516, both on the window**, were y 800 and y 847; Stop in the status bar at 997, 723 (unit 355) |
 | 1280 × 720 | 270 px, 0.458 of 590 (291, 0.493) | 103 px, 0.175 (82, 0.139) | yes | not measured | the license line 4 lines, the rule of thumb 4, the mode line 2, between words |
 | 1366 × 728 | 242 px, 0.405 of 598 (254, 0.425) | 139 px, 0.232 (127, 0.212) | yes | not measured | *not listening yet* trimmed to 20 of 170 px |
 | 1536 × 824 | 196 px, 0.282 of 694 (208, 0.300) | 281 px, 0.405 (269, 0.388) | yes | not measured | *not listening yet* 110 of 170 |
@@ -156,6 +156,29 @@ and the RF power offer, so no empty column stands under it*, and the top row kee
   runs warmer than voice. Hamlet can set your radio's transmit power to 50% for you. Nothing else on
   the radio changes, and nothing is set unless you press this.* It also holds *Set my power to 50%*,
   *I will set it myself*, and the ALC reference line.
+
+**What the sentence after a send says, word for word** (work instruction 356 task 2). Tim reported the
+old one incorrect on 2026-09-14: it was composed before the send it described had been counted, so an
+FT8 send that read 62 was told Hamlet had never seen an FT8 send, and it finished by telling him to look
+at the ALC bar on the radio and turn a knob. **No sentence here names a meter or the radio** (R11), and
+the reference is stored before the sentence is written (R15). Four forms, one line each:
+
+- **The send that sets or raises the reference** — *Your radio's level control read 62 of 120 during
+  this send. That is Hamlet's reference from now on, and a PSK31 send that reads well above it will get
+  a sentence here. Nothing for you to do.*
+- **A later send inside it** — *Level 58 of 120, inside the 62 Hamlet measured on a clean FT8 send.
+  Nothing for you to do.*
+- **A PSK31 send past it by the margin** — *Your radio is holding this signal back: its level control
+  read 90 of 120 against the 62 Hamlet measured on a clean FT8 send, and that is what makes PSK31 spread
+  into the people either side of you. Turn the transmit drive on this screen down one step and send
+  again.*
+- **No reference yet** — *Your radio's level control read 62 of 120 during this send. Hamlet has no
+  reference to compare that with yet and is not judging it, and it takes one from your next FT8 or FT4
+  send. Nothing for you to do.*
+
+*Source: `TheAlcSentenceTests`, 5 of 5, this tree; `TheAlcLearnsFromFt8Tests` 9 of 9 with two phrases of
+the superseded wording updated to the new words. The 62, 58 and 90 are the tests' own handed-in
+readings, and 120 is `Psk31AlcScaleTop`; the margin is 15.*
 - **The line's ink** is 4.61:1 on the rig panel's fill.
 - **The green block adds** *PSK31 lives at 14.070; you are at 14.074*, because the test tunes FT8's
   dial and then chooses PSK31 (unit 341 item 2).
@@ -572,17 +595,21 @@ One line each, with the report that found it.
     carried, and still an ask.*
 27. **The host draws text wider than your screen**, so wraps at 1400 are probably fewer for you. That
     is an inference. *Unit 337 section 2.*
-28. **At 1100 × 780, the size Hamlet opens at, CQ is drawn below the window.** The window's bottom edge
-    is at 780; CQ is 54 × 22 at y 800 on FT8, 830 on PSK31 and 816 on the plain window, under mode tabs
-    that start at y 796. **Stop is no longer there**: since work instruction 355 it is in the status bar at
-    997, 723, on the window at this size and at all nine (2.1). At 900 × 620 CQ is on the window, at y 462
-    (474 on PSK31). *Work instruction 354, `00454639`; CQ and Stop re-read by its trace in unit 355 at
-    `b5be0db9`.*
-29. **At 1100 × 780 the top row is 623 px, 0.958 of the 650 below the pills**, 452.7 px over 0.262; 653 px
-    (1.005) on PSK31. **The three panels are 0 px**, 325 px short of half. The green block is 218 px wide:
-    the license line takes 17 lines, the rule of thumb 17 and *Digital · FT8 · yours to use* 8, each
-    breaking words, and *14.074 MHz* needs 100 px in 40. The plain window: 620 px (0.954), panels 0.
-    *Work instruction 354, `00454639`.*
+28. **FIXED in work instruction 356 task 1: CQ is on the window at all nine sizes.** It was drawn at
+    y 800 at 1100 × 780, the size Hamlet opens at, under mode tabs starting at y 796, against a bottom
+    edge at 780. The top row is now capped at 300 px and the card scrolls inside the cap, so **CQ moves
+    to y 469 and the tabs to y 516**. Measured at all nine sizes on CQ, the mode tabs, Stop and the drive
+    note, with the send area's drawn height the same at every one:
+    `TheStopIsAlwaysOnScreenTests.AtEachOfTheNineSizesTheSendAreaIsWholeOnTheWindow`, 8 of 9 before and
+    9 of 9 after. *Work instruction 354, `00454639`; fixed by 356.*
+29. **At 1100 × 780 the card still asks for 623 px and is now capped at 300, and that is a cap and not
+    a cure.** The row it occupies is 300; the neighborhood card's own box is unchanged at 623 (653 on
+    PSK31) and scrolls inside it, so **the trace still prints 623** and it is right to. **The three
+    panels go from 0 px to 141 px** (0.217), which is 184 px short of R26's half rather than 325. The
+    green block is still 218 px wide, with the license line on 17 lines, the rule of thumb on 17 and
+    *Digital · FT8 · yours to use* on 8, each breaking words, and *14.074 MHz* needing 100 px in 40.
+    **Making the card fit rather than scroll is a wrapping and typography question and was not this
+    unit's.** *Work instruction 354, `00454639`; capped by 356, which measured the rest again.*
 30. **At 900 × 620 the top row is 285 px, 0.582 of the 490 below the pills**, 156.6 px over 0.262; 297 px
     (0.606) on PSK31. **The three panels are 0 px**, 245 px short of half. The green block's left column
     (`GreenZoneRegions`) is 0 px wide, so the band, frequency, mode line, license line and rule of thumb are
