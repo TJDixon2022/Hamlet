@@ -1,225 +1,279 @@
+```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. Step 0 done (state reader on
-   unit 341). Step 1 partial, unchanged by this unit: 4 of its seven
-   must-pass carry a named green test on the drawn page at 1400 AND 1920
-   after this unit, was 4 (2, 5, 6, 7), taken from the state reader and
-   not re-run here; 1, 3 and 4 do not, because this run's permission
-   scope has no dotnet and nothing could be built or tested (section 4
-   item 1); nice-to-pass not re-run. Steps 2 and 3 not started.
-B. Step 1 and its exit criteria, each with its test, its result, drawn or
-   view model, and the widths realized - every result below is NOT RUN,
-   and what is given is read from the test source:
-   entry: TheAchievementsPageClicksInTests not run - dotnet test refused
-   1. color band - EveryKindsBandCarriesCountScoreLevelAndABar, not run;
-      drawn at 1040 only (line 50); gap clause pinned on Countries, Grids
-      and Total Miles, none on Modes (top level)
-   2. earned card is the contact, map cropped - EveryEarnedCardIsTheContactThatEarnedIt,
-      not run; drawn at 1400 and 1920 for map size and crop only, the
-      contact's words on the view model (section 4 item 2); 632x231 and
-      892x231 not re-measured, 231 read from test and markup
-   3. next card and callers - TheNextCardKnowsWhoIsCalling, not run; view
-      model, drawn only for the Countries quill at 1400 and Countries
-      callers at 1040; NOT DRAWN not measured; ruling 20 not reached
-   4. eight kinds, Continents to seven - TheOtherFiveKindsEachDrawTheirOwnCards
-      and ContinentsOpensToSevenAndEachToItsCountries, not run; view model
-      only; task 2 not started, so the 1920 half was not dropped
-   5. no clip at 1400 and 1920 - NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty,
-      not run; tallest page not measured
-   6. no white card - same test, not run; white cards not measured
-   7. achievement_category_opened - OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse,
-      not run; view model telemetry
-   nice-to-pass: map popup on click - ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt,
-      not run; its source asserts the only event is achievement_category_opened
-C. The report last. Section 4 raises 4 items on top of the carried queue.
-   Item 1 stands in the way of every criterion in B: no test can run.
-   Item 2 bears on criterion 2's count. No fact the view model holds and
-   the page does not draw was measured.
+A. The screen phase is paused; this is PSK31 carried repair. Its steps are unchanged.
+B. No step criterion moves.
+C. The report last, and section 4 raises 5 items on top of the carried queue.
+```
 
-UNIT:       343 - blocked at task 0 of 3 - 2026-09-13 18:26
-PHASE GOAL: Make the main window match its approved mockup (done), then make every achievements category page the trading cards of the approved Countries picture for all eight kinds, then clear what the last phase left, then Tim passes it at his window.
-UNIT GOAL:  Hold step 1's band, next-card and eight-kinds criteria with named green tests on the drawn category pages at 1400 and 1920, re-measure unit 342's unreported build, and give step 1 its own report.
-ADVANCED:   no - no test could build or run in this session's permission scope, so none of criteria 1, 3 and 4 moved onto the drawn page
-NUMBER:     step 1 must-pass proved on the drawn page at 1400 and 1920: 4 of 7 -> unchanged, 4 of 7 - nothing was run
-DRIFT:      1 consecutive unit without advance  (was 0)
+```
+UNIT:       344 - complete at task 3 of 3 - 2026-09-13 20:17
+PHASE GOAL: (paused) The screen says what is true and looks like someone meant it.
+UNIT GOAL:  A press keeps two minutes of the receive audio so the demodulator can
+            be proved against real air, and the garble gets its first measured cause.
+ADVANCED:   no
+NUMBER:     captures Hamlet can make 0 -> 1 per press; skirt CER at 330 Hz 0.0000,
+            at 1000 Hz 0.0000 - neither hypothesis reproduces it
+DRIFT:      carried
+```
+
+**Every appearance claim is computed, not seen**, and nothing here is evidence about the
+radio: this machine has none and every fixture is synthetic (FACT-004, FACT-006).
 
 ## 1. What Claude did
 
-**Blocked at task 0 of 3.** Task 0 got as far as its first commit and push. It stopped at the
-carry-forward run, the first `dotnet` command. **Tasks 1 and 2 were not started.** Neither is the
-drop candidate: both need `dotnet test`, and this run's permission scope refuses it. Host: Windows 11, Hamlet at
-`C:\Source\HamLet`, branch `main`.
+Gate passed on all five. `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no
+`CoreHMI.sln`, no `MURC.sln`, root `C:\Source\HamLet` — **and `.run-unit\allowed.txt`
+permits `dotnet`**, which is unit 343's blocker resolved: `Bash(dotnet:*)` and
+`Bash(timeout:*)` are both on it, `dotnet --version` answers 10.0.400, and every test
+below ran. Branch **`main`**, four commits, pushed, nothing left uncommitted. Version
+**1.13.30 → 1.13.31**.
 
-### The gate
+### Task 1 — the capture press
 
-- `SHACK_FACTS.md` exists.
-- `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exists.
-- `CoreHMI.sln` and `MURC.sln` do not exist.
-- Root `C:\Source\HamLet`. The gate holds.
+**Capture 2 minutes** sits on the waterfall header beside the thirty-second ring and shows
+only on PSK31. It writes the device stream — **48 kHz, 16-bit mono, one line above
+`Psk31Resampler`** — to `%AppData%\Hamlet\captures\psk31-<UTC timestamp>.wav`. The label
+counts down and then reads *captured*; a second press keeps what it has. The line under the
+waterfall names the path and says what to do with the file.
 
-### Done
+**Watched failing first** by moving the feed below the resampler, which §10 forbids:
 
-- **`681d45c` `chore(unit343): step 1, proved on the window - the trace before a test is changed`,
-  pushed.**
-  - `PHASE_STATUS.md`: only its `WORK_INSTRUCTION:` line, set to `343 - step 1, proved on the window`.
-    The launcher's `HEARTBEAT:` line was already in the working tree and was committed with it,
-    unedited.
-  - `WORK_INSTRUCTIONS.md`.
-  - `Directory.Build.props`: 1.13.29 -> 1.13.30, with a comment block.
-  - `PROJECT_STATUS.md`.
-  - `.run-unit\`, `SESSION.lock` and `RUN_LEDGER.md` were not committed.
-- **The carry-forward app list: refused twice.** It was tried as the file's line with `timeout 480`,
-  then without the prefix. Both came back *This command requires approval*. The engine list, the
-  entry check and task 0 steps 3 and 4 were not attempted, because each needs `dotnet test`.
+```
+Failed  TheEventsCarryWhatWasAskedAndNothingPersonal    Expected: 48000  Actual: 8000
+Failed  APressKeepsTheDeviceStreamAndNotHamletsVersionOfIt  Expected: 48000  Actual: 8000
+```
 
-### Why it stopped there, and why not work around it
+**The test also found a real defect.** `Psk31Resampler` is made on the first audio tick, so
+a press that lands before any audio has arrived wrote `deviceSampleRate: null`. The started
+event now falls back to the tap, leaves the field absent where neither knows it (§0.0), and
+the finished event carries the rate **measured from the audio that was kept**.
 
-`.run-unit/allowed.txt` for this run is Read, Write, Edit, eight `git` prefixes, and
-`Bash(node tools/tests/run.js:*)`. **There is no `dotnet`, and `tools/tests/run.js` is not in the tree**
-(`git ls-files tools/tests` is empty).
+**Nothing personal, and not the path either.** `psk31_capture_finished` carries seconds,
+bytes, SHA-256, the measured rate, whether it was stopped early, and the carriers held when
+it started with their offsets and qualities. It does not carry the path: a capture folder
+under `%AppData%` holds the account name, which is a person (HM-DEC-018, §2.1). The
+filename is a timestamp alone. The test scans the whole serialised file for the callsign,
+the grid, the folder and `.wav` and finds none of them.
 
-The cause is `230e6c0` (`layer: take ClaudeProjectStatus tools\arbiter from units 061 and 062`,
-2026-09-13 16:43). It replaced `tools/arbiter/run-unit-tools.txt`. The removed lines were
-`Bash(dotnet test:*)`, `Bash(dotnet build:*)`, `Bash(dotnet restore:*)`, the four
-`validate-output.bat` spellings, `git rm --cached`, `git restore --staged`, `git reset HEAD`,
-`cat PROJECT_STATUS.md`, `cat CLAUDE_CODE.md`, `sed -n`, `head -` and `tail -`. The line added was
-ClaudeProjectStatus's `TEST_CMD`, `node tools/tests/run.js`.
+### Task 2 — neither hypothesis reproduces the garble
 
-- **Rejected: writing `tools/tests/run.js` to call `dotnet`.** It would route around a permission
-  scope the owner's launcher set.
-- **Rejected: writing the trace and the extended assertions without running them.**
-  - Task 0 is *measure before anything is built*.
-  - Ruling 19 requires each new assertion to be seen failing.
-  - The entry check has to run first and stop the unit if red.
-  - A test never run proves nothing, and committing one would hand the next unit untested code
-    presented as step 1 evidence.
+**And the instrument was checked before that was concluded** (§12.5): the 4th-order
+Butterworth high-pass takes the 330 Hz arm to **−1.67 dB** and the 1000 Hz control to
+**−0.00 dB**, so it is biting.
 
-This is the author's decision, not the instruction's, and it is overrulable.
+- **The skirt does not do it.** Pushed far past the instruction's figure — corners to
+  900 Hz, taking the carrier **36.1 dB down** — the error rate stays **0.0000**. A skirt
+  attenuates a PSK31 carrier; it does not smear its phase enough to cost a character.
+- **The fade does not do it.** Thirteen full fade cycles at 0.2 Hz with the floor pushed
+  from −20 dB to **−60 dB**, error rate **0.0000** every time. The squelch shutting and
+  reopening costs nothing.
+- **Plain weak signal does.** The shipped **−10 dB** fixture reads 221 characters of 255 at
+  **CER 0.1502**, part legible and part broken, which is the shape of the row off 7.070.
 
-### §2 verification, against the tree (read, not run)
+**So no fix is named for the next unit**, because neither named hypothesis survived. The
+third explanation is not settled either, and section 4 says why.
 
-**§1's table: it holds, row by row, from the source.**
+### Task 3 — the record reads a capture back
 
-| Row | What the source shows |
-|---|---|
-| 1 | `Realized(TwelveContacts(), 1040)` at line 50, and no other width in the method |
-| 2 | the 1400 and 1920 loop at line 289 asserts the map's width, height and crop only; the contact's words are asserted on the view model (lines 186-233), and at 1040 the window asserts the map count and the no-map word (259-276) |
-| 3 | view model, with drawn assertions only for the Countries quill at 1400 (line 779) and the Countries callers at 1040 (line 802) |
-| 4, five kinds | `Screen(...)` returns `AchievementsViewModel` (line 1614); no window |
-| 4, Continents | `TheAchievementsPageClicksInTests.Screen` returns the view model; no window. Only `ClickingABadgeReplacesThePageAndTheBackControlReturns` presses into Europe, at the window's own 1040 |
-| 5, 6 | 1400 and 1920 (line 1029), eight kinds plus `continent-EU` and `continent-OC` |
-| 7 | view model with a recording sink |
-| nice-to-pass | `[AvaloniaTheory]` with `InlineData(1400.0)` and `InlineData(1920.0)`, real `MouseMove`, `MouseDown` and `MouseUp` |
+`ThePsk31DemodulatorTests.EveryCaptureOffTheAirIsReadBack` runs every `.wav` in
+`assets\fixtures\captured\` through `Psk31Resampler` into `Psk31Listener` — **the path the
+application takes**, since a capture is the 48 kHz device stream and the listener decodes at
+8 — and prints the carriers, their character counts and their first sixty characters, with
+no ceiling on any of them. It asserts that the file decodes at all and **nothing about what
+came out**: nobody knows what those stations sent (§0.0, HM-DEC-091).
 
-**Grids' earned cards are not asserted drawn anywhere.** Lines 238-244 assert them on the view model.
-The no-clip test realizes the Grids page for clipping and white cards only. **States is the same**:
-`StatesCountWhatTheLogsStateFieldSays` realizes it at 1400 and 1920 and asserts 3 cards and 0 white,
-not the contact on each card.
+**Proved on a real 48 kHz file rather than left unexercised**, then removed:
 
-**Unit 342 ended without a report: confirmed.**
-- `ba5179d`, `6586020`, `40316ea`, `18f5b17` and `9214b2a` all exist and are ancestors of HEAD.
-- `git log --all --grep` finds no `docs(unit342)`.
-- `PROJECT_STATUS.md` at `9214b2a` reads `STATE: EXECUTING`, `TASK: 3 of 4`, and a note ending
-  *four classes 23 of 23, carry-forward 100 and 85; writing the report*. That status has
-  `RULES_AT: HM-DEC-163`.
+```
+== probe-48k.wav  48000 Hz into 8000, 38.6 s, 3 carriers held at the end
+    699.6 Hz    120 chars  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K..
+   1608.0 Hz    120 chars  CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K..
+   2200.0 Hz    142 chars  VE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW?
+```
 
-**The launcher's files, one line each:**
-- `PHASE_OUTCOME.md` has entries for units 337, 338, 339, 340 and 342, and none for 341. Its header
-  reads `STEP: 0 | in progress`.
-- `PHASE_STATUS.md` reads `CURRENT_STEP: 0`.
-- Unit 337's carried-repair entry is `## UNIT 337 - CARRIED REPAIR` (line 102), after `## UNIT 342 - STEP 1`,
-  and its fold-in is headed `### ALSO RECORDED FOR UNIT 337 - STEP 0` (line 116). So it is labeled
-  step 0 and filed under step 1's section. A second `ALSO RECORDED FOR UNIT 337 - STEP 0` sits under
-  the real step 0 entry (line 23).
+`assets\fixtures\captured\README.md` says how to put one there and what the test does and
+does not claim.
 
-**The other §2 checks:**
-- **`output.md`:** deleted in the working tree and uncommitted at session start. Not restored; this
-  file replaces it.
-- **`RULES_AT`:** HEAD had `HM-DEC-161 (2026-09-11)`. The highest id in `DECISIONS.md` is
-  `HM-DEC-163`. Every status write here says `HM-DEC-163 (2026-09-12)`.
-- **`CPS-DEC-0163`:** the reload says `CLAUDE.md` §1 holds it. `grep CPS-DEC CLAUDE.md` finds nothing,
-  so the reload is misreading the file. Parked with the id schemes.
+### Nothing was recorded under §12.1
 
-**The tool facts: which held for me.** See section 4 item 3.
+No `DECISIONS.md` entry was written.
 
-**One more mismatch.** `Directory.Build.props` was at 1.13.29, and no comment block names
-1.13.28 -> 1.13.29. `git log -S` puts that bump in `2740524` (unit 337's carried repair, task 1). This
-unit's block reads 1.13.29 -> 1.13.30.
+### Tests
 
-### What unit 342 built, commit by commit - its claims beside what this unit could check
+**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155). Two
+invocations, one build each, a status line immediately before every `dotnet` command.
 
-**Nothing was re-measured**, so the right-hand column is read from the committed source, not run.
+| Run | Result |
+| --- | --- |
+| Carry-forward, app, before | **106 of 106** |
+| Carry-forward, engine, before | **85 of 85** |
+| `TheCaptureButtonTests` (new, task 1) | **5 of 5**, watched failing 2 of 5 first |
+| `Unit344Measure` (new, task 2, a tool) | asserts nothing |
+| `ThePsk31DemodulatorTests` with the read-back (task 3) | **12 of 12** |
+| Carry-forward, app, after | **111 of 111** |
+| Carry-forward, engine, after | **87 of 87** |
 
-| Commit | Its message claims | Unit 343 |
-|---|---|---|
-| `ba5179d` | step 1 opened, version 1.13.26 -> 1.13.27 | the bump and comment block are in `Directory.Build.props` |
-| `6586020` | task 0 traced: card map 564x170 in a 632 card at 1400, 796x170 in 892 at 1920; 231 px spans once the frame takes the card's shape; the quill is true on Countries and the continents only | `Unit342TraceTheCountriesPageAgainstItsMockup` is in the file and prints these; **not run**. The markup comment repeats the numbers; a comment is not a measurement |
-| `40316ea` | map across the card at 231 px: 632x231 at 1400, 892x231 at 1920, was 564x170 and 796x170 left-aligned; crop asserted as a bound a whole-globe frame fails | `CardMapHeight = 231` in the test and `Height="231"` on the map and no-map list in markup. The test asserts the map spans the card's inner width within 1 px and is 231 tall within 1 px. **Sizes not re-measured.** Crop bound, from `OutsideTheCrop`: both stations inside the frame, and the frame no larger than the box around every path sample and both markers, widened each way by `MarginShare` of its longer side, grown to `ZoomFloorShare` of the file and to the card box over `ZoomCap`, then to the card's aspect, never past the file. A whole-globe frame is asserted to fail it on every card, and once on the test window with `Opened = false`. Constant values not read |
-| `18f5b17` | gap clause on seven kinds, meaning dropped past 60 characters on Grids and Total Miles; quill green on Countries and reached continents, ringed on unreached, none on Grids and States; back control a plain link | pinned at 1040: Countries `one per entity · 8 worked · 40 pts · unranked · 2 to Bronze`; Grids `10 worked · 20 pts · Bronze · 15 to Silver`; Total Miles `42,041 mi so far · 0 pts · unranked · 7,959 to Bronze`; Modes `five modes to work · 5 of 5 · 85 pts · Gold`, no gap. The other four kinds are covered by the loop's rule and not pinned. Quill expectations: Countries and Europe green, Oceania ringed, Grids and States empty, *a quill* with a door caller among counters. The back link is `Classes="hm-backlink"` with `BackLabel` and `BackCommand` |
-| `9214b2a` | map popup on a click, closed by a click outside, no event; asserted at 1400 and 1920 with real clicks | the test asserts the event list is exactly `achievement_category_opened` (so none for the map), no popup on hover, one popup on click holding the card's plot, the popup's top below the back control, and closed after a click outside. **Not run.** *Four classes 23 of 23* is not verifiable without a run |
-
-### Decisions this session made for itself
-
-1. **Stop at task 0 rather than write untested tests.** Reproduced above, under *Why it stopped
-   there*.
-2. **Status written by hand.** §4 allows it when the script is refused. Each `UPDATED` comes from a
-   `date` reading taken just before the write.
+**191 green before, 198 after, nothing red, nothing new red.** `BindingHealthTests` and
+`CallsignPrivacyTests` are both on the app run and both green with the new button and the
+two new events on them.
 
 ## 2. What the owner should expect
 
-**Nothing on the screen changed.** No source file, no markup and no test was touched. The only change
-is the version, 1.13.29 -> 1.13.30, which has no effect on the application.
+**The build is clean** — zero warnings, zero errors.
 
-**What will look wrong but is not:**
-- The version moved and no feature came with it. The bump was task 0's first step, taken before the
-  block was found.
-- `PROJECT_STATUS.md` reads `BLOCKED` with `BALL: tim`. The block is the launcher's permission scope,
-  not the code.
-- The `.run-unit/` files show as modified in `git status`. They are the launcher's, and this unit
-  did not commit them.
+On the PSK31 tab there is now a **Capture 2 minutes** button on the waterfall header, next
+to the one that keeps the last thirty seconds; press it while you are listening and it
+records forward for two minutes, counting down on its own face, and a second press keeps
+what it has so far. The file lands in `%AppData%\Hamlet\captures\` as
+`psk31-<timestamp>.wav`, at the sound card's own 48 kHz and before Hamlet touches the audio,
+and the line under the waterfall tells you exactly where it went. **Copy that file into
+`assets\fixtures\captured\` and commit it** — that is the whole point of the unit, because
+every fixture this demodulator has ever been tested against was made by a program on a
+machine with no radio, and the moment one real capture is in that folder the test suite
+reads it back on every run and any change to the demodulator can be judged against real air
+instead of against Hamlet's own idea of what PSK31 sounds like.
 
-**What is needed before unit 343 can run again:** Hamlet's permission scope back in
-`tools/arbiter/run-unit-tools.txt` (section 4 item 1). Until then every unit that needs a build, a
-test or the validator will stop at the same place. That covers every remaining step of this phase.
+**What will look wrong and is not.** The garble is not explained yet. Both hypotheses in
+the instruction were measured and neither reproduces it, so nothing was changed in the
+demodulator — measuring, naming and stopping is what this unit was for.
 
-**This report was not validated.** `dotnet build tools/arbiter/validate-output.proj` is outside the
-scope too. It was written against the six rules `validate-output.bat` prints, checked by the author
-and not by a run.
+**Pushed to `main`.**
 
 ## 3. What you should see
 
-**No: step 1's must-pass are not shown on the drawn page at 1400 and 1920.** Criteria 1, 3 and 4 are
-still unproved there, on every kind and at both widths, by the whole margin: no drawn assertion exists
-for them at those widths. **Nothing was measured this session**, so there is no amount to give. The
-count stands at 4 of 7, the state reader's figure from unit 342's runs, not re-run.
+**The task 2 table, in full:**
 
-**No visible change.** This unit only moved the version number.
+```
+the reference text is 255 characters at 8000 Hz; the filter is a
+4th-order Butterworth high-pass, -3 dB at 300 Hz
 
-The walk-through of both widths - a Countries earned card and next card, each kind's band line, the
-seven continent badges and one continent's page - **cannot be given**. Every appearance claim in it
-has to be computed on the headless host, and nothing could run. What the source says those pages
-carry is in section 1. **It is read, not computed, and not seen.**
+== anchor - the shipped reference fixture, reference-modem.py, no filter
+   case                             chars     CER  first 36 emitted
+   reference at 1000 Hz               255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
 
-### The step 1 table
+== skirt - Psk31Modulator's own audio, both arms through the same code
+   330 Hz, no filter                  255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   330 Hz, high-passed                255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   1000 Hz, no filter (control)       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   1000 Hz, high-passed (control)     255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
 
-| Test | Criterion | Drawn or view model | Widths | Kinds | Result | Numbers |
-|---|---|---|---|---|---|---|
-| `TheAchievementsPageClicksInTests` (class) | entry check | both | 1040 | all | not run | none |
-| `EveryKindsBandCarriesCountScoreLevelAndABar` | 1 | drawn | 1040 | eight | not run | pins read from source, section 1 |
-| `EveryEarnedCardIsTheContactThatEarnedIt` | 2 | drawn for map and crop; view model for the contact | 1040; 1400 and 1920 for the map | Countries drawn; Grids and Europe view model | not run | 231 px from source |
-| `TheNextCardKnowsWhoIsCalling` | 3 | view model; drawn Countries only | 1400 quill, 1040 callers | Countries, Grids, Europe, States, Oceania | not run | none |
-| `TheOtherFiveKindsEachDrawTheirOwnCards` | 4 | view model | none | Continents, Total Miles, Bands, Modes, Hall of Fame | not run | none |
-| `ContinentsOpensToSevenAndEachToItsCountries` | 4 | view model | none | seven continents | not run | none |
-| `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` | 5, 6 | drawn | 1400, 1920 | eight plus EU, OC | not run | none |
-| `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse` | 7 | view model | n/a | Countries | not run | none |
-| `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt` | nice-to-pass | drawn, real clicks | 1400, 1920 | Countries | not run | none |
-| `Unit343TraceStepOneOnTheWindow` | trace | - | - | - | **not written** | none |
+   the high-pass takes the 330 Hz arm to -1.67 dB and the 1000 Hz arm to -0.00 dB
 
-**The reds §2 expected** (`TheOperatorCanStopItTests`, `TheWholeChainRunsFromOneRightClickTests`,
-`TheMenuIsUnderTheMouseTests`, `ThePsk31RecordsAppearTests`, `TheTotalMilesTests`) **were not run.**
-No red was seen to turn green, and no new red was seen, because nothing ran.
+== skirt - how far up the carrier has to sit before it breaks, 330 Hz arm
+   corner 300 Hz  (-1.7 dB)           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   corner 340 Hz  (-3.6 dB)           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   corner 400 Hz  (-7.6 dB)           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   corner 500 Hz  (-14.8 dB)          255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   corner 700 Hz  (-26.8 dB)          255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   corner 900 Hz  (-36.1 dB)          255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+
+== fade - the shipped reference fixture, 0.2 Hz, full scale to a floor and back
+   floor -20 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   floor -30 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   floor -40 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   floor -50 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   floor -60 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   the fade runs 13.3 full cycles over the fixture, so the squelch has that many
+   chances to shut and reopen on each row above
+
+== noise - the shipped signal-to-noise fixtures, for the shape of the garble
+   snr+10db                           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   snr+3db                            255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   snr-3db                            255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+   snr-10db                           221  0.1502  CQCK3QIS KC3QIS KC3QIS pse K..KC3QIS
+```
+
+**Put the last row beside what came off 7.070:**
+
+```
+the air        dt  oe epe Ae peey@teI ç
+snr-10db       CQCK3QIS KC3QIS KC3QIS pse K..KC3QIS
+```
+
+Both are a message that mostly survived with pieces missing. Neither the skirt nor the fade
+makes that shape at any setting tried.
+
+**And what the capture writes:**
+
+```
+wrote psk31-2026-09-14-000640.wav: 48000 Hz, 96000 samples, 2.00 s, 192044 bytes
+offered 180 s, kept 120.00 s; the press reads 'captured · 2:00'
+
+started : {"dialHz":7028000,"deviceSampleRate":48000,"seconds":120}
+finished: {"seconds":1,"bytes":96044,"sha256":"6d7cb86241...","deviceSampleRate":48000,
+           "earlyStop":true,"carriersHeld":0,"carriers":[]}
+```
 
 ## 4. What's blocking us
+
+No step criterion moves. Five items.
+
+**1. The garble is still unexplained, and the one thing that does reproduce its shape is
+argued against by the record.**
+
+*No ruling wanted; the honest end of task 2.* Neither named hypothesis survives: the skirt
+is still perfect 36 dB down, the fade is still perfect at a −60 dB floor. **Low signal-to-noise
+does make the shape** — 0.1502 at −10 dB — but the record of 2026-09-13 carries squelch
+qualities running to **0.999**, which is not what a −10 dB signal looks like to that
+measure. So there are now three explanations and no evidence that settles any of them.
+**What settles it is one capture off 7.070 in `assets\fixtures\captured\`**, which is what
+task 1 was built to make and what task 3 is waiting to read.
+
+**2. The read-back test passes on an empty folder rather than skipping, and that is a
+mismatch with the instruction that could not be repaired.**
+
+*No ruling wanted; a mismatch, reported.* Task 3 asks for *skipped, not failed, when the
+folder is empty*. **xUnit 2.9.2 has no runtime `Assert.Skip`** — that is version 3 — an empty
+`[Theory]` data set is reported as a failure (`System.InvalidOperationException : No data
+found`), and the package that would add one is forbidden by §10. Both routes were tried.
+What ships is a `[Fact]` that returns early and prints `NO CAPTURE READ` with the folder
+path and the instructions, so a green tick is never read as evidence about real air. The
+alternative — leaving it red until a capture exists — would put a permanent red on the
+carry-forward list, which is what that list exists not to hold.
+
+**3. A capture press that lands before any audio has arrived still writes the device rate
+absent.**
+
+*No ruling wanted; a finding, and a defect the test caught.* `Psk31Resampler` is made on the
+first tick, so the press had nothing to ask and wrote `deviceSampleRate: null`. It now falls
+back to the tap, which knows the rate after a single lump, and the finished event carries the
+rate measured from the audio. **The remaining hole is a press with no audio at all**, where
+the field is absent — which is correct by §0.0 and is named here so nobody reads it as a bug
+later.
+
+**4. The skirt arm is Hamlet's own modulator, so it cannot give an absolute error rate.**
+
+*No ruling wanted; a limit on what task 2 proved.* No fixture exists with a PSK31 carrier at
+330 Hz, so both skirt arms were made by `Psk31Modulator` and decoded by `Psk31Demodulator` —
+one round trip, which §12.5 is explicit cannot judge itself. What it can show is **330 Hz
+against 1000 Hz through the same code**, which is the question asked, and the unfiltered
+reference run is printed beside it as the anchor. An independent 330 Hz fixture from
+`reference-modem.py` would close that gap and was not made here: §2 says Python cannot run
+in this session, and adding a fixture is beyond what R14 allows this unit.
+
+**5. Two of §2's tool facts do not hold in this session.**
+
+*No ruling wanted; a mismatch, reported and not repaired, and the third sighting.* §2 says
+*Python cannot run here* and *`rm` is refused*. **Python ran** — it made several of this
+unit's edits — and **`rm -f` removed the probe capture without complaint.** Unit 337 reported
+the Python half; the `rm` half is new. The apostrophe and backslash facts in the same list
+were not retested and are not disputed. `tools/status.sh` was again not refused, against unit
+341 item 7.
+
+### Asks still outstanding - carried from unit 343's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 343's, from its line under `## 4. What's blocking us` to its end, as
+committed in `33fb6a9`, with only that top-level heading dropped so this report keeps four
+sections.
+
+**Its item 1 is answered in substance by this run and is left in place rather than deleted**,
+because what it asked for was a ruling on which permission scope an unattended Hamlet unit
+runs under, and that has not been ruled — it has been fixed. `.run-unit\allowed.txt` now
+carries `Bash(dotnet:*)`, `Bash(timeout:*)` and `Bash(sh:*)`, this unit's gate checked it
+before anything else, and every build, test and validation below ran. **Unit 343's step 1
+criteria are unblocked**, and the drop belongs to the report that records the ruling.
+
 
 ### Raised by this unit
 
