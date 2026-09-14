@@ -1,308 +1,303 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. At 0ddb0566: step 0 done (unit
+A. The phase goal - the screen, done right. At bc4aee85: step 0 done (unit
    351), step 1 done (unit 347), step 2 done (unit 348). Step 3 0 of 1,
-   waiting on Tim's verdict on docs/unit349-what-tim-looks-at.md, which
-   this unit checked against the screen and changed at these lines: :47
-   (the 1920 FT8 green block), :71-73 and :118 (two source notes' test
-   counts), :511-514 (section 5, the pin red gone).
+   blocked on Tim's verdict on docs/unit349-what-tim-looks-at.md, which
+   this unit changed at these lines: :47, :54 and :57 (re-cited to
+   2077432a, same numbers), :71-72 and :118 (13 of 13 corrected to 14 of 14).
 B. Step 3 and its exit criterion: Tim says it passed - not met, and no
-   session can meet it. What this unit checked under ruling 46's exception:
-   1. Unit332TwoWidthsTests after unit 351's change - 3 of 3, before and
-      after the fixture change; reds none
-   2. TheGreenZoneTests after unit 351's change - 15 of 15 (not 14),
-      before and after; reds none
-   3. step 0's pinned proof, three runs after the fixture change -
-      27 of 27 each on the committed tree (and 27 of 27 in three earlier
-      runs with the trace's live half still in); pins 8 of 8 each, the
-      40 m fact 4 of 4 each; the cause the trace named: the band_changed
-      spot reload Realized's own band select starts, waiting on POTA's
-      reply, landing 86 to 116 ms in, after the pin, 3 of 10 windows
-   4. step 0's numbers after the change - 1920 190 px, 1400 PSK31 228 px,
-      1400 FT8 216 px, panels 503 (1920) / 465 (1400 PSK31) / 477 (1400
-      FT8); none of the pinned numbers moved. In the facts that pin
-      nothing, the 1920 green block moved 55 -> 64 (FT8) and 67 -> 76
-      (PSK31), because those windows now draw the hour's best bet
-   5. carry-forward - 111 of 111, 86 of 86, before and after
-C. The report last. Section 4 raises 3 items on top of the carried queue,
-   and none is an ask. None shows the sheet wrong beyond the cell corrected
-   at :47. Item 1 is the only thing a unit could still do before Tim
-   answers: the facts that pin nothing now measure the hour's best bet and
-   0 stations rather than the fixture's no best bet and 6 stations. It does
-   not stand in the way of step 3.
+   session can meet it. What this unit cleared under ruling 46's exception:
+   1. what the test window held after its reloads, before the change -
+      count 0, best bet 80 m at 02:08 local (the 2 am table);
+      writers after Realized returns: none
+   2. after the change - the guard held on every run; count 6, best bet
+      none, on every licensed window of step 0's filter (the plain window
+      declares no count: best bet none, count 0, and 1 in one run)
+   3. step 0's filter, three runs - 28 of 28 each; pins 8 of 8 each;
+      diff lines across the three 12, 39 and 27 (run1-run2, run1-run3,
+      run2-run3), none in a window the restore covers
+   4. the unpinned numbers - back to the fixture's window: 1920 block
+      64 -> 55 (FT8) and 76 -> 67 (PSK31), heard just now y 260 -> 251 and
+      286 -> 268, the no-license 1920 panels 441 -> 450, Unit350 True ->
+      False 12 of 12; not back: Unit338's no-license left column 340 and
+      740; the pinned numbers unmoved
+   5. the sheet's "6 stations" (:55, :57) - cited to a fact that draws it
+      at 2077432a
+   6. Unit332TwoWidthsTests 3 of 3, TheGreenZoneTests 15 of 15;
+      carry-forward 111 of 111 (110 of 111 once, red unnamed), 86 of 86
+C. The report last. Section 4 raises 5 items on top of the carried queue,
+   all findings. None shows the sheet wrong. Nothing is left that a unit
+   can do for the sheet before Tim answers (item 5).
 ```
 
 ```
-UNIT:       352 - complete at task 3 of 3 - 2026-09-14 01:51
-PHASE GOAL: Hamlet's main window drawn as the approved mockup and every achievements page as trading
-            cards, with what the last phase left closed, then passed by Tim at his own window.
-UNIT GOAL:  Show the sheet Tim will judge is the screen at this tree: run the two green block readers
-            unit 351 never ran, and make step 0's pinned proof read the same every run by keeping the
-            test window off the live spot feeds, with no screen change.
-ADVANCED:   no - step 3 waits on Tim; the sheet corrected at :47, :71-73, :118 and :511-514; step 0's proof steady
-NUMBER:     step 0's filter after the change: 27 of 27, 27 of 27, 27 of 27; pin failures was 1 in each of 2 runs -> 0
+UNIT:       353 - complete at task 3 of 3 - 2026-09-14 02:22
+PHASE GOAL: The main window laid out like the approved mockup and the achievements pages as trading cards - built and shown by the tests in steps 0 to 2 - and then Tim, at his own window, saying it passed, which is all that is left.
+UNIT GOAL:  Make the test window draw what its fixture says (6 stations, its sparkline, no best bet) at any hour of the run, without moving the screen, and point the sheet's green block words at a test that draws them.
+ADVANCED:   no - step 3 waits on Tim; the test window draws its fixture's window whatever the hour on every licensed window, and the plain window's count still depends on the run's spot history (section 4 item 1); the sheet re-cited at :47, :54, :57 and corrected at :71-72, :118
+NUMBER:     step 0's filter after the change: 28 of 28, 28 of 28, 28 of 28; unpinned facts reading the fixture's count 0 of 12 -> 12 of 12 (printed licensed count lines)
 DRIFT:      0
 ```
 
-**Every appearance claim here is computed on the headless test host, not seen.** Nothing here is
-evidence about the radio, and nothing here touched it.
-
 ## 1. What Claude did
 
-**Complete at task 3 of 3.** QUIVERFULL, `C:\Source\HamLet`, Hamlet (the gate's four checks held),
-branch `main`. Every commit was pushed.
+**Complete, at task 3 of 3.** Machine QUIVERFULL, `C:\Source\HamLet`, project Hamlet, branch `main`. The gate
+held: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and
+`MURC.sln` do not. Every appearance claim below is computed from a headless test window, not seen.
 
-### Task 0 - the trace (`75e101e2`, `4ad20a25`)
+### Task 0 - the trace (`d66a6ace`, `b01e033e`)
 
-- **Carry-forward before any change:** 111 of 111 app, 86 of 86 engine.
-- **Step 0's filter before any change:** 25 of 26. `TheTopRowTests` 11 of 12, `TheWorkingPanelsTests`
-  8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5. The red was
-  `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, with one line: *at 1920.0 on FT8 with
-  the best bet absent the pin did not hold after settling: IsBestBet is on [40 m], pinned []; the
-  green block's best bet is drawn*. This time the miss was on FT8, not PSK31. Pins 7 of 8; the 40 m
-  fact 4 of 4. Every limit held in every case: 1920 190 and 503; 1400 FT8 216 and 477; 1400 PSK31
-  228 and 465.
-- **`Unit332TwoWidthsTests` and `TheGreenZoneTests`, once, before any change:** 3 of 3 and 15 of 15.
-  No red, so nothing to sort under ruling 60.
-- **`Unit352TraceTheSpotReloadOnTheTestWindow`** added to `TheTopRowTests`. It asserts nothing and
-  presses nothing. It builds ten 1920 PSK31 windows with `Realized(1920, telemetry)`, takes each
-  through the pinned fact's own steps, and prints every `spots_refreshed` and `source_unhealthy`
-  event in the telemetry file, every move of `IsBestBet` and of `SourcesSummary`, each marked before
-  or after the pin, then the spots by source, where the best bet ended and whether the pin held.
+- **Committed** `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` (`WORK_INSTRUCTION: 353 - ...`) and 1.13.39 -> 1.13.40
+  with its comment block (`d66a6ace`).
+- **Carry-forward:** 111 of 111 app, 86 of 86 engine.
+- **Step 0's filter once, before any change**, from 02:04:57 to 02:05:21 local (`testresults\u353-t0-step0.trx`):
+  `TheTopRowTests` 13 of 13, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
+  Every pin line read *pin held True* (59 lines). The hour was 2, so `HfBands.BestBets` (`HfBands.cs:113`,
+  `>= 21 or < 6`) put *80 m* first. Every unpinned best bet line read *80 m (likely, going on the hour)*.
+  The unpinned numbers as printed: 1920 green block 64 on FT8 and 76 on PSK31, *heard just now* y 260 and
+  286, the count y 272 and 295, *0 stations* on all 18 count lines. The no-license 1920 panels with the strip
+  showing were 441 at y 512, `Unit338`'s no-license left column 340 and 740, and `Unit350TraceStepZeroBothWays`
+  True 12 of 12. Its pixel lines differ from unit 352's after run (`u352-t1-final-run1`) by 0 lines and from
+  its before run (`u352-t0-step0`) by 362.
+- **`Unit353TraceTheDeclaredWindowAfterTheReloads`** (`b01e033e`), added to `TheTopRowTests`. It covers both
+  fixtures, FT8 and PSK31, at 1920 and 1400, and reads the model as shown (pass 0) and after each settle
+  pass. It reads through a read-only hook overload added to each `Realized` (decision 1). The mode is chosen
+  after the fixture returns, as the pinned facts choose it, then one more pass of the same shape is run.
+  Telemetry places each `spots_refreshed` in its pass. It asserts nothing and presses nothing. What it printed
+  is the table in section 3.
+- **The writers, read in `src` and changed not at all.** All three are written only in `ReloadSpotsAsync`
+  (`MainWindowViewModel.cs:16969`):
+  - `HeardInTheLastMinute` at `:17026`;
+  - `HeardSparkline` at `:17031`;
+  - `IsBestBet` at `:16857`, in `ApplyBestBet`, called from `:17038`.
+  
+  What starts that reload:
+  - `band_changed`: `SelectBand`, `:8098`. This fixture's 20 m select.
+  - `startup`: `ReconnectOnStartupAsync`, `:11066`, from the window's `Opened` handler (`MainWindow.axaml.cs:56`-`59`,
+    `StartReconnect` at `:246`).
+  - `resume`: `:7717`, on the window's visibility.
+  - `manual`: `:8390`, the refresh command.
+  - `settings`: `:8425`, after the settings dialog.
+  - `timer`: `:11691`, `_spotRefreshTimer`, started by `ApplyFeedTimers` at `:7731`, every 5 minutes
+    (`AppSettings.cs:492`).
+  
+  The one-second age tick (`MainWindowViewModel.cs:59`, `OnAgeTick` `:11693`) writes `Heard`, not the count.
+  The clock tick (`:8147`, ten minutes) queries the clock only. `BandButtonViewModel.IsBestBet` has a public
+  setter (`:18071`), which the pinned facts use.
+- **The answers task 0 asked for, from the numbers:**
+  - **Which pass, and what after the sixth.** Both reloads, `band_changed` and `startup`, each with 0 spots,
+    landed in pass 1 in all four licensed windows. In one later run's 1920 FT8 window `band_changed` was
+    placed in pass 0. The plain window changed in pass 1 too (count null -> 0, best bet [] -> [80 m]). After
+    pass 6 every window held count 0, a sparkline summing 0 and best bet *80 m*.
+  - **Can anything write after `Realized` returns?** No. The trace's own pass read *(unchanged)* in 8 of 8
+    windows. The reload's other triggers are a band select, the settings dialog, the refresh command and
+    visibility, and no step 0 fact starts one after `Realized`. The timer is five minutes. A test would see a
+    late writer as a change between `returned` and the trace's own pass, or as the guard's values moving.
+  - **Which change, and why on the test window only.** Ruling 67's restore. The reload drawing the hour's best
+    bet and the real count is the product doing its job for the operator. What was wrong was a fixture that
+    declares a window and then measured a different one.
 
-**The answers, from the numbers, before task 1 started:**
-- **Are the two classes green?** Yes, 3 of 3 and 15 of 15. No red of either kind.
-- **In how many of the ten traced cases did the pin not hold?** 3: pinned on 20 m run 4, pinned
-  absent runs 3 and 4. Each time the landing was the `band_changed` reload, which `Realized`'s own
-  `SelectBandCommand` starts (`MainWindowViewModel.cs:8098`), with 0 spots. It landed at +89, +97 and
-  +116 ms, after the pin (+86, +89, +116). As it landed, the sources summary turned from empty to
-  *POTA, RBN*: both sources reported answering. In one more window (20 m run 5) the same reload landed
-  at +90 ms, before the pin at +100, and the pin held. In the other six nothing landed while the
-  window was open.
-- **Is a live source's reply the cause?** Yes. The reload awaits `_activitySource.GetSpotsAsync()`
-  (`:16984`), and with POTA on that await is POTA's HTTP reply. With nothing heard on any band,
-  `RankBands` falls back to the hour's table (`BandOpportunity.cs:159`-`170`, `HfBands.cs:113`, *80 m,
-  40 m* before 6 am), so the reply moved the badge to 40 m, not to a band with spots.
-- **Which fixture change, and why on the test window only?** POTA, SOTA and RBN switched off by
-  `SourceName` through `SetSourceEnabled` in the fixture's settings. The cause is the fixture being a
-  real operator with default sources, not the product, and ruling 61 keeps `BuildSources`,
-  `ReloadSpotsAsync`, the ranking and the clock as they are.
+### Task 1 - the declared window set again (`2077432a`)
 
-### Task 1 - the fixture quieted (`386690a2`)
+- **The change**, in the tests only:
+  - `TheTopRowTests.Realized`: after its six passes, the count (6), the sparkline and no best bet are set again
+    (`NotifyGreenZoneForTests`), the same six passes are run once more, then three `Assert.True` guards run.
+    Each names the property and what it held.
+  - `TheWorkingPanelsTests.Realized`: no best bet set again, the same six passes, one guard. Its count is left
+    as the reload gives it.
+  - Nothing under `src`, no source switch, callsign, grid, license or dial, and neither pinned fact's body
+    changed. The *WHAT THAT MOVES* paragraph (`TheTopRowTests.cs`, `FixtureSettings`' remarks) now carries
+    this unit's measured numbers.
+- **The guard watched red once** (ruling 19). The restore set the count to 5 on the test window only, and the
+  trace fact alone was run (`u353-t1-red.trx`):
+  `the test window's HeardInTheLastMinute held 5 after the restore, where the fixture declares 6`. Then it was
+  put back.
+- **The trace with the change** prints passes 7 to 12 after the restore, with a line saying so. Run 1:
+  - every licensed window's pass 12 and its own pass read count 6, the sparkline summing 6
+    `[1 0 0 1 0 1 0 0 0 1 1 1]`, best bet none;
+  - every plain window read count 0, best bet none;
+  - 16 *CHANGED* marks: passes 1 and 7 of each of 8 windows. Nothing changed after the return.
+- **Step 0's filter three times** (`u353-t1-run1` to `-run3`, 02:11:10, 02:12:07, 02:13:15): 28 of 28 each.
+  `TheTopRowTests` 14 of 14, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
+  59 pin lines read *pin held True* in each, so pins 8 of 8 and the 40 m fact 4 of 4. The guard held on every
+  `Realized` call in every run. **The printed pixel lines were not identical:**
+  - run 1 against run 2: 12 lines;
+  - run 1 against run 3: 39;
+  - run 2 against run 3: 27.
+  
+  None is in a window the restore covers (section 4 item 1). The numbers against unit 352's runs are the table
+  in section 3.
+- **`Unit332TwoWidthsTests` 3 of 3 and `TheGreenZoneTests` 15 of 15** in one filter (`u353-t1-readers.trx`), 0 pixel
+  diff lines against unit 352's `u352-t1-greenblock.trx`.
+- **Carry-forward:** app 110 of 111 at 02:16:36, with no trx, then 111 of 111 at 02:17:21 with one
+  (`u353-t1-carry-app.trx`), decision 3. Engine 86 of 86.
 
-- **The change.** `TheTopRowTests.FixtureSettings()` builds the licensed operator and switches off
-  `TheTopRowTests.NetworkSources` (POTA, SOTA, RBN). `Realized(width, telemetry)` uses it.
-  `TheWorkingPanelsTests.Realized` has its own fixture and callsign (see item 3), and switches the same
-  three off. The sample feed stays at its default, off. The callsign, grid, license and dial are
-  unchanged. No `src` file changed, and no settle, retry or clock was added.
-- **No ruling 60 correction**: both readers were green.
-- **The trace with the change, first run:** both reloads, `band_changed` and `startup`, landed 37 to
-  100 ms in, inside `Realized`'s own settle loop and before the pin, in 10 of 10 windows. None landed
-  after the pin, the sources summary read *no sources answering*, and the pin held 10 of 10.
-- **Step 0's filter, three runs:** 27 of 27, 27 of 27, 27 of 27 (26 plus the trace). Pins 8 of 8 and
-  the 40 m fact 4 of 4 in each. Those runs still had the trace's as-built half (the ten windows with
-  sources on) in the fact.
-- **The two readers again:** 3 of 3 and 15 of 15, with every pixel line the same as before the change.
-- **Carry-forward after the change:** 111 of 111, 86 of 86.
-- **Then the trace's live half came out** (decision 2), and step 0's filter ran three more times on the
-  committed tree: 27 of 27 each, pins 8 of 8 each, the 40 m fact 4 of 4 each. The trace held 10 of 10
-  in each, with both reloads landing 16 to 148 ms in, before the pin (1246 ms on one run's first
-  window). Every pixel line printed by those three runs is identical (0 diff lines, run 1 against 2
-  and against 3).
+### Task 2 - the sheet (`66fd6111`)
 
-**What moved when the sources were switched off** (the task 0 run against the first run after; no
-assertion changed and every fact stayed green):
-- **The pinned facts:** nothing. Every top row, panel, card, rig and block number above is the same.
-- **Why the rest moved:** both reloads now land inside `Realized`, every time. A fact that pins nothing
-  now measures the best bet the ranking gives, the hour's *80 m* (40 m when the trace's live half had
-  seeded the run's spot history), and the count the reload gives, *0 stations* where the fixture set 6.
-  Before, the reload usually landed after the window closed, so those facts mostly measured no best bet
-  and 6 stations.
-- `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`,
-  `TheWorldClockIsAtTheCardsRightEndWithOneMarker` and `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock`:
-  the 1920 green block 55 -> 64 px on FT8 and 67 -> 76 on PSK31.
-- `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`: *heard just now* y 251 -> 260 at 1920
-  and 268 -> 286 at 1400; the count y 263 -> 272 and 277 -> 295; the sparkline y 260 -> 269.
-- `TheThreePanelsShareOneTopAndOneBottom` (the no-license window): the three panels at 1920 with the
-  strip showing 450 -> 441 px, top y 503 -> 512. The floor, y 953, did not move.
-- `Unit338TraceTheRowsAboveThePanels`: the no-license green block's left column 480 -> 340 px at 1400
-  and 1000 -> 740 at 1920, the right column 0 -> 140 at 1400, and the 1920 regions row 41 -> 50 tall.
-- `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock`: the strayed line y 289 -> 298. On its rejected
-  *line on the drive row* candidate, the top row went 190 -> 207 (0.227) and the panels 503 -> 486.
-- `Unit350TraceStepZeroBothWays`: *before pinning the hour's best bet was visible* False -> True in
-  all 12 cases.
-- `Unit351TraceTheCheckInTheGreenBlock`: in the absent cases the hidden best bet button now holds a
-  40 x 9 word, and the prefix measures 140 x 9 inside a 0 x 0 row. Nothing more is drawn.
-- **Unchanged after, and on the sheet:** 1920 top row 190, card 1328 x 190, rig 546 x 190, panels 503 /
-  450 licensed; 1400 FT8 216 and 477 / 424; 1400 PSK31 228 and 465; the no-license window at 1400, 217
-  and 476 / 423; the waterfall, list and For You widths; the floor at y 953 and the status bar at 978.
+Only ruling 69's lines were changed:
+- **`:47`**, the 1920 FT8 green block cell: *55 with no best bet; 64 with one drawn*, re-cited to `2077432a`.
+  Both numbers were printed in this unit's runs: 55 by `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`,
+  64 by `Unit350TraceStepZeroBothWays`' drawn window.
+- **`:54` and `:57`**, the text sizes and the 1400 wrap, re-cited to `2077432a` with the words unchanged. Run 1
+  printed 20 (*20 m*), 13, 13, 11, 11, 11 (*heard just now*), 15 (*6 stations*) and 10 (*last minute*). At
+  1400 the license line took 3 lines and the rule of thumb 2. *heard just now* sat at y 268 over *6 stations*
+  at 277.
+- **`:71`-`72` and `:118`**, the source notes: `TheTopRowTests` *13 of 13 at `386690a2`* became *14 of 14 at
+  `2077432a`*, printed in `u353-t1-run1` to `-run3`.
+- **Left alone:**
+  - `:20`-`21`: *17 m as the best bet* is `TheCategoryPagesAreTradingCardsTests`' achievements fixture,
+    `new BandBet("17 m", "best bet now")` (`:161`). Step 1's classes are not run in this unit.
+  - `:438`-`439`: no number in it moved.
+  - section 5: no red stays.
 
-### Task 2 - the sheet, only where measured wrong (`0ddb0566`)
+### Task 3 - the two windows still on POTA (`bc4aee85`)
 
-- `:47`, section 2.1's green block row: *1038 × 55* became *1038 × 55 with no best bet; 1038 × 64 with
-  one drawn (`386690a2`)*. The fact the source note names for the block now prints 64. The pinned
-  fact's absent case still prints 55.
-- `:71`-`73`, section 2.1's source note: *`TheTopRowTests` 8 of 8 … at `85437c2`* became 13 of 13 at
-  `386690a2`, three runs, with the trx names. The first measurement stays cited.
-- `:118`, section 2.2's source note: *all in `TheTopRowTests` 8 of 8 at `85437c2`* became 13 of 13
-  three times at `386690a2`.
-- `:511`-`514`, section 5: one line saying the pinned fact's pin red is gone, with the commit and the
-  three runs.
-- No section 4 line: neither reader went red. No other line changed (decision 4).
-
-### Task 3 - what the test window reaches over the network
-
-Read, not changed, and reported as item 2 of *Raised by unit 352*. In short: a switched-off POTA or RBN
-opens nothing. Before the change, every `Realized` window started a POTA request and RBN's telnet reader
-under KC3QIS. After it, no `Realized` window does. Two other windows in step 0's filter still leave POTA
-on, without a callsign.
+- **`EmptyTab`'s printed numbers differed across task 1's three runs.** At 1920 with the list empty, Stop was at
+  y 373, 373 and 367, and both filter chips moved up 11 px with it. So its network sources were switched off by
+  `TheTopRowTests.NetworkSources`, with a remark.
+- **Step 0's filter once more** (`u353-t3-run.trx`, 02:21:12): 28 of 28, 59 pin lines held, `EmptyTab`'s Stop
+  back at y 373. Its pixel lines differ by 0 from run 2, by 12 from run 1 and by 27 from run 3.
+- **`BindingHealthTests` was not changed** (section 4 item 3).
 
 ### Checked against the tree (§2)
 
-- The gate: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist;
-  `CoreHMI.sln` and `MURC.sln` do not; the root is `C:\Source\HamLet`. `.run-unit\allowed.txt:14` is
-  `Bash(dotnet:*)`, and `dotnet test` was not refused.
-- `HEAD` and `origin/main` read `cdead300` at the start, and `output.md` was unit 351's.
-- `Directory.Build.props:817` read 1.13.38. It is 1.13.39 with its comment block (`75e101e2`).
-- `DECISIONS.md` tops at HM-DEC-163 (`:7`). No commit after `cdead300` carries a verdict from Tim.
-- `PHASE_STATUS.md` read steps 0, 1 and 2 `done`, step 3 `in progress`, and `WORK_INSTRUCTION: 351`.
-  Only that line was changed, to 352. `PHASE_OUTCOME.md`'s last entries read `STATE_AFTER: done`
-  for step 0; its step lines were not read one by one. `PHASE_OUTCOME.md`, `PHASE_STATUS.md`,
-  `RUN_LEDGER.md` and `.run-unit\` were modified and uncommitted at the start. None of them was
-  committed except `PHASE_STATUS.md`'s one line.
-- `.run-unit\reload.txt:9` and `:34` say `CLAUDE.md` §1 holds `CPS-DEC-0163`, and `CLAUDE.md` has no
-  `CPS-DEC` match. Parked with the id schemes.
-- `tools\arbiter.bak-20260913\` and `SESSION.lock` are untracked at the root. Files were staged by name.
-- The cited lines: `TheTopRowTests.cs` `:688`, `:754`, `:1651`-`1715`, `:1771`-`1778` and
-  `:1877`-`1902` held at the start; `AppSettings.cs:641`-`649`; `MainWindowViewModel.cs:7602`-`7638`,
-  `:8098`, `:11066` and `:16969`-`16984`; `Unit332TwoWidthsTests.cs` `:50`, `:65`, `:112`, `:151`;
-  `TheGreenZoneTests.cs:443`. Mismatches are in item 3.
+- **Held:**
+  - `HEAD` and `origin/main` were `8fa20cb1`, and `output.md` was unit 352's.
+  - 1.13.39 at `Directory.Build.props:825`; `DECISIONS.md` topped at HM-DEC-163 (`:7`), with no later commit
+    and no verdict from Tim.
+  - `allowed.txt:14` read `Bash(dotnet:*)`.
+  - `PHASE_OUTCOME.md` and `PHASE_STATUS.md` read steps 0 to 2 `done` and step 3 `blocked`, and `PHASE_STATUS.md`
+    read `WORK_INSTRUCTION: 352`.
+  - `tools\arbiter.bak-20260913\` and `SESSION.lock` were untracked.
+  - `TheTopRowTests.Realized` at `:2067`-`2099` (count `:2081`-`2083`, settle `:2092`-`2096`), `FixtureSettings` at
+    `:2130`-`2144`, and *WHAT THAT MOVES* at `:2124`-`2128`.
+  - `TheWorkingPanelsTests.Realized` at `:718` (sources `:725`-`728`) and `EmptyTab` at `:484`-`486`.
+  - `BindingHealthTests.cs:108`.
+- **`Unit332TwoWidthsTests` builds its own window** (`:308`-`333`) and calls no shared `Realized` (section 4 item 3).
+- **Mismatches** are in section 4 item 4.
 
 ### Decisions made for this unit
 
-1. **Both fixtures were quieted, not only `TheTopRowTests.Realized`.** `TheWorkingPanelsTests` has its own
-   `Realized` with a callsign and default sources, and it is in step 0's filter. SOTA is switched off
-   by name as well, although its default is already off, so the list names every network source.
-2. **The trace's as-built half was taken out after the first three runs.** Building those ten windows
-   again made a POTA request and started RBN under KC3QIS on every run of `TheTopRowTests`. The
-   recorded spots also reached later windows through the run's shared spot history: *1 station*,
-   *2 stations* and 40 m against 80 m varied between runs. The as-built output is task 0's, at
-   `4ad20a25`, in `testresults\u352-t0-trace.trx`, and a second as-built print is in
-   `u352-t1-trace.trx` (that time 10 of 10 held, because no reply landed while a window was open). The
-   proof was run three more times on the committed tree. Ruling 62's *do not run a fourth time* is for a
-   pin still failing, and none failed.
-3. **`TheWorkingPanelsTests.EmptyTab` and `BindingHealthTests`' window were left alone.** Neither is
-   `Realized`, neither sets a callsign, and ruling 61 names `Realized`. Both still leave POTA on (item
-   2).
-4. **Section 2.1's *6 stations at 15* bullet (`:55`) was not edited.** The facts now print *0
-   stations*. The words are the fixture's count, not a measurement of the screen, and the text size was
-   not re-printed differently. Ruling 63 lets the sheet change only for a number measured wrong. It is
-   item 1.
-5. **Section 2.1's block cell carries both numbers** rather than 64 alone. The sheet describes Tim's
-   window, where the best bet follows the hour and the air, and both states print at this tree.
-6. **The remark's reload range was corrected after the final three runs**, comment only, before
-   `386690a2`. The code those runs built is the committed code.
-7. **The trx files and scripts are in `testresults\`:** `u352-t0-step0`, `u352-t0-greenblock`,
-   `u352-t0-trace`, `u352-t1-trace`, `u352-t1-step0-run1` to `-run3`, `u352-t1-greenblock`,
-   `u352-t1-final-run1` to `-run3`. The comparison scripts `u352-compare.sh` and `u352-bytest.sh` wrote
-   `u352-diff-*.txt` and `u352-bytest-*.txt`.
+1. **A read-only hook in both fixtures, in task 0.** Ruling 66 asks what the model holds at each of `Realized`'s
+   six passes, and nothing outside `Realized` can see a pass. So each `Realized` gained an `internal` overload
+   taking `Action<int, Window>?`, called as shown and after each pass. The public signatures are unchanged and
+   null is passed everywhere else. Overrule with *"trace from outside the fixture"*; the passes are then not
+   visible.
+2. **The restore shipped though ruling 68's identical lines did not hold.** Ruling 67's condition, *ship the
+   restore only if the guard held on every run*, held. The lines that differ are in the plain window's count,
+   `EmptyTab` and one 1400 plain panel, none of which the restore sets, and every restored and pinned number
+   was identical in all three runs. Overrule with *"commit the trace only until three runs are identical"*.
+3. **The carry-forward app invocation was run a second time**, with a trx logger, to name a red. HM-DEC-155
+   allows one invocation. It read 111 of 111 and the red stays unnamed. Overrule with *"report the red and do
+   not re-run"*.
+4. **The trace chooses PSK31 after `Realized` returns**, as the pinned facts do, so a PSK31 window's six passes
+   are FT8's. The reloads do not depend on the mode.
+5. **`PHASE_STATUS.md` was committed whole in `d66a6ace`**, as task 0 asks. The launcher's uncommitted `HEARTBEAT`
+   and step 3 `in progress -> blocked` went in with the `WORK_INSTRUCTION` line.
+6. **The *WHAT THAT MOVES* paragraph was corrected after the three runs.** It is a comment, so the runs measured
+   the same code.
 
 ### Commits
 
-All on `main`, all pushed to `origin`, no push refused:
-- `75e101e2` chore(unit352): the instruction, `WORK_INSTRUCTION: 352`, 1.13.39
-- `4ad20a25` test(app): task 0 - the trace
-- `386690a2` test(app): task 1 - the test window takes no live spot reload
-- `0ddb0566` docs(unit352): the sheet checked
-- the report and `PROJECT_STATUS.md`, in their own commit after this file
+All pushed to `origin/main`; every push succeeded.
+
+| Commit | What |
+|---|---|
+| `d66a6ace` | chore(unit353): the instruction, `PHASE_STATUS.md`, 1.13.40 |
+| `b01e033e` | test(app): task 0 - the trace and the read-only hooks |
+| `2077432a` | test(app): task 1 - the restore and guards, the corrected remark |
+| `66fd6111` | docs(unit353): task 2 - the sheet at `:47`, `:54`, `:57`, `:71`-`72`, `:118` |
+| `bc4aee85` | test(app): task 3 - `EmptyTab`'s network sources off |
+
+The report and `PROJECT_STATUS.md` follow in their own commit.
 
 ## 2. What the owner should expect
 
-**Nothing on the screen moved.** No file under `src` and no markup changed. The sheet changed at four
-places: the 1920 FT8 green block cell (`:47`), two source notes' test counts (`:71`-`73`, `:118`), and
-one line in *Known reds* (`:511`-`514`).
+**Nothing on the screen moved.** No file under `src` and no markup changed. The sheet changed at `:47`, `:54`
+and `:57` (the same numbers, cited to this unit's commit) and at `:71`-`72` and `:118` (`TheTopRowTests` is now
+14 facts).
 
-**What the test window no longer does:** it no longer asks POTA or the Reverse Beacon Network for spots
-while a test measures it. Before, the window was built as you, KC3QIS, with POTA and RBN switched on.
-The request it sent when it chose 20 m sometimes came back while the test was reading the best bet, and
-moved the badge to 40 m. Step 0's pinned proof now holds every pin, run after run.
-
-**What will look wrong, but is not:**
-- In `TheTopRowTests`, the green block of any test that does not set the best bet itself now says
-  *best bet now: 80 m* and *0 stations*. The window takes its spot reload before the test reads it, and
-  with nothing heard the ranking falls back to the hour. The tests that set the best bet by hand read
-  exactly what they read before.
-- The sheet still says *6 stations* in section 2.1. That is the fixture's old count, not a size. Your
-  window shows your own count (item 1).
-- `TheGreenZoneTests` has 15 facts, not the 14 the instruction said.
-- Step 0's filter reads 27, not 26: the trace is a fact.
+- **What the test window now draws, whatever time the tests run.** The main window test sets up an operator on
+  20 m hearing 6 stations, with no best bet. The live spot check the app runs when it opens used to wipe that
+  out: the window showed 0 stations and whatever the clock's table said, *80 m* at night and *20 m* by day. The
+  test now puts the 6 stations, the sparkline and *no best bet* back after that check, and stops with a message
+  if anything else is there. So the green block's words and sizes on the sheet are measured on the window the
+  sheet describes, at any hour.
+- **What will look wrong but is not:**
+  - **The window without a license class still says *0 stations*** in some test output, and once *1 station*.
+    That window never declared a count, so it shows what the spot check found in the test run's own history.
+    No sheet line cites it.
+  - **The three runs' printouts were not identical to the pixel.** Every difference is in a window the sheet
+    does not cite, and the one that reached the network is now switched off.
 
 ## 3. What you should see
 
-**Is the sheet the screen at this tree? Yes.** Both green block readers are green after unit 351's
-change. Step 0's proof held every pin in six runs after the fixture change. The only sheet number a run
-printed differently was the 1920 FT8 green block with a best bet drawn, and that cell now carries it.
-There is no visible change in the application: this unit only makes the tests read the same window
-every run.
+**Yes: every step 0 fact on a licensed test window now measures the window its fixture declares, whatever the
+hour: 6 stations, its sparkline, no best bet unless a fact pins one.** The guard held on every run, and the
+trace's pass 12 read *count 6, sparkline summing 6, best bet none* on all four licensed windows. The plain
+window reads *no best bet*, and its count is whatever the run's history gives (0, 0, 1).
 
-**The two classes, per fact, before (`cdead300` plus the instruction) and after (`386690a2`):**
+**The trace** (`b01e033e` at 02:08 before the change; `u353-t1-run1` after). Every reload carried 0 spots.
 
-| Class | Fact | Before | After | Failure line |
+| Fixture | Width, mode | Reloads landed (before / after) | Held after pass 6, before | Held after pass 12 and the trace's own pass, after |
 |---|---|---|---|---|
-| `Unit332TwoWidthsTests` | `TheGreenZoneAtFourteenHundredAndNineteenTwenty` | pass | pass | none |
-| `Unit332TwoWidthsTests` | `TheNightSideAtTwoAndTenPm` | pass | pass | none |
-| `Unit332TwoWidthsTests` | `TheAchievementsWindowAtItsOwnSize` | pass | pass | none |
-| `TheGreenZoneTests` | `LineOneIsTheThreeLinesInTheirOwnWords` | pass | pass | none |
-| `TheGreenZoneTests` | `LineTwoOpensWithTheBandForTheDial` | pass | pass | none |
-| `TheGreenZoneTests` | `TheFamilyAndSubModeComeFromTheMapAndTheTab` | pass | pass | none |
-| `TheGreenZoneTests` | `TheBestBetChecksWhenItIsHereAndNudgesWhenItIsNot` | pass | pass | none |
-| `TheGreenZoneTests` | `TheHeardCountIsTheDotsOwnAndAbsentIsNotNought` | pass | pass | none |
-| `TheGreenZoneTests` | `TheStrayedLineAppearsOnlyWhenItIsTrue` | pass | pass | none |
-| `TheGreenZoneTests` | `TheSubsolarLongitudeMatchesAHandComputedValueWithinADegree` | pass | pass | none |
-| `TheGreenZoneTests` | `TheNightSideIsTheSunsAndTheGrayEdgeIsAFade` | pass | pass | none |
-| `TheGreenZoneTests` | `TheMapCarriesExactlyOneMarkerAtTheOperatorsGrid` | pass | pass | none |
-| `TheGreenZoneTests` | `TheSparklineReflectsTheHeardCount` | pass | pass | none |
-| `TheGreenZoneTests` | `NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth` | pass | pass | none |
-| `TheGreenZoneTests` | `TheBandIsTheLargestTextOnThePanelAndInFamilyInk` | pass | pass | none |
-| `TheGreenZoneTests` | `TheMapRegionRendersWithItsRuleOfThumbAndNoClaimOfOpenness` | pass | pass | none |
-| `TheGreenZoneTests` | `ThePanelUsesAtLeastNinetyPercentOfItsWidth` | pass | pass | none |
-| `TheGreenZoneTests` | `TheTwoEventsCarryWhatTheyNameAndNothingElse` | pass | pass | none |
+| `TheTopRowTests.Realized(width, telemetry)` | 1920 FT8 | `band_changed` +762 ms, `startup` +763, pass 1 / +40 pass 0, +41 pass 1 | count 0, sparkline 0, best bet 80 m | count 6, sparkline 6, none |
+| same | 1920 PSK31 | +63, +63, pass 1 / +12, +12, pass 1 | count 0, sparkline 0, 80 m | count 6, sparkline 6, none |
+| same | 1400 FT8 | +82, +84, pass 1 / +105, +105, pass 1 | count 0, sparkline 0, 80 m | count 6, sparkline 6, none |
+| same | 1400 PSK31 | +68, +68, pass 1 / +12, +12, pass 1 | count 0, sparkline 0, 80 m | count 6, sparkline 6, none |
+| `TheWorkingPanelsTests.Realized` (no telemetry) | 1920 and 1400, FT8 and PSK31 | a change in pass 1: count null -> 0, best bet [] -> [80 m] (both) | count 0, sparkline 0, 80 m | count 0, sparkline 0, none |
 
-Their 36 printed pixel lines are identical before and after.
+As shown (pass 0), every licensed window held count 6 and no best bet, and every plain window count null. In
+all 16 traced windows, before and after, the trace's own pass read *(unchanged)*.
 
-**The ten traced cases, 1920 PSK31.** Before is task 0's trace at `4ad20a25`; after is the first final
-run at `386690a2`. Times are from the window's build; *pin* is when the pin was set.
+**The writers:** `MainWindowViewModel.cs:17026` (count), `:17031` (sparkline), `:16857` via `:17038`
+(`IsBestBet`), all in `ReloadSpotsAsync` (`:16969`). The triggers are `:8098`, `:11066`, `:7717`, `:8390`,
+`:8425` and `:11691`, with the last on a five-minute timer. None writes after `Realized` returns.
 
-| Case | Before: what landed, when | Source | Pin held | After: what landed, when | Source | Pin held |
-|---|---|---|---|---|---|---|
-| 20 m, 1 | nothing while open (pin +1315, first window) | - | yes | band_changed +59, startup +60; pin later | none answering | yes |
-| 20 m, 2 | nothing while open (pin +120) | - | yes | band_changed +44, startup +45 | none answering | yes |
-| 20 m, 3 | nothing while open (pin +112) | - | yes | band_changed +96, startup +96 | none answering | yes |
-| 20 m, 4 | **band_changed +89, after the pin +86**, 0 spots, badge to 40 m | POTA, RBN | **no** | band_changed +49, startup +49 | none answering | yes |
-| 20 m, 5 | band_changed +90, before the pin +100, 0 spots | POTA, RBN | yes | band_changed +37, startup +38 | none answering | yes |
-| absent, 1 | nothing while open (pin +103) | - | yes | band_changed +64, startup +64 | none answering | yes |
-| absent, 2 | nothing while open (pin +83) | - | yes | band_changed +45, startup +46 | none answering | yes |
-| absent, 3 | **band_changed +97, after the pin +89**, 0 spots, badge to 40 m | POTA, RBN | **no** | band_changed +39, startup +39 | none answering | yes |
-| absent, 4 | **band_changed +116, with the pin +116**, 0 spots, badge to 40 m | POTA, RBN | **no** | band_changed +40, startup +41 | none answering | yes |
-| absent, 5 | nothing while open (pin +79) | - | yes | band_changed +49, startup +49 | none answering | yes |
+**Step 0's runs, every unpinned number named against unit 352's runs.** Unit 352's before run is
+`u352-t0-step0`, before `386690a2`; its after run is `u352-t1-final-run1`.
 
-After the change, every reload landed before the pin, in all ten windows of all four trace runs.
+| Printed | u352 before | u352 after | this unit before (`u353-t0-step0`) | this unit runs 1-3 |
+|---|---|---|---|---|
+| 1920 green block, FT8 / PSK31, no pin | 55 / 67 | 64 / 76 | 64 / 76 | **55 / 67** |
+| *heard just now* y, 1920 / 1400 | 251 / 268 | 260 / 286 | 260 / 286 | **251 / 268** |
+| count y, 1920 / 1400 | 263 / 277 | 272 / 295 | 272 / 295 | **263 / 277** |
+| count words on the licensed windows | 6 stations | 0 stations | 0 stations (18 lines) | **6 stations, 12 of 12 lines** |
+| unpinned best bet | none | 80 m | 80 m | **none** (10 lines `pills []`) |
+| no-license 1920 panels, strip showing (`TheThreePanelsShareOneTopAndOneBottom`) | 450 at y 503 | 441 at y 512 | 441 at y 512 | **450 at y 503** |
+| `Unit338` no-license left column, 1400 / 1920 | 480 / 1000 | 340 / 740 | 340 / 740 | 340 / 740, **not back** |
+| `Unit350` *before pinning the hour's best bet was visible* | False | True | True, 12 of 12 | **False, 12 of 12** |
+| `Unit341` 1920 drive-row candidate's top row | 207 | 207 | 207 | **190** |
+| `Unit351` hidden best-bet button, as laid out | 0 x 0 | 40 x 9 | 40 x 9 | 40 x 9, visible False |
 
-**Step 0's three runs on the committed tree** (`u352-t1-final-run1` to `-run3`): 27 of 27 each.
-`TheTopRowTests` 13 of 13, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests`
-5 of 5. The pinned fact's lines were the same in all three:
-
-| | FT8, 20 m | FT8, absent | PSK31, 20 m | PSK31, absent | 40 m fact, FT8 / PSK31 |
-|---|---|---|---|---|---|
-| 1920 top row / panels / block | 190 / 503 / 64 | 190 / 503 / 55 | 190 / 503 / 76 | 190 / 503 / 67 | 190 / 503 / 64 and 76 |
-| 1400 top row / panels / block | 216 / 477 / 88 | 216 / 477 / 88 | 228 / 465 / 100 | 228 / 465 / 100 | 216 / 477 / 88 and 228 / 465 / 100 |
-| pin held | yes | yes | yes | yes | yes |
-
-Card and rig equal in every case. None of these moved from the task 0 run. The numbers that moved are
-listed in section 1 under task 1.
+- **The pinned numbers did not move:** 1920 190 px, panels 503; 1400 FT8 216, panels 477; 1400 PSK31 228,
+  panels 465. No pinned fact's line is in any diff.
+- **The no-license left column did not come back** because that window now draws a count (0) and so shows its
+  right column. Before `386690a2` its reload landed after the window closed and it drew none.
+- **`Unit351`'s hidden button keeps the size the reload's badge laid it out at**, with visible False.
+- **Across this unit's runs:**
+  - run 1 against run 2, 12 lines: `TheThreePanelsShareOneTopAndOneBottom` 1400 PSK31 plain, 410 at y 543
+    against 409 at 544;
+  - run 3 against runs 1 and 2, 27 more: `EmptyTab` 1920, Stop y 373 -> 367 and the chips 11 px, and the plain
+    count *0 stations* -> *1 station* at both widths;
+  - the run after task 3 equals run 2.
 
 ## 4. What's blocking us
+
+**Nothing new needs a ruling.** Tim's step 3 verdict stays open.
+
+Unit 352's section 4 comes first, verbatim per HM-DEC-139, from its line under `## 4. What's blocking us` to its
+end, as committed in `8fa20cb1`. It was kept in place, and the marks work instruction 353 §9 asks for were added
+with the file editor:
+- unit 349 item 1, *STILL OPEN*;
+- unit 352 item 1, *TAKEN UP by work instruction 353 rulings 66 to 69*, with the result;
+- unit 352 item 2's last two bullets, *TAKEN UP by work instruction 353 ruling 70*, with the result.
+
+This unit's five items follow at the very end, under *Raised by unit 353*. Each is a finding, and none is an
+ask.
+
+### Asks still outstanding - carried from unit 352's section 4, per HM-DEC-139, verbatim
 
 **Nothing new needs a ruling.** Tim's step 3 verdict stays open.
 
@@ -1948,6 +1943,9 @@ clips or wraps. The watched red is built in, and no string changed.
 **1. Ruling wanted, Tim's, step 3: pass or not, at your window size, reading
 `docs\unit349-what-tim-looks-at.md`.**
 
+`STILL OPEN - Tim's; work instruction 353 authors nothing into the verdict` (the sheet re-cited at `:47`,
+`:54` and `:57` and corrected at `:71`-`72` and `:118`, `66fd6111`; nothing on the screen moved).
+
 `STILL OPEN - Tim's; work instruction 352 authors nothing into the verdict, and the sheet was checked
 against the screen at 0ddb0566` (corrected at `:47`, `:71`-`73`, `:118` and `:511`-`514`; nothing on
 the screen moved).
@@ -2136,6 +2134,14 @@ committed tree, pins 8 of 8 and the 40 m fact 4 of 4 each, both bodies unedited;
 **1. The facts that pin nothing now measure the hour's best bet and 0 stations, not the fixture's no
 best bet and 6 stations.**
 
+`TAKEN UP by work instruction 353 rulings 66 to 69` - the trace (`b01e033e`) put both reloads in pass 1 of
+`Realized`'s settle in every window, leaving count 0 and *80 m* at 02:08, with nothing written after
+`Realized` returns. `TheTopRowTests.Realized` now sets the count 6, its sparkline and no best bet again after
+the settle and guards them, and `TheWorkingPanelsTests.Realized` the best bet (`2077432a`). The guard held
+in all three runs, 28 of 28 each. The unpinned facts drew *6 stations* and no best bet: the 1920 block 55
+and 67, *heard just now* y 251 and 268. The sheet's `:55` and `:57` are cited to `2077432a` (`66fd6111`).
+The plain window's count still follows the run's spot history (unit 353 item 1).
+
 *A finding, not an ask.*
 - With the network sources off, both spot reloads (`band_changed` and `startup`) land inside
   `Realized`'s own settle, every time (16 to 148 ms in, and 1246 on one run's first window). Each one
@@ -2185,6 +2191,12 @@ best bet and 6 stations.**
 - **Not examined:** whether an RBN reader already started is stopped when its switch is later turned
   off. No test window in this unit turns a source off after starting it.
 
+  `TAKEN UP by work instruction 353 ruling 70` - `EmptyTab`'s printed numbers differed across unit 353's
+  three runs (1920, Stop y 373, 373, 367). Its network sources were switched off by
+  `TheTopRowTests.NetworkSources` (`bc4aee85`), and step 0's filter read 28 of 28 with Stop back at y 373.
+  `BindingHealthTests` prints no pixel line, passed every run and was not changed (unit 353 item 3). Whether
+  an RBN reader is stopped when switched off is still not examined.
+
 **3. Mismatches with work instruction 352, and the tool facts.**
 
 *A finding, reported and not repaired.*
@@ -2213,3 +2225,112 @@ best bet and 6 stations.**
 - `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. Each write was set back to
   `HM-DEC-163 (2026-09-12)` with the file editor before the next one, except where two writes came in
   one batch of calls.
+
+### Raised by unit 353
+
+**1. Step 0's printed lines were not identical across the three runs; every difference is in a window the
+restore does not cover.**
+
+*A finding, not an ask.*
+- **The counts:**
+  - run 1 against run 2, 12 lines; run 1 against run 3, 39; run 2 against run 3, 27
+    (`testresults\u353-bytest-run1-vs-run2.txt`, `-run1-vs-run3.txt`, `-run2-vs-run3.txt`);
+  - unit 352's three final runs had 0.
+- **`TheWorkingPanelsTests.EmptyTab`** (`StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList`, 1920, list
+  empty):
+  - Stop at y 373 in runs 1 and 2 and 367 in run 3;
+  - `DigitalFilterCq` 426 -> 415 and `DigitalFilterEverything` 425 -> 414;
+  - its network sources were at their defaults. Taken up by task 3 (item 3).
+- **The plain window's count** (`Unit338TraceTheRowsAboveThePanels`, built by `TheWorkingPanelsTests.Realized`):
+  - *0 stations* in runs 1 and 2 and *1 station* in run 3, at 1920 (y 263) and 1400 (y 277);
+  - that fixture declares no count, so ruling 67 leaves it;
+  - the test run's data folder is one per test process (`TheOperatorsFolderIsNotOursTests.cs:45`-`50`), so every
+    window in a run shares the spot history the reload reads;
+  - **read, not proven:** the station was a spot `EmptyTab`'s POTA reply recorded earlier in the same run;
+  - the run after task 3 drew 0.
+- **The 1400 PSK31 plain panels** (`TheThreePanelsShareOneTopAndOneBottom`):
+  - 410 px at y 543 in run 1;
+  - 409 at y 544 in runs 2 and 3, in the run after task 3, and in unit 352's three final runs;
+  - **not traced.** The assertion it feeds, one top and one bottom, held in every run.
+- **Does any of it show the sheet wrong? No.** The sheet cites none of the three. Its no-license 1400 row
+  (`:64`-`65`: 217 px, panels 476 and 423) printed the same in all four runs. The restored and pinned numbers
+  were identical in all three.
+
+**2. The carry-forward list's app invocation read 110 of 111 once, after task 1's change.**
+
+*A finding, not an ask.*
+- At 02:16:36 it read *Failed: 1, Passed: 110*. The invocation had no trx logger, so the red has no name.
+- The same invocation at 02:17:21, with a trx, read 111 of 111 (`testresults\u353-t1-carry-app.trx`).
+- No class on the list builds `TheTopRowTests.Realized`, `TheWorkingPanelsTests.Realized` or `FixtureSettings`.
+  Only `TheTopRowTests.cs` and `TheWorkingPanelsTests.cs` name them, so by reading the restore is not on the
+  red's path. That is an inference.
+- A unit that runs the list with a trx logger would name it if it comes back.
+
+**3. What still reaches the network from a test window.**
+
+`TAKEN UP by work instruction 353 ruling 70` for the two windows it names. *A finding;
+`BindingHealthTests` is reported, not changed.*
+- **`EmptyTab`: switched off** by `TheTopRowTests.NetworkSources` (`bc4aee85`), because its printed numbers
+  differed (item 1). Step 0's filter once more: 28 of 28, Stop back at y 373, 0 diff lines against run 2.
+- **`BindingHealthTests.cs:108`, `new MainWindowViewModel(new AppSettings(), null)`:**
+  - the product's default settings, so POTA is on and no callsign is set;
+  - it prints no pixel line, so there was nothing of its own to compare across the runs;
+  - it passed in every run of its class and on the carry-forward list;
+  - unchanged, as ruling 70 says.
+- **Not in ruling 70, found while checking §2: `Unit332TwoWidthsTests` builds its own window**
+  (`Unit332TwoWidthsTests.cs:308`-`333`):
+  - it sets the callsign *KC3QIS*, a General license and 6 stations, with the sources at their defaults, so its
+    band select reaches POTA and starts RBN under that call;
+  - it has no restore;
+  - its printed lines matched unit 352's with 0 diff lines in this unit's one run;
+  - whether its reload lands before it measures was not measured;
+  - not changed: no ruling covers it.
+
+**4. Mismatches with work instruction 353, and the tool facts.**
+
+*A finding, reported and not repaired.*
+- **§1, `Unit341`'s drive-row candidate *190 to 207* at `386690a2`.** `u352-t0-step0`, the run before `386690a2`,
+  printed 207 as well (1920, top row 207, panels 486). This unit's runs print 190 (panels 503).
+- **§1, the no-license 1920 panels *450 -> 441*.** Those are `TheThreePanelsShareOneTopAndOneBottom`'s plain
+  1920 window. `Unit338`'s plain 1920 window with the strip showing read 452 at y 501 in unit 352's after run and
+  in this unit's runs.
+- **§1, `Unit338`'s no-license left column.** It did not return: 340 and 740 (section 3).
+- **Ruling 66's *both licensed fixtures*.** `TheWorkingPanelsTests.Realized` sets a callsign but no license class;
+  the sheet calls it *no license class*. It was traced as the second fixture.
+- **§2's launcher files.** `PHASE_STATUS.md` read as §2 says. Its uncommitted `HEARTBEAT` and step 3 line went into
+  `d66a6ace` with the `WORK_INSTRUCTION` line (decision 5). `.run-unit\watched.cpu` read deleted at the start and
+  modified later: the launcher's.
+- **`.run-unit\reload.txt:9` and `:34`** say `CLAUDE.md` §1 holds `CPS-DEC-0163`. `grep -n "CPS-DEC"` finds nothing in
+  `CLAUDE.md`. Parked with the id schemes.
+- **The tool facts, against §7.**
+  - These ran:
+    - `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test … | grep`;
+    - `git add && git commit -m -m && git push && git log | cut`;
+    - `grep -n`, `grep -n -A`, `grep -o -e` and `grep -c` on trx files, joined by `&&` with `wc -l`;
+    - `sh` on scripts written with the file editor into `testresults\`.
+  - These asked for approval and were not run:
+    - a line with `pwd -W`;
+    - `sed -e` with a grouped expression in a pipe;
+    - `awk -F:` in a pipe;
+    - `tasklist`;
+    - a `grep -o` with `\{0,90\}` counts.
+  - Refused: a `grep` with `$(...)` (*Contains command_substitution*).
+  - §7's `for` loop and `sed -n` refusals were not tried.
+  - `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. Every write was set back to `HM-DEC-163 (2026-09-12)`
+    with the file editor before the next one, and no two status writes shared a batch.
+
+**5. The arbiter's recommendation, carried with what this unit measured (ruling 71).**
+
+*The author's recommendation to the next arbiter, and a note logged for the owner; findings, not asks.*
+- **The recommendation:** if this unit ends with the guard holding, three identical runs and the sheet re-cited,
+  no unit remains that ruling 46 licenses.
+- **Measured against it:**
+  - the guard held on every run;
+  - the sheet is re-cited;
+  - the three runs were not identical to the pixel, for the reasons in item 1, and none of those lines is a
+    number the sheet cites.
+- **So by this unit's reading nothing is left that ruling 46's exception licenses.** The next decision block can
+  say so rather than author a unit for the loop's sake. That reading is this session's, not a ruling.
+- **Logged, not chased:** `ARBITER.md` §3 and §6 give no move for *waiting on the owner's eyes*, so the loop
+  authors a unit into step 3 on each call. Units 349 to 352 cost about $10 to $14 each (`RUN_LEDGER.md`, as work
+  instruction 353 quotes it; not re-read here).
