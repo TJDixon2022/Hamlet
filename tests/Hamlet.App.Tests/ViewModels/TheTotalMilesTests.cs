@@ -44,7 +44,11 @@ public sealed class TheTotalMilesTests
             + " | " + badge.Standing + " | " + badge.ScoreLine);
 
         Assert.Equal("Total Miles", badge.Name);
-        Assert.Equal("grid to grid, added up", badge.Meaning);
+
+        // **CORRECTED UNDER §R12 BY WORK INSTRUCTION 348 TASK 4** (ruling 39): unit 332 (`3ea16ec`) shortened
+        // the badge's meaning line from `grid to grid, added up` to `every mile, added` in `src` and left this
+        // expectation behind, red since.
+        Assert.Equal("every mile, added", badge.Meaning);
         Assert.Equal("globe", badge.Emblem);
         Assert.Equal("0 mi so far", badge.Standing);
         Assert.Equal("50,000 miles", badge.NextCard);
