@@ -1098,6 +1098,234 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 350 task 0: step 0 with the best bet pinned both ways, and what stands
+    /// between the three panels and the status bar** - at 1920 and 1400, on FT8 and PSK31.
+    /// Printed, not asserted - the trace task 1 is built from.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 49**: `RankBands` reads `DateTime.Now.Hour`, so the green
+    /// block's best bet, and with it the 1400 top row, followed the hour the test ran. The badge is
+    /// set here on the test window only, the way
+    /// <see cref="TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow"/> sets it - drawn on
+    /// the band the fixture is on, and absent - and the pin is read back after settling. A best bet
+    /// on another band is printed as well, for the report only.</para>
+    /// <para>**RULING 50**: from the panels' bottom edge to the status bar's top edge, every
+    /// visual with height that overlaps the gap, with its margin, border and padding.</para>
+    /// <para>**NOTHING IS PRESSED** (§0.2). `GreenZoneBestBet` moves the operator's band; it is
+    /// read and never clicked. FT8 is put back before each window closes.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit350TraceStepZeroBothWays()
+    {
+        _output.WriteLine("local hour the run read: " + DateTime.Now.Hour.ToString("00", CultureInfo.InvariantCulture));
+
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "FT8", "PSK31" })
+            {
+                foreach (var (label, pinned) in new (string, string?)[] { ("drawn", "20 m"), ("absent", null), ("elsewhere, report only", "40 m") })
+                {
+                    var c = WithTheBestBetPinned(width, mode, pinned);
+
+                    _output.WriteLine(
+                        "=== " + mode + " " + Px(width) + " x " + Px(WindowHeight) + ", licensed; best bet " + label
+                        + " (" + (pinned ?? "no band") + "); before pinning the hour's best bet was visible " + c.VisibleBeforePin);
+                    _output.WriteLine(
+                        "  top row  : " + Px(c.TopRow) + " px of " + Px(c.Below) + " = " + Share(c.TopRow, c.Below)
+                        + "; limit 0.262 x below = " + Px(0.262 * c.Below) + ", margin " + Px((0.262 * c.Below) - c.TopRow));
+                    _output.WriteLine("  card " + Box(c.Card) + "; rig panel " + Box(c.Rig) + "; rig - card = " + Px(c.Rig.Height - c.Card.Height));
+                    _output.WriteLine("  green block " + Box(c.Block) + " = " + Px(c.Block.Height) + " px");
+                    _output.WriteLine(
+                        "  panels   : " + Px(c.PanelsHidden) + " px = " + Share(c.PanelsHidden, c.Below) + " strip hidden; "
+                        + Px(c.PanelsShown) + " px = " + Share(c.PanelsShown, c.Below) + " strip "
+                        + (c.StripShown ? "showing" : "not showing (nothing to say)") + "; half = " + Px(c.Below / 2));
+                    _output.WriteLine(
+                        "  pin held " + c.PinHeld + ": badged [" + string.Join(", ", c.Badged) + "], best bet visible "
+                        + c.BestBetVisible + " [" + c.BestBetSaid + "]" + (c.PinHeld ? "" : "; " + c.PinWhy));
+                }
+            }
+        }
+
+        // **THE FLOOR** (ruling 50): the panels' bottom, the status bar's top, and every visual with
+        // height that overlaps what is between them.
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            var window = Realized(width);
+            var model = (MainWindowViewModel)window.DataContext!;
+
+            try
+            {
+                Settle(window);
+
+                var panels = TheWorkingPanelsTests.Panels(window);
+                var waterfall = Named<Control>(window, "DigitalWaterfallPanel");
+                var status = Named<Control>(window, "StatusBar");
+                var floor = panels.Max(p => p.Rect.Bottom);
+                var top = RectIn(status, window).Top;
+                var holding = waterfall.GetVisualAncestors().ToHashSet();
+                var statusHolding = status.GetVisualAncestors().ToHashSet();
+
+                _output.WriteLine(
+                    "=== FLOOR FT8 " + Px(width) + " x " + Px(WindowHeight) + ": panels' bottoms ["
+                    + string.Join(", ", panels.Select(p => p.Name + " " + Px(p.Rect.Bottom))) + "]; status bar " + Box(RectIn(status, window))
+                    + "; gap y " + Px(floor) + " to " + Px(top) + " = " + Px(top - floor) + " px");
+
+                foreach (var v in window.GetVisualDescendants().OfType<Control>().Prepend(window))
+                {
+                    var r = RectIn(v, window);
+
+                    if (!v.IsEffectivelyVisible || r.Height <= 0 || r.Bottom <= floor + 0.5 || r.Top >= top - 0.5)
+                    {
+                        continue;
+                    }
+
+                    var role = holding.Contains(v) && statusHolding.Contains(v) ? "holds the panels and the status bar"
+                        : holding.Contains(v) ? "holds the panels; " + Px(r.Bottom - floor) + " px of it below their floor"
+                        : r.Top >= floor - 0.5 && r.Bottom <= top + 0.5 ? "STANDS IN THE GAP"
+                        : "crosses the gap";
+
+                    _output.WriteLine(
+                        "  " + (v.GetType().Name + " " + (v.Name ?? "-")).PadRight(44) + "top " + Px(r.Top) + ", height " + Px(r.Height)
+                        + ", bottom " + Px(r.Bottom) + "; " + Spacing(v) + "; " + role);
+                }
+
+                // **WHAT EACH PIXEL IS**: the chain from the waterfall panel up to the working card's
+                // border, bottom edges and what each adds under its child.
+                _output.WriteLine("  chain from the waterfall panel to the window:");
+
+                foreach (var v in waterfall.GetVisualAncestors().OfType<Control>().Prepend(waterfall))
+                {
+                    var r = RectIn(v, window);
+
+                    _output.WriteLine("    " + (v.GetType().Name + " " + (v.Name ?? "-")).PadRight(44) + "bottom " + Px(r.Bottom) + "; " + Spacing(v));
+
+                    if (ReferenceEquals(v, Named<Control>(window, "WorkspaceBoundary")))
+                    {
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                model.ChosenDigitalMode = "FT8";
+                window.Close();
+            }
+        }
+    }
+
+    /// <summary>What one window measured with the best bet set by hand, and whether it stayed set.</summary>
+    public sealed record BestBetCase(
+        double TopRow,
+        double Below,
+        Rect Card,
+        Rect Rig,
+        Rect Block,
+        double PanelsShown,
+        double PanelsHidden,
+        bool StripShown,
+        bool VisibleBeforePin,
+        bool PinHeld,
+        string PinWhy,
+        IReadOnlyList<string> Badged,
+        bool BestBetVisible,
+        string BestBetSaid);
+
+    /// <summary>
+    /// Realizes the licensed window on <paramref name="mode"/>, sets the best bet on
+    /// <paramref name="pinned"/> or on no band, and measures the top row and the panels.
+    /// </summary>
+    /// <remarks>
+    /// **THE PIN IS SET ON THE TEST WINDOW ONLY** (the arbiter's ruling 49), by `IsBestBet` and
+    /// `NotifyGreenZoneForTests`, after the mode has settled, and read back after every settle
+    /// that follows. Nothing is pressed.
+    /// </remarks>
+    private static BestBetCase WithTheBestBetPinned(double width, string mode, string? pinned)
+    {
+        var window = Realized(width);
+        var model = (MainWindowViewModel)window.DataContext!;
+
+        try
+        {
+            model.ChosenDigitalMode = mode;
+            Settle(window);
+
+            var bet = Named<Button>(window, "GreenZoneBestBet");
+            var visibleBeforePin = bet.IsEffectivelyVisible;
+
+            foreach (var band in model.Bands)
+            {
+                band.IsBestBet = band.Band.Name == pinned;
+            }
+
+            model.NotifyGreenZoneForTests();
+            Settle(window);
+
+            var m = Measure(window);
+            var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+            var below = window.Bounds.Height - RectIn(pills, window).Bottom;
+            var block = RectIn(Block(window), window);
+            var strip = Named<Border>(window, "DigitalReadinessStrip");
+            var stripShown = strip.IsEffectivelyVisible;
+            var shown = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+            strip.IsVisible = false;
+            Settle(window);
+
+            var hidden = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+
+            // **READ BACK AFTER THE LAST SETTLE**: a re-rank would have moved the badge.
+            var badged = model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name).ToList();
+            var said = bet.Content as string ?? "";
+            var why = new List<string>();
+
+            if (!badged.SequenceEqual(pinned is null ? Array.Empty<string>() : new[] { pinned }))
+            {
+                why.Add("IsBestBet is on [" + string.Join(", ", badged) + "], pinned [" + pinned + "]");
+            }
+
+            if (bet.IsEffectivelyVisible != (pinned is not null))
+            {
+                why.Add("the green block's best bet is " + (bet.IsEffectivelyVisible ? "drawn" : "not drawn"));
+            }
+
+            if (pinned is not null && !said.StartsWith(pinned, StringComparison.Ordinal))
+            {
+                why.Add("the green block's best bet says [" + said + "]");
+            }
+
+            return new BestBetCase(
+                m.TopRowHeight, below, m.Card, m.Rig, block, shown, hidden, stripShown, visibleBeforePin,
+                why.Count == 0, string.Join("; ", why), badged, bet.IsEffectivelyVisible, said);
+        }
+        finally
+        {
+            model.ChosenDigitalMode = "FT8";
+            window.Close();
+        }
+    }
+
+    private static string Share(double part, double whole)
+        => (part / whole).ToString("0.000", CultureInfo.InvariantCulture);
+
+    /// <summary>A visual's margin, and its border and padding where it has them.</summary>
+    private static string Spacing(Control v)
+    {
+        static string T(Thickness t) => Px(t.Left) + "," + Px(t.Top) + "," + Px(t.Right) + "," + Px(t.Bottom);
+
+        var (border, padding) = v switch
+        {
+            Border b => (b.BorderThickness, b.Padding),
+            TemplatedControl t => (t.BorderThickness, t.Padding),
+            Decorator d => (default(Thickness), d.Padding),
+            Avalonia.Controls.Presenters.ContentPresenter p => (p.BorderThickness, p.Padding),
+            _ => (default(Thickness), default(Thickness)),
+        };
+
+        return "margin " + T(v.Margin) + ", border " + T(border) + ", padding " + T(padding);
+    }
+
     // ------------------------------------------------------------------------------------
 
     /// <summary>The power offer's border: the box `HasPsk31PowerOffer` shows, around the sentence.</summary>
