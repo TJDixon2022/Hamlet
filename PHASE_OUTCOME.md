@@ -337,3 +337,18 @@ ACCOMPLISHED: written in output.md at the end of the unit and not claimed here a
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: not recorded - no step moves; written at task 0.
+
+## UNIT 357 - STEP 3
+
+STEP: 3
+APPROACH: right-click any PSK31 row to open that station card, add a text block that sends one framed line through the existing unslotted sequence on one click, lift the cap to sixty seconds for typed text, and show a row whole message on hover and on click
+HIT: recorded at task 0, before anything was built. Tim ruling of 2026-09-14 is written into PHASE_PLAN.md as R29 and withdraws the no-keyboard line of PSK31 plan R2 and nothing else of it.
+MOVE: continue
+WHY: he read a real QSO off 14.070 with nothing to send back but another CQ, and typing is the thing PSK31 offers over FT8 and FT4; the framing keeps the callsigns and the hand-back out of his hands while one click one transmission and the single keying path stay exactly as proved
+DECIDED: the frame exact words are the author own; the sixty-second cap is the author number; the word that says the turn is doubtful is the author own
+LICENCE: Tim 2026-09-14 overruling PSK31 plan R2; CLAUDE.md 0.2; PSK31 plan R1, R10, R11, R13; HM-DEC-018 and 2.1
+COST: one session, five tasks, each committed on its own
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at its start
+FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: not recorded - no step moves; this unit clears a blocker rather than advancing a criterion, and step 3 exit is Tim verdict. Written at task 0.

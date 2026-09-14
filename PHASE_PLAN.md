@@ -69,6 +69,26 @@ mockup answers it, and its outcomes are the rulings:
   the unit measures and chooses, marks the choice as its own, and reports the numbers at
   both widths.**
 
+**R29 - typed text goes on the air, framed by Hamlet.** Tim, 2026-09-14, after reading a
+real QSO between KE0JBT and N7WE off 14.070 and having nothing to send back but another CQ:
+*"I want to add the ability to send text I type. That is the thing PSK31 offers over
+FT8/4."* And the shape: *"I right click on a message in the Everything list and it creates a
+card. On that card I can do a standard answer but there is also a text block where I can
+enter text to transmit."*
+
+**This withdraws the no-keyboard line of PSK31 plan R2** and nothing else of it: the four
+macros stand, their words stand, and Name, QTH and grid still come from Settings. What is
+withdrawn is *free typing is not in this phase* and the rejection of a keyboard under it.
+
+**What it does not touch, and what a later unit may not quietly take back.** One click, one
+transmission (0.2). One keying sequence and one PttOn site (R10). The certainty gate on
+Report and Confirm (R1). **Hamlet frames what he types** with the callsigns and the
+hand-back, because those are the two things a beginner forgets on a keyboard mode, and they
+are not his to remember. **And the text he typed never enters the record** (HM-DEC-018,
+2.1); its length does.
+
+Recorded by unit 357 task 0 from his own words.
+
 **R28 - Stop is always pressable and never grey.** Tim, 2026-09-14, asked which of two
 ways Stop should behave and answering *"A, the way it has been"*: the control stays live at
 every instant, including when nothing is keyed, rather than being disabled until there is
