@@ -289,7 +289,7 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
     /// <summary>
     /// An evening of FT8 with one DX contact in it, and no PSK31 anywhere.
     /// </summary>
-    private static List<AdifLogRecord> EveningWithDx()
+    internal static List<AdifLogRecord> EveningWithDx()
         => Enumerable.Range(0, 6)
             .Select(i => Record(
                 "W" + (i + 1) + "ABC", "20m", "FT8", null, "FN42",

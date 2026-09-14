@@ -2637,6 +2637,299 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     }
 
     /// <summary>
+    /// **Work instruction 348 task 0: what step 2's five things are on the tree today**, before a line
+    /// is changed - the States count and its cards as drawn, every `confirm` drawn or held, every PSK
+    /// run on the Modes test's own walk with the card it sits on, and the points file's keys against
+    /// its comment block. It asserts nothing and presses nothing that transmits or tunes.
+    /// </summary>
+    [AvaloniaFact]
+    public void Unit348TraceWhatTheLastPhaseLeft()
+    {
+        var states = StateContacts();
+        var widths = new[] { 1400.0, 1920.0 };
+
+        // **STATES: THE COUNT, THE BAND, THE CARDS, AND THE US RECORDS WITH NO STATE.**
+        var usNames = new[] { "United States of America", "Alaska", "Hawaii" };
+        var us = new AchievementLog(states, MyGrid).Contacts
+            .Where(c => c.Entity is { } e && usNames.Contains(e, StringComparer.OrdinalIgnoreCase))
+            .ToList();
+        var noState = us.Where(c => string.IsNullOrWhiteSpace(c.State)).ToList();
+        var unscored = us.Where(c => !string.IsNullOrWhiteSpace(c.State) && AchievementLog.StateOf(c) is null).ToList();
+
+        _output.WriteLine(
+            "STATES LOG: " + us.Count + " United States, Alaska and Hawaii records; " + noState.Count + " carry no STATE ("
+            + string.Join(", ", noState.Select(c => c.Callsign)) + "); " + unscored.Count + " carry a STATE that scores nothing ("
+            + string.Join(", ", unscored.Select(c => c.Callsign + " " + c.State)) + ")");
+
+        foreach (var width in widths)
+        {
+            var window = Realized(states, width);
+            var screen = (AchievementsViewModel)window.DataContext!;
+
+            try
+            {
+                var badge = Named<ItemsControl>(window, "AchievementsBadges").GetVisualDescendants().OfType<Button>()
+                    .First(b => b.DataContext is AchievementBadge { Kind: AchievementKinds.States });
+
+                _output.WriteLine(
+                    "STATES " + F(width) + " badge drawn: " + string.Join(" | ", VisibleText(badge))
+                    + "; hover [" + (ToolTip.GetTip(badge) as string ?? "") + "]");
+
+                OpenOnWindow(window, screen, AchievementKinds.States);
+
+                _output.WriteLine(
+                    "STATES " + F(width) + " band drawn: "
+                    + string.Join(" | ", VisibleText(Named<Border>(window, "AchievementsCategoryBand"))));
+
+                foreach (var card in TradingCards(window))
+                {
+                    _output.WriteLine(
+                        "STATES " + F(width) + " " + (((AchievementCategoryCard)card.DataContext!).Earned ? "earned" : "next")
+                        + " card drawn: " + string.Join(" | ", VisibleText(card)));
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        // **EVERY RUN AND HOVER CONTAINING `confirm`**: the page, the eight kinds and the seven continents.
+        foreach (var (records, label) in new (IReadOnlyList<AdifLogRecord> Records, string Label)[]
+        {
+            (TheAchievementsPageTests.TwelveContacts(), "twelve contacts"),
+            (states, "state contacts"),
+        })
+        {
+            foreach (var width in widths)
+            {
+                var window = Realized(records, width);
+                var screen = (AchievementsViewModel)window.DataContext!;
+                var found = new List<string>();
+                var read = 0;
+                var screenContexts = 0;
+
+                void Read(string where)
+                {
+                    var said = Unit348Said(window);
+
+                    read += said.Count;
+                    screenContexts += window.GetVisualDescendants()
+                        .Count(v => v is Control { IsEffectivelyVisible: true } c
+                            && c.DataContext?.GetType().Name is "AchievementScreen" or "AchievementCard");
+                    found.AddRange(said.Where(s => s.Contains("confirm", StringComparison.OrdinalIgnoreCase)).Select(s => where + " [" + s + "]"));
+                }
+
+                try
+                {
+                    Read("page");
+
+                    foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+                    {
+                        OpenOnWindow(window, screen, kind);
+                        Read(kind);
+                        ToThePage(window, screen);
+                    }
+                }
+                finally
+                {
+                    window.Close();
+                }
+
+                _output.WriteLine(
+                    "CONFIRM " + F(width) + " " + label + ", page + 8 kinds + 7 continents, " + read + " runs and hovers read: "
+                    + (found.Count == 0 ? "NO CONFIRM DRAWN" : string.Join("; ", found))
+                    + "; visible controls bound to AchievementScreen or AchievementCard: " + screenContexts);
+            }
+        }
+
+        // **EVERY `confirm` HELD IN AN ACHIEVEMENTS VIEW MODEL'S SOURCE**, and whether the window binds the old screen.
+        var root = Unit348Root();
+
+        foreach (var file in System.IO.Directory.GetFiles(System.IO.Path.Combine(root, "src", "Hamlet.App", "ViewModels"), "Achievement*.cs")
+            .OrderBy(f => f, StringComparer.Ordinal))
+        {
+            var lines = System.IO.File.ReadAllLines(file);
+
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (lines[i].Contains("confirm", StringComparison.OrdinalIgnoreCase))
+                {
+                    _output.WriteLine(
+                        "CONFIRM HELD " + System.IO.Path.GetFileName(file) + ":" + (i + 1)
+                        + (lines[i].TrimStart().StartsWith("//", StringComparison.Ordinal) ? " (comment) " : " (string) ") + lines[i].Trim());
+                }
+            }
+        }
+
+        var markup = System.IO.File.ReadAllText(System.IO.Path.Combine(root, "src", "Hamlet.App", "Views", "AchievementsWindow.axaml"));
+
+        _output.WriteLine(
+            "SCREEN: AchievementsWindow.axaml mentions Screen " + markup.Contains("Screen", StringComparison.Ordinal)
+            + ", AchievementCard " + markup.Contains("AchievementCard\"", StringComparison.Ordinal)
+            + ", Detail " + markup.Contains("Detail", StringComparison.Ordinal)
+            + "; the sentence is AchievementCard.Detail on the cards AchievementScreen.Entity builds, held by AchievementsViewModel.Screen");
+
+        // **THE MODES TEST'S OWN WALK**: its no-PSK31 log, its grid, the window at its own size, no CQ list.
+        {
+            var screen = new AchievementsViewModel(
+                Hamlet.App.Tests.ViewModels.ThePsk31RecordsAppearTests.EveningWithDx(), "FN00DJ", AchievementPoints.Parse(AchievementPoints.Shipped()));
+            var window = new AchievementsWindow { DataContext = screen };
+
+            void Psk(string where)
+            {
+                foreach (var text in window.GetVisualDescendants().OfType<TextBlock>()
+                    .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Contains("PSK", StringComparison.OrdinalIgnoreCase)))
+                {
+                    _output.WriteLine("PSK RUN " + where + ": [" + text.Text + "] on " + Unit348On(text));
+                }
+
+                foreach (var control in window.GetVisualDescendants().OfType<Control>()
+                    .Where(c => c.IsEffectivelyVisible && ToolTip.GetTip(c) is string s && s.Contains("PSK", StringComparison.OrdinalIgnoreCase)))
+                {
+                    _output.WriteLine("PSK HOVER " + where + ": [" + ToolTip.GetTip(control) + "] on " + Unit348On(control));
+                }
+            }
+
+            window.Show();
+            Settle(window);
+
+            try
+            {
+                _output.WriteLine("MODES TEST WALK: " + window.GetVisualDescendants().OfType<TabItem>().Count() + " tabs on the window");
+
+                Psk("page");
+
+                foreach (var kind in AchievementKinds.All)
+                {
+                    screen.OpenCategoryCommand.Execute(kind);
+                    Settle(window);
+                    Psk(kind);
+                    screen.BackCommand.Execute(null);
+                    Settle(window);
+                }
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
+        // **THE POINTS FILE: EVERY KEY AT EVERY LEVEL, AND EVERY QUOTED WORD IN THE BLOCK.**
+        var shipped = AchievementPoints.Shipped().Replace("\r\n", "\n", StringComparison.Ordinal);
+        var block = shipped.Split('\n').TakeWhile(l => l.TrimStart().StartsWith("//", StringComparison.Ordinal)).ToList();
+        var documented = block
+            .Select(l => System.Text.RegularExpressions.Regex.Match(l, "^\\s*//\\s*\"([^\"]+)\"[ ]{2,}"))
+            .Where(m => m.Success)
+            .Select(m => m.Groups[1].Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        var quoted = block
+            .SelectMany(l => System.Text.RegularExpressions.Regex.Matches(l, "\"([^\"]+)\"").Select(m => m.Groups[1].Value))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        using var document = System.Text.Json.JsonDocument.Parse(
+            shipped,
+            new System.Text.Json.JsonDocumentOptions { CommentHandling = System.Text.Json.JsonCommentHandling.Skip });
+
+        var keys = new List<(string Path, string Name)>();
+        var entries = new List<string>();
+
+        void Keys(System.Text.Json.JsonElement element, string path)
+        {
+            var table = path.Length > 0 && path.Split('.')[^1] is "per" or "special" or "milestones" or "tiers";
+
+            foreach (var property in element.EnumerateObject())
+            {
+                var here = path.Length == 0 ? property.Name : path + "." + property.Name;
+
+                if (table)
+                {
+                    entries.Add(here);
+                }
+                else
+                {
+                    keys.Add((here, property.Name));
+                }
+
+                if (property.Value.ValueKind == System.Text.Json.JsonValueKind.Object)
+                {
+                    Keys(property.Value, here);
+                }
+            }
+        }
+
+        Keys(document.RootElement, "");
+
+        var names = keys.Select(k => k.Name).Distinct(StringComparer.Ordinal).ToList();
+
+        _output.WriteLine(
+            "POINTS RULE: a documented key is a quoted word that is the first thing on a comment line after // and is followed by "
+            + "two or more spaces, the block's key column; every other quoted "
+            + "word is an example value or a reference. A key in the file is a table entry, not a key, where its parent is per, "
+            + "special, milestones or tiers, whose keys are a continent, a band, a mode, a state or a count.");
+        _output.WriteLine("POINTS DOCUMENTED (" + documented.Count + "): " + string.Join(", ", documented));
+        _output.WriteLine("POINTS QUOTED, NOT DOCUMENTED KEYS: " + string.Join(", ", quoted.Except(documented, StringComparer.Ordinal)));
+        _output.WriteLine("POINTS FILE KEYS (" + keys.Count + " at every level, " + names.Count + " names): " + string.Join(", ", keys.Select(k => k.Path)));
+        _output.WriteLine("POINTS TABLE ENTRIES (" + entries.Count + "): " + string.Join(", ", entries));
+        _output.WriteLine("POINTS IN THE FILE, NOT THE BLOCK: [" + string.Join(", ", names.Except(documented, StringComparer.Ordinal)) + "]");
+        _output.WriteLine("POINTS IN THE BLOCK, NOT THE FILE: [" + string.Join(", ", documented.Except(names, StringComparer.Ordinal)) + "]");
+    }
+
+    /// <summary>Work instruction 348 task 0: every visible run and every visible hover the window holds.</summary>
+    private static List<string> Unit348Said(Window window)
+        => window.GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0)
+            .Select(t => t.Text!)
+            .Concat(window.GetVisualDescendants().OfType<Control>()
+                .Where(c => c.IsEffectivelyVisible)
+                .Select(c => ToolTip.GetTip(c) as string)
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => s!))
+            .ToList();
+
+    /// <summary>Work instruction 348 task 0: what a drawn run sits on - a tab, a card and which, a badge, the band.</summary>
+    private static string Unit348On(Control control)
+    {
+        var chain = control.GetSelfAndVisualAncestors().OfType<Control>().ToList();
+        var card = chain.OfType<Border>().FirstOrDefault(b => b.Classes.Contains("trading-card"));
+        var badge = chain.OfType<Button>().FirstOrDefault(b => b.Classes.Contains("hm-badge"));
+
+        if (chain.Any(c => c is TabItem))
+        {
+            return "a tab";
+        }
+
+        if (card?.DataContext is AchievementCategoryCard model)
+        {
+            return (model.Earned ? "an earned card" : "the next card, unearned") + " [" + model.Title + "]"
+                + (control.Classes.Contains("card-caller-place") || control.Classes.Contains("card-caller-call") ? ", a caller row" : "")
+                + (badge is not null ? ", inside a continent badge" : "");
+        }
+
+        if (badge?.DataContext is AchievementBadge owner)
+        {
+            return "the " + owner.Name + " badge";
+        }
+
+        return chain.Any(c => c.Name == "AchievementsCategoryBand") ? "the category band" : "the window, on no card";
+    }
+
+    /// <summary>The repository root: the folder holding `Hamlet.sln`.</summary>
+    private static string Unit348Root()
+    {
+        var at = new System.IO.DirectoryInfo(AppContext.BaseDirectory);
+
+        while (at is not null && !System.IO.File.Exists(System.IO.Path.Combine(at.FullName, "Hamlet.sln")))
+        {
+            at = at.Parent;
+        }
+
+        return at?.FullName ?? throw new InvalidOperationException("no Hamlet.sln above " + AppContext.BaseDirectory);
+    }
+
+    /// <summary>
     /// Work instruction 346 task 0: `Fits`' measurement without its asserts - how many visible runs fit,
     /// and each one that would clip or wrap, in `Fits`' own words.
     /// </summary>
