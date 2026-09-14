@@ -307,3 +307,18 @@ ACCOMPLISHED: Tim can stop a transmission from the status bar at every window si
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: Step 3's only exit criterion is Tim's verdict at his window size, which no session can give. The unit completed its five tasks, and it raises one transmit-side ask: task 1 said Stop should be disabled with nothing keyed, and it was built pressable at every instant instead, because the send plan's step 1 says the abort cannot be disabled and a guarding test holds that.
+
+## UNIT 1 - STEP 3
+
+STEP: 3
+APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
+HIT: section 4 wants a ruling: yes - Item 1 asks the owner to decide whether the Stop abort stays pressable at every instant or is disabled when nothing is keyed, which touches transmit and the radio's safety, and the unit's own build contradicts the work instruction's words.
+MOVE: continue
+WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
+DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
+LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
+COST: 27.369619999999998
+ACCOMPLISHED: Tim can always stop a transmission from any window size, and what a PSK31 station said stays on his screen after the station stops
+FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: The only exit criterion is Tim saying it passed and the report shows no such verdict, so no unit can meet it, and the open ask on whether Stop may be disabled touches the transmit abort, which is one of the three things the phase stops for.

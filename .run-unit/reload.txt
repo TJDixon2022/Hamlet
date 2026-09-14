@@ -1,5 +1,5 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-14T02:30:03-04:00  root C:\Source\HamLet
+measured 2026-09-14T08:25:26-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
@@ -7,9 +7,6 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   RULES_AT         PROJECT_STATUS.md says HM-DEC-163 (2026-09-12); CLAUDE.md section 1 holds CPS-DEC-0163.
-  UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
-  UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
-  UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -21,11 +18,8 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 0d69123a
-  uncommitted at the root : 3
-      M PHASE_OUTCOME.md
-      M PHASE_STATUS.md
-      M RUN_LEDGER.md
+  HEAD   : 4ac119ef
+  uncommitted at the root : 0
 
 ==============================================================
  THE RULINGS IN FORCE
@@ -225,20 +219,19 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  10 lines, 1215 bytes
+  9 lines, 1182 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
   CURRENT_STEP: 3
-  WORK_INSTRUCTION: 353 - the test window draws what its fixture declares, whatever the hour
-  HEARTBEAT: 2026-09-14 02:30:01
+  WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
   STEP: 0 | done | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
   STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
   STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
   STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
 
   --- PHASE_OUTCOME.md ---
-  280 lines, 60154 bytes
+  295 lines, 65033 bytes
   PHASE: The screen, done right
   PHASE_SET: 2026-09-12
   DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
@@ -519,6 +512,21 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   FATE: executed
   STATE_AFTER: blocked
   STATE_WHY: The only exit criterion is Tim saying the pages passed at his own window size, the report shows he has not given that verdict, and no unit can meet it for him since no session can see the screen, so it waits on Tim and more work will not help.
+  
+  ## UNIT 10 - STEP 3
+  
+  STEP: 3
+  APPROACH: measure the main window and the achievements window at the sizes Tim can actually open - the product's opening size 1100 x 780, its minimum 900 x 620 and common laptop and desktop screens - against R26's outcomes and step 1's no-clip and no-white-card clauses, through a height overload of the existing Realized fixtures with the 1400 and 1920 anchors reproducing the pinned numbers, no screen change and every miss put on Tim's sheet unfixed; the achievements window as the drop candidate; the carry-forward list run with trx loggers so a red names itself
+  HIT: section 4 wants a ruling: yes - Item 1 under unit 354 asks the owner to choose how to keep the Stop control on the window at the opening size, which touches the transmit abort and so falls inside the first of the three.
+  MOVE: work around
+  WHY: Step 3 is blocked on Tim's verdict at his window size, and unit 353 left nothing on the test window's reloads (ruling 71, upheld). But every measurement in the phase is at 1400 or 1920 wide and 1040 tall, while Hamlet opens at 1100 x 780 and allows 900 x 620, so Tim may judge a window nothing measured. Measuring the sizes he can open is a different approach from re-checking the sheet against the test window, the loop test found nothing like it, and waiting on the owner's eyes is not one of the three stops.
+  DECIDED: ruling 72 - ruling 46 amended so a unit may be authored into step 3 where Tim's verdict would fall on an unmeasured window size, ruling 71's no-more-reload-work upheld; ruling 73 - the sizes fixed by the instruction (main window 900x620, 1100x780, 1280x720, 1366x728, 1536x824, 1400x1040 and 1920x1040 as anchors, 1920x1017, 2560x1400; achievements 900x620, 1040x720, 1280x720, 1400x720, 1920x720), Tim's own size measured only once he names it; ruling 74 - an internal height overload of both Realized fixtures keeping ruling 61's sources and ruling 67's guard, the anchors reproducing 190/503, 216/477 and 228/465 or nothing ships; ruling 75 - R26's outcomes read per size on FT8 and PSK31 with the best bet pinned absent and on his band, trimmed or clipped text and off-window controls named, asserting nothing; ruling 76 - ruling 63 amended for this unit: the sheet's :11-12, one sizes table and one section 4 item per miss, nothing else; ruling 77 - a miss is reported and never fixed here (ruling 47 holds), no red-going test, the next arbiter weighs a fix, and only a miss touching Stop, keying or transmit is an ask; ruling 78 - the carry-forward list run once with trx loggers so a red names itself (overrules unit 353 decision 3), and Unit332TwoWidthsTests' network reach logged, not chased, as a third reload unit would loop with 352 and 353 - all the author's, marked for Tim at step 3, overrulable
+  LICENCE: PHASE_PLAN.md R26 (at no window size less than half), sections 1 (computed, described, then Tim's eyes), 4 (step 3 exit at his window size; step 0 and step 1 exit clauses), 6 (the arbiter decides and continues; never loosen a test; never clip; transmit or a package stops) and 7; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 3 blocked on unit 353); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 353 (UNIT 9 - STEP 3) STATE_WHY; unit 353 output.md at 0d69123a section 1 and section 4 items 2, 3 and 5; rulings 43 and 46 (work instruction 349), 47 (350), 61 (352), 67, 70 and 71 (353); src/Hamlet.App/Views/MainWindow.axaml 12-13; src/Hamlet.App/App.axaml.cs 93-96, 137-138; src/Hamlet.App/Views/AchievementsWindow.axaml 9; tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 48, 2227; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs 510, 778; tests/Hamlet.App.Tests/Views/TheAchievementsPageClicksInTests.cs 630; tests/Hamlet.App.Tests/Views/TheCategoryPagesAreTradingCardsTests.cs 533; docs/unit349-what-tim-looks-at.md 11-18; docs/carry-forward-tests.txt; Directory.Build.props 834; DECISIONS.md 7 (HM-DEC-163); RUN_LEDGER.md (units 349 to 353, about $8 to $14 each); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+  COST: 11.855571999999999
+  ACCOMPLISHED: when Tim opens Hamlet to give the phase's last verdict - at the size it first opens, at the smallest he can drag it to, or on a common laptop or desktop screen - the sheet already says what the main window and the achievements pages draw there against the mockup's promises, with every shortfall named in pixels, so his verdict is not given on a window nobody measured, and nothing on the screen moved under his review
+  FATE: executed
+  STATE_AFTER: blocked
+  STATE_WHY: The only exit criterion is Tim saying the step passed, which the report shows has not happened and no session can do, and the unit also raised a decision for the owner about Stop being drawn below the window at the opening size of 1100 x 780, which touches transmit safety.
 
   --- CLAUDE.md ---
   1387 lines, 197230 bytes
@@ -541,17 +549,17 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 919 bytes
+  19 lines, 1001 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
   STATE: COMPLETED
   TASK: TASK 3 of 3
-  WORK_INSTRUCTION: 353 - the test window draws what its fixture declares, whatever the hour
+  WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
   BALL: tim
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-163 (2026-09-12)
-  UPDATED: 2026-09-14T02:28:15-04:00
-  NOTE: Unit 353 complete at task 3 of 3 - the licensed test window draws its fixture's 6 stations and no best bet whatever the hour (guard held, step 0 28 of 28 three times, pins held), EmptyTab off the network, sheet re-cited at :47, :54, :57 and corrected at :71-72, :118; step 3 still Tim's
+  UPDATED: 2026-09-14T03:06:51-04:00
+  NOTE: Unit 354 complete at task 3 of 3 - main window measured at 9 sizes: R26 holds at 1400x1040, 1920x1040, 1920x1017, 2560x1400 and misses at every size under 1040 tall; at 1100x780 panels 0 px and Stop below the window (ask, section 4 item 1); achievements clean at 1040x720 and wider, 8 runs clip at 900x620; sheet gained both tables and items 28 to 35; step 3 still Tim's
   
   ---
   
