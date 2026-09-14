@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: TASK 2 of 3
-WORK_INSTRUCTION: 346 - step 1, the Modes next card and every continent page
+TASK: TASK 3 of 3
+WORK_INSTRUCTION: 347 - step 1, a PSK31 caller's distance on the next card
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-13T22:05:22-04:00
-NOTE: Unit 346 complete at task 2 of 3, task 3 dropped - Modes EMPTY rows 4 to 0, clip and white measured on 16 pages; step 1 unqualified 3 of 7 to 6 of 7; report validated
+UPDATED: 2026-09-13T22:39:20-04:00
+NOTE: Unit 347 complete at task 3 of 3 - PSK31 caller with a certain grid drawn with 4,100 mi on Modes and Europe, no-caller row carries the read time, every Modes row fits; step 1 unqualified 6 of 7 to 7 of 7; report written
 
 ---
 

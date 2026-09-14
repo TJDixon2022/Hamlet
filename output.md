@@ -2,357 +2,337 @@
 READ IN THIS ORDER.
 
 A. The phase goal - the screen, done right. Step 0 done (state reader on
-   unit 341). Step 1 partial on the evidence: 7 of its seven must-pass
-   carry a named green test on the drawn page at 1400 AND 1920 (criterion
-   7 is a telemetry event with no width), and 6 of 7 with nothing
-   qualifying them, was 3 unqualified after the state reader on unit 345
-   (unit 345 claimed 7). Criterion 3 keeps one qualification: on the
-   Modes next card a PSK31 caller is drawn as his callsign with no
-   distance, because the CQ list holds no grid for a PSK31 row. Steps 2
-   and 3 not started.
-B. Step 1 and its exit criteria - the two gaps the state reader named
+   unit 341). Step 1 done on the evidence: 7 of its seven must-pass carry
+   a named green test with nothing qualifying them - six on the drawn
+   page at 1400 AND 1920, and criterion 7 a telemetry event with no
+   width - was 6 of 7 after the state reader on unit 346 (criterion 3: a
+   PSK31 caller drawn without distance). None left short. Steps 2 and 3
+   not started.
+B. Step 1 and its exit criteria - the one gap the state reader named
    first, then the rest re-run:
-   entry: TheAchievementsPageClicksInTests 8 of 8, run first;
-      TheCategoryPagesAreTradingCardsTests 10 of 10
+   entry: TheAchievementsPageClicksInTests 8 of 8, run first; trading cards 11 of 11
    3. next card names its want and its callers with distance, or no one
-      calling - Modes rows at 1400 and 1920, the same at both: with
-      Calling(), CW [18.080 on 17 m · the CQ list carries no Morse], FT4
-      [3.575 on 80 m · the CQ list cannot tell FT4 from FT8], PSK31
-      [3.580 on 80 m · no one is calling in it now]; with the PSK31
-      caller, CW and FT4 the same and PSK31 [3.580 on 80 m · EA3XYZ], no
-      distance; EMPTY rows 4 -> 0 (the CW row, each list, each width);
-      TheNextCardKnowsWhoIsCalling pass, every other next card re-run
-   4. all eight kinds per R22 - Modes: where each unworked mode lives -
-      CW at 18.080 on 17 m, where a 17 m band button lands (CwBand.JumpHz
-      from HfBands.Landing, HM-DEC-110, read through the public
-      HfBands.Bands, no engine change), FT4 3.575 and PSK31 3.580 on 80 m
-      (DigitalCallingFrequencies; 17 m has neither); who is there - CW the
-      no-Morse words, FT4 that the list cannot tell it from FT8, PSK31 its
-      nearest caller or no one in it now;
-      TheOtherFiveKindsEachDrawTheirOwnCards pass, view model and drawn
-   5. no string clips or wraps a word - pages measured: 8 kinds, 7
-      continent pages, Modes on five contacts with a PSK31 caller;
+      calling - the rule (ruling 30): a distance wherever the caller's
+      CQ carried a grid the list holds, the callsign alone where it
+      carried none or the reading was uncertain. Modes PSK31 row at 1400
+      and 1920, five contacts, the same at both: certain CQ with a grid
+      [3.580 on 80 m · EA3ABC · 4,100 mi]; no grid [3.580 on 80 m ·
+      EA3XYZ]; uncertain with a grid [3.580 on 80 m · EA3ABC]; both
+      callers [3.580 on 80 m · EA3ABC · 4,100 mi and 1 more]; no PSK31
+      caller [3.580 on 80 m · no one calling at 21:41 UTC].
+      TheNextCardKnowsWhoIsCalling pass; 4,100 mi worked out by the test
+      from GridPath; watched reds on the tree as it was.
+      Grid source: Psk31Exchange.Grid, read in CqSnapshot.From only where
+      Reading.IsCertain and Ft8MessageSplit.IsGrid hold; a live PSK31 row
+      carries it (MainWindowViewModel.cs:2972, Reading: ReadPsk31(channel)).
+      Other kinds whose next card changed: Europe's continent page, Spain
+      [EA3ABC · 4,100 mi] where it was [EA3ABC], on five and twelve
+      contacts; Grids' more line [and 2 more on the CQ list] where it was
+      [and 1 more], on the certain list. Countries, Hall of Fame unchanged.
+   5. no string clips or wraps a word - pages measured at 1400 and 1920:
+      8 kinds and 7 continent pages on twelve contacts; Modes on five
+      contacts with one PSK31 caller, two, and none; Europe with two;
       NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty
-      pass; tallest page Grids 2022 px at 1400 and at 1920; States on its
-      own log in StatesCountWhatTheLogsStateFieldSays, pass
-   6. no card is a white rectangle - the same test, pass; 0 white of 64
-      cards at 1400 and 0 white of 64 at 1920
-   1, 2, 7 and the nice-to-pass - re-run in the one filter, 25 of 25:
-      EveryKindsBandCarriesCountScoreLevelAndABar pass;
-      EveryEarnedCardIsTheContactThatEarnedIt pass;
-      OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse pass;
-      ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt pass at
-      1400 and 1920
-   ruling 11's span on every kind - DROPPED (task 3, the drop candidate):
-      VK2DEF 633.18 of 892 at 1920 on Grids and Bands, 258.82 short; every
-      other map on every kind spans its card at both widths
-C. The report last. Section 4 raises 5 items on top of the carried queue.
-   Item 1, the PSK31 caller's missing distance, is the one qualification
-   on criterion 3 in B. The CW place needed no engine accessor. One row's
-   words may claim more than the CQ list can know: PSK31's "no one is
-   calling in it now" (item 2).
+      pass, after one shortening (section 1, task 2); every Modes row -
+      CW, FT4, FT8, Voice, PSK31 with a caller, with none and with no
+      list, on FT4-only and CW-and-FT4 logs - fits, pass, watched red
+   1, 2, 4, 6, 7 and the nice-to-pass - re-run in the one filter, 26 of 26:
+      1 EveryKindsBandCarriesCountScoreLevelAndABar pass;
+      2 EveryEarnedCardIsTheContactThatEarnedIt pass;
+      4 TheOtherFiveKindsEachDrawTheirOwnCards pass and
+        ContinentsOpensToSevenAndEachToItsCountries pass;
+      6 NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty
+        pass, 0 white of 83 cards a width;
+      7 OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse pass;
+      nice-to-pass ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt
+        pass at 1400 and 1920
+C. The report last. Section 4 raises 4 items on top of the carried queue;
+   none stands in the way of a criterion in B. The grid needed nothing
+   beyond CqSnapshot.From, and no line claims more than the list can know.
+   Nearest to a gap, item 2: a live row's grid via the splitter is not run.
 ```
 
 ```
-UNIT:       346 - complete at task 2 of 3 - 2026-09-13 21:58
+UNIT:       347 - complete at task 3 of 3 - 2026-09-13 22:32
 PHASE GOAL: Hamlet's main window and every achievements category page drawn as Tim's approved
             pictures at his two widths, proved by computation, then passed by Tim at his window.
-UNIT GOAL:  Close the two gaps the state reader named on unit 345 - no empty row on the Modes
-            next card, each row saying where its mode lives and who is there as far as the CQ
-            list can know, and no clip and no white card measured over all seven continent
-            pages and the Modes page that draws a next card.
-ADVANCED:   yes - the empty CW row is filled and drawn at both widths and criteria 5 and 6 are
-            measured on all 16 pages; criterion 3 keeps one named qualification, a PSK31
-            caller drawn without distance because the list holds no grid for him
+UNIT GOAL:  Give a PSK31 caller who sent his grid his distance on the next cards, from the grid his
+            certain PSK31 reading already holds, leave the callsign alone where there is no grid or
+            the reading is a guess, stop the PSK31 row saying now about a list read once, and
+            measure every row the Modes next card can draw for fit.
+ADVANCED:   yes - criterion 3's distance is drawn at 1400 and 1920 for a certain PSK31 CQ with a
+            grid, and the callsign alone otherwise by the stated rule; the one clause the state
+            reader named on unit 346 is closed
 NUMBER:     step 1 must-pass held on the drawn page at 1400 and 1920 with nothing qualifying
-            them: 3 of 7 -> 6 of 7
+            them: 6 of 7 -> 7 of 7
 DRIFT:      0
 ```
 
-**Every appearance claim here is computed on the headless test host, not seen.** Nothing
-here is evidence about the radio.
+**Every appearance claim here is computed on the headless test host, not seen.** Nothing here is
+evidence about the radio.
 
 ## 1. What Claude did
 
-**Complete at task 2 of 3; task 3 was dropped.** Task 3 was the named drop candidate. It was
-dropped because it could not be built inside its own limits, not for time (below). This machine,
-project Hamlet at `C:\Source\HamLet`, branch `main`. The gate held: `SHACK_FACTS.md` and
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and `MURC.sln` do not,
-and `.run-unit\allowed.txt` carries `Bash(dotnet:*)`. **`dotnet test` was never refused.**
+**Complete at task 3 of 3.** Nothing was dropped. This machine, project Hamlet at `C:\Source\HamLet`,
+branch `main`. The gate held: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs`
+exist, `CoreHMI.sln` and `MURC.sln` do not, and `.run-unit\allowed.txt` carries `Bash(dotnet:*)`.
+**`dotnet test` was never refused.**
 
-### Task 0 - the trace, before anything changed
+### Task 0 - the trace, before the list changed
 
-- **Opening commit `7e830e4`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line
-  only, and 1.13.32 -> 1.13.33 with its comment block.
+- **Opening commit `4be21c0`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line only,
+  and 1.13.33 -> 1.13.34 with its comment block.
 - **Carry-forward, before**: app **111 of 111**, engine **86 of 86**.
 - **Entry check**: `TheAchievementsPageClicksInTests` **8 of 8**, then
-  `TheCategoryPagesAreTradingCardsTests` **10 of 10** (unit 345's nine and its trace). Green, so
-  the unit went on.
-- **`Unit346TraceTheModesNextCardAndEveryPage`** (`09da5d7`) asserts nothing and presses nothing
-  that transmits or tunes.
-  - It adds `CallingWithPsk31()`: `Calling()`'s four, plus the text-only row `CQ CQ CQ de EA3XYZ
-    EA3XYZ K` read by `Psk31ExchangeParser.Read`, the way `ThePsk31ReadsTheConversationTests`
-    builds one.
-  - At 1400 and 1920 it printed:
-    - the Modes next card on the five-contact log, row by row, on both lists;
-    - the CW place candidates per band;
-    - every page ruling 27 names, with its runs, cards, white cards and height;
-    - every earned card's map against its card's inner width.
+  `TheCategoryPagesAreTradingCardsTests` **11 of 11**. Green, so the unit went on.
+- **`Unit347TraceThePsk31CallersGridAndDistance`** (`dc47f9f`) asserts nothing and presses nothing
+  that transmits or tunes. It adds `CallingWith(params string[])`: `Calling()`'s four and a text-only
+  row per PSK31 text, each read by `Psk31ExchangeParser.Read` as `CallingWithPsk31()` builds its own.
+  **The texts:**
+  - certain with a grid: `CQ CQ CQ de EA3ABC EA3ABC JN11 K`;
+  - no grid: `CQ CQ CQ de EA3XYZ EA3XYZ K`, `CallingWithPsk31()`'s own;
+  - uncertain with a grid: `CQ CQ CQ de EA3ABC EA3ABC JN11`, the first with its turnover removed.
+
+**What the parser read, and what the snapshot kept, on the tree as it was:**
+
+| Text | Speaker | Grid | IsCertain | Snapshot grid | Snapshot mode |
+|---|---|---|---|---|---|
+| certain with a grid | EA3ABC | JN11 | True | `""` | PSK31 |
+| no grid | EA3XYZ | null | True | `""` | PSK31 |
+| uncertain with a grid | EA3ABC | JN11 | False | `""` | PSK31 |
 
 **Task 0's answers, from the numbers:**
-- **Which Modes rows were `EMPTY`:** the CW row, at 1400 and 1920, with `Calling()` and with the
-  PSK31 caller - all 4 realizations.
-  - FT4 drew `3.575 on 80 m` and PSK31 `3.580 on 80 m`, with nothing about who is there.
-  - With the PSK31 caller, PSK31 drew `3.580 on 80 m · 1 calling CQ`.
-  - The card's no-caller line was empty in all four.
-- **Where the CW place can be read:** `HfBands.Bands` is public. Each `CwBand.JumpHz` is what
-  `Build` fills from the private `HfBands.Landing`, and the band buttons read that same member
-  (`MainWindowViewModel.cs` lines 7295 and 10906). **So no accessor was needed and no engine file
-  changed.** Per band, where it lands and its CW segment:
+- **Does the certain CQ's reading hold the grid, and does the snapshot drop it:** yes and yes. The
+  reading holds `JN11`, and the call on the list has grid `""`.
+- **Is the uncertain reading's grid null:** no. It is present, `JN11`, with `IsCertain` false. So the
+  certainty test, not the grid's presence, is what keeps it off the list.
+- **Which kinds' next cards list a PSK31 caller today, and with what line**, at 1400 and 1920 on
+  five and twelve contacts:
+  - **Modes** (five contacts only; twelve have worked every mode): the PSK31 row, `3.580 on 80 m ·
+    EA3ABC` or `· EA3XYZ`, the callsign alone on all three lists.
+  - **Europe's continent page**: *Spain*, `EA3ABC` or `EA3XYZ`, the callsign alone.
+  - Countries counts the Spanish caller in its *and 1 more on the CQ list* and does not draw him
+    among its three. Grids and Hall of Fame do not list him.
+- **Does a live PSK31 row carry the reading the fix reads:** yes. `MainWindowViewModel.cs:2972`
+  builds the row with `Reading: ReadPsk31(channel)`, which is `message.Exchange` from the channel's
+  `Psk31MessageSplitter`, itself `Psk31ExchangeParser.Read`. `MainWindowViewModel.cs:6403` hands the
+  achievements window `CqSnapshot.From(DigitalDecodes, DateTime.UtcNow)`.
+  `ThePsk31ReadsTheConversationTests.cs:89`, on the carry-forward list and green, asserts a live row's
+  `Reading.Kind`. **The trace printed the route as read from the source; it could not print `NO LIVE
+  READING`.**
 
-  | Band | Lands | CW segment |
-  |---|---|---|
-  | 80 m | 3.530 | 3.500 to 3.600 |
-  | 40 m | 7.028 | 7.000 to 7.125 |
-  | 30 m | 10.103 | 10.100 to 10.150 |
-  | 20 m | 14.030 | 14.000 to 14.150 |
-  | **17 m, the fixture's best bet** | **18.080** | 18.068 to 18.110 |
-  | 15 m | 21.030 | 21.000 to 21.200 |
-  | 10 m | 28.030 | 28.000 to 28.300 |
-- **Can the list say FT4:** no. `CqSnapshot.From` marks a call `PSK31` where the row is text-only
-  and `""` otherwise. Every `Heard(...)` row carried `""` and EA3XYZ carried `PSK31`. No call on
-  either list said FT4.
-- **Does any page clip or draw a white card today:** no. There were 0 clips and 0 white cards on
-  all of these, at both widths:
-  - the 8 kinds and 7 continent pages;
-  - Modes on five contacts with the PSK31 caller.
-- **Which maps fall short:** only VK2DEF at 1920, on Grids (QF56) and Bands (10 m): 633.18 drawn
-  in 892, **258.82 short**.
-  - Every other earned card's map, on every kind and continent page, spans its card's inner width
-    exactly: 632 at 1400, 892 at 1920.
-  - VK2DEF spans 632 at 1400.
-- **Also found:** the PSK31 caller's call has grid `""`. The CQ list holds no grid for a PSK31
-  row, so no distance can be drawn for him (section 4, *Raised by unit 346*, item 1).
+### Task 1 - the grid onto the CQ list (`92584a2`)
 
-### Task 1 - the Modes next card (`7b5fa8f`)
-
-- **Tests first, watched red on the tree as it was:**
-  - **`TheNextCardKnowsWhoIsCalling`**: the drawn loop now runs Modes on the five-contact log with
-    `Calling()` and with `CallingWithPsk31()`.
-    - `ModesRowMiss` asserts every drawn row has a place, and a line made of where the mode lives,
-      ` · `, then who is there.
-    - It works the place out on its own, from `HfBands.Bands` and `DigitalCallingFrequencies`.
-    - Failure line: *1400.00 modes with 4 on the CQ list: the CW row draws an EMPTY line (rows
-      drawn: CW [] / FT4 [3.575 on 80 m] / PSK31 [3.580 on 80 m])*.
-  - **`TheOtherFiveKindsEachDrawTheirOwnCards`**, Modes half: the CW row equals `18.080 on 17 m ·
-    the CQ list carries no Morse`, on the view model and drawn at 1400 and 1920. FT4 and PSK31
-    keep `3.575 on 80 m` and `3.580 on 80 m`. Failure line: *Assert.Equal() Failure: Strings
-    differ. Expected: "18.080 on 17 m · the CQ list carries no M"···, Actual: ""*.
-  - **Second check, built in (ruling 19):** the same drawn rows held against a 40 m best bet. On
-    every green run it prints *the CW row draws [18.080 on 17 m · the CQ list carries no Morse],
-    not [7.028 on 40 m · the CQ list carries no Morse]*.
-  - Every existing assertion was kept.
-- **Built in `AchievementCategory.ModesFor` and `LivesAt`.** `CallingIn` is replaced by
-  `WhoIsThere`:
-  - `LivesAt("CW", bet)` reads `HfBands.Bands` for the best-bet band, or the lowest band, and
-    writes it in `LivesAt`'s form through a shared `OnBand`. No frequency is typed.
-  - `WhoIsThere` gives, per mode:
-    - CW: `NoMorseOnTheList`;
-    - FT4: `ListCannotTellFt4`;
-    - FT8: `ListCannotTellFt8`;
-    - PSK31: the nearest caller by miles, as `Joined(callsign, distance)` with ` and n more` past
-      one; or `NoOneCallingInIt`; or `ListNotRead` where no list was handed in;
-    - any other mode (Voice): `NoVoiceOnTheList`.
-  - `MilesTo` now reads a new `MilesBetween`, and its output is unchanged.
-  - No earning, score, points, other kind's next card or word from rulings 11 to 16 changed.
-- **One filter, 25 of 25**: `TheCategoryPagesAreTradingCardsTests` 11 of 11,
+- **Tests first, watched red on the tree as it was.** `TheNextCardKnowsWhoIsCalling`'s drawn loop
+  now carries a wanted PSK31 row per Modes realization on five contacts, at 1400 and 1920, worked out
+  in the test from the text and `GridPath` (its own `Mi`), not from the snapshot:
+  - `CallingWithPsk31()`: `3.580 on 80 m · EA3XYZ`;
+  - the certain CQ: `3.580 on 80 m · EA3ABC · 4,100 mi`;
+  - the uncertain CQ: `3.580 on 80 m · EA3ABC`;
+  - both callers, the no-grid one first on the list: `3.580 on 80 m · EA3ABC · 4,100 mi and 1 more`.
+  - Europe is realized on the certain caller's list too, so its existing *every caller has a
+    distance* assertion now covers a PSK31 caller.
+  - **Failure line:** *1400.00 modes: the PSK31 row draws [3.580 on 80 m · EA3ABC], not [3.580 on
+    80 m · EA3ABC · 4,100 mi]*.
+  - `Calling()` is unchanged, and every existing assertion was kept.
+- **Built in `CqSnapshot.From`**, through a new private `GridOf`: a text-only row's grid is
+  `Reading.Grid` where `Reading.IsCertain` is true and `Ft8MessageSplit.IsGrid` holds, otherwise `""`.
+  An FT8-shaped row still takes its payload where it is a grid. The remark at `:29`-`:30` and
+  `WhoIsThere`'s now say what is true. **No parser, splitter, demodulator, row construction, earning,
+  score, points or ruling 11 to 16 word changed. No file under `src/Hamlet.RadioEngine/` changed.**
+- **After the build**, the trace read the certain CQ's call as grid `JN11`, the other two as `""`.
+  On the certain list:
+  - Modes' PSK31 row: `3.580 on 80 m · EA3ABC · 4,100 mi`;
+  - Europe: *Spain* `EA3ABC · 4,100 mi`, on five and twelve contacts;
+  - Grids: still three callers drawn, the more line *and 2 more on the CQ list* where it was *and 1
+    more*, because JN11 is now an unworked square on the list;
+  - Countries: unchanged, *and 1 more on the CQ list*.
+- **One filter, 26 of 26**: `TheCategoryPagesAreTradingCardsTests` 12 of 12,
   `TheAchievementsPageClicksInTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
-  Carry-forward: app **111 of 111**, engine **86 of 86**. No engine file changed.
-- **Fit:** after the build, the trace measured Modes on five contacts at 26 runs and 0 clips at
-  both widths. The longest row, FT4's, fits, and nothing was shortened.
+- **Carry-forward**: app **111 of 111**. Engine **85 of 86** on the first run, then **86 of 86** on
+  an immediate re-run with no file changed between. The first run's red was not named (section 4,
+  *Raised by unit 347*, item 1).
 
-### Task 2 - criteria 5 and 6 on every page (`03a54f7`)
+### Task 2 - the no-caller words and the new lines' fit (`3dbe927`)
 
-- **`NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`** now realizes two logs at
-  each width:
-  - twelve contacts with `Calling()`, over the 8 kinds and all 7 continent pages, replacing EU and
-    OC;
-  - five contacts with `CallingWithPsk31()`, over Modes, asserting its next card is drawn.
-- Its `Fits` asserts, the 0.5 px tolerance and `white == 0` are unchanged. Each page's line prints
-  as before, and now the tallest page prints too.
-- **Watched red**, built in: the first card on the first page gets its map, bar and list hidden on
-  the test window, then shown again. It prints *1400.00 twelve contacts hall_of_fame [Your first
-  contact] with its map, bar and list hidden on the test window (2 hidden), watched red: counted
-  white*.
-- **Nothing clipped and no card was white**, so nothing was shortened or widened.
-- **One filter 25 of 25** (11, 8, 1, 5). Carry-forward: app **111 of 111**, engine **86 of 86**.
+- **Tests first.** `TheNextCardKnowsWhoIsCalling` wants the PSK31 row on `Calling()` to carry ruling
+  31's words, and asserts no Modes row contains the word `now`. `ModesRowMiss`'s own copy of the old
+  words was corrected to the new truth (R12), and its remark with it.
+  - **Failure line:** *1400.00 modes: the PSK31 row draws [3.580 on 80 m · no one is calling in it
+    now], not [3.580 on 80 m · no one calling CQ in it at 21:41 UTC]*.
+- **Built:** `NoOneCallingInIt` became `NoOneCallingInItAt`, and `WhoIsThere` joins it with the
+  list's `ReadAt`. `ListNotRead` stays for a window with no list.
+- **The clip test** now also realizes, at both widths: Modes with both PSK31 callers, Europe with
+  them, and Modes with no PSK31 caller. Its `Fits` asserts, the 0.5 px tolerance and `white == 0` are
+  unchanged.
+- **One clip, fixed by §6 and named:** *no one calling CQ in it at 21:41 UTC* was red at 1400 - the
+  longer row squeezed the place column, and *[PSK31] needs 50.00 px and its slot is 48.00*. **Shortened
+  to `no one calling at 21:41 UTC`**; the row already names the mode. Nothing was widened.
+- **After it:** Modes 26 runs fit, 3 cards, 0 white on each of the three lists; Europe 27 runs, 3
+  cards, 0 white; at 1400 and at 1920.
+- **One filter 26 of 26** (12, 8, 1, 5). Carry-forward: app **111 of 111**, engine **86 of 86**.
 
-### Task 3 - dropped
+### Task 3 - every Modes row measured (`049a30a`)
 
-**Dropped as the drop candidate, and not for time.** `Ft8GlobePlot.CardFrameFor` grows the frame
-to the card's shape inside the file, and its remark says why VK2DEF stops: *where the shape cannot
-be reached inside the file - a path too tall for a card that wide - the frame stops at the file's
-edge and the picture is drawn narrower, rather than past the photograph (§0.0)*.
-
-VK2DEF's path from FN00 needs the file's full width and more height than 892 by 231 allows. Filling
-the card would take one of these, and each is ruled out:
-- cropping a station out, against ruling 12;
-- stretching, which `Ft8GlobeControl`'s measure remark rules out (HM-DEC-092);
-- a taller map, against *change no height*;
-- drawing past the photograph, against the method's §0.0 remark.
-
-Ruling 28 makes the span no bar to step 1. Unit 345 gave VK2DEF's number, and task 0 re-measured
-it: 633.18 of 892 at 1920.
+- **The clip test** now realizes two more logs, each with both PSK31 callers and with no list, at
+  1400 and 1920, and prints each Modes row drawn:
+  - **FT4 only** (`Ft4Only()`): 3 rows before *and 1 more* - CW, FT8 and PSK31. Voice is the one
+    not drawn.
+  - **CW and FT4** (`CwAndFt4()`): 3 rows, no more line - FT8, PSK31 and Voice.
+- **Every row fits and no card is white** at both widths: 22 runs on FT4 only, 27 on CW and FT4.
+  Nothing was shortened.
+- **Watched red, built in (ruling 19):** the longest row's call line is held 10 px narrower than it
+  needs on the test window, then let go and measured again. It prints *1400.00 five contacts and a
+  PSK31 caller modes [3.575 on 80 m · the CQ list cannot tell FT4 from FT8] held to 510.00 px on the
+  test window, watched red: [3.575 on 80 m · the CQ list cannot tell FT4 from FT8] needs 520.00 px and
+  its slot is 510.00*.
+- **One filter 26 of 26** (12, 8, 1, 5). Carry-forward: app **111 of 111**, engine **86 of 86**.
 
 ### Checked against the tree (§2)
 
 **Held:**
-- **`ModesFor`**, line 662, builds one `NextCaller` per unworked mode with
-  `Joined(LivesAt(...), CallingIn(...))`.
-  - `LivesAt` (695) read only `DigitalCallingFrequencies`.
-  - `CallingIn` (712) counted rows whose `Mode` matched.
-  - The remark is at 655 to 659.
-  - `Joined` of two empty strings is empty, and the card passed `""` as its no-caller line.
-  - `first_cw_qso` at 571 uses `NoMorseOnTheList`.
-- **`HfBands.Landing`** (190) is `private`. It is the first `CW main street` block inside the
-  segment, or the segment's bottom.
-- **The public read §1 left unchecked exists:** `HfBands.Bands[i].JumpHz`, which the band buttons
-  use.
-- **The list's modes:** `Heard(...)` rows carry no mode, and no call can say FT4.
-- **The tests as §1 described them:**
-  - The clip test looped the 8 kinds plus `continent-EU` and `continent-OC`, on `TwelveContacts()`
-    only.
-  - The twelve contacts draw no Modes next card.
-  - `Calling()` is four FT8-shaped rows, with no PSK31 caller.
-  - `StatesCountWhatTheLogsStateFieldSays` measures States on its own log, at 1400 and 1920, for
-    fit and white cards.
-- **Unit 345's commits** `de709fd`, `c5bb6a9`, `ff09a11`, `04b8abf` and `218d6e0` are on
-  `origin/main`; `main` was level with it at the start. `output.md` was unchanged since `218d6e0`.
-- **The version** was 1.13.32.
-- **The launcher's files:**
-  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`.
-  - Its entries are units 337, 338, 339, 340 and 342, then `UNIT 337 - CARRIED REPAIR`, then two
-    `UNIT 1 - STEP 1` (units 343 and 345). There is no unit 341 or 344 entry.
-  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0`.
-- **`RULES_AT`:** `DECISIONS.md` tops at HM-DEC-163. `tools/status.sh` writes HM-DEC-161, so every
-  write was followed by a hand edit to `HM-DEC-163 (2026-09-12)`.
-- **`CPS-DEC`:** `CLAUDE.md` holds no such id (0 matches). Parked with the id schemes.
-- **Housekeeping:** `tools\arbiter.bak-20260913\` stayed untracked. Files were staged by name, and
-  the validator was given the report.
+- `Psk31ExchangeParser.Read` at 157; `Psk31Exchange.Grid` at 72; the certainty computed at 212.
+- `DigitalDecodeRow.Reading` at 159; `Payload` at 726 is `Fields?.Payload ?? ""`.
+- `CqSnapshot.From` at 59 set the grid from the payload only; its remark at 29-30 said a PSK31 row
+  has no grid.
+- `WhoIsThere` at 743 orders PSK31 callers by `MilesBetween` and joins the nearest with `MilesTo`.
+  `CallersFrom` at 988 joins each caller with `MilesTo`. The Grids path checks `call.Grid.Length < 4`
+  at 1033. `first_psk31` lists callers by mode (561-566); the default next card lists everyone (591).
+- `CallingWithPsk31()` at 2950 reads `CQ CQ CQ de EA3XYZ EA3XYZ K`.
+- The live row carries `Reading` (task 0).
+- Unit 346's commits `7e830e4`, `09da5d7`, `7b5fa8f`, `03a54f7` and `0b506ed`; `origin/main` read
+  `0b506ed` at the start, and `output.md` was unit 346's.
+- The version was 1.13.33, at line 778 of `Directory.Build.props`. `DECISIONS.md` tops at HM-DEC-163.
+- **The launcher's files**, edited by none of this unit:
+  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`. Its entries run 337, 338, 339, 340, 342,
+    `UNIT 337 - CARRIED REPAIR`, two `UNIT 1 - STEP 1` and one `UNIT 2 - STEP 1`. No 341 or 344 entry.
+  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0`, and its own `STEP: 0` line also reads `in progress`.
+  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and `.run-unit\` files were modified and
+    uncommitted by the launcher. `PHASE_STATUS.md` was committed at `4be21c0` with the launcher's
+    `HEARTBEAT` change in it, because the file is committed whole.
+- `CLAUDE.md` holds no `CPS-DEC` id (0 matches). Parked with the id schemes.
+- `tools\arbiter.bak-20260913\` stayed untracked. Files were staged by name, and the validator was
+  given the report.
 
 **Mismatches, reported and not repaired:**
-- **Task 1 asks the PSK31 row with the caller to draw ` · n mi`.** The tree cannot, because a PSK31
-  row has no grid on the CQ list. The assertion was written to what the list holds (section 4,
-  *Raised by unit 346*, item 1).
-- **§2's tool facts name `sort` with options as asking for approval.** It was not tried here. See
-  the table below.
+- §1 places `UnworkedCountry` at `:1226`. That is the continent page's call; the method is at 1009.
+- §1 says *on every other kind, `CallersFrom` joins each caller*. Bands lists unworked bands and
+  States lists no caller; neither calls `CallersFrom`.
+- §1's `IsCertain (:212)` is the parser's local `certain`; the record's member is at 70.
 
 **Reds expected:** none was in any filter, so none was run. No red turned green and no new red
-appeared in what ran. The one wanted red, task 1's, is given above.
+appeared in what ran, apart from the engine run in task 1 (item 1). The wanted reds are given above.
 
 **Tool facts, as they held for this session.**
 
 | Result | Commands |
 |---|---|
-| Ran | `sh tools/status.sh` (every write); `&&` joining `git add`, `commit` and `push`; commits with several `-m`; `grep`, `tail`, `cut`, `uniq` and `tr` in pipes; `git diff --quiet ... && echo`; `date` |
-| Asked for approval, not run | a `cd` before `git` in a compound; `grep` with `\s` in its pattern, twice; `awk` in a pipe |
-| Blocked | none met |
-| Not retested | output redirects; `sed -i`; `git -C`; `git show` with several hashes; `sort` with options; apostrophes in `.bat` arguments |
+| Ran | `sh tools/status.sh` (every write); `&&` joining `git add`, `commit` and `push`; commits with several `-m`; `grep -E`, `tail` and `cut` in pipes; `date` |
+| Asked for approval, not run | `grep` with `\s` in its pattern; a `grep -E` pattern with `{0,40}` and `-A1`; `;` joining `grep`, a `tail` redirect into a file, `head` and `wc` |
+| Refused | the file writer on a path outside the repository (`--restricted`) |
+| Not tried | a `cd` before `git`; `awk`; `sort` with options; `git fetch` or `git status -sb` in a compound; `uniq`; `tr`; `git diff --quiet ... && echo`; `sed -i`; `git -C`; apostrophes in `.bat` arguments |
+
+**`RULES_AT`:** `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. **This session set it back
+to `HM-DEC-163 (2026-09-12)` once, after the last write, and not after every write** as §4 asks; the
+file carried 161 between writes while the unit ran.
 
 ### Decisions made for this unit
 
 All are the unit's own and overrulable:
-1. **The words:**
-   - `no one is calling in it now`, `NoOneCalling`'s sense fitted to a mode row;
-   - `the CQ list cannot tell FT4 from FT8`, and its FT8 twin;
-   - `the CQ list carries no voice`;
-   - ` and n more` after the nearest PSK31 caller, where the instruction said *the count*.
-   None needed shortening.
-2. **No engine accessor.** The public `HfBands.Bands` already carries the landing, so ruling 25's
-   allowance was not used.
-3. **The Voice and FT8 rows get words** though no fixture draws them unworked, so no row is empty on
-   any log. Neither is measured on the window (item 3).
-4. **PSK31 with no list handed in says `the CQ list was not read`**, as `NextCard` does, never *no
-   one*.
-5. **Task 3 was dropped**, for the reason above.
-6. **The PSK31 caller row is built with `Psk31ExchangeParser.Read`**, not through the splitter the
-   main window feeds. It gives the same kind of `Reading`.
-7. **Watched reds are built into the tests as second checks**, unit 345's pattern.
+1. **The PSK31 texts**: EA3ABC in JN11 (Barcelona's square) for the grid caller, certain with `K` and
+   uncertain without it; EA3XYZ's unchanged text for the no-grid caller.
+2. **The words**: `no one calling at 21:41 UTC`, shortened by §6 from `no one calling CQ in it at 21:41
+   UTC`. They carry the read time rather than *on the CQ list*, matching the other cards' heading.
+3. **The grid is held to `Ft8MessageSplit.IsGrid`** as well as certainty, so the PSK31 grid passes
+   the same test as the FT8 payload.
+4. **Europe realized on the certain caller's list** in `TheNextCardKnowsWhoIsCalling`, the one other
+   kind that draws the caller, under the existing distance assertion. Grids' more line is reported,
+   not asserted.
+5. **Task 3's logs**: FT4 only, and CW with FT4, so between them every row the card can draw is drawn.
+6. **Watched reds built into the tests as second checks**, units 345 and 346's pattern; task 3's by a
+   `MaxWidth` set and cleared on the test window.
+7. **The trace also prints each next card's more line**, added before task 1's commit, so the Grids
+   change could be read.
 
 ### Commits
 
-`7e830e4`, `09da5d7`, `7b5fa8f` and `03a54f7`, each pushed to `main` without refusal. This report
-and the status file follow in their own commit.
+`4be21c0`, `dc47f9f`, `92584a2`, `3dbe927` and `049a30a`, each pushed to `main` without refusal. This
+report and the status file follow in their own commit.
 
 ## 2. What the owner should expect
 
-**The Modes page's next card now says something on every row.** On a log that has not worked CW,
-FT4 or PSK31, with 17 m the best bet:
-- *CW*: *18.080 on 17 m · the CQ list carries no Morse*;
-- *FT4*: *3.575 on 80 m · the CQ list cannot tell FT4 from FT8*;
-- *PSK31*: *3.580 on 80 m · no one is calling in it now*, or the nearest PSK31 caller's callsign.
+**A PSK31 station calling CQ with his grid now shows how far away he is on the achievements next
+cards**, the way an FT8 caller already did. With 17 m the best bet, a log that has not worked PSK31
+draws on the Modes card:
+- *PSK31*: *3.580 on 80 m · EA3ABC · 4,100 mi* where his CQ carried JN11;
+- *PSK31*: *3.580 on 80 m · EA3XYZ* where his CQ carried no grid;
+- *PSK31*: *3.580 on 80 m · no one calling at 21:41 UTC* where no PSK31 caller was on the list when
+  the window opened.
 
-The CW place is where a 17 m band button lands. Nothing on the card tunes. Nothing else on any page
-changed. The version is 1.13.33.
+Europe's page lists him as *Spain · EA3ABC · 4,100 mi* where Spain is unworked. The version is 1.13.34.
 
 **What will look wrong but is not:**
-- **The CW row names 17 m and the digital rows name 80 m.** CW has a landing on every band. FT4 and
-  PSK31 have no calling row on 17 m, so they fall to the lowest band that has one - the rule the
-  digital rows already used.
-- **A PSK31 caller shows no distance.** His CQ puts no grid on the CQ list.
-- **`Unit346TraceTheModesNextCardAndEveryPage` passes and asserts nothing.** It is the record behind
+- **A PSK31 caller with a grid in his text can still show no distance.** Hamlet takes the grid only
+  where the PSK31 reading is certain - his callsign after `de`, a turnover at the end, nothing
+  damaged. A guess is never drawn as a distance.
+- **The time on the PSK31 row is when the window opened**, not the time now. The list is read once.
+- **The Grids card's *and n more* can go up by one** when a PSK31 caller sent an unworked square.
+- **`Unit347TraceThePsk31CallersGridAndDistance` passes and asserts nothing.** It is the record behind
   task 0's answers.
-- **Six watched-red lines print on every green run.** Each is asserted to fail against a wrong
-  expectation. A missing line is the failure.
+- **More watched-red lines print on every green run.** Each is asserted to fail against a wrong
+  expectation on the test window. A missing line is the failure.
 
 ## 3. What you should see
 
-**Not quite.** Every step 1 must-pass has a named green test on the drawn page at 1400 and 1920,
-the Modes next card draws no empty row, and all seven continent pages are measured. **One
-qualification is left, on criterion 3:** on the Modes next card, at both widths, a PSK31 caller is
-drawn as `EA3XYZ` with no ` · n mi`. The CQ list holds no grid for a PSK31 row. It is one row's
-distance, and nothing clips.
+**Yes.** Every step 1 must-pass holds with nothing qualifying it. A PSK31 caller who sent a grid is
+drawn with his distance, *EA3ABC · 4,100 mi*, at 1400 and at 1920. One who sent none, or whose
+reading is uncertain, is drawn as his callsign alone, by ruling 30's rule. Nothing clips and no card
+is white.
 
-**The Modes next card on the five-contact log**, top to bottom, the same at 1400 and 1920:
-- *One more mode*, *5 pts*, *next*; then *A mode you have not worked*; then *where each one lives*.
-- With the four FT8 callers:
-  - *CW*: *18.080 on 17 m · the CQ list carries no Morse*;
-  - *FT4*: *3.575 on 80 m · the CQ list cannot tell FT4 from FT8*;
-  - *PSK31*: *3.580 on 80 m · no one is calling in it now*.
-- With EA3XYZ calling CQ in PSK31: CW and FT4 the same, and *PSK31*: *3.580 on 80 m · EA3XYZ*.
-- Before this unit, the CW row was blank in all four.
+**The Modes next card's PSK31 row on five contacts**, the same at 1400 and 1920, under *where each
+one lives* and after *CW 18.080 on 17 m · the CQ list carries no Morse* and *FT4 3.575 on 80 m · the
+CQ list cannot tell FT4 from FT8*:
+- with a certain CQ carrying JN11: *3.580 on 80 m · EA3ABC · 4,100 mi*;
+- with a CQ carrying no grid: *3.580 on 80 m · EA3XYZ*;
+- with the JN11 CQ read uncertain: *3.580 on 80 m · EA3ABC*;
+- with both callers: *3.580 on 80 m · EA3ABC · 4,100 mi and 1 more*;
+- with no PSK31 caller: *3.580 on 80 m · no one calling at 21:41 UTC*;
+- with no list (FT4-only and CW-and-FT4 logs): *3.580 on 80 m · the CQ list was not read*.
 
-**The seven continent pages**, the same at 1400 and 1920. No run clipped and no card was white:
+**Other kinds' next cards with a PSK31 caller who sent a grid**, the same at both widths: Europe
+draws *Spain* *EA3ABC · 4,100 mi*; Grids draws the same three callers with *and 2 more on the CQ
+list*.
 
-| Page | Runs fit | Cards | Height |
-|---|---|---|---|
-| Africa | 17 | 2 | 589 px |
-| Antarctica | 11 | 1 | 589 px |
-| Asia | 17 | 2 | 589 px |
-| Europe | 30 | 4 | 674 px |
-| North America | 24 | 3 | 674 px |
-| Oceania | 12 | 1 | 589 px |
-| South America | 17 | 2 | 589 px |
-
-**The Grids VK2DEF card's map:** task 3 did not run. Task 0 measured it at 632 by 231 at 1400,
-filling the card, and 633.18 by 231 in 892 at 1920.
+**The Modes rows task 3 measured**, top to bottom, each fitting at 1400 and 1920:
+- FT4 only: *CW 18.080 on 17 m · the CQ list carries no Morse*; *FT8 18.100 on 17 m · the CQ list
+  cannot tell FT8 from FT4*; *PSK31* with the caller or *the CQ list was not read*; then *and 1 more*.
+- CW and FT4: *FT8 18.100 on 17 m · the CQ list cannot tell FT8 from FT4*; *PSK31* as above; *Voice
+  the CQ list carries no voice*.
 
 **The step 1 table.** Every appearance claim here is computed on the headless host, not seen.
 
 | Test | Criterion | Drawn or view model | Widths | Pages | Result | Numbers |
 |---|---|---|---|---|---|---|
-| `EveryKindsBandCarriesCountScoreLevelAndABar` | 1 | drawn (1040 kept) | 1400, 1920 | 8 kinds, 7 continent pages | pass | re-run; this unit did not change it |
-| `EveryEarnedCardIsTheContactThatEarnedIt` | 2 | drawn | 1400, 1920 | Countries, Grids, States | pass | re-run; this unit did not change it |
-| `TheNextCardKnowsWhoIsCalling` | 3 | drawn (view model kept) | 1400, 1920 | every kind, Continents, 7 continent pages; Modes on five contacts with `Calling()` and with a PSK31 caller | pass, one qualification | Modes EMPTY rows 4 -> 0; PSK31 caller without distance; watched reds |
-| `TheOtherFiveKindsEachDrawTheirOwnCards` | 4 | drawn and view model | 1400, 1920 | Continents, Total Miles, Bands, Modes, Hall of Fame | pass | CW `18.080 on 17 m · the CQ list carries no Morse`; FT4 and PSK31 on 80 m |
-| `ContinentsOpensToSevenAndEachToItsCountries` | 4 | drawn, by press | 1400, 1920 | 7 continents | pass | re-run; this unit did not change it |
-| `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` | 5, 6 | drawn | 1400, 1920 | 8 kinds, 7 continent pages, Modes on five contacts | pass | 0 white of 64 cards a width; tallest Grids 2022 px; watched red |
+| `EveryKindsBandCarriesCountScoreLevelAndABar` | 1 | drawn (1040 kept) | 1400, 1920 | 8 kinds, 7 continent pages | pass | re-run; unchanged |
+| `EveryEarnedCardIsTheContactThatEarnedIt` | 2 | drawn | 1400, 1920 | Countries, Grids, States | pass | re-run; unchanged |
+| `TheNextCardKnowsWhoIsCalling` | 3 | drawn (view model kept) | 1400, 1920 | every kind, Continents, 7 continent pages; Modes on five contacts on 5 lists; Europe with the grid caller | pass | PSK31 row with 4,100 mi from GridPath; callsign alone twice; no bare now; 2 watched reds |
+| `TheOtherFiveKindsEachDrawTheirOwnCards` | 4 | drawn and view model | 1400, 1920 | Continents, Total Miles, Bands, Modes, Hall of Fame | pass | re-run; unchanged |
+| `ContinentsOpensToSevenAndEachToItsCountries` | 4 | drawn, by press | 1400, 1920 | 7 continents | pass | re-run; unchanged |
+| `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` | 5, 6 | drawn | 1400, 1920 | 8 kinds, 7 continent pages; Modes on 3 lists; Europe; Modes on FT4-only and CW-and-FT4, with callers and with no list | pass | 0 white of 83 cards a width; one string shortened; 2 watched reds |
 | `StatesCountWhatTheLogsStateFieldSays` | 5, 6 | drawn | 1400, 1920 | States on the state log | pass | 3 cards, 0 white |
 | `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse` | 7 | view model, telemetry | none | Countries | pass | re-run |
 | `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt` | nice-to-pass | drawn, real clicks | 1400, 1920 | Countries | pass | 2 of 2 |
-| ruling 11's span (task 3) | ruling 11 | drawn | 1920 | Grids, Bands | DROPPED | VK2DEF 633.18 of 892 |
 
 ## 4. What's blocking us
+
+**No ruling is needed to go on.** Unit 346's section 4 comes first, verbatim per HM-DEC-139: from its
+line under `## 4. What's blocking us` to its end, as committed in `0b506ed`, kept in place with the
+file editor and not retyped (a redirect asked for approval, and the file writer is confined to the
+repository). Four of its items are marked under *Raised by unit 346*, as work instruction 347 §9 asks:
+items 1, 2 and 3 *TAKEN UP*, item 4 *NOTED*. This unit's four items follow at the very end, under
+*Raised by unit 347*. None of them needs a ruling.
+
+### Asks still outstanding - carried from unit 346's section 4, per HM-DEC-139, verbatim
 
 **No ruling is needed to go on.** Unit 345's section 4 comes first, verbatim per HM-DEC-139: from
 its line under `## 4. What's blocking us` to its end, as committed in `218d6e0`, kept in place with
@@ -1701,6 +1681,13 @@ grid for a PSK31 row.**
 - **If Tim wants the distance**, the route is `CqSnapshot.From` taking the parse's grid where the
   parse is certain, across every kind's next card, as its own unit.
 
+*TAKEN UP by work instruction 347 rulings 29 and 30 and task 1.* `CqSnapshot.From` now gives a PSK31
+call the grid its certain reading holds (`92584a2`). At 1400 and 1920 on five contacts, the Modes
+PSK31 row draws *3.580 on 80 m · EA3ABC · 4,100 mi* for a certain CQ carrying JN11; *3.580 on 80 m ·
+EA3XYZ* for a CQ with no grid; *3.580 on 80 m · EA3ABC* for the same CQ read uncertain; and *3.580 on
+80 m · EA3ABC · 4,100 mi and 1 more* with both callers. Europe's next card draws *Spain · EA3ABC ·
+4,100 mi*, and Grids' more line reads *and 2 more on the CQ list* where it read *and 1 more*.
+
 **2. `no one is calling in it now` may claim more than the CQ list can know.**
 
 *No ruling wanted; a finding against ruling 26's own words, built as written.*
@@ -1713,6 +1700,11 @@ grid for a PSK31 row.**
 - A narrower wording would be *no PSK31 caller on the CQ list*. It was not applied, because ruling
   26 names the sense.
 
+*TAKEN UP by work instruction 347 ruling 31 and task 2.* The PSK31 row with no PSK31 caller on the
+list now draws *3.580 on 80 m · no one calling at 21:41 UTC*, the list's read time, at 1400 and 1920.
+No Modes row says *now*. *no one calling CQ in it at 21:41 UTC* was tried first and shortened by §6:
+it squeezed the row's place column so *PSK31* needed 50 px in a 48 px slot at 1400.
+
 **3. The FT8 and Voice rows are built and not measured on the window.**
 
 *No ruling wanted; a finding.*
@@ -1721,6 +1713,13 @@ grid for a PSK31 row.**
   fit is unmeasured.
 - Voice has no cited place, so its row would be the words alone.
 - PSK31's `the CQ list was not read`, for a window with no list, is unmeasured too.
+
+*TAKEN UP by work instruction 347 ruling 32 and task 3.* Measured drawn at 1400 and 1920 in
+`NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`, on an FT4-only log (CW, FT8 and
+PSK31 drawn before *and 1 more*) and a CW-and-FT4 log (FT8, PSK31 and Voice drawn, no more line), each
+with two PSK31 callers and with no list. Every row fits and no card is white: *18.100 on 17 m · the CQ
+list cannot tell FT8 from FT4*, *the CQ list carries no voice*, *3.580 on 80 m · the CQ list was not
+read* and *3.580 on 80 m · EA3ABC · 4,100 mi and 1 more*. Nothing was shortened.
 
 **4. VK2DEF's short map is the card frame's designed stop, not a sizing slip.**
 
@@ -1733,6 +1732,8 @@ grid for a PSK31 row.**
   - the picture wrapped past the date line.
 - Each is a picture decision, not a sizing fix.
 
+*NOTED by work instruction 347 - ruling 28 closed, for Tim at step 3.* Not re-measured by unit 347.
+
 **5. The status script and this session's tool facts.**
 
 *No ruling wanted; a finding.*
@@ -1742,3 +1743,53 @@ grid for a PSK31 row.**
   and were not run.
 - Redirects were not retried. This report was assembled with the file editor around unit 345's
   committed section 4.
+
+### Raised by unit 347
+
+**1. The engine carry-forward read 85 of 86 once, in task 1, and 86 of 86 on every run after.**
+
+*No ruling wanted; a finding.*
+- The red came on the run straight after the app invocation, with no file under
+  `src/Hamlet.RadioEngine/` or `tests/Hamlet.RadioEngine.Tests/` changed by this unit. It took 10 s
+  where the green runs took 4 to 5 s.
+- The run was read through `tail -1`, so the failing test's name was not captured. The immediate
+  re-run, filtered to print failures, was 86 of 86, as were tasks 2 and 3's runs.
+- Not chased: the engine and PSK31 are parked (ruling 23). If it recurs, the name is the first thing
+  to take.
+
+**2. The fixtures read a PSK31 CQ with the parser directly; the live list reads it through the
+splitter. The grid's live route is read from the source, not run.**
+
+*No ruling wanted; a finding that bears on criterion 3's evidence, not its result.*
+- `CallingWith(...)` and `CallingWithPsk31()` build each row with `Psk31ExchangeParser.Read(text)`.
+  The main window builds its row with `ReadPsk31(channel)`, the latest `message.Exchange` from
+  `Psk31MessageSplitter`, which uses the same parser (`MainWindowViewModel.cs:2296`-`2372`).
+- No test in this unit feeds a PSK31 CQ with a grid through the splitter and into
+  `CqSnapshot.From`. `ThePsk31ReadsTheConversationTests` asserts a live row's `Reading.Kind`, not its
+  grid.
+- **A row carries only its latest complete message.** A station whose CQ with a grid is followed on
+  the same channel by another message, say a reply without a grid, loses the grid on the list. That
+  is the row's own rule (ruling 29 forbids changing how a row is made), and the card then shows his
+  callsign alone.
+
+**3. A PSK31 caller who sent a grid now counts on Grids too, and Hall of Fame's PSK31 first is not
+measured with one.**
+
+*No ruling wanted; a finding, as ruling 29 intends.*
+- On the certain caller's list Grids draws the same three callers and its more line goes from *and
+  1 more* to *and 2 more on the CQ list*, because JN11 is an unworked square.
+- Hall of Fame lists PSK31 callers only when `first_psk31` is the next first. Neither fixture log
+  makes it so, so a PSK31 caller's distance on that card is built by the same `CallersFrom` and not
+  drawn by any test.
+
+**4. The status script's `RULES_AT`, and this session's report route.**
+
+*No ruling wanted; a finding.*
+- `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. This session set it back to `HM-DEC-163
+  (2026-09-12)` once, after its last write, rather than after every write as §4 asks.
+- A `tail` redirect joined with `;` asked for approval, and the file writer refused a path outside
+  the repository, so this report was assembled in place with the file editor around unit 346's
+  committed section 4.
+- `tools/arbiter/validate-output.bat` looks for the `UNIT:` line only in the file's first 60 lines
+  (`Get-Content -TotalCount 60`). This report's first draft put it at line 62 and failed rule 1 with
+  the line present; the ordering block was shortened, not the validator touched.
