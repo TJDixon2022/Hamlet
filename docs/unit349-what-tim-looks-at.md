@@ -8,8 +8,9 @@ trace added at `40c297d`, or from a named report's commit and item. **Nothing he
 **Every appearance claim here is computed on a test host, not seen. Your window is the first eyes on
 it.**
 
-- **Your window size is not in the record.** Everything was measured at two widths, **1400 and 1920
-  px**. The main window was 1040 px tall. **Please put your window size in your verdict.**
+- **Your window size is not in the record.** The main window was measured at **1400 and 1920 px wide,
+  1040 tall**, and by work instruction 354 at nine sizes, among them the **1100 × 780 Hamlet opens at** and
+  the **900 × 620 it lets you shrink to** (the table under 2.1). **Please put your window size in your verdict.**
 - **The achievements window opens at its own size, 1040 by 720** (`AchievementsWindow.axaml:9`).
   Nothing sizes it from the main window. Its pages were measured by setting it 1400 and 1920 wide,
   720 tall, so widen it to compare.
@@ -79,6 +80,24 @@ at `85437c2`, `testresults\u349\u349-step0.trx`. The top row, block, panels, rul
 and `NoCallsignIsClipped`. Facts under at 1400: `AtFourteenHundredTheSameShapeHolds`. Facts beside at
 1920: `AtNineteenTwentyTheCardsFactsSitBesideTheMap`, which printed its numbers on PSK31. Stop and the
 filter: `StopNeverCollapsesAndTheFilterStaysOnAnEmptyOrCollapsedList`.*
+
+**What the tree draws at the sizes you can open, licensed, FT8, with PSK31 in brackets where it differs.** R26's limits as step 0 reads them: the top row at most 0.262 of the height below the pills (within 10% of 190 at 1920), the three panels at least half of it. The numbers are the same with the best bet absent and drawn on your band. The rig panel is the card's height at every size.
+
+| Size | Top row (share of below the pills) | The three panels (share) | The three one top and bottom, to the status bar | Clipped callsign | Trimmed, clipped or cut text; anything off the window |
+|---|---|---|---|---|---|
+| 900 × 620, the smallest Hamlet allows | 285 px, 0.582 of 490 (297, 0.606) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the green block's left column 0 px wide: *20 m*, *14.074 MHz*, the mode, license and rule-of-thumb lines not drawn; *CW main street · 14.000–14.150* trimmed to 50 of 300 px; *nothing for you yet* 40 of 190; CQ and Stop on the window at y 462 (474) |
+| 1100 × 780, the size Hamlet opens at | 623 px, 0.958 of 650 (653, 1.005) | **0 px** (0.000) | yes, all three 0 px tall | none of 2 rows on the plain window; both rows below a 0 px panel | the license line on 17 lines, the rule of thumb on 17 and *Digital · FT8 · yours to use* on 8, each breaking words; *14.074 MHz* needs 100 px in 40; **the tabs drawn from y 796 (826), and CQ and Stop at y 800 to 822 (830 to 852), below the window's bottom edge at 780** |
+| 1280 × 720 | 270 px, 0.458 of 590 (291, 0.493) | 103 px, 0.175 (82, 0.139) | yes | not measured | the license line 4 lines, the rule of thumb 4, the mode line 2, between words |
+| 1366 × 728 | 242 px, 0.405 of 598 (254, 0.425) | 139 px, 0.232 (127, 0.212) | yes | not measured | *not listening yet* trimmed to 20 of 170 px |
+| 1536 × 824 | 196 px, 0.282 of 694 (208, 0.300) | 281 px, 0.405 (269, 0.388) | yes | not measured | *not listening yet* 110 of 170 |
+| 1400 × 1040, as above | 216 px, 0.237 of 910 (228, 0.251) | 477 px, 0.524 (465, 0.511) | yes | none, by step 0's test | *not listening yet* 40 of 170 |
+| 1920 × 1040, as above | 190 px, 0.209 of 910 | 503 px, 0.553 | yes | none, by step 0's test | only *nothing decoded yet*, under the table |
+| 1920 × 1017, a 1080p screen maximized | 190 px, 0.214 of 887 | 480 px, 0.541 | yes | not measured | only *nothing decoded yet*, under the table |
+| 2560 × 1400, a 1440p screen maximized | 190 px, 0.150 of 1270 | 863 px, 0.680 | yes | not measured | only *nothing decoded yet*, under the table |
+
+At every size, *nothing decoded yet* in the Decoded text header is trimmed to 180 of the 190 px it needs. **Every size under 1040 tall misses R26; the smallest listed size where every outcome holds is 1400 × 1040** (section 4, items 28 to 34).
+
+*Source: `TheTopRowTests.Unit354TraceTheMainWindowAtTheSizesTimCanOpen` at `00454639`, printed in `testresults\u354-t1-trace.trx` (work instruction 354); every size realized as asked. The plain window, at 900 × 620 and 1100 × 780 only: top row 309 px (0.631) and 620 (0.954), panels 0, and the card's facts under its map by the rule (169 px inside against 336; 269 against 499). The licensed window draws no decoded row and no card, so its callsigns are not measured.*
 
 ### 2.2 The main window, on PSK31, with the power offer not yet answered
 
@@ -495,6 +514,32 @@ One line each, with the report that found it.
     carried, and still an ask.*
 27. **The host draws text wider than your screen**, so wraps at 1400 are probably fewer for you. That
     is an inference. *Unit 337 section 2.*
+28. **At 1100 × 780, the size Hamlet opens at, CQ and Stop are drawn below the window.** The window's
+    bottom edge is at 780; Stop is 74 × 22 at y 800 on FT8 and 830 on PSK31, CQ beside it, the mode tabs
+    at y 796, and on the plain window Stop is at y 798. At 900 × 620 and at every other size measured they
+    are on the window. *Work instruction 354, `00454639`.*
+29. **At 1100 × 780 the top row is 623 px, 0.958 of the 650 below the pills**, 452.7 px over 0.262; 653 px
+    (1.005) on PSK31. **The three panels are 0 px**, 325 px short of half. The green block is 218 px wide:
+    the license line takes 17 lines, the rule of thumb 17 and *Digital · FT8 · yours to use* 8, each
+    breaking words, and *14.074 MHz* needs 100 px in 40. The plain window: 620 px (0.954), panels 0.
+    *Work instruction 354, `00454639`.*
+30. **At 900 × 620 the top row is 285 px, 0.582 of the 490 below the pills**, 156.6 px over 0.262; 297 px
+    (0.606) on PSK31. **The three panels are 0 px**, 245 px short of half. The green block's left column
+    (`GreenZoneRegions`) is 0 px wide, so the band, frequency, mode line, license line and rule of thumb are
+    not drawn. The plain window: 309 px (0.631), panels 0. *Work instruction 354, `00454639`.*
+31. **At 1280 × 720 the top row is 270 px, 0.458 of 590**, 115.4 px over 0.262; 291 px (0.493) on PSK31.
+    The three panels are 103 px (0.175), 192 px short of half; 82 px (0.139) on PSK31. *Work instruction
+    354, `00454639`.*
+32. **At 1366 × 728 the top row is 242 px, 0.405 of 598**, 85.3 px over 0.262; 254 px (0.425) on PSK31.
+    The three panels are 139 px (0.232), 160 px short of half; 127 px (0.212) on PSK31. *Work instruction
+    354, `00454639`.*
+33. **At 1536 × 824 the top row is 196 px, 0.282 of 694**, 14.2 px over 0.262; 208 px (0.300), 26.2 over,
+    on PSK31. The three panels are 281 px (0.405), 66 px short of half; 269 px (0.388), 78 short, on
+    PSK31. *Work instruction 354, `00454639`.*
+34. **Text is trimmed at every size measured, 1400 and 1920 included**: *nothing decoded yet* in the
+    Decoded text header, 180 of 190 px; on the plain window *021130 UTC · 2 shown · oldest first*, 180 of
+    350; *not listening yet* in the waterfall header at 1366 (20 of 170 px), 1400 (40) and 1536 (110);
+    *nothing for you yet* at 900 × 620 (40 of 190). *Work instruction 354, `00454639`.*
 
 ## 5. Known reds
 
