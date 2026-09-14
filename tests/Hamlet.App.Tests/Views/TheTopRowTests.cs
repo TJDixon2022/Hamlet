@@ -1453,6 +1453,21 @@ public sealed class TheTopRowTests
                 TraceTheGreenBlock(width, "PSK31", "20 m", name, arrange);
             }
         }
+
+        // **TASK 3: U2'S OVERRULE NUMBER** - the upgrade row shown again on this window only, the
+        // row whose one button toggles the upgrade ladder, as it stood before work instruction 341.
+        // Its button keeps its own binding, and nothing is pressed.
+        foreach (var pinned in new[] { "20 m", "40 m", null })
+        {
+            TraceTheGreenBlock(1400, "PSK31", pinned, "the upgrade row put back (U2's overrule)", w =>
+            {
+                var model = (MainWindowViewModel)w.DataContext!;
+                var upgrade = Named<Border>(w, "GreenZoneBlock").GetVisualDescendants().OfType<Button>()
+                    .First(b => ReferenceEquals(b.Command, model.ToggleUpgradeLadderCommand));
+
+                ((Control)upgrade.GetVisualParent()!).IsVisible = true;
+            });
+        }
     }
 
     /// <summary>
