@@ -393,13 +393,19 @@ public sealed class TheTopRowTests
                     RectIn(drive, window).Top >= RectIn(rig, window).Bottom - 0.5,
                     "at " + Px(width) + " the drive is not under the rig display's S-meter");
 
-                foreach (var name in new[] { "DigitalSendCqButton", "DigitalStopButton" })
+                // **STOP IS IN THE STATUS BAR SINCE WORK INSTRUCTION 355** (Tim, 2026-09-14, ruling A); CQ stays
+                // in the send area. `TheStopIsAlwaysOnScreenTests` reads Stop at unit 354's nine sizes.
+                foreach (var (name, home, homeName) in new (string, Control, string)[]
+                {
+                    ("DigitalSendCqButton", reserved, "the send area"),
+                    ("DigitalStopButton", Named<Border>(window, "StatusBar"), "the status bar"),
+                })
                 {
                     var button = Named<Button>(window, name);
 
                     Assert.True(
-                        button.GetVisualAncestors().Contains(reserved),
-                        "at " + Px(width) + " " + name + " has left the send area");
+                        button.GetVisualAncestors().Contains(home),
+                        "at " + Px(width) + " " + name + " is not in " + homeName);
                     Assert.True(button.IsEffectivelyVisible, "at " + Px(width) + " " + name + " is not visible");
                     Assert.Empty(button.GetVisualAncestors().OfType<CollapsiblePanel>());
                 }

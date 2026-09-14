@@ -839,8 +839,14 @@
     Tests and the sheet only; no file under src and no markup changes, so the screen Tim is reviewing
     does not move.
   -->
+  <!--
+    1.13.41 -> 1.13.42, UNIT 355 TASK 1. A PATCH, STEP 3, STOP IS ALWAYS ON SCREEN AND WHAT WAS HEARD
+    STAYS: the FT8 and PSK31 Stop control moves from the send area to the status bar with its command
+    and its path unchanged (Tim, 2026-09-14, ruling A); a PSK31 row keeps its text after its carrier
+    ends; the license lookup goes behind a seam so no test reaches callook.info.
+  -->
   <PropertyGroup>
-    <Version>1.13.41</Version>
+    <Version>1.13.42</Version>
   </PropertyGroup>
 
   <!--

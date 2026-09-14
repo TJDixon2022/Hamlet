@@ -293,3 +293,15 @@ ACCOMPLISHED: when Tim opens Hamlet to give the phase's last verdict - at the si
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: The only exit criterion is Tim saying the step passed, which the report shows has not happened and no session can do, and the unit also raised a decision for the owner about Stop being drawn below the window at the opening size of 1100 x 780, which touches transmit safety.
+
+## UNIT 355 - STEP 3
+
+STEP: 3
+APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
+MOVE: continue
+WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
+DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
+LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
+COST: one session, five tasks, each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 1.
+FATE: executed

@@ -3458,69 +3458,14 @@
                                     Command="{Binding SendCallToAnyoneCommand}"
                                     ToolTip.Tip="{Binding CallToAnyoneText}" />
 
-                            <!-- **ALWAYS THERE AND ALWAYS
-                                 PRESSABLE** (step 1: the abort
-                                 cannot be disabled, deferred or
-                                 made conditional). No IsVisible, no
-                                 CanExecute, nothing that reads a
-                                 state - because a stop that hides
-                                 when the application believes
-                                 nothing is happening is hidden at
-                                 exactly the moment the application
-                                 is wrong. It is here before the slot
-                                 boundary and it is here during the
-                                 12.64 seconds, and it is the same
-                                 button at both. The CW path's own
-                                 "Stop sending" is a different
-                                 button on a different view model
-                                 and never appears on this tab. -->
-                            <!-- **IT SAYS WHAT IT IS** (Tim,
-                                 2026-09-07). The most consequential
-                                 control in the application was an
-                                 unlabelled coloured block and the
-                                 operator had to ask what it was. The
-                                 word is bound rather than fixed
-                                 because it names the state as well
-                                 as the action.
-
-                                 **AND IT IS NOT FILLED WITH THE
-                                 FAMILY COLOUR** (HM-DEC-012, §0.5).
-                                 It was filled `HmAmberDeepBrush`,
-                                 which is amber — this application's
-                                 Morse and transmitter colour — used
-                                 as a fill. Family colour is text
-                                 colour only. The ink is amber in
-                                 both states now and the fill is
-                                 paper at rest and a tint when there
-                                 is something to stop.
-
-                                 **THE STYLES TARGET `/template/
-                                 ContentPresenter`**, which is the
-                                 lesson HM-DEC-080 records at the top
-                                 of this file: a Background set on
-                                 the Button itself is overridden by
-                                 the theme's own ContentPresenter
-                                 setters in the pointerover and
-                                 pressed states, so the button looked
-                                 like one thing at rest and another
-                                 under the mouse.
-
-                                 **NOTHING HERE READS A STATE TO
-                                 DECIDE WHETHER IT WORKS.** No
-                                 IsVisible, no IsEnabled, no
-                                 CanExecute — `hm-live` is a class
-                                 that changes ink weight and a
-                                 border, and the command is the same
-                                 command at every instant. Step 1:
-                                 the abort cannot be disabled,
-                                 deferred or made conditional. -->
-                            <Button x:Name="DigitalStopButton"
-                                    Classes="hm-stop"
-                                    Classes.hm-live="{Binding HasSomethingToStop}"
-                                    Content="{Binding StopLabel}"
-                                    Padding="16,4"
-                                    Command="{Binding StopSendingCommand}"
-                                    ToolTip.Tip="{Binding StopTip}" />
+                            <!-- **STOP LEFT THIS AREA IN WORK INSTRUCTION
+                                 355** (Tim, 2026-09-14, ruling A: *Stop
+                                 lives in the status bar, always*). Unit 354
+                                 measured it below the window at 1100 x 780,
+                                 because this row is inside the canvas and
+                                 gives up its height first. It is
+                                 `DigitalStopButton` in `StatusBar` now, with
+                                 the same command and its history. -->
                         </StackPanel>
 
                         <!-- **WHAT WENT OUT, BESIDE THE BUTTONS** (work
@@ -6209,8 +6154,9 @@
             <!-- **FOUR COLUMNS SINCE WORK INSTRUCTION 300.** It was two, with the
                  badge line and the belt strip both asking for a column that did
                  not exist; the achievement mark needs one of its own between
-                 them, so they are named rather than clamped. -->
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                 them, so they are named rather than clamped. **FIVE SINCE WORK
+                 INSTRUCTION 355**: the last is Stop's. -->
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
                 <!-- **ONLY WHAT SPEAKS** (Tim, 2026-09-08: text only where he
                      intentionally hovers, and a fault is the one exception). This
                      bound to `StatusText` and carried an 884-character paragraph
@@ -6346,6 +6292,50 @@
                                               VerticalAlignment="Center"
                                               Margin="6,0,0,0" />
                 </StackPanel>
+
+                <!-- **STOP LIVES IN THE STATUS BAR, ALWAYS** (Tim, 2026-09-14, ruling A;
+                     work instruction 355 task 1). It was in the send area in the tab
+                     row, and unit 354 measured it below the window at 1100 x 780, the
+                     size Hamlet opens at: that row is inside the canvas, which gives up
+                     its height first. This bar is the window's last row and never
+                     scrolls, collapses or leaves the window. **The command is the one it
+                     always bound**; only its parent changed.
+
+                     **THE LAST COLUMN, SO IT NEVER MOVES.** The count beside it comes
+                     and goes with the log, and a stop that shifts sideways when a
+                     contact is logged is a stop the hand misses. It is right of the
+                     bar's centre at every size, and the bar's height: it stretches to
+                     the row and adds nothing to it.
+
+                     **ALWAYS THERE AND ALWAYS PRESSABLE** (`docs/phase-send/PHASE_PLAN.md`
+                     step 1: the abort cannot be disabled, deferred or made conditional).
+                     No IsVisible, no IsEnabled, no CanExecute - a stop that hides or
+                     greys when the application believes nothing is happening is dead at
+                     exactly the moment the application is wrong. It is here before the
+                     slot boundary and during the 12.64 seconds, and on every tab. The CW
+                     path's own "Stop sending" is a different button on a different view
+                     model.
+
+                     **IT SAYS WHAT IT IS** (Tim, 2026-09-07). The word is bound rather
+                     than fixed because it names the state as well as the action.
+
+                     **AND IT IS NOT FILLED WITH THE FAMILY COLOUR** (HM-DEC-012, §0.5).
+                     The ink is amber in both states and the fill is paper at rest and a
+                     tint when there is something to stop; `hm-live` changes ink weight
+                     and a border and never whether it works. The styles target
+                     `/template/ ContentPresenter`, the HM-DEC-080 lesson at the top of
+                     this file. -->
+                <Button Grid.Column="4"
+                        x:Name="DigitalStopButton"
+                        Classes="hm-stop"
+                        Classes.hm-live="{Binding HasSomethingToStop}"
+                        Content="{Binding StopLabel}"
+                        Margin="16,0,0,0"
+                        Padding="16,0"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Command="{Binding StopSendingCommand}"
+                        ToolTip.Tip="{Binding StopTip}" />
             </Grid>
         </Border>
     </Grid>

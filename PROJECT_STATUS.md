@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 3 of 3
+STATE: EXECUTING
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-14T03:06:51-04:00
-NOTE: Unit 354 complete at task 3 of 3 - main window measured at 9 sizes: R26 holds at 1400x1040, 1920x1040, 1920x1017, 2560x1400 and misses at every size under 1040 tall; at 1100x780 panels 0 px and Stop below the window (ask, section 4 item 1); achievements clean at 1040x720 and wider, 8 runs clip at 900x620; sheet gained both tables and items 28 to 35; step 3 still Tim's
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-161 (2026-09-11)
+UPDATED: 2026-09-14T08:39:50-04:00
+NOTE: Task 1 done - Stop in the status bar at 9 of 9 sizes, pressable at rest and live when armed, clicks reach StopNow as before; committing and pushing, then reading the PSK31 retire rule for task 2
 
 ---
 
