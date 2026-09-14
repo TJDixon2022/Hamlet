@@ -44,17 +44,17 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
 |---|---|---|
 | Top row (neighborhood card and rig panel) | 216 px, 0.237 of the 910 px below the pills | 190 px, 0.209 |
 | Neighborhood card / rig panel | 808 × 216 / 546 × 216 | 1328 × 190 / 546 × 190 |
-| Green block | 518 × 88 | 1038 × 55 with no best bet; 1038 × 64 with one drawn (`386690a2`) |
+| Green block | 518 × 88 | 1038 × 55 with no best bet; 1038 × 64 with one drawn (`2077432a`) |
 | World clock | 246 × 134, one dot, 15 px from the card's right edge | the same |
 | The three panels, readiness strip hidden / showing | 477 px (0.524) / 424 px (0.466) | 503 px (0.553) / 450 px (0.495) |
 | Waterfall · decoded text · For You, wide | 474 · 378 · 475 | 734 · 378 · 735 |
 | Where the panels end | y 953, the working card's floor; then 25 px to the status bar's top at y 978: the card's 12 px padding and 1 px border, then the status bar's 12 px margin, and nothing stands in it (`437cedd8`) | y 953, and the same 25 px |
 | The conversation card's facts (no license class) | under the map: 419 px inside, and beside would need 568 | beside the map: 678 px inside, the facts at x 232 |
 
-- **The green block's text, the same at both widths:** *20 m* at 20 px is the largest. Then *14.074
+- **The green block's text, the same at both widths** (`2077432a`): *20 m* at 20 px is the largest. Then *14.074
   MHz* and *Digital · FT8 · yours to use* at 13; *6 stations* at 15; the license line, the rule of
   thumb and *heard just now* at 11; *last minute* at 10.
-- **At 1400:** the sparkline is hidden, and *heard just now* stands over *6 stations*. The license
+- **At 1400** (`2077432a`): the sparkline is hidden, and *heard just now* stands over *6 stations*. The license
   line takes 3 lines and the rule of thumb 2. *Digital · FT8 · yours to use* sits on its own line
   under the band.
 - **The decoded list** is 378 px wide at both widths. Its longest line, *VP2MAA/P KC3QIS R-09*,
@@ -68,8 +68,8 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
 whether the green block and the clock balance each other. Check that the waterfall is not too narrow
 at 1400. Check the colors against the mockup, and whether it is *not white bread boring*.
 
-*Source: `TheTopRowTests` 13 of 13 and `TheWorkingPanelsTests` 8 of 8 at `386690a2`, three runs,
-printed in `testresults\u352-t1-final-run1.trx` to `-run3.trx` (work instruction 352); first measured
+*Source: `TheTopRowTests` 14 of 14 and `TheWorkingPanelsTests` 8 of 8 at `2077432a`, three runs,
+printed in `testresults\u353-t1-run1.trx` to `-run3.trx` (work instruction 353); first measured
 at `85437c2`, `testresults\u349\u349-step0.trx`. The top row, block, panels, rule and sparkline:
 `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`. The card, rig panel and panel sizes:
 `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest`. The clock:
@@ -115,7 +115,7 @@ muted ink is readable on the amber panel.
 *Source: `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` (line, ink, block),
 `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` (the line's place and the popup's
 words) and `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` (top row, panels), all in
-`TheTopRowTests`, 13 of 13 three times at `386690a2` (work instruction 352). The best-bet numbers are `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`
+`TheTopRowTests`, 14 of 14 three times at `2077432a` (work instruction 353). The best-bet numbers are `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`
 and `TheTopRowAndThePanelShareHoldWithTheBestBetOnAnotherBand` at `1faf33a6` (work instruction 351).*
 
 ### 2.3 The achievements opening page
