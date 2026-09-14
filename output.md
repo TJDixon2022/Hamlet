@@ -2,328 +2,417 @@
 READ IN THIS ORDER.
 
 A. The phase goal - the screen, done right. Step 0 done (state reader on
-   unit 341). Step 1 done on the evidence: 7 of its seven must-pass carry
-   a named green test with nothing qualifying them - six on the drawn
-   page at 1400 AND 1920, and criterion 7 a telemetry event with no
-   width - was 6 of 7 after the state reader on unit 346 (criterion 3: a
-   PSK31 caller drawn without distance). None left short. Steps 2 and 3
-   not started.
-B. Step 1 and its exit criteria - the one gap the state reader named
-   first, then the rest re-run:
-   entry: TheAchievementsPageClicksInTests 8 of 8, run first; trading cards 11 of 11
-   3. next card names its want and its callers with distance, or no one
-      calling - the rule (ruling 30): a distance wherever the caller's
-      CQ carried a grid the list holds, the callsign alone where it
-      carried none or the reading was uncertain. Modes PSK31 row at 1400
-      and 1920, five contacts, the same at both: certain CQ with a grid
-      [3.580 on 80 m · EA3ABC · 4,100 mi]; no grid [3.580 on 80 m ·
-      EA3XYZ]; uncertain with a grid [3.580 on 80 m · EA3ABC]; both
-      callers [3.580 on 80 m · EA3ABC · 4,100 mi and 1 more]; no PSK31
-      caller [3.580 on 80 m · no one calling at 21:41 UTC].
-      TheNextCardKnowsWhoIsCalling pass; 4,100 mi worked out by the test
-      from GridPath; watched reds on the tree as it was.
-      Grid source: Psk31Exchange.Grid, read in CqSnapshot.From only where
-      Reading.IsCertain and Ft8MessageSplit.IsGrid hold; a live PSK31 row
-      carries it (MainWindowViewModel.cs:2972, Reading: ReadPsk31(channel)).
-      Other kinds whose next card changed: Europe's continent page, Spain
-      [EA3ABC · 4,100 mi] where it was [EA3ABC], on five and twelve
-      contacts; Grids' more line [and 2 more on the CQ list] where it was
-      [and 1 more], on the certain list. Countries, Hall of Fame unchanged.
-   5. no string clips or wraps a word - pages measured at 1400 and 1920:
-      8 kinds and 7 continent pages on twelve contacts; Modes on five
-      contacts with one PSK31 caller, two, and none; Europe with two;
-      NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty
-      pass, after one shortening (section 1, task 2); every Modes row -
-      CW, FT4, FT8, Voice, PSK31 with a caller, with none and with no
-      list, on FT4-only and CW-and-FT4 logs - fits, pass, watched red
-   1, 2, 4, 6, 7 and the nice-to-pass - re-run in the one filter, 26 of 26:
-      1 EveryKindsBandCarriesCountScoreLevelAndABar pass;
-      2 EveryEarnedCardIsTheContactThatEarnedIt pass;
-      4 TheOtherFiveKindsEachDrawTheirOwnCards pass and
-        ContinentsOpensToSevenAndEachToItsCountries pass;
-      6 NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty
-        pass, 0 white of 83 cards a width;
-      7 OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse pass;
-      nice-to-pass ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt
-        pass at 1400 and 1920
-C. The report last. Section 4 raises 4 items on top of the carried queue;
-   none stands in the way of a criterion in B. The grid needed nothing
-   beyond CqSnapshot.From, and no line claims more than the list can know.
-   Nearest to a gap, item 2: a live row's grid via the splitter is not run.
+   unit 341; TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8, read
+   once). Step 1 done (state reader on unit 347). Step 2 met on the
+   evidence: 5 of 5 must-pass met, was 0 of 5. Step 3 not started.
+B. Step 2 and its exit criteria:
+   entry: TheAchievementsPageClicksInTests 8 of 8; trading cards 12 of 12
+   1. States says worked, no confirm - badge [2 worked, from STATE], band
+      [2 worked, from STATE · 12 pts · unranked · 8 to Bronze], no-STATE
+      line [1 US contact carries no STATE] on the next card; confirm
+      drawn: none (page, 8 kinds, 7 continents, runs and hovers, two
+      logs); AchievementScreen sentence [The count says worked: the DXCC
+      award counts only contacts both stations have verified, by QSL card
+      or electronically, ...], held, drawn by no window;
+      StatesCountWhatTheLogsStateFieldSays pass at 1400 and 1920
+   2. the Modes test
+      WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed ->
+      WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard: PSK31 drawn only on
+      [the Modes next card's caller row]; pass; watched red [modes draws
+      [PSK31] on an unearned card [One more mode]]
+   3. the undeletable files: 15, listed once in section 2
+   4. the Views reds: TheMenuIsUnderTheMouseTests 0 of 8, 8 named with
+      why in section 3
+   5. the points file: 24 key names in the file, 24 documented, none on
+      one side only; rank_names []; the two-way test
+      TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop pass,
+      watched red [documented in the block and not in the file:
+      rank_names]
+C. The report last. Section 4 raises 6 items on top of the carried queue;
+   none stands in the way of a criterion in B. No change reached scoring,
+   points or a card other than States; the transmit side was not
+   touched, and TheMenuIsUnderTheMouseTests was run once and not edited.
 ```
 
 ```
-UNIT:       347 - complete at task 3 of 3 - 2026-09-13 22:32
+UNIT:       348 - complete at task 4 of 4 - 2026-09-13 23:28
 PHASE GOAL: Hamlet's main window and every achievements category page drawn as Tim's approved
-            pictures at his two widths, proved by computation, then passed by Tim at his window.
-UNIT GOAL:  Give a PSK31 caller who sent his grid his distance on the next cards, from the grid his
-            certain PSK31 reading already holds, leave the callsign alone where there is no grid or
-            the reading is a guess, stop the PSK31 row saying now about a list read once, and
-            measure every row the Modes next card can draw for fit.
-ADVANCED:   yes - criterion 3's distance is drawn at 1400 and 1920 for a certain PSK31 CQ with a
-            grid, and the callsign alone otherwise by the stated rule; the one clause the state
-            reader named on unit 346 is closed
-NUMBER:     step 1 must-pass held on the drawn page at 1400 and 1920 with nothing qualifying
-            them: 6 of 7 -> 7 of 7
+            pictures at his two widths and proved by computation, then what the last phase left
+            closed, then passed by Tim at his window.
+UNIT GOAL:  Close what unit 336 left: States saying worked and what its count counts, with no
+            confirm anywhere the achievements window draws; the Modes test agreeing with Tim's
+            later next-card rulings; the emptied files as one list; the Views reds named with why;
+            and the points file documenting exactly the keys it carries.
+ADVANCED:   yes - all five step 2 criteria now hold, each on a named green test or a named list in
+            this report
+NUMBER:     step 2 must-pass met: 0 of 5 -> 5 of 5
 DRIFT:      0
 ```
 
 **Every appearance claim here is computed on the headless test host, not seen.** Nothing here is
-evidence about the radio.
+evidence about the radio, and nothing here touched it.
 
 ## 1. What Claude did
 
-**Complete at task 3 of 3.** Nothing was dropped. This machine, project Hamlet at `C:\Source\HamLet`,
-branch `main`. The gate held: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs`
-exist, `CoreHMI.sln` and `MURC.sln` do not, and `.run-unit\allowed.txt` carries `Bash(dotnet:*)`.
-**`dotnet test` was never refused.**
+**Complete at task 4 of 4.** Nothing was dropped: task 4, the drop candidate, was done. This machine,
+project Hamlet at `C:\Source\HamLet`, branch `main`. The gate held: `SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and `MURC.sln` do not, and
+`.run-unit\allowed.txt` carries `Bash(dotnet:*)` at line 14. **`dotnet test` was never refused.** The
+prompt carried the status instruction and the task count.
 
-### Task 0 - the trace, before the list changed
+### Task 0 - the trace (`02884b1`, `07f48d9`)
 
-- **Opening commit `4be21c0`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line only,
-  and 1.13.33 -> 1.13.34 with its comment block.
+- **Opening commit `02884b1`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line only,
+  and 1.13.34 -> 1.13.35 with its comment block.
 - **Carry-forward, before**: app **111 of 111**, engine **86 of 86**.
-- **Entry check**: `TheAchievementsPageClicksInTests` **8 of 8**, then
-  `TheCategoryPagesAreTradingCardsTests` **11 of 11**. Green, so the unit went on.
-- **`Unit347TraceThePsk31CallersGridAndDistance`** (`dc47f9f`) asserts nothing and presses nothing
-  that transmits or tunes. It adds `CallingWith(params string[])`: `Calling()`'s four and a text-only
-  row per PSK31 text, each read by `Psk31ExchangeParser.Read` as `CallingWithPsk31()` builds its own.
-  **The texts:**
-  - certain with a grid: `CQ CQ CQ de EA3ABC EA3ABC JN11 K`;
-  - no grid: `CQ CQ CQ de EA3XYZ EA3XYZ K`, `CallingWithPsk31()`'s own;
-  - uncertain with a grid: `CQ CQ CQ de EA3ABC EA3ABC JN11`, the first with its turnover removed.
-
-**What the parser read, and what the snapshot kept, on the tree as it was:**
-
-| Text | Speaker | Grid | IsCertain | Snapshot grid | Snapshot mode |
-|---|---|---|---|---|---|
-| certain with a grid | EA3ABC | JN11 | True | `""` | PSK31 |
-| no grid | EA3XYZ | null | True | `""` | PSK31 |
-| uncertain with a grid | EA3ABC | JN11 | False | `""` | PSK31 |
+- **Entry check**, one filter: `TheAchievementsPageClicksInTests` **8 of 8**,
+  `TheCategoryPagesAreTradingCardsTests` **12 of 12**. Green, so the unit went on.
+- **Step 0, read once** (ruling 33): `TheTopRowTests` **8 of 8**, `TheWorkingPanelsTests` **8 of 8**.
+  Nothing on the main window was changed.
+- **The older reds, read once by exact name:**
+  - `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`: *modes
+    draws [PSK31] before any PSK31 contact*;
+  - `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`: *Assert.Equal()
+    Failure: Strings differ ... Expected: "grid to grid, added up"*;
+  - `TheAchievementsScreenTests.TheWindowDrawsEverySixRows`: *System.InvalidOperationException :
+    Sequence contains no matching element*.
+- **`Unit348TraceWhatTheLastPhaseLeft`** (`07f48d9`) asserts nothing and presses nothing that
+  transmits or tunes. To walk the Modes test's own log it calls `EveningWithDx()`, which was made
+  `internal` for it. **One slip of mine, fixed before the commit:** its first documented-key rule
+  caught `"AS"`, a wrapped example line that starts with a quoted word. The rule now wants two spaces
+  after the key, which is the block's key column.
 
 **Task 0's answers, from the numbers:**
-- **Does the certain CQ's reading hold the grid, and does the snapshot drop it:** yes and yes. The
-  reading holds `JN11`, and the call on the list has grid `""`.
-- **Is the uncertain reading's grid null:** no. It is present, `JN11`, with `IsCertain` false. So the
-  certainty test, not the grid's presence, is what keeps it off the list.
-- **Which kinds' next cards list a PSK31 caller today, and with what line**, at 1400 and 1920 on
-  five and twelve contacts:
-  - **Modes** (five contacts only; twelve have worked every mode): the PSK31 row, `3.580 on 80 m ·
-    EA3ABC` or `· EA3XYZ`, the callsign alone on all three lists.
-  - **Europe's continent page**: *Spain*, `EA3ABC` or `EA3XYZ`, the callsign alone.
-  - Countries counts the Spanish caller in its *and 1 more on the CQ list* and does not draw him
-    among its three. Grids and Hall of Fame do not list him.
-- **Does a live PSK31 row carry the reading the fix reads:** yes. `MainWindowViewModel.cs:2972`
-  builds the row with `Reading: ReadPsk31(channel)`, which is `message.Exchange` from the channel's
-  `Psk31MessageSplitter`, itself `Psk31ExchangeParser.Read`. `MainWindowViewModel.cs:6403` hands the
-  achievements window `CqSnapshot.From(DigitalDecodes, DateTime.UtcNow)`.
-  `ThePsk31ReadsTheConversationTests.cs:89`, on the carry-forward list and green, asserts a live row's
-  `Reading.Kind`. **The trace printed the route as read from the source; it could not print `NO LIVE
-  READING`.**
+- **What the States count said, and the fixture's US records with no `STATE`.** The badge said `2
+  worked`. The band said `the 50 states · 2 worked · 12 pts · unranked · 8 to Bronze`. Both were the
+  same at 1400 and 1920. `StateContacts()` holds 4 United States, Alaska and Hawaii records: 1
+  carries no `STATE` (W1AW), and 1 carries a `STATE` that scores nothing (N3DC, `DC`).
+- **Where `confirm` was drawn: nowhere.** Per width, the walk read 546 runs and hovers on twelve
+  contacts and 387 on state contacts, across the page, the 8 kinds and the 7 continent pages. It
+  printed `NO CONFIRM DRAWN` each time.
+  - **Where it was only held:** one string, `AchievementScreen.cs:545`, and three comments,
+    `AchievementBadges.cs:23`, `AchievementCategory.cs:161` and `AchievementScreen.cs:414`-`415`.
+  - **No window draws that sentence.** `AchievementsWindow.axaml` names neither `Screen` nor
+    `Detail`, and no visible control was bound to `AchievementScreen` or `AchievementCard`.
+    `MainWindowViewModel.cs:13748` builds a screen only to read its `OpenKeys`.
+  - **The member that would carry it** is `AchievementCard.Detail`, on the cards
+    `AchievementScreen.Entity` builds, held by `AchievementsViewModel.Screen`.
+- **Which PSK31 runs the Modes test catches: one.** *PSK31* sits on the Modes next card (unearned,
+  *One more mode*), on a caller row. The window has no tabs (0 `TabItem`). No badge, earned card or
+  Hall of Fame card names PSK31; that log's next first is *A Morse contact*.
+- **Keys on one side only:** none in the file that the block lacks; in the block and not the file,
+  `rank_names`.
+- **Were step 0's two classes green:** yes, 8 of 8 each.
+- **The files: 15**, listed once in section 2. How they were found:
+  - `git grep --untracked -L -e "^[[:space:]]*[^/#@[:space:]]"` over `*.cs`, `*.py`, `*.bat`,
+    `*.cmd`, `*.sh`, `*.ps1`, `*.js`, `*.csproj` and `*.axaml`, tracked and untracked, lists files with
+    no line outside a comment;
+  - `git grep --untracked -l -i` for *emptied by*, *safe to delete*, *delete by hand*, *could not
+    delete*, *cannot delete*, *refused to delete* and *refuses file deletion*, over those types plus
+    `*.txt` and `*.json`;
+  - every hit was read, and `git ls-files` gave tracking. Gitignored files were not searched; the
+    `-v` form of the search asked for approval.
 
-### Task 1 - the grid onto the CQ list (`92584a2`)
+### Task 1 - States says worked and what it counts, and nothing says confirmed (`1684d51`)
 
-- **Tests first, watched red on the tree as it was.** `TheNextCardKnowsWhoIsCalling`'s drawn loop
-  now carries a wanted PSK31 row per Modes realization on five contacts, at 1400 and 1920, worked out
-  in the test from the text and `GridPath` (its own `Mi`), not from the snapshot:
-  - `CallingWithPsk31()`: `3.580 on 80 m · EA3XYZ`;
-  - the certain CQ: `3.580 on 80 m · EA3ABC · 4,100 mi`;
-  - the uncertain CQ: `3.580 on 80 m · EA3ABC`;
-  - both callers, the no-grid one first on the list: `3.580 on 80 m · EA3ABC · 4,100 mi and 1 more`.
-  - Europe is realized on the certain caller's list too, so its existing *every caller has a
-    distance* assertion now covers a PSK31 caller.
-  - **Failure line:** *1400.00 modes: the PSK31 row draws [3.580 on 80 m · EA3ABC], not [3.580 on
-    80 m · EA3ABC · 4,100 mi]*.
-  - `Calling()` is unchanged, and every existing assertion was kept.
-- **Built in `CqSnapshot.From`**, through a new private `GridOf`: a text-only row's grid is
-  `Reading.Grid` where `Reading.IsCertain` is true and `Ft8MessageSplit.IsGrid` holds, otherwise `""`.
-  An FT8-shaped row still takes its payload where it is a grid. The remark at `:29`-`:30` and
-  `WhoIsThere`'s now say what is true. **No parser, splitter, demodulator, row construction, earning,
-  score, points or ruling 11 to 16 word changed. No file under `src/Hamlet.RadioEngine/` changed.**
-- **After the build**, the trace read the certain CQ's call as grid `JN11`, the other two as `""`.
-  On the certain list:
-  - Modes' PSK31 row: `3.580 on 80 m · EA3ABC · 4,100 mi`;
-  - Europe: *Spain* `EA3ABC · 4,100 mi`, on five and twelve contacts;
-  - Grids: still three callers drawn, the more line *and 2 more on the CQ list* where it was *and 1
-    more*, because JN11 is now an unworked square on the list;
-  - Countries: unchanged, *and 1 more on the CQ list*.
-- **One filter, 26 of 26**: `TheCategoryPagesAreTradingCardsTests` 12 of 12,
-  `TheAchievementsPageClicksInTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
-- **Carry-forward**: app **111 of 111**. Engine **85 of 86** on the first run, then **86 of 86** on
-  an immediate re-run with no file changed between. The first run's red was not named (section 4,
-  *Raised by unit 347*, item 1).
+- **Test first.** `StatesCountWhatTheLogsStateFieldSays` keeps every assertion it had.
+  `Assert.StartsWith("2 ", badge.Standing)` is unchanged, because the number did not move. It adds:
+  - the badge's standing is `2 worked, from STATE`, the band's is the same, and it is a whole part of
+    the band line;
+  - the next card's count line is `1 US contact carries no STATE`;
+  - at 1400 and 1920, the badge's corner, the band line and the next card draw those words, with *Any
+    state you have not worked* and `NoStateFromTheAir`;
+  - no run or hover contains *confirm* on the page, the 8 kinds or the 7 continent pages, at both
+    widths, on state contacts and twelve contacts;
+  - no line outside a comment in `src/Hamlet.App/ViewModels/Achievement*.cs` contains *confirm*.
+  - **Watched red on the tree as it was:** *Assert.Equal() Failure: Strings differ ... Expected: "2
+    worked, from STATE"*, against `2 worked`.
+- **Built:**
+  - `AchievementBadges`: States' standing is `Worked(n)` plus `FromStateField`, `, from STATE`.
+  - `AchievementCategory.StatesFor`: the next card's `CountLine` is `NoStateLine(log)`.
+  - `AchievementScreen`: the sentence is reworded (section 3).
+  - No score, points or other kind's words changed.
+- **Shortened, and named (§6):**
+  - *2 states worked, read from the log's STATE field* (48 characters) became `2 worked, from STATE`
+    (20). The badge's corner holds about 22 on the test host.
+  - **The band loses its meaning line on this log.** In full it would be 70 characters. The band's
+    existing 60-character rule takes the meaning off first, so it draws `2 worked, from STATE · 12
+    pts · unranked · 8 to Bronze`. The badge above still says *the 50 states*.
+- **The no-`STATE` line was the drop candidate.** It fits and is drawn, not dropped.
+- **No other test carried the old words.** Tests were searched for *worked rather than*, `"2
+  worked"` and a States standing.
+- **One filter:** trading cards **13 of 13**, clicks-in **8 of 8**, achievements page **10 of 10**,
+  PSK31 records **3 of 4** (the Modes test, red until task 2), binding health **1 of 1**, voice **5
+  of 5**. Carry-forward: app **111 of 111**, engine **86 of 86**.
 
-### Task 2 - the no-caller words and the new lines' fit (`3dbe927`)
+### Task 2 - the Modes test and the points file (`36c3a7b`)
 
-- **Tests first.** `TheNextCardKnowsWhoIsCalling` wants the PSK31 row on `Calling()` to carry ruling
-  31's words, and asserts no Modes row contains the word `now`. `ModesRowMiss`'s own copy of the old
-  words was corrected to the new truth (R12), and its remark with it.
-  - **Failure line:** *1400.00 modes: the PSK31 row draws [3.580 on 80 m · no one is calling in it
-    now], not [3.580 on 80 m · no one calling CQ in it at 21:41 UTC]*.
-- **Built:** `NoOneCallingInIt` became `NoOneCallingInItAt`, and `WhoIsThere` joins it with the
-  list's `ReadAt`. `ListNotRead` stays for a window with no list.
-- **The clip test** now also realizes, at both widths: Modes with both PSK31 callers, Europe with
-  them, and Modes with no PSK31 caller. Its `Fits` asserts, the 0.5 px tolerance and `white == 0` are
-  unchanged.
-- **One clip, fixed by §6 and named:** *no one calling CQ in it at 21:41 UTC* was red at 1400 - the
-  longer row squeezed the place column, and *[PSK31] needs 50.00 px and its slot is 48.00*. **Shortened
-  to `no one calling at 21:41 UTC`**; the row already names the mode. Nothing was widened.
-- **After it:** Modes 26 runs fit, 3 cards, 0 white on each of the three lists; Europe 27 runs, 3
-  cards, 0 white; at 1400 and at 1920.
-- **One filter 26 of 26** (12, 8, 1, 5). Carry-forward: app **111 of 111**, engine **86 of 86**.
+- **The Modes test**, renamed from `WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed` to
+  `WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard`. The old name stays in its remark.
+  - **It walks what it walked:** the page and every kind, at the window's own size, on
+    `EveningWithDx()`, with no CQ list. `Walk` gained an optional read callback.
+  - **Where each PSK run and hover may be.** Each is placed while its kind is open, and must be:
+    - on no tab and no badge;
+    - on a card that is not earned;
+    - the kind's single unearned card, with figure `next` and the next-card opacity;
+    - on Modes, a caller row; or on Hall of Fame, *A PSK31 contact*.
+  - **It also asserts that at least one such run exists**, which is R22's row.
+  - **A slip of mine, fixed before the watched red.** The first version placed runs after the window
+    had closed. It failed with *modes draws [PSK31] on no card*, which is my fault, not a watched
+    red.
+  - **Watched red:** with the next card expected earned, on the test only, it failed with *modes
+    draws [PSK31] on an unearned card [One more mode]*. Reverted.
+  - **No card, markup or view model changed.**
+- **The points file.**
+  - **The test first:** it checks both directions at every level, with the rule printed. Watched red
+    on the file as it was: *documented in the block and not in the file: rank_names*.
+  - **Then the file:** `"rank_names": []` was added after `ranks`. Its comment changed from *Not in
+    this file as shipped - add it to name your ranks* to *Empty as shipped, so every rank shows Rank
+    n. Put your names for your ranks in it, Rank 1 first*. No other key, value or point changed.
+  - **What the test now asserts about it:** `rank_names` is an empty array, `RankNamesRead` is 0, and
+    Rank 1 to Rank 9 each read `Rank n`.
+  - **Result:** 24 documented keys, and 43 keys at every level with 24 names. 32 table entries are
+    each checked by shape: a continent code quoted in the block, a whole-number count, one of the
+    fifty states, a band matching `^[0-9]+c?m$`, or a mode in `ContactModes.Six`. No key is on one
+    side only.
+- **Two new reds from the file change, corrected under R12:**
+  - `TheAchievementsPageTests.TheRanksCarryTheNamesInThePointsFile`, *Strings differ*;
+  - `TheAchievementsPageClicksInTests.ReadingThePointsFileWritesHowManyRankNamesItReadAndNoName`,
+    *Expected: 3*.
+  - Each added a second `rank_names` key, and the shipped empty list was the one read. Each now
+    fills in the shipped list instead.
+- **One filter, 41 of 41** (13, 8, 10, 4, 1, 5). Carry-forward: app **111 of 111**, engine **86 of
+  86**, run before the fixture fix and again after it.
 
-### Task 3 - every Modes row measured (`049a30a`)
+### Task 3 - the `Views` reds, named (no commit)
 
-- **The clip test** now realizes two more logs, each with both PSK31 callers and with no list, at
-  1400 and 1920, and prints each Modes row drawn:
-  - **FT4 only** (`Ft4Only()`): 3 rows before *and 1 more* - CW, FT8 and PSK31. Voice is the one
-    not drawn.
-  - **CW and FT4** (`CwAndFt4()`): 3 rows, no more line - FT8, PSK31 and Voice.
-- **Every row fits and no card is white** at both widths: 22 runs on FT4 only, 27 on CW and FT4.
-  Nothing was shortened.
-- **Watched red, built in (ruling 19):** the longest row's call line is held 10 px narrower than it
-  needs on the test window, then let go and measured again. It prints *1400.00 five contacts and a
-  PSK31 caller modes [3.575 on 80 m · the CQ list cannot tell FT4 from FT8] held to 510.00 px on the
-  test window, watched red: [3.575 on 80 m · the CQ list cannot tell FT4 from FT8] needs 520.00 px and
-  its slot is 510.00*.
-- **One filter 26 of 26** (12, 8, 1, 5). Carry-forward: app **111 of 111**, engine **86 of 86**.
+- **`TheMenuIsUnderTheMouseTests`, run once by class: 0 of 8.** All eight fail in `RightClickRow` at
+  `TheMenuIsUnderTheMouseTests.cs:552` with *expected both decoded lists in the window, found
+  DigitalDecodedRows*. Their names are in section 3.
+- **Read, not edited.** `RightClickRow` (`:532`-`:571`) wants both `DigitalDecodedRows` and
+  `DigitalMineRows`. `DigitalMineRows` is at `MainWindow.axaml:6060`, inside a container shown only on
+  `ShowsConversation` (`:6059`).
+- **All eight still share unit 331's cause.** None fails for another reason. The trace gained no line,
+  so there was nothing to commit.
+
+### Task 4 - the other small reds (`8895891`)
+
+- **`TheTotalMilesTests` (the app's):** *grid to grid, added up* corrected to *every mile, added*, the
+  line `src` has drawn since `3ea16ec`. The class ran **3 of 3**.
+- **`TheAchievementsScreenTests`, by class: 9 of 10.** `TheWindowDrawsEverySixRows` is still red.
+  It is named with why in section 3, not fixed.
+- **`WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` passed.** The remark on
+  `TheTwoInheritedRedsStillHaveSomethingToBeAbout` names it as a known red. Not chased.
+- **Never run:** `TheOperatorCanStopItTests` and `TheWholeChainRunsFromOneRightClickTests`.
+- **One filter, 41 of 41.** Carry-forward: app **111 of 111**, engine **86 of 86**.
 
 ### Checked against the tree (§2)
 
 **Held:**
-- `Psk31ExchangeParser.Read` at 157; `Psk31Exchange.Grid` at 72; the certainty computed at 212.
-- `DigitalDecodeRow.Reading` at 159; `Payload` at 726 is `Fields?.Payload ?? ""`.
-- `CqSnapshot.From` at 59 set the grid from the payload only; its remark at 29-30 said a PSK31 row
-  has no grid.
-- `WhoIsThere` at 743 orders PSK31 callers by `MilesBetween` and joins the nearest with `MilesTo`.
-  `CallersFrom` at 988 joins each caller with `MilesTo`. The Grids path checks `call.Grid.Length < 4`
-  at 1033. `first_psk31` lists callers by mode (561-566); the default next card lists everyone (591).
-- `CallingWithPsk31()` at 2950 reads `CQ CQ CQ de EA3XYZ EA3XYZ K`.
-- The live row carries `Reading` (task 0).
-- Unit 346's commits `7e830e4`, `09da5d7`, `7b5fa8f`, `03a54f7` and `0b506ed`; `origin/main` read
-  `0b506ed` at the start, and `output.md` was unit 346's.
-- The version was 1.13.33, at line 778 of `Directory.Build.props`. `DECISIONS.md` tops at HM-DEC-163.
+- `AchievementBadges.cs:353` builds `n worked`. `AchievementCategory.cs:929` is `NoStateFromTheAir`,
+  and `:964` is *Any state you have not worked*.
+- `AchievementsViewModel.cs:352` and `MainWindowViewModel.cs:13748` build an `AchievementScreen`.
+- `ThePsk31RecordsAppearTests.cs:86` and `:152`. `TheCategoryPagesAreTradingCardsTests.cs:1693`.
+  `TheAchievementsPageTests.cs:298` and `:340`-`:342`.
+- `Hamlet.RadioEngine.csproj:91` embeds the points file. Its comment block ends at line 50, with
+  *Not in this file as shipped* at line 34.
+- `TheMenuIsUnderTheMouseTests.cs:278` executes a menu item's command, `:465` builds
+  `Ft8ArmedSend`, `:489` executes `SendMessageCommand`, and `:519` opens the conversation before a
+  right-click.
+- `TheTotalMilesTests.cs:38` and `TheAchievementsScreenTests.cs:280`.
+- **The thirteen files:** all present, all tracked, all comments only.
+- **Unit 347's commits** `4be21c0`, `dc47f9f`, `92584a2`, `3dbe927`, `049a30a` and `066ad04` are on
+  `origin/main`, which read `066ad04` at the start. `output.md` was unit 347's.
+- **The version** was 1.13.34, at line 785 of `Directory.Build.props`. `DECISIONS.md` tops at
+  HM-DEC-163.
 - **The launcher's files**, edited by none of this unit:
-  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`. Its entries run 337, 338, 339, 340, 342,
-    `UNIT 337 - CARRIED REPAIR`, two `UNIT 1 - STEP 1` and one `UNIT 2 - STEP 1`. No 341 or 344 entry.
-  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0`, and its own `STEP: 0` line also reads `in progress`.
-  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and `.run-unit\` files were modified and
-    uncommitted by the launcher. `PHASE_STATUS.md` was committed at `4be21c0` with the launcher's
-    `HEARTBEAT` change in it, because the file is committed whole.
+  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`, and there is no unit 341 or 344 entry.
+  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0` and step 1 `done`.
+  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md` (before task 0's commit), `RUN_LEDGER.md` and `.run-unit\`
+    files were modified and uncommitted by the launcher.
 - `CLAUDE.md` holds no `CPS-DEC` id (0 matches). Parked with the id schemes.
-- `tools\arbiter.bak-20260913\` stayed untracked. Files were staged by name, and the validator was
-  given the report.
+- `tools\arbiter.bak-20260913\` stayed untracked. Files were staged by name.
 
 **Mismatches, reported and not repaired:**
-- §1 places `UnworkedCountry` at `:1226`. That is the continent page's call; the method is at 1009.
-- §1 says *on every other kind, `CallersFrom` joins each caller*. Bands lists unworked bands and
-  States lists no caller; neither calls `CallersFrom`.
-- §1's `IsCertain (:212)` is the parser's local `certain`; the record's member is at 70.
+- §1's `AchievementScreen.cs:543`-`546`: line 543 opens `detail:`, and the sentence runs from 544 to
+  547.
+- **Ruling 34's example reword still contains the word.** *The DXCC award counts confirmations*
+  holds *confirm*, which criterion 1 forbids in a view-model string. Different words were used
+  (section 3).
+- **§1 says thirteen emptied files; the tree holds fifteen.** `tools\unit217\status.py` (unit 217)
+  and `.run-unit\cost.py` (unit 252) are also session-emptied, comment-only and tracked. Several of
+  the thirteen say in their own text that they are untracked or never committed; git tracks every
+  one.
+- **§2 says units 345, 346 and 347 are recorded as `UNIT 1`, `UNIT 2` and `UNIT 3 - STEP 1`.**
+  `PHASE_OUTCOME.md` holds two `UNIT 1 - STEP 1` entries, one `UNIT 2` and one `UNIT 3`: four entries
+  for three units.
+- **`TheTotalMilesTests` is two classes.** One is in `tests/Hamlet.App.Tests/ViewModels/`, the one
+  named. The other is in `tests/Hamlet.RadioEngine.Tests/Contacts/` and was not run.
+- **`TheAchievementsPageTests` and `TheAchievementsScreenTests` live under `Views/`**, not
+  `ViewModels/`. §1 gives no folder, so this is noted only.
 
-**Reds expected:** none was in any filter, so none was run. No red turned green and no new red
-appeared in what ran, apart from the engine run in task 1 (item 1). The wanted reds are given above.
+**Reds that moved in what ran:**
+- **Turned green:** the Modes test, by correction (task 2), and Total Miles (task 4).
+- **Also green:** `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo`, named a known red in a remark.
+- **New, and corrected in the same task:** the two rank-name fixtures (task 2).
+- **The engine read 86 of 86 on all five runs.**
 
 **Tool facts, as they held for this session.**
 
 | Result | Commands |
 |---|---|
-| Ran | `sh tools/status.sh` (every write); `&&` joining `git add`, `commit` and `push`; commits with several `-m`; `grep -E`, `tail` and `cut` in pipes; `date` |
-| Asked for approval, not run | `grep` with `\s` in its pattern; a `grep -E` pattern with `{0,40}` and `-A1`; `;` joining `grep`, a `tail` redirect into a file, `head` and `wc` |
-| Refused | the file writer on a path outside the repository (`--restricted`) |
-| Not tried | a `cd` before `git`; `awk`; `sort` with options; `git fetch` or `git status -sb` in a compound; `uniq`; `tr`; `git diff --quiet ... && echo`; `sed -i`; `git -C`; apostrophes in `.bat` arguments |
+| Ran | `sh tools/status.sh` on every write, joined by `&&` before `dotnet`; `&&` joining `git add`, `commit` and `push`; commits with several `-m`; `grep -E`, `cut`, `sed -n` and `tail -n +1` in pipes; `git grep --untracked` with several `-e`; `ls`; `date` |
+| Asked for approval, not run | `awk` in a pipe; `sort -t- -k3 -n` in a chain; `sed -E` in a pipe; `xargs grep -L -v` after a `grep -E` pipe; `;` joining `head`, `git ls-files`, `git check-ignore` and `git show`; `git grep -L -v` with several `-e` |
+| Refused | a `for` loop over a shell variable (*Contains simple_expansion*); `sed -i` on `output.md` and a redirect onto `output.md`, both *blocked* as outside the allowed working directory `C:\Source\HamLet`, though the file is inside it |
+| Not tried | `grep` with `\s`; a `cd` before `git`; `git -C`; apostrophes in `.bat` arguments |
 
-**`RULES_AT`:** `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. **This session set it back
-to `HM-DEC-163 (2026-09-12)` once, after the last write, and not after every write** as §4 asks; the
-file carried 161 between writes while the unit ran.
+**`RULES_AT`:** `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. This session set it back to
+`HM-DEC-163 (2026-09-12)` with the file editor after every write. Between a write and its edit the
+file carried 161 for a few seconds.
 
 ### Decisions made for this unit
 
 All are the unit's own and overrulable:
-1. **The PSK31 texts**: EA3ABC in JN11 (Barcelona's square) for the grid caller, certain with `K` and
-   uncertain without it; EA3XYZ's unchanged text for the no-grid caller.
-2. **The words**: `no one calling at 21:41 UTC`, shortened by §6 from `no one calling CQ in it at 21:41
-   UTC`. They carry the read time rather than *on the CQ list*, matching the other cards' heading.
-3. **The grid is held to `Ft8MessageSplit.IsGrid`** as well as certainty, so the PSK31 grid passes
-   the same test as the FT8 payload.
-4. **Europe realized on the certain caller's list** in `TheNextCardKnowsWhoIsCalling`, the one other
-   kind that draws the caller, under the existing distance assertion. Grids' more line is reported,
-   not asserted.
-5. **Task 3's logs**: FT4 only, and CW with FT4, so between them every row the card can draw is drawn.
-6. **Watched reds built into the tests as second checks**, units 345 and 346's pattern; task 3's by a
-   `MaxWidth` set and cleared on the test window.
-7. **The trace also prints each next card's more line**, added before task 1's commit, so the Grids
-   change could be read.
+1. **The count's words:** `2 worked, from STATE`. *STATE* in capitals names the field, and the kind's
+   name is already on the badge. The band losing *the 50 states* on the state log follows from its
+   existing 60-character rule and was not chosen here.
+2. **The no-`STATE` line** goes in the next card's count slot. It reads `n US contact carries` or
+   `contacts carry no STATE`, and is blank at 0.
+   - **What counts as a US record:** one where a `STATE` would score. The contact is tested with `PA`
+     put in its place, under `AchievementLog.StateOf`, so the app holds no second list of entities.
+   - **Not counted:** a record carrying a `STATE` that scores nothing, such as `DC`.
+3. **`AchievementScreen`'s sentence:** *The count says worked: the DXCC award counts only contacts both
+   stations have verified, by QSL card or electronically, and Hamlet only knows what passed on the air
+   from your own log.*
+4. **The documented-key rule:** a quoted word first on a comment line, followed by two or more spaces.
+   Keys under `per`, `special`, `milestones` and `tiers` are table entries, checked by shape.
+5. **`rank_names`' comment:** *Empty as shipped, so every rank shows Rank n. Put your names for your
+   ranks in it, Rank 1 first*, and the two lines after it are kept.
+6. **The Modes test places each run while its kind is open**, and asserts the R22 row is there.
+7. **The two rank-name fixtures** now fill in the shipped list instead of adding a key.
+8. **`TheWindowDrawsEverySixRows` is named, not fixed.** Its failure is a retired card, not a stale
+   string (section 3).
+9. **`EveningWithDx()` made `internal`**, for the trace only.
 
 ### Commits
 
-`4be21c0`, `dc47f9f`, `92584a2`, `3dbe927` and `049a30a`, each pushed to `main` without refusal. This
-report and the status file follow in their own commit.
+`02884b1`, `07f48d9`, `1684d51`, `36c3a7b` and `8895891`, each pushed to `main` without refusal.
+Task 3 had nothing to commit. This report and the status file follow in their own commit.
 
 ## 2. What the owner should expect
 
-**A PSK31 station calling CQ with his grid now shows how far away he is on the achievements next
-cards**, the way an FT8 caller already did. With 17 m the best bet, a log that has not worked PSK31
-draws on the Modes card:
-- *PSK31*: *3.580 on 80 m · EA3ABC · 4,100 mi* where his CQ carried JN11;
-- *PSK31*: *3.580 on 80 m · EA3XYZ* where his CQ carried no grid;
-- *PSK31*: *3.580 on 80 m · no one calling at 21:41 UTC* where no PSK31 caller was on the list when
-  the window opened.
+**The States page says what its count counts.** The badge and the band read *2 worked, from STATE*
+on the test log. The next card adds *1 US contact carries no STATE* under what it wants. On your own
+log, Hamlet's entries carry no `STATE`, so expect that number to be large. It counts records, and says
+nothing about where those stations are. **No achievements page says *confirmed*.**
 
-Europe's page lists him as *Spain · EA3ABC · 4,100 mi* where Spain is unworked. The version is 1.13.34.
+**The shipped points file now carries `"rank_names": []`**, documented as empty. **Your own copy
+under `%AppData%\Hamlet\achievements\` is unchanged and never replaced**, so this reaches only a
+fresh seed. To name your ranks, add `rank_names` to your copy as before. On a fresh seed the
+`achievement_points_loaded` event's `fileHash` changes with the file, as expected (R13).
+`assets\data\achievement-points.json` is still unread, and it was not changed or deleted. The version
+is 1.13.35.
 
 **What will look wrong but is not:**
-- **A PSK31 caller with a grid in his text can still show no distance.** Hamlet takes the grid only
-  where the PSK31 reading is certain - his callsign after `de`, a turnover at the end, nothing
-  damaged. A guess is never drawn as a distance.
-- **The time on the PSK31 row is when the window opened**, not the time now. The list is read once.
-- **The Grids card's *and n more* can go up by one** when a PSK31 caller sent an unworked square.
-- **`Unit347TraceThePsk31CallersGridAndDistance` passes and asserts nothing.** It is the record behind
-  task 0's answers.
-- **More watched-red lines print on every green run.** Each is asserted to fail against a wrong
-  expectation on the test window. A missing line is the failure.
+- **The States band no longer says *the 50 states*.** The longer count pushed the line past its 60
+  characters, and the band's existing rule takes the meaning off first. The badge still says it.
+- **The States next card has three lines of words and no callers.** The count line is new; the other
+  two are unit 335's, kept.
+- **`Unit348TraceWhatTheLastPhaseLeft` passes and asserts nothing.** It is the record behind task 0.
+- **Thirteen tests are still red** (section 3's table). Four of them are never run.
+
+### The one list of files for Tim to delete by hand
+
+Every one was emptied by a session because this environment refuses deletes. Each holds only
+comments or a note, and no code. **All fifteen are tracked by git**, so delete them and commit the
+deletion.
+
+| # | Path | Tracked | Holds | Emptied by |
+|---|---|---|---|---|
+| 1 | `C:\Source\HamLet\commit-msg-326.txt` | yes | a one-paragraph note, no code | unit 326 |
+| 2 | `C:\Source\HamLet\toolsarbitervalidate-output.bat` | yes | one `@rem` line | unit 332 |
+| 3 | `C:\Source\HamLet\tools\arbiter\unit323-append.bat` | yes | one `@rem` line | unit 332 |
+| 4 | `C:\Source\HamLet\tools\arbiter\unit323-append.py` | yes | one `#` line | unit 332 |
+| 5 | `C:\Source\HamLet\tools\cut-header-action.py` | yes | one `#` line | unit 332 |
+| 6 | `C:\Source\HamLet\tests\Hamlet.App.Tests\Views\Unit333ProbeTests.cs` | yes | one `//` line | unit 333 |
+| 7 | `C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ThePsk31TabIsInertTests.cs` | yes | `//` lines only | unit 323 |
+| 8 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Unit216Probe.cs` | yes | `//` lines only | unit 216 |
+| 9 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Unit217Probe.cs` | yes | `//` lines only | unit 217 |
+| 10 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\UpstreamSyncSearchProbe.cs` | yes | `//` lines only | unit 214 |
+| 11 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Ldpc\UpstreamLdpcProbe.cs` | yes | `//` lines only | unit 215 |
+| 12 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\TempEncoderProbe.cs` | yes | `//` lines only | unit 203 |
+| 13 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Unit289SourceProbe.cs` | yes | `//` lines only | unit 289 |
+| 14 | `C:\Source\HamLet\tools\unit217\status.py` | yes | `#` lines only | unit 217, not on unit 334's list |
+| 15 | `C:\Source\HamLet\.run-unit\cost.py` | yes | `#` lines only | unit 252, not on unit 334's list; it sits in the launcher's folder |
+
+**Not on the list:**
+- **`C:\Source\HamLet\tools\arbiter.bak-20260913\`** is the launcher's backup: untracked and not
+  emptied. It holds copies of items 3 and 4, which go when the folder goes.
+- **Unit 334's gitignored scratch**, both still present and not emptied: `.commit-msg.tmp` and
+  `artifacts\unit333\psk31-fixture-export.adi`.
+- **`src\Hamlet.App\Telemetry\Psk31Macro.cs`** matched the search only on a remark. It is code.
+- **Four `.run-unit\` text files** matched on the launcher's prompt wording.
 
 ## 3. What you should see
 
-**Yes.** Every step 1 must-pass holds with nothing qualifying it. A PSK31 caller who sent a grid is
-drawn with his distance, *EA3ABC · 4,100 mi*, at 1400 and at 1920. One who sent none, or whose
-reading is uncertain, is drawn as his callsign alone, by ruling 30's rule. Nothing clips and no card
-is white.
+**Yes. Every step 2 must-pass now holds: 5 of 5.** States says worked and what it counts, and no
+achievements page or view-model string says *confirm*. The Modes test agrees with R22 and Ruling C.
+The fifteen files are one list. The eight `Views` reds are named with why. The points file documents
+exactly the keys it carries.
 
-**The Modes next card's PSK31 row on five contacts**, the same at 1400 and 1920, under *where each
-one lives* and after *CW 18.080 on 17 m · the CQ list carries no Morse* and *FT4 3.575 on 80 m · the
-CQ list cannot tell FT4 from FT8*:
-- with a certain CQ carrying JN11: *3.580 on 80 m · EA3ABC · 4,100 mi*;
-- with a CQ carrying no grid: *3.580 on 80 m · EA3XYZ*;
-- with the JN11 CQ read uncertain: *3.580 on 80 m · EA3ABC*;
-- with both callers: *3.580 on 80 m · EA3ABC · 4,100 mi and 1 more*;
-- with no PSK31 caller: *3.580 on 80 m · no one calling at 21:41 UTC*;
-- with no list (FT4-only and CW-and-FT4 logs): *3.580 on 80 m · the CQ list was not read*.
+**The States badge, band and next card**, the same at 1400 and 1920 on the state log:
+- **Badge:** *States*, *the 50 states*, *next One more state*, *2 worked, from STATE*, *12 pts ·
+  unranked*, *8 to Bronze*.
+- **Band:** *States*, *2 worked, from STATE · 12 pts · unranked · 8 to Bronze*, and over the bar *2 of
+  10 to Bronze*.
+- **Earned cards:** *AK*, *10 pts*, *KL7XYZ · BP51*, *3,200 mi*; and *PA*, *2 pts*, *K3PA · FN10*, *110
+  mi*.
+- **Next card:** *One more state*, *2 pts*, *next*, *1 US contact carries no STATE*, *Any state you
+  have not worked*, *Hamlet cannot tell a caller's state*.
 
-**Other kinds' next cards with a PSK31 caller who sent a grid**, the same at both widths: Europe
-draws *Spain* *EA3ABC · 4,100 mi*; Grids draws the same three callers with *and 2 more on the CQ
-list*.
+**Where PSK31 is drawn on the no-PSK31 log:** once, as *PSK31* on the Modes next card's caller row,
+the kind's one unearned card. It is on no badge, tab, earned card or Hall of Fame card.
 
-**The Modes rows task 3 measured**, top to bottom, each fitting at 1400 and 1920:
-- FT4 only: *CW 18.080 on 17 m · the CQ list carries no Morse*; *FT8 18.100 on 17 m · the CQ list
-  cannot tell FT8 from FT4*; *PSK31* with the caller or *the CQ list was not read*; then *and 1 more*.
-- CW and FT4: *FT8 18.100 on 17 m · the CQ list cannot tell FT8 from FT4*; *PSK31* as above; *Voice
-  the CQ list carries no voice*.
+**The reworded sentence**, held on `AchievementScreen` and drawn by no window today: *The count says
+worked: the DXCC award counts only contacts both stations have verified, by QSL card or
+electronically, and Hamlet only knows what passed on the air from your own log.*
 
-**The step 1 table.** Every appearance claim here is computed on the headless host, not seen.
+**The step 2 table.** Every appearance claim here is computed on the headless host, not seen.
 
-| Test | Criterion | Drawn or view model | Widths | Pages | Result | Numbers |
-|---|---|---|---|---|---|---|
-| `EveryKindsBandCarriesCountScoreLevelAndABar` | 1 | drawn (1040 kept) | 1400, 1920 | 8 kinds, 7 continent pages | pass | re-run; unchanged |
-| `EveryEarnedCardIsTheContactThatEarnedIt` | 2 | drawn | 1400, 1920 | Countries, Grids, States | pass | re-run; unchanged |
-| `TheNextCardKnowsWhoIsCalling` | 3 | drawn (view model kept) | 1400, 1920 | every kind, Continents, 7 continent pages; Modes on five contacts on 5 lists; Europe with the grid caller | pass | PSK31 row with 4,100 mi from GridPath; callsign alone twice; no bare now; 2 watched reds |
-| `TheOtherFiveKindsEachDrawTheirOwnCards` | 4 | drawn and view model | 1400, 1920 | Continents, Total Miles, Bands, Modes, Hall of Fame | pass | re-run; unchanged |
-| `ContinentsOpensToSevenAndEachToItsCountries` | 4 | drawn, by press | 1400, 1920 | 7 continents | pass | re-run; unchanged |
-| `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` | 5, 6 | drawn | 1400, 1920 | 8 kinds, 7 continent pages; Modes on 3 lists; Europe; Modes on FT4-only and CW-and-FT4, with callers and with no list | pass | 0 white of 83 cards a width; one string shortened; 2 watched reds |
-| `StatesCountWhatTheLogsStateFieldSays` | 5, 6 | drawn | 1400, 1920 | States on the state log | pass | 3 cards, 0 white |
-| `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse` | 7 | view model, telemetry | none | Countries | pass | re-run |
-| `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt` | nice-to-pass | drawn, real clicks | 1400, 1920 | Countries | pass | 2 of 2 |
+| Test or list | Criterion | Drawn or source | Widths | Result | Numbers |
+|---|---|---|---|---|---|
+| `TheAchievementsPageClicksInTests`, `TheCategoryPagesAreTradingCardsTests` | entry | drawn | window size; 1400, 1920 | pass | 8 of 8; 12 of 12 (13 of 13 with the trace) |
+| `StatesCountWhatTheLogsStateFieldSays` | 1 | drawn, view model and source | 1400, 1920 | pass | badge and band `2 worked, from STATE`; next card `1 US contact carries no STATE`; 0 *confirm* on the page, 8 kinds and 7 continents on 2 logs; 0 held outside comments; 3 cards, 0 white; watched red |
+| `WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard` (was `WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`) | 2 | drawn | the window's own 1040, as before | pass | 1 PSK run, on the Modes next card's caller row; watched red |
+| section 2's list | 3 | tree search | none | listed once | 15 files, all tracked |
+| `TheMenuIsUnderTheMouseTests` | 4 | run once | none | 0 of 8, named | all 8 at `:552` |
+| `TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop` | 5 | the shipped file | none | pass | 24 documented, 24 key names, 43 keys, 32 table entries by shape; `rank_names` []; ranks read `Rank n`; watched red |
+
+**The known reds.**
+
+| Test | Count | Failure line | Cause | Why it is not fixed | The fix a later phase could make |
+|---|---|---|---|---|---|
+| `TheMenuIsUnderTheMouseTests`: `ARowThatNamesNoStationPutsNothingUnderTheMouse`, `OutOfPrivilegesTheMenuSaysSoAndForbidsNothing`, `BothListsCarryTheMenuAndLogIsOnTheRightOne`, `EveryStationsPredictedMenuAppearsUnderTheMouse`, `TheRepeatCountBelongsToTheClickAndNotToTheRow`, `AThirdPartyExchangeHasAMenuAndNoLog`, `WithNoGridTheReasonIsANoteAndTheRestStayClickable`, `ChoosingOneGoesThroughTheOneCommandThatArms` | 8 (0 of 8) | *expected both decoded lists in the window, found DigitalDecodedRows* (`:552`) | `DigitalMineRows` is realized only behind *show the N messages* (`ShowsConversation`, `MainWindow.axaml:6059`-`6060`), which is deliberate | The scene builds `Ft8ArmedSend` over `Ft8TransmitSequence`, executes `SendMessageCommand` and reads audio going out. That is the transmit chain, outside this phase (§6, §0.2; ruling 38) | Realize the mine rows the way the operator does, by pressing *show the N messages*, before the menu is read |
+| `TheWholeChainRunsFromOneRightClickTests` | 2 | not run | The same cause, by unit 337's trace | The transmit side, and a real audio endpoint; never run (ruling 39) | The same, with a fake endpoint |
+| `TheOperatorCanStopItTests` | 2 | not run | Transmit-side, as unit 336 found | The transmit side; never run (ruling 39) | A transmit-side unit |
+| `TheAchievementsScreenTests.TheWindowDrawsEverySixRows` | 1 | *System.InvalidOperationException : Sequence contains no matching element* | It looks for `AchievementsModeRows`, the old card's six mode rows, which the click-in window no longer has. It also wants WSPR on the screen and over 1,000 characters of hover prose | Not a stale string. Its subject was retired by Tim's click-in ruling of 2026-09-12 and §3.1, and `TheTwoInheritedRedsStillHaveSomethingToBeAbout` keeps it as a finding. Making it pass means writing a different test (R14) | Retire it under R12 on a ruling, or rewrite it onto the Modes category page |
 
 ## 4. What's blocking us
+
+**No ruling is needed to go on.** Unit 347's section 4 comes first, verbatim per HM-DEC-139: from its
+line under `## 4. What's blocking us` to its end, as committed in `066ad04`, kept in place with the
+file editor. The marks work instruction 348 §9 asks for are in the carried text:
+- unit 335 item 1, *ANSWERED*;
+- unit 336 item 2 and unit 333 item 1, *ANSWERED*;
+- unit 336 item 3, *TAKEN UP*;
+- unit 331 queue item 14, *ANSWERED*;
+- unit 331 queue item 19 and unit 333 item 3, each replaced by one *ANSWERED* line, with their file
+  names out;
+- unit 347 item 1, *NOTED*.
+
+This unit's items follow at the very end, under *Raised by unit 348*. None of them needs a ruling.
+
+### Asks still outstanding - carried from unit 347's section 4, per HM-DEC-139, verbatim
 
 **No ruling is needed to go on.** Unit 346's section 4 comes first, verbatim per HM-DEC-139: from its
 line under `## 4. What's blocking us` to its end, as committed in `0b506ed`, kept in place with the
@@ -1179,12 +1268,21 @@ touched Modes.
 *What was rejected and why.* Rewriting the test or the card here: §12.6, and neither is this
 step's.
 
+*ANSWERED by work instruction 348 ruling 36 and task 2.* The test is now
+`WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard`; it was
+`WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`. Before a PSK31 contact, PSK31 may be
+drawn only on the Modes next card's caller row and on Hall of Fame's next first, each the kind's
+unearned card. It is on no tab, badge, earned card or dimmed card. The screen did not change.
+
 **3. `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext` has been red
 since unit 332.**
 
 *No ruling wanted; a finding.* It expects the Total Miles badge line `grid to grid, added up`, and
 unit 332 (`3ea16ec`) changed that line to `every mile, added` in `src` only. It is not on the
 known-reds list, and the unit that next touches Total Miles owns it under R12.
+
+*TAKEN UP by work instruction 348 task 4.* Corrected under R12 to `every mile, added` (`8895891`).
+`TheTotalMilesTests` ran 3 of 3.
 
 ##### Where the carried items stand after unit 336
 
@@ -1231,6 +1329,11 @@ Guessing a state from a prefix was rejected before: a `W3` can be anywhere.
 *What was rejected and why.*
 - A wider slot. That would change every next card's width for one sentence.
 - A second line. The fit rule says no string wraps.
+
+*ANSWERED by work instruction 348 ruling 35 - kept.* Both lines stay: `Any state you have not worked`
+and `Hamlet cannot tell a caller's state`. The count now reads `2 worked, from STATE` on the badge and
+the band. Where the log holds US records with no `STATE`, the next card adds a count of them, `1 US
+contact carries no STATE` on the test log.
 
 **2. The next cards name callers from continents you have never worked.**
 
@@ -1348,6 +1451,11 @@ instruction says not to choose, so **the screen is left as it was and still show
 last in the list, which only moves the collision to a later log and reorders the owner's
 firsts.
 
+*ANSWERED by work instruction 348 ruling 36 and task 2.* Ruling C and R22 win, as the later
+rulings, and the card stays. The test is now `WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard`. It
+allows `A PSK31 contact` only as Hall of Fame's unearned next first, and PSK31 only on the Modes next
+card's caller row. §3.1 stays whole for records.
+
 **2. The nice-to-pass wants a logger, and this session could not look for one.**
 
 *Something you can do in a minute, not a stop.* Import `docs/unit333-psk31-fixture-export.adi`
@@ -1362,16 +1470,7 @@ listing outside `C:\Source\HamLet` and the registry query.
 your machine. Guessing from memory which loggers are installed, which would be a claim nobody
 measured.
 
-**3. This environment refuses deletes inside the repository and listings outside it, so two
-scratch files remain.**
-
-*No ruling wanted; housekeeping.*
-- `tests/Hamlet.App.Tests/Views/Unit333ProbeTests.cs` is untracked and one comment line.
-- `artifacts/unit333/psk31-fixture-export.adi` is gitignored.
-
-Both are safe to delete by hand, beside the five carried in item 19 below. The validator was
-run by the `.proj` route the instruction names. The prompt's `.bat` spelling is the one unit
-243 documented as mangled by Git Bash.
+**3.** `ANSWERED by unit 348 - the one list is in section 2`
 
 ######## Carried from unit 332's section 4, per HM-DEC-139 - verbatim
 
@@ -1604,6 +1703,10 @@ gated on `ShowsConversation`, so the right-hand **row** list is realized only af
 panel of cards and the raw rows are one press down, never gone. The test's premise
 went stale on the day cards replaced that list.
 
+*ANSWERED by work instruction 348 ruling 38 - named as known reds, section 3.* Run once: 0 of 8,
+all eight failing at `RightClickRow` `:552` on the same line. Not edited, because the scene drives
+the FT8 send path.
+
 **15.** *(was items 11, 12, 13)* **Unit 326 items 8 and 9 and unit 325 item 6 -
 CLOSED by unit 327** and re-proved in the runs above.
 
@@ -1620,10 +1723,7 @@ Reported, not repaired. `PROJECT_STATUS.md` carries `RULES_AT: HM-DEC-161
 this repository resolves which is canonical**, and no unit should pick one without a
 ruling.
 
-**19.** *(was item 17)* **Files this environment cannot delete.** Now five, listed for
-Tim in section 2: `commit-msg-326.txt`, `toolsarbitervalidate-output.bat`,
-`tools\arbiter\unit323-append.bat`, `tools\arbiter\unit323-append.py` and this
-session's own `tools\cut-header-action.py`.
+**19.** `ANSWERED by unit 348 - the one list is in section 2`
 
 **All other items stand as unit 328 carried them.**
 
@@ -1757,6 +1857,9 @@ read* and *3.580 on 80 m · EA3ABC · 4,100 mi and 1 more*. Nothing was shortene
 - Not chased: the engine and PSK31 are parked (ruling 23). If it recurs, the name is the first thing
   to take.
 
+*NOTED by unit 348.* It did not recur. The engine carry-forward read 86 of 86 on all five runs: before
+task 0, after task 1, twice in task 2 and after task 4. No engine source file changed.
+
 **2. The fixtures read a PSK31 CQ with the parser directly; the live list reads it through the
 splitter. The grid's live route is read from the source, not run.**
 
@@ -1793,3 +1896,61 @@ measured with one.**
 - `tools/arbiter/validate-output.bat` looks for the `UNIT:` line only in the file's first 60 lines
   (`Get-Content -TotalCount 60`). This report's first draft put it at line 62 and failed rule 1 with
   the line present; the ordering block was shortened, not the validator touched.
+
+### Raised by unit 348
+
+**1. Fifteen files are emptied, not thirteen: two more were missed by unit 334's list.**
+
+*No ruling wanted; a finding, and both are on section 2's list.*
+- `tools\unit217\status.py` (unit 217) and `.run-unit\cost.py` (unit 252) hold only `#` comments, and
+  both are tracked.
+- Both were found by the comment-only search. Unit 334's search looked for the words *emptied* and
+  *could not delete*, and their notes say *refused every attempt to delete* and *`rm` on this path was
+  refused*.
+- `.run-unit\cost.py` sits in the launcher's folder, but a session emptied it and git tracks it.
+
+**2. Ruling 34's example reword still contains the word it removes.**
+
+*No ruling wanted; a finding.*
+- The example reads *the DXCC award counts confirmations*, and *confirmations* holds *confirm*.
+  Criterion 1 forbids that in any string an achievements view model holds.
+- **Used instead:** *The count says worked: the DXCC award counts only contacts both stations have
+  verified, by QSL card or electronically, and Hamlet only knows what passed on the air from your own
+  log.* The meaning is kept.
+- *Rejected:* the example as written, which would leave criterion 1's source check red.
+
+**3. The no-`STATE` line is measured only at one digit.**
+
+*No ruling wanted; a finding for Tim at step 3.*
+- The fixture draws *1 US contact carries no STATE*, 29 characters, and it fits at 1400 and 1920.
+- On Tim's log the number will run to hundreds or thousands. *1,234 US contacts carry no STATE* is 32
+  characters. The card has 632 px inside at 1400, and at the test host's ten pixels a character that
+  is about 320 px, so it should fit; **that is arithmetic, not a measurement.**
+
+**4. The States band loses *the 50 states* on the state log.**
+
+*No ruling wanted; a finding for Tim at step 3, beside ruling 13.*
+- The new count makes the band line 70 characters, and `BandLineMost` is 60. The band's rule, unit
+  342's, takes the meaning off first, so it draws *2 worked, from STATE · 12 pts · unranked · 8 to
+  Bronze*.
+- The badge above it still says *the 50 states*. Grids and Total Miles already lose their meaning line
+  the same way on the twelve-contact log.
+- *Rejected:* a shorter count such as *2 from STATE*, which drops *worked*, the one word criterion 1
+  asks for.
+
+**5. A known red passed: `TheAchievementsScreenTests.WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo`.**
+
+*No ruling wanted; a finding.*
+- `TheTwoInheritedRedsStillHaveSomethingToBeAbout`'s remark names it, with `TheWindowDrawsEverySixRows`,
+  as the two inherited reds. In task 4's class run it passed, and `TheWindowDrawsEverySixRows` did
+  not.
+- Not chased: it is not a criterion, and nothing in this unit touched `AchievementScreen`'s mode rows.
+
+**6. The status script's `RULES_AT`, and this session's report route.**
+
+*No ruling wanted; a finding.*
+- `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. This session set it back to `HM-DEC-163
+  (2026-09-12)` with the file editor after every write.
+- `sed -i` on `output.md` and a redirect onto `output.md` were both *blocked* as outside
+  `C:\Source\HamLet`, though the file is inside it. A `for` loop over a shell variable was refused.
+  This report was assembled in place with the file editor around unit 347's committed section 4.
