@@ -2130,6 +2130,10 @@ public sealed class TheTopRowTests
 
         _output.WriteLine("=== " + fixture + ", " + Px(width) + " " + mode + " (chosen after the fixture returns)");
 
+        // **TASK 1: THE SAME WINDOWS WITH THE CHANGE IN PLACE.** Passes 1 to 6 are the fixture's settle as
+        // it was; passes 7 to 12 follow the restore ruling 67 added, and the guard has run before `returned`.
+        _output.WriteLine("  passes 1-6 the settle as built; passes 7-12 after the declared window is set again (work instruction 353)");
+
         var previous = "";
 
         foreach (var (pass, at, held) in passes)
@@ -2214,9 +2218,8 @@ public sealed class TheTopRowTests
         model.ChosenDigitalMode = "FT8";
         model.MapExpanded = true;
         model.GrayLineUtc = TwoPmEdt;
-        model.HeardInTheLastMinute = 6;
-        model.HeardSparkline = GreenZone.Sparkline(
-            new[] { 3, 9, 14, 30, 44, 58 }.Select(s => TwoPmEdt.AddSeconds(-s)), TwoPmEdt);
+        model.HeardInTheLastMinute = DeclaredHeard;
+        model.HeardSparkline = DeclaredSparkline();
         model.DigitalWaterfallExpanded = true;
         model.DigitalDecodedExpanded = true;
         model.DigitalMineExpanded = true;
@@ -2233,8 +2236,54 @@ public sealed class TheTopRowTests
             afterEachPass?.Invoke(i + 1, window);
         }
 
+        // **THE DECLARED WINDOW IS SET AGAIN AFTER THE RELOADS, SINCE WORK INSTRUCTION 353** (the
+        // arbiter's ruling 67, the unit's own and overrulable). `Unit353TraceTheDeclaredWindowAfterTheReloads`
+        // as built (`b01e033e`), at 02:08 local: in all eight windows both spot reloads, `band_changed`
+        // and `startup` with 0 spots, landed in pass 1 of the six above, and from pass 1 on the window
+        // held 0 stations, a sparkline summing 0 and the hour's best bet (*80 m* on the 2 am table)
+        // where this fixture declares 6, its sparkline and none. Nothing wrote after `Realized`
+        // returned: every writer of the three is `ReloadSpotsAsync`, and its only trigger left that
+        // can fire in a test's span is the five-minute refresh timer. So the declared values are set
+        // once more and the same six passes run once more, then checked.
+        model.HeardInTheLastMinute = DeclaredHeard;
+        model.HeardSparkline = DeclaredSparkline();
+
+        foreach (var band in model.Bands)
+        {
+            band.IsBestBet = false;
+        }
+
+        model.NotifyGreenZoneForTests();
+
+        for (var i = 0; i < 6; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+            afterEachPass?.Invoke(i + 7, window);
+        }
+
+        Assert.True(
+            model.HeardInTheLastMinute == DeclaredHeard,
+            "the test window's HeardInTheLastMinute held " + (model.HeardInTheLastMinute?.ToString(CultureInfo.InvariantCulture) ?? "null")
+            + " after the restore, where the fixture declares " + DeclaredHeard);
+        Assert.True(
+            model.HeardSparkline.Sum() == DeclaredHeard && model.HeardSparkline.SequenceEqual(DeclaredSparkline()),
+            "the test window's HeardSparkline held [" + string.Join(" ", model.HeardSparkline) + "] after the restore, where the fixture declares ["
+            + string.Join(" ", DeclaredSparkline()) + "]");
+        Assert.True(
+            !model.Bands.Any(b => b.IsBestBet),
+            "the test window's IsBestBet held true on [" + string.Join(", ", model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name))
+            + "] after the restore, where the fixture declares no best bet");
+
         return window;
     }
+
+    /// <summary>The heard count the test window declares: six stations.</summary>
+    private const int DeclaredHeard = 6;
+
+    /// <summary>The sparkline the test window declares: six stations heard 3 to 58 seconds before 2 pm EDT.</summary>
+    private static IReadOnlyList<int> DeclaredSparkline()
+        => GreenZone.Sparkline(new[] { 3, 9, 14, 30, 44, 58 }.Select(s => TwoPmEdt.AddSeconds(-s)), TwoPmEdt);
 
     /// <summary>The spot sources that reach over the network: POTA, SOTA and RBN.</summary>
     public static readonly string[] NetworkSources =
@@ -2259,11 +2308,18 @@ public sealed class TheTopRowTests
     /// `Realized`'s own settle and before the pin, and the pin held in 10 of 10 in each of four trace
     /// runs. **The callsign, grid, license and dial are unchanged**, and the
     /// sample feed stays at its default, off.</para>
-    /// <para>**WHAT THAT MOVES, MEASURED.** Because both reloads now land inside `Realized`, a test that
-    /// does not pin the best bet measures the one the ranking gives - the hour's table, *80 m* or *40 m*
-    /// at the hour of the run - and the count the reload gives, 0 to 2 stations where the fixture set 6.
-    /// At 1920 its green block is 64 px on FT8 and 76 on PSK31 (was 55 and 67), the pinned fact's drawn
-    /// numbers. The pinned facts' numbers did not move.</para>
+    /// <para>**WHAT THAT MOVED, AND WHAT WORK INSTRUCTION 353 PUT BACK, MEASURED.** Because both reloads
+    /// land inside `Realized`'s settle, from `386690a2` a test that did not pin the best bet measured the
+    /// one the ranking gives - *80 m* on the 2 am table - and 0 stations where the fixture set 6; at 1920
+    /// its green block was 64 px on FT8 and 76 on PSK31. **Since work instruction 353 `Realized` sets the
+    /// declared count, sparkline and no best bet again after that settle, and guards them.** In three
+    /// runs of step 0's classes (02:11 to 02:13 local) the unpinned facts drew 6 stations and no best
+    /// bet: the 1920 green block 55 px on FT8 and 67 on PSK31, *heard just now* at y 251 at 1920 and 268
+    /// at 1400, the count at y 263 and 277, `Unit350TraceStepZeroBothWays`' *before pinning the hour's
+    /// best bet was visible* False in 12 of 12, and `Unit341`'s 1920 drive-row candidate on a 190 px row
+    /// (207 at `386690a2`). The pinned facts' numbers did not move. `TheWorkingPanelsTests.Realized`
+    /// declares no count, so its plain window still draws what the run's spot history gives: 0 stations
+    /// in two of the runs and 1 in the third.</para>
     /// </remarks>
     public static AppSettings FixtureSettings()
     {

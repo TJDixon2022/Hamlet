@@ -772,6 +772,31 @@ public sealed class TheWorkingPanelsTests
             afterEachPass?.Invoke(i + 1, window);
         }
 
+        // **NO BEST BET, SET AGAIN AFTER THE RELOAD, SINCE WORK INSTRUCTION 353** (the arbiter's ruling
+        // 67, the unit's own and overrulable), for the reason `TheTopRowTests.Realized` gives: the
+        // `startup` reload lands in pass 1 of the six above (`Unit353TraceTheDeclaredWindowAfterTheReloads`,
+        // `b01e033e`) and badges the hour's best bet, *80 m* at 2 am. **This window declares no heard
+        // count**, so the count is left as the reload gives it: 0 at `b01e033e`, where it was null as
+        // shown.
+        foreach (var band in model.Bands)
+        {
+            band.IsBestBet = false;
+        }
+
+        model.NotifyGreenZoneForTests();
+
+        for (var i = 0; i < 6; i++)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+            afterEachPass?.Invoke(i + 7, window);
+        }
+
+        Assert.True(
+            !model.Bands.Any(b => b.IsBestBet),
+            "the plain test window's IsBestBet held true on [" + string.Join(", ", model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name))
+            + "] after the restore, where the fixture declares no best bet");
+
         return window;
     }
 
