@@ -317,6 +317,15 @@ public partial class MainWindow : Window
             return;
         }
 
+        // **THE RIGHT-CLICK ITSELF MAKES THE CARD** (R29, Tim 2026-09-14: *"I right click
+        // on a message in the Everything list and it creates a card"*), and it does so on
+        // any PSK31 row, CQ or not, live or ended. It runs before the menu is built because
+        // the card is the thing he asked for; the menu is what it offers afterwards.
+        //
+        // **IT SENDS NOTHING.** The command opens a card and returns; every transmission on
+        // this panel still goes through one click on a named button.
+        vm.OpenPsk31CardCommand.Execute(row);
+
         var flyout = SendFlyoutFor(vm, row);
 
         // **HANDLED EITHER WAY.** A row with no station has no menu, and letting

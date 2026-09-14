@@ -2630,6 +2630,20 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Every PSK31 conversation card, by the calling station.</summary>
     private readonly Dictionary<string, Psk31CardState> _psk31Cards = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>Stations the operator has right-clicked a row of, so they get a card.</summary>
+    /// <remarks>
+    /// <para>**TIM'S OWN WORDS, 2026-09-14** (R29): *"I right click on a message in the
+    /// Everything list and it creates a card."* Until this unit a card appeared only where a
+    /// station had certainly addressed him, or where Hamlet had already sent to one, so the
+    /// two stations he was reading off 14.070 that morning could be watched and not
+    /// answered.</para>
+    /// <para>**THE SAME SHAPE AS `_psk31Mine`, AND FOR THE SAME REASON.** It is still his
+    /// click and not a guess: nothing puts a station in here but a right-click on its row.
+    /// **It is not in `answered`**, because that list retires the receipt, and asking for a
+    /// card is not somebody coming back to his call.</para>
+    /// </remarks>
+    private readonly HashSet<string> _psk31Asked = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>One macro Hamlet sent, and how much of the channel had arrived first.</summary>
     /// <param name="AfterHeard">How many messages the channel held when it went out.</param>
     /// <param name="Message">The macro, parsed the same way his messages are.</param>
@@ -3345,6 +3359,13 @@ public partial class MainWindowViewModel : ObservableObject
                 .Select(m => m.Exchange.Speaker)
                 .Where(s => s is not null && _psk31Mine.ContainsKey(s))
                 .Select(s => s!))
+
+            // **AND A STATION HE RIGHT-CLICKED** (R29, work instruction 357 task 1). The
+            // same concat and the same reason as the line above: his click, not a guess.
+            .Concat(reading.Messages
+                .Select(m => m.Exchange.Speaker)
+                .Where(s => s is not null && _psk31Asked.Contains(s))
+                .Select(s => s!))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
@@ -3647,6 +3668,7 @@ public partial class MainWindowViewModel : ObservableObject
         had |= _psk31Cards.Count > 0;
 
         _psk31Cards.Clear();
+        _psk31Asked.Clear();
         OnPropertyChanged(nameof(HasDigitalCards));
 
         _psk31 = null;
@@ -15029,6 +15051,68 @@ public partial class MainWindowViewModel : ObservableObject
 
             return;
         }
+    }
+
+    /// <summary>The station a PSK31 row names, or null where it names nobody.</summary>
+    /// <param name="row">The row the mouse was over.</param>
+    /// <remarks>
+    /// <para>**ANY ROW, CQ OR NOT, LIVE OR ENDED** (R29). `Psk31CqOn` is the stricter
+    /// question and stays exactly as it is, because what it gates is a transmission: a
+    /// guessed CQ offers nothing to click, since answering a callsign that did not read
+    /// cleanly would put a neighbour's call on the air. **Opening a card sends nothing**,
+    /// so it asks only that the parser named somebody and that somebody is not him.</para>
+    /// <para>**A GUESSED CALLSIGN STILL OPENS A CARD, AND THE CARD SAYS SO.** The turn
+    /// reads *unknown* and Report and Confirm keep §R1's certainty gate, so nothing goes
+    /// on the air on the strength of a name Hamlet is unsure of.</para>
+    /// </remarks>
+    internal string? Psk31StationOn(DigitalDecodeRow? row)
+        => row is { IsTextOnly: true } && IsPsk31Chosen
+            && row.Sender is { Length: > 0 } speaker
+            && !Ft8MessageSplit.IsSameStation(speaker, _settings.Operator.Callsign)
+                ? speaker
+                : null;
+
+    /// <summary>Open, or bring forward, the conversation card for the station on this row.</summary>
+    /// <param name="row">The row that was right-clicked.</param>
+    /// <remarks>
+    /// <para>**IT OPENS A CARD AND SENDS NOTHING** (§0.2). No composer, no arming, no
+    /// keying: it adds a name to a set and asks `ShowPsk31Cards` to read the conversation
+    /// again, which is the method the tick already calls.</para>
+    /// <para>**A SECOND CLICK BRINGS THE CARD FORWARD RATHER THAN MAKING A SECOND ONE.**
+    /// `_psk31Cards` is keyed by callsign, so the card cannot duplicate; what a second
+    /// click adds is moving it to the front of the list. **That is this unit's own choice**
+    /// for what *focuses* means, taken because the panel has no selection of its own and a
+    /// click that appeared to do nothing would be worse than one that moved something.
+    /// </para>
+    /// </remarks>
+    [RelayCommand]
+    private void OpenPsk31Card(DigitalDecodeRow? row)
+    {
+        if (Psk31StationOn(row) is not { } station)
+        {
+            return;
+        }
+
+        _psk31Asked.Add(station);
+
+        AppEvents.OperatorAction(
+            _telemetry, "psk31_card_opened", OperatingMode, _digitalMode.ToString());
+
+        RefreshPsk31Card(station);
+
+        if (!_psk31Cards.TryGetValue(station, out var state))
+        {
+            return;
+        }
+
+        var at = DigitalCards.IndexOf(state.Card);
+
+        if (at > 0)
+        {
+            DigitalCards.Move(at, 0);
+        }
+
+        OnPropertyChanged(nameof(HasDigitalCards));
     }
 
     /// <summary>Which channel a PSK31 row is the face of, or null.</summary>

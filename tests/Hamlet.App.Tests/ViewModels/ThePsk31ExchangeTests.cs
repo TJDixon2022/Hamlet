@@ -295,6 +295,142 @@ public sealed class ThePsk31ExchangeTests
             + string.Concat(model.DigitalCards.Select(
                 c => " " + c.Callsign + " [" + c.StateWord + "]"));
 
+    /// <summary>**R29: a right-click on a row that is not a CQ makes his card, and sends nothing.**</summary>
+    /// <remarks>
+    /// **WHAT TIM COULD NOT DO BEFORE.** On 2026-09-14 he read a whole QSO between KE0JBT and
+    /// N7WE off 14.070 and had no way to open either station: a card appeared only where one had
+    /// certainly addressed him, or where Hamlet had already sent to one. Neither was true of two
+    /// people talking to each other.
+    /// </remarks>
+    [Fact]
+    public void ARightClickOnARowThatIsNotACqMakesHisCard()
+    {
+        var (model, sink) = Panel();
+
+        // **`04-not-for-me` IS TIM'S OWN CASE**: a full exchange between two other stations,
+        // with nothing addressed to the operator. Its first two lines are F4DIA's call and
+        // EI4GNB's answer to him, so the latest complete message is EI4GNB's and it is a
+        // conversation the operator is only reading. **A first draft of this test used
+        // `01-textbook` and found a card already there**, correctly: that station's second
+        // line is addressed to KC3QIS, which is the rule that already made one.
+        Hear(model, 2, "04-not-for-me");
+
+        var row = Assert.Single(model.DigitalDecodes);
+
+        _output.WriteLine("row    : " + row.Hz + " Hz  " + Flat(row.Message));
+        _output.WriteLine("reading: " + row.Reading?.Kind + ", speaker " + row.Sender);
+
+        // **NOT A CQ AND NOT FOR HIM, SO THE OLD MENU OFFERED NOTHING AND NO CARD EXISTED.**
+        Assert.Null(model.Psk31AnswerLabelFor(row));
+        Assert.Empty(model.DigitalCards);
+        Assert.Equal("EI4GNB", model.Psk31StationOn(row));
+
+        model.OpenPsk31CardCommand.Execute(row);
+
+        _output.WriteLine("cards  : " + Describe(model));
+
+        var card = Assert.Single(model.DigitalCards);
+
+        Assert.Equal("EI4GNB", card.Callsign);
+        Assert.True(card.IsPsk31);
+
+        // **AND NOTHING WENT ON THE AIR** (0.2). Opening a card is not a transmission.
+        Assert.Equal(0, sink.TimesCalled);
+        Assert.False(model.HasSomethingToStop);
+    }
+
+    /// <summary>**R29: on a CQ row the same right-click makes the card, and Answer is still offered.**</summary>
+    [Fact]
+    public void OnACqRowTheRightClickMakesTheCardAndAnswerIsStillOffered()
+    {
+        var (model, sink) = Panel();
+
+        Hear(model, 1);
+
+        var row = Assert.Single(model.DigitalDecodes);
+
+        model.OpenPsk31CardCommand.Execute(row);
+
+        var card = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine("cards : " + Describe(model));
+        _output.WriteLine("answer: " + model.Psk31AnswerLabelFor(row));
+
+        Assert.Equal("W1AW", card.Callsign);
+
+        // **THE CQ MENU IS UNTOUCHED** (unit 323 task 3): the card is what the right-click
+        // makes, and Answer is what the menu still offers on top of it.
+        Assert.Equal("Answer W1AW", model.Psk31AnswerLabelFor(row));
+
+        Assert.Equal(0, sink.TimesCalled);
+    }
+
+    /// <summary>**R29: a second right-click brings the card forward and never makes a second one.**</summary>
+    /// <remarks>
+    /// **FORWARD IS THIS UNIT'S OWN READING OF *focuses*.** The panel has no selection of its
+    /// own, so the card moves to the front of the list; what is not the unit's choice is that it
+    /// must not duplicate, and `_psk31Cards` is keyed by callsign so it cannot.
+    /// </remarks>
+    [Fact]
+    public void ASecondRightClickBringsTheCardForwardAndNeverDuplicates()
+    {
+        var (model, sink) = Panel();
+
+        // **TWO STATIONS ON THE PANEL AT ONCE**, so *forward* is a question with an answer.
+        var corpus = Psk31Corpus.Load();
+
+        model.ShowPsk31ChannelsForTests(new[]
+        {
+            new Psk31Channel(1, HisHz, 10.0, HisLines(corpus, "01-textbook", 2)),
+            new Psk31Channel(2, HisHz + 200, 8.0, HisLines(corpus, "02-chatty", 2)),
+        });
+
+        var rows = model.DigitalDecodes.ToList();
+
+        Assert.Equal(2, rows.Count);
+
+        var first = rows.Single(r => r.Sender == "W1AW");
+        var second = rows.Single(r => r.Sender == "G4XYZ");
+
+        model.OpenPsk31CardCommand.Execute(first);
+        model.OpenPsk31CardCommand.Execute(second);
+
+        _output.WriteLine("after two : " + Describe(model));
+
+        Assert.Equal(2, model.DigitalCards.Count);
+        Assert.Equal("G4XYZ", model.DigitalCards[0].Callsign);
+
+        // **THE SECOND CLICK ON THE FIRST STATION.**
+        model.OpenPsk31CardCommand.Execute(first);
+
+        _output.WriteLine("after re  : " + Describe(model));
+
+        Assert.Equal(2, model.DigitalCards.Count);
+        Assert.Equal("W1AW", model.DigitalCards[0].Callsign);
+
+        // **AND A THIRD AND FOURTH CLICK STILL MAKE NO NEW CARD.**
+        model.OpenPsk31CardCommand.Execute(first);
+        model.OpenPsk31CardCommand.Execute(second);
+
+        Assert.Equal(2, model.DigitalCards.Count);
+        Assert.Equal(0, sink.TimesCalled);
+    }
+
+    /// <summary>One row's text on one line, so a printed trace stays readable.</summary>
+    private static string Flat(string text)
+        => string.Join(" / ", text.Split(
+                new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(l => l.Trim()));
+
+    /// <summary>His lines from one transcript, as one channel's text.</summary>
+    private static string HisLines(Psk31Corpus corpus, string name, int lines)
+        => string.Concat(corpus.Transcripts
+            .Single(t => t.Name == name)
+            .Lines
+            .Where(l => !string.Equals(l.Frm, corpus.Operator, StringComparison.OrdinalIgnoreCase))
+            .Take(lines)
+            .Select(l => l.Text + "\n"));
+
     private static (MainWindowViewModel Model, FakeSink Sink) Panel(
         Hamlet.RadioEngine.Telemetry.JsonlTelemetry? telemetry = null)
     {
