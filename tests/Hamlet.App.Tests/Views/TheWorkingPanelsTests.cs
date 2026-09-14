@@ -715,7 +715,12 @@ public sealed class TheWorkingPanelsTests
     /// real operator too, with POTA and RBN on by default and a spot reload waiting on POTA's reply
     /// while the test settles. The callsign, grid and rows are unchanged.
     /// </remarks>
-    public static Window Realized(double width)
+    public static Window Realized(double width) => Realized(width, null);
+
+    /// <summary>The same window, with <paramref name="afterEachPass"/> called as shown (0) and after each settle pass.</summary>
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
+    internal static Window Realized(double width, Action<int, Window>? afterEachPass)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -758,11 +763,13 @@ public sealed class TheWorkingPanelsTests
         var window = new MainWindow { DataContext = model, Width = width, Height = TheTopRowTests.WindowHeight };
 
         window.Show();
+        afterEachPass?.Invoke(0, window);
 
         for (var i = 0; i < 6; i++)
         {
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
             window.UpdateLayout();
+            afterEachPass?.Invoke(i + 1, window);
         }
 
         return window;

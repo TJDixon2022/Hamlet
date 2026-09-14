@@ -2055,6 +2055,136 @@ public sealed class TheTopRowTests
             .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0);
 
     /// <summary>
+    /// **Work instruction 353 task 0: what the test window holds after its spot reloads, pass by
+    /// pass** - both licensed fixtures, FT8 and PSK31, at 1920 and 1400.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 66. A TRACE, AND IT ASSERTS NOTHING.** Each window is built by its
+    /// fixture with a hook that reads the model as shown (pass 0) and after each of the fixture's six
+    /// settle passes: the heard count, the sparkline's bins and the stations they sum to, and every
+    /// band carrying `IsBestBet`. The mode is then chosen as the pinned facts choose it, after the
+    /// fixture returns, and one more pass of the same shape is run and read. Where the fixture takes a
+    /// telemetry file (`Realized(width, telemetry)`), every `spots_refreshed` it recorded is placed in
+    /// the pass it landed in; `TheWorkingPanelsTests.Realized` takes none, so there a reload is read
+    /// off the model's public members, as a change between two passes.</para>
+    /// <para>**THE WRITERS, READ IN `src` AND CHANGED NOT AT ALL.** All three are written in one place,
+    /// `ReloadSpotsAsync` (`MainWindowViewModel.cs:16969`): the count at `:17026`, the sparkline at
+    /// `:17031`, `IsBestBet` through `ApplyBestBet` (`:16857`) from `:17038`. That reload is started by
+    /// `band_changed` (`:8098`, `SelectBand`), `startup` (`:11066`, `ReconnectOnStartupAsync`, from the
+    /// window's `Opened` handler, `MainWindow.axaml.cs:56`-`59`, through `StartReconnect` at `:246`), `resume` (`:7717`), `manual` (`:8390`),
+    /// `settings` (`:8425`) and `timer` (`:11691`, `_spotRefreshTimer`, started by `ApplyFeedTimers` at
+    /// `:7731`). The tests also write `IsBestBet` and the count themselves; nothing else in `src`
+    /// does.</para>
+    /// <para>It reads public members and the telemetry file only. **Nothing is pressed** (§0.2).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit353TraceTheDeclaredWindowAfterTheReloads()
+    {
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "FT8", "PSK31" })
+            {
+                TraceTheDeclaredWindow(true, width, mode);
+                TraceTheDeclaredWindow(false, width, mode);
+            }
+        }
+    }
+
+    private void TraceTheDeclaredWindow(bool topRow, double width, string mode)
+    {
+        var fixture = topRow ? "TheTopRowTests.Realized(width, telemetry)" : "TheWorkingPanelsTests.Realized";
+        var folder = Path.Combine(Path.GetTempPath(), "hamlet-unit353-declared-" + Guid.NewGuid().ToString("N"));
+
+        Directory.CreateDirectory(folder);
+
+        var telemetry = topRow ? new JsonlTelemetry(folder, "353", _ => true) : null;
+        var passes = new List<(int Pass, DateTime At, string Held)>();
+        var start = DateTime.UtcNow;
+
+        string Ms(DateTime t) => "+" + (t - start).TotalMilliseconds.ToString("0", CultureInfo.InvariantCulture) + " ms";
+
+        void AfterPass(int pass, Window shown)
+            => passes.Add((pass, DateTime.UtcNow, Holds((MainWindowViewModel)shown.DataContext!)));
+
+        var window = topRow ? Realized(width, telemetry, AfterPass) : TheWorkingPanelsTests.Realized(width, AfterPass);
+        var model = (MainWindowViewModel)window.DataContext!;
+        var returnedAt = DateTime.UtcNow;
+        var was = model.ChosenDigitalMode;
+        var extraAt = DateTime.MaxValue;
+        var extra = "";
+
+        try
+        {
+            model.ChosenDigitalMode = mode;
+            Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+            window.UpdateLayout();
+            extraAt = DateTime.UtcNow;
+            extra = Holds(model);
+        }
+        finally
+        {
+            model.ChosenDigitalMode = was;
+            window.Close();
+            telemetry?.Dispose();
+        }
+
+        _output.WriteLine("=== " + fixture + ", " + Px(width) + " " + mode + " (chosen after the fixture returns)");
+
+        var previous = "";
+
+        foreach (var (pass, at, held) in passes)
+        {
+            _output.WriteLine(
+                "  pass " + pass + (pass == 0 ? " (as shown)" : "") + " " + Ms(at) + ": " + held
+                + (previous.Length > 0 && held != previous ? "   <- CHANGED in this pass" : ""));
+            previous = held;
+        }
+
+        _output.WriteLine(
+            "  returned " + Ms(returnedAt) + "; the trace's own pass " + Ms(extraAt) + ": " + extra
+            + (extra != previous ? "   <- CHANGED after the fixture returned" : "   (unchanged)"));
+
+        if (telemetry is null)
+        {
+            _output.WriteLine("  no telemetry file on this fixture; a reload shows only as a change above");
+            _output.WriteLine("");
+            return;
+        }
+
+        foreach (var file in Directory.GetFiles(folder, "*.jsonl"))
+        {
+            foreach (var line in File.ReadAllLines(file))
+            {
+                using var doc = System.Text.Json.JsonDocument.Parse(line);
+                var root = doc.RootElement;
+
+                if (root.GetProperty("event").GetString() != "spots_refreshed")
+                {
+                    continue;
+                }
+
+                var at = DateTime.Parse(
+                    root.GetProperty("ts").GetString()!, CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+                var landing = passes.FirstOrDefault(p => p.At >= at);
+                var where = landing.At != default ? "in pass " + landing.Pass
+                    : at <= extraAt ? "AFTER THE FIXTURE RETURNED, by the trace's own pass" : "AFTER THE TRACE'S OWN PASS";
+
+                _output.WriteLine("  spots_refreshed " + root.GetProperty("data").GetRawText() + " at " + Ms(at) + ", " + where);
+            }
+        }
+
+        _output.WriteLine("");
+    }
+
+    /// <summary>What the model holds of the three things the green block's heard line and badge read.</summary>
+    private static string Holds(MainWindowViewModel model)
+        => "count " + (model.HeardInTheLastMinute?.ToString(CultureInfo.InvariantCulture) ?? "null")
+            + ", sparkline " + model.HeardSparkline.Count + " bins summing " + model.HeardSparkline.Sum()
+            + " [" + string.Join(" ", model.HeardSparkline) + "], best bet ["
+            + string.Join(", ", model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name)) + "]";
+
+    /// <summary>
     /// The main window on 20 m FT8 with a General license, a grid, a heard count, and every
     /// panel of the digital tab open.
     /// </summary>
@@ -2064,7 +2194,13 @@ public sealed class TheTopRowTests
     /// <summary>The same window, with the model recording to <paramref name="telemetry"/>.</summary>
     /// <param name="width">How wide the window is.</param>
     /// <param name="telemetry">Where the model records, or null for nowhere.</param>
-    public static Window Realized(double width, JsonlTelemetry? telemetry)
+    public static Window Realized(double width, JsonlTelemetry? telemetry) => Realized(width, telemetry, null);
+
+    /// <summary>The same window, with <paramref name="afterEachPass"/> called as shown (0) and after each settle pass.</summary>
+    /// <param name="width">How wide the window is.</param>
+    /// <param name="telemetry">Where the model records, or null for nowhere.</param>
+    /// <param name="afterEachPass">Read-only hook for the unit 353 trace, or null.</param>
+    internal static Window Realized(double width, JsonlTelemetry? telemetry, Action<int, Window>? afterEachPass)
     {
         var settings = FixtureSettings();
 
@@ -2088,11 +2224,13 @@ public sealed class TheTopRowTests
         var window = new MainWindow { DataContext = model, Width = width, Height = WindowHeight };
 
         window.Show();
+        afterEachPass?.Invoke(0, window);
 
         for (var i = 0; i < 6; i++)
         {
             Avalonia.Threading.Dispatcher.UIThread.RunJobs();
             window.UpdateLayout();
+            afterEachPass?.Invoke(i + 1, window);
         }
 
         return window;
