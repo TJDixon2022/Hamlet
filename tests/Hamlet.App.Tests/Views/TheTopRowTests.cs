@@ -750,55 +750,60 @@ public sealed class TheTopRowTests
     /// the ranking does.</para>
     /// <para>**BOTH SIDES OF THE CHECK** (§0.6: the check is the non-color carrier): the best bet on
     /// the band he is on wears it, and a best bet elsewhere does not.</para>
+    /// <para>**WORK INSTRUCTION 350 TASK 3: AT 1400 AS WELL** (the arbiter's ruling 51), in the same
+    /// loop, with the assertions unchanged. Nothing is pressed (§0.2).</para>
     /// </remarks>
     [AvaloniaFact]
     public void TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow()
     {
-        var window = Realized(1920);
-
-        try
+        foreach (var width in new[] { 1920.0, 1400.0 })
         {
-            var model = (MainWindowViewModel)window.DataContext!;
-            var here = Named<TextBlock>(window, "GreenZoneBand").Text;
+            var window = Realized(width);
 
-            foreach (var bestName in new[] { "20 m", "40 m" })
+            try
             {
-                foreach (var band in model.Bands)
+                var model = (MainWindowViewModel)window.DataContext!;
+                var here = Named<TextBlock>(window, "GreenZoneBand").Text;
+
+                foreach (var bestName in new[] { "20 m", "40 m" })
                 {
-                    band.IsBestBet = band.Band.Name == bestName;
+                    foreach (var band in model.Bands)
+                    {
+                        band.IsBestBet = band.Band.Name == bestName;
+                    }
+
+                    model.NotifyGreenZoneForTests();
+
+                    for (var i = 0; i < 4; i++)
+                    {
+                        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+                        window.UpdateLayout();
+                    }
+
+                    var badged = window.GetVisualDescendants().OfType<TextBlock>()
+                        .Where(t => t.IsEffectivelyVisible && t.Text == "best bet now")
+                        .Select(t => (t.DataContext as BandButtonViewModel)?.Band.Name)
+                        .ToList();
+                    var bet = Named<Button>(window, "GreenZoneBestBet");
+                    var said = bet.Content as string ?? "";
+                    var checkDrawn = said.Contains(GreenZone.OnIt.Trim(), StringComparison.Ordinal);
+
+                    _output.WriteLine(
+                        "at " + Px(width) + " best bet " + bestName + ": pills wearing the badge [" + string.Join(", ", badged)
+                        + "]; green block band [" + here + "], best bet [" + said + "] visible "
+                        + bet.IsEffectivelyVisible + ", check drawn " + checkDrawn);
+
+                    Assert.Single(badged);
+                    Assert.True(bet.IsEffectivelyVisible, "the green block's best bet is not drawn");
+                    Assert.StartsWith(badged[0] + "", said, StringComparison.Ordinal);
+                    Assert.Equal("20 m", here);
+                    Assert.Equal(badged[0] == here, checkDrawn);
                 }
-
-                model.NotifyGreenZoneForTests();
-
-                for (var i = 0; i < 4; i++)
-                {
-                    Avalonia.Threading.Dispatcher.UIThread.RunJobs();
-                    window.UpdateLayout();
-                }
-
-                var badged = window.GetVisualDescendants().OfType<TextBlock>()
-                    .Where(t => t.IsEffectivelyVisible && t.Text == "best bet now")
-                    .Select(t => (t.DataContext as BandButtonViewModel)?.Band.Name)
-                    .ToList();
-                var bet = Named<Button>(window, "GreenZoneBestBet");
-                var said = bet.Content as string ?? "";
-                var checkDrawn = said.Contains(GreenZone.OnIt.Trim(), StringComparison.Ordinal);
-
-                _output.WriteLine(
-                    "best bet " + bestName + ": pills wearing the badge [" + string.Join(", ", badged)
-                    + "]; green block band [" + here + "], best bet [" + said + "] visible "
-                    + bet.IsEffectivelyVisible + ", check drawn " + checkDrawn);
-
-                Assert.Single(badged);
-                Assert.True(bet.IsEffectivelyVisible, "the green block's best bet is not drawn");
-                Assert.StartsWith(badged[0] + "", said, StringComparison.Ordinal);
-                Assert.Equal("20 m", here);
-                Assert.Equal(badged[0] == here, checkDrawn);
             }
-        }
-        finally
-        {
-            window.Close();
+            finally
+            {
+                window.Close();
+            }
         }
     }
 
