@@ -1534,6 +1534,255 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             null).Width;
 
     /// <summary>
+    /// **Work instruction 345 task 0: what step 1 asserts, and what the page draws, before a test is
+    /// changed** - at 1400 and 1920, on every kind, the Continents page's seven and each continent's
+    /// own page. It asserts nothing and presses nothing that transmits.
+    /// </summary>
+    /// <remarks>
+    /// <para>**EVERY NUMBER IS COMPUTED ON THE HEADLESS HOST, NOT SEEN.** A fact the view model holds
+    /// that no visible text on its band or card carries is printed `NOT DRAWN`.</para>
+    /// <para>**THE FIXTURE IS `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty`'s**:
+    /// twelve contacts, four callers and the best bet. Countries on the five-contact log and States on
+    /// the state log are traced as well, because the twelve contacts carry no grid-less card, no
+    /// date-less card and no `STATE`.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit345TraceStepOneOnTheWindow()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+        var twelve = TheAchievementsPageTests.TwelveContacts();
+        var log = new AchievementLog(twelve, MyGrid);
+        var continents = DxccContinents.Codes.Keys.OrderBy(k => k, StringComparer.Ordinal)
+            .Select(k => AchievementCategory.ContinentPrefix + k)
+            .ToList();
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var window = Realized(twelve, width, Calling(), bet);
+            var screen = (AchievementsViewModel)window.DataContext!;
+            var tallest = (Height: 0.0, Kind: "");
+
+            try
+            {
+                _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height) + ", twelve contacts");
+
+                foreach (var kind in AchievementKinds.All.Concat(continents))
+                {
+                    var height = Unit345TracePage(window, screen, kind, width);
+
+                    if (height > tallest.Height)
+                    {
+                        tallest = (height, kind);
+                    }
+                }
+
+                // **THE SEVEN, DRAWN, AND WHAT EACH ONE OPENS.**
+                screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+                Settle(window);
+
+                var seven = Named<ItemsControl>(window, "AchievementsSubBadges").GetVisualDescendants().OfType<Button>()
+                    .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("hm-badge"))
+                    .Select(b => (Kind: (string)b.CommandParameter!, Said: string.Join(" | ", VisibleText(b))))
+                    .ToList();
+
+                _output.WriteLine("  THE SEVEN AT " + F(width) + ": " + seven.Count + " sub-badges drawn");
+
+                foreach (var (code, said) in seven)
+                {
+                    screen.OpenCategoryCommand.Execute(code);
+                    Settle(window);
+
+                    var drawn = Named<ItemsControl>(window, "AchievementsCategoryCards").GetVisualDescendants().OfType<Border>()
+                        .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+                        .Select(b => (AchievementCategoryCard)b.DataContext!)
+                        .ToList();
+
+                    _output.WriteLine(
+                        "    " + code + " badge [" + said + "] opens: name [" + Named<TextBlock>(window, "AchievementsCategoryName").Text
+                        + "] back [" + Named<Button>(window, "AchievementsBack").Content + "] earned cards drawn "
+                        + drawn.Count(c => c.Earned) + " of " + log.EntitiesOn(code[AchievementCategory.ContinentPrefix.Length..])
+                        + " entities worked there; next cards drawn " + drawn.Count(c => !c.Earned)
+                        + " [" + string.Join(" / ", drawn.Where(c => !c.Earned).Select(c => c.Title)) + "]");
+
+                    screen.BackCommand.Execute(null);
+                    Settle(window);
+                }
+
+                while (screen.Category is not null)
+                {
+                    screen.BackCommand.Execute(null);
+                }
+
+                Settle(window);
+            }
+            finally
+            {
+                window.Close();
+            }
+
+            _output.WriteLine("  TALLEST PAGE AT " + F(width) + ": " + tallest.Kind + ", " + F(tallest.Height) + " px");
+        }
+
+        // **THE CARDS THE TWELVE CONTACTS DO NOT HAVE**: no grid, no date, and a `STATE`.
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var (records, label, kind) in new[]
+            {
+                (FiveContacts(), "five contacts", AchievementKinds.Countries),
+                (StateContacts(), "state contacts", AchievementKinds.States),
+            })
+            {
+                var window = Realized(records, width, Calling(), bet);
+
+                try
+                {
+                    _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height) + ", " + label);
+                    Unit345TracePage(window, (AchievementsViewModel)window.DataContext!, kind, width);
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Work instruction 345 task 0's page half: one kind at one width - the band, then every drawn card
+    /// top to bottom - returning the page's height. Leaves the window on the page of eight.
+    /// </summary>
+    private double Unit345TracePage(Window window, AchievementsViewModel screen, string kind, double width)
+    {
+        if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+        {
+            screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+        }
+
+        screen.OpenCategoryCommand.Execute(kind);
+        Settle(window);
+
+        var category = screen.Category!;
+        var band = Named<Border>(window, "AchievementsCategoryBand");
+        var bandSaid = VisibleText(band).ToList();
+        var bars = band.GetVisualDescendants().OfType<BadgeProgressControl>().Where(b => b.IsEffectivelyVisible).ToList();
+        var bandLine = Named<TextBlock>(window, "AchievementsCategoryBandLine");
+
+        _output.WriteLine("  " + kind + " at " + F(width));
+        _output.WriteLine(
+            "    BAND drawn [" + string.Join(" | ", bandSaid) + "]; "
+            + (bars.Count == 0 ? "no bar" : bars.Count + " bar, width " + string.Join(", ", bars.Select(b => F(b.Bounds.Width)))));
+        _output.WriteLine(
+            "    BAND model: Standing [" + category.Standing + "] " + Unit345Drawn(bandSaid, category.Standing)
+            + "; ScoreLine [" + category.ScoreLine + "] " + Unit345Drawn(bandSaid, category.ScoreLine)
+            + "; LevelName [" + category.LevelName + "] " + Unit345Drawn(bandSaid, category.LevelName)
+            + "; BandLine [" + category.BandLine + "] " + Unit345Drawn(bandSaid, category.BandLine)
+            + "; LevelBarLine [" + category.LevelBarLine + "] " + Unit345Drawn(bandSaid, category.LevelBarLine)
+            + "; GapLine [" + category.GapLine + "] on the drawn band line "
+            + (category.GapLine.Length > 0 && (bandLine.Text ?? "").EndsWith(" · " + category.GapLine, StringComparison.Ordinal))
+            + "; NoNextLevelLine [" + category.NoNextLevelLine + "] " + Unit345Drawn(bandSaid, category.NoNextLevelLine));
+
+        var page = window.GetVisualDescendants().OfType<ItemsControl>()
+            .First(i => i.IsEffectivelyVisible && (i.Name == "AchievementsCategoryCards" || i.Name == "AchievementsSubBadges"));
+        var cards = page.GetVisualDescendants().OfType<Border>()
+            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+            .OrderBy(b => Math.Round(Top(b, window)))
+            .ThenBy(b => b.TranslatePoint(new Point(0, 0), window)?.X ?? 0)
+            .ToList();
+        var eightFacts = kind == AchievementKinds.Countries || kind == AchievementKinds.States || kind == AchievementKinds.Grids
+            || kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal);
+
+        _output.WriteLine("    PAGE " + page.Name + " " + F(page.Bounds.Width) + " x " + F(page.Bounds.Height) + ", " + cards.Count + " cards");
+
+        foreach (var card in cards)
+        {
+            var data = (AchievementCategoryCard)card.DataContext!;
+            var said = VisibleText(card).ToList();
+            var globe = card.GetVisualDescendants().OfType<Ft8GlobeControl>()
+                .FirstOrDefault(g => g.IsEffectivelyVisible && g.Plot is not null && g.Bounds.Width > 0);
+            var bar = card.GetVisualDescendants().OfType<BadgeProgressControl>()
+                .FirstOrDefault(b => b.IsEffectivelyVisible && b.Bounds.Width > 0);
+            var list = card.GetVisualDescendants().OfType<Border>()
+                .Any(b => b.IsEffectivelyVisible && b.Classes.Contains("card-list") && VisibleText(b).Any());
+            var drawnMap = globe is null ? "no map" : "map drawn " + F(Unit342Drawn(globe).Width) + " x " + F(Unit342Drawn(globe).Height);
+
+            _output.WriteLine(
+                "    CARD y " + F(Top(card, window)) + " " + (data.Earned ? "earned" : "NEXT") + " [" + string.Join(" | ", said) + "]; "
+                + drawnMap + "; " + (bar is null ? "no bar" : "bar " + F(bar.Bounds.Width)) + "; " + (list ? "a list" : "no list"));
+
+            if (globe is not null && kind == AchievementKinds.Countries)
+            {
+                var plot = globe.Plot!;
+                var inner = Unit342Column(card).Bounds.Width;
+                var box = Unit342PathBox(plot);
+                var (boundWidth, boundHeight) = Unit342Bound(plot, inner, CardMapHeight);
+
+                _output.WriteLine(
+                    "      crop: frame " + F(globe.DrawnFrame.Width) + " by " + F(globe.DrawnFrame.Height) + " within the bound " + F(boundWidth)
+                    + " by " + F(boundHeight) + ", margin " + F(Ft8GlobePlot.MarginShare * Math.Max(box.Width, box.Height))
+                    + " (MarginShare " + F(Ft8GlobePlot.MarginShare) + " of the path's longer side " + F(Math.Max(box.Width, box.Height))
+                    + "); inside " + (OutsideTheCrop(plot, globe.DrawnFrame, inner, CardMapHeight) ?? "yes"));
+            }
+
+            if (data.Earned && eightFacts)
+            {
+                var bandMode = data.BandModeLine.Split(" · ");
+                var entity = kind == AchievementKinds.Grids
+                    ? data.CallGridLine[(data.CallGridLine.IndexOf(" · ", StringComparison.Ordinal) is var at && at >= 0 ? at + 3 : data.CallGridLine.Length)..]
+                    : data.Title;
+
+                _output.WriteLine(
+                    "      EIGHT: entity [" + entity + "] " + Unit345Drawn(said, entity)
+                    + "; callsign [" + data.Callsign + "] " + Unit345Drawn(said, data.Callsign)
+                    + "; grid [" + data.Grid + "] " + Unit345Drawn(said, data.Grid)
+                    + "; distance [" + data.DistanceLine + "] " + Unit345Drawn(said, data.DistanceLine)
+                    + "; band [" + (bandMode.Length > 1 ? bandMode[0] : "") + "] " + Unit345Drawn(said, bandMode.Length > 1 ? bandMode[0] : "")
+                    + "; mode [" + bandMode[^1] + "] " + Unit345Drawn(said, bandMode[^1])
+                    + "; date [" + data.DateLine + "] " + Unit345Drawn(said, data.DateLine)
+                    + "; points [" + data.PointsLine + "] " + Unit345Drawn(said, data.PointsLine)
+                    + (data.HasMap ? "" : "; no map [" + data.NoMapWord + "] " + Unit345Drawn(said, data.NoMapWord)));
+            }
+
+            var held = new List<(string Name, string Value)>
+            {
+                ("title", data.Title),
+                ("callgrid", data.CallGridLine),
+                ("count", data.CountLine),
+                ("tier", data.TierLine),
+                ("wants", data.WantsLine),
+                ("quill", data.QuillLine),
+                ("heading", data.CallersHeading),
+                ("more", data.MoreCallersLine),
+                ("nocaller", data.NoCallerLine),
+                ("distance", data.DistanceLine),
+                ("bandmode", data.BandModeLine),
+                ("date", data.DateLine),
+                ("points", data.PointsLine),
+            };
+
+            held.AddRange(data.Callers.SelectMany(c => new[] { ("caller place", c.Place), ("caller call", c.CallLine) }));
+
+            _output.WriteLine(
+                "      MODEL: " + string.Join("; ", held.Where(h => h.Value.Length > 0).Select(h => h.Name + " [" + h.Value + "] " + Unit345Drawn(said, h.Value)))
+                + (data.Figure.Length > 0 ? "; figure [" + data.Figure + "] " + (data.ShowsFigure ? Unit345Drawn(said, data.Figure) : "hidden by ShowsFigure") : ""));
+        }
+
+        var height = page.Bounds.Height;
+
+        while (screen.Category is not null)
+        {
+            screen.BackCommand.Execute(null);
+        }
+
+        Settle(window);
+
+        return height;
+    }
+
+    private static string Unit345Drawn(IReadOnlyList<string> said, string value)
+        => value.Length == 0 ? "(none held)"
+            : said.Any(s => s.Contains(value, StringComparison.Ordinal)) ? "drawn" : "NOT DRAWN";
+
+    /// <summary>
     /// **Five records as ADI text, with `STATE` where the record carries one** - PA on a US call,
     /// none on a US call, AK on an Alaska call, ON on a Canadian call, DC on a US call.
     /// </summary>
