@@ -821,8 +821,17 @@
     wrong (the arbiter's rulings 59 to 64). Tests and the sheet only; no file under src and no
     markup changes, so the screen Tim is reviewing does not move.
   -->
+  <!--
+    1.13.39 -> 1.13.40, UNIT 353 TASK 0. A PATCH, STEP 3, THE TEST WINDOW DRAWS WHAT ITS FIXTURE
+    DECLARES, WHATEVER THE HOUR: what the test window holds after both spot reloads land inside its
+    settle is traced pass by pass with every writer named; the declared heard count, sparkline and no
+    best bet are set again after the settle and guarded, on the test fixtures only; the sheet's green
+    block words are re-cited to a window that draws them (the arbiter's rulings 65 to 71). Tests and
+    the sheet only; no file under src and no markup changes, so the screen Tim is reviewing does not
+    move.
+  -->
   <PropertyGroup>
-    <Version>1.13.39</Version>
+    <Version>1.13.40</Version>
   </PropertyGroup>
 
   <!--
