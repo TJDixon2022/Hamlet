@@ -4921,8 +4921,12 @@
                                                          says guess or unknown in a word beside it (§R1,
                                                          §0.6 - not by colour alone). An FT8 row with no
                                                          fields has no reading, so both are hidden and it
-                                                         is drawn exactly as before. -->
-                                                    <Grid Grid.Column="3" ColumnDefinitions="Auto,Auto,*"
+                                                         is drawn exactly as before.
+
+                                                         **AND AN ENDED ROW SAYS ENDED** (work
+                                                         instruction 355 task 2): his carrier went and
+                                                         his words stayed, faded and said in a word. -->
+                                                    <Grid Grid.Column="3" ColumnDefinitions="Auto,Auto,Auto,*"
                                                           IsVisible="{Binding !HasFields}">
                                                         <TextBlock Grid.Column="0" Text="{Binding Sender}"
                                                                    IsVisible="{Binding ShowsReadSender}"
@@ -4933,7 +4937,12 @@
                                                                    IsVisible="{Binding HasReadingWord}"
                                                                    Foreground="{StaticResource HmTextMutedBrush}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
-                                                        <TextBlock Grid.Column="2" Text="{Binding Unsplit}"
+                                                        <TextBlock Grid.Column="2" x:Name="DecodedRowEndedWord"
+                                                                   Text="{Binding EndedWord}"
+                                                                   IsVisible="{Binding HasEndedWord}"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
+                                                        <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
                                                     </Grid>
 

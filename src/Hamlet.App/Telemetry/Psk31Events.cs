@@ -232,6 +232,50 @@ public static class Psk31Events
             });
     }
 
+    /// <summary>A PSK31 row outlived its carrier and was kept on the list, marked ended.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="offsetHz">Where the row's carrier was, as the row's cell says.</param>
+    /// <param name="characters">How many characters the row shows.</param>
+    /// <param name="lines">How many complete messages the parser read on it.</param>
+    /// <param name="lifetimeSeconds">Audio seconds from the row going up to its carrier going.</param>
+    /// <remarks>
+    /// **WHAT WAS HEARD STAYS** (Tim, 2026-09-14; work instruction 355 task 2). The carrier's own
+    /// retirement is `psk31_carrier_retired`; this is the row's, and it is the fact that the words
+    /// are still on his screen. **Counts and a frequency, never the words** (HM-DEC-018, §2.1).
+    /// </remarks>
+    public static void RowEnded(
+        ITelemetry? telemetry, double offsetHz, int characters, int lines, double lifetimeSeconds)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_row_ended",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["offsetHz"] = offsetHz,
+                ["characters"] = characters,
+                ["lines"] = lines,
+                ["lifetimeSeconds"] = Math.Round(lifetimeSeconds, 1),
+            });
+
+    /// <summary>An ended PSK31 row left the list.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="offsetHz">Where the row's carrier was.</param>
+    /// <param name="characters">How many characters went with it.</param>
+    /// <param name="reason">`clear`, `retune` or `cap` - which of the list's own rules removed it.</param>
+    /// <remarks>
+    /// **THE ONLY WAYS AN ENDED ROW GOES ARE THE WAYS AN FT8 ROW GOES**, and the reason says which,
+    /// so a record that shows words appearing also shows what took them off the screen.
+    /// </remarks>
+    public static void RowCleared(ITelemetry? telemetry, double offsetHz, int characters, string reason)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_row_cleared",
+            new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["offsetHz"] = offsetHz,
+                ["characters"] = characters,
+                ["reason"] = reason,
+            });
+
     /// <summary>A held carrier stopped typing, or started again.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="activity">What the listener recorded.</param>

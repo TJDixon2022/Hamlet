@@ -390,7 +390,48 @@ public sealed partial record DigitalDecodeRow(
     /// list he reads callsigns off, and a callsign he has to lean in for is worse
     /// than a label he has to ignore.</para>
     /// </remarks>
-    public double RowOpacity => HasWorkedBefore || HeardNotReadable ? 0.55 : 1.0;
+    public double RowOpacity => HasWorkedBefore || HeardNotReadable || Ended ? 0.55 : 1.0;
+
+    private bool _ended;
+
+    /// <summary>**True where this PSK31 row's carrier has gone and the row was kept.**</summary>
+    /// <remarks>
+    /// <para>**WHAT WAS HEARD STAYS** (Tim, 2026-09-14: *I've seen a few PSK31 phrases. In the
+    /// past, they disappear. There's no record of them.*; work instruction 355 task 2). Until
+    /// then a PSK31 row belonged to its carrier and went with it, text and all, while an FT8
+    /// message stayed until the list was cleared or its cap dropped it. An ended row lives by
+    /// the FT8 rule.</para>
+    /// <para>**SAID IN A WORD AS WELL AS BY FADING** (§0.6): <see cref="EndedWord"/> beside the
+    /// station, and the worked fade's 0.55 rather than a third opacity, for the reason
+    /// <see cref="HeardNotReadable"/> borrows it.</para>
+    /// <para>**SET IN PLACE AND NOT BY A COPY**, so the row keeps its identity on the list and
+    /// in the arrival order, and a station who comes back resumes this row rather than a copy
+    /// of it.</para>
+    /// </remarks>
+    public bool Ended
+    {
+        get => _ended;
+        set
+        {
+            if (_ended == value)
+            {
+                return;
+            }
+
+            _ended = value;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Ended)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(EndedWord)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasEndedWord)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RowOpacity)));
+        }
+    }
+
+    /// <summary>The word an ended row carries, or "". The word is the unit's (work instruction 355).</summary>
+    public string EndedWord => Ended ? "ended" : "";
+
+    /// <summary>True where <see cref="EndedWord"/> has something to say.</summary>
+    public bool HasEndedWord => Ended;
 
     /// <summary>**True where Hamlet can hear this carrier and cannot yet read it.**</summary>
     /// <remarks>

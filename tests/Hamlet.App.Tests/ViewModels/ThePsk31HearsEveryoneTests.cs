@@ -525,7 +525,11 @@ public sealed class ThePsk31HearsEveryoneTests
 
         var seen = new HashSet<double>();
 
-        foreach (var row in rows)
+        // **AN ENDED ROW HAS NO CARRIER UNDER IT** (work instruction 355 task 2). Since Tim's ruling of
+        // 2026-09-14 a retired carrier's row stays on the list with its words, marked ended, so the
+        // carrier is gone at the tick its row ends rather than at the tick the row leaves - which it no
+        // longer does. The bound this measures against is unchanged.
+        foreach (var row in rows.Where(r => !r.Ended))
         {
             var hz = double.TryParse(row.Hz, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed)
                 ? parsed

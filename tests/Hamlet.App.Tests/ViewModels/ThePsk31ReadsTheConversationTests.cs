@@ -400,10 +400,13 @@ public sealed class ThePsk31ReadsTheConversationTests
         // carrier Hamlet can hear and cannot read fades the same way, which assertion 6
         // above and `ThePsk31CarrierLivesTests` both check by behaviour rather than by
         // source text. A worked-before row is still 0.55 and that is asserted, not pinned.
+        // **AND A THIRD IN WORK INSTRUCTION 355 TASK 2**, moved again rather than dropped: a PSK31
+        // row whose carrier went is kept and fades the same way (Tim, 2026-09-14), checked by
+        // behaviour in `ThePsk31RowStaysTests`. The number and the mechanism are unchanged.
         foreach (var body in new[]
         {
             "public bool HasWorkedBefore => _workedBefore.Length > 0;",
-            "public double RowOpacity => HasWorkedBefore || HeardNotReadable ? 0.55 : 1.0;",
+            "public double RowOpacity => HasWorkedBefore || HeardNotReadable || Ended ? 0.55 : 1.0;",
         })
         {
             var count = rowSource.Split(body).Length - 1;

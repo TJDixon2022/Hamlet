@@ -2286,11 +2286,186 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private IReadOnlyList<Psk31Candidate> _psk31Candidates = [];
 
+    /// <summary>**How near his old offset a returning carrier must be to resume his ended row**, in hertz.</summary>
+    /// <remarks>
+    /// **THE UNIT'S NUMBER** (work instruction 355 task 2). Four of the search's 4 Hz bins and half of
+    /// <see cref="Psk31CarrierSearch.SignalHalfWidthHz"/>: wide enough for one carrier measured again a
+    /// bin or two off, and well inside the spacing at which two PSK31 stations can both be read.
+    /// </remarks>
+    internal const double Psk31ResumeWithinHz = 16;
+
+    /// <summary>**How soon after his row ended a returning carrier resumes it**, in seconds of audio.</summary>
+    /// <remarks>
+    /// **THE UNIT'S NUMBER** (work instruction 355 task 2). A station who drops his carrier for a
+    /// breath or a fade and comes back is one station; one who comes back after a whole over from
+    /// somebody else is a new row, which costs a line and never merges two people into one row.
+    /// Counted in the listener's own audio seconds, like every PSK31 lifetime in the record.
+    /// </remarks>
+    internal const double Psk31ResumeWithinSeconds = 15;
+
     /// <summary>Which row on the panel is which channel's, by the carrier's id.</summary>
     private readonly Dictionary<int, DigitalDecodeRow> _psk31Rows = new();
 
     /// <summary>When each channel's row first went up, as its time cell.</summary>
     private readonly Dictionary<int, string> _psk31FirstHeard = new();
+
+    /// <summary>When each channel's row first went up, in the listener's audio seconds, for its lifetime.</summary>
+    private readonly Dictionary<int, double> _psk31RowBornAt = new();
+
+    /// <summary>The words a resumed row already showed before this channel's carrier came back.</summary>
+    private readonly Dictionary<int, string> _psk31Before = new();
+
+    /// <summary>
+    /// **Every ended PSK31 row a returning carrier could still resume**, oldest first (work
+    /// instruction 355 task 2).
+    /// </summary>
+    /// <remarks>
+    /// **THE ROWS THEMSELVES STAY ON THE LIST WHETHER OR NOT THEY ARE HERE.** This is only what a
+    /// carrier coming back at the same offset needs to take its row up again, and it is emptied
+    /// with the listener, because a new listener counts its audio seconds from nought.
+    /// </remarks>
+    private readonly List<Psk31EndedRow> _psk31Ended = new();
+
+    /// <summary>An ended row, where its carrier was, when it ended, and its reading, for a resume.</summary>
+    private sealed record Psk31EndedRow(
+        DigitalDecodeRow Row, double OffsetHz, double EndedAt, double BornAt, string FirstHeard, Psk31ChannelReading? Reading);
+
+    /// <summary>
+    /// **A PSK31 row whose carrier went: kept and marked ended if it read any words, taken off otherwise.**
+    /// </summary>
+    /// <param name="id">The channel that went.</param>
+    /// <param name="row">Its row.</param>
+    /// <remarks>
+    /// <para>**WHAT WAS HEARD STAYS** (Tim, 2026-09-14; work instruction 355 task 2). Until then the
+    /// row went with its carrier, text and all (unit 324), and an FT8 message stayed until cleared.
+    /// An ended row now lives by the FT8 rule: it is already in the arrival order, so the clear, the
+    /// retune and the cap remove it and the order button keeps it.</para>
+    /// <para>**A ROW THAT NEVER READ A CHARACTER STILL GOES** - the unit's choice.
+    /// <see cref="HeardNotReadableYet"/> is Hamlet's sentence and not his words, and kept it would be
+    /// a way for a station that has gone to stay on the list for ever (unit 324's reason, and
+    /// <c>ThePsk31CarrierLivesTests.AHeardRowGoesWhenItsCarrierGoes</c>).</para>
+    /// <para>**IT CHANGES NOTHING ABOUT THE CARRIER.** The search's retire rule and its record are
+    /// untouched; this is what the list does afterwards.</para>
+    /// </remarks>
+    private void EndOrRemovePsk31Row(int id, DigitalDecodeRow row)
+    {
+        var index = IndexOfPsk31Row(row);
+
+        if (index < 0 || row.HeardNotReadable || row.Message.Length == 0)
+        {
+            if (index >= 0)
+            {
+                DigitalDecodes.RemoveAt(index);
+            }
+
+            _digitalArrivals.RemoveAll(r => ReferenceEquals(r, row));
+
+            return;
+        }
+
+        var now = AudioSecondsHeard();
+        var bornAt = _psk31RowBornAt.GetValueOrDefault(id, now);
+        var reading = _psk31Readings.GetValueOrDefault(id);
+        var offset = OffsetOn(row) ?? 0;
+
+        row.Ended = true;
+
+        _psk31Ended.Add(new Psk31EndedRow(
+            row, offset, now, bornAt, _psk31FirstHeard.GetValueOrDefault(id, row.Utc), reading));
+
+        Psk31Events.RowEnded(_telemetry, offset, row.Message.Length, reading?.Messages.Count ?? 0, now - bornAt);
+    }
+
+    /// <summary>The ended row a newly listed carrier takes up again, or null.</summary>
+    /// <param name="channel">A channel with no row yet.</param>
+    /// <returns>The newest ended row still on the list within <see cref="Psk31ResumeWithinHz"/> and <see cref="Psk31ResumeWithinSeconds"/>.</returns>
+    /// <remarks>
+    /// **THE SAME ROW, RESUMED, NOT A NEW ONE** (work instruction 355 task 2). The search gives a
+    /// carrier it finds again a new id, so the offset and the audio clock are what say it is him.
+    /// </remarks>
+    private Psk31EndedRow? ResumePsk31Row(Psk31Channel channel)
+    {
+        var now = AudioSecondsHeard();
+
+        _psk31Ended.RemoveAll(e => now - e.EndedAt > Psk31ResumeWithinSeconds || IndexOfPsk31Row(e.Row) < 0);
+
+        for (var i = _psk31Ended.Count - 1; i >= 0; i--)
+        {
+            if (Math.Abs(_psk31Ended[i].OffsetHz - channel.OffsetHz) <= Psk31ResumeWithinHz)
+            {
+                var back = _psk31Ended[i];
+
+                _psk31Ended.RemoveAt(i);
+
+                return back;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Drop the oldest arrivals past <see cref="MaxDigitalDecodes"/>.</summary>
+    /// <remarks>
+    /// <para>**THE CAP THAT WAS INLINE IN `AddDecodeRow`, NOW ALSO REACHED BY A PSK31 ROW** (work
+    /// instruction 355 task 2), so an ended row is dropped by the rule that drops an FT8 row. For a
+    /// list with no PSK31 row on it the loop does what it did, line for line.</para>
+    /// <para>**A PSK31 ROW WITH A CARRIER STILL UNDER IT IS PASSED OVER**: its channel would put it
+    /// straight back on the next tick as a new row with its words half gone.</para>
+    /// </remarks>
+    private void TrimDigitalDecodes()
+    {
+        while (_digitalArrivals.Count > MaxDigitalDecodes)
+        {
+            // **THE OLDEST ARRIVAL, NOT THE FIRST ROW ON SCREEN.** Under a
+            // newest-first ordering the first row in the collection is the
+            // newest, and the old `RemoveAt(0)` would have thrown away the row
+            // that had just arrived.
+            var at = _digitalArrivals.FindIndex(
+                r => !r.IsTextOnly || !_psk31Rows.Values.Any(live => ReferenceEquals(live, r)));
+
+            if (at < 0)
+            {
+                return;
+            }
+
+            var oldest = _digitalArrivals[at];
+
+            _digitalArrivals.RemoveAt(at);
+
+            if (oldest.IsTextOnly)
+            {
+                var index = IndexOfPsk31Row(oldest);
+
+                if (index >= 0)
+                {
+                    DigitalDecodes.RemoveAt(index);
+                }
+
+                _psk31Ended.RemoveAll(e => ReferenceEquals(e.Row, oldest));
+                Psk31Events.RowCleared(_telemetry, OffsetOn(oldest) ?? 0, oldest.Message.Length, "cap");
+            }
+            else
+            {
+                DigitalDecodes.Remove(oldest);
+                _digitalDecodeKeys.Remove(_digitalDecodeKeyOrder[0]);
+                _digitalDecodeKeyOrder.RemoveAt(0);
+            }
+
+            _digitalTrimmed++;
+        }
+    }
+
+    /// <summary>Record every ended PSK31 row a clear is about to take off the list.</summary>
+    /// <param name="reason">`clear` or `retune`.</param>
+    private void NoteEndedPsk31RowsCleared(string reason)
+    {
+        foreach (var row in DigitalDecodes.Where(r => r.IsTextOnly && r.Ended))
+        {
+            Psk31Events.RowCleared(_telemetry, OffsetOn(row) ?? 0, row.Message.Length, reason);
+        }
+
+        _psk31Ended.Clear();
+    }
 
     /// <summary>Each channel's splitter, how far into its text it has read, and its latest message.</summary>
     private readonly Dictionary<int, Psk31ChannelReading> _psk31Readings = new();
@@ -2925,17 +3100,37 @@ public partial class MainWindowViewModel : ObservableObject
     private void ShowPsk31Channels(IReadOnlyList<Psk31Channel> channels)
     {
         var changed = false;
+        var added = false;
         var live = new HashSet<int>();
 
         foreach (var channel in channels)
         {
             live.Add(channel.Id);
 
+            // **A CARRIER BACK AT HIS OFFSET TAKES HIS ENDED ROW UP AGAIN** (work instruction 355
+            // task 2): the same row in the same place, his earlier words first, and the reading
+            // carried on from where his last carrier left it.
+            if (!_psk31Rows.ContainsKey(channel.Id) && ResumePsk31Row(channel) is { } back)
+            {
+                _psk31Rows[channel.Id] = back.Row;
+                _psk31FirstHeard[channel.Id] = back.FirstHeard;
+                _psk31RowBornAt[channel.Id] = back.BornAt;
+                _psk31Before[channel.Id] = back.Row.Message;
+
+                if (back.Reading is not null)
+                {
+                    back.Reading.Fed = 0;
+                    _psk31Readings[channel.Id] = back.Reading;
+                }
+            }
+
             if (!_psk31FirstHeard.TryGetValue(channel.Id, out var firstHeard))
             {
                 firstHeard = DateTime.UtcNow.ToString("HHmmss", CultureInfo.InvariantCulture);
                 _psk31FirstHeard[channel.Id] = firstHeard;
             }
+
+            _psk31RowBornAt.TryAdd(channel.Id, AudioSecondsHeard());
 
             var snr = DigitalDecodeRow.FormatSnr(
                 double.IsNaN(channel.StrengthDb) ? null : channel.StrengthDb);
@@ -2947,10 +3142,14 @@ public partial class MainWindowViewModel : ObservableObject
             // anything*. Once a character arrives the row is an ordinary row and stays
             // one: what was read is never taken back off the screen because the squelch
             // shut again afterwards.
-            var heardOnly = channel.Text.Length == 0 && !channel.Readable;
-            var message = heardOnly ? HeardNotReadableYet : channel.Text;
+            // **A RESUMED ROW'S EARLIER WORDS COME FIRST** (work instruction 355 task 2), so what
+            // he said before his carrier dropped is never taken back off the screen either.
+            var text = _psk31Before.GetValueOrDefault(channel.Id, "") + channel.Text;
+            var heardOnly = text.Length == 0 && !channel.Readable;
+            var message = heardOnly ? HeardNotReadableYet : text;
 
             if (_psk31Rows.TryGetValue(channel.Id, out var shown)
+                && !shown.Ended
                 && shown.Snr == snr && shown.Hz == hz && shown.Message == message)
             {
                 continue;
@@ -2996,18 +3195,30 @@ public partial class MainWindowViewModel : ObservableObject
                 DigitalDecodes.Add(row);
             }
 
+            // **IN THE ARRIVAL ORDER WITH THE FT8 ROWS** (work instruction 355 task 2). A PSK31 row
+            // was never in it, so the order button's rebuild and the cap both passed it by; an ended
+            // row has to be there to be dropped by the cap and kept by the rebuild.
+            var arrival = shown is null ? -1 : _digitalArrivals.FindIndex(r => ReferenceEquals(r, shown));
+
+            if (arrival >= 0)
+            {
+                _digitalArrivals[arrival] = row;
+            }
+            else
+            {
+                _digitalArrivals.Add(row);
+                added = true;
+            }
+
             _psk31Rows[channel.Id] = row;
             changed = true;
         }
 
         foreach (var id in _psk31Rows.Keys.Where(id => !live.Contains(id)).ToList())
         {
-            var index = IndexOfPsk31Row(_psk31Rows[id]);
-
-            if (index >= 0)
-            {
-                DigitalDecodes.RemoveAt(index);
-            }
+            // **THE CARRIER WENT AND HIS WORDS STAY** (work instruction 355 task 2): kept and marked
+            // ended where it read anything, taken off where it never did.
+            EndOrRemovePsk31Row(id, _psk31Rows[id]);
 
             // **THE CARRIER WENT, SO NOTHING IS STILL ARRIVING.** The card stays, read one last
             // time with no characters pending, rather than saying *he is still sending* for ever.
@@ -3019,7 +3230,14 @@ public partial class MainWindowViewModel : ObservableObject
             _psk31Rows.Remove(id);
             _psk31FirstHeard.Remove(id);
             _psk31Readings.Remove(id);
+            _psk31RowBornAt.Remove(id);
+            _psk31Before.Remove(id);
             changed = true;
+        }
+
+        if (added)
+        {
+            TrimDigitalDecodes();
         }
 
         if (changed)
@@ -3361,15 +3579,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         var had = _psk31Rows.Count > 0;
 
-        foreach (var row in _psk31Rows.Values)
+        // **LEAVING THE TAB IS NOT A CLEAR** (work instruction 355 task 2). A row that read any words
+        // is kept and marked ended, as a carrier that went is; only a row that never read anything
+        // goes. What a new listener could resume starts empty, because its audio clock does.
+        foreach (var (id, row) in _psk31Rows.ToList())
         {
-            var index = IndexOfPsk31Row(row);
-
-            if (index >= 0)
-            {
-                DigitalDecodes.RemoveAt(index);
-            }
+            EndOrRemovePsk31Row(id, row);
         }
+
+        _psk31Ended.Clear();
+        _psk31RowBornAt.Clear();
+        _psk31Before.Clear();
 
         // **AND ITS CARDS**, which are read from the channels that are going.
         foreach (var state in _psk31Cards.Values)
@@ -12358,21 +12578,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         PlaceRow(DigitalDecodeRow.From(decode));
 
-        while (_digitalArrivals.Count > MaxDigitalDecodes)
-        {
-            // **THE OLDEST ARRIVAL, NOT THE FIRST ROW ON SCREEN.** Under a
-            // newest-first ordering the first row in the collection is the
-            // newest, and the old `RemoveAt(0)` would have thrown away the row
-            // that had just arrived.
-            var oldest = _digitalArrivals[0];
-
-            _digitalArrivals.RemoveAt(0);
-            DigitalDecodes.Remove(oldest);
-            _digitalDecodeKeys.Remove(_digitalDecodeKeyOrder[0]);
-            _digitalDecodeKeyOrder.RemoveAt(0);
-
-            _digitalTrimmed++;
-        }
+        TrimDigitalDecodes();
 
         return true;
     }
@@ -16302,6 +16508,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private void ClearDigitalDecodes()
     {
+        NoteEndedPsk31RowsCleared("clear");
         DigitalDecodes.Clear();
         _digitalArrivals.Clear();
         _digitalDecodeKeys.Clear();
@@ -16340,6 +16547,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         }
 
+        NoteEndedPsk31RowsCleared("retune");
         DigitalDecodes.Clear();
         _digitalArrivals.Clear();
         _digitalDecodeKeys.Clear();
