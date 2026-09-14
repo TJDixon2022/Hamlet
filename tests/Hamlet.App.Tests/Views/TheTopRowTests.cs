@@ -1290,6 +1290,258 @@ public sealed class TheTopRowTests
         }
     }
 
+    /// <summary>
+    /// **Work instruction 351 task 0: what the check costs the green block, line by line, and what
+    /// each arrangement gives** - at 1920 and 1400, on FT8 and PSK31, with the best bet on his band,
+    /// on 40 m and absent. Printed, not asserted - the trace task 1 is built from.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 54**: the right column's width, the left column's width, each
+    /// left line's height and line count, the best bet row's height and the word measured with and
+    /// without *✓*, before anything is built. The best bet is pinned the way
+    /// <see cref="Unit350TraceStepZeroBothWays"/> pins it, and read back after the last settle.</para>
+    /// <para>**THE CANDIDATES ARE SET ON THE TEST WINDOW ONLY**, on 1400 PSK31 with the best bet on
+    /// his band and on 1920 with the same pin, and every one keeps ruling 55's list: no word
+    /// changes, nothing hides, and `GreenZoneBestBet` keeps its name, command, tooltip and
+    /// visibility binding. Nothing goes into the markup.</para>
+    /// <para>**NOTHING IS PRESSED** (§0.2). The best bet is read and never clicked. FT8 is put back
+    /// before each window closes.</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit351TraceTheCheckInTheGreenBlock()
+    {
+        _output.WriteLine("local hour the run read: " + DateTime.Now.Hour.ToString("00", CultureInfo.InvariantCulture));
+
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "FT8", "PSK31" })
+            {
+                foreach (var pinned in new[] { "20 m", "40 m", null })
+                {
+                    TraceTheGreenBlock(width, mode, pinned, "as built", null);
+                }
+            }
+        }
+
+        static StackPanel BestBetRow(Window w) => (StackPanel)Named<Button>(w, "GreenZoneBestBet").GetVisualParent()!;
+
+        static void Detach(Control c) => ((Panel)c.GetVisualParent()!).Children.Remove(c);
+
+        var candidates = new (string Name, Action<Window> Arrange)[]
+        {
+            ("the best bet row moved to the left column, under the rule of thumb", w =>
+            {
+                var row = BestBetRow(w);
+
+                Detach(row);
+                row.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+                Named<StackPanel>(w, "GreenZoneLeft").Children.Add(row);
+            }),
+            ("the best bet row moved into the band line, after the verdict", w =>
+            {
+                var row = BestBetRow(w);
+
+                Detach(row);
+                row.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+                ((WrapPanel)Named<StackPanel>(w, "GreenZoneLeft").Children[0]).Children.Add(row);
+            }),
+            ("the best bet row moved under the regions, right-aligned across the block", w =>
+            {
+                var row = BestBetRow(w);
+                var stack = (StackPanel)Named<Border>(w, "GreenZoneBlock").Child!;
+
+                Detach(row);
+                stack.Children.Insert(stack.Children.IndexOf(Named<Grid>(w, "GreenZoneRegions")) + 1, row);
+            }),
+            ("the right column held to the heard grid's width, the best bet row wrapping", w =>
+            {
+                var row = BestBetRow(w);
+                var right = Named<StackPanel>(w, "GreenZoneRight");
+                var wrap = new WrapPanel
+                {
+                    Orientation = Avalonia.Layout.Orientation.Horizontal,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                };
+                var parts = row.Children.ToList();
+
+                row.Children.Clear();
+                parts.ForEach(p => wrap.Children.Add(p));
+                right.Children.Remove(row);
+                right.Children.Insert(0, wrap);
+                right.Width = Named<Grid>(w, "GreenZoneHeardGrid").Bounds.Width;
+            }),
+            ("the check's line held to the prefix's line height", w =>
+            {
+                var prefix = Named<TextBlock>(w, "GreenZoneBestBetPrefix");
+
+                foreach (var inner in Named<Button>(w, "GreenZoneBestBet").GetVisualDescendants().OfType<TextBlock>())
+                {
+                    inner.LineHeight = prefix.TextLayout.TextLines[0].Height;
+                }
+            }),
+        };
+
+        foreach (var (name, arrange) in candidates)
+        {
+            foreach (var width in new[] { 1400.0, 1920.0 })
+            {
+                TraceTheGreenBlock(width, "PSK31", "20 m", name, arrange);
+            }
+        }
+    }
+
+    /// <summary>
+    /// One pinned window for <see cref="Unit351TraceTheCheckInTheGreenBlock"/>: the top row, the
+    /// panels and the green block line by line, with <paramref name="arrange"/> set on this window
+    /// only where it is given.
+    /// </summary>
+    private void TraceTheGreenBlock(double width, string mode, string? pinned, string arrangement, Action<Window>? arrange)
+    {
+        var window = Realized(width);
+        var model = (MainWindowViewModel)window.DataContext!;
+
+        static string Lines(TextBlock t)
+        {
+            var lines = t.TextLayout.TextLines;
+            var one = lines.Count == 0 ? 0 : lines[0].Height;
+
+            return lines.Count + " lines of " + Px(one) + " px, height over line " + (one > 0 ? Px(t.Bounds.Height / one) : "-");
+        }
+
+        static (double Width, double Height) Words(string text, TemplatedControl face)
+        {
+            var f = new Avalonia.Media.FormattedText(
+                text,
+                CultureInfo.CurrentUICulture,
+                Avalonia.Media.FlowDirection.LeftToRight,
+                new Avalonia.Media.Typeface(face.FontFamily, face.FontStyle, face.FontWeight),
+                face.FontSize,
+                Avalonia.Media.Brushes.Black);
+
+            return (f.Width, f.Height);
+        }
+
+        try
+        {
+            model.ChosenDigitalMode = mode;
+            Settle(window);
+
+            foreach (var band in model.Bands)
+            {
+                band.IsBestBet = band.Band.Name == pinned;
+            }
+
+            model.NotifyGreenZoneForTests();
+            Settle(window);
+
+            if (arrange is not null)
+            {
+                arrange(window);
+                Settle(window);
+            }
+
+            var m = Measure(window);
+            var pills = window.GetVisualDescendants().OfType<ItemsControl>()
+                .First(i => i.GetVisualDescendants().OfType<Button>().Any(b => b.Classes.Contains("hm-band")));
+            var below = window.Bounds.Height - RectIn(pills, window).Bottom;
+            var block = Named<Border>(window, "GreenZoneBlock");
+            var regions = Named<Grid>(window, "GreenZoneRegions");
+            var left = Named<StackPanel>(window, "GreenZoneLeft");
+            var right = Named<StackPanel>(window, "GreenZoneRight");
+            var bet = Named<Button>(window, "GreenZoneBestBet");
+            var prefix = Named<TextBlock>(window, "GreenZoneBestBetPrefix");
+            var said = bet.Content as string ?? "";
+
+            _output.WriteLine(
+                "=== " + mode + " " + Px(width) + ", licensed; best bet " + (pinned ?? "absent") + "; " + arrangement);
+            _output.WriteLine(
+                "  top row " + Px(m.TopRowHeight) + " px of " + Px(below) + " = " + Share(m.TopRowHeight, below)
+                + " (limit " + Px(0.262 * below) + "); card " + Px(m.Card.Height) + ", rig " + Px(m.Rig.Height));
+            _output.WriteLine(
+                "  green block " + Box(RectIn(block, window)) + "; regions " + Box(RectIn(regions, window))
+                + "; left " + Box(RectIn(left, window)) + " margin right " + Px(left.Margin.Right)
+                + "; right " + Box(RectIn(right, window)));
+
+            foreach (var row in ((Panel)block.Child!).Children.Where(c => c.IsVisible))
+            {
+                _output.WriteLine("    block row " + (row.Name ?? row.GetType().Name).PadRight(24) + Box(RectIn(row, window)));
+            }
+
+            var bandLine = (Panel)left.Children[0];
+            var shown = bandLine.Children.Where(c => c.IsVisible).ToList();
+            var wraps = shown.Skip(1).Where((c, i) => c.Bounds.X <= shown[i].Bounds.X).Count();
+
+            _output.WriteLine("    left band line " + Box(RectIn(bandLine, window)) + ", " + (shown.Count == 0 ? 0 : wraps + 1) + " rows");
+
+            foreach (var name in new[] { "GreenZoneBand", "GreenZoneFrequency", "GreenZoneModeLine", "GreenZoneLicenseLine", "GreenZoneRuleOfThumb" })
+            {
+                var t = Named<TextBlock>(window, name);
+
+                _output.WriteLine(
+                    "      " + name.PadRight(24) + Box(RectIn(t, window)) + " visible " + t.IsEffectivelyVisible + "; "
+                    + Lines(t) + " [" + t.Text + "]");
+            }
+
+            foreach (var part in left.Children.Skip(3).Where(c => c.IsVisible))
+            {
+                _output.WriteLine("      left, added: " + part.GetType().Name + " " + Box(RectIn(part, window)));
+            }
+
+            var betRow = (Control)bet.GetVisualParent()!;
+            var inner = bet.GetVisualDescendants().OfType<TextBlock>().FirstOrDefault();
+            var withCheck = Words(said, bet);
+            var without = Words(said.Replace(GreenZone.OnIt, "", StringComparison.Ordinal), bet);
+            var check = Words(GreenZone.OnIt.Trim(), bet);
+
+            _output.WriteLine(
+                "    best bet row " + (betRow.GetType().Name) + " " + Box(RectIn(betRow, window)) + " visible " + betRow.IsEffectivelyVisible
+                + "; prefix " + Box(RectIn(prefix, window)) + ", " + Lines(prefix));
+            _output.WriteLine(
+                "      button [" + said + "] " + Box(RectIn(bet, window)) + ", desired " + Px(bet.DesiredSize.Width) + " x "
+                + Px(bet.DesiredSize.Height) + ", visible " + bet.IsEffectivelyVisible
+                + (inner is null ? "" : "; inner text " + Box(RectIn(inner, window)) + ", " + Lines(inner)));
+            _output.WriteLine(
+                "      the word measured: with the check " + Px(withCheck.Width) + " x " + Px(withCheck.Height)
+                + ", without " + Px(without.Width) + " x " + Px(without.Height) + ", the check alone "
+                + Px(check.Width) + " x " + Px(check.Height));
+
+            if (inner is not null)
+            {
+                foreach (var run in inner.TextLayout.TextLines.SelectMany(l => l.TextRuns))
+                {
+                    _output.WriteLine(
+                        "      run " + run.GetType().Name + " length " + run.Length
+                        + (run is Avalonia.Media.TextFormatting.DrawableTextRun d ? ", size " + Px(d.Size.Width) + " x " + Px(d.Size.Height) : "")
+                        + (run is Avalonia.Media.TextFormatting.ShapedTextRun s ? ", face " + s.GlyphRun.GlyphTypeface.FamilyName : ""));
+                }
+            }
+
+            _output.WriteLine(
+                "    heard grid " + Box(RectIn(Named<Grid>(window, "GreenZoneHeardGrid"), window)) + "; sparkline visible "
+                + Named<SparklineControl>(window, "GreenZoneSparkline").IsEffectivelyVisible);
+
+            var strip = Named<Border>(window, "DigitalReadinessStrip");
+
+            strip.IsVisible = false;
+            Settle(window);
+
+            var hidden = TheWorkingPanelsTests.Panels(window)[0].Rect.Height;
+            var badged = model.Bands.Where(b => b.IsBestBet).Select(b => b.Band.Name).ToList();
+            var held = badged.SequenceEqual(pinned is null ? Array.Empty<string>() : new[] { pinned })
+                && bet.IsEffectivelyVisible == (pinned is not null);
+
+            _output.WriteLine(
+                "  panels " + Px(hidden) + " px = " + Share(hidden, below) + " strip hidden (half " + Px(below / 2)
+                + "); after hiding the strip the top row is " + Px(Measure(window).TopRowHeight) + "; pin held " + held
+                + " [" + string.Join(", ", badged) + "] best bet [" + (bet.Content as string) + "]");
+        }
+        finally
+        {
+            model.ChosenDigitalMode = "FT8";
+            window.Close();
+        }
+    }
+
     /// <summary>What one window measured with the best bet set by hand, and whether it stayed set.</summary>
     public sealed record BestBetCase(
         double TopRow,
