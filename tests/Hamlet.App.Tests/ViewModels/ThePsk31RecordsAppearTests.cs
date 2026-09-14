@@ -76,16 +76,29 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
         }
     }
 
-    /// <summary>**1: with no PSK31 contact, nothing PSK31 is on the window at all.**</summary>
+    /// <summary>**1: with no PSK31 contact, PSK31 is a next card and nothing else.**</summary>
     /// <remarks>
-    /// **THE EVENING HAS A DX CONTACT IN IT ON PURPOSE.** With `first_contact` and
+    /// <para>**RENAMED AND CORRECTED UNDER §R12 BY WORK INSTRUCTION 348 TASK 2** (ruling 36). It was
+    /// `WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed` and asserted that no drawn run named
+    /// PSK at all. Unit 336 found it red with `modes draws [PSK31] before any PSK31 contact`, because
+    /// Tim's later rulings put PSK31 on two next cards: R22's *where the unearned mode lives and who is
+    /// there* on the Modes next card, and Ruling C's nearest unearned first on Hall of Fame's.</para>
+    /// <para>**§3.1 STAYS WHOLE FOR RECORDS.** Every run and hover naming PSK is on no tab, no badge, no
+    /// earned card and no dimmed record: it is on the kind's one unearned card, drawn as next cards are
+    /// drawn, and that card is the Modes next card with PSK31 on a caller row, or Hall of Fame's next
+    /// first. The screen is unchanged; only the assertion caught up. Watched red once, with the next
+    /// card expected earned on the test only: `modes draws [PSK31] on an unearned card [One more
+    /// mode]`.</para>
+    /// <para>**THE EVENING HAS A DX CONTACT IN IT ON PURPOSE.** With `first_contact` and
     /// `first_dx` earned, the nearest unearned Hall of Fame first in the list's order is
-    /// `first_psk31`, which is the slot that drew *A PSK31 contact* before this unit.
+    /// `first_psk31`, which is the slot that drew *A PSK31 contact* before unit 333.</para>
     /// </remarks>
     [AvaloniaFact]
-    public void WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed()
+    public void WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard()
     {
-        var drawn = Walk(EveningWithDx(), null);
+        var placed = new List<Psk31Placed>();
+
+        var drawn = Walk(EveningWithDx(), null, (where, window) => placed.AddRange(NamingPsk(where, window)));
 
         foreach (var (where, words) in drawn)
         {
@@ -93,13 +106,34 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
                 + words.Count(w => w.Contains("PSK", StringComparison.OrdinalIgnoreCase)));
         }
 
-        // **EVERY WORD, NOT AN `Earned` FLAG.** A dimmed card is a visible card.
-        foreach (var (where, words) in drawn)
-        {
-            var named = words.FirstOrDefault(
-                w => w.Contains("PSK", StringComparison.OrdinalIgnoreCase));
+        // **R22: THE MODES NEXT CARD SAYS WHERE PSK31 LIVES**, so there is something here to place.
+        Assert.NotEmpty(placed);
 
-            Assert.True(named is null, where + " draws [" + named + "] before any PSK31 contact");
+        var nextOpacity = new AchievementCategoryCard("", "", "", false).CardOpacity;
+
+        // **EVERY RUN AND HOVER, BY WHAT IT SITS ON, NOT BY AN `Earned` FLAG ALONE.**
+        foreach (var (where, words, card, onRow, onTab, onBadge, category) in placed)
+        {
+            var said = where + " draws [" + words + "]";
+
+            _output.WriteLine(said + " on " + (card is null ? "no card" : (card.Earned ? "earned" : "unearned") + " [" + card.Title + "]")
+                + (onRow ? ", a caller row" : ""));
+
+            Assert.False(onTab, said + " on a tab");
+            Assert.False(onBadge, said + " on a badge");
+            Assert.True(card is not null, said + " on no card");
+            Assert.False(card!.Earned, said + " on an earned card [" + card.Title + "]");
+
+            // **THE KIND'S ONE UNEARNED CARD, DRAWN AS NEXT CARDS ARE DRAWN.**
+            Assert.Same(category!.Cards.Single(c => !c.Earned), card);
+            Assert.Equal(AchievementCategoryCard.NextWord, card.Figure);
+            Assert.Equal(nextOpacity, card.CardOpacity);
+
+            // **AND ONLY WHERE TIM'S RULINGS PUT IT**: the Modes next card's row, or Hall of Fame's next first.
+            Assert.True(
+                (where == AchievementKinds.Modes && onRow)
+                || (where == AchievementKinds.HallOfFame && card.Title == "A PSK31 contact"),
+                said + " on [" + card.Title + "], which is neither the Modes next card's row nor Hall of Fame's next first");
         }
     }
 
@@ -198,9 +232,12 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
     /// </summary>
     /// <param name="records">The log.</param>
     /// <param name="inside">Called with each kind while it is open, or null.</param>
+    /// <param name="read">Called with `page` and with each kind, on the window, while it shows; or null.</param>
     /// <returns>Every visible run and hover, by `page` or by kind.</returns>
     private static Dictionary<string, List<string>> Walk(
-        IReadOnlyList<AdifLogRecord> records, Action<string, AchievementsViewModel>? inside)
+        IReadOnlyList<AdifLogRecord> records,
+        Action<string, AchievementsViewModel>? inside,
+        Action<string, Window>? read = null)
     {
         var model = new AchievementsViewModel(
             records, HisGrid, AchievementPoints.Parse(AchievementPoints.Shipped()));
@@ -216,6 +253,7 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
             Assert.True(model.ShowsPage, "the window did not open on the page");
 
             drawn["page"] = Words(window);
+            read?.Invoke("page", window);
 
             foreach (var kind in AchievementKinds.All)
             {
@@ -226,6 +264,7 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
 
                 drawn[kind] = Words(window);
                 inside?.Invoke(kind, model);
+                read?.Invoke(kind, window);
 
                 model.BackCommand.Execute(null);
                 Settle(window);
@@ -253,6 +292,44 @@ public sealed class ThePsk31RecordsAppearTests : IDisposable
             .Select(s => s!);
 
         return runs.Concat(tips).ToList();
+    }
+
+    /// <summary>
+    /// A run or hover naming PSK, and what it sat on while its kind was open: the trading card, whether
+    /// it is a caller row, whether it is on a tab or a badge, and the category showing.
+    /// </summary>
+    private sealed record Psk31Placed(
+        string Where, string Words, AchievementCategoryCard? Card, bool OnRow, bool OnTab, bool OnBadge, AchievementCategory? Category);
+
+    /// <summary>
+    /// Every visible run and hover naming PSK, placed **while the window still shows it** (work instruction
+    /// 348 task 2): once the kind is closed its controls have no ancestors left to read.
+    /// </summary>
+    private static List<Psk31Placed> NamingPsk(string where, Window window)
+    {
+        var category = ((AchievementsViewModel)window.DataContext!).Category;
+
+        Psk31Placed Place(Control on, string words)
+        {
+            var chain = on.GetSelfAndVisualAncestors().OfType<Control>().ToList();
+
+            return new Psk31Placed(
+                where,
+                words,
+                chain.OfType<Border>().FirstOrDefault(b => b.Classes.Contains("trading-card"))?.DataContext as AchievementCategoryCard,
+                on.Classes.Contains("card-caller-place") || on.Classes.Contains("card-caller-call"),
+                chain.Any(c => c is TabItem),
+                chain.OfType<Button>().Any(b => b.Classes.Contains("hm-badge")),
+                category);
+        }
+
+        return window.GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Contains("PSK", StringComparison.OrdinalIgnoreCase))
+            .Select(t => Place(t, t.Text!))
+            .Concat(window.GetVisualDescendants().OfType<Control>()
+                .Where(c => c.IsEffectivelyVisible && ToolTip.GetTip(c) is string s && s.Contains("PSK", StringComparison.OrdinalIgnoreCase))
+                .Select(c => Place(c, (string)ToolTip.GetTip(c)!)))
+            .ToList();
     }
 
     private static void Settle(Window window)

@@ -577,9 +577,14 @@ public sealed class TheAchievementsPageClicksInTests
     public void ReadingThePointsFileWritesHowManyRankNamesItReadAndNoName()
     {
         var sink = new Recording();
+
+        // **THE SHIPPED LIST IS FILLED IN, NOT A SECOND KEY ADDED** (work instruction 348 ruling 37, corrected
+        // under §R12): the file ships `"rank_names": []`.
+        Assert.Contains("\"rank_names\": []", AchievementPoints.Shipped(), StringComparison.Ordinal);
+
         var named = AchievementPoints.Parse(AchievementPoints.Shipped().Replace(
-            "\"ranks\": [",
-            "\"rank_names\": [\"Listener\", \"Novice\", \"Operator\"],\n \"ranks\": [",
+            "\"rank_names\": []",
+            "\"rank_names\": [\"Listener\", \"Novice\", \"Operator\"]",
             StringComparison.Ordinal));
         var shipped = AchievementPoints.Parse(AchievementPoints.Shipped());
 

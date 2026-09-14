@@ -256,22 +256,25 @@ public sealed class TheAchievementsPageTests
         {
             var json = AchievementPoints.Shipped();
 
+            // **THE SHIPPED LIST IS FILLED IN, NOT A SECOND KEY ADDED** (work instruction 348 ruling 37, corrected
+            // under §R12): the file ships `"rank_names": []`, and a second `rank_names` would leave two in one file.
             if (rankNames is not null)
             {
-                json = json.Replace(
-                    "\"ranks\": [", "\"rank_names\": " + rankNames + ",\n \"ranks\": [", StringComparison.Ordinal);
+                Assert.Contains("\"rank_names\": []", json, StringComparison.Ordinal);
+
+                json = json.Replace("\"rank_names\": []", "\"rank_names\": " + rankNames, StringComparison.Ordinal);
             }
 
             var page = new AchievementBadgePage(log, AchievementPoints.Parse(json));
 
-            _output.WriteLine((rankNames ?? "absent").PadRight(100) + " -> " + page.TotalLine);
+            _output.WriteLine((rankNames ?? "empty as shipped").PadRight(100) + " -> " + page.TotalLine);
 
             Assert.True(page.Scores.Points.Loaded, "the points did not load: " + page.Problem);
 
             return page.TotalLine;
         }
 
-        // **ABSENT: THE DEFAULTS SHOW.**
+        // **EMPTY AS SHIPPED: THE DEFAULTS SHOW.**
         Assert.Equal("Total 465 pts · Rank 4 · 35 to Rank 5", Line(null));
 
         // **PRESENT: EACH RANK BY ITS POSITION, AND THE GAP NAMES THE NEXT.**
@@ -290,17 +293,28 @@ public sealed class TheAchievementsPageTests
     }
 
     /// <summary>
-    /// **Work instruction 336 task 2: the shipped points file explains itself** - a comment block at
-    /// its top names every key, the reader skips it, and `rank_names` is documented there and not
-    /// added, so the defaults show on the shipped file.
+    /// **Work instruction 336 task 2, made two-way at every level by work instruction 348 task 2: the
+    /// shipped points file documents exactly the keys it carries** - a comment block at its top names
+    /// every key in the file, the file carries every key the block names, and the reader skips it.
     /// </summary>
+    /// <remarks>
+    /// <para>**THE RULE FOR A DOCUMENTED KEY** (ruling 37): a quoted word that is the first thing on a
+    /// comment line after `//` and is followed by two or more spaces - the block's key column. Every
+    /// other quoted word, such as `"160m"`, `"CW"`, `"AK"`, `"NA"`, `"10"` or a rank name in the
+    /// example, is an example value or a reference.</para>
+    /// <para>**A KEY IN THE FILE IS A TABLE ENTRY, NOT A KEY,** where its parent is `per`, `special`,
+    /// `milestones` or `tiers`, whose keys are a continent, a band, a mode, a state or a count. Each
+    /// entry is checked against the shape its parent's line documents instead.</para>
+    /// <para>**CORRECTED UNDER §R12**: until 348 this asserted that `rank_names` was documented and
+    /// not a key. Ruling 37 ships it as an empty list, so every rank still reads `Rank n`. Watched red
+    /// on the tree as it was: `documented in the block and not in the file: rank_names`.</para>
+    /// </remarks>
     [Fact]
     public void TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop()
     {
         var shipped = AchievementPoints.Shipped().Replace("\r\n", "\n", StringComparison.Ordinal);
-        var block = string.Join(
-            "\n",
-            shipped.Split('\n').TakeWhile(l => l.TrimStart().StartsWith("//", StringComparison.Ordinal)));
+        var lines = shipped.Split('\n').TakeWhile(l => l.TrimStart().StartsWith("//", StringComparison.Ordinal)).ToList();
+        var block = string.Join("\n", lines);
 
         _output.WriteLine(block);
 
@@ -312,34 +326,97 @@ public sealed class TheAchievementsPageTests
         Assert.True(points.Loaded, points.Problem);
         Assert.Equal(8, points.Kinds);
 
-        // **EVERY TOP-LEVEL KEY, AND EVERY KEY INSIDE A SECTION, IS NAMED IN QUOTES IN THE BLOCK.**
+        var documented = lines
+            .Select(l => System.Text.RegularExpressions.Regex.Match(l, "^\\s*//\\s*\"([^\"]+)\"[ ]{2,}"))
+            .Where(m => m.Success)
+            .Select(m => m.Groups[1].Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
         using var document = System.Text.Json.JsonDocument.Parse(
             shipped,
             new System.Text.Json.JsonDocumentOptions { CommentHandling = System.Text.Json.JsonCommentHandling.Skip });
 
-        var keys = new System.Collections.Generic.List<string>();
+        // **EVERY KEY AT EVERY LEVEL**, with the table entries set apart.
+        var keys = new List<string>();
+        var entries = new List<(string Path, string Kind, string Table, string Name)>();
 
-        foreach (var top in document.RootElement.EnumerateObject())
+        void Walk(System.Text.Json.JsonElement element, string path)
         {
-            keys.Add(top.Name);
+            var parts = path.Split('.');
+            var table = path.Length > 0 && parts[^1] is "per" or "special" or "milestones" or "tiers";
 
-            if (top.Value.ValueKind == System.Text.Json.JsonValueKind.Object)
+            foreach (var property in element.EnumerateObject())
             {
-                keys.AddRange(top.Value.EnumerateObject().Select(k => k.Name));
+                var here = path.Length == 0 ? property.Name : path + "." + property.Name;
+
+                if (table)
+                {
+                    entries.Add((here, parts[0], parts[^1], property.Name));
+                }
+                else
+                {
+                    keys.Add(here);
+                }
+
+                if (property.Value.ValueKind == System.Text.Json.JsonValueKind.Object)
+                {
+                    Walk(property.Value, here);
+                }
             }
         }
 
-        var named = keys.Distinct(StringComparer.Ordinal).ToList();
-        var missing = named.Where(k => !block.Contains("\"" + k + "\"", StringComparison.Ordinal)).ToList();
+        Walk(document.RootElement, "");
 
-        _output.WriteLine(named.Count + " keys: " + string.Join(", ", named));
-        _output.WriteLine("missing from the block: " + string.Join(", ", missing));
+        var names = keys.Select(k => k.Split('.')[^1]).Distinct(StringComparer.Ordinal).ToList();
+        var notDocumented = names.Except(documented, StringComparer.Ordinal).ToList();
+        var notInFile = documented.Except(names, StringComparer.Ordinal).ToList();
 
-        Assert.Empty(missing);
+        _output.WriteLine(
+            "the rule: a documented key is a quoted word first on a comment line and followed by two or more spaces; "
+            + "a key under per, special, milestones or tiers is a table entry, checked by its shape");
+        _output.WriteLine(documented.Count + " documented: " + string.Join(", ", documented));
+        _output.WriteLine(keys.Count + " keys in the file, " + names.Count + " names: " + string.Join(", ", keys));
+        _output.WriteLine(entries.Count + " table entries: " + string.Join(", ", entries.Select(e => e.Path)));
+        _output.WriteLine("in the file, not the block: [" + string.Join(", ", notDocumented) + "]");
+        _output.WriteLine("in the block, not the file: [" + string.Join(", ", notInFile) + "]");
 
-        // **`rank_names` IS DOCUMENTED AND IS NOT A KEY**, so the shipped file shows the defaults.
+        Assert.True(notDocumented.Count == 0, "in the file and not documented in the block: " + string.Join(", ", notDocumented));
+        Assert.True(notInFile.Count == 0, "documented in the block and not in the file: " + string.Join(", ", notInFile));
+
+        // **EACH TABLE ENTRY HAS THE SHAPE ITS PARENT'S LINE DOCUMENTS.**
+        foreach (var (path, kind, table, name) in entries)
+        {
+            var shaped = table switch
+            {
+                "milestones" or "tiers" => long.TryParse(name, NumberStyles.None, CultureInfo.InvariantCulture, out _),
+                "per" => kind == AchievementKinds.Continents
+                    && Hamlet.RadioEngine.Explore.DxccContinents.Codes.ContainsKey(name)
+                    && block.Contains("\"" + name + "\"", StringComparison.Ordinal),
+                _ => kind switch
+                {
+                    AchievementKinds.States => AchievementLog.FiftyStates.Contains(name),
+                    AchievementKinds.Bands => System.Text.RegularExpressions.Regex.IsMatch(name, "^[0-9]+c?m$"),
+                    AchievementKinds.Modes => ContactModes.Six.Any(m => m.Name == name),
+                    _ => false,
+                },
+            };
+
+            Assert.True(shaped, path + " is not the shape its parent's line documents");
+        }
+
+        // **`rank_names` IS IN THE FILE, EMPTY, SO EVERY RANK STILL READS `Rank n`** (ruling 37). Until
+        // 348 this said `rank_names` is documented and is not a key; corrected under §R12.
         Assert.Contains("\"rank_names\"", block, StringComparison.Ordinal);
-        Assert.False(document.RootElement.TryGetProperty("rank_names", out _));
+        Assert.True(document.RootElement.TryGetProperty("rank_names", out var rankNames), "rank_names is not in the shipped file");
+        Assert.Equal(System.Text.Json.JsonValueKind.Array, rankNames.ValueKind);
+        Assert.Equal(0, rankNames.GetArrayLength());
+        Assert.Equal(0, points.RankNamesRead);
+
+        for (var rank = 1; rank <= points.Ranks.Count + 1; rank++)
+        {
+            Assert.Equal("Rank " + rank.ToString(CultureInfo.InvariantCulture), points.RankName(rank));
+        }
     }
 
     /// <summary>

@@ -31,8 +31,8 @@
 //   "levels"        For each kind, the counts where Bronze, Silver, Gold and Platinum begin, lowest
 //                   first; for "total_miles" they are miles. A kind with more than four shows
 //                   Level 5 and up past Platinum.
-//   "rank_names"    Not in this file as shipped - add it to name your ranks. A list of names,
-//                   Rank 1 first, for example  "rank_names": ["Listener", "Novice", "Operator"],
+//   "rank_names"    Empty as shipped, so every rank shows Rank n. Put your names for your ranks in
+//                   it, Rank 1 first, for example  "rank_names": ["Listener", "Novice", "Operator"],
 //                   A shorter list names the first ranks and the rest show Rank n. Anything other
 //                   than a list of names is ignored, and every rank shows Rank n.
 //
@@ -138,6 +138,7 @@
   5000,
   10000
  ],
+ "rank_names": [],
  "levels": {
   "countries": [
    10,
