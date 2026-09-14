@@ -1,35 +1,30 @@
-# Work instruction 350 - step 0, on the record and not on the clock
+# Work instruction 351 - step 0's last red: the check fitted at 1400
 
-Step 0 of `PHASE_PLAN.md`. **The screen does not change in this unit.** Step 3 is waiting for Tim.
+Step 0 of `PHASE_PLAN.md`. **One case moves on the screen, and the sheet Tim holds moves with it.**
 
 Where each step stands:
 
-- **Step 3 is waiting for Tim's verdict** on `docs/unit349-what-tim-looks-at.md`.
-  - The state reader returned `in progress` on unit 349: *the only exit criterion is Tim saying it
-    passed, which has not happened.*
-  - No commit after `1456ac5c` carries an answer, and `DECISIONS.md` still tops at HM-DEC-163.
-  - **Nothing is authored into step 3** (ruling 46, upheld as ruling 47).
+- **Step 0 is `partial`** on the state reader's verdict on unit 350 (`.run-unit\state-verdict.json`):
+  *Five of the six must-pass criteria are backed by measured numbers at this tree, but criterion 5
+  fails at 1400 on PSK31 when the best bet is on the operator's own band, where the top row is 247 px
+  against a limit of 238.4 and the panels are 446 px against 455, and this is a layout miss rather
+  than a stop.*
+  - It is the only red standing between step 0 and `done`.
+  - It is also the only place R26's *at no window size do the working panels get less than half the
+    height below the band pills* is broken.
 - **Steps 1 and 2 are done** on the state reader's verdicts on units 347 and 348.
-- **Step 0 has no `done` anywhere in the record.**
-  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`.
-  - Its last step 0 entry is unit 340, `STATE_AFTER: blocked`, and the reload reads that entry as
-    winning.
-  - There is no unit 341 entry. Work instructions 342 to 349 took step 0 as done on a state-reader
-    verdict on unit 341, and `.run-unit\state-verdict.json` has since been overwritten.
-  - **Steps 1, 2 and 3 all rest on step 0.** A foundation that exists only in a file that has been
-    overwritten is the failure `PHASE_CONTROL.md` §7 names. Even if Tim says *passed* tomorrow, the
-    launcher would still read one open step.
-- **One of step 0's must-pass numbers depends on the hour the test runs.**
-  - `MainWindowViewModel.RankBands` reads `DateTime.Now.Hour` (`MainWindowViewModel.cs:16836`), and
-    the green block's *best bet* follows that ranking.
-  - On PSK31 at 1400 the top row is 237 px with the best bet drawn and 228 px without. The limit is
-    0.262 × 910 = 238.4 (unit 341 item 1, `0f383a3`; unit 339 item 2, `991223a`).
-  - The run at `85437c2` read 228, because no best bet was drawn at that hour. **No test has
-    measured the worst case on purpose.**
+- **Step 3 is waiting for Tim's verdict** on `docs/unit349-what-tim-looks-at.md`. No commit after
+  `1456ac5c` carries an answer, and `DECISIONS.md` still tops at HM-DEC-163 (`:7`). **Nothing is
+  authored into step 3.**
 
-This unit gives step 0 a report of its own, criterion by criterion at this tree, so the state reader
-can judge step 0 on it. It also measures criteria 1 and 5 with the best bet pinned both ways, so the
-result does not depend on the clock. It has four tasks, 0 to 3. Task 3 is the drop candidate.
+Unit 350 held the screen still so the sheet would stay the screen (ruling 47), and it left the red
+for the next arbiter to choose between a fix and Tim's verdict. **This arbiter chooses the fix.**
+- Tim's verdict cannot move until he reads the sheet. Meanwhile the one known must-pass miss sits
+  on the sheet as *what will look wrong, but is known*, item 1.
+- A 9 px miss that arrangement may close is not a reason to spend Tim's review on it.
+- The sheet is updated in the same unit, so it stays the screen.
+
+The unit has four tasks, 0 to 3. Task 3 is the drop candidate.
 
 ---
 
@@ -46,7 +41,7 @@ root                                                    C:\Source\HamLet
 **If any of the four is wrong, stop and say so in `output.md` section 4. Write nothing
 else.** The refusal text: *This is not Hamlet. Nothing was changed.*
 
-These four are copied from work instruction 349; unit 349 checked them and they held. Check them
+These four are copied from work instruction 350; unit 350 checked them and they held. Check them
 again.
 
 **Also:** `.run-unit\allowed.txt` must permit `dotnet`. For this arbiter it carried `Bash(dotnet:*)`
@@ -61,49 +56,57 @@ at line 14.
 
 ## 1. Why this unit exists
 
-**The numbers today:**
-- **Step 0:** 6 must-pass criteria. The record holds no `done`: the header reads `in progress`, and
-  the last entry reads `blocked` (unit 340).
-  - Unit 349 re-ran step 0's classes at `85437c2`: 22 of 22.
-  - Criteria 1 and 5 held at 228 px on PSK31 at 1400, **measured at whatever hour the run happened
-    to be**.
+**The numbers today** (unit 350, `b49eb3ab`, `437cedd8`; none re-run by this arbiter):
+- **Step 0:** 5 of 6 must-pass evidenced at `c88d3974`, and the nice-to-pass holds at 1920 and 1400.
+- **Criterion 5, the one red:** `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`
+  (`TheTopRowTests.cs:688`). On PSK31 at 1400, licensed, with the best bet drawn on 20 m, the band the
+  fixture is on:
+  - the top row is **247 px of 910 = 0.271**, against 0.262 × 910 = 238.4, **8.6 px over**;
+  - the three panels, strip hidden, are **446 px**, against 455, **9 px under half**.
+- **The same window with the best bet on another band:** 237 px (green block 109). **With no best
+  bet:** 228 px.
+- **The green block is 10 px taller when the best bet carries its check** (119 against 109). Unit
+  350 did not read why.
+- **Step 0's filter reads 23 of 24**, the one red being this fact. Carry-forward is 111 of 111 app
+  and 86 of 86 engine.
 - **Step 3:** 0 of 1, and it stays 0 of 1 until Tim answers.
 
-**What this arbiter read from the tree at `1456ac5c`. None of it has been run:**
-- **`AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`** (`TheTopRowTests.cs:577`) loops over FT8
-  and PSK31 at 1920 and 1400.
-  - At 1400 it asserts `m.TopRowHeight <= 0.262 * below` (`:652`) and panels `>= below / 2`
-    (`:656`).
-  - It never sets the best bet, so the ranking at run time decides which case it measures.
-- **There is already a test-only way to set the best bet on a realized window.**
-  `TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` (`:684`) sets `band.IsBestBet` for each
-  band and calls `model.NotifyGreenZoneForTests()` (`:697`-`700`). It runs at 1920 only. That test is
-  step 0's nice-to-pass.
-- **The ranking also runs on each spot refresh:** `RankBands(now)` then `ApplyBestBet(ranking)`
-  (`MainWindowViewModel.cs:17037`-`17038`). A refresh during a test could overwrite a pinned best
-  bet. Whether one does on the headless host is not known to this arbiter.
-- **Criterion 4 says *full to the status bar*.** Unit 349's sheet check (correction 1) found that the
-  panels end at y 953, the working card's floor, and that the status bar's top is at y 978. What
-  fills those 25 px has not been named in any report this arbiter found. Unit 339 wrote that *full to
-  the status bar at 1400 is printed and not asserted*.
-- **The three launcher fields disagree**, as the reload says: header `in progress`, last entry
-  `blocked`, and no unit 341 entry. Only a step 0 report the state reader can read will change what
-  the launcher appends. Neither this arbiter nor the unit may edit those files.
+**What this arbiter read in the tree at `c88d3974`. None of it has been run:**
+- **The green block's two regions are one `Grid`, `GreenZoneRegions`, `ColumnDefinitions="*,Auto"`**
+  (`MainWindow.axaml:639`-`640`).
+  - The left column, `GreenZoneLeft` (`:658`-`717`), holds the band line, the license line and the
+    rule of thumb. The last two are `TextWrapping="Wrap"`.
+  - The right column, `GreenZoneRight` (`:720`-`792`), is **`Auto`**. It holds the best bet row
+    (`:727`-`746`, *best bet now:* and the `GreenZoneBestBet` button, `Command="{Binding
+    TuneToBestBetCommand}"` at `:737`) over `GreenZoneHeardGrid`.
+  - So the widest thing in the right column sets how much width the left column's wrapping lines
+    get.
+- **The check is text in the button's word:** `GreenZone.OnIt = " ✓"` (`GreenZone.cs:51`), appended
+  by `BestBetWords` only when the best bet is the band the dial is in (`:296`-`301`).
+- **`FitTheHeardCount`** (`MainWindow.axaml.cs:98`-`147`) already decides, from the words' widths,
+  whether the sparkline hides. It counts the best bet row's width in the right column (`:114`-`119`).
+- **Unit 341 item 1 (`0f383a3`)** measured that where the best bet draws, the block's right column
+  widens from 140 to 180 px and the rule of thumb takes a third line.
+- **Hypotheses, not measured.** The *✓* can cost 10 px more in two ways:
+  - it widens the word again, wrapping a second left line;
+  - it falls back to a font whose line is taller than the 11 px row.
+
+  **The trace settles which.** Do not build on either guess.
 
 ```
 PHASE GOAL: The screen, done right - the main window as the approved mockup
-            (step 0: 6 must-pass, no done in the record, last entry blocked);
+            (step 0: partial, 5 of 6 must-pass, criterion 5 red at one case);
             every achievements category page as trading cards (step 1, done on
             unit 347); what the last phase left (step 2, done on unit 348); then
             Tim at his window says it passed (step 3, 0 of 1, waiting for Tim).
-UNIT GOAL:  Give step 0 a report of its own at this tree, criterion by criterion,
-            with the 1400 top row and panel share measured with the best bet
-            pinned both ways instead of at the hour of the run, and with what
-            stands between the panels and the status bar named in pixels.
-ADVANCES:   step 0 - criteria 1 and 5 (the 190 px row and the 1400 share, held
-            at the best bet's worst case, not by the clock); criterion 4 (full to
-            the status bar, measured and named); and step 0's missing record,
-            which steps 1 to 3 rest on.
+UNIT GOAL:  Fit the green block at 1400 so that, with the best bet drawn on the
+            operator's own band, the top row is at most 0.262 of the height below
+            the band pills and the three panels at least half - by arrangement,
+            every word, check and command unchanged - with every other pinned case
+            still holding, and the sheet Tim holds brought to the new screen.
+ADVANCES:   step 0 criterion 5 (the 1400 share, at its worst case) and R26's
+            half-the-height floor under criterion 1, which is what stands between
+            step 0 and done.
 DRIFT:      0
 ```
 
@@ -117,36 +120,37 @@ work succeeds anyway.
 
 Check:
 - **Every file, line and item §1 cites.**
-- **`HEAD` and `origin/main` read `1456ac5c`** for this arbiter, and `output.md` in the tree is unit
-  349's.
-- **The version is 1.13.36** in `Directory.Build.props` (line 801 for this arbiter).
-- **`DECISIONS.md` tops at HM-DEC-163.** If a higher id exists, or any commit after `1456ac5c`
+- **`HEAD` and `origin/main` read `c88d3974`** for this arbiter, and `output.md` in the tree is unit
+  350's.
+- **The version is 1.13.37** in `Directory.Build.props` (line 809 for this arbiter).
+- **`DECISIONS.md` tops at HM-DEC-163.** If a higher id exists, or any commit after `c88d3974`
   carries a verdict from Tim on step 3, **stop at task 0.** Quote it in section 4 and write nothing
   else: a verdict changes what the next unit is.
-- **The launcher's files still disagree with themselves.** One line each; edit none:
-  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`, and its last step 0 entry is unit 340,
-    `blocked`. There is no unit 341 entry.
-  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0`, step 3 `in progress`, and `WORK_INSTRUCTION: 349`.
+- **The launcher's files, one line each; edit none:**
+  - `PHASE_OUTCOME.md` and `PHASE_STATUS.md` read step 0 `partial`, steps 1 and 2 `done`, step 3
+    `in progress`.
+  - `PHASE_STATUS.md` reads `WORK_INSTRUCTION: 350`.
   - `PHASE_OUTCOME.md`, `PHASE_STATUS.md`, `RUN_LEDGER.md` and files under `.run-unit\` are modified
     and uncommitted by the launcher.
-- **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`.** Unit 349 found no `CPS-DEC` id in the
-  file. It is parked with the id schemes. One line.
-- **`validate-output.bat` reads the `UNIT:` line only in the report's first 60 lines.**
-- **`tools\arbiter.bak-20260913\` is untracked at the root.** **Never `git add -A` or `git add .`**;
-  stage files by name.
-- **The tool facts in §7** are unit 349's. Say which held for you.
+- **The reload says `CLAUDE.md` §1 holds `CPS-DEC-0163`.** Units 349 and 350 found no `CPS-DEC` id
+  there. It is parked with the id schemes. One line.
+- **`tools\arbiter.bak-20260913\` is untracked at the root**, and `SESSION.lock` may be. **Never
+  `git add -A` or `git add .`**; stage files by name.
+- **The tool facts in §7** are unit 350's. Say which held for you.
 
 **Reds expected, older than this unit. This unit runs none of them:**
 - `TheMenuIsUnderTheMouseTests` (8);
 - `TheAchievementsScreenTests.TheWindowDrawsEverySixRows` (1);
 - `TheOperatorCanStopItTests` (2) and `TheWholeChainRunsFromOneRightClickTests` (2), **never run.**
 
-**Expected green:**
-- **the carry-forward list:** 111 of 111 app and 86 of 86 engine, unit 349's numbers after task 3;
-- **step 0's filter:** `TheTopRowTests` 8 of 8, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests`
-  1 of 1 and `VoiceTests` 5 of 5, which is 22 of 22.
+**Expected at the start:**
+- **the carry-forward list:** 111 of 111 app and 86 of 86 engine;
+- **step 0's filter: 23 of 24.**
+  - `TheTopRowTests` 9 of 10, the red being `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`.
+  - `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1 and `VoiceTests` 5 of 5.
 
-**If a red turns green, a green turns red, or a count moves, say which.**
+**Expected at the end:** step 0's filter all green, whatever count it then has, with the carry-forward
+list unchanged. **If a red turns green, a green turns red, or a count moves, say which.**
 
 ---
 
@@ -207,84 +211,106 @@ backgrounds a command and polls for it.*
   content. A step's exit is what is on the screen, asserted by computation and described in words,
   then Tim's eyes. Every appearance claim is computed, not seen, and says so.*
 - *A must-pass is missed by a little: ship, report, `partial`, move on. Never loosen a test.*
+- *A string will not fit: shorten and say which, or widen; never clip.* **This unit narrows that
+  to arrangement only (ruling 55).**
 - *Anything touches the radio, a decoder, a parser or the transmit chain: `MOVE: stop`.*
 - *A package is needed: `MOVE: stop`.*
 - *Carried: every open ask from unit 336's queue, verbatim in every unit. Plus: real flags on earned
   country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the radio; the recording of
   real PSK31 audio; the id-scheme split; the map bitmap's license.*
 
-**The arbiter's rulings 1 to 46 stand as units 337 to 349 built them.** They are gathered on the
-sheet, marked for Tim at step 3, and overrulable. **This unit re-opens, re-words or re-builds none of
-them.** Three bite here:
+**The arbiter's rulings 1 to 52 stand as units 337 to 350 built them, except where ruling 53 below
+overrules ruling 47.** They are gathered on the sheet, marked for Tim at step 3, and overrulable.
+**This unit re-opens, re-words or re-builds none of the others.** These bite here:
 - **1.** *The working panels* means the three panels themselves, at least half the height below the
   band pills at 1920 and 1400, with the readiness strip hidden. The number with the strip showing is
   also reported.
+- **2.** The rule of thumb is the mockup's sentence, `GreenZone.RuleOfThumb`. Its words do not
+  change.
 - **19. Watching red.** Show a new assertion fail once, against a deliberately wrong expectation set on
   the test window only, and give the failure line. **Never break markup or a view to watch a test
   fail.** Where the new assertion is red against the tree as it is, that is the watched red.
 - **46.** No further unit is authored into step 3 until Tim answers, unless the sheet is shown wrong.
+- **49**, as unit 350 built it: `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays` pins
+  `IsBestBet` drawn on 20 m and absent, on FT8 and PSK31, at 1920 and 1400. It asserts the 1920 row
+  within 10% of 190, the 1400 row `<= 0.262 * below`, the three panels `>= below / 2`, the rig panel
+  within 2 px of the card, and the pin read back. **Its limits are not loosened, and its body is not
+  edited to turn it green.**
 
 **The arbiter's rulings for this unit.** They are the author's, marked for Tim at step 3, and
 overrulable:
 
-47. **Step 3 is held for Tim, and this unit changes nothing Tim is reviewing.**
-    - Ruling 46 is upheld. Unit 349's section 4 item 1 is Tim's ask and stays open.
-    - **No file under `src\` changes in this unit, and no markup changes.** The sheet describes the
-      screen at `85437c2`, and the screen must still be that screen when Tim opens it.
-    - The only file under `docs\` that changes is the sheet, and only as task 2 says. Those edits are
-      numbers measured here, never new words about the screen.
-48. **Step 0 gets a report of its own at this tree.**
-    - The report's block B is step 0's seven criteria, each with its test, its numbers at 1400 and
-      1920, and *met* or *not met*. The state reader then judges step 0 on this unit, not on a
-      verdict that has been overwritten.
-    - **Every number comes from a run in this unit.** Where no class prints a number a criterion
-      needs, say so and quote the latest report that measured it, with its commit. Do not compose a
-      number.
-    - Unit 341's report (`0f383a3`) is the step 0 evidence the record lost. Cite it where it
-      measured something this unit does not re-measure. Say which items those are.
-49. **Criteria 1 and 5 are measured with the best bet pinned both ways, not at the hour of the
-    run.**
-    - Set the best bet on the test window only, the way `:697`-`700` does, in two states:
-      - **drawn**, on the band the fixture is on;
-      - **absent**, with every `IsBestBet` false.
-    - Do this on FT8 and PSK31, at 1920 and 1400, on the licensed fixture.
-    - Assert the limits the tree already has, unchanged, in each state: the 1400 top row
-      `<= 0.262 * below`, the three panels `>= below / 2`, and the rig panel within 2 px of the card.
-      **0.262 and one half are not loosened.**
-    - Put it where it reads best. That can be an extension of
-      `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, or one new fact beside it in
-      `TheTopRowTests`. Name which.
-    - **Check that the pin holds.** Read `IsBestBet` and the green block's best bet visibility after
-      settling, and print them.
-      - If a spot refresh re-ranks and overwrites the pin, the test fails with that message.
-      - Do not work around it in `src`: no clock injection and no ranking change. Report it, and the
-        next arbiter decides.
-    - **Nothing is pressed.** `GreenZoneBestBet` is a button that moves the operator's band. Read it;
-      never click it or invoke its command (§0.2).
-    - **If the worst case is red at this tree:**
-      - that is a finding for block B, with the failure line;
-      - it is **not fixed**, because the screen is under Tim's review (ruling 47);
-      - a miss by a little is `partial` under §6, and the next arbiter decides between a fix and
-        Tim's verdict.
-50. **Criterion 4's *full to the status bar* is measured and named, not asserted into a new
-    shape.**
-    - At 1920 and 1400, on FT8, print from the three panels' bottom edge to the status bar's top edge.
-      Give the bottom and top in window coordinates, and every visual between them that has height:
-      its name or type, its top, its height, and whether it is a border, padding, margin or content.
-    - **The report says, in block B, whether anything a person would call a panel, a strip or empty
-      space stands there.** It does not judge whether that meets R26's words; the state reader and
-      Tim do.
-    - If an assertion is warranted, it asserts the gap as measured, no looser, and names what fills
-      it. Otherwise it is printed only. Name which.
-51. **Task 3, the drop candidate: the nice-to-pass at 1400.**
-    `TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` runs at 1920 only. Extend it to 1400 in
-    the same loop, with its assertions unchanged. Watch it red by ruling 19 if it is green on the tree.
-52. **Section 4 raises no new ask of its own unless the measurements put one there.**
-    - Unit 349 item 1 is carried as Tim's open ask, marked *STILL OPEN - work instruction 350 authors
-      nothing into step 3*.
-    - Everything else this unit finds is a finding, and says so.
-    - A red at the worst case (ruling 49) is a finding, not an ask. §6 already says what happens to a
-      small miss.
+53. **The screen moves for this one case, and the sheet moves with it. This overrules ruling 47 for
+    this unit.**
+    - Files under `src\Hamlet.App\Views\` and `src\Hamlet.App\ViewModels\` may change, only as ruling
+      55 allows.
+    - The sheet changes only as task 2 says. When this unit ends, the sheet describes the screen at
+      this unit's last commit.
+    - Ruling 46 holds: nothing here is step 3's.
+    - *Why:* Tim cannot answer a sheet whose first known imperfection is a must-pass miss someone
+      could have closed. Criterion 5's red is the only open work in a phase otherwise waiting on him.
+54. **The trace chooses the mechanism; the arbiter does not.**
+    - Before anything is built, name in pixels what makes the 1400 PSK31 green block 10 px taller
+      with the check than with a best bet on another band, and 19 px taller than with none. Give it
+      line by line:
+      - the right column's width;
+      - the left column's width;
+      - each left line's height and line count;
+      - the best bet row's height, and the height of the word with and without *✓*.
+    - Then, **on the test window only**, measure each arrangement the unit considers, the way unit
+      340 measured its options. For each, give the 1400 PSK31 top row and panels with the best bet on
+      his band, and the 1920 row.
+    - Build the one that fits. Name it as the unit's own and overrulable, with the words that
+      overrule it.
+55. **Arrangement only. What may not change:**
+    - **No word changes.** Not *best bet now:*, not the band name, not *✓*, not the license line,
+      not the rule of thumb (ruling 2), not *heard just now*, the count or *last minute*.
+    - **Nothing hides.** The best bet, its check and the count stay drawn at 1400 whenever they
+      draw now. The sparkline's existing rule (U1) may be re-used but not tightened into hiding
+      anything else. §0.5: *collapsing hides detail, never information.* §0.6: the check is the carrier
+      that is not color.
+    - **`GreenZoneBestBet` stays the pill's own press:** its `Command`, `ToolTip.Tip`, `IsVisible`
+      binding and `x:Name` unchanged. **Nothing presses it**, in any test or trace (§0.2).
+    - **The ranking and the clock do not change:** nothing in `RankBands`, `ApplyBestBet`,
+      `BestBetWords`, `GreenZone.For` or any clock source.
+    - **The band stays the block's largest text**, and **the 1920 row stays 190 px** in every pinned
+      case.
+    - **What may change:**
+      - where the best bet row and the heard grid stand inside `GreenZoneBlock`;
+      - `GreenZoneRegions`' columns;
+      - a font size, line height or font family on the check or best bet row only, if the trace
+        shows the glyph's line as the cost;
+      - `FitTheHeardCount`'s rule, kept measured from the words and not from a window width, as its
+        own remark requires.
+    - **If no arrangement reaches 238.4 and 455:** ship the best measured one if it is closer than 247
+      and 446 and moves no other pinned case past its limit; otherwise ship nothing. Report the
+      numbers per arrangement. That is `partial` under §6, and **no word is shortened to close it.**
+56. **The pinned fact is the proof, unchanged.**
+    - `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays` is red on the tree. That is its
+      watched red, and it already carries the failure line.
+    - **Green with its body unedited** is the proof that the fix works.
+    - Also assert, in the same fact or one beside it, the case unit 350 printed and did not assert:
+      **the best bet drawn on another band** (40 m), with the same limits. Its watched red is by
+      ruling 19.
+    - **The pin can be overwritten by a spot reload** (unit 350 item 2). If the fact fails with the
+      pin message rather than a limit, run the filter once more and report both runs. A pin-message
+      red is neither a layout miss nor a layout pass. Do not add a clock seam or change the reload.
+57. **The sheet, `docs\unit349-what-tim-looks-at.md`, brought to the new screen - and to nothing
+    else:**
+    - section 2.2's table: the *Top row*, *Green block* and panels rows (`:93`-`96`), re-measured
+      with the best bet on his band, on another band and absent;
+    - section 2.2's bullet *When the best bet draws…* (`:106`-`107`) and its source note (`:116`),
+      replaced with this unit's numbers and commit;
+    - section 2.1's FT8 table: only if the change moved an FT8 number, re-measured;
+    - section 3.3: one new row **U11**, this unit's arrangement, in the table's own columns, with its
+      overrule words;
+    - section 4 items 1 and 2 (`:434`-`438`): item 1 replaced by the result, or removed and the list
+      renumbered if the case now holds; item 2's 19 px replaced by the new spread;
+    - section 3.3's U2 overrule number (`:414`): only if task 3 runs.
+    - **No other line changes.** A measured number that contradicts another line is reported in
+      section 4 and not edited.
+58. **Section 4 raises no new ask of its own unless the measurements put one there.** Unit 349 item 1
+    is carried as Tim's open ask. Everything else this unit finds is a finding, and says so.
 
 **Standing, transcribed:**
 - **§0.0**: *Never present a guess as a decode… This binds pictures as hard as sentences.* Every
@@ -297,8 +323,8 @@ overrulable:
 - **§0.6**: every ink clears 4.5:1 against its fill, and color is never the only carrier.
 - **R12**: *a session fixes its own tests and never asks the owner to approve it.*
 - **R13**: telemetry on every new stage. This unit adds no stage.
-- **R14**: *a test exists to prove an exit criterion.* This unit adds only rulings 49 to 51's
-  assertions and task 0's trace.
+- **R14**: *a test exists to prove an exit criterion.* This unit adds only task 0's trace and ruling
+  56's assertion.
 - **R19**: American spelling.
 - **HM-DEC-139**: open asks are carried verbatim until answered.
 
@@ -307,7 +333,7 @@ overrulable:
 ## 4. Status cadence
 
 Write status **before every `dotnet` command, after every commit and after every task**, with
-`sh tools/status.sh`. It ran for every write in unit 349. If it is refused, take a `date` reading and
+`sh tools/status.sh`. It ran for every write in unit 350. If it is refused, take a `date` reading and
 paste it whole. **Never compose a time.**
 
 The script hard-codes `RULES_AT: HM-DEC-161 (2026-09-11)`. **After every write**, set that line back
@@ -320,89 +346,105 @@ status between sections of the report**, so a quiet stretch of editing is never 
 
 ## 5. The tasks
 
-### Task 0 - the trace: step 0 at this tree, with the best bet both ways and the floor named
+### Task 0 - the trace: what the check costs, and what each arrangement gives
 
-Measure before anything is asserted. **Say what you find rather than confirming §1.**
+Measure before anything is built. **Say what you find rather than confirming §1.**
 
-1. **Commit `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` and a patch bump (1.13.36 -> 1.13.37, with its
+1. **Commit `WORK_INSTRUCTIONS.md`, `PHASE_STATUS.md` and a patch bump (1.13.37 -> 1.13.38, with its
    comment block).**
-   - In `PHASE_STATUS.md`, change only the `WORK_INSTRUCTION:` line, to `350 - step 0, on the record
-     and not on the clock`. Do not touch its `STEP:` lines, `CURRENT_STEP` or `HEARTBEAT`.
+   - In `PHASE_STATUS.md`, change only the `WORK_INSTRUCTION:` line, to `351 - step 0's last red: the
+     check fitted at 1400`. Do not touch its `STEP:` lines, `CURRENT_STEP` or `HEARTBEAT`.
    - Do not commit `.run-unit\`, `PHASE_OUTCOME.md`, `RUN_LEDGER.md`, `SESSION.lock` or
      `tools\arbiter.bak-20260913\`.
-   - The message is `chore(unit350): step 0, on the record and not on the clock - the trace first`.
+   - The message is `chore(unit351): step 0's last red, the check fitted at 1400 - the trace first`.
    - Run the carry-forward list, status first, and give both invocations as *n of n*.
 2. **Step 0's filter, once**, status first, with a stated timeout. Give each class as *n of n*, and
-   the failure line of any red. **Do not stop for a red; do not fix one.** Print the hour the run
-   read, and whether the best bet drew, on each 1400 PSK31 window.
-3. **Add `Unit350TraceStepZeroBothWays` to `TheTopRowTests`.** It asserts nothing and presses nothing.
-   - **Best bet, both ways (ruling 49):** at 1920 and 1400, FT8 and PSK31, licensed, best bet drawn
-     and best bet absent. For each, print:
-     - top row px and share;
-     - card and rig panel;
-     - green block height;
-     - the three panels with the strip hidden and showing;
-     - whether the pin held after settling.
-   - **The floor (ruling 50):** at 1920 and 1400 on FT8, the panels' bottom, the status bar's top, and
-     every visual with height between them.
+   the failure line of any red. Expect 23 of 24.
+3. **Add `Unit351TraceTheCheckInTheGreenBlock` to `TheTopRowTests`.** It asserts nothing and presses
+   nothing.
+   - **Setup:** pin the best bet as `Unit350TraceStepZeroBothWays` does, at 1400 and 1920, on FT8 and
+     PSK31, licensed, in three states: on his band (20 m, with *✓*), on 40 m, and absent.
+   - **For each, print** (ruling 54):
+     - top row px and share, and the three panels with the strip hidden;
+     - `GreenZoneBlock`'s height;
+     - `GreenZoneLeft`'s and `GreenZoneRight`'s widths;
+     - each left line's height and its line count (height over the line's own line height);
+     - the best bet row's height, the button's desired width and height, and the same word measured
+       without *✓*;
+     - whether the sparkline is showing;
+     - whether the pin held.
+   - **Then, on the 1400 PSK31 window with the best bet on his band, set each candidate arrangement on
+     the test window only** and print the same numbers, plus the 1920 row with that arrangement.
+     Consider at least:
+     - the best bet row moved out of the right column;
+     - the right column held to the width it has without the best bet, the best bet row wrapping;
+     - the check's line held to the row's line height.
+
+     Add any other arrangement the numbers suggest. **Every candidate keeps ruling 55's list.**
 4. **Answer from the numbers, in section 1, before task 1 starts:**
-   - The worst 1400 PSK31 top row, and its margin to 0.262 × `below`.
-   - The worst panel share at either width, strip hidden.
-   - Did the pin hold in every state?
-   - What fills the gap between the panels and the status bar, in pixels, at each width?
-   - Did step 0's filter read 22 of 22?
+   - What makes the block 10 px taller with *✓*, and 19 px taller than with no best bet, line by line?
+   - Which arrangement brings the 1400 PSK31 row to at most 238.4 and the panels to at least 455 with
+     the best bet on his band, and what does it do to the other cases at 1400 and 1920?
+   - Which one will task 1 build, and why?
+   - Did every pin hold?
 
-**Drop candidate:** none. Every line of block B rests on it.
+**Drop candidate:** none. Task 1 is built on it.
 
-### Task 1 - the best bet pinned, asserted (ruling 49)
+### Task 1 - the arrangement built, and the pinned fact green unchanged (rulings 55 and 56)
 
-1. **The assertion**, at 1920 and 1400, FT8 and PSK31, best bet drawn and absent, with the limits the
-   tree already has. Name where it lives.
-2. **The watched red** by ruling 19, on the test window only, with the failure line. Or give the red
-   on the tree, and do not fix it (ruling 47).
-3. **Run step 0's filter again**, status first. Commit and push:
-   `test(app): task 1 - the 1400 top row and panel share held with the best bet pinned both ways -
-   <numbers>`.
+1. **Build the chosen arrangement** in the markup and, if needed, `FitTheHeardCount`. Keep the
+   existing remarks' voice: say what moved, why, and the numbers, as the block's other comments do.
+2. **Run step 0's filter**, status first.
+   `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays` should be green with its body
+   unedited, and every other step 0 test green.
+3. **Add the 40 m case** to the pinned assertion (ruling 56), with its watched red by ruling 19 on the
+   test window only.
+4. **Run step 0's filter again**, status first, and the carry-forward list. Commit and push:
+   `feat(app): task 1 - the check fitted at 1400 - <arrangement>; 1400 PSK31 with the best bet on his
+   band <px> of 238.4, panels <px> of 455; <numbers for the other cases>`.
 
-**Drop candidate:** none. Criterion 5 does not stand on the clock without it.
+**If no arrangement fits**, follow ruling 55's last bullet and commit the result under `feat(app)` or
+`test(app)`, whichever is true.
 
-### Task 2 - the floor named, and the sheet's numbers brought to this tree (rulings 48 and 50)
+**Drop candidate:** none. It is the unit.
 
-1. **Criterion 4:** printed or asserted as ruling 50 says. Name which, and why.
-2. **The sheet, `docs\unit349-what-tim-looks-at.md`, numbers only:**
-   - section 2.2's top-row line and section 4's items 1 and 2 take the numbers task 1 measured,
-     citing this unit's commit;
-   - section 2.1's *Where the panels end* row adds what task 0 named, in the same words the report
-     uses.
+### Task 2 - the sheet brought to the new screen (ruling 57)
 
-   **No other line of the sheet changes.** If a measured number contradicts another line of the
-   sheet, say so in section 4. Do not edit that line.
-3. **Run the carry-forward list**, status first. Commit and push:
-   `docs(unit350): step 0's worst case and floor on the sheet - <numbers>`.
+1. **Edit only the lines ruling 57 lists**, with numbers from task 1's runs and this unit's commit.
+2. **U11's row** says, in the table's columns:
+   - what moved in the green block;
+   - where Tim sees it (green block, 1400);
+   - what was rejected, from task 0's other arrangements;
+   - the overrule words.
+3. **Commit and push:** `docs(unit351): the sheet at the new screen - <numbers>`.
 
-**Drop candidate:** the sheet edit (step 2). If time is short, skip it and say so. Section 3 of the
-report carries the numbers, and the next arbiter decides whether the sheet needs them before Tim reads
-it.
+**Drop candidate:** none. Without it the sheet is no longer the screen (ruling 53).
 
-### Task 3 - the nice-to-pass at 1400 (ruling 51, the drop candidate)
+### Task 3 - U2's overrule number re-measured (the drop candidate)
 
-1. **Extend `TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` to 1400**, with its assertions
-   unchanged. Give the watched red.
-2. **Run step 0's filter again**, status first. Commit and push.
+Section 3.3's U2 row says putting the upgrade row back takes the 1400 PSK31 top row to *240 px (0.264)
+with the best bet drawn*. That is unit 341's number, from before this unit's arrangement, with the best
+bet on another band.
+1. **On the test window only**, show the upgrade row and its button again, and print the 1400 PSK31
+   top row and panels with the best bet on his band, on 40 m and absent. **Nothing is pressed.**
+2. **Replace the number in U2's overrule cell** with what was measured, citing the commit. Commit and
+   push.
 
-**Drop candidate: this task, whole.** If time runs short, skip it. The nice-to-pass stays at 1920, and
-the report says so.
+**Drop candidate: this task, whole.** If time runs short, skip it. U2's cell keeps unit 341's number,
+and the report says so.
 
 ---
 
 ## 6. Parked - do not touch, do not raise
 
-- **Step 3 and the verdict.** Tim's (ruling 47).
-- **The screen, all of it.** No file under `src\` and no `.axaml` changes, even for a red at the worst
-  case.
-- **The best bet ranking and the clock.** Nothing in `RankBands`, `ApplyBestBet` or any clock source
-  changes; a test that finds the pin overwritten reports it.
-- **Every red in the record**, and every test except those rulings 49 to 51 and task 0 name.
+- **Step 3 and the verdict.** Tim's (ruling 46).
+- **Every word on the screen**, and everything on the screen outside `GreenZoneBlock` and
+  `FitTheHeardCount` (ruling 55).
+- **The best bet ranking, the spot reload and the clock.** Nothing in `RankBands`, `ApplyBestBet`,
+  `ReloadSpotsAsync` or any clock source changes. A pin-message red is reported (ruling 56).
+- **The strayed-frequency line on the licensed fixture** (unit 341 item 2). The fixture is not
+  changed to make the case shorter.
+- **Every red in the record**, and every test except those task 0, ruling 56 and task 3 name.
 - **Steps 1 and 2.** Done. Their classes are not run in this unit.
 - **Pictures**: no package, no running app, no drawn mockup (ruling 42).
 - **PSK31 decoding, all of it** (ruling 23).
@@ -413,8 +455,8 @@ the report says so.
   - the live license lookup and the live heard count;
   - the two id schemes, including `CPS-DEC-0163`;
   - real flags on country cards, PSK31 step 6, real PSK31 audio and the map bitmap's license;
-  - the launcher's `PHASE_OUTCOME.md` header, its missing unit 341 and 344 entries, its unit
-    numbering, and `tools/status.sh`'s hard-coded `RULES_AT`.
+  - the launcher's `PHASE_OUTCOME.md` entries and unit numbering, and `tools/status.sh`'s hard-coded
+    `RULES_AT`.
 - **Anything touching the radio, a decoder, a parser or the transmit chain. Any package.**
 
 ## 7. What not to do
@@ -422,25 +464,33 @@ the report says so.
 - **No unfiltered `dotnet test`. Never background and poll. Never compose a timestamp.** HM-DEC-155.
 - **Never run `TheOperatorCanStopItTests`, `TheWholeChainRunsFromOneRightClickTests` or
   `TheMenuIsUnderTheMouseTests`.**
-- **Do not change a file under `src\`** (ruling 47). **Do not loosen 0.262, one half or the 2 px rig
-  tolerance** (§6).
-- **Do not press, click or invoke the best bet, a band button, CQ, Stop or any send** (§0.2, ruling
-  49).
+- **Do not change a word, hide anything, or touch the best bet's command** (ruling 55). **Do not
+  loosen 0.262, one half, the 10% at 1920 or the 2 px rig tolerance, and do not edit the pinned
+  fact's body to turn it green** (§6, ruling 56).
+- **Do not press, click or invoke the best bet, a band button, CQ, Stop or any send** (§0.2).
 - **Do not break the view to watch a test fail** (ruling 19).
-- **Do not edit the sheet beyond task 2's lines** (ruling 47).
+- **Do not edit the sheet beyond ruling 57's lines.**
 - **Do not delete a file.** Empty it, comment it, list it (§6).
 - **Do not edit `PHASE_OUTCOME.md`, `RUN_LEDGER.md`, the `STEP:` lines, `CURRENT_STEP`,
   `.run-unit\allowed.txt` or anything under `tools\arbiter\`.** They are the launcher's.
 - **Never `git add -A` or `git add .`** (§2).
 - `CLAUDE.md` §12.6 covers the rest. **No package. Report mismatches. Write American.**
-- **The tool facts, as unit 349 found them.** Say which held for you:
-  - **ran:** `sh tools/status.sh` on every write, joined by `&&` before `dotnet`; `&&` joining
-    `git add`, `commit` and `push`; commits with several `-m`; `grep` with several `-e`, `-v`, `-o`,
-    `-c`, `-n` and `-A`; `cut`, `paste` and `sed -n` in pipes after `git show`; `ls`; `date`;
-  - **asked for approval, not run:** `grep -E` with a `{1,2}` quantifier and `\*` in a pipe after
-    `git show`; `sed -e 's/.../'` in a pipe. This arbiter also found `;` joining `git` commands asking
-    for approval, and an apostrophe inside `outcome-read.bat --approach` breaking its search;
-  - **refused:** none for unit 349. Unit 348 found a `for` loop over a shell variable refused, and
+- **The tool facts, as unit 350 found them.** Say which held for you:
+  - **ran:**
+    - `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test`, with `| tail` or
+      `| grep -e` after it;
+    - `git add && git commit -m -m && git push && date`;
+    - `grep -n -e`, `grep -o -e … | cut`, `git diff | grep -c`;
+    - `ls`, `cat`, `sed -n`, `git rev-parse HEAD origin/main`;
+  - **asked for approval, not run:**
+    - `cd` before `git`;
+    - `pwd -W && ls … 2>&1 | cat`;
+    - a `$TEMP` expansion;
+    - a `>` redirect joined with `;`;
+    - `git check-ignore -v`;
+    - `grep -E` with a brace quantifier;
+    - `sed -e` substitutions in pipes;
+  - **refused:** none for unit 350. Unit 348 found a `for` loop over a shell variable refused, and
     `sed -i` or a redirect onto `output.md` blocked;
   - **so:** write the report with the file editor.
 
@@ -468,73 +518,79 @@ fall inside the first 60 lines.**
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. At <hash>: step 0 has no done
-   in the record (header in progress, last entry unit 340 blocked, no unit
-   341 entry) - this report is its evidence. Step 1 done (unit 347). Step 2
-   done (unit 348). Step 3 0 of 1, waiting on Tim's verdict on
-   docs/unit349-what-tim-looks-at.md; nothing here moves it.
-B. Step 0 and its exit criteria, at this tree, best bet pinned both ways:
+A. The phase goal - the screen, done right. At <hash>: step 0 partial on
+   unit 350 (criterion 5 red at 1400 PSK31 with the best bet on his band)
+   - this report is its evidence. Step 1 done (unit 347). Step 2 done
+   (unit 348). Step 3 0 of 1, waiting on Tim's verdict on
+   docs/unit349-what-tim-looks-at.md, which this unit updated to the new
+   screen and did not otherwise move.
+B. Step 0 and its exit criteria, at this tree, best bet pinned three ways:
    entry: the tree is Hamlet's; PHASE_STATUS.md names this phase - <met?>
-   1. 1920 top row about 190, panels take the rest - <met/not>: <px, share>
+   1. 1920 top row about 190, panels take the rest - <met/not>: <px, share
+      in every pinned case>
    2. card carries strip, green block, clock; band largest; one dot -
-      <met/not>: <test, numbers>
+      <met/not>: <test, numbers after the arrangement>
    3. rig panel the card's height, drive and offer under the S-meter -
-      <met/not>: <px at both widths, both modes; or cited from 0f383a3>
+      <met/not>: <px at both widths, both modes>
    4. three panels equal, full to the status bar; facts beside at 1920 -
-      <met/not>: <heights; panels' bottom y, status bar top y, what fills it>
-   5. 1400 same shape, no callsign clipped, facts rule - <met/not>: worst
-      PSK31 top row <px> of <limit> with the best bet drawn, <px> without;
-      worst panel share <n>; pin held <yes/no>
+      <met/not>: <test; this unit ran it after the change>
+   5. 1400 same shape, no callsign clipped, facts rule - <met/not>: PSK31
+      top row <px> of 238.4 with the best bet on his band (was 247), <px>
+      on 40 m, <px> absent; worst panel share <n> (was 446 of 455); FT8
+      <px>; pin held <yes/no>
    6. BindingHealthTests, VoiceTests, carry-forward - <n of n each>
-   nice: best bet joined to the green block - <1920 and 1400 | 1920 only>
+   nice: best bet joined to the green block - <1920 and 1400 | which>
 C. The report last. Section 4 raises N items on top of the carried queue.
-   Say whether any stands in the way of a criterion in B, and whether any
-   red here is a miss by a little (section 6: partial) or more.
+   Say whether any stands in the way of a criterion in B, and, if 5 is
+   still red, by how much and what was tried.
 ```
 
 **Every line specific to this unit.** If something was not measured, say *not measured*. Do not fill
 the shape.
 
 ```
-UNIT:       350 - <complete|stopped> at task N of 3 - <date time, read from the clock>
+UNIT:       351 - <complete|stopped> at task N of 3 - <date time, read from the clock>
 PHASE GOAL: <restated in your own words>
 UNIT GOAL:  <restated in your own words>
-ADVANCED:   <yes|no> - step 0 criteria <which>; <what is now measured that was not>
-NUMBER:     step 0 must-pass evidenced at this tree: <n> of 6; 1400 PSK31 worst-case top row: not measured -> <px>
+ADVANCED:   <yes|no> - step 0 criterion 5 <held|closer|unchanged>; <what moved on the screen>
+NUMBER:     1400 PSK31 top row, best bet on his band: 247 px -> <px> (limit 238.4); panels 446 -> <px> (floor 455)
 DRIFT:      0
 ```
 
-**Section 2 says, first**, that nothing on the screen changed and the sheet Tim holds is still the
-screen. Then it says, in one or two sentences, what the top row does at 1400 on PSK31 at the hours
-when the best bet shows.
+**Section 2 says, first**, what moved on the screen, in words Tim can find at his window, and that the
+sheet was updated to it (with the lines). Then it says whether any word changed or anything hides. The
+answer ruling 55 requires is *no*; if it is not, say so plainly.
 
-**Section 3 leads with the answer:** does every step 0 criterion hold at this tree, whatever the hour?
-Then the table: criterion, test, 1400, 1920, met. Then what fills the space above the status bar. Then
-any number that differs from the sheet. **Every appearance claim is computed, not seen. Say so once.**
+**Section 3 leads with the answer:** does criterion 5 hold now at every pinned case? Then the table:
+case (width, mode, best bet state), top row, panels, green block, met. Then task 0's arrangements
+with their numbers, and which was built. **Every appearance claim is computed, not seen. Say so once.**
 
-**Section 4:** unit 349's section 4 verbatim per HM-DEC-139, from its line under
-`## 4. What's blocking us` to its end, as committed in `1456ac5c`, including the queues it carries.
+**Section 4:** unit 350's section 4 verbatim per HM-DEC-139, from its line under
+`## 4. What's blocking us` to its end, as committed in `c88d3974`, including the queues it carries.
 Keep it in place with the file editor. In the carried text, mark:
-- unit 349 item 1 (Tim's step 3 verdict): `STILL OPEN - Tim's; work instruction 350 authors nothing
-  into step 3`;
-- unit 341 item 1 and unit 339 item 2 (the best bet moves the 1400 row with the clock): `TAKEN UP by
-  work instruction 350 ruling 49`, with the measured worst case.
+- unit 349 item 1 (Tim's step 3 verdict): `STILL OPEN - Tim's; work instruction 351 authors nothing
+  into step 3, and the sheet was updated to the new screen at <hash>`;
+- unit 350 item 1 (criterion 5 red): `TAKEN UP by work instruction 351 rulings 53 to 56`, with the
+  measured result;
+- unit 350 item 3 (three sheet lines with the older number): `TAKEN UP by work instruction 351 ruling
+  57`, naming which lines changed;
+- unit 350 item 2 (the pin and the spot reload): `STANDS`, with this unit's pin readings.
 
-Then this unit's items, under *Raised by unit 350*. **Each says whether it is a finding or an ask**
-(ruling 52).
+Then this unit's items, under *Raised by unit 351*. **Each says whether it is a finding or an ask**
+(ruling 58).
 
 ---
 
 ```
 ARBITER-DECISION
 STEP: 0
-APPROACH: put step 0 on the record at this tree criterion by criterion - no screen change - with the 1400 top row and panel share asserted with the best bet pinned both ways on the test window (drawn and absent, FT8 and PSK31, 1920 and 1400) instead of at the hour of the run, and what stands between the three panels and the status bar named in pixels; the sheet's step 0 numbers brought to this tree; the best bet nice-to-pass extended to 1400 as the drop candidate
+APPROACH: fit the 1400 green block by arrangement so the best bet with its check on the operator's own band no longer widens the Auto right column or grows the block - every word, the check, the best bet's command and the ranking unchanged, nothing hidden - traced line by line and chosen from arrangements measured on the test window, proven by the unedited pinned fact going green plus the 40 m case, the sheet brought to the new screen; U2's overrule number re-measured as the drop candidate
 MOVE: work around
-WHY: Step 3 waits on Tim and ruling 46 holds, but step 0, which steps 1 to 3 rest on, has no done in the record (last entry unit 340 blocked, the unit 341 verdict overwritten), and its criterion 5 has held only at whatever hour the test ran (237 of 238.4 px with the best bet, 228 without). This differs from unit 339's proof: it pins the clock-driven input unit 339 item 2 and unit 341 item 1 named, and names criterion 4's floor. The loop test found nothing like it.
-STATE: in progress
-DECIDED: ruling 47 - step 3 held for Tim (ruling 46 upheld), no src or markup change so the sheet Tim holds stays the screen; ruling 48 - step 0 gets its own report at this tree, criterion by criterion, numbers only from this unit's runs or cited by commit; ruling 49 - criteria 1 and 5 asserted with IsBestBet pinned drawn and absent on the test window (the :697-700 precedent), FT8 and PSK31, 1920 and 1400, with 0.262, one half and 2 px unchanged, the best bet never pressed, an overwritten pin or a red worst case reported and not fixed; ruling 50 - criterion 4's gap from the panels' floor (y 953) to the status bar (y 978) measured and every visual in it named, asserted only as measured; ruling 51 - the nice-to-pass extended to 1400, the drop candidate; ruling 52 - no new ask unless the numbers raise one, unit 349 item 1 carried as Tim's and open - all the author's, marked for Tim at step 3, overrulable
-LICENCE: PHASE_PLAN.md sections 1, 4 (step 0 exit in full), 5 (steps 1-3 one pipeline on step 0), 6 (the arbiter decides and continues; a small miss ships partial; never loosen a test; transmit or a package stops) and 7; PHASE_CONTROL.md sections 2 (a step verifies its own ground), 3 (course correction, revisiting a step) and 7 (a step passing on a foundation that failed); ARBITER.md sections 3, 4, 6 and 8; .run-unit/reload.txt disagreements (PHASE_OUTCOME header in progress, last step 0 entry blocked); PHASE_OUTCOME.md unit 340 STATE_WHY and no unit 341 entry; .run-unit/state-verdict.json (step 3 in progress on unit 349); .run-unit/s4-verdict.json (none); unit 349 output.md at 1456ac5c sections 1 (sheet correction 1: y 953 against y 978) and 4 item 1; docs/unit349-what-tim-looks-at.md sections 2.1, 2.2 and 4 items 1-2; unit 341 output.md at 0f383a3 item 1; unit 339 output.md at 991223a item 2; TheTopRowTests.cs 577, 652, 656, 684, 697-700; MainWindowViewModel.cs 16831, 16836, 17037-17038; Directory.Build.props 801; DECISIONS.md (HM-DEC-163 top); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-ACCOMPLISHED: the main window's promise - a short top row and the working panels given more than half the height - is shown to hold at both of Tim's widths whatever time of day the best bet appears, and the space above the status bar is named; step 0 has a report of its own on the tree Tim is reviewing, so the phase's first step stands in the record and not in a file that was overwritten, and nothing on the screen moved under Tim's review
-ADVANCES: step 0 - criteria 1 and 5 (the 190 px row and the 1400 share held with the best bet pinned drawn and absent, not by the hour of the run), criterion 4 (full to the status bar, measured and the gap named), and step 0's missing done in the record that steps 1 to 3 rest on; the nice-to-pass at 1400 if task 3 runs
+WHY: Step 0 is partial on one case - 1400 PSK31 with the best bet on his band, 247 of 238.4 px and panels 446 of 455 - and unit 350 held the screen still and left a fix or Tim's verdict to this arbiter; a fix is the only work open in the phase and Tim should not spend his review on a 9 px miss. Unit 338 shortened a string and unit 341 hid an empty row; this changes no word and hides nothing, and the loop test found nothing like it.
+STATE: partial
+DECIDED: ruling 53 - the screen moves for this one case and the sheet with it, overruling ruling 47 for this unit, ruling 46 upheld; ruling 54 - the trace names what the check costs line by line and measures candidate arrangements on the test window before one is built, the choice the unit's; ruling 55 - arrangement only: no word, check, command, tooltip, ranking or clock change, nothing hidden, the band the largest text and 1920 at 190, and a miss beyond arrangement ships partial without shortening; ruling 56 - TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays green with its body unedited is the proof, the 40 m case asserted beside it, a pin-message red run once more and reported; ruling 57 - the sheet's section 2.2 rows, bullet and note, a new U11 row and section 4 items 1 and 2 brought to the new screen, nothing else; ruling 58 - no new ask unless the numbers raise one, unit 349 item 1 carried as Tim's - all the author's, marked for Tim at step 3, overrulable
+LICENCE: PHASE_PLAN.md R26 (at no window size less than half; at 1400 the unit measures and chooses), sections 1, 4 (step 0 exit criteria 1 and 5), 6 (the arbiter decides and continues; a small miss ships partial; shorten or widen, never clip; never loosen a test; transmit or a package stops) and 7; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 0 partial on unit 350, criterion 5 at 1400 PSK31 with the best bet on his band); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 350 (UNIT 6 - STEP 0) STATE_WHY, unit 338 and unit 341 approaches; unit 350 output.md at c88d3974 sections 1 and 3 and section 4 items 1 to 3 (b49eb3ab, 437cedd8); unit 341 output.md at 0f383a3 item 1 (the right column 140 to 180 px); src/Hamlet.App/Views/MainWindow.axaml 604, 639-640, 658-717, 720-792, 727-746, 737; src/Hamlet.App/Views/MainWindow.axaml.cs 98-147; src/Hamlet.App/ViewModels/GreenZone.cs 51, 296-301; tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 577, 688, 757, 1195; docs/unit349-what-tim-looks-at.md 93-96, 106-107, 116, 414, 434-438; Directory.Build.props 809; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
+ACCOMPLISHED: on PSK31 at Tim's narrower width, when the best bet is the band he is already on, the short top row stays the mockup's share and the waterfall, decoded text and For You keep at least half the window, with every word and the check still on the screen - so the last measured miss in step 0 is closed or narrowed with numbers, and the sheet Tim is reading describes the screen as it now is
+ADVANCES: step 0 - criterion 5 (the 1400 top row share at its worst case, the best bet drawn on the operator's own band) and R26's half-the-height floor under criterion 1, the only red standing between step 0 and done
 END-ARBITER-DECISION
 ```

@@ -805,8 +805,16 @@
     named in pixels (the arbiter's rulings 47 to 52). Tests and the sheet's numbers only; no file
     under src and no markup changes, so the screen Tim is reviewing does not move.
   -->
+  <!--
+    1.13.37 -> 1.13.38, UNIT 351 TASK 0. A PATCH, STEP 0'S LAST RED, THE CHECK FITTED AT 1400: the
+    green block is fitted by arrangement so that on PSK31 at 1400, with the best bet drawn on the
+    band he is on, the top row keeps the mockup's share and the three panels keep half; what the
+    check costs is traced line by line and each arrangement measured on the test window before one
+    is built, and the sheet Tim holds is brought to the new screen (the arbiter's rulings 53 to 58).
+    No word, check, command or ranking changes and nothing hides; nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.37</Version>
+    <Version>1.13.38</Version>
   </PropertyGroup>
 
   <!--
