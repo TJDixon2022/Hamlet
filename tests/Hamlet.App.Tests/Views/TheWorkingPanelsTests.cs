@@ -481,9 +481,24 @@ public sealed class TheWorkingPanelsTests
     }
 
     /// <summary>The digital tab with nothing decoded, every panel open.</summary>
+    /// <remarks>
+    /// **THE NETWORK SOURCES ARE SWITCHED OFF SINCE WORK INSTRUCTION 353** (the arbiter's ruling 70, the
+    /// unit's own and overrulable), by the same list as <see cref="TheTopRowTests.FixtureSettings"/>. With
+    /// POTA at its default this window's numbers moved between runs of the same tree: at 1920 with the
+    /// list empty, Stop at y 373 in two of three runs and 367 in the third, the two filter chips 11 px
+    /// higher with it (`u353-t1-run1` to `-run3`). In the third run the plain window drew *1 station*
+    /// where the other two drew 0, which is read, not proven, as a spot this window's POTA reply wrote
+    /// into the run's shared spot history. Nothing else about the window changes.
+    /// </remarks>
     private static Window EmptyTab(double width)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
+
+        foreach (var name in TheTopRowTests.NetworkSources)
+        {
+            settings.SetSourceEnabled(name, false);
+        }
+
         var model = new MainWindowViewModel(settings, null)
         {
             OperatingMode = "Digital",
