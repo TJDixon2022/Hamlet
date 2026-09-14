@@ -4966,8 +4966,91 @@
                                                                    IsVisible="{Binding HasEndedWord}"
                                                                    Foreground="{StaticResource HmTextMutedBrush}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
+                                                        <!-- **THE WHOLE MESSAGE ON HOVER AND
+                                                             ON A CLICK** (Tim, 2026-09-14: *"I
+                                                             should be able to hover and see a
+                                                             whole message, not just cut off"*).
+                                                             The cell is one line in a column
+                                                             as wide as it is, so a station who
+                                                             typed three sentences showed the
+                                                             first few words and there was no
+                                                             way to read the rest.
+
+                                                             **IT IS THE ROW'S OWN TEXT** (§0.0):
+                                                             no re-wording and no summary, with
+                                                             the station and the time above it so
+                                                             a box opened later says whose words
+                                                             these were. Ended rows too, because
+                                                             the row keeps its text (unit 355).
+
+                                                             **A CLICK OPENS AND SENDS NOTHING.** -->
+                                                        <Button Grid.Column="3"
+                                                                x:Name="DecodedRowWholeMessage"
+                                                                Padding="0"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Left"
+                                                                Cursor="Hand"
+                                                                Command="{Binding OpenTheWholeMessageCommand}"
+                                                                IsVisible="{Binding HasWholeMessage}">
+                                                            <Button.Content>
+                                                                <TextBlock Text="{Binding Unsplit}"
+                                                                           FontFamily="Consolas,Menlo,monospace"
+                                                                           FontSize="12" Margin="0,1,0,1" />
+                                                            </Button.Content>
+                                                            <ToolTip.Tip>
+                                                                <TextBlock x:Name="DecodedRowWholeMessageTip"
+                                                                           Text="{Binding WholeMessage}"
+                                                                           TextWrapping="Wrap"
+                                                                           MaxWidth="460"
+                                                                           FontFamily="Consolas,Menlo,monospace"
+                                                                           FontSize="12" />
+                                                            </ToolTip.Tip>
+                                                        </Button>
+
+                                                        <!-- **AND AN FT8 ROW, OR A PSK31 ROW WITH
+                                                             NOTHING READ YET**, keeps the plain
+                                                             cell: there is no whole message to
+                                                             open and a button that opened an
+                                                             empty box would be a control that
+                                                             looks live and is not (§0.5.1). -->
                                                         <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
+                                                                   IsVisible="{Binding !HasWholeMessage}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
+
+                                                        <Popup IsOpen="{Binding WholeMessageIsOpen, Mode=TwoWay}"
+                                                               Placement="Center"
+                                                               PlacementTarget="{Binding $parent[Window]}"
+                                                               IsLightDismissEnabled="True">
+                                                            <Border Classes="hm-nudgepopup">
+                                                                <Grid RowDefinitions="Auto,Auto" MaxWidth="520">
+                                                                    <TextBlock Grid.Row="0"
+                                                                               Text="{Binding Sender}"
+                                                                               FontWeight="SemiBold"
+                                                                               VerticalAlignment="Center" />
+
+                                                                    <Button Grid.Row="0"
+                                                                            x:Name="WholeMessageDismiss"
+                                                                            Content="&#x2715;"
+                                                                            Command="{Binding CloseTheWholeMessageCommand}"
+                                                                            HorizontalAlignment="Right"
+                                                                            Background="Transparent"
+                                                                            BorderThickness="0"
+                                                                            Padding="6,0"
+                                                                            Cursor="Hand"
+                                                                            ToolTip.Tip="Put it away." />
+
+                                                                    <TextBlock Grid.Row="1"
+                                                                               x:Name="WholeMessageText"
+                                                                               Margin="0,10,0,0"
+                                                                               Text="{Binding WholeMessage}"
+                                                                               TextWrapping="Wrap"
+                                                                               FontFamily="Consolas,Menlo,monospace"
+                                                                               FontSize="12" />
+                                                                </Grid>
+                                                            </Border>
+                                                        </Popup>
                                                     </Grid>
 
                                                     <!-- **THE STATE IS TEXT AND THE

@@ -773,6 +773,91 @@ public sealed partial record DigitalDecodeRow(
     /// </remarks>
     public string Unsplit => Fields is null ? Message : "";
 
+    /// <summary>Everything this row holds, wrapped, for the hover and the box.</summary>
+    /// <remarks>
+    /// <para>**TIM, 2026-09-14**: *"I should be able to hover and see a whole message, not just
+    /// cut off."* The cell is one line in a column that is as wide as it is, so a station who
+    /// typed three sentences shows the first few words and no way to read the rest.</para>
+    /// <para>**IT IS THE ROW'S OWN TEXT AND NOTHING ELSE** (§0.0). No re-wording, no summary,
+    /// no ellipsis: the characters the demodulator emitted, with the station and the time above
+    /// them so a box opened an hour later says whose words these were.</para>
+    /// <para>**AN FT8 ROW HAS NOTHING TO ADD**, because its message is three short fields that
+    /// already fit, so this is empty there and the hover does not appear.</para>
+    /// </remarks>
+    public string WholeMessage
+    {
+        get
+        {
+            // **THE DIMMED FORM IS NOT A MESSAGE** (§0.0, and this test found it). A held
+            // carrier with a shut squelch carries *heard, not readable yet*, which is
+            // Hamlet's own sentence about the row and not a word anybody sent. Opening a box
+            // on it would show the operator his own program talking to him.
+            if (!IsTextOnly || HeardNotReadable || Message.Trim().Length == 0)
+            {
+                return "";
+            }
+
+            var head = Sender.Length > 0 ? Sender + "  ·  " + Utc : Utc;
+
+            return head + "\n\n" + Message.Trim();
+        }
+    }
+
+    /// <summary>True where there is a whole message to show.</summary>
+    public bool HasWholeMessage => WholeMessage.Length > 0;
+
+    /// <summary>True while the box holding this row's whole message is open.</summary>
+    /// <remarks>
+    /// **THE SAME SHAPE AS <see cref="NudgeIsOpen"/>**, and for the same reason: the popup
+    /// is per row, the row is what the template is bound to, and a bool on the row is what
+    /// a light-dismiss popup can bind two ways to.
+    /// </remarks>
+    public bool WholeMessageIsOpen
+    {
+        get => _wholeMessageIsOpen;
+
+        set
+        {
+            if (_wholeMessageIsOpen == value)
+            {
+                return;
+            }
+
+            _wholeMessageIsOpen = value;
+
+            PropertyChanged?.Invoke(
+                this, new PropertyChangedEventArgs(nameof(WholeMessageIsOpen)));
+        }
+    }
+
+    private bool _wholeMessageIsOpen;
+
+    /// <summary>Open the box holding this row's whole message.</summary>
+    /// <remarks>**IT OPENS A BOX AND SENDS NOTHING** (§0.2).</remarks>
+    public void OpenTheWholeMessage()
+    {
+        if (HasWholeMessage)
+        {
+            WholeMessageIsOpen = true;
+        }
+    }
+
+    /// <summary>Put the box away.</summary>
+    public void CloseTheWholeMessage() => WholeMessageIsOpen = false;
+
+    /// <summary>Opens the box, for the click on the text.</summary>
+    public ICommand OpenTheWholeMessageCommand
+        => _openTheWholeMessage ??= new RelayCommand(OpenTheWholeMessage);
+
+    private ICommand? _openTheWholeMessage;
+
+    /// <summary>Puts the box away, for its X.</summary>
+    public ICommand CloseTheWholeMessageCommand
+        => _closeTheWholeMessage ??= new RelayCommand(CloseTheWholeMessage);
+
+    private ICommand? _closeTheWholeMessage;
+
+
     /// <summary>True where the message has three fields to colour.</summary>
     public bool HasFields => Fields is not null;
 
