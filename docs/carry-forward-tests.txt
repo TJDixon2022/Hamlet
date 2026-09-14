@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests"
 
@@ -151,3 +151,19 @@ pass.
 
 App 112 green before and 140 after, engine 86 and 102, on the invocations above
 plus this unit's other names.
+
+WHAT UNIT 357 ADDED, both on the app invocation.
+
+TheTypedLineGoesOutTests - the text block that R29 opened. It guards the frame
+Hamlet puts round a typed line, that one click makes one transmission through the
+one sequence, that a whitespace line sends nothing, that a character outside the
+varicode is dropped and counted, that the record says "typed" and holds none of
+his words, and both sides of the sixty-second cap. It is the only test in the
+tree that asserts anything about free typing on the air.
+
+TheWholeMessageTests - a row's whole text on hover and in the box. It also holds
+the line a held carrier with a shut squelch must not cross: "heard, not readable
+yet" is Hamlet's sentence about the row, not a word anybody sent, and it offers
+no box.
+
+App 127 green before and 148 after; engine 86 both ways.
