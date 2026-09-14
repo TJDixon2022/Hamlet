@@ -797,8 +797,16 @@
     untouched except one string if the four-digit no-STATE line clips; nothing on the radio side
     moves.
   -->
+  <!--
+    1.13.36 -> 1.13.37, UNIT 350 TASK 0. A PATCH, STEP 0, ON THE RECORD AND NOT ON THE CLOCK: step 0
+    gets a report of its own at this tree, criterion by criterion; the 1400 top row and the panel
+    share are measured and asserted with the best bet pinned drawn and absent on the test window
+    rather than at the hour of the run; what stands between the three panels and the status bar is
+    named in pixels (the arbiter's rulings 47 to 52). Tests and the sheet's numbers only; no file
+    under src and no markup changes, so the screen Tim is reviewing does not move.
+  -->
   <PropertyGroup>
-    <Version>1.13.36</Version>
+    <Version>1.13.37</Version>
   </PropertyGroup>
 
   <!--
