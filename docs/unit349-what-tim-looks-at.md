@@ -44,7 +44,7 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
 |---|---|---|
 | Top row (neighborhood card and rig panel) | 216 px, 0.237 of the 910 px below the pills | 190 px, 0.209 |
 | Neighborhood card / rig panel | 808 × 216 / 546 × 216 | 1328 × 190 / 546 × 190 |
-| Green block | 518 × 88 | 1038 × 55 |
+| Green block | 518 × 88 | 1038 × 55 with no best bet; 1038 × 64 with one drawn (`386690a2`) |
 | World clock | 246 × 134, one dot, 15 px from the card's right edge | the same |
 | The three panels, readiness strip hidden / showing | 477 px (0.524) / 424 px (0.466) | 503 px (0.553) / 450 px (0.495) |
 | Waterfall · decoded text · For You, wide | 474 · 378 · 475 | 734 · 378 · 735 |
@@ -68,8 +68,9 @@ the card's facts cannot sit beside the map they go under it; no callsign is ever
 whether the green block and the clock balance each other. Check that the waterfall is not too narrow
 at 1400. Check the colors against the mockup, and whether it is *not white bread boring*.
 
-*Source: `TheTopRowTests` 8 of 8 and `TheWorkingPanelsTests` 8 of 8 at `85437c2`, printed in
-`testresults\u349\u349-step0.trx`. The top row, block, panels, rule and sparkline:
+*Source: `TheTopRowTests` 13 of 13 and `TheWorkingPanelsTests` 8 of 8 at `386690a2`, three runs,
+printed in `testresults\u352-t1-final-run1.trx` to `-run3.trx` (work instruction 352); first measured
+at `85437c2`, `testresults\u349\u349-step0.trx`. The top row, block, panels, rule and sparkline:
 `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`. The card, rig panel and panel sizes:
 `AtNineteenTwentyTheTopRowIsAbout190AndTheWorkingCardTakesTheRest`. The clock:
 `TheWorldClockIsAtTheCardsRightEndWithOneMarker`. Text sizes and wraps:
@@ -114,7 +115,7 @@ muted ink is readable on the amber panel.
 *Source: `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock` (line, ink, block),
 `DriveAndThePowerOfferAreUnderTheRigAndTheSendAreaKeepsCqAndStop` (the line's place and the popup's
 words) and `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare` (top row, panels), all in
-`TheTopRowTests` 8 of 8 at `85437c2`. The best-bet numbers are `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`
+`TheTopRowTests`, 13 of 13 three times at `386690a2` (work instruction 352). The best-bet numbers are `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`
 and `TheTopRowAndThePanelShareHoldWithTheBestBetOnAnotherBand` at `1faf33a6` (work instruction 351).*
 
 ### 2.3 The achievements opening page
@@ -507,6 +508,10 @@ Thirteen tests are red, as unit 348 named them at `26e5879`. None is on a page a
 - **`TheOperatorCanStopItTests`, 2, never run.** They are on the transmit side.
 - **`TheAchievementsScreenTests.TheWindowDrawsEverySixRows`, 1 red.** It looks for the old six mode
   rows, which your click-in ruling retired.
+- **`TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, red on some runs after `1faf33a6`,
+  is gone.** A spot reload waiting on POTA's reply overwrote the pinned best bet at 1920; with the test
+  window's network sources switched off (`386690a2`) it held every pin in three runs. *Work
+  instruction 352.*
 
 ## 6. Yours, and not this phase's
 
