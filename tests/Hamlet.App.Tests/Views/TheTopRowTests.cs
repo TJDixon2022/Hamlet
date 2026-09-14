@@ -667,6 +667,77 @@ public sealed class TheTopRowTests
     }
 
     /// <summary>
+    /// **Work instruction 350 task 1: the top row, the panel share and the rig panel's height
+    /// hold with the best bet pinned drawn and absent, not at the hour of the run** - at 1920 and
+    /// 1400, on FT8 and PSK31.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE ARBITER'S RULING 49.** <see cref="AtFourteenHundredTheLicensedTopRowIsTheMockupsShare"/>
+    /// never sets the best bet, and `RankBands` reads `DateTime.Now.Hour`, so which case it measured
+    /// was the clock's. Here the badge is set on the test window only, on the band the fixture is on
+    /// and on no band, and every case is measured. The limits are the tree's, unchanged: at 1920 the
+    /// top row within 10% of 190; at 1400 the top row at most 0.262 of the height below the pills;
+    /// at both widths the three panels at least half of it with the readiness strip hidden (ruling
+    /// 1), and the rig panel within 2 px of the card.</para>
+    /// <para>**THE PIN IS READ BACK AFTER THE LAST SETTLE.** A spot reload that lands during the
+    /// settle re-ranks the bands; where it moved the badge, the case fails with that message and
+    /// is not worked around (ruling 49). Every case is measured before anything is asserted, so a
+    /// red names every miss at once. Nothing is pressed (§0.2).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays()
+    {
+        var misses = new List<string>();
+
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "FT8", "PSK31" })
+            {
+                foreach (var pinned in new[] { "20 m", null })
+                {
+                    var c = WithTheBestBetPinned(width, mode, pinned);
+                    var at = "at " + Px(width) + " on " + mode + " with the best bet " + (pinned is null ? "absent" : "drawn on " + pinned);
+
+                    _output.WriteLine(
+                        at + ": top row " + Px(c.TopRow) + " of " + Px(c.Below) + " = " + Share(c.TopRow, c.Below)
+                        + "; panels " + Px(c.PanelsHidden) + " = " + Share(c.PanelsHidden, c.Below) + " strip hidden; card "
+                        + Px(c.Card.Height) + ", rig " + Px(c.Rig.Height) + "; green block " + Px(c.Block.Height)
+                        + "; pin held " + c.PinHeld + ", best bet visible " + c.BestBetVisible + " [" + c.BestBetSaid + "]");
+
+                    if (!c.PinHeld)
+                    {
+                        misses.Add(at + " the pin did not hold after settling: " + c.PinWhy);
+                    }
+
+                    if (Math.Abs(c.Rig.Height - c.Card.Height) > 2)
+                    {
+                        misses.Add(at + " the rig panel is " + Px(c.Rig.Height) + " px and the card " + Px(c.Card.Height));
+                    }
+
+                    if (c.PanelsHidden < c.Below / 2)
+                    {
+                        misses.Add(at + " the three panels are " + Px(c.PanelsHidden) + " px of " + Px(c.Below) + ", less than half");
+                    }
+
+                    if (width > 1900 && Math.Abs(c.TopRow - TopRowTarget) > TopRowTarget * 0.10)
+                    {
+                        misses.Add(at + " the top row is " + Px(c.TopRow) + " px against " + Px(TopRowTarget) + " within 10%");
+                    }
+
+                    if (width < 1900 && c.TopRow > 0.262 * c.Below)
+                    {
+                        misses.Add(
+                            at + " the licensed top row is " + Px(c.TopRow) + " px of " + Px(c.Below) + " = "
+                            + Share(c.TopRow, c.Below) + ", above the mockup's 0.262 (" + Px(0.262 * c.Below) + " px)");
+                    }
+                }
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    /// <summary>
     /// **Work instruction 338 task 3, step 0's nice-to-pass: on the realized window at 1920 the
     /// band pill wearing *best bet now* and the green block name the same band, and the check is
     /// drawn where that band is the one he is on.**
