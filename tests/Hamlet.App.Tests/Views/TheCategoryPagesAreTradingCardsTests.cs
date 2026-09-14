@@ -958,7 +958,7 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             foreach (var (fixture, kinds, list, psk31Row) in new[]
             {
                 (records, AchievementKinds.All.Concat(ContinentKinds()).ToList(), Calling(), (string?)null),
-                (FiveContacts(), new List<string> { AchievementKinds.Modes }, Calling(), null),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, Calling(), "3.580 on 80 m · no one calling at 21:41 UTC"),
                 (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWithPsk31(), "3.580 on 80 m · EA3XYZ"),
                 (FiveContacts(), new List<string> { AchievementKinds.Modes, AchievementCategory.ContinentPrefix + "EU" },
                     CallingWith(CertainPsk31WithGrid), "3.580 on 80 m · EA3ABC · " + Mi("JN11")),
@@ -1059,8 +1059,6 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                                     where + " with " + list.Calls.Count + " on the CQ list, modes rows: "
                                     + (modesMiss ?? string.Join(" / ", rows.Select(r => r.Place + " [" + r.CallLine + "]"))));
 
-                                Assert.True(modesMiss is null, where + " with " + list.Calls.Count + " on the CQ list: " + modesMiss);
-
                                 if (psk31Row is not null)
                                 {
                                     var drawnPsk31 = rows.Single(r => r.Place == "PSK31").CallLine;
@@ -1069,6 +1067,12 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
                                     Assert.True(drawnPsk31 == psk31Row, where + ": the PSK31 row draws [" + drawnPsk31 + "], not [" + psk31Row + "]");
                                 }
+
+                                // **WORK INSTRUCTION 347 RULING 31: THE LIST WAS READ ONCE, SO NO ROW SAYS *NOW*.**
+                                Assert.DoesNotContain(
+                                    rows, r => System.Text.RegularExpressions.Regex.IsMatch(r.CallLine, @"\bnow\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase));
+
+                                Assert.True(modesMiss is null, where + " with " + list.Calls.Count + " on the CQ list: " + modesMiss);
 
                                 // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the same rows held against a
                                 // best bet on another band.
@@ -1517,6 +1521,12 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             {
                 (TheAchievementsPageTests.TwelveContacts(), "twelve contacts", Calling(), AchievementKinds.All.Concat(ContinentKinds()).ToList()),
                 (FiveContacts(), "five contacts and a PSK31 caller", CallingWithPsk31(), new List<string> { AchievementKinds.Modes }),
+
+                // **WORK INSTRUCTION 347 TASK 2**: the longest PSK31 line, with two PSK31 callers, on Modes and on
+                // Europe where the caller is listed; and the no-caller words with none.
+                (FiveContacts(), "five contacts and two PSK31 callers", CallingWith(Psk31WithNoGrid, CertainPsk31WithGrid),
+                    new List<string> { AchievementKinds.Modes, AchievementCategory.ContinentPrefix + "EU" }),
+                (FiveContacts(), "five contacts and no PSK31 caller", Calling(), new List<string> { AchievementKinds.Modes }),
             })
             {
                 var window = Realized(records, width, calling, bet);
@@ -2803,7 +2813,8 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     /// lands on the best-bet band or the lowest band, a digital mode at its calling row on the same rule;
     /// then the no-Morse words for CW, the words that the list cannot tell FT4 from FT8 for FT4, and for a
     /// mode the list's rows do say the nearest caller in it with his distance where the list holds his
-    /// grid and how many more, or that no one is calling in it now. Otherwise what is wrong.
+    /// grid and how many more, or that no one was calling CQ in it when the list was read (work instruction
+    /// 347 ruling 31). Otherwise what is wrong.
     /// </summary>
     private static string? ModesRowMiss(IReadOnlyList<NextCaller> rows, CqSnapshot calling, BandBet bet)
     {
@@ -2842,7 +2853,7 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             {
                 "CW" => AchievementCategory.NoMorseOnTheList,
                 "FT4" => "the CQ list cannot tell FT4 from FT8",
-                _ when callers.Count == 0 => "no one is calling in it now",
+                _ when callers.Count == 0 => "no one calling at " + calling.ReadAt,
                 _ => callers[0].Callsign
                     + (Miles(callers[0].Grid) is { } mi ? " · " + GridPath.DescribeMiles(mi).Replace(" miles", " mi", StringComparison.Ordinal) : "")
                     + (callers.Count > 1 ? " and " + (callers.Count - 1).ToString(CultureInfo.InvariantCulture) + " more" : ""),

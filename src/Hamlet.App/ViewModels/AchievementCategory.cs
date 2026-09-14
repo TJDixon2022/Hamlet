@@ -660,7 +660,7 @@ public sealed class AchievementCategory
     /// <para>**WHO IS THERE SAYS ONLY WHAT THE CQ LIST CAN KNOW, AND NEVER NOTHING** (§0.0; ruling
     /// 26). The list is the digital decoded list, so it carries no Morse and no voice; an FT8-shaped
     /// row does not say whether it was FT8 or FT4 (`CqCall.Mode`); and a PSK31 row does say its mode,
-    /// so PSK31 names its nearest caller or says no one is calling in it now.</para>
+    /// so PSK31 names its nearest caller or says no one was calling CQ in it when the list was read.</para>
     /// <para>**`ModeFirstRow.Why` IS NOT DRAWN** - it says false things (parked).</para>
     /// </remarks>
     private static List<AchievementCategoryCard> ModesFor(
@@ -769,7 +769,7 @@ public sealed class AchievementCategory
             .ToList();
 
         return inIt.Count == 0
-            ? NoOneCallingInIt
+            ? NoOneCallingInItAt + calling.ReadAt
             : Joined(inIt[0].Callsign, MilesTo(operatorGrid, inIt[0].Grid))
                 + (inIt.Count > 1 ? " and " + (inIt.Count - 1).ToString(CultureInfo.InvariantCulture) + " more" : "");
     }
@@ -931,8 +931,18 @@ public sealed class AchievementCategory
     /// <summary>What a next card says where no CQ list was handed to the window.</summary>
     public const string ListNotRead = "the CQ list was not read";
 
-    /// <summary>What a Modes row says where the list's rows say that mode and nobody is calling in it.</summary>
-    public const string NoOneCallingInIt = "no one is calling in it now";
+    /// <summary>
+    /// What a Modes row says where the list's rows say that mode and nobody is calling in it, before the
+    /// time the list was read: `no one calling at 21:41 UTC`.
+    /// </summary>
+    /// <remarks>
+    /// <para>**NEVER *NOW*** (work instruction 347 ruling 31): the list is read once when the window opens
+    /// (ruling 14), so the row says when nobody was on it rather than that nobody is calling at all.</para>
+    /// <para>**SHORTENED TO FIT** (§6): *no one calling CQ in it at 21:41 UTC* squeezed the row's place
+    /// column at 1400, so *PSK31* needed 50 px in a 48 px slot. The row already names the mode, so
+    /// *CQ in it* went.</para>
+    /// </remarks>
+    public const string NoOneCallingInItAt = "no one calling at ";
 
     /// <summary>What the FT4 row says: an FT8-shaped row does not say which of the two it was.</summary>
     public const string ListCannotTellFt4 = "the CQ list cannot tell FT4 from FT8";
