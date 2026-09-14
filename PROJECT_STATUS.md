@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: COMPLETED
 TASK: TASK 2 of 2
 WORK_INSTRUCTION: 345 - step 1, proved on the window
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-13T21:24:27-04:00
-NOTE: Task 2 - carry-forward app 111 of 111 after the change; running the engine invocation, then the task 2 commit and the report.
+UPDATED: 2026-09-13T21:32:53-04:00
+NOTE: Unit 345 complete - step 1 must-pass on the drawn page at 1400 and 1920 went 3 of 7 to 7 of 7; nothing NOT DRAWN; report validated.
 
 ---
 

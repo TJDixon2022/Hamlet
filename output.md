@@ -1,211 +1,387 @@
 ```
 READ IN THIS ORDER.
 
-A. The screen phase is paused; this is PSK31 carried repair. Its steps are unchanged.
-B. No step criterion moves.
-C. The report last, and section 4 raises 5 items on top of the carried queue.
+A. The phase goal - the screen, done right. Step 0 done (state reader on unit 341). Step 1
+   proved: 7 of its seven must-pass carry a named green test on the drawn page at 1400 AND
+   1920 after this unit (criterion 7 is a telemetry event, which has no width), was 3 read by
+   rulings 17 and 21 (4 by the state reader on unit 342); none misses; nice-to-pass re-run
+   green. Steps 2 and 3 not started. Unit 343 ran nothing (no dotnet in its scope); unit 344
+   was PSK31 carried repair.
+B. Step 1 and its exit criteria - test, result, drawn or view model, widths realized:
+   entry: TheAchievementsPageClicksInTests 8 of 8, run first; TheCategoryPagesAreTradingCardsTests 9 of 9
+   1. color band, count, score, level, bar - EveryKindsBandCarriesCountScoreLevelAndABar, pass;
+      drawn, 8 kinds and 7 continent pages at 1400 and 1920 (the 1040 run kept); gap clause on
+      hall_of_fame, continents, countries, states, grids, total_miles and bands
+   2. earned card is the contact, path map cropped - EveryEarnedCardIsTheContactThatEarnedIt,
+      pass; the eight facts drawn on Countries, States and Grids at 1400 and 1920; map 632x231
+      and 892x231 re-measured, as unit 342 said; crop bound e.g. Brazil 464.80 by 169.89
+   3. next card, its want and callers with distance, or no one - TheNextCardKnowsWhoIsCalling,
+      pass; drawn, every kind and continent page at 1400 and 1920; nothing NOT DRAWN, so
+      ruling 20 fixed nothing
+   4. all eight kinds, Continents to seven and each to its countries -
+      TheOtherFiveKindsEachDrawTheirOwnCards and ContinentsOpensToSevenAndEachToItsCountries,
+      pass; drawn at 1400 and 1920; the 1920 half was not dropped
+   5. no string clips or wraps - NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty,
+      pass; tallest page Grids, 2022 px at both widths
+   6. no white card - the same test, pass; 0 white of 51 cards at each width
+   7. achievement_category_opened - OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse,
+      pass; view model, no width
+   nice-to-pass: map popup on click - ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt,
+      pass at 1400 and 1920; it writes no event, only the category's own opening
+C. The report last. Section 4 raises 5 items on top of the carried queue; none stands in the
+   way of a criterion in B. No fact the view model holds is undrawn, and dotnet was never refused.
 ```
 
 ```
-UNIT:       344 - complete at task 3 of 3 - 2026-09-13 20:17
-PHASE GOAL: (paused) The screen says what is true and looks like someone meant it.
-UNIT GOAL:  A press keeps two minutes of the receive audio so the demodulator can
-            be proved against real air, and the garble gets its first measured cause.
-ADVANCED:   no
-NUMBER:     captures Hamlet can make 0 -> 1 per press; skirt CER at 330 Hz 0.0000,
-            at 1000 Hz 0.0000 - neither hypothesis reproduces it
-DRIFT:      carried
+UNIT:       345 - complete at task 2 of 2 - 2026-09-13 21:27
+PHASE GOAL: The main window and every achievements category page drawn as Tim's approved
+            pictures at his two widths, proved by computation, then passed by Tim at his window.
+UNIT GOAL:  Prove every step 1 must-pass on the drawn category pages at 1400 and 1920 rather
+            than on the view model, and give unit 342's build the report it never had.
+ADVANCED:   yes - criteria 1, 2 (its eight facts), 3 and 4 now hold on the drawn page at both widths
+NUMBER:     step 1 must-pass proved on the drawn page at 1400 and 1920: 3 of 7 -> 7 of 7
+DRIFT:      0
 ```
 
-**Every appearance claim is computed, not seen**, and nothing here is evidence about the
-radio: this machine has none and every fixture is synthetic (FACT-004, FACT-006).
+**Every appearance claim here is computed on the headless test host, not seen.** Nothing
+here is evidence about the radio.
 
 ## 1. What Claude did
 
-Gate passed on all five. `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, no
-`CoreHMI.sln`, no `MURC.sln`, root `C:\Source\HamLet` — **and `.run-unit\allowed.txt`
-permits `dotnet`**, which is unit 343's blocker resolved: `Bash(dotnet:*)` and
-`Bash(timeout:*)` are both on it, `dotnet --version` answers 10.0.400, and every test
-below ran. Branch **`main`**, four commits, pushed, nothing left uncommitted. Version
-**1.13.30 → 1.13.31**.
+**Complete at task 2 of 2** (three tasks, 0 to 2). Nothing was dropped; the named drop
+candidate, task 2's 1920 half, was kept. This machine, project Hamlet at `C:\Source\HamLet`,
+branch `main`. The gate held: `SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` exist,
+`CoreHMI.sln` and `MURC.sln` do not. **`dotnet` was never refused.** Task 0's first `dotnet`
+command was the carry-forward app invocation, `timeout 480 dotnet test
+tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|…"`,
+and it gave 111 of 111.
 
-### Task 1 — the capture press
+### Task 0 - the trace, before a test was changed
 
-**Capture 2 minutes** sits on the waterfall header beside the thirty-second ring and shows
-only on PSK31. It writes the device stream — **48 kHz, 16-bit mono, one line above
-`Psk31Resampler`** — to `%AppData%\Hamlet\captures\psk31-<UTC timestamp>.wav`. The label
-counts down and then reads *captured*; a second press keeps what it has. The line under the
-waterfall names the path and says what to do with the file.
+- **Opening commit `de709fd`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line
+  only, and 1.13.31 -> 1.13.32 with its comment block.
+- **Carry-forward, before**: app **111 of 111**, engine **86 of 86** (the instruction expected
+  87; section 4 item 1).
+- **Entry check**: `TheAchievementsPageClicksInTests` **8 of 8**, then
+  `TheCategoryPagesAreTradingCardsTests` **9 of 9**. Green, so the unit went on.
+- **`Unit345TraceStepOneOnTheWindow`** (`c5bb6a9`) asserts nothing and presses nothing that
+  transmits. At 1400 and 1920, on twelve contacts, four callers and the best bet, it printed:
+  - every kind's band beside the view model's lines;
+  - every card top to bottom, with its map, bar or list;
+  - each earned card's eight facts on Countries, Grids and the seven continent pages;
+  - every next card's lines;
+  - the seven badges and what each opens;
+  - the tallest page.
+  It printed Countries on the five-contact log and States on the state log the same way.
+- **Unit 342's numbers re-run**: the popup test and the crop method in one filter with the
+  trace, **4 of 4**.
 
-**Watched failing first** by moving the feed below the resampler, which §10 forbids:
+**Task 0's answers, from the numbers:**
+- **§1's table holds, row by row.**
+  - The band is asserted at 1040 only (`Realized(..., 1040)`, line 50).
+  - `EveryEarnedCardIsTheContactThatEarnedIt` draws only the map and crop at 1400 and 1920
+    (line 289); at 1040 it checks only the map count and the no-map word.
+  - The next card is asserted on the view model. It is drawn only for the Countries quill at
+    1400 (line 779) and the Countries callers at 1040 (line 802).
+  - `TheOtherFiveKindsEachDrawTheirOwnCards` and `ContinentsOpensToSevenAndEachToItsCountries`
+    are view model only (`Screen(...)`, line 1614).
+  - Criteria 5 and 6 are drawn at both widths, over the eight kinds plus `continent-EU` and
+    `continent-OC`. Criterion 7 is telemetry on the view model. The popup is drawn with real
+    clicks at both widths.
+  - **The earned contact's words were asserted drawn at no width on Grids and States**, and only
+    as the map on Countries. `StatesCountWhatTheLogsStateFieldSays` measures States at both
+    widths for fit and white cards only.
+- **The count was 3 of 7** by rulings 17 and 21: criteria 5, 6 and 7. Criterion 2 rested on its
+  map.
+- **Already drawn at both widths, computed and not yet asserted**: every clause of criteria 1
+  to 4, on every kind, every continent page and both extra logs.
+- **`NOT DRAWN`: none**, on any kind, continent page or width.
+- **Unit 342's commit messages match what was measured**, in the table below.
 
-```
-Failed  TheEventsCarryWhatWasAskedAndNothingPersonal    Expected: 48000  Actual: 8000
-Failed  APressKeepsTheDeviceStreamAndNotHamletsVersionOfIt  Expected: 48000  Actual: 8000
-```
+### What unit 342 built, commit by commit, re-measured
 
-**The test also found a real defect.** `Psk31Resampler` is made on the first audio tick, so
-a press that lands before any audio has arrived wrote `deviceSampleRate: null`. The started
-event now falls back to the tap, leaves the field absent where neither knows it (§0.0), and
-the finished event carries the rate **measured from the audio that was kept**.
+| Commit | Its message says | Measured by unit 345 |
+|---|---|---|
+| `ba5179d` | step 1 opens; the trace before a card is changed | a chore; nothing to measure |
+| `6586020` | the map 564x170 in a 632 card at 1400 and 796x170 in 892 at 1920; the quill true on Countries and the continents only | the 170 px markup is gone, so the before-numbers cannot be re-measured; the quill clause holds (row `18f5b17`) |
+| `40316ea` | the map 632x231 at 1400 and 892x231 at 1920 on every Countries card; the crop asserted as a bound a whole-globe frame fails | **matches.** Every Countries map on both fixtures is 632.00 x 231.00 at 1400 and 892.00 x 231.00 at 1920. The crop is green: Brazil's frame is 464.80 by 169.89 within a bound of 464.80 by 169.89, with margin 9.10 (`MarginShare` 0.06 of the path's longer side, 151.69). The whole-globe 698 by 381 fails it. Japan's frame is 698 by 255.12 within 698 by 381 |
+| `18f5b17` | the gap clause on seven kinds, the meaning dropped past 60 characters on Grids and Total Miles; the quill green on Countries and reached continents, ringed on unreached, none on Grids and States; the back control a plain link | **matches.** The gap clause is on Hall of Fame, Continents, Countries, States, Grids, Total Miles and Bands, and not on Modes. Grids' and Total Miles' lines start at the count. The quill is green on AF, AS, EU, NA and SA, ringed on AN and OC, and absent on Grids and States. Countries says *a quill* over these four callers, because ZL1ABC would open Oceania, and *the green quill* over the five-CQ list. The links read `‹ All achievements` and `‹ Continents` |
+| `9214b2a` | a card's map opens in its popup on a click and closes on a click outside; no event; 1400 and 1920 | **matches**, 2 of 2. It opens PY2JKL's map at 720 x 400. The popup's top is at screen y 136, under the back control's bottom at 31. Nothing is written but `achievement_category_opened` |
+| (its tests) | four classes 23 of 23 | 23 before this unit's trace; **24 of 24** with it |
 
-**Nothing personal, and not the path either.** `psk31_capture_finished` carries seconds,
-bytes, SHA-256, the measured rate, whether it was stopped early, and the carriers held when
-it started with their offsets and qualities. It does not carry the path: a capture folder
-under `%AppData%` holds the account name, which is a person (HM-DEC-018, §2.1). The
-filename is a timestamp alone. The test scans the whole serialised file for the callsign,
-the grid, the folder and `.wav` and finds none of them.
+### Task 1 - criteria 1 and 3 on the drawn page (`ff09a11`)
 
-### Task 2 — neither hypothesis reproduces the garble
+- **`EveryKindsBandCarriesCountScoreLevelAndABar`**: the 1040 run and its pinned strings stay.
+  At 1400 and 1920, on all 8 kinds and 7 continent pages, `BandMiss` asserts on the drawn band:
+  - the name;
+  - `Standing`, `ScoreLine` and `LevelName` as whole parts of the drawn band line, which equals
+    `BandLine`;
+  - the fill equals `Band`;
+  - where a next level exists: one bar with width, `LevelBarLine` drawn, and the drawn line
+    ending in `GapLine`;
+  - where none exists: no bar and `NoNextLevelLine` drawn.
+  - **Watched red**: Hall of Fame's drawn band held against Modes' band - *the count [5 of 5] is
+    not a part of the drawn band line*.
+- **`TheNextCardKnowsWhoIsCalling`**: the view-model half stays. At 1400 and 1920, on every kind,
+  the Continents page and every continent page, and Modes on the five-contact log, the drawn
+  next cards equal the view model's in number. Each draws:
+  - its title, wants, quill, heading, no-caller, more-callers and tier lines, and no quill where
+    it holds none;
+  - each caller's place and call line in order.
+  Per kind:
+  - where the callers come from the CQ list: the heading `calling CQ at 21:41 UTC, unworked`, a
+    ` · n mi` distance on every caller, or *no one is calling from there now*;
+  - Grids and States draw no quill, and States says *Hamlet cannot tell a caller's state*;
+  - Bands' first row is `17 m` / `best bet now`;
+  - Modes draws CW, FT4 and PSK31;
+  - Hall of Fame draws *Over 10,000 miles* with a bar.
+  - **Watched red**: Oceania's card held against a caller the view model does not hold - *the
+    callers drawn are [New Zealand ZL1ABC · 8,600 mi], not [New Zealand ZL1ABC · 8,600 mi /
+    Nowhere XX0XX · 1 mi]*.
+- **Ruling 20**: nothing was `NOT DRAWN`, so no markup or string changed.
+- **Four classes**, one filter: **24 of 24**. `TheCategoryPagesAreTradingCardsTests` 10 of 10,
+  `TheAchievementsPageClicksInTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5.
+  Carry-forward: app **111 of 111**, engine **86 of 86**.
 
-**And the instrument was checked before that was concluded** (§12.5): the 4th-order
-Butterworth high-pass takes the 330 Hz arm to **−1.67 dB** and the 1000 Hz control to
-**−0.00 dB**, so it is biting.
+### Task 2 - criteria 4 and 2 on the drawn page (`04b8abf`)
 
-- **The skirt does not do it.** Pushed far past the instruction's figure — corners to
-  900 Hz, taking the carrier **36.1 dB down** — the error rate stays **0.0000**. A skirt
-  attenuates a PSK31 carrier; it does not smear its phase enough to cost a character.
-- **The fade does not do it.** Thirteen full fade cycles at 0.2 Hz with the floor pushed
-  from −20 dB to **−60 dB**, error rate **0.0000** every time. The squelch shutting and
-  reopening costs nothing.
-- **Plain weak signal does.** The shipped **−10 dB** fixture reads 221 characters of 255 at
-  **CER 0.1502**, part legible and part broken, which is the shape of the row off 7.070.
+- **`TheOtherFiveKindsEachDrawTheirOwnCards`**: the view-model half stays. The drawn half runs at
+  1400 and 1920 on the same fixtures:
+  - **Continents**: 7 badges. Each opened one draws its name, its first contact's callsign and
+    *n countries worked there*. Each unopened one draws its name and the callers heading.
+    Oceania draws ZL1ABC.
+  - **Total Miles**: the tier bar has width and draws `42,041 of 50,000 mi`. On the nine-contact
+    log, the crossing card draws *50,000 miles*, `Aug 8, 2026` and a map with width.
+  - **Bands**: the 20 m card draws W3YNI with a map, and the next card's first row is the best
+    bet.
+  - **Modes** (five contacts): the FT8 card draws LA1ZZZ. The next card draws CW, FT4 and PSK31,
+    with PSK31's `3.580 on 80 m`.
+  - **Hall of Fame**: each of the five earned firsts draws its callsign and a map. *Over 10,000
+    miles* draws its bar.
+  - **Watched red**: *Your first contact* held against A DX contact's VA3VRR - *[VA3VRR] not
+    drawn on the card*.
+- **`EveryEarnedCardIsTheContactThatEarnedIt`** (ruling 21): the map and crop stay.
+  `EarnedCardMiss` covers every earned card at 1400 and 1920:
+  - Countries on the twelve- and five-contact logs, Grids on both, States on the state log;
+  - 32 cards a width, 64 in all.
+  It asserts the entity, callsign, grid, distance, band, mode, date and points drawn, each from
+  the log entry that earned the card (the earliest contact for that key) and not from the card.
+  The points come from the shipped file. Where the entry lacks a fact:
+  - the rest is drawn, and no dash;
+  - VE3PQR has no grid, so no map, *no grid, so no map*, and no distance slot;
+  - G0MNO has no date, so one band-and-mode line and no date line;
+  - VK2DEF has no entity, so its Grids card draws the callsign alone.
+  - **Watched red**: the Countries Canada card held against VE3PQR's entry - *the callsign
+    [VE3PQR] from VE3PQR's log entry is not drawn*.
+  - `StatesCountWhatTheLogsStateFieldSays` is named and not duplicated: it checks fit and white
+    cards, not facts.
+- **`ContinentsOpensToSevenAndEachToItsCountries`**: the view-model half stays. At 1400 and 1920,
+  each of the 7 drawn badges is pressed through its command, as
+  `ClickingABadgeReplacesThePageAndTheBackControlReturns` presses one. Each page draws:
+  - the continent's name and `‹ Continents`;
+  - one earned card per entity worked there, titled with that entity's spoken name;
+  - at most one next card.
+  The link then brings back *Continents* and the seven.
+  - **Watched red**: Africa's page held against Antarctica - *the page's name is [Africa], not
+    [Antarctica]*.
+- **Four classes 24 of 24**. Carry-forward: app **111 of 111**, engine **86 of 86**.
 
-**So no fix is named for the next unit**, because neither named hypothesis survived. The
-third explanation is not settled either, and section 4 says why.
+### Checked against the tree (§2)
 
-### Task 3 — the record reads a capture back
+**Held:**
+- unit 342's five commits, none of them `docs(unit342)`;
+- unit 343 is only `681d45c` and `33fb6a9`;
+- `output.md` was unit 344's (`6da5149`);
+- the achievements window and both test files are unchanged since `681d45c`; only
+  `MainWindow.axaml` and its view model moved;
+- `.run-unit\allowed.txt` carries `Bash(dotnet:*)`, and `tools/arbiter/run-unit-tools.txt` at
+  HEAD does not;
+- `PHASE_OUTCOME.md` has no unit 341 entry, its header reads step 0 `in progress`, unit 343 is
+  `UNIT 1 - STEP 1`, and unit 344 has no entry;
+- `PHASE_STATUS.md` reads `CURRENT_STEP: 0`;
+- unit 337's carried repair is filed partly under *ALSO RECORDED FOR UNIT 337 - STEP 0*;
+- `RULES_AT` read HM-DEC-161 while `DECISIONS.md` tops at HM-DEC-163;
+- `CLAUDE.md` holds no `CPS-DEC` id at all (the reload's misreading, parked);
+- `tools\arbiter.bak-20260913\` stayed untracked and was never staged;
+- the validator was always given the report.
 
-`ThePsk31DemodulatorTests.EveryCaptureOffTheAirIsReadBack` runs every `.wav` in
-`assets\fixtures\captured\` through `Psk31Resampler` into `Psk31Listener` — **the path the
-application takes**, since a capture is the 48 kHz device stream and the listener decodes at
-8 — and prints the carriers, their character counts and their first sixty characters, with
-no ceiling on any of them. It asserts that the file decodes at all and **nothing about what
-came out**: nobody knows what those stations sent (§0.0, HM-DEC-091).
+**Mismatches, reported and not repaired:**
+- **The engine carry-forward is 86, not 87** (section 4 item 1).
+- **The reload lists unit 337's carried-repair approach twice**, directly after unit 342's entry,
+  but **under unit 337's own headings**, not labelled *unit 342, step 1*.
+- **The prompt names `TASK: n of m`; `CLAUDE.md` §13.1's field table names `PHASE`.** The status
+  script writes `TASK`, so `TASK` was written.
 
-**Proved on a real 48 kHz file rather than left unexercised**, then removed:
+**Reds expected**: none was in any filter, so none was run. **No red turned green and no new
+red appeared** in what ran.
 
-```
-== probe-48k.wav  48000 Hz into 8000, 38.6 s, 3 carriers held at the end
-    699.6 Hz    120 chars  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K..
-   1608.0 Hz    120 chars  CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K..
-   2200.0 Hz    142 chars  VE3XN de F4DIA UR RST 579 579 Name Marc QTH Lyon HW?
-```
+**Tool facts, as they held for this session.**
 
-`assets\fixtures\captured\README.md` says how to put one there and what the test does and
-does not claim.
+| Result | Commands |
+|---|---|
+| Ran | `sh tools/status.sh` (every write); `&&` joining `git add`, `commit` and `push`; `;` joining two `grep`s; `grep`, `cut`, `uniq`, `tail`, `head` and `grep -v` in pipes; commits with several `-m` |
+| Asked for approval, not run | a compound of `status.sh`, `sed -i` and `dotnet test`; `git -C`; `git show` with several hashes (`git log --no-walk` ran instead) |
+| Blocked | an output redirect, to `/tmp` and into the repository; `sed -i` on `output.md`; `grep` on a file outside the repository |
+| Not tried | Python, `rm`, `git stash`, `sed -E`, `tee -a`, apostrophes in heredocs, doubled backslashes |
 
-### Nothing was recorded under §12.1
+### Decisions made for this unit
 
-No `DECISIONS.md` entry was written.
+All are the unit's own and overrulable:
+1. **Each watched red is built into its test as a second check**, run and printed every time,
+   against a wrong expectation on the test window. This follows the file's own whole-globe
+   check. The rejected alternative was an edit, a run and a revert, which leaves nothing to
+   re-read.
+2. **Modes' next card is measured on the five-contact log** in tasks 1 and 2. The twelve contacts
+   have worked all five modes and draw no Modes next card.
+3. **The drawn next cards use the page-wide test's four callers and best bet**, not the method's
+   own five-CQ list. With those callers every kind has a next card to measure, and Oceania has a
+   caller.
+4. **Criterion 7 is counted with no width.** It is an event, and B says so.
+5. **The carried queue was kept in place with the file editor**, because the redirect and `sed -i`
+   routes were blocked.
 
-### Tests
+### Commits
 
-**No suite was run**; every name filtered, foregrounded, 480 s timeout (HM-DEC-155). Two
-invocations, one build each, a status line immediately before every `dotnet` command.
-
-| Run | Result |
-| --- | --- |
-| Carry-forward, app, before | **106 of 106** |
-| Carry-forward, engine, before | **85 of 85** |
-| `TheCaptureButtonTests` (new, task 1) | **5 of 5**, watched failing 2 of 5 first |
-| `Unit344Measure` (new, task 2, a tool) | asserts nothing |
-| `ThePsk31DemodulatorTests` with the read-back (task 3) | **12 of 12** |
-| Carry-forward, app, after | **111 of 111** |
-| Carry-forward, engine, after | **87 of 87** |
-
-**191 green before, 198 after, nothing red, nothing new red.** `BindingHealthTests` and
-`CallsignPrivacyTests` are both on the app run and both green with the new button and the
-two new events on them.
+`de709fd`, `c5bb6a9`, `ff09a11` and `04b8abf`, each pushed to `main` without refusal. This report
+and the status file follow in their own commit.
 
 ## 2. What the owner should expect
 
-**The build is clean** — zero warnings, zero errors.
+**Nothing on the screen changed.** The unit changed tests and the version (1.13.32) only. No
+markup, string, score or rule moved, and nothing on the radio side was touched. The four
+classes are 24 of 24, and the carry-forward list reads 111 and 86.
 
-On the PSK31 tab there is now a **Capture 2 minutes** button on the waterfall header, next
-to the one that keeps the last thirty seconds; press it while you are listening and it
-records forward for two minutes, counting down on its own face, and a second press keeps
-what it has so far. The file lands in `%AppData%\Hamlet\captures\` as
-`psk31-<timestamp>.wav`, at the sound card's own 48 kHz and before Hamlet touches the audio,
-and the line under the waterfall tells you exactly where it went. **Copy that file into
-`assets\fixtures\captured\` and commit it** — that is the whole point of the unit, because
-every fixture this demodulator has ever been tested against was made by a program on a
-machine with no radio, and the moment one real capture is in that folder the test suite
-reads it back on every run and any change to the demodulator can be judged against real air
-instead of against Hamlet's own idea of what PSK31 sounds like.
-
-**What will look wrong and is not.** The garble is not explained yet. Both hypotheses in
-the instruction were measured and neither reproduces it, so nothing was changed in the
-demodulator — measuring, naming and stopping is what this unit was for.
-
-**Pushed to `main`.**
+**What will look wrong but is not:**
+- **The engine carry-forward reads 86 where unit 344 reported 87.** It was 86 before this unit
+  changed anything, and nothing here touches the engine.
+- **`Unit345TraceStepOneOnTheWindow` passes and asserts nothing.** It prints about 500 lines, the
+  record behind task 0's answers, as `Unit342TraceTheCountriesPageAgainstItsMockup` does.
+- **Four of the assertions print a failure line on every green run.** Those are the watched reds,
+  each asserted to fail against a wrong expectation. A missing line is the failure.
 
 ## 3. What you should see
 
-**The task 2 table, in full:**
+**Yes: every step 1 must-pass now holds with a named green test on the drawn category pages at
+1400 and 1920.** Criterion 7 is a telemetry event with no width. Nothing misses on any kind or
+width.
 
-```
-the reference text is 255 characters at 8000 Hz; the filter is a
-4th-order Butterworth high-pass, -3 dB at 300 Hz
+**No visible change - this unit only makes the tests catch a regression later.** What the
+tests see on the page, in words, is the same at both widths. The one exception is the maps:
+632 x 231 at 1400, 892 x 231 at 1920.
 
-== anchor - the shipped reference fixture, reference-modem.py, no filter
-   case                             chars     CER  first 36 emitted
-   reference at 1000 Hz               255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+**A Countries earned card**, top to bottom, Brazil:
+- *Brazil* large, with *5 pts* on the right;
+- *PY2JKL · GG66*;
+- the path map across the card;
+- *4,900 mi* large, beside *20 m · FT4* and *Aug 22, 2026*.
 
-== skirt - Psk31Modulator's own audio, both arms through the same code
-   330 Hz, no filter                  255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   330 Hz, high-passed                255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   1000 Hz, no filter (control)       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   1000 Hz, high-passed (control)     255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+**The Countries next card**:
+- *One more country*, *5 pts*, *next*;
+- *Any country you have not worked*;
+- *On the CQ list they carry a quill.*;
+- then the panel *calling CQ at 21:41 UTC, unworked*;
+- *Austria* with *OE8DDX · 4,400 mi*, *Grenada* with *J38DX · 2,200 mi*, *New Zealand* with
+  *ZL1ABC · 8,600 mi*.
 
-   the high-pass takes the 330 Hz arm to -1.67 dB and the 1000 Hz arm to -0.00 dB
+**The band on each kind, as drawn**. Each has a 300 px bar with the words above it, except
+Modes:
+- **Hall of Fame**: *once-only firsts · 5 worked · 125 pts · Bronze · 1 to Silver*; *5 of 6 to
+  Silver*.
+- **Continents**: *each of the 7 · 5 of 7 · 170 pts · Silver · 2 to Gold*; *5 of 7 to Gold*.
+- **Countries**: *one per entity · 8 worked · 40 pts · unranked · 2 to Bronze*; *8 of 10 to
+  Bronze*.
+- **States**: *the 50 states · 0 worked · 0 pts · unranked · 10 to Bronze*; *0 of 10 to Bronze*.
+- **Grids**: *10 worked · 20 pts · Bronze · 15 to Silver*; *10 of 25 to Silver*.
+- **Total Miles**: *42,041 mi so far · 0 pts · unranked · 7,959 to Bronze*; *42,041 of 50,000 mi
+  to Bronze*.
+- **Bands**: *first on each band · 5 of 7 · 25 pts · Bronze · 1 to Silver*; *5 of 6 to Silver*.
+- **Modes**: *five modes to work · 5 of 5 · 85 pts · Gold*; no bar, and *Gold, the top level*.
 
-== skirt - how far up the carrier has to sit before it breaks, 330 Hz arm
-   corner 300 Hz  (-1.7 dB)           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   corner 340 Hz  (-3.6 dB)           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   corner 400 Hz  (-7.6 dB)           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   corner 500 Hz  (-14.8 dB)          255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   corner 700 Hz  (-26.8 dB)          255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   corner 900 Hz  (-36.1 dB)          255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
+**The seven continent badges**, two to a row:
+- *Africa*: ZS6GHI · South Africa, 1 country worked there, 8,300 mi, 75 pts.
+- *Antarctica*: next, 500 pts, *A first contact here*, the ringed quill, *no one is calling from
+  there now*.
+- *Asia*: JA1XYZ · Japan, 1 country worked there, 6,700 mi, 50 pts.
+- *Europe*: LA8ENA · Norway, 3 countries worked there, 3,900 mi, 15 pts.
+- *North America*: W3YNI · United States, 2 countries worked there, 210 mi, 5 pts.
+- *Oceania*: next, 50 pts, the ringed quill, *New Zealand* with *ZL1ABC · 8,600 mi*.
+- *South America*: PY2JKL · Brazil, 1 country worked there, 4,900 mi, 25 pts.
 
-== fade - the shipped reference fixture, 0.2 Hz, full scale to a floor and back
-   floor -20 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   floor -30 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   floor -40 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   floor -50 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   floor -60 dB                       255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   the fade runs 13.3 full cycles over the fixture, so the squelch has that many
-   chances to shut and reopen on each row above
+The earned ones carry a map.
 
-== noise - the shipped signal-to-noise fixtures, for the shape of the garble
-   snr+10db                           255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   snr+3db                            255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   snr-3db                            255  0.0000  CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse
-   snr-10db                           221  0.1502  CQCK3QIS KC3QIS KC3QIS pse K..KC3QIS
-```
+**Europe's page**:
+- *‹ Continents*;
+- the band *Europe*, *a DXCC continent · 3 worked · 15 pts*, *no levels per continent*, no bar;
+- three earned cards:
+  - *Germany*: DL1ABC · JN48, 4,100 mi, 20 m · PSK31, Aug 18, 2026;
+  - *Norway*: LA8ENA · JO59, 3,900 mi, 20 m · FT8, Aug 17, 2026;
+  - *United Kingdom*: G0MNO · IO91, 3,600 mi, 20 m · Voice, Aug 24, 2026;
+- the next card: *One more country*, *Any unworked country in Europe*, *On the CQ list they carry
+  the green quill.*, and *Austria* with *OE8DDX · 4,400 mi*.
 
-**Put the last row beside what came off 7.070:**
+**The step 1 table:**
 
-```
-the air        dt  oe epe Ae peey@teI ç
-snr-10db       CQCK3QIS KC3QIS KC3QIS pse K..KC3QIS
-```
-
-Both are a message that mostly survived with pieces missing. Neither the skirt nor the fade
-makes that shape at any setting tried.
-
-**And what the capture writes:**
-
-```
-wrote psk31-2026-09-14-000640.wav: 48000 Hz, 96000 samples, 2.00 s, 192044 bytes
-offered 180 s, kept 120.00 s; the press reads 'captured · 2:00'
-
-started : {"dialHz":7028000,"deviceSampleRate":48000,"seconds":120}
-finished: {"seconds":1,"bytes":96044,"sha256":"6d7cb86241...","deviceSampleRate":48000,
-           "earlyStop":true,"carriersHeld":0,"carriers":[]}
-```
+| Test | Criterion | Drawn or view model | Widths | Kinds | Result | Numbers |
+|---|---|---|---|---|---|---|
+| `EveryKindsBandCarriesCountScoreLevelAndABar` | 1 | drawn (and 1040 kept) | 1400, 1920 | 8 kinds, 7 continent pages | pass | 30 bands; gap clause on 7 kinds; watched red |
+| `EveryEarnedCardIsTheContactThatEarnedIt` | 2 | drawn | 1400, 1920 | Countries, Grids, States | pass | maps 632x231 and 892x231; 64 earned cards with their eight facts; watched red |
+| `TheNextCardKnowsWhoIsCalling` | 3 | drawn (and view model kept) | 1400, 1920 | every kind, Continents, 7 continent pages, Modes on five contacts | pass | 17 next cards a width; watched red |
+| `TheOtherFiveKindsEachDrawTheirOwnCards` | 4 | drawn (and view model kept) | 1400, 1920 | Continents, Total Miles, Bands, Modes, Hall of Fame | pass | 7 badges; 5 firsts; watched red |
+| `ContinentsOpensToSevenAndEachToItsCountries` | 4 | drawn, by press (and view model kept) | 1400, 1920 | 7 continents | pass | earned cards 1, 0, 1, 3, 2, 0, 1 against the entities worked; watched red |
+| `NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty` | 5, 6 | drawn | 1400, 1920 | 8 kinds, `continent-EU`, `continent-OC` | pass | 0 white of 51 cards a width; tallest page Grids 2022 px |
+| `OpeningACategoryWritesTheKindAndTheCardCountAndNothingElse` | 7 | view model, telemetry | none | Countries | pass | `kind` and `cards` = 9 |
+| `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt` | nice-to-pass | drawn, real clicks | 1400, 1920 | Countries | pass | 720 x 400; no event of its own |
 
 ## 4. What's blocking us
+
+**No ruling wanted.** Five findings raised by this unit, then the carried queue.
+
+**1. The engine carry-forward is 86 of 86, and unit 344 reported 87 of 87.**
+
+*No ruling wanted; a mismatch, reported and not repaired.*
+- Both engine runs, before and after this unit's changes, read 86.
+- `EveryCaptureOffTheAirIsReadBack` is a `[Fact]` inside `ThePsk31DemodulatorTests`, which is on
+  the list.
+- Which test the 87 counted was not found. The engine and PSK31 are parked (ruling 23).
+
+**2. VK2DEF's map is 633.18 x 231 in an 892 px card at 1920, on Grids (QF56) and Bands (10 m).**
+
+*No ruling wanted; a finding.*
+- At 1400 it is 632 x 231.
+- Ruling 11's span is asserted only on Countries, where VK2DEF has no card: its callsign resolves
+  to no entity, so the Grids card draws *VK2DEF* alone.
+- Criterion 2's facts and map are drawn and asserted; only the span stops short.
+
+**3. Modes' next card draws CW with no place to find it.**
+
+*No ruling wanted; a finding for step 2, whose exit names the Modes test (ruling 22).*
+- On the five-contact log the rows are *CW* with an empty call line, *FT4 3.575 on 80 m* and
+  *PSK31 3.580 on 80 m*.
+- R22 asks for *where the unearned mode lives and who is there*.
+- The view model holds the empty line, so the page draws what it holds, and ruling 20 has nothing
+  to fix.
+
+**4. Version 1.13.30 -> 1.13.31 has no comment block.**
+
+*No ruling wanted; a finding beside unit 343's item 4.* It is unit 344's bump. Not repaired.
+
+**5. The status script's `RULES_AT` and this session's blocked file routes.**
+
+*No ruling wanted; a finding.*
+- `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`, so each write here was followed by a
+  hand edit to `HM-DEC-163 (2026-09-12)`.
+- Redirects and `sed -i` were blocked, so this report was assembled with the file editor around
+  unit 344's committed section 4.
+
+### Asks still outstanding - carried from unit 344's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 344's, from its line under `## 4. What's blocking us` to its end, as
+committed in `6da5149`. Only that top-level heading is dropped, so this report keeps four
+sections. They were kept in place with the file editor, not retyped. Four items are marked, as
+work instruction 345 §9 asks:
+- unit 343's items 1 and 2;
+- unit 340's item 5;
+- unit 339's item 5.
 
 No step criterion moves. Five items.
 
@@ -280,6 +456,12 @@ criteria are unblocked**, and the drop belongs to the report that records the ru
 **1. This run cannot build, test or validate Hamlet: `230e6c0` replaced its permission scope with
 ClaudeProjectStatus's.**
 
+**ANSWERED by the tree - .run-unit\allowed.txt carries Bash(dotnet:*), noted by unit 344 and re-proved
+by unit 345 task 0.** Task 0's first `dotnet` command was `timeout 480 dotnet test
+tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|…"`,
+the carry-forward app invocation. It gave 111 of 111 and was not refused; nor was any `dotnet` command
+after it.
+
 *Ruling wanted, or a launcher fix, and it blocks every step 1 criterion: which permission scope an
 unattended Hamlet unit runs under.*
 - **The scope now.** `tools/arbiter/run-unit-tools.txt` allows `node tools/tests/run.js`, and
@@ -307,6 +489,13 @@ not confirmed.
   its own guard is the thing that file's header warns against.
 
 **2. Criterion 2's "earned card is the contact" is held on the drawn page only for the map.**
+
+**TAKEN UP by work instruction 345 ruling 21 and task 2.** The eight facts are now asserted drawn
+at 1400 and 1920 in `EveryEarnedCardIsTheContactThatEarnedIt` (`EarnedCardMiss`, `04b8abf`), each
+from the log entry that earned the card:
+- Countries on the twelve- and five-contact logs;
+- Grids on both;
+- States on the state log.
 
 *No ruling wanted; a finding that bears on the 4 of 7.* At 1400 and 1920,
 `EveryEarnedCardIsTheContactThatEarnedIt` asserts only the map's width, height and crop on Countries
@@ -597,6 +786,12 @@ at `681d45c`, none of it run by unit 343:
 - Each continent to its countries: still `ContinentsOpensToSevenAndEachToItsCountries`, on the view
   model. Work instruction 343 task 2 would press all seven on the window at 1400 and 1920. **Not
   started; blocked, section 4 item 1 of unit 343.**
+- **Unit 345 (`04b8abf`):**
+  - `ContinentsOpensToSevenAndEachToItsCountries` now presses all seven drawn badges at 1400 and
+    1920. Each page draws its name, `‹ Continents`, one earned card per entity worked there and at
+    most one next card, and the link brings the seven back. Green, and watched red.
+  - `achievement_category_opened` stays on the view model; it has no width.
+  - The crop was re-run green at both widths.
 
 *No ruling wanted; a finding for the arbiter authoring step 1.*
 - `achievement_category_opened` is tested in `TheAchievementsPageClicksInTests`.
@@ -700,7 +895,9 @@ composed.
 
 **ANSWERED by unit 342 task 3 (`9214b2a`)**: `ACardsMapOpensInItsPopupOnAClickAndAClickOutsideClosesIt`,
 at 1400 and 1920 with real clicks. It was to be re-run in unit 343 task 0: **not run - blocked, unit 343
-section 4 item 1.**
+section 4 item 1.** **Re-run by unit 345 task 0: green at 1400 and 1920.** The card's map opens PY2JKL's
+path at 720 x 400. The popup's top is at screen y 136, below the back control's bottom at 31. A click
+outside closes it, and nothing is written but `achievement_category_opened`.
 
 *No ruling wanted; a finding for the arbiter authoring step 1.* See section 3: the globe on a
 trading card takes no click, and the only map popup is the conversation card's.
