@@ -25,15 +25,32 @@ public sealed class RsidCodes
         string source,
         double symbolRateHz,
         int symbols,
+        int silenceSymbolsBefore,
+        int firstToneOffsetSymbols,
         IReadOnlyDictionary<string, int> codes,
         IReadOnlyDictionary<string, IReadOnlyList<int>> toneSequences)
     {
         Source = source;
         SymbolRateHz = symbolRateHz;
         Symbols = symbols;
+        SilenceSymbolsBefore = silenceSymbolsBefore;
+        FirstToneOffsetSymbols = firstToneOffsetSymbols;
         Codes = codes;
         ToneSequences = toneSequences;
     }
+
+    /// <summary>How many symbols of silence a burst starts with, as the file states it.</summary>
+    /// <remarks>
+    /// **READ, NOT TYPED** (work instruction 359 task 2). The detector and the burst both
+    /// need the burst's shape, and the file is the one place it is written.
+    /// </remarks>
+    public int SilenceSymbolsBefore { get; }
+
+    /// <summary>
+    /// Where tone 0 sits, in tone steps from the center - negative is below it - as the file
+    /// states it.
+    /// </summary>
+    public int FirstToneOffsetSymbols { get; }
 
     /// <summary>Where the codes were ported from, as the file states it.</summary>
     public string Source { get; }
@@ -114,6 +131,19 @@ public sealed class RsidCodes
                 ? count
                 : throw new InvalidDataException("its symbol count is missing or not a whole number");
 
+            var silence = root.TryGetProperty("silence_symbols_before", out var q)
+                          && q.ValueKind == JsonValueKind.Number
+                          && q.TryGetInt32(out var quiet)
+                          && quiet >= 0
+                ? quiet
+                : throw new InvalidDataException("its silence before a burst is missing or not a whole number");
+
+            var firstTone = root.TryGetProperty("first_tone_offset_symbols", out var f)
+                            && f.ValueKind == JsonValueKind.Number
+                            && f.TryGetInt32(out var offset)
+                ? offset
+                : throw new InvalidDataException("its first tone's offset is missing or not a whole number");
+
             if (!root.TryGetProperty("codes", out var codesElement)
                 || codesElement.ValueKind != JsonValueKind.Object)
             {
@@ -184,7 +214,7 @@ public sealed class RsidCodes
                 }
             }
 
-            return new RsidCodes(source, rate, symbols, codes, sequences);
+            return new RsidCodes(source, rate, symbols, silence, firstTone, codes, sequences);
         }
     }
 }

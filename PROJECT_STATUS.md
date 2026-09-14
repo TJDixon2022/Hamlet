@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 7
+TASK: 2 of 7
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T12:20:52-04:00
-NOTE: Task 1 trace: running the measurement - burst positions in the nine fixtures, macro seconds plus burst against the caps, CQ hash
+UPDATED: 2026-09-14T12:31:18-04:00
+NOTE: Task 2 detector: RsidDetector built from the file's sequences; running TheRsidDetectorTests and TheOliviaDataTests
 
 ---
 
