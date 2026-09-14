@@ -1499,6 +1499,7 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     {
         var bet = new BandBet("17 m", "best bet now");
         var watched = false;
+        var watchedRow = false;
 
         static bool Filled(Border card)
         {
@@ -1527,6 +1528,14 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                 (FiveContacts(), "five contacts and two PSK31 callers", CallingWith(Psk31WithNoGrid, CertainPsk31WithGrid),
                     new List<string> { AchievementKinds.Modes, AchievementCategory.ContinentPrefix + "EU" }),
                 (FiveContacts(), "five contacts and no PSK31 caller", Calling(), new List<string> { AchievementKinds.Modes }),
+
+                // **WORK INSTRUCTION 347 TASK 3, RULING 32: EVERY ROW THE MODES NEXT CARD CAN DRAW.** FT4 alone draws
+                // CW, FT8 and PSK31 before its more line; CW and FT4 draw FT8, PSK31 and Voice. Each with two PSK31
+                // callers on the list, and with no list, where PSK31 says the list was not read.
+                (Ft4Only(), "FT4 only and two PSK31 callers", CallingWith(Psk31WithNoGrid, CertainPsk31WithGrid), new List<string> { AchievementKinds.Modes }),
+                (Ft4Only(), "FT4 only and no list", CqSnapshot.None, new List<string> { AchievementKinds.Modes }),
+                (CwAndFt4(), "CW and FT4 and two PSK31 callers", CallingWith(Psk31WithNoGrid, CertainPsk31WithGrid), new List<string> { AchievementKinds.Modes }),
+                (CwAndFt4(), "CW and FT4 and no list", CqSnapshot.None, new List<string> { AchievementKinds.Modes }),
             })
             {
                 var window = Realized(records, width, calling, bet);
@@ -1576,6 +1585,47 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                             + F(page.Bounds.Height) + " px tall");
 
                         Assert.True(white == 0, state + ": " + white + " card(s) with no map, bar or list");
+
+                        // **WORK INSTRUCTION 347 TASK 3: EACH MODES ROW DRAWN, AND HOW MANY BEFORE *AND N MORE*.** The
+                        // rows are measured by `Fits` above with every other run on the page.
+                        if (kind == AchievementKinds.Modes
+                            && cards.FirstOrDefault(c => c.DataContext is AchievementCategoryCard { Earned: false }) is { } modesNext)
+                        {
+                            var rows = CallerRows(modesNext);
+                            var more = ((AchievementCategoryCard)modesNext.DataContext!).MoreCallersLine;
+
+                            _output.WriteLine(
+                                "    modes rows: " + rows.Count + " drawn before [" + more + "]: "
+                                + string.Join(" / ", rows.Select(r => r.Place + " [" + r.CallLine + "]")));
+
+                            if (!watchedRow)
+                            {
+                                // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the longest row's call line held
+                                // in a slot 10 px narrower than it needs, then let go.
+                                var line = modesNext.GetVisualDescendants().OfType<TextBlock>()
+                                    .Where(t => t.IsEffectivelyVisible && t.Classes.Contains("card-caller-call"))
+                                    .OrderByDescending(t => (t.Text ?? "").Length)
+                                    .First();
+                                var needs = Unit342Needs(line, line.Text ?? "");
+
+                                line.MaxWidth = needs - 10;
+                                Settle(window);
+
+                                var narrowed = Unit346Fit(window).Clips;
+
+                                _output.WriteLine(
+                                    "    " + state + " [" + line.Text + "] held to " + F(needs - 10) + " px on the test window, watched red: "
+                                    + (narrowed.Count == 0 ? "fits" : string.Join("; ", narrowed)));
+
+                                Assert.Contains(narrowed, c => c.StartsWith("[" + line.Text + "]", StringComparison.Ordinal));
+
+                                line.MaxWidth = double.PositiveInfinity;
+                                Settle(window);
+
+                                Assert.Empty(Unit346Fit(window).Clips);
+                                watchedRow = true;
+                            }
+                        }
 
                         // **THE MODES PAGE ON THE FIVE CONTACTS DRAWS ITS NEXT CARD**, or it measures nothing new.
                         if (calling.Calls.Any(c => c.Mode == "PSK31"))
@@ -3161,6 +3211,21 @@ public sealed class TheCategoryPagesAreTradingCardsTests
             Record("VE3PQR", "FT8", null, "80m", null, new DateTime(2026, 8, 25, 1, 5, 0, DateTimeKind.Utc)),
             Record("LA1ZZZ", "FT8", null, "40m", "JO28", new DateTime(2026, 8, 12, 2, 15, 0, DateTimeKind.Utc)),
             Record("G0MNO", "SSB", null, "20m", "IO91", null),
+        };
+
+    /// <summary>One FT4 contact, so CW, FT8, PSK31 and Voice are unworked (work instruction 347 task 3).</summary>
+    private static IReadOnlyList<AdifLogRecord> Ft4Only()
+        => new[]
+        {
+            Record("LA8ENA", "MFSK", "FT4", "20m", "JO59", new DateTime(2026, 8, 17, 21, 41, 30, DateTimeKind.Utc)),
+        };
+
+    /// <summary>A CW and an FT4 contact, so FT8, PSK31 and Voice are unworked (work instruction 347 task 3).</summary>
+    private static IReadOnlyList<AdifLogRecord> CwAndFt4()
+        => new[]
+        {
+            Record("W3YNI", "CW", null, "40m", "FN20", new DateTime(2026, 8, 14, 21, 41, 30, DateTimeKind.Utc)),
+            Record("LA8ENA", "MFSK", "FT4", "20m", "JO59", new DateTime(2026, 8, 17, 21, 41, 30, DateTimeKind.Utc)),
         };
 
     private static AdifLogRecord Record(
