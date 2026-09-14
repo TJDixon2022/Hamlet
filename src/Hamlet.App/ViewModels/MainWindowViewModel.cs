@@ -14857,10 +14857,15 @@ public partial class MainWindowViewModel : ObservableObject
     private void SendPsk31(string wanted)
     {
         var kind = _psk31Macro;
-        var macro = Psk31MacroToken.For(kind);
+
+        // **A TYPED LINE IS ITS OWN TOKEN IN THE RECORD** (§R13, work instruction 357 task
+        // 2). `none` would say the composer did not know what it was sending; `typed` says
+        // what happened. **The text itself is not here and never is** (HM-DEC-018, §2.1).
+        var macro = _psk31Typed ? "typed" : Psk31MacroToken.For(kind);
         var at = _psk31SendAtHz;
 
         _psk31Macro = Psk31Macro.Cq;
+        _psk31Typed = false;
         _psk31SendAtHz = null;
 
         // **A CLEAR SPOT HAMLET FINDS, NOT A FIXED OFFSET** (§R6). The rule is
@@ -15051,6 +15056,96 @@ public partial class MainWindowViewModel : ObservableObject
 
             return;
         }
+    }
+
+    /// <summary>True while the send being composed is a line the operator typed.</summary>
+    /// <remarks>
+    /// **IT IS NOT A FIFTH VALUE OF <see cref="Psk31Macro"/>** (work instruction 357 task 2).
+    /// That enum is the engine's, and `Psk31Offer` answers with it: adding a member the offer
+    /// can never return would put a case in every switch that reads it for a thing the engine
+    /// does not know about. A typed line is not a macro; it is what happens instead of one.
+    /// </remarks>
+    private bool _psk31Typed;
+
+    /// <summary>Send the line the operator typed on a station's card.</summary>
+    /// <param name="card">Whose card the Send was pressed on.</param>
+    /// <remarks>
+    /// <para>**ONE CLICK, ONE TRANSMISSION, AND NOT A SECOND PATH** (§0.2, §R10, §10). It
+    /// composes the framed text and hands it to <see cref="SendMessage"/>, which is the same
+    /// door the four macros go through: the same composer, the same arming, the same
+    /// `Ft8TransmitSequence` with the one `PttOn` site, and the same `Stop`.</para>
+    /// <para>**IT IS NOT GATED ON CERTAINTY** (the instruction, §10). Where the parser is not
+    /// sure whose turn it is, the card says so in a word and the click still sends: typed
+    /// text is Tim's call. Report and Confirm keep §R1's gate, because those two assert
+    /// something about the contact and this asserts nothing.</para>
+    /// <para>**THE BLOCK CLEARS ONLY WHERE THE SEND ARMED.** `_armedText` is what
+    /// <see cref="SendPsk31"/> writes when it has armed something, so a refusal - no clear
+    /// spot, no transmit path, over the cap - leaves his words on the card where he can
+    /// shorten them and press again, rather than throwing away what he typed.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void SendTypedPsk31(Ft8ContactCard? card)
+    {
+        if (card is null || !card.IsPsk31)
+        {
+            return;
+        }
+
+        var station = card.Callsign;
+        var (clean, dropped) = Psk31Macros.Sendable(card.TypedText);
+
+        // **A LINE THAT IS ONLY WHITESPACE DOES NOT SEND** (the instruction). Nothing is
+        // keyed and the card says why, because a press that did nothing at all is the case
+        // somebody has to diagnose (§8.1).
+        if (clean.Length == 0)
+        {
+            card.TypedNote = dropped > 0
+                ? "Nothing here PSK31 can send: all "
+                    + dropped.ToString(CultureInfo.InvariantCulture)
+                    + " characters are outside what it carries."
+                : "Type something first.";
+
+            return;
+        }
+
+        string framed;
+
+        try
+        {
+            framed = Psk31Macros.Typed(station, _settings.Operator.Callsign ?? "", clean);
+        }
+        catch (ArgumentException error)
+        {
+            card.TypedNote = "Hamlet did not send it: " + error.Message;
+
+            return;
+        }
+
+        AppEvents.OperatorAction(
+            _telemetry, "psk31_typed_pressed", OperatingMode, _digitalMode.ToString());
+
+        _psk31Macro = Psk31Macro.None;
+        _psk31Typed = true;
+        _psk31SendAtHz = Psk31OffsetOf(station);
+
+        SendMessage(framed);
+
+        if (!string.Equals(_armedText, framed, StringComparison.Ordinal))
+        {
+            // **REFUSED, AND HIS WORDS STAY WHERE HE CAN EDIT THEM.** `DigitalSendLine`
+            // already carries the reason, in the operator's words.
+            return;
+        }
+
+        card.TypedText = "";
+
+        card.TypedNote = dropped > 0
+            ? "Sent. " + dropped.ToString(CultureInfo.InvariantCulture)
+            + (dropped == 1 ? " character was" : " characters were")
+            + " dropped: PSK31 carries the Latin-1 set and nothing else."
+            : "";
+
+        RefreshPsk31Card(station);
     }
 
     /// <summary>The station a PSK31 row names, or null where it names nobody.</summary>

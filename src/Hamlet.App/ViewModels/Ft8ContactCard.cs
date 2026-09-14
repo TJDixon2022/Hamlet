@@ -197,6 +197,37 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>Whose turn it is, on a PSK31 card, or null on an FT8 card.</summary>
     public Psk31TurnReading? Turn => _turn;
 
+    /// <summary>What the operator has typed on this card, not yet sent.</summary>
+    /// <remarks>
+    /// <para>**R29, TIM 2026-09-14**: *"there is also a text block where I can enter text to
+    /// transmit."* Until this unit the four macros were the whole vocabulary; free typing was
+    /// PSK31 plan R2's explicit rejection, and his later ruling wins.</para>
+    /// <para>**IT HOLDS WHAT HE TYPED AND NOTHING ELSE.** The callsigns and the hand-back are
+    /// added when it is sent and are not in here, so what he sees is what he wrote.</para>
+    /// </remarks>
+    [ObservableProperty]
+    private string _typedText = "";
+
+    /// <summary>What the card says beside the Send button, or "" where it says nothing.</summary>
+    /// <remarks>
+    /// **THE DOUBT IS SAID AND IT DOES NOT STOP HIM** (work instruction 357 task 2, §10).
+    /// Where the parser is not sure whose turn it is, the card says so in a word and the
+    /// click sends anyway: **typed text is Tim's call.** Report and Confirm keep §R1's
+    /// certainty gate, because those two assert something about the contact.
+    /// </remarks>
+    [ObservableProperty]
+    private string _typedNote = "";
+
+    /// <summary>True where the text block and its Send button belong on this card.</summary>
+    /// <remarks>
+    /// **OFFERED WHENEVER IT IS NOT CERTAINLY HIS TURN** (the instruction). Hamlet will not
+    /// invite him to talk over a station it is sure is still sending; everywhere else,
+    /// including *unknown*, the block is there and the doubt is a word beside it.
+    /// </remarks>
+    public bool CanType
+        => _turn is not null
+            && !(_turn.State == Psk31TurnState.HisTurn && _turn.IsCertain);
+
     /// <summary>**Whose turn it is, in words, where FT8's card has its state word.**</summary>
     /// <remarks>
     /// <para>**A GUESS SAYS SO IN WORDS** (§R1, §0.6): *a guess* is part of the word, so printed in

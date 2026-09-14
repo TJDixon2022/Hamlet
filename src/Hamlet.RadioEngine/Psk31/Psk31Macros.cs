@@ -117,6 +117,71 @@ public static class Psk31Macros
         return $"{other} de {me}  R R  TNX for the QSO  73 73  {other} de {me} SK";
     }
 
+    /// <summary>What Hamlet adds around a line the operator typed.</summary>
+    /// <param name="his">The other station's callsign.</param>
+    /// <param name="mine">The operator's callsign.</param>
+    /// <param name="text">What he typed, already cleaned by <see cref="Sendable"/>.</param>
+    /// <returns>The text, exactly as it goes on the air.</returns>
+    /// <exception cref="ArgumentException">A callsign is blank or cannot be sent, or the line is empty.</exception>
+    /// <remarks>
+    /// <para>**R29, AND THE FRAME IS THE WHOLE OF WHAT HAMLET ADDS.** Tim's words go out as
+    /// he typed them, trimmed, with his callsign and the other station's in front and the
+    /// hand-back behind. **Those two are the things a beginner forgets on a keyboard mode**,
+    /// and they are not his to remember: a line with no callsigns identifies nobody, and a
+    /// line with no turnover leaves the other operator waiting for a hand-back that never
+    /// comes.</para>
+    /// <para>**NOTHING ELSE IS ADDED, AND NOTHING IS REWORDED** (§0.0). What he sees on the
+    /// card is what goes on the air.</para>
+    /// </remarks>
+    public static string Typed(string his, string mine, string text)
+    {
+        var other = Field(his, nameof(his), "the other station's callsign");
+        var me = Field(mine, nameof(mine), "your callsign");
+        var said = Field(text, nameof(text), "your line");
+
+        return $"{other} de {me}  {said}  BTU {other} de {me} K";
+    }
+
+    /// <summary>How long a typed line would take on the air, framed.</summary>
+    /// <param name="his">The other station's callsign.</param>
+    /// <param name="mine">The operator's callsign.</param>
+    /// <param name="text">What he typed.</param>
+    /// <returns>Seconds, including the idle either side.</returns>
+    public static double TypedSeconds(string his, string mine, string text)
+        => Psk31Modulator.SecondsFor(Typed(his, mine, text));
+
+    /// <summary>What of a typed line PSK31 can send as itself, and how much was dropped.</summary>
+    /// <param name="text">What the operator typed.</param>
+    /// <returns>The sendable text, trimmed, and how many characters were dropped.</returns>
+    /// <remarks>
+    /// <para>**DROPPED, NOT REFUSED, AND THE CARD SAYS HOW MANY** (work instruction 357
+    /// task 2). A curly quote from a paste, an accented letter, an emoji: the varicode
+    /// carries the 256 Latin-1 bytes and nothing else, so a character outside them would go
+    /// out as something other than itself, which is §0.0 broken on the air rather than on
+    /// the screen. Refusing the whole line over one pasted character would be worse: he
+    /// would not know which one.</para>
+    /// <para>**A CONTROL CHARACTER GOES TOO**, including the tab and the newline a paste
+    /// brings with it, because the line is one line.</para>
+    /// </remarks>
+    public static (string Text, int Dropped) Sendable(string? text)
+    {
+        var kept = new System.Text.StringBuilder();
+        var dropped = 0;
+
+        foreach (var character in text ?? string.Empty)
+        {
+            if (character > (char)0xFF || char.IsControl(character))
+            {
+                dropped++;
+                continue;
+            }
+
+            kept.Append(character);
+        }
+
+        return (kept.ToString().Trim(), dropped);
+    }
+
     /// <summary>One field, trimmed, or a refusal naming it.</summary>
     /// <param name="value">What was handed in.</param>
     /// <param name="parameter">The parameter it came in on.</param>

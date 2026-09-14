@@ -5561,6 +5561,57 @@
                                                                      count already was. -->
                                                             </Grid>
 
+                                                            <!-- **THE TEXT BLOCK, AND ONE CLICK SENDS IT FRAMED**
+                                                                 (R29; Tim, 2026-09-14: *"there is also a text
+                                                                 block where I can enter text to transmit"*).
+
+                                                                 **HAMLET ADDS THE CALLSIGNS AND THE HAND-BACK**
+                                                                 and nothing else, because those are the two
+                                                                 things a beginner forgets on a keyboard mode.
+                                                                 What is in the box is what he wrote.
+
+                                                                 **IT IS NOT GATED ON CERTAINTY** (§10). The
+                                                                 block is here whenever it is not certainly the
+                                                                 other station's turn; where the parser is
+                                                                 unsure, `TypedNote` says so beside the button
+                                                                 and the click still sends. Report and Confirm
+                                                                 keep §R1's gate above; this asserts nothing
+                                                                 about the contact.
+
+                                                                 **ONE CLICK, ONE TRANSMISSION** (§0.2). The
+                                                                 command goes through `SendMessage` to the same
+                                                                 sequence the macros use, and `Stop` stops it. -->
+                                                            <StackPanel x:Name="Psk31TypedBlock"
+                                                                        IsVisible="{Binding CanType}"
+                                                                        Margin="0,6,0,0"
+                                                                        Spacing="4">
+                                                                <TextBox x:Name="Psk31TypedBox"
+                                                                         Text="{Binding TypedText, Mode=TwoWay}"
+                                                                         Watermark="Say something to him"
+                                                                         AcceptsReturn="False"
+                                                                         TextWrapping="Wrap"
+                                                                         MinHeight="46"
+                                                                         FontSize="12" />
+
+                                                                <Grid ColumnDefinitions="*,Auto">
+                                                                    <TextBlock x:Name="Psk31TypedNote"
+                                                                               Grid.Column="0"
+                                                                               VerticalAlignment="Center"
+                                                                               FontSize="11"
+                                                                               TextWrapping="Wrap"
+                                                                               Text="{Binding TypedNote}"
+                                                                               Foreground="{StaticResource HmTextMutedBrush}" />
+
+                                                                    <Button x:Name="Psk31TypedSend"
+                                                                            Grid.Column="1"
+                                                                            Classes="hm-cardaction"
+                                                                            Content="Send"
+                                                                            Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).SendTypedPsk31Command}"
+                                                                            CommandParameter="{Binding}"
+                                                                            ToolTip.Tip="Sends your line with both callsigns and the hand-back around it." />
+                                                                </Grid>
+                                                            </StackPanel>
+
                                                             <!-- **THE MAP, ON THE FACE** (work instruction 308 task 4, the
                                                                  authors proposal and not a ruling - see output.md). It was
                                                                  behind a globe glyph in the header until this unit, where a
