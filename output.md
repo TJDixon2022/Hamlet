@@ -1,51 +1,39 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. Step 0 done (state reader on
-   unit 341; TheTopRowTests 8 of 8, TheWorkingPanelsTests 8 of 8, read
-   once). Step 1 done (state reader on unit 347). Step 2 met on the
-   evidence: 5 of 5 must-pass met, was 0 of 5. Step 3 not started.
-B. Step 2 and its exit criteria:
-   entry: TheAchievementsPageClicksInTests 8 of 8; trading cards 12 of 12
-   1. States says worked, no confirm - badge [2 worked, from STATE], band
-      [2 worked, from STATE · 12 pts · unranked · 8 to Bronze], no-STATE
-      line [1 US contact carries no STATE] on the next card; confirm
-      drawn: none (page, 8 kinds, 7 continents, runs and hovers, two
-      logs); AchievementScreen sentence [The count says worked: the DXCC
-      award counts only contacts both stations have verified, by QSL card
-      or electronically, ...], held, drawn by no window;
-      StatesCountWhatTheLogsStateFieldSays pass at 1400 and 1920
-   2. the Modes test
-      WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed ->
-      WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard: PSK31 drawn only on
-      [the Modes next card's caller row]; pass; watched red [modes draws
-      [PSK31] on an unearned card [One more mode]]
-   3. the undeletable files: 15, listed once in section 2
-   4. the Views reds: TheMenuIsUnderTheMouseTests 0 of 8, 8 named with
-      why in section 3
-   5. the points file: 24 key names in the file, 24 documented, none on
-      one side only; rank_names []; the two-way test
-      TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop pass,
-      watched red [documented in the block and not in the file:
-      rank_names]
-C. The report last. Section 4 raises 6 items on top of the carried queue;
-   none stands in the way of a criterion in B. No change reached scoring,
-   points or a card other than States; the transmit side was not
-   touched, and TheMenuIsUnderTheMouseTests was run once and not edited.
+A. The phase goal - the screen, done right. Re-read at 85437c2 this unit:
+   step 0 done (state reader on unit 341; TheTopRowTests 8 of 8,
+   TheWorkingPanelsTests 8 of 8, BindingHealthTests 1 of 1, VoiceTests
+   5 of 5). Step 1 done (unit 347; trading cards 13 of 13, clicks-in
+   8 of 8). Step 2 done (unit 348; PSK31 records 4 of 4, achievements
+   page 10 of 10). Step 3 not started: 0 of 1, and only Tim can move it.
+B. Step 3 and its exit criterion:
+   entry: step 2 done - met on the state reader's verdict on unit 348
+   1. Tim says it passed - NOT MET, and not a session's to meet. What
+      stands ready for him: docs\unit349-what-tim-looks-at.md, 12 page
+      blocks at 1400 and 1920; 21 rulings with a screen effect, 19
+      without, 10 unit choices, each with its overrule words; 28 known
+      items; 4 known reds (13 tests); 184 claims checked, 12 corrected,
+      3 removed; the four-digit no-STATE line [1,234 US contacts carry no
+      STATE drawn whole at 1400 and 1920, 320 px in slots of 632 and 892,
+      nothing clipped, watched red built in]
+   Any class that did not read as work instruction 349 section 2
+   expects: none - 22 of 22 and 35 of 35, carry-forward 111 and 86
+C. The report last. Section 4 raises 5 items on top of the carried queue.
+   One is Tim's step 3 verdict. No other stands in the way of step 3's
+   criterion, and no red was found here, so none re-opens step 0, 1 or 2.
 ```
 
 ```
-UNIT:       348 - complete at task 4 of 4 - 2026-09-13 23:28
+UNIT:       349 - complete at task 3 of 3 - 2026-09-14 00:04
 PHASE GOAL: Hamlet's main window and every achievements category page drawn as Tim's approved
-            pictures at his two widths and proved by computation, then what the last phase left
-            closed, then passed by Tim at his window.
-UNIT GOAL:  Close what unit 336 left: States saying worked and what its count counts, with no
-            confirm anywhere the achievements window draws; the Modes test agreeing with Tim's
-            later next-card rulings; the emptied files as one list; the Views reds named with why;
-            and the points file documenting exactly the keys it carries.
-ADVANCED:   yes - all five step 2 criteria now hold, each on a named green test or a named list in
-            this report
-NUMBER:     step 2 must-pass met: 0 of 5 -> 5 of 5
+            pictures, proved by computation at 1400 and 1920, what the last phase left closed,
+            and then passed by Tim himself at his own window.
+UNIT GOAL:  Put the whole phase in front of Tim on one checked sheet he can go through at his window
+            in one sitting - every page with this tree's numbers, every decision made for him with
+            its overrule words, every known imperfection - and measure the four-digit no-STATE line.
+ADVANCED:   no - step 3's criterion is Tim's; docs\unit349-what-tim-looks-at.md stands ready for it
+NUMBER:     step 3 must-pass met: 0 of 1 -> 0 of 1; decisions gathered for Tim: 0 -> 50
 DRIFT:      0
 ```
 
@@ -54,350 +42,297 @@ evidence about the radio, and nothing here touched it.
 
 ## 1. What Claude did
 
-**Complete at task 4 of 4.** Nothing was dropped: task 4, the drop candidate, was done. This machine,
-project Hamlet at `C:\Source\HamLet`, branch `main`. The gate held: `SHACK_FACTS.md` and
+**Complete at task 3 of 3.** Nothing was dropped: task 3, the drop candidate, was done. Machine
+QUIVERFULL, project Hamlet at `C:\Source\HamLet`, branch `main`. The gate held: `SHACK_FACTS.md` and
 `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and `MURC.sln` do not, and
-`.run-unit\allowed.txt` carries `Bash(dotnet:*)` at line 14. **`dotnet test` was never refused.** The
-prompt carried the status instruction and the task count.
+the root is `C:\Source\HamLet`. `.run-unit\allowed.txt` carries `Bash(dotnet:*)` at line 14, and
+**`dotnet test` was never refused.** The prompt carried the status instruction and the task count.
 
-### Task 0 - the trace (`02884b1`, `07f48d9`)
+### Task 0 - the trace (`85437c2`, `40c297d`)
 
-- **Opening commit `02884b1`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line only,
-  and 1.13.34 -> 1.13.35 with its comment block.
+- **Opening commit `85437c2`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line only,
+  and 1.13.35 -> 1.13.36 with its comment block.
 - **Carry-forward, before**: app **111 of 111**, engine **86 of 86**.
-- **Entry check**, one filter: `TheAchievementsPageClicksInTests` **8 of 8**,
-  `TheCategoryPagesAreTradingCardsTests` **12 of 12**. Green, so the unit went on.
-- **Step 0, read once** (ruling 33): `TheTopRowTests` **8 of 8**, `TheWorkingPanelsTests` **8 of 8**.
-  Nothing on the main window was changed.
-- **The older reds, read once by exact name:**
-  - `ThePsk31RecordsAppearTests.WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`: *modes
-    draws [PSK31] before any PSK31 contact*;
-  - `TheTotalMilesTests.TheBadgeSaysZeroMilesOnAnEmptyLogAndTheLowestTierIsNext`: *Assert.Equal()
-    Failure: Strings differ ... Expected: "grid to grid, added up"*;
-  - `TheAchievementsScreenTests.TheWindowDrawsEverySixRows`: *System.InvalidOperationException :
-    Sequence contains no matching element*.
-- **`Unit348TraceWhatTheLastPhaseLeft`** (`07f48d9`) asserts nothing and presses nothing that
-  transmits or tunes. To walk the Modes test's own log it calls `EveningWithDx()`, which was made
-  `internal` for it. **One slip of mine, fixed before the commit:** its first documented-key rule
-  caught `"AS"`, a wrapped example line that starts with a quoted word. The rule now wants two spaces
-  after the key, which is the block's key column.
+- **Step 0, one filter**: `TheTopRowTests` **8 of 8**, `TheWorkingPanelsTests` **8 of 8**,
+  `BindingHealthTests` **1 of 1**, `VoiceTests` **5 of 5** (22 of 22).
+- **Steps 1 and 2, one filter**: `TheCategoryPagesAreTradingCardsTests` **13 of 13**,
+  `TheAchievementsPageClicksInTests` **8 of 8**, `ThePsk31RecordsAppearTests` **4 of 4**,
+  `TheAchievementsPageTests` **10 of 10** (35 of 35). No red, so there is no failure line to give.
+- **`Unit349TraceWhatTimLooksAt`** (`40c297d`) asserts nothing and presses nothing that transmits or
+  tunes. It prints the opening page's eight badges, then each kind's band and cards on the twelve
+  contacts, then States on `StateContacts()`. It also prints Continents' seven and each continent
+  page's first and next card, at 1400 and 1920. Every drawn run goes through `Unit346Fit`.
+  - **One slip of mine, fixed before the commit.** Its first run failed with *there is no ItemsControl
+    named AchievementsCategoryCards*. Continents draws its seven as badges with no card list, and the
+    trace now reads cards only where the list exists. The second run passed.
+- **The main window: nothing new printed.** Every number on the sheet's main-window blocks comes from
+  step 0's classes' own output at this tree, in `testresults\u349\u349-step0.trx`.
+  - One number was not printed there: the 1400 PSK31 top row with the best bet drawn. The best bet
+    did not draw in this run, so the row read 228 px. The sheet quotes unit 341 item 1 (`0f383a3`),
+    237 px.
+  - The facts-beside numbers were read from the PSK31 line of
+    `AtNineteenTwentyTheCardsFactsSitBesideTheMap`. The test passed on both modes.
+- **The work instructions, from git, and the rulings each carries:**
+  - 338 `6ab04aa`: 1 to 3.
+  - 339 `38b4427`: 4 and 5.
+  - 340 `cd517bc`: 6 and 7.
+  - 341 `8796858`: 8 to 10; ruling 7 withdrawn.
+  - 342 `ba5179d`: 11 to 16.
+  - 343 `681d45c`: 17 to 20.
+  - 345 `de709fd`: 21 to 23.
+  - 346 `7e830e4`: 24 to 28.
+  - 347 `4be21c0`: 29 to 32.
+  - 348 `02884b1`: 33 to 40.
+  - 337 (`0e37597`) and 344 (`83888ce`, the PSK31 capture instruction) carry no numbered ruling.
+  - **No ruling number is missing.**
+- **The reports, from git:**
+  - 337 `67fe28c`; a second unit-337 report is `e4c160f`, the PSK31 row;
+  - 338 `f7f6eb6`, 339 `991223a`, 340 `808e088`, 341 `0f383a3`;
+  - 343 `33fb6a9`, blocked, with no screen choice;
+  - 344 `6da5149`, PSK31 capture, with no screen choice;
+  - 345 `218d6e0`, 346 `0b506ed`, 347 `066ad04`, 348 `26e5879`.
+  - **Unit 342 has no report commit.** Its choices were read from its commit messages `40316ea`,
+    `18f5b17` and `9214b2a`.
+- **Unit choices that changed a word or hid something on the screen: 10.**
+  - Unit 338: decision 4.
+  - Unit 341: decision 6.
+  - Unit 342: two, from `18f5b17`.
+  - Unit 346: decisions 1 and 4.
+  - Unit 347: decision 2.
+  - Unit 348: decisions 1 and 2, and item 4.
+- **Known items: 28**, from these reports:
+  - unit 337 section 2;
+  - unit 338 section 2;
+  - unit 339 item 2;
+  - unit 341 items 1, 2, 5 and 6, and section 2;
+  - unit 346 item 4 and section 2;
+  - unit 347 items 2 and 3, and section 2;
+  - unit 348 items 3 and 4, and section 2;
+  - carried in those reports: unit 331 queue item 5, unit 332 items 2, 3 and 4, and unit 335 items 2
+    and 3.
 
 **Task 0's answers, from the numbers:**
-- **What the States count said, and the fixture's US records with no `STATE`.** The badge said `2
-  worked`. The band said `the 50 states · 2 worked · 12 pts · unranked · 8 to Bronze`. Both were the
-  same at 1400 and 1920. `StateContacts()` holds 4 United States, Alaska and Hawaii records: 1
-  carries no `STATE` (W1AW), and 1 carries a `STATE` that scores nothing (N3DC, `DC`).
-- **Where `confirm` was drawn: nowhere.** Per width, the walk read 546 runs and hovers on twelve
-  contacts and 387 on state contacts, across the page, the 8 kinds and the 7 continent pages. It
-  printed `NO CONFIRM DRAWN` each time.
-  - **Where it was only held:** one string, `AchievementScreen.cs:545`, and three comments,
-    `AchievementBadges.cs:23`, `AchievementCategory.cs:161` and `AchievementScreen.cs:414`-`415`.
-  - **No window draws that sentence.** `AchievementsWindow.axaml` names neither `Screen` nor
-    `Detail`, and no visible control was bound to `AchievementScreen` or `AchievementCard`.
-    `MainWindowViewModel.cs:13748` builds a screen only to read its `OpenKeys`.
-  - **The member that would carry it** is `AchievementCard.Detail`, on the cards
-    `AchievementScreen.Entity` builds, held by `AchievementsViewModel.Screen`.
-- **Which PSK31 runs the Modes test catches: one.** *PSK31* sits on the Modes next card (unearned,
-  *One more mode*), on a caller row. The window has no tabs (0 `TabItem`). No badge, earned card or
-  Hall of Fame card names PSK31; that log's next first is *A Morse contact*.
-- **Keys on one side only:** none in the file that the block lacks; in the block and not the file,
-  `rank_names`.
-- **Were step 0's two classes green:** yes, 8 of 8 each.
-- **The files: 15**, listed once in section 2. How they were found:
-  - `git grep --untracked -L -e "^[[:space:]]*[^/#@[:space:]]"` over `*.cs`, `*.py`, `*.bat`,
-    `*.cmd`, `*.sh`, `*.ps1`, `*.js`, `*.csproj` and `*.axaml`, tracked and untracked, lists files with
-    no line outside a comment;
-  - `git grep --untracked -l -i` for *emptied by*, *safe to delete*, *delete by hand*, *could not
-    delete*, *cannot delete*, *refused to delete* and *refuses file deletion*, over those types plus
-    `*.txt` and `*.json`;
-  - every hit was read, and `git ls-files` gave tracking. Gitignored files were not searched; the
-    `-v` form of the search asked for approval.
+- **Did every class in step 2 read as §2 expects?** Yes. `ThePsk31RecordsAppearTests` read 4 of 4 and
+  `TheAchievementsPageTests` 10 of 10. Steps 0 and 1 also read as expected, and nothing moved.
+- **Pages and runs.** The sheet has **12 page blocks**:
+  - the main window on FT8 and on PSK31;
+  - the opening page;
+  - one block for what every category page shares;
+  - the eight kinds, with Europe standing for all seven continent pages inside Continents.
 
-### Task 1 - States says worked and what it counts, and nothing says confirmed (`1684d51`)
+  The trace read **590 drawn runs per width**, at both widths.
+- **Rulings.** **21** have a screen effect and **19** have none. There are **10** unit choices.
+- **Known items: 28.**
+- **Clipped at either width: nothing.** The trace printed `NOTHING CLIPPED` at 1400 and 1920.
 
-- **Test first.** `StatesCountWhatTheLogsStateFieldSays` keeps every assertion it had.
-  `Assert.StartsWith("2 ", badge.Standing)` is unchanged, because the number did not move. It adds:
-  - the badge's standing is `2 worked, from STATE`, the band's is the same, and it is a whole part of
-    the band line;
-  - the next card's count line is `1 US contact carries no STATE`;
-  - at 1400 and 1920, the badge's corner, the band line and the next card draw those words, with *Any
-    state you have not worked* and `NoStateFromTheAir`;
-  - no run or hover contains *confirm* on the page, the 8 kinds or the 7 continent pages, at both
-    widths, on state contacts and twelve contacts;
-  - no line outside a comment in `src/Hamlet.App/ViewModels/Achievement*.cs` contains *confirm*.
-  - **Watched red on the tree as it was:** *Assert.Equal() Failure: Strings differ ... Expected: "2
-    worked, from STATE"*, against `2 worked`.
-- **Built:**
-  - `AchievementBadges`: States' standing is `Worked(n)` plus `FromStateField`, `, from STATE`.
-  - `AchievementCategory.StatesFor`: the next card's `CountLine` is `NoStateLine(log)`.
-  - `AchievementScreen`: the sentence is reworded (section 3).
-  - No score, points or other kind's words changed.
-- **Shortened, and named (§6):**
-  - *2 states worked, read from the log's STATE field* (48 characters) became `2 worked, from STATE`
-    (20). The badge's corner holds about 22 on the test host.
-  - **The band loses its meaning line on this log.** In full it would be 70 characters. The band's
-    existing 60-character rule takes the meaning off first, so it draws `2 worked, from STATE · 12
-    pts · unranked · 8 to Bronze`. The badge above still says *the 50 states*.
-- **The no-`STATE` line was the drop candidate.** It fits and is drawn, not dropped.
-- **No other test carried the old words.** Tests were searched for *worked rather than*, `"2
-  worked"` and a States standing.
-- **One filter:** trading cards **13 of 13**, clicks-in **8 of 8**, achievements page **10 of 10**,
-  PSK31 records **3 of 4** (the Modes test, red until task 2), binding health **1 of 1**, voice **5
-  of 5**. Carry-forward: app **111 of 111**, engine **86 of 86**.
+### Task 1 - the sheet (`e32d009`)
 
-### Task 2 - the Modes test and the points file (`36c3a7b`)
+- **`docs\unit349-what-tim-looks-at.md`**, in ruling 43's seven sections, from task 0's output. Status
+  was written between sections.
+- **One slip of mine, fixed before the commit:** the sheet had a unit choice for the reworded DXCC
+  sentence. No window draws that sentence, so it is not a screen choice, and it came out.
+- Test names appear only in the source notes under each block. Spelling is American.
 
-- **The Modes test**, renamed from `WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed` to
-  `WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard`. The old name stays in its remark.
-  - **It walks what it walked:** the page and every kind, at the window's own size, on
-    `EveningWithDx()`, with no CQ list. `Walk` gained an optional read callback.
-  - **Where each PSK run and hover may be.** Each is placed while its kind is open, and must be:
-    - on no tab and no badge;
-    - on a card that is not earned;
-    - the kind's single unearned card, with figure `next` and the next-card opacity;
-    - on Modes, a caller row; or on Hall of Fame, *A PSK31 contact*.
-  - **It also asserts that at least one such run exists**, which is R22's row.
-  - **A slip of mine, fixed before the watched red.** The first version placed runs after the window
-    had closed. It failed with *modes draws [PSK31] on no card*, which is my fault, not a watched
-    red.
-  - **Watched red:** with the next card expected earned, on the test only, it failed with *modes
-    draws [PSK31] on an unearned card [One more mode]*. Reverted.
-  - **No card, markup or view model changed.**
-- **The points file.**
-  - **The test first:** it checks both directions at every level, with the rule printed. Watched red
-    on the file as it was: *documented in the block and not in the file: rank_names*.
-  - **Then the file:** `"rank_names": []` was added after `ranks`. Its comment changed from *Not in
-    this file as shipped - add it to name your ranks* to *Empty as shipped, so every rank shows Rank
-    n. Put your names for your ranks in it, Rank 1 first*. No other key, value or point changed.
-  - **What the test now asserts about it:** `rank_names` is an empty array, `RankNamesRead` is 0, and
-    Rank 1 to Rank 9 each read `Rank n`.
-  - **Result:** 24 documented keys, and 43 keys at every level with 24 names. 32 table entries are
-    each checked by shape: a continent code quoted in the block, a whole-number count, one of the
-    fifty states, a band matching `^[0-9]+c?m$`, or a mode in `ContactModes.Six`. No key is on one
-    side only.
-- **Two new reds from the file change, corrected under R12:**
-  - `TheAchievementsPageTests.TheRanksCarryTheNamesInThePointsFile`, *Strings differ*;
-  - `TheAchievementsPageClicksInTests.ReadingThePointsFileWritesHowManyRankNamesItReadAndNoName`,
-    *Expected: 3*.
-  - Each added a second `rank_names` key, and the shipped empty list was the one read. Each now
-    fills in the shipped list instead.
-- **One filter, 41 of 41** (13, 8, 10, 4, 1, 5). Carry-forward: app **111 of 111**, engine **86 of
-  86**, run before the fixture fix and again after it.
+### Task 2 - the sheet checked (`d0660c4`)
 
-### Task 3 - the `Views` reds, named (no commit)
+- **184 claims checked, 12 corrected, 3 removed.** One claim is one table row per width, one bullet,
+  one ruling or choice line, one known item or one list line.
+- **Corrected:**
+  1. the panels end at the working card's floor, y 953, not at the status bar's top (y 978);
+  2. the facts row is the no-license fixture;
+  3. the strayed line now cites unit 341 item 2;
+  4. the popup's words come from the drive test, not `Unit340Trace`;
+  5. the read-time heading is on next cards that list callers, not on every kind;
+  6. ruling 30's rejected alternative is a dash;
+  7. U1 is the sparkline's width rule as unit 338's own, not a rule I composed;
+  8. U3's rejected alternative is *not recorded*;
+  9. U4's rejected alternative is the picture's green-quill sentence;
+  10. known item 7 is back in unit 337's words;
+  11. item 13 cites unit 335 on unit 332 item 3;
+  12. the verdict's step mapping names only what `PHASE_PLAN.md` names.
+- **Removed:**
+  - Total Miles' *with a bar*, which had no source;
+  - a dangling note in item 15;
+  - *carries no Morse* from U5, which is ruling 26's words and not the unit's.
+- **The overrule lines:** each names a thing Tim can see or say. U1's was rewritten with its row, and
+  is counted in the 12.
 
-- **`TheMenuIsUnderTheMouseTests`, run once by class: 0 of 8.** All eight fail in `RightClickRow` at
-  `TheMenuIsUnderTheMouseTests.cs:552` with *expected both decoded lists in the window, found
-  DigitalDecodedRows*. Their names are in section 3.
-- **Read, not edited.** `RightClickRow` (`:532`-`:571`) wants both `DigitalDecodedRows` and
-  `DigitalMineRows`. `DigitalMineRows` is at `MainWindow.axaml:6060`, inside a container shown only on
-  `ShowsConversation` (`:6059`).
-- **All eight still share unit 331's cause.** None fails for another reason. The trace gained no line,
-  so there was nothing to commit.
+### Task 3 - the no-`STATE` line at four digits (`1c1851b`)
 
-### Task 4 - the other small reds (`8895891`)
-
-- **`TheTotalMilesTests` (the app's):** *grid to grid, added up* corrected to *every mile, added*, the
-  line `src` has drawn since `3ea16ec`. The class ran **3 of 3**.
-- **`TheAchievementsScreenTests`, by class: 9 of 10.** `TheWindowDrawsEverySixRows` is still red.
-  It is named with why in section 3, not fixed.
-- **`WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` passed.** The remark on
-  `TheTwoInheritedRedsStillHaveSomethingToBeAbout` names it as a known red. Not chased.
-- **Never run:** `TheOperatorCanStopItTests` and `TheWholeChainRunsFromOneRightClickTests`.
-- **One filter, 41 of 41.** Carry-forward: app **111 of 111**, engine **86 of 86**.
+- **The assertion.** `StatesCountWhatTheLogsStateFieldSays` was extended with
+  `StateContactsWithThousandsNoState()`. That fixture is `StateContacts()` plus 1,233 US calls, `W1AAA`
+  onward, with no `STATE`.
+- **It was already whole on the tree.** *1,234 US contacts carry no STATE* is drawn, separator and
+  all, at 1400 in a 632 px slot and at 1920 in an 892 px slot, and it needs 320 px. `Fits` passes with
+  22 runs.
+- **Watched red, built in, on the test window only**, at both widths:
+  - with the line held to half its width, the clip measure reports *[1,234 US contacts carry no STATE]
+    needs 320.00 px and its slot is 160.00*;
+  - without the separator, the check reports *[1234 US contacts carry no STATE] not drawn on the card*.
+- **No string was shortened and no `src` file changed.** `NoStateLine` already formats with `"#,0"`
+  (`AchievementCategory.cs:942`).
+- **After:** the steps 1 and 2 filter read **36 of 36**, with trading cards 14 including the trace.
+  The carry-forward read app **111 of 111** and engine **86 of 86**.
 
 ### Checked against the tree (§2)
 
 **Held:**
-- `AchievementBadges.cs:353` builds `n worked`. `AchievementCategory.cs:929` is `NoStateFromTheAir`,
-  and `:964` is *Any state you have not worked*.
-- `AchievementsViewModel.cs:352` and `MainWindowViewModel.cs:13748` build an `AchievementScreen`.
-- `ThePsk31RecordsAppearTests.cs:86` and `:152`. `TheCategoryPagesAreTradingCardsTests.cs:1693`.
-  `TheAchievementsPageTests.cs:298` and `:340`-`:342`.
-- `Hamlet.RadioEngine.csproj:91` embeds the points file. Its comment block ends at line 50, with
-  *Not in this file as shipped* at line 34.
-- `TheMenuIsUnderTheMouseTests.cs:278` executes a menu item's command, `:465` builds
-  `Ft8ArmedSend`, `:489` executes `SendMessageCommand`, and `:519` opens the conversation before a
-  right-click.
-- `TheTotalMilesTests.cs:38` and `TheAchievementsScreenTests.cs:280`.
-- **The thirteen files:** all present, all tracked, all comments only.
-- **Unit 347's commits** `4be21c0`, `dc47f9f`, `92584a2`, `3dbe927`, `049a30a` and `066ad04` are on
-  `origin/main`, which read `066ad04` at the start. `output.md` was unit 347's.
-- **The version** was 1.13.34, at line 785 of `Directory.Build.props`. `DECISIONS.md` tops at
-  HM-DEC-163.
-- **The launcher's files**, edited by none of this unit:
-  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`, and there is no unit 341 or 344 entry.
-  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0` and step 1 `done`.
-  - `PHASE_OUTCOME.md`, `PHASE_STATUS.md` (before task 0's commit), `RUN_LEDGER.md` and `.run-unit\`
-    files were modified and uncommitted by the launcher.
-- `CLAUDE.md` holds no `CPS-DEC` id (0 matches). Parked with the id schemes.
+- `TheMarksRenderTests.cs:154`-`161` records that the headless drawing backend rasterizes nothing,
+  that `CopyPixels` throws, and that `Avalonia.Headless.Skia` would be a package.
+  `Unit300SizesTests.WhetherAnythingHereCanActuallyLook` is at `:243`; it was not run.
+- **Unit 348's commits** `02884b1`, `07f48d9`, `1684d51`, `36c3a7b`, `8895891` and `26e5879` are
+  pushed. `HEAD` and `origin/main` read `26e5879` at the start, and `output.md` was unit 348's.
+- **The version** was 1.13.35 at `Directory.Build.props:793`. `DECISIONS.md` tops at HM-DEC-163.
+- **The launcher's files, edited by none of this unit:**
+  - `PHASE_OUTCOME.md`'s header reads step 0 `in progress`. Its entries are units 337 to 340, 342,
+    *337 - carried repair*, two `UNIT 1 - STEP 1`, `UNIT 2`, `UNIT 3 - STEP 1` and `UNIT 4 - STEP 2`
+    (`:192`). There is no unit 341 or 344 entry.
+  - `PHASE_STATUS.md` reads `CURRENT_STEP: 0`, with steps 1 and 2 `done`.
+  - `PHASE_OUTCOME.md`, `RUN_LEDGER.md` and the `.run-unit\` files were modified and uncommitted by
+    the launcher, and so was `PHASE_STATUS.md` before task 0's commit.
+- `.run-unit\reload.txt:9` and `:35` say `CLAUDE.md` §1 holds `CPS-DEC-0163`, and `CLAUDE.md` has no
+  `CPS-DEC` match. Parked with the id schemes.
+- `validate-output.bat` reads the `UNIT:` line in the first 60 lines (`-TotalCount 60`, `:98`).
 - `tools\arbiter.bak-20260913\` stayed untracked. Files were staged by name.
+- The three images are in `assets\`.
+- §1's unit 341 items 1, 3 and 5, unit 346 item 4 and unit 348 items 3 and 4 say what §1 says they
+  say.
 
 **Mismatches, reported and not repaired:**
-- §1's `AchievementScreen.cs:543`-`546`: line 543 opens `detail:`, and the sentence runs from 544 to
-  547.
-- **Ruling 34's example reword still contains the word.** *The DXCC award counts confirmations*
-  holds *confirm*, which criterion 1 forbids in a view-model string. Different words were used
-  (section 3).
-- **§1 says thirteen emptied files; the tree holds fifteen.** `tools\unit217\status.py` (unit 217)
-  and `.run-unit\cost.py` (unit 252) are also session-emptied, comment-only and tracked. Several of
-  the thirteen say in their own text that they are untracked or never committed; git tracks every
-  one.
-- **§2 says units 345, 346 and 347 are recorded as `UNIT 1`, `UNIT 2` and `UNIT 3 - STEP 1`.**
-  `PHASE_OUTCOME.md` holds two `UNIT 1 - STEP 1` entries, one `UNIT 2` and one `UNIT 3`: four entries
-  for three units.
-- **`TheTotalMilesTests` is two classes.** One is in `tests/Hamlet.App.Tests/ViewModels/`, the one
-  named. The other is in `tests/Hamlet.RadioEngine.Tests/Contacts/` and was not run.
-- **`TheAchievementsPageTests` and `TheAchievementsScreenTests` live under `Views/`**, not
-  `ViewModels/`. §1 gives no folder, so this is noted only.
+- **§1 says the evidence is spread across twelve reports.** Git holds twelve report commits for units
+  337 to 348, but unit 342 has none and unit 337 has two (`67fe28c`, `e4c160f`). Units 343 and 344
+  carry no screen evidence.
+- **§1 says *every measurement is at 1400 and 1920 wide, on a host 1040 px tall*.** The achievements
+  pages are measured at the achievements window's own 720 px height (`AchievementsWindow.axaml:9`;
+  the trace printed `1920.00 x 720.00`). Only the main window is 1040 tall.
+- **§1 gives VK2DEF's map as spanning 633 of 892 px.** At this tree the map control is 892 × 231 at
+  1920. The 633.18 is the drawn frame inside it (`DrawnFrame`), which this unit did not re-measure.
+- **`DRIFT`.** `CLAUDE_CODE.md` §8 increments it on `ADVANCED: no`, while this instruction's template
+  prints `DRIFT: 0` and its own block gives 0. It is written as the instruction gives it.
 
-**Reds that moved in what ran:**
-- **Turned green:** the Modes test, by correction (task 2), and Total Miles (task 4).
-- **Also green:** `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo`, named a known red in a remark.
-- **New, and corrected in the same task:** the two rank-name fixtures (task 2).
-- **The engine read 86 of 86 on all five runs.**
+**Reds that moved:** none. No count moved in any run.
 
 **Tool facts, as they held for this session.**
 
 | Result | Commands |
 |---|---|
-| Ran | `sh tools/status.sh` on every write, joined by `&&` before `dotnet`; `&&` joining `git add`, `commit` and `push`; commits with several `-m`; `grep -E`, `cut`, `sed -n` and `tail -n +1` in pipes; `git grep --untracked` with several `-e`; `ls`; `date` |
-| Asked for approval, not run | `awk` in a pipe; `sort -t- -k3 -n` in a chain; `sed -E` in a pipe; `xargs grep -L -v` after a `grep -E` pipe; `;` joining `head`, `git ls-files`, `git check-ignore` and `git show`; `git grep -L -v` with several `-e` |
-| Refused | a `for` loop over a shell variable (*Contains simple_expansion*); `sed -i` on `output.md` and a redirect onto `output.md`, both *blocked* as outside the allowed working directory `C:\Source\HamLet`, though the file is inside it |
-| Not tried | `grep` with `\s`; a `cd` before `git`; `git -C`; apostrophes in `.bat` arguments |
+| Ran | `sh tools/status.sh` on every write, joined by `&&` before `dotnet`; `&&` joining `git add`, `commit` and `push`; commits with several `-m`; `grep` with several `-e`, `-v`, `-o`, `-c`, `-n` and `-A`, `cut`, `paste` and `sed -n` in pipes after `git show`; `ls`; `date` |
+| Asked for approval, not run | `grep -E` with a `{1,2}` quantifier and `\*` in a pipe after `git show`; `sed -e 's/.../'` in a pipe, twice |
+| Refused | none |
+| Not tried | redirects, `sed -i`, `for` loops, `awk`, `cd` before `git` |
+
+`git rev-parse --short HEAD origin/main` failed with *Needed a single revision*. That was my command,
+not the permission layer, and each ref was then read alone.
 
 **`RULES_AT`:** `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. This session set it back to
-`HM-DEC-163 (2026-09-12)` with the file editor after every write. Between a write and its edit the
-file carried 161 for a few seconds.
+`HM-DEC-163 (2026-09-12)` with the file editor after every write, sometimes in the next batch of calls
+rather than immediately. One status write was already corrected when its edit ran.
 
 ### Decisions made for this unit
 
 All are the unit's own and overrulable:
-1. **The count's words:** `2 worked, from STATE`. *STATE* in capitals names the field, and the kind's
-   name is already on the badge. The band losing *the 50 states* on the state log follows from its
-   existing 60-character rule and was not chosen here.
-2. **The no-`STATE` line** goes in the next card's count slot. It reads `n US contact carries` or
-   `contacts carry no STATE`, and is blank at 0.
-   - **What counts as a US record:** one where a `STATE` would score. The contact is tested with `PA`
-     put in its place, under `AchievementLog.StateOf`, so the app holds no second list of entities.
-   - **Not counted:** a record carrying a `STATE` that scores nothing, such as `DC`.
-3. **`AchievementScreen`'s sentence:** *The count says worked: the DXCC award counts only contacts both
-   stations have verified, by QSL card or electronically, and Hamlet only knows what passed on the air
-   from your own log.*
-4. **The documented-key rule:** a quoted word first on a comment line, followed by two or more spaces.
-   Keys under `per`, `special`, `milestones` and `tiers` are table entries, checked by shape.
-5. **`rank_names`' comment:** *Empty as shipped, so every rank shows Rank n. Put your names for your
-   ranks in it, Rank 1 first*, and the two lines after it are kept.
-6. **The Modes test places each run while its kind is open**, and asserts the R22 row is there.
-7. **The two rank-name fixtures** now fill in the shipped list instead of adding a key.
-8. **`TheWindowDrawsEverySixRows` is named, not fixed.** Its failure is a retired card, not a stale
-   string (section 3).
-9. **`EveningWithDx()` made `internal`**, for the trace only.
+1. **The trace's fixture is the page-wide clip test's**: twelve contacts, its four callers and 17 m
+   as the best bet. States is also traced on `StateContacts()`. Continent pages print only their
+   first card and their next card, as ruling 43 asks.
+2. **The trace's clip measure is `Unit346Fit`**, which is `Fits`' measurement without its asserts. It
+   counts runs per width over every realized page, including Continents and the States log.
+3. **The trace prints the map control's size, not its drawn frame.** The VK2DEF known item keeps unit
+   346's frame number.
+4. **What counts as a screen effect**: a ruling that decides a word, a place, a size or what is shown.
+   Rulings about tests, runs, evidence or the record count as none. Ruling 22 (closed by 35 and 36),
+   34 (a sentence no window draws) and 37 (`rank_names []`, with ranks unchanged) also count as none.
+5. **Unit choices are only those that changed a word or hid something on the screen.** Layout choices
+   a ruling later took over are not repeated. Unit 342's come from its commit messages, because it
+   wrote no report.
+6. **Known items include screen-visible items from units 331, 332 and 335**, because reports 337 to
+   348 carry them. Test-host-only caveats were left off: the license lookup and the heard count, unit
+   338 items 1 and 4.
+7. **The claim count's rule**, as stated under task 2.
+8. **Task 3's fixture** is 1,233 synthetic `W1` calls on FN31, so that with W1AW the count is exactly
+   1,234. The watched red uses unit 347's pattern, a `MaxWidth` set and cleared on the test window.
+   The separator is checked by its absence.
+9. **The report was assembled in place with the file editor** around unit 348's committed section 4.
 
 ### Commits
 
-`02884b1`, `07f48d9`, `1684d51`, `36c3a7b` and `8895891`, each pushed to `main` without refusal.
-Task 3 had nothing to commit. This report and the status file follow in their own commit.
+`85437c2`, `40c297d`, `e32d009`, `d0660c4` and `1c1851b`, each pushed to `main` without refusal. This
+report and the status file follow in their own commit.
 
 ## 2. What the owner should expect
 
-**The States page says what its count counts.** The badge and the band read *2 worked, from STATE*
-on the test log. The next card adds *1 US contact carries no STATE* under what it wants. On your own
-log, Hamlet's entries carry no `STATE`, so expect that number to be large. It counts records, and says
-nothing about where those stations are. **No achievements page says *confirmed*.**
+**The thing to read at your window is `docs\unit349-what-tim-looks-at.md`.** Go through it with
+Hamlet open. **Nothing on it was seen by anyone**: every number was computed on a test host, and your
+screen is the first eyes on it. **It asks for your verdict on step 3**: *passed*, or *not passed*
+with the page, the width and what is wrong. **It also asks for your window size**, which the record
+does not have.
 
-**The shipped points file now carries `"rank_names": []`**, documented as empty. **Your own copy
-under `%AppData%\Hamlet\achievements\` is unchanged and never replaced**, so this reaches only a
-fresh seed. To name your ranks, add `rank_names` to your copy as before. On a fresh seed the
-`achievement_points_loaded` event's `fileHash` changes with the file, as expected (R13).
-`assets\data\achievement-points.json` is still unread, and it was not changed or deleted. The version
-is 1.13.35.
-
-**What will look wrong but is not:**
-- **The States band no longer says *the 50 states*.** The longer count pushed the line past its 60
-  characters, and the band's existing rule takes the meaning off first. The badge still says it.
-- **The States next card has three lines of words and no callers.** The count line is new; the other
-  two are unit 335's, kept.
-- **`Unit348TraceWhatTheLastPhaseLeft` passes and asserts nothing.** It is the record behind task 0.
-- **Thirteen tests are still red** (section 3's table). Four of them are never run.
-
-### The one list of files for Tim to delete by hand
-
-Every one was emptied by a session because this environment refuses deletes. Each holds only
-comments or a note, and no code. **All fifteen are tracked by git**, so delete them and commit the
-deletion.
-
-| # | Path | Tracked | Holds | Emptied by |
-|---|---|---|---|---|
-| 1 | `C:\Source\HamLet\commit-msg-326.txt` | yes | a one-paragraph note, no code | unit 326 |
-| 2 | `C:\Source\HamLet\toolsarbitervalidate-output.bat` | yes | one `@rem` line | unit 332 |
-| 3 | `C:\Source\HamLet\tools\arbiter\unit323-append.bat` | yes | one `@rem` line | unit 332 |
-| 4 | `C:\Source\HamLet\tools\arbiter\unit323-append.py` | yes | one `#` line | unit 332 |
-| 5 | `C:\Source\HamLet\tools\cut-header-action.py` | yes | one `#` line | unit 332 |
-| 6 | `C:\Source\HamLet\tests\Hamlet.App.Tests\Views\Unit333ProbeTests.cs` | yes | one `//` line | unit 333 |
-| 7 | `C:\Source\HamLet\tests\Hamlet.App.Tests\ViewModels\ThePsk31TabIsInertTests.cs` | yes | `//` lines only | unit 323 |
-| 8 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Unit216Probe.cs` | yes | `//` lines only | unit 216 |
-| 9 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\Unit217Probe.cs` | yes | `//` lines only | unit 217 |
-| 10 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Dsp\UpstreamSyncSearchProbe.cs` | yes | `//` lines only | unit 214 |
-| 11 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Ldpc\UpstreamLdpcProbe.cs` | yes | `//` lines only | unit 215 |
-| 12 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\TempEncoderProbe.cs` | yes | `//` lines only | unit 203 |
-| 13 | `C:\Source\HamLet\tests\Ft8Sharp.Tests\Unit289SourceProbe.cs` | yes | `//` lines only | unit 289 |
-| 14 | `C:\Source\HamLet\tools\unit217\status.py` | yes | `#` lines only | unit 217, not on unit 334's list |
-| 15 | `C:\Source\HamLet\.run-unit\cost.py` | yes | `#` lines only | unit 252, not on unit 334's list; it sits in the launcher's folder |
-
-**Not on the list:**
-- **`C:\Source\HamLet\tools\arbiter.bak-20260913\`** is the launcher's backup: untracked and not
-  emptied. It holds copies of items 3 and 4, which go when the folder goes.
-- **Unit 334's gitignored scratch**, both still present and not emptied: `.commit-msg.tmp` and
-  `artifacts\unit333\psk31-fixture-export.adi`.
-- **`src\Hamlet.App\Telemetry\Psk31Macro.cs`** matched the search only on a remark. It is code.
-- **Four `.run-unit\` text files** matched on the launcher's prompt wording.
+- **Nothing on the screen changed in this unit.** The version is 1.13.36. Two tests grew: a trace
+  that asserts nothing, and the States test's four-digit line.
+- **What will look wrong but is not:**
+  - `Unit349TraceWhatTimLooksAt` passes and asserts nothing; it is the record behind the sheet.
+  - The States test prints four watched-red lines on every green run. A missing line would be the
+    failure.
+  - Everything that will look wrong on the screen is in the sheet's section 4.
+- The trx files behind the numbers are in `testresults\u349\`. Nothing was created that cannot be
+  deleted, and the fifteen emptied files are still on unit 348's list at `26e5879`.
 
 ## 3. What you should see
 
-**Yes. Every step 2 must-pass now holds: 5 of 5.** States says worked and what it counts, and no
-achievements page or view-model string says *confirm*. The Modes test agrees with R22 and Ruling C.
-The fifteen files are one list. The eight `Views` reds are named with why. The points file documents
-exactly the keys it carries.
+**Yes, the phase's evidence stands at this tree.** Every class read as work instruction 349 §2
+expects:
+- step 0: 22 of 22 (`TheTopRowTests` 8, `TheWorkingPanelsTests` 8, `BindingHealthTests` 1,
+  `VoiceTests` 5);
+- steps 1 and 2: 35 of 35 (trading cards 13, clicks-in 8, PSK31 records 4, achievements page 10);
+- carry-forward: app 111 and engine 86.
 
-**The States badge, band and next card**, the same at 1400 and 1920 on the state log:
-- **Badge:** *States*, *the 50 states*, *next One more state*, *2 worked, from STATE*, *12 pts ·
-  unranked*, *8 to Bronze*.
-- **Band:** *States*, *2 worked, from STATE · 12 pts · unranked · 8 to Bronze*, and over the bar *2 of
-  10 to Bronze*.
-- **Earned cards:** *AK*, *10 pts*, *KL7XYZ · BP51*, *3,200 mi*; and *PA*, *2 pts*, *K3PA · FN10*, *110
-  mi*.
-- **Next card:** *One more state*, *2 pts*, *next*, *1 US contact carries no STATE*, *Any state you
-  have not worked*, *Hamlet cannot tell a caller's state*.
+No count moved.
 
-**Where PSK31 is drawn on the no-PSK31 log:** once, as *PSK31* on the Modes next card's caller row,
-the kind's one unearned card. It is on no badge, tab, earned card or Hall of Fame card.
+**No visible change in the application.** This unit readies Tim's verdict, and its one test extension
+only makes a four-digit regression catchable.
 
-**The reworded sentence**, held on `AchievementScreen` and drawn by no window today: *The count says
-worked: the DXCC award counts only contacts both stations have verified, by QSL card or
-electronically, and Hamlet only knows what passed on the air from your own log.*
+**The counts:**
+- 12 page blocks at 1400 and 1920;
+- 590 drawn runs a width, nothing clipped;
+- 21 rulings with a screen effect, 19 without, and 10 unit choices, each with its overrule words;
+- 28 known items;
+- 4 known reds (13 tests);
+- 184 claims checked, 12 corrected, 3 removed;
+- *1,234 US contacts carry no STATE* drawn whole at both widths.
 
-**The step 2 table.** Every appearance claim here is computed on the headless host, not seen.
+**The sheet, `docs\unit349-what-tim-looks-at.md`:**
+1. How to look: the widths, the achievements window's own 1040 × 720, and the three pictures.
+2. Page by page:
+   - 2.1 main window on FT8;
+   - 2.2 on PSK31 with the power offer;
+   - 2.3 the opening page;
+   - 2.4 every category page;
+   - 2.5 to 2.12 Hall of Fame, Continents with Europe, Countries, States, Grids, Total Miles, Bands,
+     Modes.
+3. Decided for you: the rulings with a screen effect, the rulings without one, and the units' own
+   choices.
+4. What will look wrong, but is known: 28 items.
+5. Known reds.
+6. Yours, and not this phase's.
+7. Your verdict: a copyable form.
 
-| Test or list | Criterion | Drawn or source | Widths | Result | Numbers |
-|---|---|---|---|---|---|
-| `TheAchievementsPageClicksInTests`, `TheCategoryPagesAreTradingCardsTests` | entry | drawn | window size; 1400, 1920 | pass | 8 of 8; 12 of 12 (13 of 13 with the trace) |
-| `StatesCountWhatTheLogsStateFieldSays` | 1 | drawn, view model and source | 1400, 1920 | pass | badge and band `2 worked, from STATE`; next card `1 US contact carries no STATE`; 0 *confirm* on the page, 8 kinds and 7 continents on 2 logs; 0 held outside comments; 3 cards, 0 white; watched red |
-| `WithNoPsk31ContactPsk31IsDrawnOnlyAsANextCard` (was `WithNoPsk31ContactNoPsk31CardIsOnTheScreenAndNoneIsDimmed`) | 2 | drawn | the window's own 1040, as before | pass | 1 PSK run, on the Modes next card's caller row; watched red |
-| section 2's list | 3 | tree search | none | listed once | 15 files, all tracked |
-| `TheMenuIsUnderTheMouseTests` | 4 | run once | none | 0 of 8, named | all 8 at `:552` |
-| `TheShippedPointsFileDocumentsEveryKeyInACommentBlockAtItsTop` | 5 | the shipped file | none | pass | 24 documented, 24 key names, 43 keys, 32 table entries by shape; `rank_names` []; ranks read `Rank n`; watched red |
+**Task 2's corrections** are named in section 1. The two that change what Tim would look for:
+- the panels end at the working card's floor, not the status bar;
+- the read-time heading appears only on next cards that list callers.
 
-**The known reds.**
-
-| Test | Count | Failure line | Cause | Why it is not fixed | The fix a later phase could make |
-|---|---|---|---|---|---|
-| `TheMenuIsUnderTheMouseTests`: `ARowThatNamesNoStationPutsNothingUnderTheMouse`, `OutOfPrivilegesTheMenuSaysSoAndForbidsNothing`, `BothListsCarryTheMenuAndLogIsOnTheRightOne`, `EveryStationsPredictedMenuAppearsUnderTheMouse`, `TheRepeatCountBelongsToTheClickAndNotToTheRow`, `AThirdPartyExchangeHasAMenuAndNoLog`, `WithNoGridTheReasonIsANoteAndTheRestStayClickable`, `ChoosingOneGoesThroughTheOneCommandThatArms` | 8 (0 of 8) | *expected both decoded lists in the window, found DigitalDecodedRows* (`:552`) | `DigitalMineRows` is realized only behind *show the N messages* (`ShowsConversation`, `MainWindow.axaml:6059`-`6060`), which is deliberate | The scene builds `Ft8ArmedSend` over `Ft8TransmitSequence`, executes `SendMessageCommand` and reads audio going out. That is the transmit chain, outside this phase (§6, §0.2; ruling 38) | Realize the mine rows the way the operator does, by pressing *show the N messages*, before the menu is read |
-| `TheWholeChainRunsFromOneRightClickTests` | 2 | not run | The same cause, by unit 337's trace | The transmit side, and a real audio endpoint; never run (ruling 39) | The same, with a fake endpoint |
-| `TheOperatorCanStopItTests` | 2 | not run | Transmit-side, as unit 336 found | The transmit side; never run (ruling 39) | A transmit-side unit |
-| `TheAchievementsScreenTests.TheWindowDrawsEverySixRows` | 1 | *System.InvalidOperationException : Sequence contains no matching element* | It looks for `AchievementsModeRows`, the old card's six mode rows, which the click-in window no longer has. It also wants WSPR on the screen and over 1,000 characters of hover prose | Not a stale string. Its subject was retired by Tim's click-in ruling of 2026-09-12 and §3.1, and `TheTwoInheritedRedsStillHaveSomethingToBeAbout` keeps it as a finding. Making it pass means writing a different test (R14) | Retire it under R12 on a ruling, or rewrite it onto the Modes category page |
+**Every appearance claim here and on the sheet is computed on the headless host, not seen.**
 
 ## 4. What's blocking us
+
+**One ruling is wanted, and it is Tim's: step 3, pass or not.** It is item 1 under *Raised by unit
+349*, at the very end.
+
+Unit 348's section 4 comes first, verbatim per HM-DEC-139. It runs from its line under `## 4. What's
+blocking us` to its end, as committed in `26e5879`, and was kept in place with the file editor. The
+marks work instruction 349 §9 asks for are in the carried text:
+- unit 348 item 3, *TAKEN UP*;
+- unit 348 item 4, unit 346 item 4, and unit 341 items 1, 3 and 5, each *ON THE SHEET*.
+
+### Asks still outstanding - carried from unit 348's section 4, per HM-DEC-139, verbatim
 
 **No ruling is needed to go on.** Unit 347's section 4 comes first, verbatim per HM-DEC-139: from its
 line under `## 4. What's blocking us` to its end, as committed in `066ad04`, kept in place with the
@@ -709,6 +644,9 @@ named unit 336's queue; see item 3 above.
 
 **1. On PSK31 at 1400 the top row holds by 1.4 px, and the live best bet moves it by 9 px.**
 
+*ON THE SHEET for Tim - work instruction 349 ruling 43.* Section 4, item 1. At `85437c2` the row read
+228 px (0.251), with no best bet drawn.
+
 *No ruling wanted; a finding, beside parked item 2 of unit 339, raised once.*
 - With the best bet drawn in the green block, the row is 237 px (0.260) against 238.4. Without it,
   the row is 228 px (0.251).
@@ -730,6 +668,9 @@ dial and then chooses PSK31.**
 
 **3. Ruling 9's fit took a path the ruling does not name.**
 
+*ON THE SHEET for Tim - work instruction 349 ruling 43.* Section 3.3, choice U2: "put the upgrade row
+back".
+
 *No ruling wanted; a finding, marked as the unit's own and overrulable.*
 - The line that makes PSK31 taller is `GreenZoneStrayedLine`, not one of the four ruling 9 lists.
   The rule of thumb's third line is fixed by ruling 2, and the sparkline is already hidden.
@@ -749,6 +690,9 @@ but no longer proves the sentence is on the screen.**
   list, not in this instruction.
 
 **5. The line's ink clears 4.5:1 by 0.11.**
+
+*ON THE SHEET for Tim - work instruction 349 ruling 43.* Section 4, item 3. It was printed again at
+`85437c2`: 4.61:1.
 
 *No ruling wanted; a finding.* Computed from the brushes: `HmTextMutedBrush` #6E6E66 on the rig
 panel's `HmAmberTintBrush` #FDF1DE is 4.61:1. It is the same ink and fill as the drive note beside
@@ -1834,6 +1778,9 @@ read* and *3.580 on 80 m · EA3ABC · 4,100 mi and 1 more*. Nothing was shortene
 
 *NOTED by work instruction 347 - ruling 28 closed, for Tim at step 3.* Not re-measured by unit 347.
 
+*ON THE SHEET for Tim - work instruction 349 ruling 43.* Section 4, item 14. At `40c297d` the map
+control is 892 × 231 at 1920; its drawn frame was not re-measured.
+
 **5. The status script and this session's tool facts.**
 
 *No ruling wanted; a finding.*
@@ -1921,6 +1868,11 @@ measured with one.**
 
 **3. The no-`STATE` line is measured only at one digit.**
 
+*TAKEN UP by work instruction 349 task 3.* It is measured now, in `1c1851b`. On a state log with
+1,234 US records carrying no `STATE`, *1,234 US contacts carry no STATE* is drawn whole with its
+thousands separator at 1400 and 1920. It needs 320 px in slots of 632 and 892, and nothing on the page
+clips or wraps. The watched red is built in, and no string changed.
+
 *No ruling wanted; a finding for Tim at step 3.*
 - The fixture draws *1 US contact carries no STATE*, 29 characters, and it fits at 1400 and 1920.
 - On Tim's log the number will run to hundreds or thousands. *1,234 US contacts carry no STATE* is 32
@@ -1928,6 +1880,9 @@ measured with one.**
   is about 320 px, so it should fit; **that is arithmetic, not a measurement.**
 
 **4. The States band loses *the 50 states* on the state log.**
+
+*ON THE SHEET for Tim - work instruction 349 ruling 44.* Section 3.3, choice U9, and section 4, item
+16.
 
 *No ruling wanted; a finding for Tim at step 3, beside ruling 13.*
 - The new count makes the band line 70 characters, and `BandLineMost` is 60. The band's rule, unit
@@ -1954,3 +1909,55 @@ measured with one.**
 - `sed -i` on `output.md` and a redirect onto `output.md` were both *blocked* as outside
   `C:\Source\HamLet`, though the file is inside it. A `for` loop over a shell variable was refused.
   This report was assembled in place with the file editor around unit 347's committed section 4.
+
+### Raised by unit 349
+
+**1. Ruling wanted, Tim's, step 3: pass or not, at your window size, reading
+`docs\unit349-what-tim-looks-at.md`.**
+
+*Ruling wanted.* Say *passed*, or *not passed* with the page, the width and what is wrong, and give
+your window size. Section 7 of the sheet has the form.
+
+*Reasoning.*
+- Every step before this one is done on evidence, re-read green at this tree: step 0 on the state
+  reader's verdict on unit 341, step 1 on unit 347, step 2 on unit 348.
+- No session can see the screen. The headless host rasterizes nothing, and changing that takes a
+  package, which is a stop.
+
+*What was rejected and why* (ruling 42):
+- `Avalonia.Headless.Skia`, because it is a package.
+- Running `Hamlet.App` to capture a window, because it is the whole app with the radio side.
+- A drawn picture of what the page should look like, because §0.0 binds pictures as hard as
+  sentences.
+
+After this, no session can move step 3 (ruling 46).
+
+**2. The achievements pages are measured 720 px tall, not 1040, and the window opens at 1040 × 720.**
+
+*No ruling wanted; a finding.*
+- `AchievementsWindow.axaml:9` sets 1040 by 720. The trace printed `1920.00 x 720.00`. Every page
+  measurement in steps 1 to 3 was taken at that height, with the width set on the test window.
+- What Tim sees depends on how wide he makes that window. The sheet asks for both window sizes.
+- The window's own size stays parked under ruling 17.
+
+**3. Unit 342 wrote no report, and two reports are numbered 337.**
+
+*No ruling wanted; a finding about the record.*
+- There is no `docs(unit342)` commit, and no `output.md` commit for unit 342. Its screen choices were
+  read from its commit messages.
+- `67fe28c` (step 0) and `e4c160f` (the PSK31 row) are both unit 337's report.
+
+**4. VK2DEF's map: the control spans 892 px at 1920, and the picture inside it 633.18.**
+
+*No ruling wanted; a finding on two measures.* This unit's trace prints the map control's size. Unit
+346 measured the drawn frame inside it. Both are true, and the sheet keeps the frame's number, which
+is what Tim will see.
+
+**5. The status script's `RULES_AT`, and this session's tools.**
+
+*No ruling wanted; a finding.*
+- `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. Each write here was followed by a hand
+  edit to `HM-DEC-163 (2026-09-12)`.
+- `grep -E` with a brace quantifier and `sed -e` substitutions in pipes asked for approval. Plain
+  `grep -e` did the same work. Nothing was refused.
+- This report was assembled in place with the file editor around unit 348's committed section 4.
