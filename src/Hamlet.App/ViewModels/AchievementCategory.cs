@@ -736,7 +736,9 @@ public sealed class AchievementCategory
     /// <remarks>
     /// <para>**ONLY A PSK31 ROW SAYS ITS MODE** (`CqSnapshot.From`), so only PSK31 names a caller or
     /// says no one is calling: the nearest by the miles his CQ's grid gives, with how many more. A
-    /// PSK31 row carries no grid, so today its caller is his callsign alone.</para>
+    /// PSK31 caller's grid is the one his certain reading holds (work instruction 347 ruling 29), so
+    /// he carries his distance where his CQ sent a grid, and is his callsign alone where it sent none
+    /// or the reading was uncertain.</para>
     /// <para>**NEVER *NO ONE* WHERE THE LIST COULD NOT SHOW ONE.** FT8 and FT4 rows cannot be told
     /// apart, and Morse and voice are never on it.</para>
     /// </remarks>

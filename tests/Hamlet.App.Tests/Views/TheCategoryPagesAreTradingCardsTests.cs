@@ -951,11 +951,20 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         {
             // **WORK INSTRUCTION 346 TASK 1: MODES WITH A PSK31 CALLER AS WELL**, so a Modes row's who is
             // there is drawn where the list's rows say the mode and someone is calling in it.
-            foreach (var (fixture, kinds, list) in new[]
+            // **WORK INSTRUCTION 347 TASK 1, RULINGS 29 AND 30: THE PSK31 ROW AS DRAWN, WORKED OUT HERE FROM
+            // THE TEXT AND `GridPath`** and not from the snapshot - a certain CQ with a grid carries his
+            // distance, a CQ with no grid or an uncertain reading is the callsign alone, and of two callers
+            // the nearest by miles is named. Europe is drawn on the certain caller's list too, where he is.
+            foreach (var (fixture, kinds, list, psk31Row) in new[]
             {
-                (records, AchievementKinds.All.Concat(ContinentKinds()).ToList(), Calling()),
-                (FiveContacts(), new List<string> { AchievementKinds.Modes }, Calling()),
-                (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWithPsk31()),
+                (records, AchievementKinds.All.Concat(ContinentKinds()).ToList(), Calling(), (string?)null),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, Calling(), null),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWithPsk31(), "3.580 on 80 m · EA3XYZ"),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes, AchievementCategory.ContinentPrefix + "EU" },
+                    CallingWith(CertainPsk31WithGrid), "3.580 on 80 m · EA3ABC · " + Mi("JN11")),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }, CallingWith(UncertainPsk31WithGrid), "3.580 on 80 m · EA3ABC"),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes },
+                    CallingWith(Psk31WithNoGrid, CertainPsk31WithGrid), "3.580 on 80 m · EA3ABC · " + Mi("JN11") + " and 1 more"),
             })
             {
                 var wide = Realized(fixture, width, list, bet);
@@ -1051,6 +1060,15 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                                     + (modesMiss ?? string.Join(" / ", rows.Select(r => r.Place + " [" + r.CallLine + "]"))));
 
                                 Assert.True(modesMiss is null, where + " with " + list.Calls.Count + " on the CQ list: " + modesMiss);
+
+                                if (psk31Row is not null)
+                                {
+                                    var drawnPsk31 = rows.Single(r => r.Place == "PSK31").CallLine;
+
+                                    _output.WriteLine(where + " PSK31 row drawn [" + drawnPsk31 + "], wanted [" + psk31Row + "]");
+
+                                    Assert.True(drawnPsk31 == psk31Row, where + ": the PSK31 row draws [" + drawnPsk31 + "], not [" + psk31Row + "]");
+                                }
 
                                 // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the same rows held against a
                                 // best bet on another band.
@@ -2525,6 +2543,11 @@ public sealed class TheCategoryPagesAreTradingCardsTests
 
                                 // **EVERY OTHER KIND: ONLY THE LINES THAT NAME A PSK31 CALLER.**
                                 var withPsk31 = next.Callers.Where(c => psk31Calls.Any(p => c.CallLine.StartsWith(p, StringComparison.Ordinal))).ToList();
+
+                                if (next.MoreCallersLine.Length > 0)
+                                {
+                                    _output.WriteLine("MORE " + where + " [" + next.Title + "]: " + next.Callers.Count + " drawn, [" + next.MoreCallersLine + "]");
+                                }
 
                                 if (withPsk31.Count == 0)
                                 {

@@ -27,7 +27,10 @@ public sealed record CqCall(string Callsign, string Grid, string HeardUtc, strin
 /// <para>**A CQ IS WHAT THE DECODED LIST'S OWN CQ TOGGLE CALLS ONE**:
 /// `Ft8MessageSplit.IsCallToAnyone` on the row's addressee, from a row with a sender, that this
 /// station did not send. **The grid is the payload only where it is a grid**
-/// (`Ft8MessageSplit.IsGrid`); a PSK31 row has no fields and so no grid.</para>
+/// (`Ft8MessageSplit.IsGrid`). **A PSK31 row has no fields, so its grid is the one its PSK31
+/// reading already holds, and only where that reading is certain** (work instruction 347 ruling
+/// 29): an uncertain reading is a guess, and a distance drawn from it would not show one
+/// (`PHASE_PLAN.md` §R1 of the PSK31 phase).</para>
 /// <para>**IT READS AND DOES NOT DECODE.** Nothing here touches how a row came to be on the list
 /// (§10 of the instruction).</para>
 /// </remarks>
@@ -66,7 +69,7 @@ public sealed class CqSnapshot
                 && Ft8MessageSplit.IsCallToAnyone(r.Addressee))
             .Select(r => new CqCall(
                 r.Sender.Trim().ToUpperInvariant(),
-                Ft8MessageSplit.IsGrid(r.Payload) ? r.Payload : "",
+                GridOf(r),
                 r.Utc,
                 r.IsTextOnly ? "PSK31" : ""))
             .GroupBy(c => c.Callsign, StringComparer.OrdinalIgnoreCase)
@@ -75,6 +78,16 @@ public sealed class CqSnapshot
 
         return new CqSnapshot(calls, readUtc);
     }
+
+    /// <summary>The grid a row's CQ carried, or "".</summary>
+    /// <remarks>
+    /// **IT READS AND DOES NOT DECODE**: a PSK31 row's `Reading.Grid` is what the parser already
+    /// filled, held to the same grid test the FT8 payload is.
+    /// </remarks>
+    private static string GridOf(DigitalDecodeRow row)
+        => row.IsTextOnly
+            ? row.Reading is { IsCertain: true, Grid: { } grid } && Ft8MessageSplit.IsGrid(grid) ? grid : ""
+            : Ft8MessageSplit.IsGrid(row.Payload) ? row.Payload : "";
 }
 
 /// <summary>
