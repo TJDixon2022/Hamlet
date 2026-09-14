@@ -48,17 +48,21 @@ public sealed record DigitalModeChip(string Label, bool IsLit, bool IsChosen)
     public bool IsPlain => !IsLit && !IsChosen;
 
     /// <summary>
-    /// The four modes the strip carries, in the order they are drawn.
+    /// The modes the strip carries, in the order they are drawn.
     /// </summary>
     /// <remarks>
-    /// **THE OWNER'S FOUR, KEPT.** They were chosen in August and this unit
+    /// <para>**THE OWNER'S FOUR, KEPT.** They were chosen in August and this unit
     /// lights them rather than choosing a different set. The map knows blocks
     /// the strip has no chip for, JS8 and RTTY among them, and in one of those
-    /// the honest picture is four unlit chips rather than a fifth invented here
-    /// (§12.1).
+    /// the honest picture is unlit chips rather than one invented here
+    /// (§12.1).</para>
+    /// <para>**AND OLIVIA, THE FIFTH, BY RULING** (Tim, 2026-09-14, HM-DEC-164; work
+    /// instruction 358 task 2). It is a name and not an acronym, so it is spelled as
+    /// one, and every comparison on this type ignores case so a settings file holding
+    /// `OLIVIA` still finds it.</para>
     /// </remarks>
     public static readonly IReadOnlyList<string> Labels =
-        new[] { "FT8", "FT4", "PSK31", "WSPR" };
+        new[] { "FT8", "FT4", "PSK31", "WSPR", "Olivia" };
 
     /// <summary>The strip for one neighborhood.</summary>
     /// <param name="here">Where the dial is, or null when the map has no block.</param>
@@ -83,13 +87,19 @@ public sealed record DigitalModeChip(string Label, bool IsLit, bool IsChosen)
         // frequency the map has no block for. Both are the absence of a reading
         // rather than a reading of absence, and neither is a licence to guess.
         var label = here is { Family: ModeFamily.Digital }
-            ? here.ShortName.Trim().ToUpperInvariant()
+            ? here.ShortName.Trim()
             : "";
 
-        var picked = chosen?.Trim().ToUpperInvariant() ?? "";
+        var picked = chosen?.Trim() ?? "";
 
+        // **CASE IS IGNORED, NOT FOLDED ONTO THE LABEL** (work instruction 358 task 2).
+        // Upper-casing both sides worked while every label was an acronym; `Olivia` is a
+        // name, and upper-casing only the other side would leave its chip never chosen.
         return Labels
-            .Select(one => new DigitalModeChip(one, one == label, one == picked))
+            .Select(one => new DigitalModeChip(
+                one,
+                label.Length > 0 && string.Equals(one, label, StringComparison.OrdinalIgnoreCase),
+                picked.Length > 0 && string.Equals(one, picked, StringComparison.OrdinalIgnoreCase)))
             .ToList();
     }
 
@@ -110,9 +120,9 @@ public sealed record DigitalModeChip(string Label, bool IsLit, bool IsChosen)
     /// </remarks>
     public static string? Canonical(string? label)
     {
-        var wanted = label?.Trim().ToUpperInvariant();
+        var wanted = label?.Trim();
 
         return Labels.FirstOrDefault(
-            one => string.Equals(one, wanted, StringComparison.Ordinal));
+            one => string.Equals(one, wanted, StringComparison.OrdinalIgnoreCase));
     }
 }

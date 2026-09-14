@@ -156,10 +156,27 @@ public static class ContactModes
         new ContactMode("Voice", new[] { "SSB", "AM", "FM" }, null, true),
     };
 
+    /// <summary>**Every mode the log can write: the six, and Olivia.**</summary>
+    /// <remarks>
+    /// <para>**OLIVIA IS OFFERED BY THE LOG BEFORE IT IS COUNTED** (work instruction 358
+    /// task 2). The Olivia phase's step 0 has the log offer `OLIVIA`; the achievements count
+    /// <see cref="Six"/>, and the mode's records, its badge and its submode are step 5's.
+    /// Putting it in the six here would reveal an achievement row for a mode nobody can yet
+    /// work, which is the promise the six's own remarks warn against.</para>
+    /// <para>**THE SPELLING IS `PHASE_PLAN.md` STEP 5's**: `MODE=OLIVIA`, with the variant as
+    /// `SUBMODE` once step 5 writes one. It was taken from the plan and not re-read from the
+    /// ADIF page in this unit, which reached no network; step 5 checks it against <see
+    /// cref="Cite"/>. **No submode is carried**, so a record saying `MODE=OLIVIA` with any
+    /// variant is Olivia and one without a variant is too.</para>
+    /// </remarks>
+    public static IReadOnlyList<ContactMode> Logged { get; } = Six
+        .Concat(new[] { new ContactMode("Olivia", new[] { "OLIVIA" }, null, true) })
+        .ToList();
+
     /// <summary>The mode of that name, or null.</summary>
     /// <param name="name">Hamlet's own name for it, e.g. "FT8".</param>
-    /// <returns>The entry, or null where the name is not one of the six.</returns>
+    /// <returns>The entry, or null where the name is not one the log can write.</returns>
     public static ContactMode? Named(string name)
-        => Six.FirstOrDefault(
+        => Logged.FirstOrDefault(
             m => string.Equals(m.Name, name, StringComparison.OrdinalIgnoreCase));
 }

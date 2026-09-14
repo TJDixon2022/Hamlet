@@ -15,6 +15,7 @@ using Hamlet.App.Telemetry;
 using System.Text;
 using Hamlet.RadioEngine.Audio;
 using Hamlet.RadioEngine.Psk31;
+using Hamlet.RadioEngine.Olivia;
 using Hamlet.RadioEngine.Bands;
 using Hamlet.RadioEngine.Civ;
 using Hamlet.RadioEngine.Contacts;
@@ -1129,6 +1130,10 @@ public partial class MainWindowViewModel : ObservableObject
             // second thing that is not true.
             var grid = IsPsk31Chosen
                 ? ChosenDigitalMode + ", one continuous carrier a station"
+                // **OLIVIA HAS NO SLOTS AND NOTHING READS IT YET** (work instruction 358
+                // task 2), so the caption names the mode and says so rather than a grid.
+                : IsOliviaChosen
+                ? OliviaLabel + ", not read yet"
                 : ClockOffset.IsKnown
                     ? DigitalGrid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture)
                       + " s slots"
@@ -1365,11 +1370,164 @@ public partial class MainWindowViewModel : ObservableObject
         await TuneToDigitalModeAsync(picked).ConfigureAwait(true);
     }
 
+    /// <summary>Take the dial to Olivia's calling spot for this band, in USB-D, and confirm it landed.</summary>
+    /// <param name="bandName">The band the operator is on.</param>
+    /// <remarks>
+    /// <para>**THE SPOT IS THE CITED TABLE'S, AND SO IS THE DIAL** (work instruction 358 task 2,
+    /// `PHASE_PLAN.md` R29, HM-DEC-054). The row gives the center of the signal; the dial is
+    /// what puts that center in the middle of the passband, derived by the engine from the
+    /// file's own row that prints both. Nothing here holds a number.</para>
+    /// <para>**A TABLE THAT COULD NOT BE READ MOVES NOTHING** and the line carries the
+    /// engine's sentence naming the file (§0.0).</para>
+    /// <para>**USB-D IS ASKED FOR BY THE PRESS.** On three of the seven bands the dial lands
+    /// where mode-follow has no block to answer from, so the press asks for the mode the
+    /// engine says Olivia is worked in, once the frequency is confirmed. Setting a mode keys
+    /// nothing (§0.2).</para>
+    /// </remarks>
+    private async Task TuneToOliviaAsync(string bandName)
+    {
+        var calling = _olivia.Calling;
+
+        if (calling is null)
+        {
+            DigitalTuneFailed = true;
+            DigitalTuneLine = "The dial has not moved. "
+                + (_olivia.Problem ?? "Hamlet could not read " + OliviaCallingTable.FilePath + ".");
+
+            return;
+        }
+
+        var row = calling.CallingRowFor(bandName);
+
+        if (row is null)
+        {
+            var elsewhere = HfBands.Names.Where(b => calling.CallingRowFor(b) is not null).ToList();
+
+            DigitalTuneFailed = true;
+            DigitalTuneLine = elsewhere.Count == 0
+                ? "There is no Olivia calling spot in " + OliviaCallingTable.FilePath
+                  + ", so the dial has not moved."
+                : $"There is no Olivia calling spot on {bandName}, so the dial has not "
+                  + $"moved. {Listed(elsewhere)} {(elsewhere.Count == 1 ? "has" : "have")} one.";
+
+            return;
+        }
+
+        if (calling.DialHzFor(row) is not { } target)
+        {
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"Olivia on {bandName} is called on {Megahertz(row.CenterHz)} MHz, and "
+                + OliviaCallingTable.FilePath + " gives no way to say where the dial goes, so "
+                + "the dial has not moved.";
+
+            return;
+        }
+
+        if (_rig is null || !IsConnected)
+        {
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"Nothing is connected, so the dial has not moved. Olivia on {bandName} is "
+                + $"called on {Megahertz(row.CenterHz)} MHz, which is the dial at "
+                + $"{Megahertz(target)} MHz when a radio is.";
+
+            return;
+        }
+
+        var was = FrequencyHz;
+        NoteTuneWritten(target, was, DateTime.UtcNow);
+
+        AppEvents.TuneRequested(_telemetry, target, "digital_mode_press");
+
+        long readBack;
+
+        try
+        {
+            await _rig.SetFrequencyHzAsync(target).ConfigureAwait(true);
+            readBack = await _rig.GetFrequencyHzAsync().ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            AppEvents.TuneWritten(_telemetry, target, "failed", null);
+
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"The tune to Olivia did not take: {ex.Message}. The dial is still showing "
+                + $"{Megahertz(was)} MHz.";
+
+            return;
+        }
+
+        if (readBack != target)
+        {
+            AppEvents.TuneWritten(_telemetry, target, "unconfirmed", null);
+
+            DigitalTuneFailed = true;
+            DigitalTuneLine =
+                $"The tune to Olivia did not take. Hamlet asked for {Megahertz(target)} MHz "
+                + $"and the radio came back with {Megahertz(readBack)} MHz, so the display is "
+                + "left where it was.";
+
+            return;
+        }
+
+        AppEvents.TuneWritten(_telemetry, target, "confirmed", null);
+
+        ApplyRigFrequency(readBack);
+
+        var mode = "";
+
+        if (ModeFollowPlan.TargetForMode(OliviaLabel) is { } wanted)
+        {
+            _settingModeOurselves = true;
+
+            try
+            {
+                var result = await _rig.SetModeAsync(wanted.Mode, wanted.DataMode).ConfigureAwait(true);
+
+                _lastKnownMode = result.Worked ? wanted.Mode : null;
+
+                AppEvents.ModeFollowed(
+                    _telemetry, wanted.Mode.ToString(), wanted.DataMode, result.Outcome.ToString());
+
+                mode = result.Worked
+                    ? " in " + wanted.Name
+                    : ", but the radio did not take " + wanted.Name + " ("
+                      + (result.Detail.Length > 0 ? result.Detail : result.Source) + ")";
+            }
+            catch (Exception ex)
+            {
+                mode = ", but Hamlet could not set " + wanted.Name + " (" + ex.Message + ")";
+            }
+            finally
+            {
+                _settingModeOurselves = false;
+            }
+        }
+
+        DigitalTuneFailed = false;
+        DigitalTuneLine =
+            $"Olivia on {bandName}: the radio confirmed {Megahertz(readBack)} MHz{mode}, which puts "
+            + $"the calling spot at {Megahertz(row.CenterHz)} MHz in the middle of the passband. "
+            + "The spot is a community convention, not a band plan.";
+    }
+
     /// <summary>Take the dial to a sub-mode's block, and confirm it landed.</summary>
-    /// <param name="picked">One of the four, already canonical.</param>
+    /// <param name="picked">One of the strip's labels, already canonical.</param>
     private async Task TuneToDigitalModeAsync(string picked)
     {
         var bandName = SelectedBand.Band.Name;
+
+        // **OLIVIA'S SPOT IS IN ITS OWN CITED TABLE**, not among the band's blocks (work
+        // instruction 358 task 2).
+        if (string.Equals(picked, OliviaLabel, StringComparison.Ordinal))
+        {
+            await TuneToOliviaAsync(bandName).ConfigureAwait(true);
+
+            return;
+        }
+
         var block = DigitalCallingFrequencies.Find(bandName, picked);
 
         if (block is null)
@@ -2261,6 +2419,36 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>True while the operator has PSK31 pressed.</summary>
     private bool IsPsk31Chosen
         => string.Equals(ChosenDigitalMode, "PSK31", StringComparison.Ordinal);
+
+    /// <summary>The strip's label for Olivia, which is also what the record's mode field says.</summary>
+    private const string OliviaLabel = "Olivia";
+
+    /// <summary>True while the operator has Olivia pressed.</summary>
+    /// <remarks>
+    /// **A LABEL WITH NO DECODER AND NO MODULATOR** (work instruction 358 task 2). It is
+    /// answered false by <see cref="CanDecode"/> and <see cref="CanTransmitIn"/>, so the slot
+    /// watch is not asked, the PSK31 listener does not start and the send door refuses it;
+    /// this only decides where the press tunes and what the panel says.
+    /// </remarks>
+    private bool IsOliviaChosen
+        => string.Equals(ChosenDigitalMode, OliviaLabel, StringComparison.Ordinal);
+
+    /// <summary>The Olivia calling table and RSID codes, read when the window is built.</summary>
+    /// <remarks>
+    /// **READ AT STARTUP, AND A FILE THAT COULD NOT BE READ IS A SENTENCE ON THE PANEL**
+    /// (work instruction 358 task 1, `PHASE_PLAN.md` criterion 0.4). The values and the
+    /// sentence are the engine's; this only holds them and says where they show.
+    /// </remarks>
+    private OliviaData _olivia = OliviaData.Current;
+
+    /// <summary>Hand the panel a different reading of the Olivia files, for a test.</summary>
+    /// <param name="data">What the files are to have held.</param>
+    internal void UseOliviaDataForTests(OliviaData data)
+    {
+        _olivia = data;
+
+        OnPropertyChanged(nameof(DigitalModeStripLine));
+    }
 
     /// <summary>Every PSK31 signal in the passband, or null until PSK31 is pressed.</summary>
     /// <summary>**What a row says where Hamlet hears a carrier and cannot read it.**</summary>
@@ -5629,7 +5817,11 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>What the decoded panel says before anything has decoded.</summary>
     public string DigitalDecodedIdle
-        => IsPsk31Chosen ? DigitalIdleText.DecodedUnslotted : DigitalIdleText.Decoded;
+        => IsPsk31Chosen
+            ? DigitalIdleText.DecodedUnslotted
+            : IsOliviaChosen
+                ? DigitalIdleText.DecodedOlivia
+                : DigitalIdleText.Decoded;
 
     /// <summary>What the plain-English panel says, which is its idle line.</summary>
     /// <remarks>
@@ -5654,6 +5846,13 @@ public partial class MainWindowViewModel : ObservableObject
     public string DigitalModeStripLine
         => IsPsk31Chosen
             ? DigitalIdleText.ListeningAcrossThePassband(ChosenDigitalMode!)
+            // **OLIVIA SAYS IT CANNOT BE READ, AND A CITED FILE THAT COULD NOT BE READ SAYS
+            // SO FIRST** (work instruction 358 tasks 1 and 2). The engine's sentence names the
+            // file and what was wrong; nothing is guessed in its place.
+            : IsOliviaChosen
+            ? _olivia.Problem is { } problem
+                ? problem + " " + DigitalIdleText.NotYetReadable(OliviaLabel)
+                : DigitalIdleText.NotYetReadable(OliviaLabel)
             : !CanDecode(ChosenDigitalMode)
             ? DigitalIdleText.NotYetReadable(ChosenDigitalMode!)
             : _digitalRefusal.Length > 0

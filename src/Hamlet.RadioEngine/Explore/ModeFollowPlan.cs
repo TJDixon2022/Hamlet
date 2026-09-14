@@ -190,6 +190,24 @@ public static class ModeFollowPlan
     /// </remarks>
     public const long SidebandChangeoverHz = 10_000_000;
 
+    /// <summary>The mode a digital sub-mode is worked in, or null where the name is not one.</summary>
+    /// <param name="mode">The sub-mode's name, e.g. "Olivia".</param>
+    /// <returns>The target, or null.</returns>
+    /// <remarks>
+    /// **FOR A PRESS THAT LANDS OUTSIDE ANY BLOCK** (work instruction 358 task 2). Olivia's
+    /// calling spots come from their own cited table, and on 30 m, 15 m and 10 m the dial
+    /// lands in an automatic-stations block or in no block at all, where
+    /// <see cref="TargetFor(Neighborhood?)"/> rightly says nothing. The mode itself still
+    /// says what it is worked in, and that is a mode convention, which is the engine's
+    /// (§0.1).
+    /// </remarks>
+    public static ModeTarget? TargetForMode(string? mode)
+        => (mode ?? "").Trim().ToUpperInvariant() is "FT8" or "FT4" or "JS8" or "PSK31" or "RTTY" or "OLIVIA"
+            ? new ModeTarget(
+                CivMode.Usb, true,
+                "the digital modes are all worked through the computer on the upper sideband")
+            : null;
+
     /// <summary>The mode a neighborhood calls for, or null when it says nothing.</summary>
     /// <param name="hood">The neighborhood, or null.</param>
     /// <returns>The target, or null.</returns>

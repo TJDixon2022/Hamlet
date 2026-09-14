@@ -113,4 +113,16 @@ public static class DigitalIdleText
         + "line here, filling in a character at a time as it arrives. A signal it is "
         + "not sure of gets no line at all rather than a guess, so an empty panel can "
         + "mean a quiet band or a signal too rough to read.";
+
+    /// <summary>The decoded text table under Olivia, which Hamlet cannot read yet.</summary>
+    /// <remarks>
+    /// **THE SAME PANEL, EMPTY, SAYING WHY** (work instruction 358 task 2). Nothing reads
+    /// Olivia until step 2 of its phase, so the panel does not promise lines the way
+    /// <see cref="DecodedUnslotted"/> does; it says nothing is coming yet and what the Capture
+    /// button beside it is for.
+    /// </remarks>
+    public const string DecodedOlivia =
+        "nothing decoded, because Hamlet cannot read Olivia yet. Nothing will appear here "
+        + "until it can. Capture keeps two minutes of what the radio hears, so the evening's "
+        + "signals can be used to teach it.";
 }
