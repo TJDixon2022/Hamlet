@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 4 of 5
+TASK: TASK 5 of 5
 WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T09:05:54-04:00
-NOTE: Task 3 done - an ended CQ row keeps his station, country and fade and one click sends one Answer at his offset and opens his card at His turn; carry-forward and neighbours 174 of 174; committing, then reading the callook lookup for the seam
+UPDATED: 2026-09-14T09:17:45-04:00
+NOTE: Task 4 done - license lookup behind ICallsignLookup, the network denied for every test view model, both layout fixtures hand in General for KC3QIS; carry-forward, layout and license tests 170 of 170; committing, then the sheet
 
 ---
 

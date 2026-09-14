@@ -2631,7 +2631,9 @@ public sealed class TheTopRowTests
     {
         var settings = FixtureSettings();
 
-        var model = new MainWindowViewModel(settings, telemetry)
+        // **GENERAL FOR KC3QIS, HANDED IN** (work instruction 355 task 4): the class is already set here, and
+        // the resolve that confirms it asked callook.info at construction until the seam.
+        var model = new MainWindowViewModel(settings, telemetry, FixedLicenseLookup.GeneralForKc3qis())
         {
             OperatingMode = "Digital",
         };

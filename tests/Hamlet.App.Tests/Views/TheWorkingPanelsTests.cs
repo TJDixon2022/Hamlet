@@ -759,7 +759,9 @@ public sealed class TheWorkingPanelsTests
             settings.SetSourceEnabled(name, false);
         }
 
-        var model = new MainWindowViewModel(settings, null)
+        // **GENERAL FOR KC3QIS, HANDED IN** (work instruction 355 task 4). Unit 354 found this window asking
+        // callook.info at construction, so the class landed or not with the network.
+        var model = new MainWindowViewModel(settings, null, FixedLicenseLookup.GeneralForKc3qis())
         {
             DigitalNewestFirst = false,
             OperatingMode = "Digital",

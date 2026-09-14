@@ -7476,11 +7476,39 @@ public partial class MainWindowViewModel : ObservableObject
     {
     }
 
-    /// <summary>Runtime constructor.</summary>
+    /// <summary>**Where a view model built without one gets its license lookup** (work instruction 355 task 4).</summary>
+    /// <remarks>
+    /// <para>**THE LIVE CALLOOK.INFO CLIENT IN THE APPLICATION**, one polite client per request as
+    /// before (<see cref="LiveCallookLookup"/>). **The test assembly replaces it before its first test**
+    /// with a lookup that refuses - the network denied - and its layout fixtures hand in a fixed answer.
+    /// Unit 354 found the plain fixture asking callook.info for KC3QIS at construction, so whether
+    /// *General* landed, and what the layout tests measured, depended on the network.</para>
+    /// </remarks>
+    internal static Func<ICallsignLookup> DefaultLicenseLookup { get; set; } = () => new LiveCallookLookup();
+
+    /// <summary>The license lookup this view model resolves the operator's profile through.</summary>
+    private readonly ICallsignLookup _licenses;
+
+    /// <summary>The license lookup this view model was built with, for a test.</summary>
+    internal ICallsignLookup LicenseLookupForTests => _licenses;
+
+    /// <summary>Runtime constructor, with the default license lookup (<see cref="DefaultLicenseLookup"/>).</summary>
     /// <param name="settings">Live settings; panel and feed state persist here.</param>
     /// <param name="telemetry">The writer, or null.</param>
     public MainWindowViewModel(AppSettings settings, JsonlTelemetry? telemetry)
+        : this(settings, telemetry, DefaultLicenseLookup())
     {
+    }
+
+    /// <summary>Runtime constructor, with the license lookup handed in.</summary>
+    /// <param name="settings">Live settings; panel and feed state persist here.</param>
+    /// <param name="telemetry">The writer, or null.</param>
+    /// <param name="licenseLookup">Where the operator's license class is looked up (work instruction 355 task 4).</param>
+    public MainWindowViewModel(AppSettings settings, JsonlTelemetry? telemetry, ICallsignLookup licenseLookup)
+    {
+        ArgumentNullException.ThrowIfNull(licenseLookup);
+
+        _licenses = licenseLookup;
         _settings = settings;
         _telemetry = telemetry;
 
@@ -17909,9 +17937,9 @@ public partial class MainWindowViewModel : ObservableObject
         ProfileResolution resolution;
         try
         {
-            using var lookup = new CallookCallsignLookup(
-                AboutViewModel.AppVersion, callsign);
-            var resolver = new ProfileResolver(lookup);
+            // **THROUGH THE SEAM** (work instruction 355 task 4): the live callook.info client in the
+            // application, and under test the answer the test hands in or the network denied.
+            var resolver = new ProfileResolver(_licenses);
             resolution = await resolver.ResolveAsync(_settings.Operator, cts.Token);
         }
         catch (OperationCanceledException)
