@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 0 of 7
+TASK: 1 of 7
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T12:15:56-04:00
-NOTE: Task 0: app carry-forward 144 of 144 green before any change; running the engine invocation
+UPDATED: 2026-09-14T12:20:52-04:00
+NOTE: Task 1 trace: running the measurement - burst positions in the nine fixtures, macro seconds plus burst against the caps, CQ hash
 
 ---
 
