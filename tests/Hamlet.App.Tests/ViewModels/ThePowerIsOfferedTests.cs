@@ -201,9 +201,19 @@ public sealed class ThePowerIsOfferedTests : IDisposable
             Assert.Contains("\"zone\":null", latest, StringComparison.Ordinal);
             Assert.False(past);
 
-            // **A SENTENCE, AND THE ONE THING HE CAN DO THAT HAMLET CANNOT.** It carries
-            // the number on the meter's own scale and passes no judgement on it.
-            Assert.Contains("turn the transmit drive", sentence, StringComparison.OrdinalIgnoreCase);
+            // **A SENTENCE THAT CARRIES THE NUMBER AND PASSES NO JUDGEMENT.**
+            //
+            // **THIS ASSERTION PINNED THE OPPOSITE UNTIL WORK INSTRUCTION 356 TASK 2.** It
+            // required *turn the transmit drive* in the sentence for a reading with no
+            // reference behind it, which is R15 broken twice over: with no reference
+            // Hamlet reports and judges nothing, and an instruction to turn something down
+            // is a judgement that the reading is too high. The sentence now says what it
+            // read, says plainly that it is not judging it, and says there is nothing to
+            // do. **What this test really guards is unchanged**: a reading produces a
+            // sentence, the sentence carries the number and the scale, and `judged` is
+            // false in the record beside it.
+            Assert.Contains("is not judging it", sentence, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Nothing for you to do.", sentence, StringComparison.Ordinal);
             Assert.Contains(
                 reading.ToString("0", System.Globalization.CultureInfo.InvariantCulture),
                 sentence,
