@@ -738,6 +738,71 @@ public sealed class TheTopRowTests
     }
 
     /// <summary>
+    /// **Work instruction 351 ruling 56: the same limits with the best bet drawn on another band** -
+    /// the case unit 350 printed and did not assert.
+    /// </summary>
+    /// <remarks>
+    /// <para>**BESIDE THE PINNED FACT, NOT INSIDE IT**, so that fact goes green with its body unedited.
+    /// The best bet is pinned on 40 m, so the green block says *40 m* without the check, at 1920 and
+    /// 1400 on FT8 and PSK31, with the limits unchanged: the 1920 row within 10% of 190, the 1400 row
+    /// at most 0.262 of below, the three panels at least half with the readiness strip hidden (ruling
+    /// 1), the rig panel within 2 px of the card, and the pin read back after the last settle. A pin
+    /// overwritten by a spot reload fails with that message and is not worked around. Nothing is
+    /// pressed (§0.2).</para>
+    /// </remarks>
+    [AvaloniaFact]
+    public void TheTopRowAndThePanelShareHoldWithTheBestBetOnAnotherBand()
+    {
+        const double limit = 0.262;
+        var misses = new List<string>();
+
+        foreach (var width in new[] { 1920.0, 1400.0 })
+        {
+            foreach (var mode in new[] { "FT8", "PSK31" })
+            {
+                var c = WithTheBestBetPinned(width, mode, "40 m");
+                var at = "at " + Px(width) + " on " + mode + " with the best bet drawn on 40 m";
+
+                _output.WriteLine(
+                    at + ": top row " + Px(c.TopRow) + " of " + Px(c.Below) + " = " + Share(c.TopRow, c.Below)
+                    + "; panels " + Px(c.PanelsHidden) + " = " + Share(c.PanelsHidden, c.Below) + " strip hidden; card "
+                    + Px(c.Card.Height) + ", rig " + Px(c.Rig.Height) + "; green block " + Px(c.Block.Height)
+                    + "; pin held " + c.PinHeld + ", best bet visible " + c.BestBetVisible + " [" + c.BestBetSaid + "]");
+
+                if (!c.PinHeld)
+                {
+                    misses.Add(at + " the pin did not hold after settling: " + c.PinWhy);
+                }
+
+                if (Math.Abs(c.Rig.Height - c.Card.Height) > 2)
+                {
+                    misses.Add(at + " the rig panel is " + Px(c.Rig.Height) + " px and the card " + Px(c.Card.Height));
+                }
+
+                if (c.PanelsHidden < c.Below / 2)
+                {
+                    misses.Add(at + " the three panels are " + Px(c.PanelsHidden) + " px of " + Px(c.Below) + ", less than half");
+                }
+
+                if (width > 1900 && Math.Abs(c.TopRow - TopRowTarget) > TopRowTarget * 0.10)
+                {
+                    misses.Add(at + " the top row is " + Px(c.TopRow) + " px against " + Px(TopRowTarget) + " within 10%");
+                }
+
+                if (width < 1900 && c.TopRow > limit * c.Below)
+                {
+                    misses.Add(
+                        at + " the licensed top row is " + Px(c.TopRow) + " px of " + Px(c.Below) + " = "
+                        + Share(c.TopRow, c.Below) + ", above the mockup's " + limit.ToString("0.000", CultureInfo.InvariantCulture)
+                        + " (" + Px(limit * c.Below) + " px)");
+                }
+            }
+        }
+
+        Assert.True(misses.Count == 0, string.Join(Environment.NewLine, misses));
+    }
+
+    /// <summary>
     /// **Work instruction 338 task 3, step 0's nice-to-pass: on the realized window at 1920 the
     /// band pill wearing *best bet now* and the green block name the same band, and the check is
     /// drawn where that band is the one he is on.**
@@ -1323,7 +1388,7 @@ public sealed class TheTopRowTests
             }
         }
 
-        static StackPanel BestBetRow(Window w) => (StackPanel)Named<Button>(w, "GreenZoneBestBet").GetVisualParent()!;
+        static Panel BestBetRow(Window w) => (Panel)Named<Button>(w, "GreenZoneBestBet").GetVisualParent()!;
 
         static void Detach(Control c) => ((Panel)c.GetVisualParent()!).Children.Remove(c);
 

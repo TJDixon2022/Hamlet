@@ -94,6 +94,14 @@ public partial class MainWindow : Window
     /// wrong on the other. The decision reads the width the right-hand column would have if it
     /// were wide, never its current width, so hiding the sparkline cannot undo itself on the
     /// next layout pass.</para>
+    /// <para>**THE BEST BET ROW FOLLOWS THE SAME RULE SINCE WORK INSTRUCTION 351, MARKED AS THAT
+    /// UNIT'S OWN AND OVERRULABLE.** Where the sparkline hides, the best bet row is held to the widest
+    /// of the heard words, or of *best bet now:* or the band where one of those is wider, so the band
+    /// stands under *best bet now:* and the right-hand column stays as wide as its heard words
+    /// whatever the best bet says. Measured at 1400 on PSK31 with the best bet on his band, the check
+    /// widened the column 180 to 200 px and the verdict took a second line: the top row 247 px against
+    /// 238.4. Held, the column is 140 px and the row 228. **Nothing hides and no word changes**; at
+    /// 1920 the row is one line, as before.</para>
     /// </remarks>
     private void FitTheHeardCount()
     {
@@ -111,10 +119,12 @@ public partial class MainWindow : Window
         var heardWide = System.Math.Max(TextWidth(label), sparkline.Width) + HeardGap
             + System.Math.Max(TextWidth(count), TextWidth(lastMinute));
 
-        var bestBet = Named<TextBlock>("GreenZoneBestBetPrefix") is { IsVisible: true } prefix
-            && Named<Button>("GreenZoneBestBet") is { IsVisible: true } bet
-                ? TextWidth(prefix) + TextWidth(bet.Content as string, bet)
-                : 0;
+        var prefix = Named<TextBlock>("GreenZoneBestBetPrefix");
+        var bet = Named<Button>("GreenZoneBestBet");
+        var betShown = prefix is { IsVisible: true } && bet is { IsVisible: true };
+        var prefixWidth = betShown ? TextWidth(prefix!) : 0;
+        var betWidth = betShown ? TextWidth(bet!.Content as string, bet) : 0;
+        var bestBet = prefixWidth + betWidth;
 
         var column = regions.Bounds.Width - System.Math.Max(heardWide, bestBet) - left.Margin.Right;
 
@@ -135,6 +145,24 @@ public partial class MainWindow : Window
                 Named<TextBlock>("GreenZoneRuleOfThumb") is { } rule ? TextWidth(rule) : 0));
 
         var narrow = column < need;
+
+        // **THE BEST BET ROW HELD TO THE HEARD WORDS WHERE THE SPARKLINE HIDES** (work instruction
+        // 351): the widest of *heard just now*, the count and *last minute*, or the prefix or the band
+        // alone where one of those is wider, so the row wraps and nothing is clipped. Set on every
+        // pass, because the best bet's word changes while the sparkline's state does not.
+        if (Named<WrapPanel>("GreenZoneBestBetRow") is { } row)
+        {
+            var held = narrow
+                ? System.Math.Max(
+                    System.Math.Max(TextWidth(label), System.Math.Max(TextWidth(count), TextWidth(lastMinute))),
+                    System.Math.Max(prefixWidth, betWidth))
+                : double.PositiveInfinity;
+
+            if (row.MaxWidth != held)
+            {
+                row.MaxWidth = held;
+            }
+        }
 
         if (sparkline.IsVisible != narrow)
         {

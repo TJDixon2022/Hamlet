@@ -724,7 +724,18 @@
                                     <!-- **PRESSABLE, AND IT IS THE PILL'S OWN PRESS**
                                          (§0.5.1). The check is drawn INTO the word by
                                          `GreenZone.OnIt` (§0.6). -->
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <!-- **ONE ROW THAT CAN STAND ITS BAND UNDER ITS WORDS** (work
+                                         instruction 351, the unit's own arrangement). The check
+                                         costs width, not height: *20 m ✓* is 20 px wider than *20 m*,
+                                         and this column is `Auto`, so on PSK31 at 1400 it went 180 to
+                                         200 px, the left column 300 to 280, and the verdict took a
+                                         second line - the top row 247 px against 238.4. **Where the
+                                         sparkline hides**, `FitTheHeardCount` holds this row to the
+                                         heard words' width, so *best bet now:* stands over the band
+                                         and the column is 140 px whatever the best bet says: 228 px,
+                                         and the panels 465. At 1920 it is one line, as before. -->
+                                    <WrapPanel x:Name="GreenZoneBestBetRow"
+                                               Orientation="Horizontal" HorizontalAlignment="Right">
                                         <TextBlock x:Name="GreenZoneBestBetPrefix"
                                                    Text="best bet now: " FontSize="11"
                                                    IsVisible="{Binding GreenZone.HasBestBet}"
@@ -743,7 +754,7 @@
                                                 VerticalAlignment="Center"
                                                 ToolTip.Tip="The band with the most going on right now, from the same ranking the badge in the band strip wears. Pressing it tunes there."
                                                 Foreground="{StaticResource HmAmberDeepBrush}" />
-                                    </StackPanel>
+                                    </WrapPanel>
 
                                     <!-- **STATIONS HEARD HERE OVER THE LAST MINUTE**: the
                                          line, then the count in words, which is the carrier.
