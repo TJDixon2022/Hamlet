@@ -850,8 +850,13 @@
     names the Olivia phase (HM-DEC-164), the outcome carries unit 358 under step 0, and the nine Olivia
     fixtures hash as their manifest says. No file under src changes at this task.
   -->
+  <!--
+    1.13.45 -> 1.13.46, UNIT 359 TASK 0. A PATCH, STEP 1 OF THE OLIVIA PHASE, THE UNIT OPENS: step 0 is
+    done, the two entry fixtures and then the other seven hash as their manifest says, and the outcome
+    carries unit 359 under step 1. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.45</Version>
+    <Version>1.13.46</Version>
   </PropertyGroup>
 
   <!--

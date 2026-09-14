@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 6 of 6
+STATE: EXECUTING
+TASK: 0 of 7
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: web
-NEXT_PASTE: output.md -> Claude Web
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T11:48:17-04:00
-NOTE: Unit 358 complete, tasks 0 to 5 pushed - Olivia is a mode (tab, cited spot, panel, Capture, map spot), step 0 criteria 6 of 6 met by tests; carry-forward app 144, engine 90; one overrulable dial reading in section 4
+UPDATED: 2026-09-14T12:15:56-04:00
+NOTE: Task 0: app carry-forward 144 of 144 green before any change; running the engine invocation
 
 ---
 
