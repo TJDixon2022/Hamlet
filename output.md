@@ -1,50 +1,47 @@
 ```
 READ IN THIS ORDER.
 
-A. The phase goal - the screen, done right. At 4544e3b0: step 0 partial on
-   unit 350 (criterion 5 red at 1400 PSK31 with the best bet on his band)
-   - this report is its evidence. Step 1 done (unit 347). Step 2 done
-   (unit 348). Step 3 0 of 1, waiting on Tim's verdict on
-   docs/unit349-what-tim-looks-at.md, which this unit updated to the new
-   screen and did not otherwise move.
-B. Step 0 and its exit criteria, at this tree, best bet pinned three ways:
-   entry: the tree is Hamlet's; PHASE_STATUS.md names this phase - met
-   1. 1920 top row about 190, panels take the rest - met: 190 px (0.209)
-      and panels 503 (0.553) on FT8 and PSK31, best bet on his band, on
-      40 m and absent, in every run after the change
-   2. card carries strip, green block, clock; band largest; one dot -
-      met: TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest and
-      TheWorldClockIsAtTheCardsRightEndWithOneMarker green after the
-      change; their numbers were not re-printed by this unit
-   3. rig panel the card's height, drive and offer under the S-meter -
-      met: rig = card in all 12 pinned cases (1920 190 both modes; 1400
-      FT8 216, PSK31 228); DriveAndThePowerOffer... green after the change
-   4. three panels equal, full to the status bar; facts beside at 1920 -
-      met: TheWorkingPanelsTests 8 of 8, run three times after the change
-   5. 1400 same shape, no callsign clipped, facts rule - met: PSK31 top
-      row 228 of 238.4 with the best bet on his band (was 247), 228 on
-      40 m, 228 absent; worst panel share 0.511, 465 px (was 446 of 455);
-      FT8 216 in all three (was 225 with a best bet); pin held yes at
-      1400, 18 of 18 across runs; TheWorkingPanelsTests green
-   6. BindingHealthTests, VoiceTests, carry-forward - 1 of 1, 5 of 5,
-      111 of 111 and 86 of 86, before and after
-   nice: best bet joined to the green block - 1920 and 1400
+A. The phase goal - the screen, done right. At 0ddb0566: step 0 done (unit
+   351), step 1 done (unit 347), step 2 done (unit 348). Step 3 0 of 1,
+   waiting on Tim's verdict on docs/unit349-what-tim-looks-at.md, which
+   this unit checked against the screen and changed at these lines: :47
+   (the 1920 FT8 green block), :71-73 and :118 (two source notes' test
+   counts), :511-514 (section 5, the pin red gone).
+B. Step 3 and its exit criterion: Tim says it passed - not met, and no
+   session can meet it. What this unit checked under ruling 46's exception:
+   1. Unit332TwoWidthsTests after unit 351's change - 3 of 3, before and
+      after the fixture change; reds none
+   2. TheGreenZoneTests after unit 351's change - 15 of 15 (not 14),
+      before and after; reds none
+   3. step 0's pinned proof, three runs after the fixture change -
+      27 of 27 each on the committed tree (and 27 of 27 in three earlier
+      runs with the trace's live half still in); pins 8 of 8 each, the
+      40 m fact 4 of 4 each; the cause the trace named: the band_changed
+      spot reload Realized's own band select starts, waiting on POTA's
+      reply, landing 86 to 116 ms in, after the pin, 3 of 10 windows
+   4. step 0's numbers after the change - 1920 190 px, 1400 PSK31 228 px,
+      1400 FT8 216 px, panels 503 (1920) / 465 (1400 PSK31) / 477 (1400
+      FT8); none of the pinned numbers moved. In the facts that pin
+      nothing, the 1920 green block moved 55 -> 64 (FT8) and 67 -> 76
+      (PSK31), because those windows now draw the hour's best bet
+   5. carry-forward - 111 of 111, 86 of 86, before and after
 C. The report last. Section 4 raises 3 items on top of the carried queue,
-   and none is an ask. None stands in the way of a criterion in B. Item 1:
-   step 0's filter read 25 of 26 in both runs after the change was
-   finished, and the red was a pin-message red at 1920 (a spot reload), not
-   a layout miss.
+   and none is an ask. None shows the sheet wrong beyond the cell corrected
+   at :47. Item 1 is the only thing a unit could still do before Tim
+   answers: the facts that pin nothing now measure the hour's best bet and
+   0 stations rather than the fixture's no best bet and 6 stations. It does
+   not stand in the way of step 3.
 ```
 
 ```
-UNIT:       351 - complete at task 3 of 3 - 2026-09-14 01:08
+UNIT:       352 - complete at task 3 of 3 - 2026-09-14 01:51
 PHASE GOAL: Hamlet's main window drawn as the approved mockup and every achievements page as trading
             cards, with what the last phase left closed, then passed by Tim at his own window.
-UNIT GOAL:  Close step 0's one red by arrangement: on PSK31 at 1400 with the best bet on his own band,
-            bring the top row under 0.262 of the height below the pills and the panels to half,
-            without changing a word or hiding anything, and bring Tim's sheet to that screen.
-ADVANCED:   yes - step 0 criterion 5 held; at 1400 the green block's "best bet now:" stands over its band where the sparkline hides
-NUMBER:     1400 PSK31 top row, best bet on his band: 247 px -> 228 px (limit 238.4); panels 446 -> 465 (floor 455)
+UNIT GOAL:  Show the sheet Tim will judge is the screen at this tree: run the two green block readers
+            unit 351 never ran, and make step 0's pinned proof read the same every run by keeping the
+            test window off the live spot feeds, with no screen change.
+ADVANCED:   no - step 3 waits on Tim; the sheet corrected at :47, :71-73, :118 and :511-514; step 0's proof steady
+NUMBER:     step 0's filter after the change: 27 of 27, 27 of 27, 27 of 27; pin failures was 1 in each of 2 runs -> 0
 DRIFT:      0
 ```
 
@@ -53,254 +50,274 @@ evidence about the radio, and nothing here touched it.
 
 ## 1. What Claude did
 
-**Complete at task 3 of 3.** Nothing was dropped. Machine QuiverFull (`hostname`), project Hamlet at
-`C:\Source\HamLet`, branch `main`. The gate held: `SHACK_FACTS.md` and
-`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, and `CoreHMI.sln` and `MURC.sln` do not.
-`.run-unit\allowed.txt` carries `Bash(dotnet:*)` at line 14, and **no `dotnet` command was refused.**
+**Complete at task 3 of 3.** QUIVERFULL, `C:\Source\HamLet`, Hamlet (the gate's four checks held),
+branch `main`. Every commit was pushed.
 
-### Task 0 - the trace (`55b8f9b9`, `9baf54da`)
+### Task 0 - the trace (`75e101e2`, `4ad20a25`)
 
-- **Opening commit `55b8f9b9`**: this instruction, `PHASE_STATUS.md`'s `WORK_INSTRUCTION:` line
-  (`351 - step 0's last red: the check fitted at 1400`), and 1.13.37 -> 1.13.38 with its comment block.
-  The launcher's uncommitted `HEARTBEAT` line in `PHASE_STATUS.md` rode along, because the file is
-  committed whole.
-- **Carry-forward, before**: app **111 of 111**, engine **86 of 86**.
-- **Step 0's filter, once**, at 00:49:02: **23 of 24**, as expected. `TheTopRowTests` 9 of 10,
-  `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5. The red,
-  `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, carried four lines:
-  - *at 1400.0 on PSK31 with the best bet drawn on 20 m the three panels are 446.0 px of 910.0, less
-    than half*;
-  - *at 1400.0 on PSK31 with the best bet drawn on 20 m the licensed top row is 247.0 px of 910.0 =
-    0.271, above the mockup's 0.262 (238.4 px)*;
-  - two pin messages: *at 1920.0 on PSK31 with the best bet drawn on 20 m the pin did not hold after
-    settling: IsBestBet is on [40 m], pinned [20 m]*, and *at 1400.0 on FT8 with the best bet absent
-    … IsBestBet is on [40 m], pinned []*.
-- **`Unit351TraceTheCheckInTheGreenBlock`** (`9baf54da`), in `TheTopRowTests`, asserts nothing and
-  presses nothing. It prints 12 pinned windows (1920 and 1400, FT8 and PSK31, best bet on 20 m, on
-  40 m, absent) line by line, then five arrangements set on the test window only, at 1400 and 1920.
+- **Carry-forward before any change:** 111 of 111 app, 86 of 86 engine.
+- **Step 0's filter before any change:** 25 of 26. `TheTopRowTests` 11 of 12, `TheWorkingPanelsTests`
+  8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests` 5 of 5. The red was
+  `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, with one line: *at 1920.0 on FT8 with
+  the best bet absent the pin did not hold after settling: IsBestBet is on [40 m], pinned []; the
+  green block's best bet is drawn*. This time the miss was on FT8, not PSK31. Pins 7 of 8; the 40 m
+  fact 4 of 4. Every limit held in every case: 1920 190 and 503; 1400 FT8 216 and 477; 1400 PSK31
+  228 and 465.
+- **`Unit332TwoWidthsTests` and `TheGreenZoneTests`, once, before any change:** 3 of 3 and 15 of 15.
+  No red, so nothing to sort under ruling 60.
+- **`Unit352TraceTheSpotReloadOnTheTestWindow`** added to `TheTopRowTests`. It asserts nothing and
+  presses nothing. It builds ten 1920 PSK31 windows with `Realized(1920, telemetry)`, takes each
+  through the pinned fact's own steps, and prints every `spots_refreshed` and `source_unhealthy`
+  event in the telemetry file, every move of `IsBestBet` and of `SourcesSummary`, each marked before
+  or after the pin, then the spots by source, where the best bet ended and whether the pin held.
 
-**Task 0's answers, from the numbers, written before task 1 started:**
-- **What makes the block 10 px taller with *✓*: width, not a taller line.** In the same `$Default`
-  face at 11 px, *20 m ✓* is 60 × 8.8 and *20 m* is 40 × 8.8; the check alone is 10 × 8.8, one
-  shaped run, and every 11 px line is 8.8 px with or without it. On 1400 PSK31:
-  - right column (`Auto`): 200 px on his band (the best bet row 140 + 60), 180 on 40 m, 140 absent
-    (the heard grid, sparkline hidden in all three);
-  - left column: 280, 300 and 340 px;
-  - band line: 2 rows, 37 px on his band, 27 on 40 m and absent, because *Digital · PSK31 · yours to
-    use* is 300 px and takes 2 lines of 10.4 px in 280, 1 line in 300 and 340;
-  - license line: 3 lines of 8.8 (27 px) in all three;
-  - rule of thumb: 3 lines (27 px) on his band and on 40 m, 2 lines (18 px) absent;
-  - the best bet row: 9 px tall in both, the button 60 × 9 against 40 × 9;
-  - left column 93, 83, 74 px; block 119, 109, 100.
+**The answers, from the numbers, before task 1 started:**
+- **Are the two classes green?** Yes, 3 of 3 and 15 of 15. No red of either kind.
+- **In how many of the ten traced cases did the pin not hold?** 3: pinned on 20 m run 4, pinned
+  absent runs 3 and 4. Each time the landing was the `band_changed` reload, which `Realized`'s own
+  `SelectBandCommand` starts (`MainWindowViewModel.cs:8098`), with 0 spots. It landed at +89, +97 and
+  +116 ms, after the pin (+86, +89, +116). As it landed, the sources summary turned from empty to
+  *POTA, RBN*: both sources reported answering. In one more window (20 m run 5) the same reload landed
+  at +90 ms, before the pin at +100, and the pin held. In the other six nothing landed while the
+  window was open.
+- **Is a live source's reply the cause?** Yes. The reload awaits `_activitySource.GetSpotsAsync()`
+  (`:16984`), and with POTA on that await is POTA's HTTP reply. With nothing heard on any band,
+  `RankBands` falls back to the hour's table (`BandOpportunity.cs:159`-`170`, `HfBands.cs:113`, *80 m,
+  40 m* before 6 am), so the reply moved the badge to 40 m, not to a band with spots.
+- **Which fixture change, and why on the test window only?** POTA, SOTA and RBN switched off by
+  `SourceName` through `SetSourceEnabled` in the fixture's settings. The cause is the fixture being a
+  real operator with default sources, not the product, and ruling 61 keeps `BuildSources`,
+  `ReloadSpotsAsync`, the ranking and the clock as they are.
 
-  So **+10 px** is the verdict's second line and **+19 px** is that plus the rule of thumb's third.
-  On FT8 the verdict is 280 px and fits in 280, so the check costs nothing there; the 9 px against no
-  best bet is the rule of thumb again (225 against 216).
-- **Which arrangement fits**, on 1400 PSK31 with the best bet on his band, measured on the test window
-  (top row of 238.4, panels of 455, then the 1920 row):
+### Task 1 - the fixture quieted (`386690a2`)
 
-  | Arrangement | 1400 top row | Panels | Block | 1920 row |
-  |---|---|---|---|---|
-  | As built | 247 (0.271) | 446 | 119 | 190 |
-  | Right column held to the heard grid's width, the best bet row wrapping | **228 (0.251)** | **465** | 100 | 190 (block 76, unchanged) |
-  | Best bet row moved to the left column, under the rule of thumb | 238.0 (0.262) | 455 | 110 | 190 (block 72) |
-  | Best bet row moved into the band line, after the verdict | 237 (0.260) | 456 | 109 | 190 (block 62) |
-  | Best bet row under the regions, right-aligned | 240 (0.264) | 453 | 112 | 190 (block 74) |
-  | The check's line held to the prefix's line height | 247 (0.271) | 446 | 119 | 190 |
+- **The change.** `TheTopRowTests.FixtureSettings()` builds the licensed operator and switches off
+  `TheTopRowTests.NetworkSources` (POTA, SOTA, RBN). `Realized(width, telemetry)` uses it.
+  `TheWorkingPanelsTests.Realized` has its own fixture and callsign (see item 3), and switches the same
+  three off. The sample feed stays at its default, off. The callsign, grid, license and dial are
+  unchanged. No `src` file changed, and no settle, retry or clock was added.
+- **No ruling 60 correction**: both readers were green.
+- **The trace with the change, first run:** both reloads, `band_changed` and `startup`, landed 37 to
+  100 ms in, inside `Realized`'s own settle loop and before the pin, in 10 of 10 windows. None landed
+  after the pin, the sources summary read *no sources answering*, and the pin held 10 of 10.
+- **Step 0's filter, three runs:** 27 of 27, 27 of 27, 27 of 27 (26 plus the trace). Pins 8 of 8 and
+  the 40 m fact 4 of 4 in each. Those runs still had the trace's as-built half (the ten windows with
+  sources on) in the fact.
+- **The two readers again:** 3 of 3 and 15 of 15, with every pixel line the same as before the change.
+- **Carry-forward after the change:** 111 of 111, 86 of 86.
+- **Then the trace's live half came out** (decision 2), and step 0's filter ran three more times on the
+  committed tree: 27 of 27 each, pins 8 of 8 each, the 40 m fact 4 of 4 each. The trace held 10 of 10
+  in each, with both reloads landing 16 to 148 ms in, before the pin (1246 ms on one run's first
+  window). Every pixel line printed by those three runs is identical (0 diff lines, run 1 against 2
+  and against 3).
 
-  The other cases at 1400 and 1920 were measured as built only; each candidate was measured on PSK31
-  on his band at both widths.
-- **Task 1 builds the first: the best bet row held to the heard words' width where the sparkline
-  hides.** It is the only one with room: 10.4 px under the limit and 10 px over half, where the left
-  column clears by 0.4 and 0 px and the band line by 1.4 and 1. It keeps the best bet on the right,
-  in *what is worth doing now*, instead of moving it into *where you are*. It gives the same 228 px as
-  no best bet, so the best bet should stop moving the 1400 row. The line height made no difference,
-  because the check is not taller.
-- **Every pin held: 22 of 22 windows.**
+**What moved when the sources were switched off** (the task 0 run against the first run after; no
+assertion changed and every fact stayed green):
+- **The pinned facts:** nothing. Every top row, panel, card, rig and block number above is the same.
+- **Why the rest moved:** both reloads now land inside `Realized`, every time. A fact that pins nothing
+  now measures the best bet the ranking gives, the hour's *80 m* (40 m when the trace's live half had
+  seeded the run's spot history), and the count the reload gives, *0 stations* where the fixture set 6.
+  Before, the reload usually landed after the window closed, so those facts mostly measured no best bet
+  and 6 stations.
+- `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`,
+  `TheWorldClockIsAtTheCardsRightEndWithOneMarker` and `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock`:
+  the 1920 green block 55 -> 64 px on FT8 and 67 -> 76 on PSK31.
+- `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`: *heard just now* y 251 -> 260 at 1920
+  and 268 -> 286 at 1400; the count y 263 -> 272 and 277 -> 295; the sparkline y 260 -> 269.
+- `TheThreePanelsShareOneTopAndOneBottom` (the no-license window): the three panels at 1920 with the
+  strip showing 450 -> 441 px, top y 503 -> 512. The floor, y 953, did not move.
+- `Unit338TraceTheRowsAboveThePanels`: the no-license green block's left column 480 -> 340 px at 1400
+  and 1000 -> 740 at 1920, the right column 0 -> 140 at 1400, and the 1920 regions row 41 -> 50 tall.
+- `Unit341TraceTheOneLineOfferAndThePsk31GreenBlock`: the strayed line y 289 -> 298. On its rejected
+  *line on the drive row* candidate, the top row went 190 -> 207 (0.227) and the panels 503 -> 486.
+- `Unit350TraceStepZeroBothWays`: *before pinning the hour's best bet was visible* False -> True in
+  all 12 cases.
+- `Unit351TraceTheCheckInTheGreenBlock`: in the absent cases the hidden best bet button now holds a
+  40 x 9 word, and the prefix measures 140 x 9 inside a 0 x 0 row. Nothing more is drawn.
+- **Unchanged after, and on the sheet:** 1920 top row 190, card 1328 x 190, rig 546 x 190, panels 503 /
+  450 licensed; 1400 FT8 216 and 477 / 424; 1400 PSK31 228 and 465; the no-license window at 1400, 217
+  and 476 / 423; the waterfall, list and For You widths; the floor at y 953 and the status bar at 978.
 
-### Task 1 - the arrangement built, and the pinned fact within its limits (`1faf33a6`)
+### Task 2 - the sheet, only where measured wrong (`0ddb0566`)
 
-- **What moved** (`MainWindow.axaml`, `MainWindow.axaml.cs`):
-  - the best bet row, which held *best bet now:* and `GreenZoneBestBet`, was a horizontal
-    `StackPanel`; it is now `WrapPanel x:Name="GreenZoneBestBetRow"`, still first in `GreenZoneRight`;
-  - `FitTheHeardCount` sets that row's `MaxWidth` on every layout pass. Where the sparkline hides, it
-    is the widest of *heard just now*, the count and *last minute*, or of the prefix or the band word
-    where one of those is wider, so nothing is clipped. Otherwise it is unbounded. The sparkline's
-    rule itself is unchanged.
-  - `GreenZoneBestBet`'s `x:Name`, `Content`, `Command`, `ToolTip.Tip` and `IsVisible` are unchanged,
-    and so are the prefix's words and binding. Nothing in `GreenZone`, `RankBands`, `ApplyBestBet` or
-    any clock changed.
-- **Step 0's filter, first run** (00:57:50): **24 of 25**. Every limit held in the pinned fact's eight
-  lines, with pins 8 of 8: 1920 190 / 503; 1400 FT8 216 / 477 both ways; 1400 PSK31 **228 / 465** both
-  ways. **The one red was mine**: `Unit351TraceTheCheckInTheGreenBlock`'s candidates cast the best bet
-  row to `StackPanel`, and it is now a `WrapPanel`. The cast was widened to `Panel`.
-- **The 40 m case, ruling 56**: `TheTopRowAndThePanelShareHoldWithTheBestBetOnAnotherBand`, beside
-  the pinned fact, with the same five checks. **Watched red** (ruling 19), against a deliberate 0.200
-  limit in the new fact, run by exact name with the trace (1 of 2, 00:59:46): *at 1400.0 on FT8 with
-  the best bet drawn on 40 m the licensed top row is 216.0 px of 910.0 = 0.237, above the mockup's
-  0.200 (182.0 px)*, and the same for PSK31 at 228.0. The limit was set back to 0.262. The trace passed.
-- **Step 0's filter, second run** (01:00:20): **25 of 26**. `TheTopRowTests` 11 of 12, the red the
-  pinned fact with one line only: *at 1920.0 on PSK31 with the best bet drawn on 20 m the pin did not
-  hold after settling: IsBestBet is on [40 m], pinned [20 m]; the green block's best bet says [40 m]*.
-  That is a pin-message red, not a limit (ruling 56).
-- **Step 0's filter, once more** (01:01:09), per ruling 56: **25 of 26**, again one pin message only:
-  *at 1920.0 on PSK31 with the best bet absent the pin did not hold after settling: IsBestBet is on
-  [40 m], pinned []; the green block's best bet is drawn*. Both unheld windows still measured 190 px
-  and 503. `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1 and `VoiceTests` 5 of 5 in
-  every run. I did not run it a fourth time.
-- **Carry-forward, after**: app **111 of 111**, engine **86 of 86**.
+- `:47`, section 2.1's green block row: *1038 × 55* became *1038 × 55 with no best bet; 1038 × 64 with
+  one drawn (`386690a2`)*. The fact the source note names for the block now prints 64. The pinned
+  fact's absent case still prints 55.
+- `:71`-`73`, section 2.1's source note: *`TheTopRowTests` 8 of 8 … at `85437c2`* became 13 of 13 at
+  `386690a2`, three runs, with the trx names. The first measurement stays cited.
+- `:118`, section 2.2's source note: *all in `TheTopRowTests` 8 of 8 at `85437c2`* became 13 of 13
+  three times at `386690a2`.
+- `:511`-`514`, section 5: one line saying the pinned fact's pin red is gone, with the commit and the
+  three runs.
+- No section 4 line: neither reader went red. No other line changed (decision 4).
 
-### Task 2 - the sheet at the new screen (`51091022`)
+### Task 3 - what the test window reaches over the network
 
-In `docs\unit349-what-tim-looks-at.md`, only ruling 57's lines changed:
-- **section 2.2, :93, :95 and :96**: top row 228 px (0.251) with the best bet on your band, on 40 m
-  and absent; green block 518 × 100 all three ways at 1400, and at 1920 1038 × 76 drawn and 67 absent;
-  panels 465 / 412 and 503 / 450;
-- **section 2.2's bullet**, now :106-108, and **the source note's last sentence**, now :116-117;
-- **section 3.3, U11**, a new row at :425;
-- **section 4**: item 1 removed, because the case holds; the old item 2 renumbered to 1 with the 0 px
-  spread; the items after it renumbered 2 to 27.
-- **Section 2.1's FT8 table was not edited.** Its rows are the no-best-bet case, and they re-measured
-  the same: 216, 518 × 88, 477 / 424.
-
-### Task 3 - U2's overrule number (`eca6d60d`, `4544e3b0`)
-
-- **On the test window only**, the trace now shows the upgrade row again. That is the row whose one
-  button toggles the upgrade ladder, and the button keeps its own binding. Nothing is pressed, and
-  whether the button drew was not printed. On 1400 PSK31, with the best bet on his band, on 40 m and
-  absent alike: **top row 231 px (0.254), panels 462 (0.508), green block 518 × 103, pin held.**
-  Trace 1 of 1.
-- **U2's overrule cell** now reads 231 px (0.254) and panels 462, in all three states, citing
-  `eca6d60d`. Unit 341's 240 (0.264) is gone.
+Read, not changed, and reported as item 2 of *Raised by unit 352*. In short: a switched-off POTA or RBN
+opens nothing. Before the change, every `Realized` window started a POTA request and RBN's telnet reader
+under KC3QIS. After it, no `Realized` window does. Two other windows in step 0's filter still leave POTA
+on, without a callsign.
 
 ### Checked against the tree (§2)
 
-**Held:**
-- `HEAD` and `origin/main` read `c88d3974` at the start, and `output.md` was unit 350's.
-- The version was 1.13.37 at `Directory.Build.props:809`.
-- `DECISIONS.md` tops at HM-DEC-163 (`:7`). No commit after `c88d3974` carried a verdict.
-- `PHASE_OUTCOME.md`'s header reads step 0 `partial`, steps 1 and 2 `done`, step 3 `in progress`, and
-  `PHASE_STATUS.md` reads the same, with `WORK_INSTRUCTION: 350`.
-- The launcher's files were modified and uncommitted. None was edited except `PHASE_STATUS.md`'s one
-  line.
-- `CLAUDE.md` has no `CPS-DEC` match. `.run-unit\reload.txt:9` and `:34` name `CPS-DEC-0163`. It is
-  parked.
-- `tools\arbiter.bak-20260913\` and `SESSION.lock` stayed untracked. Every file was staged by name.
-- §1's citations held:
-  - `MainWindow.axaml:604`, `:639`-`640`, `:658`-`717`, `:720`-`792`, `:727`-`746` and `:737`;
-  - `MainWindow.axaml.cs:98`-`147`, the best bet's width at `:114`-`119`;
-  - `GreenZone.cs:51`, and `BestBetWords` near `:296`-`301`;
-  - `TheTopRowTests.cs:577`, `:688`, `:757` and `:1195`;
-  - the sheet's `:93`-`96`, `:106`-`107`, `:414` and `:434`-`438`.
-- The block measured 119 against 109 (§1).
-
-**Mismatches:** section 4 item 3.
-
-**Reds and counts that moved:**
-- Step 0's filter went from 23 of 24 to 25 of 26. Two tests are new and green: the trace and the 40 m
-  fact.
-- The pinned fact stayed red, but its red changed kind. At the start it missed the 1400 PSK31 limits.
-  After the change it missed no limit, and failed only on a pin message at 1920.
-- Carry-forward did not move. No listed red was run.
-
-**Tool facts, as they held for this session.**
-
-| Result | Commands |
-|---|---|
-| Ran | `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test`, then `\| grep -e … \| cut` or `\| tail`; `git add && git commit -m -m && git push && git log \| cut && sh tools/status.sh && date`; `grep -n -e`, `grep -o -e` on trx files; `sed -n`; `ls`; `hostname`; `git status --short`; `git diff --stat`; `git rev-parse HEAD origin/main` |
-| Asked for approval, not run | `grep -v -e "^\s*$"` in a pipe; a shell variable assignment then `;`-joined greps with `cut` |
-| Refused | none |
+- The gate: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist;
+  `CoreHMI.sln` and `MURC.sln` do not; the root is `C:\Source\HamLet`. `.run-unit\allowed.txt:14` is
+  `Bash(dotnet:*)`, and `dotnet test` was not refused.
+- `HEAD` and `origin/main` read `cdead300` at the start, and `output.md` was unit 351's.
+- `Directory.Build.props:817` read 1.13.38. It is 1.13.39 with its comment block (`75e101e2`).
+- `DECISIONS.md` tops at HM-DEC-163 (`:7`). No commit after `cdead300` carries a verdict from Tim.
+- `PHASE_STATUS.md` read steps 0, 1 and 2 `done`, step 3 `in progress`, and `WORK_INSTRUCTION: 351`.
+  Only that line was changed, to 352. `PHASE_OUTCOME.md`'s last entries read `STATE_AFTER: done`
+  for step 0; its step lines were not read one by one. `PHASE_OUTCOME.md`, `PHASE_STATUS.md`,
+  `RUN_LEDGER.md` and `.run-unit\` were modified and uncommitted at the start. None of them was
+  committed except `PHASE_STATUS.md`'s one line.
+- `.run-unit\reload.txt:9` and `:34` say `CLAUDE.md` §1 holds `CPS-DEC-0163`, and `CLAUDE.md` has no
+  `CPS-DEC` match. Parked with the id schemes.
+- `tools\arbiter.bak-20260913\` and `SESSION.lock` are untracked at the root. Files were staged by name.
+- The cited lines: `TheTopRowTests.cs` `:688`, `:754`, `:1651`-`1715`, `:1771`-`1778` and
+  `:1877`-`1902` held at the start; `AppSettings.cs:641`-`649`; `MainWindowViewModel.cs:7602`-`7638`,
+  `:8098`, `:11066` and `:16969`-`16984`; `Unit332TwoWidthsTests.cs` `:50`, `:65`, `:112`, `:151`;
+  `TheGreenZoneTests.cs:443`. Mismatches are in item 3.
 
 ### Decisions made for this unit
 
-All are the unit's own and overrulable:
-1. **The arrangement is U11**: the best bet row held to the heard words where the sparkline hides.
-   Say *"keep the best bet on one line at 1400"* to overrule it. It re-uses U1's sparkline rule and does
-   not tighten that rule.
-2. **The row's width is the widest of the heard words, the prefix and the band word**, rather than
-   the heard grid's drawn width. So it never clips, and it holds when the heard grid is hidden.
-3. **The 40 m case is a new fact beside the pinned fact**, not a third state inside it, so the pinned
-   fact's body is unedited (ruling 56).
-4. **Its watched red was a wrong expectation**, 0.200 for 0.262, in the new fact on one run, and was
-   not a change to the view.
-5. **Task 3 is measured inside the unit 351 trace**, not in a new fact (R14).
-6. **The sheet's old item 2 was reworded** beyond the number: *so what the green block says changes
-   with the hour; the 1400 top row now moves by 0 px with it, 228 px on PSK31 and 216 on FT8…*. The
-   19 px spread is gone, so the sentence's *can move by* no longer holds.
-7. **The trx files are in `testresults\`**: `u351-t0-step0`, `u351-t0-trace`, `u351-t1-step0`,
-   `u351-t1-watched`, `u351-t1-step0-again`, `u351-t1-step0-third` and `u351-t3-trace`. None is
-   committed.
-
-**The trace's candidates now stack on the built arrangement**, so a re-run prints different candidate
-numbers from task 0's table. The table is from `9baf54da`.
+1. **Both fixtures were quieted, not only `TheTopRowTests.Realized`.** `TheWorkingPanelsTests` has its own
+   `Realized` with a callsign and default sources, and it is in step 0's filter. SOTA is switched off
+   by name as well, although its default is already off, so the list names every network source.
+2. **The trace's as-built half was taken out after the first three runs.** Building those ten windows
+   again made a POTA request and started RBN under KC3QIS on every run of `TheTopRowTests`. The
+   recorded spots also reached later windows through the run's shared spot history: *1 station*,
+   *2 stations* and 40 m against 80 m varied between runs. The as-built output is task 0's, at
+   `4ad20a25`, in `testresults\u352-t0-trace.trx`, and a second as-built print is in
+   `u352-t1-trace.trx` (that time 10 of 10 held, because no reply landed while a window was open). The
+   proof was run three more times on the committed tree. Ruling 62's *do not run a fourth time* is for a
+   pin still failing, and none failed.
+3. **`TheWorkingPanelsTests.EmptyTab` and `BindingHealthTests`' window were left alone.** Neither is
+   `Realized`, neither sets a callsign, and ruling 61 names `Realized`. Both still leave POTA on (item
+   2).
+4. **Section 2.1's *6 stations at 15* bullet (`:55`) was not edited.** The facts now print *0
+   stations*. The words are the fixture's count, not a measurement of the screen, and the text size was
+   not re-printed differently. Ruling 63 lets the sheet change only for a number measured wrong. It is
+   item 1.
+5. **Section 2.1's block cell carries both numbers** rather than 64 alone. The sheet describes Tim's
+   window, where the best bet follows the hour and the air, and both states print at this tree.
+6. **The remark's reload range was corrected after the final three runs**, comment only, before
+   `386690a2`. The code those runs built is the committed code.
+7. **The trx files and scripts are in `testresults\`:** `u352-t0-step0`, `u352-t0-greenblock`,
+   `u352-t0-trace`, `u352-t1-trace`, `u352-t1-step0-run1` to `-run3`, `u352-t1-greenblock`,
+   `u352-t1-final-run1` to `-run3`. The comparison scripts `u352-compare.sh` and `u352-bytest.sh` wrote
+   `u352-diff-*.txt` and `u352-bytest-*.txt`.
 
 ### Commits
 
-`55b8f9b9`, `9baf54da`, `1faf33a6`, `51091022`, `eca6d60d` and `4544e3b0`, each pushed to `main`
-without refusal. This report and the status file follow in their own commit.
+All on `main`, all pushed to `origin`, no push refused:
+- `75e101e2` chore(unit352): the instruction, `WORK_INSTRUCTION: 352`, 1.13.39
+- `4ad20a25` test(app): task 0 - the trace
+- `386690a2` test(app): task 1 - the test window takes no live spot reload
+- `0ddb0566` docs(unit352): the sheet checked
+- the report and `PROJECT_STATUS.md`, in their own commit after this file
 
 ## 2. What the owner should expect
 
-**What moved on the screen: the green block at 1400.** Where *heard just now* already stands over the
-count, *best bet now:* now sits on its own line with the band under it: *20 m ✓* when it is your band,
-*40 m* when it is not. Before, *best bet now: 20 m ✓* was one line, and that pushed the mode and
-verdict line to wrap. **At 1920 nothing moved.** The version is 1.13.38.
+**Nothing on the screen moved.** No file under `src` and no markup changed. The sheet changed at four
+places: the 1920 FT8 green block cell (`:47`), two source notes' test counts (`:71`-`73`, `:118`), and
+one line in *Known reds* (`:511`-`514`).
 
-- On PSK31 at 1400 the top row is now 228 px whatever the best bet says, and the three panels 465 px.
-  Before, the row was 247 when the best bet was your band.
-- On FT8 at 1400 it is 216 px in every state. Before, it was 225 with a best bet.
+**What the test window no longer does:** it no longer asks POTA or the Reverse Beacon Network for spots
+while a test measures it. Before, the window was built as you, KC3QIS, with POTA and RBN switched on.
+The request it sent when it chose 20 m sometimes came back while the test was reading the best bet, and
+moved the badge to 40 m. Step 0's pinned proof now holds every pin, run after run.
 
-**No word changed and nothing hides.** The check, the band, *best bet now:*, the tooltip and what
-pressing the band does are all as they were.
-
-**The sheet, `docs\unit349-what-tim-looks-at.md`, was brought to this screen:**
-- section 2.2's top row, green block and panels rows, its best-bet bullet and its source note;
-- a new U11 row in section 3.3, with its overrule words, and U2's overrule number;
-- section 4's first item, removed because it no longer looks wrong, with the list renumbered.
-
-**What will look wrong but is not:**
-- **`TheTopRowTests` can still be red** on `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`,
-  with only a *pin did not hold* line at 1920. That is a spot reload landing while the test settles
-  (unit 350 item 2). It is not a layout miss.
-- **`Unit351TraceTheCheckInTheGreenBlock` passes and asserts nothing.** It is the record behind the
-  numbers.
-- **On your screen the band may stay on the same line as *best bet now:***. The rule is measured from
-  the words, and your screen draws them narrower than the host (sheet item 27). That is an inference.
+**What will look wrong, but is not:**
+- In `TheTopRowTests`, the green block of any test that does not set the best bet itself now says
+  *best bet now: 80 m* and *0 stations*. The window takes its spot reload before the test reads it, and
+  with nothing heard the ranking falls back to the hour. The tests that set the best bet by hand read
+  exactly what they read before.
+- The sheet still says *6 stations* in section 2.1. That is the fixture's old count, not a size. Your
+  window shows your own count (item 1).
+- `TheGreenZoneTests` has 15 facts, not the 14 the instruction said.
+- Step 0's filter reads 27, not 26: the trace is a fact.
 
 ## 3. What you should see
 
-**Yes: criterion 5 now holds at every pinned case.** On PSK31 at 1400 with the best bet on your band,
-the top row is 228 px of 238.4 and the panels 465 of 455. Every other case holds as well. The only red
-left in step 0's filter is a pin message at 1920, not a limit.
+**Is the sheet the screen at this tree? Yes.** Both green block readers are green after unit 351's
+change. Step 0's proof held every pin in six runs after the fixture change. The only sheet number a run
+printed differently was the 1920 FT8 green block with a best bet drawn, and that cell now carries it.
+There is no visible change in the application: this unit only makes the tests read the same window
+every run.
 
-| Case (width, mode, best bet) | Top row (share) | Panels, strip hidden | Green block | Met |
+**The two classes, per fact, before (`cdead300` plus the instruction) and after (`386690a2`):**
+
+| Class | Fact | Before | After | Failure line |
 |---|---|---|---|---|
-| 1920 FT8: your band / 40 m / absent | 190 (0.209) | 503 (0.553) | 64 / 64 / 55 | met |
-| 1920 PSK31: your band / 40 m / absent | 190 (0.209) | 503 (0.553) | 76 / 76 / 67 | met; pin unheld once on your band and once absent, 190 both times |
-| 1400 FT8: your band / 40 m / absent | 216 (0.237) | 477 (0.524) | 88 | met (was 225 / 225 / 216) |
-| 1400 PSK31: your band | **228 (0.251)** | **465 (0.511)** | 100 | met (was 247, 446, block 119) |
-| 1400 PSK31: 40 m | 228 (0.251) | 465 (0.511) | 100 | met (was 237, 456, block 109) |
-| 1400 PSK31: absent | 228 (0.251) | 465 (0.511) | 100 | met (unchanged) |
+| `Unit332TwoWidthsTests` | `TheGreenZoneAtFourteenHundredAndNineteenTwenty` | pass | pass | none |
+| `Unit332TwoWidthsTests` | `TheNightSideAtTwoAndTenPm` | pass | pass | none |
+| `Unit332TwoWidthsTests` | `TheAchievementsWindowAtItsOwnSize` | pass | pass | none |
+| `TheGreenZoneTests` | `LineOneIsTheThreeLinesInTheirOwnWords` | pass | pass | none |
+| `TheGreenZoneTests` | `LineTwoOpensWithTheBandForTheDial` | pass | pass | none |
+| `TheGreenZoneTests` | `TheFamilyAndSubModeComeFromTheMapAndTheTab` | pass | pass | none |
+| `TheGreenZoneTests` | `TheBestBetChecksWhenItIsHereAndNudgesWhenItIsNot` | pass | pass | none |
+| `TheGreenZoneTests` | `TheHeardCountIsTheDotsOwnAndAbsentIsNotNought` | pass | pass | none |
+| `TheGreenZoneTests` | `TheStrayedLineAppearsOnlyWhenItIsTrue` | pass | pass | none |
+| `TheGreenZoneTests` | `TheSubsolarLongitudeMatchesAHandComputedValueWithinADegree` | pass | pass | none |
+| `TheGreenZoneTests` | `TheNightSideIsTheSunsAndTheGrayEdgeIsAFade` | pass | pass | none |
+| `TheGreenZoneTests` | `TheMapCarriesExactlyOneMarkerAtTheOperatorsGrid` | pass | pass | none |
+| `TheGreenZoneTests` | `TheSparklineReflectsTheHeardCount` | pass | pass | none |
+| `TheGreenZoneTests` | `NoBandPillIsOnTheGreenZoneAndTheMapTookTheirWidth` | pass | pass | none |
+| `TheGreenZoneTests` | `TheBandIsTheLargestTextOnThePanelAndInFamilyInk` | pass | pass | none |
+| `TheGreenZoneTests` | `TheMapRegionRendersWithItsRuleOfThumbAndNoClaimOfOpenness` | pass | pass | none |
+| `TheGreenZoneTests` | `ThePanelUsesAtLeastNinetyPercentOfItsWidth` | pass | pass | none |
+| `TheGreenZoneTests` | `TheTwoEventsCarryWhatTheyNameAndNothingElse` | pass | pass | none |
 
-With the strip showing, the 1400 PSK31 panels are 412 px (0.453) in all three states.
+Their 36 printed pixel lines are identical before and after.
 
-**Task 0's arrangements**, on 1400 PSK31 with the best bet on your band, measured on the test window
-at `9baf54da`:
+**The ten traced cases, 1920 PSK31.** Before is task 0's trace at `4ad20a25`; after is the first final
+run at `386690a2`. Times are from the window's build; *pin* is when the pin was set.
 
-| Arrangement | 1400 top row | Panels | 1920 row | |
-|---|---|---|---|---|
-| The best bet row held to the heard words' width, wrapping | 228 | 465 | 190 | **built** |
-| The best bet row in the left column, under the rule of thumb | 238.0 | 455 | 190 | 0.4 and 0 px to spare |
-| The best bet row in the band line, after the verdict | 237 | 456 | 190 | 1.4 and 1 px to spare |
-| The best bet row under the regions | 240 | 453 | 190 | over |
-| The check's line held to the prefix's line height | 247 | 446 | 190 | no change: the check is not taller |
+| Case | Before: what landed, when | Source | Pin held | After: what landed, when | Source | Pin held |
+|---|---|---|---|---|---|---|
+| 20 m, 1 | nothing while open (pin +1315, first window) | - | yes | band_changed +59, startup +60; pin later | none answering | yes |
+| 20 m, 2 | nothing while open (pin +120) | - | yes | band_changed +44, startup +45 | none answering | yes |
+| 20 m, 3 | nothing while open (pin +112) | - | yes | band_changed +96, startup +96 | none answering | yes |
+| 20 m, 4 | **band_changed +89, after the pin +86**, 0 spots, badge to 40 m | POTA, RBN | **no** | band_changed +49, startup +49 | none answering | yes |
+| 20 m, 5 | band_changed +90, before the pin +100, 0 spots | POTA, RBN | yes | band_changed +37, startup +38 | none answering | yes |
+| absent, 1 | nothing while open (pin +103) | - | yes | band_changed +64, startup +64 | none answering | yes |
+| absent, 2 | nothing while open (pin +83) | - | yes | band_changed +45, startup +46 | none answering | yes |
+| absent, 3 | **band_changed +97, after the pin +89**, 0 spots, badge to 40 m | POTA, RBN | **no** | band_changed +39, startup +39 | none answering | yes |
+| absent, 4 | **band_changed +116, with the pin +116**, 0 spots, badge to 40 m | POTA, RBN | **no** | band_changed +40, startup +41 | none answering | yes |
+| absent, 5 | nothing while open (pin +79) | - | yes | band_changed +49, startup +49 | none answering | yes |
 
-**U2, re-measured:** putting the upgrade row back takes the 1400 PSK31 row to 231 px (0.254) and the
-panels to 462 in all three states.
+After the change, every reload landed before the pin, in all ten windows of all four trace runs.
 
-**Every appearance claim here is computed on the headless host, not seen.**
+**Step 0's three runs on the committed tree** (`u352-t1-final-run1` to `-run3`): 27 of 27 each.
+`TheTopRowTests` 13 of 13, `TheWorkingPanelsTests` 8 of 8, `BindingHealthTests` 1 of 1, `VoiceTests`
+5 of 5. The pinned fact's lines were the same in all three:
+
+| | FT8, 20 m | FT8, absent | PSK31, 20 m | PSK31, absent | 40 m fact, FT8 / PSK31 |
+|---|---|---|---|---|---|
+| 1920 top row / panels / block | 190 / 503 / 64 | 190 / 503 / 55 | 190 / 503 / 76 | 190 / 503 / 67 | 190 / 503 / 64 and 76 |
+| 1400 top row / panels / block | 216 / 477 / 88 | 216 / 477 / 88 | 228 / 465 / 100 | 228 / 465 / 100 | 216 / 477 / 88 and 228 / 465 / 100 |
+| pin held | yes | yes | yes | yes | yes |
+
+Card and rig equal in every case. None of these moved from the task 0 run. The numbers that moved are
+listed in section 1 under task 1.
 
 ## 4. What's blocking us
+
+**Nothing new needs a ruling.** Tim's step 3 verdict stays open.
+
+Unit 351's section 4 comes first, verbatim per HM-DEC-139, from its line under
+`## 4. What's blocking us` to its end, as committed in `cdead300`. It was kept in place, and the marks
+work instruction 352 §9 asks for were added with the file editor:
+- unit 349 item 1, *STILL OPEN*;
+- unit 350 item 2 and unit 351 item 1, *TAKEN UP by work instruction 352 rulings 61 and 62*, with the
+  result;
+- unit 351 item 2, *TAKEN UP by work instruction 352 ruling 60*, with the counts.
+
+This unit's three items follow at the very end, under *Raised by unit 352*. Each is a finding, and none
+is an ask.
+
+### Asks still outstanding - carried from unit 351's section 4, per HM-DEC-139, verbatim
 
 **Nothing new needs a ruling.** Tim's step 3 verdict stays open.
 
@@ -1931,6 +1948,10 @@ clips or wraps. The watched red is built in, and no string changed.
 **1. Ruling wanted, Tim's, step 3: pass or not, at your window size, reading
 `docs\unit349-what-tim-looks-at.md`.**
 
+`STILL OPEN - Tim's; work instruction 352 authors nothing into the verdict, and the sheet was checked
+against the screen at 0ddb0566` (corrected at `:47`, `:71`-`73`, `:118` and `:511`-`514`; nothing on
+the screen moved).
+
 `STILL OPEN - Tim's; work instruction 351 authors nothing into step 3, and the sheet was updated to
 the new screen at 51091022` (and U2's overrule number in the commit after it).
 
@@ -2010,6 +2031,11 @@ absent. `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, body unedit
 
 **2. A spot reload can overwrite a pinned best bet while a test settles.**
 
+**TAKEN UP by work instruction 352 rulings 61 and 62.** The reload was measured: the `band_changed`
+reload `Realized`'s band select starts, waiting on POTA's reply, landed after the pin in 3 of 10 traced
+windows at `4ad20a25`. With POTA, SOTA and RBN switched off in the test fixtures (`386690a2`), both
+reloads land before the pin in 10 of 10, and step 0's filter read 27 of 27 with pins 8 of 8 in six runs.
+
 **STANDS.** Unit 351's readings, in order:
 - step 0's filter at task 0: two unheld, 1920 PSK31 drawn and 1400 FT8 absent, both to 40 m;
 - task 0's trace: 22 of 22 held;
@@ -2066,6 +2092,10 @@ absent. `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, body unedit
 **1. Step 0's filter was not all green at the end: 25 of 26 in both runs after the change was
 finished, and the red was a pin message, not a limit.**
 
+**TAKEN UP by work instruction 352 rulings 61 and 62.** Before the change it read 25 of 26 again, the
+red at 1920 FT8 with the best bet absent. After it (`386690a2`), 27 of 27 in each of three runs on the
+committed tree, pins 8 of 8 and the 40 m fact 4 of 4 each, both bodies unedited; no pinned number moved.
+
 *A finding, not an ask (ruling 58).*
 - §2 expected all green at the end. The only red was
   `TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays`, with one line each time: *at 1920.0 on
@@ -2078,6 +2108,9 @@ finished, and the red was a pin message, not a limit.**
   call.
 
 **2. Tests that read the green block's right column and were not run.**
+
+**TAKEN UP by work instruction 352 ruling 60.** `Unit332TwoWidthsTests` 3 of 3 and `TheGreenZoneTests`
+15 of 15, before the fixture change and after it, with identical pixel lines; no red to sort.
 
 *A finding.*
 - `Unit332TwoWidthsTests` names `GreenZoneRight` (`:65`). It is not in step 0's filter or the
@@ -2097,3 +2130,86 @@ finished, and the red was a pin message, not a limit.**
   pipe, and a variable assignment with `;`-joined greps. Nothing was refused.
 - `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. Each write was set back to
   `HM-DEC-163 (2026-09-12)` with the file editor before the next one.
+
+### Raised by unit 352
+
+**1. The facts that pin nothing now measure the hour's best bet and 0 stations, not the fixture's no
+best bet and 6 stations.**
+
+*A finding, not an ask.*
+- With the network sources off, both spot reloads (`band_changed` and `startup`) land inside
+  `Realized`'s own settle, every time (16 to 148 ms in, and 1246 on one run's first window). Each one
+  overwrites the fixture's `HeardInTheLastMinute = 6` and its sparkline with the reload's count, and
+  runs `ApplyBestBet` on the hour's table. Before the change they usually landed after the window
+  closed.
+- So `AtFourteenHundredTheLicensedTopRowIsTheMockupsShare`, `TheGreenBlockIsInsideTheCardUnderTheStripWithTheBandLargest`,
+  `TheWorldClockIsAtTheCardsRightEndWithOneMarker`, the no-license window's
+  `TheThreePanelsShareOneTopAndOneBottom` and four traces now read *best bet now: 80 m* and *0
+  stations*. The numbers that moved are in section 1, task 1. Every assertion still holds.
+- What the facts read now depends on the hour of the run, not on a race. From 9 am to 5 pm the table
+  puts 20 m first, which is the band the fixture is on, so the check would be drawn.
+- The pinned facts do not depend on this. They set `IsBestBet` after both reloads have landed.
+- **On the sheet:** section 2.1's green block cell now carries both numbers (`:47`). Its *6 stations at
+  15* bullet (`:55`) was left as it was (decision 4). The count is the fixture's, and it is no longer
+  what the test window draws.
+- **What a unit could do**, marked as this unit's own reading and not a ruling: in `Realized`, after its
+  settle loop, set the heard count and sparkline back and clear `IsBestBet`, the way the pinned fact
+  does. Every fact would then measure the fixture's declared window again. That goes past ruling 61's
+  *only the sources are switched off*, so it was not done here. Step 3 does not wait on it.
+
+**2. What the test window reaches over the network (task 3).**
+
+*A finding. Read, not changed; nothing under `src` moved.*
+- **Constructing a source opens nothing.**
+  - `RbnActivitySource(callsign)` stores a connection factory (`RbnActivitySource.cs:79`-`99`). The
+    telnet connection to `telnet.reversebeacon.net:7000` is made in `Start()` (`:173`-`190`), which
+    `GetSpotsAsync` calls (`:193`-`198`).
+  - `PotaActivitySource(version, callsign)` builds an `HttpClient` whose User-Agent carries the callsign
+    (`PotaActivitySource.cs:75`-`84`, `HamletIdentity.cs:40`-`48` and `:59`-`71`). The request is made
+    in `GetSpotsAsync` (`:106`).
+- **A switched-off source is never polled.** `AggregateActivitySource.GetSpotsAsync` checks
+  `_isEnabled` and marks the source disabled before any fetch (`AggregateActivitySource.cs:97`-`103`).
+  So with the sources off, neither `Start()` nor the HTTP request is reached.
+- **Before the change.** Every `Realized` window in `TheTopRowTests` and `TheWorkingPanelsTests` started
+  a spot reload when it chose 20 m, so each made a POTA request with a User-Agent carrying *KC3QIS* (and
+  `TheWorkingPanelsTests`' own window its `HisCall`), and started RBN's telnet reader under that call.
+  - In task 0's trace, 3 of 10 windows saw the reply land, and the sources summary read *POTA, RBN* as
+    it did. Whether RBN's login was accepted is not in the telemetry: not measured.
+  - The trace's as-built half did the same in four later runs (decision 2).
+- **After the change.** The trace's ten windows read *no sources answering*, with 0 spots, in every
+  run. No `Realized` window reached POTA or RBN.
+- **Still reaching POTA, by reading and not measured:** `BindingHealthTests`' window
+  (`BindingHealthTests.cs:108`, a default `AppSettings`) and `TheWorkingPanelsTests.EmptyTab` (`:484`).
+  Neither sets a callsign, so RBN is not built and POTA's User-Agent carries no call. Both are in step
+  0's filter.
+- **Not examined:** whether an RBN reader already started is stopped when its switch is later turned
+  off. No test window in this unit turns a source off after starting it.
+
+**3. Mismatches with work instruction 352, and the tool facts.**
+
+*A finding, reported and not repaired.*
+- §1 and §5 say `TheGreenZoneTests` has 14 facts (`:78` to `:656`). It has 15; the one not counted is
+  among `:78`, `:121`, `:148`, `:182`, `:221`, `:243`, `:277`, `:312`, `:341`, `:372`, `:403`, `:467`,
+  `:507`, `:574`, `:656`. 15 of 15 ran, twice.
+- Ruling 62 says every test in `TheTopRowTests` and `TheWorkingPanelsTests` shares `Realized`.
+  `TheWorkingPanelsTests` has its own `Realized` (`:712` at the start, callsign `HisCall`, no license
+  class), calls `TheTopRowTests.Realized` only at `:346` and `:523`, and builds `EmptyTab` (`:484`)
+  with no callsign.
+- The header says `BuildSources` builds POTA and RBN. It also builds SOTA (`:7615`) and the sample feed
+  (`:7631`), both off by default.
+- §1 says unit 351's pin reds fell at 1920 PSK31. This unit's first run had its red at 1920 FT8 with the
+  best bet absent.
+- §2's expected end said 26 of 26, or more if a fact is added: it is 27, the trace.
+- The reload the trace names moves the badge by the hour's table, not by spots: every landed reload
+  carried 0 spots.
+- **Tool facts.** These ran: `sh tools/status.sh` joined by `&&` to `date` and `timeout … dotnet test …
+  | tail`; `git add && git commit -m -m && git push && git log`; `grep -n`, `grep -o -e` on trx files;
+  `ls`, `wc -l`, `git diff --stat`, `git rev-parse`, `git log -p`; `sh` on scripts written with the
+  file editor into `testresults\`. These asked for approval and were not run: a `;`-joined line of
+  `ls`, `pwd -W`, `git rev-parse`, `head` and `grep`; a `grep` line with a `;` and `head`; `git log |
+  cut && git show`. These were refused: a `for` loop over `$f` (*Contains simple_expansion*), and
+  `sed -n` on a trx file under `testresults\` (*may only edit files in the allowed working
+  directories*). The trx was read with the file reader instead.
+- `tools/status.sh` still writes `HM-DEC-161 (2026-09-11)`. Each write was set back to
+  `HM-DEC-163 (2026-09-12)` with the file editor before the next one, except where two writes came in
+  one batch of calls.

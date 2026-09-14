@@ -2,12 +2,12 @@ PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
 TASK: TASK 3 of 3
-WORK_INSTRUCTION: 351 - step 0's last red: the check fitted at 1400
+WORK_INSTRUCTION: 352 - the sheet Tim holds, checked against the screen unit 351 changed
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-14T01:11:57-04:00
-NOTE: Unit 351 complete at task 3 of 3 - the 1400 green block's best bet stands over its band where the sparkline hides: PSK31 on his band 228 of 238.4 px (was 247), panels 465 of 455 (was 446), every pinned case within limits; sheet updated; step 0 filter 25 of 26, the red a 1920 pin message; step 3 still Tim's
+UPDATED: 2026-09-14T01:52:06-04:00
+NOTE: Unit 352 complete at task 3 of 3 - the sheet is the screen: both green block readers green (3 of 3, 15 of 15), the pin red traced to POTA's reply on the fixture's band_changed reload and gone with the test window's network sources off, step 0's filter 27 of 27 three times with pins 8 of 8; sheet corrected at :47, :71-73, :118, :511-514; step 3 still Tim's
 
 ---
 
