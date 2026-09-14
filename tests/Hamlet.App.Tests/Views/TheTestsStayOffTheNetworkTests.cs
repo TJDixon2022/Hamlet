@@ -1,4 +1,10 @@
 using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Hamlet.RadioEngine.Explore;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
@@ -22,10 +28,12 @@ namespace Hamlet.App.Tests.Views;
 /// callook.info client in the application (<see cref="LiveCallookLookup"/>), the network denied by
 /// default in this test assembly, and a fixed *General* for KC3QIS handed in by both layout fixtures.
 /// **Each test checks the default first**, so a red here fails before any view model can reach out.</para>
-/// <para>**WHAT IS NOT ASSERTED, AND WHY.** The instruction's *no HTTP client is created under test*
-/// does not hold and is not made to: <c>MainWindowViewModel.BuildSources</c> constructs the POTA and SOTA
-/// sources at construction, each with its own client, whether or not they are switched on. The layout
-/// fixtures switch them off, so neither sends. Reported in unit 355's section 4.</para>
+/// <para>**AND NO CLIENT IS CREATED UNDER TEST, WHICH UNIT 355 REPORTED DID NOT HOLD.** That unit
+/// found <c>MainWindowViewModel.BuildSources</c> constructing the POTA and SOTA sources at
+/// construction, each with its own <c>HttpClient</c>, whether or not they were switched on; the
+/// fixtures switched them off so nothing was ever sent, but the criterion was *no client is created*
+/// and it was not met. **Unit 356 task 3 moved both behind the same seam the license lookup took**:
+/// the ingredients are kept and the client is made on the first fetch.</para>
 /// </remarks>
 public sealed class TheTestsStayOffTheNetworkTests
 {
@@ -55,6 +63,59 @@ public sealed class TheTestsStayOffTheNetworkTests
         Assert.IsType<NetworkDeniedLookup>(model.LicenseLookupForTests);
         Assert.Equal(1, denied.Attempts);
         Assert.Equal(LicenseClass.Unknown, handed.LicenseClass);
+    }
+
+    /// <summary>**Building a view model makes no HTTP client, and fetching makes one.**</summary>
+    /// <remarks>
+    /// **BOTH HALVES, BECAUSE EITHER ALONE IS EASY TO PASS.** A source that never made a client
+    /// would satisfy the first and be broken; one that made it eagerly satisfies the second and is
+    /// the fault. What is asserted is the order: **none at construction, one on the first fetch.**
+    /// </remarks>
+    [Fact]
+    public async Task BuildingAViewModelMakesNoHttpClient()
+    {
+        TheDefaultUnderTestIsTheNetworkDenied();
+
+        var model = new MainWindowViewModel(Kc3qis(LicenseClass.General), null);
+
+        var pota = model.OwnedSourcesForTests.OfType<PotaActivitySource>().Single();
+        var sota = model.OwnedSourcesForTests.OfType<SotaActivitySource>().Single();
+
+        _output.WriteLine(
+            "after construction: POTA client made " + pota.ClientMadeForTests
+            + ", SOTA client made " + sota.ClientMadeForTests);
+
+        Assert.False(pota.ClientMadeForTests, "POTA made an HTTP client at construction");
+        Assert.False(sota.ClientMadeForTests, "SOTA made an HTTP client at construction");
+
+        // **AND THE APPLICATION STILL FETCHES.** A handed-in transport answers, so nothing
+        // leaves this machine, and the client is made because the fetch asked for it.
+        using var handler = new AnswersWithNothing();
+        using var source = new PotaActivitySource("356", "KC3QIS", handler);
+
+        Assert.False(source.ClientMadeForTests, "a source made a client before it was asked");
+
+        _ = await source.GetSpotsAsync();
+
+        _output.WriteLine("after one fetch: POTA client made " + source.ClientMadeForTests);
+
+        Assert.True(source.ClientMadeForTests, "the fetch did not make a client");
+    }
+
+    /// <summary>A transport that answers every request with an empty list, so no packet leaves.</summary>
+    /// <remarks>
+    /// **AN EMPTY LIST AND NOT A REFUSAL.** A 503 makes `GetStringAsync` throw, and a test
+    /// that asked whether a client was made would then be measuring the throw. An empty
+    /// array is a fetch that succeeded and found nothing, which is what this needs.
+    /// </remarks>
+    private sealed class AnswersWithNothing : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, CancellationToken cancellationToken)
+            => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("[]"),
+            });
     }
 
     /// <summary>**The plain fixture constructs with the seam's fixed answer: General for KC3QIS, asked once.**</summary>

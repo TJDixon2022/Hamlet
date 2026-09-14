@@ -158,6 +158,15 @@ public partial class MainWindowViewModel : ObservableObject
     private AggregateActivitySource _activitySource;
     private RbnActivitySource? _rbn;
     private IDisposable[] _ownedSources = Array.Empty<IDisposable>();
+
+    /// <summary>The sources this view model built and owns, for a test that asks what they did.</summary>
+    /// <remarks>
+    /// **IT HANDS BACK WHAT IS ALREADY THERE** (work instruction 356 task 3). It builds
+    /// nothing, fetches nothing and disposes nothing; it exists so a test can ask the two
+    /// spot sources whether either has made an HTTP client, which is the criterion unit
+    /// 355 reported did not hold.
+    /// </remarks>
+    internal IReadOnlyList<IDisposable> OwnedSourcesForTests => _ownedSources;
     private TrainingSpectrumSource? _trainingSpectrum;
     private readonly DispatcherTimer _decodeTimer;
 

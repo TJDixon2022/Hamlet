@@ -48,7 +48,18 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
         PropertyNameCaseInsensitive = true,
     };
 
-    private readonly HttpClient _client;
+    /// <summary>The client, made on the first fetch and never in a constructor.</summary>
+    /// <remarks>
+    /// **NO CLIENT IS CREATED UNDER TEST** (work instruction 356 task 3). Unit 355 found
+    /// that `MainWindowViewModel.BuildSources` built this source at construction, with its
+    /// own `HttpClient`, whether or not the source was switched on. The fixtures switched
+    /// it off so nothing was ever sent, but *no client is created under test* was the
+    /// criterion and it did not hold. **The ingredients are kept and the client is made on
+    /// the first fetch**, which is the same seam the license lookup took in unit 355.
+    /// </remarks>
+    private HttpClient? _client;
+
+    private readonly Func<HttpClient>? _makeClient;
     private readonly bool _ownsClient;
     private readonly Func<DateTime> _utcNow;
     private readonly object _gate = new();
@@ -63,6 +74,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
     public PotaActivitySource(HttpClient client, Func<DateTime>? utcNow = null)
     {
         _client = client;
+        _makeClient = null;
         _ownsClient = false;
         _utcNow = utcNow ?? (() => DateTime.UtcNow);
     }
@@ -78,9 +90,51 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
         HttpMessageHandler? handler = null,
         Func<DateTime>? utcNow = null)
     {
-        _client = HamletIdentity.CreateClient(version, callsign, handler);
+        // **KEPT, NOT CALLED** (work instruction 356 task 3). Building the client here is
+        // what put one behind every test that constructs a view model.
+        _makeClient = () => HamletIdentity.CreateClient(version, callsign, handler);
         _ownsClient = true;
         _utcNow = utcNow ?? (() => DateTime.UtcNow);
+    }
+
+
+    /// <summary>The client, made on first use under the gate.</summary>
+    /// <remarks>
+    /// **REENTRANT ON PURPOSE.** The fetch already holds <c>_gate</c> when it asks for
+    /// this, and a monitor is reentrant on the same thread, so one lock serves both and
+    /// there is no second one to get out of order with.
+    /// </remarks>
+    private HttpClient Client
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _client ??= _makeClient is null
+                    ? throw new InvalidOperationException(
+                        "no client and no way to make one")
+                    : _makeClient();
+            }
+        }
+    }
+
+
+    /// <summary>True once a client has been made, for a test that asks whether one was.</summary>
+    /// <remarks>
+    /// **THE CRITERION IS THAT NONE EXISTS, SO SOMETHING HAS TO BE ABLE TO SAY SO** (work
+    /// instruction 356 task 3). It reads a field and does nothing else; removing it would
+    /// change no behavior and cost the only way a test has of telling a client that was
+    /// never made from one that was made and never used.
+    /// </remarks>
+    internal bool ClientMadeForTests
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _client is not null;
+            }
+        }
     }
 
     /// <inheritdoc/>
@@ -103,7 +157,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
             }
         }
 
-        var json = await _client.GetStringAsync(Endpoint, cancellationToken)
+        var json = await Client.GetStringAsync(Endpoint, cancellationToken)
             .ConfigureAwait(false);
 
         var raw = JsonSerializer.Deserialize<PotaSpot[]>(json, Json)
@@ -133,7 +187,7 @@ public sealed class PotaActivitySource : IContextualActivitySource, IDisposable
     {
         if (_ownsClient)
         {
-            _client.Dispose();
+            _client?.Dispose();
         }
     }
 
