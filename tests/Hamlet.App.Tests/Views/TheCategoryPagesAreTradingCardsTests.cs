@@ -2194,6 +2194,205 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         return height;
     }
 
+    /// <summary>
+    /// **Work instruction 346 task 0: the Modes next card, the CW place, and every page's fit, before
+    /// anything changes** - at 1400 and 1920. It asserts nothing and presses nothing that transmits or
+    /// tunes.
+    /// </summary>
+    /// <remarks>
+    /// **EVERY NUMBER IS COMPUTED ON THE HEADLESS HOST, NOT SEEN.** A Modes row with no line is printed
+    /// `EMPTY`, and a run that would clip is printed rather than asserted.
+    /// </remarks>
+    [AvaloniaFact]
+    public void Unit346TraceTheModesNextCardAndEveryPage()
+    {
+        var bet = new BandBet("17 m", "best bet now");
+        var lists = new[] { (Label: "Calling()", List: Calling()), (Label: "Calling() and a PSK31 caller", List: CallingWithPsk31()) };
+
+        static string Mhz(long hz) => (hz / 1_000_000.0).ToString("0.000", CultureInfo.InvariantCulture);
+
+        // **WHAT MODE EACH ROW ON THE LIST CARRIES, AND WHETHER ANY CAN SAY FT4.**
+        foreach (var (label, list) in lists)
+        {
+            _output.WriteLine(
+                "LIST " + label + ": " + string.Join(", ", list.Calls.Select(c => c.Callsign + " grid [" + c.Grid + "] mode [" + c.Mode + "]"))
+                + "; calls saying FT4: " + list.Calls.Count(c => c.Mode == "FT4"));
+        }
+
+        // **THE CW PLACE CANDIDATES, PER HF BAND**, through the public route.
+        _output.WriteLine("CW ROUTE: HfBands.Bands (public) -> CwBand.JumpHz, which Build fills from HfBands.Landing (private); CwBand.CwLowHz and CwHighHz");
+
+        foreach (var band in HfBands.Bands)
+        {
+            _output.WriteLine(
+                "  " + band.Name.PadRight(6) + "lands " + Mhz(band.JumpHz) + ", CW segment " + Mhz(band.CwLowHz) + " to " + Mhz(band.CwHighHz)
+                + "; FT4 row " + (DigitalCallingFrequencies.Find(band.Name, "FT4") is { } ft4 ? Mhz(ft4.JumpHz) : "none")
+                + ", PSK31 row " + (DigitalCallingFrequencies.Find(band.Name, "PSK31") is { } psk ? Mhz(psk.JumpHz) : "none")
+                + (band.Name == bet.Band ? "  <- the fixture's best bet" : ""));
+        }
+
+        // **THE MODES NEXT CARD ON THE FIVE-CONTACT LOG, DRAWN BESIDE THE VIEW MODEL, ROW BY ROW.**
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var (label, list) in lists)
+            {
+                var window = Realized(FiveContacts(), width, list, bet);
+                var screen = (AchievementsViewModel)window.DataContext!;
+
+                try
+                {
+                    OpenOnWindow(window, screen, AchievementKinds.Modes);
+
+                    var next = screen.Category!.Cards[^1];
+                    var card = TradingCards(window).Single(b => ReferenceEquals(b.DataContext, next));
+                    var rows = CallerRows(card);
+
+                    _output.WriteLine(
+                        "MODES NEXT at " + F(width) + ", five contacts, " + label + ": earned " + next.Earned + ", heading [" + next.CallersHeading
+                        + "], no-caller [" + next.NoCallerLine + "], " + rows.Count + " rows drawn; card drawn [" + string.Join(" | ", VisibleText(card)) + "]");
+
+                    foreach (var held in next.Callers)
+                    {
+                        var drawn = rows.FirstOrDefault(r => r.Place == held.Place);
+
+                        _output.WriteLine(
+                            "  row " + held.Place.PadRight(6) + " model [" + (held.CallLine.Length == 0 ? "EMPTY" : held.CallLine) + "] drawn ["
+                            + (drawn is null ? "NOT DRAWN" : drawn.CallLine.Length == 0 ? "EMPTY" : drawn.CallLine) + "]");
+                    }
+                }
+                finally
+                {
+                    window.Close();
+                }
+            }
+        }
+
+        // **EVERY PAGE RULING 27 NAMES, AND EVERY EARNED CARD WITH A MAP ON IT.**
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var (records, label, list, kinds) in new[]
+            {
+                (TheAchievementsPageTests.TwelveContacts(), "twelve contacts", Calling(), AchievementKinds.All.Concat(ContinentKinds()).ToList()),
+                (FiveContacts(), "five contacts and a PSK31 caller", CallingWithPsk31(), new List<string> { AchievementKinds.Modes }),
+            })
+            {
+                var window = Realized(records, width, list, bet);
+                var screen = (AchievementsViewModel)window.DataContext!;
+                var tallest = (Height: 0.0, Kind: "");
+
+                try
+                {
+                    _output.WriteLine("PAGES at " + F(width) + ", " + label + ", window " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height));
+
+                    foreach (var kind in kinds)
+                    {
+                        OpenOnWindow(window, screen, kind);
+
+                        var (fit, clips) = Unit346Fit(window);
+                        var cards = window.GetVisualDescendants().OfType<Border>()
+                            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+                            .ToList();
+                        var page = window.GetVisualDescendants().OfType<ItemsControl>()
+                            .First(i => i.IsEffectivelyVisible && (i.Name == "AchievementsCategoryCards" || i.Name == "AchievementsSubBadges"));
+
+                        if (page.Bounds.Height > tallest.Height)
+                        {
+                            tallest = (page.Bounds.Height, kind);
+                        }
+
+                        _output.WriteLine(
+                            "  " + kind.PadRight(14) + fit + " runs fit, " + clips.Count + " clip or wrap, " + cards.Count + " cards, "
+                            + cards.Count(c => !Unit346Filled(c)) + " white, page " + F(page.Bounds.Height) + " px tall");
+
+                        foreach (var clip in clips)
+                        {
+                            _output.WriteLine("    CLIPS " + clip);
+                        }
+
+                        foreach (var card in cards.Where(c => c.DataContext is AchievementCategoryCard { Earned: true }))
+                        {
+                            var data = (AchievementCategoryCard)card.DataContext!;
+                            var globe = card.GetVisualDescendants().OfType<Ft8GlobeControl>()
+                                .FirstOrDefault(g => g.IsEffectivelyVisible && g.Plot is not null && g.Bounds.Width > 0);
+
+                            if (globe is null)
+                            {
+                                continue;
+                            }
+
+                            var column = card.GetVisualDescendants().OfType<StackPanel>().FirstOrDefault(s => Grid.GetColumn(s) == 1);
+                            var drawn = Unit342Drawn(globe);
+
+                            _output.WriteLine(
+                                "    MAP [" + data.Title + "] " + data.Callsign + " drawn " + F(drawn.Width) + " x " + F(drawn.Height)
+                                + " in a control " + F(globe.Bounds.Width) + " x " + F(globe.Bounds.Height) + "; card inner width "
+                                + (column is null ? "no column" : F(column.Bounds.Width) + ", short by " + F(column.Bounds.Width - drawn.Width)));
+                        }
+
+                        ToThePage(window, screen);
+                    }
+                }
+                finally
+                {
+                    window.Close();
+                }
+
+                _output.WriteLine("  TALLEST at " + F(width) + ", " + label + ": " + tallest.Kind + ", " + F(tallest.Height) + " px");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Work instruction 346 task 0: `Fits`' measurement without its asserts - how many visible runs fit,
+    /// and each one that would clip or wrap, in `Fits`' own words.
+    /// </summary>
+    private static (int Fit, List<string> Clips) Unit346Fit(Window window)
+    {
+        var fit = 0;
+        var clips = new List<string>();
+
+        foreach (var text in window.GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.IsEffectivelyVisible && (t.Text ?? "").Trim().Length > 0))
+        {
+            var needs = Unit342Needs(text, text.Text ?? "");
+            var clip = text.TextWrapping != Avalonia.Media.TextWrapping.NoWrap ? "[" + text.Text + "] is allowed to wrap"
+                : needs > text.Bounds.Width + 0.5 ? "[" + text.Text + "] needs " + F(needs) + " px and its slot is " + F(text.Bounds.Width)
+                : null;
+
+            foreach (var box in clip is null ? text.GetVisualAncestors().OfType<Control>() : Enumerable.Empty<Control>())
+            {
+                var left = text.TranslatePoint(new Point(0, 0), box)?.X ?? 0;
+
+                if (left < -0.5 || left + needs > box.Bounds.Width + 0.5)
+                {
+                    clip = "[" + text.Text + "] runs from " + F(left) + " to " + F(left + needs) + " inside a " + box.GetType().Name + " " + F(box.Bounds.Width) + " wide";
+                    break;
+                }
+            }
+
+            if (clip is null)
+            {
+                fit++;
+            }
+            else
+            {
+                clips.Add(clip);
+            }
+        }
+
+        return (fit, clips);
+    }
+
+    /// <summary>True where a card draws a map, a bar or a list - the page-wide test's measure of a card that is not white.</summary>
+    private static bool Unit346Filled(Border card)
+    {
+        var inside = card.GetVisualDescendants().Where(v => v is Control { IsEffectivelyVisible: true }).ToList();
+
+        return inside.OfType<Ft8GlobeControl>().Any(m => m.Plot is not null && m.Bounds.Width > 0)
+            || inside.OfType<BadgeProgressControl>().Any(b => b.Bounds.Width > 0)
+            || inside.OfType<Border>().Any(b => b.Classes.Contains("card-list") && VisibleText(b).Any());
+    }
+
     private static string Unit345Drawn(IReadOnlyList<string> said, string value)
         => value.Length == 0 ? "(none held)"
             : said.Any(s => s.Contains(value, StringComparison.Ordinal)) ? "drawn" : "NOT DRAWN";
@@ -2592,6 +2791,28 @@ public sealed class TheCategoryPagesAreTradingCardsTests
                 Heard("CQ ZL1ABC RF72"),
             },
             new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc));
+
+    /// <summary>
+    /// `Calling()`'s four, and a PSK31 station in Spain calling CQ - a text-only row read by the PSK31
+    /// parser, as the list builds one (work instruction 346).
+    /// </summary>
+    private static CqSnapshot CallingWithPsk31()
+    {
+        const string text = "CQ CQ CQ de EA3XYZ EA3XYZ K";
+
+        return CqSnapshot.From(
+            new[]
+            {
+                Heard("CQ OE8DDX JN76"),
+                Heard("CQ DX J38DX FK92"),
+                Heard("CQ K1ABC FN42"),
+                Heard("CQ ZL1ABC RF72"),
+                new DigitalDecodeRow(
+                    "214100", "+10", DigitalDecodeRow.NotMeasured, "1000", text,
+                    IsTextOnly: true, Reading: Hamlet.RadioEngine.Psk31.Psk31ExchangeParser.Read(text, "KC3QIS")),
+            },
+            new DateTime(2026, 9, 12, 21, 41, 0, DateTimeKind.Utc));
+    }
 
     /// <summary>A decoded row, as the list holds one.</summary>
     private static DigitalDecodeRow Heard(string message)
