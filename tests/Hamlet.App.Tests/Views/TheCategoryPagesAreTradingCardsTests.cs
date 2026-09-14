@@ -1476,71 +1476,126 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     public void NoStringClipsAndNoCardIsWhiteAtFourteenHundredAndNineteenTwenty()
     {
         var bet = new BandBet("17 m", "best bet now");
+        var watched = false;
+
+        static bool Filled(Border card)
+        {
+            var inside = card.GetVisualDescendants().Where(v => v is Control { IsEffectivelyVisible: true }).ToList();
+            var map = inside.OfType<Ft8GlobeControl>().Any(m => m.Plot is not null && m.Bounds.Width > 0);
+            var bar = inside.OfType<BadgeProgressControl>().Any(b => b.Bounds.Width > 0);
+            var list = inside.OfType<Border>().Any(b => b.Classes.Contains("card-list")
+                && VisibleText(b).Any());
+
+            return map || bar || list;
+        }
 
         foreach (var width in new[] { 1400.0, 1920.0 })
         {
-            var window = Realized(TheAchievementsPageTests.TwelveContacts(), width, Calling(), bet);
-            var screen = (AchievementsViewModel)window.DataContext!;
-
-            try
+            // **WORK INSTRUCTION 346 TASK 2, RULING 27: EVERY PAGE STEP 1'S DRAWN TESTS REALIZE** - the eight
+            // kinds and all seven continent pages on the twelve contacts, and the Modes page on the five
+            // contacts with a PSK31 caller on the list, where its next card and its longest row are drawn.
+            // States on its own log is measured in `StatesCountWhatTheLogsStateFieldSays`.
+            foreach (var (records, label, calling, kinds) in new[]
             {
-                _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height));
+                (TheAchievementsPageTests.TwelveContacts(), "twelve contacts", Calling(), AchievementKinds.All.Concat(ContinentKinds()).ToList()),
+                (FiveContacts(), "five contacts and a PSK31 caller", CallingWithPsk31(), new List<string> { AchievementKinds.Modes }),
+            })
+            {
+                var window = Realized(records, width, calling, bet);
+                var screen = (AchievementsViewModel)window.DataContext!;
+                var tallest = (Height: 0.0, Kind: "");
 
-                foreach (var kind in AchievementKinds.All.Concat(new[] { "continent-EU", "continent-OC" }))
+                try
                 {
-                    if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+                    _output.WriteLine("WINDOW " + F(window.Bounds.Width) + " x " + F(window.Bounds.Height) + ", " + label);
+
+                    foreach (var kind in kinds)
                     {
-                        screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
-                    }
+                        if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+                        {
+                            screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+                        }
 
-                    screen.OpenCategoryCommand.Execute(kind);
-                    Settle(window);
+                        screen.OpenCategoryCommand.Execute(kind);
+                        Settle(window);
 
-                    var state = F(width) + " " + kind;
-                    var runs = Fits(window, state);
-                    var cards = window.GetVisualDescendants().OfType<Border>()
-                        .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
-                        .ToList();
+                        var state = F(width) + " " + label + " " + kind;
+                        var runs = Fits(window, state);
+                        var cards = window.GetVisualDescendants().OfType<Border>()
+                            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card"))
+                            .ToList();
 
-                    Assert.True(cards.Count > 0, state + ": no trading card is drawn");
+                        Assert.True(cards.Count > 0, state + ": no trading card is drawn");
 
-                    var white = 0;
+                        var white = 0;
 
-                    foreach (var card in cards)
-                    {
-                        var inside = card.GetVisualDescendants().Where(v => v is Control { IsEffectivelyVisible: true }).ToList();
-                        var map = inside.OfType<Ft8GlobeControl>().Any(m => m.Plot is not null && m.Bounds.Width > 0);
-                        var bar = inside.OfType<BadgeProgressControl>().Any(b => b.Bounds.Width > 0);
-                        var list = inside.OfType<Border>().Any(b => b.Classes.Contains("card-list")
-                            && VisibleText(b).Any());
-
-                        if (!(map || bar || list))
+                        foreach (var card in cards.Where(c => !Filled(c)))
                         {
                             white++;
                             _output.WriteLine("  white card: " + string.Join(" | ", VisibleText(card)));
                         }
+
+                        var page = window.GetVisualDescendants().OfType<ItemsControl>()
+                            .First(i => i.IsEffectivelyVisible && (i.Name == "AchievementsCategoryCards" || i.Name == "AchievementsSubBadges"));
+
+                        if (page.Bounds.Height > tallest.Height)
+                        {
+                            tallest = (page.Bounds.Height, kind);
+                        }
+
+                        _output.WriteLine(
+                            "  " + kind.PadRight(14) + runs + " runs fit, " + cards.Count + " cards, " + white + " white, page "
+                            + F(page.Bounds.Height) + " px tall");
+
+                        Assert.True(white == 0, state + ": " + white + " card(s) with no map, bar or list");
+
+                        // **THE MODES PAGE ON THE FIVE CONTACTS DRAWS ITS NEXT CARD**, or it measures nothing new.
+                        if (calling.Calls.Any(c => c.Mode == "PSK31"))
+                        {
+                            Assert.Contains(cards, c => c.DataContext is AchievementCategoryCard { Earned: false });
+                        }
+
+                        if (!watched)
+                        {
+                            // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: one card with its map, bar and
+                            // list hidden is counted white, and then shown again.
+                            var card = cards[0];
+                            var hidden = card.GetVisualDescendants().OfType<Control>()
+                                .Where(v => v.IsVisible && (v is Ft8GlobeControl || v is BadgeProgressControl || (v is Border b && b.Classes.Contains("card-list"))))
+                                .ToList();
+
+                            hidden.ForEach(v => v.IsVisible = false);
+                            Settle(window);
+
+                            var counted = Filled(card) ? "not white" : "white";
+
+                            _output.WriteLine(
+                                "  " + state + " [" + ((AchievementCategoryCard)card.DataContext!).Title + "] with its map, bar and list hidden on the test window ("
+                                + hidden.Count + " hidden), watched red: counted " + counted);
+
+                            Assert.Equal("white", counted);
+
+                            hidden.ForEach(v => v.IsVisible = true);
+                            Settle(window);
+
+                            Assert.True(Filled(card), state + ": the card is not filled again once shown");
+                            watched = true;
+                        }
+
+                        while (screen.Category is not null)
+                        {
+                            screen.BackCommand.Execute(null);
+                        }
+
+                        Settle(window);
                     }
-
-                    var page = window.GetVisualDescendants().OfType<ItemsControl>()
-                        .First(i => i.IsEffectivelyVisible && (i.Name == "AchievementsCategoryCards" || i.Name == "AchievementsSubBadges"));
-
-                    _output.WriteLine(
-                        "  " + kind.PadRight(14) + runs + " runs fit, " + cards.Count + " cards, " + white + " white, page "
-                        + F(page.Bounds.Height) + " px tall");
-
-                    Assert.True(white == 0, state + ": " + white + " card(s) with no map, bar or list");
-
-                    while (screen.Category is not null)
-                    {
-                        screen.BackCommand.Execute(null);
-                    }
-
-                    Settle(window);
                 }
-            }
-            finally
-            {
-                window.Close();
+                finally
+                {
+                    window.Close();
+                }
+
+                _output.WriteLine("  TALLEST at " + F(width) + ", " + label + ": " + tallest.Kind + ", " + F(tallest.Height) + " px");
             }
         }
     }
