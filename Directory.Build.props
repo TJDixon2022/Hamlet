@@ -813,8 +813,16 @@
     is built, and the sheet Tim holds is brought to the new screen (the arbiter's rulings 53 to 58).
     No word, check, command or ranking changes and nothing hides; nothing on the radio side moves.
   -->
+  <!--
+    1.13.38 -> 1.13.39, UNIT 352 TASK 0. A PATCH, STEP 3, THE SHEET TIM HOLDS CHECKED AGAINST THE
+    SCREEN UNIT 351 CHANGED: the two test classes that read the green block and had not run since
+    the markup change are run; the pin failure step 0's proof showed at 1920 is traced to what lands
+    on it and removed on the test window only; the sheet is corrected only where a run measured it
+    wrong (the arbiter's rulings 59 to 64). Tests and the sheet only; no file under src and no
+    markup changes, so the screen Tim is reviewing does not move.
+  -->
   <PropertyGroup>
-    <Version>1.13.38</Version>
+    <Version>1.13.39</Version>
   </PropertyGroup>
 
   <!--
