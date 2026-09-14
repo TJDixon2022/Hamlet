@@ -789,8 +789,16 @@
     reds named with why; the emptied files listed once (the arbiter's rulings 33 to 40). Screen
     and tests only; no score, no points and nothing on the radio side moves.
   -->
+  <!--
+    1.13.35 -> 1.13.36, UNIT 349 TASK 0. A PATCH, STEP 3, WHAT TIM LOOKS AT: the phase's classes
+    read once at this tree, every achievements page's drawn words and numbers traced at 1400 and
+    1920, and one sheet for Tim - every page, every decision made for him with its overrule words,
+    every known thing that will look wrong but is not (the arbiter's rulings 41 to 46). Screen
+    untouched except one string if the four-digit no-STATE line clips; nothing on the radio side
+    moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.35</Version>
+    <Version>1.13.36</Version>
   </PropertyGroup>
 
   <!--
