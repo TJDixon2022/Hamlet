@@ -2972,7 +2972,67 @@ public partial class MainWindowViewModel : ObservableObject
     public bool HasPsk31CaptureWhere => Psk31CaptureWhere.Length > 0;
 
     /// <summary>True where the capture press belongs on the screen.</summary>
-    public bool HasPsk31Capture => IsPsk31Chosen;
+    /// <remarks>
+    /// **PSK31 AND OLIVIA** (work instruction 358 task 3, `PHASE_PLAN.md` R30). The same
+    /// button, because the question is the same one: what the radio sent, kept before any
+    /// demodulator makes something of it.
+    /// </remarks>
+    public bool HasPsk31Capture => IsPsk31Chosen || IsOliviaChosen;
+
+    /// <summary>The mode a running capture was started on, as the record and the file name say it.</summary>
+    private string _captureMode = "psk31";
+
+    /// <summary>Where in the tap an Olivia capture has read to, or -1 before its first tick.</summary>
+    private long _oliviaCaptureAt = -1;
+
+    /// <summary>The buffer an Olivia capture copies the tap through.</summary>
+    private float[] _oliviaCaptureBuffer = [];
+
+    /// <summary>Hand a running capture the device stream under Olivia, and do nothing else.</summary>
+    /// <param name="tap">The receive audio.</param>
+    /// <remarks>
+    /// **THE SAME READ `HearPsk31` MAKES, WITH NOTHING BEHIND IT** (work instruction 358 task
+    /// 3). The samples are the device's, at the device rate, and they go to the recorder and
+    /// nowhere else. With no capture running the tap is not read at all.
+    /// </remarks>
+    private void KeepOliviaCapture(AudioTap tap)
+    {
+        if (_psk31CaptureRecorder is not { IsRunning: true })
+        {
+            return;
+        }
+
+        if (_oliviaCaptureAt < 0)
+        {
+            // **NO TAP AT THE PRESS MEANS NOTHING HAD ARRIVED BEFORE IT**, so everything the
+            // ring holds now arrived after the press and belongs in the file.
+            _oliviaCaptureAt = Math.Max(0, tap.SamplesSeen - tap.SamplesHeld);
+        }
+
+        var wanted = (int)Math.Min(tap.SamplesSeen - _oliviaCaptureAt, tap.SamplesHeld);
+
+        if (wanted <= 0)
+        {
+            return;
+        }
+
+        if (_oliviaCaptureBuffer.Length < wanted)
+        {
+            _oliviaCaptureBuffer = new float[wanted];
+        }
+
+        if (!tap.Window(_oliviaCaptureAt, wanted, _oliviaCaptureBuffer, out _))
+        {
+            // **THE AUDIO WENT PAST BEFORE IT WAS READ.** Catch up rather than splice a gap
+            // into the file as though it were continuous.
+            _oliviaCaptureAt = tap.SamplesSeen;
+            return;
+        }
+
+        _oliviaCaptureAt += wanted;
+
+        FeedPsk31Capture(_oliviaCaptureBuffer.AsSpan(0, wanted), tap.SampleRate);
+    }
 
     /// <summary>Where a PSK31 capture is written.</summary>
     internal static string Psk31CaptureFolder => CaptureFolder;
@@ -2999,6 +3059,14 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31CaptureRecorder = new Psk31Capture();
         _psk31CaptureRecorder.Start();
 
+        // **THE MODE IS TAKEN AT THE PRESS** (work instruction 358 task 3), so the file name
+        // and both events say what the tab was on when the operator asked for the audio.
+        _captureMode = IsOliviaChosen ? "olivia" : "psk31";
+
+        // **AN OLIVIA CAPTURE RECORDS FORWARD FROM THE PRESS**, from wherever the tap has got
+        // to, or from its first tick where no tap exists yet.
+        _oliviaCaptureAt = (TapForTests ?? _decoder?.Tap)?.SamplesSeen ?? -1;
+
         // **WHAT WAS BEING HELD WHEN IT STARTED**, so the file and the record can be
         // matched afterwards. A capture made while four stations were held is evidence
         // about four stations; one made on an empty band is evidence about the band.
@@ -3009,6 +3077,7 @@ public partial class MainWindowViewModel : ObservableObject
 
         Psk31Events.CaptureStarted(
             _telemetry,
+            _captureMode,
             FrequencyHz,
             // **THE RESAMPLER IS MADE ON THE FIRST TICK, AND A PRESS CAN COME BEFORE
             // ONE** (work instruction 344 task 1, found by the test). The tap knows the
@@ -3078,7 +3147,7 @@ public partial class MainWindowViewModel : ObservableObject
             // in the record.
             var path = Path.Combine(
                 folder,
-                "psk31-" + DateTime.UtcNow.ToString(
+                _captureMode + "-" + DateTime.UtcNow.ToString(
                     "yyyy-MM-dd-HHmmss", CultureInfo.InvariantCulture) + ".wav");
 
             WavAudio.Write(path, audio);
@@ -3087,6 +3156,7 @@ public partial class MainWindowViewModel : ObservableObject
 
             Psk31Events.CaptureFinished(
                 _telemetry,
+                _captureMode,
                 audio.Duration.TotalSeconds,
                 bytes,
                 Psk31Capture.Fingerprint(path),
@@ -12637,6 +12707,13 @@ public partial class MainWindowViewModel : ObservableObject
             if (IsPsk31Chosen)
             {
                 HearPsk31(tap);
+            }
+            else if (IsOliviaChosen)
+            {
+                // **OLIVIA HAS NO LISTENING YET, ONLY THE CAPTURE** (work instruction 358
+                // task 3). The tap's audio goes to a running capture and nowhere else; no
+                // demodulator, resampler or search is made.
+                KeepOliviaCapture(tap);
             }
 
             return;

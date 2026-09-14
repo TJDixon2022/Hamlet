@@ -267,6 +267,76 @@ public sealed class TheCaptureButtonTests : IDisposable
         Assert.False(model.HasPsk31Capture);
     }
 
+    /// <summary>**Pressing under Olivia writes the WAV and the events, with `mode: olivia`.**</summary>
+    /// <remarks>
+    /// <para>**THE SAME BUTTON ON THE OLIVIA PANEL** (work instruction 358 task 3,
+    /// `PHASE_PLAN.md` R30). Nothing reads Olivia yet, so the first evening's air is the
+    /// fixture the next unit is proved against; the press has to work before the
+    /// demodulator exists.</para>
+    /// <para>**THE DEVICE STREAM WITH NO DECODER UNDER IT.** Under Olivia the tick hands a
+    /// running capture the tap's audio and does nothing else, so the file is at 48 kHz and
+    /// no PSK31 listener starts to supply it.</para>
+    /// </remarks>
+    [Fact]
+    public void PressingUnderOliviaWritesTheWavAndTheEventsWithModeOlivia()
+    {
+        string[] lines;
+        string where;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "358", _ => true))
+        {
+            var model = Listening(telemetry);
+
+            model.ChooseDigitalModeCommand.Execute("Olivia");
+
+            Assert.True(model.HasPsk31Capture);
+
+            model.CapturePsk31Command.Execute(null);
+
+            Feed(model, seconds: 2.0);
+
+            model.CapturePsk31Command.Execute(null);
+
+            where = model.Psk31CaptureWhere;
+        }
+
+        lines = Directory.GetFiles(_folder, "*.jsonl").SelectMany(File.ReadAllLines).ToArray();
+
+        var file = Assert.Single(Directory.GetFiles(_captures, "*.wav"));
+        var kept = WavAudio.Read(file);
+
+        _output.WriteLine(
+            "wrote " + Path.GetFileName(file) + ": "
+            + kept.SampleRate.ToString(CultureInfo.InvariantCulture) + " Hz, "
+            + kept.Duration.TotalSeconds.ToString("0.00", CultureInfo.InvariantCulture) + " s");
+        _output.WriteLine("the panel says: " + where);
+
+        Assert.Equal(DeviceRate, kept.SampleRate);
+        Assert.InRange(kept.Duration.TotalSeconds, 1.7, 2.05);
+        Assert.StartsWith("olivia-", Path.GetFileName(file), StringComparison.Ordinal);
+        Assert.Contains(file, where, StringComparison.Ordinal);
+
+        var started = Assert.Single(Events(lines, "olivia_capture_started"));
+        var finished = Assert.Single(Events(lines, "olivia_capture_finished"));
+
+        _output.WriteLine("started : " + started.GetRawText());
+        _output.WriteLine("finished: " + finished.GetRawText());
+
+        Assert.Equal("olivia", started.GetProperty("mode").GetString());
+        Assert.Equal("olivia", finished.GetProperty("mode").GetString());
+        Assert.Equal(DeviceRate, finished.GetProperty("deviceSampleRate").GetInt32());
+        Assert.Equal(Psk31Capture.Fingerprint(file), finished.GetProperty("sha256").GetString());
+
+        // **NOT RECORDED AS A PSK31 CAPTURE, AND NO PSK31 LISTENER SUPPLIED IT.**
+        Assert.Empty(Events(lines, "psk31_capture_started"));
+        Assert.Empty(Events(lines, "psk31_listening_started"));
+
+        var whole = string.Join("\n", lines);
+
+        Assert.DoesNotContain(OwnCall, whole, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(".wav", whole, StringComparison.OrdinalIgnoreCase);
+    }
+
     /// <summary>Feed a tone through the tap the way the device delivers it.</summary>
     private static void Feed(MainWindowViewModel model, double seconds)
     {

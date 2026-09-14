@@ -693,22 +693,29 @@ public static class Psk31Events
 
     /// <summary>The operator pressed capture and the recorder started.</summary>
     /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="mode">The mode the tab was on, "psk31" or "olivia".</param>
     /// <param name="dialHz">Where the radio was, or 0 where it is unknown.</param>
     /// <param name="sampleRate">The device rate the audio is being kept at.</param>
     /// <param name="seconds">How long it will run for unless it is stopped.</param>
     /// <remarks>
-    /// **THE DEVICE RATE, BECAUSE THAT IS WHAT THE FILE WILL BE** (work instruction 344
+    /// <para>**THE DEVICE RATE, BECAUSE THAT IS WHAT THE FILE WILL BE** (work instruction 344
     /// task 1). The capture is taken before the resampler, so this is not the rate the
     /// demodulators read at, and a reader matching a file to a session needs the one the
-    /// file carries.
+    /// file carries.</para>
+    /// <para>**THE MODE NAMES THE EVENT AND TRAVELS IN IT** (work instruction 358 task 3). The
+    /// same press is on the Olivia panel, and a capture of Olivia audio written down as a
+    /// PSK31 capture would send the next unit to prove the wrong demodulator against it.
+    /// PSK31's event keeps its name and its category; Olivia's is `olivia_capture_started`
+    /// under diagnostics, because Olivia has no category of its own.</para>
     /// </remarks>
     public static void CaptureStarted(
-        ITelemetry? telemetry, long dialHz, int sampleRate, double seconds)
+        ITelemetry? telemetry, string mode, long dialHz, int sampleRate, double seconds)
         => telemetry?.Write(
-            TelemetryCategory.Psk31,
-            "psk31_capture_started",
+            CaptureCategory(mode),
+            mode + "_capture_started",
             new Dictionary<string, object?>(StringComparer.Ordinal)
             {
+                ["mode"] = mode,
                 ["dialHz"] = dialHz > 0 ? dialHz : null,
                 ["deviceSampleRate"] = sampleRate > 0 ? sampleRate : null,
                 ["seconds"] = seconds,
@@ -733,8 +740,10 @@ public static class Psk31Events
     /// account name, which is a person, and a fingerprint identifies the file without
     /// naming anybody.</para>
     /// </remarks>
+    /// <param name="mode">The mode the tab was on when it started, "psk31" or "olivia".</param>
     public static void CaptureFinished(
         ITelemetry? telemetry,
+        string mode,
         double seconds,
         long bytes,
         string sha256,
@@ -742,10 +751,11 @@ public static class Psk31Events
         bool earlyStop,
         IReadOnlyList<Psk31ChannelState> held)
         => telemetry?.Write(
-            TelemetryCategory.Psk31,
-            "psk31_capture_finished",
+            CaptureCategory(mode),
+            mode + "_capture_finished",
             new Dictionary<string, object?>(StringComparer.Ordinal)
             {
+                ["mode"] = mode,
                 ["seconds"] = Math.Round(seconds, 2),
                 ["bytes"] = bytes,
                 ["sha256"] = sha256,
@@ -766,6 +776,14 @@ public static class Psk31Events
                     .ToList(),
             },
             TelemetryLevel.Info);
+
+    /// <summary>Where a capture event is filed, by the mode it was made on.</summary>
+    /// <param name="mode">"psk31" or "olivia".</param>
+    /// <returns>PSK31's own category for PSK31, and diagnostics for any other mode.</returns>
+    private static TelemetryCategory CaptureCategory(string mode)
+        => string.Equals(mode, "psk31", StringComparison.Ordinal)
+            ? TelemetryCategory.Psk31
+            : TelemetryCategory.Diagnostics;
 
     /// <summary>A number as the record spells it.</summary>
     internal static string Say(double value)
