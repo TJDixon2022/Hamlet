@@ -781,8 +781,16 @@
     knows; every Modes row measured for fit (the arbiter's rulings 29 to 32). Screen only; the
     parser is read and not changed, and nothing on the radio side moves.
   -->
+  <!--
+    1.13.34 -> 1.13.35, UNIT 348 TASK 0. A PATCH, STEP 2, WHAT THE LAST PHASE LEFT: the States
+    count says it counts states worked from the log's STATE field and no achievements page says
+    confirmed; the Modes test agrees with the next-card rulings made after it; the shipped points
+    file carries exactly the keys its comment block documents, rank_names added empty; the Views
+    reds named with why; the emptied files listed once (the arbiter's rulings 33 to 40). Screen
+    and tests only; no score, no points and nothing on the radio side moves.
+  -->
   <PropertyGroup>
-    <Version>1.13.34</Version>
+    <Version>1.13.35</Version>
   </PropertyGroup>
 
   <!--
