@@ -322,3 +322,18 @@ ACCOMPLISHED: Tim can always stop a transmission from any window size, and what 
 FATE: executed
 STATE_AFTER: blocked
 STATE_WHY: The only exit criterion is Tim saying it passed and the report shows no such verdict, so no unit can meet it, and the open ask on whether Stop may be disabled touches the transmit abort, which is one of the three things the phase stops for.
+
+## UNIT 356 - STEP 3
+
+STEP: 3
+APPROACH: keep the send area inside the window at every size by giving up panel height first and the top row second, compose the post-send ALC sentence after the reference is stored and never send the operator to the radio, and put the spot sources' HTTP clients behind the seam so no test constructs one
+HIT: recorded at task 0, before anything was built. Tim ruling of 2026-09-14 on Stop is written into PHASE_PLAN.md as R28 and builds nothing, because the behavior is already what he chose.
+MOVE: continue
+WHY: Hamlet opens at 1100x780 and CQ sits below the window's bottom edge, so a new operator cannot see the button that calls CQ; and the sentence on Tim own screen after an FT8 send contradicts R15 by not counting the send it describes and R11 by sending him to a meter on the radio
+DECIDED: the height-giving order - panels first, then the top row, never the send area - is the unit own stated rule; the three sentence forms are the author words for the operator
+LICENCE: screen phase R26 and section 6; PSK31 plan R11, R15, R12, R14, R19; Tim 2026-09-14 on Stop; CLAUDE.md 0.0
+COST: one session, five tasks, each committed on its own
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at its start
+FATE: executed
+STATE_AFTER: blocked
+STATE_WHY: not recorded - no step moves; written at task 0.

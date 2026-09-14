@@ -846,7 +846,7 @@
     ends; the license lookup goes behind a seam so no test reaches callook.info.
   -->
   <PropertyGroup>
-    <Version>1.13.42</Version>
+    <Version>1.13.43</Version>
   </PropertyGroup>
 
   <!--

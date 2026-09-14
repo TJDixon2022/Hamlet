@@ -69,6 +69,13 @@ mockup answers it, and its outcomes are the rulings:
   the unit measures and chooses, marks the choice as its own, and reports the numbers at
   both widths.**
 
+**R28 - Stop is always pressable and never grey.** Tim, 2026-09-14, asked which of two
+ways Stop should behave and answering *"A, the way it has been"*: the control stays live at
+every instant, including when nothing is keyed, rather than being disabled until there is
+something to stop. A press with nothing running costs nothing; a grey Stop on the evening it
+is needed costs the transmission. Recorded by unit 356 task 0 from his own words, and
+building nothing: the behavior is already this.
+
 **R27 - what the last phase left.** Unit 336's open items: the States wording (*worked*,
 never *confirmed*, and the count says what it counts); the Modes test; the files sessions
 cannot delete, listed once for Tim; the two `Views` reds and any other small red in the
