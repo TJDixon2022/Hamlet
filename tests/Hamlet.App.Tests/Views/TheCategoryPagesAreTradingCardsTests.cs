@@ -150,6 +150,55 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         {
             window.Close();
         }
+
+        // **WORK INSTRUCTION 345 TASK 1, RULING 17: THE BAND AS DRAWN AT 1400 AND 1920**, on all eight
+        // kinds and all seven continent pages. The 1040 run and its pinned strings above stay; this is
+        // what criterion 1 is counted on.
+        var watched = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            var wide = Realized(TheAchievementsPageTests.TwelveContacts(), width, Calling(), new BandBet("17 m", "best bet now"));
+            var opened = (AchievementsViewModel)wide.DataContext!;
+
+            try
+            {
+                foreach (var kind in AchievementKinds.All.Concat(ContinentKinds()))
+                {
+                    OpenOnWindow(wide, opened, kind);
+
+                    var miss = BandMiss(wide, opened.Category!);
+
+                    _output.WriteLine(
+                        F(width) + " " + kind.PadRight(14)
+                        + (miss ?? "drawn: " + string.Join(" | ", VisibleText(Named<Border>(wide, "AchievementsCategoryBand")))));
+
+                    Assert.True(miss is null, F(width) + " " + kind + ": " + miss);
+
+                    if (!watched)
+                    {
+                        // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: this drawn band held
+                        // against the band of a kind it is not. Nothing in the view changes.
+                        var other = Screen(TheAchievementsPageTests.TwelveContacts(), CqSnapshot.None, BandBet.None);
+
+                        other.OpenCategoryCommand.Execute(kind == AchievementKinds.Modes ? AchievementKinds.Countries : AchievementKinds.Modes);
+
+                        var wrong = BandMiss(wide, other.Category!);
+
+                        _output.WriteLine(F(width) + " " + kind + " held against " + other.Category!.Kind + "'s band, watched red: " + wrong);
+
+                        Assert.NotNull(wrong);
+                        watched = true;
+                    }
+
+                    ToThePage(wide, opened);
+                }
+            }
+            finally
+            {
+                wide.Close();
+            }
+        }
     }
 
     /// <summary>
@@ -820,6 +869,126 @@ public sealed class TheCategoryPagesAreTradingCardsTests
         finally
         {
             window.Close();
+        }
+
+        // **WORK INSTRUCTION 345 TASK 1, RULING 17: EVERY NEXT CARD AS DRAWN AT 1400 AND 1920**, on
+        // every kind, the Continents page and every continent page, over the four callers and the best
+        // bet the page-wide test uses. **Modes on the five-contact log as well**, because the twelve
+        // contacts have worked every mode and draw no next card there.
+        var bet = new BandBet("17 m", "best bet now");
+        var watchedNext = false;
+
+        foreach (var width in new[] { 1400.0, 1920.0 })
+        {
+            foreach (var (fixture, kinds) in new[]
+            {
+                (records, AchievementKinds.All.Concat(ContinentKinds()).ToList()),
+                (FiveContacts(), new List<string> { AchievementKinds.Modes }),
+            })
+            {
+                var wide = Realized(fixture, width, Calling(), bet);
+                var opened = (AchievementsViewModel)wide.DataContext!;
+
+                try
+                {
+                    foreach (var kind in kinds)
+                    {
+                        OpenOnWindow(wide, opened, kind);
+
+                        var category = opened.Category!;
+                        var held = category.Cards.Concat(category.SubBadges.Select(b => b.Card!)).Where(c => !c.Earned).ToList();
+                        var drawn = wide.GetVisualDescendants().OfType<Border>()
+                            .Where(b => b.IsEffectivelyVisible && b.Classes.Contains("trading-card")
+                                && b.DataContext is AchievementCategoryCard { Earned: false })
+                            .ToList();
+                        var where = F(width) + " " + kind;
+                        var fromTheCqList = kind == AchievementKinds.Countries || kind == AchievementKinds.Grids
+                            || kind == AchievementKinds.Continents || kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal);
+
+                        Assert.True(
+                            drawn.Count == held.Count,
+                            where + ": the view model holds " + held.Count + " next card(s) and the page draws " + drawn.Count);
+
+                        foreach (var next in held)
+                        {
+                            var card = drawn.Single(b => ReferenceEquals(b.DataContext, next));
+                            var said = VisibleText(card).ToList();
+                            var rows = CallerRows(card);
+                            var miss = NextCardMiss(card, next);
+
+                            _output.WriteLine(where + " [" + next.Title + "] " + (miss ?? "drawn: " + string.Join(" | ", said)));
+
+                            Assert.True(miss is null, where + ": " + miss);
+
+                            if (!watchedNext && next.Callers.Count > 0)
+                            {
+                                // **RULING 19, WATCHED RED ON THE TEST WINDOW ONLY**: the drawn card held
+                                // against a caller line the view model does not hold.
+                                var wrong = NextCardMiss(
+                                    card, next with { Callers = next.Callers.Append(new NextCaller("Nowhere", "XX0XX · 1 mi")).ToList() });
+
+                                _output.WriteLine(where + " [" + next.Title + "] with a caller the view model does not hold, watched red: " + wrong);
+
+                                Assert.NotNull(wrong);
+                                watchedNext = true;
+                            }
+
+                            // **FROM THE CQ LIST: THE READ TIME, AND A DISTANCE ON EVERY CALLER, OR NO ONE.**
+                            if (fromTheCqList)
+                            {
+                                Assert.Contains("calling CQ at 21:41 UTC, unworked", said);
+                                Assert.All(rows, r => Assert.Matches(@" · [\d,]+ mi$", r.CallLine));
+
+                                if (rows.Count == 0)
+                                {
+                                    Assert.Contains("no one is calling from there now", said);
+                                }
+                            }
+
+                            // **GRIDS AND STATES: THE LIST MARKS NO SQUARE OR STATE, SO NO QUILL IS DRAWN**;
+                            // States says in words that a caller carries no state.
+                            if (kind == AchievementKinds.Grids || kind == AchievementKinds.States)
+                            {
+                                Assert.DoesNotContain(
+                                    card.GetVisualDescendants().OfType<TextBlock>(),
+                                    t => t.IsEffectivelyVisible && t.Classes.Contains("card-quill"));
+                            }
+
+                            if (kind == AchievementKinds.States)
+                            {
+                                Assert.Contains(AchievementCategory.NoStateFromTheAir, said);
+                            }
+
+                            // **BANDS: THE BEST BET IS THE FIRST ROW DRAWN.**
+                            if (kind == AchievementKinds.Bands)
+                            {
+                                Assert.Equal(new NextCaller("17 m", "best bet now"), rows[0]);
+                            }
+
+                            // **MODES: WHERE EACH UNWORKED MODE LIVES, DRAWN.**
+                            if (kind == AchievementKinds.Modes)
+                            {
+                                Assert.Equal(new[] { "CW", "FT4", "PSK31" }, rows.Select(r => r.Place).OrderBy(p => p, StringComparer.Ordinal));
+                            }
+
+                            // **HALL OF FAME: THE NEXT FIRST, WITH ITS BAR DRAWN.**
+                            if (kind == AchievementKinds.HallOfFame)
+                            {
+                                Assert.Contains("Over 10,000 miles", said);
+                                Assert.Contains(
+                                    card.GetVisualDescendants().OfType<BadgeProgressControl>(),
+                                    b => b.IsEffectivelyVisible && b.Bounds.Width > 0);
+                            }
+                        }
+
+                        ToThePage(wide, opened);
+                    }
+                }
+                finally
+                {
+                    wide.Close();
+                }
+            }
         }
     }
 
@@ -1781,6 +1950,172 @@ public sealed class TheCategoryPagesAreTradingCardsTests
     private static string Unit345Drawn(IReadOnlyList<string> said, string value)
         => value.Length == 0 ? "(none held)"
             : said.Any(s => s.Contains(value, StringComparison.Ordinal)) ? "drawn" : "NOT DRAWN";
+
+    /// <summary>The seven continent pages' kinds, `continent-AF` to `continent-SA`.</summary>
+    private static IEnumerable<string> ContinentKinds()
+        => DxccContinents.Codes.Keys.OrderBy(k => k, StringComparer.Ordinal).Select(k => AchievementCategory.ContinentPrefix + k);
+
+    /// <summary>Opens a kind on the realized window, through Continents where it is a continent.</summary>
+    private static void OpenOnWindow(Window window, AchievementsViewModel screen, string kind)
+    {
+        if (kind.StartsWith(AchievementCategory.ContinentPrefix, StringComparison.Ordinal))
+        {
+            screen.OpenCategoryCommand.Execute(AchievementKinds.Continents);
+        }
+
+        screen.OpenCategoryCommand.Execute(kind);
+        Settle(window);
+    }
+
+    /// <summary>Back to the page of eight.</summary>
+    private static void ToThePage(Window window, AchievementsViewModel screen)
+    {
+        while (screen.Category is not null)
+        {
+            screen.BackCommand.Execute(null);
+        }
+
+        Settle(window);
+    }
+
+    /// <summary>
+    /// **Work instruction 345 task 1, criterion 1 on the drawn band**: null where the band shows the
+    /// kind's name, its count, score and level as whole parts of the drawn band line, its color, and
+    /// either one bar with width, the words over it and the gap at the line's end, or no bar and the
+    /// words saying there is no next level; otherwise what is missing.
+    /// </summary>
+    private static string? BandMiss(Window window, AchievementCategory category)
+    {
+        var band = Named<Border>(window, "AchievementsCategoryBand");
+        var said = VisibleText(band).ToList();
+        var line = Named<TextBlock>(window, "AchievementsCategoryBandLine");
+        var drawnLine = line.IsEffectivelyVisible ? line.Text ?? "" : "";
+        var parts = drawnLine.Split(" · ");
+        var bars = band.GetVisualDescendants().OfType<BadgeProgressControl>().Where(b => b.IsEffectivelyVisible).ToList();
+        var shown = " (drawn: " + string.Join(" | ", said) + "; " + bars.Count + " bar)";
+
+        foreach (var (what, value) in new[] { ("the count", category.Standing), ("the score", category.ScoreLine), ("the level", category.LevelName) })
+        {
+            if (value.Length > 0 && !parts.Contains(value))
+            {
+                return what + " [" + value + "] is not a part of the drawn band line" + shown;
+            }
+        }
+
+        if (!said.Contains(category.Name))
+        {
+            return "the name [" + category.Name + "] is not drawn" + shown;
+        }
+
+        if (drawnLine != category.BandLine)
+        {
+            return "the drawn band line is not [" + category.BandLine + "]" + shown;
+        }
+
+        if (band.Background is not Avalonia.Media.ISolidColorBrush fill || fill.Color != Avalonia.Media.Color.Parse(category.Band))
+        {
+            return "the band is not filled " + category.Band + shown;
+        }
+
+        if (category.HasLevelBar)
+        {
+            if (bars.Count != 1 || bars[0].Bounds.Width <= 0)
+            {
+                return "a next level and " + bars.Count + " bar(s), or a bar with no width" + shown;
+            }
+
+            if (!said.Contains(category.LevelBarLine))
+            {
+                return "the words over the bar [" + category.LevelBarLine + "] are not drawn" + shown;
+            }
+
+            if (category.GapLine.Length == 0 || parts[^1] != category.GapLine)
+            {
+                return "the drawn band line does not end in the gap [" + category.GapLine + "]" + shown;
+            }
+        }
+        else
+        {
+            if (bars.Count != 0)
+            {
+                return "no next level and " + bars.Count + " bar(s) drawn" + shown;
+            }
+
+            if (category.NoNextLevelLine.Length == 0 || !said.Contains(category.NoNextLevelLine))
+            {
+                return "no next level and the words [" + category.NoNextLevelLine + "] are not drawn" + shown;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>The caller rows a card draws, top to bottom, as place and call line.</summary>
+    private static List<NextCaller> CallerRows(Border card)
+    {
+        List<TextBlock> Slot(string slot)
+            => card.GetVisualDescendants().OfType<TextBlock>()
+                .Where(t => t.IsEffectivelyVisible && t.Classes.Contains(slot))
+                .OrderBy(t => t.TranslatePoint(new Point(0, 0), card)?.Y ?? 0)
+                .ToList();
+
+        return Slot("card-caller-place").Zip(Slot("card-caller-call"), (p, c) => new NextCaller(p.Text ?? "", c.Text ?? "")).ToList();
+    }
+
+    /// <summary>
+    /// **Work instruction 345 task 1, criterion 3 on the drawn next card**: null where the card draws
+    /// every line the view model holds for it - the title, the wants line, the quill line and no quill
+    /// where it holds none, the callers heading, each caller's place and call line in order, the
+    /// no-caller and more-callers lines, and the tier line with a bar - otherwise what is missing.
+    /// </summary>
+    private static string? NextCardMiss(Border card, AchievementCategoryCard next)
+    {
+        var said = VisibleText(card).ToList();
+        var shown = " (drawn: " + string.Join(" | ", said) + ")";
+
+        string? Missing(string what, string value)
+            => value.Length > 0 && !said.Contains(value) ? what + " [" + value + "] is not drawn" + shown : null;
+
+        var miss = Missing("the title", next.Title)
+            ?? Missing("the wants line", next.WantsLine)
+            ?? Missing("the quill line", next.QuillLine)
+            ?? Missing("the callers heading", next.CallersHeading)
+            ?? Missing("the no-caller line", next.NoCallerLine)
+            ?? Missing("the more-callers line", next.MoreCallersLine)
+            ?? Missing("the tier line", next.TierLine);
+
+        if (miss is not null)
+        {
+            return miss;
+        }
+
+        if (next.QuillLine.Length == 0
+            && card.GetVisualDescendants().OfType<TextBlock>().Any(t => t.IsEffectivelyVisible && t.Classes.Contains("card-quill")))
+        {
+            return "a quill line is drawn where the view model holds none" + shown;
+        }
+
+        var rows = CallerRows(card);
+        var held = next.Callers.Select(c => new NextCaller(c.Place, c.CallLine)).ToList();
+
+        if (!rows.SequenceEqual(held))
+        {
+            return "the callers drawn are [" + string.Join(" / ", rows.Select(r => r.Place + " " + r.CallLine)) + "], not ["
+                + string.Join(" / ", held.Select(r => r.Place + " " + r.CallLine)) + "]" + shown;
+        }
+
+        if (next.HasCallersPanel && held.Count == 0 && next.NoCallerLine.Length == 0)
+        {
+            return "a callers panel with no caller and no words saying so" + shown;
+        }
+
+        if (next.HasTierBar && !card.GetVisualDescendants().OfType<BadgeProgressControl>().Any(b => b.IsEffectivelyVisible && b.Bounds.Width > 0))
+        {
+            return "a tier line and no bar with width" + shown;
+        }
+
+        return null;
+    }
 
     /// <summary>
     /// **Five records as ADI text, with `STATE` where the record carries one** - PA on a US call,

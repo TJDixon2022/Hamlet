@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 2
+TASK: TASK 1 of 2
 WORK_INSTRUCTION: 345 - step 1, proved on the window
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-163 (2026-09-12)
-UPDATED: 2026-09-13T21:09:16-04:00
-NOTE: Task 0 - trace written; running Unit345Trace with unit 342's popup and crop tests in one filter to re-measure 632x231 and 892x231.
+UPDATED: 2026-09-13T21:16:40-04:00
+NOTE: Task 1 - carry-forward app 111 of 111 after the change; running the engine invocation, then the task 1 commit.
 
 ---
 
