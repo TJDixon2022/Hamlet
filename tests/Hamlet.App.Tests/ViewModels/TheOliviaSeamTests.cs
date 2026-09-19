@@ -184,15 +184,21 @@ public sealed class TheOliviaSeamTests : IDisposable
         Assert.Contains(broken.Problem!, model.DigitalModeStripLine, StringComparison.Ordinal);
     }
 
-    /// <summary>**The panel names the mode, promises no slot, and says nothing on it can be answered.**</summary>
+    /// <summary>**The panel names the mode and promises no slot.**</summary>
     /// <remarks>
-    /// **REWRITTEN BY WORK INSTRUCTION 364 UNDER PSK31 PLAN §R12 (decision AM).** It asserted the
-    /// sentence *Hamlet cannot read Olivia yet*, which guarded a shut door: from unit 364 Olivia is
-    /// read and drawn as rows, and the sentence is false. What 0.5 guards is that nothing under
-    /// this tab can be answered, so that is what the strip is held to now.
+    /// <para>**REWRITTEN BY WORK INSTRUCTION 364 UNDER PSK31 PLAN §R12 (decision AM).** It asserted
+    /// the sentence *Hamlet cannot read Olivia yet*, which guarded a shut door: from unit 364
+    /// Olivia is read and drawn as rows, and the sentence is false.</para>
+    /// <para>**AND REWRITTEN AGAIN BY WORK INSTRUCTION 366 UNDER §R12 (decision BI).** It then
+    /// asserted *nothing on those lines can be answered yet* and
+    /// <c>CanAnswerRowsForTests</c> false, which guarded the mode gate while it was shut. **This
+    /// unit opened it**, so both were guarding a door that is now open and both are gone; what is
+    /// left is what still holds and what criterion 0.5 was always about - the tab names its mode,
+    /// and nothing on a panel for a mode with no slots may promise one. **The door itself is
+    /// guarded by `TheOliviaSendTests`**, which drives a press all the way to the sound card.</para>
     /// </remarks>
     [Fact]
-    public void ThePanelNamesTheModeAndSaysNothingCanBeAnswered()
+    public void ThePanelNamesTheModeAndPromisesNoSlot()
     {
         var model = Panel(null);
 
@@ -223,9 +229,10 @@ public sealed class TheOliviaSeamTests : IDisposable
             Assert.DoesNotContain("slot", text, StringComparison.OrdinalIgnoreCase);
         }
 
-        // **AND NOTHING ON IT CAN BE ANSWERED** (0.5), which the strip says and the door holds.
-        Assert.Contains("can be answered yet", model.DigitalModeStripLine, StringComparison.Ordinal);
-        Assert.False(model.CanAnswerRowsForTests);
+        // **AND THE STRIP SAYS WHAT A LINE ACTUALLY OFFERS** (§0.0). Until this unit it said
+        // nothing on a line could be answered, which the mode gate made true; the gate is open, so
+        // the sentence that stands has to be one that is.
+        Assert.Contains("Answer", model.DigitalModeStripLine, StringComparison.Ordinal);
     }
 
     /// <summary>**The log offers `OLIVIA`.**</summary>
@@ -291,14 +298,19 @@ public sealed class TheOliviaSeamTests : IDisposable
         }
     }
 
-    /// <summary>**No decoder is attached, and no path from the tab reaches anything that keys.**</summary>
+    /// <summary>**No other mode's decoder is attached, and nothing is composed until a press.**</summary>
     /// <remarks>
-    /// **§0.2, AND THE PHASE PLAN'S CRITERION 0.5.** Under Olivia the FT8 slot watch is not
-    /// asked, the PSK31 listener does not start, no card appears, no row can be answered,
-    /// and the one send door refuses the press for being this mode.
+    /// <para>**§0.2, AND THE PHASE PLAN'S CRITERION 0.5.** Under Olivia the FT8 slot watch is not
+    /// asked and the PSK31 listener does not start.</para>
+    /// <para>**REWRITTEN BY WORK INSTRUCTION 366 UNDER §R12 (decision BI).** It pressed CQ and
+    /// asserted the door refused it for being this mode, with `send_refused` the last word in the
+    /// record. That guarded the shut gate, which this unit opened. **What still holds, and is what
+    /// §0.2 is actually about, is that nothing is composed, armed or keyed until the operator
+    /// presses something** - so the press is gone and the sweep now covers the whole run of ticks
+    /// before one. A press that goes out is `TheOliviaSendTests`' business.</para>
     /// </remarks>
     [Fact]
-    public void NoDecoderIsAttachedAndNoPathReachesAnythingThatKeys()
+    public void NoDecoderIsAttachedAndNothingIsComposedUntilAPress()
     {
         var keying = Path.Combine(_folder, "keying");
 
@@ -331,14 +343,13 @@ public sealed class TheOliviaSeamTests : IDisposable
             Assert.Equal(0, model.SlotsReadForTests);
             Assert.Empty(model.DigitalDecodes);
             Assert.Empty(model.DigitalCards);
-            Assert.False(model.CanAnswerRowsForTests);
 
-            // **THE ONE DOOR REFUSES IT FOR BEING THIS MODE.**
-            model.SendCallToAnyoneCommand.Execute(null);
+            // **AND NOTHING WAS PRESSED**, which is the whole point of the sweep below: thirty
+            // ticks of audio went through the tab and not one of them composed, armed or keyed
+            // anything. One operator action is what makes a transmission, and there was none.
+            _output.WriteLine("send line     : \"" + model.DigitalSendLine + "\"");
 
-            _output.WriteLine("send line     : " + model.DigitalSendLine);
-
-            Assert.Contains("cannot send " + Mode, model.DigitalSendLine, StringComparison.Ordinal);
+            Assert.Equal("nothing sent yet", model.DigitalSendLine);
         }
 
         var lines = Lines(keying);
@@ -358,11 +369,10 @@ public sealed class TheOliviaSeamTests : IDisposable
             lines.Where(l => l.Contains("\"event\":\"psk31_", StringComparison.Ordinal)),
             l => Assert.Contains("\"mode\":\"olivia\"", l, StringComparison.Ordinal));
 
-        // **THE PRESS IS RECORDED, AND THE RECORD STOPS AT THE REFUSAL.** The operator's own
-        // action is written under the transmit category whatever the mode - the press, the
-        // request and the refusal - and that is the record of a click, not a keying. What must
-        // not be there is anything past the gate: a stage, a composed signal, a keying or a
-        // transmission record.
+        // **NOTHING WAS PRESSED, SO THE TRANSMIT CATEGORY IS EMPTY.** Every line that reaches it
+        // comes from a click - the press, the request, the refusal, the stages, the record - and
+        // thirty ticks of audio produce none of them. **This is the half that outlives the gate**:
+        // the door being open makes a press go out, and it does not make a decode into one.
         var transmitEvents = lines
             .Select(l => System.Text.Json.JsonDocument.Parse(l).RootElement)
             .Where(e => e.GetProperty("category").GetString() == "transmit")
@@ -373,14 +383,7 @@ public sealed class TheOliviaSeamTests : IDisposable
             _output.WriteLine("transmit category: " + e.GetRawText());
         }
 
-        Assert.All(transmitEvents, e => Assert.Equal("operator_action", e.GetProperty("event").GetString()));
-
-        var actions = transmitEvents
-            .Select(e => e.GetProperty("data").GetProperty("action").GetString())
-            .ToList();
-
-        Assert.Subset(new HashSet<string?> { "cq_pressed", "send_requested", "send_refused" }, actions.ToHashSet());
-        Assert.Equal("send_refused", actions.Last());
+        Assert.Empty(transmitEvents);
 
         foreach (var word in new[] { "transmission", "ptt", "keyed", "composed", "send_stage", "armed" })
         {
