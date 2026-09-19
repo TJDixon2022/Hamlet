@@ -17,6 +17,7 @@ namespace Hamlet.RadioEngine.Olivia;
 /// <param name="LastBlockSeconds">Where the last decoded block began, or NaN where none was.</param>
 /// <param name="BlockSnrs">Every block's signal-to-noise at the chosen sync, in order, decoded or not.</param>
 /// <param name="LastBlockCharacters">How many characters the last decoded block gave, which a short final block pads with idle.</param>
+/// <param name="OffsetTrack">The frequency offset the tones were read at, one block's frames a segment, each at the segment's middle.</param>
 /// <remarks>
 /// **THE TEXT IS FOR THE SCREEN AND NEVER FOR THE RECORD** (HM-DEC-018). The events this run
 /// writes carry the counts beside it and not a character of it.
@@ -33,7 +34,13 @@ public sealed record OliviaDecoding(
     double FirstBlockSeconds,
     double LastBlockSeconds,
     IReadOnlyList<double> BlockSnrs,
-    int LastBlockCharacters);
+    int LastBlockCharacters,
+    IReadOnlyList<OliviaOffset> OffsetTrack);
+
+/// <summary>Where the tones were read, from one point in a recording on.</summary>
+/// <param name="Seconds">Where in the recording.</param>
+/// <param name="OffsetHz">How far from the tones the center names they were read.</param>
+public readonly record struct OliviaOffset(double Seconds, double OffsetHz);
 
 /// <summary>
 /// **Reads Olivia text for a named variant at a named center, in Hamlet's own code.**
@@ -48,7 +55,9 @@ public sealed record OliviaDecoding(
 /// <para>**THE SHAPE, IN FIVE STEPS.** Every eighth of a symbol, one analysis window of audio,
 /// raised-cosine shaped as the transmitter shapes a symbol, is transformed with a quarter-bin
 /// grid, and the power on every tone is kept for every offset within half a tone of where the
-/// center puts them. The offset that puts the most power on the tones is taken. Each tone's power,
+/// center puts them. The offset that puts the most power on the tones is taken, block by block,
+/// along a track that starts within half a tone of the center and moves a grid step at a time
+/// (work instruction 362 decision V). Each tone's power,
 /// in units of the noise, becomes a likelihood, and the likelihoods a soft value for each bit the
 /// tone carries. For each of the frames in a symbol and each of the block's symbols as a starting
 /// point, every block is decoded - de-interleaved, descrambled and correlated against every Walsh
@@ -98,6 +107,16 @@ public sealed class OliviaDemodulator
     /// and with every block accepted it still reads at 0.33, so no threshold meets its ceiling.</para>
     /// </remarks>
     public const double SyncThreshold = 4.0;
+
+    /// <summary>How far, in tone spacings beyond the half-tone the start may sit at, the offset track may wander from the center.</summary>
+    /// <remarks>**THE UNIT'S NUMBER** (work instruction 362 task 4): 20 Hz a minute across the
+    /// longest fixture, 131.38 s, is 1.40 spacings at 31.25 Hz; two holds it.</remarks>
+    public const int TrackTones = 2;
+
+    /// <summary>Segments either side of each one whose power is summed into its figure when the offset is tracked.</summary>
+    /// <remarks>**THE UNIT'S NUMBER** (work instruction 362 task 4): five blocks, ten seconds at the
+    /// phase's three variants, over which 20 Hz a minute moves the tones 3.3 Hz, less than a grid step.</remarks>
+    public const int TrackSmoothing = 2;
 
     private readonly OliviaFormat _format;
     private readonly OliviaVariant _variant;
@@ -195,8 +214,14 @@ public sealed class OliviaDemodulator
         var binsPerTone = _variant.ToneSpacingHz / binHz;
         var reach = (int)Math.Floor(binsPerTone / 2);
         var firstBin = (int)Math.Round((_centerHz + _variant.FirstToneOffsetHz) / binHz);
-        var lowBin = firstBin - reach;
-        var span = (int)Math.Round((_variant.Tones - 1) * binsPerTone) + (2 * reach) + 1;
+        var tonesSpan = (int)Math.Round((_variant.Tones - 1) * binsPerTone);
+        // **THE GRID REACHES AS FAR AS THE TRACK MAY WANDER**, and no further than the transform
+        // has bins on either side.
+        var pad = Math.Max(reach, Math.Min(
+            reach + (int)Math.Floor(TrackTones * binsPerTone),
+            Math.Min(firstBin - 1, (size / 2) - 1 - (firstBin + tonesSpan))));
+        var lowBin = firstBin - pad;
+        var span = tonesSpan + (2 * pad) + 1;
         // **THE LAST SYMBOL'S WINDOW RUNS PAST THE END OF THE AUDIO**, because the transmitter
         // stops at the end of its last symbol period and the window is two of them. What lies past
         // the end is read as silence, which is what it is, rather than dropping the last block.
@@ -238,32 +263,9 @@ public sealed class OliviaDemodulator
             power[f] = row;
         }
 
-        // 2. The offset that puts the most power on the tones.
-        var bestOffset = 0;
-        var bestScore = double.MinValue;
-
-        for (var offset = -reach; offset <= reach; offset++)
-        {
-            double score = 0;
-
-            for (var f = 0; f < frames; f++)
-            {
-                double loudest = 0;
-
-                for (var k = 0; k < _variant.Tones; k++)
-                {
-                    loudest = Math.Max(loudest, power[f][ToneColumn(k, offset, reach, binsPerTone)]);
-                }
-
-                score += loudest;
-            }
-
-            if (score > bestScore)
-            {
-                bestScore = score;
-                bestOffset = offset;
-            }
-        }
+        // 2. The offset that puts the most power on the tones, tracked block by block.
+        var segment = _format.SymbolsPerBlock * FramesPerSymbol;
+        var path = Track(power, frames, segment, reach, pad, binsPerTone);
 
         // 3. A soft value for every bit of every frame: the log-likelihood that the bit is clear.
         var bits = _variant.BitsPerSymbol;
@@ -274,7 +276,7 @@ public sealed class OliviaDemodulator
         {
             for (var k = 0; k < tones; k++)
             {
-                energies[(f * tones) + k] = power[f][ToneColumn(k, bestOffset, reach, binsPerTone)];
+                energies[(f * tones) + k] = power[f][ToneColumn(k, path[f / segment], pad, binsPerTone)];
             }
         }
 
@@ -362,7 +364,11 @@ public sealed class OliviaDemodulator
         var inSync = false;
         var blockSnrs = new List<double>();
         var lastBlockCharacters = 0;
-        var offsetHz = bestOffset * binHz + (firstBin * binHz) - (_centerHz + _variant.FirstToneOffsetHz);
+        double OffsetHz(int frame)
+            => (path.Length == 0 ? 0 : path[Math.Min(frame / segment, path.Length - 1)] * binHz) + (firstBin * binHz) - (_centerHz + _variant.FirstToneOffsetHz);
+
+        var offsetHz = OffsetHz(0);
+        var offsetFound = false;
         var totalSymbols = bestPhase >= frames ? 0 : ((frames - 1 - bestPhase) / FramesPerSymbol) + 1;
 
         for (var first = bestBlock; first + perBlock <= totalSymbols; first += perBlock)
@@ -375,9 +381,15 @@ public sealed class OliviaDemodulator
 
             if (result.Snr >= _threshold)
             {
+                if (!offsetFound)
+                {
+                    offsetHz = OffsetHz(frame);
+                    offsetFound = true;
+                }
+
                 if (!inSync)
                 {
-                    Sync("found", seconds, offsetHz, bestPhase, first % perBlock, result.Snr);
+                    Sync("found", seconds, OffsetHz(frame), bestPhase, first % perBlock, result.Snr);
                     inSync = true;
                 }
 
@@ -405,7 +417,7 @@ public sealed class OliviaDemodulator
             {
                 if (inSync)
                 {
-                    Sync("lost", seconds, offsetHz, bestPhase, first % perBlock, result.Snr);
+                    Sync("lost", seconds, OffsetHz(frame), bestPhase, first % perBlock, result.Snr);
                     inSync = false;
                 }
 
@@ -425,11 +437,120 @@ public sealed class OliviaDemodulator
             firstSeconds,
             lastSeconds,
             blockSnrs,
-            lastBlockCharacters);
+            lastBlockCharacters,
+            path.Select((_, s) =>
+            {
+                var middle = Math.Min(frames - 1, (s * segment) + (segment / 2));
+
+                return new OliviaOffset(startSeconds + (((middle * hop) + (window / 2.0) - (symbolSamples / 2.0)) / _sampleRate), OffsetHz(middle));
+            }).ToArray());
 
         Summary(decoding, symbolSamples, window, hop, size);
 
         return decoding;
+    }
+
+    /// <summary>
+    /// **The offset, segment by segment**: one block's frames a segment, the path through them that
+    /// puts the most power on the tones while moving no more than one grid step between segments.
+    /// </summary>
+    /// <remarks>
+    /// <para>**WORK INSTRUCTION 362 DECISION V, FOR CRITERION 2.7.** Until unit 362 one offset was
+    /// chosen for the whole recording, from within half a tone of the center, so a carrier that
+    /// drifted further than that across a file was read off its tones. Now each segment's figure
+    /// is the power on its loudest tone summed over its own frames and <see cref="TrackSmoothing"/>
+    /// segments either side, and the best path through those figures is found by dynamic
+    /// programming: it starts within half a tone of the center, as the one offset did, and may
+    /// wander as far as <see cref="TrackTones"/> spacings from it, a grid step at a time.</para>
+    /// <para>**THE STEP IS WHAT KEEPS IT ON THE CARRIER.** Tones one spacing apart look alike to a
+    /// comb that is shifted by one spacing, so only continuity from the start tells them apart. A
+    /// grid step is a quarter-bin's width, about four hertz at the phase's three variants, and a
+    /// block is two seconds or more at those, so the track follows up to about a hundred hertz a
+    /// minute.</para>
+    /// </remarks>
+    private int[] Track(double[][] power, int frames, int segment, int reach, int pad, double binsPerTone)
+    {
+        var segments = frames == 0 ? 0 : ((frames - 1) / segment) + 1;
+        var width = (2 * pad) + 1;
+        var raw = new double[segments, width];
+
+        for (var f = 0; f < frames; f++)
+        {
+            var s = f / segment;
+
+            for (var o = -pad; o <= pad; o++)
+            {
+                double loudest = 0;
+
+                for (var k = 0; k < _variant.Tones; k++)
+                {
+                    loudest = Math.Max(loudest, power[f][ToneColumn(k, o, pad, binsPerTone)]);
+                }
+
+                raw[s, o + pad] += loudest;
+            }
+        }
+
+        var best = new double[segments, width];
+        var from = new int[segments, width];
+
+        for (var s = 0; s < segments; s++)
+        {
+            for (var i = 0; i < width; i++)
+            {
+                double score = 0;
+
+                for (var n = Math.Max(0, s - TrackSmoothing); n <= Math.Min(segments - 1, s + TrackSmoothing); n++)
+                {
+                    score += raw[n, i];
+                }
+
+                if (s == 0)
+                {
+                    best[s, i] = Math.Abs(i - pad) <= reach ? score : double.NegativeInfinity;
+                    continue;
+                }
+
+                best[s, i] = double.NegativeInfinity;
+
+                for (var j = Math.Max(0, i - 1); j <= Math.Min(width - 1, i + 1); j++)
+                {
+                    // Ties go to staying put, then to the lower step, so a flat stretch holds still.
+                    var candidate = best[s - 1, j] + score;
+
+                    if (candidate > best[s, i] || (candidate == best[s, i] && j == i))
+                    {
+                        best[s, i] = candidate;
+                        from[s, i] = j;
+                    }
+                }
+            }
+        }
+
+        var path = new int[segments];
+
+        if (segments == 0)
+        {
+            return path;
+        }
+
+        var end = 0;
+
+        for (var i = 1; i < width; i++)
+        {
+            if (best[segments - 1, i] > best[segments - 1, end])
+            {
+                end = i;
+            }
+        }
+
+        for (var s = segments - 1; s >= 0; s--)
+        {
+            path[s] = end - pad;
+            end = s > 0 ? from[s, end] : end;
+        }
+
+        return path;
     }
 
     /// <summary>The noise in one tone bin, and the signal in one symbol in units of it.</summary>
