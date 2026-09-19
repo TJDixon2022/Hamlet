@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T11:55:44-04:00
-NOTE: Task 0 - engine carry-forward rerun for its pass count (the first run's summary was cut by my filter)
+UPDATED: 2026-09-19T12:04:08-04:00
+NOTE: Task 1 trace - running Unit363Trace: -14 dB audio on five seeds, the two-signal file through Decode and Search, block timing
 
 ---
 
