@@ -6,7 +6,7 @@ RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 
     timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4"
 
-    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch"
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical"
 
 EVERY WORKING MODE HAS A GUARD HERE, PERMANENTLY (work instruction 362, the FT8 regression,
 and the no-regression rule in DECISIONS.md). A mode that reached the air before a unit must
@@ -21,7 +21,8 @@ a fixture decodes:
     PSK31  send  ThePsk31CqGoesOutTests, TheSendReachesTheAirTests.APsk31Cq...     app
            read  ThePsk31DemodulatorTests                                          engine
     Olivia read  TheOliviaDemodulatorTests (the clean fixtures)                    engine
-           send  none yet - added the unit Olivia first transmits
+           modulate  TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical engine
+           send  none yet - added the unit the gate opens
 
 EVERY UNIT RUNS THIS LIST BEFORE ITS FIRST CHANGE AND AFTER ITS LAST. A RED AFTER THAT WAS
 GREEN BEFORE IS A REGRESSION, and the report names it as one in section 1 and section 4.
@@ -127,6 +128,7 @@ TheOliviaDriftTests                                     unit 362
 TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise   unit 363, by method since 364
 TheOliviaListenerTests                                  unit 363
 TheOliviaRetireTests                                    unit 364
+TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical   Olivia's modulate guard, unit 365
 
 -- known reds, NEVER on the list above ---------------------------------------
 
@@ -298,3 +300,11 @@ engine invocation. TheSendReachesTheAirTests drives an FT8 and an FT4 CQ to the 
 their records written, a PSK31 CQ with its burst and its announced records, and every return
 between read-back and arming, each of which must leave send_refused with a stable reason. It
 exists because two FT8 sends on 2026-09-19 stopped after read_back and the record said nothing.
+
+WHAT UNIT 365 ADDED. TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical, on the
+engine invocation, by type and method (work instruction 365 decision AX). It is Olivia's modulate
+guard: the four PSK31 macros and a 110-character framed typed line, modulated by Hamlet's own
+OliviaModulator at 8/250, 16/500 and 32/1000, at 1000 Hz and 1500 Hz, each read back through the
+untouched OliviaDemodulator to the exact string. Thirty of thirty when it was added, each decode
+0.4 to 2.3 s of CPU. Olivia still has no send guard: nothing sends Olivia until the unit that
+opens the gate.
