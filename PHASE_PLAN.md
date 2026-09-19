@@ -155,11 +155,11 @@ is Hamlet's.
 **Exit:**
 - [x] 2.1 The clean 8/250, 16/500 and 32/1000 fixtures decode to their text at CER at or under 0.01 each, the variant taken from RSID. *must-pass*
 - [x] 2.2 The -10 dB fixture decodes at or under 0.05; the -16 dB fixture's CER is measured and reported with no ceiling - the author set -16 dB below the mode's own published sensitivity for 16/500 (about -12 to -13 dB in 2500 Hz), so the ceiling was the author's error, corrected 2026-09-19. *must-pass*
-- [ ] 2.3 The no-RSID 8/250 fixture is found by the blind search - the variant identified within a stated time from the tone spacing and symbol rate - and decodes at or under 0.05. *must-pass*
+- [x] 2.3 The no-RSID 8/250 fixture is found by the blind search - the variant identified within a stated time from the tone spacing and symbol rate - and decodes at or under 0.05. *must-pass*
 - [x] 2.4 The noise-only fixture emits zero characters. *must-pass*
 - [x] 2.5 Every fixture's hash matches the manifest before use; each decodes in under twenty seconds of CPU, reported. *must-pass*
 - [x] 2.6 The seconds-per-character for each variant is measured from the fixtures and stored as the mode's timing table, from which every later timing rule derives. *must-pass*
-- [ ] 2.7 A carrier that drifts 20 Hz over a minute (a fixture the unit makes from the shipped one) holds. *nice-to-pass*
+- [x] 2.7 A carrier that drifts 20 Hz over a minute (a fixture the unit makes from the shipped one) holds. *nice-to-pass*
 
 **Depends on:** step 1.
 
@@ -174,13 +174,13 @@ station ends, as PSK31 rows do.
 **Entry:** step 2 done; the two-signal fixture's RSIDs detected, checked first.
 
 **Exit:**
-- [ ] 3.0 A new fixture from the reference generator - 8/250 at -14 dB in 2500 Hz, RSID in front, the QSO text - is made by the unit and decodes at or under 0.10; the below-noise claim proved at the variant that can do it. *must-pass*
-- [ ] 3.1 The two-signal fixture yields two rows, each with its variant and its own text at or under 0.05, nothing of one in the other. *must-pass*
-- [ ] 3.2 The transcript corpus fed through Olivia rows yields the same verdicts as through PSK31 rows - no parser change. *must-pass*
-- [ ] 3.3 The CQ filter, worked-fade, `EntityOf` with its `CQ` guard, the quill and the hover run on Olivia rows with no change to their code. *must-pass*
-- [ ] 3.4 A row is retired when its signal goes and stays on the list marked ended; the retire window is the variant's timing table times a stated factor. *must-pass*
-- [ ] 3.5 Telemetry: the PSK31 row events with `mode: olivia` and the variant; nothing personal. *must-pass*
-- [ ] 3.6 Real-time ratio on the two-signal fixture under 1.0, reported. *nice-to-pass*
+- [x] 3.0 A new fixture from the reference generator - 8/250 at -14 dB in 2500 Hz, RSID in front, the QSO text - is made by the unit and decodes at or under 0.10; the below-noise claim proved at the variant that can do it. *must-pass*
+- [x] 3.1 The two-signal fixture yields two rows, each with its variant and its own text at or under 0.05, nothing of one in the other. *must-pass*
+- [x] 3.2 The transcript corpus fed through Olivia rows yields the same verdicts as through PSK31 rows - no parser change. *must-pass*
+- [x] 3.3 The CQ filter, worked-fade, `EntityOf` with its `CQ` guard, the quill and the hover run on Olivia rows with no change to their code. *must-pass*
+- [x] 3.4 A row is retired when its signal goes and stays on the list marked ended; the retire window is the variant's timing table times a stated factor. *must-pass*
+- [x] 3.5 Telemetry: the PSK31 row events with `mode: olivia` and the variant; nothing personal. *must-pass*
+- [x] 3.6 Real-time ratio on the two-signal fixture under 1.0, reported. *nice-to-pass*
 
 **Depends on:** step 2.
 
@@ -240,10 +240,11 @@ nowhere to route; work it or halt.
 
 ## §6 Branching
 
-- **No regression, ahead of the three stops (HM-DEC-165, Tim, 2026-09-19).** No unit is
-  complete, whatever its own criteria say, if a mode that reached the air before it does not
-  reach the air after it, or a mode that read the air before it reads less; the judge marks it
-  partial at best, and the next unit's first task is the repair before any new criterion.
+- **A mode that works stays working - HM-DEC-165, Tim, 2026-09-19.** No unit is complete,
+  whatever its own criteria say, if a mode that reached the air before it does not reach
+  the air after it, or a mode that read the air before it reads less. The carry-forward
+  list carries a send guard and a read guard per working mode; a red after is a
+  regression, named, and the next unit's first task is the repair.
 - **The arbiter stops for three things only**: keying, transmit or the radio's safety;
   money past the budget; a decision that changes what the product promises the operator
   - a fact stated about the radio, a contact or a send. A hint, a label, a number, a
@@ -277,3 +278,4 @@ the rank names; real flags on country cards; the id-scheme split; the map bitmap
 
 - **2026-09-18.** R32 on Tim's rulings; 1.5 reworded to carry them; criteria met by units 358 and 359 checked as the record has them.
 - **2026-09-19.** 2.2 corrected - the -16 dB ceiling was the author's, below the mode's own sensitivity; 3.0 added so the below-noise claim is proved on 8/250 at -14 dB; 2.1, 2.4, 2.5, 2.6 checked as unit 361 proved them.
+- **2026-09-19, evening.** 2.3, 2.7 and 3.0-3.6 checked on units 363 and 364's reports (the loop graded 364's draft; its final report met seven of seven). HM-DEC-165 written into §6 by unit 362. Step 4 is next.
