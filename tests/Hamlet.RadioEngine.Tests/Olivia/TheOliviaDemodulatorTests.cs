@@ -120,6 +120,58 @@ public sealed class TheOliviaDemodulatorTests
         Assert.NotNull(sync.Data["frequencyOffsetHz"]);
     }
 
+    /// <summary>
+    /// **2.6 and decision N: the timing table is measured by the demodulator**, and it is what
+    /// OliviaData hands out.
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE FIGURE IS THE SLOPE, NOT THE LENGTH.** Seconds per character is the time from the
+    /// first decoded block to the last over the characters the blocks before the last one carried,
+    /// so the idle padding of a short final block is not charged to every character. The manifest
+    /// arithmetic beside it - the file's length less the burst, over its text - is the old
+    /// estimate's method and is printed, not asserted.</para>
+    /// <para>**THE NO-RSID 8/250 FILE IS PRINTED AND NOT USED** (decision N): it has no burst, so its
+    /// variant and center are the manifest's, which is the blind search's case and not this one.</para>
+    /// </remarks>
+    [Fact]
+    public void TheTimingTableIsMeasuredByTheDemodulator()
+    {
+        var timing = OliviaData.Current.Timing;
+
+        Assert.NotNull(timing);
+        _output.WriteLine($"timing.json: source {timing!.Source}; method {timing.Method}");
+
+        foreach (var file in new[] { "olivia-8-250-cq-rsid.wav", "olivia-16-500-qso-rsid.wav", "olivia-32-1000-qso-rsid.wav" })
+        {
+            var fixture = OliviaFixtures.Load(file);
+            var audio = WavAudio.Read(fixture.Path);
+            var d = Assert.Single(RsidDetector.Detect(Codes, audio, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz));
+            var decoding = new OliviaDemodulator(Format, Format.Variant(d.Variant)!, d.CenterHz, audio.SampleRate).Decode(audio, BurstEnd(d));
+            var measured = SecondsPerCharacter(decoding);
+            var arithmetic = ((audio.Samples.Length / (double)audio.SampleRate) - 2.32) / fixture.Text.Length;
+            var table = timing.SecondsPerCharacter.TryGetValue(d.Variant, out var t) ? t : double.NaN;
+
+            _output.WriteLine(
+                $"{d.Variant,-8}: measured {measured:0.00000} s/character ({decoding.FirstBlockSeconds:0.000} to "
+                + $"{decoding.LastBlockSeconds:0.000} s over {decoding.CharactersOut - decoding.LastBlockCharacters} characters); "
+                + $"manifest arithmetic {arithmetic:0.00000}; table {table:0.00000}");
+
+            Assert.Equal("measured", timing.Source);
+            Assert.InRange(table, measured * 0.98, measured * 1.02);
+        }
+
+        var blind = OliviaFixtures.Load("olivia-8-250-qso-norsid.wav");
+        var blindAudio = WavAudio.Read(blind.Path);
+        var blindDecoding = new OliviaDemodulator(Format, Format.Variant(blind.Variant!)!, blind.CenterHz, blindAudio.SampleRate).Decode(blindAudio, 0);
+
+        _output.WriteLine(
+            $"8/250 no-RSID file, manifest variant and center, reported not used: {SecondsPerCharacter(blindDecoding):0.00000} s/character "
+            + $"over {blindDecoding.CharactersOut} characters, CER {OliviaFixtures.CharacterErrorRate(blindDecoding.Text, blind.Text):0.0000}");
+    }
+
+    private static double SecondsPerCharacter(OliviaDecoding decoding)
+        => (decoding.LastBlockSeconds - decoding.FirstBlockSeconds) / (decoding.CharactersOut - decoding.LastBlockCharacters);
+
     private static RsidCodes Codes
         => OliviaData.Current.Rsid ?? throw new InvalidOperationException(OliviaData.Current.Problem);
 

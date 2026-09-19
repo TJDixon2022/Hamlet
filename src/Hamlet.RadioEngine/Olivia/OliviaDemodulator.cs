@@ -16,6 +16,7 @@ namespace Hamlet.RadioEngine.Olivia;
 /// <param name="FirstBlockSeconds">Where the first decoded block began, or NaN where none was.</param>
 /// <param name="LastBlockSeconds">Where the last decoded block began, or NaN where none was.</param>
 /// <param name="BlockSnrs">Every block's signal-to-noise at the chosen sync, in order, decoded or not.</param>
+/// <param name="LastBlockCharacters">How many characters the last decoded block gave, which a short final block pads with idle.</param>
 /// <remarks>
 /// **THE TEXT IS FOR THE SCREEN AND NEVER FOR THE RECORD** (HM-DEC-018). The events this run
 /// writes carry the counts beside it and not a character of it.
@@ -31,7 +32,8 @@ public sealed record OliviaDecoding(
     double SyncSnr,
     double FirstBlockSeconds,
     double LastBlockSeconds,
-    IReadOnlyList<double> BlockSnrs);
+    IReadOnlyList<double> BlockSnrs,
+    int LastBlockCharacters);
 
 /// <summary>
 /// **Reads Olivia text for a named variant at a named center, in Hamlet's own code.**
@@ -359,6 +361,7 @@ public sealed class OliviaDemodulator
         var lastSeconds = double.NaN;
         var inSync = false;
         var blockSnrs = new List<double>();
+        var lastBlockCharacters = 0;
         var offsetHz = bestOffset * binHz + (firstBin * binHz) - (_centerHz + _variant.FirstToneOffsetHz);
         var totalSymbols = bestPhase >= frames ? 0 : ((frames - 1 - bestPhase) / FramesPerSymbol) + 1;
 
@@ -387,12 +390,14 @@ public sealed class OliviaDemodulator
                 }
 
                 lastSeconds = seconds;
+                lastBlockCharacters = 0;
 
                 foreach (var character in result.Characters)
                 {
                     if (IsText(character))
                     {
                         text.Append((char)character);
+                        lastBlockCharacters++;
                     }
                 }
             }
@@ -419,7 +424,8 @@ public sealed class OliviaDemodulator
             decoded == 0 ? 0 : snrSum / decoded,
             firstSeconds,
             lastSeconds,
-            blockSnrs);
+            blockSnrs,
+            lastBlockCharacters);
 
         Summary(decoding, symbolSamples, window, hop, size);
 

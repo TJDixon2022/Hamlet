@@ -67,6 +67,7 @@
     <EmbeddedResource Include="..\..\data\bands\olivia-calling.json" LogicalName="Hamlet.RadioEngine.Data.Bands.olivia-calling.json" />
     <EmbeddedResource Include="..\..\data\rsid\rsid-codes.json" LogicalName="Hamlet.RadioEngine.Data.Rsid.rsid-codes.json" />
     <EmbeddedResource Include="..\..\data\olivia\format.json" LogicalName="Hamlet.RadioEngine.Data.Olivia.format.json" />
+    <EmbeddedResource Include="..\..\data\olivia\timing.json" LogicalName="Hamlet.RadioEngine.Data.Olivia.timing.json" />
   </ItemGroup>
 
   <!-- The glossary lives in /data with the other editorial content and is

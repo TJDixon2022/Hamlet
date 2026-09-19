@@ -26,6 +26,9 @@ public sealed class OliviaData
     /// <summary>Resource name of the embedded Olivia format.</summary>
     public const string FormatResourceName = "Hamlet.RadioEngine.Data.Olivia.format.json";
 
+    /// <summary>Resource name of the embedded Olivia timing table.</summary>
+    public const string TimingResourceName = "Hamlet.RadioEngine.Data.Olivia.timing.json";
+
     private static readonly Lazy<OliviaData> Shared = new(LoadEmbedded);
 
     private OliviaData(OliviaCallingTable? calling, RsidCodes? rsid, OliviaFormat? format, string? problem)
@@ -33,7 +36,8 @@ public sealed class OliviaData
         Calling = calling;
         Rsid = rsid;
         Format = format;
-        Problem = problem;
+        Timing = LoadTiming(out var timingProblem);
+        Problem = timingProblem is null ? problem : (problem is null ? timingProblem : problem + " " + timingProblem);
     }
 
     /// <summary>What the shipped files hold.</summary>
@@ -52,6 +56,13 @@ public sealed class OliviaData
     /// the way the RSID codes are read, so the demodulator carries none of them as a literal.
     /// </remarks>
     public OliviaFormat? Format { get; }
+
+    /// <summary>The Olivia timing table as shipped, or null where it could not be read.</summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 361 DECISION N.** Seconds per character for each variant, measured by
+    /// the demodulator. It is always the embedded file: nothing reads a copy of it.
+    /// </remarks>
+    public OliviaTiming? Timing { get; }
 
     /// <summary>
     /// One sentence per file that could not be read, or null where every one was.
@@ -162,6 +173,33 @@ public sealed class OliviaData
 
     private static OliviaData LoadEmbedded()
         => Read(Embedded(CallingResourceName), Embedded(RsidResourceName), Embedded(FormatResourceName));
+
+    private static OliviaTiming? LoadTiming(out string? problem)
+    {
+        problem = null;
+
+        var json = Embedded(TimingResourceName);
+
+        if (json is null)
+        {
+            problem = "Hamlet's Olivia timing table, " + OliviaTiming.FilePath
+                      + ", is missing from this build, so no Olivia send can be timed and none is guessed.";
+
+            return null;
+        }
+
+        try
+        {
+            return OliviaTiming.Parse(json);
+        }
+        catch (InvalidDataException error)
+        {
+            problem = "Hamlet could not read its Olivia timing table, " + OliviaTiming.FilePath
+                      + ", because " + error.Message + ", so no Olivia send can be timed and none is guessed.";
+
+            return null;
+        }
+    }
 
     private static string? Embedded(string resourceName)
     {

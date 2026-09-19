@@ -1,84 +1,41 @@
 {
- "_about": "Seconds per character for each Olivia variant - the first row of the mode's timing table, which every later timing rule derives from (PHASE_PLAN.md section 3.2, step 2 criterion 2.6). Estimated from the fixtures' lengths; step 2 measures it. Nothing reads this file yet.",
- "source": "estimated",
- "confirm": "step 2 of the Olivia phase, criterion 2.6, from the demodulated fixtures",
- "written_by": "work instruction 358 task 5",
- "method": "From assets/fixtures/olivia/manifest.json alone: each fixture's seconds, less 2.32 s where rsid is true, divided by the number of characters in its text, each newline counted as one. 2.32 s is the work instruction's figure for the RSID burst, and it agrees with data/rsid/rsid-codes.json: 15 tones plus 5 silent symbols either side, at a symbol rate of 10.7666015625 Hz, is 25 / 10.7666015625 = 2.322 s. Characters counted by machine: the CQ text is 38, the four-line QSO text 251.",
- "why_an_upper_bound": "A fixture's length includes whatever the transmitter sends before the first character and after the last - preamble, tail and the padding that completes the final block - so a length divided by a character count overstates the per-character time, and a short text overstates it most. The two 8/250 fixtures show it: the 38-character CQ gives 0.702 and the 251-character QSO 0.686. A straight line through both gives 0.683 s per character plus 0.72 s fixed; no other variant has two lengths to do the same.",
- "excluded": [
-  {
-   "file": "olivia-16-500-qso-snr-10db.wav",
-   "why": "the clean 16/500 QSO with noise added; the same length, so no independent reading"
-  },
-  {
-   "file": "olivia-16-500-qso-snr-16db.wav",
-   "why": "the clean 16/500 QSO with noise added; the same length, so no independent reading"
-  },
-  {
-   "file": "olivia-two-signals-rsid.wav",
-   "why": "two variants in one length, which cannot be divided between them"
-  },
-  {
-   "file": "olivia-noise-only-30s.wav",
-   "why": "no text"
-  },
-  {
-   "file": "psk31-cq-rsid.wav",
-   "why": "not Olivia"
-  }
- ],
+ "_about": "Seconds per character for each Olivia variant - the first row of the mode's timing table, which every later timing rule derives from (PHASE_PLAN.md section 3.2, step 2 criterion 2.6). Measured by Hamlet's own Olivia demodulator on the mode author's clean fixtures (work instruction 361 task 5, decision N), and read at startup through OliviaData.Timing.",
+ "source": "measured",
+ "confirm": "done: work instruction 361 task 5 measured it; TheOliviaDemodulatorTests.TheTimingTableIsMeasuredByTheDemodulator holds each row within 2% of the demodulator's own figure",
+ "written_by": "work instruction 358 task 5, measured by work instruction 361 task 5",
+ "method": "Each clean fixture is read by OliviaDemodulator with the variant and center its RSID burst announced. Seconds per character is the time from the first decoded block's start to the last decoded block's start, over the characters the blocks before the last one carried: the slope, so the idle padding of a short final block is not charged to every character. The 8/250 row is measured on olivia-8-250-cq-rsid.wav; olivia-8-250-qso-norsid.wav is the blind search's and is reported, not used.",
  "variants": [
   {
    "variant": "8/250",
-   "seconds_per_character": 0.683,
-   "fixed_seconds": 0.72,
-   "how": "the straight line through both 8/250 fixtures",
-   "readings": [
-    {
-     "file": "olivia-8-250-cq-rsid.wav",
-     "seconds": 28.98,
-     "rsid_seconds": 2.32,
-     "characters": 38,
-     "seconds_per_character": 0.702
-    },
-    {
-     "file": "olivia-8-250-qso-norsid.wav",
-     "seconds": 172.06,
-     "rsid_seconds": 0,
-     "characters": 251,
-     "seconds_per_character": 0.686
-    }
-   ]
+   "seconds_per_character": 0.68267,
+   "measured_on": "olivia-8-250-cq-rsid.wav",
+   "first_block_seconds": 2.338,
+   "last_block_seconds": 26.914,
+   "characters_before_the_last_block": 36,
+   "estimated_before": 0.683
   },
   {
    "variant": "16/500",
-   "seconds_per_character": 0.514,
-   "fixed_seconds": null,
-   "how": "one fixture, so the fixed time is inside the figure",
-   "readings": [
-    {
-     "file": "olivia-16-500-qso-rsid.wav",
-     "seconds": 131.38,
-     "rsid_seconds": 2.32,
-     "characters": 251,
-     "seconds_per_character": 0.514
-    }
-   ]
+   "seconds_per_character": 0.512,
+   "measured_on": "olivia-16-500-qso-rsid.wav",
+   "first_block_seconds": 2.338,
+   "last_block_seconds": 129.314,
+   "characters_before_the_last_block": 248,
+   "estimated_before": 0.514
   },
   {
    "variant": "32/1000",
-   "seconds_per_character": 0.416,
-   "fixed_seconds": null,
-   "how": "one fixture, so the fixed time is inside the figure",
-   "readings": [
-    {
-     "file": "olivia-32-1000-qso-rsid.wav",
-     "seconds": 106.8,
-     "rsid_seconds": 2.32,
-     "characters": 251,
-     "seconds_per_character": 0.416
-    }
-   ]
+   "seconds_per_character": 0.4096,
+   "measured_on": "olivia-32-1000-qso-rsid.wav",
+   "first_block_seconds": 2.338,
+   "last_block_seconds": 104.738,
+   "characters_before_the_last_block": 250,
+   "estimated_before": 0.416
   }
- ]
+ ],
+ "estimated_before": {
+  "source": "estimated",
+  "method": "From assets/fixtures/olivia/manifest.json alone: each fixture's seconds, less 2.32 s where rsid is true, divided by the number of characters in its text, each newline counted as one; for 8/250 the straight line through both 8/250 fixtures (0.683 s per character plus 0.72 s fixed). Work instruction 358 task 5.",
+  "why_it_overstated": "A fixture's length includes whatever the transmitter sends before the first character and after the last - preamble, tail and the padding that completes the final block - so a length divided by a character count overstates the per-character time, and a short text overstates it most."
+ }
 }
