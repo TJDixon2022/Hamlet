@@ -878,8 +878,13 @@
     the RSID detector reads 8/250 at 1000.29 Hz and 16/500 at 1999.66 Hz in it, the other eight hash,
     and the outcome carries unit 363 under step 3. No file under src changes at this task.
   -->
+  <!--
+    1.13.51 -> 1.13.52, WORK INSTRUCTION 362 (THE FT8 REGRESSION) TASK 0. A PATCH, CARRIED REPAIR, THE
+    OLIVIA PHASE PAUSED: an FT8 send at the bench reaches Played, and the operator's record of
+    2026-09-19 (read_back, then nothing) matches the bench only for a press with no armed send.
+  -->
   <PropertyGroup>
-    <Version>1.13.51</Version>
+    <Version>1.13.52</Version>
   </PropertyGroup>
 
   <!--

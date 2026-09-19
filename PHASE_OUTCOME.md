@@ -197,3 +197,31 @@ LICENCE: PHASE_PLAN.md step 3 criteria 3.1 to 3.6, step 0 criterion 0.5, R27, R2
 COST: one session, six tasks (0 to 5), each committed on its own.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ENTRY: PHASE_STATUS.md has steps 0, 1 and 2 done and step 3 partial; olivia-two-signals-rsid.wav hashes as the manifest says and the RSID detector reads OLIVIA_8_250 (69) at 1000.29 Hz and OLIVIA_16_500 (70) at 1999.66 Hz, 15 tones right each; the other eight hash, 9 of 9. Carry-forward before any change: engine 134 of 134 (4 m 39 s), app 166 of 166 (36 s).
+
+## UNIT 3 - STEP 3
+
+STEP: 3
+APPROACH: Olivia listener wired under the Olivia tab and its channels drawn as rows through the one PSK31 row path with the variant on the row - parser and row features unchanged, retire window as a factor on the timing table, the PSK31 row events with mode olivia - and every send control still refusing
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Every carried item is either a finding, a note for the record, or an ask already answered by the owner, and none asks him to decide anything inside the three stops.
+MOVE: continue
+WHY: Step 3 is partial with 3.0 met and the listener built; the five must-passes left - 3.1's rows, 3.2, 3.3, 3.4, 3.5 - all stand on putting that listener's channels on the screen, and the loop test finds no rows approach in any entry. This is the first unit on them, not a retry.
+DECIDED: author's, overrulable - (AE) the listener is fed under the Olivia tab only, from the PSK31 audio tap, PSK31's listener not fed under Olivia nor Olivia's elsewhere; R27's across-tab switch is not a step 3 criterion and is logged, not built. (AF) one row path - a mapping and a variant field, no copy of the row code, parser, CQ filter, worked-fade, EntityOf, quill or hover, proved by git diff. (AG) a row's text is the channel's accepted text, its center as of the last accepted block, the lag measured and reported with no ceiling. (AH) 3.1 proved through the app's own feed on the two-signal fixture. (AI) 3.2 fed at the row - every corpus.json transcript through an Olivia row and a PSK31 row, zero verdict differences. (AJ) the retire window is 24 times the variant's seconds per character from the last accepted block's end, raised to the smallest whole factor that retires nothing mid-transmission on any shipped fixture if 24 does, stated; ended rows stay listed and stop tracking. (AK) the PSK31 row events with mode olivia and the variant, no text, no callsign. (AL) the engine carry-forward line takes TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise by method, dropping the name that asserts nothing. (AM) the panel's nothing-decodes sentence goes and TheOliviaSeamTests is rewritten under R12 to guard 0.5. (AN) every send control under Olivia still refuses with rows present; a send path appearing is stop material. Decision L lifted for the receive side. Task 5 (3.6) is the drop candidate; tasks 0 to 4 have none. Unit 363's section 4 asked for no ruling; items 2, 3 and 4 are taken as decisions AL, AG and AJ, the rest logged.
+LICENCE: PHASE_PLAN.md step 3 criteria 3.1 to 3.6, step 0 criterion 0.5, R27, R28, R31, section 3.2, section 3.3 and section 6 (a number, a label or a mechanism is the arbiter's; the transmit clause; never loosen a test; a package is needed); PSK31 plan R9, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155; ARBITER.md sections 2 and 6
+COST: 17.930809499999995
+ACCOMPLISHED: The operator presses Olivia and sees the stations on the air as rows, as PSK31 shows them - each row naming its variant, reading only its own station, understood by the same parser, filtered, faded and resolved the same way, and marked ended when the station goes - with nothing on the Olivia tab yet able to transmit; which closes hearing everyone and opens Hamlet's own Olivia send
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Earlier units met 3.0, but the unit is still running at task 1 of 6 and its report quotes no measurement showing 3.1 to 3.5 met, since the rows, retire window and Olivia row events are only traced and not yet built or measured.
+
+## UNIT 362 - CARRIED REPAIR (THE FT8 SEND THAT STOPS AFTER READ-BACK)
+
+STEP: 3 (paused)
+ADVANCED: blocker
+APPROACH: trace an FT8 send from read-back to arming at the bench, make every non-arming return write send_refused, retry the transmit path once at the press where a radio is connected and nothing is armed, put a guard per working mode on the carry-forward list, and write the no-regression rule
+MOVE: continue
+WHY: the owner record of 2026-09-19 shows two FT8 sends stopping after read_back with no arm, no record and no refusal on 1.13.48
+DECIDED: nothing beyond the fault; the retry at the press is the author repair and is reported
+LICENCE: CLAUDE.md 0.2; PSK31 plan R10, R13; Olivia plan R32
+COST: one session, four tasks (0 to 3), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: carry-forward on unchanged HEAD eeaca3c8, run in a separate worktree: engine 142 of 142, app 179 of 179. At the bench an FT8 CQ and a 16-character reply reach Played; only a press with no armed send leaves read_back Standard and nothing after it, the operator record exactly.
