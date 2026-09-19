@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T14:26:09-04:00
-NOTE: TheOliviaRowsKeepUpTests written; running it by name at 8 kHz and 48 kHz
+UPDATED: 2026-09-19T14:28:12-04:00
+NOTE: Decision AN test given a name and place so the card's Report button exists and is pressed; running TheOliviaRowsTests
 
 ---
 

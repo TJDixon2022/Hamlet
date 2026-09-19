@@ -332,8 +332,9 @@ public sealed class TheOliviaRowsTests : IDisposable
         var actions = transmit.Select(e => e.Data.GetProperty("action").GetString()).ToList();
 
         Assert.Equal(actions.Count(a => a == "send_requested"), actions.Count(a => a == "send_refused"));
-        Assert.True(actions.Count(a => a == "send_refused") >= 3, "the CQ press, the answer to the finished CQ and the typed line must each reach the door");
+        Assert.True(actions.Count(a => a == "send_refused") >= 4, "the CQ press, the answer to the finished CQ, the card's button and the typed line must each reach the door");
         Assert.Contains(presses, p => p.Control.StartsWith("answer", StringComparison.Ordinal) && p.Line.Length > 0);
+        Assert.Contains(presses, p => p.Control == "card Send" && p.Line.Length > 0);
         Assert.All(transmit, e => Assert.Equal("operator_action", e.Event));
 
         foreach (var word in new[] { "transmission", "ptt", "keyed", "composed", "send_stage", "armed", "rsid_sent" })
@@ -551,6 +552,12 @@ public sealed class TheOliviaRowsTests : IDisposable
 
         settings.Operator.Callsign = OwnCall;
         settings.Operator.GridSquare = "FN42";
+
+        // **A NAME AND A PLACE, SO A CARD'S REPORT HAS TEXT AND ITS BUTTON EXISTS** (PSK31's rule in
+        // `MacroTextFor`): without them there is no Report to press, and decision AN's card press
+        // would test nothing.
+        settings.Operator.OperatorName = "Pat";
+        settings.Operator.Location = "Boston MA";
 
         var model = new MainWindowViewModel(settings, telemetry)
         {
