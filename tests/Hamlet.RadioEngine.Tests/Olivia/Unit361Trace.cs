@@ -140,6 +140,104 @@ public sealed class Unit361Trace
         }
     }
 
+    /// <summary>
+    /// Task 4's ground: **the SNR each 16/500 file actually carries, and what the demodulator reads
+    /// at each threshold.** Asserts nothing.
+    /// </summary>
+    /// <remarks>
+    /// The SNR is measured, not taken from the manifest: the noise density from 1600 to 2400 Hz,
+    /// where no tone is, and the signal as the power from 700 to 1300 Hz less that density across
+    /// 600 Hz, referenced to 2500 Hz as the manifest's note says.
+    /// </remarks>
+    [Fact]
+    public void BelowTheNoise()
+    {
+        var root = Root();
+        var fixtures = Path.Combine(root, "assets", "fixtures", "olivia");
+        var codes = OliviaData.Current.Rsid!;
+        var format = OliviaData.Current.Format!;
+
+        foreach (var file in new[] { "olivia-16-500-qso-rsid.wav", "olivia-16-500-qso-snr-10db.wav", "olivia-16-500-qso-snr-16db.wav" })
+        {
+            var audio = WavAudio.Read(Path.Combine(fixtures, file));
+            var d = RsidDetector.Detect(codes, audio, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz).First();
+            var burstEnd = d.StartSeconds + (codes.Symbols / codes.SymbolRateHz);
+            var start = (int)Math.Ceiling((burstEnd + 1) * audio.SampleRate);
+            var (band, noiseDensity) = BandAndNoise(audio.Samples.AsSpan(start, audio.Samples.Length - start - audio.SampleRate), audio.SampleRate);
+            var signal = band - (noiseDensity * 600);
+            var snr = 10 * Math.Log10(Math.Max(signal, 1e-30) / (noiseDensity * 2500));
+            var esN0 = 10 * Math.Log10(Math.Max(signal, 1e-30) * 0.032 / noiseDensity);
+
+            _output.WriteLine($"-- {file}: measured SNR in 2500 Hz {snr:0.00} dB; Es/N0 per 32 ms symbol {esN0:0.00} dB");
+
+            foreach (var threshold in new[] { 0.0, 3.0, 3.5, 4.0 })
+            {
+                var demodulator = new OliviaDemodulator(format, format.Variant(d.Variant)!, d.CenterHz, audio.SampleRate, null, threshold);
+                var decoding = demodulator.Decode(audio, burstEnd);
+                var manifest = OliviaFixtures.Load(file).Text;
+
+                _output.WriteLine(
+                    $"   threshold {threshold:0.0}: blocks {decoding.BlocksDecoded} decoded, {decoding.BlocksRejected} rejected; "
+                    + $"characters {decoding.CharactersOut}; CER {OliviaFixtures.CharacterErrorRate(decoding.Text, manifest):0.0000}");
+            }
+        }
+    }
+
+    private static (double Band, double NoiseDensity) BandAndNoise(ReadOnlySpan<float> body, int rate)
+    {
+        const int size = 8192;
+        var fft = new RealFft(size);
+        var sum = new double[fft.BinCount];
+        var mags = new double[fft.BinCount];
+        var re = new double[size];
+        var im = new double[size];
+        var window = new float[size];
+        var frames = 0;
+        double shapeEnergy = 0;
+
+        for (var i = 0; i < size; i++)
+        {
+            var w = 0.5 * (1 - Math.Cos(2 * Math.PI * i / size));
+            shapeEnergy += w * w;
+        }
+
+        for (var at = 0; at + size <= body.Length; at += size / 2)
+        {
+            for (var i = 0; i < size; i++)
+            {
+                window[i] = (float)(body[at + i] * 0.5 * (1 - Math.Cos(2 * Math.PI * i / size)));
+            }
+
+            fft.Magnitudes(window, mags, re, im);
+
+            for (var b = 0; b < sum.Length; b++)
+            {
+                sum[b] += mags[b] * mags[b];
+            }
+
+            frames++;
+        }
+
+        // A one-sided periodogram: bin power times two over the window's energy and the rate is
+        // power per hertz.
+        var binHz = (double)rate / size;
+        double PerHz(int b) => sum[b] / frames * 2 / (shapeEnergy * rate);
+
+        double Sum(double low, double high)
+        {
+            double total = 0;
+
+            for (var b = (int)Math.Ceiling(low / binHz); b <= (int)Math.Floor(high / binHz); b++)
+            {
+                total += PerHz(b) * binHz;
+            }
+
+            return total;
+        }
+
+        return (Sum(700, 1300), Sum(1600, 2400) / 800);
+    }
+
     private void Line(string what, string file, string[] lines, params int[] numbers)
     {
         foreach (var n in numbers)
