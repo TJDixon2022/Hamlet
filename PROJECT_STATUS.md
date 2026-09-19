@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T12:56:50-04:00
-NOTE: Carry-forward before any change - engine invocation rerun, the first run's summary line was lost to my grep
+UPDATED: 2026-09-19T13:04:07-04:00
+NOTE: Decision AL applied to the list - engine invocation running once more to time it without TheFurtherSeedsArePrinted
 
 ---
 
