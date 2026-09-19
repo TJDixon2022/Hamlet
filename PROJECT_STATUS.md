@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 5 of 5
-WORK_INSTRUCTION: 365 - Hamlet own Olivia modulator, read back by Hamlet own ears
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 366 - say it out loud: the Olivia send goes through the one sequence
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T18:13:41-04:00
-NOTE: Unit 365 complete - Hamlet's own Olivia modulator: 30 of 30 read back identical, measures like the author's, every send announced; nothing keys
+UPDATED: 2026-09-19T18:46:41-04:00
+NOTE: Task 0 - committing the opening: outcome entry, version bump, work instruction
 
 ---
 
