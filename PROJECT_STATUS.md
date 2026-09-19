@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 6
+TASK: TASK 3 of 6
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T13:49:41-04:00
-NOTE: Olivia listener start/stop renamed olivia_listening_*; rerunning the capture test, the rows tests and the seam tests
+UPDATED: 2026-09-19T14:02:20-04:00
+NOTE: CQ filter test rewritten to the tree's rule (unit 337 keeps every text row); rerunning TheOliviaRowsReadLikePsk31Tests
 
 ---
 
