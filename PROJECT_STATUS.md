@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 0 of 6
+TASK: TASK 1 of 6
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T13:04:07-04:00
-NOTE: Decision AL applied to the list - engine invocation running once more to time it without TheFurtherSeedsArePrinted
+UPDATED: 2026-09-19T13:12:26-04:00
+NOTE: Unit364Trace written - running it by name for the gaps (8 files) and the lag
 
 ---
 

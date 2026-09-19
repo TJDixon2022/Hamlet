@@ -1,339 +1,128 @@
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet works Olivia the way it works PSK31. Steps 0,
-   1 and 2 done and closed; step 3 was not started, none of seven met, at
-   the start of this unit and is one of seven met (3.0) with 3.1's engine
-   half met and 3.6 measured on the engine, on this report's evidence,
-   for the arbiter to mark; steps 4-6 not started, and step 4's entry
-   opens only when step 3 is done.
-B. Step 3's criteria this unit worked - 3.0 below the noise: SNR set -14,
-   measured -13.82 dB; RSID read 8/250 at 1000.16 Hz; CER 0.0000 (0.10) on
-   seed 363, and 0.0000, 0.0000, 0.0000, 0.0000 on the four others. 3.1
-   engine half: channels 2 (2), 8/250 at 1000.00 Hz and 16/500 at 2003.91
-   Hz (5 Hz), CERs 0.0000 and 0.0000 (0.05), characters of the other
-   station 0 and 0 (0). 3.6: ratio 0.154 (1.0) on the engine, worst piece
-   0.115 s. Met: 3.0; engine half met: 3.1. Not worked, the next unit's:
-   3.2, 3.3, 3.4, 3.5, and the rows half of 3.1. Step 2's rows through the
-   listener: clean CERs 0.0000 / 0.0000 / 0.0000 (0.0000), -10 dB 0.0000,
-   noise channels 0 (0); and the no-RSID file one channel found blind at
-   1000.00 Hz, CER 0.0000 (0.05).
-C. The report last: section 4 raises 9 items on top of the carried queue;
-   none stands in the way of 3.0 or 3.1. 3.0 was met on every seed, not
-   only the stated one - and by the demodulator as unit 362 left it, with
-   no change; the trace read 0.0000 on all five before a line was written
-   (item 1). No channel ever showed the other station's characters, so
-   decision AC did not bite and nothing was built for it (item 5).
-   Nothing in pj_mfsk.h had to be copied; it was not opened this unit.
-   The listener is ready for the next unit to draw rows from as it
-   stands, with three things it should know first: text reaches a
-   channel about three blocks after the block began (item 3), a channel's
-   tracked center wanders a grid step once its station stops and no
-   retire exists yet (item 4), and the engine carry-forward run now takes
-   4 m 40 s (item 2).
+A. The phase goal - written when the unit ends.
+B. Step 3's criteria this unit worked - written when the unit ends.
+C. The report last - written when the unit ends.
 
-UNIT:       363 - complete at task 4 of 5, task 4 built - 2026-09-19 12:38
-PHASE GOAL: Olivia in Hamlet as fully as PSK31 - every station heard, read, answered and logged - with the variant always taken from the signal itself (its RSID, or measured off a carrier that never announced itself) and never picked by the operator.
-UNIT GOAL:  Prove Olivia reads below the noise - the mode author's 8/250 QSO at -14 dB in 2500 Hz, RSID in front, read at CER 0.10 or under from its own RSID - and build the engine's one Olivia receiver: audio in as it arrives, one channel per station by RSID or blind search, each with its own reader and its text as blocks are accepted, two stations on the two-signal file with nothing of one in the other, at a real-time ratio reported.
-ADVANCED:   yes - 3.0, the phase's headline claim, is met on five noise draws out of five, and 3.1's engine half is met: two stations read at once, each only its own.
-NUMBER:     step 3 criteria met 0 of 7 -> 1 of 7 (3.0; 3.1 engine half; 3.6 measured on the engine); stations read at once 1 -> 2
+UNIT:       364 - in progress at task 1 of 6 - this draft is replaced before the session stops
+PHASE GOAL: Hamlet works Olivia as it works PSK31, with the variant taken from the signal and never picked by the operator.
+UNIT GOAL:  Olivia channels drawn as rows through the one PSK31 row path under the Olivia tab, with nothing new able to reach a send.
+ADVANCED:   not yet stated - the unit is running
+NUMBER:     not yet stated - the unit is running
 DRIFT:      0
-
-| Criterion | This unit's evidence | State |
-| --- | --- | --- |
-| 3.0 8/250 at -14 dB in 2500 Hz, RSID in front, CER <= 0.10 | seed 363: SNR measured back -13.82 dB; RSID OLIVIA_8_250 at 1000.16 Hz; CER **0.0000**, 251 of 251, 84 blocks / 0, 5.4 s CPU. Four further seeds 0.0000 each, not asserted | **met** |
-| 3.1 two-signal file yields two rows, own text <= 0.05, nothing of one in the other | listener: exactly 2 channels, most at once 2; 8/250 at 1000.00 Hz and 16/500 at 2003.91 Hz, both by RSID; CER 0.0000 and 0.0000; the other callsign 0 and 0 times. No rows drawn | **engine half met** |
-| 3.2 transcript corpus through Olivia rows, same verdicts | - | not worked, the next unit's |
-| 3.3 CQ filter, worked-fade, EntityOf, quill, hover on Olivia rows | - | not worked, the next unit's |
-| 3.4 retire window from the timing table | - (no channel retires in this unit, decision AA) | not worked, the next unit's |
-| 3.5 row telemetry with mode olivia and the variant | - (the listener's own `olivia_channel` and `olivia_block` events exist, decision AD) | not worked, the next unit's |
-| 3.6 real-time ratio on the two-signal file under 1.0 | 0.154 (4.453 s CPU for 28.98 s), longest single Add 0.115 s wall; 16/500 131 s file 0.109, noise 0.079 | **measured on the engine** |
 
 ## 1. What Claude did
 
-**Complete: tasks 0 to 4 of 5, all built, none dropped.** Machine: Tim's development box,
-`C:\Source\HamLet`, gate held (`SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present,
-`CoreHMI.sln` and `MURC.sln` absent), branch `main`. Five task commits, **every push succeeded**:
-`40bc67bb` (task 0), `bca75bf7` (1), `49c66245` (2), `f66a1e69` (3), `0b9e99e1` (4); this report is
-committed after them. Status written at every task boundary and before every `dotnet test`,
-`EXECUTING` and `code` throughout.
+**In progress.** Machine: Tim's development box, `C:\Source\HamLet`, gate held (`SHACK_FACTS.md`
+and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and `MURC.sln` absent), branch `main`.
 
 ### Task 0 - the unit opens
 
-`PHASE_STATUS.md`: steps 0, 1 and 2 `done`, **step 3 `not started`**, `CURRENT_STEP: 3`,
+`PHASE_STATUS.md`: steps 0, 1 and 2 `done`, **step 3 `partial`**, `CURRENT_STEP: 3`,
 `WORK_INSTRUCTION: 358` (stale, as expected). **Step 3's entry:** `olivia-two-signals-rsid.wav`
 hashes as its manifest says, and the RSID detector reads **OLIVIA_8_250 (69) at 1000.29 Hz and
 OLIVIA_16_500 (70) at 1999.66 Hz**, 15 tones right each, first tones at 0.465 and 0.464 s. The other
-eight hash, **9 of 9** - all nine inside `TheRsidDetectorTests` on the carry-forward run, which hashes
-every file it reads against the manifest. `UNIT 363 - STEP 3` appended to `PHASE_OUTCOME.md`, no
-earlier entry touched; version 1.13.49 -> 1.13.50. Carry-forward before any change: **app 166 of 166
-(45 s), engine 124 of 124 (1 m 39 s)**, first runs. The engine line ran **twice**: the first run's
-summary line was cut off by my own `grep`/`head` filter, so I ran it again for the count. That is
-three invocations at task 0, not two.
+eight hash, **9 of 9**, inside `TheRsidDetectorTests` on the carry-forward run. `UNIT 364 - STEP 3`
+appended to `PHASE_OUTCOME.md`, no earlier entry touched; version 1.13.50 -> 1.13.51. Carry-forward
+before any change: **app 166 of 166 (36 s), engine 134 of 134 (4 m 39 s)**. The engine line ran
+**twice**: my first run's `grep` pattern missed the summary line under normal verbosity, so the count
+was lost and I ran it again. That is three invocations at task 0, not two. Commit `6c632d3d`.
+**Decision AL** in its own commit (`cbcde914`): the engine line takes
+`TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise` by method; run once more, **133 of 133 in
+3 m 12 s**.
 
-### Task 1 - the trace (`Unit363Trace`, asserts nothing, in `CpuMeasuredAlone`)
+### Task 1 - the trace, before anything is built
 
-1. **The -14 dB fixture, decision W's recipe, before any change.** Burst's first tone at 0.465 s by
-   the detector; **slice ends at sample 18580 = 2.3225 s**, located as first tone + (15 tones + 5
-   silence symbols) / 10.7666 Hz from `rsid-codes.json` - the trailing silence taken as the file's
-   own silence count, which it states for the front of the burst. Checked against the CQ file's own
-   samples: the mean square between the tones' end (sample 14865) and the slice end is 0.000000000,
-   and the first sample over 1% of the peak after the tones is sample 18602, **22 samples (2.75 ms)
-   after the slice end** - the Olivia tones begin where the slice ends. The QSO file follows whole
-   (1 376 512 samples). Signal power over the QSO alone 0.093929; noise variance 3.775039 (so the
-   noise in 2500 Hz is 25.1 times the signal). **SNR set -14.00, measured back -13.82 dB** on seed 363;
-   the same method reads the shipped -10 dB file at **-10.48 dB**, as unit 361 found. The detector
-   reads OLIVIA_8_250 at 1000.16 Hz, 14 tones right. **`Decode` at that detection: CER 0.0000, 84
-   blocks / 0, sync S/N 9.87, lowest accepted block 8.21, 5.17 s CPU.** The other four seeds:
-   measured -13.90 / -14.03 / -14.18 / -13.90 dB, RSID at 999.75 / 1000.36 / 999.42 / 999.42 Hz
-   (13 to 15 tones right), **CER 0.0000 on each**, 84 / 0, sync S/N 9.60 to 9.85, lowest accepted
-   7.31 to 7.52. **This is the number 3.0 started from: already met.**
-2. **The two-signal file through what exists.** 8/250 at 1000.29 Hz: 13 blocks / 0, sync S/N 85.11,
-   first block 2.338 s, **CER 0.0000 against KC3QIS's half, KC3QIS 3 times, EI4GNB 0 times.** 16/500
-   at 1999.66 Hz: 10 / 3, sync S/N 84.04, **CER 0.0000 against EI4GNB's half, EI4GNB 3 times, KC3QIS 0
-   times.** Against the wrong half each reads 0.4737 - the two CQs share every character but the
-   callsigns. `OliviaBlindSearch`, told nothing: **2 candidates after 8.192 s**, 8/250 at 1000.00
-   (S/N 79.05 on 2 blocks) and 16/500 at 2000.00 (83.55 on 2); at 2000 it also weighed 4/500, which
-   put 2 blocks through at 4.30 and lost on S/N.
-3. **What in `Decode` and `Search` looks at audio not yet arrived** (lines as at `60ec790a`).
-   `OliviaDemodulator.cs`: :228 the frame count from the whole recording, and :225-228 the last
-   window read past its end as silence; :231-264 every frame's power held; :267-268 and :471-554 the
-   offset track, each segment's figure summed over `TrackSmoothing` segments **after** it (:503) and
-   the path **backtracked from the last segment** (:537-551); :283 and :565-604 the noise as the
-   median of **every** frame's tone energies; :335-355 the sync as the best sum over **every** block
-   at 8 x 64 phases; :374-426 every block read at that one sync, those before it was evident
-   included. What a stream holds instead: the frames not yet decided; each segment's figure and the
-   forward figures of the last decided one, deciding a segment once `TrackSmoothing` more have
-   arrived; the energies of the nearest decided segments for the noise; the 8 x 64 running sums;
-   the likelihoods of the frames of blocks not yet read; and where the last shown block ended.
-   `OliviaBlindSearch.cs`: :123-150 `Search` re-runs `LookAt` over `audio[..taken]` each time
-   `taken` grows by a block - the whole history per step; :162 the Welch average over all of it;
-   :247 and :329-463 the tones over all of it; :266-302 a trial `Decode` of all of it per row
-   weighed. A stream holds a running set of recent spectra, the recent audio for the tones, and
-   trial readers that keep reading.
-4. **`Psk31Listener` as the app uses it.** Made at `MainWindowViewModel.cs:2896` at
-   `Psk31Resampler.TargetSampleRate`; fed at :2958 with whatever the audio tap holds since the last
-   tick, through the resampler; it cuts that into one-symbol pieces itself (`Psk31Listener.cs:189`,
-   :260-292). A channel is `Psk31Channel(Id, OffsetHz, StrengthDb, Text, Readable)` (:21-22). A new
-   channel is replayed the last `ReplaySeconds` = 3.0 s (:167, :375-381, :423-443). `States` gives
-   `Psk31ChannelState(Id, OffsetHz, Open, Quality, AfcHz, Characters, FirstCharacterSeconds)`
-   (:230-241, `Psk31Watch.cs:135`); the app writes events from them at :3179, :3444 and :3975 and
-   drains `Watch` at :3386-3422. `Channels` is read at :3500 (`ShowPsk31Channels`). **The listener
-   writes no telemetry itself**; the app does, from `States` and `Watch`.
-5. **What blocks cost in time.** 64 symbols a block: **2.048 s at 8/250, 16/500 and 32/1000** (1.024 s
-   at 4/250, 8/500, 16/1000; 0.512 s at 4/500). On the three clean files the first accepted block
-   begins **0.480 s after the burst's end** and ends 2.528 s after it. The replay decision Y derives
-   is therefore bounded below by the detector's delay (a burst is handed back about one burst length,
-   1.39 s, after it ends) plus that 0.48 s, and by the blind search's first look at two blocks.
+Items 1 to 3 read from the source, lines as at `cbcde914`. Items 4 and 5 measured by `Unit364Trace`
+(engine, asserts nothing, in `CpuMeasuredAlone`, not on the carry-forward line).
 
-### Task 2 - below the noise (3.0, `TheOliviaBelowTheNoiseTests`)
+1. **The rate.** `OliviaListener` takes any rate at construction, and everything behind it (the
+   RSID detector, `OliviaStream`, the search) was proved at 8 kHz on the mode author's 8 kHz files.
+   The audio tap hands over the device's rate (`AudioTap.SampleRate`, 48 kHz on a sound card);
+   `Psk31Resampler(deviceRate)` brings any rate to `Psk31Resampler.TargetSampleRate` = 8000. The app
+   already runs one for PSK31 (`MainWindowViewModel.cs:2895`) and a second for the RSID detector
+   under Olivia (:3103). **Feeding the listener takes one more `Psk31Resampler` and nothing else**:
+   no new resampler class, no package.
+2. **The row path.** `ShowPsk31Channels(IReadOnlyList<Psk31Channel>)` at :3524 takes
+   `Psk31Channel(Id, OffsetHz, StrengthDb, Text, Readable)` (`Psk31Listener.cs:21-22`) and builds a
+   `DigitalDecodeRow` per channel (:3583-3599) - `Hz` from the offset, `Snr` from the strength (a
+   dash where it is NaN), `Message` from the text, `IsTextOnly: true`, and
+   `Reading: ReadPsk31(channel)` (:2743), which feeds new characters to a `Psk31MessageSplitter` and
+   through it `Psk31ExchangeParser`, and writes `psk31_line_parsed`. A channel no longer listed goes
+   through `EndOrRemovePsk31Row` (:2596): kept and marked `Ended` if it read anything, removed if
+   not, with `psk31_row_ended`. The features read the row: **the CQ filter** is
+   `DecodedFilterRule.Wants(cq, row.Addressee)` (`DecodedFilter.cs:48`, applied in
+   `ApplyDecodedFilter` at :5910), `Addressee` on a text-only row coming from `Reading`
+   (`DigitalDecodeRow.cs:729`, :754); **worked-fade** is `row.WorkedBefore = WorkedBeforeNote(row.Sender)`
+   (:3610, :14581) and `RowOpacity` (`DigitalDecodeRow.cs:393`); **`EntityOf` and its `CQ` guard**
+   is `DxccPrefixes.EntityOf(Sender)` in `SenderHelp` (`DigitalDecodeRow.cs:900`,
+   `DxccPrefixes.cs:104`); **the quill** is the row's nudge, set by `MarkIfItOpensSomething(row)`
+   (:3606, :13965); **the hover** is `WholeMessage` (`DigitalDecodeRow.cs:787`). Every one reads
+   `Sender`, `Addressee` or `Message`, so a row built by the same code from an Olivia channel gets
+   them with no change. **Where a click reaches a send**: every send - the card's Answer, Report and
+   Confirm (:5539, :5548), the macros (:15413), the typed line (:15553) and the CQ press (:16933) -
+   goes through `SendMessage` (:14963), and its mode gate at :14989, `CanTransmitIn(ChosenDigitalMode)`
+   (:2431), answers false for Olivia and refuses before either `Arm(` site (:15135, and :15334 inside
+   `SendPsk31`, which only `SendMessage` calls after the gate). **That gate is the whole of 0.5's
+   refusal, and decision AN's risk is exactly that it stays the only door**: drawing rows adds a card
+   under Olivia wherever a station certainly calls the operator (`ShowPsk31Cards`, :3701), and every
+   control on that card goes through the same door. **A second exposure, not a send**: `ReadPsk31`
+   books a certain message addressed to the operator into the contact ledger with `RecordPsk31`
+   (:2790). On an Olivia row that books an Olivia message with no mode on it. It keys nothing; it is
+   reported in section 4.
+3. **The PSK31 row events the app writes**, all in category `Psk31`, from `NotePsk31` (:3377) unless
+   named: `psk31_listening_started` (:2906; dialHz, passband, sampleRate, deviceSampleRate,
+   resampleRatio, squelchQuality, retirePasses, retireSeconds, retireRule, searchRule);
+   `psk31_carrier_appeared` (carrierId, offsetHz, strengthDb, quality, passesAsCandidate);
+   `psk31_carrier_retired` (carrierId, offsetHz, reason, lifetimeSeconds, charactersEmitted,
+   linesParsed, secondsSinceLastCharacter; also from `ForgetPsk31` at :3979); `psk31_carrier_idling` /
+   `_typing`; `psk31_search_pass`; `psk31_squelch` (offsetHz, open, quality, threshold);
+   `psk31_reading` (offsetHz, reading, afcHz); `psk31_audio_level`; `psk31_line_parsed` (from
+   `ReadPsk31`, :2763; offsetHz, kind, certain, turnover, toOperator, characters);
+   `psk31_row_ended` (from `EndOrRemovePsk31Row`, :2627; offsetHz, characters, lines,
+   lifetimeSeconds); `psk31_row_cleared`; `psk31_listening_stopped` (:4000). The capture events are
+   the button's, not the rows'.
+4. **The gaps** (every Olivia file in the manifest through the listener, quarter-second pieces, then
+   flushed). Every variant's block is 2.048 s. Seconds a character from `timing.json`: 8/250 0.68267,
+   16/500 0.512, 32/1000 0.4096; **24 times that: 16.384 s, 12.288 s, 9.830 s.**
 
-**No demodulator change: the trace had already read 0.0000 on all five seeds.** The test builds
-decision W's audio in memory (`OliviaBelowTheNoise.Make`, written nowhere, the manifest untouched,
-the entry count still nine), takes the variant and center from the made audio's RSID, and asserts
-8/250 within 5 Hz of 1000, CER 0.10 or under, 2.5's 20 s of CPU, and §3.3's every character from an
-accepted block (as unit 362's -16 dB test asserts it). **Watched failing first against a stub that
-handed back the decode with its text emptied: CER 1.0000, red.** Then green, CER 0.0000. The four
-further seeds are a second name that prints and asserts nothing. On the engine carry-forward line.
+   | File | Channel | Longest gap between accepted block ends | Longest the listener went with no new accepted block while he was still sending | Smallest whole factor that holds | Last accepted block to file end |
+   | --- | --- | --- | --- | --- | --- |
+   | 8/250 CQ | 8/250 rsid | 2.048 s = 3.0 ch | 8.142 s = 11.9 ch | 12 | 0.016 s |
+   | 16/500 QSO | 16/500 rsid | 2.048 s = 4.0 ch | 8.142 s = 15.9 ch | 16 | 0.016 s |
+   | 32/1000 QSO | 32/1000 rsid | 2.049 s = 5.0 ch | 8.142 s = 19.9 ch | 20 | 0.016 s |
+   | 8/250 no-RSID | 8/250 blind | 2.048 s = 3.0 ch | 6.182 s = 9.1 ch | 10 | 0.016 s |
+   | 16/500 -10 dB | 16/500 rsid | 2.048 s = 4.0 ch | 8.143 s = 15.9 ch | 16 | 0.013 s |
+   | **16/500 -16 dB** | 16/500 rsid | **22.528 s = 44.0 ch** | **28.242 s = 55.2 ch** | **56** | 16.400 s |
+   | two-signal | 16/500 rsid | 2.048 s = 4.0 ch | 8.142 s = 15.9 ch | 16 | **6.160 s** |
+   | two-signal | 8/250 rsid | 2.048 s = 3.0 ch | 8.142 s = 11.9 ch | 12 | 0.016 s |
+   | noise only | none | - | - | - | - |
 
-### Task 3 - the listener (3.1 engine half, `TheOliviaListenerTests`)
+   The middle column is what the retire is judged on, because the listener only learns of a block
+   when it reaches the channel: on the clean files it is the wait from the burst's end to the first
+   block reaching the channel. **At 24 the clean files hold (32/1000 by 1.7 s), and the -16 dB
+   file's channel would be retired while its station was still sending.** By decision AJ's own rule
+   the factor goes to **56**, the smallest whole number that holds on every shipped file, and the
+   windows become 38.23 s / 28.67 s / 22.94 s. The -16 dB file is the one the plan says is below
+   16/500's sensitivity (2.2, revised 2026-09-19): its reader shows 9 blocks of 77.
+5. **The lag, from the row's side** - when each accepted block ended in the audio and when its
+   text reached the channel:
 
-Three new engine classes under `src\Hamlet.RadioEngine\Olivia\`, wired into nothing (decision L):
+   | File, channel | Accepted blocks | First block ends / reaches the channel | Median lag | Worst lag |
+   | --- | --- | --- | --- | --- |
+   | two-signal, 8/250 | 13 | 4.386 s / 10.250 s | 5.816 s | 5.970 s (2.92 blocks) |
+   | two-signal, 16/500 | 10 | 4.386 s / 10.250 s | 5.864 s | 5.970 s (2.92 blocks) |
+   | 16/500 QSO | 63 | 4.386 s / 10.250 s | 5.838 s | 5.972 s (2.92 blocks) |
 
-- **`OliviaStream`**, made by `OliviaDemodulator.Open()`: `Decode`'s five steps kept and advanced.
-  Each frame is transformed once, as its window arrives. The offset track is decided a segment at
-  a time, forward only, once `TrackSmoothing` segments after it have arrived: the same figure and the
-  same one-grid-step rule, but the segment takes the best figure at that point instead of a
-  backtracked path. The noise and signal are measured over the `2 x TrackSmoothing + 1` decided
-  segments nearest the one being read. The 8 x 64 sync sums are advanced as each block completes.
-  A block is read at the sync that leads now as soon as its last frame is decided; once one is
-  shown, nothing that starts inside it is read, and a new frame phase may start up to one symbol
-  early. `Flush()` reads a recording's last block the way `Decode` does (the window past the end
-  as silence); the app never calls it. Memory is trimmed to two blocks behind the newest frame.
-- **`OliviaSearchStream`**: the blind search fed as audio arrives. A running set of the last
-  `AverageBlocks` = 4 slowest-row blocks' spectra is kept. `OliviaBlindSearch`'s own region, gate,
-  occupied-band and ranking steps are used, the tones are measured over the last two blocks, and
-  **each row weighed is an `OliviaStream` that keeps reading** from the kept audio. The rule for
-  naming is the same: at least `ConfirmBlocks` = 2, best S/N. A place already read is never
-  searched.
-- **`OliviaListener`**: `Add(samples)`, `Flush()`, `Channels` as `OliviaChannel(Id, Variant,
-  CenterHz, Found, OpenedSeconds, Text, BlocksDecoded, BlocksRejected, Ended)`, `States` as
-  `OliviaChannelState(...)` with counts and no text, `SamplesSeen`, `SampleRate`, `ReplaySeconds`.
-  The streaming `RsidDetector` hears announcements, and an Olivia one opens a channel at its
-  variant and center, read from the burst's end out of kept audio. The search's named carriers open
-  channels found `blind`, each keeping the reader that confirmed it. Decision AA: the same place is
-  within half the narrower bandwidth; the same variant announced there opens nothing and turns
-  `blind` into `rsid`; a different variant ends the old channel and opens a new one. Nothing
-  retires. Events (decision AD, category `Psk31`, as the Olivia events already use):
-  `olivia_channel` (opened / announced / ended) and `olivia_block`, one for every block a channel
-  reads.
-
-**`Decode` and `Search` keep their results.** `OliviaDemodulator` only opens its block decoder,
-likelihood helpers, noise measure and a few read-only properties to the stream, and gains
-`Open()`. `OliviaBlindSearch`'s region, ranking and tones steps are pulled into internal helpers,
-in the same order, unchanged. Their tests stayed green unedited on the carry-forward run.
-**Decision V's eight rows, re-printed after the change, match unit 362's to the digit** (section 3).
-
-**Tests watched failing first**, against an `Add` that returned at once: **7 of 8 red** - the noise
-row is green against it, as a listener that hears nothing opens nothing. Then **8 of 8 green**.
-
-**Carry-forward with `TheOliviaBelowTheNoiseTests` and `TheOliviaListenerTests` on the engine line:
-engine 134 of 134 in 4 m 40 s** (was 124 in 1 m 39 s at task 0), first run; **app 165 of 166** on
-the list run. The red, `TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns`,
-failed again alone, then **passed alone on the second rerun**. It is a flake: this unit changed no
-app code, and "the flaky Stop tests" are in the carried queue. The app number is the list run's,
-165 of 166.
-
-### Task 4 - the real-time ratio (3.6, `TheOliviaListenerKeepsUpTests`)
-
-Process CPU around the feed alone, quarter-second pieces, in `CpuMeasuredAlone`: two-signal file
-**0.154**, asserted under 1.0; the 131 s 16/500 file 0.109 and the noise 0.079, printed. The longest
-single `Add`: **0.115 s wall** on the two-signal file, on the piece where both RSID channels open and
-take their replay. **Not put on the carry-forward line** - my call, stated as a decision below.
-
-### Decisions this session made for itself, author's and overrulable
-
-- **The slice's trailing silence is `rsid-codes.json`'s `silence_symbols_before`, 5 symbols, laid
-  after the tones.** The file states a silence count only for the front; the CQ file's own samples
-  confirm the Olivia tones start 22 samples after that point.
-- **Seeds 363 (asserted) and 3631-3634 (printed), written into the helper before any run.**
-- **The streaming reader's rules**: the noise window of `2 x TrackSmoothing + 1` decided segments;
-  the forward-only track decided `TrackSmoothing` segments late; the sync is the one that leads now;
-  a shown block fixes the reading point, with a new frame phase allowed up to one symbol early; two
-  blocks of frames kept behind the newest.
-- **`OliviaSearchStream`'s three numbers**: `AverageBlocks` = 4 (the whole search named the
-  two-signal file's carriers at four blocks), `ReplayBlocks` = 3 (a carrier starting at the audio's
-  first sample still has its first block whole when the first look comes at two), `TrialBlocks` = 4
-  (two to confirm and two for a region found while its carrier was still starting). **The listener's
-  replay is `ReplayBlocks` x the slowest row's block, 6.144 s** - derived, not a literal.
-- **The listener writes its own events**, where `Psk31Listener` leaves that to the app, because
-  decision AD asks for the listener's own event and the Olivia engine classes already write theirs.
-- **`TheOliviaListenerKeepsUpTests` is not on the carry-forward line.** 3.6 is nice-to-pass, the next
-  unit measures it again with the rows drawn, and the engine invocation already went from 1 m 39 s
-  to 4 m 40 s.
-
-### Verified against the tree - mismatches with section 5 of the instruction
-
-- **None of substance.** HEAD `60ec790a`, 1.13.49; `output.md` unit 362's, committed; `PHASE_STATUS.md`
-  steps 0-2 `done`, step 3 `not started`, `CURRENT_STEP: 3`, `WORK_INSTRUCTION: 358`;
-  `PHASE_OUTCOME.md` ending on `UNIT 1 - STEP 2` with `FATE: executed` and `STATE_AFTER: done`; the
-  nine fixtures, seconds and texts as stated; the generator's five arguments and `SOURCE.md`'s
-  *nothing here is built by a session* and `cRsId` port; the six Olivia files; `Decode`, `Search`,
-  `TrackTones` 2, `TrackSmoothing` 2, `OffsetTrack`; `RsidDetector.Feed` and `Flush`;
-  `Psk31Listener`'s shape; carry-forward 124 / 166 with the names as stated; `PttOn` 1
-  (`Ft8TransmitSequence.cs:513`), `Arm(` 2; `assets\fixtures\captured\` holding only `README.md`.
-- **Section 1's "unit 362 measured the engine invocation at 1 m 23 s for 124 tests"**: unit 362's
-  report gives 1 m 23 s for **123**; its 124 came after task 4, with no duration. This unit measured
-  124 in 1 m 39 s.
-- The expected mismatches were not rediscovered; none was edited.
-
-## 2. What the owner should expect
-
-- **Hamlet's engine now hears more than one Olivia station at once.** Give it the passband as it
-  arrives and it opens a channel for every station that announces itself, and for one that does
-  not, each read by its own reader, each with only its own text. On the two-signal recording that
-  is two channels, KC3QIS's CQ on one and EI4GNB's on the other, letter for letter. **Nothing on
-  screen changes**: it is wired to no panel (decision L), and the Olivia panel still says nothing
-  decodes. Drawing the rows is the next unit's.
-- **Olivia reads from under the noise.** An 8/250 QSO buried 14 dB below the noise in 2500 Hz -
-  25 times more noise power than signal - is read letter for letter, on five different draws of the
-  noise. That was already true of the demodulator unit 362 left; this unit proved it.
-- **What will look wrong but is not:**
-  - Every channel reports one **rejected** block where the whole-file decode reports none. That is
-    a block read at a sync that led for a moment before the carrier began. It showed nothing.
-  - A channel's text appears **seconds after the block was sent**, not as it arrives: the reader
-    waits for the offset track to settle (item 3).
-  - The engine carry-forward run takes **4 m 40 s** now (item 2).
-  - `PHASE_STATUS.md` still says step 3 `not started` and unit 358, and `PROJECT_STATUS.md` says
-    `WORK_INSTRUCTION: 358`, because `tools/status.sh` reads it from there.
-
-## 3. What you should see
-
-**No visible change in the application** - engine and tests only. What it proves (computed, not
-seen; nothing here is evidence about the radio, FACT-004):
-
-**3.0 - below the noise** (`TheOliviaBelowTheNoiseTests`, alone in its collection):
-
-| | |
-| --- | --- |
-| Recipe | fldigi-port burst sliced from `olivia-8-250-cq-rsid.wav`, samples 0-18579 (to 2.3225 s: first tone 0.465 s by the detector + 20 symbols at 10.7666 Hz), then all of `olivia-8-250-qso-norsid.wav`; seeded white Gaussian noise over everything |
-| SNR set | -14.00 dB in 2500 Hz (signal 0.093929 over the QSO part; noise variance 3.775039) |
-| The method's check | shipped -10 dB file measures **-10.48 dB** |
-
-| Seed | SNR measured back | RSID | CER (0.10) | Characters | Blocks decoded / rejected | Sync S/N | CPU |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| **363 (asserted)** | -13.82 dB | OLIVIA_8_250 at 1000.16 Hz, 14 right | **0.0000** | 251 of 251 | 84 / 0 | 9.87 | 5.42 s |
-| 3631 | -13.90 dB | at 999.75 Hz, 14 right | 0.0000 | 251 of 251 | 84 / 0 | 9.85 | 5.22 s |
-| 3632 | -14.03 dB | at 1000.36 Hz, 15 right | 0.0000 | 251 of 251 | 84 / 0 | 9.68 | 5.16 s |
-| 3633 | -14.18 dB | at 999.42 Hz, 13 right | 0.0000 | 251 of 251 | 84 / 0 | 9.69 | 5.16 s |
-| 3634 | -13.90 dB | at 999.42 Hz, 15 right | 0.0000 | 251 of 251 | 84 / 0 | 9.60 | 5.20 s |
-
-The decoded text is the manifest's four-line QSO exactly, on all five. The weakest accepted block
-on any seed stood at 7.31 against the threshold's 4.0.
-
-**The listener on the two-signal file** (`TheOliviaListenerTests`, quarter-second pieces, told nothing):
-
-| Channel | Found | Variant | Center (manifest, 5 Hz) | Opened | CER against its half (0.05) | Other station's callsign | Blocks decoded / rejected |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 2 | rsid | 8/250 | 1000.00 Hz (1000; detector 1000.29) | 3.500 s | **0.0000** | EI4GNB 0 times | 13 / 1 |
-| 1 | rsid | 16/500 | 2003.91 Hz (2000; detector 1999.66) | 3.500 s | **0.0000** | KC3QIS 0 times | 10 / 4 |
-
-Most channels at once across the whole feed: 2. Each channel's characters (38 each) are no more
-than its accepted blocks could carry. The 16/500 center of 2003.91 is where its track ended, a grid
-step off, in the silence after that station's last block (item 4).
-
-**Decision Z's rows, the listener beside the whole-file numbers** (unit 362's in brackets):
-
-| File | Channels (most at once) | Found | Variant, center | CER | Blocks | Listener CPU / ratio |
-| --- | --- | --- | --- | --- | --- | --- |
-| 8/250 CQ, clean | 1 (1) | rsid | 8/250, 1000.00 | **0.0000** (0.0000) | 13 / 1 (13 / 0) | 3.05 s / 0.105 |
-| 16/500 QSO, clean | 1 (1) | rsid | 16/500, 1000.00 | **0.0000** (0.0000) | 63 / 1 (63 / 0) | 14.20 s / 0.108 |
-| 32/1000 QSO, clean | 1 (1) | rsid | 32/1000, 1000.00 | **0.0000** (0.0000) | 51 / 1 (51 / 0) | 11.98 s / 0.112 |
-| 16/500 -10 dB | 1 (1) | rsid | 16/500, 1000.00 | **0.0000** (0.0000) | 63 / 1 (63 / 0) | 14.19 s / 0.108 |
-| 8/250 no-RSID | 1 (1) | **blind**, opened at 10.250 s | 8/250, 1000.00 | **0.0000** (0.0000 after the search) | 84 / 0 (84 / 0) | 21.84 s / 0.127 |
-| noise only | **0 (0)** | - | - | no character | - | 2.73 s / 0.091 |
-
-**The listener's §R13 events, as written** (two-signal file, printed by the test: the two opens and
-the first three blocks):
-
-```
-Psk31 olivia_channel {"mode":"olivia","variant":"16/500","state":"opened","id":1,"found":"rsid","centerHz":1999.66,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}
-Psk31 olivia_channel {"mode":"olivia","variant":"8/250","state":"opened","id":2,"found":"rsid","centerHz":1000.29,"atSeconds":3.5,"readFromSeconds":1.858,"replaySeconds":6.144}
-Psk31 olivia_block {"mode":"olivia","variant":"16/500","id":1,"found":"rsid","centerHz":2000,"atSeconds":1.902,"snr":2.26,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}
-Psk31 olivia_block {"mode":"olivia","variant":"8/250","id":2,"found":"rsid","centerHz":1000,"atSeconds":1.878,"snr":3.32,"accepted":false,"characters":0,"blocksDecoded":0,"blocksRejected":1,"threshold":4}
-Psk31 olivia_block {"mode":"olivia","variant":"16/500","id":1,"found":"rsid","centerHz":2000,"atSeconds":2.338,"snr":73.86,"accepted":true,"characters":4,"blocksDecoded":1,"blocksRejected":1,"threshold":4}
-```
-
-`characters` is a count. The first two blocks are the one rejected block each channel reports: read
-at a sync that led before the carrier began. The test asserts every event is `mode: olivia` with a
-variant, that no word of three letters or more from either station's text is in any of them, and that
-no string value is 12 characters or longer.
-
-**3.6 - the real-time table** (`TheOliviaListenerKeepsUpTests`, alone):
-
-| File | Audio | CPU | Ratio (1.0) | Longest single Add |
-| --- | --- | --- | --- | --- |
-| two-signal | 28.98 s | 4.453 s | **0.154** | 0.115 s, the piece at 3.25 s |
-| 16/500 QSO | 131.38 s | 14.313 s | 0.109 | 0.063 s |
-| noise only | 30.00 s | 2.359 s | 0.079 | 0.021 s |
-
-On the no-RSID file the longest single `Add` was **0.983 s** wall (`TheOliviaListenerTests`), on the
-look that opened the trial readers and handed each 4 to 6 s of kept audio.
-
-**Decision V's eight rows, `Decode` re-printed after the demodulator's access changes** (unit 362's in
-brackets; all identical):
-
-| Fixture | CER | Characters | Blocks decoded / rejected | Demodulator CPU |
-| --- | --- | --- | --- | --- |
-| 8/250 CQ | 0.0000 (0.0000) | 38 of 38 | 13 / 0 | 0.797 s (0.813) |
-| 16/500 QSO | 0.0000 (0.0000) | 251 of 251 | 63 / 0 | 4.094 s (4.109) |
-| 32/1000 QSO | 0.0000 (0.0000) | 251 of 251 | 51 / 0 | 3.625 s (3.656) |
-| 16/500 -10 dB | 0.0000 (0.0000) | 251 of 251 | 63 / 0 | 4.453 s (4.469) |
-| 16/500 -16 dB | 0.9044 (0.9044) | 24 of 251 | 6 / 57 (6 / 57) | 4.094 s (4.172) |
-| noise as 8/250 | 0 characters (0) | 0 | 0 / 14, highest 3.45 (3.45) | 1.078 s (1.031) |
-| noise as 16/500 | 0 characters (0) | 0 | 0 / 14, highest 3.27 (3.27) | 1.047 s (1.000) |
-| noise as 32/1000 | 0 characters (0) | 0 | 0 / 14, highest 3.15 (3.15) | 1.406 s (1.078) |
+   Three of the 8/250 channel's blocks and three of the QSO's reached it only at the flush, which a
+   recording's end makes and the air does not: on the air those arrive as later audio pushes them
+   through.
 
 ## 4. What's blocking us
+
+*Written when the unit ends. Unit 363's section 4 is carried below, verbatim.*
+
+### Asks still outstanding - carried from unit 363's section 4, per HM-DEC-139, verbatim
 
 **Nothing blocks step 3.** Nine new items, all findings; none wants a ruling from the owner. The
 carried queue follows them.
