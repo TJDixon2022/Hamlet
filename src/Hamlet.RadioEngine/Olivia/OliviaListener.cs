@@ -13,6 +13,11 @@ namespace Hamlet.RadioEngine.Olivia;
 /// <param name="BlocksDecoded">Blocks shown.</param>
 /// <param name="BlocksRejected">Blocks read and not shown.</param>
 /// <param name="Ended">True where the station announced a different variant at the same place, and this channel stopped reading.</param>
+/// <param name="ShownCenterHz">
+/// Where it sat when its last accepted block was read - the center a row shows - or NaN before any
+/// block was accepted (work instruction 364 decision AG). <paramref name="CenterHz"/> keeps tracking
+/// after the station stops; this does not.
+/// </param>
 public sealed record OliviaChannel(
     int Id,
     string Variant,
@@ -22,7 +27,8 @@ public sealed record OliviaChannel(
     string Text,
     int BlocksDecoded,
     int BlocksRejected,
-    bool Ended);
+    bool Ended,
+    double ShownCenterHz = double.NaN);
 
 /// <summary>What one channel's reader is doing, for something outside to write down.</summary>
 /// <param name="Id">The channel.</param>
@@ -262,6 +268,13 @@ public sealed class OliviaListener
         {
             foreach (var block in channel.Stream.DrainBlocks())
             {
+                if (block.Accepted)
+                {
+                    // **WHERE IT WAS WHEN IT WAS LAST READ** (decision AG), not where the track has
+                    // wandered to since.
+                    channel.ShownCenterHz = channel.Stream.CenterHz + block.OffsetHz;
+                }
+
                 _telemetry?.Write(
                     TelemetryCategory.Psk31,
                     "olivia_block",
@@ -293,7 +306,8 @@ public sealed class OliviaListener
                 c.Stream.Text,
                 c.Stream.BlocksDecoded,
                 c.Stream.BlocksRejected,
-                c.Ended))
+                c.Ended,
+                c.ShownCenterHz))
             .OrderBy(c => c.CenterHz)
             .ToList();
     }
@@ -348,6 +362,9 @@ public sealed class OliviaListener
         public long StartSample { get; } = startSample;
 
         public bool Ended { get; set; }
+
+        /// <summary>The center as of its last accepted block, or NaN before one.</summary>
+        public double ShownCenterHz { get; set; } = double.NaN;
 
         /// <summary>The center the reader was made at, moved by its offset track.</summary>
         public double CenterHz => Stream.CenterHz + Stream.OffsetHz;

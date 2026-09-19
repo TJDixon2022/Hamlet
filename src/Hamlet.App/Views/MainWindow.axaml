@@ -4950,19 +4950,29 @@
 
                                                          **AND AN ENDED ROW SAYS ENDED** (work
                                                          instruction 355 task 2): his carrier went and
-                                                         his words stayed, faded and said in a word. -->
-                                                    <Grid Grid.Column="3" ColumnDefinitions="Auto,Auto,Auto,*"
+                                                         his words stayed, faded and said in a word.
+
+                                                         **AND AN OLIVIA ROW SAYS ITS VARIANT FIRST** (work
+                                                         instruction 364 decision AF, R28 *the row says the
+                                                         variant*). Its own column, hidden and taking no
+                                                         width on every other row. -->
+                                                    <Grid Grid.Column="3" ColumnDefinitions="Auto,Auto,Auto,Auto,*"
                                                           IsVisible="{Binding !HasFields}">
-                                                        <TextBlock Grid.Column="0" Text="{Binding Sender}"
+                                                        <TextBlock Grid.Column="0" x:Name="DecodedRowVariant"
+                                                                   Text="{Binding Variant}"
+                                                                   IsVisible="{Binding HasVariant}"
+                                                                   Foreground="{StaticResource HmTextMutedBrush}"
+                                                                   FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
+                                                        <TextBlock Grid.Column="1" Text="{Binding Sender}"
                                                                    IsVisible="{Binding ShowsReadSender}"
                                                                    ToolTip.Tip="{Binding SenderHelp}"
                                                                    Foreground="{StaticResource HmGreenBrush}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
-                                                        <TextBlock Grid.Column="1" Text="{Binding ReadingWord}"
+                                                        <TextBlock Grid.Column="2" Text="{Binding ReadingWord}"
                                                                    IsVisible="{Binding HasReadingWord}"
                                                                    Foreground="{StaticResource HmTextMutedBrush}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,6,1" />
-                                                        <TextBlock Grid.Column="2" x:Name="DecodedRowEndedWord"
+                                                        <TextBlock Grid.Column="3" x:Name="DecodedRowEndedWord"
                                                                    Text="{Binding EndedWord}"
                                                                    IsVisible="{Binding HasEndedWord}"
                                                                    Foreground="{StaticResource HmTextMutedBrush}"
@@ -4985,7 +4995,7 @@
                                                              the row keeps its text (unit 355).
 
                                                              **A CLICK OPENS AND SENDS NOTHING.** -->
-                                                        <Button Grid.Column="3"
+                                                        <Button Grid.Column="4"
                                                                 x:Name="DecodedRowWholeMessage"
                                                                 Padding="0"
                                                                 Background="Transparent"
@@ -5016,7 +5026,7 @@
                                                              open and a button that opened an
                                                              empty box would be a control that
                                                              looks live and is not (§0.5.1). -->
-                                                        <TextBlock Grid.Column="3" Text="{Binding Unsplit}"
+                                                        <TextBlock Grid.Column="4" Text="{Binding Unsplit}"
                                                                    IsVisible="{Binding !HasWholeMessage}"
                                                                    FontFamily="Consolas,Menlo,monospace" FontSize="12" Margin="0,1,0,1" />
 

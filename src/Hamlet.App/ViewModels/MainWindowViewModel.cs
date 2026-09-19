@@ -407,6 +407,13 @@ public partial class MainWindowViewModel : ObservableObject
             ForgetPsk31();
         }
 
+        // **AND LEAVING OLIVIA PUTS ITS LISTENER DOWN**, for the same reason (work instruction 364
+        // decision AE): pressing PSK31 from Olivia is exactly the case the line above skips.
+        if (!string.Equals(value, OliviaLabel, StringComparison.Ordinal))
+        {
+            ForgetOlivia();
+        }
+
         // **THE RECORD SAYS WHICH MODE HE WENT TO, BY NAME** (work instruction 312
         // task 2). The mode field on every other event is `DigitalMode`, which has
         // two members and answers `Ft8` for the two labels it does not carry - so
@@ -1146,12 +1153,10 @@ public partial class MainWindowViewModel : ObservableObject
             // caption as hard as the picture over it. The clock does not come into it
             // either: PSK31 needs no slot grid, so *waiting for the clock* would be a
             // second thing that is not true.
-            var grid = IsPsk31Chosen
+            // **OLIVIA HAS NO SLOTS, AND SINCE WORK INSTRUCTION 364 IT IS READ**, so it says what
+            // PSK31 says rather than *not read yet* (decision AM).
+            var grid = IsPsk31Chosen || IsOliviaChosen
                 ? ChosenDigitalMode + ", one continuous carrier a station"
-                // **OLIVIA HAS NO SLOTS AND NOTHING READS IT YET** (work instruction 358
-                // task 2), so the caption names the mode and says so rather than a grid.
-                : IsOliviaChosen
-                ? OliviaLabel + ", not read yet"
                 : ClockOffset.IsKnown
                     ? DigitalGrid.SlotSeconds.ToString("0.##", CultureInfo.InvariantCulture)
                       + " s slots"
@@ -2443,10 +2448,11 @@ public partial class MainWindowViewModel : ObservableObject
 
     /// <summary>True while the operator has Olivia pressed.</summary>
     /// <remarks>
-    /// **A LABEL WITH NO DECODER AND NO MODULATOR** (work instruction 358 task 2). It is
-    /// answered false by <see cref="CanDecode"/> and <see cref="CanTransmitIn"/>, so the slot
-    /// watch is not asked, the PSK31 listener does not start and the send door refuses it;
-    /// this only decides where the press tunes and what the panel says.
+    /// **A LABEL WITH NO MODULATOR** (work instruction 358 task 2). It is answered false by
+    /// <see cref="CanDecode"/> and <see cref="CanTransmitIn"/>, so the slot watch is not asked,
+    /// the PSK31 listener does not start and the send door refuses it. **Since work instruction
+    /// 364 it has its own listener** (<see cref="HearOlivia"/>), drawn as rows, and still nothing
+    /// under it can send.
     /// </remarks>
     private bool IsOliviaChosen
         => string.Equals(ChosenDigitalMode, OliviaLabel, StringComparison.Ordinal);
@@ -2624,7 +2630,7 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31Ended.Add(new Psk31EndedRow(
             row, offset, now, bornAt, _psk31FirstHeard.GetValueOrDefault(id, row.Utc), reading));
 
-        Psk31Events.RowEnded(_telemetry, offset, row.Message.Length, reading?.Messages.Count ?? 0, now - bornAt);
+        Psk31Events.RowEnded(_telemetry, offset, row.Message.Length, reading?.Messages.Count ?? 0, now - bornAt, OliviaTagFor(row));
     }
 
     /// <summary>The ended row a newly listed carrier takes up again, or null.</summary>
@@ -2694,7 +2700,7 @@ public partial class MainWindowViewModel : ObservableObject
 
                 _psk31Ended.RemoveAll(e => ReferenceEquals(e.Row, oldest));
                 ForgetEndedPsk31Reading(oldest);
-                Psk31Events.RowCleared(_telemetry, OffsetOn(oldest) ?? 0, oldest.Message.Length, "cap");
+                Psk31Events.RowCleared(_telemetry, OffsetOn(oldest) ?? 0, oldest.Message.Length, "cap", OliviaTagFor(oldest));
             }
             else
             {
@@ -2713,7 +2719,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         foreach (var row in DigitalDecodes.Where(r => r.IsTextOnly && r.Ended))
         {
-            Psk31Events.RowCleared(_telemetry, OffsetOn(row) ?? 0, row.Message.Length, reason);
+            Psk31Events.RowCleared(_telemetry, OffsetOn(row) ?? 0, row.Message.Length, reason, OliviaTagFor(row));
             ForgetEndedPsk31Reading(row);
         }
 
@@ -2767,7 +2773,8 @@ public partial class MainWindowViewModel : ObservableObject
                     message.Exchange.IsCertain,
                     message.Exchange.HandsOver,
                     message.Exchange.IsForOperator,
-                    message.Text.Length);
+                    message.Text.Length,
+                    OliviaTagFor(channel.Id));
 
                 // **COUNTED TO ITS CARRIER EVEN BEFORE THE CARRIER'S APPEARANCE IS DRAINED**
                 // (work instruction 337 task 1), so the retires' lines and the stopped event's
@@ -3140,6 +3147,287 @@ public partial class MainWindowViewModel : ObservableObject
         }
     }
 
+    /// <summary>Every Olivia station in the passband, or null where the Olivia tab is not listening.</summary>
+    private OliviaListener? _oliviaListener;
+
+    /// <summary>Brings the device stream to the Olivia listener's rate.</summary>
+    private Psk31Resampler? _oliviaResampler;
+
+    /// <summary>The next sample the Olivia listener wants from the tap.</summary>
+    private long _oliviaAt;
+
+    /// <summary>The buffer the Olivia listener copies the tap through.</summary>
+    private float[] _oliviaBuffer = [];
+
+    /// <summary>The channels last drawn, for a test.</summary>
+    private IReadOnlyList<OliviaChannel> _oliviaShown = [];
+
+    /// <summary>Each Olivia row's variant, by its channel: what makes a row an Olivia row.</summary>
+    private readonly Dictionary<int, string> _oliviaVariants = new();
+
+    /// <summary>What each Olivia channel was doing last time this looked.</summary>
+    private readonly Dictionary<int, OliviaChannelState> _oliviaWas = new();
+
+    /// <summary>Where each Olivia channel was first heard, for how far its track has pulled.</summary>
+    private readonly Dictionary<int, double> _oliviaFirstCenter = new();
+
+    /// <summary>The Olivia channels whose end has been written down.</summary>
+    private readonly HashSet<int> _oliviaGone = new();
+
+    private int _oliviaCarriersSeen;
+    private int _oliviaRetiredCharacters;
+    private int _oliviaRetiredLines;
+
+    /// <summary>Read the Olivia stations out of whatever has arrived since the last tick, and draw them.</summary>
+    /// <param name="tap">The receive audio, the same tap every other mode reads.</param>
+    /// <remarks>
+    /// <para>**`HearPsk31`'s READ, AT ITS RATE, INTO THE ENGINE'S OLIVIA LISTENER** (work instruction
+    /// 364 decision AE). The device's samples go through a <see cref="Psk31Resampler"/> to 8 kHz, the
+    /// rate every Olivia path was proved at, and the listener hears the passband the PSK31 search
+    /// does. **It is called under the Olivia tab and nowhere else**, and the PSK31 listener is not
+    /// called under it: no other mode's decoder runs (`PHASE_PLAN.md` 0.5).</para>
+    /// <para>**ITS CHANNELS ARE DRAWN BY THE PSK31 ROW PATH** (decision AF): <see cref="ShowOliviaChannels"/>
+    /// maps each to what <see cref="ShowPsk31Channels(IReadOnlyList{Psk31Channel}, IReadOnlyDictionary{int, string})"/>
+    /// takes, with its variant beside it. Nothing here parses, answers or sends.</para>
+    /// <para>**THE VARIANT IS THE CHANNEL'S** - from its RSID or the blind search - and the operator
+    /// picks nothing (R27).</para>
+    /// </remarks>
+    private void HearOlivia(AudioTap tap)
+    {
+        if (_olivia?.Format is not { } format || _olivia.Rsid is not { } codes || tap.SampleRate <= 0)
+        {
+            return;
+        }
+
+        if (_oliviaListener is null || _oliviaResampler is null)
+        {
+            _oliviaResampler = new Psk31Resampler(tap.SampleRate);
+            _oliviaListener = new OliviaListener(
+                format, codes, Psk31Resampler.TargetSampleRate,
+                Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz, _telemetry);
+            _oliviaAt = 0;
+            _oliviaCarriersSeen = 0;
+            _oliviaRetiredCharacters = 0;
+            _oliviaRetiredLines = 0;
+
+            Psk31Events.OliviaListeningStarted(
+                _telemetry,
+                FrequencyHz,
+                Psk31CarrierSearch.PassbandLowHz,
+                Psk31CarrierSearch.PassbandHighHz,
+                _oliviaListener.SampleRate,
+                _oliviaResampler.DeviceSampleRate,
+                _oliviaResampler.Ratio,
+                OliviaDemodulator.SyncThreshold,
+                _oliviaListener.ReplaySeconds);
+        }
+
+        if (_oliviaAt <= 0)
+        {
+            // **START FROM WHAT HAS ALREADY ARRIVED**, as the PSK31 listener does.
+            _oliviaAt = Math.Max(0, tap.SamplesSeen - tap.SamplesHeld);
+        }
+
+        var wanted = (int)Math.Min(tap.SamplesSeen - _oliviaAt, tap.SamplesHeld);
+
+        if (wanted <= 0)
+        {
+            return;
+        }
+
+        if (_oliviaBuffer.Length < wanted)
+        {
+            _oliviaBuffer = new float[wanted];
+        }
+
+        if (!tap.Window(_oliviaAt, wanted, _oliviaBuffer, out _))
+        {
+            // **THE AUDIO WENT PAST BEFORE IT WAS READ.** Catch up rather than read a splice.
+            _oliviaAt = tap.SamplesSeen;
+            return;
+        }
+
+        _oliviaAt += wanted;
+
+        _oliviaListener.Add(_oliviaResampler.Take(_oliviaBuffer.AsSpan(0, wanted)));
+
+        ShowOliviaChannels(_oliviaListener.Channels);
+
+        NoteOlivia(tap);
+    }
+
+    /// <summary>Draw Olivia channels through the PSK31 row path, each row carrying its variant.</summary>
+    /// <param name="channels">What the listener lists now.</param>
+    /// <remarks>
+    /// <para>**THE MAPPING, AND THE ONLY NEW THING THE ROW PATH TAKES** (decision AF). A channel's
+    /// id, its text and whether it has read a block go across as they are. **Its center is the one
+    /// as of its last accepted block** (decision AG), so a row does not wander after its station
+    /// stops. **Its strength is a dash**: the listener measures a block's signal-to-noise in its own
+    /// units, not decibels in 2500 Hz, and a number in the PSK31 column that meant something else
+    /// would be a claim nothing measured (§0.0).</para>
+    /// <para>**A CHANNEL THAT HAS ENDED IS NOT LISTED**, so the PSK31 path ends its row as it ends a
+    /// carrier's that went: kept with its words and marked ended, or taken off where it read
+    /// nothing.</para>
+    /// <para>**THE TEXT IS THE CHANNEL'S ACCEPTED TEXT AND NOTHING ELSE** (§3.3, §R9).</para>
+    /// </remarks>
+    private void ShowOliviaChannels(IReadOnlyList<OliviaChannel> channels)
+    {
+        _oliviaShown = channels;
+
+        var live = channels.Where(c => !c.Ended).ToList();
+
+        foreach (var channel in live)
+        {
+            _oliviaVariants[channel.Id] = channel.Variant;
+        }
+
+        ShowPsk31Channels(
+            live.Select(c => new Psk31Channel(
+                    c.Id,
+                    double.IsNaN(c.ShownCenterHz) ? c.CenterHz : c.ShownCenterHz,
+                    double.NaN,
+                    c.Text,
+                    Readable: c.BlocksDecoded > 0))
+                .ToList(),
+            _oliviaVariants);
+    }
+
+    /// <summary>Write down what the Olivia channels just did, as the PSK31 row events.</summary>
+    /// <param name="tap">The audio they are reading.</param>
+    /// <remarks>
+    /// <para>**THE PSK31 ROW EVENTS, WITH `mode: olivia` AND THE VARIANT** (decision AK, §R13): a
+    /// channel appearing, its blocks starting and stopping being shown (`psk31_squelch`, its last
+    /// block's signal-to-noise against Olivia's own threshold), its reading starting (`psk31_reading`),
+    /// and its end. The parse and the row's end are written by the row path itself.</para>
+    /// <para>**COUNTS AND FIGURES, NEVER TEXT OR A CALLSIGN** (HM-DEC-018). It reads and writes and
+    /// changes nothing (§0.2).</para>
+    /// </remarks>
+    private void NoteOlivia(AudioTap tap)
+    {
+        if (_oliviaListener is not { } listener)
+        {
+            return;
+        }
+
+        var now = AudioSecondsHeard();
+
+        foreach (var state in listener.States)
+        {
+            var tag = OliviaSquelchTag(state.Variant);
+            var known = _oliviaWas.TryGetValue(state.Id, out var was);
+
+            if (!known)
+            {
+                _oliviaCarriersSeen++;
+                _oliviaFirstCenter[state.Id] = state.CenterHz;
+                _psk31Tally.TryAdd(state.Id, (0, 0, now));
+
+                Psk31Events.OliviaCarrierAppeared(_telemetry, state.Id, state.CenterHz, state.Variant, state.Found);
+            }
+
+            if (!known || was.InSync != state.InSync)
+            {
+                Psk31Events.Squelch(_telemetry, state.CenterHz, state.InSync, state.LastBlockSnr, tag);
+            }
+
+            var afc = state.CenterHz - _oliviaFirstCenter.GetValueOrDefault(state.Id, state.CenterHz);
+            var wasAfc = known ? was.CenterHz - _oliviaFirstCenter.GetValueOrDefault(state.Id, was.CenterHz) : afc;
+
+            if (!known || (state.Characters > 0) != (was.Characters > 0) || Math.Abs(afc - wasAfc) >= 2.0)
+            {
+                Psk31Events.Reading(_telemetry, state.CenterHz, state.Characters > 0, afc, Psk31Events.Olivia(state.Variant));
+            }
+
+            if (_psk31Tally.TryGetValue(state.Id, out var tally) && state.Characters != tally.Characters)
+            {
+                _psk31Tally[state.Id] = (state.Characters, tally.Lines, now);
+            }
+
+            _oliviaWas[state.Id] = state;
+        }
+
+        foreach (var channel in listener.Channels.Where(c => c.Ended && _oliviaGone.Add(c.Id)))
+        {
+            OliviaChannelEnded(channel, "VariantChanged", null);
+        }
+
+        if (DateTime.UtcNow - _psk31LevelWritten >= Psk31Events.PassInterval)
+        {
+            _psk31LevelWritten = DateTime.UtcNow;
+
+            Psk31Events.AudioHeard(_telemetry, tap.Level, "sampled", Psk31Events.Olivia(null));
+        }
+    }
+
+    /// <summary>Write one Olivia channel's end, and count it into the stop's totals.</summary>
+    private void OliviaChannelEnded(OliviaChannel channel, string reason, IReadOnlyDictionary<string, object?>? retire)
+    {
+        var now = AudioSecondsHeard();
+        var tally = _psk31Tally.GetValueOrDefault(channel.Id);
+
+        Psk31Events.OliviaCarrierRetired(
+            _telemetry,
+            channel.Id,
+            double.IsNaN(channel.ShownCenterHz) ? channel.CenterHz : channel.ShownCenterHz,
+            channel.Variant,
+            reason,
+            now - channel.OpenedSeconds,
+            channel.Text.Length,
+            tally.Lines,
+            channel.Text.Length > 0 ? now - tally.LastCharacterAt : null,
+            retire);
+
+        _oliviaRetiredCharacters += channel.Text.Length;
+        _oliviaRetiredLines += tally.Lines;
+    }
+
+    /// <summary>An Olivia row's squelch event: its variant, and Olivia's threshold where PSK31's would be.</summary>
+    private static Dictionary<string, object?> OliviaSquelchTag(string variant)
+        => new(Psk31Events.Olivia(variant), StringComparer.Ordinal) { ["threshold"] = OliviaDemodulator.SyncThreshold };
+
+    /// <summary>What an Olivia channel's parse adds to `psk31_line_parsed`, or null on a PSK31 channel.</summary>
+    private IReadOnlyDictionary<string, object?>? OliviaTagFor(int channelId)
+        => _oliviaVariants.TryGetValue(channelId, out var variant) ? Psk31Events.Olivia(variant) : null;
+
+    /// <summary>What an Olivia row adds to its row events, or null on a PSK31 row.</summary>
+    private static IReadOnlyDictionary<string, object?>? OliviaTagFor(DigitalDecodeRow row)
+        => row.HasVariant ? Psk31Events.Olivia(row.Variant) : null;
+
+    /// <summary>Stop listening for Olivia, write down what was heard, and end its rows.</summary>
+    /// <remarks>
+    /// **`ForgetPsk31`'s SHAPE** (decision AK): a channel still being read when the tab is left is
+    /// written ended with the reason `ListeningStopped`, then the stop with the sum of the ends, then
+    /// the rows go the way PSK31's go - kept and marked ended where they read anything.
+    /// </remarks>
+    private void ForgetOlivia()
+    {
+        if (_oliviaListener is { } listener)
+        {
+            foreach (var channel in listener.Channels.Where(c => _oliviaGone.Add(c.Id)))
+            {
+                OliviaChannelEnded(channel, channel.Ended ? "VariantChanged" : "ListeningStopped", null);
+            }
+
+            Psk31Events.OliviaListeningStopped(
+                _telemetry, AudioSecondsHeard(), _oliviaCarriersSeen, _oliviaRetiredCharacters, _oliviaRetiredLines);
+        }
+
+        if (_oliviaListener is not null || _oliviaVariants.Count > 0)
+        {
+            // **THE ROWS GO AS PSK31'S GO**, while the listener's clock still says how long each lived.
+            ForgetPsk31();
+        }
+
+        _oliviaListener = null;
+        _oliviaResampler = null;
+        _oliviaAt = 0;
+        _oliviaShown = [];
+        _oliviaVariants.Clear();
+        _oliviaWas.Clear();
+        _oliviaFirstCenter.Clear();
+        _oliviaGone.Clear();
+    }
+
     /// <summary>Where a PSK31 capture is written.</summary>
     internal static string Psk31CaptureFolder => CaptureFolder;
 
@@ -3359,10 +3647,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// **ONE CLOCK FOR THE WHOLE RECORD** (work instruction 322 task 5). The search
     /// counts samples, so every duration written beside it counts samples too.
     /// </remarks>
+    /// <remarks>
+    /// **AND UNDER OLIVIA, THE OLIVIA LISTENER'S** (work instruction 364 decision AF): its rows go
+    /// through the same path, so their lifetimes count the same way.
+    /// </remarks>
     private double AudioSecondsHeard()
-        => _psk31 is null || _psk31.SampleRate <= 0
-            ? 0
-            : _psk31.SamplesSeen / (double)_psk31.SampleRate;
+        => _psk31 is { SampleRate: > 0 } psk31
+            ? psk31.SamplesSeen / (double)psk31.SampleRate
+            : _oliviaListener is { SampleRate: > 0 } olivia
+                ? olivia.SamplesSeen / (double)olivia.SampleRate
+                : 0;
 
     /// <summary>Write down what the listener just did.</summary>
     /// <param name="tap">The audio it is reading.</param>
@@ -3509,6 +3803,22 @@ public partial class MainWindowViewModel : ObservableObject
     internal void ShowPsk31ChannelsForTests(IReadOnlyList<Psk31Channel> channels)
         => ShowPsk31Channels(channels);
 
+    /// <summary>Put these Olivia channels on the panel, for a test that has text and no audio.</summary>
+    /// <param name="channels">What the Olivia listener would have listed on this tick.</param>
+    /// <remarks>**THE SAME PATH THE TICK TAKES**, from the mapping onwards - the Olivia twin of
+    /// <see cref="ShowPsk31ChannelsForTests"/>, for its reason (work instruction 364 decision AI).</remarks>
+    internal void ShowOliviaChannelsForTests(IReadOnlyList<OliviaChannel> channels)
+        => ShowOliviaChannels(channels);
+
+    /// <summary>What the Olivia channels last drawn were, for a test.</summary>
+    internal IReadOnlyList<OliviaChannel> OliviaChannelsForTests => _oliviaShown;
+
+    /// <summary>How many samples the Olivia listener has been fed, or 0 where none is listening, for a test.</summary>
+    internal long OliviaSamplesHeardForTests => _oliviaListener?.SamplesSeen ?? 0;
+
+    /// <summary>How many samples the PSK31 listener has been fed, or 0 where none is listening, for a test.</summary>
+    internal long Psk31SamplesHeardForTests => _psk31?.SamplesSeen ?? 0;
+
     /// <summary>Hand the clear-spot search a band, for a test that has no audio.</summary>
     /// <param name="candidates">What a search pass would have measured.</param>
     /// <remarks>
@@ -3521,7 +3831,12 @@ public partial class MainWindowViewModel : ObservableObject
     internal void UsePsk31CandidatesForTests(IReadOnlyList<Psk31Candidate> candidates)
         => _psk31Candidates = candidates;
 
-    private void ShowPsk31Channels(IReadOnlyList<Psk31Channel> channels)
+    /// <param name="channels">What the listener lists now.</param>
+    /// <param name="variants">
+    /// **Each Olivia channel's variant, by id, or null under PSK31** (work instruction 364 decision
+    /// AF): the one thing the Olivia rows add to this path, put on the row and nowhere else.
+    /// </param>
+    private void ShowPsk31Channels(IReadOnlyList<Psk31Channel> channels, IReadOnlyDictionary<int, string>? variants = null)
     {
         var changed = false;
         var added = false;
@@ -3572,10 +3887,11 @@ public partial class MainWindowViewModel : ObservableObject
             var text = _psk31Before.GetValueOrDefault(channel.Id, "") + channel.Text;
             var heardOnly = text.Length == 0 && !channel.Readable;
             var message = heardOnly ? HeardNotReadableYet : text;
+            var variant = variants?.GetValueOrDefault(channel.Id) ?? "";
 
             if (_psk31Rows.TryGetValue(channel.Id, out var shown)
                 && !shown.Ended
-                && shown.Snr == snr && shown.Hz == hz && shown.Message == message)
+                && shown.Snr == snr && shown.Hz == hz && shown.Message == message && shown.Variant == variant)
             {
                 continue;
             }
@@ -3596,6 +3912,7 @@ public partial class MainWindowViewModel : ObservableObject
                 Reading: ReadPsk31(channel))
             {
                 HeardNotReadable = heardOnly,
+                Variant = variant,
             };
 
             // **THE SAME TWO QUESTIONS `PlaceRow` ASKS OF AN FT8 ROW, OF THE SAME METHODS**
@@ -6022,13 +6339,14 @@ public partial class MainWindowViewModel : ObservableObject
     public string DigitalModeStripLine
         => IsPsk31Chosen
             ? DigitalIdleText.ListeningAcrossThePassband(ChosenDigitalMode!)
-            // **OLIVIA SAYS IT CANNOT BE READ, AND A CITED FILE THAT COULD NOT BE READ SAYS
-            // SO FIRST** (work instruction 358 tasks 1 and 2). The engine's sentence names the
-            // file and what was wrong; nothing is guessed in its place.
+            // **A CITED FILE THAT COULD NOT BE READ SAYS SO FIRST** (work instruction 358 tasks 1
+            // and 2), and then there is nothing to listen with. **Where the files were read,
+            // Olivia says what PSK31 says** (work instruction 364 decision AM): it listens across
+            // the passband, a line a station, and nothing on a line can be answered yet.
             : IsOliviaChosen
             ? _olivia.Problem is { } problem
                 ? problem + " " + DigitalIdleText.NotYetReadable(OliviaLabel)
-                : DigitalIdleText.NotYetReadable(OliviaLabel)
+                : DigitalIdleText.ListeningAcrossThePassband(OliviaLabel)
             : !CanDecode(ChosenDigitalMode)
             ? DigitalIdleText.NotYetReadable(ChosenDigitalMode!)
             : _digitalRefusal.Length > 0
@@ -12824,12 +13142,14 @@ public partial class MainWindowViewModel : ObservableObject
             }
             else if (IsOliviaChosen)
             {
-                // **OLIVIA HAS NO DEMODULATOR YET: THE CAPTURE, AND NOW THE RSID LISTENER**
-                // (work instruction 358 task 3; 359 task 5). The tap's audio goes to a running
-                // capture and to the RSID detector, which writes what it hears and changes
-                // nothing else - no mode, variant, tab or dial (the arbiter's decision B).
+                // **THE CAPTURE, THE RSID LISTENER, AND NOW THE OLIVIA LISTENER** (work
+                // instruction 358 task 3; 359 task 5; 364 decision AE). The tap's audio goes to a
+                // running capture, to the RSID detector, which writes what it hears and changes
+                // nothing else - no mode, variant, tab or dial (the arbiter's decision B) - and to
+                // the Olivia listener, whose stations are drawn as rows. Nothing here can send.
                 KeepOliviaCapture(tap);
                 HearRsid(tap);
+                HearOlivia(tap);
             }
 
             return;

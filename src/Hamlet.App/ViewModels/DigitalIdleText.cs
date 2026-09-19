@@ -114,15 +114,18 @@ public static class DigitalIdleText
         + "not sure of gets no line at all rather than a guess, so an empty panel can "
         + "mean a quiet band or a signal too rough to read.";
 
-    /// <summary>The decoded text table under Olivia, which Hamlet cannot read yet.</summary>
+    /// <summary>The decoded text table under Olivia, before anything has decoded.</summary>
     /// <remarks>
-    /// **THE SAME PANEL, EMPTY, SAYING WHY** (work instruction 358 task 2). Nothing reads
-    /// Olivia until step 2 of its phase, so the panel does not promise lines the way
-    /// <see cref="DecodedUnslotted"/> does; it says nothing is coming yet and what the Capture
-    /// button beside it is for.
+    /// <para>**IT SAID NOTHING WOULD APPEAR, AND SINCE WORK INSTRUCTION 364 THAT IS FALSE**
+    /// (decision AM). It now says what <see cref="DecodedUnslotted"/> says, in Olivia's terms: a
+    /// line for every station it is sure of, text arriving a block at a time rather than a
+    /// character, and why a line might not be there.</para>
+    /// <para>**THE CAPTURE SENTENCE STAYS**, because the button is still beside it and still
+    /// what the evening's signals are kept with.</para>
     /// </remarks>
     public const string DecodedOlivia =
-        "nothing decoded, because Hamlet cannot read Olivia yet. Nothing will appear here "
-        + "until it can. Capture keeps two minutes of what the radio hears, so the evening's "
-        + "signals can be used to teach it.";
+        "nothing decoded yet. Every station Hamlet is sure is sending Olivia gets a line here, "
+        + "filling in a few characters at a time as each block is read. A signal it is not sure "
+        + "of gets no line at all rather than a guess, so an empty panel can mean a quiet band or "
+        + "a signal too weak to read. Capture keeps two minutes of what the radio hears.";
 }

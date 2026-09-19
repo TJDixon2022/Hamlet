@@ -238,43 +238,52 @@ public static class Psk31Events
     /// <param name="characters">How many characters the row shows.</param>
     /// <param name="lines">How many complete messages the parser read on it.</param>
     /// <param name="lifetimeSeconds">Audio seconds from the row going up to its carrier going.</param>
+    /// <param name="tag">What an Olivia row adds - see <see cref="Olivia"/> - or null on PSK31's.</param>
     /// <remarks>
     /// **WHAT WAS HEARD STAYS** (Tim, 2026-09-14; work instruction 355 task 2). The carrier's own
     /// retirement is `psk31_carrier_retired`; this is the row's, and it is the fact that the words
     /// are still on his screen. **Counts and a frequency, never the words** (HM-DEC-018, §2.1).
     /// </remarks>
     public static void RowEnded(
-        ITelemetry? telemetry, double offsetHz, int characters, int lines, double lifetimeSeconds)
+        ITelemetry? telemetry, double offsetHz, int characters, int lines, double lifetimeSeconds,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_row_ended",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["offsetHz"] = offsetHz,
-                ["characters"] = characters,
-                ["lines"] = lines,
-                ["lifetimeSeconds"] = Math.Round(lifetimeSeconds, 1),
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["offsetHz"] = offsetHz,
+                    ["characters"] = characters,
+                    ["lines"] = lines,
+                    ["lifetimeSeconds"] = Math.Round(lifetimeSeconds, 1),
+                },
+                tag));
 
     /// <summary>An ended PSK31 row left the list.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="offsetHz">Where the row's carrier was.</param>
     /// <param name="characters">How many characters went with it.</param>
     /// <param name="reason">`clear`, `retune` or `cap` - which of the list's own rules removed it.</param>
+    /// <param name="tag">What an Olivia row adds - see <see cref="Olivia"/> - or null on PSK31's.</param>
     /// <remarks>
     /// **THE ONLY WAYS AN ENDED ROW GOES ARE THE WAYS AN FT8 ROW GOES**, and the reason says which,
     /// so a record that shows words appearing also shows what took them off the screen.
     /// </remarks>
-    public static void RowCleared(ITelemetry? telemetry, double offsetHz, int characters, string reason)
+    public static void RowCleared(
+        ITelemetry? telemetry, double offsetHz, int characters, string reason,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_row_cleared",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["offsetHz"] = offsetHz,
-                ["characters"] = characters,
-                ["reason"] = reason,
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["offsetHz"] = offsetHz,
+                    ["characters"] = characters,
+                    ["reason"] = reason,
+                },
+                tag));
 
     /// <summary>A held carrier stopped typing, or started again.</summary>
     /// <param name="telemetry">Sink, or null.</param>
@@ -313,24 +322,29 @@ public static class Psk31Events
     /// <param name="offsetHz">Where the carrier sits.</param>
     /// <param name="open">True where it opened.</param>
     /// <param name="quality">What the measure read at that moment.</param>
+    /// <param name="tag">What an Olivia row adds - see <see cref="Olivia"/> - or null on PSK31's.</param>
     public static void Squelch(
-        ITelemetry? telemetry, double offsetHz, bool open, double quality)
+        ITelemetry? telemetry, double offsetHz, bool open, double quality,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_squelch",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["offsetHz"] = Math.Round(offsetHz, 1),
-                ["open"] = open,
-                ["quality"] = Math.Round(quality, 3),
-                ["threshold"] = Psk31Demodulator.SquelchQuality,
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["offsetHz"] = Math.Round(offsetHz, 1),
+                    ["open"] = open,
+                    ["quality"] = Math.Round(quality, 3),
+                    ["threshold"] = Psk31Demodulator.SquelchQuality,
+                },
+                tag));
 
     /// <summary>A held carrier started or stopped being readable, or its AFC moved.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="offsetHz">Where the carrier sits.</param>
     /// <param name="reading">True where characters are coming out of it.</param>
     /// <param name="afcHz">How far the AFC has pulled from the first estimate.</param>
+    /// <param name="tag">What an Olivia row adds - see <see cref="Olivia"/> - or null on PSK31's.</param>
     /// <remarks>
     /// <para>**IT WAS CALLED `psk31_lock` AND IT NEVER MEASURED LOCK** (work instruction
     /// 324 task 3). What it reads is the demodulator's squelch: whether this carrier is
@@ -343,16 +357,19 @@ public static class Psk31Events
     /// `psk31_carrier_retired` no longer describe the same moment.</para>
     /// </remarks>
     public static void Reading(
-        ITelemetry? telemetry, double offsetHz, bool reading, double afcHz)
+        ITelemetry? telemetry, double offsetHz, bool reading, double afcHz,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_reading",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["offsetHz"] = Math.Round(offsetHz, 1),
-                ["reading"] = reading,
-                ["afcHz"] = Math.Round(afcHz, 1),
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["offsetHz"] = Math.Round(offsetHz, 1),
+                    ["reading"] = reading,
+                    ["afcHz"] = Math.Round(afcHz, 1),
+                },
+                tag));
 
     /// <summary>The parser returned a verdict for one line.</summary>
     /// <param name="telemetry">Sink, or null.</param>
@@ -362,6 +379,7 @@ public static class Psk31Events
     /// <param name="turnover">True where the line handed over.</param>
     /// <param name="toOperator">True where it was addressed to this station.</param>
     /// <param name="characters">How long the line was.</param>
+    /// <param name="tag">What an Olivia row adds - see <see cref="Olivia"/> - or null on PSK31's.</param>
     /// <remarks>
     /// **THE VERDICT AND NOT THE LINE** (HM-DEC-018, §2.1). A kind, two flags and a
     /// count. **The text itself never leaves the screen**, and neither does the callsign
@@ -375,19 +393,22 @@ public static class Psk31Events
         bool certain,
         bool turnover,
         bool toOperator,
-        int characters)
+        int characters,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_line_parsed",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["offsetHz"] = Math.Round(offsetHz, 1),
-                ["kind"] = kind,
-                ["certain"] = certain,
-                ["turnover"] = turnover,
-                ["toOperator"] = toOperator,
-                ["characters"] = characters,
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["offsetHz"] = Math.Round(offsetHz, 1),
+                    ["kind"] = kind,
+                    ["certain"] = certain,
+                    ["turnover"] = turnover,
+                    ["toOperator"] = toOperator,
+                    ["characters"] = characters,
+                },
+                tag));
 
     /// <summary>What the audio on the PSK31 path looks like.</summary>
     /// <param name="telemetry">Sink, or null.</param>
@@ -399,20 +420,186 @@ public static class Psk31Events
     /// device is silent and a path that hears nothing because the band is quiet are
     /// different faults, and this is what separates them.
     /// </remarks>
+    /// <param name="tag">What an Olivia row adds - see <see cref="Olivia"/> - or null on PSK31's.</param>
     public static void AudioHeard(
-        ITelemetry? telemetry, AudioLevel level, string reason)
+        ITelemetry? telemetry, AudioLevel level, string reason,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_audio_level",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["reason"] = reason,
+                    ["inputPeakDb"] = Math.Round(level.PeakDb, 1),
+                    ["inputRmsDb"] = Math.Round(level.RmsDb, 1),
+                    ["inputFloorDb"] = Math.Round(level.FloorDb, 1),
+                    ["clipping"] = level.PeakDb >= Hamlet.RadioEngine.Audio.AudioLevel.FullScaleDb,
+                    ["nearlySilent"] = level.NearlySilent,
+                },
+                tag));
+
+    /// <summary>**What an Olivia row's event adds to the PSK31 row event of the same name.**</summary>
+    /// <param name="variant">The row's variant, or null on an event about the whole listener.</param>
+    /// <returns>`mode: olivia`, and the variant where there is one.</returns>
+    /// <remarks>
+    /// **ONE SET OF ROW EVENTS, TWO MODES** (work instruction 364 decision AK). Olivia rows are drawn
+    /// by the PSK31 row path, so they are written by the PSK31 row events - the same names and
+    /// fields - with the mode and the variant on top. A reader of the file tells them apart by
+    /// `mode`, which a PSK31 row's event does not carry.
+    /// </remarks>
+    public static IReadOnlyDictionary<string, object?> Olivia(string? variant)
+        => variant is null
+            ? new Dictionary<string, object?>(StringComparer.Ordinal) { ["mode"] = "olivia" }
+            : new Dictionary<string, object?>(StringComparer.Ordinal) { ["mode"] = "olivia", ["variant"] = variant };
+
+    /// <summary>The Olivia listener started under the Olivia tab.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="dialHz">Where the radio was, or 0 where it is unknown.</param>
+    /// <param name="lowHz">The bottom of the passband listened to.</param>
+    /// <param name="highHz">The top of it.</param>
+    /// <param name="sampleRate">The audio rate the listener reads at.</param>
+    /// <param name="deviceSampleRate">The rate the audio device is handing over.</param>
+    /// <param name="resampleRatio">Input samples per output sample, 1 where it passes through.</param>
+    /// <param name="threshold">The block signal-to-noise a block must reach to be shown.</param>
+    /// <param name="replaySeconds">How much audio a new channel is handed from before it was opened.</param>
+    /// <remarks>
+    /// **`psk31_listening_started`'s fields that mean the same thing under Olivia**, and Olivia's own
+    /// threshold where PSK31's squelch would be: a PSK31 retire rule written beside an Olivia
+    /// listener would be a rule nothing is applying.
+    /// </remarks>
+    public static void OliviaListeningStarted(
+        ITelemetry? telemetry,
+        long dialHz,
+        double lowHz,
+        double highHz,
+        int sampleRate,
+        int deviceSampleRate,
+        double resampleRatio,
+        double threshold,
+        double replaySeconds)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_listening_started",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["dialHz"] = dialHz > 0 ? dialHz : null,
+                    ["passbandLowHz"] = Math.Round(lowHz),
+                    ["passbandHighHz"] = Math.Round(highHz),
+                    ["sampleRate"] = sampleRate,
+                    ["deviceSampleRate"] = deviceSampleRate,
+                    ["resampleRatio"] = Math.Round(resampleRatio, 4),
+                    ["threshold"] = threshold,
+                    ["replaySeconds"] = Math.Round(replaySeconds, 3),
+                },
+                Olivia(null)));
+
+    /// <summary>An Olivia channel opened, and its row with it.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="id">The channel.</param>
+    /// <param name="offsetHz">Where it sits.</param>
+    /// <param name="variant">Its variant.</param>
+    /// <param name="found">`rsid` or `blind`.</param>
+    /// <remarks>
+    /// **`psk31_carrier_appeared`, WITH WHAT OLIVIA MEASURES.** There is no search pass to count and no
+    /// decibel strength in 2500 Hz, so those two are absent rather than zero (§0.0); how the station
+    /// was found is the fact an Olivia reader needs in their place.
+    /// </remarks>
+    public static void OliviaCarrierAppeared(
+        ITelemetry? telemetry, int id, double offsetHz, string variant, string found)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_carrier_appeared",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["carrierId"] = id,
+                    ["offsetHz"] = Math.Round(offsetHz, 1),
+                    ["strengthDb"] = null,
+                    ["quality"] = null,
+                    ["passesAsCandidate"] = null,
+                    ["found"] = found,
+                },
+                Olivia(variant)));
+
+    /// <summary>An Olivia channel stopped being read.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="id">The channel.</param>
+    /// <param name="offsetHz">Where it sat as of its last accepted block.</param>
+    /// <param name="variant">Its variant.</param>
+    /// <param name="reason">Why: `SignalGone`, `VariantChanged` or `ListeningStopped`.</param>
+    /// <param name="lifetimeSeconds">Audio seconds from its opening to now.</param>
+    /// <param name="characters">How many characters it showed.</param>
+    /// <param name="lines">How many lines the parser made of them.</param>
+    /// <param name="sinceLastCharacter">Seconds since its last character, or null where it showed none.</param>
+    /// <param name="retire">What an Olivia retire adds - its window and factor - or null.</param>
+    public static void OliviaCarrierRetired(
+        ITelemetry? telemetry,
+        int id,
+        double offsetHz,
+        string variant,
+        string reason,
+        double lifetimeSeconds,
+        int characters,
+        int lines,
+        double? sinceLastCharacter,
+        IReadOnlyDictionary<string, object?>? retire = null)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_carrier_retired",
+            Tagged(
+                Tagged(
+                    new Dictionary<string, object?>(StringComparer.Ordinal)
+                    {
+                        ["carrierId"] = id,
+                        ["offsetHz"] = Math.Round(offsetHz, 1),
+                        ["reason"] = reason,
+                        ["lifetimeSeconds"] = Math.Round(lifetimeSeconds, 1),
+                        ["charactersEmitted"] = characters,
+                        ["linesParsed"] = lines,
+                        ["secondsSinceLastCharacter"] = sinceLastCharacter is { } seconds
+                            ? Math.Round(seconds, 1)
+                            : null,
+                    },
+                    Olivia(variant)),
+                retire));
+
+    /// <summary>The Olivia tab was left, or the application stopped.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="seconds">How long it listened.</param>
+    /// <param name="carriers">How many channels opened in that time.</param>
+    /// <param name="characters">How many characters were shown - the sum of every retire's count.</param>
+    /// <param name="lines">How many lines the parser returned a verdict for - the sum of every retire's count.</param>
+    public static void OliviaListeningStopped(
+        ITelemetry? telemetry, double seconds, int carriers, int characters, int lines)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_listening_stopped",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["seconds"] = Math.Round(seconds, 1),
+                    ["carriersSeen"] = carriers,
+                    ["charactersEmitted"] = characters,
+                    ["linesParsed"] = lines,
+                },
+                Olivia(null)));
+
+    /// <summary>A row event's fields with an Olivia row's added, or as they were where there are none.</summary>
+    private static Dictionary<string, object?> Tagged(
+        Dictionary<string, object?> fields, IReadOnlyDictionary<string, object?>? tag)
+    {
+        if (tag is not null)
+        {
+            foreach (var (key, value) in tag)
             {
-                ["reason"] = reason,
-                ["inputPeakDb"] = Math.Round(level.PeakDb, 1),
-                ["inputRmsDb"] = Math.Round(level.RmsDb, 1),
-                ["inputFloorDb"] = Math.Round(level.FloorDb, 1),
-                ["clipping"] = level.PeakDb >= Hamlet.RadioEngine.Audio.AudioLevel.FullScaleDb,
-                ["nearlySilent"] = level.NearlySilent,
-            });
+                fields[key] = value;
+            }
+        }
+
+        return fields;
+    }
 
     /// <summary>A macro was composed for sending.</summary>
     /// <param name="telemetry">Sink, or null.</param>

@@ -433,6 +433,12 @@ public sealed partial record DigitalDecodeRow(
     /// <summary>True where <see cref="EndedWord"/> has something to say.</summary>
     public bool HasEndedWord => Ended;
 
+    /// <summary>The Olivia variant this row's station is read at, or "" on every other row.</summary>
+    public string Variant { get; init; } = "";
+
+    /// <summary>True where <see cref="Variant"/> has something to say: only on an Olivia row.</summary>
+    public bool HasVariant => Variant.Length > 0;
+
     /// <summary>**True where Hamlet can hear this carrier and cannot yet read it.**</summary>
     /// <remarks>
     /// <para>**AN EMPTY LIST AND A BAND FULL OF SIGNALS HAMLET CANNOT READ MUST NOT LOOK
