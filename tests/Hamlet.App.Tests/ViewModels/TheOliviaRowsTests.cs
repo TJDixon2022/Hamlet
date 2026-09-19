@@ -206,12 +206,18 @@ public sealed class TheOliviaRowsTests : IDisposable
 
         foreach (var name in new[]
                  {
-                     "psk31_listening_started", "psk31_carrier_appeared", "psk31_squelch", "psk31_reading",
-                     "psk31_line_parsed", "psk31_carrier_retired", "psk31_row_ended", "psk31_listening_stopped",
+                     "psk31_carrier_appeared", "psk31_squelch", "psk31_reading",
+                     "psk31_line_parsed", "psk31_carrier_retired", "psk31_row_ended",
                  })
         {
             Assert.Contains(name, names);
         }
+
+        // **THE LISTENER'S START AND STOP ARE ITS OWN**, not PSK31's: `psk31_listening_started` means a
+        // PSK31 listener started, and none did.
+        Assert.DoesNotContain("psk31_listening_started", names);
+        Assert.Single(lines.Select(Parse), e => e.Event == "olivia_listening_started");
+        Assert.Single(lines.Select(Parse), e => e.Event == "olivia_listening_stopped");
 
         var appeared = rowEvents.Where(e => e.Event == "psk31_carrier_appeared").ToList();
 

@@ -6,8 +6,8 @@ WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T13:44:55-04:00
-NOTE: TheOliviaSeamTests rewritten under R12 (decision AM) - running it by name before its own commit
+UPDATED: 2026-09-19T13:49:41-04:00
+NOTE: Olivia listener start/stop renamed olivia_listening_*; rerunning the capture test, the rows tests and the seam tests
 
 ---
 

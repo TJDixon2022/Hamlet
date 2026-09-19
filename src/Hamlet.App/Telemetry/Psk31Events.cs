@@ -464,9 +464,13 @@ public static class Psk31Events
     /// <param name="threshold">The block signal-to-noise a block must reach to be shown.</param>
     /// <param name="replaySeconds">How much audio a new channel is handed from before it was opened.</param>
     /// <remarks>
-    /// **`psk31_listening_started`'s fields that mean the same thing under Olivia**, and Olivia's own
-    /// threshold where PSK31's squelch would be: a PSK31 retire rule written beside an Olivia
-    /// listener would be a rule nothing is applying.
+    /// <para>**`psk31_listening_started`'s fields that mean the same thing under Olivia**, and Olivia's
+    /// own threshold where PSK31's squelch would be: a PSK31 retire rule written beside an Olivia
+    /// listener would be a rule nothing is applying.</para>
+    /// <para>**UNDER ITS OWN NAME, NOT PSK31'S** (work instruction 364, the session's decision). The
+    /// row events are PSK31's names with `mode: olivia` (decision AK); this is not a row event, and
+    /// `psk31_listening_started` is what the record has always meant by *a PSK31 listener started* -
+    /// `TheCaptureButtonTests` reads it that way under the Olivia tab.</para>
     /// </remarks>
     public static void OliviaListeningStarted(
         ITelemetry? telemetry,
@@ -480,7 +484,7 @@ public static class Psk31Events
         double replaySeconds)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
-            "psk31_listening_started",
+            "olivia_listening_started",
             Tagged(
                 new Dictionary<string, object?>(StringComparer.Ordinal)
                 {
@@ -571,11 +575,12 @@ public static class Psk31Events
     /// <param name="carriers">How many channels opened in that time.</param>
     /// <param name="characters">How many characters were shown - the sum of every retire's count.</param>
     /// <param name="lines">How many lines the parser returned a verdict for - the sum of every retire's count.</param>
+    /// <remarks>**UNDER ITS OWN NAME**, for <see cref="OliviaListeningStarted"/>'s reason.</remarks>
     public static void OliviaListeningStopped(
         ITelemetry? telemetry, double seconds, int carriers, int characters, int lines)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
-            "psk31_listening_stopped",
+            "olivia_listening_stopped",
             Tagged(
                 new Dictionary<string, object?>(StringComparer.Ordinal)
                 {
