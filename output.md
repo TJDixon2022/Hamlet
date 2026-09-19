@@ -1,333 +1,326 @@
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet works Olivia the way it works PSK31. Step 0 done
-   and closed; step 1 done (1.5 met by this unit's measurements; the separate
-   reading decides); steps 2-6 not started, step 2's entry open.
-B. Step 1's one open criterion, 1.5, in its R32 wording - PSK31 records
-   saying announced 5 of 5 with code 1; the compound-callsign report
-   fits yes at 28.192 s of text (30.050 s with its burst); the typed-line
-   card and gate agree yes (373 characters, 59.968 s of text, goes on both;
-   374, 60.096 s, refused on both); FT8/FT4 byte-identical yes; PttOn 1 and
-   Arm( 2 unchanged yes. 1.1-1.4, 1.6, 1.7 still green on the carry-forward
-   list yes (engine 111 of 111; app 165 of 166 in the combined run, the one red
-   a known-flaky layout test that passed alone on the first rerun).
+A. The phase goal - Hamlet works Olivia the way it works PSK31. Steps 0
+   and 1 done and closed; step 2 partial (2.1, 2.4, 2.5, 2.6 met; 2.2 met
+   at -10 dB and not at -16 dB; 2.3 and 2.7 parked); steps 3-6 not
+   started, step 3's entry not open until 2.3 is met.
+B. Step 2's criteria - 2.1 clean CER 8/250 0.0000, 16/500 0.0000,
+   32/1000 0.0000 (ceiling 0.01, variant from RSID yes); 2.2 -10 dB 0.0000
+   (0.05), -16 dB 0.9203 (0.10); 2.3 not attempted (parked); 2.4 noise-only
+   characters 0 (0); 2.5 hashes 9 of 9, CPU per file 0.797 / 4.031 / 3.453 /
+   4.016 / 4.047 s and noise 1.000 / 0.969 / 1.188 s (ceiling 20); 2.6
+   measured yes; 2.7 not attempted (parked). Met: 2.1, 2.4, 2.5, 2.6; 2.2
+   half (the -10 dB file).
 C. The report last: section 4 raises 5 items on top of the carried queue.
-   None stands in the way of 1.5 or of step 2's entry. Task 2 did not stop
-   at the transmit chain: nothing it needed touched the gate, PttOn, the
-   finally, StopNow or the cap's value. Task 4 found nothing in pj_mfsk.h
-   that cannot be written as Hamlet's own. The format's constants (the
-   scrambling code, the shift of 13, the character-to-Walsh mapping, the Gray
-   code) have to match bit for bit, so they belong in a cited data file, not
-   in code.
+   One stands in the way of a criterion in B: the -16 dB file (item 1),
+   which measures -17.19 dB in 2500 Hz and reads at CER 0.33 even with
+   every block accepted, so no threshold meets 0.10 without showing wrong
+   characters. Nothing in pj_mfsk.h had to be copied (no stop material):
+   the format's facts are cited data in data/olivia/format.json and the
+   receiver is Hamlet's own. Every fixture decoded; none failed to decode
+   at all.
 
-UNIT:       360 - complete at task 5 of 5 (tasks 0 to 4), task 4 built - 2026-09-18 22:10
+UNIT:       361 - complete at task 6 of 6, task 5 built - 2026-09-18 23:34
 PHASE GOAL: Hamlet hears, reads, answers and logs Olivia the way it already does PSK31, with the variant taken from the signal's own RSID announcement and never picked by the operator.
-UNIT GOAL:  Make every PSK31 send's transmission record say it was announced and with which code, and hold the cap to the text alone with the burst outside it, so step 1's last criterion closes and step 2 can start.
-ADVANCED:   yes - 1.5 now has measured support on every clause: 5 of 5 records say announced with code 1, and the compound-callsign report fits and is armed
-NUMBER:     PSK31 records saying announced 0 -> 5 of 5; compound-callsign report refused -> fits
+UNIT GOAL:  Build Hamlet's own Olivia demodulator that, handed the variant and center the RSID detector read, turns the mode author's clean 8/250, 16/500 and 32/1000 audio into its text at CER 0.01 or under, the -10 and -16 dB files at 0.05 and 0.10, and pure noise into nothing, each in under 20 s of CPU.
+ADVANCED:   yes - step 2 goes from 0 of 7 criteria to 4 met (2.1, 2.4, 2.5, 2.6) and 2.2 half met
+NUMBER:     Olivia fixtures decoded at or under their ceiling 0 -> 4 of 5 (three clean, two below the noise); noise-only characters 0
 DRIFT:      0
 
-| Criterion | State after this unit | Evidence |
+| Criterion | This unit's number | State |
 | --- | --- | --- |
-| 1.1 each RSID fixture one detection, none on no-RSID and noise | green | `TheRsidDetectorTests`, engine carry-forward 111 of 111 |
-| 1.2 two-signal fixture two detections | green | same run |
-| 1.3 the -16 dB burst detected | green | same run |
-| 1.4 Hamlet's burst reads back and matches the file's sequence | green | `TheRsidBurstTests`, same run |
-| **1.5** CQ begins with the burst by loopback; the record says `announced: true` with the code; FT8/FT4 byte-identical; the burst outside the cap | **met** | loopback: `ThePsk31SendIsAnnouncedTests`; record: 5 of 5, code 1; `TheFt8AndFt4SendsAreByteIdenticalTests` green, unedited; VP2V/W1AW report 28.192 s of text fits and is armed |
-| 1.6 `rsid_heard` and `rsid_sent`, no callsign | green | `TheOliviaSeamTests` and `ThePsk31SendIsAnnouncedTests`, app carry-forward |
-| 1.7 keeps up with real time (nice-to-pass) | green | `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime` in the engine run; the ratio was not re-read this unit (unit 359: 0.075) |
+| 2.1 clean fixtures, CER <= 0.01, variant and center from RSID | 8/250 0.0000, 16/500 0.0000, 32/1000 0.0000; detector gave 69, 70, 71 at 1000.32 Hz | **met** |
+| 2.2 below the noise | -10 dB 0.0000 (ceiling 0.05); -16 dB 0.9203 (ceiling 0.10) | **half**: -10 met, -16 not met |
+| 2.3 blind variant search | not attempted | parked |
+| 2.4 noise-only, each variant at 1000 Hz, zero characters | 0, 0, 0 (highest block S/N 3.20, 3.48, 3.31 against 4.0) | **met** |
+| 2.5 hashes and CPU under 20 s per file | hashes 9 of 9; demodulator CPU 0.797 to 4.047 s | **met** |
+| 2.6 timing table measured | 0.68267, 0.51200, 0.40960 s/character, `source: measured`, within 2% (exact) | **met** |
+| 2.7 drift fixture | not attempted | parked |
 
 ## 1. What Claude did
 
-**Complete: tasks 0 to 4, five of five, task 4 built.** Machine: the development PC,
-`C:\Source\HamLet`, project Hamlet, branch `main`. Every commit was pushed to `origin/main` and
-every push succeeded: `0a55852c`, `1ac1f84b`, `b5259457`, `186c1a65`, `ebc653fa`, `b79fb3f0`, and
-this report.
+**Surface and gate.** Claude Code on the development machine, branch `main`, every commit pushed.
+The prompt claimed `PROJECT: Hamlet`; the tree confirmed it: `PROJECT_CARD.md` says `PROJECT:
+Hamlet`, `Hamlet.sln` exists, `SHACK_FACTS.md` and
+`src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln` and `MURC.sln` do not,
+root `C:\Source\HamLet`. **Nothing in this report is evidence about the radio** (FACT-004,
+HM-DEC-093). The work order carried the status instruction and six tasks; status was written
+with `tools/status.sh` in the allowed words (`EXECUTING`, `code`) after every commit and task and
+immediately before every `dotnet test`.
+
+**Commits on `main`, all pushed:**
+
+| Commit | Task |
+| --- | --- |
+| `ec4b466e` | 0 - the unit opens, 1.13.47 -> 1.13.48 |
+| `8b7e6591` | 1 - `Unit361Trace.StepTwosTrace` |
+| `b16bb1ae` | 2 - `data/olivia/format.json`, `OliviaFormat`, read through `OliviaData` |
+| `23b46c2d` | 3 - `OliviaDemodulator`, `OliviaFixtures`, `TheOliviaDemodulatorTests`, carry-forward list |
+| `1a800e4d` | 4 - `Unit361Trace.BelowTheNoise` |
+| `69d0a953` | §R12 rewrite of `Unit360Trace`, its own commit |
+| `e03d3a8a` | 5 - `data/olivia/timing.json` measured, `OliviaTiming`, `OliviaData.Timing` |
 
 ### Task 0 - the unit opens
 
-- The gate held: `SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs`
-  exist, `CoreHMI.sln` and `MURC.sln` do not, root `C:\Source\HamLet`.
-- `PHASE_STATUS.md`: step 0 `done`, step 1 `partial`.
-- The nine fixtures hash as `manifest.json` says, `psk31-cq-rsid.wav` first: **9 of 9**.
-- `UNIT 360 - STEP 1` appended at the end of `PHASE_OUTCOME.md`; no earlier entry touched.
-- Version 1.13.46 -> **1.13.47**.
-- Carry-forward before any change: **app 165 of 165, engine 105 of 105**, first run of each.
-- Committed and pushed as `0a55852c`.
+- `PHASE_STATUS.md` has steps 0 and 1 `done` (uncommitted launcher edit, committed here as told).
+- **Step 2's entry, first:** `olivia-16-500-qso-rsid.wav` hashes as the manifest says, and the RSID
+  detector reads `OLIVIA_16_500 (70) mode OLIVIA variant "16/500" at 1000.32 Hz, error 0.32 Hz,
+  quality 0.902, tones right 15, first tone at 0.464 s`. Then the other eight hash: **9 of 9**.
+- `UNIT 361 - STEP 2` appended at the end of `PHASE_OUTCOME.md`; no earlier entry touched.
+- Version **1.13.47 -> 1.13.48** in `Directory.Build.props`.
+- Carry-forward before any change: **engine 111 of 111, app 166 of 166** (first run, no reruns).
 
-### Task 1 - the trace, before anything is built
+### Task 1 - the trace (`Unit361Trace.StepTwosTrace`, asserts nothing)
 
-**1. Every place a no-slot send's length is judged.**
+**1. The variants, from `pj_mfsk.h`'s formulas at 8000 Hz** (the rate `Psk31Resampler.TargetSampleRate`
+hands the RSID detector; decision M):
 
-- `UnslottedTransmission.Fit` (`UnslottedTransmission.cs:81`-`85`) is **the one judge**:
-  `Seconds > Cap`, where `Seconds` is all the samples over the rate, the burst included.
-- `Ft8ArmedSend.Arm` (`Ft8ArmedSend.cs:279`) asks `Ft8TransmitSequence.RefusedBeforeArming`,
-  which asks `SendableWithNoSlot` (`Ft8TransmitSequence.cs:781`). That reads `audio.Fit` and
-  writes the refusal sentence from `audio.Seconds` and `audio.Cap`. The same method is the
-  sequence's backstop inside `RunAsync`. **Neither measures anything itself**; both read `Fit`.
-- The typed line's *too long to send*, in two places, both through
-  `Psk31Modulator.SentSecondsFor` (text + `RsidBurst.Seconds`):
-  - the card's word, `Ft8ContactCard.TypedSecondsWord` (`Ft8ContactCard.cs:246`-`249`), via
-    `Psk31Macros.TypedSeconds` (`Psk31Macros.cs:155`);
-  - the press's note, `MainWindowViewModel.cs:15563`.
-- `psk31_send_composed`'s `withinCap` (`Psk31Events.cs:448`): `seconds <= capSeconds`, with
-  `seconds` = `composed.Seconds`, the burst included (`MainWindowViewModel.cs:15303`).
-- Nothing else found. `TransmitRecord` writes `longestSeconds` but judges nothing.
+| Variant | Tones | Spacing | Symbol | Bits/symbol | Symbols/block | Chars/block | Block | s/char | Samples/symbol |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 8/250 | 8 | 31.250 Hz | 32.000 ms | 3 | 64 | 3 | 2.048 s | 0.6827 | 256 |
+| 16/500 | 16 | 31.250 Hz | 32.000 ms | 4 | 64 | 4 | 2.048 s | 0.5120 | 256 |
+| 32/1000 | 32 | 31.250 Hz | 32.000 ms | 5 | 64 | 5 | 2.048 s | 0.4096 | 256 |
 
-**2. The seconds of each send, measured today** (`Unit359Trace`, 12000 and 48000 Hz identical).
-`Compose` now puts the burst in front, so the trace's first column is text + burst. The text
-column is that less the 1.8576 s burst.
+The analysis window (`SymbolLen`) is 512 samples, two symbol periods. **The audio agrees with the
+header on every clean fixture**: the symbol period measured from the tone changes is 256 samples
+(32.000 ms) on all three.
 
-| Send | Text s | Text + burst s | Cap | Today |
-| --- | --- | --- | --- | --- |
-| CQ | 11.456 | 13.314 | 30 | fits |
-| Answer to W1AW | 7.840 | 9.698 | 30 | fits |
-| Report to W1AW | 24.800 | 26.658 | 30 | fits |
-| Confirm to W1AW | 16.256 | 18.114 | 30 | fits |
-| Report to VP2V/W1AW | 28.192 | **30.050** | 30 | **refused** |
-| Typed line, 227 characters | 58.112 | 59.970 | 60 | fits |
+**2. The spectrum after each burst**, 512-sample raised-cosine windows padded to 2048 (3.906 Hz bins):
 
-**Unit 359's table still holds**, number for number. The trace's longest typed line is now
-227 characters rather than 235, because `TypedSeconds` has counted the burst since unit 359.
-
-**3. What `ft8_transmission` carries today.**
-- A PSK31 send: `mode`, `frequencyHz`, `durationSeconds`, `sampleRate`, `sampleCount`,
-  `messageLength`, `outcome`, `cameOutOfTransmit`, `keyed`, `fit`, `audioSeconds`,
-  `longestSeconds`, `stagesEntered`. **Nothing about the announcement.**
-- An FT8 send: `slotStartUtc`, `startSecondsIntoSlot`, `frequencyHz`, `durationSeconds`,
-  `sampleRate`, `sampleCount`, `messageType`, `messageLength`, `carriedHashedCallsign`,
-  `outcome`, `cameOutOfTransmit`, `keyed`, `stagesEntered`.
-- Found along the way: `longestSeconds` is always `OperatorSend.LongestUnslottedSeconds`
-  (30), even on a typed line held to 60 (`TransmitRecord.cs:166`).
-
-**4. Tests that assert the burst counts inside the cap.** One:
-`ThePsk31SendIsAnnouncedTests.TheTypedLinesTooLongEstimateIncludesTheBurst`. It also asserts
-`SentSecondsFor` = text + burst. It is the §R12 rewrite for task 2.
-`TheUnslottedSendTests.ASendWithNoSlotLongerThanTheCapIsRefusedBeforeItArmsWithARecord` compares
-whole audio to the cap. Its report to VP2V/W1AW with a long place is over on its text alone, so
-it still holds under D.
-
-**5. Counts.** `CivConstants.PttOn` code lines **1**; `_armedSend.Arm(` lines **2**.
-
-This trace was committed as `1ac1f84b`, before task 2 wrote a line.
-
-### Task 2 - the burst is outside the cap (1.5, R32 a)
-
-Built decisions D and E. **No change to the gate, `PttOn`, the `finally`, `StopNow`, the cap's
-value, or any keying or arming site.** The sequence did not change in this task.
-
-- `UnslottedTransmission` gains `AnnouncementSamples` (init), `Announced`,
-  `AnnouncementSeconds` and `TextSeconds`. Only `Psk31Modulator.Compose` sets
-  `AnnouncementSamples`, from `burst.Length`, the burst it actually put in front.
-- `Fit` holds `TextSeconds` (the samples after the announcement) to `Cap`. The excusal is
-  bounded: the claimed announcement must be no longer than
-  `RsidBurst.LengthInSamples(codes, SampleRate)`, must carry a code the file has a sequence for,
-  and must be no longer than the audio. Otherwise the send is `LongerThanTheCap`. Unannounced
-  audio has `AnnouncementSamples` 0 and is measured whole. No literal code, tone, rate or length
-  is in the code: all of them come from `OliviaData.Current.Rsid`.
-- E: `Psk31Macros.TypedSeconds` and the press's note now use `Psk31Modulator.SecondsFor`, the
-  framed text alone. The card reads *N s of text* (it read *N s on the air*), and the note reads
-  *comes to N s of text*. `psk31_send_composed`'s `withinCap` takes the announcement off.
-  **`SentSecondsFor` is gone**: nothing used it once the card and the note moved. No file was
-  emptied.
-- **Tests, watched red first** (against a stub with the properties and no behavior):
-  `TheUnslottedSendTests` gained four. Three were red and went green:
-  `TheReportToACompoundCallsignFitsWithItsBurstOutsideTheCap` (28.192 s of text, 1.858 s burst,
-  30.050 s audio, `Fits`, armed, played, one key and one unkey, every sample handed over);
-  `ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot` at 12000 and 48000 Hz (360000 and
-  1440000 text samples fit; one more is refused); and
-  `AnAnnouncementLongerThanTheBurstOrWithNoCodeIsLongerThanTheCap` (five cases, each with 10 s
-  of text). `UnannouncedAudioIsMeasuredWholeAsBefore` was green before and after, as a guard
-  of *as before* should be.
-- **§R12 rewrite, in its own commit (`b5259457`)**:
-  `ThePsk31SendIsAnnouncedTests.TheTypedLinesTooLongEstimateIncludesTheBurst` became
-  `TheTypedLinesCardAndGateAgreeOnTheTextAlone`. Watched red first (*61.8 s on the air, too long
-  to send* for 59.968 s of text), then green: **373 characters, 59.968 s of text (61.826 s with
-  the burst), is not too long on the card and goes. 374 characters, 60.096 s, is too long on the
-  card and refused at the press.** No other test needed a rewrite.
-- Run filtered, green and unedited: `TheFt8AndFt4SendsAreByteIdenticalTests` (engine run 32 of
-  32 with `TheUnslottedSendTests` and `ThePsk31ModulatorTests`) and
-  `TheStopIsAlwaysOnScreenTests` (app run 29 of 29 with `ThePsk31SendIsAnnouncedTests`,
-  `TheTypedLineGoesOutTests` and `ThePsk31TransmitTelemetryTests`).
-- Committed `186c1a65`.
-
-### Task 3 - the record says it was announced (1.5, R32 b)
-
-Built decision F. `TransmitRecord` gains `Announced`, `RsidCode` and `AnnouncementSeconds`,
-optional and written only when not null. `Ft8TransmitSequence.Recorded` fills them on the
-no-slot branch only: `announced`, `rsidCode` only when announced, and `announcementSeconds` (0
-when not announced). **This is the one change the sequence took.** `audioSeconds` is still the
-whole audio. The slotted branch is untouched.
-
-- **Watched red first** on the missing `announced` key, both tests, then green:
-  - `ThePsk31SendIsAnnouncedTests.EachOfTheFiveKindsOfSendRecordsThatItWasAnnounced` (app). It
-    presses CQ, then Answer, Report and Confirm through the textbook exchange, then a typed
-    line, on the fake radio. Composed in that order; five played; **5 of 5 records say
-    `announced: true`, `rsidCode: 1`, `announcementSeconds` 1.8575833 s**, which is
-    `RsidBurst.LengthInSamples` at 12000 Hz over the rate. Nothing personal: no callsign (his or
-    mine), grid, place or word of the typed text in any record.
-  - `TheUnslottedSendTests.TheRecordSaysWhetherTheSendWasAnnounced` (engine). A composed CQ
-    writes `announced: true`, the code and the burst's seconds. The same text unannounced writes
-    `announced: false`, no `rsidCode` key, and `announcementSeconds` 0. `audioSeconds` is the
-    whole audio in both.
-- **The codes cannot be made unreadable from a test.** `OliviaData.Current` is read once from
-  the embedded file. So the unannounced case is the `UnslottedTransmission` that `Compose`
-  returns in that case (the text's samples, no code), handed to the real sequence. It is not a
-  run with the file actually broken.
-- FT8: `TheFt8AndFt4SendsAreByteIdenticalTests`, which pins the FT8 and FT4 records key by key,
-  is green and unedited. So no new key reached a slotted record.
-- `PttOn` 1, `Arm(` 2 (`TheKeyingAndArmingSitesAreUnchanged`).
-- **Carry-forward, both invocations, after the build:** engine **111 of 111** (105 plus this
-  unit's 6 new cases in `TheUnslottedSendTests`). App **165 of 166** in the combined run; the one
-  red, `TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning`, **passed
-  alone on the first rerun**. That is the test unit 357 item 1 names as flaky. The app count
-  after the build is 166 because this unit added one test method. **The list gains no name:**
-  no new test class was made (`Unit360Trace` is a trace that asserts nothing).
-- Committed `ebc653fa`.
-
-### Task 4 - step 2's ground, measured and nothing built
-
-`Unit360Trace` (engine, `tests\...\Olivia\`) prints and asserts nothing, the shape of
-`Unit359Trace`. Committed `b79fb3f0`.
-
-**1. Step 2's entry check.** The clean 16/500 fixture's RSID is **still detected**:
-`OLIVIA_16_500 (70) at 1000.32 Hz, tones right 15`.
-
-**2. `assets\reference\jalocha\pj_mfsk.h` (2367 lines), read for structure.**
-
-| Lines | Part | What an Olivia receiver needs from it |
-| --- | --- | --- |
-| 1-32 | includes (`pj_fht.h`, `pj_gray.h`, `pj_fft.h` and others), `Exp2`, `Log2` | - |
-| 33-55 | the symbol shape in the frequency domain: coefficient tables from gMFSK and DM780 | the transmitter's pulse shape; a receiver may use its own window |
-| 56-239 | `MFSK_Modulator` | step 4, not a receiver |
-| 240-289, 600-701 | `BoxFilter`, `CircularBuffer` | utilities |
-| 290-599 | `MFSK_InputProcessor`: overlapped-FFT input conditioning | optional |
-| **702-1047** | **`MFSK_Demodulator`: tone detection.** An FFT per symbol with two spectra slices per symbol (`SpectraPerSymbol = 2`, `:718`), a symbol-shaped window, and soft bits per tone with Gray decoding (`:952`-`:1038`) | tone detection |
-| **1058-1218** | **`MFSK_Encoder`: the other side of the code.** Character to a Walsh function (inverse FHT, `:1150`-`:1166`); scrambling by `ScramblingCodeOlivia` (`:1076`, `ScrambleFHT` `:1168`-`:1177`); interleave by rotating each character's bits across the symbols, shifted 13 per character for Olivia (5 for Contestia) (`EncodeBlock`, `:1178`-`:1206`) | the definition the decoder inverts |
-| **1219-1431** | **`MFSK_SoftDecoder`: the Walsh-function decode.** De-interleave on input (`:1320`-`:1326`), descramble and FHT (`DecodeCharacter`, `:1328`-`:1380`), best-correlation character out | the error correction |
-| 1432-1615 | `RateConverter` | Hamlet has its own rate handling |
-| 1616-1850 | `MFSK_Transmitter` | step 4 |
-| 1851-1928 | a usage comment for `MFSK_Receiver` | - |
-| **1929-2367** | **`MFSK_Receiver`: symbol and block sync.** A search over `2 * SyncMargin + 1` frequency offsets and `SlicesPerSymbol * SymbolsPerBlock` block phases (`:2088`-`:2089`), integrated over `SyncIntegLen` blocks, with an S/N threshold (defaults margin 8, integration 4, threshold 3.0, `:2031`-`:2033`) and best phase and offset tracking (`:2240`-`:2360`) | sync |
-
-**What could not be written as Hamlet's own without copying: no algorithm.** The FFT tone
-detection, the block-phase and offset search, and the FHT correlation decode are standard
-techniques. Hamlet can write them from the structure above, the way the RSID detector was
-written. **What has to be taken from the source is the format's constants**, because a decoder
-must match them bit for bit: the 64-bit Olivia scrambling code, the shift of 13, the
-character-to-Walsh-index mapping (`Char < SymbolsPerBlock` gives +1, otherwise -1 at
-`Char - SymbolsPerBlock`), and the Gray code. These are facts of the format, not expression. By
-R27's pattern they belong in a cited data file (`rsid-codes.json` is the precedent), not as
-literals in code. Nothing here needs a package or a port of the file.
-
-**3. `data\olivia\timing.json`, parsed by machine** (System.Text.Json, in the trace; `python`
-and `jq` both needed approval this session). Its keys: `_about`, `source` (*estimated*),
-`confirm`, `written_by`, `method`, `why_an_upper_bound`, `excluded`, `variants`. Against the
-manifest:
-
-| Variant | File | Seconds (file / manifest) | Characters | RSID | Per character (file / computed) | |
+| File | Tones found | Lowest | Highest | Midpoint vs center | Mean spacing | Occupied (20 dB) vs bandwidth |
 | --- | --- | --- | --- | --- | --- | --- |
-| 8/250 | `olivia-8-250-cq-rsid.wav` | 28.98 / 28.98 | 38 / 38 | 2.32 / true | 0.702 / 0.702 | agrees |
-| 8/250 | `olivia-8-250-qso-norsid.wav` | 172.06 / 172.06 | 251 / 251 | 0 / false | **0.686 / 0.685** | per-character rounded up |
-| 16/500 | `olivia-16-500-qso-rsid.wav` | 131.38 / 131.38 | 251 / 251 | 2.32 / true | 0.514 / 0.514 | agrees |
-| 32/1000 | `olivia-32-1000-qso-rsid.wav` | 106.8 / 106.8 | 251 / 251 | 2.32 / true | 0.416 / 0.416 | agrees |
+| 8/250 | 7 of 8 | 891.87 | 1109.23 | 1000.55 vs 1000.32 | 36.225 | 855.5-1144.5 = 289.1 vs 250 |
+| 16/500 | 16 of 16 | 768.06 | 1232.37 | 1000.22 vs 1000.32 | 30.955 | 730.5-1269.5 = 539.1 vs 500 |
+| 32/1000 | 30 of 32 | 518.99 | 1483.11 | 1001.05 vs 1000.32 | 33.245 | 480.5-1519.5 = 1039.1 vs 1000 |
 
-172.06 / 251 = 0.68550, so 0.685 to three places, where the file has 0.686. The 8/250 line
-fit (0.683 s per character, 0.72 s fixed) is unaffected: it is computed from the seconds, not
-the rounded figures. The file's 2.32 s RSID is the burst with five silent symbols either side
-(2.3220 s). Hamlet's own burst keeps only the silence in front (1.8576 s), which is decision G.
+The tones the header predicts at a 1000 Hz center run 890.625-1109.375, 765.625-1234.375 and
+515.625-1484.375 Hz; the measured lowest and highest sit within 5 Hz of them. The two missing
+peaks are the peak-picker merging neighbors whose raised-cosine lobes overlap, not missing tones.
 
-### Decisions this session made for itself - the author's, marked and overrulable
+**3. The four format constants**, printed by the trace from the headers at the lines named:
+scrambling code `pj_mfsk.h:1076` and `:1235` `0xE257E6D0291574ECLL`; shift 13 `:1185`, `:1335`,
+applied at `:1192`, `:1337`; character to Walsh index `:1135`, `:1156`, `:1161-1165`; Walsh bit to
+tone bit `:1195-1197`, `:1202`; the inverse Walsh butterfly `pj_fht.h:40-43`; Gray code
+`pj_mfsk.h:168` and `pj_gray.h:11-12`; tone position `pj_mfsk.h:172`, `:1722-1723`. The pin is
+`SOURCE.md` lines 3-5 (fldigi master branch 2026-09-14).
 
-1. **The card's wording.** *N s on the air* became *N s of text*, and the note's *s on the
-   air* became *s of text*. The number no longer includes the burst, so *on the air* would have
-   understated what keys by 1.86 s.
-2. **`SentSecondsFor` is deleted** rather than kept for telemetry. Decision E left this to the
-   unit, and nothing read it after the change.
-3. **`announcementSeconds` is written as 0 on an unannounced send** rather than left out.
-   Decision F says `rsidCode` is absent when false and does not say which for the seconds; 0 is
-   the measured length.
-4. **`Announced` requires both a code and a length above 0.** A code with no samples claimed
-   excuses nothing and records `announced: false`.
-5. **The unannounced case in task 3 is proved at the engine**, with the transmission `Compose`
-   makes when the codes are unreadable, because the codes cannot be broken from a test.
+**4. Where it plugs in.** `RsidDetection` gives `Code`, `Name`, `Mode`, `Variant` (`"16/500"`),
+`CenterHz`, `Quality`, `TonesRight`, `StartSeconds` - **the first tone, not the burst's end**
+(section 4 item 4); the end is `StartSeconds + Symbols / SymbolRateHz` = +1.393 s, from
+`rsid-codes.json`. `OliviaData` reads embedded files once and a malformed one yields a null value
+and a sentence. The resampler is `Psk31Resampler` at 8000 Hz (`_rsidResampler` in
+`MainWindowViewModel`). The PSK31 receive events use `TelemetryCategory.Psk31`.
 
-### Section 5 of the instruction, checked against the tree
+**5. The RSID detector's CPU alone:** 8/250 2.172 s (28.98 s of audio), 16/500 9.766 s (131.38),
+32/1000 8.391 s (106.80), -10 dB 10.500 s, -16 dB 9.906 s, noise 2.234 s (none detected).
 
-Held: HEAD `7bb6b253`; `UnslottedTransmission` `:62` and `:81`-`:85`;
-`LongestUnslottedSeconds = 30` at `Ft8TransmitSequence.cs:133`; `LongestTypedSeconds = 60` at
-`:15489`; `Compose` `:148`; `SentSecondsFor` `:111`; `Psk31Macros.cs:155`;
-`MainWindowViewModel.cs:15563`; `Recorded` `:637`; `TransmitRecord.cs:70`;
-`psk31_send_composed` already carrying `announced` and `rsidCode`; carry-forward 165 and 105;
-`PttOn` 1, `Arm(` 2; Jalocha's headers in `assets\reference\jalocha\`.
+### Task 2 - the format as cited data (decision H)
 
-Mismatches:
-- **`assets\fixtures\captured\` exists.** It holds one file, `README.md`. The instruction says
-  it does not exist.
-- **R32 (a)'s *a fixed 2.3 seconds*** is the burst with silence on both sides. Hamlet's burst
-  is 1.8576 s, which the instruction's own *1.86 s* and decision G match. Not re-argued: the
-  excusal is the burst's measured length, whatever that is.
-- The known ones, not rediscovered: `PHASE_PLAN.md` step 1 still shows 1.7 unchecked;
-  `PHASE_STATUS.md` still says `WORK_INSTRUCTION: 358` (so every status write this unit carries
-  358); `RULES_AT` still HM-DEC-161; the plan's data file names; the mislabeled outcome entries;
-  the two red tests off the list.
+`data/olivia/format.json`: bits per character 7, symbols per block 64, character mask 127, the
+upper half negated, the inverse Walsh butterfly `[[1,-1],[1,1]]`, the scrambling code
+`E257E6D0291574EC`, the shift 13, the scrambling rule, the tone-bit rotation 1, negative sets the
+bit, the Gray table for symbols 0-31, the analysis window of 2 symbols, the null character 0, and
+seven variant rows (4/250, 4/500, 8/250, 8/500, 16/500, 16/1000, 32/1000), **every value with its
+`pj_mfsk.h`, `pj_fht.h` or `pj_gray.h` line**. `OliviaFormat.Parse` is strict: a value without a
+citation, a row whose spacing, symbol length and first tone disagree with its tone count, or a Gray
+table that does not send each symbol on its own tone fails the file. `OliviaData.Format` reads it
+at startup; the two-argument `OliviaData.Read` keeps its meaning and takes the embedded format.
+
+Tests in `TheOliviaDataTests`: `TheOliviaFormatIsReadAtStartupWithItsVariantsAndConstants` checks
+the code and the shift **against `pj_mfsk.h` itself** and the Gray table against `pj_gray.h`'s rule;
+`AMalformedFormatIsReportedInWordsAndNoValue` covers cut off, not hex, a disagreeing row, and
+missing. **Watched red first**: the startup test failed (`Format` null) and `BothFilesParse`
+failed (the missing-format sentence) before the file was embedded. The malformed test passed on
+its first run, because the parser was written with it. 6 of 6 green after.
+
+### Task 3 - hear one (2.1, 2.4, 2.5)
+
+`src\Hamlet.RadioEngine\Olivia\OliviaDemodulator.cs`, Hamlet's own: every eighth of a symbol a
+512-sample raised-cosine window padded to 2048; the offset within half a tone that puts the most
+power on the tones; each tone's power in units of the noise made a likelihood (the noise is the
+median tone power over ln 2, the signal what a symbol carries above it) and turned into a soft
+value per bit; the sync is the frame within a symbol and the symbol a block starts on whose blocks
+stand furthest out of the noise; at the sync each block is read, de-interleaved, descrambled and
+correlated against every Walsh function, **and a block below the threshold shows nothing** (§3.3,
+§R9). Idle (null) characters are not text. **No tone count, spacing, symbol length, rate,
+scrambling code, shift or mapping is a literal in code**: all from `format.json`, the rate the
+caller's. Its constructor takes a named variant and a named center (decision I); it is not wired
+into the app (decision L).
+
+**Tests** (`TheOliviaDemodulatorTests`): the three clean files (2.1, 2.5), noise at each variant
+(2.4), the events (§R13), and the two below-noise files (task 4's, written into the same class
+here). Decision J's CER lives once in `OliviaFixtures.CharacterErrorRate`. **Watched first**: the
+demodulator was written before the tests first ran, so red-first held only where the first run was
+red - 8/250 at CER 0.0526 (its last block lost, the file ending inside the last window) and -16 dB.
+Reading past the end as silence fixed 8/250.
+
+Carry-forward after task 3: **engine 119 of 119, app 166 of 166.** **`TheOliviaDemodulatorTests`
+went onto the engine line by type and method, four of its five names**; the fifth,
+`TheMinusSixteenDecibelFixtureDecodes`, is red, and `docs\carry-forward-tests.txt` never carries a
+known red. The work order asked for the type; this is a departure and it is said here.
+
+### Task 4 - below the noise (2.2)
+
+`Unit361Trace.BelowTheNoise` measured the files rather than taking the manifest's word: **-10.48 dB
+and -17.19 dB in 2500 Hz** (noise density from 1600-2400 Hz, signal from 700-1300 Hz less it), Es/N0
+per symbol 8.55 dB and 1.84 dB. The -10 dB file decodes at CER 0.0000. The -16 dB file does not
+meet 0.10 at any setting tried. **Numbers chosen, each the author's, each on the file named:**
+
+| Change, on `olivia-16-500-qso-snr-16db.wav` | CER at threshold 4.0 | CER with every block accepted |
+| --- | --- | --- |
+| task 3's first cut: max-ratio soft bits, 4 frames/symbol | 0.9363 | not measured |
+| noncoherent likelihoods (Bessel I0), 4 frames/symbol | 0.9402 | 0.3865 |
+| + `Passes = 3` iterative decoding (the codes hand back to the tones) | 0.9124 | 0.3745 |
+| + `FramesPerSymbol = 8` | **0.9203** | **0.3267** |
+
+`SyncThreshold = 4.0` was chosen on the noise-only file (highest block S/N 3.48) and kept: at 3.0
+the -16 dB file reads 0.43 and noise would clear it, which shows wrong characters. **The clean and
+noise results did not move after any tuning**: CER 0.0000 on all three clean files and the -10 dB
+file in every run; noise 0 characters in every run, highest block S/N 3.46 after the likelihood change and 3.48 after the last tuning.
+The iterative pass is Hamlet's own and not in `pj_mfsk.h`, whose decoder reads each character once.
+
+### Task 5 - the timing table (2.6, decision N)
+
+`data/olivia/timing.json` now reads `source: measured`, with the method stated: the time from the
+first decoded block to the last over the characters the blocks before the last one carried, so a
+short final block's idle padding is not charged to every character. `OliviaTiming` parses it and
+`OliviaData.Timing` hands it out. `TheTimingTableIsMeasuredByTheDemodulator` was **watched red on
+the estimated file** (`source` differs), then green. The §R12 rewrite of `Unit360Trace` (it read the
+estimate's `fixed_seconds` and `readings`, which went with the estimate) is its own commit.
+
+**Recorded under §12.1: nothing.** No entry was written to `DECISIONS.md`.
+
+**Mismatches with the work order** (section 5 asked for them even where the work succeeded):
+- `RsidDetection` does not give the burst's end (task 1 item 4); it gives the first tone's start.
+- `docs\carry-forward-tests.txt` gained four method names rather than the type (above).
+- Task 4's two tests were written in task 3's file and first ran in task 3.
+- The app carry-forward was 166 of 166 at the start, not 165 of 166.
+- Everything else in section 5 held as written: HEAD `dcffd02c`, 1.13.47, the nine fixtures and
+  their manifest fields, `pj_mfsk.h` 2367 lines with the structure map as named, `Olivia\` holding
+  two files and no demodulator, `timing.json` estimated, `assets\fixtures\captured\` holding only
+  `README.md`, engine 111 of 111, `PttOn` 1 and `Arm(` 2.
 
 ## 2. What the owner should expect
 
-- **A PSK31 report to a compound callsign goes again.** With the default name and place it is
-  28.19 s of text and 30.05 s on the air, and it is armed and sent.
-- **Any PSK31 send can key for up to the cap plus 1.86 s**: 31.86 s for a macro and 61.86 s
-  for a typed line. That is R32 (a), and it is bounded. Nothing can claim more than the file's
-  burst as announcement.
-- **The typed line's card now reads *N s of text*.** A line may be up to 60 s of text; the burst
-  in front is extra. Near the limit the card can read *60 s of text* and still send (59.968 s
-  rounds to 60), and one character more reads *60.1 s of text, too long to send*.
-- **Every PSK31 `ft8_transmission` line now ends its announcement with three keys:**
-  `announced`, `rsidCode` and `announcementSeconds`. An FT8 or FT4 line is exactly what it was.
-- **What will look wrong but is not:** a refused PSK31 send's sentence still reads *this is N s
-  of PSK31 audio*, where N is the whole audio with the burst. The cap measured the text, so N is
-  1.86 s more than the number compared to the cap. See section 4 item 2.
+- **Hamlet's engine reads Olivia** from the mode author's audio, at all three variants and at
+  -10 dB, handed the variant and center the RSID burst announced. **The app does not use it yet**:
+  the Olivia panel still says nothing decodes (decision L). Step 3 wires it.
+- **The -16 dB fixture is not read.** Five blocks of 63 clear the threshold and show 20 characters;
+  the rest show nothing. What is shown is right: each of the five four-character blocks
+  (`C3QI`, `S de`, `ffor`, `KC3Q`, `QTH `) occurs in the manifest's text.
+- `TheMinusSixteenDecibelFixtureDecodes` is **red on purpose** and off the carry-forward list; it is
+  the criterion, not a flake. The other nine names in the class are green.
+- `data/olivia/format.json` and `data/olivia/timing.json` ship embedded. `OliviaData.Problem` stays
+  null on the shipped build.
+- Build clean. Final carry-forward **engine 119 of 119, app 166 of 166**, first runs, no reruns.
+  `PttOn` 1, `Arm(` 2; nothing on the transmit side was touched.
+- Version **1.13.48**. Seven commits on `main`, all pushed. Uncommitted at the end:
+  `PROJECT_STATUS.md` (the status file), `RUN_LEDGER.md` and `.run-unit\` (the launcher's), and
+  this `output.md`, which the session leaves to the launcher.
 
 ## 3. What you should see
 
-**The five `ft8_transmission` records** for the five kinds of PSK31 send, as written by
-`EachOfTheFiveKindsOfSendRecordsThatItWasAnnounced` on the fake radio at 12000 Hz
-(`ts` and `sessionId` dropped):
+**The decode table** (from the run of `TheOliviaDemodulatorTests` after the last tuning; CPU is
+the demodulator's own process CPU; the detector's is beside it):
+
+| Fixture | Detector gave | CER (ceiling) | Characters | Blocks decoded / rejected | Demod CPU | Detector CPU | Met |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 8/250 CQ | OLIVIA_8_250 (69), 8/250, 1000.32 Hz | 0.0000 (0.01) | 38 of 38 | 13 / 0 | 0.797 s | 2.172 s | yes |
+| 16/500 QSO | OLIVIA_16_500 (70), 16/500, 1000.32 Hz | 0.0000 (0.01) | 251 of 251 | 63 / 0 | 4.031 s | 9.844 s | yes |
+| 32/1000 QSO | OLIVIA_32_1000 (71), 32/1000, 1000.32 Hz | 0.0000 (0.01) | 251 of 251 | 51 / 0 | 3.453 s | 8.016 s | yes |
+| 16/500 -10 dB | OLIVIA_16_500 (70), 16/500, 1000.37 Hz | 0.0000 (0.05) | 251 of 251 | 63 / 0 | 4.016 s | 10.063 s | yes |
+| 16/500 -16 dB | OLIVIA_16_500 (70), 16/500, 1000.77 Hz | 0.9203 (0.10) | 20 of 251 | 5 / 58 | 4.047 s | 9.766 s | **no** |
+| noise as 8/250 | none (1000 Hz given) | 0 characters (0) | 0 | 0 / 14 | 1.000 s | - | yes |
+| noise as 16/500 | none (1000 Hz given) | 0 characters (0) | 0 | 0 / 14 | 0.969 s | - | yes |
+| noise as 32/1000 | none (1000 Hz given) | 0 characters (0) | 0 | 0 / 14 | 1.188 s | - | yes |
+
+Block S/N at the sync: clean files lowest 76.95 to 86.03; -10 dB lowest 13.81, median 17.24;
+-16 dB lowest 2.49, median 3.17, highest 5.12; noise highest 3.20 / 3.48 / 3.31. Threshold 4.0.
+
+**The one file that is not exact**, decoded beside the manifest:
 
 ```
-cq      {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":13.313583333333334,"sampleRate":12000,"sampleCount":159763,"messageLength":38,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":13.313583333333334,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
-answer  {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":9.697583333333334,"sampleRate":12000,"sampleCount":116371,"messageLength":23,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":9.697583333333334,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
-report  {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":26.657583333333335,"sampleRate":12000,"sampleCount":319891,"messageLength":96,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":26.657583333333335,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
-confirm {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":18.113583333333334,"sampleRate":12000,"sampleCount":217363,"messageLength":62,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":18.113583333333334,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
-typed   {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":16.769583333333333,"sampleRate":12000,"sampleCount":201235,"messageLength":58,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":16.769583333333333,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
+decoded : "C3QIS defforKC3QQTH "
+manifest: "CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K\nKC3QIS de W1AW W1AW K\nW1AW de KC3QIS RST 599 599 Name Tim Tim QTH Trafford PA Grid FN00 FN00 BTU W1AW de KC3QIS K\nKC3QIS de W1AW R R TNX Tim UR 599 599 Name Bob QTH Newington CT Grid FN31 73 73 KC3QIS de W1AW SK\n"
 ```
 
-**One FT8 record beside them**, as `TheFt8AndFt4SendsAreByteIdenticalTests` pins it and as it
-still passes: no `announced`, `rsidCode` or `announcementSeconds` key.
+**One decision-K event as written** (the clean 16/500 file); neither carries text or a callsign, and
+the test asserts no word of the manifest appears in either:
 
 ```
-ft8     slotStartUtc 2026-09-11T18:00:00.0000000Z, startSecondsIntoSlot 0.5, frequencyHz 14074000, durationSeconds 12.64, sampleRate 48000, sampleCount 606720, messageType Standard, messageLength 14, carriedHashedCallsign False, outcome Played, cameOutOfTransmit OrdinaryUnkey, keyed True, stagesEntered gate_asked | keyed | handed_to_the_sound_card | unkeyed
+Psk31 olivia_sync {"mode":"olivia","variant":"16/500","state":"found","centerHz":1000.32,"frequencyOffsetHz":-0.32,"symbolPhase":4,"blockPhase":14,"snr":80.97,"threshold":4,"atSeconds":2.338}
+Psk31 olivia_run {"mode":"olivia","variant":"16/500","centerHz":1000.32,"sampleRate":8000,"samplesPerSymbol":256,"windowSamples":512,"hopSamples":32,"transformSize":2048,"frequencyOffsetHz":-0.32,"symbolPhase":4,"blockPhase":14,"blocksDecoded":63,"blocksRejected":0,"charactersOut":251,"meanSnr":83.6,"threshold":4}
 ```
 
-**The cap table, after this unit.** The burst is 1.858 s at 12000 and 48000 Hz alike.
+**The timing table before and after:**
 
-| Send | Text s | Burst s | Total on the air s | Cap (measures the text) | Now |
-| --- | --- | --- | --- | --- | --- |
-| CQ | 11.456 | 1.858 | 13.314 | 30 | fits |
-| Answer to W1AW | 7.840 | 1.858 | 9.698 | 30 | fits |
-| Report to W1AW | 24.800 | 1.858 | 26.658 | 30 | fits |
-| Confirm to W1AW | 16.256 | 1.858 | 18.114 | 30 | fits |
-| Report to VP2V/W1AW | 28.192 | 1.858 | 30.050 | 30 | **fits** (was refused) |
-| Typed line, 373 × `e` | 59.968 | 1.858 | 61.826 | 60 | **fits** |
-| Typed line, 374 × `e` | 60.096 | 1.858 | 61.954 | 60 | refused, card and press |
+| Variant | Before (estimated) | Manifest arithmetic | After (measured) | Measured on |
+| --- | --- | --- | --- | --- |
+| 8/250 | 0.683 | 0.70152 | **0.68267** | CQ file, 2.338 to 26.914 s over 36 characters |
+| 16/500 | 0.514 | 0.51417 | **0.51200** | QSO file, 2.338 to 129.314 s over 248 characters |
+| 32/1000 | 0.416 | 0.41626 | **0.40960** | QSO file, 2.338 to 104.738 s over 250 characters |
 
-Task 4's findings are in section 1 under its own heading.
+The 8/250 no-RSID file, read with the manifest's variant and center and reported, not used:
+0.68267 s per character over 251 characters, CER 0.0000.
 
-**On the screen:** a report to a compound callsign sends where it was refused, and the typed
-line's card says *s of text*. Everything else is in the telemetry file. **All of this is
-computed, not seen, and none of it is evidence about the radio** (FACT-004).
+**Every figure here is computed, not seen. Nothing here is evidence about the radio** (FACT-004).
 
 ## 4. What's blocking us
+
+**One criterion is not met: 2.2 at -16 dB.** Five new items, all findings; none wants a ruling
+from the owner. The carried queue follows them.
+
+### Raised by unit 361
+
+**1. The -16 dB fixture is not read at CER 0.10, and no threshold would read it.**
+
+*A finding; 2.2 reported not met, the test not loosened.* Measured, the file carries -17.19 dB in
+2500 Hz (the -10 dB file measures -10.48 by the same method), Es/N0 1.84 dB per symbol. With every
+block accepted the demodulator reads it at CER 0.3267; at the 4.0 threshold, which noise never
+clears, 0.9203. Tried and kept: noncoherent likelihoods, three iterative passes, eight frames per
+symbol. **What the next unit can try**: timing and frequency tracked per block rather than once
+per file; the sync decided per block from the neighbors' likelihoods; soft combining of the two
+frames either side of the chosen one. Whether the fixture's figure is reachable by any Olivia
+decoder was not measured here; the fixture is the mode author's and is not in question (§6).
+
+**2. The demodulator runs over a whole recording, not a stream.**
+
+*A finding for step 3.* `Decode(MonoAudio, startSeconds)` finds one offset, one symbol phase and
+one block phase for the whole recording. That is what step 2 asks for and what the fixtures need;
+step 3's rows per station will need it fed as the RSID path feeds the detector.
+
+**3. The fixture test runs the RSID detector over the whole file first.**
+
+*A cost, reported.* About ten seconds of CPU on the 131 s files before the demodulator's four, so
+the four demodulator names add about a minute to the engine carry-forward (1 m 14 s, 119 tests).
+The 20 s ceiling is the demodulator's own and is met with room.
+
+**4. `RsidDetection` carries the first tone's start, not the burst's end.**
+
+*A mismatch with the work order's task 1 item 4.* The end is derived from `rsid-codes.json`
+(`StartSeconds + Symbols / SymbolRateHz`), which the tests do in one helper.
+
+**5. Tool facts and status words this session.**
+
+*A finding, reported and not repaired.*
+- Python scripts written to the scratchpad and run as `python file.py` ran; unit 360 reported
+  Python did not run. `python -c` was not tried.
+- A quoted heredoc containing apostrophes broke once, as the work order warned. A `sed`
+  substitution with backslashes in the pattern (the csproj line) matched nothing and reported
+  nothing; it was redone with the editor.
+- Every status write used `EXECUTING` and `code`. `tools/status.sh` still writes
+  `RULES_AT: HM-DEC-161` and `WORK_INSTRUCTION` from `PHASE_STATUS.md`, which still says 358.
+- `PHASE_PLAN.md`'s unchecked 1.5 and 1.7 and the mislabeled outcome entries are unchanged and not
+  edited, as told.
+
+### Asks still outstanding - carried from unit 360's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 360's, from its line under `## 4. What's blocking us` to its end, as
+committed in `dcffd02c`. Only that top-level heading is dropped, so this report keeps four
+sections. Its nested queues are carried as unit 360 carried them, and the queue of units 337 to
+353 is still carried by reference to `4c55deac:output.md`. **One item is marked in place - unit
+358 item 5 - and nothing is deleted.** This unit answers none of the others.
+
 
 **Nothing blocks 1.5 or step 2's entry.** Five new items, all findings; none wants a ruling.
 The carried queue follows them.
@@ -505,6 +498,10 @@ The headers themselves are in `assets/reference/jalocha/`, so nothing is lost to
 
 *No ruling wanted; a tool limit.* The PowerShell parse needed approval this session could not
 give. It was written by hand from the table in section 1; step 2 reads it first.
+
+*ANSWERED by work instruction 360 task 4 - parsed by System.Text.Json, agrees with the
+manifest except 8/250 no-RSID per-character rounded up (0.686 against 0.685).* (Marked in place
+by unit 361, as work instruction 361 section 3 directs.)
 
 ### Asks still outstanding - carried from unit 357's section 4, per HM-DEC-139, verbatim
 

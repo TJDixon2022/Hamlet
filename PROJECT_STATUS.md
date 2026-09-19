@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: 5 of 5
+TASK: TASK 6 of 6
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: web
+BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-18T22:12:26-04:00
-NOTE: Unit 360 complete: PSK31 records say announced 5 of 5 with code 1, the VP2V/W1AW report fits at 28.192 s of text; 1.5 met, step 2 entry open; report written
+UPDATED: 2026-09-18T23:37:04-04:00
+NOTE: Unit 361 complete - Olivia demodulator reads 4 of 5 fixtures at ceiling, -16 dB not met (CER 0.9203), timing measured
 
 ---
 
