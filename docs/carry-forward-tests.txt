@@ -6,7 +6,7 @@ RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 
     timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests"
 
-    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes"
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes"
 
 WHY IT IS WRITTEN OUT HERE RATHER THAN LEFT TO THE READER. Unit 323 read this
 file as a list of names and ran one `dotnet test` per name - forty-one builds.
@@ -99,7 +99,7 @@ ThePsk31TurnTests                                       unit 319
 ThePsk31OfferTests                                      unit 319
 TheRsidDetectorTests                                    unit 359
 TheRsidBurstTests                                       unit 359
-TheOliviaDemodulatorTests, four of its five names         unit 361
+TheOliviaDemodulatorTests, five of its six names          unit 361, the -16 dB name unit 362
 
 -- known reds, NEVER on the list above ---------------------------------------
 
@@ -200,11 +200,21 @@ next name added here should be weighed against its seconds.
 
 WHAT UNIT 361 ADDED. TheOliviaDemodulatorTests on the engine invocation, by type and
 method, four of its five names: the three clean fixtures, the noise at each of three
-variants, the events carrying no text, and the -10 dB file. **The fifth,
-TheMinusSixteenDecibelFixtureDecodes, is left off because it is red** (CER 0.9203 against
-0.10), and this file never carries a known red. Work instruction 361 asked for the type on
-the engine line; the type-and-method form, which BindingHealthTests already uses, carries
-the type and keeps the rule.
+variants, the events carrying no text, and the -10 dB file. The fifth,
+TheMinusSixteenDecibelFixtureDecodes, was left off by unit 361 because it was red (CER
+0.9203 against 0.10), and this file never carries a known red. Work instruction 361 asked
+for the type on the engine line; the type-and-method form, which BindingHealthTests
+already uses, carries the type and keeps the rule. (The type also holds
+TheTimingTableIsMeasuredByTheDemodulator, unit 361 task 5's, which is not on the line.)
+
+WHAT UNIT 362 CHANGED. **TheMinusSixteenDecibelFixtureDecodes is on the engine line now,
+and it is green.** `PHASE_PLAN.md` §8's revision of 2026-09-19 withdrew the 0.10 ceiling as
+the plan author's own error, below the mode's sensitivity for 16/500; 2.2 now asks for the
+-16 dB CER measured and reported with no ceiling. Unit 362 rewrote the test in its own
+commit (work instruction 362 decision U, PSK31 plan R12) to print the CER and fail only if
+the burst is not heard at the right variant and center, if no block is read, if the read
+runs past twenty seconds of CPU, or if more characters are shown than the accepted blocks
+could carry. It read CER 0.9203, 20 characters from 5 accepted blocks.
 
 It guards step 2's criteria 2.1, 2.2's -10 dB half, 2.4 and 2.5: Hamlet's own Olivia
 demodulator reads the mode author's audio from the RSID detector's variant and center, and

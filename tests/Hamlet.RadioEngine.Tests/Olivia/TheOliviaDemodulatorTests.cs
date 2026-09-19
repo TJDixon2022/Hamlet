@@ -48,9 +48,31 @@ public sealed class TheOliviaDemodulatorTests
     [Fact]
     public void TheMinusTenDecibelFixtureDecodes() => DecodesWithin("olivia-16-500-qso-snr-10db.wav", 0.05);
 
-    /// <summary>**2.2: the -16 dB fixture decodes at CER 0.10 or under.**</summary>
+    /// <summary>
+    /// **2.2 as corrected on 2026-09-19, and 2.5: the -16 dB fixture is read inside the CPU
+    /// ceiling, its CER is measured and printed with no ceiling, and every character shown came
+    /// from a block that cleared the threshold.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**THE 0.10 CEILING WAS WITHDRAWN BY THE OWNER'S PLAN, NOT LOOSENED HERE**
+    /// (`PHASE_PLAN.md` §8, the revision of 2026-09-19; work instruction 362 decision U, PSK31 plan
+    /// §R12): it sat below the mode's published sensitivity for 16/500.</para>
+    /// <para>**IT STILL FAILS** if the burst is not heard or names the wrong variant or center, if
+    /// no block is read at all, if the read runs past twenty seconds of CPU, or if a character is
+    /// shown that no accepted block could have carried (§3.3, §R9): a block gives at most its
+    /// bits-per-symbol characters, so more characters than accepted blocks times that is a
+    /// character from nowhere.</para>
+    /// </remarks>
     [Fact]
-    public void TheMinusSixteenDecibelFixtureDecodes() => DecodesWithin("olivia-16-500-qso-snr-16db.wav", 0.10);
+    public void TheMinusSixteenDecibelFixtureDecodes()
+    {
+        var (decoding, variant) = DecodesWithin("olivia-16-500-qso-snr-16db.wav", null);
+
+        Assert.True(decoding.BlocksDecoded > 0, "the -16 dB file: no block was read at all");
+        Assert.Equal(decoding.BlocksDecoded, decoding.BlockSnrs.Count(s => s >= OliviaDemodulator.SyncThreshold));
+        Assert.Equal(decoding.Text.Length, decoding.CharactersOut);
+        Assert.InRange(decoding.CharactersOut, 1, decoding.BlocksDecoded * variant.BitsPerSymbol);
+    }
 
     /// <summary>**2.4: pure noise, read at each of the three variants at 1000 Hz, gives no characters.**</summary>
     /// <param name="variant">The variant the noise is read as.</param>
@@ -188,7 +210,7 @@ public sealed class TheOliviaDemodulatorTests
         return (value, (Process.GetCurrentProcess().TotalProcessorTime - before).TotalSeconds);
     }
 
-    private void DecodesWithin(string file, double ceiling)
+    private (OliviaDecoding Decoding, OliviaVariant Variant) DecodesWithin(string file, double? ceiling)
     {
         var fixture = OliviaFixtures.Load(file);
         var audio = WavAudio.Read(fixture.Path);
@@ -212,7 +234,7 @@ public sealed class TheOliviaDemodulatorTests
         _output.WriteLine(
             $"{file}: detector {d.Name} variant {d.Variant} at {d.CenterHz:0.00} Hz (cpu {detectorCpu:0.000} s); "
             + $"{audio.SampleRate} Hz, {demodulator.SamplesPerSymbol} samples/symbol; "
-            + $"CER {cer:0.0000} (ceiling {ceiling:0.00}); characters {decoding.CharactersOut} of {fixture.Text.Length}; "
+            + $"CER {cer:0.0000} (ceiling {(ceiling is { } c ? $"{c:0.00}" : "none, measured and reported")}); characters {decoding.CharactersOut} of {fixture.Text.Length}; "
             + $"blocks decoded {decoding.BlocksDecoded}, rejected {decoding.BlocksRejected}; "
             + $"offset {decoding.FrequencyOffsetHz:0.00} Hz, symbol phase {decoding.SymbolPhase}, block phase {decoding.BlockPhase}, "
             + $"mean block snr {decoding.SyncSnr:0.00}; first block {decoding.FirstBlockSeconds:0.000} s, last {decoding.LastBlockSeconds:0.000} s; "
@@ -233,8 +255,14 @@ public sealed class TheOliviaDemodulatorTests
             _output.WriteLine("manifest: " + JsonSerializer.Serialize(fixture.Text));
         }
 
-        Assert.True(cer <= ceiling, $"{file}: CER {cer:0.0000} over {ceiling:0.00}");
+        if (ceiling is { } limit)
+        {
+            Assert.True(cer <= limit, $"{file}: CER {cer:0.0000} over {limit:0.00}");
+        }
+
         Assert.True(cpu < CpuCeilingSeconds, $"{file}: demodulator cpu {cpu:0.000} s");
+
+        return (decoding, variant!);
     }
 
     private sealed record Event(TelemetryCategory Category, string Name, IReadOnlyDictionary<string, object?> Data);
