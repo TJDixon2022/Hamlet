@@ -184,9 +184,15 @@ public sealed class TheOliviaSeamTests : IDisposable
         Assert.Contains(broken.Problem!, model.DigitalModeStripLine, StringComparison.Ordinal);
     }
 
-    /// <summary>**The panel names the mode and says it cannot be read yet.**</summary>
+    /// <summary>**The panel names the mode, promises no slot, and says nothing on it can be answered.**</summary>
+    /// <remarks>
+    /// **REWRITTEN BY WORK INSTRUCTION 364 UNDER PSK31 PLAN §R12 (decision AM).** It asserted the
+    /// sentence *Hamlet cannot read Olivia yet*, which guarded a shut door: from unit 364 Olivia is
+    /// read and drawn as rows, and the sentence is false. What 0.5 guards is that nothing under
+    /// this tab can be answered, so that is what the strip is held to now.
+    /// </remarks>
     [Fact]
-    public void ThePanelNamesTheModeAndSaysItCannotBeReadYet()
+    public void ThePanelNamesTheModeAndSaysNothingCanBeAnswered()
     {
         var model = Panel(null);
 
@@ -209,7 +215,6 @@ public sealed class TheOliviaSeamTests : IDisposable
         }
 
         Assert.Contains(Mode, model.DigitalModeStripLine, StringComparison.Ordinal);
-        Assert.Contains("cannot read " + Mode + " yet", model.DigitalModeStripLine, StringComparison.Ordinal);
         Assert.Contains(Mode, model.DigitalDecodedIdle, StringComparison.Ordinal);
 
         // **OLIVIA HAS NO SLOTS**, so nothing bound on its panel may promise one.
@@ -218,8 +223,9 @@ public sealed class TheOliviaSeamTests : IDisposable
             Assert.DoesNotContain("slot", text, StringComparison.OrdinalIgnoreCase);
         }
 
-        // **AND NOTHING SAYS IT IS LISTENING**, because nothing is.
-        Assert.DoesNotContain("listening for", model.DigitalModeStripLine, StringComparison.OrdinalIgnoreCase);
+        // **AND NOTHING ON IT CAN BE ANSWERED** (0.5), which the strip says and the door holds.
+        Assert.Contains("can be answered yet", model.DigitalModeStripLine, StringComparison.Ordinal);
+        Assert.False(model.CanAnswerRowsForTests);
     }
 
     /// <summary>**The log offers `OLIVIA`.**</summary>
@@ -345,8 +351,12 @@ public sealed class TheOliviaSeamTests : IDisposable
         Assert.NotEmpty(lines);
 
         // **NO OTHER MODE'S LISTENER STARTED**, which is where a PSK31 path left running
-        // under this tab would show.
-        Assert.DoesNotContain(lines, l => l.Contains("psk31_", StringComparison.Ordinal));
+        // under this tab would show. **Rewritten by work instruction 364 under §R12 (decision AM)**:
+        // it asserted no `psk31_` line at all, and from unit 364 the Olivia rows write the PSK31
+        // row events with `mode: olivia` (decision AK). A line with no such mode is PSK31's own.
+        Assert.All(
+            lines.Where(l => l.Contains("\"event\":\"psk31_", StringComparison.Ordinal)),
+            l => Assert.Contains("\"mode\":\"olivia\"", l, StringComparison.Ordinal));
 
         // **THE PRESS IS RECORDED, AND THE RECORD STOPS AT THE REFUSAL.** The operator's own
         // action is written under the transmit category whatever the mode - the press, the
@@ -452,8 +462,9 @@ public sealed class TheOliviaSeamTests : IDisposable
     /// card hands it over. The line says the code, the mode, the variant, the center and the
     /// quality, and nothing personal.</para>
     /// <para>**A DETECTION CHANGES NOTHING ELSE** (the arbiter's decision B, §0.2). The radio is
-    /// asked for nothing more, the dial, the mode and the tab stay where they were, no row or card
-    /// appears, and nothing is composed or sent. Setting the mode from a burst is step 3's.</para>
+    /// asked for nothing more, the dial, the mode and the tab stay where they were, no row but an
+    /// Olivia row and no card appears (since unit 364, which draws the station it announced), and
+    /// nothing is composed or sent.</para>
     /// </remarks>
     [Theory]
     [InlineData(8_000)]
@@ -510,7 +521,12 @@ public sealed class TheOliviaSeamTests : IDisposable
             Assert.Equal(frequency, model.FrequencyHz);
             Assert.Equal(Mode, model.ChosenDigitalMode);
             Assert.Equal("Digital", model.OperatingMode);
-            Assert.Empty(model.DigitalDecodes);
+
+            // **REWRITTEN BY WORK INSTRUCTION 364 UNDER §R12 (decision AM).** It asserted no row at
+            // all, which guarded the shut door: from unit 364 the station is read and drawn. What
+            // 0.5 guards is that nothing but Olivia's own listener draws one and nothing opens a
+            // card to answer, so every row is an Olivia row and no card is up.
+            Assert.All(model.DigitalDecodes, r => Assert.True(r.HasVariant));
             Assert.Empty(model.DigitalCards);
         }
 
