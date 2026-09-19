@@ -157,6 +157,58 @@ public sealed class Unit363Trace
         }
     }
 
+    /// <summary>
+    /// Task 3's ground: the streaming reader beside Decode on each RSID file, both started at the
+    /// burst's end, the stream fed in quarter-second pieces.
+    /// </summary>
+    [Fact]
+    public void TheStreamBesideDecode()
+    {
+        foreach (var file in new[]
+                 {
+                     "olivia-8-250-cq-rsid.wav", "olivia-16-500-qso-rsid.wav", "olivia-32-1000-qso-rsid.wav",
+                     "olivia-16-500-qso-snr-10db.wav", "olivia-16-500-qso-snr-16db.wav", "olivia-two-signals-rsid.wav",
+                 })
+        {
+            var fixture = OliviaFixtures.Load(file);
+            var audio = WavAudio.Read(fixture.Path);
+            var halves = fixture.Text.Split(" | ");
+
+            foreach (var d in RsidDetector.Detect(Codes, audio, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz))
+            {
+                var demodulator = new OliviaDemodulator(Format, Format.Variant(d.Variant)!, d.CenterHz, audio.SampleRate);
+                var whole = demodulator.Decode(audio, BurstEnd(d));
+                var start = (int)Math.Ceiling(BurstEnd(d) * audio.SampleRate);
+                var stream = demodulator.Open();
+                var piece = audio.SampleRate / 4;
+                var before = Process.GetCurrentProcess().TotalProcessorTime;
+
+                for (var at = start; at < audio.Samples.Length; at += piece)
+                {
+                    stream.Add(audio.Samples.AsSpan(at, Math.Min(piece, audio.Samples.Length - at)));
+                }
+
+                stream.Flush();
+
+                var cpu = (Process.GetCurrentProcess().TotalProcessorTime - before).TotalSeconds;
+                var blocks = stream.DrainBlocks();
+                var text = halves.Length > 1 ? halves[d.Variant == "8/250" ? 0 : 1] : fixture.Text;
+
+                _output.WriteLine(
+                    $"{file} {d.Variant} at {d.CenterHz:0.00}: Decode CER {OliviaFixtures.CharacterErrorRate(whole.Text, text):0.0000} "
+                    + $"({whole.BlocksDecoded}/{whole.BlocksRejected}); stream CER {OliviaFixtures.CharacterErrorRate(stream.Text, text):0.0000} "
+                    + $"({stream.BlocksDecoded}/{stream.BlocksRejected}), first shown block {blocks.Where(b => b.Accepted).Select(b => b.Seconds + (start / (double)audio.SampleRate)).DefaultIfEmpty(double.NaN).First():0.000} s, "
+                    + $"stream cpu {cpu:0.000} s for {(audio.Samples.Length - start) / (double)audio.SampleRate:0.0} s of audio");
+
+                if (stream.Text != whole.Text)
+                {
+                    _output.WriteLine("   stream: " + JsonSerializer.Serialize(stream.Text));
+                    _output.WriteLine("   Decode: " + JsonSerializer.Serialize(whole.Text));
+                }
+            }
+        }
+    }
+
     private void SliceCheck(BelowTheNoiseAudio made)
     {
         // The CQ file's own samples, before the noise: where the Olivia tones start after the burst.

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T12:08:49-04:00
-NOTE: Task 2 - stub out, running TheOliviaBelowTheNoiseTests for real: stated seed asserted, four more printed
+UPDATED: 2026-09-19T12:31:02-04:00
+NOTE: Task 3 - app carry-forward 165 of 166, one Stop test red; rerunning it alone (flaky list, no app code changed)
 
 ---
 

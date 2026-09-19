@@ -185,6 +185,26 @@ public sealed class OliviaDemodulator
     /// <summary>The variant being read.</summary>
     public OliviaVariant Variant => _variant;
 
+    /// <summary>The center it was made for.</summary>
+    public double CenterHz => _centerHz;
+
+    /// <summary>The audio's samples a second.</summary>
+    public int SampleRate => _sampleRate;
+
+    /// <summary>The block signal-to-noise a block must clear to be shown.</summary>
+    public double Threshold => _threshold;
+
+    internal OliviaFormat Format => _format;
+
+    internal int[] ToneToSymbol => _toneToSymbol;
+
+    /// <summary>
+    /// **Read as the audio arrives** (work instruction 363 decision Z): a reader fed piece by piece,
+    /// whose first sample is the first one it is handed.
+    /// </summary>
+    /// <returns>A reader at this demodulator's variant, center, rate and threshold.</returns>
+    public OliviaStream Open() => new(this);
+
     /// <summary>Read a whole recording from a point in it.</summary>
     /// <param name="audio">The recording, at the rate this demodulator was made for.</param>
     /// <param name="startSeconds">Where to begin: the end of the RSID burst's tones.</param>
@@ -562,7 +582,7 @@ public sealed class OliviaDemodulator
     /// carry anything: the tones of one frame hold one noise bin each plus the one symbol. It is
     /// floored at a tenth of a noise bin, so a run that holds no signal still has a likelihood.</para>
     /// </remarks>
-    private static (double Noise, double Signal) NoiseAndSignal(double[] energies, int frames, int tones)
+    internal static (double Noise, double Signal) NoiseAndSignal(double[] energies, int frames, int tones)
     {
         if (frames == 0)
         {
@@ -606,7 +626,7 @@ public sealed class OliviaDemodulator
     /// <summary>The natural log of the modified Bessel function of the first kind, order zero.</summary>
     /// <remarks>The polynomial approximations of Abramowitz and Stegun 9.8.1 and 9.8.2, the second
     /// written in logs so a large argument does not overflow.</remarks>
-    private static double LogBesselI0(double x)
+    internal static double LogBesselI0(double x)
     {
         if (x < 3.75)
         {
@@ -640,7 +660,7 @@ public sealed class OliviaDemodulator
     }
 
     /// <summary>The log of the sum of two numbers given as logs.</summary>
-    private static double LogAdd(double a, double b)
+    internal static double LogAdd(double a, double b)
     {
         if (double.IsNegativeInfinity(a))
         {
@@ -658,7 +678,7 @@ public sealed class OliviaDemodulator
     }
 
     /// <summary>Whether a character is text rather than idle or a control nobody reads.</summary>
-    private bool IsText(int character)
+    internal bool IsText(int character)
         => character != _format.NullCharacter
            && (character == '\n' || character == '\r' || character == '\t' || (character >= ' ' && character < 127));
 
@@ -708,10 +728,10 @@ public sealed class OliviaDemodulator
             });
 
     /// <summary>One block's characters and how far they stood out of the noise.</summary>
-    private readonly record struct Block(int[] Characters, double Snr);
+    internal readonly record struct Block(int[] Characters, double Snr);
 
     /// <summary>De-interleaves, descrambles and correlates one block against every Walsh function.</summary>
-    private sealed class BlockDecoder
+    internal sealed class BlockDecoder
     {
         private readonly OliviaFormat _format;
         private readonly int[] _toneToSymbol;

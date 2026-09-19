@@ -6,7 +6,7 @@ RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 
     timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests"
 
-    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests"
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests|FullyQualifiedName~TheOliviaListenerTests"
 
 WHY IT IS WRITTEN OUT HERE RATHER THAN LEFT TO THE READER. Unit 323 read this
 file as a list of names and ran one `dotnet test` per name - forty-one builds.
@@ -103,6 +103,7 @@ TheOliviaDemodulatorTests, five of its six names          unit 361, the -16 dB n
 TheOliviaBlindSearchTests                               unit 362
 TheOliviaDriftTests                                     unit 362
 TheOliviaBelowTheNoiseTests                             unit 363
+TheOliviaListenerTests                                  unit 363
 
 -- known reds, NEVER on the list above ---------------------------------------
 
@@ -249,3 +250,15 @@ announced as 8/250 within 5 Hz of 1000 and read at CER 0.10 or under, every char
 from an accepted block. It read CER 0.0000. Its second name prints four further seeds
 and asserts nothing about them (all four read 0.0000). THE COST: the two names took
 1 m 49 s filtered alone, most of it the RSID detector over five 174 s recordings.
+
+TheOliviaListenerTests, on the engine invocation, in CpuMeasuredAlone. It guards step 3's
+criterion 3.1, the engine half: OliviaListener, fed each file a quarter-second at a time
+and told nothing, gives the two-signal file exactly two channels (8/250 at 1000, 16/500
+at 2000, both by RSID, each its own half at CER 0.0000 and never the other's callsign);
+the three clean files and the -10 dB file one RSID channel each at CER 0.0000; the
+no-RSID file one channel found blind; the noise nothing; and its events carry no text.
+**THE COST MOVED A LOT**: the engine invocation went from 124 tests in 1 m 39 s to 134 in
+4 m 40 s, because every row runs the RSID detector, the streaming search and the readers
+over the whole file, and CpuMeasuredAlone runs them one at a time. Still inside the
+480 s timeout and the twelve-minute watchdog; the next name added here must be weighed
+against that.

@@ -181,68 +181,12 @@ public sealed class OliviaBlindSearch
         var floorDb = 10 * Math.Log10(floor);
         var peakDb = 10 * Math.Log10(loudest / floor);
         var gate = floor * (1 + (GateSigmas / Math.Sqrt(count)));
-        var claimed = new bool[average.Length];
         var regions = new List<Region>();
         var candidates = new List<OliviaCandidate>();
 
         // 2. Every region standing clear of the gate, loudest first.
-        while (true)
+        foreach (var (occupiedLow, occupiedHigh) in Occupied(average, low, high, gate, binHz, narrowestBand))
         {
-            var peakBin = -1;
-
-            for (var b = low; b <= high; b++)
-            {
-                if (!claimed[b] && average[b] >= gate && (peakBin < 0 || average[b] > average[peakBin]))
-                {
-                    peakBin = b;
-                }
-            }
-
-            if (peakBin < 0)
-            {
-                break;
-            }
-
-            var from = peakBin;
-            var to = peakBin;
-
-            while (from > low && !claimed[from - 1] && average[from - 1] >= gate)
-            {
-                from--;
-            }
-
-            while (to < high && !claimed[to + 1] && average[to + 1] >= gate)
-            {
-                to++;
-            }
-
-            for (var b = from; b <= to; b++)
-            {
-                claimed[b] = true;
-            }
-
-            var edge = Math.Max(gate, average[peakBin] / OccupiedRatio);
-            var lowEdge = peakBin;
-            var highEdge = peakBin;
-
-            while (lowEdge > from && average[lowEdge - 1] >= edge)
-            {
-                lowEdge--;
-            }
-
-            while (highEdge < to && average[highEdge + 1] >= edge)
-            {
-                highEdge++;
-            }
-
-            var occupiedLow = (lowEdge - 0.5) * binHz;
-            var occupiedHigh = (highEdge + 0.5) * binHz;
-
-            if (occupiedHigh - occupiedLow < narrowestBand / 2.0)
-            {
-                continue;
-            }
-
             // 3. The tones, from where the loudest frequency sits frame by frame.
             var (tones, spacing, middle) = Tones(samples, rate, occupiedLow, occupiedHigh);
 
@@ -252,14 +196,7 @@ public sealed class OliviaBlindSearch
             }
 
             // 4. The rows that fit, ranked, each tried by decoding what has been taken.
-            var width = occupiedHigh - occupiedLow;
-            var ranked = _format.Variants
-                .Select(v => (Row: v, Band: Octaves(v.BandwidthHz, width), Spacing: double.IsNaN(spacing) ? double.NaN : Octaves(v.ToneSpacingHz, spacing)))
-                .Where(r => r.Band <= FitOctaves || r.Spacing <= FitOctaves)
-                .OrderByDescending(r => (r.Band <= FitOctaves ? 1 : 0) + (r.Spacing <= FitOctaves ? 1 : 0))
-                .ThenBy(r => r.Band + (double.IsNaN(r.Spacing) ? 0 : r.Spacing))
-                .Select(r => r.Row)
-                .ToList();
+            var ranked = Rank(occupiedHigh - occupiedLow, spacing);
             var trials = new List<OliviaTrial>();
             OliviaCandidate? chosen = null;
 
@@ -313,6 +250,85 @@ public sealed class OliviaBlindSearch
     }
 
     /// <summary>
+    /// Every region of an averaged spectrum standing clear of the gate, loudest first, as the band
+    /// <see cref="OccupiedRatio"/> down from its peak; a region narrower than half the narrowest row
+    /// is claimed and not handed back.
+    /// </summary>
+    internal static List<(double Low, double High)> Occupied(double[] average, int low, int high, double gate, double binHz, double narrowestBand)
+    {
+        var claimed = new bool[average.Length];
+        var found = new List<(double Low, double High)>();
+
+        while (true)
+        {
+            var peakBin = -1;
+
+            for (var b = low; b <= high; b++)
+            {
+                if (!claimed[b] && average[b] >= gate && (peakBin < 0 || average[b] > average[peakBin]))
+                {
+                    peakBin = b;
+                }
+            }
+
+            if (peakBin < 0)
+            {
+                return found;
+            }
+
+            var from = peakBin;
+            var to = peakBin;
+
+            while (from > low && !claimed[from - 1] && average[from - 1] >= gate)
+            {
+                from--;
+            }
+
+            while (to < high && !claimed[to + 1] && average[to + 1] >= gate)
+            {
+                to++;
+            }
+
+            for (var b = from; b <= to; b++)
+            {
+                claimed[b] = true;
+            }
+
+            var edge = Math.Max(gate, average[peakBin] / OccupiedRatio);
+            var lowEdge = peakBin;
+            var highEdge = peakBin;
+
+            while (lowEdge > from && average[lowEdge - 1] >= edge)
+            {
+                lowEdge--;
+            }
+
+            while (highEdge < to && average[highEdge + 1] >= edge)
+            {
+                highEdge++;
+            }
+
+            var occupiedLow = (lowEdge - 0.5) * binHz;
+            var occupiedHigh = (highEdge + 0.5) * binHz;
+
+            if (occupiedHigh - occupiedLow >= narrowestBand / 2.0)
+            {
+                found.Add((occupiedLow, occupiedHigh));
+            }
+        }
+    }
+
+    /// <summary>The rows within <see cref="FitOctaves"/> of a measured band or spacing, those that fit both first.</summary>
+    internal List<OliviaVariant> Rank(double width, double spacing)
+        => _format.Variants
+            .Select(v => (Row: v, Band: Octaves(v.BandwidthHz, width), Spacing: double.IsNaN(spacing) ? double.NaN : Octaves(v.ToneSpacingHz, spacing)))
+            .Where(r => r.Band <= FitOctaves || r.Spacing <= FitOctaves)
+            .OrderByDescending(r => (r.Band <= FitOctaves ? 1 : 0) + (r.Spacing <= FitOctaves ? 1 : 0))
+            .ThenBy(r => r.Band + (double.IsNaN(r.Spacing) ? 0 : r.Spacing))
+            .Select(r => r.Row)
+            .ToList();
+
+    /// <summary>
     /// The tones in an occupied band: how many stand out, their mean spacing and their middle.
     /// </summary>
     /// <remarks>
@@ -326,7 +342,7 @@ public sealed class OliviaBlindSearch
     /// ripple across the averaged spectrum read 35.16 Hz and the histogram's own autocorrelation
     /// 62.50 Hz on a file whose tones are 31.25 Hz apart, and the peaks read 31.250.</para>
     /// </remarks>
-    private (int Tones, double SpacingHz, double MiddleHz) Tones(float[] samples, int rate, double lowHz, double highHz)
+    internal (int Tones, double SpacingHz, double MiddleHz) Tones(float[] samples, int rate, double lowHz, double highHz)
     {
         var longest = _format.Variants.Max(v => v.SymbolSeconds);
         var shortest = _format.Variants.Min(v => v.SymbolSeconds);
