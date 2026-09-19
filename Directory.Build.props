@@ -866,8 +866,14 @@
     fixtures hash as their manifest says, and the outcome carries unit 361 under step 2. No file under
     src changes at this task.
   -->
+  <!--
+    1.13.48 -> 1.13.49, UNIT 362 TASK 0. A PATCH, STEP 2 OF THE OLIVIA PHASE, THE BLIND SEARCH: steps 0
+    and 1 are done, the no-RSID 8/250 file hashes as its manifest says and the RSID detector finds
+    nothing in it, the other eight hash, and the outcome carries unit 362 under step 2. No file under
+    src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.48</Version>
+    <Version>1.13.49</Version>
   </PropertyGroup>
 
   <!--

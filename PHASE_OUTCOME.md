@@ -131,3 +131,15 @@ LICENCE: PHASE_PLAN.md step 2, R27, R30, R31, section 3.3 and section 6; PSK31 p
 COST: one session, six tasks (0 to 5), each committed on its own.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ENTRY: PHASE_STATUS.md has steps 0 and 1 done; olivia-16-500-qso-rsid.wav hashes as the manifest says and the RSID detector reads OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; then the other eight hash, 9 of 9. Carry-forward before any change: engine 111 of 111, app 166 of 166.
+
+## UNIT 362 - STEP 2
+
+STEP: 2
+APPROACH: blind variant search for a carrier that never announced itself - the center and the variant found from occupied bandwidth and tone spacing, confirmed by trial decode against the noise floor, plus a drift fixture made from the shipped one
+MOVE: continue
+WHY: Step 2 is five of seven with 2.3 the only must-pass left, and step 3's entry is shut until it is met; the loop test finds no blind search in any entry, and unit 361 already read this very fixture at CER 0.0000 when handed the variant, so what is unbuilt is the finding and not the reading
+DECIDED: the arbiter O, P, Q, R, S, T, U and V as work instruction 362 carries them, author and overrulable. Task 4 is the drop candidate; tasks 0 to 3 have none.
+LICENCE: PHASE_PLAN.md step 2 criteria 2.3 and 2.7, R27, R30, R31, section 3.3, section 8 and section 6; PSK31 plan R5, R9, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155
+COST: one session, five tasks (0 to 4), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md has steps 0 and 1 done and step 2 not started; olivia-8-250-qso-norsid.wav hashes as the manifest says and the RSID detector finds nothing in it over 200-3000 Hz (0 detections, 13.5 s cpu); then the other eight hash, 9 of 9. Carry-forward before any change: engine 119 of 119, app 166 of 166.
