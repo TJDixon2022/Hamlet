@@ -284,45 +284,71 @@ public sealed class ThePsk31SendIsAnnouncedTests : IDisposable
         Assert.True(sink.LastSamples.Length / (double)rate > Psk31Modulator.SecondsFor(framed));
     }
 
-    /// <summary>**The typed line's *too long to send* counts the burst, so the card and the gate agree.**</summary>
+    /// <summary>
+    /// **The typed line's *too long to send* measures the framed text alone, and the card and the
+    /// gate agree just under sixty seconds and just over.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**REWRITTEN UNDER §R12** (work instruction 360 task 2). Unit 359 wrote this to guard
+    /// its decision A, the burst inside the cap. Tim's R32 (a) of 2026-09-18 put the burst outside
+    /// it, so the test now guards that rule: the line just under sixty seconds of text is over
+    /// sixty with its burst, and it goes.</para>
+    /// </remarks>
     [Fact]
-    public void TheTypedLinesTooLongEstimateIncludesTheBurst()
+    public void TheTypedLinesCardAndGateAgreeOnTheTextAlone()
     {
         var (model, sink) = Panel();
         var card = CardFor(model);
         var burstSeconds = RsidBurst.Seconds(Codes);
 
-        // **A LINE THE TEXT ALONE WOULD LET THROUGH AND THE BURST DOES NOT**, found by arithmetic.
+        // **THE LONGEST LINE WHOSE TEXT FITS, AND ONE CHARACTER MORE**, found by arithmetic.
         var n = 1;
 
-        while (Psk31Modulator.SecondsFor(Psk31Macros.Typed(card.Callsign, Mine, new string('e', n))) + burstSeconds
+        while (Psk31Modulator.SecondsFor(Psk31Macros.Typed(card.Callsign, Mine, new string('e', n + 1)))
                <= MainWindowViewModel.LongestTypedSeconds)
         {
             n++;
         }
 
-        var framed = Psk31Macros.Typed(card.Callsign, Mine, new string('e', n));
-        var textSeconds = Psk31Modulator.SecondsFor(framed);
+        var under = Psk31Modulator.SecondsFor(Psk31Macros.Typed(card.Callsign, Mine, new string('e', n)));
+        var over = Psk31Modulator.SecondsFor(Psk31Macros.Typed(card.Callsign, Mine, new string('e', n + 1)));
 
         _output.WriteLine(
-            $"{n} characters: text {textSeconds:0.000} s, with the burst {textSeconds + burstSeconds:0.000} s, "
-            + $"estimate {Psk31Modulator.SentSecondsFor(framed):0.000} s");
+            $"{n} characters: text {under:0.000} s, with the burst {under + burstSeconds:0.000} s; "
+            + $"{n + 1} characters: text {over:0.000} s");
 
-        Assert.True(textSeconds <= MainWindowViewModel.LongestTypedSeconds, "the line is over on its text alone");
-        Assert.Equal(textSeconds + burstSeconds, Psk31Modulator.SentSecondsFor(framed), 6);
+        Assert.True(under <= MainWindowViewModel.LongestTypedSeconds);
+        Assert.True(under + burstSeconds > MainWindowViewModel.LongestTypedSeconds, "the burst would not have tipped it over");
+        Assert.True(over > MainWindowViewModel.LongestTypedSeconds);
 
+        // **JUST UNDER: THE CARD DOES NOT SAY TOO LONG, AND IT GOES.**
         card.TypedText = new string('e', n);
 
-        _output.WriteLine("card says: " + card.TypedSecondsWord);
+        _output.WriteLine("under, card says: " + card.TypedSecondsWord);
+
+        Assert.DoesNotContain("too long to send", card.TypedSecondsWord, StringComparison.Ordinal);
+
+        model.SendTypedPsk31Command.Execute(card);
+        Settle(model);
+
+        _output.WriteLine("under, note     : " + card.TypedNote + " | " + model.DigitalSendLine);
+
+        Assert.Equal(1, sink.TimesCalled);
+        Assert.DoesNotContain("Too long", card.TypedNote, StringComparison.Ordinal);
+
+        // **JUST OVER: THE CARD SAYS SO, AND THE PRESS IS REFUSED.**
+        card.TypedText = new string('e', n + 1);
+
+        _output.WriteLine("over, card says : " + card.TypedSecondsWord);
 
         Assert.Contains("too long to send", card.TypedSecondsWord, StringComparison.Ordinal);
 
         model.SendTypedPsk31Command.Execute(card);
         Settle(model);
 
-        _output.WriteLine("note     : " + card.TypedNote);
+        _output.WriteLine("over, note      : " + card.TypedNote);
 
-        Assert.Equal(0, sink.TimesCalled);
+        Assert.Equal(1, sink.TimesCalled);
         Assert.Contains("Too long to send", card.TypedNote, StringComparison.Ordinal);
     }
 
