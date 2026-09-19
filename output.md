@@ -1,27 +1,48 @@
 READ IN THIS ORDER.
 
 A. The phase goal - Hamlet works Olivia the way it works PSK31. Step 0 done
-   and closed; step 1 partial; steps 2-6 not started, step 2's entry not open.
+   and closed; step 1 done (1.5 met by this unit's measurements; the separate
+   reading decides); steps 2-6 not started, step 2's entry open.
 B. Step 1's one open criterion, 1.5, in its R32 wording - PSK31 records
-   saying announced 0 of 5 with code 1; the compound-callsign report
-   fits no at 28.192 s of text; the typed-line card and gate agree yes
-   (both count the burst today); FT8/FT4 byte-identical yes; PttOn 1 and
-   Arm( 2 unchanged yes. 1.1-1.4, 1.6, 1.7 still green on the
-   carry-forward list yes (app 165 of 165, engine 105 of 105, before any change).
-C. The report last: this is the draft written at task 1, before task 2 wrote
-   a line. Section 4 raises nothing yet on top of the carried queue.
+   saying announced 5 of 5 with code 1; the compound-callsign report
+   fits yes at 28.192 s of text (30.050 s with its burst); the typed-line
+   card and gate agree yes (373 characters, 59.968 s of text, goes on both;
+   374, 60.096 s, refused on both); FT8/FT4 byte-identical yes; PttOn 1 and
+   Arm( 2 unchanged yes. 1.1-1.4, 1.6, 1.7 still green on the carry-forward
+   list yes (engine 111 of 111; app 165 of 166 in the combined run, the one red
+   a known-flaky layout test that passed alone on the first rerun).
+C. The report last: section 4 raises 5 items on top of the carried queue.
+   None stands in the way of 1.5 or of step 2's entry. Task 2 did not stop
+   at the transmit chain: nothing it needed touched the gate, PttOn, the
+   finally, StopNow or the cap's value. Task 4 found nothing in pj_mfsk.h
+   that cannot be written as Hamlet's own. The format's constants (the
+   scrambling code, the shift of 13, the character-to-Walsh mapping, the Gray
+   code) have to match bit for bit, so they belong in a cited data file, not
+   in code.
 
-UNIT:       360 - stopped at task 1 of 5 (draft, written before task 2) - 2026-09-18 21:57
+UNIT:       360 - complete at task 5 of 5 (tasks 0 to 4), task 4 built - 2026-09-18 22:10
 PHASE GOAL: Hamlet hears, reads, answers and logs Olivia the way it already does PSK31, with the variant taken from the signal's own RSID announcement and never picked by the operator.
-UNIT GOAL:  Make every PSK31 send's transmission record say it was announced and with which code, and hold the cap to the text alone with the burst outside it, so step 1 closes.
-ADVANCED:   no - draft at task 1; nothing is built yet
-NUMBER:     PSK31 records saying announced 0 -> 0 of 5; compound-callsign report refused -> refused
+UNIT GOAL:  Make every PSK31 send's transmission record say it was announced and with which code, and hold the cap to the text alone with the burst outside it, so step 1's last criterion closes and step 2 can start.
+ADVANCED:   yes - 1.5 now has measured support on every clause: 5 of 5 records say announced with code 1, and the compound-callsign report fits and is armed
+NUMBER:     PSK31 records saying announced 0 -> 5 of 5; compound-callsign report refused -> fits
 DRIFT:      0
+
+| Criterion | State after this unit | Evidence |
+| --- | --- | --- |
+| 1.1 each RSID fixture one detection, none on no-RSID and noise | green | `TheRsidDetectorTests`, engine carry-forward 111 of 111 |
+| 1.2 two-signal fixture two detections | green | same run |
+| 1.3 the -16 dB burst detected | green | same run |
+| 1.4 Hamlet's burst reads back and matches the file's sequence | green | `TheRsidBurstTests`, same run |
+| **1.5** CQ begins with the burst by loopback; the record says `announced: true` with the code; FT8/FT4 byte-identical; the burst outside the cap | **met** | loopback: `ThePsk31SendIsAnnouncedTests`; record: 5 of 5, code 1; `TheFt8AndFt4SendsAreByteIdenticalTests` green, unedited; VP2V/W1AW report 28.192 s of text fits and is armed |
+| 1.6 `rsid_heard` and `rsid_sent`, no callsign | green | `TheOliviaSeamTests` and `ThePsk31SendIsAnnouncedTests`, app carry-forward |
+| 1.7 keeps up with real time (nice-to-pass) | green | `TheRsidDetectorTests.TheDetectorKeepsUpWithRealTime` in the engine run; the ratio was not re-read this unit (unit 359: 0.075) |
 
 ## 1. What Claude did
 
-**Draft, at task 1 of 5.** Tasks 2, 3 and 4 are not yet done; this file is rewritten when they are.
-Machine: the development PC, `C:\Source\HamLet`, project Hamlet, branch `main`.
+**Complete: tasks 0 to 4, five of five, task 4 built.** Machine: the development PC,
+`C:\Source\HamLet`, project Hamlet, branch `main`. Every commit was pushed to `origin/main` and
+every push succeeded: `0a55852c`, `1ac1f84b`, `b5259457`, `186c1a65`, `ebc653fa`, `b79fb3f0`, and
+this report.
 
 ### Task 0 - the unit opens
 
@@ -88,17 +109,277 @@ it still holds under D.
 
 **5. Counts.** `CivConstants.PttOn` code lines **1**; `_armedSend.Arm(` lines **2**.
 
+This trace was committed as `1ac1f84b`, before task 2 wrote a line.
+
+### Task 2 - the burst is outside the cap (1.5, R32 a)
+
+Built decisions D and E. **No change to the gate, `PttOn`, the `finally`, `StopNow`, the cap's
+value, or any keying or arming site.** The sequence did not change in this task.
+
+- `UnslottedTransmission` gains `AnnouncementSamples` (init), `Announced`,
+  `AnnouncementSeconds` and `TextSeconds`. Only `Psk31Modulator.Compose` sets
+  `AnnouncementSamples`, from `burst.Length`, the burst it actually put in front.
+- `Fit` holds `TextSeconds` (the samples after the announcement) to `Cap`. The excusal is
+  bounded: the claimed announcement must be no longer than
+  `RsidBurst.LengthInSamples(codes, SampleRate)`, must carry a code the file has a sequence for,
+  and must be no longer than the audio. Otherwise the send is `LongerThanTheCap`. Unannounced
+  audio has `AnnouncementSamples` 0 and is measured whole. No literal code, tone, rate or length
+  is in the code: all of them come from `OliviaData.Current.Rsid`.
+- E: `Psk31Macros.TypedSeconds` and the press's note now use `Psk31Modulator.SecondsFor`, the
+  framed text alone. The card reads *N s of text* (it read *N s on the air*), and the note reads
+  *comes to N s of text*. `psk31_send_composed`'s `withinCap` takes the announcement off.
+  **`SentSecondsFor` is gone**: nothing used it once the card and the note moved. No file was
+  emptied.
+- **Tests, watched red first** (against a stub with the properties and no behavior):
+  `TheUnslottedSendTests` gained four. Three were red and went green:
+  `TheReportToACompoundCallsignFitsWithItsBurstOutsideTheCap` (28.192 s of text, 1.858 s burst,
+  30.050 s audio, `Fits`, armed, played, one key and one unkey, every sample handed over);
+  `ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot` at 12000 and 48000 Hz (360000 and
+  1440000 text samples fit; one more is refused); and
+  `AnAnnouncementLongerThanTheBurstOrWithNoCodeIsLongerThanTheCap` (five cases, each with 10 s
+  of text). `UnannouncedAudioIsMeasuredWholeAsBefore` was green before and after, as a guard
+  of *as before* should be.
+- **§R12 rewrite, in its own commit (`b5259457`)**:
+  `ThePsk31SendIsAnnouncedTests.TheTypedLinesTooLongEstimateIncludesTheBurst` became
+  `TheTypedLinesCardAndGateAgreeOnTheTextAlone`. Watched red first (*61.8 s on the air, too long
+  to send* for 59.968 s of text), then green: **373 characters, 59.968 s of text (61.826 s with
+  the burst), is not too long on the card and goes. 374 characters, 60.096 s, is too long on the
+  card and refused at the press.** No other test needed a rewrite.
+- Run filtered, green and unedited: `TheFt8AndFt4SendsAreByteIdenticalTests` (engine run 32 of
+  32 with `TheUnslottedSendTests` and `ThePsk31ModulatorTests`) and
+  `TheStopIsAlwaysOnScreenTests` (app run 29 of 29 with `ThePsk31SendIsAnnouncedTests`,
+  `TheTypedLineGoesOutTests` and `ThePsk31TransmitTelemetryTests`).
+- Committed `186c1a65`.
+
+### Task 3 - the record says it was announced (1.5, R32 b)
+
+Built decision F. `TransmitRecord` gains `Announced`, `RsidCode` and `AnnouncementSeconds`,
+optional and written only when not null. `Ft8TransmitSequence.Recorded` fills them on the
+no-slot branch only: `announced`, `rsidCode` only when announced, and `announcementSeconds` (0
+when not announced). **This is the one change the sequence took.** `audioSeconds` is still the
+whole audio. The slotted branch is untouched.
+
+- **Watched red first** on the missing `announced` key, both tests, then green:
+  - `ThePsk31SendIsAnnouncedTests.EachOfTheFiveKindsOfSendRecordsThatItWasAnnounced` (app). It
+    presses CQ, then Answer, Report and Confirm through the textbook exchange, then a typed
+    line, on the fake radio. Composed in that order; five played; **5 of 5 records say
+    `announced: true`, `rsidCode: 1`, `announcementSeconds` 1.8575833 s**, which is
+    `RsidBurst.LengthInSamples` at 12000 Hz over the rate. Nothing personal: no callsign (his or
+    mine), grid, place or word of the typed text in any record.
+  - `TheUnslottedSendTests.TheRecordSaysWhetherTheSendWasAnnounced` (engine). A composed CQ
+    writes `announced: true`, the code and the burst's seconds. The same text unannounced writes
+    `announced: false`, no `rsidCode` key, and `announcementSeconds` 0. `audioSeconds` is the
+    whole audio in both.
+- **The codes cannot be made unreadable from a test.** `OliviaData.Current` is read once from
+  the embedded file. So the unannounced case is the `UnslottedTransmission` that `Compose`
+  returns in that case (the text's samples, no code), handed to the real sequence. It is not a
+  run with the file actually broken.
+- FT8: `TheFt8AndFt4SendsAreByteIdenticalTests`, which pins the FT8 and FT4 records key by key,
+  is green and unedited. So no new key reached a slotted record.
+- `PttOn` 1, `Arm(` 2 (`TheKeyingAndArmingSitesAreUnchanged`).
+- **Carry-forward, both invocations, after the build:** engine **111 of 111** (105 plus this
+  unit's 6 new cases in `TheUnslottedSendTests`). App **165 of 166** in the combined run; the one
+  red, `TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning`, **passed
+  alone on the first rerun**. That is the test unit 357 item 1 names as flaky. The app count
+  after the build is 166 because this unit added one test method. **The list gains no name:**
+  no new test class was made (`Unit360Trace` is a trace that asserts nothing).
+- Committed `ebc653fa`.
+
+### Task 4 - step 2's ground, measured and nothing built
+
+`Unit360Trace` (engine, `tests\...\Olivia\`) prints and asserts nothing, the shape of
+`Unit359Trace`. Committed `b79fb3f0`.
+
+**1. Step 2's entry check.** The clean 16/500 fixture's RSID is **still detected**:
+`OLIVIA_16_500 (70) at 1000.32 Hz, tones right 15`.
+
+**2. `assets\reference\jalocha\pj_mfsk.h` (2367 lines), read for structure.**
+
+| Lines | Part | What an Olivia receiver needs from it |
+| --- | --- | --- |
+| 1-32 | includes (`pj_fht.h`, `pj_gray.h`, `pj_fft.h` and others), `Exp2`, `Log2` | - |
+| 33-55 | the symbol shape in the frequency domain: coefficient tables from gMFSK and DM780 | the transmitter's pulse shape; a receiver may use its own window |
+| 56-239 | `MFSK_Modulator` | step 4, not a receiver |
+| 240-289, 600-701 | `BoxFilter`, `CircularBuffer` | utilities |
+| 290-599 | `MFSK_InputProcessor`: overlapped-FFT input conditioning | optional |
+| **702-1047** | **`MFSK_Demodulator`: tone detection.** An FFT per symbol with two spectra slices per symbol (`SpectraPerSymbol = 2`, `:718`), a symbol-shaped window, and soft bits per tone with Gray decoding (`:952`-`:1038`) | tone detection |
+| **1058-1218** | **`MFSK_Encoder`: the other side of the code.** Character to a Walsh function (inverse FHT, `:1150`-`:1166`); scrambling by `ScramblingCodeOlivia` (`:1076`, `ScrambleFHT` `:1168`-`:1177`); interleave by rotating each character's bits across the symbols, shifted 13 per character for Olivia (5 for Contestia) (`EncodeBlock`, `:1178`-`:1206`) | the definition the decoder inverts |
+| **1219-1431** | **`MFSK_SoftDecoder`: the Walsh-function decode.** De-interleave on input (`:1320`-`:1326`), descramble and FHT (`DecodeCharacter`, `:1328`-`:1380`), best-correlation character out | the error correction |
+| 1432-1615 | `RateConverter` | Hamlet has its own rate handling |
+| 1616-1850 | `MFSK_Transmitter` | step 4 |
+| 1851-1928 | a usage comment for `MFSK_Receiver` | - |
+| **1929-2367** | **`MFSK_Receiver`: symbol and block sync.** A search over `2 * SyncMargin + 1` frequency offsets and `SlicesPerSymbol * SymbolsPerBlock` block phases (`:2088`-`:2089`), integrated over `SyncIntegLen` blocks, with an S/N threshold (defaults margin 8, integration 4, threshold 3.0, `:2031`-`:2033`) and best phase and offset tracking (`:2240`-`:2360`) | sync |
+
+**What could not be written as Hamlet's own without copying: no algorithm.** The FFT tone
+detection, the block-phase and offset search, and the FHT correlation decode are standard
+techniques. Hamlet can write them from the structure above, the way the RSID detector was
+written. **What has to be taken from the source is the format's constants**, because a decoder
+must match them bit for bit: the 64-bit Olivia scrambling code, the shift of 13, the
+character-to-Walsh-index mapping (`Char < SymbolsPerBlock` gives +1, otherwise -1 at
+`Char - SymbolsPerBlock`), and the Gray code. These are facts of the format, not expression. By
+R27's pattern they belong in a cited data file (`rsid-codes.json` is the precedent), not as
+literals in code. Nothing here needs a package or a port of the file.
+
+**3. `data\olivia\timing.json`, parsed by machine** (System.Text.Json, in the trace; `python`
+and `jq` both needed approval this session). Its keys: `_about`, `source` (*estimated*),
+`confirm`, `written_by`, `method`, `why_an_upper_bound`, `excluded`, `variants`. Against the
+manifest:
+
+| Variant | File | Seconds (file / manifest) | Characters | RSID | Per character (file / computed) | |
+| --- | --- | --- | --- | --- | --- | --- |
+| 8/250 | `olivia-8-250-cq-rsid.wav` | 28.98 / 28.98 | 38 / 38 | 2.32 / true | 0.702 / 0.702 | agrees |
+| 8/250 | `olivia-8-250-qso-norsid.wav` | 172.06 / 172.06 | 251 / 251 | 0 / false | **0.686 / 0.685** | per-character rounded up |
+| 16/500 | `olivia-16-500-qso-rsid.wav` | 131.38 / 131.38 | 251 / 251 | 2.32 / true | 0.514 / 0.514 | agrees |
+| 32/1000 | `olivia-32-1000-qso-rsid.wav` | 106.8 / 106.8 | 251 / 251 | 2.32 / true | 0.416 / 0.416 | agrees |
+
+172.06 / 251 = 0.68550, so 0.685 to three places, where the file has 0.686. The 8/250 line
+fit (0.683 s per character, 0.72 s fixed) is unaffected: it is computed from the seconds, not
+the rounded figures. The file's 2.32 s RSID is the burst with five silent symbols either side
+(2.3220 s). Hamlet's own burst keeps only the silence in front (1.8576 s), which is decision G.
+
+### Decisions this session made for itself - the author's, marked and overrulable
+
+1. **The card's wording.** *N s on the air* became *N s of text*, and the note's *s on the
+   air* became *s of text*. The number no longer includes the burst, so *on the air* would have
+   understated what keys by 1.86 s.
+2. **`SentSecondsFor` is deleted** rather than kept for telemetry. Decision E left this to the
+   unit, and nothing read it after the change.
+3. **`announcementSeconds` is written as 0 on an unannounced send** rather than left out.
+   Decision F says `rsidCode` is absent when false and does not say which for the seconds; 0 is
+   the measured length.
+4. **`Announced` requires both a code and a length above 0.** A code with no samples claimed
+   excuses nothing and records `announced: false`.
+5. **The unannounced case in task 3 is proved at the engine**, with the transmission `Compose`
+   makes when the codes are unreadable, because the codes cannot be broken from a test.
+
+### Section 5 of the instruction, checked against the tree
+
+Held: HEAD `7bb6b253`; `UnslottedTransmission` `:62` and `:81`-`:85`;
+`LongestUnslottedSeconds = 30` at `Ft8TransmitSequence.cs:133`; `LongestTypedSeconds = 60` at
+`:15489`; `Compose` `:148`; `SentSecondsFor` `:111`; `Psk31Macros.cs:155`;
+`MainWindowViewModel.cs:15563`; `Recorded` `:637`; `TransmitRecord.cs:70`;
+`psk31_send_composed` already carrying `announced` and `rsidCode`; carry-forward 165 and 105;
+`PttOn` 1, `Arm(` 2; Jalocha's headers in `assets\reference\jalocha\`.
+
+Mismatches:
+- **`assets\fixtures\captured\` exists.** It holds one file, `README.md`. The instruction says
+  it does not exist.
+- **R32 (a)'s *a fixed 2.3 seconds*** is the burst with silence on both sides. Hamlet's burst
+  is 1.8576 s, which the instruction's own *1.86 s* and decision G match. Not re-argued: the
+  excusal is the burst's measured length, whatever that is.
+- The known ones, not rediscovered: `PHASE_PLAN.md` step 1 still shows 1.7 unchecked;
+  `PHASE_STATUS.md` still says `WORK_INSTRUCTION: 358` (so every status write this unit carries
+  358); `RULES_AT` still HM-DEC-161; the plan's data file names; the mislabeled outcome entries;
+  the two red tests off the list.
+
 ## 2. What the owner should expect
 
-Nothing has changed yet. The draft is here so there is a report whatever happens next.
+- **A PSK31 report to a compound callsign goes again.** With the default name and place it is
+  28.19 s of text and 30.05 s on the air, and it is armed and sent.
+- **Any PSK31 send can key for up to the cap plus 1.86 s**: 31.86 s for a macro and 61.86 s
+  for a typed line. That is R32 (a), and it is bounded. Nothing can claim more than the file's
+  burst as announcement.
+- **The typed line's card now reads *N s of text*.** A line may be up to 60 s of text; the burst
+  in front is extra. Near the limit the card can read *60 s of text* and still send (59.968 s
+  rounds to 60), and one character more reads *60.1 s of text, too long to send*.
+- **Every PSK31 `ft8_transmission` line now ends its announcement with three keys:**
+  `announced`, `rsidCode` and `announcementSeconds`. An FT8 or FT4 line is exactly what it was.
+- **What will look wrong but is not:** a refused PSK31 send's sentence still reads *this is N s
+  of PSK31 audio*, where N is the whole audio with the burst. The cap measured the text, so N is
+  1.86 s more than the number compared to the cap. See section 4 item 2.
 
 ## 3. What you should see
 
-No visible change yet.
+**The five `ft8_transmission` records** for the five kinds of PSK31 send, as written by
+`EachOfTheFiveKindsOfSendRecordsThatItWasAnnounced` on the fake radio at 12000 Hz
+(`ts` and `sessionId` dropped):
+
+```
+cq      {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":13.313583333333334,"sampleRate":12000,"sampleCount":159763,"messageLength":38,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":13.313583333333334,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
+answer  {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":9.697583333333334,"sampleRate":12000,"sampleCount":116371,"messageLength":23,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":9.697583333333334,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
+report  {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":26.657583333333335,"sampleRate":12000,"sampleCount":319891,"messageLength":96,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":26.657583333333335,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
+confirm {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":18.113583333333334,"sampleRate":12000,"sampleCount":217363,"messageLength":62,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":18.113583333333334,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
+typed   {"mode":"Psk31","frequencyHz":14070000,"durationSeconds":16.769583333333333,"sampleRate":12000,"sampleCount":201235,"messageLength":58,"outcome":"Played","cameOutOfTransmit":"OrdinaryUnkey","keyed":true,"fit":"Fits","audioSeconds":16.769583333333333,"announced":true,"rsidCode":1,"announcementSeconds":1.8575833333333334,"longestSeconds":30,"stagesEntered":"gate_asked | keyed | handed_to_the_sound_card | unkeyed"}
+```
+
+**One FT8 record beside them**, as `TheFt8AndFt4SendsAreByteIdenticalTests` pins it and as it
+still passes: no `announced`, `rsidCode` or `announcementSeconds` key.
+
+```
+ft8     slotStartUtc 2026-09-11T18:00:00.0000000Z, startSecondsIntoSlot 0.5, frequencyHz 14074000, durationSeconds 12.64, sampleRate 48000, sampleCount 606720, messageType Standard, messageLength 14, carriedHashedCallsign False, outcome Played, cameOutOfTransmit OrdinaryUnkey, keyed True, stagesEntered gate_asked | keyed | handed_to_the_sound_card | unkeyed
+```
+
+**The cap table, after this unit.** The burst is 1.858 s at 12000 and 48000 Hz alike.
+
+| Send | Text s | Burst s | Total on the air s | Cap (measures the text) | Now |
+| --- | --- | --- | --- | --- | --- |
+| CQ | 11.456 | 1.858 | 13.314 | 30 | fits |
+| Answer to W1AW | 7.840 | 1.858 | 9.698 | 30 | fits |
+| Report to W1AW | 24.800 | 1.858 | 26.658 | 30 | fits |
+| Confirm to W1AW | 16.256 | 1.858 | 18.114 | 30 | fits |
+| Report to VP2V/W1AW | 28.192 | 1.858 | 30.050 | 30 | **fits** (was refused) |
+| Typed line, 373 × `e` | 59.968 | 1.858 | 61.826 | 60 | **fits** |
+| Typed line, 374 × `e` | 60.096 | 1.858 | 61.954 | 60 | refused, card and press |
+
+Task 4's findings are in section 1 under its own heading.
+
+**On the screen:** a report to a compound callsign sends where it was refused, and the typed
+line's card says *s of text*. Everything else is in the telemetry file. **All of this is
+computed, not seen, and none of it is evidence about the radio** (FACT-004).
 
 ## 4. What's blocking us
 
-Nothing new yet. The carried queue follows.
+**Nothing blocks 1.5 or step 2's entry.** Five new items, all findings; none wants a ruling.
+The carried queue follows them.
+
+### Raised by unit 360
+
+**1. `longestSeconds` on a typed line's record says 30 when the send was held to 60.**
+
+*A finding, not repaired.* `TransmitRecord.ToBag` writes `OperatorSend.LongestUnslottedSeconds`
+for every no-slot send (`TransmitRecord.cs`, the `longestSeconds` line), not the send's own
+`Cap`. The typed record in section 3 shows it: `longestSeconds: 30` on a send held to 60. This
+is older than this unit (work instruction 357 moved the cap onto the send and did not move
+this). Decision F named the fields this unit adds, and this is not one of them. A later unit can
+carry `Cap` through `Recorded` the way this one carried the announcement.
+
+**2. The sequence's refusal sentence quotes the whole audio, not the text the cap measured.**
+
+*A finding, not repaired.* `SendableWithNoSlot` says *this is {audio.Seconds} s of PSK31 audio,
+and this send may be at most {Cap} s*. Since R32 (a), the number compared to the cap is
+`TextSeconds`, so an announced refusal quotes 1.86 s more than was measured. The sentence is
+still true about the audio. Changing it touches `Ft8TransmitSequence` beyond decision F's one
+change, so it was left.
+
+**3. `WhereTheTransmissionStartsAndWhatTheRecordSaysTests.ATransmitRecordCannotCarryTheMessageOrTheCallsignInIt`
+is red, and older than this unit.**
+
+*A finding, not repaired.* It asserts `Assert.Single` over every event a slotted FT8 run
+writes. Since `7de5018b` (every stage writes `send_stage`), the run writes four `send_stage`
+events and then the record, so it fails on the count before it reaches the record's shape. It
+is not on the carry-forward list. This unit's filter picked it up by name, and this unit
+changed no stage.
+
+**4. The typed line's card rounds to *60 s of text* for a line that goes.**
+
+*A finding for whoever next touches the card.* 59.968 s prints as *60 s of text* beside *the
+most a typed line may be is 60 s*, and it sends. One character more prints *60.1 s*. The card
+and the gate agree, as the test proves, but the word does not show the margin.
+
+**5. Tool facts and status words this session.**
+
+*A finding, reported and not repaired.*
+- Needed approval and not run: `python -c`, `jq`, `git restore --source`, `git checkout <rev> --
+  <file>`, `git stash push`, `awk`, and `tools/status.sh` run directly (not through `sh`) when
+  joined by `&&`. `sh tools/status.sh` alone, and joined by `&&` to `git` and `dotnet test`, ran.
+  Earlier units report that Python ran; it did not run this session.
+- `sed -n` inside a pipe after `git show` ran. `tail -n +N file | md5sum` ran, and was used to
+  check that the carried queue below is byte-identical to `db3edfa1:output.md` from its unit 358
+  heading to its end.
+- **The first five status writes this session read `STATE: WORKING` and `BALL: claude`**, which
+  are not allowed words (`CLAUDE.md` §13.1). Every write from the sixth on, during task 1, used
+  `EXECUTING` and `code`. `tools/status.sh` still writes `RULES_AT: HM-DEC-161`, and `WORK_INSTRUCTION` is read
+  from `PHASE_STATUS.md`, which still says 358.
 
 ### Asks still outstanding - carried from unit 359's section 4, per HM-DEC-139, verbatim
 

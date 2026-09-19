@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: 4 of 5
+STATE: COMPLETED
+TASK: 5 of 5
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: code
-NEXT_PASTE: none
+BALL: web
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-18T22:10:13-04:00
-NOTE: Task 4: pj_mfsk.h mapped (demodulator 702-1047, encoder 1058-1218, soft decoder 1219-1431, receiver sync 1929-2367); committing the trace
+UPDATED: 2026-09-18T22:12:26-04:00
+NOTE: Unit 360 complete: PSK31 records say announced 5 of 5 with code 1, the VP2V/W1AW report fits at 28.192 s of text; 1.5 met, step 2 entry open; report written
 
 ---
 
