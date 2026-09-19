@@ -1,0 +1,69 @@
+{
+ "_about": "The facts of the Olivia format that a receiver must match bit for bit, transcribed with the line each stands on. This is the pattern data/rsid/rsid-codes.json and data/psk31/varicode.csv set: facts of a published format, cited, not a port of anybody's code (work instruction 361 decision H). Hamlet's demodulator reads every number here through OliviaData and carries none of them as a literal.",
+ "source": "Pawel Jalocha, pj_mfsk.h, pj_fht.h and pj_gray.h as shipped in fldigi src/include/jalocha/, GPL-3, master branch 2026-09-14 (assets/reference/SOURCE.md lines 3 to 5); the copies read are under assets/reference/jalocha/",
+ "bits_per_character": {
+  "value": 7,
+  "cite": "pj_mfsk.h:1121 BitsPerCharacter = 7 (standard Olivia)"
+ },
+ "symbols_per_block": {
+  "value": 64,
+  "cite": "pj_mfsk.h:1124 SymbolsPerBlock = Exp2(BitsPerCharacter-1)"
+ },
+ "character_mask": {
+  "value": 127,
+  "cite": "pj_mfsk.h:1135 Mask = (SymbolsPerBlock << 1) - 1, applied at :1156"
+ },
+ "upper_half_negated": {
+  "value": true,
+  "cite": "pj_mfsk.h:1161-1164: a character below SymbolsPerBlock sets +1 at its own index, one at or above it sets -1 at its index less SymbolsPerBlock"
+ },
+ "walsh_inverse_kernel": {
+  "value": [[1, -1], [1, 1]],
+  "cite": "pj_fht.h:40-45, the IFHT butterfly applied at pj_mfsk.h:1165: the lower output is the lower input less the upper, the upper output their sum; rows are outputs, columns inputs"
+ },
+ "scrambling_code": {
+  "value": "E257E6D0291574EC",
+  "cite": "pj_mfsk.h:1076 and :1235 ScramblingCodeOlivia = 0xE257E6D0291574ECLL"
+ },
+ "scrambling_shift_per_character": {
+  "value": 13,
+  "cite": "pj_mfsk.h:1185 and :1335 nShift = 13 for Olivia, applied as FreqBit * nShift at :1192 and :1337"
+ },
+ "scrambling_rule": {
+  "value": "the code bit for character c at symbol t is bit ((c * shift) + t) modulo symbols_per_block of the code, and a set bit negates that symbol's Walsh value",
+  "cite": "pj_mfsk.h:1170-1176 and :1337-1347"
+ },
+ "tone_bit_rotation_per_symbol": {
+  "value": 1,
+  "cite": "pj_mfsk.h:1196-1204: character c's value at symbol t sets bit (c + t) modulo bits_per_symbol of that symbol, the rotation stepping by one per symbol"
+ },
+ "negative_sets_the_bit": {
+  "value": true,
+  "cite": "pj_mfsk.h:1195 if (FHT_Buffer[TimeBit] < 0) the bit is set"
+ },
+ "symbol_to_tone": {
+  "value": [0, 1, 3, 2, 6, 7, 5, 4, 12, 13, 15, 14, 10, 11, 9, 8, 24, 25, 27, 26, 30, 31, 29, 28, 20, 21, 23, 22, 18, 19, 17, 16],
+  "cite": "pj_mfsk.h:168 Symbol = GrayCode(Symbol) before the tone is chosen; pj_gray.h:11-12 GrayCode(Binary) = Binary ^ (Binary >> 1). The table is that rule for symbols 0 to 31, which serves every variant of up to 32 tones; tone k sits k spacings above the first tone (pj_mfsk.h:172)"
+ },
+ "analysis_window_symbols": {
+  "value": 2,
+  "cite": "pj_mfsk.h:121 and :804 SymbolSepar = SymbolLen / 2: each symbol is shaped with a raised cosine SymbolLen long (:227) and the next starts SymbolSepar later"
+ },
+ "null_character": {
+  "value": 0,
+  "cite": "pj_mfsk.h:1825-1826: a block with fewer characters queued than it carries is filled with character 0, which is idle and not text"
+ },
+ "variant_rule": {
+  "value": "tone_spacing_hz = bandwidth_hz / tones; symbol_seconds = 1 / tone_spacing_hz; first_tone_offset_hz = -(tones - 1) / 2 * tone_spacing_hz",
+  "cite": "pj_mfsk.h:1719-1723 and :2060-2063: SymbolLen = 2^(BitsPerSymbol + 7 - log2(Bandwidth / 125)) at 8000 Hz, carriers 2 bins of SymbolLen apart (:68, :717) and symbols SymbolLen / 2 apart, so the spacing and the symbol rate are both Bandwidth / Tones; fldigi's olivia.cxx places the carriers with fc_offset = Bandwidth * (1 - 0.5 / Tones) / 2 below the center and the +1 bin of :1723 puts their middle on it (assets/reference/olivia-fixture-generator.cpp line 13)"
+ },
+ "variants": [
+  { "variant": "4/250", "tones": 4, "bandwidth_hz": 250, "bits_per_symbol": 2, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -93.75 },
+  { "variant": "4/500", "tones": 4, "bandwidth_hz": 500, "bits_per_symbol": 2, "tone_spacing_hz": 125.0, "symbol_seconds": 0.008, "first_tone_offset_hz": -187.5 },
+  { "variant": "8/250", "tones": 8, "bandwidth_hz": 250, "bits_per_symbol": 3, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -109.375 },
+  { "variant": "8/500", "tones": 8, "bandwidth_hz": 500, "bits_per_symbol": 3, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -218.75 },
+  { "variant": "16/500", "tones": 16, "bandwidth_hz": 500, "bits_per_symbol": 4, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -234.375 },
+  { "variant": "16/1000", "tones": 16, "bandwidth_hz": 1000, "bits_per_symbol": 4, "tone_spacing_hz": 62.5, "symbol_seconds": 0.016, "first_tone_offset_hz": -468.75 },
+  { "variant": "32/1000", "tones": 32, "bandwidth_hz": 1000, "bits_per_symbol": 5, "tone_spacing_hz": 31.25, "symbol_seconds": 0.032, "first_tone_offset_hz": -484.375 }
+ ]
+}

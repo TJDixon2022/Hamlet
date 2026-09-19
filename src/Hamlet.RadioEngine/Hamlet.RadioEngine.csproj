@@ -61,10 +61,12 @@
   <!-- The Olivia calling table, a community convention cited on its face, beside the
        band rows it is read with; and the RSID codes and tone sequences ported from
        fldigi's rsid.cxx (GPL-3) with their citation (work instruction 358 task 1,
-       PHASE_PLAN.md R27 and R29). Both read at startup by OliviaData. -->
+       PHASE_PLAN.md R27 and R29). Both read at startup by OliviaData. The Olivia format's
+       cited facts join them (work instruction 361 decision H), read the same way. -->
   <ItemGroup>
     <EmbeddedResource Include="..\..\data\bands\olivia-calling.json" LogicalName="Hamlet.RadioEngine.Data.Bands.olivia-calling.json" />
     <EmbeddedResource Include="..\..\data\rsid\rsid-codes.json" LogicalName="Hamlet.RadioEngine.Data.Rsid.rsid-codes.json" />
+    <EmbeddedResource Include="..\..\data\olivia\format.json" LogicalName="Hamlet.RadioEngine.Data.Olivia.format.json" />
   </ItemGroup>
 
   <!-- The glossary lives in /data with the other editorial content and is

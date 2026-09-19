@@ -174,6 +174,104 @@ public sealed class TheOliviaDataTests
         Assert.Contains("rsid-codes.json", missing.Problem!, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Work instruction 361 task 2: **`format.json` is read at startup and gives each variant's
+    /// parameters and the four constants.**
+    /// </summary>
+    /// <remarks>
+    /// **THE CONSTANTS ARE CHECKED AGAINST THE HEADERS THEMSELVES**, not against a second copy
+    /// typed here: the scrambling code and the shift are read out of `pj_mfsk.h` at the lines
+    /// the file cites, and the Gray table against `pj_gray.h`'s rule.
+    /// </remarks>
+    [Fact]
+    public void TheOliviaFormatIsReadAtStartupWithItsVariantsAndConstants()
+    {
+        var format = OliviaData.Current.Format;
+
+        _output.WriteLine("problem : " + (OliviaData.Current.Problem ?? "(none)"));
+
+        Assert.NotNull(format);
+        Assert.False(string.IsNullOrWhiteSpace(format!.Source));
+
+        var root = RepoRoot();
+        var mfsk = File.ReadAllLines(Path.Combine(root, "assets", "reference", "jalocha", "pj_mfsk.h"));
+        var codeLine = mfsk[1076 - 1];
+        var hex = codeLine[(codeLine.IndexOf("0x", StringComparison.Ordinal) + 2)..codeLine.IndexOf("LL", StringComparison.Ordinal)];
+
+        _output.WriteLine($"code    : file {format.ScramblingCode:X16}, pj_mfsk.h:1076 {hex}");
+        Assert.Equal(Convert.ToUInt64(hex, 16), format.ScramblingCode);
+
+        Assert.Contains(": " + format.ScramblingShiftPerCharacter + ";", mfsk[1185 - 1], StringComparison.Ordinal);
+        Assert.Contains("BitsPerCharacter = " + format.BitsPerCharacter + ";", mfsk[1121 - 1], StringComparison.Ordinal);
+        Assert.Equal(1 << (format.BitsPerCharacter - 1), format.SymbolsPerBlock);
+
+        // pj_gray.h:12 - GrayCode(Binary) = Binary ^ (Binary >> 1).
+        for (var symbol = 0; symbol < format.SymbolToTone.Count; symbol++)
+        {
+            Assert.Equal(symbol ^ (symbol >> 1), format.SymbolToTone[symbol]);
+        }
+
+        // pj_fht.h:40-43 - the lower output is the lower input less the upper, the upper their sum.
+        Assert.Equal(new[,] { { 1, -1 }, { 1, 1 } }, format.WalshInverseKernel);
+        Assert.True(format.UpperHalfNegated);
+
+        foreach (var name in new[] { "8/250", "16/500", "32/1000" })
+        {
+            var v = format.Variant(name);
+
+            Assert.NotNull(v);
+            _output.WriteLine(
+                $"{name,-8}: tones {v!.Tones}, bits {v.BitsPerSymbol}, spacing {v.ToneSpacingHz} Hz, "
+                + $"symbol {v.SymbolSeconds} s, first tone {v.FirstToneOffsetHz} Hz");
+
+            var parts = name.Split('/');
+
+            Assert.Equal(int.Parse(parts[0]), v.Tones);
+            Assert.Equal(int.Parse(parts[1]), v.BandwidthHz);
+        }
+
+        // **AND THE FILE IN THE TREE IS THE ONE EMBEDDED.**
+        var fromTree = OliviaData.Read(
+            File.ReadAllText(Path.Combine(root, "data", "bands", "olivia-calling.json")),
+            File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json")),
+            File.ReadAllText(Path.Combine(root, "data", "olivia", "format.json")));
+
+        Assert.Null(fromTree.Problem);
+        Assert.Equal(format.Variants, fromTree.Format!.Variants);
+    }
+
+    /// <summary>
+    /// Work instruction 361 task 2: **a malformed format is reported in words, not guessed**, the
+    /// same shape as `rsid-codes.json`'s.
+    /// </summary>
+    [Fact]
+    public void AMalformedFormatIsReportedInWordsAndNoValue()
+    {
+        var root = RepoRoot();
+        var calling = File.ReadAllText(Path.Combine(root, "data", "bands", "olivia-calling.json"));
+        var rsid = File.ReadAllText(Path.Combine(root, "data", "rsid", "rsid-codes.json"));
+        var format = File.ReadAllText(Path.Combine(root, "data", "olivia", "format.json"));
+
+        var cutOff = OliviaData.Read(calling, rsid, format[..(format.Length / 2)]);
+        var notHex = OliviaData.Read(calling, rsid, format.Replace("\"E257E6D0291574EC\"", "\"E257-E6D0\"", StringComparison.Ordinal));
+        var disagrees = OliviaData.Read(calling, rsid, format.Replace("\"tone_spacing_hz\": 31.25, \"symbol_seconds\": 0.032, \"first_tone_offset_hz\": -234.375", "\"tone_spacing_hz\": 32.0, \"symbol_seconds\": 0.032, \"first_tone_offset_hz\": -234.375", StringComparison.Ordinal));
+        var missing = OliviaData.Read(calling, rsid, null);
+
+        foreach (var (what, read) in new[] { ("cut off", cutOff), ("not hex", notHex), ("disagrees", disagrees), ("missing", missing) })
+        {
+            _output.WriteLine($"{what,-10}: {read.Problem}");
+
+            Assert.Null(read.Format);
+            Assert.NotNull(read.Problem);
+            Assert.Contains("format.json", read.Problem, StringComparison.Ordinal);
+            Assert.EndsWith(".", read.Problem, StringComparison.Ordinal);
+
+            // **ONE BAD FILE DOES NOT TAKE THE OTHERS WITH IT.**
+            Assert.NotNull(read.Calling);
+            Assert.NotNull(read.Rsid);
+        }
+    }
+
     private static string RepoRoot()
     {
         var at = new DirectoryInfo(AppContext.BaseDirectory);

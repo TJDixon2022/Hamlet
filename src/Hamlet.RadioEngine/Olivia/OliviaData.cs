@@ -23,12 +23,16 @@ public sealed class OliviaData
     /// <summary>Resource name of the embedded RSID codes.</summary>
     public const string RsidResourceName = "Hamlet.RadioEngine.Data.Rsid.rsid-codes.json";
 
+    /// <summary>Resource name of the embedded Olivia format.</summary>
+    public const string FormatResourceName = "Hamlet.RadioEngine.Data.Olivia.format.json";
+
     private static readonly Lazy<OliviaData> Shared = new(LoadEmbedded);
 
-    private OliviaData(OliviaCallingTable? calling, RsidCodes? rsid, string? problem)
+    private OliviaData(OliviaCallingTable? calling, RsidCodes? rsid, OliviaFormat? format, string? problem)
     {
         Calling = calling;
         Rsid = rsid;
+        Format = format;
         Problem = problem;
     }
 
@@ -41,21 +45,42 @@ public sealed class OliviaData
     /// <summary>The RSID codes, or null where they could not be read.</summary>
     public RsidCodes? Rsid { get; }
 
+    /// <summary>The Olivia format's cited facts, or null where they could not be read.</summary>
+    /// <remarks>
+    /// **WORK INSTRUCTION 361 DECISION H.** The scrambling code, the shift, the Walsh mapping,
+    /// the Gray code and each variant's parameters, read from <c>data/olivia/format.json</c>
+    /// the way the RSID codes are read, so the demodulator carries none of them as a literal.
+    /// </remarks>
+    public OliviaFormat? Format { get; }
+
     /// <summary>
-    /// One sentence per file that could not be read, or null where both were.
+    /// One sentence per file that could not be read, or null where every one was.
     /// </summary>
     public string? Problem { get; }
 
-    /// <summary>Read the two files from their text.</summary>
+    /// <summary>Read the calling table and the RSID codes from their text, and the format as shipped.</summary>
     /// <param name="callingJson">The calling table's contents, or null where the file is missing.</param>
     /// <param name="rsidJson">The RSID codes' contents, or null where the file is missing.</param>
+    /// <returns>What could be read, and a sentence about what could not.</returns>
+    /// <remarks>
+    /// **THE TWO-FILE READ STEP 0 WROTE, UNCHANGED IN MEANING.** Its callers hand it two files
+    /// and ask about those two; the format is the embedded one, so a caller that never heard
+    /// of it is not told it is missing.
+    /// </remarks>
+    public static OliviaData Read(string? callingJson, string? rsidJson)
+        => Read(callingJson, rsidJson, Embedded(FormatResourceName));
+
+    /// <summary>Read the three files from their text.</summary>
+    /// <param name="callingJson">The calling table's contents, or null where the file is missing.</param>
+    /// <param name="rsidJson">The RSID codes' contents, or null where the file is missing.</param>
+    /// <param name="formatJson">The Olivia format's contents, or null where the file is missing.</param>
     /// <returns>What could be read, and a sentence about what could not.</returns>
     /// <remarks>
     /// **ONE BAD FILE DOES NOT TAKE THE OTHER WITH IT.** They are separate facts: a broken
     /// RSID table leaves the calling spot usable, and the sentence names only the file that
     /// failed.
     /// </remarks>
-    public static OliviaData Read(string? callingJson, string? rsidJson)
+    public static OliviaData Read(string? callingJson, string? rsidJson, string? formatJson)
     {
         var problems = new List<string>();
 
@@ -105,14 +130,38 @@ public sealed class OliviaData
             }
         }
 
+        OliviaFormat? format = null;
+
+        if (formatJson is null)
+        {
+            problems.Add(
+                "Hamlet's Olivia format, " + OliviaFormat.FilePath
+                + ", is missing from this build, so no Olivia text can be read and none is guessed.");
+        }
+        else
+        {
+            try
+            {
+                format = OliviaFormat.Parse(formatJson);
+            }
+            catch (InvalidDataException error)
+            {
+                problems.Add(
+                    "Hamlet could not read its Olivia format, " + OliviaFormat.FilePath
+                    + ", because " + error.Message
+                    + ", so no Olivia text can be read and none is guessed.");
+            }
+        }
+
         return new OliviaData(
             calling,
             rsid,
+            format,
             problems.Count == 0 ? null : string.Join(" ", problems));
     }
 
     private static OliviaData LoadEmbedded()
-        => Read(Embedded(CallingResourceName), Embedded(RsidResourceName));
+        => Read(Embedded(CallingResourceName), Embedded(RsidResourceName), Embedded(FormatResourceName));
 
     private static string? Embedded(string resourceName)
     {
