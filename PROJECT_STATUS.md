@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
-WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
-RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T16:48:36-04:00
-NOTE: FT8 regression unit complete - a press rebuilds the transmit path once and every stop after read_back says why; guards on the list; HM-DEC-165
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 365 - Hamlet own Olivia modulator, read back by Hamlet own ears
+BALL: code
+NEXT_PASTE: none
+RULES_AT: HM-DEC-165 (2026-09-19)
+UPDATED: 2026-09-19T17:38:04-04:00
+NOTE: Unit 365 task 0 - trace measured: author fixtures 8/16/32 tones at 31.25 Hz, preamble 0.467 s, no preamble symbols; writing the outcome entry and committing
 
 ---
 

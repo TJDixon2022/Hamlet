@@ -883,8 +883,14 @@
     OLIVIA PHASE PAUSED: an FT8 send at the bench reaches Played, and the operator's record of
     2026-09-19 (read_back, then nothing) matches the bench only for a press with no armed send.
   -->
+  <!--
+    1.13.52 -> 1.13.53, UNIT 365 TASK 0. A PATCH, STEP 4 OF THE OLIVIA PHASE, SAY IT: step 3 is done by
+    PHASE_PLAN.md section 8's revision of 2026-09-19 evening (decision AO), the nine fixtures hash as
+    their manifest says, and the carry-forward list is run before any change. No file under src changes
+    at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.52</Version>
+    <Version>1.13.53</Version>
   </PropertyGroup>
 
   <!--
