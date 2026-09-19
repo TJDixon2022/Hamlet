@@ -264,6 +264,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string _transmitRefusal = "";
 
+    /// <summary>
+    /// **Why nothing is armed, as a stable token for the record**, or empty where a send is armed
+    /// or nothing has been tried (work instruction 362 task 1).
+    /// </summary>
+    /// <remarks>
+    /// <see cref="_transmitRefusal"/> is the sentence for the screen and may be reworded; this is
+    /// the token the file carries, so two evenings compare the same words (§8.1).
+    /// </remarks>
+    private string _transmitRefusalReason = "";
+
     private bool _updatingFromRig;
     private bool _rigSendPending;
     private ModeFollowState _modeFollow = ModeFollowState.Armed(false);
@@ -13715,14 +13725,19 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _armedSend = null;
         _transmitRefusal = "";
+        _transmitRefusalReason = "";
         _transmitSampleRate = Ft8Composer.DefaultSampleRate;
 
         var endpoint = (_settings.AudioOutputDeviceId ?? "").Trim();
 
+        // **EVERY REFUSAL BELOW NAMES ITSELF IN THE RECORD** (work instruction 362 task 1). Each
+        // wrote a sentence for the screen and nothing for the file, so a press made later with
+        // nothing armed stopped after read-back and the record could not say why.
         if (port is null && endpoint.Length == 0)
         {
             // The wording every existing test of this refusal was written
             // against, kept verbatim for the case that has not changed.
+            RefuseTransmitPath("no_radio");
             return;
         }
 
@@ -13731,6 +13746,7 @@ public partial class MainWindowViewModel : ObservableObject
             _transmitRefusal =
                 "no radio with a serial port is connected. The training radio is a "
                 + "simulator and has no port, so nothing can be keyed through it";
+            RefuseTransmitPath("no_serial_port");
             return;
         }
 
@@ -13741,6 +13757,7 @@ public partial class MainWindowViewModel : ObservableObject
                 + "own USB audio input, and Hamlet will not choose one for you: "
                 + "playing FT8 into whatever the computer defaults to is not "
                 + "transmitting";
+            RefuseTransmitPath("no_transmit_device");
             return;
         }
 
@@ -13760,6 +13777,8 @@ public partial class MainWindowViewModel : ObservableObject
 
             DigitalSendLine =
                 "Hamlet cannot transmit: " + _transmitRefusal + ".";
+
+            RefuseTransmitPath("transmit_device_would_not_open");
 
             return;
         }
@@ -13807,6 +13826,8 @@ public partial class MainWindowViewModel : ObservableObject
             DigitalSendLine =
                 "Hamlet cannot transmit: " + _transmitRefusal + ".";
 
+            RefuseTransmitPath("transmit_rate_unusable", rate);
+
             return;
         }
 
@@ -13829,6 +13850,17 @@ public partial class MainWindowViewModel : ObservableObject
 
         _armedSend = new Ft8ArmedSend(
             new Ft8TransmitSequence(port, sink, _sendLicence, _telemetry));
+
+        AppEvents.TransmitPath(_telemetry, "built", rate);
+    }
+
+    /// <summary>Keep why nothing was armed, and write it down.</summary>
+    /// <param name="reason">The stable token.</param>
+    /// <param name="sampleRate">The endpoint's rate where one was opened, or 0.</param>
+    private void RefuseTransmitPath(string reason, int sampleRate = 0)
+    {
+        _transmitRefusalReason = reason;
+        AppEvents.TransmitPath(_telemetry, reason, sampleRate);
     }
 
     /// <summary>The rate the armed send's endpoint declared, and composes at.</summary>
@@ -15412,6 +15444,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         if (!readBack.WouldReachAnybody)
         {
+            // **A SEND THAT STOPS HERE SAYS SO IN THE RECORD** (work instruction 362 task 1): the
+            // sentence below reached the screen and nothing reached the file.
+            AppEvents.SendRefusedAfterReadBack(
+                _telemetry, _digitalMode.ToString(), SendStage.ReadBack, "unreadable_on_the_air");
+
             DigitalSendLine = Ft8ReadBack.SentNothing(wanted, readBack);
             return;
         }
@@ -15443,8 +15480,27 @@ public partial class MainWindowViewModel : ObservableObject
         var trueUtc = Ft8Slots.TrueUtc(DateTime.UtcNow, ClockOffset) ?? DateTime.UtcNow;
         var next = grid.SlotStart(trueUtc).AddSeconds(grid.SlotSeconds);
 
+        // **A RADIO IS CONNECTED AND NOTHING IS ARMED: TRY ONCE MORE, HERE** (work instruction
+        // 362 task 1). The transmit path is built when the radio connects, from the Settings of
+        // that moment, and nothing rebuilt it afterwards - so a transmit device named, plugged in
+        // or back from a driver reset after the connect left every FT8 press stopping after
+        // read-back until the radio was connected again. `BuildTheArmedSend` catches what the
+        // device throws and keys nothing; this arms nothing either, and the press is still the
+        // one press (§0.2).
+        if (_armedSend is null && _rigPort is not null)
+        {
+            BuildTheArmedSend(_rigPort);
+        }
+
         if (_armedSend is null)
         {
+            // **AND WHERE IT STILL CANNOT, THE RECORD SAYS WHY** (work instruction 362 task 1):
+            // this return wrote the sentence below and nothing else, which is the record of
+            // 2026-09-19 exactly - `read_back`, then silence.
+            AppEvents.SendRefusedAfterReadBack(
+                _telemetry, _digitalMode.ToString(), "arm",
+                _transmitRefusalReason.Length == 0 ? "no_radio" : _transmitRefusalReason);
+
             // REFUSED WITH WORDS, NEVER SILENTLY, AND IT NAMES WHICH HALF IS
             // MISSING. `_transmitRefusal` is written by `BuildTheArmedSend` at
             // the moment the radio connected; empty means nothing has connected
@@ -19187,6 +19243,7 @@ public partial class MainWindowViewModel : ObservableObject
             _rigPort = null;
             _armedSend = null;
             _transmitRefusal = "";
+            _transmitRefusalReason = "";
             _transmitSampleRate = Ft8Composer.DefaultSampleRate;
 
             IsConnected = false;

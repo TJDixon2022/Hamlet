@@ -1731,6 +1731,55 @@ public static class AppEvents
     }
 
     /// <summary>
+    /// **A send stopped between read-back and arming, and this says where and why** (work
+    /// instruction 362 task 1).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="mode">The digital mode the send was composed in.</param>
+    /// <param name="stage">The stage it stopped at: `read_back` or `arm`.</param>
+    /// <param name="reason">A stable token for why.</param>
+    /// <remarks>
+    /// **TWO FT8 SENDS ON 2026-09-19 STOPPED AFTER `read_back` AND THE FILE SAID NOTHING.** Both
+    /// returns there wrote a sentence to the screen and nothing to the record, so a send that
+    /// could not go and a send that vanished read the same. A refusal is a warning (§8.1); no
+    /// text and no callsign go in it (§2.1).
+    /// </remarks>
+    public static void SendRefusedAfterReadBack(
+        ITelemetry? telemetry, string mode, string stage, string reason)
+        => telemetry?.Write(
+            TelemetryCategory.Transmit, "send_refused",
+            new Dictionary<string, object?>
+            {
+                ["mode"] = mode,
+                ["stage"] = stage,
+                ["reason"] = reason,
+            },
+            TelemetryLevel.Warn);
+
+    /// <summary>
+    /// **Whether a transmit path was built when the radio connected, and if not, why** (work
+    /// instruction 362 task 1).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="reason">`built`, or the stable token naming what was missing.</param>
+    /// <param name="sampleRate">The endpoint's rate where one was opened, or 0.</param>
+    /// <remarks>
+    /// **THE ONE FACT THE RECORD NEVER HELD.** An FT8 press with nothing armed stopped after
+    /// read-back with nothing after it, and the reason nothing was armed was decided here, at
+    /// connect, and written only to the screen. A refusal is a warning (§8.1).
+    /// </remarks>
+    public static void TransmitPath(ITelemetry? telemetry, string reason, int sampleRate)
+        => telemetry?.Write(
+            TelemetryCategory.Transmit, "transmit_path",
+            new Dictionary<string, object?>
+            {
+                ["outcome"] = reason == "built" ? "proceeded" : "refused",
+                ["reason"] = reason,
+                ["sampleRate"] = sampleRate,
+            },
+            reason == "built" ? TelemetryLevel.Info : TelemetryLevel.Warn);
+
+    /// <summary>
     /// **The operator did something.** Written the moment the action is taken and
     /// before anything it triggers (work instruction 305 task 2).
     /// </summary>
