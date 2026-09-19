@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 4 of 6
+TASK: TASK 5 of 6
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T14:13:18-04:00
-NOTE: Engine retire and data tests 15 of 15; running TheOliviaRowsTests with the retire test
+UPDATED: 2026-09-19T14:26:09-04:00
+NOTE: TheOliviaRowsKeepUpTests written; running it by name at 8 kHz and 48 kHz
 
 ---
 
