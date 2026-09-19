@@ -15303,7 +15303,8 @@ public partial class MainWindowViewModel : ObservableObject
             composed.Seconds,
             composed.Cap,
             offsetHz,
-            composed.AnnouncedCode);
+            composed.AnnouncedCode,
+            composed.AnnouncementSeconds);
 
         SendStage.Entered(
             _telemetry,
@@ -15558,16 +15559,16 @@ public partial class MainWindowViewModel : ObservableObject
             //
             // **THE CARD SAYS IT IN CHARACTERS, WHICH IS WHAT HE CAN SHORTEN** (work
             // instruction 357 task 3). The send line is about seconds of audio, and nobody
-            // types seconds. **The announcement in front is counted** (work instruction 359
-            // task 4), because it is part of what the cap measured.
-            var seconds = Psk31Modulator.SentSecondsFor(framed);
+            // types seconds. **The announcement in front is not counted** (R32 (a); work
+            // instruction 360, decision E), because the cap measures the framed text alone.
+            var seconds = Psk31Modulator.SecondsFor(framed);
 
             if (seconds > LongestTypedSeconds)
             {
                 card.TypedNote =
                     "Too long to send: " + clean.Length.ToString(CultureInfo.InvariantCulture)
                     + " characters comes to " + seconds.ToString("0.#", CultureInfo.InvariantCulture)
-                    + " s on the air, and the most a typed line may be is "
+                    + " s of text, and the most a typed line may be is "
                     + LongestTypedSeconds.ToString("0", CultureInfo.InvariantCulture)
                     + " s. Nothing was sent. Shorten it and press Send again.";
             }

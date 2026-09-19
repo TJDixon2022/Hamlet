@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-18T21:57:00-04:00
-NOTE: Task 1 trace done: Fit is the one judge; the typed card uses SentSecondsFor; the record has no announcement; one test pins the burst inside the cap; drafting the section 1 trace
+UPDATED: 2026-09-18T22:02:27-04:00
+NOTE: Task 2: engine 32 of 32 (Unslotted, byte-identical, modulator); running the app announced, typed-line and Stop tests
 
 ---
 

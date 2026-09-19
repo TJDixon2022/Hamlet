@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Olivia;
 using Hamlet.RadioEngine.Psk31;
+using Hamlet.RadioEngine.Rsid;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Tests.Rig;
 using Hamlet.RadioEngine.Transmit;
@@ -306,7 +308,167 @@ public sealed class TheUnslottedSendTests
         Assert.Contains("Ft8TransmitSequence.cs", only, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// **R32 (a): the report to a compound callsign fits and is armed, and what plays is the
+    /// text with its burst in front.**
+    /// </summary>
+    /// <remarks>
+    /// Work instruction 360 task 2. It is 28.19 s of text and 30.05 s of audio: refused under
+    /// unit 359's decision A, and going under Tim's R32, because the cap measures the macro and
+    /// not the announcement.
+    /// </remarks>
+    [Fact]
+    public async Task TheReportToACompoundCallsignFitsWithItsBurstOutsideTheCap()
+    {
+        var (armed, port, sink, telemetry) = Armed();
+        var text = Psk31Macros.Report("VP2V/W1AW", Mine, "Tim", "Trafford PA", "FN00DJ");
+        var audio = Psk31Modulator.Compose(text, Rate, 1000, Ft8Composer.DefaultDrivePeak);
+        var said = Psk31Modulator.Modulate(text, Rate, 1000, Ft8Composer.DefaultDrivePeak);
+        var burst = RsidBurst.LengthInSamples(Codes, Rate);
+        var send = OperatorSend.Now(audio, Psk31Dial, LicenseClass.General, true);
+
+        _output.WriteLine(
+            $"report to VP2V/W1AW: text {audio.TextSeconds:0.000} s, burst {audio.AnnouncementSeconds:0.000} s, "
+            + $"audio {audio.Seconds:0.000} s, cap {audio.Cap:0} s, fit {audio.Fit}");
+
+        Assert.Equal(burst, audio.AnnouncementSamples);
+        Assert.Equal(burst + said.Length, audio.Samples.Length);
+        Assert.True(audio.Seconds > OperatorSend.LongestUnslottedSeconds, "the whole audio is not over the cap");
+        Assert.True(audio.TextSeconds <= OperatorSend.LongestUnslottedSeconds, "the text is over the cap");
+        Assert.Equal(UnslottedFit.Fits, audio.Fit);
+
+        Assert.Null(armed.Arm(send));
+
+        var result = await armed.NowAsync();
+
+        Print(telemetry);
+
+        Assert.Equal(Ft8TransmitOutcome.Played, result.Run!.Outcome);
+        Assert.Equal(PttOnThenPttOff, TheUnkeyHappensWhateverGoesWrongTests.Hex(port.Written));
+        Assert.Equal(audio.Samples.Length, sink.SamplesHandedOver);
+    }
+
+    /// <summary>**A text at the cap, with its burst, fits; one sample more is refused.**</summary>
+    /// <param name="rate">Samples a second.</param>
+    [Theory]
+    [InlineData(12_000)]
+    [InlineData(48_000)]
+    public void ATextAtTheCapWithItsBurstFitsAndOneSampleMoreDoesNot(int rate)
+    {
+        var code = Codes.CodeOf(Psk31Modulator.AnnouncedAs)!.Value;
+        var burst = RsidBurst.Samples(Codes, code, 1000, rate, Ft8Composer.DefaultDrivePeak);
+        var atTheCap = (int)Math.Floor(OperatorSend.LongestUnslottedSeconds * rate);
+
+        var at = Announced(burst, atTheCap, rate, code);
+        var over = Announced(burst, atTheCap + 1, rate, code);
+
+        _output.WriteLine(
+            $"{rate} Hz: burst {burst.Length} samples; text {atTheCap} samples ({at.TextSeconds:0.000000} s) {at.Fit}, "
+            + $"{atTheCap + 1} ({over.TextSeconds:0.000000} s) {over.Fit}");
+
+        Assert.Equal(UnslottedFit.Fits, at.Fit);
+        Assert.Equal(UnslottedFit.LongerThanTheCap, over.Fit);
+    }
+
+    /// <summary>
+    /// **The excusal is the burst and only the burst**: an announcement claimed longer than
+    /// `RsidBurst` makes it, or claimed with no code, is `LongerThanTheCap`.
+    /// </summary>
+    /// <remarks>
+    /// The arbiter's decision D: no path can buy carrier time by calling it an announcement, so
+    /// the longest keying is the cap plus one burst. Each case here has ten seconds of text,
+    /// which would fit on its own.
+    /// </remarks>
+    [Fact]
+    public void AnAnnouncementLongerThanTheBurstOrWithNoCodeIsLongerThanTheCap()
+    {
+        const int R = 12_000;
+        const int TenSeconds = 10 * R;
+
+        var code = Codes.CodeOf(Psk31Modulator.AnnouncedAs)!.Value;
+        var burst = RsidBurst.LengthInSamples(Codes, R);
+
+        var cases = new (string Name, UnslottedTransmission Audio)[]
+        {
+            ("one sample longer than the burst", new(UnslottedMode.Psk31, new float[burst + 1 + TenSeconds], R, 1)
+            {
+                AnnouncedCode = code,
+                AnnouncementSamples = burst + 1,
+            }),
+            ("the burst's length with no code", new(UnslottedMode.Psk31, new float[burst + TenSeconds], R, 1)
+            {
+                AnnouncementSamples = burst,
+            }),
+            ("a code the file does not carry", new(UnslottedMode.Psk31, new float[burst + TenSeconds], R, 1)
+            {
+                AnnouncedCode = -1,
+                AnnouncementSamples = burst,
+            }),
+            ("longer than the audio itself", new(UnslottedMode.Psk31, new float[burst - 1], R, 1)
+            {
+                AnnouncedCode = code,
+                AnnouncementSamples = burst,
+            }),
+            ("a negative length", new(UnslottedMode.Psk31, new float[TenSeconds], R, 1)
+            {
+                AnnouncedCode = code,
+                AnnouncementSamples = -1,
+            }),
+        };
+
+        foreach (var (name, audio) in cases)
+        {
+            _output.WriteLine($"{name,-34}: {audio.Fit}");
+
+            Assert.Equal(UnslottedFit.LongerThanTheCap, audio.Fit);
+        }
+    }
+
+    /// <summary>**Unannounced audio - the codes unreadable - is measured whole, exactly as before.**</summary>
+    [Fact]
+    public void UnannouncedAudioIsMeasuredWholeAsBefore()
+    {
+        const int R = 12_000;
+
+        var atTheCap = (int)(OperatorSend.LongestUnslottedSeconds * R);
+        var code = Codes.CodeOf(Psk31Modulator.AnnouncedAs)!.Value;
+
+        var at = new UnslottedTransmission(UnslottedMode.Psk31, new float[atTheCap], R, 1);
+        var over = new UnslottedTransmission(UnslottedMode.Psk31, new float[atTheCap + 1], R, 1);
+
+        // **A CODE WITH NO SAMPLES CLAIMED EXCUSES NOTHING.**
+        var codeOnly = new UnslottedTransmission(UnslottedMode.Psk31, new float[atTheCap + 1], R, 1)
+        {
+            AnnouncedCode = code,
+        };
+
+        _output.WriteLine($"unannounced: {atTheCap} samples {at.Fit}, one more {over.Fit}; a code and no samples {codeOnly.Fit}");
+
+        Assert.Equal(0, at.AnnouncementSamples);
+        Assert.Equal(at.Seconds, at.TextSeconds);
+        Assert.Equal(UnslottedFit.Fits, at.Fit);
+        Assert.Equal(UnslottedFit.LongerThanTheCap, over.Fit);
+        Assert.Equal(UnslottedFit.LongerThanTheCap, codeOnly.Fit);
+    }
+
     // ---- helpers ---------------------------------------------------------
+
+    private static RsidCodes Codes
+        => OliviaData.Current.Rsid ?? throw new InvalidOperationException(OliviaData.Current.Problem);
+
+    /// <summary>A burst, then this many samples of text, announced under the code.</summary>
+    private static UnslottedTransmission Announced(float[] burst, int textSamples, int rate, int code)
+    {
+        var samples = new float[burst.Length + textSamples];
+
+        burst.CopyTo(samples, 0);
+
+        return new(UnslottedMode.Psk31, samples, rate, 1)
+        {
+            AnnouncedCode = code,
+            AnnouncementSamples = burst.Length,
+        };
+    }
 
     /// <summary>§R2's CQ, as Hamlet's own modulator makes it at a real endpoint's rate.</summary>
     private static UnslottedTransmission CqAudio()

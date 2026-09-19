@@ -61,6 +61,25 @@ public sealed record UnslottedTransmission(
     /// <summary>The RSID code the audio begins with, or null where it begins with none.</summary>
     public int? AnnouncedCode { get; init; }
 
+    /// <summary>How many samples at the front are the announcement, or 0 where there is none.</summary>
+    /// <remarks>
+    /// **SET ONLY BY <c>Psk31Modulator.Compose</c>, FROM THE BURST IT ACTUALLY PUT THERE** (work
+    /// instruction 360, the arbiter's decision D). <see cref="Fit"/> holds it to that burst's own
+    /// length, so no caller can buy carrier time by calling it an announcement.
+    /// </remarks>
+    public int AnnouncementSamples { get; init; }
+
+    /// <summary>Whether the audio begins with an announcement the file names.</summary>
+    public bool Announced => AnnouncedCode is not null && AnnouncementSamples > 0;
+
+    /// <summary>How long the announcement is, from its samples and the rate.</summary>
+    public double AnnouncementSeconds => SampleRate > 0 ? AnnouncementSamples / (double)SampleRate : 0;
+
+    /// <summary>How long the audio after the announcement is.</summary>
+    public double TextSeconds => SampleRate > 0
+        ? Math.Max(0, Samples.Length - Math.Max(0, AnnouncementSamples)) / (double)SampleRate
+        : 0;
+
     /// <summary>The cap this send is held to, never below nothing.</summary>
     /// <remarks>
     /// <para>**THE CAP IS THE SEND'S, NOT A CONSTANT EVERY SEND SHARES** (work instruction
@@ -78,9 +97,36 @@ public sealed record UnslottedTransmission(
         : OperatorSend.LongestUnslottedSeconds;
 
     /// <summary>Whether it may go, against its own cap.</summary>
+    /// <remarks>
+    /// <para>**THE CAP MEASURES THE TEXT; THE ANNOUNCEMENT IN FRONT IS OUTSIDE IT** (`PHASE_PLAN.md`
+    /// R32 (a), Tim 2026-09-18). The samples after the announcement are held to
+    /// <see cref="Cap"/>, whose value does not move. Audio with no announcement is measured
+    /// whole, exactly as before.</para>
+    /// <para>**THE EXCUSAL IS BOUNDED** (the arbiter's decision D). An announcement claimed longer
+    /// than <c>RsidBurst</c> makes one for that code at that rate, claimed with no code or a code
+    /// the file does not carry, or longer than the audio, is
+    /// <see cref="UnslottedFit.LongerThanTheCap"/>. So the longest keying is the cap plus one
+    /// burst.</para>
+    /// </remarks>
     public UnslottedFit Fit => Samples.Length == 0 || SampleRate <= 0
         ? UnslottedFit.NoAudio
-        : Seconds > Cap
+        : !AnnouncementIsTheBurst() || TextSeconds > Cap
             ? UnslottedFit.LongerThanTheCap
             : UnslottedFit.Fits;
+
+    /// <summary>Whether what is claimed as the announcement is no more than the file's burst for its code.</summary>
+    private bool AnnouncementIsTheBurst()
+    {
+        if (AnnouncementSamples == 0)
+        {
+            return true;
+        }
+
+        return AnnouncementSamples > 0
+               && AnnouncementSamples <= Samples.Length
+               && AnnouncedCode is { } code
+               && Olivia.OliviaData.Current.Rsid is { } codes
+               && Rsid.RsidBurst.TonesFor(codes, code) is not null
+               && AnnouncementSamples <= Rsid.RsidBurst.LengthInSamples(codes, SampleRate);
+    }
 }

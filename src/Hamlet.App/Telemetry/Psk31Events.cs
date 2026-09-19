@@ -422,11 +422,14 @@ public static class Psk31Events
     /// <param name="capSeconds">The longest a single send may run.</param>
     /// <param name="offsetHz">Where it would go out, or null where unknown.</param>
     /// <param name="rsidCode">The RSID code the audio begins with, or null where it begins with none.</param>
+    /// <param name="announcementSeconds">How much of <paramref name="seconds"/> is the announcement.</param>
     /// <remarks>
     /// <para>**THE LENGTH AND NOT THE TEXT** (§2.1). A macro carries the operator's callsign
     /// twice over, and a count says everything a diagnosis needs.</para>
     /// <para>**AND WHETHER IT WAS ANNOUNCED** (work instruction 359 task 4). The seconds include
     /// the burst, so the record says the burst is there and which code it names.</para>
+    /// <para>**`withinCap` MEASURES THE TEXT** (`PHASE_PLAN.md` R32 (a); work instruction 360),
+    /// the burst taken off, as the sequence's cap does.</para>
     /// </remarks>
     public static void SendComposed(
         ITelemetry? telemetry,
@@ -435,7 +438,8 @@ public static class Psk31Events
         double seconds,
         double capSeconds,
         double? offsetHz,
-        int? rsidCode = null)
+        int? rsidCode = null,
+        double announcementSeconds = 0)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_composed",
@@ -445,7 +449,7 @@ public static class Psk31Events
                 ["characters"] = characters,
                 ["seconds"] = Math.Round(seconds, 2),
                 ["capSeconds"] = capSeconds,
-                ["withinCap"] = seconds <= capSeconds,
+                ["withinCap"] = seconds - announcementSeconds <= capSeconds,
                 ["offsetHz"] = offsetHz is { } hz ? Math.Round(hz, 1) : null,
                 ["announced"] = rsidCode is not null,
                 ["rsidCode"] = rsidCode,

@@ -221,8 +221,11 @@ public sealed partial class Ft8ContactCard : ObservableObject
     [NotifyPropertyChangedFor(nameof(TypedSecondsWord))]
     private string _typedText = "";
 
-    /// <summary>How long his line would take on the air, framed, or "" where it cannot be said.</summary>
+    /// <summary>How long his line's framed text would take, or "" where it cannot be said.</summary>
     /// <remarks>
+    /// <para>**THE ANNOUNCEMENT IN FRONT IS NOT COUNTED** (`PHASE_PLAN.md` R32 (a); work
+    /// instruction 360, decision E), because the cap measures the text and this says what the
+    /// cap will do.</para>
     /// <para>**IT COUNTS THE FRAME, BECAUSE THE FRAME GOES OUT TOO** (work instruction 357
     /// task 3). A number that measured only what he typed would be under by the two
     /// callsigns and the hand-back, which is about eight seconds at 31.25 baud, and he would
@@ -245,7 +248,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
             {
                 var seconds = Psk31Macros.TypedSeconds(Callsign, OperatorCallsign, clean);
 
-                return seconds.ToString("0.#", CultureInfo.InvariantCulture) + " s on the air"
+                return seconds.ToString("0.#", CultureInfo.InvariantCulture) + " s of text"
                     + (seconds > MainWindowViewModel.LongestTypedSeconds ? ", too long to send" : "");
             }
             catch (ArgumentException)

@@ -96,21 +96,6 @@ public static class Psk31Modulator
     /// </remarks>
     public const string AnnouncedAs = "BPSK31";
 
-    /// <summary>**How long this text takes on the air as a send goes out: the announcement, then the text.**</summary>
-    /// <param name="text">What would be sent.</param>
-    /// <returns>Seconds.</returns>
-    /// <exception cref="ArgumentNullException">There is no text.</exception>
-    /// <remarks>
-    /// <para>**THE BURST COUNTS INSIDE THE CAP** (work instruction 359, the arbiter's decision A).
-    /// A typed line's *too long to send* is measured with this, so the card says what the
-    /// sequence will do.</para>
-    /// <para>**<see cref="SecondsFor"/> STAYS THE TEXT'S OWN LENGTH**, because the turn timing
-    /// that reads it is about how long the other station's words take, and nothing in this unit
-    /// is licensed to move it.</para>
-    /// </remarks>
-    public static double SentSecondsFor(string text)
-        => SecondsFor(text) + (Announcement() is { } codes ? RsidBurst.Seconds(codes) : 0);
-
     /// <summary>The audio for this text.</summary>
     /// <param name="text">What to send. A character with no varicode is skipped by the code.</param>
     /// <param name="sampleRate">Samples a second.</param>
@@ -139,8 +124,9 @@ public static class Psk31Modulator
     /// macros and the typed line all reach this through `SendMessage`, so they are all announced,
     /// and the burst rides the same <see cref="Transmit.UnslottedTransmission"/> through the same
     /// arming and the same sequence - no second keying, no second path, no change to the
-    /// sequence, the gate, `Stop` or the cap (§6, §R10). **The burst counts inside the cap**
-    /// (the arbiter's decision A).</para>
+    /// sequence, the gate, `Stop` or the cap (§6, §R10). **The burst is outside the cap**
+    /// (`PHASE_PLAN.md` R32 (a), Tim 2026-09-18): its length is set here, from the burst actually
+    /// put in front, and the cap measures the samples after it.</para>
     /// <para>**WHERE THE CODES COULD NOT BE READ, THE SEND GOES UNANNOUNCED AND SAYS SO.**
     /// <see cref="Transmit.UnslottedTransmission.AnnouncedCode"/> is null and the composition
     /// record carries it; no code is guessed (§0.0). This session's choice, overrulable.</para>
@@ -168,6 +154,7 @@ public static class Psk31Modulator
         return new(Transmit.UnslottedMode.Psk31, samples, sampleRate, text.Length, longestSeconds)
         {
             AnnouncedCode = code,
+            AnnouncementSamples = burst.Length,
         };
     }
 
