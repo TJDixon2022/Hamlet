@@ -86,6 +86,14 @@ fixture for the next unit.
 is closed. The owner's step ends the run. Two rulings per unit at most. A question about
 layout, wording, a number or a mechanism is the arbiter's to answer, mark and continue.
 
+**R32 - Tim, 2026-09-18, on unit 359's two questions.** (a) **The RSID burst does not
+count against the send cap.** The cap measures the macro or the typed line; the
+announcement is a fixed 2.3 seconds in front of it. (b) **The transmission record says a
+send was announced** - `announced: true` and the RSID code on every keyboard-mode send.
+Both were the arbiter's to decide under §6 and it stopped instead; **a cap the plan
+calls the author's number, and a field on a record, are neither the radio's safety nor
+a promise, and are never a stop.**
+
 ## §4 The steps
 
 Each step verifies its own ground. Exit criteria carry ids `N.k`; met is `[x]`. A step's
@@ -103,12 +111,12 @@ says nothing can be read yet.
 hashes match its nine files.
 
 **Exit:**
-- [ ] 0.1 Pressing Olivia tunes to the calling center for the band from `data/olivia-calling.json`, not a constant, and the panel names the mode and says nothing decodes yet. *must-pass*
-- [ ] 0.2 The mode is in the Digital family, text color only; the log offers `OLIVIA`; the telemetry mode field says Olivia. *must-pass*
-- [ ] 0.3 The Capture button from unit 344 is on the Olivia panel and writes a 48 kHz WAV as it does on PSK31. *must-pass*
-- [ ] 0.4 `data/rsid-codes.json` and `data/olivia-calling.json` are in the tree with their citations and are read at startup; a malformed file is reported, not guessed. *must-pass*
-- [ ] 0.5 Under Olivia no other mode's decoder runs and no path reaches the send chain; `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
-- [ ] 0.6 The neighborhood map picks out the Olivia spot when the tab is selected. *nice-to-pass*
+- [x] 0.1 Pressing Olivia tunes to the calling center for the band from `data/olivia-calling.json`, not a constant, and the panel names the mode and says nothing decodes yet. *must-pass*
+- [x] 0.2 The mode is in the Digital family, text color only; the log offers `OLIVIA`; the telemetry mode field says Olivia. *must-pass*
+- [x] 0.3 The Capture button from unit 344 is on the Olivia panel and writes a 48 kHz WAV as it does on PSK31. *must-pass*
+- [x] 0.4 `data/rsid-codes.json` and `data/olivia-calling.json` are in the tree with their citations and are read at startup; a malformed file is reported, not guessed. *must-pass*
+- [x] 0.5 Under Olivia no other mode's decoder runs and no path reaches the send chain; `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
+- [x] 0.6 The neighborhood map picks out the Olivia spot when the tab is selected. *nice-to-pass*
 
 **Depends on:** nothing.
 
@@ -123,12 +131,12 @@ begins with its own announcement.
 manifest says, checked first.
 
 **Exit:**
-- [ ] 1.1 Each RSID fixture yields exactly one detection with the right code, variant and center within 5 Hz; the no-RSID and noise-only fixtures yield none. *must-pass*
-- [ ] 1.2 The two-signal fixture yields two detections, 8/250 at 1000 and 16/500 at 2000. *must-pass*
-- [ ] 1.3 The -16 dB fixture's RSID is detected. *must-pass*
-- [ ] 1.4 Hamlet's own burst generator, fed a code, produces tones that the detector reads back as that code at that center, and matches the shipped burst's tone sequence from `rsid-codes.json`. *must-pass*
-- [ ] 1.5 A PSK31 CQ from Hamlet now begins with the BPSK31 RSID burst, proved by loopback through the detector; the transmission record says so; FT8 and FT4 sends are byte-identical to before. *must-pass*
-- [ ] 1.6 `rsid_heard` (code, variant, center, quality) and `rsid_sent` events, no callsign. *must-pass*
+- [x] 1.1 Each RSID fixture yields exactly one detection with the right code, variant and center within 5 Hz; the no-RSID and noise-only fixtures yield none. *must-pass*
+- [x] 1.2 The two-signal fixture yields two detections, 8/250 at 1000 and 16/500 at 2000. *must-pass*
+- [x] 1.3 The -16 dB fixture's RSID is detected. *must-pass*
+- [x] 1.4 Hamlet's own burst generator, fed a code, produces tones that the detector reads back as that code at that center, and matches the shipped burst's tone sequence from `rsid-codes.json`. *must-pass*
+- [ ] 1.5 A PSK31 CQ from Hamlet now begins with the BPSK31 RSID burst, proved by loopback through the detector; the transmission record says `announced: true` with the code (R32); FT8 and FT4 sends are byte-identical to before; the burst is outside the cap (R32). *must-pass*
+- [x] 1.6 `rsid_heard` (code, variant, center, quality) and `rsid_sent` events, no callsign. *must-pass*
 - [ ] 1.7 The detector keeps up with real time on the four-signal PSK31 fixture and the two-signal Olivia fixture, ratio reported. *nice-to-pass*
 
 **Depends on:** step 0.
@@ -259,3 +267,7 @@ nowhere to route; work it or halt.
 Every open ask of the screen phase, from unit 357's queue, verbatim by every unit. Plus:
 the PSK31 demodulator's garble on real air, waiting on a capture; the quill's cap and
 the rank names; real flags on country cards; the id-scheme split; the map bitmap's license.
+
+## §8 Revision record
+
+- **2026-09-18.** R32 on Tim's rulings; 1.5 reworded to carry them; criteria met by units 358 and 359 checked as the record has them.

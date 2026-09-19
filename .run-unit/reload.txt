@@ -1,16 +1,17 @@
 ﻿RELOAD - PHASE_CONTROL.md section 3
-measured 2026-09-14T11:08:46-04:00  root C:\Source\HamLet
+measured 2026-09-14T12:08:31-04:00  root C:\Source\HamLet
 Every line below was read from the tree at that moment. Nothing is remembered.
 
 ==============================================================
  DISAGREEMENTS - what does not agree with itself
 ==============================================================
 
-  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0163.
+  RULES_AT         PROJECT_STATUS.md says HM-DEC-161 (2026-09-11); CLAUDE.md section 1 holds CPS-DEC-0164.
   UNCOMMITTED      PHASE_OUTCOME.md is modified and uncommitted.
   UNCOMMITTED      PHASE_STATUS.md is modified and uncommitted.
   UNCOMMITTED      RUN_LEDGER.md is modified and uncommitted.
   UNCOMMITTED      WORK_INSTRUCTIONS.md is modified and uncommitted.
+  UNCOMMITTED      output.md is modified and uncommitted.
 
   Checked: RULES_AT against CLAUDE.md section 1; the working tree
   against HEAD at the root; CLAUDE_CODE.md tree against HEAD;
@@ -22,18 +23,19 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   branch : main
-  HEAD   : 4e187e79
-  uncommitted at the root : 4
+  HEAD   : 1444962f
+  uncommitted at the root : 5
       M PHASE_OUTCOME.md
       M PHASE_STATUS.md
       M RUN_LEDGER.md
       M WORK_INSTRUCTIONS.md
+      D output.md
 
 ==============================================================
  THE RULINGS IN FORCE
 ==============================================================
 
-  highest in CLAUDE.md section 1 : CPS-DEC-0163
+  highest in CLAUDE.md section 1 : CPS-DEC-0164
   PROJECT_STATUS.md RULES_AT     : HM-DEC-161 (2026-09-11)
 
 ==============================================================
@@ -41,605 +43,341 @@ Every line below was read from the tree at that moment. Nothing is remembered.
 ==============================================================
 
   --- PHASE_PLAN.md ---
-  210 lines, 11596 bytes
-  PHASE: The screen, done right
-  PHASE_SET: 2026-09-12
-  DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  STEP: 0 | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-  STEP: 1 | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
-  STEP: 3 | Tim looks at every page at his window size and says it passed.
+  261 lines, 17175 bytes
+  PHASE: Hamlet works Olivia the way it works PSK31
+  PHASE_SET: 2026-09-14
+  DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
+  STEP: 0 | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
+  STEP: 1 | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
+  STEP: 2 | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
+  STEP: 3 | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
+  STEP: 4 | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
+  STEP: 5 | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
+  STEP: 6 | Tim at the radio - tune to the calling spot, see text, work a station, log it. Only he can close it.
   
   ---
   
-  # The screen, done right - the reasoning under the step list
+  # The Olivia phase - the reasoning under the step list
   
-  **Set 2026-09-12 by the web thread on Tim's instruction**, replacing the maintenance
-  phase of the same day, which is archived at `docs/phase-maintenance-run/` with its steps
-  0 and 1 done and step 2 partial. That phase's plan told the arbiter a mechanism for the
-  layout that arithmetic would not allow, and its step 0 grew the green zone until the
-  working panels lost the window. **This plan states outcomes and carries a picture.**
+  **Set 2026-09-14 by the web thread after an interview with Tim, before five days away.**
+  The screen phase is archived at `docs/phase-screen-run/` with its step 3 - Tim's verdict -
+  open; PSK31 is tabled with unit 357 delivered. **This phase is also a test of the
+  arbiter: the plan is written to be run unattended for its length.**
   
-  `assets/main-screen-mockup.png` is the approved main window. `assets/category-page-countries.png`
-  is the approved category page. `assets/achievements-opening-mockup.png` is the opening
-  page, already built by unit 332 and unchanged.
+  ## Â§1 What Olivia is, and why it is next
   
-  ## Â§1 What this phase is
+  MFSK - one of 8, 16 or 32 tones at a time across 250, 500 or 1000 Hz - with forward
+  error correction on top. It reads around -13 dB where PSK31 falls apart at -10, and it
+  shrugs off drift, multipath and fading. Slow: about PSK31's speed at 16/500, half that
+  at 8/250. A keyboard mode with the same conversation shape as PSK31 - CQ, answer,
+  report, name and QTH, 73 - so everything above the modem is already built.
   
-  Screen only. Nothing here touches the radio, a decoder, a parser, the transmit chain or
-  the log's content. **A step's exit is what is on the screen, asserted by computation and
-  described in words, then Tim's eyes.** Every appearance claim is computed, not seen, and
-  says so.
+  **What makes it hard for a beginner, and what this phase does about each:** which
+  variant (the signal announces it - Â§R27); where (the cited table - Â§R29); the etiquette
+  of moving off the calling frequency and widening (a macro - Â§R29).
   
-  ## Â§2 What stands
+  ## Â§2 What is the same
   
-  Every ruling of the PSK31 phase (R1-R20, `docs/phase-psk31-run/PHASE_PLAN.md`) and of the
-  maintenance phase (R21-R25, `docs/phase-maintenance-run/PHASE_PLAN.md`) stands. **R12** a
-  session rewrites its own tests and never asks; **R13** telemetry on every new stage;
-  **R14** tests prove criteria and nothing beyond; **R16** the two quills; **R19** American;
-  **R22** the category pages as trading cards; **R23** States from `STATE`, rank names from
-  the points file. `ACHIEVEMENTS_PHILOSOPHY.md` Â§2, Â§3.1 as bent by Ruling C, Â§3.5, Â§4.
-  `CLAUDE.md` Â§0.0, Â§0.5, Â§0.6. **HM-DEC-155**, **HM-DEC-139**, **FACT-004**, **FACT-006**.
+  Every ruling of the PSK31 plan (`docs/phase-psk31-run/PHASE_PLAN.md`, R1-R20 and the
+  card rulings R1-R6) and of the screen plan stands. The ones this phase leans on: the two
+  card types; one click one transmission and the one keying path (R10); the certainty gate
+  on Report and Confirm (R1); the typed line framed by Hamlet (Tim, 2026-09-14, unit 357);
+  nothing at the radio (R11); the ALC learned from FT8 (R15); telemetry on every stage
+  (R13); a session fixes its own tests (R12); nothing beyond the criterion (R14); American
+  (R19); the three stops (Â§6); the later ruling wins.
   
-  **The arbiter stops for three things only** (Tim, 2026-09-12, now in `ARBITER.md`):
-  keying, transmit or the radio's safety; money past the budget; a decision that changes
-  what the product promises the operator. On everything else it takes its own
-  recommendation, marks it author's and overrulable, applies it, and continues. **A later
-  ruling of Tim's beats an earlier line of this plan; the arbiter proceeds.**
+  ## Â§3 What is different
   
-  ## Â§R Rulings, Tim, 2026-09-12
+  1. **The variant.** A signal is one of several variants and a decoder set to the wrong
+     one reads nothing. The signal's RSID says which.
+  2. **Speed.** Every timing rule - the send cap, the turn indicator's patience, the retire
+     window - scales with the variant's seconds per character, taken from the mode author's
+     audio (the fixtures' manifest gives seconds and characters for each) and never fixed
+     in seconds.
+  3. **The error correction.** Olivia's decoder either has a block or does not; there are no
+     garbled letters, only missing ones. R9 - a character not sure of is not shown - is
+     the mode's own behavior.
   
-  **R26 - the main window.** Tim, on unit 334's screen: the green zone had grown to two
-  thirds of the window and the working panels were squeezed into the bottom third. The
-  mockup answers it, and its outcomes are the rulings:
+  ## Â§R Rulings, Tim, 2026-09-14, from the interview
   
-  - **The top row is one band, about 190 px tall at 1920**, and the working panels below
-    the tabs take the rest of the window. At no window size do the working panels get less
-    than half the height below the band pills.
-  - **The neighborhood card carries three things**: the band strip with the legend and the
-    *you Â· mode* marker; **the green block** - the band in the largest text, the frequency,
-    mode and *yours to use*, the license line small, the rule-of-thumb line small, and
-    heard-just-now with its count and sparkline; and **the world's clock** at its right end,
-    about 246 px wide, with the operator's dot only.
-  - **The rig display is the same height as the neighborhood card**, and carries under the
-    frequency and S-meter the transmit drive and the RF power offer, so no empty column
-    stands under it.
-  - **The band pills stay where they are** and are not repeated anywhere.
-  - **Below the tabs**: waterfall, decoded text, For You, all the same height, full to the
-    status bar. The decoded list is as wide as its longest line needs and no wider; For You
-    takes the rest, wide enough that the card's facts sit beside its map.
-  - **At 1400**: the same shape; where the card's facts cannot sit beside the map they go
-    under it; no callsign is ever clipped in the decoded list. **No mechanism is prescribed;
-    the unit measures and chooses, marks the choice as its own, and reports the numbers at
-    both widths.**
+  **R27 - RSID, both ways, always, Hamlet-wide.** Every keyboard-mode transmission Hamlet
+  sends begins with the RSID burst naming its mode and variant - Olivia, and PSK31
+  retroactively. Hamlet listens for RSID across the passband and when one arrives sets the
+  mode, the variant and the offset itself. The operator never picks a variant. A carrier
+  that never announced itself gets the blind search of step 2 as a fallback. The tables
+  and codes are `data/rsid-codes.json`, ported from fldigi's `rsid.cxx` (GPL-3).
   
-  **R29 - typed text goes on the air, framed by Hamlet.** Tim, 2026-09-14, after reading a
-  real QSO between KE0JBT and N7WE off 14.070 and having nothing to send back but another CQ:
-  *"I want to add the ability to send text I type. That is the thing PSK31 offers over
-  FT8/4."* And the shape: *"I right click on a message in the Everything list and it creates a
-  card. On that card I can do a standard answer but there is also a text block where I can
-  enter text to transmit."*
+  **R28 - Identical to PSK31 above the modem.** The same receipt, conversation card, Answer,
+  Report, Confirm on certainty, the typed line framed with the callsigns and the hand-back,
+  the same parser. The mode chip says Olivia, the row says the variant, the calling spot is
+  Olivia's. Timing rules scale with the variant (Â§3.2).
   
-  **This withdraws the no-keyboard line of PSK31 plan R2** and nothing else of it: the four
-  macros stand, their words stand, and Name, QTH and grid still come from Settings. What is
-  withdrawn is *free typing is not in this phase* and the rejection of a keyboard under it.
+  **R29 - The established locations, as FT8, FT4 and PSK31 have.** The calling table is
+  cited data, `data/olivia-calling.json`, a community convention and labeled as one.
+  Pressing Olivia tunes to the 8/250 spot for the band. After a certain answer on the
+  calling frequency the card offers one click - *move up 500 Hz and switch to 16/500* -
+  which sends the line saying so, retunes, changes variant, and the other end's RSID
+  confirms he followed.
   
-  **What it does not touch, and what a later unit may not quietly take back.** One click, one
-  transmission (0.2). One keying sequence and one PttOn site (R10). The certainty gate on
-  Report and Confirm (R1). **Hamlet frames what he types** with the callsigns and the
-  hand-back, because those are the two things a beginner forgets on a keyboard mode, and they
-  are not his to remember. **And the text he typed never enters the record** (HM-DEC-018,
-  2.1); its length does.
+  **R30 - Synthetic fixtures first, the capture button from step 0.** Tim has no time to
+  generate fldigi audio. So the fixtures under `assets/fixtures/olivia/` were made by the
+  web thread from **the mode author's own transmitter** - Pawel Jalocha's `pj_mfsk.h` as
+  shipped in fldigi, compiled and driven exactly as fldigi drives it - with RSID bursts
+  from fldigi's own encoder. They are independent of anything Hamlet thinks Olivia is,
+  which is the lesson of the PSK31 phase. `assets/reference/SOURCE.md` says how. The
+  Capture button is on the Olivia panel from step 0 so the first evening's air becomes the
+  fixture for the next unit.
   
-  Recorded by unit 357 task 0 from his own words.
-  
-  **R28 - Stop is always pressable and never grey.** Tim, 2026-09-14, asked which of two
-  ways Stop should behave and answering *"A, the way it has been"*: the control stays live at
-  every instant, including when nothing is keyed, rather than being disabled until there is
-  something to stop. A press with nothing running costs nothing; a grey Stop on the evening it
-  is needed costs the transmission. Recorded by unit 356 task 0 from his own words, and
-  building nothing: the behavior is already this.
-  
-  **R27 - what the last phase left.** Unit 336's open items: the States wording (*worked*,
-  never *confirmed*, and the count says what it counts); the Modes test; the files sessions
-  cannot delete, listed once for Tim; the two `Views` reds and any other small red in the
-  record; the points file's comment block checked key by key against the file. Small, and
-  one step.
+  **R31 - This phase runs unattended.** Progress is counted in criteria by id. A done step
+  is closed. The owner's step ends the run. Two rulings per unit at most. A question about
+  layout, wording, a number or a mechanism is the arbiter's to answer, mark and continue.
   
   ## Â§4 The steps
   
-  Each step verifies its own ground. Exit criteria are tiered. **A step's exit is its own
-  assertions plus the carry-forward list, run as its own comment says** - not the whole
-  suite.
+  Each step verifies its own ground. Exit criteria carry ids `N.k`; met is `[x]`. A step's
+  exit is its own assertions plus `docs/carry-forward-tests.txt` run as its comment says -
+  not the whole suite (HM-DEC-155).
   
-  ## Step 0 - The main window is the mockup
+  ## Step 0 - The seam
   
-  **Delivers:** R26.
+  **Delivers:** Olivia exists as a mode. The tab, the family color as text, the log mode,
+  the telemetry mode field, the cited calling table, the RSID data, the Capture button.
+  Pressing it tunes USB-D to the band's 8/250 spot and shows a panel that names itself and
+  says nothing can be read yet.
   
-  **Entry:** the tree is Hamlet's; `PHASE_STATUS.md` names this phase.
+  **Entry:** `PHASE_STATUS.md` names this phase; `assets/fixtures/olivia/manifest.json`
+  hashes match its nine files.
   
   **Exit:**
-  - At 1920, the top row (neighborhood card and rig display) is about 190 px tall and the
-    working panels below the tabs take the rest; the numbers reported. *must-pass*
-  - The neighborhood card carries the band strip, the green block and the world clock as
-    R26 says; the green block's band is its largest text; the clock carries one dot.
-    *must-pass*
-  - The rig display is the neighborhood card's height and carries drive and the power
-    offer under the S-meter. *must-pass*
-  - Waterfall, decoded text and For You are equal height, full to the status bar; the
-    card's facts sit beside its map at 1920. *must-pass*
-  - At 1400 the same shape holds, no callsign is clipped, and the facts go beside or under
-    by the unit's stated rule; the numbers reported at both widths. *must-pass*
-  - `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
-  - The band pills' *best bet now* is joined to the green block by the check as before.
-    *nice-to-pass*
+  - [ ] 0.1 Pressing Olivia tunes to the calling center for the band from `data/olivia-calling.json`, not a constant, and the panel names the mode and says nothing decodes yet. *must-pass*
+  - [ ] 0.2 The mode is in the Digital family, text color only; the log offers `OLIVIA`; the telemetry mode field says Olivia. *must-pass*
+  - [ ] 0.3 The Capture button from unit 344 is on the Olivia panel and writes a 48 kHz WAV as it does on PSK31. *must-pass*
+  - [ ] 0.4 `data/rsid-codes.json` and `data/olivia-calling.json` are in the tree with their citations and are read at startup; a malformed file is reported, not guessed. *must-pass*
+  - [ ] 0.5 Under Olivia no other mode's decoder runs and no path reaches the send chain; `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
+  - [ ] 0.6 The neighborhood map picks out the Olivia spot when the tab is selected. *nice-to-pass*
   
   **Depends on:** nothing.
   
-  ## Step 1 - Every category page is trading cards
+  ## Step 1 - Hear the announcement
   
-  **Delivers:** R22, as `assets/category-page-countries.png`, on all eight kinds.
+  **Delivers:** an RSID detector across the passband - the 15-tone burst at 11025/1024 Hz
+  spacing, decoded through the ported tables to a mode code - yielding mode, variant and
+  center offset; and an RSID burst generator, so that every keyboard-mode send Hamlet makes
+  begins with its own announcement.
   
-  **Entry:** step 0 done; `TheAchievementsPageClicksInTests` green, checked first.
+  **Entry:** step 0 done; `psk31-cq-rsid.wav` and `olivia-8-250-cq-rsid.wav` hash as the
+  manifest says, checked first.
   
   **Exit:**
-  - A category page has the color band with count, score, level and a bar to the next
-    level. *must-pass*
-  - An earned card carries the entity, callsign, grid, a path map cropped to the two
-    stations, distance, band, mode, date and points, from the log entry that earned it.
-    *must-pass*
-  - The next card names what it wants and, when anyone on the CQ list would earn it, lists
-    them with distance; otherwise says no one is calling from there now. *must-pass*
-  - All eight kinds render this way with their own content per R22; Continents opens to
-    seven badges and each to its countries. *must-pass*
-  - No string clips or wraps a word, measured at 1400 and 1920. *must-pass*
-  - No card is a white rectangle. *must-pass*
-  - `achievement_category_opened` carries the kind and the count of cards. *must-pass*
-  - A card's map opens in the popup on click. *nice-to-pass*
+  - [ ] 1.1 Each RSID fixture yields exactly one detection with the right code, variant and center within 5 Hz; the no-RSID and noise-only fixtures yield none. *must-pass*
+  - [ ] 1.2 The two-signal fixture yields two detections, 8/250 at 1000 and 16/500 at 2000. *must-pass*
+  - [ ] 1.3 The -16 dB fixture's RSID is detected. *must-pass*
+  - [ ] 1.4 Hamlet's own burst generator, fed a code, produces tones that the detector reads back as that code at that center, and matches the shipped burst's tone sequence from `rsid-codes.json`. *must-pass*
+  - [ ] 1.5 A PSK31 CQ from Hamlet now begins with the BPSK31 RSID burst, proved by loopback through the detector; the transmission record says so; FT8 and FT4 sends are byte-identical to before. *must-pass*
+  - [ ] 1.6 `rsid_heard` (code, variant, center, quality) and `rsid_sent` events, no callsign. *must-pass*
+  - [ ] 1.7 The detector keeps up with real time on the four-signal PSK31 fixture and the two-signal Olivia fixture, ratio reported. *nice-to-pass*
   
   **Depends on:** step 0.
   
-  ## Step 2 - What the last phase left
+  ## Step 2 - Hear one
   
-  **Delivers:** R27.
+  **Delivers:** `OliviaDemodulator` - MFSK with the mode's Walsh-function block coding and
+  scrambling, symbol and block synchronization, for a named variant at a named offset -
+  proved against the mode author's own audio; and a blind variant search for a carrier
+  that never announced itself. The reference is fldigi's `pj_mfsk.h`, read at the pinned
+  clone and never ported wholesale (PSK31 plan R5); the structure may be followed, the code
+  is Hamlet's.
   
-  **Entry:** step 1 done.
+  **Entry:** step 1 done; the clean 16/500 fixture's RSID detected, checked first.
   
   **Exit:**
-  - The States badge and its cards say *worked*; no *confirmed* anywhere. *must-pass*
-  - The Modes test unit 336 named is green or named as a known red with why. *must-pass*
-  - The undeletable files are listed once in the report. *must-pass*
-  - The two `Views` reds are green or named as known reds with why. *must-pass*
-  - The points file's comment block names every key in the file and no key it lacks.
-    *must-pass*
+  - [ ] 2.1 The clean 8/250, 16/500 and 32/1000 fixtures decode to their text at CER at or under 0.01 each, the variant taken from RSID. *must-pass*
+  - [ ] 2.2 The -10 dB fixture decodes at or under 0.05 and the -16 dB fixture at or under 0.10. *must-pass*
+  - [ ] 2.3 The no-RSID 8/250 fixture is found by the blind search - the variant identified within a stated time from the tone spacing and symbol rate - and decodes at or under 0.05. *must-pass*
+  - [ ] 2.4 The noise-only fixture emits zero characters. *must-pass*
+  - [ ] 2.5 Every fixture's hash matches the manifest before use; each decodes in under twenty seconds of CPU, reported. *must-pass*
+  - [ ] 2.6 The seconds-per-character for each variant is measured from the fixtures and stored as the mode's timing table, from which every later timing rule derives. *must-pass*
+  - [ ] 2.7 A carrier that drifts 20 Hz over a minute (a fixture the unit makes from the shipped one) holds. *nice-to-pass*
   
   **Depends on:** step 1.
   
-  ## Step 3 - Tim looks
+  ## Step 3 - Hear everyone and read
   
-  **Delivers:** Tim opens every page at his window size and says it passed.
+  **Delivers:** every RSID heard, and every blind-found carrier, gets its own demodulator
+  and its own row in the decoded list, text as blocks arrive, the variant on the row; the
+  PSK31 parser reads the rows unchanged; the CQ filter, worked-fade, entity resolution,
+  the quill and the row's whole-message hover all work on Olivia rows; rows stay after the
+  station ends, as PSK31 rows do.
   
-  **Entry:** step 2 done.
+  **Entry:** step 2 done; the two-signal fixture's RSIDs detected, checked first.
   
   **Exit:**
-  - Tim says it passed. *must-pass* No script can evaluate this.
+  - [ ] 3.1 The two-signal fixture yields two rows, each with its variant and its own text at or under 0.05, nothing of one in the other. *must-pass*
+  - [ ] 3.2 The transcript corpus fed through Olivia rows yields the same verdicts as through PSK31 rows - no parser change. *must-pass*
+  - [ ] 3.3 The CQ filter, worked-fade, `EntityOf` with its `CQ` guard, the quill and the hover run on Olivia rows with no change to their code. *must-pass*
+  - [ ] 3.4 A row is retired when its signal goes and stays on the list marked ended; the retire window is the variant's timing table times a stated factor. *must-pass*
+  - [ ] 3.5 Telemetry: the PSK31 row events with `mode: olivia` and the variant; nothing personal. *must-pass*
+  - [ ] 3.6 Real-time ratio on the two-signal fixture under 1.0, reported. *nice-to-pass*
   
   **Depends on:** step 2.
   
+  ## Step 4 - Say it
+  
+  **Delivers:** Hamlet's own `OliviaModulator` for 8/250, 16/500 and 32/1000; every send
+  begins with its RSID; the four macros and the typed line through the one unslotted
+  sequence with the cap and the turn indicator's patience scaled by the variant's timing
+  table; the calling spot from the cited table; the move-off-and-widen macro of R29.
+  
+  **Entry:** step 3 done; the loopback chain of the PSK31 phase unchanged, checked by its
+  guarding tests first.
+  
+  **Exit:**
+  - [ ] 4.1 Loopback: each macro and a typed line, modulated by Hamlet at each variant, decodes through Hamlet's demodulator identical; and the modulated signal's tone spacing, symbol rate, preamble length and occupied bandwidth match the mode author's fixture for that variant within stated tolerances. *must-pass*
+  - [ ] 4.2 Every send begins with its RSID; the detector reads it back as the variant sent. *must-pass*
+  - [ ] 4.3 The CQ goes out on the calling center from the cited table for the band on a clear spot; the receipt carries no station facts and no Log; a certain answer retires it. *must-pass*
+  - [ ] 4.4 The cap and the turn indicator's patience are the timing table times stated factors, not fixed seconds; a Report at 8/250 is allowed its length. *must-pass*
+  - [ ] 4.5 After a certain answer on the calling frequency the card offers *move up 500 Hz and switch to 16/500*; one click sends the line, retunes, changes variant, and the card says whether the other end's RSID followed. *must-pass*
+  - [ ] 4.6 Nothing keys at the bench; one `PttOn` site; FT8, FT4 and PSK31 sends byte-identical to before except PSK31's new RSID prefix; Stop aborts an Olivia send. *must-pass*
+  - [ ] 4.7 The power offer, the ALC reference and the ALC sentence work on Olivia sends as on PSK31. *must-pass*
+  - [ ] 4.8 The turn indicator changes within one block of the other station's turnover word. *nice-to-pass*
+  
+  **Depends on:** step 3.
+  
+  ## Step 5 - Log and achievements
+  
+  **Delivers:** an Olivia contact logs with RST and grid, exports as ADIF `MODE=OLIVIA`
+  with the variant as `SUBMODE` (`OLIVIA 16/500`), and the mode's records are revealed by
+  the first Olivia contact and absent before it.
+  
+  **Entry:** step 4 done; a loopback exchange reaches 73, checked first.
+  
+  **Exit:**
+  - [ ] 5.1 An Olivia contact logs with RST and grid; the ADIF carries `MODE=OLIVIA` and the variant submode. *must-pass*
+  - [ ] 5.2 Before the first Olivia contact no earned Olivia card is visible; after it the mode's records appear; the Modes badge counts it. *must-pass*
+  - [ ] 5.3 The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
+  - [ ] 5.4 The export imports cleanly into one named logger. *nice-to-pass*
+  
+  **Depends on:** step 4.
+  
+  ## Step 6 - Tim at the radio
+  
+  **Delivers:** Tim tunes to the calling spot, sees text, works a station, logs it.
+  
+  **Entry:** step 5 done.
+  
+  **Exit:**
+  - [ ] 6.1 Tim says it passed. No script can evaluate this. *must-pass*
+  
+  **Depends on:** step 5.
+  
   ## Â§5 Dependencies
   
-  Step 0 depends on nothing. Steps 1-3 are one pipeline.
+  Step 0 depends on nothing; steps 1-6 are one pipeline. When a step blocks there is
+  nowhere to route; work it or halt.
   
   ## Â§6 Branching
   
-  - **The arbiter stops for three things only**; on everything else it decides, marks,
-    applies, continues.
+  - **The arbiter stops for three things only**: keying, transmit or the radio's safety;
+    money past the budget; a decision that changes what the product promises the operator
+    - a fact stated about the radio, a contact or a send. A hint, a label, a number, a
+    layout, a mechanism arithmetic will not allow: the arbiter decides, marks it author's
+    and overrulable, and continues.
   - **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins.
-  - **A must-pass is missed by a little.** Ship, report, `partial`, move on. Never loosen a
-    test.
-  - **A string will not fit.** Shorten and say which, or widen; never clip.
-  - **A fact for a card is missing from the log.** Show what is there; no dash; a map with
-    no grid is no map.
-  - **Anything touches the radio, a decoder, a parser or the transmit chain.** `MOVE: stop`.
+  - **A must-pass ceiling is missed by a little.** Ship, report the number, `partial`,
+    move on. Never loosen a test.
+  - **A done step is closed.** Only Tim reopens it.
+  - **Every remaining step is Tim's.** Halt.
+  - **A fixture will not decode at all.** That is a finding about the demodulator, not the
+    fixture - the fixtures are the mode author's. Report the spectrum measured against the
+    manifest, mark `partial`, and name what the next unit tries.
+  - **Real off-air audio appears** under `assets/fixtures/captured/`. The next unit proves
+    the demodulator against it before anything else.
+  - **Reading `pj_mfsk.h` tempts a port.** Read the structure; write Hamlet's own. If a
+    unit cannot proceed without copying, `MOVE: stop` and say what it would copy.
   - **A package is needed.** `MOVE: stop`.
+  - **Anything touches the transmit chain beyond adding an audio generator and an RSID
+    prefix behind the one sequence.** `MOVE: stop`.
   - **A file must be deleted.** Empty it, comment it, list it.
-  - **Status.** `tools/status.sh` reads the clock; never compose a time. The watchdog now
-    polls the process; a session is killed only when its process tree accrues no CPU for
-    ten minutes.
+  - **Status.** `tools/status.sh`, real clock, after every commit and every task.
   
   ## Â§7 Carried
   
-  Every open ask from unit 336's queue, verbatim in every unit. Plus: real flags on
-  earned country cards - undecided, Tim's; the PSK31 phase's step 6 - Tim's, at the
-  radio; the recording of real PSK31 audio; the id-scheme split; the map bitmap's license.
+  Every open ask of the screen phase, from unit 357's queue, verbatim by every unit. Plus:
+  the PSK31 demodulator's garble on real air, waiting on a capture; the quill's cap and
+  the rank names; real flags on country cards; the id-scheme split; the map bitmap's license.
 
   --- PHASE_STATUS.md ---
-  10 lines, 1216 bytes
-  PHASE: The screen, done right
-  PHASE_SET: 2026-09-12
-  DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  CURRENT_STEP: 0
-  WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-  HEARTBEAT: 2026-09-14 11:08:44
-  STEP: 0 | partial | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
-  STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
+  12 lines, 1848 bytes
+  PHASE: Hamlet works Olivia the way it works PSK31
+  PHASE_SET: 2026-09-14
+  DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
+  CURRENT_STEP: 1
+  WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
+  STEP: 0 | done | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
+  STEP: 1 | not started | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
+  STEP: 2 | not started | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
+  STEP: 3 | not started | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
+  STEP: 4 | not started | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
+  STEP: 5 | not started | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
+  STEP: 6 | not started | Tim at the radio - tune to the calling spot, see text, work a station, log it. Only he can close it.
 
   --- PHASE_OUTCOME.md ---
-  369 lines, 72404 bytes
-  PHASE: The screen, done right
-  PHASE_SET: 2026-09-12
-  DESCRIPTION: The main window laid out as the approved mockup - one short top row about where you are, the working panels given the height - and the achievements category pages as trading cards. Screen only. Judged by Tim at his window.
-  STEP: 0 | partial | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-  STEP: 1 | done | Every achievements category page is trading cards - the contact that earned each card with its path map, distance, band, mode and date; the next card carrying who is calling now from an unworked place. All eight kinds.
-  STEP: 2 | done | What the last phase left - the States wording, the Modes test, the undeletable files listed once, the record's small reds, the points file's documentation checked against the file.
-  STEP: 3 | blocked | Tim looks at every page at his window size and says it passed.
+  52 lines, 6576 bytes
+  PHASE: Hamlet works Olivia the way it works PSK31
+  PHASE_SET: 2026-09-14
+  DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
+  STEP: 0 | done | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
+  STEP: 1 | not started | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
+  STEP: 2 | not started | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
+  STEP: 3 | not started | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
+  STEP: 4 | not started | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
+  STEP: 5 | not started | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
+  STEP: 6 | not started | Tim at the radio - tune to the calling spot, see text, work a station, log it. Only he can close it.
   
-  ## UNIT 337 - STEP 0
+  ## UNIT 358 - STEP 0
   
   STEP: 0
-  APPROACH: lay the main window out as assets/main-screen-mockup.png - one top row of about 190 px holding the neighborhood card (band strip and legend, a compact green block under them, the world clock at its right end with one dot) and a rig display of the same height with drive and the power offer under the S-meter; waterfall, decoded text and For You equal height below the tabs, the decoded column as wide as the longest FT8 line needs; measured and chosen at 1920 and 1400
+  APPROACH: wire Olivia everywhere PSK31 is wired, read the cited calling table and the RSID codes from data files, put the Capture button on the panel, and keep the tab inert for decoding and sending
   MOVE: continue
-  WHY: step 0 depends on nothing; the owner drew the outcome and ruled it (R26); the plan prescribes no mechanism, so nothing here is a stop
-  DECIDED: nothing beyond the instruction at task 0. Every mechanism - the split, the 1400 rule, the exact heights - is the unit's, marked as its own and overrulable. The sparkline is task 1's drop candidate; task 4 is droppable whole; tasks 0, 2 and 3 have none.
-  LICENCE: PHASE_PLAN.md R26, section 4 step 0, section 6; docs/phase-psk31-run/PHASE_PLAN.md R12, R14, R19; CLAUDE.md 0.0, 0.5, 0.6; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: one session, five tasks (0 to 4), each committing and pushing on its own.
+  WHY: step 0 depends on nothing; the shape is the PSK31 seam's, proved twice; every value comes from a cited file
+  DECIDED: nothing beyond the plan; the timing table's first row is marked an estimate. Task 4 (the map) and task 5 (the timing row) are the drop candidates; tasks 0 to 3 have none.
+  LICENCE: PHASE_PLAN.md R27, R29, R30, section 6; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.1, 0.2, 0.5, 2.1; HM-DEC-054, HM-DEC-164
+  COST: one session, six tasks (0 to 5), each committed on its own.
   ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: Written at task 4, against tests that ran in this session; every appearance claim is computed on the headless host at 1040 px tall, not seen. Tasks 0 to 4 done, 0 to 3 pushed as 107268c, a406dc1, 9b07750, d1c2def. One, met: at 1920 the top row went 445 -> 190 px and the working card 318 -> 573 px, to the status bar; TheTopRowTests watched red. Two, met: the green block is inside the neighborhood card under the strip and legend, the band at 20 the largest text, the count and sparkline at its right; the world clock is 246 x 134 at the card's right end with one marker. Three, met: the rig panel is 190 px, the card's height, with the drive and the PSK31 power offer under the display and out of the send area, which keeps CQ and Stop. Four, met: waterfall, decoded text and For You are 363 px each at 1920 with one top and one bottom at the working card's floor, split 735/378/734 of 1862 (0.395/0.203/0.394); the card is 678 px inside and its facts sit beside the map; TheWorkingPanelsTests watched red on 2 of 4. Five, met by its test with one named miss: at 1400 no callsign is clipped, the facts go under the map by the stated rule (419 inside against 568), and the working card is 534 to 555 of the 910 px below the band pills; but the top row on a licensed operator's fixture is 273 px, 0.300 of that height, against the mockup's 0.262, which the instruction says not to exceed. Six, met: BindingHealthTests and VoiceTests in the layout set, 57 of 57; carry-forward app 100 of 100 after tasks 1 and 2, engine 85 of 85 after task 3. Three reds off the list are older than this unit. Nothing touched the radio side, a decoder, a parser or the transmit logic.
-  
-  ### ALSO RECORDED FOR UNIT 337 - STEP 0
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: lay the main window out as the approved mockup - a short top row holding the neighborhood card with the green block and the world clock and a rig display of the same height with drive and power under it, the working panels full height below the tabs, at 1920 and 1400 - measuring the real controls and choosing the mechanism
-  HIT: section 4 wants a ruling: banked - The only rulings wanted on step 0 are how to shorten the green block at 1400 and what the working panels means, and each touches one exit criterion, the plan already lets the arbiter shorten a string and carry on, and the other step 0 work such as the nice to pass check stays open.
-  WHY: step 0 depends on nothing; the owner drew the outcome and ruled it; the plan prescribes no mechanism, so nothing here is a stop
-  DECIDED: every mechanism - the split, the 1400 rule, the exact heights - is the unit's, marked as its own, overrulable
-  LICENCE: PHASE_PLAN.md R26, section 6; the PSK31 and maintenance rulings; CLAUDE.md 0.0, 0.5, 0.6
-  COST: 20.433159000000003
-  ACCOMPLISHED: the main window looks like the mockup Tim approved, and the working panels have the window again
-  STATE_WHY: At 1920 the top row, rig height, equal panels and facts beside the map are measured and met, but at 1400 the licensed top row is 273 px, which the unit itself calls a miss, and the rig panel matching the card was not measured again at that height.
-  
-  ## UNIT 338 - STEP 0
-  
-  UNIT_AS_CALLED: 2
-  STEP: 0
-  APPROACH: fold the strips above the three working panels into one row as the mockup draws (filter into the decoded panel header, Stop never collapsible) so the panels themselves take half the height, and shorten the green block's rule of thumb to the mockup's words so the 1400 licensed top row returns to 0.262
-  HIT: section 4 wants a ruling: banked - The open asks are the filter chips and send area placements, which are already built on the recommended option, and older carried rulings on the license phrase, the Modes and States cards and the demodulator, none of which stops the step 0 work still open such as the fourth task and measuring the license phrase at 1400.
-  MOVE: work around
-  WHY: Unit 337 met step 0 at 1920 by counting the working card as the working panels; measured against the mockup the three panels are 0.40 of the height where the picture gives them 0.54, and the 1400 top row is 0.300 against 0.262 - both are reachable by moving strips and shortening one string, so this is a different approach to the same step, not a loop and not a cut.
-  DECIDED: R26's 'working panels' means the three panels themselves, at least half the height below the band pills at 1920 and 1400 with the readiness strip hidden (overrides unit 337's reading 7); the rule of thumb becomes the mockup's sentence '20 m and up want daylight along the path; 40 m and down want dark.'; the sparkline may hide at narrow widths only if that alone does not bring the 1400 top row to 0.262 - all the author's, marked for Tim, overrulable
-  LICENCE: PHASE_PLAN.md R26 and section 6 (shorten a string and name it; the arbiter decides layout and continues); assets/main-screen-mockup.png (panels 382 of 710 px below the pills); unit 337 output.md section 4 items 1 and 2; CLAUDE.md 0.2, 0.5; psk31 R12, R14, R17
-  COST: 24.163439500000006
-  ACCOMPLISHED: the waterfall, the decoded list and For You get more than half of the window below the band pills at both of Tim's widths, as in the picture he approved, and the top band stays short at 1400 too
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: The report measures the 190 px top row, the equal rig height and the panel shares at 1920 and 1400, but for criterion 2 it only says the band strip and world clock are unchanged and shows nothing for the green block's band being its largest text, the clock's single dot or drive and power sitting under the S-meter, and BindingHealthTests and VoiceTests are not named with results while the layout set still has one red.
-  
-  ## UNIT 339 - STEP 0
-  
-  UNIT_AS_CALLED: 3
-  STEP: 0
-  APPROACH: prove step 0 criterion by criterion on the realized window - extend the green block, world clock and drive-and-power tests from 1920 to 1400, run and name every step 0 test with its result and BindingHealthTests and VoiceTests as counts - then measure step 1's category page against its mockup without building
-  HIT: section 4 wants a ruling: banked - This unit's own items ask for no ruling, but the carried asks still want rulings on the Modes and States cards, the demodulator, the achievements hovers and the id schemes, and none of them stops step 0 work that is still open, such as task 3, asserting the 1400 panel floor and the reds on the carry forward list.
-  MOVE: work around
-  WHY: Two units built the layout and the state reader still found step 0 partial on evidence, not on the screen: criteria 2 and 3 are asserted only at 1920, and criterion 6's classes were never named with counts. A different approach to the same step - proof instead of more layout - not a loop (the loop test found nothing like it) and not a cut, since nothing measured is missing.
-  DECIDED: the filter chips stay in the mode strip (unit 338 item 2, option a) and CQ and Stop stay right of the tabs (unit 338 item 3); the readiness-strip-hidden measure of ruling 1 stands, with the strip-showing number reported at 1400; step 1 may be measured before step 0's verdict, but not built - all the author's, marked for Tim, overrulable
-  LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues); unit 338 output.md section 4 items 2 and 3 and their stated reasoning; PHASE_OUTCOME.md unit 338 STATE_WHY; CLAUDE.md 0.2, 0.5; R17; psk31 R12, R14
-  COST: 11.540931500000001
-  ACCOMPLISHED: every promise the approved mockup makes about the main window is checked by a named test at both of Tim's widths, so step 0 is closed on evidence and step 1 starts from measured numbers
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: Five must-pass criteria have measured numbers behind them, but criterion 3 is not fully shown, because the power offer is not drawn on the FT8 fixture and is checked only as being inside the rig panel, so nothing measures it sitting under the S-meter at either width.
-  
-  ## UNIT 340 - STEP 0
-  
-  UNIT_AS_CALLED: 4
-  STEP: 0
-  APPROACH: draw the PSK31 power offer in the rig panel on the licensed fixture and assert it under the S-meter at 1920 and 1400 with the top row and rig height holding while it shows, fitting it by arrangement in RigDriveAndPower if it does not; assert the three panels' floor at 1400; then run step 1's TheCategoryPagesAreTradingCardsTests without building
-  HIT: section 4 wants a ruling: banked - The one ruling wanted is where the PSK31 power offer sits against the 190 px top row, which bears on criteria 1, 3 and 5 while the offer shows, but the PSK31 green block putting the 1400 row 2 px over without the offer, the transmit reds on the carry forward list and the nice to pass check can all go ahead without it.
-  MOVE: work around
-  WHY: The state reader left step 0 partial on one clause: the power offer was only ever checked by containment on an FT8 fixture where it is not drawn, so its place under the S-meter - and whether the 190 px top row survives it - was never measured. This is a different approach from unit 339's (draw the thing on the mode that offers it, and fit it if it breaks the row, rather than extend existing assertions to a second width); the loop test found nothing like it.
-  DECIDED: the power offer is measured on PSK31, the mode that offers it, and is not added to FT8 because the mockup draws it there (ruling 6); if it breaks the top row it is fitted by arrangement only, with its words, the ALC line, bindings and commands unchanged, and a miss beyond arrangement is reported rather than shortened (ruling 7); TheOperatorCanStopItTests runs alone, never joined; step 1's tests may run before step 0's verdict but nothing is built - all the author's, marked for Tim, overrulable
-  LICENCE: PHASE_PLAN.md R26, sections 4 (step 0 exit, step 1 entry) and 6 (the arbiter decides layout and continues; a miss by a little ships partial; never loosen a test); PHASE_OUTCOME.md unit 339 STATE_WHY; unit 339 output.md section 4 items 1 and 4; MainWindowViewModel.HasPsk31PowerOffer and OnChosenDigitalModeChanged (section R11 on PSK31); HM-DEC-084; R15; CLAUDE.md 0.2, 0.5; psk31 R12, R14
-  COST: 10.092021
-  ACCOMPLISHED: the rig display is shown to hold the transmit drive and the power offer under the S-meter, with the offer actually on the screen, at both of Tim's widths, and the top row stays the mockup's height when PSK31 is chosen - so step 0 can close on evidence and step 1 starts from its own test results
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: With the PSK31 power offer drawn the top row measures 305 px against 209 at 1920 and 0.335 against 0.262 at 1400, so criteria 1 and 5 are red, and the unit shows that no layout change inside the rig column fixes this without changing the offer's words, which ruling 7 forbids, so a ruling on section 4 item 1 is needed first.
-  
-  ## UNIT 342 - STEP 1
-  
-  UNIT_AS_CALLED: 6
-  STEP: 1
-  APPROACH: fit the built category pages to assets/category-page-countries.png - the earned card map across the card inner width with the crop to the two stations asserted as a bound a whole-globe frame fails; the band line gap clause and the next card quill sentence where true; the back control as a link; a card map opening in a click popup as the drop candidate; measured at 1400 and 1920
-  HIT: section 4 wants a ruling: banked - This unit's own items ask for no ruling, but the carried asks still want rulings on the Hall of Fame and Modes next cards, callers from unopened continents, the States wording and the demodulator, and none of them stops the step 1 work still open, such as the fit at 1400 and 1920, the eight kinds and the category telemetry.
-  MOVE: continue
-  WHY: The state reader found step 0 done on unit 341's evidence, so the plan moves to step 1, whose content unit 335 built in the last phase but which was never held to the approved picture; units 339 and 340 measured the gaps, and the loop test found nothing like this approach (unit 335 built the pages, this fits them to the picture).
-  DECIDED: rulings 11 to 16 - the card map spans the card inner width at a height the unit chooses near the picture's 3 to 1, with the no-map border matched; the crop asserted as a stated bound that fails on a whole-globe frame; the band line carries the gap to the next level (overrules unit 335's choice); the quill sentence only on kinds whose callers carry the quill; the read time kept over 'right now' (keeps unit 335's choice, section 0.0); the back control a plain link with its words and command unchanged; the map popup on click reusing the conversation card's mechanism, with that popup's event or none - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 2, 4 (step 1 delivers R22 as the picture; entry step 0 done) and 6; docs/phase-maintenance-run/PHASE_PLAN.md R22; assets/category-page-countries.png; .run-unit/state-verdict.json (step 0 done on unit 341); unit 339 output.md section 3 (the Countries page against its mockup, three largest gaps) and section 4 item 5; unit 340 output.md section 4 item 5; CLAUDE.md 0.0, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-155
-  COST: 12.401394500000002
-  ACCOMPLISHED: each achievements category page looks like the Countries picture Tim approved - the map of the contact's path across the card and cropped to the two stations, the level's gap on the band, the next card's words where they are true - with every step 1 criterion proven by a named test at both of Tim's widths, and a card's map one click from its popup if the night allows
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: Criteria 2, 5, 6 and 7 have green tests with measured numbers, but criterion 4 is checked only on the view model for five kinds and for Continents, criteria 1 and 3 are not checked at 1400 or 1920, and the detailed sections of the report describe the step 0 power offer work rather than step 1, so nothing there backs the summary.
-  
-  ## UNIT 337 - CARRIED REPAIR
-  
-  STEP: none - carried repair from the PSK31 phase, whose step 6 is open on this fault
-  APPROACH: find where an emitted PSK31 character stops between the demodulator and the row, make the row show every emitted character as it arrives, make the two character counters one source, and measure whether the 262-character carrier was text or bit-slip
-  MOVE: continue
-  WHY: the owner's record shows the demodulator emitting hundreds of characters and a certain parsed CQ on real air while the screen showed nothing; the ear works and the display does not
-  DECIDED: nothing beyond the instruction at task 0. The number 337 is the work instruction's own heading and collides with the step 0 entry above written under the same number; this entry is kept separate because it is a different unit of work, and the collision is reported in output.md section 4.
-  LICENCE: PHASE_PLAN.md section 6; PSK31 plan R9, R12, R13; CLAUDE.md 0.0; HM-DEC-139, HM-DEC-155
-  COST: one session, three tasks (0 to 2), each committed on its own.
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
-  FATE: executed
-  STATE_AFTER: not recorded
-  STATE_WHY: not recorded - no step moves; written at task 0.
-  
-  ### ALSO RECORDED FOR UNIT 337 - STEP 0
-  
-  A second append for the same unit and the same step, called as UNIT 1.
-  One unit is one entry, so what this route recorded is folded in here
-  rather than written as a second entry. Only what differs is listed.
-  
-  APPROACH: find where an emitted PSK31 character stops between the demodulator and the row, make the row show every emitted character as it arrives, make the two character counters one source, and measure whether the 262-character carrier was text or bit-slip
-  HIT: section 4 wants a ruling: no - section 4 is blank, which is CLAUDE_CODE.md section 8's empty-is-a-real-answer
-  WHY: the owner's record shows the demodulator emitting hundreds of characters and a certain parsed CQ on real air while the screen showed nothing; the ear works and the display does not
-  DECIDED: the fault is display-first by the record; whether the characters were readable is measured in task 2 and named for the next unit if not
-  LICENCE: PHASE_PLAN.md section 6; PSK31 plan R9, R12, R13; CLAUDE.md 0.0
-  COST: 12.401394500000002
-  ACCOMPLISHED: a PSK31 station Hamlet can hear is a row with his words on it, as the record already said it should have been
-  STATE_AFTER: in progress
-  STATE_WHY: no output.md, so there is no report to judge the step against
-  
-  ## UNIT 1 - STEP 1
-  
-  STEP: 1
-  APPROACH: prove step 1 on the drawn category pages at 1400 and 1920 instead of the view model - the band (criterion 1), the next card and its callers per kind (criterion 3), all eight kinds with Continents to seven and each to its countries by click (criterion 4) - fixing only a fact the view model holds and the page does not draw, and re-measuring and reporting unit 342's unreported build
-  HIT: section 4 wants a ruling: yes - The carried asks still open include rulings on what a card asserts, such as the Modes and Hall of Fame next cards naming PSK31 against section 3.1 and the States next card wording, which fall inside the third of the three, though the new permission scope question alone does not.
-  MOVE: work around
-  WHY: Unit 342 built its rulings and ended at 'writing the report', so the state reader judged step 1 against unit 341's step 0 report and found criteria 1, 3 and 4 unproved on the screen (view model or 1040 only, per the test source). Proving on the drawn page is a different approach from fitting the pages to the picture. The loop test found nothing like it for step 1, and it is the method that closed step 0 (unit 339), not a repeat of it.
-  DECIDED: rulings 17 to 20 - criteria 1, 3 and 4 count only on the realized page at 1400 and 1920, not at 1040 and not on the view model; unit 342's build stands and is re-measured, not redone; a watched red for an already-true assertion is a wrong expectation on the test window only, never broken markup; a fact the view model holds and the page does not draw is fixed as step 1 work, never changing scoring, earning or rulings 11-16's words; plus the Hall of Fame and Modes PSK31 next-card collision left to step 2 as drawn, and unit 337's PSK31 findings logged, not chased - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1 (a step's exit is what is on the screen, asserted by computation), 2, 4 (step 1 exit criteria), 6 (the arbiter decides and continues; ship partial on a small miss; never loosen a test) and 7; .run-unit/state-verdict.json (step 1 partial on unit 342: criteria 1, 3, 4); PHASE_OUTCOME.md unit 342 STATE_WHY; PROJECT_STATUS.md at 9214b2a (EXECUTING, writing the report) and git log (no docs(unit342) commit); tests TheCategoryPagesAreTradingCardsTests lines 50, 289, 779, 802, 1029, 1614 and TheAchievementsPageClicksInTests line 281; docs/phase-maintenance-run/PHASE_PLAN.md R22; unit 337 output.md section 4 (e4c160f); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155
-  COST: 5.3819905000000015
-  ACCOMPLISHED: every achievements category page is shown, on the page as drawn at both of Tim's widths, to carry its band, its earned contacts and a next card naming who is calling, for all eight kinds and every continent - and the step has a report of its own saying what unit 342 built and what it measures
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: The run was not allowed to use dotnet at all because commit 230e6c0 replaced the permission list, so no test could be built or run, and criteria 1, 3 and 4 still have no test on the drawn page at 1400 and 1920 that anyone has seen pass, and only a launcher fix will change that, not more work by the unit.
-  
-  ## UNIT 1 - STEP 1
-  
-  STEP: 1
-  APPROACH: re-issue work instruction 343 now that the unit scope permits dotnet - prove step 1 on the drawn category pages at 1400 and 1920 instead of the view model: the band (criterion 1), the earned contact's eight facts on Countries, States and Grids (criterion 2), the next card and its callers per kind (criterion 3), all eight kinds with Continents to seven and each to its countries by click (criterion 4); re-measure and report unit 342's unreported build
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Every item this unit raised says no ruling is wanted, and the carried asks that remain open are about layout, wording, next cards, hovers, numbers, test ownership or decoder tuning, so none falls inside keying, budget or a promise to the operator.
-  MOVE: continue
-  WHY: Unit 343's approach was blocked by its permission scope and never ran a test - evidence about the harness, not the approach - and the tree now carries Bash(dotnet:*) in .run-unit/allowed.txt, which unit 344 used for every build and test, so the same approach resumes and is not a loop. The phase goal is untouched by unit 344's PSK31 detour, and step 1 is where the plan stands.
-  DECIDED: rulings 17 to 20 re-issued unchanged; ruling 21 - criterion 2 counts only where the earned contact's eight facts are asserted drawn at 1400 and 1920 on Countries, States and Grids, not on the map alone (from unit 343 item 2); ruling 22 - the carried asks on the Hall of Fame and Modes PSK31 next cards and the States next-card wording are not a stop (R22 is later than section 3.1 and PHASE_PLAN.md section 6 lets the later ruling win; States wording is already R27), and stay as drawn for step 2; ruling 23 - unit 344's PSK31 findings logged, not chased; the recorded step 1 state read as partial because the blocked verdict's cause is measured cleared - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1, 2, 4 (step 1 exit criteria), 6 (the arbiter decides and continues; later ruling wins; never loosen a test) and 7; ARBITER.md section 8 (a run blocked by the harness is evidence about the harness, not the approach); PHASE_OUTCOME.md unit 343 (UNIT 1 - STEP 1) STATE_WHY and unit 342 STATE_WHY; .run-unit/allowed.txt (Bash(dotnet:*)) and tools/arbiter/run-unit.bat since 1d9943e (allowed.txt read as it is, never rewritten); unit 344 output.md section 1 (dotnet ran, 111 and 87 green) and its carried unit 343 section 4 items 1 and 2; .run-unit/s4-verdict.json; git diff 681d45c..HEAD (step 1's tests and the achievements window unchanged); docs/phase-maintenance-run/PHASE_PLAN.md R22; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 13.254202499999996
-  ACCOMPLISHED: every achievements category page is shown, on the page as drawn at both of Tim's widths, to carry its band, the contact that earned each card with all its facts, and a next card naming who is calling, for all eight kinds and every continent - and step 1 finally has a report of its own saying what unit 342 built and what it measures
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: The report shows named green drawn tests at 1400 and 1920 for most criteria, but its own finding 3 says the Modes next card draws CW with an empty line and no place or callers, which misses R22 content for criterion 4 and the no one is calling line for criterion 3, and the clip and white card test covers only two of the seven continent pages.
-  
-  ## UNIT 2 - STEP 1
-  
-  STEP: 1
-  APPROACH: close the two gaps the state reader named on unit 345 - fill the empty CW row on the Modes next card with the cited CW place Hamlet already derives for band buttons and a who-is-there line per mode that claims only what the CQ list can know, never empty; extend the clip and white card test from two to all seven continent pages and the Modes page with its next card; the map span on every kind as the drop candidate; measured at 1400 and 1920
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - This unit's five items all say no ruling is wanted, and the older carried asks are about card wording, next card lines, layout, test shape, a squelch mechanism and timing numbers, none of which touches transmit, money or a fact about what was logged, heard or sent.
-  MOVE: work around
-  WHY: Unit 345 proved the existing pages on the window and changed nothing, and the state reader still returned partial on two named gaps - an empty Modes row (criteria 3 and 4) and continent coverage of two of seven (criteria 5 and 6). Filling a content gap and widening coverage is a different approach from proving what is already drawn; the loop test found nothing like it.
-  DECIDED: ruling 22 amended - only the PSK31 collision and the States wording stay for step 2; ruling 24 - the empty Modes row is step 1 work under criteria 3 and 4 (overrules unit 345 item 3); ruling 25 - where a mode lives comes only from a cited table, CW from the HM-DEC-110 band-button landing on the bet band or the lowest that has one, via at most one read-only accessor, never a typed frequency and never a change to landing or tuning; ruling 26 - who is there per row says only what the CQ list can know (nearest caller with distance, no one in that mode, the list carries no Morse, or the list cannot tell FT4 from FT8), never empty; ruling 27 - criteria 5 and 6 count over all seven continent pages and the Modes page with its next card; ruling 28 - ruling 11 span on every kind, VK2DEF fixed, the drop candidate and no bar to step 1 - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1, 2, 4 (step 1 exit criteria 3 to 6), 6 (the arbiter decides and continues; later ruling wins; shorten a string and name it; never loosen a test; anything that tunes or transmits stops) and 7; .run-unit/state-verdict.json (step 1 partial on unit 345: the Modes CW row, two of seven continent pages); unit 345 output.md section 4 items 2 and 3; .run-unit/s4-verdict.json (none); docs/phase-maintenance-run/PHASE_PLAN.md R22 (Modes: where the unearned mode lives and who is there; nothing empty); src/Hamlet.App/ViewModels/AchievementCategory.cs ModesFor, LivesAt, CallingIn, NextCard, first_cw_qso and NoMorseOnTheList at 218d6e0; src/Hamlet.RadioEngine/Bands/HfBands.cs Landing (HM-DEC-110); TheCategoryPagesAreTradingCardsTests lines 1441 and 2585; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 9.6476085
-  ACCOMPLISHED: every row of the Modes next card tells the operator where that mode lives on the air and who is there, in words Hamlet can stand behind, and every achievements category page - all seven continents and the Modes page included - is measured at both of Tim's widths with no clipped word and no blank card, so step 1 stands on evidence with nothing left for the state reader to name
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: Six of the seven must-pass criteria have named green tests on the drawn page at 1400 and 1920, but criterion 3 asks for callers listed with distance and the Modes next card draws the PSK31 caller EA3XYZ with no distance, which is a gap to close and not a stop the phase waits for.
-  
-  ## UNIT 3 - STEP 1
-  
-  STEP: 1
-  APPROACH: carry the grid the PSK31 reading already holds onto the CQ list in CqSnapshot.From, only where the reading is certain, so a PSK31 caller who sent a grid is drawn with distance on every next card and one who sent none is his callsign alone by section 6; the PSK31 row's no-caller words tied to the list's read time instead of now; every Modes row measured for fit as the drop candidate; asserted drawn at 1400 and 1920
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The unit's own items are findings, and every carried ruling request that is not already answered is about layout, wording, a card's next line, a hover, a label, a number or a decoder mechanism, none of which touches transmit, money, or a fact stated about what was logged, heard or sent.
-  MOVE: work around
-  WHY: Unit 346 closed both gaps it was aimed at and the state reader left step 1 partial on one remaining clause - criterion 3's distance, missing for a PSK31 caller because CqSnapshot.From discards the grid the row's PSK31 reading already holds. Reading that field is a different approach from filling the Modes rows or proving coverage, and the loop test found nothing like it.
-  DECIDED: ruling 29 - a PSK31 call's grid on the CQ list is Reading.Grid where the reading is certain, read in CqSnapshot.From with no change to the parser, splitter or row construction, and it reaches every kind's next card (overrules work instruction 346's no-other-kind limit for this fact; rejects entity-centroid distance and uncertain grids); ruling 30 - criterion 3's with-distance counts as met where the caller's CQ carried a grid the list holds, the callsign alone otherwise by PHASE_PLAN.md section 6, asserted both ways on the drawn Modes page; ruling 31 - the PSK31 row's no-caller words carry the list's read time or say on the CQ list, never an unqualified now (unit 346 item 2, ruling 14's precedent); ruling 32 - every Modes row measured for fit, the drop candidate and no bar to step 1; ruling 28 closed, VK2DEF's span logged for Tim at step 3 (unit 346 item 4) - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1, 2, 4 (step 1 exit criterion 3 and 5), 6 (the arbiter decides and continues; show what is there, no dash; never loosen a test; a parser change stops) and 7; .run-unit/state-verdict.json (step 1 partial on unit 346: the PSK31 caller EA3XYZ drawn with no distance); .run-unit/s4-verdict.json (none); unit 346 output.md section 4 items 1 to 4; docs/phase-maintenance-run/PHASE_PLAN.md R22 (with distance, from the CQ list); docs/phase-psk31-run/PHASE_PLAN.md R1 (an uncertain parse is shown as a guess); src/Hamlet.App/ViewModels/CqSnapshot.cs From and its remark at 0b506ed; src/Hamlet.RadioEngine/Psk31/Psk31ExchangeParser.cs Psk31Exchange.Grid and IsCertain; src/Hamlet.App/ViewModels/DigitalDecodeRow.cs Reading and Payload; AchievementCategory.cs WhoIsThere, CallersFrom and NextCaller's remark; TheCategoryPagesAreTradingCardsTests CallingWithPsk31 at 2950; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 8.573785499999998
-  ACCOMPLISHED: a station calling CQ in PSK31 who sends his grid shows on the achievements next cards with how far away he is, the same as an FT8 caller does, and a station who sends none shows as his callsign without a made-up number; the PSK31 row no longer says no one is calling now when it only means no one was on the list when the window opened - so every step 1 criterion stands on the drawn page at both of Tim's widths with nothing left for the state reader to name
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: All seven must-pass criteria now have named green tests with quoted measurements at 1400 and 1920, criterion 3 is closed by the PSK31 row drawing EA3ABC 4,100 mi from a certain grid and the callsign alone otherwise, and the nice-to-pass popup test also passes.
-  
-  ## UNIT 4 - STEP 2
-  
-  STEP: 2
-  APPROACH: open step 2 on unit 336's leftovers - the States count saying worked and its STATE-field source with no confirm anywhere the achievements window draws at 1400 and 1920; the Modes PSK31 test corrected so PSK31 before a PSK31 contact is only a next card (R22, Ruling C); the shipped points file carrying exactly the keys its comment block documents, rank_names added as an empty list; TheMenuIsUnderTheMouseTests' Views reds run once and named as known reds with why, not edited; the thirteen emptied files listed once; other small reds as the drop candidate
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Unit 348 says no ruling is needed and all six of its own items are findings, and the open carried asks are about layout, wording, next card lines, numbers or mechanisms, so none asks the owner to decide keying, money or a promise.
-  MOVE: continue
-  WHY: The state reader returned step 1 done on unit 347, so step 2's entry is met and the plan moves to it. No unit has run on step 2, and the loop test found nothing like this approach. None of the five items touches keying, money or what the product promises: the PSK31 next cards are Tim's own later rulings, and the Views reds that sit on the send path are named, not edited.
-  DECIDED: ruling 33 - step 2 entry met on the unit 347 verdict, step 0's two classes read once and nothing changed; ruling 34 - criterion 1 covers every run and hover the achievements window draws at 1400 and 1920 and the achievements view-model strings, AchievementScreen.cs:543-546 reworded without the word, radio and lookup uses of confirmed out of reach; ruling 35 - the States count names states worked from the STATE field, with a line counting US records carrying no STATE as task 1's drop candidate, unit 335 item 1 answered keep; ruling 36 - the Modes test corrected under R12 so PSK31 with no PSK31 contact is drawn only on the Modes next card row and Hall of Fame's next first, screen unchanged, unit 336 item 2 and unit 333 item 1 answered; ruling 37 - rank_names added to the shipped points file as an empty list and the comment-block test made two-way at every level; ruling 38 - TheMenuIsUnderTheMouseTests' reds named as known reds with why and never edited, because their scene drives the FT8 send path; ruling 39 - other small reds are task 4, the drop candidate, with the stop and whole-chain tests never run; ruling 40 - the files listed once in section 2 and their carried mentions replaced by one ANSWERED line; ruling 22 closed - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md R27, sections 1, 2, 4 (step 2 entry and exit), 6 (the arbiter decides and continues; later ruling wins; shorten and name; never loosen; transmit chain stops; empty, comment, list) and 7; .run-unit/state-verdict.json (step 1 done on unit 347); .run-unit/s4-verdict.json (none); unit 347 output.md sections 1 and 4 at 066ad04; unit 336 output.md at cbe5000 (reds older than the unit; section 4 items 2 and 3); unit 334 output.md at d7178b7 section 2 (the thirteen files); docs/phase-maintenance-run/PHASE_PLAN.md R22, R23 and Ruling C as unit 333 quoted it; ACHIEVEMENTS_PHILOSOPHY.md sections 3.1, 3.4 and 4; AchievementScreen.cs 543-546; AchievementBadges.cs 353; AchievementCategory.cs 929 and 964; ThePsk31RecordsAppearTests.cs 86 and 152; TheAchievementsPageTests.cs 298-342; data/achievements/achievement-points.json lines 1-50 and 34; TheMenuIsUnderTheMouseTests.cs 278, 465, 489, 519; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 13.8218565
-  ACCOMPLISHED: the achievements pages say worked and never confirmed, and the States count says it counts states from the log's STATE field; the test that contradicted Tim's next-card rulings now agrees with them; the points file Tim edits documents exactly what is in it; the files he has to delete by hand are one list; and every old red is either fixed or named with why - so the screen goes to Tim at step 3 with nothing left over from the last phase
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: All five must-pass criteria are backed by quoted evidence, namely StatesCountWhatTheLogsStateFieldSays passing with 2 worked, from STATE and no confirm drawn at 1400 and 1920, the renamed Modes test passing with a watched red, the fifteen files in one list in section 2, the eight TheMenuIsUnderTheMouseTests reds and TheWindowDrawsEverySixRows named with why, and the two-way points test passing with 24 keys documented and 24 in the file.
-  
-  ## UNIT 5 - STEP 3
-  
-  STEP: 3
-  APPROACH: prepare step 3 for Tim without changing the screen - re-run step 0, 1 and 2's classes once at this tree and trace every achievements page's drawn words and numbers at 1400 and 1920; write one review sheet, docs/unit349-what-tim-looks-at.md, page by page with what R26 and R22 promise and what the tree draws, every arbiter ruling 1 to 40 and every unit choice that changed a word or hid something gathered from git with its overrule words, the known imperfections and known reds; check the sheet claim by claim against its sources; the four-digit no-STATE line measured at 1400 and 1920 as the drop candidate
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open ask is Tim's pass or not on how the step 3 pages look, which is a layout verdict, and the older carried asks are about layout, wording, tests or decoder tuning, so none touches transmit, money or what the product states as logged, heard or sent.
-  MOVE: continue
-  WHY: The state reader returned step 2 done on unit 348, so step 3's entry is met, and its one criterion is Tim's word, which no session can supply and no picture can be made for without a package. What a unit can do is clear what stands between Tim and that word: forty decisions made for him, a dozen known imperfections and the phase's numbers spread over twelve reports. Nothing here is a stop, and the loop test found nothing like it.
-  DECIDED: ruling 41 - step 3 entered on the unit 348 verdict, step 0 read as done as work instructions 342 to 348 read it, the phase's eight classes run once at this tree as a reading and never fixed; ruling 42 - no pictures, the headless backend rasterizes nothing, and Avalonia.Headless.Skia (a package), running Hamlet.App and a drawn mockup are all rejected; ruling 43 - one sheet at docs/unit349-what-tim-looks-at.md in seven sections, every claim sourced to a test run this unit or a report's commit and item, and Tim asked for his window size since the record has none; ruling 44 - every arbiter ruling 1 to 40 and every unit choice that changed a word or hid something, gathered from git, one line each with where it shows, the rejected alternative and the words that overrule it; ruling 45 - the no-STATE line at four digits asserted drawn at 1400 and 1920, shortened and named only if it clips, the drop candidate; ruling 46 - section 4 carries one real ask, Tim's step 3 verdict, and no further unit is authored into step 3 until he answers unless the sheet is shown wrong - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1 (a step's exit is computed, described in words, then Tim's eyes), 2, 4 (step 3 entry and exit; No script can evaluate this), 6 (the arbiter decides and continues; a package stops; shorten and name; never loosen) and 7; docs/phase-maintenance-run/PHASE_PLAN.md R22 and R25; PHASE_PLAN.md R26 and R27; .run-unit/state-verdict.json (step 2 done on unit 348); .run-unit/s4-verdict.json (none); unit 348 output.md at 26e5879 sections 1, 3 and 4 items 3 and 4; unit 346 item 4 and unit 341 items 1, 3 and 5 as carried there; TheMarksRenderTests.cs 154-161 and Unit300SizesTests.WhetherAnythingHereCanActuallyLook (no raster on the headless backend); work instructions 338 to 348 in git (rulings 1 to 40); ARBITER.md sections 6 and 8; CLAUDE.md 0.0, 0.2, 0.5, 0.6, 8; psk31 R12, R13, R14, R16, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 13.679649000000001
-  ACCOMPLISHED: Tim has one sheet to read at his own window that tells him, page by page, what the main window and every achievements page should show and what this tree measures there at both widths, every choice made for him and how to undo it, and every known thing that will look off - with every number checked against its source - so he can give step 3's verdict in one sitting, and the phase's evidence is re-read on the tree he will be looking at
-  FATE: executed
-  STATE_AFTER: in progress
-  STATE_WHY: The review sheet for Tim is ready at 1400 and 1920 with every page, decision and known item checked, but the only exit criterion is Tim saying it passed, which has not happened, and a verdict on how the screen looks is not one of the three things that make a step blocked.
-  
-  ## UNIT 6 - STEP 0
-  
-  STEP: 0
-  APPROACH: put step 0 on the record at this tree criterion by criterion - no screen change - with the 1400 top row and panel share asserted with the best bet pinned both ways on the test window (drawn and absent, FT8 and PSK31, 1920 and 1400) instead of at the hour of the run, and what stands between the three panels and the status bar named in pixels; the sheet's step 0 numbers brought to this tree; the best bet nice-to-pass extended to 1400 as the drop candidate
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only ask still open is Tim's step 3 pass or not on how the screen looks, which is layout and wording and outside the three, and every other item is a finding, a note or already answered.
-  MOVE: work around
-  WHY: Step 3 waits on Tim and ruling 46 holds, but step 0, which steps 1 to 3 rest on, has no done in the record (last entry unit 340 blocked, the unit 341 verdict overwritten), and its criterion 5 has held only at whatever hour the test ran (237 of 238.4 px with the best bet, 228 without). This differs from unit 339's proof: it pins the clock-driven input unit 339 item 2 and unit 341 item 1 named, and names criterion 4's floor. The loop test found nothing like it.
-  DECIDED: ruling 47 - step 3 held for Tim (ruling 46 upheld), no src or markup change so the sheet Tim holds stays the screen; ruling 48 - step 0 gets its own report at this tree, criterion by criterion, numbers only from this unit's runs or cited by commit; ruling 49 - criteria 1 and 5 asserted with IsBestBet pinned drawn and absent on the test window (the :697-700 precedent), FT8 and PSK31, 1920 and 1400, with 0.262, one half and 2 px unchanged, the best bet never pressed, an overwritten pin or a red worst case reported and not fixed; ruling 50 - criterion 4's gap from the panels' floor (y 953) to the status bar (y 978) measured and every visual in it named, asserted only as measured; ruling 51 - the nice-to-pass extended to 1400, the drop candidate; ruling 52 - no new ask unless the numbers raise one, unit 349 item 1 carried as Tim's and open - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1, 4 (step 0 exit in full), 5 (steps 1-3 one pipeline on step 0), 6 (the arbiter decides and continues; a small miss ships partial; never loosen a test; transmit or a package stops) and 7; PHASE_CONTROL.md sections 2 (a step verifies its own ground), 3 (course correction, revisiting a step) and 7 (a step passing on a foundation that failed); ARBITER.md sections 3, 4, 6 and 8; .run-unit/reload.txt disagreements (PHASE_OUTCOME header in progress, last step 0 entry blocked); PHASE_OUTCOME.md unit 340 STATE_WHY and no unit 341 entry; .run-unit/state-verdict.json (step 3 in progress on unit 349); .run-unit/s4-verdict.json (none); unit 349 output.md at 1456ac5c sections 1 (sheet correction 1: y 953 against y 978) and 4 item 1; docs/unit349-what-tim-looks-at.md sections 2.1, 2.2 and 4 items 1-2; unit 341 output.md at 0f383a3 item 1; unit 339 output.md at 991223a item 2; TheTopRowTests.cs 577, 652, 656, 684, 697-700; MainWindowViewModel.cs 16831, 16836, 17037-17038; Directory.Build.props 801; DECISIONS.md (HM-DEC-163 top); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 7.633490500000001
-  ACCOMPLISHED: the main window's promise - a short top row and the working panels given more than half the height - is shown to hold at both of Tim's widths whatever time of day the best bet appears, and the space above the status bar is named; step 0 has a report of its own on the tree Tim is reviewing, so the phase's first step stands in the record and not in a file that was overwritten, and nothing on the screen moved under Tim's review
-  FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: Five of the six must-pass criteria are backed by measured numbers at this tree, but criterion 5 fails at 1400 on PSK31 when the best bet is on the operator's own band, where the top row is 247 px against a limit of 238.4 and the panels are 446 px against 455, and this is a layout miss rather than a stop.
-  
-  ## UNIT 7 - STEP 0
-  
-  STEP: 0
-  APPROACH: fit the 1400 green block by arrangement so the best bet with its check on the operator's own band no longer widens the Auto right column or grows the block - every word, the check, the best bet's command and the ranking unchanged, nothing hidden - traced line by line and chosen from arrangements measured on the test window, proven by the unedited pinned fact going green plus the 40 m case, the sheet brought to the new screen; U2's overrule number re-measured as the drop candidate
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open ask is Tim's step 3 verdict on how the achievements pages look, which is a layout review outside the three stops, and every other item is a carried finding or an older ask that is already answered or is about layout, wording or numbers.
-  MOVE: work around
-  WHY: Step 0 is partial on one case - 1400 PSK31 with the best bet on his band, 247 of 238.4 px and panels 446 of 455 - and unit 350 held the screen still and left a fix or Tim's verdict to this arbiter; a fix is the only work open in the phase and Tim should not spend his review on a 9 px miss. Unit 338 shortened a string and unit 341 hid an empty row; this changes no word and hides nothing, and the loop test found nothing like it.
-  DECIDED: ruling 53 - the screen moves for this one case and the sheet with it, overruling ruling 47 for this unit, ruling 46 upheld; ruling 54 - the trace names what the check costs line by line and measures candidate arrangements on the test window before one is built, the choice the unit's; ruling 55 - arrangement only: no word, check, command, tooltip, ranking or clock change, nothing hidden, the band the largest text and 1920 at 190, and a miss beyond arrangement ships partial without shortening; ruling 56 - TheTopRowAndThePanelShareHoldWithTheBestBetPinnedBothWays green with its body unedited is the proof, the 40 m case asserted beside it, a pin-message red run once more and reported; ruling 57 - the sheet's section 2.2 rows, bullet and note, a new U11 row and section 4 items 1 and 2 brought to the new screen, nothing else; ruling 58 - no new ask unless the numbers raise one, unit 349 item 1 carried as Tim's - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md R26 (at no window size less than half; at 1400 the unit measures and chooses), sections 1, 4 (step 0 exit criteria 1 and 5), 6 (the arbiter decides and continues; a small miss ships partial; shorten or widen, never clip; never loosen a test; transmit or a package stops) and 7; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 0 partial on unit 350, criterion 5 at 1400 PSK31 with the best bet on his band); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 350 (UNIT 6 - STEP 0) STATE_WHY, unit 338 and unit 341 approaches; unit 350 output.md at c88d3974 sections 1 and 3 and section 4 items 1 to 3 (b49eb3ab, 437cedd8); unit 341 output.md at 0f383a3 item 1 (the right column 140 to 180 px); src/Hamlet.App/Views/MainWindow.axaml 604, 639-640, 658-717, 720-792, 727-746, 737; src/Hamlet.App/Views/MainWindow.axaml.cs 98-147; src/Hamlet.App/ViewModels/GreenZone.cs 51, 296-301; tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 577, 688, 757, 1195; docs/unit349-what-tim-looks-at.md 93-96, 106-107, 116, 414, 434-438; Directory.Build.props 809; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 9.589631500000003
-  ACCOMPLISHED: on PSK31 at Tim's narrower width, when the best bet is the band he is already on, the short top row stays the mockup's share and the waterfall, decoded text and For You keep at least half the window, with every word and the check still on the screen - so the last measured miss in step 0 is closed or narrowed with numbers, and the sheet Tim is reading describes the screen as it now is
-  FATE: executed
-  STATE_AFTER: done
-  STATE_WHY: Every must-pass criterion is backed by measurements or green tests, including 1400 PSK31 at 228 px of 238.4 with panels at 465 of 455 in all three best bet states, and the one red left is a pin failure at 1920 where the layout still measured 190 and 503, not a missed limit.
-  
-  ## UNIT 8 - STEP 3
-  
-  STEP: 3
-  APPROACH: check the sheet Tim holds against the screen unit 351 changed, with no screen change - run the two unrun classes that read the green block (Unit332TwoWidthsTests, TheGreenZoneTests), trace which spot reload overwrites the pinned best bet, and switch the live spot sources off on the test window only so step 0's pinned proof holds on three runs; the sheet corrected only where a number moved or a red shows it wrong; what the test window reaches over the network read as the drop candidate
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only open ask is the owner's step 3 pass or not verdict on how the screen looks, which is layout and outside the three, and every other item is a finding, a note or a carried item already answered or taken up.
-  MOVE: continue
-  WHY: Steps 0 to 2 are done and step 3 is Tim's word, so under ruling 46 a unit may only act where the sheet could be wrong - and unit 351 left two such places, a green block reader never run after its markup change and a step 0 proof red on some runs that the sheet's known reds do not list. The loop test found nothing like this approach, and none of it touches keying, money or what the product promises.
-  DECIDED: ruling 59 - ruling 46's exception invoked for two points only, ruling 47 back in force, nothing under src changes; ruling 60 - Unit332TwoWidthsTests and TheGreenZoneTests run before and after, a stale number U11 changed corrected under R12 in that test with no R26 limit loosened, any other red reported and put on the sheet's section 4 without changing the screen; ruling 61 - the pin failure traced over ten 1920 PSK31 cases through telemetry and public members, then fixed in the tests' Realized fixture only by switching the network sources off with SetSourceEnabled, no clock seam, retry or longer settle; ruling 62 - proof is step 0's filter all green three times with pins 8 of 8 and bodies unedited, every moved number named, a pin still failing reported as a finding and step 0 not re-opened; ruling 63 - the sheet changes only where measured wrong, plus one section 5 line on the pin red, no U row; ruling 64 - no new ask unless measured, unit 349 item 1 carried as Tim's, and the recommendation that if this unit ends clean nothing is left that a unit can do before Tim answers - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1, 4 (step 3 exit; step 0 exit criteria 1, 5 and 6), 6 (the arbiter decides and continues; never loosen a test; transmit or a package stops) and 7; R26; ARBITER.md sections 2, 4, 6 and 8; .run-unit/state-verdict.json (step 0 done on unit 351, the one red a pin failure at 1920); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 351 (UNIT 7 - STEP 0) STATE_WHY; unit 351 output.md at cdead300 sections 1 and 2 and section 4 items 1 and 2, unit 350 item 2; ruling 46 (work instruction 349) and ruling 47 (work instruction 350); tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 688, 709, 754, 1651-1715, 1771-1778, 1877-1902; tests/Hamlet.App.Tests/Views/Unit332TwoWidthsTests.cs 50, 65, 112, 151; tests/Hamlet.App.Tests/ViewModels/TheGreenZoneTests.cs 443; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs (shares Realized); src/Hamlet.App/ViewModels/MainWindowViewModel.cs 7602-7638, 16969-16984, 8098, 11066; src/Hamlet.App/Settings/AppSettings.cs 641-663; docs/unit349-what-tim-looks-at.md 71, 93, 106-108, 113-117, 425, 432-496, 498-509; Directory.Build.props 817; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 12.794684999999996
-  ACCOMPLISHED: the sheet Tim reads to give the phase's last verdict is shown to be the screen after unit 351's change - every test that reads the green block has run on it - and step 0's proof reads the same on every run because the test window no longer takes a live spot reload in the middle of a measurement; whatever does not match is on the sheet, so nothing Tim is told is untested
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: The only exit criterion is Tim saying the pages passed at his window size, no session can see the screen or give that verdict, the report shows the sheet ready and the verdict still open, so more unit effort cannot move the step until Tim looks.
-  
-  ## UNIT 9 - STEP 3
-  
-  STEP: 3
-  APPROACH: restore the test window declared heard count, sparkline and cleared best bet after Realized's settle, so step 0's unpinned facts measure the fixture's window whatever the hour of the run, guarded in the fixture - no screen change; trace every writer first; the sheet's '6 stations' words and 1920 green block cell re-cited to a fact that draws them; the two windows still reaching POTA (BindingHealthTests, EmptyTab) read as the drop candidate
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The only ruling still open is the owner's visual pass or not on step 3, which is about layout, and the older asks carried along are about layout, wording, numbers or mechanisms or have already been answered, so none asks for a decision on keying, money past the budget or what the product promises.
-  MOVE: continue
-  WHY: Steps 0 to 2 are done and step 3 is Tim's word, so under ruling 46 a unit may act only where the sheet is shown wrong - and unit 352's own item 1 shows it: the sheet's '6 stations' is cited to a fact that now draws 0 and the hour's best bet, and every unpinned step 0 number now depends on the hour of the run. The loop test found nothing like this; it follows unit 352's successful change rather than repeating a failed one, and none of it touches keying, money or what the product promises.
-  DECIDED: ruling 65 - ruling 46's exception invoked for one point in two parts (the sheet's 6 stations cited to a fact drawing 0; unpinned facts depending on the hour), ruling 47 in force, nothing under src; ruling 66 - trace both licensed fixtures at 1400 and 1920 on FT8 and PSK31, pass by pass, and name every writer of the heard count, sparkline and IsBestBet by file and line; ruling 67 - after Realized's six settle passes set the declared count, sparkline and no best bet again, six passes more, a guard that names what failed, TheWorkingPanelsTests.Realized clears the best bet only, no clock seam, retry, wait-until loop or source change, a writer after the restore reported and the restore shipped only if the guard held every run; ruling 68 - step 0's filter green three times with pins 8 of 8, identical printed lines, every unpinned number named against unit 352's before and after runs, pinned numbers unmoved; ruling 69 - the sheet changes only at :47, :54-57, :71-73, :118, :20-21, :438-439 and section 5 where measured wrong; ruling 70 - EmptyTab's sources switched off only if its numbers differed across runs, BindingHealthTests never changed, the drop candidate; ruling 71 - no new ask unless measured, unit 349 item 1 carried as Tim's, the recommendation that if this ends clean no unit remains that ruling 46 licenses, and logged for the owner that ARBITER.md has no move for waiting on the owner's eyes so the loop spends a unit per call - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md sections 1, 4 (step 3 exit; step 0 exit criteria 1, 2, 5 and 6), 6 (the arbiter decides and continues; never loosen a test; transmit or a package stops) and 7; R26; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 3 blocked on unit 352); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 352 (UNIT 8 - STEP 3) STATE_WHY; unit 352 output.md at 8fa20cb1 section 1 task 1 and decisions 3 and 4, section 4 items 1 and 2; ruling 46 (work instruction 349), ruling 47 (work instruction 350), rulings 61 to 64 (work instruction 352); tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 2067-2099, 2081-2083, 2092-2096, 2101-2144; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs 484-486, 718-737; tests/Hamlet.App.Tests/Views/BindingHealthTests.cs 108; docs/unit349-what-tim-looks-at.md 20-21, 47, 54-57, 71-81, 118, 438-439, 499-514; docs/carry-forward-tests.txt; Directory.Build.props 825; DECISIONS.md 7 (HM-DEC-163); .run-unit/allowed.txt 14; RUN_LEDGER.md (units 349 to 352 cost); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 10.5068985
-  ACCOMPLISHED: the numbers and words on the sheet Tim reads for the phase's last verdict come from a test window that draws the same thing whatever time the tests run - six stations, its sparkline and no best bet unless a test sets one - so every green block line on the sheet can be reproduced, and nothing on the screen moved under Tim's review
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: The only exit criterion is Tim saying the pages passed at his own window size, the report shows he has not given that verdict, and no unit can meet it for him since no session can see the screen, so it waits on Tim and more work will not help.
-  
-  ## UNIT 10 - STEP 3
-  
-  STEP: 3
-  APPROACH: measure the main window and the achievements window at the sizes Tim can actually open - the product's opening size 1100 x 780, its minimum 900 x 620 and common laptop and desktop screens - against R26's outcomes and step 1's no-clip and no-white-card clauses, through a height overload of the existing Realized fixtures with the 1400 and 1920 anchors reproducing the pinned numbers, no screen change and every miss put on Tim's sheet unfixed; the achievements window as the drop candidate; the carry-forward list run with trx loggers so a red names itself
-  HIT: section 4 wants a ruling: yes - Item 1 under unit 354 asks the owner to choose how to keep the Stop control on the window at the opening size, which touches the transmit abort and so falls inside the first of the three.
-  MOVE: work around
-  WHY: Step 3 is blocked on Tim's verdict at his window size, and unit 353 left nothing on the test window's reloads (ruling 71, upheld). But every measurement in the phase is at 1400 or 1920 wide and 1040 tall, while Hamlet opens at 1100 x 780 and allows 900 x 620, so Tim may judge a window nothing measured. Measuring the sizes he can open is a different approach from re-checking the sheet against the test window, the loop test found nothing like it, and waiting on the owner's eyes is not one of the three stops.
-  DECIDED: ruling 72 - ruling 46 amended so a unit may be authored into step 3 where Tim's verdict would fall on an unmeasured window size, ruling 71's no-more-reload-work upheld; ruling 73 - the sizes fixed by the instruction (main window 900x620, 1100x780, 1280x720, 1366x728, 1536x824, 1400x1040 and 1920x1040 as anchors, 1920x1017, 2560x1400; achievements 900x620, 1040x720, 1280x720, 1400x720, 1920x720), Tim's own size measured only once he names it; ruling 74 - an internal height overload of both Realized fixtures keeping ruling 61's sources and ruling 67's guard, the anchors reproducing 190/503, 216/477 and 228/465 or nothing ships; ruling 75 - R26's outcomes read per size on FT8 and PSK31 with the best bet pinned absent and on his band, trimmed or clipped text and off-window controls named, asserting nothing; ruling 76 - ruling 63 amended for this unit: the sheet's :11-12, one sizes table and one section 4 item per miss, nothing else; ruling 77 - a miss is reported and never fixed here (ruling 47 holds), no red-going test, the next arbiter weighs a fix, and only a miss touching Stop, keying or transmit is an ask; ruling 78 - the carry-forward list run once with trx loggers so a red names itself (overrules unit 353 decision 3), and Unit332TwoWidthsTests' network reach logged, not chased, as a third reload unit would loop with 352 and 353 - all the author's, marked for Tim at step 3, overrulable
-  LICENCE: PHASE_PLAN.md R26 (at no window size less than half), sections 1 (computed, described, then Tim's eyes), 4 (step 3 exit at his window size; step 0 and step 1 exit clauses), 6 (the arbiter decides and continues; never loosen a test; never clip; transmit or a package stops) and 7; ARBITER.md sections 2, 3, 4, 6 and 8; .run-unit/state-verdict.json (step 3 blocked on unit 353); .run-unit/s4-verdict.json (none); PHASE_OUTCOME.md unit 353 (UNIT 9 - STEP 3) STATE_WHY; unit 353 output.md at 0d69123a section 1 and section 4 items 2, 3 and 5; rulings 43 and 46 (work instruction 349), 47 (350), 61 (352), 67, 70 and 71 (353); src/Hamlet.App/Views/MainWindow.axaml 12-13; src/Hamlet.App/App.axaml.cs 93-96, 137-138; src/Hamlet.App/Views/AchievementsWindow.axaml 9; tests/Hamlet.App.Tests/Views/TheTopRowTests.cs 48, 2227; tests/Hamlet.App.Tests/Views/TheWorkingPanelsTests.cs 510, 778; tests/Hamlet.App.Tests/Views/TheAchievementsPageClicksInTests.cs 630; tests/Hamlet.App.Tests/Views/TheCategoryPagesAreTradingCardsTests.cs 533; docs/unit349-what-tim-looks-at.md 11-18; docs/carry-forward-tests.txt; Directory.Build.props 834; DECISIONS.md 7 (HM-DEC-163); RUN_LEDGER.md (units 349 to 353, about $8 to $14 each); CLAUDE.md 0.0, 0.2, 0.5, 0.6; psk31 R12, R13, R14, R19; HM-DEC-139, HM-DEC-155, HM-DEC-163
-  COST: 11.855571999999999
-  ACCOMPLISHED: when Tim opens Hamlet to give the phase's last verdict - at the size it first opens, at the smallest he can drag it to, or on a common laptop or desktop screen - the sheet already says what the main window and the achievements pages draw there against the mockup's promises, with every shortfall named in pixels, so his verdict is not given on a window nobody measured, and nothing on the screen moved under his review
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: The only exit criterion is Tim saying the step passed, which the report shows has not happened and no session can do, and the unit also raised a decision for the owner about Stop being drawn below the window at the opening size of 1100 x 780, which touches transmit safety.
-  
-  ## UNIT 355 - STEP 3
-  
-  STEP: 3
-  APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
-  MOVE: continue
-  WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
-  DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
-  LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
-  COST: one session, five tasks, each committed on its own.
-  ACCOMPLISHED: Tim can stop a transmission from the status bar at every window size measured, 9 of 9 where it was off the window at the size Hamlet opens at; a PSK31 station's words stay on the list, marked ended, after his carrier goes, and an ended CQ row can still be answered; no test view model can reach callook.info; the sheet he reads says so with this unit's numbers
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: Step 3's only exit criterion is Tim's verdict at his window size, which no session can give. The unit completed its five tasks, and it raises one transmit-side ask: task 1 said Stop should be disabled with nothing keyed, and it was built pressable at every instant instead, because the send plan's step 1 says the abort cannot be disabled and a guarding test holds that.
-  
-  ## UNIT 1 - STEP 3
-  
-  STEP: 3
-  APPROACH: move the Stop control to the always-visible status bar without touching its path, keep a PSK31 row and its text on the list after its carrier ends, let an ended CQ row still be answered, put the license lookup behind a seam so tests stay off the network, and update the sheet Tim reads
-  HIT: section 4 wants a ruling: yes - Item 1 asks the owner to decide whether the Stop abort stays pressable at every instant or is disabled when nothing is keyed, which touches transmit and the radio's safety, and the unit's own build contradicts the work instruction's words.
-  MOVE: continue
-  WHY: Tim ruled A on the Stop control found off-screen at small sizes, and ruled that PSK31 text must not vanish; the network lookup makes the layout tests unstable; all of it is the ground step 3 is judged from
-  DECIDED: Stop's exact place on the bar and the ended row's word are the unit's; the retire window for resuming a row is the unit's number to state
-  LICENCE: screen phase R26 and section 6; PSK31 plan 0.2, R9, R12, R13, R14; Tim 2026-09-14
-  COST: 27.369619999999998
-  ACCOMPLISHED: Tim can always stop a transmission from any window size, and what a PSK31 station said stays on his screen after the station stops
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: The only exit criterion is Tim saying it passed and the report shows no such verdict, so no unit can meet it, and the open ask on whether Stop may be disabled touches the transmit abort, which is one of the three things the phase stops for.
-  
-  ## UNIT 356 - STEP 3
-  
-  STEP: 3
-  APPROACH: keep the send area inside the window at every size by giving up panel height first and the top row second, compose the post-send ALC sentence after the reference is stored and never send the operator to the radio, and put the spot sources' HTTP clients behind the seam so no test constructs one
-  HIT: recorded at task 0, before anything was built. Tim ruling of 2026-09-14 on Stop is written into PHASE_PLAN.md as R28 and builds nothing, because the behavior is already what he chose.
-  MOVE: continue
-  WHY: Hamlet opens at 1100x780 and CQ sits below the window's bottom edge, so a new operator cannot see the button that calls CQ; and the sentence on Tim own screen after an FT8 send contradicts R15 by not counting the send it describes and R11 by sending him to a meter on the radio
-  DECIDED: the height-giving order - panels first, then the top row, never the send area - is the unit own stated rule; the three sentence forms are the author words for the operator
-  LICENCE: screen phase R26 and section 6; PSK31 plan R11, R15, R12, R14, R19; Tim 2026-09-14 on Stop; CLAUDE.md 0.0
-  COST: one session, five tasks, each committed on its own
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at its start
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: not recorded - no step moves; written at task 0.
-  
-  ## UNIT 357 - STEP 3
-  
-  STEP: 3
-  APPROACH: right-click any PSK31 row to open that station card, add a text block that sends one framed line through the existing unslotted sequence on one click, lift the cap to sixty seconds for typed text, and show a row whole message on hover and on click
-  HIT: recorded at task 0, before anything was built. Tim ruling of 2026-09-14 is written into PHASE_PLAN.md as R29 and withdraws the no-keyboard line of PSK31 plan R2 and nothing else of it.
-  MOVE: continue
-  WHY: he read a real QSO off 14.070 with nothing to send back but another CQ, and typing is the thing PSK31 offers over FT8 and FT4; the framing keeps the callsigns and the hand-back out of his hands while one click one transmission and the single keying path stay exactly as proved
-  DECIDED: the frame exact words are the author own; the sixty-second cap is the author number; the word that says the turn is doubtful is the author own
-  LICENCE: Tim 2026-09-14 overruling PSK31 plan R2; CLAUDE.md 0.2; PSK31 plan R1, R10, R11, R13; HM-DEC-018 and 2.1
-  COST: one session, five tasks, each committed on its own
-  ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at its start
-  FATE: executed
-  STATE_AFTER: blocked
-  STATE_WHY: not recorded - no step moves; this unit clears a blocker rather than advancing a criterion, and step 3 exit is Tim verdict. Written at task 0.
+  ENTRY: PHASE_STATUS.md line 1 names this phase; the nine fixtures hash as manifest.json says, 9 of 9. Carry-forward before any change: app 143 of 143, engine 86 of 86.
   
   ## UNIT 1 - STEP 0
   
   STEP: 0
   APPROACH: wire Olivia everywhere PSK31 is wired, read the cited calling table and the RSID codes from data files, put the Capture button on the panel, and keep the tab inert for decoding and sending
-  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - This unit's items are an install step for Tim, findings and mismatches, and the only carried ask inside the three, about Stop and the abort, is recorded as ruled by Tim on 2026-09-14.
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - The dial offset is a number already built as the author's overrulable recommendation, the other items are findings, and the carried Stop asks were answered by the owner's ruling A of 2026-09-14.
   MOVE: continue
   WHY: step 0 depends on nothing; the shape is the PSK31 seam's, proved twice; every value comes from a cited file
   DECIDED: nothing beyond the plan; the timing table's first row is marked an estimate
   LICENCE: PHASE_PLAN.md R27, R29, R30, section 6; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.1, 0.2, 0.5, 2.1; HM-DEC-054
-  COST: 1.7553294999999998
+  COST: 15.045699500000005
   ACCOMPLISHED: Olivia is a tab that tunes to the right place and says what it cannot do yet, with its data cited and its fixtures hashed
   FATE: executed
-  STATE_AFTER: partial
-  STATE_WHY: This unit touched nothing in src and measured none of this step, but the carried unit 354 findings show the rig matches the card height and the top row and panels hold at 1400 and 1920, while the green block text, the clock dot and callsign clipping at 1400 are not measured and the carry forward list is unstable run to run.
+  STATE_AFTER: done
+  STATE_WHY: Each of the six criteria has measured support in the report, including seven of seven bands tuned from the cited table, the quoted sentence for a malformed file, a 48000 Hz capture, zero slot looks and a refused send, and BindingHealth, Voice and the carry forward list green, while the file paths in subfolders and the dial set 1500 Hz below the center are the unit’s own overrulable choices and not a stop.
+  
+  ## UNIT 2 - STEP 1
+  
+  STEP: 1
+  APPROACH: Hamlet's own RSID detector across the passband reading codes from the ported data file, proved on the mode author's fixtures, and an RSID burst generator composed in front of every PSK31 send's audio behind the one transmit sequence
+  HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Item 1 is a receive dial offset the unit has already built and marked overrulable, its tune line still states the dial truthfully and nothing is keyed, the carried Stop questions were answered by the owner's ruling A, and the rest are findings, tool reports or layout matters outside the three.
+  MOVE: continue
+  WHY: Step 0 is done and closed and step 1 is next in a one-way pipeline; the loop test finds no earlier approach for it. Its only transmit change is the RSID prefix that section 6 licenses, and the instruction stops at anything beyond that.
+  DECIDED: author's, overrulable - (A) the burst counts inside the existing no-slot caps, 30 s for a macro and 60 s for a typed line, which do not move; if any macro would exceed its cap with the burst, task 4 is not built and the numbers go to Tim as a section R10 question. (B) rsid_heard is fed live under the Olivia tab only, and a detection changes no mode, variant, tab or dial in this step. Unit 358's section 4 item 1 (dial 1500 Hz below the center) is logged, not reopened: step 0 is closed.
+  LICENCE: PHASE_PLAN.md R27, R30, R31 and section 6 (the RSID-prefix clause, a done step is closed); PSK31 plan R5, R10, R12, R13, R14; CLAUDE.md 0.2 and 2.1; HM-DEC-139, HM-DEC-155; ARBITER.md section 6 (a number or a mechanism is the arbiter's)
+  COST: 15.045699500000005
+  ACCOMPLISHED: Hamlet hears an RSID announcement anywhere in the passband and names the mode, variant and spot from it on the mode author's own audio, and every PSK31 transmission it makes announces itself the same way, with FT8 and FT4 unchanged
+  FATE: executed
+  STATE_AFTER: not started
+  STATE_WHY: The unit delivered only step 0, meaning the RSID and calling data read from the tree and the fixture hashes checked, and it built no detector, no burst generator, no RSID on any PSK31 send and no rsid_heard or rsid_sent events, so none of the criteria 1.1 to 1.7 has been worked on.
 
   --- CLAUDE.md ---
-  1387 lines, 197230 bytes
+  1388 lines, 197843 bytes
   (not inlined - the rulings in force are above; read the file for the rest)
 
   --- CLAUDE_CODE.md ---
@@ -648,28 +386,28 @@ Every line below was read from the tree at that moment. Nothing is remembered.
   (not inlined - it is the standard and it is long)
 
   --- PROJECT_CARD.md ---
-  29 lines, 1355 bytes
+  29 lines, 1375 bytes
   PROJECT: Hamlet
   TRUNK: main
-  PHASE: The screen, done right
-  PHASE_SET: 2026-09-12
+  PHASE: Hamlet works Olivia the way it works PSK31
+  PHASE_SET: 2026-09-14
   TEST_CMD: dotnet test
   NOTE: BASELINE_RED above is THE CARD S CLAIM about the suite.
   This command does not run the suite - it has to be cheap enough
   to run every unit. Run TEST_CMD yourself if the number matters.
 
   --- PROJECT_STATUS.md ---
-  19 lines, 784 bytes
+  19 lines, 815 bytes
   PROTOCOL: 2
   PROJECT: Hamlet
-  STATE: BLOCKED
-  TASK: TASK 0 of 6
-  WORK_INSTRUCTION: 354 - the window sizes Tim can actually open, measured before he looks
-  BALL: tim
+  STATE: COMPLETED
+  TASK: TASK 6 of 6
+  WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
+  BALL: web
   NEXT_PASTE: output.md -> Claude Web
   RULES_AT: HM-DEC-161 (2026-09-11)
-  UPDATED: 2026-09-14T11:04:25-04:00
-  NOTE: Unit 358 stopped before task 0 - install-phase.bat has not run, root PHASE_STATUS.md is still the screen phase, nothing built, fixtures hashed 9 of 9 match
+  UPDATED: 2026-09-14T11:48:17-04:00
+  NOTE: Unit 358 complete, tasks 0 to 5 pushed - Olivia is a mode (tab, cited spot, panel, Capture, map spot), step 0 criteria 6 of 6 met by tests; carry-forward app 144, engine 90; one overrulable dial reading in section 4
   
   ---
   

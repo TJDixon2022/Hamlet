@@ -1,47 +1,124 @@
 ﻿
-No criterion changes state. Three items.
+Nothing blocks step 2's entry: the clean 16/500 burst is detected. Five items. **Item 1 wants
+Tim, because it changes what a send can be. Item 2 is stop material the unit did not build.**
 
-**1. Action for Tim, most blocking: run `install-phase.bat`.**
+**1. The report macro to a compound callsign no longer fits its cap with the burst in front.**
 
-*Not a ruling; only you can do it.* Without it, root `PHASE_STATUS.md`, `PHASE_PLAN.md` and
-`PHASE_OUTCOME.md` stay the screen phase's, and every Olivia unit hits the same stop at
-section 5. The installer checks the gate, archives the screen phase to
-`docs\phase-screen-run\`, confirms the archived outcome's size, then installs the three
-staged files. *Rejected:* the session copying them itself. The installer says this is not a
-work unit's job, and the instruction says to repair nothing.
+*Raised for the next arbiter to take to Tim as a Â§R10 question, as decision A directs.* The four
+macros as Â§R2 writes them fit, so task 4 was built.
 
-**2. The installer's closing advice, `git add -A`, would commit things that should not go in.**
+**The numbers:** the report to VP2V/W1AW with the default name and place is 28.192 s. With
+Hamlet's burst it is **30.050 s, over the 30 s cap by 0.05 s**, so that send is now refused with
+its length where it went before. It would be 29.585 s with the tones and no leading silence.
+Unit 318 chose thirty so that this report would fit, with 1.8 s to spare. The burst takes that
+margin and 0.05 s more.
 
-*No ruling wanted; a finding.* The tree holds `SESSION.lock`, changed `.run-unit\` files
-(two of them deleted) and the uncommitted `WORK_INSTRUCTIONS.md` alongside the phase files.
-HEAD `32f67637` exists only to untrack a phase seed that an earlier sweeping commit took in.
-Adding the phase files by name avoids a repeat.
+**Options:**
+- *A, as built:* the burst counts inside the cap, and a long report is refused in words. Nothing
+  keys; the operator shortens a Settings field.
+- *B, Tim raises the macro cap past thirty.* Â§R10 says *not more than thirty*, so only he can.
+- *C, the arbiter's to decide:* drop the five silent symbols in front of a PSK31 send's burst,
+  since the transmitter is keyed for 0.46 s of nothing. That fits at 29.585 s, but Hamlet's burst
+  would no longer be the file's shape.
 
-**3. Mismatches with work instruction 358, reported and not repaired.**
+**Recommended:** A until Tim says otherwise. The cap is transmit safety, and C leaves 0.4 s of
+margin.
 
-- **Â§3** says unit 357's queue is *verbatim in section 4*. The instruction's Â§4 is *Why this
-  unit exists* and holds no queue. It is carried below from unit 357's `output.md` instead.
-- **Â§4** says *read `PHASE_PLAN.md` at the root; Â§1 says what Olivia is, Â§R27-Â§R31 are the
-  rulings*. The root plan is the screen plan. The Olivia plan is at
-  `docs\phase-olivia\PHASE_PLAN.md`, a result of item 1.
-- **Task 1's destinations disagree with the staged plan.** The instruction says
-  `data\rsid\rsid-codes.json` and `data\bands\olivia-calling.json`. The plan's R27, R29 and
-  criterion 0.4 say `data/rsid-codes.json` and `data/olivia-calling.json`. The next unit
-  will meet this. It is a path, so under plan Â§6 the arbiter's to settle.
-- **Status fields.** The prompt and `tools/status.sh` use `TASK`, but `CLAUDE.md` Â§13.1's
-  table names the field `PHASE`. `tools/status.sh` still writes
-  `RULES_AT: HM-DEC-161 (2026-09-11)`, left as the tool writes it.
-- **Â§2's tool facts.** Refused: a `for` loop over `$f` (*Contains simple_expansion*), and
-  `sed -i` on `output.md` inside the root (*blocked*). Needed approval and not run:
-  `pwd -W`. Ran: `sh tools/status.sh`, `sha256sum`, `git diff`, `ls`. Python and `rm` were
-  not tried.
+**2. The transmission record does not say the send was announced.**
+
+*Stop material under task 4's fence, so not built.* Criterion 1.5 says *the transmission record
+says so*. `ft8_transmission` is built only in `Ft8TransmitSequence.Recorded`, from
+`send.Unslotted`'s mode, fit and seconds. Carrying `AnnouncedCode` into it takes one named
+argument there and one optional field on `TransmitRecord`: a change to `Ft8TransmitSequence`,
+which the instruction forbids. **What was built instead:** `psk31_send_composed` carries
+`announced` and `rsidCode`, and `rsid_sent` follows the keying. **To license it, say** *add
+`announcedCode` to the no-slot transmission record*. The slotted branch would not change, and
+`TheFt8AndFt4SendsAreByteIdenticalTests` pins it.
+
+**3. The fldigi commit is not recorded, and codes 72 to 75 stay undetected.**
+
+*A finding, not a stop.* The session could list nothing outside `C:\Source\HamLet`, so Â§R5's pin
+is still owed and decision C's table could not be added. Step 2 reads `pj_mfsk.h` from the same
+clone and will meet the same wall. A launcher that grants read access to `C:\Source\fldigi`, or a
+commit hash written into the next instruction, would close it.
+
+**4. Hamlet's own answer is now 1.86 s longer than the turn timing thinks.**
+
+*A finding for step 4's timing work.* `Psk31Macros.AnswerSeconds`, the Â§R18 stated equivalent of
+one FT8 slot, still reads `Psk31Modulator.SecondsFor`, the text alone. Nothing in this unit was
+licensed to move turn patience, and it now undercounts Hamlet's own answer by the burst.
+
+**5. One Stop test went red once in a combined run, on an FT8 send.**
+
+*A finding that repeats unit 355 item 6 and unit 357 item 1.*
+`TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns` wrote
+the abort frames twice in a run of seven types. It passed alone on the first rerun and in the
+final 165 run. It drives a slotted FT8 send, which nothing in this unit touches.
+
+### Asks still outstanding - carried from unit 358's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 358's, from its line under `## 4. What's blocking us` to its end, as
+committed in `1444962f`. Only that top-level heading is dropped, so this report keeps four
+sections. Unit 357's, 356's, 355's and 354's queues are inside it, as unit 358 carried them. The
+queue of units 337 to 353 is carried by reference to `4c55deac:output.md`. **This unit answers
+none of them.** Unit 358's item 1, the dial 1500 Hz below the center, is logged and not reopened:
+step 0 is closed.
+
+Nothing blocks step 1. Five items; **item 1 is the only one that may want a ruling.**
+
+**1. Where the dial goes for "the calling center" - built as center less 1500 Hz, overrulable.**
+
+*Raised because Â§6 stops the arbiter for "a fact stated about the radio", and this is where the
+radio is put.*
+
+**Ruling proposed:** pressing Olivia sets the dial to the row's center less the audio center the
+file's own 20 m row implies (1500 Hz), so the cited center sits mid-passband, and the tune line
+names both.
+
+**Reasoning:** in USB a dial at 14.073000 puts a signal centered on 14.073000 at 0 Hz of audio,
+below the passband, so the operator would hear nothing where Hamlet said Olivia was. The file
+states its dial convention and prints one dial, and the derivation is checked against that
+printed dial. Step 1's detector listens across the passband and would need the signal inside it.
+
+**Rejected:** *A, dial to the center literally*, as the instruction words it - the spot would be
+inaudible and step 6 could not pass at it. *B, a 1500 Hz constant in code* - a number the file
+already carries, typed a second time (Â§0). *C, the fixtures' 1000 Hz audio center* - that is
+where the web thread put its test signals, not where the community's dial convention puts them.
+
+To overrule, say *dial the center itself* or name the audio offset.
+
+**2. The Olivia press writes the radio's mode.**
+
+*No ruling wanted; built and marked.* PSK31 and FT8 presses leave the mode to mode-follow. On
+three of seven Olivia spots mode-follow has no block to answer from, so the press asks for USB-D
+once the frequency is confirmed. A declined mode is said on the tune line and the tune still
+counts. It keys nothing.
+
+**3. HM-OPEN-090: `cq_pressed` says `Ft8` under Olivia and under PSK31.**
+
+*No ruling wanted; a finding.* The CQ press record's `detail` is `_digitalMode`, the
+decoder enum, which is `Ft8` for every label that is not FT4. The refusal line after it says
+`Olivia` correctly. Named in `OPEN_ISSUES.md` and left (Â§12.6).
+
+**4. Jalocha's headers are pinned to a date, not a commit.**
+
+*No ruling wanted; a mismatch.* `assets/reference/SOURCE.md` says *master branch 2026-09-14*. Step
+2 reads `pj_mfsk.h` for structure; a commit hash would let a later reader fetch the same file.
+The headers themselves are in `assets/reference/jalocha/`, so nothing is lost today.
+
+**5. `data/olivia/timing.json` was not parsed by a machine.**
+
+*No ruling wanted; a tool limit.* The PowerShell parse needed approval this session could not
+give. It was written by hand from the table in section 1; step 2 reads it first.
 
 ### Asks still outstanding - carried from unit 357's section 4, per HM-DEC-139, verbatim
 
-The words below are unit 357's, from its line under `## 4. What's blocking us` to its end,
-as committed at `32f67637`, with only that top-level heading dropped so this report keeps
-four sections. None of its items is answered or re-measured by this unit.
-
+The words below are unit 357's, from its line under `## 4. What's blocking us` to its end, as
+committed in `bd0805cf`, with only that top-level heading dropped so this report keeps four
+sections. Unit 356's, 355's and 354's queues are inside it as unit 357 carried them, and the
+queue of units 337 to 353 is carried by reference to `4c55deac:output.md` as unit 354 left it.
+**This unit answers none of them.** The screen phase's step 3, Tim's verdict at his window,
+stays open with that phase archived.
 
 No criterion changes state. Five items.
 

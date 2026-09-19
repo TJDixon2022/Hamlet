@@ -1,25 +1,22 @@
-﻿STEP: 0 | The main window is the mockup - the top row 190 px with the neighborhood card carrying the green block and the world clock, the rig display the same height with drive and power under it, the working panels full height below the tabs, at 1920 and at 1400.
-## Step 0 - The main window is the mockup
+﻿STEP: 1 | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
+## Step 1 - Hear the announcement
 
-**Delivers:** R26.
+**Delivers:** an RSID detector across the passband - the 15-tone burst at 11025/1024 Hz
+spacing, decoded through the ported tables to a mode code - yielding mode, variant and
+center offset; and an RSID burst generator, so that every keyboard-mode send Hamlet makes
+begins with its own announcement.
 
-**Entry:** the tree is Hamlet's; `PHASE_STATUS.md` names this phase.
+**Entry:** step 0 done; `psk31-cq-rsid.wav` and `olivia-8-250-cq-rsid.wav` hash as the
+manifest says, checked first.
 
 **Exit:**
-- At 1920, the top row (neighborhood card and rig display) is about 190 px tall and the
-  working panels below the tabs take the rest; the numbers reported. *must-pass*
-- The neighborhood card carries the band strip, the green block and the world clock as
-  R26 says; the green block's band is its largest text; the clock carries one dot.
-  *must-pass*
-- The rig display is the neighborhood card's height and carries drive and the power
-  offer under the S-meter. *must-pass*
-- Waterfall, decoded text and For You are equal height, full to the status bar; the
-  card's facts sit beside its map at 1920. *must-pass*
-- At 1400 the same shape holds, no callsign is clipped, and the facts go beside or under
-  by the unit's stated rule; the numbers reported at both widths. *must-pass*
-- `BindingHealthTests`, `VoiceTests` and the carry-forward list green. *must-pass*
-- The band pills' *best bet now* is joined to the green block by the check as before.
-  *nice-to-pass*
+- [ ] 1.1 Each RSID fixture yields exactly one detection with the right code, variant and center within 5 Hz; the no-RSID and noise-only fixtures yield none. *must-pass*
+- [ ] 1.2 The two-signal fixture yields two detections, 8/250 at 1000 and 16/500 at 2000. *must-pass*
+- [ ] 1.3 The -16 dB fixture's RSID is detected. *must-pass*
+- [ ] 1.4 Hamlet's own burst generator, fed a code, produces tones that the detector reads back as that code at that center, and matches the shipped burst's tone sequence from `rsid-codes.json`. *must-pass*
+- [ ] 1.5 A PSK31 CQ from Hamlet now begins with the BPSK31 RSID burst, proved by loopback through the detector; the transmission record says so; FT8 and FT4 sends are byte-identical to before. *must-pass*
+- [ ] 1.6 `rsid_heard` (code, variant, center, quality) and `rsid_sent` events, no callsign. *must-pass*
+- [ ] 1.7 The detector keeps up with real time on the four-signal PSK31 fixture and the two-signal Olivia fixture, ratio reported. *nice-to-pass*
 
-**Depends on:** nothing.
+**Depends on:** step 0.
 

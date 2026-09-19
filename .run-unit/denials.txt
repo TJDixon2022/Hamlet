@@ -1,4 +1,5 @@
-﻿   Bash  {"command":"for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln; do if [ -e \"$f\" ]; then echo \"EXISTS $f\"; else echo \"MISSING $f\"; fi; done \u0026\u0026 pwd -W","description":"Check the fou ...(truncated)
-   Bash  {"command":"ls -d SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln 2\u003e\u00261\npwd -W","description":"Check the four project gate files and the root"}
-   Bash  {"command":"sed -i \u00271,180d\u0027 output.md","description":"Trim old report down to unit 357\u0027s carried section 4"}
-   Bash  {"command":"test \"$(git rev-parse HEAD)\" = 32f67637508e2c43bb2d3d3bb3c05029a3ff37c3 \u0026\u0026 git add output.md PROJECT_STATUS.md \u0026\u0026 git commit -m \"docs(unit358): stopped at task 0 of 6 - install-phase.bat has not run\" -m \ ...(truncated)
+﻿   Bash  {"command":"cd /c/Source/HamLet; for f in SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs CoreHMI.sln MURC.sln; do [ -e \"$f\" ] \u0026\u0026 echo \"EXISTS $f\" || echo \"MISSING $f\"; done; pwd; echo ---lock; cat SESSION ...(truncated)
+   Bash  {"command":"ls -la SHACK_FACTS.md src/Hamlet.RadioEngine/Cw/CwProbabilisticDecoder.cs \u0026\u0026 pwd \u0026\u0026 (ls CoreHMI.sln MURC.sln 2\u003e\u00261 || true) \u0026\u0026 echo ---lock \u0026\u0026 cat SESSION.lock \u0026\u0026 echo \ ...(truncated)
+   Bash  {"command":"ls C:/Source/fldigi/src/rsid","description":"Check whether the fldigi reference clone is readable"}
+   Bash  {"command":"sh tools/status.sh EXECUTING \"1 of 7\" code none \"Task 1 trace: running the measurement - burst positions in the nine fixtures, macro seconds plus burst against the caps, CQ hash\" \u0026\u0026 timeout 480 dotnet test tests/Ha ...(truncated)
+   Bash  {"command":"grep -n \"^    [A-Z][A-Za-z0-9]*,\\?$\" src/Hamlet.RadioEngine/Telemetry/ITelemetry.cs","description":"List every telemetry category member"}

@@ -2,7 +2,7 @@
 PHASE_SET: 2026-09-14
 DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
 STEP: 0 | done | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
-STEP: 1 | not started | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
+STEP: 1 | partial | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
 STEP: 2 | not started | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
 STEP: 3 | not started | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
 STEP: 4 | not started | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
@@ -62,3 +62,18 @@ LICENCE: PHASE_PLAN.md R27, R30, R31, section 6; PSK31 plan R5, R10, R12, R13, R
 COST: one session, seven tasks (0 to 6), each committed on its own.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ENTRY: PHASE_STATUS.md has step 0 done; psk31-cq-rsid.wav and olivia-8-250-cq-rsid.wav hash as manifest.json says, then the other seven, 9 of 9. Carry-forward before any change: app 144 of 144, engine 86 of 86.
+
+## UNIT 1 - STEP 1
+
+STEP: 1
+APPROACH: Hamlet's own RSID detector across the passband reading codes and tone sequences from the ported data file, proved on the mode author's fixtures, and an RSID burst generator composed in front of every PSK31 send's audio behind the one transmit sequence
+HIT: section 4 wants a ruling: yes - Item 1 asks the owner whether to raise the transmit macro cap past thirty seconds, which touches transmit, and item 2 asks him to license the transmission record saying a send was announced, which is what is logged as true.
+MOVE: continue
+WHY: Step 0 is done and closed and step 1 is next in a one-way pipeline. The loop test matches the UNIT 2 entry, but that run never executed - it halted on the session lock, carries unit 358's cost, and left no commit - so the approach is untried, not looped. The only transmit change is the RSID prefix section 6 licenses, fenced by a stop.
+DECIDED: author's, overrulable - (A) the burst counts inside the existing no-slot caps, 30 s for a macro and 60 s for a typed line, which do not move; if any macro would exceed its cap with the burst, task 4 is not built and the numbers go to Tim as a section R10 question. (B) rsid_heard is fed live under the Olivia tab only, and a detection changes no mode, variant, tab or dial in this step. (C) detection and generation work from the tone_sequences in rsid-codes.json, which cover every fixture's code; codes 72 to 75 have no sequence and no table, and none is derived in code - the table may be added to the data file with a pinned citation, or they stay undetected as a finding. The UNIT 2 outcome entry's FATE executed is read as never ran. Unit 358's section 4 item 1 (dial 1500 Hz below the center) is logged, not reopened: step 0 is closed.
+LICENCE: PHASE_PLAN.md R27, R30, R31 and section 6 (the RSID-prefix clause, a done step is closed); PSK31 plan R5, R10, R12, R13, R14; CLAUDE.md 0.2 and 2.1; HM-DEC-139, HM-DEC-155; ARBITER.md section 6 (a number or a mechanism is the arbiter's) and section 8 (a never-ran entry is not a tried approach)
+COST: 15.298641500000002
+ACCOMPLISHED: Hamlet hears an RSID announcement anywhere in the passband and names the mode, variant and spot from it on the mode author's own audio, and every PSK31 transmission it makes announces itself the same way, with FT8 and FT4 unchanged
+FATE: executed
+STATE_AFTER: partial
+STATE_WHY: Criteria 1.1 to 1.4, 1.6 and 1.7 are met with measured numbers, but 1.5 is not, because the transmission record for a PSK31 send still does not say the send was announced, and adding that is a logging field a later instruction can allow without needing a ruling from the owner.
