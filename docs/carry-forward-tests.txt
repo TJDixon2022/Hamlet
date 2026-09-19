@@ -4,9 +4,27 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4"
 
-    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests"
+    timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch"
+
+EVERY WORKING MODE HAS A GUARD HERE, PERMANENTLY (work instruction 362, the FT8 regression,
+and the no-regression rule in DECISIONS.md). A mode that reached the air before a unit must
+reach it after, and a mode that read the air before must read as much after. Each working
+mode has one send guard - a send reaches the sound card at the bench - and one read guard -
+a fixture decodes:
+
+    FT8    send  TheSendReachesTheAirTests.AnFt8CqReachesTheAir                    app
+           read  RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000...           engine
+    FT4    send  TheSendReachesTheAirTests.AnFt4CqReachesTheAir                    app
+           read  PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalf... app
+    PSK31  send  ThePsk31CqGoesOutTests, TheSendReachesTheAirTests.APsk31Cq...     app
+           read  ThePsk31DemodulatorTests                                          engine
+    Olivia read  TheOliviaDemodulatorTests (the clean fixtures)                    engine
+           send  none yet - added the unit Olivia first transmits
+
+EVERY UNIT RUNS THIS LIST BEFORE ITS FIRST CHANGE AND AFTER ITS LAST. A RED AFTER THAT WAS
+GREEN BEFORE IS A REGRESSION, and the report names it as one in section 1 and section 4.
 
 WHY IT IS WRITTEN OUT HERE RATHER THAN LEFT TO THE READER. Unit 323 read this
 file as a list of names and ran one `dotnet test` per name - forty-one builds.
@@ -83,6 +101,8 @@ TheAlcIsReadTests                                       unit 324
 BindingHealthTests.TheMainWindowBindsWithoutOneComplaint
 ThePsk31SendIsAnnouncedTests                            unit 359
 TheOliviaSeamTests                                      unit 358, listed by 359
+TheSendReachesTheAirTests                               FT8, FT4 and PSK31 send guards, 362
+PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4   FT4 read guard, 362
 TheOliviaRowsTests                                      unit 364
 TheOliviaRowsReadLikePsk31Tests                         unit 364
 
@@ -271,3 +291,10 @@ method now, TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise (work instruct
 decision AL). The type also ran TheFurtherSeedsArePrinted, which prints four seeds and
 asserts nothing, and a name that cannot fail is kept off this list. Engine 134 in
 4 m 39 s before, 133 in 3 m 12 s after, the same session.
+
+WHAT WORK INSTRUCTION 362 (THE FT8 REGRESSION) ADDED. The mode guards above, three names:
+TheSendReachesTheAirTests and the FT4 read on the app invocation, the FT8 off-air read on the
+engine invocation. TheSendReachesTheAirTests drives an FT8 and an FT4 CQ to the sound card with
+their records written, a PSK31 CQ with its burst and its announced records, and every return
+between read-back and arming, each of which must leave send_refused with a stable reason. It
+exists because two FT8 sends on 2026-09-19 stopped after read_back and the record said nothing.

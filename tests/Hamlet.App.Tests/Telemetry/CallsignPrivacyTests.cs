@@ -16,7 +16,7 @@ public sealed class CallsignPrivacyTests : IDisposable
     /// <summary>Every public event-writing method on <see cref="AppEvents"/>.
     /// If this number moves, a new event was added and the walk below has to
     /// grow with it — that is the point.</summary>
-    private const int ExpectedEventMethodCount = 79;
+    private const int ExpectedEventMethodCount = 81;
 
     private const string Callsign = "KC3QIS";
     // "Timothy", not "Tim": a three-letter needle matches "timer", which is a
@@ -448,6 +448,10 @@ public sealed class CallsignPrivacyTests : IDisposable
         AppEvents.DigitalDecoderStarted(telemetry, "Ft8", 15.0, 48_000, "USB Audio CODEC");
 
         AppEvents.OperatorAction(telemetry, "cq_pressed", "Digital", "14 characters");
+
+        AppEvents.SendRefusedAfterReadBack(telemetry, "Ft8", "arm", "no_transmit_device");
+
+        AppEvents.TransmitPath(telemetry, "no_transmit_device", 0);
 
         AppEvents.StateChanged(
             telemetry, "digital_sub_mode", "FT8", "PSK31",
