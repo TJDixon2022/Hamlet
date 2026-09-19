@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 4 of 5
+STATE: COMPLETED
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T12:32:46-04:00
-NOTE: Task 4 - running TheOliviaListenerKeepsUpTests: ratio on the two-signal, 16/500 and noise files, worst piece
+UPDATED: 2026-09-19T12:42:17-04:00
+NOTE: Unit 363 complete - 3.0 met at -14 dB, CER 0.0000 on five seeds; listener hears the two-signal file as two channels, CER 0.0000 each; ratio 0.154
 
 ---
 
