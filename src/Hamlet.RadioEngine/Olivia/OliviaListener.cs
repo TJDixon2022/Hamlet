@@ -18,6 +18,10 @@ namespace Hamlet.RadioEngine.Olivia;
 /// block was accepted (work instruction 364 decision AG). <paramref name="CenterHz"/> keeps tracking
 /// after the station stops; this does not.
 /// </param>
+/// <param name="Retired">
+/// True where it ended because its station went quiet for longer than its variant's retire window
+/// (work instruction 364 decision AJ), rather than by announcing a different variant.
+/// </param>
 public sealed record OliviaChannel(
     int Id,
     string Variant,
@@ -28,7 +32,8 @@ public sealed record OliviaChannel(
     int BlocksDecoded,
     int BlocksRejected,
     bool Ended,
-    double ShownCenterHz = double.NaN);
+    double ShownCenterHz = double.NaN,
+    bool Retired = false);
 
 /// <summary>What one channel's reader is doing, for something outside to write down.</summary>
 /// <param name="Id">The channel.</param>
@@ -75,7 +80,9 @@ public readonly record struct OliviaChannelState(
 /// narrower of the two variants' bandwidths. An announcement at a place already read at the same
 /// variant opens nothing, and turns a blind-found channel into an announced one; at a different
 /// variant it ends the old channel and opens a new one. The search is never let open a place
-/// already read. **No channel is retired for going quiet**: the retire window is the next unit's.</para>
+/// already read. **A channel is retired for going quiet** once its variant's retire window has
+/// passed since its last accepted block, where the listener is given a timing table (work
+/// instruction 364 decision AJ); without one, nothing retires.</para>
 /// <para>**TEXT ONLY AS BLOCKS ARE SHOWN** (§3.3, §R9): a channel's text is its reader's, which
 /// holds nothing but the characters of blocks that cleared the threshold.</para>
 /// <para>**ITS EVENTS CARRY NO TEXT AND NO CALLSIGN** (decision AD, HM-DEC-018): `olivia_channel`
@@ -95,6 +102,7 @@ public sealed class OliviaListener
     private readonly RsidCodes _codes;
     private readonly int _rate;
     private readonly ITelemetry? _telemetry;
+    private readonly OliviaTiming? _timing;
     private readonly RsidDetector _rsid;
     private readonly OliviaSearchStream _search;
     private readonly int _keep;
@@ -113,7 +121,8 @@ public sealed class OliviaListener
     /// <param name="lowestHz">The passband's low edge.</param>
     /// <param name="highestHz">The passband's high edge.</param>
     /// <param name="telemetry">Where the channel and block events are written, or null.</param>
-    public OliviaListener(OliviaFormat format, RsidCodes codes, int sampleRate, double lowestHz, double highestHz, ITelemetry? telemetry = null)
+    /// <param name="timing">The timing table the retire window is read from, or null where nothing retires.</param>
+    public OliviaListener(OliviaFormat format, RsidCodes codes, int sampleRate, double lowestHz, double highestHz, ITelemetry? telemetry = null, OliviaTiming? timing = null)
     {
         ArgumentNullException.ThrowIfNull(format);
         ArgumentNullException.ThrowIfNull(codes);
@@ -122,6 +131,7 @@ public sealed class OliviaListener
         _codes = codes;
         _rate = sampleRate;
         _telemetry = telemetry;
+        _timing = timing;
         _rsid = new RsidDetector(codes, sampleRate, lowestHz, highestHz);
         _search = new OliviaSearchStream(format, sampleRate, lowestHz, highestHz);
         _keep = (int)Math.Ceiling(_search.ReplaySeconds * sampleRate);
@@ -180,6 +190,62 @@ public sealed class OliviaListener
         }
 
         Report();
+
+        if (RetireTheQuiet())
+        {
+            Report();
+        }
+    }
+
+    /// <summary>
+    /// **Retire every channel whose station has been quiet longer than its variant's window**
+    /// (step 3 criterion 3.4, work instruction 364 decision AJ).
+    /// </summary>
+    /// <returns>True where one was retired.</returns>
+    /// <remarks>
+    /// <para>**THE WINDOW IS THE TIMING TABLE'S** - the variant's seconds per character times
+    /// <see cref="OliviaTiming.RetireAfterCharacters"/> - **counted from the end of the channel's last
+    /// accepted block**, or from where it was read from if it has shown none. Never a figure in
+    /// seconds (§3.2).</para>
+    /// <para>**A RETIRED CHANNEL STAYS LISTED, ENDED, AND IS FED NOTHING MORE**, so its reader and its
+    /// offset track stop and its center stays where it was. A new announcement or a blind find at the
+    /// same place opens a new channel (decision AA): the place is free once the old one has ended.</para>
+    /// <para>**ONLY <see cref="Add"/> RETIRES.** A recording's end is not a station going quiet.</para>
+    /// </remarks>
+    private bool RetireTheQuiet()
+    {
+        if (_timing is null)
+        {
+            return false;
+        }
+
+        var any = false;
+
+        foreach (var channel in _channels.Where(c => !c.Ended))
+        {
+            var window = _timing.RetireWindowSeconds(channel.Stream.Variant.Name);
+
+            if (double.IsNaN(window) || SamplesSeen - channel.LastShownEndSample <= window * _rate)
+            {
+                continue;
+            }
+
+            channel.Ended = true;
+            channel.Retired = true;
+            any = true;
+
+            ChannelEvent(
+                channel,
+                "retired",
+                new Dictionary<string, object?>
+                {
+                    ["windowSeconds"] = Math.Round(window, 3),
+                    ["retireFactor"] = _timing.RetireAfterCharacters,
+                    ["lastBlockEndSeconds"] = Math.Round(channel.LastShownEndSample / (double)_rate, 3),
+                });
+        }
+
+        return any;
     }
 
     /// <summary>
@@ -271,8 +337,11 @@ public sealed class OliviaListener
                 if (block.Accepted)
                 {
                     // **WHERE IT WAS WHEN IT WAS LAST READ** (decision AG), not where the track has
-                    // wandered to since.
+                    // wandered to since, and **WHEN THAT BLOCK ENDED**, which the retire window counts
+                    // from (decision AJ).
                     channel.ShownCenterHz = channel.Stream.CenterHz + block.OffsetHz;
+                    channel.LastShownEndSample = channel.StartSample
+                        + (long)Math.Round((block.Seconds + (_format.SymbolsPerBlock * channel.Stream.Variant.SymbolSeconds)) * _rate);
                 }
 
                 _telemetry?.Write(
@@ -307,27 +376,34 @@ public sealed class OliviaListener
                 c.Stream.BlocksDecoded,
                 c.Stream.BlocksRejected,
                 c.Ended,
-                c.ShownCenterHz))
+                c.ShownCenterHz,
+                c.Retired))
             .OrderBy(c => c.CenterHz)
             .ToList();
     }
 
-    private void ChannelEvent(Channel channel, string state)
-        => _telemetry?.Write(
-            TelemetryCategory.Psk31,
-            "olivia_channel",
-            new Dictionary<string, object?>
-            {
-                ["mode"] = "olivia",
-                ["variant"] = channel.Stream.Variant.Name,
-                ["state"] = state,
-                ["id"] = channel.Id,
-                ["found"] = channel.Found,
-                ["centerHz"] = Math.Round(channel.CenterHz, 2),
-                ["atSeconds"] = Math.Round(SamplesSeen / (double)_rate, 3),
-                ["readFromSeconds"] = Math.Round(channel.StartSample / (double)_rate, 3),
-                ["replaySeconds"] = Math.Round(ReplaySeconds, 3),
-            });
+    private void ChannelEvent(Channel channel, string state, IReadOnlyDictionary<string, object?>? more = null)
+    {
+        var fields = new Dictionary<string, object?>
+        {
+            ["mode"] = "olivia",
+            ["variant"] = channel.Stream.Variant.Name,
+            ["state"] = state,
+            ["id"] = channel.Id,
+            ["found"] = channel.Found,
+            ["centerHz"] = Math.Round(channel.CenterHz, 2),
+            ["atSeconds"] = Math.Round(SamplesSeen / (double)_rate, 3),
+            ["readFromSeconds"] = Math.Round(channel.StartSample / (double)_rate, 3),
+            ["replaySeconds"] = Math.Round(ReplaySeconds, 3),
+        };
+
+        foreach (var (key, value) in more ?? new Dictionary<string, object?>())
+        {
+            fields[key] = value;
+        }
+
+        _telemetry?.Write(TelemetryCategory.Psk31, "olivia_channel", fields);
+    }
 
     private void Remember(ReadOnlySpan<float> samples)
     {
@@ -365,6 +441,12 @@ public sealed class OliviaListener
 
         /// <summary>The center as of its last accepted block, or NaN before one.</summary>
         public double ShownCenterHz { get; set; } = double.NaN;
+
+        /// <summary>Where its last accepted block ended, in the listener's samples; where it was read from until one is.</summary>
+        public long LastShownEndSample { get; set; } = startSample;
+
+        /// <summary>True where it ended by going quiet past its window.</summary>
+        public bool Retired { get; set; }
 
         /// <summary>The center the reader was made at, moved by its offset track.</summary>
         public double CenterHz => Stream.CenterHz + Stream.OffsetHz;

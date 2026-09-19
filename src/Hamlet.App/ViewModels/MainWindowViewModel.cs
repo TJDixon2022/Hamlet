@@ -3202,9 +3202,11 @@ public partial class MainWindowViewModel : ObservableObject
         if (_oliviaListener is null || _oliviaResampler is null)
         {
             _oliviaResampler = new Psk31Resampler(tap.SampleRate);
+            // **THE TIMING TABLE GIVES THE RETIRE WINDOW** (decision AJ); where it could not be read
+            // nothing retires, and the panel already says which file failed.
             _oliviaListener = new OliviaListener(
                 format, codes, Psk31Resampler.TargetSampleRate,
-                Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz, _telemetry);
+                Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz, _telemetry, _olivia.Timing);
             _oliviaAt = 0;
             _oliviaCarriersSeen = 0;
             _oliviaRetiredCharacters = 0;
@@ -3348,7 +3350,18 @@ public partial class MainWindowViewModel : ObservableObject
 
         foreach (var channel in listener.Channels.Where(c => c.Ended && _oliviaGone.Add(c.Id)))
         {
-            OliviaChannelEnded(channel, "VariantChanged", null);
+            // **A RETIRE SAYS ITS WINDOW AND ITS FACTOR** (decisions AJ and AK), where PSK31 writes
+            // its passes: the rule that ended the row, in the file beside the row's end.
+            OliviaChannelEnded(
+                channel,
+                channel.Retired ? Psk31Retirement.SignalGone.ToString() : "VariantChanged",
+                channel.Retired && _olivia.Timing is { } timing
+                    ? new Dictionary<string, object?>(StringComparer.Ordinal)
+                    {
+                        ["windowSeconds"] = Math.Round(timing.RetireWindowSeconds(channel.Variant), 3),
+                        ["retireFactor"] = timing.RetireAfterCharacters,
+                    }
+                    : null);
         }
 
         if (DateTime.UtcNow - _psk31LevelWritten >= Psk31Events.PassInterval)

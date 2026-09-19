@@ -370,6 +370,132 @@ public sealed class TheOliviaRowsTests : IDisposable
         Assert.DoesNotContain(psk31.DigitalDecodes, r => r.HasVariant);
     }
 
+    /// <summary>
+    /// **3.4, decision AJ: fed the two-signal file and then quiet for longer than the longest window,
+    /// each row is retired within its own variant's window after its last accepted block - the 16/500
+    /// row, whose station stops first, while the 8/250 row is still open - and stays on the list
+    /// marked ended, with its text, its center not moving after it ends; the retire event carries the
+    /// variant, the window and the factor, and no text.**
+    /// </summary>
+    /// <remarks>
+    /// The quiet is <see cref="TailRms"/> seeded noise, as every tail here is: the longest window
+    /// plus <see cref="TailBlocks"/> of the slowest variant's blocks.
+    /// </remarks>
+    [Fact]
+    public void EachRowIsRetiredWithinItsWindowAndStaysListedAsEnded()
+    {
+        var (audio, text) = Fixture("olivia-two-signals-rsid.wav");
+        var timing = OliviaData.Current.Timing!;
+        var folder = Path.Combine(_folder, "retire");
+        var rate = audio.SampleRate;
+        var block = new Dictionary<string, double>();
+
+        foreach (var v in Format.Variants)
+        {
+            block[v.Name] = Format.SymbolsPerBlock * v.SymbolSeconds;
+        }
+
+        var longest = new[] { "8/250", "16/500" }.Max(timing.RetireWindowSeconds);
+        var quiet = Noise((int)((longest + (TailBlocks * block["8/250"])) * rate), TailRms);
+        var all = audio.Samples.Concat(quiet).ToArray();
+        var endedAt = new Dictionary<string, double>();
+        var hzAtEnd = new Dictionary<string, string>();
+        var centerAtEnd = new Dictionary<string, double>();
+        var textAtEnd = new Dictionary<string, string>();
+        MainWindowViewModel model;
+
+        Directory.CreateDirectory(folder);
+
+        using (var telemetry = new JsonlTelemetry(folder, "retire", _ => true))
+        {
+            model = Listening(telemetry);
+
+            var piece = rate / 4;
+
+            for (var at = 0; at < all.Length; at += piece)
+            {
+                var count = Math.Min(piece, all.Length - at);
+
+                model.TapForTests!.Take(all.AsSpan(at, count), rate);
+                model.LookForASlotForTests();
+
+                var now = (at + count) / (double)rate;
+
+                foreach (var row in model.DigitalDecodes.Where(r => r.HasVariant && r.Ended && !endedAt.ContainsKey(r.Variant)))
+                {
+                    endedAt[row.Variant] = now;
+                    hzAtEnd[row.Variant] = row.Hz;
+                    textAtEnd[row.Variant] = row.Message;
+                    centerAtEnd[row.Variant] = model.OliviaChannelsForTests.Single(c => c.Variant == row.Variant).CenterHz;
+
+                    // **THE OTHER ROW, AT THIS TICK**, for the order the stations stopped in.
+                    _output.WriteLine($"{row.Variant} ended at {now:0.00} s; rows still open: "
+                        + string.Join(", ", model.DigitalDecodes.Where(r => !r.Ended).Select(r => r.Variant)));
+                }
+            }
+        }
+
+        var events = Lines(folder).Select(Parse).ToList();
+        var halves = text.Split(" | ");
+
+        Print(model.DigitalDecodes);
+
+        foreach (var (variant, own) in new[] { ("8/250", halves[0]), ("16/500", halves[1]) })
+        {
+            var lastEnd = events
+                .Where(e => e.Event == "olivia_block"
+                    && e.Data.GetProperty("variant").GetString() == variant
+                    && e.Data.GetProperty("accepted").GetBoolean())
+                .Select(e => e.Data.GetProperty("atSeconds").GetDouble() + block[variant])
+                .Max();
+            var window = timing.RetireWindowSeconds(variant);
+            var row = Assert.Single(model.DigitalDecodes, r => r.Variant == variant);
+            var channel = model.OliviaChannelsForTests.Single(c => c.Variant == variant);
+
+            _output.WriteLine(
+                $"{variant}: last accepted block ends {lastEnd:0.000} s; window {window:0.000} s ({timing.RetireAfterCharacters} x "
+                + $"{timing.SecondsPerCharacter[variant]}); ended at {(endedAt.TryGetValue(variant, out var t) ? t : double.NaN):0.000} s, "
+                + $"{t - lastEnd:0.000} s after it; center at the end {centerAtEnd.GetValueOrDefault(variant):0.00}, now {channel.CenterHz:0.00}; "
+                + $"row Hz {hzAtEnd.GetValueOrDefault(variant)} then {row.Hz}");
+
+            Assert.True(endedAt.ContainsKey(variant), variant + " was never retired");
+            Assert.InRange(endedAt[variant] - lastEnd, window, window + 0.25 + 1e-6);
+            Assert.True(row.Ended);
+            Assert.True(channel.Retired);
+            Assert.Equal(textAtEnd[variant], row.Message);
+            Assert.True(ErrorRate(row.Message, own) <= 0.05);
+            Assert.Equal(hzAtEnd[variant], row.Hz);
+            Assert.Equal(centerAtEnd[variant], channel.CenterHz);
+        }
+
+        Assert.True(endedAt["16/500"] < endedAt["8/250"], "the 16/500 station stops first and must be ended first");
+
+        var retires = events
+            .Where(e => e.Event == "psk31_carrier_retired" && e.Data.GetProperty("reason").GetString() == "SignalGone")
+            .ToList();
+
+        foreach (var e in retires)
+        {
+            _output.WriteLine("retire event: " + e.Data.GetRawText());
+        }
+
+        Assert.Equal(2, retires.Count);
+
+        foreach (var e in retires)
+        {
+            var variant = e.Data.GetProperty("variant").GetString()!;
+
+            Assert.Equal("olivia", e.Data.GetProperty("mode").GetString());
+            Assert.Equal(Math.Round(timing.RetireWindowSeconds(variant), 3), e.Data.GetProperty("windowSeconds").GetDouble());
+            Assert.Equal(timing.RetireAfterCharacters, e.Data.GetProperty("retireFactor").GetInt32());
+
+            foreach (var word in text.Split(' ', '|').Where(w => w.Length >= 3 && w.Any(char.IsLetter)))
+            {
+                Assert.DoesNotContain(word, e.Data.GetRawText(), StringComparison.Ordinal);
+            }
+        }
+    }
+
     private void Print(IEnumerable<DigitalDecodeRow> rows)
     {
         foreach (var row in rows)

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 6
+TASK: TASK 4 of 6
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T14:02:20-04:00
-NOTE: CQ filter test rewritten to the tree's rule (unit 337 keeps every text row); rerunning TheOliviaRowsReadLikePsk31Tests
+UPDATED: 2026-09-19T14:13:18-04:00
+NOTE: Engine retire and data tests 15 of 15; running TheOliviaRowsTests with the retire test
 
 ---
 

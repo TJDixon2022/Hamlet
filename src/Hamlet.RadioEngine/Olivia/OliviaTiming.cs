@@ -19,11 +19,12 @@ public sealed class OliviaTiming
 
     private readonly Dictionary<string, double> _secondsPerCharacter;
 
-    private OliviaTiming(string source, string method, Dictionary<string, double> secondsPerCharacter)
+    private OliviaTiming(string source, string method, Dictionary<string, double> secondsPerCharacter, int retireAfterCharacters)
     {
         Source = source;
         Method = method;
         _secondsPerCharacter = secondsPerCharacter;
+        RetireAfterCharacters = retireAfterCharacters;
     }
 
     /// <summary>Whether the figures were estimated or measured, as the file says.</summary>
@@ -34,6 +35,24 @@ public sealed class OliviaTiming
 
     /// <summary>Every variant's figure, by the name the air uses for the variant.</summary>
     public IReadOnlyDictionary<string, double> SecondsPerCharacter => _secondsPerCharacter;
+
+    /// <summary>**The retire window's factor, in the variant's characters**, as the file states it.</summary>
+    /// <remarks>
+    /// Step 3 criterion 3.4 and work instruction 364 decision AJ: a channel is retired once this many
+    /// characters' worth of its variant's time has passed since its last accepted block ended. The
+    /// file says why the number is what it is.
+    /// </remarks>
+    public int RetireAfterCharacters { get; }
+
+    /// <summary>**The retire window for a variant, in seconds**: its seconds per character times <see cref="RetireAfterCharacters"/>.</summary>
+    /// <param name="variant">The variant's name, as the air spells it.</param>
+    /// <returns>The window, or NaN for a variant the table has no row for.</returns>
+    /// <remarks>
+    /// **NEVER A FIGURE IN SECONDS** (`PHASE_PLAN.md` §3.2): every timing rule scales with the variant.
+    /// A variant with no row has no window, and nothing is retired on a guess.
+    /// </remarks>
+    public double RetireWindowSeconds(string variant)
+        => _secondsPerCharacter.TryGetValue(variant, out var seconds) ? seconds * RetireAfterCharacters : double.NaN;
 
     /// <summary>Read the file's contents.</summary>
     /// <param name="json">The file's contents.</param>
@@ -99,7 +118,15 @@ public sealed class OliviaTiming
                 throw new InvalidDataException("it carries no variants");
             }
 
-            return new OliviaTiming(source, method, figures);
+            if (!root.TryGetProperty("retire_after_characters", out var retire)
+                || retire.ValueKind != JsonValueKind.Number
+                || !retire.TryGetInt32(out var factor)
+                || factor <= 0)
+            {
+                throw new InvalidDataException("its retire_after_characters is missing or not a positive whole number");
+            }
+
+            return new OliviaTiming(source, method, figures, factor);
         }
     }
 
