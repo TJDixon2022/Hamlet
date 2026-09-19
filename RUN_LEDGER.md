@@ -168,3 +168,6 @@ the owner reads instead of watching.
 | phase | 2026-09-14T11:58 | 2026-09-14T11:58 | halted | 15.0457 | the run could not take the session lock |
 | phase | 2026-09-14T13:03 | 2026-09-14T13:03 | halted | 0 | stop 3: a ruling is wanted on one of the three - judged, not counted |
 | phase | 2026-09-18T22:18 | 2026-09-18T22:18 | halted | 11.7896 | the run could not take the session lock |
+| 1 | 2026-09-19T11:00 | 2026-09-19T11:43 | complete | 14.782491499999999 | ran unattended, 136 turns, 10 denied call(s) worked around, report valid |
+| 2 | 2026-09-19T11:49 | 2026-09-19T12:42 | complete | 17.930809499999995 | ran unattended, 140 turns, 6 denied call(s) worked around, report valid |
+| phase | 2026-09-19T14:09 | 2026-09-19T14:09 | halted | 50.6441 | stop 4: the arbiter declared a decision the owner's |

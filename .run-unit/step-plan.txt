@@ -1,23 +1,22 @@
-﻿STEP: 2 | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
-## Step 2 - Hear one
+﻿STEP: 3 | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
+## Step 3 - Hear everyone and read
 
-**Delivers:** `OliviaDemodulator` - MFSK with the mode's Walsh-function block coding and
-scrambling, symbol and block synchronization, for a named variant at a named offset -
-proved against the mode author's own audio; and a blind variant search for a carrier
-that never announced itself. The reference is fldigi's `pj_mfsk.h`, read at the pinned
-clone and never ported wholesale (PSK31 plan R5); the structure may be followed, the code
-is Hamlet's.
+**Delivers:** every RSID heard, and every blind-found carrier, gets its own demodulator
+and its own row in the decoded list, text as blocks arrive, the variant on the row; the
+PSK31 parser reads the rows unchanged; the CQ filter, worked-fade, entity resolution,
+the quill and the row's whole-message hover all work on Olivia rows; rows stay after the
+station ends, as PSK31 rows do.
 
-**Entry:** step 1 done; the clean 16/500 fixture's RSID detected, checked first.
+**Entry:** step 2 done; the two-signal fixture's RSIDs detected, checked first.
 
 **Exit:**
-- [ ] 2.1 The clean 8/250, 16/500 and 32/1000 fixtures decode to their text at CER at or under 0.01 each, the variant taken from RSID. *must-pass*
-- [ ] 2.2 The -10 dB fixture decodes at or under 0.05 and the -16 dB fixture at or under 0.10. *must-pass*
-- [ ] 2.3 The no-RSID 8/250 fixture is found by the blind search - the variant identified within a stated time from the tone spacing and symbol rate - and decodes at or under 0.05. *must-pass*
-- [ ] 2.4 The noise-only fixture emits zero characters. *must-pass*
-- [ ] 2.5 Every fixture's hash matches the manifest before use; each decodes in under twenty seconds of CPU, reported. *must-pass*
-- [ ] 2.6 The seconds-per-character for each variant is measured from the fixtures and stored as the mode's timing table, from which every later timing rule derives. *must-pass*
-- [ ] 2.7 A carrier that drifts 20 Hz over a minute (a fixture the unit makes from the shipped one) holds. *nice-to-pass*
+- [ ] 3.0 A new fixture from the reference generator - 8/250 at -14 dB in 2500 Hz, RSID in front, the QSO text - is made by the unit and decodes at or under 0.10; the below-noise claim proved at the variant that can do it. *must-pass*
+- [ ] 3.1 The two-signal fixture yields two rows, each with its variant and its own text at or under 0.05, nothing of one in the other. *must-pass*
+- [ ] 3.2 The transcript corpus fed through Olivia rows yields the same verdicts as through PSK31 rows - no parser change. *must-pass*
+- [ ] 3.3 The CQ filter, worked-fade, `EntityOf` with its `CQ` guard, the quill and the hover run on Olivia rows with no change to their code. *must-pass*
+- [ ] 3.4 A row is retired when its signal goes and stays on the list marked ended; the retire window is the variant's timing table times a stated factor. *must-pass*
+- [ ] 3.5 Telemetry: the PSK31 row events with `mode: olivia` and the variant; nothing personal. *must-pass*
+- [ ] 3.6 Real-time ratio on the two-signal fixture under 1.0, reported. *nice-to-pass*
 
-**Depends on:** step 1.
+**Depends on:** step 2.
 

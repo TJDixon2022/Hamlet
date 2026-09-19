@@ -51,6 +51,249 @@ WHY: one sentence, plain text, no punctuation beyond commas and full stops
 --- the section 4 text follows ---
 
 ﻿
+*Written when the unit ends. Unit 363's section 4 is carried below, verbatim.*
+
+### Asks still outstanding - carried from unit 363's section 4, per HM-DEC-139, verbatim
+
+**Nothing blocks step 3.** Nine new items, all findings; none wants a ruling from the owner. The
+carried queue follows them.
+
+### Raised by unit 363
+
+**1. 3.0 was already met before this unit changed anything.**
+
+*A finding, for the record of what advanced the phase.* The trace read decision W's audio at CER
+0.0000 on all five seeds through `OliviaDemodulator.Decode` exactly as unit 362 left it: sync S/N
+about 9.7, weakest accepted block 7.31 against the threshold's 4.0. So the below-noise claim at
+8/250 is the mode's and the existing demodulator's, and this unit's contribution to 3.0 is the
+fixture and the test. Unit 361 item 1's improvements were not needed and not tried.
+
+**2. The engine carry-forward invocation now takes 4 m 40 s, and one of its names asserts nothing.**
+
+*A cost, reported.* 124 tests in 1 m 39 s became 134 in 4 m 40 s: every listener row runs the RSID
+detector, the streaming search and its readers over a whole file, and `CpuMeasuredAlone` runs those
+classes one at a time. It is inside the 480 s timeout and the twelve-minute watchdog, with about three
+minutes to spare. **`TheOliviaBelowTheNoiseTests.TheFurtherSeedsArePrinted` is on the line only
+because the instruction named the class**, and it asserts nothing - the list's own rule keeps such
+names off (`Unit337Measure`). It costs about 85 s. The type-and-method form,
+`TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise`, would keep the rule and the seconds. Not
+changed here, because the numbers above were run on the list as the instruction set it.
+
+**3. A channel's text lags its block by about three blocks.**
+
+*A behavior the rows unit inherits, stated and not measured to the second.* A block is read when
+its last frame's segment is decided, and a segment is decided when `TrackSmoothing` = 2 more have
+arrived - so text appears roughly two to three blocks (4 to 6 s at the phase's three variants) after
+the block ends. The blind channel opened at 10.25 s of audio where the whole-file search named the
+carrier at 4.096 s, for the same reason: its trial readers must show two blocks. Shortening the
+lag means deciding the track with fewer segments ahead, which trades against 2.7's drift tracking.
+The rows unit should measure the lag from the row's point of view, as unit 327 did for PSK31.
+
+**4. A channel's tracked center wanders once its station stops.**
+
+*A finding for 3.4.* On the two-signal file the 16/500 station stops about 7 s before the file ends.
+Its channel's track moved one grid step (3.9 Hz) in the silence after that, ending at 2003.91 Hz -
+inside the 5 Hz check, but not where the station was. With no retire in this unit, a channel keeps
+tracking noise after its station stops. The rows unit may want to report the center as of the last
+shown block, or let 3.4's retire rule end it.
+
+**5. Decision AC did not bite.**
+
+*A finding, not a build.* No channel showed a character of the other station: 0 and 0, and each
+channel's characters never exceeded what its accepted blocks carry. Unit 362 item 2's per-character
+gate stays logged, not chased. Still true and still open: the streaming reader shows a block at the
+sync that leads *now*, and cannot take a block back if the sync later moves. That never happened on
+any fixture, but it is where a wrong character could come from below the noise.
+
+**6. The streaming reader and `Decode` differ below the noise.**
+
+*A finding, reported.* On every file at -10 dB or better they give identical text; the stream
+reports one more rejected block. On the -16 dB file (trace only, not a criterion) the stream read
+**CER 0.8566 from 9 blocks** where `Decode` reads 0.9044 from 6 - the local noise measure and the
+running sync, not a regression. The -16 dB file was not put through the listener.
+
+**7. The listener is not the app's yet, and has one call the app never makes.**
+
+*A note for the next unit.* It is fed and read like `Psk31Listener`, at the rate `Psk31Resampler`
+gives. The differences: it writes its own events rather than handing the shell `States` to write -
+though it has `States` too. And it has `Flush()`, which only a recording's end needs. `Channels`
+keeps an `Ended` channel listed, as decision AA and the PSK31 rows' "stay after the station ends"
+suggest.
+
+**8. The flaky Stop test went red once in the list run and once alone.**
+
+*Carried as known, reported for the count.*
+`TheStopIsAlwaysOnScreenTests.KeyedAtTheOpeningSizeAClickOnTheBarFiresTheAbortWhileItRuns`: red in
+the app list run, red on the first rerun alone, green on the second. No app code changed in this
+unit.
+
+**9. Tool facts this session.**
+
+*Reported, not repaired.*
+- `sed -i` on `output.md` was refused as "outside the allowed working directories" though the file
+  is at the root, and `cat >> docs\carry-forward-tests.txt` was refused the same way. **So the
+  carried queue below was never retyped:** unit 362's `output.md` lines 1-294 were removed in place
+  with the file editor, and the carried text is the original bytes. Checked by `md5sum`: unit 362's
+  lines 295-940, in the working tree and at `60ec790a`, hash `a32bfbd8bb8dad4968059e1ec43be8f8`;
+  this file's lines 427-1072, the carried block's first line to its end, hash the same.
+- A command joining `grep -v` into a pipe needed approval, and a status-write-and-commit command
+  that included one was refused whole, so one commit was made a second time on its own.
+- `sh tools/status.sh ... && dotnet test ...` and `&& git ...` ran. `EXECUTING` and `code`
+  throughout. `tools/status.sh` still writes `RULES_AT: HM-DEC-161` and `WORK_INSTRUCTION: 358`.
+- `.unit362-carry.tmp` is still in the root, ignored by git.
+
+### Asks still outstanding - carried from unit 362's section 4, per HM-DEC-139, verbatim
+
+**Nothing blocks step 2 or step 3's entry.** Seven new items, all findings; none wants a ruling
+from the owner. The carried queue follows them.
+
+### Raised by unit 362
+
+**1. 2.3's wording says "tone spacing and symbol rate"; the search measures tone spacing and
+occupied band.**
+
+*A mismatch between `PHASE_PLAN.md` 2.3 and work instruction 362 decision P, reported; no ruling
+wanted.* For every row in `format.json` the symbol rate is the tone spacing (`variant_rule`:
+symbol_seconds = 1 / tone_spacing_hz), so a measured symbol rate says nothing a measured spacing
+has not said. The phase's three rows share both, and only the band tells them apart. The trace
+measured the symbol period anyway - 30.00 ms against 32 on the no-RSID file, and 32.00 ms on pure
+noise, so it is no discriminator. The search follows decision P. If the plan's wording should say
+"occupied band", that is the plan's author's edit; this unit did not touch `PHASE_PLAN.md`.
+
+**2. A block can clear the threshold and still show wrong characters.**
+
+*A finding against PSK31 plan Â§R9 and the prime directive, for step 3 before anything reaches the
+screen.* The threshold is a block's mean over its characters, set on noise only (unit 361). Two
+cases this unit measured: (a) the drifted file read on one offset put **60 blocks through at a mean
+S/N of 31 and read at CER 0.2032** - strong blocks carrying some wrong characters; (b) a wrong
+variant puts single blocks of wrong characters through: 16/500 read over 8/250 at 4.10, 4/500 read
+over 16/500 at 4.37. The blind search guards itself (two blocks to confirm), and tracking removes
+case (a) on the fixtures, but the demodulator on its own would show those characters. **What the
+next unit can try**: a per-character gate (each character's own Walsh peak against the block's
+noise) rather than the block mean alone, and a threshold checked against wrong-variant audio as
+well as noise.
+
+**3. The CPU ceiling is read as process CPU, which counts the tests running beside it.**
+
+*A finding; fixed for this unit's classes, not for unit 361's.* In the carry-forward run the
+decode after the blind search read 23.5 s against 5.1 alone and the test went red; the
+`CpuMeasuredAlone` collection fixed it for `TheOliviaBlindSearchTests` and `TheOliviaDriftTests`.
+`TheOliviaDemodulatorTests` still measures beside other classes - its demodulator figures read
+about 8 s in the carry-forward run against about 4 alone - so on a loaded machine it could go red on
+2.5 for a reason that is not the demodulator. Putting it in the same collection is one attribute and
+costs seconds of wall time; not done here because it is unit 361's class and not this unit's to
+change.
+
+**4. The search re-reads from the start every time it takes more audio.**
+
+*A cost, reported.* On a clean carrier it names in 4 to 8 s of audio and under 2 s of CPU. On the
+-10 dB file it named 16/500 correctly but only after 102.4 s of audio and 17.8 s of CPU, because at
+2.48 dB over the floor the spectrum measurements are poor (5 tones, 144.53 Hz band) and each new
+2 s of audio repeats the whole look. Step 3 will want it fed a stream; the fix is to keep the
+running averages and trial decodes, not re-derive them.
+
+**5. The search finds nothing at -16 dB.**
+
+*A finding, not a criterion.* The loudest bin stands 0.87 dB over the passband median across the
+whole file, under the gate, so no row is tried. 2.3 asks only for the no-RSID 8/250 file, which is
+clean. Criterion 3.0's -14 dB 8/250 fixture will be the first test of the search below the noise.
+
+**6. The offset track follows up to two tone spacings and one grid step a block.**
+
+*A limit, stated.* `TrackTones` = 2 and one 3.9 Hz step per block (2 s at the phase's variants) let
+it follow up to about 100 Hz a minute and about 62 Hz in total from where it started. A carrier
+that starts more than half a tone from the center it is given is still read off its tones, as
+before, and the search's measured middle is what keeps a blind start inside that half tone.
+
+**7. Tool facts and status words this session.**
+
+*A finding, reported and not repaired.*
+- A command joined with `;` ran. `grep -v "^\s*$"` and `sed -n '/a/,/b/p'` in a pipe after
+  `dotnet test` each needed approval; `grep -E`, `tail` and `sed -n N,Mp` after `git show` did not.
+- **Python did not run this session**, against unit 361: `python` on a script in the root (named
+  `.unit362-carry.tmp` so `*.tmp` ignores it) needed approval, as did `mv`, `tee -a output.md`,
+  `git check-ignore`, and command substitution; `git show ... | tail >> output.md` was blocked as
+  output redirection. **The carried queue below was therefore copied in with the file editor** and
+  checked with `sed -n N,Mp | md5sum` against `6d9cf1e6:output.md`: its lines 269-275 and 276-820
+  match this file byte for byte on each side of the one mark. The unrun script,
+  `.unit362-carry.tmp`, is left in the root, ignored by git; `rm` is refused.
+- Every status write used `EXECUTING` and `code`. `tools/status.sh` still writes
+  `RULES_AT: HM-DEC-161` and `WORK_INSTRUCTION` from `PHASE_STATUS.md`, which still says 358.
+- `PHASE_PLAN.md` still shows 2.3 and 2.7 unchecked; this unit did not edit it. Marking them, and
+  step 2's state, is the arbiter's.
+- The MCP connectors for Gmail, Google Calendar and Google Drive reported that they need
+  authorization in claude.ai's connector settings. Nothing in this unit used them.
+
+### Asks still outstanding - carried from unit 361's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 361's, from its line under `## 4. What's blocking us` to its end, as
+committed in `6d9cf1e6`. Only that top-level heading is dropped, so this report keeps four
+sections. Its nested queues are carried as unit 361 carried them, and the queue of units 337 to
+353 is still carried by reference to `4c55deac:output.md`. **One item is marked in place - unit
+361 item 1 - and nothing is deleted.** This unit answers none of the others.
+
+
+**One criterion is not met: 2.2 at -16 dB.** Five new items, all findings; none wants a ruling
+from the owner. The carried queue follows them.
+
+### Raised by unit 361
+
+**1. The -16 dB fixture is not read at CER 0.10, and no threshold would read it.**
+
+*ANSWERED by `PHASE_PLAN.md` Â§8, the revision of 2026-09-19 - the -16 dB ceiling was the plan
+author's own error, set below the mode's published sensitivity for 16/500, and is withdrawn;
+2.2 now asks for the number measured and reported with no ceiling, which unit 361 measured at
+0.9203, and 2.2 is checked met. Work instruction 362 task 2 makes the test say what the
+criterion now says.* (Marked in place by unit 362, as work instruction 362 section 3 directs.)
+
+*A finding; 2.2 reported not met, the test not loosened.* Measured, the file carries -17.19 dB in
+2500 Hz (the -10 dB file measures -10.48 by the same method), Es/N0 1.84 dB per symbol. With every
+block accepted the demodulator reads it at CER 0.3267; at the 4.0 threshold, which noise never
+clears, 0.9203. Tried and kept: noncoherent likelihoods, three iterative passes, eight frames per
+symbol. **What the next unit can try**: timing and frequency tracked per block rather than once
+per file; the sync decided per block from the neighbors' likelihoods; soft combining of the two
+frames either side of the chosen one. Whether the fixture's figure is reachable by any Olivia
+decoder was not measured here; the fixture is the mode author's and is not in question (Â§6).
+
+**2. The demodulator runs over a whole recording, not a stream.**
+
+*A finding for step 3.* `Decode(MonoAudio, startSeconds)` finds one offset, one symbol phase and
+one block phase for the whole recording. That is what step 2 asks for and what the fixtures need;
+step 3's rows per station will need it fed as the RSID path feeds the detector.
+
+**3. The fixture test runs the RSID detector over the whole file first.**
+
+*A cost, reported.* About ten seconds of CPU on the 131 s files before the demodulator's four, so
+the four demodulator names add about a minute to the engine carry-forward (1 m 14 s, 119 tests).
+The 20 s ceiling is the demodulator's own and is met with room.
+
+**4. `RsidDetection` carries the first tone's start, not the burst's end.**
+
+*A mismatch with the work order's task 1 item 4.* The end is derived from `rsid-codes.json`
+(`StartSeconds + Symbols / SymbolRateHz`), which the tests do in one helper.
+
+**5. Tool facts and status words this session.**
+
+*A finding, reported and not repaired.*
+- Python scripts written to the scratchpad and run as `python file.py` ran; unit 360 reported
+  Python did not run. `python -c` was not tried.
+- A quoted heredoc containing apostrophes broke once, as the work order warned. A `sed`
+  substitution with backslashes in the pattern (the csproj line) matched nothing and reported
+  nothing; it was redone with the editor.
+- Every status write used `EXECUTING` and `code`. `tools/status.sh` still writes
+  `RULES_AT: HM-DEC-161` and `WORK_INSTRUCTION` from `PHASE_STATUS.md`, which still says 358.
+- `PHASE_PLAN.md`'s unchecked 1.5 and 1.7 and the mislabeled outcome entries are unchanged and not
+  edited, as told.
+
+### Asks still outstanding - carried from unit 360's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 360's, from its line under `## 4. What's blocking us` to its end, as
+committed in `dcffd02c`. Only that top-level heading is dropped, so this report keeps four
+sections. Its nested queues are carried as unit 360 carried them, and the queue of units 337 to
+353 is still carried by reference to `4c55deac:output.md`. **One item is marked in place - unit
+358 item 5 - and nothing is deleted.** This unit answers none of the others.
+
+
 **Nothing blocks 1.5 or step 2's entry.** Five new items, all findings; none wants a ruling.
 The carried queue follows them.
 
@@ -227,6 +470,10 @@ The headers themselves are in `assets/reference/jalocha/`, so nothing is lost to
 
 *No ruling wanted; a tool limit.* The PowerShell parse needed approval this session could not
 give. It was written by hand from the table in section 1; step 2 reads it first.
+
+*ANSWERED by work instruction 360 task 4 - parsed by System.Text.Json, agrees with the
+manifest except 8/250 no-RSID per-character rounded up (0.686 against 0.685).* (Marked in place
+by unit 361, as work instruction 361 section 3 directs.)
 
 ### Asks still outstanding - carried from unit 357's section 4, per HM-DEC-139, verbatim
 
