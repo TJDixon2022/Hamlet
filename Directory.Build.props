@@ -860,8 +860,14 @@
     done and step 1 partial, the nine fixtures hash as their manifest says, and the outcome carries
     unit 360 under step 1. No file under src changes at this task.
   -->
+  <!--
+    1.13.47 -> 1.13.48, UNIT 361 TASK 0. A PATCH, STEP 2 OF THE OLIVIA PHASE, THE DEMODULATOR: steps 0
+    and 1 are done, the clean 16/500 burst is detected (code 70 at 1000.32 Hz) and then the other eight
+    fixtures hash as their manifest says, and the outcome carries unit 361 under step 2. No file under
+    src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.47</Version>
+    <Version>1.13.48</Version>
   </PropertyGroup>
 
   <!--

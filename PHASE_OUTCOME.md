@@ -2,7 +2,7 @@
 PHASE_SET: 2026-09-14
 DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
 STEP: 0 | done | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
-STEP: 1 | partial | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
+STEP: 1 | done | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
 STEP: 2 | not started | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
 STEP: 3 | not started | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
 STEP: 4 | not started | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
@@ -89,3 +89,45 @@ LICENCE: PHASE_PLAN.md R32 (a) and (b), R27, R31, section 6; PSK31 plan R5, R10,
 COST: one session, five tasks (0 to 4), each committed on its own.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ENTRY: PHASE_STATUS.md has step 0 done and step 1 partial; psk31-cq-rsid.wav first, then the other eight, hash as manifest.json says, 9 of 9. Carry-forward before any change: app 165 of 165, engine 105 of 105.
+
+## UNIT 1 - STEP 1
+
+STEP: 1
+APPROACH: carry the RSID code into the no-slot transmission record and hold the cap to the text alone, burst outside it, bounded by the burst's own measured length
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Unit 360 raises only findings and asks for no decision, and the carried asks inside the three are already answered by R32, Tim's Stop ruling A and step 0's closure, while those still open, the test HTTP client and the step 3 screen verdict, fall outside the three.
+MOVE: continue
+WHY: Step 1 is partial on 1.5 alone, and both halves unit 359 fenced off are now licensed by Tim's R32; the loop test finds this approach in no entry, and step 2 cannot start until step 1 is done.
+DECIDED: author's, overrulable - (D) the cap measures the samples after the announcement, and the excusal is only the burst RsidBurst made for that code at that rate; anything longer, or claimed with no code, is LongerThanTheCap, and the cap's value does not move. (E) the typed line's too-long-to-send measures the framed text alone, so the card and the gate agree. (F) the no-slot ft8_transmission gains announced, rsidCode and announcementSeconds, audioSeconds stays the whole audio, and the slotted branch is untouched. (G) the burst keeps the file's leading silence; unit 359 item 1 option C is moot. Task 4, a read-only measurement of step 2's ground in pj_mfsk.h and timing.json, is the drop candidate. PHASE_PLAN.md's unchecked 1.7 is reported, not edited.
+LICENCE: PHASE_PLAN.md R32 (a) and (b), R27, R31 and section 6 (a later ruling wins; a number or a mechanism is the arbiter's); PSK31 plan R5, R10, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155; ARBITER.md section 6
+COST: 11.789573999999998
+ACCOMPLISHED: Every PSK31 transmission Hamlet makes says in its own record that it announced itself and with which code, and the announcement no longer eats into the send's length, so the compound-callsign report goes again - which closes hearing the announcement and opens the Olivia demodulator
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: The report backs every clause of 1.5 with evidence, including five records reading announced true with code 1, the compound-callsign report fitting on 28.192 s of text, the FT8 and FT4 byte-identical test green and unedited, and the loopback test green, while 1.1 to 1.4 and 1.6 stay green in the carry-forward runs and 1.7 has a passing real-time test with its ratio of 0.075 reported by unit 359.
+
+## UNIT 2 - STEP 2
+
+STEP: 2
+APPROACH: Hamlet's own Olivia demodulator for a named variant and offset from the RSID detection - FFT tone detection, block sync, de-interleave, descramble, Walsh correlation decode - with the format constants as cited data, proved on the clean, noise-only and below-noise fixtures
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Unit 360 says nothing blocks and lists five findings that ask for no ruling, the carried items are answered, closed or outside the three, and the wrong longestSeconds in the record is reported as a finding for a later unit, not put to the owner to decide.
+MOVE: continue
+WHY: Step 1 is done and closed and step 2 is next in a one-way pipeline; its entry was measured open by unit 360, the loop test finds no Olivia demodulator in any entry, and unit 360 read pj_mfsk.h and found no algorithm that must be copied.
+DECIDED: author's, overrulable - (H) the scrambling code, the shift of 13, the character-to-Walsh mapping, the Gray code and each variant's parameters go in data/olivia/format.json with pj_mfsk.h line citations, read through OliviaData, which is transcription of a format's facts as R27 and PSK31 R5 did, not a port; anything else that cannot be written without copying is stop material, not built. (I) variant and center come from the step 1 detector, never from the test. (J) CER is Levenshtein over the manifest text's length, line endings unified, case exact, pre-sync characters counted. (K) sync and per-run summary events with mode olivia and the variant, no text, no callsign. (L) engine only, the panel is not wired. (M) rate and samples per symbol derive from format.json. (N) timing.json becomes measured from the demodulator's block times. Task 5 (2.6) is the drop candidate; 2.3 blind search and 2.7 drift are parked to the next unit.
+LICENCE: PHASE_PLAN.md step 2, R27, R30, R31, section 3.3 and section 6 (a number or a mechanism is the arbiter's; a fixture that will not decode; the port clause); PSK31 plan R5, R9, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155; ARBITER.md section 6
+COST: 11.789573999999998
+ACCOMPLISHED: Hamlet reads Olivia text off the mode author's own audio at all three variants, in the clear and below the noise, with the variant taken from the signal's announcement, and hears nothing in pure noise - the receiver every later step stands on
+FATE: executed
+STATE_AFTER: not started
+STATE_WHY: The unit worked on step 1 criterion 1.5 and only surveyed step 2, confirming its entry check and reading pj_mfsk.h and timing.json, but it built no Olivia demodulator or blind search and met none of the exit criteria 2.1 to 2.7.
+
+## UNIT 361 - STEP 2
+
+STEP: 2
+APPROACH: Hamlet own Olivia demodulator for a named variant and offset from the RSID detection - tone detection, block sync, de-interleave, descramble, Walsh correlation decode - with the format constants as cited data, proved on the clean, noise-only and below-noise fixtures
+MOVE: continue
+WHY: Step 1 is done and closed and step 2 is next in a one-way pipeline; its entry was measured open by unit 360, the loop test finds no Olivia demodulator in any entry, and unit 360 read pj_mfsk.h and found no algorithm that must be copied
+DECIDED: the arbiter H, I, J, K, L, M and N as work instruction 361 carries them, author and overrulable. Task 5 is the drop candidate; tasks 0 to 4 have none.
+LICENCE: PHASE_PLAN.md step 2, R27, R30, R31, section 3.3 and section 6; PSK31 plan R5, R9, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155
+COST: one session, six tasks (0 to 5), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md has steps 0 and 1 done; olivia-16-500-qso-rsid.wav hashes as the manifest says and the RSID detector reads OLIVIA_16_500 (70) at 1000.32 Hz, 15 tones right; then the other eight hash, 9 of 9. Carry-forward before any change: engine 111 of 111, app 166 of 166.
