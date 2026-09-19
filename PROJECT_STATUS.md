@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: COMPLETED
-TASK: TASK 5 of 6
+TASK: TASK 4 of 4
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
 BALL: tim
 NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T14:36:09-04:00
-NOTE: Unit 364 complete - Olivia rows on screen, 2 from the two-signal file at CER 0.0000; 3.1-3.6 met, retire factor 56; nothing under Olivia sends
+UPDATED: 2026-09-19T16:48:36-04:00
+NOTE: FT8 regression unit complete - a press rebuilds the transmit path once and every stop after read_back says why; guards on the list; HM-DEC-165
 
 ---
 
