@@ -249,11 +249,25 @@ public sealed class TheOliviaRowsTests : IDisposable
     }
 
     /// <summary>
-    /// **Decision AN: with the two rows present under Olivia, and a card open for a station calling
-    /// the operator, every send control refuses and nothing is composed, armed or keyed.**
+    /// **With the two rows present under Olivia, and a card open, nothing is composed until a
+    /// control is pressed, and every press that composes is announced at its own row's variant.**
     /// </summary>
+    /// <remarks>
+    /// <para>**REWRITTEN BY WORK INSTRUCTION 366 UNDER PSK31 PLAN §R12 (decision BI).** It was unit
+    /// 364's decision AN test: every send control refused, four refusals at least, and no line of
+    /// the record held `composed`, `armed` or `ptt`. **All of that guarded the shut mode gate**,
+    /// which this unit opened, so keeping it would have made this class the wall that stopped the
+    /// unit told to open the door.</para>
+    /// <para>**WHAT IT GUARDS NOW IS WHAT STILL HOLDS**: no line of the record before the first
+    /// press; one composition per press and no more, which is §R10's one click one transmission;
+    /// each composition announced at the variant of the row it was addressed to, never at a variant
+    /// anything here chose; and no second keying path, counted in `src/`. **Nothing keys**, because
+    /// this panel has no armed send at all - the presses stop at `no_transmit_path`, which is the
+    /// honest state of a bench with no radio and leaves the keying itself to
+    /// `TheOliviaSendTests`.</para>
+    /// </remarks>
     [Fact]
-    public async System.Threading.Tasks.Task WithRowsPresentEverySendControlRefusesAndNothingKeys()
+    public async System.Threading.Tasks.Task WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant()
     {
         var (audio, _) = Fixture("olivia-two-signals-rsid.wav");
         var folder = Path.Combine(_folder, "refuse");
@@ -285,6 +299,14 @@ public sealed class TheOliviaRowsTests : IDisposable
             var card = Assert.Single(model.DigitalCards);
 
             _output.WriteLine($"card: {card.Callsign}, offered {card.Offered}, action {card.ActionKind}");
+
+            // **NOTHING HAS BEEN PRESSED YET, AND NOTHING HAS BEEN COMPOSED.** Two fixture
+            // stations read, two more channels drawn, a card opened - and not one line of the
+            // transmit or send-stage record, because a transmission takes a click (§0.2).
+            var before = Lines(folder);
+
+            Assert.DoesNotContain(before, l => l.Contains("psk31_send_composed", StringComparison.Ordinal));
+            Assert.DoesNotContain(before, l => l.Contains("send_stage", StringComparison.Ordinal));
 
             foreach (var row in model.DigitalDecodes.Where(r => r.HasVariant).ToList())
             {
@@ -324,20 +346,44 @@ public sealed class TheOliviaRowsTests : IDisposable
             _output.WriteLine("transmit: " + e.Event + " " + e.Data.GetRawText());
         }
 
-        // **EVERY PRESS THAT REACHED THE DOOR WAS REFUSED BY IT, FOR BEING THIS MODE.**
+        // **EVERY PRESS THAT REACHED THE DOOR WENT THROUGH IT AND STOPPED AT THE BENCH.** There is
+        // no armed send on this panel, so each composition is followed by `no_transmit_path`, and
+        // the operator is told which half is missing rather than left with a silent button.
         Assert.All(
             presses.Where(p => p.Line.Length > 0),
-            p => Assert.Contains("cannot send " + Mode, p.Line, StringComparison.Ordinal));
+            p => Assert.Contains("sent nothing", p.Line, StringComparison.Ordinal));
 
-        var actions = transmit.Select(e => e.Data.GetProperty("action").GetString()).ToList();
+        // **THE CLICKS, NOT THE STAGES.** The transmit category carries both now that a press goes
+        // through the door, and only the operator's own actions name one.
+        var actions = transmit
+            .Where(e => e.Event == "operator_action")
+            .Select(e => e.Data.GetProperty("action").GetString())
+            .ToList();
 
-        Assert.Equal(actions.Count(a => a == "send_requested"), actions.Count(a => a == "send_refused"));
-        Assert.True(actions.Count(a => a == "send_refused") >= 4, "the CQ press, the answer to the finished CQ, the card's button and the typed line must each reach the door");
-        Assert.Contains(presses, p => p.Control.StartsWith("answer", StringComparison.Ordinal) && p.Line.Length > 0);
-        Assert.Contains(presses, p => p.Control == "card Send" && p.Line.Length > 0);
-        Assert.All(transmit, e => Assert.Equal("operator_action", e.Event));
+        var composed = lines.Select(Parse).Where(e => e.Event == "psk31_send_composed").ToList();
 
-        foreach (var word in new[] { "transmission", "ptt", "keyed", "composed", "send_stage", "armed", "rsid_sent" })
+        foreach (var e in composed)
+        {
+            _output.WriteLine("composed: " + e.Data.GetRawText());
+        }
+
+        // **ONE COMPOSITION PER PRESS THAT GOT PAST THE GATE, AND NOT ONE MORE** (§R10).
+        Assert.Equal(actions.Count(a => a == "send_requested"), composed.Count);
+        Assert.True(composed.Count >= 4, "the CQ press, the answer to the finished CQ, the card's button and the typed line must each reach the composer");
+
+        // **EACH AT ITS OWN ROW'S VARIANT, AND THE CQ AT THE CALLING VARIANT** (R27, decision BA).
+        // The variants that appear are the ones the two rows announced and the one the cited table
+        // says calls start on, and nothing else.
+        var variants = composed.Select(e => e.Data.GetProperty("variant").GetString()).Distinct().Order().ToList();
+
+        _output.WriteLine("variants composed at: " + string.Join(", ", variants));
+
+        Assert.All(composed, e => Assert.Equal("olivia", e.Data.GetProperty("mode").GetString()));
+        Assert.Subset(new HashSet<string?> { "8/250", "16/500", OliviaCallingTable.CallingVariant }, variants.ToHashSet());
+        Assert.Contains(OliviaCallingTable.CallingVariant, variants);
+
+        // **AND NOTHING KEYED, BECAUSE NOTHING WAS ARMED.**
+        foreach (var word in new[] { "transmission", "ptt", "keyed", "armed", "rsid_sent" })
         {
             Assert.All(lines, l => Assert.DoesNotContain(word, l, StringComparison.OrdinalIgnoreCase));
         }
