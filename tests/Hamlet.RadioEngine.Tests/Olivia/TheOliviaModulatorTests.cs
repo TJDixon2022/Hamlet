@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
 using Hamlet.RadioEngine.Audio;
@@ -58,8 +59,10 @@ public sealed class TheOliviaModulatorTests
     /// </summary>
     /// <param name="variant">The variant.</param>
     /// <remarks>
-    /// **UNTIL TASK 3 COMPOSES THE BURST, THE VARIANT AND CENTER ARE THE CALL'S** (work instruction
-    /// 365 task 1, noted as it says to). Task 3 returns this to decision AT's form.
+    /// **THE VARIANT AND THE CENTER COME FROM THE DETECTOR, NEVER FROM THE TEST** (decision AT,
+    /// carrying decision I forward). The text is composed with its burst in front, the detector
+    /// reads the burst off that audio, and what it says is what the demodulator is built with; the
+    /// variant the loop asked for only checks the detection.
     /// </remarks>
     [Theory]
     [InlineData("8/250")]
@@ -74,10 +77,16 @@ public sealed class TheOliviaModulatorTests
         {
             foreach (var (name, text) in texts)
             {
-                var samples = OliviaModulator.Modulate(text, variant, center, Rate, Ft8Composer.DefaultDrivePeak);
-                var demodulator = new OliviaDemodulator(Format, Format.Variant(variant)!, center, Rate);
+                var composed = OliviaModulator.Compose(text, variant, center, Rate, Ft8Composer.DefaultDrivePeak);
+                var announced = Announcement(composed);
+
+                Assert.Equal(variant, announced.Variant);
+                Assert.InRange(announced.CenterHz, center - 5, center + 5);
+
+                var samples = composed.Samples;
+                var demodulator = new OliviaDemodulator(Format, Format.Variant(announced.Variant)!, announced.CenterHz, Rate);
                 var before = Process.GetCurrentProcess().TotalProcessorTime;
-                var decoding = demodulator.Decode(new MonoAudio(Rate, samples), 0);
+                var decoding = demodulator.Decode(new MonoAudio(Rate, samples), BurstEnd(announced));
                 var cpu = (Process.GetCurrentProcess().TotalProcessorTime - before).TotalSeconds;
                 var same = string.Equals(Unify(decoding.Text), Unify(text), StringComparison.Ordinal);
 
@@ -85,7 +94,8 @@ public sealed class TheOliviaModulatorTests
 
                 _output.WriteLine(
                     $"{variant} at {center:0} Hz, {name}: {text.Length} characters in, {decoding.CharactersOut} out, "
-                    + $"{(same ? "identical" : "DIFFERENT")}; {samples.Length / (double)Rate:0.000} s of audio, "
+                    + $"{(same ? "identical" : "DIFFERENT")}; announced {announced.Name} ({announced.Code}) at "
+                    + $"{announced.CenterHz:0.00} Hz, {announced.TonesRight} tones right; {samples.Length / (double)Rate:0.000} s of audio, "
                     + $"blocks {decoding.BlocksDecoded} decoded, {decoding.BlocksRejected} rejected; decode cpu {cpu:0.000} s");
 
                 if (!same)
@@ -155,6 +165,78 @@ public sealed class TheOliviaModulatorTests
             Assert.True(Math.Abs(h - a) <= limit, $"{variant.Name} {quantity}: author {a:0.0000}, Hamlet {h:0.0000}, over {limit:0.0000}");
         }
     }
+
+    /// <summary>
+    /// **4.2 at the engine: every composed send begins with the burst naming its own variant**
+    /// (decision AU), read back by <see cref="Hamlet.RadioEngine.Rsid.RsidDetector"/> off the audio.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    /// <remarks>
+    /// **THE ENGINE HALF, AND IT IS SAID AS THAT.** *Every send* is proved when a send exists; the
+    /// application's gate still refuses Olivia, so what is proved here is every transmission this
+    /// engine composes.
+    /// </remarks>
+    [Theory]
+    [InlineData("8/250")]
+    [InlineData("16/500")]
+    [InlineData("32/1000")]
+    public void EverySendBeginsWithItsRsid(string variant)
+    {
+        var codes = OliviaData.Current.Rsid!;
+
+        foreach (var center in Centers)
+        {
+            var composed = OliviaModulator.Compose(
+                Psk31Macros.Cq(Unit365Trace.Mine), variant, center, Rate, Ft8Composer.DefaultDrivePeak);
+            var announced = Announcement(composed);
+            var burstSamples = Hamlet.RadioEngine.Rsid.RsidBurst.LengthInSamples(codes, Rate);
+
+            _output.WriteLine(
+                $"{variant} at {center:0} Hz: announced {announced.Name} ({announced.Code}) at {announced.CenterHz:0.00} Hz, "
+                + $"{announced.TonesRight} of {codes.Symbols} tones right, quality {announced.Quality:0.000}; "
+                + $"record says announced {composed.Announced} code {composed.AnnouncedCode}; "
+                + $"announcement {composed.AnnouncementSeconds:0.000} s of {composed.Seconds:0.000} s, "
+                + $"text {composed.TextSeconds:0.000} s against a cap of {composed.Cap:0.000} s; fit {composed.Fit}");
+
+            // The burst is the variant's own, where the composer said it was, and read as that variant.
+            Assert.Equal(OliviaModulator.AnnouncedAs(variant), announced.Name);
+            Assert.Equal(codes.CodeOf(OliviaModulator.AnnouncedAs(variant)), announced.Code);
+            Assert.Equal(variant, announced.Variant);
+            Assert.InRange(announced.CenterHz, center - 5, center + 5);
+            Assert.Equal(codes.Symbols, announced.TonesRight);
+
+            // And the record says a send was announced, with the code and that burst's own length.
+            Assert.True(composed.Announced);
+            Assert.Equal(announced.Code, composed.AnnouncedCode);
+            Assert.Equal(burstSamples, composed.AnnouncementSamples);
+            Assert.Equal(UnslottedMode.Olivia, composed.Mode);
+            Assert.Equal(UnslottedFit.Fits, composed.Fit);
+        }
+    }
+
+    /// <summary>What the detector reads off the front of a composed transmission.</summary>
+    /// <remarks>
+    /// **ONLY THE FRONT IS FED**, because that is where a burst is and the detector's cost is the
+    /// audio's length: the burst, its pause, and a second more, then the stream is closed.
+    /// </remarks>
+    private static Hamlet.RadioEngine.Rsid.RsidDetection Announcement(UnslottedTransmission composed)
+    {
+        var codes = OliviaData.Current.Rsid!;
+        var detector = new Hamlet.RadioEngine.Rsid.RsidDetector(
+            codes, composed.SampleRate, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz);
+        var leading = Math.Min(
+            composed.Samples.Length,
+            (2 * Hamlet.RadioEngine.Rsid.RsidBurst.LengthInSamples(codes, composed.SampleRate)) + composed.SampleRate);
+        var heard = new List<Hamlet.RadioEngine.Rsid.RsidDetection>(detector.Feed(composed.Samples.AsSpan(0, leading)));
+
+        heard.AddRange(detector.Flush());
+
+        return Assert.Single(heard);
+    }
+
+    /// <summary>Where the burst's tones end, which is where the reading begins.</summary>
+    private static double BurstEnd(Hamlet.RadioEngine.Rsid.RsidDetection heard)
+        => heard.StartSeconds + (OliviaData.Current.Rsid!.Symbols / OliviaData.Current.Rsid!.SymbolRateHz);
 
     /// <summary>Decision J's line-ending unification: CR LF and a lone CR become LF.</summary>
     private static string Unify(string text)
