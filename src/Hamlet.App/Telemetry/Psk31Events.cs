@@ -615,6 +615,7 @@ public static class Psk31Events
     /// <param name="offsetHz">Where it would go out, or null where unknown.</param>
     /// <param name="rsidCode">The RSID code the audio begins with, or null where it begins with none.</param>
     /// <param name="announcementSeconds">How much of <paramref name="seconds"/> is the announcement.</param>
+    /// <param name="tag">The mode and variant an Olivia send adds, from <see cref="Olivia"/>, or null on PSK31.</param>
     /// <remarks>
     /// <para>**THE LENGTH AND NOT THE TEXT** (§2.1). A macro carries the operator's callsign
     /// twice over, and a count says everything a diagnosis needs.</para>
@@ -631,42 +632,49 @@ public static class Psk31Events
         double capSeconds,
         double? offsetHz,
         int? rsidCode = null,
-        double announcementSeconds = 0)
+        double announcementSeconds = 0,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_composed",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["macro"] = kind,
-                ["characters"] = characters,
-                ["seconds"] = Math.Round(seconds, 2),
-                ["capSeconds"] = capSeconds,
-                ["withinCap"] = seconds - announcementSeconds <= capSeconds,
-                ["offsetHz"] = offsetHz is { } hz ? Math.Round(hz, 1) : null,
-                ["announced"] = rsidCode is not null,
-                ["rsidCode"] = rsidCode,
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["macro"] = kind,
+                    ["characters"] = characters,
+                    ["seconds"] = Math.Round(seconds, 2),
+                    ["capSeconds"] = capSeconds,
+                    ["withinCap"] = seconds - announcementSeconds <= capSeconds,
+                    ["offsetHz"] = offsetHz is { } hz ? Math.Round(hz, 1) : null,
+                    ["announced"] = rsidCode is not null,
+                    ["rsidCode"] = rsidCode,
+                },
+                tag));
 
     /// <summary>A send was refused before anything went out.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="reason">A stable token: `bolt`, `cap`, `uncertain`, `mode`.</param>
     /// <param name="kind">Which macro, where it is known.</param>
     /// <param name="stage">How far it got before the refusal.</param>
+    /// <param name="tag">The mode and variant an Olivia send adds, from <see cref="Olivia"/>, or null on PSK31.</param>
     /// <remarks>
     /// **A REFUSAL IS AN OUTCOME** (§8.1). It is as loggable as a transmission and more
     /// useful, because a send that worked is the case nobody has to diagnose.
     /// </remarks>
     public static void SendRefused(
-        ITelemetry? telemetry, string reason, string? kind, string stage)
+        ITelemetry? telemetry, string reason, string? kind, string stage,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             "psk31_send_refused",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["reason"] = reason,
-                ["macro"] = string.IsNullOrWhiteSpace(kind) ? null : kind,
-                ["stage"] = stage,
-            },
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["reason"] = reason,
+                    ["macro"] = string.IsNullOrWhiteSpace(kind) ? null : kind,
+                    ["stage"] = stage,
+                },
+                tag),
             TelemetryLevel.Warn);
 
     /// <summary>The transmitter was keyed, or let go.</summary>
@@ -675,6 +683,7 @@ public static class Psk31Events
     /// <param name="seconds">Seconds keyed so far, or planned.</param>
     /// <param name="plannedSeconds">How long it was meant to run.</param>
     /// <param name="aborted">True where it was stopped early.</param>
+    /// <param name="tag">The mode and variant an Olivia send adds, from <see cref="Olivia"/>, or null on PSK31.</param>
     /// <remarks>
     /// **THIS WRITES AND DOES NOT KEY** (§0.2). It is called from beside the one keying
     /// site and the `finally` that lets go; it reaches neither.
@@ -684,16 +693,19 @@ public static class Psk31Events
         bool keyed,
         double seconds,
         double plannedSeconds,
-        bool aborted)
+        bool aborted,
+        IReadOnlyDictionary<string, object?>? tag = null)
         => telemetry?.Write(
             TelemetryCategory.Psk31,
             keyed ? "psk31_send_keyed" : "psk31_send_unkeyed",
-            new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["seconds"] = Math.Round(seconds, 2),
-                ["plannedSeconds"] = Math.Round(plannedSeconds, 2),
-                ["aborted"] = aborted,
-            });
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["seconds"] = Math.Round(seconds, 2),
+                    ["plannedSeconds"] = Math.Round(plannedSeconds, 2),
+                    ["aborted"] = aborted,
+                },
+                tag));
 
     /// <summary>What the radio said after a send.</summary>
     /// <param name="telemetry">Sink, or null.</param>

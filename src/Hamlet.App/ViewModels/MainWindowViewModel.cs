@@ -26,6 +26,7 @@ using Hamlet.RadioEngine.Licensing;
 using Hamlet.RadioEngine.Solar;
 using Hamlet.RadioEngine.Training;
 using Hamlet.RadioEngine.Rig;
+using Hamlet.RadioEngine.Rsid;
 using Hamlet.RadioEngine.Scan;
 using Hamlet.RadioEngine.Transmit;
 using Hamlet.RadioEngine.Transport;
@@ -2430,7 +2431,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// 323 task 1c, `PHASE_PLAN.md` §R11). What made the answer false was never that
     /// PSK31 had no voice - <see cref="Psk31Modulator"/> has existed since unit 318 and
     /// its four macros read back identical - but that nothing downstream of this line
-    /// composed in it. **That is fixed in the same change**: <see cref="SendPsk31"/> is
+    /// composed in it. **That is fixed in the same change**: <see cref="SendUnslotted"/> is
     /// the PSK31 arm of <see cref="SendMessage"/> and it composes PSK31 audio, so the
     /// fault above cannot come back by opening this door.</para>
     /// <para>**WHAT THE BOLT WAS.** Units 320 and 321 both decided the door would open
@@ -2442,12 +2443,22 @@ public partial class MainWindowViewModel : ObservableObject
     /// (HM-DEC-084), and **nothing is required of the operator** for this to answer
     /// true. So the bolt does not move; it is gone, and the door is the mode gate it
     /// always was.</para>
+    /// <para>**OLIVIA IS NOW THE FOURTH, AND IT IS STILL THE SAME PREDICATE** (work
+    /// instruction 366 decision AZ, which lifts unit 365's decision AN for this line alone).
+    /// <see cref="Hamlet.RadioEngine.Olivia.OliviaModulator"/> has existed since unit 365 and
+    /// its thirty loopbacks read back identical, so the reason this answered false - nothing
+    /// downstream composed in it - stopped being true. **This one line is the whole of the
+    /// gate's change**: <see cref="SendUnslotted"/> composes Olivia audio at the row's variant
+    /// and center, arms it at the same unslotted `Arm` site PSK31 uses, and fires the same
+    /// <c>Ft8TransmitSequence</c>. **No new `PttOn` site and no new `Arm` line**, which is what
+    /// §6's transmit clause licenses and nothing wider.</para>
     /// </remarks>
     private static bool CanTransmitIn(string? chosen)
         => chosen is null
             || string.Equals(chosen, "FT8", StringComparison.Ordinal)
             || string.Equals(chosen, "FT4", StringComparison.Ordinal)
-            || string.Equals(chosen, "PSK31", StringComparison.Ordinal);
+            || string.Equals(chosen, "PSK31", StringComparison.Ordinal)
+            || string.Equals(chosen, OliviaLabel, StringComparison.Ordinal);
 
     /// <summary>True while the operator has PSK31 pressed.</summary>
     private bool IsPsk31Chosen
@@ -5869,12 +5880,13 @@ public partial class MainWindowViewModel : ObservableObject
                 // **THE SAME ONE DOOR, TOLD WHICH MACRO AND WHERE** (work instruction 323
                 // task 3). A PSK31 reply goes out on the frequency the other station is on
                 // rather than on a spot Hamlet chose, and the record names which of §R2's
-                // four it was. Both travel beside the call, and `SendPsk31` takes them; the
+                // four it was. Both travel beside the call, and `SendUnslotted` takes them; the
                 // send itself is `SendMessage`, unchanged, with every guard it carries.
                 if (card.IsPsk31)
                 {
                     _psk31Macro = card.Offered;
                     _psk31SendAtHz = Psk31OffsetOf(card.Callsign);
+                    _oliviaSendVariant = OliviaVariantOf(card.Callsign);
 
                     SendMessage(card.ActionMessage);
 
@@ -15381,11 +15393,15 @@ public partial class MainWindowViewModel : ObservableObject
         // point every send goes through - the record of the press, the empty check and
         // the mode gate - and everything below it is FT8's and FT4's slot arithmetic,
         // which a mode with no slots has no use for. **There is no second entry point
-        // and no second keying site**: `SendPsk31` composes, arms the same
+        // and no second keying site**: `SendUnslotted` composes, arms the same
         // `Ft8ArmedSend` and fires the same sequence, with no slot (§R10).
-        if (IsPsk31Chosen)
+        // **AND OLIVIA LEAVES BY THE SAME ARM** (work instruction 366 decision AZ). It is
+        // unslotted for the same reason PSK31 is, so it takes the same branch rather than a
+        // branch of its own; what differs is which modulator composes the audio, and that is
+        // one line inside `SendUnslotted`.
+        if (IsPsk31Chosen || IsOliviaChosen)
         {
-            SendPsk31(wanted);
+            SendUnslotted(wanted);
 
             return;
         }
@@ -15600,7 +15616,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// is the one entry point and takes the text alone, which is what keeps it the one
     /// entry point; a second parameter would be a second signature for the same door.
     /// Each caller writes this immediately before calling, and
-    /// <see cref="SendPsk31"/> takes it and puts it back to `cq` - so a press that
+    /// <see cref="SendUnslotted"/> takes it and puts it back to `cq` - so a press that
     /// arrives by any route that did not set it is recorded as the call to anyone,
     /// which is what the CQ button sends.</para>
     /// </remarks>
@@ -15612,13 +15628,27 @@ public partial class MainWindowViewModel : ObservableObject
     /// for a call to anyone, which has nowhere it has to be; an answer has to land where the
     /// station being answered is listening, and that is the offset his carrier is on. Set
     /// beside the call for the same reason <see cref="_psk31Macro"/> is, and cleared by
-    /// <see cref="SendPsk31"/> - so a press that arrives by any other route calls on a spot
+    /// <see cref="SendUnslotted"/> - so a press that arrives by any other route calls on a spot
     /// Hamlet found rather than on the last station's frequency.
     /// </remarks>
     private double? _psk31SendAtHz;
 
+    /// <summary>Which Olivia variant the next send goes at, or null for the calling variant.</summary>
+    /// <remarks>
+    /// <para>**THE VARIANT IS THE SIGNAL'S AND NEVER THE OPERATOR'S** (`PHASE_PLAN.md` R27, work
+    /// instruction 366 decision BA). A send addressed to a row goes at the variant that row's own
+    /// RSID announced, or that the blind search found for it; a call to anyone has no row, so it
+    /// goes at <see cref="OliviaCallingTable.CallingVariant"/>, which is what the cited table says
+    /// calls start on. **No control anywhere offers a choice**, on screen or in Settings.</para>
+    /// <para>**IT TRAVELS BESIDE THE CALL**, for <see cref="_psk31SendAtHz"/>'s own reason: the one
+    /// door takes the text alone, and a second parameter would be a second signature for it. Each
+    /// caller writes it immediately before calling and <see cref="SendUnslotted"/> puts it back to
+    /// null, so a press arriving by any route that did not set it calls at the calling variant.</para>
+    /// </remarks>
+    private string? _oliviaSendVariant;
+
     /// <summary>
-    /// **The PSK31 arm of the one send path: compose, arm with no slot, fire now.**
+    /// **The unslotted arm of the one send path: compose, arm with no slot, fire now.**
     /// </summary>
     /// <param name="wanted">The macro text, exactly as it goes on the air.</param>
     /// <remarks>
@@ -15635,8 +15665,14 @@ public partial class MainWindowViewModel : ObservableObject
     /// Every return below writes both a sentence on the panel and a
     /// `psk31_send_refused` with a stable reason, because a press that produced silence
     /// is the case somebody has to diagnose (§8.1).</para>
+    /// <para>**IT IS BOTH UNSLOTTED MODES, AND THAT IS WHY IT IS NOT CALLED `SendPsk31` ANY
+    /// MORE** (work instruction 366 decision AZ). PSK31 and Olivia differ in which modulator
+    /// makes the audio, which variant that audio is at and which cap it is held to, and in
+    /// nothing else: the spot, the arming, the receipt, the conversation, the sentence and the
+    /// firing are one path, as §R28 asks for. **A rename is not a new door** - the `Arm` call
+    /// below is still the one unslotted `Arm` call in the tree.</para>
     /// </remarks>
-    private void SendPsk31(string wanted)
+    private void SendUnslotted(string wanted)
     {
         var kind = _psk31Macro;
 
@@ -15647,17 +15683,45 @@ public partial class MainWindowViewModel : ObservableObject
         var macro = typed ? "typed" : Psk31MacroToken.For(kind);
         var at = _psk31SendAtHz;
 
+        // **THE VARIANT IS THE ROW'S OR THE TABLE'S, NEVER A CONTROL'S** (R27, decision BA).
+        var olivia = IsOliviaChosen;
+        var variant = olivia ? _oliviaSendVariant ?? OliviaCallingTable.CallingVariant : null;
+        var tag = olivia ? Psk31Events.Olivia(variant) : null;
+
         _psk31Macro = Psk31Macro.Cq;
         _psk31Typed = false;
         _psk31SendAtHz = null;
+        _oliviaSendVariant = null;
+
+        // **NO BURST, NO SEND, AND THE PANEL'S OWN READING OF THE FILE DECIDES** (work instruction
+        // 365 decision AS, R27). An Olivia signal names its variant only by its announcement, so a
+        // receiver that has to guess the variant reads nothing. **It is checked before the spot is
+        // chosen** rather than caught out of the composer, because the panel already says which
+        // file failed and this is the sentence that names it (§0.0); the composer's own throw is
+        // still caught below, for a fault the file cannot show.
+        if (olivia && !CanAnnounceOlivia(variant!))
+        {
+            Psk31Events.SendRefused(_telemetry, "no_announcement", macro, "announce", tag);
+
+            DigitalSendLine =
+                "Hamlet did not call in Olivia: a send has to begin with the burst naming its "
+                + "variant, and " + (_olivia.Problem ?? RsidCodes.FilePath + " carries no burst for " + variant + ".")
+                + " So nothing went out, because a signal nobody can name the variant of is a "
+                + "signal nobody can read.";
+
+            return;
+        }
 
         // **A CLEAR SPOT HAMLET FINDS, NOT A FIXED OFFSET** (§R6). The rule is
         // `Psk31ClearSpot.Rule` and it is stated in one place; this reads it. **A reply
         // skips it and goes out where the station being replied to is** - see
         // `_psk31SendAtHz`.
-        if ((at ?? ClearSpotForTheCall()) is not { } offsetHz)
+        // **AND AN OLIVIA CALL STARTS ON THE CITED CALLING CENTER** (R29, criterion 4.3,
+        // decision BA): the table says where calls start on this band, so a call to anyone
+        // goes there where it is clear, and falls back to the same rule where it is not.
+        if ((at ?? (olivia ? OliviaCallingOffsetHz() : null) ?? ClearSpotForTheCall()) is not { } offsetHz)
         {
-            Psk31Events.SendRefused(_telemetry, "no_clear_spot", macro, "spot");
+            Psk31Events.SendRefused(_telemetry, "no_clear_spot", macro, "spot", tag);
 
             DigitalSendLine =
                 "Hamlet did not call: the band is too crowded here to call without "
@@ -15673,12 +15737,43 @@ public partial class MainWindowViewModel : ObservableObject
         // compound callsign at 28.19 s; it is far too short for a sentence somebody typed.
         // **The cap travels on the send rather than being a constant everybody shares**, so
         // raising it for the one thing that needs it does not raise it for the rest.
-        var composed = Psk31Modulator.Compose(
-            wanted,
-            _transmitSampleRate,
-            offsetHz,
-            _settings.TransmitDrivePeak,
-            typed ? LongestTypedSeconds : OperatorSend.LongestUnslottedSeconds);
+        // **OLIVIA'S CAP IS THE SAME TWO RULES COUNTED IN ITS OWN CHARACTERS** (§3.2,
+        // criterion 4.4, decision BD): `OliviaTiming.CapSeconds` charges the timing table's
+        // counts at this variant's seconds per character, and the app's only job is to say
+        // which of PSK31's two caps this press is. **No figure in seconds is written here**,
+        // and PSK31's thirty and sixty do not move.
+        UnslottedTransmission composed;
+
+        try
+        {
+            composed = olivia
+                ? OliviaModulator.Compose(
+                    wanted,
+                    variant!,
+                    offsetHz,
+                    _transmitSampleRate,
+                    _settings.TransmitDrivePeak,
+                    typed ? OliviaSendKind.TypedLine : OliviaSendKind.Macro)
+                : Psk31Modulator.Compose(
+                    wanted,
+                    _transmitSampleRate,
+                    offsetHz,
+                    _settings.TransmitDrivePeak,
+                    typed ? LongestTypedSeconds : OperatorSend.LongestUnslottedSeconds);
+        }
+        catch (Exception error) when (error is InvalidOperationException or ArgumentException or ArgumentOutOfRangeException)
+        {
+            // **NO BURST, NO SEND** (work instruction 365 decision AS, R27). An Olivia signal
+            // names its variant only by its announcement, so where the codes or the format
+            // could not be read, or the text holds something Olivia cannot send as itself,
+            // nothing is composed and nothing is keyed. **The operator is told which file**,
+            // because a press that produced silence is the case somebody has to diagnose.
+            Psk31Events.SendRefused(_telemetry, "cannot_compose", macro, "compose", tag);
+
+            DigitalSendLine = "Hamlet did not send it: " + error.Message + ".";
+
+            return;
+        }
 
         // **WHAT WAS COMPOSED, BEFORE ANYTHING CAN REFUSE IT** (§R13). The length and the
         // seconds, never the text (§2.1).
@@ -15693,20 +15788,21 @@ public partial class MainWindowViewModel : ObservableObject
             composed.Cap,
             offsetHz,
             composed.AnnouncedCode,
-            composed.AnnouncementSeconds);
+            composed.AnnouncementSeconds,
+            tag);
 
         SendStage.Entered(
             _telemetry,
             SendStage.Composed,
-            UnslottedMode.Psk31.ToString(),
+            composed.Mode.ToString(),
             slotted: false);
 
         if (_armedSend is null)
         {
-            Psk31Events.SendRefused(_telemetry, "no_transmit_path", macro, "arm");
+            Psk31Events.SendRefused(_telemetry, "no_transmit_path", macro, "arm", tag);
 
             DigitalSendLine =
-                "Hamlet composed the PSK31 call and sent nothing: "
+                "Hamlet composed the " + ChosenDigitalMode + " call and sent nothing: "
                 + (_transmitRefusal.Length == 0
                     ? "no radio is connected and no transmit audio device is named "
                       + "in Settings."
@@ -15722,9 +15818,9 @@ public partial class MainWindowViewModel : ObservableObject
         // `Arm` returns the refusal already recorded, with nothing armed and nothing keyed.
         if (_armedSend.Arm(send) is { } refused)
         {
-            Psk31Events.SendRefused(_telemetry, "cap", macro, "arm");
+            Psk31Events.SendRefused(_telemetry, "cap", macro, "arm", tag);
 
-            DigitalSendLine = "Hamlet did not send the PSK31 call: " + refused.Reason;
+            DigitalSendLine = "Hamlet did not send the " + ChosenDigitalMode + " call: " + refused.Reason;
 
             return;
         }
@@ -15759,8 +15855,71 @@ public partial class MainWindowViewModel : ObservableObject
 
         // **THE CLICK IS THE MOMENT** (§R10). A send with no slot has no boundary to wait
         // for, so the action that armed it fires it; nothing reads a clock to decide.
-        _ = FirePsk31Async(wanted, macro, composed.Seconds, composed.AnnouncedCode, offsetHz);
+        _ = FirePsk31Async(wanted, macro, composed.Seconds, composed.AnnouncedCode, offsetHz, tag);
     }
+
+    /// <summary>Where an Olivia call to anyone goes in the passband, or null where the table cannot say.</summary>
+    /// <returns>The audio offset of the band's Olivia calling center, or null.</returns>
+    /// <remarks>
+    /// <para>**THE CENTER IS THE CITED TABLE'S AND THE ARITHMETIC IS THE DIAL'S** (R29,
+    /// criterion 4.3, decision BA). The table gives the center of the signal as a frequency on
+    /// the band; the passband offset that puts it there is that center less the USB dial, which
+    /// is the same relation <see cref="OliviaCallingTable.DialHzFor"/> states from the other
+    /// side. **Nothing here holds a number** - not the center, not the audio center the file's
+    /// dials assume, not the band.</para>
+    /// <para>**WHERE THE ANSWER WOULD NOT LEAVE THE RADIO, THERE IS NO ANSWER.** A dial the
+    /// operator has moved away from the calling spot puts that spot outside what an SSB
+    /// transmitter passes, and a carrier placed there would leave the sound card and never leave
+    /// the radio (<see cref="Psk31ClearSpot.LowestCallHz"/>'s own reasoning). The caller then
+    /// falls back to the clear-spot rule, which is bounded by those same two numbers.</para>
+    /// <para>**AND A SPOT SOMEBODY IS SITTING ON IS NOT CLEAR** (criterion 4.3). Where an Olivia
+    /// station being read is within <see cref="Psk31ClearSpot.ClearHz"/> of the calling center,
+    /// this answers null and the clear-spot rule chooses instead, or refuses in words.</para>
+    /// </remarks>
+    private double? OliviaCallingOffsetHz()
+    {
+        if (_olivia.Calling?.CallingRowFor(SelectedBand.Band.Name) is not { } row || FrequencyHz <= 0)
+        {
+            return null;
+        }
+
+        var offsetHz = row.CenterHz - (double)FrequencyHz;
+
+        if (offsetHz < Psk31ClearSpot.LowestCallHz || offsetHz > Psk31ClearSpot.HighestCallHz)
+        {
+            return null;
+        }
+
+        return OliviaCentersHeard().Any(hz => Math.Abs(hz - offsetHz) < Psk31ClearSpot.ClearHz)
+            ? null
+            : offsetHz;
+    }
+
+    /// <summary>Where every Olivia station being read sits in the passband.</summary>
+    /// <remarks>
+    /// **THE LISTENER'S OWN NUMBERS** (§0.1, decision BB). A channel that has ended is not
+    /// somebody to avoid, and a channel's center is the one as of its last accepted block, which
+    /// is the same number its row shows.
+    /// </remarks>
+    /// <summary>Whether the panel's own reading of the codes can announce a send at this variant.</summary>
+    /// <param name="variant">The variant the send would go at.</param>
+    /// <returns>True where the file gives a burst for it.</returns>
+    /// <remarks>
+    /// **THE PANEL'S READING AND NOT THE PROCESS'S** (work instruction 358 task 1). The file is
+    /// read once at startup and the panel holds what came back, so this asks the same object the
+    /// strip's sentence is written from. A file that could not be read is reported and never
+    /// guessed at.
+    /// </remarks>
+    private bool CanAnnounceOlivia(string variant)
+        => _olivia.Rsid is { } codes
+           && codes.CodeOf(OliviaModulator.AnnouncedAs(variant)) is { } code
+           && RsidBurst.TonesFor(codes, code) is not null;
+
+    private IEnumerable<double> OliviaCentersHeard()
+        => _oliviaShown
+            .Where(c => !c.Ended)
+            .Select(c => double.IsNaN(c.ShownCenterHz) ? c.CenterHz : c.ShownCenterHz)
+            .Where(hz => hz > 0);
 
     /// <summary>
     /// **Answer a station calling CQ: one click, one Answer, on his frequency.**
@@ -15798,6 +15957,11 @@ public partial class MainWindowViewModel : ObservableObject
 
         _psk31Macro = Psk31Macro.Answer;
         _psk31SendAtHz = OffsetOn(row!);
+
+        // **AT HIS VARIANT AS WELL AS HIS FREQUENCY** (R27, R28, decision BA). The row carries
+        // the variant its own RSID announced, or the one the blind search found; the answer goes
+        // at that, because a reply at another variant is a reply his decoder does not read.
+        _oliviaSendVariant = row!.HasVariant ? row.Variant : null;
 
         SendMessage(text);
 
@@ -15890,7 +16054,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// text is Tim's call. Report and Confirm keep §R1's gate, because those two assert
     /// something about the contact and this asserts nothing.</para>
     /// <para>**THE BLOCK CLEARS ONLY WHERE THE SEND ARMED.** `_armedText` is what
-    /// <see cref="SendPsk31"/> writes when it has armed something, so a refusal - no clear
+    /// <see cref="SendUnslotted"/> writes when it has armed something, so a refusal - no clear
     /// spot, no transmit path, over the cap - leaves his words on the card where he can
     /// shorten them and press again, rather than throwing away what he typed.</para>
     /// </remarks>
@@ -15938,6 +16102,7 @@ public partial class MainWindowViewModel : ObservableObject
         _psk31Macro = Psk31Macro.None;
         _psk31Typed = true;
         _psk31SendAtHz = Psk31OffsetOf(station);
+        _oliviaSendVariant = OliviaVariantOf(station);
 
         SendMessage(framed);
 
@@ -15989,7 +16154,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// on the air on the strength of a name Hamlet is unsure of.</para>
     /// </remarks>
     internal string? Psk31StationOn(DigitalDecodeRow? row)
-        => row is { IsTextOnly: true } && IsPsk31Chosen
+        => row is { IsTextOnly: true } && (IsPsk31Chosen || IsOliviaChosen)
             && row.Sender is { Length: > 0 } speaker
             && !Ft8MessageSplit.IsSameStation(speaker, _settings.Operator.Callsign)
                 ? speaker
@@ -16085,7 +16250,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="row">The row.</param>
     /// <returns>The label, or null.</returns>
     internal string? Psk31AnswerLabelFor(DigitalDecodeRow? row)
-        => Psk31CqOn(row) is { } station && IsPsk31Chosen ? "Answer " + station : null;
+        => Psk31CqOn(row) is { } station && (IsPsk31Chosen || IsOliviaChosen) ? "Answer " + station : null;
 
     /// <summary>Which offset a station's carrier is on, or null where he is not being heard.</summary>
     private double? Psk31OffsetOf(string callsign)
@@ -16098,6 +16263,30 @@ public partial class MainWindowViewModel : ObservableObject
             if (his && _psk31Rows.TryGetValue(id, out var row))
             {
                 return OffsetOn(row);
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>Which Olivia variant a station is being read at, or null where he is not an Olivia station.</summary>
+    /// <remarks>
+    /// **THE CHANNEL'S OWN VARIANT, BY THE SAME KEY THE OFFSET IS FOUND BY** (decision BA, AF's
+    /// one row path). <see cref="Psk31OffsetOf"/> finds which channel a station is speaking on
+    /// and reads its row; this finds the same channel and reads what
+    /// <see cref="ShowOliviaChannels"/> wrote down for it. **A PSK31 channel has no entry**, so
+    /// this answers null there and the send is composed as PSK31.
+    /// </remarks>
+    private string? OliviaVariantOf(string callsign)
+    {
+        foreach (var (id, reading) in _psk31Readings)
+        {
+            var his = reading.Messages.Any(
+                m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, callsign));
+
+            if (his && _oliviaVariants.TryGetValue(id, out var variant))
+            {
+                return variant;
             }
         }
 
@@ -16223,9 +16412,19 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var listener = _psk31;
 
+        // **UNDER OLIVIA THE CARRIERS TO AVOID ARE OLIVIA'S** (work instruction 366 decision
+        // BB). The PSK31 listener is not running there, so handing over its empty list would
+        // have said the band was empty while two stations were on the screen - the honest
+        // state of a search that has not run is not the same as the honest state of one that
+        // has (§0.0). **The rule itself is untouched**: the same `Choose`, the same 150 Hz,
+        // the same 400 to 2200, fed the stations Hamlet is actually reading.
+        var heard = IsOliviaChosen
+            ? OliviaCentersHeard()
+            : listener?.States.Select(s => s.OffsetHz) ?? [];
+
         return Psk31ClearSpot.Choose(
-            listener?.States.Select(s => s.OffsetHz) ?? [],
-            _psk31Candidates,
+            heard,
+            IsOliviaChosen ? [] : _psk31Candidates,
             listener?.LowestHz ?? Psk31ClearSpot.LowestCallHz,
             listener?.HighestHz ?? Psk31ClearSpot.HighestCallHz);
     }
@@ -16236,6 +16435,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="plannedSeconds">How long the composed audio is.</param>
     /// <param name="announcedCode">The RSID code the audio begins with, or null where it begins with none.</param>
     /// <param name="offsetHz">Where the send is in the passband, which is where its burst is centered.</param>
+    /// <param name="tag">The mode and variant an Olivia send adds to its lines, or null on PSK31.</param>
     /// <returns>What now did, or null where nothing was armed.</returns>
     /// <remarks>
     /// <para>**THE KEYING EVENTS ARE WRITTEN FROM WHAT THE RUN MEASURED, NOT FROM AN
@@ -16251,7 +16451,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// rather than a silence to infer.</para>
     /// </remarks>
     private async Task<Ft8BoundaryResult?> FirePsk31Async(
-        string wanted, string macro, double plannedSeconds, int? announcedCode, double offsetHz)
+        string wanted, string macro, double plannedSeconds, int? announcedCode, double offsetHz,
+        IReadOnlyDictionary<string, object?>? tag = null)
     {
         if (_armedSend is null)
         {
@@ -16298,14 +16499,16 @@ public partial class MainWindowViewModel : ObservableObject
                     keyed: true,
                     run.SecondsOffered,
                     plannedSeconds,
-                    aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
+                    aborted: run.Outcome == Ft8TransmitOutcome.Cancelled,
+                    tag);
 
                 Psk31Events.SendKeying(
                     _telemetry,
                     keyed: false,
                     run.SecondsOffered,
                     plannedSeconds,
-                    aborted: run.Outcome == Ft8TransmitOutcome.Cancelled);
+                    aborted: run.Outcome == Ft8TransmitOutcome.Cancelled,
+                    tag);
 
                 // **THE ANNOUNCEMENT IS WRITTEN AS SENT ONCE THE KEYING WAS TAKEN** (work
                 // instruction 359 task 4, §R13), for `psk31_send_keyed`'s reason: a line written
@@ -17264,7 +17467,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// are having conversations**, and nobody would answer it.</para>
     /// </remarks>
     public string CallToAnyoneText
-        => IsPsk31Chosen
+        => IsPsk31Chosen || IsOliviaChosen
             ? Psk31CallToAnyone
             : Ft8SendOptions.CallToAnyone(
                 _settings.Operator.Callsign?.Trim() ?? "", _settings.Operator.GridSquare);

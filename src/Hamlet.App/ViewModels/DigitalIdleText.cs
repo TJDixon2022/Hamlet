@@ -74,14 +74,18 @@ public static class DigitalIdleText
     /// which said, correctly then, that Hamlet listened a thousand hertz above the dial
     /// and nowhere else. It now looks at everything the receiver passes, so a quiet list
     /// does mean nothing Hamlet can be sure is PSK31 is there.</para>
-    /// <para>**IT SAYS THE LINES CANNOT BE ANSWERED** (0.0, 0.2), because a line of text
-    /// with a callsign in it looks like something to click, and nothing on it is.</para>
+    /// <para>**IT USED TO SAY THE LINES COULD NOT BE ANSWERED** (0.0, 0.2), which was true of
+    /// PSK31 for the one unit between its listener and its send path and has been false ever
+    /// since, and which work instruction 366 made false for Olivia too by opening the mode
+    /// gate. **A sentence nobody noticed going stale is the fault 0.0 is about**, so what
+    /// stands here now is what a line actually offers: a station calling anybody carries an
+    /// Answer, and the click sends the reply where he is listening.</para>
     /// </remarks>
     public static string ListeningAcrossThePassband(string mode)
         => "listening for " + mode + " across the whole passband. Every signal Hamlet is "
             + "sure is " + mode + " gets a line of its own below, with where it sits, how "
-            + "strong it is and its text as it arrives. Nothing on those lines can be "
-            + "answered yet.";
+            + "strong it is and its text as it arrives, and a line from somebody calling "
+            + "anybody carries an Answer that replies on his own frequency.";
 
     /// <summary>The waterfall, before any spectrum has arrived.</summary>
     /// <remarks>
