@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: 7 of 7
+STATE: WORKING
+TASK: 0 of 5
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: web
-NEXT_PASTE: output.md -> Claude Web
+BALL: claude
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-14T13:01:50-04:00
-NOTE: Unit 359 complete: RSID bursts read 8 of 8, PSK31 sends announced 5 of 5, 1.5 partial on the ft8_transmission field; report written
+UPDATED: 2026-09-18T21:53:23-04:00
+NOTE: Task 0: engine carry-forward 105 of 105 before any change; app invocation starting
 
 ---
 

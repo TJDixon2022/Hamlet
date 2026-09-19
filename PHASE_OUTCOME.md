@@ -77,3 +77,15 @@ ACCOMPLISHED: Hamlet hears an RSID announcement anywhere in the passband and nam
 FATE: executed
 STATE_AFTER: partial
 STATE_WHY: Criteria 1.1 to 1.4, 1.6 and 1.7 are met with measured numbers, but 1.5 is not, because the transmission record for a PSK31 send still does not say the send was announced, and adding that is a logging field a later instruction can allow without needing a ruling from the owner.
+
+## UNIT 360 - STEP 1
+
+STEP: 1
+APPROACH: carry the RSID code into the no-slot transmission record and hold the cap to the text alone, burst outside it, bounded by the burst's own measured length
+MOVE: continue
+WHY: step 1 is partial on 1.5 alone, and both halves unit 359 fenced off are now licensed by Tim's R32; the loop test finds this approach in no entry, and step 2 cannot start until step 1 is done
+DECIDED: the arbiter's D, E, F and G as work instruction 360 carries them, author's and overrulable. Task 4 is the drop candidate; tasks 0 to 3 have none.
+LICENCE: PHASE_PLAN.md R32 (a) and (b), R27, R31, section 6; PSK31 plan R5, R10, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155
+COST: one session, five tasks (0 to 4), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md has step 0 done and step 1 partial; psk31-cq-rsid.wav first, then the other eight, hash as manifest.json says, 9 of 9. Carry-forward before any change: app 165 of 165, engine 105 of 105.

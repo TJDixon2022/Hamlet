@@ -855,8 +855,13 @@
     done, the two entry fixtures and then the other seven hash as their manifest says, and the outcome
     carries unit 359 under step 1. No file under src changes at this task.
   -->
+  <!--
+    1.13.46 -> 1.13.47, UNIT 360 TASK 0. A PATCH, STEP 1 OF THE OLIVIA PHASE, 1.5 UNDER R32: step 0 is
+    done and step 1 partial, the nine fixtures hash as their manifest says, and the outcome carries
+    unit 360 under step 1. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.46</Version>
+    <Version>1.13.47</Version>
   </PropertyGroup>
 
   <!--
