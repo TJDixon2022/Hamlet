@@ -10,6 +10,15 @@ public enum UnslottedMode
 {
     /// <summary>PSK31: a continuous carrier for exactly as long as its text takes.</summary>
     Psk31 = 0,
+
+    /// <summary>Olivia: whole blocks of tones, for as long as its text's blocks take.</summary>
+    /// <remarks>
+    /// **COMPOSED BY THE ENGINE, NOT YET SENT BY THE APPLICATION** (work instruction 365 decision
+    /// AP). <c>OliviaModulator.Compose</c> makes one, and the application's mode gate still refuses
+    /// Olivia, so the member names audio the engine can make and nothing yet keys. No line of the
+    /// sequence changed for it: the sequence reads the mode only into its record and its sentences.
+    /// </remarks>
+    Olivia = 1,
 }
 
 /// <summary>Whether a send with no slot may go, measured against the cap.</summary>
@@ -63,8 +72,9 @@ public sealed record UnslottedTransmission(
 
     /// <summary>How many samples at the front are the announcement, or 0 where there is none.</summary>
     /// <remarks>
-    /// **SET ONLY BY <c>Psk31Modulator.Compose</c>, FROM THE BURST IT ACTUALLY PUT THERE** (work
-    /// instruction 360, the arbiter's decision D). <see cref="Fit"/> holds it to that burst's own
+    /// **SET ONLY BY <c>Psk31Modulator.Compose</c> AND <c>OliviaModulator.Compose</c>, FROM THE BURST
+    /// EACH ACTUALLY PUT THERE** (work instruction 360, the arbiter's decision D; work instruction
+    /// 365 decision AP). <see cref="Fit"/> holds it to that burst's own
     /// length, so no caller can buy carrier time by calling it an announcement.
     /// </remarks>
     public int AnnouncementSamples { get; init; }

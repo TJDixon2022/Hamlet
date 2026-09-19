@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 1 of 5
+TASK: TASK 2 of 5
 WORK_INSTRUCTION: 365 - Hamlet own Olivia modulator, read back by Hamlet own ears
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T17:42:39-04:00
-NOTE: Unit 365 task 1 done - loopback 30 of 30 identical at 3 variants x 2 centers; committing, then task 2 (measure against the author)
+UPDATED: 2026-09-19T17:46:43-04:00
+NOTE: Unit 365 task 2 done - Hamlet's signal matches the author's on all four quantities at every variant, worst 0.48% of a 5% tolerance; committing
 
 ---
 

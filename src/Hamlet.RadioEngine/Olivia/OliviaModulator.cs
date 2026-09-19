@@ -87,6 +87,72 @@ public static class OliviaModulator
         return Synthesize(Tones(format, v, Characters(format, text)), v, centerHz, sampleRate, peak);
     }
 
+    /// <summary>The name a send at this variant is announced under, as `rsid-codes.json` carries it.</summary>
+    /// <param name="variant">The variant, as the air names it, e.g. "8/250".</param>
+    /// <returns>The name, e.g. "OLIVIA_8_250".</returns>
+    /// <remarks>**A NAME TO LOOK THE CODE UP BY, NOT A CODE** (R27), spelled the way
+    /// <see cref="Rsid.RsidCodes.VariantOf"/> reads it back.</remarks>
+    public static string AnnouncedAs(string variant) => "OLIVIA_" + (variant ?? "").Replace('/', '_');
+
+    /// <summary>The audio for this text, as a send with no slot carries it: its announcement, a pause, then the text.</summary>
+    /// <param name="text">What to send.</param>
+    /// <param name="variant">The variant, as the air names it.</param>
+    /// <param name="centerHz">Where the tones, and the burst, are centered.</param>
+    /// <param name="sampleRate">Samples a second - the transmit endpoint's.</param>
+    /// <param name="peak">The drive level the operator set.</param>
+    /// <param name="longestSeconds">The most this send may be after its announcement.</param>
+    /// <returns>The samples, the rate, the mode, the text's length and the code announced - and not the text.</returns>
+    /// <exception cref="InvalidOperationException">The format or the RSID codes could not be read, or carry no burst for the variant.</exception>
+    /// <remarks>
+    /// <para>**EVERY OLIVIA SEND BEGINS WITH ITS VARIANT'S RSID BURST** (`PHASE_PLAN.md` R27), from
+    /// <see cref="Rsid.RsidBurst"/>, centered on the send's own center at the same drive level.
+    /// <see cref="Transmit.UnslottedTransmission.AnnouncedCode"/> and
+    /// <see cref="Transmit.UnslottedTransmission.AnnouncementSamples"/> are the burst actually placed,
+    /// so the cap measures what follows it (R32 (a)) and <c>Fit</c> excuses that burst and no more.</para>
+    /// <para>**THEN THE BURST'S OWN SILENCE AGAIN, BEFORE THE FIRST SYMBOL** (work instruction 365
+    /// decision AS). The author's fixtures, made the way fldigi sends RSID, carry five RSID symbols
+    /// of silence after the tones as before them, and `Unit365Trace` measured 0.467 s from the last
+    /// tone to the first symbol on all three. The file states the silence before
+    /// (<see cref="Rsid.RsidCodes.SilenceSymbolsBefore"/>) and Hamlet's burst carries it; the same
+    /// count after is this unit's reading of the fixtures. It is outside the announcement, so the
+    /// cap counts it.</para>
+    /// <para>**NO BURST, NO SEND** (§0.0). An Olivia signal names its variant only by its burst, and
+    /// a receiver that must guess the variant reads nothing, so where the codes carry no burst for
+    /// the variant nothing is composed. This unit's choice, overrulable; PSK31's send, whose mode a
+    /// receiver needs no announcement to read, goes unannounced instead.</para>
+    /// </remarks>
+    public static Transmit.UnslottedTransmission Compose(
+        string text,
+        string variant,
+        double centerHz,
+        int sampleRate,
+        float peak,
+        double longestSeconds = Transmit.OperatorSend.LongestUnslottedSeconds)
+    {
+        var said = Modulate(text, variant, centerHz, sampleRate, peak);
+
+        var codes = OliviaData.Current.Rsid
+            ?? throw new InvalidOperationException("the RSID codes could not be read, so the send cannot be announced: " + OliviaData.Current.Problem);
+
+        if (codes.CodeOf(AnnouncedAs(variant)) is not { } code || Rsid.RsidBurst.TonesFor(codes, code) is null)
+        {
+            throw new InvalidOperationException("the RSID codes carry no burst for Olivia " + variant + ", so the send cannot be announced");
+        }
+
+        var burst = Rsid.RsidBurst.Samples(codes, code, centerHz, sampleRate, peak);
+        var pause = Rsid.RsidBurst.ToneStartSample(codes, sampleRate);
+        var samples = new float[burst.Length + pause + said.Length];
+
+        burst.CopyTo(samples, 0);
+        said.CopyTo(samples, burst.Length + pause);
+
+        return new(Transmit.UnslottedMode.Olivia, samples, sampleRate, text.Length, longestSeconds)
+        {
+            AnnouncedCode = code,
+            AnnouncementSamples = burst.Length,
+        };
+    }
+
     /// <summary>How many symbols this text takes at this variant: whole blocks.</summary>
     /// <param name="format">The format's facts.</param>
     /// <param name="variant">The variant.</param>
