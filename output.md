@@ -1,20 +1,68 @@
 READ IN THIS ORDER.
 
-A. The phase goal - written when the unit ends.
-B. Step 3's criteria this unit worked - written when the unit ends.
-C. The report last - written when the unit ends.
+A. The phase goal - Hamlet works Olivia the way it works PSK31. Steps 0,
+   1 and 2 done and closed; step 3 was partial at the start of this unit
+   - 3.0 met, 3.1 engine half, 3.6 measured on the engine - and is seven
+   of seven met on this report's evidence, for the arbiter to mark done;
+   steps 4-6 not started, and step 4's entry opens only when step 3 is
+   done, which it is on this report if the arbiter marks it so.
+B. Step 3's criteria this unit worked - 3.1 rows: rows 2 (2), 8/250 at 1000
+   Hz and 16/500 at 2000 Hz (5 Hz), CERs 0.0000 and 0.0000 (0.05), the
+   other callsign 0 and 0 (0), most rows at once 2. 3.2: transcripts 8
+   (32 row readings, 31 parser verdicts), verdict differences 0 (0),
+   parser diff none. 3.3: CQ filter, worked-fade, EntityOf and CQ guard,
+   quill, hover - same each, code diff none in any of their files or
+   members (the row gains Variant and HasVariant, named below). 3.4:
+   factor 56 (24 raised: the -16 dB 16/500 file goes 55.2 characters
+   without a new accepted block while its station still sends), windows
+   38.230 / 28.672 / 22.938 s, rows ended 2 of 2, mid-transmission
+   retires 0 (0) on 8 files. 3.5: 21 row events of 7 PSK31 names, mode
+   olivia on each and the variant on each row's, text or callsign 0 (0).
+   3.6: ratio 0.212 at 8 kHz and 0.245 at 48 kHz (1.0) with rows drawn.
+   Met: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, with 3.0 from unit 363. Not met:
+   none. Send controls under Olivia with rows: keyed 0 (0); PttOn 1 (1),
+   Arm( 2 (2).
+C. The report last: section 4 raises 12 items on top of the carried
+   queue; none stands in the way of a step 3 criterion. Drawing rows
+   opened no path toward a send: every send still goes through
+   SendMessage, whose mode gate refused all four presses that reached it
+   (decision AN, item 3). No row showed a character not its own
+   station's. No feature's code changed for Olivia rows; the row path took
+   the variant field, the mapping and a mode tag on four row events (item
+   4). The lag measured from the row is 5.84 s median, 5.97 s worst,
+   2.92 blocks, every variant alike. Carry-forward at the end: engine 142
+   in 4 m 46 s (286 s), app 179 in 2 m 27 s, against the 480 s timeout.
+   Item 1 is for whoever runs the loop: while this unit ran, the harness
+   ended it, and an arbiter wrote a PHASE_OUTCOME entry for it that is
+   false on three fields.
 
-UNIT:       364 - in progress at task 1 of 6 - this draft is replaced before the session stops
-PHASE GOAL: Hamlet works Olivia as it works PSK31, with the variant taken from the signal and never picked by the operator.
-UNIT GOAL:  Olivia channels drawn as rows through the one PSK31 row path under the Olivia tab, with nothing new able to reach a send.
-ADVANCED:   not yet stated - the unit is running
-NUMBER:     not yet stated - the unit is running
+UNIT:       364 - complete at task 5 of 6, task 5 built - 2026-09-19 14:31
+PHASE GOAL: Olivia in Hamlet as PSK31 is - every station heard, read, answered and logged - with the variant always taken from the signal (its RSID, or measured off a carrier that never announced itself) and never picked by the operator.
+UNIT GOAL:  Put the engine's Olivia listener on the screen under the Olivia tab as PSK31 is on it - a row per station through the PSK31 row path with its variant, the same parser and row features reading it unchanged, rows that retire on a window scaled by the variant's timing and stay listed as ended, the row telemetry with mode olivia - and nothing new able to reach a send.
+ADVANCED:   yes - Olivia stations appear on the Olivia panel as rows for the first time, and the five must-passes step 3 still had open are met with measurements.
+NUMBER:     step 3 criteria met 1 of 7 -> 7 of 7; Olivia rows on screen 0 -> 2
 DRIFT:      0
+
+| Criterion | This unit's evidence | State |
+| --- | --- | --- |
+| 3.0 8/250 at -14 dB, CER <= 0.10 | unit 363: CER 0.0000 on five seeds at a measured -13.82 dB; not re-worked | **met** (unit 363) |
+| 3.1 two-signal file yields two rows, own text <= 0.05, nothing of one in the other | through the app's tick and tap: rows 2, most at once 2; 8/250 at 1000 Hz and 16/500 at 2000 Hz, each showing its variant; CER 0.0000 and 0.0000; EI4GNB 0 times on KC3QIS's row and KC3QIS 0 times on EI4GNB's | **met** |
+| 3.2 corpus through Olivia rows, same verdicts, no parser change | 8 transcripts, 32 row readings and 31 parser verdicts compared field by field: 0 differences; `Psk31ExchangeParser.cs` no diff against `75571f5d` | **met** |
+| 3.3 CQ filter, worked-fade, EntityOf and CQ guard, quill, hover on Olivia rows, no change to their code | the same outcome as the PSK31 row on all five; no diff in `DecodedFilter.cs`, `DxccPrefixes.cs`, `NudgeSet.cs`, `NudgeWords.cs`, nor in `WantsRow`, `ApplyDecodedFilter`, `WorkedBeforeNote`, `MarkIfItOpensSomething`, `RowOpacity`, `SenderHelp`, `WholeMessage` | **met** |
+| 3.4 retired when the signal goes, listed as ended, window = timing table x a stated factor | factor 56 in `timing.json`; 16/500 ended 28.682 s after its last block (window 28.672), 8/250 still open; 8/250 ended 38.288 s after (38.230); both listed, ended, text and center unchanged; 0 retires on 8 shipped files | **met** |
+| 3.5 PSK31 row events with mode olivia and the variant, nothing personal | 21 events of 7 PSK31 row-event names on the two-signal feed plus one finished line; every one mode olivia, every row's with its variant; no word of either station's text, no callsign, not the operator's | **met** |
+| 3.6 real-time ratio on the two-signal file under 1.0 (nice-to-pass) | with rows drawn, the whole tick: 0.212 at 8 kHz, 0.245 at 48 kHz; longest single tick 0.130 / 0.141 s | **met** |
 
 ## 1. What Claude did
 
-**In progress.** Machine: Tim's development box, `C:\Source\HamLet`, gate held (`SHACK_FACTS.md`
-and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and `MURC.sln` absent), branch `main`.
+**Complete: tasks 0 to 5 of 6, all built, none dropped** - task 5, the drop candidate, included.
+Machine: Tim's development box, `C:\Source\HamLet`, gate held (`SHACK_FACTS.md` and
+`CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and `MURC.sln` absent), branch `main`. Commits,
+**every push succeeded**: `6c632d3d` (task 0), `cbcde914` (decision AL), `f10e045b` (task 1),
+`70014dfb` (task 2), `2caf9107` (task 2, §R12 seam rewrite in its own commit), `4ce4cd9c` (task 2
+fix), `15d6ea69` (task 3), `64cb9cc0` (task 4), `5a769cf1` (task 5), `1079966a` (decision AN's card
+press); this report is committed after them. Status written at every task boundary, after commits
+and before every `dotnet test`, `EXECUTING` and `code` throughout.
 
 ### Task 0 - the unit opens
 
@@ -118,9 +166,343 @@ Items 1 to 3 read from the source, lines as at `cbcde914`. Items 4 and 5 measure
    recording's end makes and the air does not: on the air those arrive as later audio pushes them
    through.
 
+### Task 2 - the rows (3.1 rows half, 3.5)
+
+- **Decision AE.** `HearOlivia` (`MainWindowViewModel.cs`, beside `HearRsid`) reads the tap as
+  `HearPsk31` does, through its own `Psk31Resampler` to 8 kHz, into one `OliviaListener` over
+  200-3000 Hz, and is called in the tick's Olivia branch only, after the capture and the RSID
+  detector. Leaving the Olivia tab calls `ForgetOlivia` (written ended, stopped, rows ended as
+  PSK31's are), from `OnChosenDigitalModeChanged`, which until now left an Olivia path alive on a
+  press of PSK31 because it only forgot PSK31 when leaving PSK31.
+- **Decision AF.** `ShowOliviaChannels` maps each live channel to `Psk31Channel(Id, center, NaN,
+  Text, Readable: BlocksDecoded > 0)` and calls `ShowPsk31Channels(channels, variants)`. The row
+  gained `Variant` and `HasVariant`, drawn in a leading `Auto` column of the text-row grid, hidden and
+  zero-width on every other row. An ended channel is left out of the list, so the PSK31 path ends its
+  row as it ends a carrier's.
+- **Decision AG.** `OliviaChannel` gained `ShownCenterHz`, the center as of the last accepted
+  block. The row shows it, and shows the tracked center only before the first block. **The strength
+  cell is a dash**: the listener measures a block's S/N in its own units, not decibels in 2500 Hz.
+- **Decision AK.** The PSK31 row events, with `mode: olivia`, and the variant on each row's:
+  `psk31_carrier_appeared`, `psk31_squelch` (last block S/N against Olivia's threshold 4),
+  `psk31_reading`, `psk31_line_parsed`, `psk31_row_ended`, `psk31_row_cleared`,
+  `psk31_carrier_retired`, `psk31_audio_level`. The listener's own start and stop are
+  `olivia_listening_started` / `_stopped` (a decision, below). `olivia_channel` and `olivia_block`
+  are unchanged.
+- **Decision AM.** The strip says `ListeningAcrossThePassband("Olivia")`, PSK31's sentence (still
+  `NotYetReadable` behind a file that failed to read). The decoded-idle line (`DigitalIdleText.DecodedOlivia`)
+  says a line per station, a few characters a block, and keeps its Capture sentence. The waterfall
+  caption says PSK31's `Olivia, one continuous carrier a station` where it said `not read yet`.
+  **`TheOliviaSeamTests` was rewritten under §R12 in its own commit** (`2caf9107`): three
+  assertions guarded the shut door and went red when rows were drawn - the strip's *cannot read
+  Olivia yet*, *no row* after the RSID burst, and *no `psk31_` event at all* - and now guard 0.5:
+  the strip says nothing can be answered and `CanAnswerRowsForTests` is false, every row after the
+  burst is an Olivia row and no card opens, and every `psk31_` event under the tab carries `mode:
+  olivia`. 11 of 11.
+- **`TheOliviaRowsTests` watched failing first** against stub seams: **5 of 6 red**, the noise test
+  green against it as a listener that hears nothing draws nothing. Then 6 of 6. Every file
+  hash-checked; each fed through the real tick a quarter-second at a time, then four blocks of the
+  slowest variant (8.192 s) of seeded noise at RMS 0.001, because the app never flushes and the
+  last blocks reach a channel only as later audio pushes them through.
+- **The carry-forward, first run with the rows: app 171 of 172.** The red was
+  `TheCaptureButtonTests.PressingUnderOliviaWritesTheWavAndTheEventsWithModeOlivia` - **this unit's
+  doing, not a flake**: it reads `psk31_listening_started` under the Olivia tab as *a PSK31 listener
+  supplied the capture*, and the Olivia listener's start had taken that name. Renamed
+  (`4ce4cd9c`), the test not edited. Then **app 172 of 172 (2 m 8 s)**, **engine 133 of 133 (3 m 15 s)**.
+
+### Task 3 - the parser and the row features (3.2, 3.3)
+
+`TheOliviaRowsReadLikePsk31Tests`, **app project**, because the seams are there: an Olivia row by
+`ShowOliviaChannelsForTests` (added, the Olivia twin of `ShowPsk31ChannelsForTests`), a PSK31 row by
+`ShowPsk31ChannelsForTests`. **Watched failing first against a stub that drew no Olivia row: 6 of 6
+red**, then removed. The first real run was 5 of 6: my CQ-filter test expected a non-CQ row dropped,
+and **on a PSK31 row it is not** (item 5), so the test now holds the Olivia row to wherever the
+PSK31 row lands. 6 of 6. **No source changed in this task.**
+
+### Task 4 - the retire (3.4)
+
+The factor is **56**, in `data/olivia/timing.json` as `retire_after_characters`, with a
+`retire_about` saying why. `OliviaTiming.RetireAfterCharacters` reads it strictly, and
+`RetireWindowSeconds(variant)` is the variant's seconds per character times it: **38.230 s, 28.672 s,
+22.938 s**. `OliviaListener`, given the table (the app passes `OliviaData.Timing`; the engine tests
+that pass nothing retire nothing, as before), retires in `Add` any channel whose `SamplesSeen` has
+passed its last accepted block's end, or where it was read from, by more than the window. A retired
+channel is ended, fed nothing more, and flagged `Retired`, with an `olivia_channel` event `retired`
+carrying `windowSeconds`, `retireFactor` and `lastBlockEndSeconds`. The app writes
+`psk31_carrier_retired` with reason `SignalGone`, the window and the factor. **Watched failing first
+against stubs**: the derived-window test red and the app retire test red (*8/250 was never retired*).
+The eight no-retire rows were green against the stub trivially, since it retired nothing, and got
+their real test once the retire existed. Then engine `TheOliviaRetireTests` and
+`TheOliviaDataTests` 15 of 15, app `TheOliviaRowsTests` 7 of 7. `TheOliviaRetireTests` joined the
+engine line (it adds about 85 s, and the line stays under the 400 s the instruction sets).
+**Carry-forward: engine 142 of 142 in 4 m 46 s; app 178 of 179 in 2 m 27 s.** The red,
+`TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning`, **passed alone on the
+first rerun**. It realizes three whole windows twice and compares every box. This unit changed that
+layout only inside the decoded-row template (a zero-width column on non-Olivia rows), and none of
+its windows draws a text row. The app number is the list run's, 178 of 179.
+
+### Task 5 - the real-time ratio with the rows drawn (3.6)
+
+`TheOliviaRowsKeepUpTests`, app, in a `CpuMeasuredAlone` collection defined there (the app
+assembly already runs nothing in parallel), **not on the carry-forward line**. Process CPU around the
+whole tick - capture check, the RSID detector, the listener, the mapping, the row path, the events -
+over the file and its quiet, rows drawn 2: **0.212 at 8 kHz, 0.245 at a 48 kHz device**, both
+asserted under 1.0.
+
+**Afterwards, decision AN's test was strengthened** (`1079966a`). Its first version pressed a card
+whose Report had no text, because the test's settings had no name or location (PSK31's rule in
+`MacroTextFor`), so no card button was ever pressed. With a name and place set, the card offers
+Report with action Send, and the press is refused at the door. `TheOliviaRowsTests` 7 of 7, run by
+name. **The last full app list run predates this test-only change.**
+
+### Decisions this session made for itself, author's and overrulable
+
+- **Factor 56**, by decision AJ's own rule (item 2).
+- **The quiet after each file in the app tests**: four blocks of the slowest variant of seeded
+  Gaussian noise at RMS 0.001 - not digital silence, whose noise measure would be exactly nothing -
+  and for the retire test the longest window plus those four blocks.
+- **The Olivia listener's start and stop are `olivia_listening_started` and
+  `olivia_listening_stopped`**, not PSK31's names: they are not row events, and
+  `psk31_listening_started` means *a PSK31 listener started* to a test §10 forbids me to edit.
+- **The row's strength is a dash** (decision AG's mapping): Olivia's block S/N is not dB in 2500 Hz.
+- **The row's variant is drawn first in the text-row grid**, muted, in its own column.
+- **The decoded-idle sentence for Olivia** is new wording (DecodedOlivia): the old one was false
+  once rows were drawn, and PSK31's names PSK31. The strip and the waterfall caption reuse
+  PSK31's sentences with the mode's name.
+- **Synthetic Olivia channels through the tick's own seam** in the AN and events tests. The
+  fixture's CQs never finish a line (item 6), so a finished CQ, a line to the operator and one to
+  another station were given through `ShowOliviaChannelsForTests`, from the mapping on.
+- **`TheOliviaRetireTests` on the engine line** and `TheOliviaRowsReadLikePsk31Tests` on the app
+  line; `Unit364Trace` and `TheOliviaRowsKeepUpTests` on neither.
+
+### Verified against the tree - mismatches with section 5 of the instruction
+
+- **None of substance in section 5's list.** HEAD `eb714fa4`, 1.13.50; `output.md` unit 363's,
+  committed; `PHASE_STATUS.md` steps 0-2 `done`, step 3 `partial`, `CURRENT_STEP: 3`,
+  `WORK_INSTRUCTION: 358`; `PHASE_OUTCOME.md` ending on `UNIT 2 - STEP 3`; the nine Olivia engine
+  files; `OliviaListener`'s shape as stated; the PSK31 row path at the lines stated (±0); the corpus
+  and its readers; `timing.json` at 0.683 s a character (0.68267); carry-forward 134 / 166 with the
+  names as stated; `PttOn` 1 and `Arm(` 2; `assets\fixtures\captured\` holding only `README.md`.
+- **Decision AH / task 3's wording: *the CQ filter keeps a CQ row and drops a non-CQ one*.** On a
+  PSK31 row it drops nothing (item 5).
+- **Section 1's cost note** (*every engine class that feeds a whole fixture costs about as much as
+  `TheOliviaListenerTests`*) held: `TheOliviaRetireTests` added about 85 s.
+- The expected mismatches were not rediscovered; none was edited.
+
+## 2. What the owner should expect
+
+- **Press Olivia and the stations on the air appear as lines**, one per station, each starting with
+  its variant (`8/250`, `16/500`), in the same list PSK31 lines use, filling in a few characters at a
+  time. A station that announced itself shows *heard, not readable yet* until its first block is
+  read.
+- **Text arrives about six seconds after it was sent** - three blocks - on every variant. That is
+  the reader waiting for its frequency track to settle, and it is measured, not a fault.
+- **A line goes grey and says `ended`** once its station has been quiet 56 characters' worth of its
+  variant: 38 s at 8/250, 29 s at 16/500, 23 s at 32/1000. It stays on the list with its words, as
+  PSK31 lines do.
+- **The Answer, Report, Confirm, CQ and typed-line buttons under Olivia still send nothing** and say
+  *Hamlet cannot send Olivia yet*. Step 4 opens them.
+- **What will look wrong but is not:**
+  - The strength column on an Olivia line is a dash, and the strip's sentence (PSK31's) still says
+    each line shows *how strong it is* (item 8).
+  - A station's last line in an over - `... pse K` - is not read as a CQ, and cannot be clicked,
+    until whatever it sends next arrives (item 6).
+  - With CQ only on, Olivia lines that are not CQs stay on the list, exactly as PSK31 lines do (item 5).
+  - The engine carry-forward run takes 4 m 46 s and the app run 2 m 27 s.
+  - `PHASE_STATUS.md`, `PHASE_OUTCOME.md` and `WORK_INSTRUCTIONS.md` show uncommitted changes this
+    session did not make (item 1).
+
+## 3. What you should see
+
+**The Olivia tab with the two-signal recording fed** (computed through the app's own tick, not seen
+on a screen; nothing here is evidence about the radio, FACT-004):
+
+| Variant | Center | Text | State |
+| --- | --- | --- | --- |
+| 8/250 | 1000 Hz | `CQ CQ CQ de KC3QIS KC3QIS KC3QIS pse K` | live |
+| 16/500 | 2000 Hz | `CQ CQ CQ de EI4GNB EI4GNB EI4GNB pse K` | live |
+
+**And after the retire window** (the file, then quiet): the same two lines, the same text and the
+same centers, both greyed and marked `ended`. The 16/500 line ended at 51.50 s of audio while the
+8/250 line was still open, and the 8/250 line at 67.25 s.
+
+**3.2 - the corpus through both rows**: 8 transcripts, 32 row readings after each line and 31
+parser verdicts compared, every field: **0 differences**.
+
+**3.3 - the features** (the same text on a PSK31 row and an Olivia row):
+
+| Feature | PSK31 row | Olivia row | Code diff against `75571f5d` |
+| --- | --- | --- | --- |
+| CQ filter (CQ only on) | CQ shown; line to W9ZZZ shown; line to the operator on his side; unfinished line shown | the same, each | none (`DecodedFilter.cs`, `WantsRow`, `ApplyDecodedFilter`) |
+| worked-fade | 0.55, tip as worked | 0.55, the same tip | none (`WorkedBeforeNote`, `RowOpacity`) |
+| `EntityOf` and the `CQ` guard | TI2ABC -> Costa Rica; `CQ` refused | the same; *Who sent it. TI2ABC is a callsign from Costa Rica.* | none (`DxccPrefixes.cs`, `SenderHelp`) |
+| quill | Visible, *Costa Rica · new country*, lift 1 | the same | none (`MarkIfItOpensSomething`, `NudgeSet.cs`, `NudgeWords.cs`) |
+| hover | whole message under *TI2ABC · time* | the same body, byte for byte | none (`WholeMessage`) |
+
+The parser, `Psk31MessageSplitter.cs` and `Psk31ExchangeParser.cs`: no diff. The row path's own
+changed lines are listed in item 4.
+
+**The retire table:**
+
+| Variant | Seconds a character | Factor | Window | Longest the listener went with no new block while sending, any file |
+| --- | --- | --- | --- | --- |
+| 8/250 | 0.68267 | 56 | 38.230 s | 8.142 s (11.9 ch) |
+| 16/500 | 0.512 | 56 | 28.672 s | **28.242 s (55.2 ch), the -16 dB file**; 8.143 s on the others |
+| 32/1000 | 0.4096 | 56 | 22.938 s | 8.142 s (19.9 ch) |
+
+**The row events as written** (two-signal feed, the first of each kind; start and stop since renamed
+`olivia_listening_*`):
+
+```
+psk31_carrier_appeared {"carrierId":2,"offsetHz":1000.3,"strengthDb":null,"quality":null,"passesAsCandidate":null,"found":"rsid","mode":"olivia","variant":"8/250"}
+psk31_squelch {"offsetHz":1000.3,"open":false,"quality":0,"threshold":4,"mode":"olivia","variant":"8/250"}
+psk31_reading {"offsetHz":1000.3,"reading":false,"afcHz":0,"mode":"olivia","variant":"8/250"}
+psk31_line_parsed {"offsetHz":1500,"kind":"Cq","certain":true,"turnover":true,"toOperator":false,"characters":32,"mode":"olivia","variant":"16/500"}
+psk31_row_ended {"offsetHz":1000,"characters":38,"lines":0,"lifetimeSeconds":33.7,"mode":"olivia","variant":"8/250"}
+psk31_carrier_retired {"carrierId":1,"offsetHz":2000,"reason":"SignalGone","lifetimeSeconds":48,"charactersEmitted":38,"linesParsed":0,"secondsSinceLastCharacter":22.8,"mode":"olivia","variant":"16/500","windowSeconds":28.672,"retireFactor":56}
+```
+
+**The lag, from the row's side** (`Unit364Trace`): first block ended 4.386 s and reached its channel
+at 10.250 s on every file; median 5.816 s (8/250) and 5.864 s (16/500) on the two-signal file, 5.838 s
+on the 16/500 QSO; worst 5.970-5.972 s, 2.92 blocks.
+
+**The send controls under Olivia, two rows present plus two given through the seam:**
+
+| Control | What happened |
+| --- | --- |
+| click on the fixture's 8/250 and 16/500 rows (Answer) | nothing: no finished CQ on them (item 6) |
+| click on a finished Olivia CQ (Answer) | `send_requested`, `send_refused` - *Hamlet cannot send Olivia yet* |
+| right-click (open a card) | nothing: `Psk31StationOn` answers only under PSK31 |
+| CQ | `send_requested`, `send_refused` |
+| the card's Report (action Send) | `send_requested`, `send_refused` |
+| the card's typed line | `send_requested`, `send_refused` |
+
+Four requested, four refused; no `send_stage`, composed, armed, keyed, `ptt` or `rsid_sent` line.
+`PttOn` code lines 1 (`Ft8TransmitSequence.cs:513`), `Arm(` lines 2; no diff under `Transmit\`, in
+`Psk31Modulator.cs` or `RsidBurst.cs`.
+
+**The real-time table** (the whole tick, rows drawn):
+
+| Device rate | Audio | CPU | Ratio (1.0) | The file alone | Longest single tick |
+| --- | --- | --- | --- | --- | --- |
+| 8 kHz | 37.00 s | 7.859 s | **0.212** | 0.212 | 0.130 s, the piece ending 3.50 s |
+| 48 kHz | 37.00 s | 9.047 s | **0.245** | 0.246 | 0.141 s, the piece ending 3.50 s |
+
+Unit 363's listener alone: 0.154. The piece at 3.50 s is where both RSID channels open and take
+their replay.
+
 ## 4. What's blocking us
 
-*Written when the unit ends. Unit 363's section 4 is carried below, verbatim.*
+**Nothing blocks step 3 or step 4's entry.** Twelve new items. Item 1 is for whoever runs the loop;
+the rest are findings, and none wants a ruling from the owner. The carried queue follows them.
+
+### Raised by unit 364
+
+**1. The harness ended this unit while it ran, and an arbiter wrote over the loop's files.**
+
+*A finding about the loop, not the code; nothing here was edited or committed by this session.* At
+about 14:05, with this unit at task 4, something outside the session rewrote three files:
+- **`WORK_INSTRUCTIONS.md`** now reads *No unit authored - the arbiter stops: unit 364 is still
+  running*, and tells this unit its instruction is at `6c632d3d`.
+- **`PHASE_OUTCOME.md`** has a new last entry, `UNIT 3 - STEP 3`, with `FATE: executed`, `COST:
+  17.930809499999995` (unit 363's) and `STATE_AFTER: partial`, judged from this report's task-1
+  draft. The arbiter's own note says all three fields are false, and this report agrees.
+- **`PHASE_STATUS.md`** lost its `HEARTBEAT` line.
+
+This session committed `PHASE_OUTCOME.md`, `PHASE_STATUS.md` and `WORK_INSTRUCTIONS.md` at task 0,
+as the instruction asked, and has not committed their later changes. `SESSION.lock` and
+`.run-unit\` were never committed.
+
+**2. The retire factor is 56, not 24.**
+
+*A number, raised by decision AJ's own rule; the arbiter's to overrule.* The retire is judged on
+what the listener knows, and a block reaches a channel about six seconds after it ends. So the
+longest a sending station goes without a new accepted block, as the listener sees it, is 8.14 s on
+every clean file: the wait from the burst to the first block. At 24 the clean files hold, 32/1000 by
+1.7 s. **The -16 dB 16/500 file goes 28.24 s, 55.2 characters**, because its reader shows 9 blocks
+of 77. So 24 would have ended that row while the station was still sending. At 56 it holds by
+0.43 s. That file is the one the plan's revised 2.2 calls below 16/500's sensitivity. **A station
+that stops is listed as live for 38 s at 8/250, where 24 would have given 16 s.**
+
+**3. Decision AN held, and here is why.**
+
+*A finding, for step 4.* Every send in the app goes through `SendMessage`, and its mode gate
+(`CanTransmitIn`, `MainWindowViewModel.cs:2431`) refuses Olivia before either `Arm(` site. Drawing
+rows added two ways to reach that door under Olivia: Answer on a finished CQ, and a card, which opens
+where a station certainly calls the operator. Both reached it and were refused. **Step 4 opens the
+door for Olivia at that one gate**, and every row control will then be live at once.
+
+**4. The row path's changed lines, named (decision AF).**
+
+*For the record of what the one path took.* `DigitalDecodeRow`: `Variant`, `HasVariant`.
+`ShowPsk31Channels`: an optional `variants` map, `var variant = ...`, `&& shown.Variant == variant` in
+the unchanged-row check, and `Variant = variant` on the new row. Four row events gain a mode tag:
+`ReadPsk31`'s `LineParsed`, `EndOrRemovePsk31Row`'s `RowEnded`, and the two `RowCleared` calls, each
+passing `OliviaTagFor(...)`, which is null on a PSK31 row. `AudioSecondsHeard` falls back to the
+Olivia listener's clock. `MainWindow.axaml`'s text-row grid gained a leading column, so its four
+other columns moved by one. **No line in the parser, the splitter or any 3.3 feature.**
+
+**5. The CQ filter holds back no PSK31 or Olivia row - the instruction expected it to drop a non-CQ
+one.**
+
+*A mismatch with the tree, reported, not repaired.* `WantsRow` (`MainWindowViewModel.cs:2138`, unit
+337): *the squelch is the only gate on a PSK31 row*; the CQ toggle applies to FT8 rows only, and a
+line to the operator goes to his side. Olivia rows get exactly that. 3.3 asks for the same outcome
+with no code change, and it is the same.
+
+**6. An over's last line is not read until the next character arrives.**
+
+*A finding, shared with PSK31.* The splitter closes a message on the character after the turnover.
+The two-signal file's CQs end `pse K` with nothing after them, so on that file no line is parsed,
+neither row is a clickable CQ, and `psk31_line_parsed` needed a line given through the seam. On the
+air the station's next character, or the next station's, closes it.
+
+**7. A certain message to the operator on an Olivia row is booked in the contact ledger with no
+mode.**
+
+*A finding for step 5, not a send.* `ReadPsk31` books such a message through
+`Ft8ContactLedger.RecordPsk31` (`MainWindowViewModel.cs:2790`) for PSK31 rows, and now for Olivia
+rows. The ledger carries no mode. It keys nothing. Logging Olivia with its submode is step 5's.
+
+**8. An Olivia row's strength is a dash, and the strip's reused sentence promises one.**
+
+*Wording, the arbiter's.* The listener's figure is a block's S/N in its own units, which is not
+comparable to PSK31's dB in 2500 Hz, so the cell is honest and empty. The strip now says PSK31's
+*... with where it sits, how strong it is and its text as it arrives*. That is true for PSK31 and
+not for Olivia's strength.
+
+**9. The tracked center wanders after a station stops, up to 19.5 Hz, until the retire.**
+
+*A finding; decision AG's shown center hides it from the row.* On the two-signal file, after its last
+block, the 16/500 channel's track moved to 2019.53 Hz and the 8/250's to 996.09 Hz. The rows showed
+2000 and 1000 throughout, and nothing moved after the retire. The lag is 5.84 s median, the same on
+every variant, because every block is 2.048 s.
+
+**10. Two RSID detectors run under Olivia.**
+
+*A cost, reported.* `HearRsid` (step 1's `rsid_heard`, criterion 1.6) and the listener's own
+detector both run on the same audio. The ratios in section 3 include both. Folding `rsid_heard`
+into the listener would save about 0.08 of real time, and would change a step 1 event's source.
+
+**11. R27's across-tab half is logged, not built (decision AE).**
+
+*For the plan's author.* An RSID heard under PSK31 or FT8 switches nothing; the Olivia listener runs
+under the Olivia tab only.
+
+**12. Tool facts and runs this session.**
+
+*Reported, not repaired.*
+- The engine line ran **three times at task 0**: my first `grep` pattern missed the summary line
+  under normal verbosity. Every later filter kept `Passed!|Failed!`.
+- `sed -i` on `output.md` and a `>` redirect into the root were refused as *outside the allowed
+  working directories*. **So unit 363's sections 1-3 were removed with the file editor**, and the
+  carried queue below is the original bytes: `git show 75571f5d:output.md | tail -n +338 | md5sum`
+  gives `15c07dbd758513f633cdc449c55a332b`, and so did this file's carried block at task 1
+  (`tail -n +127`) and in the final report (`tail -n +509`).
+- `grep -o` with a quantifier, `git config` and `grep -v` in a pipe needed approval; `grep -n` on a
+  `.trx` and `sh tools/status.sh ... && dotnet test ... | grep -E` ran.
+- `TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning` went red once in the
+  list run and was green alone on the first rerun (task 4).
+- `tools/status.sh` still writes `RULES_AT: HM-DEC-161` and `WORK_INSTRUCTION: 358`.
 
 ### Asks still outstanding - carried from unit 363's section 4, per HM-DEC-139, verbatim
 
