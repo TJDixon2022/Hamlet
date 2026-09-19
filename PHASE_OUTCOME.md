@@ -3,7 +3,7 @@ PHASE_SET: 2026-09-14
 DESCRIPTION: A fourth digital mode, MFSK with error correction that reads below the noise, on the same cards, macros, typed line, log and achievements as PSK31; the variant chosen by the signal's own announcement, never by the operator.
 STEP: 0 | done | The seam - Olivia exists as a mode. The cited calling table, a tab that tunes to the 8/250 spot, a panel that names itself, the Capture button, the RSID and calling data in the tree. Nothing decodes.
 STEP: 1 | done | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
-STEP: 2 | not started | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
+STEP: 2 | done | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
 STEP: 3 | not started | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
 STEP: 4 | not started | Say it - Hamlet's own modulator for the variants, every send announced by RSID, the PSK31 macros and the typed line with their timing scaled to the variant, the move-off-and-widen macro, through the one proved chain.
 STEP: 5 | not started | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
@@ -143,3 +143,30 @@ LICENCE: PHASE_PLAN.md step 2 criteria 2.3 and 2.7, R27, R30, R31, section 3.3, 
 COST: one session, five tasks (0 to 4), each committed on its own.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ENTRY: PHASE_STATUS.md has steps 0 and 1 done and step 2 not started; olivia-8-250-qso-norsid.wav hashes as the manifest says and the RSID detector finds nothing in it over 200-3000 Hz (0 detections, 13.5 s cpu); then the other eight hash, 9 of 9. Carry-forward before any change: engine 119 of 119, app 166 of 166.
+
+## UNIT 1 - STEP 2
+
+STEP: 2
+APPROACH: blind variant search for a carrier that never announced itself - the center and the variant found from occupied bandwidth and tone spacing, confirmed by trial decode against the noise floor, plus a drift fixture made from the shipped one
+HIT: section 4 asked nothing inside the three stops - author's, overrulable, the loop continued - Every new item is a finding the unit says wants no ruling, and every carried ask inside the three has either been answered or is recorded as a finding without asking the owner to decide anything.
+MOVE: continue
+WHY: Step 2 is five of seven with 2.3 the only must-pass left, and step 3's entry is shut until it is met; the loop test finds no blind search in any entry, and unit 361 already read this very fixture at CER 0.0000 when handed the variant, so what is unbuilt is the finding and not the reading.
+DECIDED: author's, overrulable - (O) OliviaBlindSearch is its own engine class, given audio and a passband and never a center, a variant or a start time; the manifest checks what it found. (P) the variant is chosen by measured tone spacing and occupied band matched against format.json rows, ranked and confirmed by trial decode on the sync S/N the demodulator already uses, with a candidate no better than noise refused; only the phase's three rows must separate, and the other four are a reported finding. (Q) 2.3's stated time is stated as two numbers - audio seconds consumed before the naming, and search CPU seconds - with no ceiling set, the decode still measured against 2.5's twenty. (R) the noise-only fixture must yield no candidate; that is part of 2.3's proof. (S) 2.7's drifted audio is made in the test from a hash-checked shipped file by a 20 Hz-per-minute ramp, written into no folder and never into the manifest. (T) 2.7 holds means CER 0.05 or under with the tracked offset reported. (U) the -16 dB test is rewritten in its own commit to assert what the corrected 2.2 asks - read inside the CPU ceiling, every character from an accepted block, the CER measured and printed with no ceiling - and joins the carry-forward list, because the plan withdrew that ceiling on 2026-09-19 and a later ruling wins. (V) per-block frequency and timing tracking is allowed for 2.7, and unit 361's eight decode rows are re-measured beside their old numbers, a clean CER off 0.0000 being a regression that comes out. Task 4 is the drop candidate; tasks 0 to 3 have none. Unit 361's section 4 asked for no ruling; its item 1 is answered by the plan's own revision and marked in place.
+LICENCE: PHASE_PLAN.md step 2 criteria 2.3 and 2.7, R27 (the blind search as the fallback), R30, R31, section 3.3, section 8 (the revision of 2026-09-19) and section 6 (a later ruling wins; a number or a mechanism is the arbiter's; a fixture that will not decode; the port clause); PSK31 plan R5, R9, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155; ARBITER.md section 6
+COST: 14.782491499999999
+ACCOMPLISHED: Hamlet finds an Olivia station that never announced itself - reading its variant and its place off the air the way an operator reads a waterfall - and reads it, while hearing nothing at all in noise; which is the last thing step 2 owed and the gate to hearing everyone
+FATE: executed
+STATE_AFTER: done
+STATE_WHY: The report backs every exit criterion with measurements, including the blind search that found and named the unannounced carrier after 4.096 seconds of audio and 0.703 seconds of CPU and then decoded it at CER 0.0000, and the drift test that held at CER 0.0000.
+
+## UNIT 363 - STEP 3
+
+STEP: 3
+APPROACH: Olivia listener - one streaming demodulator per carrier heard by RSID or found blind, channels per station as Psk31Listener gives them, and the -14 dB 8/250 fixture made in the test from the mode author's shipped audio with a seeded noise
+MOVE: continue
+WHY: Step 2 is done and closed, and step 3 is next in a one-way pipeline with its entry - the two-signal fixture's RSIDs - proved by step 1's 1.2. Its rows need an engine object that reads a stream and gives a channel per station, which does not exist, and its 3.0 is the phase's below-noise claim; the loop test finds neither in any entry.
+DECIDED: the arbiter W, X, Y, Z, AA, AB, AC and AD as work instruction 363 carries them, author's and overrulable. Task 4 is the drop candidate; tasks 0 to 3 have none.
+LICENCE: PHASE_PLAN.md step 3 criteria 3.0, 3.1 and 3.6, R27, R28, R30, R31, section 3.2, section 3.3, section 8 and section 6; PSK31 plan R5, R9, R12, R13, R14; CLAUDE.md 0.2; HM-DEC-139, HM-DEC-155
+COST: one session, five tasks (0 to 4), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md has steps 0, 1 and 2 done and step 3 not started; olivia-two-signals-rsid.wav hashes as the manifest says and the RSID detector reads OLIVIA_8_250 (69) at 1000.29 Hz and OLIVIA_16_500 (70) at 1999.66 Hz, 15 tones right each; the other eight hash, 9 of 9. Carry-forward before any change: engine 124 of 124 (1 m 39 s), app 166 of 166 (45 s).

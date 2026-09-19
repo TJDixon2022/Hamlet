@@ -872,8 +872,14 @@
     nothing in it, the other eight hash, and the outcome carries unit 362 under step 2. No file under
     src changes at this task.
   -->
+  <!--
+    1.13.49 -> 1.13.50, UNIT 363 TASK 0. A PATCH, STEP 3 OF THE OLIVIA PHASE, THE LISTENER AND THE
+    BELOW-NOISE CLAIM: steps 0, 1 and 2 are done, the two-signal file hashes as its manifest says and
+    the RSID detector reads 8/250 at 1000.29 Hz and 16/500 at 1999.66 Hz in it, the other eight hash,
+    and the outcome carries unit 363 under step 3. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.49</Version>
+    <Version>1.13.50</Version>
   </PropertyGroup>
 
   <!--

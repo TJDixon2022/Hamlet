@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 4 of 4
+STATE: EXECUTING
+TASK: TASK 0 of 5
 WORK_INSTRUCTION: 358 - the seam: Olivia exists as a mode
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-161 (2026-09-11)
-UPDATED: 2026-09-19T11:43:05-04:00
-NOTE: Unit 362 complete - blind search finds the no-RSID 8/250 at 1000.00 Hz in 4.1 s, CER 0.0000, noise none; drift held at CER 0.0000
+UPDATED: 2026-09-19T11:55:44-04:00
+NOTE: Task 0 - engine carry-forward rerun for its pass count (the first run's summary was cut by my filter)
 
 ---
 
