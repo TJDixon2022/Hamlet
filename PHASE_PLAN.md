@@ -153,12 +153,12 @@ is Hamlet's.
 **Entry:** step 1 done; the clean 16/500 fixture's RSID detected, checked first.
 
 **Exit:**
-- [ ] 2.1 The clean 8/250, 16/500 and 32/1000 fixtures decode to their text at CER at or under 0.01 each, the variant taken from RSID. *must-pass*
-- [ ] 2.2 The -10 dB fixture decodes at or under 0.05 and the -16 dB fixture at or under 0.10. *must-pass*
+- [x] 2.1 The clean 8/250, 16/500 and 32/1000 fixtures decode to their text at CER at or under 0.01 each, the variant taken from RSID. *must-pass*
+- [x] 2.2 The -10 dB fixture decodes at or under 0.05; the -16 dB fixture's CER is measured and reported with no ceiling - the author set -16 dB below the mode's own published sensitivity for 16/500 (about -12 to -13 dB in 2500 Hz), so the ceiling was the author's error, corrected 2026-09-19. *must-pass*
 - [ ] 2.3 The no-RSID 8/250 fixture is found by the blind search - the variant identified within a stated time from the tone spacing and symbol rate - and decodes at or under 0.05. *must-pass*
-- [ ] 2.4 The noise-only fixture emits zero characters. *must-pass*
-- [ ] 2.5 Every fixture's hash matches the manifest before use; each decodes in under twenty seconds of CPU, reported. *must-pass*
-- [ ] 2.6 The seconds-per-character for each variant is measured from the fixtures and stored as the mode's timing table, from which every later timing rule derives. *must-pass*
+- [x] 2.4 The noise-only fixture emits zero characters. *must-pass*
+- [x] 2.5 Every fixture's hash matches the manifest before use; each decodes in under twenty seconds of CPU, reported. *must-pass*
+- [x] 2.6 The seconds-per-character for each variant is measured from the fixtures and stored as the mode's timing table, from which every later timing rule derives. *must-pass*
 - [ ] 2.7 A carrier that drifts 20 Hz over a minute (a fixture the unit makes from the shipped one) holds. *nice-to-pass*
 
 **Depends on:** step 1.
@@ -174,6 +174,7 @@ station ends, as PSK31 rows do.
 **Entry:** step 2 done; the two-signal fixture's RSIDs detected, checked first.
 
 **Exit:**
+- [ ] 3.0 A new fixture from the reference generator - 8/250 at -14 dB in 2500 Hz, RSID in front, the QSO text - is made by the unit and decodes at or under 0.10; the below-noise claim proved at the variant that can do it. *must-pass*
 - [ ] 3.1 The two-signal fixture yields two rows, each with its variant and its own text at or under 0.05, nothing of one in the other. *must-pass*
 - [ ] 3.2 The transcript corpus fed through Olivia rows yields the same verdicts as through PSK31 rows - no parser change. *must-pass*
 - [ ] 3.3 The CQ filter, worked-fade, `EntityOf` with its `CQ` guard, the quill and the hover run on Olivia rows with no change to their code. *must-pass*
@@ -271,3 +272,4 @@ the rank names; real flags on country cards; the id-scheme split; the map bitmap
 ## §8 Revision record
 
 - **2026-09-18.** R32 on Tim's rulings; 1.5 reworded to carry them; criteria met by units 358 and 359 checked as the record has them.
+- **2026-09-19.** 2.2 corrected - the -16 dB ceiling was the author's, below the mode's own sensitivity; 3.0 added so the below-noise claim is proved on 8/250 at -14 dB; 2.1, 2.4, 2.5, 2.6 checked as unit 361 proved them.

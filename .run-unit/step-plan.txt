@@ -1,22 +1,23 @@
-﻿STEP: 1 | Hear the announcement - RSID detected across the passband, the mode, variant and offset read from it, proved on every RSID fixture; and every keyboard-mode send Hamlet makes begins with its own RSID, PSK31 included.
-## Step 1 - Hear the announcement
+﻿STEP: 2 | Hear one - an Olivia demodulator for a named variant at a named offset, MFSK with the mode's error correction, proved against the mode author's own audio at 8/250, 16/500 and 32/1000, clean and below the noise; a blind variant search for a carrier that never announced itself.
+## Step 2 - Hear one
 
-**Delivers:** an RSID detector across the passband - the 15-tone burst at 11025/1024 Hz
-spacing, decoded through the ported tables to a mode code - yielding mode, variant and
-center offset; and an RSID burst generator, so that every keyboard-mode send Hamlet makes
-begins with its own announcement.
+**Delivers:** `OliviaDemodulator` - MFSK with the mode's Walsh-function block coding and
+scrambling, symbol and block synchronization, for a named variant at a named offset -
+proved against the mode author's own audio; and a blind variant search for a carrier
+that never announced itself. The reference is fldigi's `pj_mfsk.h`, read at the pinned
+clone and never ported wholesale (PSK31 plan R5); the structure may be followed, the code
+is Hamlet's.
 
-**Entry:** step 0 done; `psk31-cq-rsid.wav` and `olivia-8-250-cq-rsid.wav` hash as the
-manifest says, checked first.
+**Entry:** step 1 done; the clean 16/500 fixture's RSID detected, checked first.
 
 **Exit:**
-- [ ] 1.1 Each RSID fixture yields exactly one detection with the right code, variant and center within 5 Hz; the no-RSID and noise-only fixtures yield none. *must-pass*
-- [ ] 1.2 The two-signal fixture yields two detections, 8/250 at 1000 and 16/500 at 2000. *must-pass*
-- [ ] 1.3 The -16 dB fixture's RSID is detected. *must-pass*
-- [ ] 1.4 Hamlet's own burst generator, fed a code, produces tones that the detector reads back as that code at that center, and matches the shipped burst's tone sequence from `rsid-codes.json`. *must-pass*
-- [ ] 1.5 A PSK31 CQ from Hamlet now begins with the BPSK31 RSID burst, proved by loopback through the detector; the transmission record says so; FT8 and FT4 sends are byte-identical to before. *must-pass*
-- [ ] 1.6 `rsid_heard` (code, variant, center, quality) and `rsid_sent` events, no callsign. *must-pass*
-- [ ] 1.7 The detector keeps up with real time on the four-signal PSK31 fixture and the two-signal Olivia fixture, ratio reported. *nice-to-pass*
+- [ ] 2.1 The clean 8/250, 16/500 and 32/1000 fixtures decode to their text at CER at or under 0.01 each, the variant taken from RSID. *must-pass*
+- [ ] 2.2 The -10 dB fixture decodes at or under 0.05 and the -16 dB fixture at or under 0.10. *must-pass*
+- [ ] 2.3 The no-RSID 8/250 fixture is found by the blind search - the variant identified within a stated time from the tone spacing and symbol rate - and decodes at or under 0.05. *must-pass*
+- [ ] 2.4 The noise-only fixture emits zero characters. *must-pass*
+- [ ] 2.5 Every fixture's hash matches the manifest before use; each decodes in under twenty seconds of CPU, reported. *must-pass*
+- [ ] 2.6 The seconds-per-character for each variant is measured from the fixtures and stored as the mode's timing table, from which every later timing rule derives. *must-pass*
+- [ ] 2.7 A carrier that drifts 20 Hz over a minute (a fixture the unit makes from the shipped one) holds. *nice-to-pass*
 
-**Depends on:** step 0.
+**Depends on:** step 1.
 

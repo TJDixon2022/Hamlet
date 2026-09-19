@@ -1,8 +1,71 @@
 ﻿
+**Nothing blocks 1.5 or step 2's entry.** Five new items, all findings; none wants a ruling.
+The carried queue follows them.
+
+### Raised by unit 360
+
+**1. `longestSeconds` on a typed line's record says 30 when the send was held to 60.**
+
+*A finding, not repaired.* `TransmitRecord.ToBag` writes `OperatorSend.LongestUnslottedSeconds`
+for every no-slot send (`TransmitRecord.cs`, the `longestSeconds` line), not the send's own
+`Cap`. The typed record in section 3 shows it: `longestSeconds: 30` on a send held to 60. This
+is older than this unit (work instruction 357 moved the cap onto the send and did not move
+this). Decision F named the fields this unit adds, and this is not one of them. A later unit can
+carry `Cap` through `Recorded` the way this one carried the announcement.
+
+**2. The sequence's refusal sentence quotes the whole audio, not the text the cap measured.**
+
+*A finding, not repaired.* `SendableWithNoSlot` says *this is {audio.Seconds} s of PSK31 audio,
+and this send may be at most {Cap} s*. Since R32 (a), the number compared to the cap is
+`TextSeconds`, so an announced refusal quotes 1.86 s more than was measured. The sentence is
+still true about the audio. Changing it touches `Ft8TransmitSequence` beyond decision F's one
+change, so it was left.
+
+**3. `WhereTheTransmissionStartsAndWhatTheRecordSaysTests.ATransmitRecordCannotCarryTheMessageOrTheCallsignInIt`
+is red, and older than this unit.**
+
+*A finding, not repaired.* It asserts `Assert.Single` over every event a slotted FT8 run
+writes. Since `7de5018b` (every stage writes `send_stage`), the run writes four `send_stage`
+events and then the record, so it fails on the count before it reaches the record's shape. It
+is not on the carry-forward list. This unit's filter picked it up by name, and this unit
+changed no stage.
+
+**4. The typed line's card rounds to *60 s of text* for a line that goes.**
+
+*A finding for whoever next touches the card.* 59.968 s prints as *60 s of text* beside *the
+most a typed line may be is 60 s*, and it sends. One character more prints *60.1 s*. The card
+and the gate agree, as the test proves, but the word does not show the margin.
+
+**5. Tool facts and status words this session.**
+
+*A finding, reported and not repaired.*
+- Needed approval and not run: `python -c`, `jq`, `git restore --source`, `git checkout <rev> --
+  <file>`, `git stash push`, `awk`, and `tools/status.sh` run directly (not through `sh`) when
+  joined by `&&`. `sh tools/status.sh` alone, and joined by `&&` to `git` and `dotnet test`, ran.
+  Earlier units report that Python ran; it did not run this session.
+- `sed -n` inside a pipe after `git show` ran. `tail -n +N file | md5sum` ran, and was used to
+  check that the carried queue below is byte-identical to `db3edfa1:output.md` from its unit 358
+  heading to its end.
+- **The first five status writes this session read `STATE: WORKING` and `BALL: claude`**, which
+  are not allowed words (`CLAUDE.md` Â§13.1). Every write from the sixth on, during task 1, used
+  `EXECUTING` and `code`. `tools/status.sh` still writes `RULES_AT: HM-DEC-161`, and `WORK_INSTRUCTION` is read
+  from `PHASE_STATUS.md`, which still says 358.
+
+### Asks still outstanding - carried from unit 359's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 359's, from its line under `## 4. What's blocking us` to its end, as
+committed in `db3edfa1`. Only that top-level heading is dropped, so this report keeps four
+sections. Its nested queues are carried as unit 359 carried them, and the queue of units 337 to
+353 is still carried by reference to `4c55deac:output.md`. **Two items are marked in place and
+nothing is deleted.** This unit answers none of the others.
+
 Nothing blocks step 2's entry: the clean 16/500 burst is detected. Five items. **Item 1 wants
 Tim, because it changes what a send can be. Item 2 is stop material the unit did not build.**
 
 **1. The report macro to a compound callsign no longer fits its cap with the burst in front.**
+
+*ANSWERED by R32 (a), Tim 2026-09-18 - the burst does not count against the cap; built in work
+instruction 360 task 2.*
 
 *Raised for the next arbiter to take to Tim as a Â§R10 question, as decision A directs.* The four
 macros as Â§R2 writes them fit, so task 4 was built.
@@ -25,6 +88,8 @@ margin and 0.05 s more.
 margin.
 
 **2. The transmission record does not say the send was announced.**
+
+*ANSWERED by R32 (b), Tim 2026-09-18; built in work instruction 360 task 3.*
 
 *Stop material under task 4's fence, so not built.* Criterion 1.5 says *the transmission record
 says so*. `ft8_transmission` is built only in `Ft8TransmitSequence.Recorded`, from
