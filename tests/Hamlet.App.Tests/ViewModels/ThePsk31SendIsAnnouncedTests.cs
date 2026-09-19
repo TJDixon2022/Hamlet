@@ -352,6 +352,92 @@ public sealed class ThePsk31SendIsAnnouncedTests : IDisposable
         Assert.Contains("Too long to send", card.TypedNote, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// **R32 (b): each of the five kinds of PSK31 send, pressed on the fake radio, writes an
+    /// `ft8_transmission` saying it was announced, with the code and the burst's length.**
+    /// </summary>
+    /// <remarks>
+    /// Work instruction 360 task 3, the arbiter's decision F. CQ, then Answer, Report and Confirm
+    /// through the textbook exchange the way `ThePsk31ExchangeTests` presses them, then a typed
+    /// line on the same card. **Nothing personal** in any record: no callsign, grid, place or
+    /// word of the text.
+    /// </remarks>
+    [Fact]
+    public void EachOfTheFiveKindsOfSendRecordsThatItWasAnnounced()
+    {
+        FakeSink sink;
+        string his;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "360", _ => true))
+        {
+            MainWindowViewModel model;
+
+            (model, sink) = Panel(telemetry);
+
+            model.SendCallToAnyoneCommand.Execute(null);
+            Settle(model);
+
+            HearTextbook(model, 1);
+            model.AnswerPsk31Command.Execute(model.DigitalDecodes[0]);
+            Settle(model);
+
+            HearTextbook(model, 2);
+            model.CardActionCommand.Execute(model.DigitalCards[0]);
+            Settle(model);
+
+            HearTextbook(model, 3);
+            model.CardActionCommand.Execute(model.DigitalCards[0]);
+            Settle(model);
+
+            var card = model.DigitalCards[0];
+
+            his = card.Callsign;
+            card.TypedText = "hello from the bench";
+
+            model.SendTypedPsk31Command.Execute(card);
+            Settle(model);
+        }
+
+        var lines = Lines();
+        var code = Codes.CodeOf(AnnouncedAs)!.Value;
+        var kinds = Events(lines, "psk31_send_composed").Select(e => e.GetProperty("macro").GetString()).ToList();
+        var records = lines.Where(l => l.Contains("\"" + TransmitRecord.EventName + "\"", StringComparison.Ordinal)).ToList();
+
+        _output.WriteLine("composed, in order: " + string.Join(", ", kinds));
+
+        foreach (var line in records)
+        {
+            _output.WriteLine(line);
+        }
+
+        Assert.Equal(new[] { "cq", "answer", "report", "confirm", "typed" }, kinds);
+        Assert.Equal(5, sink.TimesCalled);
+
+        var written = Events(records, TransmitRecord.EventName);
+        var announced = 0;
+
+        Assert.Equal(5, written.Count);
+
+        foreach (var record in written)
+        {
+            var rate = record.GetProperty("sampleRate").GetInt32();
+
+            Assert.Equal("Played", record.GetProperty("outcome").GetString());
+            Assert.True(record.GetProperty("announced").GetBoolean());
+            Assert.Equal(code, record.GetProperty("rsidCode").GetInt32());
+            Assert.Equal(
+                RsidBurst.LengthInSamples(Codes, rate) / (double)rate,
+                record.GetProperty("announcementSeconds").GetDouble(),
+                9);
+
+            announced++;
+        }
+
+        _output.WriteLine($"records saying announced with code {code}: {announced} of {written.Count}");
+
+        NothingPersonal(records, his, "Trafford", "hello", "bench");
+    }
+
     /// <summary>**The keying and arming sites are the task 1 trace's: one `PttOn` write, two `Arm(` lines.**</summary>
     [Fact]
     public void TheKeyingAndArmingSitesAreUnchanged()
@@ -440,6 +526,21 @@ public sealed class ThePsk31SendIsAnnouncedTests : IDisposable
         model.OpenPsk31CardCommand.Execute(row);
 
         return model.DigitalCards.Single(c => c.Callsign == "EI4GNB");
+    }
+
+    /// <summary>His first lines of the textbook exchange, as `ThePsk31ExchangeTests` feeds them.</summary>
+    private static void HearTextbook(MainWindowViewModel model, int lines)
+    {
+        var corpus = Psk31Corpus.Load();
+
+        var his = corpus.Transcripts
+            .Single(t => t.Name == "01-textbook")
+            .Lines
+            .Where(l => !string.Equals(l.Frm, corpus.Operator, StringComparison.OrdinalIgnoreCase))
+            .Take(lines)
+            .Select(l => l.Text + "\n");
+
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(1, HisHz, 10.0, string.Concat(his)) });
     }
 
     /// <summary>Lets a no-slot send finish; the click fires it and does not wait (§R10).</summary>

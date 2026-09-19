@@ -666,7 +666,10 @@ public sealed class Ft8TransmitSequence
                 Keyed: run.Keyed,
                 Mode: send.Unslotted.Mode,
                 Fit: send.Unslotted.Fit,
-                AudioSeconds: send.Unslotted.Seconds);
+                AudioSeconds: send.Unslotted.Seconds,
+                Announced: send.Unslotted.Announced,
+                RsidCode: send.Unslotted.Announced ? send.Unslotted.AnnouncedCode : null,
+                AnnouncementSeconds: send.Unslotted.Announced ? send.Unslotted.AnnouncementSeconds : 0);
 
         var bag = new Dictionary<string, object?>(record.ToBag());
 

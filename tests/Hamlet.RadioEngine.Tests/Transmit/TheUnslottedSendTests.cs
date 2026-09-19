@@ -451,7 +451,58 @@ public sealed class TheUnslottedSendTests
         Assert.Equal(UnslottedFit.LongerThanTheCap, codeOnly.Fit);
     }
 
+    /// <summary>
+    /// **R32 (b): the no-slot record says whether the send was announced, with the code and the
+    /// burst's length; with the codes unreadable it says `announced: false` and no code.**
+    /// </summary>
+    /// <remarks>
+    /// Work instruction 360 task 3, the arbiter's decision F. **The codes cannot be made unreadable
+    /// from a test** - `OliviaData.Current` is read once from the embedded file - so the
+    /// unannounced send is what <c>Compose</c> returns in that case: the text's samples with no
+    /// code and no announcement. `audioSeconds` stays the whole audio, because that is what keyed.
+    /// </remarks>
+    [Fact]
+    public async Task TheRecordSaysWhetherTheSendWasAnnounced()
+    {
+        var code = Codes.CodeOf(Psk31Modulator.AnnouncedAs)!.Value;
+        var text = Psk31Macros.Cq(Mine);
+
+        var announced = Psk31Modulator.Compose(text, Rate, 1000, Ft8Composer.DefaultDrivePeak);
+        var unannounced = new UnslottedTransmission(
+            UnslottedMode.Psk31, Psk31Modulator.Modulate(text, Rate, 1000, Ft8Composer.DefaultDrivePeak), Rate, text.Length);
+
+        var withCode = await RecordOf(announced);
+        var withNone = await RecordOf(unannounced);
+
+        Assert.True(Assert.IsType<bool>(withCode.Data["announced"]));
+        Assert.Equal(code, Assert.IsType<int>(withCode.Data["rsidCode"]));
+        Assert.Equal(RsidBurst.LengthInSamples(Codes, Rate) / (double)Rate, Assert.IsType<double>(withCode.Data["announcementSeconds"]));
+        Assert.Equal(announced.Seconds, Assert.IsType<double>(withCode.Data["audioSeconds"]));
+
+        Assert.False(Assert.IsType<bool>(withNone.Data["announced"]));
+        Assert.False(withNone.Data.ContainsKey("rsidCode"), "an unannounced send wrote a code");
+        Assert.Equal(0.0, Assert.IsType<double>(withNone.Data["announcementSeconds"]));
+        Assert.Equal(unannounced.Seconds, Assert.IsType<double>(withNone.Data["audioSeconds"]));
+
+        NothingPersonal(withCode);
+        NothingPersonal(withNone);
+    }
+
     // ---- helpers ---------------------------------------------------------
+
+    /// <summary>Arms and fires one send and hands back the record it wrote.</summary>
+    private async Task<TelemetryEvent> RecordOf(UnslottedTransmission audio)
+    {
+        var (armed, _, _, telemetry) = Armed();
+
+        Assert.Null(armed.Arm(OperatorSend.Now(audio, Psk31Dial, LicenseClass.General, true)));
+
+        await armed.NowAsync();
+
+        Print(telemetry);
+
+        return Assert.Single(telemetry.Events, e => e.Event == TransmitRecord.EventName);
+    }
 
     private static RsidCodes Codes
         => OliviaData.Current.Rsid ?? throw new InvalidOperationException(OliviaData.Current.Problem);

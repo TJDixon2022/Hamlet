@@ -29,7 +29,9 @@ namespace Hamlet.RadioEngine.Telemetry;
 /// flag are null and are not written at all - a slot in the record where there was none
 /// would be evidence of a moment that never existed. What it writes instead is
 /// **which mode went out**, how its audio measured against
-/// <see cref="OperatorSend.LongestUnslottedSeconds"/>, and that cap's number.</para>
+/// <see cref="OperatorSend.LongestUnslottedSeconds"/>, and that cap's number - and **whether it
+/// was announced, with which RSID code and for how long** (`PHASE_PLAN.md` R32 (b); work
+/// instruction 360, decision F).</para>
 /// <para>**A SLOTTED SEND WRITES EXACTLY WHAT IT ALWAYS WROTE**, key for key and in the
 /// same order, which <c>TheFt8AndFt4SendsAreByteIdenticalTests</c> pins.</para>
 /// </remarks>
@@ -67,6 +69,15 @@ namespace Hamlet.RadioEngine.Telemetry;
 /// How long a send with no slot's audio was, whether or not any of it was offered - which
 /// is how a refusal over the cap says by how much. Null for a slotted send.
 /// </param>
+/// <param name="Announced">
+/// **Whether a send with no slot began with its RSID announcement** (`PHASE_PLAN.md` R32 (b),
+/// Tim 2026-09-18). Null for a slotted send.
+/// </param>
+/// <param name="RsidCode">The RSID code it was announced with, or null where it was not.</param>
+/// <param name="AnnouncementSeconds">
+/// How much of <paramref name="AudioSeconds"/> was the announcement, 0 where there was none.
+/// Null for a slotted send.
+/// </param>
 public sealed record TransmitRecord(
     DateTime? SlotStartUtc,
     double? StartSecondsIntoSlot,
@@ -82,7 +93,10 @@ public sealed record TransmitRecord(
     bool Keyed,
     UnslottedMode? Mode = null,
     UnslottedFit? Fit = null,
-    double? AudioSeconds = null)
+    double? AudioSeconds = null,
+    bool? Announced = null,
+    int? RsidCode = null,
+    double? AnnouncementSeconds = null)
 {
     /// <summary>The event name this is written under.</summary>
     public const string EventName = "ft8_transmission";
@@ -159,6 +173,21 @@ public sealed record TransmitRecord(
         if (AudioSeconds is { } audio)
         {
             bag["audioSeconds"] = audio;
+        }
+
+        if (Announced is { } announced)
+        {
+            bag["announced"] = announced;
+        }
+
+        if (RsidCode is { } code)
+        {
+            bag["rsidCode"] = code;
+        }
+
+        if (AnnouncementSeconds is { } announcement)
+        {
+            bag["announcementSeconds"] = announcement;
         }
 
         if (Mode is not null)
