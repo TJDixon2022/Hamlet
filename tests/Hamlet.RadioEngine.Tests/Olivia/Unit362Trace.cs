@@ -150,6 +150,38 @@ public sealed class Unit362Trace
         }
     }
 
+    /// <summary>
+    /// Task 3's finding, printed and not asserted: the blind search over the other two of the phase's
+    /// three variants and the two noisy files, each of which has an RSID burst in front that the
+    /// search is not told about.
+    /// </summary>
+    [Fact]
+    public void TheSearchOverTheOtherFixtures()
+    {
+        var format = OliviaData.Current.Format!;
+
+        foreach (var file in new[] { "olivia-16-500-qso-rsid.wav", "olivia-32-1000-qso-rsid.wav", "olivia-8-250-cq-rsid.wav", "olivia-16-500-qso-snr-10db.wav", "olivia-16-500-qso-snr-16db.wav" })
+        {
+            var fixture = OliviaFixtures.Load(file);
+            var audio = WavAudio.Read(fixture.Path);
+            var before = Process.GetCurrentProcess().TotalProcessorTime;
+            var search = new OliviaBlindSearch(format).Search(audio, Psk31CarrierSearch.PassbandLowHz, Psk31CarrierSearch.PassbandHighHz);
+            var cpu = (Process.GetCurrentProcess().TotalProcessorTime - before).TotalSeconds;
+
+            _output.WriteLine(
+                $"{file} (manifest {fixture.Variant} at {fixture.CenterHz}): candidates {search.Candidates.Count}, audio {search.AudioSeconds:0.000} s, "
+                + $"cpu {cpu:0.000} s, loudest bin {search.PeakOverFloorDb:0.00} dB over the floor");
+
+            foreach (var c in search.Candidates)
+            {
+                _output.WriteLine(
+                    $"   named {c.Variant.Name} at {c.CenterHz:0.00} Hz, confidence {c.Confidence:0.00}; spacing {c.ToneSpacingHz:0.000} Hz over {c.TonesCounted} tones, "
+                    + $"occupied {c.OccupiedHighHz - c.OccupiedLowHz:0.00} Hz; weighed "
+                    + string.Join(", ", c.Trials.Select(t => $"{t.Variant} {t.SyncSnr:0.00}/{t.BlocksDecoded}")));
+            }
+        }
+    }
+
     private double Measure(OliviaFormat format, MonoAudio audio, string name)
     {
         var rate = audio.SampleRate;
