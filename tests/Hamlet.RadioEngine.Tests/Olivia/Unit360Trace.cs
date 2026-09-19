@@ -62,10 +62,22 @@ public sealed class Unit360Trace
         {
             var name = variant.GetProperty("variant").GetString();
 
-            _output.WriteLine(
-                $"{name}: {variant.GetProperty("seconds_per_character")} s per character, fixed {variant.GetProperty("fixed_seconds")}");
+            // **WORK INSTRUCTION 361 MEASURED THIS FILE** (decision N, and PSK31 plan R12): the
+            // estimate's fixed time and its readings went with the estimate, so they are read where
+            // they are still present and said to be absent where they are not.
+            var fixedSeconds = variant.TryGetProperty("fixed_seconds", out var f) ? f.ToString() : "(not in the measured file)";
 
-            foreach (var reading in variant.GetProperty("readings").EnumerateArray())
+            _output.WriteLine(
+                $"{name}: {variant.GetProperty("seconds_per_character")} s per character, fixed {fixedSeconds}");
+
+            if (!variant.TryGetProperty("readings", out var readings))
+            {
+                _output.WriteLine("  no readings: the file is measured, not estimated from the manifest");
+
+                continue;
+            }
+
+            foreach (var reading in readings.EnumerateArray())
             {
                 var file = reading.GetProperty("file").GetString()!;
                 var entry = entries[file];
