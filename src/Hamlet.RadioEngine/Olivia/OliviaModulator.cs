@@ -100,7 +100,7 @@ public static class OliviaModulator
     /// <param name="centerHz">Where the tones, and the burst, are centered.</param>
     /// <param name="sampleRate">Samples a second - the transmit endpoint's.</param>
     /// <param name="peak">The drive level the operator set.</param>
-    /// <param name="longestSeconds">The most this send may be after its announcement.</param>
+    /// <param name="kind">Which of PSK31's two caps this send is held to.</param>
     /// <returns>The samples, the rate, the mode, the text's length and the code announced - and not the text.</returns>
     /// <exception cref="InvalidOperationException">The format or the RSID codes could not be read, or carry no burst for the variant.</exception>
     /// <remarks>
@@ -116,6 +116,10 @@ public static class OliviaModulator
     /// (<see cref="Rsid.RsidCodes.SilenceSymbolsBefore"/>) and Hamlet's burst carries it; the same
     /// count after is this unit's reading of the fixtures. It is outside the announcement, so the
     /// cap counts it.</para>
+    /// <para>**THE CAP IS THIS VARIANT'S, IN CHARACTERS** (decision AV, criterion 4.4):
+    /// <see cref="OliviaTiming.CapSeconds"/> - PSK31's thirty or sixty seconds counted in PSK31
+    /// characters, charged at this variant's seconds per character. <c>OperatorSend</c>'s thirty
+    /// seconds does not move and still bounds every PSK31 send.</para>
     /// <para>**NO BURST, NO SEND** (§0.0). An Olivia signal names its variant only by its burst, and
     /// a receiver that must guess the variant reads nothing, so where the codes carry no burst for
     /// the variant nothing is composed. This unit's choice, overrulable; PSK31's send, whose mode a
@@ -127,9 +131,17 @@ public static class OliviaModulator
         double centerHz,
         int sampleRate,
         float peak,
-        double longestSeconds = Transmit.OperatorSend.LongestUnslottedSeconds)
+        OliviaSendKind kind = OliviaSendKind.Macro)
     {
         var said = Modulate(text, variant, centerHz, sampleRate, peak);
+
+        // **THE CAP IS THE TIMING TABLE'S COUNT AT THIS VARIANT'S RATE** (`PHASE_PLAN.md` §3.2,
+        // criterion 4.4, decision AV). Where the table could not be read there is no cap of this
+        // variant's own, and the send falls back to the thirty seconds every unslotted send has
+        // always been held to rather than to a guess.
+        var longestSeconds = OliviaData.Current.Timing?.CapSeconds(variant, kind) is { } cap && !double.IsNaN(cap)
+            ? cap
+            : Transmit.OperatorSend.LongestUnslottedSeconds;
 
         var codes = OliviaData.Current.Rsid
             ?? throw new InvalidOperationException("the RSID codes could not be read, so the send cannot be announced: " + OliviaData.Current.Problem);

@@ -2,6 +2,16 @@ using System.Text.Json;
 
 namespace Hamlet.RadioEngine.Olivia;
 
+/// <summary>Which of PSK31's two caps a send is held to.</summary>
+public enum OliviaSendKind
+{
+    /// <summary>One of the macros, which PSK31 allows thirty seconds.</summary>
+    Macro = 0,
+
+    /// <summary>A line the operator typed, which PSK31 allows sixty.</summary>
+    TypedLine = 1,
+}
+
 /// <summary>
 /// **Seconds per character for each Olivia variant, read from <c>data/olivia/timing.json</c>.**
 /// </summary>
@@ -19,12 +29,22 @@ public sealed class OliviaTiming
 
     private readonly Dictionary<string, double> _secondsPerCharacter;
 
-    private OliviaTiming(string source, string method, Dictionary<string, double> secondsPerCharacter, int retireAfterCharacters)
+    private OliviaTiming(
+        string source,
+        string method,
+        Dictionary<string, double> secondsPerCharacter,
+        int retireAfterCharacters,
+        int capMacroCharacters,
+        int capTypedCharacters,
+        int patienceCharacters)
     {
         Source = source;
         Method = method;
         _secondsPerCharacter = secondsPerCharacter;
         RetireAfterCharacters = retireAfterCharacters;
+        CapMacroCharacters = capMacroCharacters;
+        CapTypedCharacters = capTypedCharacters;
+        PatienceCharacters = patienceCharacters;
     }
 
     /// <summary>Whether the figures were estimated or measured, as the file says.</summary>
@@ -53,6 +73,44 @@ public sealed class OliviaTiming
     /// </remarks>
     public double RetireWindowSeconds(string variant)
         => _secondsPerCharacter.TryGetValue(variant, out var seconds) ? seconds * RetireAfterCharacters : double.NaN;
+
+    /// <summary>**The send cap for a macro, in the variant's characters**, as the file states it.</summary>
+    /// <remarks>
+    /// Step 4 criterion 4.4 and work instruction 365 decision AV: PSK31's thirty seconds counted at
+    /// PSK31's own seconds per character. The file says how the count was arrived at.
+    /// </remarks>
+    public int CapMacroCharacters { get; }
+
+    /// <summary>**The send cap for a typed line, in the variant's characters**, as the file states it.</summary>
+    /// <remarks>PSK31's sixty seconds counted the same way (decision AV).</remarks>
+    public int CapTypedCharacters { get; }
+
+    /// <summary>**The turn indicator's patience, in the variant's characters**, as the file states it.</summary>
+    /// <remarks>
+    /// R18's stated PSK31 equivalent of one slot - the Answer macro's time on the air - counted in
+    /// PSK31 characters and rounded up (decision AV).
+    /// </remarks>
+    public int PatienceCharacters { get; }
+
+    /// <summary>**The send cap for a variant, in seconds**: its seconds per character times the kind's count.</summary>
+    /// <param name="variant">The variant's name, as the air spells it.</param>
+    /// <param name="kind">Which of PSK31's two caps.</param>
+    /// <returns>The cap, or NaN for a variant the table has no row for.</returns>
+    /// <remarks>
+    /// **NEVER A FIGURE IN SECONDS** (`PHASE_PLAN.md` §3.2). A variant with no row has no cap of its
+    /// own, and the caller falls back to <c>OperatorSend.LongestUnslottedSeconds</c> rather than to
+    /// a guess.
+    /// </remarks>
+    public double CapSeconds(string variant, OliviaSendKind kind)
+        => _secondsPerCharacter.TryGetValue(variant, out var seconds)
+            ? seconds * (kind == OliviaSendKind.TypedLine ? CapTypedCharacters : CapMacroCharacters)
+            : double.NaN;
+
+    /// <summary>**The turn indicator's patience for a variant, in seconds**: its seconds per character times <see cref="PatienceCharacters"/>.</summary>
+    /// <param name="variant">The variant's name, as the air spells it.</param>
+    /// <returns>The patience, or NaN for a variant the table has no row for.</returns>
+    public double PatienceSeconds(string variant)
+        => _secondsPerCharacter.TryGetValue(variant, out var seconds) ? seconds * PatienceCharacters : double.NaN;
 
     /// <summary>Read the file's contents.</summary>
     /// <param name="json">The file's contents.</param>
@@ -126,9 +184,25 @@ public sealed class OliviaTiming
                 throw new InvalidDataException("its retire_after_characters is missing or not a positive whole number");
             }
 
-            return new OliviaTiming(source, method, figures, factor);
+            return new OliviaTiming(
+                source,
+                method,
+                figures,
+                factor,
+                Count(root, "cap_macro_characters"),
+                Count(root, "cap_typed_characters"),
+                Count(root, "patience_characters"));
         }
     }
+
+    /// <summary>One count of characters the file must carry, or the whole file fails.</summary>
+    private static int Count(JsonElement root, string name)
+        => root.TryGetProperty(name, out var value)
+           && value.ValueKind == JsonValueKind.Number
+           && value.TryGetInt32(out var count)
+           && count > 0
+            ? count
+            : throw new InvalidDataException("its " + name + " is missing or not a positive whole number");
 
     private static string? Text(JsonElement element, string name)
         => element.TryGetProperty(name, out var value)

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 3 of 5
+TASK: TASK 4 of 5
 WORK_INSTRUCTION: 365 - Hamlet own Olivia modulator, read back by Hamlet own ears
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T17:50:22-04:00
-NOTE: Unit 365 task 3 done - 6 of 6 composed sends read back as their own variant within 0.32 Hz, 15 of 15 tones; loopback still 30 of 30 from the detector's variant
+UPDATED: 2026-09-19T17:54:05-04:00
+NOTE: Unit 365 task 4 done - caps 121/242 and patience 32 characters in timing.json; 8/250 macro cap 82.6 s, Report 66.0 s fits
 
 ---
 
