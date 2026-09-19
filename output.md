@@ -214,9 +214,9 @@ estimate's `fixed_seconds` and `readings`, which went with the estimate) is its 
   null on the shipped build.
 - Build clean. Final carry-forward **engine 119 of 119, app 166 of 166**, first runs, no reruns.
   `PttOn` 1, `Arm(` 2; nothing on the transmit side was touched.
-- Version **1.13.48**. Seven commits on `main`, all pushed. Uncommitted at the end:
-  `PROJECT_STATUS.md` (the status file), `RUN_LEDGER.md` and `.run-unit\` (the launcher's), and
-  this `output.md`, which the session leaves to the launcher.
+- Version **1.13.48**. Seven work commits on `main`, then this report with `PROJECT_STATUS.md` in
+  its own commit, as unit 360's was; every push succeeded. Uncommitted at the end, and left so as
+  told: `RUN_LEDGER.md` and `.run-unit\` (the launcher's).
 
 ## 3. What you should see
 
