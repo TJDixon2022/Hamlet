@@ -4,6 +4,35 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-165
+date: 2026-09-19
+refs: work instruction 362 (the FT8 regression) task 3, PHASE_PLAN.md section 6, docs/carry-forward-tests.txt, TheSendReachesTheAirTests
+---
+
+**No unit is complete, whatever its own criteria say, if a mode that reached the air before
+it does not reach the air after it, or a mode that read the air before it reads less; the
+judge marks it partial at best, and the next unit's first task is the repair before any new
+criterion.** Tim, 2026-09-19, set just below the prime directive: *"We can't break data
+modes that already work. FT8 and FT4 were solid. Now they're broken. Breaking something and
+claiming success is not success."*
+
+**Whose words are whose.** The quotation is his. The bolded rule is the operative wording
+work instruction 362 carried for him to be recorded as his ruling; it is recorded here as
+written and not reworded.
+
+**Why.** On 2026-09-19 two FT8 sends on 1.13.48 stopped after read-back with nothing in the
+record, while the units before them reported their own criteria met. Each unit's tests
+proved what it built; none proved that what already worked still did.
+
+**How it is enforced.** `docs/carry-forward-tests.txt` carries a send guard and a read guard
+for every working mode (FT8, FT4 and PSK31 now, Olivia's read now and its send when it has
+one). Every unit runs the list before its first change and after its last; a red after that
+was green before is a regression, named as one in section 1 and section 4 of its report.
+
+**Recorded by work instruction 362 task 3 as a ruling the owner gave, not one a session
+made.** Nothing was rejected in the recording.
+
+---
 id: HM-DEC-164
 date: 2026-09-14
 refs: PHASE_PLAN.md, PHASE_STATUS.md, PROJECT_CARD.md, HM-DEC-163, docs/phase-screen-run/, assets/fixtures/olivia/, work instruction 358 task 0

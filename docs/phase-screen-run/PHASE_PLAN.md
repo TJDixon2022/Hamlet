@@ -188,6 +188,11 @@ Step 0 depends on nothing. Steps 1-3 are one pipeline.
 
 ## §6 Branching
 
+- **No regression (HM-DEC-165, Tim, 2026-09-19). ADDED AFTER THE FACT, for the record, by
+  work instruction 362; this phase ran without it.** No unit is complete, whatever its own
+  criteria say, if a mode that reached the air before it does not reach the air after it, or a
+  mode that read the air before it reads less; the judge marks it partial at best, and the next
+  unit's first task is the repair before any new criterion.
 - **The arbiter stops for three things only**; on everything else it decides, marks,
   applies, continues.
 - **A later ruling of Tim's contradicts a line of this plan.** The later ruling wins.

@@ -478,6 +478,11 @@ contrivance. **When a step blocks, there is nowhere to route: work it or halt.**
 These are the handful of calls the arbiter would otherwise get wrong at three in the
 morning. Everything else is the arbiter's judgment, reported.
 
+- **No regression (HM-DEC-165, Tim, 2026-09-19). ADDED AFTER THE FACT, for the record, by
+  work instruction 362; this phase ran without it.** No unit is complete, whatever its own
+  criteria say, if a mode that reached the air before it does not reach the air after it, or a
+  mode that read the air before it reads less; the judge marks it partial at best, and the next
+  unit's first task is the repair before any new criterion.
 - **A must-pass ceiling is missed by a little.** Ship the decoder or parser anyway,
   report the number, mark the step `partial`, and move on. A decoder at 0.12 on a
   fixture is a finding about the fixture. **Do not delete the assertion and do not loosen

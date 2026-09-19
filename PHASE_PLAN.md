@@ -240,6 +240,10 @@ nowhere to route; work it or halt.
 
 ## §6 Branching
 
+- **No regression, ahead of the three stops (HM-DEC-165, Tim, 2026-09-19).** No unit is
+  complete, whatever its own criteria say, if a mode that reached the air before it does not
+  reach the air after it, or a mode that read the air before it reads less; the judge marks it
+  partial at best, and the next unit's first task is the repair before any new criterion.
 - **The arbiter stops for three things only**: keying, transmit or the radio's safety;
   money past the budget; a decision that changes what the product promises the operator
   - a fact stated about the radio, a contact or a send. A hint, a label, a number, a
