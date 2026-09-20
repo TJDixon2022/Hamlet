@@ -24,6 +24,85 @@ public enum Ft8CardActionKind
 }
 
 /// <summary>
+/// **What the card says about R29's move off the calling frequency**: whether it is offered, what
+/// the one click reads, and the one sentence under it.
+/// </summary>
+/// <remarks>
+/// <para>**IT IS NOT A FOURTH <see cref="Ft8CardActionKind"/> AND NOT A FIFTH `Psk31Macro`** (work
+/// instruction 367 decision BM). Both of those types are shared by every mode, and this is an
+/// Olivia-only idea; it travels as one record on the card instead, and PSK31's card never carries
+/// one.</para>
+/// <para>**THE LINE IS THE ONLY SENTENCE**, and it carries all four states the card can be in
+/// about the move - not offered and why not, offered, moved and waiting, moved and something
+/// heard or nothing heard. Empty where the card has nothing to say about a move at all.</para>
+/// </remarks>
+/// <param name="Offered">True where the one click belongs on this card.</param>
+/// <param name="Label">What the one click reads.</param>
+/// <param name="Tip">What the hover says it does and why.</param>
+/// <param name="Line">The one sentence under it, or "".</param>
+public sealed record OliviaMoveOffer(bool Offered, string Label, string Tip, string Line)
+{
+    /// <summary>Nothing about a move on this card.</summary>
+    public static readonly OliviaMoveOffer Nothing = new(false, "", "", "");
+}
+
+/// <summary>
+/// **Every sentence Hamlet says about the move off the calling frequency, in one place.**
+/// </summary>
+/// <remarks>
+/// <para>**THE WORDS ARE A SESSION'S AND NOT A RULING** (work instruction 367, R31), beside
+/// `Ft8ContactCard.Psk31ActionLabel`'s. They are here rather than in the view model so a test
+/// reads the sentence it is asserting from the one place it is written (§0).</para>
+/// <para>**THE LABEL IS R29'S OWN WORDS.** The plan says the card offers *move up 500 Hz and
+/// switch to 16/500*, and that is what the button reads. The hertz on this one control are the
+/// operator's own convention for the thing being done - a step in the passband - and not a
+/// measurement of a contact, which is what the card keeps off its face.</para>
+/// <para>**IT NEVER SAYS HE FOLLOWED** (§0.0, decision BP). An RSID burst carries a mode code and
+/// no callsign, so the sentence says what was heard where they moved to and says plainly that it
+/// is not a claim about who sent it; and it never says he refused.</para>
+/// </remarks>
+public static class OliviaMoveWords
+{
+    /// <summary>What the one click reads: R29's own words.</summary>
+    public const string Label = "Move up 500 Hz and switch to 16/500";
+
+    /// <summary>What the hover says the click does, and why anybody would press it.</summary>
+    public const string Tip =
+        "The calling frequency is where everybody listens for new calls, so a conversation is "
+        + "supposed to move off it. One click tells him you are going up 500 Hz and changing to "
+        + "16/500, and then takes Hamlet there - about twice the speed, and the calling spot left "
+        + "clear for the next caller.";
+
+    /// <summary>Hamlet has moved and the window is still open.</summary>
+    public const string Waiting =
+        "Hamlet has moved up 500 Hz and is reading 16/500 there. Nothing has been heard at the new "
+        + "place yet.";
+
+    /// <summary>The window closed with nothing heard at the new place.</summary>
+    public const string NoneArrived =
+        "Nothing was heard at the new place while Hamlet listened. He may not have followed, or his "
+        + "announcement may not have read; Hamlet is there and still listening.";
+
+    /// <summary>The line did not go out, so nothing moved.</summary>
+    public const string NothingMoved =
+        "Nothing moved: the line saying you were going up 500 Hz did not go out, so Hamlet is still "
+        + "on the calling frequency at 8/250.";
+
+    /// <summary>The move is not offered because the new place would be outside what Hamlet listens across.</summary>
+    public const string OutsideThePassband =
+        "Hamlet is not offering the move on this frequency: 500 Hz up from here would put the signal "
+        + "outside the range Hamlet listens across, so it could not hear the answer.";
+
+    /// <summary>An Olivia 16/500 announcement arrived at the new place.</summary>
+    /// <param name="callsign">The station whose card this is.</param>
+    /// <returns>The sentence.</returns>
+    public static string Arrived(string callsign)
+        => "An Olivia 16/500 announcement has arrived at the new place. An announcement carries no "
+            + "callsign, so that is somebody in the mode and at the place you moved to, and not a "
+            + "certainty that it was " + callsign + ".";
+}
+
+/// <summary>
 /// **The numbers a card keeps off its face, as the decode measured them.**
 /// </summary>
 /// <remarks>
@@ -126,10 +205,16 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// </remarks>
     /// <param name="operatorCallsign">The operator's own call, so the card can say what a typed line costs.</param>
     /// <param name="oliviaVariant">The variant this station is being read at, or null on a PSK31 channel.</param>
+    /// <param name="move">
+    /// What this card says about R29's move off the calling frequency, or null where it says nothing.
+    /// **It is handed in, never worked out here** (§0.1): whether the conversation is on the cited
+    /// calling center, at 8/250, under Olivia, on a certain reading, and whether the move has already
+    /// gone out are all the shell's questions, and this type asks none of them.
+    /// </param>
     public static Ft8ContactCard ForPsk31(
         string callsign, Psk31TurnReading turn, string? operatorGrid, Psk31Macro offered = Psk31Macro.None,
         string? grid = null, string offeredText = "", bool complete = false, string? operatorCallsign = null,
-        string? oliviaVariant = null)
+        string? oliviaVariant = null, OliviaMoveOffer? move = null)
     {
         ArgumentNullException.ThrowIfNull(turn);
 
@@ -142,6 +227,7 @@ public sealed partial class Ft8ContactCard : ObservableObject
         {
             OperatorCallsign = operatorCallsign ?? "",
             OliviaVariant = oliviaVariant ?? "",
+            Move = move ?? OliviaMoveOffer.Nothing,
         };
     }
 
@@ -234,6 +320,29 @@ public sealed partial class Ft8ContactCard : ObservableObject
 
     /// <summary>True where this card's station is being read in Olivia.</summary>
     public bool IsOlivia => OliviaVariant.Length > 0;
+
+    /// <summary>What this card says about R29's move off the calling frequency.</summary>
+    /// <remarks>
+    /// **HANDED IN, NEVER DERIVED HERE** (§0.1, decision BM). On a PSK31 card, and on an Olivia card
+    /// where none of decision BL's four conditions holds, it is
+    /// <see cref="OliviaMoveOffer.Nothing"/> and nothing about a move appears.
+    /// </remarks>
+    public OliviaMoveOffer Move { get; init; } = OliviaMoveOffer.Nothing;
+
+    /// <summary>True where the one-click move belongs on this card.</summary>
+    public bool HasOliviaMove => Move.Offered && Move.Label.Length > 0;
+
+    /// <summary>What the one-click move reads.</summary>
+    public string OliviaMoveLabel => Move.Label;
+
+    /// <summary>What the hover on the one-click move says.</summary>
+    public string OliviaMoveTip => Move.Tip;
+
+    /// <summary>The one sentence this card says about the move, or "".</summary>
+    public string OliviaMoveLine => Move.Line;
+
+    /// <summary>True where there is a sentence about the move to show.</summary>
+    public bool HasOliviaMoveLine => Move.Line.Length > 0;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(TypedSecondsWord))]

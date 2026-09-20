@@ -5655,6 +5655,67 @@
                                                                      count already was. -->
                                                             </Grid>
 
+                                                            <!-- **R29's ONE CLICK: MOVE OFF THE CALLING
+                                                                 FREQUENCY AND WIDEN** (criterion 4.5, work
+                                                                 instruction 367 decisions BL, BM and BN).
+
+                                                                 **IT IS BESIDE THE MACRO OFFER, NEVER INSTEAD
+                                                                 OF IT.** The same certain answer that offers
+                                                                 Report offers this, and the operator picks
+                                                                 which he wants.
+
+                                                                 **IT IS ITS OWN CONTROL AND NOT A FOURTH
+                                                                 `Ft8CardActionKind`** (decision BM), so
+                                                                 nothing about a PSK31 card moved: on a PSK31
+                                                                 card, and on an Olivia card anywhere but the
+                                                                 cited calling center at 8/250,
+                                                                 `HasOliviaMove` is false and neither the
+                                                                 button nor the line is here.
+
+                                                                 **ONE CLICK, ONE TRANSMISSION** (§0.2). The
+                                                                 command goes through `SendMessage` to the
+                                                                 same sequence every other send uses, and
+                                                                 `Stop` stops it. **Nothing moves until that
+                                                                 line has gone out and unkeyed ordinarily**
+                                                                 (decision BO), and no frequency command is
+                                                                 ever sent to the radio (decision BK). -->
+                                                            <StackPanel x:Name="OliviaMoveBlock"
+                                                                        IsVisible="{Binding HasOliviaMove}"
+                                                                        Margin="0,6,0,0">
+                                                                <Button x:Name="OliviaMoveButton"
+                                                                        Classes="hm-cardaction"
+                                                                        HorizontalAlignment="Left"
+                                                                        Content="{Binding OliviaMoveLabel}"
+                                                                        Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).OliviaMoveUpCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        ToolTip.Tip="{Binding OliviaMoveTip}" />
+                                                            </StackPanel>
+
+                                                            <!-- **AND WHAT WAS HEARD WHERE THEY MOVED TO**
+                                                                 (criterion 4.5's last clause, decision BP).
+
+                                                                 **THREE STATES, AND NONE OF THEM SAYS HE
+                                                                 FOLLOWED** (§0.0). An RSID burst carries a
+                                                                 mode code and no callsign, so the sentence
+                                                                 says what arrived at the place they moved to
+                                                                 and says plainly that it is not a claim about
+                                                                 who sent it; after the window it says nothing
+                                                                 arrived, never that he refused.
+
+                                                                 **IT IS ALSO WHERE THE CARD SAYS NOTHING
+                                                                 MOVED** after a press whose line did not go
+                                                                 out, and where it says why the move is not
+                                                                 offered on a frequency whose moved-to signal
+                                                                 would fall outside the passband Hamlet
+                                                                 listens across. -->
+                                                            <TextBlock x:Name="OliviaMoveLine"
+                                                                       IsVisible="{Binding HasOliviaMoveLine}"
+                                                                       Margin="0,6,0,0"
+                                                                       FontSize="11"
+                                                                       TextWrapping="Wrap"
+                                                                       Text="{Binding OliviaMoveLine}"
+                                                                       Foreground="{StaticResource HmTextMutedBrush}" />
+
                                                             <!-- **THE TEXT BLOCK, AND ONE CLICK SENDS IT FRAMED**
                                                                  (R29; Tim, 2026-09-14: *"there is also a text
                                                                  block where I can enter text to transmit"*).

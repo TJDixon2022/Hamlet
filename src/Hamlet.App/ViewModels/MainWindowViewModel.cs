@@ -3168,6 +3168,13 @@ public partial class MainWindowViewModel : ObservableObject
         foreach (var heard in _rsidDetector.Feed(_rsidResampler.Take(_rsidBuffer.AsSpan(0, wanted))))
         {
             RsidEvents.Heard(_telemetry, heard);
+
+            // **AND ONE INCH MORE THAN THAT, FOR R29's MOVE ALONE** (work instruction 367 decision
+            // BQ, criterion 4.5). Where Hamlet has moved a conversation up 500 Hz, the card has to
+            // be able to say what was heard where they moved to - so this detection is *read* by
+            // that one check. **It still sets no mode, no tab, no dial and no variant**, and R27's
+            // across-tab switch stays parked: the whole of the lift is a card's sentence.
+            NoteAnOliviaAnnouncement(heard);
         }
     }
 
@@ -3463,6 +3470,14 @@ public partial class MainWindowViewModel : ObservableObject
         _oliviaWas.Clear();
         _oliviaFirstCenter.Clear();
         _oliviaGone.Clear();
+
+        // **AND LEAVING THE TAB ENDS THE CONVERSATION, SO IT ENDS THE MOVE** (criterion 4.5,
+        // decision BL's *once per conversation*). `ForgetPsk31` above has already taken the cards
+        // off, and a station Hamlet thought it had moved up 500 Hz would otherwise still be read at
+        // the moved-to place on the next Olivia press, on an evening that had nothing to do with it.
+        _oliviaMove = null;
+        _oliviaMoved.Clear();
+        _oliviaMoveRefused.Clear();
     }
 
     /// <summary>Where a PSK31 capture is written.</summary>
@@ -4145,11 +4160,18 @@ public partial class MainWindowViewModel : ObservableObject
                 .Select(m => m.Exchange.Grid)
                 .LastOrDefault();
 
+            // **AND R29's ONE CLICK, BESIDE THE MACRO OFFER AND NEVER INSTEAD OF IT** (criterion
+            // 4.5, decision BL). The same certain answer that offers Report offers the move; what
+            // this answers on a PSK31 card, and on an Olivia card anywhere but the calling center at
+            // 8/250, is nothing at all.
+            var variantHere = _oliviaVariants.GetValueOrDefault(channelId, "");
+            var move = OliviaMoveOfferFor(station, channelId, offered, variantHere);
+
             if (!_psk31Cards.TryGetValue(station, out var state))
             {
                 state = new Psk31CardState(Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, _oliviaVariants.GetValueOrDefault(channelId))), channelId)
+                    _settings.Operator.Callsign, variantHere, move)), channelId)
                 {
                     Messages = talk.Count,
                 };
@@ -4174,21 +4196,32 @@ public partial class MainWindowViewModel : ObservableObject
                 state.ClearedAtMessages = null;
                 state.Card = Nudged(Ft8ContactCard.ForPsk31(
                     station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
-                    _settings.Operator.Callsign, _oliviaVariants.GetValueOrDefault(channelId)));
+                    _settings.Operator.Callsign, variantHere, move));
                 DigitalCards.Add(state.Card);
                 continue;
             }
 
+            // **THE VARIANT AND THE MOVE ARE PART OF WHETHER THIS CARD HAS CHANGED** (criterion
+            // 4.5, decision BR). Until this unit a card whose turn and offer had not moved was left
+            // alone, so a station who moved from 8/250 to 16/500 kept a card still saying 8/250 -
+            // and the seconds that card quotes for a typed line come from the variant, so it was
+            // quoting a number nothing would produce (§0.0).
             if (state.Card.Turn == turn
                 && state.Card.Offered == offered
                 && state.Card.Facts.Grid == grid
-                && state.Card.ShowsLogLink == complete)
+                && state.Card.ShowsLogLink == complete
+                && string.Equals(state.Card.OliviaVariant, variantHere, StringComparison.Ordinal)
+                && state.Card.Move == move)
             {
                 continue;
             }
 
+            // **AND A REBUILT CARD KEEPS EVERYTHING THE FIRST ONE WAS HANDED.** This call had
+            // carried neither the operator's callsign nor the variant since unit 366 wrote them,
+            // which is the same fault one line up by another route.
             var fresh = Nudged(Ft8ContactCard.ForPsk31(
-                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete));
+                    station, turn, _settings.Operator.GridSquare, offered, grid, next, complete,
+                    _settings.Operator.Callsign, variantHere, move));
             var index = DigitalCards.IndexOf(state.Card);
 
             state.Card = fresh;
@@ -15691,7 +15724,13 @@ public partial class MainWindowViewModel : ObservableObject
         // 2). `none` would say the composer did not know what it was sending; `typed` says
         // what happened. **The text itself is not here and never is** (HM-DEC-018, §2.1).
         var typed = _psk31Typed;
-        var macro = typed ? "typed" : Psk31MacroToken.For(kind);
+
+        // **AND R29's MOVE IS ITS OWN TOKEN TOO** (criterion 4.5, §R13). `none` would say the
+        // composer did not know what it was sending; `qsy` says what happened. **It is read here
+        // and not cleared here**: the press is taken at the moment the line is armed, below, so
+        // every refusal above that point leaves it for the command to see and say nothing moved.
+        var moving = _oliviaMove;
+        var macro = typed ? "typed" : moving is not null ? "qsy" : Psk31MacroToken.For(kind);
         var at = _psk31SendAtHz;
 
         // **THE VARIANT IS THE ROW'S OR THE TABLE'S, NEVER A CONTROL'S** (R27, decision BA).
@@ -15864,9 +15903,15 @@ public partial class MainWindowViewModel : ObservableObject
 
         RaiseStopControl();
 
+        // **THE MOVE IS TAKEN HERE, WHERE THE LINE IS ARMED, AND NOT BEFORE** (decision BO). Above
+        // this point every return is a refusal that moved nothing, and the command reads the field
+        // it left behind to say so; from here the press belongs to this transmission, and
+        // `FirePsk31Async` applies it only after an ordinary unkey.
+        _oliviaMove = null;
+
         // **THE CLICK IS THE MOMENT** (§R10). A send with no slot has no boundary to wait
         // for, so the action that armed it fires it; nothing reads a clock to decide.
-        _ = FirePsk31Async(wanted, macro, composed.Seconds, composed.AnnouncedCode, offsetHz, tag);
+        _ = FirePsk31Async(wanted, macro, composed.Seconds, composed.AnnouncedCode, offsetHz, tag, moving);
     }
 
     /// <summary>Where an Olivia call to anyone goes in the passband, or null where the table cannot say.</summary>
@@ -15914,6 +15959,389 @@ public partial class MainWindowViewModel : ObservableObject
     /// the move-off offer exists for.
     /// </remarks>
     internal double? OliviaCallingOffsetForTests => OliviaCallingOffsetHz();
+
+    // ---------------------------------------------------------------------------------------
+    // **R29's ONE CLICK: MOVE OFF THE CALLING FREQUENCY AND WIDEN** (criterion 4.5, work
+    // instruction 367 decisions BK to BR).
+    //
+    // A beginner who answers a call on the Olivia calling spot does not know that the
+    // conversation is supposed to move off it, or that the answer is to go up and get faster.
+    // That is one of the three things `PHASE_PLAN.md` §1 says makes Olivia hard for a newcomer,
+    // and this region is Hamlet's answer to it: one click, on a card, under exactly the
+    // conditions decision BL names and no looser ones.
+    //
+    // **NOTHING HERE KEYS, COMPOSES OR ARMS ANYTHING** (§0.2). The press goes to `SendMessage`,
+    // the one send entry point, with the two fields every other Olivia send travels on;
+    // everything else in here reads, writes a sentence, or writes a line in the file.
+    // ---------------------------------------------------------------------------------------
+
+    /// <summary>**How far up R29's move goes: 500 Hz in the passband, and not a dial command.**</summary>
+    /// <remarks>
+    /// **THE AUDIO CENTER MOVES AND THE RADIO DOES NOT** (decision BK, §R11). Two Olivia stations
+    /// move off a calling spot inside one SSB passband, which is what the other end's software
+    /// follows - it is listening for an announcement across the passband, not watching a dial - so
+    /// no CI-V frequency command is sent and the VFO stays exactly where pressing Olivia put it.
+    /// </remarks>
+    internal const double OliviaMoveUpHz = 500;
+
+    /// <summary>**What R29 widens to.** The plan names the variant; no control offers a choice (R27).</summary>
+    internal const string OliviaMoveToVariant = "16/500";
+
+    /// <summary>
+    /// **How many of the moved-to variant's patiences Hamlet listens at the new place** (decision BP).
+    /// </summary>
+    /// <remarks>
+    /// **NEVER A FIGURE IN SECONDS** (§3.2). The window is
+    /// <see cref="OliviaTiming.PatienceSeconds"/> of <see cref="OliviaMoveToVariant"/> times this
+    /// whole number, so it scales with the variant's own rate as every other Olivia timing rule
+    /// does. Two, because one patience is what the tree already calls *long enough for the other
+    /// end to answer* and following a move needs his software to hear the line, retune and
+    /// announce - two turns of that, not one.
+    /// </remarks>
+    internal const int OliviaMoveWindowFactor = 2;
+
+    /// <summary>One move the operator has pressed, travelling beside the call.</summary>
+    /// <param name="Station">Who it was sent to.</param>
+    /// <param name="FromHz">Where the conversation was: the band's calling center in the passband.</param>
+    /// <param name="FromVariant">What it was at: the calling variant.</param>
+    /// <param name="ToHz">Where it goes: 500 Hz up.</param>
+    /// <param name="ToVariant">What it goes to: 16/500.</param>
+    private sealed record OliviaMovePress(
+        string Station, double FromHz, string FromVariant, double ToHz, string ToVariant);
+
+    /// <summary>A move that has actually gone out, and what has been heard at the new place since.</summary>
+    private sealed class OliviaMoveMade
+    {
+        public OliviaMoveMade(OliviaMovePress press, double atSeconds, double windowSeconds)
+        {
+            Press = press;
+            AtSeconds = atSeconds;
+            WindowSeconds = windowSeconds;
+        }
+
+        public OliviaMovePress Press { get; }
+
+        /// <summary>The audio seconds at which the line finished going out.</summary>
+        public double AtSeconds { get; }
+
+        /// <summary>How long Hamlet listens at the new place before it says nothing arrived.</summary>
+        public double WindowSeconds { get; }
+
+        /// <summary>True where an Olivia 16/500 announcement arrived at the new place inside the window.</summary>
+        public bool Heard { get; set; }
+    }
+
+    /// <summary>
+    /// The move the press is sending, or null. **Read by <see cref="SendUnslotted"/> and cleared
+    /// there once the line is armed**, exactly as <see cref="_oliviaSendVariant"/> is.
+    /// </summary>
+    private OliviaMovePress? _oliviaMove;
+
+    /// <summary>Every station Hamlet has moved off the calling frequency, by callsign.</summary>
+    /// <remarks>
+    /// **ONCE PER CONVERSATION** (decision BL). An entry here is what takes the offer off the card,
+    /// whether or not anything was heard at the new place, and it is what makes the next send to
+    /// that station go out at the new center and the new variant (decision BO).
+    /// </remarks>
+    private readonly Dictionary<string, OliviaMoveMade> _oliviaMoved =
+        new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Stations whose move was pressed and whose line did not go out.</summary>
+    /// <remarks>
+    /// **A REFUSAL MOVES NOTHING AND THE CARD SAYS SO** (decision BO). The offer stays, because a
+    /// send the cap or the announcement refused is not a move the operator has had; what he gets is
+    /// the sentence saying nothing moved.
+    /// </remarks>
+    private readonly HashSet<string> _oliviaMoveRefused = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>Where the band's Olivia calling center sits in the passband, by the table's arithmetic alone.</summary>
+    /// <returns>The audio offset, or null where the table or the dial cannot say.</returns>
+    /// <remarks>
+    /// **THIS IS NOT <see cref="OliviaCallingOffsetHz"/> AND THE DIFFERENCE IS THE WHOLE OF
+    /// DECISION BL's THIRD CONDITION.** That method answers *where may a call to anyone go*, so it
+    /// refuses a spot a station is sitting within <see cref="Psk31ClearSpot.ClearHz"/> of - which is
+    /// exactly the case during a QSO on the calling center, the only case the move is ever offered
+    /// in (unit 367's trace, item 4). A conversation that has already begun is not a call to
+    /// anyone, so the question here is only *is this the center the cited table names*.
+    /// </remarks>
+    private double? OliviaCallingCenterOffsetHz()
+        => _olivia.Calling?.CallingRowFor(SelectedBand.Band.Name) is { } row && FrequencyHz > 0
+            ? row.CenterHz - (double)FrequencyHz
+            : null;
+
+    /// <summary>Half the width a variant's tones occupy, from the format file.</summary>
+    /// <remarks>
+    /// **THE FILE'S NUMBERS AND NOT A LITERAL** (decision H). `about ±250 Hz` for 16/500 is the
+    /// plan's round figure; this is the arithmetic behind it - the tones span
+    /// `(tones - 1) × spacing`, and half of that either side of the center.
+    /// </remarks>
+    private double? OliviaHalfWidthHz(string variant)
+        => _olivia.Format?.Variant(variant) is { } v
+            ? (v.Tones - 1) * v.ToneSpacingHz / 2.0
+            : null;
+
+    /// <summary>
+    /// **What this card says about the move** - decision BL's four conditions, and BK's bound.
+    /// </summary>
+    /// <param name="station">Whose card.</param>
+    /// <param name="channelId">The channel his conversation is being read on.</param>
+    /// <param name="offered">What <see cref="Psk31Offer"/> named for this card, which is the reading.</param>
+    /// <param name="variant">The variant this channel is read at, or "".</param>
+    /// <returns>The offer, or <see cref="OliviaMoveOffer.Nothing"/>.</returns>
+    /// <remarks>
+    /// <para>**R1's GATE AND NO LOOSER ONE** (decision BL). The reading is not a copy of
+    /// <see cref="Psk31Offer.For"/>'s test - it *is* that test's answer, handed in: a macro is
+    /// offered only on a certain *your turn* over a certain message addressed to the operator that
+    /// hands over, so the same certain answer that offers Report offers the move, and a guessed
+    /// *your turn* offers neither.</para>
+    /// <para>**AND IT SAYS WHY WHERE IT CANNOT OFFER** (decision BK, §0.0). A move that would put
+    /// the signal outside the passband Hamlet listens across is not offered, because Hamlet could
+    /// not hear the answer at the place it had just announced; the card says that rather than
+    /// offering it and failing quietly.</para>
+    /// <para>**NOTHING HERE TRANSMITS AND NOTHING HERE MOVES ANYTHING** (§0.2).</para>
+    /// </remarks>
+    private OliviaMoveOffer OliviaMoveOfferFor(
+        string station, int channelId, Psk31Macro offered, string variant)
+    {
+        // **A MOVE THAT HAS BEEN MADE IS THE CARD'S FOLLOW LINE AND NOT AN OFFER** (decision BP).
+        if (_oliviaMoved.TryGetValue(station, out var made))
+        {
+            return new OliviaMoveOffer(false, "", "", OliviaFollowLineFor(station, made));
+        }
+
+        if (_oliviaMoveRefused.Contains(station))
+        {
+            return new OliviaMoveOffer(
+                true, OliviaMoveWords.Label, OliviaMoveWords.Tip, OliviaMoveWords.NothingMoved);
+        }
+
+        // 1. Olivia is the chosen mode, and 4. the conversation is at the calling variant.
+        if (!IsOliviaChosen
+            || !string.Equals(variant, OliviaCallingTable.CallingVariant, StringComparison.Ordinal))
+        {
+            return OliviaMoveOffer.Nothing;
+        }
+
+        // 2. **THE READING**: a certain your turn over his certain handover, which is the only
+        // thing that makes `Psk31Offer.For` name a macro at all.
+        if (offered == Psk31Macro.None)
+        {
+            return OliviaMoveOffer.Nothing;
+        }
+
+        // 3. The conversation is on the band's calling center from the cited table.
+        if (OliviaCallingCenterOffsetHz() is not { } calling
+            || _psk31Rows.GetValueOrDefault(channelId) is not { } row
+            || OffsetOn(row) is not { } his
+            || OliviaHalfWidthHz(OliviaCallingTable.CallingVariant) is not { } halfCalling
+            || Math.Abs(his - calling) > halfCalling)
+        {
+            return OliviaMoveOffer.Nothing;
+        }
+
+        // **AND BK's BOUND**: the moved-to signal has to lie wholly inside the passband Hamlet
+        // listens across, or Hamlet would announce a place it cannot hear.
+        if (OliviaHalfWidthHz(OliviaMoveToVariant) is not { } halfMoved)
+        {
+            return OliviaMoveOffer.Nothing;
+        }
+
+        var to = calling + OliviaMoveUpHz;
+
+        return to - halfMoved < Psk31CarrierSearch.PassbandLowHz
+               || to + halfMoved > Psk31CarrierSearch.PassbandHighHz
+            ? new OliviaMoveOffer(false, "", "", OliviaMoveWords.OutsideThePassband)
+            : new OliviaMoveOffer(true, OliviaMoveWords.Label, OliviaMoveWords.Tip, "");
+    }
+
+    /// <summary>Which of decision BP's three sentences a made move is at now.</summary>
+    /// <remarks>
+    /// **IT NEVER SAYS HE FOLLOWED** (§0.0, decision BP). An RSID burst carries a mode code and no
+    /// callsign, so *an announcement arrived* is as far as Hamlet can honestly go; and after the
+    /// window it says nothing arrived, never that he refused.
+    /// </remarks>
+    private string OliviaFollowLineFor(string station, OliviaMoveMade made)
+        => made.Heard
+            ? OliviaMoveWords.Arrived(station)
+            : AudioSecondsHeard() - made.AtSeconds <= made.WindowSeconds
+                ? OliviaMoveWords.Waiting
+                : OliviaMoveWords.NoneArrived;
+
+    /// <summary>**The line the move sends, exactly as it goes on the air** (decision BN).</summary>
+    /// <param name="station">Who it is addressed to.</param>
+    /// <returns>The text, or "" where Settings has no callsign to sign it with.</returns>
+    /// <remarks>
+    /// <para>**BOTH CALLSIGNS, THE AMOUNT AND THE VARIANT, TWICE** (decision BN). It is the
+    /// arbiter's recommended text. Twice, because Olivia is used where a block can be lost and the
+    /// one thing this line must not do is half-arrive: a station who reads only the second copy
+    /// still knows where to go. **Hamlet frames it**, as it frames a typed line - the calls at
+    /// both ends and the hand-back - because those are the two things a beginner forgets.</para>
+    /// <para>**IT IS A MACRO FOR THE CAP** (`OliviaSendKind.Macro`) and it is composed by
+    /// `OliviaModulator` like every other send.</para>
+    /// </remarks>
+    internal string OliviaMoveTextFor(string station)
+    {
+        var mine = _settings.Operator.Callsign?.Trim() ?? "";
+        var his = (station ?? "").Trim();
+
+        if (mine.Length == 0 || his.Length == 0)
+        {
+            return "";
+        }
+
+        var said = "QSY UP " + OliviaMoveUpHz.ToString("0", CultureInfo.InvariantCulture)
+            + " TO OLIVIA " + OliviaMoveToVariant;
+
+        return his + " de " + mine + "  " + said + "  " + said + "  " + his + " de " + mine + " K";
+    }
+
+    /// <summary>
+    /// **R29's one click: send the line where he is listening, then move** (criterion 4.5).
+    /// </summary>
+    /// <param name="card">The card it was pressed on.</param>
+    /// <remarks>
+    /// <para>**ONE CLICK, ONE TRANSMISSION, AND THE SAME ONE DOOR** (§R10, §0.2). It sets the two
+    /// fields every Olivia send travels on - where it goes and at which variant - and calls
+    /// <see cref="SendMessage"/>, which is the application's one send entry point. There is no
+    /// second keying path, no second `Arm` and no second composer.</para>
+    /// <para>**IT GOES OUT AT THE OLD PLACE AND THE OLD VARIANT** (decision BN), because that is
+    /// where the other station is listening. Telling him at the new place would be telling him
+    /// somewhere he is not.</para>
+    /// <para>**AND NOTHING MOVES YET** (decision BO). This arms the line; the move itself is
+    /// applied in <see cref="FirePsk31Async"/> after an ordinary unkey, so a refusal, a cap
+    /// failure, a `no_announcement` or a Stop leaves Hamlet exactly where it was.</para>
+    /// </remarks>
+    [RelayCommand]
+    private void OliviaMoveUp(Ft8ContactCard? card)
+    {
+        if (card is null || !card.HasOliviaMove)
+        {
+            return;
+        }
+
+        var station = card.Callsign;
+        var text = OliviaMoveTextFor(station);
+
+        if (OliviaCallingCenterOffsetHz() is not { } from || text.Length == 0)
+        {
+            return;
+        }
+
+        var press = new OliviaMovePress(
+            station, from, OliviaCallingTable.CallingVariant, from + OliviaMoveUpHz, OliviaMoveToVariant);
+
+        Psk31Events.OliviaMoveOffered(_telemetry, press.FromHz, press.ToHz, press.FromVariant, press.ToVariant);
+
+        _oliviaMoveRefused.Remove(station);
+        _oliviaMove = press;
+
+        // **THE TWO FIELDS EVERY OLIVIA SEND TRAVELS ON**, set immediately before the call as
+        // every other caller sets them, and put back by `SendUnslotted`.
+        _psk31Macro = Psk31Macro.None;
+        _psk31SendAtHz = press.FromHz;
+        _oliviaSendVariant = press.FromVariant;
+
+        SendMessage(text);
+
+        // **A SEND THAT NEVER ARMED LEAVES THE MOVE HERE.** `SendUnslotted` takes the press and
+        // clears this field at the moment the line is armed, so a field still holding one is a
+        // press that was refused before anything was keyed - and nothing moved.
+        if (_oliviaMove is { } refused)
+        {
+            _oliviaMove = null;
+
+            OliviaMoveDidNotGo(refused, "refused");
+        }
+    }
+
+    /// <summary>**The line went out and unkeyed ordinarily, so Hamlet moves** (decision BO).</summary>
+    /// <remarks>
+    /// <para>**THIS IS THE ONLY PLACE ANYTHING MOVES.** Hamlet is never at a place it did not
+    /// announce, and never announces a place it is not at: the announcement has been played, the
+    /// transmitter has let go, and now the send-and-reply center and the variant follow it.</para>
+    /// <para>**NO FREQUENCY COMMAND IS SENT** (decision BK, §R11). The dial does not move and
+    /// nothing is asked of the operator at the radio; what moves is where in the passband Hamlet
+    /// puts its next signal, and Hamlet was already listening across the whole passband.</para>
+    /// </remarks>
+    private void OliviaMoveWentOut(OliviaMovePress press)
+    {
+        var window = _olivia.Timing is { } timing
+            ? timing.PatienceSeconds(press.ToVariant) * OliviaMoveWindowFactor
+            : 0;
+
+        _oliviaMoveRefused.Remove(press.Station);
+        _oliviaMoved[press.Station] = new OliviaMoveMade(press, AudioSecondsHeard(), window);
+
+        Psk31Events.OliviaMoveSent(
+            _telemetry, press.FromHz, press.ToHz, press.FromVariant, press.ToVariant, window);
+
+        Dispatcher.UIThread.Post(() => RefreshPsk31Card(press.Station));
+    }
+
+    /// <summary>**The line did not go out, so nothing moved, and the card says so** (decision BO).</summary>
+    private void OliviaMoveDidNotGo(OliviaMovePress press, string why)
+    {
+        _oliviaMoveRefused.Add(press.Station);
+
+        Psk31Events.OliviaMoveRefused(_telemetry, press.FromHz, press.ToHz, press.ToVariant, why);
+
+        Dispatcher.UIThread.Post(() => RefreshPsk31Card(press.Station));
+    }
+
+    /// <summary>Where the next send to this station goes and at which variant, where Hamlet has moved him.</summary>
+    /// <remarks>
+    /// **READ BY <see cref="Psk31OffsetOf"/> AND <see cref="OliviaVariantOf"/>**, which is how
+    /// every press that answers a station picks up the move: the card's Send, the typed line and
+    /// anything a later unit adds all go through those two (decision BO).
+    /// </remarks>
+    private OliviaMovePress? OliviaMovedTo(string callsign)
+        => _oliviaMoved.GetValueOrDefault(callsign ?? "")?.Press;
+
+    /// <summary>
+    /// **What arrived where they moved to** - decision BQ's one inch of unit 359's decision B.
+    /// </summary>
+    /// <param name="heard">A burst the detector read, with its code and its center.</param>
+    /// <remarks>
+    /// <para>**IT IS READ AND NOTHING ELSE CHANGES.** No mode, tab, dial or variant moves on a
+    /// detection; R27's across-tab switch stays parked. All this does is mark that an Olivia 16/500
+    /// announcement was heard at the place Hamlet moved to, inside the window, so the card can say
+    /// what was heard instead of nothing.</para>
+    /// <para>**AND IT TRANSMITS NOTHING** (§0.2). A detection is a value handed back; nothing here
+    /// composes, arms or keys.</para>
+    /// <para>**WHY THE DETECTION AND NOT THE CHANNEL** (decision BQ). `RsidDetection` carries the
+    /// code and the center at the moment the burst ended, which is what R29 asks about; a channel
+    /// opens only once blocks have synchronised, and it can be opened by the blind search, which is
+    /// not an announcement at all.</para>
+    /// </remarks>
+    private void NoteAnOliviaAnnouncement(RsidDetection heard)
+    {
+        if (_oliviaMoved.Count == 0 || _olivia.Rsid is not { } codes)
+        {
+            return;
+        }
+
+        var now = AudioSecondsHeard();
+
+        foreach (var made in _oliviaMoved.Values)
+        {
+            if (made.Heard
+                || codes.CodeOf(OliviaModulator.AnnouncedAs(made.Press.ToVariant)) is not { } code
+                || heard.Code != code
+                || OliviaHalfWidthHz(made.Press.ToVariant) is not { } half
+                || Math.Abs(heard.CenterHz - made.Press.ToHz) > half
+                || now - made.AtSeconds > made.WindowSeconds)
+            {
+                continue;
+            }
+
+            made.Heard = true;
+
+            Psk31Events.OliviaMoveAnswered(
+                _telemetry, made.Press.ToHz, heard.CenterHz, heard.Code, now - made.AtSeconds, made.WindowSeconds);
+
+            RefreshPsk31Card(made.Press.Station);
+        }
+    }
 
     /// <summary>Where every Olivia station being read sits in the passband.</summary>
     /// <remarks>
@@ -16273,8 +16701,19 @@ public partial class MainWindowViewModel : ObservableObject
         => Psk31CqOn(row) is { } station && (IsPsk31Chosen || IsOliviaChosen) ? "Answer " + station : null;
 
     /// <summary>Which offset a station's carrier is on, or null where he is not being heard.</summary>
+    /// <remarks>
+    /// **A STATION HAMLET HAS MOVED IS AT THE PLACE IT MOVED HIM TO** (criterion 4.5, decision BO).
+    /// The line saying so has gone out at the old place and unkeyed, so the next send to him goes
+    /// out 500 Hz up - and it goes there through this one method rather than through each press, so
+    /// the card's Send, the typed line and anything a later unit adds all move together.
+    /// </remarks>
     private double? Psk31OffsetOf(string callsign)
     {
+        if (OliviaMovedTo(callsign) is { } moved)
+        {
+            return moved.ToHz;
+        }
+
         foreach (var (id, reading) in _psk31Readings)
         {
             var his = reading.Messages.Any(
@@ -16299,6 +16738,13 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private string? OliviaVariantOf(string callsign)
     {
+        // **AND A STATION HAMLET HAS MOVED IS AT THE VARIANT IT ANNOUNCED IT WAS CHANGING TO**
+        // (criterion 4.5, decision BO). R29 names the variant and no control offers a choice.
+        if (OliviaMovedTo(callsign) is { } moved)
+        {
+            return moved.ToVariant;
+        }
+
         foreach (var (id, reading) in _psk31Readings)
         {
             var his = reading.Messages.Any(
@@ -16456,6 +16902,10 @@ public partial class MainWindowViewModel : ObservableObject
     /// <param name="announcedCode">The RSID code the audio begins with, or null where it begins with none.</param>
     /// <param name="offsetHz">Where the send is in the passband, which is where its burst is centered.</param>
     /// <param name="tag">The mode and variant an Olivia send adds to its lines, or null on PSK31.</param>
+    /// <param name="moving">
+    /// R29's move this send is the line for, or null - which is every send but that one, and every
+    /// PSK31 send always. **It is applied only after an ordinary unkey** (decision BO).
+    /// </param>
     /// <returns>What now did, or null where nothing was armed.</returns>
     /// <remarks>
     /// <para>**THE KEYING EVENTS ARE WRITTEN FROM WHAT THE RUN MEASURED, NOT FROM AN
@@ -16472,7 +16922,7 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private async Task<Ft8BoundaryResult?> FirePsk31Async(
         string wanted, string macro, double plannedSeconds, int? announcedCode, double offsetHz,
-        IReadOnlyDictionary<string, object?>? tag = null)
+        IReadOnlyDictionary<string, object?>? tag = null, OliviaMovePress? moving = null)
     {
         if (_armedSend is null)
         {
@@ -16550,6 +17000,22 @@ public partial class MainWindowViewModel : ObservableObject
             if (run.Keyed)
             {
                 SayTheSendWasOurs(keyingFromUtc, run.SecondsOffered);
+            }
+        }
+
+        // **AND ONLY NOW DOES HAMLET MOVE** (criterion 4.5, decision BO). The line has been played
+        // to the end and the transmitter has let go ordinarily; a Stop, an audio failure, a dead
+        // port or a run that never keyed moves nothing and the card says so. **Hamlet is never at a
+        // place it did not announce, and never announces a place it is not at.**
+        if (moving is { } move)
+        {
+            if (run is { Keyed: true, Outcome: Ft8TransmitOutcome.Played })
+            {
+                OliviaMoveWentOut(move);
+            }
+            else
+            {
+                OliviaMoveDidNotGo(move, run?.Outcome.ToString() ?? "nothing_was_keyed");
             }
         }
 

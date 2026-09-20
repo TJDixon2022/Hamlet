@@ -453,6 +453,115 @@ public static class Psk31Events
             ? new Dictionary<string, object?>(StringComparer.Ordinal) { ["mode"] = "olivia" }
             : new Dictionary<string, object?>(StringComparer.Ordinal) { ["mode"] = "olivia", ["variant"] = variant };
 
+    /// <summary>R29's move off the calling frequency was offered, and the operator pressed it.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="fromHz">Where the conversation is: the band's calling center in the passband.</param>
+    /// <param name="toHz">Where the move goes: 500 Hz up.</param>
+    /// <param name="fromVariant">The calling variant.</param>
+    /// <param name="toVariant">What R29 widens to.</param>
+    /// <remarks>
+    /// **THE FOUR NUMBERS AND NO WORDS** (§R13, HM-DEC-018, §2.1). A reader diagnosing a move needs
+    /// where it went from, where it went to and which variants; the callsign it was addressed to and
+    /// the line that went out are not in here and never are.
+    /// </remarks>
+    public static void OliviaMoveOffered(
+        ITelemetry? telemetry, double fromHz, double toHz, string fromVariant, string toVariant)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "olivia_move_offered",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["fromHz"] = Math.Round(fromHz, 1),
+                    ["toHz"] = Math.Round(toHz, 1),
+                    ["fromVariant"] = fromVariant,
+                    ["toVariant"] = toVariant,
+                    ["upHz"] = Math.Round(toHz - fromHz, 1),
+                },
+                Olivia(fromVariant)));
+
+    /// <summary>The move's line went out and unkeyed ordinarily, so Hamlet moved.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="fromHz">Where Hamlet was.</param>
+    /// <param name="toHz">Where Hamlet is now.</param>
+    /// <param name="fromVariant">What it was at.</param>
+    /// <param name="toVariant">What it is at now.</param>
+    /// <param name="windowSeconds">How long it listens at the new place before saying nothing arrived.</param>
+    /// <remarks>
+    /// **WRITTEN AFTER THE UNKEY AND NOT AT THE PRESS** (decision BO, `psk31_send_keyed`'s own
+    /// reason). A line written at the press would say Hamlet had moved on an evening the port was
+    /// dead and nothing went out.
+    /// </remarks>
+    public static void OliviaMoveSent(
+        ITelemetry? telemetry, double fromHz, double toHz, string fromVariant, string toVariant,
+        double windowSeconds)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "olivia_move_sent",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["fromHz"] = Math.Round(fromHz, 1),
+                    ["toHz"] = Math.Round(toHz, 1),
+                    ["fromVariant"] = fromVariant,
+                    ["toVariant"] = toVariant,
+                    ["upHz"] = Math.Round(toHz - fromHz, 1),
+                    ["windowSeconds"] = Math.Round(windowSeconds, 3),
+                },
+                Olivia(toVariant)));
+
+    /// <summary>The move was pressed and the line did not go out, so nothing moved.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="fromHz">Where Hamlet is, and stays.</param>
+    /// <param name="toHz">Where it would have gone.</param>
+    /// <param name="toVariant">What it would have gone to.</param>
+    /// <param name="why">What stopped it: a refusal before arming, or the run's own outcome.</param>
+    public static void OliviaMoveRefused(
+        ITelemetry? telemetry, double fromHz, double toHz, string toVariant, string why)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "olivia_move_refused",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["fromHz"] = Math.Round(fromHz, 1),
+                    ["toHz"] = Math.Round(toHz, 1),
+                    ["toVariant"] = toVariant,
+                    ["reason"] = why,
+                    ["moved"] = false,
+                },
+                Olivia(toVariant)));
+
+    /// <summary>An Olivia announcement of the moved-to variant arrived at the moved-to place.</summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="toHz">Where Hamlet moved to.</param>
+    /// <param name="heardHz">Where the burst was centered.</param>
+    /// <param name="code">The RSID code it carried.</param>
+    /// <param name="afterSeconds">How long after the move it arrived.</param>
+    /// <param name="windowSeconds">The window it arrived inside.</param>
+    /// <remarks>
+    /// **IT IS NOT A CLAIM THAT HE FOLLOWED** (§0.0, decision BP). An RSID burst carries a mode code
+    /// and no callsign, so this records a code and a center and says nothing about who sent it - the
+    /// same limit the card's own sentence keeps.
+    /// </remarks>
+    public static void OliviaMoveAnswered(
+        ITelemetry? telemetry, double toHz, double heardHz, int code, double afterSeconds,
+        double windowSeconds)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "olivia_move_answered",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["toHz"] = Math.Round(toHz, 1),
+                    ["heardHz"] = Math.Round(heardHz, 1),
+                    ["errorHz"] = Math.Round(Math.Abs(heardHz - toHz), 2),
+                    ["rsidCode"] = code,
+                    ["afterSeconds"] = Math.Round(afterSeconds, 3),
+                    ["windowSeconds"] = Math.Round(windowSeconds, 3),
+                },
+                Olivia(null)));
+
     /// <summary>The Olivia listener started under the Olivia tab.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="dialHz">Where the radio was, or 0 where it is unknown.</param>
