@@ -1,0 +1,42 @@
+feat(unit366): task 2, the gate opens - an Olivia press goes out through the one sequence (4.2, 4.6)
+
+CanTransmitIn admits Olivia. That one line is the whole of the gate's
+change (decision AZ). SendPsk31 becomes SendUnslotted and composes with
+OliviaModulator where Olivia is chosen, at the row's variant and center or
+at the cited calling center for a CQ, held to OliviaTiming's cap, and arms
+at the same unslotted Arm site PSK31 uses. No new PttOn site, no new Arm
+line, and no edit to Ft8TransmitSequence, Ft8ArmedSend, Fit, Cap,
+OperatorSend, RsidBurst, the abort or the FT8, FT4 and PSK31 branches.
+
+TheOliviaSendTests, nine names, all green:
+- AnOliviaCqReachesTheAir - composed, armed, keyed, handed_to_the_sound_card,
+  unkeyed ordinarily, one record with mode Olivia, announced true, code 69.
+  This is Olivia's send guard and it joins the app carry-forward line and
+  the guard table (decision BH).
+- The detector, told nothing, reads each send back off the audio the sound
+  card was handed: the CQ 8/250 at 1499.94 Hz against 1500 (0.06 Hz), the
+  Answer to the 8/250 row at 1000.32 against 1000 (0.32 Hz), the Answer to
+  the 16/500 row at 1999.66 against 2000 (0.34 Hz). 3 of 3 inside 5 Hz.
+- The CQ's center is the cited table's 14073000 Hz less the dial, and the
+  variant is the table's own calling variant, neither a literal.
+- No control offers a variant, on screen or in Settings.
+- With the panel's RSID codes unreadable the press is refused in words
+  naming the file and keys nothing (decision AS).
+- Stop mid-play of an 8/250 send: Cancelled by TheAbort, 1032 of 323160
+  samples out, the unkeyed line aborted true, by PSK31's own path.
+- PttOn 1 and Arm( 2, counted in src/ after the change.
+- The send's lines carry mode olivia and the variant and no text or
+  callsign.
+
+The panel's own strip stops saying nothing on a line can be answered. That
+sentence was false for PSK31 already and this unit made it false for Olivia
+too, so it says what a line actually offers.
+
+Decision BJ's after-run, reds compared by name: engine 98 of 110, app 48 of
+63, the same twenty-seven inherited names as task 0, none new. Carry-forward
+after: app 189 of 189 (2 m 26 s), engine 146 of 146 (4 m 42 s). The first
+app run read 188 of 189 on ThePsk31OfferTests.TheOfferIsOneButtonAndItIsThe
+OneTheEngineNamed, which is green alone and green on the second run of the
+same invocation; the number is the second run's.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

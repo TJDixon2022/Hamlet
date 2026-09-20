@@ -1,0 +1,33 @@
+test(unit366): task 1, the trace - every line the gate would have to reach, read from the tree
+
+Unit366Trace asserts nothing and is not on the carry-forward line. Its four
+names print items 1 to 8 of work instruction 366 task 1.
+
+The gate: CanTransmitIn :2446, called at :15354 and :4408. One PttOn line,
+two Arm( lines (:15524 slotted, :15723 unslotted), one OperatorSend.Now
+(:15718). Psk31Modulator.Compose at :15676; OliviaModulator.Compose has no
+call site in src/ at all.
+
+What a press would need, none of it on decision AZ's forbidden list:
+CallToAnyoneText :17266, Psk31CqOn :15992 and Psk31AnswerLabelFor :16088
+(the Answer label), card.IsPsk31 at :5874 and :15898, HasPsk31PowerOffer
+:16435. The row's variant lives in _oliviaVariants :3176 and on the row as
+DigitalDecodeRow.Variant, and does not reach SendMessage today.
+
+The turn is decided at :4107 by Psk31Turn.Read from the parse and the
+carrier-present fact, consuming no time at all; Psk31Macros.AnswerSeconds
+has no caller in src/. That is decision BE's answer.
+
+The clear spot on the Olivia tab today is handed nothing, because
+ClearSpotForTheCall reads _psk31, which is null under Olivia: 1300 Hz blind.
+Handed the two-signal fixture's carriers it gives 1500 Hz, where an 8/250
+send clears both by 156.3 Hz, a 16/500 send clears the 2000 Hz station by
+31.3 Hz, and a 32/1000 send overlaps both. Decision BB's finding.
+
+Caps as the product: 82.60 / 61.95 / 49.56 s for a macro, 165.21 / 123.90 /
+99.12 s typed. The longest Report the app composes is 106 characters to
+VP2V/W1AW and fits at every variant (74.22 / 55.79 / 45.55 s). The longest
+text that actually fits is 120 / 120 / 115 characters for a macro and
+240 / 240 / 240 typed.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

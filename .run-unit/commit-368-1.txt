@@ -1,0 +1,77 @@
+test(unit368): task 1, the trace - an Olivia contact logs as MODE=PSK SUBMODE=PSK31 today
+
+Unit368Trace, in the shape of Unit367Trace: it asserts nothing about the product,
+it is on neither carry-forward line, and every figure is read from the tree rather
+than transcribed from the instruction.
+
+What it found, item by item.
+
+1. What an Olivia contact logs as today. The textbook exchange worked to 73 on
+   the 20 m calling spot at 8/250 gives:
+
+   <CALL:4>W1AW <STATION_CALLSIGN:6>KC3QIS <BAND:3>20m <MODE:3>PSK
+   <SUBMODE:5>PSK31 <FREQ:9>14.071500 <RST_SENT:3>599 <RST_RCVD:3>599
+   <GRIDSQUARE:4>FN31 <MY_GRIDSQUARE:6>FN00DJ
+
+   The mode is decided at MainWindowViewModel.cs:15341, Psk31ContactWith, which
+   answers ContactModes.Named("PSK31") for any station with a card. Two other
+   lines ask the same question of the same table: MainWindowViewModel.cs:15157,
+   the telemetry gate, and AdifLog.cs:594, IsRstMode.
+
+2. Whether 5.1's "with RST and grid" already holds for Olivia. It does. The
+   record above carries RST_SENT 599, RST_RCVD 599 and GRIDSQUARE FN31, all read
+   off the conversation by Psk31ReportsFor and Psk31GridFor, which read the
+   shared card dictionaries an Olivia row fills. Nothing is built there (R14).
+
+3. Where the variant is at logging time. On a QSO that stayed put the card's
+   OliviaVariant, the channel's next-send variant and the row's variant all read
+   8/250. After unit 367's one click, with nothing yet heard at the new place,
+   the card still reads 8/250, the next send reads 16/500 at 2000 Hz, and the row
+   he was read on still reads 8/250 - so the card is the reading that says what
+   the operator has actually been shown, which is what decision BW asks for.
+
+4. What the achievements do with MODE=OLIVIA today. A log of one such record has
+   AchievementLog.Modes empty, WorkableModes 5, FirstsEarned [first_contact], the
+   Modes badge reading "five modes to work" and "0 of 5", and the category band
+   line "five modes to work - 0 of 5 - 0 pts - unranked - 2 to Bronze". The
+   record is invisible to every mode-counting badge. Four lines of src read
+   ContactModes.Six: AchievementCategory.cs:676, AchievementsViewModel.cs:317,
+   AchievementLog.cs:314 and AchievementScores.cs:311, and the badge's words are
+   typed at AchievementBadges.cs:338.
+
+5. TheAchievementsScreenTests, 5.3's before-number: 9 passed, 1 failed.
+   TheWindowDrawsEverySixRows fails with System.InvalidOperationException
+   "Sequence contains no matching element" at line 289, where the realized window
+   is searched for an ItemsControl named AchievementsModeRows. MISMATCH: the
+   instruction and docs/carry-forward-tests.txt both name two known reds in this
+   class; WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo passes. 5.3 is therefore
+   measured against one red, not two.
+
+6. Which tests assert the count of modes or the badge's words, and so are §R12
+   rewrites rather than regressions: TheAchievementsPageTests.cs:176,
+   Assert.Equal(5, AchievementScores.WorkableModes), and
+   TheCategoryPagesAreTradingCardsTests.cs:147, which asserts the band line
+   "five modes to work - 5 of 5 - 85 pts - Gold" verbatim.
+   TheAchievementsPageTests.cs:400 validates a Modes card name against
+   ContactModes.Six. TheOliviaSeamTests.cs:258 asserts Olivia is NOT in Six and
+   stays true, because Olivia goes in Logged and not in Six.
+
+7. Where the ADIF submode spelling can be checked from inside the tree.
+   ContactModes.Cite is "ADIF Specification 3.1.4, released 2022-12-06,
+   https://www.adif.org/314/ADIF_314.htm, retrieved 2026-09-08". No copy of the
+   enumeration is vendored under data/ - data/vendor holds only usno - so a test
+   may assert the citation's own text and the spellings the tree carries, and
+   nothing else, with no network call. The variant names are already in
+   data/olivia/format.json: 4/250, 4/500, 8/250, 8/500, 16/500, 16/1000, 32/1000.
+
+Before-numbers for the classes this unit stands beside, so a red afterwards can
+be told from one that was already there: app 63 of 63 in 9 s
+(TheLogSaysTheModeItWasMadeInTests, ThePsk31LogsWithRstTests,
+TheLogShowsBothGridsTests, TheBadgesCountContactsTests,
+TheLogDialogAndTheWorkedMarkTests, TheAchievementsPageTests,
+TheCategoryPagesAreTradingCardsTests, ThePsk31RecordsAppearTests); engine 40 of
+40 (ThePsk31AdifTests, TheAdifLogRoundTripsTests, TheLogCanSayFt4Tests).
+
+No file under src changes at this task.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

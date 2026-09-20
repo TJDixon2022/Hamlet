@@ -1,0 +1,71 @@
+feat(unit367): task 4, 4.5 last clause - the card says what was heard where they moved to
+
+Built to decisions BP, BQ and BR.
+
+THE THREE SENTENCES, QUOTED, AND EACH PROVED:
+
+1. waiting, inside the window -
+   "Hamlet has moved up 500 Hz and is reading 16/500 there. Nothing has been
+   heard at the new place yet."
+
+2. an announcement arrived -
+   "An Olivia 16/500 announcement has arrived at the new place. An
+   announcement carries no callsign, so that is somebody in the mode and at
+   the place you moved to, and not a certainty that it was N1XYZ."
+
+3. none arrived, after the window -
+   "Nothing was heard at the new place while Hamlet listened. He may not have
+   followed, or his announcement may not have read; Hamlet is there and still
+   listening."
+
+**NONE OF THEM SAYS HE FOLLOWED AND NONE SAYS HE REFUSED** (section 0.0,
+decision BP), asserted by sweep: an RSID burst carries a mode code and no
+callsign, so what the card reports is a code at a place.
+
+THE WINDOW IS THE PRODUCT, NEVER SECONDS (section 3.2). PatienceCharacters 32
+times 16/500's seconds per character = 16.384 s of patience, times the stated
+whole factor 2 = 32.768 s. The test asserts the product against the file's
+own windowSeconds and asserts the factor is 2; the number 32.768 is written
+nowhere in src/.
+
+WHAT COUNTS AS AN ANNOUNCEMENT, AND WHAT DOES NOT. An Olivia 16/500 code
+whose center is within 16/500's own half width of the new center - +/-234.375
+Hz from the format file, which is the plan's "about 250 Hz" arithmetic - heard
+inside the window. Measured: a real 16/500 send 900 Hz away does not count,
+and a real 8/250 send exactly on the new center does not count. Both leave
+the card saying it is still waiting.
+
+DECISION BQ, AND WHY THE DETECTION RATHER THAN THE CHANNEL. The follow check
+reads HearRsid's detections. RsidDetection carries the code and the center at
+the moment the burst ended, which is what R29 asks about; an Olivia channel
+opens only once blocks have synchronised, and it can be opened by the blind
+search, which is not an announcement at all. **The lift is one inch and no
+more**: no detection sets the mode, the tab, the dial or a variant, and
+R27's across-tab switch stays parked. The whole of it is one card sentence.
+
+NOTHING TRANSMITS ON A DETECTION (section 0.2), asserted. His whole
+transmission - the burst and 23 characters of 16/500 - is fed to the real
+tick after the move: one play, one transmission record, one psk31_send_composed,
+one keyed stage, and the port frame count unchanged at 2 before and after the
+detection.
+
+DECISION BR, THE CARD SURVIVES THE MOVE. Proved with real audio rather than
+by injection: his old channel at the calling center goes, his new one opens
+at 2000.0 Hz at 16/500 found by rsid with 23 characters read, and it is the
+same one card for the same station - turn "Your turn", offering Report,
+variant now 16/500, its conversation still holding the answer he sent at the
+old place. What that took is in task 3's commit: the card was never in danger
+(it is keyed by callsign), but the conversation it is read from is one
+channel's, so OliviaMovedConversationFor carries the messages of the channel
+he moved from into the new channel's reading.
+
+ONE PIECE OF SOURCE THIS TASK ADDED. WatchTheOliviaMoveWindows, called from
+the Olivia tick: a card is a snapshot built when something about it moves, so
+without it the "nothing has been heard yet" line would still be on the screen
+an hour later, which is a sentence that has stopped being true (section 0.0).
+It reads the audio clock, not a wall clock, rewrites one sentence, and keys,
+tunes and sends nothing.
+
+TESTS: TheOliviaMoveUpTests, 25 of 25 green in 50 s.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

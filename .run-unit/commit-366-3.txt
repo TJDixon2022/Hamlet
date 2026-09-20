@@ -1,0 +1,33 @@
+feat(unit366): task 3, 4.3 - the CQ goes out on the cited calling spot with PSK31's receipt
+
+Four names in TheOliviaSendTests, all green, plus one repair.
+
+The center is the band's own, read from data/bands/olivia-calling.json and
+a literal nowhere: on 20 m the table calls on 14073000 Hz and the dial at
+14071500 puts it at 1500 Hz in the passband; on 40 m the table calls on
+7073000 Hz and a dial at 7072000 puts it at 1000 Hz. The detector, told
+nothing, reads 8/250 back at 1499.94 and 1000.32 Hz.
+
+The clear spot is Psk31ClearSpot's rule unchanged, fed the Olivia
+listener's carriers rather than the PSK31 listener's, which is not running
+on this tab. With a station sitting on the 20 m calling spot at 1500 Hz the
+call moved to 875 Hz and read back 8/250 at 874.68 Hz, 625 Hz clear of him.
+It did not have to refuse.
+
+The receipt is PSK31's receipt with no station facts and no Log, asserted
+on the same properties TheCqReceiptTests asserts for PSK31: IsCallToAnyone
+true, Place empty, ShowsGlobe false, ActionKind None, and no grid, distance
+or entity anywhere on it. A certain answer addressed to the operator on an
+Olivia row retires it through the same certainty gate, leaving that
+station's card in its place.
+
+THE REPAIR. RebuildCards read IsPsk31Chosen alone when deciding whether it
+had a moment to stamp a card with, so under Olivia the CQ booked its
+receipt into the ledger and the panel built no card from it: the press was
+recorded and the operator saw nothing. The gate widens to Olivia, which is
+decision BC's one path rather than a second. TheCqReceiptTests,
+ThePressingOfCqTests, ThePsk31ConversationCardTests,
+ThePsk31CardIsHandedHisGridTests and ThePsk31ExchangeTests are green after
+it, 29 of 29.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

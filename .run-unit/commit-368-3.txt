@@ -1,0 +1,85 @@
+feat(unit368): task 3, 5.1 second half - the export says MODE=OLIVIA with the variant as SUBMODE
+
+The pair, as another logger and an award program read it. Quoted verbatim from
+the run, for a contact worked to 73 on the 20 m calling spot and never moved:
+
+    <CALL:4>W1AW
+    <STATION_CALLSIGN:6>KC3QIS
+    <QSO_DATE:8>20260920
+    <TIME_ON:6>031502
+    <TIME_OFF:6>031502
+    <BAND:3>20m
+    <MODE:6>OLIVIA
+    <SUBMODE:12>OLIVIA 8/250
+    <FREQ:9>14.071500
+    <RST_SENT:3>599
+    <RST_RCVD:3>599
+    <GRIDSQUARE:4>FN31
+    <MY_GRIDSQUARE:6>FN00DJ
+    <EOR>
+
+And decision BW's own case - the same QSO opened on the calling spot at 8/250,
+taken up 500 Hz and widened by unit 367's one click, and finished at the new
+place:
+
+    <MODE:6>OLIVIA
+    <SUBMODE:13>OLIVIA 16/500
+
+The variant logged is the one the conversation ended at, because that is what
+the operator read on the card when he pressed Log. The card is asserted to have
+ended at 16/500 and the record is asserted not to carry the variant it opened
+at; ADIF has one SUBMODE tag, so there is no third answer.
+
+One change in src, and it is a defect task 1 found. AdifLog.IsRstMode asked
+ContactModes.Named("PSK31") and nothing else, so a record Hamlet had just
+written with RST_SENT 599 came back out of its own reader as a DECIBEL report of
+599 - a readability read as a signal-to-noise ratio ninety times too large. It
+now asks the pair of both keyboard modes. Olivia's operators exchange a
+599-style RST in prose exactly as PSK31's do and Psk31ContactReport reads it out
+of the conversation the same way. The variant makes no difference:
+ContactModes.Olivia(null) is the entry any Olivia record matches.
+
+TheOliviaExportSaysOliviaTests, five assertions, 5 of 5 green, three of which
+were red before the change.
+
+1. A contact that stayed at 8/250 exports the pair with that variant, asserted
+   both as the tags the file carries and through ContactModes' own question.
+2. Decision BW's case above.
+3. The pair cannot be set apart. Every entry in ContactModes.Logged and one per
+   variant in data/olivia/format.json is put through Ft8ContactLogEntry.For and
+   both halves come out of the one object; a submode with no mode is asserted
+   impossible; and src is read to check that exactly one line composes a submode
+   at all - Ft8ContactLogEntry.cs:122, beside the mode, from the same object.
+   AdifLog reads one back out of a file and ContactLogViewModel shows one on the
+   screen; neither composes one.
+4. The round trip: the file re-read by AdifLog's own reader gives back the same
+   mode, submode, band, grids, frequency, times and - now - the same two RST
+   fields with the decibel fields empty. THIS IS HAMLET READING HAMLET AND IT IS
+   NOT CRITERION 5.4. It proves the export is self-consistent and proves nothing
+   at all about Log4OM, N1MM or LoTW; no logger is on this machine and nothing
+   here imported the file into anything.
+5. The spellings against the citation the tree carries, with no network call.
+   ContactModes.Cite names ADIF Specification 3.1.4 at https://www.adif.org/314/
+   and no copy of the submode enumeration is vendored here, so what is checked
+   is that every variant the format file holds gives MODE=OLIVIA with SUBMODE
+   "OLIVIA " and the format file's own name for the variant - OLIVIA 8/250,
+   OLIVIA 16/500, OLIVIA 32/1000 - and that an unmeasured variant gives no
+   submode at all. A CITATION AND NOT A FETCH.
+
+ThePsk31AdifTests and TheAdifLogRoundTripsTests are green and unedited; no
+existing test needed a §R12 rewrite at this task.
+
+No regression: app 97 of 97 in 58 s across the two new classes,
+TheLogSaysTheModeItWasMadeInTests, ThePsk31LogsWithRstTests,
+TheLogShowsBothGridsTests, TheBadgesCountContactsTests,
+TheLogDialogAndTheWorkedMarkTests, TheAchievementsPageTests,
+TheCategoryPagesAreTradingCardsTests, ThePsk31RecordsAppearTests and unit 367's
+TheOliviaMoveUpTests; engine 52 of 52 across ThePsk31AdifTests,
+TheAdifLogRoundTripsTests, TheLogCanSayFt4Tests, TheLogEntryIsWhatWasHeardTests
+and TheTotalMilesTests.
+
+Nothing here goes near the transmit chain (decision CD). Every record is a
+loopback on the development machine and none of it is evidence about the radio
+(FACT-004).
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,91 @@
+feat(unit367): task 3, 4.5 second half - one click sends the line, and then Hamlet moves
+
+Built to decisions BN, BO and BK, inside decision AZ's fence. The one change
+to source this task needed was decision BR's, below.
+
+THE LINE, VERBATIM, AS IT GOES ON THE AIR - the arbiter's recommended text,
+unshortened:
+
+    N1XYZ de K1ABC  QSY UP 500 TO OLIVIA 16/500  QSY UP 500 TO OLIVIA 16/500  N1XYZ de K1ABC K
+
+90 characters. Composed at 8/250 that is 63.79 s against a cap of 82.60 s,
+Fits, macro token "qsy", offset 1500 Hz, announced true, rsidCode 69, mode
+olivia, variant 8/250. Its record: outcome Played, cameOutOfTransmit
+OrdinaryUnkey, keyed true, announcementSeconds 1.8576, longestSeconds 30.
+
+MEASURED, NOT SEEN, AND THE DETECTOR WAS TOLD NOTHING (decision I):
+- the move send, read back off the audio the sound card was handed:
+  OLIVIA_8_250, code 69, at 1499.94 Hz against 1500.0 Hz wanted - 0.06 Hz of
+  error against a 5 Hz bound.
+- the first send after the unkey, proved by sending one rather than by
+  reading a field: composed at 2000 Hz at 16/500, 94 characters, 51.51 s
+  against a cap of 61.95 s, rsidCode 70, and read back OLIVIA_16_500 code 70
+  at 1999.66 Hz against 2000.0 Hz - 0.34 Hz of error.
+
+NOTHING MOVES UNTIL THE LINE HAS GONE OUT (decision BO). Three presses that
+went nowhere, each asserting the center and the variant afterwards and each
+reading the card's own sentence:
+- a Stop mid-play: stopped by the token with part of the audio unplayed, the
+  unkey aborted, no olivia_move_sent, olivia_move_refused moved false, and
+  the next send to him still 1500.0 Hz at 8/250.
+- the licence gate: outcome RefusedByLicence, cameOutOfTransmit
+  NothingWasKeyed, keyed false, nothing played, nothing written to the port,
+  and the next send still 1500.0 Hz at 8/250.
+- no_announcement, with the codes file read back empty and the real calling
+  table: nothing composed, and the next send still 1500.0 Hz at 8/250.
+The card says, in all three: "Nothing moved: the line saying you were going
+up 500 Hz did not go out, so Hamlet is still on the calling frequency at
+8/250."
+
+**THE CAP CANNOT REFUSE THIS LINE AT 8/250 AND THAT IS ARITHMETIC.** The
+framed line is 90 characters against timing.json's macro count of 121, so
+there is no cap refusal to measure at the calling variant and none was
+manufactured. The test measures the other refusal that reaches the same
+place with nothing played - the licence gate - and prints the line's seconds
+against its cap. No cap test was loosened and no count in timing.json moved.
+
+DECISION BK's BOUND, WITH THE ARITHMETIC ON THE REAL BANDS. Hamlet listens
+across 200 to 3000 Hz; 16/500 occupies +/-234.375 Hz; so the highest calling
+offset the move may be offered at is 2265.625 Hz. On all eight rows of the
+cited table, at the dial pressing Olivia sets, the calling offset is 1500 Hz
+and the move lands at 2000 Hz, occupying 1765.6 to 2234.4 Hz - wholly
+inside. At a dial the operator has moved down to 14 070 600, the calling
+offset is 2400 Hz, the move would occupy 2665.6 to 3134.4 Hz, and it is not
+offered: the card says "Hamlet is not offering the move on this frequency:
+500 Hz up from here would put the signal outside the range Hamlet listens
+across, so it could not hear the answer."
+
+DECISION BR, AND IT NEEDED ONE PIECE OF SOURCE. The card itself always
+survived the move - _psk31Cards is keyed by the callsign, not by the channel
+- but the conversation it is read from is one channel's, and a station who
+follows opens a new one. Without a carry, the card read his new channel with
+his half of the history missing, which put Hamlet's own move line at the end
+of the list and had the card saying it was his turn a moment after he had
+come back: no Send button, and the next send could not be made at all. So
+OliviaMovedConversationFor carries the messages of the channel he moved from
+into the reading of the new channel at the place Hamlet announced, with a
+fresh splitter and the complete messages. It fires only for a station Hamlet
+itself moved and only within the moved-to variant's own half width; nothing
+guesses that two carriers are the same station.
+
+TELEMETRY (R13). olivia_move_offered and olivia_move_sent carry fromHz,
+toHz, upHz, fromVariant, toVariant and, on the sent line, the window as
+PatienceSeconds(16/500) x 2 = 32.768 s. No line of any of the four move
+events carries a callsign, the word QSY or any text, asserted by sweep.
+CallsignPrivacyTests, ThePsk31TelemetryTests and ThePsk31TransmitTelemetryTests
+green, 15 of 15.
+
+THE FENCE AND THE COUNTS. PttOn code lines 1, Arm( call lines 2, asserted in
+this class after the task. No line on decision AZ's forbidden list touched.
+No frequency command was sent to the radio: the dial stays where pressing
+Olivia put it (decision BK, R11).
+
+DECISION BT's AFTER-RUN OF THE CHAIN-GUARDING LIST, against task 0's
+before-run, every red compared by name: engine 98 of 110 in 47 s (46 s
+before), app 48 of 63 in 33 s (36 s before). The same twelve engine reds and
+the same fifteen app reds, by name, and no new red - so nothing that was
+green is red (HM-DEC-165).
+
+TESTS: TheOliviaMoveUpTests, 19 of 19 green in 28 s.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,44 @@
+docs(unit367): the report - R29's one click, step 4 from 6 of 8 to 8 of 8 and done
+
+Complete at task 5 of 5 with task 5 built rather than dropped. 4.5 and 4.8
+are both met, so step 4 has every must-pass and its one nice-to-pass, and
+step 5's entry opens.
+
+4.5: the offer appeared under all four of decision BL's conditions and was
+refused on 8 of 8 conditions it must not appear under, each its own
+assertion. The line, 90 characters, went out at the calling center 1500 Hz at
+8/250 and read back OLIVIA_8_250 code 69 at 0.06 Hz of error against an
+allowance of 5. After the ordinary unkey the next send to that station went
+out at 2000 Hz at 16/500 and read back code 70 at 0.34 Hz - proved by
+sending one, not by reading a field. A Stop mid-play, a licence refusal and
+a no_announcement refusal each moved nothing, all three asserted at the
+center and the variant afterwards with the card saying so in words. The
+follow line's three states are proved 3 of 3 with the window asserted as
+PatienceSeconds(16/500) x 2 = 32.768 s and the number written nowhere in
+src/. The card survived the move with its history.
+
+4.8: lag 0.000 s / 0.000 blocks at 8/250 and 2.000 s / 0.977 blocks at
+16/500, one block being 2.048 s. Met at both variants, and the turn still
+reads no clock.
+
+Entry and chain: chain-guarding reds before 27, after 27, new 0. Carry-forward
+app 189 of 189 (2 m 18 s), engine 146 of 146 (4 m 45 s), about 195 s inside
+the 480 s timeout. PttOn 1 and Arm( 2 before and after. No line on decision
+AZ's forbidden list was touched and no frequency command was sent to the
+radio.
+
+The carried queue: lines 677 to the end of output.md are unit 366's section 4
+byte for byte, left in place on disk rather than retyped. Both hashes agree -
+git show efc07610:output.md | tail -n +469 | md5sum and
+tail -n +677 output.md | md5sum both give 685f335dc84fdfdf8da1b686951bb2e4.
+
+Section 4 raises five items, none of them stop material and none of them in
+the way of a step 4 criterion. Section 1 also reports plainly that the tests
+for tasks 2 to 4 were not watched failing first, which is what the
+instruction asked for.
+
+Nothing has been on the air. No Olivia signal from Hamlet has been keyed, no
+QSO has been moved off a real calling frequency, and none will be until Tim
+presses it at step 6.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

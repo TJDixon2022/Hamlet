@@ -1,0 +1,77 @@
+feat(unit368): task 2, 5.1 first half - an Olivia contact logs as an Olivia contact
+
+The defect this step exists to repair. Psk31ContactWith answered
+ContactModes.Named("PSK31") for any station with a card, and since unit 364
+Olivia's rows and cards ARE PSK31's - so an evening worked on Olivia went into
+the operator's permanent file saying MODE=PSK, SUBMODE=PSK31. Task 1's trace
+quoted that record in full. It is a false sentence in the longest-lived thing
+Hamlet writes (CLAUDE.md 0.0), and no later unit could repair it, because by
+then nobody would know which records were wrong.
+
+What changed, three places in src.
+
+ContactModes gains Olivia(variant) (decision BV): one object carrying both
+halves of the pair - MODE=OLIVIA with the variant as SUBMODE, spelled the way
+the cited edition spells it, the word and a space and the variant as
+data/olivia/format.json already writes it. Ft8ContactLogEntry.For projects Mode
+and Submode from one ContactMode, so there is no path that can set one without
+the other. A blank variant gives back ContactModes.Logged's own null-submode
+entry, which is what a record with no variant matches on the way back in.
+THE SPELLING IS A READING CARRIED FORWARD FROM ContactModes.Cite AND NOT A
+FETCH: no test here reaches the network and no copy of the ADIF enumeration is
+vendored in this tree. The variant names are not listed in ContactModes - there
+is one list of Olivia's variants in this repository and it is the format file.
+
+MainWindowViewModel.Psk31ContactWith reads the conversation (decision BU): the
+card says which of the two modes it was, because Ft8ContactCard.IsOlivia and
+OliviaVariant are filled from the channel's own variant, which came from the
+signal's announcement or the blind search and never from a control. The variant
+logged is the one the card is showing now (decision BW), which is what the
+operator read at the end of the QSO. Where the card shows no variant, the
+channel it is being read on still says the conversation is Olivia, so the record
+says MODE=OLIVIA with SUBMODE absent rather than naming the wrong mode
+(decision BX). The question is still asked of the conversation and never of the
+tab, which is unit 326's rule in that method unchanged.
+
+MainWindowViewModel.WriteLoggedContact fires psk31_contact_logged for an Olivia
+record too (PSK31 plan R13): logging is a stage, and without the line an Olivia
+contact reached the file in silence. The line carries the mode and, inside the
+submode, the variant - and no callsign, no grid and no text.
+
+TheOliviaLogsAsOliviaTests, four assertions, 4 of 4 green. Watched failing
+first, measured rather than asserted: with the card reading disabled, 3 of the 4
+go red - the record, the absent submode and the telemetry line - and the fourth,
+which is decision BU's regression assertion, passes both ways because it is
+about the modes that must not change.
+
+1. The station from the loopback Olivia exchange logs MODE=OLIVIA,
+   SUBMODE=OLIVIA 8/250, RST_SENT 599, RST_RCVD 599, GRIDSQUARE FN31. Not one
+   figure in that test is a literal: the mode comes from ContactModes.Olivia at
+   the variant the card is showing, the report Hamlet sent is read out of the
+   macro that went on the air, the report he sent is the corpus's own declared
+   reading of his line, and the grid is the one the card is printing. 5.1's
+   "with RST and grid" already held for Olivia (task 1 item 2) and nothing was
+   built for it (R14) - it is asserted here so it cannot quietly stop working.
+2. A PSK31 station still logs MODE=PSK SUBMODE=PSK31 with its RST, an FT8
+   contact still logs MODE=FT8 with its decibels and no RST, and an FT4 contact
+   still logs MODE=MFSK SUBMODE=FT4. None of the three matches Olivia.
+3. An Olivia conversation with no readable variant logs MODE=OLIVIA with the
+   SUBMODE tag absent from the file, not empty in it, and still not PSK31.
+4. psk31_contact_logged carries mode OLIVIA and submode OLIVIA 8/250, the two
+   reports and whether a grid went in, and no callsign, grid, name or town.
+
+Nothing here goes near the transmit chain (decision CD): PttOn stays 1 code line
+and Arm( stays 2, and no line on decision AZ's forbidden list is touched.
+
+No regression in the neighbours: app 78 of 78 in 20 s across the new class,
+TheLogSaysTheModeItWasMadeInTests, ThePsk31LogsWithRstTests,
+TheLogShowsBothGridsTests, TheBadgesCountContactsTests,
+TheLogDialogAndTheWorkedMarkTests, TheAchievementsPageTests,
+TheCategoryPagesAreTradingCardsTests, ThePsk31RecordsAppearTests and
+TheOliviaSeamTests; engine 40 of 40 across ThePsk31AdifTests,
+TheAdifLogRoundTripsTests and TheLogCanSayFt4Tests.
+
+Every contact in this commit is a loopback on the development machine and none
+of it is evidence about the radio (FACT-004).
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

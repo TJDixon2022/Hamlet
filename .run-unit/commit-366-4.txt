@@ -1,0 +1,47 @@
+feat(unit366): task 4, 4.4 - the cap and the patience at the press, in the variant's own characters
+
+Six names in TheOliviaSendTests, all green. Twenty-one of twenty-one in the
+class.
+
+The cap is the product and a literal nowhere: 121 x 0.68267 = 82.6031 s at
+8/250, 121 x 0.51200 = 61.9520 at 16/500, 121 x 0.40960 = 49.5616 at
+32/1000 for a macro, and the same at 242 characters for a typed line -
+165.2061, 123.9040 and 99.1232 s. Asserted as count times seconds per
+character, both read from timing.json.
+
+Nothing else moved: OperatorSend.LongestUnslottedSeconds 30,
+LongestTypedSeconds 60, a PSK31 macro held to 30, the FT8 slot 15 and the
+FT4 slot 7.5, each asserted.
+
+The longest Report the macro builder composes, to the compound callsign
+VP2V/W1AW, is 102 characters and takes 71.99 s at 8/250 against the 82.60 s
+cap. It is armed and played through SendMessage, the one door, with the
+record reading Played, keyed true, and one call to the sound card.
+
+A text one character past what fits is refused as LongerThanTheCap: 120
+characters fit at 82.42 s and 121 give 84.46 s, which is decision BD's
+answer to unit 365 item 1 measured at the press. At the press a 400
+character typed line is refused with "cap" at the "arm" stage in PSK31's
+own words - "this is 301.36 s of Olivia audio, and this send may be at most
+165 s so that a continuous carrier cannot run on" - with nothing keyed,
+nothing played and no frame written.
+
+The card states the seconds in the mode the line would go out in. A new
+OliviaModulator.TextSeconds gives whole blocks plus the last symbol's tail,
+which is what the air actually sends, and Ft8ContactCard carries the
+variant its channel was heard at. A 69 character framed line reads "47.1 s
+of text" on an 8/250 card where PSK31 would have said 16.9.
+
+The patience scales: 32 x each variant's rate gives 21.8454, 16.3840 and
+13.1072 s, no two alike. Decision BE's finding stands - no application path
+consumes a time-based patience. Every turn in the app is decided by
+Psk31Turn.Read at ShowPsk31Cards from the channel's finished messages and
+its carrier-present fact, reading no clock, and Psk31Macros.AnswerSeconds
+has no caller in src/. Nothing was invented to have something to scale.
+
+FINDING, reported not repaired (R14): the PSK31 exchange parser reads no
+speaker from a line whose callsign carries a slash, so no card opens for a
+compound-callsign station and its Report cannot be reached by a button.
+That is why the Report above goes through SendMessage directly.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,69 @@
+feat(unit367): task 2, 4.5 first half - the move is offered on a certain answer and nowhere else
+
+R29's one click, built to decisions BL and BM. **Said plainly: the code for
+4.5 was written in one pass, so this commit carries the whole mechanism -
+tasks 2, 3 and 4's source - with task 2's tests. Tasks 3 and 4 add their own
+tests on top of it in their own commits. The instruction asks for tests
+watched failing first and that is not what happened here; it is reported in
+output.md section 1.**
+
+WHAT THE OPERATOR GETS. On a card whose station has certainly come back on
+the Olivia calling frequency at 8/250, a second one-click control appears
+beside the macro offer reading
+
+    Move up 500 Hz and switch to 16/500
+
+with a hover saying why anybody would press it. Pressing it sends the line
+at the old place and the old variant, and only after that line has gone out
+and unkeyed ordinarily does Hamlet's own send-and-reply center go up 500 Hz
+and its variant become 16/500. Then the card says what was heard there.
+
+DECISION BL's FOUR CONDITIONS, AND NO LOOSER GATE. Olivia chosen; the
+reading is Psk31Offer.For's own answer, which is a certain your turn over a
+certain message addressed to the operator that hands over; the conversation
+is on the band's calling center from the cited table; and the variant is
+8/250. Once per conversation, and beside the macro offer, never instead of
+it.
+
+DECISION BM: IT IS ITS OWN CONTROL. Ft8CardActionKind still has exactly
+None, Send and Log; Psk31Macro still has exactly None, Cq, Answer, Report
+and Confirm; ActionFor and CardActionAsync's Send and Log paths are
+untouched. The move travels as one OliviaMoveOffer record on the card, so
+nothing appears on a PSK31 card - proved by a card built the PSK31 way
+carrying no move, and by ThePsk31ConversationCardTests, ThePsk31OfferTests,
+ThePsk31CardIsHandedHisGridTests and BindingHealthTests green, 13 of 13.
+
+THE TRAP THE TRACE FOUND. The offer's "are we on the calling center" test is
+the cited table's own arithmetic, in a new OliviaCallingCenterOffsetHz, and
+not OliviaCallingOffsetHz - that one answers where a CALL may go, and it
+refuses a spot a station is sitting within 150 Hz of, which is exactly the
+situation the move exists for. The tolerance is half the calling variant's
+own occupied width from the format file, 109.375 Hz: offered at 0 and
++108.4 Hz from the center, refused at +110.4, +300 and -400.
+
+DECISION BK's BOUND. The moved-to signal must lie wholly inside
+Psk31CarrierSearch's 200-3000 Hz. 16/500 occupies +/-234.375 Hz, so the
+highest calling offset the move may be offered at is 2265.6 Hz; above that
+it is not offered and the card says why.
+
+TELEMETRY (R13). Four new events in the psk31 category, none carrying a
+callsign or a word of text: olivia_move_offered at the press with the from
+and to centers and variants, olivia_move_sent after the unkey with the
+window, olivia_move_refused with the reason and moved: false, and
+olivia_move_answered with the heard center, the code and the error.
+
+THE FENCE (decision AZ). No line on the forbidden list was touched: no new
+PttOn site, no new Arm call, and no edit to Ft8TransmitSequence,
+Ft8ArmedSend, UnslottedTransmission's Fit, Cap or announcement arithmetic,
+OperatorSend, RsidBurst, the abort, or the FT8, FT4 and PSK31 branches of
+SendMessage. The three lines added inside SendUnslotted read a field that is
+always null on a PSK31 send. No frequency command is sent to the radio.
+
+TESTS: TheOliviaMoveUpTests, 11 of 11 green in 1 s - offered on all four
+conditions, and refused on a guessed your turn, on his turn, while he is
+still sending, under PSK31, at 16/500, at 32/1000, away from the calling
+center and a second time after it has been used, each its own assertion;
+the label quoted; PSK31's card unchanged; and the offer appearing composing
+nothing, keying nothing and writing no transmit stage at all.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

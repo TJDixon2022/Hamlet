@@ -1,0 +1,21 @@
+test(unit366): task 2, R12 - TheOliviaSeamTests stops guarding the shut mode gate
+
+PSK31 plan R12, work instruction 366 decision BI. This class asserted the
+door this unit is told to open, so it is rewritten in its own commit before
+the door moves, and it guards what still holds.
+
+ThePanelNamesTheModeAndSaysNothingCanBeAnswered ->
+ThePanelNamesTheModeAndPromisesNoSlot. Gone: the sentence "can be answered
+yet" and Assert.False(CanAnswerRowsForTests). Kept: the mode is named on
+the strip and on the decoded idle, and nothing on a panel for a mode with
+no slots promises one. Added: the strip says what a line actually offers.
+
+NoDecoderIsAttachedAndNoPathReachesAnythingThatKeys ->
+NoDecoderIsAttachedAndNothingIsComposedUntilAPress. Gone: the CQ press,
+"cannot send Olivia", send_refused last, and the word sweep over composed
+and send_stage. Kept: the slot watch is not asked, no other mode's decoder
+runs, no row and no card appear on this feed. Added: the transmit category
+is empty across thirty ticks, because a transmission takes a click - which
+is the half of 0.2 that outlives the gate.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

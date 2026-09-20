@@ -1,0 +1,23 @@
+test(unit366): task 2, R12 - TheOliviaRowsTests' refusal test guards the press, not the shut door
+
+PSK31 plan R12, work instruction 366 decision BI, in its own commit as BI
+asks. Unit 364's decision AN test - every send control refuses, at least
+four refusals, no composed or armed line anywhere - guarded the mode gate
+while it was shut, and keeping it would make this class the wall that stops
+the unit told to open it.
+
+WithRowsPresentEverySendControlRefusesAndNothingKeys ->
+WithRowsPresentNothingIsComposedUntilAPressAndEachPressCarriesItsRowsVariant.
+
+Gone: "cannot send Olivia" on every press, the count of send_refused, and
+composed, armed and send_stage in the word sweep.
+
+Kept and added: no composed line and no stage before the first press; one
+composition per press that got past the gate and not one more, which is
+R10's one click one transmission; each composition carrying mode olivia and
+the variant of the row it was addressed to, with the CQ at the cited
+calling variant and no variant appearing that no signal announced; and
+nothing keyed, because this panel has no armed send and every press ends at
+no_transmit_path.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

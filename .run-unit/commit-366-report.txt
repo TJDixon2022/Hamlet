@@ -1,0 +1,17 @@
+docs(unit366): the report - the Olivia press goes out, step 4 from 1 of 8 to 6 of 8
+
+Complete at task 5 of 5 with task 5 built. 4.2, 4.3, 4.4, 4.6 and 4.7 met;
+4.5 and 4.8 are the next unit's, so step 4 stays partial.
+
+The send needed no line on decision AZ's forbidden list. PttOn 1 and Arm( 2
+before and after. Chain-guarding reds 27 before and 27 after, the same
+names. Carry-forward app 189 of 189 (2 m 34 s), engine 146 of 146
+(5 m 1 s). Olivia is the fourth mode with a send guard on the line.
+
+Section 4 raises eight items on top of the carried queue and none of them
+blocks a criterion. The carried block is unit 365's lines 265 to the end,
+moved by replacing only lines 1 to 264 of the file already in the working
+tree, so it is byte-identical by construction: both md5sums read
+fe891bea7e4e2f4a2dc91f1d491ce4ae.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

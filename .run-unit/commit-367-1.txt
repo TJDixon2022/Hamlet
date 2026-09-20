@@ -1,0 +1,60 @@
+test(unit367): task 1, the trace - what the move would have to reach, read from the tree
+
+Unit367Trace, in the app project because the move's path is: the card, the
+offer, the two send fields and the turn all live in MainWindowViewModel. It
+asserts nothing and is on neither carry-forward line. Five names, 30 s.
+
+What it found, against what work instruction 367 section 5 believed:
+
+1. The card is keyed by callsign, not by channel (MainWindowViewModel.cs:2869),
+   and state.ChannelId is updated in place (:4162), so the card ALREADY survives
+   a move: driven through his 8/250 channel ending and a new 16/500 channel
+   opening 500 Hz up, W1AW's card is still there with its turn and its offer.
+   What does not survive is the card's OliviaVariant - it still reads 8/250
+   after he has moved, because the rebuild at :4190 passes neither the variant
+   nor the operator's callsign. That is a sentence about a send that is now
+   wrong (section 0.0) and it is task 4's.
+
+2. The two fields are _psk31SendAtHz (:15645) and _oliviaSendVariant (:15659),
+   set from Psk31OffsetOf (:16267) and OliviaVariantOf (:16291) at the card
+   press (:5899) and the typed line (:16115). Those two methods are where
+   decision BO's after-the-unkey move belongs: every press that goes to a
+   station reads them.
+
+3. The offer is Psk31Offer.For at :4125, its label Ft8ContactCard.Psk31ActionLabel
+   (:180), its command CardActionAsync (:5874) bound at MainWindow.axaml:5604.
+   A second one-click control attaches as a second property on the card and a
+   second [RelayCommand], touching neither Ft8CardActionKind nor Psk31Macro.
+
+4. **THE TRAP DECISION BL HAS TO AVOID.** OliviaCallingOffsetHz (:15890) is the
+   send path's question - where may a call to anyone go - and it answers null
+   while a station sits within 150 Hz of the calling center, which is exactly
+   the situation the move is offered in: 1500 Hz with nothing being read, null
+   with him on the spot. So the offer's "are we on the calling center" test is
+   the table's own arithmetic, not that method. On all eight table rows the
+   calling offset at the tab's own dial is 1500 Hz and the move lands at
+   2000 Hz, wholly inside the 200-3000 Hz listening passband; 16/500 occupies
+   about +/-234.4 Hz, so the highest calling offset the move may be offered at
+   is 2265.6 Hz.
+
+5. RSID detections land at :3168 and are read by RsidEvents.Heard and nothing
+   else. RsidDetection carries Code, Name, Mode, Variant, CenterHz, Quality,
+   TonesRight and StartSeconds - everything the follow check needs, at the
+   moment the burst ended. OliviaChannel carries Variant, CenterHz and Found,
+   but Found may be "blind" and a channel opens only after blocks sync, so a
+   channel-open is not an announcement. **Decision BQ reads the detections.**
+
+6. 4.8's number, from the mode author's own 16/500 audio through the real tick
+   and from Hamlet's own modulator at 8/250, one block being 2.048 s at every
+   variant: 8/250 lag 0.000 s = 0.000 blocks, the card saying "Your turn" at
+   the same quarter-second the turnover word's last character arrived; 16/500
+   lag 2.000 s = 0.977 blocks. Both are one block or less.
+
+7. Every IsPsk31Chosen site on the move's path already carries an Olivia branch.
+   The one that does not is ShowsSlotClock (:379), and it is not on this path.
+
+The one line added to src/ is OliviaCallingOffsetForTests, a read-only accessor
+so the trace can print item 4's trap. Nothing on decision AZ's forbidden list
+was touched.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

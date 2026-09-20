@@ -1,22 +1,17 @@
-﻿STEP: 3 | Hear everyone and read - a row per station from every RSID heard or blind-found, the PSK31 parser reading them unchanged, the two-signal fixture yielding two rows.
-## Step 3 - Hear everyone and read
+﻿STEP: 5 | Log and achievements - MODE OLIVIA with its submode in the log and the export, the mode's records revealed by the first contact.
+## Step 5 - Log and achievements
 
-**Delivers:** every RSID heard, and every blind-found carrier, gets its own demodulator
-and its own row in the decoded list, text as blocks arrive, the variant on the row; the
-PSK31 parser reads the rows unchanged; the CQ filter, worked-fade, entity resolution,
-the quill and the row's whole-message hover all work on Olivia rows; rows stay after the
-station ends, as PSK31 rows do.
+**Delivers:** an Olivia contact logs with RST and grid, exports as ADIF `MODE=OLIVIA`
+with the variant as `SUBMODE` (`OLIVIA 16/500`), and the mode's records are revealed by
+the first Olivia contact and absent before it.
 
-**Entry:** step 2 done; the two-signal fixture's RSIDs detected, checked first.
+**Entry:** step 4 done; a loopback exchange reaches 73, checked first.
 
 **Exit:**
-- [ ] 3.0 A new fixture from the reference generator - 8/250 at -14 dB in 2500 Hz, RSID in front, the QSO text - is made by the unit and decodes at or under 0.10; the below-noise claim proved at the variant that can do it. *must-pass*
-- [ ] 3.1 The two-signal fixture yields two rows, each with its variant and its own text at or under 0.05, nothing of one in the other. *must-pass*
-- [ ] 3.2 The transcript corpus fed through Olivia rows yields the same verdicts as through PSK31 rows - no parser change. *must-pass*
-- [ ] 3.3 The CQ filter, worked-fade, `EntityOf` with its `CQ` guard, the quill and the hover run on Olivia rows with no change to their code. *must-pass*
-- [ ] 3.4 A row is retired when its signal goes and stays on the list marked ended; the retire window is the variant's timing table times a stated factor. *must-pass*
-- [ ] 3.5 Telemetry: the PSK31 row events with `mode: olivia` and the variant; nothing personal. *must-pass*
-- [ ] 3.6 Real-time ratio on the two-signal fixture under 1.0, reported. *nice-to-pass*
+- [ ] 5.1 An Olivia contact logs with RST and grid; the ADIF carries `MODE=OLIVIA` and the variant submode. *must-pass*
+- [ ] 5.2 Before the first Olivia contact no earned Olivia card is visible; after it the mode's records appear; the Modes badge counts it. *must-pass*
+- [ ] 5.3 The two inherited reds in `TheAchievementsScreenTests` are not made worse. *must-pass*
+- [ ] 5.4 The export imports cleanly into one named logger. *nice-to-pass*
 
-**Depends on:** step 2.
+**Depends on:** step 4.
 

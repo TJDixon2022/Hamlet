@@ -1,0 +1,103 @@
+feat(unit368): task 4, 5.2 and 5.3 - the mode's records appear and the badge counts it
+
+Before this task a record saying MODE=OLIVIA mapped to no mode at all. Task 1
+measured it: a log of one such record had AchievementLog.Modes empty,
+WorkableModes 5, and a Modes badge reading "five modes to work · 0 of 5". The
+log said he had worked the mode and the screen said he had not (CLAUDE.md 0.0).
+
+What changed, decision BY: where the achievement code reads ContactModes.Six to
+decide what a mode is, it reads ContactModes.Logged.
+
+- AchievementLog's contact mapping, so a record saying MODE=OLIVIA maps to a
+  mode and log.Modes holds "Olivia".
+- AchievementScores.WorkableModes, which is now 6. THE NUMBER IS NOWHERE TYPED:
+  it is a count of the table, and the badge's words are composed from it -
+  AchievementBadgePage.ModesToWork, which read "five modes to work" as a string
+  until now. A badge whose words are a string and whose standing is a count can
+  say "five modes to work · 0 of 6".
+- AchievementCategory.ModesFor's unworked list, so the badge asking for one more
+  mode has a card for it. An unworked row is an invitation and not a claim that
+  he worked it (decision BZ).
+
+Decision CA: the Hall of Fame gains first_olivia, worth 15 - the value of
+first_psk31, in the owner's own points file, beside it and documented in the
+file's own header block. On screen it reads "An Olivia contact", in the
+shortened form unit 332 set. THE NUMBER IS THE ARBITER'S AND OVERRULABLE: it is
+one line of data/achievements/achievement-points.json and no source file reads a
+value. It is earned off log.Modes exactly as first_psk31 is, and it joins the
+firsts section 3.1 keeps off the window until they are earned - which was one
+const for PSK31 and is now both keyboard modes.
+
+Two smaller repairs the change exposed, both in the Modes category:
+
+- AchievementCategory.LivesAt asked DigitalCallingFrequencies where Olivia
+  lives, and Olivia has no band-plan block - its calling spots are its own cited
+  table, data/bands/olivia-calling.json, which is where the tab tunes from. The
+  one unworked mode a beginner is being invited to work was the one row that
+  could not say where to find it. The number is the table's own.
+- WhoIsThere answered "the CQ list carries no voice" for Olivia, because Olivia
+  fell through to the Voice branch. That is a sentence about a different mode.
+  It now says "reads as PSK31 on the CQ list", which is the truth: CqSnapshot
+  reads a text-only row as PSK31 and since unit 364 an Olivia row is a text-only
+  row. The shorter wording was measured, not guessed - the longer form clipped
+  the mode's own name to nothing at 1400 px on the test host.
+
+TheOliviaRecordsAppearTests, five assertions, 5 of 5 green.
+
+1. Before: with a log holding no Olivia record, Olivia is not in log.Modes, no
+   earned Modes card names it, first_olivia is not earned and is not what the
+   page offers next, and neither the badge's standing nor its next card names
+   it.
+2. The unworked row decision BZ allows: on a log that has worked every other
+   mode, the Olivia row is drawn, says where the mode lives and what the CQ list
+   can see of it, and is on the "a mode you have not worked" card - with no
+   earned card and no first.
+3. After: one Olivia record puts the mode in log.Modes, earns the Modes card,
+   earns first_olivia reading "An Olivia contact", and raises the badge's worked
+   count by exactly one against the same target and the same words.
+4. The target is counted from the table and the words follow it; WSPR is still
+   not one of the modes there are to work.
+5. The other five are unharmed: an FT8-and-PSK31 log scores its modes against
+   the owner's own points file - one per mode, a special where he set one, no
+   all-modes bonus - first_psk31 is earned, first_olivia is not, and the total
+   is still the sum of the eight badges.
+
+§R12 rewrites, named because they guarded the door this unit was told to open.
+Four assertions in two classes, each rewritten in place with the reason beside
+it:
+
+- TheAchievementsPageTests.TheFixtureLogsScoresMatchTheHandComputedArithmetic:
+  Assert.Equal(5, WorkableModes) is now 6, and the modes score 85 is now 35 -
+  the 50 was the all-modes bonus a five-of-six log no longer earns.
+- TheAchievementsPageTests, the twelve-contact total: 465 is now 415 and the gap
+  to Rank 5 is 85 rather than 35, in both that test and TheRanksCarryTheNames-
+  InThePointsFile. Nothing about ranks changed.
+- TheCategoryPagesAreTradingCardsTests, the Modes band line: the pinned string
+  "five modes to work · 5 of 5 · 85 pts · Gold" is now composed from
+  AchievementBadgePage.ModesToWork and reads "six modes to work · 5 of 6 · 35
+  pts · Gold".
+- TheCategoryPagesAreTradingCardsTests.TheNextCardKnowsWhoIsCalling: the
+  unworked modes were named as {CW, FT4, PSK31}, a fact about one fixture and a
+  five-mode table. It now asserts the rule - every row drawn is a mode this log
+  has not worked - and its ModesRowMiss helper learned where Olivia lives and
+  what the CQ list can say about it.
+
+Criterion 5.3, decision CB, measured whole and by name before and after:
+TheAchievementsScreenTests 9 passed / 1 failed both times. The same one name,
+TheWindowDrawsEverySixRows, for the same reason - System.InvalidOperationException
+"Sequence contains no matching element" at line 289, where the realized window is
+searched for an ItemsControl named AchievementsModeRows. NO THIRD NAME WENT RED.
+MISMATCH, reported and not repaired: the instruction and
+docs/carry-forward-tests.txt both name two inherited reds in that class;
+WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo passes, before and after.
+
+Decision CG's chain-guarding after-run, compared name by name against task 0:
+engine 98 of 110 in 46 s (was 46 s), app 48 of 63 in 33 s (was 33 s), the same
+twenty-seven inherited reds by name and no new one. No regression elsewhere: app
+101 of 101 across the three new classes and every log and achievement neighbour,
+engine 67 of 67.
+
+Nothing here goes near the transmit chain (decision CD): PttOn is 1 code line
+and Arm( is 2, re-counted after the change.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

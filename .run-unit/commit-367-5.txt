@@ -1,0 +1,57 @@
+test(unit367): task 5, 4.8 - the turn indicator lands inside one block of the turnover word
+
+Built to decision BS. **This is a measurement and the number is the
+deliverable**; nothing was invented to have something to point at and the
+turn was given no clock.
+
+ONE BLOCK IS 2.048 s AT EVERY VARIANT - 64 symbols of 0.032 s from
+data/olivia/format.json - carrying 3 characters at 8/250 and 4 at 16/500.
+
+THE LAG TABLE, measured through the real tick, audio fed a quarter-second at
+a time, the lag being audio seconds and not wall seconds:
+
+    variant | block s | lag s | lag in blocks | met
+    8/250   | 2.048   | 0.000 | 0.000         | yes
+    16/500  | 2.048   | 2.000 | 0.977         | yes
+
+**4.8 IS MET AT BOTH VARIANTS, AND THE TEST'S BOUND IS THE BLOCK ITSELF.**
+
+At 16/500 the audio is the mode author's own four-line QSO, hashed against
+the manifest first, with the operator set to the author's other station so
+his lines are addressed to the operator and a card exists to read a turn off:
+"KC3QIS de W1AW W1AW K" has its turnover word's last accepted character
+arrive at 39.000 s and the card's turn reading change at 41.000 s. At 8/250
+the audio is Hamlet's own modulator in memory, because the shipped 8/250 file
+is a CQ to anybody and opens no card: the turnover word's last character and
+the character that closes the message land in the same block, so the card
+says "Your turn" at the same quarter-second, 0.000 s.
+
+WHY 16/500 IS 2.000 s AND NOT NOUGHT, which is unit 364 item 6's known cause
+and not a fault: a message closes at the whitespace AFTER the turnover word
+(Psk31MessageSplitter.SplitRule), so where the K is the last character its
+block carries, the newline that closes the message is in the next block -
+one block later. That is why the bound is one block and why one block is the
+right bound; it is inside it either way.
+
+AND THE TURN STILL READS NO CLOCK (R14). One call site in src/ decides a
+turn, MainWindowViewModel.cs:4151, and Psk31Turn.cs holds no DateTime, no
+Stopwatch, no tick count and no seconds at all - asserted.
+
+CARRY-FORWARD, BOTH INVOCATIONS, AFTER THE LAST CHANGE.
+- app 189 of 189 in 2 m 18 s. **The first run of this invocation showed two
+  reds and both were flakes**: TheTestsStayOffTheNetworkTests.The354Layout
+  ReadsTheSameNumbersTwiceRunning, a known headless flake, and ThePsk31
+  ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt, which
+  is not on the known-flake list. Both passed alone and both passed in the
+  second run of the whole invocation, which is the run the 189 comes from.
+  Nothing in this unit touches ShowsSlotClock.
+- engine 146 of 146 in 4 m 45 s, about 195 s inside the 480 s timeout -
+  better than unit 366's 5 m 1 s, so the margin the instruction asked this
+  unit to keep is kept. Nothing this unit added is on the engine line.
+
+Every per-mode guard green: FT8 send and read, FT4 send and read, PSK31 send
+and read, Olivia read, modulate and send (HM-DEC-165).
+
+Nothing this unit added goes on either carry-forward list.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

@@ -1,0 +1,37 @@
+feat(unit366): task 5, 4.7 - the power offer and the ALC read on an Olivia send
+
+Two names in TheOliviaSendTests, both green, and the gate widened rather
+than the code copied (decision BG).
+
+HasPsk31PowerOffer answers for both keyboard modes. The reason for the
+offer is true of both: a keyboard mode keys a continuous signal for as long
+as its text takes, and Olivia does it for longer than PSK31. One property,
+one sentence, one accept label, one settle. Pressing FT8 still takes the
+offer off the screen and pressing either keyboard mode brings it back
+unless he has answered it; declining under Olivia settles it for PSK31 too,
+which is what one gate means. The property keeps its name, because renaming
+it would touch the view and every test that binds it to no end the operator
+can see.
+
+Two sentences stop naming a mode he is not using. The offer read "PSK31
+sends a steady carrier" and the ALC's holding-back form read "that is what
+makes PSK31 spread into the people either side of you"; both now read the
+chosen mode, which is the same sentence reading the panel rather than a
+fork of it. The learned reference keeps its own Mode field, so a reference
+taken on FT8 still reads "the 62 Hamlet measured on a clean FT8 send" in
+the middle of an Olivia sentence - that clause is a fact about where the
+measurement came from.
+
+The ALC needed no change at all: FirePsk31Async already reads the meter in
+its finally and the reference and its line were never gated on the mode. On
+an Olivia CQ with a reference of 62 learned on FT8 and a reading of 95, the
+record says measured true, alc 95, judged true, zone 77, pastTheZone true,
+reference 62, margin 15, referenceMode FT8, and the sentence points at the
+drive control on this screen and never at a knob on the rig (R11).
+
+PttOn code lines 1, Arm( call lines 2, counted after the task.
+
+Final carry-forward, both invocations: app 189 of 189 (2 m 34 s), engine
+146 of 146 (5 m 1 s), both inside the 480 s timeout.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

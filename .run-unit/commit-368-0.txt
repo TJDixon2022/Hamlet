@@ -1,0 +1,41 @@
+chore(unit368): task 0 - step 5 opens, the entry exchange reaches 73 before anything is built
+
+The unit opens on step 5, the log and the achievements. Step 4 closed at 8 of 8
+on unit 367 and a done step is closed, so this is step 5's first unit and it
+stands at 0 of 4.
+
+What was measured before a line of src changed:
+
+- The project gate: SHACK_FACTS.md and CwProbabilisticDecoder.cs present,
+  neither CoreHMI.sln nor MURC.sln in the tree, root C:\Source\HamLet.
+- All nine Olivia fixtures hash as assets/fixtures/olivia/manifest.json says,
+  9 of 9, checked by hand.
+- Decision CG's chain-guarding before-run: engine 98 of 110 in 46 s, app 48 of
+  63 in 33 s, the same twenty-seven inherited reds carried as ask 35.
+- The carry-forward list, both invocations, before any change: app 189 of 189
+  in 2 m 21 s, engine 146 of 146 in 4 m 37 s. Every per-mode send and read
+  guard green (HM-DEC-165).
+- Decision CE's entry: an Olivia conversation on the 20 m calling spot at
+  8/250, his half the corpus's 01-textbook and Hamlet's half its own macros,
+  carried to 73 on both sides in 37.2 s, with each of Hamlet's three sends read
+  back off the samples the sound card was handed - announced OLIVIA_8_250 code
+  69 at 1499.94 Hz and demodulated to the macro it composed. The card is open at
+  the end and its Log link is true.
+
+Decision CF: PHASE_STATUS.md said CURRENT_STEP: 3 with step 3 partial and
+WORK_INSTRUCTION 367, which understates the tree by a whole step. It is the
+unit's file to correct and not the arbiter's (ARBITER.md section 5 lets the
+arbiter write WORK_INSTRUCTIONS.md and nothing else), so it now says
+CURRENT_STEP: 5, step 3 done and WORK_INSTRUCTION 368, on the authority of
+PHASE_PLAN.md section 8's revision of 2026-09-19 evening and the reports of
+units 363 to 367. PHASE_PLAN.md's own checkboxes are the owner's and are left
+alone.
+
+Version 1.13.55 to 1.13.56. No file under src changes at this task; the one new
+test file asserts nothing about the product and is on neither carry-forward line.
+
+Nothing here is evidence about the radio (FACT-004): every figure is computed on
+the development machine and the contact is a loopback, not a station anybody
+worked.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

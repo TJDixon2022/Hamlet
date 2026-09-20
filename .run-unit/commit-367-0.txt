@@ -1,0 +1,30 @@
+chore(unit367): task 0, the unit opens - step 4's entry proved and the outcome entry appended
+
+Step 4 stands at 6 of 8 with 4.5 the last must-pass and 4.8 the last
+nice-to-pass. Before a line is written:
+
+- All nine Olivia fixtures hash as assets/fixtures/olivia/manifest.json
+  says, 9 of 9, by hand.
+- Decision BT's chain-guarding before-run on unchanged HEAD efc07610:
+  engine 98 of 110 in 46 s, app 48 of 63 in 36 s, the twenty-seven
+  inherited reds carried as ask 35 and none chased.
+- Step 4's entry: TheFt8AndFt4SendsAreByteIdenticalTests and
+  TheUnslottedSendTests green inside the engine run, and
+  ThePsk31CqGoesOutTests with TheOliviaSendTests.AnOliviaCqReachesTheAir
+  green by name, 5 of 5. The PSK31 loopback chain and Olivia's own send
+  are unchanged, so the entry is open.
+- Carry-forward before any change, two invocations, one build each: app
+  189 of 189 in 2 m 21 s, engine 146 of 146 in 4 m 43 s, about 197 s of
+  margin against the 480 s timeout. Every per-mode guard green, Olivia
+  with all three rows.
+- PttOn write lines 1, Arm( call lines 2.
+- Version 1.13.54 to 1.13.55.
+- UNIT 367 - STEP 4 appended to PHASE_OUTCOME.md, no earlier entry
+  touched, decision letters BK to BT so nothing collides with 366's.
+- PHASE_STATUS.md WORK_INSTRUCTION set to 367 and nothing else; it still
+  says CURRENT_STEP: 3 with step 3 partial, which is the launcher's file
+  and is reported rather than repaired.
+
+No file under src changes at this task.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

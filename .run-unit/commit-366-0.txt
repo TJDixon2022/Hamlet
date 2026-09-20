@@ -1,0 +1,15 @@
+chore(unit366): task 0, the unit opens - step 4's entry proved and the outcome entry appended
+
+Step 4's entry, decision BJ's before-run: chain-guarding engine 98 of 110
+(56 s, twelve inherited reds), app 48 of 63 (51 s, fifteen inherited reds);
+ThePsk31CqGoesOutTests 4 of 4 and TheFt8AndFt4SendsAreByteIdenticalTests
+green, so the PSK31 loopback chain is unchanged and the entry is open.
+
+Carry-forward before any change: app 188 of 188 (2 m 20 s), engine 146 of
+146 (4 m 41 s). Every per-mode guard green. PttOn 1, Arm( 2. Nine Olivia
+fixtures hash 9 of 9.
+
+Version 1.13.53 -> 1.13.54. PHASE_OUTCOME.md gains UNIT 366 - STEP 4 at
+the end, with no earlier entry touched.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>

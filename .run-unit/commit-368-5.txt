@@ -1,0 +1,67 @@
+test(unit368): task 5 - what 5.4 can honestly reach, and the plain sentence that it does not
+
+Decision CC. The deliverable is a measurement and a sentence, not a claim.
+
+The whole exported file for one Olivia contact worked to 73 on the 20 m calling
+spot, quoted from the run:
+
+    Hamlet contact log. ADI format, ADIF Specification 3.1.4, released
+    2022-12-06, https://www.adif.org/314/ADIF_314.htm, retrieved 2026-09-07.
+    Fields Hamlet did not observe are absent rather than empty.
+    <ADIF_VER:5>3.1.4
+    <PROGRAMID:6>Hamlet
+    <PROGRAMVERSION:7>1.13.56
+    <EOH>
+    <CALL:4>W1AW
+    <STATION_CALLSIGN:6>KC3QIS
+    <QSO_DATE:8>20260920
+    <TIME_ON:6>033407
+    <TIME_OFF:6>033407
+    <BAND:3>20m
+    <MODE:6>OLIVIA
+    <SUBMODE:12>OLIVIA 8/250
+    <FREQ:9>14.071500
+    <RST_SENT:3>599
+    <RST_RCVD:3>599
+    <GRIDSQUARE:4>FN31
+    <MY_GRIDSQUARE:6>FN00DJ
+    <EOR>
+
+Every field checked against what the cited specification requires of it, as that
+requirement is carried in this tree: the header ends at <EOH> and the record at
+<EOR>; every declared length is its own value's length, which is the one thing
+about the ADI format a reader cannot recover from; the pair is the one
+ContactModes spells for the variant the card ended at; the two RST tags carry
+three digits and come back out of AdifLog's reader as an RST and not as a
+decibel figure, which is the same question IsRstMode asks; the band is the one
+the dial is in, spelled 20m as the enumeration spells it and not 20 m as
+Hamlet's own band plan writes it for a person; the frequency is megahertz to six
+places; the times are YYYYMMDD and HHMMSS and the off is not before the on; and
+both grids are there with his not being the operator's.
+
+CRITERION 5.4 IS NOT MET. No third-party logger is on this machine, installing
+one would be a MOVE: stop, and the tests reach no network, so nothing in this
+unit has imported this file into anything - every check above is Hamlet checking
+Hamlet, and a file that is right by all of them can still be refused by a real
+logger. 5.4 is carried to step 6, where Tim is at a machine with a logger on it.
+NOTHING IN THIS UNIT SAYS A LOGGER READ THE FILE.
+
+Decision CG: one name joins the app carry-forward line and none joins the engine
+line. TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndThe-
+GridTheCardShowed is Olivia's log guard, the fourth row of that mode's block on
+the per-mode guard table. The other names of that class, and the whole of
+TheOliviaExportSaysOliviaTests, TheOliviaRecordsAppearTests and Unit368Trace,
+stay off it as R14 asks.
+
+The carry-forward list, both invocations, after the last change: app 190 of 190
+in 2 m 21 s, which is one more test at the same seconds as the 189 of 189 in
+2 m 21 s before the first change; engine 146 of 146 in 4 m 38 s against 4 m 37 s
+before, with nothing added to it and about 195 s of margin against the 480 s
+timeout intact. Every per-mode send and read guard green both times
+(HM-DEC-165).
+
+PttOn write lines 1, Arm( call lines 2, unchanged (decision CD). Nothing in this
+unit went near the transmit chain and nothing needed a line on decision AZ's
+forbidden list.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
