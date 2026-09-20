@@ -3287,6 +3287,10 @@ public partial class MainWindowViewModel : ObservableObject
         ShowOliviaChannels(_oliviaListener.Channels);
 
         NoteOlivia(tap);
+
+        // **AND WHETHER A MOVE'S WINDOW HAS RUN OUT** (criterion 4.5, decision BP). It changes one
+        // sentence on one card and nothing else; it keys nothing, tunes nothing and sends nothing.
+        WatchTheOliviaMoveWindows();
     }
 
     /// <summary>Draw Olivia channels through the PSK31 row path, each row carrying its variant.</summary>
@@ -16050,6 +16054,9 @@ public partial class MainWindowViewModel : ObservableObject
 
         /// <summary>True where an Olivia 16/500 announcement arrived at the new place inside the window.</summary>
         public bool Heard { get; set; }
+
+        /// <summary>True once the window has been reported closed, so the card is read again only once.</summary>
+        public bool Closed { get; set; }
     }
 
     /// <summary>
@@ -16307,6 +16314,41 @@ public partial class MainWindowViewModel : ObservableObject
         Psk31Events.OliviaMoveRefused(_telemetry, press.FromHz, press.ToHz, press.ToVariant, why);
 
         Dispatcher.UIThread.Post(() => RefreshPsk31Card(press.Station));
+    }
+
+    /// <summary>
+    /// **The moment a follow window closes with nothing heard, so the card stops saying *waiting*.**
+    /// </summary>
+    /// <remarks>
+    /// <para>**A SENTENCE THAT NEVER CHANGES IS A SENTENCE THAT LIES** (§0.0). The card is a snapshot
+    /// built when something about it moves, so without this the *nothing has been heard yet* line
+    /// would still be on the screen an hour later. **It says nothing arrived; it never says he
+    /// refused** (decision BP).</para>
+    /// <para>**IT IS READ OFF THE AUDIO CLOCK, NOT A TIMER** (§0.2, §3.2). The window is
+    /// `PatienceSeconds(16/500)` times a whole factor of the audio Hamlet has heard, so nothing here
+    /// runs on a wall clock, nothing fires and nothing is sent: reaching the end of the window
+    /// rewrites one sentence.</para>
+    /// </remarks>
+    private void WatchTheOliviaMoveWindows()
+    {
+        if (_oliviaMoved.Count == 0)
+        {
+            return;
+        }
+
+        var now = AudioSecondsHeard();
+
+        foreach (var made in _oliviaMoved.Values)
+        {
+            if (made.Heard || made.Closed || now - made.AtSeconds <= made.WindowSeconds)
+            {
+                continue;
+            }
+
+            made.Closed = true;
+
+            RefreshPsk31Card(made.Press.Station);
+        }
     }
 
     /// <summary>

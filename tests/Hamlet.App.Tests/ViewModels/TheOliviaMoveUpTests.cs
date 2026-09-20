@@ -896,10 +896,321 @@ public sealed class TheOliviaMoveUpTests : IDisposable
         Assert.Equal(2, arm.Count);
     }
 
+    /// <summary>
+    /// **4.5, the last clause: the card's follow line has three states, and the first is *waiting*
+    /// inside the window** (decision BP).
+    /// </summary>
+    [Fact]
+    public void InsideTheWindowTheCardSaysNothingHasBeenHeardYet()
+    {
+        var model = Moved(out _, out _);
+        var card = TheCard(model);
+
+        _output.WriteLine("the card says: \"" + card.OliviaMoveLine + "\"");
+
+        Assert.Equal(
+            "Hamlet has moved up 500 Hz and is reading 16/500 there. Nothing has been heard at the "
+            + "new place yet.",
+            card.OliviaMoveLine);
+        Assert.Equal(OliviaMoveWords.Waiting, card.OliviaMoveLine);
+        Assert.False(card.HasOliviaMove);
+    }
+
+    /// <summary>
+    /// **The second state: an Olivia 16/500 announcement arrives at the new place inside the window,
+    /// and the card says what was heard without ever saying he followed** (decisions BP and BQ).
+    /// </summary>
+    /// <remarks>
+    /// **THE BURST IS REAL AUDIO THROUGH THE REAL TICK.** What is fed is a 16/500 send Hamlet's own
+    /// modulator composed at the moved-to center, which begins with its own RSID; the panel's
+    /// detector finds it across the passband with no help, and the same audio opens his new channel.
+    /// **This is also decision BR's proof**: his old channel goes, his new one opens 500 Hz up at
+    /// 16/500, and it is still the same card with his earlier words in its conversation.
+    /// </remarks>
+    [Fact]
+    public void AnAnnouncementAtTheNewPlaceIsSaidAndNeverClaimedAsHim()
+    {
+        var model = Moved(out var calling, out _);
+        var moved = calling + 500;
+
+        Feed(model, HisFollowUp(moved));
+
+        var card = TheCard(model);
+        var line = card.OliviaMoveLine;
+
+        _output.WriteLine($"his channels now: {string.Join(" | ", model.OliviaChannelsForTests.Select(Describe))}");
+        _output.WriteLine("the card says: \"" + line + "\"");
+        _output.WriteLine($"and its turn is \"{card.TurnWord}\", offering {card.OfferedMacro}, variant \"{card.OliviaVariant}\"");
+
+        Assert.Equal(OliviaMoveWords.Arrived(His), line);
+        Assert.Equal(
+            "An Olivia 16/500 announcement has arrived at the new place. An announcement carries no "
+            + "callsign, so that is somebody in the mode and at the place you moved to, and not a "
+            + "certainty that it was " + His + ".",
+            line);
+
+        // **IT NEVER SAYS HE FOLLOWED AND IT NEVER SAYS HE REFUSED** (§0.0, decision BP).
+        foreach (var word in new[] { "followed", "refused", "he is there", "confirmed" })
+        {
+            Assert.DoesNotContain(word, line, StringComparison.OrdinalIgnoreCase);
+        }
+
+        // **AND THE CARD SURVIVED THE MOVE WITH ITS HISTORY** (decision BR): the same one card for
+        // the same station, its conversation still holding the answer he sent at the old place.
+        Assert.Equal(OliviaMoveToVariantForTests, card.OliviaVariant);
+        Assert.Equal(Psk31TurnState.YourTurn, card.Turn!.State);
+        Assert.NotEqual(Psk31Macro.None, card.Offered);
+        Assert.Contains(
+            model.OliviaChannelsForTests,
+            c => !c.Ended && Math.Abs(c.CenterHz - moved) < 100 && c.Variant == OliviaMoveToVariantForTests);
+    }
+
+    /// <summary>
+    /// **The third state: after the window ends the card says nothing arrived** (decision BP).
+    /// </summary>
+    [Fact]
+    public void AfterTheWindowTheCardSaysNothingArrived()
+    {
+        var model = Moved(out _, out var window);
+
+        _output.WriteLine($"the window is {window:0.000} s of audio");
+
+        // **AUDIO, NOT A WALL CLOCK** (§3.2). The window is spent by feeding quiet band past it.
+        Feed(model, new MonoAudio(12000, Noise((int)((window + 4) * 12000), 0.0005)));
+
+        var card = TheCard(model);
+
+        _output.WriteLine("the card says: \"" + card.OliviaMoveLine + "\"");
+
+        Assert.Equal(
+            "Nothing was heard at the new place while Hamlet listened. He may not have followed, or "
+            + "his announcement may not have read; Hamlet is there and still listening.",
+            card.OliviaMoveLine);
+        Assert.Equal(OliviaMoveWords.NoneArrived, card.OliviaMoveLine);
+
+        // **IT NEVER SAYS HE REFUSED** (§0.0).
+        Assert.DoesNotContain("refused", card.OliviaMoveLine, StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// **The window is the product `PatienceSeconds(16/500) x 2`, asserted as the product and never
+    /// as a number of seconds** (§3.2, decision BP).
+    /// </summary>
+    [Fact]
+    public void TheWindowIsThePatienceOfTheMovedToVariantTimesAStatedFactor()
+    {
+        var timing = OliviaData.Current.Timing!;
+        var patience = timing.PatienceSeconds(OliviaMoveToVariantForTests);
+        double window;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "367", _ => true))
+        {
+            var model = Listening(telemetry);
+
+            Arm(model, telemetry);
+
+            model.ShowOliviaChannelsForTests(
+                [Channel(61, OliviaCallingTable.CallingVariant, CallingOffsetOn(model), HisAnswer)]);
+
+            model.OliviaMoveUpCommand.Execute(TheCard(model));
+            Settle(model);
+        }
+
+        var sent = Assert.Single(Events(Lines(), "olivia_move_sent"));
+
+        window = sent.GetProperty("windowSeconds").GetDouble();
+
+        _output.WriteLine(
+            $"PatienceCharacters {timing.PatienceCharacters} x seconds per character of "
+            + $"{OliviaMoveToVariantForTests} = {patience:0.000} s of patience");
+        _output.WriteLine(
+            $"the window is that patience x {MainWindowViewModel.OliviaMoveWindowFactor} = "
+            + $"{patience * MainWindowViewModel.OliviaMoveWindowFactor:0.000} s; the file says {window:0.000} s");
+
+        // **THE PRODUCT, NOT A LITERAL.** Nothing here writes 32.768.
+        Assert.Equal(2, MainWindowViewModel.OliviaMoveWindowFactor);
+        Assert.Equal(
+            Math.Round(patience * MainWindowViewModel.OliviaMoveWindowFactor, 3),
+            window);
+
+        // And the patience is itself the timing table's count at the variant's own rate.
+        Assert.Equal(
+            Math.Round(timing.PatienceCharacters * timing.SecondsPerCharacter[OliviaMoveToVariantForTests], 6),
+            Math.Round(patience, 6));
+    }
+
+    /// <summary>
+    /// **A 16/500 burst a long way from the new center does not count, and neither does an 8/250
+    /// burst at it** (decision BP).
+    /// </summary>
+    [Fact]
+    public void AnAnnouncementOfTheWrongVariantOrInTheWrongPlaceDoesNotCount()
+    {
+        var v = OliviaData.Current.Format!.Variant(OliviaMoveToVariantForTests)!;
+        var half = (v.Tones - 1) * v.ToneSpacingHz / 2.0;
+
+        _output.WriteLine($"an announcement counts within +/-{half:0.000} Hz of the new center");
+
+        // 16/500 far away, then 8/250 right on the new center. Neither is what Hamlet announced.
+        foreach (var (variant, away) in new[] { (OliviaMoveToVariantForTests, 900.0), ("8/250", 0.0) })
+        {
+            var model = Moved(out var calling, out _);
+            var at = calling + 500 + away;
+
+            Feed(model, Composed(variant, at));
+
+            var card = TheCard(model);
+
+            _output.WriteLine(
+                $"a {variant} announcement at {at:0} Hz, {Math.Abs(away):0} Hz from the new center: "
+                + $"the card says \"{card.OliviaMoveLine}\"");
+
+            Assert.Equal(OliviaMoveWords.Waiting, card.OliviaMoveLine);
+            Assert.NotEqual(OliviaMoveWords.Arrived(His), card.OliviaMoveLine);
+        }
+    }
+
+    /// <summary>**Nothing transmits on a detection** (§0.2, decision BQ), asserted.</summary>
+    /// <remarks>
+    /// **THE ONE THING THIS WHOLE CLAUSE MUST NOT DO.** The follow check reads a detection and
+    /// writes a sentence; a transmission on a decode is the fault §0.2 exists to prevent, and the
+    /// way it would show is a second play or a second keying frame after the move's own.
+    /// </remarks>
+    [Fact]
+    public void NothingTransmitsOnADetection()
+    {
+        FakeSink sink;
+        FakePort port;
+        int writtenAfterTheMove;
+        List<string> lines;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "367", _ => true))
+        {
+            var model = Listening(telemetry);
+            var parts = Arm(model, telemetry);
+
+            sink = parts.Sink;
+            port = parts.Port;
+
+            var calling = CallingOffsetOn(model);
+
+            model.ShowOliviaChannelsForTests([Channel(63, OliviaCallingTable.CallingVariant, calling, HisAnswer)]);
+            model.OliviaMoveUpCommand.Execute(TheCard(model));
+            Settle(model);
+
+            var playedByTheMove = sink.TimesCalled;
+
+            writtenAfterTheMove = port.Written.Count;
+
+            // **HIS ANNOUNCEMENT AND HIS WHOLE TRANSMISSION**, fed to the real tick.
+            Feed(model, HisFollowUp(calling + 500));
+            Settle(model);
+
+            _output.WriteLine($"the move played {playedByTheMove} time(s); after his announcement, {sink.TimesCalled}");
+
+            Assert.Equal(1, playedByTheMove);
+        }
+
+        lines = Lines();
+
+        var stages = Stages(lines);
+
+        _output.WriteLine("stages: " + string.Join(" | ", stages));
+        _output.WriteLine($"port frames: {writtenAfterTheMove} after the move, {port.Written.Count} after the detection");
+        _output.WriteLine("olivia_move_answered: " + Events(lines, "olivia_move_answered").Count);
+
+        // **ONE PLAY, ONE TRANSMISSION RECORD, AND NOT ONE FRAME MORE ON THE WIRE** after the
+        // detection, however much audio arrived.
+        Assert.Equal(1, sink.TimesCalled);
+        Assert.Equal(writtenAfterTheMove, port.Written.Count);
+        Assert.Single(Events(lines, TransmitRecord.EventName));
+        Assert.Single(Events(lines, "psk31_send_composed"));
+        Assert.Single(Events(lines, "olivia_move_answered"));
+        Assert.Equal(1, stages.Count(s => s == SendStage.Keyed));
+    }
+
     // ---------------------------------------------------------------------------------------
     // The harness. Its shape is `TheOliviaSendTests`'s, which is every send test in this
     // project since unit 260: a fake wire, a fake sound card, and the real tick.
     // ---------------------------------------------------------------------------------------
+
+    /// <summary>A panel that has pressed the move and had its line go out, with the window still open.</summary>
+    /// <param name="calling">Where the calling center is in the passband.</param>
+    /// <param name="window">How long the follow window is, in audio seconds.</param>
+    /// <returns>The panel.</returns>
+    private MainWindowViewModel Moved(out double calling, out double window)
+    {
+        var telemetry = new JsonlTelemetry(_folder, "367", _ => true);
+        var model = Listening(telemetry);
+
+        Arm(model, telemetry);
+
+        calling = CallingOffsetOn(model);
+        window = OliviaData.Current.Timing!.PatienceSeconds(OliviaMoveToVariantForTests)
+            * MainWindowViewModel.OliviaMoveWindowFactor;
+
+        model.ShowOliviaChannelsForTests([Channel(62, OliviaCallingTable.CallingVariant, calling, HisAnswer)]);
+        model.OliviaMoveUpCommand.Execute(TheCard(model));
+
+        Settle(model);
+
+        Assert.False(TheCard(model).HasOliviaMove);
+
+        return model;
+    }
+
+    /// <summary>His whole transmission at the new place: the announcement and his answer at 16/500.</summary>
+    private static MonoAudio HisFollowUp(double centerHz)
+        => Composed(OliviaMoveToVariantForTests, centerHz, HisAnswer);
+
+    /// <summary>A send Hamlet's own modulator composed, with its own RSID in front, and a tail of quiet.</summary>
+    private static MonoAudio Composed(string variant, double centerHz, string? text = null)
+    {
+        var format = OliviaData.Current.Format!;
+        var composed = OliviaModulator.Compose(text ?? "R R K\n", variant, centerHz, 12000, 0.5f);
+        var tail = Noise(
+            (int)(4 * format.SymbolsPerBlock * format.Variants.Max(v => v.SymbolSeconds) * composed.SampleRate),
+            0.0005);
+
+        return new MonoAudio(composed.SampleRate, composed.Samples.Concat(tail).ToArray());
+    }
+
+    /// <summary>Hand a recording to the tick in quarter-second pieces, as a sound card would.</summary>
+    private static void Feed(MainWindowViewModel model, MonoAudio audio)
+    {
+        var rate = audio.SampleRate;
+        var piece = rate / 4;
+
+        for (var at = 0; at < audio.Samples.Length; at += piece)
+        {
+            model.TapForTests!.Take(audio.Samples.AsSpan(at, Math.Min(piece, audio.Samples.Length - at)), rate);
+            model.LookForASlotForTests();
+        }
+
+        Avalonia.Threading.Dispatcher.UIThread.RunJobs();
+    }
+
+    /// <summary>Seeded white Gaussian noise, the tail unit 364 feeds after a file.</summary>
+    private static float[] Noise(int count, double rms)
+    {
+        var random = new Random(367);
+        var samples = new float[count];
+
+        for (var i = 0; i < count; i++)
+        {
+            var u1 = 1.0 - random.NextDouble();
+            var u2 = random.NextDouble();
+
+            samples[i] = (float)(rms * Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Cos(2.0 * Math.PI * u2));
+        }
+
+        return samples;
+    }
+
+    /// <summary>One channel, in one line for the output.</summary>
+    private static string Describe(OliviaChannel channel)
+        => $"{channel.Id}: {channel.Variant} at {channel.CenterHz:0.0} Hz by {channel.Found}, "
+            + $"{channel.Text.Length} characters, ended {channel.Ended}";
 
     /// <summary>Where the next send to a station would go, in one line for the output.</summary>
     private static string Say((double? AtHz, string? Variant) next)
@@ -1074,23 +1385,6 @@ public sealed class TheOliviaMoveUpTests : IDisposable
         => Events(lines, SendStage.EventName)
             .Select(e => e.GetProperty("stage").GetString() ?? "")
             .ToList();
-
-    /// <summary>A fixture from the mode author's set, after its hash has been checked against the manifest.</summary>
-    private static MonoAudio Fixture(string file)
-    {
-        var folder = Path.Combine(Root(), "assets", "fixtures", "olivia");
-
-        using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(folder, "manifest.json")));
-
-        var entry = manifest.RootElement.EnumerateArray().Single(e => e.GetProperty("file").GetString() == file);
-        var path = Path.Combine(folder, file);
-
-        Assert.Equal(
-            entry.GetProperty("sha256").GetString(),
-            Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path))).ToLowerInvariant());
-
-        return WavAudio.Read(path);
-    }
 
     private static string Root()
     {
