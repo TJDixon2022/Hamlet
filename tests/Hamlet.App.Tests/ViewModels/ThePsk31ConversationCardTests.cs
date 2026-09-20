@@ -113,9 +113,19 @@ public sealed class ThePsk31ConversationCardTests
         Assert.Equal("Your turn", model.DigitalCards[at].StateWord);
     }
 
-    /// <summary>**Assertion 3: a guessed addressee opens no card, and the row stays on his side.**</summary>
+    /// <summary>
+    /// **Assertion 3, rewritten under R12 by work instruction 371 task 1: a guessed answer to the
+    /// operator opens his card as a guess, and a guessed line addressed to nobody opens none.**
+    /// </summary>
+    /// <remarks>
+    /// **THE DOOR THIS GUARDED IS OPEN.** It walked `05-garbled` line by line and required an
+    /// empty card panel throughout, including at line 3 - a report addressed to the operator,
+    /// handing the turn back, uncertain because its digits are damaged. That is the case Tim hit
+    /// on 2026-09-20. **The row's own behaviour is unchanged** and is still asserted: it is on his
+    /// side and marked a guess.
+    /// </remarks>
     [Fact]
-    public void AGuessedAddresseeOpensNoCard()
+    public void AGuessedAnswerOpensHisCardAndAGuessedAddresseeOpensNone()
     {
         var corpus = Psk31Corpus.Load();
         var garbled = Transcript(corpus, "05-garbled");
@@ -130,12 +140,24 @@ public sealed class ThePsk31ConversationCardTests
 
             _output.WriteLine("05-garbled through line " + lines + ": " + Describe(model) + (onHisSide ? ", row on his side" : ""));
 
-            Assert.Empty(model.DigitalCards);
+            if (lines < 3)
+            {
+                // **NOTHING HAS BEEN ADDRESSED TO HIM YET**: line 1 is a CQ to anybody and line 2
+                // is his own answer.
+                Assert.Empty(model.DigitalCards);
+            }
 
             if (lines == 3)
             {
                 Assert.True(onHisSide, "05-garbled line 3 left his side");
                 Assert.True(row.IsGuess);
+
+                // **AND HIS CARD IS THERE, AS A GUESS**, with the doubt beside what it offers.
+                var card = Assert.Single(model.DigitalCards);
+
+                Assert.Equal("K3ABC", card.Callsign);
+                Assert.True(card.TurnIsGuess);
+                Assert.Equal("not sure it is your turn", card.OfferNote);
             }
         }
 

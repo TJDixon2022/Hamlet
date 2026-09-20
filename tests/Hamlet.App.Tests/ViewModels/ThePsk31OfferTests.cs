@@ -33,7 +33,7 @@ public sealed class ThePsk31OfferTests
 
     /// <summary>**Assertion 1 through the card: a certain your turn names the macro; nothing else does.**</summary>
     [Fact]
-    public void TheCardNamesTheMacroOnlyOnACertainYourTurn()
+    public void TheCardNamesTheMacroOnHisTurnAndOnlyAReportWhenItIsAGuess()
     {
         var corpus = Psk31Corpus.Load();
         var textbook = corpus.Transcripts.Single(t => t.Name == "01-textbook");
@@ -53,20 +53,32 @@ public sealed class ThePsk31OfferTests
 
         Assert.Equal(new[] { "Report", "", "Confirm" }, named);
 
+        // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 371 TASK 1.** The second half required no
+        // macro named on either an unknown turn or a guessed one. An unknown turn still names
+        // none - nothing said it was his turn - but **a guessed hand-back to the operator names
+        // the Report**, with the doubt beside it, and the click is what sends (§0.2).
         var unknown = Channel(textbook, 3).Text + "de W1AW K\n";
         var guessed = unknown + "KC3QIS de W1AW 5#9 K\n";
 
-        foreach (var text in new[] { unknown, guessed })
-        {
-            model = Panel();
-            model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(1, 1000, 10.0, text) });
+        model = Panel();
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(1, 1000, 10.0, unknown) });
 
-            var card = Assert.Single(model.DigitalCards);
+        var onUnknown = Assert.Single(model.DigitalCards);
 
-            _output.WriteLine("[" + card.StateWord + "] offers [" + card.OfferedMacro + "]");
+        _output.WriteLine("unknown: [" + onUnknown.StateWord + "] offers [" + onUnknown.OfferedMacro + "]");
 
-            Assert.Equal("", card.OfferedMacro);
-        }
+        Assert.Equal("", onUnknown.OfferedMacro);
+
+        model = Panel();
+        model.ShowPsk31ChannelsForTests(new[] { new Psk31Channel(1, 1000, 10.0, guessed) });
+
+        var onGuess = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine("guessed: [" + onGuess.StateWord + "] offers [" + onGuess.OfferedMacro
+            + "] note [" + onGuess.OfferNote + "]");
+
+        Assert.Equal("Report", onGuess.OfferedMacro);
+        Assert.Equal("not sure it is your turn", onGuess.OfferNote);
     }
 
     /// <summary>**Assertion 4: the offer is one button, and it is the one the engine named.**</summary>
