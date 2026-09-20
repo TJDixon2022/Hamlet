@@ -3916,6 +3916,17 @@ public partial class MainWindowViewModel : ObservableObject
                 }
             }
 
+            // **AND A STATION HAMLET MOVED KEEPS HIS CONVERSATION AT THE NEW PLACE** (criterion 4.5,
+            // decision BR). A station who follows the move opens a new channel 500 Hz up at a new
+            // variant, and the old one retires; without this his card would be read from a
+            // conversation with his half missing, which puts Hamlet's own last message at the end of
+            // it and has the card saying it is his turn when he has just come back.
+            if (!_psk31Readings.ContainsKey(channel.Id)
+                && OliviaMovedConversationFor(channel) is { } carried)
+            {
+                _psk31Readings[channel.Id] = carried;
+            }
+
             if (!_psk31FirstHeard.TryGetValue(channel.Id, out var firstHeard))
             {
                 firstHeard = DateTime.UtcNow.ToString("HHmmss", CultureInfo.InvariantCulture);
@@ -15960,6 +15971,16 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     internal double? OliviaCallingOffsetForTests => OliviaCallingOffsetHz();
 
+    /// <summary>Where the next send to a station would go and at which variant, for a test.</summary>
+    /// <remarks>
+    /// **IT IS THE TWO METHODS THE SEND PATH ITSELF READS** (<see cref="Psk31OffsetOf"/> and
+    /// <see cref="OliviaVariantOf"/>), so a test can print the before-and-after table. **It is not
+    /// how the tests prove the move**: criterion 4.5 asks for a send, so the proof is the audio the
+    /// sound card was handed, read back by the detector, and this is the caption beside it.
+    /// </remarks>
+    internal (double? AtHz, string? Variant) OliviaNextSendForTests(string callsign)
+        => (Psk31OffsetOf(callsign), OliviaVariantOf(callsign));
+
     // ---------------------------------------------------------------------------------------
     // **R29's ONE CLICK: MOVE OFF THE CALLING FREQUENCY AND WIDEN** (criterion 4.5, work
     // instruction 367 decisions BK to BR).
@@ -16286,6 +16307,57 @@ public partial class MainWindowViewModel : ObservableObject
         Psk31Events.OliviaMoveRefused(_telemetry, press.FromHz, press.ToHz, press.ToVariant, why);
 
         Dispatcher.UIThread.Post(() => RefreshPsk31Card(press.Station));
+    }
+
+    /// <summary>
+    /// **The conversation a moved station carries to his new channel**, or null (decision BR).
+    /// </summary>
+    /// <param name="channel">A channel with no reading yet.</param>
+    /// <returns>A reading holding what he had already said, with a fresh splitter, or null.</returns>
+    /// <remarks>
+    /// <para>**THE CARD SURVIVES THE MOVE AND SO DOES ITS HISTORY** (R28, criterion 4.5). The card
+    /// itself always survived - `_psk31Cards` is keyed by the callsign, not by the channel - but the
+    /// conversation it is read from is one channel's, and a station who moved has a new one. Every
+    /// question the card answers is asked of that list: whose turn it is, which macro comes next,
+    /// whether the exchange is finished, and what his grid is.</para>
+    /// <para>**THE SPLITTER IS NEW AND THE MESSAGES ARE THE OLD ONES.** His new channel's characters
+    /// start at the beginning of a message, so a splitter carrying half a word from the old place
+    /// would merge two overs into one; what carries over is what was already read, complete.</para>
+    /// <para>**ONLY FOR A STATION HAMLET ITSELF MOVED, AND ONLY AT THE PLACE IT MOVED HIM TO.**
+    /// Nothing here guesses that two carriers are the same station (§0.0); the only reason to think
+    /// so is that Hamlet announced the move and this is where it said it was going.</para>
+    /// </remarks>
+    private Psk31ChannelReading? OliviaMovedConversationFor(Psk31Channel channel)
+    {
+        foreach (var made in _oliviaMoved.Values)
+        {
+            if (OliviaHalfWidthHz(made.Press.ToVariant) is not { } half
+                || Math.Abs(channel.OffsetHz - made.Press.ToHz) > half)
+            {
+                continue;
+            }
+
+            var was = _psk31Readings.Values
+                .Concat(_psk31EndedReadings.Values)
+                .FirstOrDefault(r => r.Messages.Any(
+                    m => Ft8MessageSplit.IsSameStation(m.Exchange.Speaker, made.Press.Station)));
+
+            if (was is null)
+            {
+                continue;
+            }
+
+            var carried = new Psk31ChannelReading(new Psk31MessageSplitter(_settings.Operator.Callsign))
+            {
+                Latest = was.Latest,
+            };
+
+            carried.Messages.AddRange(was.Messages);
+
+            return carried;
+        }
+
+        return null;
     }
 
     /// <summary>Where the next send to this station goes and at which variant, where Hamlet has moved him.</summary>

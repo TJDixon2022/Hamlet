@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: TASK 2 of 5
+TASK: TASK 3 of 5
 WORK_INSTRUCTION: 367 - move up and widen: the one click that takes the QSO off the calling spot
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T21:40:08-04:00
-NOTE: Task 2 - 11 of 11 move-offer tests green; checking PSK31's own card and the window's bindings
+UPDATED: 2026-09-19T21:53:17-04:00
+NOTE: Task 3 - chain-guarding after-run matches before by name, 27 reds; privacy walk next
 
 ---
 
