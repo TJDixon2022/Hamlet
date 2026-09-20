@@ -1,224 +1,220 @@
-```
 READ IN THIS ORDER.
 
-A. The phase goal - Hamlet holds what it has. Step 0 done, 1-5 not started.
-B. Step 0's criteria 0.1 to 0.5 - 0.2, 0.3, 0.4 and 0.5 met and measured. 0.1 is
-   answered and its answer is a NEGATIVE: there is no such commit, and the line
-   that dropped the device is named below and predates 1.13.30.
-C. The report last, and section 4 raises 5 items on top of the carried queue.
-```
+A. The phase goal - Hamlet holds what it has. No step moves.
+B. No criterion changes state; this clears a PSK31 blocker from Tim's record.
+C. The report last, and section 4 raises 6 items on top of the carried queue.
 
-```
-UNIT:       369 - complete at task 3 of 3 - 2026-09-20 17:21
-PHASE GOAL: Stop Hamlet losing things it already had. Everything banked in the
-            PSK31 and Olivia threads that is screen, record or test, hardened
-            while Tim is away, needing neither the radio nor him.
-UNIT GOAL:  A setting Tim chose once outlives an upgrade, and a send that cannot
-            go says which of the two faults it actually is - nothing chosen, or
-            a chosen device that will not open.
-ADVANCED:   yes - step 0 closes; the loader no longer discards a settings file,
-            and the refusal that named the wrong fault is two refusals now
-NUMBER:     settings-file shapes that load whole 0 -> 3; the commit that dropped
-            the device: NONE EXISTS - the line is AppSettings.cs LoadFrom's
-            `return new AppSettings()`, older than 1.13.30
-DRIFT:      carried - 0 consecutive units without advance (was carried)
-```
+UNIT:       371 - complete at task 3 of 3 - 2026-09-20 19:10
+PHASE GOAL: Hamlet keeps what it already has working - the hardening phase, paused for this one repair.
+UNIT GOAL:  A station who answers Tim's CQ gets his conversation card even when the parser is not certain, marked as a guess, with Report offered on his click, and his row is never hidden.
+ADVANCED:   blocker
+NUMBER:     answers to the operator that open a card: certain only -> certain or guessed
+DRIFT:      carried
 
 ## 1. What Claude did
 
-**Complete, at task 3 of 3.** All three tasks done, each committed and pushed on
-its own. Machine QUIVERFULL, project Hamlet (gate verified against the tree:
-`SHACK_FACTS.md` and `CwProbabilisticDecoder.cs` present, `CoreHMI.sln` and
-`MURC.sln` absent, root `C:\Source\HamLet`, `Hamlet.sln`), branch `main`.
-`PHASE_STATUS.md` line 1 names *Hamlet holds what it has*, so the phase was
-installed and the previous session's block is cleared.
+**Surface and gate.** Claude Code on the development machine, branch `main`. The prompt claimed
+`PROJECT: Hamlet`; the tree confirmed it: `PROJECT_CARD.md` says `PROJECT: Hamlet`, `Hamlet.sln`,
+`SHACK_FACTS.md` and `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` exist, `CoreHMI.sln`
+and `MURC.sln` do not, root `C:\Source\HamLet`. **Nothing in this report is evidence about the
+radio** (FACT-004): the operator's own record was read only as the work order quotes it, and every
+number below is from the bench. Status written with `tools/status.sh` after every task and commit.
 
-Commits: `cd0d37a0` task 0, `564f8475` task 1, `b212968e` task 2.
+**Commits on `main`, pushed at the end:**
 
-### The commit and the line — this is criterion 0.1, and it is a negative
+| Commit | What |
+| --- | --- |
+| `f06db5b7` | task 0 - the unit opens, 1.13.57 -> 1.13.58 |
+| `b6f67f03` | task 1 - the repair and `TheAnswerYouHeardTests` |
+| `6502c5b2` | task 1's §R12 rewrites, four tests, their own commit |
+| `0d309edc` | task 2 - `TheRowForYouIsNeverHiddenTests`, no code changed |
+| `721d66fc` | §R12 rewrites of the two names on the carry-forward list |
 
-**No commit between 1.13.30 and 1.13.48 dropped the transmit device, because no
-commit in that window touched the settings model, its loader, its migrations or
-the transmit-device picker.** The evidence, all of it re-runnable:
+### Task 0 - the record
 
-| Measured | Result |
-|---|---|
-| `<Version>1.13.30</Version>` set at | `681d45c8` |
-| `<Version>1.13.40</Version>` set at | `d66a6ace` |
-| `<Version>1.13.48</Version>` set at | `ec4b466e` |
-| Commits in `681d45c8..ec4b466e` | 119 |
-| …naming any file under `src/Hamlet.App/Settings/` | **0** |
-| `git diff 681d45c8 ec4b466e -- src/` | 31 files, `AppSettings.cs` not among them |
-| `git diff 681d45c8 HEAD --` settings, `SettingsViewModel.cs`, `SettingsWindow.axaml`, `App.axaml.cs` | **empty** |
+Carry-forward before any change: **engine 146 of 146, app 206 of 206**, both first runs.
+`UNIT 371` appended to `PHASE_OUTCOME.md` as a carried repair with `ADVANCED: blocker`; version
+**1.13.57 -> 1.13.58**.
 
-The settings model, its loader, the settings UI and `App.axaml.cs` are
-byte-identical from 1.13.30 to HEAD. The loader did not change, so the loader is
-not where a change dropped the value.
+### Task 1 - an uncertain answer opens his card
 
-**The line is real, though, and I found it. It is older than 1.13.30.**
+**What was happening, in one line:** `ShowPsk31Cards` took only parses with `IsCertain: true` as
+answers, so the station who came back to Tim twice - `toOperator: true`, `turnover: true`,
+`Chat`, `certain: false` - was never an answer, no card opened, and the Calling receipt stayed.
 
-```
-src/Hamlet.App/Settings/AppSettings.cs   SettingsStore.LoadFrom
-        catch (Exception)
-        {
-            return new AppSettings();      <-- this line
-        }
-```
+Changed:
 
-`LoadFrom` deserialized the whole file in one call and answered **every**
-exception with bare defaults. So **one value anywhere in `settings.json` that the
-build could not parse discarded every other value in it** — transmit device,
-receive device, grid, callsign, license class, drive, the lot. `App.axaml.cs:141`
-saves on exit, so those defaults then went over Tim's own file and the loss became
-permanent. From his chair that is exactly *"the settings lost the listing
-setting"*: he lost the device, re-chose the USB Audio CODEC, and FT8 transmitted.
+- **`MainWindowViewModel.ShowPsk31Cards`**: an answer is now a parse addressed to the operator,
+  naming a speaker who is not him, that is **either certain or hands the turn back**. A certain
+  parse behaves exactly as before; an uncertain one must hand over, which is what separates an
+  answer from a fragment of somebody else's over that happens to carry his callsign. The receipt
+  retires on any answer.
+- **`Psk31Offer.For`** (engine): the certainty gate moves off the offer and onto the macro. On a
+  guessed *your turn* the **Report** is offered and nothing else; **Confirm keeps §R1's gate**,
+  because it claims a contact and signs off on it. The rule line in `Psk31Offer.Table` says so.
+- **`Ft8ContactCard.OfferNote`**: *not sure it is your turn*, beside the offered button, drawn in
+  `MainWindow.axaml` next to it and empty when there is nothing to doubt. The turn word itself
+  already said *Your turn, a guess* and is unchanged.
+- **`Psk31Events.AnswerTaken`**: a new `psk31_answer_taken` carrying the offset and `certain`,
+  once per station, **no callsign and no text** (HM-DEC-018).
 
-I found it by accident and then on purpose: my first reconstructed fixture used
-two enum member names that do not exist (`SetByHand`, `Lookup` — the real ones are
-`EnteredByOperator` and `LookedUp`), and a well-formed file with 47 good keys and
-one bad one came back **entirely empty**. That is the fault, reproduced.
+**`TheAnswerYouHeardTests` (app), watched red first**: copied into a worktree at the task 0 commit,
+**4 of its 5 failed there** (the fifth only asserts what the parser says, which this unit does not
+change); the new property did not exist there, so that assertion was stripped in the copy to make
+the behavioural red visible. **6 of 6 green after**, the sixth being the Olivia line §9 asked for.
 
-**The file's own remarks had seen half of it.** `SettingsStore` carries a
-`JsonStringEnumConverter` because without it a hand-edited `"General"` threw and
-*"EVERY setting silently reverts to defaults, which is a spectacular punishment for
-a reasonable guess."* That fixed the one value it named. The punishment was never
-specific to that guess.
+**§R12 rewrites, in their own commits.** Six tests asserted the shut door. Four in `6502c5b2`:
+`ThePsk31OfferTests` (engine) on two corpus walks, `ThePsk31CqGoesOutTests`' receipt case, and
+`ThePsk31ExchangeTests`' guessed case. Two more in `721d66fc`, found by the carry-forward run:
+`ThePsk31ConversationCardTests.AGuessedAddresseeOpensNoCard` and the app's
+`ThePsk31OfferTests.TheCardNamesTheMacroOnlyOnACertainYourTurn`. Each now guards the rule: an
+offer only on his turn, a Report and never a Confirm on a guess, the receipt retired by a guessed
+answer that hands over, and **still nothing at all for a line that names nobody or hands nothing
+back**.
 
-### Task 0 — the unit opens
+### Task 2 - a row addressed to you is never hidden
 
-`PHASE_OUTCOME.md` carries `UNIT 369` under step 0. Patch-bump 1.13.56 → 1.13.57
-with its comment block. `PROJECT_CARD.md`'s `PHASE` and `PHASE_SET` moved to the
-hardening phase. **`DECISIONS.md` HM-DEC-166** records, as Tim's ruling of
-2026-09-20, the hardening phase set and the Olivia phase archived at 38 of 40 with
-5.4 and 6.1 his — and states that the ruling is what licenses the card's two lines
-moving, since the card is changed only by ruling. Carry-forward before any change:
-**app 190 of 190, engine 146 of 146**, `TheSendReachesTheAirTests` among them.
+**No code needed changing, and the instruction's premise does not hold in the tree.** Measured
+with the CQ filter on:
 
-### Task 1 — settings survive an upgrade
+- A PSK31 row addressed to the operator is on the for-you side **live and after its carrier
+  goes**. The ended row from the record's 22:20:43 is on the screen, not hidden.
+- Where two stations answer at once, one is the conversation and the other is a name on the
+  waiting strip; **no row that spoke to him is on no list**.
+- A PSK31 row addressed to somebody else is **also shown**, because the CQ toggle does not hold
+  back a PSK31 row at all - unit 337 task 1 and PSK31 plan §R9, after an evening when a carrier
+  emitted 262 characters with no turnover and was held off the list.
 
-`TheSettingsSurviveAnUpgradeTests`, **watched failing first**, now 15 of 15.
+So the second half of the order - *one addressed to someone else is not shown* - would be a
+**change** to R9 rather than a repair, and this unit did not make it (section 4 item 1).
+`TheRowForYouIsNeverHiddenTests` asserts what is true today, including that case, so a later unit
+that starts hiding PSK31 rows has to answer for it rather than discover it on an evening.
 
-Three fixtures reconstructed from the tree at 1.13.30, 1.13.40 and HEAD. They are
-JSON text, not a round-trip of today's class, because a fixture built by
-serializing the current type agrees with it by construction and could never catch a
-renamed key. The three shapes are identical — which is itself the evidence for 0.1
-— so they carry the same 47 keys with different values, separated only by
-`Psk31AlcReference`, which this unit adds.
+**Recorded under §12.1: nothing.**
 
-- **`NothingTheFileCarriesIsDropped`** walks every key in the file rather than a
-  list of seven names, so a field dropped by a rewrite years from now fails here
-  without anybody having thought to add it.
-- **`OneUnreadableValueCostsThatValueAndNotTheFile`** and its nested twin are the
-  two that were red. They are the fault above.
-- The seven values 0.2 names are asserted by value on each fixture; a missing new
-  field takes its default and is written back; each file round-trips byte-identically.
-
-**The repair.** The whole-file read is tried first and is unchanged for every file
-in ordinary use. Where it throws, `Salvage` reads the file property by property,
-keeps everything readable, defaults only what is not, and **descends into a nested
-object rather than writing it off** — the operator profile holds four of the seven
-values 0.2 names, so one bad field inside it must not cost the callsign beside it.
-A file that is not JSON at all is still defaults; HM-DEC-018 is untouched and
-`SettingsRoundTripTests.CorruptSettingsFile_YieldsDefaults` still says so.
-
-**The ALC reference is now a setting, and it was not one before.** Criterion 0.2
-names it among the values that must survive. It did not exist in `AppSettings`: it
-was learned into `MainWindowViewModel.Psk31AlcReference` and written nowhere, so
-every restart threw away a measurement that had cost a transmission to take. It is
-now on `AppSettings` beside the drive — same subject — read back at construction
-and saved where it is learned, carrying `TakenUtc` so a reference from last week
-reads as last week's (HM-DEC-111).
-
-### Task 2 — a missing device says so
-
-`TheRefusalNamesTheFaultTests`, **watched failing first**, now 7 of 7.
-
-- **0.3.** No device chosen yields `send_refused stage arm reason
-  no_transmit_device` and, on the panel, *No transmit device is chosen. Open
-  Settings and pick the radio's sound card.* — the whole of what it says, on both
-  the FT8 path and the keyboard-mode path, not a clause buried after *Hamlet
-  composed … and sent nothing*. The sentence is one constant and the view takes its
-  three pieces from it, so the screen and the test cannot drift.
-- **0.3, the link.** A new `hm-inline-link` button style: no chrome at rest,
-  underlined and amber so it still says it can be pressed (§0.5.1, HM-DEC-087),
-  never greyed. **Only the no-device refusal offers it** — a device that is
-  unplugged is not fixed by opening the picker, and advice that does not work is
-  worse than none.
-- **0.4.** A chosen device that will not open keeps
-  `transmit_device_would_not_open` and carries the device, the rate asked for
-  (12000) and the OS error text — in `send_refused`, in every `transmit_path`
-  attempt, and on the panel in words. The keys are written only where there is a
-  device to name: an absent key and an empty one are different pictures.
-
-### Decisions I made for myself, reproduced in full
-
-1. **I recorded 0.1 as a negative rather than naming a commit that fits.** The
-   criterion presupposes a commit in that window. The evidence says there is none.
-   Naming a plausible one would have been an invented answer (§0.0).
-2. **I added ALC-reference persistence, which is new storage rather than only "how
-   a setting survives."** §10 says not to change what a setting means; this changes
-   nothing's meaning, and 0.2 and task 1 both name the ALC reference among the
-   values that must survive, so the criterion cannot be met honestly without it.
-3. **I put two names on `docs/carry-forward-tests.txt`** —
-   `TheSettingsSurviveAnUpgradeTests` whole, and
-   `TheRefusalNamesTheFaultTests.NoDeviceChosenYieldsItsOwnReasonAndItsOwnSentence`
-   by type and method. The work instruction did not ask for this. The list's own
-   rules say a mode guard goes on permanently; settings and the refusal sentence
-   are not modes, but both are the fault that took FT8 off the air for five days.
-   Cost measured: under 0.4 s for the whole settings type.
-4. **Nothing was dropped.** Tasks 0, 1 and 2 are all done. The named drop candidate
-   — task 2's Settings link — was built, not dropped.
+**Mismatches with the work order:**
+- **Task 2's premise**: an ended non-CQ PSK31 row *is* shown, and the filter hides no PSK31 row.
+- **The turn indicator**: the order asks for *his turn?* with a question mark; the card already
+  says *Your turn, a guess* / *His turn, a guess* in words, which §0.6 prefers to punctuation
+  (grayscale), and the decision block leaves the doubt word to the author. **Kept as it was.**
+- **"Python cannot run here"**: Python scripts written to the scratchpad and run as `python
+  file.py` ran throughout, as they did for units 361 and 362.
+- The order says two tasks in its header and lists three (0, 1, 2), and its report template counts
+  *task N of 3*.
 
 ## 2. What the owner should expect
 
-**Your settings will not be lost like that again.** Hamlet used to throw away your
-entire settings file if there was one value in it that the new build could not
-read, and then write the empty one back over yours when you closed the app — which
-is how the transmit device went missing. It now keeps every value it can read and
-only forgets the one it genuinely cannot.
+**When somebody answers your CQ now, his card appears even if Hamlet is not quite sure it was an
+answer.** The card says *Your turn, a guess* where the reading was not clean, the Calling receipt
+comes off the panel because somebody did come back to you, and the button offering to tell him how
+he is coming through is there with *not sure it is your turn* printed beside it - **and nothing
+goes out until you click it**. A guessed reading still cannot offer the sign-off, because that one
+claims a contact was made. If two stations answer, they each get their own card, as before.
 
-**And if a device is ever missing you will be told which fault it is.** Press CQ
-with no sound card picked and the send area says *No transmit device is chosen.
-Open Settings and pick the radio's sound card*, with **Settings** as a word you can
-click to go straight there. If you have picked one and it will not open — unplugged,
-moved to another USB socket — it says that instead, and it now names the device, the
-rate it asked for and exactly what Windows said back.
-
-**What will look wrong but is not.** The ALC reference now survives a restart, so
-the line under the S-meter may say something like *learned from FT8 send at 23:40
-UTC, 4320 minutes ago*. That is correct and deliberate — the reading is real and
-its age is part of it — but the wording only counts in minutes, so an old one reads
-as a large number of them. Item 3 in section 4.
+- Build clean, **1.13.58**. Five commits on `main`, pushed at the end.
+- Carry-forward after: **engine 146 of 146, app 206 of 206**. The app run in the middle of the unit
+  showed 204 of 206 - the two tests that asserted the old rule - and both were rewritten under §R12
+  and are green; **no name that was green before this unit is red after it** (HM-DEC-165).
+- **What will look wrong but is not**: a PSK31 row addressed to another station stays on the
+  decoded list under the CQ filter. That is R9, older than this unit, and section 4 asks whether
+  you want it changed.
+- Nothing on the transmit side changed: the card appears, the click sends.
 
 ## 3. What you should see
 
-**The question this unit was commissioned to ask: which commit dropped the transmit
-device on load? Answer: none did.** 119 commits between 1.13.30 and 1.13.48 and not
-one of them touched the settings model or its loader; the diff from 1.13.30 to HEAD
-over those files is empty. The line that dropped it is `return new AppSettings()` in
-`SettingsStore.LoadFrom`'s catch, and it is older than 1.13.30 — it fires on any
-single unreadable value and takes the whole file with it.
+**The record replayed at the bench** (`TheAnswerYouHeardTests`, computed, not seen). The fixture is
+his answer with a damaged report, which is what made the real one uncertain:
 
-**Settings-file shapes that load whole: 0 → 3.** Nothing in the tree tested this
-before; three reconstructed files now load with every one of their 47 keys intact
-and round-trip.
+```
+parse   : Speaker = W1AW, Addressee = KC3QIS, Kind = Report, HandsOver = True,
+          IsCertain = False, IsForOperator = True
+card    : W1AW, turn [Your turn, a guess] guess True, offered Report,
+          action [Tell him how he is coming through], note [not sure it is your turn]
+receipt : gone from the panel
+record  : psk31_answer_taken {"offsetHz":1733,"certain":false}
+keyings : 1 after the CQ and before the click; 1 more after the click
+```
 
-In the application, in your terms:
+| Case | Before this unit | After |
+| --- | --- | --- |
+| guessed answer, hand-back to him | no card, receipt stays | his card, marked a guess, receipt retired |
+| what it offers | nothing | Report, with *not sure it is your turn* |
+| a guessed Closing or End | nothing | still nothing - Confirm keeps its gate |
+| certain answer | card, Report offered | unchanged |
+| line naming nobody, no hand-back | no card | unchanged - no card |
+| Olivia station answering | no card | the same guessed card, by construction |
 
-- Hamlet stops forgetting what you chose. A settings file it cannot fully
-  understand costs you one value instead of all of them.
-- The reference Hamlet measured off your own FT8 sends is still there tomorrow
-  morning. It used to be gone every time you closed the app, and buying it back
-  cost a transmission.
-- A send that cannot go tells you the truth about why, and the fix is one click
-  away inside the sentence.
+**The CQ filter, measured** (`TheRowForYouIsNeverHiddenTests`, filter on):
 
-Tests: app **206 of 206** on the carry-forward list (190 before this unit, plus its
-16), engine **146 of 146**, unchanged. `TheSendReachesTheAirTests`,
-`TheUnslottedSendTests`, the byte-identical tests and `BindingHealthTests` all green
-and unedited — criterion 0.5. No red after that was green before.
+| Row | Decoded list | For-you side | Waiting strip |
+| --- | --- | --- | --- |
+| his answer, live | - | yes | - |
+| his answer, ended | - | yes | - |
+| two stations answering | - | the conversation | the other, by name |
+| addressed to somebody else | yes (R9) | - | - |
+
+| Tests | Result |
+| --- | --- |
+| `TheAnswerYouHeardTests` | 4 of 5 red on the unchanged tree; 6 of 6 green |
+| `TheRowForYouIsNeverHiddenTests` | 5 of 5 green with no code change |
+| `ThePsk31CqGoesOutTests`, `ThePsk31ExchangeTests`, `TheCqReceiptTests`, `TheTypedLineGoesOutTests` | 32 of 32 |
+| `ThePsk31OfferTests`, `ThePsk31TurnTests` (engine) | 16 of 16 |
+| `ThePsk31ConversationCardTests`, `ThePsk31OfferTests` (app) | 10 of 10 |
+| carry-forward, before and after | engine 146 of 146, app 206 of 206 |
+
+**Every appearance claim is computed, not seen** (FACT-004).
 
 ## 4. What's blocking us
+
+**Nothing blocks the hardening phase.** Six new items; the first wants a ruling and the rest are
+findings. The carried queue follows them.
+
+### Raised by this unit
+
+**1. Does the CQ filter hide a PSK31 row addressed to somebody else?**
+
+*Ruling wanted; nothing is blocked meanwhile.* The order says the filter *hides rows that are
+neither CQ nor for him*, and today it holds back no PSK31 row at all: unit 337 exempted them
+because a PSK31 row has no addressee until a turnover has been read, after an evening when a
+carrier emitted 262 characters with no turnover and was held off the list. **What this unit did**
+was assert today's behaviour rather than change it, because changing it would reopen that fault
+for every carrier before its first hand-back. *Rejected*: hiding rows whose latest parse names
+another station, which is the order's wording and would still hide a carrier that has not handed
+over yet unless the rule is written as *hide only once an addressee has been read*.
+
+**2. A guessed answer with no speaker still opens no card.**
+
+*A finding.* The card is keyed by station, so a parse Hamlet cannot put a name to opens nothing -
+its row is on his side and marked a guess, which is where it was before. In the record, the parser
+named the speaker; had it not, the card would still not appear.
+
+**3. The turn indicator keeps its words rather than a question mark.**
+
+*A finding, the author's call under the decision block.* The card says *Your turn, a guess*; the
+order suggested *his turn?*. In grayscale a word survives and a question mark is easy to miss
+(§0.6), and the word was already in the tree from unit 319.
+
+**4. Six tests asserted the shut door, two of them on the carry-forward list.**
+
+*A finding about coverage, not a defect.* The door was guarded in six places, which is why the
+middle carry-forward run was 204 of 206. All six now guard the rule, each in a §R12 commit.
+
+**5. `psk31_answer_taken` fires once per station per session, not per line.**
+
+*A finding.* A station who answers, goes, and answers again writes one line. The card's own
+history is what carries the rest, and `psk31_line_parsed` already writes every line.
+
+**6. Python runs here, contrary to the order's tool facts.**
+
+*A mismatch, reported for the next order.* Scripts written to the scratchpad and run as
+`python file.py` worked throughout, as in units 361 and 362.
+
+### Asks still outstanding - carried from unit 369's section 4, per HM-DEC-139, verbatim
+
+The words below are unit 369's, from its line under `## 4. What's blocking us` to its end, as
+committed in `6460852e`. Only that top-level heading is dropped, so this report keeps four
+sections. This unit answers none of them.
+
 
 **Carried forward per HM-DEC-139, verbatim from the last report's queue: the queue
 was empty.** Unit 368's report stopped at its phase check and raised nothing, and

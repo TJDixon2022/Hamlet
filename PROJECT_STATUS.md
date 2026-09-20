@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETE
-TASK: 3 of 3
+STATE: COMPLETED
+TASK: TASK 3 of 3
 WORK_INSTRUCTION: 369 - settings survive, and a refusal names the fault
-BALL: owner
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T17:23:03-04:00
-NOTE: Unit 369 complete. Step 0 done: the loader no longer discards a settings file over one bad value, the ALC reference persists, and the no-device refusal is its own sentence with a Settings link. output.md written; 0.1 answered as a negative and section 4 raises five items.
+UPDATED: 2026-09-20T19:11:43-04:00
+NOTE: Unit 371 complete - a guessed answer opens his card with Report on the click; the row was never hidden, measured
 
 ---
 
