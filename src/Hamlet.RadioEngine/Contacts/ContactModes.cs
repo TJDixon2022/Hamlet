@@ -173,6 +173,58 @@ public static class ContactModes
         .Concat(new[] { new ContactMode("Olivia", new[] { "OLIVIA" }, null, true) })
         .ToList();
 
+    /// <summary>Hamlet's own name for the mode this phase built, in one place.</summary>
+    public const string OliviaName = "Olivia";
+
+    /// <summary>
+    /// **How ADIF spells an Olivia submode: the word, a space, and the variant.**
+    /// </summary>
+    /// <remarks>
+    /// **READ FROM <see cref="Cite"/> AND NOT RE-FETCHED** (work instruction 368 decision
+    /// BV). The submode enumeration of that edition spells the variants
+    /// `OLIVIA 4/125`, `OLIVIA 4/250`, `OLIVIA 8/250`, `OLIVIA 8/500`,
+    /// `OLIVIA 16/500`, `OLIVIA 16/1000` and `OLIVIA 32/1000` — the mode's name, a
+    /// single space, and the variant written *tones/bandwidth*, which is the same
+    /// way `data/olivia/format.json` already writes it. **No test reaches the
+    /// network to check that**, and no copy of the enumeration is vendored in this
+    /// tree; what a test may assert is that the pair this file composes has that
+    /// shape and that the citation is the one the file names.
+    /// </remarks>
+    private const string OliviaSubmodePrefix = "OLIVIA ";
+
+    /// <summary>
+    /// **Olivia at a named variant, as one object carrying both halves of the pair.**
+    /// </summary>
+    /// <param name="variant">
+    /// The variant the conversation was read at, e.g. `16/500`, exactly as
+    /// `data/olivia/format.json` names it. **Null or blank means Hamlet did not
+    /// measure one.**
+    /// </param>
+    /// <returns>The mode, with `MODE=OLIVIA` and the variant as its submode.</returns>
+    /// <remarks>
+    /// <para>**THE PAIR CANNOT COME APART** (decision BV). `Ft8ContactLogEntry.For` sets
+    /// `Mode` and `Submode` from one <see cref="ContactMode"/>, so a caller that has this
+    /// object cannot write `MODE=OLIVIA` with somebody else's submode beside it, and
+    /// there is no other way to spell an Olivia record.</para>
+    /// <para>**A VARIANT HAMLET DID NOT MEASURE IS AN ABSENT SUBMODE AND NEVER A GUESSED
+    /// ONE** (decision BX, §0.0). The entry in <see cref="Logged"/> is what comes back
+    /// then, and it is the same entry a record written with no variant matches on the way
+    /// back in - which is what that entry's own remarks already provided for.</para>
+    /// <para>**THE VARIANT NAMES ARE NOT LISTED HERE** (§0, §0.1). There is one list of
+    /// Olivia's variants in this repository and it is the format file; a second list in
+    /// this file would be a second place for the same fact to live and disagree. What this
+    /// method knows is how ADIF spells a submode, which is what this file is for.</para>
+    /// </remarks>
+    public static ContactMode Olivia(string? variant)
+    {
+        var name = (variant ?? "").Trim();
+
+        return name.Length == 0
+            ? Named(OliviaName)!
+            : new ContactMode(
+                OliviaName, new[] { "OLIVIA" }, OliviaSubmodePrefix + name, true);
+    }
+
     /// <summary>The mode of that name, or null.</summary>
     /// <param name="name">Hamlet's own name for it, e.g. "FT8".</param>
     /// <returns>The entry, or null where the name is not one the log can write.</returns>

@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: EXECUTING
-TASK: 1 of 5
+TASK: 2 of 5
 WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
 BALL: code
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T23:05:38-04:00
-NOTE: Task 1 done: the trace found the Olivia contact logging as PSK31, RST and grid already right, and four Six sites.
+UPDATED: 2026-09-19T23:11:07-04:00
+NOTE: Task 2 committed: the mode is read off the card and an Olivia contact logs as Olivia.
 
 ---
 

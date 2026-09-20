@@ -15154,8 +15154,13 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var written = ContactLogStore.Append(entry, AboutViewModel.AppVersion);
 
-        if (written && ContactModes.Named("PSK31") is { } psk31
-            && psk31.Matches(entry.Mode, entry.Submode))
+        // **AND OLIVIA IS A KEYBOARD MODE IN THE SAME CATEGORY** (work instruction 368,
+        // §R13). Logging is a stage, and a stage a step adds writes a line a person can
+        // diagnose it from: without this an Olivia contact reached the file in silence,
+        // so a record that went in wrong and a record that never went in at all were the
+        // same absence. **The line carries the mode and, for Olivia, the variant inside
+        // the submode** - and no callsign and no text, which is what it always carried.
+        if (written && IsKeyboardModeRecord(entry))
         {
             Psk31Events.ContactLogged(
                 _telemetry, entry.RstSent, entry.RstReceived, entry.Mode, entry.Submode,
@@ -15164,6 +15169,19 @@ public partial class MainWindowViewModel : ObservableObject
 
         return written;
     }
+
+    /// <summary>Whether this record was made in one of the two keyboard modes.</summary>
+    /// <param name="entry">The record, as it will stand in the file.</param>
+    /// <returns>True where the pair says PSK31 or says Olivia.</returns>
+    /// <remarks>
+    /// **THE PAIR, THROUGH THE TABLE THAT OWNS IT** (`ContactModes`), and not the tab, the
+    /// card or the string `OLIVIA` found in a field. `ContactModes.Olivia(null)` is the
+    /// entry a record with any variant matches, so an Olivia record at 16/500 and one whose
+    /// variant Hamlet never measured both answer true here.
+    /// </remarks>
+    private static bool IsKeyboardModeRecord(AdifContact entry)
+        => (ContactModes.Named("PSK31") is { } psk31 && psk31.Matches(entry.Mode, entry.Submode))
+           || ContactModes.Olivia(null).Matches(entry.Mode, entry.Submode);
 
     /// <summary>Writes one contact the way the Save button does.</summary>
     /// <param name="entry">The record.</param>
@@ -15328,17 +15346,47 @@ public partial class MainWindowViewModel : ObservableObject
             .LastOrDefault();
     }
 
-    /// <summary>PSK31's log entry where this contact was a PSK31 one, or null.</summary>
+    /// <summary>The keyboard mode this contact was made in, or null.</summary>
     /// <param name="station">The other station.</param>
-    /// <returns>The mode, or null where nothing was worked in PSK31 with him.</returns>
+    /// <returns>Olivia at its variant, PSK31, or null where neither was worked with him.</returns>
     /// <remarks>
-    /// **A CONVERSATION CARD IS THE EVIDENCE.** One is opened only where the parser was
-    /// certain a station addressed the operator on the PSK31 tab, so its existence is a
-    /// measurement that this contact happened in this mode - and the spelling of the
-    /// pair is <see cref="ContactModes"/>'s, never re-derived here.
+    /// <para>**A CONVERSATION CARD IS THE EVIDENCE.** One is opened only where the parser was
+    /// certain a station addressed the operator, so its existence is a measurement that this
+    /// contact happened in this mode - and the spelling of the pair is
+    /// <see cref="ContactModes"/>'s, never re-derived here.</para>
+    /// <para>**AND SINCE UNIT 364 THE CARD SAYS WHICH OF THE TWO** (work instruction 368
+    /// decision BU). Olivia's rows and cards *are* PSK31's - one row path, decision AF - so
+    /// asking only whether a card exists answered `PSK31` for an Olivia conversation, and an
+    /// evening on Olivia went into the log as a mode it was not made in. **The card knows**:
+    /// <see cref="Ft8ContactCard.IsOlivia"/> is set from the channel's own variant, which came
+    /// from the signal's announcement or the blind search and never from a control.</para>
+    /// <para>**THE VARIANT IS THE ONE THE CARD IS SHOWING NOW** (decision BW). Unit 367's one
+    /// click means a QSO can open at 8/250 and finish at 16/500, and what he read on the card
+    /// at the end is what his log should say; the card carries the variant the conversation is
+    /// being read at, so there is nothing to choose between here.</para>
+    /// <para>**AND IT IS STILL ASKED OF THE CONVERSATION AND NOT OF THE TAB**, which is unit
+    /// 326's rule in this method unchanged: a station worked on Olivia is an Olivia contact
+    /// whatever the operator has since pressed.</para>
     /// </remarks>
     private ContactMode? Psk31ContactWith(string station)
-        => _psk31Cards.ContainsKey(station) ? ContactModes.Named("PSK31") : null;
+    {
+        if (!_psk31Cards.TryGetValue(station, out var state))
+        {
+            return null;
+        }
+
+        // **THE CARD SAYS WHICH OF THE TWO, AND THE CHANNEL SAYS SO WHERE THE CARD CANNOT**
+        // (decisions BU and BX). `IsOlivia` is *the card is showing a variant*, so a channel
+        // the listener opened without a readable variant would have answered PSK31 - a false
+        // statement about the mode rather than a missing one about the variant. The channel
+        // it is being read on is the same one fact in the same one place `OliviaVariantOf`
+        // and the card builder read it from; it is not a second store of Olivia cards.
+        var olivia = state.Card.IsOlivia || _oliviaVariants.ContainsKey(state.ChannelId);
+
+        return olivia
+            ? ContactModes.Olivia(state.Card.OliviaVariant)
+            : ContactModes.Named("PSK31");
+    }
 
     /// <summary>The RST each way in one PSK31 conversation, or nulls where none passed.</summary>
     /// <param name="station">The other station.</param>
