@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: DONE
-TASK: 5 of 5
+STATE: BLOCKED
+TASK: 0 of 3
 WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
 BALL: owner
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T23:53:50-04:00
-NOTE: Unit 368 complete: step 5 at 3 of 4 with every must-pass met; 5.4 not met and carried to step 6.
+UPDATED: 2026-09-20T09:36:11-04:00
+NOTE: Stopped at the work instruction's own phase check before task 0: PHASE_STATUS.md line 1 still names the Olivia phase, so install-phase.bat has not run and the hardening phase is staged but not installed. Nothing in the tree was changed.
 
 ---
 
