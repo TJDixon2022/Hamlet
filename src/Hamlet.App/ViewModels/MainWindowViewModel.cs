@@ -15906,6 +15906,15 @@ public partial class MainWindowViewModel : ObservableObject
             : offsetHz;
     }
 
+    /// <summary>What <see cref="OliviaCallingOffsetHz"/> answers now, for a test.</summary>
+    /// <remarks>
+    /// **IT READS AND CHANGES NOTHING.** Unit 367's trace prints it to show the trap decision BL
+    /// has to avoid: this method is the send path's question - *where may a call to anyone go* -
+    /// and it answers null while a station sits on the calling center, which is the very situation
+    /// the move-off offer exists for.
+    /// </remarks>
+    internal double? OliviaCallingOffsetForTests => OliviaCallingOffsetHz();
+
     /// <summary>Where every Olivia station being read sits in the passband.</summary>
     /// <remarks>
     /// **THE LISTENER'S OWN NUMBERS** (§0.1, decision BB). A channel that has ended is not
