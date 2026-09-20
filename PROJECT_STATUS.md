@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
-TASK: TASK 0 of 5
+STATE: COMPLETED
+TASK: TASK 5 of 5
 WORK_INSTRUCTION: 366 - say it out loud: the Olivia send goes through the one sequence
-BALL: code
-NEXT_PASTE: none
+BALL: tim
+NEXT_PASTE: output.md -> Claude Web
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T18:46:41-04:00
-NOTE: Task 0 - committing the opening: outcome entry, version bump, work instruction
+UPDATED: 2026-09-19T20:45:01-04:00
+NOTE: Unit 366 complete - the Olivia press goes out: step 4 from 1 of 8 to 6 of 8, one keying path still, nothing keyed at the bench
 
 ---
 
