@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 5 of 5
-WORK_INSTRUCTION: 366 - say it out loud: the Olivia send goes through the one sequence
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 367 - move up and widen: the one click that takes the QSO off the calling spot
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T20:45:01-04:00
-NOTE: Unit 366 complete - the Olivia press goes out: step 4 from 1 of 8 to 6 of 8, one keying path still, nothing keyed at the bench
+UPDATED: 2026-09-19T21:02:04-04:00
+NOTE: Task 0 - carry-forward app 189 of 189 in 2 m 21 s; engine invocation starting (146 names, 480 s timeout)
 
 ---
 

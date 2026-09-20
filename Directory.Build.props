@@ -889,8 +889,14 @@
     their manifest says, and the carry-forward list is run before any change. No file under src changes
     at this task.
   -->
+  <!--
+    1.13.54 -> 1.13.55, UNIT 367 TASK 0. A PATCH, STEP 4 OF THE OLIVIA PHASE, MOVE UP AND WIDEN: step 4
+    stands at 6 of 8 with 4.5 the last must-pass, the nine fixtures hash as their manifest says, the
+    chain-guarding list and the carry-forward list are both run before any change, and step 4's entry -
+    the PSK31 loopback chain and Olivia's own send - is green. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.54</Version>
+    <Version>1.13.55</Version>
   </PropertyGroup>
 
   <!--
