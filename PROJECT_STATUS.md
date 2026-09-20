@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 5 of 5
-WORK_INSTRUCTION: 367 - move up and widen: the one click that takes the QSO off the calling spot
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: EXECUTING
+TASK: 0 of 5
+WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
+BALL: code
+NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T22:28:08-04:00
-NOTE: Unit 367 complete - R29's one click built: step 4 from 6 of 8 to 8 of 8 and done, 4.5 and 4.8 both met
+UPDATED: 2026-09-19T22:54:42-04:00
+NOTE: Decision CE entry check: the loopback Olivia exchange to 73, first run.
 
 ---
 

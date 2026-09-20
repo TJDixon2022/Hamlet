@@ -895,8 +895,15 @@
     chain-guarding list and the carry-forward list are both run before any change, and step 4's entry -
     the PSK31 loopback chain and Olivia's own send - is green. No file under src changes at this task.
   -->
+  <!--
+    1.13.55 -> 1.13.56, UNIT 368 TASK 0. A PATCH, STEP 5 OF THE OLIVIA PHASE, LOG AND ACHIEVEMENTS:
+    step 4 closed at 8 of 8 on unit 367 and step 5 stands at 0 of 4, the nine fixtures hash as their
+    manifest says, the chain-guarding list and the carry-forward list are both run before any change,
+    and step 5's entry - a loopback Olivia exchange carried to 73 with the card open - is measured.
+    No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.55</Version>
+    <Version>1.13.56</Version>
   </PropertyGroup>
 
   <!--
