@@ -441,6 +441,18 @@ public sealed partial class Ft8ContactCard : ObservableObject
     /// <summary>True where the turn word is a guess or an unknown.</summary>
     public bool TurnIsGuess => _turn is { IsCertain: false };
 
+    /// <summary>What the card says beside the macro it offers, or "" where it says nothing.</summary>
+    /// <remarks>
+    /// **THE DOUBT IS SAID AND IT DOES NOT STOP HIM** (work instruction 371 task 1), which is the
+    /// rule Tim set for the typed line on 2026-09-14 and this is the same rule one control along:
+    /// where the turn is a guess, the button is still there, the doubt is a word beside it, and
+    /// **nothing goes out until he clicks** (§0.2).
+    /// </remarks>
+    public string OfferNote
+        => _offered != Psk31Macro.None && _turn is { IsCertain: false }
+            ? "not sure it is your turn"
+            : "";
+
     /// <summary>What a PSK31 card says: whose turn, and why nothing is offered where nothing is.</summary>
     /// <remarks>
     /// **A BUTTON THAT IS NOT THERE HAS TO SAY WHY** (work instruction 323 task 3, §0.0).

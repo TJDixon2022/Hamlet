@@ -2768,6 +2768,12 @@ public partial class MainWindowViewModel : ObservableObject
     /// <summary>Each channel's splitter, how far into its text it has read, and its latest message.</summary>
     private readonly Dictionary<int, Psk31ChannelReading> _psk31Readings = new();
 
+    /// <summary>Where each channel last was, so the record can say where an answer came from.</summary>
+    private readonly Dictionary<int, double> _psk31Offsets = new();
+
+    /// <summary>Stations whose answer has already been written down, so it is written once.</summary>
+    private readonly HashSet<string> _psk31AnswersTaken = new(StringComparer.OrdinalIgnoreCase);
+
     /// <summary>The latest complete message on a channel, fed only what arrived since last time.</summary>
     /// <param name="channel">The channel as the listener lists it now.</param>
     /// <returns>The parse of its latest complete message, or null where none has finished.</returns>
@@ -2787,6 +2793,8 @@ public partial class MainWindowViewModel : ObservableObject
     /// </remarks>
     private Psk31Exchange? ReadPsk31(Psk31Channel channel)
     {
+        _psk31Offsets[channel.Id] = channel.OffsetHz;
+
         if (!_psk31Readings.TryGetValue(channel.Id, out var reading)
             || channel.Text.Length < reading.Fed)
         {
@@ -4101,9 +4109,20 @@ public partial class MainWindowViewModel : ObservableObject
     {
         var mine = _settings.Operator.Callsign;
 
+        // **A MAN WHO ANSWERED YOU GETS A CARD, SURE OR NOT** (work instruction 371 task 1). Until
+        // this unit only a certain parse opened one, and on 2026-09-20 a station came back to Tim's
+        // CQ seven hertz away, twice, addressed to him and handing the turn over, and the screen
+        // showed him nothing: the parse was `Chat, certain: false`, because the line did not take
+        // the Answer macro's shape. **§R1's strict side governs what Hamlet sends by itself, and a
+        // card that appears sends nothing** - its button waits for his click (§0.2), and the doubt
+        // is a word on the card (§0.0).
+        // **AN UNCERTAIN ONE MUST HAND THE TURN OVER**, which is what makes it an answer rather
+        // than a fragment of somebody else's over that happens to carry his callsign; a certain
+        // parse opens a card exactly as it did before, hand-back or not.
         var answered = reading.Messages
             .Select(m => m.Exchange)
-            .Where(e => e is { IsCertain: true, IsForOperator: true, Speaker: not null }
+            .Where(e => e is { IsForOperator: true, Speaker: not null }
+                && (e.IsCertain || e.HandsOver)
                 && !Ft8MessageSplit.IsSameStation(e.Speaker, mine))
             .Select(e => e.Speaker!)
             .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -4132,13 +4151,31 @@ public partial class MainWindowViewModel : ObservableObject
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
 
-        // **A CERTAIN ANSWER RETIRES THE RECEIPT, AND A GUESS RETIRES NOTHING** (work
-        // instruction 323 task 2; Tim, 2026-09-11, R3 and R5 on cards). `callers` is
-        // already §R1's strict side - certain, addressed to him, and not him - so the one
-        // test the receipt needs has been made two lines above. **It goes; it is handed to
+        // **AN ANSWER RETIRES THE RECEIPT, AND A GUESSED ANSWER IS STILL AN ANSWER** (work
+        // instruction 371 task 1, superseding unit 323 task 2's certain-only half; Tim,
+        // 2026-09-11, R3 and R5 on cards stand). Somebody came back to his call: leaving the
+        // receipt beside the new card would say nobody had. **It goes; it is handed to
         // nobody**: the call went to everybody, so giving it to whichever station came back
         // first would be a claim about who it was for, and two answers make that visibly
         // wrong. The cards below are what replaces it, one each.
+        // **THE RECORD SAYS A CARD WAS OPENED AND WHETHER HAMLET WAS SURE** (§R13). No callsign
+        // and no text: which station it was is on the screen (HM-DEC-018).
+        foreach (var e in reading.Messages
+                     .Select(m => m.Exchange)
+                     .Where(e => e is { IsForOperator: true, Speaker: not null }
+                         && (e.IsCertain || e.HandsOver)
+                         && !Ft8MessageSplit.IsSameStation(e.Speaker, mine)))
+        {
+            if (_psk31AnswersTaken.Add(e.Speaker!))
+            {
+                Psk31Events.AnswerTaken(
+                    _telemetry,
+                    _psk31Offsets.GetValueOrDefault(channelId),
+                    e.IsCertain,
+                    OliviaTagFor(channelId));
+            }
+        }
+
         if (answered.Count > 0 && _contacts is not null)
         {
             _contacts.RetireTheCall();

@@ -5644,6 +5644,28 @@
                                                                         CommandParameter="{Binding}"
                                                                         ToolTip.Tip="{Binding ActionTip}" />
 
+                                                                <!-- **THE DOUBT BESIDE THE
+                                                                     BUTTON, AND IT DOES NOT
+                                                                     STOP HIM** (work
+                                                                     instruction 371 task 1;
+                                                                     Tim, 2026-09-14 on the
+                                                                     typed line). Where the
+                                                                     turn is a guess the
+                                                                     offer is still there
+                                                                     and says so in a word;
+                                                                     the click is what
+                                                                     sends (§0.2). Silent
+                                                                     where there is nothing
+                                                                     to doubt. -->
+                                                                <TextBlock x:Name="Psk31OfferNote"
+                                                                           Grid.Column="2"
+                                                                           Margin="8,0,0,0"
+                                                                           VerticalAlignment="Center"
+                                                                           FontSize="11"
+                                                                           TextWrapping="Wrap"
+                                                                           Text="{Binding OfferNote}"
+                                                                           Foreground="{StaticResource HmTextMutedBrush}" />
+
                                                                 <!-- **NOTHING IS HIDDEN**
                                                                      (Tim's ruling,
                                                                      2026-09-08). The raw

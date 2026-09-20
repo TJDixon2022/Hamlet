@@ -53,7 +53,8 @@ public static class Psk31Offer
 {
     /// <summary>Which macro follows which message, in one line for a reader and for the report.</summary>
     public const string Table =
-        "his last message, certain, addressed to you and handing over -> offered: a CQ -> Answer, never "
+        "his last message, addressed to you and handing over -> offered, and where it is a guess only a "
+        + "Report is: a CQ -> Answer, never "
         + "reached because a CQ is addressed to anyone; his bare calls -> Report; a Report or Chat before "
         + "you have sent a Report -> Report; a Report or Chat after you have -> Confirm; a Closing or End "
         + "-> Confirm; anything once you have signed off -> none; Ack, Garbage or Unknown -> none.";
@@ -70,7 +71,7 @@ public static class Psk31Offer
         ArgumentNullException.ThrowIfNull(conversation);
         ArgumentNullException.ThrowIfNull(turn);
 
-        if (turn.State != Psk31TurnState.YourTurn || !turn.IsCertain || conversation.Count == 0)
+        if (turn.State != Psk31TurnState.YourTurn || conversation.Count == 0)
         {
             return Psk31Macro.None;
         }
@@ -78,8 +79,8 @@ public static class Psk31Offer
         var his = conversation[^1].Exchange;
 
         // **THE READING AND THE MESSAGE MUST AGREE**, so a reading handed in from elsewhere cannot
-        // make an uncertain message offer.
-        if (!his.IsCertain || !his.IsForOperator || !his.HandsOver)
+        // speak for a different message.
+        if (!his.IsForOperator || !his.HandsOver)
         {
             return Psk31Macro.None;
         }
@@ -94,7 +95,7 @@ public static class Psk31Offer
             return Psk31Macro.None;
         }
 
-        return his.Kind switch
+        var macro = his.Kind switch
         {
             Psk31LineKind.Answer => Psk31Macro.Report,
             Psk31LineKind.Report or Psk31LineKind.Chat
@@ -102,5 +103,18 @@ public static class Psk31Offer
             Psk31LineKind.Closing or Psk31LineKind.End => Psk31Macro.Confirm,
             _ => Psk31Macro.None,
         };
+
+        // **CERTAINTY GATES CONFIRM, NOT REPORT** (work instruction 371 task 1; Tim, 2026-09-14 on
+        // the typed line: *say the doubt in a word; send on the click*). A report tells a station
+        // how he is coming through, which is true of the audio whoever he is, and it goes out on a
+        // click with the doubt beside it. **Confirm keeps §R1's gate**, because it claims a contact
+        // was made and signs off on it, and a guess about who was speaking is a guess about whose
+        // contact it was.
+        if (!his.IsCertain || !turn.IsCertain)
+        {
+            return macro == Psk31Macro.Report ? Psk31Macro.Report : Psk31Macro.None;
+        }
+
+        return macro;
     }
 }

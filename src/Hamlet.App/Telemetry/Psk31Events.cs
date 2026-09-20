@@ -371,6 +371,31 @@ public static class Psk31Events
                 },
                 tag));
 
+    /// <summary>
+    /// **A station's answer to the operator opened his card** (work instruction 371 task 1).
+    /// </summary>
+    /// <param name="telemetry">Sink, or null.</param>
+    /// <param name="offsetHz">Which carrier he answered on.</param>
+    /// <param name="certain">True where the parse was certain, false where the card is a guess.</param>
+    /// <param name="tag">What an Olivia row adds, or null on PSK31's.</param>
+    /// <remarks>
+    /// **THE FLAG AND THE OFFSET, NEVER THE STATION** (HM-DEC-018, §2.1). Which station answered
+    /// is on the screen and not in the file; what a reader needs from here is that a card was
+    /// opened and whether Hamlet was sure.
+    /// </remarks>
+    public static void AnswerTaken(
+        ITelemetry? telemetry, double offsetHz, bool certain, IReadOnlyDictionary<string, object?>? tag = null)
+        => telemetry?.Write(
+            TelemetryCategory.Psk31,
+            "psk31_answer_taken",
+            Tagged(
+                new Dictionary<string, object?>(StringComparer.Ordinal)
+                {
+                    ["offsetHz"] = Math.Round(offsetHz, 1),
+                    ["certain"] = certain,
+                },
+                tag));
+
     /// <summary>The parser returned a verdict for one line.</summary>
     /// <param name="telemetry">Sink, or null.</param>
     /// <param name="offsetHz">Which carrier the line came from.</param>
