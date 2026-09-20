@@ -7,3 +7,16 @@ STEP: 2 | not started | The record says what was true - the send press records t
 STEP: 3 | not started | The record says what was on screen - for every decoded row and every card, whether it was drawn, filtered, scrolled away or folded, so an empty-looking screen can be diagnosed from the file without a screenshot.
 STEP: 4 | not started | The radio sheet - one page Tim reads at the radio for PSK31 and Olivia: what to press, what he should see at each step, what each refusal sentence means, where the capture goes, and what to send back if it fails.
 STEP: 5 | not started | Tim looks - at his window and, when he has time, at the radio, and says it passed.
+
+## UNIT 369 - STEP 0
+
+STEP: 0
+APPROACH: find the commit that dropped the transmit device on load, make the loader keep every value an old file carries, and split the refusal into no-device-chosen with a Settings link and device-would-not-open with the name, rate and OS error
+MOVE: continue
+WHY: the transmit device setting was lost on upgrade and FT8 could not send for five days; the refusal named the wrong fault
+DECIDED: nothing beyond the fault. Task 2's Settings link is the drop candidate; tasks 0 and 1 have none.
+LICENCE: CLAUDE.md 0.0, 0.2; PSK31 plan R11, R12, R13, R14, R19; PHASE_PLAN.md R33; HM-DEC-155, HM-DEC-139, HM-DEC-165
+COST: one session, three tasks (0 to 2), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md line 1 names this phase. Carry-forward before any change: app 190 of 190, engine 146 of 146, with TheSendReachesTheAirTests among them and green.
+FOUND AT TASK 0: criterion 0.1 is a negative, and the evidence is in the tree. No commit between 1.13.30 (681d45c8) and 1.13.48 (ec4b466e) touched the settings model, its loader, its migrations or the transmit-device picker - 119 commits in that window and not one of them names a file under src/Hamlet.App/Settings/. git diff over src/Hamlet.App/Settings/, ViewModels/SettingsViewModel.cs, Views/SettingsWindow.axaml and App.axaml.cs from 681d45c8 to HEAD is empty. The loader did not drop the value, so the drop is not in the load path.

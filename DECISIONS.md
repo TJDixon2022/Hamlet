@@ -4,6 +4,37 @@ Rulings, newest first. A ruling is never edited — a later decision supersedes
 it by id. Index in `CLAUDE.md` §1.
 
 ---
+id: HM-DEC-166
+date: 2026-09-20
+refs: PHASE_PLAN.md, PHASE_STATUS.md, PHASE_OUTCOME.md, PROJECT_CARD.md, docs/phase-olivia-run/, work instruction 369 task 0
+---
+
+**The Olivia phase is archived at 38 of 40, and the hardening phase — *Hamlet holds
+what it has* — is the phase in force from today.** Tim, 2026-09-20.
+
+**What is archived, and at what.** *Hamlet works Olivia the way it works PSK31*, set
+2026-09-14, closes at **38 of its 40 exit criteria**. The two left open are **5.4** —
+the export imports cleanly into one named logger, a *nice-to-pass* — and **6.1** — Tim
+says it passed, which no script can evaluate. **Both are his**, and neither is a session's
+to close or to carry into the new phase as debt. The phase's run folder is
+`docs/phase-olivia-run/`.
+
+**What is set.** *Hamlet holds what it has*: a hardening phase run unattended while he is
+away, over everything banked in the PSK31 and Olivia threads that is screen, record or
+test and needs neither the radio nor the owner. Six steps, the last of them his own look
+at the window. Judged by tests that ran, and at the end by him.
+
+**Why a ruling and not an edit.** `PROJECT_CARD.md` holds standing facts and is changed
+only by ruling (CLAUDE.md §13.3), and `PHASE` and `PHASE_SET` are two of them. This entry
+is what licenses those two lines moving from the Olivia phase to this one, and it is the
+only thing that does.
+
+**Whose words are whose.** The phase name, its description and the two criteria left his
+are taken from `PHASE_PLAN.md` and `PHASE_STATUS.md` as `install-phase.bat` wrote them;
+the wording above is work instruction 369 task 0's recording of his ruling, not a session's
+own conclusion. Nothing was rejected in the recording.
+
+---
 id: HM-DEC-165
 date: 2026-09-19
 refs: work instruction 362 (the FT8 regression) task 3, PHASE_PLAN.md section 6, docs/carry-forward-tests.txt, TheSendReachesTheAirTests

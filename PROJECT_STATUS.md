@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: BLOCKED
+STATE: RUNNING
 TASK: 0 of 3
-WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
-BALL: owner
+WORK_INSTRUCTION: 369 - settings survive, and a refusal names the fault
+BALL: claude
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T09:36:11-04:00
-NOTE: Stopped at the work instruction's own phase check before task 0: PHASE_STATUS.md line 1 still names the Olivia phase, so install-phase.bat has not run and the hardening phase is staged but not installed. Nothing in the tree was changed.
+UPDATED: 2026-09-20T16:46:46-04:00
+NOTE: Carry-forward baseline green - app 190, engine 146. Now hunting the settings-model commit between 1.13.30 and 1.13.48 that dropped the transmit device on load.
 
 ---
 

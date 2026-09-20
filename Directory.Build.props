@@ -902,8 +902,16 @@
     and step 5's entry - a loopback Olivia exchange carried to 73 with the card open - is measured.
     No file under src changes at this task.
   -->
+  <!--
+    1.13.56 -> 1.13.57, UNIT 369 TASK 0. A PATCH, STEP 0 OF THE HARDENING PHASE, SETTINGS SURVIVE AND
+    A REFUSAL NAMES THE FAULT: the Olivia phase is archived at 38 of 40 and this phase is installed,
+    step 0 stands at 0 of 5, and the carry-forward list is run before any change - app 190 of 190,
+    engine 146 of 146. Criterion 0.1's search is done at this task and it is a negative: nothing under
+    src/Hamlet.App/Settings/, SettingsViewModel.cs, SettingsWindow.axaml or App.axaml.cs changed
+    between 1.13.30 and 1.13.48, or between 1.13.30 and HEAD. No file under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.56</Version>
+    <Version>1.13.57</Version>
   </PropertyGroup>
 
   <!--
