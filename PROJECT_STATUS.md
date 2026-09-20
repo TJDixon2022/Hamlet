@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
 STATE: RUNNING
-TASK: TASK 0 of 5
+TASK: TASK 1 of 5
 WORK_INSTRUCTION: 372 - Hamlet opens whole, and the send area is never the thing that leaves
 BALL: claude
 NEXT_PASTE: none yet
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T19:46:16-04:00
-NOTE: Task 0 done - version at 1.13.59, the outcome entry carries app 206 of 206 and engine 146 of 146; committing
+UPDATED: 2026-09-20T19:57:42-04:00
+NOTE: Task 1 done - the panels reach 0 px at 700 and below, MinHeight binds headless, the flake is named; committing
 
 ---
 
