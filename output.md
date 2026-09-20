@@ -2,556 +2,551 @@ READ IN THIS ORDER.
 
 A. The phase goal - Hamlet works Olivia the way it works PSK31: hears it,
    reads it, answers it, logs it, with the variant taken from the signal's
-   own announcement and never picked by the operator. Steps 0 to 3 done;
-   step 4 was 6 of 8 met at the start of this unit and is 8 of 8 after it,
-   with 4.5 the step's last must-pass and 4.8 its last nice-to-pass; steps
-   5 and 6 not started. **Step 4 is done - every must-pass met and the one
-   nice-to-pass met too, so nothing in it is partial and nothing was
-   dropped.** Step 5's entry opens.
-B. Step 4's criteria this unit worked. 4.5: the offer appeared under all
-   four of decision BL's conditions YES and was refused on 8 of 8
-   conditions it must not appear under - a guessed your turn, his turn, he
-   is still sending, PSK31, 16/500, 32/1000, off the calling center and a
-   second time after it has been used. The line quoted in section 3, out
-   at the calling center 1500 Hz at 8/250, code read back OLIVIA_8_250 at
-   0.06 Hz of error against an allowance of 5; after the unkey the next
-   send went out at 2000 Hz at 16/500, code 70 read back at 0.34 Hz of
-   error, proved by sending one. A Stop, a licence refusal and a
-   no-announcement refusal moved nothing YES, all three asserted at the
-   center and the variant afterwards; the cap cannot refuse this line at
-   8/250 and that is arithmetic - 90 characters against a count of 121,
-   61.94 s against a cap of 82.60 s - so the licence gate stands in its
-   place at the same point with nothing played. The follow line's three
-   states proved 3 of 3 with the window asserted as
-   PatienceSeconds(16/500) x 2 = 32.768 s; the card survived the move YES,
-   and what it took was carrying the conversation of the channel he moved
-   from into the reading of the channel he moved to - the card itself was
-   never in danger, being keyed by callsign. 4.8: lag from the turnover
-   word to the turn reading 0.000 s / 0.000 blocks at 8/250 and 2.000 s /
-   0.977 blocks at 16/500, one block being 2.048 s - MET. Met: 4.5, 4.8.
-   Not met: none. Entry: chain-guarding reds before 27, after 27, new 0.
-C. The report last: section 4 raises 5 items on top of the carried queue;
-   not one of them stands in the way of 4.5 or 4.8, both of which are met.
-   Nothing needed a line on decision AZ's forbidden list, so there is no
-   stop material in this unit. No working mode's send or read guard went
-   red after green: one app carry-forward run showed two reds and both
-   passed alone and on the immediate rerun of the whole invocation, which
-   is the run the number comes from. The PttOn and Arm( counts did not
-   move, 1 and 2 before and after. No frequency command was sent to the
-   radio and the dial never moved (decision BK). The carry-forward seconds
-   are app 2 m 18 s and engine 4 m 45 s against the 480 s timeout, so the
-   engine invocation's margin is about 195 s - better than unit 366's
-   three minutes, which is the margin this unit was told to keep.
+   own announcement and never picked by the operator. Steps 0 to 4 done,
+   step 4 closed at 8 of 8 by unit 367; step 5 was 0 of 4 at the start of
+   this unit and is 3 of 4 after it; step 6 is Tim's. **Step 5 is done on
+   its must-passes: 5.1, 5.2 and 5.3 are all met and 5.4, its only
+   nice-to-pass, is not met and could not be reached on this machine.**
+   All four verbs of the goal are now proved on the development machine -
+   hears, reads, answers and logs - and the one thing none of them is
+   proved on is a radio, which is step 6 and Tim's alone.
+B. Step 5's criteria this unit worked. Entry: step 4 done and the loopback
+   exchange reached 73 YES - his half the corpus's 01-textbook and
+   Hamlet's half its own macros, on the 20 m calling spot at 8/250, in
+   37.2 s, with each of Hamlet's three sends read back off the samples the
+   sound card was handed and demodulated to the macro it composed. 5.1:
+   the Olivia contact logged MODE=OLIVIA SUBMODE=OLIVIA 8/250, RST sent
+   599 received 599, grid FN31; a PSK31 contact in the same session still
+   logged MODE=PSK SUBMODE=PSK31 YES, and FT8 and FT4 are unchanged; the
+   record is quoted whole in section 3, and a QSO that moved logged
+   SUBMODE=OLIVIA 16/500. 5.2: before the first Olivia record, earned
+   Olivia cards 0, firsts naming Olivia 0, badge counts naming Olivia 0;
+   after it, the Modes card earned YES, first_olivia earned YES reading
+   "An Olivia contact", the badge's worked count 2 -> 3 of 6. 5.3:
+   TheAchievementsScreenTests before 9 passed / 1 failed, after 9 passed /
+   1 failed, the failing name TheWindowDrawsEverySixRows both times for
+   the same reason, third-red count 0. 5.4: NOT MET - no third-party
+   logger is on this machine, a package would be a MOVE: stop and the
+   tests reach no network, so nothing here imported the file into
+   anything. Met: 5.1, 5.2, 5.3. Not met: 5.4, carried to step 6. Entry:
+   chain-guarding reds before 27, after 27, new 0.
+C. The report last: section 4 raises 7 items on top of the carried queue;
+   not one of them stands in the way of 5.1, 5.2 or 5.3, all three of
+   which are met. No working mode's send or read guard went red after
+   green - the carry-forward list was 189 of 189 and 146 of 146 before the
+   first change and 190 of 190 and 146 of 146 after the last, with the
+   added name being Olivia's own log guard. The other five modes' log
+   records did not change shape, asserted rather than assumed; their badge
+   scores did change in one way and it is item 3 - a log holding all five
+   of the old table no longer earns the all-modes bonus until Olivia is
+   worked, because there are six modes to work now. The PttOn and Arm(
+   counts did not move, 1 and 2 before and after, and nothing needed a
+   line on decision AZ's forbidden list, so there is no stop material in
+   this unit. The carry-forward seconds are app 2 m 21 s and engine
+   4 m 38 s against the 480 s timeout, so the engine invocation's margin
+   is about 202 s and nothing was added to it.
 
 ```
-UNIT:       367 - complete at task 5 of 5, task 5 built - 2026-09-19 22:27
+UNIT:       368 - complete at task 5 of 5, task 5 built - 2026-09-20 03:45
 PHASE GOAL: Olivia becomes a mode Hamlet works the way it works PSK31 - hears
             it, reads it, answers it, logs it - with the variant taken from the
             signal's own RSID announcement and never picked by the operator.
-UNIT GOAL:  Build R29's one click. After a station has certainly come back on the
-            Olivia calling spot, the card offers to move up 500 Hz and switch to
-            16/500; pressing it sends the line saying so at the old place and the
-            old variant, and only once that line has gone out does Hamlet's own
-            send-and-listen center go up 500 Hz and its variant become 16/500.
-            The card then says what was heard where they moved to - an
-            announcement, or nothing yet - and never that the station personally
-            followed. Then measure how far behind the turnover word the turn
-            indicator lands, in blocks.
-ADVANCED:   yes - step 4 criteria 4.5 and 4.8 both met, so step 4 is 8 of 8 and
-            done, and the last of the three things PHASE_PLAN section 1 says
-            makes Olivia hard for a beginner is now one click
-NUMBER:     step 4 criteria met 6 of 8 -> 8 of 8; must-passes left in step 4 1 -> 0
+UNIT GOAL:  An Olivia contact reaches the operator's log as an Olivia contact.
+            The mode is read off the conversation and not off the tab, the RST
+            and the grid come the way PSK31's do, the export says MODE=OLIVIA
+            with the variant the QSO ended at as its SUBMODE through one object
+            that cannot set one without the other, and the achievements screen -
+            which named no earned Olivia card before the first contact - counts
+            the mode and reveals its records after it, with the inherited reds in
+            TheAchievementsScreenTests no worse than they were.
+ADVANCED:   yes - step 5 criteria 5.1, 5.2 and 5.3 all met, so step 5 has every
+            must-pass met and only 5.4, which needs a logger this machine does
+            not have, stands between the phase and step 6
+NUMBER:     step 5 criteria met 0 of 4 -> 3 of 4; must-passes left in step 5 3 -> 0
 DRIFT:      0 - 0 consecutive units without advance (was 0)
 ```
 
-**The criterion table, 4.1 to 4.8.** (Not a heading: `###` appears only nested under the four
+**The criterion table, 5.1 to 5.4.** (Not a heading: `###` appears only nested under the four
 sections below, which is what the shape rules ask.)
 
 ```
 id  | state          | this unit's numbers
-4.1 | met (unit 365) | 30 of 30 loopbacks identical; every measure inside tolerance
-4.2 | met (unit 366) | 6 of 6 read back as the variant sent, worst error 0.34 Hz of 5
-4.3 | met (unit 366) | center from the table on 2 bands; spot found at 875 Hz with a
-    |                | station on the calling spot; receipt station facts 0, Log absent
-4.4 | met (unit 366) | caps 82.603 / 61.952 / 49.562 s as the product; the
-    |                | 102-character Report armed and played at 71.99 s
-4.5 | MET, this unit | offered on all four conditions, refused on 8 of 8 it must not
-    |                | appear under; the line 90 characters out at 1500 Hz at 8/250,
-    |                | code 69 read back at 0.06 Hz of 5; the next send at 2000 Hz at
-    |                | 16/500, code 70 read back at 0.34 Hz; a Stop, a licence refusal
-    |                | and a no-announcement refusal each moved nothing; the follow
-    |                | line 3 of 3 states with the window PatienceSeconds(16/500) x 2
-    |                | = 32.768 s; the card survived the move with its history
-4.6 | met (unit 366) | PttOn 1, Arm( 2, real ports keyed 0, Stop aborts mid-play -
-    |                | all four re-measured and unchanged by this unit
-4.7 | met (unit 366) | power offer under Olivia yes; ALC read, judged and said
-4.8 | MET, this unit | lag 0.000 s / 0.000 blocks at 8/250 and 2.000 s / 0.977 blocks
-    |                | at 16/500, one block being 2.048 s; the turn still reads no clock
+5.1 | MET, this unit | the loopback Olivia contact logged MODE=OLIVIA,
+    | must-pass      | SUBMODE=OLIVIA 8/250, RST_SENT 599, RST_RCVD 599,
+    |                | GRIDSQUARE FN31, BAND 20m, FREQ 14.071500; the QSO that
+    |                | moved logged SUBMODE=OLIVIA 16/500, the variant it ended
+    |                | at; PSK31 still MODE=PSK SUBMODE=PSK31, FT8 still
+    |                | MODE=FT8 with its decibels, FT4 still MODE=MFSK
+    |                | SUBMODE=FT4; a card with no readable variant logs
+    |                | MODE=OLIVIA with the SUBMODE tag absent; round trip
+    |                | through AdifLog's own reader identical on all nine fields
+5.2 | MET, this unit | before: earned Olivia cards 0, firsts naming Olivia 0,
+    | must-pass      | badge counts naming Olivia 0. after one record: Modes card
+    |                | earned yes, first_olivia earned yes reading "An Olivia
+    |                | contact", the badge 2 of 6 -> 3 of 6 with the same words.
+    |                | WorkableModes 5 -> 6, counted from the table; no literal
+    |                | five or six anywhere in the change
+5.3 | MET, this unit | TheAchievementsScreenTests 9 passed / 1 failed before and
+    | must-pass      | 9 passed / 1 failed after; the same one name,
+    |                | TheWindowDrawsEverySixRows, with the same message; no
+    |                | third name went red
+5.4 | NOT MET        | no third-party logger is on this machine, a package is a
+    | nice-to-pass   | MOVE: stop and the tests reach no network. The export was
+    |                | checked field by field against the citation the tree
+    |                | carries and round-tripped through Hamlet's own reader,
+    |                | which is Hamlet checking Hamlet. Carried to step 6
 ```
 
-**Step 4 is 8 of 8. Every must-pass is met, the one nice-to-pass is met, and the step is done.**
+**Step 5 is 3 of 4: every must-pass met, the one nice-to-pass not met and carried to step 6.**
 
 ## 1. What Claude did
 
 **Complete, at task 5 of 5, with task 5 built rather than dropped.** Development computer, prompt
 gated `PROJECT: Hamlet`, confirmed against the tree (`SHACK_FACTS.md` and
 `src\Hamlet.RadioEngine\Cw\CwProbabilisticDecoder.cs` present, no `CoreHMI.sln`, no `MURC.sln`,
-root `C:\Source\HamLet`); branch `main`, six task commits and this report's, every push succeeded.
-**Nothing in this report
-is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093, FACT-004): every figure was computed, no
-port was opened and nothing keyed. **No Olivia signal from Hamlet has been on the air, no QSO has
-been moved off a real calling frequency, and none will be until Tim presses it at step 6.**
+root `C:\Source\HamLet`); branch `main`, six task commits and this report's, **every push
+succeeded**. **Nothing in this report is evidence about the radio** (`SHACK_FACTS.md`, HM-DEC-093,
+FACT-004): every figure was computed, no port was opened and nothing keyed. **No Olivia signal from
+Hamlet has been on the air, and no Olivia record written in this unit is a contact anybody made** -
+every one of them is composed from a loopback exchange on this machine. The first real one will be
+Tim's, at step 6.
 
 **Nothing was left undone and nothing was dropped.** Task 5 was the named drop candidate and it was
-built; 4.8 is met.
+built; what it delivers is the measurement decision CC asks for and the plain sentence that 5.4 is
+not met.
 
-**R29's one click exists, and the transmit chain did not move.** The move is its own control on the
-card and its own `[RelayCommand]`; `Ft8CardActionKind` still has exactly `None`, `Send` and `Log`,
-`Psk31Macro` still has exactly `None`, `Cq`, `Answer`, `Report` and `Confirm`, and `ActionFor` and
-`CardActionAsync`'s `Send` and `Log` paths are untouched. The line reaches the air through the one
-existing gate, the one existing unslotted `Arm` site and the one existing `Ft8TransmitSequence`.
-**`PttOn` code lines 1 and `Arm(` call lines 2, before and after, asserted in the unit's own test
-class.** **Nothing on decision AZ's forbidden list was touched**, so there is no `MOVE: stop`
-material in this unit. **No CI-V frequency command was sent and the dial never moved** (decision BK,
-§R11): what moves is where in the passband Hamlet puts its next signal, inside a passband it was
-already listening across.
+**Nothing in this unit went near the transmit chain** (decision CD). It reads conversations that had
+already happened. **`PttOn` code lines 1 and `Arm(` call lines 2, before and after**, re-counted in
+the tree; **nothing on decision AZ's forbidden list was touched**, so there is no `MOVE: stop`
+material in this unit.
 
-**Task 0 - the unit opens.** Step 4's entry first, decision BT's before-run of
-`docs\chain-guarding-tests.txt` on unchanged `HEAD` `efc07610`: engine 98 of 110 in 46 s with twelve
-inherited reds, app 48 of 63 in 36 s with fifteen. `TheFt8AndFt4SendsAreByteIdenticalTests` and
-`TheUnslottedSendTests` green inside the engine run; `ThePsk31CqGoesOutTests` and
-`TheOliviaSendTests.AnOliviaCqReachesTheAir` green by name, **5 of 5**, so the PSK31 loopback chain
-and Olivia's own send are both unchanged and the entry is open. All nine Olivia fixtures hash as
-`manifest.json` says, **9 of 9**. Carry-forward before any change: app **189 of 189** (2 m 21 s),
-engine **146 of 146** (4 m 43 s). Version 1.13.54 to 1.13.55. `UNIT 367 - STEP 4` appended to
-`PHASE_OUTCOME.md` with no earlier entry touched, decision letters BK to BT.
+**Task 0 - the unit opens.** The project gate first, then decision CG's before-run of
+`docs\chain-guarding-tests.txt` on unchanged `HEAD` `c395e6b8`: engine **98 of 110** in 46 s with
+twelve inherited reds, app **48 of 63** in 33 s with fifteen - the same twenty-seven carried as ask
+35. All nine Olivia fixtures hash as `manifest.json` says, **9 of 9**, checked by hand. Carry-forward
+before any change, both invocations: app **189 of 189** (2 m 21 s), engine **146 of 146** (4 m 37 s),
+so every per-mode send and read guard was green and step 4 is done in the tree as well as in the
+plan. **Then decision CE's entry**, measured before a line of `src` changed: an Olivia conversation
+on the 20 m calling spot at 8/250 carried to **73 on both halves of one card in 37.2 s**, with each
+of Hamlet's three sends read back off the samples the sound card was handed - announced
+`OLIVIA_8_250` code 69 at 1499.94 Hz and demodulated to the macro it composed. Version 1.13.55 to
+1.13.56. `UNIT 368 - STEP 5` appended to `PHASE_OUTCOME.md` with no earlier entry touched, decision
+letters BU to CG. **`PHASE_STATUS.md` corrected per decision CF** - see the mismatch list below for
+what it said first.
 
-**Task 1 - the trace** (`Unit367Trace`, **app** test project because the move's path is there, five
-names, 30 s, asserts nothing, on neither carry-forward line). Its seven answers are in section 3.
-**The one that decided the shape of task 2 was item 4**, and it is the finding of this unit:
-`OliviaCallingOffsetHz` - the method the instruction pointed at for *are we on the calling center* -
-answers **null** whenever a station is sitting within `Psk31ClearSpot.ClearHz` of the calling center,
-because it is the send path's question *where may a call to anyone go*. That is exactly and only the
-situation the move is offered in. So the offer's third condition is the cited table's own arithmetic
-in a new `OliviaCallingCenterOffsetHz`, and not that method.
+**Task 1 - the trace** (`Unit368Trace`, **app** test project because the log path is there, four
+names, asserts nothing about the product, on neither carry-forward line). Its seven answers are in
+section 3. **The one that decided the shape of tasks 2 and 3 was item 1**: an Olivia contact logged
+`MODE=PSK`, `SUBMODE=PSK31`, decided at `MainWindowViewModel.cs:15341`, `Psk31ContactWith`. **Item 2
+saved the unit a task**: the RST each way and the grid were already right, because `Psk31ReportsFor`
+and `Psk31GridFor` read the shared card dictionaries an Olivia row fills - so nothing was built for
+them (R14) and they are asserted instead.
 
-**Task 2 - the offer** (4.5, first half), decisions BL and BM. `TheOliviaMoveUpTests`, eleven names
-at that task and twenty-five by the end of the unit.
+**Task 2 - the mode is read off the conversation** (5.1, first half), decisions BU, BW and BX.
+`TheOliviaLogsAsOliviaTests`, four names. Three source changes: `ContactModes.Olivia(variant)`, which
+carries `MODE=OLIVIA` and the variant's submode as one object; `Psk31ContactWith`, which now asks the
+card which of the two keyboard modes it is; and `WriteLoggedContact`, whose telemetry gate was PSK31
+only (§R13). **Watched failing first, measured rather than asserted**: with the card reading
+disabled, three of the four new names go red and the fourth - decision BU's regression assertion -
+passes both ways, because it is about the modes that must not change.
 
-**Task 3 - the send and the move** (4.5, second half), decisions BN, BO and BK. Eight more names.
-**One piece of source this task needed that the instruction did not foresee**, and it is decision
-BR's: without it the card read the new channel with his half of the history missing, which put
-Hamlet's own move line at the end of the conversation and had the card saying it was his turn a
-moment after he had come back - no `Send` button, and the send that proves the move could not be made
-at all. `OliviaMovedConversationFor` carries the complete messages of the channel he moved from into
-the reading of the new channel at the place Hamlet announced, with a fresh splitter.
+**Task 3 - the export** (5.1, second half), decisions BV and BW. `TheOliviaExportSaysOliviaTests`,
+five names at that task and six by the end of the unit. **One source change, and it is a defect task
+1 exposed**: `AdifLog.IsRstMode` asked `ContactModes.Named("PSK31")` and nothing else, so a record
+Hamlet had just written with `RST_SENT 599` came back out of its own reader as a **decibel** report
+of 599. Three of the five names were red before that change.
 
-**Task 4 - what was heard where they moved to** (4.5, last clause), decisions BP, BQ and BR. Six more
-names. One piece of source: `WatchTheOliviaMoveWindows`, because a card is a snapshot and without it
-*nothing has been heard yet* would still be on the screen an hour later, which is a sentence that has
-stopped being true (§0.0). It reads the audio clock, not a wall clock.
+**Task 4 - the achievements** (5.2 and 5.3), decisions BY, BZ, CA and CB.
+`TheOliviaRecordsAppearTests`, five names. Four source changes plus one line of the owner's points
+file, and **two smaller repairs the change exposed**: `AchievementCategory.LivesAt` asked the band
+plan where Olivia lives and Olivia has no block there, so the one unworked mode a beginner is being
+invited to work was the one row that could not say where to find it; and `WhoIsThere` answered *the
+CQ list carries no voice* for Olivia, which is a sentence about a different mode.
 
-**Task 5 - 4.8** (`TheTurnKeepsUpWithTheTurnoverWordTests`, three names, 30 s). **Built, not
-dropped.** The numbers are in section 3.
+**Task 5 - what 5.4 can honestly reach** (decision CC). One more name on
+`TheOliviaExportSaysOliviaTests`: the whole exported file quoted and every field checked against the
+citation the tree carries. **Built, not dropped**, and its deliverable is the sentence in section 3
+saying 5.4 is not met.
 
-**Where this session departed from the instruction, said plainly.** §8's tasks 2, 3 and 4 each ask
-for **tests watched failing first**, and that is not what happened: the whole of 4.5's mechanism was
-written in one pass and committed at task 2, with tasks 3 and 4 adding their tests on top of it. Two
-of task 3's tests did fail on their first run and were diagnosed and fixed - one because the licence
-gate refuses inside the sequence rather than at `Arm`, one because a broken `OliviaData` took the
-calling table with it - and task 3's third failure was the real defect decision BR names, found by a
-test rather than by reading. But the discipline the instruction asked for was not kept, and the
-report says so rather than implying it was.
+**Four existing assertions were rewritten under §R12, named because they guarded the door this unit
+was told to open.** All four asserted, in one form or another, that the achievements count five
+modes: `TheAchievementsPageTests.TheFixtureLogsScoresMatchTheHandComputedArithmetic`
+(`Assert.Equal(5, WorkableModes)` and a modes score of 85), the twelve-contact total of 465 in that
+test and in `TheRanksCarryTheNamesInThePointsFile`, and in
+`TheCategoryPagesAreTradingCardsTests` the pinned band line
+*five modes to work · 5 of 5 · 85 pts · Gold* and the unworked modes named as {CW, FT4, PSK31}. Each
+was rewritten in place with its reason beside it, in task 4's own commit. **No test was loosened**,
+and the two rewritten to a rule rather than to a fixture are stricter than what they replaced.
 
-**One decision this session made for itself, overrulable, in section 4's terms.** The move's button
-reads **`Move up 500 Hz and switch to 16/500`** - R29's own words, which is what criterion 4.5 says
-the card offers. `Ft8ContactCard`'s remarks keep hertz off the card's face, and that rule is about
-measurements of a contact; this is a control's label naming the thing pressing it does, in the
-convention the operator will meet on the air. Section 4 item 1 carries it for overrule.
+**One wording decision this session made for itself, overrulable, in section 4's terms.** The
+unworked Olivia row says **`reads as PSK31 on the CQ list`** rather than the longer
+*the CQ list cannot tell Olivia from PSK31*. **The shorter form was measured, not preferred**: the
+longer one clipped the mode's own name to nothing at 1400 px on the test host. Section 4 item 5
+carries it.
 
 **Nothing was recorded in `DECISIONS.md`.** No ruling of this unit's met §12.1's four tests.
 
 **Verifying the instruction against the tree (§5), every mismatch reported and none repaired.**
 
-1. **`PHASE_STATUS.md` says `CURRENT_STEP: 3` and step 3 `partial`**, as §5 predicted. The launcher's
-   file was left as the launcher leaves it; only `WORK_INSTRUCTION` was moved from 366 to 367,
-   because `tools/status.sh` reads it from there. **It now understates the tree by a whole step**:
-   step 4 is done.
-2. **`PHASE_PLAN.md` leaves 1.5, 1.7 and every one of 4.1 to 4.8 unchecked** though units 359 to 367
-   have now met all of 4.1 to 4.8. Reported, not edited (§10).
-3. **`PHASE_OUTCOME.md` carries two step 4 entries whose decision letters clash**, as §5 says.
-   Neither was edited; this unit's letters start at BK.
-4. **`HearRsid` is at `MainWindowViewModel.cs:3125`, not *about :3135***; :3135 is where it builds
-   the detector. Everything else §5 gives by line held exactly: `CanTransmitIn` :2459 admitting
-   Olivia at :2464, `IsPsk31Chosen` :2467, `OliviaLabel` :2471, `IsOliviaChosen` :2481,
-   `CanAnswerRowsForTests` :4423, `CivConstants.PttOn` one code line at `Ft8TransmitSequence.cs:513`,
-   `_armedSend.Arm(` at :15551 and :15830, `ActionFor` :5700, `CardActionAsync` :5874 setting
-   `_psk31Macro = card.Offered` at :5898, `Psk31Turn.Read` :4121, `Ft8CardActionKind` at
-   `Ft8ContactCard.cs:14` with exactly three members, `Ft8ContactCard.Turn` :205 with its state words
-   at :326-:328, `ClearSpotForTheCall` :16422 calling `Psk31ClearSpot.Choose` at :16436, version
-   1.13.54 at `Directory.Build.props:893`, and `HEAD` `efc07610`. **Several of those lines have moved
-   down by this unit's own additions** and the numbers above are the ones before it.
-5. **The two windows are the numbers §5 gives**, measured: `Psk31ClearSpot` 150 / 400 / 2200 and
-   `Psk31CarrierSearch` 200 / 3000. **§5's arithmetic for the bound is right but its round figure is
-   not the file's**: 16/500 occupies **±234.375 Hz**, not *about ±250*, so the highest center wholly
-   inside the passband is **2765.625 Hz** and the highest calling offset the move may be offered at
-   is **2265.625 Hz**, where §5 says *about 2750*. The code reads the format file and holds no
-   literal.
-6. **Nothing in `src/` knew what a QSY was**, as §5 says, and this unit is the first to put one there.
-7. **`docs\chain-guarding-tests.txt` holds 17 engine and 11 app classes**, as §5 says. All 28 ran
-   before any change and again after task 3.
-8. **`assets\fixtures\captured\` holds only `README.md`.** No real Olivia audio is in the tree.
-9. **`OliviaTiming`'s counts are 121 / 242 / 32 / 56** with seconds per character 0.68267 / 0.512 /
-   0.4096, and the calling table's `CallingVariant` is `8/250`, all as §5 says.
-10. **`tools\arbiter\validate-output.bat` could not be run**, for the third unit running: it is a
+1. **`TheAchievementsScreenTests` has ONE inherited red, not two.** §5 and
+   `docs\carry-forward-tests.txt` both name
+   `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and `TheWindowDrawsEverySixRows` as the step's two
+   known reds. **The Wspr name passes**, before this unit and after it. 5.3 was therefore measured
+   against one red and not two, and *not made worse* was read as *the same names fail for the same
+   reasons and no new one does*. Section 4 item 1.
+2. **Decision CE's `CanLogRow` clause cannot hold for a keyboard mode.** `CanLogRow` refuses a
+   text-only row before it reads the callsigns, and since unit 364 an Olivia row is a text-only row -
+   so it answers **false** at the end of a completed Olivia QSO, and did so before this unit too. The
+   door a keyboard-mode contact is logged from is the card's own Log link, which reads **true**. Both
+   were measured and both are in section 3. Section 4 item 2.
+3. **`PHASE_STATUS.md` said `CURRENT_STEP: 3`, step 3 `partial`, step 4 `done`, `WORK_INSTRUCTION`
+   367**, exactly as §5 predicted. **Decision CF told this unit to correct it and it did**, at task 0:
+   `CURRENT_STEP: 5`, step 3 `done` and `WORK_INSTRUCTION: 368`, citing `PHASE_PLAN.md` §8's revision
+   of 2026-09-19 evening and units 363 to 367 in the commit message. `PHASE_PLAN.md`'s own checkboxes
+   were not touched.
+4. **`PHASE_PLAN.md` leaves 1.5, 1.7 and every one of 4.1 to 4.8 unchecked** though units 359 to 367
+   met all of them. Reported, not edited (§10).
+5. **`PHASE_OUTCOME.md` carries two step 4 entries whose decision letters clash**, as §5 says.
+   Neither was edited; this unit's letters start at BU and its entry is appended at the end.
+6. **Every code line §5 gives held, to within this unit's own additions.**
+   `MainWindowViewModel.ContactLogEntryForStation` :15224 calling `Ft8ContactLogEntry.For` :15243 with
+   an `Ft8StationConditions` at :15246 and the mode argument at :15276; `Psk31ContactWith` :15340 as
+   the one line §5 quotes; `Psk31ReportsFor` :15354 and `Psk31GridFor` :15316;
+   `Ft8ContactCard.OliviaVariant` :319 and `IsOlivia` :322; `ContactModes.Cite` :133, `Six` :138,
+   `Logged` :172 and `Named` :179; `AdifLog` writing `MODE` at :349 and `SUBMODE` at :356, reading
+   both back at :561-:562, `IsRstMode` at :593; `AchievementLog`'s mapping at :314;
+   `AchievementScores.WorkableModes` :311 reading **5**; `FirstsEarned` :200 adding `first_psk31` at
+   :223; `AchievementBadgePage.Firsts` :277 with `("first_psk31", "A PSK31 contact")`;
+   `achievement-points.json` `"first_psk31": 15` at :125; the Modes badge at :338;
+   `AchievementCategory.ModesFor` :666 with the unworked list at :676-:677; version **1.13.55** at
+   `Directory.Build.props:899`; `HEAD` `c395e6b8`. **§5 names `AchievementBadges.Firsts`; the type is
+   `AchievementBadgePage`, in `AchievementBadges.cs`.** **And §5 names four `ContactModes.Six` sites
+   and the tree has four**, the fourth being `AchievementsViewModel.cs:317`, which §5 does not
+   mention and which this unit deliberately left alone - section 4 item 4.
+7. **`assets\fixtures\captured\` holds only `README.md`.** No real Olivia audio is in the tree, and
+   nothing in this unit needed any.
+8. **`docs\chain-guarding-tests.txt` holds 17 engine and 11 app classes**, as §5 says. All 28 ran
+   before any change and again after task 4.
+9. **No copy of the ADIF submode enumeration is vendored under `data\`** - `data\vendor` holds only
+   `usno`. Every spelling check in this unit is against `ContactModes.Cite`'s own text and the
+   variant names in `data/olivia/format.json`, **with no network call**.
+10. **`tools\arbiter\validate-output.bat` could not be run**, for the fourth unit running: it is a
     Windows batch file and the only shell available runs it as `sh`, so every `rem` and `@echo` line
     is a command-not-found. **The report's shape was checked by hand against the rules the script
     prints in its own header** - the ordering block with A, B and C and C's item count; the `UNIT:`
     line above section 1; the four `##` sections in order with their exact names and no fifth;
-    section 3 non-empty; section 4 present; `###` nested under the four and nowhere else - and it
-    satisfies all six.
+    section 3 non-empty; `###` nested under the four and nowhere else - and it satisfies all six.
 
 ## 2. What the owner should expect
 
-**A beginner who answers a call on the Olivia calling spot is no longer left sitting on it.** When
-the station has certainly come back, his card now offers two things instead of one: the reply it
-always offered, and a second button reading *Move up 500 Hz and switch to 16/500*. One press tells
-him you are going, in his own mode, at the frequency he is listening on; then Hamlet goes there and
-gets twice as fast, and the card says what came back from the new place. The calling frequency is
-left clear for the next caller. **Nobody had to learn the etiquette, nobody touched a variant
-control, and nobody touched the radio** - the dial is exactly where pressing Olivia put it, because
-the move is 500 Hz inside the passband and not a command to the rig.
+**The evening leaves something behind.** A station worked on Olivia now goes into the log as an
+Olivia contact - not as PSK31, which is what Hamlet wrote before this unit - with the report and the
+grid the card showed him, and the variant the QSO ended at. The export says `MODE=OLIVIA` with that
+variant as its `SUBMODE`, which is the pair every other logger and every award program reads. Open
+the achievements screen afterwards and the mode is there: a first he has earned, a card among the
+modes, and a badge that counts Olivia as one of the modes there are to work - where before his first
+Olivia contact nothing on that screen claimed he had worked it.
 
-**Step 4 is done.** All eight of its criteria are met, which was not true of any unit before this
-one. Step 5's entry - *a loopback exchange reaches 73* - is the same conversation this unit's move
-sits in the middle of, and it is now open.
+**And the defect this step existed to repair is repaired.** Every Olivia contact logged before this
+unit would have said `MODE=PSK, SUBMODE=PSK31` - a false statement about a contact, in the file the
+operator keeps forever. There are none in Tim's log, because nothing in this project has worked an
+Olivia station on the air yet; **the first Olivia record in his real log will be the one he makes at
+step 6, and it will say Olivia.**
 
-**Nothing has been on the air.** Every figure in this report was computed on the development machine,
-against a fake serial port and a fake sound card. The first Olivia signal Hamlet puts on a real
-antenna, and the first QSO it moves off a real calling frequency, will be the ones Tim presses at
-step 6.
+**Step 5 is done on its must-passes.** 5.1, 5.2 and 5.3 are met. 5.4 - *the export imports cleanly
+into one named logger* - is **not met and was not attempted**, because there is no logger on this
+machine to import it into, installing one would be a `MOVE: stop`, and the tests reach no network. It
+is carried to step 6, where Tim is at a machine with one.
+
+**Nothing has been on the air.** Every figure in this report was computed on the development machine
+against a fake serial port and a fake sound card, and the contact in it is a loopback exchange, not a
+station anybody worked (FACT-004).
+
+**One change will be visible in a score he already has.**
+
+- **A log holding all five of the old modes loses 50 points until Olivia is worked.** The *all modes*
+  bonus is paid where every mode there is to work is in the log, and there are six now. The fixture
+  in the tests moved from `five modes to work · 5 of 5 · 85 pts` to `six modes to work · 5 of 6 · 35
+  pts`, and a real log with all five will move the same way. **That is the count telling the truth**,
+  not a scoring change: the bonus says *you have worked every mode*, and until he works Olivia he has
+  not. Section 4 item 3.
 
 **What will look wrong and is not.**
 
-- **The move button carries hertz on the face of a card**, which the card type's own remarks
-  otherwise keep off it. That rule is about measurements of a contact; this is a control saying what
-  pressing it does, in R29's own words and in the convention he will meet on the air. Section 4 item
-  1 carries it for overrule.
-- **The card never says he followed.** Even when a 16/500 announcement arrives at exactly the place
-  Hamlet moved to, the sentence says *an announcement has arrived* and says in the same breath that
-  it carries no callsign. That is not timidity: an RSID burst names a mode and nothing else, so
-  saying *he followed* would be a fact Hamlet does not have (§0.0).
-- **The card never says he refused, either.** After the window it says nothing arrived, and that he
-  may not have followed or his announcement may not have read.
-- **The offer disappears after one press** and does not come back for that conversation, however the
-  press went. It comes back only if the line did not go out at all, where the card says nothing
-  moved.
-- **The offer is not there at all on most cards**, and that is the gate working: it wants Olivia
-  chosen, a certain *your turn* over his certain handover, the conversation on the cited calling
-  center, and 8/250. A guess offers nothing.
+- **The Olivia row appears among the modes he has not worked before he has worked one**, saying where
+  it lives and what the CQ list can see of it. **That is an invitation and not a claim**: it is what
+  every unworked mode gets, and it is expressly what criterion 5.2 allows. What is not there before
+  his first Olivia contact is an *earned* card, an *earned* first, or any count saying he worked it.
+- **The Olivia row says `reads as PSK31 on the CQ list`.** The CQ list is built from the digital
+  decoded list and reads any text-only row as PSK31, so a CQ heard on Olivia is on it under PSK31's
+  name. Saying *no one is calling in it* would be a claim the list cannot support (§0.0). Section 4
+  items 5 and 6.
+- **A contact whose variant Hamlet never measured logs `MODE=OLIVIA` with no `SUBMODE` at all** - the
+  tag absent from the file rather than empty in it. A variant Hamlet did not measure is a fact it
+  does not have, and writing the likely one would put a measurement in a permanent file that nobody
+  made.
+- **A QSO that moved logs the variant it ended at**, not the one it opened at. That is what the card
+  was showing him when he pressed Log, and ADIF has one `SUBMODE` tag, so there is no third answer.
+- **`first_olivia` is worth 15 points**, the same as `first_psk31`, in the owner's own points file
+  beside it. **That number is the arbiter's and is one line to change.** Section 4 item 3.
+- **The achievements window's per-mode *firsts* rows still show six rows and no Olivia row.** Those
+  rows are `ContactModes.Six` - Tim's own list of the modes he keeps a first in, ruled 2026-09-08 -
+  and this unit did not add to it. Olivia's first is in the Hall of Fame instead, which is where
+  decision CA put it. Section 4 item 4.
 - **Twenty-seven tests on the chain-guarding list are red.** They were red before this unit, they are
-  the same twenty-seven by name, and that list carries known reds on purpose - it is the list of what
-  guards the chain, not a list that should be green.
+  the same twenty-seven by name, and that list carries known reds on purpose.
+- **One test in `TheAchievementsScreenTests` is red** and was red before this unit. The instruction
+  says two; the second passes. Section 4 item 1.
 - **Three reds sit outside both lists**, as they did before this unit:
   `TheOperatorCanStopItTests.TheStopAddedNoNewRouteToATransmission`,
   `TheTopRowTests.TheBestBetPillAndTheGreenBlockNameTheSameBandOnTheWindow` and
   `WhereTheTransmissionStartsAndWhatTheRecordSaysTests.ATransmitRecordCannotCarryTheMessageOrThe`
   `CallsignInIt`.
-- **A compound callsign still opens no card** (unit 366 item 1). The move's tests use a plain
-  callsign and say so.
 
-**What this unit does not do.** Logging the moved QSO is step 5 and is untouched, even though this is
-the conversation that would be logged. An RSID heard under PSK31 or FT8 still switches nothing
-(R27's across-tab switch, parked). `Psk31ClearSpot`'s margin against Olivia's width is still unit
-366's finding and still not rewritten - the move is not routed through that rule, because R29 says up
-500 Hz and up 500 Hz is what it is.
+**What this unit does not do.** It does not put an Olivia file in front of a real logger - that is
+5.4 and step 6's. It does not touch the transmit chain, the dial, or any line on decision AZ's
+forbidden list. It does not add Olivia to `ContactModes.Six`, which is the operator's own list. And
+it does not chase the wider question of what the CQ list calls an Olivia row, which is bounded out of
+this unit by §9.
 
 ## 3. What you should see
 
-**The answer this unit was commissioned for: one click takes the QSO off the calling spot, and the
-card says what came back from the new place.** 4.5 is met, 4.8 is met, and step 4 is done.
+**The answer this unit was commissioned for: the evening leaves a record behind, and the record says
+Olivia.** 5.1, 5.2 and 5.3 are met; 5.4 is not met and could not be, on this machine.
 
-### The operator's evening, press by press, from the calling spot to the new one
+### The operator's evening, from the 73 to the log window to the achievements screen
 
-**He presses Olivia on 20 m.** The dial goes to 14.071500 MHz - the cited table's 14.073000 MHz
-calling center with the passband's 1500 Hz allowed for - and it does not move again all evening.
-
-**He presses CQ.** *Sending "CQ CQ CQ de K1ABC K1ABC K1ABC pse K" now, at 1500 Hz in the passband.*
-The signal goes out at 8/250 on the cited spot with its own RSID in front of it.
-
-**A station answers certainly.** `N1XYZ de K1ABC` ... his row reads `K1ABC de N1XYZ N1XYZ K`, and
-because the parse is certain, is addressed to him, and hands over, his card opens saying **`Your
-turn`**.
-
-**The card now offers two things, and both labels are quoted here:**
+**He presses Olivia on 20 m and works a station.** His half of the exchange is the corpus's textbook
+QSO and Hamlet's half is its own macros, pressed one over at a time; the conversation runs to `73` on
+both sides, and **every one of Hamlet's three sends was read back off the samples the sound card was
+handed** - announced `OLIVIA_8_250`, code 69, at 1499.94 Hz, and demodulated to the macro that was
+composed:
 
 ```
-the macro offer : Tell him how he is coming through
-the move        : Move up 500 Hz and switch to 16/500
+over 1 | he sends  | CQ CQ CQ de W1AW W1AW W1AW pse K
+       | Hamlet    | W1AW de KC3QIS KC3QIS K                       23 chars from 8 blocks, 18.7 s
+over 2 | he sends  | KC3QIS de W1AW GA TNX FER CALL UR RST 599 599 NAME BOB BOB QTH NEWINGTON CT
+       |           | GRID FN31 FN31 HW? KC3QIS de W1AW K
+       | Hamlet    | W1AW de KC3QIS  RST 599 599  Name Tim Tim  QTH Trafford PA  Grid FN00 FN00
+       |           | BTU W1AW de KC3QIS K                          96 chars from 32 blocks, 67.9 s
+over 3 | he sends  | KC3QIS de W1AW R R TNX TIM 73 73 KC3QIS de W1AW SK
+       | Hamlet    | W1AW de KC3QIS  R R  TNX for the QSO  73 73  W1AW de KC3QIS SK
+       |           |                                               62 chars from 21 blocks, 45.4 s
 ```
 
-and the move's hover reads, verbatim:
+**At the end the card is open**, its turn reading `His turn`, its variant `8/250`, and its **Log link
+true**. The whole exchange took **37.2 s** of wall clock on this machine.
+
+**He presses Log, and what he saves says Olivia and says which Olivia.** Not PSK31, which is what
+this same exchange produced before this unit.
+
+**Then he opens the achievements screen and the mode is there**, where before the contact it was not:
+a Modes card he has earned, a Hall of Fame first reading *An Olivia contact*, and a badge that counts
+Olivia as one of the six modes there are to work.
+
+### The record, field by field, as it stands in the log and as it goes out in the ADIF
+
+**The contact that stayed on the calling spot** - quoted whole, exactly as the file carries it:
 
 ```
-The calling frequency is where everybody listens for new calls, so a conversation is supposed to
-move off it. One click tells him you are going up 500 Hz and changing to 16/500, and then takes
-Hamlet there - about twice the speed, and the calling spot left clear for the next caller.
+<CALL:4>W1AW
+<STATION_CALLSIGN:6>KC3QIS
+<QSO_DATE:8>20260920
+<TIME_ON:6>031502
+<TIME_OFF:6>031502
+<BAND:3>20m
+<MODE:6>OLIVIA
+<SUBMODE:12>OLIVIA 8/250
+<FREQ:9>14.071500
+<RST_SENT:3>599
+<RST_RCVD:3>599
+<GRIDSQUARE:4>FN31
+<MY_GRIDSQUARE:6>FN00DJ
+<EOR>
 ```
 
-**He presses the move.** *Sending "N1XYZ de K1ABC  QSY UP 500 TO OLIVIA 16/500  QSY UP 500 TO OLIVIA
-16/500  N1XYZ de K1ABC K" now, at 1500 Hz in the passband.* It goes out **at the old place and the
-old variant**, because that is where N1XYZ is listening.
-
-**Hamlet moves - after the unkey and not before.** The play ran to the end, the transmitter let go
-ordinarily, and only then did Hamlet's own send-and-reply center become 2000 Hz and its variant
-16/500. The card stops offering the move and starts saying what it is listening for.
-
-**His next press goes out 500 Hz up at 16/500.** N1XYZ followed, announced himself at the new place,
-and came back; the card - the same card - offered `Tell him how he is coming through` again, and the
-press put 94 characters of 16/500 on the air at 2000 Hz. **Nothing asked him which variant, and no
-control anywhere offers one.**
-
-**And the card says what was heard at the new place**, in one sentence that never claims it was him.
-
-### The move line's text, verbatim, and its record
-
 ```
-N1XYZ de K1ABC  QSY UP 500 TO OLIVIA 16/500  QSY UP 500 TO OLIVIA 16/500  N1XYZ de K1ABC K
+field        | in the log         | where it came from
+MODE         | OLIVIA             | ContactModes.Olivia(the card's variant).AdifMode
+SUBMODE      | OLIVIA 8/250       | the same object's AdifSubmode - one object, both halves
+RST_SENT     | 599                | the RST inside the Report macro Hamlet actually sent
+RST_RCVD     | 599                | the corpus's own reading of his report line
+GRIDSQUARE   | FN31               | the grid the card was printing, read by the parser for certain
+MY_GRIDSQUARE| FN00DJ             | Settings, and it is a different tag from his
+BAND         | 20m                | the band the row's own dial is in, spelled as ADIF spells it
+FREQ         | 14.071500          | the row's own dial in MHz, six places
+TIME_ON/OFF  | 031502 / 031502    | the conversation's first and last moments
+report sent  | (absent)           | Olivia exchanged no decibel ratio, so the field stays empty
+report rcvd  | (absent)           | the same
 ```
 
-90 characters. It carries **both callsigns, the amount and the variant**, twice over, because Olivia
-is used where a block can be lost and the one thing this line must not do is half-arrive.
+**And the contact that moved** (decision BW) - opened on the calling spot at 8/250, taken up 500 Hz
+and widened by unit 367's one click, and finished at the new place:
 
 ```
-psk31_send_composed | macro qsy, 90 characters, 63.79 s, capSeconds 82.60307, withinCap true,
-                    | offsetHz 1500, announced true, rsidCode 69, mode olivia, variant 8/250
-ft8_transmission    | mode Olivia, frequencyHz 14071500, durationSeconds 63.794, sampleRate 12000,
-                    | sampleCount 765528, messageLength 90, outcome Played,
-                    | cameOutOfTransmit OrdinaryUnkey, keyed true, fit Fits, audioSeconds 63.794,
-                    | announced true, rsidCode 69, announcementSeconds 1.8575833333333334,
-                    | longestSeconds 30,
-                    | stagesEntered gate_asked | keyed | handed_to_the_sound_card | unkeyed
+<MODE:6>OLIVIA
+<SUBMODE:13>OLIVIA 16/500
 ```
 
-Not one line of it holds a word he sent or his callsign. **`macro` reads `qsy`** rather than `none`,
-because a record saying the composer did not know what it was sending is a record nobody can
-diagnose from.
+**The variant logged is the one the conversation ended at**, because that is what the card was
+showing when he pressed Log. The test asserts the card ended at 16/500, asserts the record carries
+that variant, and asserts the record does **not** carry the variant it opened at.
 
-### The detector's read-back of the move send and of the first send after it
-
-The audio the **sound card was actually handed** was fed whole to `RsidDetector` with no variant, no
-center and no start time (decision I):
+**What it logged before this unit**, from task 1's trace, on exactly the same exchange:
 
 ```
-send                          | variant sent | code read        | center sent | center read | error Hz
-the move line                 | 8/250        | OLIVIA_8_250  69 |     1500.00 |     1499.94 |    0.06
-the first send after the move  | 16/500      | OLIVIA_16_500 70 |     2000.00 |     1999.66 |    0.34
+<MODE:3>PSK
+<SUBMODE:5>PSK31
 ```
 
-**Both read back as the variant that was sent, worst error 0.34 Hz against an allowance of 5**, which
-was not loosened. The second is the proof that Hamlet moved: it was **sent**, not read off a field.
-
-### Before and after the press
+**And the other four modes, asserted rather than assumed** (decision BU's regression assertion):
 
 ```
-                                   | Hamlet's next send to N1XYZ | variant
-before the press                   |                     1500 Hz | 8/250
-after the line played and unkeyed   |                    2000 Hz | 16/500
-after a Stop mid-play              |                     1500 Hz | 8/250
-after a licence refusal            |                     1500 Hz | 8/250
-after a no_announcement refusal    |                     1500 Hz | 8/250
+mode   | MODE  | SUBMODE | report field used
+PSK31  | PSK   | PSK31   | RST_SENT / RST_RCVD
+FT8    | FT8   | (none)  | the decibel field, RST null
+FT4    | MFSK  | FT4     | the decibel field
+Olivia | OLIVIA| OLIVIA <variant> or absent | RST_SENT / RST_RCVD
 ```
 
-**Every one of the three refusals moved nothing**, and each is asserted at the center and the variant
-afterwards, with the card's own words:
+**None of the first three matches Olivia**, asked of `ContactModes` rather than of the strings.
+
+**A card with no readable variant** logs `MODE=OLIVIA` with the `SUBMODE` tag **absent from the file,
+not empty in it** - and still not PSK31, because answering the wrong mode to hide a missing variant
+would replace a missing fact with a false one.
+
+**The telemetry line** (§R13), which is new for Olivia - logging was a stage that reached the file in
+silence before this unit:
 
 ```
-Nothing moved: the line saying you were going up 500 Hz did not go out, so Hamlet is still on the
-calling frequency at 8/250.
+psk31_contact_logged | rstSent 599, rstReceived 599, mode OLIVIA, submode OLIVIA 8/250,
+                     | gridCarried true
 ```
 
-- **The Stop**: stopped by the token with part of the audio unplayed, `psk31_send_unkeyed` carrying
-  `aborted true`, no `olivia_move_sent`, `olivia_move_refused` with `moved false`.
-- **The licence gate**: `outcome RefusedByLicence`, `cameOutOfTransmit NothingWasKeyed`, `keyed
-  false`, nothing played, nothing written to the port. **It stands in for the cap, and why is
-  arithmetic**: the framed line is 90 characters against `timing.json`'s macro count of 121, 61.94 s
-  against a cap of 82.60 s, so no cap refusal exists at 8/250 to measure and none was manufactured.
-  The licence gate refuses at the same point with nothing played. **No cap test was loosened and no
-  count in `timing.json` moved.**
-- **`no_announcement`**: the codes file read back empty with the real calling table in place, so
-  nothing could name the variant it was sending and nothing was composed.
+The variant is **inside the submode** rather than in a field of its own, so it cannot disagree with
+the record. **No callsign, no grid, no name, no town and no text** - asserted by sweeping the line for
+each of them.
 
-### The bound, and the arithmetic on the real bands (decision BK)
-
-Hamlet listens across **200 to 3000 Hz** (`Psk31CarrierSearch`). 16/500's tones occupy **±234.375
-Hz** of its center, read from `data/olivia/format.json` rather than typed. So the highest center
-wholly inside the passband is **2765.625 Hz** and the highest calling offset the move may be offered
-at is **2265.625 Hz**.
+### The achievements screen, before and after the first Olivia contact
 
 ```
-band | calling center | dial the tab sets | calling offset | move to | 16/500 occupies | inside
-80m  |      3583000   |         3581500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-40m  |      7073000   |         7071500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-30m  |     10143000   |        10141500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-20m  |     14073000   |        14071500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-20m  |     14107500   |        14106000   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-17m  |     18103000   |        18101500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-15m  |     21073000   |        21071500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
-10m  |     28123000   |        28121500   |        1500 Hz | 2000 Hz | 1765.6 - 2234.4 | yes
+                              | before                  | after one Olivia record
+log.Modes                     | FT8, PSK31              | FT8, PSK31, Olivia
+earned Modes cards naming it  | 0                       | 1, and it is earned
+firsts earned naming it       | 0                       | first_olivia
+what that first reads         | -                       | An Olivia contact
+the Modes badge               | six modes to work, 2 of 6 | six modes to work, 3 of 6
+the badge's next card         | One more mode           | One more mode
 ```
 
-**On every row of the cited table, at the dial pressing Olivia sets, the move lands wholly inside the
-passband.** The bound bites only where the operator has tuned the dial down so the calling spot sits
-high: at 14 070 600 the calling offset is 2400 Hz, the move would occupy 2665.6 to 3134.4 Hz, and it
-is not offered - the card says
+**Before the first contact, each its own assertion**: Olivia is not in `log.Modes`, no earned card
+names it, `first_olivia` is not earned, it is not what the page offers next (§3.1 keeps both keyboard
+modes' firsts off the window until they are earned), and neither the badge's standing nor its next
+card names it. **An unworked Olivia row is allowed and is drawn**, saying where the mode lives and
+what the CQ list can see of it - that is an invitation and it is what every unworked mode gets.
+
+**The count is composed and not typed.** `AchievementScores.WorkableModes` counts
+`ContactModes.Logged`'s contact modes and reads **6**; the badge's words are built from that count;
+WSPR is still not one of them, because nobody works anybody on a beacon. **There is no literal five
+or six anywhere in the change.**
+
+**The other five modes' scores.** An FT8-and-PSK31 log scores its modes against the owner's own
+points file - one per mode worked, a special where he set one - and that is unchanged, `first_psk31`
+is earned and `first_olivia` is not, and the total is still the sum of the eight badges. **One score
+did move and it is honest**: the twelve-contact fixture, which holds all five of the old table, went
+from `five modes to work · 5 of 5 · 85 pts · Gold` to `six modes to work · 5 of 6 · 35 pts · Gold`,
+and its page total from 465 to 415. The 50 is the *all modes* bonus, which says *you have worked
+every mode*; until Olivia is worked, he has not. Section 4 item 3.
+
+### `TheAchievementsScreenTests`, by name, before and after - 5.3's proof
 
 ```
-Hamlet is not offering the move on this frequency: 500 Hz up from here would put the signal outside
-the range Hamlet listens across, so it could not hear the answer.
+                                 before   after
+passed                                9       9
+failed                                1       1
 ```
 
-**`Psk31ClearSpot`'s 400 to 2200 Hz is not the bound** (decision BK). That is where a call to anyone
-may start, and a QSO that has already begun is not a call to anyone.
-
-### When the offer appears, and the eight conditions it refuses under
+**The one red, both times, with its message:**
 
 ```
-Olivia, certain your turn over his certain handover, calling center, 8/250 | OFFERED
-a guessed your turn (one damaged word in his message)                     | not offered
-his turn (Hamlet handed over)                                             | not offered
-he is still sending (characters pending)                                  | not offered
-under PSK31, same channel, same center, same variant, same answer         | not offered
-at 16/500 on the calling center                                           | not offered
-at 32/1000 on the calling center                                          | not offered
-off the calling center (+110.4 Hz, +300 Hz, -400 Hz)                      | not offered
-a second time after it has been used                                      | not offered
+TheAchievementsScreenTests.TheWindowDrawsEverySixRows
+  System.InvalidOperationException : Sequence contains no matching element
+  at TheAchievementsScreenTests.cs:line 289
 ```
 
-**8 of 8, each its own assertion.** The tolerance for *on the calling center* is half the calling
-variant's own occupied width from the format file - **109.375 Hz** - so 0 and +108.4 Hz are on it and
-+110.4 Hz is not. **The reading is `Psk31Offer.For`'s own answer and not a copy of it loosened**: the
-same certain answer that offers Report offers the move, and a guess offers neither.
+Line 289 is where the realized window is searched for an `ItemsControl` named
+`AchievementsModeRows`. **The same name, the same exception, the same line, before this unit and
+after it. No third name went red**, which is what decision CB asks and what *not made worse* means.
 
-**Nothing is composed and nothing keys by the offer merely appearing**: with the offer on the screen
-and an armed send available, the transmit category holds no stage, no composed line and no
-transmission record at all, the sound card was never called and the port was never written. The
-press is the only thing that writes `olivia_move_offered`.
+**The mismatch, reported and not repaired:** §5 and `docs\carry-forward-tests.txt` name **two** known
+reds in this class. `WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` **passes**, before and after.
+Section 4 item 1.
 
-### The follow line's three sentences, quoted, and the window as the product
+### The round trip, and the sentence that says it is not 5.4
 
-```
-1 waiting          | Hamlet has moved up 500 Hz and is reading 16/500 there. Nothing has been
-                   | heard at the new place yet.
-2 one arrived      | An Olivia 16/500 announcement has arrived at the new place. An announcement
-                   | carries no callsign, so that is somebody in the mode and at the place you
-                   | moved to, and not a certainty that it was N1XYZ.
-3 none arrived     | Nothing was heard at the new place while Hamlet listened. He may not have
-                   | followed, or his announcement may not have read; Hamlet is there and still
-                   | listening.
-```
+The file Hamlet wrote was read back by **`AdifLog`'s own reader** and compared field by field: the
+mode, the submode, the band, both grids, the frequency, and the times to the second the format
+carries them at. **And the two reports come back in the field they went out in** - a readability and
+not a decibel figure - which they did not before this unit, because `AdifLog.IsRstMode` asked only
+PSK31 and read `599` back as a signal-to-noise ratio ninety times too large.
 
-**3 of 3 proved.** State 2 was reached with **real audio through the real tick**: a 16/500 send
-Hamlet's own modulator composed at the moved-to center, whose own RSID the panel's detector found
-across the passband with no help, and whose Olivia signal opened his new channel. State 3 was reached
-by spending the window on quiet band.
+Every field was also checked against what the cited specification requires of it as the tree carries
+that requirement: the header ends at `<EOH>` and the record at `<EOR>`; every declared length is its
+own value's length; the band is `20m` as the enumeration spells it and not `20 m` as Hamlet's band
+plan writes it for a person; the frequency is megahertz to six places; the times are `YYYYMMDD` and
+`HHMMSS` with the off not before the on; and both grids are present with his not being the
+operator's. The two submode spellings were checked against `ContactModes.Cite` - *ADIF Specification
+3.1.4, released 2022-12-06, https://www.adif.org/314/ADIF_314.htm, retrieved 2026-09-08* - as the
+citation the tree carries, **with no network call**, and every variant in
+`data/olivia/format.json` composes `OLIVIA ` plus the file's own name for it.
 
-**The window, asserted as the product and never as seconds** (§3.2):
+**Said plainly, and it is the deliverable of task 5:**
 
-```
-PatienceCharacters 32 x 16/500's seconds per character 0.512 = 16.384 s of patience
-16.384 s x the stated whole factor 2                          = 32.768 s of window
-```
+> **Criterion 5.4 is not met.** No third-party logger is on this machine, installing one would be a
+> `MOVE: stop`, and the tests reach no network - so nothing in this unit has imported this file into
+> anything. **Every check above is Hamlet reading Hamlet**, and a file that is right by all of them
+> can still be refused by Log4OM, N1MM or LoTW. 5.4 is carried to step 6, where Tim is at a machine
+> with a logger on it.
 
-The file's own `olivia_move_sent` line carries `windowSeconds 32.768`, and the test asserts it
-against the product. **The number 32.768 appears nowhere in `src/`.**
+### The trace's seven answers (task 1, before anything was built)
 
-**What counts as an announcement, and what does not.** An Olivia 16/500 code within ±234.375 Hz of
-the new center, inside the window. Measured: a **real 16/500 send 900 Hz away** does not count, and a
-**real 8/250 send exactly on the new center** does not count. Both leave the card waiting.
-
-**And nothing transmits on a detection** (§0.2), asserted: his whole transmission - the burst and 23
-characters of 16/500 - fed to the real tick after the move gives one play, one transmission record,
-one `psk31_send_composed`, one `keyed` stage, and the port frame count unchanged at 2 before and
-after the detection.
-
-**Decision BQ, and why the detection rather than the channel.** `RsidDetection` carries the code and
-the center at the moment the burst ended, which is what R29 asks about. An Olivia channel opens only
-once blocks have synchronised, and it can be opened by the blind search - which is not an
-announcement at all. **The lift of unit 359's decision B is one inch**: a detection is *read* by this
-one check and still sets no mode, no tab, no dial and no variant.
-
-### The card survived the move (decision BR), and what that took
-
-```
-his channels after the move : 16/500 at 2000.0 Hz by rsid, 23 characters, ended False
-his card                    : the same one card for N1XYZ - turn "Your turn", offering Report,
-                              variant now 16/500, its conversation still holding the answer he
-                              sent at the old place
-```
-
-**The card itself was never in danger**, and the trace found that before a line was written:
-`_psk31Cards` is keyed by the callsign and `state.ChannelId` is updated in place, so a station who
-moves keeps his card. **Two things were in danger and both were repaired:**
-
-1. **The conversation.** A card is read from one channel's messages, and a station who follows has a
-   new channel. Without a carry the card read his new channel with his half of the history missing,
-   which put Hamlet's own move line at the end of the list and had the card saying `His turn` a moment
-   after he had come back - no `Send` button, and the send that proves 4.5 could not be made.
-   `OliviaMovedConversationFor` carries the complete messages of the channel he moved from into the
-   reading of the new channel at the place Hamlet announced, with a fresh splitter, and only for a
-   station Hamlet itself moved.
-2. **The variant on the card.** The rebuild at `ShowPsk31Cards` passed neither the operator's
-   callsign nor the variant, and a card whose turn and offer had not changed was left alone - so a
-   station who moved from 8/250 to 16/500 kept a card still reading 8/250, and the seconds that card
-   quotes for a typed line come from the variant. It was quoting a number nothing would produce
-   (§0.0). The variant and the move are now part of whether the card has changed.
-
-**Neither needed a line on decision AZ's forbidden list.**
-
-### 4.8's lag table
-
-```
-variant | block s | lag s | lag in blocks | met
-8/250   |   2.048 | 0.000 |         0.000 | yes
-16/500  |   2.048 | 2.000 |         0.977 | yes
-```
-
-**One block is 2.048 s at every variant** - 64 symbols of 0.032 s from `data/olivia/format.json` -
-carrying 3 characters at 8/250 and 4 at 16/500. The lag is **audio** seconds, not wall seconds, so
-the number is a property of the mode and the splitter rather than of the machine.
-
-At 16/500 the audio is the **mode author's own four-line QSO**, hashed against the manifest first,
-with the operator set to the author's other station so his lines are addressed to the operator and a
-card exists to read a turn off:
-
-```
-16/500: "KC3QIS de W1AW W1AW K" - the turnover word's last accepted character arrived at 39.000 s
-        the card's turn reading changed to "Your turn" at 41.000 s
-        LAG 2.000 s = 0.977 blocks against one block of 2.048 s
-```
-
-At 8/250 the audio is **Hamlet's own modulator in memory**, because the shipped 8/250 fixture is a CQ
-to anybody and opens no card: the turnover word's last character and the character that closes the
-message land in the same block, so the card says `Your turn` at the same quarter-second - **0.000 s**.
-
-**Why 16/500 is 2.000 s and not nought**, which is unit 364 item 6's known cause and not a fault: a
-message closes at the whitespace **after** the turnover word (`Psk31MessageSplitter.SplitRule`), so
-where the `K` is the last character its block carries, the newline that closes the message is in the
-next block - one block later. **That is why the bound is one block, and it is inside it either way.**
-Nothing was loosened.
-
-**And the turn still reads no clock** (R14): one call site in `src/` decides a turn,
-`MainWindowViewModel.cs:4151` (it was :4121 before this unit's own additions moved it), and
-`Psk31Turn.cs` holds no `DateTime`, no `Stopwatch`, no tick count and no seconds at all - asserted.
+1. **What an Olivia contact logged as**: `MODE=PSK`, `SUBMODE=PSK31`, with RST 599 each way, grid
+   FN31, band 20m, freq 14.071500 and both times present. The line that decided the mode was
+   `MainWindowViewModel.cs:15341`. Two other lines asked the same question of the same table:
+   `:15157`, the telemetry gate, and `AdifLog.cs:594`, `IsRstMode`. **All three needed changing and
+   all three were changed.**
+2. **5.1's *with RST and grid* already held.** `Psk31ReportsFor` and `Psk31GridFor` read the shared
+   card dictionaries an Olivia row fills, and they answered 599, 599 and FN31. **Nothing was built
+   there** (R14); they are asserted instead.
+3. **Where the variant was at logging time.** On a QSO that stayed put, the card, the channel's
+   next-send variant and the row all read `8/250`. After unit 367's one click with nothing yet heard
+   at the new place, the card still read `8/250`, the next send read `16/500` at 2000 Hz, and the row
+   read `8/250` - so **the card is the reading that says what the operator has actually been shown**,
+   which is what decision BW asks for.
+4. **What the achievements did with `MODE=OLIVIA`**: `AchievementLog.Modes` empty, `WorkableModes` 5,
+   `FirstsEarned` `[first_contact]`, the Modes badge `five modes to work · 0 of 5`, and the category
+   band line `five modes to work · 0 of 5 · 0 pts · unranked · 2 to Bronze`. **The record was
+   invisible to every mode-counting badge.** Four lines of `src` read `ContactModes.Six`:
+   `AchievementCategory.cs:676`, `AchievementsViewModel.cs:317`, `AchievementLog.cs:314` and
+   `AchievementScores.cs:311`; the badge's words were typed at `AchievementBadges.cs:338`.
+5. **`TheAchievementsScreenTests`**: 9 passed, 1 failed - the before-number above.
+6. **Which tests asserted the count**: `TheAchievementsPageTests.cs:176` and `:400`,
+   `TheCategoryPagesAreTradingCardsTests.cs:147` and `:1052`, and
+   `TheAchievementsScreenTests.cs:298`, `:318` and `:327`. Four assertions were §R12 rewrites; the
+   screen tests' three were untouched, because `AchievementsViewModel.Firsts` was left on
+   `ContactModes.Six`. `TheOliviaSeamTests.cs:258` asserts Olivia is **not** in `Six` and stays true.
+7. **Where the spelling can be checked**: `ContactModes.Cite` only. `data\vendor` holds `usno` and no
+   copy of the ADIF enumeration, so a test may assert the citation's own text and the spellings the
+   tree carries, and nothing else, with no network call.
 
 ### The runs, before and after, by name
 
-**Chain-guarding (`docs\chain-guarding-tests.txt`, decision BT), all 17 engine and 11 app classes:**
+**Chain-guarding (`docs\chain-guarding-tests.txt`, decision CG), all 17 engine and 11 app classes:**
 
 ```
-                    before (efc07610)        after task 3
-engine      98 of 110,  46 s          98 of 110,  47 s
-app         48 of  63,  36 s          48 of  63,  33 s
+                  before (c395e6b8)        after task 4
+engine      98 of 110,  46 s          98 of 110,  46 s
+app         48 of  63,  33 s          48 of  63,  33 s
 ```
 
 **The same twenty-seven reds by name, before and after, none new.** Engine: the six in
@@ -569,35 +564,34 @@ and were not chased.
 
 ```
                  before                         after
-app      189 of 189, 2 m 21 s          189 of 189, 2 m 18 s
-engine   146 of 146, 4 m 43 s          146 of 146, 4 m 45 s
+app      189 of 189, 2 m 21 s          190 of 190, 2 m 21 s
+engine   146 of 146, 4 m 37 s          146 of 146, 4 m 38 s
 ```
 
 **Every per-mode guard green before and after: FT8 send and read, FT4 send and read, PSK31 send and
-read, Olivia read, modulate and send.** **No red after that was green before**, so HM-DEC-165 is
-satisfied and no repair is owed to the next unit.
+read, Olivia read, modulate, send and now log.** **No red after that was green before**, so
+HM-DEC-165 is satisfied and no repair is owed to the next unit. **No flake was seen in either
+invocation**, so every number above comes from its first run.
 
-**Two app reds were seen and both were flakes, reported with the run each number came from.** The
-first run of the app after-invocation read **187 of 189**, failing
-`TheTestsStayOffTheNetworkTests.The354LayoutReadsTheSameNumbersTwiceRunning` - a known headless flake
-named in the instruction - and
-`ThePsk31ConversationCardTests.NoSlotClockUnderPsk31AndFt8AndFt4StillShowIt`, **which is not on the
-known-flake list**. Both passed alone, and the immediate rerun of the whole invocation read **189 of
-189**, which is the run the number above comes from. **Nothing in this unit touches
-`ShowsSlotClock`**, and its one gate - `!IsPsk31Chosen` at `MainWindowViewModel.cs:379` - is
-unchanged; it is carried as section 4 item 4 rather than waved through.
+**One name joined the app line and none joined the engine line** (decision CG):
+`TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed`,
+Olivia's log guard, which is the fourth row of that mode's block on the per-mode guard table. **It
+cost nothing measurable**: 190 tests in the same 2 m 21 s as 189.
 
-**Seconds against the 480 s timeout:** app 138 s, engine 285 s. **The engine invocation's margin is
-about 195 s, better than the three minutes unit 366 had**, which is the margin this unit was told to
-keep. **Nothing this unit added went on either carry-forward line.**
+**Seconds against the 480 s timeout:** app 141 s, engine 278 s. **The engine invocation's margin is
+about 202 s**, and nothing was added to it.
 
 ### The tests this unit added
 
 ```
-Unit367Trace                             app     5 names,  30 s   asserts nothing, on no list
-TheOliviaMoveUpTests                     app    25 names,  50 s   4.5
-TheTurnKeepsUpWithTheTurnoverWordTests   app     3 names,  30 s   4.8
+Unit368Trace                    app    4 names   asserts nothing about the product, on no list
+TheOliviaLogsAsOliviaTests      app    4 names   5.1 first half; ONE name on the app carry-forward
+TheOliviaExportSaysOliviaTests  app    6 names   5.1 second half, and task 5's measurement
+TheOliviaRecordsAppearTests     app    5 names   5.2
 ```
+
+**Nothing was added to the engine test project at all**, which is where the carry-forward margin is
+tightest.
 
 ### The `PttOn` and `Arm(` counts
 
@@ -607,12 +601,97 @@ PttOn code lines in src/          1               1
 Arm( call lines in src/           2               2
 ```
 
-`src\Hamlet.RadioEngine\Transmit\Ft8TransmitSequence.cs:513` and
-`src\Hamlet.App\ViewModels\MainWindowViewModel.cs:15551` and `:15830`, the second of the two being
-the unslotted one the move uses. **The move is a fifth thing to send, not a fifth way to send**, and
-the count is the guard that says so.
+`src\Hamlet.RadioEngine\Transmit\Ft8TransmitSequence.cs:513`, and
+`src\Hamlet.App\ViewModels\MainWindowViewModel.cs:15647` and `:15932` - the same two sites, moved
+down by this unit's own additions to that file. **Nothing in this unit is on the transmit path**, and
+nothing needed a line on decision AZ's forbidden list.
 
 ## 4. What's blocking us
+
+**Nothing blocks step 5's must-passes, all three of which are met, and nothing in this unit is stop
+material.** Seven items from this unit. **Nothing needed a line on decision AZ's forbidden list**;
+**no working mode's send or read guard went red after green**; **the `PttOn` and `Arm(` counts did
+not move**, 1 and 2 before and after; and **nothing in this unit went near the transmit chain, the
+dial or the radio**. Not one of the seven stands in the way of 5.1, 5.2 or 5.3. **One of them,
+item 3, changes a number the owner may already have seen on his own screen**, and it is the first
+thing he should read.
+
+### Raised by unit 368
+
+**1. `TheAchievementsScreenTests` has one inherited red, not two - and the lists say two.**
+`docs\carry-forward-tests.txt`'s known-red block and work instruction 368 §5 both name
+`TheAchievementsScreenTests.WsprIsNotAFirstAnybodyCanEarnAndTheCardSaysSo` and
+`TheAchievementsScreenTests.TheWindowDrawsEverySixRows`. **The Wspr name passes**, measured whole and
+by name before this unit's first change and again after its last. So criterion 5.3's *the two
+inherited reds are not made worse* was measured against **one** red, read as *the same names fail for
+the same reasons and no new name does* - which held, 9 passed and 1 failed both times. **The
+known-red block was not edited**, because it is a list the whole project reads and taking a name off
+it is a decision about what the project believes, not a repair this unit was asked to make.
+**Author's, overrulable, and it is a question for the owner**: take the Wspr name off that block, or
+leave it and let the next unit find the same thing.
+
+**2. Decision CE's `CanLogRow` clause cannot hold for a keyboard mode, and the card's Log link is the
+door.** The entry asks for *`CanLogRow` true at the end*. `CanLogRow` refuses a text-only row before
+it reads any callsign (`MainWindowViewModel.cs:15051-15054`), and since unit 364 an Olivia row **is**
+a text-only row - so it answers **false** at the end of a completed Olivia QSO, and answered false
+before this unit as well. The door a keyboard-mode contact is actually logged from is
+`Ft8ContactCard.ShowsLogLink`, which on a PSK31 or Olivia card is *the exchange is finished* and
+reads **true**. Both were measured and both are in section 3, and the entry is reported as reached on
+the card's own link. **Reported, not repaired** (§5): nothing was changed in `CanLogRow`, because a
+Log item on an FT8-shaped row and a Log link on a keyboard card are two different controls and
+merging them is not this unit's to decide.
+
+**3. An operator who has worked all five of the old modes loses 50 points until he works Olivia, and
+`first_olivia` is worth 15 because the arbiter said so.** Decision BY makes the achievements count
+every mode the log can write, so `WorkableModes` is 6 and the *all modes* bonus is no longer payable
+at five. **The fixture moved from 85 points and a 465 total to 35 and 415**, and a real log with all
+five will move the same way the first time he opens the screen after this build. **That is the count
+telling the truth** - the bonus's own words are *every mode* - but it is a number going down on a
+screen he has already seen, and he should hear it from the report rather than from the screen.
+**Both numbers are one line each to overrule**: `"all": 50` under `modes` in
+`data\achievements\achievement-points.json`, and `"first_olivia": 15` beside `"first_psk31": 15` in
+the same file. **No source file holds either value.**
+
+**4. Olivia has no row among the achievements window's per-mode *firsts*, and that was a choice.**
+`AchievementsViewModel.cs:317` builds those rows from `ContactModes.Six` - Tim's own list of the six
+modes he keeps a first in, ruled 2026-09-08 - and this unit left it alone. Decision BY named two
+sites and this is not one of them; decision CA put Olivia's first in the Hall of Fame instead, where
+it is earned and reads *An Olivia contact*. **So after his first Olivia contact the screen shows six
+mode rows with no Olivia among them, and an Olivia first in the Hall of Fame.** **Author's,
+overrulable**: adding Olivia to that list is one line, and it would change what
+`TheAchievementsScreenTests.TheWindowDrawsEverySixRows` counts - a test that is already red for an
+unrelated reason. Left for the owner rather than taken.
+
+**5. The unworked Olivia row's sentence was shortened to fit, and the measurement is quoted.** It
+reads **`reads as PSK31 on the CQ list`**. The first form, *the CQ list cannot tell Olivia from
+PSK31*, is the same fact in the FT4 row's own idiom, and at 1400 px on the test host it pushed the
+row's `*` column to **0.00 px** and clipped the word `Olivia` to nothing - measured, not guessed, by
+`TheCategoryPagesAreTradingCardsTests`' own clipping check, which was the test that found it.
+**Author's, overrulable**, and it is a label, which §6 says the arbiter decides and continues.
+
+**6. The CQ list calls an Olivia row PSK31, and that is wider than this unit.**
+`CqSnapshot.cs:74` reads `r.IsTextOnly ? "PSK31" : ""`, and since unit 364 an Olivia row is
+text-only - so a station calling CQ on Olivia is on the CQ list under PSK31's name, and Hamlet's
+*who is calling in this mode* answers for the wrong one. **That is why the Olivia achievement row
+says what it says** rather than *no one is calling*. **Not repaired**: §9 bounds this unit to what
+the log and the achievements read, and the fix is a fact about the decoded row rather than about the
+achievements. **Nothing claims a mode it cannot tell** - the row says plainly what the list can and
+cannot see - so this is a narrowing worth having, not a false statement on the screen.
+
+**7. `PHASE_STATUS.md` was corrected and `PHASE_PLAN.md` was not.** Decision CF's correction is done:
+`CURRENT_STEP: 5`, step 3 `done`, `WORK_INSTRUCTION: 368`. **One line beyond what CF enumerated was
+also written, and it is named here rather than slipped in**: step 5's own state line said `not
+started`, which stopped being true at task 2, and it now reads `partial` with the three met criteria
+and the one that is not. CF's grant is that the file is the unit's to correct; its list was what the
+unit does *at task 0*, and leaving a status line false for the next session to read is the fault that
+grant exists to prevent. **`PHASE_PLAN.md` still leaves 1.5, 1.7
+and every one of 4.1 to 4.8 unchecked**, and step 5's own boxes are unchecked too though 5.1, 5.2 and
+5.3 are met. It is the owner's file (§10) and no unit may tick it. **Reported for the fifth unit
+running.** And `tools\arbiter\validate-output.bat` could not be run for the fourth unit running - it
+is a batch file and the shell available runs it as `sh` - so this report's shape was checked by hand
+against the six rules the script prints, and it satisfies all six.
+
+### Carried from unit 367
 
 **Nothing blocks step 4, which is done, and nothing in this unit is stop material.** Five items from
 this unit. **Nothing needed a line on decision AZ's forbidden list**; **no working mode's send or read

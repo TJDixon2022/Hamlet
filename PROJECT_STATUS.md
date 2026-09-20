@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: EXECUTING
+STATE: DONE
 TASK: 5 of 5
 WORK_INSTRUCTION: 368 - the Olivia contact goes in the log, and the mode's records appear
-BALL: code
+BALL: owner
 NEXT_PASTE: none
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-19T23:43:16-04:00
-NOTE: Task 5 committed: 5.4 reported not met with its reason; the report is next.
+UPDATED: 2026-09-19T23:53:50-04:00
+NOTE: Unit 368 complete: step 5 at 3 of 4 with every must-pass met; 5.4 not met and carried to step 6.
 
 ---
 
