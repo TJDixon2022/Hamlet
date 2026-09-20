@@ -188,14 +188,26 @@ public sealed class ThePsk31CqGoesOutTests : IDisposable
         Assert.Equal(2, radio.Sink.TimesCalled);
     }
 
-    /// <summary>**3: a certain answer retires the receipt and opens his card; a guess does not.**</summary>
+    /// <summary>
+    /// **3, rewritten under R12 by work instruction 371 task 1: an answer retires the receipt and
+    /// opens his card, and a guessed answer is still an answer.**
+    /// </summary>
+    /// <remarks>
+    /// **THE DOOR THIS GUARDED IS OPEN.** It asserted that a guess retires nothing, which is what
+    /// happened to Tim on 2026-09-20: a station came back to his CQ twice, addressed to him and
+    /// handing the turn over, the parse was not certain, and the screen showed him nothing.
+    /// **§R1's strict side governs what Hamlet sends by itself; a card that appears sends
+    /// nothing.** What still retires nothing is a line that hands nothing back and names nobody,
+    /// which is asserted below.
+    /// </remarks>
     [Fact]
-    public void ACertainAnswerRetiresTheReceiptAndAGuessDoesNot()
+    public void AnAnswerRetiresTheReceiptAndAGuessedAnswerIsStillAnAnswer()
     {
         var corpus = Psk31Corpus.Load();
 
-        // **A GUESS RETIRES NOTHING.** 05-garbled's third line is addressed to the operator
-        // and the parser is not certain of it, which is the whole case (§R1).
+        // **A GUESSED ANSWER OPENS HIS CARD AND RETIRES THE RECEIPT.** 05-garbled's third line is
+        // addressed to the operator and hands the turn back; the parser is not certain of it
+        // because its report digits are damaged.
         var guessed = Panel();
 
         GiveItARadio(guessed);
@@ -207,8 +219,31 @@ public sealed class ThePsk31CqGoesOutTests : IDisposable
 
         _output.WriteLine("after a guessed answer : " + Describe(guessed));
 
-        Assert.Contains(
+        var guessedCard = Assert.Single(guessed.DigitalCards);
+
+        Assert.Equal("K3ABC", guessedCard.Callsign);
+        Assert.True(guessedCard.TurnIsGuess);
+        Assert.Equal("not sure it is your turn", guessedCard.OfferNote);
+        Assert.DoesNotContain(
             guessed.DigitalCards,
+            c => c.Callsign == Ft8ContactLedger.CallToAnyone);
+
+        // **AND A LINE THAT HANDS NOTHING BACK AND NAMES NOBODY RETIRES NOTHING**: 05-garbled's
+        // fourth line has no callsign and no turnover word, so there is nobody to open a card for
+        // and no answer to claim.
+        var loose = Panel();
+
+        GiveItARadio(loose);
+        loose.SendCallToAnyoneCommand.Execute(null);
+        Settle(loose);
+
+        loose.ShowPsk31ChannelsForTests(
+            new[] { new Psk31Channel(1, 1000, 10.0, Transcript(corpus, "05-garbled").Lines[3].Text + "\n") });
+
+        _output.WriteLine("after a loose line     : " + Describe(loose));
+
+        Assert.Contains(
+            loose.DigitalCards,
             c => c.Callsign == Ft8ContactLedger.CallToAnyone);
 
         // **ONE CERTAIN ANSWER: THE RECEIPT GOES AND HIS CARD ARRIVES.**

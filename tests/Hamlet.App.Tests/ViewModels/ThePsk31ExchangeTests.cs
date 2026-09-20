@@ -78,9 +78,18 @@ public sealed class ThePsk31ExchangeTests
         Assert.False(card.HasAction);
     }
 
-    /// <summary>**2 and 3: the offer follows the exchange, and an uncertain line offers nothing.**</summary>
+    /// <summary>
+    /// **2 and 3, rewritten under R12 by work instruction 371 task 1: the offer follows the
+    /// exchange, and an uncertain line offers the Report with the doubt beside it.**
+    /// </summary>
+    /// <remarks>
+    /// Its last third asserted that a guess offers nothing and the card says it is waiting to be
+    /// sure. That is the door this unit opens: the offer is there, the doubt is a word beside the
+    /// button, and **the click is what sends** (§0.2). A Confirm still waits for certainty, which
+    /// `ThePsk31OfferTests` counts over the whole corpus.
+    /// </remarks>
     [Fact]
-    public void TheOfferFollowsTheExchangeAndNeverFollowsAGuess()
+    public void TheOfferFollowsTheExchangeAndAGuessOffersTheReportWithItsDoubt()
     {
         var (model, sink) = Panel();
 
@@ -139,12 +148,13 @@ public sealed class ThePsk31ExchangeTests
         _output.WriteLine("on a guess       : [" + uncertain.StateWord + "] "
             + uncertain.Sentence);
 
-        Assert.Equal(Psk31Macro.None, uncertain.Offered);
-        Assert.False(uncertain.HasAction);
-        Assert.Contains(
-            "Waiting to be sure it is your turn",
-            uncertain.Sentence,
-            StringComparison.Ordinal);
+        Assert.Equal(Psk31Macro.Report, uncertain.Offered);
+        Assert.True(uncertain.HasAction);
+        Assert.Equal("not sure it is your turn", uncertain.OfferNote);
+
+        // **AND THE CARD STILL SAYS IT IS A GUESS** (§0.0), in the word it already used.
+        Assert.True(uncertain.TurnIsGuess);
+        Assert.Contains("guess", uncertain.Sentence, StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>**4 and 5: his certain 73 finishes it, the Log appears, and keyings equal clicks.**</summary>

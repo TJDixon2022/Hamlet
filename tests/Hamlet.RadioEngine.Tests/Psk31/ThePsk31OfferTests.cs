@@ -80,13 +80,23 @@ public sealed class ThePsk31OfferTests
         Assert.Equal(Psk31Macro.Report, reply);
     }
 
-    /// <summary>**Assertion 2: every other state offers nothing, and the two numbers walked.**</summary>
+    /// <summary>
+    /// **Assertion 2, rewritten under R12 by work instruction 371 task 1: nothing is offered
+    /// unless it is his turn, and on a guessed turn only a Report is.**
+    /// </summary>
+    /// <remarks>
+    /// It read *every state but a certain your turn offers nothing*, which is the door this unit
+    /// opens: a guessed hand-back to the operator offers the Report, and the card says the doubt
+    /// beside the button. A Confirm still needs certainty, and that is counted here.
+    /// </remarks>
     [Fact]
-    public void EveryOtherStateOffersNothing()
+    public void NothingIsOfferedUnlessItIsHisTurnAndAGuessOffersOnlyAReport()
     {
         var corpus = Psk31Corpus.Load();
         var onCertain = 0;
         var onAnythingElse = 0;
+        var onGuessedYourTurn = 0;
+        var confirmsOnAGuess = 0;
 
         foreach (var transcript in corpus.Transcripts)
         {
@@ -96,9 +106,15 @@ public sealed class ThePsk31OfferTests
             {
                 var macro = Psk31Offer.For(step.Messages, step.Turn, corpus.Operator);
 
-                if (macro != Psk31Macro.None && step.Turn != CertainYourTurn)
+                if (macro != Psk31Macro.None && step.Turn.State != Psk31TurnState.YourTurn)
                 {
                     onAnythingElse++;
+                }
+
+                if (macro != Psk31Macro.None && step.Turn is { State: Psk31TurnState.YourTurn, IsCertain: false })
+                {
+                    onGuessedYourTurn++;
+                    confirmsOnAGuess += macro == Psk31Macro.Confirm ? 1 : 0;
                 }
 
                 if (macro != Psk31Macro.None && previous == Psk31Macro.None)
@@ -113,8 +129,18 @@ public sealed class ThePsk31OfferTests
         _output.WriteLine("offers made on a certain your turn : " + onCertain);
         _output.WriteLine("offers made on anything else       : " + onAnythingElse);
 
+        // **REWRITTEN UNDER R12 BY WORK INSTRUCTION 371 TASK 1.** It counted every offer made on
+        // anything but a certain *your turn* and required none. The door it guarded is open now:
+        // a guessed hand-back to the operator offers a Report, which goes out on his click with
+        // the doubt beside it. **What it guards now is the rule, not the shut door** - an offer is
+        // made only where it is his turn, and on a guessed turn only a Report is offered.
+        _output.WriteLine("offers made on a guessed your turn : " + onGuessedYourTurn);
+        _output.WriteLine("of those, a Confirm                : " + confirmsOnAGuess);
+
         Assert.Equal(0, onAnythingElse);
         Assert.True(onCertain > 0);
+        Assert.True(onGuessedYourTurn > 0);
+        Assert.Equal(0, confirmsOnAGuess);
 
         // **EACH OF THE OTHER FOUR, BY NAME, OVER A CONVERSATION THAT WOULD OTHERWISE OFFER.**
         var textbook = corpus.Transcripts.Single(t => t.Name == "01-textbook");
@@ -123,9 +149,14 @@ public sealed class ThePsk31OfferTests
 
         Assert.Equal(Psk31Macro.Report, Psk31Offer.For(third.Messages, CertainYourTurn, corpus.Operator));
 
+        // **A GUESSED YOUR TURN OFFERS THE REPORT**, which is this unit's change, and the doubt is
+        // said on the card rather than the offer being withheld.
+        Assert.Equal(
+            Psk31Macro.Report,
+            Psk31Offer.For(third.Messages, new Psk31TurnReading(Psk31TurnState.YourTurn, false), corpus.Operator));
+
         foreach (var other in new[]
         {
-            new Psk31TurnReading(Psk31TurnState.YourTurn, false),
             new Psk31TurnReading(Psk31TurnState.HisTurn, true),
             new Psk31TurnReading(Psk31TurnState.HisTurn, false),
             new Psk31TurnReading(Psk31TurnState.HeIsSending, true),
@@ -138,21 +169,44 @@ public sealed class ThePsk31OfferTests
         Assert.Equal(Psk31Macro.None, Psk31Offer.For(Array.Empty<Psk31Message>(), CertainYourTurn, corpus.Operator));
     }
 
-    /// <summary>**Assertion 3: `05-garbled` and `04-not-for-me` produce no offer.**</summary>
+    /// <summary>
+    /// **Assertion 3, rewritten under R12 by work instruction 371 task 1: `04-not-for-me` produces
+    /// no offer at all, and `05-garbled` offers a Report and never a Confirm.**
+    /// </summary>
+    /// <remarks>
+    /// **THE DOOR THIS GUARDED IS OPEN.** It required silence on the garbled transcript, whose
+    /// third line is a report addressed to the operator that hands the turn back and is a guess
+    /// because its digits are damaged - the very case of Tim's record of 2026-09-20. A report says
+    /// how a station is coming through, which is true of the audio whoever he is; a Confirm claims
+    /// a contact, so it keeps §R1's gate. **`04-not-for-me` is unchanged**: nothing in it is
+    /// addressed to the operator, so nothing is offered however certain it is.
+    /// </remarks>
     [Fact]
-    public void TheGarbledAndTheNotForMeTranscriptsProduceNoOffer()
+    public void TheNotForMeTranscriptOffersNothingAndTheGarbledOneOffersOnlyAReport()
     {
         var corpus = Psk31Corpus.Load();
 
-        foreach (var name in new[] { "05-garbled", "04-not-for-me" })
-        {
-            var transcript = corpus.Transcripts.Single(t => t.Name == name);
-            var steps = ThePsk31TurnTests.Walk(corpus.Operator, ThePsk31TurnTests.Stream(transcript));
+        var notForMe = corpus.Transcripts.Single(t => t.Name == "04-not-for-me");
+        var notForMeSteps = ThePsk31TurnTests.Walk(corpus.Operator, ThePsk31TurnTests.Stream(notForMe));
 
-            _output.WriteLine(name + ": " + steps.Count + " characters walked");
+        _output.WriteLine("04-not-for-me: " + notForMeSteps.Count + " characters walked");
 
-            Assert.All(steps, s => Assert.Equal(Psk31Macro.None, Psk31Offer.For(s.Messages, s.Turn, corpus.Operator)));
-        }
+        Assert.All(
+            notForMeSteps,
+            s => Assert.Equal(Psk31Macro.None, Psk31Offer.For(s.Messages, s.Turn, corpus.Operator)));
+
+        var garbled = corpus.Transcripts.Single(t => t.Name == "05-garbled");
+        var steps = ThePsk31TurnTests.Walk(corpus.Operator, ThePsk31TurnTests.Stream(garbled));
+        var offers = steps
+            .Select(s => Psk31Offer.For(s.Messages, s.Turn, corpus.Operator))
+            .Where(m => m != Psk31Macro.None)
+            .ToList();
+
+        _output.WriteLine("05-garbled   : " + steps.Count + " characters walked, "
+            + offers.Count + " offers, kinds " + string.Join(", ", offers.Distinct()));
+
+        Assert.NotEmpty(offers);
+        Assert.All(offers, m => Assert.Equal(Psk31Macro.Report, m));
     }
 
     /// <summary>**Assertion 5: §6's number - messages to the operator beside offers made.**</summary>
