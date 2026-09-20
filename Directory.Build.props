@@ -917,8 +917,18 @@
     Carry-forward before any change: engine 146 of 146, app 206 of 206. No file under src changes at
     this task.
   -->
+  <!--
+    1.13.58 -> 1.13.59, UNIT 372 TASK 0. A PATCH, STEP 1 OF THE HARDENING PHASE, HAMLET OPENS WHOLE
+    AND THE SEND AREA IS NEVER THE THING THAT LEAVES: step 0 is done under work instruction 372
+    section 6's first ruling (0.1 met on unit 369's completed negative), and step 1 opens at 0 units
+    spent. The rule unit 356 wrote into MainWindow.axaml - the working panels give up height first,
+    then the top row, and the send area is never the thing that leaves - is a comment and not a test;
+    nothing measures the order height is surrendered in and nothing measures the window below
+    900 x 620 at all. Carry-forward before any change: app 206 of 206, engine 146 of 146. No file
+    under src changes at this task.
+  -->
   <PropertyGroup>
-    <Version>1.13.58</Version>
+    <Version>1.13.59</Version>
   </PropertyGroup>
 
   <!--

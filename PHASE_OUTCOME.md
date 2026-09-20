@@ -48,3 +48,16 @@ LICENCE: PSK31 plan R1 read as strict-on-sends only; Tim 2026-09-14 on the typed
 COST: one session, three tasks (0 to 2), each committed on its own.
 ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
 ENTRY: carry-forward before any change: engine 146 of 146, app 206 of 206.
+
+## UNIT 372 - STEP 1
+
+STEP: 1
+ADVANCED: step 1
+APPROACH: shrink the window below the minimums and assert by measuring that the working panels give up height first, then the top row, and the panels scroll inside themselves while the send area stays put
+MOVE: continue
+WHY: step 1 has zero units spent and its rule is stated only in an axaml comment - unit 356 capped the top row and asserted the nine sizes, so 1.1 is largely banked, but nothing measures the order height is surrendered in and nothing measures the window below 900x620 at all.
+DECIDED: author's, overrulable, two, both transcribed in work instruction 372 section 6. (1) Criterion 0.1 is met by unit 369's completed negative - 119 commits searched, an empty diff over every settings path, the mechanism named and repaired - so step 0 is done and step 1's entry is open. (2) R9 stands: the CQ filter keeps showing a PSK31 row addressed to another station, because a PSK31 row has no addressee until a turnover has been read. Also settled as the author's: 1.4's "the sheet's layout tests" reads as TheTopRowTests, TheWorkingPanelsTests and TheStopIsAlwaysOnScreenTests.
+LICENCE: PHASE_PLAN.md R34, R31 and section 6 - a layout number is the arbiter's to decide and never a stop; PSK31 plan R11, R12, R13, R14, R19; CLAUDE.md 0.0, 0.2, 0.5, 0.6; HM-DEC-051, HM-DEC-139, HM-DEC-155, HM-DEC-165; FACT-004
+COST: one session, five tasks (0 to 4), each committed on its own.
+ACCOMPLISHED: written in output.md at the end of the unit and not claimed here at task 0.
+ENTRY: PHASE_STATUS.md line 1 names this phase. Carry-forward before any change, both invocations, one build each: app 206 of 206, engine 146 of 146. Both green - no red to name at this task.

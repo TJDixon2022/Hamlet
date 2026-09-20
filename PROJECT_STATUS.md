@@ -1,13 +1,13 @@
 PROTOCOL: 2
 PROJECT: Hamlet
-STATE: COMPLETED
-TASK: TASK 3 of 3
-WORK_INSTRUCTION: 369 - settings survive, and a refusal names the fault
-BALL: tim
-NEXT_PASTE: output.md -> Claude Web
+STATE: RUNNING
+TASK: TASK 0 of 5
+WORK_INSTRUCTION: 372 - Hamlet opens whole, and the send area is never the thing that leaves
+BALL: claude
+NEXT_PASTE: none yet
 RULES_AT: HM-DEC-165 (2026-09-19)
-UPDATED: 2026-09-20T19:11:43-04:00
-NOTE: Unit 371 complete - a guessed answer opens his card with Report on the click; the row was never hidden, measured
+UPDATED: 2026-09-20T19:46:16-04:00
+NOTE: Task 0 done - version at 1.13.59, the outcome entry carries app 206 of 206 and engine 146 of 146; committing
 
 ---
 
