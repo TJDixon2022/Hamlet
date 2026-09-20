@@ -432,6 +432,198 @@ public sealed class TheOliviaSendTests : IDisposable
         Assert.Equal("cq", Events(lines, "psk31_send_composed").First().GetProperty("macro").GetString());
     }
 
+    /// <summary>
+    /// **4.3: the CQ's center is the band's own Olivia calling center read from the cited table,
+    /// on two bands, and it is a literal nowhere.**
+    /// </summary>
+    /// <param name="band">The band as Hamlet spells it.</param>
+    /// <param name="dialHz">Where the dial is put, which is not the same distance below the
+    /// calling center on the two bands, so a constant could not satisfy both.</param>
+    /// <param name="wantedHz">The passband offset that puts the table's center on the air.</param>
+    [Theory]
+    [InlineData("20 m", 14_071_500L, 1500.0)]
+    [InlineData("40 m", 7_072_000L, 1000.0)]
+    public void TheCqGoesOutOnTheBandsOwnCallingCenter(string band, long dialHz, double wantedHz)
+    {
+        var table = OliviaData.Current.Calling!;
+        var row = table.CallingRowFor(band)!;
+
+        FakeSink sink;
+        List<string> lines;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "366", _ => true))
+        {
+            var model = Listening(telemetry, dialHz);
+
+            sink = Arm(model, telemetry).Sink;
+
+            model.SendCallToAnyoneCommand.Execute(null);
+
+            Settle(model);
+        }
+
+        lines = Lines();
+
+        var (variant, centerHz) = ReadBack(sink);
+        var composed = Assert.Single(Events(lines, "psk31_send_composed"));
+
+        _output.WriteLine(
+            $"{band}: the table calls on {row.CenterHz} Hz at {row.Variant}; the dial is {dialHz} Hz, "
+            + $"so the offset is {row.CenterHz - (double)dialHz:0.0} Hz");
+        _output.WriteLine($"{band}: composed at {composed.GetProperty("offsetHz").GetDouble():0.0} Hz, read back {variant} at {centerHz:0.00} Hz");
+
+        Assert.Equal(row.CenterHz - (double)dialHz, wantedHz);
+        Assert.Equal(Math.Round(wantedHz, 1), composed.GetProperty("offsetHz").GetDouble());
+        Assert.Equal(OliviaCallingTable.CallingVariant, variant);
+        Assert.InRange(centerHz, wantedHz - 5, wantedHz + 5);
+    }
+
+    /// <summary>
+    /// **4.3: with somebody sitting on the calling center, the press finds a spot by
+    /// `Psk31ClearSpot`'s rule or refuses in words, and keys nothing when it refuses.**
+    /// </summary>
+    /// <remarks>
+    /// **THE RULE IS PSK31's AND ITS NUMBERS DO NOT MOVE** (decision BB). What is different under
+    /// Olivia is only which carriers it is handed: the Olivia listener's, because the PSK31
+    /// listener is not running on this tab.
+    /// </remarks>
+    [Fact]
+    public void ACarrierOnTheCallingCenterMovesTheCallOrRefusesItInWords()
+    {
+        var table = OliviaData.Current.Calling!;
+        var onTheSpot = table.CallingRowFor("20 m")!.CenterHz - (double)DialOn20m;
+
+        FakeSink sink;
+        string line;
+        List<string> lines;
+
+        using (var telemetry = new JsonlTelemetry(_folder, "366", _ => true))
+        {
+            var model = Listening(telemetry);
+
+            sink = Arm(model, telemetry).Sink;
+
+            // **A STATION ON THE CALLING SPOT, DRAWN THROUGH THE ROW PATH** the listener uses.
+            model.ShowOliviaChannelsForTests(
+            [
+                new OliviaChannel(
+                    91, OliviaCallingTable.CallingVariant, onTheSpot, OliviaListener.FoundByRsid, 0,
+                    "CQ CQ CQ de N1XYZ N1XYZ N1XYZ pse K\n", 9, 0, false),
+            ]);
+
+            model.SendCallToAnyoneCommand.Execute(null);
+            line = model.DigitalSendLine;
+
+            Settle(model);
+        }
+
+        lines = Lines();
+
+        var composed = Events(lines, "psk31_send_composed");
+        var refused = Events(lines, "psk31_send_refused");
+
+        _output.WriteLine($"somebody is on the calling spot at {onTheSpot:0.0} Hz");
+        _output.WriteLine("send line: " + line);
+        _output.WriteLine("rule     : " + Psk31ClearSpot.Rule);
+
+        if (composed.Count > 0)
+        {
+            var wentTo = composed[0].GetProperty("offsetHz").GetDouble();
+            var (variant, centerHz) = ReadBack(sink);
+
+            _output.WriteLine($"it moved: composed at {wentTo:0.0} Hz, read back {variant} at {centerHz:0.00} Hz");
+
+            // **IT MOVED, AND IT MOVED CLEAR OF HIM BY THE RULE'S OWN MARGIN.**
+            Assert.True(
+                Math.Abs(wentTo - onTheSpot) >= Psk31ClearSpot.ClearHz,
+                $"the call went to {wentTo} Hz, inside {Psk31ClearSpot.ClearHz} Hz of a station at {onTheSpot} Hz");
+
+            Assert.InRange(wentTo, Psk31ClearSpot.LowestCallHz, Psk31ClearSpot.HighestCallHz);
+            Assert.Equal(OliviaCallingTable.CallingVariant, variant);
+        }
+        else
+        {
+            // **OR IT REFUSED IN WORDS AND KEYED NOTHING.**
+            _output.WriteLine("it refused: " + Assert.Single(refused).GetRawText());
+
+            Assert.Equal("no_clear_spot", refused[0].GetProperty("reason").GetString());
+            Assert.Equal(0, sink.TimesCalled);
+            Assert.Contains("too crowded", line, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// **4.3 and decision BC: the Olivia CQ's receipt is PSK31's - no station facts, no Log - and a
+    /// certain answer retires it.**
+    /// </summary>
+    /// <remarks>
+    /// **ASSERTED AS `TheCqReceiptTests` ASSERTS IT FOR PSK31**, on the same properties, because
+    /// R28 says the receipt is the same receipt and the way to prove that is to make the same
+    /// claims about it.
+    /// </remarks>
+    [Fact]
+    public void TheCqReceiptCarriesNoStationFactsAndNoLogAndACertainAnswerRetiresIt()
+    {
+        using var telemetry = new JsonlTelemetry(_folder, "366", _ => true);
+
+        var model = Listening(telemetry);
+
+        Arm(model, telemetry);
+
+        model.SendCallToAnyoneCommand.Execute(null);
+
+        var receipt = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine("is a receipt : " + receipt.IsCallToAnyone);
+        _output.WriteLine("callsign     : [" + receipt.Callsign + "]");
+        _output.WriteLine("place        : [" + receipt.Place + "]");
+        _output.WriteLine("state word   : [" + receipt.StateWord + "]");
+        _output.WriteLine("sentence     : [" + receipt.Sentence + "]");
+        _output.WriteLine("action label : [" + receipt.ActionLabel + "]");
+        _output.WriteLine("shows globe  : " + receipt.ShowsGlobe);
+
+        Assert.True(receipt.IsCallToAnyone);
+
+        // **NO PLACE, NO COUNTRY, NO ENTITY, NO MAP ROW.**
+        Assert.Empty(receipt.Place);
+        Assert.False(receipt.HasPlace);
+        Assert.False(receipt.ShowsGlobe);
+
+        // **AND NO LOG.** Nothing has been worked, so there is nothing to log.
+        Assert.Equal(Ft8CardActionKind.None, receipt.ActionKind);
+        Assert.False(receipt.HasAction);
+        Assert.Equal("", receipt.ActionLabel);
+
+        var everything = string.Join(
+            " | ",
+            receipt.Callsign, receipt.Place, receipt.StateWord, receipt.Sentence,
+            receipt.ActionLabel, receipt.ActionTip, receipt.Detail);
+
+        foreach (var forbidden in new[] { "grid", "miles", "north", "south", "Portugal" })
+        {
+            Assert.DoesNotContain(forbidden, everything, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Settle(model);
+
+        // **A CERTAIN ANSWER, ADDRESSED TO HIM, ON AN OLIVIA ROW** - through the same certainty
+        // gate PSK31's answer goes through, because it is the same code.
+        model.ShowOliviaChannelsForTests(
+        [
+            new OliviaChannel(
+                92, OliviaCallingTable.CallingVariant, 1500, OliviaListener.FoundByRsid, 0,
+                Mine + " de N1XYZ N1XYZ K\n", 9, 0, false),
+        ]);
+
+        foreach (var card in model.DigitalCards)
+        {
+            _output.WriteLine($"after the answer: [{card.Callsign}] receipt {card.IsCallToAnyone}");
+        }
+
+        Assert.DoesNotContain(model.DigitalCards, c => c.IsCallToAnyone);
+        Assert.Contains(model.DigitalCards, c => string.Equals(c.Callsign, "N1XYZ", StringComparison.Ordinal));
+    }
+
     /// <summary>Press something on a listening, armed panel and give back what it left behind.</summary>
     private (FakeSink Sink, FakePort Port, List<string> Lines) Pressed(Action<MainWindowViewModel> press)
     {
@@ -478,6 +670,10 @@ public sealed class TheOliviaSendTests : IDisposable
 
     /// <summary>A panel on 20 m with the Olivia tab pressed and the tap running.</summary>
     private static MainWindowViewModel Listening(JsonlTelemetry? telemetry)
+        => Listening(telemetry, DialOn20m);
+
+    /// <summary>A panel at a named dial with the Olivia tab pressed and the tap running.</summary>
+    private static MainWindowViewModel Listening(JsonlTelemetry? telemetry, long dialHz)
     {
         var settings = new AppSettings { ReconnectOnStartup = false };
 
@@ -497,8 +693,8 @@ public sealed class TheOliviaSendTests : IDisposable
             TapForTests = new AudioTap(),
         };
 
-        model.SelectedBand = model.Bands.First(b => b.Band.LowHz <= DialOn20m && b.Band.HighHz >= DialOn20m);
-        model.FrequencyHz = DialOn20m;
+        model.SelectedBand = model.Bands.First(b => b.Band.LowHz <= dialHz && b.Band.HighHz >= dialHz);
+        model.FrequencyHz = dialHz;
         model.UseWorkedBeforeForTests(new Dictionary<string, AdifContact>(StringComparer.OrdinalIgnoreCase));
         model.ChooseDigitalModeCommand.Execute(Mode);
 

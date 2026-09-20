@@ -5504,9 +5504,16 @@ public partial class MainWindowViewModel : ObservableObject
 
         var mine = _settings.Operator.Callsign?.Trim() ?? "";
 
+        // **AND THE CLOCK IS THE WALL'S ON BOTH UNSLOTTED MODES** (work instruction 366 task 3,
+        // criterion 4.3, decision BC). A slotted mode's cards are stamped with the slot they
+        // belong to, which `CardsNow` carries; a mode with no slots has no slot to name, so the
+        // moment is now. **Until this unit that read `IsPsk31Chosen` alone**, so the Olivia CQ
+        // booked its receipt into the ledger and the panel built no card from it - the press was
+        // recorded and the operator saw nothing. Olivia's receipt is PSK31's receipt (§R28), and
+        // this is the line that lets it be.
         if (_contacts is not null
             && mine.Length > 0
-            && (CardsNow ?? (IsPsk31Chosen ? DateTime.UtcNow : null)) is { } nowUtc)
+            && (CardsNow ?? (IsPsk31Chosen || IsOliviaChosen ? DateTime.UtcNow : null)) is { } nowUtc)
         {
             foreach (var who in CardStations())
             {
