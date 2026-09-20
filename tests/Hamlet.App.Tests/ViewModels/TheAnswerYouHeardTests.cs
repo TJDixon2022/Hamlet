@@ -7,6 +7,7 @@ using Hamlet.App.Settings;
 using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Contacts;
 using Hamlet.RadioEngine.Licensing;
+using Hamlet.RadioEngine.Olivia;
 using Hamlet.RadioEngine.Psk31;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transmit;
@@ -214,6 +215,33 @@ public sealed class TheAnswerYouHeardTests : IDisposable
         telemetry.Dispose();
 
         Assert.True(Assert.Single(Events("psk31_answer_taken")).GetProperty("certain").GetBoolean());
+    }
+
+    /// <summary>
+    /// **An Olivia station who answers gets the same card, by construction** (the instruction's
+    /// §9): its rows go through the one card path, so this asserts the inheritance rather than a
+    /// second rule.
+    /// </summary>
+    [Fact]
+    public void AnOliviaStationAnsweringGetsTheSameGuessedCard()
+    {
+        var model = Panel(out _, out var telemetry);
+
+        model.ChooseDigitalModeCommand.Execute("Olivia");
+        model.ShowOliviaChannelsForTests(new[]
+        {
+            new OliviaChannel(3, "8/250", 1000, OliviaListener.FoundByRsid, 0, HisGuessedAnswer, 9, 0, false, 1000),
+        });
+
+        var card = Assert.Single(model.DigitalCards);
+
+        _output.WriteLine($"olivia card {card.Callsign}: turn [{card.TurnWord}], offered {card.Offered}, note [{card.OfferNote}]");
+
+        Assert.Equal(Him, card.Callsign);
+        Assert.True(card.TurnIsGuess);
+        Assert.Equal("not sure it is your turn", card.OfferNote);
+
+        telemetry.Dispose();
     }
 
     private static Psk31Exchange Read(string line)
