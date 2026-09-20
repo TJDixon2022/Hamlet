@@ -4,7 +4,7 @@ Carry-forward tests
 RUN IT LIKE THIS. ONE INVOCATION PER PROJECT, NOT ONE PER NAME.
 --------------------------------------------------------------
 
-    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4"
+    timeout 480 dotnet test tests/Hamlet.App.Tests/Hamlet.App.Tests.csproj --filter "FullyQualifiedName~TheSettingsSurviveAnUpgradeTests|FullyQualifiedName~ThePressingOfCqTests|FullyQualifiedName~TheCqReceiptTests|FullyQualifiedName~ThePsk31CqGoesOutTests|FullyQualifiedName~ThePsk31ExchangeTests|FullyQualifiedName~ThePowerIsOfferedTests|FullyQualifiedName~ThePsk31ConversationCardTests|FullyQualifiedName~CallsignPrivacyTests|FullyQualifiedName~ThePsk31PanelHearsTests|FullyQualifiedName~ThePsk31HearsEveryoneTests|FullyQualifiedName~ThePsk31ReadsTheConversationTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~ThePsk31CardIsHandedHisGridTests|FullyQualifiedName~ThePsk31TelemetryTests|FullyQualifiedName~ThePsk31TransmitTelemetryTests|FullyQualifiedName~ThePsk31PanelSpeaksPsk31Tests|FullyQualifiedName~ThePsk31PathRunsAtItsRateTests|FullyQualifiedName~ThePsk31CarrierLivesTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~TheAlcIsReadTests|FullyQualifiedName~BindingHealthTests.TheMainWindowBindsWithoutOneComplaint|FullyQualifiedName~TheRowShowsWhatWasHeardTests|FullyQualifiedName~TheCaptureButtonTests|FullyQualifiedName~TheAlcSentenceTests|FullyQualifiedName~TheStopIsAlwaysOnScreenTests|FullyQualifiedName~TheTestsStayOffTheNetworkTests|FullyQualifiedName~TheTypedLineGoesOutTests|FullyQualifiedName~TheWholeMessageTests|FullyQualifiedName~ThePsk31SendIsAnnouncedTests|FullyQualifiedName~TheOliviaSeamTests|FullyQualifiedName~TheOliviaRowsTests|FullyQualifiedName~TheOliviaRowsReadLikePsk31Tests|FullyQualifiedName~TheSendReachesTheAirTests|FullyQualifiedName~TheOliviaSendTests.AnOliviaCqReachesTheAir|FullyQualifiedName~TheOliviaLogsAsOliviaTests.AnOliviaContactLogsAsOliviaWithTheReportsAndTheGridTheCardShowed|FullyQualifiedName~PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4"
 
     timeout 480 dotnet test tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj --filter "FullyQualifiedName~TheUnslottedSendTests|FullyQualifiedName~TheFt8AndFt4SendsAreByteIdenticalTests|FullyQualifiedName~TheVaricodeTests|FullyQualifiedName~ThePsk31DemodulatorTests|FullyQualifiedName~ThePsk31CarrierSearchTests|FullyQualifiedName~ThePsk31StationIdlesTests|FullyQualifiedName~ThePsk31ExchangeParserTests|FullyQualifiedName~ThePsk31MessageSplitTests|FullyQualifiedName~ThePsk31ModulatorTests|FullyQualifiedName~ThePsk31TurnTests|FullyQualifiedName~ThePsk31OfferTests|FullyQualifiedName~TheRsidDetectorTests|FullyQualifiedName~TheRsidBurstTests|FullyQualifiedName~TheOliviaDemodulatorTests.EachCleanFixtureDecodesToItsText|FullyQualifiedName~TheOliviaDemodulatorTests.NoiseGivesNoCharacters|FullyQualifiedName~TheOliviaDemodulatorTests.TheEventsFireAndCarryNoTextOrCallsign|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusTenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaDemodulatorTests.TheMinusSixteenDecibelFixtureDecodes|FullyQualifiedName~TheOliviaBlindSearchTests|FullyQualifiedName~TheOliviaDriftTests|FullyQualifiedName~TheOliviaBelowTheNoiseTests.TheQsoIsReadBelowTheNoise|FullyQualifiedName~TheOliviaListenerTests|FullyQualifiedName~TheOliviaRetireTests|FullyQualifiedName~RealOffAirAudioReachesTheTabTests.OffAirAudioAt48000ProducesRowsThroughTheTapAndTheWatch|FullyQualifiedName~TheOliviaModulatorTests.EachMacroAndATypedLineComeBackIdentical"
 
@@ -108,6 +108,7 @@ PressingFt4TunesAndDecodesFt4Tests.AnFt4PressCutsSevenAndAHalfAndReadsFt4   FT4 
 TheOliviaRowsTests                                      unit 364
 TheOliviaRowsReadLikePsk31Tests                         unit 364
 TheOliviaSendTests.AnOliviaCqReachesTheAir              Olivia's send guard, unit 366
+TheSettingsSurviveAnUpgradeTests                        the settings guard, unit 369
 
 -- engine project: tests/Hamlet.RadioEngine.Tests/Hamlet.RadioEngine.Tests.csproj
 
@@ -341,3 +342,20 @@ a name that cannot fail teaches nothing by being run.
 
 **NOTHING WENT ON THE ENGINE LINE**, which had about 195 s of margin against the 480 s
 timeout and needs it.
+
+WHAT UNIT 369 ADDED, ONE TYPE ON THE APP LINE AND NONE ON THE ENGINE LINE.
+TheSettingsSurviveAnUpgradeTests, the whole type. **It is the settings guard**, and it is on
+this list for the reason HM-DEC-165 put the mode guards here: between 1.13.30 and 1.13.48 the
+operator's transmit device went out of settings.json, FT8 could not send for five days, and
+nothing in the tree tested that a settings file written by an older Hamlet still loads whole.
+
+It holds three reconstructed files - 1.13.30, 1.13.40 and HEAD - and asserts that every key
+each one carries is still there after a load and a save, walking the file rather than a list of
+names, so a field dropped by some later rewrite fails here without anybody having thought to add
+it. Its two sharpest names are the fault unit 369 actually found: **one value the build cannot
+parse used to discard the entire file**, because LoadFrom answered every exception with
+`return new AppSettings()` and App.axaml.cs then saved those defaults over his file on exit.
+
+THE COST IS NOTHING. The whole type runs in under 0.4 s; it opens no device, makes no sound and
+reaches no network. App 190 of 190 before this unit and 190 of 190 after, on the same machine in
+one session, with these names then added on top.

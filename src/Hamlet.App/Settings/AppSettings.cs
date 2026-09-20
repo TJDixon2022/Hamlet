@@ -1,5 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using Hamlet.App.ViewModels;
 using Hamlet.RadioEngine.Explore;
 using Hamlet.RadioEngine.Telemetry;
 using Hamlet.RadioEngine.Transmit;
@@ -250,6 +252,35 @@ public sealed class AppSettings
     /// because a level quietly corrected is a level he believes he set.</para>
     /// </remarks>
     public float TransmitDrivePeak { get; set; } = Ft8Composer.DefaultDrivePeak;
+
+    /// <summary>
+    /// **What this radio's level control read on a send Hamlet had no reason to
+    /// doubt** - the highest such reading seen, with when it was taken and from
+    /// which mode. Null until one has been measured.
+    /// </summary>
+    /// <remarks>
+    /// <para>**IT SITS BESIDE THE DRIVE BECAUSE THEY ARE ONE SUBJECT** (§R15): how
+    /// hard this radio is being driven. The drive is what Hamlet sets; this is what
+    /// the radio answered.</para>
+    /// <para>**IT IS HERE BECAUSE IT WAS BEING FORGOTTEN EVERY EVENING** (work
+    /// instruction 369 task 1, PHASE_PLAN.md criterion 0.2). It was learned into a
+    /// view model and written nowhere, so every restart threw away a measurement
+    /// that had cost a transmission to take and put the panel back to *Hamlet has
+    /// no reference for your radio's level control yet*. Relearning it costs
+    /// another send, and the phase this field was added in is the one named
+    /// *Hamlet holds what it has*.</para>
+    /// <para>**THE AGE IS STORED, NOT THE MOMENT IT WAS READ BACK** (HM-DEC-111).
+    /// `TakenUtc` is the poll's own time and survives the write unchanged, so a
+    /// reference learned last Tuesday reads as last Tuesday's on the panel. **A
+    /// reference is weaker the older it is and the operator is shown which he
+    /// has**; a reload that stamped itself *now* would be a fresh-looking claim
+    /// about a stale measurement, which is §0.0 broken in the quietest possible
+    /// way.</para>
+    /// <para>**NULL STAYS THE WHOLE OF *NOT LEARNED YET*.** Nothing here
+    /// substitutes a default for it, and a file that has never carried one loads
+    /// with none rather than with a number nobody measured.</para>
+    /// </remarks>
+    public LearnedAlcReference? Psk31AlcReference { get; set; }
 
     /// <summary>The highest contact badge Hamlet has already mentioned.</summary>
     /// <remarks>
@@ -776,6 +807,35 @@ public static class SettingsStore
     /// <summary>Load settings from an explicit path. The real load and the
     /// tested load are the same code (§5).</summary>
     /// <param name="path">Settings file path.</param>
+    /// <remarks>
+    /// <para>**A VALUE THIS BUILD CANNOT READ COSTS THAT VALUE, NEVER THE FILE**
+    /// (work instruction 369 task 1, PHASE_PLAN.md R33 and criterion 0.2). This
+    /// method used to deserialize the whole file in one call and answer every
+    /// exception with `return new AppSettings()`, so **one unparseable value
+    /// anywhere in `settings.json` discarded every other value in it** - the
+    /// transmit device, the receive device, the grid, the callsign, the class and
+    /// the drive together. `App.axaml.cs` saves on exit, so the defaults then went
+    /// over the operator's own file and the loss became permanent. That is what
+    /// *"the settings lost the listing setting"* was, from his chair: one value
+    /// took the lot.</para>
+    /// <para>**THE CONVERTER'S REMARKS ABOVE SAW HALF OF THIS AND FIXED ONE CASE.**
+    /// `JsonStringEnumConverter` is there because a hand-edited `"General"` threw
+    /// and every setting reverted - *"a spectacular punishment for a reasonable
+    /// guess"*. The punishment was never specific to that guess. A retired enum
+    /// member, a renamed one, a number where a string is now wanted, a shape a
+    /// later build changed: all of them reached the same catch, and each of them
+    /// was a whole settings file.</para>
+    /// <para>**SO THE WHOLE-FILE READ IS TRIED FIRST AND SALVAGE IS THE FALLBACK,
+    /// NOT THE ROUTE.** A file that reads cleanly - every file in ordinary use -
+    /// takes the same one call it always did, and nothing about it changes.
+    /// <see cref="Salvage"/> runs only where that call threw, and it reads the file
+    /// property by property so that the failure is contained to the property that
+    /// caused it.</para>
+    /// <para>**A FILE WITH NO STRUCTURE IS STILL DEFAULTS** (HM-DEC-018). There is
+    /// nothing to salvage from text that is not JSON; `JsonDocument.Parse` throws,
+    /// the outer catch answers, and losing preferences still beats refusing to
+    /// start.</para>
+    /// </remarks>
     public static AppSettings LoadFrom(string path)
     {
         try
@@ -786,8 +846,18 @@ public static class SettingsStore
             }
 
             var json = File.ReadAllText(path);
-            var settings = JsonSerializer.Deserialize<AppSettings>(json, Options)
+
+            AppSettings settings;
+
+            try
+            {
+                settings = JsonSerializer.Deserialize<AppSettings>(json, Options)
                            ?? new AppSettings();
+            }
+            catch (JsonException)
+            {
+                settings = Salvage(json);
+            }
 
             // Keys that have been renamed since the file was written are
             // carried forward here, so an upgrade never looks like the app
@@ -799,6 +869,81 @@ public static class SettingsStore
         catch (Exception)
         {
             return new AppSettings();
+        }
+    }
+
+    /// <summary>
+    /// Read a settings file one property at a time, keeping every value that can
+    /// be read and defaulting only those that cannot.
+    /// </summary>
+    /// <param name="json">The raw file text.</param>
+    /// <returns>Settings carrying everything the file could still give.</returns>
+    /// <remarks>
+    /// **IT THROWS ON A FILE WITH NO OBJECT AT ITS ROOT**, deliberately, so that
+    /// <see cref="LoadFrom"/>'s outer catch gives defaults for genuine rubbish
+    /// rather than this returning a half-read thing that looks like a settings
+    /// file.
+    /// </remarks>
+    private static AppSettings Salvage(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+
+        if (document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException("The settings file has no object at its root.");
+        }
+
+        var settings = new AppSettings();
+
+        FillFromElement(settings, document.RootElement);
+
+        return settings;
+    }
+
+    /// <summary>
+    /// Set every property of <paramref name="target"/> the element can supply.
+    /// </summary>
+    /// <param name="target">The object to fill, modified in place.</param>
+    /// <param name="source">The JSON object holding its values.</param>
+    /// <remarks>
+    /// <para>**A PROPERTY THAT WILL NOT READ IS SKIPPED AND ITS DEFAULT STANDS.**
+    /// It is never half-written, and nothing is inferred from the failure.</para>
+    /// <para>**AN OBJECT PROPERTY IS DESCENDED INTO RATHER THAN WRITTEN OFF.** The
+    /// operator profile holds four of the seven values criterion 0.2 names, so one
+    /// unreadable field inside it must not cost the callsign beside it.</para>
+    /// <para>**A NULL IN THE FILE LEAVES THE DEFAULT ALONE.** Where the default is
+    /// already null that is the same answer; where it is an empty list, keeping the
+    /// list is better than putting a null in its place for the rest of the app to
+    /// meet.</para>
+    /// </remarks>
+    private static void FillFromElement(object target, JsonElement source)
+    {
+        foreach (var property in target.GetType().GetProperties(
+                     BindingFlags.Public | BindingFlags.Instance))
+        {
+            if (!property.CanRead
+                || !property.CanWrite
+                || property.GetCustomAttribute<JsonIgnoreAttribute>() is not null
+                || !source.TryGetProperty(property.Name, out var element))
+            {
+                continue;
+            }
+
+            try
+            {
+                if (element.Deserialize(property.PropertyType, Options) is { } value)
+                {
+                    property.SetValue(target, value);
+                }
+            }
+            catch (Exception)
+            {
+                if (element.ValueKind == JsonValueKind.Object
+                    && property.GetValue(target) is { } nested)
+                {
+                    FillFromElement(nested, element);
+                }
+            }
         }
     }
 

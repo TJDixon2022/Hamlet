@@ -8339,6 +8339,23 @@ public partial class MainWindowViewModel : ObservableObject
         // and re-save a level nothing changed.
         _transmitDrivePercent = TransmitDrive.PercentFor(settings.TransmitDrivePeak);
 
+        // **AND THE REFERENCE THE DRIVE IS JUDGED AGAINST OPENS ON WHAT WAS LAST
+        // MEASURED** (work instruction 369 task 1, criterion 0.2). It was learned
+        // into this property and written nowhere, so every restart threw away a
+        // measurement that had cost a transmission to take and put the panel back
+        // to *Hamlet has no reference for your radio's level control yet*.
+        //
+        // **IT KEEPS THE TIME IT WAS TAKEN AT** (HM-DEC-111), which is the whole
+        // reason it can be carried across a restart at all: the panel's line says
+        // when the reading was taken and how long ago, so a reference from last
+        // week reads as last week's rather than as this send's. A reload stamped
+        // *now* would be a fresh-looking claim about a stale measurement.
+        //
+        // **NULL STAYS NULL.** A file that never carried one leaves the property
+        // null, which is the whole of *not learned yet*, and nothing here invents
+        // a number to stand in for it (0.0).
+        Psk31AlcReference = settings.Psk31AlcReference;
+
         // **THE VISIBLE TABLE MIRRORS THE WHOLE ONE, RATHER THAN EVERY CALLER
         // REMEMBERING TO FILL BOTH** (unit 252 task 2). There are four places a
         // row leaves or joins `DigitalDecodes` — the decoder's own door, the row
@@ -17569,6 +17586,13 @@ public partial class MainWindowViewModel : ObservableObject
         // *now* would make an old reading look fresh on the panel.
         Psk31AlcReference = new LearnedAlcReference(
             reading, value.AtUtc ?? DateTime.UtcNow, mode);
+
+        // **AND IT GOES IN THE FILE, BECAUSE IT COST A TRANSMISSION TO TAKE** (work
+        // instruction 369 task 1). This is the only place a reference is learned,
+        // so it is the only place one has to be written down; saving here rather
+        // than on exit means a session that ends badly still keeps it.
+        _settings.Psk31AlcReference = Psk31AlcReference;
+        SettingsStore.Save(_settings);
 
         Psk31Events.AlcReferenceLearned(
             _telemetry,
